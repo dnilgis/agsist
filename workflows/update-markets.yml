@@ -1,0 +1,39 @@
+name: Update Market Data
+
+on:
+  schedule:
+    # PEAK: Every 15 min during US market hours (Mon-Fri 8am-5pm CT = 14:00-23:00 UTC)
+    - cron: '*/15 14-22 * * 1-5'
+    # OFF-PEAK WEEKDAY NIGHTS: Every hour (Mon-Fri outside market hours)
+    - cron: '0 0-13,23 * * 1-5'
+    # WEEKEND: Every 2 hours (Sat-Sun) - crypto never sleeps
+    - cron: '0 */2 * * 0,6'
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install yfinance pandas
+      
+      - name: Fetch market data
+        run: python scripts/fetch_markets.py
+      
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data/markets.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update market data $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push

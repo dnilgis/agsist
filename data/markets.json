@@ -1,0 +1,26 @@
+{
+  "updated": "2025-01-22T12:00:00Z",
+  "source": "Yahoo Finance",
+  "markets": {
+    "grains": {
+      "corn": {"name": "Corn", "symbol": "ZC=F", "unit": "¢/bu", "price": 448.25, "change": 2.50, "changePct": 0.56},
+      "soybeans": {"name": "Soybeans", "symbol": "ZS=F", "unit": "¢/bu", "price": 1042.00, "change": -3.25, "changePct": -0.31},
+      "wheat": {"name": "Wheat", "symbol": "ZW=F", "unit": "¢/bu", "price": 538.50, "change": 1.75, "changePct": 0.33},
+      "oats": {"name": "Oats", "symbol": "ZO=F", "unit": "¢/bu", "price": 362.00, "change": -0.50, "changePct": -0.14}
+    },
+    "livestock": {
+      "cattle": {"name": "Live Cattle", "symbol": "LE=F", "unit": "¢/lb", "price": 195.25, "change": 0.85, "changePct": 0.44},
+      "feeder": {"name": "Feeder Cattle", "symbol": "GF=F", "unit": "¢/lb", "price": 268.50, "change": 1.20, "changePct": 0.45},
+      "hogs": {"name": "Lean Hogs", "symbol": "HE=F", "unit": "¢/lb", "price": 82.75, "change": -0.35, "changePct": -0.42}
+    },
+    "metals": {
+      "gold": {"name": "Gold", "symbol": "GC=F", "unit": "$/oz", "price": 2748.40, "change": 12.30, "changePct": 0.45},
+      "silver": {"name": "Silver", "symbol": "SI=F", "unit": "$/oz", "price": 30.85, "change": 0.22, "changePct": 0.72},
+      "copper": {"name": "Copper", "symbol": "HG=F", "unit": "$/lb", "price": 4.28, "change": -0.03, "changePct": -0.70}
+    },
+    "crypto": {
+      "bitcoin": {"name": "Bitcoin", "symbol": "BTC-USD", "unit": "$", "price": 104250.00, "change": 1850.00, "changePct": 1.81},
+      "ethereum": {"name": "Ethereum", "symbol": "ETH-USD", "unit": "$", "price": 3285.50, "change": 45.20, "changePct": 1.39}
+    }
+  }
+}
