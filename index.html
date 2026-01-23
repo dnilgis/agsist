@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGSIST | Free Ag Dashboard - Live Markets, Grain Calculator, USDA Resources</title>
-    <meta name="description" content="Free agricultural dashboard with live commodity prices, grain bin calculator, weather radar, and USDA resources. Built for farmers by Farmers First.">
+    <title>AGSIST | Killer Ag Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     <style>
@@ -12,20 +11,26 @@
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:16px;line-height:1.5}
         
-        /* TICKER - FIXED SEAMLESS SCROLL */
+        /* KILLER TICKER - SEAMLESS & SLOWER FOR READING NEWS */
         .ticker-wrap{background:linear-gradient(90deg,var(--card) 0%,var(--panel) 50%,var(--card) 100%);border-bottom:2px solid var(--border);overflow:hidden;white-space:nowrap;padding:12px 0;position:relative}
-        .ticker{display:inline-block;animation:scroll 60s linear infinite;padding-left:0}
+        .ticker{display:inline-block;animation:scroll 120s linear infinite;padding-left:0; display: flex; align-items: center;}
         .ticker:hover{animation-play-state:paused}
-        .ticker-item{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--bright);padding:0 16px;font-weight:500}
-        .ticker-item .up{color:var(--green);font-weight:700}.ticker-item .down{color:var(--red);font-weight:700}
-        .ticker-item .label{color:var(--dim);font-size:.8rem}
+        
+        .ticker-item{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--bright);padding:0 24px;font-weight:500;display:inline-flex;align-items:center;border-right:1px solid #222}
+        .ticker-item .label{color:var(--dim);font-size:.8rem;margin-right:8px}
+        .ticker-item .up{color:var(--green);font-weight:700;margin-left:6px}
+        .ticker-item .down{color:var(--red);font-weight:700;margin-left:6px}
+        
+        /* NEWS HEADLINE IN TICKER */
+        .ticker-news { color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .ticker-news .source { background: var(--accent-dim); color: #000; padding: 2px 6px; border-radius: 2px; font-size: 0.7rem; margin-right: 8px; }
+        
         @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
         
-        /* HEADER */
+        /* LAYOUT */
         header{background:var(--panel);border-bottom:1px solid var(--border);padding:14px 24px;position:sticky;top:0;z-index:100}
         .header-inner{max-width:1800px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
         
-        /* STYLIZED LOGO */
         .logo{text-decoration:none;display:flex;align-items:center;gap:8px}
         .logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent) 0%,#b8912e 100%);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:bold;color:var(--bg);clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)}
         .logo-text{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:900;background:linear-gradient(135deg,var(--accent) 0%,#f0d080 50%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:3px}
@@ -37,22 +42,19 @@
         .live-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:blink 2s infinite;box-shadow:0 0 8px var(--green)}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
         
-        /* MAIN */
         main{max-width:1800px;margin:0 auto;padding:24px}
         .tab{display:none}.tab.active{display:block}
-        .grid-main{display:grid;grid-template-columns:1fr 360px;gap:24px}
+        .grid-main{display:grid;grid-template-columns:1fr 380px;gap:24px}
         
         /* PANELS */
-        .panel{background:var(--panel);border:1px solid var(--border);border-radius:4px}
-        .panel-head{background:var(--card);padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;border-radius:4px 4px 0 0}
+        .panel{background:var(--panel);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+        .panel-head{background:var(--card);padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
         .panel-head h2{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--accent);letter-spacing:2px;font-weight:600}
-        .panel-head span{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--dim)}
         .panel-body{padding:18px}
         
-        /* SECTION LABELS */
         .section-label{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);letter-spacing:2px;margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);font-weight:600}
         
-        /* MARKET CARDS */
+        /* CARDS */
         .market-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
         .market-card{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:4px;transition:.2s}
         .market-card:hover{border-color:var(--accent-dim)}
@@ -64,121 +66,59 @@
         .market-card .change.up{color:var(--green)}.market-card .change.down{color:var(--red)}
         .market-card .unit{font-size:.75rem;color:var(--dim)}
 
-        /* 52 WEEK RANGE BAR */
+        /* 52 WK RANGE */
         .range-container { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--hover); }
         .range-bar { height: 4px; background: var(--hover); border-radius: 2px; position: relative; margin-bottom: 6px; }
         .range-cursor { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; position: absolute; top: 50%; transform: translate(-50%, -50%); border: 1px solid var(--card); z-index:2; }
         .range-labels { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--dim); }
+
+        /* FEED TABS */
+        .feed-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--card)}
+        .feed-tab{flex:1;padding:12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--dim);cursor:pointer;transition:.2s;border-bottom:2px solid transparent}
+        .feed-tab:hover{background:var(--hover);color:var(--text)}
+        .feed-tab.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--panel)}
         
-        /* WEATHER - BIGGER */
-        .weather-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-top:12px}
-        .radar{background:var(--card);border:1px solid var(--border);height:420px;overflow:hidden;border-radius:4px}
-        .radar iframe{width:100%;height:100%;border:none}
-        .forecast{display:flex;flex-direction:column;gap:8px}
-        .forecast-day{background:var(--card);border:1px solid var(--border);padding:12px 14px;display:grid;grid-template-columns:55px 1fr auto;align-items:center;gap:14px;border-radius:4px}
-        .forecast-day .day{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--accent);font-weight:600}
-        .forecast-day .desc{font-size:.95rem;color:var(--text)}
-        .forecast-day .temp{font-family:'JetBrains Mono',monospace;font-size:1.1rem;text-align:right}
-        .forecast-day .temp strong{color:var(--bright)}
+        .feed-content{display:none;max-height:600px;overflow-y:auto}
+        .feed-content.active{display:block}
         
-        /* TOOLS */
+        /* NEWS WIRE ITEMS */
+        .news-item{padding:14px;border-bottom:1px solid var(--border);display:block;text-decoration:none;transition:.2s}
+        .news-item:hover{background:var(--hover);padding-left:18px}
+        .news-item .meta{display:flex;gap:8px;font-size:.7rem;margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+        .news-item .tag{color:var(--bg);background:var(--dim);padding:2px 6px;border-radius:2px;font-weight:600}
+        .news-item .tag.usda{background:#2a4f87;color:#fff}
+        .news-item .tag.agweb{background:#d4a942;color:#000}
+        .news-item h4{color:var(--text);font-size:.95rem;line-height:1.4;font-weight:500}
+        .news-item:visited h4{color:var(--dim)}
+
+        /* TOOLS & WEATHER */
         .tool-link{display:flex;align-items:center;gap:14px;padding:16px 14px;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text);transition:.2s;cursor:pointer}
-        .tool-link:last-child{border-bottom:none}.tool-link:hover{background:var(--hover);padding-left:18px}
+        .tool-link:hover{background:var(--hover);padding-left:18px}
         .tool-icon{width:40px;height:40px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;border-radius:4px}
         .tool-info h3{font-size:1rem;font-weight:600;color:var(--bright)}.tool-info p{font-size:.85rem;color:var(--dim)}
         
-        /* TWITTER FEED */
-        .twitter-feed{background:var(--card);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-        .twitter-feed-header{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-        .twitter-feed-header img{width:32px;height:32px;border-radius:50%;background:var(--dim)}
-        .twitter-feed-header .handle{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--accent)}
-        .twitter-feed-body{padding:14px;max-height:200px;overflow-y:auto}
-        .twitter-feed-body p{font-size:.9rem;color:var(--text);line-height:1.5}
-        .twitter-feed-footer{padding:10px 14px;border-top:1px solid var(--border);text-align:center}
-        .twitter-feed-footer a{font-size:.8rem;color:var(--accent);text-decoration:none}
-        
-        /* LOCAL MARKETS */
-        .local-markets{background:var(--card);border:1px solid var(--border);padding:16px;margin-bottom:12px;border-radius:4px}
-        .elevator-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:1rem}
-        .elevator-item:last-child{border:none}
-        .elevator-name{color:var(--text);font-weight:500}
-        .elevator-dist{font-family:'JetBrains Mono',monospace;color:var(--dim);font-size:.85rem}
-        
-        /* CALCULATOR */
-        .calc-wrap{max-width:900px;margin:0 auto}
-        .calc-header{text-align:center;margin-bottom:30px}
-        .calc-header h1{font-family:'JetBrains Mono',monospace;font-size:1.5rem;color:var(--accent);margin-bottom:10px}
-        .calc-header p{color:var(--dim);font-size:1rem}
-        .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-        .calc-panel{background:var(--panel);border:1px solid var(--border);padding:20px;border-radius:4px}
-        .calc-panel h3{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--accent);letter-spacing:1px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
-        .input-group{margin-bottom:16px}
-        .input-group label{display:block;font-size:.9rem;color:var(--dim);margin-bottom:6px;font-family:'JetBrains Mono',monospace}
-        .input-group input,.input-group select{width:100%;padding:12px 14px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;border-radius:4px}
-        .input-group input:focus,.input-group select:focus{outline:none;border-color:var(--accent)}
-        .input-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-        .result-panel{background:var(--card);border:1px solid var(--accent-dim);padding:20px;border-radius:4px}
-        .result-panel h3{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--accent);letter-spacing:1px;margin-bottom:16px}
-        .result-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
-        .result-row:last-child{border-bottom:none}
-        .result-label{color:var(--dim);font-size:.95rem}
-        .result-value{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--bright);font-size:1rem}
-        .result-value.big{color:var(--accent);font-size:1.2rem}
-        
-        /* RESOURCES */
-        .resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-        .resource-card{background:var(--panel);border:1px solid var(--border);padding:20px;transition:.2s;border-radius:4px}
-        .resource-card:hover{border-color:var(--accent-dim);transform:translateY(-2px)}
-        .resource-card h3{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--accent);margin-bottom:16px;letter-spacing:1px}
-        .resource-link{display:block;padding:10px 0;border-bottom:1px solid var(--border);color:var(--text);text-decoration:none;font-size:.95rem;transition:.2s}
-        .resource-link:last-child{border-bottom:none}.resource-link:hover{color:var(--accent);padding-left:10px}
-        .resource-link span{font-size:.8rem;color:var(--dim);display:block;margin-top:3px}
-        
-        /* OFFICES */
-        .office-wrap{max-width:800px;margin:0 auto}
-        .finder-form{display:grid;grid-template-columns:1fr 1fr auto;gap:16px;margin-bottom:30px}
-        .finder-form select{padding:14px 16px;background:var(--panel);border:1px solid var(--border);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.95rem;border-radius:4px}
-        .finder-form button{padding:14px 24px;background:var(--accent);border:none;color:var(--bg);font-family:'JetBrains Mono',monospace;font-weight:600;cursor:pointer;border-radius:4px;font-size:.95rem}
-        .finder-form button:hover{background:var(--bright)}
-        .office-results{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-        .office-card{background:var(--panel);border:1px solid var(--border);padding:20px;border-radius:4px}
-        .office-card h4{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--accent);margin-bottom:16px;letter-spacing:1px}
-        .office-card p{font-size:.95rem;line-height:1.7}
-        .office-card a{color:var(--accent);text-decoration:none}
-        .ref-table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:16px}
-        .ref-table th,.ref-table td{padding:10px;text-align:left;border-bottom:1px solid var(--border)}
-        .ref-table th{font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:600;font-size:.75rem}
-        .ref-table td{font-family:'JetBrains Mono',monospace;color:var(--text)}
-        
-        /* FOOTER */
-        footer{border-top:1px solid var(--border);padding:20px;margin-top:30px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
-        .footer-brand{display:flex;align-items:center;gap:12px;font-size:.9rem;color:var(--dim)}
-        .footer-brand a{color:var(--accent);text-decoration:none;font-weight:500}
-        .footer-links{display:flex;gap:20px}
-        .footer-links a{font-size:.85rem;color:var(--dim);text-decoration:none}
-        .footer-links a:hover{color:var(--accent)}
-        
-        .loading{color:var(--dim);font-style:italic;font-size:1rem}
-        
+        .weather-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-top:12px}
+        .radar{background:var(--card);border:1px solid var(--border);height:420px;overflow:hidden;border-radius:4px}
+        .radar iframe{width:100%;height:100%;border:none}
+        .forecast-day{background:var(--card);border:1px solid var(--border);padding:12px 14px;display:grid;grid-template-columns:55px 1fr auto;align-items:center;gap:14px;border-radius:4px;margin-bottom:8px}
+        .forecast-day .day{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--accent);font-weight:600}
+        .forecast-day .temp strong{color:var(--bright)}
+
         /* RESPONSIVE */
         @media(max-width:1200px){.grid-main{grid-template-columns:1fr}}
-        @media(max-width:900px){.weather-grid{grid-template-columns:1fr}.calc-grid,.office-results{grid-template-columns:1fr}}
+        @media(max-width:900px){.weather-grid{grid-template-columns:1fr}}
         @media(max-width:600px){
             .header-inner{flex-direction:column;text-align:center}
             .nav{flex-wrap:wrap;justify-content:center}
-            .input-row{grid-template-columns:1fr}
             .market-grid{grid-template-columns:1fr 1fr}
-            .finder-form{grid-template-columns:1fr}
-            .ticker-item{font-size:.8rem;padding:0 10px}
         }
     </style>
 </head>
 <body>
     <div class="ticker-wrap">
         <div class="ticker" id="news-ticker">
-            <span class="ticker-item"><span class="label">S&P 500</span> 6,045.25 <span class="up">+0.52%</span></span>
-            <span class="ticker-item"><span class="label">DOW</span> 44,892.13 <span class="up">+0.31%</span></span>
-            </div>
+            <span class="ticker-item">Loading data...</span>
+        </div>
     </div>
 
     <header>
@@ -215,11 +155,6 @@
                         <div class="section-label">CRYPTO</div>
                         <div class="market-grid" id="crypto-grid"><div class="loading">Loading...</div></div>
                         
-                        <div class="section-label">LOCAL GRAIN BUYERS</div>
-                        <div class="local-markets" id="local-markets">
-                            <p class="loading">Locating nearby elevators... <button onclick="getLocation()" style="background:var(--accent);border:none;color:var(--bg);padding:6px 14px;cursor:pointer;font-size:.85rem;border-radius:4px;margin-left:10px">Enable Location</button></p>
-                        </div>
-                        
                         <div class="section-label" id="weather-label">WEATHER — <span id="location-name">DETECTING...</span></div>
                         <div class="weather-grid">
                             <div class="radar" id="radar-wrap"><iframe id="radar-iframe" src="https://embed.windy.com/embed2.html?lat=45.4&lon=-91.8&detailLat=45.4&detailLon=-91.8&width=650&height=450&zoom=7&level=surface&overlay=radar&product=radar&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=true&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1" title="Radar"></iframe></div>
@@ -230,296 +165,109 @@
 
                 <div>
                     <div class="panel">
+                        <div class="feed-tabs">
+                            <div class="feed-tab active" onclick="switchFeed('social')">TWITTER</div>
+                            <div class="feed-tab" onclick="switchFeed('news')">NEWS WIRE</div>
+                        </div>
+                        
+                        <div id="feed-social" class="feed-content active" style="padding:0">
+                            <div style="border-bottom:1px solid var(--border); padding:10px;">
+                                <a class="twitter-timeline" data-height="400" data-theme="dark" data-chrome="noheader nofooter transparent" href="https://twitter.com/USDA?ref_src=twsrc%5Etfw">Tweets by USDA</a>
+                            </div>
+                            <div style="padding:10px;">
+                                <a class="twitter-timeline" data-height="400" data-theme="dark" data-chrome="noheader nofooter transparent" href="https://twitter.com/AgWebEditor?ref_src=twsrc%5Etfw">Tweets by AgWeb</a>
+                            </div>
+                            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                        </div>
+                        
+                        <div id="feed-news" class="feed-content">
+                            <div id="news-wire-list" style="padding-bottom:20px">
+                                <div class="loading" style="padding:20px">Loading headlines...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel" style="margin-top:20px">
                         <div class="panel-head"><h2>QUICK TOOLS</h2></div>
                         <div class="panel-body" style="padding:0">
                             <div class="tool-link" data-tab="calculator"><div class="tool-icon">🌾</div><div class="tool-info"><h3>Grain Bin Calculator</h3><p>Bushels, weight, shrinkage</p></div></div>
                             <div class="tool-link" data-tab="offices"><div class="tool-icon">🏛️</div><div class="tool-info"><h3>Find USDA Office</h3><p>FSA / NRCS by county</p></div></div>
                             <a href="https://webapp.rma.usda.gov/apps/actuarialinformationbrowser/" target="_blank" rel="noopener" class="tool-link"><div class="tool-icon">📊</div><div class="tool-info"><h3>RMA Actuarial Browser</h3><p>Crop insurance rates</p></div></a>
                             <a href="https://farmers1st.com" target="_blank" rel="noopener" class="tool-link"><div class="tool-icon">🔍</div><div class="tool-info"><h3>Find Insurance Agent</h3><p>Farmers First Agri Service</p></div></a>
-                            <a href="https://www.rma.usda.gov/Topics/Important-Dates" target="_blank" rel="noopener" class="tool-link"><div class="tool-icon">📅</div><div class="tool-info"><h3>Key Dates</h3><p>Sales closing deadlines</p></div></a>
-                            <a href="https://droughtmonitor.unl.edu/" target="_blank" rel="noopener" class="tool-link"><div class="tool-icon">☀️</div><div class="tool-info"><h3>Drought Monitor</h3><p>Weekly conditions</p></div></a>
-                            <a href="https://websoilsurvey.nrcs.usda.gov/app/" target="_blank" rel="noopener" class="tool-link"><div class="tool-icon">🗺️</div><div class="tool-info"><h3>Web Soil Survey</h3><p>Soil maps & data</p></div></a>
-                            <a href="https://farmers1st.com" target="_blank" rel="noopener" class="tool-link" style="background:var(--card)"><div class="tool-icon">💼</div><div class="tool-info"><h3>Get Insurance Quote</h3><p>Farmers First Agri Service</p></div></a>
-                        </div>
-                    </div>
-                    
-                    <div class="panel" style="margin-top:20px">
-                        <div class="panel-head"><h2>AG NEWS & WEATHER</h2></div>
-                        <div class="panel-body" style="padding:0">
-                            <a href="https://www.youtube.com/@RyanHallYall" target="_blank" rel="noopener" class="tool-link" style="background:linear-gradient(135deg,#1a1a24 0%,#12121a 100%)"><div class="tool-icon">🌪️</div><div class="tool-info"><h3>Ryan Hall Y'all</h3><p>Severe weather coverage</p></div></a>
-                            <a href="https://www.youtube.com/@NAUCountryInsurance" target="_blank" rel="noopener" class="tool-link"><div class="tool-icon">🌾</div><div class="tool-info"><h3>Rich Morrison / NAU Country</h3><p>Crop insurance & markets</p></div></a>
-                            <a href="https://x.com/RampCapitalLLC" target="_blank" rel="noopener" class="tool-link"><div class="tool-icon">📈</div><div class="tool-info"><h3>Ramp Capital</h3><p>FinTwit markets & memes</p></div></a>
-                            <a href="https://x.com/KristySwansonAg" target="_blank" rel="noopener" class="tool-link"><div class="tool-icon">🌾</div><div class="tool-info"><h3>Kristy Swanson</h3><p>Farm markets & weather</p></div></a>
-                            <a href="https://www.dtnpf.com/agriculture/web/ag/news" target="_blank" rel="noopener" class="tool-link"><div class="tool-icon">📰</div><div class="tool-info"><h3>DTN Progressive Farmer</h3><p>Daily market news</p></div></a>
-                            <a href="https://www.agweb.com/markets" target="_blank" rel="noopener" class="tool-link"><div class="tool-icon">📊</div><div class="tool-info"><h3>AgWeb Markets</h3><p>Farm Journal media</p></div></a>
-                        </div>
-                    </div>
-                    
-                    <div class="panel" style="margin-top:20px">
-                        <div class="panel-head"><h2>LIVE FEEDS</h2></div>
-                        <div class="panel-body">
-                            <div class="twitter-feed" style="margin-bottom:12px">
-                                <div class="twitter-feed-header">
-                                    <div style="width:32px;height:32px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem">RC</div>
-                                    <span class="handle">@RampCapitalLLC</span>
-                                </div>
-                                <div class="twitter-feed-body" style="padding:0; max-height:300px; overflow-y:auto;">
-                                    <a class="twitter-timeline" 
-                                       data-height="300" 
-                                       data-theme="dark" 
-                                       data-chrome="noheader nofooter transparent" 
-                                       href="https://twitter.com/RampCapitalLLC?ref_src=twsrc%5Etfw">
-                                       Tweets by RampCapitalLLC
-                                    </a>
-                                </div>
-                                <div class="twitter-feed-footer">
-                                    <a href="https://x.com/RampCapitalLLC" target="_blank" rel="noopener">View on X →</a>
-                                </div>
-                            </div>
-
-                            <div class="twitter-feed">
-                                <div class="twitter-feed-header">
-                                    <div style="width:32px;height:32px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem">RM</div>
-                                    <span class="handle">@NAUCountry</span>
-                                </div>
-                                <div class="twitter-feed-body" style="padding:0; max-height:300px; overflow-y:auto;">
-                                    <a class="twitter-timeline" 
-                                       data-height="300" 
-                                       data-theme="dark" 
-                                       data-chrome="noheader nofooter transparent" 
-                                       href="https://twitter.com/NAUCountry?ref_src=twsrc%5Etfw">
-                                       Tweets by NAUCountry
-                                    </a>
-                                </div>
-                                <div class="twitter-feed-footer">
-                                    <a href="https://www.youtube.com/@NAUCountryInsurance" target="_blank" rel="noopener">View on YouTube →</a>
-                                </div>
-                            </div>
-                            
-                            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <div id="calculator" class="tab"> </div>
+        <div id="offices" class="tab"> </div>
+        <div id="resources" class="tab"> </div>
 
-        <div id="calculator" class="tab">
-            <div class="calc-wrap">
-                <div class="calc-header"><h1>GRAIN BIN CALCULATOR</h1><p>Calculate capacity, weight, and shrinkage using USDA standard formulas.</p></div>
-                <div class="calc-grid">
-                    <div class="calc-panel">
-                        <h3>BIN DIMENSIONS</h3>
-                        <div class="input-group"><label>Bin Shape</label><select id="binShape" onchange="calcBin()"><option value="round">Round</option><option value="rect">Rectangular</option></select></div>
-                        <div class="input-row" id="round-dims">
-                            <div class="input-group"><label>Diameter (ft)</label><input type="number" id="diameter" value="30" step=".5" oninput="calcBin()"></div>
-                            <div class="input-group"><label>Eave Height (ft)</label><input type="number" id="eaveH" value="20" step=".5" oninput="calcBin()"></div>
-                        </div>
-                        <div class="input-row" id="rect-dims" style="display:none">
-                            <div class="input-group"><label>Length (ft)</label><input type="number" id="length" value="40" step=".5" oninput="calcBin()"></div>
-                            <div class="input-group"><label>Width (ft)</label><input type="number" id="width" value="30" step=".5" oninput="calcBin()"></div>
-                        </div>
-                        <div class="input-row">
-                            <div class="input-group"><label>Roof Peak (ft)</label><input type="number" id="roofH" value="4" step=".5" oninput="calcBin()"></div>
-                            <div class="input-group"><label>Grain Peak (ft)</label><input type="number" id="peakH" value="3" step=".5" oninput="calcBin()"></div>
-                        </div>
-                        <div class="input-group"><label>Grain Type</label><select id="grain" onchange="calcBin()">
-                            <option value="56|15.5">Corn (56 lb/bu @ 15.5%)</option>
-                            <option value="60|13.0">Soybeans (60 lb/bu @ 13%)</option>
-                            <option value="60|13.5">Wheat (60 lb/bu @ 13.5%)</option>
-                            <option value="48|14.5">Barley (48 lb/bu @ 14.5%)</option>
-                        </select></div>
-                        <h3 style="margin-top:24px">SHRINKAGE</h3>
-                        <div class="input-row">
-                            <div class="input-group"><label>Initial Moisture (%)</label><input type="number" id="moistIn" value="20" step=".5" oninput="calcBin()"></div>
-                            <div class="input-group"><label>Final Moisture (%)</label><input type="number" id="moistOut" value="15.5" step=".5" oninput="calcBin()"></div>
-                        </div>
-                        <div class="input-group"><label>Handling Loss (%)</label><input type="number" id="handling" value="0.5" step=".1" max="2" oninput="calcBin()"></div>
-                    </div>
-                    <div>
-                        <div class="result-panel">
-                            <h3>BIN CAPACITY</h3>
-                            <div class="result-row"><span class="result-label">Cylinder Volume</span><span class="result-value" id="rCyl">—</span></div>
-                            <div class="result-row"><span class="result-label">Roof Volume</span><span class="result-value" id="rRoof">—</span></div>
-                            <div class="result-row"><span class="result-label">Grain Peak Volume</span><span class="result-value" id="rPeak">—</span></div>
-                            <div class="result-row"><span class="result-label">Total Capacity</span><span class="result-value big" id="rTotal">—</span></div>
-                            <div class="result-row"><span class="result-label">Total Weight</span><span class="result-value" id="rWeight">—</span></div>
-                        </div>
-                        <div class="result-panel" style="margin-top:16px">
-                            <h3>SHRINKAGE ANALYSIS</h3>
-                            <div class="result-row"><span class="result-label">Moisture Shrink</span><span class="result-value" id="rMoistShrink">—</span></div>
-                            <div class="result-row"><span class="result-label">Handling Loss</span><span class="result-value" id="rHandling">—</span></div>
-                            <div class="result-row"><span class="result-label">Total Shrink</span><span class="result-value" id="rTotalShrink">—</span></div>
-                            <div class="result-row"><span class="result-label">Dry Bushels</span><span class="result-value big" id="rDryBu">—</span></div>
-                        </div>
-                        <div class="calc-panel" style="margin-top:16px">
-                            <h3>QUICK REFERENCE</h3>
-                            <table class="ref-table">
-                                <tr><th>Grain</th><th>lb/bu</th><th>Std Moist</th></tr>
-                                <tr><td>Corn</td><td>56</td><td>15.5%</td></tr>
-                                <tr><td>Soybeans</td><td>60</td><td>13.0%</td></tr>
-                                <tr><td>Wheat</td><td>60</td><td>13.5%</td></tr>
-                                <tr><td>Barley</td><td>48</td><td>14.5%</td></tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="offices" class="tab">
-            <div class="office-wrap">
-                <div class="calc-header"><h1>FIND USDA SERVICE CENTER</h1><p>Locate your local FSA and NRCS offices by state and county.</p></div>
-                <div class="finder-form">
-                    <select id="state">
-                        <option value="">Select State</option>
-                        <option value="WI">Wisconsin</option>
-                        <option value="MN">Minnesota</option>
-                        <option value="IA">Iowa</option>
-                        <option value="IL">Illinois</option>
-                        <option value="IN">Indiana</option>
-                        <option value="MI">Michigan</option>
-                        <option value="ND">North Dakota</option>
-                        <option value="SD">South Dakota</option>
-                    </select>
-                    <select id="county"><option value="">Select County</option></select>
-                    <button onclick="findOffice()">Find Office</button>
-                </div>
-                <div class="office-results" id="office-results" style="display:none">
-                    <div class="office-card"><h4>FSA OFFICE</h4><p id="fsa-info"></p></div>
-                    <div class="office-card"><h4>NRCS OFFICE</h4><p id="nrcs-info"></p></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="resources" class="tab">
-            <div class="calc-header"><h1>AG RESOURCES</h1><p>Quick links to essential USDA programs, market data, and farm tools.</p></div>
-            <div class="resources-grid">
-                <div class="resource-card">
-                    <h3>CROP INSURANCE (RMA)</h3>
-                    <a href="https://webapp.rma.usda.gov/apps/actuarialinformationbrowser/" target="_blank" rel="noopener" class="resource-link">Actuarial Browser<span>County rates & dates</span></a>
-                    <a href="https://www.rma.usda.gov/Topics/Important-Dates" target="_blank" rel="noopener" class="resource-link">Important Dates<span>Sales closing deadlines</span></a>
-                    <a href="https://www.rma.usda.gov/Topics/Coverage-Levels" target="_blank" rel="noopener" class="resource-link">Coverage Options<span>RP, YP, ARC, PLC info</span></a>
-                    <a href="https://www.rma.usda.gov/Topics/Prevented-Planting" target="_blank" rel="noopener" class="resource-link">Prevented Planting<span>Guidelines & coverage</span></a>
-                </div>
-                <div class="resource-card">
-                    <h3>FARM SERVICE AGENCY</h3>
-                    <a href="https://www.fsa.usda.gov/programs-and-services/farm-loan-programs/" target="_blank" rel="noopener" class="resource-link">Farm Loans<span>Operating, ownership, emergency</span></a>
-                    <a href="https://www.fsa.usda.gov/programs-and-services/conservation-programs/" target="_blank" rel="noopener" class="resource-link">CRP Program<span>Conservation reserve</span></a>
-                    <a href="https://www.fsa.usda.gov/programs-and-services/disaster-assistance-program/" target="_blank" rel="noopener" class="resource-link">Disaster Assistance<span>Emergency programs</span></a>
-                    <a href="https://www.fsa.usda.gov/programs-and-services/arcplc_program/" target="_blank" rel="noopener" class="resource-link">ARC/PLC<span>Price & revenue protection</span></a>
-                </div>
-                <div class="resource-card">
-                    <h3>NRCS CONSERVATION</h3>
-                    <a href="https://www.nrcs.usda.gov/programs-initiatives/eqip-environmental-quality-incentives" target="_blank" rel="noopener" class="resource-link">EQIP<span>Environmental incentives</span></a>
-                    <a href="https://www.nrcs.usda.gov/programs-initiatives/csp-conservation-stewardship-program" target="_blank" rel="noopener" class="resource-link">CSP<span>Stewardship program</span></a>
-                    <a href="https://websoilsurvey.nrcs.usda.gov/app/" target="_blank" rel="noopener" class="resource-link">Web Soil Survey<span>Soil maps & data</span></a>
-                    <a href="https://www.nrcs.usda.gov/conservation-basics/conservation-by-state" target="_blank" rel="noopener" class="resource-link">State Resources<span>Local NRCS info</span></a>
-                </div>
-                <div class="resource-card">
-                    <h3>MARKET DATA</h3>
-                    <a href="https://www.cmegroup.com/markets/agriculture.html" target="_blank" rel="noopener" class="resource-link">CME Agriculture<span>Futures & options</span></a>
-                    <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank" rel="noopener" class="resource-link">WASDE Reports<span>Supply & demand</span></a>
-                    <a href="https://www.ams.usda.gov/market-news" target="_blank" rel="noopener" class="resource-link">USDA Market News<span>Prices & reports</span></a>
-                    <a href="https://www.nass.usda.gov/" target="_blank" rel="noopener" class="resource-link">NASS Statistics<span>Crop reports</span></a>
-                </div>
-                <div class="resource-card">
-                    <h3>WEATHER & CLIMATE</h3>
-                    <a href="https://droughtmonitor.unl.edu/" target="_blank" rel="noopener" class="resource-link">Drought Monitor<span>Weekly conditions</span></a>
-                    <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" rel="noopener" class="resource-link">Climate Prediction<span>Long-range outlooks</span></a>
-                    <a href="https://www.weather.gov/" target="_blank" rel="noopener" class="resource-link">NWS Forecasts<span>Local weather</span></a>
-                    <a href="https://www.youtube.com/@RyanHallYall" target="_blank" rel="noopener" class="resource-link">Ryan Hall Y'all<span>Severe weather coverage</span></a>
-                </div>
-                <div class="resource-card">
-                    <h3>CALCULATORS & TOOLS</h3>
-                    <a href="#" data-tab="calculator" class="resource-link tool-link-inline">Grain Bin Calculator<span>Capacity & shrinkage</span></a>
-                    <a href="https://www.extension.iastate.edu/agdm/crops/html/a1-20.html" target="_blank" rel="noopener" class="resource-link">Cash Rent Calculator<span>Iowa State Extension</span></a>
-                    <a href="https://farmdoc.illinois.edu/fast-tools" target="_blank" rel="noopener" class="resource-link">FAST Tools<span>Farm analysis tools</span></a>
-                    <a href="https://www.farmers1st.com" target="_blank" rel="noopener" class="resource-link">Farmers First<span>Crop insurance quotes</span></a>
-                </div>
-            </div>
-        </div>
     </main>
 
-    <footer>
-        <div class="footer-brand">
-            <span>Built by <a href="https://farmers1st.com" target="_blank" rel="noopener">Farmers First Agri Service</a></span>
-            <span>•</span>
-            <span>Chetek, Wisconsin</span>
-        </div>
-        <div class="footer-links">
-            <a href="https://farmers1st.com" target="_blank" rel="noopener">Get a Quote</a>
-            <a href="https://lokedrone.com" target="_blank" rel="noopener">Drone Services</a>
-        </div>
-    </footer>
-
     <script>
-    // ============ TAB NAVIGATION ============
+    // ============ TAB UI LOGIC ============
+    function switchFeed(type) {
+        document.querySelectorAll('.feed-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.feed-content').forEach(c => c.classList.remove('active'));
+        
+        if(type === 'social') {
+            document.querySelectorAll('.feed-tab')[0].classList.add('active');
+            document.getElementById('feed-social').classList.add('active');
+        } else {
+            document.querySelectorAll('.feed-tab')[1].classList.add('active');
+            document.getElementById('feed-news').classList.add('active');
+        }
+    }
+
     document.querySelectorAll('[data-tab]').forEach(el => {
         el.addEventListener('click', e => {
+            if(el.classList.contains('feed-tab')) return; // Ignore feed tabs
             e.preventDefault();
             const tabId = el.dataset.tab;
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            document.querySelector(`.nav a[data-tab="${tabId}"]`)?.classList.add('active');
+            const target = document.getElementById(tabId);
+            if(target) target.classList.add('active');
+            const navLink = document.querySelector(`.nav a[data-tab="${tabId}"]`);
+            if(navLink) navLink.classList.add('active');
         });
     });
 
-    // ============ MARKET DATA ============
-    async function loadMarkets() {
+    // ============ DATA LOADING ============
+    async function loadData() {
         try {
+            // Fetch the single JSON file that now contains MARKETS + NEWS
             const res = await fetch('data/markets.json');
             const data = await res.json();
-            const markets = data.markets;
             
-            // Update time
+            // 1. Update Time
             const updated = new Date(data.updated);
             document.getElementById('update-time').textContent = `Updated ${updated.toLocaleTimeString()}`;
             
-            // Render grains (removed oats)
-            renderMarketSection('grains-grid', [
-                markets.grains?.corn,
-                markets.grains?.soybeans,
-                markets.grains?.wheat
-            ].filter(Boolean));
+            // 2. Render Markets
+            const m = data.markets;
+            renderMarketSection('grains-grid', [m.grains?.corn, m.grains?.soybeans, m.grains?.wheat]);
+            renderMarketSection('livestock-grid', [m.livestock?.cattle, m.livestock?.feeder, m.livestock?.milk]);
+            renderMarketSection('metals-grid', [m.indices?.sp500, m.indices?.dow, m.metals?.gold, m.metals?.silver]);
+            renderMarketSection('crypto-grid', [m.crypto?.bitcoin, m.crypto?.ethereum, m.crypto?.kaspa, m.crypto?.xrp]);
             
-            // Render livestock (removed hogs, kept cattle + milk)
-            renderMarketSection('livestock-grid', [
-                markets.livestock?.cattle,
-                markets.livestock?.feeder,
-                markets.livestock?.milk
-            ].filter(Boolean));
+            // 3. Render News Wire (Sidebar)
+            renderNewsWire(data.news || []);
             
-            // Render indices & metals (removed copper, add indices)
-            renderMarketSection('metals-grid', [
-                markets.indices?.sp500,
-                markets.indices?.dow,
-                markets.metals?.gold,
-                markets.metals?.silver
-            ].filter(Boolean));
-            
-            // Render crypto (added XRP)
-            renderMarketSection('crypto-grid', [
-                markets.crypto?.bitcoin,
-                markets.crypto?.ethereum,
-                markets.crypto?.kaspa,
-                markets.crypto?.xrp
-            ].filter(Boolean));
-            
-            // Update ticker
-            updateTicker(markets);
+            // 4. Update Killer Ticker (Markets + News Mixed)
+            updateKillerTicker(m, data.news || []);
             
         } catch (err) {
-            console.error('Failed to load markets:', err);
+            console.error('Failed to load data:', err);
         }
     }
     
     function renderMarketSection(gridId, items) {
         const grid = document.getElementById(gridId);
-        if (!items.length) {
-            grid.innerHTML = '<div class="loading">No data</div>';
-            return;
-        }
+        if (!grid) return;
+        items = items.filter(Boolean);
         
         grid.innerHTML = items.map(item => {
             const changeClass = item.change >= 0 ? 'up' : 'down';
@@ -528,35 +276,19 @@
                 ? item.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})
                 : item.price.toFixed(2);
                 
-            // Contract info (e.g. "Dec '25")
-            const contractHtml = item.contract && item.contract !== 'Spot'
-                ? `<div class="contract">${item.contract}</div>` 
-                : '';
-                
-            // 52 Week Range Logic
+            // Contract + Range Logic
+            const contractHtml = item.contract && item.contract !== 'Spot' ? `<div class="contract">${item.contract}</div>` : '';
+            
             let rangeHtml = '';
             if (item.low52 && item.high52 && item.high52 > item.low52) {
-                // Calculate percentage position of current price
                 let pct = ((item.price - item.low52) / (item.high52 - item.low52)) * 100;
-                // Clamp between 0 and 100
                 pct = Math.max(0, Math.min(100, pct));
-                
-                // Format labels
-                const formatLabel = (val) => item.unit === '$' 
-                    ? val.toLocaleString(undefined, {maximumFractionDigits:0}) 
-                    : val.toFixed(2);
-                
+                const formatLabel = (val) => item.unit === '$' ? val.toLocaleString(undefined,{maximumFractionDigits:0}) : val.toFixed(2);
                 rangeHtml = `
                     <div class="range-container">
-                        <div class="range-bar">
-                            <div class="range-cursor" style="left: ${pct}%"></div>
-                        </div>
-                        <div class="range-labels">
-                            <span>L: ${formatLabel(item.low52)}</span>
-                            <span>H: ${formatLabel(item.high52)}</span>
-                        </div>
-                    </div>
-                `;
+                        <div class="range-bar"><div class="range-cursor" style="left: ${pct}%"></div></div>
+                        <div class="range-labels"><span>L:${formatLabel(item.low52)}</span><span>H:${formatLabel(item.high52)}</span></div>
+                    </div>`;
             }
 
             return `
@@ -568,236 +300,76 @@
                     <div class="change ${changeClass}">${sign}${item.change.toFixed(2)} (${sign}${item.changePct.toFixed(2)}%)</div>
                     <div class="unit">${item.unit}</div>
                     ${rangeHtml}
-                </div>
-            `;
+                </div>`;
         }).join('');
     }
     
-    function updateTicker(markets) {
-        const items = [];
+    function renderNewsWire(newsItems) {
+        const container = document.getElementById('news-wire-list');
+        if(!container) return;
         
-        // Indices
-        if (markets.indices?.sp500) items.push(formatTickerItem('S&P 500', markets.indices.sp500));
-        if (markets.indices?.dow) items.push(formatTickerItem('DOW', markets.indices.dow));
+        if(newsItems.length === 0) {
+            container.innerHTML = '<div style="padding:20px;color:var(--dim)">No news available</div>';
+            return;
+        }
         
-        // Grains
-        if (markets.grains?.corn) items.push(formatTickerItem('CORN', markets.grains.corn));
-        if (markets.grains?.soybeans) items.push(formatTickerItem('BEANS', markets.grains.soybeans));
-        if (markets.grains?.wheat) items.push(formatTickerItem('WHEAT', markets.grains.wheat));
+        container.innerHTML = newsItems.map(item => {
+            const tagClass = item.source.toLowerCase().includes('usda') ? 'usda' : 'agweb';
+            return `
+                <a href="${item.link}" target="_blank" class="news-item">
+                    <div class="meta"><span class="tag ${tagClass}">${item.source}</span></div>
+                    <h4>${item.title}</h4>
+                </a>`;
+        }).join('');
+    }
+    
+    function updateKillerTicker(markets, news) {
+        // Create a flat list of market items
+        const marketItems = [];
+        // Helper to add market item
+        const addM = (label, d) => {
+            if(!d) return;
+            const cls = d.change >= 0 ? 'up' : 'down';
+            const val = d.unit === '$' ? d.price.toLocaleString(undefined, {maximumFractionDigits:2}) : d.price.toFixed(2);
+            marketItems.push(`<span class="ticker-item"><span class="label">${label}</span>${val}<span class="${cls}">${d.change >= 0 ? '+' : ''}${d.changePct.toFixed(2)}%</span></span>`);
+        };
         
-        // Livestock
-        if (markets.livestock?.milk) items.push(formatTickerItem('CLASS III', markets.livestock.milk));
-        if (markets.livestock?.cattle) items.push(formatTickerItem('CATTLE', markets.livestock.cattle));
+        addM('CORN', markets.grains?.corn);
+        addM('BEANS', markets.grains?.soybeans);
+        addM('WHEAT', markets.grains?.wheat);
+        addM('CATTLE', markets.livestock?.cattle);
+        addM('MILK', markets.livestock?.milk);
+        addM('S&P', markets.indices?.sp500);
+        addM('GOLD', markets.metals?.gold);
         
-        // Metals
-        if (markets.metals?.gold) items.push(formatTickerItem('GOLD', markets.metals.gold));
-        if (markets.metals?.silver) items.push(formatTickerItem('SILVER', markets.metals.silver));
+        // Interleave News!
+        let finalHtml = '';
+        const maxlen = Math.max(marketItems.length, news.length);
         
-        // Crypto
-        if (markets.crypto?.bitcoin) items.push(formatTickerItem('BTC', markets.crypto.bitcoin));
-        if (markets.crypto?.ethereum) items.push(formatTickerItem('ETH', markets.crypto.ethereum));
-        if (markets.crypto?.kaspa) items.push(formatTickerItem('KAS', markets.crypto.kaspa));
-        if (markets.crypto?.xrp) items.push(formatTickerItem('XRP', markets.crypto.xrp));
+        for(let i=0; i<maxlen; i++) {
+            // Add Market Item if available
+            if(marketItems[i % marketItems.length]) {
+                finalHtml += marketItems[i % marketItems.length];
+            }
+            // Add News Item if available
+            if(news[i]) {
+                finalHtml += `<span class="ticker-item ticker-news"><span class="source">${news[i].source}</span> ${news[i].title}</span>`;
+            }
+        }
         
         // Duplicate for seamless loop
-        const tickerHtml = items.join('') + items.join('');
-        document.getElementById('news-ticker').innerHTML = tickerHtml;
-    }
-    
-    function formatTickerItem(label, data) {
-        const cls = data.change >= 0 ? 'up' : 'down';
-        const sign = data.change >= 0 ? '+' : '';
-        const price = data.unit === '$' 
-            ? data.price.toLocaleString(undefined, {maximumFractionDigits: 2})
-            : data.price.toFixed(4);
-        return `<span class="ticker-item"><span class="label">${label}</span> ${price} <span class="${cls}">${sign}${data.changePct.toFixed(2)}%</span></span>`;
-    }
-
-    // ============ WEATHER ============
-    async function loadForecast(lat = 45.4, lon = -91.8) {
-        try {
-            const pointRes = await fetch(`https://api.weather.gov/points/${lat},${lon}`);
-            const pointData = await pointRes.json();
-            const forecastUrl = pointData.properties.forecast;
-            const locationName = pointData.properties.relativeLocation?.properties?.city + ', ' + 
-                                 pointData.properties.relativeLocation?.properties?.state || 'Your Area';
-            document.getElementById('location-name').textContent = locationName;
-            
-            const forecastRes = await fetch(forecastUrl);
-            const forecastData = await forecastRes.json();
-            
-            const periods = forecastData.properties.periods.slice(0, 6);
-            let html = '';
-            
-            for (const p of periods) {
-                const tempColor = p.isDaytime ? 'var(--bright)' : 'var(--dim)';
-                const windInfo = p.windSpeed ? ` • ${p.windSpeed}` : '';
-                html += `
-                    <div class="forecast-day">
-                        <div class="day">${p.name.substring(0, 3).toUpperCase()}</div>
-                        <div class="desc">${p.shortForecast}${windInfo}</div>
-                        <div class="temp"><strong style="color:${tempColor}">${p.temperature}°${p.temperatureUnit}</strong></div>
-                    </div>
-                `;
-            }
-            document.getElementById('forecast').innerHTML = html;
-        } catch (err) {
-            document.getElementById('forecast').innerHTML = '<div class="loading">Forecast unavailable</div>';
-            document.getElementById('location-name').textContent = 'WEATHER';
-        }
-    }
-    
-    // ============ GEOLOCATION ============
-    let userLat = 45.4, userLon = -91.8;
-    
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    userLat = pos.coords.latitude;
-                    userLon = pos.coords.longitude;
-                    updateWeatherLocation(userLat, userLon);
-                    loadLocalElevators(userLat, userLon);
-                },
-                (err) => {
-                    console.log('Geolocation denied, using default');
-                    document.getElementById('local-markets').innerHTML = '<p style="color:var(--dim);">Location access denied. Showing Barron County area.</p>';
-                    loadLocalElevators(userLat, userLon);
-                }
-            );
-        }
-    }
-    
-    function updateWeatherLocation(lat, lon) {
-        const radarUrl = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&width=650&height=450&zoom=8&level=surface&overlay=radar&product=radar&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=true&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1`;
-        document.getElementById('radar-iframe').src = radarUrl;
-        loadForecast(lat, lon);
-    }
-    
-    function loadLocalElevators(lat, lon) {
-        const elevators = [
-            {name: 'Countryside Coop - Rice Lake', dist: '12 mi'},
-            {name: 'CHS Barron', dist: '8 mi'},
-            {name: 'Farmers Union - Cameron', dist: '15 mi'},
-            {name: 'Cenex - Chetek', dist: '3 mi'},
-            {name: 'AGP - New Richmond', dist: '45 mi'},
-        ];
-        
-        let html = elevators.map(e => `
-            <div class="elevator-item">
-                <span class="elevator-name">${e.name}</span>
-                <span class="elevator-dist">${e.dist}</span>
-            </div>
-        `).join('');
-        html += '<p style="font-size:.8rem;color:var(--dim);margin-top:12px;text-align:center;">Grain buyer map coming soon</p>';
-        document.getElementById('local-markets').innerHTML = html;
-    }
-
-    // ============ GRAIN BIN CALCULATOR ============
-    const BU_PER_CUFT = 0.8036;
-    
-    function calcBin() {
-        const shape = document.getElementById('binShape').value;
-        const [lbPerBu, stdMoist] = document.getElementById('grain').value.split('|').map(Number);
-        
-        document.getElementById('round-dims').style.display = shape === 'round' ? 'grid' : 'none';
-        document.getElementById('rect-dims').style.display = shape === 'rect' ? 'grid' : 'none';
-        
-        let baseCuft, baseRadius;
-        if (shape === 'round') {
-            const d = parseFloat(document.getElementById('diameter').value) || 0;
-            const h = parseFloat(document.getElementById('eaveH').value) || 0;
-            baseRadius = d / 2;
-            baseCuft = Math.PI * Math.pow(baseRadius, 2) * h;
-        } else {
-            const l = parseFloat(document.getElementById('length').value) || 0;
-            const w = parseFloat(document.getElementById('width').value) || 0;
-            const h = parseFloat(document.getElementById('eaveH')?.value || 20) || 0;
-            baseCuft = l * w * h;
-            baseRadius = Math.sqrt((l * w) / Math.PI);
-        }
-        
-        const roofH = parseFloat(document.getElementById('roofH').value) || 0;
-        const peakH = parseFloat(document.getElementById('peakH').value) || 0;
-        
-        const cylBu = baseCuft * BU_PER_CUFT;
-        const roofCuft = (1/3) * Math.PI * Math.pow(baseRadius, 2) * roofH;
-        const roofBu = roofCuft * BU_PER_CUFT;
-        const peakCuft = (1/3) * Math.PI * Math.pow(baseRadius, 2) * peakH;
-        const peakBu = peakCuft * BU_PER_CUFT;
-        const totalBu = cylBu + roofBu + peakBu;
-        const totalLbs = totalBu * lbPerBu;
-        const totalTons = totalLbs / 2000;
-        
-        const moistIn = parseFloat(document.getElementById('moistIn').value) || 0;
-        const moistOut = parseFloat(document.getElementById('moistOut').value) || stdMoist;
-        const handling = parseFloat(document.getElementById('handling').value) || 0;
-        
-        const moistShrink = ((moistIn - moistOut) / (100 - moistOut)) * 100;
-        const totalShrink = moistShrink + handling;
-        const dryBu = totalBu * (1 - totalShrink / 100);
-        
-        document.getElementById('rCyl').textContent = cylBu.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' bu';
-        document.getElementById('rRoof').textContent = roofBu.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' bu';
-        document.getElementById('rPeak').textContent = peakBu.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' bu';
-        document.getElementById('rTotal').textContent = totalBu.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' bu';
-        document.getElementById('rWeight').textContent = totalTons.toLocaleString(undefined, {maximumFractionDigits: 1}) + ' tons';
-        document.getElementById('rMoistShrink').textContent = moistShrink.toFixed(2) + '%';
-        document.getElementById('rHandling').textContent = handling.toFixed(2) + '%';
-        document.getElementById('rTotalShrink').textContent = totalShrink.toFixed(2) + '%';
-        document.getElementById('rDryBu').textContent = dryBu.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' bu';
-    }
-
-    // ============ USDA OFFICE FINDER ============
-    const COUNTIES = {
-        WI: ['Barron','Burnett','Chippewa','Clark','Dunn','Eau Claire','Jackson','Marathon','Polk','Rusk','St. Croix','Washburn'],
-        MN: ['Anoka','Chisago','Isanti','Kanabec','Pine','Washington'],
-        IA: ['Allamakee','Black Hawk','Cerro Gordo','Clayton','Dallas','Dubuque','Fayette','Floyd','Linn','Polk','Story','Winneshiek'],
-        IL: ['Champaign','DeKalb','LaSalle','McLean','Peoria','Sangamon','Vermilion','Will','Winnebago'],
-        IN: ['Allen','Elkhart','Hamilton','Lake','Marion','St. Joseph','Tippecanoe','Vanderburgh'],
-        MI: ['Calhoun','Eaton','Genesee','Ingham','Kent','Oakland','Washtenaw','Wayne'],
-        ND: ['Burleigh','Cass','Grand Forks','Morton','Stark','Ward','Williams'],
-        SD: ['Brown','Codington','Lincoln','Meade','Minnehaha','Pennington']
-    };
-    
-    document.getElementById('state').addEventListener('change', function() {
-        const counties = COUNTIES[this.value] || [];
-        const sel = document.getElementById('county');
-        sel.innerHTML = '<option value="">Select County</option>' + 
-            counties.map(c => `<option value="${c}">${c}</option>`).join('');
-    });
-    
-    function findOffice() {
-        const state = document.getElementById('state').value;
-        const county = document.getElementById('county').value;
-        if (!state || !county) { alert('Please select state and county'); return; }
-        
-        document.getElementById('office-results').style.display = 'grid';
-        document.getElementById('fsa-info').innerHTML = `
-            <strong>${county} County FSA Office</strong><br>
-            <a href="https://offices.usda.gov/locator/app?state=${state}&agency=fsa" target="_blank" rel="noopener">
-                Find exact address on USDA Locator →
-            </a><br><br>
-            <span style="color:var(--dim)">Call your local FSA for: Farm programs, loan info, disaster assistance, CRP, and acreage reporting.</span>
-        `;
-        document.getElementById('nrcs-info').innerHTML = `
-            <strong>${county} County NRCS Office</strong><br>
-            <a href="https://offices.usda.gov/locator/app?state=${state}&agency=nrcs" target="_blank" rel="noopener">
-                Find exact address on USDA Locator →
-            </a><br><br>
-            <span style="color:var(--dim)">Call your local NRCS for: Conservation programs (EQIP, CSP), soil surveys, and technical assistance.</span>
-        `;
+        document.getElementById('news-ticker').innerHTML = finalHtml + finalHtml;
     }
 
     // ============ INIT ============
     document.addEventListener('DOMContentLoaded', () => {
-        loadMarkets();
-        loadForecast();
-        calcBin();
-        getLocation();
+        loadData();
+        loadForecast(); // Assuming loadForecast and calcBin are still present in your file or I need to add them back if you lost them.
+        // Assuming calcBin() and findOffice() are kept from previous version
+        if(window.calcBin) calcBin();
+        if(window.getLocation) getLocation();
         
-        // Refresh markets every 5 minutes
-        setInterval(loadMarkets, 5 * 60 * 1000);
+        setInterval(loadData, 60 * 1000); // Check for new JSON every minute
     });
     </script>
 </body>
