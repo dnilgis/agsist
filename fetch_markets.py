@@ -45,7 +45,6 @@ RSS_FEEDS = [
     {"source": "AgWeb", "url": "https://www.agweb.com/rss/news"},
     {"source": "FarmProgress", "url": "https://www.farmprogress.com/rss.xml"},
     {"source": "USDA", "url": "https://www.usda.gov/rss/latest-releases.xml"},
-    {"source": "SuccessfulFarming", "url": "https://www.agriculture.com/rss/news"},
 ]
 
 def clean_contract_name(short_name, symbol):
@@ -75,6 +74,7 @@ def fetch_quote(symbol):
         
         contract_str = ""
         try:
+            # Info fetch can be slow, wrap in try
             contract_str = clean_contract_name(ticker.info.get('shortName', ''), symbol)
         except:
             pass
@@ -93,53 +93,34 @@ def fetch_quote(symbol):
         return None
 
 def fetch_news():
-    """Fetch and parse RSS feeds"""
+    """Fetch and parse RSS feeds with error handling"""
     news_items = []
     print("Fetching news feeds...")
     
     for feed in RSS_FEEDS:
         try:
+            # User-Agent is critical to not get blocked
             req = urllib.request.Request(
                 feed['url'], 
                 data=None, 
-                headers={'User-Agent': 'Mozilla/5.0'}
+                headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
             )
-            with urllib.request.urlopen(req, timeout=10) as response:
+            with urllib.request.urlopen(req, timeout=15) as response:
                 xml_data = response.read()
                 try:
                     root = ET.fromstring(xml_data)
                 except ET.ParseError:
                     continue 
                 
-                # Handle standard RSS <item> and Atom <entry>
-                items = root.findall('.//item')
-                if not items:
-                    items = root.findall('.//{http://www.w3.org/2005/Atom}entry')
-
+                # RSS 2.0 items
                 count = 0
-                for item in items:
-                    if count >= 3: break # Top 3 per source
+                for item in root.findall('.//item'):
+                    if count >= 3: break 
                     
-                    # Handle namespaces for Title/Link
-                    title_obj = item.find('title')
-                    if title_obj is None: 
-                        title_obj = item.find('{http://www.w3.org/2005/Atom}title')
+                    title = item.find('title').text if item.find('title') is not None else "News Update"
+                    link = item.find('link').text if item.find('link') is not None else "#"
                     
-                    link_obj = item.find('link')
-                    if link_obj is None:
-                        link_obj = item.find('{http://www.w3.org/2005/Atom}link')
-
-                    title = title_obj.text if title_obj is not None else "News Update"
-                    
-                    # Atom links often have href attribute
-                    link = "#"
-                    if link_obj is not None:
-                        if link_obj.text and link_obj.text.strip():
-                            link = link_obj.text
-                        elif link_obj.get('href'):
-                            link = link_obj.get('href')
-
-                    # Cleanup
+                    # Clean title
                     title = title.replace('&#039;', "'").replace('&quot;', '"').strip()
                     
                     news_items.append({
@@ -155,33 +136,37 @@ def fetch_news():
     return news_items
 
 def main():
-    markets = {}
+    # 1. Initialize data structure immediately (Safety Net)
+    data = {
+        "updated": datetime.now(timezone.utc).isoformat(),
+        "markets": {
+            "grains": {}, "livestock": {}, "indices": {}, "metals": {}, "crypto": {}
+        },
+        "news": []
+    }
+
+    # 2. Fetch Markets
     for category, items in SYMBOLS.items():
-        markets[category] = {}
         for key, config in items.items():
-            print(f"Fetching {config['name']} ({config['symbol']})...")
+            print(f"Fetching {config['name']}...")
             quote = fetch_quote(config["symbol"])
             if quote:
-                markets[category][key] = {
+                data["markets"][category][key] = {
                     "name": config["name"],
                     "symbol": config["symbol"],
                     "unit": config["unit"],
                     **quote
                 }
     
-    news = fetch_news()
+    # 3. Fetch News
+    data["news"] = fetch_news()
     
-    data = {
-        "updated": datetime.now(timezone.utc).isoformat(),
-        "markets": markets,
-        "news": news
-    }
-    
+    # 4. Save
     os.makedirs("data", exist_ok=True)
     with open("data/markets.json", "w") as f:
         json.dump(data, f, indent=2)
     
-    print(f"\nSuccess! Markets: {sum(len(v) for v in markets.values())} symbols. News: {len(news)} headlines.")
+    print(f"\nSuccess! Written to data/markets.json")
 
 if __name__ == "__main__":
     main()
