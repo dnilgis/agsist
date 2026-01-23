@@ -1,30 +1,142 @@
 {
-  "updated": "2026-01-22T23:59:00Z",
+  "updated": "2026-01-23T16:38:44.799458+00:00",
   "source": "Yahoo Finance",
   "markets": {
     "grains": {
-      "corn": {"name": "Corn", "symbol": "ZC=F", "unit": "¢/bu", "price": 445.25, "change": 3.25, "changePct": 0.74, "prevClose": 442.00},
-      "soybeans": {"name": "Soybeans", "symbol": "ZS=F", "unit": "¢/bu", "price": 1057.50, "change": 4.75, "changePct": 0.45, "prevClose": 1052.75},
-      "wheat": {"name": "Wheat", "symbol": "ZW=F", "unit": "¢/bu", "price": 542.75, "change": -1.75, "changePct": -0.32, "prevClose": 544.50}
+      "corn": {
+        "name": "Corn",
+        "symbol": "ZC=F",
+        "unit": "\u00a2/bu",
+        "price": 429.25,
+        "change": 6.5,
+        "changePct": 1.54,
+        "prevClose": 422.75
+      },
+      "soybeans": {
+        "name": "Soybeans",
+        "symbol": "ZS=F",
+        "unit": "\u00a2/bu",
+        "price": 1069.25,
+        "change": 7.0,
+        "changePct": 0.66,
+        "prevClose": 1062.25
+      },
+      "wheat": {
+        "name": "Wheat",
+        "symbol": "ZW=F",
+        "unit": "\u00a2/bu",
+        "price": 523.0,
+        "change": 8.0,
+        "changePct": 1.55,
+        "prevClose": 515.0
+      }
     },
     "livestock": {
-      "cattle": {"name": "Live Cattle", "symbol": "LE=F", "unit": "¢/lb", "price": 198.50, "change": 0.85, "changePct": 0.45, "prevClose": 197.65},
-      "feeder": {"name": "Feeder Cattle", "symbol": "GF=F", "unit": "¢/lb", "price": 262.75, "change": 1.25, "changePct": 0.48, "prevClose": 261.50},
-      "milk": {"name": "Class III Milk", "symbol": "DC=F", "unit": "$/cwt", "price": 15.74, "change": -0.02, "changePct": -0.13, "prevClose": 15.76}
+      "cattle": {
+        "name": "Live Cattle",
+        "symbol": "LE=F",
+        "unit": "\u00a2/lb",
+        "price": 234.1,
+        "change": 1.675,
+        "changePct": 0.72,
+        "prevClose": 232.425
+      },
+      "feeder": {
+        "name": "Feeder Cattle",
+        "symbol": "GF=F",
+        "unit": "\u00a2/lb",
+        "price": 364.075,
+        "change": 0.3,
+        "changePct": 0.08,
+        "prevClose": 363.775
+      },
+      "milk": {
+        "name": "Class III Milk",
+        "symbol": "DC=F",
+        "unit": "$/cwt",
+        "price": 14.69,
+        "change": 0.01,
+        "changePct": 0.07,
+        "prevClose": 14.68
+      }
     },
     "indices": {
-      "sp500": {"name": "S&P 500", "symbol": "^GSPC", "unit": "$", "price": 6045.25, "change": 31.25, "changePct": 0.52, "prevClose": 6014.00},
-      "dow": {"name": "Dow Jones", "symbol": "^DJI", "unit": "$", "price": 44892.13, "change": 138.42, "changePct": 0.31, "prevClose": 44753.71}
+      "sp500": {
+        "name": "S&P 500",
+        "symbol": "^GSPC",
+        "unit": "$",
+        "price": 6927.8301,
+        "change": 15.29,
+        "changePct": 0.22,
+        "prevClose": 6912.54
+      },
+      "dow": {
+        "name": "Dow Jones",
+        "symbol": "^DJI",
+        "unit": "$",
+        "price": 49173.5508,
+        "change": -204.2305,
+        "changePct": -0.41,
+        "prevClose": 49377.7812
+      }
     },
     "metals": {
-      "gold": {"name": "Gold", "symbol": "GC=F", "unit": "$/oz", "price": 2712.40, "change": 12.40, "changePct": 0.46, "prevClose": 2700.00},
-      "silver": {"name": "Silver", "symbol": "SI=F", "unit": "$/oz", "price": 31.24, "change": 0.26, "changePct": 0.82, "prevClose": 30.98}
+      "gold": {
+        "name": "Gold",
+        "symbol": "GC=F",
+        "unit": "$/oz",
+        "price": 4986.7002,
+        "change": 28.7002,
+        "changePct": 0.58,
+        "prevClose": 4958.0
+      },
+      "silver": {
+        "name": "Silver",
+        "symbol": "SI=F",
+        "unit": "$/oz",
+        "price": 100.985,
+        "change": 2.285,
+        "changePct": 2.32,
+        "prevClose": 98.7
+      }
     },
     "crypto": {
-      "bitcoin": {"name": "Bitcoin", "symbol": "BTC-USD", "unit": "$", "price": 105245.00, "change": 1228.00, "changePct": 1.18, "prevClose": 104017.00},
-      "ethereum": {"name": "Ethereum", "symbol": "ETH-USD", "unit": "$", "price": 3842.00, "change": 77.00, "changePct": 2.05, "prevClose": 3765.00},
-      "kaspa": {"name": "Kaspa", "symbol": "KAS-USD", "unit": "$", "price": 0.0512, "change": 0.0019, "changePct": 3.90, "prevClose": 0.0493},
-      "xrp": {"name": "XRP", "symbol": "XRP-USD", "unit": "$", "price": 2.41, "change": 0.04, "changePct": 1.55, "prevClose": 2.37}
+      "bitcoin": {
+        "name": "Bitcoin",
+        "symbol": "BTC-USD",
+        "unit": "$",
+        "price": 89849.8125,
+        "change": 387.7344,
+        "changePct": 0.43,
+        "prevClose": 89462.0781
+      },
+      "ethereum": {
+        "name": "Ethereum",
+        "symbol": "ETH-USD",
+        "unit": "$",
+        "price": 2953.6335,
+        "change": 4.053,
+        "changePct": 0.14,
+        "prevClose": 2949.5806
+      },
+      "kaspa": {
+        "name": "Kaspa",
+        "symbol": "KAS-USD",
+        "unit": "$",
+        "price": 0.04,
+        "change": 0.0002,
+        "changePct": 0.54,
+        "prevClose": 0.0398
+      },
+      "xrp": {
+        "name": "XRP",
+        "symbol": "XRP-USD",
+        "unit": "$",
+        "price": 1.9255,
+        "change": 0.0039,
+        "changePct": 0.2,
+        "prevClose": 1.9216
+      }
     }
   }
 }
