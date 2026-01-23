@@ -6,13 +6,14 @@ Writes to data/markets.json for static site consumption
 
 import yfinance as yf
 import json
-from datetime import datetime, timezone
+import html
 import os
 import re
 import urllib.request
 import xml.etree.ElementTree as ET
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 
-# --- MARKET CONFIGURATION ---
 SYMBOLS = {
     "grains": {
         "corn": {"symbol": "ZC=F", "name": "Corn", "unit": "¢/bu"},
@@ -40,7 +41,6 @@ SYMBOLS = {
     }
 }
 
-# --- NEWS SOURCES (RSS) ---
 RSS_FEEDS = [
     {"source": "AgWeb", "url": "https://www.agweb.com/rss/news"},
     {"source": "FarmProgress", "url": "https://www.farmprogress.com/rss.xml"},
@@ -48,19 +48,20 @@ RSS_FEEDS = [
 ]
 
 def clean_contract_name(short_name, symbol):
-    """Extracts month/year from Yahoo contract name"""
-    if not short_name: return ""
-    if "USD" in symbol or "^" in symbol: return "Spot"
+    if not short_name:
+        return ""
+    if "USD" in symbol or "^" in symbol:
+        return "Spot"
     match = re.search(r'\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*[\s-]?(\d{2,4})', short_name, re.IGNORECASE)
     if match:
         month = match.group(1).title()
         year = match.group(2)
-        if len(year) == 4: year = year[2:]
+        if len(year) == 4:
+            year = year[2:]
         return f"{month} '{year}"
     return "Spot"
 
 def fetch_quote(symbol):
-    """Fetch market data from Yahoo Finance"""
     try:
         ticker = yf.Ticker(symbol)
         fast_info = ticker.fast_info
@@ -69,14 +70,17 @@ def fetch_quote(symbol):
         year_low = fast_info.year_low
         year_high = fast_info.year_high
         
+        if price <= 0:
+            print(f"Invalid price for {symbol}: {price}")
+            return None
+        
         change = price - prev_close if prev_close else 0
         change_pct = (change / prev_close) * 100 if prev_close else 0
         
         contract_str = ""
         try:
-            # Info fetch can be slow, wrap in try
             contract_str = clean_contract_name(ticker.info.get('shortName', ''), symbol)
-        except:
+        except Exception:
             pass
         
         return {
@@ -93,13 +97,11 @@ def fetch_quote(symbol):
         return None
 
 def fetch_news():
-    """Fetch and parse RSS feeds with error handling"""
     news_items = []
     print("Fetching news feeds...")
     
     for feed in RSS_FEEDS:
         try:
-            # User-Agent is critical to not get blocked
             req = urllib.request.Request(
                 feed['url'], 
                 data=None, 
@@ -112,22 +114,32 @@ def fetch_news():
                 except ET.ParseError:
                     continue 
                 
-                # RSS 2.0 items
                 count = 0
                 for item in root.findall('.//item'):
-                    if count >= 3: break 
+                    if count >= 3:
+                        break 
                     
-                    title = item.find('title').text if item.find('title') is not None else "News Update"
-                    link = item.find('link').text if item.find('link') is not None else "#"
+                    title_el = item.find('title')
+                    link_el = item.find('link')
+                    pub_el = item.find('pubDate')
                     
-                    # Clean title
-                    title = title.replace('&#039;', "'").replace('&quot;', '"').strip()
+                    title = title_el.text if title_el is not None else "News Update"
+                    link = link_el.text if link_el is not None else "#"
+                    
+                    time_str = datetime.now(timezone.utc).isoformat()
+                    if pub_el is not None and pub_el.text:
+                        try:
+                            time_str = parsedate_to_datetime(pub_el.text).isoformat()
+                        except Exception:
+                            pass
+                    
+                    title = html.unescape(title).strip()
                     
                     news_items.append({
                         "source": feed['source'],
                         "title": title,
                         "link": link,
-                        "time": datetime.now(timezone.utc).isoformat()
+                        "time": time_str
                     })
                     count += 1
         except Exception as e:
@@ -136,7 +148,6 @@ def fetch_news():
     return news_items
 
 def main():
-    # 1. Initialize data structure immediately (Safety Net)
     data = {
         "updated": datetime.now(timezone.utc).isoformat(),
         "markets": {
@@ -145,7 +156,6 @@ def main():
         "news": []
     }
 
-    # 2. Fetch Markets
     for category, items in SYMBOLS.items():
         for key, config in items.items():
             print(f"Fetching {config['name']}...")
@@ -158,13 +168,11 @@ def main():
                     **quote
                 }
     
-    # 3. Fetch News
     data["news"] = fetch_news()
     
-    # 4. Save
     os.makedirs("data", exist_ok=True)
     with open("data/markets.json", "w") as f:
-        json.dump(data, f, indent=2)
+        json.dump(data, f, indent=2, ensure_ascii=False)
     
     print(f"\nSuccess! Written to data/markets.json")
 
