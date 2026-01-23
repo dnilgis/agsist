@@ -41,11 +41,10 @@ SYMBOLS = {
 }
 
 # --- NEWS SOURCES (RSS) ---
-# Updated URLs to more reliable feeds
 RSS_FEEDS = [
-    {"source": "USDA", "url": "https://www.usda.gov/rss/latest-releases.xml"},
     {"source": "AgWeb", "url": "https://www.agweb.com/rss/news"},
     {"source": "FarmProgress", "url": "https://www.farmprogress.com/rss.xml"},
+    {"source": "USDA", "url": "https://www.usda.gov/rss/latest-releases.xml"},
     {"source": "SuccessfulFarming", "url": "https://www.agriculture.com/rss/news"},
 ]
 
@@ -100,28 +99,47 @@ def fetch_news():
     
     for feed in RSS_FEEDS:
         try:
-            # Use User-Agent to avoid blocking
             req = urllib.request.Request(
                 feed['url'], 
                 data=None, 
-                headers={'User-Agent': 'Mozilla/5.0 (AgSist Dashboard)'}
+                headers={'User-Agent': 'Mozilla/5.0'}
             )
             with urllib.request.urlopen(req, timeout=10) as response:
                 xml_data = response.read()
                 try:
                     root = ET.fromstring(xml_data)
                 except ET.ParseError:
-                    continue # Skip malformed XML
+                    continue 
                 
-                # RSS 2.0 usually has items under channel
+                # Handle standard RSS <item> and Atom <entry>
+                items = root.findall('.//item')
+                if not items:
+                    items = root.findall('.//{http://www.w3.org/2005/Atom}entry')
+
                 count = 0
-                for item in root.findall('.//item'):
-                    if count >= 2: break # Limit to top 2 per source to mix them up
+                for item in items:
+                    if count >= 3: break # Top 3 per source
                     
-                    title = item.find('title').text if item.find('title') is not None else "No Title"
-                    link = item.find('link').text if item.find('link') is not None else "#"
+                    # Handle namespaces for Title/Link
+                    title_obj = item.find('title')
+                    if title_obj is None: 
+                        title_obj = item.find('{http://www.w3.org/2005/Atom}title')
                     
-                    # Clean title
+                    link_obj = item.find('link')
+                    if link_obj is None:
+                        link_obj = item.find('{http://www.w3.org/2005/Atom}link')
+
+                    title = title_obj.text if title_obj is not None else "News Update"
+                    
+                    # Atom links often have href attribute
+                    link = "#"
+                    if link_obj is not None:
+                        if link_obj.text and link_obj.text.strip():
+                            link = link_obj.text
+                        elif link_obj.get('href'):
+                            link = link_obj.get('href')
+
+                    # Cleanup
                     title = title.replace('&#039;', "'").replace('&quot;', '"').strip()
                     
                     news_items.append({
@@ -137,7 +155,6 @@ def fetch_news():
     return news_items
 
 def main():
-    # 1. Fetch Markets
     markets = {}
     for category, items in SYMBOLS.items():
         markets[category] = {}
@@ -152,18 +169,14 @@ def main():
                     **quote
                 }
     
-    # 2. Fetch News
     news = fetch_news()
     
-    # 3. Compile Data
     data = {
         "updated": datetime.now(timezone.utc).isoformat(),
-        "source": "Yahoo Finance & USDA",
         "markets": markets,
         "news": news
     }
     
-    # 4. Save
     os.makedirs("data", exist_ok=True)
     with open("data/markets.json", "w") as f:
         json.dump(data, f, indent=2)
