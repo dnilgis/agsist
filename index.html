@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AGSIST | Live Ag Dashboard</title>
     
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2242%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2282%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2244%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2248%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2286%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2232%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -49,9 +49,9 @@
             font-weight:900;
             padding-top:2px;
         }
-        .logo-icon .top-text{font-size:1.1rem; letter-spacing:-1px}
-        .logo-icon .bot-text{font-size:0.7rem; letter-spacing:0px}
-        .logo-text{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:800;color:var(--bright);letter-spacing:-0.03em;text-transform:uppercase}
+        .logo-icon .top-text{font-size:1.2rem; letter-spacing:-1px}
+        .logo-icon .bot-text{font-size:0.75rem; letter-spacing:0px}
+        .logo-text{font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:800;color:var(--bright);letter-spacing:-0.02em; text-transform:uppercase}
         
         .nav{display:flex;gap:4px;background:var(--card);padding:4px;border-radius:6px;border:1px solid var(--border)}
         .nav a{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--dim);text-decoration:none;padding:8px 16px;border-radius:4px;transition:.2s;font-weight:600}
@@ -187,10 +187,10 @@
                 <div class="logo-text">AGSIST</div>
             </a>
             <nav class="nav">
-                <a href="#" class="active" data-tab="dashboard">DASHBOARD</a>
-                <a href="#" data-tab="calculator">CALCULATOR</a>
-                <a href="#" data-tab="offices">OFFICES</a>
-                <a href="#" data-tab="resources">RESOURCES</a>
+                <a href="#dashboard" class="active" data-tab="dashboard">DASHBOARD</a>
+                <a href="#calculator" data-tab="calculator">CALCULATOR</a>
+                <a href="#offices" data-tab="offices">OFFICES</a>
+                <a href="#resources" data-tab="resources">RESOURCES</a>
             </nav>
             <div class="live-badge"><span class="live-dot"></span><span id="update-time">Connecting...</span></div>
         </div>
@@ -238,7 +238,10 @@
                         <div class="panel-head"><h2>LOCAL GRAIN BUYERS</h2></div>
                         <div class="panel-body">
                             <div class="local-markets" id="local-markets">
-                                <p class="loading">Locating nearby elevators...</p>
+                                <div class="elevator-item"><span class="elevator-name">Countryside Coop</span><span class="elevator-dist">12 mi</span></div>
+                                <div class="elevator-item"><span class="elevator-name">CHS Inc</span><span class="elevator-dist">15 mi</span></div>
+                                <div class="elevator-item"><span class="elevator-name">Cargill</span><span class="elevator-dist">22 mi</span></div>
+                                <div class="elevator-item"><span class="elevator-name">ADM</span><span class="elevator-dist">28 mi</span></div>
                             </div>
                         </div>
                     </div>
@@ -417,10 +420,10 @@
             <div class="footer-col">
                 <h4>PLATFORM</h4>
                 <ul>
-                    <li><a href="javascript:void(0)" onclick="switchTab('dashboard')">Live Dashboard</a></li>
-                    <li><a href="javascript:void(0)" onclick="switchTab('calculator')">Grain Calculator</a></li>
-                    <li><a href="javascript:void(0)" onclick="switchTab('offices')">USDA Locator</a></li>
-                    <li><a href="javascript:void(0)" onclick="switchTab('resources')">Resources</a></li>
+                    <li><a href="#dashboard" onclick="switchTab('dashboard')">Live Dashboard</a></li>
+                    <li><a href="#calculator" onclick="switchTab('calculator')">Grain Calculator</a></li>
+                    <li><a href="#offices" onclick="switchTab('offices')">USDA Locator</a></li>
+                    <li><a href="#resources" onclick="switchTab('resources')">Resources</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -440,4 +443,76 @@
                 </ul>
             </div>
         </div>
-        <div class="footer-bottom
+        <div class="footer-bottom">
+            <span>&copy; 2026 AGSIST. All rights reserved.</span>
+            <span>Made in the USA 🇺🇸</span>
+        </div>
+    </footer>
+
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // SAFE INIT
+            try {
+                loadData();
+                initWeather();
+                calcBin();
+                setInterval(loadData, 60000);
+            } catch(e) {
+                console.error("Init failed:", e);
+                document.getElementById('update-time').innerText = "System Error";
+            }
+        });
+
+        // --- NAVIGATION ---
+        function switchTab(id) {
+            window.scrollTo({top:0, behavior:'smooth'});
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+            document.getElementById(id)?.classList.add('active');
+            document.querySelector(`.nav a[data-tab="${id}"]`)?.classList.add('active');
+        }
+
+        document.querySelectorAll('[data-tab]').forEach(el => {
+            el.addEventListener('click', e => {
+                e.preventDefault();
+                switchTab(el.dataset.tab);
+            });
+        });
+
+        // --- DATA LOADER ---
+        async function loadData() {
+            try {
+                const res = await fetch('data/markets.json');
+                if(!res.ok) throw new Error("JSON not found");
+                const data = await res.json();
+                const m = data.markets;
+                
+                document.getElementById('update-time').textContent = new Date(data.updated).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+
+                renderGrid('grains-grid', [m.grains?.corn, m.grains?.soybeans, m.grains?.wheat]);
+                renderGrid('livestock-grid', [m.livestock?.cattle, m.livestock?.feeder, m.livestock?.milk]);
+                renderGrid('metals-grid', [m.indices?.sp500, m.indices?.dow, m.metals?.gold, m.metals?.silver]);
+                renderGrid('crypto-grid', [m.crypto?.bitcoin, m.crypto?.ethereum, m.crypto?.kaspa, m.crypto?.xrp]);
+
+                renderNews(data.news || []);
+                updateTicker(m, data.news || []);
+            } catch (e) { 
+                console.error(e); 
+                document.getElementById('update-time').textContent = "Connection Failed";
+            }
+        }
+
+        function renderGrid(id, items) {
+            const el = document.getElementById(id);
+            if(!el) return;
+            el.innerHTML = items.filter(Boolean).map(item => {
+                const isUp = item.change >= 0;
+                const sign = isUp ? '+' : '';
+                const color = isUp ? 'var(--green)' : 'var(--red)';
+                
+                // Range Calculation
+                let rangeHtml = '';
+                if(item.low52 && item.high52) {
+                    const pct = ((item.price - item.low52)/(item.high52 - item.low52)) * 100;
+                    rangeHtml =
