@@ -15,23 +15,28 @@ SYMBOLS = {
         "corn": {"symbol": "ZC=F", "name": "Corn", "unit": "¢/bu"},
         "soybeans": {"symbol": "ZS=F", "name": "Soybeans", "unit": "¢/bu"},
         "wheat": {"symbol": "ZW=F", "name": "Wheat", "unit": "¢/bu"},
-        "oats": {"symbol": "ZO=F", "name": "Oats", "unit": "¢/bu"},
+        # Removed oats
     },
     "livestock": {
         "cattle": {"symbol": "LE=F", "name": "Live Cattle", "unit": "¢/lb"},
         "feeder": {"symbol": "GF=F", "name": "Feeder Cattle", "unit": "¢/lb"},
-        "hogs": {"symbol": "HE=F", "name": "Lean Hogs", "unit": "¢/lb"},
+        # Removed hogs
         "milk": {"symbol": "DC=F", "name": "Class III Milk", "unit": "$/cwt"},
+    },
+    "indices": {
+        "sp500": {"symbol": "^GSPC", "name": "S&P 500", "unit": "$"},
+        "dow": {"symbol": "^DJI", "name": "Dow Jones", "unit": "$"},
     },
     "metals": {
         "gold": {"symbol": "GC=F", "name": "Gold", "unit": "$/oz"},
         "silver": {"symbol": "SI=F", "name": "Silver", "unit": "$/oz"},
-        "copper": {"symbol": "HG=F", "name": "Copper", "unit": "$/lb"},
+        # Removed copper
     },
     "crypto": {
         "bitcoin": {"symbol": "BTC-USD", "name": "Bitcoin", "unit": "$"},
         "ethereum": {"symbol": "ETH-USD", "name": "Ethereum", "unit": "$"},
         "kaspa": {"symbol": "KAS-USD", "name": "Kaspa", "unit": "$"},
+        "xrp": {"symbol": "XRP-USD", "name": "XRP", "unit": "$"},
     }
 }
 
