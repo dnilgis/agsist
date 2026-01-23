@@ -12,9 +12,9 @@
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:16px;line-height:1.5}
         
-        /* TICKER - SLOWER */
-        .ticker-wrap{background:linear-gradient(90deg,var(--card) 0%,var(--panel) 50%,var(--card) 100%);border-bottom:2px solid var(--border);overflow:hidden;white-space:nowrap;padding:12px 0}
-        .ticker{display:inline-block;animation:scroll 90s linear infinite;padding-left:100%}
+        /* TICKER - FIXED SEAMLESS SCROLL */
+        .ticker-wrap{background:linear-gradient(90deg,var(--card) 0%,var(--panel) 50%,var(--card) 100%);border-bottom:2px solid var(--border);overflow:hidden;white-space:nowrap;padding:12px 0;position:relative}
+        .ticker{display:inline-block;animation:scroll 60s linear infinite;padding-left:0}
         .ticker:hover{animation-play-state:paused}
         .ticker-item{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--bright);padding:0 16px;font-weight:500}
         .ticker-item .up{color:var(--green);font-weight:700}.ticker-item .down{color:var(--red);font-weight:700}
@@ -52,16 +52,23 @@
         /* SECTION LABELS */
         .section-label{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);letter-spacing:2px;margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);font-weight:600}
         
-        /* MARKET CARDS - LARGER */
-        .market-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+        /* MARKET CARDS */
+        .market-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
         .market-card{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:4px;transition:.2s}
         .market-card:hover{border-color:var(--accent-dim)}
-        .market-card .name{font-size:1rem;color:var(--bright);margin-bottom:4px;font-weight:600}
+        .market-card .name{font-size:1rem;color:var(--bright);margin-bottom:2px;font-weight:600}
         .market-card .symbol{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--dim)}
+        .market-card .contract{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--accent);margin-top:2px}
         .market-card .price{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--bright);margin:10px 0}
         .market-card .change{font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:600}
         .market-card .change.up{color:var(--green)}.market-card .change.down{color:var(--red)}
         .market-card .unit{font-size:.75rem;color:var(--dim)}
+
+        /* 52 WEEK RANGE BAR */
+        .range-container { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--hover); }
+        .range-bar { height: 4px; background: var(--hover); border-radius: 2px; position: relative; margin-bottom: 6px; }
+        .range-cursor { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; position: absolute; top: 50%; transform: translate(-50%, -50%); border: 1px solid var(--card); z-index:2; }
+        .range-labels { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--dim); }
         
         /* WEATHER - BIGGER */
         .weather-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-top:12px}
@@ -167,37 +174,11 @@
     </style>
 </head>
 <body>
-    <!-- NEWS TICKER - SLOWER (90s), MORE INDICES -->
     <div class="ticker-wrap">
         <div class="ticker" id="news-ticker">
             <span class="ticker-item"><span class="label">S&P 500</span> 6,045.25 <span class="up">+0.52%</span></span>
             <span class="ticker-item"><span class="label">DOW</span> 44,892.13 <span class="up">+0.31%</span></span>
-            <span class="ticker-item"><span class="label">CORN</span> 445.25 <span class="up">+0.74%</span></span>
-            <span class="ticker-item"><span class="label">BEANS</span> 1,057.50 <span class="up">+0.45%</span></span>
-            <span class="ticker-item"><span class="label">WHEAT</span> 542.75 <span class="down">-0.32%</span></span>
-            <span class="ticker-item"><span class="label">CLASS III</span> 15.74 <span class="down">-0.13%</span></span>
-            <span class="ticker-item"><span class="label">CATTLE</span> 198.50 <span class="up">+0.45%</span></span>
-            <span class="ticker-item"><span class="label">GOLD</span> 2,712.40 <span class="up">+0.46%</span></span>
-            <span class="ticker-item"><span class="label">SILVER</span> 31.24 <span class="up">+0.82%</span></span>
-            <span class="ticker-item"><span class="label">BTC</span> 105,245 <span class="up">+1.18%</span></span>
-            <span class="ticker-item"><span class="label">ETH</span> 3,842 <span class="up">+2.05%</span></span>
-            <span class="ticker-item"><span class="label">KAS</span> 0.0512 <span class="up">+3.90%</span></span>
-            <span class="ticker-item"><span class="label">XRP</span> 2.41 <span class="up">+1.55%</span></span>
-            <!-- Duplicate for seamless loop -->
-            <span class="ticker-item"><span class="label">S&P 500</span> 6,045.25 <span class="up">+0.52%</span></span>
-            <span class="ticker-item"><span class="label">DOW</span> 44,892.13 <span class="up">+0.31%</span></span>
-            <span class="ticker-item"><span class="label">CORN</span> 445.25 <span class="up">+0.74%</span></span>
-            <span class="ticker-item"><span class="label">BEANS</span> 1,057.50 <span class="up">+0.45%</span></span>
-            <span class="ticker-item"><span class="label">WHEAT</span> 542.75 <span class="down">-0.32%</span></span>
-            <span class="ticker-item"><span class="label">CLASS III</span> 15.74 <span class="down">-0.13%</span></span>
-            <span class="ticker-item"><span class="label">CATTLE</span> 198.50 <span class="up">+0.45%</span></span>
-            <span class="ticker-item"><span class="label">GOLD</span> 2,712.40 <span class="up">+0.46%</span></span>
-            <span class="ticker-item"><span class="label">SILVER</span> 31.24 <span class="up">+0.82%</span></span>
-            <span class="ticker-item"><span class="label">BTC</span> 105,245 <span class="up">+1.18%</span></span>
-            <span class="ticker-item"><span class="label">ETH</span> 3,842 <span class="up">+2.05%</span></span>
-            <span class="ticker-item"><span class="label">KAS</span> 0.0512 <span class="up">+3.90%</span></span>
-            <span class="ticker-item"><span class="label">XRP</span> 2.41 <span class="up">+1.55%</span></span>
-        </div>
+            </div>
     </div>
 
     <header>
@@ -217,7 +198,6 @@
     </header>
 
     <main>
-        <!-- DASHBOARD TAB -->
         <div id="dashboard" class="tab active">
             <div class="grid-main">
                 <div class="panel">
@@ -248,7 +228,6 @@
                     </div>
                 </div>
 
-                <!-- SIDEBAR -->
                 <div>
                     <div class="panel">
                         <div class="panel-head"><h2>QUICK TOOLS</h2></div>
@@ -264,7 +243,6 @@
                         </div>
                     </div>
                     
-                    <!-- AG NEWS & WEATHER LINKS -->
                     <div class="panel" style="margin-top:20px">
                         <div class="panel-head"><h2>AG NEWS & WEATHER</h2></div>
                         <div class="panel-body" style="padding:0">
@@ -277,7 +255,6 @@
                         </div>
                     </div>
                     
-                    <!-- LIVE TWITTER FEEDS -->
                     <div class="panel" style="margin-top:20px">
                         <div class="panel-head"><h2>LIVE FEEDS</h2></div>
                         <div class="panel-body">
@@ -286,32 +263,46 @@
                                     <div style="width:32px;height:32px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem">RC</div>
                                     <span class="handle">@RampCapitalLLC</span>
                                 </div>
-                                <div class="twitter-feed-body" id="ramp-feed">
-                                    <p style="color:var(--dim);font-size:.85rem">Loading latest posts...</p>
+                                <div class="twitter-feed-body" style="padding:0; max-height:300px; overflow-y:auto;">
+                                    <a class="twitter-timeline" 
+                                       data-height="300" 
+                                       data-theme="dark" 
+                                       data-chrome="noheader nofooter transparent" 
+                                       href="https://twitter.com/RampCapitalLLC?ref_src=twsrc%5Etfw">
+                                       Tweets by RampCapitalLLC
+                                    </a>
                                 </div>
                                 <div class="twitter-feed-footer">
                                     <a href="https://x.com/RampCapitalLLC" target="_blank" rel="noopener">View on X →</a>
                                 </div>
                             </div>
+
                             <div class="twitter-feed">
                                 <div class="twitter-feed-header">
                                     <div style="width:32px;height:32px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem">RM</div>
                                     <span class="handle">@NAUCountry</span>
                                 </div>
-                                <div class="twitter-feed-body" id="nau-feed">
-                                    <p style="color:var(--dim);font-size:.85rem">Loading latest posts...</p>
+                                <div class="twitter-feed-body" style="padding:0; max-height:300px; overflow-y:auto;">
+                                    <a class="twitter-timeline" 
+                                       data-height="300" 
+                                       data-theme="dark" 
+                                       data-chrome="noheader nofooter transparent" 
+                                       href="https://twitter.com/NAUCountry?ref_src=twsrc%5Etfw">
+                                       Tweets by NAUCountry
+                                    </a>
                                 </div>
                                 <div class="twitter-feed-footer">
                                     <a href="https://www.youtube.com/@NAUCountryInsurance" target="_blank" rel="noopener">View on YouTube →</a>
                                 </div>
                             </div>
+                            
+                            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- CALCULATOR TAB -->
         <div id="calculator" class="tab">
             <div class="calc-wrap">
                 <div class="calc-header"><h1>GRAIN BIN CALCULATOR</h1><p>Calculate capacity, weight, and shrinkage using USDA standard formulas.</p></div>
@@ -375,7 +366,6 @@
             </div>
         </div>
 
-        <!-- USDA OFFICES TAB -->
         <div id="offices" class="tab">
             <div class="office-wrap">
                 <div class="calc-header"><h1>FIND USDA SERVICE CENTER</h1><p>Locate your local FSA and NRCS offices by state and county.</p></div>
@@ -401,7 +391,6 @@
             </div>
         </div>
 
-        <!-- RESOURCES TAB -->
         <div id="resources" class="tab">
             <div class="calc-header"><h1>AG RESOURCES</h1><p>Quick links to essential USDA programs, market data, and farm tools.</p></div>
             <div class="resources-grid">
@@ -538,13 +527,47 @@
             const price = item.unit === '$' 
                 ? item.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})
                 : item.price.toFixed(2);
+                
+            // Contract info (e.g. "Dec '25")
+            const contractHtml = item.contract && item.contract !== 'Spot'
+                ? `<div class="contract">${item.contract}</div>` 
+                : '';
+                
+            // 52 Week Range Logic
+            let rangeHtml = '';
+            if (item.low52 && item.high52 && item.high52 > item.low52) {
+                // Calculate percentage position of current price
+                let pct = ((item.price - item.low52) / (item.high52 - item.low52)) * 100;
+                // Clamp between 0 and 100
+                pct = Math.max(0, Math.min(100, pct));
+                
+                // Format labels
+                const formatLabel = (val) => item.unit === '$' 
+                    ? val.toLocaleString(undefined, {maximumFractionDigits:0}) 
+                    : val.toFixed(2);
+                
+                rangeHtml = `
+                    <div class="range-container">
+                        <div class="range-bar">
+                            <div class="range-cursor" style="left: ${pct}%"></div>
+                        </div>
+                        <div class="range-labels">
+                            <span>L: ${formatLabel(item.low52)}</span>
+                            <span>H: ${formatLabel(item.high52)}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
             return `
                 <div class="market-card">
                     <div class="name">${item.name}</div>
                     <div class="symbol">${item.symbol}</div>
+                    ${contractHtml}
                     <div class="price">${price}</div>
                     <div class="change ${changeClass}">${sign}${item.change.toFixed(2)} (${sign}${item.changePct.toFixed(2)}%)</div>
                     <div class="unit">${item.unit}</div>
+                    ${rangeHtml}
                 </div>
             `;
         }).join('');
