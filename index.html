@@ -89,11 +89,9 @@
                         </div>
                     </div>
                     <div class="panel" style="margin-bottom:0">
-                        <div class="feed-header">LIVE FEED <span style="color:var(--dim)">@USDA</span></div>
-                        <div class="feed-scroll" style="height:400px;position:relative">
-                            <a class="twitter-timeline" data-theme="dark" data-chrome="noheader nofooter transparent" href="https://twitter.com/USDA">
-                                <div style="padding:20px;text-align:center;color:var(--dim);font-size:0.9rem">Loading Twitter Feed...<br><br><a href="https://twitter.com/USDA" target="_blank" style="color:var(--accent)">Click here if feed is blocked</a></div>
-                            </a>
+                        <div class="feed-header">USDA ALERTS <span style="color:var(--dim)">RSS</span></div>
+                        <div class="feed-scroll" id="usda-feed-list" style="height:350px">
+                            <div style="padding:20px;text-align:center;color:var(--dim)">Loading USDA updates...</div>
                         </div>
                     </div>
                     <div class="panel" style="margin-bottom:0">
@@ -183,7 +181,6 @@
         <div class="footer-bottom"><span>© 2026 AGSIST. All rights reserved.</span><span>Made in the USA 🇺🇸</span></div>
     </footer>
 
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <script src="app.js"></script>
 </body>
 </html>

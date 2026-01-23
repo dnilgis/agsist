@@ -42,9 +42,14 @@ SYMBOLS = {
 }
 
 RSS_FEEDS = [
-    {"source": "AgWeb", "url": "https://www.agweb.com/rss/news"},
-    {"source": "FarmProgress", "url": "https://www.farmprogress.com/rss.xml"},
-    {"source": "USDA", "url": "https://www.usda.gov/rss/latest-releases.xml"},
+    # USDA/Government feeds
+    {"source": "USDA", "url": "https://www.usda.gov/rss/latest-releases.xml", "category": "usda"},
+    {"source": "USDA-NASS", "url": "https://www.nass.usda.gov/rss/releases.xml", "category": "usda"},
+    {"source": "USDA-ERS", "url": "https://www.ers.usda.gov/rss/feeds/ers-homepage.xml", "category": "usda"},
+    # Ag news feeds  
+    {"source": "AgWeb", "url": "https://www.agweb.com/rss/news", "category": "news"},
+    {"source": "FarmProgress", "url": "https://www.farmprogress.com/rss.xml", "category": "news"},
+    {"source": "Successful Farming", "url": "https://www.agriculture.com/rss/news", "category": "news"},
 ]
 
 def clean_contract_name(short_name, symbol):
@@ -139,7 +144,8 @@ def fetch_news():
                         "source": feed['source'],
                         "title": title,
                         "link": link,
-                        "time": time_str
+                        "time": time_str,
+                        "category": feed.get('category', 'news')
                     })
                     count += 1
         except Exception as e:
@@ -153,7 +159,8 @@ def main():
         "markets": {
             "grains": {}, "livestock": {}, "indices": {}, "metals": {}, "crypto": {}
         },
-        "news": []
+        "news": [],
+        "usda": []
     }
 
     for category, items in SYMBOLS.items():
@@ -168,7 +175,9 @@ def main():
                     **quote
                 }
     
-    data["news"] = fetch_news()
+    all_news = fetch_news()
+    data["news"] = [n for n in all_news if n.get('category') == 'news']
+    data["usda"] = [n for n in all_news if n.get('category') == 'usda']
     
     os.makedirs("data", exist_ok=True)
     with open("data/markets.json", "w") as f:

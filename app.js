@@ -53,6 +53,7 @@ async function loadData() {
         renderGrid('crypto-grid', [m.crypto?.bitcoin, m.crypto?.ethereum, m.crypto?.kaspa, m.crypto?.xrp]);
 
         renderNews(data.news || []);
+        renderUsdaFeed(data.usda || []);
         updateTicker(m, data.news || []);
     } catch (e) { 
         console.error(e); 
@@ -145,6 +146,21 @@ function renderNews(news) {
         const tagClass = src.includes('usda') ? 'usda' : src.includes('farm') ? 'farmprogress' : 'agweb';
         return `<a href="${n.link}" target="_blank" class="news-item">
             <span class="tag ${tagClass}">${n.source}</span>
+            <h4>${n.title}</h4>
+        </a>`;
+    }).join('');
+}
+
+function renderUsdaFeed(items) {
+    const el = document.getElementById('usda-feed-list');
+    if(!el) return;
+    if(!items.length) {
+        el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--dim)">No USDA updates available.</div>';
+        return;
+    }
+    el.innerHTML = items.map(n => {
+        return `<a href="${n.link}" target="_blank" class="news-item">
+            <span class="tag usda">${n.source}</span>
             <h4>${n.title}</h4>
         </a>`;
     }).join('');
