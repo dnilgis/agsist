@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGSIST | Killer Ag Dashboard</title>
+    <title>AGSIST | Live Ag Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -17,7 +17,7 @@
         ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
         ::-webkit-scrollbar-thumb:hover{background:var(--dim)}
 
-        /* KILLER TICKER */
+        /* NEWS TICKER */
         .ticker-wrap{background:var(--panel);border-bottom:1px solid var(--border);overflow:hidden;white-space:nowrap;padding:8px 0;position:relative;z-index:20}
         .ticker{display:inline-flex;animation:scroll 120s linear infinite;}
         .ticker:hover{animation-play-state:paused}
@@ -28,11 +28,11 @@
         .ticker-news .source { background: var(--accent-dim); color: #000; padding: 1px 5px; border-radius: 2px; font-size: 0.65rem; margin-right: 8px; font-weight:700}
         @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
         
-        /* HEADER - STICKY & GUMMY */
+        /* HEADER - STICKY */
         header{background:rgba(10,10,16,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 24px;position:sticky;top:0;z-index:100}
         .header-inner{max-width:1800px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px}
         
-        /* ULTRA CLEAN LOGO */
+        /* LOGO */
         .logo{text-decoration:none;display:flex;align-items:center;gap:10px}
         .logo-icon{width:32px;height:32px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#000;border-radius:4px;font-family:'Space Grotesk',sans-serif}
         .logo-text{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;color:var(--bright);letter-spacing:-0.04em}
@@ -46,7 +46,7 @@
         .live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 2s infinite;box-shadow:0 0 8px var(--green)}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
         
-        /* MAIN LAYOUT - TIGHTER */
+        /* MAIN LAYOUT */
         main{max-width:1800px;margin:0 auto;padding:16px}
         .tab{display:none}.tab.active{display:block}
         .grid-main{display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start}
@@ -60,7 +60,7 @@
         .section-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--dim);letter-spacing:1px;margin:16px 0 8px;font-weight:700;display:flex;align-items:center;gap:8px}
         .section-label::after{content:'';height:1px;background:var(--border);flex:1}
         
-        /* MARKET CARDS - COMPACT */
+        /* MARKET CARDS */
         .market-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
         .market-card{background:var(--card);border:1px solid var(--border);padding:12px;border-radius:4px;transition:all .2s;position:relative;overflow:hidden}
         .market-card:hover{border-color:var(--accent-dim);transform:translateY(-1px);background:#13131c}
@@ -70,15 +70,15 @@
         .market-card .price{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;color:var(--bright);margin-bottom:4px}
         .market-card .meta{display:flex;justify-content:space-between;align-items:center;font-size:.75rem;font-family:'JetBrains Mono',monospace}
         
-        /* 52 WK RANGE - MINI */
+        /* 52 WK RANGE */
         .range-bar{height:3px;background:var(--border);border-radius:2px;margin-top:8px;position:relative;width:100%}
         .range-fill{height:100%;background:var(--dim);border-radius:2px}
         .range-cursor{width:6px;height:6px;background:var(--accent);border-radius:50%;position:absolute;top:-1.5px;transform:translateX(-50%);box-shadow:0 0 0 2px var(--card)}
 
-        /* SIDEBAR - STICKY STACK */
+        /* SIDEBAR - STICKY */
         .sidebar-stack{position:sticky;top:80px;display:flex;flex-direction:column;gap:16px;max-height:calc(100vh - 100px);overflow-y:auto;padding-right:4px}
         
-        /* FEED ITEMS - STACKED */
+        /* FEED ITEMS */
         .feed-section{margin-bottom:0}
         .feed-header{padding:10px 14px;background:var(--card);border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--bright);font-weight:700;display:flex;align-items:center;justify-content:space-between}
         .feed-scroll{max-height:280px;overflow-y:auto;background:#000}
@@ -90,7 +90,7 @@
         .news-item .tag.agweb{background:rgba(230,176,66,0.15);color:#e6b042;border:1px solid rgba(230,176,66,0.3)}
         .news-item h4{font-size:.85rem;color:var(--text);font-weight:500;line-height:1.4}
 
-        /* TOOLS COMPACT */
+        /* TOOLS */
         .tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
         .tool-btn{background:var(--card);padding:16px;text-align:center;text-decoration:none;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:8px}
         .tool-btn:hover{background:var(--hover)}
@@ -197,7 +197,7 @@
             </div>
         </div>
 
-        <div id="calculator" class="tab"><div class="panel"><div class="panel-body"><h3>Grain Bin Calculator</h3><p>Coming soon to this clean layout...</p></div></div></div>
+        <div id="calculator" class="tab"><div class="panel"><div class="panel-body"><h3>Grain Bin Calculator</h3><p>Coming soon...</p></div></div></div>
         <div id="offices" class="tab"><div class="panel"><div class="panel-body"><h3>USDA Offices</h3><p>Coming soon...</p></div></div></div>
         <div id="resources" class="tab"><div class="panel"><div class="panel-body"><h3>Resources</h3><p>Coming soon...</p></div></div></div>
     </main>
@@ -309,13 +309,7 @@
             navigator.geolocation.getCurrentPosition(pos => {
                 const {latitude: lat, longitude: lon} = pos.coords;
                 document.getElementById('radar-iframe').src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&zoom=7&level=surface&overlay=radar&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1`;
-                // Mock Forecast
-                document.getElementById('forecast').innerHTML = `
-                    <div class="forecast-mini"><div class="day">TODAY</div><div class="temp">72°</div></div>
-                    <div class="forecast-mini"><div class="day">TOMORROW</div><div class="temp">68°</div></div>
-                    <div class="forecast-mini"><div class="day">WED</div><div class="temp">70°</div></div>
-                    <div class="forecast-mini"><div class="day">THU</div><div class="temp">65°</div></div>
-                `; 
+                // Mock Forecast (In production you would fetch NWS data here)
                 document.getElementById('location-name').innerText = "NEARBY";
             });
         }
