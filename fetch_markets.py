@@ -111,7 +111,7 @@ def fetch_news():
                 # RSS 2.0 usually has items under channel
                 count = 0
                 for item in root.findall('.//item'):
-                    if count >= 3: break # Limit to top 3 per source to keep it fresh
+                    if count >= 3: break # Limit to top 3 per source
                     
                     title = item.find('title').text if item.find('title') is not None else "No Title"
                     link = item.find('link').text if item.find('link') is not None else "#"
@@ -123,7 +123,7 @@ def fetch_news():
                         "source": feed['source'],
                         "title": title,
                         "link": link,
-                        "time": datetime.now(timezone.utc).isoformat() # Placeholder for now
+                        "time": datetime.now(timezone.utc).isoformat()
                     })
                     count += 1
         except Exception as e:
