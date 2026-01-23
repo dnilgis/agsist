@@ -1,0 +1,203 @@
+{
+  "updated": "2026-01-23T20:30:04.562982+00:00",
+  "markets": {
+    "grains": {
+      "corn": {
+        "name": "Corn",
+        "symbol": "ZC=F",
+        "unit": "¢/bu",
+        "price": 430.75,
+        "change": 8.0,
+        "changePct": 1.89,
+        "prevClose": 422.75,
+        "contract": "Mar '26",
+        "low52": 368.75,
+        "high52": 504.5
+      },
+      "soybeans": {
+        "name": "Soybeans",
+        "symbol": "ZS=F",
+        "unit": "¢/bu",
+        "price": 1067.5,
+        "change": 5.25,
+        "changePct": 0.49,
+        "prevClose": 1062.25,
+        "contract": "Mar '26",
+        "low52": 960.75,
+        "high52": 1169.5
+      },
+      "wheat": {
+        "name": "Wheat",
+        "symbol": "ZW=F",
+        "unit": "¢/bu",
+        "price": 530.25,
+        "change": 15.25,
+        "changePct": 2.96,
+        "prevClose": 515.0,
+        "contract": "Spot",
+        "low52": 492.25,
+        "high52": 609.0
+      }
+    },
+    "livestock": {
+      "cattle": {
+        "name": "Live Cattle",
+        "symbol": "LE=F",
+        "unit": "¢/lb",
+        "price": 234.925,
+        "change": 2.5,
+        "changePct": 1.08,
+        "prevClose": 232.425,
+        "contract": "Apr '26",
+        "low52": 189.5,
+        "high52": 246.775
+      },
+      "feeder": {
+        "name": "Feeder Cattle",
+        "symbol": "GF=F",
+        "unit": "¢/lb",
+        "price": 364.8,
+        "change": 1.025,
+        "changePct": 0.28,
+        "prevClose": 363.775,
+        "contract": "Mar '26",
+        "low52": 263.15,
+        "high52": 381.025
+      },
+      "milk": {
+        "name": "Class III Milk",
+        "symbol": "DC=F",
+        "unit": "$/cwt",
+        "price": 14.71,
+        "change": 0.03,
+        "changePct": 0.2,
+        "prevClose": 14.68,
+        "contract": "Feb '26",
+        "low52": 14.69,
+        "high52": 20.45
+      }
+    },
+    "indices": {
+      "sp500": {
+        "name": "S&P 500",
+        "symbol": "^GSPC",
+        "unit": "$",
+        "price": 6909.3999,
+        "change": -3.1401,
+        "changePct": -0.05,
+        "prevClose": 6912.54,
+        "contract": "Spot",
+        "low52": 4835.04,
+        "high52": 6986.3301
+      },
+      "dow": {
+        "name": "Dow Jones",
+        "symbol": "^DJI",
+        "unit": "$",
+        "price": 49061.2188,
+        "change": -316.5625,
+        "changePct": -0.64,
+        "prevClose": 49377.7812,
+        "contract": "Spot",
+        "low52": 36611.7812,
+        "high52": 49633.3516
+      }
+    },
+    "metals": {
+      "gold": {
+        "name": "Gold",
+        "symbol": "GC=F",
+        "unit": "$/oz",
+        "price": 4981.3999,
+        "change": 23.3999,
+        "changePct": 0.47,
+        "prevClose": 4958.0,
+        "contract": "Feb '26",
+        "low52": 2737.5,
+        "high52": 4908.7998
+      },
+      "silver": {
+        "name": "Silver",
+        "symbol": "SI=F",
+        "unit": "$/oz",
+        "price": 102.37,
+        "change": 3.67,
+        "changePct": 3.72,
+        "prevClose": 98.7,
+        "contract": "Mar '26",
+        "low52": 28.31,
+        "high52": 95.98
+      }
+    },
+    "crypto": {
+      "bitcoin": {
+        "name": "Bitcoin",
+        "symbol": "BTC-USD",
+        "unit": "$",
+        "price": 89746.9922,
+        "change": 284.9141,
+        "changePct": 0.32,
+        "prevClose": 89462.0781,
+        "contract": "Spot",
+        "low52": 74436.6797,
+        "high52": 126198.0703
+      },
+      "ethereum": {
+        "name": "Ethereum",
+        "symbol": "ETH-USD",
+        "unit": "$",
+        "price": 2948.6006,
+        "change": -0.98,
+        "changePct": -0.03,
+        "prevClose": 2949.5806,
+        "contract": "Spot",
+        "low52": 1386.7993,
+        "high52": 4953.7329
+      },
+      "kaspa": {
+        "name": "Kaspa",
+        "symbol": "KAS-USD",
+        "unit": "$",
+        "price": 0.0402,
+        "change": 0.0003,
+        "changePct": 0.88,
+        "prevClose": 0.0398,
+        "contract": "Spot",
+        "low52": 0.0139,
+        "high52": 0.1349
+      },
+      "xrp": {
+        "name": "XRP",
+        "symbol": "XRP-USD",
+        "unit": "$",
+        "price": 1.9198,
+        "change": -0.0018,
+        "changePct": -0.09,
+        "prevClose": 1.9216,
+        "contract": "Spot",
+        "low52": 1.5285,
+        "high52": 3.6502
+      }
+    }
+  },
+  "news": [
+    {
+      "source": "FarmProgress",
+      "title": "Ethanol push sees big delay after E15 setback, trade group says",
+      "link": "https://www.farmprogress.com/farm-business/ethanolpushseesbigdelayaftere15setbacktradegroupsays",
+      "time": "2026-01-23T19:29:47+00:00"
+    },
+    {
+      "source": "FarmProgress",
+      "title": "Market volatility demands flexible strategy over rigid plans",
+      "link": "https://www.farmprogress.com/cattle-news/market-volatility-demands-flexible-strategy-over-rigid-plans",
+      "time": "2026-01-23T16:12:46+00:00"
+    },
+    {
+      "source": "FarmProgress",
+      "title": "Is E15 a ticket to even greater corn demand? Bingo",
+      "link": "https://www.farmprogress.com/markets-and-quotes/morning-market-review",
+      "time": "2026-01-23T13:25:25+00:00"
+    }
+  ]
+}
