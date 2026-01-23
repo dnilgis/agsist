@@ -1,5 +1,5 @@
 {
-  "updated": "2026-01-23T16:38:44.799458+00:00",
+  "updated": "2026-01-23T16:42:44.233400+00:00",
   "source": "Yahoo Finance",
   "markets": {
     "grains": {
@@ -7,28 +7,37 @@
         "name": "Corn",
         "symbol": "ZC=F",
         "unit": "\u00a2/bu",
-        "price": 429.25,
-        "change": 6.5,
-        "changePct": 1.54,
-        "prevClose": 422.75
+        "price": 429.5,
+        "change": 6.75,
+        "changePct": 1.6,
+        "prevClose": 422.75,
+        "contract": "Mar '26",
+        "low52": 368.75,
+        "high52": 504.5
       },
       "soybeans": {
         "name": "Soybeans",
         "symbol": "ZS=F",
         "unit": "\u00a2/bu",
-        "price": 1069.25,
-        "change": 7.0,
-        "changePct": 0.66,
-        "prevClose": 1062.25
+        "price": 1068.75,
+        "change": 6.5,
+        "changePct": 0.61,
+        "prevClose": 1062.25,
+        "contract": "Mar '26",
+        "low52": 960.75,
+        "high52": 1169.5
       },
       "wheat": {
         "name": "Wheat",
         "symbol": "ZW=F",
         "unit": "\u00a2/bu",
-        "price": 523.0,
-        "change": 8.0,
-        "changePct": 1.55,
-        "prevClose": 515.0
+        "price": 523.25,
+        "change": 8.25,
+        "changePct": 1.6,
+        "prevClose": 515.0,
+        "contract": "Spot",
+        "low52": 492.25,
+        "high52": 609.0
       }
     },
     "livestock": {
@@ -36,19 +45,25 @@
         "name": "Live Cattle",
         "symbol": "LE=F",
         "unit": "\u00a2/lb",
-        "price": 234.1,
-        "change": 1.675,
-        "changePct": 0.72,
-        "prevClose": 232.425
+        "price": 234.3,
+        "change": 1.875,
+        "changePct": 0.81,
+        "prevClose": 232.425,
+        "contract": "Apr '26",
+        "low52": 189.5,
+        "high52": 246.775
       },
       "feeder": {
         "name": "Feeder Cattle",
         "symbol": "GF=F",
         "unit": "\u00a2/lb",
-        "price": 364.075,
-        "change": 0.3,
-        "changePct": 0.08,
-        "prevClose": 363.775
+        "price": 364.5,
+        "change": 0.725,
+        "changePct": 0.2,
+        "prevClose": 363.775,
+        "contract": "Mar '26",
+        "low52": 263.15,
+        "high52": 381.025
       },
       "milk": {
         "name": "Class III Milk",
@@ -57,7 +72,10 @@
         "price": 14.69,
         "change": 0.01,
         "changePct": 0.07,
-        "prevClose": 14.68
+        "prevClose": 14.68,
+        "contract": "Feb '26",
+        "low52": 14.69,
+        "high52": 20.45
       }
     },
     "indices": {
@@ -65,19 +83,25 @@
         "name": "S&P 500",
         "symbol": "^GSPC",
         "unit": "$",
-        "price": 6927.8301,
-        "change": 15.29,
+        "price": 6927.4702,
+        "change": 14.9302,
         "changePct": 0.22,
-        "prevClose": 6912.54
+        "prevClose": 6912.54,
+        "contract": "Spot",
+        "low52": 4835.04,
+        "high52": 6986.3301
       },
       "dow": {
         "name": "Dow Jones",
         "symbol": "^DJI",
         "unit": "$",
-        "price": 49173.5508,
-        "change": -204.2305,
-        "changePct": -0.41,
-        "prevClose": 49377.7812
+        "price": 49164.4102,
+        "change": -213.3711,
+        "changePct": -0.43,
+        "prevClose": 49377.7812,
+        "contract": "Spot",
+        "low52": 36611.7812,
+        "high52": 49633.3516
       }
     },
     "metals": {
@@ -85,19 +109,25 @@
         "name": "Gold",
         "symbol": "GC=F",
         "unit": "$/oz",
-        "price": 4986.7002,
-        "change": 28.7002,
-        "changePct": 0.58,
-        "prevClose": 4958.0
+        "price": 4986.5,
+        "change": 28.5,
+        "changePct": 0.57,
+        "prevClose": 4958.0,
+        "contract": "Feb '26",
+        "low52": 2737.5,
+        "high52": 4908.7998
       },
       "silver": {
         "name": "Silver",
         "symbol": "SI=F",
         "unit": "$/oz",
-        "price": 100.985,
-        "change": 2.285,
-        "changePct": 2.32,
-        "prevClose": 98.7
+        "price": 101.05,
+        "change": 2.35,
+        "changePct": 2.38,
+        "prevClose": 98.7,
+        "contract": "Mar '26",
+        "low52": 28.31,
+        "high52": 95.98
       }
     },
     "crypto": {
@@ -105,37 +135,49 @@
         "name": "Bitcoin",
         "symbol": "BTC-USD",
         "unit": "$",
-        "price": 89849.8125,
-        "change": 387.7344,
-        "changePct": 0.43,
-        "prevClose": 89462.0781
+        "price": 90096.5078,
+        "change": 634.4297,
+        "changePct": 0.71,
+        "prevClose": 89462.0781,
+        "contract": "Spot",
+        "low52": 74436.6797,
+        "high52": 126198.0703
       },
       "ethereum": {
         "name": "Ethereum",
         "symbol": "ETH-USD",
         "unit": "$",
-        "price": 2953.6335,
-        "change": 4.053,
-        "changePct": 0.14,
-        "prevClose": 2949.5806
+        "price": 2967.667,
+        "change": 18.0864,
+        "changePct": 0.61,
+        "prevClose": 2949.5806,
+        "contract": "Spot",
+        "low52": 1386.7993,
+        "high52": 4953.7329
       },
       "kaspa": {
         "name": "Kaspa",
         "symbol": "KAS-USD",
         "unit": "$",
-        "price": 0.04,
-        "change": 0.0002,
-        "changePct": 0.54,
-        "prevClose": 0.0398
+        "price": 0.0404,
+        "change": 0.0006,
+        "changePct": 1.46,
+        "prevClose": 0.0398,
+        "contract": "Spot",
+        "low52": 0.0139,
+        "high52": 0.1349
       },
       "xrp": {
         "name": "XRP",
         "symbol": "XRP-USD",
         "unit": "$",
-        "price": 1.9255,
-        "change": 0.0039,
-        "changePct": 0.2,
-        "prevClose": 1.9216
+        "price": 1.9378,
+        "change": 0.0163,
+        "changePct": 0.85,
+        "prevClose": 1.9216,
+        "contract": "Spot",
+        "low52": 1.5285,
+        "high52": 3.6502
       }
     }
   }
