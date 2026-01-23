@@ -5,119 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AGSIST | Killer Ag Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root{--bg:#08080c;--panel:#0d0d14;--card:#12121a;--hover:#181822;--border:#1e1e2a;--accent:#d4a942;--accent-dim:#9a7830;--green:#22c55e;--red:#ef4444;--text:#e2e2ed;--dim:#8a8aa5;--bright:#ffffff}
+        :root{--bg:#050508;--panel:#0a0a10;--card:#0f0f16;--hover:#16161f;--border:#1f1f2a;--accent:#e6b042;--accent-dim:#b3862b;--green:#2ad568;--red:#f44336;--text:#e2e2ed;--dim:#8a8aa5;--bright:#ffffff}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:16px;line-height:1.5}
+        body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.4}
         
-        /* KILLER TICKER - SEAMLESS & SLOWER FOR READING NEWS */
-        .ticker-wrap{background:linear-gradient(90deg,var(--card) 0%,var(--panel) 50%,var(--card) 100%);border-bottom:2px solid var(--border);overflow:hidden;white-space:nowrap;padding:12px 0;position:relative}
-        .ticker{display:inline-block;animation:scroll 120s linear infinite;padding-left:0; display: flex; align-items: center;}
+        /* SCROLLBARS */
+        ::-webkit-scrollbar{width:6px;height:6px}
+        ::-webkit-scrollbar-track{background:var(--bg)}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+        ::-webkit-scrollbar-thumb:hover{background:var(--dim)}
+
+        /* KILLER TICKER */
+        .ticker-wrap{background:var(--panel);border-bottom:1px solid var(--border);overflow:hidden;white-space:nowrap;padding:8px 0;position:relative;z-index:20}
+        .ticker{display:inline-flex;animation:scroll 120s linear infinite;}
         .ticker:hover{animation-play-state:paused}
-        
-        .ticker-item{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--bright);padding:0 24px;font-weight:500;display:inline-flex;align-items:center;border-right:1px solid #222}
-        .ticker-item .label{color:var(--dim);font-size:.8rem;margin-right:8px}
-        .ticker-item .up{color:var(--green);font-weight:700;margin-left:6px}
-        .ticker-item .down{color:var(--red);font-weight:700;margin-left:6px}
-        
-        /* NEWS HEADLINE IN TICKER */
+        .ticker-item{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--bright);padding:0 20px;font-weight:500;display:inline-flex;align-items:center;border-right:1px solid #1a1a24}
+        .ticker-item .label{color:var(--dim);font-size:.75rem;margin-right:8px}
+        .ticker-item .up{color:var(--green);margin-left:6px}.ticker-item .down{color:var(--red);margin-left:6px}
         .ticker-news { color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .ticker-news .source { background: var(--accent-dim); color: #000; padding: 2px 6px; border-radius: 2px; font-size: 0.7rem; margin-right: 8px; }
-        
+        .ticker-news .source { background: var(--accent-dim); color: #000; padding: 1px 5px; border-radius: 2px; font-size: 0.65rem; margin-right: 8px; font-weight:700}
         @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
         
-        /* LAYOUT */
-        header{background:var(--panel);border-bottom:1px solid var(--border);padding:14px 24px;position:sticky;top:0;z-index:100}
-        .header-inner{max-width:1800px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+        /* HEADER - STICKY & GUMMY */
+        header{background:rgba(10,10,16,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 24px;position:sticky;top:0;z-index:100}
+        .header-inner{max-width:1800px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px}
         
-        .logo{text-decoration:none;display:flex;align-items:center;gap:8px}
-        .logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent) 0%,#b8912e 100%);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:bold;color:var(--bg);clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)}
-        .logo-text{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:900;background:linear-gradient(135deg,var(--accent) 0%,#f0d080 50%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:3px}
+        /* ULTRA CLEAN LOGO */
+        .logo{text-decoration:none;display:flex;align-items:center;gap:10px}
+        .logo-icon{width:32px;height:32px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#000;border-radius:4px;font-family:'Space Grotesk',sans-serif}
+        .logo-text{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;color:var(--bright);letter-spacing:-0.04em}
         
-        .nav{display:flex;gap:6px}
-        .nav a{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--dim);text-decoration:none;padding:12px 16px;border:1px solid transparent;transition:.2s;font-weight:500}
-        .nav a:hover,.nav a.active{color:var(--bright);border-color:var(--accent);background:var(--card)}
-        .live-badge{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--dim)}
-        .live-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:blink 2s infinite;box-shadow:0 0 8px var(--green)}
+        .nav{display:flex;gap:4px;background:var(--card);padding:4px;border-radius:6px;border:1px solid var(--border)}
+        .nav a{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--dim);text-decoration:none;padding:8px 16px;border-radius:4px;transition:.2s;font-weight:600}
+        .nav a:hover{color:var(--bright)}
+        .nav a.active{background:var(--accent);color:#000}
+        
+        .live-badge{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--dim);background:var(--card);padding:6px 12px;border-radius:4px;border:1px solid var(--border)}
+        .live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 2s infinite;box-shadow:0 0 8px var(--green)}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
         
-        main{max-width:1800px;margin:0 auto;padding:24px}
+        /* MAIN LAYOUT - TIGHTER */
+        main{max-width:1800px;margin:0 auto;padding:16px}
         .tab{display:none}.tab.active{display:block}
-        .grid-main{display:grid;grid-template-columns:1fr 380px;gap:24px}
+        .grid-main{display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start}
         
         /* PANELS */
-        .panel{background:var(--panel);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-        .panel-head{background:var(--card);padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-        .panel-head h2{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--accent);letter-spacing:2px;font-weight:600}
-        .panel-body{padding:18px}
+        .panel{background:var(--panel);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:16px}
+        .panel-head{background:var(--card);padding:10px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+        .panel-head h2{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--accent);letter-spacing:1px;font-weight:700;text-transform:uppercase}
+        .panel-body{padding:14px}
         
-        .section-label{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);letter-spacing:2px;margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);font-weight:600}
+        .section-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--dim);letter-spacing:1px;margin:16px 0 8px;font-weight:700;display:flex;align-items:center;gap:8px}
+        .section-label::after{content:'';height:1px;background:var(--border);flex:1}
         
-        /* CARDS */
-        .market-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-        .market-card{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:4px;transition:.2s}
-        .market-card:hover{border-color:var(--accent-dim)}
-        .market-card .name{font-size:1rem;color:var(--bright);margin-bottom:2px;font-weight:600}
-        .market-card .symbol{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--dim)}
-        .market-card .contract{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--accent);margin-top:2px}
-        .market-card .price{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--bright);margin:10px 0}
-        .market-card .change{font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:600}
-        .market-card .change.up{color:var(--green)}.market-card .change.down{color:var(--red)}
-        .market-card .unit{font-size:.75rem;color:var(--dim)}
+        /* MARKET CARDS - COMPACT */
+        .market-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+        .market-card{background:var(--card);border:1px solid var(--border);padding:12px;border-radius:4px;transition:all .2s;position:relative;overflow:hidden}
+        .market-card:hover{border-color:var(--accent-dim);transform:translateY(-1px);background:#13131c}
+        .market-card .head{display:flex;justify-content:space-between;align-items:start;margin-bottom:6px}
+        .market-card .name{font-size:.9rem;color:var(--bright);font-weight:600;line-height:1.2}
+        .market-card .symbol{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--dim)}
+        .market-card .price{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;color:var(--bright);margin-bottom:4px}
+        .market-card .meta{display:flex;justify-content:space-between;align-items:center;font-size:.75rem;font-family:'JetBrains Mono',monospace}
+        
+        /* 52 WK RANGE - MINI */
+        .range-bar{height:3px;background:var(--border);border-radius:2px;margin-top:8px;position:relative;width:100%}
+        .range-fill{height:100%;background:var(--dim);border-radius:2px}
+        .range-cursor{width:6px;height:6px;background:var(--accent);border-radius:50%;position:absolute;top:-1.5px;transform:translateX(-50%);box-shadow:0 0 0 2px var(--card)}
 
-        /* 52 WK RANGE */
-        .range-container { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--hover); }
-        .range-bar { height: 4px; background: var(--hover); border-radius: 2px; position: relative; margin-bottom: 6px; }
-        .range-cursor { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; position: absolute; top: 50%; transform: translate(-50%, -50%); border: 1px solid var(--card); z-index:2; }
-        .range-labels { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--dim); }
+        /* SIDEBAR - STICKY STACK */
+        .sidebar-stack{position:sticky;top:80px;display:flex;flex-direction:column;gap:16px;max-height:calc(100vh - 100px);overflow-y:auto;padding-right:4px}
+        
+        /* FEED ITEMS - STACKED */
+        .feed-section{margin-bottom:0}
+        .feed-header{padding:10px 14px;background:var(--card);border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--bright);font-weight:700;display:flex;align-items:center;justify-content:space-between}
+        .feed-scroll{max-height:280px;overflow-y:auto;background:#000}
+        
+        .news-item{display:block;padding:12px 14px;border-bottom:1px solid var(--border);text-decoration:none;transition:.2s}
+        .news-item:hover{background:var(--hover)}
+        .news-item .tag{display:inline-block;padding:2px 6px;border-radius:2px;font-size:.6rem;font-weight:700;margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+        .news-item .tag.usda{background:rgba(42,79,135,0.3);color:#8ca6d4;border:1px solid rgba(42,79,135,0.5)}
+        .news-item .tag.agweb{background:rgba(230,176,66,0.15);color:#e6b042;border:1px solid rgba(230,176,66,0.3)}
+        .news-item h4{font-size:.85rem;color:var(--text);font-weight:500;line-height:1.4}
 
-        /* FEED TABS */
-        .feed-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--card)}
-        .feed-tab{flex:1;padding:12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--dim);cursor:pointer;transition:.2s;border-bottom:2px solid transparent}
-        .feed-tab:hover{background:var(--hover);color:var(--text)}
-        .feed-tab.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--panel)}
-        
-        .feed-content{display:none;max-height:600px;overflow-y:auto}
-        .feed-content.active{display:block}
-        
-        /* NEWS WIRE ITEMS */
-        .news-item{padding:14px;border-bottom:1px solid var(--border);display:block;text-decoration:none;transition:.2s}
-        .news-item:hover{background:var(--hover);padding-left:18px}
-        .news-item .meta{display:flex;gap:8px;font-size:.7rem;margin-bottom:6px;font-family:'JetBrains Mono',monospace}
-        .news-item .tag{color:var(--bg);background:var(--dim);padding:2px 6px;border-radius:2px;font-weight:600}
-        .news-item .tag.usda{background:#2a4f87;color:#fff}
-        .news-item .tag.agweb{background:#d4a942;color:#000}
-        .news-item h4{color:var(--text);font-size:.95rem;line-height:1.4;font-weight:500}
-        .news-item:visited h4{color:var(--dim)}
+        /* TOOLS COMPACT */
+        .tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+        .tool-btn{background:var(--card);padding:16px;text-align:center;text-decoration:none;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:8px}
+        .tool-btn:hover{background:var(--hover)}
+        .tool-btn span{font-size:1.2rem}
+        .tool-btn h5{font-size:.75rem;color:var(--text);font-weight:600}
 
-        /* TOOLS & WEATHER */
-        .tool-link{display:flex;align-items:center;gap:14px;padding:16px 14px;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text);transition:.2s;cursor:pointer}
-        .tool-link:hover{background:var(--hover);padding-left:18px}
-        .tool-icon{width:40px;height:40px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;border-radius:4px}
-        .tool-info h3{font-size:1rem;font-weight:600;color:var(--bright)}.tool-info p{font-size:.85rem;color:var(--dim)}
-        
-        .weather-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-top:12px}
-        .radar{background:var(--card);border:1px solid var(--border);height:420px;overflow:hidden;border-radius:4px}
-        .radar iframe{width:100%;height:100%;border:none}
-        .forecast-day{background:var(--card);border:1px solid var(--border);padding:12px 14px;display:grid;grid-template-columns:55px 1fr auto;align-items:center;gap:14px;border-radius:4px;margin-bottom:8px}
-        .forecast-day .day{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--accent);font-weight:600}
-        .forecast-day .temp strong{color:var(--bright)}
+        /* WEATHER */
+        .weather-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        .radar-box{height:250px;background:var(--card);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+        .radar-box iframe{width:100%;height:100%;border:none}
+        .forecast-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+        .forecast-mini{background:var(--card);padding:10px;border-radius:4px;border:1px solid var(--border);text-align:center}
+        .forecast-mini .day{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent);margin-bottom:4px}
+        .forecast-mini .temp{font-weight:700;color:var(--bright)}
 
         /* RESPONSIVE */
-        @media(max-width:1200px){.grid-main{grid-template-columns:1fr}}
-        @media(max-width:900px){.weather-grid{grid-template-columns:1fr}}
-        @media(max-width:600px){
-            .header-inner{flex-direction:column;text-align:center}
-            .nav{flex-wrap:wrap;justify-content:center}
-            .market-grid{grid-template-columns:1fr 1fr}
-        }
+        @media(max-width:1000px){.grid-main{grid-template-columns:1fr}.sidebar-stack{position:static;max-height:none;overflow:visible}}
     </style>
 </head>
 <body>
     <div class="ticker-wrap">
         <div class="ticker" id="news-ticker">
-            <span class="ticker-item">Loading data...</span>
+            <span class="ticker-item">Loading markets...</span>
         </div>
     </div>
 
@@ -125,12 +121,12 @@
         <div class="header-inner">
             <a href="/" class="logo">
                 <div class="logo-icon">AG</div>
-                <span class="logo-text">AGSIST</span>
+                <div class="logo-text">AGSIST</div>
             </a>
             <nav class="nav">
                 <a href="#" class="active" data-tab="dashboard">DASHBOARD</a>
                 <a href="#" data-tab="calculator">CALCULATOR</a>
-                <a href="#" data-tab="offices">USDA OFFICES</a>
+                <a href="#" data-tab="offices">OFFICES</a>
                 <a href="#" data-tab="resources">RESOURCES</a>
             </nav>
             <div class="live-badge"><span class="live-dot"></span><span id="update-time">Loading...</span></div>
@@ -140,237 +136,189 @@
     <main>
         <div id="dashboard" class="tab active">
             <div class="grid-main">
-                <div class="panel">
-                    <div class="panel-head"><h2>LIVE MARKETS</h2><span>Auto-updated 24/7</span></div>
-                    <div class="panel-body">
-                        <div class="section-label">GRAINS</div>
-                        <div class="market-grid" id="grains-grid"><div class="loading">Loading...</div></div>
-                        
-                        <div class="section-label">LIVESTOCK & DAIRY</div>
-                        <div class="market-grid" id="livestock-grid"><div class="loading">Loading...</div></div>
-                        
-                        <div class="section-label">INDICES & METALS</div>
-                        <div class="market-grid" id="metals-grid"><div class="loading">Loading...</div></div>
-                        
-                        <div class="section-label">CRYPTO</div>
-                        <div class="market-grid" id="crypto-grid"><div class="loading">Loading...</div></div>
-                        
-                        <div class="section-label" id="weather-label">WEATHER — <span id="location-name">DETECTING...</span></div>
-                        <div class="weather-grid">
-                            <div class="radar" id="radar-wrap"><iframe id="radar-iframe" src="https://embed.windy.com/embed2.html?lat=45.4&lon=-91.8&detailLat=45.4&detailLon=-91.8&width=650&height=450&zoom=7&level=surface&overlay=radar&product=radar&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=true&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1" title="Radar"></iframe></div>
-                            <div class="forecast" id="forecast"><div class="loading">Loading forecast...</div></div>
+                <div>
+                    <div class="panel">
+                        <div class="panel-head"><h2>LOCAL CONDITIONS — <span id="location-name">LOCATING...</span></h2></div>
+                        <div class="panel-body" style="padding:0">
+                            <div class="weather-grid" style="grid-template-columns: 1.8fr 1fr; gap:0">
+                                <div class="radar-box" style="height:300px; border:none; border-right:1px solid var(--border)">
+                                    <iframe id="radar-iframe" src="https://embed.windy.com/embed2.html?lat=40.0&lon=-95.0&zoom=5&level=surface&overlay=radar&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1"></iframe>
+                                </div>
+                                <div class="forecast-list" id="forecast" style="padding:14px; display:flex; flex-direction:column; gap:6px; overflow-y:auto; height:300px">
+                                    <div class="loading">Loading forecast...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-head"><h2>LIVE MARKETS</h2></div>
+                        <div class="panel-body">
+                            <div class="section-label" style="margin-top:0">GRAINS</div>
+                            <div class="market-grid" id="grains-grid"><div class="loading">Loading...</div></div>
+                            
+                            <div class="section-label">LIVESTOCK</div>
+                            <div class="market-grid" id="livestock-grid"><div class="loading">Loading...</div></div>
+                            
+                            <div class="section-label">INDICES & METALS</div>
+                            <div class="market-grid" id="metals-grid"><div class="loading">Loading...</div></div>
+                            
+                            <div class="section-label">CRYPTO</div>
+                            <div class="market-grid" id="crypto-grid"><div class="loading">Loading...</div></div>
                         </div>
                     </div>
                 </div>
 
-                <div>
-                    <div class="panel">
-                        <div class="feed-tabs">
-                            <div class="feed-tab active" onclick="switchFeed('social')">TWITTER</div>
-                            <div class="feed-tab" onclick="switchFeed('news')">NEWS WIRE</div>
-                        </div>
-                        
-                        <div id="feed-social" class="feed-content active" style="padding:0">
-                            <div style="border-bottom:1px solid var(--border); padding:10px;">
-                                <a class="twitter-timeline" data-height="400" data-theme="dark" data-chrome="noheader nofooter transparent" href="https://twitter.com/USDA?ref_src=twsrc%5Etfw">Tweets by USDA</a>
-                            </div>
-                            <div style="padding:10px;">
-                                <a class="twitter-timeline" data-height="400" data-theme="dark" data-chrome="noheader nofooter transparent" href="https://twitter.com/AgWebEditor?ref_src=twsrc%5Etfw">Tweets by AgWeb</a>
-                            </div>
-                            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-                        </div>
-                        
-                        <div id="feed-news" class="feed-content">
-                            <div id="news-wire-list" style="padding-bottom:20px">
-                                <div class="loading" style="padding:20px">Loading headlines...</div>
-                            </div>
+                <div class="sidebar-stack">
+                    <div class="panel" style="margin-bottom:0">
+                        <div class="panel-head"><h2>QUICK TOOLS</h2></div>
+                        <div class="tool-grid">
+                            <a href="#" data-tab="calculator" class="tool-btn"><span>🌾</span><h5>Bin Calc</h5></a>
+                            <a href="#" data-tab="offices" class="tool-btn"><span>🏛️</span><h5>USDA Finder</h5></a>
+                            <a href="https://webapp.rma.usda.gov/apps/actuarialinformationbrowser/" target="_blank" class="tool-btn"><span>📊</span><h5>RMA Rates</h5></a>
+                            <a href="https://farmers1st.com" target="_blank" class="tool-btn"><span>🔍</span><h5>Agent Finder</h5></a>
                         </div>
                     </div>
 
-                    <div class="panel" style="margin-top:20px">
-                        <div class="panel-head"><h2>QUICK TOOLS</h2></div>
-                        <div class="panel-body" style="padding:0">
-                            <div class="tool-link" data-tab="calculator"><div class="tool-icon">🌾</div><div class="tool-info"><h3>Grain Bin Calculator</h3><p>Bushels, weight, shrinkage</p></div></div>
-                            <div class="tool-link" data-tab="offices"><div class="tool-icon">🏛️</div><div class="tool-info"><h3>Find USDA Office</h3><p>FSA / NRCS by county</p></div></div>
-                            <a href="https://webapp.rma.usda.gov/apps/actuarialinformationbrowser/" target="_blank" rel="noopener" class="tool-link"><div class="tool-icon">📊</div><div class="tool-info"><h3>RMA Actuarial Browser</h3><p>Crop insurance rates</p></div></a>
-                            <a href="https://farmers1st.com" target="_blank" rel="noopener" class="tool-link"><div class="tool-icon">🔍</div><div class="tool-info"><h3>Find Insurance Agent</h3><p>Farmers First Agri Service</p></div></a>
+                    <div class="panel" style="margin-bottom:0">
+                        <div class="feed-header">LIVE FEED <span style="color:var(--dim)">@USDA</span></div>
+                        <div class="feed-scroll" style="height:300px">
+                            <a class="twitter-timeline" data-theme="dark" data-chrome="noheader nofooter transparent" href="https://twitter.com/USDA?ref_src=twsrc%5Etfw"></a>
+                        </div>
+                    </div>
+
+                    <div class="panel" style="margin-bottom:0">
+                        <div class="feed-header">NEWS WIRE <span style="color:var(--dim)">RSS</span></div>
+                        <div class="feed-scroll" id="news-wire-list" style="height:300px">
+                            <div style="padding:20px; text-align:center; color:var(--dim)">Loading wire...</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div id="calculator" class="tab"> </div>
-        <div id="offices" class="tab"> </div>
-        <div id="resources" class="tab"> </div>
 
+        <div id="calculator" class="tab"><div class="panel"><div class="panel-body"><h3>Grain Bin Calculator</h3><p>Coming soon to this clean layout...</p></div></div></div>
+        <div id="offices" class="tab"><div class="panel"><div class="panel-body"><h3>USDA Offices</h3><p>Coming soon...</p></div></div></div>
+        <div id="resources" class="tab"><div class="panel"><div class="panel-body"><h3>Resources</h3><p>Coming soon...</p></div></div></div>
     </main>
 
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <script>
-    // ============ TAB UI LOGIC ============
-    function switchFeed(type) {
-        document.querySelectorAll('.feed-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.feed-content').forEach(c => c.classList.remove('active'));
-        
-        if(type === 'social') {
-            document.querySelectorAll('.feed-tab')[0].classList.add('active');
-            document.getElementById('feed-social').classList.add('active');
-        } else {
-            document.querySelectorAll('.feed-tab')[1].classList.add('active');
-            document.getElementById('feed-news').classList.add('active');
-        }
-    }
-
-    document.querySelectorAll('[data-tab]').forEach(el => {
-        el.addEventListener('click', e => {
-            if(el.classList.contains('feed-tab')) return; // Ignore feed tabs
-            e.preventDefault();
-            const tabId = el.dataset.tab;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
-            const target = document.getElementById(tabId);
-            if(target) target.classList.add('active');
-            const navLink = document.querySelector(`.nav a[data-tab="${tabId}"]`);
-            if(navLink) navLink.classList.add('active');
+        // TABS
+        document.querySelectorAll('[data-tab]').forEach(el => {
+            el.addEventListener('click', e => {
+                e.preventDefault();
+                const id = el.dataset.tab;
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+                document.getElementById(id)?.classList.add('active');
+                document.querySelector(`.nav a[data-tab="${id}"]`)?.classList.add('active');
+            });
         });
-    });
 
-    // ============ DATA LOADING ============
-    async function loadData() {
-        try {
-            // Fetch the single JSON file that now contains MARKETS + NEWS
-            const res = await fetch('data/markets.json');
-            const data = await res.json();
-            
-            // 1. Update Time
-            const updated = new Date(data.updated);
-            document.getElementById('update-time').textContent = `Updated ${updated.toLocaleTimeString()}`;
-            
-            // 2. Render Markets
-            const m = data.markets;
-            renderMarketSection('grains-grid', [m.grains?.corn, m.grains?.soybeans, m.grains?.wheat]);
-            renderMarketSection('livestock-grid', [m.livestock?.cattle, m.livestock?.feeder, m.livestock?.milk]);
-            renderMarketSection('metals-grid', [m.indices?.sp500, m.indices?.dow, m.metals?.gold, m.metals?.silver]);
-            renderMarketSection('crypto-grid', [m.crypto?.bitcoin, m.crypto?.ethereum, m.crypto?.kaspa, m.crypto?.xrp]);
-            
-            // 3. Render News Wire (Sidebar)
-            renderNewsWire(data.news || []);
-            
-            // 4. Update Killer Ticker (Markets + News Mixed)
-            updateKillerTicker(m, data.news || []);
-            
-        } catch (err) {
-            console.error('Failed to load data:', err);
-        }
-    }
-    
-    function renderMarketSection(gridId, items) {
-        const grid = document.getElementById(gridId);
-        if (!grid) return;
-        items = items.filter(Boolean);
-        
-        grid.innerHTML = items.map(item => {
-            const changeClass = item.change >= 0 ? 'up' : 'down';
-            const sign = item.change >= 0 ? '+' : '';
-            const price = item.unit === '$' 
-                ? item.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})
-                : item.price.toFixed(2);
+        // DATA LOADER
+        async function loadData() {
+            try {
+                const res = await fetch('data/markets.json');
+                const data = await res.json();
+                const m = data.markets;
                 
-            // Contract + Range Logic
-            const contractHtml = item.contract && item.contract !== 'Spot' ? `<div class="contract">${item.contract}</div>` : '';
-            
-            let rangeHtml = '';
-            if (item.low52 && item.high52 && item.high52 > item.low52) {
-                let pct = ((item.price - item.low52) / (item.high52 - item.low52)) * 100;
-                pct = Math.max(0, Math.min(100, pct));
-                const formatLabel = (val) => item.unit === '$' ? val.toLocaleString(undefined,{maximumFractionDigits:0}) : val.toFixed(2);
-                rangeHtml = `
-                    <div class="range-container">
-                        <div class="range-bar"><div class="range-cursor" style="left: ${pct}%"></div></div>
-                        <div class="range-labels"><span>L:${formatLabel(item.low52)}</span><span>H:${formatLabel(item.high52)}</span></div>
-                    </div>`;
-            }
+                // Header Time
+                document.getElementById('update-time').textContent = new Date(data.updated).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
 
-            return `
+                // Render Grids
+                renderGrid('grains-grid', [m.grains?.corn, m.grains?.soybeans, m.grains?.wheat]);
+                renderGrid('livestock-grid', [m.livestock?.cattle, m.livestock?.feeder, m.livestock?.milk]);
+                renderGrid('metals-grid', [m.indices?.sp500, m.indices?.dow, m.metals?.gold, m.metals?.silver]);
+                renderGrid('crypto-grid', [m.crypto?.bitcoin, m.crypto?.ethereum, m.crypto?.xrp]);
+
+                // Render News
+                renderNews(data.news || []);
+                
+                // Render Ticker
+                updateTicker(m, data.news || []);
+
+            } catch (e) { console.error(e); }
+        }
+
+        function renderGrid(id, items) {
+            const el = document.getElementById(id);
+            if(!el) return;
+            el.innerHTML = items.filter(Boolean).map(item => {
+                const isUp = item.change >= 0;
+                const sign = isUp ? '+' : '';
+                const color = isUp ? 'var(--green)' : 'var(--red)';
+                const rangePct = (item.low52 && item.high52) ? ((item.price - item.low52)/(item.high52 - item.low52))*100 : 50;
+                
+                return `
                 <div class="market-card">
-                    <div class="name">${item.name}</div>
-                    <div class="symbol">${item.symbol}</div>
-                    ${contractHtml}
-                    <div class="price">${price}</div>
-                    <div class="change ${changeClass}">${sign}${item.change.toFixed(2)} (${sign}${item.changePct.toFixed(2)}%)</div>
-                    <div class="unit">${item.unit}</div>
-                    ${rangeHtml}
+                    <div class="head">
+                        <div>
+                            <div class="name">${item.name}</div>
+                            <div class="symbol">${item.symbol} ${item.contract !== 'Spot' ? `<span style="color:var(--accent)">${item.contract}</span>` : ''}</div>
+                        </div>
+                    </div>
+                    <div class="price">${item.unit === '$' ? item.price.toLocaleString(undefined,{maximumFractionDigits:2}) : item.price.toFixed(2)}</div>
+                    <div class="meta" style="color:${color}">
+                        <span>${sign}${item.change.toFixed(2)}</span>
+                        <span>${sign}${item.changePct.toFixed(2)}%</span>
+                    </div>
+                    ${item.low52 ? `<div class="range-bar"><div class="range-cursor" style="left:${Math.max(0,Math.min(100,rangePct))}%"></div></div>` : ''}
                 </div>`;
-        }).join('');
-    }
-    
-    function renderNewsWire(newsItems) {
-        const container = document.getElementById('news-wire-list');
-        if(!container) return;
-        
-        if(newsItems.length === 0) {
-            container.innerHTML = '<div style="padding:20px;color:var(--dim)">No news available</div>';
-            return;
+            }).join('');
         }
-        
-        container.innerHTML = newsItems.map(item => {
-            const tagClass = item.source.toLowerCase().includes('usda') ? 'usda' : 'agweb';
-            return `
-                <a href="${item.link}" target="_blank" class="news-item">
-                    <div class="meta"><span class="tag ${tagClass}">${item.source}</span></div>
-                    <h4>${item.title}</h4>
-                </a>`;
-        }).join('');
-    }
-    
-    function updateKillerTicker(markets, news) {
-        // Create a flat list of market items
-        const marketItems = [];
-        // Helper to add market item
-        const addM = (label, d) => {
-            if(!d) return;
-            const cls = d.change >= 0 ? 'up' : 'down';
-            const val = d.unit === '$' ? d.price.toLocaleString(undefined, {maximumFractionDigits:2}) : d.price.toFixed(2);
-            marketItems.push(`<span class="ticker-item"><span class="label">${label}</span>${val}<span class="${cls}">${d.change >= 0 ? '+' : ''}${d.changePct.toFixed(2)}%</span></span>`);
-        };
-        
-        addM('CORN', markets.grains?.corn);
-        addM('BEANS', markets.grains?.soybeans);
-        addM('WHEAT', markets.grains?.wheat);
-        addM('CATTLE', markets.livestock?.cattle);
-        addM('MILK', markets.livestock?.milk);
-        addM('S&P', markets.indices?.sp500);
-        addM('GOLD', markets.metals?.gold);
-        
-        // Interleave News!
-        let finalHtml = '';
-        const maxlen = Math.max(marketItems.length, news.length);
-        
-        for(let i=0; i<maxlen; i++) {
-            // Add Market Item if available
-            if(marketItems[i % marketItems.length]) {
-                finalHtml += marketItems[i % marketItems.length];
-            }
-            // Add News Item if available
-            if(news[i]) {
-                finalHtml += `<span class="ticker-item ticker-news"><span class="source">${news[i].source}</span> ${news[i].title}</span>`;
-            }
-        }
-        
-        // Duplicate for seamless loop
-        document.getElementById('news-ticker').innerHTML = finalHtml + finalHtml;
-    }
 
-    // ============ INIT ============
-    document.addEventListener('DOMContentLoaded', () => {
+        function renderNews(news) {
+            const el = document.getElementById('news-wire-list');
+            if(!news.length) return;
+            el.innerHTML = news.map(n => `
+                <a href="${n.link}" target="_blank" class="news-item">
+                    <span class="tag ${n.source.toLowerCase().includes('usda')?'usda':'agweb'}">${n.source}</span>
+                    <h4>${n.title}</h4>
+                </a>
+            `).join('');
+        }
+
+        function updateTicker(m, news) {
+            const items = [];
+            // Simple helper to push market items
+            const add = (k, d) => d && items.push(`<span class="ticker-item"><span class="label">${k}</span>${d.price}<span class="${d.change>=0?'up':'down'}">${d.change>=0?'+':''}${d.changePct.toFixed(1)}%</span></span>`);
+            add('CORN', m.grains?.corn);
+            add('BEANS', m.grains?.soybeans);
+            add('WHEAT', m.grains?.wheat);
+            add('CATTLE', m.livestock?.cattle);
+            add('GOLD', m.metals?.gold);
+            add('BTC', m.crypto?.bitcoin);
+
+            // Interleave News
+            let html = '';
+            const max = Math.max(items.length, news.length);
+            for(let i=0; i<max; i++) {
+                if(items[i%items.length]) html += items[i%items.length];
+                if(news[i]) html += `<span class="ticker-item ticker-news"><span class="source">${news[i].source}</span> ${news[i].title}</span>`;
+            }
+            document.getElementById('news-ticker').innerHTML = html + html;
+        }
+
+        // INIT
         loadData();
-        loadForecast(); // Assuming loadForecast and calcBin are still present in your file or I need to add them back if you lost them.
-        // Assuming calcBin() and findOffice() are kept from previous version
-        if(window.calcBin) calcBin();
-        if(window.getLocation) getLocation();
+        setInterval(loadData, 60000);
         
-        setInterval(loadData, 60 * 1000); // Check for new JSON every minute
-    });
+        // WEATHER GEOLOCATION
+        if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(pos => {
+                const {latitude: lat, longitude: lon} = pos.coords;
+                document.getElementById('radar-iframe').src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&zoom=7&level=surface&overlay=radar&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1`;
+                // Mock Forecast
+                document.getElementById('forecast').innerHTML = `
+                    <div class="forecast-mini"><div class="day">TODAY</div><div class="temp">72°</div></div>
+                    <div class="forecast-mini"><div class="day">TOMORROW</div><div class="temp">68°</div></div>
+                    <div class="forecast-mini"><div class="day">WED</div><div class="temp">70°</div></div>
+                    <div class="forecast-mini"><div class="day">THU</div><div class="temp">65°</div></div>
+                `; 
+                document.getElementById('location-name').innerText = "NEARBY";
+            });
+        }
     </script>
 </body>
 </html>
