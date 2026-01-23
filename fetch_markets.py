@@ -41,10 +41,12 @@ SYMBOLS = {
 }
 
 # --- NEWS SOURCES (RSS) ---
+# Updated URLs to more reliable feeds
 RSS_FEEDS = [
     {"source": "USDA", "url": "https://www.usda.gov/rss/latest-releases.xml"},
     {"source": "AgWeb", "url": "https://www.agweb.com/rss/news"},
-    {"source": "FarmProgress", "url": "https://www.farmprogress.com/rss.xml"}
+    {"source": "FarmProgress", "url": "https://www.farmprogress.com/rss.xml"},
+    {"source": "SuccessfulFarming", "url": "https://www.agriculture.com/rss/news"},
 ]
 
 def clean_contract_name(short_name, symbol):
@@ -106,12 +108,15 @@ def fetch_news():
             )
             with urllib.request.urlopen(req, timeout=10) as response:
                 xml_data = response.read()
-                root = ET.fromstring(xml_data)
+                try:
+                    root = ET.fromstring(xml_data)
+                except ET.ParseError:
+                    continue # Skip malformed XML
                 
                 # RSS 2.0 usually has items under channel
                 count = 0
                 for item in root.findall('.//item'):
-                    if count >= 3: break # Limit to top 3 per source
+                    if count >= 2: break # Limit to top 2 per source to mix them up
                     
                     title = item.find('title').text if item.find('title') is not None else "No Title"
                     link = item.find('link').text if item.find('link') is not None else "#"
