@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AGSIST | Live Ag Dashboard - Commodity Prices, Weather & Farm Tools</title>
-    <meta name="description" content="AGSIST - Live agricultural commodity prices, weather radar, and USDA tools for farmers. Track corn, soybeans, wheat, cattle futures in real-time.">
-    <meta name="keywords" content="commodity prices, grain prices, corn futures, soybean futures, wheat prices, cattle futures, farm dashboard, agricultural markets, USDA tools, grain bin calculator">
+    <meta name="description" content="AGSIST - Free live agricultural commodity prices, weather radar, GDU calculator, break-even analysis, and USDA tools for farmers. Track corn, soybeans, wheat, cattle futures in real-time.">
+    <meta name="keywords" content="commodity prices, grain prices, corn futures, soybean futures, wheat prices, cattle futures, farm dashboard, agricultural markets, USDA tools, grain bin calculator, GDU calculator, break even calculator">
     <meta property="og:title" content="AGSIST | Live Ag Dashboard">
     <meta property="og:description" content="Real-time commodity prices, weather radar, and farm tools for modern agriculture.">
     <meta property="og:type" content="website">
@@ -18,39 +18,8 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 
-    <!-- Structured Data -->
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "AGSIST",
-        "description": "Live agricultural commodity prices, weather radar, grain bin calculator, and USDA office locator for farmers.",
-        "url": "https://agsist.com",
-        "applicationCategory": "FinanceApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "AGSIST",
-        "url": "https://agsist.com",
-        "logo": "https://agsist.com/logo.png",
-        "parentOrganization": {"@type": "Organization", "name": "Farmers First Agri Service", "url": "https://farmers1st.com"}
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            {"@type": "Question", "name": "What commodity prices does AGSIST track?", "acceptedAnswer": {"@type": "Answer", "text": "AGSIST tracks live prices for corn, soybeans, wheat, live cattle, feeder cattle, Class III milk, gold, silver, Bitcoin, Ethereum, Kaspa, and XRP."}},
-            {"@type": "Question", "name": "How often are commodity prices updated?", "acceptedAnswer": {"@type": "Answer", "text": "Prices update every 15 minutes during US market hours and hourly during off-peak times. Crypto prices update around the clock."}},
-            {"@type": "Question", "name": "Is AGSIST free to use?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, AGSIST is completely free. Access live commodity prices, weather radar, grain bin calculator, and USDA office locator at no cost."}}
-        ]
-    }
+    {"@context":"https://schema.org","@type":"WebApplication","name":"AGSIST","description":"Free live agricultural commodity prices, weather radar, grain bin calculator, GDU calculator, break-even analysis, and USDA office locator for farmers.","url":"https://agsist.com","applicationCategory":"FinanceApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
     </script>
 </head>
 <body>
@@ -64,20 +33,19 @@
                 <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
                 <div class="logo-text">AGSIST</div>
             </a>
-            
             <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
-            
             <nav class="nav" id="main-nav">
-                <a href="#dashboard" class="active" data-tab="dashboard">DASHBOARD</a>
-                <a href="#calculator" data-tab="calculator">CALCULATOR</a>
-                <a href="#offices" data-tab="offices">OFFICES</a>
-                <a href="#resources" data-tab="resources">RESOURCES</a>
+                <a href="#" class="active" data-tab="dashboard">DASHBOARD</a>
+                <a href="#" data-tab="tools">TOOLS</a>
+                <a href="#" data-tab="calendar">CALENDAR</a>
+                <a href="#" data-tab="resources">RESOURCES</a>
             </nav>
             <div class="live-badge"><span class="live-dot"></span><span id="update-time">Connecting...</span></div>
         </div>
     </header>
 
     <main>
+        <!-- DASHBOARD TAB -->
         <div id="dashboard" class="tab active">
             <div class="grid-main">
                 <div>
@@ -107,11 +75,9 @@
                         </div>
                     </div>
                     <div class="panel">
-                        <div class="panel-head"><h2>CASH BID SOURCES</h2><span style="font-size:0.7rem;color:var(--dim)" id="grain-buyer-location"></span></div>
+                        <div class="panel-head"><h2>CASH BID SOURCES</h2></div>
                         <div class="panel-body">
-                            <div class="local-markets" id="local-markets">
-                                <div class="loading">Loading cash bid sources...</div>
-                            </div>
+                            <div class="local-markets" id="local-markets"><div class="loading">Loading cash bid sources...</div></div>
                         </div>
                     </div>
                 </div>
@@ -119,30 +85,54 @@
                     <div class="panel" style="margin-bottom:0">
                         <div class="panel-head"><h2>QUICK TOOLS</h2></div>
                         <div class="tool-grid">
-                            <div onclick="switchTab('calculator')" class="tool-btn"><span>🌾</span><h5>Bin Calc</h5></div>
-                            <div onclick="switchTab('offices')" class="tool-btn"><span>🏛️</span><h5>USDA Finder</h5></div>
-                            <a href="https://webapp.rma.usda.gov/apps/actuarialinformationbrowser/" target="_blank" class="tool-btn"><span>📊</span><h5>RMA Rates</h5></a>
-                            <a href="https://farmers1st.com" target="_blank" class="tool-btn"><span>🔍</span><h5>Agent Finder</h5></a>
+                            <div onclick="switchTab('tools')" class="tool-btn"><span>🌾</span><h5>Grain Bin</h5></div>
+                            <div onclick="switchTab('tools');setTimeout(()=>scrollToEl('gdu-section'),100)" class="tool-btn"><span>🌡️</span><h5>GDU Calc</h5></div>
+                            <div onclick="switchTab('tools');setTimeout(()=>scrollToEl('breakeven-section'),100)" class="tool-btn"><span>💰</span><h5>Break-Even</h5></div>
+                            <div onclick="switchTab('calendar')" class="tool-btn"><span>📅</span><h5>Calendar</h5></div>
                         </div>
                     </div>
+                    
+                    <!-- USDA REPORT CALENDAR WIDGET -->
+                    <div class="panel" style="margin-bottom:0">
+                        <div class="feed-header">📊 UPCOMING REPORTS</div>
+                        <div id="usda-calendar" class="calendar-list"></div>
+                    </div>
+                    
+                    <!-- CROP INSURANCE DEADLINES WIDGET -->
+                    <div class="panel" style="margin-bottom:0">
+                        <div class="feed-header">⏰ INSURANCE DEADLINES <span style="color:var(--dim)">WI/MN</span></div>
+                        <div id="sidebar-deadlines" class="calendar-list"></div>
+                    </div>
+                    
+                    <!-- DROUGHT MONITOR WIDGET -->
+                    <div class="panel" style="margin-bottom:0">
+                        <div class="feed-header">🌵 DROUGHT MONITOR</div>
+                        <div style="padding:12px">
+                            <a href="https://droughtmonitor.unl.edu/" target="_blank" style="display:block">
+                                <img src="https://droughtmonitor.unl.edu/data/png/current/current_usdm.png" alt="US Drought Monitor" style="width:100%;border-radius:4px;border:1px solid var(--border)" loading="lazy">
+                            </a>
+                            <div style="margin-top:8px;font-size:0.7rem;color:var(--dim);text-align:center">Updated Thursdays • Click for details</div>
+                        </div>
+                    </div>
+                    
                     <div class="panel" style="margin-bottom:0">
                         <div class="feed-header">USDA ALERTS <span style="color:var(--dim)">RSS</span></div>
-                        <div class="feed-scroll" id="usda-feed-list" style="height:350px">
-                            <div style="padding:20px;text-align:center;color:var(--dim)">Loading USDA updates...</div>
-                        </div>
+                        <div class="feed-scroll" id="usda-feed-list" style="height:250px"><div style="padding:20px;text-align:center;color:var(--dim)">Loading USDA updates...</div></div>
                     </div>
                     <div class="panel" style="margin-bottom:0">
                         <div class="feed-header">NEWS WIRE <span style="color:var(--dim)">RSS</span></div>
-                        <div class="feed-scroll" id="news-wire-list" style="height:350px"><div style="padding:20px;text-align:center;color:var(--dim)">Loading wire...</div></div>
+                        <div class="feed-scroll" id="news-wire-list" style="height:250px"><div style="padding:20px;text-align:center;color:var(--dim)">Loading wire...</div></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="calculator" class="tab">
+        <!-- TOOLS TAB -->
+        <div id="tools" class="tab">
             <div class="calc-wrap">
-                <div class="panel">
-                    <div class="panel-head"><h2>GRAIN BIN CALCULATOR</h2></div>
+                <!-- Grain Bin Calculator -->
+                <div class="panel" id="grainbin-section">
+                    <div class="panel-head"><h2>🌾 GRAIN BIN CALCULATOR</h2></div>
                     <div class="panel-body">
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
                             <div class="calc-panel">
@@ -167,36 +157,270 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div id="offices" class="tab">
-            <div class="calc-wrap">
-                <div class="panel">
-                    <div class="panel-head"><h2>FIND USDA SERVICE CENTER</h2></div>
+                <!-- GDU Calculator -->
+                <div class="panel" id="gdu-section">
+                    <div class="panel-head"><h2>🌡️ GROWING DEGREE UNIT (GDU) CALCULATOR</h2></div>
                     <div class="panel-body">
-                        <div class="input-group"><label>State</label><select id="state" onchange="loadCounties()"><option value="">Select State</option><option value="WI">Wisconsin</option><option value="MN">Minnesota</option><option value="IA">Iowa</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="MI">Michigan</option><option value="ND">North Dakota</option><option value="SD">South Dakota</option><option value="NE">Nebraska</option><option value="KS">Kansas</option><option value="MO">Missouri</option><option value="OH">Ohio</option></select></div>
-                        <div class="input-group"><label>County</label><select id="county"><option>Select State First</option></select></div>
-                        <button onclick="findOffice()" class="tool-btn" style="width:100%;margin-top:10px;font-weight:700;background:var(--accent);color:#000">LOCATE OFFICE</button>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+                            <div class="calc-panel">
+                                <h3>INPUTS</h3>
+                                <div class="input-group">
+                                    <label>Planting Date</label>
+                                    <input type="date" id="gduPlantDate" onchange="calcGDU()">
+                                </div>
+                                <div class="input-group">
+                                    <label>Hybrid Maturity (GDUs to Black Layer)</label>
+                                    <select id="gduMaturity" onchange="calcGDU()">
+                                        <option value="2200">Very Early (2,200 GDU) - 85 day</option>
+                                        <option value="2400">Early (2,400 GDU) - 95 day</option>
+                                        <option value="2550" selected>Medium (2,550 GDU) - 105 day</option>
+                                        <option value="2700">Full Season (2,700 GDU) - 110 day</option>
+                                        <option value="2850">Late (2,850 GDU) - 115+ day</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>Average Daily High (°F) - Growing Season</label>
+                                    <input type="number" id="gduHigh" value="82" min="50" max="100" step="1" oninput="calcGDU()">
+                                </div>
+                                <div class="input-group">
+                                    <label>Average Daily Low (°F) - Growing Season</label>
+                                    <input type="number" id="gduLow" value="58" min="30" max="80" step="1" oninput="calcGDU()">
+                                </div>
+                                <div style="margin-top:16px;padding:12px;background:var(--card);border-radius:4px;font-size:0.8rem;color:var(--dim)">
+                                    <strong style="color:var(--accent)">📍 Regional Averages (May-Sep):</strong><br>
+                                    <span style="color:var(--text)">NW Wisconsin:</span> High 78°F / Low 55°F<br>
+                                    <span style="color:var(--text)">S Wisconsin:</span> High 82°F / Low 60°F<br>
+                                    <span style="color:var(--text)">S Minnesota:</span> High 83°F / Low 61°F
+                                </div>
+                            </div>
+                            <div>
+                                <div class="result-panel">
+                                    <h3>GDU ESTIMATE</h3>
+                                    <div class="result-row"><span>Daily GDU Accumulation</span><span class="result-value" id="gduDaily">-</span></div>
+                                    <div class="result-row"><span>Days Since Planting</span><span class="result-value" id="gduDays">-</span></div>
+                                    <div class="result-row"><span>Accumulated GDUs</span><span class="result-value" id="gduAccum" style="font-size:1.8rem;color:var(--accent)">-</span></div>
+                                    <div class="result-row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"><span>GDUs Remaining</span><span class="result-value" id="gduRemain">-</span></div>
+                                    <div class="result-row"><span>Progress to Maturity</span><span class="result-value" id="gduProgress">-</span></div>
+                                    <div class="result-row"><span>Est. Black Layer Date</span><span class="result-value" id="gduBlackLayer" style="color:var(--green)">-</span></div>
+                                </div>
+                                <div class="result-panel" style="margin-top:16px">
+                                    <h3>GROWTH STAGES</h3>
+                                    <div id="gduStages"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top:20px;padding:16px;background:var(--card);border-radius:4px;border-left:3px solid var(--accent)">
+                            <strong style="color:var(--accent)">GDU Formula (86/50 Method):</strong>
+                            <span style="color:var(--dim)"> GDU = [(High + Low) / 2] - 50. High temps above 86°F capped at 86, lows below 50°F set to 50. Corn growth slows above 86°F and stops below 50°F.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Break-Even Calculator -->
+                <div class="panel" id="breakeven-section">
+                    <div class="panel-head"><h2>💰 BREAK-EVEN CALCULATOR</h2></div>
+                    <div class="panel-body">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+                            <div class="calc-panel">
+                                <h3>PRODUCTION COSTS ($/acre)</h3>
+                                <div class="input-group"><label>Seed</label><input type="number" id="beSeed" value="135" step="1" oninput="calcBreakEven()"></div>
+                                <div class="input-group"><label>Fertilizer (N, P, K)</label><input type="number" id="beFert" value="165" step="1" oninput="calcBreakEven()"></div>
+                                <div class="input-group"><label>Chemicals/Herbicide</label><input type="number" id="beChem" value="55" step="1" oninput="calcBreakEven()"></div>
+                                <div class="input-group"><label>Crop Insurance</label><input type="number" id="beIns" value="38" step="1" oninput="calcBreakEven()"></div>
+                                <div class="input-group"><label>Machinery & Fuel</label><input type="number" id="beMach" value="95" step="1" oninput="calcBreakEven()"></div>
+                                <div class="input-group"><label>Labor</label><input type="number" id="beLabor" value="35" step="1" oninput="calcBreakEven()"></div>
+                                <div class="input-group"><label>Land Rent</label><input type="number" id="beRent" value="225" step="1" oninput="calcBreakEven()"></div>
+                                <div class="input-group"><label>Drying & Hauling</label><input type="number" id="beDry" value="35" step="1" oninput="calcBreakEven()"></div>
+                                <div class="input-group"><label>Other/Misc</label><input type="number" id="beOther" value="40" step="1" oninput="calcBreakEven()"></div>
+                            </div>
+                            <div>
+                                <div class="calc-panel" style="margin-bottom:20px">
+                                    <h3>YIELD & MARKET</h3>
+                                    <div class="input-group"><label>Expected Yield (bu/acre)</label><input type="number" id="beYield" value="185" step="1" oninput="calcBreakEven()"></div>
+                                    <div class="input-group"><label>Current Market Price ($/bu)</label><input type="number" id="bePrice" value="4.50" step="0.01" oninput="calcBreakEven()"></div>
+                                </div>
+                                <div class="result-panel">
+                                    <h3>BREAK-EVEN ANALYSIS</h3>
+                                    <div class="result-row"><span>Total Cost per Acre</span><span class="result-value" id="beTotalCost">-</span></div>
+                                    <div class="result-row"><span>Cost per Bushel</span><span class="result-value" id="beCostBu">-</span></div>
+                                    <div class="result-row" style="padding:12px 0;border-bottom:2px solid var(--accent)"><span style="font-weight:700">Break-Even Price</span><span class="result-value" id="beBreakEven" style="font-size:1.8rem;color:var(--accent)">-</span></div>
+                                    <div class="result-row"><span>Gross Revenue/Acre</span><span class="result-value" id="beRevenue">-</span></div>
+                                    <div class="result-row"><span>Net Profit/Loss per Acre</span><span class="result-value" id="beProfit">-</span></div>
+                                    <div class="result-row"><span>Net per Bushel</span><span class="result-value" id="beProfitBu">-</span></div>
+                                    <div class="result-row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"><span>Yield Needed to Break-Even</span><span class="result-value" id="beYieldNeeded">-</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+                            <div style="background:var(--card);padding:16px;border-radius:4px;text-align:center">
+                                <div style="font-size:0.75rem;color:var(--dim);margin-bottom:8px">CORN (WI/MN Avg)</div>
+                                <div style="font-family:'JetBrains Mono',monospace">$4.15-5.00/bu BE</div>
+                                <div style="font-size:0.8rem;color:var(--dim);margin-top:4px">175-195 bu yield</div>
+                            </div>
+                            <div style="background:var(--card);padding:16px;border-radius:4px;text-align:center">
+                                <div style="font-size:0.75rem;color:var(--dim);margin-bottom:8px">SOYBEANS (WI/MN Avg)</div>
+                                <div style="font-family:'JetBrains Mono',monospace">$9.00-11.00/bu BE</div>
+                                <div style="font-size:0.8rem;color:var(--dim);margin-top:4px">48-55 bu yield</div>
+                            </div>
+                            <div style="background:var(--card);padding:16px;border-radius:4px;text-align:center">
+                                <div style="font-size:0.75rem;color:var(--dim);margin-bottom:8px">WHEAT (WI/MN Avg)</div>
+                                <div style="font-family:'JetBrains Mono',monospace">$5.50-7.00/bu BE</div>
+                                <div style="font-size:0.8rem;color:var(--dim);margin-top:4px">65-80 bu yield</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USDA Office Finder -->
+                <div class="panel" id="offices-section">
+                    <div class="panel-head"><h2>🏛️ FIND USDA SERVICE CENTER</h2></div>
+                    <div class="panel-body">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:600px">
+                            <div class="input-group"><label>State</label><select id="state" onchange="loadCounties()"><option value="">Select State</option><option value="WI">Wisconsin</option><option value="MN">Minnesota</option><option value="IA">Iowa</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="MI">Michigan</option><option value="ND">North Dakota</option><option value="SD">South Dakota</option><option value="NE">Nebraska</option><option value="KS">Kansas</option><option value="MO">Missouri</option><option value="OH">Ohio</option></select></div>
+                            <div class="input-group"><label>County</label><select id="county"><option>Select State First</option></select></div>
+                        </div>
+                        <button onclick="findOffice()" class="calc-btn" style="margin-top:16px">LOCATE OFFICE</button>
                         <div id="office-results" style="margin-top:20px;display:none;grid-template-columns:1fr 1fr;gap:20px">
-                            <div class="market-card"><div class="name">FSA OFFICE</div><p style="font-size:.9rem;margin-top:10px">Farm Service Agency</p><a id="fsa-link" href="#" target="_blank" style="display:block;margin-top:10px;color:var(--accent)">View Contact Info →</a></div>
-                            <div class="market-card"><div class="name">NRCS OFFICE</div><p style="font-size:.9rem;margin-top:10px">Natural Resources Conservation</p><a id="nrcs-link" href="#" target="_blank" style="display:block;margin-top:10px;color:var(--accent)">View Contact Info →</a></div>
+                            <div class="market-card"><div class="name">FSA OFFICE</div><p style="font-size:.9rem;margin-top:10px;color:var(--dim)">Farm Service Agency - Loans, Programs, Disaster Assistance</p><a id="fsa-link" href="#" target="_blank" style="display:block;margin-top:10px;color:var(--accent)">View Contact Info →</a></div>
+                            <div class="market-card"><div class="name">NRCS OFFICE</div><p style="font-size:.9rem;margin-top:10px;color:var(--dim)">Natural Resources Conservation - EQIP, CSP, Soil Health</p><a id="nrcs-link" href="#" target="_blank" style="display:block;margin-top:10px;color:var(--accent)">View Contact Info →</a></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- CALENDAR TAB -->
+        <div id="calendar" class="tab">
+            <div class="calc-wrap">
+                <!-- USDA Economic Calendar -->
+                <div class="panel">
+                    <div class="panel-head"><h2>📊 USDA ECONOMIC CALENDAR 2026</h2></div>
+                    <div class="panel-body">
+                        <p style="color:var(--dim);margin-bottom:20px">Major USDA reports that move commodity markets. WASDE and Crop Production reports released at 12:00 PM ET.</p>
+                        <div id="full-usda-calendar"></div>
+                    </div>
+                </div>
+
+                <!-- Crop Insurance Deadlines -->
+                <div class="panel">
+                    <div class="panel-head"><h2>📋 CROP INSURANCE DEADLINES 2026</h2></div>
+                    <div class="panel-body">
+                        <div class="input-group" style="max-width:300px;margin-bottom:20px">
+                            <label>Select State</label>
+                            <select id="insuranceState" onchange="loadInsuranceDeadlines()">
+                                <option value="WI" selected>Wisconsin</option>
+                                <option value="MN">Minnesota</option>
+                                <option value="IA">Iowa</option>
+                                <option value="IL">Illinois</option>
+                                <option value="ND">North Dakota</option>
+                                <option value="SD">South Dakota</option>
+                            </select>
+                        </div>
+                        <div id="insurance-deadlines"></div>
+                        <div style="margin-top:24px;padding:16px;background:var(--card);border-radius:4px;border-left:3px solid var(--accent)">
+                            <strong style="color:var(--accent)">💡 Pro Tip:</strong>
+                            <span style="color:var(--dim)"> Sales closing dates are the last day to purchase or change crop insurance. Contact your agent well before these dates.</span>
+                            <div style="margin-top:12px">
+                                <a href="https://prodwebnlb.rma.usda.gov/apps/AgentLocator/" target="_blank" class="calc-btn" style="display:inline-block;padding:8px 16px;font-size:0.85rem">Find Insurance Agent →</a>
+                                <a href="https://webapp.rma.usda.gov/apps/actuarialinformationbrowser/" target="_blank" class="calc-btn" style="display:inline-block;padding:8px 16px;font-size:0.85rem;margin-left:10px;background:var(--card);border:1px solid var(--border);color:var(--text)">RMA Rates →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Market Dates -->
+                <div class="panel">
+                    <div class="panel-head"><h2>📈 KEY MARKET DATES 2026</h2></div>
+                    <div class="panel-body">
+                        <div class="market-dates-grid">
+                            <div class="date-card highlight">
+                                <div class="date-icon">📊</div>
+                                <h4>Prospective Plantings</h4>
+                                <p>March 31, 2026</p>
+                                <span class="date-desc">First look at farmer planting intentions - MAJOR MARKET MOVER</span>
+                            </div>
+                            <div class="date-card highlight">
+                                <div class="date-icon">📦</div>
+                                <h4>Quarterly Stocks</h4>
+                                <p>Mar 31 / Jun 30 / Sep 30</p>
+                                <span class="date-desc">Grain stocks on hand as of 1st of month</span>
+                            </div>
+                            <div class="date-card">
+                                <div class="date-icon">🚜</div>
+                                <h4>Planted Acreage</h4>
+                                <p>June 30, 2026</p>
+                                <span class="date-desc">Actual planted acres report</span>
+                            </div>
+                            <div class="date-card">
+                                <div class="date-icon">🌱</div>
+                                <h4>Corn Price Discovery</h4>
+                                <p>Feb 1 - Feb 28</p>
+                                <span class="date-desc">RMA projected price for Revenue Protection</span>
+                            </div>
+                            <div class="date-card">
+                                <div class="date-icon">🌽</div>
+                                <h4>Harvest Price (Corn)</h4>
+                                <p>Oct 1 - Oct 31</p>
+                                <span class="date-desc">October average for RP harvest price</span>
+                            </div>
+                            <div class="date-card">
+                                <div class="date-icon">🫘</div>
+                                <h4>Harvest Price (Beans)</h4>
+                                <p>Oct 1 - Oct 31</p>
+                                <span class="date-desc">October average for RP harvest price</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESOURCES TAB -->
         <div id="resources" class="tab">
             <div class="calc-wrap">
                 <div class="panel">
                     <div class="panel-head"><h2>AG RESOURCES</h2></div>
                     <div class="panel-body">
                         <div class="resources-grid">
-                            <div class="resource-card"><h4 class="section-label">CROP INSURANCE (RMA)</h4><a href="https://webapp.rma.usda.gov/apps/actuarialinformationbrowser/" target="_blank" class="resource-link">Actuarial Information Browser</a><a href="https://www.rma.usda.gov/Topics/Important-Dates" target="_blank" class="resource-link">Important Dates & Deadlines</a><a href="https://www.rma.usda.gov/Topics/Price-Discovery" target="_blank" class="resource-link">Price Discovery</a><a href="https://www.rma.usda.gov/Policy-and-Procedure/Insurance-Plans" target="_blank" class="resource-link">Insurance Plans (RP, YP, etc)</a></div>
-                            <div class="resource-card"><h4 class="section-label">FARM SERVICE AGENCY (FSA)</h4><a href="https://www.fsa.usda.gov/programs-and-services/farm-loan-programs/" target="_blank" class="resource-link">Farm Loan Programs</a><a href="https://www.fsa.usda.gov/programs-and-services/arcplc_program/" target="_blank" class="resource-link">ARC / PLC Program</a><a href="https://www.fsa.usda.gov/programs-and-services/conservation-programs/" target="_blank" class="resource-link">Conservation Reserve (CRP)</a><a href="https://www.fsa.usda.gov/programs-and-services/disaster-assistance-program/" target="_blank" class="resource-link">Disaster Assistance</a></div>
-                            <div class="resource-card"><h4 class="section-label">NRCS & SOIL</h4><a href="https://websoilsurvey.nrcs.usda.gov/app/" target="_blank" class="resource-link">Web Soil Survey</a><a href="https://www.nrcs.usda.gov/programs-initiatives/eqip-environmental-quality-incentives" target="_blank" class="resource-link">EQIP Program</a><a href="https://www.nrcs.usda.gov/programs-initiatives/csp-conservation-stewardship-program" target="_blank" class="resource-link">CSP Program</a></div>
-                            <div class="resource-card"><h4 class="section-label">MARKET & WEATHER</h4><a href="https://www.usda.gov/oce/commodity/wasde" target="_blank" class="resource-link">WASDE Reports</a><a href="https://www.ams.usda.gov/market-news" target="_blank" class="resource-link">USDA Market News</a><a href="https://droughtmonitor.unl.edu/" target="_blank" class="resource-link">US Drought Monitor</a><a href="https://www.cpc.ncep.noaa.gov/" target="_blank" class="resource-link">NOAA Climate Prediction</a></div>
+                            <div class="resource-card">
+                                <h4 class="section-label">CROP INSURANCE (RMA)</h4>
+                                <a href="https://webapp.rma.usda.gov/apps/actuarialinformationbrowser/" target="_blank" class="resource-link">Actuarial Information Browser</a>
+                                <a href="https://www.rma.usda.gov/Topics/Important-Dates" target="_blank" class="resource-link">Important Dates & Deadlines</a>
+                                <a href="https://www.rma.usda.gov/Topics/Price-Discovery" target="_blank" class="resource-link">Price Discovery</a>
+                                <a href="https://prodwebnlb.rma.usda.gov/apps/AgentLocator/" target="_blank" class="resource-link">Find Insurance Agent</a>
+                            </div>
+                            <div class="resource-card">
+                                <h4 class="section-label">FARM SERVICE AGENCY</h4>
+                                <a href="https://www.fsa.usda.gov/programs-and-services/farm-loan-programs/" target="_blank" class="resource-link">Farm Loan Programs</a>
+                                <a href="https://www.fsa.usda.gov/programs-and-services/arcplc_program/" target="_blank" class="resource-link">ARC / PLC Program</a>
+                                <a href="https://www.fsa.usda.gov/programs-and-services/conservation-programs/" target="_blank" class="resource-link">Conservation Reserve (CRP)</a>
+                                <a href="https://www.fsa.usda.gov/programs-and-services/disaster-assistance-program/" target="_blank" class="resource-link">Disaster Assistance</a>
+                            </div>
+                            <div class="resource-card">
+                                <h4 class="section-label">NRCS & SOIL</h4>
+                                <a href="https://websoilsurvey.nrcs.usda.gov/app/" target="_blank" class="resource-link">Web Soil Survey</a>
+                                <a href="https://www.nrcs.usda.gov/programs-initiatives/eqip-environmental-quality-incentives" target="_blank" class="resource-link">EQIP Program</a>
+                                <a href="https://www.nrcs.usda.gov/programs-initiatives/csp-conservation-stewardship-program" target="_blank" class="resource-link">CSP Program</a>
+                            </div>
+                            <div class="resource-card">
+                                <h4 class="section-label">MARKET REPORTS</h4>
+                                <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank" class="resource-link">WASDE Reports</a>
+                                <a href="https://www.ams.usda.gov/market-news" target="_blank" class="resource-link">USDA Market News</a>
+                                <a href="https://www.nass.usda.gov/Publications/" target="_blank" class="resource-link">NASS Publications</a>
+                            </div>
+                            <div class="resource-card">
+                                <h4 class="section-label">WEATHER & CLIMATE</h4>
+                                <a href="https://droughtmonitor.unl.edu/" target="_blank" class="resource-link">US Drought Monitor</a>
+                                <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" class="resource-link">NOAA Climate Prediction</a>
+                                <a href="https://hprcc.unl.edu/agroclimate/gdd.php" target="_blank" class="resource-link">U2U Corn GDD Tool</a>
+                            </div>
+                            <div class="resource-card">
+                                <h4 class="section-label">DATA & STATISTICS</h4>
+                                <a href="https://www.ers.usda.gov/" target="_blank" class="resource-link">USDA Economic Research</a>
+                                <a href="https://www.farmers.gov/dashboard" target="_blank" class="resource-link">Farmers.gov Dashboard</a>
+                                <a href="https://www.agcensus.usda.gov/" target="_blank" class="resource-link">Census of Agriculture</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -208,11 +432,11 @@
         <div class="footer-inner">
             <div class="footer-col">
                 <div class="logo" style="margin-bottom:16px"><div class="logo-icon" style="width:32px;height:32px"><span class="top-text" style="font-size:0.7rem">AG</span><span class="bot-text" style="font-size:0.45rem">SIST</span></div><span class="logo-text" style="font-size:1.2rem">AGSIST</span></div>
-                <p style="color:var(--dim);line-height:1.6;margin-bottom:16px">Professional grade market intelligence, weather data, and USDA tools built for the modern American farmer.</p>
+                <p style="color:var(--dim);line-height:1.6;margin-bottom:16px">Free professional-grade market intelligence, weather data, and farm tools for the modern American farmer.</p>
                 <div style="display:flex;gap:10px;align-items:center"><span style="width:8px;height:8px;background:var(--green);border-radius:50%"></span><span style="color:var(--text);font-size:0.8rem">All Systems Operational</span></div>
             </div>
-            <div class="footer-col"><h4>PLATFORM</h4><ul><li><a href="javascript:void(0)" onclick="switchTab('dashboard')">Live Dashboard</a></li><li><a href="javascript:void(0)" onclick="switchTab('calculator')">Grain Calculator</a></li><li><a href="javascript:void(0)" onclick="switchTab('offices')">USDA Locator</a></li><li><a href="javascript:void(0)" onclick="switchTab('resources')">Resources</a></li></ul></div>
-            <div class="footer-col"><h4>COMPANY</h4><ul><li><a href="https://farmers1st.com" target="_blank">About Us</a></li><li><a href="https://farmers1st.com" target="_blank">Contact</a></li><li><a href="#">Advertising</a></li></ul></div>
+            <div class="footer-col"><h4>TOOLS</h4><ul><li><a href="javascript:switchTab('tools')">Grain Bin Calculator</a></li><li><a href="javascript:switchTab('tools');setTimeout(()=>scrollToEl('gdu-section'),100)">GDU Calculator</a></li><li><a href="javascript:switchTab('tools');setTimeout(()=>scrollToEl('breakeven-section'),100)">Break-Even Calculator</a></li></ul></div>
+            <div class="footer-col"><h4>RESOURCES</h4><ul><li><a href="javascript:switchTab('calendar')">USDA Calendar</a></li><li><a href="javascript:switchTab('resources')">Ag Resources</a></li><li><a href="https://farmers1st.com" target="_blank">Farmers First Agri</a></li></ul></div>
             <div class="footer-col"><h4>LEGAL</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li><li><a href="/sitemap.xml">Sitemap</a></li></ul></div>
         </div>
         <div class="footer-bottom"><span>© 2026 AGSIST. All rights reserved.</span><span>Made in the USA 🇺🇸</span></div>

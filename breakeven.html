@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Break-Even Calculator - Corn & Soybean Profit Analysis | AGSIST</title>
+    <meta name="description" content="Free break-even calculator for corn, soybeans, and wheat. Calculate your cost per bushel, profit per acre, and price needed to cover production costs.">
+    <meta name="keywords" content="break even calculator, farming break even, corn cost per bushel, soybean profit calculator, crop budget calculator, farm profit analysis">
+    <link rel="canonical" href="https://agsist.com/breakeven.html">
+    <meta property="og:title" content="Break-Even Calculator - Corn & Soybean Profit Analysis">
+    <meta property="og:description" content="Calculate your break-even price per bushel for corn, soybeans, or wheat. Includes all input costs.">
+    <meta property="og:url" content="https://agsist.com/breakeven.html">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Break-Even Calculator",
+        "description": "Calculate break-even price per bushel for corn, soybeans, and wheat based on your production costs.",
+        "url": "https://agsist.com/breakeven.html",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
+    <style>
+        .profit-positive { color: var(--green) !important; }
+        .profit-negative { color: #ef4444 !important; }
+        .cost-breakdown { margin-top: 20px; }
+        .cost-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+        .cost-item:last-child { border-bottom: none; }
+        .cost-item .label { color: var(--dim); }
+        .cost-item .value { color: var(--text); }
+        .cost-total { background: var(--card); padding: 12px; border-radius: 4px; margin-top: 10px; display: flex; justify-content: space-between; font-weight: 700; }
+        .big-result { text-align: center; padding: 30px; background: var(--card); border-radius: 8px; margin-bottom: 20px; }
+        .big-result .number { font-family: 'JetBrains Mono', monospace; font-size: 3.5rem; font-weight: 700; color: var(--accent); }
+        .big-result .label { color: var(--dim); font-size: 0.85rem; margin-top: 8px; }
+        .scenario-box { background: var(--card); border-radius: 8px; padding: 20px; margin-top: 20px; }
+        .scenario-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .scenario-row:last-child { border-bottom: none; }
+        .preset-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
+        .preset-btn { padding: 8px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 4px; color: var(--text); cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+        .preset-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .preset-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
+                <div class="logo-text">AGSIST</div>
+            </a>
+            <button class="menu-toggle" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
+            <nav class="nav">
+                <a href="/">DASHBOARD</a>
+                <a href="/calculator.html">GRAIN BIN</a>
+                <a href="/gdu.html">GDU CALC</a>
+                <a href="/breakeven.html" class="active">BREAK-EVEN</a>
+                <a href="/resources.html">RESOURCES</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="calc-wrap" style="padding:20px">
+            <nav style="margin-bottom:20px;font-size:0.85rem;color:var(--dim)">
+                <a href="/" style="color:var(--accent);text-decoration:none">Home</a> → Break-Even Calculator
+            </nav>
+            
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+                <div>
+                    <div class="panel">
+                        <div class="panel-head"><h1 style="font-size:0.9rem;margin:0">💰 BREAK-EVEN CALCULATOR</h1></div>
+                        <div class="panel-body">
+                            <div class="preset-btns">
+                                <button class="preset-btn active" onclick="loadPreset('corn')">🌽 Corn</button>
+                                <button class="preset-btn" onclick="loadPreset('soybeans')">🫘 Soybeans</button>
+                                <button class="preset-btn" onclick="loadPreset('wheat')">🌾 Wheat</button>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label>Expected Yield (bu/acre)</label>
+                                <input type="number" id="yield" value="180" step="1" min="0" oninput="calculate()">
+                            </div>
+                            
+                            <h4 style="color:var(--accent);font-size:0.8rem;margin:20px 0 15px;border-top:1px solid var(--border);padding-top:15px">VARIABLE COSTS</h4>
+                            
+                            <div class="input-group">
+                                <label>Seed ($/acre)</label>
+                                <input type="number" id="seed" value="135" step="1" min="0" oninput="calculate()">
+                            </div>
+                            <div class="input-group">
+                                <label>Fertilizer - N, P, K ($/acre)</label>
+                                <input type="number" id="fert" value="165" step="1" min="0" oninput="calculate()">
+                            </div>
+                            <div class="input-group">
+                                <label>Herbicide & Chemicals ($/acre)</label>
+                                <input type="number" id="chem" value="55" step="1" min="0" oninput="calculate()">
+                            </div>
+                            <div class="input-group">
+                                <label>Crop Insurance ($/acre)</label>
+                                <input type="number" id="insurance" value="38" step="1" min="0" oninput="calculate()">
+                            </div>
+                            <div class="input-group">
+                                <label>Drying & Hauling ($/acre)</label>
+                                <input type="number" id="drying" value="35" step="1" min="0" oninput="calculate()">
+                            </div>
+                            
+                            <h4 style="color:var(--accent);font-size:0.8rem;margin:20px 0 15px;border-top:1px solid var(--border);padding-top:15px">FIXED COSTS</h4>
+                            
+                            <div class="input-group">
+                                <label>Machinery & Equipment ($/acre)</label>
+                                <input type="number" id="machinery" value="95" step="1" min="0" oninput="calculate()">
+                            </div>
+                            <div class="input-group">
+                                <label>Labor ($/acre)</label>
+                                <input type="number" id="labor" value="35" step="1" min="0" oninput="calculate()">
+                            </div>
+                            <div class="input-group">
+                                <label>Land Cost / Rent ($/acre)</label>
+                                <input type="number" id="rent" value="225" step="1" min="0" oninput="calculate()">
+                            </div>
+                            <div class="input-group">
+                                <label>Interest & Overhead ($/acre)</label>
+                                <input type="number" id="overhead" value="40" step="1" min="0" oninput="calculate()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="panel">
+                        <div class="panel-head"><h2>BREAK-EVEN ANALYSIS</h2></div>
+                        <div class="panel-body">
+                            <div class="big-result">
+                                <div class="number" id="breakEvenPrice">$4.58</div>
+                                <div class="label">BREAK-EVEN PRICE PER BUSHEL</div>
+                            </div>
+                            
+                            <div class="cost-breakdown">
+                                <div class="cost-item">
+                                    <span class="label">Total Variable Costs</span>
+                                    <span class="value" id="varCosts">$428/acre</span>
+                                </div>
+                                <div class="cost-item">
+                                    <span class="label">Total Fixed Costs</span>
+                                    <span class="value" id="fixedCosts">$395/acre</span>
+                                </div>
+                                <div class="cost-total">
+                                    <span>TOTAL COST PER ACRE</span>
+                                    <span id="totalCost">$823</span>
+                                </div>
+                                <div class="cost-item" style="margin-top:10px">
+                                    <span class="label">Cost per Bushel</span>
+                                    <span class="value" id="costPerBu">$4.57/bu</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel">
+                        <div class="panel-head"><h2>PROFIT ANALYSIS</h2></div>
+                        <div class="panel-body">
+                            <div class="input-group">
+                                <label>Market Price ($/bu)</label>
+                                <input type="number" id="marketPrice" value="4.50" step="0.05" min="0" oninput="calculate()">
+                            </div>
+                            
+                            <div class="scenario-box">
+                                <div class="scenario-row">
+                                    <span style="color:var(--dim)">Gross Revenue/Acre</span>
+                                    <span style="font-family:'JetBrains Mono',monospace" id="grossRevenue">$810.00</span>
+                                </div>
+                                <div class="scenario-row">
+                                    <span style="color:var(--dim)">Total Cost/Acre</span>
+                                    <span style="font-family:'JetBrains Mono',monospace" id="totalCost2">$823.00</span>
+                                </div>
+                                <div class="scenario-row" style="font-weight:700">
+                                    <span>Net Profit/Loss per Acre</span>
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:1.2rem" id="netProfit">-$13.00</span>
+                                </div>
+                                <div class="scenario-row">
+                                    <span style="color:var(--dim)">Net per Bushel</span>
+                                    <span style="font-family:'JetBrains Mono',monospace" id="netPerBu">-$0.07/bu</span>
+                                </div>
+                            </div>
+                            
+                            <div class="scenario-box" style="background:var(--panel)">
+                                <h4 style="color:var(--accent);font-size:0.8rem;margin-bottom:15px">ALTERNATE SCENARIOS</h4>
+                                <div class="scenario-row">
+                                    <span style="color:var(--dim)">Yield needed to break-even at this price</span>
+                                    <span style="font-family:'JetBrains Mono',monospace;color:var(--accent)" id="yieldNeeded">183 bu/ac</span>
+                                </div>
+                                <div class="scenario-row">
+                                    <span style="color:var(--dim)">Price needed with 10% lower yield</span>
+                                    <span style="font-family:'JetBrains Mono',monospace" id="priceAt90">$5.08/bu</span>
+                                </div>
+                                <div class="scenario-row">
+                                    <span style="color:var(--dim)">Price needed with 10% higher yield</span>
+                                    <span style="font-family:'JetBrains Mono',monospace" id="priceAt110">$4.16/bu</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-head"><h2>2026 REGIONAL COST BENCHMARKS</h2></div>
+                <div class="panel-body">
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+                        <div style="background:var(--card);padding:20px;border-radius:8px">
+                            <h3 style="color:var(--accent);font-size:1rem;margin-bottom:15px">🌽 CORN - Wisconsin/Minnesota</h3>
+                            <div class="cost-item"><span class="label">Typical Total Cost</span><span class="value">$750 - $900/ac</span></div>
+                            <div class="cost-item"><span class="label">Average Yield</span><span class="value">175 - 195 bu/ac</span></div>
+                            <div class="cost-item"><span class="label">Break-Even Range</span><span class="value">$4.15 - $5.00/bu</span></div>
+                            <div class="cost-item"><span class="label">Cash Rent Average</span><span class="value">$200 - $275/ac</span></div>
+                        </div>
+                        <div style="background:var(--card);padding:20px;border-radius:8px">
+                            <h3 style="color:var(--accent);font-size:1rem;margin-bottom:15px">🫘 SOYBEANS - Wisconsin/Minnesota</h3>
+                            <div class="cost-item"><span class="label">Typical Total Cost</span><span class="value">$450 - $550/ac</span></div>
+                            <div class="cost-item"><span class="label">Average Yield</span><span class="value">48 - 55 bu/ac</span></div>
+                            <div class="cost-item"><span class="label">Break-Even Range</span><span class="value">$9.00 - $11.00/bu</span></div>
+                            <div class="cost-item"><span class="label">Cash Rent Average</span><span class="value">$200 - $275/ac</span></div>
+                        </div>
+                        <div style="background:var(--card);padding:20px;border-radius:8px">
+                            <h3 style="color:var(--accent);font-size:1rem;margin-bottom:15px">🌾 WHEAT - Wisconsin/Minnesota</h3>
+                            <div class="cost-item"><span class="label">Typical Total Cost</span><span class="value">$380 - $480/ac</span></div>
+                            <div class="cost-item"><span class="label">Average Yield</span><span class="value">65 - 80 bu/ac</span></div>
+                            <div class="cost-item"><span class="label">Break-Even Range</span><span class="value">$5.50 - $7.00/bu</span></div>
+                            <div class="cost-item"><span class="label">Cash Rent Average</span><span class="value">$175 - $250/ac</span></div>
+                        </div>
+                    </div>
+                    <p style="color:var(--dim);font-size:0.8rem;margin-top:15px;text-align:center">Source: University of Wisconsin Extension, University of Minnesota Extension, USDA-ERS (2025-2026 estimates)</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;color:var(--dim);font-size:0.8rem">
+            <span>© 2026 <a href="/" style="color:var(--accent);text-decoration:none">AGSIST</a>. All rights reserved.</span>
+            <span>Made in the USA 🇺🇸</span>
+        </div>
+    </footer>
+
+    <script>
+    const presets = {
+        corn: {
+            yield: 180, seed: 135, fert: 165, chem: 55, insurance: 38, drying: 35,
+            machinery: 95, labor: 35, rent: 225, overhead: 40, price: 4.50
+        },
+        soybeans: {
+            yield: 52, seed: 75, fert: 45, chem: 45, insurance: 22, drying: 15,
+            machinery: 75, labor: 30, rent: 225, overhead: 35, price: 10.25
+        },
+        wheat: {
+            yield: 72, seed: 45, fert: 85, chem: 40, insurance: 18, drying: 20,
+            machinery: 70, labor: 28, rent: 200, overhead: 30, price: 5.75
+        }
+    };
+    
+    let currentCrop = 'corn';
+    
+    function loadPreset(crop) {
+        currentCrop = crop;
+        const p = presets[crop];
+        
+        document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.preset-btn[onclick="loadPreset('${crop}')"]`).classList.add('active');
+        
+        document.getElementById('yield').value = p.yield;
+        document.getElementById('seed').value = p.seed;
+        document.getElementById('fert').value = p.fert;
+        document.getElementById('chem').value = p.chem;
+        document.getElementById('insurance').value = p.insurance;
+        document.getElementById('drying').value = p.drying;
+        document.getElementById('machinery').value = p.machinery;
+        document.getElementById('labor').value = p.labor;
+        document.getElementById('rent').value = p.rent;
+        document.getElementById('overhead').value = p.overhead;
+        document.getElementById('marketPrice').value = p.price;
+        
+        calculate();
+    }
+    
+    function calculate() {
+        const yld = parseFloat(document.getElementById('yield').value) || 0;
+        const seed = parseFloat(document.getElementById('seed').value) || 0;
+        const fert = parseFloat(document.getElementById('fert').value) || 0;
+        const chem = parseFloat(document.getElementById('chem').value) || 0;
+        const insurance = parseFloat(document.getElementById('insurance').value) || 0;
+        const drying = parseFloat(document.getElementById('drying').value) || 0;
+        const machinery = parseFloat(document.getElementById('machinery').value) || 0;
+        const labor = parseFloat(document.getElementById('labor').value) || 0;
+        const rent = parseFloat(document.getElementById('rent').value) || 0;
+        const overhead = parseFloat(document.getElementById('overhead').value) || 0;
+        const price = parseFloat(document.getElementById('marketPrice').value) || 0;
+        
+        const varCosts = seed + fert + chem + insurance + drying;
+        const fixedCosts = machinery + labor + rent + overhead;
+        const totalCost = varCosts + fixedCosts;
+        
+        const breakEven = yld > 0 ? totalCost / yld : 0;
+        const costPerBu = yld > 0 ? totalCost / yld : 0;
+        
+        const grossRevenue = yld * price;
+        const netProfit = grossRevenue - totalCost;
+        const netPerBu = yld > 0 ? netProfit / yld : 0;
+        
+        const yieldNeeded = price > 0 ? totalCost / price : 0;
+        const yield90 = yld * 0.9;
+        const yield110 = yld * 1.1;
+        const priceAt90 = yield90 > 0 ? totalCost / yield90 : 0;
+        const priceAt110 = yield110 > 0 ? totalCost / yield110 : 0;
+        
+        // Update display
+        document.getElementById('breakEvenPrice').textContent = '$' + breakEven.toFixed(2);
+        document.getElementById('varCosts').textContent = '$' + varCosts.toFixed(0) + '/acre';
+        document.getElementById('fixedCosts').textContent = '$' + fixedCosts.toFixed(0) + '/acre';
+        document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(0);
+        document.getElementById('costPerBu').textContent = '$' + costPerBu.toFixed(2) + '/bu';
+        
+        document.getElementById('grossRevenue').textContent = '$' + grossRevenue.toFixed(2);
+        document.getElementById('totalCost2').textContent = '$' + totalCost.toFixed(2);
+        
+        const netProfitEl = document.getElementById('netProfit');
+        netProfitEl.textContent = (netProfit >= 0 ? '+' : '') + '$' + netProfit.toFixed(2);
+        netProfitEl.className = netProfit >= 0 ? 'profit-positive' : 'profit-negative';
+        
+        const netPerBuEl = document.getElementById('netPerBu');
+        netPerBuEl.textContent = (netPerBu >= 0 ? '+' : '') + '$' + netPerBu.toFixed(2) + '/bu';
+        netPerBuEl.className = netPerBu >= 0 ? 'profit-positive' : 'profit-negative';
+        
+        document.getElementById('yieldNeeded').textContent = yieldNeeded.toFixed(0) + ' bu/ac';
+        document.getElementById('priceAt90').textContent = '$' + priceAt90.toFixed(2) + '/bu';
+        document.getElementById('priceAt110').textContent = '$' + priceAt110.toFixed(2) + '/bu';
+    }
+    
+    calculate();
+    </script>
+</body>
+</html>

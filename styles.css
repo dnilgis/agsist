@@ -16,6 +16,12 @@
 *{margin:0;padding:0;box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--border) var(--bg)}
 body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.4;display:flex;flex-direction:column}
 
+/* Calendar styles */
+.calendar-list{max-height:280px;overflow-y:auto}
+.calendar-item:last-child{border-bottom:none !important}
+.deadline-item:last-child{border-bottom:none !important}
+.gdu-stages{font-size:0.85rem}
+
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
@@ -107,7 +113,7 @@ main{max-width:1800px;margin:0 auto;padding:20px;flex:1;width:100%}
 .news-item .tag.worldgrain{background:rgba(255,193,7,0.15);color:#ffc107;border:1px solid rgba(255,193,7,0.3)}
 .news-item h4{font-size:.9rem;color:var(--text);font-weight:500;line-height:1.4}
 
-.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.tool-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border)}
 .tool-btn{background:var(--card);padding:20px;text-align:center;text-decoration:none;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;color:inherit}
 .tool-btn:hover{background:var(--hover)}
 .tool-btn span{font-size:1.4rem}
