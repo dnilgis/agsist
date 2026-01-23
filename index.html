@@ -3,18 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGSIST | Live Ag Dashboard</title>
+    <title>AGSIST | Live Ag Dashboard - Commodity Prices, Weather & Farm Tools</title>
     <meta name="description" content="AGSIST - Live agricultural commodity prices, weather radar, and USDA tools for farmers. Track corn, soybeans, wheat, cattle futures in real-time.">
+    <meta name="keywords" content="commodity prices, grain prices, corn futures, soybean futures, wheat prices, cattle futures, farm dashboard, agricultural markets, USDA tools, grain bin calculator">
     <meta property="og:title" content="AGSIST | Live Ag Dashboard">
     <meta property="og:description" content="Real-time commodity prices, weather radar, and farm tools for modern agriculture.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://agsist.com">
+    <link rel="canonical" href="https://agsist.com/">
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "AGSIST",
+        "description": "Live agricultural commodity prices, weather radar, grain bin calculator, and USDA office locator for farmers.",
+        "url": "https://agsist.com",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "AGSIST",
+        "url": "https://agsist.com",
+        "logo": "https://agsist.com/logo.png",
+        "parentOrganization": {"@type": "Organization", "name": "Farmers First Agri Service", "url": "https://farmers1st.com"}
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {"@type": "Question", "name": "What commodity prices does AGSIST track?", "acceptedAnswer": {"@type": "Answer", "text": "AGSIST tracks live prices for corn, soybeans, wheat, live cattle, feeder cattle, Class III milk, gold, silver, Bitcoin, Ethereum, Kaspa, and XRP."}},
+            {"@type": "Question", "name": "How often are commodity prices updated?", "acceptedAnswer": {"@type": "Answer", "text": "Prices update every 15 minutes during US market hours and hourly during off-peak times. Crypto prices update around the clock."}},
+            {"@type": "Question", "name": "Is AGSIST free to use?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, AGSIST is completely free. Access live commodity prices, weather radar, grain bin calculator, and USDA office locator at no cost."}}
+        ]
+    }
+    </script>
 </head>
 <body>
     <div class="ticker-wrap">
@@ -27,7 +64,10 @@
                 <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
                 <div class="logo-text">AGSIST</div>
             </a>
-            <nav class="nav">
+            
+            <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
+            
+            <nav class="nav" id="main-nav">
                 <a href="#dashboard" class="active" data-tab="dashboard">DASHBOARD</a>
                 <a href="#calculator" data-tab="calculator">CALCULATOR</a>
                 <a href="#offices" data-tab="offices">OFFICES</a>
@@ -46,7 +86,7 @@
                         <div class="panel-body" style="padding:0">
                             <div class="weather-grid">
                                 <div class="radar-box">
-                                    <iframe id="radar-iframe" src=""></iframe>
+                                    <iframe id="radar-iframe" src="" title="Weather Radar"></iframe>
                                     <button class="locate-btn" onclick="initWeather(true)">📍 Locate Me</button>
                                 </div>
                                 <div class="forecast-list" id="forecast"><div class="loading">Loading local forecast...</div></div>
@@ -67,13 +107,10 @@
                         </div>
                     </div>
                     <div class="panel">
-                        <div class="panel-head"><h2>LOCAL GRAIN BUYERS</h2></div>
+                        <div class="panel-head"><h2>CASH BID SOURCES</h2><span style="font-size:0.7rem;color:var(--dim)" id="grain-buyer-location"></span></div>
                         <div class="panel-body">
                             <div class="local-markets" id="local-markets">
-                                <div class="elevator-item"><span class="elevator-name">Countryside Coop</span><span class="elevator-dist">12 mi</span></div>
-                                <div class="elevator-item"><span class="elevator-name">CHS Inc</span><span class="elevator-dist">15 mi</span></div>
-                                <div class="elevator-item"><span class="elevator-name">Cargill</span><span class="elevator-dist">22 mi</span></div>
-                                <div class="elevator-item"><span class="elevator-name">ADM</span><span class="elevator-dist">28 mi</span></div>
+                                <div class="loading">Loading cash bid sources...</div>
                             </div>
                         </div>
                     </div>

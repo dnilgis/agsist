@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+Allow: /calculator.html
+Allow: /offices.html
+Allow: /resources.html
+Disallow: /data/
 
 Sitemap: https://agsist.com/sitemap.xml

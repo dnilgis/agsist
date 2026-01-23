@@ -1,15 +1,29 @@
-// AGSIST App - Part 1: Core Functions
+// AGSIST App - Main JavaScript
 
 document.addEventListener('DOMContentLoaded', () => {
     try {
         loadData();
         initWeather();
+        loadCashBidSources();
         calcBin();
         setInterval(loadData, 60000);
     } catch(e) {
         console.error("Init failed:", e);
         document.getElementById('update-time').innerText = "System Error";
     }
+});
+
+// Mobile Menu Toggle
+function toggleMenu() {
+    const nav = document.querySelector('.nav');
+    nav.classList.toggle('open');
+}
+
+// Close menu when clicking a nav link (mobile)
+document.querySelectorAll('.nav a').forEach(link => {
+    link.addEventListener('click', () => {
+        document.querySelector('.nav').classList.remove('open');
+    });
 });
 
 // Navigation
@@ -19,6 +33,8 @@ function switchTab(id) {
     document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
     document.getElementById(id)?.classList.add('active');
     document.querySelector(`.nav a[data-tab="${id}"]`)?.classList.add('active');
+    // Close mobile menu on tab switch
+    document.querySelector('.nav').classList.remove('open');
 }
 
 document.querySelectorAll('[data-tab]').forEach(el => {
@@ -43,6 +59,12 @@ async function loadData() {
         const res = await fetch('data/markets.json');
         if(!res.ok) throw new Error("JSON not found");
         const data = await res.json();
+        
+        if(!data.updated) {
+            document.getElementById('update-time').innerHTML = '<span style="color:var(--accent)">Awaiting Data</span>';
+            return;
+        }
+        
         const m = data.markets;
         
         document.getElementById('update-time').textContent = new Date(data.updated).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
@@ -60,13 +82,19 @@ async function loadData() {
         document.getElementById('update-time').innerHTML = '<span style="color:var(--red)">Offline</span> <button onclick="loadData()" style="margin-left:8px;background:transparent;border:1px solid var(--border);color:var(--text);padding:2px 8px;border-radius:3px;cursor:pointer;font-size:0.7rem;">↻</button>';
     }
 }
-// AGSIST App - Part 2: Render Functions
 
+// Render market grid
 function renderGrid(id, items) {
     const el = document.getElementById(id);
     if(!el) return;
     
-    el.innerHTML = items.filter(Boolean).map(item => {
+    const validItems = items.filter(Boolean);
+    if(validItems.length === 0) {
+        el.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--dim)">No data available</div>';
+        return;
+    }
+    
+    el.innerHTML = validItems.map(item => {
         const isUp = item.change >= 0;
         const sign = isUp ? '+' : '';
         const color = isUp ? 'var(--green)' : 'var(--red)';
@@ -135,15 +163,21 @@ function renderGrid(id, items) {
     }).join('');
 }
 
+// Render news feeds
 function renderNews(news) {
     const el = document.getElementById('news-wire-list');
+    if(!el) return;
     if(!news.length) {
-        el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--dim)">No news available.</div>';
+        el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--dim)">No news available</div>';
         return;
     }
     el.innerHTML = news.map(n => {
         const src = n.source.toLowerCase();
-        const tagClass = src.includes('usda') ? 'usda' : src.includes('farm') ? 'farmprogress' : 'agweb';
+        const tagClass = src.includes('usda') ? 'usda' : 
+                        src.includes('farm') ? 'farmprogress' : 
+                        src.includes('brownfield') ? 'brownfield' :
+                        src.includes('dtn') ? 'dtn' :
+                        src.includes('world') ? 'worldgrain' : 'agweb';
         return `<a href="${n.link}" target="_blank" class="news-item">
             <span class="tag ${tagClass}">${n.source}</span>
             <h4>${n.title}</h4>
@@ -155,7 +189,7 @@ function renderUsdaFeed(items) {
     const el = document.getElementById('usda-feed-list');
     if(!el) return;
     if(!items.length) {
-        el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--dim)">No USDA updates available.</div>';
+        el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--dim)">No USDA updates available</div>';
         return;
     }
     el.innerHTML = items.map(n => {
@@ -167,6 +201,11 @@ function renderUsdaFeed(items) {
 }
 
 function updateTicker(m, news) {
+    if(!m || Object.keys(m).length === 0) {
+        document.getElementById('news-ticker').innerHTML = '<span class="ticker-item" style="color:var(--dim)">Awaiting market data...</span>';
+        return;
+    }
+    
     const items = [];
     const add = (k, d) => {
         if(d) items.push(`<span class="ticker-item"><span class="label">${k}</span>${formatVal(d.price, d.unit)}<span class="${d.change>=0?'up':'down'}">${d.change>=0?'+':''}${d.changePct.toFixed(1)}%</span></span>`);
@@ -180,6 +219,11 @@ function updateTicker(m, news) {
     add('BTC', m.crypto?.bitcoin);
     add('KAS', m.crypto?.kaspa);
 
+    if(items.length === 0 && news.length === 0) {
+        document.getElementById('news-ticker').innerHTML = '<span class="ticker-item" style="color:var(--dim)">No market data available</span>';
+        return;
+    }
+
     let html = '';
     const max = Math.max(items.length, news.length);
     for(let i=0; i<max; i++) {
@@ -188,10 +232,10 @@ function updateTicker(m, news) {
     }
     document.getElementById('news-ticker').innerHTML = html + html;
 }
-// AGSIST App - Part 3: Weather Functions
 
-const DEFAULT_LAT = 41.58; 
-const DEFAULT_LON = -93.62;
+// Weather Functions
+const DEFAULT_LAT = 45.4;  // Barron, WI area
+const DEFAULT_LON = -91.85;
 
 function initWeather(forceLocate = false) {
     const locName = document.getElementById('location-name');
@@ -201,23 +245,23 @@ function initWeather(forceLocate = false) {
         
         const t = setTimeout(() => {
             console.log("Geo timeout");
-            loadWeather(DEFAULT_LAT, DEFAULT_LON, "CENTRAL US (DEFAULT)");
+            loadWeather(DEFAULT_LAT, DEFAULT_LON, "NORTHWEST WI");
         }, 10000);
 
         navigator.geolocation.getCurrentPosition(
             (pos) => {
                 clearTimeout(t);
-                loadWeather(pos.coords.latitude, pos.coords.longitude, "NEARBY");
+                loadWeather(pos.coords.latitude, pos.coords.longitude, "YOUR AREA");
             },
             (err) => {
                 clearTimeout(t);
                 console.warn("Geo denied", err);
                 sessionStorage.setItem('geoDenied', 'true');
-                loadWeather(DEFAULT_LAT, DEFAULT_LON, "CENTRAL US (DEFAULT)");
+                loadWeather(DEFAULT_LAT, DEFAULT_LON, "NORTHWEST WI");
             }
         );
     } else {
-        loadWeather(DEFAULT_LAT, DEFAULT_LON, "CENTRAL US (DEFAULT)");
+        loadWeather(DEFAULT_LAT, DEFAULT_LON, "NORTHWEST WI");
     }
 }
 
@@ -244,13 +288,40 @@ async function loadWeather(lat, lon, label) {
         document.getElementById('forecast').innerHTML = '<div style="padding:20px;text-align:center;color:var(--dim)">Forecast unavailable</div>';
     }
 }
-// AGSIST App - Part 4: Calculator and Office Finder
 
+// Cash Bid Sources - Links to REAL data sources (no fake prices)
+const CASH_BID_SOURCES = [
+    {name: "DTN Cash Bids", url: "https://www.dtn.com/agriculture/grains/cash-grain-bids/", desc: "Real-time regional elevator bids"},
+    {name: "AgWeb Cash Grain", url: "https://www.agweb.com/markets/cash-grain-bids", desc: "Cash prices by location"},
+    {name: "Barchart Cash Prices", url: "https://www.barchart.com/futures/quotes/ZC*0/cash-prices", desc: "Corn cash prices nationwide"}
+];
+
+function loadCashBidSources() {
+    const container = document.getElementById('local-markets');
+    if (!container) return;
+    
+    container.innerHTML = `
+    <div style="padding:8px 0;font-size:0.8rem;color:var(--dim);border-bottom:1px solid var(--border)">
+        Live cash bids from regional sources:
+    </div>` + CASH_BID_SOURCES.map(source => `
+        <a href="${source.url}" target="_blank" class="elevator-item">
+            <div>
+                <span class="elevator-name">${source.name}</span>
+                <span style="display:block;font-size:0.75rem;color:var(--dim)">${source.desc}</span>
+            </div>
+            <div style="color:var(--accent);font-size:1.2rem">→</div>
+        </a>`).join('');
+}
+
+// Grain Bin Calculator
 const BU_PER_CUFT = 0.8036;
 
 function calcBin() {
-    const shape = document.getElementById('binShape').value;
-    const grainParts = document.getElementById('grain').value.split('|');
+    const shape = document.getElementById('binShape')?.value;
+    const grainEl = document.getElementById('grain');
+    if(!grainEl) return;
+    
+    const grainParts = grainEl.value.split('|');
     const lbPerBu = parseFloat(grainParts[0]);
     const stdMoist = parseFloat(grainParts[1]);
     
@@ -258,14 +329,14 @@ function calcBin() {
     document.getElementById('rect-dims').style.display = shape === 'rect' ? 'block' : 'none';
     
     let vol = 0;
-    const h = Math.max(0, parseFloat(document.getElementById('eaveH').value) || 0);
+    const h = Math.max(0, parseFloat(document.getElementById('eaveH')?.value) || 0);
     
     if(shape === 'round') {
-        const d = Math.max(0, parseFloat(document.getElementById('diameter').value) || 0);
+        const d = Math.max(0, parseFloat(document.getElementById('diameter')?.value) || 0);
         vol = Math.PI * Math.pow(d/2, 2) * h;
     } else {
-        const l = Math.max(0, parseFloat(document.getElementById('length').value) || 0);
-        const w = Math.max(0, parseFloat(document.getElementById('width').value) || 0);
+        const l = Math.max(0, parseFloat(document.getElementById('length')?.value) || 0);
+        const w = Math.max(0, parseFloat(document.getElementById('width')?.value) || 0);
         vol = l * w * h;
     }
     
@@ -283,6 +354,7 @@ function calcBin() {
     document.getElementById('rDryBu').textContent = Math.round(dryBu).toLocaleString();
 }
 
+// USDA Office Finder
 const COUNTIES = {
     WI: ['Barron','Burnett','Chippewa','Clark','Dunn','Eau Claire','Polk','Rusk','St. Croix','Trempealeau','Washburn'],
     MN: ['Anoka','Chisago','Dakota','Hennepin','Isanti','Ramsey','Washington','Winona'],
@@ -299,14 +371,15 @@ const COUNTIES = {
 };
 
 function loadCounties() {
-    const s = document.getElementById('state').value;
+    const s = document.getElementById('state')?.value;
     const c = document.getElementById('county');
+    if(!c) return;
     c.innerHTML = (COUNTIES[s] || []).map(n => `<option>${n}</option>`).join('');
 }
 
 function findOffice() {
-    const state = document.getElementById('state').value;
-    const county = document.getElementById('county').value;
+    const state = document.getElementById('state')?.value;
+    const county = document.getElementById('county')?.value;
     
     if(!state) {
         alert('Please select a state');

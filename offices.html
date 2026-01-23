@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find USDA Service Center - FSA & NRCS Office Locator | AGSIST</title>
+    <meta name="description" content="Find your local USDA Service Center, FSA office, and NRCS office. Access farm loans, ARC/PLC programs, EQIP, CRP, and disaster assistance programs.">
+    <meta name="keywords" content="USDA service center, FSA office locator, NRCS office finder, farm service agency, USDA office near me, EQIP program, CRP signup">
+    <link rel="canonical" href="https://agsist.com/offices.html">
+    <meta property="og:title" content="Find USDA Service Center - FSA & NRCS Office Locator">
+    <meta property="og:description" content="Locate your local FSA and NRCS offices for farm programs, loans, and conservation assistance.">
+    <meta property="og:url" content="https://agsist.com/offices.html">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
+                <div class="logo-text">AGSIST</div>
+            </a>
+            <nav class="nav">
+                <a href="/">DASHBOARD</a>
+                <a href="/calculator.html">CALCULATOR</a>
+                <a href="/offices.html" class="active">OFFICES</a>
+                <a href="/resources.html">RESOURCES</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="calc-wrap" style="padding:20px">
+            <nav style="margin-bottom:20px;font-size:0.85rem;color:var(--dim)">
+                <a href="/" style="color:var(--accent);text-decoration:none">Home</a> → USDA Office Locator
+            </nav>
+            
+            <div class="panel">
+                <div class="panel-head"><h1 style="font-size:0.9rem;margin:0">FIND USDA SERVICE CENTER</h1></div>
+                <div class="panel-body">
+                    <div class="input-group"><label>State</label><select id="state" onchange="loadCounties()"><option value="">Select State</option><option value="WI">Wisconsin</option><option value="MN">Minnesota</option><option value="IA">Iowa</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="MI">Michigan</option><option value="ND">North Dakota</option><option value="SD">South Dakota</option><option value="NE">Nebraska</option><option value="KS">Kansas</option><option value="MO">Missouri</option><option value="OH">Ohio</option></select></div>
+                    <div class="input-group"><label>County</label><select id="county"><option>Select State First</option></select></div>
+                    <button onclick="findOffice()" class="tool-btn" style="width:100%;margin-top:10px;font-weight:700;background:var(--accent);color:#000;border:none;cursor:pointer">LOCATE OFFICE</button>
+                    <div id="office-results" style="margin-top:20px;display:none;grid-template-columns:1fr 1fr;gap:20px">
+                        <div class="market-card"><div class="name">FSA OFFICE</div><p style="font-size:.9rem;margin-top:10px;color:var(--dim)">Farm Service Agency</p><a id="fsa-link" href="#" target="_blank" style="display:block;margin-top:10px;color:var(--accent)">View Contact Info →</a></div>
+                        <div class="market-card"><div class="name">NRCS OFFICE</div><p style="font-size:.9rem;margin-top:10px;color:var(--dim)">Natural Resources Conservation</p><a id="nrcs-link" href="#" target="_blank" style="display:block;margin-top:10px;color:var(--accent)">View Contact Info →</a></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+                <div class="panel">
+                    <div class="panel-head"><h2>FSA PROGRAMS</h2></div>
+                    <div class="panel-body" style="color:var(--dim);line-height:1.8">
+                        <p><strong style="color:var(--text)">Farm Loans:</strong> Operating loans, ownership loans, microloans, and emergency loans for farmers.</p>
+                        <p style="margin-top:12px"><strong style="color:var(--text)">ARC/PLC:</strong> Agriculture Risk Coverage and Price Loss Coverage commodity programs.</p>
+                        <p style="margin-top:12px"><strong style="color:var(--text)">Disaster Assistance:</strong> Emergency assistance for livestock, trees, and crop losses.</p>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-head"><h2>NRCS PROGRAMS</h2></div>
+                    <div class="panel-body" style="color:var(--dim);line-height:1.8">
+                        <p><strong style="color:var(--text)">EQIP:</strong> Environmental Quality Incentives Program for conservation practices.</p>
+                        <p style="margin-top:12px"><strong style="color:var(--text)">CSP:</strong> Conservation Stewardship Program for ongoing stewardship.</p>
+                        <p style="margin-top:12px"><strong style="color:var(--text)">CRP:</strong> Conservation Reserve Program for environmentally sensitive land.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;color:var(--dim);font-size:0.8rem">
+            <span>© 2026 <a href="/" style="color:var(--accent);text-decoration:none">AGSIST</a>. All rights reserved.</span>
+            <span>Made in the USA 🇺🇸</span>
+        </div>
+    </footer>
+
+    <script>
+    const COUNTIES = {
+        WI: ['Barron','Burnett','Chippewa','Clark','Dunn','Eau Claire','Polk','Rusk','St. Croix','Trempealeau','Washburn'],
+        MN: ['Anoka','Chisago','Dakota','Hennepin','Isanti','Ramsey','Washington','Winona'],
+        IA: ['Boone','Dallas','Jasper','Madison','Marion','Marshall','Polk','Story','Warren'],
+        IL: ['Champaign','Cook','DeKalb','DuPage','Kane','Lake','McHenry','Will','Winnebago'],
+        IN: ['Allen','Elkhart','Hamilton','Lake','Marion','St. Joseph'],
+        MI: ['Allegan','Barry','Branch','Calhoun','Clinton','Eaton','Hillsdale','Huron','Ingham','Ionia'],
+        ND: ['Burleigh','Cass','Grand Forks','Ward','Williams'],
+        SD: ['Brown','Lincoln','Minnehaha','Pennington'],
+        NE: ['Douglas','Lancaster','Sarpy'],
+        KS: ['Johnson','Sedgwick','Shawnee'],
+        MO: ['Boone','Greene','Jackson','St. Louis'],
+        OH: ['Cuyahoga','Franklin','Hamilton','Lucas','Summit']
+    };
+    function loadCounties() {
+        const s = document.getElementById('state').value;
+        const c = document.getElementById('county');
+        c.innerHTML = (COUNTIES[s] || []).map(n => `<option>${n}</option>`).join('');
+    }
+    function findOffice() {
+        const state = document.getElementById('state').value;
+        const county = document.getElementById('county').value;
+        if(!state) { alert('Please select a state'); return; }
+        const url = `https://offices.sc.egov.usda.gov/locator/app?state=${state}&county=${encodeURIComponent(county)}`;
+        document.getElementById('fsa-link').href = url;
+        document.getElementById('nrcs-link').href = url;
+        document.getElementById('office-results').style.display = 'grid';
+    }
+    </script>
+</body>
+</html>
