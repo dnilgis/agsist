@@ -294,6 +294,43 @@
             color: var(--text);
         }
         
+        /* 52-week range bar */
+        .range-bar {
+            margin: 8px 0 4px;
+        }
+        .range-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--dim);
+            margin-bottom: 4px;
+        }
+        .range-bar-track {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            position: relative;
+        }
+        .range-bar-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #4ade80, #e6b042, #ef4444);
+            border-radius: 3px;
+            opacity: 0.3;
+        }
+        .range-bar-marker {
+            position: absolute;
+            top: -2px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            border: 2px solid var(--card);
+        }
+        
         /* SECTION HEADERS */
         .section-header {
             font-size: 0.85rem;
@@ -501,7 +538,7 @@
             }
             /* Mobile nav - smaller, scrollable */
             .nav-links {
-                gap: 4px;
+                gap: 2px;
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: none;
@@ -510,12 +547,12 @@
                 display: none;
             }
             .nav-links a {
-                padding: 6px 8px;
-                font-size: 0.75rem;
+                padding: 5px 6px;
+                font-size: 0.65rem;
                 white-space: nowrap;
             }
             .logo {
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
         }
         
@@ -577,10 +614,12 @@
                 </div>
                 <div class="price-value" id="corn-price">--</div>
                 <div class="price-change" id="corn-change">--</div>
+                <div class="range-bar" id="corn-range">
+                    <div class="range-bar-label"><span id="corn-range-low">--</span><span>52wk</span><span id="corn-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="corn-marker" style="left:50%"></div></div>
+                </div>
                 <div class="price-details">
                     <div class="price-details-row"><span>Prev Close</span><span id="corn-prev">--</span></div>
-                    <div class="price-details-row"><span>52-wk High</span><span id="corn-high">--</span></div>
-                    <div class="price-details-row"><span>52-wk Low</span><span id="corn-low">--</span></div>
                     <div class="price-details-row"><span>Symbol</span><span id="corn-symbol" style="font-size:0.75rem;color:var(--dim)">--</span></div>
                 </div>
             </div>
@@ -591,10 +630,12 @@
                 </div>
                 <div class="price-value" id="corn-dec-price">--</div>
                 <div class="price-change" id="corn-dec-change">--</div>
+                <div class="range-bar" id="corn-dec-range">
+                    <div class="range-bar-label"><span id="corn-dec-range-low">--</span><span>52wk</span><span id="corn-dec-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="corn-dec-marker" style="left:50%"></div></div>
+                </div>
                 <div class="price-details">
                     <div class="price-details-row"><span>Prev Close</span><span id="corn-dec-prev">--</span></div>
-                    <div class="price-details-row"><span>52-wk High</span><span id="corn-dec-high">--</span></div>
-                    <div class="price-details-row"><span>52-wk Low</span><span id="corn-dec-low">--</span></div>
                     <div class="price-details-row"><span>Symbol</span><span id="corn-dec-symbol" style="font-size:0.75rem;color:var(--dim)">--</span></div>
                 </div>
             </div>
@@ -605,10 +646,12 @@
                 </div>
                 <div class="price-value" id="soy-price">--</div>
                 <div class="price-change" id="soy-change">--</div>
+                <div class="range-bar" id="soy-range">
+                    <div class="range-bar-label"><span id="soy-range-low">--</span><span>52wk</span><span id="soy-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="soy-marker" style="left:50%"></div></div>
+                </div>
                 <div class="price-details">
                     <div class="price-details-row"><span>Prev Close</span><span id="soy-prev">--</span></div>
-                    <div class="price-details-row"><span>52-wk High</span><span id="soy-high">--</span></div>
-                    <div class="price-details-row"><span>52-wk Low</span><span id="soy-low">--</span></div>
                     <div class="price-details-row"><span>Symbol</span><span id="soy-symbol" style="font-size:0.75rem;color:var(--dim)">--</span></div>
                 </div>
             </div>
@@ -619,10 +662,12 @@
                 </div>
                 <div class="price-value" id="soy-nov-price">--</div>
                 <div class="price-change" id="soy-nov-change">--</div>
+                <div class="range-bar" id="soy-nov-range">
+                    <div class="range-bar-label"><span id="soy-nov-range-low">--</span><span>52wk</span><span id="soy-nov-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="soy-nov-marker" style="left:50%"></div></div>
+                </div>
                 <div class="price-details">
                     <div class="price-details-row"><span>Prev Close</span><span id="soy-nov-prev">--</span></div>
-                    <div class="price-details-row"><span>52-wk High</span><span id="soy-nov-high">--</span></div>
-                    <div class="price-details-row"><span>52-wk Low</span><span id="soy-nov-low">--</span></div>
                     <div class="price-details-row"><span>Symbol</span><span id="soy-nov-symbol" style="font-size:0.75rem;color:var(--dim)">--</span></div>
                 </div>
             </div>
@@ -849,6 +894,12 @@
             const chgClass = (val) => val >= 0 ? 'up' : 'down';
             const chgSign = (val) => val >= 0 ? '+' : '';
             
+            // Helper to calculate range position (0-100%)
+            const rangePos = (price, low, high) => {
+                if (!low || !high || high === low) return 50;
+                return Math.min(100, Math.max(0, ((price - low) / (high - low)) * 100));
+            };
+            
             // CORN
             if (m.grains?.corn) {
                 const c = m.grains.corn;
@@ -857,9 +908,13 @@
                 document.getElementById('corn-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
                 document.getElementById('corn-change').className = 'price-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('corn-prev').textContent = '$' + fmt(c.prevClose, c.unit);
-                if (c.high52) document.getElementById('corn-high').textContent = '$' + fmt(c.high52, c.unit);
-                if (c.low52) document.getElementById('corn-low').textContent = '$' + fmt(c.low52, c.unit);
                 if (c.symbol) document.getElementById('corn-symbol').textContent = c.symbol;
+                // Range bar
+                if (c.low52 && c.high52) {
+                    document.getElementById('corn-range-low').textContent = '$' + fmt(c.low52, c.unit);
+                    document.getElementById('corn-range-high').textContent = '$' + fmt(c.high52, c.unit);
+                    document.getElementById('corn-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             // CORN DEC
@@ -869,9 +924,13 @@
                 document.getElementById('corn-dec-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
                 document.getElementById('corn-dec-change').className = 'price-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('corn-dec-prev').textContent = '$' + fmt(c.prevClose, c.unit);
-                if (c.high52) document.getElementById('corn-dec-high').textContent = '$' + fmt(c.high52, c.unit);
-                if (c.low52) document.getElementById('corn-dec-low').textContent = '$' + fmt(c.low52, c.unit);
                 if (c.symbol) document.getElementById('corn-dec-symbol').textContent = c.symbol;
+                // Range bar
+                if (c.low52 && c.high52) {
+                    document.getElementById('corn-dec-range-low').textContent = '$' + fmt(c.low52, c.unit);
+                    document.getElementById('corn-dec-range-high').textContent = '$' + fmt(c.high52, c.unit);
+                    document.getElementById('corn-dec-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             // SOYBEANS
@@ -882,9 +941,13 @@
                 document.getElementById('soy-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
                 document.getElementById('soy-change').className = 'price-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('soy-prev').textContent = '$' + fmt(c.prevClose, c.unit);
-                if (c.high52) document.getElementById('soy-high').textContent = '$' + fmt(c.high52, c.unit);
-                if (c.low52) document.getElementById('soy-low').textContent = '$' + fmt(c.low52, c.unit);
                 if (c.symbol) document.getElementById('soy-symbol').textContent = c.symbol;
+                // Range bar
+                if (c.low52 && c.high52) {
+                    document.getElementById('soy-range-low').textContent = '$' + fmt(c.low52, c.unit);
+                    document.getElementById('soy-range-high').textContent = '$' + fmt(c.high52, c.unit);
+                    document.getElementById('soy-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             // SOYBEANS NOV
@@ -894,9 +957,13 @@
                 document.getElementById('soy-nov-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
                 document.getElementById('soy-nov-change').className = 'price-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('soy-nov-prev').textContent = '$' + fmt(c.prevClose, c.unit);
-                if (c.high52) document.getElementById('soy-nov-high').textContent = '$' + fmt(c.high52, c.unit);
-                if (c.low52) document.getElementById('soy-nov-low').textContent = '$' + fmt(c.low52, c.unit);
                 if (c.symbol) document.getElementById('soy-nov-symbol').textContent = c.symbol;
+                // Range bar
+                if (c.low52 && c.high52) {
+                    document.getElementById('soy-nov-range-low').textContent = '$' + fmt(c.low52, c.unit);
+                    document.getElementById('soy-nov-range-high').textContent = '$' + fmt(c.high52, c.unit);
+                    document.getElementById('soy-nov-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             // WHEAT
