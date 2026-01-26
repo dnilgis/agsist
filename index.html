@@ -70,12 +70,12 @@
         :root {
             --bg: #0a0a0a;
             --card: #111;
-            --border: #222;
-            --text: #e8e8e8;
-            --dim: #666;
+            --border: #333;
+            --text: #f5f5f5;
+            --dim: #999;
             --accent: #e6b042;
-            --green: #22c55e;
-            --red: #ef4444;
+            --green: #4ade80;
+            --red: #f87171;
         }
         
         body {
@@ -84,32 +84,34 @@
             color: var(--text);
             line-height: 1.5;
             min-height: 100vh;
+            font-size: 16px;
         }
         
         /* NAV - sticky but slim */
         nav {
             background: var(--card);
             border-bottom: 1px solid var(--border);
-            padding: 12px 16px;
+            padding: 10px 16px;
             position: sticky;
             top: 0;
             z-index: 100;
         }
         
-        /* TICKER */
+        /* TICKER - slower, full width fill */
         .ticker-wrap {
-            background: var(--card);
+            background: #000;
             border-bottom: 1px solid var(--border);
             overflow: hidden;
-            padding: 8px 0;
+            padding: 10px 0;
         }
         
         .ticker {
             display: flex;
-            gap: 40px;
-            animation: ticker-scroll 60s linear infinite;
+            gap: 50px;
+            animation: ticker-scroll 120s linear infinite;
             white-space: nowrap;
             width: max-content;
+            padding: 0 20px;
         }
         
         .ticker:hover {
@@ -119,21 +121,23 @@
         .ticker-item {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
+            gap: 10px;
+            font-size: 0.95rem;
         }
         
         .ticker-item .label {
             color: var(--dim);
+            font-weight: 500;
         }
         
         .ticker-item .price {
             color: var(--text);
-            font-weight: 600;
+            font-weight: 700;
         }
         
         .ticker-item .change {
-            font-size: 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
         
         .ticker-item .change.up { color: var(--green); }
@@ -141,7 +145,7 @@
         
         .ticker-item.news {
             color: var(--accent);
-            max-width: 400px;
+            max-width: 500px;
             overflow: hidden;
             text-overflow: ellipsis;
         }
@@ -152,7 +156,7 @@
         }
         
         .nav-inner {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -161,22 +165,22 @@
         
         .logo {
             font-weight: 700;
-            font-size: 1.25rem;
+            font-size: 1.4rem;
             color: var(--accent);
             text-decoration: none;
         }
         
         .nav-links {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
         
         .nav-links a {
             color: var(--dim);
             text-decoration: none;
-            padding: 8px 12px;
+            padding: 8px 14px;
             border-radius: 4px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             transition: all 0.2s;
         }
         
@@ -185,11 +189,11 @@
             background: var(--border);
         }
         
-        /* MAIN CONTENT */
+        /* MAIN CONTENT - wider */
         main {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
-            padding: 16px;
+            padding: 12px;
         }
         
         /* UPDATE TIME */
@@ -197,81 +201,116 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            font-size: 0.75rem;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
             color: var(--dim);
         }
         
         /* PRICE CARDS */
         .price-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
         }
         
         .price-card {
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 16px;
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .price-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(230,176,66,0.15);
         }
         
         .price-card.featured {
             border-color: var(--accent);
+            background: linear-gradient(135deg, var(--card) 0%, #1a1500 100%);
         }
         
         .price-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         
         .price-label {
-            font-size: 0.8rem;
-            color: var(--dim);
-            text-transform: uppercase;
+            font-size: 0.95rem;
+            color: var(--text);
+            font-weight: 600;
         }
         
         .price-contract {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: var(--dim);
-            background: var(--border);
-            padding: 2px 6px;
-            border-radius: 3px;
+            background: var(--bg);
+            padding: 3px 8px;
+            border-radius: 4px;
         }
         
         .price-value {
-            font-size: 1.75rem;
+            font-size: 2rem;
             font-weight: 700;
             margin-bottom: 4px;
         }
         
         .price-change {
-            font-size: 0.85rem;
+            font-size: 0.95rem;
+            font-weight: 600;
         }
         
         .price-change.up { color: var(--green); }
         .price-change.down { color: var(--red); }
         
+        /* HOVER EXPAND DETAILS */
+        .price-details {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+        
+        .price-card:hover .price-details {
+            display: block;
+        }
+        
+        .price-details-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            color: var(--dim);
+        }
+        
+        .price-details-row span:last-child {
+            color: var(--text);
+        }
+        
         /* SECTION HEADERS */
         .section-header {
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             color: var(--dim);
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin: 20px 0 12px;
-            padding-bottom: 8px;
+            margin: 16px 0 10px;
+            padding-bottom: 6px;
             border-bottom: 1px solid var(--border);
         }
         
-        /* SECONDARY PRICES - smaller grid */
+        /* SECONDARY PRICES - 6 across on desktop */
         .secondary-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-bottom: 16px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
         }
         
         .secondary-card {
@@ -279,36 +318,43 @@
             border: 1px solid var(--border);
             border-radius: 6px;
             padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .secondary-card:hover {
+            border-color: var(--accent);
         }
         
         .secondary-label {
-            font-size: 0.7rem;
+            font-size: 0.85rem;
             color: var(--dim);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         
         .secondary-value {
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.25rem;
+            font-weight: 700;
         }
         
         .secondary-change {
-            font-size: 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
         
-        /* WEATHER */
+        /* WEATHER - no scroll, fixed height */
         .weather-card {
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 8px;
             overflow: hidden;
-            margin-bottom: 16px;
         }
         
         .weather-card iframe {
             width: 100%;
-            height: 300px;
+            height: 350px;
             border: none;
+            display: block;
         }
         
         /* NEWS */
@@ -316,7 +362,7 @@
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 16px;
+            padding: 14px;
         }
         
         .news-item {
@@ -374,22 +420,35 @@
             flex-wrap: wrap;
         }
         
-        /* DESKTOP */
+        /* TABLET */
         @media (min-width: 768px) {
-            main { padding: 24px; }
+            main { padding: 16px 20px; }
             
             .price-grid {
                 grid-template-columns: repeat(4, 1fr);
             }
             
             .secondary-grid {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(3, 1fr);
             }
             
             .two-col {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                gap: 16px;
+                gap: 12px;
+            }
+            
+            .weather-card iframe {
+                height: 380px;
+            }
+        }
+        
+        /* DESKTOP */
+        @media (min-width: 1200px) {
+            main { padding: 16px 24px; }
+            
+            .secondary-grid {
+                grid-template-columns: repeat(6, 1fr);
             }
             
             .weather-card iframe {
@@ -397,9 +456,16 @@
             }
         }
         
-        @media (min-width: 1024px) {
+        /* MOBILE - stack price cards 2x2 */
+        @media (max-width: 767px) {
+            .price-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .price-value {
+                font-size: 1.5rem;
+            }
             .secondary-grid {
-                grid-template-columns: repeat(6, 1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
         }
         
@@ -440,72 +506,123 @@
         
         <!-- PRIMARY: Corn & Soybeans -->
         <div class="price-grid" id="primary-prices">
-            <div class="price-card featured">
+            <div class="price-card featured" id="card-corn">
                 <div class="price-header">
                     <span class="price-label">🌽 Corn</span>
                     <span class="price-contract" id="corn-contract">--</span>
                 </div>
                 <div class="price-value" id="corn-price">--</div>
                 <div class="price-change" id="corn-change">--</div>
+                <div class="price-details">
+                    <div class="price-details-row"><span>52-wk High</span><span id="corn-high">--</span></div>
+                    <div class="price-details-row"><span>52-wk Low</span><span id="corn-low">--</span></div>
+                </div>
             </div>
-            <div class="price-card">
+            <div class="price-card" id="card-corn-dec">
                 <div class="price-header">
                     <span class="price-label">🌽 Corn Harvest</span>
                     <span class="price-contract">Dec '26</span>
                 </div>
                 <div class="price-value" id="corn-dec-price">--</div>
                 <div class="price-change" id="corn-dec-change">--</div>
+                <div class="price-details">
+                    <div class="price-details-row"><span>52-wk High</span><span id="corn-dec-high">--</span></div>
+                    <div class="price-details-row"><span>52-wk Low</span><span id="corn-dec-low">--</span></div>
+                </div>
             </div>
-            <div class="price-card featured">
+            <div class="price-card featured" id="card-soy">
                 <div class="price-header">
                     <span class="price-label">🫘 Soybeans</span>
                     <span class="price-contract" id="soy-contract">--</span>
                 </div>
                 <div class="price-value" id="soy-price">--</div>
                 <div class="price-change" id="soy-change">--</div>
+                <div class="price-details">
+                    <div class="price-details-row"><span>52-wk High</span><span id="soy-high">--</span></div>
+                    <div class="price-details-row"><span>52-wk Low</span><span id="soy-low">--</span></div>
+                </div>
             </div>
-            <div class="price-card">
+            <div class="price-card" id="card-soy-nov">
                 <div class="price-header">
                     <span class="price-label">🫘 Beans Harvest</span>
                     <span class="price-contract">Nov '26</span>
                 </div>
                 <div class="price-value" id="soy-nov-price">--</div>
                 <div class="price-change" id="soy-nov-change">--</div>
+                <div class="price-details">
+                    <div class="price-details-row"><span>52-wk High</span><span id="soy-nov-high">--</span></div>
+                    <div class="price-details-row"><span>52-wk Low</span><span id="soy-nov-low">--</span></div>
+                </div>
             </div>
         </div>
         
         <!-- SECONDARY: Other commodities -->
-        <div class="section-header">Livestock & More</div>
+        <div class="section-header">Livestock & Energy</div>
         <div class="secondary-grid" id="secondary-prices">
             <div class="secondary-card">
-                <div class="secondary-label">Wheat</div>
+                <div class="secondary-label">🌾 Wheat</div>
                 <div class="secondary-value" id="wheat-price">--</div>
                 <div class="secondary-change" id="wheat-change">--</div>
             </div>
             <div class="secondary-card">
-                <div class="secondary-label">Live Cattle</div>
+                <div class="secondary-label">🐄 Live Cattle</div>
                 <div class="secondary-value" id="cattle-price">--</div>
                 <div class="secondary-change" id="cattle-change">--</div>
             </div>
             <div class="secondary-card">
-                <div class="secondary-label">Feeder Cattle</div>
+                <div class="secondary-label">🐂 Feeder Cattle</div>
                 <div class="secondary-value" id="feeder-price">--</div>
                 <div class="secondary-change" id="feeder-change">--</div>
             </div>
             <div class="secondary-card">
-                <div class="secondary-label">Lean Hogs</div>
+                <div class="secondary-label">🐷 Lean Hogs</div>
                 <div class="secondary-value" id="hogs-price">--</div>
                 <div class="secondary-change" id="hogs-change">--</div>
             </div>
             <div class="secondary-card">
-                <div class="secondary-label">Class III Milk</div>
+                <div class="secondary-label">🥛 Class III Milk</div>
                 <div class="secondary-value" id="milk-price">--</div>
                 <div class="secondary-change" id="milk-change">--</div>
             </div>
             <div class="secondary-card">
-                <div class="secondary-label">Crude Oil</div>
+                <div class="secondary-label">🛢️ Crude Oil</div>
                 <div class="secondary-value" id="oil-price">--</div>
                 <div class="secondary-change" id="oil-change">--</div>
+            </div>
+        </div>
+        
+        <!-- METALS & CRYPTO -->
+        <div class="section-header">Metals & Crypto</div>
+        <div class="secondary-grid">
+            <div class="secondary-card">
+                <div class="secondary-label">🥇 Gold</div>
+                <div class="secondary-value" id="gold-price">--</div>
+                <div class="secondary-change" id="gold-change">--</div>
+            </div>
+            <div class="secondary-card">
+                <div class="secondary-label">🥈 Silver</div>
+                <div class="secondary-value" id="silver-price">--</div>
+                <div class="secondary-change" id="silver-change">--</div>
+            </div>
+            <div class="secondary-card">
+                <div class="secondary-label">🪙 Bitcoin</div>
+                <div class="secondary-value" id="btc-price">--</div>
+                <div class="secondary-change" id="btc-change">--</div>
+            </div>
+            <div class="secondary-card">
+                <div class="secondary-label">💎 Kaspa</div>
+                <div class="secondary-value" id="kas-price">--</div>
+                <div class="secondary-change" id="kas-change">--</div>
+            </div>
+            <div class="secondary-card">
+                <div class="secondary-label">📈 S&P 500</div>
+                <div class="secondary-value" id="sp500-price">--</div>
+                <div class="secondary-change" id="sp500-change">--</div>
+            </div>
+            <div class="secondary-card">
+                <div class="secondary-label">💵 USD Index</div>
+                <div class="secondary-value" id="dxy-price">--</div>
+                <div class="secondary-change" id="dxy-change">--</div>
             </div>
         </div>
         
@@ -610,26 +727,9 @@
         <!-- WEATHER & NEWS side by side on desktop -->
         <div class="two-col">
             <div>
-                <div class="section-header" style="display:flex;justify-content:space-between;align-items:center">
-                    <span>Weather Radar</span>
-                    <select id="radar-select" onchange="changeRadar()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:4px;font-size:0.7rem;font-family:inherit">
-                        <option value="KARX">La Crosse, WI</option>
-                        <option value="KMKX">Milwaukee, WI</option>
-                        <option value="KGRB">Green Bay, WI</option>
-                        <option value="KDLH">Duluth, MN</option>
-                        <option value="KMPX">Minneapolis, MN</option>
-                        <option value="KFSD">Sioux Falls, SD</option>
-                        <option value="KDMX">Des Moines, IA</option>
-                        <option value="KDVN">Davenport, IA</option>
-                        <option value="KLOT">Chicago, IL</option>
-                        <option value="KFGF">Fargo, ND</option>
-                    </select>
-                </div>
+                <div class="section-header">Weather - Barron County</div>
                 <div class="weather-card">
-                    <iframe id="radar-frame" src="https://radar.weather.gov/ridge/standard/KARX_loop.gif" title="NWS Radar"></iframe>
-                </div>
-                <div style="font-size:0.7rem;color:var(--dim);margin-top:8px;text-align:center" id="radar-status">
-                    📍 Detecting your location...
+                    <iframe src="https://embed.windy.com/embed2.html?lat=45.4&lon=-91.85&detailLat=45.4&detailLon=-91.85&width=650&height=400&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1" frameborder="0" title="Windy Weather"></iframe>
                 </div>
             </div>
             <div>
@@ -702,6 +802,8 @@
                 document.getElementById('corn-price').textContent = '$' + fmt(c.price, c.unit);
                 document.getElementById('corn-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
                 document.getElementById('corn-change').className = 'price-change ' + chgClass(c.change);
+                if (c.high52) document.getElementById('corn-high').textContent = '$' + fmt(c.high52, c.unit);
+                if (c.low52) document.getElementById('corn-low').textContent = '$' + fmt(c.low52, c.unit);
             }
             
             // CORN DEC
@@ -710,6 +812,8 @@
                 document.getElementById('corn-dec-price').textContent = '$' + fmt(c.price, c.unit);
                 document.getElementById('corn-dec-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
                 document.getElementById('corn-dec-change').className = 'price-change ' + chgClass(c.change);
+                if (c.high52) document.getElementById('corn-dec-high').textContent = '$' + fmt(c.high52, c.unit);
+                if (c.low52) document.getElementById('corn-dec-low').textContent = '$' + fmt(c.low52, c.unit);
             }
             
             // SOYBEANS
@@ -719,6 +823,8 @@
                 document.getElementById('soy-price').textContent = '$' + fmt(c.price, c.unit);
                 document.getElementById('soy-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
                 document.getElementById('soy-change').className = 'price-change ' + chgClass(c.change);
+                if (c.high52) document.getElementById('soy-high').textContent = '$' + fmt(c.high52, c.unit);
+                if (c.low52) document.getElementById('soy-low').textContent = '$' + fmt(c.low52, c.unit);
             }
             
             // SOYBEANS NOV
@@ -727,6 +833,8 @@
                 document.getElementById('soy-nov-price').textContent = '$' + fmt(c.price, c.unit);
                 document.getElementById('soy-nov-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
                 document.getElementById('soy-nov-change').className = 'price-change ' + chgClass(c.change);
+                if (c.high52) document.getElementById('soy-nov-high').textContent = '$' + fmt(c.high52, c.unit);
+                if (c.low52) document.getElementById('soy-nov-low').textContent = '$' + fmt(c.low52, c.unit);
             }
             
             // WHEAT
@@ -775,6 +883,54 @@
                 document.getElementById('oil-price').textContent = '$' + c.price.toFixed(2);
                 document.getElementById('oil-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
                 document.getElementById('oil-change').className = 'secondary-change ' + chgClass(c.change);
+            }
+            
+            // GOLD
+            if (m.metals?.gold) {
+                const c = m.metals.gold;
+                document.getElementById('gold-price').textContent = '$' + c.price.toFixed(0);
+                document.getElementById('gold-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('gold-change').className = 'secondary-change ' + chgClass(c.change);
+            }
+            
+            // SILVER
+            if (m.metals?.silver) {
+                const c = m.metals.silver;
+                document.getElementById('silver-price').textContent = '$' + c.price.toFixed(2);
+                document.getElementById('silver-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('silver-change').className = 'secondary-change ' + chgClass(c.change);
+            }
+            
+            // BITCOIN
+            if (m.crypto?.bitcoin) {
+                const c = m.crypto.bitcoin;
+                document.getElementById('btc-price').textContent = '$' + c.price.toLocaleString(undefined, {maximumFractionDigits: 0});
+                document.getElementById('btc-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('btc-change').className = 'secondary-change ' + chgClass(c.change);
+            }
+            
+            // KASPA
+            if (m.crypto?.kaspa) {
+                const c = m.crypto.kaspa;
+                document.getElementById('kas-price').textContent = '$' + c.price.toFixed(3);
+                document.getElementById('kas-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('kas-change').className = 'secondary-change ' + chgClass(c.change);
+            }
+            
+            // S&P 500
+            if (m.indices?.sp500) {
+                const c = m.indices.sp500;
+                document.getElementById('sp500-price').textContent = c.price.toLocaleString(undefined, {maximumFractionDigits: 0});
+                document.getElementById('sp500-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('sp500-change').className = 'secondary-change ' + chgClass(c.change);
+            }
+            
+            // USD INDEX
+            if (m.indices?.dollar) {
+                const c = m.indices.dollar;
+                document.getElementById('dxy-price').textContent = c.price.toFixed(2);
+                document.getElementById('dxy-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('dxy-change').className = 'secondary-change ' + chgClass(c.change);
             }
             
             // NEWS
@@ -852,44 +1008,8 @@
     }
     
     loadData();
-    // Refresh every 5 minutes
-    setInterval(loadData, 5 * 60 * 1000);
-    
-    // RADAR STATIONS with lat/lon
-    const RADAR_STATIONS = [
-        { code: 'KARX', name: 'La Crosse, WI', lat: 43.82, lon: -91.19 },
-        { code: 'KMKX', name: 'Milwaukee, WI', lat: 42.97, lon: -88.55 },
-        { code: 'KGRB', name: 'Green Bay, WI', lat: 44.50, lon: -88.11 },
-        { code: 'KDLH', name: 'Duluth, MN', lat: 46.84, lon: -92.21 },
-        { code: 'KMPX', name: 'Minneapolis, MN', lat: 44.85, lon: -93.57 },
-        { code: 'KFSD', name: 'Sioux Falls, SD', lat: 43.59, lon: -96.73 },
-        { code: 'KDMX', name: 'Des Moines, IA', lat: 41.73, lon: -93.72 },
-        { code: 'KDVN', name: 'Davenport, IA', lat: 41.61, lon: -90.58 },
-        { code: 'KLOT', name: 'Chicago, IL', lat: 41.60, lon: -88.08 },
-        { code: 'KFGF', name: 'Fargo, ND', lat: 47.45, lon: -96.86 }
-    ];
-    
-    function changeRadar() {
-        const code = document.getElementById('radar-select').value;
-        const station = RADAR_STATIONS.find(s => s.code === code);
-        document.getElementById('radar-frame').src = `https://radar.weather.gov/ridge/standard/${code}_loop.gif`;
-        document.getElementById('radar-status').textContent = `📍 ${station.name}`;
-    }
-    
-    function findNearestRadar(lat, lon) {
-        let nearest = RADAR_STATIONS[0];
-        let minDist = Infinity;
-        
-        RADAR_STATIONS.forEach(station => {
-            const dist = Math.sqrt(Math.pow(lat - station.lat, 2) + Math.pow(lon - station.lon, 2));
-            if (dist < minDist) {
-                minDist = dist;
-                nearest = station;
-            }
-        });
-        
-        return nearest;
-    }
+    // Refresh every 2 minutes
+    setInterval(loadData, 2 * 60 * 1000);
     
     // Welcome message based on time
     function getGreeting() {
@@ -907,36 +1027,22 @@
         document.getElementById('welcome-msg').textContent = msg;
     }
     
-    // Set default welcome
-    setWelcome('');
-    
-    // Geolocation
+    // Geolocation for welcome message
     if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
             (pos) => {
-                const nearest = findNearestRadar(pos.coords.latitude, pos.coords.longitude);
-                document.getElementById('radar-select').value = nearest.code;
-                document.getElementById('radar-frame').src = `https://radar.weather.gov/ridge/standard/${nearest.code}_loop.gif`;
-                document.getElementById('radar-status').textContent = `📍 ${nearest.name} (nearest to you)`;
-                
-                // Reverse geocode to get county/city name
                 fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`)
                     .then(r => r.json())
                     .then(data => {
                         const county = data.address?.county || data.address?.city || data.address?.state || '';
                         if (county) setWelcome(county);
                     })
-                    .catch(() => setWelcome(nearest.name.split(',')[0]));
+                    .catch(() => setWelcome('Wisconsin'));
             },
-            (err) => {
-                // Default to La Crosse (Barron County area)
-                document.getElementById('radar-status').textContent = '📍 La Crosse, WI (default)';
-                setWelcome('');
-            },
+            () => setWelcome(''),
             { timeout: 5000, maximumAge: 600000 }
         );
     } else {
-        document.getElementById('radar-status').textContent = '📍 La Crosse, WI (default)';
         setWelcome('');
     }
     
