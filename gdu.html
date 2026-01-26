@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <meta property="og:image" content="https://agsist.com/og-image.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GDU Calculator - Growing Degree Units for Corn | AGSIST</title>
     <meta name="description" content="Free Growing Degree Unit (GDU) calculator for corn. Track heat unit accumulation, predict silking and black layer dates based on planting date and location.">
@@ -13,6 +19,8 @@
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     
@@ -201,7 +209,31 @@
                                 <span>Days to Maturity</span>
                                 <span class="result-value" id="rDays">--</span>
                             </div>
+                            <button onclick="copyGDUResults()" style="margin-top:15px;width:100%;padding:10px;background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.85rem">📋 Copy Results</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-head"><h2>MORE TOOLS</h2></div>
+                <div class="panel-body">
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+                        <a href="/calculator.html" style="background:var(--card);padding:20px;border-radius:4px;text-decoration:none;text-align:center;border:1px solid var(--border);transition:border-color 0.2s">
+                            <div style="font-size:1.5rem;margin-bottom:8px">🌾</div>
+                            <div style="color:var(--text);font-weight:600">Grain Bin Calculator</div>
+                            <div style="color:var(--dim);font-size:0.8rem;margin-top:4px">Calculate storage capacity</div>
+                        </a>
+                        <a href="/breakeven.html" style="background:var(--card);padding:20px;border-radius:4px;text-decoration:none;text-align:center;border:1px solid var(--border);transition:border-color 0.2s">
+                            <div style="font-size:1.5rem;margin-bottom:8px">💰</div>
+                            <div style="color:var(--text);font-weight:600">Break-Even Calculator</div>
+                            <div style="color:var(--dim);font-size:0.8rem;margin-top:4px">Analyze crop profitability</div>
+                        </a>
+                        <a href="/offices.html" style="background:var(--card);padding:20px;border-radius:4px;text-decoration:none;text-align:center;border:1px solid var(--border);transition:border-color 0.2s">
+                            <div style="font-size:1.5rem;margin-bottom:8px">🏛️</div>
+                            <div style="color:var(--text);font-weight:600">USDA Office Finder</div>
+                            <div style="color:var(--dim);font-size:0.8rem;margin-top:4px">Find FSA & NRCS offices</div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -209,7 +241,12 @@
     </main>
 
     <footer>
-        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;color:var(--dim);font-size:0.8rem">
+        <div style="max-width:1800px;margin:0 auto;padding:20px 20px 10px;display:flex;justify-content:center;gap:30px;flex-wrap:wrap">
+            <a href="https://farmers1st.com" target="_blank" style="color:var(--accent);text-decoration:none;font-size:0.85rem">🌾 Farmers First Agri Service</a>
+            <a href="https://lokedrone.com" target="_blank" style="color:var(--accent);text-decoration:none;font-size:0.85rem">✈️ Loke Drone LC</a>
+            <a href="https://usdronemap.com" target="_blank" style="color:var(--accent);text-decoration:none;font-size:0.85rem">🗺️ US Drone Map</a>
+        </div>
+        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:10px 20px 20px;display:flex;justify-content:space-between;color:var(--dim);font-size:0.8rem">
             <span>© 2026 <a href="/" style="color:var(--accent);text-decoration:none">AGSIST</a>. All rights reserved.</span>
             <span>Made in the USA 🇺🇸</span>
         </div>
@@ -296,6 +333,24 @@
     }
     
     calcGDU();
+    
+    function copyGDUResults() {
+        const hybrid = document.getElementById('hybrid').value;
+        const results = `GDU CALCULATOR RESULTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Hybrid: ${hybrid}-day
+Planting Date: ${document.getElementById('rPlant').textContent}
+Est. Silking Date: ${document.getElementById('rSilk').textContent}
+Est. Black Layer: ${document.getElementById('rBlack').textContent}
+Days to Maturity: ${document.getElementById('rDays').textContent}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Generated by AGSIST - agsist.com`;
+        navigator.clipboard.writeText(results).then(() => {
+            const btn = event.target;
+            btn.textContent = '✓ Copied!';
+            setTimeout(() => btn.textContent = '📋 Copy Results', 2000);
+        });
+    }
     </script>
 </body>
 </html>

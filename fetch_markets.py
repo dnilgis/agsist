@@ -42,14 +42,18 @@ SYMBOLS = {
 }
 
 RSS_FEEDS = [
-    # USDA/Government feeds
-    {"source": "USDA", "url": "https://www.usda.gov/rss/latest-releases.xml", "category": "usda"},
-    {"source": "USDA-NASS", "url": "https://www.nass.usda.gov/rss/releases.xml", "category": "usda"},
-    {"source": "USDA-ERS", "url": "https://www.ers.usda.gov/rss/feeds/ers-homepage.xml", "category": "usda"},
-    # Ag news feeds  
-    {"source": "AgWeb", "url": "https://www.agweb.com/rss/news", "category": "news"},
+    # Ag news feeds (most reliable)
     {"source": "FarmProgress", "url": "https://www.farmprogress.com/rss.xml", "category": "news"},
-    {"source": "Successful Farming", "url": "https://www.agriculture.com/rss/news", "category": "news"},
+    {"source": "AgWeb", "url": "https://www.agweb.com/rss/news", "category": "news"},
+    {"source": "DTN", "url": "https://www.dtnpf.com/agriculture/web/ag/news/rss/xml", "category": "news"},
+    {"source": "Brownfield", "url": "https://brownfieldagnews.com/feed/", "category": "news"},
+    {"source": "AGDAILY", "url": "https://www.agdaily.com/feed/", "category": "news"},
+    {"source": "WorldGrain", "url": "https://www.world-grain.com/ext/rss/channel/5", "category": "news"},
+    {"source": "Agweek", "url": "https://www.agweek.com/index.rss", "category": "news"},
+    # USDA feeds
+    {"source": "USDA", "url": "https://www.usda.gov/rss/latest-releases.xml", "category": "usda"},
+    {"source": "USDA-ERS", "url": "https://www.ers.usda.gov/rss/feeds/ers-homepage.xml", "category": "usda"},
+    {"source": "USDA-NASS", "url": "https://www.nass.usda.gov/rss/feeds/nassr01.xml", "category": "usda"},
 ]
 
 def clean_contract_name(short_name, symbol):
@@ -117,6 +121,7 @@ def fetch_news():
                 try:
                     root = ET.fromstring(xml_data)
                 except ET.ParseError:
+                    print(f"XML parse error for {feed['source']}")
                     continue 
                 
                 count = 0
@@ -148,8 +153,10 @@ def fetch_news():
                         "category": feed.get('category', 'news')
                     })
                     count += 1
+                    
+                print(f"  ✓ {feed['source']}: {count} items")
         except Exception as e:
-            print(f"Error fetching RSS {feed['source']}: {e}")
+            print(f"  ✗ Error fetching RSS {feed['source']}: {e}")
             
     return news_items
 
@@ -183,7 +190,9 @@ def main():
     with open("data/markets.json", "w") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     
-    print(f"\nSuccess! Written to data/markets.json")
+    print(f"\n✓ Success! Written to data/markets.json")
+    print(f"  - {len(data['news'])} news items")
+    print(f"  - {len(data['usda'])} USDA items")
 
 if __name__ == "__main__":
     main()

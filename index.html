@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AGSIST | Live Ag Dashboard - Commodity Prices, Weather & Farm Tools</title>
@@ -10,11 +13,16 @@
     <meta property="og:description" content="Real-time commodity prices, weather radar, and farm tools for modern agriculture.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://agsist.com">
+    <meta property="og:image" content="https://agsist.com/og-image.png">
     <link rel="canonical" href="https://agsist.com/">
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 
@@ -122,6 +130,58 @@
                     <div class="panel" style="margin-bottom:0">
                         <div class="feed-header">NEWS WIRE <span style="color:var(--dim)">RSS</span></div>
                         <div class="feed-scroll" id="news-wire-list" style="height:250px"><div style="padding:20px;text-align:center;color:var(--dim)">Loading wire...</div></div>
+                    </div>
+                    
+                    <!-- TWITTER/X FEEDS SECTION -->
+                    <div class="panel" style="margin-bottom:0">
+                        <div class="feed-header">𝕏 AG TWITTER <span style="color:var(--dim)">LIVE</span></div>
+                        <div class="twitter-feeds-container">
+                            <!-- Tab buttons for switching feeds -->
+                            <div class="twitter-tabs">
+                                <button class="twitter-tab active" onclick="showTwitterFeed('markets')">📈 Markets</button>
+                                <button class="twitter-tab" onclick="showTwitterFeed('weather')">🌪️ Weather</button>
+                                <button class="twitter-tab" onclick="showTwitterFeed('ag')">🌾 Ag News</button>
+                            </div>
+                            <!-- Feed containers -->
+                            <div id="twitter-markets" class="twitter-feed active">
+                                <a class="twitter-timeline" 
+                                   href="https://twitter.com/RampCapitalLLC" 
+                                   data-height="400"
+                                   data-theme="dark"
+                                   data-chrome="noheader nofooter noborders transparent"
+                                   data-tweet-limit="5"
+                                   data-dnt="true">
+                                   Loading @RampCapitalLLC...
+                                </a>
+                            </div>
+                            <div id="twitter-weather" class="twitter-feed" style="display:none">
+                                <a class="twitter-timeline" 
+                                   href="https://twitter.com/ryanhallyall" 
+                                   data-height="400"
+                                   data-theme="dark"
+                                   data-chrome="noheader nofooter noborders transparent"
+                                   data-tweet-limit="5"
+                                   data-dnt="true">
+                                   Loading @ryanhallyall...
+                                </a>
+                            </div>
+                            <div id="twitter-ag" class="twitter-feed" style="display:none">
+                                <a class="twitter-timeline" 
+                                   href="https://twitter.com/dtnpf" 
+                                   data-height="400"
+                                   data-theme="dark"
+                                   data-chrome="noheader nofooter noborders transparent"
+                                   data-tweet-limit="5"
+                                   data-dnt="true">
+                                   Loading @dtnpf...
+                                </a>
+                            </div>
+                            <div style="padding:8px;text-align:center;border-top:1px solid var(--border)">
+                                <a href="https://x.com/naucountry" target="_blank" style="color:var(--dim);font-size:0.75rem;text-decoration:none;margin-right:10px">@naucountry</a>
+                                <a href="https://x.com/USDA" target="_blank" style="color:var(--dim);font-size:0.75rem;text-decoration:none;margin-right:10px">@USDA</a>
+                                <a href="https://x.com/BrownfieldAgNew" target="_blank" style="color:var(--dim);font-size:0.75rem;text-decoration:none">@BrownfieldAgNew</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -322,7 +382,7 @@
                             <strong style="color:var(--accent)">💡 Pro Tip:</strong>
                             <span style="color:var(--dim)"> Sales closing dates are the last day to purchase or change crop insurance. Contact your agent well before these dates.</span>
                             <div style="margin-top:12px">
-                                <a href="https://prodwebnlb.rma.usda.gov/apps/AgentLocator/" target="_blank" class="calc-btn" style="display:inline-block;padding:8px 16px;font-size:0.85rem">Find Insurance Agent →</a>
+                                <a href="https://farmers1st.com" target="_blank" class="calc-btn" style="display:inline-block;padding:8px 16px;font-size:0.85rem">Find Insurance Agent →</a>
                                 <a href="https://webapp.rma.usda.gov/apps/actuarialinformationbrowser/" target="_blank" class="calc-btn" style="display:inline-block;padding:8px 16px;font-size:0.85rem;margin-left:10px;background:var(--card);border:1px solid var(--border);color:var(--text)">RMA Rates →</a>
                             </div>
                         </div>
@@ -384,11 +444,11 @@
                     <div class="panel-body">
                         <div class="resources-grid">
                             <div class="resource-card">
-                                <h4 class="section-label">CROP INSURANCE (RMA)</h4>
+                                <h4 class="section-label">CROP INSURANCE</h4>
+                                <a href="https://farmers1st.com" target="_blank" class="resource-link">Find Insurance Agent (Farmers First)</a>
                                 <a href="https://webapp.rma.usda.gov/apps/actuarialinformationbrowser/" target="_blank" class="resource-link">Actuarial Information Browser</a>
                                 <a href="https://www.rma.usda.gov/Topics/Important-Dates" target="_blank" class="resource-link">Important Dates & Deadlines</a>
                                 <a href="https://www.rma.usda.gov/Topics/Price-Discovery" target="_blank" class="resource-link">Price Discovery</a>
-                                <a href="https://prodwebnlb.rma.usda.gov/apps/AgentLocator/" target="_blank" class="resource-link">Find Insurance Agent</a>
                             </div>
                             <div class="resource-card">
                                 <h4 class="section-label">FARM SERVICE AGENCY</h4>
@@ -416,10 +476,9 @@
                                 <a href="https://hprcc.unl.edu/agroclimate/gdd.php" target="_blank" class="resource-link">U2U Corn GDD Tool</a>
                             </div>
                             <div class="resource-card">
-                                <h4 class="section-label">DATA & STATISTICS</h4>
-                                <a href="https://www.ers.usda.gov/" target="_blank" class="resource-link">USDA Economic Research</a>
-                                <a href="https://www.farmers.gov/dashboard" target="_blank" class="resource-link">Farmers.gov Dashboard</a>
-                                <a href="https://www.agcensus.usda.gov/" target="_blank" class="resource-link">Census of Agriculture</a>
+                                <h4 class="section-label">DRONE SERVICES</h4>
+                                <a href="https://lokedrone.com" target="_blank" class="resource-link">Loke Drone LC - Crop Spraying</a>
+                                <a href="https://usdronemap.com" target="_blank" class="resource-link">US Drone Map - Find Pilots</a>
                             </div>
                         </div>
                     </div>
@@ -436,12 +495,14 @@
                 <div style="display:flex;gap:10px;align-items:center"><span style="width:8px;height:8px;background:var(--green);border-radius:50%"></span><span style="color:var(--text);font-size:0.8rem">All Systems Operational</span></div>
             </div>
             <div class="footer-col"><h4>TOOLS</h4><ul><li><a href="javascript:switchTab('tools')">Grain Bin Calculator</a></li><li><a href="javascript:switchTab('tools');setTimeout(()=>scrollToEl('gdu-section'),100)">GDU Calculator</a></li><li><a href="javascript:switchTab('tools');setTimeout(()=>scrollToEl('breakeven-section'),100)">Break-Even Calculator</a></li></ul></div>
-            <div class="footer-col"><h4>RESOURCES</h4><ul><li><a href="javascript:switchTab('calendar')">USDA Calendar</a></li><li><a href="javascript:switchTab('resources')">Ag Resources</a></li><li><a href="https://farmers1st.com" target="_blank">Farmers First Agri</a></li></ul></div>
+            <div class="footer-col"><h4>RESOURCES</h4><ul><li><a href="javascript:switchTab('calendar')">USDA Calendar</a></li><li><a href="javascript:switchTab('resources')">Ag Resources</a></li><li><a href="https://farmers1st.com" target="_blank">Farmers First Agri</a></li><li><a href="https://lokedrone.com" target="_blank">Loke Drone LC</a></li></ul></div>
             <div class="footer-col"><h4>LEGAL</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li><li><a href="/sitemap.xml">Sitemap</a></li></ul></div>
         </div>
-        <div class="footer-bottom"><span>© 2026 AGSIST. All rights reserved.</span><span>Made in the USA 🇺🇸</span></div>
+        <div class="footer-bottom"><span>© 2026 AGSIST. All rights reserved.</span><span id="footer-updated" style="color:var(--dim)"></span><span>Made in the USA 🇺🇸</span></div>
     </footer>
 
     <script src="app.js"></script>
+    <!-- Twitter Widget Script - load async -->
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </body>
 </html>

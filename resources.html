@@ -1,20 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <meta property="og:image" content="https://agsist.com/og-image.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agricultural Resources - USDA Programs, Crop Insurance & Farm Tools | AGSIST</title>
-    <meta name="description" content="Comprehensive agricultural resources including RMA crop insurance tools, FSA farm programs, NRCS conservation programs, WASDE reports, and weather data.">
-    <meta name="keywords" content="USDA programs, crop insurance, RMA actuarial browser, FSA farm loans, NRCS EQIP, WASDE reports, farm resources">
+    <title>Agricultural Resources - News, Weather, Markets & Tools | AGSIST</title>
+    <meta name="description" content="Comprehensive agricultural resources including commodity news RSS feeds, weather channels, crop insurance tools, USDA links, and market analysis.">
+    <meta name="keywords" content="agriculture resources, farm news, commodity prices, USDA, crop insurance, weather, farming tools">
     <link rel="canonical" href="https://agsist.com/resources.html">
-    <meta property="og:title" content="Agricultural Resources - USDA Programs & Farm Tools">
-    <meta property="og:description" content="Access crop insurance tools, USDA programs, market reports, and weather resources for farmers.">
-    <meta property="og:url" content="https://agsist.com/resources.html">
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .resource-section { margin-bottom: 30px; }
+        .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .resource-card { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 20px; transition: border-color 0.2s; }
+        .resource-card:hover { border-color: var(--accent); }
+        .resource-card h3 { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--accent); margin-bottom: 12px; }
+        .resource-card p { color: var(--dim); font-size: 0.85rem; margin-bottom: 12px; line-height: 1.5; }
+        .resource-link { display: block; padding: 8px 0; border-bottom: 1px solid var(--border); color: var(--text); text-decoration: none; font-size: 0.9rem; transition: all 0.2s; }
+        .resource-link:last-child { border-bottom: none; }
+        .resource-link:hover { color: var(--accent); padding-left: 8px; }
+        .resource-link .icon { margin-right: 8px; }
+        .social-card { display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--card); border-radius: 6px; text-decoration: none; color: var(--text); transition: all 0.2s; border: 1px solid var(--border); }
+        .social-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .social-card .avatar { width: 50px; height: 50px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+        .social-card .info h4 { font-size: 0.95rem; margin-bottom: 4px; }
+        .social-card .info p { font-size: 0.8rem; color: var(--dim); }
+        .feed-embed { background: var(--card); border-radius: 6px; padding: 15px; margin-top: 15px; max-height: 400px; overflow-y: auto; }
+        .rss-tag { display: inline-block; background: var(--accent); color: #000; font-size: 0.65rem; padding: 2px 6px; border-radius: 3px; font-weight: 700; margin-left: 8px; }
+        .youtube-embed { position: relative; width: 100%; padding-bottom: 56.25%; margin-top: 15px; border-radius: 6px; overflow: hidden; }
+        .youtube-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .twitter-section { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .category-header { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent); letter-spacing: 1px; margin: 30px 0 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        .category-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    </style>
 </head>
 <body>
     <header>
@@ -23,71 +52,285 @@
                 <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
                 <div class="logo-text">AGSIST</div>
             </a>
+            <button class="menu-toggle" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
             <nav class="nav">
                 <a href="/">DASHBOARD</a>
-                <a href="/calculator.html">CALCULATOR</a>
-                <a href="/offices.html">OFFICES</a>
+                <a href="/calculator.html">GRAIN BIN</a>
+                <a href="/gdu.html">GDU CALC</a>
+                <a href="/breakeven.html">BREAK-EVEN</a>
                 <a href="/resources.html" class="active">RESOURCES</a>
             </nav>
         </div>
     </header>
 
-    <main>
-        <div class="calc-wrap" style="padding:20px">
-            <nav style="margin-bottom:20px;font-size:0.85rem;color:var(--dim)">
-                <a href="/" style="color:var(--accent);text-decoration:none">Home</a> → Agricultural Resources
-            </nav>
-            
-            <div class="panel">
-                <div class="panel-head"><h1 style="font-size:0.9rem;margin:0">AGRICULTURAL RESOURCES</h1></div>
-                <div class="panel-body">
-                    <div class="resources-grid">
-                        <div class="resource-card">
-                            <h4 class="section-label">CROP INSURANCE (RMA)</h4>
-                            <a href="https://webapp.rma.usda.gov/apps/actuarialinformationbrowser/" target="_blank" class="resource-link">Actuarial Information Browser</a>
-                            <a href="https://www.rma.usda.gov/Topics/Important-Dates" target="_blank" class="resource-link">Important Dates & Deadlines</a>
-                            <a href="https://www.rma.usda.gov/Topics/Price-Discovery" target="_blank" class="resource-link">Price Discovery</a>
-                            <a href="https://www.rma.usda.gov/Policy-and-Procedure/Insurance-Plans" target="_blank" class="resource-link">Insurance Plans (RP, YP, etc)</a>
-                        </div>
-                        <div class="resource-card">
-                            <h4 class="section-label">FARM SERVICE AGENCY (FSA)</h4>
-                            <a href="https://www.fsa.usda.gov/programs-and-services/farm-loan-programs/" target="_blank" class="resource-link">Farm Loan Programs</a>
-                            <a href="https://www.fsa.usda.gov/programs-and-services/arcplc_program/" target="_blank" class="resource-link">ARC / PLC Program</a>
-                            <a href="https://www.fsa.usda.gov/programs-and-services/conservation-programs/" target="_blank" class="resource-link">Conservation Reserve (CRP)</a>
-                            <a href="https://www.fsa.usda.gov/programs-and-services/disaster-assistance-program/" target="_blank" class="resource-link">Disaster Assistance</a>
-                        </div>
-                        <div class="resource-card">
-                            <h4 class="section-label">NRCS & SOIL</h4>
-                            <a href="https://websoilsurvey.nrcs.usda.gov/app/" target="_blank" class="resource-link">Web Soil Survey</a>
-                            <a href="https://www.nrcs.usda.gov/programs-initiatives/eqip-environmental-quality-incentives" target="_blank" class="resource-link">EQIP Program</a>
-                            <a href="https://www.nrcs.usda.gov/programs-initiatives/csp-conservation-stewardship-program" target="_blank" class="resource-link">CSP Program</a>
-                        </div>
-                        <div class="resource-card">
-                            <h4 class="section-label">MARKET REPORTS</h4>
-                            <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank" class="resource-link">WASDE Reports</a>
-                            <a href="https://www.ams.usda.gov/market-news" target="_blank" class="resource-link">USDA Market News</a>
-                            <a href="https://www.nass.usda.gov/Quick_Stats/" target="_blank" class="resource-link">NASS Quick Stats</a>
-                        </div>
-                        <div class="resource-card">
-                            <h4 class="section-label">WEATHER & CLIMATE</h4>
-                            <a href="https://droughtmonitor.unl.edu/" target="_blank" class="resource-link">US Drought Monitor</a>
-                            <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" class="resource-link">NOAA Climate Prediction</a>
-                            <a href="https://www.weather.gov/" target="_blank" class="resource-link">National Weather Service</a>
-                        </div>
-                        <div class="resource-card">
-                            <h4 class="section-label">DATA & STATISTICS</h4>
-                            <a href="https://www.ers.usda.gov/" target="_blank" class="resource-link">USDA Economic Research</a>
-                            <a href="https://www.nass.usda.gov/" target="_blank" class="resource-link">National Agricultural Statistics</a>
-                            <a href="https://www.agcensus.usda.gov/" target="_blank" class="resource-link">Census of Agriculture</a>
-                        </div>
-                    </div>
-                </div>
+    <main style="max-width:1400px;margin:0 auto;padding:20px">
+        <nav style="margin-bottom:20px;font-size:0.85rem;color:var(--dim)">
+            <a href="/" style="color:var(--accent);text-decoration:none">Home</a> → Resources
+        </nav>
+        
+        <h1 style="font-family:'Space Grotesk',sans-serif;font-size:1.8rem;margin-bottom:30px;color:var(--bright)">📚 AGRICULTURAL RESOURCES</h1>
+
+        <!-- WEATHER & FORECASTS -->
+        <h2 class="category-header">🌤️ WEATHER & FORECASTS</h2>
+        <div class="resource-grid">
+            <div class="resource-card">
+                <h3>🌪️ RYAN HALL, Y'ALL</h3>
+                <p>The Internet's Weatherman - Live severe weather coverage, tornado tracking, and storm forecasts. Essential for farmers monitoring dangerous weather.</p>
+                <a href="https://www.youtube.com/@RyanHallYall" target="_blank" class="resource-link"><span class="icon">▶️</span> YouTube Channel (3M+ subscribers)</a>
+                <a href="https://www.ryanhallyall.com/" target="_blank" class="resource-link"><span class="icon">🌐</span> Official Website</a>
+                <a href="https://x.com/ryanhallyall" target="_blank" class="resource-link"><span class="icon">𝕏</span> @ryanhallyall</a>
+                <a href="https://www.youtube.com/feeds/videos.xml?channel_id=UCJHAT3Uvv-g3I8H3GhHWV7w" target="_blank" class="resource-link"><span class="icon">📡</span> RSS Feed <span class="rss-tag">RSS</span></a>
+            </div>
+            <div class="resource-card">
+                <h3>🌾 NWS AGRICULTURE WEATHER</h3>
+                <p>National Weather Service agricultural forecasts, growing degree days, frost/freeze warnings, and drought monitoring.</p>
+                <a href="https://www.weather.gov/wrh/climate" target="_blank" class="resource-link"><span class="icon">🌡️</span> Climate Data</a>
+                <a href="https://droughtmonitor.unl.edu/" target="_blank" class="resource-link"><span class="icon">🏜️</span> US Drought Monitor</a>
+                <a href="https://alerts.weather.gov/" target="_blank" class="resource-link"><span class="icon">⚠️</span> Weather Alerts</a>
+            </div>
+            <div class="resource-card">
+                <h3>🛰️ RADAR & SATELLITE</h3>
+                <p>Real-time radar, satellite imagery, and precipitation tracking.</p>
+                <a href="https://radar.weather.gov/" target="_blank" class="resource-link"><span class="icon">📡</span> National Radar Mosaic</a>
+                <a href="https://www.star.nesdis.noaa.gov/goes/" target="_blank" class="resource-link"><span class="icon">🛰️</span> GOES Satellite</a>
+                <a href="https://www.weather.gov/forecastmaps" target="_blank" class="resource-link"><span class="icon">🗺️</span> Forecast Maps</a>
             </div>
         </div>
+
+        <!-- SOCIAL FEEDS - TWITTER/X -->
+        <h2 class="category-header">𝕏 MUST-FOLLOW AG ACCOUNTS</h2>
+        <div class="twitter-section">
+            <a href="https://x.com/RampCapitalLLC" target="_blank" class="social-card">
+                <div class="avatar">📈</div>
+                <div class="info">
+                    <h4>@RampCapitalLLC</h4>
+                    <p>Finance Twitter legend. Market memes, commodity insights, and trading humor. The CFO of FinTwit.</p>
+                </div>
+            </a>
+            <a href="https://x.com/naucountry" target="_blank" class="social-card">
+                <div class="avatar">🌾</div>
+                <div class="info">
+                    <h4>@naucountry</h4>
+                    <p>NAU Country Insurance - Rich Morrison's market insights, crop insurance updates, and ag commentary.</p>
+                </div>
+            </a>
+            <a href="https://x.com/dtnpf" target="_blank" class="social-card">
+                <div class="avatar">📰</div>
+                <div class="info">
+                    <h4>@dtnpf</h4>
+                    <p>DTN/Progressive Farmer - Breaking ag news, market analysis, and commodity updates.</p>
+                </div>
+            </a>
+            <a href="https://x.com/agaborneag" target="_blank" class="social-card">
+                <div class="avatar">🌽</div>
+                <div class="info">
+                    <h4>@agaborneag</h4>
+                    <p>Grain market commentary, basis analysis, and trading insights from the floor.</p>
+                </div>
+            </a>
+            <a href="https://x.com/USDA" target="_blank" class="social-card">
+                <div class="avatar">🏛️</div>
+                <div class="info">
+                    <h4>@USDA</h4>
+                    <p>Official USDA account - Policy updates, programs, reports, and agricultural news.</p>
+                </div>
+            </a>
+            <a href="https://x.com/BrownfieldAgNew" target="_blank" class="social-card">
+                <div class="avatar">📻</div>
+                <div class="info">
+                    <h4>@BrownfieldAgNew</h4>
+                    <p>Brownfield Ag News - Markets, weather, and farm policy from the Midwest.</p>
+                </div>
+            </a>
+            <a href="https://x.com/farmcrediteast" target="_blank" class="social-card">
+                <div class="avatar">💰</div>
+                <div class="info">
+                    <h4>@FarmCredit</h4>
+                    <p>Farm Credit - Financing updates, loan programs, and rural lending news.</p>
+                </div>
+            </a>
+            <a href="https://x.com/ryanhallyall" target="_blank" class="social-card">
+                <div class="avatar">🌪️</div>
+                <div class="info">
+                    <h4>@ryanhallyall</h4>
+                    <p>Ryan Hall Y'all - Severe weather alerts, storm coverage, and forecast updates.</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- AG NEWS RSS FEEDS -->
+        <h2 class="category-header">📰 AG NEWS RSS FEEDS</h2>
+        <div class="resource-grid">
+            <div class="resource-card">
+                <h3>📡 COMMODITY & MARKET NEWS</h3>
+                <p>Real-time agricultural market news from trusted sources.</p>
+                <a href="https://www.dtnpf.com/agriculture/web/ag/news/rss/xml" target="_blank" class="resource-link"><span class="icon">📰</span> DTN Progressive Farmer <span class="rss-tag">RSS</span></a>
+                <a href="https://www.agweb.com/rss/news" target="_blank" class="resource-link"><span class="icon">📰</span> AgWeb News <span class="rss-tag">RSS</span></a>
+                <a href="https://www.farmprogress.com/rss.xml" target="_blank" class="resource-link"><span class="icon">📰</span> Farm Progress <span class="rss-tag">RSS</span></a>
+                <a href="https://brownfieldagnews.com/feed/" target="_blank" class="resource-link"><span class="icon">📰</span> Brownfield Ag News <span class="rss-tag">RSS</span></a>
+                <a href="https://www.agdaily.com/feed/" target="_blank" class="resource-link"><span class="icon">📰</span> AGDAILY <span class="rss-tag">RSS</span></a>
+                <a href="https://www.world-grain.com/rss" target="_blank" class="resource-link"><span class="icon">📰</span> World Grain <span class="rss-tag">RSS</span></a>
+            </div>
+            <div class="resource-card">
+                <h3>🏛️ USDA FEEDS</h3>
+                <p>Official government agricultural data and reports.</p>
+                <a href="https://www.usda.gov/rss/latest-releases.xml" target="_blank" class="resource-link"><span class="icon">🏛️</span> USDA Latest Releases <span class="rss-tag">RSS</span></a>
+                <a href="https://www.usda.gov/rss/latest-blogs.xml" target="_blank" class="resource-link"><span class="icon">📝</span> USDA Blogs <span class="rss-tag">RSS</span></a>
+                <a href="https://www.nass.usda.gov/rss/feeds/nassr01.xml" target="_blank" class="resource-link"><span class="icon">📊</span> NASS Reports <span class="rss-tag">RSS</span></a>
+                <a href="https://www.ers.usda.gov/rss/feeds/ers-homepage.xml" target="_blank" class="resource-link"><span class="icon">📈</span> ERS Research <span class="rss-tag">RSS</span></a>
+            </div>
+            <div class="resource-card">
+                <h3>🌾 REGIONAL AG NEWS</h3>
+                <p>State and regional agricultural coverage.</p>
+                <a href="https://www.agweek.com/index.rss" target="_blank" class="resource-link"><span class="icon">📰</span> Agweek (ND/MN/SD) <span class="rss-tag">RSS</span></a>
+                <a href="https://www.producer.com/feed/" target="_blank" class="resource-link"><span class="icon">🍁</span> Western Producer (Canada) <span class="rss-tag">RSS</span></a>
+                <a href="https://www.farms.com/Portals/_default/rssfeed.aspx" target="_blank" class="resource-link"><span class="icon">🌾</span> Farms.com <span class="rss-tag">RSS</span></a>
+                <a href="https://www.agproud.com/rss/news" target="_blank" class="resource-link"><span class="icon">🐄</span> Ag Proud (Dairy/Cattle) <span class="rss-tag">RSS</span></a>
+            </div>
+        </div>
+
+        <!-- CROP INSURANCE & RISK MANAGEMENT -->
+        <h2 class="category-header">🛡️ CROP INSURANCE & RISK MANAGEMENT</h2>
+        <div class="resource-grid">
+            <div class="resource-card" style="border-color:var(--accent)">
+                <h3>⭐ FARMERS FIRST AGRI SERVICE</h3>
+                <p>Your local crop insurance experts serving Wisconsin, Minnesota, and the Upper Midwest. Multi-peril crop insurance, crop-hail, and risk management.</p>
+                <a href="https://farmers1st.com" target="_blank" class="resource-link" style="color:var(--accent);font-weight:600"><span class="icon">🌾</span> farmers1st.com - Get a Quote</a>
+            </div>
+            <div class="resource-card">
+                <h3>🏛️ USDA RMA</h3>
+                <p>USDA Risk Management Agency - Federal crop insurance information and tools.</p>
+                <a href="https://www.rma.usda.gov/" target="_blank" class="resource-link"><span class="icon">🏛️</span> RMA Homepage</a>
+                <a href="https://prodwebnlb.rma.usda.gov/apps/AgentLocator/" target="_blank" class="resource-link"><span class="icon">🔍</span> Find an Agent</a>
+                <a href="https://www.rma.usda.gov/en/Information-Tools/Summary-of-Business" target="_blank" class="resource-link"><span class="icon">📊</span> Summary of Business</a>
+                <a href="https://www.rma.usda.gov/en/Topics/Important-Dates" target="_blank" class="resource-link"><span class="icon">📅</span> Important Dates</a>
+            </div>
+            <div class="resource-card">
+                <h3>📊 NAU COUNTRY</h3>
+                <p>Crop insurance provider with market insights from Rich Morrison.</p>
+                <a href="https://www.naucountry.com/" target="_blank" class="resource-link"><span class="icon">🌾</span> NAU Country</a>
+                <a href="https://www.youtube.com/@NAUCountryInsurance" target="_blank" class="resource-link"><span class="icon">▶️</span> YouTube - The Thinking Cap</a>
+            </div>
+        </div>
+
+        <!-- DRONE SERVICES -->
+        <h2 class="category-header">✈️ AGRICULTURAL DRONE SERVICES</h2>
+        <div class="resource-grid">
+            <div class="resource-card" style="border-color:var(--accent)">
+                <h3>⭐ LOKE DRONE LC</h3>
+                <p>Professional agricultural drone services for crop spraying, seeding, and mapping across Wisconsin and Minnesota.</p>
+                <a href="https://lokedrone.com" target="_blank" class="resource-link" style="color:var(--accent);font-weight:600"><span class="icon">✈️</span> lokedrone.com - Schedule Service</a>
+            </div>
+            <div class="resource-card">
+                <h3>🗺️ US DRONE MAP</h3>
+                <p>Find local drone service providers for agriculture, deer recovery, real estate, and more across the USA.</p>
+                <a href="https://usdronemap.com" target="_blank" class="resource-link"><span class="icon">🗺️</span> usdronemap.com - Find Pilots</a>
+            </div>
+        </div>
+
+        <!-- USDA & GOVERNMENT -->
+        <h2 class="category-header">🏛️ USDA & GOVERNMENT RESOURCES</h2>
+        <div class="resource-grid">
+            <div class="resource-card">
+                <h3>🏛️ FSA - FARM SERVICE AGENCY</h3>
+                <p>Farm loans, disaster assistance, conservation programs, and commodity programs.</p>
+                <a href="https://www.fsa.usda.gov/" target="_blank" class="resource-link"><span class="icon">🏛️</span> FSA Homepage</a>
+                <a href="https://www.farmers.gov/" target="_blank" class="resource-link"><span class="icon">🌾</span> Farmers.gov Portal</a>
+                <a href="/offices.html" class="resource-link"><span class="icon">📍</span> Find Your Local Office</a>
+            </div>
+            <div class="resource-card">
+                <h3>🌿 NRCS - CONSERVATION</h3>
+                <p>EQIP, CSP, CRP, and conservation planning assistance.</p>
+                <a href="https://www.nrcs.usda.gov/" target="_blank" class="resource-link"><span class="icon">🌿</span> NRCS Homepage</a>
+                <a href="https://websoilsurvey.nrcs.usda.gov/" target="_blank" class="resource-link"><span class="icon">🗺️</span> Web Soil Survey</a>
+                <a href="https://www.nrcs.usda.gov/programs-initiatives/eqip-environmental-quality-incentives" target="_blank" class="resource-link"><span class="icon">💰</span> EQIP Program</a>
+            </div>
+            <div class="resource-card">
+                <h3>📊 NASS - STATISTICS</h3>
+                <p>Crop reports, acreage data, prices, and agricultural statistics.</p>
+                <a href="https://www.nass.usda.gov/" target="_blank" class="resource-link"><span class="icon">📊</span> NASS Homepage</a>
+                <a href="https://quickstats.nass.usda.gov/" target="_blank" class="resource-link"><span class="icon">🔍</span> Quick Stats Database</a>
+                <a href="https://www.nass.usda.gov/Publications/Calendar/" target="_blank" class="resource-link"><span class="icon">📅</span> Report Calendar</a>
+            </div>
+        </div>
+
+        <!-- MARKET DATA -->
+        <h2 class="category-header">📈 MARKET DATA & PRICES</h2>
+        <div class="resource-grid">
+            <div class="resource-card">
+                <h3>💹 FUTURES & COMMODITIES</h3>
+                <p>Real-time and delayed futures prices for grains, livestock, and more.</p>
+                <a href="https://www.cmegroup.com/markets/agriculture.html" target="_blank" class="resource-link"><span class="icon">📈</span> CME Group Agriculture</a>
+                <a href="https://www.barchart.com/futures/grains" target="_blank" class="resource-link"><span class="icon">📊</span> Barchart Grains</a>
+                <a href="https://tradingeconomics.com/commodities" target="_blank" class="resource-link"><span class="icon">🌍</span> Trading Economics</a>
+            </div>
+            <div class="resource-card">
+                <h3>🌾 CASH PRICES & BASIS</h3>
+                <p>Local elevator bids and basis information.</p>
+                <a href="https://www.dtn.com/agriculture/" target="_blank" class="resource-link"><span class="icon">📊</span> DTN Market Data</a>
+                <a href="https://www.farms.com/markets/" target="_blank" class="resource-link"><span class="icon">💰</span> Farms.com Markets</a>
+            </div>
+            <div class="resource-card">
+                <h3>📉 CHARTS & ANALYSIS</h3>
+                <p>Technical analysis and charting tools.</p>
+                <a href="https://www.tradingview.com/symbols/CBOT-ZC1!/" target="_blank" class="resource-link"><span class="icon">📈</span> TradingView Corn</a>
+                <a href="https://finviz.com/futures_charts.ashx?t=ZC" target="_blank" class="resource-link"><span class="icon">📊</span> FinViz Futures</a>
+            </div>
+        </div>
+
+        <!-- CALCULATORS & TOOLS -->
+        <h2 class="category-header">🧮 CALCULATORS & TOOLS</h2>
+        <div class="resource-grid">
+            <div class="resource-card">
+                <h3>🌾 AGSIST CALCULATORS</h3>
+                <p>Free tools for farmers right here on AGSIST.</p>
+                <a href="/calculator.html" class="resource-link"><span class="icon">🌾</span> Grain Bin Calculator</a>
+                <a href="/gdu.html" class="resource-link"><span class="icon">🌡️</span> GDU Calculator</a>
+                <a href="/breakeven.html" class="resource-link"><span class="icon">💰</span> Break-Even Calculator</a>
+                <a href="/offices.html" class="resource-link"><span class="icon">🏛️</span> USDA Office Finder</a>
+            </div>
+            <div class="resource-card">
+                <h3>🌱 UNIVERSITY EXTENSION</h3>
+                <p>Research-based tools and guides from land-grant universities.</p>
+                <a href="https://extension.wisc.edu/" target="_blank" class="resource-link"><span class="icon">🎓</span> UW Extension</a>
+                <a href="https://extension.umn.edu/" target="_blank" class="resource-link"><span class="icon">🎓</span> UMN Extension</a>
+                <a href="https://www.extension.iastate.edu/" target="_blank" class="resource-link"><span class="icon">🎓</span> Iowa State Extension</a>
+            </div>
+        </div>
+
+        <!-- FINANCIAL MARKETS (FOR FUN) -->
+        <h2 class="category-header">💎 FINANCIAL MARKETS & MACRO</h2>
+        <div class="resource-grid">
+            <div class="resource-card">
+                <h3>📈 BROADER MARKETS</h3>
+                <p>Macro data that affects commodity prices.</p>
+                <a href="https://www.330ramp.com/" target="_blank" class="resource-link"><span class="icon">📈</span> Ramp Capital Blog</a>
+                <a href="https://fred.stlouisfed.org/" target="_blank" class="resource-link"><span class="icon">📊</span> FRED Economic Data</a>
+                <a href="https://www.zerohedge.com/" target="_blank" class="resource-link"><span class="icon">📰</span> Zero Hedge</a>
+                <a href="https://finviz.com/" target="_blank" class="resource-link"><span class="icon">🗺️</span> FinViz Market Maps</a>
+            </div>
+            <div class="resource-card">
+                <h3>💰 CRYPTO & ALT ASSETS</h3>
+                <p>Digital assets and alternative investments.</p>
+                <a href="https://kaslive.com" target="_blank" class="resource-link"><span class="icon">💎</span> KasLive - Kaspa Tracker</a>
+                <a href="https://www.coingecko.com/" target="_blank" class="resource-link"><span class="icon">🪙</span> CoinGecko</a>
+            </div>
+        </div>
+
     </main>
 
     <footer>
-        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;color:var(--dim);font-size:0.8rem">
+        <div class="footer-inner" style="max-width:1400px;margin:0 auto;padding:40px 20px">
+            <div class="footer-col">
+                <h4>AGSIST</h4>
+                <p style="color:var(--dim);font-size:0.85rem;line-height:1.6">Agricultural dashboard for farmers. Real-time markets, weather, calculators, and crop insurance tools.</p>
+                <div style="margin-top:15px">
+                    <a href="https://farmers1st.com" target="_blank" style="color:var(--accent);text-decoration:none;display:block;margin-bottom:8px">🌾 Farmers First Agri Service</a>
+                    <a href="https://lokedrone.com" target="_blank" style="color:var(--accent);text-decoration:none;display:block">✈️ Loke Drone LC</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom" style="max-width:1400px;margin:0 auto;padding:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;color:var(--dim);font-size:0.8rem">
             <span>© 2026 <a href="/" style="color:var(--accent);text-decoration:none">AGSIST</a>. All rights reserved.</span>
             <span>Made in the USA 🇺🇸</span>
         </div>

@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <meta property="og:image" content="https://agsist.com/og-image.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Find USDA Service Center - FSA & NRCS Office Locator | AGSIST</title>
     <meta name="description" content="Find your local USDA Service Center, FSA office, and NRCS office. Access farm loans, ARC/PLC programs, EQIP, CRP, and disaster assistance programs.">
@@ -13,6 +19,8 @@
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -23,10 +31,12 @@
                 <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
                 <div class="logo-text">AGSIST</div>
             </a>
+            <button class="menu-toggle" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
             <nav class="nav">
                 <a href="/">DASHBOARD</a>
-                <a href="/calculator.html">CALCULATOR</a>
-                <a href="/offices.html" class="active">OFFICES</a>
+                <a href="/calculator.html">GRAIN BIN</a>
+                <a href="/gdu.html">GDU CALC</a>
+                <a href="/breakeven.html">BREAK-EVEN</a>
                 <a href="/resources.html">RESOURCES</a>
             </nav>
         </div>
@@ -39,14 +49,16 @@
             </nav>
             
             <div class="panel">
-                <div class="panel-head"><h1 style="font-size:0.9rem;margin:0">FIND USDA SERVICE CENTER</h1></div>
+                <div class="panel-head"><h1 style="font-size:0.9rem;margin:0">🏛️ FIND USDA SERVICE CENTER</h1></div>
                 <div class="panel-body">
-                    <div class="input-group"><label>State</label><select id="state" onchange="loadCounties()"><option value="">Select State</option><option value="WI">Wisconsin</option><option value="MN">Minnesota</option><option value="IA">Iowa</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="MI">Michigan</option><option value="ND">North Dakota</option><option value="SD">South Dakota</option><option value="NE">Nebraska</option><option value="KS">Kansas</option><option value="MO">Missouri</option><option value="OH">Ohio</option></select></div>
-                    <div class="input-group"><label>County</label><select id="county"><option>Select State First</option></select></div>
-                    <button onclick="findOffice()" class="tool-btn" style="width:100%;margin-top:10px;font-weight:700;background:var(--accent);color:#000;border:none;cursor:pointer">LOCATE OFFICE</button>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:600px">
+                        <div class="input-group"><label>State</label><select id="state" onchange="loadCounties()"><option value="">Select State</option><option value="WI">Wisconsin</option><option value="MN">Minnesota</option><option value="IA">Iowa</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="MI">Michigan</option><option value="ND">North Dakota</option><option value="SD">South Dakota</option><option value="NE">Nebraska</option><option value="KS">Kansas</option><option value="MO">Missouri</option><option value="OH">Ohio</option></select></div>
+                        <div class="input-group"><label>County</label><select id="county"><option>Select State First</option></select></div>
+                    </div>
+                    <button onclick="findOffice()" style="margin-top:16px;padding:12px 24px;background:var(--accent);color:#000;border:none;border-radius:4px;font-weight:700;cursor:pointer;font-size:0.9rem">LOCATE OFFICE</button>
                     <div id="office-results" style="margin-top:20px;display:none;grid-template-columns:1fr 1fr;gap:20px">
-                        <div class="market-card"><div class="name">FSA OFFICE</div><p style="font-size:.9rem;margin-top:10px;color:var(--dim)">Farm Service Agency</p><a id="fsa-link" href="#" target="_blank" style="display:block;margin-top:10px;color:var(--accent)">View Contact Info →</a></div>
-                        <div class="market-card"><div class="name">NRCS OFFICE</div><p style="font-size:.9rem;margin-top:10px;color:var(--dim)">Natural Resources Conservation</p><a id="nrcs-link" href="#" target="_blank" style="display:block;margin-top:10px;color:var(--accent)">View Contact Info →</a></div>
+                        <div class="market-card"><div class="name">FSA OFFICE</div><p style="font-size:.9rem;margin-top:10px;color:var(--dim)">Farm Service Agency - Loans, Programs, Disaster Assistance</p><a id="fsa-link" href="#" target="_blank" style="display:block;margin-top:10px;color:var(--accent)">View Contact Info →</a></div>
+                        <div class="market-card"><div class="name">NRCS OFFICE</div><p style="font-size:.9rem;margin-top:10px;color:var(--dim)">Natural Resources Conservation - EQIP, CSP, Soil Health</p><a id="nrcs-link" href="#" target="_blank" style="display:block;margin-top:10px;color:var(--accent)">View Contact Info →</a></div>
                     </div>
                 </div>
             </div>
@@ -69,11 +81,48 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="panel">
+                <div class="panel-head"><h2>MORE TOOLS</h2></div>
+                <div class="panel-body">
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+                        <a href="/calculator.html" style="background:var(--card);padding:20px;border-radius:4px;text-decoration:none;text-align:center;border:1px solid var(--border);transition:border-color 0.2s">
+                            <div style="font-size:1.5rem;margin-bottom:8px">🌾</div>
+                            <div style="color:var(--text);font-weight:600">Grain Bin Calculator</div>
+                        </a>
+                        <a href="/gdu.html" style="background:var(--card);padding:20px;border-radius:4px;text-decoration:none;text-align:center;border:1px solid var(--border);transition:border-color 0.2s">
+                            <div style="font-size:1.5rem;margin-bottom:8px">🌡️</div>
+                            <div style="color:var(--text);font-weight:600">GDU Calculator</div>
+                        </a>
+                        <a href="/breakeven.html" style="background:var(--card);padding:20px;border-radius:4px;text-decoration:none;text-align:center;border:1px solid var(--border);transition:border-color 0.2s">
+                            <div style="font-size:1.5rem;margin-bottom:8px">💰</div>
+                            <div style="color:var(--text);font-weight:600">Break-Even Calculator</div>
+                        </a>
+                        <a href="https://farmers1st.com" target="_blank" style="background:var(--card);padding:20px;border-radius:4px;text-decoration:none;text-align:center;border:1px solid var(--border);transition:border-color 0.2s">
+                            <div style="font-size:1.5rem;margin-bottom:8px">🛡️</div>
+                            <div style="color:var(--text);font-weight:600">Crop Insurance</div>
+                        </a>
+                        <a href="https://lokedrone.com" target="_blank" style="background:var(--card);padding:20px;border-radius:4px;text-decoration:none;text-align:center;border:1px solid var(--border);transition:border-color 0.2s">
+                            <div style="font-size:1.5rem;margin-bottom:8px">✈️</div>
+                            <div style="color:var(--text);font-weight:600">Drone Services</div>
+                        </a>
+                        <a href="https://usdronemap.com" target="_blank" style="background:var(--card);padding:20px;border-radius:4px;text-decoration:none;text-align:center;border:1px solid var(--border);transition:border-color 0.2s">
+                            <div style="font-size:1.5rem;margin-bottom:8px">🗺️</div>
+                            <div style="color:var(--text);font-weight:600">Find Drone Pilots</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
     <footer>
-        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;color:var(--dim);font-size:0.8rem">
+        <div style="max-width:1800px;margin:0 auto;padding:20px 20px 10px;display:flex;justify-content:center;gap:30px;flex-wrap:wrap">
+            <a href="https://farmers1st.com" target="_blank" style="color:var(--accent);text-decoration:none;font-size:0.85rem">🌾 Farmers First Agri Service</a>
+            <a href="https://lokedrone.com" target="_blank" style="color:var(--accent);text-decoration:none;font-size:0.85rem">✈️ Loke Drone LC</a>
+            <a href="https://usdronemap.com" target="_blank" style="color:var(--accent);text-decoration:none;font-size:0.85rem">🗺️ US Drone Map</a>
+        </div>
+        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:10px 20px 20px;display:flex;justify-content:space-between;color:var(--dim);font-size:0.8rem">
             <span>© 2026 <a href="/" style="color:var(--accent);text-decoration:none">AGSIST</a>. All rights reserved.</span>
             <span>Made in the USA 🇺🇸</span>
         </div>
