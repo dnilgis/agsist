@@ -780,8 +780,34 @@
             </div>
             <div>
                 <div class="section-header">🌤️ Weather</div>
+                <div id="forecast" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;font-size:0.8rem">
+                    <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center">
+                        <div style="color:var(--dim);font-size:0.7rem">TODAY</div>
+                        <div id="wx-today-icon" style="font-size:1.5rem;margin:4px 0">--</div>
+                        <div id="wx-today-temp" style="font-weight:600">--</div>
+                        <div id="wx-today-desc" style="font-size:0.7rem;color:var(--dim)">--</div>
+                    </div>
+                    <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center">
+                        <div style="color:var(--dim);font-size:0.7rem">TONIGHT</div>
+                        <div id="wx-tonight-icon" style="font-size:1.5rem;margin:4px 0">--</div>
+                        <div id="wx-tonight-temp" style="font-weight:600">--</div>
+                        <div id="wx-tonight-desc" style="font-size:0.7rem;color:var(--dim)">--</div>
+                    </div>
+                    <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center">
+                        <div style="color:var(--dim);font-size:0.7rem">TOMORROW</div>
+                        <div id="wx-tomorrow-icon" style="font-size:1.5rem;margin:4px 0">--</div>
+                        <div id="wx-tomorrow-temp" style="font-weight:600">--</div>
+                        <div id="wx-tomorrow-desc" style="font-size:0.7rem;color:var(--dim)">--</div>
+                    </div>
+                    <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center">
+                        <div style="color:var(--dim);font-size:0.7rem">TOM NIGHT</div>
+                        <div id="wx-tomnight-icon" style="font-size:1.5rem;margin:4px 0">--</div>
+                        <div id="wx-tomnight-temp" style="font-weight:600">--</div>
+                        <div id="wx-tomnight-desc" style="font-size:0.7rem;color:var(--dim)">--</div>
+                    </div>
+                </div>
                 <div class="weather-card">
-                    <iframe src="https://embed.windy.com/embed2.html?lat=45.4&lon=-91.85&detailLat=45.4&detailLon=-91.85&width=650&height=420&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1" frameborder="0" title="Windy Weather"></iframe>
+                    <iframe src="https://embed.windy.com/embed2.html?lat=45.4&lon=-91.85&detailLat=45.4&detailLon=-91.85&width=650&height=350&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1" frameborder="0" title="Windy Weather"></iframe>
                 </div>
             </div>
         </div>
@@ -956,8 +982,6 @@
                 if (c.low52) document.getElementById('gold-low').textContent = '$' + c.low52.toFixed(0);
                 if (c.symbol) document.getElementById('gold-symbol').textContent = c.symbol;
             }
-                if (c.low52) document.getElementById('gold-low').textContent = '$' + c.low52.toFixed(0);
-            }
             
             // SILVER
             if (m.metals?.silver) {
@@ -1096,6 +1120,58 @@
     loadData();
     // Refresh every 2 minutes
     setInterval(loadData, 2 * 60 * 1000);
+    
+    // Fetch NWS forecast for Barron County
+    async function loadForecast() {
+        try {
+            // NWS API for Barron, WI area
+            const res = await fetch('https://api.weather.gov/gridpoints/DLH/75,63/forecast');
+            if (!res.ok) throw new Error('Forecast unavailable');
+            const data = await res.json();
+            const periods = data.properties.periods;
+            
+            // Weather icon helper
+            const wxIcon = (forecast, isDay) => {
+                const f = forecast.toLowerCase();
+                if (f.includes('thunder') || f.includes('storm')) return '⛈️';
+                if (f.includes('rain') || f.includes('shower')) return '🌧️';
+                if (f.includes('snow') || f.includes('flurr')) return '🌨️';
+                if (f.includes('cloud') || f.includes('overcast')) return isDay ? '☁️' : '☁️';
+                if (f.includes('partly') || f.includes('mostly sunny')) return isDay ? '⛅' : '🌙';
+                if (f.includes('fog') || f.includes('mist')) return '🌫️';
+                if (f.includes('wind')) return '💨';
+                return isDay ? '☀️' : '🌙';
+            };
+            
+            // Populate 4 periods (Today, Tonight, Tomorrow, Tomorrow Night)
+            if (periods[0]) {
+                document.getElementById('wx-today-icon').textContent = wxIcon(periods[0].shortForecast, periods[0].isDaytime);
+                document.getElementById('wx-today-temp').textContent = periods[0].temperature + '°' + periods[0].temperatureUnit;
+                document.getElementById('wx-today-desc').textContent = periods[0].shortForecast.substring(0, 20);
+            }
+            if (periods[1]) {
+                document.getElementById('wx-tonight-icon').textContent = wxIcon(periods[1].shortForecast, periods[1].isDaytime);
+                document.getElementById('wx-tonight-temp').textContent = periods[1].temperature + '°' + periods[1].temperatureUnit;
+                document.getElementById('wx-tonight-desc').textContent = periods[1].shortForecast.substring(0, 20);
+            }
+            if (periods[2]) {
+                document.getElementById('wx-tomorrow-icon').textContent = wxIcon(periods[2].shortForecast, periods[2].isDaytime);
+                document.getElementById('wx-tomorrow-temp').textContent = periods[2].temperature + '°' + periods[2].temperatureUnit;
+                document.getElementById('wx-tomorrow-desc').textContent = periods[2].shortForecast.substring(0, 20);
+            }
+            if (periods[3]) {
+                document.getElementById('wx-tomnight-icon').textContent = wxIcon(periods[3].shortForecast, periods[3].isDaytime);
+                document.getElementById('wx-tomnight-temp').textContent = periods[3].temperature + '°' + periods[3].temperatureUnit;
+                document.getElementById('wx-tomnight-desc').textContent = periods[3].shortForecast.substring(0, 20);
+            }
+        } catch (e) {
+            console.log('Forecast error:', e);
+        }
+    }
+    
+    loadForecast();
+    // Refresh forecast every 30 minutes
+    setInterval(loadForecast, 30 * 60 * 1000);
     
     // Welcome message based on time
     function getGreeting() {
