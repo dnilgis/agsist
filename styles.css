@@ -22,6 +22,19 @@ body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);color
 .deadline-item:last-child{border-bottom:none !important}
 .gdu-stages{font-size:0.85rem}
 
+/* Market dates grid */
+.market-dates-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.date-card{background:var(--card);padding:20px;border-radius:8px;border:1px solid var(--border)}
+.date-card.highlight{border-color:var(--accent)}
+.date-card .date-icon{font-size:1.5rem;margin-bottom:10px}
+.date-card h4{color:var(--text);font-size:1rem;margin-bottom:8px}
+.date-card p{color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.9rem;margin-bottom:8px}
+.date-card .date-desc{color:var(--dim);font-size:0.8rem}
+
+/* Calc button */
+.calc-btn{padding:12px 24px;background:var(--accent);color:#000;border:none;border-radius:4px;font-weight:700;cursor:pointer;font-size:0.9rem;transition:background 0.2s}
+.calc-btn:hover{background:var(--accent-dim)}
+
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
@@ -169,6 +182,7 @@ footer{background:var(--panel);border-top:1px solid var(--border);padding:40px 0
     .grid-main{grid-template-columns:1fr}
     .sidebar-stack{position:static;max-height:none;overflow:visible}
     .footer-inner{grid-template-columns:1fr 1fr}
+    .market-dates-grid{grid-template-columns:1fr}
 }
 
 @media(max-width:768px){
@@ -194,4 +208,79 @@ footer{background:var(--panel);border-top:1px solid var(--border);padding:40px 0
     .footer-bottom{flex-direction:column;gap:10px;text-align:center}
     
     .calc-wrap .panel-body > div{grid-template-columns:1fr!important}
+    .market-dates-grid{grid-template-columns:1fr}
+}
+
+/* Twitter Feed Tabs */
+.twitter-feeds-container { background: var(--card); }
+.twitter-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); }
+.twitter-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 10px 8px;
+    color: var(--dim);
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+}
+.twitter-tab:hover { color: var(--text); background: var(--panel); }
+.twitter-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--panel); }
+.twitter-feed { min-height: 200px; }
+.twitter-feed iframe { border-radius: 0 !important; }
+
+/* Print Styles */
+@media print {
+    /* Hide non-essential elements */
+    nav, footer, .ticker, .twitter-feeds-container, 
+    .panel-head button, .tab-btn, .nav-tabs,
+    [onclick], button:not(.print-btn) { display: none !important; }
+    
+    /* Reset colors for printing */
+    body { 
+        background: white !important; 
+        color: black !important; 
+        font-size: 12pt;
+    }
+    
+    /* Make panels print-friendly */
+    .panel, .card, .result-card, .calc-card {
+        background: white !important;
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+        margin-bottom: 15pt;
+    }
+    
+    /* Headers */
+    .panel-head, h1, h2, h3, h4 {
+        background: none !important;
+        color: black !important;
+        border-bottom: 1px solid #ccc;
+    }
+    
+    /* Results styling */
+    .result-value, .result-row span {
+        color: black !important;
+    }
+    
+    /* Links show URL */
+    a[href]:after { content: " (" attr(href) ")"; font-size: 9pt; }
+    a[href^="#"]:after, a[href^="javascript"]:after { content: ""; }
+    
+    /* Page setup */
+    @page { margin: 0.5in; }
+    
+    /* Add print header */
+    body:before {
+        content: "AGSIST - agsist.com";
+        display: block;
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10pt;
+        padding-bottom: 5pt;
+        border-bottom: 2px solid black;
+    }
 }
