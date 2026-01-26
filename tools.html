@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Farm Calculators - Grain Bin, GDU, Break-Even | AGSIST</title>
+    <meta name="description" content="Free farming calculators: Grain bin bushel capacity, corn GDU growing degree units, crop break-even analysis. Built for farmers by farmers. No login required.">
+    <meta name="keywords" content="grain bin calculator, bushel calculator, GDU calculator, growing degree units, corn heat units, break even calculator, farm calculator, crop calculator">
+    <link rel="canonical" href="https://agsist.com/tools.html">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <meta property="og:title" content="Free Farm Calculators - Grain Bin, GDU, Break-Even">
+    <meta property="og:description" content="Free farming calculators built for farmers. Grain bin capacity, GDU tracking, break-even analysis.">
+    <meta property="og:image" content="https://agsist.com/og-image.png">
+    <meta property="og:url" content="https://agsist.com/tools.html">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Schema.org markup for tools -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "AGSIST Farm Calculators",
+        "description": "Free agricultural calculators for grain bin capacity, GDU tracking, and break-even analysis",
+        "url": "https://agsist.com/tools.html",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": ["Grain Bin Calculator", "GDU Calculator", "Break-Even Calculator", "USDA Office Finder"]
+    }
+    </script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #0a0a0a;
+            --card: #111;
+            --border: #222;
+            --text: #e8e8e8;
+            --dim: #666;
+            --accent: #e6b042;
+            --green: #22c55e;
+            --red: #ef4444;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+        
+        /* NAV */
+        nav {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .nav-links a {
+            color: var(--dim);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text);
+            background: var(--border);
+        }
+        
+        /* MAIN */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        
+        /* PAGE HEADER */
+        .page-header {
+            margin-bottom: 24px;
+        }
+        
+        .page-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        
+        .page-header p {
+            color: var(--dim);
+            font-size: 0.9rem;
+        }
+        
+        /* TOOL JUMP LINKS */
+        .tool-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .tool-nav a {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        
+        .tool-nav a:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        
+        /* TOOL SECTIONS */
+        .tool-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 24px;
+            scroll-margin-top: 80px;
+        }
+        
+        .tool-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .tool-header h2 {
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tool-header .tag {
+            font-size: 0.7rem;
+            background: var(--accent);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        
+        .tool-body {
+            padding: 16px;
+        }
+        
+        /* FORM ELEMENTS */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .form-group label {
+            font-size: 0.75rem;
+            color: var(--dim);
+            text-transform: uppercase;
+        }
+        
+        .form-group input,
+        .form-group select {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        /* RESULTS */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .result-item {
+            background: var(--bg);
+            padding: 12px;
+            border-radius: 6px;
+        }
+        
+        .result-item.highlight {
+            grid-column: 1 / -1;
+            border: 1px solid var(--accent);
+        }
+        
+        .result-label {
+            font-size: 0.7rem;
+            color: var(--dim);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        
+        .result-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .result-value.accent {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+        
+        /* COPY BUTTON */
+        .copy-btn {
+            width: 100%;
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        
+        .copy-btn:hover {
+            border-color: var(--accent);
+        }
+        
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 20px 16px;
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--dim);
+        }
+        
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        /* TABLET+ */
+        @media (min-width: 640px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .form-grid.three-col {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .results-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (min-width: 768px) {
+            main { padding: 24px; }
+            .page-header h1 { font-size: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="logo">AGSIST</a>
+            <div class="nav-links">
+                <a href="/tools.html" class="active">Tools</a>
+                <a href="/fastfacts.html">Fast Facts</a>
+                <a href="/learn.html">Learn</a>
+                <a href="/calendar.html">Calendar</a>
+                <a href="/resources.html">Resources</a>
+            </div>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="page-header">
+            <h1>Free Farm Calculators</h1>
+            <p>Built for farmers. No login. No ads. Just tools that work.</p>
+        </div>
+        
+        <div class="tool-nav">
+            <a href="#grain-bin">🌾 Grain Bin</a>
+            <a href="#gdu">🌡️ GDU Calculator</a>
+            <a href="#breakeven">💰 Break-Even</a>
+            <a href="#fertilizer">🧪 Fertilizer</a>
+            <a href="#office-finder">📍 USDA Offices</a>
+        </div>
+        
+        <!-- GRAIN BIN CALCULATOR -->
+        <section class="tool-section" id="grain-bin">
+            <div class="tool-header">
+                <h2>🌾 Grain Bin Calculator</h2>
+                <span class="tag">FREE</span>
+            </div>
+            <div class="tool-body">
+                <div class="form-grid three-col">
+                    <div class="form-group">
+                        <label>Bin Shape</label>
+                        <select id="bin-shape" onchange="calcBin()">
+                            <option value="round">Round</option>
+                            <option value="rect">Rectangular</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label id="dim1-label">Diameter (ft)</label>
+                        <input type="number" id="bin-dim1" value="30" onchange="calcBin()">
+                    </div>
+                    <div class="form-group" id="dim2-group">
+                        <label id="dim2-label">Height (ft)</label>
+                        <input type="number" id="bin-dim2" value="24" onchange="calcBin()">
+                    </div>
+                    <div class="form-group" id="dim3-group" style="display:none;">
+                        <label>Height (ft)</label>
+                        <input type="number" id="bin-dim3" value="20" onchange="calcBin()">
+                    </div>
+                    <div class="form-group">
+                        <label>Grain Type</label>
+                        <select id="bin-grain" onchange="calcBin()">
+                            <option value="corn">Corn (56 lb/bu)</option>
+                            <option value="soybeans">Soybeans (60 lb/bu)</option>
+                            <option value="wheat">Wheat (60 lb/bu)</option>
+                            <option value="barley">Barley (48 lb/bu)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Current Moisture %</label>
+                        <input type="number" id="bin-moisture" value="15.5" step="0.1" onchange="calcBin()">
+                    </div>
+                    <div class="form-group">
+                        <label>Standard Moisture %</label>
+                        <input type="number" id="bin-std-moisture" value="15.0" step="0.1" onchange="calcBin()">
+                    </div>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-item highlight">
+                        <div class="result-label">Total Bushels</div>
+                        <div class="result-value accent" id="bin-bushels">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Total Volume</div>
+                        <div class="result-value" id="bin-volume">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Total Weight</div>
+                        <div class="result-value" id="bin-weight">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Moisture Shrink</div>
+                        <div class="result-value" id="bin-shrink">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Dry Bushels</div>
+                        <div class="result-value" id="bin-dry">--</div>
+                    </div>
+                </div>
+                
+                <button class="copy-btn" onclick="copyBinResults()">📋 Copy Results</button>
+            </div>
+        </section>
+        
+        <!-- GDU CALCULATOR -->
+        <section class="tool-section" id="gdu">
+            <div class="tool-header">
+                <h2>🌡️ GDU Calculator</h2>
+                <span class="tag">FREE</span>
+            </div>
+            <div class="tool-body">
+                <div class="form-grid three-col">
+                    <div class="form-group">
+                        <label>Hybrid Maturity (days)</label>
+                        <select id="gdu-hybrid" onchange="calcGDU()">
+                            <option value="85">85-day (2100 GDU)</option>
+                            <option value="90">90-day (2250 GDU)</option>
+                            <option value="95">95-day (2400 GDU)</option>
+                            <option value="100" selected>100-day (2550 GDU)</option>
+                            <option value="105">105-day (2700 GDU)</option>
+                            <option value="110">110-day (2850 GDU)</option>
+                            <option value="115">115-day (3000 GDU)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Planting Date</label>
+                        <input type="date" id="gdu-plant-date" onchange="calcGDU()">
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <select id="gdu-location" onchange="calcGDU()">
+                            <option value="wi-central" selected>Wisconsin - Central</option>
+                            <option value="wi-south">Wisconsin - South</option>
+                            <option value="mn-south">Minnesota - South</option>
+                            <option value="ia-north">Iowa - North</option>
+                            <option value="ia-central">Iowa - Central</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-label">Planting Date</div>
+                        <div class="result-value" id="gdu-plant">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Est. Silking</div>
+                        <div class="result-value accent" id="gdu-silk">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Est. Black Layer</div>
+                        <div class="result-value" style="color:var(--green)" id="gdu-black">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">GDU to Silk</div>
+                        <div class="result-value" id="gdu-to-silk">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">GDU to Maturity</div>
+                        <div class="result-value" id="gdu-to-mature">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Days to Maturity</div>
+                        <div class="result-value" id="gdu-days">--</div>
+                    </div>
+                </div>
+                
+                <button class="copy-btn" onclick="copyGDUResults()">📋 Copy Results</button>
+                
+                <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:6px;font-size:0.8rem;color:var(--dim)">
+                    <strong style="color:var(--text)">How GDUs Work:</strong> Growing Degree Units accumulate daily heat above 50°F base temp. Formula: (Daily High + Daily Low) / 2 - 50, with high capped at 86°F and low at 50°F.
+                </div>
+            </div>
+        </section>
+        
+        <!-- BREAK-EVEN CALCULATOR -->
+        <section class="tool-section" id="breakeven">
+            <div class="tool-header">
+                <h2>💰 Break-Even Calculator</h2>
+                <span class="tag">FREE</span>
+            </div>
+            <div class="tool-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Crop</label>
+                        <select id="be-crop" onchange="loadBEPreset();calcBE()">
+                            <option value="corn">Corn</option>
+                            <option value="soybeans">Soybeans</option>
+                            <option value="wheat">Wheat</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Yield (bu/ac)</label>
+                        <input type="number" id="be-yield" value="180" onchange="calcBE()">
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Price ($/bu)</label>
+                        <input type="number" id="be-price" value="4.50" step="0.01" onchange="calcBE()">
+                    </div>
+                    <div class="form-group">
+                        <label>Cash Rent ($/ac)</label>
+                        <input type="number" id="be-rent" value="225" onchange="calcBE()">
+                    </div>
+                </div>
+                
+                <details style="margin-bottom:16px">
+                    <summary style="cursor:pointer;color:var(--accent);font-size:0.85rem;padding:8px 0">+ Show All Costs</summary>
+                    <div class="form-grid" style="margin-top:12px">
+                        <div class="form-group">
+                            <label>Seed ($/ac)</label>
+                            <input type="number" id="be-seed" value="135" onchange="calcBE()">
+                        </div>
+                        <div class="form-group">
+                            <label>Fertilizer ($/ac)</label>
+                            <input type="number" id="be-fert" value="165" onchange="calcBE()">
+                        </div>
+                        <div class="form-group">
+                            <label>Chemical ($/ac)</label>
+                            <input type="number" id="be-chem" value="55" onchange="calcBE()">
+                        </div>
+                        <div class="form-group">
+                            <label>Crop Insurance ($/ac)</label>
+                            <input type="number" id="be-insurance" value="38" onchange="calcBE()">
+                        </div>
+                        <div class="form-group">
+                            <label>Drying ($/ac)</label>
+                            <input type="number" id="be-drying" value="35" onchange="calcBE()">
+                        </div>
+                        <div class="form-group">
+                            <label>Machinery ($/ac)</label>
+                            <input type="number" id="be-machinery" value="95" onchange="calcBE()">
+                        </div>
+                        <div class="form-group">
+                            <label>Labor ($/ac)</label>
+                            <input type="number" id="be-labor" value="35" onchange="calcBE()">
+                        </div>
+                        <div class="form-group">
+                            <label>Overhead ($/ac)</label>
+                            <input type="number" id="be-overhead" value="40" onchange="calcBE()">
+                        </div>
+                    </div>
+                </details>
+                
+                <div class="results-grid">
+                    <div class="result-item highlight">
+                        <div class="result-label">Break-Even Price</div>
+                        <div class="result-value accent" id="be-breakeven">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Total Cost/Acre</div>
+                        <div class="result-value" id="be-total-cost">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Gross Revenue</div>
+                        <div class="result-value" id="be-revenue">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Net Profit/Acre</div>
+                        <div class="result-value" id="be-profit">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Net $/Bushel</div>
+                        <div class="result-value" id="be-per-bu">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Yield to Break-Even</div>
+                        <div class="result-value" id="be-yield-needed">--</div>
+                    </div>
+                </div>
+                
+                <button class="copy-btn" onclick="copyBEResults()">📋 Copy Results</button>
+            </div>
+        </section>
+        
+        <!-- FERTILIZER COST CALCULATOR -->
+        <section class="tool-section" id="fertilizer">
+            <div class="tool-header">
+                <h2>🧪 Fertilizer Cost Calculator</h2>
+                <span class="tag">FREE</span>
+            </div>
+            <div class="tool-body">
+                <div class="form-grid three-col">
+                    <div class="form-group">
+                        <label>Product Type</label>
+                        <select id="fert-product" onchange="updateFertAnalysis();calcFert()">
+                            <option value="custom">Custom Blend</option>
+                            <option value="urea">Urea (46-0-0)</option>
+                            <option value="uan28">UAN 28% (28-0-0)</option>
+                            <option value="uan32">UAN 32% (32-0-0)</option>
+                            <option value="anhydrous">Anhydrous (82-0-0)</option>
+                            <option value="dap">DAP (18-46-0)</option>
+                            <option value="map">MAP (11-52-0)</option>
+                            <option value="potash">Potash (0-0-60)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Price ($/ton)</label>
+                        <input type="number" id="fert-price" value="550" onchange="calcFert()">
+                    </div>
+                    <div class="form-group">
+                        <label>Acres</label>
+                        <input type="number" id="fert-acres" value="100" onchange="calcFert()">
+                    </div>
+                </div>
+                
+                <div class="form-grid three-col">
+                    <div class="form-group">
+                        <label>N Analysis (%)</label>
+                        <input type="number" id="fert-n" value="46" step="0.1" onchange="calcFert()">
+                    </div>
+                    <div class="form-group">
+                        <label>P₂O₅ Analysis (%)</label>
+                        <input type="number" id="fert-p" value="0" step="0.1" onchange="calcFert()">
+                    </div>
+                    <div class="form-group">
+                        <label>K₂O Analysis (%)</label>
+                        <input type="number" id="fert-k" value="0" step="0.1" onchange="calcFert()">
+                    </div>
+                </div>
+                
+                <div class="form-grid three-col">
+                    <div class="form-group">
+                        <label>N Needed (lb/ac)</label>
+                        <input type="number" id="fert-n-need" value="180" onchange="calcFert()">
+                    </div>
+                    <div class="form-group">
+                        <label>P₂O₅ Needed (lb/ac)</label>
+                        <input type="number" id="fert-p-need" value="0" onchange="calcFert()">
+                    </div>
+                    <div class="form-group">
+                        <label>K₂O Needed (lb/ac)</label>
+                        <input type="number" id="fert-k-need" value="0" onchange="calcFert()">
+                    </div>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-item highlight">
+                        <div class="result-label">Total Cost</div>
+                        <div class="result-value accent" id="fert-total-cost">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Cost per Acre</div>
+                        <div class="result-value" id="fert-cost-acre">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Product Needed</div>
+                        <div class="result-value" id="fert-tons">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Cost per lb N</div>
+                        <div class="result-value" id="fert-cost-n">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Lbs Product/Acre</div>
+                        <div class="result-value" id="fert-lbs-acre">--</div>
+                    </div>
+                </div>
+                
+                <button class="copy-btn" onclick="copyFertResults()">📋 Copy Results</button>
+            </div>
+        </section>
+        
+        <!-- USDA OFFICE FINDER -->
+        <section class="tool-section" id="office-finder">
+            <div class="tool-header">
+                <h2>📍 USDA Office Finder</h2>
+                <span class="tag">FREE</span>
+            </div>
+            <div class="tool-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>State</label>
+                        <select id="office-state" onchange="updateCounties()">
+                            <option value="">Select State</option>
+                            <option value="WI">Wisconsin</option>
+                            <option value="MN">Minnesota</option>
+                            <option value="IA">Iowa</option>
+                            <option value="IL">Illinois</option>
+                            <option value="ND">North Dakota</option>
+                            <option value="SD">South Dakota</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>County</label>
+                        <select id="office-county">
+                            <option value="">Select county...</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="copy-btn" style="background:var(--accent);color:#000;border-color:var(--accent);margin-top:0;margin-bottom:16px" onclick="findOffice()">🔍 Find Office</button>
+                
+                <div id="office-results" style="display:none">
+                    <div class="results-grid" style="grid-template-columns:1fr 1fr;border-top:none;padding-top:0">
+                        <a id="fsa-link" href="#" target="_blank" class="result-item" style="text-decoration:none;text-align:center;border:1px solid var(--border)">
+                            <div class="result-label">FSA Office</div>
+                            <div class="result-value" style="font-size:1rem;color:var(--accent)">Farm Service Agency →</div>
+                            <div style="font-size:0.7rem;color:var(--dim);margin-top:4px">Loans, disaster assistance, conservation</div>
+                        </a>
+                        <a id="nrcs-link" href="#" target="_blank" class="result-item" style="text-decoration:none;text-align:center;border:1px solid var(--border)">
+                            <div class="result-label">NRCS Office</div>
+                            <div class="result-value" style="font-size:1rem;color:var(--accent)">Natural Resources →</div>
+                            <div style="font-size:0.7rem;color:var(--dim);margin-top:4px">EQIP, CSP, soil surveys</div>
+                        </a>
+                    </div>
+                </div>
+                
+                <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:6px;font-size:0.8rem;color:var(--dim)">
+                    <strong style="color:var(--text)">Quick Links:</strong>
+                    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:8px">
+                        <a href="https://www.farmers.gov/" target="_blank" style="color:var(--accent)">Farmers.gov</a>
+                        <a href="https://www.fsa.usda.gov/programs-and-services/farm-loan-programs/" target="_blank" style="color:var(--accent)">Farm Loans</a>
+                        <a href="https://www.nrcs.usda.gov/wps/portal/nrcs/main/national/programs/financial/eqip/" target="_blank" style="color:var(--accent)">EQIP Program</a>
+                        <a href="https://www.rma.usda.gov/" target="_blank" style="color:var(--accent)">Crop Insurance (RMA)</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-links">
+            <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
+            <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
+            <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
+        </div>
+        <div>© 2026 AGSIST • Made in the USA 🇺🇸</div>
+    </footer>
+    
+    <script>
+    // GRAIN BIN CALCULATOR
+    const BU_PER_CUFT = 0.8036;
+    const GRAINS = {
+        corn: { lb: 56, stdMoist: 15.0 },
+        soybeans: { lb: 60, stdMoist: 13.0 },
+        wheat: { lb: 60, stdMoist: 13.5 },
+        barley: { lb: 48, stdMoist: 14.0 }
+    };
+    
+    function calcBin() {
+        const shape = document.getElementById('bin-shape').value;
+        const dim1 = parseFloat(document.getElementById('bin-dim1').value) || 0;
+        const dim2 = parseFloat(document.getElementById('bin-dim2').value) || 0;
+        const dim3 = parseFloat(document.getElementById('bin-dim3').value) || 0;
+        const grain = document.getElementById('bin-grain').value;
+        const moisture = parseFloat(document.getElementById('bin-moisture').value) || 15;
+        const stdMoist = parseFloat(document.getElementById('bin-std-moisture').value) || GRAINS[grain].stdMoist;
+        
+        // Update labels based on shape
+        if (shape === 'round') {
+            document.getElementById('dim1-label').textContent = 'Diameter (ft)';
+            document.getElementById('dim2-label').textContent = 'Height (ft)';
+            document.getElementById('dim2-group').style.display = '';
+            document.getElementById('dim3-group').style.display = 'none';
+        } else {
+            document.getElementById('dim1-label').textContent = 'Length (ft)';
+            document.getElementById('dim2-label').textContent = 'Width (ft)';
+            document.getElementById('dim2-group').style.display = '';
+            document.getElementById('dim3-group').style.display = '';
+        }
+        
+        // Calculate volume
+        let volumeCuFt;
+        if (shape === 'round') {
+            const radius = dim1 / 2;
+            volumeCuFt = Math.PI * radius * radius * dim2;
+        } else {
+            volumeCuFt = dim1 * dim2 * dim3;
+        }
+        
+        // Calculate bushels
+        const totalBu = volumeCuFt * BU_PER_CUFT;
+        const lbPerBu = GRAINS[grain].lb;
+        const totalWeight = totalBu * lbPerBu;
+        
+        // Moisture shrink
+        const shrinkPct = Math.max(0, (moisture - stdMoist) * 1.3);
+        const dryBu = totalBu * (1 - shrinkPct / 100);
+        
+        // Update display
+        document.getElementById('bin-volume').textContent = Math.round(volumeCuFt).toLocaleString() + ' cu ft';
+        document.getElementById('bin-bushels').textContent = Math.round(totalBu).toLocaleString() + ' bu';
+        document.getElementById('bin-weight').textContent = (totalWeight / 2000).toFixed(1) + ' tons';
+        document.getElementById('bin-shrink').textContent = shrinkPct.toFixed(1) + '%';
+        document.getElementById('bin-dry').textContent = Math.round(dryBu).toLocaleString() + ' bu';
+    }
+    
+    function copyBinResults() {
+        const results = `GRAIN BIN CALCULATOR
+━━━━━━━━━━━━━━━━━━━━
+Volume: ${document.getElementById('bin-volume').textContent}
+Total Bushels: ${document.getElementById('bin-bushels').textContent}
+Weight: ${document.getElementById('bin-weight').textContent}
+Moisture Shrink: ${document.getElementById('bin-shrink').textContent}
+Dry Bushels: ${document.getElementById('bin-dry').textContent}
+━━━━━━━━━━━━━━━━━━━━
+agsist.com/tools`;
+        navigator.clipboard.writeText(results).then(() => {
+            event.target.textContent = '✓ Copied!';
+            setTimeout(() => event.target.textContent = '📋 Copy Results', 2000);
+        });
+    }
+    
+    // Initialize
+    calcBin();
+    
+    // GDU CALCULATOR
+    const GDU_BY_MATURITY = {
+        85: 2100, 90: 2250, 95: 2400, 100: 2550,
+        105: 2700, 110: 2850, 115: 3000
+    };
+    
+    const AVG_DAILY_GDU = {
+        'wi-central': 18,
+        'wi-south': 20,
+        'mn-south': 19,
+        'ia-north': 21,
+        'ia-central': 23
+    };
+    
+    // Set default planting date to May 1 of current year
+    document.getElementById('gdu-plant-date').value = new Date().getFullYear() + '-05-01';
+    
+    function calcGDU() {
+        const hybrid = parseInt(document.getElementById('gdu-hybrid').value);
+        const plantDate = new Date(document.getElementById('gdu-plant-date').value + 'T12:00:00');
+        const location = document.getElementById('gdu-location').value;
+        
+        if (isNaN(plantDate.getTime())) return;
+        
+        const gduNeeded = GDU_BY_MATURITY[hybrid];
+        const gduToSilk = Math.round(gduNeeded * 0.5);
+        const avgDaily = AVG_DAILY_GDU[location];
+        
+        // Days to silk (~50% of total GDU)
+        const daysToSilk = Math.round(gduToSilk / avgDaily);
+        const silkDate = new Date(plantDate);
+        silkDate.setDate(silkDate.getDate() + daysToSilk);
+        
+        // Days to black layer (full maturity)
+        const daysToBlack = Math.round(gduNeeded / avgDaily);
+        const blackDate = new Date(plantDate);
+        blackDate.setDate(blackDate.getDate() + daysToBlack);
+        
+        // Update display
+        const fmt = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        
+        document.getElementById('gdu-plant').textContent = fmt(plantDate);
+        document.getElementById('gdu-silk').textContent = fmt(silkDate);
+        document.getElementById('gdu-black').textContent = fmt(blackDate);
+        document.getElementById('gdu-to-silk').textContent = gduToSilk.toLocaleString();
+        document.getElementById('gdu-to-mature').textContent = gduNeeded.toLocaleString();
+        document.getElementById('gdu-days').textContent = daysToBlack + ' days';
+    }
+    
+    function copyGDUResults() {
+        const hybrid = document.getElementById('gdu-hybrid').value;
+        const results = `GDU CALCULATOR
+━━━━━━━━━━━━━━━━━━━━
+Hybrid: ${hybrid}-day
+Planting: ${document.getElementById('gdu-plant').textContent}
+Est. Silking: ${document.getElementById('gdu-silk').textContent}
+Est. Black Layer: ${document.getElementById('gdu-black').textContent}
+GDU to Maturity: ${document.getElementById('gdu-to-mature').textContent}
+Days to Maturity: ${document.getElementById('gdu-days').textContent}
+━━━━━━━━━━━━━━━━━━━━
+agsist.com/tools`;
+        navigator.clipboard.writeText(results).then(() => {
+            event.target.textContent = '✓ Copied!';
+            setTimeout(() => event.target.textContent = '📋 Copy Results', 2000);
+        });
+    }
+    
+    calcGDU();
+    
+    // BREAK-EVEN CALCULATOR
+    const BE_PRESETS = {
+        corn: { yield: 180, price: 4.50, seed: 135, fert: 165, chem: 55, insurance: 38, drying: 35, machinery: 95, labor: 35, rent: 225, overhead: 40 },
+        soybeans: { yield: 52, price: 10.25, seed: 75, fert: 45, chem: 45, insurance: 22, drying: 15, machinery: 75, labor: 30, rent: 225, overhead: 35 },
+        wheat: { yield: 70, price: 5.50, seed: 45, fert: 85, chem: 35, insurance: 18, drying: 10, machinery: 70, labor: 25, rent: 200, overhead: 30 }
+    };
+    
+    function loadBEPreset() {
+        const crop = document.getElementById('be-crop').value;
+        const p = BE_PRESETS[crop];
+        document.getElementById('be-yield').value = p.yield;
+        document.getElementById('be-price').value = p.price;
+        document.getElementById('be-seed').value = p.seed;
+        document.getElementById('be-fert').value = p.fert;
+        document.getElementById('be-chem').value = p.chem;
+        document.getElementById('be-insurance').value = p.insurance;
+        document.getElementById('be-drying').value = p.drying;
+        document.getElementById('be-machinery').value = p.machinery;
+        document.getElementById('be-labor').value = p.labor;
+        document.getElementById('be-rent').value = p.rent;
+        document.getElementById('be-overhead').value = p.overhead;
+    }
+    
+    function calcBE() {
+        const yld = parseFloat(document.getElementById('be-yield').value) || 0;
+        const price = parseFloat(document.getElementById('be-price').value) || 0;
+        const seed = parseFloat(document.getElementById('be-seed').value) || 0;
+        const fert = parseFloat(document.getElementById('be-fert').value) || 0;
+        const chem = parseFloat(document.getElementById('be-chem').value) || 0;
+        const insurance = parseFloat(document.getElementById('be-insurance').value) || 0;
+        const drying = parseFloat(document.getElementById('be-drying').value) || 0;
+        const machinery = parseFloat(document.getElementById('be-machinery').value) || 0;
+        const labor = parseFloat(document.getElementById('be-labor').value) || 0;
+        const rent = parseFloat(document.getElementById('be-rent').value) || 0;
+        const overhead = parseFloat(document.getElementById('be-overhead').value) || 0;
+        
+        const totalCost = seed + fert + chem + insurance + drying + machinery + labor + rent + overhead;
+        const breakeven = yld > 0 ? totalCost / yld : 0;
+        const revenue = yld * price;
+        const profit = revenue - totalCost;
+        const perBu = yld > 0 ? profit / yld : 0;
+        const yieldNeeded = price > 0 ? totalCost / price : 0;
+        
+        document.getElementById('be-breakeven').textContent = '$' + breakeven.toFixed(2) + '/bu';
+        document.getElementById('be-total-cost').textContent = '$' + totalCost.toFixed(0) + '/ac';
+        document.getElementById('be-revenue').textContent = '$' + revenue.toFixed(0) + '/ac';
+        
+        const profitEl = document.getElementById('be-profit');
+        profitEl.textContent = (profit >= 0 ? '+' : '') + '$' + profit.toFixed(0) + '/ac';
+        profitEl.style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
+        
+        const perBuEl = document.getElementById('be-per-bu');
+        perBuEl.textContent = (perBu >= 0 ? '+' : '') + '$' + perBu.toFixed(2) + '/bu';
+        perBuEl.style.color = perBu >= 0 ? 'var(--green)' : 'var(--red)';
+        
+        document.getElementById('be-yield-needed').textContent = yieldNeeded.toFixed(0) + ' bu/ac';
+    }
+    
+    function copyBEResults() {
+        const crop = document.getElementById('be-crop').value.toUpperCase();
+        const results = `BREAK-EVEN CALCULATOR
+━━━━━━━━━━━━━━━━━━━━
+Crop: ${crop}
+Break-Even: ${document.getElementById('be-breakeven').textContent}
+Total Cost: ${document.getElementById('be-total-cost').textContent}
+Revenue: ${document.getElementById('be-revenue').textContent}
+Net Profit: ${document.getElementById('be-profit').textContent}
+Net/Bushel: ${document.getElementById('be-per-bu').textContent}
+Yield Needed: ${document.getElementById('be-yield-needed').textContent}
+━━━━━━━━━━━━━━━━━━━━
+agsist.com/tools`;
+        navigator.clipboard.writeText(results).then(() => {
+            event.target.textContent = '✓ Copied!';
+            setTimeout(() => event.target.textContent = '📋 Copy Results', 2000);
+        });
+    }
+    
+    calcBE();
+    
+    // FERTILIZER CALCULATOR
+    const FERT_PRODUCTS = {
+        custom: { n: 46, p: 0, k: 0, price: 550 },
+        urea: { n: 46, p: 0, k: 0, price: 550 },
+        uan28: { n: 28, p: 0, k: 0, price: 320 },
+        uan32: { n: 32, p: 0, k: 0, price: 360 },
+        anhydrous: { n: 82, p: 0, k: 0, price: 700 },
+        dap: { n: 18, p: 46, k: 0, price: 650 },
+        map: { n: 11, p: 52, k: 0, price: 680 },
+        potash: { n: 0, p: 0, k: 60, price: 450 }
+    };
+    
+    function updateFertAnalysis() {
+        const product = document.getElementById('fert-product').value;
+        const p = FERT_PRODUCTS[product];
+        document.getElementById('fert-n').value = p.n;
+        document.getElementById('fert-p').value = p.p;
+        document.getElementById('fert-k').value = p.k;
+        document.getElementById('fert-price').value = p.price;
+    }
+    
+    function calcFert() {
+        const price = parseFloat(document.getElementById('fert-price').value) || 0;
+        const acres = parseFloat(document.getElementById('fert-acres').value) || 0;
+        const nPct = parseFloat(document.getElementById('fert-n').value) || 0;
+        const pPct = parseFloat(document.getElementById('fert-p').value) || 0;
+        const kPct = parseFloat(document.getElementById('fert-k').value) || 0;
+        const nNeed = parseFloat(document.getElementById('fert-n-need').value) || 0;
+        const pNeed = parseFloat(document.getElementById('fert-p-need').value) || 0;
+        const kNeed = parseFloat(document.getElementById('fert-k-need').value) || 0;
+        
+        // Calculate lbs product needed per acre based on highest requirement
+        let lbsPerAcre = 0;
+        if (nPct > 0 && nNeed > 0) lbsPerAcre = Math.max(lbsPerAcre, (nNeed / nPct) * 100);
+        if (pPct > 0 && pNeed > 0) lbsPerAcre = Math.max(lbsPerAcre, (pNeed / pPct) * 100);
+        if (kPct > 0 && kNeed > 0) lbsPerAcre = Math.max(lbsPerAcre, (kNeed / kPct) * 100);
+        
+        const totalLbs = lbsPerAcre * acres;
+        const totalTons = totalLbs / 2000;
+        const totalCost = totalTons * price;
+        const costPerAcre = acres > 0 ? totalCost / acres : 0;
+        const costPerLbN = (nPct > 0 && nNeed > 0) ? costPerAcre / nNeed : 0;
+        
+        document.getElementById('fert-total-cost').textContent = '$' + totalCost.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        document.getElementById('fert-cost-acre').textContent = '$' + costPerAcre.toFixed(2) + '/ac';
+        document.getElementById('fert-tons').textContent = totalTons.toFixed(2) + ' tons';
+        document.getElementById('fert-cost-n').textContent = costPerLbN > 0 ? '$' + costPerLbN.toFixed(3) + '/lb' : 'N/A';
+        document.getElementById('fert-lbs-acre').textContent = lbsPerAcre.toFixed(0) + ' lbs';
+    }
+    
+    function copyFertResults() {
+        const product = document.getElementById('fert-product').value.toUpperCase();
+        const results = `FERTILIZER CALCULATOR
+━━━━━━━━━━━━━━━━━━━━
+Product: ${product}
+Total Cost: ${document.getElementById('fert-total-cost').textContent}
+Cost/Acre: ${document.getElementById('fert-cost-acre').textContent}
+Product Needed: ${document.getElementById('fert-tons').textContent}
+Lbs/Acre: ${document.getElementById('fert-lbs-acre').textContent}
+Cost/lb N: ${document.getElementById('fert-cost-n').textContent}
+━━━━━━━━━━━━━━━━━━━━
+agsist.com/tools`;
+        navigator.clipboard.writeText(results).then(() => {
+            event.target.textContent = '✓ Copied!';
+            setTimeout(() => event.target.textContent = '📋 Copy Results', 2000);
+        });
+    }
+    
+    calcFert();
+    
+    // USDA OFFICE FINDER
+    const COUNTIES = {
+        WI: ['Barron','Burnett','Chippewa','Clark','Dunn','Eau Claire','Polk','Rusk','St. Croix','Washburn','Adams','Brown','Buffalo','Crawford','Dane','Dodge','Door','Grant','Green','Iowa','Jackson','Jefferson','Juneau','Kenosha','La Crosse','Lafayette','Marquette','Milwaukee','Monroe','Outagamie','Ozaukee','Pepin','Pierce','Portage','Racine','Richland','Rock','Sauk','Sheboygan','Trempealeau','Vernon','Walworth','Washington','Waukesha','Waupaca','Waushara','Winnebago','Wood'],
+        MN: ['Aitkin','Anoka','Becker','Beltrami','Benton','Blue Earth','Brown','Carlton','Carver','Cass','Chippewa','Chisago','Clay','Clearwater','Cottonwood','Crow Wing','Dakota','Dodge','Douglas','Faribault','Fillmore','Freeborn','Goodhue','Hennepin','Houston','Isanti','Jackson','Kandiyohi','Lac qui Parle','Le Sueur','Lincoln','Lyon','Martin','McLeod','Meeker','Mower','Murray','Nicollet','Nobles','Norman','Olmsted','Otter Tail','Pipestone','Polk','Pope','Ramsey','Redwood','Renville','Rice','Rock','Scott','Sherburne','Sibley','Stearns','Steele','Stevens','Swift','Todd','Wabasha','Waseca','Washington','Watonwan','Winona','Wright','Yellow Medicine'],
+        IA: ['Adair','Adams','Allamakee','Appanoose','Audubon','Benton','Black Hawk','Boone','Bremer','Buchanan','Buena Vista','Butler','Calhoun','Carroll','Cass','Cedar','Cerro Gordo','Cherokee','Chickasaw','Clarke','Clay','Clayton','Clinton','Crawford','Dallas','Davis','Decatur','Delaware','Des Moines','Dickinson','Dubuque','Emmet','Fayette','Floyd','Franklin','Fremont','Greene','Grundy','Guthrie','Hamilton','Hancock','Hardin','Harrison','Henry','Howard','Humboldt','Ida','Iowa','Jackson','Jasper','Jefferson','Johnson','Jones','Keokuk','Kossuth','Lee','Linn','Louisa','Lucas','Lyon','Madison','Mahaska','Marion','Marshall','Mills','Mitchell','Monona','Monroe','Montgomery','Muscatine','O\'Brien','Osceola','Page','Palo Alto','Plymouth','Pocahontas','Polk','Pottawattamie','Poweshiek','Ringgold','Sac','Scott','Shelby','Sioux','Story','Tama','Taylor','Union','Van Buren','Wapello','Warren','Washington','Wayne','Webster','Winnebago','Winneshiek','Woodbury','Worth','Wright'],
+        IL: ['Adams','Bureau','Champaign','Cook','DeKalb','DuPage','Grundy','Henry','Jo Daviess','Kane','Kankakee','Kendall','Knox','Lake','LaSalle','Lee','Livingston','Logan','Macon','Marshall','McLean','Mercer','Ogle','Peoria','Rock Island','Sangamon','Stephenson','Tazewell','Whiteside','Will','Winnebago','Woodford'],
+        ND: ['Barnes','Cass','Grand Forks','Pembina','Ramsey','Richland','Steele','Traill','Walsh'],
+        SD: ['Brookings','Brown','Codington','Lincoln','Minnehaha','Roberts','Union','Yankton']
+    };
+    
+    function updateCounties() {
+        const state = document.getElementById('office-state').value;
+        const countySelect = document.getElementById('office-county');
+        countySelect.innerHTML = '<option value="">Select County</option>';
+        if (state && COUNTIES[state]) {
+            COUNTIES[state].forEach(c => {
+                countySelect.innerHTML += `<option value="${c}">${c}</option>`;
+            });
+        }
+    }
+    
+    function findOffice() {
+        const state = document.getElementById('office-state').value;
+        const county = document.getElementById('office-county').value;
+        if (!state) { alert('Please select a state'); return; }
+        const url = `https://offices.sc.egov.usda.gov/locator/app?state=${state}&county=${encodeURIComponent(county)}`;
+        document.getElementById('fsa-link').href = url;
+        document.getElementById('nrcs-link').href = url;
+        document.getElementById('office-results').style.display = 'block';
+    }
+    </script>
+</body>
+</html>

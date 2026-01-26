@@ -6,28 +6,28 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://agsist.com/calculator.html</loc>
+    <loc>https://agsist.com/tools.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://agsist.com/gdu.html</loc>
+    <loc>https://agsist.com/fastfacts.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://agsist.com/breakeven.html</loc>
+    <loc>https://agsist.com/learn.html</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://agsist.com/offices.html</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://agsist.com/calendar.html</loc>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://agsist.com/resources.html</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
 </urlset>

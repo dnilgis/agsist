@@ -17,17 +17,25 @@ from email.utils import parsedate_to_datetime
 SYMBOLS = {
     "grains": {
         "corn": {"symbol": "ZC=F", "name": "Corn", "unit": "¢/bu"},
+        "corn_dec": {"symbol": "ZCZ26.CBT", "name": "Corn Dec '26", "unit": "¢/bu"},
         "soybeans": {"symbol": "ZS=F", "name": "Soybeans", "unit": "¢/bu"},
+        "soybeans_nov": {"symbol": "ZSX26.CBT", "name": "Soybeans Nov '26", "unit": "¢/bu"},
         "wheat": {"symbol": "ZW=F", "name": "Wheat", "unit": "¢/bu"},
     },
     "livestock": {
         "cattle": {"symbol": "LE=F", "name": "Live Cattle", "unit": "¢/lb"},
         "feeder": {"symbol": "GF=F", "name": "Feeder Cattle", "unit": "¢/lb"},
+        "hogs": {"symbol": "HE=F", "name": "Lean Hogs", "unit": "¢/lb"},
         "milk": {"symbol": "DC=F", "name": "Class III Milk", "unit": "$/cwt"},
     },
     "indices": {
         "sp500": {"symbol": "^GSPC", "name": "S&P 500", "unit": "$"},
         "dow": {"symbol": "^DJI", "name": "Dow Jones", "unit": "$"},
+        "dollar": {"symbol": "DX-Y.NYB", "name": "US Dollar Index", "unit": "$"},
+    },
+    "energy": {
+        "oil": {"symbol": "CL=F", "name": "Crude Oil", "unit": "$/bbl"},
+        "natgas": {"symbol": "NG=F", "name": "Natural Gas", "unit": "$/MMBtu"},
     },
     "metals": {
         "gold": {"symbol": "GC=F", "name": "Gold", "unit": "$/oz"},

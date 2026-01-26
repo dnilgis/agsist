@@ -6,503 +6,948 @@
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGSIST | Live Ag Dashboard - Commodity Prices, Weather & Farm Tools</title>
-    <meta name="description" content="AGSIST - Free live agricultural commodity prices, weather radar, GDU calculator, break-even analysis, and USDA tools for farmers. Track corn, soybeans, wheat, cattle futures in real-time.">
-    <meta name="keywords" content="commodity prices, grain prices, corn futures, soybean futures, wheat prices, cattle futures, farm dashboard, agricultural markets, USDA tools, grain bin calculator, GDU calculator, break even calculator">
-    <meta property="og:title" content="AGSIST | Live Ag Dashboard">
-    <meta property="og:description" content="Real-time commodity prices, weather radar, and farm tools for modern agriculture.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://agsist.com">
-    <meta property="og:image" content="https://agsist.com/og-image.png">
+    <title>AGSIST | Free Live Ag Dashboard - Corn, Soybean, Wheat Prices</title>
+    <meta name="description" content="Free live agricultural commodity prices, weather radar, and farm tools. Corn, soybean, wheat futures updated every 15 minutes. Built by Wisconsin farmers.">
+    <meta name="keywords" content="corn prices today, soybean prices, wheat futures, ag commodity prices, farm dashboard, grain prices, livestock prices">
     <link rel="canonical" href="https://agsist.com/">
     
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-    <link rel="apple-touch-icon" href="favicon.png">
+    <!-- Schema.org for Organization -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "AGSIST",
+        "description": "Free agricultural dashboard with live commodity prices, farm calculators, and tools for farmers",
+        "url": "https://agsist.com",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://agsist.com/tools.html",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "AGSIST",
+        "url": "https://agsist.com",
+        "logo": "https://agsist.com/icon-512.png",
+        "description": "Agricultural technology tools built by farmers for farmers in Wisconsin",
+        "address": {
+            "@type": "PostalAddress",
+            "addressRegion": "WI",
+            "addressCountry": "US"
+        },
+        "sameAs": [
+            "https://farmers1st.com",
+            "https://lokedrone.com"
+        ]
+    }
+    </script>
     
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#e6b042">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AGSIST">
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta property="og:title" content="AGSIST | Free Live Ag Dashboard">
+    <meta property="og:description" content="Free live commodity prices, weather radar, and farm tools. Built by Wisconsin farmers.">
+    <meta property="og:image" content="https://agsist.com/og-image.png">
+    <meta property="og:url" content="https://agsist.com/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-
-    <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"WebApplication","name":"AGSIST","description":"Free live agricultural commodity prices, weather radar, grain bin calculator, GDU calculator, break-even analysis, and USDA office locator for farmers.","url":"https://agsist.com","applicationCategory":"FinanceApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #0a0a0a;
+            --card: #111;
+            --border: #222;
+            --text: #e8e8e8;
+            --dim: #666;
+            --accent: #e6b042;
+            --green: #22c55e;
+            --red: #ef4444;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+        
+        /* NAV - sticky but slim */
+        nav {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        /* TICKER */
+        .ticker-wrap {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            overflow: hidden;
+            padding: 8px 0;
+        }
+        
+        .ticker {
+            display: flex;
+            gap: 40px;
+            animation: ticker-scroll 60s linear infinite;
+            white-space: nowrap;
+            width: max-content;
+        }
+        
+        .ticker:hover {
+            animation-play-state: paused;
+        }
+        
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+        }
+        
+        .ticker-item .label {
+            color: var(--dim);
+        }
+        
+        .ticker-item .price {
+            color: var(--text);
+            font-weight: 600;
+        }
+        
+        .ticker-item .change {
+            font-size: 0.75rem;
+        }
+        
+        .ticker-item .change.up { color: var(--green); }
+        .ticker-item .change.down { color: var(--red); }
+        
+        .ticker-item.news {
+            color: var(--accent);
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        @keyframes ticker-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .nav-links a {
+            color: var(--dim);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text);
+            background: var(--border);
+        }
+        
+        /* MAIN CONTENT */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        
+        /* UPDATE TIME */
+        .update-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            font-size: 0.75rem;
+            color: var(--dim);
+        }
+        
+        /* PRICE CARDS */
+        .price-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .price-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        .price-card.featured {
+            border-color: var(--accent);
+        }
+        
+        .price-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .price-label {
+            font-size: 0.8rem;
+            color: var(--dim);
+            text-transform: uppercase;
+        }
+        
+        .price-contract {
+            font-size: 0.7rem;
+            color: var(--dim);
+            background: var(--border);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        
+        .price-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .price-change {
+            font-size: 0.85rem;
+        }
+        
+        .price-change.up { color: var(--green); }
+        .price-change.down { color: var(--red); }
+        
+        /* SECTION HEADERS */
+        .section-header {
+            font-size: 0.75rem;
+            color: var(--dim);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 20px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        /* SECONDARY PRICES - smaller grid */
+        .secondary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .secondary-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+        }
+        
+        .secondary-label {
+            font-size: 0.7rem;
+            color: var(--dim);
+            margin-bottom: 4px;
+        }
+        
+        .secondary-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .secondary-change {
+            font-size: 0.75rem;
+        }
+        
+        /* WEATHER */
+        .weather-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+        
+        .weather-card iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+        }
+        
+        /* NEWS */
+        .news-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        .news-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .news-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .news-item:first-child {
+            padding-top: 0;
+        }
+        
+        .news-item a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            display: block;
+        }
+        
+        .news-item a:hover {
+            color: var(--accent);
+        }
+        
+        .news-source {
+            font-size: 0.7rem;
+            color: var(--dim);
+            margin-top: 4px;
+        }
+        
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 20px 16px;
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--dim);
+        }
+        
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        /* DESKTOP */
+        @media (min-width: 768px) {
+            main { padding: 24px; }
+            
+            .price-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .secondary-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .two-col {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+            
+            .weather-card iframe {
+                height: 400px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .secondary-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+        
+        /* LOADING STATE */
+        .loading {
+            color: var(--dim);
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="logo">AGSIST</a>
+            <div class="nav-links">
+                <a href="/tools.html">Tools</a>
+                <a href="/fastfacts.html">Fast Facts</a>
+                <a href="/learn.html">Learn</a>
+                <a href="/calendar.html">Calendar</a>
+                <a href="/resources.html">Resources</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- TICKER -->
     <div class="ticker-wrap">
-        <div class="ticker" id="news-ticker"><span class="ticker-item">Initializing markets...</span></div>
+        <div class="ticker" id="ticker">
+            <!-- Populated by JS -->
+        </div>
     </div>
-
-    <header>
-        <div class="header-inner">
-            <a href="/" class="logo">
-                <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
-                <div class="logo-text">AGSIST</div>
-            </a>
-            <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
-            <nav class="nav" id="main-nav">
-                <a href="#" class="active" data-tab="dashboard">DASHBOARD</a>
-                <a href="#" data-tab="tools">TOOLS</a>
-                <a href="#" data-tab="calendar">CALENDAR</a>
-                <a href="#" data-tab="resources">RESOURCES</a>
-            </nav>
-            <div class="live-badge"><span class="live-dot"></span><span id="update-time">Connecting...</span></div>
-        </div>
-    </header>
-
+    
     <main>
-        <!-- DASHBOARD TAB -->
-        <div id="dashboard" class="tab active">
-            <div class="grid-main">
-                <div>
-                    <div class="panel">
-                        <div class="panel-head"><h2>CONDITIONS — <span id="location-name">LOCATING...</span></h2></div>
-                        <div class="panel-body" style="padding:0">
-                            <div class="weather-grid">
-                                <div class="radar-box">
-                                    <iframe id="radar-iframe" src="" title="Weather Radar"></iframe>
-                                    <button class="locate-btn" onclick="initWeather(true)">📍 Locate Me</button>
-                                </div>
-                                <div class="forecast-list" id="forecast"><div class="loading">Loading local forecast...</div></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel">
-                        <div class="panel-head"><h2>LIVE MARKETS</h2></div>
-                        <div class="panel-body">
-                            <div class="section-label" style="margin-top:0">GRAINS</div>
-                            <div class="market-grid" id="grains-grid"><div class="loading">Loading...</div></div>
-                            <div class="section-label">LIVESTOCK</div>
-                            <div class="market-grid" id="livestock-grid"><div class="loading">Loading...</div></div>
-                            <div class="section-label">INDICES & METALS</div>
-                            <div class="market-grid" id="metals-grid"><div class="loading">Loading...</div></div>
-                            <div class="section-label">CRYPTO</div>
-                            <div class="market-grid" id="crypto-grid"><div class="loading">Loading...</div></div>
-                        </div>
-                    </div>
-                    <div class="panel">
-                        <div class="panel-head"><h2>CASH BID SOURCES</h2></div>
-                        <div class="panel-body">
-                            <div class="local-markets" id="local-markets"><div class="loading">Loading cash bid sources...</div></div>
-                        </div>
-                    </div>
+        <div id="welcome-msg" style="margin-bottom:12px;font-size:0.95rem;color:var(--text)"></div>
+        <div class="update-bar">
+            <span>Last updated: <span id="update-time" class="loading">Loading...</span></span>
+            <span>Data auto-refreshes</span>
+        </div>
+        
+        <!-- PRIMARY: Corn & Soybeans -->
+        <div class="price-grid" id="primary-prices">
+            <div class="price-card featured">
+                <div class="price-header">
+                    <span class="price-label">🌽 Corn</span>
+                    <span class="price-contract" id="corn-contract">--</span>
                 </div>
-                <div class="sidebar-stack">
-                    <div class="panel" style="margin-bottom:0">
-                        <div class="panel-head"><h2>QUICK TOOLS</h2></div>
-                        <div class="tool-grid">
-                            <div onclick="switchTab('tools')" class="tool-btn"><span>🌾</span><h5>Grain Bin</h5></div>
-                            <div onclick="switchTab('tools');setTimeout(()=>scrollToEl('gdu-section'),100)" class="tool-btn"><span>🌡️</span><h5>GDU Calc</h5></div>
-                            <div onclick="switchTab('tools');setTimeout(()=>scrollToEl('breakeven-section'),100)" class="tool-btn"><span>💰</span><h5>Break-Even</h5></div>
-                            <div onclick="switchTab('calendar')" class="tool-btn"><span>📅</span><h5>Calendar</h5></div>
-                        </div>
-                    </div>
-                    
-                    <!-- USDA REPORT CALENDAR WIDGET -->
-                    <div class="panel" style="margin-bottom:0">
-                        <div class="feed-header">📊 UPCOMING REPORTS</div>
-                        <div id="usda-calendar" class="calendar-list"></div>
-                    </div>
-                    
-                    <!-- CROP INSURANCE DEADLINES WIDGET -->
-                    <div class="panel" style="margin-bottom:0">
-                        <div class="feed-header">⏰ INSURANCE DEADLINES <span style="color:var(--dim)">WI/MN</span></div>
-                        <div id="sidebar-deadlines" class="calendar-list"></div>
-                    </div>
-                    
-                    <!-- DROUGHT MONITOR WIDGET -->
-                    <div class="panel" style="margin-bottom:0">
-                        <div class="feed-header">🌵 DROUGHT MONITOR</div>
-                        <div style="padding:12px">
-                            <a href="https://droughtmonitor.unl.edu/" target="_blank" style="display:block">
-                                <img src="https://droughtmonitor.unl.edu/data/png/current/current_usdm.png" alt="US Drought Monitor" style="width:100%;border-radius:4px;border:1px solid var(--border)" loading="lazy">
-                            </a>
-                            <div style="margin-top:8px;font-size:0.7rem;color:var(--dim);text-align:center">Updated Thursdays • Click for details</div>
-                        </div>
-                    </div>
-                    
-                    <div class="panel" style="margin-bottom:0">
-                        <div class="feed-header">USDA ALERTS <span style="color:var(--dim)">RSS</span></div>
-                        <div class="feed-scroll" id="usda-feed-list" style="height:250px"><div style="padding:20px;text-align:center;color:var(--dim)">Loading USDA updates...</div></div>
-                    </div>
-                    <div class="panel" style="margin-bottom:0">
-                        <div class="feed-header">NEWS WIRE <span style="color:var(--dim)">RSS</span></div>
-                        <div class="feed-scroll" id="news-wire-list" style="height:250px"><div style="padding:20px;text-align:center;color:var(--dim)">Loading wire...</div></div>
-                    </div>
-                    
-                    <!-- TWITTER/X FEEDS SECTION -->
-                    <div class="panel" style="margin-bottom:0">
-                        <div class="feed-header">𝕏 AG TWITTER <span style="color:var(--dim)">LIVE</span></div>
-                        <div class="twitter-feeds-container">
-                            <!-- Tab buttons for switching feeds -->
-                            <div class="twitter-tabs">
-                                <button class="twitter-tab active" onclick="showTwitterFeed('markets')">📈 Markets</button>
-                                <button class="twitter-tab" onclick="showTwitterFeed('weather')">🌪️ Weather</button>
-                                <button class="twitter-tab" onclick="showTwitterFeed('ag')">🌾 Ag News</button>
-                            </div>
-                            <!-- Feed containers -->
-                            <div id="twitter-markets" class="twitter-feed active">
-                                <a class="twitter-timeline" 
-                                   href="https://twitter.com/RampCapitalLLC" 
-                                   data-height="400"
-                                   data-theme="dark"
-                                   data-chrome="noheader nofooter noborders transparent"
-                                   data-tweet-limit="5"
-                                   data-dnt="true">
-                                   Loading @RampCapitalLLC...
-                                </a>
-                            </div>
-                            <div id="twitter-weather" class="twitter-feed" style="display:none">
-                                <a class="twitter-timeline" 
-                                   href="https://twitter.com/ryanhallyall" 
-                                   data-height="400"
-                                   data-theme="dark"
-                                   data-chrome="noheader nofooter noborders transparent"
-                                   data-tweet-limit="5"
-                                   data-dnt="true">
-                                   Loading @ryanhallyall...
-                                </a>
-                            </div>
-                            <div id="twitter-ag" class="twitter-feed" style="display:none">
-                                <a class="twitter-timeline" 
-                                   href="https://twitter.com/dtnpf" 
-                                   data-height="400"
-                                   data-theme="dark"
-                                   data-chrome="noheader nofooter noborders transparent"
-                                   data-tweet-limit="5"
-                                   data-dnt="true">
-                                   Loading @dtnpf...
-                                </a>
-                            </div>
-                            <div style="padding:8px;text-align:center;border-top:1px solid var(--border)">
-                                <a href="https://x.com/naucountry" target="_blank" style="color:var(--dim);font-size:0.75rem;text-decoration:none;margin-right:10px">@naucountry</a>
-                                <a href="https://x.com/USDA" target="_blank" style="color:var(--dim);font-size:0.75rem;text-decoration:none;margin-right:10px">@USDA</a>
-                                <a href="https://x.com/BrownfieldAgNew" target="_blank" style="color:var(--dim);font-size:0.75rem;text-decoration:none">@BrownfieldAgNew</a>
-                            </div>
-                        </div>
-                    </div>
+                <div class="price-value" id="corn-price">--</div>
+                <div class="price-change" id="corn-change">--</div>
+            </div>
+            <div class="price-card">
+                <div class="price-header">
+                    <span class="price-label">🌽 Corn Harvest</span>
+                    <span class="price-contract">Dec '26</span>
                 </div>
+                <div class="price-value" id="corn-dec-price">--</div>
+                <div class="price-change" id="corn-dec-change">--</div>
+            </div>
+            <div class="price-card featured">
+                <div class="price-header">
+                    <span class="price-label">🫘 Soybeans</span>
+                    <span class="price-contract" id="soy-contract">--</span>
+                </div>
+                <div class="price-value" id="soy-price">--</div>
+                <div class="price-change" id="soy-change">--</div>
+            </div>
+            <div class="price-card">
+                <div class="price-header">
+                    <span class="price-label">🫘 Beans Harvest</span>
+                    <span class="price-contract">Nov '26</span>
+                </div>
+                <div class="price-value" id="soy-nov-price">--</div>
+                <div class="price-change" id="soy-nov-change">--</div>
             </div>
         </div>
-
-        <!-- TOOLS TAB -->
-        <div id="tools" class="tab">
-            <div class="calc-wrap">
-                <!-- Grain Bin Calculator -->
-                <div class="panel" id="grainbin-section">
-                    <div class="panel-head"><h2>🌾 GRAIN BIN CALCULATOR</h2></div>
-                    <div class="panel-body">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
-                            <div class="calc-panel">
-                                <h3>DIMENSIONS</h3>
-                                <div class="input-group"><label>Bin Shape</label><select id="binShape" onchange="calcBin()"><option value="round">Round</option><option value="rect">Rectangular</option></select></div>
-                                <div class="input-group" id="round-dims"><label>Diameter (ft)</label><input type="number" id="diameter" value="30" step=".5" min="0" oninput="calcBin()"></div>
-                                <div class="input-group" id="rect-dims" style="display:none"><label>Length (ft)</label><input type="number" id="length" value="40" step=".5" min="0" oninput="calcBin()"><label style="margin-top:10px">Width (ft)</label><input type="number" id="width" value="30" step=".5" min="0" oninput="calcBin()"></div>
-                                <div class="input-group"><label>Eave Height (ft)</label><input type="number" id="eaveH" value="20" step=".5" min="0" oninput="calcBin()"></div>
-                                <div class="input-group"><label>Grain Type</label><select id="grain" onchange="calcBin()"><option value="56|15.5">Corn (56 lb/bu)</option><option value="60|13.0">Soybeans (60 lb/bu)</option><option value="60|13.5">Wheat (60 lb/bu)</option><option value="48|14.5">Barley (48 lb/bu)</option></select></div>
-                                <div class="input-group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div><label>Current Moist %</label><input type="number" id="moistIn" value="15.5" step=".1" min="0" max="50" oninput="calcBin()"></div><div><label>Pack Factor %</label><input type="number" id="pack" value="0" step=".5" min="0" max="20" oninput="calcBin()"></div></div>
-                            </div>
-                            <div>
-                                <div class="result-panel">
-                                    <h3>ESTIMATED CAPACITY</h3>
-                                    <div class="result-row"><span>Total Volume</span><span class="result-value" id="rVol">-</span></div>
-                                    <div class="result-row"><span>Total Bushels</span><span class="result-value" id="rTotal" style="font-size:1.8rem;color:var(--accent)">-</span></div>
-                                    <div class="result-row"><span>Total Weight</span><span class="result-value" id="rWeight">-</span></div>
-                                    <div class="result-row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"><span>Moisture Shrink</span><span class="result-value" id="rShrink">-</span></div>
-                                    <div class="result-row"><span>Dry Bushels</span><span class="result-value" id="rDryBu">-</span></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- GDU Calculator -->
-                <div class="panel" id="gdu-section">
-                    <div class="panel-head"><h2>🌡️ GROWING DEGREE UNIT (GDU) CALCULATOR</h2></div>
-                    <div class="panel-body">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
-                            <div class="calc-panel">
-                                <h3>INPUTS</h3>
-                                <div class="input-group">
-                                    <label>Planting Date</label>
-                                    <input type="date" id="gduPlantDate" onchange="calcGDU()">
-                                </div>
-                                <div class="input-group">
-                                    <label>Hybrid Maturity (GDUs to Black Layer)</label>
-                                    <select id="gduMaturity" onchange="calcGDU()">
-                                        <option value="2200">Very Early (2,200 GDU) - 85 day</option>
-                                        <option value="2400">Early (2,400 GDU) - 95 day</option>
-                                        <option value="2550" selected>Medium (2,550 GDU) - 105 day</option>
-                                        <option value="2700">Full Season (2,700 GDU) - 110 day</option>
-                                        <option value="2850">Late (2,850 GDU) - 115+ day</option>
-                                    </select>
-                                </div>
-                                <div class="input-group">
-                                    <label>Average Daily High (°F) - Growing Season</label>
-                                    <input type="number" id="gduHigh" value="82" min="50" max="100" step="1" oninput="calcGDU()">
-                                </div>
-                                <div class="input-group">
-                                    <label>Average Daily Low (°F) - Growing Season</label>
-                                    <input type="number" id="gduLow" value="58" min="30" max="80" step="1" oninput="calcGDU()">
-                                </div>
-                                <div style="margin-top:16px;padding:12px;background:var(--card);border-radius:4px;font-size:0.8rem;color:var(--dim)">
-                                    <strong style="color:var(--accent)">📍 Regional Averages (May-Sep):</strong><br>
-                                    <span style="color:var(--text)">NW Wisconsin:</span> High 78°F / Low 55°F<br>
-                                    <span style="color:var(--text)">S Wisconsin:</span> High 82°F / Low 60°F<br>
-                                    <span style="color:var(--text)">S Minnesota:</span> High 83°F / Low 61°F
-                                </div>
-                            </div>
-                            <div>
-                                <div class="result-panel">
-                                    <h3>GDU ESTIMATE</h3>
-                                    <div class="result-row"><span>Daily GDU Accumulation</span><span class="result-value" id="gduDaily">-</span></div>
-                                    <div class="result-row"><span>Days Since Planting</span><span class="result-value" id="gduDays">-</span></div>
-                                    <div class="result-row"><span>Accumulated GDUs</span><span class="result-value" id="gduAccum" style="font-size:1.8rem;color:var(--accent)">-</span></div>
-                                    <div class="result-row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"><span>GDUs Remaining</span><span class="result-value" id="gduRemain">-</span></div>
-                                    <div class="result-row"><span>Progress to Maturity</span><span class="result-value" id="gduProgress">-</span></div>
-                                    <div class="result-row"><span>Est. Black Layer Date</span><span class="result-value" id="gduBlackLayer" style="color:var(--green)">-</span></div>
-                                </div>
-                                <div class="result-panel" style="margin-top:16px">
-                                    <h3>GROWTH STAGES</h3>
-                                    <div id="gduStages"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="margin-top:20px;padding:16px;background:var(--card);border-radius:4px;border-left:3px solid var(--accent)">
-                            <strong style="color:var(--accent)">GDU Formula (86/50 Method):</strong>
-                            <span style="color:var(--dim)"> GDU = [(High + Low) / 2] - 50. High temps above 86°F capped at 86, lows below 50°F set to 50. Corn growth slows above 86°F and stops below 50°F.</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Break-Even Calculator -->
-                <div class="panel" id="breakeven-section">
-                    <div class="panel-head"><h2>💰 BREAK-EVEN CALCULATOR</h2></div>
-                    <div class="panel-body">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
-                            <div class="calc-panel">
-                                <h3>PRODUCTION COSTS ($/acre)</h3>
-                                <div class="input-group"><label>Seed</label><input type="number" id="beSeed" value="135" step="1" oninput="calcBreakEven()"></div>
-                                <div class="input-group"><label>Fertilizer (N, P, K)</label><input type="number" id="beFert" value="165" step="1" oninput="calcBreakEven()"></div>
-                                <div class="input-group"><label>Chemicals/Herbicide</label><input type="number" id="beChem" value="55" step="1" oninput="calcBreakEven()"></div>
-                                <div class="input-group"><label>Crop Insurance</label><input type="number" id="beIns" value="38" step="1" oninput="calcBreakEven()"></div>
-                                <div class="input-group"><label>Machinery & Fuel</label><input type="number" id="beMach" value="95" step="1" oninput="calcBreakEven()"></div>
-                                <div class="input-group"><label>Labor</label><input type="number" id="beLabor" value="35" step="1" oninput="calcBreakEven()"></div>
-                                <div class="input-group"><label>Land Rent</label><input type="number" id="beRent" value="225" step="1" oninput="calcBreakEven()"></div>
-                                <div class="input-group"><label>Drying & Hauling</label><input type="number" id="beDry" value="35" step="1" oninput="calcBreakEven()"></div>
-                                <div class="input-group"><label>Other/Misc</label><input type="number" id="beOther" value="40" step="1" oninput="calcBreakEven()"></div>
-                            </div>
-                            <div>
-                                <div class="calc-panel" style="margin-bottom:20px">
-                                    <h3>YIELD & MARKET</h3>
-                                    <div class="input-group"><label>Expected Yield (bu/acre)</label><input type="number" id="beYield" value="185" step="1" oninput="calcBreakEven()"></div>
-                                    <div class="input-group"><label>Current Market Price ($/bu)</label><input type="number" id="bePrice" value="4.50" step="0.01" oninput="calcBreakEven()"></div>
-                                </div>
-                                <div class="result-panel">
-                                    <h3>BREAK-EVEN ANALYSIS</h3>
-                                    <div class="result-row"><span>Total Cost per Acre</span><span class="result-value" id="beTotalCost">-</span></div>
-                                    <div class="result-row"><span>Cost per Bushel</span><span class="result-value" id="beCostBu">-</span></div>
-                                    <div class="result-row" style="padding:12px 0;border-bottom:2px solid var(--accent)"><span style="font-weight:700">Break-Even Price</span><span class="result-value" id="beBreakEven" style="font-size:1.8rem;color:var(--accent)">-</span></div>
-                                    <div class="result-row"><span>Gross Revenue/Acre</span><span class="result-value" id="beRevenue">-</span></div>
-                                    <div class="result-row"><span>Net Profit/Loss per Acre</span><span class="result-value" id="beProfit">-</span></div>
-                                    <div class="result-row"><span>Net per Bushel</span><span class="result-value" id="beProfitBu">-</span></div>
-                                    <div class="result-row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"><span>Yield Needed to Break-Even</span><span class="result-value" id="beYieldNeeded">-</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
-                            <div style="background:var(--card);padding:16px;border-radius:4px;text-align:center">
-                                <div style="font-size:0.75rem;color:var(--dim);margin-bottom:8px">CORN (WI/MN Avg)</div>
-                                <div style="font-family:'JetBrains Mono',monospace">$4.15-5.00/bu BE</div>
-                                <div style="font-size:0.8rem;color:var(--dim);margin-top:4px">175-195 bu yield</div>
-                            </div>
-                            <div style="background:var(--card);padding:16px;border-radius:4px;text-align:center">
-                                <div style="font-size:0.75rem;color:var(--dim);margin-bottom:8px">SOYBEANS (WI/MN Avg)</div>
-                                <div style="font-family:'JetBrains Mono',monospace">$9.00-11.00/bu BE</div>
-                                <div style="font-size:0.8rem;color:var(--dim);margin-top:4px">48-55 bu yield</div>
-                            </div>
-                            <div style="background:var(--card);padding:16px;border-radius:4px;text-align:center">
-                                <div style="font-size:0.75rem;color:var(--dim);margin-bottom:8px">WHEAT (WI/MN Avg)</div>
-                                <div style="font-family:'JetBrains Mono',monospace">$5.50-7.00/bu BE</div>
-                                <div style="font-size:0.8rem;color:var(--dim);margin-top:4px">65-80 bu yield</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- USDA Office Finder -->
-                <div class="panel" id="offices-section">
-                    <div class="panel-head"><h2>🏛️ FIND USDA SERVICE CENTER</h2></div>
-                    <div class="panel-body">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:600px">
-                            <div class="input-group"><label>State</label><select id="state" onchange="loadCounties()"><option value="">Select State</option><option value="WI">Wisconsin</option><option value="MN">Minnesota</option><option value="IA">Iowa</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="MI">Michigan</option><option value="ND">North Dakota</option><option value="SD">South Dakota</option><option value="NE">Nebraska</option><option value="KS">Kansas</option><option value="MO">Missouri</option><option value="OH">Ohio</option></select></div>
-                            <div class="input-group"><label>County</label><select id="county"><option>Select State First</option></select></div>
-                        </div>
-                        <button onclick="findOffice()" class="calc-btn" style="margin-top:16px">LOCATE OFFICE</button>
-                        <div id="office-results" style="margin-top:20px;display:none;grid-template-columns:1fr 1fr;gap:20px">
-                            <div class="market-card"><div class="name">FSA OFFICE</div><p style="font-size:.9rem;margin-top:10px;color:var(--dim)">Farm Service Agency - Loans, Programs, Disaster Assistance</p><a id="fsa-link" href="#" target="_blank" style="display:block;margin-top:10px;color:var(--accent)">View Contact Info →</a></div>
-                            <div class="market-card"><div class="name">NRCS OFFICE</div><p style="font-size:.9rem;margin-top:10px;color:var(--dim)">Natural Resources Conservation - EQIP, CSP, Soil Health</p><a id="nrcs-link" href="#" target="_blank" style="display:block;margin-top:10px;color:var(--accent)">View Contact Info →</a></div>
-                        </div>
-                    </div>
-                </div>
+        
+        <!-- SECONDARY: Other commodities -->
+        <div class="section-header">Livestock & More</div>
+        <div class="secondary-grid" id="secondary-prices">
+            <div class="secondary-card">
+                <div class="secondary-label">Wheat</div>
+                <div class="secondary-value" id="wheat-price">--</div>
+                <div class="secondary-change" id="wheat-change">--</div>
+            </div>
+            <div class="secondary-card">
+                <div class="secondary-label">Live Cattle</div>
+                <div class="secondary-value" id="cattle-price">--</div>
+                <div class="secondary-change" id="cattle-change">--</div>
+            </div>
+            <div class="secondary-card">
+                <div class="secondary-label">Feeder Cattle</div>
+                <div class="secondary-value" id="feeder-price">--</div>
+                <div class="secondary-change" id="feeder-change">--</div>
+            </div>
+            <div class="secondary-card">
+                <div class="secondary-label">Lean Hogs</div>
+                <div class="secondary-value" id="hogs-price">--</div>
+                <div class="secondary-change" id="hogs-change">--</div>
+            </div>
+            <div class="secondary-card">
+                <div class="secondary-label">Class III Milk</div>
+                <div class="secondary-value" id="milk-price">--</div>
+                <div class="secondary-change" id="milk-change">--</div>
+            </div>
+            <div class="secondary-card">
+                <div class="secondary-label">Crude Oil</div>
+                <div class="secondary-value" id="oil-price">--</div>
+                <div class="secondary-change" id="oil-change">--</div>
             </div>
         </div>
-
-        <!-- CALENDAR TAB -->
-        <div id="calendar" class="tab">
-            <div class="calc-wrap">
-                <!-- USDA Economic Calendar -->
-                <div class="panel">
-                    <div class="panel-head"><h2>📊 USDA ECONOMIC CALENDAR 2026</h2></div>
-                    <div class="panel-body">
-                        <p style="color:var(--dim);margin-bottom:20px">Major USDA reports that move commodity markets. WASDE and Crop Production reports released at 12:00 PM ET.</p>
-                        <div id="full-usda-calendar"></div>
-                    </div>
+        
+        <!-- LOCAL CASH BIDS -->
+        <div class="section-header" style="margin-top:24px;display:flex;justify-content:space-between;align-items:center">
+            <span>Local Cash Bids (NW Wisconsin)</span>
+            <a href="https://www.dtn.com/agriculture/cash-bids/" target="_blank" style="font-size:0.7rem;color:var(--accent);text-decoration:none">More bids →</a>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin-bottom:16px">
+            <!-- Row 1 -->
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:0.8rem;font-weight:600">FlashGrain</span>
+                    <a href="https://flashgrain.com" target="_blank" style="font-size:0.6rem;color:var(--accent);text-decoration:none">Site →</a>
                 </div>
-
-                <!-- Crop Insurance Deadlines -->
-                <div class="panel">
-                    <div class="panel-head"><h2>📋 CROP INSURANCE DEADLINES 2026</h2></div>
-                    <div class="panel-body">
-                        <div class="input-group" style="max-width:300px;margin-bottom:20px">
-                            <label>Select State</label>
-                            <select id="insuranceState" onchange="loadInsuranceDeadlines()">
-                                <option value="WI" selected>Wisconsin</option>
-                                <option value="MN">Minnesota</option>
-                                <option value="IA">Iowa</option>
-                                <option value="IL">Illinois</option>
-                                <option value="ND">North Dakota</option>
-                                <option value="SD">South Dakota</option>
-                            </select>
-                        </div>
-                        <div id="insurance-deadlines"></div>
-                        <div style="margin-top:24px;padding:16px;background:var(--card);border-radius:4px;border-left:3px solid var(--accent)">
-                            <strong style="color:var(--accent)">💡 Pro Tip:</strong>
-                            <span style="color:var(--dim)"> Sales closing dates are the last day to purchase or change crop insurance. Contact your agent well before these dates.</span>
-                            <div style="margin-top:12px">
-                                <a href="https://farmers1st.com" target="_blank" class="calc-btn" style="display:inline-block;padding:8px 16px;font-size:0.85rem">Find Insurance Agent →</a>
-                                <a href="https://webapp.rma.usda.gov/apps/actuarialinformationbrowser/" target="_blank" class="calc-btn" style="display:inline-block;padding:8px 16px;font-size:0.85rem;margin-left:10px;background:var(--card);border:1px solid var(--border);color:var(--text)">RMA Rates →</a>
-                            </div>
-                        </div>
-                    </div>
+                <div style="font-size:0.75rem;color:var(--dim)">Real-time digital bids</div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:0.8rem;font-weight:600">CDR Farms</span>
+                    <span style="font-size:0.6rem;color:var(--dim)">715-455-1474</span>
                 </div>
-
-                <!-- Key Market Dates -->
-                <div class="panel">
-                    <div class="panel-head"><h2>📈 KEY MARKET DATES 2026</h2></div>
-                    <div class="panel-body">
-                        <div class="market-dates-grid">
-                            <div class="date-card highlight">
-                                <div class="date-icon">📊</div>
-                                <h4>Prospective Plantings</h4>
-                                <p>March 31, 2026</p>
-                                <span class="date-desc">First look at farmer planting intentions - MAJOR MARKET MOVER</span>
-                            </div>
-                            <div class="date-card highlight">
-                                <div class="date-icon">📦</div>
-                                <h4>Quarterly Stocks</h4>
-                                <p>Mar 31 / Jun 30 / Sep 30</p>
-                                <span class="date-desc">Grain stocks on hand as of 1st of month</span>
-                            </div>
-                            <div class="date-card">
-                                <div class="date-icon">🚜</div>
-                                <h4>Planted Acreage</h4>
-                                <p>June 30, 2026</p>
-                                <span class="date-desc">Actual planted acres report</span>
-                            </div>
-                            <div class="date-card">
-                                <div class="date-icon">🌱</div>
-                                <h4>Corn Price Discovery</h4>
-                                <p>Feb 1 - Feb 28</p>
-                                <span class="date-desc">RMA projected price for Revenue Protection</span>
-                            </div>
-                            <div class="date-card">
-                                <div class="date-icon">🌽</div>
-                                <h4>Harvest Price (Corn)</h4>
-                                <p>Oct 1 - Oct 31</p>
-                                <span class="date-desc">October average for RP harvest price</span>
-                            </div>
-                            <div class="date-card">
-                                <div class="date-icon">🫘</div>
-                                <h4>Harvest Price (Beans)</h4>
-                                <p>Oct 1 - Oct 31</p>
-                                <span class="date-desc">October average for RP harvest price</span>
-                            </div>
-                        </div>
-                    </div>
+                <div style="font-size:0.75rem;color:var(--dim)">Prairie Farm area</div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:0.8rem;font-weight:600">Rooney Farms</span>
+                    <span style="font-size:0.6rem;color:var(--dim)">715-749-3800</span>
                 </div>
+                <div style="font-size:0.75rem;color:var(--dim)">Glenwood City</div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:0.8rem;font-weight:600">Chippewa Valley Grain</span>
+                    <span style="font-size:0.6rem;color:var(--dim)">715-723-8555</span>
+                </div>
+                <div style="font-size:0.75rem;color:var(--dim)">Chippewa Falls</div>
+            </div>
+            <!-- Row 2 -->
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:0.8rem;font-weight:600">Emmert's</span>
+                    <span style="font-size:0.6rem;color:var(--dim)">715-597-3145</span>
+                </div>
+                <div style="font-size:0.75rem;color:var(--dim)">Augusta</div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:0.8rem;font-weight:600">Jennie-O Turkey Store</span>
+                    <span style="font-size:0.6rem;color:var(--dim)">715-568-4000</span>
+                </div>
+                <div style="font-size:0.75rem;color:var(--dim)">Barron (corn)</div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:0.8rem;font-weight:600">Equity Cooperative</span>
+                    <span style="font-size:0.6rem;color:var(--dim)">715-537-3144</span>
+                </div>
+                <div style="font-size:0.75rem;color:var(--dim)">Barron</div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:0.8rem;font-weight:600">CHS - Rice Lake</span>
+                    <span style="font-size:0.6rem;color:var(--dim)">715-234-8877</span>
+                </div>
+                <div style="font-size:0.75rem;color:var(--dim)">Rice Lake</div>
+            </div>
+            <!-- Row 3 -->
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:0.8rem;font-weight:600">Landmark - Cameron</span>
+                    <span style="font-size:0.6rem;color:var(--dim)">715-458-2171</span>
+                </div>
+                <div style="font-size:0.75rem;color:var(--dim)">Cameron</div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:0.8rem;font-weight:600">United Farmers Coop</span>
+                    <span style="font-size:0.6rem;color:var(--dim)">715-268-7137</span>
+                </div>
+                <div style="font-size:0.75rem;color:var(--dim)">Amery</div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:0.8rem;font-weight:600">Compeer Financial</span>
+                    <span style="font-size:0.6rem;color:var(--dim)">844-426-6733</span>
+                </div>
+                <div style="font-size:0.75rem;color:var(--dim)">Regional financing</div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:0.8rem;font-weight:600">River Country Coop</span>
+                    <span style="font-size:0.6rem;color:var(--dim)">715-235-4533</span>
+                </div>
+                <div style="font-size:0.75rem;color:var(--dim)">Menomonie</div>
             </div>
         </div>
-
-        <!-- RESOURCES TAB -->
-        <div id="resources" class="tab">
-            <div class="calc-wrap">
-                <div class="panel">
-                    <div class="panel-head"><h2>AG RESOURCES</h2></div>
-                    <div class="panel-body">
-                        <div class="resources-grid">
-                            <div class="resource-card">
-                                <h4 class="section-label">CROP INSURANCE</h4>
-                                <a href="https://farmers1st.com" target="_blank" class="resource-link">Find Insurance Agent (Farmers First)</a>
-                                <a href="https://webapp.rma.usda.gov/apps/actuarialinformationbrowser/" target="_blank" class="resource-link">Actuarial Information Browser</a>
-                                <a href="https://www.rma.usda.gov/Topics/Important-Dates" target="_blank" class="resource-link">Important Dates & Deadlines</a>
-                                <a href="https://www.rma.usda.gov/Topics/Price-Discovery" target="_blank" class="resource-link">Price Discovery</a>
-                            </div>
-                            <div class="resource-card">
-                                <h4 class="section-label">FARM SERVICE AGENCY</h4>
-                                <a href="https://www.fsa.usda.gov/programs-and-services/farm-loan-programs/" target="_blank" class="resource-link">Farm Loan Programs</a>
-                                <a href="https://www.fsa.usda.gov/programs-and-services/arcplc_program/" target="_blank" class="resource-link">ARC / PLC Program</a>
-                                <a href="https://www.fsa.usda.gov/programs-and-services/conservation-programs/" target="_blank" class="resource-link">Conservation Reserve (CRP)</a>
-                                <a href="https://www.fsa.usda.gov/programs-and-services/disaster-assistance-program/" target="_blank" class="resource-link">Disaster Assistance</a>
-                            </div>
-                            <div class="resource-card">
-                                <h4 class="section-label">NRCS & SOIL</h4>
-                                <a href="https://websoilsurvey.nrcs.usda.gov/app/" target="_blank" class="resource-link">Web Soil Survey</a>
-                                <a href="https://www.nrcs.usda.gov/programs-initiatives/eqip-environmental-quality-incentives" target="_blank" class="resource-link">EQIP Program</a>
-                                <a href="https://www.nrcs.usda.gov/programs-initiatives/csp-conservation-stewardship-program" target="_blank" class="resource-link">CSP Program</a>
-                            </div>
-                            <div class="resource-card">
-                                <h4 class="section-label">MARKET REPORTS</h4>
-                                <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank" class="resource-link">WASDE Reports</a>
-                                <a href="https://www.ams.usda.gov/market-news" target="_blank" class="resource-link">USDA Market News</a>
-                                <a href="https://www.nass.usda.gov/Publications/" target="_blank" class="resource-link">NASS Publications</a>
-                            </div>
-                            <div class="resource-card">
-                                <h4 class="section-label">WEATHER & CLIMATE</h4>
-                                <a href="https://droughtmonitor.unl.edu/" target="_blank" class="resource-link">US Drought Monitor</a>
-                                <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" class="resource-link">NOAA Climate Prediction</a>
-                                <a href="https://hprcc.unl.edu/agroclimate/gdd.php" target="_blank" class="resource-link">U2U Corn GDD Tool</a>
-                            </div>
-                            <div class="resource-card">
-                                <h4 class="section-label">DRONE SERVICES</h4>
-                                <a href="https://lokedrone.com" target="_blank" class="resource-link">Loke Drone LC - Crop Spraying</a>
-                                <a href="https://usdronemap.com" target="_blank" class="resource-link">US Drone Map - Find Pilots</a>
-                            </div>
-                        </div>
-                    </div>
+        <div style="font-size:0.7rem;color:var(--dim);text-align:center;margin-bottom:24px">
+            💡 Cash bids change daily. Call elevators for current prices. <a href="/learn.html#basis" style="color:var(--accent);text-decoration:none">Learn about basis →</a>
+        </div>
+        
+        <!-- WEATHER & NEWS side by side on desktop -->
+        <div class="two-col">
+            <div>
+                <div class="section-header" style="display:flex;justify-content:space-between;align-items:center">
+                    <span>Weather Radar</span>
+                    <select id="radar-select" onchange="changeRadar()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:4px;font-size:0.7rem;font-family:inherit">
+                        <option value="KARX">La Crosse, WI</option>
+                        <option value="KMKX">Milwaukee, WI</option>
+                        <option value="KGRB">Green Bay, WI</option>
+                        <option value="KDLH">Duluth, MN</option>
+                        <option value="KMPX">Minneapolis, MN</option>
+                        <option value="KFSD">Sioux Falls, SD</option>
+                        <option value="KDMX">Des Moines, IA</option>
+                        <option value="KDVN">Davenport, IA</option>
+                        <option value="KLOT">Chicago, IL</option>
+                        <option value="KFGF">Fargo, ND</option>
+                    </select>
+                </div>
+                <div class="weather-card">
+                    <iframe id="radar-frame" src="https://radar.weather.gov/ridge/standard/KARX_loop.gif" title="NWS Radar"></iframe>
+                </div>
+                <div style="font-size:0.7rem;color:var(--dim);margin-top:8px;text-align:center" id="radar-status">
+                    📍 Detecting your location...
+                </div>
+            </div>
+            <div>
+                <div class="section-header">Ag News</div>
+                <div class="news-card" id="news-feed">
+                    <div class="news-item loading">Loading news...</div>
                 </div>
             </div>
         </div>
     </main>
-
-    <footer>
-        <div class="footer-inner">
-            <div class="footer-col">
-                <div class="logo" style="margin-bottom:16px"><div class="logo-icon" style="width:32px;height:32px"><span class="top-text" style="font-size:0.7rem">AG</span><span class="bot-text" style="font-size:0.45rem">SIST</span></div><span class="logo-text" style="font-size:1.2rem">AGSIST</span></div>
-                <p style="color:var(--dim);line-height:1.6;margin-bottom:16px">Free professional-grade market intelligence, weather data, and farm tools for the modern American farmer.</p>
-                <div style="display:flex;gap:10px;align-items:center"><span style="width:8px;height:8px;background:var(--green);border-radius:50%"></span><span style="color:var(--text);font-size:0.8rem">All Systems Operational</span></div>
+    
+    <!-- ABOUT SECTION -->
+    <section style="max-width:800px;margin:40px auto;padding:0 16px">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;text-align:center">
+            <h2 style="font-size:1.1rem;margin-bottom:16px;color:var(--accent)">Built by Farmers, for Farmers</h2>
+            <p style="color:var(--dim);font-size:0.9rem;line-height:1.7;margin-bottom:16px">
+                AGSIST was created in rural Wisconsin by people who actually farm. We got tired of slow, cluttered ag sites filled with ads. So we built something better — fast, clean, and focused on what matters: prices, weather, and tools that work.
+            </p>
+            <p style="color:var(--dim);font-size:0.9rem;line-height:1.7;margin-bottom:20px">
+                We run <a href="https://farmers1st.com" target="_blank" style="color:var(--accent)">Farmers First Agri Service</a> (crop insurance & agronomy) and <a href="https://lokedrone.com" target="_blank" style="color:var(--accent)">Loke Drone LC</a> (agricultural drone services) right here in Barron County. This isn't a side project from some tech company — it's built by your neighbors.
+            </p>
+            <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
+                <span style="background:var(--bg);padding:6px 12px;border-radius:4px;font-size:0.75rem;color:var(--dim)">📍 Barron County, WI</span>
+                <span style="background:var(--bg);padding:6px 12px;border-radius:4px;font-size:0.75rem;color:var(--dim)">🌽 Family Farm</span>
+                <span style="background:var(--bg);padding:6px 12px;border-radius:4px;font-size:0.75rem;color:var(--dim)">🚜 Since 2020</span>
             </div>
-            <div class="footer-col"><h4>TOOLS</h4><ul><li><a href="javascript:switchTab('tools')">Grain Bin Calculator</a></li><li><a href="javascript:switchTab('tools');setTimeout(()=>scrollToEl('gdu-section'),100)">GDU Calculator</a></li><li><a href="javascript:switchTab('tools');setTimeout(()=>scrollToEl('breakeven-section'),100)">Break-Even Calculator</a></li></ul></div>
-            <div class="footer-col"><h4>RESOURCES</h4><ul><li><a href="javascript:switchTab('calendar')">USDA Calendar</a></li><li><a href="javascript:switchTab('resources')">Ag Resources</a></li><li><a href="https://farmers1st.com" target="_blank">Farmers First Agri</a></li><li><a href="https://lokedrone.com" target="_blank">Loke Drone LC</a></li></ul></div>
-            <div class="footer-col"><h4>LEGAL</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li><li><a href="/sitemap.xml">Sitemap</a></li></ul></div>
         </div>
-        <div class="footer-bottom"><span>© 2026 AGSIST. All rights reserved.</span><span id="footer-updated" style="color:var(--dim)"></span><span>Made in the USA 🇺🇸</span></div>
+    </section>
+    
+    <footer>
+        <div class="footer-links">
+            <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
+            <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
+            <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
+        </div>
+        <div>© 2026 AGSIST • Made in the USA 🇺🇸</div>
     </footer>
-
-    <script src="app.js"></script>
-    <!-- Twitter Widget Script - load async -->
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    
+    <script>
+    async function loadData() {
+        try {
+            const res = await fetch('data/markets.json');
+            if (!res.ok) throw new Error('Failed to load');
+            const data = await res.json();
+            
+            // Update time
+            document.getElementById('update-time').textContent = 
+                new Date(data.updated).toLocaleString([], {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+            document.getElementById('update-time').classList.remove('loading');
+            
+            const m = data.markets;
+            
+            // Helper to format price
+            const fmt = (val, unit) => {
+                if (unit === '¢/bu') return (val / 100).toFixed(2);
+                if (unit === '¢/lb') return val.toFixed(2);
+                if (unit === '$/cwt') return val.toFixed(2);
+                if (unit === '$/bbl') return val.toFixed(2);
+                return val.toFixed(2);
+            };
+            
+            // Helper to set change class
+            const chgClass = (val) => val >= 0 ? 'up' : 'down';
+            const chgSign = (val) => val >= 0 ? '+' : '';
+            
+            // CORN
+            if (m.grains?.corn) {
+                const c = m.grains.corn;
+                document.getElementById('corn-contract').textContent = c.contract || 'Front';
+                document.getElementById('corn-price').textContent = '$' + fmt(c.price, c.unit);
+                document.getElementById('corn-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
+                document.getElementById('corn-change').className = 'price-change ' + chgClass(c.change);
+            }
+            
+            // CORN DEC
+            if (m.grains?.corn_dec) {
+                const c = m.grains.corn_dec;
+                document.getElementById('corn-dec-price').textContent = '$' + fmt(c.price, c.unit);
+                document.getElementById('corn-dec-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
+                document.getElementById('corn-dec-change').className = 'price-change ' + chgClass(c.change);
+            }
+            
+            // SOYBEANS
+            if (m.grains?.soybeans) {
+                const c = m.grains.soybeans;
+                document.getElementById('soy-contract').textContent = c.contract || 'Front';
+                document.getElementById('soy-price').textContent = '$' + fmt(c.price, c.unit);
+                document.getElementById('soy-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
+                document.getElementById('soy-change').className = 'price-change ' + chgClass(c.change);
+            }
+            
+            // SOYBEANS NOV
+            if (m.grains?.soybeans_nov) {
+                const c = m.grains.soybeans_nov;
+                document.getElementById('soy-nov-price').textContent = '$' + fmt(c.price, c.unit);
+                document.getElementById('soy-nov-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
+                document.getElementById('soy-nov-change').className = 'price-change ' + chgClass(c.change);
+            }
+            
+            // WHEAT
+            if (m.grains?.wheat) {
+                const c = m.grains.wheat;
+                document.getElementById('wheat-price').textContent = '$' + fmt(c.price, c.unit);
+                document.getElementById('wheat-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('wheat-change').className = 'secondary-change ' + chgClass(c.change);
+            }
+            
+            // CATTLE
+            if (m.livestock?.cattle) {
+                const c = m.livestock.cattle;
+                document.getElementById('cattle-price').textContent = '$' + c.price.toFixed(2);
+                document.getElementById('cattle-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('cattle-change').className = 'secondary-change ' + chgClass(c.change);
+            }
+            
+            // FEEDER
+            if (m.livestock?.feeder) {
+                const c = m.livestock.feeder;
+                document.getElementById('feeder-price').textContent = '$' + c.price.toFixed(2);
+                document.getElementById('feeder-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('feeder-change').className = 'secondary-change ' + chgClass(c.change);
+            }
+            
+            // HOGS
+            if (m.livestock?.hogs) {
+                const c = m.livestock.hogs;
+                document.getElementById('hogs-price').textContent = '$' + c.price.toFixed(2);
+                document.getElementById('hogs-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('hogs-change').className = 'secondary-change ' + chgClass(c.change);
+            }
+            
+            // MILK
+            if (m.livestock?.milk) {
+                const c = m.livestock.milk;
+                document.getElementById('milk-price').textContent = '$' + c.price.toFixed(2);
+                document.getElementById('milk-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('milk-change').className = 'secondary-change ' + chgClass(c.change);
+            }
+            
+            // OIL
+            if (m.energy?.oil) {
+                const c = m.energy.oil;
+                document.getElementById('oil-price').textContent = '$' + c.price.toFixed(2);
+                document.getElementById('oil-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('oil-change').className = 'secondary-change ' + chgClass(c.change);
+            }
+            
+            // NEWS
+            if (data.news && data.news.length > 0) {
+                const newsEl = document.getElementById('news-feed');
+                newsEl.innerHTML = data.news.slice(0, 8).map(n => `
+                    <div class="news-item">
+                        <a href="${n.link}" target="_blank">${n.title}</a>
+                        <div class="news-source">${n.source || 'Ag News'}</div>
+                    </div>
+                `).join('');
+            }
+            
+            // TICKER
+            buildTicker(m, data.news || []);
+            
+        } catch (e) {
+            console.error(e);
+            document.getElementById('update-time').textContent = 'Offline';
+            document.getElementById('update-time').classList.remove('loading');
+        }
+    }
+    
+    function buildTicker(m, news) {
+        const items = [];
+        const chgClass = (val) => val >= 0 ? 'up' : 'down';
+        const chgSign = (val) => val >= 0 ? '+' : '';
+        
+        // Corn
+        if (m.grains?.corn) {
+            const c = m.grains.corn;
+            items.push(`<span class="ticker-item"><span class="label">🌽 Corn</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
+        }
+        
+        // Soybeans
+        if (m.grains?.soybeans) {
+            const c = m.grains.soybeans;
+            items.push(`<span class="ticker-item"><span class="label">🫘 Beans</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
+        }
+        
+        // Wheat
+        if (m.grains?.wheat) {
+            const c = m.grains.wheat;
+            items.push(`<span class="ticker-item"><span class="label">🌾 Wheat</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
+        }
+        
+        // Cattle
+        if (m.livestock?.cattle) {
+            const c = m.livestock.cattle;
+            items.push(`<span class="ticker-item"><span class="label">🐄 Cattle</span><span class="price">$${c.price.toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
+        }
+        
+        // Bitcoin
+        if (m.crypto?.bitcoin) {
+            const c = m.crypto.bitcoin;
+            items.push(`<span class="ticker-item"><span class="label">₿ BTC</span><span class="price">$${c.price.toLocaleString(undefined,{maximumFractionDigits:0})}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
+        }
+        
+        // Kaspa - 3 decimal places
+        if (m.crypto?.kaspa) {
+            const c = m.crypto.kaspa;
+            items.push(`<span class="ticker-item"><span class="label">KAS</span><span class="price">$${c.price.toFixed(3)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
+        }
+        
+        // Add news headlines
+        if (news.length > 0) {
+            news.slice(0, 3).forEach(n => {
+                items.push(`<span class="ticker-item news">📰 ${n.title}</span>`);
+            });
+        }
+        
+        // Duplicate for seamless scroll
+        const tickerEl = document.getElementById('ticker');
+        tickerEl.innerHTML = items.join('') + items.join('');
+    }
+    
+    loadData();
+    // Refresh every 5 minutes
+    setInterval(loadData, 5 * 60 * 1000);
+    
+    // RADAR STATIONS with lat/lon
+    const RADAR_STATIONS = [
+        { code: 'KARX', name: 'La Crosse, WI', lat: 43.82, lon: -91.19 },
+        { code: 'KMKX', name: 'Milwaukee, WI', lat: 42.97, lon: -88.55 },
+        { code: 'KGRB', name: 'Green Bay, WI', lat: 44.50, lon: -88.11 },
+        { code: 'KDLH', name: 'Duluth, MN', lat: 46.84, lon: -92.21 },
+        { code: 'KMPX', name: 'Minneapolis, MN', lat: 44.85, lon: -93.57 },
+        { code: 'KFSD', name: 'Sioux Falls, SD', lat: 43.59, lon: -96.73 },
+        { code: 'KDMX', name: 'Des Moines, IA', lat: 41.73, lon: -93.72 },
+        { code: 'KDVN', name: 'Davenport, IA', lat: 41.61, lon: -90.58 },
+        { code: 'KLOT', name: 'Chicago, IL', lat: 41.60, lon: -88.08 },
+        { code: 'KFGF', name: 'Fargo, ND', lat: 47.45, lon: -96.86 }
+    ];
+    
+    function changeRadar() {
+        const code = document.getElementById('radar-select').value;
+        const station = RADAR_STATIONS.find(s => s.code === code);
+        document.getElementById('radar-frame').src = `https://radar.weather.gov/ridge/standard/${code}_loop.gif`;
+        document.getElementById('radar-status').textContent = `📍 ${station.name}`;
+    }
+    
+    function findNearestRadar(lat, lon) {
+        let nearest = RADAR_STATIONS[0];
+        let minDist = Infinity;
+        
+        RADAR_STATIONS.forEach(station => {
+            const dist = Math.sqrt(Math.pow(lat - station.lat, 2) + Math.pow(lon - station.lon, 2));
+            if (dist < minDist) {
+                minDist = dist;
+                nearest = station;
+            }
+        });
+        
+        return nearest;
+    }
+    
+    // Welcome message based on time
+    function getGreeting() {
+        const hour = new Date().getHours();
+        if (hour < 5) return '🌙 Late night';
+        if (hour < 12) return '☀️ Good morning';
+        if (hour < 17) return '🌤️ Good afternoon';
+        if (hour < 21) return '🌅 Good evening';
+        return '🌙 Good night';
+    }
+    
+    function setWelcome(location) {
+        const greeting = getGreeting();
+        const msg = location ? `${greeting} from ${location}` : greeting;
+        document.getElementById('welcome-msg').textContent = msg;
+    }
+    
+    // Set default welcome
+    setWelcome('');
+    
+    // Geolocation
+    if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const nearest = findNearestRadar(pos.coords.latitude, pos.coords.longitude);
+                document.getElementById('radar-select').value = nearest.code;
+                document.getElementById('radar-frame').src = `https://radar.weather.gov/ridge/standard/${nearest.code}_loop.gif`;
+                document.getElementById('radar-status').textContent = `📍 ${nearest.name} (nearest to you)`;
+                
+                // Reverse geocode to get county/city name
+                fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`)
+                    .then(r => r.json())
+                    .then(data => {
+                        const county = data.address?.county || data.address?.city || data.address?.state || '';
+                        if (county) setWelcome(county);
+                    })
+                    .catch(() => setWelcome(nearest.name.split(',')[0]));
+            },
+            (err) => {
+                // Default to La Crosse (Barron County area)
+                document.getElementById('radar-status').textContent = '📍 La Crosse, WI (default)';
+                setWelcome('');
+            },
+            { timeout: 5000, maximumAge: 600000 }
+        );
+    } else {
+        document.getElementById('radar-status').textContent = '📍 La Crosse, WI (default)';
+        setWelcome('');
+    }
+    
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').then(() => {
+            console.log('AGSIST: Service Worker registered');
+        }).catch((err) => {
+            console.log('SW registration failed:', err);
+        });
+    }
+    </script>
 </body>
 </html>

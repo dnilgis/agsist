@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farming Guides - Basis, Grain Marketing, Crop Insurance, GDUs | AGSIST</title>
+    <meta name="description" content="Free farming guides: understanding corn basis, when to sell grain, crop insurance 101, GDU explained, and break-even analysis. Written for farmers by farmers.">
+    <meta name="keywords" content="corn basis explained, when to sell grain, crop insurance guide, GDU growing degree units, farm break even analysis, grain marketing basics">
+    <link rel="canonical" href="https://agsist.com/learn.html">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta property="og:title" content="Farming Guides - Basis, Marketing, Insurance & More">
+    <meta property="og:description" content="Plain-English farming guides. No fluff, just what you need to know.">
+    <meta property="og:image" content="https://agsist.com/og-image.png">
+    <meta property="og:url" content="https://agsist.com/learn.html">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Schema.org for Articles -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": [
+            {
+                "@type": "Article",
+                "position": 1,
+                "name": "Understanding Corn Basis",
+                "description": "Learn what basis is, how it affects your grain price, and how to trade basis like a pro.",
+                "url": "https://agsist.com/learn.html#basis"
+            },
+            {
+                "@type": "Article",
+                "position": 2,
+                "name": "When to Sell Your Grain",
+                "description": "Smart grain marketing strategies, seasonal patterns, and signals to watch.",
+                "url": "https://agsist.com/learn.html#when-to-sell"
+            },
+            {
+                "@type": "Article",
+                "position": 3,
+                "name": "Crop Insurance 101",
+                "description": "Understanding yield protection vs revenue protection, coverage levels, and key dates.",
+                "url": "https://agsist.com/learn.html#crop-insurance"
+            },
+            {
+                "@type": "Article",
+                "position": 4,
+                "name": "Growing Degree Units Explained",
+                "description": "How GDUs work, requirements by hybrid, and using them for planting decisions.",
+                "url": "https://agsist.com/learn.html#gdu"
+            },
+            {
+                "@type": "Article",
+                "position": 5,
+                "name": "Break-Even Analysis for Farmers",
+                "description": "Calculate your break-even price and use it for smarter grain marketing.",
+                "url": "https://agsist.com/learn.html#breakeven"
+            }
+        ]
+    }
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #0a0a0a;
+            --card: #111;
+            --border: #222;
+            --text: #e8e8e8;
+            --dim: #666;
+            --accent: #e6b042;
+            --green: #22c55e;
+            --red: #ef4444;
+        }
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        nav {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-weight: 700; font-size: 1.25rem; color: var(--accent); text-decoration: none; }
+        .nav-links { display: flex; gap: 8px; }
+        .nav-links a {
+            color: var(--dim);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--text); background: var(--border); }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
+        
+        .page-header { margin-bottom: 32px; }
+        .page-header h1 { font-size: 1.75rem; margin-bottom: 8px; }
+        .page-header p { color: var(--dim); font-size: 0.95rem; }
+        
+        /* Jump nav */
+        .jump-nav {
+            display: flex; gap: 8px; flex-wrap: wrap;
+            margin-bottom: 32px; padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .jump-nav a {
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--text); text-decoration: none;
+            padding: 8px 12px; border-radius: 6px; font-size: 0.8rem;
+        }
+        .jump-nav a:hover { border-color: var(--accent); color: var(--accent); }
+        
+        /* Articles */
+        article {
+            margin-bottom: 48px;
+            padding-bottom: 48px;
+            border-bottom: 1px solid var(--border);
+            scroll-margin-top: 80px;
+        }
+        article:last-of-type { border-bottom: none; }
+        
+        article h2 {
+            font-size: 1.4rem;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+        article h3 {
+            font-size: 1.1rem;
+            margin: 24px 0 12px;
+            color: var(--text);
+        }
+        article p {
+            margin-bottom: 16px;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+        article ul, article ol {
+            margin: 0 0 16px 24px;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+        article li { margin-bottom: 8px; }
+        
+        .highlight-box {
+            background: var(--card);
+            border-left: 3px solid var(--accent);
+            padding: 16px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+        .highlight-box strong { color: var(--accent); }
+        
+        .example-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            margin: 20px 0;
+            font-size: 0.85rem;
+            font-family: monospace;
+        }
+        .example-box .label {
+            font-size: 0.7rem;
+            color: var(--dim);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        
+        .cta-box {
+            background: var(--card);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+            text-align: center;
+        }
+        .cta-box a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 20px 16px; margin-top: 30px;
+            text-align: center; font-size: 0.75rem; color: var(--dim);
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+        .footer-links { display: flex; justify-content: center; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="logo">AGSIST</a>
+            <div class="nav-links">
+                <a href="/tools.html">Tools</a>
+                <a href="/fastfacts.html">Fast Facts</a>
+                <a href="/learn.html" class="active">Learn</a>
+                <a href="/calendar.html">Calendar</a>
+            </div>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="page-header">
+            <h1>📚 Farming Guides</h1>
+            <p>Plain-English explanations. No fluff, just what you need to know.</p>
+        </div>
+        
+        <div class="jump-nav">
+            <a href="#basis">📊 Understanding Basis</a>
+            <a href="#when-to-sell">💰 When to Sell</a>
+            <a href="#crop-insurance">🛡️ Crop Insurance 101</a>
+            <a href="#gdu">🌡️ GDUs Explained</a>
+            <a href="#breakeven">📈 Break-Even Analysis</a>
+        </div>
+        
+        <!-- ARTICLE 1: UNDERSTANDING BASIS -->
+        <article id="basis">
+            <h2>📊 Understanding Corn Basis</h2>
+            
+            <p>Basis is the difference between your local cash price and the futures price. It's the single most important concept in grain marketing that most farmers don't fully understand.</p>
+            
+            <div class="highlight-box">
+                <strong>The Formula:</strong><br>
+                Basis = Local Cash Price − Futures Price
+            </div>
+            
+            <h3>Why Basis Matters</h3>
+            <p>When you sell grain, you're not really selling at "the futures price." You're selling at futures plus or minus basis. A strong basis can add 20-30 cents to your price. A weak basis can cost you the same.</p>
+            
+            <h3>What Affects Basis?</h3>
+            <ul>
+                <li><strong>Transportation costs</strong> – Further from export terminals = weaker basis</li>
+                <li><strong>Local supply/demand</strong> – Ethanol plant nearby? Stronger basis</li>
+                <li><strong>Storage availability</strong> – Full elevators = weaker basis</li>
+                <li><strong>Time of year</strong> – Harvest = weakest basis, summer = strongest</li>
+                <li><strong>Quality</strong> – High test weight, low moisture = basis premiums</li>
+            </ul>
+            
+            <div class="example-box">
+                <div class="label">Example</div>
+                December corn futures: $4.50/bu<br>
+                Local elevator bid: $4.25/bu<br>
+                Basis = $4.25 − $4.50 = <strong>−25 cents</strong> (25 under)
+            </div>
+            
+            <h3>Basis Patterns</h3>
+            <p>Basis is seasonal and somewhat predictable. Track your local basis over several years to find patterns. Typically:</p>
+            <ul>
+                <li><strong>Weakest:</strong> October-November (harvest pressure)</li>
+                <li><strong>Improving:</strong> December-February (storage carries value)</li>
+                <li><strong>Strongest:</strong> May-August (old crop tight, new crop uncertain)</li>
+            </ul>
+            
+            <h3>Trading Basis</h3>
+            <p>You can lock in futures price with a hedge, then wait for basis to improve before setting your final cash price. This is called "basis trading" and it separates professional grain marketers from everyone else.</p>
+            
+            <div class="cta-box">
+                Track your local basis over time using our <a href="/tools.html">Break-Even Calculator →</a>
+            </div>
+        </article>
+        
+        <!-- ARTICLE 2: WHEN TO SELL GRAIN -->
+        <article id="when-to-sell">
+            <h2>💰 When to Sell Your Grain</h2>
+            
+            <p>There's no perfect answer, but there are smart strategies. The goal isn't to hit the high—it's to average a profitable price across your crop.</p>
+            
+            <h3>The 3 Worst Times to Sell</h3>
+            <ol>
+                <li><strong>Harvest</strong> – Everyone's selling. Basis is weakest. You have the least information about final yield.</li>
+                <li><strong>When you "need" cash</strong> – Desperation selling never works out.</li>
+                <li><strong>After a big rally</strong> – By the time it's on the news, the move is mostly done.</li>
+            </ol>
+            
+            <h3>A Simple Marketing Plan</h3>
+            <p>Sell in increments. Don't try to time the market—spread your risk:</p>
+            <ul>
+                <li>Sell 10-20% pre-harvest when prices hit your target</li>
+                <li>Sell 20-30% at harvest for cash flow</li>
+                <li>Store 30-40% for basis improvement</li>
+                <li>Keep 10-20% for spring rallies</li>
+            </ul>
+            
+            <div class="highlight-box">
+                <strong>Rule of Thumb:</strong><br>
+                If the price covers your costs + reasonable profit, sell some. Don't wait for "more."
+            </div>
+            
+            <h3>Watch These Signals</h3>
+            <ul>
+                <li><strong>USDA Reports</strong> – WASDE, Grain Stocks, Prospective Plantings move markets</li>
+                <li><strong>South American weather</strong> – Brazil/Argentina crops affect US prices</li>
+                <li><strong>Export sales</strong> – Strong weekly sales = bullish</li>
+                <li><strong>Basis trends</strong> – Strengthening basis = good time to price</li>
+                <li><strong>Your break-even</strong> – Know your number before you sell</li>
+            </ul>
+            
+            <h3>Seasonal Patterns</h3>
+            <p>Corn and soybeans have historical price patterns:</p>
+            <ul>
+                <li><strong>Corn lows:</strong> Often October (harvest) and June (big acreage fears)</li>
+                <li><strong>Corn highs:</strong> Often July (weather market) or December-January</li>
+                <li><strong>Soy lows:</strong> October harvest, sometimes February</li>
+                <li><strong>Soy highs:</strong> Often May-July (SA crop + US weather)</li>
+            </ul>
+            
+            <p>But patterns break. Always have a plan, not just a hope.</p>
+            
+            <div class="cta-box">
+                Know your numbers first → <a href="/tools.html#breakeven">Break-Even Calculator</a>
+            </div>
+        </article>
+        
+        <!-- ARTICLE 3: CROP INSURANCE 101 -->
+        <article id="crop-insurance">
+            <h2>🛡️ Crop Insurance 101</h2>
+            
+            <p>Crop insurance is the safety net that lets you take risks. Understanding your options can save—or cost—you thousands.</p>
+            
+            <h3>The Two Main Types</h3>
+            <ul>
+                <li><strong>Yield Protection (YP)</strong> – Covers yield loss only. You're exposed to price drops.</li>
+                <li><strong>Revenue Protection (RP)</strong> – Covers revenue (yield × price). Protects against yield loss AND price drops. Most popular choice.</li>
+            </ul>
+            
+            <div class="highlight-box">
+                <strong>RP with Harvest Price Option:</strong><br>
+                If harvest price > spring price, your guarantee goes UP. This is why 90% of corn/soy acres are on RP.
+            </div>
+            
+            <h3>Coverage Levels</h3>
+            <p>You choose 50% to 85% coverage. Higher coverage = higher premium, but better protection.</p>
+            <ul>
+                <li><strong>85%</strong> – Maximum protection. Makes sense for cash rent situations.</li>
+                <li><strong>80%</strong> – Good balance of cost vs. coverage.</li>
+                <li><strong>75% or below</strong> – Only for very low-risk situations or tight budgets.</li>
+            </ul>
+            
+            <h3>Key Dates (Upper Midwest)</h3>
+            <ul>
+                <li><strong>March 15</strong> – Sales closing date. Last day to buy or change coverage.</li>
+                <li><strong>July 15</strong> – Acreage reporting deadline.</li>
+                <li><strong>Premium due</strong> – Usually October, after harvest.</li>
+            </ul>
+            
+            <h3>The Enterprise Unit Discount</h3>
+            <p>Combining all your acres of a crop into one "enterprise unit" gives you a 20-30% premium discount. The trade-off: you can't file on individual fields—your whole-farm average must drop below guarantee.</p>
+            
+            <h3>Prevented Planting</h3>
+            <p>If you can't plant due to weather, prevented planting coverage pays 55% (YP) or 60% (RP) of your guarantee. Some years this matters a lot.</p>
+            
+            <div class="cta-box">
+                Questions about crop insurance? <a href="https://farmers1st.com" target="_blank">Contact Farmers First Agri Service →</a>
+            </div>
+        </article>
+        
+        <!-- ARTICLE 4: GDU EXPLAINED -->
+        <article id="gdu">
+            <h2>🌡️ Growing Degree Units (GDUs) Explained</h2>
+            
+            <p>GDUs measure heat accumulation that drives corn development. Understanding GDUs helps you pick hybrids, predict maturity, and make harvest decisions.</p>
+            
+            <h3>The Formula</h3>
+            <div class="highlight-box">
+                <strong>Daily GDU = (High + Low) ÷ 2 − 50</strong><br><br>
+                Rules:<br>
+                • High capped at 86°F (corn growth slows above this)<br>
+                • Low floored at 50°F (no growth below this)<br>
+                • If result is negative, GDU = 0 for that day
+            </div>
+            
+            <div class="example-box">
+                <div class="label">Example</div>
+                High: 82°F, Low: 58°F<br>
+                GDU = (82 + 58) ÷ 2 − 50 = 70 − 50 = <strong>20 GDUs</strong>
+            </div>
+            
+            <h3>GDU Requirements by Hybrid</h3>
+            <ul>
+                <li><strong>85-day hybrid:</strong> ~2,100 GDUs to black layer</li>
+                <li><strong>95-day hybrid:</strong> ~2,400 GDUs</li>
+                <li><strong>105-day hybrid:</strong> ~2,700 GDUs</li>
+                <li><strong>115-day hybrid:</strong> ~3,000 GDUs</li>
+            </ul>
+            
+            <h3>GDUs for Growth Stages</h3>
+            <ul>
+                <li><strong>Emergence:</strong> 115-120 GDUs after planting</li>
+                <li><strong>Silking (R1):</strong> ~1,200-1,400 GDUs (about 50% of total)</li>
+                <li><strong>Black layer (R6):</strong> Full maturity, kernel moisture ~30-35%</li>
+            </ul>
+            
+            <h3>Why This Matters</h3>
+            <ul>
+                <li><strong>Hybrid selection:</strong> Match GDU requirement to your area's typical accumulation</li>
+                <li><strong>Planting date:</strong> Late planting = fewer GDUs available = need shorter hybrid</li>
+                <li><strong>Fall frost risk:</strong> Track GDUs to predict if crop will mature before frost</li>
+                <li><strong>Silage timing:</strong> Use GDUs to predict optimal harvest moisture</li>
+            </ul>
+            
+            <h3>Average Daily GDUs (May-September)</h3>
+            <ul>
+                <li><strong>Southern Wisconsin:</strong> 18-20 GDUs/day</li>
+                <li><strong>Central Wisconsin:</strong> 16-18 GDUs/day</li>
+                <li><strong>Northern Wisconsin:</strong> 14-16 GDUs/day</li>
+                <li><strong>Southern Minnesota:</strong> 19-21 GDUs/day</li>
+                <li><strong>Central Iowa:</strong> 22-24 GDUs/day</li>
+            </ul>
+            
+            <div class="cta-box">
+                Calculate GDUs for your field → <a href="/tools.html#gdu">GDU Calculator</a>
+            </div>
+        </article>
+        
+        <!-- ARTICLE 5: BREAK-EVEN ANALYSIS -->
+        <article id="breakeven">
+            <h2>📈 Break-Even Analysis for Farmers</h2>
+            
+            <p>Your break-even price is the minimum you need to cover costs. Know this number before you sell a single bushel.</p>
+            
+            <h3>The Formula</h3>
+            <div class="highlight-box">
+                <strong>Break-Even Price = Total Cost per Acre ÷ Expected Yield</strong>
+            </div>
+            
+            <div class="example-box">
+                <div class="label">Example - Corn</div>
+                Total costs: $850/acre<br>
+                Expected yield: 190 bu/acre<br>
+                Break-even = $850 ÷ 190 = <strong>$4.47/bu</strong>
+            </div>
+            
+            <h3>Costs to Include</h3>
+            <p><strong>Direct Costs (per acre):</strong></p>
+            <ul>
+                <li>Seed: $100-150</li>
+                <li>Fertilizer: $150-200</li>
+                <li>Chemical: $40-60</li>
+                <li>Crop insurance: $30-50</li>
+                <li>Drying: $30-50</li>
+            </ul>
+            
+            <p><strong>Overhead Costs (per acre):</strong></p>
+            <ul>
+                <li>Land (rent or ownership): $150-300</li>
+                <li>Machinery: $80-120</li>
+                <li>Labor: $30-50</li>
+                <li>Interest & overhead: $30-50</li>
+            </ul>
+            
+            <h3>Know Your Numbers</h3>
+            <p>Most farmers underestimate costs. Common mistakes:</p>
+            <ul>
+                <li>Forgetting unpaid family labor</li>
+                <li>Ignoring machinery depreciation</li>
+                <li>Not counting interest on operating loans</li>
+                <li>Using "average" yield when you should use APH</li>
+            </ul>
+            
+            <h3>Using Break-Even for Marketing</h3>
+            <ul>
+                <li><strong>Above break-even + 20%:</strong> Strong sell signal. Lock in profits.</li>
+                <li><strong>Above break-even:</strong> Consider selling 25-50%.</li>
+                <li><strong>At break-even:</strong> Cover operating costs at minimum.</li>
+                <li><strong>Below break-even:</strong> Evaluate options carefully. Storage? Insurance?</li>
+            </ul>
+            
+            <h3>Break-Even by Scenario</h3>
+            <p>Smart marketers calculate multiple break-evens:</p>
+            <ul>
+                <li><strong>Cash flow break-even:</strong> Just covers out-of-pocket costs</li>
+                <li><strong>Full break-even:</strong> Covers all costs including depreciation</li>
+                <li><strong>Profit target:</strong> Break-even + your desired profit margin</li>
+            </ul>
+            
+            <div class="cta-box">
+                Calculate your break-even → <a href="/tools.html#breakeven">Break-Even Calculator</a>
+            </div>
+        </article>
+    </main>
+    
+    <footer>
+        <div class="footer-links">
+            <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
+            <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
+            <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
+        </div>
+        <div>© 2026 AGSIST • Written by farmers, for farmers</div>
+    </footer>
+</body>
+</html>

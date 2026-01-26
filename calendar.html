@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USDA Report Calendar & Crop Insurance Deadlines 2026 | AGSIST</title>
+    <meta name="description" content="2026 USDA report calendar with WASDE, Crop Progress, Grain Stocks dates. Plus crop insurance deadlines for corn, soybeans, wheat. Never miss a deadline.">
+    <meta name="keywords" content="USDA calendar, WASDE report dates, crop progress report, grain stocks report, crop insurance deadline, sales closing date, acreage reporting">
+    <link rel="canonical" href="https://agsist.com/calendar.html">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <meta property="og:title" content="USDA Report Calendar & Crop Insurance Deadlines 2026">
+    <meta property="og:description" content="Never miss a USDA report or insurance deadline. Complete 2026 calendar for farmers.">
+    <meta property="og:image" content="https://agsist.com/og-image.png">
+    <meta property="og:url" content="https://agsist.com/calendar.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #0a0a0a;
+            --card: #111;
+            --border: #222;
+            --text: #e8e8e8;
+            --dim: #666;
+            --accent: #e6b042;
+            --green: #22c55e;
+            --red: #ef4444;
+            --blue: #3b82f6;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+        
+        nav {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .nav-links a {
+            color: var(--dim);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text);
+            background: var(--border);
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        
+        .page-header {
+            margin-bottom: 24px;
+        }
+        
+        .page-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        
+        .page-header p {
+            color: var(--dim);
+            font-size: 0.9rem;
+        }
+        
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .section-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-header h2 {
+            font-size: 1rem;
+        }
+        
+        .section-body {
+            padding: 16px;
+        }
+        
+        /* Calendar items */
+        .calendar-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            align-items: flex-start;
+        }
+        
+        .calendar-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .calendar-item:first-child {
+            padding-top: 0;
+        }
+        
+        .cal-date {
+            background: var(--bg);
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-align: center;
+            min-width: 70px;
+        }
+        
+        .cal-date .month {
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+        
+        .cal-date .day {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .cal-info {
+            flex: 1;
+        }
+        
+        .cal-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .cal-desc {
+            font-size: 0.8rem;
+            color: var(--dim);
+        }
+        
+        .cal-tag {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 8px;
+        }
+        
+        .cal-tag.usda { background: var(--blue); color: #fff; }
+        .cal-tag.insurance { background: var(--red); color: #fff; }
+        .cal-tag.upcoming { background: var(--green); color: #fff; }
+        
+        /* Deadline urgency */
+        .urgent {
+            border-left: 3px solid var(--red);
+            padding-left: 12px;
+            margin-left: -16px;
+        }
+        
+        .soon {
+            border-left: 3px solid var(--accent);
+            padding-left: 12px;
+            margin-left: -16px;
+        }
+        
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 20px 16px;
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--dim);
+        }
+        
+        footer a { color: var(--accent); text-decoration: none; }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        @media (min-width: 768px) {
+            main { padding: 24px; }
+            .page-header h1 { font-size: 1.75rem; }
+            
+            .two-col {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="logo">AGSIST</a>
+            <div class="nav-links">
+                <a href="/tools.html">Tools</a>
+                <a href="/fastfacts.html">Fast Facts</a>
+                <a href="/calendar.html" class="active">Calendar</a>
+                <a href="/resources.html">Resources</a>
+            </div>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="page-header">
+            <h1>📅 2026 Ag Calendar</h1>
+            <p>USDA report dates and crop insurance deadlines. Never miss a deadline.</p>
+        </div>
+        
+        <div class="two-col">
+            <!-- INSURANCE DEADLINES -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>🛡️ Crop Insurance Deadlines</h2>
+                </div>
+                <div class="section-body">
+                    <div class="calendar-item">
+                        <div class="cal-date">
+                            <div class="month">Mar</div>
+                            <div class="day">15</div>
+                        </div>
+                        <div class="cal-info">
+                            <div class="cal-title">Sales Closing Date <span class="cal-tag insurance">DEADLINE</span></div>
+                            <div class="cal-desc">Last day to purchase or change crop insurance for corn, soybeans, spring wheat (Upper Midwest)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-item">
+                        <div class="cal-date">
+                            <div class="month">Jul</div>
+                            <div class="day">15</div>
+                        </div>
+                        <div class="cal-info">
+                            <div class="cal-title">Acreage Reporting <span class="cal-tag insurance">DEADLINE</span></div>
+                            <div class="cal-desc">Report planted acres to FSA for corn, soybeans, spring grains</div>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-item">
+                        <div class="cal-date">
+                            <div class="month">Sep</div>
+                            <div class="day">30</div>
+                        </div>
+                        <div class="cal-info">
+                            <div class="cal-title">Winter Wheat Sales Closing <span class="cal-tag insurance">DEADLINE</span></div>
+                            <div class="cal-desc">Last day to purchase winter wheat crop insurance</div>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-item">
+                        <div class="cal-date">
+                            <div class="month">Nov</div>
+                            <div class="day">15</div>
+                        </div>
+                        <div class="cal-info">
+                            <div class="cal-title">Winter Wheat Acreage Report <span class="cal-tag insurance">DEADLINE</span></div>
+                            <div class="cal-desc">Report planted winter wheat acres</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:6px;font-size:0.8rem">
+                        <strong style="color:var(--accent)">Need crop insurance?</strong><br>
+                        <a href="https://farmers1st.com" target="_blank" style="color:var(--accent)">Contact Farmers First Agri Service →</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- USDA REPORTS -->
+            <div class="section" id="usda-section">
+                <div class="section-header">
+                    <h2>📊 USDA Reports</h2>
+                </div>
+                <div class="section-body" id="usda-reports">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- UPCOMING REPORTS -->
+        <div class="section">
+            <div class="section-header">
+                <h2>📈 Key 2026 USDA Report Dates</h2>
+            </div>
+            <div class="section-body">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+                    <div style="background:var(--bg);padding:16px;border-radius:6px">
+                        <h3 style="font-size:0.85rem;color:var(--accent);margin-bottom:12px">WASDE Reports</h3>
+                        <div style="font-size:0.8rem;color:var(--dim);line-height:1.8">
+                            Jan 10 • Feb 11 • Mar 11 • Apr 9<br>
+                            May 12 • Jun 11 • Jul 11 • Aug 12<br>
+                            Sep 11 • Oct 9 • Nov 10 • Dec 10
+                        </div>
+                    </div>
+                    <div style="background:var(--bg);padding:16px;border-radius:6px">
+                        <h3 style="font-size:0.85rem;color:var(--accent);margin-bottom:12px">Grain Stocks</h3>
+                        <div style="font-size:0.8rem;color:var(--dim);line-height:1.8">
+                            Jan 10 • Mar 28 • Jun 30 • Sep 30
+                        </div>
+                    </div>
+                    <div style="background:var(--bg);padding:16px;border-radius:6px">
+                        <h3 style="font-size:0.85rem;color:var(--accent);margin-bottom:12px">Prospective Plantings</h3>
+                        <div style="font-size:0.8rem;color:var(--dim);line-height:1.8">
+                            Mar 28
+                        </div>
+                    </div>
+                    <div style="background:var(--bg);padding:16px;border-radius:6px">
+                        <h3 style="font-size:0.85rem;color:var(--accent);margin-bottom:12px">Acreage Report</h3>
+                        <div style="font-size:0.8rem;color:var(--dim);line-height:1.8">
+                            Jun 30
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:16px;font-size:0.75rem;color:var(--dim)">
+                    Reports typically released at 12:00 PM ET. Dates subject to change. 
+                    <a href="https://www.usda.gov/media/agency-reports" target="_blank" style="color:var(--accent)">Official USDA Calendar →</a>
+                </div>
+            </div>
+        </div>
+        
+    </main>
+    
+    <footer>
+        <div class="footer-links">
+            <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
+            <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
+            <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
+        </div>
+        <div>© 2026 AGSIST • Made in the USA 🇺🇸</div>
+    </footer>
+    
+    <script>
+    // USDA Report Calendar 2026
+    const USDA_REPORTS = [
+        { date: '2026-01-10', title: 'WASDE & Grain Stocks', desc: 'World supply/demand + quarterly stocks' },
+        { date: '2026-02-11', title: 'WASDE Report', desc: 'World supply/demand estimates' },
+        { date: '2026-03-11', title: 'WASDE Report', desc: 'World supply/demand estimates' },
+        { date: '2026-03-28', title: 'Prospective Plantings & Grain Stocks', desc: 'Planting intentions + quarterly stocks' },
+        { date: '2026-04-09', title: 'WASDE Report', desc: 'World supply/demand estimates' },
+        { date: '2026-05-12', title: 'WASDE Report', desc: 'World supply/demand estimates' },
+        { date: '2026-06-11', title: 'WASDE Report', desc: 'World supply/demand estimates' },
+        { date: '2026-06-30', title: 'Acreage & Grain Stocks', desc: 'Actual planted acres + quarterly stocks' },
+        { date: '2026-07-11', title: 'WASDE Report', desc: 'World supply/demand estimates' },
+        { date: '2026-08-12', title: 'WASDE Report', desc: 'First corn/soybean crop estimates' },
+        { date: '2026-09-11', title: 'WASDE Report', desc: 'Updated production estimates' },
+        { date: '2026-09-30', title: 'Grain Stocks', desc: 'Quarterly stocks report' },
+        { date: '2026-10-09', title: 'WASDE Report', desc: 'World supply/demand estimates' },
+        { date: '2026-11-10', title: 'WASDE Report', desc: 'World supply/demand estimates' },
+        { date: '2026-12-10', title: 'WASDE Report', desc: 'World supply/demand estimates' }
+    ];
+    
+    function renderUpcoming() {
+        const now = new Date();
+        const container = document.getElementById('usda-reports');
+        
+        // Get next 5 upcoming reports
+        const upcoming = USDA_REPORTS
+            .filter(r => new Date(r.date + 'T12:00:00') >= now)
+            .slice(0, 5);
+        
+        if (upcoming.length === 0) {
+            container.innerHTML = '<p style="color:var(--dim)">No upcoming reports this year.</p>';
+            return;
+        }
+        
+        container.innerHTML = upcoming.map((r, i) => {
+            const d = new Date(r.date + 'T12:00:00');
+            const month = d.toLocaleDateString('en-US', { month: 'short' });
+            const day = d.getDate();
+            const daysUntil = Math.ceil((d - now) / (1000 * 60 * 60 * 24));
+            
+            let urgency = '';
+            let tag = '';
+            if (daysUntil <= 3) {
+                urgency = 'urgent';
+                tag = '<span class="cal-tag upcoming">THIS WEEK</span>';
+            } else if (daysUntil <= 14) {
+                urgency = 'soon';
+                tag = '<span class="cal-tag usda">SOON</span>';
+            }
+            
+            return `
+                <div class="calendar-item ${urgency}">
+                    <div class="cal-date">
+                        <div class="month">${month}</div>
+                        <div class="day">${day}</div>
+                    </div>
+                    <div class="cal-info">
+                        <div class="cal-title">${r.title} ${tag}</div>
+                        <div class="cal-desc">${r.desc}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    renderUpcoming();
+    </script>
+</body>
+</html>
