@@ -172,7 +172,7 @@ def main():
     data = {
         "updated": datetime.now(timezone.utc).isoformat(),
         "markets": {
-            "grains": {}, "livestock": {}, "indices": {}, "metals": {}, "crypto": {}
+            "grains": {}, "livestock": {}, "indices": {}, "energy": {}, "metals": {}, "crypto": {}
         },
         "news": [],
         "usda": []

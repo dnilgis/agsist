@@ -320,10 +320,13 @@
             padding: 12px;
             cursor: pointer;
             transition: all 0.2s;
+            position: relative;
         }
         
         .secondary-card:hover {
             border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(230,176,66,0.15);
         }
         
         .secondary-label {
@@ -342,6 +345,35 @@
             font-weight: 600;
         }
         
+        /* Hover details for secondary cards */
+        .secondary-details {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+        }
+        
+        .secondary-card:hover .secondary-details {
+            display: block;
+        }
+        
+        .secondary-details-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+            color: var(--dim);
+        }
+        
+        .secondary-details-row span:last-child {
+            color: var(--text);
+        }
+        
+        .sym {
+            font-size: 0.7rem;
+            color: var(--dim) !important;
+        }
+        
         /* WEATHER - no scroll, fixed height */
         .weather-card {
             background: var(--card);
@@ -352,21 +384,21 @@
         
         .weather-card iframe {
             width: 100%;
-            height: 350px;
+            height: 420px;
             border: none;
             display: block;
         }
         
-        /* NEWS */
+        /* NEWS - tighter spacing for more articles */
         .news-card {
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 14px;
+            padding: 12px;
         }
         
         .news-item {
-            padding: 12px 0;
+            padding: 10px 0;
             border-bottom: 1px solid var(--border);
         }
         
@@ -383,7 +415,7 @@
             color: var(--text);
             text-decoration: none;
             font-size: 0.9rem;
-            line-height: 1.4;
+            line-height: 1.35;
             display: block;
         }
         
@@ -467,12 +499,43 @@
             .secondary-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+            /* Mobile nav - smaller, scrollable */
+            .nav-links {
+                gap: 4px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            .nav-links::-webkit-scrollbar {
+                display: none;
+            }
+            .nav-links a {
+                padding: 6px 8px;
+                font-size: 0.75rem;
+                white-space: nowrap;
+            }
+            .logo {
+                font-size: 1.1rem;
+            }
         }
         
         /* LOADING STATE */
         .loading {
             color: var(--dim);
             font-style: italic;
+        }
+        
+        /* Screen reader only - for SEO H1 */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            white-space: nowrap;
+            border: 0;
         }
     </style>
 </head>
@@ -485,7 +548,7 @@
                 <a href="/fastfacts.html">Fast Facts</a>
                 <a href="/learn.html">Learn</a>
                 <a href="/calendar.html">Calendar</a>
-                <a href="/resources.html">Resources</a>
+                <a href="/resources.html">Links</a>
             </div>
         </div>
     </nav>
@@ -498,6 +561,7 @@
     </div>
     
     <main>
+        <h1 class="sr-only">AGSIST - Free Live Agricultural Commodity Prices, News & Weather Dashboard</h1>
         <div id="welcome-msg" style="margin-bottom:12px;font-size:0.95rem;color:var(--text)"></div>
         <div class="update-bar">
             <span>Last updated: <span id="update-time" class="loading">Loading...</span></span>
@@ -514,8 +578,10 @@
                 <div class="price-value" id="corn-price">--</div>
                 <div class="price-change" id="corn-change">--</div>
                 <div class="price-details">
+                    <div class="price-details-row"><span>Prev Close</span><span id="corn-prev">--</span></div>
                     <div class="price-details-row"><span>52-wk High</span><span id="corn-high">--</span></div>
                     <div class="price-details-row"><span>52-wk Low</span><span id="corn-low">--</span></div>
+                    <div class="price-details-row"><span>Symbol</span><span id="corn-symbol" style="font-size:0.75rem;color:var(--dim)">--</span></div>
                 </div>
             </div>
             <div class="price-card" id="card-corn-dec">
@@ -526,8 +592,10 @@
                 <div class="price-value" id="corn-dec-price">--</div>
                 <div class="price-change" id="corn-dec-change">--</div>
                 <div class="price-details">
+                    <div class="price-details-row"><span>Prev Close</span><span id="corn-dec-prev">--</span></div>
                     <div class="price-details-row"><span>52-wk High</span><span id="corn-dec-high">--</span></div>
                     <div class="price-details-row"><span>52-wk Low</span><span id="corn-dec-low">--</span></div>
+                    <div class="price-details-row"><span>Symbol</span><span id="corn-dec-symbol" style="font-size:0.75rem;color:var(--dim)">--</span></div>
                 </div>
             </div>
             <div class="price-card featured" id="card-soy">
@@ -538,8 +606,10 @@
                 <div class="price-value" id="soy-price">--</div>
                 <div class="price-change" id="soy-change">--</div>
                 <div class="price-details">
+                    <div class="price-details-row"><span>Prev Close</span><span id="soy-prev">--</span></div>
                     <div class="price-details-row"><span>52-wk High</span><span id="soy-high">--</span></div>
                     <div class="price-details-row"><span>52-wk Low</span><span id="soy-low">--</span></div>
+                    <div class="price-details-row"><span>Symbol</span><span id="soy-symbol" style="font-size:0.75rem;color:var(--dim)">--</span></div>
                 </div>
             </div>
             <div class="price-card" id="card-soy-nov">
@@ -550,8 +620,10 @@
                 <div class="price-value" id="soy-nov-price">--</div>
                 <div class="price-change" id="soy-nov-change">--</div>
                 <div class="price-details">
+                    <div class="price-details-row"><span>Prev Close</span><span id="soy-nov-prev">--</span></div>
                     <div class="price-details-row"><span>52-wk High</span><span id="soy-nov-high">--</span></div>
                     <div class="price-details-row"><span>52-wk Low</span><span id="soy-nov-low">--</span></div>
+                    <div class="price-details-row"><span>Symbol</span><span id="soy-nov-symbol" style="font-size:0.75rem;color:var(--dim)">--</span></div>
                 </div>
             </div>
         </div>
@@ -563,31 +635,67 @@
                 <div class="secondary-label">🌾 Wheat</div>
                 <div class="secondary-value" id="wheat-price">--</div>
                 <div class="secondary-change" id="wheat-change">--</div>
+                <div class="secondary-details">
+                    <div class="secondary-details-row"><span>Prev Close</span><span id="wheat-prev">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk High</span><span id="wheat-high">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk Low</span><span id="wheat-low">--</span></div>
+                    <div class="secondary-details-row"><span>Symbol</span><span id="wheat-symbol" class="sym">--</span></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🐄 Live Cattle</div>
                 <div class="secondary-value" id="cattle-price">--</div>
                 <div class="secondary-change" id="cattle-change">--</div>
+                <div class="secondary-details">
+                    <div class="secondary-details-row"><span>Prev Close</span><span id="cattle-prev">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk High</span><span id="cattle-high">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk Low</span><span id="cattle-low">--</span></div>
+                    <div class="secondary-details-row"><span>Symbol</span><span id="cattle-symbol" class="sym">--</span></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🐂 Feeder Cattle</div>
                 <div class="secondary-value" id="feeder-price">--</div>
                 <div class="secondary-change" id="feeder-change">--</div>
+                <div class="secondary-details">
+                    <div class="secondary-details-row"><span>Prev Close</span><span id="feeder-prev">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk High</span><span id="feeder-high">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk Low</span><span id="feeder-low">--</span></div>
+                    <div class="secondary-details-row"><span>Symbol</span><span id="feeder-symbol" class="sym">--</span></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🐷 Lean Hogs</div>
                 <div class="secondary-value" id="hogs-price">--</div>
                 <div class="secondary-change" id="hogs-change">--</div>
+                <div class="secondary-details">
+                    <div class="secondary-details-row"><span>Prev Close</span><span id="hogs-prev">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk High</span><span id="hogs-high">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk Low</span><span id="hogs-low">--</span></div>
+                    <div class="secondary-details-row"><span>Symbol</span><span id="hogs-symbol" class="sym">--</span></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🥛 Class III Milk</div>
                 <div class="secondary-value" id="milk-price">--</div>
                 <div class="secondary-change" id="milk-change">--</div>
+                <div class="secondary-details">
+                    <div class="secondary-details-row"><span>Prev Close</span><span id="milk-prev">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk High</span><span id="milk-high">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk Low</span><span id="milk-low">--</span></div>
+                    <div class="secondary-details-row"><span>Symbol</span><span id="milk-symbol" class="sym">--</span></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🛢️ Crude Oil</div>
                 <div class="secondary-value" id="oil-price">--</div>
                 <div class="secondary-change" id="oil-change">--</div>
+                <div class="secondary-details">
+                    <div class="secondary-details-row"><span>Prev Close</span><span id="oil-prev">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk High</span><span id="oil-high">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk Low</span><span id="oil-low">--</span></div>
+                    <div class="secondary-details-row"><span>Symbol</span><span id="oil-symbol" class="sym">--</span></div>
+                </div>
             </div>
         </div>
         
@@ -598,166 +706,86 @@
                 <div class="secondary-label">🥇 Gold</div>
                 <div class="secondary-value" id="gold-price">--</div>
                 <div class="secondary-change" id="gold-change">--</div>
+                <div class="secondary-details">
+                    <div class="secondary-details-row"><span>Prev Close</span><span id="gold-prev">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk High</span><span id="gold-high">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk Low</span><span id="gold-low">--</span></div>
+                    <div class="secondary-details-row"><span>Symbol</span><span id="gold-symbol" class="sym">--</span></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🥈 Silver</div>
                 <div class="secondary-value" id="silver-price">--</div>
                 <div class="secondary-change" id="silver-change">--</div>
+                <div class="secondary-details">
+                    <div class="secondary-details-row"><span>Prev Close</span><span id="silver-prev">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk High</span><span id="silver-high">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk Low</span><span id="silver-low">--</span></div>
+                    <div class="secondary-details-row"><span>Symbol</span><span id="silver-symbol" class="sym">--</span></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🪙 Bitcoin</div>
                 <div class="secondary-value" id="btc-price">--</div>
                 <div class="secondary-change" id="btc-change">--</div>
+                <div class="secondary-details">
+                    <div class="secondary-details-row"><span>Prev Close</span><span id="btc-prev">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk High</span><span id="btc-high">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk Low</span><span id="btc-low">--</span></div>
+                    <div class="secondary-details-row"><span>Symbol</span><span id="btc-symbol" class="sym">--</span></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">💎 Kaspa</div>
                 <div class="secondary-value" id="kas-price">--</div>
                 <div class="secondary-change" id="kas-change">--</div>
+                <div class="secondary-details">
+                    <div class="secondary-details-row"><span>Prev Close</span><span id="kas-prev">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk High</span><span id="kas-high">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk Low</span><span id="kas-low">--</span></div>
+                    <div class="secondary-details-row"><span>Symbol</span><span id="kas-symbol" class="sym">--</span></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">📈 S&P 500</div>
                 <div class="secondary-value" id="sp500-price">--</div>
                 <div class="secondary-change" id="sp500-change">--</div>
+                <div class="secondary-details">
+                    <div class="secondary-details-row"><span>Prev Close</span><span id="sp500-prev">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk High</span><span id="sp500-high">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk Low</span><span id="sp500-low">--</span></div>
+                    <div class="secondary-details-row"><span>Symbol</span><span id="sp500-symbol" class="sym">--</span></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">💵 USD Index</div>
                 <div class="secondary-value" id="dxy-price">--</div>
                 <div class="secondary-change" id="dxy-change">--</div>
+                <div class="secondary-details">
+                    <div class="secondary-details-row"><span>Prev Close</span><span id="dxy-prev">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk High</span><span id="dxy-high">--</span></div>
+                    <div class="secondary-details-row"><span>52-wk Low</span><span id="dxy-low">--</span></div>
+                    <div class="secondary-details-row"><span>Symbol</span><span id="dxy-symbol" class="sym">--</span></div>
+                </div>
             </div>
         </div>
         
-        <!-- LOCAL CASH BIDS -->
-        <div class="section-header" style="margin-top:24px;display:flex;justify-content:space-between;align-items:center">
-            <span>Local Cash Bids (NW Wisconsin)</span>
-            <a href="https://www.dtn.com/agriculture/cash-bids/" target="_blank" style="font-size:0.7rem;color:var(--accent);text-decoration:none">More bids →</a>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin-bottom:16px">
-            <!-- Row 1 -->
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                    <span style="font-size:0.8rem;font-weight:600">FlashGrain</span>
-                    <a href="https://flashgrain.com" target="_blank" style="font-size:0.6rem;color:var(--accent);text-decoration:none">Site →</a>
-                </div>
-                <div style="font-size:0.75rem;color:var(--dim)">Real-time digital bids</div>
-            </div>
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                    <span style="font-size:0.8rem;font-weight:600">CDR Farms</span>
-                    <span style="font-size:0.6rem;color:var(--dim)">715-455-1474</span>
-                </div>
-                <div style="font-size:0.75rem;color:var(--dim)">Prairie Farm area</div>
-            </div>
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                    <span style="font-size:0.8rem;font-weight:600">Rooney Farms</span>
-                    <span style="font-size:0.6rem;color:var(--dim)">715-749-3800</span>
-                </div>
-                <div style="font-size:0.75rem;color:var(--dim)">Glenwood City</div>
-            </div>
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                    <span style="font-size:0.8rem;font-weight:600">Chippewa Valley Grain</span>
-                    <span style="font-size:0.6rem;color:var(--dim)">715-723-8555</span>
-                </div>
-                <div style="font-size:0.75rem;color:var(--dim)">Chippewa Falls</div>
-            </div>
-            <!-- Row 2 -->
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                    <span style="font-size:0.8rem;font-weight:600">Emmert's</span>
-                    <span style="font-size:0.6rem;color:var(--dim)">715-597-3145</span>
-                </div>
-                <div style="font-size:0.75rem;color:var(--dim)">Augusta</div>
-            </div>
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                    <span style="font-size:0.8rem;font-weight:600">Jennie-O Turkey Store</span>
-                    <span style="font-size:0.6rem;color:var(--dim)">715-568-4000</span>
-                </div>
-                <div style="font-size:0.75rem;color:var(--dim)">Barron (corn)</div>
-            </div>
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                    <span style="font-size:0.8rem;font-weight:600">Equity Cooperative</span>
-                    <span style="font-size:0.6rem;color:var(--dim)">715-537-3144</span>
-                </div>
-                <div style="font-size:0.75rem;color:var(--dim)">Barron</div>
-            </div>
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                    <span style="font-size:0.8rem;font-weight:600">CHS - Rice Lake</span>
-                    <span style="font-size:0.6rem;color:var(--dim)">715-234-8877</span>
-                </div>
-                <div style="font-size:0.75rem;color:var(--dim)">Rice Lake</div>
-            </div>
-            <!-- Row 3 -->
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                    <span style="font-size:0.8rem;font-weight:600">Landmark - Cameron</span>
-                    <span style="font-size:0.6rem;color:var(--dim)">715-458-2171</span>
-                </div>
-                <div style="font-size:0.75rem;color:var(--dim)">Cameron</div>
-            </div>
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                    <span style="font-size:0.8rem;font-weight:600">United Farmers Coop</span>
-                    <span style="font-size:0.6rem;color:var(--dim)">715-268-7137</span>
-                </div>
-                <div style="font-size:0.75rem;color:var(--dim)">Amery</div>
-            </div>
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                    <span style="font-size:0.8rem;font-weight:600">Compeer Financial</span>
-                    <span style="font-size:0.6rem;color:var(--dim)">844-426-6733</span>
-                </div>
-                <div style="font-size:0.75rem;color:var(--dim)">Regional financing</div>
-            </div>
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                    <span style="font-size:0.8rem;font-weight:600">River Country Coop</span>
-                    <span style="font-size:0.6rem;color:var(--dim)">715-235-4533</span>
-                </div>
-                <div style="font-size:0.75rem;color:var(--dim)">Menomonie</div>
-            </div>
-        </div>
-        <div style="font-size:0.7rem;color:var(--dim);text-align:center;margin-bottom:24px">
-            💡 Cash bids change daily. Call elevators for current prices. <a href="/learn.html#basis" style="color:var(--accent);text-decoration:none">Learn about basis →</a>
-        </div>
-        
-        <!-- WEATHER & NEWS side by side on desktop -->
+        <!-- NEWS & WEATHER side by side - NEWS FIRST (priority) -->
         <div class="two-col">
             <div>
-                <div class="section-header">Weather - Barron County</div>
-                <div class="weather-card">
-                    <iframe src="https://embed.windy.com/embed2.html?lat=45.4&lon=-91.85&detailLat=45.4&detailLon=-91.85&width=650&height=400&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1" frameborder="0" title="Windy Weather"></iframe>
+                <div class="section-header">📰 Ag News</div>
+                <div class="news-card" id="news-feed" style="max-height:420px;overflow-y:auto">
+                    <div class="news-item loading">Loading news...</div>
                 </div>
             </div>
             <div>
-                <div class="section-header">Ag News</div>
-                <div class="news-card" id="news-feed">
-                    <div class="news-item loading">Loading news...</div>
+                <div class="section-header">🌤️ Weather</div>
+                <div class="weather-card">
+                    <iframe src="https://embed.windy.com/embed2.html?lat=45.4&lon=-91.85&detailLat=45.4&detailLon=-91.85&width=650&height=420&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1" frameborder="0" title="Windy Weather"></iframe>
                 </div>
             </div>
         </div>
     </main>
-    
-    <!-- ABOUT SECTION -->
-    <section style="max-width:800px;margin:40px auto;padding:0 16px">
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;text-align:center">
-            <h2 style="font-size:1.1rem;margin-bottom:16px;color:var(--accent)">Built by Farmers, for Farmers</h2>
-            <p style="color:var(--dim);font-size:0.9rem;line-height:1.7;margin-bottom:16px">
-                AGSIST was created in rural Wisconsin by people who actually farm. We got tired of slow, cluttered ag sites filled with ads. So we built something better — fast, clean, and focused on what matters: prices, weather, and tools that work.
-            </p>
-            <p style="color:var(--dim);font-size:0.9rem;line-height:1.7;margin-bottom:20px">
-                We run <a href="https://farmers1st.com" target="_blank" style="color:var(--accent)">Farmers First Agri Service</a> (crop insurance & agronomy) and <a href="https://lokedrone.com" target="_blank" style="color:var(--accent)">Loke Drone LC</a> (agricultural drone services) right here in Barron County. This isn't a side project from some tech company — it's built by your neighbors.
-            </p>
-            <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
-                <span style="background:var(--bg);padding:6px 12px;border-radius:4px;font-size:0.75rem;color:var(--dim)">📍 Barron County, WI</span>
-                <span style="background:var(--bg);padding:6px 12px;border-radius:4px;font-size:0.75rem;color:var(--dim)">🌽 Family Farm</span>
-                <span style="background:var(--bg);padding:6px 12px;border-radius:4px;font-size:0.75rem;color:var(--dim)">🚜 Since 2020</span>
-            </div>
-        </div>
-    </section>
     
     <footer>
         <div class="footer-links">
@@ -765,7 +793,7 @@
             <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
             <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
         </div>
-        <div>© 2026 AGSIST • Made in the USA 🇺🇸</div>
+        <div style="margin-top:8px;font-size:0.7rem;color:var(--dim)">Built in Barron County, WI • © 2026 AGSIST</div>
     </footer>
     
     <script>
@@ -802,8 +830,10 @@
                 document.getElementById('corn-price').textContent = '$' + fmt(c.price, c.unit);
                 document.getElementById('corn-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
                 document.getElementById('corn-change').className = 'price-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('corn-prev').textContent = '$' + fmt(c.prevClose, c.unit);
                 if (c.high52) document.getElementById('corn-high').textContent = '$' + fmt(c.high52, c.unit);
                 if (c.low52) document.getElementById('corn-low').textContent = '$' + fmt(c.low52, c.unit);
+                if (c.symbol) document.getElementById('corn-symbol').textContent = c.symbol;
             }
             
             // CORN DEC
@@ -812,8 +842,10 @@
                 document.getElementById('corn-dec-price').textContent = '$' + fmt(c.price, c.unit);
                 document.getElementById('corn-dec-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
                 document.getElementById('corn-dec-change').className = 'price-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('corn-dec-prev').textContent = '$' + fmt(c.prevClose, c.unit);
                 if (c.high52) document.getElementById('corn-dec-high').textContent = '$' + fmt(c.high52, c.unit);
                 if (c.low52) document.getElementById('corn-dec-low').textContent = '$' + fmt(c.low52, c.unit);
+                if (c.symbol) document.getElementById('corn-dec-symbol').textContent = c.symbol;
             }
             
             // SOYBEANS
@@ -823,8 +855,10 @@
                 document.getElementById('soy-price').textContent = '$' + fmt(c.price, c.unit);
                 document.getElementById('soy-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
                 document.getElementById('soy-change').className = 'price-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('soy-prev').textContent = '$' + fmt(c.prevClose, c.unit);
                 if (c.high52) document.getElementById('soy-high').textContent = '$' + fmt(c.high52, c.unit);
                 if (c.low52) document.getElementById('soy-low').textContent = '$' + fmt(c.low52, c.unit);
+                if (c.symbol) document.getElementById('soy-symbol').textContent = c.symbol;
             }
             
             // SOYBEANS NOV
@@ -833,8 +867,10 @@
                 document.getElementById('soy-nov-price').textContent = '$' + fmt(c.price, c.unit);
                 document.getElementById('soy-nov-change').textContent = chgSign(c.change) + (c.change/100).toFixed(2) + ' (' + chgSign(c.changePct) + c.changePct.toFixed(1) + '%)';
                 document.getElementById('soy-nov-change').className = 'price-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('soy-nov-prev').textContent = '$' + fmt(c.prevClose, c.unit);
                 if (c.high52) document.getElementById('soy-nov-high').textContent = '$' + fmt(c.high52, c.unit);
                 if (c.low52) document.getElementById('soy-nov-low').textContent = '$' + fmt(c.low52, c.unit);
+                if (c.symbol) document.getElementById('soy-nov-symbol').textContent = c.symbol;
             }
             
             // WHEAT
@@ -843,6 +879,10 @@
                 document.getElementById('wheat-price').textContent = '$' + fmt(c.price, c.unit);
                 document.getElementById('wheat-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
                 document.getElementById('wheat-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('wheat-prev').textContent = '$' + fmt(c.prevClose, c.unit);
+                if (c.high52) document.getElementById('wheat-high').textContent = '$' + fmt(c.high52, c.unit);
+                if (c.low52) document.getElementById('wheat-low').textContent = '$' + fmt(c.low52, c.unit);
+                if (c.symbol) document.getElementById('wheat-symbol').textContent = c.symbol;
             }
             
             // CATTLE
@@ -851,6 +891,10 @@
                 document.getElementById('cattle-price').textContent = '$' + c.price.toFixed(2);
                 document.getElementById('cattle-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
                 document.getElementById('cattle-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('cattle-prev').textContent = '$' + c.prevClose.toFixed(2);
+                if (c.high52) document.getElementById('cattle-high').textContent = '$' + c.high52.toFixed(2);
+                if (c.low52) document.getElementById('cattle-low').textContent = '$' + c.low52.toFixed(2);
+                if (c.symbol) document.getElementById('cattle-symbol').textContent = c.symbol;
             }
             
             // FEEDER
@@ -859,6 +903,10 @@
                 document.getElementById('feeder-price').textContent = '$' + c.price.toFixed(2);
                 document.getElementById('feeder-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
                 document.getElementById('feeder-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('feeder-prev').textContent = '$' + c.prevClose.toFixed(2);
+                if (c.high52) document.getElementById('feeder-high').textContent = '$' + c.high52.toFixed(2);
+                if (c.low52) document.getElementById('feeder-low').textContent = '$' + c.low52.toFixed(2);
+                if (c.symbol) document.getElementById('feeder-symbol').textContent = c.symbol;
             }
             
             // HOGS
@@ -867,6 +915,10 @@
                 document.getElementById('hogs-price').textContent = '$' + c.price.toFixed(2);
                 document.getElementById('hogs-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
                 document.getElementById('hogs-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('hogs-prev').textContent = '$' + c.prevClose.toFixed(2);
+                if (c.high52) document.getElementById('hogs-high').textContent = '$' + c.high52.toFixed(2);
+                if (c.low52) document.getElementById('hogs-low').textContent = '$' + c.low52.toFixed(2);
+                if (c.symbol) document.getElementById('hogs-symbol').textContent = c.symbol;
             }
             
             // MILK
@@ -875,6 +927,10 @@
                 document.getElementById('milk-price').textContent = '$' + c.price.toFixed(2);
                 document.getElementById('milk-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
                 document.getElementById('milk-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('milk-prev').textContent = '$' + c.prevClose.toFixed(2);
+                if (c.high52) document.getElementById('milk-high').textContent = '$' + c.high52.toFixed(2);
+                if (c.low52) document.getElementById('milk-low').textContent = '$' + c.low52.toFixed(2);
+                if (c.symbol) document.getElementById('milk-symbol').textContent = c.symbol;
             }
             
             // OIL
@@ -883,6 +939,10 @@
                 document.getElementById('oil-price').textContent = '$' + c.price.toFixed(2);
                 document.getElementById('oil-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
                 document.getElementById('oil-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('oil-prev').textContent = '$' + c.prevClose.toFixed(2);
+                if (c.high52) document.getElementById('oil-high').textContent = '$' + c.high52.toFixed(2);
+                if (c.low52) document.getElementById('oil-low').textContent = '$' + c.low52.toFixed(2);
+                if (c.symbol) document.getElementById('oil-symbol').textContent = c.symbol;
             }
             
             // GOLD
@@ -891,6 +951,12 @@
                 document.getElementById('gold-price').textContent = '$' + c.price.toFixed(0);
                 document.getElementById('gold-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
                 document.getElementById('gold-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('gold-prev').textContent = '$' + c.prevClose.toFixed(0);
+                if (c.high52) document.getElementById('gold-high').textContent = '$' + c.high52.toFixed(0);
+                if (c.low52) document.getElementById('gold-low').textContent = '$' + c.low52.toFixed(0);
+                if (c.symbol) document.getElementById('gold-symbol').textContent = c.symbol;
+            }
+                if (c.low52) document.getElementById('gold-low').textContent = '$' + c.low52.toFixed(0);
             }
             
             // SILVER
@@ -899,6 +965,10 @@
                 document.getElementById('silver-price').textContent = '$' + c.price.toFixed(2);
                 document.getElementById('silver-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
                 document.getElementById('silver-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('silver-prev').textContent = '$' + c.prevClose.toFixed(2);
+                if (c.high52) document.getElementById('silver-high').textContent = '$' + c.high52.toFixed(2);
+                if (c.low52) document.getElementById('silver-low').textContent = '$' + c.low52.toFixed(2);
+                if (c.symbol) document.getElementById('silver-symbol').textContent = c.symbol;
             }
             
             // BITCOIN
@@ -907,6 +977,10 @@
                 document.getElementById('btc-price').textContent = '$' + c.price.toLocaleString(undefined, {maximumFractionDigits: 0});
                 document.getElementById('btc-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
                 document.getElementById('btc-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('btc-prev').textContent = '$' + c.prevClose.toLocaleString(undefined, {maximumFractionDigits: 0});
+                if (c.high52) document.getElementById('btc-high').textContent = '$' + c.high52.toLocaleString(undefined, {maximumFractionDigits: 0});
+                if (c.low52) document.getElementById('btc-low').textContent = '$' + c.low52.toLocaleString(undefined, {maximumFractionDigits: 0});
+                if (c.symbol) document.getElementById('btc-symbol').textContent = c.symbol;
             }
             
             // KASPA
@@ -915,6 +989,10 @@
                 document.getElementById('kas-price').textContent = '$' + c.price.toFixed(3);
                 document.getElementById('kas-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
                 document.getElementById('kas-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('kas-prev').textContent = '$' + c.prevClose.toFixed(3);
+                if (c.high52) document.getElementById('kas-high').textContent = '$' + c.high52.toFixed(3);
+                if (c.low52) document.getElementById('kas-low').textContent = '$' + c.low52.toFixed(3);
+                if (c.symbol) document.getElementById('kas-symbol').textContent = c.symbol;
             }
             
             // S&P 500
@@ -923,6 +1001,10 @@
                 document.getElementById('sp500-price').textContent = c.price.toLocaleString(undefined, {maximumFractionDigits: 0});
                 document.getElementById('sp500-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
                 document.getElementById('sp500-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('sp500-prev').textContent = c.prevClose.toLocaleString(undefined, {maximumFractionDigits: 0});
+                if (c.high52) document.getElementById('sp500-high').textContent = c.high52.toLocaleString(undefined, {maximumFractionDigits: 0});
+                if (c.low52) document.getElementById('sp500-low').textContent = c.low52.toLocaleString(undefined, {maximumFractionDigits: 0});
+                if (c.symbol) document.getElementById('sp500-symbol').textContent = c.symbol;
             }
             
             // USD INDEX
@@ -931,12 +1013,16 @@
                 document.getElementById('dxy-price').textContent = c.price.toFixed(2);
                 document.getElementById('dxy-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
                 document.getElementById('dxy-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('dxy-prev').textContent = c.prevClose.toFixed(2);
+                if (c.high52) document.getElementById('dxy-high').textContent = c.high52.toFixed(2);
+                if (c.low52) document.getElementById('dxy-low').textContent = c.low52.toFixed(2);
+                if (c.symbol) document.getElementById('dxy-symbol').textContent = c.symbol;
             }
             
-            // NEWS
+            // NEWS - show more articles
             if (data.news && data.news.length > 0) {
                 const newsEl = document.getElementById('news-feed');
-                newsEl.innerHTML = data.news.slice(0, 8).map(n => `
+                newsEl.innerHTML = data.news.slice(0, 15).map(n => `
                     <div class="news-item">
                         <a href="${n.link}" target="_blank">${n.title}</a>
                         <div class="news-source">${n.source || 'Ag News'}</div>
