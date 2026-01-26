@@ -1,39 +1,63 @@
 {
-  "updated": "2026-01-26T18:00:00.000000+00:00",
+  "updated": "2026-01-26T22:00:56.875270+00:00",
   "markets": {
     "grains": {
       "corn": {
         "name": "Corn",
         "symbol": "ZC=F",
         "unit": "¢/bu",
-        "price": 430.75,
-        "change": 8.0,
-        "changePct": 1.89,
-        "prevClose": 422.75,
+        "price": 428.5,
+        "change": -2.5,
+        "changePct": -0.58,
+        "prevClose": 431.0,
         "contract": "Mar '26",
         "low52": 368.75,
         "high52": 504.5
+      },
+      "corn_dec": {
+        "name": "Corn Dec '26",
+        "symbol": "ZCZ26.CBT",
+        "unit": "¢/bu",
+        "price": 455.25,
+        "change": -0.5,
+        "changePct": -0.11,
+        "prevClose": 455.75,
+        "contract": "Dec '26",
+        "low52": 440.75,
+        "high52": 477.0
       },
       "soybeans": {
         "name": "Soybeans",
         "symbol": "ZS=F",
         "unit": "¢/bu",
-        "price": 1067.5,
-        "change": 5.25,
-        "changePct": 0.49,
-        "prevClose": 1062.25,
+        "price": 1060.0,
+        "change": -14.25,
+        "changePct": -1.33,
+        "prevClose": 1074.25,
         "contract": "Mar '26",
         "low52": 960.75,
         "high52": 1169.5
+      },
+      "soybeans_nov": {
+        "name": "Soybeans Nov '26",
+        "symbol": "ZSX26.CBT",
+        "unit": "¢/bu",
+        "price": 1078.0,
+        "change": -8.5,
+        "changePct": -0.78,
+        "prevClose": 1086.5,
+        "contract": "Nov '26",
+        "low52": 992.0,
+        "high52": 1131.5
       },
       "wheat": {
         "name": "Wheat",
         "symbol": "ZW=F",
         "unit": "¢/bu",
-        "price": 530.25,
-        "change": 15.25,
-        "changePct": 2.96,
-        "prevClose": 515.0,
+        "price": 522.5,
+        "change": -9.75,
+        "changePct": -1.83,
+        "prevClose": 532.25,
         "contract": "Spot",
         "low52": 492.25,
         "high52": 609.0
@@ -44,10 +68,10 @@
         "name": "Live Cattle",
         "symbol": "LE=F",
         "unit": "¢/lb",
-        "price": 234.925,
-        "change": 2.5,
-        "changePct": 1.08,
-        "prevClose": 232.425,
+        "price": 237.95,
+        "change": 3.025,
+        "changePct": 1.29,
+        "prevClose": 234.925,
         "contract": "Apr '26",
         "low52": 189.5,
         "high52": 246.775
@@ -56,24 +80,36 @@
         "name": "Feeder Cattle",
         "symbol": "GF=F",
         "unit": "¢/lb",
-        "price": 364.8,
-        "change": 1.025,
-        "changePct": 0.28,
-        "prevClose": 363.775,
+        "price": 362.7,
+        "change": -2.1,
+        "changePct": -0.58,
+        "prevClose": 364.8,
         "contract": "Mar '26",
         "low52": 263.15,
         "high52": 381.025
+      },
+      "hogs": {
+        "name": "Lean Hogs",
+        "symbol": "HE=F",
+        "unit": "¢/lb",
+        "price": 96.675,
+        "change": 8.25,
+        "changePct": 9.33,
+        "prevClose": 88.425,
+        "contract": "Apr '26",
+        "low52": 77.35,
+        "high52": 113.7
       },
       "milk": {
         "name": "Class III Milk",
         "symbol": "DC=F",
         "unit": "$/cwt",
-        "price": 14.71,
-        "change": 0.03,
-        "changePct": 0.2,
-        "prevClose": 14.68,
+        "price": 16.03,
+        "change": 0.65,
+        "changePct": 4.23,
+        "prevClose": 15.38,
         "contract": "Feb '26",
-        "low52": 14.69,
+        "low52": 14.66,
         "high52": 20.45
       }
     },
@@ -82,25 +118,63 @@
         "name": "S&P 500",
         "symbol": "^GSPC",
         "unit": "$",
-        "price": 6915.61,
-        "change": 2.26,
-        "changePct": 0.03,
-        "prevClose": 6913.35,
+        "price": 6950.23,
+        "change": 34.62,
+        "changePct": 0.5,
+        "prevClose": 6915.61,
         "contract": "Spot",
         "low52": 4835.04,
-        "high52": 6986.33
+        "high52": 6986.3301
       },
       "dow": {
         "name": "Dow Jones",
         "symbol": "^DJI",
         "unit": "$",
-        "price": 49098.71,
-        "change": -285.3,
-        "changePct": -0.58,
-        "prevClose": 49384.01,
+        "price": 49412.3984,
+        "change": 313.6884,
+        "changePct": 0.64,
+        "prevClose": 49098.71,
         "contract": "Spot",
-        "low52": 36611.78,
-        "high52": 49633.35
+        "low52": 36611.7812,
+        "high52": 49633.3516
+      },
+      "dollar": {
+        "name": "US Dollar Index",
+        "symbol": "DX-Y.NYB",
+        "unit": "$",
+        "price": 97.073,
+        "change": -0.034,
+        "changePct": -0.04,
+        "prevClose": 97.107,
+        "contract": "Spot",
+        "low52": 96.22,
+        "high52": 109.88
+      }
+    },
+    "energy": {
+      "oil": {
+        "name": "Crude Oil",
+        "symbol": "CL=F",
+        "unit": "$/bbl",
+        "price": 60.88,
+        "change": -0.3,
+        "changePct": -0.49,
+        "prevClose": 61.18,
+        "contract": "Mar '26",
+        "low52": 54.98,
+        "high52": 78.4
+      },
+      "natgas": {
+        "name": "Natural Gas",
+        "symbol": "NG=F",
+        "unit": "$/MMBtu",
+        "price": 3.848,
+        "change": 0.083,
+        "changePct": 2.2,
+        "prevClose": 3.765,
+        "contract": "Mar '26",
+        "low52": 2.622,
+        "high52": 5.65
       }
     },
     "metals": {
@@ -108,25 +182,25 @@
         "name": "Gold",
         "symbol": "GC=F",
         "unit": "$/oz",
-        "price": 4983.1,
-        "change": 25.1,
-        "changePct": 0.51,
-        "prevClose": 4958.0,
+        "price": 5008.7002,
+        "change": -59.8999,
+        "changePct": -1.18,
+        "prevClose": 5068.6001,
         "contract": "Feb '26",
         "low52": 2737.5,
-        "high52": 4908.8
+        "high52": 4976.2002
       },
       "silver": {
         "name": "Silver",
         "symbol": "SI=F",
         "unit": "$/oz",
-        "price": 103.26,
-        "change": 4.56,
-        "changePct": 4.62,
-        "prevClose": 98.7,
+        "price": 103.97,
+        "change": -3.93,
+        "changePct": -3.64,
+        "prevClose": 107.9,
         "contract": "Mar '26",
         "low52": 28.31,
-        "high52": 95.98
+        "high52": 102.925
       }
     },
     "crypto": {
@@ -134,34 +208,34 @@
         "name": "Bitcoin",
         "symbol": "BTC-USD",
         "unit": "$",
-        "price": 89605.79,
-        "change": 143.71,
-        "changePct": 0.16,
-        "prevClose": 89462.08,
+        "price": 87966.7734,
+        "change": 1409.3906,
+        "changePct": 1.63,
+        "prevClose": 86557.3828,
         "contract": "Spot",
-        "low52": 74436.68,
-        "high52": 126198.07
+        "low52": 74436.6797,
+        "high52": 126198.0703
       },
       "ethereum": {
         "name": "Ethereum",
         "symbol": "ETH-USD",
         "unit": "$",
-        "price": 2956.28,
-        "change": 6.7,
-        "changePct": 0.23,
-        "prevClose": 2949.58,
+        "price": 2926.1487,
+        "change": 111.0046,
+        "changePct": 3.94,
+        "prevClose": 2815.144,
         "contract": "Spot",
-        "low52": 1386.8,
-        "high52": 4953.73
+        "low52": 1386.7993,
+        "high52": 4953.7329
       },
       "kaspa": {
         "name": "Kaspa",
         "symbol": "KAS-USD",
         "unit": "$",
-        "price": 0.0402,
-        "change": 0.0004,
-        "changePct": 0.96,
-        "prevClose": 0.0398,
+        "price": 0.0399,
+        "change": 0.0003,
+        "changePct": 0.82,
+        "prevClose": 0.0396,
         "contract": "Spot",
         "low52": 0.0139,
         "high52": 0.1349
@@ -170,10 +244,10 @@
         "name": "XRP",
         "symbol": "XRP-USD",
         "unit": "$",
-        "price": 1.9243,
-        "change": 0.0027,
-        "changePct": 0.14,
-        "prevClose": 1.9216,
+        "price": 1.8981,
+        "change": 0.0653,
+        "changePct": 3.56,
+        "prevClose": 1.8329,
         "contract": "Spot",
         "low52": 1.5285,
         "high52": 3.6502
@@ -183,23 +257,86 @@
   "news": [
     {
       "source": "FarmProgress",
-      "title": "Here's what sparked today's end-of-week rally",
+      "title": "Grain prices had a ‘case of the Mondays’",
       "link": "https://www.farmprogress.com/markets-and-quotes/afternoon-market-recap",
       "time": "2026-01-26T20:29:15+00:00",
       "category": "news"
     },
     {
       "source": "FarmProgress",
-      "title": "Ethanol push sees big delay after E15 setback, trade group says",
-      "link": "https://www.farmprogress.com/farm-business/ethanolpushseesbigdelayaftere15setbacktradegroupsays",
-      "time": "2026-01-26T19:29:47+00:00",
+      "title": "Buy or sell America?",
+      "link": "https://www.farmprogress.com/commentary/buy-or-sell-america-",
+      "time": "2026-01-26T19:20:31+00:00",
       "category": "news"
     },
     {
       "source": "FarmProgress",
-      "title": "Market volatility demands flexible strategy over rigid plans",
-      "link": "https://www.farmprogress.com/cattle-news/market-volatility-demands-flexible-strategy-over-rigid-plans",
-      "time": "2026-01-26T16:12:46+00:00",
+      "title": "Farm Progress America, January 26, 2026",
+      "link": "https://www.farmprogress.com/farm-business/farm-progress-america-january-26-2026",
+      "time": "2026-01-26T13:27:49+00:00",
+      "category": "news"
+    },
+    {
+      "source": "Brownfield",
+      "title": "MSU dairy center begins research on high oleic soybeans with new robotic feeders",
+      "link": "https://www.brownfieldagnews.com/news/msu-dairy-center-begins-research-on-high-oleic-soybeans-with-new-robotic-feeders/",
+      "time": "2026-01-26T21:57:52+00:00",
+      "category": "news"
+    },
+    {
+      "source": "Brownfield",
+      "title": "Van Orden says new Council needed to advance year-round E15",
+      "link": "https://www.brownfieldagnews.com/news/van-orden-says-new-council-needed-to-advance-year-round-e15/",
+      "time": "2026-01-26T21:54:12+00:00",
+      "category": "news"
+    },
+    {
+      "source": "Brownfield",
+      "title": "Cattle futures higher to start the week",
+      "link": "https://www.brownfieldagnews.com/market-news/cattle-futures-higher-to-start-the-week-37/",
+      "time": "2026-01-26T21:52:43+00:00",
+      "category": "news"
+    },
+    {
+      "source": "AGDAILY",
+      "title": "Colorado agriculture at a crossroads as farm loss accelerates",
+      "link": "https://www.agdaily.com/news/colorado-agriculture-at-a-crossroads-as-farmland-loss-accelerates/",
+      "time": "2026-01-26T18:13:35+00:00",
+      "category": "news"
+    },
+    {
+      "source": "AGDAILY",
+      "title": "Mark Gold’s Weekly Grain Comments for Jan. 26, 2026",
+      "link": "https://www.agdaily.com/crops/mark-golds-weekly-grain-comments-jan-26-2026/",
+      "time": "2026-01-26T15:00:39+00:00",
+      "category": "news"
+    },
+    {
+      "source": "AGDAILY",
+      "title": "Winter storms crush ag country as losses likely to top $100 billion",
+      "link": "https://www.agdaily.com/weather/winter-storms-crush-ag-country-losses-likely-top-100-billion/",
+      "time": "2026-01-26T14:54:36+00:00",
+      "category": "news"
+    },
+    {
+      "source": "Agweek",
+      "title": "Ag producers want a seat at the table concerning state permitting and regulations",
+      "link": "https://www.agweek.com/news/policy/ag-producers-want-a-seat-at-the-table-concerning-state-permitting-and-regulations",
+      "time": "2026-01-26T20:56:53+00:00",
+      "category": "news"
+    },
+    {
+      "source": "Agweek",
+      "title": "Loss of topsoil is hurting the pockets and fields of farmers",
+      "link": "https://www.agweek.com/crops/loss-of-topsoil-is-hurting-the-pockets-and-fields-of-farmers",
+      "time": "2026-01-26T11:30:00+00:00",
+      "category": "news"
+    },
+    {
+      "source": "Agweek",
+      "title": "Is cost-share needed for profitable soil health practices?",
+      "link": "https://www.agweek.com/crops/is-cost-share-needed-for-profitable-soil-health-practices",
+      "time": "2026-01-26T11:30:00+00:00",
       "category": "news"
     }
   ],
