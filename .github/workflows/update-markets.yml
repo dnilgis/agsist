@@ -28,7 +28,6 @@ jobs:
         run: pip install yfinance pandas
       
       - name: Fetch market data
-        # FIXED: Removed "scripts/" prefix since file is now in root
         run: python fetch_markets.py
       
       - name: Commit and push
