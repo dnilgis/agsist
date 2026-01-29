@@ -1,4 +1,22 @@
+# AGSIST robots.txt
+# https://agsist.com/robots.txt
+
 User-agent: *
 Allow: /
 
+# Block data files and API endpoints
+Disallow: /data/
+Disallow: /*.json$
+
+# Allow all major crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Sitemaps
 Sitemap: https://agsist.com/sitemap.xml

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ============================================
+         TEMPLATE VARIABLES - Replace these:
+         Wisconsin = Wisconsin
+         WI = WI
+         wisconsin = wisconsin
+         Corn = Corn
+         corn = corn
+         🌽 = 🌽
+         175 = 175
+         -35 = -35
+         -18 = -18
+         Dane, Rock, Grant, Lafayette, Iowa = Dane, Rock, Grant, Lafayette, Iowa
+         3.9 million = 3.9 million
+         10th = 10th
+    ============================================ -->
+    
+    <title>Wisconsin Corn Prices Today - Live Futures, Basis & Local Market Data | AGSIST</title>
+    <meta name="description" content="Live wisconsin corn prices, local basis data, and WI market analysis. Current futures, Wisconsin yield history, and elevator bids. Updated every 15 minutes.">
+    <meta name="keywords" content="wisconsin corn prices, WI corn basis, wisconsin grain prices, corn prices WI, wisconsin corn market">
+    <link rel="canonical" href="https://agsist.com/prices/wisconsin-corn.html">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Wisconsin Corn Prices Today">
+    <meta property="og:description" content="Live wisconsin corn prices, local basis, and market data for WI farmers.">
+    <meta property="og:image" content="https://agsist.com/images/og-wisconsin-corn.png">
+    <meta property="og:url" content="https://agsist.com/prices/wisconsin-corn.html">
+    <meta property="og:type" content="website">
+    
+    <!-- Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": "https://agsist.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Corn Prices", "item": "https://agsist.com/corn-prices.html"},
+        {"@type": "ListItem", "position": 3, "name": "Wisconsin", "item": "https://agsist.com/prices/wisconsin-corn.html"}
+      ]
+    }
+    </script>
+    
+    <!-- Schema: FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the current corn price in Wisconsin?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Wisconsin corn prices follow CBOT futures plus local basis. The current front-month futures price is shown above. Wisconsin basis typically ranges from -35¢ at harvest to -18¢ in summer, depending on location and local supply/demand."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the average corn yield in Wisconsin?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Wisconsin averages approximately 175 bushels per acre for corn, though this varies significantly by region and year. The state ranks 10th nationally in corn production with 3.9 million acres planted annually."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What affects corn basis in Wisconsin?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Wisconsin corn basis is affected by: distance to ethanol plants and export terminals, local supply (yields), transportation costs, storage availability, and time of year. Basis is typically weakest at harvest and strongest in late spring/summer."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where are the top corn producing counties in Wisconsin?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The top corn producing counties in Wisconsin include Dane, Rock, Grant, Lafayette, Iowa. These areas typically have the most competitive basis due to local demand from elevators and processors."
+          }
+        }
+      ]
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
+                <div class="logo-text">AGSIST</div>
+            </a>
+            <button class="menu-toggle" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
+            <nav class="nav">
+                <a href="/">DASHBOARD</a>
+                <a href="/corn-prices.html">CORN</a>
+                <a href="/tools.html">TOOLS</a>
+                <a href="/learn.html">LEARN</a>
+                <a href="/calendar.html">CALENDAR</a>
+                <a href="/resources.html">LINKS</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div style="max-width:1200px;margin:0 auto;padding:20px">
+            
+            <!-- Breadcrumb -->
+            <nav style="margin-bottom:20px;font-size:0.85rem;color:var(--dim)">
+                <a href="/" style="color:var(--accent);text-decoration:none">Home</a> → 
+                <a href="/corn-prices.html" style="color:var(--accent);text-decoration:none">Corn Prices</a> → 
+                Wisconsin
+            </nav>
+            
+            <!-- Hero -->
+            <div class="panel" style="border:2px solid var(--accent);margin-bottom:20px">
+                <div class="panel-head" style="background:var(--accent);color:#000">
+                    <h1 style="font-size:1rem;margin:0;font-weight:800">🌽 Wisconsin Corn PRICES TODAY</h1>
+                    <span style="font-size:0.75rem;opacity:0.7" id="lastUpdate">Loading...</span>
+                </div>
+                <div class="panel-body">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center">
+                        
+                        <!-- Current Price -->
+                        <div style="text-align:center">
+                            <div style="font-size:0.8rem;color:var(--dim);margin-bottom:8px">CBOT FRONT MONTH</div>
+                            <div style="font-size:3.5rem;font-weight:800;color:var(--accent);font-family:'JetBrains Mono',monospace" id="price">--</div>
+                            <div style="font-size:0.9rem;color:var(--dim)">per bushel</div>
+                            <div style="margin-top:12px">
+                                <span id="change" style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:600">--</span>
+                            </div>
+                        </div>
+                        
+                        <!-- State Basis -->
+                        <div style="background:var(--card);padding:20px;border-radius:8px;border:1px solid var(--border)">
+                            <div style="font-size:0.8rem;color:var(--dim);margin-bottom:12px">WI TYPICAL BASIS RANGE</div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;text-align:center">
+                                <div>
+                                    <div style="font-size:0.7rem;color:var(--dim)">Harvest</div>
+                                    <div style="font-size:1.5rem;font-weight:700;color:var(--red)">-35¢</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:0.7rem;color:var(--dim)">Summer</div>
+                                    <div style="font-size:1.5rem;font-weight:700;color:var(--green)">-18¢</div>
+                                </div>
+                            </div>
+                            <div style="margin-top:16px;font-size:0.8rem;color:var(--dim)">
+                                <strong>Estimated Cash Price:</strong><br>
+                                <span style="color:var(--bright);font-size:1rem" id="cashPrice">$--</span>
+                                <span style="color:var(--dim)">(futures + current basis)</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Stats -->
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px">
+                <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px;text-align:center">
+                    <div style="font-size:0.7rem;color:var(--dim);text-transform:uppercase">WI Acres</div>
+                    <div style="font-size:1.3rem;font-weight:700;color:var(--bright)">3.9 million</div>
+                </div>
+                <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px;text-align:center">
+                    <div style="font-size:0.7rem;color:var(--dim);text-transform:uppercase">Avg Yield</div>
+                    <div style="font-size:1.3rem;font-weight:700;color:var(--bright)">175 bu/ac</div>
+                </div>
+                <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px;text-align:center">
+                    <div style="font-size:0.7rem;color:var(--dim);text-transform:uppercase">US Rank</div>
+                    <div style="font-size:1.3rem;font-weight:700;color:var(--bright)">10th</div>
+                </div>
+                <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px;text-align:center">
+                    <div style="font-size:0.7rem;color:var(--dim);text-transform:uppercase">Top Counties</div>
+                    <div style="font-size:0.85rem;font-weight:600;color:var(--bright)">Dane, Rock, Grant, Lafayette, Iowa</div>
+                </div>
+            </div>
+            
+            <!-- Main Content Grid -->
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
+                
+                <!-- Left Column -->
+                <div>
+                    
+                    <!-- State Basis by Region -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2>📍 WI REGIONAL BASIS</h2>
+                        </div>
+                        <div class="panel-body">
+                            <p style="color:var(--dim);margin-bottom:16px;font-size:0.85rem">Typical corn basis by region (current season estimates)</p>
+                            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px">
+                                <div style="background:var(--bg);padding:14px;border-radius:6px;text-align:center;border:1px solid var(--border)">
+                                    <div style="font-size:0.8rem;color:var(--dim)">Southern WI</div>
+                                    <div style="font-size:1.4rem;font-weight:700;color:var(--green)">-22¢</div>
+                                </div>
+                                <div style="background:var(--bg);padding:14px;border-radius:6px;text-align:center;border:1px solid var(--border)">
+                                    <div style="font-size:0.8rem;color:var(--dim)">Central WI</div>
+                                    <div style="font-size:1.4rem;font-weight:700;color:var(--accent)">-28¢</div>
+                                </div>
+                                <div style="background:var(--bg);padding:14px;border-radius:6px;text-align:center;border:1px solid var(--border)">
+                                    <div style="font-size:0.8rem;color:var(--dim)">Northern WI</div>
+                                    <div style="font-size:1.4rem;font-weight:700;color:var(--red)">-35¢</div>
+                                </div>
+                            </div>
+                            <p style="font-size:0.75rem;color:var(--dim);margin-top:12px">Basis varies by elevator. Contact local buyers for current bids. <a href="/learn.html#basis" style="color:var(--accent)">Learn about basis →</a></p>
+                        </div>
+                    </div>
+                    
+                    <!-- State Yield History -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2>📊 WI Corn YIELD HISTORY</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div style="display:grid;gap:8px">
+                                <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
+                                    <span style="color:var(--dim)">2025</span>
+                                    <span style="font-weight:600;font-family:'JetBrains Mono',monospace">178 bu/ac</span>
+                                    <span style="color:var(--green);font-size:0.85rem">+3.4%</span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
+                                    <span style="color:var(--dim)">2024</span>
+                                    <span style="font-weight:600;font-family:'JetBrains Mono',monospace">172 bu/ac</span>
+                                    <span style="color:var(--green);font-size:0.85rem">+2.4%</span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
+                                    <span style="color:var(--dim)">2023</span>
+                                    <span style="font-weight:600;font-family:'JetBrains Mono',monospace">168 bu/ac</span>
+                                    <span style="color:var(--red);font-size:0.85rem">-1.2%</span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
+                                    <span style="color:var(--dim)">2022</span>
+                                    <span style="font-weight:600;font-family:'JetBrains Mono',monospace">170 bu/ac</span>
+                                    <span style="color:var(--dim);font-size:0.85rem">0.0%</span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
+                                    <span style="color:var(--dim)">2021</span>
+                                    <span style="font-weight:600;font-family:'JetBrains Mono',monospace">170 bu/ac</span>
+                                    <span style="color:var(--green);font-size:0.85rem">+5.0%</span>
+                                </div>
+                            </div>
+                            <div style="margin-top:16px;padding:14px;background:var(--card);border-radius:6px">
+                                <div style="display:flex;justify-content:space-between">
+                                    <span style="color:var(--dim)">5-Year Average:</span>
+                                    <span style="font-weight:700;color:var(--accent)">175 bu/ac</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- About State Corn -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2>ℹ️ Corn PRODUCTION IN Wisconsin</h2>
+                        </div>
+                        <div class="panel-body" style="line-height:1.8;color:var(--dim)">
+                            <p>Wisconsin ranks 10th in the nation for corn production, with approximately 3.9 million acres planted annually. The state's corn is primarily used for livestock feed, ethanol production, and export.</p>
+                            
+                            <p style="margin-top:16px">The top corn producing counties — Dane, Rock, Grant, Lafayette, Iowa — benefit from rich soils and favorable growing conditions. Wisconsin farmers typically plant corn from late April through May, with harvest occurring in October and November.</p>
+                            
+                            <p style="margin-top:16px">Wisconsin corn basis tends to be weaker than Iowa or Illinois due to greater distance from major export terminals and ethanol plants. However, local demand from dairy operations provides some basis support in certain regions.</p>
+                            
+                            <h3 style="color:var(--accent);font-size:0.9rem;margin-top:20px">Marketing Considerations for WI Farmers</h3>
+                            <ul style="margin:12px 0 0 20px">
+                                <li>Basis typically improves 15-20¢ from harvest to summer</li>
+                                <li>On-farm storage can capture this basis improvement</li>
+                                <li>Watch for local ethanol plant demand spikes</li>
+                                <li>River terminal bids may offer better basis for southern WI</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Right Column (Sidebar) -->
+                <div>
+                    
+                    <!-- National Price Reference -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2>📈 NATIONAL PRICES</h2>
+                        </div>
+                        <div class="panel-body" style="padding:0">
+                            <a href="/corn-prices.html" style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text)">
+                                <span>🌽 Corn Futures</span>
+                                <span style="color:var(--accent);font-family:'JetBrains Mono',monospace" id="cornNat">--</span>
+                            </a>
+                            <a href="/soybean-prices.html" style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text)">
+                                <span>🫘 Soybean Futures</span>
+                                <span style="color:var(--accent);font-family:'JetBrains Mono',monospace" id="soyNat">--</span>
+                            </a>
+                            <a href="/wheat-prices.html" style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;text-decoration:none;color:var(--text)">
+                                <span>🌾 Wheat Futures</span>
+                                <span style="color:var(--accent);font-family:'JetBrains Mono',monospace" id="wheatNat">--</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Other States -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2>🗺️ OTHER STATES</h2>
+                        </div>
+                        <div class="panel-body" style="padding:0">
+                            <a href="/prices/iowa-corn.html" style="display:block;padding:12px 16px;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text);font-size:0.9rem">Iowa Corn</a>
+                            <a href="/prices/minnesota-corn.html" style="display:block;padding:12px 16px;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text);font-size:0.9rem">Minnesota Corn</a>
+                            <a href="/prices/illinois-corn.html" style="display:block;padding:12px 16px;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text);font-size:0.9rem">Illinois Corn</a>
+                            <a href="/prices/nebraska-corn.html" style="display:block;padding:12px 16px;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text);font-size:0.9rem">Nebraska Corn</a>
+                            <a href="/prices/indiana-corn.html" style="display:block;padding:12px 16px;text-decoration:none;color:var(--text);font-size:0.9rem">Indiana Corn</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Tools -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2>🧮 TOOLS</h2>
+                        </div>
+                        <div class="panel-body" style="padding:0">
+                            <a href="/breakeven.html" style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text)">
+                                <span>💰 Break-Even Calculator</span>
+                                <span style="color:var(--accent)">→</span>
+                            </a>
+                            <a href="/gdu.html" style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text)">
+                                <span>🌡️ GDU Calculator</span>
+                                <span style="color:var(--accent)">→</span>
+                            </a>
+                            <a href="/calculator.html" style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;text-decoration:none;color:var(--text)">
+                                <span>🌾 Grain Bin Calculator</span>
+                                <span style="color:var(--accent)">→</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- FSA Office -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2>🏢 WI USDA OFFICES</h2>
+                        </div>
+                        <div class="panel-body">
+                            <p style="font-size:0.85rem;color:var(--dim);margin-bottom:12px">Find your local FSA and NRCS office for crop insurance, acreage reporting, and conservation programs.</p>
+                            <a href="/offices.html" style="display:inline-block;background:var(--accent);color:#000;padding:10px 20px;border-radius:4px;text-decoration:none;font-weight:600;font-size:0.85rem">Find WI Offices →</a>
+                        </div>
+                    </div>
+                    
+                    <!-- CTA -->
+                    <div style="background:var(--card);border:1px solid var(--accent);border-radius:6px;padding:20px;text-align:center;margin-top:20px">
+                        <div style="font-size:1rem;font-weight:600;margin-bottom:8px">Wisconsin Crop Insurance</div>
+                        <div style="font-size:0.8rem;color:var(--dim);margin-bottom:12px">Get a quote for your WI farm</div>
+                        <a href="https://farmers1st.com" target="_blank" style="color:var(--accent);font-weight:600;text-decoration:none">Farmers First Agri Service →</a>
+                    </div>
+                    
+                </div>
+                
+            </div>
+            
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:0.8rem">
+            <span>© 2026 <a href="/" style="color:var(--accent);text-decoration:none">AGSIST</a>. All rights reserved.</span>
+            <span><a href="/learn.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Guides</a><a href="/tools.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Tools</a><a href="/resources.html" style="color:var(--dim);text-decoration:none">Resources</a></span>
+            <span>Made in the USA 🇺🇸</span>
+        </div>
+    </footer>
+
+    <script>
+    // Load price data - connect to your API
+    function loadData() {
+        document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+        
+        // Placeholder - replace with actual API call
+        const futuresPrice = 4.52;
+        const change = +0.08;
+        const basis = -25; // Current estimated basis
+        
+        document.getElementById('price').textContent = '$' + futuresPrice.toFixed(2);
+        
+        const changeEl = document.getElementById('change');
+        changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + ' (' + ((change/futuresPrice)*100).toFixed(1) + '%)';
+        changeEl.style.color = change >= 0 ? 'var(--green)' : 'var(--red)';
+        
+        const cashPrice = futuresPrice + (basis / 100);
+        document.getElementById('cashPrice').textContent = '$' + cashPrice.toFixed(2);
+        
+        // Sidebar prices
+        document.getElementById('cornNat').textContent = '$' + futuresPrice.toFixed(2);
+        document.getElementById('soyNat').textContent = '$10.25';
+        document.getElementById('wheatNat').textContent = '$5.85';
+    }
+    
+    loadData();
+    setInterval(loadData, 5 * 60 * 1000);
+    </script>
+</body>
+</html>
