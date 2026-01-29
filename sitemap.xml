@@ -1,32 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Homepage - highest priority, updates frequently -->
   <url>
     <loc>https://agsist.com/</loc>
+    <lastmod>2026-01-28</lastmod>
     <changefreq>hourly</changefreq>
     <priority>1.0</priority>
   </url>
+  
+  <!-- Commodity Price Pages - high value SEO targets -->
+  <url>
+    <loc>https://agsist.com/corn-prices.html</loc>
+    <lastmod>2026-01-29</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  
+  <!-- Core Calculators - high value pages -->
+  <url>
+    <loc>https://agsist.com/calculator.html</loc>
+    <lastmod>2026-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://agsist.com/gdu.html</loc>
+    <lastmod>2026-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://agsist.com/breakeven.html</loc>
+    <lastmod>2026-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
   <url>
     <loc>https://agsist.com/tools.html</loc>
+    <lastmod>2026-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
+  
+  <!-- Reference & Learning -->
   <url>
     <loc>https://agsist.com/fastfacts.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://agsist.com/learn.html</loc>
+    <lastmod>2026-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://agsist.com/calendar.html</loc>
+    <loc>https://agsist.com/learn.html</loc>
+    <lastmod>2026-01-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://agsist.com/calendar.html</loc>
+    <lastmod>2026-01-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Utility Pages -->
+  <url>
+    <loc>https://agsist.com/offices.html</loc>
+    <lastmod>2026-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://agsist.com/resources.html</loc>
+    <lastmod>2026-01-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
