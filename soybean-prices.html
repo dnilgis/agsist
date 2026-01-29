@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soybean Prices Today - Live Futures & Market Analysis | AGSIST</title>
+    <meta name="description" content="Live soybean futures prices, historical charts, seasonal patterns, and soybean market news. The complete soybean resource for farmers. Coming soon.">
+    <meta name="keywords" content="soybean prices today, soybean futures, soybean price history, CBOT soybeans, soybean market analysis">
+    <link rel="canonical" href="https://agsist.com/soybean-prices.html">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Soybean Prices Today - Coming Soon | AGSIST">
+    <meta property="og:description" content="Live soybean futures, historical charts, and market analysis. Coming soon.">
+    <meta property="og:url" content="https://agsist.com/soybean-prices.html">
+    <meta property="og:type" content="website">
+    
+    <!-- Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": "https://agsist.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Soybean Prices", "item": "https://agsist.com/soybean-prices.html"}
+      ]
+    }
+    </script>
+    
+    <style>
+    /* Coming soon page specific styles */
+    .coming-soon-hero {
+        background: linear-gradient(135deg, var(--panel) 0%, #1a1510 100%);
+        border: 2px solid var(--accent);
+        margin-bottom: 20px;
+        text-align: center;
+        padding: 60px 20px;
+    }
+    .coming-soon-icon {
+        font-size: 5rem;
+        margin-bottom: 20px;
+    }
+    .coming-soon-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--bright);
+        margin-bottom: 12px;
+    }
+    .coming-soon-subtitle {
+        font-size: 1.1rem;
+        color: var(--dim);
+        margin-bottom: 32px;
+    }
+    .current-price-box {
+        background: var(--card);
+        border: 1px solid var(--accent);
+        border-radius: 8px;
+        padding: 24px;
+        max-width: 400px;
+        margin: 0 auto 32px;
+    }
+    .current-price-box .label {
+        font-size: 0.85rem;
+        color: var(--dim);
+        margin-bottom: 8px;
+    }
+    .current-price-box .price {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--accent);
+    }
+    .current-price-box .change {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1rem;
+        margin-top: 8px;
+    }
+    .current-price-box .change.up { color: var(--green); }
+    .current-price-box .change.down { color: var(--red); }
+    .current-price-box .note {
+        font-size: 0.8rem;
+        color: var(--dim);
+        margin-top: 12px;
+    }
+    .current-price-box .note a {
+        color: var(--accent);
+        text-decoration: none;
+    }
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+        max-width: 900px;
+        margin: 0 auto 32px;
+        text-align: left;
+    }
+    .feature-item {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .feature-item .icon {
+        font-size: 1.5rem;
+        color: var(--green);
+    }
+    .feature-item .text {
+        font-size: 0.95rem;
+        color: var(--text);
+    }
+    .cta-btn {
+        display: inline-block;
+        padding: 14px 32px;
+        background: var(--accent);
+        color: #000;
+        text-decoration: none;
+        font-weight: 700;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: opacity 0.2s;
+    }
+    .cta-btn:hover {
+        opacity: 0.9;
+    }
+    @media (max-width: 768px) {
+        .coming-soon-title { font-size: 1.8rem; }
+        .coming-soon-icon { font-size: 4rem; }
+        .current-price-box .price { font-size: 2.5rem; }
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
+                <div class="logo-text">AGSIST</div>
+            </a>
+            <button class="menu-toggle" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
+            <nav class="nav">
+                <a href="/">DASHBOARD</a>
+                <a href="/corn-prices.html">CORN</a>
+                <a href="/soybean-prices.html" class="active">SOYBEANS</a>
+                <a href="/tools.html">TOOLS</a>
+                <a href="/calendar.html">CALENDAR</a>
+                <a href="/resources.html">LINKS</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div style="max-width:1200px;margin:0 auto;padding:20px">
+            
+            <!-- Breadcrumb -->
+            <nav style="margin-bottom:20px;font-size:0.85rem;color:var(--dim)">
+                <a href="/" style="color:var(--accent);text-decoration:none">Home</a> → Soybean Prices
+            </nav>
+            
+            <div class="coming-soon-hero">
+                <div class="coming-soon-icon">🫘</div>
+                <h1 class="coming-soon-title">Soybean Prices</h1>
+                <p class="coming-soon-subtitle">Dedicated soybean market page coming soon</p>
+                
+                <div class="current-price-box">
+                    <div class="label">Current Soybean Price</div>
+                    <div class="price" id="soy-price">Loading...</div>
+                    <div class="change" id="soy-change"></div>
+                    <div class="note">Live data available on <a href="/">main dashboard</a></div>
+                </div>
+                
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <span class="icon">✓</span>
+                        <span class="text">Real-time soybean futures prices</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="icon">✓</span>
+                        <span class="text">Interactive historical price charts</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="icon">✓</span>
+                        <span class="text">52-week high/low analysis</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="icon">✓</span>
+                        <span class="text">Soybean-specific market news</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="icon">✓</span>
+                        <span class="text">Contract month comparisons</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="icon">✓</span>
+                        <span class="text">Crush margins & export data</span>
+                    </div>
+                </div>
+                
+                <p style="color:var(--dim);margin-bottom:16px">In the meantime, track soybean prices on our main dashboard</p>
+                <a href="/" class="cta-btn">← Back to Dashboard</a>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:0.8rem">
+            <span>© 2026 <a href="/" style="color:var(--accent);text-decoration:none">AGSIST</a>. All rights reserved.</span>
+            <span><a href="/tools.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Tools</a><a href="/resources.html" style="color:var(--dim);text-decoration:none">Resources</a></span>
+            <span>Made in the USA 🇺🇸</span>
+        </div>
+    </footer>
+
+    <script>
+        async function loadPrice() {
+            try {
+                const res = await fetch('data/markets.json');
+                if (!res.ok) throw new Error('Failed');
+                const data = await res.json();
+                
+                if (data.markets?.grains?.soybeans) {
+                    const s = data.markets.grains.soybeans;
+                    const price = (s.price / 100).toFixed(2);
+                    const changePct = s.changePct;
+                    const sign = changePct >= 0 ? '+' : '';
+                    const cls = changePct >= 0 ? 'up' : 'down';
+                    
+                    document.getElementById('soy-price').textContent = '$' + price;
+                    document.getElementById('soy-change').textContent = sign + changePct.toFixed(2) + '%';
+                    document.getElementById('soy-change').className = 'change ' + cls;
+                }
+            } catch (e) {
+                document.getElementById('soy-price').textContent = '--';
+            }
+        }
+        loadPrice();
+    </script>
+</body>
+</html>

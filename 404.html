@@ -1,87 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#e6b042">
-    <title>404 - Page Not Found | AGSIST</title>
-    <meta name="description" content="Page not found. Return to AGSIST for free agricultural commodity prices, news, weather, and farm tools.">
+    <title>Page Not Found | AGSIST</title>
     <meta name="robots" content="noindex">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
-    <meta property="og:title" content="404 - Page Not Found | AGSIST">
-    <meta property="og:description" content="Page not found. Return to AGSIST for free agricultural tools.">
-    <meta property="og:image" content="https://agsist.com/og-image.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #0d0d0f;
+            --card: #141418;
+            --border: #2a2a32;
+            --text: #e8e8ec;
+            --dim: #a0a0a8;
+            --accent: #e6b042;
+        }
+        
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: #0d0d0d;
-            color: #e8e8e8;
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        nav {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+        }
+        
+        .nav-inner {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .error-page {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 20px;
+            padding: 40px 20px;
         }
+        
         .error-code {
-            font-size: 8rem;
-            font-weight: 900;
-            color: #e6b042;
+            font-size: 6rem;
+            font-weight: 700;
+            color: var(--accent);
             line-height: 1;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
         }
-        h1 {
+        
+        .error-title {
             font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #888;
+            color: var(--text);
+            margin-bottom: 12px;
         }
-        p {
-            color: #666;
-            margin-bottom: 30px;
+        
+        .error-message {
+            color: var(--dim);
+            font-size: 1rem;
             max-width: 400px;
+            margin-bottom: 32px;
         }
-        .links {
+        
+        .error-links {
             display: flex;
-            gap: 15px;
+            gap: 16px;
             flex-wrap: wrap;
             justify-content: center;
         }
-        a {
-            color: #e6b042;
-            text-decoration: none;
+        
+        .error-links a {
             padding: 12px 24px;
-            border: 1px solid #333;
+            background: var(--card);
+            border: 1px solid var(--border);
             border-radius: 4px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
             transition: all 0.2s;
         }
-        a:hover {
-            background: #e6b042;
-            color: #000;
-            border-color: #e6b042;
+        
+        .error-links a:hover {
+            border-color: var(--accent);
+            color: var(--accent);
         }
-        .logo {
-            margin-bottom: 30px;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #e6b042;
+        
+        .error-links a.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .error-links a.primary:hover {
+            opacity: 0.9;
+            color: #000;
+        }
+        
+        footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 20px 16px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--dim);
+        }
+        
+        @media (max-width: 480px) {
+            .error-code {
+                font-size: 4rem;
+            }
+            .error-title {
+                font-size: 1.2rem;
+            }
+            .error-links {
+                flex-direction: column;
+                width: 100%;
+            }
+            .error-links a {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="logo">AGSIST</div>
-    <div class="error-code">404</div>
-    <h1>Page Not Found</h1>
-    <p>The page you're looking for doesn't exist or has been moved.</p>
-    <div class="links">
-        <a href="/">Dashboard</a>
-        <a href="/tools.html">Tools</a>
-        <a href="/learn.html">Learn</a>
-    </div>
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="logo">AGSIST</a>
+        </div>
+    </nav>
+
+    <main class="error-page">
+        <div class="error-code">404</div>
+        <h1 class="error-title">Page Not Found</h1>
+        <p class="error-message">The page you're looking for doesn't exist or may have been moved. Let's get you back on track.</p>
+        <div class="error-links">
+            <a href="/" class="primary">← Back to Dashboard</a>
+            <a href="tools.html">Tools</a>
+            <a href="resources.html">Resources</a>
+        </div>
+    </main>
+
+    <footer>
+        © 2026 AGSIST • Built in Barron County, WI
+    </footer>
 </body>
 </html>
