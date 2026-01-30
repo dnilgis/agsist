@@ -4,383 +4,243 @@
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Local USDA & Extension Offices | AGSIST</title>
-    <meta name="description" content="Find your local FSA office, NRCS service center, and Extension office. Official USDA locators for farmers nationwide.">
+    <title>USDA Office Locator - Find Your Local FSA & NRCS Office | AGSIST</title>
+    <meta name="description" content="Find your local USDA FSA and NRCS office. Search by state, county, or zip code. Get contact info, hours, and directions for crop insurance, conservation programs, and farm loans.">
+    <meta name="keywords" content="USDA office locator, FSA office near me, NRCS office, farm service agency, local USDA office, FSA contact">
     <link rel="canonical" href="https://agsist.com/offices.html">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --bg: #0d0d0f;
-            --card: #141418;
-            --border: #2a2a32;
-            --text: #e8e8ec;
-            --dim: #a0a0a8;
-            --accent: #e6b042;
-        }
-        
-        body {
-            font-family: 'JetBrains Mono', monospace;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        
-        nav {
-            background: var(--card);
-            border-bottom: 1px solid var(--border);
-            padding: 12px 16px;
-        }
-        
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-weight: 700;
-            font-size: 1.3rem;
-            color: var(--accent);
-            text-decoration: none;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-        
-        .nav-links a {
-            color: var(--dim);
-            text-decoration: none;
-            font-size: 0.95rem;
-        }
-        
-        .nav-links a:hover {
-            color: var(--accent);
-        }
-        
-        main {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 24px 16px;
-        }
-        
-        .page-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        
-        .page-header h1 {
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-        
-        .page-header p {
-            color: var(--dim);
-            font-size: 0.9rem;
-        }
-        
-        .locator-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 32px;
-        }
-        
-        .locator-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 24px;
-            text-align: center;
-        }
-        
-        .locator-card .icon {
-            font-size: 2.5rem;
-            margin-bottom: 12px;
-        }
-        
-        .locator-card h2 {
-            font-size: 1rem;
-            color: var(--text);
-            margin-bottom: 8px;
-        }
-        
-        .locator-card p {
-            font-size: 0.95rem;
-            color: var(--dim);
-            margin-bottom: 16px;
-        }
-        
-        .locator-btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background: var(--accent);
-            color: #000;
-            text-decoration: none;
-            font-weight: 600;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            transition: opacity 0.2s;
-        }
-        
-        .locator-btn:hover {
-            opacity: 0.9;
-        }
-        
-        .info-section {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-        
-        .info-section h3 {
-            font-size: 0.9rem;
-            color: var(--accent);
-            margin-bottom: 16px;
-        }
-        
-        .service-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-        }
-        
-        .service-item {
-            background: var(--bg);
-            padding: 12px;
-            border-radius: 4px;
-            font-size: 0.95rem;
-        }
-        
-        .service-item strong {
-            color: var(--accent);
-            display: block;
-            margin-bottom: 4px;
-        }
-        
-        footer {
-            background: var(--card);
-            border-top: 1px solid var(--border);
-            padding: 20px 16px;
-            margin-top: 40px;
-            text-align: center;
-        }
-        
-        .footer-links {
-            margin-bottom: 12px;
-        }
-        
-        .footer-links a {
-            color: var(--dim);
-            text-decoration: none;
-            margin: 0 12px;
-            font-size: 0.95rem;
-        }
-        
-        .footer-links a:hover {
-            color: var(--accent);
-        }
-        
-        .footer-copy {
-            font-size: 0.9rem;
-            color: var(--dim);
-        }
-        
-        @media (max-width: 600px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .locator-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="USDA Office Locator - Find FSA & NRCS">
+    <meta property="og:description" content="Find your local USDA FSA and NRCS office for crop insurance, conservation, and farm loans.">
+    <meta property="og:image" content="https://agsist.com/og-image.png">
+    <meta property="og:url" content="https://agsist.com/offices.html">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": "https://agsist.com/"},
+        {"@type": "ListItem", "position": 2, "name": "USDA Office Locator", "item": "https://agsist.com/offices.html"}
+      ]
+    }
+    </script>
 </head>
 <body>
-        <nav class="main-nav">
-        <div class="nav-inner">
-            <a href="index.html" class="logo">AGSIST</a>
-            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
-            <div class="nav-links">
-                <div class="nav-dropdown">
-                    <button class="nav-link dropdown-toggle">Prices ▾</button>
-                    <div class="dropdown-menu">
-                        <a href="corn-prices.html" class="dropdown-item">🌽 Corn</a>
-                        <a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a>
-                        <a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a>
-                    </div>
-                </div>
-                <a href="tools.html" class="nav-link">Tools</a>
-                <a href="fastfacts.html" class="nav-link">Fast Facts</a>
-                <a href="learn.html" class="nav-link">Learn</a>
-                <a href="calendar.html" class="nav-link">Calendar</a>
-                <a href="resources.html" class="nav-link">Links</a>
-            </div>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
+                <div class="logo-text">AGSIST</div>
+            </a>
+            <button class="menu-toggle" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
+            <nav class="nav">
+                <a href="/">DASHBOARD</a>
+                <a href="/calculator.html">GRAIN BIN</a>
+                <a href="/gdu.html">GDU CALC</a>
+                <a href="/breakeven.html">BREAK-EVEN</a>
+                <a href="/offices.html" class="active">OFFICES</a>
+                <a href="/resources.html">RESOURCES</a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
     <main>
-        <div class="page-header">
-            <h1>🏢 Find Local Offices</h1>
-            <p>Connect with USDA service centers and Extension offices in your area</p>
-        </div>
-        
-        <div class="locator-grid">
-            <div class="locator-card">
-                <div class="icon">🏛️</div>
-                <h2>USDA Service Center Locator</h2>
-                <p>Find your local FSA, NRCS, and RD offices. The official USDA tool covers all 50 states.</p>
-                <a href="https://offices.sc.egov.usda.gov/locator/app" target="_blank" class="locator-btn">Find USDA Offices →</a>
+        <div style="padding:20px;max-width:1000px;margin:0 auto">
+            <nav style="margin-bottom:20px;font-size:0.85rem;color:var(--dim)">
+                <a href="/" style="color:var(--accent);text-decoration:none">Home</a> → USDA Office Locator
+            </nav>
+            
+            <div class="panel">
+                <div class="panel-head"><h1 style="font-size:0.9rem;margin:0">🏢 USDA OFFICE LOCATOR</h1></div>
+                <div class="panel-body">
+                    <p style="color:var(--dim);margin-bottom:20px">Find your local FSA (Farm Service Agency) and NRCS (Natural Resources Conservation Service) offices.</p>
+                    
+                    <!-- Search Box -->
+                    <div style="display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:24px">
+                        <input type="text" id="searchInput" placeholder="Enter state, county, or zip code..." style="padding:12px 16px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem" onkeypress="if(event.key==='Enter')searchOffice()">
+                        <button onclick="searchOffice()" style="padding:12px 24px;background:var(--accent);border:none;border-radius:6px;color:black;font-weight:600;cursor:pointer">Search</button>
+                    </div>
+                    
+                    <!-- Quick Links by State -->
+                    <div style="margin-bottom:24px">
+                        <div style="font-size:0.85rem;color:var(--dim);margin-bottom:12px">QUICK LINKS - UPPER MIDWEST</div>
+                        <div style="display:flex;flex-wrap:wrap;gap:8px">
+                            <a href="https://offices.sc.egov.usda.gov/locator/app?state=wi&agency=fsa" target="_blank" style="padding:8px 16px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);text-decoration:none;font-size:0.9rem">🧀 Wisconsin FSA</a>
+                            <a href="https://offices.sc.egov.usda.gov/locator/app?state=mn&agency=fsa" target="_blank" style="padding:8px 16px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);text-decoration:none;font-size:0.9rem">🌲 Minnesota FSA</a>
+                            <a href="https://offices.sc.egov.usda.gov/locator/app?state=ia&agency=fsa" target="_blank" style="padding:8px 16px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);text-decoration:none;font-size:0.9rem">🌽 Iowa FSA</a>
+                            <a href="https://offices.sc.egov.usda.gov/locator/app?state=il&agency=fsa" target="_blank" style="padding:8px 16px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);text-decoration:none;font-size:0.9rem">🏙️ Illinois FSA</a>
+                            <a href="https://offices.sc.egov.usda.gov/locator/app?state=nd&agency=fsa" target="_blank" style="padding:8px 16px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);text-decoration:none;font-size:0.9rem">🌾 North Dakota FSA</a>
+                            <a href="https://offices.sc.egov.usda.gov/locator/app?state=sd&agency=fsa" target="_blank" style="padding:8px 16px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);text-decoration:none;font-size:0.9rem">🦬 South Dakota FSA</a>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align:center;padding:20px;background:var(--bg);border-radius:6px">
+                        <a href="https://offices.sc.egov.usda.gov/locator/app" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600;font-size:1.1rem">→ Official USDA Service Center Locator ←</a>
+                        <p style="color:var(--dim);font-size:0.8rem;margin-top:8px">Opens in new tab • Search all 50 states</p>
+                    </div>
+                </div>
             </div>
             
-            <div class="locator-card">
-                <div class="icon">🌾</div>
-                <h2>FSA State Offices</h2>
-                <p>Farm Service Agency state offices for loan programs, conservation, and commodity programs.</p>
-                <a href="https://www.fsa.usda.gov/state-offices/index" target="_blank" class="locator-btn">FSA Directory →</a>
+            <!-- What FSA Does -->
+            <div class="panel">
+                <div class="panel-head"><h2>🌾 FARM SERVICE AGENCY (FSA)</h2></div>
+                <div class="panel-body" style="line-height:1.8">
+                    <p style="color:var(--dim);margin-bottom:16px">FSA administers farm programs and provides credit to agricultural producers.</p>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+                        <div style="background:var(--bg);padding:16px;border-radius:6px">
+                            <div style="font-weight:600;margin-bottom:8px">Commodity Programs</div>
+                            <ul style="margin:0 0 0 16px;color:var(--dim);font-size:0.85rem">
+                                <li>ARC/PLC enrollment</li>
+                                <li>Marketing assistance loans</li>
+                                <li>Disaster assistance</li>
+                            </ul>
+                        </div>
+                        <div style="background:var(--bg);padding:16px;border-radius:6px">
+                            <div style="font-weight:600;margin-bottom:8px">Farm Loans</div>
+                            <ul style="margin:0 0 0 16px;color:var(--dim);font-size:0.85rem">
+                                <li>Operating loans</li>
+                                <li>Farm ownership loans</li>
+                                <li>Beginning farmer programs</li>
+                            </ul>
+                        </div>
+                        <div style="background:var(--bg);padding:16px;border-radius:6px">
+                            <div style="font-weight:600;margin-bottom:8px">Required Reporting</div>
+                            <ul style="margin:0 0 0 16px;color:var(--dim);font-size:0.85rem">
+                                <li>Acreage reporting</li>
+                                <li>Production reporting</li>
+                                <li>Farm records</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
             
-            <div class="locator-card">
-                <div class="icon">🎓</div>
-                <h2>Extension Services</h2>
-                <p>Find your state's land-grant university Extension office for research-based agricultural information.</p>
-                <a href="https://www.nifa.usda.gov/land-grant-colleges-and-universities-partner-website-directory" target="_blank" class="locator-btn">Find Extension →</a>
+            <!-- What NRCS Does -->
+            <div class="panel">
+                <div class="panel-head"><h2>🌱 NATURAL RESOURCES CONSERVATION SERVICE (NRCS)</h2></div>
+                <div class="panel-body" style="line-height:1.8">
+                    <p style="color:var(--dim);margin-bottom:16px">NRCS provides technical assistance and cost-share programs for conservation practices.</p>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+                        <div style="background:var(--bg);padding:16px;border-radius:6px">
+                            <div style="font-weight:600;margin-bottom:8px">EQIP</div>
+                            <ul style="margin:0 0 0 16px;color:var(--dim);font-size:0.85rem">
+                                <li>Cover crops cost-share</li>
+                                <li>Nutrient management</li>
+                                <li>Irrigation efficiency</li>
+                            </ul>
+                        </div>
+                        <div style="background:var(--bg);padding:16px;border-radius:6px">
+                            <div style="font-weight:600;margin-bottom:8px">CSP</div>
+                            <ul style="margin:0 0 0 16px;color:var(--dim);font-size:0.85rem">
+                                <li>Enhance existing practices</li>
+                                <li>Annual payments</li>
+                                <li>5-year contracts</li>
+                            </ul>
+                        </div>
+                        <div style="background:var(--bg);padding:16px;border-radius:6px">
+                            <div style="font-weight:600;margin-bottom:8px">Technical Assistance</div>
+                            <ul style="margin:0 0 0 16px;color:var(--dim);font-size:0.85rem">
+                                <li>Soil health planning</li>
+                                <li>Conservation planning</li>
+                                <li>Free soil surveys</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <div class="info-section">
-            <h3>What Services Are Available?</h3>
-            <div class="service-list">
-                <div class="service-item">
-                    <strong>FSA (Farm Service Agency)</strong>
-                    Farm loans, disaster assistance, conservation programs, commodity programs
-                </div>
-                <div class="service-item">
-                    <strong>NRCS (Natural Resources)</strong>
-                    Conservation planning, EQIP, CSP, technical assistance
-                </div>
-                <div class="service-item">
-                    <strong>RMA (Risk Management)</strong>
-                    Crop insurance information, approved insurance providers
-                </div>
-                <div class="service-item">
-                    <strong>Extension Services</strong>
-                    Soil testing, pest management, crop recommendations, education programs
+            
+            <!-- Key Deadlines Reminder -->
+            <div class="panel">
+                <div class="panel-head"><h2>📅 KEY DEADLINES</h2></div>
+                <div class="panel-body">
+                    <p style="color:var(--dim);margin-bottom:16px">Don't miss these important dates at your local USDA office:</p>
+                    <div style="display:grid;gap:12px">
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:6px">
+                            <div>
+                                <div style="font-weight:600">Acreage Reporting</div>
+                                <div style="font-size:0.8rem;color:var(--dim)">Report planted acres to FSA</div>
+                            </div>
+                            <div style="font-weight:700;font-size:1.1rem;color:var(--accent)">Jul 15</div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:6px">
+                            <div>
+                                <div style="font-weight:600">ARC/PLC Enrollment</div>
+                                <div style="font-size:0.8rem;color:var(--dim)">Sign up for commodity programs</div>
+                            </div>
+                            <div style="font-weight:700;font-size:1.1rem;color:var(--accent)">Mar 15</div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:6px">
+                            <div>
+                                <div style="font-weight:600">EQIP Applications</div>
+                                <div style="font-size:0.8rem;color:var(--dim)">Conservation cost-share sign-up</div>
+                            </div>
+                            <div style="font-weight:700;font-size:1.1rem;color:var(--dim)">Varies by state</div>
+                        </div>
+                    </div>
+                    <p style="margin-top:12px"><a href="/calendar.html" style="color:var(--accent)">View full USDA calendar →</a></p>
                 </div>
             </div>
-        </div>
-        
-        <div class="info-section">
-            <h3>Key Deadlines to Remember</h3>
-            <div class="service-list">
-                <div class="service-item">
-                    <strong>Crop Insurance</strong>
-                    Sales closing dates vary by crop and region - contact RMA or your agent
+            
+            <!-- Related Tools Section -->
+            <div class="panel">
+                <div class="panel-head"><h2>📌 RELATED RESOURCES</h2></div>
+                <div class="panel-body">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+                        <a href="/calendar.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-size:1.2rem;margin-bottom:6px">📅</div>
+                            <div style="font-weight:600;margin-bottom:4px">USDA Calendar</div>
+                            <div style="font-size:0.75rem;color:var(--dim)">Report dates & deadlines</div>
+                        </a>
+                        <a href="/resources.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-size:1.2rem;margin-bottom:6px">🔗</div>
+                            <div style="font-weight:600;margin-bottom:4px">Ag Resources</div>
+                            <div style="font-size:0.75rem;color:var(--dim)">Market data, weather & more</div>
+                        </a>
+                        <a href="/learn.html#crop-insurance" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-size:1.2rem;margin-bottom:6px">🛡️</div>
+                            <div style="font-weight:600;margin-bottom:4px">Crop Insurance Guide</div>
+                            <div style="font-size:0.75rem;color:var(--dim)">YP vs RP explained</div>
+                        </a>
+                    </div>
                 </div>
-                <div class="service-item">
-                    <strong>ARC/PLC Elections</strong>
-                    Annual enrollment typically in fall - check with FSA
-                </div>
-                <div class="service-item">
-                    <strong>Conservation Programs</strong>
-                    EQIP and CSP have periodic signup periods - contact NRCS
-                </div>
-                <div class="service-item">
-                    <strong>Disaster Assistance</strong>
-                    Report losses promptly - most programs have filing deadlines
-                </div>
+            </div>
+            
+            <!-- CTA Box -->
+            <div style="margin-top:20px;padding:20px;background:var(--card);border:1px solid var(--accent);border-radius:8px;text-align:center">
+                <div style="font-size:1rem;font-weight:600;margin-bottom:8px">Need Help with Crop Insurance?</div>
+                <div style="font-size:0.85rem;color:var(--dim);margin-bottom:12px">FSA handles acreage reporting, but crop insurance is sold through private agents.</div>
+                <a href="https://farmers1st.com" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600">Contact Farmers First Agri Service →</a>
             </div>
         </div>
     </main>
 
-            <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-main">
-                <div class="footer-brand-row">
-                    <a href="index.html" class="footer-brand">AGSIST</a>
-                    <span class="footer-sep">|</span>
-                    <span class="footer-tagline">Free agricultural prices, tools & news</span>
-                </div>
-                <div class="footer-links">
-                    <a href="corn-prices.html">Corn</a>
-                    <a href="soybean-prices.html">Soybeans</a>
-                    <a href="wheat-prices.html">Wheat</a>
-                    <a href="tools.html">Tools</a>
-                    <a href="fastfacts.html">Fast Facts</a>
-                    <a href="calendar.html">Calendar</a>
-                    <a href="resources.html">Resources</a>
-                </div>
-                <div class="footer-legal">
-                    <span>© 2026 AGSIST</span>
-                    <a href="privacy.html">Privacy</a>
-                    <a href="terms.html">Terms</a>
-                </div>
-            </div>
-            <div class="footer-network">
-                <h4>Our Network</h4>
-                <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
-                <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
-                <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
-            </div>
+    <footer>
+        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:0.8rem">
+            <span>© 2026 <a href="/" style="color:var(--accent);text-decoration:none">AGSIST</a>. All rights reserved.</span>
+            <span><a href="/learn.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Guides</a><a href="/tools.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Tools</a><a href="/resources.html" style="color:var(--dim);text-decoration:none">Resources</a></span>
+            <span>Made in the USA 🇺🇸</span>
         </div>
     </footer>
 
     <script>
-    document.querySelector('.menu-toggle')?.addEventListener('click', function() {
-        const nav = document.querySelector('.nav-links');
-        const isOpen = nav.classList.toggle('open');
-        this.textContent = isOpen ? '✕' : '☰';
-    });
-    document.querySelectorAll('.nav-dropdown-trigger').forEach(trigger => {
-        trigger.addEventListener('click', function(e) {
-            if (window.innerWidth <= 767) {
-                e.preventDefault();
-                this.closest('.nav-dropdown').classList.toggle('open');
-            }
-        });
-    });
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('nav')) {
-            document.querySelector('.nav-links')?.classList.remove('open');
-            const toggle = document.querySelector('.menu-toggle');
-            if (toggle) toggle.textContent = '☰';
+    function searchOffice() {
+        const query = document.getElementById('searchInput').value.trim();
+        if (query) {
+            window.open('https://offices.sc.egov.usda.gov/locator/app?search=' + encodeURIComponent(query), '_blank');
+        } else {
+            window.open('https://offices.sc.egov.usda.gov/locator/app', '_blank');
         }
-        if (!e.target.closest('.nav-dropdown')) {
-            document.querySelectorAll('.nav-dropdown.open').forEach(d => d.classList.remove('open'));
-        }
-    });
-    </script>
-    <script>
-    document.querySelector('.mobile-menu-btn')?.addEventListener('click', function() {
-        const nav = document.querySelector('.nav-links');
-        const isOpen = nav.classList.toggle('open');
-        this.textContent = isOpen ? '✕' : '☰';
-    });
-    document.querySelectorAll('.nav-link.dropdown-toggle').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            if (window.innerWidth <= 767) {
-                e.preventDefault();
-                this.closest('.nav-dropdown').classList.toggle('open');
-            }
-        });
-    });
+    }
     </script>
 </body>
 </html>

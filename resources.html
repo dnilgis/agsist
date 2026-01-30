@@ -4,195 +4,273 @@
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resources | AGSIST</title>
-    <meta name="description" content="Agricultural resources for farmers - links to USDA, Extension services, and market information.">
-    <link rel="stylesheet" href="/styles.css">
-    <style>
-        :root { --primary: #2d5a27; --primary-light: #4a7c43; --accent: #f4a012; --bg: #f8f9fa; --card-bg: #ffffff; --text: #1a1a1a; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
-        header { background: var(--primary); color: white; padding: 1rem; }
-        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-        .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: white; }
-        nav a { color: white; text-decoration: none; margin-left: 1.5rem; opacity: 0.9; }
-        nav a:hover { opacity: 1; }
-        main { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
-        h1 { color: var(--primary); margin-bottom: 1rem; }
-        .resource-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
-        .resource-card { background: var(--card-bg); border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        .resource-card h3 { color: var(--primary); margin-bottom: 1rem; }
-        .resource-card ul { list-style: none; }
-        .resource-card li { padding: 0.5rem 0; }
-        .resource-card a { color: var(--primary); text-decoration: none; }
-        .resource-card a:hover { text-decoration: underline; }
-        footer { background: var(--primary); color: white; padding: 2rem 1rem; margin-top: 3rem; text-align: center; }
-        footer a { color: var(--accent); }
-    </style>
+    <title>Agricultural Resources - Market Data, Weather, News & USDA Links | AGSIST</title>
+    <meta name="description" content="Curated agricultural resources for farmers. Links to CME market data, weather services, USDA reports, university extension, and ag news. Everything you need in one place.">
+    <meta name="keywords" content="agricultural resources, farm resources, CME grain prices, USDA data, ag weather, university extension, farm news">
+    <link rel="canonical" href="https://agsist.com/resources.html">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Agricultural Resources - AGSIST">
+    <meta property="og:description" content="Curated links to market data, weather, USDA reports, and ag news for farmers.">
+    <meta property="og:image" content="https://agsist.com/og-image.png">
+    <meta property="og:url" content="https://agsist.com/resources.html">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": "https://agsist.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Agricultural Resources", "item": "https://agsist.com/resources.html"}
+      ]
+    }
+    </script>
 </head>
 <body>
-            <nav class="main-nav">
-        <div class="nav-inner">
-            <a href="index.html" class="logo">AGSIST</a>
-            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
-            <div class="nav-links">
-                <div class="nav-dropdown">
-                    <button class="nav-link dropdown-toggle">Prices ▾</button>
-                    <div class="dropdown-menu">
-                        <a href="corn-prices.html" class="dropdown-item">🌽 Corn</a>
-                        <a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a>
-                        <a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
+                <div class="logo-text">AGSIST</div>
+            </a>
+            <button class="menu-toggle" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
+            <nav class="nav">
+                <a href="/">DASHBOARD</a>
+                <a href="/calculator.html">GRAIN BIN</a>
+                <a href="/gdu.html">GDU CALC</a>
+                <a href="/breakeven.html">BREAK-EVEN</a>
+                <a href="/offices.html">OFFICES</a>
+                <a href="/resources.html" class="active">RESOURCES</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div style="padding:20px;max-width:1200px;margin:0 auto">
+            <nav style="margin-bottom:20px;font-size:0.85rem;color:var(--dim)">
+                <a href="/" style="color:var(--accent);text-decoration:none">Home</a> → Agricultural Resources
+            </nav>
+            
+            <div class="panel">
+                <div class="panel-head"><h1 style="font-size:0.9rem;margin:0">🔗 AGRICULTURAL RESOURCES</h1></div>
+                <div class="panel-body">
+                    <p style="color:var(--dim);margin-bottom:20px">Curated links to essential agricultural data, tools, and information. All links open in new tabs.</p>
+                </div>
+            </div>
+            
+            <!-- Market Data -->
+            <div class="panel">
+                <div class="panel-head"><h2>📈 MARKET DATA & PRICES</h2></div>
+                <div class="panel-body">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px">
+                        <a href="https://www.cmegroup.com/markets/agriculture/grains/corn.html" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">CME Corn Futures</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Live quotes, charts, specs</div>
+                        </a>
+                        <a href="https://www.cmegroup.com/markets/agriculture/oilseeds/soybean.html" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">CME Soybean Futures</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Live quotes, charts, specs</div>
+                        </a>
+                        <a href="https://www.cmegroup.com/markets/agriculture/grains/wheat.html" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">CME Wheat Futures</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Live quotes, charts, specs</div>
+                        </a>
+                        <a href="https://www.barchart.com/futures/quotes/ZC*0/futures-prices" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">Barchart Grain Futures</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Charts, technical analysis</div>
+                        </a>
+                        <a href="https://www.dtn.com/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">DTN Progressive Farmer</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Market analysis, news</div>
+                        </a>
+                        <a href="https://www.farms.com/markets/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">Farms.com Markets</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Cash bids, basis data</div>
+                        </a>
                     </div>
                 </div>
-                <a href="tools.html" class="nav-link">Tools</a>
-                <a href="fastfacts.html" class="nav-link">Fast Facts</a>
-                <a href="learn.html" class="nav-link">Learn</a>
-                <a href="calendar.html" class="nav-link">Calendar</a>
-                <a href="resources.html" class="nav-link">Links</a>
-            </div>
-        </div>
-    </nav>
-    
-    <main>
-        <h1>Agricultural Resources</h1>
-        <p>Helpful links and resources for farmers.</p>
-        
-        <div class="resource-grid">
-            <div class="resource-card">
-                <h3>📊 Market Information</h3>
-                <ul>
-                    <li><a href="https://www.cmegroup.com/markets/agriculture.html" target="_blank">CME Group Agriculture</a></li>
-                    <li><a href="https://www.ams.usda.gov/market-news" target="_blank">USDA Market News</a></li>
-                    <li><a href="https://www.dtnpf.com/" target="_blank">DTN Progressive Farmer</a></li>
-                </ul>
             </div>
             
-            <div class="resource-card">
-                <h3>🏛️ Government Programs</h3>
-                <ul>
-                    <li><a href="https://www.fsa.usda.gov/" target="_blank">USDA Farm Service Agency</a></li>
-                    <li><a href="https://www.rma.usda.gov/" target="_blank">Risk Management Agency</a></li>
-                    <li><a href="https://www.nrcs.usda.gov/" target="_blank">NRCS Conservation</a></li>
-                </ul>
+            <!-- USDA Resources -->
+            <div class="panel">
+                <div class="panel-head"><h2>🏛️ USDA RESOURCES</h2></div>
+                <div class="panel-body">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px">
+                        <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">WASDE Report</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Monthly supply/demand estimates</div>
+                        </a>
+                        <a href="https://www.nass.usda.gov/Publications/Todays_Reports/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">NASS Reports</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Crop progress, stocks, acreage</div>
+                        </a>
+                        <a href="https://quickstats.nass.usda.gov/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">NASS Quick Stats</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Historical ag data database</div>
+                        </a>
+                        <a href="https://www.rma.usda.gov/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">RMA Crop Insurance</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Official crop insurance info</div>
+                        </a>
+                        <a href="https://www.fsa.usda.gov/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">Farm Service Agency</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Programs, loans, disaster aid</div>
+                        </a>
+                        <a href="https://www.nrcs.usda.gov/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">NRCS Conservation</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">EQIP, CSP, soil surveys</div>
+                        </a>
+                    </div>
+                </div>
             </div>
             
-            <div class="resource-card">
-                <h3>🎓 UW Extension</h3>
-                <ul>
-                    <li><a href="https://cropsandsoils.extension.wisc.edu/" target="_blank">Crops & Soils</a></li>
-                    <li><a href="https://ipcm.wisc.edu/" target="_blank">Pest Management</a></li>
-                    <li><a href="https://coolbean.info/" target="_blank">Coolbean (Soybean)</a></li>
-                </ul>
+            <!-- Weather Resources -->
+            <div class="panel">
+                <div class="panel-head"><h2>🌦️ WEATHER</h2></div>
+                <div class="panel-body">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px">
+                        <a href="https://www.weather.gov/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">NWS Weather.gov</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Official forecasts, radar</div>
+                        </a>
+                        <a href="https://droughtmonitor.unl.edu/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">U.S. Drought Monitor</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Weekly drought conditions</div>
+                        </a>
+                        <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">Climate Prediction Center</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">6-10 day, 8-14 day outlooks</div>
+                        </a>
+                        <a href="https://mesonet.agron.iastate.edu/GIS/apps/coop/gsplot.phtml?var=gdd_sum&sdate=2026-05-01&network=WI_COOP" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">Iowa Mesonet GDD</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Growing degree day maps</div>
+                        </a>
+                    </div>
+                </div>
             </div>
             
-            <div class="resource-card">
-                <h3>🌤️ Weather</h3>
-                <ul>
-                    <li><a href="https://www.weather.gov/" target="_blank">National Weather Service</a></li>
-                    <li><a href="https://agweather.cals.wisc.edu/" target="_blank">WI Ag Weather</a></li>
-                    <li><a href="https://www.drought.gov/" target="_blank">US Drought Monitor</a></li>
-                </ul>
+            <!-- University Extension -->
+            <div class="panel">
+                <div class="panel-head"><h2>🎓 UNIVERSITY EXTENSION</h2></div>
+                <div class="panel-body">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px">
+                        <a href="https://extension.wisc.edu/agriculture/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">UW-Extension Agriculture</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Wisconsin research, guides</div>
+                        </a>
+                        <a href="https://extension.umn.edu/agriculture" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">U of MN Extension</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Minnesota ag research</div>
+                        </a>
+                        <a href="https://www.extension.iastate.edu/ag/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">Iowa State Extension</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Iowa ag research, tools</div>
+                        </a>
+                        <a href="https://farmdoc.illinois.edu/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">FarmDoc (U of IL)</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Marketing, farm management</div>
+                        </a>
+                        <a href="https://www.ag.purdue.edu/commercialag" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">Purdue Ag Economics</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Marketing, policy analysis</div>
+                        </a>
+                        <a href="https://cropwatch.unl.edu/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">Nebraska CropWatch</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Crop production, pest alerts</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ag News -->
+            <div class="panel">
+                <div class="panel-head"><h2>📰 AG NEWS</h2></div>
+                <div class="panel-body">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px">
+                        <a href="https://www.agweb.com/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">AgWeb</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Farm Journal news, markets</div>
+                        </a>
+                        <a href="https://www.agriculture.com/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">Successful Farming</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">News, machinery, crops</div>
+                        </a>
+                        <a href="https://brownfieldagnews.com/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">Brownfield Ag News</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Midwest ag radio/news</div>
+                        </a>
+                        <a href="https://www.reuters.com/markets/commodities/" target="_blank" rel="noopener" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-weight:600;margin-bottom:4px">Reuters Commodities</div>
+                            <div style="font-size:0.8rem;color:var(--dim)">Global commodity news</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AGSIST Tools Section -->
+            <div class="panel">
+                <div class="panel-head"><h2>🧮 AGSIST TOOLS</h2></div>
+                <div class="panel-body">
+                    <p style="color:var(--dim);margin-bottom:16px">Don't forget our free tools built for Upper Midwest farmers:</p>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+                        <a href="/" style="background:var(--bg);border:1px solid var(--accent);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-size:1.2rem;margin-bottom:6px">📊</div>
+                            <div style="font-weight:600;margin-bottom:4px">Live Dashboard</div>
+                            <div style="font-size:0.75rem;color:var(--dim)">Prices, weather, news</div>
+                        </a>
+                        <a href="/calculator.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-size:1.2rem;margin-bottom:6px">🌾</div>
+                            <div style="font-weight:600;margin-bottom:4px">Grain Bin Calculator</div>
+                            <div style="font-size:0.75rem;color:var(--dim)">Bushels, shrink</div>
+                        </a>
+                        <a href="/gdu.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-size:1.2rem;margin-bottom:6px">🌡️</div>
+                            <div style="font-weight:600;margin-bottom:4px">GDU Calculator</div>
+                            <div style="font-size:0.75rem;color:var(--dim)">Heat units, maturity</div>
+                        </a>
+                        <a href="/breakeven.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-size:1.2rem;margin-bottom:6px">💰</div>
+                            <div style="font-weight:600;margin-bottom:4px">Break-Even Calculator</div>
+                            <div style="font-size:0.75rem;color:var(--dim)">Cost per bushel</div>
+                        </a>
+                        <a href="/tools.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-size:1.2rem;margin-bottom:6px">🧮</div>
+                            <div style="font-weight:600;margin-bottom:4px">All Tools</div>
+                            <div style="font-size:0.75rem;color:var(--dim)">Complete list</div>
+                        </a>
+                        <a href="/learn.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-size:1.2rem;margin-bottom:6px">📚</div>
+                            <div style="font-weight:600;margin-bottom:4px">Farming Guides</div>
+                            <div style="font-size:0.75rem;color:var(--dim)">Basis, marketing, GDU</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CTA Box -->
+            <div style="margin-top:20px;padding:20px;background:var(--card);border:1px solid var(--accent);border-radius:8px;text-align:center">
+                <div style="font-size:1rem;font-weight:600;margin-bottom:8px">Have a Resource to Suggest?</div>
+                <div style="font-size:0.85rem;color:var(--dim);margin-bottom:12px">We're always looking for helpful tools and data sources for farmers.</div>
+                <a href="https://farmers1st.com" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600">Contact Us →</a>
             </div>
         </div>
-    
-        <!-- Our Network - Featured Section -->
-        <div style="margin:32px 0;">
-            <h2 style="color:var(--accent);font-size:1.2rem;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.5px;">Our Network</h2>
-            <div class="network-cards">
-                <a href="https://farmers1st.com" target="_blank" rel="noopener" class="network-card">
-                    <span>🌾</span>
-                    <h4>Farmers First Agri Service</h4>
-                    <p>Professional crop insurance and agronomy services for Midwest farmers.</p>
-                </a>
-                <a href="https://lokedrone.com" target="_blank" rel="noopener" class="network-card">
-                    <span>✈️</span>
-                    <h4>Loke Drone</h4>
-                    <p>Agricultural drone services - crop spraying, cover crop seeding, frost seeding at $18/acre.</p>
-                </a>
-                <a href="https://usdronemap.com" target="_blank" rel="noopener" class="network-card">
-                    <span>🗺️</span>
-                    <h4>US Drone Map</h4>
-                    <p>Find certified drone pilots and agricultural drone services in your area.</p>
-                </a>
-            </div>
-        </div>
-
     </main>
-    
-            <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-main">
-                <div class="footer-brand-row">
-                    <a href="index.html" class="footer-brand">AGSIST</a>
-                    <span class="footer-sep">|</span>
-                    <span class="footer-tagline">Free agricultural prices, tools & news</span>
-                </div>
-                <div class="footer-links">
-                    <a href="corn-prices.html">Corn</a>
-                    <a href="soybean-prices.html">Soybeans</a>
-                    <a href="wheat-prices.html">Wheat</a>
-                    <a href="tools.html">Tools</a>
-                    <a href="fastfacts.html">Fast Facts</a>
-                    <a href="calendar.html">Calendar</a>
-                    <a href="resources.html">Resources</a>
-                </div>
-                <div class="footer-legal">
-                    <span>© 2026 AGSIST</span>
-                    <a href="privacy.html">Privacy</a>
-                    <a href="terms.html">Terms</a>
-                </div>
-            </div>
-            <div class="footer-network">
-                <h4>Our Network</h4>
-                <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
-                <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
-                <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
-            </div>
+
+    <footer>
+        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:0.8rem">
+            <span>© 2026 <a href="/" style="color:var(--accent);text-decoration:none">AGSIST</a>. All rights reserved.</span>
+            <span><a href="/learn.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Guides</a><a href="/tools.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Tools</a><a href="/resources.html" style="color:var(--dim);text-decoration:none">Resources</a></span>
+            <span>Made in the USA 🇺🇸</span>
         </div>
     </footer>
-
-    <script>
-    document.querySelector('.menu-toggle')?.addEventListener('click', function() {
-        const nav = document.querySelector('.nav-links');
-        const isOpen = nav.classList.toggle('open');
-        this.textContent = isOpen ? '✕' : '☰';
-    });
-    document.querySelectorAll('.nav-dropdown-trigger').forEach(trigger => {
-        trigger.addEventListener('click', function(e) {
-            if (window.innerWidth <= 767) {
-                e.preventDefault();
-                this.closest('.nav-dropdown').classList.toggle('open');
-            }
-        });
-    });
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('nav')) {
-            document.querySelector('.nav-links')?.classList.remove('open');
-            const toggle = document.querySelector('.menu-toggle');
-            if (toggle) toggle.textContent = '☰';
-        }
-        if (!e.target.closest('.nav-dropdown')) {
-            document.querySelectorAll('.nav-dropdown.open').forEach(d => d.classList.remove('open'));
-        }
-    });
-    </script>
-    <script>
-    document.querySelector('.mobile-menu-btn')?.addEventListener('click', function() {
-        const nav = document.querySelector('.nav-links');
-        const isOpen = nav.classList.toggle('open');
-        this.textContent = isOpen ? '✕' : '☰';
-    });
-    document.querySelectorAll('.nav-link.dropdown-toggle').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            if (window.innerWidth <= 767) {
-                e.preventDefault();
-                this.closest('.nav-dropdown').classList.toggle('open');
-            }
-        });
-    });
-    </script>
 </body>
 </html>
