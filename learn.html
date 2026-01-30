@@ -1,465 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farming Guides - Corn Basis, GDUs, Break-Even Analysis & Crop Insurance | AGSIST</title>
-    <meta name="description" content="Free farming guides for corn and soybean growers. Learn about basis, when to sell grain, GDU calculations, break-even analysis, and crop insurance options. Written by Certified Crop Advisors.">
-    <meta name="keywords" content="corn basis explained, when to sell grain, GDU guide, break even analysis farming, crop insurance YP vs RP, grain marketing guide">
+    <title>Learn - Grain Marketing Guides & Basis Education | AGSIST</title>
+    <meta name="description" content="Learn about grain marketing, basis trading, hedging strategies, and agricultural market fundamentals. Free educational resources for farmers.">
     <link rel="canonical" href="https://agsist.com/learn.html">
-    
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Farming Guides - AGSIST">
-    <meta property="og:description" content="Free guides on corn basis, grain marketing, GDUs, break-even analysis, and crop insurance.">
-    <meta property="og:image" content="https://agsist.com/og-image.png">
-    <meta property="og:url" content="https://agsist.com/learn.html">
-    <meta name="twitter:card" content="summary_large_image">
-    
-    <!-- Schema: BreadcrumbList -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": "https://agsist.com/"},
-        {"@type": "ListItem", "position": 2, "name": "Farming Guides", "item": "https://agsist.com/learn.html"}
-      ]
-    }
-    </script>
-    
-    <!-- Schema: FAQPage -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is corn basis and why does it matter?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Basis is the difference between your local cash price and the futures price (Cash Price - Futures Price = Basis). A basis of -25 means your local elevator pays 25 cents under the futures price. Basis matters because it can add or subtract 20-40 cents per bushel from your final price, and understanding basis patterns helps you time sales better."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "When is the best time to sell corn?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Historically, corn prices tend to be highest in late June/early July (pre-pollination weather premium) and lowest at harvest (October-November). However, the best time to sell is when the price exceeds your break-even by a profitable margin, regardless of time of year. Many farmers use a scale-up selling strategy, selling portions as prices hit target levels."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the difference between YP and RP crop insurance?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yield Protection (YP) covers only yield losses and uses harvest-time price for calculations. Revenue Protection (RP) covers both yield and price losses, using the higher of spring or harvest price. RP typically costs 10-15% more but provides protection if prices drop significantly between spring and harvest."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do you calculate GDUs for corn?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Daily GDU = (Daily High + Daily Low) ÷ 2 − 50. Cap high temperature at 86°F and floor low temperature at 50°F. If result is negative, GDU equals 0. Accumulate daily GDUs from planting to track crop progress toward maturity."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do you calculate break-even price for farming?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Break-Even Price = Total Cost per Acre ÷ Expected Yield. Include all costs: seed, fertilizer, chemicals, crop insurance, machinery, labor, land rent, and overhead. For 2026 Wisconsin corn, typical break-even ranges from $4.15-5.00/bu depending on land costs and yields."
-          }
-        }
-      ]
-    }
-    </script>
+    <style>
+        .article { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 20px; }
+        .article h2 { color: var(--accent); font-size: 1.1rem; margin-bottom: 16px; }
+        .article h3 { color: var(--text); font-size: 0.95rem; margin: 20px 0 12px; }
+        .article p { color: var(--dim); font-size: 0.9rem; line-height: 1.7; margin-bottom: 12px; }
+        .article ul { color: var(--dim); font-size: 0.9rem; line-height: 1.8; margin: 12px 0 12px 20px; }
+        .article strong { color: var(--text); }
+        .toc { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .toc h3 { color: var(--accent); font-size: 0.9rem; margin-bottom: 12px; }
+        .toc a { display: block; color: var(--dim); font-size: 0.85rem; padding: 6px 0; text-decoration: none; }
+        .toc a:hover { color: var(--accent); }
+    </style>
 </head>
 <body>
-    <header>
-        <div class="header-inner">
-            <a href="/" class="logo">
-                <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
-                <div class="logo-text">AGSIST</div>
-            </a>
-            <button class="menu-toggle" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
-            <nav class="nav">
-                <a href="/">DASHBOARD</a>
-                <a href="/calculator.html">GRAIN BIN</a>
-                <a href="/gdu.html">GDU CALC</a>
-                <a href="/breakeven.html">BREAK-EVEN</a>
-                <a href="/offices.html">OFFICES</a>
-                <a href="/resources.html">RESOURCES</a>
-            </nav>
+    <nav class="main-nav">
+        <div class="nav-inner">
+            <a href="/" class="logo">AGSIST</a>
+            <div class="nav-links">
+                <div class="nav-dropdown"><button class="dropdown-toggle">Prices ▾</button><div class="dropdown-menu"><a href="corn-prices.html" class="dropdown-item">🌽 Corn</a><a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a><a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a></div></div>
+                <div class="nav-dropdown"><button class="dropdown-toggle">Tools ▾</button><div class="dropdown-menu"><a href="tools.html" class="dropdown-item">All Tools</a><a href="breakeven.html" class="dropdown-item">Breakeven</a><a href="gdu.html" class="dropdown-item">GDU Calculator</a><a href="calculator.html" class="dropdown-item">Grain Bin</a><a href="fastfacts.html" class="dropdown-item">Fast Facts</a></div></div>
+                <div class="nav-dropdown"><button class="dropdown-toggle">Info ▾</button><div class="dropdown-menu"><a href="learn.html" class="dropdown-item">Learn</a><a href="calendar.html" class="dropdown-item">Calendar</a><a href="resources.html" class="dropdown-item">Resources</a><a href="offices.html" class="dropdown-item">Offices</a></div></div>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
         </div>
-    </header>
+    </nav>
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-section">Prices</div><a href="corn-prices.html" class="mobile-link">🌽 Corn</a><a href="soybean-prices.html" class="mobile-link">🫘 Soybeans</a><a href="wheat-prices.html" class="mobile-link">🌾 Wheat</a>
+        <div class="mobile-section">Tools</div><a href="tools.html" class="mobile-link">All Tools</a><a href="breakeven.html" class="mobile-link">Breakeven</a><a href="gdu.html" class="mobile-link">GDU Calculator</a><a href="calculator.html" class="mobile-link">Grain Bin</a><a href="fastfacts.html" class="mobile-link">Fast Facts</a>
+        <div class="mobile-section">Info</div><a href="learn.html" class="mobile-link">Learn</a><a href="calendar.html" class="mobile-link">Calendar</a><a href="resources.html" class="mobile-link">Resources</a><a href="offices.html" class="mobile-link">Offices</a>
+    </div>
 
     <main>
-        <div style="padding:20px;max-width:900px;margin:0 auto">
-            <nav style="margin-bottom:20px;font-size:0.85rem;color:var(--dim)">
-                <a href="/" style="color:var(--accent);text-decoration:none">Home</a> → Farming Guides
-            </nav>
+        <nav class="breadcrumb"><a href="/">Home</a> → Learn</nav>
+
+        <div class="toc">
+            <h3>📚 TOPICS</h3>
+            <a href="#basis">Understanding Basis</a>
+            <a href="#marketing">Grain Marketing Strategies</a>
+            <a href="#futures">Futures Contracts 101</a>
+        </div>
+
+        <div class="article" id="basis">
+            <h2>📊 Understanding Basis</h2>
+            <p><strong>Basis</strong> is the difference between your local cash price and the futures price. It's calculated as: <strong>Cash Price - Futures Price = Basis</strong></p>
             
-            <div class="panel">
-                <div class="panel-head"><h1 style="font-size:0.9rem;margin:0">📚 FARMING GUIDES</h1></div>
-                <div class="panel-body">
-                    <p style="color:var(--dim);margin-bottom:20px">Practical guides for grain farmers. Written by Certified Crop Advisors with decades of Upper Midwest experience.</p>
-                    
-                    <!-- Table of Contents -->
-                    <div style="background:var(--bg);border-radius:6px;padding:16px;margin-bottom:24px">
-                        <div style="font-weight:600;margin-bottom:12px;font-size:0.85rem">ON THIS PAGE</div>
-                        <div style="display:grid;gap:8px;font-size:0.9rem">
-                            <a href="#basis" style="color:var(--accent);text-decoration:none">→ Understanding Corn Basis</a>
-                            <a href="#when-to-sell" style="color:var(--accent);text-decoration:none">→ When to Sell Your Grain</a>
-                            <a href="#crop-insurance" style="color:var(--accent);text-decoration:none">→ YP vs RP Crop Insurance</a>
-                            <a href="#gdu" style="color:var(--accent);text-decoration:none">→ Growing Degree Units (GDU) Guide</a>
-                            <a href="#breakeven" style="color:var(--accent);text-decoration:none">→ Break-Even Analysis for Farmers</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <h3>Why Basis Matters</h3>
+            <p>Basis reflects local supply and demand conditions. Understanding basis patterns helps you make better marketing decisions by separating the "local" component from the "global" futures price.</p>
             
-            <!-- SECTION: Basis -->
-            <div class="panel" id="basis">
-                <div class="panel-head"><h2>🌽 UNDERSTANDING CORN BASIS</h2></div>
-                <div class="panel-body" style="line-height:1.8">
-                    <p><strong>What is Basis?</strong> Basis is the difference between your local cash price and the Chicago futures price:</p>
-                    <div style="background:var(--bg);padding:16px;border-radius:6px;margin:16px 0;font-family:'JetBrains Mono',monospace;text-align:center">
-                        Cash Price − Futures Price = Basis
-                    </div>
-                    <p>If December corn futures are trading at $4.50 and your local elevator is bidding $4.25, your basis is <strong>-25 cents</strong> (often written as "25 under").</p>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">Why Basis Matters</h3>
-                    <p>Basis can add or subtract 20-40 cents per bushel from your final price. On a 500-acre corn farm averaging 190 bu/acre, a 20-cent basis improvement is worth <strong>$19,000</strong>.</p>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">What Affects Basis?</h3>
-                    <ul style="margin-left:20px;color:var(--dim)">
-                        <li><strong>Location:</strong> Distance to rivers, ethanol plants, and export terminals</li>
-                        <li><strong>Time of year:</strong> Basis typically weakens at harvest, strengthens in summer</li>
-                        <li><strong>Local supply/demand:</strong> Nearby ethanol plant demand, local yields</li>
-                        <li><strong>Transportation costs:</strong> Fuel prices, rail availability, truck freight</li>
-                        <li><strong>Storage availability:</strong> On-farm vs commercial storage capacity</li>
-                    </ul>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">Typical Wisconsin Corn Basis Patterns</h3>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0">
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">Harvest (Oct-Nov)</div>
-                            <div style="font-size:1.2rem;font-weight:600;color:var(--red)">-30 to -45¢</div>
-                        </div>
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">Winter (Dec-Feb)</div>
-                            <div style="font-size:1.2rem;font-weight:600;color:var(--accent)">-20 to -35¢</div>
-                        </div>
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">Summer (Jun-Aug)</div>
-                            <div style="font-size:1.2rem;font-weight:600;color:var(--green)">-10 to -25¢</div>
-                        </div>
-                    </div>
-                    
-                    <p style="margin-top:16px"><strong>Pro Tip:</strong> Track your local basis over 3-5 years to identify patterns. Many farmers find summer basis can be 15-20 cents stronger than harvest — enough to cover storage costs and generate profit.</p>
-                    
-                    <div style="margin-top:20px;padding:16px;background:var(--card);border-left:3px solid var(--accent);border-radius:0 6px 6px 0">
-                        <strong>Related Tools:</strong> Check live prices on our <a href="/" style="color:var(--accent)">dashboard</a> and use the <a href="/breakeven.html" style="color:var(--accent)">break-even calculator</a> to know your target price.
-                    </div>
-                </div>
-            </div>
+            <h3>Factors Affecting Basis</h3>
+            <ul>
+                <li><strong>Transportation costs:</strong> Distance to terminal markets</li>
+                <li><strong>Local supply/demand:</strong> Nearby ethanol plants, livestock feeders</li>
+                <li><strong>Storage availability:</strong> Commercial and on-farm capacity</li>
+                <li><strong>Quality premiums/discounts:</strong> Moisture, test weight, damage</li>
+                <li><strong>Time of year:</strong> Harvest pressure vs. tight supplies</li>
+            </ul>
+
+            <h3>Using Basis in Marketing</h3>
+            <p>Track your local basis history to identify patterns. A "stronger" (less negative) basis means better local prices relative to futures. Consider basis contracts when basis is historically strong but you're uncertain about futures direction.</p>
+        </div>
+
+        <div class="article" id="marketing">
+            <h2>💰 Grain Marketing Strategies</h2>
+            <p>Successful grain marketing involves spreading sales across time and using multiple pricing tools. No single strategy works in all market conditions.</p>
             
-            <!-- SECTION: When to Sell -->
-            <div class="panel" id="when-to-sell">
-                <div class="panel-head"><h2>📈 WHEN TO SELL YOUR GRAIN</h2></div>
-                <div class="panel-body" style="line-height:1.8">
-                    <p>The "best" time to sell is when the price exceeds your <a href="/breakeven.html" style="color:var(--accent)">break-even</a> by a profitable margin. But understanding seasonal patterns helps you set realistic expectations.</p>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">Seasonal Price Patterns (Historical)</h3>
-                    <ul style="margin-left:20px;color:var(--dim)">
-                        <li><strong>Late June - Early July:</strong> Often the highest prices due to weather premium before pollination</li>
-                        <li><strong>August:</strong> Prices often decline as crop conditions become clearer</li>
-                        <li><strong>October - November:</strong> Typically the lowest prices (harvest pressure)</li>
-                        <li><strong>January - March:</strong> Modest recovery as farmer selling slows</li>
-                        <li><strong>April - May:</strong> Planting concerns can add weather premium</li>
-                    </ul>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">Scale-Up Selling Strategy</h3>
-                    <p>Instead of trying to pick the perfect top, many successful marketers use a scale-up approach:</p>
-                    <div style="display:grid;gap:8px;margin:16px 0;font-size:0.9rem">
-                        <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
-                            <span>At break-even + 10%</span><span style="font-weight:600">Sell 20%</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
-                            <span>At break-even + 20%</span><span style="font-weight:600">Sell 25%</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
-                            <span>At break-even + 30%</span><span style="font-weight:600">Sell 25%</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
-                            <span>Remaining</span><span style="font-weight:600">Sell by next harvest</span>
-                        </div>
-                    </div>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">Market-Moving Events to Watch</h3>
-                    <p>Check our <a href="/calendar.html" style="color:var(--accent)">USDA Calendar</a> for key report dates:</p>
-                    <ul style="margin-left:20px;color:var(--dim)">
-                        <li><strong>WASDE Report</strong> (monthly): Supply/demand estimates</li>
-                        <li><strong>Prospective Plantings</strong> (late March): Acreage intentions</li>
-                        <li><strong>Acreage Report</strong> (late June): Actual planted acres</li>
-                        <li><strong>Grain Stocks</strong> (quarterly): Inventory levels</li>
-                    </ul>
-                    
-                    <div style="margin-top:20px;padding:16px;background:var(--card);border-left:3px solid var(--accent);border-radius:0 6px 6px 0">
-                        <strong>Related Tools:</strong> <a href="/breakeven.html" style="color:var(--accent)">Calculate your break-even</a> first, then check <a href="/" style="color:var(--accent)">current prices</a> and <a href="/calendar.html" style="color:var(--accent)">upcoming USDA reports</a>.
-                    </div>
-                </div>
-            </div>
+            <h3>Common Strategies</h3>
+            <ul>
+                <li><strong>Scale-up selling:</strong> Sell portions as prices rise to target levels</li>
+                <li><strong>Seasonal patterns:</strong> Consider typical harvest lows and summer highs</li>
+                <li><strong>Cost-based targets:</strong> Know your break-even and set profitable targets</li>
+                <li><strong>Basis contracts:</strong> Lock in strong basis, leave futures open</li>
+                <li><strong>Hedge-to-Arrive:</strong> Lock in futures, leave basis open</li>
+            </ul>
+
+            <h3>Risk Management Tips</h3>
+            <p>Never sell 100% of expected production before harvest. Leave flexibility for yield surprises. Consider crop insurance as part of your overall risk management plan.</p>
+        </div>
+
+        <div class="article" id="futures">
+            <h2>📈 Futures Contracts 101</h2>
+            <p>Futures contracts are standardized agreements to buy or sell a commodity at a specific price on a future date. They're used for price discovery and risk management.</p>
             
-            <!-- SECTION: Crop Insurance -->
-            <div class="panel" id="crop-insurance">
-                <div class="panel-head"><h2>🛡️ YP VS RP CROP INSURANCE</h2></div>
-                <div class="panel-body" style="line-height:1.8">
-                    <p>Choosing between Yield Protection (YP) and Revenue Protection (RP) is one of the most important crop insurance decisions you'll make each year.</p>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">Quick Comparison</h3>
-                    <div style="overflow-x:auto">
-                        <table style="width:100%;border-collapse:collapse;font-size:0.9rem">
-                            <thead>
-                                <tr style="background:var(--bg)">
-                                    <th style="padding:12px;text-align:left;border-bottom:2px solid var(--border)">Feature</th>
-                                    <th style="padding:12px;text-align:center;border-bottom:2px solid var(--border)">Yield Protection (YP)</th>
-                                    <th style="padding:12px;text-align:center;border-bottom:2px solid var(--border)">Revenue Protection (RP)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr style="border-bottom:1px solid var(--border)">
-                                    <td style="padding:12px">Covers</td>
-                                    <td style="padding:12px;text-align:center">Yield loss only</td>
-                                    <td style="padding:12px;text-align:center;color:var(--green)">Yield + Price loss</td>
-                                </tr>
-                                <tr style="border-bottom:1px solid var(--border)">
-                                    <td style="padding:12px">Price used</td>
-                                    <td style="padding:12px;text-align:center">Harvest price</td>
-                                    <td style="padding:12px;text-align:center;color:var(--green)">Higher of spring or harvest</td>
-                                </tr>
-                                <tr style="border-bottom:1px solid var(--border)">
-                                    <td style="padding:12px">Premium cost</td>
-                                    <td style="padding:12px;text-align:center;color:var(--green)">Lower (10-15% less)</td>
-                                    <td style="padding:12px;text-align:center">Higher</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding:12px">Best when...</td>
-                                    <td style="padding:12px;text-align:center">Prices expected stable/rising</td>
-                                    <td style="padding:12px;text-align:center;color:var(--green)">Price drops are a concern</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">When RP Makes Sense</h3>
-                    <ul style="margin-left:20px;color:var(--dim)">
-                        <li>Spring prices are historically high (more downside risk)</li>
-                        <li>You're highly leveraged and can't afford price risk</li>
-                        <li>You haven't pre-sold a significant portion of your crop</li>
-                        <li>Trade policy or global supply concerns exist</li>
-                    </ul>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">When YP Might Work</h3>
-                    <ul style="margin-left:20px;color:var(--dim)">
-                        <li>Spring prices are historically low (limited downside)</li>
-                        <li>You've already locked in prices through forward contracts</li>
-                        <li>Premium savings are significant for your operation</li>
-                        <li>You have strong financial reserves</li>
-                    </ul>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">Key Deadlines</h3>
-                    <p>Check our <a href="/calendar.html" style="color:var(--accent)">USDA Calendar</a> for current year deadlines:</p>
-                    <ul style="margin-left:20px;color:var(--dim)">
-                        <li><strong>Sales Closing:</strong> March 15 (most spring crops)</li>
-                        <li><strong>Acreage Reporting:</strong> July 15</li>
-                        <li><strong>Production Reporting:</strong> Varies by crop</li>
-                    </ul>
-                    
-                    <div style="margin-top:20px;padding:16px;background:var(--card);border-left:3px solid var(--accent);border-radius:0 6px 6px 0">
-                        <strong>Need Help?</strong> Our <a href="https://farmers1st.com" target="_blank" style="color:var(--accent)">Certified Crop Advisors at Farmers First</a> can help you choose the right coverage for your operation.
-                    </div>
-                </div>
-            </div>
-            
-            <!-- SECTION: GDU -->
-            <div class="panel" id="gdu">
-                <div class="panel-head"><h2>🌡️ GROWING DEGREE UNITS (GDU) GUIDE</h2></div>
-                <div class="panel-body" style="line-height:1.8">
-                    <p>Growing Degree Units (GDUs), also called heat units, measure the heat accumulation that drives corn development from planting to maturity.</p>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">The Formula</h3>
-                    <div style="background:var(--bg);padding:16px;border-radius:6px;margin:16px 0;font-family:'JetBrains Mono',monospace;text-align:center">
-                        GDU = [(Daily High + Daily Low) ÷ 2] − 50
-                    </div>
-                    <p><strong>Important rules:</strong></p>
-                    <ul style="margin-left:20px;color:var(--dim)">
-                        <li>Cap the high temperature at 86°F (corn growth slows above this)</li>
-                        <li>Floor the low temperature at 50°F (no growth below this)</li>
-                        <li>If the result is negative, GDU = 0 for that day</li>
-                    </ul>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">GDU Requirements by Growth Stage</h3>
-                    <div style="display:grid;gap:8px;margin:16px 0;font-size:0.9rem">
-                        <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
-                            <span>🌱 Emergence (VE)</span><span style="font-weight:600">125 GDU</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
-                            <span>🌿 V6 (Knee High)</span><span style="font-weight:600">475 GDU</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
-                            <span>🌾 V12</span><span style="font-weight:600">870 GDU</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
-                            <span>🌽 Silking (R1)</span><span style="font-weight:600">1,200-1,400 GDU</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
-                            <span>🟡 Dent (R5)</span><span style="font-weight:600">2,190 GDU</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px">
-                            <span>⬛ Black Layer (R6)</span><span style="font-weight:600">2,200-2,700 GDU</span>
-                        </div>
-                    </div>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">Hybrid Maturity & GDU Needs</h3>
-                    <ul style="margin-left:20px;color:var(--dim)">
-                        <li><strong>85-day (early):</strong> ~2,200 GDUs to black layer</li>
-                        <li><strong>95-day (medium-early):</strong> ~2,400 GDUs</li>
-                        <li><strong>105-day (full season):</strong> ~2,550 GDUs</li>
-                        <li><strong>115-day (late):</strong> ~2,700 GDUs</li>
-                    </ul>
-                    
-                    <div style="margin-top:20px;padding:16px;background:var(--card);border-left:3px solid var(--accent);border-radius:0 6px 6px 0">
-                        <strong>Calculate Now:</strong> Use our <a href="/gdu.html" style="color:var(--accent)">GDU Calculator</a> to track your crop's progress and estimate maturity dates.
-                    </div>
-                </div>
-            </div>
-            
-            <!-- SECTION: Break-Even -->
-            <div class="panel" id="breakeven">
-                <div class="panel-head"><h2>💰 BREAK-EVEN ANALYSIS FOR FARMERS</h2></div>
-                <div class="panel-body" style="line-height:1.8">
-                    <p>Your break-even price is the most important number in your grain marketing plan. If you don't know your cost per bushel, you're flying blind.</p>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">The Formula</h3>
-                    <div style="background:var(--bg);padding:16px;border-radius:6px;margin:16px 0;font-family:'JetBrains Mono',monospace;text-align:center">
-                        Break-Even Price = Total Cost per Acre ÷ Expected Yield
-                    </div>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">Costs to Include</h3>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-                        <div>
-                            <h4 style="font-size:0.85rem;color:var(--dim);margin-bottom:8px">DIRECT COSTS</h4>
-                            <ul style="margin-left:20px;color:var(--dim);font-size:0.9rem">
-                                <li>Seed</li>
-                                <li>Fertilizer (N, P, K, micronutrients)</li>
-                                <li>Chemicals (herbicide, insecticide, fungicide)</li>
-                                <li>Crop insurance premium</li>
-                                <li>Drying and handling</li>
-                                <li>Custom hire / application</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 style="font-size:0.85rem;color:var(--dim);margin-bottom:8px">OVERHEAD COSTS</h4>
-                            <ul style="margin-left:20px;color:var(--dim);font-size:0.9rem">
-                                <li>Land rent or ownership cost</li>
-                                <li>Machinery depreciation</li>
-                                <li>Fuel and repairs</li>
-                                <li>Labor (including unpaid family labor!)</li>
-                                <li>Interest on operating loans</li>
-                                <li>General overhead (insurance, utilities, etc.)</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">2026 Regional Benchmarks (WI/MN)</h3>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0">
-                        <div style="background:var(--bg);padding:16px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.8rem;color:var(--dim)">Corn</div>
-                            <div style="font-size:1.3rem;font-weight:700;color:var(--accent)">$4.15-5.00/bu</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">($750-900/ac)</div>
-                        </div>
-                        <div style="background:var(--bg);padding:16px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.8rem;color:var(--dim)">Soybeans</div>
-                            <div style="font-size:1.3rem;font-weight:700;color:var(--accent)">$9.00-11.00/bu</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">($450-550/ac)</div>
-                        </div>
-                        <div style="background:var(--bg);padding:16px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.8rem;color:var(--dim)">Wheat</div>
-                            <div style="font-size:1.3rem;font-weight:700;color:var(--accent)">$5.50-7.00/bu</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">($400-500/ac)</div>
-                        </div>
-                    </div>
-                    
-                    <h3 style="font-size:1rem;margin:24px 0 12px;color:var(--accent)">Using Break-Even for Marketing</h3>
-                    <ul style="margin-left:20px;color:var(--dim)">
-                        <li><strong>Above break-even + 20%:</strong> Strong sell signal — lock in profits</li>
-                        <li><strong>Above break-even:</strong> Consider selling 25-50% to cover costs</li>
-                        <li><strong>At break-even:</strong> Cover operating expenses at minimum</li>
-                        <li><strong>Below break-even:</strong> Evaluate storage, basis improvement, insurance options</li>
-                    </ul>
-                    
-                    <div style="margin-top:20px;padding:16px;background:var(--card);border-left:3px solid var(--accent);border-radius:0 6px 6px 0">
-                        <strong>Calculate Now:</strong> Use our <a href="/breakeven.html" style="color:var(--accent)">Break-Even Calculator</a> to find your cost per bushel for corn, soybeans, and wheat.
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Related Tools Section -->
-            <div class="panel">
-                <div class="panel-head"><h2>📌 RELATED TOOLS</h2></div>
-                <div class="panel-body">
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
-                        <a href="/breakeven.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.2rem;margin-bottom:6px">💰</div>
-                            <div style="font-weight:600;margin-bottom:4px">Break-Even Calculator</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Know your cost per bushel</div>
-                        </a>
-                        <a href="/gdu.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.2rem;margin-bottom:6px">🌡️</div>
-                            <div style="font-weight:600;margin-bottom:4px">GDU Calculator</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Track corn heat units</div>
-                        </a>
-                        <a href="/calendar.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.2rem;margin-bottom:6px">📅</div>
-                            <div style="font-weight:600;margin-bottom:4px">USDA Calendar</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Report dates & deadlines</div>
-                        </a>
-                        <a href="/tools.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.2rem;margin-bottom:6px">🧮</div>
-                            <div style="font-weight:600;margin-bottom:4px">All Calculators</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Grain bin, fertilizer & more</div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- CTA Box -->
-            <div style="margin-top:20px;padding:20px;background:var(--card);border:1px solid var(--accent);border-radius:8px;text-align:center">
-                <div style="font-size:1rem;font-weight:600;margin-bottom:8px">Need Personalized Advice?</div>
-                <div style="font-size:0.85rem;color:var(--dim);margin-bottom:12px">Our Certified Crop Advisors can help with crop planning, marketing strategies, and insurance decisions.</div>
-                <a href="https://farmers1st.com" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600">Contact Farmers First Agri Service →</a>
-            </div>
+            <h3>Contract Specifications</h3>
+            <ul>
+                <li><strong>Corn (ZC):</strong> 5,000 bushels, #2 Yellow</li>
+                <li><strong>Soybeans (ZS):</strong> 5,000 bushels, #2 Yellow</li>
+                <li><strong>Wheat (ZW):</strong> 5,000 bushels, #2 Soft Red Winter</li>
+            </ul>
+
+            <h3>Contract Months</h3>
+            <p><strong>Corn & Soybeans:</strong> March, May, July, September, December<br>
+            <strong>Wheat:</strong> March, May, July, September, December</p>
+
+            <h3>How Farmers Use Futures</h3>
+            <p>Farmers typically use futures to hedge (reduce risk), not speculate. A short hedge involves selling futures to protect against price declines. When you eventually sell your physical grain, you buy back the futures position.</p>
         </div>
     </main>
 
-    <footer>
-        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:0.8rem">
-            <span>© 2026 <a href="/" style="color:var(--accent);text-decoration:none">AGSIST</a>. All rights reserved.</span>
-            <span><a href="/learn.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Guides</a><a href="/tools.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Tools</a><a href="/resources.html" style="color:var(--dim);text-decoration:none">Resources</a></span>
-            <span>Made in the USA 🇺🇸</span>
+    <footer class="footer-c">
+        <div class="footer-c-inner">
+            <div class="footer-c-main">
+                <div class="brand-row"><a href="/" class="brand">AGSIST</a><span class="sep">|</span><span class="tagline">Free agricultural prices, tools & news</span></div>
+                <div class="site-links"><a href="corn-prices.html">Corn</a><a href="soybean-prices.html">Soybeans</a><a href="wheat-prices.html">Wheat</a><a href="tools.html">Tools</a><a href="fastfacts.html">Fast Facts</a><a href="calendar.html">Calendar</a><a href="resources.html">Resources</a></div>
+                <div class="legal-row"><span>© 2026 AGSIST</span></div>
+            </div>
+            <div class="footer-c-network"><h4>Our Network</h4><a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a><a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a><a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a></div>
         </div>
     </footer>
+
+    <script>
+    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+        document.getElementById('mobile-menu').classList.toggle('active');
+        this.textContent = this.textContent === '☰' ? '✕' : '☰';
+    });
+    </script>
 </body>
 </html>

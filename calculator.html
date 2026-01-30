@@ -5,49 +5,60 @@
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grain Bin Calculator - Free Bushel & Storage Capacity Tool | AGSIST</title>
-    <meta name="description" content="Free grain bin calculator for farmers. Calculate bushel capacity, moisture shrink, and storage volume for round and rectangular bins.">
+    <title>Grain Bin Calculator - Free Bushel & Storage Tool | AGSIST</title>
+    <meta name="description" content="Free grain bin calculator. Calculate bushel capacity, moisture shrink, and storage volume for round and rectangular bins.">
     <link rel="canonical" href="https://agsist.com/calculator.html">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- NAVIGATION -->
-            <nav class="main-nav">
+    <nav class="main-nav">
         <div class="nav-inner">
-            <a href="index.html" class="logo">AGSIST</a>
-            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
+            <a href="/" class="logo">AGSIST</a>
             <div class="nav-links">
                 <div class="nav-dropdown">
-                    <button class="nav-link dropdown-toggle">Prices ▾</button>
+                    <button class="dropdown-toggle">Prices ▾</button>
                     <div class="dropdown-menu">
                         <a href="corn-prices.html" class="dropdown-item">🌽 Corn</a>
                         <a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a>
                         <a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a>
                     </div>
                 </div>
-                <a href="tools.html" class="nav-link">Tools</a>
-                <a href="fastfacts.html" class="nav-link">Fast Facts</a>
-                <a href="learn.html" class="nav-link">Learn</a>
-                <a href="calendar.html" class="nav-link">Calendar</a>
-                <a href="resources.html" class="nav-link">Links</a>
+                <div class="nav-dropdown">
+                    <button class="dropdown-toggle">Tools ▾</button>
+                    <div class="dropdown-menu">
+                        <a href="tools.html" class="dropdown-item">All Tools</a>
+                        <a href="breakeven.html" class="dropdown-item">Breakeven</a>
+                        <a href="gdu.html" class="dropdown-item">GDU Calculator</a>
+                        <a href="calculator.html" class="dropdown-item">Grain Bin</a>
+                        <a href="fastfacts.html" class="dropdown-item">Fast Facts</a>
+                    </div>
+                </div>
+                <div class="nav-dropdown">
+                    <button class="dropdown-toggle">Info ▾</button>
+                    <div class="dropdown-menu">
+                        <a href="learn.html" class="dropdown-item">Learn</a>
+                        <a href="calendar.html" class="dropdown-item">Calendar</a>
+                        <a href="resources.html" class="dropdown-item">Resources</a>
+                        <a href="offices.html" class="dropdown-item">Offices</a>
+                    </div>
+                </div>
             </div>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
         </div>
     </nav>
-
-    <!-- MOBILE MENU -->
-    <div class="mobile-menu">
+    <div class="mobile-menu" id="mobile-menu">
         <div class="mobile-section">Prices</div>
-        <a href="corn-prices.html" class="mobile-link">Corn</a>
-        <a href="soybean-prices.html" class="mobile-link">Soybeans</a>
-        <a href="wheat-prices.html" class="mobile-link">Wheat</a>
+        <a href="corn-prices.html" class="mobile-link">🌽 Corn</a>
+        <a href="soybean-prices.html" class="mobile-link">🫘 Soybeans</a>
+        <a href="wheat-prices.html" class="mobile-link">🌾 Wheat</a>
         <div class="mobile-section">Tools</div>
         <a href="tools.html" class="mobile-link">All Tools</a>
         <a href="breakeven.html" class="mobile-link">Breakeven</a>
         <a href="gdu.html" class="mobile-link">GDU Calculator</a>
-        <a href="calculator.html" class="mobile-link active">Grain Bin</a>
+        <a href="calculator.html" class="mobile-link">Grain Bin</a>
         <a href="fastfacts.html" class="mobile-link">Fast Facts</a>
         <div class="mobile-section">Info</div>
         <a href="learn.html" class="mobile-link">Learn</a>
@@ -56,182 +67,110 @@
         <a href="offices.html" class="mobile-link">Offices</a>
     </div>
 
-    <main class="page-content">
-        <div class="calc-wrap" style="padding:20px;max-width:1200px;margin:0 auto">
-            <nav style="margin-bottom:20px;font-size:0.95rem;color:var(--dim)"><a href="" style="color:var(--accent);text-decoration:none">Home</a> → <a href="tools.html" style="color:var(--accent);text-decoration:none">Tools</a> → Grain Bin Calculator</nav>
+    <main>
+        <nav class="breadcrumb"><a href="/">Home</a> → <a href="tools.html">Tools</a> → Grain Bin Calculator</nav>
+        <div class="grid-2">
             <div class="panel">
-                <div class="panel-head"><h1 style="font-size:0.9rem;margin:0">🌾 GRAIN BIN CALCULATOR</h1></div>
+                <div class="panel-head"><h1>🌾 GRAIN BIN CALCULATOR</h1></div>
                 <div class="panel-body">
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px">
-                        <div class="calc-panel">
-                            <h3 style="font-size:0.9rem;color:var(--dim);margin-bottom:12px">DIMENSIONS</h3>
-                            <div class="input-group"><label>Bin Shape</label><select id="binShape" onchange="calcBin()"><option value="round">Round</option><option value="rect">Rectangular</option></select></div>
-                            <div class="input-group" id="round-dims"><label>Diameter (ft)</label><input type="number" id="diameter" value="30" step=".5" min="0" oninput="calcBin()"></div>
-                            <div class="input-group" id="rect-dims" style="display:none"><label>Length (ft)</label><input type="number" id="length" value="40" step=".5" min="0" oninput="calcBin()"><label style="margin-top:10px">Width (ft)</label><input type="number" id="width" value="30" step=".5" min="0" oninput="calcBin()"></div>
-                            <div class="input-group"><label>Eave Height (ft)</label><input type="number" id="eaveH" value="20" step=".5" min="0" oninput="calcBin()"></div>
-                            <div class="input-group"><label>Grain Type</label><select id="grain" onchange="calcBin()"><option value="56|15.5">Corn (56 lb/bu)</option><option value="60|13.0">Soybeans (60 lb/bu)</option><option value="60|13.5">Wheat (60 lb/bu)</option><option value="48|14.5">Barley (48 lb/bu)</option></select></div>
-                            <div class="input-group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div><label>Current Moist %</label><input type="number" id="moistIn" value="15.5" step=".1" min="0" max="50" oninput="calcBin()"></div><div><label>Pack Factor %</label><input type="number" id="pack" value="0" step=".5" min="0" max="20" oninput="calcBin()"></div></div>
+                    <div style="margin-bottom:20px">
+                        <label>Crop Type</label>
+                        <select id="crop" onchange="calcBin()">
+                            <option value="corn">Corn (56 lb/bu)</option>
+                            <option value="soybeans">Soybeans (60 lb/bu)</option>
+                            <option value="wheat">Wheat (60 lb/bu)</option>
+                            <option value="barley">Barley (48 lb/bu)</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom:20px">
+                        <label>Bin Shape</label>
+                        <select id="shape" onchange="calcBin()">
+                            <option value="round">Round</option>
+                            <option value="rect">Rectangular</option>
+                        </select>
+                    </div>
+                    <div id="round-inputs">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+                            <div><label>Diameter (ft)</label><input type="number" id="diameter" value="30" onchange="calcBin()"></div>
+                            <div><label>Height (ft)</label><input type="number" id="height" value="24" onchange="calcBin()"></div>
                         </div>
-                        <div>
-                            <div class="result-panel">
-                                <h3 style="font-size:0.9rem;color:var(--dim);margin-bottom:12px">ESTIMATED CAPACITY</h3>
-                                <div class="result-row"><span>Total Volume</span><span class="result-value" id="rVol">-</span></div>
-                                <div class="result-row"><span>Total Bushels</span><span class="result-value" id="rTotal" style="font-size:1.8rem;color:var(--accent)">-</span></div>
-                                <div class="result-row"><span>Total Weight</span><span class="result-value" id="rWeight">-</span></div>
-                                <div class="result-row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"><span>Moisture Shrink</span><span class="result-value" id="rShrink">-</span></div>
-                                <div class="result-row"><span>Dry Bushels</span><span class="result-value" id="rDryBu">-</span></div>
-                            </div>
+                    </div>
+                    <div id="rect-inputs" style="display:none">
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+                            <div><label>Length (ft)</label><input type="number" id="length" value="40" onchange="calcBin()"></div>
+                            <div><label>Width (ft)</label><input type="number" id="width" value="20" onchange="calcBin()"></div>
+                            <div><label>Height (ft)</label><input type="number" id="heightRect" value="10" onchange="calcBin()"></div>
                         </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                        <div><label>Moisture In (%)</label><input type="number" id="moistIn" value="15.5" step="0.1" onchange="calcBin()"></div>
+                        <div><label>Pack Factor (%)</label><input type="number" id="pack" value="0" onchange="calcBin()"></div>
                     </div>
                 </div>
             </div>
             <div class="panel">
-                <div class="panel-head"><h2 style="font-size:0.9rem;margin:0">📌 RELATED TOOLS</h2></div>
+                <div class="panel-head"><h2>RESULTS</h2></div>
                 <div class="panel-body">
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
-                        <a href="breakeven.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block"><div style="font-size:1.2rem;margin-bottom:6px">💰</div><div style="font-weight:600;margin-bottom:4px">Break-Even Calculator</div><div style="font-size:0.875rem;color:var(--dim)">Know your cost per bushel</div></a>
-                        <a href="gdu.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block"><div style="font-size:1.2rem;margin-bottom:6px">🌡️</div><div style="font-weight:600;margin-bottom:4px">GDU Calculator</div><div style="font-size:0.875rem;color:var(--dim)">Track growing degree units</div></a>
-                        <a href="fastfacts.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block"><div style="font-size:1.2rem;margin-bottom:6px">📊</div><div style="font-weight:600;margin-bottom:4px">Nutrient Fast Facts</div><div style="font-size:0.875rem;color:var(--dim)">Fertilizer & nutrient calculators</div></a>
-                    </div>
+                    <div class="result-row"><span class="result-label">Volume</span><span class="result-value" id="rVol">--</span></div>
+                    <div class="result-row"><span class="result-label">Total Bushels</span><span class="result-value highlight" id="rTotal">--</span></div>
+                    <div class="result-row"><span class="result-label">Weight</span><span class="result-value" id="rWeight">--</span></div>
+                    <div class="result-row"><span class="result-label">Shrink</span><span class="result-value" id="rShrink">--</span></div>
+                    <div class="result-row"><span class="result-label">Dry Bushels</span><span class="result-value" id="rDryBu">--</span></div>
                 </div>
             </div>
         </div>
     </main>
 
-        <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-main">
-                <div class="footer-brand-row">
-                    <a href="index.html" class="footer-brand">AGSIST</a>
-                    <span class="footer-sep">|</span>
-                    <span class="footer-tagline">Free agricultural prices, tools & news</span>
-                </div>
-                <div class="footer-links">
-                    <a href="corn-prices.html">Corn</a>
-                    <a href="soybean-prices.html">Soybeans</a>
-                    <a href="wheat-prices.html">Wheat</a>
-                    <a href="tools.html">Tools</a>
-                    <a href="fastfacts.html">Fast Facts</a>
-                    <a href="calendar.html">Calendar</a>
-                    <a href="resources.html">Resources</a>
-                </div>
-                <div class="footer-legal">
-                    <span>© 2026 AGSIST</span>
-                    <a href="privacy.html">Privacy</a>
-                    <a href="terms.html">Terms</a>
-                </div>
+    <footer class="footer-c">
+        <div class="footer-c-inner">
+            <div class="footer-c-main">
+                <div class="brand-row"><a href="/" class="brand">AGSIST</a><span class="sep">|</span><span class="tagline">Free agricultural prices, tools & news</span></div>
+                <div class="site-links"><a href="corn-prices.html">Corn</a><a href="soybean-prices.html">Soybeans</a><a href="wheat-prices.html">Wheat</a><a href="tools.html">Tools</a><a href="fastfacts.html">Fast Facts</a><a href="calendar.html">Calendar</a><a href="resources.html">Resources</a></div>
+                <div class="legal-row"><span>© 2026 AGSIST</span></div>
             </div>
-            <div class="footer-network">
-                <h4>Our Network</h4>
-                <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
-                <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
-                <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
-            </div>
-        </div>
-    </footer>
-
-
-
-    <footer class="main-footer">
-        <div class="footer-inner">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h4>Prices</h4>
-                    <a href="corn-prices.html">Corn</a>
-                    <a href="soybean-prices.html">Soybeans</a>
-                    <a href="wheat-prices.html">Wheat</a>
-                </div>
-                <div class="footer-col">
-                    <h4>Tools</h4>
-                    <a href="tools.html">All Tools</a>
-                    <a href="breakeven.html">Breakeven</a>
-                    <a href="gdu.html">GDU Calculator</a>
-                    <a href="calculator.html">Grain Bin</a>
-                    <a href="fastfacts.html">Fast Facts</a>
-                </div>
-                <div class="footer-col">
-                    <h4>Info</h4>
-                    <a href="learn.html">Learn</a>
-                    <a href="calendar.html">Calendar</a>
-                    <a href="resources.html">Resources</a>
-                    <a href="offices.html">Offices</a>
-                </div>
-                <div class="footer-col">
-                    <h4>Legal</h4>
-                    <a href="privacy.html">Privacy</a>
-                    <a href="terms.html">Terms</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>© 2026 AGSIST</p>
-                <p class="disclaimer">Prices delayed minimum 10 minutes. Not financial advice.</p>
-            </div>
+            <div class="footer-c-network"><h4>Our Network</h4><a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a><a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a><a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a></div>
         </div>
     </footer>
 
     <script>
-    document.querySelector('.mobile-menu-btn')?.addEventListener('click', function() {
-        document.querySelector('.mobile-menu').classList.toggle('active');
+    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+        document.getElementById('mobile-menu').classList.toggle('active');
+        this.textContent = this.textContent === '☰' ? '✕' : '☰';
     });
-    
+    document.getElementById('shape').addEventListener('change', function() {
+        document.getElementById('round-inputs').style.display = this.value === 'round' ? 'block' : 'none';
+        document.getElementById('rect-inputs').style.display = this.value === 'rect' ? 'block' : 'none';
+    });
     const BU_PER_CUFT = 0.8036;
+    const crops = {corn:{lb:56,std:15.5},soybeans:{lb:60,std:13},wheat:{lb:60,std:13.5},barley:{lb:48,std:14.5}};
     function calcBin() {
-        const shape = document.getElementById('binShape').value;
-        const grainParts = document.getElementById('grain').value.split('|');
-        const lbPerBu = parseFloat(grainParts[0]);
-        const stdMoist = parseFloat(grainParts[1]);
-        document.getElementById('round-dims').style.display = shape === 'round' ? 'block' : 'none';
-        document.getElementById('rect-dims').style.display = shape === 'rect' ? 'block' : 'none';
+        const crop = document.getElementById('crop').value;
+        const shape = document.getElementById('shape').value;
+        const {lb:lbPerBu, std:stdMoist} = crops[crop];
         let vol = 0;
-        const h = Math.max(0, parseFloat(document.getElementById('eaveH').value) || 0);
-        if(shape === 'round') {
-            const d = Math.max(0, parseFloat(document.getElementById('diameter').value) || 0);
+        if (shape === 'round') {
+            const d = parseFloat(document.getElementById('diameter').value) || 0;
+            const h = parseFloat(document.getElementById('height').value) || 0;
             vol = Math.PI * Math.pow(d/2, 2) * h;
         } else {
-            const l = Math.max(0, parseFloat(document.getElementById('length').value) || 0);
-            const w = Math.max(0, parseFloat(document.getElementById('width').value) || 0);
+            const l = parseFloat(document.getElementById('length').value) || 0;
+            const w = parseFloat(document.getElementById('width').value) || 0;
+            const h = parseFloat(document.getElementById('heightRect').value) || 0;
             vol = l * w * h;
         }
         const bu = vol * BU_PER_CUFT;
         const moistIn = parseFloat(document.getElementById('moistIn').value) || stdMoist;
         const pack = parseFloat(document.getElementById('pack').value) || 0;
-        const packedBu = bu * (1 + (pack/100));
-        let shrinkPct = Math.max(0, (moistIn - stdMoist) * 1.3);
-        const dryBu = packedBu * (1 - (shrinkPct/100));
+        const packedBu = bu * (1 + pack/100);
+        const shrinkPct = Math.max(0, (moistIn - stdMoist) * 1.3);
+        const dryBu = packedBu * (1 - shrinkPct/100);
         document.getElementById('rVol').textContent = Math.round(vol).toLocaleString() + ' ft³';
-        document.getElementById('rTotal').textContent = Math.round(packedBu).toLocaleString();
-        document.getElementById('rWeight').textContent = (packedBu * lbPerBu / 2000).toFixed(1) + ' T';
+        document.getElementById('rTotal').textContent = Math.round(packedBu).toLocaleString() + ' bu';
+        document.getElementById('rWeight').textContent = (packedBu * lbPerBu / 2000).toFixed(1) + ' tons';
         document.getElementById('rShrink').textContent = shrinkPct.toFixed(1) + '%';
-        document.getElementById('rDryBu').textContent = Math.round(dryBu).toLocaleString();
+        document.getElementById('rDryBu').textContent = Math.round(dryBu).toLocaleString() + ' bu';
     }
     calcBin();
-    </script>
-
-    <script>
-    // Mobile menu toggle
-    document.querySelector('.menu-toggle')?.addEventListener('click', function() {
-        const nav = document.querySelector('.nav-links');
-        const isOpen = nav.classList.toggle('open');
-        this.textContent = isOpen ? '✕' : '☰';
-    });
-    document.querySelectorAll('.nav-dropdown-trigger').forEach(trigger => {
-        trigger.addEventListener('click', function(e) {
-            if (window.innerWidth <= 767) {
-                e.preventDefault();
-                this.closest('.nav-dropdown').classList.toggle('open');
-            }
-        });
-    });
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('nav')) {
-            document.querySelector('.nav-links')?.classList.remove('open');
-            const toggle = document.querySelector('.menu-toggle');
-            if (toggle) toggle.textContent = '☰';
-        }
-        if (!e.target.closest('.nav-dropdown')) {
-            document.querySelectorAll('.nav-dropdown.open').forEach(d => d.classList.remove('open'));
-        }
-    });
     </script>
 </body>
 </html>

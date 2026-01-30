@@ -1,254 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GDU Calculator - Corn Growing Degree Units & Maturity Tracker | AGSIST</title>
-    <meta name="description" content="Free GDU calculator for corn. Calculate growing degree units, predict silking and black layer dates by hybrid maturity. Track heat unit accumulation for Wisconsin, Minnesota, and Iowa.">
-    <meta name="keywords" content="GDU calculator, growing degree units, corn heat units, corn maturity calculator, GDU corn, degree days calculator, black layer date">
+    <title>GDU Calculator - Growing Degree Units for Corn | AGSIST</title>
+    <meta name="description" content="Free GDU calculator for corn. Track growing degree units, estimate silking dates, and monitor crop development stages.">
     <link rel="canonical" href="https://agsist.com/gdu.html">
-    
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="GDU Calculator - Corn Growing Degree Units">
-    <meta property="og:description" content="Calculate corn GDUs, predict silking and black layer dates. Free tool for farmers.">
-    <meta property="og:image" content="https://agsist.com/og-image.png">
-    <meta property="og:url" content="https://agsist.com/gdu.html">
-    <meta name="twitter:card" content="summary_large_image">
-    
-    <!-- Schema: WebApplication -->
-    <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"WebApplication","name":"GDU Calculator","description":"Calculate corn growing degree units, predict silking and black layer maturity dates by hybrid.","url":"https://agsist.com/gdu.html","applicationCategory":"UtilityApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
-    </script>
-    
-    <!-- Schema: BreadcrumbList -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": "https://agsist.com/"},
-        {"@type": "ListItem", "position": 2, "name": "GDU Calculator", "item": "https://agsist.com/gdu.html"}
-      ]
-    }
-    </script>
-    
-    <!-- Schema: FAQPage -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "How do you calculate GDUs for corn?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Daily GDU = (Daily High + Daily Low) ÷ 2 − 50. Cap the high temperature at 86°F and floor the low at 50°F. If the result is negative, GDU equals 0 for that day. Accumulate daily GDUs from planting to track crop progress."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How many GDUs does corn need to reach maturity?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "GDU requirements vary by hybrid maturity: 85-day hybrids need approximately 2,200 GDUs, 95-day hybrids need 2,400 GDUs, 105-day hybrids need 2,550 GDUs, and 115-day hybrids need 2,700 GDUs to reach black layer (physiological maturity)."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What GDUs are needed for corn silking?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Corn typically reaches silking (R1 stage) at approximately 1,200-1,400 GDUs, which is about 50% of the total GDUs needed for full maturity. This usually occurs in mid to late July in the Upper Midwest."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How many GDUs per day does Wisconsin accumulate?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Average daily GDU accumulation during the growing season (May-September): Northwest Wisconsin averages 14-16 GDUs/day, Central Wisconsin 16-18 GDUs/day, and Southern Wisconsin 18-20 GDUs/day. Southern Minnesota averages 19-21 GDUs/day."
-          }
-        }
-      ]
-    }
-    </script>
 </head>
 <body>
-    <header>
-        <div class="header-inner">
-            <a href="/" class="logo">
-                <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
-                <div class="logo-text">AGSIST</div>
-            </a>
-            <button class="menu-toggle" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
-            <nav class="nav">
-                <a href="/">DASHBOARD</a>
-                <a href="/calculator.html">GRAIN BIN</a>
-                <a href="/gdu.html" class="active">GDU CALC</a>
-                <a href="/breakeven.html">BREAK-EVEN</a>
-                <a href="/offices.html">OFFICES</a>
-                <a href="/resources.html">RESOURCES</a>
-            </nav>
+    <nav class="main-nav">
+        <div class="nav-inner">
+            <a href="/" class="logo">AGSIST</a>
+            <div class="nav-links">
+                <div class="nav-dropdown"><button class="dropdown-toggle">Prices ▾</button><div class="dropdown-menu"><a href="corn-prices.html" class="dropdown-item">🌽 Corn</a><a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a><a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a></div></div>
+                <div class="nav-dropdown"><button class="dropdown-toggle">Tools ▾</button><div class="dropdown-menu"><a href="tools.html" class="dropdown-item">All Tools</a><a href="breakeven.html" class="dropdown-item">Breakeven</a><a href="gdu.html" class="dropdown-item">GDU Calculator</a><a href="calculator.html" class="dropdown-item">Grain Bin</a><a href="fastfacts.html" class="dropdown-item">Fast Facts</a></div></div>
+                <div class="nav-dropdown"><button class="dropdown-toggle">Info ▾</button><div class="dropdown-menu"><a href="learn.html" class="dropdown-item">Learn</a><a href="calendar.html" class="dropdown-item">Calendar</a><a href="resources.html" class="dropdown-item">Resources</a><a href="offices.html" class="dropdown-item">Offices</a></div></div>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
         </div>
-    </header>
+    </nav>
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-section">Prices</div><a href="corn-prices.html" class="mobile-link">🌽 Corn</a><a href="soybean-prices.html" class="mobile-link">🫘 Soybeans</a><a href="wheat-prices.html" class="mobile-link">🌾 Wheat</a>
+        <div class="mobile-section">Tools</div><a href="tools.html" class="mobile-link">All Tools</a><a href="breakeven.html" class="mobile-link">Breakeven</a><a href="gdu.html" class="mobile-link">GDU Calculator</a><a href="calculator.html" class="mobile-link">Grain Bin</a><a href="fastfacts.html" class="mobile-link">Fast Facts</a>
+        <div class="mobile-section">Info</div><a href="learn.html" class="mobile-link">Learn</a><a href="calendar.html" class="mobile-link">Calendar</a><a href="resources.html" class="mobile-link">Resources</a><a href="offices.html" class="mobile-link">Offices</a>
+    </div>
 
     <main>
-        <div class="calc-wrap" style="padding:20px;max-width:1200px;margin:0 auto">
-            <nav style="margin-bottom:20px;font-size:0.85rem;color:var(--dim)">
-                <a href="/" style="color:var(--accent);text-decoration:none">Home</a> → GDU Calculator
-            </nav>
-            
+        <nav class="breadcrumb"><a href="/">Home</a> → <a href="tools.html">Tools</a> → GDU Calculator</nav>
+        <div class="grid-2">
             <div class="panel">
-                <div class="panel-head"><h1 style="font-size:0.9rem;margin:0">🌡️ CORN GDU CALCULATOR</h1></div>
+                <div class="panel-head"><h1>🌡️ GDU CALCULATOR</h1></div>
                 <div class="panel-body">
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
-                        <div>
-                            <h3 style="font-size:0.8rem;color:var(--dim);margin-bottom:12px">INPUTS</h3>
-                            <div class="input-group"><label>Hybrid Maturity</label>
-                                <select id="hybrid" onchange="calcGDU()">
-                                    <option value="2200">Early Season (2,200 GDUs)</option>
-                                    <option value="2400" selected>Medium-Early (2,400 GDUs)</option>
-                                    <option value="2550">Full Season (2,550 GDUs)</option>
-                                    <option value="2700">Late Season (2,700 GDUs)</option>
-                                </select>
-                            </div>
-                            <div class="input-group"><label>Daily High (°F)</label><input type="number" id="highTemp" value="82" min="50" max="110" oninput="calcGDU()"></div>
-                            <div class="input-group"><label>Daily Low (°F)</label><input type="number" id="lowTemp" value="58" min="30" max="80" oninput="calcGDU()"></div>
-                            <div class="input-group"><label>Accumulated GDUs (Season)</label><input type="number" id="accumGDU" value="0" min="0" oninput="calcGDU()"></div>
-                            
-                            <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:6px">
-                                <div style="font-size:0.75rem;color:var(--dim);margin-bottom:8px">REGIONAL AVERAGES (May-Sep)</div>
-                                <div style="font-size:0.8rem;display:grid;gap:4px">
-                                    <div>🧀 NW Wisconsin: <strong>78°F / 55°F</strong> (16 GDU/day)</div>
-                                    <div>🧀 Southern WI: <strong>82°F / 60°F</strong> (18 GDU/day)</div>
-                                    <div>🌽 Southern MN: <strong>83°F / 61°F</strong> (19 GDU/day)</div>
-                                </div>
-                            </div>
+                    <div style="margin-bottom:20px">
+                        <label>Hybrid Maturity (CRM)</label>
+                        <select id="crm" onchange="calcGDU()">
+                            <option value="80">80-day (2000 GDU)</option>
+                            <option value="90">90-day (2300 GDU)</option>
+                            <option value="100" selected>100-day (2500 GDU)</option>
+                            <option value="110">110-day (2700 GDU)</option>
+                            <option value="115">115-day (2900 GDU)</option>
+                        </select>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+                        <div><label>Planting Date</label><input type="date" id="plantDate" onchange="calcGDU()"></div>
+                        <div><label>GDUs Accumulated</label><input type="number" id="gduAccum" value="0" onchange="calcGDU()"></div>
+                    </div>
+                    <div style="margin-bottom:20px">
+                        <label>Daily GDU Input (Optional)</label>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                            <div><label style="font-size:0.7rem">High Temp (°F)</label><input type="number" id="highTemp" value="86" onchange="calcDaily()"></div>
+                            <div><label style="font-size:0.7rem">Low Temp (°F)</label><input type="number" id="lowTemp" value="58" onchange="calcDaily()"></div>
                         </div>
-                        <div>
-                            <h3 style="font-size:0.8rem;color:var(--dim);margin-bottom:12px">RESULTS</h3>
-                            <div class="result-panel">
-                                <div class="result-row"><span>Today's GDU</span><span class="result-value" id="todayGDU" style="font-size:1.8rem;color:var(--accent)">-</span></div>
-                                <div class="result-row"><span>Accumulated Total</span><span class="result-value" id="totalGDU">-</span></div>
-                                <div class="result-row"><span>Progress to Maturity</span><span class="result-value" id="progressPct">-</span></div>
-                                <div class="result-row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"><span>GDUs Remaining</span><span class="result-value" id="remainGDU">-</span></div>
-                                <div class="result-row"><span>Est. Days to Maturity</span><span class="result-value" id="daysRemain">-</span></div>
-                            </div>
-                            
-                            <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:6px">
-                                <div style="font-size:0.75rem;color:var(--dim);margin-bottom:8px">GROWTH STAGES</div>
-                                <div style="font-size:0.8rem;display:grid;gap:4px">
-                                    <div>🌱 Emergence: <strong>125 GDU</strong></div>
-                                    <div>🌿 V6 (Knee High): <strong>475 GDU</strong></div>
-                                    <div>🌾 V12: <strong>870 GDU</strong></div>
-                                    <div>🌽 Silking (R1): <strong>1,350 GDU</strong></div>
-                                    <div>🟡 Dent (R5): <strong>2,190 GDU</strong></div>
-                                    <div>⬛ Black Layer: <strong>Hybrid-specific</strong></div>
-                                </div>
-                            </div>
+                        <div style="margin-top:8px;padding:10px;background:var(--bg);border-radius:4px;text-align:center">
+                            <span style="color:var(--dim);font-size:0.8rem">Daily GDU:</span>
+                            <span style="color:var(--accent);font-weight:600" id="dailyGDU">22</span>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- How GDUs Work Section -->
             <div class="panel">
-                <div class="panel-head"><h2>HOW GDUS WORK</h2></div>
-                <div class="panel-body" style="color:var(--dim);line-height:1.8">
-                    <p><strong style="color:var(--text)">The Formula:</strong> GDU = [(Daily High + Daily Low) ÷ 2] − 50</p>
-                    <p style="margin-top:12px"><strong style="color:var(--text)">Caps & Floors:</strong> High temperature is capped at 86°F (corn growth slows above this). Low temperature is floored at 50°F (no growth below). If result is negative, GDU = 0.</p>
-                    <p style="margin-top:12px"><strong style="color:var(--text)">Why 86/50?</strong> Corn has optimal growth between 50°F and 86°F. Above 86°F, the plant experiences heat stress and doesn't accumulate additional heat units. Below 50°F, corn growth essentially stops.</p>
-                    <p style="margin-top:12px">For a deeper dive, read our <a href="/learn.html#gdu" style="color:var(--accent)">complete guide to Growing Degree Units</a>.</p>
-                </div>
-            </div>
-            
-            <!-- Related Tools Section (Internal Links) -->
-            <div class="panel">
-                <div class="panel-head"><h2>📌 RELATED TOOLS</h2></div>
+                <div class="panel-head"><h2>RESULTS</h2></div>
                 <div class="panel-body">
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
-                        <a href="/breakeven.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.2rem;margin-bottom:6px">💰</div>
-                            <div style="font-weight:600;margin-bottom:4px">Break-Even Calculator</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Know your cost per bushel</div>
-                        </a>
-                        <a href="/calculator.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.2rem;margin-bottom:6px">🌾</div>
-                            <div style="font-weight:600;margin-bottom:4px">Grain Bin Calculator</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Calculate bushel capacity</div>
-                        </a>
-                        <a href="/calendar.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.2rem;margin-bottom:6px">📅</div>
-                            <div style="font-weight:600;margin-bottom:4px">USDA Calendar</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Report dates & deadlines</div>
-                        </a>
+                    <div class="result-row"><span class="result-label">GDUs to Maturity</span><span class="result-value" id="gduNeeded">2500</span></div>
+                    <div class="result-row"><span class="result-label">GDUs Accumulated</span><span class="result-value" id="gduHave">0</span></div>
+                    <div class="result-row"><span class="result-label">GDUs Remaining</span><span class="result-value highlight" id="gduLeft">2500</span></div>
+                    <div class="result-row"><span class="result-label">Progress</span><span class="result-value" id="progress">0%</span></div>
+                    <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:4px">
+                        <div style="color:var(--dim);font-size:0.75rem;margin-bottom:8px">GROWTH STAGES</div>
+                        <div style="font-size:0.85rem;line-height:1.8">
+                            <div>🌱 Emergence: <span style="color:var(--dim)">~125 GDU</span></div>
+                            <div>🌿 V6 (6 leaves): <span style="color:var(--dim)">~475 GDU</span></div>
+                            <div>🌽 Silking: <span style="color:var(--dim)">~1400 GDU</span></div>
+                            <div>✅ Black Layer: <span style="color:var(--dim)">~2700 GDU</span></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Learn More Section (Internal Links) -->
-            <div class="panel">
-                <div class="panel-head"><h2>📚 LEARN MORE</h2></div>
-                <div class="panel-body" style="color:var(--dim);line-height:1.8">
-                    <p>GDU tracking helps you plan for harvest timing, but grain marketing is just as important. Use our <a href="/breakeven.html" style="color:var(--accent)">break-even calculator</a> to know your cost per bushel, and learn about <a href="/learn.html#basis" style="color:var(--accent)">corn basis</a> to understand how local prices are determined.</p>
-                    <p style="margin-top:12px">Check <a href="/calendar.html" style="color:var(--accent)">USDA report dates</a> for market-moving events, and don't miss <a href="/calendar.html" style="color:var(--accent)">crop insurance deadlines</a> for your area.</p>
-                </div>
-            </div>
-            
-            <!-- CTA Box -->
-            <div style="margin-top:20px;padding:20px;background:var(--card);border:1px solid var(--accent);border-radius:8px;text-align:center">
-                <div style="font-size:1rem;font-weight:600;margin-bottom:8px">Need Crop Insurance Help?</div>
-                <div style="font-size:0.85rem;color:var(--dim);margin-bottom:12px">Protect your corn investment with the right coverage.</div>
-                <a href="https://farmers1st.com" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600">Contact Farmers First Agri Service →</a>
             </div>
         </div>
     </main>
 
-    <footer>
-        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:0.8rem">
-            <span>© 2026 <a href="/" style="color:var(--accent);text-decoration:none">AGSIST</a>. All rights reserved.</span>
-            <span><a href="/learn.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Guides</a><a href="/tools.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Tools</a><a href="/resources.html" style="color:var(--dim);text-decoration:none">Resources</a></span>
-            <span>Made in the USA 🇺🇸</span>
+    <footer class="footer-c">
+        <div class="footer-c-inner">
+            <div class="footer-c-main">
+                <div class="brand-row"><a href="/" class="brand">AGSIST</a><span class="sep">|</span><span class="tagline">Free agricultural prices, tools & news</span></div>
+                <div class="site-links"><a href="corn-prices.html">Corn</a><a href="soybean-prices.html">Soybeans</a><a href="wheat-prices.html">Wheat</a><a href="tools.html">Tools</a><a href="fastfacts.html">Fast Facts</a><a href="calendar.html">Calendar</a><a href="resources.html">Resources</a></div>
+                <div class="legal-row"><span>© 2026 AGSIST</span></div>
+            </div>
+            <div class="footer-c-network"><h4>Our Network</h4><a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a><a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a><a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a></div>
         </div>
     </footer>
 
     <script>
+    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+        document.getElementById('mobile-menu').classList.toggle('active');
+        this.textContent = this.textContent === '☰' ? '✕' : '☰';
+    });
+    const crmGDU = {80:2000, 90:2300, 100:2500, 110:2700, 115:2900};
+    document.getElementById('plantDate').valueAsDate = new Date();
+    function calcDaily() {
+        let hi = Math.min(86, parseFloat(document.getElementById('highTemp').value) || 0);
+        let lo = Math.max(50, parseFloat(document.getElementById('lowTemp').value) || 0);
+        const gdu = Math.max(0, (hi + lo) / 2 - 50);
+        document.getElementById('dailyGDU').textContent = gdu.toFixed(1);
+    }
     function calcGDU() {
-        const hybridGDU = parseInt(document.getElementById('hybrid').value);
-        let high = parseFloat(document.getElementById('highTemp').value) || 0;
-        let low = parseFloat(document.getElementById('lowTemp').value) || 0;
-        const accum = parseFloat(document.getElementById('accumGDU').value) || 0;
-        
-        // Apply 86/50 rule
-        if (high > 86) high = 86;
-        if (low < 50) low = 50;
-        if (low > high) low = high;
-        
-        const todayGDU = Math.max(0, ((high + low) / 2) - 50);
-        const totalGDU = accum + todayGDU;
-        const progressPct = Math.min(100, (totalGDU / hybridGDU) * 100);
-        const remainGDU = Math.max(0, hybridGDU - totalGDU);
-        
-        // Estimate days remaining (assume 17 GDU/day average)
-        const avgDaily = 17;
-        const daysRemain = Math.ceil(remainGDU / avgDaily);
-        
-        document.getElementById('todayGDU').textContent = todayGDU.toFixed(1);
-        document.getElementById('totalGDU').textContent = Math.round(totalGDU).toLocaleString() + ' GDU';
-        document.getElementById('progressPct').textContent = progressPct.toFixed(0) + '%';
-        document.getElementById('remainGDU').textContent = Math.round(remainGDU).toLocaleString() + ' GDU';
-        document.getElementById('daysRemain').textContent = totalGDU >= hybridGDU ? 'Mature!' : daysRemain + ' days';
+        const crm = document.getElementById('crm').value;
+        const needed = crmGDU[crm];
+        const accum = parseFloat(document.getElementById('gduAccum').value) || 0;
+        const left = Math.max(0, needed - accum);
+        const pct = Math.min(100, (accum / needed) * 100);
+        document.getElementById('gduNeeded').textContent = needed.toLocaleString();
+        document.getElementById('gduHave').textContent = accum.toLocaleString();
+        document.getElementById('gduLeft').textContent = left.toLocaleString();
+        document.getElementById('progress').textContent = pct.toFixed(1) + '%';
     }
     calcGDU();
+    calcDaily();
     </script>
 </body>
 </html>

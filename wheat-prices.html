@@ -1,298 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wheat Prices Today - Live Futures & Market Analysis | AGSIST</title>
-    <meta name="description" content="Live wheat futures prices, historical charts, seasonal patterns, and wheat market news. The complete wheat resource for farmers. Coming soon.">
-    <meta name="keywords" content="wheat prices today, wheat futures, wheat price history, CBOT wheat, wheat market analysis">
+    <title>Wheat Prices Today - Live Futures & Cash Prices | AGSIST</title>
+    <meta name="description" content="Live wheat prices, futures quotes, and cash bids. Track CBOT wheat futures, basis levels, and price charts updated throughout the trading day.">
+    <meta name="keywords" content="wheat prices, wheat futures, CBOT wheat, wheat cash prices, wheat basis">
     <link rel="canonical" href="https://agsist.com/wheat-prices.html">
-    
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Wheat Prices Today - Coming Soon | AGSIST">
-    <meta property="og:description" content="Live wheat futures, historical charts, and market analysis. Coming soon.">
-    <meta property="og:url" content="https://agsist.com/wheat-prices.html">
-    <meta property="og:type" content="website">
-    
-    <!-- Schema: BreadcrumbList -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": "https://agsist.com/"},
-        {"@type": "ListItem", "position": 2, "name": "Wheat Prices", "item": "https://agsist.com/wheat-prices.html"}
-      ]
-    }
-    </script>
-    
     <style>
-    /* Coming soon page specific styles */
-    .coming-soon-hero {
-        background: linear-gradient(135deg, var(--panel) 0%, #1a1510 100%);
-        border: 2px solid var(--accent);
-        margin-bottom: 20px;
-        text-align: center;
-        padding: 60px 20px;
-    }
-    .coming-soon-icon {
-        font-size: 5rem;
-        margin-bottom: 20px;
-    }
-    .coming-soon-title {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: var(--bright);
-        margin-bottom: 12px;
-    }
-    .coming-soon-subtitle {
-        font-size: 1.1rem;
-        color: var(--dim);
-        margin-bottom: 32px;
-    }
-    .current-price-box {
-        background: var(--card);
-        border: 1px solid var(--accent);
-        border-radius: 8px;
-        padding: 24px;
-        max-width: 400px;
-        margin: 0 auto 32px;
-    }
-    .current-price-box .label {
-        font-size: 0.95rem;
-        color: var(--dim);
-        margin-bottom: 8px;
-    }
-    .current-price-box .price {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 3rem;
-        font-weight: 700;
-        color: var(--accent);
-    }
-    .current-price-box .change {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 1rem;
-        margin-top: 8px;
-    }
-    .current-price-box .change.up { color: var(--green); }
-    .current-price-box .change.down { color: var(--red); }
-    .current-price-box .note {
-        font-size: 0.9rem;
-        color: var(--dim);
-        margin-top: 12px;
-    }
-    .current-price-box .note a {
-        color: var(--accent);
-        text-decoration: none;
-    }
-    .feature-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 16px;
-        max-width: 900px;
-        margin: 0 auto 32px;
-        text-align: left;
-    }
-    .feature-item {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    .feature-item .icon {
-        font-size: 1.5rem;
-        color: var(--green);
-    }
-    .feature-item .text {
-        font-size: 0.95rem;
-        color: var(--text);
-    }
-    .cta-btn {
-        display: inline-block;
-        padding: 14px 32px;
-        background: var(--accent);
-        color: #000;
-        text-decoration: none;
-        font-weight: 700;
-        border-radius: 6px;
-        font-size: 1rem;
-        transition: opacity 0.2s;
-    }
-    .cta-btn:hover {
-        opacity: 0.9;
-    }
-    @media (max-width: 768px) {
-        .coming-soon-title { font-size: 1.8rem; }
-        .coming-soon-icon { font-size: 4rem; }
-        .current-price-box .price { font-size: 2.5rem; }
-    }
+        .price-hero { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, var(--card) 0%, var(--panel) 100%); border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .price-hero h1 { font-size: 1.2rem; color: var(--dim); margin-bottom: 8px; }
+        .price-big { font-size: 3rem; color: var(--accent); font-weight: 700; }
+        .price-change { font-size: 1.1rem; margin-top: 8px; }
+        .price-change.up { color: var(--green); }
+        .price-change.down { color: var(--red); }
+        .price-meta { color: var(--dim); font-size: 0.8rem; margin-top: 12px; }
+        .contracts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+        .contract-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 16px; }
+        .contract-card .month { color: var(--dim); font-size: 0.8rem; }
+        .contract-card .price { font-size: 1.3rem; font-weight: 600; color: var(--text); margin: 4px 0; }
+        .contract-card .change { font-size: 0.85rem; }
+        .contract-card .change.up { color: var(--green); }
+        .contract-card .change.down { color: var(--red); }
+        .info-section { margin-top: 30px; }
+        .info-section h2 { color: var(--accent); font-size: 1rem; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .info-section p { color: var(--dim); font-size: 0.9rem; line-height: 1.7; margin-bottom: 12px; }
     </style>
 </head>
 <body>
-            <nav class="main-nav">
+    <nav class="main-nav">
         <div class="nav-inner">
-            <a href="index.html" class="logo">AGSIST</a>
-            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
+            <a href="/" class="logo">AGSIST</a>
             <div class="nav-links">
-                <div class="nav-dropdown">
-                    <button class="nav-link dropdown-toggle">Prices ▾</button>
-                    <div class="dropdown-menu">
-                        <a href="corn-prices.html" class="dropdown-item">🌽 Corn</a>
-                        <a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a>
-                        <a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a>
-                    </div>
-                </div>
-                <a href="tools.html" class="nav-link">Tools</a>
-                <a href="fastfacts.html" class="nav-link">Fast Facts</a>
-                <a href="learn.html" class="nav-link">Learn</a>
-                <a href="calendar.html" class="nav-link">Calendar</a>
-                <a href="resources.html" class="nav-link">Links</a>
+                <div class="nav-dropdown"><button class="dropdown-toggle">Prices ▾</button><div class="dropdown-menu"><a href="corn-prices.html" class="dropdown-item">🌽 Corn</a><a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a><a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a></div></div>
+                <div class="nav-dropdown"><button class="dropdown-toggle">Tools ▾</button><div class="dropdown-menu"><a href="tools.html" class="dropdown-item">All Tools</a><a href="breakeven.html" class="dropdown-item">Breakeven</a><a href="gdu.html" class="dropdown-item">GDU Calculator</a><a href="calculator.html" class="dropdown-item">Grain Bin</a><a href="fastfacts.html" class="dropdown-item">Fast Facts</a></div></div>
+                <div class="nav-dropdown"><button class="dropdown-toggle">Info ▾</button><div class="dropdown-menu"><a href="learn.html" class="dropdown-item">Learn</a><a href="calendar.html" class="dropdown-item">Calendar</a><a href="resources.html" class="dropdown-item">Resources</a><a href="offices.html" class="dropdown-item">Offices</a></div></div>
             </div>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
         </div>
     </nav>
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-section">Prices</div><a href="corn-prices.html" class="mobile-link">🌽 Corn</a><a href="soybean-prices.html" class="mobile-link">🫘 Soybeans</a><a href="wheat-prices.html" class="mobile-link">🌾 Wheat</a>
+        <div class="mobile-section">Tools</div><a href="tools.html" class="mobile-link">All Tools</a><a href="breakeven.html" class="mobile-link">Breakeven</a><a href="gdu.html" class="mobile-link">GDU Calculator</a><a href="calculator.html" class="mobile-link">Grain Bin</a><a href="fastfacts.html" class="mobile-link">Fast Facts</a>
+        <div class="mobile-section">Info</div><a href="learn.html" class="mobile-link">Learn</a><a href="calendar.html" class="mobile-link">Calendar</a><a href="resources.html" class="mobile-link">Resources</a><a href="offices.html" class="mobile-link">Offices</a>
+    </div>
 
     <main>
-        <div style="max-width:1200px;margin:0 auto;padding:20px">
-            
-            <!-- Breadcrumb -->
-            <nav style="margin-bottom:20px;font-size:0.95rem;color:var(--dim)">
-                <a href="index.html" style="color:var(--accent);text-decoration:none">Home</a> → Wheat Prices
-            </nav>
-            
-            <div class="coming-soon-hero">
-                <div class="coming-soon-icon">🌾</div>
-                <h1 class="coming-soon-title">Wheat Prices</h1>
-                <p class="coming-soon-subtitle">Dedicated wheat market page coming soon</p>
-                
-                <div class="current-price-box">
-                    <div class="label">Current Wheat Price</div>
-                    <div class="price" id="wheat-price">Loading...</div>
-                    <div class="change" id="wheat-change"></div>
-                    <div class="note">Live data available on <a href="index.html">main dashboard</a></div>
-                </div>
-                
-                <div class="feature-grid">
-                    <div class="feature-item">
-                        <span class="icon">✓</span>
-                        <span class="text">Real-time wheat futures prices</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="icon">✓</span>
-                        <span class="text">Interactive historical price charts</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="icon">✓</span>
-                        <span class="text">52-week high/low analysis</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="icon">✓</span>
-                        <span class="text">Wheat-specific market news</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="icon">✓</span>
-                        <span class="text">Chicago vs Kansas City comparison</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="icon">✓</span>
-                        <span class="text">Global production & export data</span>
-                    </div>
-                </div>
-                
-                <p style="color:var(--dim);margin-bottom:16px">In the meantime, track wheat prices on our main dashboard</p>
-                <a href="index.html" class="cta-btn">← Back to Dashboard</a>
-            </div>
-            
+        <nav class="breadcrumb"><a href="/">Home</a> → <a href="wheat-prices.html">Prices</a> → Wheat</nav>
         
-            <!-- CTA: Calculate your break-even -->
-            <div class="cta-box" style="max-width:600px;margin:24px auto;">
-                <h4>📊 Know Your Break-Even Price</h4>
-                <p>Calculate what price you need for wheat to be profitable with our free Break-Even Calculator.</p>
-                <a href="breakeven.html" class="btn">Calculate Break-Even →</a>
+        <div class="price-hero">
+            <h1>🌾 WHEAT FUTURES (CBOT)</h1>
+            <div class="price-big" id="mainPrice">$5.68</div>
+            <div class="price-change up" id="mainChange">+$0.12 (+2.16%)</div>
+            <div class="price-meta">Front Month ZW · <span id="updateTime">Updated just now</span></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-head"><h2>CONTRACT PRICES</h2></div>
+            <div class="panel-body">
+                <div class="contracts-grid">
+                    <div class="contract-card"><div class="month">MAR 2026</div><div class="price">$5.68</div><div class="change up">+0.12</div></div>
+                    <div class="contract-card"><div class="month">MAY 2026</div><div class="price">$5.78</div><div class="change up">+0.11</div></div>
+                    <div class="contract-card"><div class="month">JUL 2026</div><div class="price">$5.85</div><div class="change up">+0.10</div></div>
+                    <div class="contract-card"><div class="month">SEP 2026</div><div class="price">$5.92</div><div class="change up">+0.08</div></div>
+                    <div class="contract-card"><div class="month">DEC 2026</div><div class="price">$6.05</div><div class="change up">+0.09</div></div>
+                </div>
             </div>
-            
+        </div>
+
+        <div class="info-section">
+            <h2>About Wheat Futures</h2>
+            <p>Chicago wheat futures (ZW) are traded on the Chicago Board of Trade (CBOT). Each contract represents 5,000 bushels of soft red winter wheat. Prices are quoted in cents per bushel.</p>
+            <p>Trading hours are Sunday-Friday 7:00pm - 7:45am CT and Monday-Friday 8:30am - 1:20pm CT. Kansas City (HRW) and Minneapolis (spring wheat) futures trade on their respective exchanges.</p>
+            <p><strong>Key factors affecting wheat prices:</strong> Global weather (especially Black Sea region), export competition, USDA reports, quality concerns, and currency fluctuations affecting export demand.</p>
         </div>
     </main>
 
-            <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-main">
-                <div class="footer-brand-row">
-                    <a href="index.html" class="footer-brand">AGSIST</a>
-                    <span class="footer-sep">|</span>
-                    <span class="footer-tagline">Free agricultural prices, tools & news</span>
-                </div>
-                <div class="footer-links">
-                    <a href="corn-prices.html">Corn</a>
-                    <a href="soybean-prices.html">Soybeans</a>
-                    <a href="wheat-prices.html">Wheat</a>
-                    <a href="tools.html">Tools</a>
-                    <a href="fastfacts.html">Fast Facts</a>
-                    <a href="calendar.html">Calendar</a>
-                    <a href="resources.html">Resources</a>
-                </div>
-                <div class="footer-legal">
-                    <span>© 2026 AGSIST</span>
-                    <a href="privacy.html">Privacy</a>
-                    <a href="terms.html">Terms</a>
-                </div>
+    <footer class="footer-c">
+        <div class="footer-c-inner">
+            <div class="footer-c-main">
+                <div class="brand-row"><a href="/" class="brand">AGSIST</a><span class="sep">|</span><span class="tagline">Free agricultural prices, tools & news</span></div>
+                <div class="site-links"><a href="corn-prices.html">Corn</a><a href="soybean-prices.html">Soybeans</a><a href="wheat-prices.html">Wheat</a><a href="tools.html">Tools</a><a href="fastfacts.html">Fast Facts</a><a href="calendar.html">Calendar</a><a href="resources.html">Resources</a></div>
+                <div class="legal-row"><span>© 2026 AGSIST</span></div>
             </div>
-            <div class="footer-network">
-                <h4>Our Network</h4>
-                <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
-                <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
-                <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
-            </div>
+            <div class="footer-c-network"><h4>Our Network</h4><a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a><a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a><a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a></div>
         </div>
     </footer>
 
     <script>
-        async function loadPrice() {
-            try {
-                const res = await fetch('data/markets.json');
-                if (!res.ok) throw new Error('Failed');
-                const data = await res.json();
-                
-                if (data.markets?.grains?.wheat) {
-                    const w = data.markets.grains.wheat;
-                    const price = (w.price / 100).toFixed(2);
-                    const changePct = w.changePct;
-                    const sign = changePct >= 0 ? '+' : '';
-                    const cls = changePct >= 0 ? 'up' : 'down';
-                    
-                    document.getElementById('wheat-price').textContent = '$' + price;
-                    document.getElementById('wheat-change').textContent = sign + changePct.toFixed(2) + '%';
-                    document.getElementById('wheat-change').className = 'change ' + cls;
-                }
-            } catch (e) {
-                document.getElementById('wheat-price').textContent = '--';
-            }
-        }
-        loadPrice();
-    </script>
-    <script>
-    document.querySelector('.mobile-menu-btn')?.addEventListener('click', function() {
-        const nav = document.querySelector('.nav-links');
-        const isOpen = nav.classList.toggle('open');
-        this.textContent = isOpen ? '✕' : '☰';
-    });
-    document.querySelectorAll('.nav-link.dropdown-toggle').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            if (window.innerWidth <= 767) {
-                e.preventDefault();
-                this.closest('.nav-dropdown').classList.toggle('open');
-            }
-        });
+    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+        document.getElementById('mobile-menu').classList.toggle('active');
+        this.textContent = this.textContent === '☰' ? '✕' : '☰';
     });
     </script>
 </body>

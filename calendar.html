@@ -1,196 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farm Calendar | AGSIST</title>
-    <meta name="description" content="Agricultural calendar with planting dates, harvest windows, and key farming deadlines.">
-    <link rel="stylesheet" href="/styles.css">
-    <style>
-        :root {
-            --primary: #2d5a27;
-            --primary-light: #4a7c43;
-            --accent: #f4a012;
-            --bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --text: #1a1a1a;
-            --text-muted: #6b7280;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
-        
-        header { background: var(--primary); color: white; padding: 1rem; }
-        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-        .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: white; }
-        nav a { color: white; text-decoration: none; margin-left: 1.5rem; opacity: 0.9; }
-        nav a:hover { opacity: 1; }
-        
-        main { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
-        h1 { color: var(--primary); margin-bottom: 1rem; }
-        
-        .calendar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
-        .month-card { background: var(--card-bg); border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        .month-card h3 { color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; margin-bottom: 1rem; }
-        .month-card ul { list-style: none; }
-        .month-card li { padding: 0.5rem 0; border-bottom: 1px solid #eee; }
-        .month-card li:last-child { border-bottom: none; }
-        
-        footer { background: var(--primary); color: white; padding: 2rem 1rem; margin-top: 3rem; text-align: center; }
-        footer a { color: var(--accent); }
-    </style>
+    <title>USDA Report Calendar - WASDE, Crop Progress Dates | AGSIST</title>
+    <meta name="description" content="USDA agricultural report release dates. Track WASDE, Crop Progress, Grain Stocks, Prospective Plantings, and other key report schedules.">
+    <link rel="canonical" href="https://agsist.com/calendar.html">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .cal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+        .cal-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+        .cal-card h3 { color: var(--accent); font-size: 0.95rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .cal-card p { color: var(--dim); font-size: 0.85rem; margin-bottom: 12px; line-height: 1.5; }
+        .cal-card .schedule { font-size: 0.8rem; color: var(--text); background: var(--bg); padding: 8px 12px; border-radius: 4px; }
+        .report-list { margin-top: 20px; }
+        .report-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .report-item:last-child { border-bottom: none; }
+        .report-name { color: var(--text); font-size: 0.9rem; }
+        .report-date { color: var(--accent); font-size: 0.85rem; }
+        .report-time { color: var(--dim); font-size: 0.8rem; }
+    </style>
 </head>
 <body>
-            <nav class="main-nav">
+    <nav class="main-nav">
         <div class="nav-inner">
-            <a href="index.html" class="logo">AGSIST</a>
-            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
+            <a href="/" class="logo">AGSIST</a>
             <div class="nav-links">
-                <div class="nav-dropdown">
-                    <button class="nav-link dropdown-toggle">Prices ▾</button>
-                    <div class="dropdown-menu">
-                        <a href="corn-prices.html" class="dropdown-item">🌽 Corn</a>
-                        <a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a>
-                        <a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a>
-                    </div>
-                </div>
-                <a href="tools.html" class="nav-link">Tools</a>
-                <a href="fastfacts.html" class="nav-link">Fast Facts</a>
-                <a href="learn.html" class="nav-link">Learn</a>
-                <a href="calendar.html" class="nav-link">Calendar</a>
-                <a href="resources.html" class="nav-link">Links</a>
+                <div class="nav-dropdown"><button class="dropdown-toggle">Prices ▾</button><div class="dropdown-menu"><a href="corn-prices.html" class="dropdown-item">🌽 Corn</a><a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a><a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a></div></div>
+                <div class="nav-dropdown"><button class="dropdown-toggle">Tools ▾</button><div class="dropdown-menu"><a href="tools.html" class="dropdown-item">All Tools</a><a href="breakeven.html" class="dropdown-item">Breakeven</a><a href="gdu.html" class="dropdown-item">GDU Calculator</a><a href="calculator.html" class="dropdown-item">Grain Bin</a><a href="fastfacts.html" class="dropdown-item">Fast Facts</a></div></div>
+                <div class="nav-dropdown"><button class="dropdown-toggle">Info ▾</button><div class="dropdown-menu"><a href="learn.html" class="dropdown-item">Learn</a><a href="calendar.html" class="dropdown-item">Calendar</a><a href="resources.html" class="dropdown-item">Resources</a><a href="offices.html" class="dropdown-item">Offices</a></div></div>
             </div>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
         </div>
     </nav>
-    
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-section">Prices</div><a href="corn-prices.html" class="mobile-link">🌽 Corn</a><a href="soybean-prices.html" class="mobile-link">🫘 Soybeans</a><a href="wheat-prices.html" class="mobile-link">🌾 Wheat</a>
+        <div class="mobile-section">Tools</div><a href="tools.html" class="mobile-link">All Tools</a><a href="breakeven.html" class="mobile-link">Breakeven</a><a href="gdu.html" class="mobile-link">GDU Calculator</a><a href="calculator.html" class="mobile-link">Grain Bin</a><a href="fastfacts.html" class="mobile-link">Fast Facts</a>
+        <div class="mobile-section">Info</div><a href="learn.html" class="mobile-link">Learn</a><a href="calendar.html" class="mobile-link">Calendar</a><a href="resources.html" class="mobile-link">Resources</a><a href="offices.html" class="mobile-link">Offices</a>
+    </div>
+
     <main>
-        <h1>Farm Calendar</h1>
-        <p>Key dates and activities for farmers throughout the growing season.</p>
-        
-        <div class="calendar-grid">
-            <div class="month-card">
-                <h3>🌱 Spring (Mar-May)</h3>
-                <ul>
-                    <li><strong>March:</strong> Soil testing, equipment prep</li>
-                    <li><strong>April:</strong> Early oat planting, field prep</li>
-                    <li><strong>May 1-15:</strong> Corn planting window</li>
-                    <li><strong>May 15-31:</strong> Soybean planting window</li>
-                </ul>
+        <nav class="breadcrumb"><a href="/">Home</a> → Calendar</nav>
+
+        <div class="panel">
+            <div class="panel-head"><h1>📅 USDA REPORT CALENDAR</h1></div>
+            <div class="panel-body">
+                <div class="cal-grid">
+                    <div class="cal-card">
+                        <h3>📊 WASDE</h3>
+                        <p>World Agricultural Supply & Demand Estimates. The most market-moving report with global production and ending stocks estimates.</p>
+                        <div class="schedule">Monthly · Usually 2nd week · 12:00 PM ET</div>
+                    </div>
+                    <div class="cal-card">
+                        <h3>🌱 Crop Progress</h3>
+                        <p>Weekly updates on planting progress, crop conditions, and harvest progress during growing season.</p>
+                        <div class="schedule">Weekly · Mondays · 4:00 PM ET (Apr-Nov)</div>
+                    </div>
+                    <div class="cal-card">
+                        <h3>🏭 Grain Stocks</h3>
+                        <p>Quarterly report of on-farm and off-farm grain stocks. Key for understanding supply tightness.</p>
+                        <div class="schedule">Quarterly · End of Mar, Jun, Sep, Dec</div>
+                    </div>
+                    <div class="cal-card">
+                        <h3>🚜 Prospective Plantings</h3>
+                        <p>Farmer planting intentions survey. First major indication of upcoming crop acreage.</p>
+                        <div class="schedule">Annual · End of March · 12:00 PM ET</div>
+                    </div>
+                    <div class="cal-card">
+                        <h3>📐 Acreage Report</h3>
+                        <p>Updated planted acreage based on June survey. Often differs from March intentions.</p>
+                        <div class="schedule">Annual · End of June · 12:00 PM ET</div>
+                    </div>
+                    <div class="cal-card">
+                        <h3>🌾 Crop Production</h3>
+                        <p>Monthly production forecasts with yield and acreage estimates during growing season.</p>
+                        <div class="schedule">Monthly · Aug-Jan · 12:00 PM ET</div>
+                    </div>
+                </div>
+
+                <div class="report-list">
+                    <h3 style="color:var(--accent);margin:24px 0 16px;font-size:0.95rem">UPCOMING REPORTS (2026)</h3>
+                    <div class="report-item"><span class="report-name">WASDE</span><span class="report-date">Feb 11</span></div>
+                    <div class="report-item"><span class="report-name">Crop Production Annual</span><span class="report-date">Feb 7</span></div>
+                    <div class="report-item"><span class="report-name">WASDE</span><span class="report-date">Mar 11</span></div>
+                    <div class="report-item"><span class="report-name">Prospective Plantings</span><span class="report-date">Mar 31</span></div>
+                    <div class="report-item"><span class="report-name">Grain Stocks</span><span class="report-date">Mar 31</span></div>
+                </div>
             </div>
-            
-            <div class="month-card">
-                <h3>☀️ Summer (Jun-Aug)</h3>
-                <ul>
-                    <li><strong>June:</strong> Crop scouting, weed management</li>
-                    <li><strong>July:</strong> Side-dress nitrogen, pest monitoring</li>
-                    <li><strong>August:</strong> Silage harvest begins</li>
-                    <li><strong>Late Aug:</strong> Winter wheat planting prep</li>
-                </ul>
-            </div>
-            
-            <div class="month-card">
-                <h3>🍂 Fall (Sep-Nov)</h3>
-                <ul>
-                    <li><strong>September:</strong> Corn silage, early grain harvest</li>
-                    <li><strong>Oct 1-15:</strong> Prime corn harvest</li>
-                    <li><strong>Oct 15-31:</strong> Soybean harvest</li>
-                    <li><strong>November:</strong> Fall tillage, cover crops</li>
-                </ul>
-            </div>
-            
-            <div class="month-card">
-                <h3>❄️ Winter (Dec-Feb)</h3>
-                <ul>
-                    <li><strong>December:</strong> Marketing planning, tax prep</li>
-                    <li><strong>January:</strong> Equipment maintenance</li>
-                    <li><strong>February:</strong> Seed orders, crop insurance</li>
-                    <li><strong>Late Feb:</strong> Frost seeding legumes</li>
-                </ul>
-            </div>
-        </div>
-    
-        <!-- CTA: Insurance Deadlines -->
-        <div class="cta-box" style="max-width:600px;margin:24px auto;">
-            <h4>📅 Don't Miss Insurance Deadlines</h4>
-            <p>Crop insurance sign-up deadlines are critical. Farmers First can help you stay covered year-round.</p>
-            <a href="https://farmers1st.com" target="_blank" rel="noopener" class="btn">Check Deadlines →</a>
         </div>
     </main>
-    
-            <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-main">
-                <div class="footer-brand-row">
-                    <a href="index.html" class="footer-brand">AGSIST</a>
-                    <span class="footer-sep">|</span>
-                    <span class="footer-tagline">Free agricultural prices, tools & news</span>
-                </div>
-                <div class="footer-links">
-                    <a href="corn-prices.html">Corn</a>
-                    <a href="soybean-prices.html">Soybeans</a>
-                    <a href="wheat-prices.html">Wheat</a>
-                    <a href="tools.html">Tools</a>
-                    <a href="fastfacts.html">Fast Facts</a>
-                    <a href="calendar.html">Calendar</a>
-                    <a href="resources.html">Resources</a>
-                </div>
-                <div class="footer-legal">
-                    <span>© 2026 AGSIST</span>
-                    <a href="privacy.html">Privacy</a>
-                    <a href="terms.html">Terms</a>
-                </div>
+
+    <footer class="footer-c">
+        <div class="footer-c-inner">
+            <div class="footer-c-main">
+                <div class="brand-row"><a href="/" class="brand">AGSIST</a><span class="sep">|</span><span class="tagline">Free agricultural prices, tools & news</span></div>
+                <div class="site-links"><a href="corn-prices.html">Corn</a><a href="soybean-prices.html">Soybeans</a><a href="wheat-prices.html">Wheat</a><a href="tools.html">Tools</a><a href="fastfacts.html">Fast Facts</a><a href="calendar.html">Calendar</a><a href="resources.html">Resources</a></div>
+                <div class="legal-row"><span>© 2026 AGSIST</span></div>
             </div>
-            <div class="footer-network">
-                <h4>Our Network</h4>
-                <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
-                <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
-                <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
-            </div>
+            <div class="footer-c-network"><h4>Our Network</h4><a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a><a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a><a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a></div>
         </div>
     </footer>
 
     <script>
-    document.querySelector('.menu-toggle')?.addEventListener('click', function() {
-        const nav = document.querySelector('.nav-links');
-        const isOpen = nav.classList.toggle('open');
-        this.textContent = isOpen ? '✕' : '☰';
-    });
-    document.querySelectorAll('.nav-dropdown-trigger').forEach(trigger => {
-        trigger.addEventListener('click', function(e) {
-            if (window.innerWidth <= 767) {
-                e.preventDefault();
-                this.closest('.nav-dropdown').classList.toggle('open');
-            }
-        });
-    });
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('nav')) {
-            document.querySelector('.nav-links')?.classList.remove('open');
-            const toggle = document.querySelector('.menu-toggle');
-            if (toggle) toggle.textContent = '☰';
-        }
-        if (!e.target.closest('.nav-dropdown')) {
-            document.querySelectorAll('.nav-dropdown.open').forEach(d => d.classList.remove('open'));
-        }
-    });
-    </script>
-    <script>
-    document.querySelector('.mobile-menu-btn')?.addEventListener('click', function() {
-        const nav = document.querySelector('.nav-links');
-        const isOpen = nav.classList.toggle('open');
-        this.textContent = isOpen ? '✕' : '☰';
-    });
-    document.querySelectorAll('.nav-link.dropdown-toggle').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            if (window.innerWidth <= 767) {
-                e.preventDefault();
-                this.closest('.nav-dropdown').classList.toggle('open');
-            }
-        });
+    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+        document.getElementById('mobile-menu').classList.toggle('active');
+        this.textContent = this.textContent === '☰' ? '✕' : '☰';
     });
     </script>
 </body>
