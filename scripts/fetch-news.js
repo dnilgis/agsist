@@ -192,7 +192,7 @@ async function fetchArticleContent(url) {
     if (!content || content.length < 200) {
       const paragraphs = html.match(/<p[^>]*>([\s\S]*?)<\/p>/gi);
       if (paragraphs) {
-        content = paragraphs.slice(0, 20).join(' '); // Get first 20 paragraphs
+        content = paragraphs.slice(0, 30).join(' '); // Get first 30 paragraphs
       }
     }
     
@@ -203,9 +203,9 @@ async function fetchArticleContent(url) {
       if (metaMatch) content = metaMatch[1];
     }
     
-    // Clean and truncate
+    // Clean and truncate - increased for comprehensive summaries
     content = cleanText(content);
-    return content.substring(0, 6000); // Increased to ~1500 tokens for better summaries
+    return content.substring(0, 12000); // ~3000 tokens for full article coverage
     
   } catch (e) {
     return null;
@@ -235,25 +235,31 @@ async function generateSummary(title, content, source) {
       },
       body: JSON.stringify({
         model: 'claude-3-haiku-20240307',
-        max_tokens: 400,
+        max_tokens: 1024,
         messages: [{
           role: 'user',
-          content: `Summarize this agricultural news article for farmers. Write a comprehensive summary that:
+          content: `You are creating a comprehensive summary of this agricultural news article. Your goal is to capture ALL the important information so a farmer doesn't need to read the original article.
 
-1. States the main news, finding, or announcement clearly
-2. Includes specific numbers, prices, dates, percentages, or data points mentioned
-3. Explains why this matters for farmers or the agriculture industry
-4. Notes any action items, deadlines, or recommendations if applicable
+Write a COMPLETE summary that includes:
+- The main news, announcement, or finding
+- ALL specific numbers, prices, statistics, percentages, and data points mentioned
+- ALL dates, deadlines, and timeframes
+- Names of people, organizations, companies, or programs mentioned
+- Geographic locations if relevant
+- Causes, reasons, or context for why this is happening
+- Impacts and implications for farmers and the ag industry
+- Any recommendations, action items, or next steps
+- Quotes from experts or officials if included
 
-Write 4-6 sentences. Be specific and practical - farmers want facts, not fluff. Use plain language.
+Write as many sentences as needed to fully summarize the article - typically 6-12 sentences for a standard article. Be thorough but concise. Use plain language. Do not add information not in the article.
 
 ARTICLE TITLE: ${title}
 SOURCE: ${source}
 
-ARTICLE CONTENT:
-${content.substring(0, 5000)}
+FULL ARTICLE CONTENT:
+${content.substring(0, 10000)}
 
-SUMMARY:`
+COMPREHENSIVE SUMMARY:`
         }]
       })
     });
