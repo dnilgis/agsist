@@ -1,23 +1,6 @@
 {
-  "updated": "2026-01-30T18:37:13.679Z",
+  "tweets": [],
   "count": 0,
-  "accounts": [
-    "RichNelson_Alln",
-    "texzona",
-    "ScottSeifert1",
-    "MGrayGrain",
-    "ChrisHydeGrain",
-    "MattBennettGrain",
-    "GrainStats",
-    "RampCapitalLLC",
-    "philaborninabarn",
-    "RyanHallYall",
-    "kannbwx",
-    "DroughtMonitor",
-    "ABORNINABARN",
-    "RoachAg",
-    "FarmPolicy",
-    "USDAFarmPolicy"
-  ],
-  "tweets": []
+  "accounts": 0,
+  "updated": null
 }

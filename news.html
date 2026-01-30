@@ -1,47 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ag News Feed | AGSIST - Live Agricultural Market Commentary</title>
-    <meta name="description" content="Live agricultural market news and commentary from top grain analysts, weather experts, and farm policy voices. Curated X/Twitter feed updated every 30 minutes.">
-    <meta name="keywords" content="ag news, grain market news, agricultural commentary, farm news, commodity market analysis, ag twitter">
-    <link rel="canonical" href="https://agsist.com/news.html">
-    
-    <!-- Schema.org -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Ag News Feed",
-        "description": "Live agricultural market news and commentary from top grain analysts and weather experts",
-        "url": "https://agsist.com/news.html",
-        "isPartOf": {
-            "@type": "WebSite",
-            "name": "AGSIST",
-            "url": "https://agsist.com"
-        }
-    }
-    </script>
-    
-    <!-- PWA -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#e6b042">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="AGSIST">
-    
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-    <link rel="apple-touch-icon" href="icon-192.png">
-    <meta property="og:title" content="Ag News Feed | AGSIST">
-    <meta property="og:description" content="Live agricultural market news from top grain analysts, weather experts, and farm policy voices.">
-    <meta property="og:image" content="https://agsist.com/og-image.png">
-    <meta property="og:url" content="https://agsist.com/news.html">
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
+    <title>Ag Market Feed | AGSIST</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -51,12 +13,15 @@
         :root {
             --bg: #0d0d0f;
             --card: #141418;
+            --card-hover: #1a1a1f;
             --border: #2a2a32;
             --text: #e8e8ec;
-            --dim: #a0a0a8;
+            --dim: #8a8a94;
             --accent: #e6b042;
-            --green: #4ade80;
-            --red: #f87171;
+            --grain: #e6b042;
+            --weather: #4a9eff;
+            --markets: #22c55e;
+            --farm: #a855f7;
         }
         
         body {
@@ -65,575 +30,265 @@
             color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
-            font-size: 16px;
         }
         
         /* NAV */
         nav {
             background: var(--card);
             border-bottom: 1px solid var(--border);
-            padding: 10px 16px;
+            padding: 12px 20px;
             position: sticky;
             top: 0;
             z-index: 100;
         }
-        
         .nav-inner {
-            max-width: 1600px;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: relative;
         }
-        
         .logo {
             font-weight: 700;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             color: var(--accent);
             text-decoration: none;
         }
-        
         .nav-links {
             display: flex;
-            gap: 6px;
+            gap: 24px;
         }
-        
         .nav-links a {
             color: var(--dim);
             text-decoration: none;
-            padding: 8px 14px;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            transition: all 0.2s;
+            font-size: 0.85rem;
+            transition: color 0.2s;
         }
-        
         .nav-links a:hover, .nav-links a.active {
-            color: var(--text);
-            background: var(--border);
-        }
-        
-        /* MOBILE MENU */
-        .mobile-menu-btn {
-            display: none;
-            background: var(--card);
-            border: 1px solid var(--border);
-            color: var(--text);
-            font-size: 1.4rem;
-            width: 44px;
-            height: 44px;
-            border-radius: 4px;
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .mobile-menu-btn:hover {
-            background: var(--border);
             color: var(--accent);
         }
         
-        /* NAV DROPDOWN */
-        .nav-dropdown {
-            position: relative;
-        }
-        
-        .nav-link.dropdown-toggle {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-        }
-        
-        .dropdown-arrow {
-            font-size: 0.7em;
-            transition: transform 0.2s;
-        }
-        
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: calc(100% + 4px);
-            left: 0;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            min-width: 180px;
-            padding: 6px 0;
-            z-index: 1000;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-        }
-        
-        .nav-dropdown:hover .dropdown-menu {
-            display: block;
-        }
-        
-        .dropdown-menu a {
-            display: block;
-            padding: 10px 14px;
-            color: var(--text);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-        
-        .dropdown-menu a:hover {
-            background: var(--border);
-            color: var(--accent);
-        }
-        
-        /* MAIN CONTENT */
+        /* MAIN */
         main {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 20px 16px;
+            padding: 24px 16px;
         }
         
-        /* PAGE HEADER */
         .page-header {
             margin-bottom: 24px;
+            text-align: center;
         }
-        
         .page-header h1 {
             font-size: 1.8rem;
             color: var(--accent);
             margin-bottom: 8px;
         }
-        
         .page-header p {
             color: var(--dim);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
         
-        /* CATEGORY FILTERS */
-        .feed-filters {
+        /* FILTERS */
+        .filters {
             display: flex;
             gap: 8px;
             margin-bottom: 20px;
             flex-wrap: wrap;
+            justify-content: center;
         }
-        
         .filter-btn {
             background: var(--card);
             border: 1px solid var(--border);
             color: var(--dim);
             padding: 8px 16px;
             border-radius: 20px;
-            font-size: 0.85rem;
-            font-family: inherit;
             cursor: pointer;
+            font-family: inherit;
+            font-size: 0.8rem;
             transition: all 0.2s;
         }
-        
         .filter-btn:hover {
             border-color: var(--accent);
             color: var(--text);
         }
-        
         .filter-btn.active {
             background: var(--accent);
             border-color: var(--accent);
             color: #000;
         }
+        .filter-btn[data-filter="grain"].active { background: var(--grain); }
+        .filter-btn[data-filter="weather"].active { background: var(--weather); }
+        .filter-btn[data-filter="markets"].active { background: var(--markets); }
+        .filter-btn[data-filter="farm"].active { background: var(--farm); }
         
-        /* FEED WIDGET STYLES */
-        .ag-feed {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        
-        .ag-feed-header {
-            background: linear-gradient(135deg, #2a2a2a 0%, var(--card) 100%);
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .ag-feed-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .ag-feed-updated {
-            font-size: 0.75rem;
-            color: var(--dim);
-        }
-        
-        .ag-feed-body {
-            max-height: 800px;
-            overflow-y: auto;
-        }
-        
-        .ag-tweet {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-            transition: background 0.15s;
-            cursor: pointer;
-            text-decoration: none;
-            display: block;
-            color: inherit;
-        }
-        
-        .ag-tweet:hover {
-            background: rgba(255,255,255,0.03);
-        }
-        
-        .ag-tweet:last-child {
-            border-bottom: none;
-        }
-        
-        .ag-tweet-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
-        }
-        
-        .ag-tweet-author {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .ag-tweet-name {
-            font-weight: 600;
-            color: var(--text);
-            font-size: 0.9rem;
-        }
-        
-        .ag-tweet-handle {
+        /* STATUS */
+        .feed-status {
+            text-align: center;
             color: var(--dim);
             font-size: 0.8rem;
-        }
-        
-        .ag-tweet-tag {
-            font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 4px;
-            background: #333;
-            color: var(--accent);
-            text-transform: uppercase;
-        }
-        
-        .ag-tweet-tag.grain { background: rgba(230,176,66,0.2); }
-        .ag-tweet-tag.weather { background: rgba(66,165,245,0.2); color: #42a5f5; }
-        .ag-tweet-tag.markets { background: rgba(102,187,106,0.2); color: #66bb6a; }
-        .ag-tweet-tag.farm { background: rgba(171,71,188,0.2); color: #ab47bc; }
-        
-        .ag-tweet-text {
-            color: var(--text);
-            font-size: 0.85rem;
-            line-height: 1.5;
-            margin-bottom: 8px;
-        }
-        
-        .ag-tweet-text a {
-            color: var(--accent);
-            pointer-events: none;
-        }
-        
-        /* Image grid styles */
-        .ag-tweet-images {
-            display: grid;
-            gap: 4px;
-            margin: 10px 0;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        .ag-tweet-images.img-1 { grid-template-columns: 1fr; }
-        .ag-tweet-images.img-2 { grid-template-columns: 1fr 1fr; }
-        .ag-tweet-images.img-3 { grid-template-columns: 1fr 1fr; }
-        .ag-tweet-images.img-4 { grid-template-columns: 1fr 1fr; }
-        
-        .ag-tweet-img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            background: #222;
-            border-radius: 4px;
-        }
-        
-        .ag-tweet-images.img-1 .ag-tweet-img { height: 240px; }
-        
-        .ag-tweet-video-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(230,176,66,0.2);
-            color: var(--accent);
-            font-size: 0.7rem;
-            padding: 3px 8px;
-            border-radius: 4px;
-            margin: 8px 0;
-        }
-        
-        .ag-tweet-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .ag-tweet-time {
-            font-size: 0.75rem;
-            color: #666;
-        }
-        
-        .ag-tweet-link {
-            font-size: 0.75rem;
-            color: var(--accent);
-            text-decoration: none;
-        }
-        
-        .ag-tweet-rt {
-            opacity: 0.8;
-        }
-        
-        .ag-tweet-rt .ag-tweet-text::before {
-            content: "🔁 ";
-        }
-        
-        .ag-feed-footer {
-            padding: 12px 20px;
-            background: var(--card);
-            border-top: 1px solid var(--border);
-            text-align: center;
-        }
-        
-        .ag-feed-footer a {
-            color: var(--dim);
-            font-size: 0.75rem;
-            text-decoration: none;
-        }
-        
-        .ag-feed-error, .ag-feed-loading {
-            padding: 40px 20px;
-            text-align: center;
-            color: var(--dim);
-        }
-        
-        /* Scrollbar styling */
-        .ag-feed-body::-webkit-scrollbar { width: 8px; }
-        .ag-feed-body::-webkit-scrollbar-track { background: var(--card); }
-        .ag-feed-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-        .ag-feed-body::-webkit-scrollbar-thumb:hover { background: #444; }
-        
-        /* ACCOUNTS LIST */
-        .accounts-section {
-            margin-top: 24px;
-            padding: 20px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-        }
-        
-        .accounts-section h3 {
-            color: var(--accent);
-            font-size: 0.9rem;
             margin-bottom: 16px;
         }
+        .feed-status .live { color: #22c55e; }
         
-        .accounts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        /* TWEET CARDS */
+        .feed {
+            display: flex;
+            flex-direction: column;
             gap: 12px;
         }
         
-        .account-item {
+        .tweet {
+            display: block;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+        }
+        .tweet:hover {
+            background: var(--card-hover);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .tweet-header {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            background: var(--bg);
-            border-radius: 6px;
-            text-decoration: none;
-            color: var(--text);
-            font-size: 0.85rem;
-            transition: all 0.2s;
+            gap: 12px;
+            margin-bottom: 12px;
         }
+        .tweet-author {
+            flex: 1;
+            min-width: 0;
+        }
+        .tweet-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+        .tweet-handle {
+            color: var(--dim);
+            font-size: 0.8rem;
+        }
+        .tweet-tag {
+            font-size: 0.65rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .tweet-tag.grain { background: rgba(230, 176, 66, 0.2); color: var(--grain); }
+        .tweet-tag.weather { background: rgba(74, 158, 255, 0.2); color: var(--weather); }
+        .tweet-tag.markets { background: rgba(34, 197, 94, 0.2); color: var(--markets); }
+        .tweet-tag.farm { background: rgba(168, 85, 247, 0.2); color: var(--farm); }
         
-        .account-item:hover {
+        .tweet-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--text);
+            margin-bottom: 12px;
+            word-wrap: break-word;
+        }
+        .tweet-text .mention { color: var(--weather); }
+        .tweet-text .ticker { color: var(--markets); font-weight: 600; }
+        .tweet-text .link { color: var(--accent); }
+        
+        /* Images */
+        .tweet-images {
+            display: grid;
+            gap: 4px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .tweet-images.img-1 { grid-template-columns: 1fr; }
+        .tweet-images.img-2, .tweet-images.img-3, .tweet-images.img-4 { grid-template-columns: 1fr 1fr; }
+        .tweet-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
             background: var(--border);
         }
+        .tweet-images.img-1 .tweet-img { height: 300px; }
         
-        .account-item .tag {
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            border-radius: 3px;
-            text-transform: uppercase;
+        .tweet-video-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.1);
+            color: var(--dim);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            margin-bottom: 12px;
         }
         
-        .account-item .tag.grain { background: rgba(230,176,66,0.2); color: var(--accent); }
-        .account-item .tag.weather { background: rgba(66,165,245,0.2); color: #42a5f5; }
-        .account-item .tag.markets { background: rgba(102,187,106,0.2); color: #66bb6a; }
-        .account-item .tag.farm { background: rgba(171,71,188,0.2); color: #ab47bc; }
-        
-        /* FOOTER */
-        .site-footer {
-            background: var(--card);
-            border-top: 1px solid var(--border);
-            padding: 32px 20px;
-            margin-top: 40px;
-        }
-        
-        .footer-inner {
-            max-width: 1600px;
-            margin: 0 auto;
+        .tweet-footer {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 32px;
-        }
-        
-        .footer-brand {
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: var(--accent);
-            text-decoration: none;
-        }
-        
-        .footer-sep {
-            color: var(--border);
-            margin: 0 12px;
-        }
-        
-        .footer-tagline {
+            align-items: center;
             color: var(--dim);
-            font-size: 0.85rem;
+            font-size: 0.75rem;
         }
-        
-        .footer-links {
-            display: flex;
-            gap: 16px;
-            margin-top: 16px;
-            flex-wrap: wrap;
-        }
-        
-        .footer-links a {
-            color: var(--dim);
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: color 0.2s;
-        }
-        
-        .footer-links a:hover {
+        .tweet-time { color: var(--dim); }
+        .tweet-link {
             color: var(--accent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .tweet:hover .tweet-link { opacity: 1; }
+        
+        .tweet.rt {
+            opacity: 0.85;
+            border-left: 3px solid var(--dim);
         }
         
-        .footer-legal {
-            display: flex;
-            gap: 16px;
-            margin-top: 16px;
-            font-size: 0.8rem;
+        /* Loading / Error */
+        .feed-loading, .feed-error {
+            text-align: center;
+            padding: 60px 20px;
             color: var(--dim);
         }
-        
-        .footer-legal a {
-            color: var(--dim);
-            text-decoration: none;
-        }
-        
-        .footer-legal a:hover {
-            color: var(--accent);
-        }
-        
-        .footer-network h4 {
-            color: var(--accent);
-            font-size: 0.8rem;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-        }
-        
-        .footer-network a {
+        .feed-loading::before {
+            content: "⏳";
             display: block;
-            color: var(--dim);
-            text-decoration: none;
-            font-size: 0.85rem;
-            margin-bottom: 8px;
+            font-size: 2rem;
+            margin-bottom: 12px;
+            animation: pulse 1.5s infinite;
         }
-        
-        .footer-network a:hover {
-            color: var(--accent);
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .feed-error::before {
+            content: "⚠️";
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 12px;
         }
         
         /* MOBILE */
-        @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: flex;
-            }
-            
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: var(--card);
-                border-top: 1px solid var(--border);
-                flex-direction: column;
-                padding: 16px;
-                gap: 8px;
-            }
-            
-            .nav-links.open {
-                display: flex;
-            }
-            
-            .nav-dropdown {
-                width: 100%;
-            }
-            
-            .dropdown-menu {
-                position: static;
-                box-shadow: none;
-                border: none;
-                background: transparent;
-                padding-left: 16px;
-            }
-            
-            .page-header h1 {
-                font-size: 1.4rem;
-            }
-            
-            .accounts-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-inner {
-                flex-direction: column;
-            }
+        @media (max-width: 600px) {
+            .nav-links { gap: 12px; font-size: 0.75rem; }
+            .page-header h1 { font-size: 1.4rem; }
+            .tweet { padding: 12px; }
+            .tweet-images.img-1 .tweet-img { height: 200px; }
+            .tweet-img { height: 140px; }
         }
     </style>
 </head>
 <body>
-    <nav class="main-nav">
+    <nav>
         <div class="nav-inner">
             <a href="index.html" class="logo">AGSIST</a>
-            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
             <div class="nav-links">
-                <div class="nav-dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">Prices <span class="dropdown-arrow">▾</span></a>
-                    <div class="dropdown-menu">
-                        <a href="corn-prices.html" class="dropdown-item">🌽 Corn Prices</a>
-                        <a href="soybean-prices.html">🫘 Soybean Prices</a>
-                        <a href="wheat-prices.html">🌾 Wheat Prices</a>
-                    </div>
-                </div>
-                <a href="tools.html"><span class="nav-link">Tools</span></a>
+                <a href="index.html">Dashboard</a>
                 <a href="fastfacts.html">Fast Facts</a>
                 <a href="learn.html">Learn</a>
                 <a href="news.html" class="active">News</a>
-                <a href="calendar.html">Calendar</a>
-                <a href="resources.html" class="nav-link">Links</a>
             </div>
         </div>
     </nav>
@@ -641,338 +296,157 @@
     <main>
         <div class="page-header">
             <h1>📡 Ag Market Feed</h1>
-            <p>Live commentary from grain analysts, weather experts, and farm policy voices. Updated every 30 minutes.</p>
+            <p>Live commentary from grain analysts, weather experts, and farm policy voices</p>
         </div>
         
-        <!-- Category Filters -->
-        <div class="feed-filters">
+        <div class="filters">
             <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="grain">🌽 Grain</button>
+            <button class="filter-btn" data-filter="grain">🌾 Grain</button>
             <button class="filter-btn" data-filter="weather">🌦️ Weather</button>
             <button class="filter-btn" data-filter="markets">📈 Markets</button>
             <button class="filter-btn" data-filter="farm">🚜 Farm</button>
         </div>
         
-        <!-- Feed Widget -->
-        <div class="ag-feed" id="agFeed">
-            <div class="ag-feed-header">
-                <div class="ag-feed-title">📡 Live Feed</div>
-                <div class="ag-feed-updated" id="agFeedUpdated">Loading...</div>
-            </div>
-            <div class="ag-feed-body" id="agFeedBody">
-                <div class="ag-feed-loading">Loading posts...</div>
-            </div>
-            <div class="ag-feed-footer">
-                <a href="https://github.com/dnilgis/agsist" target="_blank">Powered by AGSIST</a>
-            </div>
+        <div class="feed-status">
+            <span id="feedStatus">Loading...</span>
         </div>
         
-        <!-- Accounts We Follow -->
-        <div class="accounts-section">
-            <h3>📋 Accounts We Follow</h3>
-            <div class="accounts-grid">
-                <a href="https://x.com/RichNelsonMkts" target="_blank" class="account-item">
-                    <span class="tag grain">grain</span>
-                    @RichNelsonMkts
-                </a>
-                <a href="https://x.com/TheTedSpread" target="_blank" class="account-item">
-                    <span class="tag grain">grain</span>
-                    @TheTedSpread
-                </a>
-                <a href="https://x.com/ScottSeifert1" target="_blank" class="account-item">
-                    <span class="tag grain">grain</span>
-                    @ScottSeifert1
-                </a>
-                <a href="https://x.com/MGrayGrain" target="_blank" class="account-item">
-                    <span class="tag grain">grain</span>
-                    @MGrayGrain
-                </a>
-                <a href="https://x.com/ChrisHydeGrain" target="_blank" class="account-item">
-                    <span class="tag grain">grain</span>
-                    @ChrisHydeGrain
-                </a>
-                <a href="https://x.com/MattBennettGrain" target="_blank" class="account-item">
-                    <span class="tag grain">grain</span>
-                    @MattBennettGrain
-                </a>
-                <a href="https://x.com/GrainStats" target="_blank" class="account-item">
-                    <span class="tag grain">grain</span>
-                    @GrainStats
-                </a>
-                <a href="https://x.com/RampCapitalLLC" target="_blank" class="account-item">
-                    <span class="tag markets">markets</span>
-                    @RampCapitalLLC
-                </a>
-                <a href="https://x.com/RyanHallYall" target="_blank" class="account-item">
-                    <span class="tag weather">weather</span>
-                    @RyanHallYall
-                </a>
-                <a href="https://x.com/snodgrss" target="_blank" class="account-item">
-                    <span class="tag weather">weather</span>
-                    @snodgrss
-                </a>
-                <a href="https://x.com/DroughtMonitor" target="_blank" class="account-item">
-                    <span class="tag weather">weather</span>
-                    @DroughtMonitor
-                </a>
-                <a href="https://x.com/ABORNINABARN" target="_blank" class="account-item">
-                    <span class="tag weather">weather</span>
-                    @ABORNINABARN
-                </a>
-                <a href="https://x.com/RoachAg" target="_blank" class="account-item">
-                    <span class="tag farm">farm</span>
-                    @RoachAg
-                </a>
-                <a href="https://x.com/FarmPolicy" target="_blank" class="account-item">
-                    <span class="tag farm">farm</span>
-                    @FarmPolicy
-                </a>
-            </div>
+        <div class="feed" id="feed">
+            <div class="feed-loading">Loading feed...</div>
         </div>
     </main>
     
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-main">
-                <div class="footer-brand-row">
-                    <a href="index.html" class="footer-brand">AGSIST</a>
-                    <span class="footer-sep">|</span>
-                    <span class="footer-tagline">Free agricultural prices, tools & news</span>
-                </div>
-                <div class="footer-links">
-                    <a href="corn-prices.html">Corn</a>
-                    <a href="soybean-prices.html">Soybeans</a>
-                    <a href="wheat-prices.html">Wheat</a>
-                    <a href="tools.html">Tools</a>
-                    <a href="fastfacts.html">Fast Facts</a>
-                    <a href="news.html">News</a>
-                    <a href="calendar.html">Calendar</a>
-                    <a href="resources.html">Resources</a>
-                </div>
-                <div class="footer-legal">
-                    <span>© 2026 AGSIST</span>
-                    <a href="privacy.html">Privacy</a>
-                    <a href="terms.html">Terms</a>
-                </div>
-            </div>
-            <div class="footer-network">
-                <h4>Our Network</h4>
-                <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
-                <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
-                <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
-            </div>
-        </div>
-    </footer>
-    
     <script>
-    // Mobile menu toggle
-    document.querySelector('.mobile-menu-btn')?.addEventListener('click', function() {
-        const nav = document.querySelector('.nav-links');
-        const isOpen = nav.classList.toggle('open');
-        this.textContent = isOpen ? '✕' : '☰';
-    });
-    
-    // ═══════════════════════════════════════════════════════════════════════
-    // DIRECT RSSHUB FEED - NO GITHUB NEEDED
-    // ═══════════════════════════════════════════════════════════════════════
-    
-    // YOUR CLOUDFLARE WORKER URL - UPDATE THIS AFTER DEPLOYING
-    const WORKER_URL = 'https://agsist-feed.YOUR_SUBDOMAIN.workers.dev';
-    
-    const ACCOUNTS = [
-        { handle: 'RichNelsonMkts', name: 'Rich Nelson', tag: 'grain' },
-        { handle: 'TheTedSpread', name: 'Ted Seifried', tag: 'grain' },
-        { handle: 'ScottSeifert1', name: 'Scott Seifert', tag: 'grain' },
-        { handle: 'MGrayGrain', name: 'Mike Gray', tag: 'grain' },
-        { handle: 'ChrisHydeGrain', name: 'Chris Hyde', tag: 'grain' },
-        { handle: 'MattBennettGrain', name: 'Matt Bennett', tag: 'grain' },
-        { handle: 'GrainStats', name: 'Grain Stats', tag: 'grain' },
-        { handle: 'RampCapitalLLC', name: 'Ramp Capital', tag: 'markets' },
-        { handle: 'RyanHallYall', name: "Ryan Hall Y'all", tag: 'weather' },
-        { handle: 'snodgrss', name: 'Eric Snodgrass', tag: 'weather' },
-        { handle: 'DroughtMonitor', name: 'Drought Monitor', tag: 'weather' },
-        { handle: 'ABORNINABARN', name: 'AG Weather', tag: 'weather' },
-        { handle: 'RoachAg', name: 'Tim Roach', tag: 'farm' },
-        { handle: 'FarmPolicy', name: 'Farm Policy News', tag: 'farm' },
-    ];
-    
-    let allPosts = [];
-    let currentFilter = 'all';
-    
-    const body = document.getElementById('agFeedBody');
-    const updated = document.getElementById('agFeedUpdated');
-    
-    function timeAgo(dateStr) {
-        const now = Date.now();
-        const then = new Date(dateStr).getTime();
-        if (isNaN(then)) return '';
-        const diff = Math.floor((now - then) / 1000);
+        // ═══════════════════════════════════════════════════════════════════════
+        // CONFIG - UPDATE THIS WITH YOUR GITHUB USERNAME AND REPO
+        // ═══════════════════════════════════════════════════════════════════════
+        const GITHUB_USER = 'dnilgis';  // ← Your GitHub username
+        const GITHUB_REPO = 'agsist';   // ← Your repo name
+        const GITHUB_BRANCH = 'main';   // ← Your branch (main or master)
         
-        if (diff < 60) return 'just now';
-        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
-        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
-        if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
-        return new Date(dateStr).toLocaleDateString();
-    }
-    
-    function linkify(text) {
-        text = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
-        text = text.replace(/@(\w+)/g, '<a href="https://x.com/$1" target="_blank">@$1</a>');
-        text = text.replace(/\$([A-Z]+)/g, '<strong>$$$1</strong>');
-        return text;
-    }
-    
-    function renderImages(images) {
-        if (!images || images.length === 0) return '';
-        const count = Math.min(images.length, 4);
-        const imgHtml = images.slice(0, 4).map(url => 
-            `<img class="ag-tweet-img" src="${url}" alt="Post image" loading="lazy" onerror="this.style.display='none'">`
-        ).join('');
-        return `<div class="ag-tweet-images img-${count}">${imgHtml}</div>`;
-    }
-    
-    function renderPosts(posts) {
-        if (!posts || posts.length === 0) {
-            body.innerHTML = '<div class="ag-feed-error">No posts available yet. Refresh to try again.</div>';
-            return;
+        const FEED_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/data/tweets.json`;
+        
+        let allTweets = [];
+        let currentFilter = 'all';
+        
+        const feed = document.getElementById('feed');
+        const status = document.getElementById('feedStatus');
+        
+        // ═══════════════════════════════════════════════════════════════════════
+        // HELPERS
+        // ═══════════════════════════════════════════════════════════════════════
+        function timeAgo(dateStr) {
+            const now = Date.now();
+            const then = new Date(dateStr).getTime();
+            if (isNaN(then)) return '';
+            const diff = Math.floor((now - then) / 1000);
+            
+            if (diff < 60) return 'just now';
+            if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+            if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+            if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+            return new Date(dateStr).toLocaleDateString();
         }
         
-        body.innerHTML = posts.map(t => `
-            <a class="ag-tweet ${t.isRT ? 'ag-tweet-rt' : ''}" href="${t.link}" target="_blank" rel="noopener" data-tag="${t.tag}">
-                <div class="ag-tweet-header">
-                    <div class="ag-tweet-author">
-                        <span class="ag-tweet-name">${t.name}</span>
-                        <span class="ag-tweet-handle">@${t.handle}</span>
+        function linkify(text) {
+            if (!text) return '';
+            text = text.replace(/(https?:\/\/[^\s]+)/g, '<span class="link">$1</span>');
+            text = text.replace(/@(\w+)/g, '<span class="mention">@$1</span>');
+            text = text.replace(/\$([A-Z]{1,5})\b/g, '<span class="ticker">$$$1</span>');
+            return text;
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════════
+        // RENDER
+        // ═══════════════════════════════════════════════════════════════════════
+        function renderImages(images) {
+            if (!images || images.length === 0) return '';
+            const count = Math.min(images.length, 4);
+            const imgHtml = images.slice(0, 4).map(url => 
+                `<img class="tweet-img" src="${url}" alt="" loading="lazy" onerror="this.style.display='none'">`
+            ).join('');
+            return `<div class="tweet-images img-${count}">${imgHtml}</div>`;
+        }
+        
+        function renderTweets(tweets) {
+            if (!tweets || tweets.length === 0) {
+                feed.innerHTML = '<div class="feed-error">No tweets available yet.</div>';
+                return;
+            }
+            
+            feed.innerHTML = tweets.map(t => `
+                <a class="tweet ${t.isRT ? 'rt' : ''}" href="${t.link}" target="_blank" rel="noopener" data-tag="${t.tag}">
+                    <div class="tweet-header">
+                        <div class="tweet-author">
+                            <div class="tweet-name">${t.name || t.handle}</div>
+                            <div class="tweet-handle">@${t.handle}</div>
+                        </div>
+                        <span class="tweet-tag ${t.tag}">${t.tag}</span>
                     </div>
-                    <span class="ag-tweet-tag ${t.tag}">${t.tag}</span>
-                </div>
-                <div class="ag-tweet-text">${linkify(t.text)}</div>
-                ${renderImages(t.images)}
-                ${t.hasVideo ? '<div class="ag-tweet-video-badge">▶ Video</div>' : ''}
-                <div class="ag-tweet-footer">
-                    <span class="ag-tweet-time">${timeAgo(t.date)}</span>
-                    <span class="ag-tweet-link">View on 𝕏 →</span>
-                </div>
-            </a>
-        `).join('');
-    }
-    
-    function applyFilter(filter) {
-        currentFilter = filter;
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.filter === filter);
-        });
-        const filtered = filter === 'all' 
-            ? allPosts 
-            : allPosts.filter(p => p.tag === filter);
-        renderPosts(filtered);
-    }
-    
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
-    });
-    
-    // Parse RSS XML to posts
-    function parseRSS(xml, account) {
-        const posts = [];
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(xml, 'text/xml');
-        const items = doc.querySelectorAll('item');
-        
-        items.forEach((item, i) => {
-            if (i >= 3) return; // Max 3 per account
-            
-            const title = item.querySelector('title')?.textContent || '';
-            const link = item.querySelector('link')?.textContent || '';
-            const pubDate = item.querySelector('pubDate')?.textContent || '';
-            const description = item.querySelector('description')?.textContent || '';
-            
-            // Clean text
-            let text = title.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').trim();
-            
-            // Skip empty or short RT
-            if (!text || (text.startsWith('RT @') && text.length < 20)) return;
-            
-            // Extract images from description
-            const images = [];
-            const imgMatches = description.matchAll(/<img[^>]+src=["']([^"']+)["']/g);
-            for (const match of imgMatches) {
-                let url = match[1];
-                if (!url.includes('profile_images') && !url.includes('emoji')) {
-                    images.push(url);
-                }
-            }
-            
-            const hasVideo = description.includes('video') || description.includes('.mp4');
-            
-            posts.push({
-                id: link.match(/status\/(\d+)/)?.[1] || Date.now().toString(),
-                text: text.substring(0, 500),
-                link: link.replace(/nitter\.[^/]+/, 'x.com').replace('twitter.com', 'x.com'),
-                date: pubDate,
-                timestamp: new Date(pubDate).getTime(),
-                handle: account.handle,
-                name: account.name,
-                tag: account.tag,
-                images: images.slice(0, 4),
-                hasVideo,
-                isRT: text.startsWith('RT @'),
-            });
-        });
-        
-        return posts;
-    }
-    
-    // Fetch single account via Cloudflare Worker
-    async function fetchAccount(account) {
-        try {
-            const url = `${WORKER_URL}?handle=${account.handle}`;
-            const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
-            if (res.ok) {
-                const xml = await res.text();
-                if (xml.includes('<item>')) {
-                    return parseRSS(xml, account);
-                }
-            }
-        } catch (e) {
-            console.log(`Failed to fetch @${account.handle}:`, e.message);
+                    <div class="tweet-text">${linkify(t.text)}</div>
+                    ${renderImages(t.images)}
+                    ${t.hasVideo ? '<div class="tweet-video-badge">▶ Contains video</div>' : ''}
+                    <div class="tweet-footer">
+                        <span class="tweet-time">${timeAgo(t.date)}</span>
+                        <span class="tweet-link">View on 𝕏 →</span>
+                    </div>
+                </a>
+            `).join('');
         }
-        return [];
-    }
-    
-    // Fetch all accounts
-    async function fetchAllFeeds() {
-        body.innerHTML = '<div class="ag-feed-loading">Loading live feed...</div>';
-        updated.textContent = 'Fetching...';
-        console.log('Starting feed fetch for', ACCOUNTS.length, 'accounts...');
         
-        const results = await Promise.allSettled(
-            ACCOUNTS.map(account => fetchAccount(account))
-        );
+        // ═══════════════════════════════════════════════════════════════════════
+        // FILTER
+        // ═══════════════════════════════════════════════════════════════════════
+        function applyFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            
+            const filtered = filter === 'all' 
+                ? allTweets 
+                : allTweets.filter(t => t.tag === filter);
+            
+            renderTweets(filtered);
+        }
         
-        const successful = results.filter(r => r.status === 'fulfilled' && r.value.length > 0);
-        console.log('Fetched', successful.length, 'accounts successfully');
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
+        });
         
-        allPosts = results
-            .filter(r => r.status === 'fulfilled')
-            .flatMap(r => r.value)
-            .sort((a, b) => b.timestamp - a.timestamp)
-            .slice(0, 50);
+        // ═══════════════════════════════════════════════════════════════════════
+        // FETCH
+        // ═══════════════════════════════════════════════════════════════════════
+        async function fetchFeed() {
+            try {
+                // Add cache buster
+                const res = await fetch(FEED_URL + '?t=' + Date.now());
+                
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                
+                const data = await res.json();
+                
+                if (data.tweets && data.tweets.length > 0) {
+                    allTweets = data.tweets;
+                    const updated = data.updated ? new Date(data.updated).toLocaleTimeString() : 'Unknown';
+                    status.innerHTML = `<span class="live">●</span> ${data.count} posts • Updated ${updated}`;
+                    applyFilter(currentFilter);
+                } else {
+                    status.textContent = 'Waiting for first fetch...';
+                    feed.innerHTML = '<div class="feed-error">Feed is empty. The GitHub Action may not have run yet.<br><small>It runs every 30 minutes, or you can trigger it manually.</small></div>';
+                }
+            } catch (err) {
+                console.error('Feed fetch error:', err);
+                status.textContent = 'Feed unavailable';
+                feed.innerHTML = `<div class="feed-error">Could not load feed.<br><small>${err.message}</small></div>`;
+            }
+        }
         
-        console.log('Total posts:', allPosts.length);
+        // Initial fetch
+        fetchFeed();
         
-        updated.textContent = allPosts.length > 0 
-            ? `Live • ${allPosts.length} posts`
-            : 'Feed unavailable';
-        
-        renderPosts(allPosts);
-    }
-    
-    // Initial fetch
-    fetchAllFeeds();
-    
-    // Auto-refresh every 5 minutes
-    setInterval(fetchAllFeeds, 5 * 60 * 1000);
+        // Refresh every 5 minutes
+        setInterval(fetchFeed, 5 * 60 * 1000);
     </script>
 </body>
 </html>

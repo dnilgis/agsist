@@ -1,217 +1,213 @@
-/**
- * AGSIST X (Twitter) Feed Aggregator
- * Fetches posts from RSS feeds (no API needed)
- * 
- * Add/remove accounts in the ACCOUNTS array below
- */
+// Fetch tweets from RSSHub/Nitter and save to JSON
+// No dependencies needed - uses built-in fetch
 
 const fs = require('fs');
 const path = require('path');
 
-// ═══════════════════════════════════════════════════════════════════════════
-// CONFIGURE YOUR ACCOUNTS HERE
-// ═══════════════════════════════════════════════════════════════════════════
-const ACCOUNTS = [
-  // === GRAIN MARKETS ===
-  { handle: 'RichNelson_Alln', name: 'Rich Nelson', tag: 'grain' },        // Allendale grain analyst
-  { handle: 'texzona', name: 'Ted Seifried', tag: 'grain' },               // Zaner Ag Hedge
-  { handle: 'ScottSeifert1', name: 'Scott Seifert', tag: 'grain' },        // Grain markets
-  { handle: 'MGrayGrain', name: 'Mike Gray', tag: 'grain' },               // Grain analyst
-  { handle: 'ChrisHydeGrain', name: 'Chris Hyde', tag: 'grain' },          // Grain markets
-  { handle: 'MattBennettGrain', name: 'Matt Bennett', tag: 'grain' },      // AgMarket.Net
-  { handle: 'GrainStats', name: 'Grain Stats', tag: 'grain' },             // Grain data
-  
-  // === MARKETS & TRADING ===
-  { handle: 'RampCapitalLLC', name: 'Ramp Capital', tag: 'markets' },      // Market commentary
-  { handle: 'philaborninabarn', name: 'Phil in the Barn', tag: 'markets' },// Trading perspective
-  
-  // === WEATHER ===
-  { handle: 'RyanHallYall', name: 'Ryan Hall Y\'all', tag: 'weather' },   // Severe weather
-  { handle: 'kannbwx', name: 'Eric Snodgrass', tag: 'weather' },           // Ag weather - Nutrien
-  { handle: 'DroughtMonitor', name: 'Drought Monitor', tag: 'weather' },   // USDM official
-  { handle: 'ABORNINABARN', name: 'AG Weather', tag: 'weather' },          // Farm weather
-  
-  // === FARM LIFE & POLICY ===
-  { handle: 'RoachAg', name: 'Tim Roach', tag: 'farm' },                   // Farm perspective
-  { handle: 'FarmPolicy', name: 'Farm Policy News', tag: 'farm' },         // Ag policy
-  { handle: 'USDAFarmPolicy', name: 'USDA Farm Policy', tag: 'farm' },     // Official USDA
-];
-
-// RSS sources - script tries each until one works
-// RSSHub is most reliable, Nitter instances as fallback
+// Try RSSHub first (faster), then xcancel (most stable Nitter)
 const RSS_SOURCES = [
-  // RSSHub instances (most reliable)
-  { type: 'rsshub', base: 'https://rsshub.app/twitter/user' },
-  { type: 'rsshub', base: 'https://rsshub.rssforever.com/twitter/user' },
-  { type: 'rsshub', base: 'https://rss.fatpandac.com/twitter/user' },
-  // Nitter instances (fallback)
-  { type: 'nitter', base: 'https://nitter.poast.org' },
-  { type: 'nitter', base: 'https://nitter.privacydev.net' },
-  { type: 'nitter', base: 'https://n.opnxng.com' },
+  { type: 'rsshub', base: 'https://rsshub.app/twitter/user/' },
+  { type: 'nitter', base: 'https://xcancel.com/' },
 ];
 
-const MAX_TWEETS_PER_ACCOUNT = 3;
-const MAX_TOTAL_TWEETS = 40;
-const OUTPUT_FILE = path.join(__dirname, '..', 'data', 'tweets.json');
-
-// ═══════════════════════════════════════════════════════════════════════════
-// FETCH LOGIC
-// ═══════════════════════════════════════════════════════════════════════════
-
-async function fetchWithTimeout(url, timeout = 10000) {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
-  try {
-    const res = await fetch(url, { signal: controller.signal });
-    clearTimeout(id);
-    return res;
-  } catch (e) {
-    clearTimeout(id);
-    throw e;
-  }
-}
+// 🛡️ VERIFIED HANDLES - Updated early 2026
+const ACCOUNTS = [
+  { handle: 'RichNelsonMkts', name: 'Rich Nelson', tag: 'grain' },      // Corrected from @RichNelson_Alln
+  { handle: 'TheTedSpread', name: 'Ted Seifried', tag: 'grain' },       // Corrected from @texzona
+  { handle: 'ScottSeifert1', name: 'Scott Seifert', tag: 'grain' },     // Verified
+  { handle: 'GrainStats', name: 'Grain Stats', tag: 'grain' },          // Verified
+  { handle: 'RampCapitalLLC', name: 'Ramp Capital', tag: 'markets' },   // Verified
+  { handle: 'RyanHallYall', name: "Ryan Hall Y'all", tag: 'weather' },  // Verified
+  { handle: 'snodgrss', name: 'Eric Snodgrass', tag: 'weather' },       // Corrected from @kannbwx
+];
 
 function parseRSS(xml, account) {
   const tweets = [];
   const itemRegex = /<item>([\s\S]*?)<\/item>/g;
-  const titleRegex = /<title><!\[CDATA\[([\s\S]*?)\]\]><\/title>|<title>([\s\S]*?)<\/title>/;
-  const linkRegex = /<link>([\s\S]*?)<\/link>/;
-  const pubDateRegex = /<pubDate>([\s\S]*?)<\/pubDate>/;
-  const descRegex = /<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>|<description>([\s\S]*?)<\/description>/;
-
   let match;
-  while ((match = itemRegex.exec(xml)) !== null) {
+  let count = 0;
+
+  while ((match = itemRegex.exec(xml)) !== null && count < 3) {
     const item = match[1];
-    
-    const titleMatch = item.match(titleRegex);
-    const linkMatch = item.match(linkRegex);
-    const dateMatch = item.match(pubDateRegex);
-    const descMatch = item.match(descRegex);
-    
-    let text = titleMatch ? (titleMatch[1] || titleMatch[2] || '') : '';
-    // Clean up the text
-    text = text.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').trim();
-    
-    // Skip retweets if they're just "RT @someone"
-    if (text.startsWith('RT @') && text.length < 20) continue;
-    // Skip replies that are just @mentions
-    if (text.startsWith('@') && !text.includes(' ')) continue;
-    
-    const link = linkMatch ? linkMatch[1].trim() : '';
-    const pubDate = dateMatch ? dateMatch[1].trim() : '';
-    
-    // Extract tweet ID from link
-    const idMatch = link.match(/status\/(\d+)/);
-    const id = idMatch ? idMatch[1] : Date.now().toString();
-    
-    // Extract images from description
-    const descContent = descMatch ? (descMatch[1] || descMatch[2] || '') : '';
+
+    const title = (item.match(/<title><!\[CDATA\[([\s\S]*?)\]\]><\/title>/) ||
+                   item.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || '';
+    const link = (item.match(/<link>([\s\S]*?)<\/link>/) || [])[1] || '';
+    const pubDate = (item.match(/<pubDate>([\s\S]*?)<\/pubDate>/) || [])[1] || '';
+    const description = (item.match(/<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>/) ||
+                        item.match(/<description>([\s\S]*?)<\/description>/) || [])[1] || '';
+
+    let text = title
+      .replace(/<[^>]*>/g, '')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .trim();
+
+    if (!text || text.length < 5 || text.includes('not yet whitelisted')) continue;
+
+    const tweetId = (link.match(/status\/(\d+)/) || [])[1] || Date.now().toString();
+
+    // Extract images
     const images = [];
     const imgRegex = /<img[^>]+src=["']([^"']+)["']/g;
     let imgMatch;
-    while ((imgMatch = imgRegex.exec(descContent)) !== null) {
-      let imgUrl = imgMatch[1];
-      // Convert nitter image URLs to original Twitter/X URLs if possible
-      if (imgUrl.includes('nitter')) {
-        imgUrl = imgUrl.replace(/https?:\/\/[^/]+\/pic\//, 'https://pbs.twimg.com/');
-      }
-      // Skip profile pics and emoji
-      if (!imgUrl.includes('profile_images') && !imgUrl.includes('emoji')) {
-        images.push(imgUrl);
+    while ((imgMatch = imgRegex.exec(description)) !== null) {
+      const url = imgMatch[1];
+      if (!url.includes('profile_images') && !url.includes('emoji') && !url.includes('twemoji')) {
+        // Convert to pbs.twimg.com if needed
+        let cleanUrl = url;
+        if (url.includes('/pic/')) {
+          cleanUrl = 'https://pbs.twimg.com/' + url.split('/pic/')[1];
+        }
+        images.push(cleanUrl);
       }
     }
-    
-    // Check for video
-    const hasVideo = descContent.includes('video') || descContent.includes('.mp4');
-    
-    if (text && link) {
-      tweets.push({
-        id,
-        text: text.substring(0, 500), // Limit length
-        link: link.replace(/nitter\.[^/]+/, 'x.com').replace('twitter.com', 'x.com'),
-        date: pubDate,
-        timestamp: new Date(pubDate).getTime(),
-        handle: account.handle,
-        name: account.name,
-        tag: account.tag,
-        images: images.slice(0, 4), // Max 4 images per post
-        hasVideo,
-        isRT: text.startsWith('RT @'),
-      });
-    }
+
+    const hasVideo = description.includes('video') || description.includes('.mp4');
+
+    const xLink = link
+      .replace(/xcancel\.com/, 'x.com')
+      .replace(/nitter\.[^\/]+/, 'x.com')
+      .replace('twitter.com', 'x.com');
+
+    tweets.push({
+      id: tweetId,
+      text: text.substring(0, 500),
+      link: xLink,
+      date: pubDate,
+      timestamp: new Date(pubDate).getTime() || 0,
+      handle: account.handle,
+      name: account.name,
+      tag: account.tag,
+      images: images.slice(0, 4),
+      hasVideo,
+      isRT: text.startsWith('RT @'),
+    });
+
+    count++;
   }
-  
-  return tweets.slice(0, MAX_TWEETS_PER_ACCOUNT);
+
+  return tweets;
 }
 
-async function fetchAccountTweets(account) {
+async function fetchAccount(account) {
   for (const source of RSS_SOURCES) {
     let url;
     if (source.type === 'rsshub') {
-      url = `${source.base}/${account.handle}`;
+      url = `${source.base}${account.handle}`;
     } else {
-      url = `${source.base}/${account.handle}/rss`;
+      url = `${source.base}${account.handle}/rss`;
     }
     
     try {
-      console.log(`  Trying ${source.base}...`);
-      const res = await fetchWithTimeout(url);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+      
+      const res = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+          'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+        }
+      });
+      
+      clearTimeout(timeout);
+      
       if (res.ok) {
         const xml = await res.text();
-        if (xml.includes('<item>')) {
-          const tweets = parseRSS(xml, account);
-          console.log(`  ✓ Got ${tweets.length} tweets from ${source.type}`);
-          return tweets;
+        if (xml.includes('<item>') && !xml.includes('not yet whitelisted')) {
+          console.log(`✓ @${account.handle} via ${source.type}`);
+          return parseRSS(xml, account);
         }
       }
     } catch (e) {
-      console.log(`  ✗ ${source.base} failed: ${e.message}`);
+      // Try next source
     }
   }
-  console.log(`  ✗ All sources failed for @${account.handle}`);
-  return [];
+  
+  console.log(`✗ @${account.handle} - all sources failed`);
+  return null; // Return null instead of empty array to signal failure
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function main() {
-  console.log('═══════════════════════════════════════════════════');
-  console.log('AGSIST X Feed Fetcher');
-  console.log('═══════════════════════════════════════════════════\n');
+  console.log('Fetching ag feed...\n');
+  
+  // 🛡️ SAFETY GUARD: Load existing tweets to preserve on partial failure
+  const outputPath = path.join(process.cwd(), 'data', 'tweets.json');
+  let existingData = { tweets: [] };
+  try {
+    if (fs.existsSync(outputPath)) {
+      existingData = JSON.parse(fs.readFileSync(outputPath, 'utf8'));
+      console.log(`Loaded ${existingData.tweets?.length || 0} existing tweets as backup\n`);
+    }
+  } catch (e) {
+    console.log('No existing data to preserve');
+  }
+  
+  // Group existing tweets by handle for easy lookup
+  const existingByHandle = {};
+  for (const tweet of (existingData.tweets || [])) {
+    if (!existingByHandle[tweet.handle]) {
+      existingByHandle[tweet.handle] = [];
+    }
+    existingByHandle[tweet.handle].push(tweet);
+  }
   
   const allTweets = [];
+  let successCount = 0;
+  let preservedCount = 0;
   
   for (const account of ACCOUNTS) {
-    console.log(`Fetching @${account.handle}...`);
-    const tweets = await fetchAccountTweets(account);
-    allTweets.push(...tweets);
-    // Small delay between accounts to be nice
-    await new Promise(r => setTimeout(r, 1000));
+    const tweets = await fetchAccount(account);
+    
+    if (tweets && tweets.length > 0) {
+      // Fresh tweets fetched successfully
+      allTweets.push(...tweets);
+      successCount++;
+    } else if (existingByHandle[account.handle]?.length > 0) {
+      // 🛡️ SAFETY GUARD: Keep old tweets if fetch failed
+      console.log(`  ↳ Preserving ${existingByHandle[account.handle].length} old tweets for @${account.handle}`);
+      allTweets.push(...existingByHandle[account.handle]);
+      preservedCount++;
+    }
+    
+    // Small delay between accounts
+    await sleep(500);
   }
   
-  // Sort by timestamp (newest first)
+  // Sort by date
   allTweets.sort((a, b) => b.timestamp - a.timestamp);
   
-  // Limit total
-  const finalTweets = allTweets.slice(0, MAX_TOTAL_TWEETS);
-  
-  // Ensure output directory exists
-  const outputDir = path.dirname(OUTPUT_FILE);
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
-  
-  // Write output
   const output = {
+    tweets: allTweets.slice(0, 50),
+    count: allTweets.length,
+    accounts: successCount,
+    preserved: preservedCount,
     updated: new Date().toISOString(),
-    count: finalTweets.length,
-    accounts: ACCOUNTS.map(a => a.handle),
-    tweets: finalTweets,
   };
   
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2));
+  // Ensure data directory exists
+  const dataDir = path.join(process.cwd(), 'data');
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
   
-  console.log('\n═══════════════════════════════════════════════════');
-  console.log(`✓ Saved ${finalTweets.length} tweets to ${OUTPUT_FILE}`);
-  console.log('═══════════════════════════════════════════════════');
+  // Write JSON
+  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
+  
+  console.log(`\n✅ Saved ${output.count} tweets`);
+  console.log(`   Fresh: ${successCount}/${ACCOUNTS.length} accounts`);
+  if (preservedCount > 0) {
+    console.log(`   Preserved: ${preservedCount} accounts (from previous run)`);
+  }
+  console.log(`   Output: ${outputPath}`);
 }
 
 main().catch(console.error);
