@@ -1,268 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USDA Calendar 2026 - Report Dates, Crop Insurance Deadlines & WASDE Schedule | AGSIST</title>
-    <meta name="description" content="2026 USDA calendar with WASDE report dates, crop insurance deadlines, acreage reports, and grain stocks releases. Never miss a market-moving report or deadline.">
-    <meta name="keywords" content="USDA calendar 2026, WASDE report dates, crop insurance deadlines, acreage report date, grain stocks report, USDA report schedule">
-    <link rel="canonical" href="https://agsist.com/calendar.html">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="USDA Calendar 2026 - Report Dates & Deadlines">
-    <meta property="og:description" content="WASDE report dates, crop insurance deadlines, and market-moving USDA reports for 2026.">
-    <meta property="og:image" content="https://agsist.com/og-image.png">
-    <meta property="og:url" content="https://agsist.com/calendar.html">
-    <meta name="twitter:card" content="summary_large_image">
-    
-    <!-- Schema: BreadcrumbList -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": "https://agsist.com/"},
-        {"@type": "ListItem", "position": 2, "name": "USDA Calendar & Deadlines", "item": "https://agsist.com/calendar.html"}
-      ]
-    }
-    </script>
+    <title>Farm Calendar | AGSIST</title>
+    <meta name="description" content="Agricultural calendar with planting dates, harvest windows, and key farming deadlines.">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        :root {
+            --primary: #2d5a27;
+            --primary-light: #4a7c43;
+            --accent: #f4a012;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #1a1a1a;
+            --text-muted: #6b7280;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        
+        header { background: var(--primary); color: white; padding: 1rem; }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: white; }
+        nav a { color: white; text-decoration: none; margin-left: 1.5rem; opacity: 0.9; }
+        nav a:hover { opacity: 1; }
+        
+        main { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
+        h1 { color: var(--primary); margin-bottom: 1rem; }
+        
+        .calendar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+        .month-card { background: var(--card-bg); border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .month-card h3 { color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+        .month-card ul { list-style: none; }
+        .month-card li { padding: 0.5rem 0; border-bottom: 1px solid #eee; }
+        .month-card li:last-child { border-bottom: none; }
+        
+        footer { background: var(--primary); color: white; padding: 2rem 1rem; margin-top: 3rem; text-align: center; }
+        footer a { color: var(--accent); }
+    </style>
 </head>
 <body>
-    <header>
-        <div class="header-inner">
-            <a href="/" class="logo">
-                <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
-                <div class="logo-text">AGSIST</div>
-            </a>
-            <button class="menu-toggle" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
-            <nav class="nav">
-                <a href="/">DASHBOARD</a>
-                <a href="/calculator.html">GRAIN BIN</a>
-                <a href="/gdu.html">GDU CALC</a>
-                <a href="/breakeven.html">BREAK-EVEN</a>
-                <a href="/offices.html">OFFICES</a>
-                <a href="/resources.html">RESOURCES</a>
-            </nav>
+        <nav>
+        <div class="nav-inner">
+            <a href="index.html" class="logo">AGSIST</a>
+            <button class="menu-toggle" aria-label="Menu">☰</button>
+            <div class="nav-links">
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-dropdown-trigger">Prices <span class="dropdown-arrow">▾</span></a>
+                    <div class="nav-dropdown-content">
+                        <a href="corn-prices.html">🌽 Corn Prices</a>
+                        <a href="soybean-prices.html">🫘 Soybean Prices</a>
+                        <a href="wheat-prices.html">🌾 Wheat Prices</a>
+                    </div>
+                </div>
+                <a href="tools.html">Tools</a>
+                <a href="fastfacts.html">Fast Facts</a>
+                <a href="learn.html">Learn</a>
+                <a href="calendar.html">Calendar</a>
+                <a href="resources.html">Links</a>
+            </div>
         </div>
-    </header>
-
+    </nav>
+    
     <main>
-        <div style="padding:20px;max-width:1200px;margin:0 auto">
-            <nav style="margin-bottom:20px;font-size:0.85rem;color:var(--dim)">
-                <a href="/" style="color:var(--accent);text-decoration:none">Home</a> → USDA Calendar & Deadlines
-            </nav>
-            
-            <div class="panel">
-                <div class="panel-head"><h1 style="font-size:0.9rem;margin:0">📅 USDA CALENDAR & DEADLINES 2026</h1></div>
-                <div class="panel-body">
-                    <p style="color:var(--dim);margin-bottom:20px">Market-moving USDA report dates and critical crop insurance deadlines. Bookmark this page and never miss a date.</p>
-                </div>
+        <h1>Farm Calendar</h1>
+        <p>Key dates and activities for farmers throughout the growing season.</p>
+        
+        <div class="calendar-grid">
+            <div class="month-card">
+                <h3>🌱 Spring (Mar-May)</h3>
+                <ul>
+                    <li><strong>March:</strong> Soil testing, equipment prep</li>
+                    <li><strong>April:</strong> Early oat planting, field prep</li>
+                    <li><strong>May 1-15:</strong> Corn planting window</li>
+                    <li><strong>May 15-31:</strong> Soybean planting window</li>
+                </ul>
             </div>
             
-            <!-- Crop Insurance Deadlines -->
-            <div class="panel">
-                <div class="panel-head"><h2>🛡️ CROP INSURANCE DEADLINES (Upper Midwest)</h2></div>
-                <div class="panel-body">
-                    <p style="color:var(--dim);margin-bottom:16px;font-size:0.85rem">Key deadlines for Wisconsin, Minnesota, Iowa, and surrounding states</p>
-                    <div style="display:grid;gap:12px">
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:6px;border-left:4px solid var(--red)">
-                            <div>
-                                <div style="font-weight:600">Sales Closing Date</div>
-                                <div style="font-size:0.8rem;color:var(--dim)">Last day to apply for crop insurance (corn, soybeans, wheat)</div>
-                            </div>
-                            <div style="font-weight:700;font-size:1.1rem;color:var(--red)">Mar 15</div>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:6px;border-left:4px solid var(--accent)">
-                            <div>
-                                <div style="font-weight:600">Premium Billing Date</div>
-                                <div style="font-size:0.8rem;color:var(--dim)">Premium amounts determined</div>
-                            </div>
-                            <div style="font-weight:700;font-size:1.1rem">Aug 15</div>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:6px;border-left:4px solid var(--accent)">
-                            <div>
-                                <div style="font-weight:600">Acreage Reporting</div>
-                                <div style="font-size:0.8rem;color:var(--dim)">Report planted acres to FSA/crop insurance</div>
-                            </div>
-                            <div style="font-weight:700;font-size:1.1rem">Jul 15</div>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:6px;border-left:4px solid var(--accent)">
-                            <div>
-                                <div style="font-weight:600">Production Reporting</div>
-                                <div style="font-size:0.8rem;color:var(--dim)">Report yields after harvest</div>
-                            </div>
-                            <div style="font-weight:700;font-size:1.1rem">Varies</div>
-                        </div>
-                    </div>
-                    <p style="color:var(--dim);font-size:0.8rem;margin-top:12px">Dates may vary by county — confirm with your <a href="/offices.html" style="color:var(--accent)">local FSA office</a> or <a href="https://farmers1st.com" target="_blank" style="color:var(--accent)">crop insurance agent</a>.</p>
-                </div>
+            <div class="month-card">
+                <h3>☀️ Summer (Jun-Aug)</h3>
+                <ul>
+                    <li><strong>June:</strong> Crop scouting, weed management</li>
+                    <li><strong>July:</strong> Side-dress nitrogen, pest monitoring</li>
+                    <li><strong>August:</strong> Silage harvest begins</li>
+                    <li><strong>Late Aug:</strong> Winter wheat planting prep</li>
+                </ul>
             </div>
             
-            <!-- WASDE Report Schedule -->
-            <div class="panel">
-                <div class="panel-head"><h2>📊 2026 WASDE REPORT SCHEDULE</h2></div>
-                <div class="panel-body">
-                    <p style="color:var(--dim);margin-bottom:16px;font-size:0.85rem">World Agricultural Supply and Demand Estimates — released monthly at 12:00 PM ET</p>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">January</div>
-                            <div style="font-weight:600">Jan 10</div>
-                        </div>
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">February</div>
-                            <div style="font-weight:600">Feb 11</div>
-                        </div>
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">March</div>
-                            <div style="font-weight:600">Mar 11</div>
-                        </div>
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">April</div>
-                            <div style="font-weight:600">Apr 9</div>
-                        </div>
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">May</div>
-                            <div style="font-weight:600">May 12</div>
-                        </div>
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">June</div>
-                            <div style="font-weight:600">Jun 11</div>
-                        </div>
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">July</div>
-                            <div style="font-weight:600">Jul 10</div>
-                        </div>
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">August</div>
-                            <div style="font-weight:600">Aug 12</div>
-                        </div>
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">September</div>
-                            <div style="font-weight:600">Sep 11</div>
-                        </div>
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">October</div>
-                            <div style="font-weight:600">Oct 9</div>
-                        </div>
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">November</div>
-                            <div style="font-weight:600">Nov 10</div>
-                        </div>
-                        <div style="background:var(--bg);padding:12px;border-radius:6px;text-align:center">
-                            <div style="font-size:0.75rem;color:var(--dim)">December</div>
-                            <div style="font-weight:600">Dec 10</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="month-card">
+                <h3>🍂 Fall (Sep-Nov)</h3>
+                <ul>
+                    <li><strong>September:</strong> Corn silage, early grain harvest</li>
+                    <li><strong>Oct 1-15:</strong> Prime corn harvest</li>
+                    <li><strong>Oct 15-31:</strong> Soybean harvest</li>
+                    <li><strong>November:</strong> Fall tillage, cover crops</li>
+                </ul>
             </div>
             
-            <!-- Key Annual Reports -->
-            <div class="panel">
-                <div class="panel-head"><h2>📈 KEY ANNUAL REPORTS</h2></div>
-                <div class="panel-body">
-                    <p style="color:var(--dim);margin-bottom:16px;font-size:0.85rem">These reports often cause significant market moves</p>
-                    <div style="display:grid;gap:12px">
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:6px;border-left:4px solid var(--green)">
-                            <div>
-                                <div style="font-weight:600">Prospective Plantings</div>
-                                <div style="font-size:0.8rem;color:var(--dim)">Farmer planting intentions — sets market expectations</div>
-                            </div>
-                            <div style="font-weight:700;font-size:1.1rem;color:var(--green)">Mar 31</div>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:6px;border-left:4px solid var(--green)">
-                            <div>
-                                <div style="font-weight:600">Acreage Report</div>
-                                <div style="font-size:0.8rem;color:var(--dim)">Actual planted acres — often differs from intentions</div>
-                            </div>
-                            <div style="font-weight:700;font-size:1.1rem;color:var(--green)">Jun 30</div>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:6px;border-left:4px solid var(--accent)">
-                            <div>
-                                <div style="font-weight:600">Grain Stocks (Quarterly)</div>
-                                <div style="font-size:0.8rem;color:var(--dim)">U.S. grain inventory levels</div>
-                            </div>
-                            <div style="font-weight:700;font-size:1.1rem">Mar, Jun, Sep, Dec</div>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:6px;border-left:4px solid var(--accent)">
-                            <div>
-                                <div style="font-weight:600">Crop Progress (Weekly)</div>
-                                <div style="font-size:0.8rem;color:var(--dim)">Planting, emergence, condition, harvest progress</div>
-                            </div>
-                            <div style="font-weight:700;font-size:1.1rem">Mondays</div>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:6px;border-left:4px solid var(--accent)">
-                            <div>
-                                <div style="font-weight:600">Export Sales (Weekly)</div>
-                                <div style="font-size:0.8rem;color:var(--dim)">U.S. grain export commitments and shipments</div>
-                            </div>
-                            <div style="font-weight:700;font-size:1.1rem">Thursdays</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="month-card">
+                <h3>❄️ Winter (Dec-Feb)</h3>
+                <ul>
+                    <li><strong>December:</strong> Marketing planning, tax prep</li>
+                    <li><strong>January:</strong> Equipment maintenance</li>
+                    <li><strong>February:</strong> Seed orders, crop insurance</li>
+                    <li><strong>Late Feb:</strong> Frost seeding legumes</li>
+                </ul>
             </div>
-            
-            <!-- Why Reports Matter -->
-            <div class="panel">
-                <div class="panel-head"><h2>💡 WHY THESE REPORTS MATTER</h2></div>
-                <div class="panel-body" style="color:var(--dim);line-height:1.8">
-                    <p>USDA reports can move corn and soybean prices 10-20+ cents in minutes. Understanding the calendar helps you:</p>
-                    <ul style="margin:12px 0 0 20px">
-                        <li><strong>Avoid selling into volatility</strong> — don't make sales right before major reports unless you want the risk</li>
-                        <li><strong>Anticipate market moves</strong> — traders position before reports, creating predictable patterns</li>
-                        <li><strong>Meet deadlines</strong> — missing crop insurance dates can be costly</li>
-                        <li><strong>Plan marketing</strong> — use report dates to schedule pricing decisions</li>
-                    </ul>
-                    <p style="margin-top:16px">Learn more about <a href="/learn.html#when-to-sell" style="color:var(--accent)">when to sell your grain</a> and how reports fit into your marketing strategy.</p>
-                </div>
-            </div>
-            
-            <!-- Related Tools Section -->
-            <div class="panel">
-                <div class="panel-head"><h2>📌 RELATED TOOLS</h2></div>
-                <div class="panel-body">
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
-                        <a href="/breakeven.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.2rem;margin-bottom:6px">💰</div>
-                            <div style="font-weight:600;margin-bottom:4px">Break-Even Calculator</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Know your target price</div>
-                        </a>
-                        <a href="/offices.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.2rem;margin-bottom:6px">🏢</div>
-                            <div style="font-weight:600;margin-bottom:4px">USDA Office Locator</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Find your local FSA office</div>
-                        </a>
-                        <a href="/learn.html#crop-insurance" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.2rem;margin-bottom:6px">🛡️</div>
-                            <div style="font-weight:600;margin-bottom:4px">YP vs RP Guide</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Choose the right coverage</div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- CTA Box -->
-            <div style="margin-top:20px;padding:20px;background:var(--card);border:1px solid var(--accent);border-radius:8px;text-align:center">
-                <div style="font-size:1rem;font-weight:600;margin-bottom:8px">Don't Miss Your Crop Insurance Deadline</div>
-                <div style="font-size:0.85rem;color:var(--dim);margin-bottom:12px">Our team can help you choose the right coverage before the March 15 sales closing date.</div>
-                <a href="https://farmers1st.com" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600">Contact Farmers First Agri Service →</a>
-            </div>
+        </div>
+    
+        <!-- CTA: Insurance Deadlines -->
+        <div class="cta-box" style="max-width:600px;margin:24px auto;">
+            <h4>📅 Don't Miss Insurance Deadlines</h4>
+            <p>Crop insurance sign-up deadlines are critical. Farmers First can help you stay covered year-round.</p>
+            <a href="https://farmers1st.com" target="_blank" rel="noopener" class="btn">Check Deadlines →</a>
         </div>
     </main>
-
-    <footer>
-        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:0.8rem">
-            <span>© 2026 <a href="/" style="color:var(--accent);text-decoration:none">AGSIST</a>. All rights reserved.</span>
-            <span><a href="/learn.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Guides</a><a href="/tools.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Tools</a><a href="/resources.html" style="color:var(--dim);text-decoration:none">Resources</a></span>
-            <span>Made in the USA 🇺🇸</span>
+    
+        <footer>
+        <div class="footer-inner">
+            <div class="footer-col">
+                <h4>AGSIST</h4>
+                <p>Free live agricultural commodity prices, weather, and news for farmers.</p>
+                <p class="footer-tagline">Real-time data. No account required.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Prices</h4>
+                <ul>
+                    <li><a href="corn-prices.html">Corn Prices</a></li>
+                    <li><a href="soybean-prices.html">Soybean Prices</a></li>
+                    <li><a href="wheat-prices.html">Wheat Prices</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <ul>
+                    <li><a href="tools.html">All Tools</a></li>
+                    <li><a href="gdu.html">GDU Calculator</a></li>
+                    <li><a href="breakeven.html">Break-Even Calculator</a></li>
+                    <li><a href="calculator.html">Grain Bin Calculator</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="fastfacts.html">Fast Facts</a></li>
+                    <li><a href="learn.html">Learn</a></li>
+                    <li><a href="calendar.html">USDA Calendar</a></li>
+                    <li><a href="resources.html">Ag Links</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Our Network</h4>
+                <ul>
+                    <li><a href="https://farmers1st.com" target="_blank" rel="noopener">🌾 Farmers First Agri</a></li>
+                    <li><a href="https://lokedrone.com" target="_blank" rel="noopener">✈️ Loke Drone</a></li>
+                    <li><a href="https://usdronemap.com" target="_blank" rel="noopener">🗺️ US Drone Map</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 AGSIST</span>
+            <div class="footer-legal">
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+            </div>
         </div>
     </footer>
+
+    <script>
+    document.querySelector('.menu-toggle')?.addEventListener('click', function() {
+        const nav = document.querySelector('.nav-links');
+        const isOpen = nav.classList.toggle('open');
+        this.textContent = isOpen ? '✕' : '☰';
+    });
+    document.querySelectorAll('.nav-dropdown-trigger').forEach(trigger => {
+        trigger.addEventListener('click', function(e) {
+            if (window.innerWidth <= 767) {
+                e.preventDefault();
+                this.closest('.nav-dropdown').classList.toggle('open');
+            }
+        });
+    });
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('nav')) {
+            document.querySelector('.nav-links')?.classList.remove('open');
+            const toggle = document.querySelector('.menu-toggle');
+            if (toggle) toggle.textContent = '☰';
+        }
+        if (!e.target.closest('.nav-dropdown')) {
+            document.querySelectorAll('.nav-dropdown.open').forEach(d => d.classList.remove('open'));
+        }
+    });
+    </script>
 </body>
 </html>

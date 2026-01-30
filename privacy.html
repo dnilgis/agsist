@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Not Found | AGSIST</title>
-    <meta name="robots" content="noindex">
+    <title>Privacy Policy | AGSIST</title>
+    <meta name="description" content="AGSIST privacy policy. How we collect, use, and protect your information.">
+    <link rel="canonical" href="https://agsist.com/privacy.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         :root {
             --bg: #0d0d0f;
             --card: #141418;
@@ -19,128 +19,91 @@
             --dim: #a0a0a8;
             --accent: #e6b042;
         }
-        
         body {
             font-family: 'JetBrains Mono', monospace;
             background: var(--bg);
             color: var(--text);
-            line-height: 1.6;
+            line-height: 1.7;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
-        
         nav {
             background: var(--card);
             border-bottom: 1px solid var(--border);
-            padding: 10px 16px;
+            padding: 12px 16px;
         }
-        
         .nav-inner {
-            max-width: 1600px;
+            max-width: 900px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
         .logo {
             font-weight: 700;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             color: var(--accent);
             text-decoration: none;
         }
-        
-        .error-page {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+        .nav-links a {
+            color: var(--dim);
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-left: 20px;
+        }
+        .nav-links a:hover { color: var(--accent); }
+        main {
+            max-width: 900px;
+            margin: 0 auto;
             padding: 40px 20px;
         }
-        
-        .error-code {
-            font-size: 6rem;
-            font-weight: 700;
-            color: var(--accent);
-            line-height: 1;
-            margin-bottom: 16px;
-        }
-        
-        .error-title {
+        h1 {
             font-size: 1.5rem;
-            color: var(--text);
-            margin-bottom: 12px;
+            color: var(--accent);
+            margin-bottom: 8px;
         }
-        
-        .error-message {
+        .updated {
+            font-size: 0.95rem;
             color: var(--dim);
-            font-size: 1rem;
-            max-width: 400px;
             margin-bottom: 32px;
         }
-        
-        .error-links {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .error-links a {
-            padding: 12px 24px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 4px;
+        h2 {
+            font-size: 1rem;
             color: var(--text);
-            text-decoration: none;
+            margin: 32px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        p, li {
             font-size: 0.9rem;
-            transition: all 0.2s;
+            color: var(--dim);
+            margin-bottom: 12px;
         }
-        
-        .error-links a:hover {
-            border-color: var(--accent);
-            color: var(--accent);
+        ul {
+            margin-left: 20px;
+            margin-bottom: 16px;
         }
-        
-        .error-links a.primary {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #000;
-            font-weight: 600;
-        }
-        
-        .error-links a.primary:hover {
-            opacity: 0.9;
-            color: #000;
-        }
-        
+        a { color: var(--accent); }
         footer {
             background: var(--card);
             border-top: 1px solid var(--border);
-            padding: 20px 16px;
+            padding: 20px;
             text-align: center;
+            margin-top: 60px;
+        }
+        footer a {
+            color: var(--dim);
+            text-decoration: none;
+            margin: 0 12px;
+            font-size: 0.95rem;
+        }
+        footer a:hover { color: var(--accent); }
+        .footer-copy {
+            margin-top: 12px;
             font-size: 0.9rem;
             color: var(--dim);
         }
-        
-        @media (max-width: 480px) {
-            .error-code {
-                font-size: 4rem;
-            }
-            .error-title {
-                font-size: 1.2rem;
-            }
-            .error-links {
-                flex-direction: column;
-                width: 100%;
-            }
-            .error-links a {
-                width: 100%;
-                text-align: center;
-            }
+        @media (max-width: 600px) {
+            .nav-links { display: none; }
         }
     </style>
 </head>
@@ -148,18 +111,54 @@
     <nav>
         <div class="nav-inner">
             <a href="/" class="logo">AGSIST</a>
+            <div class="nav-links">
+                <a href="/tools.html">Tools</a>
+                <a href="/resources.html">Resources</a>
+            </div>
         </div>
     </nav>
 
-    <main class="error-page">
-        <div class="error-code">404</div>
-        <h1 class="error-title">Page Not Found</h1>
-        <p class="error-message">The page you're looking for doesn't exist or may have been moved. Let's get you back on track.</p>
-        <div class="error-links">
-            <a href="/" class="primary">← Back to Dashboard</a>
-            <a href="/tools.html">Tools</a>
-            <a href="/resources.html">Resources</a>
-        </div>
+    <main>
+        <h1>Privacy Policy</h1>
+        <p class="updated">Last updated: January 2026</p>
+
+        <h2>Information We Collect</h2>
+        <p>AGSIST collects minimal information to provide our agricultural tools and market data services:</p>
+        <ul>
+            <li><strong>Usage Data:</strong> We use Google Analytics to understand how visitors use our site. This includes pages visited, time on site, and general location (country/region level).</li>
+            <li><strong>Local Storage:</strong> Some calculators may store your inputs locally in your browser for convenience. This data never leaves your device.</li>
+        </ul>
+
+        <h2>Information We Don't Collect</h2>
+        <ul>
+            <li>We do not require account registration</li>
+            <li>We do not collect personal information (name, email, phone)</li>
+            <li>We do not sell or share data with third parties for marketing</li>
+            <li>We do not use cookies for advertising or tracking across sites</li>
+        </ul>
+
+        <h2>Third-Party Services</h2>
+        <p>We use the following third-party services:</p>
+        <ul>
+            <li><strong>Google Analytics:</strong> For website analytics. See <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a>.</li>
+            <li><strong>Market Data Providers:</strong> Price data is sourced from public APIs and may be delayed.</li>
+        </ul>
+
+        <h2>Data Security</h2>
+        <p>Our website is served over HTTPS. We do not store sensitive personal information on our servers.</p>
+
+        <h2>Your Choices</h2>
+        <ul>
+            <li>You can disable JavaScript to prevent analytics tracking</li>
+            <li>You can clear your browser's local storage to remove any saved calculator inputs</li>
+            <li>You can use browser privacy tools or extensions to limit tracking</li>
+        </ul>
+
+        <h2>Changes to This Policy</h2>
+        <p>We may update this policy periodically. Changes will be posted on this page with an updated date.</p>
+
+        <h2>Contact</h2>
+        <p>Questions about this privacy policy? Visit our <a href="/resources.html">Resources</a> page for contact information.</p>
     </main>
 
         <footer>

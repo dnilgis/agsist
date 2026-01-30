@@ -1,130 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Break-Even Calculator - Corn, Soybean & Wheat Cost Analysis | AGSIST</title>
-    <meta name="description" content="Free break-even calculator for farmers. Calculate your cost per bushel for corn, soybeans, and wheat. Includes seed, fertilizer, rent, and all input costs. Know your number before you sell.">
-    <meta name="keywords" content="break even calculator, farm break even, corn cost per bushel, soybean break even price, crop cost calculator, farm profitability calculator">
+    <meta name="description" content="Free break-even calculator for farmers. Calculate your cost per bushel for corn, soybeans, and wheat. Includes seed, fertilizer, rent, and all input costs.">
     <link rel="canonical" href="https://agsist.com/breakeven.html">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Open Graph -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <meta property="og:title" content="Break-Even Calculator - Farm Cost Analysis">
-    <meta property="og:description" content="Calculate your break-even price for corn, soybeans, and wheat. Free tool for farmers.">
-    <meta property="og:image" content="https://agsist.com/og-image.png">
     <meta property="og:url" content="https://agsist.com/breakeven.html">
-    <meta name="twitter:card" content="summary_large_image">
-    
-    <!-- Schema: WebApplication -->
-    <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"WebApplication","name":"Break-Even Calculator","description":"Calculate break-even price per bushel for corn, soybeans, and wheat including all input costs.","url":"https://agsist.com/breakeven.html","applicationCategory":"UtilityApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
-    </script>
-    
-    <!-- Schema: BreadcrumbList -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": "https://agsist.com/"},
-        {"@type": "ListItem", "position": 2, "name": "Break-Even Calculator", "item": "https://agsist.com/breakeven.html"}
-      ]
-    }
-    </script>
-    
-    <!-- Schema: FAQPage -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "How do you calculate break-even price for corn?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Break-Even Price = Total Cost per Acre ÷ Expected Yield. For example, if your total costs are $850/acre and you expect 190 bushels/acre, your break-even price is $4.47/bu ($850 ÷ 190 = $4.47)."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What costs should I include in a farm break-even analysis?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Include direct costs (seed, fertilizer, chemicals, crop insurance, drying) and overhead costs (land rent or ownership cost, machinery depreciation, labor, interest on operating loans, and general overhead). Common mistakes include forgetting unpaid family labor and machinery depreciation."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is a typical break-even price for corn in Wisconsin?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "For 2026, typical corn break-even prices in Wisconsin range from $4.15-5.00/bu depending on land costs and yield potential. Total production costs typically range from $750-900/acre for cash rent operations."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How should I use break-even price for grain marketing?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "If the market price is above your break-even plus 20%, it's a strong sell signal to lock in profits. At or slightly above break-even, consider selling 25-50% to cover operating costs. Below break-even, carefully evaluate storage costs, basis improvement potential, and crop insurance options."
-          }
-        }
-      ]
-    }
-    </script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Break-Even Calculator","url":"https://agsist.com/breakeven.html","applicationCategory":"UtilityApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
 </head>
 <body>
-    <header>
-        <div class="header-inner">
-            <a href="/" class="logo">
-                <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
-                <div class="logo-text">AGSIST</div>
-            </a>
-            <button class="menu-toggle" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
-            <nav class="nav">
-                <a href="/">DASHBOARD</a>
-                <a href="/calculator.html">GRAIN BIN</a>
-                <a href="/gdu.html">GDU CALC</a>
-                <a href="/breakeven.html" class="active">BREAK-EVEN</a>
-                <a href="/offices.html">OFFICES</a>
-                <a href="/resources.html">RESOURCES</a>
-            </nav>
+    <!-- NAVIGATION -->
+        <nav>
+        <div class="nav-inner">
+            <a href="index.html" class="logo">AGSIST</a>
+            <button class="menu-toggle" aria-label="Menu">☰</button>
+            <div class="nav-links">
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-dropdown-trigger">Prices <span class="dropdown-arrow">▾</span></a>
+                    <div class="nav-dropdown-content">
+                        <a href="corn-prices.html">🌽 Corn Prices</a>
+                        <a href="soybean-prices.html">🫘 Soybean Prices</a>
+                        <a href="wheat-prices.html">🌾 Wheat Prices</a>
+                    </div>
+                </div>
+                <a href="tools.html">Tools</a>
+                <a href="fastfacts.html">Fast Facts</a>
+                <a href="learn.html">Learn</a>
+                <a href="calendar.html">Calendar</a>
+                <a href="resources.html">Links</a>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <main>
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu">
+        <div class="mobile-section">Prices</div>
+        <a href="corn-prices.html" class="mobile-link">Corn</a>
+        <a href="soybean-prices.html" class="mobile-link">Soybeans</a>
+        <a href="wheat-prices.html" class="mobile-link">Wheat</a>
+        <div class="mobile-section">Tools</div>
+        <a href="tools.html" class="mobile-link">All Tools</a>
+        <a href="breakeven.html" class="mobile-link active">Breakeven</a>
+        <a href="gdu.html" class="mobile-link">GDU Calculator</a>
+        <a href="calculator.html" class="mobile-link">Grain Bin</a>
+        <a href="fastfacts.html" class="mobile-link">Fast Facts</a>
+        <div class="mobile-section">Info</div>
+        <a href="learn.html" class="mobile-link">Learn</a>
+        <a href="calendar.html" class="mobile-link">Calendar</a>
+        <a href="resources.html" class="mobile-link">Resources</a>
+        <a href="offices.html" class="mobile-link">Offices</a>
+    </div>
+
+    <main class="page-content">
         <div class="calc-wrap" style="padding:20px;max-width:1200px;margin:0 auto">
-            <nav style="margin-bottom:20px;font-size:0.85rem;color:var(--dim)">
-                <a href="/" style="color:var(--accent);text-decoration:none">Home</a> → Break-Even Calculator
-            </nav>
-            
+            <nav style="margin-bottom:20px;font-size:0.95rem;color:var(--dim)"><a href="" style="color:var(--accent);text-decoration:none">Home</a> → <a href="tools.html" style="color:var(--accent);text-decoration:none">Tools</a> → Break-Even Calculator</nav>
             <div class="panel">
                 <div class="panel-head"><h1 style="font-size:0.9rem;margin:0">💰 BREAK-EVEN CALCULATOR</h1></div>
                 <div class="panel-body">
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px">
                         <div>
-                            <h3 style="font-size:0.8rem;color:var(--dim);margin-bottom:12px">CROP & YIELD</h3>
-                            <div class="input-group">
-                                <label>Crop</label>
-                                <select id="crop" onchange="loadCropPreset();calcBreakeven()">
-                                    <option value="corn">Corn</option>
-                                    <option value="soybeans">Soybeans</option>
-                                    <option value="wheat">Wheat</option>
-                                </select>
-                            </div>
+                            <h3 style="font-size:0.9rem;color:var(--dim);margin-bottom:12px">CROP & YIELD</h3>
+                            <div class="input-group"><label>Crop</label><select id="crop" onchange="loadCropPreset();calcBreakeven()"><option value="corn">Corn</option><option value="soybeans">Soybeans</option><option value="wheat">Wheat</option></select></div>
                             <div class="input-group"><label>Expected Yield (bu/ac)</label><input type="number" id="yield" value="180" oninput="calcBreakeven()"></div>
                             <div class="input-group"><label>Market Price ($/bu)</label><input type="number" id="price" value="4.50" step="0.01" oninput="calcBreakeven()"></div>
-                            
-                            <h3 style="font-size:0.8rem;color:var(--dim);margin:20px 0 12px">INPUT COSTS ($/ac)</h3>
+                            <h3 style="font-size:0.9rem;color:var(--dim);margin:20px 0 12px">INPUT COSTS ($/ac)</h3>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
                                 <div class="input-group"><label>Seed</label><input type="number" id="seed" value="135" oninput="calcBreakeven()"></div>
                                 <div class="input-group"><label>Fertilizer</label><input type="number" id="fert" value="175" oninput="calcBreakeven()"></div>
@@ -137,7 +84,7 @@
                             </div>
                         </div>
                         <div>
-                            <h3 style="font-size:0.8rem;color:var(--dim);margin-bottom:12px">RESULTS</h3>
+                            <h3 style="font-size:0.9rem;color:var(--dim);margin-bottom:12px">RESULTS</h3>
                             <div class="result-panel">
                                 <div class="result-row"><span>Total Cost/Acre</span><span class="result-value" id="totalCost">-</span></div>
                                 <div class="result-row"><span>Cost/Bushel</span><span class="result-value" id="costBu">-</span></div>
@@ -146,10 +93,9 @@
                                 <div class="result-row"><span>Net Profit/Loss</span><span class="result-value" id="profit">-</span></div>
                                 <div class="result-row"><span>Yield Needed @ Market</span><span class="result-value" id="yieldNeeded">-</span></div>
                             </div>
-                            
                             <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:6px">
-                                <div style="font-size:0.75rem;color:var(--dim);margin-bottom:8px">2026 REGIONAL BENCHMARKS (WI/MN)</div>
-                                <div style="font-size:0.8rem;display:grid;gap:4px">
+                                <div style="font-size:0.875rem;color:var(--dim);margin-bottom:8px">2026 REGIONAL BENCHMARKS</div>
+                                <div style="font-size:0.9rem;display:grid;gap:4px">
                                     <div>🌽 Corn: <strong>$750-900/ac</strong> → $4.15-5.00/bu</div>
                                     <div>🫘 Soybeans: <strong>$450-550/ac</strong> → $9.00-11.00/bu</div>
                                     <div>🌾 Wheat: <strong>$400-500/ac</strong> → $5.50-7.00/bu</div>
@@ -159,80 +105,126 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- How It Works Section -->
             <div class="panel">
-                <div class="panel-head"><h2>HOW TO USE BREAK-EVEN ANALYSIS</h2></div>
-                <div class="panel-body" style="color:var(--dim);line-height:1.8">
-                    <p><strong style="color:var(--text)">The Formula:</strong> Break-Even Price = Total Cost per Acre ÷ Expected Yield</p>
-                    <p style="margin-top:12px"><strong style="color:var(--text)">Marketing Signals:</strong></p>
-                    <ul style="margin:8px 0 0 20px">
-                        <li><strong style="color:var(--green)">Above break-even + 20%:</strong> Strong sell signal — lock in profits</li>
-                        <li><strong style="color:var(--accent)">Above break-even:</strong> Consider selling 25-50%</li>
-                        <li><strong style="color:var(--text)">At break-even:</strong> Cover operating costs at minimum</li>
-                        <li><strong style="color:var(--red)">Below break-even:</strong> Evaluate storage, basis improvement, insurance</li>
-                    </ul>
-                    <p style="margin-top:12px">For more marketing strategies, read our guide on <a href="/learn.html#when-to-sell" style="color:var(--accent)">when to sell your grain</a> and <a href="/learn.html#breakeven" style="color:var(--accent)">break-even analysis for farmers</a>.</p>
-                </div>
-            </div>
-            
-            <!-- Related Tools Section (Internal Links) -->
-            <div class="panel">
-                <div class="panel-head"><h2>📌 RELATED TOOLS</h2></div>
+                <div class="panel-head"><h2 style="font-size:0.9rem;margin:0">📌 RELATED TOOLS</h2></div>
                 <div class="panel-body">
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
-                        <a href="/gdu.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.2rem;margin-bottom:6px">🌡️</div>
-                            <div style="font-weight:600;margin-bottom:4px">GDU Calculator</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Track corn growing degree units</div>
-                        </a>
-                        <a href="/calculator.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.2rem;margin-bottom:6px">🌾</div>
-                            <div style="font-weight:600;margin-bottom:4px">Grain Bin Calculator</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Calculate storage capacity</div>
-                        </a>
-                        <a href="/calendar.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.2rem;margin-bottom:6px">📅</div>
-                            <div style="font-weight:600;margin-bottom:4px">USDA Calendar</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Market-moving report dates</div>
-                        </a>
+                        <a href="gdu.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block"><div style="font-size:1.2rem;margin-bottom:6px">🌡️</div><div style="font-weight:600;margin-bottom:4px">GDU Calculator</div><div style="font-size:0.875rem;color:var(--dim)">Track corn growing degree units</div></a>
+                        <a href="calculator.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block"><div style="font-size:1.2rem;margin-bottom:6px">🌾</div><div style="font-weight:600;margin-bottom:4px">Grain Bin Calculator</div><div style="font-size:0.875rem;color:var(--dim)">Calculate storage capacity</div></a>
+                        <a href="fastfacts.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block"><div style="font-size:1.2rem;margin-bottom:6px">📊</div><div style="font-weight:600;margin-bottom:4px">Nutrient Fast Facts</div><div style="font-size:0.875rem;color:var(--dim)">Fertilizer & nutrient calculators</div></a>
                     </div>
                 </div>
             </div>
-            
-            <!-- Learn More Section (Internal Links) -->
-            <div class="panel">
-                <div class="panel-head"><h2>📚 LEARN MORE</h2></div>
-                <div class="panel-body" style="color:var(--dim);line-height:1.8">
-                    <p>Understanding your break-even is step one. Next, learn about <a href="/learn.html#basis" style="color:var(--accent)">corn basis and how it affects your cash price</a>. Basis can add or subtract 20-30 cents from your price depending on location and timing.</p>
-                    <p style="margin-top:12px">Use our <a href="/fastfacts.html" style="color:var(--accent)">nutrient management fast facts</a> to dial in your fertilizer costs, and check <a href="/calendar.html" style="color:var(--accent)">crop insurance deadlines</a> to make sure you're protected.</p>
-                </div>
-            </div>
-            
-            <!-- CTA Box -->
-            <div style="margin-top:20px;padding:20px;background:var(--card);border:1px solid var(--accent);border-radius:8px;text-align:center">
-                <div style="font-size:1rem;font-weight:600;margin-bottom:8px">Need Crop Insurance Help?</div>
-                <div style="font-size:0.85rem;color:var(--dim);margin-bottom:12px">The right coverage can be the difference between a tough year and a disaster.</div>
-                <a href="https://farmers1st.com" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600">Contact Farmers First Agri Service →</a>
-            </div>
+        </div>
+    
+        <!-- CTA: Crop Insurance -->
+        <div class="cta-box" style="max-width:600px;margin:24px auto;">
+            <h4>🌾 Protect Your Investment</h4>
+            <p>After calculating your break-even, make sure you're covered. Get a free crop insurance quote from Farmers First Agri Service.</p>
+            <a href="https://farmers1st.com" target="_blank" rel="noopener" class="btn">Get Free Quote →</a>
         </div>
     </main>
 
     <footer>
-        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:0.8rem">
-            <span>© 2026 <a href="/" style="color:var(--accent);text-decoration:none">AGSIST</a>. All rights reserved.</span>
-            <span><a href="/learn.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Guides</a><a href="/tools.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Tools</a><a href="/resources.html" style="color:var(--dim);text-decoration:none">Resources</a></span>
-            <span>Made in the USA 🇺🇸</span>
+        <div class="footer-inner">
+            <div class="footer-col">
+                <h4>AGSIST</h4>
+                <p>Free live agricultural commodity prices, weather, and news for farmers.</p>
+                <p class="footer-tagline">Real-time data. No account required.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Prices</h4>
+                <ul>
+                    <li><a href="corn-prices.html">Corn Prices</a></li>
+                    <li><a href="soybean-prices.html">Soybean Prices</a></li>
+                    <li><a href="wheat-prices.html">Wheat Prices</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <ul>
+                    <li><a href="tools.html">All Tools</a></li>
+                    <li><a href="gdu.html">GDU Calculator</a></li>
+                    <li><a href="breakeven.html">Break-Even Calculator</a></li>
+                    <li><a href="calculator.html">Grain Bin Calculator</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="fastfacts.html">Fast Facts</a></li>
+                    <li><a href="learn.html">Learn</a></li>
+                    <li><a href="calendar.html">USDA Calendar</a></li>
+                    <li><a href="resources.html">Ag Links</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Our Network</h4>
+                <ul>
+                    <li><a href="https://farmers1st.com" target="_blank" rel="noopener">🌾 Farmers First Agri</a></li>
+                    <li><a href="https://lokedrone.com" target="_blank" rel="noopener">✈️ Loke Drone</a></li>
+                    <li><a href="https://usdronemap.com" target="_blank" rel="noopener">🗺️ US Drone Map</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 AGSIST</span>
+            <div class="footer-legal">
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+
+
+    <footer class="main-footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Prices</h4>
+                    <a href="corn-prices.html">Corn</a>
+                    <a href="soybean-prices.html">Soybeans</a>
+                    <a href="wheat-prices.html">Wheat</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Tools</h4>
+                    <a href="tools.html">All Tools</a>
+                    <a href="breakeven.html">Breakeven</a>
+                    <a href="gdu.html">GDU Calculator</a>
+                    <a href="calculator.html">Grain Bin</a>
+                    <a href="fastfacts.html">Fast Facts</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Info</h4>
+                    <a href="learn.html">Learn</a>
+                    <a href="calendar.html">Calendar</a>
+                    <a href="resources.html">Resources</a>
+                    <a href="offices.html">Offices</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy</a>
+                    <a href="terms.html">Terms</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 AGSIST</p>
+                <p class="disclaimer">Prices delayed minimum 10 minutes. Not financial advice.</p>
+            </div>
         </div>
     </footer>
 
     <script>
+    document.querySelector('.mobile-menu-btn')?.addEventListener('click', function() {
+        document.querySelector('.mobile-menu').classList.toggle('active');
+    });
+    
     const PRESETS = {
         corn: { yield: 180, price: 4.50, seed: 135, fert: 175, chem: 55, ins: 38, mach: 95, labor: 40, rent: 225, other: 45 },
         soybeans: { yield: 52, price: 10.75, seed: 70, fert: 45, chem: 50, ins: 28, mach: 85, labor: 35, rent: 225, other: 25 },
         wheat: { yield: 72, price: 5.75, seed: 45, fert: 95, chem: 40, ins: 22, mach: 80, labor: 30, rent: 180, other: 25 }
     };
-    
     function loadCropPreset() {
         const crop = document.getElementById('crop').value;
         const p = PRESETS[crop];
@@ -247,7 +239,6 @@
         document.getElementById('rent').value = p.rent;
         document.getElementById('other').value = p.other;
     }
-    
     function calcBreakeven() {
         const yld = parseFloat(document.getElementById('yield').value) || 0;
         const price = parseFloat(document.getElementById('price').value) || 0;
@@ -259,27 +250,49 @@
         const labor = parseFloat(document.getElementById('labor').value) || 0;
         const rent = parseFloat(document.getElementById('rent').value) || 0;
         const other = parseFloat(document.getElementById('other').value) || 0;
-        
         const totalCost = seed + fert + chem + ins + mach + labor + rent + other;
         const costBu = yld > 0 ? totalCost / yld : 0;
         const breakeven = costBu;
         const revenue = yld * price;
         const profit = revenue - totalCost;
         const yieldNeeded = price > 0 ? totalCost / price : 0;
-        
         document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(0) + '/ac';
         document.getElementById('costBu').textContent = '$' + costBu.toFixed(2) + '/bu';
         document.getElementById('breakeven').textContent = '$' + breakeven.toFixed(2) + '/bu';
         document.getElementById('revenue').textContent = '$' + revenue.toFixed(0) + '/ac';
-        
         const profitEl = document.getElementById('profit');
         profitEl.textContent = (profit >= 0 ? '+' : '') + '$' + profit.toFixed(0) + '/ac';
         profitEl.style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
-        
         document.getElementById('yieldNeeded').textContent = yieldNeeded.toFixed(0) + ' bu/ac';
     }
-    
     calcBreakeven();
+    </script>
+
+    <script>
+    // Mobile menu toggle
+    document.querySelector('.menu-toggle')?.addEventListener('click', function() {
+        const nav = document.querySelector('.nav-links');
+        const isOpen = nav.classList.toggle('open');
+        this.textContent = isOpen ? '✕' : '☰';
+    });
+    document.querySelectorAll('.nav-dropdown-trigger').forEach(trigger => {
+        trigger.addEventListener('click', function(e) {
+            if (window.innerWidth <= 767) {
+                e.preventDefault();
+                this.closest('.nav-dropdown').classList.toggle('open');
+            }
+        });
+    });
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('nav')) {
+            document.querySelector('.nav-links')?.classList.remove('open');
+            const toggle = document.querySelector('.menu-toggle');
+            if (toggle) toggle.textContent = '☰';
+        }
+        if (!e.target.closest('.nav-dropdown')) {
+            document.querySelectorAll('.nav-dropdown.open').forEach(d => d.classList.remove('open'));
+        }
+    });
     </script>
 </body>
 </html>

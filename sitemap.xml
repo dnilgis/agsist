@@ -1,106 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    
-    <!-- HOMEPAGE - Highest Priority -->
+    <!-- Homepage - highest priority -->
     <url>
         <loc>https://agsist.com/</loc>
-        <lastmod>2026-01-28</lastmod>
-        <changefreq>hourly</changefreq>
+        <lastmod>2026-01-30</lastmod>
+        <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
     
-    <!-- COMMODITY PRICE PAGES -->
+    <!-- Price Pages - high priority, updated frequently -->
     <url>
         <loc>https://agsist.com/corn-prices.html</loc>
-        <lastmod>2026-01-28</lastmod>
-        <changefreq>hourly</changefreq>
+        <lastmod>2026-01-30</lastmod>
+        <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
         <loc>https://agsist.com/soybean-prices.html</loc>
-        <lastmod>2026-01-28</lastmod>
-        <changefreq>hourly</changefreq>
+        <lastmod>2026-01-30</lastmod>
+        <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
         <loc>https://agsist.com/wheat-prices.html</loc>
-        <lastmod>2026-01-28</lastmod>
-        <changefreq>hourly</changefreq>
+        <lastmod>2026-01-30</lastmod>
+        <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
     
-    <!-- TOOLS HUB -->
+    <!-- Tools - high priority -->
     <url>
         <loc>https://agsist.com/tools.html</loc>
-        <lastmod>2026-01-28</lastmod>
+        <lastmod>2026-01-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
-    
-    <!-- INDIVIDUAL TOOLS -->
     <url>
-        <loc>https://agsist.com/gdu-calculator.html</loc>
-        <lastmod>2026-01-28</lastmod>
+        <loc>https://agsist.com/breakeven.html</loc>
+        <lastmod>2026-01-30</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
+        <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://agsist.com/breakeven-calculator.html</loc>
-        <lastmod>2026-01-28</lastmod>
+        <loc>https://agsist.com/gdu.html</loc>
+        <lastmod>2026-01-30</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
+        <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://agsist.com/grain-bin-calculator.html</loc>
-        <lastmod>2026-01-28</lastmod>
+        <loc>https://agsist.com/calculator.html</loc>
+        <lastmod>2026-01-30</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>https://agsist.com/rainfall-calculator.html</loc>
-        <lastmod>2026-01-28</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
+        <priority>0.8</priority>
     </url>
     
-    <!-- RESOURCES & CONTENT -->
+    <!-- Resources - medium priority -->
     <url>
         <loc>https://agsist.com/fastfacts.html</loc>
-        <lastmod>2026-01-28</lastmod>
-        <changefreq>weekly</changefreq>
+        <lastmod>2026-01-30</lastmod>
+        <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
         <loc>https://agsist.com/learn.html</loc>
-        <lastmod>2026-01-28</lastmod>
-        <changefreq>weekly</changefreq>
+        <lastmod>2026-01-30</lastmod>
+        <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
         <loc>https://agsist.com/calendar.html</loc>
-        <lastmod>2026-01-28</lastmod>
+        <lastmod>2026-01-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
         <loc>https://agsist.com/resources.html</loc>
-        <lastmod>2026-01-28</lastmod>
+        <lastmod>2026-01-30</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://agsist.com/offices.html</loc>
+        <lastmod>2026-01-30</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
     </url>
     
-    <!-- LEGAL PAGES -->
+    <!-- Legal - low priority -->
     <url>
         <loc>https://agsist.com/privacy.html</loc>
-        <lastmod>2026-01-28</lastmod>
+        <lastmod>2026-01-30</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
         <loc>https://agsist.com/terms.html</loc>
-        <lastmod>2026-01-28</lastmod>
+        <lastmod>2026-01-30</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
-    
 </urlset>

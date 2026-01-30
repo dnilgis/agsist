@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AGSIST | Free Live Ag Dashboard - Corn, Soybean, Wheat Prices</title>
-    <meta name="description" content="Free live agricultural commodity prices, weather radar, and farm tools. Corn, soybean, wheat futures updated every 15 minutes. Built by Wisconsin farmers.">
+    <meta name="description" content="Free live agricultural commodity prices, weather radar, and farm tools. Corn, soybean, wheat futures updated every 15 minutes. Built for farmers.">
     <meta name="keywords" content="corn prices today, soybean prices, wheat futures, ag commodity prices, farm dashboard, grain prices, livestock prices">
     <link rel="canonical" href="https://agsist.com/">
     
@@ -33,16 +33,7 @@
         "name": "AGSIST",
         "url": "https://agsist.com",
         "logo": "https://agsist.com/icon-512.png",
-        "description": "Agricultural technology tools built by farmers for farmers in Wisconsin",
-        "address": {
-            "@type": "PostalAddress",
-            "addressRegion": "WI",
-            "addressCountry": "US"
-        },
-        "sameAs": [
-            "https://farmers1st.com",
-            "https://lokedrone.com"
-        ]
+        "description": "Agricultural technology tools built by farmers for farmers"
     }
     </script>
     
@@ -56,7 +47,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     <meta property="og:title" content="AGSIST | Free Live Ag Dashboard">
-    <meta property="og:description" content="Free live commodity prices, weather radar, and farm tools. Built by Wisconsin farmers.">
+    <meta property="og:description" content="Free live commodity prices, weather radar, and farm tools. Built for farmers.">
     <meta property="og:image" content="https://agsist.com/og-image.png">
     <meta property="og:url" content="https://agsist.com/">
     <meta property="og:type" content="website">
@@ -68,12 +59,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
-            /* REFINED FOR BETTER READABILITY - Less eye strain */
-            --bg: #0d0d0f;          /* Slightly lighter than pure black */
-            --card: #141418;        /* Warmer dark */
-            --border: #2a2a32;      /* Subtle purple tint, more visible */
-            --text: #e8e8ec;        /* Softer white, less harsh */
-            --dim: #a0a0a8;         /* More readable secondary text */
+            --bg: #0d0d0f;
+            --card: #141418;
+            --border: #2a2a32;
+            --text: #e8e8ec;
+            --dim: #b0b0b8;
             --accent: #e6b042;
             --green: #4ade80;
             --red: #f87171;
@@ -83,12 +73,11 @@
             font-family: 'JetBrains Mono', monospace;
             background: var(--bg);
             color: var(--text);
-            line-height: 1.6;       /* Increased from 1.5 for better readability */
+            line-height: 1.7;
             min-height: 100vh;
             font-size: 16px;
         }
         
-        /* NAV - sticky but slim */
         nav {
             background: var(--card);
             border-bottom: 1px solid var(--border);
@@ -98,7 +87,6 @@
             z-index: 100;
         }
         
-        /* TICKER - slower, full width fill */
         .ticker-wrap {
             background: #000;
             border-bottom: 1px solid var(--border);
@@ -115,9 +103,7 @@
             padding: 0 20px;
         }
         
-        .ticker:hover {
-            animation-play-state: paused;
-        }
+        .ticker:hover { animation-play-state: paused; }
         
         .ticker-item {
             display: inline-flex;
@@ -126,30 +112,12 @@
             font-size: 0.95rem;
         }
         
-        .ticker-item .label {
-            color: var(--dim);
-            font-weight: 500;
-        }
-        
-        .ticker-item .price {
-            color: var(--text);
-            font-weight: 700;
-        }
-        
-        .ticker-item .change {
-            font-size: 0.9rem;      /* Increased from 0.85rem */
-            font-weight: 600;
-        }
-        
+        .ticker-item .label { color: var(--dim); font-weight: 500; }
+        .ticker-item .price { color: var(--text); font-weight: 700; }
+        .ticker-item .change { font-size: 0.9rem; font-weight: 600; }
         .ticker-item .change.up { color: var(--green); }
         .ticker-item .change.down { color: var(--red); }
-        
-        .ticker-item.news {
-            color: var(--accent);
-            max-width: 500px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        .ticker-item.news { color: var(--accent); max-width: 500px; overflow: hidden; text-overflow: ellipsis; }
         
         @keyframes ticker-scroll {
             0% { transform: translateX(0); }
@@ -165,33 +133,11 @@
             position: relative;
         }
         
-        .logo {
-            font-weight: 700;
-            font-size: 1.4rem;
-            color: var(--accent);
-            text-decoration: none;
-        }
+        .logo { font-weight: 700; font-size: 1.4rem; color: var(--accent); text-decoration: none; }
+        .nav-links { display: flex; gap: 6px; }
+        .nav-links a { color: var(--dim); text-decoration: none; padding: 8px 14px; border-radius: 4px; font-size: 0.9rem; transition: all 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--text); background: var(--border); }
         
-        .nav-links {
-            display: flex;
-            gap: 6px;
-        }
-        
-        .nav-links a {
-            color: var(--dim);
-            text-decoration: none;
-            padding: 8px 14px;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-        
-        .nav-links a:hover, .nav-links a.active {
-            color: var(--text);
-            background: var(--border);
-        }
-        
-        /* MOBILE HAMBURGER MENU */
         .menu-toggle {
             display: none;
             background: var(--card);
@@ -206,17 +152,9 @@
             justify-content: center;
         }
         
-        .menu-toggle:hover,
-        .menu-toggle:active {
-            background: var(--border);
-            color: var(--accent);
-        }
+        .menu-toggle:hover, .menu-toggle:active { background: var(--border); color: var(--accent); }
         
-        /* NAV DROPDOWN */
-        .nav-dropdown {
-            position: relative;
-        }
-        
+        .nav-dropdown { position: relative; }
         .nav-dropdown-trigger {
             display: flex;
             align-items: center;
@@ -229,20 +167,9 @@
             font-size: 0.9rem;
             transition: all 0.2s;
         }
-        
-        .nav-dropdown-trigger:hover {
-            color: var(--text);
-            background: var(--border);
-        }
-        
-        .dropdown-arrow {
-            font-size: 0.7em;
-            transition: transform 0.2s;
-        }
-        
-        .nav-dropdown.open .dropdown-arrow {
-            transform: rotate(180deg);
-        }
+        .nav-dropdown-trigger:hover { color: var(--text); background: var(--border); }
+        .dropdown-arrow { font-size: 0.7em; transition: transform 0.2s; }
+        .nav-dropdown.open .dropdown-arrow { transform: rotate(180deg); }
         
         .nav-dropdown-content {
             display: none;
@@ -258,69 +185,19 @@
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
         }
         
-        .nav-dropdown:hover .nav-dropdown-content {
-            display: block;
-        }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+        .nav-dropdown.open .nav-dropdown-content { display: block; }
+        .nav-dropdown-content a { display: block; padding: 10px 14px; color: var(--text); text-decoration: none; font-size: 0.9rem; transition: all 0.2s; }
+        .nav-dropdown-content a:hover { background: var(--border); color: var(--accent); }
         
-        .nav-dropdown.open .nav-dropdown-content {
-            display: block;
-        }
+        main { max-width: 1600px; margin: 0 auto; padding: 12px; }
+        .update-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.9rem; color: var(--dim); }
         
-        .nav-dropdown-content a {
-            display: block;
-            padding: 10px 14px;
-            color: var(--text);
-            text-decoration: none;
-            font-size: 0.9rem;      /* Increased from 0.85rem */
-            transition: all 0.2s;
-        }
+        .price-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
         
-        .nav-dropdown-content a:hover {
-            background: var(--border);
-            color: var(--accent);
-        }
-        
-        /* MAIN CONTENT - wider */
-        main {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 12px;
-        }
-        
-        /* UPDATE TIME */
-        .update-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            font-size: 0.9rem;      /* Increased from 0.85rem */
-            color: var(--dim);
-        }
-        
-        /* PRICE CARDS */
-        .price-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-        
-        /* CLICKABLE PRICE CARDS */
-        a.card-link {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-        
-        a.card-link:hover .price-card,
-        a.card-link:focus .price-card {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(230,176,66,0.15);
-        }
-        
-        a.card-link:hover .secondary-card,
-        a.card-link:focus .secondary-card {
+        a.card-link { text-decoration: none; color: inherit; display: block; }
+        a.card-link:hover .price-card, a.card-link:focus .price-card,
+        a.card-link:hover .secondary-card, a.card-link:focus .secondary-card {
             border-color: var(--accent);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(230,176,66,0.15);
@@ -347,528 +224,112 @@
             background: linear-gradient(135deg, var(--card) 0%, #1a1500 100%);
         }
         
-        .price-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .price-label {
-            font-size: 0.95rem;
-            color: var(--text);
-            font-weight: 600;
-        }
-        
-        .price-contract {
-            font-size: 0.8rem;      /* Increased from 0.75rem */
-            color: var(--dim);
-            background: var(--bg);
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-        
-        .price-value {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        
-        .price-change {
-            font-size: 0.95rem;
-            font-weight: 600;
-        }
-        
+        .price-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .price-label { font-size: 0.95rem; color: var(--text); font-weight: 600; }
+        .price-contract { font-size: 0.9rem; color: var(--dim); background: var(--bg); padding: 3px 8px; border-radius: 4px; }
+        .price-value { font-size: 2rem; font-weight: 700; margin-bottom: 4px; }
+        .price-change { font-size: 0.95rem; font-weight: 600; }
         .price-change.up { color: var(--green); }
         .price-change.down { color: var(--red); }
+        .price-meta { display: flex; gap: 12px; font-size: 0.875rem; color: var(--dim); margin-top: 4px; }
+        .price-meta span { white-space: nowrap; }
         
-        /* Inline meta (symbol, prev close) */
-        .price-meta {
-            display: flex;
-            gap: 12px;
-            font-size: 0.75rem;     /* Increased from 0.7rem */
-            color: var(--dim);
-            margin-top: 4px;
-        }
-        .price-meta span {
-            white-space: nowrap;
-        }
+        .range-bar { margin: 8px 0 4px; }
+        .range-bar-label { display: flex; justify-content: space-between; font-size: 0.875rem; color: var(--dim); margin-bottom: 4px; }
+        .range-bar-track { height: 6px; background: var(--border); border-radius: 3px; position: relative; }
+        .range-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: linear-gradient(90deg, #4ade80, #e6b042, #ef4444); border-radius: 3px; opacity: 0.3; }
+        .range-bar-marker { position: absolute; top: -2px; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; transform: translateX(-50%); border: 2px solid var(--card); }
         
-        /* 52-week range bar */
-        .range-bar {
-            margin: 8px 0 4px;
-        }
-        .range-bar-label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;     /* Increased from 0.7rem */
-            color: var(--dim);
-            margin-bottom: 4px;
-        }
-        .range-bar-track {
-            height: 6px;
-            background: var(--border);
-            border-radius: 3px;
-            position: relative;
-        }
-        .range-bar-fill {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            background: linear-gradient(90deg, #4ade80, #e6b042, #ef4444);
-            border-radius: 3px;
-            opacity: 0.3;
-        }
-        .range-bar-marker {
-            position: absolute;
-            top: -2px;
-            width: 10px;
-            height: 10px;
-            background: var(--accent);
-            border-radius: 50%;
-            transform: translateX(-50%);
-            border: 2px solid var(--card);
-        }
+        .section-header { font-size: 0.9rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.05em; margin: 16px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
         
-        /* SECTION HEADERS */
-        .section-header {
-            font-size: 0.9rem;      /* Increased from 0.85rem */
-            color: var(--dim);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin: 16px 0 10px;
-            padding-bottom: 6px;
-            border-bottom: 1px solid var(--border);
-        }
+        .secondary-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 12px; }
+        .secondary-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 12px; cursor: pointer; transition: all 0.2s; position: relative; }
+        .secondary-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(230,176,66,0.15); }
+        .secondary-label { font-size: 0.9rem; color: var(--dim); margin-bottom: 6px; }
+        .secondary-value { font-size: 1.25rem; font-weight: 700; }
+        .secondary-change { font-size: 0.9rem; font-weight: 600; }
+        .secondary-meta { display: flex; gap: 8px; font-size: 0.875rem; color: var(--dim); margin-top: 4px; }
         
-        /* SECONDARY PRICES - 6 across on desktop */
-        .secondary-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 10px;
-            margin-bottom: 12px;
-        }
+        .range-bar-sm { margin-top: 6px; }
+        .range-bar-sm .range-bar-track { height: 4px; background: var(--border); border-radius: 2px; position: relative; }
+        .range-bar-sm .range-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: linear-gradient(90deg, #4ade80, #e6b042, #ef4444); border-radius: 2px; opacity: 0.3; }
+        .range-bar-sm .range-bar-marker { position: absolute; top: -2px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; transform: translateX(-50%); border: 1px solid var(--card); }
         
-        .secondary-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-        }
+        .weather-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        .weather-card iframe { width: 100%; height: 420px; border: none; display: block; }
         
-        .secondary-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(230,176,66,0.15);
-        }
+        .news-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+        .news-item { padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .news-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .news-item:first-child { padding-top: 0; }
+        .news-item a { color: var(--text); text-decoration: none; font-size: 0.95rem; line-height: 1.6; display: block; }
+        .news-item a:hover { color: var(--accent); }
+        .news-source { font-size: 0.875rem; color: var(--dim); margin-top: 4px; }
         
-        .secondary-label {
-            font-size: 0.9rem;      /* Increased from 0.85rem */
-            color: var(--dim);
-            margin-bottom: 6px;
-        }
+        footer { background: var(--card); border-top: 1px solid var(--border); padding: 40px 16px 20px; margin-top: 30px; }
+        .footer-inner { max-width: 1600px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr; gap: 32px; margin-bottom: 32px; }
+        .footer-col h4 { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 0.9rem; margin-bottom: 16px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+        .footer-col p { color: var(--dim); font-size: 0.95rem; line-height: 1.5; margin-bottom: 8px; }
+        .footer-col ul { list-style: none; padding: 0; margin: 0; }
+        .footer-col li { margin-bottom: 10px; }
+        .footer-col a { color: var(--dim); text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+        .footer-col a:hover { color: var(--accent); }
+        .footer-tagline { color: var(--accent); font-weight: 600; }
+        .footer-bottom { max-width: 1600px; margin: 0 auto; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-bottom span { font-size: 0.9rem; color: var(--dim); }
+        .footer-legal { display: flex; gap: 20px; }
+        .footer-legal a { color: var(--dim); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+        .footer-legal a:hover { color: var(--accent); }
         
-        .secondary-value {
-            font-size: 1.25rem;
-            font-weight: 700;
-        }
-        
-        .secondary-change {
-            font-size: 0.9rem;      /* Increased from 0.85rem */
-            font-weight: 600;
-        }
-        
-        /* Secondary card meta (inline prev/symbol) */
-        .secondary-meta {
-            display: flex;
-            gap: 8px;
-            font-size: 0.7rem;      /* Increased from 0.65rem */
-            color: var(--dim);
-            margin-top: 4px;
-        }
-        
-        /* Small range bar for secondary cards */
-        .range-bar-sm {
-            margin-top: 6px;
-        }
-        .range-bar-sm .range-bar-track {
-            height: 4px;
-            background: var(--border);
-            border-radius: 2px;
-            position: relative;
-        }
-        .range-bar-sm .range-bar-fill {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            background: linear-gradient(90deg, #4ade80, #e6b042, #ef4444);
-            border-radius: 2px;
-            opacity: 0.3;
-        }
-        .range-bar-sm .range-bar-marker {
-            position: absolute;
-            top: -2px;
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-            transform: translateX(-50%);
-            border: 1px solid var(--card);
-        }
-        
-        /* WEATHER - no scroll, fixed height */
-        .weather-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        .weather-card iframe {
-            width: 100%;
-            height: 420px;
-            border: none;
-            display: block;
-        }
-        
-        /* NEWS - tighter spacing for more articles */
-        .news-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px;
-        }
-        
-        .news-item {
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .news-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        
-        .news-item:first-child {
-            padding-top: 0;
-        }
-        
-        .news-item a {
-            color: var(--text);
-            text-decoration: none;
-            font-size: 0.95rem;     /* Increased from 0.9rem */
-            line-height: 1.45;      /* Increased from 1.35 */
-            display: block;
-        }
-        
-        .news-item a:hover {
-            color: var(--accent);
-        }
-        
-        .news-source {
-            font-size: 0.75rem;     /* Increased from 0.7rem */
-            color: var(--dim);
-            margin-top: 4px;
-        }
-        
-        /* FOOTER */
-        footer {
-            background: var(--card);
-            border-top: 1px solid var(--border);
-            padding: 40px 16px 20px;
-            margin-top: 30px;
-        }
-        
-        .footer-inner {
-            max-width: 1600px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
-            gap: 32px;
-            margin-bottom: 32px;
-        }
-        
-        .footer-col h4 {
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--accent);
-            font-size: 0.8rem;      /* Increased from 0.75rem */
-            margin-bottom: 16px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        
-        .footer-col p {
-            color: var(--dim);
-            font-size: 0.85rem;
-            line-height: 1.5;
-            margin-bottom: 8px;
-        }
-        
-        .footer-col ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .footer-col li {
-            margin-bottom: 10px;
-        }
-        
-        .footer-col a {
-            color: var(--dim);
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: color 0.2s;
-        }
-        
-        .footer-col a:hover {
-            color: var(--accent);
-        }
-        
-        .footer-tagline {
-            color: var(--accent);
-            font-weight: 600;
-        }
-        
-        .footer-bottom {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        
-        .footer-bottom span {
-            font-size: 0.8rem;      /* Increased from 0.7rem */
-            color: var(--dim);
-        }
-        
-        .footer-legal {
-            display: flex;
-            gap: 20px;
-        }
-        
-        .footer-legal a {
-            color: var(--dim);
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: color 0.2s;
-        }
-        
-        .footer-legal a:hover {
-            color: var(--accent);
-        }
-        
-        /* TABLET */
         @media (min-width: 768px) {
             main { padding: 16px 20px; }
-            
-            .price-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            
-            .secondary-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            
-            .two-col {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-            }
-            
-            .weather-card iframe {
-                height: 380px;
-            }
+            .price-grid { grid-template-columns: repeat(4, 1fr); }
+            .secondary-grid { grid-template-columns: repeat(3, 1fr); }
+            .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+            .weather-card iframe { height: 380px; }
         }
         
-        /* DESKTOP */
         @media (min-width: 1200px) {
             main { padding: 16px 24px; }
-            
-            .secondary-grid {
-                grid-template-columns: repeat(6, 1fr);
-            }
-            
-            .weather-card iframe {
-                height: 400px;
-            }
+            .secondary-grid { grid-template-columns: repeat(6, 1fr); }
+            .weather-card iframe { height: 400px; }
         }
         
-        /* MOBILE */
         @media (max-width: 767px) {
-            .price-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .price-value {
-                font-size: 1.5rem;
-            }
-            .secondary-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            /* Show hamburger */
-            .menu-toggle {
-                display: flex;
-            }
-            
-            /* Hide nav links by default */
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: var(--card);
-                border: 1px solid var(--border);
-                border-top: none;
-                flex-direction: column;
-                padding: 8px;
-                gap: 4px;
-                z-index: 100;
-            }
-            
-            .nav-links.open {
-                display: flex;
-            }
-            
-            .nav-links a,
-            .nav-dropdown-trigger {
-                padding: 12px 14px;
-                text-align: center;
-                font-size: 0.9rem;      /* Increased from 0.85rem */
-            }
-            
-            /* Mobile dropdown */
-            .nav-dropdown {
-                width: 100%;
-            }
-            
-            .nav-dropdown-trigger {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .nav-dropdown:hover .nav-dropdown-content {
-                display: none;
-            }
-            
-            .nav-dropdown.open .nav-dropdown-content {
-                display: block;
-            }
-            
-            .nav-dropdown-content {
-                position: static;
-                background: var(--bg);
-                border: none;
-                box-shadow: none;
-                padding: 4px 0 4px 16px;
-            }
-            
-            .nav-dropdown-content a {
-                text-align: left;
-                padding: 10px 14px;
-            }
-            
-            .logo {
-                font-size: 1rem;
-            }
-            
-            /* Footer responsive */
-            .footer-inner {
-                grid-template-columns: 1fr 1fr;
-                gap: 24px;
-            }
-            
-            .footer-inner .footer-col:first-child {
-                grid-column: 1 / -1;
-            }
-            
-            .footer-bottom {
-                flex-direction: column;
-                text-align: center;
-                gap: 12px;
-            }
+            .price-grid { grid-template-columns: repeat(2, 1fr); }
+            .price-value { font-size: 1.5rem; }
+            .secondary-grid { grid-template-columns: repeat(2, 1fr); }
+            .menu-toggle { display: flex; }
+            .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card); border: 1px solid var(--border); border-top: none; flex-direction: column; padding: 8px; gap: 4px; z-index: 100; }
+            .nav-links.open { display: flex; }
+            .nav-links a, .nav-dropdown-trigger { padding: 12px 14px; text-align: center; font-size: 0.9rem; }
+            .nav-dropdown { width: 100%; }
+            .nav-dropdown-trigger { width: 100%; justify-content: center; }
+            .nav-dropdown:hover .nav-dropdown-content { display: none; }
+            .nav-dropdown.open .nav-dropdown-content { display: block; }
+            .nav-dropdown-content { position: static; background: var(--bg); border: none; box-shadow: none; padding: 4px 0 4px 16px; }
+            .nav-dropdown-content a { text-align: left; padding: 10px 14px; }
+            .logo { font-size: 1rem; }
+            .footer-inner { grid-template-columns: 1fr 1fr; gap: 24px; }
+            .footer-inner .footer-col:first-child { grid-column: 1 / -1; }
+            .footer-bottom { flex-direction: column; text-align: center; gap: 12px; }
         }
         
         @media (max-width: 480px) {
-            .footer-inner {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            
-            .footer-col ul {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 8px 16px;
-            }
-            
-            .footer-col li {
-                margin: 0;
-            }
+            .footer-inner { grid-template-columns: 1fr; text-align: center; }
+            .footer-col ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; }
+            .footer-col li { margin: 0; }
         }
         
-        /* TOUCH TARGETS */
         @media (max-width: 767px) {
-            .nav-links a,
-            .menu-toggle,
-            .price-card,
-            .secondary-card {
-                min-height: 44px;
-            }
+            .nav-links a, .menu-toggle, .price-card, .secondary-card { min-height: 44px; }
         }
         
-        /* PREVENT iOS ZOOM ON INPUT FOCUS */
-        input[type="text"],
-        input[type="number"],
-        input[type="email"],
-        select,
-        textarea {
-            font-size: 16px !important;
-        }
-        
-        /* FOCUS STATES (Accessibility) */
-        a:focus,
-        button:focus,
-        .menu-toggle:focus {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-        }
-        
-        /* PREVENT HORIZONTAL SCROLL */
-        html, body {
-            overflow-x: hidden;
-        }
-        
-        /* LOADING STATE */
-        .loading {
-            color: var(--dim);
-            font-style: italic;
-        }
-        
-        /* Screen reader only - for SEO H1 */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0,0,0,0);
-            white-space: nowrap;
-            border: 0;
-        }
+        input[type="text"], input[type="number"], input[type="email"], select, textarea { font-size: 16px !important; }
+        a:focus, button:focus, .menu-toggle:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+        html, body { overflow-x: hidden; }
+        .loading { color: var(--dim); font-style: italic; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
     </style>
 </head>
 <body>
@@ -894,11 +355,8 @@
         </div>
     </nav>
     
-    <!-- TICKER -->
     <div class="ticker-wrap">
-        <div class="ticker" id="ticker">
-            <!-- Populated by JS -->
-        </div>
+        <div class="ticker" id="ticker"></div>
     </div>
     
     <main>
@@ -909,7 +367,6 @@
             <span>Data auto-refreshes</span>
         </div>
         
-        <!-- PRIMARY: Corn & Soybeans -->
         <div class="price-grid" id="primary-prices">
             <a href="corn-prices.html" class="card-link">
                 <div class="price-card featured" id="card-corn">
@@ -968,8 +425,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- SECONDARY: Other commodities -->
         <div class="section-header">Livestock & Energy</div>
         <div class="secondary-grid" id="secondary-prices">
             <a href="wheat-prices.html" class="card-link">
@@ -978,9 +433,7 @@
                     <div class="secondary-value" id="wheat-price">--</div>
                     <div class="secondary-change" id="wheat-change">--</div>
                     <div class="secondary-meta"><span id="wheat-prev">--</span><span id="wheat-symbol">--</span></div>
-                    <div class="range-bar-sm">
-                        <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="wheat-marker" style="left:50%"></div></div>
-                    </div>
+                    <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="wheat-marker" style="left:50%"></div></div></div>
                 </div>
             </a>
             <div class="secondary-card">
@@ -988,49 +441,38 @@
                 <div class="secondary-value" id="cattle-price">--</div>
                 <div class="secondary-change" id="cattle-change">--</div>
                 <div class="secondary-meta"><span id="cattle-prev">--</span><span id="cattle-symbol">--</span></div>
-                <div class="range-bar-sm">
-                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="cattle-marker" style="left:50%"></div></div>
-                </div>
+                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="cattle-marker" style="left:50%"></div></div></div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🐂 Feeder Cattle</div>
                 <div class="secondary-value" id="feeder-price">--</div>
                 <div class="secondary-change" id="feeder-change">--</div>
                 <div class="secondary-meta"><span id="feeder-prev">--</span><span id="feeder-symbol">--</span></div>
-                <div class="range-bar-sm">
-                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="feeder-marker" style="left:50%"></div></div>
-                </div>
+                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="feeder-marker" style="left:50%"></div></div></div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🐷 Lean Hogs</div>
                 <div class="secondary-value" id="hogs-price">--</div>
                 <div class="secondary-change" id="hogs-change">--</div>
                 <div class="secondary-meta"><span id="hogs-prev">--</span><span id="hogs-symbol">--</span></div>
-                <div class="range-bar-sm">
-                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="hogs-marker" style="left:50%"></div></div>
-                </div>
+                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="hogs-marker" style="left:50%"></div></div></div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🥛 Class III Milk</div>
                 <div class="secondary-value" id="milk-price">--</div>
                 <div class="secondary-change" id="milk-change">--</div>
                 <div class="secondary-meta"><span id="milk-prev">--</span><span id="milk-symbol">--</span></div>
-                <div class="range-bar-sm">
-                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="milk-marker" style="left:50%"></div></div>
-                </div>
+                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="milk-marker" style="left:50%"></div></div></div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🛢️ Crude Oil</div>
                 <div class="secondary-value" id="oil-price">--</div>
                 <div class="secondary-change" id="oil-change">--</div>
                 <div class="secondary-meta"><span id="oil-prev">--</span><span id="oil-symbol">--</span></div>
-                <div class="range-bar-sm">
-                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="oil-marker" style="left:50%"></div></div>
-                </div>
+                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="oil-marker" style="left:50%"></div></div></div>
             </div>
         </div>
         
-        <!-- METALS & CRYPTO -->
         <div class="section-header">Metals & Crypto</div>
         <div class="secondary-grid">
             <div class="secondary-card">
@@ -1038,58 +480,44 @@
                 <div class="secondary-value" id="gold-price">--</div>
                 <div class="secondary-change" id="gold-change">--</div>
                 <div class="secondary-meta"><span id="gold-prev">--</span><span id="gold-symbol">--</span></div>
-                <div class="range-bar-sm">
-                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="gold-marker" style="left:50%"></div></div>
-                </div>
+                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="gold-marker" style="left:50%"></div></div></div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🥈 Silver</div>
                 <div class="secondary-value" id="silver-price">--</div>
                 <div class="secondary-change" id="silver-change">--</div>
                 <div class="secondary-meta"><span id="silver-prev">--</span><span id="silver-symbol">--</span></div>
-                <div class="range-bar-sm">
-                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="silver-marker" style="left:50%"></div></div>
-                </div>
+                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="silver-marker" style="left:50%"></div></div></div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🪙 Bitcoin</div>
                 <div class="secondary-value" id="btc-price">--</div>
                 <div class="secondary-change" id="btc-change">--</div>
                 <div class="secondary-meta"><span id="btc-prev">--</span><span id="btc-symbol">--</span></div>
-                <div class="range-bar-sm">
-                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="btc-marker" style="left:50%"></div></div>
-                </div>
+                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="btc-marker" style="left:50%"></div></div></div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">💎 Kaspa</div>
                 <div class="secondary-value" id="kas-price">--</div>
                 <div class="secondary-change" id="kas-change">--</div>
                 <div class="secondary-meta"><span id="kas-prev">--</span><span id="kas-symbol">--</span></div>
-                <div class="range-bar-sm">
-                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="kas-marker" style="left:50%"></div></div>
-                </div>
+                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="kas-marker" style="left:50%"></div></div></div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">📈 S&P 500</div>
                 <div class="secondary-value" id="sp500-price">--</div>
                 <div class="secondary-change" id="sp500-change">--</div>
                 <div class="secondary-meta"><span id="sp500-prev">--</span><span id="sp500-symbol">--</span></div>
-                <div class="range-bar-sm">
-                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="sp500-marker" style="left:50%"></div></div>
-                </div>
+                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="sp500-marker" style="left:50%"></div></div></div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">💵 USD Index</div>
                 <div class="secondary-value" id="dxy-price">--</div>
                 <div class="secondary-change" id="dxy-change">--</div>
                 <div class="secondary-meta"><span id="dxy-prev">--</span><span id="dxy-symbol">--</span></div>
-                <div class="range-bar-sm">
-                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="dxy-marker" style="left:50%"></div></div>
-                </div>
+                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="dxy-marker" style="left:50%"></div></div></div>
             </div>
         </div>
-        
-        <!-- NEWS & WEATHER side by side - NEWS FIRST (priority) -->
         <div class="two-col">
             <div>
                 <div class="section-header">📰 Ag News</div>
@@ -1099,30 +527,30 @@
             </div>
             <div>
                 <div class="section-header">🌤️ Weather</div>
-                <div id="forecast" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;font-size:0.85rem">
+                <div id="forecast" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;font-size:0.95rem">
                     <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center">
-                        <div style="color:var(--dim);font-size:0.75rem">TODAY</div>
+                        <div style="color:var(--dim);font-size:0.875rem">TODAY</div>
                         <div id="wx-today-icon" style="font-size:1.5rem;margin:4px 0">--</div>
                         <div id="wx-today-temp" style="font-weight:600">--</div>
-                        <div id="wx-today-desc" style="font-size:0.75rem;color:var(--dim)">--</div>
+                        <div id="wx-today-desc" style="font-size:0.875rem;color:var(--dim)">--</div>
                     </div>
                     <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center">
-                        <div style="color:var(--dim);font-size:0.75rem">TONIGHT</div>
+                        <div style="color:var(--dim);font-size:0.875rem">TONIGHT</div>
                         <div id="wx-tonight-icon" style="font-size:1.5rem;margin:4px 0">--</div>
                         <div id="wx-tonight-temp" style="font-weight:600">--</div>
-                        <div id="wx-tonight-desc" style="font-size:0.75rem;color:var(--dim)">--</div>
+                        <div id="wx-tonight-desc" style="font-size:0.875rem;color:var(--dim)">--</div>
                     </div>
                     <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center">
-                        <div style="color:var(--dim);font-size:0.75rem">TOMORROW</div>
+                        <div style="color:var(--dim);font-size:0.875rem">TOMORROW</div>
                         <div id="wx-tomorrow-icon" style="font-size:1.5rem;margin:4px 0">--</div>
                         <div id="wx-tomorrow-temp" style="font-weight:600">--</div>
-                        <div id="wx-tomorrow-desc" style="font-size:0.75rem;color:var(--dim)">--</div>
+                        <div id="wx-tomorrow-desc" style="font-size:0.875rem;color:var(--dim)">--</div>
                     </div>
                     <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center">
-                        <div style="color:var(--dim);font-size:0.75rem">TOM NIGHT</div>
+                        <div style="color:var(--dim);font-size:0.875rem">TOM NIGHT</div>
                         <div id="wx-tomnight-icon" style="font-size:1.5rem;margin:4px 0">--</div>
                         <div id="wx-tomnight-temp" style="font-weight:600">--</div>
-                        <div id="wx-tomnight-desc" style="font-size:0.75rem;color:var(--dim)">--</div>
+                        <div id="wx-tomnight-desc" style="font-size:0.875rem;color:var(--dim)">--</div>
                     </div>
                 </div>
                 <div class="weather-card">
@@ -1136,7 +564,7 @@
         <div class="footer-inner">
             <div class="footer-col">
                 <h4>AGSIST</h4>
-                <p>Free live agricultural commodity prices, weather, and news for farmers. Built in Barron County, Wisconsin.</p>
+                <p>Free live agricultural commodity prices, weather, and news for farmers.</p>
                 <p class="footer-tagline">Real-time data. No account required.</p>
             </div>
             <div class="footer-col">
@@ -1151,9 +579,9 @@
                 <h4>Tools</h4>
                 <ul>
                     <li><a href="tools.html">All Tools</a></li>
-                    <li><a href="gdu-calculator.html">GDU Calculator</a></li>
-                    <li><a href="breakeven-calculator.html">Break-Even Calculator</a></li>
-                    <li><a href="grain-bin-calculator.html">Grain Bin Calculator</a></li>
+                    <li><a href="gdu.html">GDU Calculator</a></li>
+                    <li><a href="breakeven.html">Break-Even Calculator</a></li>
+                    <li><a href="calculator.html">Grain Bin Calculator</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -1175,23 +603,20 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <span>© 2026 AGSIST • Built in Barron County, WI</span>
+            <span>© 2026 AGSIST</span>
             <div class="footer-legal">
                 <a href="privacy.html">Privacy</a>
                 <a href="terms.html">Terms</a>
             </div>
         </div>
     </footer>
-    
     <script>
-    // Mobile menu toggle
     document.querySelector('.menu-toggle')?.addEventListener('click', function() {
         const nav = document.querySelector('.nav-links');
         const isOpen = nav.classList.toggle('open');
         this.textContent = isOpen ? '✕' : '☰';
     });
 
-    // Dropdown toggle for mobile
     document.querySelectorAll('.nav-dropdown-trigger').forEach(trigger => {
         trigger.addEventListener('click', function(e) {
             if (window.innerWidth <= 767) {
@@ -1201,7 +626,6 @@
         });
     });
 
-    // Close menu when clicking outside
     document.addEventListener('click', function(e) {
         if (!e.target.closest('nav')) {
             document.querySelector('.nav-links')?.classList.remove('open');
@@ -1219,14 +643,12 @@
             if (!res.ok) throw new Error('Failed to load');
             const data = await res.json();
             
-            // Update time
             document.getElementById('update-time').textContent = 
                 new Date(data.updated).toLocaleString([], {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
             document.getElementById('update-time').classList.remove('loading');
             
             const m = data.markets;
             
-            // Helper to format price
             const fmt = (val, unit) => {
                 if (unit === '¢/bu') return (val / 100).toFixed(2);
                 if (unit === '¢/lb') return val.toFixed(2);
@@ -1235,17 +657,13 @@
                 return val.toFixed(2);
             };
             
-            // Helper to set change class
             const chgClass = (val) => val >= 0 ? 'up' : 'down';
             const chgSign = (val) => val >= 0 ? '+' : '';
-            
-            // Helper to calculate range position (0-100%)
             const rangePos = (price, low, high) => {
                 if (!low || !high || high === low) return 50;
                 return Math.min(100, Math.max(0, ((price - low) / (high - low)) * 100));
             };
             
-            // CORN
             if (m.grains?.corn) {
                 const c = m.grains.corn;
                 document.getElementById('corn-contract').textContent = c.contract || 'Front';
@@ -1254,7 +672,6 @@
                 document.getElementById('corn-change').className = 'price-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('corn-prev').textContent = 'prev: $' + fmt(c.prevClose, c.unit);
                 if (c.symbol) document.getElementById('corn-symbol').textContent = c.symbol;
-                // Range bar
                 if (c.low52 && c.high52) {
                     document.getElementById('corn-range-low').textContent = '$' + fmt(c.low52, c.unit);
                     document.getElementById('corn-range-high').textContent = '$' + fmt(c.high52, c.unit);
@@ -1262,7 +679,6 @@
                 }
             }
             
-            // CORN DEC
             if (m.grains?.corn_dec) {
                 const c = m.grains.corn_dec;
                 document.getElementById('corn-dec-price').textContent = '$' + fmt(c.price, c.unit);
@@ -1270,7 +686,6 @@
                 document.getElementById('corn-dec-change').className = 'price-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('corn-dec-prev').textContent = 'prev: $' + fmt(c.prevClose, c.unit);
                 if (c.symbol) document.getElementById('corn-dec-symbol').textContent = c.symbol;
-                // Range bar
                 if (c.low52 && c.high52) {
                     document.getElementById('corn-dec-range-low').textContent = '$' + fmt(c.low52, c.unit);
                     document.getElementById('corn-dec-range-high').textContent = '$' + fmt(c.high52, c.unit);
@@ -1278,7 +693,6 @@
                 }
             }
             
-            // SOYBEANS
             if (m.grains?.soybeans) {
                 const c = m.grains.soybeans;
                 document.getElementById('soy-contract').textContent = c.contract || 'Front';
@@ -1287,7 +701,6 @@
                 document.getElementById('soy-change').className = 'price-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('soy-prev').textContent = 'prev: $' + fmt(c.prevClose, c.unit);
                 if (c.symbol) document.getElementById('soy-symbol').textContent = c.symbol;
-                // Range bar
                 if (c.low52 && c.high52) {
                     document.getElementById('soy-range-low').textContent = '$' + fmt(c.low52, c.unit);
                     document.getElementById('soy-range-high').textContent = '$' + fmt(c.high52, c.unit);
@@ -1295,7 +708,6 @@
                 }
             }
             
-            // SOYBEANS NOV
             if (m.grains?.soybeans_nov) {
                 const c = m.grains.soybeans_nov;
                 document.getElementById('soy-nov-price').textContent = '$' + fmt(c.price, c.unit);
@@ -1303,7 +715,6 @@
                 document.getElementById('soy-nov-change').className = 'price-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('soy-nov-prev').textContent = 'prev: $' + fmt(c.prevClose, c.unit);
                 if (c.symbol) document.getElementById('soy-nov-symbol').textContent = c.symbol;
-                // Range bar
                 if (c.low52 && c.high52) {
                     document.getElementById('soy-nov-range-low').textContent = '$' + fmt(c.low52, c.unit);
                     document.getElementById('soy-nov-range-high').textContent = '$' + fmt(c.high52, c.unit);
@@ -1311,7 +722,6 @@
                 }
             }
             
-            // WHEAT
             if (m.grains?.wheat) {
                 const c = m.grains.wheat;
                 document.getElementById('wheat-price').textContent = '$' + fmt(c.price, c.unit);
@@ -1321,8 +731,6 @@
                 if (c.symbol) document.getElementById('wheat-symbol').textContent = c.symbol;
                 if (c.low52 && c.high52) document.getElementById('wheat-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
             }
-            
-            // CATTLE
             if (m.livestock?.cattle) {
                 const c = m.livestock.cattle;
                 document.getElementById('cattle-price').textContent = '$' + c.price.toFixed(2);
@@ -1333,7 +741,6 @@
                 if (c.low52 && c.high52) document.getElementById('cattle-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
             }
             
-            // FEEDER
             if (m.livestock?.feeder) {
                 const c = m.livestock.feeder;
                 document.getElementById('feeder-price').textContent = '$' + c.price.toFixed(2);
@@ -1344,7 +751,6 @@
                 if (c.low52 && c.high52) document.getElementById('feeder-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
             }
             
-            // HOGS
             if (m.livestock?.hogs) {
                 const c = m.livestock.hogs;
                 document.getElementById('hogs-price').textContent = '$' + c.price.toFixed(2);
@@ -1355,7 +761,6 @@
                 if (c.low52 && c.high52) document.getElementById('hogs-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
             }
             
-            // MILK
             if (m.livestock?.milk) {
                 const c = m.livestock.milk;
                 document.getElementById('milk-price').textContent = '$' + c.price.toFixed(2);
@@ -1366,7 +771,6 @@
                 if (c.low52 && c.high52) document.getElementById('milk-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
             }
             
-            // OIL
             if (m.energy?.oil) {
                 const c = m.energy.oil;
                 document.getElementById('oil-price').textContent = '$' + c.price.toFixed(2);
@@ -1377,7 +781,6 @@
                 if (c.low52 && c.high52) document.getElementById('oil-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
             }
             
-            // GOLD
             if (m.metals?.gold) {
                 const c = m.metals.gold;
                 document.getElementById('gold-price').textContent = '$' + c.price.toFixed(0);
@@ -1388,7 +791,6 @@
                 if (c.low52 && c.high52) document.getElementById('gold-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
             }
             
-            // SILVER
             if (m.metals?.silver) {
                 const c = m.metals.silver;
                 document.getElementById('silver-price').textContent = '$' + c.price.toFixed(2);
@@ -1399,7 +801,6 @@
                 if (c.low52 && c.high52) document.getElementById('silver-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
             }
             
-            // BITCOIN
             if (m.crypto?.bitcoin) {
                 const c = m.crypto.bitcoin;
                 document.getElementById('btc-price').textContent = '$' + c.price.toLocaleString(undefined, {maximumFractionDigits: 0});
@@ -1410,7 +811,6 @@
                 if (c.low52 && c.high52) document.getElementById('btc-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
             }
             
-            // KASPA
             if (m.crypto?.kaspa) {
                 const c = m.crypto.kaspa;
                 document.getElementById('kas-price').textContent = '$' + c.price.toFixed(3);
@@ -1421,7 +821,6 @@
                 if (c.low52 && c.high52) document.getElementById('kas-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
             }
             
-            // S&P 500
             if (m.indices?.sp500) {
                 const c = m.indices.sp500;
                 document.getElementById('sp500-price').textContent = c.price.toLocaleString(undefined, {maximumFractionDigits: 0});
@@ -1432,7 +831,6 @@
                 if (c.low52 && c.high52) document.getElementById('sp500-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
             }
             
-            // USD INDEX
             if (m.indices?.dollar) {
                 const c = m.indices.dollar;
                 document.getElementById('dxy-price').textContent = c.price.toFixed(2);
@@ -1443,7 +841,6 @@
                 if (c.low52 && c.high52) document.getElementById('dxy-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
             }
             
-            // NEWS - show more articles
             if (data.news && data.news.length > 0) {
                 const newsEl = document.getElementById('news-feed');
                 newsEl.innerHTML = data.news.slice(0, 15).map(n => `
@@ -1454,7 +851,6 @@
                 `).join('');
             }
             
-            // TICKER
             buildTicker(m, data.news || []);
             
         } catch (e) {
@@ -1469,81 +865,60 @@
         const chgClass = (val) => val >= 0 ? 'up' : 'down';
         const chgSign = (val) => val >= 0 ? '+' : '';
         
-        // Corn
         if (m.grains?.corn) {
             const c = m.grains.corn;
             items.push(`<span class="ticker-item"><span class="label">🌽 Corn</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
-        
-        // Soybeans
         if (m.grains?.soybeans) {
             const c = m.grains.soybeans;
             items.push(`<span class="ticker-item"><span class="label">🫘 Beans</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
-        
-        // Wheat
         if (m.grains?.wheat) {
             const c = m.grains.wheat;
             items.push(`<span class="ticker-item"><span class="label">🌾 Wheat</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
-        
-        // Cattle
         if (m.livestock?.cattle) {
             const c = m.livestock.cattle;
             items.push(`<span class="ticker-item"><span class="label">🐄 Cattle</span><span class="price">$${c.price.toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
-        
-        // Bitcoin
         if (m.crypto?.bitcoin) {
             const c = m.crypto.bitcoin;
             items.push(`<span class="ticker-item"><span class="label">₿ BTC</span><span class="price">$${c.price.toLocaleString(undefined,{maximumFractionDigits:0})}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
-        
-        // Kaspa - 3 decimal places
         if (m.crypto?.kaspa) {
             const c = m.crypto.kaspa;
             items.push(`<span class="ticker-item"><span class="label">KAS</span><span class="price">$${c.price.toFixed(3)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
-        
-        // Add news headlines
         if (news.length > 0) {
             news.slice(0, 3).forEach(n => {
                 items.push(`<span class="ticker-item news">📰 ${n.title}</span>`);
             });
         }
-        
-        // Duplicate for seamless scroll
-        const tickerEl = document.getElementById('ticker');
-        tickerEl.innerHTML = items.join('') + items.join('');
+        document.getElementById('ticker').innerHTML = items.join('') + items.join('');
     }
     
     loadData();
-    // Refresh every 2 minutes
     setInterval(loadData, 2 * 60 * 1000);
     
-    // Fetch NWS forecast for Barron County
     async function loadForecast() {
         try {
-            // NWS API for Barron, WI area
             const res = await fetch('https://api.weather.gov/gridpoints/DLH/75,63/forecast');
             if (!res.ok) throw new Error('Forecast unavailable');
             const data = await res.json();
             const periods = data.properties.periods;
             
-            // Weather icon helper
             const wxIcon = (forecast, isDay) => {
                 const f = forecast.toLowerCase();
                 if (f.includes('thunder') || f.includes('storm')) return '⛈️';
                 if (f.includes('rain') || f.includes('shower')) return '🌧️';
                 if (f.includes('snow') || f.includes('flurr')) return '🌨️';
-                if (f.includes('cloud') || f.includes('overcast')) return isDay ? '☁️' : '☁️';
+                if (f.includes('cloud') || f.includes('overcast')) return '☁️';
                 if (f.includes('partly') || f.includes('mostly sunny')) return isDay ? '⛅' : '🌙';
                 if (f.includes('fog') || f.includes('mist')) return '🌫️';
                 if (f.includes('wind')) return '💨';
                 return isDay ? '☀️' : '🌙';
             };
             
-            // Populate 4 periods (Today, Tonight, Tomorrow, Tomorrow Night)
             if (periods[0]) {
                 document.getElementById('wx-today-icon').textContent = wxIcon(periods[0].shortForecast, periods[0].isDaytime);
                 document.getElementById('wx-today-temp').textContent = periods[0].temperature + '°' + periods[0].temperatureUnit;
@@ -1570,10 +945,8 @@
     }
     
     loadForecast();
-    // Refresh forecast every 30 minutes
     setInterval(loadForecast, 30 * 60 * 1000);
     
-    // Welcome message based on time
     function getGreeting() {
         const hour = new Date().getHours();
         if (hour < 5) return '🌙 Late night';
@@ -1589,7 +962,6 @@
         document.getElementById('welcome-msg').textContent = msg;
     }
     
-    // Geolocation for welcome message
     if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
             (pos) => {
@@ -1599,7 +971,7 @@
                         const county = data.address?.county || data.address?.city || data.address?.state || '';
                         if (county) setWelcome(county);
                     })
-                    .catch(() => setWelcome('Wisconsin'));
+                    .catch(() => setWelcome(''));
             },
             () => setWelcome(''),
             { timeout: 5000, maximumAge: 600000 }
@@ -1608,13 +980,8 @@
         setWelcome('');
     }
     
-    // Register Service Worker for PWA
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').then(() => {
-            console.log('AGSIST: Service Worker registered');
-        }).catch((err) => {
-            console.log('SW registration failed:', err);
-        });
+        navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW error:', err));
     }
     </script>
 </body>
