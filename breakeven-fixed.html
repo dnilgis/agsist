@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Break-Even Calculator - Corn, Soybean & Wheat Cost Analysis | AGSIST</title>
+    <meta name="description" content="Free break-even calculator for farmers. Calculate your cost per bushel for corn, soybeans, and wheat. Includes seed, fertilizer, rent, and all input costs.">
+    <link rel="canonical" href="https://agsist.com/breakeven.html">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta property="og:title" content="Break-Even Calculator - Farm Cost Analysis">
+    <meta property="og:url" content="https://agsist.com/breakeven.html">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Break-Even Calculator","url":"https://agsist.com/breakeven.html","applicationCategory":"UtilityApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+</head>
+<body>
+    <!-- NAVIGATION -->
+    <nav class="main-nav">
+        <div class="nav-inner">
+            <a href="index.html" class="logo">AGSIST</a>
+            <button class="mobile-menu-btn">☰</button>
+            <div class="nav-links">
+                <div class="nav-dropdown">
+                    <button class="nav-link dropdown-toggle">Prices ▾</button>
+                    <div class="dropdown-menu">
+                        <a href="corn-prices.html" class="dropdown-item">🌽 Corn</a>
+                        <a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a>
+                        <a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a>
+                    </div>
+                </div>
+                <a href="tools.html" class="nav-link">Tools</a>
+                <a href="fastfacts.html" class="nav-link">Fast Facts</a>
+                <a href="learn.html" class="nav-link">Learn</a>
+                <a href="calendar.html" class="nav-link">Calendar</a>
+                <a href="resources.html" class="nav-link">Links</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu">
+        <div class="mobile-section">Prices</div>
+        <a href="corn-prices.html" class="mobile-link">Corn</a>
+        <a href="soybean-prices.html" class="mobile-link">Soybeans</a>
+        <a href="wheat-prices.html" class="mobile-link">Wheat</a>
+        <div class="mobile-section">Tools</div>
+        <a href="tools.html" class="mobile-link">All Tools</a>
+        <a href="breakeven.html" class="mobile-link active">Breakeven</a>
+        <a href="gdu.html" class="mobile-link">GDU Calculator</a>
+        <a href="calculator.html" class="mobile-link">Grain Bin</a>
+        <a href="fastfacts.html" class="mobile-link">Fast Facts</a>
+        <div class="mobile-section">Info</div>
+        <a href="learn.html" class="mobile-link">Learn</a>
+        <a href="calendar.html" class="mobile-link">Calendar</a>
+        <a href="resources.html" class="mobile-link">Resources</a>
+        <a href="offices.html" class="mobile-link">Offices</a>
+    </div>
+
+    <main class="page-content">
+        <div class="calc-wrap" style="padding:20px;max-width:1200px;margin:0 auto">
+            <nav style="margin-bottom:20px;font-size:0.95rem;color:var(--dim)"><a href="" style="color:var(--accent);text-decoration:none">Home</a> → <a href="tools.html" style="color:var(--accent);text-decoration:none">Tools</a> → Break-Even Calculator</nav>
+            <div class="panel">
+                <div class="panel-head"><h1 style="font-size:0.9rem;margin:0">💰 BREAK-EVEN CALCULATOR</h1></div>
+                <div class="panel-body">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px">
+                        <div>
+                            <h3 style="font-size:0.9rem;color:var(--dim);margin-bottom:12px">CROP & YIELD</h3>
+                            <div class="input-group"><label>Crop</label><select id="crop" onchange="loadCropPreset();calcBreakeven()"><option value="corn">Corn</option><option value="soybeans">Soybeans</option><option value="wheat">Wheat</option></select></div>
+                            <div class="input-group"><label>Expected Yield (bu/ac)</label><input type="number" id="yield" value="180" oninput="calcBreakeven()"></div>
+                            <div class="input-group"><label>Market Price ($/bu)</label><input type="number" id="price" value="4.50" step="0.01" oninput="calcBreakeven()"></div>
+                            <h3 style="font-size:0.9rem;color:var(--dim);margin:20px 0 12px">INPUT COSTS ($/ac)</h3>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                                <div class="input-group"><label>Seed</label><input type="number" id="seed" value="135" oninput="calcBreakeven()"></div>
+                                <div class="input-group"><label>Fertilizer</label><input type="number" id="fert" value="175" oninput="calcBreakeven()"></div>
+                                <div class="input-group"><label>Chemicals</label><input type="number" id="chem" value="55" oninput="calcBreakeven()"></div>
+                                <div class="input-group"><label>Crop Insurance</label><input type="number" id="ins" value="38" oninput="calcBreakeven()"></div>
+                                <div class="input-group"><label>Machinery</label><input type="number" id="mach" value="95" oninput="calcBreakeven()"></div>
+                                <div class="input-group"><label>Labor</label><input type="number" id="labor" value="40" oninput="calcBreakeven()"></div>
+                                <div class="input-group"><label>Land/Rent</label><input type="number" id="rent" value="225" oninput="calcBreakeven()"></div>
+                                <div class="input-group"><label>Other/Drying</label><input type="number" id="other" value="45" oninput="calcBreakeven()"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 style="font-size:0.9rem;color:var(--dim);margin-bottom:12px">RESULTS</h3>
+                            <div class="result-panel">
+                                <div class="result-row"><span>Total Cost/Acre</span><span class="result-value" id="totalCost">-</span></div>
+                                <div class="result-row"><span>Cost/Bushel</span><span class="result-value" id="costBu">-</span></div>
+                                <div class="result-row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"><span>Break-Even Price</span><span class="result-value" id="breakeven" style="font-size:1.8rem;color:var(--accent)">-</span></div>
+                                <div class="result-row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"><span>Gross Revenue/Acre</span><span class="result-value" id="revenue">-</span></div>
+                                <div class="result-row"><span>Net Profit/Loss</span><span class="result-value" id="profit">-</span></div>
+                                <div class="result-row"><span>Yield Needed @ Market</span><span class="result-value" id="yieldNeeded">-</span></div>
+                            </div>
+                            <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:6px">
+                                <div style="font-size:0.875rem;color:var(--dim);margin-bottom:8px">2026 REGIONAL BENCHMARKS</div>
+                                <div style="font-size:0.9rem;display:grid;gap:4px">
+                                    <div>🌽 Corn: <strong>$750-900/ac</strong> → $4.15-5.00/bu</div>
+                                    <div>🫘 Soybeans: <strong>$450-550/ac</strong> → $9.00-11.00/bu</div>
+                                    <div>🌾 Wheat: <strong>$400-500/ac</strong> → $5.50-7.00/bu</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-head"><h2 style="font-size:0.9rem;margin:0">📌 RELATED TOOLS</h2></div>
+                <div class="panel-body">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+                        <a href="gdu.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block"><div style="font-size:1.2rem;margin-bottom:6px">🌡️</div><div style="font-weight:600;margin-bottom:4px">GDU Calculator</div><div style="font-size:0.875rem;color:var(--dim)">Track corn growing degree units</div></a>
+                        <a href="calculator.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block"><div style="font-size:1.2rem;margin-bottom:6px">🌾</div><div style="font-weight:600;margin-bottom:4px">Grain Bin Calculator</div><div style="font-size:0.875rem;color:var(--dim)">Calculate storage capacity</div></a>
+                        <a href="fastfacts.html" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-decoration:none;color:var(--text);display:block"><div style="font-size:1.2rem;margin-bottom:6px">📊</div><div style="font-weight:600;margin-bottom:4px">Nutrient Fast Facts</div><div style="font-size:0.875rem;color:var(--dim)">Fertilizer & nutrient calculators</div></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- CTA: Crop Insurance -->
+        <div class="cta-box" style="max-width:600px;margin:24px auto;">
+            <h4>🌾 Protect Your Investment</h4>
+            <p>After calculating your break-even, make sure you're covered. Get a free crop insurance quote from Farmers First Agri Service.</p>
+            <a href="https://farmers1st.com" target="_blank" rel="noopener" class="btn">Get Free Quote →</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-col">
+                <h4>AGSIST</h4>
+                <p>Free live agricultural commodity prices, weather, and news for farmers.</p>
+                <p class="footer-tagline">Real-time data. No account required.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Prices</h4>
+                <ul>
+                    <li><a href="corn-prices.html">Corn Prices</a></li>
+                    <li><a href="soybean-prices.html">Soybean Prices</a></li>
+                    <li><a href="wheat-prices.html">Wheat Prices</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <ul>
+                    <li><a href="tools.html">All Tools</a></li>
+                    <li><a href="gdu.html">GDU Calculator</a></li>
+                    <li><a href="breakeven.html">Break-Even Calculator</a></li>
+                    <li><a href="calculator.html">Grain Bin Calculator</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="fastfacts.html">Fast Facts</a></li>
+                    <li><a href="learn.html">Learn</a></li>
+                    <li><a href="calendar.html">USDA Calendar</a></li>
+                    <li><a href="resources.html">Ag Links</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Our Network</h4>
+                <ul>
+                    <li><a href="https://farmers1st.com" target="_blank" rel="noopener">🌾 Farmers First Agri</a></li>
+                    <li><a href="https://lokedrone.com" target="_blank" rel="noopener">✈️ Loke Drone</a></li>
+                    <li><a href="https://usdronemap.com" target="_blank" rel="noopener">🗺️ US Drone Map</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 AGSIST</span>
+            <div class="footer-legal">
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+
+
+    <footer class="main-footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Prices</h4>
+                    <a href="corn-prices.html">Corn</a>
+                    <a href="soybean-prices.html">Soybeans</a>
+                    <a href="wheat-prices.html">Wheat</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Tools</h4>
+                    <a href="tools.html">All Tools</a>
+                    <a href="breakeven.html">Breakeven</a>
+                    <a href="gdu.html">GDU Calculator</a>
+                    <a href="calculator.html">Grain Bin</a>
+                    <a href="fastfacts.html">Fast Facts</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Info</h4>
+                    <a href="learn.html">Learn</a>
+                    <a href="calendar.html">Calendar</a>
+                    <a href="resources.html">Resources</a>
+                    <a href="offices.html">Offices</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy</a>
+                    <a href="terms.html">Terms</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 AGSIST</p>
+                <p class="disclaimer">Prices delayed minimum 10 minutes. Not financial advice.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    document.querySelector('.mobile-menu-btn')?.addEventListener('click', function() {
+        document.querySelector('.mobile-menu').classList.toggle('active');
+    });
+    
+    const PRESETS = {
+        corn: { yield: 180, price: 4.50, seed: 135, fert: 175, chem: 55, ins: 38, mach: 95, labor: 40, rent: 225, other: 45 },
+        soybeans: { yield: 52, price: 10.75, seed: 70, fert: 45, chem: 50, ins: 28, mach: 85, labor: 35, rent: 225, other: 25 },
+        wheat: { yield: 72, price: 5.75, seed: 45, fert: 95, chem: 40, ins: 22, mach: 80, labor: 30, rent: 180, other: 25 }
+    };
+    function loadCropPreset() {
+        const crop = document.getElementById('crop').value;
+        const p = PRESETS[crop];
+        document.getElementById('yield').value = p.yield;
+        document.getElementById('price').value = p.price;
+        document.getElementById('seed').value = p.seed;
+        document.getElementById('fert').value = p.fert;
+        document.getElementById('chem').value = p.chem;
+        document.getElementById('ins').value = p.ins;
+        document.getElementById('mach').value = p.mach;
+        document.getElementById('labor').value = p.labor;
+        document.getElementById('rent').value = p.rent;
+        document.getElementById('other').value = p.other;
+    }
+    function calcBreakeven() {
+        const yld = parseFloat(document.getElementById('yield').value) || 0;
+        const price = parseFloat(document.getElementById('price').value) || 0;
+        const seed = parseFloat(document.getElementById('seed').value) || 0;
+        const fert = parseFloat(document.getElementById('fert').value) || 0;
+        const chem = parseFloat(document.getElementById('chem').value) || 0;
+        const ins = parseFloat(document.getElementById('ins').value) || 0;
+        const mach = parseFloat(document.getElementById('mach').value) || 0;
+        const labor = parseFloat(document.getElementById('labor').value) || 0;
+        const rent = parseFloat(document.getElementById('rent').value) || 0;
+        const other = parseFloat(document.getElementById('other').value) || 0;
+        const totalCost = seed + fert + chem + ins + mach + labor + rent + other;
+        const costBu = yld > 0 ? totalCost / yld : 0;
+        const breakeven = costBu;
+        const revenue = yld * price;
+        const profit = revenue - totalCost;
+        const yieldNeeded = price > 0 ? totalCost / price : 0;
+        document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(0) + '/ac';
+        document.getElementById('costBu').textContent = '$' + costBu.toFixed(2) + '/bu';
+        document.getElementById('breakeven').textContent = '$' + breakeven.toFixed(2) + '/bu';
+        document.getElementById('revenue').textContent = '$' + revenue.toFixed(0) + '/ac';
+        const profitEl = document.getElementById('profit');
+        profitEl.textContent = (profit >= 0 ? '+' : '') + '$' + profit.toFixed(0) + '/ac';
+        profitEl.style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
+        document.getElementById('yieldNeeded').textContent = yieldNeeded.toFixed(0) + ' bu/ac';
+    }
+    calcBreakeven();
+    </script>
+
+    <script>
+    // Mobile menu toggle
+    document.querySelector('.mobile-menu-btn')?.addEventListener('click', function() {
+        document.querySelector('.mobile-menu').classList.toggle('active');
+    });
+    </script>
+</body>
+</html>
