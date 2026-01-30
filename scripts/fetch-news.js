@@ -17,7 +17,9 @@ const SUMMARY_MAX_AGE_HOURS = 48; // Re-summarize after 48 hours
 // ═══════════════════════════════════════════════════════════════════════════
 
 const FEEDS = [
-  // REDDIT - Community discussions
+  // ═══════════════════════════════════════════════════════════════════════════
+  // REDDIT - All verified working (public RSS)
+  // ═══════════════════════════════════════════════════════════════════════════
   { url: 'https://www.reddit.com/r/farming/.rss', source: 'r/farming', category: 'community', icon: '🚜' },
   { url: 'https://www.reddit.com/r/agriculture/.rss', source: 'r/agriculture', category: 'community', icon: '🌾' },
   { url: 'https://www.reddit.com/r/tractors/.rss', source: 'r/tractors', category: 'community', icon: '🚜' },
@@ -27,51 +29,30 @@ const FEEDS = [
   { url: 'https://www.reddit.com/r/dairyfarming/.rss', source: 'r/dairyfarming', category: 'community', icon: '🥛' },
   { url: 'https://www.reddit.com/r/Cattle/.rss', source: 'r/Cattle', category: 'community', icon: '🐄' },
   
-  // USDA / GOVERNMENT
-  { url: 'https://www.usda.gov/rss/home.xml', source: 'USDA', category: 'government', icon: '🏛️' },
-  { url: 'https://www.nass.usda.gov/rss/feeds/news_room.xml', source: 'USDA NASS', category: 'government', icon: '📊' },
-  { url: 'https://www.ers.usda.gov/rss/feeds/ers-newsroom.xml', source: 'USDA ERS', category: 'government', icon: '📈' },
-  { url: 'https://www.fsa.usda.gov/rss/news.xml', source: 'USDA FSA', category: 'government', icon: '🏛️' },
-  { url: 'https://droughtmonitor.unl.edu/rss/rss.aspx', source: 'Drought Monitor', category: 'weather', icon: '🌡️' },
-  { url: 'https://www.nrcs.usda.gov/rss/nrcs-news.xml', source: 'USDA NRCS', category: 'government', icon: '🌱' },
-  { url: 'https://www.ams.usda.gov/rss-feeds/market-news', source: 'USDA AMS', category: 'markets', icon: '📊' },
-  { url: 'https://www.rma.usda.gov/rss/news.xml', source: 'USDA RMA', category: 'government', icon: '🛡️' },
-  
-  // UNIVERSITIES / EXTENSION
-  { url: 'https://extension.umn.edu/rss/crop-news', source: 'UMN Extension', category: 'university', icon: '🎓' },
-  { url: 'https://crops.extension.iastate.edu/feed', source: 'Iowa State', category: 'university', icon: '🎓' },
-  { url: 'https://agcrops.osu.edu/feed', source: 'Ohio State', category: 'university', icon: '🎓' },
+  // ═══════════════════════════════════════════════════════════════════════════
+  // UNIVERSITIES - Verified working
+  // ═══════════════════════════════════════════════════════════════════════════
   { url: 'https://ipcm.wisc.edu/feed/', source: 'UW Madison', category: 'university', icon: '🎓' },
   { url: 'https://farmdoc.illinois.edu/feed', source: 'farmdoc (UIUC)', category: 'university', icon: '🎓' },
-  { url: 'https://extension.purdue.edu/extmedia/rss/ag-news.xml', source: 'Purdue Extension', category: 'university', icon: '🎓' },
-  { url: 'https://www.agronomy.k-state.edu/rss/news.xml', source: 'Kansas State', category: 'university', icon: '🎓' },
-  { url: 'https://cropwatch.unl.edu/feed', source: 'Nebraska Extension', category: 'university', icon: '🎓' },
-  { url: 'https://www.ag.ndsu.edu/news/rss', source: 'NDSU Extension', category: 'university', icon: '🎓' },
-  { url: 'https://www.canr.msu.edu/news/rss', source: 'Michigan State', category: 'university', icon: '🎓' },
-  { url: 'https://extension.sdstate.edu/rss.xml', source: 'South Dakota State', category: 'university', icon: '🎓' },
   
-  // AG NEWS / INDUSTRY
-  { url: 'https://www.agweb.com/rss.xml', source: 'AgWeb', category: 'industry', icon: '📰' },
-  { url: 'https://www.dtnpf.com/agriculture/web/ag/rss', source: 'DTN', category: 'industry', icon: '📰' },
-  { url: 'https://www.agriculture.com/rss/news', source: 'Successful Farming', category: 'industry', icon: '📰' },
+  // ═══════════════════════════════════════════════════════════════════════════
+  // AG NEWS / INDUSTRY - Verified working URLs
+  // ═══════════════════════════════════════════════════════════════════════════
   { url: 'https://brownfieldagnews.com/feed/', source: 'Brownfield', category: 'industry', icon: '📻' },
   { url: 'https://www.feedstuffs.com/rss.xml', source: 'Feedstuffs', category: 'industry', icon: '🐷' },
-  { url: 'https://www.hoards.com/rss.xml', source: "Hoard's Dairyman", category: 'industry', icon: '🥛' },
-  { url: 'https://www.dairyherd.com/rss.xml', source: 'Dairy Herd', category: 'industry', icon: '🥛' },
-  { url: 'https://www.farmjournal.com/rss.xml', source: 'Farm Journal', category: 'industry', icon: '📰' },
-  { url: 'https://www.progressivefarmer.com/rss.xml', source: 'Progressive Farmer', category: 'industry', icon: '📰' },
-  { url: 'https://www.no-tillfarmer.com/rss.xml', source: 'No-Till Farmer', category: 'industry', icon: '🌱' },
-  { url: 'https://www.high-plains-journal.com/rss.xml', source: 'High Plains Journal', category: 'industry', icon: '🌾' },
-  { url: 'https://www.cornandsoybeandigest.com/rss.xml', source: 'Corn & Soybean Digest', category: 'industry', icon: '🌽' },
+  { url: 'https://www.agweek.com/index.rss', source: 'Agweek', category: 'industry', icon: '📰' },
+  { url: 'https://www.farmjournal.com/feed/', source: 'Farm Journal', category: 'industry', icon: '📰' },
+  { url: 'https://modernfarmer.com/feed/', source: 'Modern Farmer', category: 'industry', icon: '🌱' },
+  { url: 'https://feeds.feedburner.com/CivilEats', source: 'Civil Eats', category: 'industry', icon: '🥗' },
+  { url: 'https://agdaily.com/feed/', source: 'AgDaily', category: 'industry', icon: '📰' },
+  { url: 'https://www.tsln.com/feed/', source: 'Tri-State Livestock', category: 'industry', icon: '🐄' },
+  { url: 'https://www.lancasterfarming.com/feed/', source: 'Lancaster Farming', category: 'industry', icon: '🌾' },
+  { url: 'https://allagnews.com/feed/', source: 'All Ag News', category: 'industry', icon: '📻' },
   
-  // MARKETS
-  { url: 'https://www.farms.com/rss/markets/', source: 'Farms.com', category: 'markets', icon: '💹' },
-  { url: 'https://www.barchart.com/solutions/rss/agriculture', source: 'Barchart Ag', category: 'markets', icon: '📈' },
-  { url: 'https://www.cmegroup.com/rss/agricultural-news.xml', source: 'CME Group', category: 'markets', icon: '💹' },
-  
-  // WEATHER / CLIMATE
-  { url: 'https://www.cpc.ncep.noaa.gov/rss/outlooks.xml', source: 'NOAA Climate', category: 'weather', icon: '🌦️' },
-  { url: 'https://www.weather.gov/rss_page.php?site=mkx', source: 'NWS Milwaukee', category: 'weather', icon: '⛈️' },
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MARKETS - Using reliable sources
+  // ═══════════════════════════════════════════════════════════════════════════
+  { url: 'https://www.farms.com/markets/rss.ashx', source: 'Farms.com Markets', category: 'markets', icon: '💹' },
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════
