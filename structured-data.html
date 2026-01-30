@@ -1,21 +1,48 @@
-<!-- ============================================
-     AGSIST STRUCTURED DATA (JSON-LD)
-     ============================================
-     Add these scripts to the <head> of each page
-     Your homepage already has Organization + WebSite schemas - keep those!
-     These are ADDITIONAL schemas for other pages.
-     ============================================ -->
+<!-- STRUCTURED DATA FOR AGSIST.COM -->
+<!-- Copy relevant sections to each page's <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+ -->
 
+<!-- HOMEPAGE - Organization + WebSite -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "AGSIST",
+    "url": "https://agsist.com",
+    "logo": "https://agsist.com/logo.png",
+    "description": "Free agricultural tools and real-time commodity prices for farmers",
+    "areaServed": {
+        "@type": "Country",
+        "name": "United States"
+    },
+    "sameAs": []
+}
+</script>
 
-<!-- ============================================
-     CORN PRICES PAGE (corn-prices.html)
-     ============================================ -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "AGSIST",
+    "url": "https://agsist.com",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://agsist.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+    }
+}
+</script>
+
+<!-- CORN PRICES PAGE -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Live Corn Prices & Futures",
-    "description": "Track live corn futures prices, historical charts, and market analysis. Free real-time corn commodity data updated throughout trading hours.",
+    "name": "Live Corn Prices - Corn Futures & Cash Prices",
+    "description": "Real-time corn futures prices, local basis levels, and cash prices. Updated throughout trading hours.",
     "url": "https://agsist.com/corn-prices.html",
     "isPartOf": {
         "@type": "WebSite",
@@ -23,341 +50,245 @@
         "url": "https://agsist.com"
     },
     "about": {
-        "@type": "Product",
-        "name": "Corn Futures",
-        "category": "Agricultural Commodities"
-    },
-    "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://agsist.com/"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Corn Prices",
-                "item": "https://agsist.com/corn-prices.html"
-            }
-        ]
+        "@type": "Thing",
+        "name": "Corn Prices"
     }
 }
 </script>
 
-
-<!-- ============================================
-     SOYBEAN PRICES PAGE (soybean-prices.html)
-     ============================================ -->
+<!-- SOYBEAN PRICES PAGE -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Live Soybean Prices & Futures",
-    "description": "Track live soybean futures prices, historical charts, and market analysis. Free real-time soybean commodity data for farmers and traders.",
+    "name": "Live Soybean Prices - Soybean Futures & Cash Prices",
+    "description": "Real-time soybean futures prices, local basis levels, and cash prices. Updated throughout trading hours.",
     "url": "https://agsist.com/soybean-prices.html",
     "isPartOf": {
         "@type": "WebSite",
         "name": "AGSIST",
         "url": "https://agsist.com"
-    },
-    "about": {
-        "@type": "Product",
-        "name": "Soybean Futures",
-        "category": "Agricultural Commodities"
-    },
-    "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://agsist.com/"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Soybean Prices",
-                "item": "https://agsist.com/soybean-prices.html"
-            }
-        ]
     }
 }
 </script>
 
-
-<!-- ============================================
-     WHEAT PRICES PAGE (wheat-prices.html)
-     ============================================ -->
+<!-- WHEAT PRICES PAGE -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Live Wheat Prices & Futures",
-    "description": "Track live wheat futures prices, historical charts, and market analysis. Free real-time wheat commodity data for farmers and traders.",
+    "name": "Live Wheat Prices - Wheat Futures & Cash Prices",
+    "description": "Real-time wheat futures prices, local basis levels, and cash prices. Updated throughout trading hours.",
     "url": "https://agsist.com/wheat-prices.html",
     "isPartOf": {
         "@type": "WebSite",
         "name": "AGSIST",
         "url": "https://agsist.com"
-    },
-    "about": {
-        "@type": "Product",
-        "name": "Wheat Futures",
-        "category": "Agricultural Commodities"
-    },
-    "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://agsist.com/"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Wheat Prices",
-                "item": "https://agsist.com/wheat-prices.html"
-            }
-        ]
     }
 }
 </script>
 
-
-<!-- ============================================
-     TOOLS HUB PAGE (tools.html)
-     ============================================ -->
-<script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "name": "Free Farming Tools & Calculators",
-    "description": "Free agricultural calculators and tools for farmers: GDU calculator, break-even calculator, grain bin capacity, rainfall converter, and more.",
-    "url": "https://agsist.com/tools.html",
-    "isPartOf": {
-        "@type": "WebSite",
-        "name": "AGSIST",
-        "url": "https://agsist.com"
-    },
-    "mainEntity": {
-        "@type": "ItemList",
-        "itemListElement": [
-            {
-                "@type": "SoftwareApplication",
-                "position": 1,
-                "name": "GDU Calculator",
-                "url": "https://agsist.com/gdu-calculator.html",
-                "applicationCategory": "UtilitiesApplication",
-                "operatingSystem": "Web Browser"
-            },
-            {
-                "@type": "SoftwareApplication",
-                "position": 2,
-                "name": "Break-Even Calculator",
-                "url": "https://agsist.com/breakeven-calculator.html",
-                "applicationCategory": "FinanceApplication",
-                "operatingSystem": "Web Browser"
-            },
-            {
-                "@type": "SoftwareApplication",
-                "position": 3,
-                "name": "Grain Bin Calculator",
-                "url": "https://agsist.com/grain-bin-calculator.html",
-                "applicationCategory": "UtilitiesApplication",
-                "operatingSystem": "Web Browser"
-            },
-            {
-                "@type": "SoftwareApplication",
-                "position": 4,
-                "name": "Rainfall Calculator",
-                "url": "https://agsist.com/rainfall-calculator.html",
-                "applicationCategory": "UtilitiesApplication",
-                "operatingSystem": "Web Browser"
-            }
-        ]
-    }
-}
-</script>
-
-
-<!-- ============================================
-     GDU CALCULATOR (gdu-calculator.html)
-     ============================================ -->
+<!-- GDU CALCULATOR - SoftwareApplication -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "GDU Calculator - Growing Degree Units",
-    "description": "Calculate Growing Degree Units (GDUs) for corn and soybeans. Track crop development, estimate maturity dates, and optimize planting decisions.",
-    "url": "https://agsist.com/gdu-calculator.html",
-    "applicationCategory": "UtilitiesApplication",
+    "name": "Growing Degree Unit Calculator",
+    "applicationCategory": "Agriculture",
     "operatingSystem": "Web Browser",
+    "url": "https://agsist.com/gdu.html",
+    "description": "Calculate growing degree units (GDU/GDD) for corn and soybeans. Track crop development and predict maturity dates.",
     "offers": {
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "USD"
     },
-    "creator": {
+    "provider": {
         "@type": "Organization",
-        "name": "AGSIST",
-        "url": "https://agsist.com"
-    },
-    "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://agsist.com/"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Tools",
-                "item": "https://agsist.com/tools.html"
-            },
-            {
-                "@type": "ListItem",
-                "position": 3,
-                "name": "GDU Calculator",
-                "item": "https://agsist.com/gdu-calculator.html"
-            }
-        ]
+        "name": "AGSIST"
     }
 }
 </script>
 
-
-<!-- ============================================
-     BREAK-EVEN CALCULATOR (breakeven-calculator.html)
-     ============================================ -->
+<!-- BREAKEVEN CALCULATOR - SoftwareApplication -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "Break-Even Calculator for Farmers",
-    "description": "Calculate your break-even price per bushel for corn, soybeans, and wheat. Input costs and yields to determine profitability thresholds.",
-    "url": "https://agsist.com/breakeven-calculator.html",
-    "applicationCategory": "FinanceApplication",
+    "name": "Farm Breakeven Calculator",
+    "applicationCategory": "Agriculture",
     "operatingSystem": "Web Browser",
+    "url": "https://agsist.com/breakeven.html",
+    "description": "Calculate your breakeven price per bushel. Input costs for seed, fertilizer, chemicals, and land to determine profitability.",
     "offers": {
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "USD"
     },
-    "creator": {
+    "provider": {
         "@type": "Organization",
-        "name": "AGSIST",
-        "url": "https://agsist.com"
+        "name": "AGSIST"
     }
 }
 </script>
 
-
-<!-- ============================================
-     GRAIN BIN CALCULATOR (grain-bin-calculator.html)
-     ============================================ -->
+<!-- GRAIN BIN CALCULATOR - SoftwareApplication -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "Grain Bin Calculator",
-    "description": "Calculate grain bin capacity in bushels. Enter diameter, height, and grain type to estimate storage capacity for corn, soybeans, and wheat.",
-    "url": "https://agsist.com/grain-bin-calculator.html",
-    "applicationCategory": "UtilitiesApplication",
+    "applicationCategory": "Agriculture",
     "operatingSystem": "Web Browser",
+    "url": "https://agsist.com/calculator.html",
+    "description": "Calculate grain bin capacity and bushels stored. Supports round bins, flat storage, and grain piles.",
     "offers": {
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "USD"
     },
-    "creator": {
+    "provider": {
         "@type": "Organization",
-        "name": "AGSIST",
-        "url": "https://agsist.com"
+        "name": "AGSIST"
     }
 }
 </script>
 
-
-<!-- ============================================
-     USDA CALENDAR (calendar.html)
-     ============================================ -->
+<!-- TOOLS HUB - CollectionPage -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "USDA Report Calendar & Deadlines",
-    "description": "USDA report release dates, crop insurance deadlines, and important agricultural calendar events for farmers in 2026.",
-    "url": "https://agsist.com/calendar.html",
-    "isPartOf": {
-        "@type": "WebSite",
-        "name": "AGSIST",
-        "url": "https://agsist.com"
-    }
+    "@type": "CollectionPage",
+    "name": "Free Farm Tools & Calculators",
+    "description": "Free agricultural calculators: GDU calculator, breakeven calculator, grain bin calculator, and more.",
+    "url": "https://agsist.com/tools.html",
+    "hasPart": [
+        {
+            "@type": "SoftwareApplication",
+            "name": "Growing Degree Unit Calculator",
+            "url": "https://agsist.com/gdu.html"
+        },
+        {
+            "@type": "SoftwareApplication",
+            "name": "Breakeven Calculator",
+            "url": "https://agsist.com/breakeven.html"
+        },
+        {
+            "@type": "SoftwareApplication",
+            "name": "Grain Bin Calculator",
+            "url": "https://agsist.com/calculator.html"
+        }
+    ]
 }
 </script>
 
-
-<!-- ============================================
-     FAST FACTS (fastfacts.html)
-     ============================================ -->
+<!-- FAST FACTS - FAQPage -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Agricultural Fast Facts & Statistics",
-    "description": "Quick reference agricultural statistics and data: bushel weights, planting rates, yield averages, and essential farming reference information.",
+    "@type": "FAQPage",
+    "name": "Agricultural Fast Facts & Quick Reference",
     "url": "https://agsist.com/fastfacts.html",
-    "isPartOf": {
-        "@type": "WebSite",
-        "name": "AGSIST",
-        "url": "https://agsist.com"
-    }
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "How many bushels are in a ton of corn?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "At standard moisture, there are approximately 39.37 bushels of corn per metric ton, or 35.71 bushels per short ton."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What is the test weight of corn?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Standard test weight for corn is 56 pounds per bushel."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What is the test weight of soybeans?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Standard test weight for soybeans is 60 pounds per bushel."
+            }
+        }
+    ]
 }
 </script>
 
-
-<!-- ============================================
-     LEARN PAGE (learn.html)
-     ============================================ -->
+<!-- LEARN PAGE - Article/Guide -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Learn About Farming & Agriculture",
-    "description": "Educational resources about commodity markets, crop insurance, farming practices, and agricultural basics for farmers and ag students.",
+    "@type": "Article",
+    "headline": "Understanding Commodity Markets & Grain Marketing",
+    "description": "Learn about basis, futures contracts, crop insurance, and grain marketing strategies.",
     "url": "https://agsist.com/learn.html",
-    "isPartOf": {
-        "@type": "WebSite",
-        "name": "AGSIST",
-        "url": "https://agsist.com"
+    "author": {
+        "@type": "Organization",
+        "name": "AGSIST"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "AGSIST"
     }
 }
 </script>
 
-
-<!-- ============================================
-     RESOURCES/LINKS (resources.html)
-     ============================================ -->
+<!-- CALENDAR - Event listing -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "WebPage",
+    "name": "Farm Calendar & Important Dates",
+    "description": "Key dates for farmers: planting windows, crop insurance deadlines, market reports, and seasonal activities.",
+    "url": "https://agsist.com/calendar.html"
+}
+</script>
+
+<!-- RESOURCES - CollectionPage -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
     "name": "Agricultural Resources & Links",
-    "description": "Curated links to USDA resources, market data providers, weather services, and essential agricultural websites for farmers.",
-    "url": "https://agsist.com/resources.html",
-    "isPartOf": {
-        "@type": "WebSite",
-        "name": "AGSIST",
-        "url": "https://agsist.com"
-    }
+    "description": "Curated links to USDA, Extension services, weather services, and other resources for farmers.",
+    "url": "https://agsist.com/resources.html"
+}
+</script>
+
+<!-- OFFICES - LocalBusiness listings reference -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Find Local FSA & Extension Offices",
+    "description": "Find your local USDA Farm Service Agency and Extension offices.",
+    "url": "https://agsist.com/offices.html"
+}
+</script>
+
+<!-- BREADCRUMB - Use on subpages -->
+<!-- Example for corn-prices.html -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://agsist.com/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Corn Prices",
+            "item": "https://agsist.com/corn-prices.html"
+        }
+    ]
 }
 </script>
