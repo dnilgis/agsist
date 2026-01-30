@@ -3,6 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CONFIG
@@ -111,7 +112,10 @@ function parseRSS(xml, feed) {
     
     if (!title || title.length < 5) continue;
     
-    const id = link ? Buffer.from(link).toString('base64').substring(0, 20) : Date.now().toString();
+    // Generate unique ID from full link hash (not truncated base64 which can collide)
+    const id = link ? 
+      crypto.createHash('md5').update(link).digest('hex').substring(0, 16) : 
+      Date.now().toString() + Math.random().toString(36).substring(2, 8);
     
     items.push({
       id,
@@ -425,8 +429,35 @@ async function main() {
     
     console.log(`  Summarizing: ${item.title.substring(0, 50)}...`);
     
-    // For Reddit: use description as content (it's the selftext)
-    let content = item.description;
+    let content = item.description || '';
+    
+    // For Reddit: try to fetch the actual post content via JSON API
+    if (item.category === 'community' && item.link) {
+      try {
+        // Reddit JSON API - add .json to URL
+        const jsonUrl = item.link.replace(/\/$/, '') + '.json';
+        const redditRes = await fetch(jsonUrl, {
+          headers: { 'User-Agent': 'AGSIST News Bot 1.0' }
+        });
+        if (redditRes.ok) {
+          const redditData = await redditRes.json();
+          const postData = redditData?.[0]?.data?.children?.[0]?.data;
+          if (postData) {
+            // Get selftext (text posts) or combine with title for link posts
+            const selftext = postData.selftext || '';
+            if (selftext.length > 50) {
+              content = selftext;
+            } else if (postData.url && !postData.url.includes('reddit.com')) {
+              // It's a link post - mention what it links to
+              content = `Link post sharing: ${postData.url}. ${selftext}`.trim();
+            }
+          }
+        }
+        await sleep(300); // Rate limit Reddit API
+      } catch (e) {
+        // Fallback to RSS description
+      }
+    }
     
     // For non-Reddit: try to fetch full article
     if (item.category !== 'community' && item.link && ANTHROPIC_API_KEY) {
