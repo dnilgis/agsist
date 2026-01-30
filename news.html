@@ -52,12 +52,12 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
+      gtag('config', 'G-6KXCTD5Z9H');
     </script>
     
     <!-- Schema.org Structured Data -->
@@ -521,7 +521,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 16px;
-            align-items: start;
+            align-items: stretch; /* Changed from start to stretch for consistent rows */
         }
         
         /* ═══════════════════════════════════════════════════════════════════════ */
@@ -537,10 +537,9 @@
             text-decoration: none;
             color: inherit;
             transition: all 0.25s ease;
-            height: 280px; /* Fixed height for consistency */
-        }
-        .article.has-thumb {
-            height: 380px; /* Taller when has thumbnail */
+            min-height: 240px;
+            height: 100%; /* Fill grid cell */
+            position: relative;
         }
         .article:hover {
             background: var(--card-hover);
@@ -551,7 +550,7 @@
         
         .article-thumb {
             width: 100%;
-            height: 120px; /* Smaller thumbnail */
+            height: 120px;
             object-fit: cover;
             background: var(--border);
             flex-shrink: 0;
@@ -562,7 +561,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            min-height: 0; /* Important for flex children */
         }
         
         .article-meta {
@@ -571,6 +570,7 @@
             gap: 10px;
             margin-bottom: 12px;
             flex-shrink: 0;
+            flex-wrap: wrap;
         }
         
         .article-source {
@@ -578,9 +578,10 @@
             padding: 4px 10px;
             border-radius: 6px;
             font-weight: 600;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 4px;
+            white-space: nowrap;
         }
         .article-source.community { background: rgba(255,107,53,0.15); color: var(--community); }
         .article-source.government { background: rgba(16,185,129,0.15); color: var(--government); }
@@ -593,6 +594,7 @@
             color: var(--dim);
             font-size: 0.7rem;
             margin-left: auto;
+            white-space: nowrap;
         }
         
         .article-title {
@@ -602,10 +604,10 @@
             margin-bottom: 8px;
             line-height: 1.4;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            flex-shrink: 0;
+            word-break: break-word;
         }
         
         .article-excerpt {
@@ -617,7 +619,7 @@
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            min-height: 0;
+            word-break: break-word;
         }
         
         .article-footer {
@@ -627,8 +629,9 @@
             margin-top: auto;
             padding-top: 12px;
             border-top: 1px solid var(--border);
-            gap: 12px;
+            gap: 8px;
             flex-shrink: 0;
+            flex-wrap: wrap;
         }
         
         .article-link {
@@ -640,6 +643,7 @@
             border: 1px solid var(--border);
             border-radius: 4px;
             transition: all 0.2s;
+            white-space: nowrap;
         }
         .article-link:hover {
             border-color: var(--accent);
@@ -1164,11 +1168,7 @@
             
             /* Article cards mobile */
             .article {
-                height: auto;
-                min-height: 200px;
-            }
-            .article.has-thumb {
-                height: auto;
+                min-height: 180px;
             }
             .article-thumb {
                 height: 140px;
@@ -1176,9 +1176,13 @@
             .article-body {
                 padding: 14px;
             }
+            .article-meta {
+                margin-bottom: 10px;
+            }
             .article-title {
                 font-size: 0.9rem;
                 -webkit-line-clamp: 3;
+                margin-bottom: 6px;
             }
             .article-excerpt {
                 font-size: 0.78rem;
@@ -1187,6 +1191,7 @@
             .article-footer {
                 flex-wrap: wrap;
                 gap: 8px;
+                padding-top: 10px;
             }
             .tldr-btn, .article-link {
                 min-height: 44px; /* Touch target */
@@ -1567,9 +1572,9 @@
             }
             
             feed.innerHTML = items.map(item => `
-                <div class="article ${item.category === 'community' ? 'reddit' : ''} ${item.thumbnail ? 'has-thumb' : ''}" 
-                     data-category="${item.category}">
-                    ${item.thumbnail ? `<img class="article-thumb" src="${item.thumbnail}" alt="" loading="lazy" onerror="this.parentElement.classList.remove('has-thumb'); this.remove()">` : ''}
+                <article class="article ${item.category === 'community' ? 'reddit' : ''}" 
+                         data-category="${item.category}">
+                    ${item.thumbnail ? `<img class="article-thumb" src="${item.thumbnail}" alt="" loading="lazy" onerror="this.remove()">` : ''}
                     <div class="article-body">
                         <div class="article-meta">
                             <span class="article-source ${item.category}">
@@ -1580,11 +1585,11 @@
                         <h3 class="article-title">${item.title}</h3>
                         ${item.description ? `<p class="article-excerpt">${item.description.substring(0, 120)}${item.description.length > 120 ? '...' : ''}</p>` : ''}
                         <div class="article-footer">
-                            <button class="tldr-btn" onclick="showTLDR('${item.id}')" title="Too Long; Didn't Read - AI-generated summary">📋 Summary</button>
+                            <button class="tldr-btn" onclick="showTLDR('${item.id}')" title="AI-generated comprehensive summary">📋 Summary</button>
                             <a class="article-link" href="${item.link}" target="_blank" rel="noopener" onclick="trackArticleClick('${item.source}', '${item.category}')">Read more →</a>
                         </div>
                     </div>
-                </div>
+                </article>
             `).join('');
         }
         
