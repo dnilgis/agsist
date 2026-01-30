@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ag News Feed | AGSIST - Live Agricultural Market Commentary</title>
+    <meta name="description" content="Live agricultural market news and commentary from top grain analysts, weather experts, and farm policy voices. Curated X/Twitter feed updated every 30 minutes.">
+    <meta name="keywords" content="ag news, grain market news, agricultural commentary, farm news, commodity market analysis, ag twitter">
+    <link rel="canonical" href="https://agsist.com/news.html">
+    
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Ag News Feed",
+        "description": "Live agricultural market news and commentary from top grain analysts and weather experts",
+        "url": "https://agsist.com/news.html",
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": "AGSIST",
+            "url": "https://agsist.com"
+        }
+    }
+    </script>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#e6b042">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AGSIST">
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta property="og:title" content="Ag News Feed | AGSIST">
+    <meta property="og:description" content="Live agricultural market news from top grain analysts, weather experts, and farm policy voices.">
+    <meta property="og:image" content="https://agsist.com/og-image.png">
+    <meta property="og:url" content="https://agsist.com/news.html">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #0d0d0f;
+            --card: #141418;
+            --border: #2a2a32;
+            --text: #e8e8ec;
+            --dim: #a0a0a8;
+            --accent: #e6b042;
+            --green: #4ade80;
+            --red: #f87171;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            font-size: 16px;
+        }
+        
+        /* NAV */
+        nav {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-inner {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        
+        .logo {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .nav-links a {
+            color: var(--dim);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text);
+            background: var(--border);
+        }
+        
+        /* MOBILE MENU */
+        .mobile-menu-btn {
+            display: none;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 1.4rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 4px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mobile-menu-btn:hover {
+            background: var(--border);
+            color: var(--accent);
+        }
+        
+        /* NAV DROPDOWN */
+        .nav-dropdown {
+            position: relative;
+        }
+        
+        .nav-link.dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        
+        .dropdown-arrow {
+            font-size: 0.7em;
+            transition: transform 0.2s;
+        }
+        
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            min-width: 180px;
+            padding: 6px 0;
+            z-index: 1000;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+        
+        .nav-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 14px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .dropdown-menu a:hover {
+            background: var(--border);
+            color: var(--accent);
+        }
+        
+        /* MAIN CONTENT */
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+        
+        /* PAGE HEADER */
+        .page-header {
+            margin-bottom: 24px;
+        }
+        
+        .page-header h1 {
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        
+        .page-header p {
+            color: var(--dim);
+            font-size: 0.95rem;
+        }
+        
+        /* CATEGORY FILTERS */
+        .feed-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--dim);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        
+        .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #000;
+        }
+        
+        /* FEED WIDGET STYLES */
+        .ag-feed {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .ag-feed-header {
+            background: linear-gradient(135deg, #2a2a2a 0%, var(--card) 100%);
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .ag-feed-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .ag-feed-updated {
+            font-size: 0.75rem;
+            color: var(--dim);
+        }
+        
+        .ag-feed-body {
+            max-height: 800px;
+            overflow-y: auto;
+        }
+        
+        .ag-tweet {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+        
+        .ag-tweet:hover {
+            background: rgba(255,255,255,0.03);
+        }
+        
+        .ag-tweet:last-child {
+            border-bottom: none;
+        }
+        
+        .ag-tweet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        
+        .ag-tweet-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .ag-tweet-name {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+        
+        .ag-tweet-handle {
+            color: var(--dim);
+            font-size: 0.8rem;
+        }
+        
+        .ag-tweet-tag {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #333;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+        
+        .ag-tweet-tag.grain { background: rgba(230,176,66,0.2); }
+        .ag-tweet-tag.weather { background: rgba(66,165,245,0.2); color: #42a5f5; }
+        .ag-tweet-tag.markets { background: rgba(102,187,106,0.2); color: #66bb6a; }
+        .ag-tweet-tag.farm { background: rgba(171,71,188,0.2); color: #ab47bc; }
+        
+        .ag-tweet-text {
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+        
+        .ag-tweet-text a {
+            color: var(--accent);
+            pointer-events: none;
+        }
+        
+        /* Image grid styles */
+        .ag-tweet-images {
+            display: grid;
+            gap: 4px;
+            margin: 10px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .ag-tweet-images.img-1 { grid-template-columns: 1fr; }
+        .ag-tweet-images.img-2 { grid-template-columns: 1fr 1fr; }
+        .ag-tweet-images.img-3 { grid-template-columns: 1fr 1fr; }
+        .ag-tweet-images.img-4 { grid-template-columns: 1fr 1fr; }
+        
+        .ag-tweet-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background: #222;
+            border-radius: 4px;
+        }
+        
+        .ag-tweet-images.img-1 .ag-tweet-img { height: 240px; }
+        
+        .ag-tweet-video-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(230,176,66,0.2);
+            color: var(--accent);
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin: 8px 0;
+        }
+        
+        .ag-tweet-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .ag-tweet-time {
+            font-size: 0.75rem;
+            color: #666;
+        }
+        
+        .ag-tweet-link {
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .ag-tweet-rt {
+            opacity: 0.8;
+        }
+        
+        .ag-tweet-rt .ag-tweet-text::before {
+            content: "🔁 ";
+        }
+        
+        .ag-feed-footer {
+            padding: 12px 20px;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+        
+        .ag-feed-footer a {
+            color: var(--dim);
+            font-size: 0.75rem;
+            text-decoration: none;
+        }
+        
+        .ag-feed-error, .ag-feed-loading {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--dim);
+        }
+        
+        /* Scrollbar styling */
+        .ag-feed-body::-webkit-scrollbar { width: 8px; }
+        .ag-feed-body::-webkit-scrollbar-track { background: var(--card); }
+        .ag-feed-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        .ag-feed-body::-webkit-scrollbar-thumb:hover { background: #444; }
+        
+        /* ACCOUNTS LIST */
+        .accounts-section {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+        
+        .accounts-section h3 {
+            color: var(--accent);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+        
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        
+        .account-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--bg);
+            border-radius: 6px;
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        
+        .account-item:hover {
+            background: var(--border);
+        }
+        
+        .account-item .tag {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            text-transform: uppercase;
+        }
+        
+        .account-item .tag.grain { background: rgba(230,176,66,0.2); color: var(--accent); }
+        .account-item .tag.weather { background: rgba(66,165,245,0.2); color: #42a5f5; }
+        .account-item .tag.markets { background: rgba(102,187,106,0.2); color: #66bb6a; }
+        .account-item .tag.farm { background: rgba(171,71,188,0.2); color: #ab47bc; }
+        
+        /* FOOTER */
+        .site-footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 32px 20px;
+            margin-top: 40px;
+        }
+        
+        .footer-inner {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 32px;
+        }
+        
+        .footer-brand {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .footer-sep {
+            color: var(--border);
+            margin: 0 12px;
+        }
+        
+        .footer-tagline {
+            color: var(--dim);
+            font-size: 0.85rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+        
+        .footer-legal {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+            font-size: 0.8rem;
+            color: var(--dim);
+        }
+        
+        .footer-legal a {
+            color: var(--dim);
+            text-decoration: none;
+        }
+        
+        .footer-legal a:hover {
+            color: var(--accent);
+        }
+        
+        .footer-network h4 {
+            color: var(--accent);
+            font-size: 0.8rem;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+        
+        .footer-network a {
+            display: block;
+            color: var(--dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        
+        .footer-network a:hover {
+            color: var(--accent);
+        }
+        
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--card);
+                border-top: 1px solid var(--border);
+                flex-direction: column;
+                padding: 16px;
+                gap: 8px;
+            }
+            
+            .nav-links.open {
+                display: flex;
+            }
+            
+            .nav-dropdown {
+                width: 100%;
+            }
+            
+            .dropdown-menu {
+                position: static;
+                box-shadow: none;
+                border: none;
+                background: transparent;
+                padding-left: 16px;
+            }
+            
+            .page-header h1 {
+                font-size: 1.4rem;
+            }
+            
+            .accounts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-inner {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-inner">
+            <a href="index.html" class="logo">AGSIST</a>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
+            <div class="nav-links">
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">Prices <span class="dropdown-arrow">▾</span></a>
+                    <div class="dropdown-menu">
+                        <a href="corn-prices.html" class="dropdown-item">🌽 Corn Prices</a>
+                        <a href="soybean-prices.html">🫘 Soybean Prices</a>
+                        <a href="wheat-prices.html">🌾 Wheat Prices</a>
+                    </div>
+                </div>
+                <a href="tools.html"><span class="nav-link">Tools</span></a>
+                <a href="fastfacts.html">Fast Facts</a>
+                <a href="learn.html">Learn</a>
+                <a href="news.html" class="active">News</a>
+                <a href="calendar.html">Calendar</a>
+                <a href="resources.html" class="nav-link">Links</a>
+            </div>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="page-header">
+            <h1>📡 Ag Market Feed</h1>
+            <p>Live commentary from grain analysts, weather experts, and farm policy voices. Updated every 30 minutes.</p>
+        </div>
+        
+        <!-- Category Filters -->
+        <div class="feed-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="grain">🌽 Grain</button>
+            <button class="filter-btn" data-filter="weather">🌦️ Weather</button>
+            <button class="filter-btn" data-filter="markets">📈 Markets</button>
+            <button class="filter-btn" data-filter="farm">🚜 Farm</button>
+        </div>
+        
+        <!-- Feed Widget -->
+        <div class="ag-feed" id="agFeed">
+            <div class="ag-feed-header">
+                <div class="ag-feed-title">📡 Live Feed</div>
+                <div class="ag-feed-updated" id="agFeedUpdated">Loading...</div>
+            </div>
+            <div class="ag-feed-body" id="agFeedBody">
+                <div class="ag-feed-loading">Loading posts...</div>
+            </div>
+            <div class="ag-feed-footer">
+                <a href="https://github.com/dnilgis/agsist" target="_blank">Powered by AGSIST</a>
+            </div>
+        </div>
+        
+        <!-- Accounts We Follow -->
+        <div class="accounts-section">
+            <h3>📋 Accounts We Follow</h3>
+            <div class="accounts-grid">
+                <a href="https://x.com/RichNelson_Alln" target="_blank" class="account-item">
+                    <span class="tag grain">grain</span>
+                    @RichNelson_Alln
+                </a>
+                <a href="https://x.com/texzona" target="_blank" class="account-item">
+                    <span class="tag grain">grain</span>
+                    @texzona
+                </a>
+                <a href="https://x.com/ScottSeifert1" target="_blank" class="account-item">
+                    <span class="tag grain">grain</span>
+                    @ScottSeifert1
+                </a>
+                <a href="https://x.com/MGrayGrain" target="_blank" class="account-item">
+                    <span class="tag grain">grain</span>
+                    @MGrayGrain
+                </a>
+                <a href="https://x.com/ChrisHydeGrain" target="_blank" class="account-item">
+                    <span class="tag grain">grain</span>
+                    @ChrisHydeGrain
+                </a>
+                <a href="https://x.com/MattBennettGrain" target="_blank" class="account-item">
+                    <span class="tag grain">grain</span>
+                    @MattBennettGrain
+                </a>
+                <a href="https://x.com/GrainStats" target="_blank" class="account-item">
+                    <span class="tag grain">grain</span>
+                    @GrainStats
+                </a>
+                <a href="https://x.com/RampCapitalLLC" target="_blank" class="account-item">
+                    <span class="tag markets">markets</span>
+                    @RampCapitalLLC
+                </a>
+                <a href="https://x.com/RyanHallYall" target="_blank" class="account-item">
+                    <span class="tag weather">weather</span>
+                    @RyanHallYall
+                </a>
+                <a href="https://x.com/kannbwx" target="_blank" class="account-item">
+                    <span class="tag weather">weather</span>
+                    @kannbwx
+                </a>
+                <a href="https://x.com/DroughtMonitor" target="_blank" class="account-item">
+                    <span class="tag weather">weather</span>
+                    @DroughtMonitor
+                </a>
+                <a href="https://x.com/RoachAg" target="_blank" class="account-item">
+                    <span class="tag farm">farm</span>
+                    @RoachAg
+                </a>
+                <a href="https://x.com/FarmPolicy" target="_blank" class="account-item">
+                    <span class="tag farm">farm</span>
+                    @FarmPolicy
+                </a>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-main">
+                <div class="footer-brand-row">
+                    <a href="index.html" class="footer-brand">AGSIST</a>
+                    <span class="footer-sep">|</span>
+                    <span class="footer-tagline">Free agricultural prices, tools & news</span>
+                </div>
+                <div class="footer-links">
+                    <a href="corn-prices.html">Corn</a>
+                    <a href="soybean-prices.html">Soybeans</a>
+                    <a href="wheat-prices.html">Wheat</a>
+                    <a href="tools.html">Tools</a>
+                    <a href="fastfacts.html">Fast Facts</a>
+                    <a href="news.html">News</a>
+                    <a href="calendar.html">Calendar</a>
+                    <a href="resources.html">Resources</a>
+                </div>
+                <div class="footer-legal">
+                    <span>© 2026 AGSIST</span>
+                    <a href="privacy.html">Privacy</a>
+                    <a href="terms.html">Terms</a>
+                </div>
+            </div>
+            <div class="footer-network">
+                <h4>Our Network</h4>
+                <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
+                <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
+                <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+    // Mobile menu toggle
+    document.querySelector('.mobile-menu-btn')?.addEventListener('click', function() {
+        const nav = document.querySelector('.nav-links');
+        const isOpen = nav.classList.toggle('open');
+        this.textContent = isOpen ? '✕' : '☰';
+    });
+    
+    // ═══════════════════════════════════════════════════════════════════════
+    // FEED CONFIGURATION
+    // ═══════════════════════════════════════════════════════════════════════
+    const FEED_URL = 'https://raw.githubusercontent.com/dnilgis/agsist/main/data/tweets.json';
+    
+    let allPosts = [];
+    let currentFilter = 'all';
+    
+    const body = document.getElementById('agFeedBody');
+    const updated = document.getElementById('agFeedUpdated');
+    
+    function timeAgo(dateStr) {
+        const now = Date.now();
+        const then = new Date(dateStr).getTime();
+        const diff = Math.floor((now - then) / 1000);
+        
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+        if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+        return new Date(dateStr).toLocaleDateString();
+    }
+    
+    function linkify(text) {
+        text = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+        text = text.replace(/@(\w+)/g, '<a href="https://x.com/$1" target="_blank">@$1</a>');
+        text = text.replace(/\$([A-Z]+)/g, '<strong>$$$1</strong>');
+        return text;
+    }
+    
+    function renderImages(images) {
+        if (!images || images.length === 0) return '';
+        const count = Math.min(images.length, 4);
+        const imgHtml = images.slice(0, 4).map(url => 
+            `<img class="ag-tweet-img" src="${url}" alt="Post image" loading="lazy" onerror="this.style.display='none'">`
+        ).join('');
+        return `<div class="ag-tweet-images img-${count}">${imgHtml}</div>`;
+    }
+    
+    function renderPosts(posts) {
+        if (!posts || posts.length === 0) {
+            body.innerHTML = '<div class="ag-feed-error">No posts available. Feed will populate shortly.</div>';
+            return;
+        }
+        
+        body.innerHTML = posts.map(t => `
+            <a class="ag-tweet ${t.isRT ? 'ag-tweet-rt' : ''}" href="${t.link}" target="_blank" rel="noopener" data-tag="${t.tag}">
+                <div class="ag-tweet-header">
+                    <div class="ag-tweet-author">
+                        <span class="ag-tweet-name">${t.name}</span>
+                        <span class="ag-tweet-handle">@${t.handle}</span>
+                    </div>
+                    <span class="ag-tweet-tag ${t.tag}">${t.tag}</span>
+                </div>
+                <div class="ag-tweet-text">${linkify(t.text)}</div>
+                ${renderImages(t.images)}
+                ${t.hasVideo ? '<div class="ag-tweet-video-badge">▶ Video</div>' : ''}
+                <div class="ag-tweet-footer">
+                    <span class="ag-tweet-time">${timeAgo(t.date)}</span>
+                    <span class="ag-tweet-link">View on 𝕏 →</span>
+                </div>
+            </a>
+        `).join('');
+    }
+    
+    function applyFilter(filter) {
+        currentFilter = filter;
+        
+        // Update button states
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.filter === filter);
+        });
+        
+        // Filter and render
+        const filtered = filter === 'all' 
+            ? allPosts 
+            : allPosts.filter(p => p.tag === filter);
+        renderPosts(filtered);
+    }
+    
+    // Filter button handlers
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
+    });
+    
+    // Fetch and render feed
+    fetch(FEED_URL)
+        .then(r => {
+            if (!r.ok) throw new Error('Feed not found');
+            return r.json();
+        })
+        .then(data => {
+            allPosts = data.tweets || [];
+            updated.textContent = 'Updated ' + timeAgo(data.updated);
+            renderPosts(allPosts);
+        })
+        .catch(err => {
+            console.error('Feed error:', err);
+            body.innerHTML = `<div class="ag-feed-error">
+                Feed temporarily unavailable.<br>
+                <small style="color:#555">Check back soon or <a href="https://x.com" style="color:var(--accent)">view on X</a></small>
+            </div>`;
+        });
+    </script>
+</body>
+</html>
