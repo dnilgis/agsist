@@ -1,204 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Free Farm Calculators - Grain Bin, GDU, Break-Even & Fertilizer Tools | AGSIST</title>
-    <meta name="description" content="Free agricultural calculators for farmers. Grain bin capacity, GDU calculator, break-even analysis, fertilizer rates, and more. Professional tools for corn, soybean, and wheat growers.">
-    <meta name="keywords" content="farm calculators, grain bin calculator, GDU calculator, break even calculator, fertilizer calculator, agricultural tools, farming tools">
+    <meta name="description" content="Free agricultural calculators for farmers. Grain bin capacity, GDU calculator, break-even analysis, and more.">
     <link rel="canonical" href="https://agsist.com/tools.html">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
+    <link rel="stylesheet" href="/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Free Farm Calculators - AGSIST">
-    <meta property="og:description" content="Grain bin calculator, GDU calculator, break-even analysis, and more. Free tools for farmers.">
-    <meta property="og:image" content="https://agsist.com/og-image.png">
-    <meta property="og:url" content="https://agsist.com/tools.html">
-    <meta name="twitter:card" content="summary_large_image">
-    
-    <!-- Schema: BreadcrumbList -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": "https://agsist.com/"},
-        {"@type": "ListItem", "position": 2, "name": "Farm Calculators", "item": "https://agsist.com/tools.html"}
-      ]
-    }
-    </script>
-    
-    <!-- Schema: ItemList for Tools -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      "name": "Farm Calculators",
-      "description": "Free agricultural calculators for farmers",
-      "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "Grain Bin Calculator", "url": "https://agsist.com/calculator.html"},
-        {"@type": "ListItem", "position": 2, "name": "GDU Calculator", "url": "https://agsist.com/gdu.html"},
-        {"@type": "ListItem", "position": 3, "name": "Break-Even Calculator", "url": "https://agsist.com/breakeven.html"}
-      ]
-    }
-    </script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="header-inner">
-            <a href="/" class="logo">
-                <div class="logo-icon"><span class="top-text">AG</span><span class="bot-text">SIST</span></div>
-                <div class="logo-text">AGSIST</div>
-            </a>
-            <button class="menu-toggle" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
-            <nav class="nav">
-                <a href="/">DASHBOARD</a>
-                <a href="/calculator.html">GRAIN BIN</a>
-                <a href="/gdu.html">GDU CALC</a>
-                <a href="/breakeven.html">BREAK-EVEN</a>
-                <a href="/offices.html">OFFICES</a>
-                <a href="/resources.html">RESOURCES</a>
-            </nav>
+    <!-- NAVIGATION -->
+    <nav class="main-nav">
+        <div class="nav-inner">
+            <a href="/" class="logo">AGSIST</a>
+            <div class="nav-links">
+                <div class="nav-dropdown">
+                    <button class="nav-link dropdown-toggle">Prices ▾</button>
+                    <div class="dropdown-menu">
+                        <a href="/corn-prices.html" class="dropdown-item">Corn</a>
+                        <a href="/soybean-prices.html" class="dropdown-item">Soybeans</a>
+                        <a href="/wheat-prices.html" class="dropdown-item">Wheat</a>
+                    </div>
+                </div>
+                <div class="nav-dropdown">
+                    <button class="nav-link dropdown-toggle">Tools ▾</button>
+                    <div class="dropdown-menu">
+                        <a href="/tools.html" class="dropdown-item active">All Tools</a>
+                        <a href="/breakeven.html" class="dropdown-item">Breakeven</a>
+                        <a href="/gdu.html" class="dropdown-item">GDU Calculator</a>
+                        <a href="/calculator.html" class="dropdown-item">Grain Bin</a>
+                        <a href="/fastfacts.html" class="dropdown-item">Fast Facts</a>
+                    </div>
+                </div>
+                <div class="nav-dropdown">
+                    <button class="nav-link dropdown-toggle">Info ▾</button>
+                    <div class="dropdown-menu">
+                        <a href="/learn.html" class="dropdown-item">Learn</a>
+                        <a href="/calendar.html" class="dropdown-item">Calendar</a>
+                        <a href="/resources.html" class="dropdown-item">Resources</a>
+                        <a href="/offices.html" class="dropdown-item">Offices</a>
+                    </div>
+                </div>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
         </div>
-    </header>
+    </nav>
 
-    <main>
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu">
+        <div class="mobile-section">Prices</div>
+        <a href="/corn-prices.html" class="mobile-link">Corn</a>
+        <a href="/soybean-prices.html" class="mobile-link">Soybeans</a>
+        <a href="/wheat-prices.html" class="mobile-link">Wheat</a>
+        <div class="mobile-section">Tools</div>
+        <a href="/tools.html" class="mobile-link active">All Tools</a>
+        <a href="/breakeven.html" class="mobile-link">Breakeven</a>
+        <a href="/gdu.html" class="mobile-link">GDU Calculator</a>
+        <a href="/calculator.html" class="mobile-link">Grain Bin</a>
+        <a href="/fastfacts.html" class="mobile-link">Fast Facts</a>
+        <div class="mobile-section">Info</div>
+        <a href="/learn.html" class="mobile-link">Learn</a>
+        <a href="/calendar.html" class="mobile-link">Calendar</a>
+        <a href="/resources.html" class="mobile-link">Resources</a>
+        <a href="/offices.html" class="mobile-link">Offices</a>
+    </div>
+
+    <main class="page-content">
         <div style="padding:20px;max-width:1200px;margin:0 auto">
-            <nav style="margin-bottom:20px;font-size:0.85rem;color:var(--dim)">
-                <a href="/" style="color:var(--accent);text-decoration:none">Home</a> → Farm Calculators
-            </nav>
+            <nav style="margin-bottom:20px;font-size:0.85rem;color:var(--dim)"><a href="/" style="color:var(--accent);text-decoration:none">Home</a> → Farm Calculators</nav>
             
             <div class="panel">
                 <div class="panel-head"><h1 style="font-size:0.9rem;margin:0">🧮 FARM CALCULATORS & TOOLS</h1></div>
                 <div class="panel-body">
-                    <p style="color:var(--dim);margin-bottom:24px">Free, professional-grade tools for grain farmers. No sign-up required — just accurate results.</p>
-                    
-                    <!-- Main Calculators Grid -->
+                    <p style="color:var(--dim);margin-bottom:24px">Free, professional-grade tools for grain farmers. No sign-up required.</p>
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
-                        
-                        <!-- Grain Bin Calculator -->
-                        <a href="/calculator.html" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px;text-decoration:none;color:var(--text);display:block;transition:border-color 0.2s">
+                        <a href="/calculator.html" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px;text-decoration:none;color:var(--text);display:block">
                             <div style="font-size:2rem;margin-bottom:12px">🌾</div>
                             <div style="font-weight:700;font-size:1.1rem;margin-bottom:8px">Grain Bin Calculator</div>
-                            <div style="font-size:0.85rem;color:var(--dim);line-height:1.5">Calculate bushel capacity for round and rectangular bins. Includes moisture shrink and dry bushel calculations for corn, soybeans, wheat, and barley.</div>
+                            <div style="font-size:0.85rem;color:var(--dim);line-height:1.5">Calculate bushel capacity for round and rectangular bins. Includes moisture shrink and dry bushel calculations.</div>
                             <div style="margin-top:12px;font-size:0.8rem;color:var(--accent)">Calculate Now →</div>
                         </a>
-                        
-                        <!-- GDU Calculator -->
-                        <a href="/gdu.html" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px;text-decoration:none;color:var(--text);display:block;transition:border-color 0.2s">
+                        <a href="/gdu.html" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px;text-decoration:none;color:var(--text);display:block">
                             <div style="font-size:2rem;margin-bottom:12px">🌡️</div>
                             <div style="font-weight:700;font-size:1.1rem;margin-bottom:8px">GDU Calculator</div>
-                            <div style="font-size:0.85rem;color:var(--dim);line-height:1.5">Track Growing Degree Units for corn. Predict silking and black layer dates by hybrid maturity. Regional averages for Wisconsin and Minnesota.</div>
+                            <div style="font-size:0.85rem;color:var(--dim);line-height:1.5">Track Growing Degree Units for corn. Predict silking and black layer dates by hybrid maturity.</div>
                             <div style="margin-top:12px;font-size:0.8rem;color:var(--accent)">Calculate Now →</div>
                         </a>
-                        
-                        <!-- Break-Even Calculator -->
-                        <a href="/breakeven.html" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px;text-decoration:none;color:var(--text);display:block;transition:border-color 0.2s">
+                        <a href="/breakeven.html" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px;text-decoration:none;color:var(--text);display:block">
                             <div style="font-size:2rem;margin-bottom:12px">💰</div>
                             <div style="font-weight:700;font-size:1.1rem;margin-bottom:8px">Break-Even Calculator</div>
-                            <div style="font-size:0.85rem;color:var(--dim);line-height:1.5">Know your cost per bushel before you sell. Includes all input costs: seed, fertilizer, chemicals, rent, machinery, labor, and more.</div>
+                            <div style="font-size:0.85rem;color:var(--dim);line-height:1.5">Know your cost per bushel before you sell. Includes all input costs: seed, fertilizer, chemicals, rent, and more.</div>
                             <div style="margin-top:12px;font-size:0.8rem;color:var(--accent)">Calculate Now →</div>
                         </a>
-                        
+                        <a href="/fastfacts.html" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px;text-decoration:none;color:var(--text);display:block">
+                            <div style="font-size:2rem;margin-bottom:12px">📊</div>
+                            <div style="font-weight:700;font-size:1.1rem;margin-bottom:8px">Nutrient Fast Facts</div>
+                            <div style="font-size:0.85rem;color:var(--dim);line-height:1.5">8 interactive calculators for fertilizer, nutrients, and manure. Based on UWEX A2809 guidelines.</div>
+                            <div style="margin-top:12px;font-size:0.8rem;color:var(--accent)">Calculate Now →</div>
+                        </a>
                     </div>
                 </div>
             </div>
             
-            <!-- Quick Reference Tools -->
             <div class="panel">
-                <div class="panel-head"><h2>📋 QUICK REFERENCE</h2></div>
+                <div class="panel-head"><h2 style="font-size:0.9rem;margin:0">📋 QUICK REFERENCE</h2></div>
                 <div class="panel-body">
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px">
-                        
-                        <a href="/fastfacts.html" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.5rem;margin-bottom:8px">📊</div>
-                            <div style="font-weight:600;margin-bottom:4px">Nutrient Fast Facts</div>
-                            <div style="font-size:0.8rem;color:var(--dim)">Fertilizer rates, nutrient removal, conversion factors</div>
-                        </a>
-                        
-                        <a href="/calendar.html" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.5rem;margin-bottom:8px">📅</div>
-                            <div style="font-weight:600;margin-bottom:4px">USDA Calendar</div>
-                            <div style="font-size:0.8rem;color:var(--dim)">Report dates, crop insurance deadlines</div>
-                        </a>
-                        
-                        <a href="/offices.html" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-size:1.5rem;margin-bottom:8px">🏢</div>
-                            <div style="font-weight:600;margin-bottom:4px">USDA Office Locator</div>
-                            <div style="font-size:0.8rem;color:var(--dim)">Find your local FSA and NRCS offices</div>
-                        </a>
-                        
+                        <a href="/calendar.html" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-decoration:none;color:var(--text);display:block"><div style="font-size:1.5rem;margin-bottom:8px">📅</div><div style="font-weight:600;margin-bottom:4px">USDA Calendar</div><div style="font-size:0.8rem;color:var(--dim)">Report dates, crop insurance deadlines</div></a>
+                        <a href="/offices.html" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-decoration:none;color:var(--text);display:block"><div style="font-size:1.5rem;margin-bottom:8px">🏢</div><div style="font-weight:600;margin-bottom:4px">USDA Office Locator</div><div style="font-size:0.8rem;color:var(--dim)">Find your local FSA and NRCS offices</div></a>
+                        <a href="/learn.html" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;text-decoration:none;color:var(--text);display:block"><div style="font-size:1.5rem;margin-bottom:8px">📚</div><div style="font-weight:600;margin-bottom:4px">Learn</div><div style="font-size:0.8rem;color:var(--dim)">Guides on basis, GDUs, and more</div></a>
                     </div>
                 </div>
             </div>
             
-            <!-- Guides Section -->
             <div class="panel">
-                <div class="panel-head"><h2>📚 FARMING GUIDES</h2></div>
-                <div class="panel-body">
-                    <p style="color:var(--dim);margin-bottom:16px">Tools work best when you understand the fundamentals. Our guides cover the concepts behind the calculations.</p>
-                    
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
-                        <a href="/learn.html#basis" style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-weight:600;margin-bottom:4px">Understanding Corn Basis</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">How local prices are determined</div>
-                        </a>
-                        <a href="/learn.html#when-to-sell" style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-weight:600;margin-bottom:4px">When to Sell Your Grain</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Seasonal patterns & signals</div>
-                        </a>
-                        <a href="/learn.html#gdu" style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-weight:600;margin-bottom:4px">GDU Guide</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Growing degree units explained</div>
-                        </a>
-                        <a href="/learn.html#breakeven" style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-weight:600;margin-bottom:4px">Break-Even Analysis</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Cost accounting for farms</div>
-                        </a>
-                        <a href="/learn.html#crop-insurance" style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-weight:600;margin-bottom:4px">YP vs RP Insurance</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">Choosing the right coverage</div>
-                        </a>
-                        <a href="/learn.html" style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px;text-decoration:none;color:var(--text);display:block">
-                            <div style="font-weight:600;margin-bottom:4px">All Guides →</div>
-                            <div style="font-size:0.75rem;color:var(--dim)">View complete library</div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Live Data CTA -->
-            <div class="panel">
-                <div class="panel-head"><h2>📈 LIVE MARKET DATA</h2></div>
+                <div class="panel-head"><h2 style="font-size:0.9rem;margin:0">📈 LIVE MARKET DATA</h2></div>
                 <div class="panel-body" style="text-align:center;padding:30px 20px">
                     <div style="font-size:1.1rem;font-weight:600;margin-bottom:12px">Need live commodity prices?</div>
                     <div style="font-size:0.9rem;color:var(--dim);margin-bottom:20px">Our dashboard shows real-time corn, soybean, and wheat prices with 52-week ranges, futures, and ag news.</div>
                     <a href="/" style="display:inline-block;background:var(--accent);color:black;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600">Go to Dashboard →</a>
                 </div>
             </div>
-            
-            <!-- CTA Box -->
-            <div style="margin-top:20px;padding:20px;background:var(--card);border:1px solid var(--accent);border-radius:8px;text-align:center">
-                <div style="font-size:1rem;font-weight:600;margin-bottom:8px">Need Personalized Help?</div>
-                <div style="font-size:0.85rem;color:var(--dim);margin-bottom:12px">Our Certified Crop Advisors can help with crop planning, nutrient management, and crop insurance.</div>
-                <a href="https://farmers1st.com" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600">Contact Farmers First Agri Service →</a>
-            </div>
         </div>
     </main>
 
-    <footer>
-        <div class="footer-bottom" style="max-width:1800px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:0.8rem">
-            <span>© 2026 <a href="/" style="color:var(--accent);text-decoration:none">AGSIST</a>. All rights reserved.</span>
-            <span><a href="/learn.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Guides</a><a href="/tools.html" style="color:var(--dim);text-decoration:none;margin-right:15px">Tools</a><a href="/resources.html" style="color:var(--dim);text-decoration:none">Resources</a></span>
-            <span>Made in the USA 🇺🇸</span>
+    <footer class="main-footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Prices</h4>
+                    <a href="/corn-prices.html">Corn</a>
+                    <a href="/soybean-prices.html">Soybeans</a>
+                    <a href="/wheat-prices.html">Wheat</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Tools</h4>
+                    <a href="/tools.html">All Tools</a>
+                    <a href="/breakeven.html">Breakeven</a>
+                    <a href="/gdu.html">GDU Calculator</a>
+                    <a href="/calculator.html">Grain Bin</a>
+                    <a href="/fastfacts.html">Fast Facts</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Info</h4>
+                    <a href="/learn.html">Learn</a>
+                    <a href="/calendar.html">Calendar</a>
+                    <a href="/resources.html">Resources</a>
+                    <a href="/offices.html">Offices</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="/privacy.html">Privacy</a>
+                    <a href="/terms.html">Terms</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 AGSIST</p>
+                <p class="disclaimer">Prices delayed minimum 10 minutes. Not financial advice.</p>
+            </div>
         </div>
     </footer>
+
+    <script>
+        document.querySelector('.mobile-menu-btn')?.addEventListener('click', function() {
+            document.querySelector('.mobile-menu').classList.toggle('active');
+        });
+    </script>
 </body>
 </html>
