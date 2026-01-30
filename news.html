@@ -769,9 +769,31 @@
     });
     
     // ═══════════════════════════════════════════════════════════════════════
-    // FEED CONFIGURATION
+    // DIRECT RSSHUB FEED - NO GITHUB NEEDED
     // ═══════════════════════════════════════════════════════════════════════
-    const FEED_URL = 'https://raw.githubusercontent.com/dnilgis/agsist/main/data/tweets.json';
+    
+    const ACCOUNTS = [
+        { handle: 'RichNelson_Alln', name: 'Rich Nelson', tag: 'grain' },
+        { handle: 'texzona', name: 'Ted Seifried', tag: 'grain' },
+        { handle: 'ScottSeifert1', name: 'Scott Seifert', tag: 'grain' },
+        { handle: 'MGrayGrain', name: 'Mike Gray', tag: 'grain' },
+        { handle: 'ChrisHydeGrain', name: 'Chris Hyde', tag: 'grain' },
+        { handle: 'MattBennettGrain', name: 'Matt Bennett', tag: 'grain' },
+        { handle: 'GrainStats', name: 'Grain Stats', tag: 'grain' },
+        { handle: 'RampCapitalLLC', name: 'Ramp Capital', tag: 'markets' },
+        { handle: 'RyanHallYall', name: "Ryan Hall Y'all", tag: 'weather' },
+        { handle: 'kannbwx', name: 'Eric Snodgrass', tag: 'weather' },
+        { handle: 'DroughtMonitor', name: 'Drought Monitor', tag: 'weather' },
+        { handle: 'ABORNINABARN', name: 'AG Weather', tag: 'weather' },
+        { handle: 'RoachAg', name: 'Tim Roach', tag: 'farm' },
+        { handle: 'FarmPolicy', name: 'Farm Policy News', tag: 'farm' },
+    ];
+    
+    const RSSHUB_INSTANCES = [
+        'https://rsshub.app',
+        'https://rsshub.rssforever.com',
+        'https://rss.fatpandac.com',
+    ];
     
     let allPosts = [];
     let currentFilter = 'all';
@@ -782,6 +804,7 @@
     function timeAgo(dateStr) {
         const now = Date.now();
         const then = new Date(dateStr).getTime();
+        if (isNaN(then)) return '';
         const diff = Math.floor((now - then) / 1000);
         
         if (diff < 60) return 'just now';
@@ -809,7 +832,7 @@
     
     function renderPosts(posts) {
         if (!posts || posts.length === 0) {
-            body.innerHTML = '<div class="ag-feed-error">No posts available. Feed will populate shortly.</div>';
+            body.innerHTML = '<div class="ag-feed-error">No posts available yet. Refresh to try again.</div>';
             return;
         }
         
@@ -835,42 +858,116 @@
     
     function applyFilter(filter) {
         currentFilter = filter;
-        
-        // Update button states
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.filter === filter);
         });
-        
-        // Filter and render
         const filtered = filter === 'all' 
             ? allPosts 
             : allPosts.filter(p => p.tag === filter);
         renderPosts(filtered);
     }
     
-    // Filter button handlers
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
     });
     
-    // Fetch and render feed
-    fetch(FEED_URL)
-        .then(r => {
-            if (!r.ok) throw new Error('Feed not found');
-            return r.json();
-        })
-        .then(data => {
-            allPosts = data.tweets || [];
-            updated.textContent = 'Updated ' + timeAgo(data.updated);
-            renderPosts(allPosts);
-        })
-        .catch(err => {
-            console.error('Feed error:', err);
-            body.innerHTML = `<div class="ag-feed-error">
-                Feed temporarily unavailable.<br>
-                <small style="color:#555">Check back soon or <a href="https://x.com" style="color:var(--accent)">view on X</a></small>
-            </div>`;
+    // Parse RSS XML to posts
+    function parseRSS(xml, account) {
+        const posts = [];
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(xml, 'text/xml');
+        const items = doc.querySelectorAll('item');
+        
+        items.forEach((item, i) => {
+            if (i >= 3) return; // Max 3 per account
+            
+            const title = item.querySelector('title')?.textContent || '';
+            const link = item.querySelector('link')?.textContent || '';
+            const pubDate = item.querySelector('pubDate')?.textContent || '';
+            const description = item.querySelector('description')?.textContent || '';
+            
+            // Clean text
+            let text = title.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').trim();
+            
+            // Skip empty or short RT
+            if (!text || (text.startsWith('RT @') && text.length < 20)) return;
+            
+            // Extract images from description
+            const images = [];
+            const imgMatches = description.matchAll(/<img[^>]+src=["']([^"']+)["']/g);
+            for (const match of imgMatches) {
+                let url = match[1];
+                if (!url.includes('profile_images') && !url.includes('emoji')) {
+                    images.push(url);
+                }
+            }
+            
+            const hasVideo = description.includes('video') || description.includes('.mp4');
+            
+            posts.push({
+                id: link.match(/status\/(\d+)/)?.[1] || Date.now().toString(),
+                text: text.substring(0, 500),
+                link: link.replace(/nitter\.[^/]+/, 'x.com').replace('twitter.com', 'x.com'),
+                date: pubDate,
+                timestamp: new Date(pubDate).getTime(),
+                handle: account.handle,
+                name: account.name,
+                tag: account.tag,
+                images: images.slice(0, 4),
+                hasVideo,
+                isRT: text.startsWith('RT @'),
+            });
         });
+        
+        return posts;
+    }
+    
+    // Fetch single account with fallback instances
+    async function fetchAccount(account) {
+        for (const instance of RSSHUB_INSTANCES) {
+            const url = `${instance}/twitter/user/${account.handle}`;
+            try {
+                const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+                if (res.ok) {
+                    const xml = await res.text();
+                    if (xml.includes('<item>')) {
+                        return parseRSS(xml, account);
+                    }
+                }
+            } catch (e) {
+                // Try next instance
+            }
+        }
+        return [];
+    }
+    
+    // Fetch all accounts
+    async function fetchAllFeeds() {
+        body.innerHTML = '<div class="ag-feed-loading">Loading live feed...</div>';
+        updated.textContent = 'Fetching...';
+        
+        const results = await Promise.allSettled(
+            ACCOUNTS.map(account => fetchAccount(account))
+        );
+        
+        allPosts = results
+            .filter(r => r.status === 'fulfilled')
+            .flatMap(r => r.value)
+            .sort((a, b) => b.timestamp - a.timestamp)
+            .slice(0, 50);
+        
+        updated.textContent = allPosts.length > 0 
+            ? `Live • ${allPosts.length} posts`
+            : 'Feed unavailable';
+        
+        renderPosts(allPosts);
+    }
+    
+    // Initial fetch
+    fetchAllFeeds();
+    
+    // Auto-refresh every 5 minutes
+    setInterval(fetchAllFeeds, 5 * 60 * 1000);
     </script>
 </body>
 </html>
