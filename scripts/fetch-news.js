@@ -238,28 +238,19 @@ async function generateSummary(title, content, source) {
         max_tokens: 1024,
         messages: [{
           role: 'user',
-          content: `You are creating a comprehensive summary of this agricultural news article. Your goal is to capture ALL the important information so a farmer doesn't need to read the original article.
+          content: `Summarize this agricultural news article comprehensively. Capture ALL important information so a farmer doesn't need to read the original.
 
-Write a COMPLETE summary that includes:
-- The main news, announcement, or finding
-- ALL specific numbers, prices, statistics, percentages, and data points mentioned
-- ALL dates, deadlines, and timeframes
-- Names of people, organizations, companies, or programs mentioned
-- Geographic locations if relevant
-- Causes, reasons, or context for why this is happening
-- Impacts and implications for farmers and the ag industry
-- Any recommendations, action items, or next steps
-- Quotes from experts or officials if included
+Include: main news/finding, ALL numbers/prices/statistics/percentages, ALL dates/deadlines, names of people/organizations/programs, locations, context/causes, impacts for farmers, recommendations/action items, expert quotes if any.
 
-Write as many sentences as needed to fully summarize the article - typically 6-12 sentences for a standard article. Be thorough but concise. Use plain language. Do not add information not in the article.
+CRITICAL: Start directly with the summary content. Do NOT include any preamble like "Here is a summary" or "This article discusses". Just write the summary itself.
 
-ARTICLE TITLE: ${title}
+Write 6-12 sentences as needed. Be thorough but concise. Plain language. Facts only from the article.
+
+TITLE: ${title}
 SOURCE: ${source}
 
-FULL ARTICLE CONTENT:
-${content.substring(0, 10000)}
-
-COMPREHENSIVE SUMMARY:`
+CONTENT:
+${content.substring(0, 10000)}`
         }]
       })
     });
@@ -270,9 +261,17 @@ COMPREHENSIVE SUMMARY:`
     }
     
     const data = await res.json();
-    const summary = data.content?.[0]?.text?.trim();
+    let summary = data.content?.[0]?.text?.trim() || null;
     
-    return summary || null;
+    // Remove any preamble the AI might still add
+    if (summary) {
+      summary = summary
+        .replace(/^(Here is|Here's|This is|Below is|The following is)[^.]*[.:]\s*/i, '')
+        .replace(/^(This article|The article)[^.]*[.:]\s*/i, '')
+        .trim();
+    }
+    
+    return summary;
     
   } catch (e) {
     console.log(`  ⚠ Summary error: ${e.message}`);
