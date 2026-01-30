@@ -776,6 +776,9 @@
     // DIRECT RSSHUB FEED - NO GITHUB NEEDED
     // ═══════════════════════════════════════════════════════════════════════
     
+    // YOUR CLOUDFLARE WORKER URL - UPDATE THIS AFTER DEPLOYING
+    const WORKER_URL = 'https://agsist-feed.YOUR_SUBDOMAIN.workers.dev';
+    
     const ACCOUNTS = [
         { handle: 'RichNelsonMkts', name: 'Rich Nelson', tag: 'grain' },
         { handle: 'TheTedSpread', name: 'Ted Seifried', tag: 'grain' },
@@ -791,19 +794,6 @@
         { handle: 'ABORNINABARN', name: 'AG Weather', tag: 'weather' },
         { handle: 'RoachAg', name: 'Tim Roach', tag: 'farm' },
         { handle: 'FarmPolicy', name: 'Farm Policy News', tag: 'farm' },
-    ];
-    
-    const RSSHUB_INSTANCES = [
-        'https://rsshub.app',
-        'https://rsshub.rssforever.com',
-        'https://rss.fatpandac.com',
-    ];
-    
-    // CORS proxies to bypass browser restrictions
-    const CORS_PROXIES = [
-        'https://api.allorigins.win/raw?url=',
-        'https://corsproxy.io/?',
-        'https://api.codetabs.com/v1/proxy?quest=',
     ];
     
     let allPosts = [];
@@ -933,52 +923,19 @@
         return posts;
     }
     
-    // Working proxy/instance combo - found on first success
-    let workingProxy = null;
-    let workingInstance = null;
-    
-    // Fetch single account with fallback instances and CORS proxies
+    // Fetch single account via Cloudflare Worker
     async function fetchAccount(account) {
-        // If we already found a working combo, use it
-        if (workingProxy && workingInstance) {
-            const rssUrl = `${workingInstance}/twitter/user/${account.handle}`;
-            const url = workingProxy + encodeURIComponent(rssUrl);
-            try {
-                const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
-                if (res.ok) {
-                    const xml = await res.text();
-                    if (xml.includes('<item>')) {
-                        return parseRSS(xml, account);
-                    }
-                }
-            } catch (e) {
-                // Working combo failed, reset and try others
-                workingProxy = null;
-                workingInstance = null;
-            }
-        }
-        
-        // Try all combos to find one that works
-        for (const proxy of CORS_PROXIES) {
-            for (const instance of RSSHUB_INSTANCES) {
-                const rssUrl = `${instance}/twitter/user/${account.handle}`;
-                const url = proxy + encodeURIComponent(rssUrl);
-                try {
-                    const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
-                    if (res.ok) {
-                        const xml = await res.text();
-                        if (xml.includes('<item>')) {
-                            // Found working combo - save it
-                            workingProxy = proxy;
-                            workingInstance = instance;
-                            console.log('Feed working via:', proxy, instance);
-                            return parseRSS(xml, account);
-                        }
-                    }
-                } catch (e) {
-                    // Try next combo
+        try {
+            const url = `${WORKER_URL}?handle=${account.handle}`;
+            const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+            if (res.ok) {
+                const xml = await res.text();
+                if (xml.includes('<item>')) {
+                    return parseRSS(xml, account);
                 }
             }
+        } catch (e) {
+            console.log(`Failed to fetch @${account.handle}:`, e.message);
         }
         return [];
     }
@@ -989,27 +946,16 @@
         updated.textContent = 'Fetching...';
         console.log('Starting feed fetch for', ACCOUNTS.length, 'accounts...');
         
-        // Fetch first account to find working proxy/instance combo
-        const firstResult = await fetchAccount(ACCOUNTS[0]);
-        if (firstResult.length === 0) {
-            console.log('Could not find working feed source');
-            updated.textContent = 'Feed unavailable';
-            body.innerHTML = '<div class="ag-feed-error">Feed sources are currently unavailable. Try again later.</div>';
-            return;
-        }
-        
-        // Now fetch the rest in parallel using the working combo
         const results = await Promise.allSettled(
-            ACCOUNTS.slice(1).map(account => fetchAccount(account))
+            ACCOUNTS.map(account => fetchAccount(account))
         );
         
         const successful = results.filter(r => r.status === 'fulfilled' && r.value.length > 0);
-        console.log('Fetched', successful.length + 1, 'accounts successfully');
+        console.log('Fetched', successful.length, 'accounts successfully');
         
-        allPosts = [
-            ...firstResult,
-            ...results.filter(r => r.status === 'fulfilled').flatMap(r => r.value)
-        ]
+        allPosts = results
+            .filter(r => r.status === 'fulfilled')
+            .flatMap(r => r.value)
             .sort((a, b) => b.timestamp - a.timestamp)
             .slice(0, 50);
         
