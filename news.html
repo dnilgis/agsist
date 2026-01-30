@@ -2,12 +2,157 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ag News Hub | AGSIST - Agriculture Intelligence</title>
-    <meta name="description" content="Your comprehensive agriculture news aggregator. Reddit farming communities, USDA updates, university extension, and industry news in one place.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- Primary Meta Tags -->
+    <title>Agriculture News Hub | AGSIST - Free Farming News Aggregator</title>
+    <meta name="title" content="Agriculture News Hub | AGSIST - Free Farming News Aggregator">
+    <meta name="description" content="Free agriculture news aggregator with AI-powered summaries. Get farming news from 30+ sources including Reddit, university extension, USDA, and industry publications. Updated every 2 hours.">
+    <meta name="keywords" content="agriculture news, farming news, farm news aggregator, USDA news, crop news, livestock news, ag news, farm prices, agricultural news today, farming updates, rural news, ag industry news">
+    <meta name="author" content="AGSIST">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="https://agsist.com/news.html">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://agsist.com/news.html">
+    <meta property="og:title" content="Agriculture News Hub | AGSIST - Free Farming News Aggregator">
+    <meta property="og:description" content="Free agriculture news aggregator with AI-powered summaries. 30+ sources including Reddit farming communities, university extension, and industry news. Updated every 2 hours.">
+    <meta property="og:image" content="https://agsist.com/images/og-news.jpg">
+    <meta property="og:site_name" content="AGSIST">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://agsist.com/news.html">
+    <meta name="twitter:title" content="Agriculture News Hub | AGSIST">
+    <meta name="twitter:description" content="Free agriculture news aggregator with AI-powered summaries from 30+ sources. Updated every 2 hours.">
+    <meta name="twitter:image" content="https://agsist.com/images/og-news.jpg">
+    
+    <!-- Mobile App Meta Tags -->
+    <meta name="theme-color" content="#0a0a0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AGSIST News">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <!-- Preconnect for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
+    
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Agriculture News Hub",
+      "description": "Free agriculture news aggregator with AI-powered summaries from 30+ sources",
+      "url": "https://agsist.com/news.html",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "AGSIST",
+        "url": "https://agsist.com"
+      },
+      "about": {
+        "@type": "Thing",
+        "name": "Agriculture News"
+      },
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Farmers, Ranchers, Agricultural Professionals"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "AGSIST",
+        "url": "https://agsist.com"
+      }
+    }
+    </script>
+    
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://agsist.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Agriculture News Hub",
+          "item": "https://agsist.com/news.html"
+        }
+      ]
+    }
+    </script>
+    
+    <!-- FAQ Schema for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is AGSIST Agriculture News Hub?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AGSIST Agriculture News Hub is a free news aggregator that collects farming and agriculture news from over 30 sources including Reddit communities, university extension services, and industry publications. Articles are updated every 2 hours and include AI-powered summaries."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do the AI summaries work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "When you click the Summary button on any article, our system fetches the full article content and uses Claude AI to generate a comprehensive 4-6 sentence summary covering key facts, numbers, and why the news matters to farmers."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What sources does the news hub aggregate from?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We aggregate from 30+ sources including Reddit farming communities (r/farming, r/agriculture, r/tractors), university extension services (UW Madison, Purdue, Iowa State, Texas A&M), and industry publications (AgDaily, Farm Journal, Brownfield, Lancaster Farming)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How often is the news updated?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Agriculture News Hub automatically fetches new articles from all sources every 2 hours, ensuring you always have access to the latest farming news and agricultural updates."
+          }
+        }
+      ]
+    }
+    </script>
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -30,12 +175,20 @@
             --weather: #06b6d4;
         }
         
+        /* Mobile: Prevent horizontal scroll */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
+        }
+        
         body {
             font-family: 'JetBrains Mono', monospace;
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
+            min-height: -webkit-fill-available;
         }
         
         /* ═══════════════════════════════════════════════════════════════════════ */
@@ -218,6 +371,57 @@
             letter-spacing: 1px;
         }
         
+        /* AI Feature Callout */
+        .ai-feature {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            max-width: 700px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            text-align: left;
+        }
+        .ai-feature-badge {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .ai-feature-text {
+            font-size: 0.82rem;
+            color: var(--dim);
+            line-height: 1.6;
+        }
+        .ai-feature-text strong {
+            color: var(--text);
+        }
+        .inline-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            background: var(--accent);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            vertical-align: middle;
+        }
+        .inline-btn .mini-badge {
+            background: #000;
+            color: var(--accent);
+            font-size: 0.55rem;
+            padding: 1px 3px;
+            border-radius: 2px;
+        }
+        
         /* ═══════════════════════════════════════════════════════════════════════ */
         /* MAIN LAYOUT */
         /* ═══════════════════════════════════════════════════════════════════════ */
@@ -315,8 +519,9 @@
         /* ═══════════════════════════════════════════════════════════════════════ */
         .feed-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 16px;
+            align-items: start;
         }
         
         /* ═══════════════════════════════════════════════════════════════════════ */
@@ -332,6 +537,10 @@
             text-decoration: none;
             color: inherit;
             transition: all 0.25s ease;
+            height: 280px; /* Fixed height for consistency */
+        }
+        .article.has-thumb {
+            height: 380px; /* Taller when has thumbnail */
         }
         .article:hover {
             background: var(--card-hover);
@@ -342,9 +551,10 @@
         
         .article-thumb {
             width: 100%;
-            height: 180px;
+            height: 120px; /* Smaller thumbnail */
             object-fit: cover;
             background: var(--border);
+            flex-shrink: 0;
         }
         
         .article-body {
@@ -352,6 +562,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
         
         .article-meta {
@@ -359,6 +570,7 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 12px;
+            flex-shrink: 0;
         }
         
         .article-source {
@@ -390,9 +602,10 @@
             margin-bottom: 8px;
             line-height: 1.4;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            flex-shrink: 0;
         }
         
         .article-excerpt {
@@ -404,16 +617,18 @@
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            min-height: 0;
         }
         
         .article-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 12px;
+            margin-top: auto;
             padding-top: 12px;
             border-top: 1px solid var(--border);
             gap: 12px;
+            flex-shrink: 0;
         }
         
         .article-link {
@@ -532,6 +747,69 @@
         }
         
         /* ═══════════════════════════════════════════════════════════════════════ */
+        /* FAQ SECTION */
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        .faq-section {
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+        }
+        .faq-section h2 {
+            font-size: 1.2rem;
+            color: var(--text);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .faq-grid {
+            display: grid;
+            gap: 12px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .faq-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .faq-item summary {
+            padding: 16px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+        .faq-item summary::after {
+            content: '+';
+            font-size: 1.2rem;
+            color: var(--accent);
+            font-weight: 400;
+        }
+        .faq-item[open] summary::after {
+            content: '−';
+        }
+        .faq-item summary:hover {
+            background: var(--card-hover);
+        }
+        .faq-item p {
+            padding: 0 20px 16px;
+            color: var(--dim);
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+        .faq-item p strong {
+            color: var(--text);
+        }
+        
+        /* ═══════════════════════════════════════════════════════════════════════ */
         /* TL;DR MODAL */
         /* ═══════════════════════════════════════════════════════════════════════ */
         .tldr-btn {
@@ -547,10 +825,27 @@
             transition: all 0.2s;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .tldr-btn::after {
+            content: 'AI';
+            font-size: 0.55rem;
+            background: #000;
+            color: var(--accent);
+            padding: 1px 3px;
+            border-radius: 2px;
+            font-weight: 700;
         }
         .tldr-btn:hover {
             background: #fff;
             transform: scale(1.05);
+        }
+        /* Tooltip for TL;DR explanation */
+        .tldr-btn[title] {
+            cursor: help;
         }
         
         .modal-overlay {
@@ -566,6 +861,7 @@
             justify-content: center;
             padding: 20px;
             backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
         .modal-overlay.active {
             display: flex;
@@ -577,10 +873,11 @@
             border-radius: 12px;
             max-width: 600px;
             width: 100%;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
             position: relative;
             animation: modalSlide 0.2s ease-out;
+            -webkit-overflow-scrolling: touch;
         }
         @keyframes modalSlide {
             from { opacity: 0; transform: translateY(-20px); }
@@ -595,12 +892,28 @@
             align-items: flex-start;
             gap: 16px;
         }
-        .modal-header h3 {
+        .modal-header-content h3 {
             font-size: 0.75rem;
             color: var(--accent);
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin: 0;
+            margin: 0 0 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-header-content h3 .ai-badge {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: #fff;
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 700;
+        }
+        .modal-header-content .ai-explain {
+            font-size: 0.7rem;
+            color: var(--dim);
+            font-weight: 400;
         }
         .modal-close {
             background: none;
@@ -610,6 +923,7 @@
             cursor: pointer;
             padding: 0;
             line-height: 1;
+            flex-shrink: 0;
         }
         .modal-close:hover {
             color: var(--text);
@@ -617,6 +931,9 @@
         
         .modal-body {
             padding: 20px;
+            max-height: 50vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .modal-source {
             display: inline-flex;
@@ -637,17 +954,18 @@
             line-height: 1.4;
         }
         .modal-summary {
-            color: var(--dim);
+            color: var(--text);
             font-size: 0.95rem;
-            line-height: 1.7;
+            line-height: 1.8;
             margin-bottom: 20px;
+            white-space: pre-wrap;
         }
         .modal-summary strong {
             color: var(--accent);
         }
         .modal-thumb {
             width: 100%;
-            max-height: 200px;
+            max-height: 150px;
             object-fit: cover;
             border-radius: 8px;
             margin-bottom: 16px;
@@ -771,24 +1089,193 @@
         /* ═══════════════════════════════════════════════════════════════════════ */
         /* MOBILE */
         /* ═══════════════════════════════════════════════════════════════════════ */
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        /* MOBILE RESPONSIVE - Touch-friendly and scroll-locked */
+        /* ═══════════════════════════════════════════════════════════════════════ */
         @media (max-width: 768px) {
+            /* Prevent horizontal scroll */
+            html, body {
+                overflow-x: hidden;
+                width: 100%;
+                position: relative;
+            }
+            
             /* Nav mobile */
             .nav-links { display: none; }
             .mobile-menu-btn {
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                min-width: 44px;
+                min-height: 44px; /* Touch target size */
             }
             
             /* Content mobile */
-            .hero h1 { font-size: 1.6rem; }
-            .hero p { font-size: 0.85rem; }
-            .stats-bar { gap: 20px; }
-            .stat-value { font-size: 1.4rem; }
-            .feed-grid { grid-template-columns: 1fr; }
-            .filters { gap: 6px; }
-            .filter-btn { padding: 8px 12px; font-size: 0.7rem; }
-            .sources-grid { grid-template-columns: 1fr; }
+            .hero { padding: 24px 16px; }
+            .hero h1 { font-size: 1.5rem; }
+            .hero p { font-size: 0.85rem; line-height: 1.5; }
+            
+            /* AI Feature mobile */
+            .ai-feature {
+                flex-direction: column;
+                padding: 14px;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            .ai-feature-badge {
+                align-self: flex-start;
+            }
+            .ai-feature-text {
+                font-size: 0.78rem;
+            }
+            
+            .stats-bar { 
+                gap: 12px; 
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .stat { min-width: 70px; }
+            .stat-value { font-size: 1.3rem; }
+            .stat-label { font-size: 0.65rem; }
+            
+            /* Filters - horizontal scroll on mobile */
+            .filters { 
+                gap: 6px;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                padding-bottom: 8px;
+            }
+            .filters::-webkit-scrollbar { display: none; }
+            .filter-btn { 
+                padding: 10px 14px; 
+                font-size: 0.7rem;
+                flex-shrink: 0;
+                min-height: 44px; /* Touch target */
+            }
+            
+            /* Feed grid - single column */
+            .feed-grid { 
+                grid-template-columns: 1fr; 
+                gap: 12px;
+                padding: 0 4px;
+            }
+            
+            /* Article cards mobile */
+            .article {
+                height: auto;
+                min-height: 200px;
+            }
+            .article.has-thumb {
+                height: auto;
+            }
+            .article-thumb {
+                height: 140px;
+            }
+            .article-body {
+                padding: 14px;
+            }
+            .article-title {
+                font-size: 0.9rem;
+                -webkit-line-clamp: 3;
+            }
+            .article-excerpt {
+                font-size: 0.78rem;
+                -webkit-line-clamp: 2;
+            }
+            .article-footer {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .tldr-btn, .article-link {
+                min-height: 44px; /* Touch target */
+                padding: 10px 14px;
+                font-size: 0.72rem;
+            }
+            
+            /* Modal mobile */
+            .modal-overlay {
+                padding: 12px;
+                align-items: flex-end; /* Slide up from bottom */
+            }
+            .modal-content {
+                max-height: 90vh;
+                border-radius: 16px 16px 0 0;
+                animation: modalSlideUp 0.25s ease-out;
+            }
+            @keyframes modalSlideUp {
+                from { opacity: 0; transform: translateY(100%); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .modal-header {
+                padding: 16px;
+                position: sticky;
+                top: 0;
+                background: var(--card);
+                z-index: 1;
+            }
+            .modal-body {
+                padding: 16px;
+                max-height: 55vh;
+            }
+            .modal-title {
+                font-size: 1rem;
+            }
+            .modal-summary {
+                font-size: 0.9rem;
+                line-height: 1.7;
+            }
+            .modal-footer {
+                padding: 12px 16px;
+                position: sticky;
+                bottom: 0;
+                background: var(--card);
+            }
+            .modal-btn {
+                padding: 12px 16px;
+                min-height: 44px; /* Touch target */
+                font-size: 0.8rem;
+            }
+            .modal-close {
+                min-width: 44px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            /* Sources section mobile */
+            .sources-section { padding: 24px 16px; }
+            .sources-grid { grid-template-columns: 1fr; gap: 12px; }
+            .source-card { padding: 14px; }
+            .source-card h3 { font-size: 0.85rem; }
+            .source-card ul { gap: 6px; }
+            .source-card a { 
+                padding: 8px 0; 
+                min-height: 44px; 
+                display: flex;
+                align-items: center;
+            }
+            
+            /* FAQ section mobile */
+            .faq-section {
+                margin-top: 32px;
+                padding-top: 24px;
+            }
+            .faq-section h2 {
+                font-size: 1rem;
+                margin-bottom: 16px;
+            }
+            .faq-item summary {
+                padding: 14px 16px;
+                font-size: 0.85rem;
+                min-height: 44px;
+            }
+            .faq-item p {
+                padding: 0 16px 14px;
+                font-size: 0.8rem;
+            }
             
             /* Footer mobile */
             .footer-c { padding: 16px; }
@@ -796,15 +1283,42 @@
             .footer-c-main { gap: 12px; }
             .footer-c .brand-row { flex-wrap: wrap; gap: 6px; }
             .footer-c .tagline { display: none; }
-            .footer-c .site-links { gap: 6px; }
-            .footer-c .site-links a { padding: 4px 8px; font-size: 0.75rem; }
+            .footer-c .site-links { gap: 6px; flex-wrap: wrap; }
+            .footer-c .site-links a { 
+                padding: 8px 10px; 
+                font-size: 0.75rem;
+                min-height: 40px;
+            }
             .footer-c-network {
                 text-align: left;
                 padding-top: 12px;
                 border-top: 1px solid var(--border);
             }
             .footer-c-network h4 { margin-bottom: 8px; }
-            .footer-c-network a { display: inline-block; padding: 4px 8px 4px 0; font-size: 0.8rem; }
+            .footer-c-network a { 
+                display: inline-block; 
+                padding: 8px 8px 8px 0; 
+                font-size: 0.8rem;
+                min-height: 40px;
+            }
+        }
+        
+        /* Extra small screens */
+        @media (max-width: 380px) {
+            .hero h1 { font-size: 1.3rem; }
+            .stat-value { font-size: 1.1rem; }
+            .filter-btn { padding: 8px 10px; }
+        }
+        
+        /* Safe area insets for notched phones */
+        @supports (padding: max(0px)) {
+            .main-nav {
+                padding-left: max(20px, env(safe-area-inset-left));
+                padding-right: max(20px, env(safe-area-inset-right));
+            }
+            .footer-c {
+                padding-bottom: max(20px, env(safe-area-inset-bottom));
+            }
         }
     </style>
 </head>
@@ -830,7 +1344,14 @@
     
     <div class="hero">
         <h1>📰 The <span>Ag News</span> Hub</h1>
-        <p>Your one-stop destination for agriculture news. Community discussions, government updates, university research, and industry insights—all in one place.</p>
+        <p>Your one-stop destination for agriculture news. Community discussions, university research, and industry insights—all in one place, updated every 2 hours.</p>
+        
+        <div class="ai-feature">
+            <div class="ai-feature-badge">✨ AI-Powered</div>
+            <div class="ai-feature-text">
+                <strong>Quick Summaries:</strong> Click the <span class="inline-btn">📋 Summary <span class="mini-badge">AI</span></span> button on any article for an instant AI-generated summary. We fetch the full article and use Claude AI to create a comprehensive 4-6 sentence overview—so you get the key facts without reading the whole thing.
+            </div>
+        </div>
         
         <div class="stats-bar">
             <div class="stat">
@@ -838,7 +1359,7 @@
                 <div class="stat-label">Articles</div>
             </div>
             <div class="stat">
-                <div class="stat-value" id="stat-sources">40+</div>
+                <div class="stat-value" id="stat-sources">30+</div>
                 <div class="stat-label">Sources</div>
             </div>
             <div class="stat">
@@ -888,76 +1409,76 @@
                 <div class="source-card">
                     <h3><span class="dot community"></span> Reddit Communities</h3>
                     <ul>
-                        <li><a href="https://reddit.com/r/farming" target="_blank">r/farming</a> - General farming</li>
-                        <li><a href="https://reddit.com/r/agriculture" target="_blank">r/agriculture</a> - Ag industry</li>
-                        <li><a href="https://reddit.com/r/tractors" target="_blank">r/tractors</a> - Equipment</li>
-                        <li><a href="https://reddit.com/r/homestead" target="_blank">r/homestead</a> - Homesteading</li>
-                        <li><a href="https://reddit.com/r/ranching" target="_blank">r/ranching</a> - Livestock</li>
-                        <li><a href="https://reddit.com/r/agronomy" target="_blank">r/agronomy</a> - Crop science</li>
-                        <li><a href="https://reddit.com/r/dairyfarming" target="_blank">r/dairyfarming</a> - Dairy</li>
-                        <li><a href="https://reddit.com/r/Cattle" target="_blank">r/Cattle</a> - Cattle</li>
-                    </ul>
-                </div>
-                <div class="source-card">
-                    <h3><span class="dot government"></span> Government Sources</h3>
-                    <ul>
-                        <li><a href="https://usda.gov" target="_blank">USDA</a> - Dept of Agriculture</li>
-                        <li><a href="https://nass.usda.gov" target="_blank">USDA NASS</a> - Statistics</li>
-                        <li><a href="https://ers.usda.gov" target="_blank">USDA ERS</a> - Economics</li>
-                        <li><a href="https://fsa.usda.gov" target="_blank">USDA FSA</a> - Farm Service</li>
-                        <li><a href="https://nrcs.usda.gov" target="_blank">USDA NRCS</a> - Conservation</li>
-                        <li><a href="https://rma.usda.gov" target="_blank">USDA RMA</a> - Risk Mgmt</li>
-                        <li><a href="https://ams.usda.gov" target="_blank">USDA AMS</a> - Market News</li>
+                        <li><a href="https://reddit.com/r/farming" target="_blank">r/farming</a></li>
+                        <li><a href="https://reddit.com/r/agriculture" target="_blank">r/agriculture</a></li>
+                        <li><a href="https://reddit.com/r/tractors" target="_blank">r/tractors</a></li>
+                        <li><a href="https://reddit.com/r/ranching" target="_blank">r/ranching</a></li>
+                        <li><a href="https://reddit.com/r/agronomy" target="_blank">r/agronomy</a></li>
+                        <li><a href="https://reddit.com/r/dairyfarming" target="_blank">r/dairyfarming</a></li>
+                        <li><a href="https://reddit.com/r/Cattle" target="_blank">r/Cattle</a></li>
                     </ul>
                 </div>
                 <div class="source-card">
                     <h3><span class="dot university"></span> University Extension</h3>
                     <ul>
-                        <li><a href="https://extension.umn.edu" target="_blank">UMN</a> - Minnesota</li>
-                        <li><a href="https://crops.extension.iastate.edu" target="_blank">Iowa State</a> - Crops</li>
-                        <li><a href="https://agcrops.osu.edu" target="_blank">Ohio State</a> - C.O.R.N.</li>
-                        <li><a href="https://ipcm.wisc.edu" target="_blank">UW Madison</a> - IPM</li>
-                        <li><a href="https://farmdoc.illinois.edu" target="_blank">farmdoc</a> - UIUC</li>
-                        <li><a href="https://extension.purdue.edu" target="_blank">Purdue</a> - Indiana</li>
-                        <li><a href="https://cropwatch.unl.edu" target="_blank">Nebraska</a> - CropWatch</li>
-                        <li><a href="https://www.ag.ndsu.edu" target="_blank">NDSU</a> - North Dakota</li>
-                        <li><a href="https://www.canr.msu.edu" target="_blank">Michigan State</a></li>
-                        <li><a href="https://extension.sdstate.edu" target="_blank">South Dakota State</a></li>
-                        <li><a href="https://www.agronomy.k-state.edu" target="_blank">Kansas State</a></li>
+                        <li><a href="https://ipcm.wisc.edu" target="_blank">UW Madison</a></li>
+                        <li><a href="https://farmdoc.illinois.edu" target="_blank">farmdoc (UIUC)</a></li>
+                        <li><a href="https://ag.purdue.edu" target="_blank">Purdue Ag</a></li>
+                        <li><a href="https://crops.extension.iastate.edu" target="_blank">Iowa State</a></li>
+                        <li><a href="https://extension.umn.edu" target="_blank">UMN Crop News</a></li>
+                        <li><a href="https://agrilifetoday.tamu.edu" target="_blank">Texas A&M AgriLife</a></li>
                     </ul>
                 </div>
                 <div class="source-card">
-                    <h3><span class="dot industry"></span> Industry & Dairy</h3>
+                    <h3><span class="dot industry"></span> Industry News</h3>
                     <ul>
-                        <li><a href="https://agweb.com" target="_blank">AgWeb</a></li>
-                        <li><a href="https://dtnpf.com" target="_blank">DTN</a></li>
-                        <li><a href="https://agriculture.com" target="_blank">Successful Farming</a></li>
                         <li><a href="https://brownfieldagnews.com" target="_blank">Brownfield</a></li>
-                        <li><a href="https://hoards.com" target="_blank">Hoard's Dairyman</a></li>
-                        <li><a href="https://dairyherd.com" target="_blank">Dairy Herd</a></li>
+                        <li><a href="https://feedstuffs.com" target="_blank">Feedstuffs</a></li>
+                        <li><a href="https://agweek.com" target="_blank">Agweek</a></li>
+                        <li><a href="https://modernfarmer.com" target="_blank">Modern Farmer</a></li>
+                        <li><a href="https://civileats.com" target="_blank">Civil Eats</a></li>
+                        <li><a href="https://agdaily.com" target="_blank">AgDaily</a></li>
+                        <li><a href="https://tsln.com" target="_blank">Tri-State Livestock</a></li>
+                        <li><a href="https://lancasterfarming.com" target="_blank">Lancaster Farming</a></li>
+                        <li><a href="https://allagnews.com" target="_blank">All Ag News</a></li>
                         <li><a href="https://farmjournal.com" target="_blank">Farm Journal</a></li>
-                        <li><a href="https://progressivefarmer.com" target="_blank">Progressive Farmer</a></li>
-                        <li><a href="https://no-tillfarmer.com" target="_blank">No-Till Farmer</a></li>
-                        <li><a href="https://cornandsoybeandigest.com" target="_blank">Corn & Soybean Digest</a></li>
+                        <li><a href="https://croplife.com" target="_blank">CropLife</a></li>
+                        <li><a href="https://morningagclips.com" target="_blank">Morning Ag Clips</a></li>
                     </ul>
                 </div>
                 <div class="source-card">
                     <h3><span class="dot markets"></span> Markets</h3>
                     <ul>
-                        <li><a href="https://farms.com" target="_blank">Farms.com</a> - Markets</li>
-                        <li><a href="https://barchart.com" target="_blank">Barchart</a> - Ag futures</li>
-                        <li><a href="https://cmegroup.com" target="_blank">CME Group</a> - Commodities</li>
-                        <li><a href="https://ams.usda.gov" target="_blank">USDA AMS</a> - Prices</li>
+                        <li><a href="https://farms.com" target="_blank">Farms.com</a> - Market news</li>
                     </ul>
                 </div>
-                <div class="source-card">
-                    <h3><span class="dot weather"></span> Weather & Climate</h3>
-                    <ul>
-                        <li><a href="https://droughtmonitor.unl.edu" target="_blank">Drought Monitor</a></li>
-                        <li><a href="https://cpc.ncep.noaa.gov" target="_blank">NOAA Climate</a> - Outlooks</li>
-                        <li><a href="https://weather.gov" target="_blank">NWS</a> - Forecasts</li>
-                    </ul>
-                </div>
+            </div>
+        </div>
+        
+        <!-- FAQ Section for SEO -->
+        <div class="faq-section">
+            <h2>❓ Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <details class="faq-item">
+                    <summary>What is AGSIST Agriculture News Hub?</summary>
+                    <p>AGSIST Agriculture News Hub is a free news aggregator that collects farming and agriculture news from over 30 sources including Reddit communities, university extension services, and industry publications. Articles are updated every 2 hours and include AI-powered summaries so you can quickly understand the key points.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>How do the AI summaries work?</summary>
+                    <p>When you click the <strong>Summary</strong> button on any article, our system fetches the full article content and uses Claude AI to generate a comprehensive 4-6 sentence summary. The summary covers key facts, specific numbers or dates mentioned, why the news matters to farmers, and any action items or recommendations.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>What sources does the news hub aggregate from?</summary>
+                    <p>We aggregate from 30+ trusted sources including: <strong>Reddit communities</strong> (r/farming, r/agriculture, r/tractors, r/ranching), <strong>University extension services</strong> (UW Madison, Purdue, Iowa State, UMN, Texas A&M), and <strong>Industry publications</strong> (AgDaily, Farm Journal, Brownfield, Lancaster Farming, Civil Eats, and more).</p>
+                </details>
+                <details class="faq-item">
+                    <summary>How often is the news updated?</summary>
+                    <p>The Agriculture News Hub automatically fetches new articles from all sources every 2 hours via GitHub Actions. This ensures you always have access to the latest farming news, market updates, and agricultural research without needing to check multiple websites.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Is this service free?</summary>
+                    <p>Yes! AGSIST Agriculture News Hub is completely free to use. We believe farmers and agricultural professionals deserve easy access to comprehensive news without paywalls or subscriptions. The site is supported by AGSIST's other agricultural services.</p>
+                </details>
             </div>
         </div>
     </main>
@@ -1046,9 +1567,9 @@
             }
             
             feed.innerHTML = items.map(item => `
-                <div class="article ${item.category === 'community' ? 'reddit' : ''}" 
+                <div class="article ${item.category === 'community' ? 'reddit' : ''} ${item.thumbnail ? 'has-thumb' : ''}" 
                      data-category="${item.category}">
-                    ${item.thumbnail ? `<img class="article-thumb" src="${item.thumbnail}" alt="" loading="lazy" onerror="this.remove()">` : ''}
+                    ${item.thumbnail ? `<img class="article-thumb" src="${item.thumbnail}" alt="" loading="lazy" onerror="this.parentElement.classList.remove('has-thumb'); this.remove()">` : ''}
                     <div class="article-body">
                         <div class="article-meta">
                             <span class="article-source ${item.category}">
@@ -1059,12 +1580,22 @@
                         <h3 class="article-title">${item.title}</h3>
                         ${item.description ? `<p class="article-excerpt">${item.description.substring(0, 120)}${item.description.length > 120 ? '...' : ''}</p>` : ''}
                         <div class="article-footer">
-                            <button class="tldr-btn" onclick="showTLDR('${item.id}')">📋 TL;DR</button>
-                            <a class="article-link" href="${item.link}" target="_blank" rel="noopener">Read more →</a>
+                            <button class="tldr-btn" onclick="showTLDR('${item.id}')" title="Too Long; Didn't Read - AI-generated summary">📋 Summary</button>
+                            <a class="article-link" href="${item.link}" target="_blank" rel="noopener" onclick="trackArticleClick('${item.source}', '${item.category}')">Read more →</a>
                         </div>
                     </div>
                 </div>
             `).join('');
+        }
+        
+        // Track article click for analytics
+        function trackArticleClick(source, category) {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'click_article', {
+                    'article_source': source,
+                    'article_category': category
+                });
+            }
         }
         
         // ═══════════════════════════════════════════════════════════════════════
@@ -1097,6 +1628,14 @@
                 : allItems.filter(a => a.category === category);
             
             renderArticles(filtered);
+            
+            // Track filter usage in analytics
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'filter_articles', {
+                    'filter_category': category,
+                    'results_count': filtered.length
+                });
+            }
         }
         
         document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -1210,18 +1749,19 @@
             
             // Generate summary - use AI summary, fall back to description
             let summary = article.summary || article.description || '';
+            const isAISummary = !!article.summary && article.summary.length > 100;
+            
             if (!summary || summary.length < 20) {
                 summary = `This ${article.category} post from ${article.source} discusses: "${article.title}"`;
             }
             
-            // Truncate and clean summary
-            summary = summary.substring(0, 500);
-            if (summary.length === 500) summary += '...';
-            
             content.innerHTML = `
                 <div class="modal-header">
-                    <h3>📋 TL;DR Summary</h3>
-                    <button class="modal-close" onclick="closeTLDR()">×</button>
+                    <div class="modal-header-content">
+                        <h3>📋 Quick Summary <span class="ai-badge">AI</span></h3>
+                        <p class="ai-explain">${isAISummary ? 'Generated by AI from the full article' : 'From article description'}</p>
+                    </div>
+                    <button class="modal-close" onclick="closeTLDR()" aria-label="Close">×</button>
                 </div>
                 <div class="modal-body">
                     ${article.thumbnail ? `<img class="modal-thumb" src="${article.thumbnail}" alt="" onerror="this.remove()">` : ''}
@@ -1230,7 +1770,7 @@
                     </div>
                     <h2 class="modal-title">${article.title}</h2>
                     <div class="modal-summary">
-                        <strong>Quick take:</strong> ${summary}
+                        ${summary}
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1243,6 +1783,14 @@
             
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
+            
+            // Track AI summary view in analytics
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'view_ai_summary', {
+                    'article_source': article.source,
+                    'article_category': article.category
+                });
+            }
         }
         
         function closeTLDR() {
