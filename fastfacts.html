@@ -675,7 +675,7 @@
                                 <option value="48">Barley (48 lb/bu)</option>
                             </select>
                             <label style="display:block;font-size:0.8rem;color:var(--dim);margin-bottom:4px">Bushels</label>
-                            <input type="number" id="bushels" value="1000" style="width:100%;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:inherit;font-size:1rem">
+                            <input type="number" id="bushelsInput" value="1000" style="width:100%;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:inherit;font-size:1rem">
                             <div style="margin-top:16px;padding:16px;background:var(--card);border-radius:6px;text-align:center">
                                 <div id="lbsResult" style="font-size:1.3rem;font-weight:700;color:var(--accent)">56,000 lb = 28 tons</div>
                                 <div style="font-size:0.8rem;color:var(--dim)">weight conversion</div>
@@ -819,13 +819,13 @@
     // ═══════════════════════════════════════════════════════════════
     function calcBushels() {
         const lbPerBu = parseFloat(document.getElementById('buCrop').value) || 56;
-        const bushels = parseFloat(document.getElementById('bushels').value) || 0;
+        const bushels = parseFloat(document.getElementById('bushelsInput').value) || 0;
         const totalLbs = bushels * lbPerBu;
         const tons = totalLbs / 2000;
         document.getElementById('lbsResult').textContent = totalLbs.toLocaleString() + ' lb = ' + tons.toFixed(1) + ' tons';
     }
     document.getElementById('buCrop').addEventListener('change', calcBushels);
-    document.getElementById('bushels').addEventListener('input', calcBushels);
+    document.getElementById('bushelsInput').addEventListener('input', calcBushels);
     calcBushels();
     
     // ═══════════════════════════════════════════════════════════════
