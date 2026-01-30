@@ -2,6 +2,20 @@
   "items": [
     {
       "id": "aHR0cHM6Ly93d3cudHNs",
+      "title": "South Dakota: Learn about heat-treated soybeans at Cattlemen&#8217;s Education Day",
+      "link": "https://www.tsln.com/news/south-dakota-learn-about-heat-treated-soybeans-at-cattlemens-education-day/",
+      "description": "PIERRE, S.D. &#8211; The South Dakota Cattlemen&#8217;s Association (SDCA), in partnership with South Dakota State University (SDSU), will be hosting Cattlemen&#8217;s Education Day on February 19, 2026,&#160;in Brookings, S.D. The event brings together industry leaders,...",
+      "date": "Fri, 30 Jan 2026 23:24:55 +0000",
+      "timestamp": 1769815495000,
+      "source": "Tri-State Livestock",
+      "category": "industry",
+      "icon": "🐄",
+      "thumbnail": "",
+      "summary": "Here is a comprehensive summary of the key information from the agricultural news article:\n\nThe South Dakota Cattlemen's Association (SDCA), in partnership with South Dakota State University (SDSU), is hosting a Cattlemen's Education Day on February 19, 2026 in Brookings, South Dakota. This event will bring together industry leaders, educators, and cattle producers to learn about various aspects of cattle production.\n\nAttendees will learn from SDSU Extension Feedlot Specialist Dr. Warren Rusche about how maturity and yield grades are calculated, as well as the latest carcass trends in the United States. Rusche noted that their recent research has found an extra 20-30 pounds in carcass weight by using heat-treated soybeans in finishing diets for cattle.\n\nOther topics to be covered at the event include the benefits of soybeans in feeder calf diets, the latest implant rules and regulations, and updates on the current cattle markets. The event will conclude with an open discussion to address practical concerns and industry challenges.\n\nThanks to the generous support of Merck and the South Dakota Soybean Checkoff, this Cattlemen's Education Day is being offered at no cost to attendees, but pre-registration is highly encouraged. Interested parties can find more information and register on the SDCA website.\n\nThe South Dakota Cattlemen's Association is a grassroots organization representing beef producers across the state, and is an affiliate of the National Cattlemen's Beef Association which has over 25,000 individual members and represents more than 175,000 cattle producers and feeders nationwide.",
+      "summaryTimestamp": 1769815555249
+    },
+    {
+      "id": "aHR0cHM6Ly93d3cudHNs",
       "title": "Farm Assistance Framework Signals Need and Opportunity to Build More Robust Support",
       "link": "https://www.tsln.com/news/farm-assistance-framework-signals-need-and-opportunity-to-build-more-robust-support/",
       "description": "Washington, DC, January 15, 2026 – Today, the National Sustainable Agriculture Coalition (NSAC) issued the following comment in response to the House Agriculture Committee Minority&#8217;s unveiling of a farm assistance framework, attributable to Mike Lavender,...",
@@ -69,20 +83,6 @@
       "thumbnail": "",
       "summary": "Here is a summary of the agricultural news article:\n\nThe Texas Governor Greg Abbott has endorsed Kim Sheets over Sid Miller in the race for Texas Agriculture Commissioner. This announcement comes ahead of the 2026 election for this important statewide office that oversees the state's agriculture industry.\n\nSheets and Miller are the two main candidates running to succeed the current Agriculture Commissioner, who is retiring. The article does not provide any specific polling numbers or details on the candidates' policy platforms.\n\nThis endorsement from the Governor matters for farmers and the agriculture industry in Texas, as the Agriculture Commissioner plays a key role in setting policies, regulations, and priorities that impact Texas farmers and ranchers. Voters in the Republican primary will choose between the two candidates in early 2026, with the general election to follow later that year.\n\nThe article does not mention any specific deadlines or action items for farmers regarding this race. However, it signals that this will be a high-profile campaign to watch leading up to the 2026 election cycle in the state.",
       "summaryTimestamp": 1769814321957
-    },
-    {
-      "id": "aHR0cHM6Ly93d3cudHNs",
-      "title": "Klobuchar formally announces bid for Minnesota governor",
-      "link": "https://www.tsln.com/news/klobuchar-formally-announces-bid-for-minnesota-governor/",
-      "description": "Sen. Amy Klobuchar, D-Minn., the ranking member on the Senate Agriculture Committee, formally announced today that she is running for governor of Minnesota in a 4-minute video released on X. &#8220;I like my job in the...",
-      "date": "Fri, 30 Jan 2026 22:43:41 +0000",
-      "timestamp": 1769813021000,
-      "source": "Tri-State Livestock",
-      "category": "industry",
-      "icon": "🐄",
-      "thumbnail": "",
-      "summary": "1. Senator Amy Klobuchar has officially announced her bid for the Minnesota governor's seat, setting the stage for a highly anticipated political race.\n\n2. Farmers in Minnesota should closely follow Klobuchar's campaign and her proposed policies that may impact the agricultural industry in the state.",
-      "summaryTimestamp": 1769813078248
     },
     {
       "id": "aHR0cHM6Ly93d3cuYnJv",
@@ -1412,5 +1412,5 @@
   "feedCount": 29,
   "successCount": 125,
   "summariesGenerated": 1,
-  "updated": "2026-01-30T23:13:19.879Z"
+  "updated": "2026-01-30T23:25:55.450Z"
 }
