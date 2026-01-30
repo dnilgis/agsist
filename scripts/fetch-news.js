@@ -23,7 +23,6 @@ const FEEDS = [
   { url: 'https://www.reddit.com/r/farming/.rss', source: 'r/farming', category: 'community', icon: '🚜' },
   { url: 'https://www.reddit.com/r/agriculture/.rss', source: 'r/agriculture', category: 'community', icon: '🌾' },
   { url: 'https://www.reddit.com/r/tractors/.rss', source: 'r/tractors', category: 'community', icon: '🚜' },
-  { url: 'https://www.reddit.com/r/homestead/.rss', source: 'r/homestead', category: 'community', icon: '🏡' },
   { url: 'https://www.reddit.com/r/ranching/.rss', source: 'r/ranching', category: 'community', icon: '🐄' },
   { url: 'https://www.reddit.com/r/agronomy/.rss', source: 'r/agronomy', category: 'community', icon: '🔬' },
   { url: 'https://www.reddit.com/r/dairyfarming/.rss', source: 'r/dairyfarming', category: 'community', icon: '🥛' },
@@ -34,23 +33,32 @@ const FEEDS = [
   // ═══════════════════════════════════════════════════════════════════════════
   { url: 'https://ipcm.wisc.edu/feed/', source: 'UW Madison', category: 'university', icon: '🎓' },
   { url: 'https://farmdoc.illinois.edu/feed', source: 'farmdoc (UIUC)', category: 'university', icon: '🎓' },
+  { url: 'http://feeds.feedburner.com/purdue/dnbY.rss', source: 'Purdue Ag', category: 'university', icon: '🎓' },
+  { url: 'https://crops.extension.iastate.edu/rss/category/crop-production', source: 'Iowa State', category: 'university', icon: '🎓' },
+  { url: 'https://blog-crop-news.extension.umn.edu/feeds/posts/default?alt=rss', source: 'UMN Crop News', category: 'university', icon: '🎓' },
+  { url: 'https://agrilifetoday.tamu.edu/feed/', source: 'Texas A&M AgriLife', category: 'university', icon: '🎓' },
   
   // ═══════════════════════════════════════════════════════════════════════════
-  // AG NEWS / INDUSTRY - Verified working URLs
+  // AG NEWS / INDUSTRY - Verified working URLs from feedspot.com
   // ═══════════════════════════════════════════════════════════════════════════
   { url: 'https://brownfieldagnews.com/feed/', source: 'Brownfield', category: 'industry', icon: '📻' },
   { url: 'https://www.feedstuffs.com/rss.xml', source: 'Feedstuffs', category: 'industry', icon: '🐷' },
   { url: 'https://www.agweek.com/index.rss', source: 'Agweek', category: 'industry', icon: '📰' },
-  { url: 'https://www.farmjournal.com/feed/', source: 'Farm Journal', category: 'industry', icon: '📰' },
   { url: 'https://modernfarmer.com/feed/', source: 'Modern Farmer', category: 'industry', icon: '🌱' },
   { url: 'https://feeds.feedburner.com/CivilEats', source: 'Civil Eats', category: 'industry', icon: '🥗' },
   { url: 'https://agdaily.com/feed/', source: 'AgDaily', category: 'industry', icon: '📰' },
   { url: 'https://www.tsln.com/feed/', source: 'Tri-State Livestock', category: 'industry', icon: '🐄' },
   { url: 'https://www.lancasterfarming.com/feed/', source: 'Lancaster Farming', category: 'industry', icon: '🌾' },
   { url: 'https://allagnews.com/feed/', source: 'All Ag News', category: 'industry', icon: '📻' },
+  { url: 'https://www.farmjournal.com/feed/', source: 'Farm Journal', category: 'industry', icon: '📰' },
+  { url: 'https://www.croplife.com/feed/', source: 'CropLife', category: 'industry', icon: '🌱' },
+  { url: 'https://www.agupdate.com/rss/', source: 'Ag Update', category: 'industry', icon: '📰' },
+  { url: 'https://agritechtomorrow.com/rss/news', source: 'AgriTech Tomorrow', category: 'industry', icon: '🤖' },
+  { url: 'https://www.morningagclips.com/feed/', source: 'Morning Ag Clips', category: 'industry', icon: '📰' },
+  { url: 'https://www.farmanddairy.com/feed/', source: 'Farm and Dairy', category: 'industry', icon: '🌾' },
   
   // ═══════════════════════════════════════════════════════════════════════════
-  // MARKETS - Using reliable sources
+  // MARKETS
   // ═══════════════════════════════════════════════════════════════════════════
   { url: 'https://www.farms.com/markets/rss.ashx', source: 'Farms.com Markets', category: 'markets', icon: '💹' },
 ];
@@ -139,13 +147,13 @@ function cleanText(text) {
 async function fetchArticleContent(url) {
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
+    const timeout = setTimeout(() => controller.abort(), 15000);
     
     const res = await fetch(url, {
       signal: controller.signal,
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; AGSIST/1.0; +https://agsist.com)',
-        'Accept': 'text/html,application/xhtml+xml',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
       }
     });
     clearTimeout(timeout);
@@ -154,22 +162,41 @@ async function fetchArticleContent(url) {
     
     const html = await res.text();
     
-    // Extract article content - try common patterns
+    // Extract article content - try multiple patterns
     let content = '';
     
-    // Try article tag
+    // Try article tag first
     const articleMatch = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
     if (articleMatch) content = articleMatch[1];
     
-    // Try main content divs
-    if (!content) {
-      const mainMatch = html.match(/<main[^>]*>([\s\S]*?)<\/main>/i) ||
-                        html.match(/class="[^"]*content[^"]*"[^>]*>([\s\S]*?)<\/div>/i) ||
-                        html.match(/class="[^"]*article[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
-      if (mainMatch) content = mainMatch[1];
+    // Try main content areas
+    if (!content || content.length < 200) {
+      const patterns = [
+        /<main[^>]*>([\s\S]*?)<\/main>/i,
+        /class="[^"]*post-content[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
+        /class="[^"]*entry-content[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
+        /class="[^"]*article-body[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
+        /class="[^"]*story-body[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
+        /class="[^"]*content[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
+      ];
+      
+      for (const pattern of patterns) {
+        const match = html.match(pattern);
+        if (match && match[1].length > content.length) {
+          content = match[1];
+        }
+      }
     }
     
-    // Try meta description as fallback
+    // Extract all paragraph text as fallback
+    if (!content || content.length < 200) {
+      const paragraphs = html.match(/<p[^>]*>([\s\S]*?)<\/p>/gi);
+      if (paragraphs) {
+        content = paragraphs.slice(0, 20).join(' '); // Get first 20 paragraphs
+      }
+    }
+    
+    // Try meta description as last resort
     if (!content || content.length < 100) {
       const metaMatch = html.match(/<meta[^>]*name="description"[^>]*content="([^"]+)"/i) ||
                         html.match(/<meta[^>]*property="og:description"[^>]*content="([^"]+)"/i);
@@ -178,7 +205,7 @@ async function fetchArticleContent(url) {
     
     // Clean and truncate
     content = cleanText(content);
-    return content.substring(0, 3000); // Limit to ~750 tokens
+    return content.substring(0, 6000); // Increased to ~1500 tokens for better summaries
     
   } catch (e) {
     return null;
@@ -207,17 +234,26 @@ async function generateSummary(title, content, source) {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-3-haiku-20240307', // Cheapest, fastest
-        max_tokens: 100,
+        model: 'claude-3-haiku-20240307',
+        max_tokens: 400,
         messages: [{
           role: 'user',
-          content: `Summarize this agricultural news in exactly 2 sentences for a farmer. Be specific and practical. No fluff.
+          content: `Summarize this agricultural news article for farmers. Write a comprehensive summary that:
 
-Title: ${title}
-Source: ${source}
-Content: ${content.substring(0, 2000)}
+1. States the main news, finding, or announcement clearly
+2. Includes specific numbers, prices, dates, percentages, or data points mentioned
+3. Explains why this matters for farmers or the agriculture industry
+4. Notes any action items, deadlines, or recommendations if applicable
 
-TL;DR:`
+Write 4-6 sentences. Be specific and practical - farmers want facts, not fluff. Use plain language.
+
+ARTICLE TITLE: ${title}
+SOURCE: ${source}
+
+ARTICLE CONTENT:
+${content.substring(0, 5000)}
+
+SUMMARY:`
         }]
       })
     });
