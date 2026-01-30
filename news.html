@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ag Market Feed | AGSIST</title>
+    <title>Ag News Hub | AGSIST - Agriculture Intelligence</title>
+    <meta name="description" content="Your comprehensive agriculture news aggregator. Reddit farming communities, USDA updates, university extension, and industry news in one place.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -11,17 +12,22 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
-            --bg: #0d0d0f;
-            --card: #141418;
-            --card-hover: #1a1a1f;
+            --bg: #0a0a0c;
+            --surface: #111114;
+            --card: #16161a;
+            --card-hover: #1c1c22;
             --border: #2a2a32;
             --text: #e8e8ec;
             --dim: #8a8a94;
             --accent: #e6b042;
-            --grain: #e6b042;
-            --weather: #4a9eff;
-            --markets: #22c55e;
-            --farm: #a855f7;
+            
+            /* Category colors */
+            --community: #ff6b35;
+            --government: #10b981;
+            --university: #3b82f6;
+            --industry: #8b5cf6;
+            --markets: #f59e0b;
+            --weather: #06b6d4;
         }
         
         body {
@@ -32,421 +38,1235 @@
             min-height: 100vh;
         }
         
-        /* NAV */
-        nav {
-            background: var(--card);
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        /* MAIN NAVIGATION - Dropdown Style */
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        .main-nav {
+            background: var(--surface);
             border-bottom: 1px solid var(--border);
-            padding: 12px 20px;
+            padding: 0 20px;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
         .nav-inner {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 60px;
         }
-        .logo {
-            font-weight: 700;
-            font-size: 1.5rem;
+        .main-nav .logo {
             color: var(--accent);
+            font-weight: 700;
+            font-size: 1.2rem;
             text-decoration: none;
         }
         .nav-links {
             display: flex;
-            gap: 24px;
+            gap: 8px;
+            align-items: center;
         }
-        .nav-links a {
+        .nav-dropdown {
+            position: relative;
+        }
+        .nav-link, .dropdown-toggle {
+            background: none;
+            border: none;
+            color: var(--dim);
+            font-family: inherit;
+            font-size: 0.9rem;
+            padding: 10px 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .nav-link:hover, .dropdown-toggle:hover {
+            color: var(--text);
+            background: var(--card-hover);
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            min-width: 180px;
+            padding: 8px 0;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            z-index: 1001;
+        }
+        .nav-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        .dropdown-item {
+            display: block;
+            padding: 10px 16px;
             color: var(--dim);
             text-decoration: none;
             font-size: 0.85rem;
-            transition: color 0.2s;
+            transition: all 0.2s;
         }
-        .nav-links a:hover, .nav-links a.active {
+        .dropdown-item:hover {
+            background: var(--card-hover);
+            color: var(--accent);
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 1.4rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .mobile-menu-btn:hover {
+            background: var(--card-hover);
+            border-color: var(--accent);
+        }
+        
+        /* MOBILE MENU */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 20px;
+            z-index: 999;
+            max-height: calc(100vh - 60px);
+            overflow-y: auto;
+        }
+        .mobile-menu.active {
+            display: block;
+        }
+        .mobile-section {
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 16px 0 8px;
+            border-top: 1px solid var(--border);
+        }
+        .mobile-section:first-child {
+            border-top: none;
+            padding-top: 0;
+        }
+        .mobile-link {
+            display: block;
+            padding: 12px 0;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        .mobile-link:hover {
             color: var(--accent);
         }
         
-        /* MAIN */
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        /* HERO */
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        .hero {
+            background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+            text-align: center;
+            padding: 48px 20px 32px;
+            border-bottom: 1px solid var(--border);
+        }
+        .hero h1 {
+            font-size: 2.4rem;
+            color: var(--text);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .hero h1 span {
+            color: var(--accent);
+        }
+        .hero p {
+            color: var(--dim);
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 0 auto 24px;
+        }
+        
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        /* MAIN LAYOUT */
+        /* ═══════════════════════════════════════════════════════════════════════ */
         main {
-            max-width: 900px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 24px 16px;
         }
         
-        .page-header {
-            margin-bottom: 24px;
-            text-align: center;
-        }
-        .page-header h1 {
-            font-size: 1.8rem;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-        .page-header p {
-            color: var(--dim);
-            font-size: 0.9rem;
-        }
-        
-        /* FILTERS */
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        /* CATEGORY TABS */
+        /* ═══════════════════════════════════════════════════════════════════════ */
         .filters {
             display: flex;
             gap: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             flex-wrap: wrap;
             justify-content: center;
+            padding: 0 16px;
         }
         .filter-btn {
             background: var(--card);
             border: 1px solid var(--border);
             color: var(--dim);
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 10px 18px;
+            border-radius: 8px;
             cursor: pointer;
             font-family: inherit;
             font-size: 0.8rem;
+            font-weight: 500;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .filter-btn:hover {
             border-color: var(--accent);
             color: var(--text);
+            background: var(--card-hover);
         }
         .filter-btn.active {
             background: var(--accent);
             border-color: var(--accent);
             color: #000;
         }
-        .filter-btn[data-filter="grain"].active { background: var(--grain); }
-        .filter-btn[data-filter="weather"].active { background: var(--weather); }
-        .filter-btn[data-filter="markets"].active { background: var(--markets); }
-        .filter-btn[data-filter="farm"].active { background: var(--farm); }
+        .filter-btn .count {
+            background: rgba(0,0,0,0.15);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
         
-        /* STATUS */
-        .feed-status {
+        /* Category-specific active states */
+        .filter-btn[data-cat="community"].active { background: var(--community); }
+        .filter-btn[data-cat="government"].active { background: var(--government); }
+        .filter-btn[data-cat="university"].active { background: var(--university); }
+        .filter-btn[data-cat="industry"].active { background: var(--industry); }
+        .filter-btn[data-cat="markets"].active { background: var(--markets); }
+        .filter-btn[data-cat="weather"].active { background: var(--weather); }
+        
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        /* STATUS BAR */
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        .status-bar {
             text-align: center;
             color: var(--dim);
-            font-size: 0.8rem;
-            margin-bottom: 16px;
-        }
-        .feed-status .live { color: #22c55e; }
-        
-        /* TWEET CARDS */
-        .feed {
+            font-size: 0.75rem;
+            margin-bottom: 20px;
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .tweet {
-            display: block;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.2s ease;
-        }
-        .tweet:hover {
-            background: var(--card-hover);
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-        
-        .tweet-header {
-            display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
+            gap: 16px;
         }
-        .tweet-author {
-            flex: 1;
-            min-width: 0;
-        }
-        .tweet-name {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--text);
-        }
-        .tweet-handle {
-            color: var(--dim);
-            font-size: 0.8rem;
-        }
-        .tweet-tag {
-            font-size: 0.65rem;
-            padding: 4px 10px;
-            border-radius: 12px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-        .tweet-tag.grain { background: rgba(230, 176, 66, 0.2); color: var(--grain); }
-        .tweet-tag.weather { background: rgba(74, 158, 255, 0.2); color: var(--weather); }
-        .tweet-tag.markets { background: rgba(34, 197, 94, 0.2); color: var(--markets); }
-        .tweet-tag.farm { background: rgba(168, 85, 247, 0.2); color: var(--farm); }
-        
-        .tweet-text {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: var(--text);
-            margin-bottom: 12px;
-            word-wrap: break-word;
-        }
-        .tweet-text .mention { color: var(--weather); }
-        .tweet-text .ticker { color: var(--markets); font-weight: 600; }
-        .tweet-text .link { color: var(--accent); }
-        
-        /* Images */
-        .tweet-images {
-            display: grid;
-            gap: 4px;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-        .tweet-images.img-1 { grid-template-columns: 1fr; }
-        .tweet-images.img-2, .tweet-images.img-3, .tweet-images.img-4 { grid-template-columns: 1fr 1fr; }
-        .tweet-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: var(--border);
-        }
-        .tweet-images.img-1 .tweet-img { height: 300px; }
-        
-        .tweet-video-badge {
-            display: inline-flex;
+        .status-bar .live {
+            display: flex;
             align-items: center;
             gap: 6px;
-            background: rgba(255,255,255,0.1);
-            color: var(--dim);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            margin-bottom: 12px;
         }
-        
-        .tweet-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--dim);
-            font-size: 0.75rem;
-        }
-        .tweet-time { color: var(--dim); }
-        .tweet-link {
-            color: var(--accent);
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .tweet:hover .tweet-link { opacity: 1; }
-        
-        .tweet.rt {
-            opacity: 0.85;
-            border-left: 3px solid var(--dim);
-        }
-        
-        /* Loading / Error */
-        .feed-loading, .feed-error {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--dim);
-        }
-        .feed-loading::before {
-            content: "⏳";
-            display: block;
-            font-size: 2rem;
-            margin-bottom: 12px;
-            animation: pulse 1.5s infinite;
+        .status-bar .live::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
         }
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
-        .feed-error::before {
-            content: "⚠️";
-            display: block;
-            font-size: 2rem;
+        
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        /* FEED GRID - Masonry-style */
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        .feed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+        
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        /* ARTICLE CARDS */
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        .article {
+            display: flex;
+            flex-direction: column;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.25s ease;
+        }
+        .article:hover {
+            background: var(--card-hover);
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+        
+        .article-thumb {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: var(--border);
+        }
+        
+        .article-body {
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             margin-bottom: 12px;
         }
         
+        .article-source {
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .article-source.community { background: rgba(255,107,53,0.15); color: var(--community); }
+        .article-source.government { background: rgba(16,185,129,0.15); color: var(--government); }
+        .article-source.university { background: rgba(59,130,246,0.15); color: var(--university); }
+        .article-source.industry { background: rgba(139,92,246,0.15); color: var(--industry); }
+        .article-source.markets { background: rgba(245,158,11,0.15); color: var(--markets); }
+        .article-source.weather { background: rgba(6,182,212,0.15); color: var(--weather); }
+        
+        .article-date {
+            color: var(--dim);
+            font-size: 0.7rem;
+            margin-left: auto;
+        }
+        
+        .article-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .article-excerpt {
+            font-size: 0.8rem;
+            color: var(--dim);
+            line-height: 1.5;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            gap: 12px;
+        }
+        
+        .article-link {
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .article-link:hover {
+            border-color: var(--accent);
+            background: rgba(230,176,66,0.1);
+        }
+        
+        /* Reddit-specific styling */
+        .article.reddit .article-source::before {
+            content: '🔥';
+            font-size: 0.8rem;
+        }
+        
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        /* LOADING / ERROR */
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        .loading, .error, .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--dim);
+        }
+        .loading::before {
+            content: "🔄";
+            display: block;
+            font-size: 3rem;
+            margin-bottom: 16px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .error::before { content: "⚠️"; display: block; font-size: 3rem; margin-bottom: 16px; }
+        .empty::before { content: "📭"; display: block; font-size: 3rem; margin-bottom: 16px; }
+        
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        /* SOURCES SECTION */
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        .sources-section {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+        }
+        .sources-section h2 {
+            text-align: center;
+            color: var(--text);
+            margin-bottom: 32px;
+            font-size: 1.4rem;
+        }
+        .sources-section h2 span {
+            color: var(--accent);
+        }
+        
+        .sources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .source-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .source-card h3 {
+            color: var(--text);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .source-card h3 .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .source-card h3 .dot.community { background: var(--community); }
+        .source-card h3 .dot.government { background: var(--government); }
+        .source-card h3 .dot.university { background: var(--university); }
+        .source-card h3 .dot.industry { background: var(--industry); }
+        .source-card h3 .dot.markets { background: var(--markets); }
+        .source-card h3 .dot.weather { background: var(--weather); }
+        
+        .source-card ul {
+            list-style: none;
+            font-size: 0.8rem;
+        }
+        .source-card li {
+            padding: 6px 0;
+            color: var(--dim);
+            border-bottom: 1px solid var(--border);
+        }
+        .source-card li:last-child {
+            border-bottom: none;
+        }
+        .source-card a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .source-card a:hover {
+            color: var(--accent);
+        }
+        
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        /* TL;DR MODAL */
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        .tldr-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .tldr-btn:hover {
+            background: #fff;
+            transform: scale(1.05);
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlide 0.2s ease-out;
+        }
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        .modal-header h3 {
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--dim);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: var(--text);
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        .modal-source {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--dim);
+            margin-bottom: 16px;
+        }
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+        .modal-summary {
+            color: var(--dim);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        .modal-summary strong {
+            color: var(--accent);
+        }
+        .modal-thumb {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .modal-btn-secondary {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .modal-btn-secondary:hover {
+            border-color: var(--accent);
+        }
+        .modal-btn-primary {
+            background: var(--accent);
+            border: 1px solid var(--accent);
+            color: #000;
+        }
+        .modal-btn-primary:hover {
+            background: #fff;
+        }
+        
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        /* FOOTER-C - Minimal with Network */
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        .footer-c {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 30px 20px;
+            margin-top: auto;
+        }
+        .footer-c-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 40px;
+            align-items: start;
+        }
+        .footer-c-main {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .footer-c .brand-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .footer-c .brand {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+        }
+        .footer-c .brand:hover { opacity: 0.8; }
+        .footer-c .sep { color: var(--border); }
+        .footer-c .tagline { color: var(--dim); font-size: 0.85rem; }
+        .footer-c .site-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .footer-c .site-links a {
+            color: var(--dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .footer-c .site-links a:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .footer-c .legal-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .footer-c .legal-row span {
+            color: var(--dim);
+            font-size: 0.8rem;
+        }
+        .footer-c-network { text-align: right; }
+        .footer-c-network h4 {
+            color: var(--accent);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        .footer-c-network a {
+            display: block;
+            color: var(--dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 6px 0;
+            transition: color 0.2s;
+        }
+        .footer-c-network a:hover { color: var(--text); }
+        
+        /* ═══════════════════════════════════════════════════════════════════════ */
         /* MOBILE */
-        @media (max-width: 600px) {
-            .nav-links { gap: 12px; font-size: 0.75rem; }
-            .page-header h1 { font-size: 1.4rem; }
-            .tweet { padding: 12px; }
-            .tweet-images.img-1 .tweet-img { height: 200px; }
-            .tweet-img { height: 140px; }
+        /* ═══════════════════════════════════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            /* Nav mobile */
+            .nav-links { display: none; }
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            /* Content mobile */
+            .hero h1 { font-size: 1.6rem; }
+            .hero p { font-size: 0.85rem; }
+            .stats-bar { gap: 20px; }
+            .stat-value { font-size: 1.4rem; }
+            .feed-grid { grid-template-columns: 1fr; }
+            .filters { gap: 6px; }
+            .filter-btn { padding: 8px 12px; font-size: 0.7rem; }
+            .sources-grid { grid-template-columns: 1fr; }
+            
+            /* Footer mobile */
+            .footer-c { padding: 16px; }
+            .footer-c-inner { grid-template-columns: 1fr; gap: 16px; }
+            .footer-c-main { gap: 12px; }
+            .footer-c .brand-row { flex-wrap: wrap; gap: 6px; }
+            .footer-c .tagline { display: none; }
+            .footer-c .site-links { gap: 6px; }
+            .footer-c .site-links a { padding: 4px 8px; font-size: 0.75rem; }
+            .footer-c-network {
+                text-align: left;
+                padding-top: 12px;
+                border-top: 1px solid var(--border);
+            }
+            .footer-c-network h4 { margin-bottom: 8px; }
+            .footer-c-network a { display: inline-block; padding: 4px 8px 4px 0; font-size: 0.8rem; }
         }
     </style>
 </head>
 <body>
-    <nav>
+    <!-- NAVIGATION -->
+    <nav class="main-nav">
         <div class="nav-inner">
-            <a href="index.html" class="logo">AGSIST</a>
+            <a href="/" class="logo">AGSIST</a>
             <div class="nav-links">
-                <a href="index.html">Dashboard</a>
-                <a href="fastfacts.html">Fast Facts</a>
-                <a href="learn.html">Learn</a>
-                <a href="news.html" class="active">News</a>
+                <div class="nav-dropdown"><button class="dropdown-toggle">Prices ▾</button><div class="dropdown-menu"><a href="corn-prices.html" class="dropdown-item">🌽 Corn</a><a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a><a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a></div></div>
+                <div class="nav-dropdown"><button class="dropdown-toggle">Tools ▾</button><div class="dropdown-menu"><a href="tools.html" class="dropdown-item">All Tools</a><a href="breakeven.html" class="dropdown-item">Breakeven</a><a href="gdu.html" class="dropdown-item">GDU Calculator</a><a href="calculator.html" class="dropdown-item">Grain Bin</a><a href="fastfacts.html" class="dropdown-item">Fast Facts</a></div></div>
+                <div class="nav-dropdown"><button class="dropdown-toggle">Info ▾</button><div class="dropdown-menu"><a href="learn.html" class="dropdown-item">Learn</a><a href="calendar.html" class="dropdown-item">Calendar</a><a href="resources.html" class="dropdown-item">Resources</a><a href="offices.html" class="dropdown-item">Offices</a><a href="news.html" class="dropdown-item">📰 News Hub</a></div></div>
             </div>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
         </div>
     </nav>
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-section">Prices</div><a href="corn-prices.html" class="mobile-link">🌽 Corn</a><a href="soybean-prices.html" class="mobile-link">🫘 Soybeans</a><a href="wheat-prices.html" class="mobile-link">🌾 Wheat</a>
+        <div class="mobile-section">Tools</div><a href="tools.html" class="mobile-link">All Tools</a><a href="breakeven.html" class="mobile-link">Breakeven</a><a href="gdu.html" class="mobile-link">GDU Calculator</a><a href="calculator.html" class="mobile-link">Grain Bin</a><a href="fastfacts.html" class="mobile-link">Fast Facts</a>
+        <div class="mobile-section">Info</div><a href="learn.html" class="mobile-link">Learn</a><a href="calendar.html" class="mobile-link">Calendar</a><a href="resources.html" class="mobile-link">Resources</a><a href="offices.html" class="mobile-link">Offices</a><a href="news.html" class="mobile-link">📰 News Hub</a>
+    </div>
+    
+    <div class="hero">
+        <h1>📰 The <span>Ag News</span> Hub</h1>
+        <p>Your one-stop destination for agriculture news. Community discussions, government updates, university research, and industry insights—all in one place.</p>
+        
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value" id="stat-articles">--</div>
+                <div class="stat-label">Articles</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="stat-sources">40+</div>
+                <div class="stat-label">Sources</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="stat-updated">--</div>
+                <div class="stat-label">Updated</div>
+            </div>
+        </div>
+    </div>
     
     <main>
-        <div class="page-header">
-            <h1>📡 Ag Market Feed</h1>
-            <p>Live commentary from grain analysts, weather experts, and farm policy voices</p>
-        </div>
-        
         <div class="filters">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="grain">🌾 Grain</button>
-            <button class="filter-btn" data-filter="weather">🌦️ Weather</button>
-            <button class="filter-btn" data-filter="markets">📈 Markets</button>
-            <button class="filter-btn" data-filter="farm">🚜 Farm</button>
+            <button class="filter-btn active" data-cat="all">
+                🌐 All <span class="count" id="count-all">0</span>
+            </button>
+            <button class="filter-btn" data-cat="community">
+                🔥 Community <span class="count" id="count-community">0</span>
+            </button>
+            <button class="filter-btn" data-cat="government">
+                🏛️ Government <span class="count" id="count-government">0</span>
+            </button>
+            <button class="filter-btn" data-cat="university">
+                🎓 University <span class="count" id="count-university">0</span>
+            </button>
+            <button class="filter-btn" data-cat="industry">
+                📰 Industry <span class="count" id="count-industry">0</span>
+            </button>
+            <button class="filter-btn" data-cat="markets">
+                💹 Markets <span class="count" id="count-markets">0</span>
+            </button>
+            <button class="filter-btn" data-cat="weather">
+                🌦️ Weather <span class="count" id="count-weather">0</span>
+            </button>
         </div>
         
-        <div class="feed-status">
-            <span id="feedStatus">Loading...</span>
+        <div class="status-bar">
+            <span class="live" id="statusLive" style="display:none">Live</span>
+            <span id="statusText">Loading feeds...</span>
         </div>
         
-        <div class="feed" id="feed">
-            <div class="feed-loading">Loading feed...</div>
+        <div class="feed-grid" id="feed">
+            <div class="loading">Fetching latest ag news...</div>
+        </div>
+        
+        <div class="sources-section">
+            <h2>📡 Our <span>Sources</span></h2>
+            <div class="sources-grid">
+                <div class="source-card">
+                    <h3><span class="dot community"></span> Reddit Communities</h3>
+                    <ul>
+                        <li><a href="https://reddit.com/r/farming" target="_blank">r/farming</a> - General farming</li>
+                        <li><a href="https://reddit.com/r/agriculture" target="_blank">r/agriculture</a> - Ag industry</li>
+                        <li><a href="https://reddit.com/r/tractors" target="_blank">r/tractors</a> - Equipment</li>
+                        <li><a href="https://reddit.com/r/homestead" target="_blank">r/homestead</a> - Homesteading</li>
+                        <li><a href="https://reddit.com/r/ranching" target="_blank">r/ranching</a> - Livestock</li>
+                        <li><a href="https://reddit.com/r/agronomy" target="_blank">r/agronomy</a> - Crop science</li>
+                        <li><a href="https://reddit.com/r/dairyfarming" target="_blank">r/dairyfarming</a> - Dairy</li>
+                        <li><a href="https://reddit.com/r/Cattle" target="_blank">r/Cattle</a> - Cattle</li>
+                    </ul>
+                </div>
+                <div class="source-card">
+                    <h3><span class="dot government"></span> Government Sources</h3>
+                    <ul>
+                        <li><a href="https://usda.gov" target="_blank">USDA</a> - Dept of Agriculture</li>
+                        <li><a href="https://nass.usda.gov" target="_blank">USDA NASS</a> - Statistics</li>
+                        <li><a href="https://ers.usda.gov" target="_blank">USDA ERS</a> - Economics</li>
+                        <li><a href="https://fsa.usda.gov" target="_blank">USDA FSA</a> - Farm Service</li>
+                        <li><a href="https://nrcs.usda.gov" target="_blank">USDA NRCS</a> - Conservation</li>
+                        <li><a href="https://rma.usda.gov" target="_blank">USDA RMA</a> - Risk Mgmt</li>
+                        <li><a href="https://ams.usda.gov" target="_blank">USDA AMS</a> - Market News</li>
+                    </ul>
+                </div>
+                <div class="source-card">
+                    <h3><span class="dot university"></span> University Extension</h3>
+                    <ul>
+                        <li><a href="https://extension.umn.edu" target="_blank">UMN</a> - Minnesota</li>
+                        <li><a href="https://crops.extension.iastate.edu" target="_blank">Iowa State</a> - Crops</li>
+                        <li><a href="https://agcrops.osu.edu" target="_blank">Ohio State</a> - C.O.R.N.</li>
+                        <li><a href="https://ipcm.wisc.edu" target="_blank">UW Madison</a> - IPM</li>
+                        <li><a href="https://farmdoc.illinois.edu" target="_blank">farmdoc</a> - UIUC</li>
+                        <li><a href="https://extension.purdue.edu" target="_blank">Purdue</a> - Indiana</li>
+                        <li><a href="https://cropwatch.unl.edu" target="_blank">Nebraska</a> - CropWatch</li>
+                        <li><a href="https://www.ag.ndsu.edu" target="_blank">NDSU</a> - North Dakota</li>
+                        <li><a href="https://www.canr.msu.edu" target="_blank">Michigan State</a></li>
+                        <li><a href="https://extension.sdstate.edu" target="_blank">South Dakota State</a></li>
+                        <li><a href="https://www.agronomy.k-state.edu" target="_blank">Kansas State</a></li>
+                    </ul>
+                </div>
+                <div class="source-card">
+                    <h3><span class="dot industry"></span> Industry & Dairy</h3>
+                    <ul>
+                        <li><a href="https://agweb.com" target="_blank">AgWeb</a></li>
+                        <li><a href="https://dtnpf.com" target="_blank">DTN</a></li>
+                        <li><a href="https://agriculture.com" target="_blank">Successful Farming</a></li>
+                        <li><a href="https://brownfieldagnews.com" target="_blank">Brownfield</a></li>
+                        <li><a href="https://hoards.com" target="_blank">Hoard's Dairyman</a></li>
+                        <li><a href="https://dairyherd.com" target="_blank">Dairy Herd</a></li>
+                        <li><a href="https://farmjournal.com" target="_blank">Farm Journal</a></li>
+                        <li><a href="https://progressivefarmer.com" target="_blank">Progressive Farmer</a></li>
+                        <li><a href="https://no-tillfarmer.com" target="_blank">No-Till Farmer</a></li>
+                        <li><a href="https://cornandsoybeandigest.com" target="_blank">Corn & Soybean Digest</a></li>
+                    </ul>
+                </div>
+                <div class="source-card">
+                    <h3><span class="dot markets"></span> Markets</h3>
+                    <ul>
+                        <li><a href="https://farms.com" target="_blank">Farms.com</a> - Markets</li>
+                        <li><a href="https://barchart.com" target="_blank">Barchart</a> - Ag futures</li>
+                        <li><a href="https://cmegroup.com" target="_blank">CME Group</a> - Commodities</li>
+                        <li><a href="https://ams.usda.gov" target="_blank">USDA AMS</a> - Prices</li>
+                    </ul>
+                </div>
+                <div class="source-card">
+                    <h3><span class="dot weather"></span> Weather & Climate</h3>
+                    <ul>
+                        <li><a href="https://droughtmonitor.unl.edu" target="_blank">Drought Monitor</a></li>
+                        <li><a href="https://cpc.ncep.noaa.gov" target="_blank">NOAA Climate</a> - Outlooks</li>
+                        <li><a href="https://weather.gov" target="_blank">NWS</a> - Forecasts</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </main>
+
+    <!-- FOOTER -->
+    <footer class="footer-c">
+        <div class="footer-c-inner">
+            <div class="footer-c-main">
+                <div class="brand-row">
+                    <a href="/" class="brand">AGSIST</a>
+                    <span class="sep">|</span>
+                    <span class="tagline">Free agricultural prices, tools & news</span>
+                </div>
+                <div class="site-links">
+                    <a href="corn-prices.html">Corn</a>
+                    <a href="soybean-prices.html">Soybeans</a>
+                    <a href="wheat-prices.html">Wheat</a>
+                    <a href="tools.html">Tools</a>
+                    <a href="fastfacts.html">Fast Facts</a>
+                    <a href="calendar.html">Calendar</a>
+                    <a href="resources.html">Resources</a>
+                    <a href="news.html">News</a>
+                </div>
+                <div class="legal-row"><span>© 2026 AGSIST</span></div>
+            </div>
+            <div class="footer-c-network">
+                <h4>Our Network</h4>
+                <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
+                <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
+                <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
+            </div>
+        </div>
+    </footer>
     
     <script>
         // ═══════════════════════════════════════════════════════════════════════
-        // CONFIG - UPDATE THIS WITH YOUR GITHUB USERNAME AND REPO
+        // MOBILE MENU TOGGLE
         // ═══════════════════════════════════════════════════════════════════════
-        const GITHUB_USER = 'dnilgis';  // ← Your GitHub username
-        const GITHUB_REPO = 'agsist';   // ← Your repo name
-        const GITHUB_BRANCH = 'main';   // ← Your branch (main or master)
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('active');
+            this.textContent = this.textContent === '☰' ? '✕' : '☰';
+        });
         
-        const FEED_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/data/tweets.json`;
+        // ═══════════════════════════════════════════════════════════════════════
+        // CONFIG - Update with your GitHub repo
+        // ═══════════════════════════════════════════════════════════════════════
+        const GITHUB_USER = 'dnilgis';
+        const GITHUB_REPO = 'agsist';
+        const GITHUB_BRANCH = 'main';
         
-        let allTweets = [];
+        const NEWS_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/data/news.json`;
+        
+        let allItems = [];
         let currentFilter = 'all';
         
         const feed = document.getElementById('feed');
-        const status = document.getElementById('feedStatus');
+        const statusText = document.getElementById('statusText');
+        const statusLive = document.getElementById('statusLive');
         
         // ═══════════════════════════════════════════════════════════════════════
         // HELPERS
         // ═══════════════════════════════════════════════════════════════════════
-        function timeAgo(dateStr) {
+        function timeAgo(timestamp) {
             const now = Date.now();
-            const then = new Date(dateStr).getTime();
-            if (isNaN(then)) return '';
-            const diff = Math.floor((now - then) / 1000);
+            const diff = Math.floor((now - timestamp) / 1000);
             
             if (diff < 60) return 'just now';
             if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
             if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
             if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
-            return new Date(dateStr).toLocaleDateString();
+            return new Date(timestamp).toLocaleDateString();
         }
         
-        function linkify(text) {
-            if (!text) return '';
-            text = text.replace(/(https?:\/\/[^\s]+)/g, '<span class="link">$1</span>');
-            text = text.replace(/@(\w+)/g, '<span class="mention">@$1</span>');
-            text = text.replace(/\$([A-Z]{1,5})\b/g, '<span class="ticker">$$$1</span>');
-            return text;
+        function formatDate(isoString) {
+            const d = new Date(isoString);
+            return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
         
         // ═══════════════════════════════════════════════════════════════════════
         // RENDER
         // ═══════════════════════════════════════════════════════════════════════
-        function renderImages(images) {
-            if (!images || images.length === 0) return '';
-            const count = Math.min(images.length, 4);
-            const imgHtml = images.slice(0, 4).map(url => 
-                `<img class="tweet-img" src="${url}" alt="" loading="lazy" onerror="this.style.display='none'">`
-            ).join('');
-            return `<div class="tweet-images img-${count}">${imgHtml}</div>`;
-        }
-        
-        function renderTweets(tweets) {
-            if (!tweets || tweets.length === 0) {
-                feed.innerHTML = '<div class="feed-error">No tweets available yet.</div>';
+        function renderArticles(items) {
+            if (!items || items.length === 0) {
+                feed.innerHTML = '<div class="empty">No articles found. Try a different filter.</div>';
                 return;
             }
             
-            feed.innerHTML = tweets.map(t => `
-                <a class="tweet ${t.isRT ? 'rt' : ''}" href="${t.link}" target="_blank" rel="noopener" data-tag="${t.tag}">
-                    <div class="tweet-header">
-                        <div class="tweet-author">
-                            <div class="tweet-name">${t.name || t.handle}</div>
-                            <div class="tweet-handle">@${t.handle}</div>
+            feed.innerHTML = items.map(item => `
+                <div class="article ${item.category === 'community' ? 'reddit' : ''}" 
+                     data-category="${item.category}">
+                    ${item.thumbnail ? `<img class="article-thumb" src="${item.thumbnail}" alt="" loading="lazy" onerror="this.remove()">` : ''}
+                    <div class="article-body">
+                        <div class="article-meta">
+                            <span class="article-source ${item.category}">
+                                ${item.icon || ''} ${item.source}
+                            </span>
+                            <span class="article-date">${timeAgo(item.timestamp)}</span>
                         </div>
-                        <span class="tweet-tag ${t.tag}">${t.tag}</span>
+                        <h3 class="article-title">${item.title}</h3>
+                        ${item.description ? `<p class="article-excerpt">${item.description.substring(0, 120)}${item.description.length > 120 ? '...' : ''}</p>` : ''}
+                        <div class="article-footer">
+                            <button class="tldr-btn" onclick="showTLDR('${item.id}')">📋 TL;DR</button>
+                            <a class="article-link" href="${item.link}" target="_blank" rel="noopener">Read more →</a>
+                        </div>
                     </div>
-                    <div class="tweet-text">${linkify(t.text)}</div>
-                    ${renderImages(t.images)}
-                    ${t.hasVideo ? '<div class="tweet-video-badge">▶ Contains video</div>' : ''}
-                    <div class="tweet-footer">
-                        <span class="tweet-time">${timeAgo(t.date)}</span>
-                        <span class="tweet-link">View on 𝕏 →</span>
-                    </div>
-                </a>
+                </div>
             `).join('');
         }
         
         // ═══════════════════════════════════════════════════════════════════════
         // FILTER
         // ═══════════════════════════════════════════════════════════════════════
-        function applyFilter(filter) {
-            currentFilter = filter;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.filter === filter);
+        function updateCounts() {
+            const counts = { all: allItems.length };
+            ['community', 'government', 'university', 'industry', 'markets', 'weather'].forEach(cat => {
+                counts[cat] = allItems.filter(a => a.category === cat).length;
             });
             
-            const filtered = filter === 'all' 
-                ? allTweets 
-                : allTweets.filter(t => t.tag === filter);
+            Object.keys(counts).forEach(cat => {
+                const el = document.getElementById(`count-${cat}`);
+                if (el) el.textContent = counts[cat];
+            });
             
-            renderTweets(filtered);
+            // Update stats
+            document.getElementById('stat-articles').textContent = allItems.length;
+        }
+        
+        function applyFilter(category) {
+            currentFilter = category;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.cat === category);
+            });
+            
+            const filtered = category === 'all' 
+                ? allItems 
+                : allItems.filter(a => a.category === category);
+            
+            renderArticles(filtered);
         }
         
         document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
+            btn.addEventListener('click', () => applyFilter(btn.dataset.cat));
         });
         
         // ═══════════════════════════════════════════════════════════════════════
         // FETCH
         // ═══════════════════════════════════════════════════════════════════════
-        async function fetchFeed() {
+        async function fetchNews() {
             try {
-                // Add cache buster
-                const res = await fetch(FEED_URL + '?t=' + Date.now());
+                const res = await fetch(NEWS_URL + '?t=' + Date.now());
                 
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 
                 const data = await res.json();
                 
-                if (data.tweets && data.tweets.length > 0) {
-                    allTweets = data.tweets;
-                    const updated = data.updated ? new Date(data.updated).toLocaleTimeString() : 'Unknown';
-                    status.innerHTML = `<span class="live">●</span> ${data.count} posts • Updated ${updated}`;
+                if (data.items && data.items.length > 0) {
+                    allItems = data.items;
+                    
+                    // Update UI
+                    statusLive.style.display = 'flex';
+                    statusText.textContent = `${data.items.length} articles from ${data.feedCount || '25+'} sources`;
+                    document.getElementById('stat-updated').textContent = formatDate(data.updated);
+                    
+                    updateCounts();
                     applyFilter(currentFilter);
                 } else {
-                    status.textContent = 'Waiting for first fetch...';
-                    feed.innerHTML = '<div class="feed-error">Feed is empty. The GitHub Action may not have run yet.<br><small>It runs every 30 minutes, or you can trigger it manually.</small></div>';
+                    throw new Error('No items in feed');
                 }
             } catch (err) {
-                console.error('Feed fetch error:', err);
-                status.textContent = 'Feed unavailable';
-                feed.innerHTML = `<div class="feed-error">Could not load feed.<br><small>${err.message}</small></div>`;
+                console.error('Fetch error:', err);
+                statusText.textContent = 'Feed unavailable - loading fallback...';
+                
+                // Fallback to direct Reddit fetch
+                await fetchRedditDirect();
             }
         }
         
-        // Initial fetch
-        fetchFeed();
+        // ═══════════════════════════════════════════════════════════════════════
+        // FALLBACK: Direct Reddit Fetch (if GitHub JSON not available)
+        // ═══════════════════════════════════════════════════════════════════════
+        async function fetchRedditDirect() {
+            const subreddits = ['farming', 'agriculture', 'tractors', 'homestead', 'ranching'];
+            const items = [];
+            
+            for (const sub of subreddits) {
+                try {
+                    const res = await fetch(`https://www.reddit.com/r/${sub}/hot.json?limit=10`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        const posts = data.data?.children || [];
+                        
+                        posts.filter(p => !p.data.stickied).slice(0, 8).forEach(p => {
+                            const post = p.data;
+                            let thumb = null;
+                            if (post.thumbnail?.startsWith('http')) thumb = post.thumbnail;
+                            else if (post.preview?.images?.[0]?.source?.url) {
+                                thumb = post.preview.images[0].source.url.replace(/&amp;/g, '&');
+                            }
+                            
+                            items.push({
+                                id: post.id,
+                                title: post.title,
+                                description: post.selftext?.substring(0, 200) || '',
+                                link: 'https://reddit.com' + post.permalink,
+                                thumbnail: thumb,
+                                category: 'community',
+                                source: `r/${sub}`,
+                                icon: '🔥',
+                                timestamp: post.created_utc * 1000,
+                            });
+                        });
+                    }
+                } catch (e) {
+                    console.error(`Failed r/${sub}:`, e);
+                }
+            }
+            
+            items.sort((a, b) => b.timestamp - a.timestamp);
+            allItems = items;
+            
+            statusLive.style.display = 'flex';
+            statusText.textContent = `${items.length} posts from Reddit (live fetch)`;
+            document.getElementById('stat-articles').textContent = items.length;
+            document.getElementById('stat-updated').textContent = 'Now';
+            
+            updateCounts();
+            applyFilter(currentFilter);
+        }
         
-        // Refresh every 5 minutes
-        setInterval(fetchFeed, 5 * 60 * 1000);
+        // Initial fetch
+        fetchNews();
+        
+        // Refresh every 10 minutes
+        setInterval(fetchNews, 10 * 60 * 1000);
+        
+        // ═══════════════════════════════════════════════════════════════════════
+        // TL;DR MODAL
+        // ═══════════════════════════════════════════════════════════════════════
+        let currentArticle = null;
+        
+        function showTLDR(articleId) {
+            const article = allItems.find(a => a.id === articleId);
+            if (!article) return;
+            
+            currentArticle = article;
+            
+            const modal = document.getElementById('tldr-modal');
+            const content = document.getElementById('tldr-content');
+            
+            // Generate summary - use AI summary, fall back to description
+            let summary = article.summary || article.description || '';
+            if (!summary || summary.length < 20) {
+                summary = `This ${article.category} post from ${article.source} discusses: "${article.title}"`;
+            }
+            
+            // Truncate and clean summary
+            summary = summary.substring(0, 500);
+            if (summary.length === 500) summary += '...';
+            
+            content.innerHTML = `
+                <div class="modal-header">
+                    <h3>📋 TL;DR Summary</h3>
+                    <button class="modal-close" onclick="closeTLDR()">×</button>
+                </div>
+                <div class="modal-body">
+                    ${article.thumbnail ? `<img class="modal-thumb" src="${article.thumbnail}" alt="" onerror="this.remove()">` : ''}
+                    <div class="modal-source">
+                        ${article.icon || '📰'} ${article.source} • ${timeAgo(article.timestamp)}
+                    </div>
+                    <h2 class="modal-title">${article.title}</h2>
+                    <div class="modal-summary">
+                        <strong>Quick take:</strong> ${summary}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-btn modal-btn-secondary" onclick="closeTLDR()">Close</button>
+                    <a class="modal-btn modal-btn-primary" href="${article.link}" target="_blank" rel="noopener">
+                        Read Full Article →
+                    </a>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeTLDR() {
+            document.getElementById('tldr-modal').classList.remove('active');
+            document.body.style.overflow = '';
+            currentArticle = null;
+        }
+        
+        // Close modal on overlay click
+        document.getElementById('tldr-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'tldr-modal') closeTLDR();
+        });
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeTLDR();
+        });
     </script>
+    
+    <!-- TL;DR Modal -->
+    <div class="modal-overlay" id="tldr-modal">
+        <div class="modal-content" id="tldr-content">
+            <!-- Content injected by JS -->
+        </div>
+    </div>
 </body>
 </html>
