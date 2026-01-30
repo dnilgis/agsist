@@ -521,25 +521,17 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 16px;
-            align-items: stretch; /* Changed from start to stretch for consistent rows */
         }
         
         /* ═══════════════════════════════════════════════════════════════════════ */
         /* ARTICLE CARDS */
         /* ═══════════════════════════════════════════════════════════════════════ */
         .article {
-            display: flex;
-            flex-direction: column;
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 12px;
             overflow: hidden;
-            text-decoration: none;
-            color: inherit;
             transition: all 0.25s ease;
-            min-height: 240px;
-            height: 100%; /* Fill grid cell */
-            position: relative;
         }
         .article:hover {
             background: var(--card-hover);
@@ -550,18 +542,14 @@
         
         .article-thumb {
             width: 100%;
-            height: 120px;
+            height: 140px;
             object-fit: cover;
             background: var(--border);
-            flex-shrink: 0;
+            display: block;
         }
         
         .article-body {
             padding: 16px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 0; /* Important for flex children */
         }
         
         .article-meta {
@@ -569,7 +557,6 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 12px;
-            flex-shrink: 0;
             flex-wrap: wrap;
         }
         
@@ -607,30 +594,26 @@
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            word-break: break-word;
         }
         
         .article-excerpt {
             font-size: 0.8rem;
             color: var(--dim);
             line-height: 1.5;
-            flex: 1;
+            margin-bottom: 12px;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            word-break: break-word;
         }
         
         .article-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: auto;
             padding-top: 12px;
             border-top: 1px solid var(--border);
             gap: 8px;
-            flex-shrink: 0;
             flex-wrap: wrap;
         }
         
@@ -1167,31 +1150,18 @@
             }
             
             /* Article cards mobile */
-            .article {
-                min-height: 180px;
-            }
             .article-thumb {
-                height: 140px;
+                height: 160px;
             }
             .article-body {
                 padding: 14px;
             }
-            .article-meta {
-                margin-bottom: 10px;
-            }
             .article-title {
                 font-size: 0.9rem;
-                -webkit-line-clamp: 3;
-                margin-bottom: 6px;
             }
             .article-excerpt {
                 font-size: 0.78rem;
                 -webkit-line-clamp: 2;
-            }
-            .article-footer {
-                flex-wrap: wrap;
-                gap: 8px;
-                padding-top: 10px;
             }
             .tldr-btn, .article-link {
                 min-height: 44px; /* Touch target */
@@ -1571,26 +1541,29 @@
                 return;
             }
             
-            feed.innerHTML = items.map(item => `
-                <article class="article ${item.category === 'community' ? 'reddit' : ''}" 
-                         data-category="${item.category}">
-                    ${item.thumbnail ? `<img class="article-thumb" src="${item.thumbnail}" alt="" loading="lazy" onerror="this.remove()">` : ''}
+            feed.innerHTML = items.map(item => {
+                // Sanitize data
+                const title = (item.title || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const source = (item.source || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const description = item.description ? item.description.substring(0, 120).replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+                const hasMoreDesc = item.description && item.description.length > 120;
+                
+                return `<article class="article ${item.category === 'community' ? 'reddit' : ''}" data-category="${item.category}">
+                    ${item.thumbnail ? `<img class="article-thumb" src="${item.thumbnail}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}
                     <div class="article-body">
                         <div class="article-meta">
-                            <span class="article-source ${item.category}">
-                                ${item.icon || ''} ${item.source}
-                            </span>
+                            <span class="article-source ${item.category}">${item.icon || ''} ${source}</span>
                             <span class="article-date">${timeAgo(item.timestamp)}</span>
                         </div>
-                        <h3 class="article-title">${item.title}</h3>
-                        ${item.description ? `<p class="article-excerpt">${item.description.substring(0, 120)}${item.description.length > 120 ? '...' : ''}</p>` : ''}
+                        <h3 class="article-title">${title}</h3>
+                        ${description ? `<p class="article-excerpt">${description}${hasMoreDesc ? '...' : ''}</p>` : ''}
                         <div class="article-footer">
                             <button class="tldr-btn" onclick="showTLDR('${item.id}')" title="AI-generated comprehensive summary">📋 Summary</button>
-                            <a class="article-link" href="${item.link}" target="_blank" rel="noopener" onclick="trackArticleClick('${item.source}', '${item.category}')">Read more →</a>
+                            <a class="article-link" href="${item.link}" target="_blank" rel="noopener">Read more →</a>
                         </div>
                     </div>
-                </article>
-            `).join('');
+                </article>`;
+            }).join('');
         }
         
         // Track article click for analytics
