@@ -2,6 +2,20 @@
   "items": [
     {
       "id": "aHR0cHM6Ly93d3cudHNs",
+      "title": "Farm Assistance Framework Signals Need and Opportunity to Build More Robust Support",
+      "link": "https://www.tsln.com/news/farm-assistance-framework-signals-need-and-opportunity-to-build-more-robust-support/",
+      "description": "Washington, DC, January 15, 2026 – Today, the National Sustainable Agriculture Coalition (NSAC) issued the following comment in response to the House Agriculture Committee Minority&#8217;s unveiling of a farm assistance framework, attributable to Mike Lavender,...",
+      "date": "Fri, 30 Jan 2026 23:06:34 +0000",
+      "timestamp": 1769814394000,
+      "source": "Tri-State Livestock",
+      "category": "industry",
+      "icon": "🐄",
+      "thumbnail": "",
+      "summary": "Here is a comprehensive summary of the key information in the agricultural news article:\n\nThe National Sustainable Agriculture Coalition (NSAC) issued a statement in response to the House Agriculture Committee Minority's unveiling of a new farm assistance framework called the \"Farm and Family Relief Act\". NSAC Policy Director Mike Lavender commented that the past year has brought \"unprecedented uncertainty\" that has pushed \"countless farmers and ranchers to the brink\", and that robust financial relief is \"long overdue\".\n\nNSAC urges Congressional leaders to build on this framework to deliver assistance that:\n\n- Ensures financial assistance is available to all farmers who need it\n- Keeps farmers on the land by providing additional loan support and preventing foreclosures\n- Offers broad eligibility to actively engaged farmers\n\nHowever, NSAC notes that immediate financial relief alone is not enough. They advocate for investments that build reliable domestic markets and expand access to conservation practices to help farmers reduce persistently high input costs.\n\nIn November 2025, NSAC published a report called \"Keeping Farmers on the Land\" that analyzed the current challenges facing farmers and ranchers, and the solutions needed to support them both in the short-term and long-term. NSAC continues to advocate for comprehensive Congressional farm financial assistance based on the recommendations in this report.\n\nThe National Sustainable Agriculture Coalition is a grassroots alliance that advocates for federal policy reform to support the long-term social, economic, and environmental sustainability of agriculture, natural resources, and rural communities.",
+      "summaryTimestamp": 1769814799678
+    },
+    {
+      "id": "aHR0cHM6Ly93d3cudHNs",
       "title": "NDSU Extension sets sheep producers workshop for Feb. 28",
       "link": "https://www.tsln.com/news/ndsu-extension-sets-sheep-producers-workshop-for-feb-28/",
       "description": "Area sheep producers and anyone interested in learning more about sheep health and production are invited to North Dakota State University Extension&#8217;s sheep producers workshop on Feb. 28 at Lillehaugen Farms near Brocket, North Dakota....",
@@ -69,20 +83,6 @@
       "thumbnail": "",
       "summary": "1. Senator Amy Klobuchar has officially announced her bid for the Minnesota governor's seat, setting the stage for a highly anticipated political race.\n\n2. Farmers in Minnesota should closely follow Klobuchar's campaign and her proposed policies that may impact the agricultural industry in the state.",
       "summaryTimestamp": 1769813078248
-    },
-    {
-      "id": "aHR0cHM6Ly93d3cudHNs",
-      "title": "Dallas Granstra, Cattle Call: Cattle inventory report neutral",
-      "link": "https://www.tsln.com/news/dallas-granstra-cattle-call-cattle-inventory-report-neutral/",
-      "description": "Futures trade finished the week with a wild day. Cash led a morning rally followed by a sharp sell off. I think outside market pressure and a potentially bearish cattle inventory report pulled it down....",
-      "date": "Fri, 30 Jan 2026 22:31:39 +0000",
-      "timestamp": 1769812299000,
-      "source": "Tri-State Livestock",
-      "category": "industry",
-      "icon": "🐄",
-      "thumbnail": "",
-      "summary": "1. The cattle inventory report was neutral, indicating no significant changes in the cattle industry according to Dallas Granstra's \"Cattle Call\" analysis.\n2. Farmers should stay informed about the cattle market trends to make informed decisions for their operations.",
-      "summaryTimestamp": 1769813080110
     },
     {
       "id": "aHR0cHM6Ly93d3cuYnJv",
@@ -1411,6 +1411,6 @@
   },
   "feedCount": 29,
   "successCount": 125,
-  "summariesGenerated": 30,
-  "updated": "2026-01-30T23:06:33.762Z"
+  "summariesGenerated": 1,
+  "updated": "2026-01-30T23:13:19.879Z"
 }
