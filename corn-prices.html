@@ -3,196 +3,534 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corn Prices Today - Live CBOT Futures Chart & Analysis | AGSIST</title>
-    <meta name="description" content="Live corn futures prices, interactive charts, and market analysis. Track CBOT corn (ZC) with real-time quotes, contract spreads, and USDA report impacts.">
-    <meta name="keywords" content="corn prices today, CBOT corn futures, ZC futures, corn market, corn chart, grain prices">
+    <title>Corn Prices & Market Dashboard - Live Futures, Weather, Exports | AGSIST</title>
+    <meta name="description" content="The most comprehensive corn market dashboard. Live CBOT futures, Corn Belt weather, ethanol margins, export data, USDA reports, South American production, and basis trends. Built for farmers.">
+    <meta name="keywords" content="corn prices, corn futures, ZC futures, corn weather, corn exports, ethanol margins, USDA corn, corn basis, safrinha corn, corn belt weather">
     <link rel="canonical" href="https://agsist.com/corn-prices.html">
     <link rel="icon" href="/favicon.png">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Corn Market Dashboard - AGSIST">
+    <meta property="og:description" content="Complete corn market intelligence: prices, weather, exports, ethanol, USDA data.">
+    <meta property="og:url" content="https://agsist.com/corn-prices.html">
+    <meta property="og:type" content="website">
+    
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebPage","name":"Corn Prices & Market Dashboard","description":"Comprehensive corn futures prices, weather, exports, and market analysis","url":"https://agsist.com/corn-prices.html","mainEntity":{"@type":"Dataset","name":"Corn Market Data","description":"Live corn futures, basis, exports, and USDA data"}}
+    </script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/components/shared.css">
+    
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    
     <style>
-        .price-wrap{padding:8px;max-width:1400px;margin:0 auto}
-        .price-grid{display:grid;gap:12px}
-        .price-panel{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
-        .price-panel-head{background:var(--bg);padding:10px 12px;border-bottom:1px solid var(--border)}
-        .price-panel-head h2{font-size:0.85rem;margin:0;color:var(--accent)}
-        .price-panel-body{padding:12px}
-        .chart-container{background:#131722;border-radius:6px;overflow:hidden;height:400px}
-        .ticker-container{background:#131722;border-radius:6px;overflow:hidden;height:46px}
-        .contracts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-        .contract-link{display:block;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;text-decoration:none;color:var(--text);transition:border-color 0.2s}
-        .contract-link:hover{border-color:var(--accent)}
-        .contract-link .month{font-size:0.75rem;color:var(--dim)}
-        .contract-link .symbol{font-size:0.9rem;font-weight:600;color:var(--accent)}
+        :root{--green:#22c55e;--red:#ef4444;--blue:#3b82f6;--orange:#f97316}
+        .dash-wrap{padding:8px;max-width:1400px;margin:0 auto}
+        .dash-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+        .dash-nav a{background:var(--card);border:1px solid var(--border);color:var(--dim);padding:8px 14px;border-radius:4px;font-size:0.8rem;text-decoration:none;transition:all 0.2s}
+        .dash-nav a:hover{border-color:var(--accent);color:var(--text)}
+        .dash-nav a.active{background:var(--accent);color:black;font-weight:600;border-color:var(--accent)}
+        .dash-hero{background:linear-gradient(135deg,var(--card) 0%,var(--bg) 100%);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;text-align:center}
+        .dash-hero h1{font-size:1.1rem;color:var(--accent);margin:0 0 4px 0}
+        .dash-hero p{font-size:0.8rem;color:var(--dim);margin:0}
+        .dash-grid{display:grid;gap:12px}
+        .dash-section{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+        .dash-section-head{background:var(--bg);padding:10px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+        .dash-section-head h2{font-size:0.8rem;margin:0;color:var(--accent);display:flex;align-items:center;gap:8px}
+        .dash-section-head .toggle{font-size:0.7rem;color:var(--dim)}
+        .dash-section-body{padding:12px}
+        .dash-section-body.collapsed{display:none}
+        
+        /* Price Cards */
+        .price-sources{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+        .price-source{display:flex;flex-direction:column;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px 12px;text-decoration:none;color:var(--text);transition:all 0.2s;text-align:center}
+        .price-source:hover{border-color:var(--accent);transform:translateY(-2px)}
+        .price-source-icon{font-size:1.3rem;margin-bottom:6px}
+        .price-source-name{font-weight:600;font-size:0.8rem}
+        .price-source-desc{font-size:0.65rem;color:var(--dim);margin-top:2px}
+        
+        /* Data Grid */
+        .data-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+        .data-card{background:var(--bg);border-radius:6px;padding:10px;text-align:center}
+        .data-card-label{font-size:0.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.5px}
+        .data-card-value{font-size:1rem;font-weight:700;color:var(--text);margin-top:2px}
+        .data-card-value.green{color:var(--green)}
+        .data-card-value.red{color:var(--red)}
+        .data-card-sub{font-size:0.6rem;color:var(--dim);margin-top:2px}
+        
+        /* Link Lists */
+        .link-grid{display:grid;gap:6px}
+        .link-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg);border-radius:6px;text-decoration:none;color:var(--text);font-size:0.8rem;transition:background 0.2s}
+        .link-item:hover{background:var(--card-hover,#1c1c22)}
+        .link-item span:last-child{color:var(--dim);font-size:0.7rem}
+        .link-item.external span:last-child::after{content:" ↗"}
+        
+        /* Weather Grid */
+        .weather-grid{display:grid;gap:8px}
+        .weather-card{background:var(--bg);border-radius:6px;padding:12px}
+        .weather-card h4{font-size:0.75rem;color:var(--text);margin:0 0 6px 0;display:flex;align-items:center;gap:6px}
+        .weather-card p{font-size:0.7rem;color:var(--dim);margin:0 0 8px 0;line-height:1.5}
+        .weather-card a{font-size:0.7rem;color:var(--accent)}
+        
+        /* Info Cards */
         .info-grid{display:grid;gap:8px}
         .info-card{background:var(--bg);border-radius:6px;padding:12px}
-        .info-card h3{font-size:0.8rem;color:var(--accent);margin:0 0 8px 0}
-        .info-card p{font-size:0.8rem;color:var(--dim);margin:0;line-height:1.6}
-        .info-card ul{font-size:0.8rem;color:var(--dim);margin:8px 0 0 16px;line-height:1.8}
-        .quick-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-        .quick-links a{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 12px;font-size:0.75rem;color:var(--dim);text-decoration:none;transition:all 0.2s}
-        .quick-links a:hover{border-color:var(--accent);color:var(--accent)}
-        .source-note{font-size:0.7rem;color:var(--dim);text-align:center;margin-top:12px;padding:8px;background:var(--bg);border-radius:4px}
-        @media(min-width:640px){
-            .price-wrap{padding:12px}
-            .price-grid{grid-template-columns:1fr 300px}
-            .chart-container{height:500px}
-            .contracts-grid{grid-template-columns:repeat(3,1fr)}
+        .info-card h4{font-size:0.75rem;color:var(--accent);margin:0 0 8px 0}
+        .info-card p{font-size:0.75rem;color:var(--dim);margin:0;line-height:1.6}
+        .info-card ul{font-size:0.75rem;color:var(--dim);margin:6px 0 0 16px;line-height:1.7}
+        .info-card ul li{margin-bottom:4px}
+        
+        /* Contract Table */
+        .contract-row{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:6px}
+        .contract-item{background:var(--bg);border-radius:4px;padding:8px;text-align:center}
+        .contract-item .month{font-size:0.65rem;color:var(--dim)}
+        .contract-item .code{font-size:0.8rem;font-weight:600;color:var(--accent)}
+        
+        /* Supply Demand Table */
+        .sd-table{width:100%;font-size:0.7rem;border-collapse:collapse}
+        .sd-table th,.sd-table td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--border)}
+        .sd-table th{background:var(--bg);color:var(--dim);font-weight:600;text-align:left}
+        .sd-table th:first-child{text-align:left}
+        .sd-table td:first-child{text-align:left;color:var(--text)}
+        .sd-table .highlight{color:var(--accent);font-weight:600}
+        
+        /* Seasonal Chart Placeholder */
+        .seasonal-note{background:var(--bg);border-radius:6px;padding:16px;text-align:center}
+        .seasonal-note p{font-size:0.75rem;color:var(--dim);margin:0}
+        
+        /* Footer Note */
+        .dash-footer{font-size:0.65rem;color:var(--dim);text-align:center;padding:16px;background:var(--card);border-radius:8px;margin-top:12px;line-height:1.6}
+        .dash-footer a{color:var(--accent)}
+        
+        /* Responsive */
+        @media(min-width:480px){
+            .price-sources{grid-template-columns:repeat(4,1fr)}
+            .data-grid{grid-template-columns:repeat(4,1fr)}
+        }
+        @media(min-width:768px){
+            .dash-wrap{padding:12px}
+            .dash-grid{grid-template-columns:repeat(2,1fr)}
+            .dash-grid .full-width{grid-column:1/-1}
+            .weather-grid{grid-template-columns:repeat(2,1fr)}
             .info-grid{grid-template-columns:repeat(2,1fr)}
+            .data-grid{grid-template-columns:repeat(6,1fr)}
         }
         @media(min-width:1024px){
-            .price-wrap{padding:16px}
-            .chart-container{height:600px}
-            .contracts-grid{grid-template-columns:repeat(5,1fr)}
+            .dash-wrap{padding:16px}
+            .dash-grid{grid-template-columns:repeat(3,1fr)}
+            .price-sources{grid-template-columns:repeat(6,1fr)}
         }
     </style>
 </head>
 <body>
     <div id="header"></div>
     <main>
-        <div class="price-wrap">
-            <nav class="breadcrumb"><a href="/">Home</a> → Corn Prices</nav>
+        <div class="dash-wrap">
+            <nav class="breadcrumb"><a href="/">Home</a> → Corn Dashboard</nav>
             
-            <!-- Quick Price Links -->
-            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
-                <a href="/corn-prices.html" style="background:var(--accent);color:black;padding:8px 14px;border-radius:4px;font-size:0.8rem;font-weight:600;text-decoration:none">🌽 Corn</a>
-                <a href="/soybean-prices.html" style="background:var(--card);border:1px solid var(--border);color:var(--dim);padding:8px 14px;border-radius:4px;font-size:0.8rem;text-decoration:none">🫘 Soybeans</a>
-                <a href="/wheat-prices.html" style="background:var(--card);border:1px solid var(--border);color:var(--dim);padding:8px 14px;border-radius:4px;font-size:0.8rem;text-decoration:none">🌾 Wheat</a>
+            <div class="dash-nav">
+                <a href="/corn-prices.html" class="active">🌽 Corn</a>
+                <a href="/soybean-prices.html">🫘 Soybeans</a>
+                <a href="/wheat-prices.html">🌾 Wheat</a>
             </div>
 
-            <div class="price-grid">
-                <div>
-                    <!-- Main Chart -->
-                    <div class="price-panel">
-                        <div class="price-panel-head"><h1 style="font-size:0.9rem;margin:0;color:var(--accent)">🌽 CORN FUTURES (CBOT: ZC)</h1></div>
-                        <div class="price-panel-body" style="padding:8px">
-                            <div class="chart-container">
-                                <iframe src="https://www.tradingview.com/widgetembed/?symbol=CBOT%3AZC1%21&interval=D&hidesidetoolbar=0&symboledit=1&saveimage=0&toolbarbg=f1f3f6&studies=%5B%5D&theme=dark&style=1&timezone=America%2FChicago&withdateranges=1&showpopupbutton=1&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en" style="width:100%;height:100%;border:none" allowtransparency="true" frameborder="0"></iframe>
-                            </div>
-                        </div>
-                    </div>
+            <div class="dash-hero">
+                <h1>🌽 CORN MARKET DASHBOARD</h1>
+                <p>Complete market intelligence for corn farmers & traders</p>
+            </div>
 
-                    <!-- Contract Months -->
-                    <div class="price-panel" style="margin-top:12px">
-                        <div class="price-panel-head"><h2>CONTRACT MONTHS</h2></div>
-                        <div class="price-panel-body">
-                            <div class="contracts-grid">
-                                <a href="https://www.tradingview.com/symbols/CBOT-ZCH2026/" target="_blank" class="contract-link"><div class="month">MAR 2026</div><div class="symbol">ZCH26</div></a>
-                                <a href="https://www.tradingview.com/symbols/CBOT-ZCK2026/" target="_blank" class="contract-link"><div class="month">MAY 2026</div><div class="symbol">ZCK26</div></a>
-                                <a href="https://www.tradingview.com/symbols/CBOT-ZCN2026/" target="_blank" class="contract-link"><div class="month">JUL 2026</div><div class="symbol">ZCN26</div></a>
-                                <a href="https://www.tradingview.com/symbols/CBOT-ZCU2026/" target="_blank" class="contract-link"><div class="month">SEP 2026</div><div class="symbol">ZCU26</div></a>
-                                <a href="https://www.tradingview.com/symbols/CBOT-ZCZ2026/" target="_blank" class="contract-link"><div class="month">DEC 2026</div><div class="symbol">ZCZ26</div></a>
-                            </div>
-                            <p style="font-size:0.7rem;color:var(--dim);margin-top:10px">Contract months: Mar (H), May (K), Jul (N), Sep (U), Dec (Z). Each contract = 5,000 bushels.</p>
-                        </div>
+            <div class="dash-grid">
+                
+                <!-- PRICES & CHARTS -->
+                <div class="dash-section full-width">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>📈 PRICES & CHARTS</h2>
+                        <span class="toggle">−</span>
                     </div>
-
-                    <!-- Market Info -->
-                    <div class="price-panel" style="margin-top:12px">
-                        <div class="price-panel-head"><h2>MARKET INFORMATION</h2></div>
-                        <div class="price-panel-body">
-                            <div class="info-grid">
-                                <div class="info-card">
-                                    <h3>📋 Contract Specs</h3>
-                                    <p><strong>Exchange:</strong> CME Group (CBOT)<br>
-                                    <strong>Symbol:</strong> ZC<br>
-                                    <strong>Size:</strong> 5,000 bushels<br>
-                                    <strong>Tick:</strong> ¼ cent ($12.50)<br>
-                                    <strong>Grade:</strong> #2 Yellow Corn</p>
-                                </div>
-                                <div class="info-card">
-                                    <h3>⏰ Trading Hours (CT)</h3>
-                                    <p><strong>Electronic:</strong><br>
-                                    Sun-Fri: 7:00pm - 7:45am<br>
-                                    Mon-Fri: 8:30am - 1:20pm<br>
-                                    <strong>Settlement:</strong> 1:15pm CT</p>
-                                </div>
-                                <div class="info-card">
-                                    <h3>📊 Key Price Drivers</h3>
-                                    <ul>
-                                        <li>USDA WASDE & Crop Progress</li>
-                                        <li>US Corn Belt weather</li>
-                                        <li>Ethanol demand & margins</li>
-                                        <li>Export sales & inspections</li>
-                                        <li>South American production</li>
-                                    </ul>
-                                </div>
-                                <div class="info-card">
-                                    <h3>📅 Key Report Dates</h3>
-                                    <ul>
-                                        <li><strong>WASDE:</strong> Monthly, ~10th</li>
-                                        <li><strong>Crop Progress:</strong> Mon 4pm (Apr-Nov)</li>
-                                        <li><strong>Export Sales:</strong> Thu 8:30am</li>
-                                        <li><strong>Grain Stocks:</strong> Quarterly</li>
-                                    </ul>
-                                </div>
+                    <div class="dash-section-body">
+                        <p style="font-size:0.75rem;color:var(--dim);margin:0 0 12px 0">Live corn futures from major providers (click to open):</p>
+                        <div class="price-sources">
+                            <a href="https://www.barchart.com/futures/quotes/ZC*0/interactive-chart" target="_blank" class="price-source">
+                                <div class="price-source-icon">📊</div>
+                                <div class="price-source-name">Barchart</div>
+                                <div class="price-source-desc">Charts + Quotes</div>
+                            </a>
+                            <a href="https://www.tradingview.com/chart/?symbol=CBOT%3AZC1!" target="_blank" class="price-source">
+                                <div class="price-source-icon">📈</div>
+                                <div class="price-source-name">TradingView</div>
+                                <div class="price-source-desc">Advanced Charts</div>
+                            </a>
+                            <a href="https://www.cmegroup.com/markets/agriculture/grains/corn.quotes.html" target="_blank" class="price-source">
+                                <div class="price-source-icon">🏛️</div>
+                                <div class="price-source-name">CME Group</div>
+                                <div class="price-source-desc">Official Data</div>
+                            </a>
+                            <a href="https://finance.yahoo.com/quote/ZC=F/" target="_blank" class="price-source">
+                                <div class="price-source-icon">📰</div>
+                                <div class="price-source-name">Yahoo</div>
+                                <div class="price-source-desc">News + Quotes</div>
+                            </a>
+                            <a href="https://www.investing.com/commodities/us-corn" target="_blank" class="price-source">
+                                <div class="price-source-icon">🌐</div>
+                                <div class="price-source-name">Investing.com</div>
+                                <div class="price-source-desc">Global View</div>
+                            </a>
+                            <a href="https://quotes.ino.com/exchanges/contracts.html?r=CBOT_ZC" target="_blank" class="price-source">
+                                <div class="price-source-icon">📋</div>
+                                <div class="price-source-name">INO</div>
+                                <div class="price-source-desc">All Contracts</div>
+                            </a>
+                        </div>
+                        <div style="margin-top:16px">
+                            <h4 style="font-size:0.75rem;color:var(--text);margin:0 0 8px 0">CONTRACT MONTHS</h4>
+                            <div class="contract-row">
+                                <div class="contract-item"><div class="month">MAR</div><div class="code">ZCH</div></div>
+                                <div class="contract-item"><div class="month">MAY</div><div class="code">ZCK</div></div>
+                                <div class="contract-item"><div class="month">JUL</div><div class="code">ZCN</div></div>
+                                <div class="contract-item"><div class="month">SEP</div><div class="code">ZCU</div></div>
+                                <div class="contract-item"><div class="month">DEC</div><div class="code">ZCZ</div></div>
                             </div>
+                            <p style="font-size:0.65rem;color:var(--dim);margin:8px 0 0 0">December (ZCZ) = new crop. Each contract = 5,000 bushels. Tick = ¼¢ ($12.50).</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Sidebar -->
-                <div>
-                    <!-- Symbol Overview Widget -->
-                    <div class="price-panel">
-                        <div class="price-panel-head"><h2>QUOTE</h2></div>
-                        <div class="price-panel-body" style="padding:0;height:180px">
-                            <iframe src="https://www.tradingview.com/widgetembed/?symbol=CBOT%3AZC1%21&interval=D&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=f1f3f6&theme=dark&style=3&timezone=America%2FChicago&withdateranges=0&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en" style="width:100%;height:100%;border:none" allowtransparency="true" frameborder="0"></iframe>
-                        </div>
+                <!-- WEATHER -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>🌤️ WEATHER</h2>
+                        <span class="toggle">−</span>
                     </div>
-
-                    <!-- Related Markets -->
-                    <div class="price-panel" style="margin-top:12px">
-                        <div class="price-panel-head"><h2>RELATED MARKETS</h2></div>
-                        <div class="price-panel-body">
-                            <div style="display:grid;gap:6px">
-                                <a href="/soybean-prices.html" style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem"><span>🫘 Soybeans</span><span style="color:var(--accent)">→</span></a>
-                                <a href="/wheat-prices.html" style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem"><span>🌾 Wheat</span><span style="color:var(--accent)">→</span></a>
-                                <a href="https://www.tradingview.com/symbols/CBOT-ZM1!/" target="_blank" style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem"><span>🥜 Soybean Meal</span><span style="color:var(--dim)">↗</span></a>
-                                <a href="https://www.tradingview.com/symbols/NYMEX-RB1!/" target="_blank" style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem"><span>⛽ Ethanol/RBOB</span><span style="color:var(--dim)">↗</span></a>
+                    <div class="dash-section-body">
+                        <div class="weather-grid">
+                            <div class="weather-card">
+                                <h4>🇺🇸 US Corn Belt</h4>
+                                <p>Iowa, Illinois, Nebraska, Minnesota, Indiana - the heart of US corn production.</p>
+                                <a href="https://www.weather.gov/" target="_blank">NWS Forecasts →</a><br>
+                                <a href="https://radar.weather.gov/" target="_blank">Live Radar →</a>
+                            </div>
+                            <div class="weather-card">
+                                <h4>🏜️ Drought Monitor</h4>
+                                <p>Weekly drought conditions across corn growing regions.</p>
+                                <a href="https://droughtmonitor.unl.edu/" target="_blank">View Drought Map →</a>
+                            </div>
+                            <div class="weather-card">
+                                <h4>🌡️ 6-10 Day Outlook</h4>
+                                <p>Temperature and precipitation forecasts from CPC.</p>
+                                <a href="https://www.cpc.ncep.noaa.gov/products/predictions/610day/" target="_blank">View Outlook →</a>
+                            </div>
+                            <div class="weather-card">
+                                <h4>🇧🇷 Brazil (Safrinha)</h4>
+                                <p>Mato Grosso, Paraná, Goiás - second crop corn regions.</p>
+                                <a href="https://www.meteoblue.com/en/weather/week/mato-grosso_brazil" target="_blank">MT Weather →</a>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Quick Links -->
-                    <div class="price-panel" style="margin-top:12px">
-                        <div class="price-panel-head"><h2>RESOURCES</h2></div>
-                        <div class="price-panel-body">
-                            <div class="quick-links" style="margin:0">
-                                <a href="https://www.cmegroup.com/markets/agriculture/grains/corn.html" target="_blank">CME Corn</a>
-                                <a href="https://www.barchart.com/futures/quotes/ZC*0/overview" target="_blank">Barchart</a>
-                                <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank">WASDE</a>
-                                <a href="https://www.eia.gov/petroleum/ethanolcapacity/" target="_blank">Ethanol</a>
-                                <a href="/calendar.html">Report Calendar</a>
-                                <a href="/learn.html">Marketing Guide</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tools -->
-                    <div class="price-panel" style="margin-top:12px">
-                        <div class="price-panel-head"><h2>CALCULATORS</h2></div>
-                        <div class="price-panel-body">
-                            <div style="display:grid;gap:6px">
-                                <a href="/breakeven.html" style="display:block;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem">💰 Break-Even Calculator</a>
-                                <a href="/calculator.html" style="display:block;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem">🌾 Grain Bin Calculator</a>
-                                <a href="/fastfacts.html" style="display:block;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem">📊 Fast Facts Reference</a>
-                            </div>
+                        <div class="link-grid" style="margin-top:12px">
+                            <a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" class="link-item external"><span>📅 30-90 Day Outlook (CPC)</span><span>Long range</span></a>
+                            <a href="https://www.weather.gov/cle/GrowerServices" target="_blank" class="link-item external"><span>🌾 Agricultural Weather</span><span>NWS</span></a>
+                            <a href="https://www.wpc.ncep.noaa.gov/qpf/day1-7.shtml" target="_blank" class="link-item external"><span>💧 Precipitation Forecasts</span><span>WPC</span></a>
                         </div>
                     </div>
                 </div>
+
+                <!-- USDA REPORTS -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>📊 USDA REPORTS</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="link-grid">
+                            <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank" class="link-item external"><span>📈 WASDE Report</span><span>Monthly ~10th</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/8336h188j" target="_blank" class="link-item external"><span>🚢 Export Sales</span><span>Thu 8:30am</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/c534fn92g" target="_blank" class="link-item external"><span>🌱 Crop Progress</span><span>Mon 4pm (season)</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/xg94hp534" target="_blank" class="link-item external"><span>🏭 Grain Stocks</span><span>Quarterly</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/x633f100h" target="_blank" class="link-item external"><span>🚜 Prospective Plantings</span><span>Late March</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/j098zb09z" target="_blank" class="link-item external"><span>📐 Acreage Report</span><span>Late June</span></a>
+                            <a href="https://www.nass.usda.gov/Quick_Stats/" target="_blank" class="link-item external"><span>📚 NASS Quick Stats</span><span>Database</span></a>
+                        </div>
+                        <a href="/calendar.html" style="display:block;margin-top:12px;padding:12px;background:var(--accent);color:black;text-align:center;border-radius:6px;text-decoration:none;font-weight:600;font-size:0.8rem">📅 View Full Report Calendar →</a>
+                    </div>
+                </div>
+
+                <!-- ETHANOL -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>⛽ ETHANOL & DEMAND</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="info-card" style="margin-bottom:12px">
+                            <p><strong>~40% of US corn</strong> goes to ethanol production. Ethanol margins directly impact corn demand.</p>
+                        </div>
+                        <div class="link-grid">
+                            <a href="https://www.eia.gov/petroleum/ethanolcapacity/" target="_blank" class="link-item external"><span>🏭 Ethanol Production (EIA)</span><span>Weekly</span></a>
+                            <a href="https://www.eia.gov/dnav/pet/pet_pnp_wprode_s1_w.htm" target="_blank" class="link-item external"><span>📊 Weekly Ethanol Stats</span><span>EIA</span></a>
+                            <a href="https://www.barchart.com/futures/quotes/ZK*0" target="_blank" class="link-item external"><span>📈 Ethanol Futures (ZK)</span><span>Barchart</span></a>
+                            <a href="https://www.barchart.com/futures/quotes/RB*0" target="_blank" class="link-item external"><span>⛽ RBOB Gasoline</span><span>Barchart</span></a>
+                            <a href="https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production" target="_blank" class="link-item external"><span>📚 RFA Statistics</span><span>Annual data</span></a>
+                            <a href="https://grains.org/ethanol-2/ethanol-market-and-pricing-data/" target="_blank" class="link-item external"><span>💵 Ethanol Margins</span><span>USGC</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EXPORTS & TRADE -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>🚢 EXPORTS & TRADE</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="data-grid" style="margin-bottom:12px">
+                            <div class="data-card">
+                                <div class="data-card-label">Top Buyer</div>
+                                <div class="data-card-value">🇲🇽 Mexico</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">#2 Buyer</div>
+                                <div class="data-card-value">🇯🇵 Japan</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">#3 Buyer</div>
+                                <div class="data-card-value">🇨🇳 China</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">Export Share</div>
+                                <div class="data-card-value">~15%</div>
+                                <div class="data-card-sub">of US crop</div>
+                            </div>
+                        </div>
+                        <div class="link-grid">
+                            <a href="https://usda.library.cornell.edu/concern/publications/8336h188j" target="_blank" class="link-item external"><span>📋 Export Sales Report</span><span>Thu 8:30am</span></a>
+                            <a href="https://www.ams.usda.gov/market-news/grain-and-oilseeds" target="_blank" class="link-item external"><span>🚚 Export Inspections</span><span>AMS Weekly</span></a>
+                            <a href="https://apps.fas.usda.gov/gats/default.aspx" target="_blank" class="link-item external"><span>🌐 GATS Trade Data</span><span>FAS Database</span></a>
+                            <a href="https://ipad.fas.usda.gov/cropexplorer/pecad/main.aspx" target="_blank" class="link-item external"><span>🗺️ PSD Online</span><span>Global S&D</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SOUTH AMERICA -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>🌎 SOUTH AMERICA</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <h4>🇧🇷 Brazil</h4>
+                                <p><strong>World's #3 producer, #2 exporter.</strong> Safrinha (2nd crop) = ~75% of production. Planted Jan-Mar after soybeans. Harvest Jun-Aug.</p>
+                                <a href="https://www.conab.gov.br/info-agro/safras/graos" target="_blank" style="font-size:0.7rem;color:var(--accent)">CONAB Estimates →</a>
+                            </div>
+                            <div class="info-card">
+                                <h4>🇦🇷 Argentina</h4>
+                                <p><strong>World's #4 producer, #3 exporter.</strong> Single crop planted Sep-Dec. Harvest Mar-Jun. Often affected by La Niña drought.</p>
+                                <a href="https://www.bolsadecereales.com/estimaciones-informes" target="_blank" style="font-size:0.7rem;color:var(--accent)">Bolsa Estimates →</a>
+                            </div>
+                        </div>
+                        <div class="link-grid" style="margin-top:12px">
+                            <a href="https://ipad.fas.usda.gov/cropexplorer/cropview/commodityView.aspx?cropid=0440000&sel_year=2024&rankby=Production" target="_blank" class="link-item external"><span>🌽 Global Corn Production</span><span>FAS</span></a>
+                            <a href="https://www.abiove.org.br/en/statistics/" target="_blank" class="link-item external"><span>🇧🇷 ABIOVE Statistics</span><span>Brazil</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUPPLY & DEMAND -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>📦 US SUPPLY & DEMAND</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="info-card" style="margin-bottom:12px">
+                            <p>Key metrics from USDA WASDE. Updated monthly around the 10th.</p>
+                        </div>
+                        <div class="data-grid">
+                            <div class="data-card">
+                                <div class="data-card-label">Production</div>
+                                <div class="data-card-value">~15B</div>
+                                <div class="data-card-sub">bushels/yr</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">Yield</div>
+                                <div class="data-card-value">~180</div>
+                                <div class="data-card-sub">bu/acre trend</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">Acres</div>
+                                <div class="data-card-value">~90M</div>
+                                <div class="data-card-sub">planted</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">Feed Use</div>
+                                <div class="data-card-value">~35%</div>
+                                <div class="data-card-sub">of total</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">Ethanol</div>
+                                <div class="data-card-value">~40%</div>
+                                <div class="data-card-sub">of total</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">Exports</div>
+                                <div class="data-card-value">~15%</div>
+                                <div class="data-card-sub">of total</div>
+                            </div>
+                        </div>
+                        <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank" style="display:block;margin-top:12px;font-size:0.75rem;color:var(--accent);text-align:center">View Full WASDE Report →</a>
+                    </div>
+                </div>
+
+                <!-- SEASONAL PATTERNS -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>📅 SEASONAL PATTERNS</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="info-card">
+                            <h4>Typical Price Cycle</h4>
+                            <ul>
+                                <li><strong>Feb-Apr:</strong> Rally on planting uncertainty, "buying acres"</li>
+                                <li><strong>May-Jun:</strong> Weather premium builds, planting progress</li>
+                                <li><strong style="color:var(--green)">Late Jun-Jul:</strong> SEASONAL HIGH — pollination weather critical</li>
+                                <li><strong>Aug-Sep:</strong> Prices decline as crop matures</li>
+                                <li><strong style="color:var(--red)">Oct-Nov:</strong> SEASONAL LOW — harvest pressure</li>
+                                <li><strong>Dec-Jan:</strong> Post-harvest stabilization, SA focus</li>
+                            </ul>
+                        </div>
+                        <div class="info-card" style="margin-top:8px">
+                            <h4>Key Dates</h4>
+                            <p><strong>Planting:</strong> Late Apr - early Jun (50% by mid-May ideal)<br>
+                            <strong>Pollination:</strong> Mid-Jul (most critical 2 weeks)<br>
+                            <strong>Harvest:</strong> Sep - Nov (50% by late Oct typical)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BASIS -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>📍 BASIS & CASH</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="info-card" style="margin-bottom:12px">
+                            <p><strong>Basis = Cash Price − Futures Price.</strong> Tracks local supply/demand vs. national market. Widens at harvest, narrows in summer.</p>
+                        </div>
+                        <div class="link-grid">
+                            <a href="https://www.barchart.com/futures/quotes/ZC*0/cash-prices" target="_blank" class="link-item external"><span>💵 Cash Corn Prices</span><span>Barchart</span></a>
+                            <a href="https://www.dtn.com/agriculture/grains/" target="_blank" class="link-item external"><span>📊 DTN Cash Bids</span><span>Regional</span></a>
+                            <a href="https://farmdocdaily.illinois.edu/tag/corn" target="_blank" class="link-item external"><span>📚 Farmdoc Corn Analysis</span><span>U of I</span></a>
+                            <a href="/learn.html#basis" class="link-item"><span>📖 Understanding Basis</span><span>Learn</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COT & POSITIONING -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>📊 COT & POSITIONING</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="info-card" style="margin-bottom:12px">
+                            <p><strong>Commitment of Traders (COT)</strong> shows hedge fund and commercial positioning. Large managed money shorts can fuel rallies; large longs can pressure prices.</p>
+                        </div>
+                        <div class="link-grid">
+                            <a href="https://www.cftc.gov/dea/futures/ag_lf.htm" target="_blank" class="link-item external"><span>📋 CFTC COT Report</span><span>Fri 3:30pm</span></a>
+                            <a href="https://www.barchart.com/futures/commitment-of-traders/technical-charts/ZC*0" target="_blank" class="link-item external"><span>📈 COT Charts</span><span>Barchart</span></a>
+                            <a href="https://www.tradingster.com/cot/futures/fin/001602" target="_blank" class="link-item external"><span>📊 Historical COT</span><span>Tradingster</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TOOLS & CALCULATORS -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>🧮 TOOLS & CALCULATORS</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="link-grid">
+                            <a href="/breakeven.html" class="link-item"><span>💰 Break-Even Calculator</span><span>Cost/bushel</span></a>
+                            <a href="/calculator.html" class="link-item"><span>🌾 Grain Bin Calculator</span><span>Capacity</span></a>
+                            <a href="/gdu.html" class="link-item"><span>🌡️ GDU Calculator</span><span>Growing degrees</span></a>
+                            <a href="/fastfacts.html" class="link-item"><span>📊 Fast Facts Reference</span><span>Quick data</span></a>
+                            <a href="/learn.html" class="link-item"><span>📚 Marketing Guide</span><span>Education</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RELATED MARKETS -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>🔗 RELATED MARKETS</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="link-grid">
+                            <a href="/soybean-prices.html" class="link-item"><span>🫘 Soybean Dashboard</span><span>AGSIST</span></a>
+                            <a href="/wheat-prices.html" class="link-item"><span>🌾 Wheat Dashboard</span><span>AGSIST</span></a>
+                            <a href="https://www.barchart.com/futures/quotes/LE*0" target="_blank" class="link-item external"><span>🐄 Live Cattle</span><span>Feed demand</span></a>
+                            <a href="https://www.barchart.com/futures/quotes/HE*0" target="_blank" class="link-item external"><span>🐖 Lean Hogs</span><span>Feed demand</span></a>
+                            <a href="https://www.barchart.com/futures/quotes/DX*0" target="_blank" class="link-item external"><span>💵 US Dollar Index</span><span>Export factor</span></a>
+                            <a href="https://www.barchart.com/futures/quotes/CL*0" target="_blank" class="link-item external"><span>🛢️ Crude Oil</span><span>Input costs</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTRACT SPECS -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>📋 CONTRACT SPECIFICATIONS</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="data-grid">
+                            <div class="data-card"><div class="data-card-label">Exchange</div><div class="data-card-value">CBOT</div></div>
+                            <div class="data-card"><div class="data-card-label">Symbol</div><div class="data-card-value">ZC</div></div>
+                            <div class="data-card"><div class="data-card-label">Size</div><div class="data-card-value">5,000 bu</div></div>
+                            <div class="data-card"><div class="data-card-label">Tick</div><div class="data-card-value">¼¢</div><div class="data-card-sub">= $12.50</div></div>
+                            <div class="data-card"><div class="data-card-label">Grade</div><div class="data-card-value">#2 Yellow</div></div>
+                            <div class="data-card"><div class="data-card-label">Delivery</div><div class="data-card-value">Chicago</div></div>
+                        </div>
+                        <div class="info-card" style="margin-top:12px">
+                            <h4>Trading Hours (Central Time)</h4>
+                            <p><strong>Electronic (Globex):</strong> Sun-Fri 7:00pm - 7:45am & 8:30am - 1:20pm<br>
+                            <strong>Settlement:</strong> 1:15pm CT<br>
+                            <strong>Daily Limits:</strong> Variable based on settlement price</p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="source-note">
-                Market data provided by <a href="https://www.tradingview.com/" target="_blank" style="color:var(--accent)">TradingView</a>. Prices may be delayed. Not financial advice.
+            <div class="dash-footer">
+                <strong>Disclaimer:</strong> This dashboard aggregates publicly available data and links. Prices may be delayed. Nothing here constitutes financial advice. Futures trading involves substantial risk of loss. Consult a licensed broker before trading.<br><br>
+                Data sources: <a href="https://www.usda.gov" target="_blank">USDA</a>, <a href="https://www.cmegroup.com" target="_blank">CME Group</a>, <a href="https://www.eia.gov" target="_blank">EIA</a>, <a href="https://www.barchart.com" target="_blank">Barchart</a>
             </div>
         </div>
     </main>
     <div id="footer"></div>
     <script src="/components/load-components.js"></script>
+    <script>
+    function toggleSection(header){
+        const body=header.nextElementSibling;
+        const toggle=header.querySelector('.toggle');
+        if(body.classList.contains('collapsed')){
+            body.classList.remove('collapsed');
+            toggle.textContent='−';
+        }else{
+            body.classList.add('collapsed');
+            toggle.textContent='+';
+        }
+    }
+    </script>
 </body>
 </html>
