@@ -1,141 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO -->
     <title>Privacy Policy | AGSIST</title>
     <meta name="description" content="AGSIST privacy policy. How we collect, use, and protect your information.">
     <link rel="canonical" href="https://agsist.com/privacy.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://agsist.com/privacy.html">
+    <meta property="og:title" content="Privacy Policy | AGSIST">
+    <meta property="og:description" content="AGSIST privacy policy. How we collect, use, and protect your information.">
+    <meta property="og:site_name" content="AGSIST">
+    
+    <!-- Standard -->
+    <meta name="theme-color" content="#0a0a0c">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="/components/shared.css">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    
+    <!-- Page Styles -->
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --bg: #0d0d0f;
-            --card: #141418;
-            --border: #2a2a32;
-            --text: #e8e8ec;
-            --dim: #a0a0a8;
-            --accent: #e6b042;
-        }
-        body {
-            font-family: 'JetBrains Mono', monospace;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.7;
-            min-height: 100vh;
-        }
-        nav {
-            background: var(--card);
-            border-bottom: 1px solid var(--border);
-            padding: 12px 16px;
-        }
-        .nav-inner {
-            max-width: 900px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-weight: 700;
-            font-size: 1.3rem;
-            color: var(--accent);
-            text-decoration: none;
-        }
-        .nav-links a {
-            color: var(--dim);
-            text-decoration: none;
-            font-size: 0.95rem;
-            margin-left: 20px;
-        }
-        .nav-links a:hover { color: var(--accent); }
-        main {
-            max-width: 900px;
+        .page-content {
+            max-width: 800px;
             margin: 0 auto;
             padding: 40px 20px;
         }
-        h1 {
-            font-size: 1.5rem;
+        
+        .page-content h1 {
+            font-size: 1.8rem;
             color: var(--accent);
             margin-bottom: 8px;
         }
+        
         .updated {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             color: var(--dim);
             margin-bottom: 32px;
         }
-        h2 {
+        
+        .page-content h2 {
             font-size: 1rem;
             color: var(--text);
             margin: 32px 0 12px;
             padding-bottom: 8px;
             border-bottom: 1px solid var(--border);
         }
-        p, li {
+        
+        .page-content p,
+        .page-content li {
             font-size: 0.9rem;
             color: var(--dim);
             margin-bottom: 12px;
+            line-height: 1.7;
         }
-        ul {
+        
+        .page-content ul {
             margin-left: 20px;
             margin-bottom: 16px;
         }
-        a { color: var(--accent); }
-        footer {
-            background: var(--card);
-            border-top: 1px solid var(--border);
-            padding: 20px;
-            text-align: center;
-            margin-top: 60px;
+        
+        .page-content a {
+            color: var(--accent);
         }
-        footer a {
-            color: var(--dim);
-            text-decoration: none;
-            margin: 0 12px;
-            font-size: 0.95rem;
+        
+        .page-content strong {
+            color: var(--text);
         }
-        footer a:hover { color: var(--accent); }
-        .footer-copy {
-            margin-top: 12px;
-            font-size: 0.9rem;
-            color: var(--dim);
-        }
-        @media (max-width: 600px) {
-            .nav-links { display: none; }
+        
+        @media (max-width: 768px) {
+            .page-content {
+                padding: 24px 16px;
+            }
+            
+            .page-content h1 {
+                font-size: 1.4rem;
+            }
         }
     </style>
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-        <nav class="main-nav">
-        <div class="nav-inner">
-            <a href="index.html" class="logo">AGSIST</a>
-            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
-            <div class="nav-links">
-                <div class="nav-dropdown">
-                    <button class="nav-link dropdown-toggle">Prices ▾</button>
-                    <div class="dropdown-menu">
-                        <a href="corn-prices.html" class="dropdown-item">🌽 Corn</a>
-                        <a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a>
-                        <a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a>
-                    </div>
-                </div>
-                <a href="tools.html" class="nav-link">Tools</a>
-                <a href="fastfacts.html" class="nav-link">Fast Facts</a>
-                <a href="learn.html" class="nav-link">Learn</a>
-                <a href="calendar.html" class="nav-link">Calendar</a>
-                <a href="resources.html" class="nav-link">Links</a>
-            </div>
-        </div>
-    </nav>
-
-    <main>
+    <!-- Header -->
+    <div id="header"></div>
+    
+    <main class="page-content">
         <h1>Privacy Policy</h1>
         <p class="updated">Last updated: January 2026</p>
 
@@ -157,7 +118,7 @@
         <h2>Third-Party Services</h2>
         <p>We use the following third-party services:</p>
         <ul>
-            <li><strong>Google Analytics:</strong> For website analytics. See <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a>.</li>
+            <li><strong>Google Analytics:</strong> For website analytics. See <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</li>
             <li><strong>Market Data Providers:</strong> Price data is sourced from public APIs and may be delayed.</li>
         </ul>
 
@@ -177,78 +138,11 @@
         <h2>Contact</h2>
         <p>Questions about this privacy policy? Visit our <a href="/resources.html">Resources</a> page for contact information.</p>
     </main>
-
-            <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-main">
-                <div class="footer-brand-row">
-                    <a href="index.html" class="footer-brand">AGSIST</a>
-                    <span class="footer-sep">|</span>
-                    <span class="footer-tagline">Free agricultural prices, tools & news</span>
-                </div>
-                <div class="footer-links">
-                    <a href="corn-prices.html">Corn</a>
-                    <a href="soybean-prices.html">Soybeans</a>
-                    <a href="wheat-prices.html">Wheat</a>
-                    <a href="tools.html">Tools</a>
-                    <a href="fastfacts.html">Fast Facts</a>
-                    <a href="calendar.html">Calendar</a>
-                    <a href="resources.html">Resources</a>
-                </div>
-                <div class="footer-legal">
-                    <span>© 2026 AGSIST</span>
-                    <a href="privacy.html">Privacy</a>
-                    <a href="terms.html">Terms</a>
-                </div>
-            </div>
-            <div class="footer-network">
-                <h4>Our Network</h4>
-                <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
-                <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
-                <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-    document.querySelector('.menu-toggle')?.addEventListener('click', function() {
-        const nav = document.querySelector('.nav-links');
-        const isOpen = nav.classList.toggle('open');
-        this.textContent = isOpen ? '✕' : '☰';
-    });
-    document.querySelectorAll('.nav-dropdown-trigger').forEach(trigger => {
-        trigger.addEventListener('click', function(e) {
-            if (window.innerWidth <= 767) {
-                e.preventDefault();
-                this.closest('.nav-dropdown').classList.toggle('open');
-            }
-        });
-    });
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('nav')) {
-            document.querySelector('.nav-links')?.classList.remove('open');
-            const toggle = document.querySelector('.menu-toggle');
-            if (toggle) toggle.textContent = '☰';
-        }
-        if (!e.target.closest('.nav-dropdown')) {
-            document.querySelectorAll('.nav-dropdown.open').forEach(d => d.classList.remove('open'));
-        }
-    });
-    </script>
-    <script>
-    document.querySelector('.mobile-menu-btn')?.addEventListener('click', function() {
-        const nav = document.querySelector('.nav-links');
-        const isOpen = nav.classList.toggle('open');
-        this.textContent = isOpen ? '✕' : '☰';
-    });
-    document.querySelectorAll('.nav-link.dropdown-toggle').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            if (window.innerWidth <= 767) {
-                e.preventDefault();
-                this.closest('.nav-dropdown').classList.toggle('open');
-            }
-        });
-    });
-    </script>
+    
+    <!-- Footer -->
+    <div id="footer"></div>
+    
+    <!-- Component Loader -->
+    <script src="/components/load-components.js"></script>
 </body>
 </html>
