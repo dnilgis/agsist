@@ -1,6 +1,62 @@
 {
   "items": [
     {
+      "id": "d12dc771cb6fe3b8",
+      "title": "Trying to clarify issues about US Bans on drones",
+      "link": "https://www.reddit.com/r/Agriculture/comments/1qsex20/trying_to_clarify_issues_about_us_bans_on_drones/",
+      "description": "<table> <tr><td> <a href=\"https://www.reddit.com/r/Agriculture/comments/1qsex20/trying_to_clarify_issues_about_us_bans_on_drones/\"> <img src=\"https://external-preview.redd.it/JKQSQ5dDv4FJkw7t2X3MQ2grwL2P8gA7W8pM-Drykq4.jpeg?width=640&amp;crop=smart&amp;auto=webp&amp;s=d6fa5f2b2200bed92d6d142f177b9edfa632a169\" alt=\"Trying to clarify issues about US Bans on drones\" title=\"Trying to clarify issues about US Bans on drones\" /> </a> </td><td> &#32; submitted by &#32; <a href=\"https://www.reddit.com/us",
+      "date": "2026-01-31T21:31:21+00:00",
+      "timestamp": 1769895081000,
+      "source": "r/agriculture",
+      "category": "community",
+      "icon": "🌾",
+      "thumbnail": "https://external-preview.redd.it/JKQSQ5dDv4FJkw7t2X3MQ2grwL2P8gA7W8pM-Drykq4.jpeg?width=640&amp;crop=smart&amp;auto=webp&amp;s=d6fa5f2b2200bed92d6d142f177b9edfa632a169",
+      "summary": "S. government's regulations on the use of drones in agriculture. The main points are:\n\n- In 2016, the Federal Aviation Administration (FAA) implemented regulations that require drone operators to obtain a Part 107 commercial drone pilot license to use drones for any commercial purpose, including agriculture.\n\n- The regulations limit the weight of drones to under 55 pounds and restrict their use to visual line-of-sight operations only. Drones cannot be flown over people or beyond the operator's direct visual range.\n\n- These regulations have faced criticism from farmers and agricultural organizations, who argue that the restrictions make it difficult to use drones for beneficial applications like crop monitoring, precision spraying, and livestock management.\n\n- The Association for Unmanned Vehicle Systems International estimates that the integration of drones into U.S. agriculture could generate over $82 billion in economic activity and create 100,000 new jobs by 2025.\n\n- However, the FAA maintains that the regulations are necessary to ensure public safety and prevent misuse of drone technology.\n\n- Some experts suggest that working with the FAA to develop more flexible regulations for agricultural drone use could be a way forward. This could involve establishing specific drone corridors or testing programs to demonstrate the benefits of agricultural drone applications.\n\nThe article highlights the ongoing tension between the desire to utilize drone technology in agriculture and the government's efforts to regulate its use for safety and security reasons. Resolving this issue could have significant economic implications for the agricultural sector.",
+      "summaryTimestamp": 1769897922756
+    },
+    {
+      "id": "2d5f47481b9c5d31",
+      "title": "Op-Ed: Unnecessary Food Restrictions Hurt Indiana Farmers and Families",
+      "link": "https://www.morningagclips.com/op-ed-unnecessary-food-restrictions-hurt-indiana-farmers-and-families/",
+      "description": "INDIANAPOLIS — Indiana pork farmers are concerned about House Bill 1137, which would move our state toward food regulations similar to those used in Europe. The bill would restrict certain foods from school lunchrooms if they contain additives on a state-created list, even if those additives are considered safe by federal and international standards. The [&#8230;] The post Op-Ed: Unnecessary Food Restrictions Hurt Indiana Farmers and Families appeared first on Morning Ag Clips.",
+      "date": "Sat, 31 Jan 2026 20:47:09 +0000",
+      "timestamp": 1769892429000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "",
+      "summary": "One of the additives on the list is BHT, which is used in some pork products to prevent spoilage. \n\nThe bill has already passed the Indiana House and is now before the Senate. Indiana Pork, represented by Executive Director Josh Trenary, opposes the bill, arguing it would hurt Indiana farmers and reduce food choices for families. Trenary states that both the FDA and international Codex Alimentarius deem BHT safe for human consumption within approved limits.\n\nTrenary urges Indiana senators to vote against HB 1137, arguing the state should rely on sound science and established food safety standards rather than adopt unnecessary restrictions mirroring policies in Europe and California. He says overly restrictive regulations limit how nutritious whole foods like pork can be processed and distributed, impacting affordability and availability for families.",
+      "summaryTimestamp": 1769897925728
+    },
+    {
+      "id": "3838d234b152d631",
+      "title": "Commentary: Looking back at a year of putting Ohio farmers first",
+      "link": "https://www.farmanddairy.com/top-stories/commentary-looking-back-at-a-year-of-putting-ohio-farmers-first/903021.html",
+      "description": "Ohio FSA Director Don Jones reflects on the president's second term in office and how it impacted Ohio agriculture. The post Commentary: Looking back at a year of putting Ohio farmers first appeared first on Farm and Dairy.",
+      "date": "Sat, 31 Jan 2026 20:29:55 +0000",
+      "timestamp": 1769891395000,
+      "source": "Farm and Dairy",
+      "category": "industry",
+      "icon": "🌾",
+      "thumbnail": "",
+      "summary": "In Ohio, this includes $301 million through the Emergency Commodity Assistance Program (ECAP), $120 million in disaster relief through the Supplemental Disaster Relief Program (SDRP), and $28.8 million in assistance for specialty crop and livestock producers. \n\nThe administration also strengthened the farm safety net through the One Big Beautiful Bill Act, raising statutory reference prices for major commodities by 10-21% and adding over 30 million new base acres to Agriculture Risk Coverage and Price Loss Coverage programs starting in 2026. Crop insurance was also made more affordable, saving farmers over $400 million annually.\n\nTo lower farmers' costs, the administration is targeting price fixing and anti-competitive behavior in input markets like seed, fertilizer and equipment. It has also reformed the H-2A agricultural worker program, providing over $2 billion in annual savings.\n\nThe USDA plans to purchase up to $970 million in healthy, U.S.-grown commodities this year. Additionally, the administration announced $12 billion in Farmer Bridge Payments to help producers weather market disruptions and volatility.\n\nThe administration is also expanding global market access for American agriculture through new trade deals with over 15 countries. Ohio's farm exports support income, jobs and economic growth.\n\nDon Jones, Ohio FSA Executive Director, states the Trump administration's \"Farmers First\" agenda is delivering real relief, stronger safety nets, and expanded markets - with more progress to come.",
+      "summaryTimestamp": 1769897929971
+    },
+    {
+      "id": "b19e95cf168fe8f4",
+      "title": "USDA, MSU Extension Offer Value-Added Producer Grant Webinar",
+      "link": "https://www.morningagclips.com/usda-msu-extension-offer-value-added-producer-grant-webinar/",
+      "description": "EAST LANSING, Mich. — Have you ever considered grant funding to help enhance your valued-added agriculture business? By attending a webinar hosted by Michigan State University Extension and the MSU Product Center, you will be one step closer to determining if the U.S. Department of Agriculture&#8217;s (USDA) Value-Added Producer Grant is the right fit to [&#8230;] The post USDA, MSU Extension Offer Value-Added Producer Grant Webinar appeared first on Morning Ag Clips.",
+      "date": "Sat, 31 Jan 2026 20:24:27 +0000",
+      "timestamp": 1769891067000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "",
+      "summary": "S. Department of Agriculture (USDA) and Michigan State University (MSU) Extension are hosting a webinar on February 5, 2026 from 6-8 pm to cover the USDA's Value-Added Producer Grant. This grant provides funding to help enhance value-added agriculture businesses. \n\nThe webinar will outline the grant's eligibility requirements, priority areas, matching fund needs, and the FY26 application process, which will use a web-based platform. Attending the webinar is strongly recommended, even for those planning to apply in 2027, to prepare a strong grant application.\n\nThe MSU Product Center can also assist businesses in developing a proposal and feasibility study, which may be required for the grant. Interested parties must attend an introductory seminar to become a Product Center client and access their business development services.\n\nNo additional details on grant amounts, deadlines, or specific eligibility criteria were provided in the article. However, the webinar is intended to provide all the necessary information for farmers to determine if this USDA grant opportunity is a good fit for their value-added agriculture operations.",
+      "summaryTimestamp": 1769897933319
+    },
+    {
       "id": "a65b71e4b02bb4a6",
       "title": "Licking County Cattlemen’s Association Named Outstanding County",
       "link": "https://www.morningagclips.com/licking-county-cattlemens-association-named-outstanding-county/",
@@ -55,34 +111,6 @@
       "thumbnail": "",
       "summary": "The MALC is a state-of-the-art facility that will provide students with hands-on learning opportunities with swine, equine, poultry, and ruminants, while also engaging the public on modern livestock production. \n\nThe MALC, which had its ribbon-cutting ceremony on January 29, 2026, spans over 150,000 square feet and will house approximately 2,200 animals when fully populated. It includes separate, biosecure barns for each livestock species as well as a dairy with robotic milkers and automated manure systems. \n\nThe opening of the MALC is seen as an exciting milestone that will strengthen workforce development for a wide range of careers related to animal agriculture. Over 250 guests, including Ohio Department of Agriculture Director Brian Baldridge and Nationwide President and COO Mark Berven, attended the ribbon-cutting ceremony.\n\nThe MALC is the second major addition to the Waterman facility in the last five years, following the introduction of the Controlled Environment Agriculture Research Complex (CEARC) in 2022. Together, these facilities aim to advance teaching, research, and outreach in food systems, agriculture, environmental sustainability, and community health.\n\nCFAES Dean Cathann A. Kress stated that the MALC will give students unparalleled, hands-on learning opportunities while strengthening CFAES' ability to engage the public and prepare the next generation of agricultural leaders.",
       "summaryTimestamp": 1769890862901
-    },
-    {
-      "id": "c6091784ed9f89db",
-      "title": "Working in Balance with Angus Traits",
-      "link": "https://www.morningagclips.com/working-in-balance-with-angus-traits/",
-      "description": "WOOSTER, Ohio — When you look at quality grid premiums, Angus cattle continue to defy the fundamentals of supply and demand. As Angus cattle continue to improve, today there is a higher percentage of high-quality carcasses hanging on the rail, yet producers continue to get paid for it. That’s strong demand — and a clear [&#8230;] The post Working in Balance with Angus Traits appeared first on Morning Ag Clips.",
-      "date": "Sat, 31 Jan 2026 17:54:35 +0000",
-      "timestamp": 1769882075000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "https://www.morningagclips.com/wp-content/uploads/2026/01/Graph1_DefectRate_WorkInBal_NR-300x165.png",
-      "summary": "Kara Lee of Certified Angus Beef shared data showing that Angus cattle can simultaneously improve carcass and maternal traits:\n\n- Angus cattle continue to have a higher percentage of high-quality carcasses, with 72% of fed cattle being Angus-influenced. However, only 4 in 10 Angus-influenced cattle meet all 10 Certified Angus Beef (CAB) carcass specifications.\n- In 2024, 82% of Angus-influenced cattle didn't have enough marbling to qualify for CAB. Just over 10% were within 30 points of the marbling threshold, so moderate improvements could have a meaningful impact.\n- Data analysis showed that cattle culled for foot and fertility issues tended to have lower marbling expected progeny differences (EPDs), with the bulk of culled animals around +0.40 Marb EPD, which was the 2005 breed average.\n- The 2025 breed average Marb EPD for current sires was +0.64. Targeting the Brand requirements are +0.65 Marb EPD and +55 $G Index.\n- To achieve a 60% CAB acceptance rate (versus the current 37%), Targeting the Brand is a data-driven tool to identify registered Angus animals. For a 20% Prime acceptance rate, data suggests +1.10 Marb EPD and +72 $G.\n- Angus breeders can select for marbling without excluding other valuable traits like feet and fertility, as improvements in one area don't necessarily come at the expense of others.",
-      "summaryTimestamp": 1769883995064
-    },
-    {
-      "id": "5156d625cdc7e297",
-      "title": "What Is Agriculture Data Analytics? A Guide for Modern Farms",
-      "link": "https://www.morningagclips.com/agriculture-data-analytics/",
-      "description": "SAN MATEO, Calif. &#8212; Agriculture data analytics is the practice of collecting, processing, and analyzing farm-related information to make smarter decisions about crop production, resource management, and overall farm operations. Modern farms generate massive amounts of data from sensors, satellites, machinery, and weather stations. According to the USDA National Agricultural Statistics Service, precision agriculture adoption [&#8230;] The post What Is Agriculture Data Analytics? A Guide for",
-      "date": "Sat, 31 Jan 2026 16:19:40 +0000",
-      "timestamp": 1769876380000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "",
-      "summary": "Precision agriculture adoption has increased by over 50% in the past decade, with farmers increasingly relying on data-driven insights.\n\nThe global agriculture analytics market is projected to reach $2.4 billion by 2028, driven by the need to feed a growing population while using fewer resources. Agriculture data analytics helps farmers understand soil conditions, predict weather patterns, monitor crop health, and optimize planting, irrigation, fertilization, and harvest timing.\n\nKey benefits of agriculture data analytics include:\n- Increases crop yields and quality by precisely meeting crop needs\n- Reduces operational costs and waste by identifying inefficiencies\n- Improves decision-making speed by providing real-time data\n- Supports sustainable farming practices by minimizing chemical/water use\n- Strengthens risk management by anticipating challenges\n\nModern farms collect diverse data from sources like soil sensors, weather stations, drones, satellites, and GPS-equipped machinery. This data is stored, organized, and analyzed to identify patterns and generate actionable insights.\n\nKey technologies powering agriculture data analytics include GPS, remote sensing, IoT sensors, cloud computing, and machine learning/AI algorithms. Implementing data analytics can boost farm productivity, efficiency, financial performance, and environmental sustainability.",
-      "summaryTimestamp": 1769876572943
     },
     {
       "id": "d4b732fd02145e7a",
@@ -673,20 +701,6 @@
       "summaryTimestamp": 1769876610695
     },
     {
-      "id": "c5ad1f1bfc133ae8",
-      "title": "Right tree, right place: A guide to spring tree planting in Ohio",
-      "link": "https://www.farmanddairy.com/news/right-tree-right-place-a-guide-to-spring-tree-planting-in-ohio/903025.html",
-      "description": "Get ready for your local Soil and Water Conservation District tree sale. Learn how to test your soil, protect seedlings from deer, and choose the best species. The post Right tree, right place: A guide to spring tree planting in Ohio appeared first on Farm and Dairy.",
-      "date": "Thu, 29 Jan 2026 21:00:37 +0000",
-      "timestamp": 1769720437000,
-      "source": "Farm and Dairy",
-      "category": "industry",
-      "icon": "🌾",
-      "thumbnail": "https://www.farmanddairy.com/wp-content/uploads/2026/01/buckeye-the-dog-copy.png",
-      "summary": "Soil and water conservation districts in Ohio are hosting spring tree sales to encourage tree planting.\n\nTrees provide important benefits like soil and water conservation, supporting pollinators, and timber production. When selecting trees, it's important to consider factors like soil type, sunlight, and potential conflicts like power lines or car parking areas.\n\nDeer can be a challenge, so tree shelters/tubes are recommended as an investment to protect seedlings. Local resources like state foresters, extension agents, and soil/water conservation districts can provide guidance on the right trees for a given site.\n\nThe article encourages readers to explore their local tree sales and plant a diverse selection of trees to achieve multiple goals. Proper planning is key to ensure the \"right tree in the right place.\"",
-      "summaryTimestamp": 1769876613414
-    },
-    {
       "id": "7259df0c5c30afa7",
       "title": "North Dakota Gov. Kelly Armstrong announces statewide soil health and wildlife habitat program",
       "link": "https://www.agweek.com/news/north-dakota/north-dakota-gov-kelly-armstrong-announces-statewide-soil-health-and-wildlife-habitat-program",
@@ -1261,20 +1275,6 @@
       "summaryTimestamp": 1769812599122
     },
     {
-      "id": "b1cca70db31fce55",
-      "title": "Top 10 Best Tractors That Changed Farming Forever (Ranked & Compared)",
-      "link": "https://www.reddit.com/r/Agriculture/comments/1qljb2u/top_10_best_tractors_that_changed_farming_forever/",
-      "description": "<table> <tr><td> <a href=\"https://www.reddit.com/r/Agriculture/comments/1qljb2u/top_10_best_tractors_that_changed_farming_forever/\"> <img src=\"https://external-preview.redd.it/RdyShpowFyaHk8Ghy-zVZu3U9IPgzJPLLf8RHYB25t8.jpeg?width=640&amp;crop=smart&amp;auto=webp&amp;s=ff57570be26202c15dbb6eb96290e4e448d360f2\" alt=\"Top 10 Best Tractors That Changed Farming Forever (Ranked &amp; Compared)\" title=\"Top 10 Best Tractors That Changed Farming Forever (Ranked &amp; Compared)\" /> </a> </td><td> &#32; su",
-      "date": "2026-01-24T10:08:18+00:00",
-      "timestamp": 1769249298000,
-      "source": "r/agriculture",
-      "category": "community",
-      "icon": "🌾",
-      "thumbnail": "https://external-preview.redd.it/RdyShpowFyaHk8Ghy-zVZu3U9IPgzJPLLf8RHYB25t8.jpeg?width=640&amp;crop=smart&amp;auto=webp&amp;s=ff57570be26202c15dbb6eb96290e4e448d360f2",
-      "summary": "<table> <tr><td> <a href=\"https://www.reddit.com/r/Agriculture/comments/1qljb2u/top_10_best_tractors_that_changed_farming_forever/\"> <img src=\"https://external-preview.redd.it/RdyShpowFyaHk8Ghy-zVZu3U...",
-      "summaryTimestamp": 1769812599122
-    },
-    {
       "id": "e3305465c4421d9b",
       "title": "Jan 23 &#124; Weather Update and Market Review",
       "link": "https://farmdoc.illinois.edu/field-crop-production/weather/jan-23-weather-update-and-market-review.html",
@@ -1412,5 +1412,5 @@
   "feedCount": 29,
   "successCount": 125,
   "summariesGenerated": 4,
-  "updated": "2026-01-31T20:21:03.102Z"
+  "updated": "2026-01-31T22:18:53.519Z"
 }
