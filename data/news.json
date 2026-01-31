@@ -1,6 +1,20 @@
 {
   "items": [
     {
+      "id": "6ec201d190abf923",
+      "title": "Tractor decided",
+      "link": "https://www.reddit.com/r/tractors/comments/1qs10ht/tractor_decided/",
+      "description": "<!-- SC_OFF --><div class=\"md\"><p>What is a good tractor to buy only need it for using a br740 and a haybine 488 I’m undecided either John Deere or new holland looking for a tractor more mechanical than electric any thoughts?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href=\"https://www.reddit.com/user/Acrobatic_Hunt_8264\"> /u/Acrobatic_Hunt_8264 </a> <br/> <span><a href=\"https://www.reddit.com/r/tractors/comments/1qs10ht/tractor_decided/\">[link]</a></span> &#32; <span><a href=\"https://",
+      "date": "2026-01-31T12:24:04+00:00",
+      "timestamp": 1769862244000,
+      "source": "r/tractors",
+      "category": "community",
+      "icon": "🚜",
+      "thumbnail": "",
+      "summary": "The main news from the article is that the farmer is undecided between a John Deere or New Holland tractor for use with a br740 and a haybine 488. The key considerations are that the farmer is looking for a tractor that is more mechanical than electric. No specific prices, dates, or expert quotes are provided. The impact for the farmer is that they need to decide between the two tractor brands to best suit their farming equipment and preferences. The recommendation from the article is for any thoughts or advice from the r/tractors community to help the farmer make their decision.",
+      "summaryTimestamp": 1769863082080
+    },
+    {
       "id": "4b363a880b82747c",
       "title": "Senate passes appropriations bill",
       "link": "https://www.tsln.com/news/senate-passes-appropriations-bill/",
@@ -573,20 +587,6 @@
       "thumbnail": "",
       "summary": "1. Juan, a Colombian national, is seeking advice and guidance on finding ranch, agricultural, or farm-related employment opportunities in Canada, the USA, or Australia.\n\n2. Juan is interested in hands-on, physical work and is comfortable with long hours, outdoor labor, and structured routines, preferring practical work over office or luxury jobs.",
       "summaryTimestamp": 1769812583163
-    },
-    {
-      "id": "aba3f168d8061f2e",
-      "title": "A little community service today…",
-      "link": "https://www.reddit.com/r/tractors/comments/1qqo5dq/a_little_community_service_today/",
-      "description": "<table> <tr><td> <a href=\"https://www.reddit.com/r/tractors/comments/1qqo5dq/a_little_community_service_today/\"> <img src=\"https://preview.redd.it/dcj1gwejddgg1.jpeg?width=640&amp;crop=smart&amp;auto=webp&amp;s=a59ed0255063dfbc51aa53b763ac5f1a1595a482\" alt=\"A little community service today…\" title=\"A little community service today…\" /> </a> </td><td> &#32; submitted by &#32; <a href=\"https://www.reddit.com/user/burnt_tung\"> /u/burnt_tung </a> <br/> <span><a href=\"https://i.redd.it/dcj1gwejddgg1.",
-      "date": "2026-01-29T23:04:27+00:00",
-      "timestamp": 1769727867000,
-      "source": "r/tractors",
-      "category": "community",
-      "icon": "🚜",
-      "thumbnail": "https://preview.redd.it/dcj1gwejddgg1.jpeg?width=640&amp;crop=smart&amp;auto=webp&amp;s=a59ed0255063dfbc51aa53b763ac5f1a1595a482",
-      "summary": "1. A farmer used their tractor to help remove a fallen tree blocking a road in their community, demonstrating the practical utility of farm equipment beyond agricultural tasks.\n\n2. The farmer's community service not only cleared the road but also showcased the versatility of tractors, which can be valuable assets in various situations beyond their primary agricultural functions.",
-      "summaryTimestamp": 1769812584418
     },
     {
       "id": "f4da7149c491b048",
@@ -1411,6 +1411,6 @@
   },
   "feedCount": 29,
   "successCount": 125,
-  "summariesGenerated": 0,
-  "updated": "2026-01-31T10:20:09.317Z"
+  "summariesGenerated": 1,
+  "updated": "2026-01-31T12:38:02.281Z"
 }
