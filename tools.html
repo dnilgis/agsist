@@ -1,17 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Free Farm Tools & Calculators | AGSIST</title>
     <meta name="description" content="Free farming calculators: break-even analysis, GDU tracker, grain bin calculator, fertilizer tools, and more.">
     <link rel="canonical" href="https://agsist.com/tools.html">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
+    
+    <link rel="icon" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/components/shared.css">
     <link rel="stylesheet" href="styles.css">
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    
     <style>
         .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
         .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; transition: all 0.2s; }
@@ -23,22 +29,7 @@
     </style>
 </head>
 <body>
-    <nav class="main-nav">
-        <div class="nav-inner">
-            <a href="/" class="logo">AGSIST</a>
-            <div class="nav-links">
-                <div class="nav-dropdown"><button class="dropdown-toggle">Prices ▾</button><div class="dropdown-menu"><a href="corn-prices.html" class="dropdown-item">🌽 Corn</a><a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a><a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a></div></div>
-                <div class="nav-dropdown"><button class="dropdown-toggle">Tools ▾</button><div class="dropdown-menu"><a href="tools.html" class="dropdown-item">All Tools</a><a href="breakeven.html" class="dropdown-item">Breakeven</a><a href="gdu.html" class="dropdown-item">GDU Calculator</a><a href="calculator.html" class="dropdown-item">Grain Bin</a><a href="fastfacts.html" class="dropdown-item">Fast Facts</a></div></div>
-                <div class="nav-dropdown"><button class="dropdown-toggle">Info ▾</button><div class="dropdown-menu"><a href="learn.html" class="dropdown-item">Learn</a><a href="calendar.html" class="dropdown-item">Calendar</a><a href="resources.html" class="dropdown-item">Resources</a><a href="offices.html" class="dropdown-item">Offices</a></div></div>
-            </div>
-            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
-        </div>
-    </nav>
-    <div class="mobile-menu" id="mobile-menu">
-        <div class="mobile-section">Prices</div><a href="corn-prices.html" class="mobile-link">🌽 Corn</a><a href="soybean-prices.html" class="mobile-link">🫘 Soybeans</a><a href="wheat-prices.html" class="mobile-link">🌾 Wheat</a>
-        <div class="mobile-section">Tools</div><a href="tools.html" class="mobile-link">All Tools</a><a href="breakeven.html" class="mobile-link">Breakeven</a><a href="gdu.html" class="mobile-link">GDU Calculator</a><a href="calculator.html" class="mobile-link">Grain Bin</a><a href="fastfacts.html" class="mobile-link">Fast Facts</a>
-        <div class="mobile-section">Info</div><a href="learn.html" class="mobile-link">Learn</a><a href="calendar.html" class="mobile-link">Calendar</a><a href="resources.html" class="mobile-link">Resources</a><a href="offices.html" class="mobile-link">Offices</a>
-    </div>
+    <div id="header"></div>
 
     <main>
         <nav class="breadcrumb"><a href="/">Home</a> → Tools</nav>
@@ -49,54 +40,39 @@
                     <div class="tool-card">
                         <h3>💰 Break-Even Calculator</h3>
                         <p>Calculate your cost per bushel, break-even price, and profit margins for corn, soybeans, and wheat.</p>
-                        <a href="breakeven.html">Open Tool →</a>
+                        <a href="/breakeven.html">Open Tool →</a>
                     </div>
                     <div class="tool-card">
                         <h3>🌡️ GDU Calculator</h3>
                         <p>Track growing degree units, estimate silking dates, and monitor corn development stages.</p>
-                        <a href="gdu.html">Open Tool →</a>
+                        <a href="/gdu.html">Open Tool →</a>
                     </div>
                     <div class="tool-card">
                         <h3>🌾 Grain Bin Calculator</h3>
                         <p>Calculate bin capacity in bushels, moisture shrink, and storage weight for round or rectangular bins.</p>
-                        <a href="calculator.html">Open Tool →</a>
+                        <a href="/calculator.html">Open Tool →</a>
                     </div>
                     <div class="tool-card">
                         <h3>⚡ Fast Facts</h3>
                         <p>Quick reference calculators for fertilizer blends, nutrient removal, manure value, and more.</p>
-                        <a href="fastfacts.html">Open Tool →</a>
+                        <a href="/fastfacts.html">Open Tool →</a>
                     </div>
                     <div class="tool-card">
                         <h3>📅 USDA Calendar</h3>
                         <p>Track important USDA report release dates including WASDE, Crop Progress, and Grain Stocks.</p>
-                        <a href="calendar.html">View Calendar →</a>
+                        <a href="/calendar.html">View Calendar →</a>
                     </div>
                     <div class="tool-card">
                         <h3>🏛️ Office Finder</h3>
                         <p>Find your local USDA Service Center, FSA office, and NRCS contacts by state.</p>
-                        <a href="offices.html">Find Office →</a>
+                        <a href="/offices.html">Find Office →</a>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="footer-c">
-        <div class="footer-c-inner">
-            <div class="footer-c-main">
-                <div class="brand-row"><a href="/" class="brand">AGSIST</a><span class="sep">|</span><span class="tagline">Free agricultural prices, tools & news</span></div>
-                <div class="site-links"><a href="corn-prices.html">Corn</a><a href="soybean-prices.html">Soybeans</a><a href="wheat-prices.html">Wheat</a><a href="tools.html">Tools</a><a href="fastfacts.html">Fast Facts</a><a href="calendar.html">Calendar</a><a href="resources.html">Resources</a></div>
-                <div class="legal-row"><span>© 2026 AGSIST</span></div>
-            </div>
-            <div class="footer-c-network"><h4>Our Network</h4><a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a><a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a><a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a></div>
-        </div>
-    </footer>
-
-    <script>
-    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-        document.getElementById('mobile-menu').classList.toggle('active');
-        this.textContent = this.textContent === '☰' ? '✕' : '☰';
-    });
-    </script>
+    <div id="footer"></div>
+    <script src="/components/load-components.js"></script>
 </body>
 </html>

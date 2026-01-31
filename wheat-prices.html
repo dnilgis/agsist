@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wheat Prices Today - Live Futures & Cash Prices | AGSIST</title>
     <meta name="description" content="Live wheat prices, futures quotes, and cash bids. Track CBOT wheat futures, basis levels, and price charts updated throughout the trading day.">
     <meta name="keywords" content="wheat prices, wheat futures, CBOT wheat, wheat cash prices, wheat basis">
     <link rel="canonical" href="https://agsist.com/wheat-prices.html">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
+    
+    <link rel="icon" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/components/shared.css">
     <link rel="stylesheet" href="styles.css">
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    
     <style>
         .price-hero { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, var(--card) 0%, var(--panel) 100%); border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border); }
         .price-hero h1 { font-size: 1.2rem; color: var(--dim); margin-bottom: 8px; }
@@ -34,25 +40,10 @@
     </style>
 </head>
 <body>
-    <nav class="main-nav">
-        <div class="nav-inner">
-            <a href="/" class="logo">AGSIST</a>
-            <div class="nav-links">
-                <div class="nav-dropdown"><button class="dropdown-toggle">Prices ▾</button><div class="dropdown-menu"><a href="corn-prices.html" class="dropdown-item">🌽 Corn</a><a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a><a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a></div></div>
-                <div class="nav-dropdown"><button class="dropdown-toggle">Tools ▾</button><div class="dropdown-menu"><a href="tools.html" class="dropdown-item">All Tools</a><a href="breakeven.html" class="dropdown-item">Breakeven</a><a href="gdu.html" class="dropdown-item">GDU Calculator</a><a href="calculator.html" class="dropdown-item">Grain Bin</a><a href="fastfacts.html" class="dropdown-item">Fast Facts</a></div></div>
-                <div class="nav-dropdown"><button class="dropdown-toggle">Info ▾</button><div class="dropdown-menu"><a href="learn.html" class="dropdown-item">Learn</a><a href="calendar.html" class="dropdown-item">Calendar</a><a href="resources.html" class="dropdown-item">Resources</a><a href="offices.html" class="dropdown-item">Offices</a></div></div>
-            </div>
-            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
-        </div>
-    </nav>
-    <div class="mobile-menu" id="mobile-menu">
-        <div class="mobile-section">Prices</div><a href="corn-prices.html" class="mobile-link">🌽 Corn</a><a href="soybean-prices.html" class="mobile-link">🫘 Soybeans</a><a href="wheat-prices.html" class="mobile-link">🌾 Wheat</a>
-        <div class="mobile-section">Tools</div><a href="tools.html" class="mobile-link">All Tools</a><a href="breakeven.html" class="mobile-link">Breakeven</a><a href="gdu.html" class="mobile-link">GDU Calculator</a><a href="calculator.html" class="mobile-link">Grain Bin</a><a href="fastfacts.html" class="mobile-link">Fast Facts</a>
-        <div class="mobile-section">Info</div><a href="learn.html" class="mobile-link">Learn</a><a href="calendar.html" class="mobile-link">Calendar</a><a href="resources.html" class="mobile-link">Resources</a><a href="offices.html" class="mobile-link">Offices</a>
-    </div>
+    <div id="header"></div>
 
     <main>
-        <nav class="breadcrumb"><a href="/">Home</a> → <a href="wheat-prices.html">Prices</a> → Wheat</nav>
+        <nav class="breadcrumb"><a href="/">Home</a> → <a href="/wheat-prices.html">Prices</a> → Wheat</nav>
         
         <div class="price-hero">
             <h1>🌾 WHEAT FUTURES (CBOT)</h1>
@@ -82,22 +73,7 @@
         </div>
     </main>
 
-    <footer class="footer-c">
-        <div class="footer-c-inner">
-            <div class="footer-c-main">
-                <div class="brand-row"><a href="/" class="brand">AGSIST</a><span class="sep">|</span><span class="tagline">Free agricultural prices, tools & news</span></div>
-                <div class="site-links"><a href="corn-prices.html">Corn</a><a href="soybean-prices.html">Soybeans</a><a href="wheat-prices.html">Wheat</a><a href="tools.html">Tools</a><a href="fastfacts.html">Fast Facts</a><a href="calendar.html">Calendar</a><a href="resources.html">Resources</a></div>
-                <div class="legal-row"><span>© 2026 AGSIST</span></div>
-            </div>
-            <div class="footer-c-network"><h4>Our Network</h4><a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a><a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a><a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a></div>
-        </div>
-    </footer>
-
-    <script>
-    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-        document.getElementById('mobile-menu').classList.toggle('active');
-        this.textContent = this.textContent === '☰' ? '✕' : '☰';
-    });
-    </script>
+    <div id="footer"></div>
+    <script src="/components/load-components.js"></script>
 </body>
 </html>
