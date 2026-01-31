@@ -288,6 +288,19 @@ body {
 .footer-legal {
     color: var(--dim);
     font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.footer-legal a {
+    color: var(--dim);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-legal a:hover {
+    color: var(--accent);
 }
 
 .footer-network {
