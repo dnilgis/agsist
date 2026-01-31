@@ -2,120 +2,210 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     
-    <!-- Primary Meta Tags -->
+    <!-- SEO Meta Tags -->
     <title>Agriculture News Hub | AGSIST - Free Farming News Aggregator</title>
-    <meta name="title" content="Agriculture News Hub | AGSIST - Free Farming News Aggregator">
     <meta name="description" content="Free agriculture news aggregator with AI-powered summaries. Get farming news from 30+ sources including Reddit, university extension, USDA, and industry publications. Updated every 2 hours.">
-    <meta name="keywords" content="agriculture news, farming news, farm news aggregator, USDA news, crop news, livestock news, ag news, farm prices, agricultural news today, farming updates, rural news, ag industry news">
+    <meta name="keywords" content="agriculture news, farming news, farm news aggregator, USDA news, crop news, livestock news, ag news, farm prices, agricultural news today">
     <meta name="author" content="AGSIST">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://agsist.com/news.html">
     
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://agsist.com/news.html">
-    <meta property="og:title" content="Agriculture News Hub | AGSIST - Free Farming News Aggregator">
-    <meta property="og:description" content="Free agriculture news aggregator with AI-powered summaries. 30+ sources including Reddit farming communities, university extension, and industry news. Updated every 2 hours.">
+    <meta property="og:title" content="Agriculture News Hub | AGSIST">
+    <meta property="og:description" content="Free agriculture news aggregator with AI-powered summaries from 30+ sources. Updated every 2 hours.">
     <meta property="og:image" content="https://agsist.com/images/og-news.jpg">
     <meta property="og:site_name" content="AGSIST">
-    <meta property="og:locale" content="en_US">
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://agsist.com/news.html">
     <meta name="twitter:title" content="Agriculture News Hub | AGSIST">
-    <meta name="twitter:description" content="Free agriculture news aggregator with AI-powered summaries from 30+ sources. Updated every 2 hours.">
-    <meta name="twitter:image" content="https://agsist.com/images/og-news.jpg">
+    <meta name="twitter:description" content="Free agriculture news aggregator with AI-powered summaries from 30+ sources.">
     
-    <!-- Mobile App Meta Tags -->
+    <!-- Mobile -->
     <meta name="theme-color" content="#0a0a0c">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AGSIST News">
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     
-    <!-- Preconnect -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://www.googletagmanager.com">
-    
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- SHARED STYLES (nav, footer, variables) -->
-    <link rel="stylesheet" href="components/shared.css">
+    <!-- Shared Styles (nav, footer, variables) -->
+    <link rel="stylesheet" href="/components/shared.css">
     
-    <!-- Google Analytics 4 -->
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-6KXCTD5Z9H');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-6KXCTD5Z9H');
     </script>
     
     <!-- Schema.org -->
     <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"WebPage","name":"Agriculture News Hub","description":"Free agriculture news aggregator with AI-powered summaries from 30+ sources","url":"https://agsist.com/news.html","isPartOf":{"@type":"WebSite","name":"AGSIST","url":"https://agsist.com"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"}}
-    </script>
-    <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is AGSIST Agriculture News Hub?","acceptedAnswer":{"@type":"Answer","text":"AGSIST Agriculture News Hub is a free news aggregator that collects farming and agriculture news from over 30 sources including Reddit communities, university extension services, and industry publications."}},{"@type":"Question","name":"How do the AI summaries work?","acceptedAnswer":{"@type":"Answer","text":"When you click the Summary button on any article, our system fetches the full article content and uses Claude AI to generate a comprehensive summary."}}]}
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Agriculture News Hub",
+        "description": "Free agriculture news aggregator with AI-powered summaries from 30+ sources",
+        "url": "https://agsist.com/news.html",
+        "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"}
+    }
     </script>
     
-    <!-- PAGE-SPECIFIC STYLES -->
+    <!-- Page-Specific Styles -->
     <style>
-        /* CSS Variables (fallback if shared.css doesn't load) */
-        :root {
-            --bg: #0a0a0c;
-            --surface: #111114;
-            --card: #16161a;
-            --card-hover: #1c1c22;
-            --border: #2a2a32;
-            --text: #e8e8ec;
-            --dim: #8a8a94;
-            --accent: #e6b042;
-            --community: #ff6b35;
-            --government: #10b981;
-            --university: #3b82f6;
-            --industry: #8b5cf6;
-            --markets: #f59e0b;
-            --weather: #06b6d4;
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .hero {
+            background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+            text-align: center;
+            padding: 48px 20px 32px;
+            border-bottom: 1px solid var(--border);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); line-height: 1.6; }
         
-        /* HERO */
-        .hero { background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%); text-align: center; padding: 48px 20px 32px; border-bottom: 1px solid var(--border); }
-        .hero h1 { font-size: 2.4rem; color: var(--text); margin-bottom: 12px; font-weight: 700; }
-        .hero h1 span { color: var(--accent); }
-        .hero p { color: var(--dim); font-size: 1rem; max-width: 700px; margin: 0 auto 24px; }
-        .stats-bar { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
-        .stat { text-align: center; }
-        .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
-        .stat-label { font-size: 0.7rem; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
+        .hero h1 {
+            font-size: 2.4rem;
+            color: var(--text);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
         
-        .ai-feature { background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1)); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; padding: 16px 20px; max-width: 700px; margin: 0 auto 24px; display: flex; align-items: flex-start; gap: 12px; text-align: left; }
-        .ai-feature-badge { background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
-        .ai-feature-text { font-size: 0.82rem; color: var(--dim); line-height: 1.6; }
-        .ai-feature-text strong { color: var(--text); }
-        .inline-btn { display: inline-flex; align-items: center; gap: 3px; background: var(--accent); color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
-        .inline-btn .mini-badge { background: #000; color: var(--accent); font-size: 0.55rem; padding: 1px 3px; border-radius: 2px; }
+        .hero h1 span {
+            color: var(--accent);
+        }
         
-        /* LAYOUT */
-        main { max-width: 1600px; margin: 0 auto; padding: 24px 16px; }
+        .hero p {
+            color: var(--dim);
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 0 auto 24px;
+        }
         
-        /* FILTERS */
-        .filters { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center; }
-        .filter-btn { background: var(--card); border: 1px solid var(--border); color: var(--dim); padding: 10px 18px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
-        .filter-btn:hover { border-color: var(--accent); color: var(--text); background: var(--card-hover); }
-        .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
-        .filter-btn .count { background: rgba(0,0,0,0.15); padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
+        .ai-callout {
+            background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1));
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            max-width: 700px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            text-align: left;
+        }
+        
+        .ai-callout-badge {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        
+        .ai-callout-text {
+            font-size: 0.85rem;
+            color: var(--dim);
+            line-height: 1.6;
+        }
+        
+        .ai-callout-text strong {
+            color: var(--text);
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* ============================================
+           MAIN CONTENT
+           ============================================ */
+        main {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+        
+        /* ============================================
+           FILTERS
+           ============================================ */
+        .filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .filter-btn {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--dim);
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--accent);
+            color: var(--text);
+            background: var(--card-hover);
+        }
+        
+        .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #000;
+        }
+        
+        .filter-btn .count {
+            background: rgba(0,0,0,0.15);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
         .filter-btn[data-cat="community"].active { background: var(--community); }
         .filter-btn[data-cat="government"].active { background: var(--government); }
         .filter-btn[data-cat="university"].active { background: var(--university); }
@@ -123,180 +213,674 @@
         .filter-btn[data-cat="markets"].active { background: var(--markets); }
         .filter-btn[data-cat="weather"].active { background: var(--weather); }
         
-        /* STATUS */
-        .status-bar { text-align: center; color: var(--dim); font-size: 0.75rem; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 16px; }
-        .status-bar .live { display: flex; align-items: center; gap: 6px; }
-        .status-bar .live::before { content: ''; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        /* ============================================
+           STATUS BAR
+           ============================================ */
+        .status-bar {
+            text-align: center;
+            color: var(--dim);
+            font-size: 0.75rem;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+        }
         
-        /* FEED GRID */
-        .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-        .article { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: all 0.25s; }
-        .article:hover { background: var(--card-hover); border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
-        .article-thumb { width: 100%; height: 140px; object-fit: cover; background: var(--border); display: block; }
-        .article-body { padding: 16px; }
-        .article-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-        .article-source { font-size: 0.7rem; padding: 4px 10px; border-radius: 6px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .status-bar .live {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .status-bar .live::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* ============================================
+           FEED GRID
+           ============================================ */
+        .feed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        
+        /* ============================================
+           ARTICLE CARDS
+           ============================================ */
+        .article {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+        
+        .article:hover {
+            background: var(--card-hover);
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+        
+        .article-thumb {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            background: var(--border);
+            display: block;
+        }
+        
+        .article-body {
+            padding: 16px;
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .article-source {
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
         .article-source.community { background: rgba(255,107,53,0.15); color: var(--community); }
         .article-source.government { background: rgba(16,185,129,0.15); color: var(--government); }
         .article-source.university { background: rgba(59,130,246,0.15); color: var(--university); }
         .article-source.industry { background: rgba(139,92,246,0.15); color: var(--industry); }
         .article-source.markets { background: rgba(245,158,11,0.15); color: var(--markets); }
         .article-source.weather { background: rgba(6,182,212,0.15); color: var(--weather); }
-        .article-date { color: var(--dim); font-size: 0.7rem; margin-left: auto; }
-        .article-title { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .article-excerpt { font-size: 0.8rem; color: var(--dim); line-height: 1.5; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .article-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--border); gap: 8px; flex-wrap: wrap; }
-        .article-link { color: var(--accent); font-size: 0.75rem; font-weight: 600; text-decoration: none; padding: 6px 12px; border: 1px solid var(--border); border-radius: 4px; transition: all 0.2s; }
-        .article-link:hover { border-color: var(--accent); background: rgba(230,176,66,0.1); }
-        .article.reddit .article-source::before { content: '🔥'; }
         
-        /* LOADING */
-        .loading,.error,.empty { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--dim); }
-        .loading::before { content: "⏳"; display: block; font-size: 3rem; margin-bottom: 16px; animation: spin 2s linear infinite; }
-        @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
-        .error::before { content: "⚠️"; display: block; font-size: 3rem; margin-bottom: 16px; }
+        .article-date {
+            color: var(--dim);
+            font-size: 0.7rem;
+            margin-left: auto;
+        }
         
-        /* SOURCES */
-        .sources-section { margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--border); }
-        .sources-section h2 { text-align: center; color: var(--text); margin-bottom: 32px; font-size: 1.4rem; }
-        .sources-section h2 span { color: var(--accent); }
-        .sources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .source-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-        .source-card h3 { color: var(--text); font-size: 0.9rem; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
-        .source-card .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .article-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .article-excerpt {
+            font-size: 0.8rem;
+            color: var(--dim);
+            line-height: 1.5;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            gap: 8px;
+        }
+        
+        .summary-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .summary-btn::after {
+            content: 'AI';
+            font-size: 0.55rem;
+            background: #000;
+            color: var(--accent);
+            padding: 1px 3px;
+            border-radius: 2px;
+        }
+        
+        .summary-btn:hover {
+            background: #fff;
+            transform: scale(1.05);
+        }
+        
+        .article-link {
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .article-link:hover {
+            border-color: var(--accent);
+            background: rgba(230,176,66,0.1);
+        }
+        
+        /* ============================================
+           LOADING / ERROR / EMPTY STATES
+           ============================================ */
+        .loading, .error, .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--dim);
+            font-size: 0.9rem;
+        }
+        
+        .loading::before {
+            content: "⏳";
+            display: block;
+            font-size: 3rem;
+            margin-bottom: 16px;
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .error::before {
+            content: "⚠️";
+            display: block;
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+        
+        .empty::before {
+            content: "📭";
+            display: block;
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+        
+        /* ============================================
+           SOURCES SECTION
+           ============================================ */
+        .sources-section {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .sources-section h2 {
+            text-align: center;
+            color: var(--text);
+            margin-bottom: 32px;
+            font-size: 1.4rem;
+        }
+        
+        .sources-section h2 span {
+            color: var(--accent);
+        }
+        
+        .sources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .source-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .source-card h3 {
+            color: var(--text);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .source-card .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
         .source-card .dot.community { background: var(--community); }
         .source-card .dot.university { background: var(--university); }
         .source-card .dot.industry { background: var(--industry); }
         .source-card .dot.markets { background: var(--markets); }
-        .source-card ul { list-style: none; font-size: 0.8rem; }
-        .source-card li { padding: 6px 0; color: var(--dim); border-bottom: 1px solid var(--border); }
-        .source-card li:last-child { border-bottom: none; }
-        .source-card a { color: var(--text); text-decoration: none; }
-        .source-card a:hover { color: var(--accent); }
         
-        /* FAQ */
-        .faq-section { margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--border); }
-        .faq-section h2 { font-size: 1.2rem; color: var(--text); margin-bottom: 24px; text-align: center; }
-        .faq-grid { display: grid; gap: 12px; max-width: 800px; margin: 0 auto; }
-        .faq-item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
-        .faq-item summary { padding: 16px 20px; cursor: pointer; font-weight: 600; color: var(--text); font-size: 0.9rem; list-style: none; display: flex; justify-content: space-between; }
-        .faq-item summary::-webkit-details-marker { display: none; }
-        .faq-item summary::after { content: '+'; font-size: 1.2rem; color: var(--accent); }
-        .faq-item[open] summary::after { content: '−'; }
-        .faq-item summary:hover { background: var(--card-hover); }
-        .faq-item p { padding: 0 20px 16px; color: var(--dim); font-size: 0.85rem; line-height: 1.7; }
+        .source-card ul {
+            list-style: none;
+            font-size: 0.8rem;
+        }
         
-        /* TLDR BUTTON & MODAL */
-        .tldr-btn { background: var(--accent); color: #000; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; font-family: inherit; cursor: pointer; transition: all 0.2s; text-transform: uppercase; display: inline-flex; align-items: center; gap: 4px; }
-        .tldr-btn::after { content: 'AI'; font-size: 0.55rem; background: #000; color: var(--accent); padding: 1px 3px; border-radius: 2px; }
-        .tldr-btn:hover { background: #fff; transform: scale(1.05); }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-overlay.active { display: flex; }
-        .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 12px; max-width: 600px; width: 100%; max-height: 85vh; overflow-y: auto; animation: modalSlide 0.2s; }
-        @keyframes modalSlide { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
-        .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; }
-        .modal-header h3 { font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-        .modal-header .ai-badge { background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: #fff; font-size: 0.6rem; padding: 2px 6px; border-radius: 3px; }
-        .modal-header .ai-explain { font-size: 0.7rem; color: var(--dim); margin-top: 4px; }
-        .modal-close { background: none; border: none; color: var(--dim); font-size: 1.5rem; cursor: pointer; }
-        .modal-close:hover { color: var(--text); }
-        .modal-body { padding: 20px; }
-        .modal-source { display: inline-flex; align-items: center; gap: 8px; background: var(--bg); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; color: var(--dim); margin-bottom: 16px; }
-        .modal-thumb { max-height: 150px; width: 100%; object-fit: cover; border-radius: 8px; margin-bottom: 16px; }
-        .modal-title { font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 16px; line-height: 1.4; }
-        .modal-summary { color: var(--text); font-size: 0.9rem; line-height: 1.8; white-space: pre-wrap; }
-        .modal-footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 12px; justify-content: flex-end; }
-        .modal-btn { padding: 10px 20px; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; text-decoration: none; }
-        .modal-btn-secondary { background: var(--bg); border: 1px solid var(--border); color: var(--dim); }
-        .modal-btn-secondary:hover { border-color: var(--text); color: var(--text); }
-        .modal-btn-primary { background: var(--accent); border: 1px solid var(--accent); color: #000; }
-        .modal-btn-primary:hover { background: #fff; }
+        .source-card li {
+            padding: 6px 0;
+            color: var(--dim);
+            border-bottom: 1px solid var(--border);
+        }
         
-        /* NAV (for component loading) */
-        .main-nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; position: sticky; top: 0; z-index: 1000; }
-        .nav-inner { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 60px; }
-        .main-nav .logo { color: var(--accent); font-weight: 700; font-size: 1.2rem; text-decoration: none; }
-        .nav-links { display: flex; gap: 8px; align-items: center; }
-        .nav-dropdown { position: relative; }
-        .dropdown-toggle { background: none; border: none; color: var(--dim); font-family: inherit; font-size: 0.9rem; padding: 10px 14px; cursor: pointer; border-radius: 4px; }
-        .dropdown-toggle:hover { color: var(--text); background: var(--card-hover); }
-        .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background: var(--card); border: 1px solid var(--border); border-radius: 6px; min-width: 180px; padding: 8px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 1001; }
-        .nav-dropdown:hover .dropdown-menu { display: block; }
-        .dropdown-item { display: block; padding: 10px 16px; color: var(--dim); text-decoration: none; font-size: 0.85rem; }
-        .dropdown-item:hover { background: var(--card-hover); color: var(--accent); }
-        .mobile-menu-btn { display: none; background: none; border: 1px solid var(--border); color: var(--text); font-size: 1.4rem; width: 44px; height: 44px; border-radius: 4px; cursor: pointer; }
-        .mobile-menu { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px; z-index: 999; }
-        .mobile-menu.active { display: block; }
-        .mobile-section { color: var(--accent); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 12px 0 8px; border-top: 1px solid var(--border); margin-top: 8px; }
-        .mobile-section:first-child { border-top: none; margin-top: 0; padding-top: 0; }
-        .mobile-link { display: block; color: var(--dim); text-decoration: none; padding: 10px 0; font-size: 0.9rem; }
-        .mobile-link:hover { color: var(--text); }
+        .source-card li:last-child {
+            border-bottom: none;
+        }
         
-        /* FOOTER (for component loading) */
-        .footer-c { background: var(--surface); border-top: 1px solid var(--border); padding: 32px 20px; margin-top: 60px; }
-        .footer-c-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: start; }
-        .footer-c-main { display: flex; flex-direction: column; gap: 16px; }
-        .footer-c .brand-row { display: flex; align-items: center; gap: 12px; }
-        .footer-c .brand { color: var(--accent); text-decoration: none; font-weight: 700; font-size: 1.1rem; }
-        .footer-c .sep { color: var(--border); }
-        .footer-c .tagline { color: var(--dim); font-size: 0.85rem; }
-        .footer-c .site-links { display: flex; flex-wrap: wrap; gap: 8px; }
-        .footer-c .site-links a { color: var(--dim); text-decoration: none; font-size: 0.8rem; padding: 6px 12px; border: 1px solid var(--border); border-radius: 4px; }
-        .footer-c .site-links a:hover { color: var(--accent); border-color: var(--accent); }
-        .footer-c .legal-row { color: var(--dim); font-size: 0.75rem; }
-        .footer-c-network { text-align: right; }
-        .footer-c-network h4 { color: var(--dim); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-        .footer-c-network a { display: block; color: var(--dim); text-decoration: none; font-size: 0.85rem; padding: 4px 0; }
-        .footer-c-network a:hover { color: var(--accent); }
+        .source-card a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
         
-        /* MOBILE */
+        .source-card a:hover {
+            color: var(--accent);
+        }
+        
+        /* ============================================
+           FAQ SECTION
+           ============================================ */
+        .faq-section {
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .faq-section h2 {
+            font-size: 1.2rem;
+            color: var(--text);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .faq-grid {
+            display: grid;
+            gap: 12px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .faq-item summary {
+            padding: 16px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        .faq-item summary::after {
+            content: '+';
+            font-size: 1.2rem;
+            color: var(--accent);
+            font-weight: 400;
+        }
+        
+        .faq-item[open] summary::after {
+            content: '−';
+        }
+        
+        .faq-item summary:hover {
+            background: var(--card-hover);
+        }
+        
+        .faq-item p {
+            padding: 0 20px 16px;
+            color: var(--dim);
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+        
+        .faq-item p strong {
+            color: var(--text);
+        }
+        
+        /* ============================================
+           MODAL
+           ============================================ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: modalSlide 0.2s ease-out;
+        }
+        
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        
+        .modal-header h3 {
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .modal-header .ai-badge {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: #fff;
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 700;
+        }
+        
+        .modal-header .ai-note {
+            font-size: 0.7rem;
+            color: var(--dim);
+            font-weight: 400;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--dim);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        .modal-close:hover {
+            color: var(--text);
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-source {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--dim);
+            margin-bottom: 16px;
+        }
+        
+        .modal-thumb {
+            max-height: 150px;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+        
+        .modal-summary {
+            color: var(--text);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        
+        .modal-btn-secondary {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--dim);
+        }
+        
+        .modal-btn-secondary:hover {
+            border-color: var(--text);
+            color: var(--text);
+        }
+        
+        .modal-btn-primary {
+            background: var(--accent);
+            border: 1px solid var(--accent);
+            color: #000;
+        }
+        
+        .modal-btn-primary:hover {
+            background: #fff;
+        }
+        
+        /* ============================================
+           MOBILE RESPONSIVE
+           ============================================ */
         @media (max-width: 768px) {
-            .hero { padding: 24px 16px; }
-            .hero h1 { font-size: 1.5rem; }
-            .hero p { font-size: 0.85rem; }
-            .ai-feature { flex-direction: column; padding: 14px; gap: 10px; }
-            .stats-bar { gap: 12px; }
-            .stat-value { font-size: 1.3rem; }
-            .filters { gap: 6px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
-            .filters::-webkit-scrollbar { display: none; }
-            .filter-btn { padding: 10px 14px; font-size: 0.7rem; flex-shrink: 0; min-height: 44px; }
-            .feed-grid { grid-template-columns: 1fr; gap: 12px; }
-            .article-thumb { height: 160px; }
-            .tldr-btn, .article-link { min-height: 44px; padding: 10px 14px; }
-            .modal-overlay { padding: 12px; align-items: flex-end; }
-            .modal-content { max-height: 90vh; border-radius: 16px 16px 0 0; }
-            .sources-grid { grid-template-columns: 1fr; }
-            /* Nav/footer mobile */
-            .nav-links { display: none; }
-            .mobile-menu-btn { display: flex; align-items: center; justify-content: center; }
-            .footer-c-inner { grid-template-columns: 1fr; gap: 16px; }
-            .footer-c .tagline { display: none; }
-            .footer-c-network { text-align: left; padding-top: 12px; border-top: 1px solid var(--border); }
+            .hero {
+                padding: 24px 16px;
+            }
+            
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+            
+            .hero p {
+                font-size: 0.85rem;
+            }
+            
+            .ai-callout {
+                flex-direction: column;
+                padding: 14px;
+                gap: 10px;
+            }
+            
+            .ai-callout-badge {
+                align-self: flex-start;
+            }
+            
+            .stats-bar {
+                gap: 16px;
+            }
+            
+            .stat-value {
+                font-size: 1.4rem;
+            }
+            
+            .filters {
+                gap: 6px;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding-bottom: 8px;
+                scrollbar-width: none;
+            }
+            
+            .filters::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .filter-btn {
+                padding: 10px 14px;
+                font-size: 0.7rem;
+                flex-shrink: 0;
+                min-height: 44px;
+            }
+            
+            .feed-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .article-thumb {
+                height: 160px;
+            }
+            
+            .summary-btn, .article-link {
+                min-height: 44px;
+                padding: 10px 14px;
+            }
+            
+            .modal-overlay {
+                padding: 12px;
+                align-items: flex-end;
+            }
+            
+            .modal-content {
+                max-height: 90vh;
+                border-radius: 16px 16px 0 0;
+                animation: modalSlideUp 0.25s ease-out;
+            }
+            
+            @keyframes modalSlideUp {
+                from { opacity: 0; transform: translateY(100%); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            .sources-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .faq-item summary {
+                padding: 14px 16px;
+                min-height: 44px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- HEADER (loaded from components/header.html) -->
-    <div id="header-placeholder"></div>
+    <!-- Header (loaded from /components/header.html) -->
+    <div id="header"></div>
     
+    <!-- Hero Section -->
     <div class="hero">
         <h1>📰 The <span>Ag News</span> Hub</h1>
         <p>Your one-stop destination for agriculture news. Community discussions, university research, and industry insights—all in one place, updated every 2 hours.</p>
-        <div class="ai-feature">
-            <div class="ai-feature-badge">✨ AI-Powered</div>
-            <div class="ai-feature-text">
-                <strong>Quick Summaries:</strong> Click the <span class="inline-btn">📋 Summary <span class="mini-badge">AI</span></span> button on any article for an instant AI-generated summary.
+        
+        <div class="ai-callout">
+            <div class="ai-callout-badge">✨ AI-Powered</div>
+            <div class="ai-callout-text">
+                <strong>Quick Summaries:</strong> Click the Summary button on any article for an instant AI-generated summary covering key facts, why it matters, and action items.
             </div>
         </div>
+        
         <div class="stats-bar">
-            <div class="stat"><div class="stat-value" id="stat-articles">--</div><div class="stat-label">Articles</div></div>
-            <div class="stat"><div class="stat-value">30+</div><div class="stat-label">Sources</div></div>
-            <div class="stat"><div class="stat-value" id="stat-updated">--</div><div class="stat-label">Updated</div></div>
+            <div class="stat">
+                <div class="stat-value" id="stat-articles">--</div>
+                <div class="stat-label">Articles</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">30+</div>
+                <div class="stat-label">Sources</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="stat-updated">--</div>
+                <div class="stat-label">Updated</div>
+            </div>
         </div>
     </div>
     
+    <!-- Main Content -->
     <main>
+        <!-- Filters -->
         <div class="filters">
             <button class="filter-btn active" data-cat="all">🌐 All <span class="count" id="count-all">0</span></button>
             <button class="filter-btn" data-cat="community">🔥 Community <span class="count" id="count-community">0</span></button>
@@ -306,107 +890,310 @@
             <button class="filter-btn" data-cat="markets">💹 Markets <span class="count" id="count-markets">0</span></button>
             <button class="filter-btn" data-cat="weather">🌦️ Weather <span class="count" id="count-weather">0</span></button>
         </div>
-        <div class="status-bar">
-            <span class="live" id="statusLive" style="display:none">Live</span>
-            <span id="statusText">Loading feeds...</span>
-        </div>
-        <div class="feed-grid" id="feed"><div class="loading">Fetching latest ag news...</div></div>
         
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span class="live" id="status-live" style="display:none">Live</span>
+            <span id="status-text">Loading feeds...</span>
+        </div>
+        
+        <!-- Feed Grid -->
+        <div class="feed-grid" id="feed">
+            <div class="loading">Fetching latest ag news...</div>
+        </div>
+        
+        <!-- Sources Section -->
         <div class="sources-section">
             <h2>📡 Our <span>Sources</span></h2>
             <div class="sources-grid">
-                <div class="source-card"><h3><span class="dot community"></span> Reddit</h3><ul><li><a href="https://reddit.com/r/farming" target="_blank">r/farming</a></li><li><a href="https://reddit.com/r/agriculture" target="_blank">r/agriculture</a></li><li><a href="https://reddit.com/r/tractors" target="_blank">r/tractors</a></li><li><a href="https://reddit.com/r/ranching" target="_blank">r/ranching</a></li></ul></div>
-                <div class="source-card"><h3><span class="dot university"></span> Universities</h3><ul><li><a href="https://ipcm.wisc.edu" target="_blank">UW Madison</a></li><li><a href="https://farmdoc.illinois.edu" target="_blank">farmdoc</a></li><li><a href="https://ag.purdue.edu" target="_blank">Purdue</a></li><li><a href="https://agrilifetoday.tamu.edu" target="_blank">Texas A&M</a></li></ul></div>
-                <div class="source-card"><h3><span class="dot industry"></span> Industry</h3><ul><li><a href="https://brownfieldagnews.com" target="_blank">Brownfield</a></li><li><a href="https://agdaily.com" target="_blank">AgDaily</a></li><li><a href="https://farmjournal.com" target="_blank">Farm Journal</a></li><li><a href="https://lancasterfarming.com" target="_blank">Lancaster Farming</a></li></ul></div>
-                <div class="source-card"><h3><span class="dot markets"></span> Markets</h3><ul><li><a href="https://farms.com" target="_blank">Farms.com</a></li></ul></div>
+                <div class="source-card">
+                    <h3><span class="dot community"></span> Reddit Communities</h3>
+                    <ul>
+                        <li><a href="https://reddit.com/r/farming" target="_blank">r/farming</a></li>
+                        <li><a href="https://reddit.com/r/agriculture" target="_blank">r/agriculture</a></li>
+                        <li><a href="https://reddit.com/r/tractors" target="_blank">r/tractors</a></li>
+                        <li><a href="https://reddit.com/r/ranching" target="_blank">r/ranching</a></li>
+                        <li><a href="https://reddit.com/r/agronomy" target="_blank">r/agronomy</a></li>
+                        <li><a href="https://reddit.com/r/dairyfarming" target="_blank">r/dairyfarming</a></li>
+                        <li><a href="https://reddit.com/r/Cattle" target="_blank">r/Cattle</a></li>
+                    </ul>
+                </div>
+                <div class="source-card">
+                    <h3><span class="dot university"></span> University Extension</h3>
+                    <ul>
+                        <li><a href="https://ipcm.wisc.edu" target="_blank">UW Madison</a></li>
+                        <li><a href="https://farmdoc.illinois.edu" target="_blank">farmdoc (UIUC)</a></li>
+                        <li><a href="https://ag.purdue.edu" target="_blank">Purdue Ag</a></li>
+                        <li><a href="https://crops.extension.iastate.edu" target="_blank">Iowa State</a></li>
+                        <li><a href="https://extension.umn.edu" target="_blank">UMN Crop News</a></li>
+                        <li><a href="https://agrilifetoday.tamu.edu" target="_blank">Texas A&M AgriLife</a></li>
+                    </ul>
+                </div>
+                <div class="source-card">
+                    <h3><span class="dot industry"></span> Industry News</h3>
+                    <ul>
+                        <li><a href="https://brownfieldagnews.com" target="_blank">Brownfield</a></li>
+                        <li><a href="https://agdaily.com" target="_blank">AgDaily</a></li>
+                        <li><a href="https://farmjournal.com" target="_blank">Farm Journal</a></li>
+                        <li><a href="https://lancasterfarming.com" target="_blank">Lancaster Farming</a></li>
+                        <li><a href="https://modernfarmer.com" target="_blank">Modern Farmer</a></li>
+                        <li><a href="https://civileats.com" target="_blank">Civil Eats</a></li>
+                        <li><a href="https://feedstuffs.com" target="_blank">Feedstuffs</a></li>
+                        <li><a href="https://agweek.com" target="_blank">Agweek</a></li>
+                    </ul>
+                </div>
+                <div class="source-card">
+                    <h3><span class="dot markets"></span> Markets</h3>
+                    <ul>
+                        <li><a href="https://farms.com" target="_blank">Farms.com</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
         
+        <!-- FAQ Section -->
         <div class="faq-section">
-            <h2>❓ FAQ</h2>
+            <h2>❓ Frequently Asked Questions</h2>
             <div class="faq-grid">
-                <details class="faq-item"><summary>What is AGSIST Agriculture News Hub?</summary><p>A free news aggregator collecting farming news from 30+ sources with AI-powered summaries, updated every 2 hours.</p></details>
-                <details class="faq-item"><summary>How do the AI summaries work?</summary><p>Click Summary on any article - we fetch the full article and use Claude AI to generate a comprehensive summary.</p></details>
-                <details class="faq-item"><summary>Is this service free?</summary><p>Yes! Completely free, no paywalls or subscriptions.</p></details>
+                <details class="faq-item">
+                    <summary>What is AGSIST Agriculture News Hub?</summary>
+                    <p>AGSIST Agriculture News Hub is a free news aggregator that collects farming and agriculture news from over 30 sources including Reddit communities, university extension services, and industry publications. Articles are updated every 2 hours and include AI-powered summaries so you can quickly understand the key points.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>How do the AI summaries work?</summary>
+                    <p>When you click the <strong>Summary</strong> button on any article, our system fetches the full article content and uses Claude AI to generate a comprehensive 4-6 sentence summary. The summary covers key facts, specific numbers or dates mentioned, why the news matters to farmers, and any action items or recommendations.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>What sources does the news hub aggregate from?</summary>
+                    <p>We aggregate from 30+ trusted sources including: <strong>Reddit communities</strong> (r/farming, r/agriculture, r/tractors, r/ranching), <strong>University extension services</strong> (UW Madison, Purdue, Iowa State, UMN, Texas A&M), and <strong>Industry publications</strong> (AgDaily, Farm Journal, Brownfield, Lancaster Farming, Civil Eats, and more).</p>
+                </details>
+                <details class="faq-item">
+                    <summary>How often is the news updated?</summary>
+                    <p>The Agriculture News Hub automatically fetches new articles from all sources every 2 hours via GitHub Actions. This ensures you always have access to the latest farming news, market updates, and agricultural research without needing to check multiple websites.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Is this service free?</summary>
+                    <p>Yes! AGSIST Agriculture News Hub is completely free to use. We believe farmers and agricultural professionals deserve easy access to comprehensive news without paywalls or subscriptions. The site is supported by AGSIST's other agricultural services.</p>
+                </details>
             </div>
         </div>
     </main>
-
-    <!-- FOOTER (loaded from components/footer.html) -->
-    <div id="footer-placeholder"></div>
     
-    <div class="modal-overlay" id="tldr-modal"><div class="modal-content" id="tldr-content"></div></div>
+    <!-- Footer (loaded from /components/footer.html) -->
+    <div id="footer"></div>
     
-    <!-- LOAD COMPONENTS -->
-    <script src="components/includes.js"></script>
+    <!-- Modal for AI Summaries -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content" id="modal-content"></div>
+    </div>
     
+    <!-- Load Components (header + footer) -->
+    <script src="/components/load-components.js"></script>
+    
+    <!-- Page JavaScript -->
     <script>
-        const NEWS_URL = 'https://raw.githubusercontent.com/dnilgis/agsist/main/data/news.json';
-        let allItems = [], currentFilter = 'all';
-        const feed = document.getElementById('feed'), statusText = document.getElementById('statusText'), statusLive = document.getElementById('statusLive');
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        var NEWS_URL = 'https://raw.githubusercontent.com/dnilgis/agsist/main/data/news.json';
+        var allItems = [];
+        var currentFilter = 'all';
         
-        function timeAgo(ts) { const d = Math.floor((Date.now()-ts)/1000); return d<60?'now':d<3600?Math.floor(d/60)+'m':d<86400?Math.floor(d/3600)+'h':Math.floor(d/86400)+'d'; }
+        // ============================================
+        // DOM ELEMENTS
+        // ============================================
+        var feed = document.getElementById('feed');
+        var statusText = document.getElementById('status-text');
+        var statusLive = document.getElementById('status-live');
+        var modal = document.getElementById('modal');
+        var modalContent = document.getElementById('modal-content');
         
-        function renderArticles(items) {
-            if (!items?.length) { feed.innerHTML = '<div class="empty">No articles found.</div>'; return; }
-            feed.innerHTML = items.map(i => `<article class="article ${i.category==='community'?'reddit':''}" data-category="${i.category}">
-                ${i.thumbnail?`<img class="article-thumb" src="${i.thumbnail}" loading="lazy" onerror="this.style.display='none'">`:''}
-                <div class="article-body">
-                    <div class="article-meta"><span class="article-source ${i.category}">${i.icon||''} ${i.source}</span><span class="article-date">${timeAgo(i.timestamp)}</span></div>
-                    <h3 class="article-title">${(i.title||'').replace(/</g,'&lt;')}</h3>
-                    ${i.description?`<p class="article-excerpt">${i.description.substring(0,120).replace(/</g,'&lt;')}...</p>`:''}
-                    <div class="article-footer">
-                        <button class="tldr-btn" onclick="showTLDR('${i.id}')">📋 Summary</button>
-                        <a class="article-link" href="${i.link}" target="_blank">Read more →</a>
-                    </div>
-                </div>
-            </article>`).join('');
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        function timeAgo(timestamp) {
+            var now = Date.now();
+            var diff = Math.floor((now - timestamp) / 1000);
+            
+            if (diff < 60) return 'just now';
+            if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+            if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+            if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+            return new Date(timestamp).toLocaleDateString();
         }
         
+        function formatTime(isoString) {
+            var d = new Date(isoString);
+            return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+        
+        // ============================================
+        // RENDER ARTICLES
+        // ============================================
+        function renderArticles(items) {
+            if (!items || items.length === 0) {
+                feed.innerHTML = '<div class="empty">No articles found. Try a different filter.</div>';
+                return;
+            }
+            
+            var html = items.map(function(item) {
+                var title = escapeHtml(item.title);
+                var source = escapeHtml(item.source);
+                var excerpt = item.description ? escapeHtml(item.description.substring(0, 120)) + '...' : '';
+                
+                return '<article class="article" data-category="' + item.category + '">' +
+                    (item.thumbnail ? '<img class="article-thumb" src="' + item.thumbnail + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
+                    '<div class="article-body">' +
+                        '<div class="article-meta">' +
+                            '<span class="article-source ' + item.category + '">' + (item.icon || '') + ' ' + source + '</span>' +
+                            '<span class="article-date">' + timeAgo(item.timestamp) + '</span>' +
+                        '</div>' +
+                        '<h3 class="article-title">' + title + '</h3>' +
+                        (excerpt ? '<p class="article-excerpt">' + excerpt + '</p>' : '') +
+                        '<div class="article-footer">' +
+                            '<button class="summary-btn" onclick="showSummary(\'' + item.id + '\')">📋 Summary</button>' +
+                            '<a class="article-link" href="' + item.link + '" target="_blank" rel="noopener">Read more →</a>' +
+                        '</div>' +
+                    '</div>' +
+                '</article>';
+            }).join('');
+            
+            feed.innerHTML = html;
+        }
+        
+        // ============================================
+        // FILTERS
+        // ============================================
         function updateCounts() {
-            const c = {all:allItems.length};
-            ['community','government','university','industry','markets','weather'].forEach(cat=>c[cat]=allItems.filter(a=>a.category===cat).length);
-            Object.keys(c).forEach(k=>{const e=document.getElementById('count-'+k);if(e)e.textContent=c[k];});
+            var counts = { all: allItems.length };
+            var categories = ['community', 'government', 'university', 'industry', 'markets', 'weather'];
+            
+            categories.forEach(function(cat) {
+                counts[cat] = allItems.filter(function(a) { return a.category === cat; }).length;
+            });
+            
+            Object.keys(counts).forEach(function(cat) {
+                var el = document.getElementById('count-' + cat);
+                if (el) el.textContent = counts[cat];
+            });
+            
             document.getElementById('stat-articles').textContent = allItems.length;
         }
         
-        function applyFilter(cat) {
-            currentFilter = cat;
-            document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat===cat));
-            renderArticles(cat==='all'?allItems:allItems.filter(a=>a.category===cat));
+        function applyFilter(category) {
+            currentFilter = category;
+            
+            var buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(function(btn) {
+                btn.classList.toggle('active', btn.dataset.cat === category);
+            });
+            
+            var filtered = category === 'all' 
+                ? allItems 
+                : allItems.filter(function(a) { return a.category === category; });
+            
+            renderArticles(filtered);
         }
         
-        document.querySelectorAll('.filter-btn').forEach(b=>b.onclick=()=>applyFilter(b.dataset.cat));
+        // Filter button click handlers
+        document.querySelectorAll('.filter-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                applyFilter(this.dataset.cat);
+            });
+        });
         
-        async function fetchNews() {
-            try {
-                const r = await fetch(NEWS_URL+'?t='+Date.now());
-                const d = await r.json();
-                if (d.items?.length) {
-                    allItems = d.items;
-                    statusLive.style.display = 'flex';
-                    statusText.textContent = `${d.items.length} articles from ${d.feedCount||'25+'} sources`;
-                    document.getElementById('stat-updated').textContent = new Date(d.updated).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-                    updateCounts();
-                    applyFilter(currentFilter);
+        // ============================================
+        // FETCH NEWS
+        // ============================================
+        function fetchNews() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', NEWS_URL + '?t=' + Date.now(), true);
+            
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            
+                            if (data.items && data.items.length > 0) {
+                                allItems = data.items;
+                                statusLive.style.display = 'flex';
+                                statusText.textContent = data.items.length + ' articles from ' + (data.feedCount || '25+') + ' sources';
+                                document.getElementById('stat-updated').textContent = formatTime(data.updated);
+                                updateCounts();
+                                applyFilter(currentFilter);
+                            } else {
+                                throw new Error('No items');
+                            }
+                        } catch (e) {
+                            statusText.textContent = 'Error parsing feed';
+                            feed.innerHTML = '<div class="error">Failed to load news feed.</div>';
+                        }
+                    } else {
+                        statusText.textContent = 'Error loading feed';
+                        feed.innerHTML = '<div class="error">Failed to load news feed.</div>';
+                    }
                 }
-            } catch(e) { statusText.textContent = 'Error loading feed'; }
+            };
+            
+            xhr.send();
         }
+        
+        // Load news on page load
         fetchNews();
         
-        function showTLDR(id) {
-            const a = allItems.find(x=>x.id===id); if(!a) return;
-            const s = a.summary||a.description||`${a.source}: "${a.title}"`;
-            document.getElementById('tldr-content').innerHTML = `
-                <div class="modal-header"><div><h3>📋 Summary <span class="ai-badge">AI</span></h3><p class="ai-explain">${a.summary?.length>100?'AI-generated':'From description'}</p></div><button class="modal-close" onclick="closeTLDR()">×</button></div>
-                <div class="modal-body">${a.thumbnail?`<img class="modal-thumb" src="${a.thumbnail}" onerror="this.remove()">`:''}<div class="modal-source">${a.icon||'📰'} ${a.source}</div><h2 class="modal-title">${a.title}</h2><div class="modal-summary">${s}</div></div>
-                <div class="modal-footer"><button class="modal-btn modal-btn-secondary" onclick="closeTLDR()">Close</button><a class="modal-btn modal-btn-primary" href="${a.link}" target="_blank">Read Full →</a></div>`;
-            document.getElementById('tldr-modal').classList.add('active');
+        // ============================================
+        // MODAL / SUMMARY
+        // ============================================
+        function showSummary(articleId) {
+            var article = allItems.find(function(a) { return a.id === articleId; });
+            if (!article) return;
+            
+            var summary = article.summary || article.description || 'No summary available for this article.';
+            var isAI = article.summary && article.summary.length > 100;
+            
+            modalContent.innerHTML = 
+                '<div class="modal-header">' +
+                    '<div>' +
+                        '<h3>📋 Summary <span class="ai-badge">AI</span></h3>' +
+                        '<p class="ai-note">' + (isAI ? 'Generated by AI from the full article' : 'From article description') + '</p>' +
+                    '</div>' +
+                    '<button class="modal-close" onclick="closeModal()">×</button>' +
+                '</div>' +
+                '<div class="modal-body">' +
+                    (article.thumbnail ? '<img class="modal-thumb" src="' + article.thumbnail + '" alt="" onerror="this.remove()">' : '') +
+                    '<div class="modal-source">' + (article.icon || '📰') + ' ' + escapeHtml(article.source) + ' • ' + timeAgo(article.timestamp) + '</div>' +
+                    '<h2 class="modal-title">' + escapeHtml(article.title) + '</h2>' +
+                    '<div class="modal-summary">' + escapeHtml(summary) + '</div>' +
+                '</div>' +
+                '<div class="modal-footer">' +
+                    '<button class="modal-btn modal-btn-secondary" onclick="closeModal()">Close</button>' +
+                    '<a class="modal-btn modal-btn-primary" href="' + article.link + '" target="_blank" rel="noopener">Read Full Article →</a>' +
+                '</div>';
+            
+            modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
-        function closeTLDR() { document.getElementById('tldr-modal').classList.remove('active'); document.body.style.overflow = ''; }
-        document.getElementById('tldr-modal').onclick = e => { if(e.target.id==='tldr-modal') closeTLDR(); };
-        document.onkeydown = e => { if(e.key==='Escape') closeTLDR(); };
+        
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        // Close modal on overlay click
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) closeModal();
+        });
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
     </script>
 </body>
 </html>
