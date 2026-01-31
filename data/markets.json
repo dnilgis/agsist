@@ -1,5 +1,5 @@
 {
-  "updated": "2026-01-31T05:03:46.739105+00:00",
+  "updated": "2026-01-31T06:46:16.822361+00:00",
   "markets": {
     "grains": {
       "corn": {
@@ -208,9 +208,9 @@
         "name": "Bitcoin",
         "symbol": "BTC-USD",
         "unit": "$",
-        "price": 83857.7969,
-        "change": -261.1797,
-        "changePct": -0.31,
+        "price": 83597.0078,
+        "change": -521.9688,
+        "changePct": -0.62,
         "prevClose": 84118.9766,
         "contract": "Spot",
         "low52": 74436.6797,
@@ -220,9 +220,9 @@
         "name": "Ethereum",
         "symbol": "ETH-USD",
         "unit": "$",
-        "price": 2690.8218,
-        "change": -10.74,
-        "changePct": -0.4,
+        "price": 2684.5759,
+        "change": -16.9858,
+        "changePct": -0.63,
         "prevClose": 2701.5618,
         "contract": "Spot",
         "low52": 1386.7993,
@@ -232,9 +232,9 @@
         "name": "Kaspa",
         "symbol": "KAS-USD",
         "unit": "$",
-        "price": 0.0369,
-        "change": -0.0005,
-        "changePct": -1.23,
+        "price": 0.0363,
+        "change": -0.0011,
+        "changePct": -2.92,
         "prevClose": 0.0374,
         "contract": "Spot",
         "low52": 0.0139,
@@ -244,9 +244,9 @@
         "name": "XRP",
         "symbol": "XRP-USD",
         "unit": "$",
-        "price": 1.7351,
-        "change": 0.0026,
-        "changePct": 0.15,
+        "price": 1.7216,
+        "change": -0.0108,
+        "changePct": -0.63,
         "prevClose": 1.7324,
         "contract": "Spot",
         "low52": 1.5285,
@@ -257,23 +257,23 @@
   "news": [
     {
       "source": "FarmProgress",
+      "title": "This Week in Agribusiness, January 31, 2026",
+      "link": "https://www.farmprogress.com/marketing/this-week-in-agribusiness-january-31-2026",
+      "time": "2026-01-31T12:00:00+00:00",
+      "category": "news"
+    },
+    {
+      "source": "FarmProgress",
+      "title": "FFA Chapter Tribute: Keira Fudge, Michigan FFA State VP at Large",
+      "link": "https://www.farmprogress.com/marketing/ffachaptertributekeirafudgemichiganffastatevpatlarge",
+      "time": "2026-01-31T11:55:00+00:00",
+      "category": "news"
+    },
+    {
+      "source": "FarmProgress",
       "title": "Shiny objects send grain market bulls scattering",
       "link": "https://www.farmprogress.com/markets-and-quotes/afternoon-market-recap",
       "time": "2026-01-30T20:22:13+00:00",
-      "category": "news"
-    },
-    {
-      "source": "FarmProgress",
-      "title": "Numbers tell facts but stories reveal truth",
-      "link": "https://www.farmprogress.com/cattle-news/numbers-tell-facts-but-stories-reveal-truth",
-      "time": "2026-01-30T19:59:08+00:00",
-      "category": "news"
-    },
-    {
-      "source": "FarmProgress",
-      "title": "Commodity Classic set to celebrate 30-year anniversary",
-      "link": "https://www.farmprogress.com/farm-shows/commodity-classic-set-to-celebrate-30-year-anniversary",
-      "time": "2026-01-30T19:38:17+00:00",
       "category": "news"
     },
     {
