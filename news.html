@@ -51,6 +51,9 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Shared Styles (nav, footer, base) -->
+    <link rel="stylesheet" href="components/shared.css">
+    
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>
@@ -68,24 +71,10 @@
       "name": "Agriculture News Hub",
       "description": "Free agriculture news aggregator with AI-powered summaries from 30+ sources",
       "url": "https://agsist.com/news.html",
-      "isPartOf": {
-        "@type": "WebSite",
-        "name": "AGSIST",
-        "url": "https://agsist.com"
-      },
-      "about": {
-        "@type": "Thing",
-        "name": "Agriculture News"
-      },
-      "audience": {
-        "@type": "Audience",
-        "audienceType": "Farmers, Ranchers, Agricultural Professionals"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "AGSIST",
-        "url": "https://agsist.com"
-      }
+      "isPartOf": { "@type": "WebSite", "name": "AGSIST", "url": "https://agsist.com" },
+      "about": { "@type": "Thing", "name": "Agriculture News" },
+      "audience": { "@type": "Audience", "audienceType": "Farmers, Ranchers, Agricultural Professionals" },
+      "publisher": { "@type": "Organization", "name": "AGSIST", "url": "https://agsist.com" }
     }
     </script>
     
@@ -95,18 +84,8 @@
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://agsist.com"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Agriculture News Hub",
-          "item": "https://agsist.com/news.html"
-        }
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com" },
+        { "@type": "ListItem", "position": 2, "name": "Agriculture News Hub", "item": "https://agsist.com/news.html" }
       ]
     }
     </script>
@@ -117,213 +96,16 @@
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is AGSIST Agriculture News Hub?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "AGSIST Agriculture News Hub is a free news aggregator that collects farming and agriculture news from over 30 sources including Reddit communities, university extension services, and industry publications. Articles are updated every 2 hours and include AI-powered summaries."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do the AI summaries work?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "When you click the Summary button on any article, our system fetches the full article content and uses Claude AI to generate a comprehensive 4-6 sentence summary covering key facts, numbers, and why the news matters to farmers."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What sources does the news hub aggregate from?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "We aggregate from 30+ sources including Reddit farming communities (r/farming, r/agriculture, r/tractors), university extension services (UW Madison, Purdue, Iowa State, Texas A&M), and industry publications (AgDaily, Farm Journal, Brownfield, Lancaster Farming)."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How often is the news updated?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "The Agriculture News Hub automatically fetches new articles from all sources every 2 hours, ensuring you always have access to the latest farming news and agricultural updates."
-          }
-        }
+        { "@type": "Question", "name": "What is AGSIST Agriculture News Hub?", "acceptedAnswer": { "@type": "Answer", "text": "AGSIST Agriculture News Hub is a free news aggregator that collects farming and agriculture news from over 30 sources including Reddit communities, university extension services, and industry publications. Articles are updated every 2 hours and include AI-powered summaries." }},
+        { "@type": "Question", "name": "How do the AI summaries work?", "acceptedAnswer": { "@type": "Answer", "text": "When you click the Summary button on any article, our system fetches the full article content and uses Claude AI to generate a comprehensive 4-6 sentence summary covering key facts, numbers, and why the news matters to farmers." }},
+        { "@type": "Question", "name": "What sources does the news hub aggregate from?", "acceptedAnswer": { "@type": "Answer", "text": "We aggregate from 30+ sources including Reddit farming communities (r/farming, r/agriculture, r/tractors), university extension services (UW Madison, Purdue, Iowa State, Texas A&M), and industry publications (AgDaily, Farm Journal, Brownfield, Lancaster Farming)." }},
+        { "@type": "Question", "name": "How often is the news updated?", "acceptedAnswer": { "@type": "Answer", "text": "The Agriculture News Hub automatically fetches new articles from all sources every 2 hours, ensuring you always have access to the latest farming news and agricultural updates." }}
       ]
     }
     </script>
     
+    <!-- Page-Specific Styles -->
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --bg: #0a0a0c;
-            --surface: #111114;
-            --card: #16161a;
-            --card-hover: #1c1c22;
-            --border: #2a2a32;
-            --text: #e8e8ec;
-            --dim: #8a8a94;
-            --accent: #e6b042;
-            
-            /* Category colors */
-            --community: #ff6b35;
-            --government: #10b981;
-            --university: #3b82f6;
-            --industry: #8b5cf6;
-            --markets: #f59e0b;
-            --weather: #06b6d4;
-        }
-        
-        /* Mobile: Prevent horizontal scroll */
-        html, body {
-            overflow-x: hidden;
-            width: 100%;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        body {
-            font-family: 'JetBrains Mono', monospace;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            min-height: -webkit-fill-available;
-        }
-        
-        /* ═══════════════════════════════════════════════════════════════════════ */
-        /* MAIN NAVIGATION - Dropdown Style */
-        /* ═══════════════════════════════════════════════════════════════════════ */
-        .main-nav {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 0 20px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        .nav-inner {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 60px;
-        }
-        .main-nav .logo {
-            color: var(--accent);
-            font-weight: 700;
-            font-size: 1.2rem;
-            text-decoration: none;
-        }
-        .nav-links {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        .nav-dropdown {
-            position: relative;
-        }
-        .nav-link, .dropdown-toggle {
-            background: none;
-            border: none;
-            color: var(--dim);
-            font-family: inherit;
-            font-size: 0.9rem;
-            padding: 10px 14px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-        .nav-link:hover, .dropdown-toggle:hover {
-            color: var(--text);
-            background: var(--card-hover);
-        }
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            min-width: 180px;
-            padding: 8px 0;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-            z-index: 1001;
-        }
-        .nav-dropdown:hover .dropdown-menu {
-            display: block;
-        }
-        .dropdown-item {
-            display: block;
-            padding: 10px 16px;
-            color: var(--dim);
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-        .dropdown-item:hover {
-            background: var(--card-hover);
-            color: var(--accent);
-        }
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: 1px solid var(--border);
-            color: var(--text);
-            font-size: 1.4rem;
-            width: 44px;
-            height: 44px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .mobile-menu-btn:hover {
-            background: var(--card-hover);
-            border-color: var(--accent);
-        }
-        
-        /* MOBILE MENU */
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 60px;
-            left: 0;
-            right: 0;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 16px 20px;
-            z-index: 999;
-            max-height: calc(100vh - 60px);
-            overflow-y: auto;
-        }
-        .mobile-menu.active {
-            display: block;
-        }
-        .mobile-section {
-            color: var(--accent);
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 16px 0 8px;
-            border-top: 1px solid var(--border);
-        }
-        .mobile-section:first-child {
-            border-top: none;
-            padding-top: 0;
-        }
-        .mobile-link {
-            display: block;
-            padding: 12px 0;
-            color: var(--text);
-            text-decoration: none;
-            font-size: 0.95rem;
-        }
-        .mobile-link:hover {
-            color: var(--accent);
-        }
-        
         /* ═══════════════════════════════════════════════════════════════════════ */
         /* HERO */
         /* ═══════════════════════════════════════════════════════════════════════ */
@@ -333,149 +115,41 @@
             padding: 48px 20px 32px;
             border-bottom: 1px solid var(--border);
         }
-        .hero h1 {
-            font-size: 2.4rem;
-            color: var(--text);
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
-        .hero h1 span {
-            color: var(--accent);
-        }
-        .hero p {
-            color: var(--dim);
-            font-size: 1rem;
-            max-width: 700px;
-            margin: 0 auto 24px;
-        }
+        .hero h1 { font-size: 2.4rem; color: var(--text); margin-bottom: 12px; font-weight: 700; }
+        .hero h1 span { color: var(--accent); }
+        .hero p { color: var(--dim); font-size: 1rem; max-width: 700px; margin: 0 auto 24px; }
         
-        /* Stats bar */
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 32px;
-            flex-wrap: wrap;
-        }
-        .stat {
-            text-align: center;
-        }
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--accent);
-        }
-        .stat-label {
-            font-size: 0.7rem;
-            color: var(--dim);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        .stats-bar { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+        .stat-label { font-size: 0.7rem; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
         
         /* AI Feature Callout */
         .ai-feature {
             background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
             border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 12px;
-            padding: 16px 20px;
-            max-width: 700px;
-            margin: 0 auto 24px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            text-align: left;
+            border-radius: 12px; padding: 16px 20px; max-width: 700px; margin: 0 auto 24px;
+            display: flex; align-items: flex-start; gap: 12px; text-align: left;
         }
-        .ai-feature-badge {
-            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
-            color: #fff;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        .ai-feature-text {
-            font-size: 0.82rem;
-            color: var(--dim);
-            line-height: 1.6;
-        }
-        .ai-feature-text strong {
-            color: var(--text);
-        }
-        .inline-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-            background: var(--accent);
-            color: #000;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            vertical-align: middle;
-        }
-        .inline-btn .mini-badge {
-            background: #000;
-            color: var(--accent);
-            font-size: 0.55rem;
-            padding: 1px 3px;
-            border-radius: 2px;
-        }
+        .ai-feature-badge { background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+        .ai-feature-text { font-size: 0.82rem; color: var(--dim); line-height: 1.6; }
+        .ai-feature-text strong { color: var(--text); }
+        .inline-btn { display: inline-flex; align-items: center; gap: 3px; background: var(--accent); color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; vertical-align: middle; }
+        .inline-btn .mini-badge { background: #000; color: var(--accent); font-size: 0.55rem; padding: 1px 3px; border-radius: 2px; }
         
         /* ═══════════════════════════════════════════════════════════════════════ */
         /* MAIN LAYOUT */
         /* ═══════════════════════════════════════════════════════════════════════ */
-        main {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 24px 16px;
-        }
+        main { max-width: 1600px; margin: 0 auto; padding: 24px 16px; }
         
         /* ═══════════════════════════════════════════════════════════════════════ */
-        /* CATEGORY TABS */
+        /* FILTERS */
         /* ═══════════════════════════════════════════════════════════════════════ */
-        .filters {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 0 16px;
-        }
-        .filter-btn {
-            background: var(--card);
-            border: 1px solid var(--border);
-            color: var(--dim);
-            padding: 10px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .filter-btn:hover {
-            border-color: var(--accent);
-            color: var(--text);
-            background: var(--card-hover);
-        }
-        .filter-btn.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #000;
-        }
-        .filter-btn .count {
-            background: rgba(0,0,0,0.15);
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-        
-        /* Category-specific active states */
+        .filters { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center; padding: 0 16px; }
+        .filter-btn { background: var(--card); border: 1px solid var(--border); color: var(--dim); padding: 10px 18px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        .filter-btn:hover { border-color: var(--accent); color: var(--text); background: var(--card-hover); }
+        .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
+        .filter-btn .count { background: rgba(0,0,0,0.15); padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
         .filter-btn[data-cat="community"].active { background: var(--community); }
         .filter-btn[data-cat="government"].active { background: var(--government); }
         .filter-btn[data-cat="university"].active { background: var(--university); }
@@ -486,837 +160,165 @@
         /* ═══════════════════════════════════════════════════════════════════════ */
         /* STATUS BAR */
         /* ═══════════════════════════════════════════════════════════════════════ */
-        .status-bar {
-            text-align: center;
-            color: var(--dim);
-            font-size: 0.75rem;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 16px;
-        }
-        .status-bar .live {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .status-bar .live::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: #22c55e;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
+        .status-bar { text-align: center; color: var(--dim); font-size: 0.75rem; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 16px; }
+        .status-bar .live { display: flex; align-items: center; gap: 6px; }
+        .status-bar .live::before { content: ''; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         
         /* ═══════════════════════════════════════════════════════════════════════ */
-        /* FEED GRID - Masonry-style */
+        /* FEED GRID & ARTICLE CARDS */
         /* ═══════════════════════════════════════════════════════════════════════ */
-        .feed-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 16px;
-        }
+        .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
         
-        /* ═══════════════════════════════════════════════════════════════════════ */
-        /* ARTICLE CARDS */
-        /* ═══════════════════════════════════════════════════════════════════════ */
-        .article {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.25s ease;
-        }
-        .article:hover {
-            background: var(--card-hover);
-            border-color: var(--accent);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-        }
-        
-        .article-thumb {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            background: var(--border);
-            display: block;
-        }
-        
-        .article-body {
-            padding: 16px;
-        }
-        
-        .article-meta {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
-        
-        .article-source {
-            font-size: 0.7rem;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            white-space: nowrap;
-        }
+        .article { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: all 0.25s ease; }
+        .article:hover { background: var(--card-hover); border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+        .article-thumb { width: 100%; height: 140px; object-fit: cover; background: var(--border); display: block; }
+        .article-body { padding: 16px; }
+        .article-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+        .article-source { font-size: 0.7rem; padding: 4px 10px; border-radius: 6px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
         .article-source.community { background: rgba(255,107,53,0.15); color: var(--community); }
         .article-source.government { background: rgba(16,185,129,0.15); color: var(--government); }
         .article-source.university { background: rgba(59,130,246,0.15); color: var(--university); }
         .article-source.industry { background: rgba(139,92,246,0.15); color: var(--industry); }
         .article-source.markets { background: rgba(245,158,11,0.15); color: var(--markets); }
         .article-source.weather { background: rgba(6,182,212,0.15); color: var(--weather); }
-        
-        .article-date {
-            color: var(--dim);
-            font-size: 0.7rem;
-            margin-left: auto;
-            white-space: nowrap;
-        }
-        
-        .article-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 8px;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        .article-excerpt {
-            font-size: 0.8rem;
-            color: var(--dim);
-            line-height: 1.5;
-            margin-bottom: 12px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        .article-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 12px;
-            border-top: 1px solid var(--border);
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .article-link {
-            color: var(--accent);
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-decoration: none;
-            padding: 6px 12px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        .article-link:hover {
-            border-color: var(--accent);
-            background: rgba(230,176,66,0.1);
-        }
-        
-        /* Reddit-specific styling */
-        .article.reddit .article-source::before {
-            content: '🔥';
-            font-size: 0.8rem;
-        }
+        .article-date { color: var(--dim); font-size: 0.7rem; margin-left: auto; white-space: nowrap; }
+        .article-title { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .article-excerpt { font-size: 0.8rem; color: var(--dim); line-height: 1.5; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .article-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--border); gap: 8px; flex-wrap: wrap; }
+        .article-link { color: var(--accent); font-size: 0.75rem; font-weight: 600; text-decoration: none; padding: 6px 12px; border: 1px solid var(--border); border-radius: 4px; transition: all 0.2s; white-space: nowrap; }
+        .article-link:hover { border-color: var(--accent); background: rgba(230,176,66,0.1); }
+        .article.reddit .article-source::before { content: '🔥'; font-size: 0.8rem; }
         
         /* ═══════════════════════════════════════════════════════════════════════ */
         /* LOADING / ERROR */
         /* ═══════════════════════════════════════════════════════════════════════ */
-        .loading, .error, .empty {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 80px 20px;
-            color: var(--dim);
-        }
-        .loading::before {
-            content: "🔄";
-            display: block;
-            font-size: 3rem;
-            margin-bottom: 16px;
-            animation: spin 2s linear infinite;
-        }
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+        .loading, .error, .empty { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--dim); font-size: 0.9rem; }
+        .loading::before { content: "⏳"; display: block; font-size: 3rem; margin-bottom: 16px; animation: spin 2s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .error::before { content: "⚠️"; display: block; font-size: 3rem; margin-bottom: 16px; }
         .empty::before { content: "📭"; display: block; font-size: 3rem; margin-bottom: 16px; }
         
         /* ═══════════════════════════════════════════════════════════════════════ */
         /* SOURCES SECTION */
         /* ═══════════════════════════════════════════════════════════════════════ */
-        .sources-section {
-            margin-top: 60px;
-            padding-top: 40px;
-            border-top: 1px solid var(--border);
-        }
-        .sources-section h2 {
-            text-align: center;
-            color: var(--text);
-            margin-bottom: 32px;
-            font-size: 1.4rem;
-        }
-        .sources-section h2 span {
-            color: var(--accent);
-        }
-        
-        .sources-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        
-        .source-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-        }
-        .source-card h3 {
-            color: var(--text);
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .source-card h3 .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
+        .sources-section { margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--border); }
+        .sources-section h2 { text-align: center; color: var(--text); margin-bottom: 32px; font-size: 1.4rem; }
+        .sources-section h2 span { color: var(--accent); }
+        .sources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .source-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        .source-card h3 { color: var(--text); font-size: 0.9rem; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .source-card h3 .dot { width: 10px; height: 10px; border-radius: 50%; }
         .source-card h3 .dot.community { background: var(--community); }
-        .source-card h3 .dot.government { background: var(--government); }
         .source-card h3 .dot.university { background: var(--university); }
         .source-card h3 .dot.industry { background: var(--industry); }
         .source-card h3 .dot.markets { background: var(--markets); }
-        .source-card h3 .dot.weather { background: var(--weather); }
-        
-        .source-card ul {
-            list-style: none;
-            font-size: 0.8rem;
-        }
-        .source-card li {
-            padding: 6px 0;
-            color: var(--dim);
-            border-bottom: 1px solid var(--border);
-        }
-        .source-card li:last-child {
-            border-bottom: none;
-        }
-        .source-card a {
-            color: var(--text);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .source-card a:hover {
-            color: var(--accent);
-        }
+        .source-card ul { list-style: none; font-size: 0.8rem; }
+        .source-card li { padding: 6px 0; color: var(--dim); border-bottom: 1px solid var(--border); }
+        .source-card li:last-child { border-bottom: none; }
+        .source-card a { color: var(--text); text-decoration: none; transition: color 0.2s; }
+        .source-card a:hover { color: var(--accent); }
         
         /* ═══════════════════════════════════════════════════════════════════════ */
         /* FAQ SECTION */
         /* ═══════════════════════════════════════════════════════════════════════ */
-        .faq-section {
-            margin-top: 48px;
-            padding-top: 32px;
-            border-top: 1px solid var(--border);
-        }
-        .faq-section h2 {
-            font-size: 1.2rem;
-            color: var(--text);
-            margin-bottom: 24px;
-            text-align: center;
-        }
-        .faq-grid {
-            display: grid;
-            gap: 12px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .faq-item {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .faq-item summary {
-            padding: 16px 20px;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--text);
-            font-size: 0.9rem;
-            list-style: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.2s;
-        }
-        .faq-item summary::-webkit-details-marker {
-            display: none;
-        }
-        .faq-item summary::after {
-            content: '+';
-            font-size: 1.2rem;
-            color: var(--accent);
-            font-weight: 400;
-        }
-        .faq-item[open] summary::after {
-            content: '−';
-        }
-        .faq-item summary:hover {
-            background: var(--card-hover);
-        }
-        .faq-item p {
-            padding: 0 20px 16px;
-            color: var(--dim);
-            font-size: 0.85rem;
-            line-height: 1.7;
-        }
-        .faq-item p strong {
-            color: var(--text);
-        }
+        .faq-section { margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--border); }
+        .faq-section h2 { font-size: 1.2rem; color: var(--text); margin-bottom: 24px; text-align: center; }
+        .faq-grid { display: grid; gap: 12px; max-width: 800px; margin: 0 auto; }
+        .faq-item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        .faq-item summary { padding: 16px 20px; cursor: pointer; font-weight: 600; color: var(--text); font-size: 0.9rem; list-style: none; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary::after { content: '+'; font-size: 1.2rem; color: var(--accent); font-weight: 400; }
+        .faq-item[open] summary::after { content: '−'; }
+        .faq-item summary:hover { background: var(--card-hover); }
+        .faq-item p { padding: 0 20px 16px; color: var(--dim); font-size: 0.85rem; line-height: 1.7; }
+        .faq-item p strong { color: var(--text); }
         
         /* ═══════════════════════════════════════════════════════════════════════ */
         /* TL;DR MODAL */
         /* ═══════════════════════════════════════════════════════════════════════ */
-        .tldr-btn {
-            background: var(--accent);
-            color: #000;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .tldr-btn::after {
-            content: 'AI';
-            font-size: 0.55rem;
-            background: #000;
-            color: var(--accent);
-            padding: 1px 3px;
-            border-radius: 2px;
-            font-weight: 700;
-        }
-        .tldr-btn:hover {
-            background: #fff;
-            transform: scale(1.05);
-        }
-        /* Tooltip for TL;DR explanation */
-        .tldr-btn[title] {
-            cursor: help;
-        }
+        .tldr-btn { background: var(--accent); color: #000; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; font-family: inherit; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; position: relative; display: inline-flex; align-items: center; gap: 4px; }
+        .tldr-btn::after { content: 'AI'; font-size: 0.55rem; background: #000; color: var(--accent); padding: 1px 3px; border-radius: 2px; font-weight: 700; }
+        .tldr-btn:hover { background: #fff; transform: scale(1.05); }
         
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.85);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        
-        .modal-content {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-            animation: modalSlide 0.2s ease-out;
-            -webkit-overflow-scrolling: touch;
-        }
-        @keyframes modalSlide {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .modal-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 16px;
-        }
-        .modal-header-content h3 {
-            font-size: 0.75rem;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 0 0 6px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .modal-header-content h3 .ai-badge {
-            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
-            color: #fff;
-            font-size: 0.6rem;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-weight: 700;
-        }
-        .modal-header-content .ai-explain {
-            font-size: 0.7rem;
-            color: var(--dim);
-            font-weight: 400;
-        }
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--dim);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0;
-            line-height: 1;
-            flex-shrink: 0;
-        }
-        .modal-close:hover {
-            color: var(--text);
-        }
-        
-        .modal-body {
-            padding: 20px;
-            max-height: 50vh;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        .modal-source {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--bg);
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            color: var(--dim);
-            margin-bottom: 16px;
-        }
-        .modal-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 16px;
-            line-height: 1.4;
-        }
-        .modal-summary {
-            color: var(--text);
-            font-size: 0.95rem;
-            line-height: 1.8;
-            margin-bottom: 20px;
-            white-space: pre-wrap;
-        }
-        .modal-summary strong {
-            color: var(--accent);
-        }
-        .modal-thumb {
-            width: 100%;
-            max-height: 150px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 16px;
-        }
-        
-        .modal-footer {
-            padding: 16px 20px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-        }
-        .modal-btn {
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .modal-btn-secondary {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            color: var(--text);
-        }
-        .modal-btn-secondary:hover {
-            border-color: var(--accent);
-        }
-        .modal-btn-primary {
-            background: var(--accent);
-            border: 1px solid var(--accent);
-            color: #000;
-        }
-        .modal-btn-primary:hover {
-            background: #fff;
-        }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 12px; max-width: 600px; width: 100%; max-height: 85vh; overflow-y: auto; position: relative; animation: modalSlide 0.2s ease-out; -webkit-overflow-scrolling: touch; }
+        @keyframes modalSlide { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+        .modal-header-content h3 { font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin: 0 0 6px 0; display: flex; align-items: center; gap: 8px; }
+        .modal-header-content h3 .ai-badge { background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: #fff; font-size: 0.6rem; padding: 2px 6px; border-radius: 3px; font-weight: 700; }
+        .modal-header-content .ai-explain { font-size: 0.7rem; color: var(--dim); font-weight: 400; }
+        .modal-close { background: none; border: none; color: var(--dim); font-size: 1.5rem; cursor: pointer; padding: 0; line-height: 1; flex-shrink: 0; }
+        .modal-close:hover { color: var(--text); }
+        .modal-body { padding: 20px; max-height: 50vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .modal-source { display: inline-flex; align-items: center; gap: 8px; background: var(--bg); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; color: var(--dim); margin-bottom: 16px; }
+        .modal-thumb { max-height: 150px; width: 100%; object-fit: cover; border-radius: 8px; margin-bottom: 16px; }
+        .modal-title { font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 16px; line-height: 1.4; }
+        .modal-summary { color: var(--text); font-size: 0.9rem; line-height: 1.8; white-space: pre-wrap; }
+        .modal-footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 12px; justify-content: flex-end; }
+        .modal-btn { padding: 10px 20px; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .modal-btn-secondary { background: var(--bg); border: 1px solid var(--border); color: var(--dim); }
+        .modal-btn-secondary:hover { border-color: var(--text); color: var(--text); }
+        .modal-btn-primary { background: var(--accent); border: 1px solid var(--accent); color: #000; }
+        .modal-btn-primary:hover { background: #fff; }
         
         /* ═══════════════════════════════════════════════════════════════════════ */
-        /* FOOTER-C - Minimal with Network */
-        /* ═══════════════════════════════════════════════════════════════════════ */
-        .footer-c {
-            background: var(--surface);
-            border-top: 1px solid var(--border);
-            padding: 30px 20px;
-            margin-top: auto;
-        }
-        .footer-c-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 40px;
-            align-items: start;
-        }
-        .footer-c-main {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .footer-c .brand-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .footer-c .brand {
-            color: var(--accent);
-            font-weight: 700;
-            font-size: 1.1rem;
-            text-decoration: none;
-        }
-        .footer-c .brand:hover { opacity: 0.8; }
-        .footer-c .sep { color: var(--border); }
-        .footer-c .tagline { color: var(--dim); font-size: 0.85rem; }
-        .footer-c .site-links {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .footer-c .site-links a {
-            color: var(--dim);
-            text-decoration: none;
-            font-size: 0.85rem;
-            padding: 6px 12px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-        .footer-c .site-links a:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-        .footer-c .legal-row {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-        .footer-c .legal-row span {
-            color: var(--dim);
-            font-size: 0.8rem;
-        }
-        .footer-c-network { text-align: right; }
-        .footer-c-network h4 {
-            color: var(--accent);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-        }
-        .footer-c-network a {
-            display: block;
-            color: var(--dim);
-            text-decoration: none;
-            font-size: 0.85rem;
-            padding: 6px 0;
-            transition: color 0.2s;
-        }
-        .footer-c-network a:hover { color: var(--text); }
-        
-        /* ═══════════════════════════════════════════════════════════════════════ */
-        /* MOBILE */
-        /* ═══════════════════════════════════════════════════════════════════════ */
-        /* ═══════════════════════════════════════════════════════════════════════ */
-        /* MOBILE RESPONSIVE - Touch-friendly and scroll-locked */
+        /* MOBILE RESPONSIVE */
         /* ═══════════════════════════════════════════════════════════════════════ */
         @media (max-width: 768px) {
-            /* Prevent horizontal scroll */
-            html, body {
-                overflow-x: hidden;
-                width: 100%;
-                position: relative;
-            }
-            
-            /* Nav mobile */
-            .nav-links { display: none; }
-            .mobile-menu-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                min-width: 44px;
-                min-height: 44px; /* Touch target size */
-            }
-            
-            /* Content mobile */
             .hero { padding: 24px 16px; }
             .hero h1 { font-size: 1.5rem; }
             .hero p { font-size: 0.85rem; line-height: 1.5; }
-            
-            /* AI Feature mobile */
-            .ai-feature {
-                flex-direction: column;
-                padding: 14px;
-                gap: 10px;
-                margin-bottom: 20px;
-            }
-            .ai-feature-badge {
-                align-self: flex-start;
-            }
-            .ai-feature-text {
-                font-size: 0.78rem;
-            }
-            
-            .stats-bar { 
-                gap: 12px; 
-                flex-wrap: wrap;
-                justify-content: center;
-            }
+            .ai-feature { flex-direction: column; padding: 14px; gap: 10px; margin-bottom: 20px; }
+            .ai-feature-badge { align-self: flex-start; }
+            .ai-feature-text { font-size: 0.78rem; }
+            .stats-bar { gap: 12px; }
             .stat { min-width: 70px; }
             .stat-value { font-size: 1.3rem; }
             .stat-label { font-size: 0.65rem; }
-            
-            /* Filters - horizontal scroll on mobile */
-            .filters { 
-                gap: 6px;
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-                padding-bottom: 8px;
-            }
+            .filters { gap: 6px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 8px; }
             .filters::-webkit-scrollbar { display: none; }
-            .filter-btn { 
-                padding: 10px 14px; 
-                font-size: 0.7rem;
-                flex-shrink: 0;
-                min-height: 44px; /* Touch target */
-            }
-            
-            /* Feed grid - single column */
-            .feed-grid { 
-                grid-template-columns: 1fr; 
-                gap: 12px;
-                padding: 0 4px;
-            }
-            
-            /* Article cards mobile */
-            .article-thumb {
-                height: 160px;
-            }
-            .article-body {
-                padding: 14px;
-            }
-            .article-title {
-                font-size: 0.9rem;
-            }
-            .article-excerpt {
-                font-size: 0.78rem;
-                -webkit-line-clamp: 2;
-            }
-            .tldr-btn, .article-link {
-                min-height: 44px; /* Touch target */
-                padding: 10px 14px;
-                font-size: 0.72rem;
-            }
-            
-            /* Modal mobile */
-            .modal-overlay {
-                padding: 12px;
-                align-items: flex-end; /* Slide up from bottom */
-            }
-            .modal-content {
-                max-height: 90vh;
-                border-radius: 16px 16px 0 0;
-                animation: modalSlideUp 0.25s ease-out;
-            }
-            @keyframes modalSlideUp {
-                from { opacity: 0; transform: translateY(100%); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            .modal-header {
-                padding: 16px;
-                position: sticky;
-                top: 0;
-                background: var(--card);
-                z-index: 1;
-            }
-            .modal-body {
-                padding: 16px;
-                max-height: 55vh;
-            }
-            .modal-title {
-                font-size: 1rem;
-            }
-            .modal-summary {
-                font-size: 0.9rem;
-                line-height: 1.7;
-            }
-            .modal-footer {
-                padding: 12px 16px;
-                position: sticky;
-                bottom: 0;
-                background: var(--card);
-            }
-            .modal-btn {
-                padding: 12px 16px;
-                min-height: 44px; /* Touch target */
-                font-size: 0.8rem;
-            }
-            .modal-close {
-                min-width: 44px;
-                min-height: 44px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            
-            /* Sources section mobile */
+            .filter-btn { padding: 10px 14px; font-size: 0.7rem; flex-shrink: 0; min-height: 44px; }
+            .feed-grid { grid-template-columns: 1fr; gap: 12px; padding: 0 4px; }
+            .article-thumb { height: 160px; }
+            .article-body { padding: 14px; }
+            .article-title { font-size: 0.9rem; }
+            .article-excerpt { font-size: 0.78rem; -webkit-line-clamp: 2; }
+            .tldr-btn, .article-link { min-height: 44px; padding: 10px 14px; font-size: 0.72rem; }
+            .modal-overlay { padding: 12px; align-items: flex-end; }
+            .modal-content { max-height: 90vh; border-radius: 16px 16px 0 0; animation: modalSlideUp 0.25s ease-out; }
+            @keyframes modalSlideUp { from { opacity: 0; transform: translateY(100%); } to { opacity: 1; transform: translateY(0); } }
+            .modal-header { padding: 16px; position: sticky; top: 0; background: var(--card); z-index: 1; }
+            .modal-body { padding: 16px; max-height: 55vh; }
+            .modal-title { font-size: 1rem; }
+            .modal-summary { font-size: 0.9rem; line-height: 1.7; }
+            .modal-footer { padding: 12px 16px; position: sticky; bottom: 0; background: var(--card); }
+            .modal-btn { padding: 12px 16px; min-height: 44px; font-size: 0.8rem; }
+            .modal-close { min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
             .sources-section { padding: 24px 16px; }
             .sources-grid { grid-template-columns: 1fr; gap: 12px; }
             .source-card { padding: 14px; }
             .source-card h3 { font-size: 0.85rem; }
-            .source-card ul { gap: 6px; }
-            .source-card a { 
-                padding: 8px 0; 
-                min-height: 44px; 
-                display: flex;
-                align-items: center;
-            }
-            
-            /* FAQ section mobile */
-            .faq-section {
-                margin-top: 32px;
-                padding-top: 24px;
-            }
-            .faq-section h2 {
-                font-size: 1rem;
-                margin-bottom: 16px;
-            }
-            .faq-item summary {
-                padding: 14px 16px;
-                font-size: 0.85rem;
-                min-height: 44px;
-            }
-            .faq-item p {
-                padding: 0 16px 14px;
-                font-size: 0.8rem;
-            }
-            
-            /* Footer mobile */
-            .footer-c { padding: 16px; }
-            .footer-c-inner { grid-template-columns: 1fr; gap: 16px; }
-            .footer-c-main { gap: 12px; }
-            .footer-c .brand-row { flex-wrap: wrap; gap: 6px; }
-            .footer-c .tagline { display: none; }
-            .footer-c .site-links { gap: 6px; flex-wrap: wrap; }
-            .footer-c .site-links a { 
-                padding: 8px 10px; 
-                font-size: 0.75rem;
-                min-height: 40px;
-            }
-            .footer-c-network {
-                text-align: left;
-                padding-top: 12px;
-                border-top: 1px solid var(--border);
-            }
-            .footer-c-network h4 { margin-bottom: 8px; }
-            .footer-c-network a { 
-                display: inline-block; 
-                padding: 8px 8px 8px 0; 
-                font-size: 0.8rem;
-                min-height: 40px;
-            }
+            .source-card a { padding: 8px 0; min-height: 44px; display: flex; align-items: center; }
+            .faq-section { margin-top: 32px; padding-top: 24px; }
+            .faq-section h2 { font-size: 1rem; margin-bottom: 16px; }
+            .faq-item summary { padding: 14px 16px; font-size: 0.85rem; min-height: 44px; }
+            .faq-item p { padding: 0 16px 14px; font-size: 0.8rem; }
         }
         
-        /* Extra small screens */
         @media (max-width: 380px) {
             .hero h1 { font-size: 1.3rem; }
             .stat-value { font-size: 1.1rem; }
             .filter-btn { padding: 8px 10px; }
         }
-        
-        /* Safe area insets for notched phones */
-        @supports (padding: max(0px)) {
-            .main-nav {
-                padding-left: max(20px, env(safe-area-inset-left));
-                padding-right: max(20px, env(safe-area-inset-right));
-            }
-            .footer-c {
-                padding-bottom: max(20px, env(safe-area-inset-bottom));
-            }
-        }
     </style>
 </head>
 <body>
-    <!-- NAVIGATION -->
-    <nav class="main-nav">
-        <div class="nav-inner">
-            <a href="/" class="logo">AGSIST</a>
-            <div class="nav-links">
-                <div class="nav-dropdown"><button class="dropdown-toggle">Prices ▾</button><div class="dropdown-menu"><a href="corn-prices.html" class="dropdown-item">🌽 Corn</a><a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a><a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a></div></div>
-                <div class="nav-dropdown"><button class="dropdown-toggle">Tools ▾</button><div class="dropdown-menu"><a href="tools.html" class="dropdown-item">All Tools</a><a href="breakeven.html" class="dropdown-item">Breakeven</a><a href="gdu.html" class="dropdown-item">GDU Calculator</a><a href="calculator.html" class="dropdown-item">Grain Bin</a><a href="fastfacts.html" class="dropdown-item">Fast Facts</a></div></div>
-                <div class="nav-dropdown"><button class="dropdown-toggle">Info ▾</button><div class="dropdown-menu"><a href="learn.html" class="dropdown-item">Learn</a><a href="calendar.html" class="dropdown-item">Calendar</a><a href="resources.html" class="dropdown-item">Resources</a><a href="offices.html" class="dropdown-item">Offices</a><a href="news.html" class="dropdown-item">📰 News Hub</a></div></div>
-            </div>
-            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
-        </div>
-    </nav>
-    <!-- MOBILE MENU -->
-    <div class="mobile-menu" id="mobile-menu">
-        <div class="mobile-section">Prices</div><a href="corn-prices.html" class="mobile-link">🌽 Corn</a><a href="soybean-prices.html" class="mobile-link">🫘 Soybeans</a><a href="wheat-prices.html" class="mobile-link">🌾 Wheat</a>
-        <div class="mobile-section">Tools</div><a href="tools.html" class="mobile-link">All Tools</a><a href="breakeven.html" class="mobile-link">Breakeven</a><a href="gdu.html" class="mobile-link">GDU Calculator</a><a href="calculator.html" class="mobile-link">Grain Bin</a><a href="fastfacts.html" class="mobile-link">Fast Facts</a>
-        <div class="mobile-section">Info</div><a href="learn.html" class="mobile-link">Learn</a><a href="calendar.html" class="mobile-link">Calendar</a><a href="resources.html" class="mobile-link">Resources</a><a href="offices.html" class="mobile-link">Offices</a><a href="news.html" class="mobile-link">📰 News Hub</a>
-    </div>
+    <!-- Header (loaded from components/header.html) -->
+    <div id="header-placeholder"></div>
     
+    <!-- PAGE CONTENT -->
     <div class="hero">
         <h1>📰 The <span>Ag News</span> Hub</h1>
         <p>Your one-stop destination for agriculture news. Community discussions, university research, and industry insights—all in one place, updated every 2 hours.</p>
@@ -1346,27 +348,13 @@
     
     <main>
         <div class="filters">
-            <button class="filter-btn active" data-cat="all">
-                🌐 All <span class="count" id="count-all">0</span>
-            </button>
-            <button class="filter-btn" data-cat="community">
-                🔥 Community <span class="count" id="count-community">0</span>
-            </button>
-            <button class="filter-btn" data-cat="government">
-                🏛️ Government <span class="count" id="count-government">0</span>
-            </button>
-            <button class="filter-btn" data-cat="university">
-                🎓 University <span class="count" id="count-university">0</span>
-            </button>
-            <button class="filter-btn" data-cat="industry">
-                📰 Industry <span class="count" id="count-industry">0</span>
-            </button>
-            <button class="filter-btn" data-cat="markets">
-                💹 Markets <span class="count" id="count-markets">0</span>
-            </button>
-            <button class="filter-btn" data-cat="weather">
-                🌦️ Weather <span class="count" id="count-weather">0</span>
-            </button>
+            <button class="filter-btn active" data-cat="all">🌐 All <span class="count" id="count-all">0</span></button>
+            <button class="filter-btn" data-cat="community">🔥 Community <span class="count" id="count-community">0</span></button>
+            <button class="filter-btn" data-cat="government">🏛️ Government <span class="count" id="count-government">0</span></button>
+            <button class="filter-btn" data-cat="university">🎓 University <span class="count" id="count-university">0</span></button>
+            <button class="filter-btn" data-cat="industry">📰 Industry <span class="count" id="count-industry">0</span></button>
+            <button class="filter-btn" data-cat="markets">💹 Markets <span class="count" id="count-markets">0</span></button>
+            <button class="filter-btn" data-cat="weather">🌦️ Weather <span class="count" id="count-weather">0</span></button>
         </div>
         
         <div class="status-bar">
@@ -1430,7 +418,6 @@
             </div>
         </div>
         
-        <!-- FAQ Section for SEO -->
         <div class="faq-section">
             <h2>❓ Frequently Asked Questions</h2>
             <div class="faq-grid">
@@ -1458,52 +445,25 @@
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="footer-c">
-        <div class="footer-c-inner">
-            <div class="footer-c-main">
-                <div class="brand-row">
-                    <a href="/" class="brand">AGSIST</a>
-                    <span class="sep">|</span>
-                    <span class="tagline">Free agricultural prices, tools & news</span>
-                </div>
-                <div class="site-links">
-                    <a href="corn-prices.html">Corn</a>
-                    <a href="soybean-prices.html">Soybeans</a>
-                    <a href="wheat-prices.html">Wheat</a>
-                    <a href="tools.html">Tools</a>
-                    <a href="fastfacts.html">Fast Facts</a>
-                    <a href="calendar.html">Calendar</a>
-                    <a href="resources.html">Resources</a>
-                    <a href="news.html">News</a>
-                </div>
-                <div class="legal-row"><span>© 2026 AGSIST</span></div>
-            </div>
-            <div class="footer-c-network">
-                <h4>Our Network</h4>
-                <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
-                <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
-                <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer (loaded from components/footer.html) -->
+    <div id="footer-placeholder"></div>
     
+    <!-- TL;DR Modal -->
+    <div class="modal-overlay" id="tldr-modal">
+        <div class="modal-content" id="tldr-content"></div>
+    </div>
+    
+    <!-- Load shared components (header + footer) -->
+    <script src="components/includes.js"></script>
+    
+    <!-- Page JavaScript -->
     <script>
         // ═══════════════════════════════════════════════════════════════════════
-        // MOBILE MENU TOGGLE
-        // ═══════════════════════════════════════════════════════════════════════
-        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-            document.getElementById('mobile-menu').classList.toggle('active');
-            this.textContent = this.textContent === '☰' ? '✕' : '☰';
-        });
-        
-        // ═══════════════════════════════════════════════════════════════════════
-        // CONFIG - Update with your GitHub repo
+        // CONFIG
         // ═══════════════════════════════════════════════════════════════════════
         const GITHUB_USER = 'dnilgis';
         const GITHUB_REPO = 'agsist';
         const GITHUB_BRANCH = 'main';
-        
         const NEWS_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/data/news.json`;
         
         let allItems = [];
@@ -1519,7 +479,6 @@
         function timeAgo(timestamp) {
             const now = Date.now();
             const diff = Math.floor((now - timestamp) / 1000);
-            
             if (diff < 60) return 'just now';
             if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
             if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
@@ -1542,7 +501,6 @@
             }
             
             feed.innerHTML = items.map(item => {
-                // Sanitize data
                 const title = (item.title || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
                 const source = (item.source || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
                 const description = item.description ? item.description.substring(0, 120).replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
@@ -1566,16 +524,6 @@
             }).join('');
         }
         
-        // Track article click for analytics
-        function trackArticleClick(source, category) {
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'click_article', {
-                    'article_source': source,
-                    'article_category': category
-                });
-            }
-        }
-        
         // ═══════════════════════════════════════════════════════════════════════
         // FILTER
         // ═══════════════════════════════════════════════════════════════════════
@@ -1584,35 +532,22 @@
             ['community', 'government', 'university', 'industry', 'markets', 'weather'].forEach(cat => {
                 counts[cat] = allItems.filter(a => a.category === cat).length;
             });
-            
             Object.keys(counts).forEach(cat => {
                 const el = document.getElementById(`count-${cat}`);
                 if (el) el.textContent = counts[cat];
             });
-            
-            // Update stats
             document.getElementById('stat-articles').textContent = allItems.length;
         }
         
         function applyFilter(category) {
             currentFilter = category;
-            
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.cat === category);
             });
-            
-            const filtered = category === 'all' 
-                ? allItems 
-                : allItems.filter(a => a.category === category);
-            
+            const filtered = category === 'all' ? allItems : allItems.filter(a => a.category === category);
             renderArticles(filtered);
-            
-            // Track filter usage in analytics
             if (typeof gtag !== 'undefined') {
-                gtag('event', 'filter_articles', {
-                    'filter_category': category,
-                    'results_count': filtered.length
-                });
+                gtag('event', 'filter_articles', { 'filter_category': category, 'results_count': filtered.length });
             }
         }
         
@@ -1626,90 +561,68 @@
         async function fetchNews() {
             try {
                 const res = await fetch(NEWS_URL + '?t=' + Date.now());
-                
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                
                 const data = await res.json();
                 
                 if (data.items && data.items.length > 0) {
                     allItems = data.items;
-                    
-                    // Update UI
                     statusLive.style.display = 'flex';
                     statusText.textContent = `${data.items.length} articles from ${data.feedCount || '25+'} sources`;
                     document.getElementById('stat-updated').textContent = formatDate(data.updated);
-                    
                     updateCounts();
                     applyFilter(currentFilter);
                 } else {
                     throw new Error('No items in feed');
                 }
             } catch (err) {
-                console.error('Fetch error:', err);
-                statusText.textContent = 'Feed unavailable - loading fallback...';
-                
-                // Fallback to direct Reddit fetch
-                await fetchRedditDirect();
+                console.error('Feed error:', err);
+                statusText.textContent = 'Loading from backup...';
+                await fetchRedditFallback();
             }
         }
         
-        // ═══════════════════════════════════════════════════════════════════════
-        // FALLBACK: Direct Reddit Fetch (if GitHub JSON not available)
-        // ═══════════════════════════════════════════════════════════════════════
-        async function fetchRedditDirect() {
-            const subreddits = ['farming', 'agriculture', 'tractors', 'homestead', 'ranching'];
+        async function fetchRedditFallback() {
+            const subreddits = ['farming', 'agriculture', 'tractors', 'ranching'];
             const items = [];
             
             for (const sub of subreddits) {
                 try {
                     const res = await fetch(`https://www.reddit.com/r/${sub}/hot.json?limit=10`);
-                    if (res.ok) {
-                        const data = await res.json();
-                        const posts = data.data?.children || [];
-                        
-                        posts.filter(p => !p.data.stickied).slice(0, 8).forEach(p => {
-                            const post = p.data;
-                            let thumb = null;
-                            if (post.thumbnail?.startsWith('http')) thumb = post.thumbnail;
-                            else if (post.preview?.images?.[0]?.source?.url) {
-                                thumb = post.preview.images[0].source.url.replace(/&amp;/g, '&');
-                            }
-                            
-                            items.push({
-                                id: post.id,
-                                title: post.title,
-                                description: post.selftext?.substring(0, 200) || '',
-                                link: 'https://reddit.com' + post.permalink,
-                                thumbnail: thumb,
-                                category: 'community',
-                                source: `r/${sub}`,
-                                icon: '🔥',
-                                timestamp: post.created_utc * 1000,
-                            });
+                    const data = await res.json();
+                    
+                    data.data.children.forEach(post => {
+                        const p = post.data;
+                        if (p.stickied) return;
+                        items.push({
+                            id: p.id,
+                            title: p.title,
+                            link: `https://reddit.com${p.permalink}`,
+                            description: p.selftext?.substring(0, 200) || '',
+                            timestamp: p.created_utc * 1000,
+                            source: `r/${sub}`,
+                            category: 'community',
+                            icon: '🚜',
+                            thumbnail: p.thumbnail?.startsWith('http') ? p.thumbnail : null,
+                            summary: p.selftext?.substring(0, 300) || `Discussion on r/${sub}`
                         });
-                    }
-                } catch (e) {
-                    console.error(`Failed r/${sub}:`, e);
-                }
+                    });
+                } catch (e) { console.warn(`Failed to fetch r/${sub}`); }
             }
             
-            items.sort((a, b) => b.timestamp - a.timestamp);
-            allItems = items;
-            
-            statusLive.style.display = 'flex';
-            statusText.textContent = `${items.length} posts from Reddit (live fetch)`;
-            document.getElementById('stat-articles').textContent = items.length;
-            document.getElementById('stat-updated').textContent = 'Now';
-            
-            updateCounts();
-            applyFilter(currentFilter);
+            if (items.length > 0) {
+                allItems = items.sort((a, b) => b.timestamp - a.timestamp);
+                statusLive.style.display = 'flex';
+                statusText.textContent = `${items.length} posts from Reddit (backup mode)`;
+                document.getElementById('stat-updated').textContent = 'Now';
+                updateCounts();
+                applyFilter(currentFilter);
+            } else {
+                feed.innerHTML = '<div class="error">Unable to load news. Please try again later.</div>';
+                statusText.textContent = 'Connection error';
+            }
         }
         
-        // Initial fetch
         fetchNews();
-        
-        // Refresh every 10 minutes
-        setInterval(fetchNews, 10 * 60 * 1000);
         
         // ═══════════════════════════════════════════════════════════════════════
         // TL;DR MODAL
@@ -1721,11 +634,9 @@
             if (!article) return;
             
             currentArticle = article;
-            
             const modal = document.getElementById('tldr-modal');
             const content = document.getElementById('tldr-content');
             
-            // Generate summary - use AI summary, fall back to description
             let summary = article.summary || article.description || '';
             const isAISummary = !!article.summary && article.summary.length > 100;
             
@@ -1743,31 +654,21 @@
                 </div>
                 <div class="modal-body">
                     ${article.thumbnail ? `<img class="modal-thumb" src="${article.thumbnail}" alt="" onerror="this.remove()">` : ''}
-                    <div class="modal-source">
-                        ${article.icon || '📰'} ${article.source} • ${timeAgo(article.timestamp)}
-                    </div>
+                    <div class="modal-source">${article.icon || '📰'} ${article.source} • ${timeAgo(article.timestamp)}</div>
                     <h2 class="modal-title">${article.title}</h2>
-                    <div class="modal-summary">
-                        ${summary}
-                    </div>
+                    <div class="modal-summary">${summary}</div>
                 </div>
                 <div class="modal-footer">
                     <button class="modal-btn modal-btn-secondary" onclick="closeTLDR()">Close</button>
-                    <a class="modal-btn modal-btn-primary" href="${article.link}" target="_blank" rel="noopener">
-                        Read Full Article →
-                    </a>
+                    <a class="modal-btn modal-btn-primary" href="${article.link}" target="_blank" rel="noopener">Read Full Article →</a>
                 </div>
             `;
             
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
             
-            // Track AI summary view in analytics
             if (typeof gtag !== 'undefined') {
-                gtag('event', 'view_ai_summary', {
-                    'article_source': article.source,
-                    'article_category': article.category
-                });
+                gtag('event', 'view_ai_summary', { 'article_source': article.source, 'article_category': article.category });
             }
         }
         
@@ -1777,22 +678,13 @@
             currentArticle = null;
         }
         
-        // Close modal on overlay click
         document.getElementById('tldr-modal').addEventListener('click', (e) => {
             if (e.target.id === 'tldr-modal') closeTLDR();
         });
         
-        // Close modal on Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeTLDR();
         });
     </script>
-    
-    <!-- TL;DR Modal -->
-    <div class="modal-overlay" id="tldr-modal">
-        <div class="modal-content" id="tldr-content">
-            <!-- Content injected by JS -->
-        </div>
-    </div>
 </body>
 </html>
