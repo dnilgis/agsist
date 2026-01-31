@@ -3,74 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corn Prices Today - Live Futures & Cash Prices | AGSIST</title>
-    <meta name="description" content="Live corn prices, futures quotes, and cash bids. Track CBOT corn futures, basis levels, and price charts updated throughout the trading day.">
-    <meta name="keywords" content="corn prices, corn futures, CBOT corn, corn cash prices, corn basis">
+    <title>Corn Prices Today - Live CBOT Futures Chart & Analysis | AGSIST</title>
+    <meta name="description" content="Live corn futures prices, interactive charts, and market analysis. Track CBOT corn (ZC) with real-time quotes, contract spreads, and USDA report impacts.">
+    <meta name="keywords" content="corn prices today, CBOT corn futures, ZC futures, corn market, corn chart, grain prices">
     <link rel="canonical" href="https://agsist.com/corn-prices.html">
-    
     <link rel="icon" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="/components/shared.css">
-    <link rel="stylesheet" href="styles.css">
-    
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-    
     <style>
-        .price-hero { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, var(--card) 0%, var(--panel) 100%); border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border); }
-        .price-hero h1 { font-size: 1.2rem; color: var(--dim); margin-bottom: 8px; }
-        .price-big { font-size: 3rem; color: var(--accent); font-weight: 700; }
-        .price-change { font-size: 1.1rem; margin-top: 8px; }
-        .price-change.up { color: var(--green); }
-        .price-change.down { color: var(--red); }
-        .price-meta { color: var(--dim); font-size: 0.8rem; margin-top: 12px; }
-        .contracts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-        .contract-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 16px; }
-        .contract-card .month { color: var(--dim); font-size: 0.8rem; }
-        .contract-card .price { font-size: 1.3rem; font-weight: 600; color: var(--text); margin: 4px 0; }
-        .contract-card .change { font-size: 0.85rem; }
-        .info-section { margin-top: 30px; }
-        .info-section h2 { color: var(--accent); font-size: 1rem; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-        .info-section p { color: var(--dim); font-size: 0.9rem; line-height: 1.7; margin-bottom: 12px; }
+        .price-wrap{padding:8px;max-width:1400px;margin:0 auto}
+        .price-grid{display:grid;gap:12px}
+        .price-panel{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+        .price-panel-head{background:var(--bg);padding:10px 12px;border-bottom:1px solid var(--border)}
+        .price-panel-head h2{font-size:0.85rem;margin:0;color:var(--accent)}
+        .price-panel-body{padding:12px}
+        .chart-container{background:#131722;border-radius:6px;overflow:hidden;height:400px}
+        .ticker-container{background:#131722;border-radius:6px;overflow:hidden;height:46px}
+        .contracts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+        .contract-link{display:block;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;text-decoration:none;color:var(--text);transition:border-color 0.2s}
+        .contract-link:hover{border-color:var(--accent)}
+        .contract-link .month{font-size:0.75rem;color:var(--dim)}
+        .contract-link .symbol{font-size:0.9rem;font-weight:600;color:var(--accent)}
+        .info-grid{display:grid;gap:8px}
+        .info-card{background:var(--bg);border-radius:6px;padding:12px}
+        .info-card h3{font-size:0.8rem;color:var(--accent);margin:0 0 8px 0}
+        .info-card p{font-size:0.8rem;color:var(--dim);margin:0;line-height:1.6}
+        .info-card ul{font-size:0.8rem;color:var(--dim);margin:8px 0 0 16px;line-height:1.8}
+        .quick-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+        .quick-links a{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 12px;font-size:0.75rem;color:var(--dim);text-decoration:none;transition:all 0.2s}
+        .quick-links a:hover{border-color:var(--accent);color:var(--accent)}
+        .source-note{font-size:0.7rem;color:var(--dim);text-align:center;margin-top:12px;padding:8px;background:var(--bg);border-radius:4px}
+        @media(min-width:640px){
+            .price-wrap{padding:12px}
+            .price-grid{grid-template-columns:1fr 300px}
+            .chart-container{height:500px}
+            .contracts-grid{grid-template-columns:repeat(3,1fr)}
+            .info-grid{grid-template-columns:repeat(2,1fr)}
+        }
+        @media(min-width:1024px){
+            .price-wrap{padding:16px}
+            .chart-container{height:600px}
+            .contracts-grid{grid-template-columns:repeat(5,1fr)}
+        }
     </style>
 </head>
 <body>
     <div id="header"></div>
-
     <main>
-        <nav class="breadcrumb"><a href="/">Home</a> → <a href="/corn-prices.html">Prices</a> → Corn</nav>
-        
-        <div class="price-hero">
-            <h1>🌽 CORN FUTURES (CBOT)</h1>
-            <div class="price-big" id="mainPrice">$4.52</div>
-            <div class="price-change up" id="mainChange">+$0.03 (+0.67%)</div>
-            <div class="price-meta">Front Month ZC · <span id="updateTime">Updated just now</span></div>
-        </div>
+        <div class="price-wrap">
+            <nav class="breadcrumb"><a href="/">Home</a> → Corn Prices</nav>
+            
+            <!-- Ticker Tape -->
+            <div class="ticker-container" style="margin-bottom:12px">
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+                {"symbols":[{"proName":"CBOT:ZC1!","title":"Corn"},{"proName":"CBOT:ZS1!","title":"Soybeans"},{"proName":"CBOT:ZW1!","title":"Wheat"},{"proName":"CBOT:ZM1!","title":"Soy Meal"},{"proName":"CBOT:ZL1!","title":"Soy Oil"}],"showSymbolLogo":false,"colorTheme":"dark","isTransparent":true,"displayMode":"adaptive","locale":"en"}
+                </script>
+            </div>
 
-        <div class="panel">
-            <div class="panel-head"><h2>CONTRACT PRICES</h2></div>
-            <div class="panel-body">
-                <div class="contracts-grid">
-                    <div class="contract-card"><div class="month">MAR 2026</div><div class="price">$4.52</div><div class="change up">+0.03</div></div>
-                    <div class="contract-card"><div class="month">MAY 2026</div><div class="price">$4.58</div><div class="change up">+0.02</div></div>
-                    <div class="contract-card"><div class="month">JUL 2026</div><div class="price">$4.65</div><div class="change up">+0.03</div></div>
-                    <div class="contract-card"><div class="month">SEP 2026</div><div class="price">$4.42</div><div class="change down">-0.01</div></div>
-                    <div class="contract-card"><div class="month">DEC 2026</div><div class="price">$4.48</div><div class="change up">+0.02</div></div>
+            <div class="price-grid">
+                <div>
+                    <!-- Main Chart -->
+                    <div class="price-panel">
+                        <div class="price-panel-head"><h1 style="font-size:0.9rem;margin:0;color:var(--accent)">🌽 CORN FUTURES (CBOT: ZC)</h1></div>
+                        <div class="price-panel-body" style="padding:8px">
+                            <div class="chart-container">
+                                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                                {"autosize":true,"symbol":"CBOT:ZC1!","interval":"D","timezone":"America/Chicago","theme":"dark","style":"1","locale":"en","enable_publishing":false,"hide_top_toolbar":false,"hide_legend":false,"save_image":false,"calendar":false,"hide_volume":false,"support_host":"https://www.tradingview.com"}
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contract Months -->
+                    <div class="price-panel" style="margin-top:12px">
+                        <div class="price-panel-head"><h2>CONTRACT MONTHS</h2></div>
+                        <div class="price-panel-body">
+                            <div class="contracts-grid">
+                                <a href="https://www.tradingview.com/symbols/CBOT-ZCH2026/" target="_blank" class="contract-link"><div class="month">MAR 2026</div><div class="symbol">ZCH26</div></a>
+                                <a href="https://www.tradingview.com/symbols/CBOT-ZCK2026/" target="_blank" class="contract-link"><div class="month">MAY 2026</div><div class="symbol">ZCK26</div></a>
+                                <a href="https://www.tradingview.com/symbols/CBOT-ZCN2026/" target="_blank" class="contract-link"><div class="month">JUL 2026</div><div class="symbol">ZCN26</div></a>
+                                <a href="https://www.tradingview.com/symbols/CBOT-ZCU2026/" target="_blank" class="contract-link"><div class="month">SEP 2026</div><div class="symbol">ZCU26</div></a>
+                                <a href="https://www.tradingview.com/symbols/CBOT-ZCZ2026/" target="_blank" class="contract-link"><div class="month">DEC 2026</div><div class="symbol">ZCZ26</div></a>
+                            </div>
+                            <p style="font-size:0.7rem;color:var(--dim);margin-top:10px">Contract months: Mar (H), May (K), Jul (N), Sep (U), Dec (Z). Each contract = 5,000 bushels.</p>
+                        </div>
+                    </div>
+
+                    <!-- Market Info -->
+                    <div class="price-panel" style="margin-top:12px">
+                        <div class="price-panel-head"><h2>MARKET INFORMATION</h2></div>
+                        <div class="price-panel-body">
+                            <div class="info-grid">
+                                <div class="info-card">
+                                    <h3>📋 Contract Specs</h3>
+                                    <p><strong>Exchange:</strong> CME Group (CBOT)<br>
+                                    <strong>Symbol:</strong> ZC<br>
+                                    <strong>Size:</strong> 5,000 bushels<br>
+                                    <strong>Tick:</strong> ¼ cent ($12.50)<br>
+                                    <strong>Grade:</strong> #2 Yellow Corn</p>
+                                </div>
+                                <div class="info-card">
+                                    <h3>⏰ Trading Hours (CT)</h3>
+                                    <p><strong>Electronic:</strong><br>
+                                    Sun-Fri: 7:00pm - 7:45am<br>
+                                    Mon-Fri: 8:30am - 1:20pm<br>
+                                    <strong>Settlement:</strong> 1:15pm CT</p>
+                                </div>
+                                <div class="info-card">
+                                    <h3>📊 Key Price Drivers</h3>
+                                    <ul>
+                                        <li>USDA WASDE & Crop Progress</li>
+                                        <li>US Corn Belt weather</li>
+                                        <li>Ethanol demand & margins</li>
+                                        <li>Export sales & inspections</li>
+                                        <li>South American production</li>
+                                    </ul>
+                                </div>
+                                <div class="info-card">
+                                    <h3>📅 Key Report Dates</h3>
+                                    <ul>
+                                        <li><strong>WASDE:</strong> Monthly, ~10th</li>
+                                        <li><strong>Crop Progress:</strong> Mon 4pm (Apr-Nov)</li>
+                                        <li><strong>Export Sales:</strong> Thu 8:30am</li>
+                                        <li><strong>Grain Stocks:</strong> Quarterly</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div>
+                    <!-- Symbol Overview Widget -->
+                    <div class="price-panel">
+                        <div class="price-panel-head"><h2>QUOTE</h2></div>
+                        <div class="price-panel-body" style="padding:0;height:180px">
+                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js" async>
+                            {"symbols":[["CBOT:ZC1!|1D"]],"chartOnly":false,"width":"100%","height":"100%","locale":"en","colorTheme":"dark","autosize":true,"showVolume":false,"showMA":false,"hideDateRanges":true,"hideMarketStatus":true,"hideSymbolLogo":false,"scalePosition":"right","scaleMode":"Normal","fontFamily":"JetBrains Mono","fontSize":"10","noTimeScale":false,"valuesTracking":"1","changeMode":"price-and-percent","chartType":"area","lineWidth":2,"lineType":0,"dateRanges":["1d|1","1m|30","3m|60","12m|1D","60m|1W","all|1M"]}
+                            </script>
+                        </div>
+                    </div>
+
+                    <!-- Related Markets -->
+                    <div class="price-panel" style="margin-top:12px">
+                        <div class="price-panel-head"><h2>RELATED MARKETS</h2></div>
+                        <div class="price-panel-body">
+                            <div style="display:grid;gap:6px">
+                                <a href="/soybean-prices.html" style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem"><span>🫘 Soybeans</span><span style="color:var(--accent)">→</span></a>
+                                <a href="/wheat-prices.html" style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem"><span>🌾 Wheat</span><span style="color:var(--accent)">→</span></a>
+                                <a href="https://www.tradingview.com/symbols/CBOT-ZM1!/" target="_blank" style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem"><span>🥜 Soybean Meal</span><span style="color:var(--dim)">↗</span></a>
+                                <a href="https://www.tradingview.com/symbols/NYMEX-RB1!/" target="_blank" style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem"><span>⛽ Ethanol/RBOB</span><span style="color:var(--dim)">↗</span></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="price-panel" style="margin-top:12px">
+                        <div class="price-panel-head"><h2>RESOURCES</h2></div>
+                        <div class="price-panel-body">
+                            <div class="quick-links" style="margin:0">
+                                <a href="https://www.cmegroup.com/markets/agriculture/grains/corn.html" target="_blank">CME Corn</a>
+                                <a href="https://www.barchart.com/futures/quotes/ZC*0/overview" target="_blank">Barchart</a>
+                                <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank">WASDE</a>
+                                <a href="https://www.eia.gov/petroleum/ethanolcapacity/" target="_blank">Ethanol</a>
+                                <a href="/calendar.html">Report Calendar</a>
+                                <a href="/learn.html">Marketing Guide</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tools -->
+                    <div class="price-panel" style="margin-top:12px">
+                        <div class="price-panel-head"><h2>CALCULATORS</h2></div>
+                        <div class="price-panel-body">
+                            <div style="display:grid;gap:6px">
+                                <a href="/breakeven.html" style="display:block;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem">💰 Break-Even Calculator</a>
+                                <a href="/calculator.html" style="display:block;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem">🌾 Grain Bin Calculator</a>
+                                <a href="/fastfacts.html" style="display:block;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem">📊 Fast Facts Reference</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="info-section">
-            <h2>About Corn Futures</h2>
-            <p>Corn futures (ZC) are traded on the Chicago Board of Trade (CBOT), part of the CME Group. Each contract represents 5,000 bushels of #2 Yellow Corn. Prices are quoted in cents per bushel.</p>
-            <p>Trading hours are Sunday-Friday 7:00pm - 7:45am CT and Monday-Friday 8:30am - 1:20pm CT. The most actively traded contracts are typically the front month and the December new crop contract.</p>
-            <p><strong>Key factors affecting corn prices:</strong> USDA reports (WASDE, Crop Progress), weather conditions in the Corn Belt, export demand, ethanol production, and global supply/demand dynamics.</p>
+            <div class="source-note">
+                Market data provided by <a href="https://www.tradingview.com/" target="_blank" style="color:var(--accent)">TradingView</a>. Prices may be delayed. Not financial advice.
+            </div>
         </div>
     </main>
-
     <div id="footer"></div>
     <script src="/components/load-components.js"></script>
 </body>

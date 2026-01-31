@@ -3,76 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wheat Prices Today - Live Futures & Cash Prices | AGSIST</title>
-    <meta name="description" content="Live wheat prices, futures quotes, and cash bids. Track CBOT wheat futures, basis levels, and price charts updated throughout the trading day.">
-    <meta name="keywords" content="wheat prices, wheat futures, CBOT wheat, wheat cash prices, wheat basis">
+    <title>Wheat Prices Today - Live CBOT Futures Chart & Analysis | AGSIST</title>
+    <meta name="description" content="Live wheat futures prices, interactive charts, and market analysis. Track Chicago (ZW), Kansas City (KE), and Minneapolis (MWE) wheat with real-time quotes.">
+    <meta name="keywords" content="wheat prices today, CBOT wheat futures, ZW futures, wheat market, wheat chart, grain prices, hard red wheat, soft red wheat">
     <link rel="canonical" href="https://agsist.com/wheat-prices.html">
-    
     <link rel="icon" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="/components/shared.css">
-    <link rel="stylesheet" href="styles.css">
-    
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-    
     <style>
-        .price-hero { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, var(--card) 0%, var(--panel) 100%); border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border); }
-        .price-hero h1 { font-size: 1.2rem; color: var(--dim); margin-bottom: 8px; }
-        .price-big { font-size: 3rem; color: var(--accent); font-weight: 700; }
-        .price-change { font-size: 1.1rem; margin-top: 8px; }
-        .price-change.up { color: var(--green); }
-        .price-change.down { color: var(--red); }
-        .price-meta { color: var(--dim); font-size: 0.8rem; margin-top: 12px; }
-        .contracts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-        .contract-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 16px; }
-        .contract-card .month { color: var(--dim); font-size: 0.8rem; }
-        .contract-card .price { font-size: 1.3rem; font-weight: 600; color: var(--text); margin: 4px 0; }
-        .contract-card .change { font-size: 0.85rem; }
-        .contract-card .change.up { color: var(--green); }
-        .contract-card .change.down { color: var(--red); }
-        .info-section { margin-top: 30px; }
-        .info-section h2 { color: var(--accent); font-size: 1rem; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-        .info-section p { color: var(--dim); font-size: 0.9rem; line-height: 1.7; margin-bottom: 12px; }
+        .price-wrap{padding:8px;max-width:1400px;margin:0 auto}
+        .price-grid{display:grid;gap:12px}
+        .price-panel{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+        .price-panel-head{background:var(--bg);padding:10px 12px;border-bottom:1px solid var(--border)}
+        .price-panel-head h2{font-size:0.85rem;margin:0;color:var(--accent)}
+        .price-panel-body{padding:12px}
+        .chart-container{background:#131722;border-radius:6px;overflow:hidden;height:400px}
+        .ticker-container{background:#131722;border-radius:6px;overflow:hidden;height:46px}
+        .contracts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+        .contract-link{display:block;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;text-decoration:none;color:var(--text);transition:border-color 0.2s}
+        .contract-link:hover{border-color:var(--accent)}
+        .contract-link .month{font-size:0.75rem;color:var(--dim)}
+        .contract-link .symbol{font-size:0.9rem;font-weight:600;color:var(--accent)}
+        .info-grid{display:grid;gap:8px}
+        .info-card{background:var(--bg);border-radius:6px;padding:12px}
+        .info-card h3{font-size:0.8rem;color:var(--accent);margin:0 0 8px 0}
+        .info-card p{font-size:0.8rem;color:var(--dim);margin:0;line-height:1.6}
+        .info-card ul{font-size:0.8rem;color:var(--dim);margin:8px 0 0 16px;line-height:1.8}
+        .quick-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+        .quick-links a{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 12px;font-size:0.75rem;color:var(--dim);text-decoration:none;transition:all 0.2s}
+        .quick-links a:hover{border-color:var(--accent);color:var(--accent)}
+        .source-note{font-size:0.7rem;color:var(--dim);text-align:center;margin-top:12px;padding:8px;background:var(--bg);border-radius:4px}
+        .wheat-class{display:grid;gap:8px}
+        .wheat-type{background:var(--bg);border-radius:6px;padding:12px;border-left:3px solid var(--accent)}
+        .wheat-type h4{font-size:0.8rem;color:var(--text);margin:0 0 4px 0}
+        .wheat-type p{font-size:0.75rem;color:var(--dim);margin:0}
+        @media(min-width:640px){
+            .price-wrap{padding:12px}
+            .price-grid{grid-template-columns:1fr 300px}
+            .chart-container{height:500px}
+            .contracts-grid{grid-template-columns:repeat(3,1fr)}
+            .info-grid{grid-template-columns:repeat(2,1fr)}
+            .wheat-class{grid-template-columns:repeat(3,1fr)}
+        }
+        @media(min-width:1024px){
+            .price-wrap{padding:16px}
+            .chart-container{height:600px}
+            .contracts-grid{grid-template-columns:repeat(5,1fr)}
+        }
     </style>
 </head>
 <body>
     <div id="header"></div>
-
     <main>
-        <nav class="breadcrumb"><a href="/">Home</a> → <a href="/wheat-prices.html">Prices</a> → Wheat</nav>
-        
-        <div class="price-hero">
-            <h1>🌾 WHEAT FUTURES (CBOT)</h1>
-            <div class="price-big" id="mainPrice">$5.68</div>
-            <div class="price-change up" id="mainChange">+$0.12 (+2.16%)</div>
-            <div class="price-meta">Front Month ZW · <span id="updateTime">Updated just now</span></div>
-        </div>
+        <div class="price-wrap">
+            <nav class="breadcrumb"><a href="/">Home</a> → Wheat Prices</nav>
+            
+            <!-- Ticker Tape -->
+            <div class="ticker-container" style="margin-bottom:12px">
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+                {"symbols":[{"proName":"CBOT:ZW1!","title":"Chicago Wheat"},{"proName":"CBOT:KE1!","title":"KC Wheat"},{"proName":"CBOT:MWE1!","title":"Mpls Wheat"},{"proName":"CBOT:ZC1!","title":"Corn"},{"proName":"CBOT:ZS1!","title":"Soybeans"}],"showSymbolLogo":false,"colorTheme":"dark","isTransparent":true,"displayMode":"adaptive","locale":"en"}
+                </script>
+            </div>
 
-        <div class="panel">
-            <div class="panel-head"><h2>CONTRACT PRICES</h2></div>
-            <div class="panel-body">
-                <div class="contracts-grid">
-                    <div class="contract-card"><div class="month">MAR 2026</div><div class="price">$5.68</div><div class="change up">+0.12</div></div>
-                    <div class="contract-card"><div class="month">MAY 2026</div><div class="price">$5.78</div><div class="change up">+0.11</div></div>
-                    <div class="contract-card"><div class="month">JUL 2026</div><div class="price">$5.85</div><div class="change up">+0.10</div></div>
-                    <div class="contract-card"><div class="month">SEP 2026</div><div class="price">$5.92</div><div class="change up">+0.08</div></div>
-                    <div class="contract-card"><div class="month">DEC 2026</div><div class="price">$6.05</div><div class="change up">+0.09</div></div>
+            <div class="price-grid">
+                <div>
+                    <!-- Main Chart -->
+                    <div class="price-panel">
+                        <div class="price-panel-head"><h1 style="font-size:0.9rem;margin:0;color:var(--accent)">🌾 WHEAT FUTURES (CBOT: ZW)</h1></div>
+                        <div class="price-panel-body" style="padding:8px">
+                            <div class="chart-container">
+                                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                                {"autosize":true,"symbol":"CBOT:ZW1!","interval":"D","timezone":"America/Chicago","theme":"dark","style":"1","locale":"en","enable_publishing":false,"hide_top_toolbar":false,"hide_legend":false,"save_image":false,"calendar":false,"hide_volume":false,"support_host":"https://www.tradingview.com"}
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wheat Classes -->
+                    <div class="price-panel" style="margin-top:12px">
+                        <div class="price-panel-head"><h2>US WHEAT CLASSES</h2></div>
+                        <div class="price-panel-body">
+                            <div class="wheat-class">
+                                <div class="wheat-type">
+                                    <h4>🔴 Soft Red Winter (SRW)</h4>
+                                    <p>Chicago (ZW). Eastern US. Cakes, cookies, crackers. Lower protein.</p>
+                                </div>
+                                <div class="wheat-type">
+                                    <h4>🟤 Hard Red Winter (HRW)</h4>
+                                    <p>Kansas City (KE). Great Plains. Bread flour. 11-12% protein.</p>
+                                </div>
+                                <div class="wheat-type">
+                                    <h4>🟡 Hard Red Spring (HRS)</h4>
+                                    <p>Minneapolis (MWE). Northern Plains. Premium bread. 13-14% protein.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contract Months -->
+                    <div class="price-panel" style="margin-top:12px">
+                        <div class="price-panel-head"><h2>CONTRACT MONTHS (CHICAGO)</h2></div>
+                        <div class="price-panel-body">
+                            <div class="contracts-grid">
+                                <a href="https://www.tradingview.com/symbols/CBOT-ZWH2026/" target="_blank" class="contract-link"><div class="month">MAR 2026</div><div class="symbol">ZWH26</div></a>
+                                <a href="https://www.tradingview.com/symbols/CBOT-ZWK2026/" target="_blank" class="contract-link"><div class="month">MAY 2026</div><div class="symbol">ZWK26</div></a>
+                                <a href="https://www.tradingview.com/symbols/CBOT-ZWN2026/" target="_blank" class="contract-link"><div class="month">JUL 2026</div><div class="symbol">ZWN26</div></a>
+                                <a href="https://www.tradingview.com/symbols/CBOT-ZWU2026/" target="_blank" class="contract-link"><div class="month">SEP 2026</div><div class="symbol">ZWU26</div></a>
+                                <a href="https://www.tradingview.com/symbols/CBOT-ZWZ2026/" target="_blank" class="contract-link"><div class="month">DEC 2026</div><div class="symbol">ZWZ26</div></a>
+                            </div>
+                            <p style="font-size:0.7rem;color:var(--dim);margin-top:10px">Contract months: Mar (H), May (K), Jul (N), Sep (U), Dec (Z). Each contract = 5,000 bushels.</p>
+                        </div>
+                    </div>
+
+                    <!-- Market Info -->
+                    <div class="price-panel" style="margin-top:12px">
+                        <div class="price-panel-head"><h2>MARKET INFORMATION</h2></div>
+                        <div class="price-panel-body">
+                            <div class="info-grid">
+                                <div class="info-card">
+                                    <h3>📋 Contract Specs (ZW)</h3>
+                                    <p><strong>Exchange:</strong> CME Group (CBOT)<br>
+                                    <strong>Symbol:</strong> ZW<br>
+                                    <strong>Size:</strong> 5,000 bushels<br>
+                                    <strong>Tick:</strong> ¼ cent ($12.50)<br>
+                                    <strong>Grade:</strong> #2 Soft Red Winter</p>
+                                </div>
+                                <div class="info-card">
+                                    <h3>⏰ Trading Hours (CT)</h3>
+                                    <p><strong>Electronic:</strong><br>
+                                    Sun-Fri: 7:00pm - 7:45am<br>
+                                    Mon-Fri: 8:30am - 1:20pm<br>
+                                    <strong>Settlement:</strong> 1:15pm CT</p>
+                                </div>
+                                <div class="info-card">
+                                    <h3>📊 Key Price Drivers</h3>
+                                    <ul>
+                                        <li>Black Sea region (Russia/Ukraine)</li>
+                                        <li>US Plains drought conditions</li>
+                                        <li>Global export competition</li>
+                                        <li>Currency (USD strength)</li>
+                                        <li>Quality premiums/discounts</li>
+                                    </ul>
+                                </div>
+                                <div class="info-card">
+                                    <h3>📅 Key Report Dates</h3>
+                                    <ul>
+                                        <li><strong>WASDE:</strong> Monthly, ~10th</li>
+                                        <li><strong>Export Sales:</strong> Thu 8:30am</li>
+                                        <li><strong>Winter Wheat:</strong> Condition Mon</li>
+                                        <li><strong>IGC:</strong> Global monthly</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div>
+                    <!-- Symbol Overview Widget -->
+                    <div class="price-panel">
+                        <div class="price-panel-head"><h2>QUOTE</h2></div>
+                        <div class="price-panel-body" style="padding:0;height:180px">
+                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js" async>
+                            {"symbols":[["CBOT:ZW1!|1D"]],"chartOnly":false,"width":"100%","height":"100%","locale":"en","colorTheme":"dark","autosize":true,"showVolume":false,"showMA":false,"hideDateRanges":true,"hideMarketStatus":true,"hideSymbolLogo":false,"scalePosition":"right","scaleMode":"Normal","fontFamily":"JetBrains Mono","fontSize":"10","noTimeScale":false,"valuesTracking":"1","changeMode":"price-and-percent","chartType":"area","lineWidth":2,"lineType":0,"dateRanges":["1d|1","1m|30","3m|60","12m|1D","60m|1W","all|1M"]}
+                            </script>
+                        </div>
+                    </div>
+
+                    <!-- Other Wheat Markets -->
+                    <div class="price-panel" style="margin-top:12px">
+                        <div class="price-panel-head"><h2>OTHER WHEAT MARKETS</h2></div>
+                        <div class="price-panel-body">
+                            <div style="display:grid;gap:6px">
+                                <a href="https://www.tradingview.com/symbols/CBOT-KE1!/" target="_blank" style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem"><span>🟤 KC HRW (KE)</span><span style="color:var(--dim)">↗</span></a>
+                                <a href="https://www.tradingview.com/symbols/CBOT-MWE1!/" target="_blank" style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem"><span>🟡 Mpls HRS (MWE)</span><span style="color:var(--dim)">↗</span></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Related Markets -->
+                    <div class="price-panel" style="margin-top:12px">
+                        <div class="price-panel-head"><h2>RELATED MARKETS</h2></div>
+                        <div class="price-panel-body">
+                            <div style="display:grid;gap:6px">
+                                <a href="/corn-prices.html" style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem"><span>🌽 Corn</span><span style="color:var(--accent)">→</span></a>
+                                <a href="/soybean-prices.html" style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem"><span>🫘 Soybeans</span><span style="color:var(--accent)">→</span></a>
+                                <a href="https://www.tradingview.com/symbols/CBOT-ZO1!/" target="_blank" style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem"><span>🌾 Oats</span><span style="color:var(--dim)">↗</span></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="price-panel" style="margin-top:12px">
+                        <div class="price-panel-head"><h2>RESOURCES</h2></div>
+                        <div class="price-panel-body">
+                            <div class="quick-links" style="margin:0">
+                                <a href="https://www.cmegroup.com/markets/agriculture/grains/wheat.html" target="_blank">CME Wheat</a>
+                                <a href="https://www.barchart.com/futures/quotes/ZW*0/overview" target="_blank">Barchart</a>
+                                <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank">WASDE</a>
+                                <a href="https://www.uswheat.org/" target="_blank">US Wheat</a>
+                                <a href="/calendar.html">Report Calendar</a>
+                                <a href="/learn.html">Marketing Guide</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tools -->
+                    <div class="price-panel" style="margin-top:12px">
+                        <div class="price-panel-head"><h2>CALCULATORS</h2></div>
+                        <div class="price-panel-body">
+                            <div style="display:grid;gap:6px">
+                                <a href="/breakeven.html" style="display:block;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem">💰 Break-Even Calculator</a>
+                                <a href="/calculator.html" style="display:block;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem">🌾 Grain Bin Calculator</a>
+                                <a href="/fastfacts.html" style="display:block;padding:10px;background:var(--bg);border-radius:4px;text-decoration:none;color:var(--text);font-size:0.8rem">📊 Fast Facts Reference</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="info-section">
-            <h2>About Wheat Futures</h2>
-            <p>Chicago wheat futures (ZW) are traded on the Chicago Board of Trade (CBOT). Each contract represents 5,000 bushels of soft red winter wheat. Prices are quoted in cents per bushel.</p>
-            <p>Trading hours are Sunday-Friday 7:00pm - 7:45am CT and Monday-Friday 8:30am - 1:20pm CT. Kansas City (HRW) and Minneapolis (spring wheat) futures trade on their respective exchanges.</p>
-            <p><strong>Key factors affecting wheat prices:</strong> Global weather (especially Black Sea region), export competition, USDA reports, quality concerns, and currency fluctuations affecting export demand.</p>
+            <div class="source-note">
+                Market data provided by <a href="https://www.tradingview.com/" target="_blank" style="color:var(--accent)">TradingView</a>. Prices may be delayed. Not financial advice.
+            </div>
         </div>
     </main>
-
     <div id="footer"></div>
     <script src="/components/load-components.js"></script>
 </body>
