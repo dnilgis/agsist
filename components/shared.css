@@ -172,7 +172,7 @@ body {
     right: 0;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    padding: 16px;
+    padding: 12px;
     z-index: 999;
     max-height: calc(100vh - 60px);
     overflow-y: auto;
@@ -184,13 +184,13 @@ body {
 
 .nav-mobile-section {
     color: var(--accent);
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 12px 0 8px;
+    letter-spacing: 0.5px;
+    padding: 8px 0 4px;
     border-top: 1px solid var(--border);
-    margin-top: 8px;
+    margin-top: 6px;
 }
 
 .nav-mobile-section:first-child {
@@ -200,16 +200,20 @@ body {
 }
 
 .nav-mobile a {
-    display: block;
+    display: inline-block;
     color: var(--dim);
     text-decoration: none;
-    padding: 10px 0;
-    font-size: 0.9rem;
+    padding: 6px 10px;
+    font-size: 0.8rem;
     transition: color 0.2s;
+    background: var(--card);
+    border-radius: 4px;
+    margin: 2px;
 }
 
 .nav-mobile a:hover {
     color: var(--text);
+    background: var(--card-hover);
 }
 
 /* ============================================
