@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milk Prices & Dairy Dashboard - Class III, Cheese, Butter, DMC | AGSIST</title>
+    <meta name="description" content="Complete dairy market dashboard. Class III & IV milk futures, cheese, butter, whey prices, USDA dairy reports, DMC margins, feed costs, and Global Dairy Trade auction results. Built for dairy farmers.">
+    <meta name="keywords" content="milk prices, Class III milk, Class IV milk, cheese futures, butter prices, dairy futures, DMC dairy margin, milk futures, whey prices, nonfat dry milk">
+    <link rel="canonical" href="https://agsist.com/milk-prices.html">
+    <link rel="icon" href="/favicon.png">
+    
+    <meta property="og:title" content="Milk & Dairy Market Dashboard - AGSIST">
+    <meta property="og:description" content="Complete dairy market intelligence: milk futures, cheese, butter, DMC margins, feed costs.">
+    <meta property="og:url" content="https://agsist.com/milk-prices.html">
+    <meta property="og:type" content="website">
+    
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebPage","name":"Milk Prices & Dairy Dashboard","description":"Comprehensive dairy futures, cheese, butter, DMC margins, and market analysis","url":"https://agsist.com/milk-prices.html"}
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/components/shared.css">
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    
+    <style>
+        :root{--green:#22c55e;--red:#ef4444;--blue:#3b82f6;--orange:#f97316}
+        .dash-wrap{padding:8px;max-width:1400px;margin:0 auto}
+        .dash-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+        .dash-nav a{background:var(--card);border:1px solid var(--border);color:var(--dim);padding:8px 14px;border-radius:4px;font-size:0.8rem;text-decoration:none;transition:all 0.2s}
+        .dash-nav a:hover{border-color:var(--accent);color:var(--text)}
+        .dash-nav a.active{background:var(--accent);color:black;font-weight:600;border-color:var(--accent)}
+        .dash-hero{background:linear-gradient(135deg,var(--card) 0%,var(--bg) 100%);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;text-align:center}
+        .dash-hero h1{font-size:1.1rem;color:var(--accent);margin:0 0 4px 0}
+        .dash-hero p{font-size:0.8rem;color:var(--dim);margin:0}
+        .dash-grid{display:grid;gap:12px}
+        .dash-section{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+        .dash-section-head{background:var(--bg);padding:10px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+        .dash-section-head h2{font-size:0.8rem;margin:0;color:var(--accent);display:flex;align-items:center;gap:8px}
+        .dash-section-head .toggle{font-size:0.7rem;color:var(--dim)}
+        .dash-section-body{padding:12px}
+        .dash-section-body.collapsed{display:none}
+        .price-sources{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+        .price-source{display:flex;flex-direction:column;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px 12px;text-decoration:none;color:var(--text);transition:all 0.2s;text-align:center}
+        .price-source:hover{border-color:var(--accent);transform:translateY(-2px)}
+        .price-source-icon{font-size:1.3rem;margin-bottom:6px}
+        .price-source-name{font-weight:600;font-size:0.8rem}
+        .price-source-desc{font-size:0.65rem;color:var(--dim);margin-top:2px}
+        .data-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+        .data-card{background:var(--bg);border-radius:6px;padding:10px;text-align:center}
+        .data-card-label{font-size:0.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.5px}
+        .data-card-value{font-size:1rem;font-weight:700;color:var(--text);margin-top:2px}
+        .data-card-sub{font-size:0.6rem;color:var(--dim);margin-top:2px}
+        .link-grid{display:grid;gap:6px}
+        .link-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg);border-radius:6px;text-decoration:none;color:var(--text);font-size:0.8rem;transition:background 0.2s}
+        .link-item:hover{background:var(--card-hover,#1c1c22)}
+        .link-item span:last-child{color:var(--dim);font-size:0.7rem}
+        .link-item.external span:last-child::after{content:" ↗"}
+        .info-grid{display:grid;gap:8px}
+        .info-card{background:var(--bg);border-radius:6px;padding:12px}
+        .info-card h4{font-size:0.75rem;color:var(--accent);margin:0 0 8px 0}
+        .info-card p{font-size:0.75rem;color:var(--dim);margin:0;line-height:1.6}
+        .info-card ul{font-size:0.75rem;color:var(--dim);margin:6px 0 0 16px;line-height:1.7}
+        .info-card ul li{margin-bottom:4px}
+        .product-grid{display:grid;gap:8px}
+        .product-card{background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:12px}
+        .product-card h4{font-size:0.8rem;color:var(--text);margin:0 0 6px 0}
+        .product-card p{font-size:0.7rem;color:var(--dim);margin:0 0 8px 0;line-height:1.5}
+        .product-card a{font-size:0.7rem;color:var(--accent)}
+        .dash-footer{font-size:0.65rem;color:var(--dim);text-align:center;padding:16px;background:var(--card);border-radius:8px;margin-top:12px;line-height:1.6}
+        .dash-footer a{color:var(--accent)}
+        @media(min-width:480px){.price-sources{grid-template-columns:repeat(3,1fr)}.data-grid{grid-template-columns:repeat(3,1fr)}}
+        @media(min-width:768px){.dash-wrap{padding:12px}.dash-grid{grid-template-columns:repeat(2,1fr)}.dash-grid .full-width{grid-column:1/-1}.info-grid{grid-template-columns:repeat(2,1fr)}.product-grid{grid-template-columns:repeat(2,1fr)}.data-grid{grid-template-columns:repeat(6,1fr)}}
+        @media(min-width:1024px){.dash-wrap{padding:16px}.dash-grid{grid-template-columns:repeat(3,1fr)}.price-sources{grid-template-columns:repeat(6,1fr)}}
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    <main>
+        <div class="dash-wrap">
+            <nav class="breadcrumb"><a href="/">Home</a> → Milk & Dairy Dashboard</nav>
+            
+            <div class="dash-nav">
+                <a href="/corn-prices.html">🌽 Corn</a>
+                <a href="/soybean-prices.html">🫘 Soybeans</a>
+                <a href="/wheat-prices.html">🌾 Wheat</a>
+                <a href="/milk-prices.html" class="active">🥛 Milk</a>
+            </div>
+
+            <div class="dash-hero">
+                <h1>🥛 MILK & DAIRY DASHBOARD</h1>
+                <p>Class III/IV • Cheese • Butter • DMC Margins • Feed Costs • Global Trade</p>
+            </div>
+
+            <div class="dash-grid">
+                
+                <!-- DAIRY PRODUCTS -->
+                <div class="dash-section full-width">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>🧀 DAIRY PRODUCT FUTURES</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="product-grid">
+                            <div class="product-card" style="border-left-color:#3b82f6">
+                                <h4>🥛 Class III Milk (DC)</h4>
+                                <p><strong>Cheese milk pricing.</strong> Most actively traded dairy contract. Settles based on cheese, whey, and butterfat values.</p>
+                                <a href="https://www.barchart.com/futures/quotes/DC*0/interactive-chart" target="_blank">View Class III Chart →</a>
+                            </div>
+                            <div class="product-card" style="border-left-color:#22c55e">
+                                <h4>🥛 Class IV Milk (DK)</h4>
+                                <p><strong>Butter/powder milk pricing.</strong> Used for butter, nonfat dry milk. Often lower than Class III.</p>
+                                <a href="https://www.barchart.com/futures/quotes/DK*0/interactive-chart" target="_blank">View Class IV Chart →</a>
+                            </div>
+                            <div class="product-card" style="border-left-color:#f97316">
+                                <h4>🧀 Cheese (CSC)</h4>
+                                <p><strong>CME cheese futures.</strong> Cash cheese prices drive Class III settlement. 40-lb blocks & 500-lb barrels.</p>
+                                <a href="https://www.barchart.com/futures/quotes/CS*0/interactive-chart" target="_blank">View Cheese Chart →</a>
+                            </div>
+                            <div class="product-card" style="border-left-color:#eab308">
+                                <h4>🧈 Butter (CB)</h4>
+                                <p><strong>CME butter futures.</strong> Grade AA butter. Strong domestic + export demand. Seasonal holiday peaks.</p>
+                                <a href="https://www.barchart.com/futures/quotes/CB*0/interactive-chart" target="_blank">View Butter Chart →</a>
+                            </div>
+                            <div class="product-card" style="border-left-color:#8b5cf6">
+                                <h4>🥛 Nonfat Dry Milk (GNF)</h4>
+                                <p><strong>Powder/NFDM futures.</strong> Key export product. Global price discovery via GDT auctions.</p>
+                                <a href="https://www.barchart.com/futures/quotes/GN*0/interactive-chart" target="_blank">View NFDM Chart →</a>
+                            </div>
+                            <div class="product-card" style="border-left-color:#06b6d4">
+                                <h4>🥄 Dry Whey</h4>
+                                <p><strong>Whey protein pricing.</strong> Byproduct of cheese. Used in infant formula, sports nutrition.</p>
+                                <a href="https://www.ams.usda.gov/market-news/dairy" target="_blank">USDA Whey Prices →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRICES & CHARTS -->
+                <div class="dash-section full-width">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>📈 PRICES & CHARTS</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="price-sources">
+                            <a href="https://www.barchart.com/futures/quotes/DC*0/interactive-chart" target="_blank" class="price-source">
+                                <div class="price-source-icon">🥛</div>
+                                <div class="price-source-name">Class III</div>
+                                <div class="price-source-desc">DC Futures</div>
+                            </a>
+                            <a href="https://www.barchart.com/futures/quotes/DK*0/interactive-chart" target="_blank" class="price-source">
+                                <div class="price-source-icon">🥛</div>
+                                <div class="price-source-name">Class IV</div>
+                                <div class="price-source-desc">DK Futures</div>
+                            </a>
+                            <a href="https://www.barchart.com/futures/quotes/CS*0/interactive-chart" target="_blank" class="price-source">
+                                <div class="price-source-icon">🧀</div>
+                                <div class="price-source-name">Cheese</div>
+                                <div class="price-source-desc">CSC Futures</div>
+                            </a>
+                            <a href="https://www.barchart.com/futures/quotes/CB*0/interactive-chart" target="_blank" class="price-source">
+                                <div class="price-source-icon">🧈</div>
+                                <div class="price-source-name">Butter</div>
+                                <div class="price-source-desc">CB Futures</div>
+                            </a>
+                            <a href="https://www.cmegroup.com/markets/agriculture/dairy.html" target="_blank" class="price-source">
+                                <div class="price-source-icon">🏛️</div>
+                                <div class="price-source-name">CME Dairy</div>
+                                <div class="price-source-desc">All Products</div>
+                            </a>
+                            <a href="https://www.dailydairyreport.com/" target="_blank" class="price-source">
+                                <div class="price-source-icon">📰</div>
+                                <div class="price-source-name">Daily Dairy</div>
+                                <div class="price-source-desc">News + Analysis</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DMC - DAIRY MARGIN COVERAGE -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>🛡️ DMC MARGINS</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="info-card" style="margin-bottom:12px">
+                            <h4>Dairy Margin Coverage (DMC)</h4>
+                            <p><strong>Milk Price − Feed Cost = Margin</strong><br><br>
+                            USDA program pays when margin falls below coverage level ($4.00-$9.50/cwt). Feed cost = (corn price × 1.0728) + (soybean meal × 0.00735) + (alfalfa hay × 0.0137).</p>
+                        </div>
+                        <div class="link-grid">
+                            <a href="https://www.fsa.usda.gov/programs-and-services/dairy-margin-coverage-program/index" target="_blank" class="link-item external"><span>🏛️ FSA DMC Program</span><span>Official</span></a>
+                            <a href="https://dairymarkets.org/Tools/DMC/" target="_blank" class="link-item external"><span>📊 DMC Decision Tool</span><span>UW-Madison</span></a>
+                            <a href="https://www.ams.usda.gov/sites/default/files/media/DairyMarginCoverageMarginandFeedCost.pdf" target="_blank" class="link-item external"><span>📄 Monthly DMC Margins</span><span>USDA AMS</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FEED COSTS -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>🌽 FEED COSTS</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="info-card" style="margin-bottom:12px">
+                            <p><strong>Feed = 50-60% of milk production cost.</strong> Track corn (energy), soybean meal (protein), and hay prices to monitor margins.</p>
+                        </div>
+                        <div class="link-grid">
+                            <a href="/corn-prices.html" class="link-item"><span>🌽 Corn Dashboard</span><span>Energy</span></a>
+                            <a href="https://www.barchart.com/futures/quotes/ZM*0" target="_blank" class="link-item external"><span>🥜 Soybean Meal (ZM)</span><span>Protein</span></a>
+                            <a href="https://www.barchart.com/futures/quotes/AF*0" target="_blank" class="link-item external"><span>🌿 Alfalfa Hay</span><span>Forage</span></a>
+                            <a href="https://www.ams.usda.gov/market-news/hay" target="_blank" class="link-item external"><span>📊 USDA Hay Prices</span><span>Weekly</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USDA REPORTS -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>📊 USDA REPORTS</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="link-grid">
+                            <a href="https://www.ams.usda.gov/market-news/dairy" target="_blank" class="link-item external"><span>📰 AMS Dairy Market News</span><span>Daily/Weekly</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/4b29b5974" target="_blank" class="link-item external"><span>🥛 Milk Production</span><span>Monthly ~18th</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/dv13zs480" target="_blank" class="link-item external"><span>🧀 Dairy Products</span><span>Monthly</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/ks65hb825" target="_blank" class="link-item external"><span>🧊 Cold Storage</span><span>Monthly</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/r207tq16g" target="_blank" class="link-item external"><span>📦 Dairy Outlook</span><span>WASDE</span></a>
+                            <a href="https://www.ams.usda.gov/mnreports/dywweeklyreport.pdf" target="_blank" class="link-item external"><span>📋 Weekly Dairy Report</span><span>AMS</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CASH MARKETS -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>💵 CASH MARKETS</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="info-card" style="margin-bottom:12px">
+                            <p><strong>CME Spot Call:</strong> Daily cash trading at 12:00pm CT for cheese (blocks & barrels), butter, NFDM, and whey. These prices drive futures settlement.</p>
+                        </div>
+                        <div class="link-grid">
+                            <a href="https://www.cmegroup.com/trading/agricultural/spot-call-data.html" target="_blank" class="link-item external"><span>📞 CME Spot Call</span><span>Daily 12pm CT</span></a>
+                            <a href="https://www.ams.usda.gov/mnreports/dywdairyproducts.pdf" target="_blank" class="link-item external"><span>📊 USDA Dairy Prices</span><span>Weekly</span></a>
+                            <a href="https://www.jacoby.com/market-information/cme-dairy-cash-prices" target="_blank" class="link-item external"><span>📈 Cash Price History</span><span>Jacoby</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GLOBAL DAIRY TRADE -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>🌍 GLOBAL DAIRY TRADE</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="info-card" style="margin-bottom:12px">
+                            <p><strong>GDT Auctions:</strong> Twice-monthly (1st & 3rd Tuesday) auction for whole milk powder, skim milk powder, butter, cheese. New Zealand (Fonterra) dominates. Sets global benchmark.</p>
+                        </div>
+                        <div class="data-grid" style="margin-bottom:12px">
+                            <div class="data-card">
+                                <div class="data-card-label">🇳🇿 New Zealand</div>
+                                <div class="data-card-value">#1</div>
+                                <div class="data-card-sub">Exporter</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">🇪🇺 EU</div>
+                                <div class="data-card-value">#2</div>
+                                <div class="data-card-sub">Exporter</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">🇺🇸 USA</div>
+                                <div class="data-card-value">#3</div>
+                                <div class="data-card-sub">Exporter</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">🇨🇳 China</div>
+                                <div class="data-card-value">#1</div>
+                                <div class="data-card-sub">Importer</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">GDT</div>
+                                <div class="data-card-value">Tue</div>
+                                <div class="data-card-sub">1st & 3rd</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">Key</div>
+                                <div class="data-card-value">WMP</div>
+                                <div class="data-card-sub">Whole milk powder</div>
+                            </div>
+                        </div>
+                        <div class="link-grid">
+                            <a href="https://www.globaldairytrade.info/en/product-results/" target="_blank" class="link-item external"><span>🌐 GDT Auction Results</span><span>Biweekly</span></a>
+                            <a href="https://www.fonterra.com/nz/en.html" target="_blank" class="link-item external"><span>🇳🇿 Fonterra</span><span>NZ Cooperative</span></a>
+                            <a href="https://ec.europa.eu/info/food-farming-fisheries/farming/facts-and-figures/markets/prices/price-monitoring-sector/animal-products/milk-and-dairy_en" target="_blank" class="link-item external"><span>🇪🇺 EU Dairy Prices</span><span>Commission</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- US MILK PRODUCTION -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>🐄 US MILK PRODUCTION</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="data-grid" style="margin-bottom:12px">
+                            <div class="data-card">
+                                <div class="data-card-label">Annual</div>
+                                <div class="data-card-value">~226B</div>
+                                <div class="data-card-sub">lbs/year</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">Cows</div>
+                                <div class="data-card-value">~9.4M</div>
+                                <div class="data-card-sub">head</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">Per Cow</div>
+                                <div class="data-card-value">~24K</div>
+                                <div class="data-card-sub">lbs/year</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">#1 State</div>
+                                <div class="data-card-value">CA</div>
+                                <div class="data-card-sub">California</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">#2 State</div>
+                                <div class="data-card-value">WI</div>
+                                <div class="data-card-sub">Wisconsin</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">#3 State</div>
+                                <div class="data-card-value">ID</div>
+                                <div class="data-card-sub">Idaho</div>
+                            </div>
+                        </div>
+                        <div class="link-grid">
+                            <a href="https://usda.library.cornell.edu/concern/publications/4b29b5974" target="_blank" class="link-item external"><span>📊 Milk Production Report</span><span>Monthly</span></a>
+                            <a href="https://www.nass.usda.gov/Charts_and_Maps/Milk_Production_and_Milk_Cows/" target="_blank" class="link-item external"><span>📈 NASS Dairy Charts</span><span>Trends</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEASONAL PATTERNS -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>📅 SEASONAL PATTERNS</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="info-card">
+                            <h4>Milk Production Cycle</h4>
+                            <ul>
+                                <li><strong>Spring (Mar-May):</strong> Peak production - "spring flush"</li>
+                                <li><strong>Summer (Jun-Aug):</strong> Heat stress reduces output</li>
+                                <li><strong>Fall (Sep-Nov):</strong> Recovery, holiday demand builds</li>
+                                <li><strong>Winter (Dec-Feb):</strong> Lower production, school milk demand</li>
+                            </ul>
+                        </div>
+                        <div class="info-card" style="margin-top:8px">
+                            <h4>Cheese & Butter Demand</h4>
+                            <ul>
+                                <li><strong style="color:var(--green)">Oct-Nov:</strong> Holiday butter buying → price spike</li>
+                                <li><strong>Jan-Feb:</strong> Super Bowl cheese demand</li>
+                                <li><strong>Summer:</strong> Grilling season, cheese demand steady</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DAIRY ORGANIZATIONS -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>🏢 INDUSTRY RESOURCES</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="link-grid">
+                            <a href="https://www.nmpf.org/" target="_blank" class="link-item external"><span>🥛 NMPF</span><span>Nat'l Milk Producers</span></a>
+                            <a href="https://www.idfa.org/" target="_blank" class="link-item external"><span>🏭 IDFA</span><span>Dairy Foods Assn</span></a>
+                            <a href="https://dairymarkets.org/" target="_blank" class="link-item external"><span>🎓 UW Dairy Markets</span><span>Research</span></a>
+                            <a href="https://www.dairyfoods.com/" target="_blank" class="link-item external"><span>📰 Dairy Foods Magazine</span><span>News</span></a>
+                            <a href="https://hoards.com/" target="_blank" class="link-item external"><span>📰 Hoard's Dairyman</span><span>Since 1885</span></a>
+                            <a href="https://www.progressivedairy.com/" target="_blank" class="link-item external"><span>📰 Progressive Dairy</span><span>News</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TOOLS -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>🧮 TOOLS & CALCULATORS</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="link-grid">
+                            <a href="https://dairymarkets.org/Tools/DMC/" target="_blank" class="link-item external"><span>🛡️ DMC Decision Tool</span><span>UW-Madison</span></a>
+                            <a href="https://dairymarkets.org/Tools/FMMO/" target="_blank" class="link-item external"><span>📊 FMMO Price Calculator</span><span>UW-Madison</span></a>
+                            <a href="https://acdivoca.org/resources/dairy-margin-monitor/" target="_blank" class="link-item external"><span>📈 Margin Monitor</span><span>ACDI/VOCA</span></a>
+                            <a href="/breakeven.html" class="link-item"><span>💰 Break-Even Calculator</span><span>AGSIST</span></a>
+                            <a href="/fastfacts.html" class="link-item"><span>📊 Fast Facts</span><span>Reference</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RELATED MARKETS -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>🔗 RELATED MARKETS</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="link-grid">
+                            <a href="/corn-prices.html" class="link-item"><span>🌽 Corn Dashboard</span><span>Feed cost</span></a>
+                            <a href="/soybean-prices.html" class="link-item"><span>🫘 Soybean Dashboard</span><span>Meal prices</span></a>
+                            <a href="https://www.barchart.com/futures/quotes/LE*0" target="_blank" class="link-item external"><span>🐄 Live Cattle</span><span>Cull cow value</span></a>
+                            <a href="https://www.barchart.com/futures/quotes/GF*0" target="_blank" class="link-item external"><span>🐄 Feeder Cattle</span><span>Calf value</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTRACT SPECS -->
+                <div class="dash-section">
+                    <div class="dash-section-head" onclick="toggleSection(this)">
+                        <h2>📋 CONTRACT SPECIFICATIONS</h2>
+                        <span class="toggle">−</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <h4>Class III Milk (DC)</h4>
+                                <p><strong>Exchange:</strong> CME<br>
+                                <strong>Size:</strong> 200,000 lbs<br>
+                                <strong>Quote:</strong> $/cwt<br>
+                                <strong>Tick:</strong> $0.01 = $20<br>
+                                <strong>Months:</strong> All 12</p>
+                            </div>
+                            <div class="info-card">
+                                <h4>Cheese (CSC)</h4>
+                                <p><strong>Exchange:</strong> CME<br>
+                                <strong>Size:</strong> 20,000 lbs<br>
+                                <strong>Quote:</strong> $/lb<br>
+                                <strong>Tick:</strong> $0.001 = $20<br>
+                                <strong>Months:</strong> All 12</p>
+                            </div>
+                            <div class="info-card">
+                                <h4>Butter (CB)</h4>
+                                <p><strong>Exchange:</strong> CME<br>
+                                <strong>Size:</strong> 20,000 lbs<br>
+                                <strong>Quote:</strong> $/lb<br>
+                                <strong>Tick:</strong> $0.00025 = $5<br>
+                                <strong>Months:</strong> All 12</p>
+                            </div>
+                            <div class="info-card">
+                                <h4>NFDM (GNF)</h4>
+                                <p><strong>Exchange:</strong> CME<br>
+                                <strong>Size:</strong> 44,000 lbs<br>
+                                <strong>Quote:</strong> $/lb<br>
+                                <strong>Tick:</strong> $0.00025 = $11<br>
+                                <strong>Months:</strong> All 12</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="dash-footer">
+                <strong>Disclaimer:</strong> This dashboard aggregates publicly available data and links. Prices may be delayed. Nothing here constitutes financial advice. Futures trading involves substantial risk of loss.<br><br>
+                Data sources: <a href="https://www.usda.gov" target="_blank">USDA</a>, <a href="https://www.cmegroup.com" target="_blank">CME Group</a>, <a href="https://www.globaldairytrade.info" target="_blank">GDT</a>, <a href="https://www.barchart.com" target="_blank">Barchart</a>
+            </div>
+        </div>
+    </main>
+    <div id="footer"></div>
+    <script src="/components/load-components.js"></script>
+    <script>
+    function toggleSection(header){
+        const body=header.nextElementSibling;
+        const toggle=header.querySelector('.toggle');
+        if(body.classList.contains('collapsed')){body.classList.remove('collapsed');toggle.textContent='−';}
+        else{body.classList.add('collapsed');toggle.textContent='+';}
+    }
+    </script>
+</body>
+</html>
