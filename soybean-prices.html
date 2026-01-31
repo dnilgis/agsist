@@ -57,11 +57,11 @@
         <div class="price-wrap">
             <nav class="breadcrumb"><a href="/">Home</a> → Soybean Prices</nav>
             
-            <!-- Ticker Tape -->
-            <div class="ticker-container" style="margin-bottom:12px">
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-                {"symbols":[{"proName":"CBOT:ZS1!","title":"Soybeans"},{"proName":"CBOT:ZM1!","title":"Soy Meal"},{"proName":"CBOT:ZL1!","title":"Soy Oil"},{"proName":"CBOT:ZC1!","title":"Corn"},{"proName":"CBOT:ZW1!","title":"Wheat"}],"showSymbolLogo":false,"colorTheme":"dark","isTransparent":true,"displayMode":"adaptive","locale":"en"}
-                </script>
+            <!-- Quick Price Links -->
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+                <a href="/corn-prices.html" style="background:var(--card);border:1px solid var(--border);color:var(--dim);padding:8px 14px;border-radius:4px;font-size:0.8rem;text-decoration:none">🌽 Corn</a>
+                <a href="/soybean-prices.html" style="background:var(--accent);color:black;padding:8px 14px;border-radius:4px;font-size:0.8rem;font-weight:600;text-decoration:none">🫘 Soybeans</a>
+                <a href="/wheat-prices.html" style="background:var(--card);border:1px solid var(--border);color:var(--dim);padding:8px 14px;border-radius:4px;font-size:0.8rem;text-decoration:none">🌾 Wheat</a>
             </div>
 
             <div class="price-grid">
@@ -71,9 +71,7 @@
                         <div class="price-panel-head"><h1 style="font-size:0.9rem;margin:0;color:var(--accent)">🫘 SOYBEAN FUTURES (CBOT: ZS)</h1></div>
                         <div class="price-panel-body" style="padding:8px">
                             <div class="chart-container">
-                                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-                                {"autosize":true,"symbol":"CBOT:ZS1!","interval":"D","timezone":"America/Chicago","theme":"dark","style":"1","locale":"en","enable_publishing":false,"hide_top_toolbar":false,"hide_legend":false,"save_image":false,"calendar":false,"hide_volume":false,"support_host":"https://www.tradingview.com"}
-                                </script>
+                                <iframe src="https://www.tradingview.com/widgetembed/?symbol=CBOT%3AZS1%21&interval=D&hidesidetoolbar=0&symboledit=1&saveimage=0&toolbarbg=f1f3f6&studies=%5B%5D&theme=dark&style=1&timezone=America%2FChicago&withdateranges=1&showpopupbutton=1&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en" style="width:100%;height:100%;border:none" allowtransparency="true" frameborder="0"></iframe>
                             </div>
                         </div>
                     </div>
@@ -162,9 +160,7 @@
                     <div class="price-panel">
                         <div class="price-panel-head"><h2>QUOTE</h2></div>
                         <div class="price-panel-body" style="padding:0;height:180px">
-                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js" async>
-                            {"symbols":[["CBOT:ZS1!|1D"]],"chartOnly":false,"width":"100%","height":"100%","locale":"en","colorTheme":"dark","autosize":true,"showVolume":false,"showMA":false,"hideDateRanges":true,"hideMarketStatus":true,"hideSymbolLogo":false,"scalePosition":"right","scaleMode":"Normal","fontFamily":"JetBrains Mono","fontSize":"10","noTimeScale":false,"valuesTracking":"1","changeMode":"price-and-percent","chartType":"area","lineWidth":2,"lineType":0,"dateRanges":["1d|1","1m|30","3m|60","12m|1D","60m|1W","all|1M"]}
-                            </script>
+                            <iframe src="https://www.tradingview.com/widgetembed/?symbol=CBOT%3AZS1%21&interval=D&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=f1f3f6&theme=dark&style=3&timezone=America%2FChicago&withdateranges=0&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en" style="width:100%;height:100%;border:none" allowtransparency="true" frameborder="0"></iframe>
                         </div>
                     </div>
 
