@@ -1,83 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Complete Grain Marketing Guide for Farmers | AGSIST Learning Center</title>
-    <meta name="description" content="The most comprehensive grain marketing education resource online. Learn basis trading, futures hedging, contract types, crop insurance, GDUs, and break-even analysis. Written with university extension research.">
-    <meta name="keywords" content="grain marketing guide, corn basis explained, futures hedging for farmers, HTA contracts, basis contracts, crop insurance YP RP, GDU calculator, break-even farming, MRTN nitrogen rates">
+    <meta name="description" content="The most comprehensive grain marketing education resource online. Learn basis trading, futures hedging, contract types, crop insurance, GDUs, and break-even analysis.">
+    <meta name="keywords" content="grain marketing guide, corn basis explained, futures hedging for farmers, HTA contracts, basis contracts, crop insurance YP RP">
     <link rel="canonical" href="https://agsist.com/learn.html">
     
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
+    <link rel="icon" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/components/shared.css">
     <link rel="stylesheet" href="styles.css">
     
-    <!-- Open Graph -->
-    <meta property="og:title" content="The Complete Grain Marketing Guide for Farmers | AGSIST">
-    <meta property="og:description" content="Comprehensive education on basis, futures, grain contracts, crop insurance, and farm economics. University-sourced research for Upper Midwest farmers.">
-    <meta property="og:image" content="https://agsist.com/og-image.png">
-    <meta property="og:url" content="https://agsist.com/learn.html">
-    <meta name="twitter:card" content="summary_large_image">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     
-    <!-- Schema: FAQPage for Google Rich Results -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is corn basis and why does it matter?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Basis is the difference between your local cash price and the futures price (Cash Price - Futures Price = Basis). A basis of -25 means your local elevator pays 25 cents under the futures price. Basis matters because it can add or subtract 20-50 cents per bushel from your final price. According to Purdue Extension research, understanding basis patterns helps farmers improve profitability by timing sales when local basis is historically strong."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is a futures contract and how do farmers use them?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "A futures contract is a standardized agreement to buy or sell a commodity at a specific price on a future date. CME corn futures represent 5,000 bushels of #2 Yellow corn. Farmers typically use futures to hedge (reduce risk) by selling futures contracts to lock in a price, then buying them back when they sell their physical grain."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the difference between a basis contract and a hedge-to-arrive contract?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "A basis contract locks in the basis while leaving the futures price open. A hedge-to-arrive (HTA) contract locks in the futures price while leaving the basis open. Choose basis contracts when basis is historically strong; choose HTA when you want to capture a favorable futures price but expect basis to improve."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "When is the best time to sell corn?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Historically, corn prices tend to peak in late June through early July due to weather premium before pollination, and hit lows during October-November harvest pressure. However, the best time to sell is when the price exceeds your break-even by a profitable margin."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What crop insurance should I choose: YP or RP?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yield Protection (YP) covers only yield losses. Revenue Protection (RP) covers both yield and price losses, using the higher of spring or harvest price. RP typically costs 10-15% more but provides crucial protection if prices drop between spring and harvest. Most Upper Midwest farmers choose RP."
-          }
-        }
-      ]
-    }
-    </script>
+    <meta property="og:title" content="The Complete Grain Marketing Guide for Farmers | AGSIST">
+    <meta property="og:description" content="Comprehensive education on basis, futures, grain contracts, crop insurance, and farm economics.">
+    <meta property="og:url" content="https://agsist.com/learn.html">
     
     <style>
-        /* Learning Center Specific Styles */
         .learn-container { max-width: 900px; margin: 0 auto; padding: 20px; }
-        
-        /* Table of Contents */
         .toc-main { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
         .toc-main h2 { font-size: 1rem; color: var(--accent); margin: 0 0 20px 0; }
         .toc-section { margin-bottom: 16px; }
@@ -85,2289 +32,353 @@
         .toc-links { display: flex; flex-direction: column; gap: 4px; padding-left: 24px; }
         .toc-links a { color: var(--dim); font-size: 0.85rem; text-decoration: none; padding: 4px 0; transition: color 0.2s; }
         .toc-links a:hover { color: var(--accent); }
-        
-        /* Chapter Styling */
         .chapter { background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 32px; overflow: hidden; }
         .chapter-header { background: var(--bg); padding: 20px 24px; border-bottom: 1px solid var(--border); }
         .chapter-header h2 { font-size: 1.1rem; color: var(--accent); margin: 0; display: flex; align-items: center; gap: 12px; }
         .chapter-header .chapter-num { background: var(--accent); color: black; font-size: 0.75rem; padding: 4px 10px; border-radius: 4px; font-weight: 700; }
         .chapter-body { padding: 24px; }
         .chapter-body p { color: var(--dim); font-size: 0.95rem; line-height: 1.8; margin-bottom: 16px; }
-        .chapter-body p:last-child { margin-bottom: 0; }
         .chapter-body strong { color: var(--text); }
-        
-        /* Section Headers */
         .section-head { font-size: 1rem; color: var(--text); margin: 32px 0 16px 0; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-        .section-head:first-of-type { margin-top: 0; }
-        .subsection-head { font-size: 0.95rem; color: var(--accent); margin: 24px 0 12px 0; }
-        
-        /* Lists */
         .chapter-body ul, .chapter-body ol { color: var(--dim); font-size: 0.95rem; line-height: 1.8; margin: 16px 0 16px 24px; }
         .chapter-body li { margin-bottom: 8px; }
-        .chapter-body li strong { color: var(--text); }
-        
-        /* Formula Box */
-        .formula-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center; font-family: 'JetBrains Mono', monospace; }
+        .formula-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center; }
         .formula-box .formula { font-size: 1.1rem; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
         .formula-box .formula-note { font-size: 0.8rem; color: var(--dim); }
-        
-        /* Data Tables */
-        .data-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; }
-        .data-table th { background: var(--bg); color: var(--text); font-weight: 600; text-align: left; padding: 12px; border-bottom: 2px solid var(--border); }
-        .data-table td { padding: 12px; border-bottom: 1px solid var(--border); color: var(--dim); }
-        .data-table tr:hover { background: var(--bg); }
-        .data-table .highlight { color: var(--accent); font-weight: 600; }
-        
-        /* Info Boxes */
         .info-box { background: var(--bg); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; }
-        .info-box.warning { border-left-color: #f59e0b; }
-        .info-box.success { border-left-color: var(--green); }
         .info-box-title { font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
         .info-box p { color: var(--dim); font-size: 0.9rem; line-height: 1.7; margin: 0; }
-        
-        /* Example Box */
         .example-box { background: linear-gradient(135deg, var(--bg) 0%, var(--card) 100%); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin: 20px 0; }
         .example-box-title { font-size: 0.85rem; font-weight: 600; color: var(--accent); margin-bottom: 12px; }
         .example-box p { color: var(--dim); font-size: 0.9rem; line-height: 1.7; margin-bottom: 8px; }
-        .example-box p:last-child { margin-bottom: 0; }
         .example-calc { font-family: 'JetBrains Mono', monospace; background: var(--card); padding: 12px; border-radius: 4px; margin: 12px 0; font-size: 0.85rem; }
-        
-        /* Stats Grid */
+        .data-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; }
+        .data-table th { background: var(--bg); color: var(--text); font-weight: 600; text-align: left; padding: 12px; border-bottom: 2px solid var(--border); }
+        .data-table td { padding: 12px; border-bottom: 1px solid var(--border); color: var(--dim); }
+        .data-table .highlight { color: var(--accent); font-weight: 600; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin: 20px 0; }
         .stat-card { background: var(--bg); border-radius: 8px; padding: 16px; text-align: center; }
         .stat-label { font-size: 0.75rem; color: var(--dim); margin-bottom: 4px; }
         .stat-value { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
         .stat-value.green { color: var(--green); }
         .stat-value.red { color: var(--red); }
-        .stat-note { font-size: 0.7rem; color: var(--dim); margin-top: 4px; }
-        
-        /* Source Citation */
-        .source { font-size: 0.8rem; color: var(--dim); font-style: italic; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
-        .source a { color: var(--accent); }
-        
-        /* Contract Comparison Cards */
-        .contract-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 20px 0; }
-        .contract-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
-        .contract-card-title { font-size: 0.95rem; font-weight: 600; color: var(--accent); margin-bottom: 12px; }
-        .contract-card p { font-size: 0.85rem; color: var(--dim); line-height: 1.6; margin-bottom: 8px; }
-        .contract-card .locks { font-size: 0.8rem; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
-        .contract-card .locks span { display: inline-block; padding: 2px 8px; border-radius: 4px; margin-right: 6px; margin-bottom: 4px; font-size: 0.75rem; }
-        .contract-card .locks .locked { background: var(--green); color: black; }
-        .contract-card .locks .open { background: var(--border); color: var(--text); }
-        
-        /* Related Tools */
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 20px 0; }
         .related-tool { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-decoration: none; color: var(--text); transition: border-color 0.2s; }
         .related-tool:hover { border-color: var(--accent); }
         .related-tool-icon { font-size: 1.2rem; margin-bottom: 8px; }
         .related-tool-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
         .related-tool-desc { font-size: 0.8rem; color: var(--dim); }
-        
-        /* Print Styles */
-        @media print {
-            .main-nav, .mobile-menu, .footer-c, .toc-main { display: none !important; }
-            .chapter { break-inside: avoid; border: 1px solid #ccc; }
-            .chapter-header { background: #f5f5f5 !important; }
-        }
-        
-        /* Responsive */
         @media (max-width: 768px) {
             .learn-container { padding: 12px; }
             .chapter-body { padding: 16px; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .contract-grid { grid-template-columns: 1fr; }
-            .data-table { font-size: 0.8rem; }
-            .data-table th, .data-table td { padding: 8px; }
         }
     </style>
 </head>
 <body>
-    <!-- NAVIGATION -->
-    <nav class="main-nav">
-        <div class="nav-inner">
-            <a href="/" class="logo">AGSIST</a>
-            <div class="nav-links">
-                <div class="nav-dropdown"><button class="dropdown-toggle">Prices ▾</button><div class="dropdown-menu"><a href="corn-prices.html" class="dropdown-item">🌽 Corn</a><a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a><a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a></div></div>
-                <div class="nav-dropdown"><button class="dropdown-toggle">Tools ▾</button><div class="dropdown-menu"><a href="tools.html" class="dropdown-item">All Tools</a><a href="breakeven.html" class="dropdown-item">Breakeven</a><a href="gdu.html" class="dropdown-item">GDU Calculator</a><a href="calculator.html" class="dropdown-item">Grain Bin</a><a href="fastfacts.html" class="dropdown-item">Fast Facts</a></div></div>
-                <div class="nav-dropdown"><button class="dropdown-toggle">Info ▾</button><div class="dropdown-menu"><a href="learn.html" class="dropdown-item">Learn</a><a href="calendar.html" class="dropdown-item">Calendar</a><a href="resources.html" class="dropdown-item">Resources</a><a href="offices.html" class="dropdown-item">Offices</a></div></div>
-            </div>
-            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
-        </div>
-    </nav>
-    <!-- MOBILE MENU -->
-    <div class="mobile-menu" id="mobile-menu">
-        <div class="mobile-section">Prices</div><a href="corn-prices.html" class="mobile-link">🌽 Corn</a><a href="soybean-prices.html" class="mobile-link">🫘 Soybeans</a><a href="wheat-prices.html" class="mobile-link">🌾 Wheat</a>
-        <div class="mobile-section">Tools</div><a href="tools.html" class="mobile-link">All Tools</a><a href="breakeven.html" class="mobile-link">Breakeven</a><a href="gdu.html" class="mobile-link">GDU Calculator</a><a href="calculator.html" class="mobile-link">Grain Bin</a><a href="fastfacts.html" class="mobile-link">Fast Facts</a>
-        <div class="mobile-section">Info</div><a href="learn.html" class="mobile-link">Learn</a><a href="calendar.html" class="mobile-link">Calendar</a><a href="resources.html" class="mobile-link">Resources</a><a href="offices.html" class="mobile-link">Offices</a>
-    </div>
+    <div id="header"></div>
 
     <main>
         <div class="learn-container">
             <nav class="breadcrumb" style="margin-bottom:20px"><a href="/">Home</a> → Learning Center</nav>
             
-            <!-- Page Header -->
             <div class="panel" style="margin-bottom:24px">
                 <div class="panel-head"><h1 style="font-size:1rem;margin:0">📚 THE COMPLETE GRAIN MARKETING GUIDE</h1></div>
                 <div class="panel-body">
-                    <p style="color:var(--dim);margin:0;font-size:0.95rem">A comprehensive resource for Upper Midwest grain farmers. Research-backed education on marketing, risk management, and farm economics — written to help you make more profitable decisions.</p>
+                    <p style="color:var(--dim);margin:0;font-size:0.95rem">A comprehensive resource for Upper Midwest grain farmers. Research-backed education on marketing, risk management, and farm economics.</p>
                 </div>
             </div>
 
-            <!-- TABLE OF CONTENTS -->
             <div class="toc-main">
                 <h2>📑 TABLE OF CONTENTS</h2>
-                
                 <div class="toc-section">
                     <div class="toc-section-title">📊 Part 1: Understanding Markets</div>
                     <div class="toc-links">
-                        <a href="#basis">Chapter 1: Mastering Basis — The Local Price Component</a>
-                        <a href="#futures">Chapter 2: Futures Markets 101 — How They Work</a>
-                        <a href="#contracts">Chapter 3: Grain Contract Types — Your Marketing Tools</a>
+                        <a href="#basis">Chapter 1: Mastering Basis</a>
+                        <a href="#futures">Chapter 2: Futures Markets 101</a>
+                        <a href="#contracts">Chapter 3: Grain Contract Types</a>
                     </div>
                 </div>
-                
                 <div class="toc-section">
                     <div class="toc-section-title">💰 Part 2: Marketing Strategies</div>
                     <div class="toc-links">
-                        <a href="#when-to-sell">Chapter 4: When to Sell — Seasonal Patterns & Timing</a>
-                        <a href="#storage">Chapter 5: Storage Economics — Does It Pay?</a>
-                        <a href="#usda-reports">Chapter 6: Reading USDA Reports — What Moves Markets</a>
+                        <a href="#when-to-sell">Chapter 4: When to Sell</a>
+                        <a href="#storage">Chapter 5: Storage Economics</a>
+                        <a href="#usda-reports">Chapter 6: Reading USDA Reports</a>
                     </div>
                 </div>
-                
                 <div class="toc-section">
                     <div class="toc-section-title">🛡️ Part 3: Risk Management</div>
                     <div class="toc-links">
-                        <a href="#crop-insurance">Chapter 7: Crop Insurance — YP vs RP Explained</a>
-                        <a href="#hedging">Chapter 8: Hedging Strategies — Protecting Your Price</a>
+                        <a href="#crop-insurance">Chapter 7: Crop Insurance</a>
+                        <a href="#hedging">Chapter 8: Hedging Strategies</a>
                     </div>
                 </div>
-                
                 <div class="toc-section">
                     <div class="toc-section-title">🧮 Part 4: Farm Economics</div>
                     <div class="toc-links">
-                        <a href="#breakeven">Chapter 9: Break-Even Analysis — Know Your Numbers</a>
-                        <a href="#gdu">Chapter 10: Growing Degree Units — Tracking Crop Progress</a>
+                        <a href="#breakeven">Chapter 9: Break-Even Analysis</a>
+                        <a href="#gdu">Chapter 10: Growing Degree Units</a>
                     </div>
                 </div>
             </div>
 
-            <!-- PART 1 HEADER -->
-            <div style="background:var(--accent);color:black;padding:12px 20px;border-radius:8px;margin-bottom:24px;font-weight:600">
-                📊 PART 1: UNDERSTANDING MARKETS
-            </div>
+            <div style="background:var(--accent);color:black;padding:12px 20px;border-radius:8px;margin-bottom:24px;font-weight:600">📊 PART 1: UNDERSTANDING MARKETS</div>
 
-            <!-- CHAPTER 1: BASIS -->
             <div class="chapter" id="basis">
-                <div class="chapter-header">
-                    <h2><span class="chapter-num">CH 1</span> Mastering Basis — The Local Price Component</h2>
-                </div>
+                <div class="chapter-header"><h2><span class="chapter-num">CH 1</span> Mastering Basis — The Local Price Component</h2></div>
                 <div class="chapter-body">
-                    
-                    <p><strong>Basis is one of the most important — and most misunderstood — concepts in grain marketing.</strong> If you only learn one thing from this guide, understanding basis will have the biggest impact on your profitability. According to Purdue University's Center for Commercial Agriculture, farmers who actively track and manage basis can improve returns by 15-30 cents per bushel over those who ignore it.</p>
-                    
+                    <p><strong>Basis is one of the most important concepts in grain marketing.</strong> Understanding basis can improve returns by 15-30 cents per bushel.</p>
                     <h3 class="section-head">What Is Basis?</h3>
-                    
-                    <p>Basis is simply the difference between your local cash price and the futures price:</p>
-                    
+                    <p>Basis is the difference between your local cash price and the futures price:</p>
                     <div class="formula-box">
                         <div class="formula">Cash Price − Futures Price = Basis</div>
-                        <div class="formula-note">A negative basis means local prices are below futures; a positive basis means local prices exceed futures</div>
+                        <div class="formula-note">Negative basis means local prices are below futures</div>
                     </div>
-                    
                     <div class="example-box">
                         <div class="example-box-title">📝 Example: Calculating Your Basis</div>
-                        <p>December corn futures are trading at <strong>$4.50/bu</strong>. Your local elevator is bidding <strong>$4.25/bu</strong> for December delivery.</p>
-                        <div class="example-calc">
-                            $4.25 (cash) − $4.50 (futures) = <strong>−$0.25 basis</strong><br>
-                            This is often written as "25 under" or "-25¢"
-                        </div>
-                        <p>If the same elevator is bidding $4.60 when futures are at $4.50, your basis would be <strong>+10¢</strong> or "10 over."</p>
+                        <p>December corn futures = $4.50. Local elevator bid = $4.25.</p>
+                        <div class="example-calc">$4.25 − $4.50 = <strong>−$0.25 basis</strong> ("25 under")</div>
                     </div>
-                    
-                    <h3 class="section-head">Why Basis Matters: The Dollar Impact</h3>
-                    
-                    <p>Many farmers focus exclusively on futures prices, but basis can easily swing your final price by 20-50 cents per bushel. Consider the math:</p>
-                    
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-label">500-Acre Farm</div>
-                            <div class="stat-value">190</div>
-                            <div class="stat-note">bu/ac avg yield</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Total Production</div>
-                            <div class="stat-value">95,000</div>
-                            <div class="stat-note">bushels</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">20¢ Basis Gain</div>
-                            <div class="stat-value green">$19,000</div>
-                            <div class="stat-note">added revenue</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">20¢ Basis Loss</div>
-                            <div class="stat-value red">−$19,000</div>
-                            <div class="stat-note">lost revenue</div>
-                        </div>
-                    </div>
-                    
-                    <p>That 20-cent difference — which is common between harvest lows and summer highs — is worth <strong>$19,000</strong> on a typical Upper Midwest corn operation. Understanding when basis is historically strong versus weak at YOUR elevator is critical.</p>
-                    
-                    <h3 class="section-head">What Affects Basis? The 5 Key Factors</h3>
-                    
-                    <p>Basis reflects local supply and demand conditions that differ from the national/global picture captured in futures prices. University of Wisconsin Extension identifies five primary factors:</p>
-                    
+                    <h3 class="section-head">Why Basis Matters</h3>
+                    <p>Basis can swing your final price by 20-50 cents per bushel. On a 500-acre farm at 190 bu/ac, a 20¢ basis difference = <strong>$19,000</strong>.</p>
+                    <h3 class="section-head">What Affects Basis?</h3>
                     <ol>
-                        <li><strong>Location & Transportation Costs:</strong> Distance to terminal markets, ethanol plants, and export facilities matters enormously. Elevators near the Mississippi River, major rail lines, or ethanol plants typically offer stronger basis because they have lower transportation costs to move grain. An elevator 100 miles from a river terminal must discount its bid to cover trucking costs.</li>
-                        
-                        <li><strong>Local Supply & Demand:</strong> A new ethanol plant opening nearby can strengthen basis by 10-20 cents as it competes for bushels. Conversely, a bumper crop in your county while others had drought can weaken local basis even as futures rise. This is why YOUR basis pattern may differ significantly from state or regional averages.</li>
-                        
-                        <li><strong>Time of Year (Seasonality):</strong> Basis typically weakens during harvest when supplies are abundant and storage is tight, then strengthens through winter and into summer as supplies tighten. This seasonal pattern is generally predictable and tradeable.</li>
-                        
-                        <li><strong>Storage Availability:</strong> When commercial storage fills up at harvest, elevators widen basis (offer worse prices) to discourage deliveries. Farmers with on-farm storage can capture this basis improvement by storing grain and selling later when basis strengthens.</li>
-                        
-                        <li><strong>Quality Factors:</strong> Basis reflects quality premiums and discounts. High-moisture corn, low test weight, or damage will result in weaker basis (larger discounts). Conversely, premium quality may earn a basis premium at certain buyers.</li>
+                        <li><strong>Location & Transportation:</strong> Distance to terminals, ethanol plants</li>
+                        <li><strong>Local Supply & Demand:</strong> New ethanol plant = stronger basis</li>
+                        <li><strong>Time of Year:</strong> Weakest at harvest, strongest in summer</li>
+                        <li><strong>Storage Availability:</strong> Full bins = wider basis</li>
+                        <li><strong>Quality:</strong> Discounts for moisture, damage</li>
                     </ol>
-                    
-                    <h3 class="section-head">Seasonal Basis Patterns: What to Expect</h3>
-                    
-                    <p>Research from Purdue University's Crop Basis Tool shows consistent seasonal patterns across the Eastern Corn Belt. While your local pattern may vary, here are typical Wisconsin/Minnesota corn basis levels:</p>
-                    
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Time Period</th>
-                                <th>Typical Corn Basis</th>
-                                <th>What's Happening</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Harvest (Oct-Nov)</strong></td>
-                                <td class="highlight" style="color:var(--red)">−35¢ to −50¢</td>
-                                <td>Maximum supply pressure; storage fills up; everyone selling</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Post-Harvest (Dec-Feb)</strong></td>
-                                <td class="highlight">−25¢ to −35¢</td>
-                                <td>Farmer selling slows; basis begins seasonal recovery</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Spring (Mar-May)</strong></td>
-                                <td class="highlight">−15¢ to −25¢</td>
-                                <td>End users rebuild inventory; planting concerns can add premium</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Summer (Jun-Aug)</strong></td>
-                                <td class="highlight" style="color:var(--green)">−5¢ to −20¢</td>
-                                <td>Tightest supplies; strong demand; best basis of year</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
                     <div class="info-box">
-                        <div class="info-box-title">💡 Key Insight: Basis Can Be More Predictable Than Futures</div>
-                        <p>Futures prices are influenced by global factors — trade wars, weather in Brazil, currency movements — that are nearly impossible to predict. But YOUR local basis follows more predictable seasonal patterns driven by local supply/demand. This means basis-based strategies (like storage hedging) can be more reliable than trying to guess futures direction.</p>
-                    </div>
-                    
-                    <h3 class="section-head">How to Track & Use Basis</h3>
-                    
-                    <h4 class="subsection-head">Step 1: Build Your Basis History</h4>
-                    <p>Record your local elevator's cash bids weekly, along with the relevant futures price, for at least 3-5 years. This creates YOUR specific basis history, which is far more valuable than regional averages. Free tools like Purdue's Crop Basis Tool can supplement your records with regional data.</p>
-                    
-                    <h4 class="subsection-head">Step 2: Identify Your "Normal" Basis Range</h4>
-                    <p>Calculate your average basis for each month or season. Then identify the historical range (best and worst). This tells you when current basis is historically strong (good time to lock in basis) or weak (wait if possible).</p>
-                    
-                    <h4 class="subsection-head">Step 3: Make Basis-Informed Decisions</h4>
-                    <p>Iowa State Extension's Ag Decision Maker recommends using basis outlook alongside futures outlook to choose marketing tools:</p>
-                    
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Your Outlook</th>
-                                <th>Futures Expected</th>
-                                <th>Basis Expected</th>
-                                <th>Suggested Strategy</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Most Bearish</td>
-                                <td>↓ Decline</td>
-                                <td>↓ Weaken</td>
-                                <td>Sell cash now or forward contract</td>
-                            </tr>
-                            <tr>
-                                <td>Futures Bearish</td>
-                                <td>↓ Decline</td>
-                                <td>↑ Strengthen</td>
-                                <td>Hedge-to-Arrive (HTA) or short futures hedge</td>
-                            </tr>
-                            <tr>
-                                <td>Basis Bearish</td>
-                                <td>↑ Rise</td>
-                                <td>↓ Weaken</td>
-                                <td>Basis contract — lock in basis, leave futures open</td>
-                            </tr>
-                            <tr>
-                                <td>Most Bullish</td>
-                                <td>↑ Rise</td>
-                                <td>↑ Strengthen</td>
-                                <td>Store unpriced; wait for higher prices</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    <h3 class="section-head">Advanced: Basis Contracts Explained</h3>
-                    
-                    <p>A <strong>basis contract</strong> allows you to lock in the basis component while leaving the futures price to be set at a time you choose before delivery. The elevator typically pays a portion of the value at delivery, with final settlement when you price.</p>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Example: Basis Contract in Action</div>
-                        <p>In June, your elevator offers a basis contract for fall delivery at <strong>−15¢ basis</strong> to December futures. Historically, your harvest basis averages −35¢, so this is 20 cents better than normal.</p>
-                        <p>You sign a basis contract for 5,000 bushels. You'll deliver in October, and your final price will be:</p>
-                        <div class="example-calc">
-                            December Futures Price (at time you choose to price) − 15¢ = Your Cash Price
-                        </div>
-                        <p>If December futures are $4.50 when you set your price, you receive $4.35/bu. If futures rally to $5.00, you receive $4.85/bu. Either way, you've locked in that favorable 15-under basis.</p>
-                    </div>
-                    
-                    <div class="source">
-                        <strong>Sources:</strong> Purdue University Center for Commercial Agriculture, "Crop Basis Tool" (2025); Iowa State Extension Ag Decision Maker, "Commonly Used Grain Contracts" (A2-73); University of Wisconsin Extension, "Understanding Basis in Grain Marketing" (2024).
-                    </div>
-                    
-                    <div class="related-tools">
-                        <a href="corn-prices.html" class="related-tool">
-                            <div class="related-tool-icon">🌽</div>
-                            <div class="related-tool-name">Live Corn Prices</div>
-                            <div class="related-tool-desc">Track cash & futures prices</div>
-                        </a>
-                        <a href="breakeven.html" class="related-tool">
-                            <div class="related-tool-icon">💰</div>
-                            <div class="related-tool-name">Break-Even Calculator</div>
-                            <div class="related-tool-desc">Know your target price</div>
-                        </a>
+                        <div class="info-box-title">💡 Key Insight</div>
+                        <p>Basis patterns are more predictable than futures prices. This makes basis-based strategies more reliable.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- CHAPTER 2: FUTURES MARKETS -->
             <div class="chapter" id="futures">
-                <div class="chapter-header">
-                    <h2><span class="chapter-num">CH 2</span> Futures Markets 101 — How They Work</h2>
-                </div>
+                <div class="chapter-header"><h2><span class="chapter-num">CH 2</span> Futures Markets 101</h2></div>
                 <div class="chapter-body">
-                    
-                    <p><strong>Futures markets serve two essential functions:</strong> price discovery (establishing a transparent, global price for commodities) and risk transfer (allowing producers and buyers to manage price risk). For farmers, futures provide a way to lock in prices before harvest — or to understand where the market expects prices to be.</p>
-                    
-                    <h3 class="section-head">What Is a Futures Contract?</h3>
-                    
-                    <p>A futures contract is a standardized, legally binding agreement to buy or sell a specific quantity and quality of a commodity at a predetermined price on a future date. Key characteristics:</p>
-                    
-                    <ul>
-                        <li><strong>Standardized:</strong> Every corn futures contract represents exactly 5,000 bushels of #2 Yellow corn</li>
-                        <li><strong>Exchange-traded:</strong> Contracts trade on the CME Group (formerly Chicago Board of Trade), providing transparency and liquidity</li>
-                        <li><strong>Marked-to-market:</strong> Gains and losses are settled daily, requiring margin deposits</li>
-                        <li><strong>Delivery or offset:</strong> Contracts can be fulfilled by physical delivery OR closed out by taking an opposite position (most are offset, not delivered)</li>
-                    </ul>
-                    
-                    <h3 class="section-head">CME Grain Futures Contract Specifications</h3>
-                    
-                    <p>These are the official specifications from CME Group for the most commonly traded grain futures:</p>
-                    
-                    <div style="overflow-x:auto">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Contract</th>
-                                    <th>Symbol</th>
-                                    <th>Size</th>
-                                    <th>Grade</th>
-                                    <th>Tick Size</th>
-                                    <th>Tick Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Corn</strong></td>
-                                    <td>ZC</td>
-                                    <td>5,000 bu</td>
-                                    <td>#2 Yellow</td>
-                                    <td>¼ ¢/bu</td>
-                                    <td>$12.50</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Soybeans</strong></td>
-                                    <td>ZS</td>
-                                    <td>5,000 bu</td>
-                                    <td>#2 Yellow</td>
-                                    <td>¼ ¢/bu</td>
-                                    <td>$12.50</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Wheat (SRW)</strong></td>
-                                    <td>ZW</td>
-                                    <td>5,000 bu</td>
-                                    <td>#2 SRW</td>
-                                    <td>¼ ¢/bu</td>
-                                    <td>$12.50</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Mini Corn</strong></td>
-                                    <td>XC</td>
-                                    <td>1,000 bu</td>
-                                    <td>#2 Yellow</td>
-                                    <td>⅛ ¢/bu</td>
-                                    <td>$1.25</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="info-box">
-                        <div class="info-box-title">📊 Understanding Tick Values</div>
-                        <p>A "tick" is the minimum price movement. For corn, the minimum move is ¼ cent per bushel. On a 5,000-bushel contract: <strong>$0.0025 × 5,000 = $12.50 per tick</strong>. So if corn moves from $4.50 to $4.51 (4 ticks), your contract gains or loses <strong>$50</strong>.</p>
-                    </div>
-                    
-                    <h3 class="section-head">Contract Months: Which to Use?</h3>
-                    
-                    <p>Futures contracts trade for specific delivery months. You should generally trade the contract month closest to (but after) when you plan to sell your physical grain:</p>
-                    
+                    <p><strong>Futures markets provide price discovery and risk transfer.</strong> For farmers, futures provide a way to lock in prices before harvest.</p>
+                    <h3 class="section-head">CME Grain Futures Specs</h3>
                     <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Crop</th>
-                                <th>Contract Months</th>
-                                <th>Most Relevant for Upper Midwest</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Contract</th><th>Symbol</th><th>Size</th><th>Tick Value</th></tr></thead>
                         <tbody>
-                            <tr>
-                                <td><strong>Corn</strong></td>
-                                <td>Mar, May, Jul, Sep, Dec</td>
-                                <td><strong>December</strong> for new-crop; July for old-crop</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Soybeans</strong></td>
-                                <td>Jan, Mar, May, Jul, Aug, Sep, Nov</td>
-                                <td><strong>November</strong> for new-crop; July for old-crop</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Wheat</strong></td>
-                                <td>Mar, May, Jul, Sep, Dec</td>
-                                <td><strong>July</strong> for winter wheat harvest</td>
-                            </tr>
+                            <tr><td><strong>Corn</strong></td><td>ZC</td><td>5,000 bu</td><td>$12.50</td></tr>
+                            <tr><td><strong>Soybeans</strong></td><td>ZS</td><td>5,000 bu</td><td>$12.50</td></tr>
+                            <tr><td><strong>Wheat</strong></td><td>ZW</td><td>5,000 bu</td><td>$12.50</td></tr>
                         </tbody>
                     </table>
-                    
-                    <p><strong>Why December corn?</strong> December is the first contract month after typical Midwest harvest (October-November). It's the "new-crop" contract that most closely aligns with harvest-time pricing.</p>
-                    
-                    <h3 class="section-head">How Hedging Works: A Short Hedge Example</h3>
-                    
-                    <p>Farmers use a "short hedge" (selling futures) to protect against falling prices. Here's the concept:</p>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Example: Hedging 10,000 Bushels of Corn</div>
-                        <p><strong>In May:</strong> You expect to harvest 10,000 bushels in October. December corn futures are at $4.80. You're happy with this price but worried it might fall.</p>
-                        <p><strong>Action:</strong> SELL 2 December corn futures contracts (2 × 5,000 = 10,000 bushels) at $4.80.</p>
-                        <p><strong>In October:</strong> Futures have fallen to $4.30. Your local elevator bids $4.05 (−25¢ basis).</p>
-                        <p><strong>Close the hedge:</strong> BUY 2 December corn futures at $4.30. Profit on futures = $0.50/bu × 10,000 = <strong>$5,000</strong></p>
-                        <div class="example-calc">
-                            Cash sale: 10,000 bu × $4.05 = $40,500<br>
-                            Futures gain: $5,000<br>
-                            <strong>Net price received: $45,500 ÷ 10,000 = $4.55/bu</strong>
-                        </div>
-                        <p>Without hedging, you'd have received only $4.05/bu. The hedge added $0.50/bu to your realized price.</p>
-                    </div>
-                    
-                    <div class="info-box warning">
-                        <div class="info-box-title">⚠️ Important: Hedging Doesn't Guarantee a Specific Price</div>
-                        <p>Notice the farmer didn't receive exactly $4.80 (the original futures price). The final price depends on basis at delivery. Hedging locks in the <strong>futures component</strong> of price while leaving you exposed to basis risk. This is why understanding basis (Chapter 1) is so critical.</p>
-                    </div>
-                    
-                    <h3 class="section-head">Margin Requirements</h3>
-                    
-                    <p>Futures trading requires posting "margin" — a good-faith deposit that ensures you can cover potential losses. There are two types:</p>
-                    
-                    <ul>
-                        <li><strong>Initial Margin:</strong> The deposit required to open a position (~$1,500-2,500 per corn contract)</li>
-                        <li><strong>Maintenance Margin:</strong> The minimum balance you must maintain (~$1,200-2,000 per contract)</li>
-                    </ul>
-                    
-                    <p>If losses push your account below maintenance margin, you'll receive a "margin call" requiring immediate deposit of additional funds. <strong>This is why many farmers prefer grain contracts through their elevator</strong> (forward, basis, HTA) rather than direct futures trading — the elevator handles the hedging and margin requirements.</p>
-                    
-                    <h3 class="section-head">Reading Futures Quotes</h3>
-                    
-                    <p>Futures prices are quoted in cents per bushel. Here's how to read a quote:</p>
-                    
-                    <div class="formula-box">
-                        <div class="formula">ZCZ25 = 456'4</div>
-                        <div class="formula-note">December 2025 Corn at $4.56½ per bushel (the '4 means 4/8 = ½ cent)</div>
-                    </div>
-                    
-                    <p>Contract month codes: F=Jan, G=Feb, H=Mar, J=Apr, K=May, M=Jun, N=Jul, Q=Aug, U=Sep, V=Oct, X=Nov, Z=Dec</p>
-                    
-                    <div class="source">
-                        <strong>Sources:</strong> CME Group, "Corn Futures Contract Specifications" (2025); Virginia Tech Extension, "CME Futures Specifications"; Missouri Extension, "Agricultural Commodity Futures Contract Specifications."
-                    </div>
-                    
-                    <div class="related-tools">
-                        <a href="corn-prices.html" class="related-tool">
-                            <div class="related-tool-icon">📈</div>
-                            <div class="related-tool-name">Live Futures Prices</div>
-                            <div class="related-tool-desc">Track CME prices in real-time</div>
-                        </a>
-                        <a href="calendar.html" class="related-tool">
-                            <div class="related-tool-icon">📅</div>
-                            <div class="related-tool-name">USDA Calendar</div>
-                            <div class="related-tool-desc">Report dates that move markets</div>
-                        </a>
-                    </div>
+                    <h3 class="section-head">Contract Months</h3>
+                    <p><strong>Corn:</strong> Mar, May, Jul, Sep, Dec — Use <strong>December</strong> for new-crop.</p>
+                    <p><strong>Soybeans:</strong> Jan, Mar, May, Jul, Aug, Sep, Nov — Use <strong>November</strong> for new-crop.</p>
                 </div>
             </div>
 
-            <!-- CHAPTER 3: GRAIN CONTRACTS -->
             <div class="chapter" id="contracts">
-                <div class="chapter-header">
-                    <h2><span class="chapter-num">CH 3</span> Grain Contract Types — Your Marketing Tools</h2>
-                </div>
+                <div class="chapter-header"><h2><span class="chapter-num">CH 3</span> Grain Contract Types</h2></div>
                 <div class="chapter-body">
-                    
-                    <p><strong>Most farmers don't trade futures directly.</strong> Instead, they use grain contracts offered by local elevators and processors. These contracts embed futures-based pricing mechanisms while handling the complexity (margin, delivery logistics) for you. According to Iowa State Extension, understanding your contract options is essential to building a complete marketing plan.</p>
-                    
-                    <p>"You want to have a wide variety of tools — sell for cash, sell forward, hedge, basis contract — on your marketing menu," advises ISU Extension economist Chad Hart. "Given the volatility we see in market prices, the more choices farmers have, the better off they are."</p>
-                    
-                    <h3 class="section-head">Overview: The 6 Common Contract Types</h3>
-                    
-                    <div class="contract-grid">
-                        <div class="contract-card">
-                            <div class="contract-card-title">💵 Cash (Spot) Sale</div>
-                            <p>Deliver grain today, receive today's posted price. Simple and immediate.</p>
-                            <div class="locks">
-                                <span class="locked">Price: LOCKED</span>
-                                <span class="locked">Basis: LOCKED</span>
-                                <span class="locked">Delivery: NOW</span>
-                            </div>
-                        </div>
-                        
-                        <div class="contract-card">
-                            <div class="contract-card-title">📝 Forward Contract</div>
-                            <p>Lock in a complete price (futures + basis) for delivery at a future date.</p>
-                            <div class="locks">
-                                <span class="locked">Price: LOCKED</span>
-                                <span class="locked">Basis: LOCKED</span>
-                                <span class="open">Delivery: FUTURE</span>
-                            </div>
-                        </div>
-                        
-                        <div class="contract-card">
-                            <div class="contract-card-title">📊 Basis Contract</div>
-                            <p>Lock in basis while leaving futures price to set later. Ideal when basis is historically strong.</p>
-                            <div class="locks">
-                                <span class="open">Futures: OPEN</span>
-                                <span class="locked">Basis: LOCKED</span>
-                                <span class="open">Delivery: FUTURE</span>
-                            </div>
-                        </div>
-                        
-                        <div class="contract-card">
-                            <div class="contract-card-title">📈 Hedge-to-Arrive (HTA)</div>
-                            <p>Lock in futures price while leaving basis to set at delivery.</p>
-                            <div class="locks">
-                                <span class="locked">Futures: LOCKED</span>
-                                <span class="open">Basis: OPEN</span>
-                                <span class="open">Delivery: FUTURE</span>
-                            </div>
-                        </div>
-                        
-                        <div class="contract-card">
-                            <div class="contract-card-title">⏰ Delayed Price (DP)</div>
-                            <p>Deliver grain now but delay pricing decision. Elevator stores grain.</p>
-                            <div class="locks">
-                                <span class="open">Price: OPEN</span>
-                                <span class="open">Basis: OPEN</span>
-                                <span class="locked">Delivery: NOW</span>
-                            </div>
-                        </div>
-                        
-                        <div class="contract-card">
-                            <div class="contract-card-title">🛡️ Minimum Price</div>
-                            <p>Sets a floor price while allowing participation if prices rise.</p>
-                            <div class="locks">
-                                <span class="locked">Floor: LOCKED</span>
-                                <span class="open">Upside: OPEN</span>
-                                <span class="open">Delivery: FUTURE</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <h3 class="section-head">Forward Contract (Cash Forward)</h3>
-                    
-                    <p>A forward contract locks in a complete price (combining futures and basis) for delivery at a specified future date. This is the most common pre-harvest pricing tool.</p>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Example: Forward Contract</div>
-                        <p>In March, December corn futures are $4.80 and your elevator's harvest basis is −25¢. Transaction fee is 5¢.</p>
-                        <div class="example-calc">
-                            Forward price = $4.80 − $0.25 − $0.05 = <strong>$4.50/bu</strong>
-                        </div>
-                        <p>You sign a forward contract for 10,000 bushels at $4.50 for October delivery. Regardless of where prices go, you'll receive $4.50/bu when you deliver.</p>
-                    </div>
-                    
-                    <ul>
-                        <li><strong>When to use:</strong> When both futures AND basis are at acceptable levels; when you want complete price certainty</li>
-                        <li><strong>Advantages:</strong> Complete price protection; simple to understand; no margin calls</li>
-                        <li><strong>Disadvantages:</strong> Gives up ALL upside if prices rally; production risk if you can't deliver</li>
-                    </ul>
-                    
-                    <div class="info-box warning">
+                    <p><strong>Most farmers use elevator contracts rather than trading futures directly.</strong></p>
+                    <h3 class="section-head">The 6 Common Contract Types</h3>
+                    <table class="data-table">
+                        <thead><tr><th>Contract</th><th>Locks</th><th>Best For</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Cash Sale</strong></td><td>Everything</td><td>Immediate certainty</td></tr>
+                            <tr><td><strong>Forward</strong></td><td>Futures + Basis</td><td>Complete price protection</td></tr>
+                            <tr><td><strong>Basis Contract</strong></td><td>Basis only</td><td>Strong basis, uncertain futures</td></tr>
+                            <tr><td><strong>HTA</strong></td><td>Futures only</td><td>Good futures, weak basis</td></tr>
+                            <tr><td><strong>Delayed Price</strong></td><td>Nothing</td><td>Need to move grain</td></tr>
+                            <tr><td><strong>Minimum Price</strong></td><td>Floor only</td><td>Protection + upside</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="info-box">
                         <div class="info-box-title">⚠️ Production Risk Warning</div>
-                        <p>Forward contracts obligate delivery. If you forward contract 50,000 bushels but only harvest 40,000 (drought, hail, etc.), you must buy 10,000 bushels at market price to fulfill the contract. <strong>Never forward contract more than 50-70% of conservative yield estimates.</strong></p>
-                    </div>
-                    
-                    <h3 class="section-head">Basis Contract</h3>
-                    
-                    <p>A basis contract locks in the basis component while leaving the futures price to be set at a time you choose before delivery.</p>
-                    
-                    <div class="formula-box">
-                        <div class="formula">Final Price = Futures Price (when you set it) + Locked Basis</div>
-                        <div class="formula-note">Example: Basis locked at −20¢, you price when futures are $4.60, you receive $4.40/bu</div>
-                    </div>
-                    
-                    <ul>
-                        <li><strong>When to use:</strong> When basis is historically strong but you're uncertain about futures direction, or believe futures may rise</li>
-                        <li><strong>Advantages:</strong> Captures favorable basis; maintains futures upside; protects against basis weakening</li>
-                        <li><strong>Disadvantages:</strong> Exposed to futures price decline; must eventually set price; delivery required</li>
-                    </ul>
-                    
-                    <h3 class="section-head">Hedge-to-Arrive (HTA)</h3>
-                    
-                    <p>An HTA contract locks in the futures price while leaving the basis to be set at delivery. It's the opposite of a basis contract.</p>
-                    
-                    <div class="formula-box">
-                        <div class="formula">Final Price = Locked Futures Price − Basis (at delivery)</div>
-                        <div class="formula-note">Example: Locked futures at $4.80, delivery basis is −30¢, you receive $4.50/bu</div>
-                    </div>
-                    
-                    <ul>
-                        <li><strong>When to use:</strong> When futures prices are historically high, but basis is currently weak and expected to improve (typical at harvest)</li>
-                        <li><strong>Advantages:</strong> Locks in favorable futures price; can benefit from basis improvement</li>
-                        <li><strong>Disadvantages:</strong> Exposed to basis risk; delivery required; may have rolling fees</li>
-                    </ul>
-                    
-                    <h3 class="section-head">Decision Framework: Which Contract to Use?</h3>
-                    
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Your Situation</th>
-                                <th>Recommended Contract(s)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Happy with current price, want certainty</td>
-                                <td><strong>Forward contract</strong> or cash sale</td>
-                            </tr>
-                            <tr>
-                                <td>Basis historically strong, futures uncertain</td>
-                                <td><strong>Basis contract</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Futures favorable, basis weak (harvest)</td>
-                                <td><strong>HTA contract</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Need to move grain, don't want to price</td>
-                                <td><strong>Delayed price</strong> (with caution)</td>
-                            </tr>
-                            <tr>
-                                <td>Want protection but keep upside</td>
-                                <td><strong>Minimum price</strong> or put options</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    <div class="info-box success">
-                        <div class="info-box-title">✅ Best Practice: Diversify Your Contracts</div>
-                        <p>Don't put all your bushels in one basket. A sound marketing plan uses multiple contract types across multiple time periods. For example: 20% forward contracted pre-plant, 20% HTA at summer highs, 30% basis contract, 30% stored for post-harvest opportunities.</p>
-                    </div>
-                    
-                    <div class="source">
-                        <strong>Sources:</strong> Iowa State Extension Ag Decision Maker, "Commonly Used Grain Contracts" (A2-73); "Understanding Risk in Hedge-to-Arrive Contracts" (A2-74); University of Tennessee Extension, "Grain Marketing Contracts Series" (2025).
-                    </div>
-                    
-                    <div class="related-tools">
-                        <a href="breakeven.html" class="related-tool">
-                            <div class="related-tool-icon">💰</div>
-                            <div class="related-tool-name">Break-Even Calculator</div>
-                            <div class="related-tool-desc">Know your target price before contracting</div>
-                        </a>
-                        <a href="corn-prices.html" class="related-tool">
-                            <div class="related-tool-icon">🌽</div>
-                            <div class="related-tool-name">Live Prices</div>
-                            <div class="related-tool-desc">Check current cash & futures</div>
-                        </a>
+                        <p>Never forward contract more than 50-70% of conservative yield estimates.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
-            <!-- PART 2: MARKETING STRATEGIES -->
-            <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
-            
-            <div style="background:var(--accent);color:black;padding:12px 20px;border-radius:8px;margin-bottom:24px;font-weight:600">
-                💰 PART 2: MARKETING STRATEGIES
-            </div>
+            <div style="background:var(--accent);color:black;padding:12px 20px;border-radius:8px;margin-bottom:24px;font-weight:600">💰 PART 2: MARKETING STRATEGIES</div>
 
-            <!-- CHAPTER 4: WHEN TO SELL -->
             <div class="chapter" id="when-to-sell">
-                <div class="chapter-header">
-                    <h2><span class="chapter-num">CH 4</span> When to Sell — Seasonal Patterns & Timing</h2>
-                </div>
+                <div class="chapter-header"><h2><span class="chapter-num">CH 4</span> When to Sell — Seasonal Patterns</h2></div>
                 <div class="chapter-body">
-                    
-                    <p><strong>Timing matters in grain marketing.</strong> According to University of Wisconsin Extension, "nine years out of ten, corn prices bottom during fall harvest" — meaning selling at harvest typically leaves money on the table. Understanding seasonal price patterns can help you identify windows when prices are historically strongest and plan your marketing accordingly.</p>
-                    
+                    <p><strong>Nine years out of ten, corn prices bottom during fall harvest.</strong></p>
                     <h3 class="section-head">The Seasonal Price Cycle</h3>
-                    
-                    <p>Grain prices follow predictable seasonal patterns driven by the crop production cycle. CME Group's educational materials explain: "With corn, the most pronounced seasonal trend is the tendency for prices to be near their highest level around July because of the uncertainty around new crop production, then to decline from mid-summer into the harvest season."</p>
-                    
-                    <p>Here's the typical annual cycle for corn:</p>
-                    
                     <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Time Period</th>
-                                <th>What's Happening</th>
-                                <th>Price Tendency</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Period</th><th>Tendency</th></tr></thead>
                         <tbody>
-                            <tr>
-                                <td><strong>January - February</strong></td>
-                                <td>South American weather focus; export demand</td>
-                                <td>Often stable; may rally on S.A. weather</td>
-                            </tr>
-                            <tr>
-                                <td><strong>March - April</strong></td>
-                                <td>Planting intentions; early fieldwork</td>
-                                <td class="highlight">Often strengthening — "buying acres"</td>
-                            </tr>
-                            <tr>
-                                <td><strong>May - June</strong></td>
-                                <td>Planting progress; early crop conditions</td>
-                                <td class="highlight">Weather premium building</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Late June - July</strong></td>
-                                <td>Pollination; critical yield determination</td>
-                                <td class="highlight" style="color:var(--green)">SEASONAL HIGH — weather premium peaks</td>
-                            </tr>
-                            <tr>
-                                <td><strong>August - September</strong></td>
-                                <td>Crop size becomes clearer; early harvest</td>
-                                <td>Declining as uncertainty reduces</td>
-                            </tr>
-                            <tr>
-                                <td><strong>October - November</strong></td>
-                                <td>Full harvest; maximum supply pressure</td>
-                                <td class="highlight" style="color:var(--red)">SEASONAL LOW — harvest pressure</td>
-                            </tr>
-                            <tr>
-                                <td><strong>December</strong></td>
-                                <td>Harvest wrapping up; tax-year decisions</td>
-                                <td>Often recovering from harvest lows</td>
-                            </tr>
+                            <tr><td>Jan-Feb</td><td>Stable; S.A. weather focus</td></tr>
+                            <tr><td>Mar-Apr</td><td class="highlight">Strengthening — "buying acres"</td></tr>
+                            <tr><td>May-Jun</td><td class="highlight">Weather premium building</td></tr>
+                            <tr><td style="color:var(--green)">Late Jun-Jul</td><td style="color:var(--green)"><strong>SEASONAL HIGH</strong></td></tr>
+                            <tr><td>Aug-Sep</td><td>Declining as crop clears</td></tr>
+                            <tr><td style="color:var(--red)">Oct-Nov</td><td style="color:var(--red)"><strong>SEASONAL LOW</strong></td></tr>
                         </tbody>
                     </table>
-                    
                     <div class="info-box">
-                        <div class="info-box-title">💡 Key Insight: The "July 4th Rule"</div>
-                        <p>University of Wisconsin Extension notes: "Nine years in ten it is a good idea to have your stored grain and any pre-harvest marketing completed by the fourth of July." This captures the essence of seasonal marketing — the highest prices typically occur before the new crop's yield potential becomes clear.</p>
-                    </div>
-                    
-                    <h3 class="section-head">Historical Data: When Do Price Highs Occur?</h3>
-                    
-                    <p>Research from Brugler Marketing & Management analyzed 35 years of December corn futures data to identify when annual highs typically occur:</p>
-                    
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-label">June/July Highs</div>
-                            <div class="stat-value green">29%</div>
-                            <div class="stat-note">Most common</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">March-May Highs</div>
-                            <div class="stat-value">26%</div>
-                            <div class="stat-note">Spring rally</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Jan/Nov Highs</div>
-                            <div class="stat-value">20%</div>
-                            <div class="stat-note">Post-harvest</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Harvest Highs</div>
-                            <div class="stat-value red">~10%</div>
-                            <div class="stat-note">Oct-Dec rare</div>
-                        </div>
-                    </div>
-                    
-                    <p>The data confirms: <strong>selling at harvest is rarely optimal</strong>. Over 55% of annual highs occur between March and July, while less than 10% occur during the traditional October-December harvest window.</p>
-                    
-                    <h3 class="section-head">Soybeans: A Different Pattern</h3>
-                    
-                    <p>Soybeans follow a similar but distinct pattern. According to CME Group: "Soybeans tend to follow a pattern where prices begin to decline in the July-August time frame, continuing through 'February break,' before reaching their seasonal highs in the summer."</p>
-                    
-                    <p>Key differences from corn:</p>
-                    <ul>
-                        <li><strong>South American competition:</strong> Brazil's February-April harvest can pressure U.S. prices during winter</li>
-                        <li><strong>Less pronounced post-harvest rally:</strong> Unlike corn, soybeans rarely show strong carry signals</li>
-                        <li><strong>Summer highs still dominant:</strong> June-July remains the typical peak period</li>
-                    </ul>
-                    
-                    <h3 class="section-head">Scale-Up Selling: A Practical Strategy</h3>
-                    
-                    <p>Rather than trying to pick the exact top (which is impossible), successful marketers use "scale-up selling" — pricing portions of the crop as prices reach target levels:</p>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Example: Scale-Up Marketing Plan</div>
-                        <p>Your break-even is <strong>$4.20/bu</strong>. You set the following target levels:</p>
-                        <table class="data-table" style="margin:12px 0">
-                            <thead>
-                                <tr><th>Price Target</th><th>% to Sell</th><th>Profit/bu</th><th>Rationale</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>$4.40 (+5%)</td><td>20%</td><td>$0.20</td><td>Lock in base profit</td></tr>
-                                <tr><td>$4.60 (+10%)</td><td>20%</td><td>$0.40</td><td>Good return</td></tr>
-                                <tr><td>$4.80 (+14%)</td><td>20%</td><td>$0.60</td><td>Strong return</td></tr>
-                                <tr><td>$5.00 (+19%)</td><td>20%</td><td>$0.80</td><td>Excellent return</td></tr>
-                                <tr><td>Store/Wait</td><td>20%</td><td>TBD</td><td>Upside potential</td></tr>
-                            </tbody>
-                        </table>
-                        <p>If prices hit all four targets, your weighted average price is <strong>$4.70/bu</strong> on 80% of production — a $0.50/bu profit. The remaining 20% stays unpriced for additional upside or post-harvest opportunities.</p>
-                    </div>
-                    
-                    <h3 class="section-head">What Breaks the Pattern?</h3>
-                    
-                    <p>Seasonal patterns work "most of the time" but not always. Major disruptions include:</p>
-                    
-                    <ul>
-                        <li><strong>Drought years (2012, 2021):</strong> Prices can rally sharply through harvest as crop losses mount</li>
-                        <li><strong>Demand shocks:</strong> The 2020 COVID pandemic disrupted normal patterns, with prices rallying into fall</li>
-                        <li><strong>Trade disruptions:</strong> China tariffs (2018-2019) created atypical price action</li>
-                        <li><strong>Global supply shocks:</strong> Ukraine war (2022) sent prices to multi-year highs</li>
-                    </ul>
-                    
-                    <p>This is why no single strategy works every year — and why maintaining flexibility (never selling 100% early) is crucial.</p>
-                    
-                    <div class="info-box success">
-                        <div class="info-box-title">✅ Practical Guidelines</div>
-                        <p><strong>Before planting:</strong> Consider pricing 10-20% if prices exceed break-even by 15%+<br>
-                        <strong>May-July:</strong> Most aggressive pre-harvest pricing window — scale up as prices rise<br>
-                        <strong>By July 4:</strong> Target 50-70% priced if prices have reached acceptable levels<br>
-                        <strong>At harvest:</strong> Avoid panic selling into harvest lows if you have storage<br>
-                        <strong>Post-harvest:</strong> Set spring targets; don't hold past May-June without a plan</p>
-                    </div>
-                    
-                    <div class="source">
-                        <strong>Sources:</strong> University of Wisconsin Extension, "Seasonal Grain Price Patterns" (2024); CME Group, "Understanding Seasonality in Grains"; Farm Progress, "Historical Corn Seasonal Price Trends" (2023).
-                    </div>
-                    
-                    <div class="related-tools">
-                        <a href="calendar.html" class="related-tool">
-                            <div class="related-tool-icon">📅</div>
-                            <div class="related-tool-name">USDA Calendar</div>
-                            <div class="related-tool-desc">Key report dates</div>
-                        </a>
-                        <a href="breakeven.html" class="related-tool">
-                            <div class="related-tool-icon">💰</div>
-                            <div class="related-tool-name">Break-Even Calculator</div>
-                            <div class="related-tool-desc">Know your target price</div>
-                        </a>
+                        <div class="info-box-title">💡 The "July 4th Rule"</div>
+                        <p>Have stored grain and pre-harvest marketing completed by July 4th.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- CHAPTER 5: STORAGE ECONOMICS -->
             <div class="chapter" id="storage">
-                <div class="chapter-header">
-                    <h2><span class="chapter-num">CH 5</span> Storage Economics — Does It Pay?</h2>
-                </div>
+                <div class="chapter-header"><h2><span class="chapter-num">CH 5</span> Storage Economics</h2></div>
                 <div class="chapter-body">
-                    
-                    <p><strong>Storage is a marketing tool, not a guarantee of higher prices.</strong> The decision to store grain should be based on economics — comparing expected price gains against the costs of holding grain. According to Purdue University research, "historic returns above costs for corn storage have been in the range of $0.00 to $0.10 per bushel on average" — meaning storage works, but margins are thin.</p>
-                    
-                    <h3 class="section-head">The True Cost of Storage</h3>
-                    
-                    <p>Iowa State Extension identifies several cost components that farmers often underestimate:</p>
-                    
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Cost Component</th>
-                                <th>Typical Range</th>
-                                <th>Notes</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Interest on grain value</strong></td>
-                                <td>2-5¢/bu/month</td>
-                                <td>At $4.50 corn & 8% rate = ~3¢/month</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Shrink (moisture loss)</strong></td>
-                                <td>0.5-1%</td>
-                                <td>~2-4.5¢/bu at $4.50 corn</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Extra drying</strong></td>
-                                <td>8-15¢/bu</td>
-                                <td>Drying from 18% to 14% moisture</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Handling (in/out)</strong></td>
-                                <td>2-3¢/bu</td>
-                                <td>Higher for flat storage</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Aeration/conditioning</strong></td>
-                                <td>0.2-0.5¢/bu</td>
-                                <td>Electricity for fans</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Quality risk</strong></td>
-                                <td>Variable</td>
-                                <td>Spoilage, insects, mold — hard to quantify</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    <div class="formula-box">
-                        <div class="formula">Total 6-Month Storage Cost ≈ 15-25¢/bu (on-farm) or 25-35¢/bu (commercial)</div>
-                        <div class="formula-note">Interest costs increase significantly when rates are high — at 10% interest, add another 5-8¢</div>
-                    </div>
-                    
-                    <h3 class="section-head">Interest: The Hidden Killer</h3>
-                    
-                    <p>With elevated interest rates, the cost of tying up capital in stored grain has increased dramatically. University of Kentucky research calculates the impact:</p>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Example: Interest Cost at Different Rates</div>
-                        <p>Corn at $4.50/bu stored for 5 months:</p>
-                        <div class="example-calc">
-                            At 4% interest: $4.50 × 4% × (5/12) = <strong>$0.08/bu</strong><br>
-                            At 8% interest: $4.50 × 8% × (5/12) = <strong>$0.15/bu</strong><br>
-                            At 10% interest: $4.50 × 10% × (5/12) = <strong>$0.19/bu</strong>
-                        </div>
-                        <p>A 6% increase in interest rates adds <strong>11¢/bu</strong> to storage costs — potentially wiping out any basis improvement.</p>
-                    </div>
-                    
-                    <h3 class="section-head">Commercial vs. On-Farm Storage Costs</h3>
-                    
-                    <p>Iowa State Extension provides typical commercial storage rates:</p>
-                    
-                    <ul>
-                        <li><strong>First 3 months:</strong> 9-16¢/bu flat charge</li>
-                        <li><strong>Additional months:</strong> 2-4¢/bu per month</li>
-                        <li><strong>6-month total:</strong> 15-28¢/bu (plus interest on your capital)</li>
-                    </ul>
-                    
-                    <p>On-farm storage is typically cheaper because you're not paying the elevator's margin — but you assume all quality risk and must account for fixed ownership costs (depreciation, insurance) if evaluating a new bin investment.</p>
-                    
-                    <h3 class="section-head">What Return Should You Expect?</h3>
-                    
-                    <p>Purdue's research on Indiana storage returns provides realistic expectations:</p>
-                    
+                    <p><strong>Storage is a marketing tool, not a guarantee of higher prices.</strong></p>
+                    <h3 class="section-head">True Cost of Storage</h3>
                     <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-label">On-Farm Storage</div>
-                            <div class="stat-value">50%</div>
-                            <div class="stat-note">Odds of positive return above costs</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Avg Return (good years)</div>
-                            <div class="stat-value green">5-15¢</div>
-                            <div class="stat-note">per bushel above all costs</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Optimal Sale Window</div>
-                            <div class="stat-value">Feb-Apr</div>
-                            <div class="stat-note">Historically best returns</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Summer Returns</div>
-                            <div class="stat-value red">Drop</div>
-                            <div class="stat-note">Costs accumulate, prices often flat</div>
-                        </div>
+                        <div class="stat-card"><div class="stat-label">Interest</div><div class="stat-value">2-5¢</div><div style="font-size:0.7rem;color:var(--dim)">/bu/month</div></div>
+                        <div class="stat-card"><div class="stat-label">Shrink</div><div class="stat-value">0.5-1%</div></div>
+                        <div class="stat-card"><div class="stat-label">Drying</div><div class="stat-value">8-15¢</div><div style="font-size:0.7rem;color:var(--dim)">/bu</div></div>
+                        <div class="stat-card"><div class="stat-label">6-Mo Total</div><div class="stat-value">15-25¢</div><div style="font-size:0.7rem;color:var(--dim)">/bu on-farm</div></div>
                     </div>
-                    
-                    <p><strong>Key finding:</strong> Storage returns drop sharply after April/May as storage costs continue accumulating while prices often flatten or decline into summer. "How sharply storage returns drop into the summer for commercial storage" is a critical observation from Purdue's research.</p>
-                    
                     <h3 class="section-head">Reading the "Carry" Signal</h3>
-                    
-                    <p>The futures market gives you a signal about whether storage will pay — the "carry" between contract months:</p>
-                    
                     <div class="formula-box">
-                        <div class="formula">Carry = Deferred Futures Price − Nearby Futures Price</div>
-                        <div class="formula-note">Example: July corn at $4.60, December corn at $4.75 = 15¢ carry</div>
-                    </div>
-                    
-                    <p>University of Wisconsin Extension explains what carry tells you:</p>
-                    
-                    <ul>
-                        <li><strong>Strong carry (15-25¢+):</strong> Market is paying for storage; supplies are ample; consider storing</li>
-                        <li><strong>Weak carry (5-10¢):</strong> Market offers little incentive to store; may not cover costs</li>
-                        <li><strong>Inverted (negative):</strong> Nearby prices higher than deferred; market wants grain NOW — sell immediately</li>
-                    </ul>
-                    
-                    <div class="info-box warning">
-                        <div class="info-box-title">⚠️ Carry Doesn't Guarantee Profits</div>
-                        <p>A 20¢ carry between December and July doesn't mean you'll make 20¢ by storing. You capture carry through basis improvement, but futures prices may fall, offsetting basis gains. The carry signal is about storage incentive, not guaranteed return.</p>
-                    </div>
-                    
-                    <h3 class="section-head">Storage Hedging: Locking In the Carry</h3>
-                    
-                    <p>To actually capture carry without speculating on futures direction, you can use a "storage hedge":</p>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Example: Storage Hedge</div>
-                        <p><strong>At harvest (October):</strong> You store 10,000 bu. December futures = $4.50, July futures = $4.70 (20¢ carry)</p>
-                        <p><strong>Action:</strong> SELL December futures at $4.50 (you're now hedged)</p>
-                        <p><strong>Later (December):</strong> "Roll" hedge by buying back December at $4.40, selling July at $4.60</p>
-                        <p><strong>In spring (May):</strong> Sell cash corn, buy back July futures</p>
-                        <div class="example-calc">
-                            Result: You captured the basis improvement from harvest to spring, regardless of where absolute prices went. Your return = basis gain − storage costs.
-                        </div>
-                    </div>
-                    
-                    <p>This strategy is best executed through your elevator's HTA contract with rolling provisions, rather than trading futures directly.</p>
-                    
-                    <h3 class="section-head">Decision Framework: Store or Sell?</h3>
-                    
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Condition</th>
-                                <th>Recommendation</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Strong carry (15¢+), low interest rates</td>
-                                <td class="highlight" style="color:var(--green)">Storage likely profitable — consider storing</td>
-                            </tr>
-                            <tr>
-                                <td>Weak carry (<10¢), high interest rates</td>
-                                <td class="highlight" style="color:var(--red)">Storage unlikely to pay — sell or forward contract</td>
-                            </tr>
-                            <tr>
-                                <td>Inverted market (nearby > deferred)</td>
-                                <td class="highlight" style="color:var(--red)">Sell immediately — market paying premium for now</td>
-                            </tr>
-                            <tr>
-                                <td>Strong carry but poor quality grain</td>
-                                <td>Sell now — quality will deteriorate further in storage</td>
-                            </tr>
-                            <tr>
-                                <td>Cash flow pressure</td>
-                                <td>Sell enough to meet obligations; store remainder if economics support</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    <div class="source">
-                        <strong>Sources:</strong> Iowa State Extension Ag Decision Maker, "Cost of Storing Grain" (A2-33); Purdue University, "Corn Storage Returns: Implications for Storage and Pricing Decisions" (2020); University of Kentucky Extension, "Interest Rates and Grain Storage" (2023); University of Wisconsin Extension, "Understanding Basis in Grain Marketing."
-                    </div>
-                    
-                    <div class="related-tools">
-                        <a href="calculator.html" class="related-tool">
-                            <div class="related-tool-icon">🌾</div>
-                            <div class="related-tool-name">Grain Bin Calculator</div>
-                            <div class="related-tool-desc">Calculate bin capacity</div>
-                        </a>
-                        <a href="corn-prices.html" class="related-tool">
-                            <div class="related-tool-icon">📈</div>
-                            <div class="related-tool-name">Live Prices</div>
-                            <div class="related-tool-desc">Check current carry spread</div>
-                        </a>
+                        <div class="formula">Carry = Deferred Futures − Nearby Futures</div>
+                        <div class="formula-note">Strong carry (15¢+) = market paying for storage</div>
                     </div>
                 </div>
             </div>
 
-            <!-- CHAPTER 6: USDA REPORTS -->
             <div class="chapter" id="usda-reports">
-                <div class="chapter-header">
-                    <h2><span class="chapter-num">CH 6</span> Reading USDA Reports — What Moves Markets</h2>
-                </div>
+                <div class="chapter-header"><h2><span class="chapter-num">CH 6</span> Reading USDA Reports</h2></div>
                 <div class="chapter-body">
-                    
-                    <p><strong>USDA reports are the single biggest market movers in agriculture.</strong> According to CME Group, "when WASDE reports differ from polling expectation, the market responds: lower-than-expected ending stocks are bullish for futures prices, while larger-than-expected ending stocks are bearish." Understanding which reports matter — and what to look for — can help you anticipate market reactions and time your marketing decisions.</p>
-                    
-                    <h3 class="section-head">The Big Five: Reports That Move Markets</h3>
-                    
+                    <p><strong>USDA reports are the single biggest market movers.</strong></p>
+                    <h3 class="section-head">The Big Five Reports</h3>
                     <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Report</th>
-                                <th>Release</th>
-                                <th>What It Contains</th>
-                                <th>Market Impact</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Report</th><th>When</th><th>Impact</th></tr></thead>
                         <tbody>
-                            <tr>
-                                <td><strong>WASDE</strong></td>
-                                <td>Monthly (around 12th)</td>
-                                <td>Supply/demand balance sheets; ending stocks</td>
-                                <td class="highlight" style="color:var(--accent)">HIGHEST — Most important regular report</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Prospective Plantings</strong></td>
-                                <td>Late March (once/year)</td>
-                                <td>Intended planted acres for coming year</td>
-                                <td class="highlight" style="color:var(--accent)">HIGHEST — Sets year's supply expectations</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Acreage</strong></td>
-                                <td>Late June (once/year)</td>
-                                <td>Actual planted acres; updates March intentions</td>
-                                <td class="highlight">HIGH — Confirms or surprises from March</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Grain Stocks</strong></td>
-                                <td>Quarterly (Jan, Mar, Jun, Sep)</td>
-                                <td>Actual stocks on-farm and commercial</td>
-                                <td class="highlight">HIGH — Reality check on demand estimates</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Crop Progress</strong></td>
-                                <td>Weekly (Apr-Nov)</td>
-                                <td>Planting/harvest progress; crop conditions</td>
-                                <td>MODERATE — Cumulative impact over season</td>
-                            </tr>
+                            <tr><td><strong>WASDE</strong></td><td>Monthly</td><td class="highlight">HIGHEST</td></tr>
+                            <tr><td><strong>Prospective Plantings</strong></td><td>Late March</td><td class="highlight">HIGHEST</td></tr>
+                            <tr><td><strong>Acreage</strong></td><td>Late June</td><td>HIGH</td></tr>
+                            <tr><td><strong>Grain Stocks</strong></td><td>Quarterly</td><td>HIGH</td></tr>
+                            <tr><td><strong>Crop Progress</strong></td><td>Weekly</td><td>MODERATE</td></tr>
                         </tbody>
                     </table>
-                    
-                    <h3 class="section-head">Understanding the WASDE Report</h3>
-                    
-                    <p>The World Agricultural Supply and Demand Estimates (WASDE) is released monthly by USDA's World Agricultural Outlook Board. It's the most comprehensive and market-moving regular report. Here's what to focus on:</p>
-                    
-                    <h4 class="subsection-head">The Balance Sheet Structure</h4>
-                    
-                    <div class="formula-box">
-                        <div class="formula">Beginning Stocks + Production + Imports = Total Supply</div>
-                        <div class="formula-note">Supply side of the equation</div>
-                    </div>
-                    
-                    <div class="formula-box">
-                        <div class="formula">Feed Use + Food/Seed/Industrial + Exports = Total Demand</div>
-                        <div class="formula-note">Demand side of the equation</div>
-                    </div>
-                    
-                    <div class="formula-box">
-                        <div class="formula">Total Supply − Total Demand = Ending Stocks</div>
-                        <div class="formula-note">THE KEY NUMBER — this is what markets react to most</div>
-                    </div>
-                    
-                    <h4 class="subsection-head">Ending Stocks: Why It Matters Most</h4>
-                    
-                    <p>Ending stocks (or "carryout") represents the cushion between supply and demand. Markets watch two key metrics:</p>
-                    
-                    <ul>
-                        <li><strong>Absolute ending stocks:</strong> Billion-bushel levels for corn (e.g., 1.5 billion vs. 2.2 billion)</li>
-                        <li><strong>Stocks-to-use ratio:</strong> Ending stocks ÷ total use — expressed as a percentage or "days of supply"</li>
-                    </ul>
-                    
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-label">Corn S/U Ratio</div>
-                            <div class="stat-value red">&lt;10%</div>
-                            <div class="stat-note">Tight supplies — bullish</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Corn S/U Ratio</div>
-                            <div class="stat-value">10-14%</div>
-                            <div class="stat-note">Adequate — neutral</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Corn S/U Ratio</div>
-                            <div class="stat-value green">&gt;15%</div>
-                            <div class="stat-note">Burdensome — bearish</div>
-                        </div>
-                    </div>
-                    
-                    <h3 class="section-head">WASDE Calendar: Which Months Matter Most?</h3>
-                    
-                    <p>Not all WASDE reports are equally important. CME Group identifies the key months:</p>
-                    
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Month</th>
-                                <th>Significance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>May</strong></td>
-                                <td class="highlight" style="color:var(--accent)">First new-crop supply/demand estimates — highly anticipated</td>
-                            </tr>
-                            <tr>
-                                <td><strong>August</strong></td>
-                                <td class="highlight" style="color:var(--accent)">First survey-based yield estimate for corn/soybeans</td>
-                            </tr>
-                            <tr>
-                                <td><strong>September</strong></td>
-                                <td class="highlight">Updated yield estimates as harvest begins</td>
-                            </tr>
-                            <tr>
-                                <td><strong>October</strong></td>
-                                <td>Corn production typically finalized</td>
-                            </tr>
-                            <tr>
-                                <td><strong>November</strong></td>
-                                <td>Soybean production typically finalized</td>
-                            </tr>
-                            <tr>
-                                <td><strong>January</strong></td>
-                                <td class="highlight">Final production numbers; first look at demand adjustments</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    <h3 class="section-head">Prospective Plantings & Acreage: The Acre Battle</h3>
-                    
-                    <p>These two reports — released in late March and late June — can cause massive single-day price moves:</p>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Example: 2023 Acreage Report Impact</div>
-                        <p>On June 30, 2023, the Acreage report showed corn acres exceeding analyst expectations.</p>
-                        <div class="example-calc">
-                            December corn futures fell <strong>6.39%</strong> in one day<br>
-                            From 532¢ open to 494'6 close — a <strong>37.5¢ drop</strong>
-                        </div>
-                        <p>Conversely, soybean acres came in below expectations, sending November soybean futures up <strong>77¢/bu</strong> that same day.</p>
-                    </div>
-                    
-                    <p>The lesson: these reports can make or break your marketing plan if you're not positioned. Consider having some production priced before these release dates to reduce risk.</p>
-                    
-                    <h3 class="section-head">Reading Crop Progress Reports</h3>
-                    
-                    <p>Released weekly during the growing season, Crop Progress reports provide condition ratings that can signal yield potential:</p>
-                    
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Condition Rating</th>
-                                <th>Typical Yield Implication</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Good/Excellent &gt;70%</strong></td>
-                                <td>Above-trend yields likely — bearish for prices</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Good/Excellent 60-70%</strong></td>
-                                <td>Trend yields likely — neutral</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Good/Excellent &lt;60%</strong></td>
-                                <td>Below-trend yields likely — bullish for prices</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Good/Excellent &lt;50%</strong></td>
-                                <td>Significant crop stress — strongly bullish</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    <p>Watch for week-over-week changes, especially during critical growth stages (June pollination for corn, August pod-fill for soybeans). A 5%+ weekly decline in Good/Excellent ratings often triggers price rallies.</p>
-                    
-                    <h3 class="section-head">How to Use Reports in Your Marketing</h3>
-                    
-                    <div class="info-box success">
-                        <div class="info-box-title">✅ Practical Report Strategy</div>
-                        <p><strong>Before major reports:</strong> Don't make significant pricing decisions the day before WASDE, Prospective Plantings, or Acreage releases<br>
-                        <strong>Have a plan:</strong> Know your price targets BEFORE the report — don't react emotionally<br>
-                        <strong>Watch pre-report estimates:</strong> If market expects bearish numbers and gets them, the reaction may be muted<br>
-                        <strong>Consider the trend:</strong> One report rarely reverses a major trend — use reports as opportunities, not signals<br>
-                        <strong>Price in stages:</strong> Use report-driven rallies to price additional bushels toward your targets</p>
-                    </div>
-                    
-                    <h3 class="section-head">2026 USDA Report Calendar</h3>
-                    
-                    <p>Key dates for 2026 (reports typically released at 11:00 AM Central):</p>
-                    
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Report</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>January 12</td><td>WASDE, Crop Production, Grain Stocks</td></tr>
-                            <tr><td>February 10</td><td>WASDE</td></tr>
-                            <tr><td>March 10</td><td>WASDE</td></tr>
-                            <tr><td>March 31</td><td class="highlight">Prospective Plantings, Grain Stocks</td></tr>
-                            <tr><td>April 9</td><td>WASDE</td></tr>
-                            <tr><td>May 12</td><td class="highlight">WASDE (first new-crop estimates)</td></tr>
-                            <tr><td>June 11</td><td>WASDE</td></tr>
-                            <tr><td>June 30</td><td class="highlight">Acreage, Grain Stocks</td></tr>
-                            <tr><td>July 10</td><td>WASDE</td></tr>
-                            <tr><td>August 12</td><td class="highlight">WASDE (first yield estimates), Crop Production</td></tr>
-                            <tr><td>September 11</td><td>WASDE, Crop Production, Grain Stocks</td></tr>
-                            <tr><td>October 9</td><td>WASDE, Crop Production</td></tr>
-                            <tr><td>November 10</td><td>WASDE, Crop Production</td></tr>
-                            <tr><td>December 10</td><td>WASDE, Crop Production</td></tr>
-                        </tbody>
-                    </table>
-                    
-                    <div class="source">
-                        <strong>Sources:</strong> USDA, "WASDE Report" (2026); CME Group, "Understanding Major USDA Reports for Grains and Oilseed Markets" (2025); Britannica Money, "USDA Reports: Understanding the WASDE Report."
-                    </div>
-                    
-                    <div class="related-tools">
-                        <a href="calendar.html" class="related-tool">
-                            <div class="related-tool-icon">📅</div>
-                            <div class="related-tool-name">Full USDA Calendar</div>
-                            <div class="related-tool-desc">All report dates</div>
-                        </a>
-                        <a href="corn-prices.html" class="related-tool">
-                            <div class="related-tool-icon">📈</div>
-                            <div class="related-tool-name">Live Prices</div>
-                            <div class="related-tool-desc">Watch market reactions</div>
-                        </a>
-                    </div>
                 </div>
             </div>
 
-            <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
-            <!-- PART 3: RISK MANAGEMENT -->
-            <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
-            
-            <div style="background:var(--accent);color:black;padding:12px 20px;border-radius:8px;margin-bottom:24px;font-weight:600">
-                🛡️ PART 3: RISK MANAGEMENT
-            </div>
+            <div style="background:var(--accent);color:black;padding:12px 20px;border-radius:8px;margin-bottom:24px;font-weight:600">🛡️ PART 3: RISK MANAGEMENT</div>
 
-            <!-- CHAPTER 7: CROP INSURANCE -->
             <div class="chapter" id="crop-insurance">
-                <div class="chapter-header">
-                    <h2><span class="chapter-num">CH 7</span> Crop Insurance — YP vs RP Explained</h2>
-                </div>
+                <div class="chapter-header"><h2><span class="chapter-num">CH 7</span> Crop Insurance — YP vs RP</h2></div>
                 <div class="chapter-body">
-                    
-                    <p><strong>Crop insurance is the foundation of farm risk management.</strong> According to University of Illinois' farmdoc, Revenue Protection (RP) is used on over 90% of insured corn, soybean, and wheat acres — making it the dominant choice for Midwest grain farmers. But is it the right choice for YOUR operation? Understanding the differences between Yield Protection (YP) and Revenue Protection (RP) can save you thousands in premiums — or prevent catastrophic losses.</p>
-                    
-                    <h3 class="section-head">The Two Main Products: YP vs RP</h3>
-                    
+                    <p><strong>Revenue Protection (RP) is used on over 90% of insured acres.</strong></p>
+                    <h3 class="section-head">YP vs RP Comparison</h3>
                     <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Feature</th>
-                                <th>Yield Protection (YP)</th>
-                                <th>Revenue Protection (RP)</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Feature</th><th>Yield Protection</th><th>Revenue Protection</th></tr></thead>
                         <tbody>
-                            <tr>
-                                <td><strong>What it protects</strong></td>
-                                <td>Bushels (yield only)</td>
-                                <td>Dollars (revenue = yield × price)</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Price used</strong></td>
-                                <td>Projected price only</td>
-                                <td>Higher of projected OR harvest price</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Pays if...</strong></td>
-                                <td>Yield drops below guarantee</td>
-                                <td>Revenue drops below guarantee (yield OR price)</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Premium cost</strong></td>
-                                <td class="highlight" style="color:var(--green)">Lower (10-30% less)</td>
-                                <td>Higher</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Price protection</strong></td>
-                                <td class="highlight" style="color:var(--red)">None</td>
-                                <td class="highlight" style="color:var(--green)">Yes — guarantee can increase</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Best for</strong></td>
-                                <td>Tight budgets; price-confident producers</td>
-                                <td>Most farmers; forward contractors</td>
-                            </tr>
+                            <tr><td>Protects</td><td>Bushels only</td><td>Revenue (yield × price)</td></tr>
+                            <tr><td>Price Used</td><td>Projected only</td><td>Higher of projected OR harvest</td></tr>
+                            <tr><td>Premium</td><td class="highlight" style="color:var(--green)">Lower</td><td>Higher (10-15% more)</td></tr>
+                            <tr><td>Price Protection</td><td style="color:var(--red)">None</td><td class="highlight" style="color:var(--green)">Yes</td></tr>
                         </tbody>
                     </table>
-                    
-                    <h3 class="section-head">How the Guarantees Are Calculated</h3>
-                    
-                    <h4 class="subsection-head">Yield Protection (YP)</h4>
-                    
-                    <div class="formula-box">
-                        <div class="formula">YP Guarantee = APH Yield × Coverage Level × Projected Price</div>
-                        <div class="formula-note">Example: 180 bu/ac APH × 80% × $4.66 = $671.04/acre guarantee</div>
-                    </div>
-                    
-                    <p>With YP, your indemnity is calculated by comparing actual yield to your guaranteed yield, then multiplying the shortfall by the <strong>projected price</strong> (set in February). YP does NOT use the harvest price.</p>
-                    
-                    <h4 class="subsection-head">Revenue Protection (RP)</h4>
-                    
-                    <div class="formula-box">
-                        <div class="formula">RP Guarantee = APH Yield × Coverage Level × MAX(Projected Price, Harvest Price)</div>
-                        <div class="formula-note">Example: If harvest price rises to $5.20, guarantee becomes 180 × 80% × $5.20 = $748.80/acre</div>
-                    </div>
-                    
-                    <p>With RP, your guarantee can <strong>increase</strong> if harvest prices are higher than projected prices. This is the key advantage — and why RP is so popular among farmers who forward contract.</p>
-                    
-                    <h3 class="section-head">Side-by-Side Comparison: 3 Scenarios</h3>
-                    
-                    <p>Let's compare YP and RP under different harvest outcomes. Assumptions: APH = 180 bu/ac, Coverage = 80%, Projected Price = $4.50</p>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Scenario 1: Low Yield, Price Unchanged</div>
-                        <p><strong>Actual yield:</strong> 130 bu/ac | <strong>Harvest price:</strong> $4.50</p>
-                        <div class="example-calc">
-                            <strong>YP:</strong> Guarantee = 144 bu × $4.50 = $648. Actual = 130 × $4.50 = $585. Loss = <strong>$63/acre</strong><br>
-                            <strong>RP:</strong> Same calculation = <strong>$63/acre</strong>
-                        </div>
-                        <p>Result: <strong>Same payment</strong> — both products perform identically when prices don't change.</p>
-                    </div>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Scenario 2: Low Yield, Price Drops</div>
-                        <p><strong>Actual yield:</strong> 130 bu/ac | <strong>Harvest price:</strong> $3.80</p>
-                        <div class="example-calc">
-                            <strong>YP:</strong> Guarantee = 144 bu × $4.50 = $648. Actual = 130 × $4.50 = $585. Loss = <strong>$63/acre</strong><br>
-                            <strong>RP:</strong> Guarantee = 144 bu × $4.50 = $648. Actual = 130 × $3.80 = $494. Loss = <strong>$154/acre</strong>
-                        </div>
-                        <p>Result: <strong>RP pays $91/acre MORE</strong> because it protects against both the yield loss AND the price decline.</p>
-                    </div>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Scenario 3: Low Yield, Price Rises</div>
-                        <p><strong>Actual yield:</strong> 130 bu/ac | <strong>Harvest price:</strong> $5.50</p>
-                        <div class="example-calc">
-                            <strong>YP:</strong> Guarantee = 144 bu × $4.50 = $648. Actual = 130 × $4.50 = $585. Loss = <strong>$63/acre</strong><br>
-                            <strong>RP:</strong> Guarantee = 144 bu × $5.50 = $792. Actual = 130 × $5.50 = $715. Loss = <strong>$77/acre</strong>
-                        </div>
-                        <p>Result: <strong>RP pays $14/acre MORE</strong> because the guarantee increased with the higher harvest price.</p>
-                    </div>
-                    
-                    <div class="info-box success">
-                        <div class="info-box-title">✅ Why RP Matters for Forward Contractors</div>
-                        <p>If you forward contract grain and then have a short crop, you must buy bushels at market price to fulfill your contract. If prices have risen, RP's increased guarantee helps offset that cost. Iowa State Extension calls this "especially useful for producers who normally forward price much of their production before harvest."</p>
-                    </div>
-                    
-                    <h3 class="section-head">What About RP-HPE?</h3>
-                    
-                    <p>Revenue Protection with Harvest Price Exclusion (RP-HPE) is a middle-ground option:</p>
-                    
-                    <ul>
-                        <li>Provides revenue protection (price × yield)</li>
-                        <li>But the guarantee does NOT increase if harvest price exceeds projected price</li>
-                        <li>Premium is lower than RP but higher than YP</li>
-                        <li>Best for: Producers who don't forward contract and want revenue protection at lower cost</li>
-                    </ul>
-                    
-                    <h3 class="section-head">Coverage Levels: How Much to Buy?</h3>
-                    
-                    <p>Coverage levels range from 50% to 85% (some areas offer higher). The trade-off is simple: higher coverage = more protection = higher premium.</p>
-                    
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Coverage Level</th>
-                                <th>Premium Subsidy</th>
-                                <th>Your Share</th>
-                                <th>Typical Use</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>50% (CAT)</td>
-                                <td>100%</td>
-                                <td>$0 + admin fee</td>
-                                <td>Minimum protection; FSA requirement</td>
-                            </tr>
-                            <tr>
-                                <td>65%</td>
-                                <td>59%</td>
-                                <td>41%</td>
-                                <td>Budget-conscious; lower-risk areas</td>
-                            </tr>
-                            <tr>
-                                <td>75%</td>
-                                <td>55%</td>
-                                <td>45%</td>
-                                <td>Moderate protection</td>
-                            </tr>
-                            <tr>
-                                <td class="highlight">80%</td>
-                                <td>48%</td>
-                                <td>52%</td>
-                                <td class="highlight">Most common choice</td>
-                            </tr>
-                            <tr>
-                                <td>85%</td>
-                                <td>38%</td>
-                                <td>62%</td>
-                                <td>Maximum individual protection</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    <p><strong>Enterprise Units</strong> (combining all acres of a crop in a county) typically receive higher subsidies and lower premiums than Optional Units (separate coverage per farm/section). Most farmers use enterprise units for cost savings.</p>
-                    
-                    <h3 class="section-head">Key Dates for 2026</h3>
-                    
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Event</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>March 15</strong></td>
-                                <td>Sales closing date (deadline to buy/change policy) — Corn, Soybeans</td>
-                            </tr>
-                            <tr>
-                                <td><strong>February</strong></td>
-                                <td>Projected price discovery period (average of daily futures)</td>
-                            </tr>
-                            <tr>
-                                <td><strong>October</strong></td>
-                                <td>Harvest price discovery period — Corn, Soybeans</td>
-                            </tr>
-                            <tr>
-                                <td><strong>November 30</strong></td>
-                                <td>Acreage reporting deadline</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    <h3 class="section-head">Which Should You Choose?</h3>
-                    
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Your Situation</th>
-                                <th>Recommendation</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Forward contract significant production before harvest</td>
-                                <td class="highlight" style="color:var(--accent)"><strong>RP</strong> — Need harvest price protection</td>
-                            </tr>
-                            <tr>
-                                <td>Carry operating debt; need maximum protection</td>
-                                <td class="highlight" style="color:var(--accent)"><strong>RP at 80-85%</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Strong balance sheet; confident in marketing</td>
-                                <td><strong>YP or RP-HPE</strong> — Save on premium</td>
-                            </tr>
-                            <tr>
-                                <td>New/beginning farmer</td>
-                                <td class="highlight" style="color:var(--accent)"><strong>RP</strong> — Use extra 10% subsidy discount</td>
-                            </tr>
-                            <tr>
-                                <td>Livestock feeder (may need to buy grain)</td>
-                                <td class="highlight" style="color:var(--accent)"><strong>RP</strong> — Covers replacement cost in short crop year</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
                     <div class="info-box">
-                        <div class="info-box-title">💡 Bottom Line</div>
-                        <p>For most Upper Midwest grain farmers, <strong>Revenue Protection at 80% coverage with enterprise units</strong> is the standard recommendation. The extra premium over YP (typically 10-15%) buys critical price protection that can be worth tens of thousands of dollars in a year when both yields and prices drop — the "double-whammy" scenario that has bankrupted many farms.</p>
-                    </div>
-                    
-                    <div class="source">
-                        <strong>Sources:</strong> Iowa State Extension Ag Decision Maker, "Current Crop Insurance Policies" (A1-48); "Revenue Protection Crop Insurance" (A1-54); farmdoc daily, "Revenue Protection: The Most Used Crop Insurance Product" (2020); USDA RMA, Actuarial Documents.
-                    </div>
-                    
-                    <div class="related-tools">
-                        <a href="breakeven.html" class="related-tool">
-                            <div class="related-tool-icon">💰</div>
-                            <div class="related-tool-name">Break-Even Calculator</div>
-                            <div class="related-tool-desc">Include insurance in your costs</div>
-                        </a>
-                        <a href="https://farmers1st.com" class="related-tool" target="_blank">
-                            <div class="related-tool-icon">🌾</div>
-                            <div class="related-tool-name">Get a Quote</div>
-                            <div class="related-tool-desc">Farmers First crop insurance</div>
-                        </a>
+                        <div class="info-box-title">✅ Bottom Line</div>
+                        <p><strong>Revenue Protection at 80% coverage</strong> is the standard recommendation for most grain farmers.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- CHAPTER 8: HEDGING STRATEGIES -->
             <div class="chapter" id="hedging">
-                <div class="chapter-header">
-                    <h2><span class="chapter-num">CH 8</span> Hedging Strategies — Protecting Your Price</h2>
-                </div>
+                <div class="chapter-header"><h2><span class="chapter-num">CH 8</span> Hedging Strategies</h2></div>
                 <div class="chapter-body">
-                    
-                    <p><strong>Hedging is about reducing risk, not maximizing profit.</strong> While speculators try to predict market direction, hedgers use futures and options to lock in acceptable prices and reduce uncertainty. For farmers, the goal isn't to "beat the market" — it's to ensure profitability regardless of where prices go.</p>
-                    
-                    <h3 class="section-head">The Three Hedging Tools</h3>
-                    
-                    <div class="contract-grid">
-                        <div class="contract-card">
-                            <div class="contract-card-title">📉 Short Futures Hedge</div>
-                            <p>Sell futures contracts to lock in a price. Obligates delivery or offset. Full downside protection, but gives up all upside.</p>
-                            <div class="locks">
-                                <span class="locked">Price Floor: YES</span>
-                                <span class="locked">Price Ceiling: YES</span>
-                            </div>
-                        </div>
-                        
-                        <div class="contract-card">
-                            <div class="contract-card-title">🛡️ Put Options</div>
-                            <p>Buy the right (not obligation) to sell at strike price. Pay premium upfront. Full downside protection AND keep upside potential.</p>
-                            <div class="locks">
-                                <span class="locked">Price Floor: YES</span>
-                                <span class="open">Upside: UNLIMITED</span>
-                            </div>
-                        </div>
-                        
-                        <div class="contract-card">
-                            <div class="contract-card-title">🔄 Fence/Collar</div>
-                            <p>Buy put + sell call. Put provides floor; call premium offsets put cost. Limited upside, but lower net cost than puts alone.</p>
-                            <div class="locks">
-                                <span class="locked">Price Floor: YES</span>
-                                <span class="locked">Price Ceiling: YES (chosen)</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <h3 class="section-head">Strategy #1: Short Futures Hedge</h3>
-                    
-                    <p>The most straightforward hedge: sell futures contracts equal to your expected production. This locks in the futures price component.</p>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Example: Short Hedge on 25,000 Bushels</div>
-                        <p><strong>May:</strong> December corn futures = $4.80. You're comfortable with this price.</p>
-                        <p><strong>Action:</strong> SELL 5 December corn contracts (5 × 5,000 = 25,000 bu) at $4.80</p>
-                        <p><strong>October:</strong> December futures have fallen to $4.20. Local cash bid = $3.95 (−25¢ basis)</p>
-                        <p><strong>Close hedge:</strong> BUY 5 December contracts at $4.20</p>
-                        <div class="example-calc">
-                            Futures gain: ($4.80 − $4.20) × 25,000 = <strong>+$15,000</strong><br>
-                            Cash sale: 25,000 × $3.95 = $98,750<br>
-                            Total received: $98,750 + $15,000 = $113,750<br>
-                            <strong>Effective price: $113,750 ÷ 25,000 = $4.55/bu</strong>
-                        </div>
-                        <p>The hedge added 60¢/bu to your realized price vs. selling unhedged at $3.95.</p>
-                    </div>
-                    
-                    <div class="info-box warning">
-                        <div class="info-box-title">⚠️ Margin Risk</div>
-                        <p>If prices RISE after you sell futures, you'll face margin calls requiring immediate cash deposits — even though your physical crop is worth more. A $1.00/bu move against 5 contracts = $25,000 margin call. Many farmers prefer elevator contracts (forward, HTA) to avoid this cash flow stress.</p>
-                    </div>
-                    
-                    <h3 class="section-head">Strategy #2: Put Options — Floor with Upside</h3>
-                    
-                    <p>Put options give you the RIGHT (not obligation) to sell futures at a specific "strike price." You pay a premium upfront, but keep unlimited upside potential.</p>
-                    
-                    <div class="formula-box">
-                        <div class="formula">Minimum Price = Strike Price − Premium − Expected Basis</div>
-                        <div class="formula-note">Example: $4.50 strike − 25¢ premium − 30¢ basis = $3.95/bu floor</div>
-                    </div>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Example: Put Option Protection</div>
-                        <p><strong>May:</strong> December corn futures = $4.80. You buy a $4.50 put option for 25¢/bu premium.</p>
-                        <p><strong>Scenario A — Prices fall to $4.00:</strong></p>
-                        <div class="example-calc">
-                            Put value: $4.50 − $4.00 = $0.50 intrinsic value<br>
-                            Net after premium: $0.50 − $0.25 = $0.25 gain<br>
-                            Cash price: $3.75 (−25¢ basis) + $0.25 put gain = <strong>$4.00/bu effective</strong>
-                        </div>
-                        <p><strong>Scenario B — Prices rise to $5.50:</strong></p>
-                        <div class="example-calc">
-                            Put expires worthless (you wouldn't exercise right to sell at $4.50 when market is $5.50)<br>
-                            Cash price: $5.25 (−25¢ basis) − $0.25 premium = <strong>$5.00/bu effective</strong>
-                        </div>
-                        <p>The put cost you 25¢ in premium, but you kept the upside when prices rallied.</p>
-                    </div>
-                    
-                    <h3 class="section-head">Strategy #3: Fence (Collar)</h3>
-                    
-                    <p>A fence combines buying a put (floor) with selling a call (ceiling). The call premium received offsets part or all of the put premium cost.</p>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Example: Zero-Cost Fence</div>
-                        <p><strong>May:</strong> December corn = $4.80</p>
-                        <p>Buy $4.50 put for 25¢ (pays if prices fall below $4.50)</p>
-                        <p>Sell $5.20 call for 25¢ (obligates you if prices exceed $5.20)</p>
-                        <p><strong>Net premium: $0</strong> (25¢ paid − 25¢ received)</p>
-                        <div class="example-calc">
-                            <strong>Price floor:</strong> $4.50 − basis = ~$4.20-4.25/bu minimum<br>
-                            <strong>Price ceiling:</strong> $5.20 − basis = ~$4.90-4.95/bu maximum
-                        </div>
-                        <p>You've locked in a $4.20-4.95 range with zero premium cost. You give up gains above $5.20 but are protected below $4.50.</p>
-                    </div>
-                    
-                    <h3 class="section-head">Choosing a Strategy</h3>
-                    
+                    <p><strong>Hedging is about reducing risk, not maximizing profit.</strong></p>
+                    <h3 class="section-head">Three Hedging Tools</h3>
                     <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Your Situation</th>
-                                <th>Recommended Strategy</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Tool</th><th>Floor</th><th>Upside</th></tr></thead>
                         <tbody>
-                            <tr>
-                                <td>Want complete price certainty; OK giving up upside</td>
-                                <td><strong>Short futures</strong> or <strong>forward contract</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Want protection but expect prices may rally</td>
-                                <td><strong>Put options</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Want protection but can't afford put premium</td>
-                                <td><strong>Fence</strong> (sell call to pay for put)</td>
-                            </tr>
-                            <tr>
-                                <td>Already forward contracted; need production protection</td>
-                                <td><strong>Call options</strong> (cover short crop scenario)</td>
-                            </tr>
-                            <tr>
-                                <td>Want to avoid margin calls</td>
-                                <td><strong>Elevator contracts</strong> (HTA, forward, basis)</td>
-                            </tr>
+                            <tr><td><strong>Short Futures</strong></td><td>Yes</td><td>No (gives up all)</td></tr>
+                            <tr><td><strong>Put Options</strong></td><td>Yes</td><td>Yes (unlimited)</td></tr>
+                            <tr><td><strong>Fence/Collar</strong></td><td>Yes</td><td>Limited (cap)</td></tr>
                         </tbody>
                     </table>
-                    
-                    <h3 class="section-head">Important Hedging Rules</h3>
-                    
-                    <ol>
-                        <li><strong>Never hedge 100% of expected production:</strong> Yield variability means you may not have the bushels to deliver. Hedge 50-70% maximum pre-harvest.</li>
-                        
-                        <li><strong>Match contract months:</strong> Use December corn for fall-harvested corn; July for old-crop sales. Mismatched months create spread risk.</li>
-                        
-                        <li><strong>Understand basis:</strong> Hedging locks in futures, not cash price. Your final price = futures price ± basis. (See Chapter 1)</li>
-                        
-                        <li><strong>Have a plan for margin:</strong> If using futures directly, ensure you have credit lines or cash reserves to meet margin calls.</li>
-                        
-                        <li><strong>Consider crop insurance interaction:</strong> RP's harvest price protection complements hedging by covering production shortfalls at potentially higher prices.</li>
-                    </ol>
-                    
-                    <div class="info-box success">
-                        <div class="info-box-title">✅ Practical Approach for Most Farmers</div>
-                        <p><strong>Instead of trading futures/options directly</strong>, most farmers achieve similar results through elevator contracts: Forward contracts = short hedge; HTA = locks futures, open basis; Basis contracts = locks basis, open futures; Minimum price contracts = put option equivalent. These tools let you hedge without margin accounts, daily settlements, or broker relationships.</p>
-                    </div>
-                    
-                    <div class="source">
-                        <strong>Sources:</strong> CME Group, "Hedging with Agricultural Futures"; Iowa State Extension, "Introduction to Hedging Agricultural Commodities"; University of Illinois Extension, "Options Strategies for Grain Marketing."
-                    </div>
-                    
-                    <div class="related-tools">
-                        <a href="corn-prices.html" class="related-tool">
-                            <div class="related-tool-icon">📈</div>
-                            <div class="related-tool-name">Live Prices</div>
-                            <div class="related-tool-desc">Track futures to time hedges</div>
-                        </a>
-                        <a href="breakeven.html" class="related-tool">
-                            <div class="related-tool-icon">💰</div>
-                            <div class="related-tool-name">Break-Even Calculator</div>
-                            <div class="related-tool-desc">Know your hedge target</div>
-                        </a>
+                    <div class="info-box">
+                        <div class="info-box-title">✅ Practical Approach</div>
+                        <p>Most farmers achieve similar results through elevator contracts (forward, HTA, basis) without margin accounts.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
-            <!-- PART 4: FARM ECONOMICS -->
-            <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
-            
-            <div style="background:var(--accent);color:black;padding:12px 20px;border-radius:8px;margin-bottom:24px;font-weight:600">
-                🧮 PART 4: FARM ECONOMICS
-            </div>
+            <div style="background:var(--accent);color:black;padding:12px 20px;border-radius:8px;margin-bottom:24px;font-weight:600">🧮 PART 4: FARM ECONOMICS</div>
 
-            <!-- CHAPTER 9: BREAK-EVEN ANALYSIS -->
             <div class="chapter" id="breakeven">
-                <div class="chapter-header">
-                    <h2><span class="chapter-num">CH 9</span> Break-Even Analysis — Know Your Numbers</h2>
-                </div>
+                <div class="chapter-header"><h2><span class="chapter-num">CH 9</span> Break-Even Analysis</h2></div>
                 <div class="chapter-body">
-                    
-                    <p><strong>You can't market grain profitably if you don't know your costs.</strong> Break-even analysis is the foundation of every marketing decision — it tells you the minimum price you need to cover costs and stay in business. According to Purdue University's 2025 Crop Cost & Return Guide, understanding your true cost of production is "critical for making informed marketing and financial decisions."</p>
-                    
-                    <h3 class="section-head">The Break-Even Formula</h3>
-                    
+                    <p><strong>You can't market profitably if you don't know your costs.</strong></p>
                     <div class="formula-box">
-                        <div class="formula">Break-Even Price = Total Cost per Acre ÷ Expected Yield</div>
-                        <div class="formula-note">Example: $850/acre ÷ 190 bu/acre = $4.47/bu break-even</div>
+                        <div class="formula">Break-Even = Total Cost/Acre ÷ Expected Yield</div>
+                        <div class="formula-note">Example: $850/ac ÷ 190 bu/ac = $4.47/bu</div>
                     </div>
-                    
-                    <p>This simple formula hides significant complexity. The challenge is accurately calculating "Total Cost per Acre" — which includes costs many farmers overlook.</p>
-                    
-                    <h3 class="section-head">Cost Categories: Don't Miss Any</h3>
-                    
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Category</th>
-                                <th>Components</th>
-                                <th>Typical Range (Corn)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Seed</strong></td>
-                                <td>Seed cost, treatment, replant reserve</td>
-                                <td>$110-140/acre</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Fertilizer</strong></td>
-                                <td>N, P, K, lime, micronutrients, application</td>
-                                <td>$150-220/acre</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Crop Protection</strong></td>
-                                <td>Herbicides, insecticides, fungicides, application</td>
-                                <td>$50-90/acre</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Crop Insurance</strong></td>
-                                <td>Premium (your share after subsidy)</td>
-                                <td>$20-45/acre</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Drying & Storage</strong></td>
-                                <td>Propane/electric, handling, shrink</td>
-                                <td>$25-50/acre</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Interest</strong></td>
-                                <td>Operating loan interest on inputs</td>
-                                <td>$15-35/acre</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Machinery</strong></td>
-                                <td>Fuel, repairs, depreciation</td>
-                                <td>$80-130/acre</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Labor</strong></td>
-                                <td>Hired + operator labor value</td>
-                                <td>$25-50/acre</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Land</strong></td>
-                                <td>Cash rent OR ownership cost</td>
-                                <td>$150-350/acre</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Overhead</strong></td>
-                                <td>Utilities, insurance, professional fees, misc</td>
-                                <td>$20-40/acre</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    <h3 class="section-head">Variable vs. Fixed Costs</h3>
-                    
-                    <p>Understanding the difference matters for short-term vs. long-term decisions:</p>
-                    
+                    <h3 class="section-head">Typical Corn Costs (2025)</h3>
                     <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-label">Variable Costs</div>
-                            <div class="stat-value">$400-550</div>
-                            <div class="stat-note">per acre — changes with production</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Fixed Costs</div>
-                            <div class="stat-value">$250-400</div>
-                            <div class="stat-note">per acre — incurred regardless</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Total Cost</div>
-                            <div class="stat-value">$700-950</div>
-                            <div class="stat-note">per acre for corn (2025)</div>
-                        </div>
+                        <div class="stat-card"><div class="stat-label">Variable</div><div class="stat-value">$400-550</div><div style="font-size:0.7rem;color:var(--dim)">/acre</div></div>
+                        <div class="stat-card"><div class="stat-label">Fixed</div><div class="stat-value">$250-400</div><div style="font-size:0.7rem;color:var(--dim)">/acre</div></div>
+                        <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value">$700-950</div><div style="font-size:0.7rem;color:var(--dim)">/acre</div></div>
                     </div>
-                    
-                    <ul>
-                        <li><strong>Variable costs:</strong> Seed, fertilizer, chemicals, fuel, drying — costs that wouldn't occur if you didn't plant</li>
-                        <li><strong>Fixed costs:</strong> Land rent, machinery depreciation, insurance, labor — costs incurred whether you plant or not</li>
-                    </ul>
-                    
-                    <p><strong>Short-term decision:</strong> If prices only cover variable costs, you may still plant (better to lose less than lose all fixed costs). <strong>Long-term:</strong> Must cover ALL costs to remain viable.</p>
-                    
-                    <h3 class="section-head">Example: Corn Break-Even Calculation</h3>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Example: Upper Midwest Corn (2025)</div>
-                        <table class="data-table" style="margin:12px 0">
-                            <thead>
-                                <tr><th>Cost Item</th><th>$/Acre</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>Seed (34,000 population)</td><td>$125</td></tr>
-                                <tr><td>Fertilizer (N-P-K + application)</td><td>$185</td></tr>
-                                <tr><td>Crop protection</td><td>$65</td></tr>
-                                <tr><td>Crop insurance</td><td>$32</td></tr>
-                                <tr><td>Drying & handling</td><td>$38</td></tr>
-                                <tr><td>Interest (operating)</td><td>$28</td></tr>
-                                <tr><td>Machinery (fuel, repairs, depreciation)</td><td>$105</td></tr>
-                                <tr><td>Labor</td><td>$35</td></tr>
-                                <tr><td>Land rent</td><td>$225</td></tr>
-                                <tr><td>Overhead</td><td>$27</td></tr>
-                                <tr style="font-weight:bold;background:var(--card)"><td>TOTAL COST</td><td>$865/acre</td></tr>
-                            </tbody>
-                        </table>
-                        <div class="example-calc">
-                            At <strong>180 bu/acre</strong> yield: $865 ÷ 180 = <strong>$4.81/bu</strong> break-even<br>
-                            At <strong>200 bu/acre</strong> yield: $865 ÷ 200 = <strong>$4.33/bu</strong> break-even<br>
-                            At <strong>160 bu/acre</strong> yield: $865 ÷ 160 = <strong>$5.41/bu</strong> break-even
-                        </div>
-                        <p>A 40 bu/acre yield swing changes break-even by over <strong>$1.00/bu</strong> — this is why yield estimates matter so much for marketing decisions.</p>
-                    </div>
-                    
-                    <h3 class="section-head">Using Break-Even in Marketing</h3>
-                    
-                    <p>Once you know your break-even, you can make informed pricing decisions:</p>
-                    
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Price vs. Break-Even</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="highlight" style="color:var(--green)">Price 15%+ above break-even</td>
-                                <td>Strong profit opportunity — consider aggressive forward pricing (40-60%)</td>
-                            </tr>
-                            <tr>
-                                <td class="highlight" style="color:var(--green)">Price 5-15% above break-even</td>
-                                <td>Good return — scale-up pricing as targets hit (20-40%)</td>
-                            </tr>
-                            <tr>
-                                <td>Price near break-even (±5%)</td>
-                                <td>Marginal — price minimally; wait for better opportunities</td>
-                            </tr>
-                            <tr>
-                                <td class="highlight" style="color:var(--red)">Price below break-even</td>
-                                <td>Loss territory — use puts for floor; don't lock in losses with forwards</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    <h3 class="section-head">Common Mistakes in Break-Even Analysis</h3>
-                    
-                    <ol>
-                        <li><strong>Forgetting land cost:</strong> Whether you rent or own, land has a cost. Owners should use opportunity cost (what you could rent it for) or actual ownership costs.</li>
-                        
-                        <li><strong>Ignoring operator labor:</strong> Your time has value. If you wouldn't work for free elsewhere, don't work for free on your farm.</li>
-                        
-                        <li><strong>Using last year's costs:</strong> Input prices change. Recalculate break-even each year with current costs.</li>
-                        
-                        <li><strong>Overly optimistic yields:</strong> Use realistic APH or 5-year average, not your best year. Consider using 90% of APH for conservative planning.</li>
-                        
-                        <li><strong>Missing interest costs:</strong> At 8-10% operating loan rates, interest on inputs can add 15-35¢/bu to break-even.</li>
-                    </ol>
-                    
-                    <div class="info-box success">
-                        <div class="info-box-title">✅ Best Practice: Calculate Three Break-Evens</div>
-                        <p><strong>Optimistic:</strong> APH + 10% yield, covers variable costs only = "worst case still-plant" threshold<br>
-                        <strong>Expected:</strong> APH yield, covers all costs = primary marketing target<br>
-                        <strong>Conservative:</strong> APH - 10% yield, covers all costs = stress-test for aggressive pricing</p>
-                    </div>
-                    
-                    <div class="source">
-                        <strong>Sources:</strong> Purdue University, "2025 Crop Cost & Return Guide" (ID-166); Iowa State Extension Ag Decision Maker, "Estimating Farm Machinery Costs"; University of Illinois farmdoc, "Revenue and Costs for Corn."
-                    </div>
-                    
                     <div class="related-tools">
-                        <a href="breakeven.html" class="related-tool">
-                            <div class="related-tool-icon">💰</div>
-                            <div class="related-tool-name">Break-Even Calculator</div>
-                            <div class="related-tool-desc">Calculate your numbers</div>
-                        </a>
-                        <a href="corn-prices.html" class="related-tool">
-                            <div class="related-tool-icon">🌽</div>
-                            <div class="related-tool-name">Live Corn Prices</div>
-                            <div class="related-tool-desc">Compare to your break-even</div>
-                        </a>
+                        <a href="/breakeven.html" class="related-tool"><div class="related-tool-icon">💰</div><div class="related-tool-name">Break-Even Calculator</div><div class="related-tool-desc">Calculate your numbers</div></a>
                     </div>
                 </div>
             </div>
 
-            <!-- CHAPTER 10: GROWING DEGREE UNITS -->
             <div class="chapter" id="gdu">
-                <div class="chapter-header">
-                    <h2><span class="chapter-num">CH 10</span> Growing Degree Units — Tracking Crop Progress</h2>
-                </div>
+                <div class="chapter-header"><h2><span class="chapter-num">CH 10</span> Growing Degree Units</h2></div>
                 <div class="chapter-body">
-                    
-                    <p><strong>Corn development is driven by heat, not calendar days.</strong> Growing Degree Units (GDUs), also called Growing Degree Days (GDDs), measure accumulated heat that drives crop growth. Understanding GDUs helps you predict growth stages, time inputs, and assess crop progress — critical knowledge for both production and marketing decisions.</p>
-                    
-                    <h3 class="section-head">The GDU Formula</h3>
-                    
+                    <p><strong>Corn development is driven by heat, not calendar days.</strong></p>
                     <div class="formula-box">
                         <div class="formula">Daily GDU = [(High + Low) ÷ 2] − 50</div>
-                        <div class="formula-note">With limits: High capped at 86°F, Low floored at 50°F</div>
+                        <div class="formula-note">High capped at 86°F, Low floored at 50°F</div>
                     </div>
-                    
-                    <p>The formula uses 50°F as the "base temperature" because corn growth essentially stops below this threshold. The 86°F cap reflects research showing that temperatures above 86°F don't accelerate corn growth — they may actually stress the plant.</p>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Example: Daily GDU Calculation</div>
-                        <p><strong>Day 1:</strong> High = 78°F, Low = 56°F</p>
-                        <div class="example-calc">
-                            GDU = [(78 + 56) ÷ 2] − 50 = 67 − 50 = <strong>17 GDUs</strong>
-                        </div>
-                        <p><strong>Day 2:</strong> High = 92°F (cap at 86), Low = 68°F</p>
-                        <div class="example-calc">
-                            GDU = [(86 + 68) ÷ 2] − 50 = 77 − 50 = <strong>27 GDUs</strong>
-                        </div>
-                        <p><strong>Day 3:</strong> High = 62°F, Low = 48°F (floor at 50)</p>
-                        <div class="example-calc">
-                            GDU = [(62 + 50) ÷ 2] − 50 = 56 − 50 = <strong>6 GDUs</strong>
-                        </div>
-                        <p><strong>3-Day Total:</strong> 17 + 27 + 6 = <strong>50 GDUs accumulated</strong></p>
-                    </div>
-                    
-                    <h3 class="section-head">Corn Growth Stages by GDU</h3>
-                    
-                    <p>Hybrid seed companies rate corn maturities by "Relative Maturity" (RM), which correlates to GDUs needed to reach black layer (physiological maturity). A typical relationship:</p>
-                    
+                    <h3 class="section-head">Corn Growth Stages</h3>
                     <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Growth Stage</th>
-                                <th>GDUs from Planting</th>
-                                <th>What's Happening</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Stage</th><th>GDUs</th></tr></thead>
                         <tbody>
-                            <tr>
-                                <td><strong>VE (Emergence)</strong></td>
-                                <td>100-120</td>
-                                <td>Coleoptile breaks soil surface</td>
-                            </tr>
-                            <tr>
-                                <td><strong>V6 (6-leaf)</strong></td>
-                                <td>475-500</td>
-                                <td>Growing point above ground; ear shoots initiated</td>
-                            </tr>
-                            <tr>
-                                <td><strong>V12 (12-leaf)</strong></td>
-                                <td>870-920</td>
-                                <td>Rapid growth; kernel rows determined</td>
-                            </tr>
-                            <tr>
-                                <td><strong>VT (Tassel)</strong></td>
-                                <td>1,135-1,200</td>
-                                <td>Tassel fully emerged; 2-3 days before silk</td>
-                            </tr>
-                            <tr>
-                                <td class="highlight"><strong>R1 (Silking)</strong></td>
-                                <td class="highlight">1,200-1,350</td>
-                                <td class="highlight">Pollination window — CRITICAL 2-week period</td>
-                            </tr>
-                            <tr>
-                                <td><strong>R2 (Blister)</strong></td>
-                                <td>1,400-1,500</td>
-                                <td>Kernels white, watery; 85% moisture</td>
-                            </tr>
-                            <tr>
-                                <td><strong>R3 (Milk)</strong></td>
-                                <td>1,600-1,700</td>
-                                <td>Kernels yellow, milky fluid; 80% moisture</td>
-                            </tr>
-                            <tr>
-                                <td><strong>R4 (Dough)</strong></td>
-                                <td>1,900-2,000</td>
-                                <td>Starch accumulating; 70% moisture</td>
-                            </tr>
-                            <tr>
-                                <td><strong>R5 (Dent)</strong></td>
-                                <td>2,200-2,400</td>
-                                <td>Kernel denting; milk line visible</td>
-                            </tr>
-                            <tr>
-                                <td><strong>R6 (Black Layer)</strong></td>
-                                <td>2,500-2,800</td>
-                                <td>Physiological maturity; ~30% moisture</td>
-                            </tr>
+                            <tr><td>Emergence</td><td>100-120</td></tr>
+                            <tr><td>V6 (6 leaves)</td><td>475-500</td></tr>
+                            <tr><td class="highlight">Silking</td><td class="highlight">1,200-1,350</td></tr>
+                            <tr><td>Black Layer</td><td>2,500-2,800</td></tr>
                         </tbody>
                     </table>
-                    
-                    <p><strong>Note:</strong> GDU requirements vary by hybrid. A 95-day hybrid needs approximately 2,500 GDUs to black layer; a 110-day hybrid needs approximately 2,800 GDUs.</p>
-                    
-                    <h3 class="section-head">Why GDUs Matter for Marketing</h3>
-                    
-                    <p>Tracking GDUs helps you make better marketing decisions:</p>
-                    
-                    <ul>
-                        <li><strong>Yield potential assessment:</strong> If GDU accumulation is behind normal at silking, yield potential may be reduced — adjust forward sales accordingly</li>
-                        
-                        <li><strong>Harvest timing:</strong> Predict when your crop will reach black layer and estimate harvest moisture — affects drying costs in break-even</li>
-                        
-                        <li><strong>Frost risk:</strong> Calculate GDUs remaining to maturity vs. GDUs expected before first frost — critical for late-planted crops</li>
-                        
-                        <li><strong>Market timing:</strong> Late-maturing crops may hit harvest during different basis/price windows than early crops</li>
-                    </ul>
-                    
-                    <div class="example-box">
-                        <div class="example-box-title">📝 Example: Frost Risk Assessment</div>
-                        <p><strong>Situation:</strong> August 15, your 105-day corn (needs 2,650 GDUs) has accumulated 1,800 GDUs.</p>
-                        <p><strong>GDUs needed:</strong> 2,650 − 1,800 = 850 GDUs remaining</p>
-                        <p><strong>Your area averages:</strong> 18 GDUs/day in late August, 14 GDUs/day in September</p>
-                        <p><strong>Days to maturity:</strong> ~50-55 days → Black layer around October 5-10</p>
-                        <p><strong>Average first frost:</strong> October 10</p>
-                        <div class="example-calc">
-                            <strong>Assessment:</strong> Marginal — crop should reach maturity, but a cold September could delay black layer past frost. Consider: 1) insurance implications, 2) whether to price more now vs. waiting, 3) harvest logistics for potentially wetter corn.
-                        </div>
-                    </div>
-                    
-                    <h3 class="section-head">Typical GDU Accumulation by Region</h3>
-                    
-                    <p>Annual GDU accumulation varies significantly by location:</p>
-                    
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-label">Northern WI/MN</div>
-                            <div class="stat-value">2,200-2,500</div>
-                            <div class="stat-note">Limits hybrid selection</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Central WI/MN</div>
-                            <div class="stat-value">2,500-2,800</div>
-                            <div class="stat-note">Standard corn belt</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Southern WI/IA</div>
-                            <div class="stat-value">2,800-3,100</div>
-                            <div class="stat-note">Full-season hybrids</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Central IL/IN</div>
-                            <div class="stat-value">3,100-3,400</div>
-                            <div class="stat-note">Long growing season</div>
-                        </div>
-                    </div>
-                    
-                    <h3 class="section-head">GDU Tools and Resources</h3>
-                    
-                    <ul>
-                        <li><strong>NOAA/NWS:</strong> Daily temperature data and GDU calculators</li>
-                        <li><strong>University Extension:</strong> State climatology offices track GDU accumulation</li>
-                        <li><strong>Seed Company Apps:</strong> Most major seed companies offer GDU tracking tools</li>
-                        <li><strong>USDA Crop Progress:</strong> Weekly reports include crop condition and development stage</li>
-                    </ul>
-                    
-                    <div class="info-box">
-                        <div class="info-box-title">💡 Rule of Thumb: The "Silking by August 1" Guideline</div>
-                        <p>In the Upper Midwest, corn that hasn't reached silking by August 1 faces elevated frost risk. Each day of delayed silking typically delays maturity by 2-3 days, pushing black layer closer to (or past) average first frost dates. Late-silking fields deserve extra attention in your marketing plan.</p>
-                    </div>
-                    
-                    <div class="source">
-                        <strong>Sources:</strong> Purdue University Extension, "Corn Growth Stages and GDU Requirements"; University of Wisconsin Extension, "Using Growing Degree Days for Corn Development"; Iowa State Extension, "Corn Growth and Development."
-                    </div>
-                    
                     <div class="related-tools">
-                        <a href="calendar.html" class="related-tool">
-                            <div class="related-tool-icon">📅</div>
-                            <div class="related-tool-name">Crop Calendar</div>
-                            <div class="related-tool-desc">Key dates & deadlines</div>
-                        </a>
-                        <a href="fastfacts.html" class="related-tool">
-                            <div class="related-tool-icon">📊</div>
-                            <div class="related-tool-name">Fast Facts</div>
-                            <div class="related-tool-desc">Quick reference data</div>
-                        </a>
+                        <a href="/gdu.html" class="related-tool"><div class="related-tool-icon">🌡️</div><div class="related-tool-name">GDU Calculator</div><div class="related-tool-desc">Track crop progress</div></a>
                     </div>
                 </div>
             </div>
 
-            <!-- GUIDE COMPLETE CTA -->
             <div class="panel" style="background:linear-gradient(135deg, var(--accent) 0%, #7cb342 100%);border:none">
                 <div class="panel-body" style="text-align:center;padding:32px;color:black">
                     <div style="font-size:2rem;margin-bottom:12px">🎓</div>
-                    <div style="font-size:1.2rem;font-weight:700;margin-bottom:8px">Congratulations! You've Completed the AGSIST Marketing Guide</div>
-                    <p style="margin-bottom:20px;max-width:600px;margin-left:auto;margin-right:auto;opacity:0.9">
-                        You now have a solid foundation in grain marketing fundamentals. Remember: successful marketing is about making consistent, informed decisions — not predicting the future perfectly.
-                    </p>
+                    <div style="font-size:1.2rem;font-weight:700;margin-bottom:8px">Guide Complete!</div>
+                    <p style="margin-bottom:20px;max-width:600px;margin-left:auto;margin-right:auto;opacity:0.9">You now have a solid foundation in grain marketing fundamentals.</p>
                     <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-                        <a href="tools.html" style="background:black;color:white;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600">Explore Our Tools →</a>
-                        <a href="corn-prices.html" style="background:rgba(0,0,0,0.15);color:black;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600">Check Live Prices</a>
+                        <a href="/tools.html" style="background:black;color:white;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600">Explore Tools →</a>
+                        <a href="/corn-prices.html" style="background:rgba(0,0,0,0.15);color:black;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600">Check Prices</a>
                     </div>
                 </div>
             </div>
 
-            <!-- CTA Box -->
             <div style="margin-top:24px;padding:24px;background:var(--card);border:1px solid var(--accent);border-radius:12px;text-align:center">
-                <div style="font-size:1.1rem;font-weight:600;margin-bottom:8px">Need Personalized Marketing Advice?</div>
-                <div style="font-size:0.9rem;color:var(--dim);margin-bottom:16px">Our Certified Crop Advisors can help develop a grain marketing plan tailored to your operation.</div>
-                <a href="https://farmers1st.com" target="_blank" style="display:inline-block;background:var(--accent);color:black;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600">Contact Farmers First Agri Service →</a>
+                <div style="font-size:1.1rem;font-weight:600;margin-bottom:8px">Need Personalized Advice?</div>
+                <div style="font-size:0.9rem;color:var(--dim);margin-bottom:16px">Our CCAs can develop a marketing plan for your operation.</div>
+                <a href="https://farmers1st.com" target="_blank" style="display:inline-block;background:var(--accent);color:black;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600">Contact Farmers First →</a>
             </div>
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="footer-c">
-        <div class="footer-c-inner">
-            <div class="footer-c-main">
-                <div class="brand-row">
-                    <a href="/" class="brand">AGSIST</a>
-                    <span class="sep">|</span>
-                    <span class="tagline">Free agricultural prices, tools & news</span>
-                </div>
-                <div class="site-links">
-                    <a href="corn-prices.html">Corn</a>
-                    <a href="soybean-prices.html">Soybeans</a>
-                    <a href="wheat-prices.html">Wheat</a>
-                    <a href="tools.html">Tools</a>
-                    <a href="fastfacts.html">Fast Facts</a>
-                    <a href="calendar.html">Calendar</a>
-                    <a href="resources.html">Resources</a>
-                </div>
-                <div class="legal-row"><span>© 2026 AGSIST</span></div>
-            </div>
-            <div class="footer-c-network">
-                <h4>Our Network</h4>
-                <a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a>
-                <a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a>
-                <a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-    // Mobile menu toggle
-    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-        document.getElementById('mobile-menu').classList.toggle('active');
-        this.textContent = this.textContent === '☰' ? '✕' : '☰';
-    });
+    <div id="footer"></div>
+    <script src="/components/load-components.js"></script>
     
-    // Smooth scroll for TOC links
+    <script>
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+            if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
         });
     });
     </script>
