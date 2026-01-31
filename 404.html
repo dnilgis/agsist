@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page Not Found | AGSIST</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e6b042%22 rx=%2212%22></rect><text x=%2250%22 y=%2248%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22black%22>AG</text><text x=%2250%22 y=%2288%22 font-family=%22Arial-Black, sans-serif%22 font-weight=%22900%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22black%22>SIST</text></svg>">
+    <meta name="description" content="Page not found. Return to AGSIST for free agricultural prices, tools and news.">
+    
+    <link rel="icon" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="/components/shared.css">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    
     <style>
         .error-page { text-align: center; padding: 80px 20px; }
         .error-code { font-size: 6rem; font-weight: 700; color: var(--accent); line-height: 1; }
@@ -19,25 +27,17 @@
         .error-links a { padding: 12px 24px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--text); text-decoration: none; transition: all 0.2s; }
         .error-links a:hover { border-color: var(--accent); color: var(--accent); }
         .error-links a.primary { background: var(--accent); color: #000; border-color: var(--accent); }
+        
+        @media (max-width: 768px) {
+            .error-code { font-size: 4rem; }
+            .error-msg { font-size: 1.2rem; }
+            .error-page { padding: 60px 16px; }
+        }
     </style>
 </head>
 <body>
-    <nav class="main-nav">
-        <div class="nav-inner">
-            <a href="/" class="logo">AGSIST</a>
-            <div class="nav-links">
-                <div class="nav-dropdown"><button class="dropdown-toggle">Prices ▾</button><div class="dropdown-menu"><a href="corn-prices.html" class="dropdown-item">🌽 Corn</a><a href="soybean-prices.html" class="dropdown-item">🫘 Soybeans</a><a href="wheat-prices.html" class="dropdown-item">🌾 Wheat</a></div></div>
-                <div class="nav-dropdown"><button class="dropdown-toggle">Tools ▾</button><div class="dropdown-menu"><a href="tools.html" class="dropdown-item">All Tools</a><a href="breakeven.html" class="dropdown-item">Breakeven</a><a href="gdu.html" class="dropdown-item">GDU Calculator</a><a href="calculator.html" class="dropdown-item">Grain Bin</a><a href="fastfacts.html" class="dropdown-item">Fast Facts</a></div></div>
-                <div class="nav-dropdown"><button class="dropdown-toggle">Info ▾</button><div class="dropdown-menu"><a href="learn.html" class="dropdown-item">Learn</a><a href="calendar.html" class="dropdown-item">Calendar</a><a href="resources.html" class="dropdown-item">Resources</a><a href="offices.html" class="dropdown-item">Offices</a></div></div>
-            </div>
-            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
-        </div>
-    </nav>
-    <div class="mobile-menu" id="mobile-menu">
-        <div class="mobile-section">Prices</div><a href="corn-prices.html" class="mobile-link">🌽 Corn</a><a href="soybean-prices.html" class="mobile-link">🫘 Soybeans</a><a href="wheat-prices.html" class="mobile-link">🌾 Wheat</a>
-        <div class="mobile-section">Tools</div><a href="tools.html" class="mobile-link">All Tools</a><a href="breakeven.html" class="mobile-link">Breakeven</a><a href="gdu.html" class="mobile-link">GDU Calculator</a><a href="calculator.html" class="mobile-link">Grain Bin</a><a href="fastfacts.html" class="mobile-link">Fast Facts</a>
-        <div class="mobile-section">Info</div><a href="learn.html" class="mobile-link">Learn</a><a href="calendar.html" class="mobile-link">Calendar</a><a href="resources.html" class="mobile-link">Resources</a><a href="offices.html" class="mobile-link">Offices</a>
-    </div>
+    <!-- Header -->
+    <div id="header"></div>
 
     <main>
         <div class="error-page">
@@ -46,28 +46,16 @@
             <p class="error-sub">The page you're looking for doesn't exist or has been moved.</p>
             <div class="error-links">
                 <a href="/" class="primary">← Back to Dashboard</a>
-                <a href="tools.html">View Tools</a>
-                <a href="resources.html">Resources</a>
+                <a href="/tools.html">View Tools</a>
+                <a href="/resources.html">Resources</a>
             </div>
         </div>
     </main>
 
-    <footer class="footer-c">
-        <div class="footer-c-inner">
-            <div class="footer-c-main">
-                <div class="brand-row"><a href="/" class="brand">AGSIST</a><span class="sep">|</span><span class="tagline">Free agricultural prices, tools & news</span></div>
-                <div class="site-links"><a href="corn-prices.html">Corn</a><a href="soybean-prices.html">Soybeans</a><a href="wheat-prices.html">Wheat</a><a href="tools.html">Tools</a><a href="fastfacts.html">Fast Facts</a><a href="calendar.html">Calendar</a><a href="resources.html">Resources</a></div>
-                <div class="legal-row"><span>© 2026 AGSIST</span></div>
-            </div>
-            <div class="footer-c-network"><h4>Our Network</h4><a href="https://farmers1st.com" target="_blank">🌾 Farmers First Agri</a><a href="https://lokedrone.com" target="_blank">✈️ Loke Drone</a><a href="https://usdronemap.com" target="_blank">🗺️ US Drone Map</a></div>
-        </div>
-    </footer>
-
-    <script>
-    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-        document.getElementById('mobile-menu').classList.toggle('active');
-        this.textContent = this.textContent === '☰' ? '✕' : '☰';
-    });
-    </script>
+    <!-- Footer -->
+    <div id="footer"></div>
+    
+    <!-- Component Loader -->
+    <script src="/components/load-components.js"></script>
 </body>
 </html>
