@@ -1,6 +1,20 @@
 {
   "items": [
     {
+      "id": "e5c4a9cdae8ac599",
+      "title": "How far along do you think she is? Recently came into our rescue and have vet set for this coming week",
+      "link": "https://www.reddit.com/r/Cattle/comments/1qsvomy/how_far_along_do_you_think_she_is_recently_came/",
+      "description": "<table> <tr><td> <a href=\"https://www.reddit.com/r/Cattle/comments/1qsvomy/how_far_along_do_you_think_she_is_recently_came/\"> <img src=\"https://b.thumbs.redditmedia.com/cAXs5A6XEq_1UM435wEdu4s5P4rE_rdZwEQidH8HN-s.jpg\" alt=\"How far along do you think she is? Recently came into our rescue and have vet set for this coming week\" title=\"How far along do you think she is? Recently came into our rescue and have vet set for this coming week\" /> </a> </td><td> &#32; submitted by &#32; <a href=\"https://ww",
+      "date": "2026-02-01T11:06:18+00:00",
+      "timestamp": 1769943978000,
+      "source": "r/Cattle",
+      "category": "community",
+      "icon": "🐄",
+      "thumbnail": "https://b.thumbs.redditmedia.com/cAXs5A6XEq_1UM435wEdu4s5P4rE_rdZwEQidH8HN-s.jpg",
+      "summary": "The post indicates that a cattle rescue organization recently took in a pregnant cow and has scheduled a vet appointment for the coming week to assess the cow's pregnancy status. The poster is asking the Reddit community to estimate how far along the cow's pregnancy is based on the image provided. No specific dates, locations, or other details are mentioned beyond this. The post is seeking input from the community to help the rescue organization prepare for the cow's needs and upcoming birth.",
+      "summaryTimestamp": 1769949591146
+    },
+    {
       "id": "00f27c7176511147",
       "title": "Looking to work on a Ranch",
       "link": "https://www.reddit.com/r/Ranching/comments/1qsnktf/looking_to_work_on_a_ranch/",
@@ -1121,20 +1135,6 @@
       "summaryTimestamp": 1769813131293
     },
     {
-      "id": "43c864faa2d7853d",
-      "title": "Cattle people of Reddit what is your most scariest bull encounter and tell me your story about it",
-      "link": "https://www.reddit.com/r/Cattle/comments/1qp0riz/cattle_people_of_reddit_what_is_your_most/",
-      "description": "&#32; submitted by &#32; <a href=\"https://www.reddit.com/user/JakeThatKid4521\"> /u/JakeThatKid4521 </a> <br/> <span><a href=\"https://www.reddit.com/r/Cattle/comments/1qp0riz/cattle_people_of_reddit_what_is_your_most/\">[link]</a></span> &#32; <span><a href=\"https://www.reddit.com/r/Cattle/comments/1qp0riz/cattle_people_of_reddit_what_is_your_most/\">[comments]</a></span>",
-      "date": "2026-01-28T03:59:31+00:00",
-      "timestamp": 1769572771000,
-      "source": "r/Cattle",
-      "category": "community",
-      "icon": "🐄",
-      "thumbnail": "",
-      "summary": "&#32; submitted by &#32; <a href=\"https://www.reddit.com/user/JakeThatKid4521\"> /u/JakeThatKid4521 </a> <br/> <span><a href=\"https://www.reddit.com/r/Cattle/comments/1qp0riz/cattle_people_of_reddit_wh...",
-      "summaryTimestamp": 1769812599121
-    },
-    {
       "id": "28898aec65000293",
       "title": "Save the Date - Southern Small Grains Update Meetings",
       "link": "https://blog-crop-news.extension.umn.edu/2026/01/save-date-southern-small-grains-update.html",
@@ -1411,6 +1411,6 @@
   },
   "feedCount": 29,
   "successCount": 125,
-  "summariesGenerated": 0,
-  "updated": "2026-02-01T10:21:28.482Z"
+  "summariesGenerated": 1,
+  "updated": "2026-02-01T12:39:51.346Z"
 }
