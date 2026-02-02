@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-02T15:25:32.923966+00:00",
+  "updated": "2026-02-02T16:42:08.445214+00:00",
   "markets": {
     "grains": {
       "corn": {
@@ -118,9 +118,9 @@
         "name": "S&P 500",
         "symbol": "^GSPC",
         "unit": "$",
-        "price": 6975.79,
-        "change": 36.3901,
-        "changePct": 0.52,
+        "price": 6971.71,
+        "change": 32.3101,
+        "changePct": 0.47,
         "prevClose": 6939.3999,
         "contract": "Spot",
         "low52": 4835.04,
@@ -130,9 +130,9 @@
         "name": "Dow Jones",
         "symbol": "^DJI",
         "unit": "$",
-        "price": 49236.7891,
-        "change": 397.4609,
-        "changePct": 0.81,
+        "price": 49304.2695,
+        "change": 464.9414,
+        "changePct": 0.95,
         "prevClose": 48839.3281,
         "contract": "Spot",
         "low52": 36611.7812,
@@ -142,9 +142,9 @@
         "name": "US Dollar Index",
         "symbol": "DX-Y.NYB",
         "unit": "$",
-        "price": 97.521,
-        "change": 0.73,
-        "changePct": 0.75,
+        "price": 97.565,
+        "change": 0.774,
+        "changePct": 0.8,
         "prevClose": 96.791,
         "contract": "Spot",
         "low52": 95.55,
@@ -208,9 +208,9 @@
         "name": "Bitcoin",
         "symbol": "BTC-USD",
         "unit": "$",
-        "price": 78692.75,
-        "change": 1631.1406,
-        "changePct": 2.12,
+        "price": 78985.9062,
+        "change": 1924.2969,
+        "changePct": 2.5,
         "prevClose": 77061.6094,
         "contract": "Spot",
         "low52": 74436.6797,
@@ -220,9 +220,9 @@
         "name": "Ethereum",
         "symbol": "ETH-USD",
         "unit": "$",
-        "price": 2371.0261,
-        "change": 98.4534,
-        "changePct": 4.33,
+        "price": 2377.2578,
+        "change": 104.6851,
+        "changePct": 4.61,
         "prevClose": 2272.5728,
         "contract": "Spot",
         "low52": 1386.7993,
@@ -232,9 +232,9 @@
         "name": "Kaspa",
         "symbol": "KAS-USD",
         "unit": "$",
-        "price": 0.0324,
-        "change": 0.0017,
-        "changePct": 5.58,
+        "price": 0.034,
+        "change": 0.0033,
+        "changePct": 10.79,
         "prevClose": 0.0307,
         "contract": "Spot",
         "low52": 0.0139,
@@ -244,9 +244,9 @@
         "name": "XRP",
         "symbol": "XRP-USD",
         "unit": "$",
-        "price": 1.6442,
-        "change": 0.0524,
-        "changePct": 3.29,
+        "price": 1.6513,
+        "change": 0.0595,
+        "changePct": 3.74,
         "prevClose": 1.5918,
         "contract": "Spot",
         "low52": 1.5285,
@@ -278,37 +278,23 @@
     },
     {
       "source": "Brownfield",
+      "title": "Some farmers are turning to innovation to survive today’s ag downturn",
+      "link": "https://www.brownfieldagnews.com/news/some-farmers-are-turning-to-innovation-to-survive-todays-ag-downturn/",
+      "time": "2026-02-02T16:30:13+00:00",
+      "category": "news"
+    },
+    {
+      "source": "Brownfield",
+      "title": "CoBank: Producers sold soybeans during rally, now eye corn and wheat",
+      "link": "https://www.brownfieldagnews.com/news/cobank-producers-sold-soybeans-during-rally-now-eye-corn-and-wheat/",
+      "time": "2026-02-02T16:29:40+00:00",
+      "category": "news"
+    },
+    {
+      "source": "Brownfield",
       "title": "Winter Annual Weeds Pose Threats",
       "link": "https://www.brownfieldagnews.com/managing-for_profit/winter-annual-weeds-pose-threats/",
       "time": "2026-02-02T15:03:38+00:00",
-      "category": "news"
-    },
-    {
-      "source": "Brownfield",
-      "title": "Cold weather and frozen soils limit drought relief despite recent precipitation",
-      "link": "https://www.brownfieldagnews.com/news/cold-weather-and-frozen-soils-limit-drought-relief-despite-recent-precipitation/",
-      "time": "2026-02-02T14:43:00+00:00",
-      "category": "news"
-    },
-    {
-      "source": "Brownfield",
-      "title": "Statewide disaster declaration enhances Texas task force response to the threat of New World screwworm",
-      "link": "https://www.brownfieldagnews.com/news/statewide-disaster-declaration-enhances-texas-task-force-response-to-the-threat-of-new-world-screwworm/",
-      "time": "2026-02-02T13:08:00+00:00",
-      "category": "news"
-    },
-    {
-      "source": "AGDAILY",
-      "title": "USDA ramps up border defense against New World screwworm",
-      "link": "https://www.agdaily.com/news/usda-ramps-border-defense-new-world-screwworm/",
-      "time": "2026-02-02T13:48:22+00:00",
-      "category": "news"
-    },
-    {
-      "source": "AGDAILY",
-      "title": "Arizona FFA Foundation blue & gold gala raises record $646,677",
-      "link": "https://www.agdaily.com/ffa/arizona-ffa-foundation-blue-gold-gala-raises-record-646677/",
-      "time": "2026-02-02T13:23:13+00:00",
       "category": "news"
     },
     {
@@ -316,6 +302,20 @@
       "title": "Ag on Instagram: The week’s best photos on Jan. 30, 2026",
       "link": "https://www.agdaily.com/lifestyle/ag-instagram-weeks-best-photos-jan-30-2026/",
       "time": "2026-01-30T22:41:38+00:00",
+      "category": "news"
+    },
+    {
+      "source": "AGDAILY",
+      "title": "Horse protection amendments pushed back nearly a year",
+      "link": "https://www.agdaily.com/livestock/horse-protection-amendments-pushed-back-nearly-a-year/",
+      "time": "2026-01-30T19:00:57+00:00",
+      "category": "news"
+    },
+    {
+      "source": "AGDAILY",
+      "title": "ADM hit with $40 million accounting fine, but escapes DOJ criminal probe",
+      "link": "https://www.agdaily.com/livestock/adm-hit-with-40-million-accounting-fine-but-escapes-doj-criminal-probe/",
+      "time": "2026-01-30T18:11:44+00:00",
       "category": "news"
     },
     {
