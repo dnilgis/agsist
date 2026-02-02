@@ -170,6 +170,7 @@
         .secondary-meta { display: flex; gap: 8px; font-size: 0.875rem; color: var(--dim); margin-top: 4px; }
         
         .range-bar-sm { margin-top: 6px; }
+        .range-bar-sm .range-bar-label { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--dim); margin-bottom: 2px; }
         .range-bar-sm .range-bar-track { height: 4px; background: var(--border); border-radius: 2px; position: relative; }
         .range-bar-sm .range-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: linear-gradient(90deg, #4ade80, #e6b042, #ef4444); border-radius: 2px; opacity: 0.3; }
         .range-bar-sm .range-bar-marker { position: absolute; top: -2px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; transform: translateX(-50%); border: 1px solid var(--card); }
@@ -180,13 +181,38 @@
         .weather-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
         .weather-card iframe { width: 100%; height: 420px; border: none; display: block; }
         
-        .news-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+        .news-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
+        .news-card::-webkit-scrollbar { display: none; }
         .news-item { padding: 10px 0; border-bottom: 1px solid var(--border); }
         .news-item:last-child { border-bottom: none; padding-bottom: 0; }
         .news-item:first-child { padding-top: 0; }
         .news-item a { color: var(--text); text-decoration: none; font-size: 0.95rem; line-height: 1.6; display: block; }
         .news-item a:hover { color: var(--accent); }
-        .news-source { font-size: 0.875rem; color: var(--dim); margin-top: 4px; }
+        .news-source { font-size: 0.875rem; color: var(--dim); margin-top: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .news-summary-btn { background: linear-gradient(135deg, #8b5cf6, #3b82f6); border: none; color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-weight: 600; font-family: inherit; }
+        .news-summary-btn:hover { opacity: 0.85; }
+        
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 12px; max-width: 600px; width: 100%; max-height: 85vh; overflow-y: auto; animation: modalSlide 0.2s ease-out; }
+        @keyframes modalSlide { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+        .modal-header h3 { font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin: 0 0 6px 0; display: flex; align-items: center; gap: 8px; }
+        .modal-header .ai-badge { background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: #fff; font-size: 0.6rem; padding: 2px 6px; border-radius: 3px; font-weight: 700; }
+        .modal-header .ai-note { font-size: 0.7rem; color: var(--dim); font-weight: 400; }
+        .modal-close { background: none; border: none; color: var(--dim); font-size: 1.5rem; cursor: pointer; padding: 0; line-height: 1; }
+        .modal-close:hover { color: var(--text); }
+        .modal-body { padding: 20px; }
+        .modal-source { display: inline-flex; align-items: center; gap: 8px; background: var(--bg); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; color: var(--dim); margin-bottom: 16px; }
+        .modal-title { font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 16px; line-height: 1.4; }
+        .modal-summary { color: var(--text); font-size: 0.9rem; line-height: 1.8; white-space: pre-wrap; }
+        .modal-footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 12px; justify-content: flex-end; }
+        .modal-btn { padding: 10px 20px; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .modal-btn-secondary { background: var(--bg); border: 1px solid var(--border); color: var(--dim); }
+        .modal-btn-secondary:hover { border-color: var(--text); color: var(--text); }
+        .modal-btn-primary { background: var(--accent); border: 1px solid var(--accent); color: #000; }
+        .modal-btn-primary:hover { opacity: 0.9; }
         
         /* ============================================
            RESPONSIVE
@@ -195,7 +221,9 @@
             main { padding: 16px 20px; }
             .price-grid { grid-template-columns: repeat(4, 1fr); }
             .secondary-grid { grid-template-columns: repeat(3, 1fr); }
-            .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+            .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
+            .two-col > div { display: flex; flex-direction: column; }
+            .two-col .news-card { flex: 1; }
             .weather-card iframe { height: 380px; }
         }
         
@@ -254,19 +282,21 @@
                     </div>
                 </div>
             </a>
-            <div class="price-card" id="card-corn-dec">
-                <div class="price-header">
-                    <span class="price-label">🌽 Corn Harvest</span>
-                    <span class="price-contract">Dec '26</span>
+            <a href="corn-prices.html" class="card-link">
+                <div class="price-card" id="card-corn-dec">
+                    <div class="price-header">
+                        <span class="price-label">🌽 Corn Harvest</span>
+                        <span class="price-contract">Dec '26</span>
+                    </div>
+                    <div class="price-value" id="corn-dec-price">--</div>
+                    <div class="price-change" id="corn-dec-change">--</div>
+                    <div class="price-meta"><span id="corn-dec-prev">--</span><span id="corn-dec-symbol">--</span></div>
+                    <div class="range-bar">
+                        <div class="range-bar-label"><span id="corn-dec-range-low">--</span><span>52wk</span><span id="corn-dec-range-high">--</span></div>
+                        <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="corn-dec-marker" style="left:50%"></div></div>
+                    </div>
                 </div>
-                <div class="price-value" id="corn-dec-price">--</div>
-                <div class="price-change" id="corn-dec-change">--</div>
-                <div class="price-meta"><span id="corn-dec-prev">--</span><span id="corn-dec-symbol">--</span></div>
-                <div class="range-bar">
-                    <div class="range-bar-label"><span id="corn-dec-range-low">--</span><span>52wk</span><span id="corn-dec-range-high">--</span></div>
-                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="corn-dec-marker" style="left:50%"></div></div>
-                </div>
-            </div>
+            </a>
             <a href="soybean-prices.html" class="card-link">
                 <div class="price-card featured" id="card-soy">
                     <div class="price-header">
@@ -282,19 +312,21 @@
                     </div>
                 </div>
             </a>
-            <div class="price-card" id="card-soy-nov">
-                <div class="price-header">
-                    <span class="price-label">🫘 Beans Harvest</span>
-                    <span class="price-contract">Nov '26</span>
+            <a href="soybean-prices.html" class="card-link">
+                <div class="price-card" id="card-soy-nov">
+                    <div class="price-header">
+                        <span class="price-label">🫘 Beans Harvest</span>
+                        <span class="price-contract">Nov '26</span>
+                    </div>
+                    <div class="price-value" id="soy-nov-price">--</div>
+                    <div class="price-change" id="soy-nov-change">--</div>
+                    <div class="price-meta"><span id="soy-nov-prev">--</span><span id="soy-nov-symbol">--</span></div>
+                    <div class="range-bar">
+                        <div class="range-bar-label"><span id="soy-nov-range-low">--</span><span>52wk</span><span id="soy-nov-range-high">--</span></div>
+                        <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="soy-nov-marker" style="left:50%"></div></div>
+                    </div>
                 </div>
-                <div class="price-value" id="soy-nov-price">--</div>
-                <div class="price-change" id="soy-nov-change">--</div>
-                <div class="price-meta"><span id="soy-nov-prev">--</span><span id="soy-nov-symbol">--</span></div>
-                <div class="range-bar">
-                    <div class="range-bar-label"><span id="soy-nov-range-low">--</span><span>52wk</span><span id="soy-nov-range-high">--</span></div>
-                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="soy-nov-marker" style="left:50%"></div></div>
-                </div>
-            </div>
+            </a>
         </div>
         <div class="section-header">Livestock & Energy</div>
         <div class="secondary-grid" id="secondary-prices">
@@ -304,7 +336,10 @@
                     <div class="secondary-value" id="wheat-price">--</div>
                     <div class="secondary-change" id="wheat-change">--</div>
                     <div class="secondary-meta"><span id="wheat-prev">--</span><span id="wheat-symbol">--</span></div>
-                    <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="wheat-marker" style="left:50%"></div></div></div>
+                    <div class="range-bar-sm">
+                        <div class="range-bar-label"><span id="wheat-range-low">--</span><span>52wk</span><span id="wheat-range-high">--</span></div>
+                        <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="wheat-marker" style="left:50%"></div></div>
+                    </div>
                 </div>
             </a>
             <div class="secondary-card">
@@ -312,35 +347,52 @@
                 <div class="secondary-value" id="cattle-price">--</div>
                 <div class="secondary-change" id="cattle-change">--</div>
                 <div class="secondary-meta"><span id="cattle-prev">--</span><span id="cattle-symbol">--</span></div>
-                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="cattle-marker" style="left:50%"></div></div></div>
+                <div class="range-bar-sm">
+                    <div class="range-bar-label"><span id="cattle-range-low">--</span><span>52wk</span><span id="cattle-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="cattle-marker" style="left:50%"></div></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🐂 Feeder Cattle</div>
                 <div class="secondary-value" id="feeder-price">--</div>
                 <div class="secondary-change" id="feeder-change">--</div>
                 <div class="secondary-meta"><span id="feeder-prev">--</span><span id="feeder-symbol">--</span></div>
-                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="feeder-marker" style="left:50%"></div></div></div>
+                <div class="range-bar-sm">
+                    <div class="range-bar-label"><span id="feeder-range-low">--</span><span>52wk</span><span id="feeder-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="feeder-marker" style="left:50%"></div></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🐷 Lean Hogs</div>
                 <div class="secondary-value" id="hogs-price">--</div>
                 <div class="secondary-change" id="hogs-change">--</div>
                 <div class="secondary-meta"><span id="hogs-prev">--</span><span id="hogs-symbol">--</span></div>
-                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="hogs-marker" style="left:50%"></div></div></div>
+                <div class="range-bar-sm">
+                    <div class="range-bar-label"><span id="hogs-range-low">--</span><span>52wk</span><span id="hogs-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="hogs-marker" style="left:50%"></div></div>
+                </div>
             </div>
-            <div class="secondary-card">
-                <div class="secondary-label">🥛 Class III Milk</div>
-                <div class="secondary-value" id="milk-price">--</div>
-                <div class="secondary-change" id="milk-change">--</div>
-                <div class="secondary-meta"><span id="milk-prev">--</span><span id="milk-symbol">--</span></div>
-                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="milk-marker" style="left:50%"></div></div></div>
-            </div>
+            <a href="milk-prices.html" class="card-link">
+                <div class="secondary-card">
+                    <div class="secondary-label">🥛 Class III Milk</div>
+                    <div class="secondary-value" id="milk-price">--</div>
+                    <div class="secondary-change" id="milk-change">--</div>
+                    <div class="secondary-meta"><span id="milk-prev">--</span><span id="milk-symbol">--</span></div>
+                    <div class="range-bar-sm">
+                        <div class="range-bar-label"><span id="milk-range-low">--</span><span>52wk</span><span id="milk-range-high">--</span></div>
+                        <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="milk-marker" style="left:50%"></div></div>
+                    </div>
+                </div>
+            </a>
             <div class="secondary-card">
                 <div class="secondary-label">🛢️ Crude Oil</div>
                 <div class="secondary-value" id="oil-price">--</div>
                 <div class="secondary-change" id="oil-change">--</div>
                 <div class="secondary-meta"><span id="oil-prev">--</span><span id="oil-symbol">--</span></div>
-                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="oil-marker" style="left:50%"></div></div></div>
+                <div class="range-bar-sm">
+                    <div class="range-bar-label"><span id="oil-range-low">--</span><span>52wk</span><span id="oil-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="oil-marker" style="left:50%"></div></div>
+                </div>
             </div>
         </div>
         
@@ -351,48 +403,69 @@
                 <div class="secondary-value" id="gold-price">--</div>
                 <div class="secondary-change" id="gold-change">--</div>
                 <div class="secondary-meta"><span id="gold-prev">--</span><span id="gold-symbol">--</span></div>
-                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="gold-marker" style="left:50%"></div></div></div>
+                <div class="range-bar-sm">
+                    <div class="range-bar-label"><span id="gold-range-low">--</span><span>52wk</span><span id="gold-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="gold-marker" style="left:50%"></div></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🥈 Silver</div>
                 <div class="secondary-value" id="silver-price">--</div>
                 <div class="secondary-change" id="silver-change">--</div>
                 <div class="secondary-meta"><span id="silver-prev">--</span><span id="silver-symbol">--</span></div>
-                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="silver-marker" style="left:50%"></div></div></div>
+                <div class="range-bar-sm">
+                    <div class="range-bar-label"><span id="silver-range-low">--</span><span>52wk</span><span id="silver-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="silver-marker" style="left:50%"></div></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">🪙 Bitcoin</div>
                 <div class="secondary-value" id="btc-price">--</div>
                 <div class="secondary-change" id="btc-change">--</div>
                 <div class="secondary-meta"><span id="btc-prev">--</span><span id="btc-symbol">--</span></div>
-                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="btc-marker" style="left:50%"></div></div></div>
+                <div class="range-bar-sm">
+                    <div class="range-bar-label"><span id="btc-range-low">--</span><span>52wk</span><span id="btc-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="btc-marker" style="left:50%"></div></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">💎 Kaspa</div>
                 <div class="secondary-value" id="kas-price">--</div>
                 <div class="secondary-change" id="kas-change">--</div>
                 <div class="secondary-meta"><span id="kas-prev">--</span><span id="kas-symbol">--</span></div>
-                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="kas-marker" style="left:50%"></div></div></div>
+                <div class="range-bar-sm">
+                    <div class="range-bar-label"><span id="kas-range-low">--</span><span>52wk</span><span id="kas-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="kas-marker" style="left:50%"></div></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">📈 S&P 500</div>
                 <div class="secondary-value" id="sp500-price">--</div>
                 <div class="secondary-change" id="sp500-change">--</div>
                 <div class="secondary-meta"><span id="sp500-prev">--</span><span id="sp500-symbol">--</span></div>
-                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="sp500-marker" style="left:50%"></div></div></div>
+                <div class="range-bar-sm">
+                    <div class="range-bar-label"><span id="sp500-range-low">--</span><span>52wk</span><span id="sp500-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="sp500-marker" style="left:50%"></div></div>
+                </div>
             </div>
             <div class="secondary-card">
                 <div class="secondary-label">💵 USD Index</div>
                 <div class="secondary-value" id="dxy-price">--</div>
                 <div class="secondary-change" id="dxy-change">--</div>
                 <div class="secondary-meta"><span id="dxy-prev">--</span><span id="dxy-symbol">--</span></div>
-                <div class="range-bar-sm"><div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="dxy-marker" style="left:50%"></div></div></div>
+                <div class="range-bar-sm">
+                    <div class="range-bar-label"><span id="dxy-range-low">--</span><span>52wk</span><span id="dxy-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="dxy-marker" style="left:50%"></div></div>
+                </div>
             </div>
         </div>
         <div class="two-col">
             <div>
-                <div class="section-header">📰 Ag News</div>
-                <div class="news-card" id="news-feed" style="max-height:420px;overflow-y:auto">
+                <div class="section-header" style="display:flex;justify-content:space-between;align-items:center">
+                    <span>📰 Ag News</span>
+                    <a href="/news.html" style="font-size:0.75rem;color:var(--accent);text-decoration:none;text-transform:none;letter-spacing:0">View All →</a>
+                </div>
+                <div class="news-card" id="news-feed">
                     <div class="news-item loading">Loading news...</div>
                 </div>
             </div>
@@ -430,6 +503,11 @@
             </div>
         </div>
     </main>
+    
+    <!-- AI Summary Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content" id="modal-content"></div>
+    </div>
     
     <!-- Footer (loaded from /components/footer.html) -->
     <div id="footer"></div>
@@ -530,7 +608,11 @@
                 document.getElementById('wheat-change').className = 'secondary-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('wheat-prev').textContent = 'prev: $' + fmt(c.prevClose, c.unit);
                 if (c.symbol) document.getElementById('wheat-symbol').textContent = c.symbol;
-                if (c.low52 && c.high52) document.getElementById('wheat-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                if (c.low52 && c.high52) {
+                    document.getElementById('wheat-range-low').textContent = '$' + fmt(c.low52, c.unit);
+                    document.getElementById('wheat-range-high').textContent = '$' + fmt(c.high52, c.unit);
+                    document.getElementById('wheat-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             if (m.livestock?.cattle) {
                 const c = m.livestock.cattle;
@@ -539,7 +621,11 @@
                 document.getElementById('cattle-change').className = 'secondary-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('cattle-prev').textContent = 'prev: $' + c.prevClose.toFixed(2);
                 if (c.symbol) document.getElementById('cattle-symbol').textContent = c.symbol;
-                if (c.low52 && c.high52) document.getElementById('cattle-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                if (c.low52 && c.high52) {
+                    document.getElementById('cattle-range-low').textContent = '$' + c.low52.toFixed(2);
+                    document.getElementById('cattle-range-high').textContent = '$' + c.high52.toFixed(2);
+                    document.getElementById('cattle-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             if (m.livestock?.feeder) {
@@ -549,7 +635,11 @@
                 document.getElementById('feeder-change').className = 'secondary-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('feeder-prev').textContent = 'prev: $' + c.prevClose.toFixed(2);
                 if (c.symbol) document.getElementById('feeder-symbol').textContent = c.symbol;
-                if (c.low52 && c.high52) document.getElementById('feeder-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                if (c.low52 && c.high52) {
+                    document.getElementById('feeder-range-low').textContent = '$' + c.low52.toFixed(2);
+                    document.getElementById('feeder-range-high').textContent = '$' + c.high52.toFixed(2);
+                    document.getElementById('feeder-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             if (m.livestock?.hogs) {
@@ -559,7 +649,11 @@
                 document.getElementById('hogs-change').className = 'secondary-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('hogs-prev').textContent = 'prev: $' + c.prevClose.toFixed(2);
                 if (c.symbol) document.getElementById('hogs-symbol').textContent = c.symbol;
-                if (c.low52 && c.high52) document.getElementById('hogs-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                if (c.low52 && c.high52) {
+                    document.getElementById('hogs-range-low').textContent = '$' + c.low52.toFixed(2);
+                    document.getElementById('hogs-range-high').textContent = '$' + c.high52.toFixed(2);
+                    document.getElementById('hogs-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             if (m.livestock?.milk) {
@@ -569,7 +663,11 @@
                 document.getElementById('milk-change').className = 'secondary-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('milk-prev').textContent = 'prev: $' + c.prevClose.toFixed(2);
                 if (c.symbol) document.getElementById('milk-symbol').textContent = c.symbol;
-                if (c.low52 && c.high52) document.getElementById('milk-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                if (c.low52 && c.high52) {
+                    document.getElementById('milk-range-low').textContent = '$' + c.low52.toFixed(2);
+                    document.getElementById('milk-range-high').textContent = '$' + c.high52.toFixed(2);
+                    document.getElementById('milk-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             if (m.energy?.oil) {
@@ -579,7 +677,11 @@
                 document.getElementById('oil-change').className = 'secondary-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('oil-prev').textContent = 'prev: $' + c.prevClose.toFixed(2);
                 if (c.symbol) document.getElementById('oil-symbol').textContent = c.symbol;
-                if (c.low52 && c.high52) document.getElementById('oil-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                if (c.low52 && c.high52) {
+                    document.getElementById('oil-range-low').textContent = '$' + c.low52.toFixed(2);
+                    document.getElementById('oil-range-high').textContent = '$' + c.high52.toFixed(2);
+                    document.getElementById('oil-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             if (m.metals?.gold) {
@@ -589,7 +691,11 @@
                 document.getElementById('gold-change').className = 'secondary-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('gold-prev').textContent = 'prev: $' + c.prevClose.toFixed(0);
                 if (c.symbol) document.getElementById('gold-symbol').textContent = c.symbol;
-                if (c.low52 && c.high52) document.getElementById('gold-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                if (c.low52 && c.high52) {
+                    document.getElementById('gold-range-low').textContent = '$' + c.low52.toFixed(0);
+                    document.getElementById('gold-range-high').textContent = '$' + c.high52.toFixed(0);
+                    document.getElementById('gold-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             if (m.metals?.silver) {
@@ -599,7 +705,11 @@
                 document.getElementById('silver-change').className = 'secondary-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('silver-prev').textContent = 'prev: $' + c.prevClose.toFixed(2);
                 if (c.symbol) document.getElementById('silver-symbol').textContent = c.symbol;
-                if (c.low52 && c.high52) document.getElementById('silver-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                if (c.low52 && c.high52) {
+                    document.getElementById('silver-range-low').textContent = '$' + c.low52.toFixed(2);
+                    document.getElementById('silver-range-high').textContent = '$' + c.high52.toFixed(2);
+                    document.getElementById('silver-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             if (m.crypto?.bitcoin) {
@@ -609,7 +719,11 @@
                 document.getElementById('btc-change').className = 'secondary-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('btc-prev').textContent = 'prev: $' + c.prevClose.toLocaleString(undefined, {maximumFractionDigits: 0});
                 if (c.symbol) document.getElementById('btc-symbol').textContent = c.symbol;
-                if (c.low52 && c.high52) document.getElementById('btc-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                if (c.low52 && c.high52) {
+                    document.getElementById('btc-range-low').textContent = '$' + c.low52.toLocaleString(undefined, {maximumFractionDigits: 0});
+                    document.getElementById('btc-range-high').textContent = '$' + c.high52.toLocaleString(undefined, {maximumFractionDigits: 0});
+                    document.getElementById('btc-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             if (m.crypto?.kaspa) {
@@ -619,7 +733,11 @@
                 document.getElementById('kas-change').className = 'secondary-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('kas-prev').textContent = 'prev: $' + c.prevClose.toFixed(3);
                 if (c.symbol) document.getElementById('kas-symbol').textContent = c.symbol;
-                if (c.low52 && c.high52) document.getElementById('kas-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                if (c.low52 && c.high52) {
+                    document.getElementById('kas-range-low').textContent = '$' + c.low52.toFixed(3);
+                    document.getElementById('kas-range-high').textContent = '$' + c.high52.toFixed(3);
+                    document.getElementById('kas-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             if (m.indices?.sp500) {
@@ -629,7 +747,11 @@
                 document.getElementById('sp500-change').className = 'secondary-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('sp500-prev').textContent = 'prev: ' + c.prevClose.toLocaleString(undefined, {maximumFractionDigits: 0});
                 if (c.symbol) document.getElementById('sp500-symbol').textContent = c.symbol;
-                if (c.low52 && c.high52) document.getElementById('sp500-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                if (c.low52 && c.high52) {
+                    document.getElementById('sp500-range-low').textContent = c.low52.toLocaleString(undefined, {maximumFractionDigits: 0});
+                    document.getElementById('sp500-range-high').textContent = c.high52.toLocaleString(undefined, {maximumFractionDigits: 0});
+                    document.getElementById('sp500-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             if (m.indices?.dollar) {
@@ -639,20 +761,29 @@
                 document.getElementById('dxy-change').className = 'secondary-change ' + chgClass(c.change);
                 if (c.prevClose) document.getElementById('dxy-prev').textContent = 'prev: ' + c.prevClose.toFixed(2);
                 if (c.symbol) document.getElementById('dxy-symbol').textContent = c.symbol;
-                if (c.low52 && c.high52) document.getElementById('dxy-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                if (c.low52 && c.high52) {
+                    document.getElementById('dxy-range-low').textContent = c.low52.toFixed(2);
+                    document.getElementById('dxy-range-high').textContent = c.high52.toFixed(2);
+                    document.getElementById('dxy-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
             }
             
             if (data.news && data.news.length > 0) {
                 const newsEl = document.getElementById('news-feed');
-                newsEl.innerHTML = data.news.slice(0, 15).map(n => `
+                newsEl.innerHTML = data.news.slice(0, 15).map((n, i) => `
                     <div class="news-item">
                         <a href="${n.link}" target="_blank">${n.title}</a>
-                        <div class="news-source">${n.source || 'Ag News'}</div>
+                        <div class="news-source">
+                            <span>${n.source || 'Ag News'}</span>
+                            <button class="news-summary-btn" onclick="showSummary(${i}, 'markets')">✨ AI Summary</button>
+                        </div>
                     </div>
                 `).join('');
+                window.marketsNews = data.news;
             }
             
-            buildTicker(m, data.news || []);
+            // Fetch richer news from news.json for ticker
+            fetchNewsForTicker(m);
             
         } catch (e) {
             console.error(e);
@@ -691,12 +822,94 @@
             items.push(`<span class="ticker-item"><span class="label">KAS</span><span class="price">$${c.price.toFixed(3)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
         if (news.length > 0) {
-            news.slice(0, 3).forEach(n => {
-                items.push(`<span class="ticker-item news">📰 ${n.title}</span>`);
+            news.slice(0, 5).forEach(n => {
+                const title = n.title.length > 80 ? n.title.substring(0, 77) + '...' : n.title;
+                items.push(`<span class="ticker-item news">📰 ${title}</span>`);
             });
         }
         document.getElementById('ticker').innerHTML = items.join('') + items.join('');
     }
+    
+    // Fetch richer news from news.json for ticker
+    async function fetchNewsForTicker(markets) {
+        try {
+            const res = await fetch('data/news.json?t=' + Date.now());
+            if (res.ok) {
+                const data = await res.json();
+                if (data.items && data.items.length > 0) {
+                    window.newsHubItems = data.items;
+                    buildTicker(markets, data.items);
+                }
+            }
+        } catch (e) {
+            // Fallback to markets news if news.json fails
+            buildTicker(markets, window.marketsNews || []);
+        }
+    }
+    
+    // Modal functions
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('modal-content');
+    
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    
+    function timeAgo(timestamp) {
+        if (!timestamp) return '';
+        const now = Date.now();
+        const diff = Math.floor((now - timestamp) / 1000);
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+        if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+        return new Date(timestamp).toLocaleDateString();
+    }
+    
+    function showSummary(index, source) {
+        let article;
+        if (source === 'markets') {
+            article = window.marketsNews?.[index];
+        } else {
+            article = window.newsHubItems?.[index];
+        }
+        if (!article) return;
+        
+        const summary = article.summary || article.description || 'No summary available. Click "Read Full Article" to view the original.';
+        const isAI = article.summary && article.summary.length > 100;
+        const time = article.timestamp ? timeAgo(article.timestamp) : (article.pubDate ? new Date(article.pubDate).toLocaleDateString() : '');
+        
+        modalContent.innerHTML = 
+            '<div class="modal-header">' +
+                '<div>' +
+                    '<h3>📋 Summary <span class="ai-badge">AI</span></h3>' +
+                    '<p class="ai-note">' + (isAI ? 'Generated by AI from the full article' : 'From article description') + '</p>' +
+                '</div>' +
+                '<button class="modal-close" onclick="closeModal()">×</button>' +
+            '</div>' +
+            '<div class="modal-body">' +
+                '<div class="modal-source">📰 ' + escapeHtml(article.source || 'Ag News') + (time ? ' • ' + time : '') + '</div>' +
+                '<h2 class="modal-title">' + escapeHtml(article.title) + '</h2>' +
+                '<div class="modal-summary">' + escapeHtml(summary) + '</div>' +
+            '</div>' +
+            '<div class="modal-footer">' +
+                '<button class="modal-btn modal-btn-secondary" onclick="closeModal()">Close</button>' +
+                '<a class="modal-btn modal-btn-primary" href="' + article.link + '" target="_blank" rel="noopener">Read Full Article →</a>' +
+            '</div>';
+        
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    // Close modal on overlay click or Escape key
+    modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
     
     loadData();
     setInterval(loadData, 2 * 60 * 1000);
