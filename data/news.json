@@ -1,6 +1,20 @@
 {
   "items": [
     {
+      "id": "db90820ffe46fdd1",
+      "title": "Practical Tips for Small & Medium Dairy Farms in India – Milking Efficiency & Cow Health",
+      "link": "https://www.reddit.com/r/dairyfarming/comments/1qtnh6s/practical_tips_for_small_medium_dairy_farms_in/",
+      "description": "<!-- SC_OFF --><div class=\"md\"><p>Hello everyone! </p> <p>I work in the agricultural engineering space and have been studying how small and medium dairy farms in India can improve milking efficiency while keeping cows healthy. I wanted to share a few practical tips that are realistic and easy to implement:</p> <p>Tips for better milking operations:</p> <ol> <li>Choose the right machine type for herd size – portable bucket systems are great for 10–20 cows, pipeline systems for 20–100 cows.</li> <",
+      "date": "2026-02-02T06:27:20+00:00",
+      "timestamp": 1770013640000,
+      "source": "r/dairyfarming",
+      "category": "community",
+      "icon": "🥛",
+      "thumbnail": "",
+      "summary": "Practical Tips for Small & Medium Dairy Farms in India:\n\n1. Milking Machine Selection: Portable bucket systems are recommended for herds of 10-20 cows, while pipeline systems are better suited for 20-100 cow herds.\n\n2. Milking Routine: Establish a consistent milking routine, milking at the same times each day. This reduces stress on cows and improves milk letdown.\n\n3. Udder Preparation: Properly clean and stimulate cows' udders before milking to maximize milk flow and minimize risk of mastitis.\n\n4. Milking Time: Aim to complete milking within 5-7 minutes per cow to avoid over-milking and udder damage.\n\n5. Cow Health Monitoring: Regularly monitor cows for signs of illness, lameness, or other issues. Address problems promptly to maintain herd health and productivity.\n\n6. Nutrition: Provide a balanced, high-quality diet to support cow health, milk production, and fertility.\n\n7. Facilities Upkeep: Keep milking parlors, housing, and other facilities clean and well-maintained to promote cow comfort and hygiene.\n\nBy implementing these practical tips, small and medium dairy farmers in India can improve milking efficiency, cow health, and overall farm productivity. Regular monitoring and timely interventions are key.",
+      "summaryTimestamp": 1770015478628
+    },
+    {
       "id": "cda71bf321944ed2",
       "title": "What can fix this? Does tire need to be replaced?",
       "link": "https://www.reddit.com/r/tractors/comments/1qtiloa/what_can_fix_this_does_tire_need_to_be_replaced/",
@@ -1275,20 +1289,6 @@
       "summaryTimestamp": 1769997090962
     },
     {
-      "id": "e6bf08d2df65f25f",
-      "title": "Miss Erin escaping due to no fault of her own",
-      "link": "https://www.reddit.com/r/dairyfarming/comments/1qm67j4/miss_erin_escaping_due_to_no_fault_of_her_own/",
-      "description": "<table> <tr><td> <a href=\"https://www.reddit.com/r/dairyfarming/comments/1qm67j4/miss_erin_escaping_due_to_no_fault_of_her_own/\"> <img src=\"https://preview.redd.it/5q1vpgiklefg1.jpeg?width=640&amp;crop=smart&amp;auto=webp&amp;s=0e7eb864c01e89178b28c5c6be99fb9fdca5ae21\" alt=\"Miss Erin escaping due to no fault of her own\" title=\"Miss Erin escaping due to no fault of her own\" /> </a> </td><td> &#32; submitted by &#32; <a href=\"https://www.reddit.com/user/babycino89\"> /u/babycino89 </a> <br/> <span>",
-      "date": "2026-01-25T02:08:47+00:00",
-      "timestamp": 1769306927000,
-      "source": "r/dairyfarming",
-      "category": "community",
-      "icon": "🥛",
-      "thumbnail": "https://preview.redd.it/5q1vpgiklefg1.jpeg?width=640&amp;crop=smart&amp;auto=webp&amp;s=0e7eb864c01e89178b28c5c6be99fb9fdca5ae21",
-      "summary": "<table> <tr><td> <a href=\"https://www.reddit.com/r/dairyfarming/comments/1qm67j4/miss_erin_escaping_due_to_no_fault_of_her_own/\"> <img src=\"https://preview.redd.it/5q1vpgiklefg1.jpeg?width=640&amp;cro...",
-      "summaryTimestamp": 1769997090962
-    },
-    {
       "id": "e3305465c4421d9b",
       "title": "Jan 23 &#124; Weather Update and Market Review",
       "link": "https://farmdoc.illinois.edu/field-crop-production/weather/jan-23-weather-update-and-market-review.html",
@@ -1411,6 +1411,6 @@
   },
   "feedCount": 29,
   "successCount": 125,
-  "summariesGenerated": 15,
-  "updated": "2026-02-02T04:22:25.827Z"
+  "summariesGenerated": 1,
+  "updated": "2026-02-02T06:57:58.829Z"
 }
