@@ -69,7 +69,7 @@
             display: none; position: absolute; bottom: calc(100% + 8px); left: 0; right: 0;
             background: #1a1a22; border: 1px solid var(--accent); border-radius: 8px;
             padding: 12px 14px; z-index: 100; box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            animation: hintIn 0.15s ease-out;
+            animation: hintIn 0.15s ease-out; pointer-events: none;
         }
         .hint-popup::after {
             content: ''; position: absolute; bottom: -6px; left: 24px;
@@ -308,37 +308,15 @@
                                     <option value="wheat">Wheat</option>
                                 </select>
                             </div>
-                            <div class="input-wrap">
-                                <label style="font-size: 0.75rem;">Expected Yield (bu/ac) <span class="hint-icon">?</span></label>
+                            <div>
+                                <label style="font-size: 0.75rem;">Expected Yield (bu/ac)</label>
                                 <input type="number" id="yield" value="180" oninput="calcBreakeven()">
-                                <div class="hint-popup">
-                                    <div class="hint-title">⚡ Yield Checklist</div>
-                                    <ul class="hint-list">
-                                        <li>Your APH (Actual Production History)</li>
-                                        <li>County average vs. your field history</li>
-                                        <li>Trend-adjusted yield for this year</li>
-                                        <li>Soil type & drainage quality of field</li>
-                                        <li>Planting date impact on potential</li>
-                                    </ul>
-                                    <div class="hint-note">Conservative estimates protect your plan. Better to beat your target than miss it.</div>
-                                </div>
                             </div>
                         </div>
                         
-                        <div class="input-wrap">
-                            <label style="font-size: 0.75rem;">Market Price ($/bu) <span class="hint-icon">?</span></label>
+                        <div>
+                            <label style="font-size: 0.75rem;">Market Price ($/bu)</label>
                             <input type="number" id="price" value="4.50" step="0.01" oninput="calcBreakeven()">
-                            <div class="hint-popup">
-                                <div class="hint-title">💲 Price Considerations</div>
-                                <ul class="hint-list">
-                                    <li>Current futures contract price</li>
-                                    <li>Local basis adjustment</li>
-                                    <li>Forward contract commitments</li>
-                                    <li>Harvest vs. spring delivery basis</li>
-                                    <li>On-farm storage premium potential</li>
-                                </ul>
-                                <div class="hint-note">Use the live price above if available, or check your local elevator.</div>
-                            </div>
                         </div>
                     </div>
                     
@@ -510,6 +488,10 @@
                         <span class="result-value" id="profit">+$2/ac</span>
                     </div>
                     <div class="result-row">
+                        <span class="result-label">Return on Investment</span>
+                        <span class="result-value" id="roi">0.2%</span>
+                    </div>
+                    <div class="result-row">
                         <span class="result-label">Yield Needed @ Market</span>
                         <span class="result-value" id="yieldNeeded">180 bu/ac</span>
                     </div>
@@ -672,6 +654,19 @@
         document.getElementById('revenue').textContent = '$' + Math.round(revenue).toLocaleString() + '/ac';
         document.getElementById('yieldNeeded').textContent = Math.round(yieldNeeded) + ' bu/ac';
         
+        // Break-even color: green if price > BE, red if below
+        const beEl = document.getElementById('breakeven');
+        if (price > costPerBu && costPerBu > 0) {
+            beEl.className = 'result-value positive';
+            beEl.style.fontSize = '1.3rem';
+        } else if (price < costPerBu && costPerBu > 0) {
+            beEl.className = 'result-value negative';
+            beEl.style.fontSize = '1.3rem';
+        } else {
+            beEl.className = 'result-value highlight';
+            beEl.style.fontSize = '1.3rem';
+        }
+        
         const profitEl = document.getElementById('profit');
         if (profit >= 0) {
             profitEl.textContent = '+$' + Math.round(profit).toLocaleString() + '/ac';
@@ -680,6 +675,12 @@
             profitEl.textContent = '-$' + Math.abs(Math.round(profit)).toLocaleString() + '/ac';
             profitEl.className = 'result-value negative';
         }
+
+        // ROI
+        const roiEl = document.getElementById('roi');
+        const roiPct = totalCost > 0 ? (profit / totalCost * 100) : 0;
+        roiEl.textContent = (roiPct >= 0 ? '+' : '') + roiPct.toFixed(1) + '%';
+        roiEl.className = 'result-value ' + (roiPct >= 0 ? 'positive' : 'negative');
 
         // Farm total
         const acres = parseFloat(document.getElementById('acres').value) || 0;
@@ -713,7 +714,7 @@
             barHTML += '<div class="cost-bar-seg" style="width:' + pct.toFixed(1) + '%;background:' + COST_COLORS[k] + '">' +
                 '<span class="seg-tip">' + COST_LABELS[k] + ': $' + Math.round(costs[k]) + '/ac (' + pct.toFixed(0) + '%)</span>' +
             '</div>';
-            legendHTML += '<span class="cost-legend-item"><span class="cost-legend-dot" style="background:' + COST_COLORS[k] + '"></span>' + COST_LABELS[k] + ' $' + Math.round(costs[k]) + '</span>';
+            legendHTML += '<span class="cost-legend-item"><span class="cost-legend-dot" style="background:' + COST_COLORS[k] + '"></span>' + COST_LABELS[k] + ' ' + pct.toFixed(0) + '%</span>';
         });
         
         bar.innerHTML = barHTML;
