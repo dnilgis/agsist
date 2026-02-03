@@ -146,7 +146,7 @@
            ============================================ */
         .price-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
         
-        a.card-link { text-decoration: none; color: inherit; display: block; }
+        a.card-link { text-decoration: none; color: inherit; display: flex; flex-direction: column; height: 100%; }
         a.card-link:hover .price-card, a.card-link:focus .price-card,
         a.card-link:hover .secondary-card, a.card-link:focus .secondary-card {
             border-color: var(--accent);
@@ -289,22 +289,28 @@
             /* Morning briefing: stack to 1 column */
             .morning-briefing { grid-template-columns: 1fr; gap: 12px; padding: 14px; }
             
-            /* Price cards: 2-up, equal height */
-            .price-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; align-items: stretch; }
+            /* Price cards: 2-up, ALL same height (cross-row) */
+            .price-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-auto-rows: 1fr;    /* ALL rows same height */
+                gap: 8px;
+            }
             .card-link {
-                display: flex;
+                display: flex !important;    /* override <a> inline */
                 flex-direction: column;
-                align-self: stretch;
+                height: 100%;               /* fill grid cell */
                 min-height: 0;
             }
             .price-card {
                 padding: 10px;
                 overflow: hidden;
-                display: flex;
+                display: flex !important;
                 flex-direction: column;
-                flex: 1;
+                height: 100%;               /* fill link */
+                box-sizing: border-box;
             }
-            .price-card .range-bar { margin-top: auto; }
+            .price-card .price-meta { flex: 1; }    /* meta section absorbs extra space */
+            .price-card .range-bar { margin-top: 6px; }    /* range-bar pinned at bottom */
             .price-header { flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
             .price-label { font-size: 0.8rem; }
             .price-contract { font-size: 0.7rem; padding: 2px 6px; }
@@ -362,7 +368,7 @@
         <div class="ticker" id="ticker"></div>
     </div>
     
-    <main>
+    <main id="main-content">
         <h1 class="sr-only">AGSIST - Free Live Agricultural Commodity Prices, News & Weather Dashboard</h1>
         <div id="welcome-msg" style="margin-bottom:12px;font-size:0.95rem;color:var(--text)"></div>
         
@@ -929,7 +935,7 @@
                 const newsEl = document.getElementById('news-feed');
                 newsEl.innerHTML = data.news.slice(0, 15).map((n, i) => `
                     <div class="news-item">
-                        <a href="${n.link}" target="_blank">${n.title}</a>
+                        <a href="${n.link}" target="_blank" rel="noopener noreferrer">${n.title}</a>
                         <div class="news-source">
                             <span>${n.source || 'Ag News'}</span>
                             <button class="news-summary-btn" onclick="showSummary(${i}, 'markets')">Summary</button>

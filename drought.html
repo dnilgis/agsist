@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0c">
     <title>Drought Monitor - Live Conditions | AGSIST</title>
     <meta name="keywords" content="drought monitor, USDM, drought conditions, drought severity, agricultural drought, drought aid">
     <meta name="description" content="Real-time US Drought Monitor data. State drought percentages, D0-D4 classifications, agricultural impacts, and weekly updates from USDM.">
@@ -11,6 +12,9 @@
     <!-- Open Graph -->
     <meta property="og:title" content="Drought Monitor & Ag Impact | AGSIST">
     <meta property="og:description" content="Live US Drought Monitor data with agricultural impact analysis and USDA aid programs.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Drought Monitor & Ag Impact | AGSIST">
+    <meta name="twitter:description" content="Live US Drought Monitor data with agricultural impact analysis and USDA aid programs.">
     <meta property="og:url" content="https://agsist.com/drought.html">
     <meta property="og:type" content="website">
     <link rel="icon" href="/favicon.png">
@@ -134,7 +138,7 @@
 </head>
 <body>
     <div id="header"></div>
-    <main>
+    <main id="main-content">
         <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Drought Monitor</nav>
 
         <div class="hero">
@@ -144,7 +148,7 @@
 
         <div class="state-bar">
             <label>Your State:</label>
-            <select id="stateSelect"></select>
+            <select id="stateSelect" aria-label="Select state"></select>
             <button class="detect-btn" onclick="detectMyLocation()">📍 Detect</button>
             <span id="apiStatus" class="api-status" style="margin-left: auto;">Connecting...</span>
         </div>
@@ -186,7 +190,7 @@
                     <div class="map-wrap">
                         <img src="https://droughtmonitor.unl.edu/data/png/current/current_usdm.png" alt="Current US Drought Monitor Map" id="droughtMap" loading="lazy">
                     </div>
-                    <div class="map-label">Source: <a href="https://droughtmonitor.unl.edu/" target="_blank" style="color:var(--accent);">US Drought Monitor</a> (NOAA/USDA/UNL)</div>
+                    <div class="map-label">Source: <a href="https://droughtmonitor.unl.edu/" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">US Drought Monitor</a> (NOAA/USDA/UNL)</div>
                 </div>
             </div>
 
@@ -258,11 +262,11 @@
                     <table class="impact-table">
                         <thead><tr><th>Program</th><th>Covers</th><th>Trigger</th><th>Link</th></tr></thead>
                         <tbody>
-                            <tr><td><strong>LFP</strong></td><td>Livestock Forage Disaster</td><td>D2+ for 8 weeks on grazing land</td><td><a href="https://www.fsa.usda.gov/programs-and-services/disaster-assistance-program/livestock-forage/index" target="_blank" style="color:var(--accent);">Apply →</a></td></tr>
-                            <tr><td><strong>ELAP</strong></td><td>Emergency Livestock Assistance</td><td>Livestock losses from drought</td><td><a href="https://www.fsa.usda.gov/programs-and-services/disaster-assistance-program/emergency-assist-for-livestock-background/index" target="_blank" style="color:var(--accent);">Apply →</a></td></tr>
-                            <tr><td><strong>ECP</strong></td><td>Emergency Conservation</td><td>Fence, water facility repair</td><td><a href="https://www.fsa.usda.gov/programs-and-services/conservation-programs/emergency-conservation/index" target="_blank" style="color:var(--accent);">Apply →</a></td></tr>
-                            <tr><td><strong>EM Loans</strong></td><td>Emergency Farm Loans</td><td>Disaster designation by county</td><td><a href="https://www.fsa.usda.gov/programs-and-services/farm-loan-programs/emergency-farm-loans/index" target="_blank" style="color:var(--accent);">Apply →</a></td></tr>
-                            <tr><td><strong>CRP Haying</strong></td><td>CRP emergency haying/grazing</td><td>D2+ in county</td><td><a href="https://www.fsa.usda.gov/programs-and-services/conservation-programs/conservation-reserve-program/index" target="_blank" style="color:var(--accent);">Info →</a></td></tr>
+                            <tr><td><strong>LFP</strong></td><td>Livestock Forage Disaster</td><td>D2+ for 8 weeks on grazing land</td><td><a href="https://www.fsa.usda.gov/programs-and-services/disaster-assistance-program/livestock-forage/index" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">Apply →</a></td></tr>
+                            <tr><td><strong>ELAP</strong></td><td>Emergency Livestock Assistance</td><td>Livestock losses from drought</td><td><a href="https://www.fsa.usda.gov/programs-and-services/disaster-assistance-program/emergency-assist-for-livestock-background/index" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">Apply →</a></td></tr>
+                            <tr><td><strong>ECP</strong></td><td>Emergency Conservation</td><td>Fence, water facility repair</td><td><a href="https://www.fsa.usda.gov/programs-and-services/conservation-programs/emergency-conservation/index" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">Apply →</a></td></tr>
+                            <tr><td><strong>EM Loans</strong></td><td>Emergency Farm Loans</td><td>Disaster designation by county</td><td><a href="https://www.fsa.usda.gov/programs-and-services/farm-loan-programs/emergency-farm-loans/index" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">Apply →</a></td></tr>
+                            <tr><td><strong>CRP Haying</strong></td><td>CRP emergency haying/grazing</td><td>D2+ in county</td><td><a href="https://www.fsa.usda.gov/programs-and-services/conservation-programs/conservation-reserve-program/index" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">Info →</a></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -277,12 +281,12 @@
             <div class="panel-head"><h2>🔗 Official Drought Resources</h2></div>
             <div class="panel-body">
                 <div class="links-grid">
-                    <a href="https://droughtmonitor.unl.edu/" target="_blank" class="ext-link"><strong>US Drought Monitor</strong><span>Official weekly maps & data</span></a>
-                    <a href="https://droughtmonitor.unl.edu/DmData/DataDownload/ComprehensiveStatistics.aspx" target="_blank" class="ext-link"><strong>USDM Data Download</strong><span>CSV/Excel statistics</span></a>
-                    <a href="https://www.drought.gov/" target="_blank" class="ext-link"><strong>Drought.gov</strong><span>Forecasts & planning tools</span></a>
-                    <a href="https://www.cpc.ncep.noaa.gov/products/expert_assessment/sdo_summary.php" target="_blank" class="ext-link"><strong>CPC Drought Outlook</strong><span>Seasonal forecast</span></a>
-                    <a href="https://www.fsa.usda.gov/programs-and-services/disaster-assistance-program/index" target="_blank" class="ext-link"><strong>FSA Disaster Programs</strong><span>Federal aid for farmers</span></a>
-                    <a href="https://nassgeodata.gmu.edu/CropScape/" target="_blank" class="ext-link"><strong>CropScape</strong><span>Crop land cover maps</span></a>
+                    <a href="https://droughtmonitor.unl.edu/" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>US Drought Monitor</strong><span>Official weekly maps & data</span></a>
+                    <a href="https://droughtmonitor.unl.edu/DmData/DataDownload/ComprehensiveStatistics.aspx" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>USDM Data Download</strong><span>CSV/Excel statistics</span></a>
+                    <a href="https://www.drought.gov/" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>Drought.gov</strong><span>Forecasts & planning tools</span></a>
+                    <a href="https://www.cpc.ncep.noaa.gov/products/expert_assessment/sdo_summary.php" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>CPC Drought Outlook</strong><span>Seasonal forecast</span></a>
+                    <a href="https://www.fsa.usda.gov/programs-and-services/disaster-assistance-program/index" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>FSA Disaster Programs</strong><span>Federal aid for farmers</span></a>
+                    <a href="https://nassgeodata.gmu.edu/CropScape/" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>CropScape</strong><span>Crop land cover maps</span></a>
                 </div>
             </div>
         </div>
@@ -402,7 +406,7 @@
                 const stateName = allStates.find(s => s[0] === currentState)?.[1] || currentState;
                 statsEl.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;">
                     <p style="color: var(--dim); margin-bottom: 12px;">Live data temporarily unavailable. View current data on the official site:</p>
-                    <a href="https://droughtmonitor.unl.edu/CurrentMap/StateDroughtMonitor.aspx?${currentState}" target="_blank"
+                    <a href="https://droughtmonitor.unl.edu/CurrentMap/StateDroughtMonitor.aspx?${currentState}" target="_blank" rel="noopener noreferrer"
                        style="display:inline-block;padding:12px 24px;background:var(--accent);color:#000;border-radius:6px;text-decoration:none;font-weight:600;">
                        View ${stateName} Drought Data →
                     </a>

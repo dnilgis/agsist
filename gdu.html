@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0c">
     <title>GDU Calculator - Growing Degree Units for Corn | AGSIST</title>
     <meta name="keywords" content="GDU calculator, growing degree units, corn GDU, heat units, corn development, base 50">
     <meta name="description" content="Free GDU calculator for corn. Track growing degree units, estimate silking dates, and monitor crop development stages.">
@@ -12,6 +13,9 @@
     <!-- Open Graph -->
     <meta property="og:title" content="GDU Calculator - Growing Degree Units | AGSIST">
     <meta property="og:description" content="Free GDU calculator for corn. Track growing degree units and crop development.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="GDU Calculator - Growing Degree Units | AGSIST">
+    <meta name="twitter:description" content="Free GDU calculator for corn. Track growing degree units and crop development.">
     <meta property="og:url" content="https://agsist.com/gdu.html">
     <meta property="og:type" content="website">
     <link rel="icon" href="/favicon.png">
@@ -45,7 +49,7 @@
 <body>
     <div id="header"></div>
 
-    <main>
+    <main id="main-content">
         <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → GDU Calculator</nav>
         <div class="grid-2">
             <div class="panel">
@@ -53,7 +57,7 @@
                 <div class="panel-body">
                     <div style="margin-bottom:20px">
                         <label>Hybrid Maturity (CRM)</label>
-                        <select id="crm" onchange="calcGDU()">
+                        <select id="crm" aria-label="Select comparative relative maturity" onchange="calcGDU()">
                             <option value="80">80-day (2000 GDU)</option>
                             <option value="90">90-day (2300 GDU)</option>
                             <option value="100" selected>100-day (2500 GDU)</option>

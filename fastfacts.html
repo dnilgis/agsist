@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0c">
     <title>Fast Facts - Farm Quick Reference | AGSIST</title>
     <meta name="keywords" content="agriculture statistics, farm facts, USDA Census, crop production data, state farm data, ag calculators">
     <meta name="description" content="Quick reference for farmers. State ag stats from USDA Census, bushel weights, nutrient removal, fertilizer calculators, seeding rates, conversions.">
@@ -11,6 +12,9 @@
     <!-- Open Graph -->
     <meta property="og:title" content="Agricultural Fast Facts & Calculators | AGSIST">
     <meta property="og:description" content="USDA Census data, farm calculators, and state-by-state agricultural statistics.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Agricultural Fast Facts & Calculators | AGSIST">
+    <meta name="twitter:description" content="USDA Census data, farm calculators, and state-by-state agricultural statistics.">
     <meta property="og:url" content="https://agsist.com/fastfacts.html">
     <meta property="og:type" content="website">
     <link rel="icon" href="/favicon.png">
@@ -128,7 +132,7 @@
 </head>
 <body>
     <div id="header"></div>
-    <main>
+    <main id="main-content">
         <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Fast Facts</nav>
         
         <div class="state-hero">
@@ -137,7 +141,7 @@
                 <div class="subtitle">Agriculture quick reference</div>
             </div>
             <div class="state-selector">
-                <select id="stateSelect"></select>
+                <select id="stateSelect" aria-label="Select state"></select>
                 <button class="detect-btn" onclick="detectMyLocation()">📍 Detect</button>
             </div>
         </div>
@@ -147,7 +151,7 @@
         
         <div class="source-note">
             <span>📊</span>
-            <span>State data from <a href="https://www.nass.usda.gov/AgCensus/" target="_blank">USDA Census of Agriculture 2022</a>.</span>
+            <span>State data from <a href="https://www.nass.usda.gov/AgCensus/" target="_blank" rel="noopener noreferrer">USDA Census of Agriculture 2022</a>.</span>
             <a href="/quickstats.html" style="margin-left: auto;">View more data →</a>
         </div>
         
@@ -213,7 +217,7 @@
                     <div class="calc-card">
                         <h3>🌾 Nutrient Removal</h3>
                         <div class="calc-field"><label>Crop</label>
-                            <select id="removalCrop" onchange="calcRemoval()">
+                            <select id="removalCrop" aria-label="Select crop for nutrient removal" onchange="calcRemoval()">
                                 <option value="corn">Corn</option><option value="soybeans">Soybeans</option><option value="wheat">Wheat</option>
                             </select>
                         </div>
@@ -229,7 +233,7 @@
                     <div class="calc-card">
                         <h3>🌱 Seeding Rate</h3>
                         <div class="calc-field"><label>Row Spacing</label>
-                            <select id="rowSpacing" onchange="calcSeeds()">
+                            <select id="rowSpacing" aria-label="Select row spacing" onchange="calcSeeds()">
                                 <option value="30">30 inch</option><option value="20">20 inch</option><option value="15">15 inch</option>
                             </select>
                         </div>
@@ -239,7 +243,7 @@
                     <div class="calc-card">
                         <h3>⚖️ Bushel ↔ Weight</h3>
                         <div class="calc-field"><label>Crop</label>
-                            <select id="buCrop" onchange="calcBushels()">
+                            <select id="buCrop" aria-label="Select crop for bushel weight" onchange="calcBushels()">
                                 <option value="56">Corn (56)</option><option value="60">Soybeans (60)</option><option value="60">Wheat (60)</option>
                             </select>
                         </div>
@@ -432,7 +436,7 @@
         <div class="cta-box">
             <h3>Need Expert Agronomy Advice?</h3>
             <p>Our CCAs create customized nutrient plans and crop insurance recommendations.</p>
-            <a href="https://farmers1st.com" target="_blank" class="cta-btn">Contact Farmers First →</a>
+            <a href="https://farmers1st.com" target="_blank" rel="noopener noreferrer" class="cta-btn">Contact Farmers First →</a>
         </div>
     </main>
     <div id="footer"></div>
@@ -617,7 +621,7 @@
                 <div class="state-stat">
                     <div class="state-stat-value">${s.value}</div>
                     <div class="state-stat-label">${s.label}</div>
-                    <a class="state-stat-link" href="${buildQuickStatsUrl(s.url, s.stat, abbr)}" target="_blank">View on USDA →</a>
+                    <a class="state-stat-link" href="${buildQuickStatsUrl(s.url, s.stat, abbr)}" target="_blank" rel="noopener noreferrer">View on USDA →</a>
                 </div>
             `).join('');
             document.getElementById('stateStats').innerHTML = statsHtml;

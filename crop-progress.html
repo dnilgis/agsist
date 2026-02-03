@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0c">
     <title>Crop Progress & Conditions | AGSIST</title>
     <meta name="keywords" content="crop progress, USDA crop conditions, corn growth stages, soybean growth stages, planting progress">
     <meta name="description" content="USDA crop progress data: planting, growth stages, condition ratings, harvest progress. Visual growing season timeline with links to official NASS data.">
@@ -11,6 +12,9 @@
     <!-- Open Graph -->
     <meta property="og:title" content="Crop Progress & Growth Stages | AGSIST">
     <meta property="og:description" content="Corn, soybean, and wheat growth stage timelines with USDA crop progress links.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Crop Progress & Growth Stages | AGSIST">
+    <meta name="twitter:description" content="Corn, soybean, and wheat growth stage timelines with USDA crop progress links.">
     <meta property="og:url" content="https://agsist.com/crop-progress.html">
     <meta property="og:type" content="website">
     <link rel="icon" href="/favicon.png">
@@ -115,7 +119,7 @@
 </head>
 <body>
     <div id="header"></div>
-    <main>
+    <main id="main-content">
         <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Crop Progress</nav>
 
         <div class="hero">
@@ -125,15 +129,15 @@
 
         <div class="filters">
             <label>Commodity:</label>
-            <select id="commodity" onchange="updateAll()">
+            <select id="commodity" aria-label="Select commodity" onchange="updateAll()">
                 <option value="CORN">Corn</option>
                 <option value="SOYBEANS">Soybeans</option>
                 <option value="WHEAT">Winter Wheat</option>
             </select>
             <label>State:</label>
-            <select id="stateSelect" onchange="updateAll()"></select>
+            <select id="stateSelect" aria-label="Select state" onchange="updateAll()"></select>
             <button class="detect-btn" onclick="detectMyLocation()">📍 Detect</button>
-            <a id="nassLink" href="#" target="_blank" style="margin-left: auto; color: var(--accent); font-size: 0.85rem;">View on USDA NASS →</a>
+            <a id="nassLink" href="#" target="_blank" rel="noopener noreferrer" style="margin-left: auto; color: var(--accent); font-size: 0.85rem;">View on <span class="tip" data-tip="National Agricultural Statistics Service">USDA NASS</span> →</a>
         </div>
 
         <!-- Growing Season Timeline -->
@@ -211,7 +215,7 @@
                         <thead><tr><th>Report</th><th>Released</th><th>Season</th><th>Key Data</th></tr></thead>
                         <tbody>
                             <tr><td class="hl">Crop Progress</td><td>Mondays 4 PM ET</td><td>Apr - Nov</td><td>% planted, emerged, condition, harvest</td></tr>
-                            <tr><td class="hl">WASDE</td><td>~12th of month</td><td>Year-round</td><td>Supply/demand, yield estimates, ending stocks</td></tr>
+                            <tr><td class="hl"><span class="tip" data-tip="World Agricultural Supply &amp; Demand Estimates">WASDE</span></td><td>~12th of month</td><td>Year-round</td><td>Supply/demand, yield estimates, ending stocks</td></tr>
                             <tr><td class="hl">Prospective Plantings</td><td>March 31</td><td>Annual</td><td>Intended acres for major crops</td></tr>
                             <tr><td class="hl">Acreage Report</td><td>June 30</td><td>Annual</td><td>Actual planted acres (replaces intentions)</td></tr>
                             <tr><td class="hl">Grain Stocks</td><td>Quarterly</td><td>Jan, Mar, Jun, Sep</td><td>Stocks in all positions</td></tr>
@@ -227,10 +231,10 @@
             <div class="panel-head"><h2>🔗 Official Data Sources</h2></div>
             <div class="panel-body">
                 <div class="links-grid">
-                    <a href="https://www.nass.usda.gov/Publications/Todays_Reports/" target="_blank" class="ext-link"><strong>Today's Reports</strong><span>Latest NASS publications</span></a>
-                    <a href="https://quickstats.nass.usda.gov/" target="_blank" class="ext-link"><strong>NASS Quick Stats</strong><span>Full historical data</span></a>
-                    <a href="https://www.nass.usda.gov/Charts_and_Maps/Crop_Progress_&_Condition/" target="_blank" class="ext-link"><strong>Crop Progress Maps</strong><span>Visual data from NASS</span></a>
-                    <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank" class="ext-link"><strong>WASDE Reports</strong><span>Monthly supply/demand</span></a>
+                    <a href="https://www.nass.usda.gov/Publications/Todays_Reports/" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>Today's Reports</strong><span>Latest NASS publications</span></a>
+                    <a href="https://quickstats.nass.usda.gov/" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>NASS Quick Stats</strong><span>Full historical data</span></a>
+                    <a href="https://www.nass.usda.gov/Charts_and_Maps/Crop_Progress_&_Condition/" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>Crop Progress Maps</strong><span>Visual data from NASS</span></a>
+                    <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>WASDE Reports</strong><span>Monthly supply/demand</span></a>
                     <a href="/calendar.html" class="ext-link"><strong>USDA Calendar</strong><span>All report dates</span></a>
                     <a href="/gdu.html" class="ext-link"><strong>GDU Calculator</strong><span>Track growing degrees</span></a>
                 </div>
@@ -386,7 +390,7 @@
                     commodity_desc: currentCommodity, statisticcat_desc: s.stat.split(',')[0],
                     state_alpha: currentState, agg_level_desc: 'STATE', year__GE: '2020'
                 });
-                return `<a href="${url}" class="stage-card" target="_blank">
+                return `<a href="${url}" class="stage-card" target="_blank" rel="noopener noreferrer">
                     <div class="icon">${s.icon}</div>
                     <h3>${s.name}</h3>
                     <p>${currentCommodity} ${s.name.toLowerCase()} data for ${stateName}</p>
@@ -398,9 +402,24 @@
             // Milestones
             const cropName = currentCommodity === 'CORN' ? 'Corn' : currentCommodity === 'SOYBEANS' ? 'Soybean' : 'Wheat';
             document.getElementById('msTitle').textContent = `${crop.stages[0].icon} ${cropName} Growth Milestones`;
+            const stageTips = {
+                'VE':'Vegetative Emergence','VC':'Cotyledon stage','V2':'2nd leaf collar',
+                'V6':'6th leaf collar — ear rows determined','VT':'Tasseling — tassel fully visible',
+                'R1':'Silking / First flower','R2':'Blister / Full bloom','R3':'Milk / Beginning pod',
+                'R4':'Dough / Full pod','R5':'Dent / Beginning seed','R6':'Maturity — black layer',
+                'R7':'Beginning maturity','R8':'Full maturity'
+            };
+            function tipGrowth(g) {
+                return g.replace(/\b(VE|VC|V[2-9]|VT|R[1-8])\b/g, (m) =>
+                    stageTips[m] ? `<span class="tip" data-tip="${stageTips[m]}">${m}</span>` : m
+                );
+            }
+            function tipNotes(n) {
+                return n.replace(/\bGDU\b/g, '<span class="tip" data-tip="Growing Degree Units — heat accumulation measure">GDU</span>');
+            }
             const msHtml = `<table class="ms-table"><thead><tr><th>Stage</th><th>Typical Timing</th><th>Growth</th><th>Notes</th></tr></thead><tbody>${
                 crop.milestones.map(([stage, timing, growth, notes]) =>
-                    `<tr><td class="hl">${stage}</td><td>${timing}</td><td>${growth}</td><td>${notes}</td></tr>`
+                    `<tr><td class="hl">${stage}</td><td>${timing}</td><td>${tipGrowth(growth)}</td><td>${tipNotes(notes)}</td></tr>`
                 ).join('')
             }</tbody></table>`;
             document.getElementById('milestoneTable').innerHTML = msHtml;

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0c">
     <title>Spray Weather Conditions | AGSIST</title>
     <meta name="keywords" content="spray conditions, Delta-T, wind speed farming, spray weather, application conditions, inversion risk">
     <meta name="description" content="Real-time spray conditions for farmers. Wind speed, temperature, humidity, Delta-T, inversion risk, and 7-day spray window forecast.">
@@ -11,6 +12,9 @@
     <!-- Open Graph -->
     <meta property="og:title" content="Spray Conditions Forecast | AGSIST">
     <meta property="og:description" content="Live spray conditions with Delta-T, wind, humidity, and 7-day application forecast.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Spray Conditions Forecast | AGSIST">
+    <meta name="twitter:description" content="Live spray conditions with Delta-T, wind, humidity, and 7-day application forecast.">
     <meta property="og:url" content="https://agsist.com/spray.html">
     <meta property="og:type" content="website">
     <link rel="icon" href="/favicon.png">
@@ -37,7 +41,8 @@
         .status-hero.good { background: linear-gradient(135deg, #14532d 0%, #166534 100%); border: 2px solid var(--green); }
         .status-hero.caution { background: linear-gradient(135deg, #713f12 0%, #854d0e 100%); border: 2px solid var(--yellow); }
         .status-hero.poor { background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%); border: 2px solid var(--red); }
-        .status-hero h1 { font-size: 2rem; margin: 0 0 8px 0; color: #fff; }
+        .status-hero .status-title { font-size: 2rem; margin: 0 0 8px 0; color: #fff; font-weight: 700; }
+        #spray-h1 { font-size: 1.3rem; margin: 0 0 16px 0; color: var(--text); font-weight: 700; }
         .status-hero .subtitle { color: rgba(255,255,255,0.8); font-size: 1rem; }
         .status-hero .location { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 8px; }
         
@@ -119,7 +124,7 @@
         @media (max-width: 768px) {
             main { padding: 12px; }
             .status-hero { padding: 24px 16px; }
-            .status-hero h1 { font-size: 1.5rem; }
+            .status-hero .status-title { font-size: 1.5rem; }
             .location-bar { flex-direction: column; }
             .location-bar input { width: 100%; }
             .location-bar button { width: 100%; }
@@ -142,7 +147,7 @@
 <body>
     <div id="header"></div>
     
-    <main>
+    <main id="main-content">
         <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Spray Weather</nav>
         
         <div class="location-bar">
@@ -156,6 +161,8 @@
             <span class="cold-emoji" id="cold-emoji">🥶</span>
             <span class="cold-msg" id="cold-msg"></span>
         </div>
+        
+        <h1 id="spray-h1">🌿 Spray Weather Conditions</h1>
         
         <div id="content">
             <div class="loading">
@@ -370,7 +377,7 @@
             
             document.getElementById('content').innerHTML = `
                 <div class="status-hero ${overall}">
-                    <h1>${statusText[overall]}</h1>
+                    <div class="status-title">${statusText[overall]}</div>
                     <div class="subtitle">${statusSubtext[overall]}</div>
                     <div class="location">📍 ${currentLocation} • Updated ${new Date().toLocaleTimeString()}</div>
                 </div>

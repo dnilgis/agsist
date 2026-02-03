@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0c">
     <title>Wheat Prices Today - Futures & Analysis | AGSIST</title>
     <meta name="description" content="Live wheat futures prices with charts, class comparisons, seasonal analysis, and commentary.">
     <meta name="keywords" content="wheat prices, wheat futures, ZW futures, KC wheat, Minneapolis wheat, Black Sea wheat, Russia wheat, wheat exports, HRW wheat, HRS wheat, SRW wheat">
@@ -11,6 +12,9 @@
     
     <meta property="og:title" content="Wheat Market Dashboard - AGSIST">
     <meta property="og:description" content="Complete wheat market intelligence: all classes, Black Sea, global trade, weather.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Wheat Market Dashboard - AGSIST">
+    <meta name="twitter:description" content="Complete wheat market intelligence: all classes, Black Sea, global trade, weather.">
     <meta property="og:url" content="https://agsist.com/wheat-prices.html">
     <meta property="og:type" content="website">
     
@@ -83,7 +87,7 @@
 </head>
 <body>
     <div id="header"></div>
-    <main>
+    <main id="main-content">
         <div class="dash-wrap">
             <nav class="breadcrumb"><a href="/">Home</a> → Wheat Dashboard</nav>
             
@@ -110,19 +114,19 @@
                     <div class="dash-section-body">
                         <div class="class-grid">
                             <div class="class-card" style="border-left-color:#ef4444">
-                                <h4>🔴 Soft Red Winter (SRW)</h4>
-                                <p><strong>Chicago CBOT - ZW</strong><br>Eastern US. Low protein (~10%). Cakes, cookies, crackers, pastries.</p>
-                                <a href="https://www.barchart.com/futures/quotes/ZW*0/interactive-chart" target="_blank">View ZW Chart →</a>
+                                <h4>🔴 Soft Red Winter (<span class="tip" data-tip="Soft Red Winter — low protein wheat for cakes, cookies, pastries">SRW</span>)</h4>
+                                <p><strong>Chicago <span class="tip" data-tip="Chicago Board of Trade">CBOT</span> - ZW</strong><br>Eastern US. Low protein (~10%). Cakes, cookies, crackers, pastries.</p>
+                                <a href="https://www.barchart.com/futures/quotes/ZW*0/interactive-chart" target="_blank" rel="noopener noreferrer">View ZW Chart →</a>
                             </div>
                             <div class="class-card" style="border-left-color:#f97316">
-                                <h4>🟤 Hard Red Winter (HRW)</h4>
+                                <h4>🟤 Hard Red Winter (<span class="tip" data-tip="Hard Red Winter — bread wheat, highest US volume">HRW</span>)</h4>
                                 <p><strong>Kansas City - KE</strong><br>Great Plains. Med protein (~11-12%). All-purpose & bread flour.</p>
-                                <a href="https://www.barchart.com/futures/quotes/KE*0/interactive-chart" target="_blank">View KE Chart →</a>
+                                <a href="https://www.barchart.com/futures/quotes/KE*0/interactive-chart" target="_blank" rel="noopener noreferrer">View KE Chart →</a>
                             </div>
                             <div class="class-card" style="border-left-color:#eab308">
-                                <h4>🟡 Hard Red Spring (HRS)</h4>
+                                <h4>🟡 Hard Red Spring (<span class="tip" data-tip="Hard Red Spring — premium high-protein bread wheat">HRS</span>)</h4>
                                 <p><strong>Minneapolis - MWE</strong><br>Northern Plains. High protein (~13-14%). Premium bread flour.</p>
-                                <a href="https://www.barchart.com/futures/quotes/MW*0/interactive-chart" target="_blank">View MWE Chart →</a>
+                                <a href="https://www.barchart.com/futures/quotes/MW*0/interactive-chart" target="_blank" rel="noopener noreferrer">View MWE Chart →</a>
                             </div>
                         </div>
                         <div class="info-card" style="margin-top:12px">
@@ -139,32 +143,32 @@
                     </div>
                     <div class="dash-section-body">
                         <div class="price-sources">
-                            <a href="https://www.barchart.com/futures/quotes/ZW*0/interactive-chart" target="_blank" class="price-source">
+                            <a href="https://www.barchart.com/futures/quotes/ZW*0/interactive-chart" target="_blank" rel="noopener noreferrer" class="price-source">
                                 <div class="price-source-icon">📊</div>
                                 <div class="price-source-name">Barchart</div>
                                 <div class="price-source-desc">Charts + Quotes</div>
                             </a>
-                            <a href="https://www.tradingview.com/chart/?symbol=CBOT%3AZW1!" target="_blank" class="price-source">
+                            <a href="https://www.tradingview.com/chart/?symbol=CBOT%3AZW1!" target="_blank" rel="noopener noreferrer" class="price-source">
                                 <div class="price-source-icon">📈</div>
                                 <div class="price-source-name">TradingView</div>
                                 <div class="price-source-desc">Advanced Charts</div>
                             </a>
-                            <a href="https://www.cmegroup.com/markets/agriculture/grains/wheat.quotes.html" target="_blank" class="price-source">
+                            <a href="https://www.cmegroup.com/markets/agriculture/grains/wheat.quotes.html" target="_blank" rel="noopener noreferrer" class="price-source">
                                 <div class="price-source-icon">🏛️</div>
                                 <div class="price-source-name">CME Group</div>
                                 <div class="price-source-desc">Official Data</div>
                             </a>
-                            <a href="https://finance.yahoo.com/quote/ZW=F/" target="_blank" class="price-source">
+                            <a href="https://finance.yahoo.com/quote/ZW=F/" target="_blank" rel="noopener noreferrer" class="price-source">
                                 <div class="price-source-icon">📰</div>
                                 <div class="price-source-name">Yahoo</div>
                                 <div class="price-source-desc">News + Quotes</div>
                             </a>
-                            <a href="https://www.barchart.com/futures/quotes/KE*0" target="_blank" class="price-source">
+                            <a href="https://www.barchart.com/futures/quotes/KE*0" target="_blank" rel="noopener noreferrer" class="price-source">
                                 <div class="price-source-icon">🟤</div>
                                 <div class="price-source-name">KC Wheat</div>
                                 <div class="price-source-desc">HRW - KE</div>
                             </a>
-                            <a href="https://www.barchart.com/futures/quotes/MW*0" target="_blank" class="price-source">
+                            <a href="https://www.barchart.com/futures/quotes/MW*0" target="_blank" rel="noopener noreferrer" class="price-source">
                                 <div class="price-source-icon">🟡</div>
                                 <div class="price-source-name">Mpls Wheat</div>
                                 <div class="price-source-desc">HRS - MWE</div>
@@ -216,10 +220,10 @@
                             </div>
                         </div>
                         <div class="link-grid">
-                            <a href="https://www.sovecon.ru/en/" target="_blank" class="link-item external"><span>🇷🇺 SovEcon (Russia)</span><span>Estimates</span></a>
-                            <a href="https://www.ikar.ru/eng/" target="_blank" class="link-item external"><span>🇷🇺 IKAR (Russia)</span><span>Research</span></a>
-                            <a href="https://www.reuters.com/markets/commodities/" target="_blank" class="link-item external"><span>📰 Reuters Commodities</span><span>Black Sea news</span></a>
-                            <a href="https://www.igc.int/en/default.aspx" target="_blank" class="link-item external"><span>🌐 IGC</span><span>Global data</span></a>
+                            <a href="https://www.sovecon.ru/en/" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🇷🇺 SovEcon (Russia)</span><span>Estimates</span></a>
+                            <a href="https://www.ikar.ru/eng/" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🇷🇺 IKAR (Russia)</span><span>Research</span></a>
+                            <a href="https://www.reuters.com/markets/commodities/" target="_blank" rel="noopener noreferrer" class="link-item external"><span>📰 Reuters Commodities</span><span>Black Sea news</span></a>
+                            <a href="https://www.igc.int/en/default.aspx" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🌐 IGC</span><span>Global data</span></a>
                         </div>
                     </div>
                 </div>
@@ -254,8 +258,8 @@
                             </div>
                         </div>
                         <div class="link-grid" style="margin-top:12px">
-                            <a href="https://ipad.fas.usda.gov/cropexplorer/cropview/commodityView.aspx?cropid=0410000" target="_blank" class="link-item external"><span>🌍 Global Wheat Production</span><span>FAS</span></a>
-                            <a href="https://apps.fas.usda.gov/psdonline/app/index.html" target="_blank" class="link-item external"><span>📊 PSD Online</span><span>S&D by country</span></a>
+                            <a href="https://ipad.fas.usda.gov/cropexplorer/cropview/commodityView.aspx?cropid=0410000" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🌍 Global Wheat Production</span><span>FAS</span></a>
+                            <a href="https://apps.fas.usda.gov/psdonline/app/index.html" target="_blank" rel="noopener noreferrer" class="link-item external"><span>📊 PSD Online</span><span>S&D by country</span></a>
                         </div>
                     </div>
                 </div>
@@ -271,18 +275,18 @@
                             <div class="info-card">
                                 <h4>🇺🇸 US Great Plains</h4>
                                 <p>Kansas, Oklahoma, Texas (HRW). Drought in fall/winter affects establishment. Spring freeze risk. Harvest Jun-Jul.</p>
-                                <a href="https://droughtmonitor.unl.edu/" target="_blank" style="font-size:0.7rem;color:var(--accent)">Drought Monitor →</a>
+                                <a href="https://droughtmonitor.unl.edu/" target="_blank" rel="noopener noreferrer" style="font-size:0.7rem;color:var(--accent)">Drought Monitor →</a>
                             </div>
                             <div class="info-card">
                                 <h4>🇺🇸 Northern Plains</h4>
                                 <p>ND, SD, Montana (HRS). Planted Apr-May, harvest Aug-Sep. Late spring moisture critical.</p>
-                                <a href="https://www.cpc.ncep.noaa.gov/products/predictions/610day/" target="_blank" style="font-size:0.7rem;color:var(--accent)">6-10 Day Outlook →</a>
+                                <a href="https://www.cpc.ncep.noaa.gov/products/predictions/610day/" target="_blank" rel="noopener noreferrer" style="font-size:0.7rem;color:var(--accent)">6-10 Day Outlook →</a>
                             </div>
                         </div>
                         <div class="link-grid" style="margin-top:12px">
-                            <a href="https://www.cpc.ncep.noaa.gov/products/predictions/814day/" target="_blank" class="link-item external"><span>📅 8-14 Day Outlook</span><span>CPC</span></a>
-                            <a href="https://www.tropicaltidbits.com/analysis/models/" target="_blank" class="link-item external"><span>🛰️ GFS/Euro Models</span><span>Tropical Tidbits</span></a>
-                            <a href="https://worldweather.wmo.int/en/home.html" target="_blank" class="link-item external"><span>🌐 World Weather (WMO)</span><span>Global</span></a>
+                            <a href="https://www.cpc.ncep.noaa.gov/products/predictions/814day/" target="_blank" rel="noopener noreferrer" class="link-item external"><span>📅 8-14 Day Outlook</span><span>CPC</span></a>
+                            <a href="https://www.tropicaltidbits.com/analysis/models/" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🛰️ GFS/Euro Models</span><span>Tropical Tidbits</span></a>
+                            <a href="https://worldweather.wmo.int/en/home.html" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🌐 World Weather (WMO)</span><span>Global</span></a>
                         </div>
                     </div>
                 </div>
@@ -295,12 +299,12 @@
                     </div>
                     <div class="dash-section-body">
                         <div class="link-grid">
-                            <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank" class="link-item external"><span>📈 WASDE Report</span><span>Monthly ~10th</span></a>
-                            <a href="https://usda.library.cornell.edu/concern/publications/8336h188j" target="_blank" class="link-item external"><span>🚢 Export Sales</span><span>Thu 8:30am</span></a>
-                            <a href="https://usda.library.cornell.edu/concern/publications/c534fn92g" target="_blank" class="link-item external"><span>🌱 Crop Progress</span><span>Mon 4pm</span></a>
-                            <a href="https://usda.library.cornell.edu/concern/publications/xg94hp534" target="_blank" class="link-item external"><span>🏭 Grain Stocks</span><span>Quarterly</span></a>
-                            <a href="https://usda.library.cornell.edu/concern/publications/fq977t77t" target="_blank" class="link-item external"><span>🌾 Small Grains Summary</span><span>Annual</span></a>
-                            <a href="https://usda.library.cornell.edu/concern/publications/3t945q76s" target="_blank" class="link-item external"><span>🏭 Flour Milling Products</span><span>Monthly</span></a>
+                            <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank" rel="noopener noreferrer" class="link-item external"><span>📈 WASDE Report</span><span>Monthly ~10th</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/8336h188j" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🚢 Export Sales</span><span>Thu 8:30am</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/c534fn92g" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🌱 Crop Progress</span><span>Mon 4pm</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/xg94hp534" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🏭 Grain Stocks</span><span>Quarterly</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/fq977t77t" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🌾 Small Grains Summary</span><span>Annual</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/3t945q76s" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🏭 Flour Milling Products</span><span>Monthly</span></a>
                         </div>
                         <a href="/calendar.html" style="display:block;margin-top:12px;padding:12px;background:var(--accent);color:black;text-align:center;border-radius:6px;text-decoration:none;font-weight:600;font-size:0.8rem">📅 View Full Report Calendar →</a>
                     </div>
@@ -317,10 +321,10 @@
                             <p><strong>US exports ~50% of wheat production.</strong> HRW goes to Mexico, Nigeria, Japan. HRS to Philippines, Japan, Taiwan. SRW to Mexico, Egypt. US competes with Black Sea on price.</p>
                         </div>
                         <div class="link-grid">
-                            <a href="https://usda.library.cornell.edu/concern/publications/8336h188j" target="_blank" class="link-item external"><span>📋 Export Sales Report</span><span>Thu 8:30am</span></a>
-                            <a href="https://www.ams.usda.gov/market-news/grain-and-oilseeds" target="_blank" class="link-item external"><span>🚚 Export Inspections</span><span>AMS</span></a>
-                            <a href="https://www.uswheat.org/" target="_blank" class="link-item external"><span>🌾 US Wheat Associates</span><span>Industry</span></a>
-                            <a href="https://apps.fas.usda.gov/gats/default.aspx" target="_blank" class="link-item external"><span>🌐 GATS Trade Data</span><span>FAS</span></a>
+                            <a href="https://usda.library.cornell.edu/concern/publications/8336h188j" target="_blank" rel="noopener noreferrer" class="link-item external"><span>📋 Export Sales Report</span><span>Thu 8:30am</span></a>
+                            <a href="https://www.ams.usda.gov/market-news/grain-and-oilseeds" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🚚 Export Inspections</span><span>AMS</span></a>
+                            <a href="https://www.uswheat.org/" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🌾 US Wheat Associates</span><span>Industry</span></a>
+                            <a href="https://apps.fas.usda.gov/gats/default.aspx" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🌐 GATS Trade Data</span><span>FAS</span></a>
                         </div>
                     </div>
                 </div>
@@ -407,8 +411,8 @@
                             <p><strong>Protein premiums vary by class and location.</strong> HRS typically $0.50-1.50/bu over HRW. Quality factors: test weight, falling number, vomitoxin. Export basis at Gulf vs PNW differs.</p>
                         </div>
                         <div class="link-grid">
-                            <a href="https://www.barchart.com/futures/quotes/ZW*0/cash-prices" target="_blank" class="link-item external"><span>💵 Cash Wheat Prices</span><span>Barchart</span></a>
-                            <a href="https://www.dtn.com/agriculture/grains/" target="_blank" class="link-item external"><span>📊 DTN Cash Bids</span><span>Regional</span></a>
+                            <a href="https://www.barchart.com/futures/quotes/ZW*0/cash-prices" target="_blank" rel="noopener noreferrer" class="link-item external"><span>💵 Cash Wheat Prices</span><span>Barchart</span></a>
+                            <a href="https://www.dtn.com/agriculture/grains/" target="_blank" rel="noopener noreferrer" class="link-item external"><span>📊 DTN Cash Bids</span><span>Regional</span></a>
                             <a href="/learn.html#basis" class="link-item"><span>📖 Understanding Basis</span><span>Learn</span></a>
                         </div>
                     </div>
@@ -440,10 +444,10 @@
                         <div class="link-grid">
                             <a href="/corn-prices.html" class="link-item"><span>🌽 Corn Dashboard</span><span>AGSIST</span></a>
                             <a href="/soybean-prices.html" class="link-item"><span>🫘 Soybean Dashboard</span><span>AGSIST</span></a>
-                            <a href="https://www.barchart.com/futures/quotes/KE*0" target="_blank" class="link-item external"><span>🟤 KC Wheat (HRW)</span><span>Barchart</span></a>
-                            <a href="https://www.barchart.com/futures/quotes/MW*0" target="_blank" class="link-item external"><span>🟡 Mpls Wheat (HRS)</span><span>Barchart</span></a>
-                            <a href="https://www.barchart.com/futures/quotes/DX*0" target="_blank" class="link-item external"><span>💵 US Dollar Index</span><span>Export factor</span></a>
-                            <a href="https://www.investing.com/commodities/us-wheat?cid=959211" target="_blank" class="link-item external"><span>🇪🇺 Paris Wheat (Euronext)</span><span>EU benchmark</span></a>
+                            <a href="https://www.barchart.com/futures/quotes/KE*0" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🟤 KC Wheat (HRW)</span><span>Barchart</span></a>
+                            <a href="https://www.barchart.com/futures/quotes/MW*0" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🟡 Mpls Wheat (HRS)</span><span>Barchart</span></a>
+                            <a href="https://www.barchart.com/futures/quotes/DX*0" target="_blank" rel="noopener noreferrer" class="link-item external"><span>💵 US Dollar Index</span><span>Export factor</span></a>
+                            <a href="https://www.investing.com/commodities/us-wheat?cid=959211" target="_blank" rel="noopener noreferrer" class="link-item external"><span>🇪🇺 Paris Wheat (Euronext)</span><span>EU benchmark</span></a>
                         </div>
                     </div>
                 </div>
@@ -476,7 +480,7 @@
 
             <div class="dash-footer">
                 <strong>Disclaimer:</strong> This dashboard aggregates publicly available data and links. Prices may be delayed. Nothing here constitutes financial advice. Futures trading involves substantial risk of loss.<br><br>
-                Data sources: <a href="https://www.usda.gov" target="_blank">USDA</a>, <a href="https://www.cmegroup.com" target="_blank">CME Group</a>, <a href="https://www.igc.int" target="_blank">IGC</a>, <a href="https://www.barchart.com" target="_blank">Barchart</a>
+                Data sources: <a href="https://www.usda.gov" target="_blank" rel="noopener noreferrer">USDA</a>, <a href="https://www.cmegroup.com" target="_blank" rel="noopener noreferrer">CME Group</a>, <a href="https://www.igc.int" target="_blank" rel="noopener noreferrer">IGC</a>, <a href="https://www.barchart.com" target="_blank" rel="noopener noreferrer">Barchart</a>
             </div>
         </div>
     </main>

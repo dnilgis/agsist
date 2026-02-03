@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0c">
     <title>Grain Bin Calculator - Free Bushel & Storage Tool | AGSIST</title>
     <meta name="keywords" content="grain bin calculator, bushel capacity, moisture shrink, grain storage, bin volume calculator">
     <meta name="description" content="Free grain bin calculator. Calculate bushel capacity, moisture shrink, and storage volume for round and rectangular bins.">
@@ -12,6 +13,9 @@
     <!-- Open Graph -->
     <meta property="og:title" content="Grain Bin Calculator | AGSIST">
     <meta property="og:description" content="Free grain bin calculator. Bushel capacity, moisture shrink, and storage volume.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Grain Bin Calculator | AGSIST">
+    <meta name="twitter:description" content="Free grain bin calculator. Bushel capacity, moisture shrink, and storage volume.">
     <meta property="og:url" content="https://agsist.com/calculator.html">
     <meta property="og:type" content="website">
     <link rel="icon" href="/favicon.png">
@@ -49,7 +53,7 @@
     <!-- Header -->
     <div id="header"></div>
 
-    <main>
+    <main id="main-content">
         <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Grain Bin Calculator</nav>
         <div class="grid-2">
             <div class="panel">
@@ -57,7 +61,7 @@
                 <div class="panel-body">
                     <div style="margin-bottom:20px">
                         <label>Crop Type</label>
-                        <select id="crop" onchange="calcBin()">
+                        <select id="crop" aria-label="Select crop type" onchange="calcBin()">
                             <option value="corn">Corn (56 lb/bu)</option>
                             <option value="soybeans">Soybeans (60 lb/bu)</option>
                             <option value="wheat">Wheat (60 lb/bu)</option>
@@ -66,7 +70,7 @@
                     </div>
                     <div style="margin-bottom:20px">
                         <label>Bin Shape</label>
-                        <select id="shape" onchange="toggleShape(); calcBin()">
+                        <select id="shape" aria-label="Select bin shape" onchange="toggleShape(); calcBin()">
                             <option value="round">Round</option>
                             <option value="rect">Rectangular</option>
                         </select>

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0c">
     <title>Break-Even Calculator - Free Farm Cost Analysis | AGSIST</title>
     <meta name="description" content="Free break-even calculator for farmers. Calculate cost per bushel, profit margins, and target prices for corn, soybeans, and wheat.">
     <meta name="keywords" content="break even calculator, farm cost calculator, cost per bushel, farming profit calculator">
@@ -11,6 +12,9 @@
     <!-- Open Graph -->
     <meta property="og:title" content="Break-Even Calculator - AGSIST">
     <meta property="og:description" content="Free break-even calculator for farmers. Calculate cost per bushel and profit margins.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Break-Even Calculator - AGSIST">
+    <meta name="twitter:description" content="Free break-even calculator for farmers. Calculate cost per bushel and profit margins.">
     <meta property="og:url" content="https://agsist.com/breakeven.html">
     <meta property="og:type" content="website">
     
@@ -58,7 +62,7 @@
     <!-- Header -->
     <div id="header"></div>
 
-    <main>
+    <main id="main-content">
         <nav class="breadcrumb">
             <a href="/">Home</a> → <a href="/tools.html">Tools</a> → Break-Even Calculator
         </nav>
@@ -73,7 +77,7 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
                             <div>
                                 <label style="font-size: 0.75rem;">Crop</label>
-                                <select id="crop" onchange="calcBreakeven()">
+                                <select id="crop" aria-label="Select crop type" onchange="calcBreakeven()">
                                     <option value="corn">Corn</option>
                                     <option value="soybeans">Soybeans</option>
                                     <option value="wheat">Wheat</option>

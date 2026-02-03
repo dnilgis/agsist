@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0c">
     <title>USDA Quick Stats Explorer | AGSIST</title>
     <meta name="keywords" content="USDA Quick Stats, NASS data, agricultural statistics, crop data, county data, USDA NASS">
     <meta name="description" content="Access official USDA NASS agricultural statistics. Query corn yields, soybean production, livestock inventory, land values by state, county, and year.">
@@ -11,6 +12,9 @@
     <!-- Open Graph -->
     <meta property="og:title" content="USDA Quick Stats Explorer | AGSIST">
     <meta property="og:description" content="Interactive USDA NASS Quick Stats query builder for agricultural data.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="USDA Quick Stats Explorer | AGSIST">
+    <meta name="twitter:description" content="Interactive USDA NASS Quick Stats query builder for agricultural data.">
     <meta property="og:url" content="https://agsist.com/quickstats.html">
     <meta property="og:type" content="website">
     <link rel="icon" href="/favicon.png">
@@ -97,7 +101,7 @@
 </head>
 <body>
     <div id="header"></div>
-    <main>
+    <main id="main-content">
         <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → USDA Quick Stats</nav>
         
         <div class="hero">
@@ -112,7 +116,7 @@
         
         <div class="state-bar">
             <label>Your State:</label>
-            <select id="stateSelect"></select>
+            <select id="stateSelect" aria-label="Select state"></select>
             <button class="detect-btn" onclick="detectMyLocation()">📍 Detect Location</button>
             <span style="color: var(--dim); font-size: 0.75rem; margin-left: auto;">Saved across all AGSIST pages</span>
         </div>
@@ -133,7 +137,7 @@
                 <div class="query-row">
                     <div class="query-field">
                         <label>Commodity</label>
-                        <select id="commodity" onchange="updatePreview()">
+                        <select id="commodity" aria-label="Select commodity" onchange="updatePreview()">
                             <option value="">-- Select --</option>
                             <optgroup label="Grains & Oilseeds">
                                 <option value="CORN">Corn</option>
@@ -159,7 +163,7 @@
                     </div>
                     <div class="query-field">
                         <label>Statistic</label>
-                        <select id="statistic" onchange="updatePreview()">
+                        <select id="statistic" aria-label="Select statistic type" onchange="updatePreview()">
                             <option value="">-- Select --</option>
                             <option value="YIELD">Yield</option>
                             <option value="PRODUCTION">Production</option>
@@ -172,13 +176,13 @@
                     </div>
                     <div class="query-field">
                         <label>State</label>
-                        <select id="queryState" onchange="updatePreview()"></select>
+                        <select id="queryState" aria-label="Select state" onchange="updatePreview()"></select>
                     </div>
                 </div>
                 <div class="query-row">
                     <div class="query-field">
                         <label>Year (Start)</label>
-                        <select id="yearStart" onchange="updatePreview()">
+                        <select id="yearStart" aria-label="Select start year" onchange="updatePreview()">
                             <option value="2020">2020</option>
                             <option value="2015">2015</option>
                             <option value="2010">2010</option>
@@ -187,14 +191,14 @@
                     </div>
                     <div class="query-field">
                         <label>Year (End)</label>
-                        <select id="yearEnd" onchange="updatePreview()">
+                        <select id="yearEnd" aria-label="Select end year" onchange="updatePreview()">
                             <option value="2024">2024</option>
                             <option value="2023">2023</option>
                         </select>
                     </div>
                     <div class="query-field">
                         <label>Geographic Level</label>
-                        <select id="aggLevel" onchange="updatePreview()">
+                        <select id="aggLevel" aria-label="Select geographic level" onchange="updatePreview()">
                             <option value="STATE">State</option>
                             <option value="COUNTY">County</option>
                             <option value="NATIONAL">National</option>
@@ -208,7 +212,7 @@
                 </div>
                 
                 <div class="query-actions">
-                    <a href="#" class="btn btn-primary" id="searchBtn" target="_blank">🔍 Open on USDA Quick Stats</a>
+                    <a href="#" class="btn btn-primary" id="searchBtn" target="_blank" rel="noopener noreferrer">🔍 Open on USDA Quick Stats</a>
                     <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
                 </div>
             </div>
@@ -218,19 +222,19 @@
             <div class="panel-head"><h2>🔗 Official USDA Data Sources</h2></div>
             <div class="panel-body">
                 <div class="ext-links">
-                    <a href="https://quickstats.nass.usda.gov/" target="_blank" class="ext-link">
+                    <a href="https://quickstats.nass.usda.gov/" target="_blank" rel="noopener noreferrer" class="ext-link">
                         <strong>USDA Quick Stats</strong>
                         <span>Full database with advanced filters</span>
                     </a>
-                    <a href="https://www.nass.usda.gov/Quick_Stats/Lite/index.php" target="_blank" class="ext-link">
+                    <a href="https://www.nass.usda.gov/Quick_Stats/Lite/index.php" target="_blank" rel="noopener noreferrer" class="ext-link">
                         <strong>Quick Stats Lite</strong>
                         <span>Simplified interface</span>
                     </a>
-                    <a href="https://www.nass.usda.gov/AgCensus/" target="_blank" class="ext-link">
+                    <a href="https://www.nass.usda.gov/AgCensus/" target="_blank" rel="noopener noreferrer" class="ext-link">
                         <strong>Census of Agriculture</strong>
                         <span>Complete farm data (every 5 years)</span>
                     </a>
-                    <a href="https://www.ers.usda.gov/data-products/" target="_blank" class="ext-link">
+                    <a href="https://www.ers.usda.gov/data-products/" target="_blank" rel="noopener noreferrer" class="ext-link">
                         <strong>ERS Data Products</strong>
                         <span>Economic research & analysis</span>
                     </a>
@@ -284,7 +288,7 @@
                     year__GE: '2020',
                     agg_level_desc: 'STATE'
                 });
-                return `<a href="${url}" class="quick-card" target="_blank">
+                return `<a href="${url}" class="quick-card" target="_blank" rel="noopener noreferrer">
                     <div class="icon">${q.icon}</div>
                     <h3>${q.title}</h3>
                     <p>${q.desc}</p>

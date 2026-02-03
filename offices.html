@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0c">
     <title>USDA Office Finder - All 50 States | AGSIST</title>
     <meta name="keywords" content="USDA office finder, FSA office, NRCS service center, county extension, USDA service center locator">
     <meta name="description" content="Find your local USDA Service Center, FSA office, and NRCS contacts. All 50 states with addresses, phone numbers, and direct links.">
     <link rel="canonical" href="https://agsist.com/offices.html">
     <meta property="og:title" content="USDA Office Finder | AGSIST">
     <meta property="og:description" content="Find your local USDA Service Center, FSA office, and NRCS contacts by state.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="USDA Office Finder | AGSIST">
+    <meta name="twitter:description" content="Find your local USDA Service Center, FSA office, and NRCS contacts by state.">
     <meta property="og:url" content="https://agsist.com/offices.html">
     <meta property="og:type" content="website">
     <link rel="icon" href="/favicon.png">
@@ -58,13 +62,13 @@
 </head>
 <body>
     <div id="header"></div>
-    <main>
+    <main id="main-content">
         <nav class="breadcrumb"><a href="/">Home</a> → Offices</nav>
         <div class="panel">
             <div class="panel-head"><h1>🏛️ USDA Office Finder — All 50 States</h1></div>
             <div class="panel-body">
                 <div class="search-row">
-                    <select id="stateSelect"><option value="">Select your state...</option></select>
+                    <select id="stateSelect" aria-label="Select state"><option value="">Select your state...</option></select>
                     <button onclick="detectState()">📍 Detect</button>
                 </div>
                 <div class="office-card" id="result"></div>
@@ -74,12 +78,12 @@
             <div class="panel-head"><h2>🔗 Quick Links</h2></div>
             <div class="panel-body">
                 <div class="quick-grid">
-                    <a href="https://offices.sc.egov.usda.gov/locator/app" target="_blank" class="quick-card"><span>🔍 Service Center Locator</span><small>Find any USDA office by address</small></a>
-                    <a href="https://www.farmers.gov/" target="_blank" class="quick-card"><span>🌾 Farmers.gov</span><small>Programs, loans, disaster assistance</small></a>
-                    <a href="https://www.fsa.usda.gov/programs-and-services/" target="_blank" class="quick-card"><span>📋 FSA Programs</span><small>CRP, ARC, PLC, loans</small></a>
-                    <a href="https://www.nrcs.usda.gov/getting-assistance" target="_blank" class="quick-card"><span>🌱 NRCS Assistance</span><small>EQIP, CSP, conservation</small></a>
-                    <a href="https://www.rd.usda.gov/" target="_blank" class="quick-card"><span>🏠 Rural Development</span><small>Housing, business, utilities</small></a>
-                    <a href="https://www.rma.usda.gov/tools" target="_blank" class="quick-card"><span>🛡️ Crop Insurance</span><small>RMA tools & agents</small></a>
+                    <a href="https://offices.sc.egov.usda.gov/locator/app" target="_blank" rel="noopener noreferrer" class="quick-card"><span>🔍 Service Center Locator</span><small>Find any USDA office by address</small></a>
+                    <a href="https://www.farmers.gov/" target="_blank" rel="noopener noreferrer" class="quick-card"><span>🌾 Farmers.gov</span><small>Programs, loans, disaster assistance</small></a>
+                    <a href="https://www.fsa.usda.gov/programs-and-services/" target="_blank" rel="noopener noreferrer" class="quick-card"><span>📋 <span class="tip" data-tip="Farm Service Agency — farm programs &amp; loans">FSA</span> Programs</span><small><span class="tip" data-tip="Conservation Reserve Program">CRP</span>, <span class="tip" data-tip="Agriculture Risk Coverage">ARC</span>, <span class="tip" data-tip="Price Loss Coverage">PLC</span>, loans</small></a>
+                    <a href="https://www.nrcs.usda.gov/getting-assistance" target="_blank" rel="noopener noreferrer" class="quick-card"><span>🌱 <span class="tip" data-tip="Natural Resources Conservation Service">NRCS</span> Assistance</span><small><span class="tip" data-tip="Environmental Quality Incentives Program">EQIP</span>, <span class="tip" data-tip="Conservation Stewardship Program">CSP</span>, conservation</small></a>
+                    <a href="https://www.rd.usda.gov/" target="_blank" rel="noopener noreferrer" class="quick-card"><span>🏠 Rural Development</span><small>Housing, business, utilities</small></a>
+                    <a href="https://www.rma.usda.gov/tools" target="_blank" rel="noopener noreferrer" class="quick-card"><span>🛡️ Crop Insurance</span><small><span class="tip" data-tip="Risk Management Agency — crop insurance">RMA</span> tools &amp; agents</small></a>
                 </div>
             </div>
         </div>
@@ -161,8 +165,8 @@
             '<div class="office-row"><span class="office-label">Phone</span><span class="office-value"><a href="tel:' + o.phone.replace(/[^0-9]/g,'') + '">' + o.phone + '</a></span></div>' +
             '<div class="office-row"><span class="office-label">City</span><span class="office-value">' + o.city + ', ' + code + '</span></div>' +
             '<div class="office-links">' +
-                '<a class="office-link" href="https://offices.sc.egov.usda.gov/locator/app?state=' + code + '" target="_blank">Find county offices in ' + code + ' →</a>' +
-                '<a class="office-link" href="https://www.nrcs.usda.gov/contact/find-a-service-center" target="_blank">NRCS offices →</a>' +
+                '<a class="office-link" href="https://offices.sc.egov.usda.gov/locator/app?state=' + code + '" target="_blank" rel="noopener noreferrer">Find county offices in ' + code + ' →</a>' +
+                '<a class="office-link" href="https://www.nrcs.usda.gov/contact/find-a-service-center" target="_blank" rel="noopener noreferrer">NRCS offices →</a>' +
             '</div>';
         card.classList.add('active');
         sel.value = code;
