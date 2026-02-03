@@ -308,15 +308,37 @@
                                     <option value="wheat">Wheat</option>
                                 </select>
                             </div>
-                            <div>
-                                <label style="font-size: 0.75rem;">Expected Yield (bu/ac)</label>
+                            <div class="input-wrap">
+                                <label style="font-size: 0.75rem;">Expected Yield (bu/ac) <span class="hint-icon">?</span></label>
                                 <input type="number" id="yield" value="180" oninput="calcBreakeven()">
+                                <div class="hint-popup" inert>
+                                    <div class="hint-title">⚡ Yield Checklist</div>
+                                    <ul class="hint-list">
+                                        <li>Your APH (Actual Production History)</li>
+                                        <li>County average vs. your field history</li>
+                                        <li>Trend-adjusted yield for this year</li>
+                                        <li>Soil type & drainage quality of field</li>
+                                        <li>Planting date impact on potential</li>
+                                    </ul>
+                                    <div class="hint-note">Conservative estimates protect your plan. Better to beat your target than miss it.</div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div>
-                            <label style="font-size: 0.75rem;">Market Price ($/bu)</label>
+                        <div class="input-wrap">
+                            <label style="font-size: 0.75rem;">Market Price ($/bu) <span class="hint-icon">?</span></label>
                             <input type="number" id="price" value="4.50" step="0.01" oninput="calcBreakeven()">
+                            <div class="hint-popup" inert>
+                                <div class="hint-title">💲 Price Considerations</div>
+                                <ul class="hint-list">
+                                    <li>Current futures contract price</li>
+                                    <li>Local basis adjustment (+/- from futures)</li>
+                                    <li>Forward contract commitments</li>
+                                    <li>Harvest vs. spring delivery basis</li>
+                                    <li>On-farm storage premium potential</li>
+                                </ul>
+                                <div class="hint-note">Use the live price above if available, or check your local elevator.</div>
+                            </div>
                         </div>
                     </div>
                     
@@ -327,7 +349,7 @@
                             <div class="input-wrap">
                                 <label style="font-size: 0.75rem;">Seed <span class="hint-icon">?</span></label>
                                 <input type="number" id="seed" value="125" oninput="calcBreakeven()">
-                                <div class="hint-popup">
+                                <div class="hint-popup" inert>
                                     <div class="hint-title">🌱 Don't Forget</div>
                                     <ul class="hint-list">
                                         <li>Base seed cost per bag</li>
@@ -341,7 +363,7 @@
                             <div class="input-wrap">
                                 <label style="font-size: 0.75rem;">Fertilizer <span class="hint-icon">?</span></label>
                                 <input type="number" id="fertilizer" value="175" oninput="calcBreakeven()">
-                                <div class="hint-popup">
+                                <div class="hint-popup" inert>
                                     <div class="hint-title">🧪 Don't Forget</div>
                                     <ul class="hint-list">
                                         <li>Nitrogen (anhydrous, urea, or UAN)</li>
@@ -357,7 +379,7 @@
                             <div class="input-wrap">
                                 <label style="font-size: 0.75rem;">Chemicals <span class="hint-icon">?</span></label>
                                 <input type="number" id="chemicals" value="65" oninput="calcBreakeven()">
-                                <div class="hint-popup">
+                                <div class="hint-popup" inert>
                                     <div class="hint-title">🧴 Don't Forget</div>
                                     <ul class="hint-list">
                                         <li>Pre-emerge herbicides</li>
@@ -372,7 +394,7 @@
                             <div class="input-wrap">
                                 <label style="font-size: 0.75rem;">Crop Insurance <span class="hint-icon">?</span></label>
                                 <input type="number" id="insurance" value="35" oninput="calcBreakeven()">
-                                <div class="hint-popup">
+                                <div class="hint-popup" inert>
                                     <div class="hint-title">🛡️ Don't Forget</div>
                                     <ul class="hint-list">
                                         <li>Net premium (after federal subsidy)</li>
@@ -394,7 +416,7 @@
                             <div class="input-wrap">
                                 <label style="font-size: 0.75rem;">Machinery <span class="hint-icon">?</span></label>
                                 <input type="number" id="machinery" value="85" oninput="calcBreakeven()">
-                                <div class="hint-popup">
+                                <div class="hint-popup" inert>
                                     <div class="hint-title">🚜 Don't Forget</div>
                                     <ul class="hint-list">
                                         <li>Fuel & lube (all field passes)</li>
@@ -409,7 +431,7 @@
                             <div class="input-wrap">
                                 <label style="font-size: 0.75rem;">Labor <span class="hint-icon">?</span></label>
                                 <input type="number" id="labor" value="35" oninput="calcBreakeven()">
-                                <div class="hint-popup">
+                                <div class="hint-popup" inert>
                                     <div class="hint-title">👷 Don't Forget</div>
                                     <ul class="hint-list">
                                         <li>Hired labor (hourly × hours/ac)</li>
@@ -423,7 +445,7 @@
                             <div class="input-wrap">
                                 <label style="font-size: 0.75rem;">Land Rent/Cost <span class="hint-icon">?</span></label>
                                 <input type="number" id="land" value="250" oninput="calcBreakeven()">
-                                <div class="hint-popup">
+                                <div class="hint-popup" inert>
                                     <div class="hint-title">🏡 Don't Forget</div>
                                     <ul class="hint-list">
                                         <li>Cash rent (or flex rent estimate)</li>
@@ -438,7 +460,7 @@
                             <div class="input-wrap">
                                 <label style="font-size: 0.75rem;">Overhead <span class="hint-icon">?</span></label>
                                 <input type="number" id="overhead" value="38" oninput="calcBreakeven()">
-                                <div class="hint-popup">
+                                <div class="hint-popup" inert>
                                     <div class="hint-title">📋 Don't Forget</div>
                                     <ul class="hint-list">
                                         <li>Interest on operating loan</li>
