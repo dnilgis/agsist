@@ -101,38 +101,63 @@
         }
         
         /* ============================================
-           MORNING BRIEFING
+           MORNING BRIEFING — hero section
            ============================================ */
         .morning-briefing {
-            background: linear-gradient(135deg, #1a1500 0%, var(--card) 50%, #0a0a1a 100%);
-            border: 1px solid var(--accent);
+            background: var(--card);
+            border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 16px 18px;
+            padding: 0;
             margin-bottom: 14px;
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 14px;
-            align-items: start;
+            overflow: hidden;
         }
-        .briefing-section { min-width: 0; }
-        .briefing-label { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-        .briefing-prices { display: flex; flex-direction: column; gap: 4px; }
-        .bp-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
-        .bp-name { color: var(--dim); }
-        .bp-price { color: var(--text); font-weight: 600; }
-        .bp-chg { font-size: 0.8rem; font-weight: 600; margin-left: 6px; }
+        .briefing-section {
+            min-width: 0;
+            padding: 20px 22px;
+        }
+        .briefing-section:not(:last-child) {
+            border-right: 1px solid var(--border);
+        }
+        .briefing-label {
+            font-size: 0.7rem;
+            color: var(--dim);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        /* Prices column */
+        .briefing-prices { display: flex; flex-direction: column; gap: 8px; }
+        .bp-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.95rem; }
+        .bp-name { color: var(--text); font-weight: 500; }
+        .bp-vals { display: flex; align-items: center; gap: 8px; }
+        .bp-price { color: var(--text); font-weight: 700; font-size: 1rem; }
+        .bp-chg { font-size: 0.85rem; font-weight: 600; }
         .bp-chg.up { color: var(--green); }
         .bp-chg.down { color: var(--red); }
-        .briefing-wx { font-size: 0.9rem; color: var(--text); line-height: 1.6; }
-        .briefing-wx .wx-temp { font-size: 1.3rem; font-weight: 700; }
-        .briefing-reports { display: flex; flex-direction: column; gap: 4px; }
-        .br-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
+        .bp-chg.flat { color: var(--dim); }
+        /* Weather column */
+        .briefing-wx { color: var(--text); line-height: 1.6; }
+        .wx-main { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+        .wx-temp-big { font-size: 2rem; font-weight: 700; line-height: 1; }
+        .wx-condition { font-size: 1rem; color: var(--text); font-weight: 500; }
+        .wx-detail { font-size: 0.85rem; color: var(--dim); line-height: 1.6; }
+        .wx-location { font-size: 0.75rem; color: var(--dim); margin-top: 6px; font-style: italic; }
+        /* Reports column */
+        .briefing-reports { display: flex; flex-direction: column; gap: 8px; }
+        .br-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
         .br-name { color: var(--text); font-weight: 600; }
-        .br-date { color: var(--dim); }
+        .br-right { display: flex; align-items: center; gap: 8px; }
+        .br-date { color: var(--dim); font-size: 0.85rem; }
         .br-impact { font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 8px; }
         .br-impact.high { background: rgba(239,68,68,0.15); color: #ef4444; }
         .br-impact.medium { background: rgba(245,158,11,0.15); color: #f59e0b; }
-        .briefing-link { font-size: 0.75rem; color: var(--accent); text-decoration: none; margin-top: 4px; display: inline-block; }
+        .briefing-link { font-size: 0.8rem; color: var(--accent); text-decoration: none; margin-top: 8px; display: inline-block; }
         .briefing-link:hover { text-decoration: underline; }
 
         /* ============================================
@@ -287,7 +312,9 @@
         
         @media (max-width: 767px) {
             /* Morning briefing: stack to 1 column */
-            .morning-briefing { grid-template-columns: 1fr; gap: 12px; padding: 14px; }
+            .morning-briefing { grid-template-columns: 1fr; padding: 0; }
+            .briefing-section:not(:last-child) { border-right: none; border-bottom: 1px solid var(--border); }
+            .briefing-section { padding: 16px; }
             
             /* Price cards: 2-up, ALL same height (cross-row) */
             .price-grid {
@@ -386,26 +413,28 @@
         <!-- Morning Briefing -->
         <div class="morning-briefing" id="morning-briefing">
             <div class="briefing-section">
-                <div class="briefing-label">📋 Morning Briefing</div>
+                <div class="briefing-label">Futures — Front Month</div>
                 <div class="briefing-prices" id="briefing-prices">
-                    <div class="bp-row"><span class="bp-name">🌽 Corn</span><span><span class="bp-price" id="bp-corn">--</span><span class="bp-chg" id="bp-corn-chg"></span></span></div>
-                    <div class="bp-row"><span class="bp-name">🫘 Beans</span><span><span class="bp-price" id="bp-soy">--</span><span class="bp-chg" id="bp-soy-chg"></span></span></div>
-                    <div class="bp-row"><span class="bp-name">🌾 Wheat</span><span><span class="bp-price" id="bp-wheat">--</span><span class="bp-chg" id="bp-wheat-chg"></span></span></div>
+                    <div class="bp-row"><span class="bp-name">🌽 Corn</span><span class="bp-vals"><span class="bp-price" id="bp-corn">--</span><span class="bp-chg flat" id="bp-corn-chg"></span></span></div>
+                    <div class="bp-row"><span class="bp-name">🫘 Soybeans</span><span class="bp-vals"><span class="bp-price" id="bp-soy">--</span><span class="bp-chg flat" id="bp-soy-chg"></span></span></div>
+                    <div class="bp-row"><span class="bp-name">🌾 Wheat</span><span class="bp-vals"><span class="bp-price" id="bp-wheat">--</span><span class="bp-chg flat" id="bp-wheat-chg"></span></span></div>
                 </div>
-                <a href="/ag-odds.html" class="briefing-link">🎯 Ag Odds & Outlook →</a>
             </div>
             <div class="briefing-section">
-                <div class="briefing-label">🌤️ Local Weather</div>
+                <div class="briefing-label">Weather — <span id="wx-location-label">Barron, WI</span></div>
                 <div class="briefing-wx" id="briefing-wx">
-                    <span class="wx-temp" id="bwx-temp">--</span>
-                    <span id="bwx-desc">Loading...</span>
-                    <div style="font-size:0.8rem;color:var(--dim);margin-top:4px" id="bwx-wind"></div>
+                    <div class="wx-main">
+                        <span class="wx-temp-big" id="bwx-temp">--</span>
+                        <span class="wx-condition" id="bwx-desc">Loading...</span>
+                    </div>
+                    <div class="wx-detail" id="bwx-wind"></div>
+                    <div class="wx-detail" id="bwx-hilo"></div>
                 </div>
             </div>
             <div class="briefing-section">
-                <div class="briefing-label">📅 Reporting This Week</div>
+                <div class="briefing-label">USDA Reports This Week</div>
                 <div class="briefing-reports" id="briefing-reports">
-                    <div style="color:var(--dim);font-size:0.8rem">Loading...</div>
+                    <div style="color:var(--dim);font-size:0.85rem">Loading...</div>
                 </div>
                 <a href="/calendar.html" class="briefing-link">Full Calendar →</a>
             </div>
@@ -641,7 +670,7 @@
                         <div class="fc-desc" id="wx-tomorrow-desc">--</div>
                     </div>
                     <div class="forecast-card">
-                        <div class="fc-label">TOM NIGHT</div>
+                        <div class="fc-label">TOM. NIGHT</div>
                         <div class="fc-icon" id="wx-tomnight-icon">--</div>
                         <div class="fc-temp" id="wx-tomnight-temp">--</div>
                         <div class="fc-desc" id="wx-tomnight-desc">--</div>
@@ -1239,9 +1268,9 @@
         var html = upcoming.slice(0, 4).map(function(r) {
             var isPast = r.dateObj < now;
             var displayName = r.name === 'WASDE' ? '<span class="tip" data-tip="World Ag Supply &amp; Demand Estimates">WASDE</span>' : r.name;
-            return '<div class="br-row' + (isPast ? ' style="opacity:0.5"' : '') + '">' +
+            return '<div class="br-row"' + (isPast ? ' style="opacity:0.5"' : '') + '>' +
                 '<span class="br-name">' + displayName + '</span>' +
-                '<span style="display:flex;align-items:center;gap:6px">' +
+                '<span class="br-right">' +
                     '<span class="br-impact ' + r.impact + '">' + r.impact.charAt(0).toUpperCase() + '</span>' +
                     '<span class="br-date">' + r.date + '</span>' +
                 '</span>' +
@@ -1262,8 +1291,26 @@
         var unit = p.temperatureUnit;
         document.getElementById('bwx-temp').textContent = temp + '°' + unit;
         document.getElementById('bwx-desc').textContent = p.shortForecast;
-        if (p.windSpeed) {
-            document.getElementById('bwx-wind').textContent = '💨 Wind: ' + p.windSpeed + ' ' + p.windDirection;
+        
+        // Wind
+        if (p.windSpeed && p.windSpeed !== '0 mph') {
+            document.getElementById('bwx-wind').textContent = '💨 ' + p.windSpeed + ' ' + (p.windDirection || '');
+        } else {
+            document.getElementById('bwx-wind').textContent = '💨 Calm';
+        }
+        
+        // Hi/Lo from first two periods (today + tonight)
+        if (periods[1]) {
+            var hi, lo;
+            if (p.isDaytime) {
+                hi = p.temperature;
+                lo = periods[1].temperature;
+            } else {
+                lo = p.temperature;
+                hi = periods[1] ? periods[1].temperature : '--';
+            }
+            var hiloEl = document.getElementById('bwx-hilo');
+            if (hiloEl) hiloEl.textContent = 'High ' + hi + '° / Low ' + lo + '°';
         }
     }
     
@@ -1288,8 +1335,24 @@
                 fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`)
                     .then(r => r.json())
                     .then(data => {
-                        const county = data.address?.county || data.address?.city || data.address?.state || '';
+                        const city = data.address?.city || data.address?.town || data.address?.village || '';
+                        const state = data.address?.state || '';
+                        const county = data.address?.county || city || state;
                         if (county) setWelcome(county);
+                        // Update weather location label
+                        var locLabel = document.getElementById('wx-location-label');
+                        if (locLabel && (city || county)) {
+                            var short = city || county.replace(' County', '');
+                            if (state) {
+                                // Abbreviate state
+                                var stAbbr = state.length > 3 ? state.substring(0, 2).toUpperCase() : state;
+                                var stateMap = {'Wisconsin':'WI','Minnesota':'MN','Iowa':'IA','Illinois':'IL','Indiana':'IN','Ohio':'OH','Michigan':'MI','North Dakota':'ND','South Dakota':'SD','Nebraska':'NE','Kansas':'KS','Missouri':'MO','Montana':'MT','Wyoming':'WY','Colorado':'CO','Texas':'TX','Oklahoma':'OK','Arkansas':'AR','Louisiana':'LA','Mississippi':'MS','Alabama':'AL','Georgia':'GA','Florida':'FL','Tennessee':'TN','Kentucky':'KY','Virginia':'VA','North Carolina':'NC','South Carolina':'SC','Pennsylvania':'PA','New York':'NY','California':'CA','Oregon':'OR','Washington':'WA','Idaho':'ID','Utah':'UT','Arizona':'AZ','Nevada':'NV','New Mexico':'NM','Maryland':'MD','Delaware':'DE','New Jersey':'NJ','Connecticut':'CT','Massachusetts':'MA','Vermont':'VT','New Hampshire':'NH','Maine':'ME','Rhode Island':'RI','West Virginia':'WV','Hawaii':'HI','Alaska':'AK'};
+                                stAbbr = stateMap[state] || stAbbr;
+                                locLabel.textContent = short + ', ' + stAbbr;
+                            } else {
+                                locLabel.textContent = short;
+                            }
+                        }
                     })
                     .catch(() => setWelcome(''));
             },
