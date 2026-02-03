@@ -1,12 +1,12 @@
 {
-  "updated": "2026-02-03T19:17:37.058Z",
+  "updated": "2026-02-03T19:27:36.367Z",
   "totalMarkets": 8,
   "categories": {
     "tariffs": [
       {
         "id": "0x49686d26fb712515cd5e12c23f0a1c7e10214c7faa3cb0a730aabe0c33694082",
         "question": "Will Trump deport 250,000-500,000 people?",
-        "pct": 87,
+        "pct": 90,
         "volume": 1269676,
         "endDate": "2025-12-31T12:00:00Z",
         "slug": "how-many-people-will-trump-deport-in-2025"
@@ -39,7 +39,7 @@
         "id": "0x8e7a03cb1970e2ad6533b01892403516b6b3f5b5fa90ed7d104c28b27e40ba00",
         "question": "MicroStrategy sells any Bitcoin by June 30, 2026?",
         "pct": 12,
-        "volume": 503794,
+        "volume": 504926,
         "endDate": "2026-07-01T04:00:00Z",
         "slug": "microstrategy-sell-any-bitcoin-in-2025"
       },
