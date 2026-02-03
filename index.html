@@ -225,7 +225,7 @@
         /* ============================================
            SECONDARY CARDS
            ============================================ */
-        .secondary-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 12px; }
+        .secondary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
         .secondary-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 12px; cursor: pointer; transition: all 0.2s; position: relative; }
         .secondary-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(230,176,66,0.15); }
         .secondary-label { font-size: 0.9rem; color: var(--dim); margin-bottom: 6px; }
@@ -303,7 +303,7 @@
         @media (min-width: 768px) {
             main { padding: 16px 20px; }
             .price-grid { grid-template-columns: repeat(4, 1fr); }
-            .secondary-grid { grid-template-columns: repeat(3, 1fr); }
+            .secondary-grid { grid-template-columns: repeat(4, 1fr); }
             .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
             .two-col > div { display: flex; flex-direction: column; }
             .two-col .news-card { flex: 1; max-height: 700px; }
@@ -312,7 +312,7 @@
         
         @media (min-width: 1200px) {
             main { padding: 16px 24px; }
-            .secondary-grid { grid-template-columns: repeat(6, 1fr); }
+            .secondary-grid { grid-template-columns: repeat(4, 1fr); }
             .weather-card iframe { height: 400px; }
         }
         
@@ -614,6 +614,16 @@
                     <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="oil-marker" style="left:50%"></div></div>
                 </div>
             </div>
+            <div class="secondary-card">
+                <div class="secondary-label">🔥 Natural Gas</div>
+                <div class="secondary-value" id="natgas-price">--</div>
+                <div class="secondary-change" id="natgas-change">--</div>
+                <div class="secondary-meta"><span id="natgas-prev">--</span><span id="natgas-symbol">--</span></div>
+                <div class="range-bar-sm">
+                    <div class="range-bar-label"><span id="natgas-range-low">--</span><span>52wk</span><span id="natgas-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="natgas-marker" style="left:50%"></div></div>
+                </div>
+            </div>
         </div>
         
         <div class="section-header">Metals & Crypto</div>
@@ -646,6 +656,16 @@
                 <div class="range-bar-sm">
                     <div class="range-bar-label"><span id="btc-range-low">--</span><span>52wk</span><span id="btc-range-high">--</span></div>
                     <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="btc-marker" style="left:50%"></div></div>
+                </div>
+            </div>
+            <div class="secondary-card">
+                <div class="secondary-label">⟠ Ethereum</div>
+                <div class="secondary-value" id="eth-price">--</div>
+                <div class="secondary-change" id="eth-change">--</div>
+                <div class="secondary-meta"><span id="eth-prev">--</span><span id="eth-symbol">--</span></div>
+                <div class="range-bar-sm">
+                    <div class="range-bar-label"><span id="eth-range-low">--</span><span>52wk</span><span id="eth-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="eth-marker" style="left:50%"></div></div>
                 </div>
             </div>
             <div class="secondary-card">
@@ -959,6 +979,20 @@
                 }
             }
             
+            if (m.energy?.natgas) {
+                const c = m.energy.natgas;
+                document.getElementById('natgas-price').textContent = '$' + c.price.toFixed(2);
+                document.getElementById('natgas-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('natgas-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('natgas-prev').textContent = 'prev: $' + c.prevClose.toFixed(2);
+                if (c.symbol) document.getElementById('natgas-symbol').textContent = c.symbol;
+                if (c.low52 && c.high52) {
+                    document.getElementById('natgas-range-low').textContent = '$' + c.low52.toFixed(2);
+                    document.getElementById('natgas-range-high').textContent = '$' + c.high52.toFixed(2);
+                    document.getElementById('natgas-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
+            }
+            
             if (m.metals?.gold) {
                 const c = m.metals.gold;
                 document.getElementById('gold-price').textContent = '$' + c.price.toFixed(0);
@@ -998,6 +1032,20 @@
                     document.getElementById('btc-range-low').textContent = '$' + c.low52.toLocaleString(undefined, {maximumFractionDigits: 0});
                     document.getElementById('btc-range-high').textContent = '$' + c.high52.toLocaleString(undefined, {maximumFractionDigits: 0});
                     document.getElementById('btc-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
+            }
+            
+            if (m.crypto?.ethereum) {
+                const c = m.crypto.ethereum;
+                document.getElementById('eth-price').textContent = '$' + c.price.toLocaleString(undefined, {maximumFractionDigits: 0});
+                document.getElementById('eth-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('eth-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('eth-prev').textContent = 'prev: $' + c.prevClose.toLocaleString(undefined, {maximumFractionDigits: 0});
+                if (c.symbol) document.getElementById('eth-symbol').textContent = c.symbol;
+                if (c.low52 && c.high52) {
+                    document.getElementById('eth-range-low').textContent = '$' + c.low52.toLocaleString(undefined, {maximumFractionDigits: 0});
+                    document.getElementById('eth-range-high').textContent = '$' + c.high52.toLocaleString(undefined, {maximumFractionDigits: 0});
+                    document.getElementById('eth-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
                 }
             }
             
@@ -1126,6 +1174,14 @@
         if (m?.crypto?.xrp) {
             const c = m.crypto.xrp;
             items.push(`<span class="ticker-item"><span class="label">XRP</span><span class="price">$${c.price.toFixed(4)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
+        }
+        if (m?.crypto?.ethereum) {
+            const c = m.crypto.ethereum;
+            items.push(`<span class="ticker-item"><span class="label">⟠ ETH</span><span class="price">$${c.price.toLocaleString(undefined,{maximumFractionDigits:0})}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
+        }
+        if (m?.energy?.natgas) {
+            const c = m.energy.natgas;
+            items.push(`<span class="ticker-item"><span class="label">🔥 NatGas</span><span class="price">$${c.price.toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
         // News items — clicking opens the summary modal
         if (news && news.length > 0) {
