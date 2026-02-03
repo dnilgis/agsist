@@ -19,15 +19,12 @@ const SUMMARY_MAX_AGE_HOURS = 48; // Re-summarize after 48 hours
 
 const FEEDS = [
   // ═══════════════════════════════════════════════════════════════════════════
-  // REDDIT - All verified working (public RSS)
+  // REDDIT - Use top/week to surface quality posts, trimmed to 4 best subs
   // ═══════════════════════════════════════════════════════════════════════════
-  { url: 'https://www.reddit.com/r/farming/.rss', source: 'r/farming', category: 'community', icon: '🚜' },
-  { url: 'https://www.reddit.com/r/agriculture/.rss', source: 'r/agriculture', category: 'community', icon: '🌾' },
-  { url: 'https://www.reddit.com/r/tractors/.rss', source: 'r/tractors', category: 'community', icon: '🚜' },
-  { url: 'https://www.reddit.com/r/ranching/.rss', source: 'r/ranching', category: 'community', icon: '🐄' },
-  { url: 'https://www.reddit.com/r/agronomy/.rss', source: 'r/agronomy', category: 'community', icon: '🔬' },
-  { url: 'https://www.reddit.com/r/dairyfarming/.rss', source: 'r/dairyfarming', category: 'community', icon: '🥛' },
-  { url: 'https://www.reddit.com/r/Cattle/.rss', source: 'r/Cattle', category: 'community', icon: '🐄' },
+  { url: 'https://www.reddit.com/r/farming/top/.rss?t=week', source: 'r/farming', category: 'community', icon: '🚜', isReddit: true },
+  { url: 'https://www.reddit.com/r/agriculture/top/.rss?t=week', source: 'r/agriculture', category: 'community', icon: '🌾', isReddit: true },
+  { url: 'https://www.reddit.com/r/ranching/top/.rss?t=week', source: 'r/ranching', category: 'community', icon: '🐄', isReddit: true },
+  { url: 'https://www.reddit.com/r/agronomy/top/.rss?t=week', source: 'r/agronomy', category: 'community', icon: '🔬', isReddit: true },
   
   // ═══════════════════════════════════════════════════════════════════════════
   // UNIVERSITIES - Verified working
@@ -142,6 +139,88 @@ function cleanText(text) {
              .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
              .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ')
              .replace(/\s+/g, ' ').trim();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// REDDIT QUALITY FILTER
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Title patterns that indicate spam, low-effort, or removed posts
+const REDDIT_SPAM_PATTERNS = [
+  /^\[removed\]$/i,
+  /^\[deleted\]$/i,
+  /^test$/i,
+  /selling|buy my|discount code|coupon|promo/i,
+  /check out my|subscribe to|follow me/i,
+  /upvote if|upvote this/i,
+  /crypto|bitcoin|nft|token sale/i,
+  /onlyfans|OF link/i,
+];
+
+function isRedditSpam(title) {
+  return REDDIT_SPAM_PATTERNS.some(p => p.test(title));
+}
+
+// Fetch Reddit post score to filter low-quality posts
+async function getRedditScore(url) {
+  try {
+    const jsonUrl = url.replace(/\/$/, '') + '.json';
+    const res = await fetch(jsonUrl, {
+      headers: { 'User-Agent': 'AGSIST News Bot 1.0' }
+    });
+    if (!res.ok) return 0;
+    const data = await res.json();
+    const post = data?.[0]?.data?.children?.[0]?.data;
+    return post ? (post.score || 0) : 0;
+  } catch {
+    return 0;
+  }
+}
+
+// Filter Reddit items: require minimum score and no spam patterns
+// Only keep top 2 posts per subreddit
+async function filterRedditItems(items) {
+  const MIN_SCORE = 3; // Minimum upvotes to include
+  const MAX_PER_SUB = 2; // Max posts per subreddit
+  
+  const filtered = [];
+  const perSub = {};
+  
+  for (const item of items) {
+    // Skip obvious spam by title
+    if (isRedditSpam(item.title)) {
+      console.log(`    ✗ Spam filtered: "${item.title.substring(0, 50)}..."`);
+      continue;
+    }
+    
+    // Skip very short titles (likely low-effort)
+    if (item.title.length < 15) {
+      console.log(`    ✗ Too short: "${item.title}"`);
+      continue;
+    }
+    
+    // Check subreddit limit
+    const sub = item.source;
+    perSub[sub] = (perSub[sub] || 0);
+    if (perSub[sub] >= MAX_PER_SUB) continue;
+    
+    // Check score via Reddit JSON API
+    if (item.link) {
+      const score = await getRedditScore(item.link);
+      if (score < MIN_SCORE) {
+        console.log(`    ✗ Low score (${score}): "${item.title.substring(0, 50)}..."`);
+        await sleep(300);
+        continue;
+      }
+      item.redditScore = score;
+      await sleep(300); // Rate limit Reddit API
+    }
+    
+    perSub[sub]++;
+    filtered.push(item);
+  }
+  
+  return filtered;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -372,15 +451,31 @@ async function main() {
   console.log('PHASE 1: Fetching RSS feeds...\n');
   
   const allItems = [];
+  const redditRaw = [];
   const stats = { community: 0, government: 0, university: 0, industry: 0, markets: 0, weather: 0 };
   
   for (const feed of FEEDS) {
     const items = await fetchFeed(feed);
     if (items.length > 0) {
-      allItems.push(...items);
-      stats[feed.category] = (stats[feed.category] || 0) + items.length;
+      if (feed.isReddit) {
+        redditRaw.push(...items);
+      } else {
+        allItems.push(...items);
+        stats[feed.category] = (stats[feed.category] || 0) + items.length;
+      }
     }
     await sleep(300);
+  }
+  
+  // ─────────────────────────────────────────────────────────────────────────
+  // PHASE 1b: Filter Reddit posts for quality
+  // ─────────────────────────────────────────────────────────────────────────
+  if (redditRaw.length > 0) {
+    console.log(`\nFiltering ${redditRaw.length} Reddit posts for quality...\n`);
+    const qualityReddit = await filterRedditItems(redditRaw);
+    allItems.push(...qualityReddit);
+    stats.community = qualityReddit.length;
+    console.log(`\n✓ Kept ${qualityReddit.length}/${redditRaw.length} Reddit posts\n`);
   }
   
   // Sort by date and dedupe

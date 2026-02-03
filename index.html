@@ -290,15 +290,21 @@
             .morning-briefing { grid-template-columns: 1fr; gap: 12px; padding: 14px; }
             
             /* Price cards: 2-up, equal height */
-            .price-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .price-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; align-items: stretch; }
+            .card-link {
+                display: flex;
+                flex-direction: column;
+                align-self: stretch;
+                min-height: 0;
+            }
             .price-card {
                 padding: 10px;
                 overflow: hidden;
                 display: flex;
                 flex-direction: column;
+                flex: 1;
             }
-            .card-link { display: flex; }
-            .card-link .price-card { width: 100%; }
+            .price-card .range-bar { margin-top: auto; }
             .price-header { flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
             .price-label { font-size: 0.8rem; }
             .price-contract { font-size: 0.7rem; padding: 2px 6px; }
