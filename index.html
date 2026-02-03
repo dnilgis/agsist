@@ -6,7 +6,7 @@
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGSIST | Free Live Ag Dashboard - Corn, Soybean, Wheat Prices</title>
+    <title>AGSIST - Free Agricultural Dashboard & Prices</title>
     <meta name="description" content="Free live agricultural commodity prices, weather radar, and farm tools. Corn, soybean, wheat futures updated every 15 minutes. Built for farmers.">
     <meta name="keywords" content="corn prices today, soybean prices, wheat futures, ag commodity prices, farm dashboard, grain prices, livestock prices">
     <link rel="canonical" href="https://agsist.com/">
@@ -101,6 +101,40 @@
         }
         
         /* ============================================
+           MORNING BRIEFING
+           ============================================ */
+            background: linear-gradient(135deg, #1a1500 0%, var(--card) 50%, #0a0a1a 100%);
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+            align-items: start;
+        }
+        .briefing-section { min-width: 0; }
+        .briefing-label { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .briefing-prices { display: flex; flex-direction: column; gap: 4px; }
+        .bp-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+        .bp-name { color: var(--dim); }
+        .bp-price { color: var(--text); font-weight: 600; }
+        .bp-chg { font-size: 0.8rem; font-weight: 600; margin-left: 6px; }
+        .bp-chg.up { color: var(--green); }
+        .bp-chg.down { color: var(--red); }
+        .briefing-wx { font-size: 0.9rem; color: var(--text); line-height: 1.6; }
+        .briefing-wx .wx-temp { font-size: 1.3rem; font-weight: 700; }
+        .briefing-reports { display: flex; flex-direction: column; gap: 4px; }
+        .br-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
+        .br-name { color: var(--text); font-weight: 600; }
+        .br-date { color: var(--dim); }
+        .br-impact { font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 8px; }
+        .br-impact.high { background: rgba(239,68,68,0.15); color: #ef4444; }
+        .br-impact.medium { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .briefing-link { font-size: 0.75rem; color: var(--accent); text-decoration: none; margin-top: 4px; display: inline-block; }
+        .briefing-link:hover { text-decoration: underline; }
+
+        /* ============================================
            MAIN CONTENT
            ============================================ */
         main { max-width: 1600px; margin: 0 auto; padding: 12px; }
@@ -189,8 +223,8 @@
         .news-item a { color: var(--text); text-decoration: none; font-size: 0.95rem; line-height: 1.6; display: block; }
         .news-item a:hover { color: var(--accent); }
         .news-source { font-size: 0.875rem; color: var(--dim); margin-top: 4px; display: flex; justify-content: space-between; align-items: center; }
-        .news-summary-btn { background: linear-gradient(135deg, #8b5cf6, #3b82f6); border: none; color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-weight: 600; font-family: inherit; }
-        .news-summary-btn:hover { opacity: 0.85; }
+        .news-summary-btn { background: none; border: 1px solid var(--border); color: var(--dim); font-size: 0.75rem; padding: 2px 8px; border-radius: 3px; cursor: pointer; font-weight: 600; font-family: inherit; }
+        .news-summary-btn:hover { color: var(--accent); border-color: var(--accent); }
         
         /* Modal */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
@@ -199,8 +233,7 @@
         @keyframes modalSlide { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
         .modal-header h3 { font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin: 0 0 6px 0; display: flex; align-items: center; gap: 8px; }
-        .modal-header .ai-badge { background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: #fff; font-size: 0.6rem; padding: 2px 6px; border-radius: 3px; font-weight: 700; }
-        .modal-header .ai-note { font-size: 0.7rem; color: var(--dim); font-weight: 400; }
+        .modal-header .sub-note { font-size: 0.75rem; color: var(--dim); font-weight: 400; }
         .modal-close { background: none; border: none; color: var(--dim); font-size: 1.5rem; cursor: pointer; padding: 0; line-height: 1; }
         .modal-close:hover { color: var(--text); }
         .modal-body { padding: 20px; }
@@ -234,10 +267,32 @@
         }
         
         @media (max-width: 767px) {
-            .price-grid { grid-template-columns: repeat(2, 1fr); }
-            .price-value { font-size: 1.5rem; }
-            .secondary-grid { grid-template-columns: repeat(2, 1fr); }
+            .morning-briefing { grid-template-columns: 1fr; gap: 12px; padding: 14px; }
+            .price-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .price-card { padding: 10px; overflow: hidden; }
+            .price-header { flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+            .price-label { font-size: 0.8rem; }
+            .price-contract { font-size: 0.7rem; padding: 2px 6px; }
+            .price-value { font-size: 1.3rem; margin-bottom: 2px; }
+            .price-change { font-size: 0.8rem; }
+            .price-meta { font-size: 0.7rem; gap: 6px; flex-wrap: wrap; }
+            .price-meta span { white-space: normal; }
+            .range-bar { margin: 6px 0 2px; }
+            .range-bar-label { font-size: 0.75rem; }
+            .secondary-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .secondary-card { padding: 10px; overflow: hidden; }
+            .secondary-label { font-size: 0.75rem; margin-bottom: 4px; }
+            .secondary-value { font-size: 1.05rem; }
+            .secondary-change { font-size: 0.75rem; }
+            .secondary-meta { font-size: 0.7rem; }
+            .range-bar-sm .range-bar-label { font-size: 0.7rem; }
             .price-card, .secondary-card { min-height: 44px; }
+            .forecast-grid { grid-template-columns: repeat(2, 1fr) !important; font-size: 0.8rem !important; }
+        }
+        @media (max-width: 374px) {
+            .price-grid { grid-template-columns: 1fr; }
+            .price-value { font-size: 1.5rem; }
+            .secondary-grid { grid-template-columns: 1fr 1fr; }
         }
         
         /* ============================================
@@ -261,6 +316,35 @@
     <main>
         <h1 class="sr-only">AGSIST - Free Live Agricultural Commodity Prices, News & Weather Dashboard</h1>
         <div id="welcome-msg" style="margin-bottom:12px;font-size:0.95rem;color:var(--text)"></div>
+        
+        <!-- Morning Briefing -->
+        <div class="morning-briefing" id="morning-briefing">
+            <div class="briefing-section">
+                <div class="briefing-label">📋 Morning Briefing</div>
+                <div class="briefing-prices" id="briefing-prices">
+                    <div class="bp-row"><span class="bp-name">🌽 Corn</span><span><span class="bp-price" id="bp-corn">--</span><span class="bp-chg" id="bp-corn-chg"></span></span></div>
+                    <div class="bp-row"><span class="bp-name">🫘 Beans</span><span><span class="bp-price" id="bp-soy">--</span><span class="bp-chg" id="bp-soy-chg"></span></span></div>
+                    <div class="bp-row"><span class="bp-name">🌾 Wheat</span><span><span class="bp-price" id="bp-wheat">--</span><span class="bp-chg" id="bp-wheat-chg"></span></span></div>
+                </div>
+                <a href="/ag-odds.html" class="briefing-link">🎯 Ag Odds & Outlook →</a>
+            </div>
+            <div class="briefing-section">
+                <div class="briefing-label">🌤️ Local Weather</div>
+                <div class="briefing-wx" id="briefing-wx">
+                    <span class="wx-temp" id="bwx-temp">--</span>
+                    <span id="bwx-desc">Loading...</span>
+                    <div style="font-size:0.8rem;color:var(--dim);margin-top:4px" id="bwx-wind"></div>
+                </div>
+            </div>
+            <div class="briefing-section">
+                <div class="briefing-label">📅 Reporting This Week</div>
+                <div class="briefing-reports" id="briefing-reports">
+                    <div style="color:var(--dim);font-size:0.8rem">Loading...</div>
+                </div>
+                <a href="/calendar.html" class="briefing-link">Full Calendar →</a>
+            </div>
+        </div>
+        
         <div class="update-bar">
             <span>Last updated: <span id="update-time" class="loading">Loading...</span></span>
             <span>Data auto-refreshes</span>
@@ -471,7 +555,7 @@
             </div>
             <div>
                 <div class="section-header">🌤️ Weather</div>
-                <div id="forecast" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;font-size:0.95rem">
+                <div id="forecast" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;font-size:0.95rem" class="forecast-grid">>
                     <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center">
                         <div style="color:var(--dim);font-size:0.875rem">TODAY</div>
                         <div id="wx-today-icon" style="font-size:1.5rem;margin:4px 0">--</div>
@@ -504,7 +588,7 @@
         </div>
     </main>
     
-    <!-- AI Summary Modal -->
+    <!-- Summary Modal -->
     <div class="modal-overlay" id="modal">
         <div class="modal-content" id="modal-content"></div>
     </div>
@@ -614,6 +698,30 @@
                     document.getElementById('wheat-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
                 }
             }
+            
+            // ---- Morning Briefing Prices ----
+            if (m.grains?.corn) {
+                var bc = m.grains.corn;
+                document.getElementById('bp-corn').textContent = '$' + fmt(bc.price, bc.unit);
+                var bce = document.getElementById('bp-corn-chg');
+                bce.textContent = (bc.change >= 0 ? '▲' : '▼') + Math.abs(bc.change/100).toFixed(2);
+                bce.className = 'bp-chg ' + (bc.change >= 0 ? 'up' : 'down');
+            }
+            if (m.grains?.soybeans) {
+                var bs = m.grains.soybeans;
+                document.getElementById('bp-soy').textContent = '$' + fmt(bs.price, bs.unit);
+                var bse = document.getElementById('bp-soy-chg');
+                bse.textContent = (bs.change >= 0 ? '▲' : '▼') + Math.abs(bs.change/100).toFixed(2);
+                bse.className = 'bp-chg ' + (bs.change >= 0 ? 'up' : 'down');
+            }
+            if (m.grains?.wheat) {
+                var bw = m.grains.wheat;
+                document.getElementById('bp-wheat').textContent = '$' + fmt(bw.price, bw.unit);
+                var bwe = document.getElementById('bp-wheat-chg');
+                bwe.textContent = (bw.change >= 0 ? '▲' : '▼') + Math.abs(bw.change/100).toFixed(2);
+                bwe.className = 'bp-chg ' + (bw.change >= 0 ? 'up' : 'down');
+            }
+            
             if (m.livestock?.cattle) {
                 const c = m.livestock.cattle;
                 document.getElementById('cattle-price').textContent = '$' + c.price.toFixed(2);
@@ -775,7 +883,7 @@
                         <a href="${n.link}" target="_blank">${n.title}</a>
                         <div class="news-source">
                             <span>${n.source || 'Ag News'}</span>
-                            <button class="news-summary-btn" onclick="showSummary(${i}, 'markets')">✨ AI Summary</button>
+                            <button class="news-summary-btn" onclick="showSummary(${i}, 'markets')">Summary</button>
                         </div>
                     </div>
                 `).join('');
@@ -883,8 +991,8 @@
         modalContent.innerHTML = 
             '<div class="modal-header">' +
                 '<div>' +
-                    '<h3>📋 Summary <span class="ai-badge">AI</span></h3>' +
-                    '<p class="ai-note">' + (isAI ? 'Generated by AI from the full article' : 'From article description') + '</p>' +
+                    '<h3>Summary</h3>' +
+                    '<p class="sub-note">' + escapeHtml(source) + '</p>' +
                 '</div>' +
                 '<button class="modal-close" onclick="closeModal()">×</button>' +
             '</div>' +
@@ -953,6 +1061,9 @@
                 document.getElementById('wx-tomnight-temp').textContent = periods[3].temperature + '°' + periods[3].temperatureUnit;
                 document.getElementById('wx-tomnight-desc').textContent = periods[3].shortForecast.substring(0, 20);
             }
+            
+            // Update morning briefing weather
+            updateBriefingWeather(periods);
         } catch (e) {
             console.log('Forecast error:', e);
         }
@@ -960,6 +1071,128 @@
     
     loadForecast();
     setInterval(loadForecast, 30 * 60 * 1000);
+    
+    // ============================================
+    // REPORTING THIS WEEK (from calendar data)
+    // ============================================
+    var calReports = [
+        {d:'Jan 10',name:'WASDE',impact:'high'},
+        {d:'Jan 10',name:'Crop Production Annual',impact:'high'},
+        {d:'Jan 10',name:'Grain Stocks',impact:'high'},
+        {d:'Feb 7',name:'Crop Production',impact:'medium'},
+        {d:'Feb 11',name:'WASDE',impact:'high'},
+        {d:'Feb 20',name:'Cattle on Feed',impact:'medium'},
+        {d:'Feb 24',name:'Ag Outlook Forum',impact:'high'},
+        {d:'Mar 11',name:'WASDE',impact:'high'},
+        {d:'Mar 20',name:'Cattle on Feed',impact:'medium'},
+        {d:'Mar 27',name:'Hogs & Pigs',impact:'medium'},
+        {d:'Mar 31',name:'Prospective Plantings',impact:'high'},
+        {d:'Mar 31',name:'Grain Stocks',impact:'high'},
+        {d:'Apr 9',name:'WASDE',impact:'high'},
+        {d:'Apr 13',name:'Crop Progress',impact:'medium'},
+        {d:'Apr 17',name:'Cattle on Feed',impact:'medium'},
+        {d:'May 12',name:'WASDE',impact:'high'},
+        {d:'May 22',name:'Cattle on Feed',impact:'medium'},
+        {d:'Jun 11',name:'WASDE',impact:'high'},
+        {d:'Jun 19',name:'Cattle on Feed',impact:'medium'},
+        {d:'Jun 25',name:'Hogs & Pigs',impact:'medium'},
+        {d:'Jun 30',name:'Acreage Report',impact:'high'},
+        {d:'Jun 30',name:'Grain Stocks',impact:'high'},
+        {d:'Jul 11',name:'WASDE',impact:'high'},
+        {d:'Jul 17',name:'Cattle on Feed',impact:'medium'},
+        {d:'Aug 12',name:'WASDE',impact:'high'},
+        {d:'Aug 12',name:'Crop Production',impact:'high'},
+        {d:'Aug 21',name:'Cattle on Feed',impact:'medium'},
+        {d:'Sep 11',name:'WASDE',impact:'high'},
+        {d:'Sep 11',name:'Crop Production',impact:'high'},
+        {d:'Sep 18',name:'Cattle on Feed',impact:'medium'},
+        {d:'Sep 25',name:'Hogs & Pigs',impact:'medium'},
+        {d:'Sep 30',name:'Grain Stocks',impact:'high'},
+        {d:'Oct 10',name:'WASDE',impact:'high'},
+        {d:'Oct 10',name:'Crop Production',impact:'high'},
+        {d:'Oct 23',name:'Cattle on Feed',impact:'medium'},
+        {d:'Nov 10',name:'WASDE',impact:'high'},
+        {d:'Nov 10',name:'Crop Production',impact:'medium'},
+        {d:'Nov 20',name:'Cattle on Feed',impact:'medium'},
+        {d:'Dec 10',name:'WASDE',impact:'high'},
+        {d:'Dec 10',name:'Crop Production',impact:'high'},
+        {d:'Dec 18',name:'Cattle on Feed',impact:'medium'},
+        {d:'Dec 23',name:'Hogs & Pigs',impact:'medium'},
+    ];
+    
+    function loadReportingThisWeek() {
+        var el = document.getElementById('briefing-reports');
+        var now = new Date();
+        var year = now.getFullYear();
+        
+        // Get start/end of this week (Mon-Sun) and next week
+        var dayOfWeek = now.getDay();
+        var mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        var monday = new Date(now);
+        monday.setDate(now.getDate() + mondayOffset);
+        monday.setHours(0,0,0,0);
+        
+        var nextSunday = new Date(monday);
+        nextSunday.setDate(monday.getDate() + 13); // this week + next week
+        
+        var upcoming = [];
+        calReports.forEach(function(r) {
+            var parts = r.d.split(' ');
+            var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            var monthIdx = months.indexOf(parts[0]);
+            var day = parseInt(parts[1]);
+            if (monthIdx === -1) return;
+            var rDate = new Date(year, monthIdx, day);
+            if (rDate >= monday && rDate <= nextSunday) {
+                upcoming.push({ name: r.name, date: r.d, impact: r.impact, dateObj: rDate });
+            }
+        });
+        
+        // Also include weekly Export Sales (Thursdays) if nothing else
+        var thisThurs = new Date(monday);
+        thisThurs.setDate(monday.getDate() + 3);
+        if (upcoming.length === 0 || (upcoming.length < 2 && thisThurs >= now)) {
+            upcoming.push({ name: 'Export Sales', date: 'Thu', impact: 'medium', dateObj: thisThurs });
+        }
+        
+        // Sort by date
+        upcoming.sort(function(a,b) { return a.dateObj - b.dateObj; });
+        
+        if (upcoming.length === 0) {
+            el.innerHTML = '<div style="color:var(--dim);font-size:0.8rem">No major reports this week. Enjoy the quiet!</div>';
+            return;
+        }
+        
+        // Show up to 4
+        var html = upcoming.slice(0, 4).map(function(r) {
+            var isPast = r.dateObj < now;
+            return '<div class="br-row' + (isPast ? ' style="opacity:0.5"' : '') + '">' +
+                '<span class="br-name">' + r.name + '</span>' +
+                '<span style="display:flex;align-items:center;gap:6px">' +
+                    '<span class="br-impact ' + r.impact + '">' + r.impact.charAt(0).toUpperCase() + '</span>' +
+                    '<span class="br-date">' + r.date + '</span>' +
+                '</span>' +
+            '</div>';
+        }).join('');
+        el.innerHTML = html;
+    }
+    
+    loadReportingThisWeek();
+    
+    // ============================================
+    // MORNING BRIEFING — Weather + Prices
+    // ============================================
+    function updateBriefingWeather(periods) {
+        if (!periods || !periods[0]) return;
+        var p = periods[0];
+        var temp = p.temperature;
+        var unit = p.temperatureUnit;
+        document.getElementById('bwx-temp').textContent = temp + '°' + unit;
+        document.getElementById('bwx-desc').textContent = p.shortForecast;
+        if (p.windSpeed) {
+            document.getElementById('bwx-wind').textContent = '💨 Wind: ' + p.windSpeed + ' ' + p.windDirection;
+        }
+    }
     
     function getGreeting() {
         const hour = new Date().getHours();

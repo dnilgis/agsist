@@ -4,9 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grain Bin Calculator - Free Bushel & Storage Tool | AGSIST</title>
+    <meta name="keywords" content="grain bin calculator, bushel capacity, moisture shrink, grain storage, bin volume calculator">
     <meta name="description" content="Free grain bin calculator. Calculate bushel capacity, moisture shrink, and storage volume for round and rectangular bins.">
     <link rel="canonical" href="https://agsist.com/calculator.html">
     
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Grain Bin Calculator | AGSIST">
+    <meta property="og:description" content="Free grain bin calculator. Bushel capacity, moisture shrink, and storage volume.">
+    <meta property="og:url" content="https://agsist.com/calculator.html">
+    <meta property="og:type" content="website">
     <link rel="icon" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,11 +21,29 @@
     
     <!-- Shared Styles -->
     <link rel="stylesheet" href="/components/shared.css">
-    <link rel="stylesheet" href="styles.css">
     
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    <style>
+        @media (max-width: 500px) {
+            div[style*="grid-template-columns:1fr 1fr 1fr"] { grid-template-columns: 1fr !important; }
+            div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+        }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Grain Bin Calculator",
+        "description": "Free grain bin storage calculator for bushel capacity and moisture shrink",
+        "url": "https://agsist.com/calculator.html",
+        "applicationCategory": "Agriculture",
+        "operatingSystem": "Web Browser",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
 </head>
 <body>
     <!-- Header -->

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soil Survey Lookup | AGSIST</title>
+    <meta name="keywords" content="soil data, NRCS soil survey, web soil survey, drainage class, hydrologic group, farmland classification">
+    <meta name="description" content="Look up soil types, drainage class, productivity ratings, and crop suitability from USDA NRCS soil data. Enter any address or GPS coordinates.">
+    <link rel="canonical" href="https://agsist.com/soils.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Soil Data Lookup | AGSIST">
+    <meta property="og:description" content="Live NRCS soil data by location. Drainage, texture, hydrologic group, farmland class.">
+    <meta property="og:url" content="https://agsist.com/soils.html">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/components/shared.css">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    <style>
+        main { max-width: 1300px; margin: 0 auto; padding: 16px; }
+        .breadcrumb { font-size: 0.85rem; color: var(--dim); margin-bottom: 16px; }
+        .breadcrumb a { color: var(--accent); text-decoration: none; }
+
+        .hero { background: linear-gradient(135deg, #3e2723 0%, #5d4037 100%); border: 2px solid #8d6e63; border-radius: 12px; padding: 28px; text-align: center; margin-bottom: 20px; }
+        .hero h1 { color: #fff; font-size: 1.5rem; margin: 0 0 8px; }
+        .hero p { color: rgba(255,255,255,0.85); font-size: 0.9rem; margin: 0; }
+
+        .search-bar { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .search-bar input { flex: 1; min-width: 250px; padding: 14px; font-family: inherit; font-size: 0.95rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
+        .search-bar input:focus { outline: none; border-color: var(--accent); }
+        .search-bar button { padding: 14px 20px; font-family: inherit; font-size: 0.85rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; }
+        .search-bar .primary { background: var(--accent); color: #000; }
+        .search-bar .secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; }
+        .panel-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .panel-head h2 { font-size: 1rem; color: var(--accent); margin: 0; }
+        .panel-head .badge { font-size: 0.75rem; padding: 4px 8px; background: var(--accent); color: #000; border-radius: 12px; font-weight: 600; }
+        .panel-body { padding: 18px; }
+
+        .api-status { font-size: 0.7rem; padding: 4px 8px; border-radius: 10px; }
+        .api-status.live { background: rgba(34,197,94,0.2); color: #22c55e; }
+        .api-status.offline { background: rgba(239,68,68,0.2); color: #ef4444; }
+
+        .coords { display: flex; gap: 16px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+        .coords .coord { background: var(--bg); padding: 10px 14px; border-radius: 6px; font-size: 0.85rem; }
+        .coords .coord span { color: var(--accent); font-weight: 700; }
+
+        /* Soil Results */
+        .soil-results { display: none; }
+        .soil-results.active { display: block; }
+
+        .soil-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px; }
+        .soil-card { background: var(--bg); border-radius: 8px; padding: 16px; text-align: center; border-top: 3px solid var(--accent); }
+        .soil-card .val { font-size: 1.3rem; font-weight: 700; color: var(--accent); word-break: break-word; }
+        .soil-card .lbl { font-size: 0.7rem; color: var(--dim); margin-top: 4px; }
+
+        .soil-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .soil-table th { background: var(--bg); padding: 10px; text-align: left; font-size: 0.7rem; color: var(--dim); text-transform: uppercase; border-bottom: 2px solid var(--border); }
+        .soil-table td { padding: 10px; border-bottom: 1px solid var(--border); }
+        .soil-table tr:hover { background: var(--bg); }
+        .soil-table .hl { color: var(--accent); font-weight: 600; }
+
+        /* Reference sections */
+        .ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+        .ref-box { background: var(--bg); border-radius: 8px; padding: 16px; }
+        .ref-box h4 { font-size: 0.85rem; color: var(--accent); margin: 0 0 12px 0; }
+        .ref-box .item { display: flex; justify-content: space-between; padding: 6px 0; font-size: 0.8rem; border-bottom: 1px solid var(--border); }
+        .ref-box .item:last-child { border-bottom: none; }
+        .ref-box .item .val { color: var(--accent); font-weight: 600; }
+
+        .texture-triangle { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+        .tex-item { background: var(--bg); padding: 10px; border-radius: 6px; text-align: center; font-size: 0.8rem; }
+        .tex-item .name { font-weight: 600; color: var(--text); }
+        .tex-item .desc { font-size: 0.7rem; color: var(--dim); margin-top: 2px; }
+        .tex-item.best { border: 1px solid var(--accent); }
+
+        .info-box { background: var(--bg); border-left: 4px solid var(--accent); padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 0.85rem; color: var(--dim); }
+        .info-box strong { color: var(--text); }
+        .info-box a { color: var(--accent); }
+        .info-box.tip { border-color: #22c55e; }
+
+        .links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+        .ext-link { display: block; padding: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; text-decoration: none; }
+        .ext-link:hover { border-color: var(--accent); }
+        .ext-link strong { display: block; color: var(--text); font-size: 0.85rem; margin-bottom: 4px; }
+        .ext-link span { color: var(--dim); font-size: 0.75rem; }
+
+        .placeholder-msg { text-align: center; padding: 40px; color: var(--dim); }
+        .placeholder-msg .icon { font-size: 3rem; margin-bottom: 16px; }
+        .placeholder-msg p { font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            main { padding: 10px; }
+            .search-bar { flex-direction: column; }
+            .soil-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Soil Data Lookup",
+        "description": "Live NRCS soil data lookup with drainage class and farmland classification",
+        "url": "https://agsist.com/soils.html",
+        "applicationCategory": "Agriculture",
+        "operatingSystem": "Web Browser",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
+</head>
+<body>
+    <div id="header"></div>
+    <main>
+        <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Soil Survey</nav>
+
+        <div class="hero">
+            <h1>🗺️ Soil Survey Lookup</h1>
+            <p>Look up real soil data from USDA NRCS • Enter any address or GPS coordinates</p>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="addressInput" placeholder="Enter address, city, or coordinates (e.g., Barron, WI or 45.40, -91.85)">
+            <button class="primary" onclick="searchAddress()">🔍 Look Up Soil</button>
+            <button class="secondary" onclick="detectLocation()">📍 Use My Location</button>
+        </div>
+
+        <!-- Results -->
+        <div id="resultsArea">
+            <div class="placeholder-msg" id="placeholder">
+                <div class="icon">🗺️</div>
+                <p>Enter an address or use your location to look up soil data</p>
+            </div>
+
+            <div class="soil-results" id="soilResults">
+                <div class="panel">
+                    <div class="panel-head">
+                        <h2 id="resultTitle">📍 Soil Data</h2>
+                        <span id="soilApiStatus" class="api-status">Loading...</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="coords" id="coordsDisplay">
+                            <div class="coord">Lat: <span id="latVal">--</span></div>
+                            <div class="coord">Lon: <span id="lonVal">--</span></div>
+                            <a href="#" id="wssLink" target="_blank" style="margin-left:auto;color:var(--accent);font-size:0.85rem;">Open in Web Soil Survey →</a>
+                        </div>
+
+                        <div class="soil-grid" id="soilSummary"></div>
+
+                        <div id="soilTable" style="overflow-x:auto;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Drainage Reference -->
+        <div class="panel">
+            <div class="panel-head"><h2>💧 Drainage Class Reference</h2></div>
+            <div class="panel-body">
+                <div style="overflow-x:auto;">
+                    <table class="soil-table">
+                        <thead><tr><th>Class</th><th>Water Table</th><th>Ag Impact</th><th>Tile Drain?</th></tr></thead>
+                        <tbody>
+                            <tr><td class="hl">Excessively Drained</td><td>Very deep (&gt;6 ft)</td><td>Droughty, low moisture retention. Sandy soils.</td><td>No</td></tr>
+                            <tr><td class="hl">Well Drained</td><td>Deep (&gt;3 ft)</td><td>Ideal for most crops. Best row-crop land.</td><td>Rarely</td></tr>
+                            <tr><td class="hl">Moderately Well</td><td>1.5-3 ft seasonally</td><td>Good for crops, some spring wetness.</td><td>Sometimes</td></tr>
+                            <tr><td class="hl">Somewhat Poorly</td><td>1-2 ft seasonally</td><td>Spring delays, compaction risk. Tile improves.</td><td>Recommended</td></tr>
+                            <tr><td class="hl">Poorly Drained</td><td>0-1 ft seasonally</td><td>Frequent saturation. Tile required for row crops.</td><td>Required</td></tr>
+                            <tr><td class="hl">Very Poorly</td><td>At/above surface</td><td>Wetland conditions. May qualify for CRP/WRP.</td><td>Major investment</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Soil Texture Reference -->
+        <div class="panel">
+            <div class="panel-head"><h2>🔬 Soil Texture Classes</h2></div>
+            <div class="panel-body">
+                <div class="texture-triangle">
+                    <div class="tex-item"><div class="name">Sand</div><div class="desc">Very coarse, droughty, low CEC</div></div>
+                    <div class="tex-item"><div class="name">Loamy Sand</div><div class="desc">Coarse, low retention</div></div>
+                    <div class="tex-item"><div class="name">Sandy Loam</div><div class="desc">Good drainage, moderate nutrients</div></div>
+                    <div class="tex-item best"><div class="name">Loam ⭐</div><div class="desc">Ideal balance of sand/silt/clay</div></div>
+                    <div class="tex-item best"><div class="name">Silt Loam ⭐</div><div class="desc">Excellent cropland, high productivity</div></div>
+                    <div class="tex-item"><div class="name">Silt</div><div class="desc">Fine, can be erosion-prone</div></div>
+                    <div class="tex-item"><div class="name">Sandy Clay Loam</div><div class="desc">Moderate drainage, good structure</div></div>
+                    <div class="tex-item"><div class="name">Clay Loam</div><div class="desc">Good fertility, slower drainage</div></div>
+                    <div class="tex-item best"><div class="name">Silty Clay Loam ⭐</div><div class="desc">High CEC, productive if drained</div></div>
+                    <div class="tex-item"><div class="name">Sandy Clay</div><div class="desc">Heavy, compaction-prone</div></div>
+                    <div class="tex-item"><div class="name">Silty Clay</div><div class="desc">Very heavy, slow drainage</div></div>
+                    <div class="tex-item"><div class="name">Clay</div><div class="desc">Highest CEC but poorest drainage</div></div>
+                </div>
+                <div class="info-box tip" style="margin-top:16px;">
+                    <strong>⭐ Best for row crops:</strong> Loam, silt loam, and silty clay loam soils with good drainage generally produce the highest corn and soybean yields in the Upper Midwest.
+                </div>
+            </div>
+        </div>
+
+        <!-- Farmland Classification -->
+        <div class="panel">
+            <div class="panel-head"><h2>🏆 NRCS Farmland Classifications</h2></div>
+            <div class="panel-body">
+                <div class="ref-grid">
+                    <div class="ref-box">
+                        <h4>Prime Farmland</h4>
+                        <div class="item"><span>Definition</span><span class="val">Best suited for crops</span></div>
+                        <div class="item"><span>Drainage</span><span class="val">Well to mod. well</span></div>
+                        <div class="item"><span>Slope</span><span class="val">< 6%</span></div>
+                        <div class="item"><span>Land Value</span><span class="val">Highest</span></div>
+                    </div>
+                    <div class="ref-box">
+                        <h4>Prime if Drained</h4>
+                        <div class="item"><span>Definition</span><span class="val">Needs tile drainage</span></div>
+                        <div class="item"><span>Drainage</span><span class="val">Somewhat/poorly</span></div>
+                        <div class="item"><span>Improvement</span><span class="val">Tile = prime quality</span></div>
+                        <div class="item"><span>ROI</span><span class="val">Usually high</span></div>
+                    </div>
+                    <div class="ref-box">
+                        <h4>Farmland of Statewide Importance</h4>
+                        <div class="item"><span>Definition</span><span class="val">Good but not prime</span></div>
+                        <div class="item"><span>Limitations</span><span class="val">Slope, wetness, etc.</span></div>
+                        <div class="item"><span>Productivity</span><span class="val">80-90% of prime</span></div>
+                        <div class="item"><span>Usage</span><span class="val">Row crops & hay</span></div>
+                    </div>
+                    <div class="ref-box">
+                        <h4>Not Prime Farmland</h4>
+                        <div class="item"><span>Definition</span><span class="val">Significant limitations</span></div>
+                        <div class="item"><span>Issues</span><span class="val">Steep, rocky, wet</span></div>
+                        <div class="item"><span>Best Use</span><span class="val">Pasture, timber, CRP</span></div>
+                        <div class="item"><span>Value</span><span class="val">Lower</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Links -->
+        <div class="panel">
+            <div class="panel-head"><h2>🔗 Soil Resources</h2></div>
+            <div class="panel-body">
+                <div class="links-grid">
+                    <a href="https://websoilsurvey.nrcs.usda.gov/app/" target="_blank" class="ext-link"><strong>Web Soil Survey</strong><span>Official NRCS mapping tool</span></a>
+                    <a href="https://www.nrcs.usda.gov/resources/data-and-reports/soil-survey-geographic-database-ssurgo" target="_blank" class="ext-link"><strong>SSURGO Database</strong><span>Downloadable soil data</span></a>
+                    <a href="https://casoilresource.lawr.ucdavis.edu/gmap/" target="_blank" class="ext-link"><strong>SoilWeb</strong><span>UC Davis interactive map</span></a>
+                    <a href="https://www.nrcs.usda.gov/conservation-basics/natural-resource-concerns/soils" target="_blank" class="ext-link"><strong>NRCS Soil Health</strong><span>Management guides</span></a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+    <script src="/components/load-components.js"></script>
+    <script src="/components/geolocation.js"></script>
+    <script>
+        let currentLat = null, currentLon = null;
+
+        async function geocodeAddress(query) {
+            // Check for raw coordinates first
+            const coordMatch = query.match(/^(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)$/);
+            if (coordMatch) {
+                return { lat: parseFloat(coordMatch[1]), lon: parseFloat(coordMatch[2]) };
+            }
+
+            const resp = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=us`,
+                { headers: { 'User-Agent': 'AGSIST/1.0' } });
+            const results = await resp.json();
+            if (results.length > 0) {
+                return { lat: parseFloat(results[0].lat), lon: parseFloat(results[0].lon), display: results[0].display_name };
+            }
+            return null;
+        }
+
+        async function fetchSoilData(lat, lon) {
+            // NRCS Soil Data Access REST API
+            const query = `
+                SELECT M.muname, M.musym, M.muacres,
+                       C.compname, C.comppct_r, C.drainagecl, C.taxclname,
+                       C.taxorder, C.taxsubgrp, C.tfact, C.hydgrp,
+                       C.nirricapcl, C.irrcapcl, C.farmlndcl
+                FROM mapunit M
+                INNER JOIN component C ON M.mukey = C.mukey
+                WHERE M.mukey IN (
+                    SELECT * FROM SDA_Get_Mukey_from_intersection_with_WktWgs84('point(${lon} ${lat})')
+                )
+                AND C.comppct_r >= 5
+                ORDER BY C.comppct_r DESC
+            `;
+
+            const resp = await fetch('https://SDMDataAccess.sc.egov.usda.gov/Tabular/post.rest', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: query, format: 'JSON' })
+            });
+
+            if (!resp.ok) throw new Error('NRCS API error');
+            const data = await resp.json();
+            return data;
+        }
+
+        function renderSoilResults(data, displayName) {
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('soilResults').classList.add('active');
+
+            document.getElementById('latVal').textContent = currentLat.toFixed(5);
+            document.getElementById('lonVal').textContent = currentLon.toFixed(5);
+            document.getElementById('wssLink').href = `https://websoilsurvey.nrcs.usda.gov/app/WebSoilSurvey.aspx`;
+
+            if (displayName) {
+                document.getElementById('resultTitle').textContent = `📍 ${displayName.split(',').slice(0, 2).join(',')}`;
+            }
+
+            const statusEl = document.getElementById('soilApiStatus');
+
+            if (data && data.Table && data.Table.length > 0) {
+                statusEl.textContent = '● Live NRCS Data';
+                statusEl.className = 'api-status live';
+
+                const rows = data.Table;
+                const primary = rows[0];
+
+                // Summary cards
+                const summaryHtml = [
+                    { val: primary.compname || '--', lbl: 'Dominant Soil' },
+                    { val: primary.drainagecl || '--', lbl: 'Drainage Class' },
+                    { val: primary.hydgrp ? 'Group ' + primary.hydgrp : '--', lbl: 'Hydrologic Group' },
+                    { val: primary.farmlndcl || '--', lbl: 'Farmland Class' },
+                    { val: primary.musym || '--', lbl: 'Map Unit Symbol' },
+                    { val: primary.tfact ? primary.tfact + ' ton/ac/yr' : '--', lbl: 'T Factor (erosion)' }
+                ].map(c => `<div class="soil-card"><div class="val">${c.val}</div><div class="lbl">${c.lbl}</div></div>`).join('');
+                document.getElementById('soilSummary').innerHTML = summaryHtml;
+
+                // Component table
+                const tableHtml = `<table class="soil-table">
+                    <thead><tr><th>Component</th><th>%</th><th>Drainage</th><th>Hydro Grp</th><th>Taxonomy</th><th>Farmland</th></tr></thead>
+                    <tbody>${rows.map(r => `<tr>
+                        <td class="hl">${r.compname || '--'}</td>
+                        <td>${r.comppct_r || '--'}%</td>
+                        <td>${r.drainagecl || '--'}</td>
+                        <td>${r.hydgrp || '--'}</td>
+                        <td style="font-size:0.75rem;">${r.taxsubgrp || r.taxclname || '--'}</td>
+                        <td style="font-size:0.75rem;">${r.farmlndcl || '--'}</td>
+                    </tr>`).join('')}</tbody>
+                </table>`;
+                document.getElementById('soilTable').innerHTML = tableHtml;
+
+            } else {
+                statusEl.textContent = '● No Data Found';
+                statusEl.className = 'api-status offline';
+                document.getElementById('soilSummary').innerHTML = '';
+                document.getElementById('soilTable').innerHTML = `
+                    <div style="text-align:center;padding:20px;color:var(--dim);">
+                        <p>No soil data found for this location. This may be an urban area, water body, or unmapped location.</p>
+                        <a href="https://websoilsurvey.nrcs.usda.gov/app/" target="_blank" style="display:inline-block;margin-top:12px;padding:12px 20px;background:var(--accent);color:#000;border-radius:6px;text-decoration:none;font-weight:600;">Try Web Soil Survey →</a>
+                    </div>`;
+            }
+        }
+
+        function renderApiError() {
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('soilResults').classList.add('active');
+            document.getElementById('latVal').textContent = currentLat.toFixed(5);
+            document.getElementById('lonVal').textContent = currentLon.toFixed(5);
+
+            const statusEl = document.getElementById('soilApiStatus');
+            statusEl.textContent = '● API Unavailable';
+            statusEl.className = 'api-status offline';
+
+            document.getElementById('soilSummary').innerHTML = '';
+            document.getElementById('soilTable').innerHTML = `
+                <div style="text-align:center;padding:30px;color:var(--dim);">
+                    <p style="margin-bottom:12px;">NRCS Soil Data Access API is temporarily unavailable. Use the official tool:</p>
+                    <a href="https://websoilsurvey.nrcs.usda.gov/app/" target="_blank" style="display:inline-block;padding:14px 24px;background:var(--accent);color:#000;border-radius:6px;text-decoration:none;font-weight:600;">Open Web Soil Survey →</a>
+                    <p style="margin-top:12px;font-size:0.8rem;">Coordinates: ${currentLat.toFixed(5)}, ${currentLon.toFixed(5)}</p>
+                </div>`;
+        }
+
+        async function searchAddress() {
+            const input = document.getElementById('addressInput').value.trim();
+            if (!input) return;
+
+            try {
+                const loc = await geocodeAddress(input);
+                if (!loc) {
+                    alert('Location not found. Try a different address or enter coordinates (lat, lon).');
+                    return;
+                }
+
+                currentLat = loc.lat;
+                currentLon = loc.lon;
+
+                try {
+                    const soilData = await fetchSoilData(currentLat, currentLon);
+                    renderSoilResults(soilData, loc.display);
+                } catch (err) {
+                    console.error('Soil API error:', err);
+                    renderApiError();
+                }
+            } catch (err) {
+                alert('Error searching location: ' + err.message);
+            }
+        }
+
+        function detectLocation() {
+            if (!navigator.geolocation) { alert('Geolocation not supported'); return; }
+
+            navigator.geolocation.getCurrentPosition(
+                async (pos) => {
+                    currentLat = pos.coords.latitude;
+                    currentLon = pos.coords.longitude;
+                    document.getElementById('addressInput').value = `${currentLat.toFixed(4)}, ${currentLon.toFixed(4)}`;
+
+                    try {
+                        const soilData = await fetchSoilData(currentLat, currentLon);
+                        renderSoilResults(soilData, 'Your Location');
+                    } catch (err) {
+                        renderApiError();
+                    }
+                },
+                () => { alert('Location access denied'); }
+            );
+        }
+
+        // Enter key
+        document.getElementById('addressInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchAddress();
+        });
+    </script>
+</body>
+</html>

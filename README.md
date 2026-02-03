@@ -1,169 +1,140 @@
-# AGSIST Complete Update Package
+# AGSIST News Hub
 
-This package contains everything you need to update your AGSIST site with improved readability, navigation, SEO, and mobile support.
+A comprehensive agriculture news aggregator pulling from 40+ sources including Reddit communities, USDA/government feeds, university extension services, and industry publications. Features AI-generated TL;DR summaries for quick reading.
 
----
+## 🚀 Quick Start
 
-## PACKAGE CONTENTS
+### 1. Enable GitHub Actions Permissions
+1. Go to your repo → **Settings** → **Actions** → **General**
+2. Scroll to **"Workflow permissions"**
+3. Select **"Read and write permissions"**
+4. Click **Save**
 
-| File | Purpose | Deploy Location |
-|------|---------|-----------------|
-| `index.html` | **Complete updated homepage** with all improvements | Replace existing `index.html` |
-| `styles.css` | **Updated external stylesheet** with refined colors | Replace existing `styles.css` |
-| `soybean-prices.html` | **NEW** Coming soon page for soybeans | Site root |
-| `wheat-prices.html` | **NEW** Coming soon page for wheat | Site root |
-| `404.html` | Custom error page | Site root |
-| `robots.txt` | Search engine instructions | Site root |
-| `sitemap.xml` | Page list for Google/Bing | Site root |
-| `structured-data.html` | JSON-LD schemas (copy to each page) | Reference file |
+### 2. Add Anthropic API Key (for AI Summaries)
+1. Go to your repo → **Settings** → **Secrets and variables** → **Actions**
+2. Click **"New repository secret"**
+3. Name: `ANTHROPIC_API_KEY`
+4. Value: Your API key from [console.anthropic.com](https://console.anthropic.com)
+5. Click **Add secret**
 
----
+> **Note:** AI summaries are optional. Without an API key, the system uses RSS descriptions as summaries.
 
-## HOW IT ALL WORKS TOGETHER
-
-**Homepage (index.html):** Uses embedded `<style>` block with refined colors
-**All other pages:** Use `styles.css` which now has the SAME refined colors
-
-This means:
-- ✅ Homepage matches corn-prices.html, tools.html, etc.
-- ✅ Soybean & wheat coming soon pages match corn page style
-- ✅ All pages have consistent softer contrast and improved readability
-
----
-
-## WHAT'S IMPROVED IN INDEX.HTML
-
-### Readability (Less Eye Strain)
-- **Background:** `#0d0d0f` (slightly lighter than pure black)
-- **Cards:** `#141418` (warmer dark)
-- **Borders:** `#2a2a32` (more visible, subtle purple tint)
-- **Text:** `#e8e8ec` (softer white, less harsh)
-- **Dim text:** `#a0a0a8` (more readable)
-- **Line height:** `1.6` (increased from 1.5)
-
-### Font Sizes (All Increased)
-- Secondary labels: `0.9rem` (was 0.85rem)
-- Meta text: `0.75rem` (was 0.7rem)
-- Tiny text: `0.7rem` (was 0.65rem)
-- News items: `0.95rem` (was 0.9rem)
-
-### New Features
-- **Clickable price cards:** Corn → corn-prices.html, Soybeans → soybean-prices.html, Wheat → wheat-prices.html
-- **Mobile hamburger menu:** Shows at 767px and below
-- **"Prices" dropdown:** In navigation with links to dedicated price pages
-- **Enhanced footer:** 5 columns with internal links for SEO
-- **Touch-friendly:** 44px minimum touch targets on mobile
-- **iOS zoom prevention:** Form inputs use 16px font
-
----
-
-## DEPLOYMENT STEPS
-
-### Step 1: Backup
-Before deploying, backup your current `index.html`:
-```bash
-cp index.html index-backup.html
+### 3. Copy Files to Your Repo
+```
+your-repo/
+├── .github/
+│   └── workflows/
+│       └── fetch-news.yml
+├── scripts/
+│   └── fetch-news.js
+├── data/
+│   └── news.json
+└── news.html
 ```
 
-### Step 2: Upload Files to Site Root
-- `index.html` (replace existing)
-- `styles.css` (replace existing - THIS IS IMPORTANT for corn page to match)
-- `soybean-prices.html` (new page)
-- `wheat-prices.html` (new page)
-- `404.html`
-- `robots.txt`
-- `sitemap.xml`
-
-### Step 3: Test
-1. Load your site - verify new colors/fonts look good
-2. Click corn price → should go to corn-prices.html
-3. Resize browser to mobile → hamburger menu should appear
-4. Visit a fake URL → should show 404 page
-5. Check https://agsist.com/robots.txt loads
-6. Check https://agsist.com/sitemap.xml loads
-
-### Step 4: Submit Sitemap
-1. Go to Google Search Console
-2. Sitemaps → Add new sitemap
-3. Enter: `sitemap.xml`
-4. Submit
-
----
-
-## STRUCTURED DATA
-
-The `structured-data.html` file contains JSON-LD schemas for each page type.
-
-**For each page**, copy the relevant `<script type="application/ld+json">` block into the `<head>`:
-
-- **corn-prices.html:** WebPage + Product schema
-- **soybean-prices.html:** WebPage + Product schema
-- **wheat-prices.html:** WebPage + Product schema
-- **tools.html:** CollectionPage + ItemList schema
-- **gdu-calculator.html:** SoftwareApplication schema
-- **breakeven-calculator.html:** SoftwareApplication schema
-- **grain-bin-calculator.html:** SoftwareApplication schema
-- **calendar.html:** WebPage schema
-- **fastfacts.html:** WebPage schema
-- **learn.html:** WebPage schema
-- **resources.html:** WebPage schema
-
-Your homepage already has Organization + WebSite schemas - keep those!
-
----
-
-## PAGES THAT NEED TO EXIST
-
-The new navigation links to these pages:
-- `corn-prices.html` ✓ (you have this)
-- `soybean-prices.html` (create or remove from nav/footer)
-- `wheat-prices.html` (create or remove from nav/footer)
-- `privacy.html` (create or remove from footer)
-- `terms.html` (create or remove from footer)
-
-If you don't have these pages yet, either create them or edit index.html to remove the links.
-
----
-
-## CSS VARIABLE REFERENCE
-
-```css
-:root {
-    --bg: #0d0d0f;          /* Page background */
-    --card: #141418;        /* Card/panel background */
-    --border: #2a2a32;      /* Border color */
-    --text: #e8e8ec;        /* Primary text */
-    --dim: #a0a0a8;         /* Secondary/muted text */
-    --accent: #e6b042;      /* Gold accent color */
-    --green: #4ade80;       /* Positive/up color */
-    --red: #f87171;         /* Negative/down color */
-}
+### 4. Update news.html
+Edit the config section:
+```javascript
+const GITHUB_USER = 'your-username';
+const GITHUB_REPO = 'your-repo';
+const GITHUB_BRANCH = 'main';
 ```
 
----
+### 5. Run the Workflow
+- Go to **Actions** tab
+- Click **"Fetch Ag News"**
+- Click **"Run workflow"**
 
-## TROUBLESHOOTING
+## 📡 Sources (40+ feeds)
 
-**Mobile menu not showing?**
-- Check browser width is 767px or less
-- Verify the `.menu-toggle` CSS and JS are present
+### Reddit Communities (8 feeds)
+- r/farming, r/agriculture, r/tractors, r/homestead
+- r/ranching, r/agronomy, r/dairyfarming, r/Cattle
 
-**Dropdown not working?**
-- Check the JavaScript at the bottom of the file is intact
-- Check browser console for errors
+### Government (7 feeds)
+- USDA News, USDA NASS, USDA ERS, USDA FSA
+- USDA NRCS, USDA RMA, USDA AMS
 
-**Colors look different?**
-- Clear browser cache (Ctrl+Shift+R)
-- Check if any other CSS files are overriding (your styles.css shouldn't affect index.html since it uses embedded styles)
+### University Extension (11 feeds)
+- UMN, Iowa State, Ohio State, UW Madison, farmdoc/UIUC
+- Purdue, Kansas State, Nebraska, NDSU, Michigan State, South Dakota State
 
-**404 page not showing?**
-- For GitHub Pages: 404.html in root works automatically
-- For other hosts: Configure server (see 404.html for instructions)
+### Industry & Dairy (12 feeds)
+- AgWeb, DTN, Successful Farming, Brownfield, Feedstuffs
+- Hoard's Dairyman, Dairy Herd, Farm Journal, Progressive Farmer
+- No-Till Farmer, High Plains Journal, Corn & Soybean Digest
 
----
+### Markets (4 feeds)
+- Farms.com, Barchart Ag, CME Group, USDA AMS
 
-## SUPPORT
+### Weather (3 feeds)
+- Drought Monitor, NOAA Climate, NWS Milwaukee
 
-Questions? Just ask in the next message.
+## ⚡ Features
 
-Built with care for AGSIST 🌽
+- **40+ feeds** aggregated every 2 hours
+- **AI-generated TL;DR** summaries (via Claude Haiku - ~$2-3/month)
+- **Summary caching** - reuses summaries for 48 hours to save costs
+- **Fallback to live Reddit** if GitHub JSON unavailable
+- **Category filtering** - Community, Government, University, Industry, Markets, Weather
+- **TL;DR popup** - quick article preview without leaving the page
+- **Mobile-responsive** dark theme design
+
+## 💰 Cost Estimate
+
+Using Claude 3 Haiku (cheapest model):
+- ~30 new summaries per run × 12 runs/day = 360 API calls/day max
+- With caching, actual new summaries: ~20-50/day
+- **Estimated cost: $2-5/month**
+
+Without API key: Works fine, just uses RSS descriptions instead of AI summaries.
+
+## 🔧 Customization
+
+### Adjust Summary Rate Limit
+Edit `scripts/fetch-news.js`:
+```javascript
+const MAX_SUMMARIES_PER_RUN = 30; // Reduce to lower costs
+const SUMMARY_MAX_AGE_HOURS = 48; // Increase to cache longer
+```
+
+### Add More Reddit Subs
+```javascript
+{ url: 'https://www.reddit.com/r/YOUR_SUB/.rss', source: 'r/YOUR_SUB', category: 'community', icon: '🌾' },
+```
+
+### Add RSS Feeds
+```javascript
+{ url: 'https://example.com/feed.rss', source: 'Example', category: 'industry', icon: '📰' },
+```
+
+## 📊 How It Works
+
+```
+GitHub Action (every 2hr)
+       ↓
+fetch-news.js runs
+       ↓
+Phase 1: Fetch 40+ RSS feeds
+       ↓
+Phase 2: For each article:
+         - Check summary cache (skip if <48hr old)
+         - Fetch full article content
+         - Call Claude API for 2-sentence summary
+         - Fallback to description if API fails
+       ↓
+Phase 3: Save to data/news.json
+       ↓
+news.html loads JSON
+       ↓
+User clicks TL;DR → shows AI summary in popup
+```
+
+## 🛡️ Safety Features
+
+- **Summary caching**: Reuses existing summaries to reduce API costs
+- **Rate limiting**: Max 30 summaries per run
+- **Graceful fallback**: Uses descriptions if API unavailable
+- **Preservation guard**: If fetch fails, keeps old data
+- **Deduplication**: Removes duplicate articles
+- **Timeout handling**: 15s timeout per feed

@@ -6,7 +6,7 @@
     
     <!-- SEO Meta Tags -->
     <title>Agriculture News Hub | AGSIST - Free Farming News Aggregator</title>
-    <meta name="description" content="Free agriculture news aggregator with AI-powered summaries. Get farming news from 30+ sources including Reddit, university extension, USDA, and industry publications. Updated every 2 hours.">
+    <meta name="description" content="Free agriculture news from 30+ sources. Reddit, university extension, USDA, and industry. Updated every 2 hours.">
     <meta name="keywords" content="agriculture news, farming news, farm news aggregator, USDA news, crop news, livestock news, ag news, farm prices, agricultural news today">
     <meta name="author" content="AGSIST">
     <meta name="robots" content="index, follow">
@@ -16,14 +16,14 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://agsist.com/news.html">
     <meta property="og:title" content="Agriculture News Hub | AGSIST">
-    <meta property="og:description" content="Free agriculture news aggregator with AI-powered summaries from 30+ sources. Updated every 2 hours.">
+    <meta property="og:description" content="Free agriculture news aggregator with summaries from 30+ sources. Updated every 2 hours.">
     <meta property="og:image" content="https://agsist.com/images/og-news.jpg">
     <meta property="og:site_name" content="AGSIST">
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Agriculture News Hub | AGSIST">
-    <meta name="twitter:description" content="Free agriculture news aggregator with AI-powered summaries from 30+ sources.">
+    <meta name="twitter:description" content="Free agriculture news aggregator with summaries from 30+ sources.">
     
     <!-- Mobile -->
     <meta name="theme-color" content="#0a0a0c">
@@ -57,7 +57,7 @@
         "@context": "https://schema.org",
         "@type": "WebPage",
         "name": "Agriculture News Hub",
-        "description": "Free agriculture news aggregator with AI-powered summaries from 30+ sources",
+        "description": "Free agriculture news aggregator with summaries from 30+ sources",
         "url": "https://agsist.com/news.html",
         "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"}
     }
@@ -91,39 +91,6 @@
             font-size: 1rem;
             max-width: 700px;
             margin: 0 auto 24px;
-        }
-        
-        .ai-callout {
-            background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1));
-            border: 1px solid rgba(139,92,246,0.3);
-            border-radius: 12px;
-            padding: 16px 20px;
-            max-width: 700px;
-            margin: 0 auto 24px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            text-align: left;
-        }
-        
-        .ai-callout-badge {
-            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
-            color: #fff;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
-            white-space: nowrap;
-        }
-        
-        .ai-callout-text {
-            font-size: 0.85rem;
-            color: var(--dim);
-            line-height: 1.6;
-        }
-        
-        .ai-callout-text strong {
-            color: var(--text);
         }
         
         .stats-bar {
@@ -350,34 +317,24 @@
         }
         
         .summary-btn {
-            background: var(--accent);
-            color: #000;
-            border: none;
+            background: none;
+            color: var(--dim);
+            border: 1px solid var(--border);
             padding: 6px 12px;
             border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 700;
+            font-size: 0.75rem;
+            font-weight: 600;
             font-family: inherit;
             cursor: pointer;
             transition: all 0.2s;
-            text-transform: uppercase;
             display: inline-flex;
             align-items: center;
             gap: 4px;
         }
         
-        .summary-btn::after {
-            content: 'AI';
-            font-size: 0.55rem;
-            background: #000;
-            color: var(--accent);
-            padding: 1px 3px;
-            border-radius: 2px;
-        }
-        
         .summary-btn:hover {
-            background: #fff;
-            transform: scale(1.05);
+            color: var(--accent);
+            border-color: var(--accent);
         }
         
         .article-link {
@@ -643,17 +600,8 @@
             gap: 8px;
         }
         
-        .modal-header .ai-badge {
-            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
-            color: #fff;
-            font-size: 0.6rem;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-weight: 700;
-        }
-        
-        .modal-header .ai-note {
-            font-size: 0.7rem;
+        .modal-header .sub-note {
+            font-size: 0.75rem;
             color: var(--dim);
             font-weight: 400;
         }
@@ -767,16 +715,6 @@
                 font-size: 0.85rem;
             }
             
-            .ai-callout {
-                flex-direction: column;
-                padding: 14px;
-                gap: 10px;
-            }
-            
-            .ai-callout-badge {
-                align-self: flex-start;
-            }
-            
             .stats-bar {
                 gap: 16px;
             }
@@ -853,14 +791,7 @@
     <!-- Hero Section -->
     <div class="hero">
         <h1>📰 The <span>Ag News</span> Hub</h1>
-        <p>Your one-stop destination for agriculture news. Community discussions, university research, and industry insights—all in one place, updated every 2 hours.</p>
-        
-        <div class="ai-callout">
-            <div class="ai-callout-badge">✨ AI-Powered</div>
-            <div class="ai-callout-text">
-                <strong>Quick Summaries:</strong> Click the Summary button on any article for an instant AI-generated summary covering key facts, why it matters, and action items.
-            </div>
-        </div>
+        <p>Your one-stop destination for agriculture news. Community discussions, university research, and industry insights—all in one place.</p>
         
         <div class="stats-bar">
             <div class="stat">
@@ -957,11 +888,11 @@
             <div class="faq-grid">
                 <details class="faq-item">
                     <summary>What is AGSIST Agriculture News Hub?</summary>
-                    <p>AGSIST Agriculture News Hub is a free news aggregator that collects farming and agriculture news from over 30 sources including Reddit communities, university extension services, and industry publications. Articles are updated every 2 hours and include AI-powered summaries so you can quickly understand the key points.</p>
+                    <p>A free news aggregator that collects farming and agriculture news from over 30 sources including Reddit communities, university extension services, and industry publications. Articles are updated every 2 hours with quick summaries available for each article.</p>
                 </details>
                 <details class="faq-item">
-                    <summary>How do the AI summaries work?</summary>
-                    <p>When you click the <strong>Summary</strong> button on any article, our system fetches the full article content and uses Claude AI to generate a comprehensive 4-6 sentence summary. The summary covers key facts, specific numbers or dates mentioned, why the news matters to farmers, and any action items or recommendations.</p>
+                    <summary>How do the summaries work?</summary>
+                    <p>Click the <strong>Summary</strong> button on any article to see a 4-6 sentence overview covering key facts, why the news matters, and any action items. Summaries are generated from the full article content.</p>
                 </details>
                 <details class="faq-item">
                     <summary>What sources does the news hub aggregate from?</summary>
@@ -982,7 +913,7 @@
     <!-- Footer (loaded from /components/footer.html) -->
     <div id="footer"></div>
     
-    <!-- Modal for AI Summaries -->
+    <!-- Summary Modal -->
     <div class="modal-overlay" id="modal">
         <div class="modal-content" id="modal-content"></div>
     </div>
@@ -1056,7 +987,7 @@
                         '<h3 class="article-title">' + title + '</h3>' +
                         (excerpt ? '<p class="article-excerpt">' + excerpt + '</p>' : '') +
                         '<div class="article-footer">' +
-                            '<button class="summary-btn" onclick="showSummary(\'' + item.id + '\')">📋 Summary</button>' +
+                            '<button class="summary-btn" onclick="showSummary(\'' + item.id + '\')">Summary →</button>' +
                             '<a class="article-link" href="' + item.link + '" target="_blank" rel="noopener">Read more →</a>' +
                         '</div>' +
                     '</div>' +
@@ -1160,8 +1091,8 @@
             modalContent.innerHTML = 
                 '<div class="modal-header">' +
                     '<div>' +
-                        '<h3>📋 Summary <span class="ai-badge">AI</span></h3>' +
-                        '<p class="ai-note">' + (isAI ? 'Generated by AI from the full article' : 'From article description') + '</p>' +
+                        '<h3>Summary</h3>' +
+                        '<p class="sub-note">' + escapeHtml(article.source) + '</p>' +
                     '</div>' +
                     '<button class="modal-close" onclick="closeModal()">×</button>' +
                 '</div>' +

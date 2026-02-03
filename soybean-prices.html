@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soybean Prices & Market Dashboard - Futures, Crush, China, Exports | AGSIST</title>
-    <meta name="description" content="Complete soybean market dashboard. Live CBOT futures, crush margins, meal & oil prices, China import data, Brazil/Argentina production, USDA reports, and basis trends. Built for farmers.">
+    <title>Soybean Prices Today - Futures & Analysis | AGSIST</title>
+    <meta name="description" content="Live soybean futures prices with charts, crush spread, seasonal analysis, and commentary.">
     <meta name="keywords" content="soybean prices, soybean futures, ZS futures, crush margins, soybean meal, soybean oil, China soybeans, Brazil soybeans, USDA soybeans">
     <link rel="canonical" href="https://agsist.com/soybean-prices.html">
     <link rel="icon" href="/favicon.png">
@@ -48,13 +48,13 @@
         .price-source:hover{border-color:var(--accent);transform:translateY(-2px)}
         .price-source-icon{font-size:1.3rem;margin-bottom:6px}
         .price-source-name{font-weight:600;font-size:0.8rem}
-        .price-source-desc{font-size:0.65rem;color:var(--dim);margin-top:2px}
+        .price-source-desc{font-size:0.75rem;color:var(--dim);margin-top:2px}
         .data-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
         .data-card{background:var(--bg);border-radius:6px;padding:10px;text-align:center}
-        .data-card-label{font-size:0.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.5px}
+        .data-card-label{font-size:0.7rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.5px}
         .data-card-value{font-size:1rem;font-weight:700;color:var(--text);margin-top:2px}
         .data-card-value.green{color:var(--green)}
-        .data-card-sub{font-size:0.6rem;color:var(--dim);margin-top:2px}
+        .data-card-sub{font-size:0.7rem;color:var(--dim);margin-top:2px}
         .link-grid{display:grid;gap:6px}
         .link-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg);border-radius:6px;text-decoration:none;color:var(--text);font-size:0.8rem;transition:background 0.2s}
         .link-item:hover{background:var(--card-hover,#1c1c22)}
@@ -68,7 +68,7 @@
         .info-card ul li{margin-bottom:4px}
         .contract-row{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:6px}
         .contract-item{background:var(--bg);border-radius:4px;padding:8px;text-align:center}
-        .contract-item .month{font-size:0.65rem;color:var(--dim)}
+        .contract-item .month{font-size:0.75rem;color:var(--dim)}
         .contract-item .code{font-size:0.8rem;font-weight:600;color:var(--accent)}
         .complex-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
         .complex-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
@@ -76,7 +76,7 @@
         .complex-card-name{font-size:0.8rem;font-weight:600;color:var(--text)}
         .complex-card-symbol{font-size:0.7rem;color:var(--accent);margin-top:2px}
         .complex-card a{display:block;margin-top:8px;font-size:0.7rem;color:var(--accent)}
-        .dash-footer{font-size:0.65rem;color:var(--dim);text-align:center;padding:16px;background:var(--card);border-radius:8px;margin-top:12px;line-height:1.6}
+        .dash-footer{font-size:0.75rem;color:var(--dim);text-align:center;padding:16px;background:var(--card);border-radius:8px;margin-top:12px;line-height:1.6}
         .dash-footer a{color:var(--accent)}
         @media(min-width:480px){.price-sources{grid-template-columns:repeat(4,1fr)}.data-grid{grid-template-columns:repeat(4,1fr)}}
         @media(min-width:768px){.dash-wrap{padding:12px}.dash-grid{grid-template-columns:repeat(2,1fr)}.dash-grid .full-width{grid-column:1/-1}.info-grid{grid-template-columns:repeat(2,1fr)}.data-grid{grid-template-columns:repeat(6,1fr)}}
@@ -151,7 +151,7 @@
                                 <div class="contract-item"><div class="month">JUL</div><div class="code">ZSN</div></div>
                                 <div class="contract-item" style="border:1px solid var(--accent);background:rgba(230,176,66,0.1)"><div class="month">NOV</div><div class="code">ZSX</div></div>
                             </div>
-                            <p style="font-size:0.65rem;color:var(--dim);margin:8px 0 0 0">November (ZSX) = new crop. Also Aug (Q), Sep (U). Each contract = 5,000 bushels.</p>
+                            <p style="font-size:0.75rem;color:var(--dim);margin:8px 0 0 0">November (ZSX) = new crop. Also Aug (Q), Sep (U). Each contract = 5,000 bushels.</p>
                         </div>
                     </div>
                 </div>

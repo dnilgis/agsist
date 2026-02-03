@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmdoc Daily - Farm Economics & Research | AGSIST</title>
+    <meta name="keywords" content="farmdoc daily, farm economics, crop budgets, ARC PLC, farm marketing, University of Illinois">
+    <meta name="description" content="Farmdoc analysis hub. Farm economics, marketing tools, crop budgets from University of Illinois.">
+    <link rel="canonical" href="https://agsist.com/farmdoc.html">
+    
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Farmdoc Analysis Hub | AGSIST">
+    <meta property="og:description" content="Farmdoc farm economics, marketing tools, and crop budget analysis.">
+    <meta property="og:url" content="https://agsist.com/farmdoc.html">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/components/shared.css">
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    
+    <style>
+        main { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .breadcrumb { font-size: 0.85rem; color: var(--dim); margin-bottom: 16px; }
+        .breadcrumb a { color: var(--accent); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; }
+        .panel-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .panel-head h1, .panel-head h2 { font-size: 1.1rem; color: var(--accent); margin: 0; }
+        .panel-body { padding: 20px; }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+            border: 2px solid #3f51b5;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .hero img { height: 60px; margin-bottom: 16px; filter: brightness(0) invert(1); }
+        .hero h1 { color: #fff; font-size: 1.5rem; margin-bottom: 8px; }
+        .hero p { color: rgba(255,255,255,0.8); font-size: 0.95rem; max-width: 600px; margin: 0 auto 16px; }
+        .hero-badge { display: inline-block; background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; color: #fff; }
+        
+        /* Tool Cards */
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        
+        .tool-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        .tool-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        
+        .tool-card-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--card) 0%, #1a1a22 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        .tool-card-header h3 { color: var(--accent); font-size: 1.1rem; margin-bottom: 8px; }
+        .tool-card-header p { color: var(--dim); font-size: 0.85rem; line-height: 1.5; margin: 0; }
+        
+        .tool-card-body { padding: 20px; }
+        
+        .tool-features { list-style: none; margin-bottom: 16px; }
+        .tool-features li { 
+            padding: 8px 0; 
+            color: var(--text); 
+            font-size: 0.85rem; 
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tool-features li:last-child { border-bottom: none; }
+        .tool-features li::before { content: "✓"; color: #10b981; font-weight: bold; }
+        
+        .tool-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .tool-type { 
+            font-size: 0.7rem; 
+            padding: 4px 10px; 
+            border-radius: 12px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        .tool-type.online { background: #10b981; color: #000; }
+        .tool-type.excel { background: #3b82f6; color: #fff; }
+        .tool-updated { font-size: 0.75rem; color: var(--dim); }
+        
+        .tool-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            text-align: center;
+            background: var(--accent);
+            color: #000;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .tool-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(230,176,66,0.3); }
+        .tool-btn.secondary { background: var(--card); color: var(--accent); border: 1px solid var(--accent); }
+        .tool-btn.secondary:hover { background: var(--accent); color: #000; }
+        
+        /* Category Tabs */
+        .category-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+        .category-tab {
+            padding: 10px 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--dim);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .category-tab:hover, .category-tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
+        
+        /* More Tools Section */
+        .more-tools { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+        .mini-tool {
+            display: block;
+            padding: 14px 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .mini-tool:hover { border-color: var(--accent); }
+        .mini-tool strong { display: block; color: var(--text); font-size: 0.9rem; margin-bottom: 4px; }
+        .mini-tool span { color: var(--dim); font-size: 0.75rem; }
+        .mini-tool .type-badge { float: right; font-size: 0.75rem; padding: 2px 6px; border-radius: 8px; }
+        .mini-tool .type-badge.excel { background: #3b82f6; color: #fff; }
+        .mini-tool .type-badge.online { background: #10b981; color: #000; }
+        
+        /* Attribution */
+        .attribution {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .attribution p { color: var(--dim); font-size: 0.85rem; margin: 0; }
+        .attribution a { color: var(--accent); }
+        
+        @media (max-width: 768px) {
+            main { padding: 12px; }
+            .tool-grid { grid-template-columns: 1fr; }
+            .hero { padding: 20px; }
+            .hero h1 { font-size: 1.2rem; }
+        }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Farmdoc Analysis Hub",
+        "description": "Curated farmdoc farm economics analysis and marketing tools",
+        "url": "https://agsist.com/farmdoc.html",
+        "applicationCategory": "Agriculture",
+        "operatingSystem": "Web Browser",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
+</head>
+<body>
+    <div id="header"></div>
+
+    <main>
+        <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Farmdoc Tools</nav>
+        
+        <!-- Hero -->
+        <div class="hero">
+            <h1>🎓 University of Illinois farmdoc Tools</h1>
+            <p>Free, research-backed calculators and analysis tools from the Department of Agricultural and Consumer Economics</p>
+            <span class="hero-badge">Trusted by farmers since 1999</span>
+        </div>
+        
+        <!-- Featured Online Tools -->
+        <div class="panel">
+            <div class="panel-head">
+                <h2>⭐ Featured Online Tools</h2>
+                <span style="color: var(--dim); font-size: 0.8rem;">Opens in new tab • No download required</span>
+            </div>
+            <div class="panel-body">
+                <div class="tool-grid">
+                    <!-- Premium Calculator -->
+                    <div class="tool-card">
+                        <div class="tool-card-header">
+                            <h3>💰 Crop Insurance Premium Calculator</h3>
+                            <p>Calculate and compare premiums across all crop insurance products for your specific farm situation.</p>
+                        </div>
+                        <div class="tool-card-body">
+                            <div class="tool-meta">
+                                <span class="tool-type online">Online Tool</span>
+                                <span class="tool-updated">Updated: March 2024</span>
+                            </div>
+                            <ul class="tool-features">
+                                <li>Revenue Protection (RP) premiums</li>
+                                <li>Yield Protection (YP) comparisons</li>
+                                <li>SCO & ECO add-on coverage</li>
+                                <li>Enterprise vs. optional units</li>
+                                <li>County-level customization</li>
+                            </ul>
+                            <a href="https://fd-tools.ncsa.illinois.edu/premiums" target="_blank" class="tool-btn">
+                                Open Premium Calculator →
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Evaluator -->
+                    <div class="tool-card">
+                        <div class="tool-card-header">
+                            <h3>📊 Crop Insurance Payment Evaluator</h3>
+                            <p>Compare expected payments, costs, and risk reduction across different insurance alternatives.</p>
+                        </div>
+                        <div class="tool-card-body">
+                            <div class="tool-meta">
+                                <span class="tool-type online">Online Tool</span>
+                                <span class="tool-updated">Updated: Jan 2026</span>
+                            </div>
+                            <ul class="tool-features">
+                                <li>Historical payment frequency</li>
+                                <li>Average payment per acre</li>
+                                <li>Net cost analysis</li>
+                                <li>Risk reduction metrics</li>
+                                <li>Side-by-side comparisons</li>
+                            </ul>
+                            <a href="https://fd-tools.ncsa.illinois.edu/evaluator" target="_blank" class="tool-btn">
+                                Open Payment Evaluator →
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- ARC/PLC Calculator -->
+                    <div class="tool-card">
+                        <div class="tool-card-header">
+                            <h3>🏛️ ARC/PLC Calculator</h3>
+                            <p>Compare Agriculture Risk Coverage (ARC-CO) vs. Price Loss Coverage (PLC) for Farm Bill decisions.</p>
+                        </div>
+                        <div class="tool-card-body">
+                            <div class="tool-meta">
+                                <span class="tool-type online">Online Tool</span>
+                                <span class="tool-updated">2025 Farm Bill</span>
+                            </div>
+                            <ul class="tool-features">
+                                <li>County-level ARC-CO analysis</li>
+                                <li>PLC payment projections</li>
+                                <li>Historical benchmark prices</li>
+                                <li>Olympic average yields</li>
+                                <li>Multi-year scenarios</li>
+                            </ul>
+                            <a href="https://fd-tools.ncsa.illinois.edu/arcplc" target="_blank" class="tool-btn">
+                                Open ARC/PLC Calculator →
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Price Distribution -->
+                    <div class="tool-card">
+                        <div class="tool-card-header">
+                            <h3>📈 Price Distribution Tool</h3>
+                            <p>See probability distributions for corn and soybean prices based on current options market data.</p>
+                        </div>
+                        <div class="tool-card-body">
+                            <div class="tool-meta">
+                                <span class="tool-type online">Online Tool</span>
+                                <span class="tool-updated">Live Data</span>
+                            </div>
+                            <ul class="tool-features">
+                                <li>Option-implied probabilities</li>
+                                <li>Corn & soybean contracts</li>
+                                <li>Multiple expiration dates</li>
+                                <li>Visual price ranges</li>
+                                <li>Updated with market</li>
+                            </ul>
+                            <a href="https://farmdoc.illinois.edu/decision-tools/price-distribution" target="_blank" class="tool-btn">
+                                Open Price Distribution →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Excel Spreadsheet Tools -->
+        <div class="panel">
+            <div class="panel-head">
+                <h2>📑 Excel Spreadsheet Tools (FAST)</h2>
+                <span style="color: var(--dim); font-size: 0.8rem;">Download .xlsb files • Requires Microsoft Excel</span>
+            </div>
+            <div class="panel-body">
+                <p style="color: var(--dim); margin-bottom: 20px; font-size: 0.9rem;">
+                    FAST (Farm Analysis Solution Tools) are Excel-based calculators for detailed farm financial analysis. 
+                    Download and customize for your operation.
+                </p>
+                
+                <div class="more-tools">
+                    <!-- Crop Insurance -->
+                    <a href="https://farmdoc.illinois.edu/fast-tools/crop-insurance-decision-tool" target="_blank" class="mini-tool">
+                        <span class="type-badge excel">Excel</span>
+                        <strong>Crop Insurance Decision Tool</strong>
+                        <span>Premiums + historical payments + data</span>
+                    </a>
+                    
+                    <a href="https://farmdoc.illinois.edu/assets/fast-tools/excel/ECOSCOpay.xlsb" target="_blank" class="mini-tool">
+                        <span class="type-badge excel">Excel</span>
+                        <strong>ECO/SCO Payment Estimator</strong>
+                        <span>Area-based add-on insurance analysis</span>
+                    </a>
+                    
+                    <!-- Marketing -->
+                    <a href="https://farmdoc.illinois.edu/fast-tools/corn-soybean-basis-tool" target="_blank" class="mini-tool">
+                        <span class="type-badge excel">Excel</span>
+                        <strong>Corn & Soybean Basis Tool</strong>
+                        <span>Historical basis patterns by location</span>
+                    </a>
+                    
+                    <a href="https://farmdoc.illinois.edu/fast-tools/grain-pricing-tool" target="_blank" class="mini-tool">
+                        <span class="type-badge excel">Excel</span>
+                        <strong>Grain Pricing Tool</strong>
+                        <span>Track sales & average price</span>
+                    </a>
+                    
+                    <!-- Farm Management -->
+                    <a href="https://farmdoc.illinois.edu/fast-tools/farm-projection-tool" target="_blank" class="mini-tool">
+                        <span class="type-badge excel">Excel</span>
+                        <strong>Farm Projection Tool</strong>
+                        <span>Budget and cash flow projections</span>
+                    </a>
+                    
+                    <a href="https://farmdoc.illinois.edu/fast-tools/balance-sheet-historical-financial-statements" target="_blank" class="mini-tool">
+                        <span class="type-badge excel">Excel</span>
+                        <strong>Balance Sheet Tool</strong>
+                        <span>Financial statements & analysis</span>
+                    </a>
+                    
+                    <!-- Land & Rent -->
+                    <a href="https://farmdoc.illinois.edu/fast-tools/farm-rent-evaluator" target="_blank" class="mini-tool">
+                        <span class="type-badge excel">Excel</span>
+                        <strong>Farm Rent Evaluator</strong>
+                        <span>Fair rental rate calculator</span>
+                    </a>
+                    
+                    <a href="https://farmdoc.illinois.edu/fast-tools/land-purchase-analysis" target="_blank" class="mini-tool">
+                        <span class="type-badge excel">Excel</span>
+                        <strong>Land Purchase Analysis</strong>
+                        <span>Evaluate farmland investments</span>
+                    </a>
+                    
+                    <!-- Equipment -->
+                    <a href="https://farmdoc.illinois.edu/fast-tools/machinery-economics" target="_blank" class="mini-tool">
+                        <span class="type-badge excel">Excel</span>
+                        <strong>Machinery Economics</strong>
+                        <span>Equipment cost analysis</span>
+                    </a>
+                    
+                    <a href="https://farmdoc.illinois.edu/fast-tools/grain-bin-analysis" target="_blank" class="mini-tool">
+                        <span class="type-badge excel">Excel</span>
+                        <strong>Grain Storage Analysis</strong>
+                        <span>Bin purchase ROI</span>
+                    </a>
+                    
+                    <!-- Livestock -->
+                    <a href="https://farmdoc.illinois.edu/fast-tools/beef-tool" target="_blank" class="mini-tool">
+                        <span class="type-badge excel">Excel</span>
+                        <strong>Beef Profitability Model</strong>
+                        <span>Cow-calf & feedlot analysis</span>
+                    </a>
+                    
+                    <a href="https://farmdoc.illinois.edu/fast-tools/dairy-profitability-model" target="_blank" class="mini-tool">
+                        <span class="type-badge excel">Excel</span>
+                        <strong>Dairy Profitability Model</strong>
+                        <span>Dairy enterprise analysis</span>
+                    </a>
+                </div>
+                
+                <div style="text-align: center; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
+                    <a href="https://farmdoc.illinois.edu/fast" target="_blank" class="tool-btn secondary" style="display: inline-block; width: auto; padding: 12px 24px;">
+                        View All 50+ FAST Tools →
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Farmdoc Daily -->
+        <div class="panel">
+            <div class="panel-head">
+                <h2>📰 Farmdoc Daily Articles</h2>
+            </div>
+            <div class="panel-body">
+                <p style="color: var(--dim); margin-bottom: 16px; font-size: 0.9rem;">
+                    Research-based analysis and commentary updated daily. Essential reading for farm management decisions.
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                    <a href="https://farmdocdaily.illinois.edu/category/areas/marketing-and-outlook/weekly-outlook" target="_blank" class="mini-tool">
+                        <strong>Weekly Outlook</strong>
+                        <span>Market analysis & price forecasts</span>
+                    </a>
+                    <a href="https://farmdocdaily.illinois.edu/category/areas/management/weekly-farm-economics" target="_blank" class="mini-tool">
+                        <strong>Weekly Farm Economics</strong>
+                        <span>Cost of production & returns</span>
+                    </a>
+                    <a href="https://farmdocdaily.illinois.edu/category/areas/crop-insurance" target="_blank" class="mini-tool">
+                        <strong>Crop Insurance</strong>
+                        <span>Program updates & analysis</span>
+                    </a>
+                    <a href="https://farmdocdaily.illinois.edu/category/areas/agricultural-policy" target="_blank" class="mini-tool">
+                        <strong>Agricultural Policy</strong>
+                        <span>Farm Bill & government programs</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Attribution -->
+        <div class="attribution">
+            <p>
+                All tools developed by the <a href="https://farmdoc.illinois.edu" target="_blank">farmdoc project</a> at the 
+                University of Illinois Department of Agricultural and Consumer Economics. 
+                AGSIST provides these links as a service to farmers — we are not affiliated with U of I.
+            </p>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+    <script src="/components/load-components.js"></script>
+</body>
+</html>

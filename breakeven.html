@@ -21,7 +21,6 @@
     
     <!-- Shared Styles -->
     <link rel="stylesheet" href="/components/shared.css">
-    <link rel="stylesheet" href="styles.css">
     
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
@@ -40,6 +39,14 @@
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
     }
     </script>
+    <style>
+        @media (max-width: 500px) {
+            div[style*="grid-template-columns: 1fr 1fr"],
+            div[style*="grid-template-columns:1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->

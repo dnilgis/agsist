@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USDA Market News Reports | AGSIST</title>
+    <meta name="keywords" content="USDA market news, grain market reports, dairy prices, livestock auctions, AMS reports">
+    <meta name="description" content="Official USDA AMS market news reports. Grain cash prices, dairy, livestock auction results organized by region. Find your local market reports.">
+    <link rel="canonical" href="https://agsist.com/market-news.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="USDA Market News Reports | AGSIST">
+    <meta property="og:description" content="USDA AMS market reports for grain, dairy, and livestock. Personalized by region.">
+    <meta property="og:url" content="https://agsist.com/market-news.html">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/components/shared.css">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    <style>
+        main { max-width: 1300px; margin: 0 auto; padding: 16px; }
+        .breadcrumb { font-size: 0.85rem; color: var(--dim); margin-bottom: 16px; }
+        .breadcrumb a { color: var(--accent); text-decoration: none; }
+
+        .hero { background: linear-gradient(135deg, #1a237e 0%, #283593 100%); border: 2px solid #5c6bc0; border-radius: 12px; padding: 28px; text-align: center; margin-bottom: 20px; }
+        .hero h1 { color: #fff; font-size: 1.5rem; margin: 0 0 8px; }
+        .hero p { color: rgba(255,255,255,0.85); font-size: 0.9rem; margin: 0; }
+
+        .state-bar { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .state-bar label { color: var(--dim); font-size: 0.85rem; }
+        .state-bar select { padding: 10px 14px; font-family: inherit; font-size: 0.9rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
+        .detect-btn { padding: 10px 14px; background: var(--accent); color: #000; border: none; border-radius: 6px; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+        .region-badge { padding: 6px 12px; background: var(--accent); color: #000; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+
+        .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 6px; overflow-x: auto; }
+        .tab { padding: 12px 20px; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 600; border: none; cursor: pointer; background: transparent; color: var(--dim); white-space: nowrap; }
+        .tab.active { background: var(--accent); color: #000; }
+        .tab:hover:not(.active) { background: var(--bg); color: var(--text); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; }
+        .panel-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .panel-head h2 { font-size: 1rem; color: var(--accent); margin: 0; }
+        .panel-body { padding: 18px; }
+        .panel.highlighted { border-color: var(--accent); }
+        .panel.highlighted .panel-head { background: rgba(230,176,66,0.08); }
+
+        .report-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+        .report-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-decoration: none; display: block; transition: all 0.2s; }
+        .report-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .report-card h3 { color: var(--text); font-size: 0.9rem; margin: 0 0 4px; }
+        .report-card p { color: var(--dim); font-size: 0.75rem; margin: 0 0 8px; }
+        .report-card .action { color: var(--accent); font-size: 0.75rem; font-weight: 600; }
+        .report-card.your-region { border-color: var(--accent); background: rgba(230,176,66,0.05); }
+
+        .region-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+        .region-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+        .region-card.your-region { border-color: var(--accent); }
+        .region-card h4 { font-size: 0.9rem; color: var(--accent); margin: 0 0 4px; }
+        .region-card .states { font-size: 0.75rem; color: var(--dim); margin-bottom: 10px; }
+        .region-card a { display: block; padding: 6px 0; font-size: 0.8rem; color: var(--accent); text-decoration: none; }
+        .region-card a:hover { text-decoration: underline; }
+
+        .info-box { background: var(--bg); border-left: 4px solid var(--accent); padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 0.85rem; color: var(--dim); }
+        .info-box strong { color: var(--text); }
+
+        .guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+        .guide-item { background: var(--bg); border-radius: 8px; padding: 14px; }
+        .guide-item h4 { font-size: 0.85rem; color: var(--accent); margin: 0 0 6px; }
+        .guide-item p { font-size: 0.75rem; color: var(--dim); margin: 0; }
+
+        @media (max-width: 768px) {
+            main { padding: 10px; }
+            .state-bar { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "USDA Market News Reports",
+        "description": "Geolocation-aware USDA AMS market news reports for grain, dairy, and livestock",
+        "url": "https://agsist.com/market-news.html",
+        "applicationCategory": "Agriculture",
+        "operatingSystem": "Web Browser",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
+</head>
+<body>
+    <div id="header"></div>
+    <main>
+        <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Market News</nav>
+
+        <div class="hero">
+            <h1>📰 USDA Market News</h1>
+            <p>Official USDA AMS market reports • Grain, dairy, and livestock prices by region</p>
+        </div>
+
+        <div class="state-bar">
+            <label>Your State:</label>
+            <select id="stateSelect"></select>
+            <button class="detect-btn" onclick="detectMyLocation()">📍 Detect</button>
+            <span class="region-badge" id="regionBadge">Upper Midwest</span>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('grain')">🌾 Grain & Oilseed</button>
+            <button class="tab" onclick="showTab('dairy')">🥛 Dairy</button>
+            <button class="tab" onclick="showTab('livestock')">🐄 Livestock</button>
+            <button class="tab" onclick="showTab('guide')">📖 Report Guide</button>
+        </div>
+
+        <!-- GRAIN TAB -->
+        <div class="tab-content active" id="tab-grain">
+            <div class="panel highlighted" id="yourRegionPanel">
+                <div class="panel-head"><h2 id="yourRegionTitle">📍 Your Region: Upper Midwest</h2></div>
+                <div class="panel-body">
+                    <div class="report-grid" id="yourRegionReports"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head"><h2>🌾 National Grain Reports</h2></div>
+                <div class="panel-body">
+                    <div class="report-grid">
+                        <a href="https://www.ams.usda.gov/market-news/grain-and-oilseed" target="_blank" class="report-card"><h3>🌽 National Corn Summary</h3><p>Cash corn prices, basis, regional summaries</p><span class="action">View Report →</span></a>
+                        <a href="https://www.ams.usda.gov/market-news/grain-and-oilseed" target="_blank" class="report-card"><h3>🫘 National Soybean Summary</h3><p>Cash soybean prices, crush margins</p><span class="action">View Report →</span></a>
+                        <a href="https://www.ams.usda.gov/market-news/grain-and-oilseed" target="_blank" class="report-card"><h3>🌾 National Wheat Summary</h3><p>HRW, SRW, HRS by class and region</p><span class="action">View Report →</span></a>
+                        <a href="https://www.ams.usda.gov/market-news/ethanol" target="_blank" class="report-card"><h3>⛽ Ethanol Report</h3><p>Ethanol production, margins, DDGs</p><span class="action">View Report →</span></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head"><h2>📍 All Grain Regions</h2></div>
+                <div class="panel-body">
+                    <div class="region-grid" id="grainRegions"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DAIRY TAB -->
+        <div class="tab-content" id="tab-dairy">
+            <div class="panel">
+                <div class="panel-head"><h2>🥛 National Dairy Reports</h2></div>
+                <div class="panel-body">
+                    <div class="report-grid">
+                        <a href="https://www.ams.usda.gov/market-news/dairy" target="_blank" class="report-card"><h3>🧀 National Dairy Report</h3><p>All dairy product prices and production</p><span class="action">View Report →</span></a>
+                        <a href="https://mymarketnews.ams.usda.gov/viewReport/2999" target="_blank" class="report-card"><h3>🧈 CME Spot Dairy</h3><p>Cheese, butter, NDM, whey spot prices</p><span class="action">View Report →</span></a>
+                        <a href="https://mymarketnews.ams.usda.gov/viewReport/2996" target="_blank" class="report-card"><h3>📊 Class III/IV Prices</h3><p>Federal Order milk prices</p><span class="action">View Report →</span></a>
+                        <a href="https://mymarketnews.ams.usda.gov/viewReport/2983" target="_blank" class="report-card"><h3>🏭 Dairy Products Report</h3><p>Cheese & butter production</p><span class="action">View Report →</span></a>
+                    </div>
+                    <div class="info-box" style="margin-top:16px;">
+                        <strong>🧀 Wisconsin Dairy:</strong> Wisconsin produces ~26% of US cheese. Class III prices (cheese-based) directly affect WI dairy farmer income. Track cheese spot prices daily at CME.
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head"><h2>📍 Regional Dairy Reports</h2></div>
+                <div class="panel-body">
+                    <div class="region-grid">
+                        <div class="region-card" id="dairy-upper-mw">
+                            <h4>Upper Midwest</h4>
+                            <div class="states">WI, MN, IA, SD, ND</div>
+                            <a href="https://mymarketnews.ams.usda.gov/viewReport/2998" target="_blank">→ Upper Midwest Dairy</a>
+                            <a href="https://mymarketnews.ams.usda.gov/viewReport/2984" target="_blank">→ Central Cheese Report</a>
+                        </div>
+                        <div class="region-card">
+                            <h4>Northeast</h4>
+                            <div class="states">NY, PA, VT, ME</div>
+                            <a href="https://mymarketnews.ams.usda.gov/viewReport/2997" target="_blank">→ Northeast Dairy</a>
+                        </div>
+                        <div class="region-card">
+                            <h4>West</h4>
+                            <div class="states">CA, ID, WA</div>
+                            <a href="https://mymarketnews.ams.usda.gov/viewReport/2995" target="_blank">→ Western Dairy</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIVESTOCK TAB -->
+        <div class="tab-content" id="tab-livestock">
+            <div class="panel">
+                <div class="panel-head"><h2>🐄 National Livestock Reports</h2></div>
+                <div class="panel-body">
+                    <div class="report-grid">
+                        <a href="https://www.ams.usda.gov/market-news/feeder-cattle" target="_blank" class="report-card"><h3>🐄 Feeder Cattle</h3><p>Weekly auction results by weight & grade</p><span class="action">View Report →</span></a>
+                        <a href="https://www.ams.usda.gov/market-news/boxed-beef" target="_blank" class="report-card"><h3>🥩 Boxed Beef</h3><p>Choice & Select cutout values</p><span class="action">View Report →</span></a>
+                        <a href="https://www.ams.usda.gov/market-news/hogs-and-pork" target="_blank" class="report-card"><h3>🐷 Hogs & Pork</h3><p>Lean hog prices, pork cutouts</p><span class="action">View Report →</span></a>
+                        <a href="https://www.ams.usda.gov/market-news/lamb-meat" target="_blank" class="report-card"><h3>🐑 Lamb & Sheep</h3><p>Auction results and prices</p><span class="action">View Report →</span></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head"><h2>📍 Regional Livestock Auctions</h2></div>
+                <div class="panel-body">
+                    <div class="region-grid" id="livestockRegions"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GUIDE TAB -->
+        <div class="tab-content" id="tab-guide">
+            <div class="panel">
+                <div class="panel-head"><h2>📖 Understanding USDA Market Reports</h2></div>
+                <div class="panel-body">
+                    <div class="guide-grid">
+                        <div class="guide-item"><h4>Cash Price</h4><p>What elevators/buyers are actually paying today. Equals futures ± basis.</p></div>
+                        <div class="guide-item"><h4>Basis</h4><p>Cash price minus nearest futures price. Reflects local supply/demand, transport costs.</p></div>
+                        <div class="guide-item"><h4>Bid vs Offer</h4><p>Bid = what buyer will pay. Offer = what seller wants. Spread = negotiation room.</p></div>
+                        <div class="guide-item"><h4>Choice vs Select</h4><p>Beef quality grades. Choice is higher marbling. Choice-Select spread indicates consumer demand.</p></div>
+                        <div class="guide-item"><h4>Cutout Value</h4><p>Calculated wholesale price of a carcass. Tracks packer profitability.</p></div>
+                        <div class="guide-item"><h4>Class III Milk</h4><p>Price based on cheese & whey. Determines most WI dairy farmer payments.</p></div>
+                        <div class="guide-item"><h4>Block vs Barrel</h4><p>Two forms of cheese traded at CME. Blocks = retail, Barrels = processors.</p></div>
+                        <div class="guide-item"><h4>Dressed Weight</h4><p>Carcass weight after processing. Cattle: ~63% of live weight. Hogs: ~75%.</p></div>
+                    </div>
+                    <div class="info-box" style="margin-top:16px;">
+                        <strong>📅 Report Timing:</strong> Most grain reports release daily. Livestock reports are weekly (usually Thursday/Friday). Dairy reports are weekly to monthly depending on type.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+    <script src="/components/load-components.js"></script>
+    <script src="/components/geolocation.js"></script>
+    <script>
+        let currentState = 'WI';
+
+        const regions = {
+            upperMidwest: { name: 'Upper Midwest', states: ['WI','MN','ND','SD'], grain: '2892', livestock: ['2469','2468'] },
+            cornBelt: { name: 'Corn Belt', states: ['IA','IL','IN','OH'], grain: '2893', livestock: ['2467','2470'] },
+            plains: { name: 'Northern Plains', states: ['NE','KS','MO'], grain: '2891', livestock: ['2471'] },
+            gulf: { name: 'Gulf', states: ['TX','LA','AR'], grain: '2895', livestock: [] },
+            pnw: { name: 'Pacific Northwest', states: ['WA','OR'], grain: '2894', livestock: [] },
+            east: { name: 'Eastern', states: ['NY','PA','MI','OH'], grain: '2896', livestock: ['2472','2473'] }
+        };
+
+        const livestockAuctions = {
+            WI: { name: 'Wisconsin', id: '2469' },
+            MN: { name: 'Minnesota', id: '2468' },
+            IA: { name: 'Iowa', id: '2467' },
+            NE: { name: 'Nebraska', id: '2471' },
+            IL: { name: 'Illinois', id: '2470' },
+            IN: { name: 'Indiana', id: '2470' },
+            OH: { name: 'Ohio', id: '2472' },
+            PA: { name: 'Pennsylvania', id: '2473' },
+            TX: { name: 'Texas', id: '2475' },
+            KS: { name: 'Kansas', id: '2474' },
+            MO: { name: 'Missouri', id: '2471' },
+            SD: { name: 'South Dakota', id: '2469' },
+            ND: { name: 'North Dakota', id: '2469' }
+        };
+
+        function getRegion(state) {
+            for (const [key, r] of Object.entries(regions)) {
+                if (r.states.includes(state)) return { key, ...r };
+            }
+            return { key: 'upperMidwest', ...regions.upperMidwest };
+        }
+
+        function populateStates() {
+            const sel = document.getElementById('stateSelect');
+            sel.innerHTML = Object.entries(AGSIST_GEO.states).sort((a, b) => a[1].name.localeCompare(b[1].name))
+                .map(([a, d]) => `<option value="${a}">${d.name}</option>`).join('');
+        }
+
+        function updateRegion() {
+            const region = getRegion(currentState);
+            document.getElementById('regionBadge').textContent = region.name;
+            document.getElementById('yourRegionTitle').textContent = `📍 Your Region: ${region.name}`;
+
+            // Your region reports
+            const yourReports = `
+                <a href="https://mymarketnews.ams.usda.gov/viewReport/${region.grain}" target="_blank" class="report-card your-region">
+                    <h3>🌾 ${region.name} Grain Summary</h3>
+                    <p>Cash prices, basis for ${region.states.join(', ')}</p>
+                    <span class="action">View Report →</span>
+                </a>
+                ${livestockAuctions[currentState] ? `<a href="https://mymarketnews.ams.usda.gov/filerepo/reports?field_slug_id=${livestockAuctions[currentState].id}" target="_blank" class="report-card your-region">
+                    <h3>🐄 ${livestockAuctions[currentState].name} Livestock Auctions</h3>
+                    <p>Weekly auction results</p>
+                    <span class="action">View Report →</span>
+                </a>` : ''}
+                <a href="/cashbids.html" class="report-card your-region">
+                    <h3>💵 Local Cash Bids</h3>
+                    <p>Search elevator bids by zip code</p>
+                    <span class="action">Open Tool →</span>
+                </a>
+            `;
+            document.getElementById('yourRegionReports').innerHTML = yourReports;
+
+            // All grain regions
+            const allRegions = Object.entries(regions).map(([key, r]) => {
+                const isYours = r.states.includes(currentState);
+                return `<div class="region-card ${isYours ? 'your-region' : ''}">
+                    <h4>${isYours ? '📍 ' : ''}${r.name}</h4>
+                    <div class="states">${r.states.join(', ')}</div>
+                    <a href="https://mymarketnews.ams.usda.gov/viewReport/${r.grain}" target="_blank">→ Grain Summary</a>
+                </div>`;
+            }).join('');
+            document.getElementById('grainRegions').innerHTML = allRegions;
+
+            // Livestock regions
+            const lsRegions = Object.entries(livestockAuctions)
+                .filter(([abbr]) => ['WI','MN','IA','NE','IL','OH','TX','KS','PA'].includes(abbr))
+                .map(([abbr, info]) => {
+                    const isYours = abbr === currentState;
+                    return `<div class="region-card ${isYours ? 'your-region' : ''}">
+                        <h4>${isYours ? '📍 ' : ''}${info.name}</h4>
+                        <a href="https://mymarketnews.ams.usda.gov/filerepo/reports?field_slug_id=${info.id}" target="_blank">→ Weekly Livestock Auctions</a>
+                    </div>`;
+                }).join('');
+            document.getElementById('livestockRegions').innerHTML = lsRegions;
+
+            // Highlight dairy region
+            const dairyMw = document.getElementById('dairy-upper-mw');
+            if (dairyMw) {
+                dairyMw.className = getRegion(currentState).key === 'upperMidwest' ? 'region-card your-region' : 'region-card';
+            }
+        }
+
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + id).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function detectMyLocation() {
+            const btn = document.querySelector('.detect-btn');
+            btn.textContent = '...';
+            AGSIST_GEO.detectLocation(
+                (abbr) => {
+                    currentState = abbr;
+                    document.getElementById('stateSelect').value = abbr;
+                    AGSIST_GEO.setState(abbr);
+                    updateRegion();
+                    btn.textContent = '✓';
+                    setTimeout(() => { btn.textContent = '📍 Detect'; }, 1500);
+                },
+                () => { btn.textContent = '📍 Detect'; }
+            );
+        }
+
+        populateStates();
+        currentState = AGSIST_GEO.getState();
+        document.getElementById('stateSelect').value = currentState;
+        document.getElementById('stateSelect').addEventListener('change', function() {
+            currentState = this.value;
+            AGSIST_GEO.setState(currentState);
+            updateRegion();
+        });
+        updateRegion();
+    </script>
+</body>
+</html>

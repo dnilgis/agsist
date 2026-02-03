@@ -3,9 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nutrient Management Fast Facts | AGSIST</title>
-    <meta name="description" content="Quick reference for nutrient management. Fertilizer rates, nutrient removal, conversion factors.">
+    <title>Fast Facts - Farm Quick Reference | AGSIST</title>
+    <meta name="keywords" content="agriculture statistics, farm facts, USDA Census, crop production data, state farm data, ag calculators">
+    <meta name="description" content="Quick reference for farmers. State ag stats from USDA Census, bushel weights, nutrient removal, fertilizer calculators, seeding rates, conversions.">
     <link rel="canonical" href="https://agsist.com/fastfacts.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Agricultural Fast Facts & Calculators | AGSIST">
+    <meta property="og:description" content="USDA Census data, farm calculators, and state-by-state agricultural statistics.">
+    <meta property="og:url" content="https://agsist.com/fastfacts.html">
+    <meta property="og:type" content="website">
     <link rel="icon" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,335 +21,695 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <style>
-        .ff-wrap{padding:8px;max-width:1400px;margin:0 auto}
-        .ff-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
-        .ff-item{background:var(--bg);padding:8px 10px;border-radius:4px;display:flex;justify-content:space-between;align-items:center;font-size:0.8rem}
-        .ff-item span:last-child{font-weight:700;color:var(--accent)}
-        .ff-toc{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
-        .ff-toc a{background:var(--card);padding:5px 8px;border-radius:4px;color:var(--accent);text-decoration:none;border:1px solid var(--border);font-size:0.7rem}
-        .ff-panel{background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:12px}
-        .ff-panel-head{background:var(--bg);padding:8px 10px;border-bottom:1px solid var(--border)}
-        .ff-panel-head h2{font-size:0.8rem;margin:0;color:var(--accent)}
-        .ff-panel-body{padding:10px}
-        .ff-table{width:100%;border-collapse:collapse;font-size:0.7rem}
-        .ff-table th,.ff-table td{padding:5px 3px;text-align:center;border-bottom:1px solid var(--border)}
-        .ff-table th{background:var(--bg);font-size:0.65rem}
-        .ff-table td:first-child{text-align:left}
-        .ff-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-        .ff-stat{background:var(--bg);padding:10px 6px;border-radius:6px;text-align:center}
-        .ff-stat-label{font-size:0.6rem;color:var(--dim)}
-        .ff-stat-value{font-size:1.1rem;font-weight:700;color:var(--accent)}
-        .ff-stat-sub{font-size:0.55rem;color:var(--dim)}
-        .ff-calc{background:var(--bg);padding:10px;border-radius:6px;border:1px solid var(--border);margin-bottom:10px}
-        .ff-calc h3{font-size:0.8rem;color:var(--accent);margin:0 0 8px 0}
-        .ff-calc label{display:block;font-size:0.65rem;color:var(--dim);margin-bottom:2px}
-        .ff-calc input,.ff-calc select{width:100%;padding:8px;background:var(--card);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:inherit;font-size:0.85rem;margin-bottom:6px}
-        .ff-calc-result{background:var(--card);padding:8px;border-radius:4px;text-align:center;margin-top:6px}
-        .ff-calc-result .value{font-size:1rem;font-weight:700;color:var(--accent)}
-        .ff-calc-result .label{font-size:0.6rem;color:var(--dim)}
-        .ff-info{background:var(--bg);border-left:3px solid var(--accent);padding:8px 10px;margin:10px 0;border-radius:0 4px 4px 0;font-size:0.75rem;color:var(--dim)}
-        .ff-fert-grid{display:grid;gap:10px}
-        .ff-fert-section h3{font-size:0.75rem;color:var(--accent);margin:0 0 6px 0;padding-bottom:4px;border-bottom:1px solid var(--border)}
-        .ff-fert-item{display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg);border-radius:4px;font-size:0.75rem;margin-bottom:3px}
-        .ff-fert-item span:last-child{font-weight:600}
-        .ff-conv-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-        .ff-conv-box{background:var(--bg);padding:8px;border-radius:6px}
-        .ff-conv-box h4{font-size:0.7rem;color:var(--accent);margin:0 0 6px 0}
-        .ff-conv-box div{font-size:0.7rem;line-height:1.5}
-        .ff-n-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
-        .ff-n-card{background:var(--bg);padding:10px 6px;border-radius:6px;text-align:center;border-left:3px solid var(--accent)}
-        .ff-n-card .label{font-size:0.6rem;color:var(--dim);margin-bottom:2px}
-        .ff-n-card .value{font-size:1.3rem;font-weight:700}
-        .ff-n-card .unit{font-size:0.6rem;color:var(--dim)}
-        .ff-calc-grid{display:grid;gap:10px}
-        .ff-tools{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
-        .ff-tool{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;text-decoration:none;color:var(--text)}
-        .ff-tool:hover{border-color:var(--accent)}
-        .ff-tool-icon{font-size:1.1rem;margin-bottom:2px}
-        .ff-tool-name{font-weight:600;font-size:0.75rem}
-        .ff-tool-desc{font-size:0.65rem;color:var(--dim)}
-        .green{color:var(--green,#22c55e)!important}
-        @media(min-width:480px){.ff-grid{grid-template-columns:repeat(3,1fr)}}
-        @media(min-width:640px){
-            .ff-wrap{padding:12px}
-            .ff-grid{grid-template-columns:repeat(4,1fr);gap:8px}
-            .ff-stat-grid{grid-template-columns:repeat(6,1fr)}
-            .ff-conv-grid{grid-template-columns:repeat(3,1fr)}
-            .ff-n-grid{grid-template-columns:repeat(4,1fr)}
-            .ff-calc-grid{grid-template-columns:repeat(2,1fr)}
-            .ff-tools{grid-template-columns:repeat(4,1fr)}
-            .ff-fert-grid{grid-template-columns:repeat(3,1fr)}
+        :root { --green: #22c55e; --orange: #f97316; --blue: #3b82f6; --purple: #8b5cf6; --cyan: #06b6d4; }
+        main { max-width: 1400px; margin: 0 auto; padding: 12px; }
+        .breadcrumb { font-size: 0.8rem; color: var(--dim); margin-bottom: 12px; }
+        .breadcrumb a { color: var(--accent); text-decoration: none; }
+        
+        .state-hero { background: linear-gradient(135deg, var(--card) 0%, #1a1a00 100%); border: 2px solid var(--accent); border-radius: 12px; padding: 20px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .state-hero h1 { font-size: 1.3rem; color: var(--accent); margin: 0; display: flex; align-items: center; gap: 10px; }
+        .state-hero .subtitle { color: var(--dim); font-size: 0.8rem; margin-top: 4px; }
+        .state-selector { display: flex; align-items: center; gap: 10px; }
+        .state-selector select { padding: 10px 14px; font-family: inherit; font-size: 0.9rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
+        .detect-btn { padding: 10px 14px; background: var(--accent); color: #000; border: none; border-radius: 6px; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+        
+        .state-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 16px; }
+        .state-stat { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; position: relative; }
+        .state-stat::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); border-radius: 8px 8px 0 0; }
+        .state-stat-value { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+        .state-stat-label { font-size: 0.75rem; color: var(--dim); margin-top: 4px; }
+        .state-stat-link { display: block; font-size: 0.75rem; color: var(--accent); margin-top: 6px; text-decoration: none; opacity: 0.8; }
+        .state-stat-link:hover { opacity: 1; text-decoration: underline; }
+        
+        .source-note { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; font-size: 0.75rem; color: var(--dim); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .source-note a { color: var(--accent); }
+        
+        .toc { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; position: sticky; top: 60px; background: var(--bg); padding: 10px 0; z-index: 100; border-bottom: 1px solid var(--border); }
+        .toc a { background: var(--card); padding: 8px 12px; border-radius: 6px; color: var(--dim); text-decoration: none; border: 1px solid var(--border); font-size: 0.75rem; font-weight: 500; }
+        .toc a:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+        
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 16px; }
+        .panel-head { background: var(--bg); padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .panel-head h2 { font-size: 0.95rem; margin: 0; color: var(--accent); }
+        .panel-head .badge { font-size: 0.75rem; padding: 4px 8px; background: var(--accent); color: #000; border-radius: 12px; font-weight: 600; }
+        .panel-body { padding: 16px; }
+        
+        .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+        .data-item { background: var(--bg); padding: 10px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+        .data-item .value { font-weight: 700; color: var(--accent); }
+        
+        .calc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .calc-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+        .calc-card:hover { border-color: var(--accent); }
+        .calc-card h3 { font-size: 0.95rem; color: var(--accent); margin: 0 0 12px 0; }
+        .calc-field { margin-bottom: 10px; }
+        .calc-field label { display: block; font-size: 0.7rem; color: var(--dim); margin-bottom: 4px; text-transform: uppercase; }
+        .calc-field input, .calc-field select { width: 100%; padding: 10px 12px; font-family: inherit; font-size: 0.9rem; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
+        .calc-field input:focus, .calc-field select:focus { outline: none; border-color: var(--accent); }
+        .calc-result { background: linear-gradient(135deg, var(--card) 0%, #1a1a00 100%); border: 1px solid var(--accent); border-radius: 8px; padding: 14px; text-align: center; margin-top: 12px; }
+        .calc-result .value { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+        .calc-result .label { font-size: 0.7rem; color: var(--dim); margin-top: 2px; }
+        
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        .data-table th { background: var(--bg); padding: 10px 8px; text-align: left; font-size: 0.7rem; color: var(--dim); text-transform: uppercase; border-bottom: 2px solid var(--border); }
+        .data-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); }
+        .data-table tr:hover { background: var(--bg); }
+        .data-table .hl { color: var(--accent); font-weight: 600; }
+        
+        .conv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+        .conv-box { background: var(--bg); border-radius: 8px; padding: 14px; }
+        .conv-box h4 { font-size: 0.8rem; color: var(--accent); margin: 0 0 10px 0; }
+        .conv-box .item { font-size: 0.8rem; padding: 4px 0; display: flex; justify-content: space-between; }
+        .conv-box .item span:last-child { color: var(--accent); font-weight: 600; }
+        
+        .info-box { background: var(--bg); border-left: 4px solid var(--accent); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 0.85rem; }
+        .info-box.tip { border-color: var(--green); }
+        .info-box.warning { border-color: var(--orange); }
+        
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+        .tool-link { display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-decoration: none; text-align: center; }
+        .tool-link:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .tool-link .icon { font-size: 1.5rem; margin-bottom: 6px; }
+        .tool-link .name { font-weight: 600; color: var(--text); font-size: 0.85rem; }
+        .tool-link .desc { font-size: 0.7rem; color: var(--dim); margin-top: 2px; }
+        
+        .cta-box { background: linear-gradient(135deg, var(--card) 0%, #1a1a00 100%); border: 2px solid var(--accent); border-radius: 12px; padding: 24px; text-align: center; margin-top: 20px; }
+        .cta-box h3 { color: var(--accent); font-size: 1.1rem; margin: 0 0 8px 0; }
+        .cta-box p { color: var(--dim); font-size: 0.85rem; margin: 0 0 16px 0; }
+        .cta-btn { display: inline-block; background: var(--accent); color: #000; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        
+        @media (max-width: 768px) {
+            main { padding: 8px; }
+            .state-hero { flex-direction: column; text-align: center; }
+            .toc { position: relative; top: 0; overflow-x: auto; flex-wrap: nowrap; }
+            .toc a { white-space: nowrap; }
+            .data-grid { grid-template-columns: repeat(2, 1fr); }
+            .calc-grid { grid-template-columns: 1fr; }
+            .state-stats { grid-template-columns: repeat(2, 1fr); }
         }
-        @media(min-width:1024px){.ff-wrap{padding:16px}}
+        @media print {
+            .toc, .state-selector, .detect-btn, .cta-box, #header, #footer { display: none !important; }
+            .panel { break-inside: avoid; }
+        }
     </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Agricultural Fast Facts",
+        "description": "Interactive agriculture calculators and USDA Census statistics for 16 states",
+        "url": "https://agsist.com/fastfacts.html",
+        "applicationCategory": "Agriculture",
+        "operatingSystem": "Web Browser",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
 </head>
 <body>
     <div id="header"></div>
     <main>
-        <div class="ff-wrap">
-            <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Fast Facts</nav>
-            
-            <div class="ff-toc">
-                <a href="#bushels">⚖️ Bushels</a>
-                <a href="#removal">🌾 Removal</a>
-                <a href="#fertilizer">🧪 Fertilizer</a>
-                <a href="#seeding">🌱 Seeding</a>
-                <a href="#storage">🏗️ Storage</a>
-                <a href="#manure">💩 Manure</a>
-                <a href="#conversions">🔄 Convert</a>
-                <a href="#nitrogen">🌽 Nitrogen</a>
-                <a href="#calculators">🧮 Calc</a>
+        <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Fast Facts</nav>
+        
+        <div class="state-hero">
+            <div>
+                <h1><span id="stateFlag">🌾</span> <span id="stateName">Wisconsin</span> Fast Facts</h1>
+                <div class="subtitle">Agriculture quick reference</div>
             </div>
-
-            <div class="ff-panel" id="bushels">
-                <div class="ff-panel-head"><h2>⚖️ BUSHEL WEIGHTS</h2></div>
-                <div class="ff-panel-body">
-                    <div class="ff-grid">
-                        <div class="ff-item"><span>🌽 Corn</span><span>56</span></div>
-                        <div class="ff-item"><span>🫘 Soy</span><span>60</span></div>
-                        <div class="ff-item"><span>🌾 Wheat</span><span>60</span></div>
-                        <div class="ff-item"><span>🌾 Oats</span><span>32</span></div>
-                        <div class="ff-item"><span>🌾 Barley</span><span>48</span></div>
-                        <div class="ff-item"><span>🌾 Rye</span><span>56</span></div>
-                        <div class="ff-item"><span>🌻 Sunflwr</span><span>28</span></div>
-                        <div class="ff-item"><span>🥬 Canola</span><span>50</span></div>
-                        <div class="ff-item"><span>🌱 Flax</span><span>56</span></div>
-                        <div class="ff-item"><span>🌿 Millet</span><span>50</span></div>
-                        <div class="ff-item"><span>🌾 Sorghum</span><span>56</span></div>
-                        <div class="ff-item"><span>🫛 Beans</span><span>60</span></div>
-                    </div>
+            <div class="state-selector">
+                <select id="stateSelect"></select>
+                <button class="detect-btn" onclick="detectMyLocation()">📍 Detect</button>
+            </div>
+        </div>
+        
+        <!-- State Stats from USDA Census -->
+        <div class="state-stats" id="stateStats"></div>
+        
+        <div class="source-note">
+            <span>📊</span>
+            <span>State data from <a href="https://www.nass.usda.gov/AgCensus/" target="_blank">USDA Census of Agriculture 2022</a>.</span>
+            <a href="/quickstats.html" style="margin-left: auto;">View more data →</a>
+        </div>
+        
+        <nav class="toc">
+            <a href="#bushels">⚖️ Bushels</a>
+            <a href="#removal">🌾 Removal</a>
+            <a href="#calculators">🧮 Calculators</a>
+            <a href="#nitrogen">🌽 Nitrogen</a>
+            <a href="#seeding">🌱 Seeding</a>
+            <a href="#storage">🏗️ Storage</a>
+            <a href="#fertilizer">🧪 Fertilizer</a>
+            <a href="#conversions">🔄 Convert</a>
+            <a href="#manure">💩 Manure</a>
+        </nav>
+        
+        <!-- Bushel Weights -->
+        <div class="panel" id="bushels">
+            <div class="panel-head"><h2>⚖️ Standard Bushel Weights</h2><span class="badge">lb/bu</span></div>
+            <div class="panel-body">
+                <div class="data-grid">
+                    <div class="data-item"><span>🌽 Corn</span><span class="value">56</span></div>
+                    <div class="data-item"><span>🫘 Soybeans</span><span class="value">60</span></div>
+                    <div class="data-item"><span>🌾 Wheat</span><span class="value">60</span></div>
+                    <div class="data-item"><span>🌾 Oats</span><span class="value">32</span></div>
+                    <div class="data-item"><span>🌾 Barley</span><span class="value">48</span></div>
+                    <div class="data-item"><span>🌾 Rye</span><span class="value">56</span></div>
+                    <div class="data-item"><span>🌻 Sunflower</span><span class="value">28</span></div>
+                    <div class="data-item"><span>🥬 Canola</span><span class="value">50</span></div>
+                    <div class="data-item"><span>🌱 Flax</span><span class="value">56</span></div>
+                    <div class="data-item"><span>🌿 Millet</span><span class="value">50</span></div>
+                    <div class="data-item"><span>🫛 Dry Beans</span><span class="value">60</span></div>
+                    <div class="data-item"><span>🌾 Sorghum</span><span class="value">56</span></div>
                 </div>
             </div>
-
-            <div class="ff-panel" id="removal">
-                <div class="ff-panel-head"><h2>🌾 NUTRIENT REMOVAL (lb/bu)</h2></div>
-                <div class="ff-panel-body">
-                    <table class="ff-table">
+        </div>
+        
+        <!-- Nutrient Removal -->
+        <div class="panel" id="removal">
+            <div class="panel-head"><h2>🌾 Nutrient Removal Rates</h2><span class="badge">lb/bu</span></div>
+            <div class="panel-body">
+                <div style="overflow-x:auto;">
+                    <table class="data-table">
                         <thead><tr><th>Crop</th><th>N</th><th>P₂O₅</th><th>K₂O</th><th>S</th></tr></thead>
                         <tbody>
-                            <tr><td>🌽 Corn</td><td style="color:var(--accent);font-weight:600">0.67</td><td>0.37</td><td>0.27</td><td>0.08</td></tr>
-                            <tr><td>🫘 Soy</td><td style="color:var(--accent);font-weight:600">3.30</td><td>0.80</td><td>1.40</td><td>0.18</td></tr>
-                            <tr><td>🌾 Wheat</td><td style="color:var(--accent);font-weight:600">1.25</td><td>0.50</td><td>0.30</td><td>0.10</td></tr>
-                            <tr><td>🌾 Oats</td><td style="color:var(--accent);font-weight:600">0.65</td><td>0.25</td><td>0.20</td><td>0.06</td></tr>
-                            <tr><td>🌾 Barley</td><td style="color:var(--accent);font-weight:600">0.96</td><td>0.38</td><td>0.26</td><td>0.08</td></tr>
-                            <tr><td>🥬 Canola</td><td style="color:var(--accent);font-weight:600">2.00</td><td>1.00</td><td>0.50</td><td>0.30</td></tr>
+                            <tr><td>🌽 Corn (grain)</td><td class="hl">0.67</td><td>0.37</td><td>0.27</td><td>0.08</td></tr>
+                            <tr><td>🌽 Corn Silage (/ton)</td><td class="hl">7.7</td><td>3.0</td><td>9.0</td><td>1.0</td></tr>
+                            <tr><td>🫘 Soybeans</td><td class="hl">3.30</td><td>0.80</td><td>1.40</td><td>0.18</td></tr>
+                            <tr><td>🌾 Wheat</td><td class="hl">1.25</td><td>0.50</td><td>0.30</td><td>0.10</td></tr>
+                            <tr><td>🌾 Oats</td><td class="hl">0.65</td><td>0.25</td><td>0.20</td><td>0.08</td></tr>
+                            <tr><td>🌿 Alfalfa (/ton)</td><td class="hl">50</td><td>12</td><td>50</td><td>5.5</td></tr>
                         </tbody>
                     </table>
-                    <div class="ff-info"><strong>Ex:</strong> 200 bu corn = 134 N, 74 P₂O₅, 54 K₂O</div>
                 </div>
+                <div class="info-box tip"><strong>💡 Quick Math:</strong> 200 bu/ac corn removes ~134 lb N, 74 lb P₂O₅, 54 lb K₂O</div>
             </div>
-
-            <div class="ff-panel" id="fertilizer">
-                <div class="ff-panel-head"><h2>🧪 FERTILIZER ANALYSIS</h2></div>
-                <div class="ff-panel-body">
-                    <div class="ff-fert-grid">
-                        <div class="ff-fert-section">
-                            <h3>NITROGEN</h3>
-                            <div class="ff-fert-item"><span>Anhydrous</span><span>82-0-0</span></div>
-                            <div class="ff-fert-item"><span>Urea</span><span>46-0-0</span></div>
-                            <div class="ff-fert-item"><span>UAN 28%</span><span>28-0-0</span></div>
-                            <div class="ff-fert-item"><span>UAN 32%</span><span>32-0-0</span></div>
-                            <div class="ff-fert-item"><span>AMS</span><span>21-0-0-24S</span></div>
-                        </div>
-                        <div class="ff-fert-section">
-                            <h3>PHOSPHORUS</h3>
-                            <div class="ff-fert-item"><span>DAP</span><span>18-46-0</span></div>
-                            <div class="ff-fert-item"><span>MAP</span><span>11-52-0</span></div>
-                            <div class="ff-fert-item"><span>TSP</span><span>0-46-0</span></div>
-                            <div class="ff-fert-item"><span>10-34-0</span><span>10-34-0</span></div>
-                        </div>
-                        <div class="ff-fert-section">
-                            <h3>POTASSIUM</h3>
-                            <div class="ff-fert-item"><span>Potash</span><span>0-0-60</span></div>
-                            <div class="ff-fert-item"><span>SOP</span><span>0-0-50-18S</span></div>
-                            <div class="ff-fert-item"><span>Gypsum</span><span>17S-22Ca</span></div>
-                            <div class="ff-fert-item"><span>Elem S</span><span>90S</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ff-panel" id="seeding">
-                <div class="ff-panel-head"><h2>🌱 SEEDING RATES</h2></div>
-                <div class="ff-panel-body">
-                    <table class="ff-table">
-                        <thead><tr><th>Crop</th><th>Rate</th><th>Target</th></tr></thead>
-                        <tbody>
-                            <tr><td>🌽 Corn</td><td style="color:var(--accent)">32-36K</td><td>30-34K</td></tr>
-                            <tr><td>🫘 Soy</td><td style="color:var(--accent)">140-160K</td><td>100-120K</td></tr>
-                            <tr><td>🌾 Wheat</td><td style="color:var(--accent)">1.2-1.5M</td><td>1.0-1.2M</td></tr>
-                            <tr><td>🌾 Oats</td><td style="color:var(--accent)">64-96 lb</td><td>1.0-1.3M</td></tr>
-                            <tr><td>🌿 Alfalfa</td><td style="color:var(--accent)">12-18 lb</td><td>4-6/sqft</td></tr>
-                        </tbody>
-                    </table>
-                    <div class="ff-info"><strong>30" rows:</strong> 1 seed/ft = 17,424/ac • 1 seed/6" = 34,848/ac</div>
-                </div>
-            </div>
-
-            <div class="ff-panel" id="storage">
-                <div class="ff-panel-head"><h2>🏗️ STORAGE MOISTURE</h2></div>
-                <div class="ff-panel-body">
-                    <div class="ff-stat-grid">
-                        <div class="ff-stat"><div class="ff-stat-label">🌽 Corn</div><div class="ff-stat-value green">13-14%</div></div>
-                        <div class="ff-stat"><div class="ff-stat-label">🫘 Soy</div><div class="ff-stat-value green">11-13%</div></div>
-                        <div class="ff-stat"><div class="ff-stat-label">🌾 Wheat</div><div class="ff-stat-value green">13-14%</div></div>
-                        <div class="ff-stat"><div class="ff-stat-label">🌾 Oats</div><div class="ff-stat-value green">12-13%</div></div>
-                        <div class="ff-stat"><div class="ff-stat-label">🌾 Barley</div><div class="ff-stat-value green">12-13%</div></div>
-                        <div class="ff-stat"><div class="ff-stat-label">🥬 Canola</div><div class="ff-stat-value green">8-10%</div></div>
-                    </div>
-                    <div class="ff-info"><strong>Shrink:</strong> Corn ~1.4%/pt • Soy ~1.3%/pt removed</div>
-                </div>
-            </div>
-
-            <div class="ff-panel" id="manure">
-                <div class="ff-panel-head"><h2>💩 MANURE VALUES (lb/1000 gal)</h2></div>
-                <div class="ff-panel-body">
-                    <table class="ff-table">
-                        <thead><tr><th>Type</th><th>N</th><th>P₂O₅</th><th>K₂O</th></tr></thead>
-                        <tbody>
-                            <tr><td>🐄 Dairy liq</td><td style="color:var(--accent);font-weight:600">25-35</td><td>10-15</td><td>20-30</td></tr>
-                            <tr><td>🐖 Swine liq</td><td style="color:var(--accent);font-weight:600">45-55</td><td>35-45</td><td>25-35</td></tr>
-                            <tr><td>🐔 Poultry*</td><td style="color:var(--accent);font-weight:600">55-65</td><td>45-55</td><td>35-45</td></tr>
-                            <tr><td>🐄 Beef*</td><td style="color:var(--accent);font-weight:600">12-16</td><td>8-12</td><td>10-14</td></tr>
-                        </tbody>
-                    </table>
-                    <div class="ff-info">*lb/ton solid. <strong>1st yr N:</strong> Dairy 35-45%, Swine 50-60%, Poultry 60-70%</div>
-                </div>
-            </div>
-
-            <div class="ff-panel" id="conversions">
-                <div class="ff-panel-head"><h2>🔄 CONVERSIONS</h2></div>
-                <div class="ff-panel-body">
-                    <div class="ff-conv-grid">
-                        <div class="ff-conv-box">
-                            <h4>LIQUID FERT</h4>
-                            <div>UAN 28: 10.67 lb/gal<br>UAN 32: 11.06 lb/gal<br>10-34-0: 11.65 lb/gal<br>NH3: 5.15 lb/gal</div>
-                        </div>
-                        <div class="ff-conv-box">
-                            <h4>OXIDE</h4>
-                            <div>P × 2.29 = P₂O₅<br>P₂O₅ × 0.44 = P<br>K × 1.20 = K₂O<br>K₂O × 0.83 = K</div>
-                        </div>
-                        <div class="ff-conv-box">
-                            <h4>AREA</h4>
-                            <div>1 ac = 43,560 sqft<br>1 ha = 2.471 ac<br>1 sqmi = 640 ac</div>
-                        </div>
-                        <div class="ff-conv-box">
-                            <h4>WEIGHT</h4>
-                            <div>1 ton = 2,000 lb<br>1 MT = 2,205 lb<br>1 kg = 2.205 lb</div>
-                        </div>
-                        <div class="ff-conv-box">
-                            <h4>VOLUME</h4>
-                            <div>1 gal = 128 oz<br>1 gal = 3.785 L<br>1 ac-in = 27,154 gal</div>
-                        </div>
-                        <div class="ff-conv-box">
-                            <h4>SPEED</h4>
-                            <div>1 mph = 88 ft/min<br>Ac/hr = mph×width÷8.25</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ff-panel" id="nitrogen">
-                <div class="ff-panel-head"><h2>🌽 CORN N GUIDELINES (WI/MN)</h2></div>
-                <div class="ff-panel-body">
-                    <div class="ff-n-grid">
-                        <div class="ff-n-card"><div class="label">Corn/Soy</div><div class="value green">140-160</div><div class="unit">lb N/ac</div></div>
-                        <div class="ff-n-card"><div class="label">Corn/Corn</div><div class="value">180-200</div><div class="unit">lb N/ac</div></div>
-                        <div class="ff-n-card"><div class="label">Soy Credit</div><div class="value">40-50</div><div class="unit">lb N/ac</div></div>
-                        <div class="ff-n-card"><div class="label">Alfalfa Credit</div><div class="value">100-150</div><div class="unit">lb N/ac</div></div>
-                    </div>
-                    <div class="ff-info">Adjust for manure, soil OM, and yield goals. Contact your <a href="https://farmers1st.com" style="color:var(--accent)">CCA</a> for field-specific rates.</div>
-                </div>
-            </div>
-
-            <div class="ff-panel" id="calculators">
-                <div class="ff-panel-head"><h2>🧮 QUICK CALCULATORS</h2></div>
-                <div class="ff-panel-body">
-                    <div class="ff-calc-grid">
-                        <div class="ff-calc">
-                            <h3>💵 Fertilizer Cost/Ac</h3>
-                            <label>Price/Ton ($)</label>
-                            <input type="number" id="fertPrice" value="650">
-                            <label>Rate (lb/ac)</label>
-                            <input type="number" id="fertRate" value="200">
-                            <div class="ff-calc-result"><div class="value" id="fertCost">$65.00</div><div class="label">Cost per Acre</div></div>
-                        </div>
-                        <div class="ff-calc">
-                            <h3>🌾 Nutrient Removal</h3>
-                            <label>Crop</label>
-                            <select id="removalCrop">
-                                <option value="corn">Corn</option>
-                                <option value="soybeans">Soybeans</option>
-                                <option value="wheat">Wheat</option>
+        </div>
+        
+        <!-- Calculators -->
+        <div class="panel" id="calculators">
+            <div class="panel-head"><h2>🧮 Quick Calculators</h2><span class="badge">Interactive</span></div>
+            <div class="panel-body">
+                <div class="calc-grid">
+                    <div class="calc-card">
+                        <h3>🌾 Nutrient Removal</h3>
+                        <div class="calc-field"><label>Crop</label>
+                            <select id="removalCrop" onchange="calcRemoval()">
+                                <option value="corn">Corn</option><option value="soybeans">Soybeans</option><option value="wheat">Wheat</option>
                             </select>
-                            <label>Yield (bu/ac)</label>
-                            <input type="number" id="removalYield" value="200">
-                            <div class="ff-calc-result"><div class="value" id="removalResult">134N-74P-54K</div><div class="label">lb/ac removed</div></div>
                         </div>
-                        <div class="ff-calc">
-                            <h3>🌱 Seeds per Acre</h3>
-                            <label>Row Spacing</label>
-                            <select id="rowSpacing">
-                                <option value="30">30"</option>
-                                <option value="20">20"</option>
-                                <option value="15">15"</option>
+                        <div class="calc-field"><label>Yield (bu/ac)</label><input type="number" id="removalYield" value="200" oninput="calcRemoval()"></div>
+                        <div class="calc-result"><div class="value" id="removalResult">134N - 74P - 54K</div><div class="label">lb/ac removed</div></div>
+                    </div>
+                    <div class="calc-card">
+                        <h3>💵 Fertilizer Cost/Acre</h3>
+                        <div class="calc-field"><label>Price ($/ton)</label><input type="number" id="fertPrice" value="650" oninput="calcFertCost()"></div>
+                        <div class="calc-field"><label>Rate (lb/ac)</label><input type="number" id="fertRate" value="200" oninput="calcFertCost()"></div>
+                        <div class="calc-result"><div class="value" id="fertCostResult">$65.00</div><div class="label">Cost per Acre</div></div>
+                    </div>
+                    <div class="calc-card">
+                        <h3>🌱 Seeding Rate</h3>
+                        <div class="calc-field"><label>Row Spacing</label>
+                            <select id="rowSpacing" onchange="calcSeeds()">
+                                <option value="30">30 inch</option><option value="20">20 inch</option><option value="15">15 inch</option>
                             </select>
-                            <label>In-Row (inches)</label>
-                            <input type="number" id="inRowSpacing" value="6" step="0.5">
-                            <div class="ff-calc-result"><div class="value" id="seedsResult">34,848</div><div class="label">seeds/acre</div></div>
                         </div>
-                        <div class="ff-calc">
-                            <h3>⚖️ Bu ↔ Lbs</h3>
-                            <label>Crop</label>
-                            <select id="buCrop">
-                                <option value="56">Corn (56)</option>
-                                <option value="60">Soy (60)</option>
-                                <option value="60">Wheat (60)</option>
+                        <div class="calc-field"><label>In-Row (inches)</label><input type="number" id="inRowSpacing" value="6" step="0.5" oninput="calcSeeds()"></div>
+                        <div class="calc-result"><div class="value" id="seedsResult">34,848</div><div class="label">Seeds per Acre</div></div>
+                    </div>
+                    <div class="calc-card">
+                        <h3>⚖️ Bushel ↔ Weight</h3>
+                        <div class="calc-field"><label>Crop</label>
+                            <select id="buCrop" onchange="calcBushels()">
+                                <option value="56">Corn (56)</option><option value="60">Soybeans (60)</option><option value="60">Wheat (60)</option>
                             </select>
-                            <label>Bushels</label>
-                            <input type="number" id="bushelsInput" value="1000">
-                            <div class="ff-calc-result"><div class="value" id="lbsResult">56,000 lb</div><div class="label">= 28 tons</div></div>
                         </div>
+                        <div class="calc-field"><label>Bushels</label><input type="number" id="bushelsInput" value="1000" oninput="calcBushels()"></div>
+                        <div class="calc-result"><div class="value" id="lbsResult">56,000 lb</div><div class="label" id="tonsResult">= 28.0 tons</div></div>
+                    </div>
+                    <div class="calc-card">
+                        <h3>🏗️ Bin Capacity</h3>
+                        <div class="calc-field"><label>Diameter (ft)</label><input type="number" id="binDiam" value="30" oninput="calcBin()"></div>
+                        <div class="calc-field"><label>Eave Height (ft)</label><input type="number" id="binHeight" value="24" oninput="calcBin()"></div>
+                        <div class="calc-result"><div class="value" id="binResult">13,399 bu</div><div class="label" id="binTons">375 tons corn</div></div>
+                    </div>
+                    <div class="calc-card">
+                        <h3>💰 Break-Even Price</h3>
+                        <div class="calc-field"><label>Total Cost ($/ac)</label><input type="number" id="totalCost" value="850" oninput="calcBreakeven()"></div>
+                        <div class="calc-field"><label>Yield (bu/ac)</label><input type="number" id="expectedYield" value="200" oninput="calcBreakeven()"></div>
+                        <div class="calc-result"><div class="value" id="breakevenResult">$4.25</div><div class="label">Break-Even $/bu</div></div>
                     </div>
                 </div>
             </div>
-
-            <div class="ff-panel">
-                <div class="ff-panel-head"><h2>📌 MORE TOOLS</h2></div>
-                <div class="ff-panel-body">
-                    <div class="ff-tools">
-                        <a href="/breakeven.html" class="ff-tool"><div class="ff-tool-icon">💰</div><div class="ff-tool-name">Break-Even</div><div class="ff-tool-desc">Cost per bushel</div></a>
-                        <a href="/calculator.html" class="ff-tool"><div class="ff-tool-icon">🌾</div><div class="ff-tool-name">Grain Bin</div><div class="ff-tool-desc">Bin capacity</div></a>
-                        <a href="/gdu.html" class="ff-tool"><div class="ff-tool-icon">🌡️</div><div class="ff-tool-name">GDU Calc</div><div class="ff-tool-desc">Track GDUs</div></a>
-                        <a href="/tools.html" class="ff-tool"><div class="ff-tool-icon">🧮</div><div class="ff-tool-name">All Tools</div><div class="ff-tool-desc">Full library</div></a>
+        </div>
+        
+        <!-- Nitrogen Guidelines -->
+        <div class="panel" id="nitrogen">
+            <div class="panel-head"><h2>🌽 Nitrogen Rate Guidelines</h2><span class="badge" id="nStateBadge">WI</span></div>
+            <div class="panel-body">
+                <div class="data-grid" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));">
+                    <div class="data-item" style="flex-direction:column;text-align:center;padding:16px;">
+                        <span style="font-size:0.7rem;color:var(--dim);">Corn after Soy</span>
+                        <span class="value" style="font-size:1.4rem;color:var(--green);" id="nCornSoy">140-160</span>
+                        <span style="font-size:0.7rem;color:var(--dim);">lb N/ac</span>
+                    </div>
+                    <div class="data-item" style="flex-direction:column;text-align:center;padding:16px;">
+                        <span style="font-size:0.7rem;color:var(--dim);">Corn after Corn</span>
+                        <span class="value" style="font-size:1.4rem;" id="nCornCorn">180-200</span>
+                        <span style="font-size:0.7rem;color:var(--dim);">lb N/ac</span>
+                    </div>
+                    <div class="data-item" style="flex-direction:column;text-align:center;padding:16px;">
+                        <span style="font-size:0.7rem;color:var(--dim);">Soybean Credit</span>
+                        <span class="value" style="font-size:1.4rem;color:var(--green);" id="nSoyCredit">40-50</span>
+                        <span style="font-size:0.7rem;color:var(--dim);">lb N/ac</span>
+                    </div>
+                    <div class="data-item" style="flex-direction:column;text-align:center;padding:16px;">
+                        <span style="font-size:0.7rem;color:var(--dim);">Alfalfa Credit</span>
+                        <span class="value" style="font-size:1.4rem;color:var(--green);" id="nAlfCredit">100-150</span>
+                        <span style="font-size:0.7rem;color:var(--dim);">lb N/ac</span>
+                    </div>
+                </div>
+                <div class="info-box"><strong>⚠️ Adjust for:</strong> Manure, soil OM, irrigation, yield goal. Contact your <a href="https://farmers1st.com" style="color:var(--accent);">CCA</a> for field-specific rates.</div>
+            </div>
+        </div>
+        
+        <!-- Seeding Rates -->
+        <div class="panel" id="seeding">
+            <div class="panel-head"><h2>🌱 Recommended Seeding Rates</h2></div>
+            <div class="panel-body">
+                <table class="data-table">
+                    <thead><tr><th>Crop</th><th>Seeds/Acre</th><th>Lb/Acre</th><th>Notes</th></tr></thead>
+                    <tbody>
+                        <tr><td>🌽 Corn</td><td class="hl">32,000-36,000</td><td>--</td><td>Higher for drought-prone</td></tr>
+                        <tr><td>🫘 Soybeans</td><td class="hl">120,000-140,000</td><td>50-60</td><td>15" or drill: 140k+</td></tr>
+                        <tr><td>🌾 Wheat</td><td>1.2-1.6M</td><td class="hl">90-120</td><td>Higher for late plant</td></tr>
+                        <tr><td>🌿 Alfalfa</td><td>--</td><td class="hl">15-20</td><td>Pure stand</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Storage -->
+        <div class="panel" id="storage">
+            <div class="panel-head"><h2>🏗️ Grain Storage Reference</h2></div>
+            <div class="panel-body">
+                <div class="conv-grid">
+                    <div class="conv-box">
+                        <h4>Bin Capacity Formula</h4>
+                        <div class="item"><span>Round Bin</span><span>D² × H × 0.628</span></div>
+                        <div class="item"><span>Flat Storage</span><span>L × W × D × 0.8</span></div>
+                    </div>
+                    <div class="conv-box">
+                        <h4>Safe Storage Moisture</h4>
+                        <div class="item"><span>Corn (1 yr)</span><span>14%</span></div>
+                        <div class="item"><span>Corn (long)</span><span>13%</span></div>
+                        <div class="item"><span>Soybeans</span><span>13%</span></div>
+                    </div>
+                    <div class="conv-box">
+                        <h4>Shrink Factor</h4>
+                        <div class="item"><span>Corn 20→15%</span><span>5.88%</span></div>
+                        <div class="item"><span>Per 1% moisture</span><span>~1.18%</span></div>
                     </div>
                 </div>
             </div>
-
-            <div style="padding:16px;background:linear-gradient(135deg,var(--card) 0%,var(--bg) 100%);border:1px solid var(--accent);border-radius:8px;text-align:center;margin-top:12px">
-                <div style="font-size:0.9rem;font-weight:600;margin-bottom:4px">Need a Nutrient Management Plan?</div>
-                <div style="font-size:0.75rem;color:var(--dim);margin-bottom:10px">Our CCAs create customized 590 plans.</div>
-                <a href="https://farmers1st.com" target="_blank" style="display:inline-block;background:var(--accent);color:black;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:600;font-size:0.8rem">Contact Farmers First →</a>
+        </div>
+        
+        <!-- Fertilizer -->
+        <div class="panel" id="fertilizer">
+            <div class="panel-head"><h2>🧪 Common Fertilizer Analysis</h2></div>
+            <div class="panel-body">
+                <div class="conv-grid">
+                    <div class="conv-box">
+                        <h4>Nitrogen Sources</h4>
+                        <div class="item"><span>Anhydrous</span><span>82-0-0</span></div>
+                        <div class="item"><span>UAN 28%</span><span>28-0-0</span></div>
+                        <div class="item"><span>Urea</span><span>46-0-0</span></div>
+                        <div class="item"><span>AMS</span><span>21-0-0-24S</span></div>
+                    </div>
+                    <div class="conv-box">
+                        <h4>Phosphorus Sources</h4>
+                        <div class="item"><span>DAP</span><span>18-46-0</span></div>
+                        <div class="item"><span>MAP</span><span>11-52-0</span></div>
+                        <div class="item"><span>TSP</span><span>0-46-0</span></div>
+                    </div>
+                    <div class="conv-box">
+                        <h4>Potassium Sources</h4>
+                        <div class="item"><span>Potash</span><span>0-0-60</span></div>
+                        <div class="item"><span>K-Mag</span><span>0-0-22-11Mg</span></div>
+                    </div>
+                </div>
+                <div class="info-box tip"><strong>💰 Cost/lb N:</strong> Price per ton ÷ (analysis × 20). Ex: Urea $600/ton = $0.65/lb N</div>
             </div>
+        </div>
+        
+        <!-- Conversions -->
+        <div class="panel" id="conversions">
+            <div class="panel-head"><h2>🔄 Unit Conversions</h2></div>
+            <div class="panel-body">
+                <div class="conv-grid">
+                    <div class="conv-box">
+                        <h4>Area</h4>
+                        <div class="item"><span>1 acre</span><span>43,560 ft²</span></div>
+                        <div class="item"><span>1 acre</span><span>0.405 ha</span></div>
+                        <div class="item"><span>1 section</span><span>640 acres</span></div>
+                    </div>
+                    <div class="conv-box">
+                        <h4>Weight</h4>
+                        <div class="item"><span>1 ton</span><span>2,000 lb</span></div>
+                        <div class="item"><span>1 metric ton</span><span>2,205 lb</span></div>
+                        <div class="item"><span>1 kg</span><span>2.205 lb</span></div>
+                    </div>
+                    <div class="conv-box">
+                        <h4>Volume</h4>
+                        <div class="item"><span>1 bushel</span><span>1.244 ft³</span></div>
+                        <div class="item"><span>1 gallon</span><span>8.34 lb H₂O</span></div>
+                    </div>
+                    <div class="conv-box">
+                        <h4>Speed</h4>
+                        <div class="item"><span>1 mph</span><span>88 ft/min</span></div>
+                        <div class="item"><span>Ac/hr</span><span>mph×W÷8.25</span></div>
+                    </div>
+                    <div class="conv-box">
+                        <h4>Nutrients</h4>
+                        <div class="item"><span>P₂O₅ → P</span><span>× 0.44</span></div>
+                        <div class="item"><span>K₂O → K</span><span>× 0.83</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Manure -->
+        <div class="panel" id="manure">
+            <div class="panel-head"><h2>💩 Manure Nutrient Values</h2><span class="badge">lb/1000 gal or /ton</span></div>
+            <div class="panel-body">
+                <table class="data-table">
+                    <thead><tr><th>Source</th><th>N</th><th>P₂O₅</th><th>K₂O</th><th>Unit</th></tr></thead>
+                    <tbody>
+                        <tr><td>🐄 Dairy (liquid)</td><td class="hl">25-30</td><td>10-15</td><td>20-25</td><td>/1000 gal</td></tr>
+                        <tr><td>🐄 Dairy (solid)</td><td class="hl">10-12</td><td>4-6</td><td>8-10</td><td>/ton</td></tr>
+                        <tr><td>🐷 Swine (liquid)</td><td class="hl">40-50</td><td>25-35</td><td>20-30</td><td>/1000 gal</td></tr>
+                        <tr><td>🐔 Poultry litter</td><td class="hl">60-70</td><td>55-65</td><td>40-50</td><td>/ton</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box warning"><strong>⚠️ First-Year N:</strong> Inject = 50-60% • Surface = 25-35%. Always sample manure.</div>
+            </div>
+        </div>
+        
+        <!-- More Tools -->
+        <div class="panel">
+            <div class="panel-head"><h2>📌 More AGSIST Tools</h2></div>
+            <div class="panel-body">
+                <div class="tools-grid">
+                    <a href="/breakeven.html" class="tool-link"><div class="icon">💰</div><div class="name">Break-Even</div><div class="desc">Full cost analysis</div></a>
+                    <a href="/calculator.html" class="tool-link"><div class="icon">🏗️</div><div class="name">Grain Bin</div><div class="desc">Capacity calc</div></a>
+                    <a href="/gdu.html" class="tool-link"><div class="icon">🌡️</div><div class="name">GDU Tracker</div><div class="desc">Growing degrees</div></a>
+                    <a href="/cashbids.html" class="tool-link"><div class="icon">💵</div><div class="name">Cash Bids</div><div class="desc">Local prices</div></a>
+                    <a href="/quickstats.html" class="tool-link"><div class="icon">📊</div><div class="name">USDA Data</div><div class="desc">Quick Stats</div></a>
+                    <a href="/farmdoc.html" class="tool-link"><div class="icon">🎓</div><div class="name">Farmdoc</div><div class="desc">Crop insurance</div></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cta-box">
+            <h3>Need Expert Agronomy Advice?</h3>
+            <p>Our CCAs create customized nutrient plans and crop insurance recommendations.</p>
+            <a href="https://farmers1st.com" target="_blank" class="cta-btn">Contact Farmers First →</a>
         </div>
     </main>
     <div id="footer"></div>
+    
     <script src="/components/load-components.js"></script>
+    <script src="/components/geolocation.js"></script>
     <script>
-    function calcFertCost(){const p=parseFloat(document.getElementById('fertPrice').value)||0,r=parseFloat(document.getElementById('fertRate').value)||0;document.getElementById('fertCost').textContent='$'+(p/2000*r).toFixed(2)}
-    document.getElementById('fertPrice').addEventListener('input',calcFertCost);
-    document.getElementById('fertRate').addEventListener('input',calcFertCost);
-    const removalRates={corn:{n:0.67,p:0.37,k:0.27},soybeans:{n:3.30,p:0.80,k:1.40},wheat:{n:1.25,p:0.50,k:0.30}};
-    function calcRemoval(){const c=document.getElementById('removalCrop').value,y=parseFloat(document.getElementById('removalYield').value)||0,r=removalRates[c];document.getElementById('removalResult').textContent=Math.round(y*r.n)+'N-'+Math.round(y*r.p)+'P-'+Math.round(y*r.k)+'K'}
-    document.getElementById('removalCrop').addEventListener('change',calcRemoval);
-    document.getElementById('removalYield').addEventListener('input',calcRemoval);
-    function calcSeeds(){const row=parseFloat(document.getElementById('rowSpacing').value)||30,inRow=parseFloat(document.getElementById('inRowSpacing').value)||6;document.getElementById('seedsResult').textContent=Math.round(43560*144/(row*inRow)).toLocaleString()}
-    document.getElementById('rowSpacing').addEventListener('change',calcSeeds);
-    document.getElementById('inRowSpacing').addEventListener('input',calcSeeds);
-    function calcBushels(){const lb=parseFloat(document.getElementById('buCrop').value)||56,bu=parseFloat(document.getElementById('bushelsInput').value)||0,total=bu*lb;document.getElementById('lbsResult').textContent=total.toLocaleString()+' lb';document.querySelector('#lbsResult+.label').textContent='= '+(total/2000).toFixed(1)+' tons'}
-    document.getElementById('buCrop').addEventListener('change',calcBushels);
-    document.getElementById('bushelsInput').addEventListener('input',calcBushels);
-    document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',function(e){e.preventDefault();document.querySelector(this.getAttribute('href'))?.scrollIntoView({behavior:'smooth'})}));
+        // Real USDA Census 2022 data - rankings and key stats
+        // Source: https://www.nass.usda.gov/AgCensus/
+        const stateData = {
+            WI: { name: 'Wisconsin', flag: '🧀',
+                stats: [
+                    { label: 'Farms', value: '64,100', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '14.3M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Milk #2', value: '30B lb', url: 'MILK', stat: 'PRODUCTION' },
+                    { label: 'Cheese #1', value: '3.5B lb', url: 'CHEESE', stat: 'PRODUCTION' }
+                ],
+                nRates: { cornSoy: '140-160', cornCorn: '180-200', soyCredit: '40-50', alfCredit: '100-150' }
+            },
+            MN: { name: 'Minnesota', flag: '⭐',
+                stats: [
+                    { label: 'Farms', value: '68,000', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '25.5M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Corn #4', value: '1.5B bu', url: 'CORN', stat: 'PRODUCTION' },
+                    { label: 'Turkeys #1', value: '40M', url: 'TURKEYS', stat: 'INVENTORY' }
+                ],
+                nRates: { cornSoy: '140-160', cornCorn: '180-200', soyCredit: '40-50', alfCredit: '100-150' }
+            },
+            IA: { name: 'Iowa', flag: '🌽',
+                stats: [
+                    { label: 'Farms', value: '85,300', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '30M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Corn #1', value: '2.5B bu', url: 'CORN', stat: 'PRODUCTION' },
+                    { label: 'Hogs #1', value: '24M', url: 'HOGS', stat: 'INVENTORY' }
+                ],
+                nRates: { cornSoy: '150-180', cornCorn: '200-220', soyCredit: '45-55', alfCredit: '100-150' }
+            },
+            IL: { name: 'Illinois', flag: '🌾',
+                stats: [
+                    { label: 'Farms', value: '71,000', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '27M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Soybeans #1', value: '580M bu', url: 'SOYBEANS', stat: 'PRODUCTION' },
+                    { label: 'Corn #2', value: '2.2B bu', url: 'CORN', stat: 'PRODUCTION' }
+                ],
+                nRates: { cornSoy: '160-180', cornCorn: '200-220', soyCredit: '40-50', alfCredit: '100-150' }
+            },
+            IN: { name: 'Indiana', flag: '🏎️',
+                stats: [
+                    { label: 'Farms', value: '56,000', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '14.7M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Corn #5', value: '900M bu', url: 'CORN', stat: 'PRODUCTION' },
+                    { label: 'Soybeans #4', value: '340M bu', url: 'SOYBEANS', stat: 'PRODUCTION' }
+                ],
+                nRates: { cornSoy: '160-180', cornCorn: '200-220', soyCredit: '40-50', alfCredit: '100-150' }
+            },
+            OH: { name: 'Ohio', flag: '🌰',
+                stats: [
+                    { label: 'Farms', value: '77,800', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '13.9M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Soybeans #6', value: '280M bu', url: 'SOYBEANS', stat: 'PRODUCTION' },
+                    { label: 'Eggs #2', value: '10B', url: 'EGGS', stat: 'PRODUCTION' }
+                ],
+                nRates: { cornSoy: '150-170', cornCorn: '190-210', soyCredit: '40-50', alfCredit: '100-140' }
+            },
+            MI: { name: 'Michigan', flag: '🍒',
+                stats: [
+                    { label: 'Farms', value: '47,600', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '9.8M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Cherries #1', value: '75%', url: 'CHERRIES', stat: 'PRODUCTION' },
+                    { label: 'Blueberries #1', value: '100M lb', url: 'BLUEBERRIES', stat: 'PRODUCTION' }
+                ],
+                nRates: { cornSoy: '130-150', cornCorn: '170-190', soyCredit: '35-45', alfCredit: '90-130' }
+            },
+            ND: { name: 'North Dakota', flag: '🌻',
+                stats: [
+                    { label: 'Farms', value: '26,100', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '39M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Wheat #1', value: '320M bu', url: 'WHEAT', stat: 'PRODUCTION' },
+                    { label: 'Sunflowers #1', value: '50%', url: 'SUNFLOWER', stat: 'PRODUCTION' }
+                ],
+                nRates: { cornSoy: '100-130', cornCorn: '140-170', soyCredit: '35-45', alfCredit: '80-120' }
+            },
+            SD: { name: 'South Dakota', flag: '🦬',
+                stats: [
+                    { label: 'Farms', value: '29,400', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '43M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Corn #6', value: '820M bu', url: 'CORN', stat: 'PRODUCTION' },
+                    { label: 'Cattle', value: '4M', url: 'CATTLE', stat: 'INVENTORY' }
+                ],
+                nRates: { cornSoy: '110-140', cornCorn: '150-180', soyCredit: '35-45', alfCredit: '80-120' }
+            },
+            NE: { name: 'Nebraska', flag: '🌽',
+                stats: [
+                    { label: 'Farms', value: '45,100', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '44.8M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Corn #3', value: '1.8B bu', url: 'CORN', stat: 'PRODUCTION' },
+                    { label: 'Cattle #2', value: '6.8M', url: 'CATTLE', stat: 'INVENTORY' }
+                ],
+                nRates: { cornSoy: '140-170', cornCorn: '180-210', soyCredit: '40-50', alfCredit: '90-130' }
+            },
+            KS: { name: 'Kansas', flag: '🌾',
+                stats: [
+                    { label: 'Farms', value: '58,600', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '45.5M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Wheat #1', value: '360M bu', url: 'WHEAT', stat: 'PRODUCTION' },
+                    { label: 'Sorghum #1', value: '50%', url: 'SORGHUM', stat: 'PRODUCTION' }
+                ],
+                nRates: { cornSoy: '120-150', cornCorn: '160-190', soyCredit: '35-45', alfCredit: '80-120' }
+            },
+            MO: { name: 'Missouri', flag: '🐄',
+                stats: [
+                    { label: 'Farms', value: '95,300', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '28M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Beef #2', value: '2M cows', url: 'CATTLE', stat: 'INVENTORY' },
+                    { label: 'Soybeans #8', value: '240M bu', url: 'SOYBEANS', stat: 'PRODUCTION' }
+                ],
+                nRates: { cornSoy: '140-160', cornCorn: '180-200', soyCredit: '40-50', alfCredit: '90-130' }
+            },
+            TX: { name: 'Texas', flag: '🤠',
+                stats: [
+                    { label: 'Farms', value: '248,400', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '127M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Cattle #1', value: '13M', url: 'CATTLE', stat: 'INVENTORY' },
+                    { label: 'Cotton #1', value: '45%', url: 'COTTON', stat: 'PRODUCTION' }
+                ],
+                nRates: { cornSoy: '120-160', cornCorn: '160-200', soyCredit: '30-40', alfCredit: '60-100' }
+            },
+            CA: { name: 'California', flag: '🍇',
+                stats: [
+                    { label: 'Farms', value: '69,900', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '24.3M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Milk #1', value: '42B lb', url: 'MILK', stat: 'PRODUCTION' },
+                    { label: 'Almonds #1', value: '100%', url: 'ALMONDS', stat: 'PRODUCTION' }
+                ],
+                nRates: { cornSoy: '180-220', cornCorn: '220-260', soyCredit: '30-40', alfCredit: '80-120' }
+            },
+            NY: { name: 'New York', flag: '🍎',
+                stats: [
+                    { label: 'Farms', value: '33,400', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '6.9M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Milk #4', value: '15B lb', url: 'MILK', stat: 'PRODUCTION' },
+                    { label: 'Apples #2', value: '1.3B lb', url: 'APPLES', stat: 'PRODUCTION' }
+                ],
+                nRates: { cornSoy: '120-150', cornCorn: '160-190', soyCredit: '35-45', alfCredit: '90-130' }
+            },
+            PA: { name: 'Pennsylvania', flag: '🍄',
+                stats: [
+                    { label: 'Farms', value: '52,700', url: 'FARM OPERATIONS', stat: 'OPERATIONS' },
+                    { label: 'Farmland', value: '7.3M ac', url: 'AG LAND', stat: 'AREA' },
+                    { label: 'Mushrooms #1', value: '65%', url: 'MUSHROOMS', stat: 'PRODUCTION' },
+                    { label: 'Milk #5', value: '10B lb', url: 'MILK', stat: 'PRODUCTION' }
+                ],
+                nRates: { cornSoy: '130-160', cornCorn: '170-200', soyCredit: '35-45', alfCredit: '90-130' }
+            }
+        };
+        
+        let currentState = 'WI';
+        
+        function populateStateDropdown() {
+            const sel = document.getElementById('stateSelect');
+            sel.innerHTML = Object.entries(stateData)
+                .sort((a,b) => a[1].name.localeCompare(b[1].name))
+                .map(([abbr, data]) => `<option value="${abbr}">${data.name}</option>`)
+                .join('');
+        }
+        
+        function buildQuickStatsUrl(commodity, stat, state) {
+            return `https://quickstats.nass.usda.gov/results/?commodity_desc=${encodeURIComponent(commodity)}&statisticcat_desc=${encodeURIComponent(stat)}&state_alpha=${state}&agg_level_desc=STATE&year__GE=2020`;
+        }
+        
+        function changeState(abbr) {
+            if (!stateData[abbr]) return;
+            currentState = abbr;
+            const state = stateData[abbr];
+            
+            document.getElementById('stateName').textContent = state.name;
+            document.getElementById('stateFlag').textContent = state.flag;
+            document.getElementById('nStateBadge').textContent = abbr;
+            
+            // State stats
+            const statsHtml = state.stats.map(s => `
+                <div class="state-stat">
+                    <div class="state-stat-value">${s.value}</div>
+                    <div class="state-stat-label">${s.label}</div>
+                    <a class="state-stat-link" href="${buildQuickStatsUrl(s.url, s.stat, abbr)}" target="_blank">View on USDA →</a>
+                </div>
+            `).join('');
+            document.getElementById('stateStats').innerHTML = statsHtml;
+            
+            // N rates
+            document.getElementById('nCornSoy').textContent = state.nRates.cornSoy;
+            document.getElementById('nCornCorn').textContent = state.nRates.cornCorn;
+            document.getElementById('nSoyCredit').textContent = state.nRates.soyCredit;
+            document.getElementById('nAlfCredit').textContent = state.nRates.alfCredit;
+        }
+        
+        function detectMyLocation() {
+            const btn = document.querySelector('.detect-btn');
+            btn.textContent = '...';
+            btn.disabled = true;
+            
+            AGSIST_GEO.detectLocation(
+                (abbr) => {
+                    document.getElementById('stateSelect').value = abbr;
+                    changeState(abbr);
+                    btn.textContent = '✓';
+                    setTimeout(() => { btn.textContent = '📍 Detect'; btn.disabled = false; }, 1500);
+                },
+                () => {
+                    btn.textContent = '📍 Detect';
+                    btn.disabled = false;
+                    alert('Could not detect location');
+                }
+            );
+        }
+        
+        // Calculators
+        const removalRates = { corn: {n:0.67,p:0.37,k:0.27}, soybeans: {n:3.30,p:0.80,k:1.40}, wheat: {n:1.25,p:0.50,k:0.30} };
+        function calcRemoval() {
+            const c = document.getElementById('removalCrop').value;
+            const y = parseFloat(document.getElementById('removalYield').value) || 0;
+            const r = removalRates[c];
+            document.getElementById('removalResult').textContent = `${Math.round(y*r.n)}N - ${Math.round(y*r.p)}P - ${Math.round(y*r.k)}K`;
+        }
+        function calcFertCost() {
+            const p = parseFloat(document.getElementById('fertPrice').value) || 0;
+            const r = parseFloat(document.getElementById('fertRate').value) || 0;
+            document.getElementById('fertCostResult').textContent = '$' + ((p/2000)*r).toFixed(2);
+        }
+        function calcSeeds() {
+            const row = parseFloat(document.getElementById('rowSpacing').value) || 30;
+            const inRow = parseFloat(document.getElementById('inRowSpacing').value) || 6;
+            document.getElementById('seedsResult').textContent = Math.round(43560*144/(row*inRow)).toLocaleString();
+        }
+        function calcBushels() {
+            const lb = parseFloat(document.getElementById('buCrop').value) || 56;
+            const bu = parseFloat(document.getElementById('bushelsInput').value) || 0;
+            const total = bu * lb;
+            document.getElementById('lbsResult').textContent = total.toLocaleString() + ' lb';
+            document.getElementById('tonsResult').textContent = '= ' + (total/2000).toFixed(1) + ' tons';
+        }
+        function calcBin() {
+            const d = parseFloat(document.getElementById('binDiam').value) || 0;
+            const h = parseFloat(document.getElementById('binHeight').value) || 0;
+            const bu = Math.round(d*d*h*0.628);
+            document.getElementById('binResult').textContent = bu.toLocaleString() + ' bu';
+            document.getElementById('binTons').textContent = Math.round(bu*56/2000).toLocaleString() + ' tons corn';
+        }
+        function calcBreakeven() {
+            const cost = parseFloat(document.getElementById('totalCost').value) || 0;
+            const yield_ = parseFloat(document.getElementById('expectedYield').value) || 1;
+            document.getElementById('breakevenResult').textContent = '$' + (cost/yield_).toFixed(2);
+        }
+        
+        // Init
+        populateStateDropdown();
+        currentState = AGSIST_GEO.getState();
+        document.getElementById('stateSelect').value = currentState;
+        changeState(currentState);
+        
+        document.getElementById('stateSelect').addEventListener('change', function() {
+            AGSIST_GEO.setState(this.value);
+            changeState(this.value);
+        });
+        
+        window.addEventListener('agsist-state-change', function(e) {
+            document.getElementById('stateSelect').value = e.detail;
+            changeState(e.detail);
+        });
+        
+        // Smooth scroll
+        document.querySelectorAll('.toc a').forEach(a => {
+            a.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href'))?.scrollIntoView({behavior:'smooth'});
+            });
+        });
     </script>
 </body>
 </html>

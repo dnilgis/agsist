@@ -3,89 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USDA Report Calendar - WASDE, Crop Progress Dates | AGSIST</title>
-    <meta name="description" content="USDA agricultural report release dates. Track WASDE, Crop Progress, Grain Stocks, Prospective Plantings, and other key report schedules.">
+    <title>USDA Report Calendar 2026 | AGSIST</title>
+    <meta name="keywords" content="USDA report calendar, WASDE dates, crop progress schedule, grain stocks report, USDA report dates 2026">
+    <meta name="description" content="Complete 2026 USDA agricultural report calendar. WASDE, Crop Progress, Grain Stocks, Prospective Plantings release dates with market impact ratings.">
     <link rel="canonical" href="https://agsist.com/calendar.html">
-    
+    <meta property="og:title" content="USDA Report Calendar 2026 | AGSIST">
+    <meta property="og:description" content="Complete USDA report schedule with market impact ratings and release times.">
+    <meta property="og:url" content="https://agsist.com/calendar.html">
+    <meta property="og:type" content="website">
     <link rel="icon" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="/components/shared.css">
-    <link rel="stylesheet" href="styles.css">
-    
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-    
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebPage","name":"USDA Report Calendar 2026","description":"Complete 2026 USDA agricultural report release dates with market impact ratings","url":"https://agsist.com/calendar.html"}
+    </script>
     <style>
-        .cal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-        .cal-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
-        .cal-card h3 { color: var(--accent); font-size: 0.95rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .cal-card p { color: var(--dim); font-size: 0.85rem; margin-bottom: 12px; line-height: 1.5; }
-        .cal-card .schedule { font-size: 0.8rem; color: var(--text); background: var(--bg); padding: 8px 12px; border-radius: 4px; }
-        .report-list { margin-top: 20px; }
-        .report-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .report-item:last-child { border-bottom: none; }
-        .report-name { color: var(--text); font-size: 0.9rem; }
-        .report-date { color: var(--accent); font-size: 0.85rem; }
+        main { max-width: 1200px; margin: 0 auto; padding: 16px; }
+        .breadcrumb { font-size: 0.85rem; color: var(--dim); margin-bottom: 16px; }
+        .breadcrumb a { color: var(--accent); text-decoration: none; }
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; }
+        .panel-head { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+        .panel-head h1, .panel-head h2 { font-size: 1.1rem; color: var(--accent); margin: 0; }
+        .panel-body { padding: 20px; }
+        .month-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 20px; }
+        .month-tab { padding: 8px 14px; border: 1px solid var(--border); border-radius: 4px; background: none; color: var(--dim); font-family: inherit; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
+        .month-tab:hover { border-color: var(--accent); color: var(--text); }
+        .month-tab.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+        .month-tab.past { opacity: 0.5; }
+        .report-list { display: flex; flex-direction: column; gap: 8px; }
+        .report-row { display: grid; grid-template-columns: 70px 1fr auto auto; gap: 12px; align-items: center; padding: 12px 16px; background: var(--bg); border-radius: 6px; border-left: 3px solid var(--border); }
+        .report-row.high { border-left-color: #ef4444; }
+        .report-row.medium { border-left-color: #f59e0b; }
+        .report-row.low { border-left-color: #10b981; }
+        .report-date { font-size: 0.85rem; color: var(--accent); font-weight: 600; }
+        .report-name { font-size: 0.9rem; color: var(--text); font-weight: 600; }
+        .report-desc { font-size: 0.8rem; color: var(--dim); margin-top: 2px; }
+        .report-time { font-size: 0.8rem; color: var(--dim); white-space: nowrap; }
+        .impact { font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 10px; white-space: nowrap; }
+        .impact.high { background: rgba(239,68,68,0.15); color: #ef4444; }
+        .impact.medium { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .impact.low { background: rgba(16,185,129,0.15); color: #10b981; }
+        .guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+        .guide-card { background: var(--bg); border-radius: 6px; padding: 16px; }
+        .guide-card h3 { color: var(--accent); font-size: 0.9rem; margin-bottom: 8px; }
+        .guide-card p { color: var(--dim); font-size: 0.85rem; line-height: 1.7; }
+        .guide-card .meta { font-size: 0.8rem; color: var(--dim); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+        .guide-card a { color: var(--accent); text-decoration: none; }
+        .cal-stats { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; padding: 12px 16px; background: var(--bg); border-radius: 6px; }
+        .cal-stat-val { font-size: 1.2rem; font-weight: 700; color: var(--accent); }
+        .cal-stat-lbl { font-size: 0.75rem; color: var(--dim); }
+        .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; font-size: 0.8rem; color: var(--dim); }
+        .legend span { display: flex; align-items: center; gap: 4px; }
+        .legend-dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+        @media (max-width: 600px) {
+            .report-row { grid-template-columns: 60px 1fr; gap: 6px; padding: 10px 12px; }
+            .report-time { grid-column: 1 / -1; }
+            .impact { justify-self: start; }
+            .month-tab { padding: 6px 10px; font-size: 0.75rem; }
+        }
     </style>
 </head>
 <body>
     <div id="header"></div>
-
     <main>
         <nav class="breadcrumb"><a href="/">Home</a> → Calendar</nav>
-
         <div class="panel">
-            <div class="panel-head"><h1>📅 USDA REPORT CALENDAR</h1></div>
+            <div class="panel-head"><h1>📅 USDA Report Calendar — 2026</h1></div>
             <div class="panel-body">
-                <div class="cal-grid">
-                    <div class="cal-card">
-                        <h3>📊 WASDE</h3>
-                        <p>World Agricultural Supply & Demand Estimates. The most market-moving report with global production and ending stocks estimates.</p>
-                        <div class="schedule">Monthly · Usually 2nd week · 12:00 PM ET</div>
-                    </div>
-                    <div class="cal-card">
-                        <h3>🌱 Crop Progress</h3>
-                        <p>Weekly updates on planting progress, crop conditions, and harvest progress during growing season.</p>
-                        <div class="schedule">Weekly · Mondays · 4:00 PM ET (Apr-Nov)</div>
-                    </div>
-                    <div class="cal-card">
-                        <h3>🏭 Grain Stocks</h3>
-                        <p>Quarterly report of on-farm and off-farm grain stocks. Key for understanding supply tightness.</p>
-                        <div class="schedule">Quarterly · End of Mar, Jun, Sep, Dec</div>
-                    </div>
-                    <div class="cal-card">
-                        <h3>🚜 Prospective Plantings</h3>
-                        <p>Farmer planting intentions survey. First major indication of upcoming crop acreage.</p>
-                        <div class="schedule">Annual · End of March · 12:00 PM ET</div>
-                    </div>
-                    <div class="cal-card">
-                        <h3>📐 Acreage Report</h3>
-                        <p>Updated planted acreage based on June survey. Often differs from March intentions.</p>
-                        <div class="schedule">Annual · End of June · 12:00 PM ET</div>
-                    </div>
-                    <div class="cal-card">
-                        <h3>🌾 Crop Production</h3>
-                        <p>Monthly production forecasts with yield and acreage estimates during growing season.</p>
-                        <div class="schedule">Monthly · Aug-Jan · 12:00 PM ET</div>
-                    </div>
+                <div class="cal-stats" id="stats"></div>
+                <div class="legend">
+                    <span><span class="legend-dot" style="background:#ef4444"></span> High impact</span>
+                    <span><span class="legend-dot" style="background:#f59e0b"></span> Medium impact</span>
+                    <span><span class="legend-dot" style="background:#10b981"></span> Low impact</span>
                 </div>
-
-                <div class="report-list">
-                    <h3 style="color:var(--accent);margin:24px 0 16px;font-size:0.95rem">UPCOMING REPORTS (2026)</h3>
-                    <div class="report-item"><span class="report-name">WASDE</span><span class="report-date">Feb 11</span></div>
-                    <div class="report-item"><span class="report-name">Crop Production Annual</span><span class="report-date">Feb 7</span></div>
-                    <div class="report-item"><span class="report-name">WASDE</span><span class="report-date">Mar 11</span></div>
-                    <div class="report-item"><span class="report-name">Prospective Plantings</span><span class="report-date">Mar 31</span></div>
-                    <div class="report-item"><span class="report-name">Grain Stocks</span><span class="report-date">Mar 31</span></div>
+                <div class="month-tabs" id="monthTabs"></div>
+                <div class="report-list" id="reportList"></div>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-head"><h2>📊 Report Guide</h2></div>
+            <div class="panel-body">
+                <div class="guide-grid">
+                    <div class="guide-card"><h3>WASDE</h3><p>World Agricultural Supply & Demand Estimates. The most market-moving USDA report. Updates global production, ending stocks for all major commodities. Limit moves are common on release day.</p><div class="meta">Monthly ~12th · 12:00 PM ET · <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank">Archive →</a></div></div>
+                    <div class="guide-card"><h3>Crop Progress</h3><p>Weekly planting, crop condition, and harvest progress. The "Good + Excellent" percentage is the key metric — below 60% signals trouble, above 70% is bearish. Runs April through November.</p><div class="meta">Mondays · 4:00 PM ET · <a href="https://usda.library.cornell.edu/concern/publications/8336h188j" target="_blank">Archive →</a></div></div>
+                    <div class="guide-card"><h3>Grain Stocks</h3><p>Quarterly on-farm and off-farm grain inventories. Often reveals tighter or looser stocks than the trade expects. September report sets final old-crop carryout.</p><div class="meta">Quarterly · 12:00 PM ET · <a href="https://usda.library.cornell.edu/concern/publications/xg94hp534" target="_blank">Archive →</a></div></div>
+                    <div class="guide-card"><h3>Prospective Plantings</h3><p>March survey of farmer planting intentions. First real signal of next crop year's supply picture. Corn vs soybean acreage split drives the spring price spread.</p><div class="meta">March 31 · 12:00 PM ET · <a href="https://usda.library.cornell.edu/concern/publications/x633f100h" target="_blank">Archive →</a></div></div>
+                    <div class="guide-card"><h3>Acreage Report</h3><p>June planted acreage update — often differs significantly from March intentions due to weather or prevented planting. A ±2M acre swing can trigger major repricing.</p><div class="meta">June 30 · 12:00 PM ET · <a href="https://usda.library.cornell.edu/concern/publications/j098zb09z" target="_blank">Archive →</a></div></div>
+                    <div class="guide-card"><h3>Crop Production</h3><p>Monthly yield and production estimates during growing season. August is the first field-based yield estimate and often the most volatile report of the year.</p><div class="meta">Monthly Aug-Jan · 12:00 PM ET · <a href="https://usda.library.cornell.edu/concern/publications/tm70mv177" target="_blank">Archive →</a></div></div>
+                    <div class="guide-card"><h3>Export Sales</h3><p>Weekly outstanding export sales and shipments. Flash sales (100K+ MT) reported within 24 hours. Tracks pace vs. USDA projections — key for demand-side price direction.</p><div class="meta">Thursdays · 8:30 AM ET · <a href="https://apps.fas.usda.gov/export-sales/" target="_blank">Archive →</a></div></div>
+                    <div class="guide-card"><h3>Cattle on Feed</h3><p>Monthly feedlot placement, marketing, and inventory. Pre-report estimates are widely traded. Surprises in placements drive cattle futures direction.</p><div class="meta">Monthly · 3:00 PM ET · <a href="https://usda.library.cornell.edu/concern/publications/m326m174z" target="_blank">Archive →</a></div></div>
                 </div>
             </div>
         </div>
     </main>
-
     <div id="footer"></div>
     <script src="/components/load-components.js"></script>
+    <script>
+    var reports = [
+        {d:'Jan 10',name:'WASDE',desc:'World Supply & Demand',time:'12:00 PM',impact:'high'},
+        {d:'Jan 10',name:'Crop Production Annual',desc:'Final 2025 production',time:'12:00 PM',impact:'high'},
+        {d:'Jan 10',name:'Grain Stocks',desc:'Quarterly (Dec 1)',time:'12:00 PM',impact:'high'},
+        {d:'Feb 7',name:'Crop Production',desc:'Annual summary update',time:'12:00 PM',impact:'medium'},
+        {d:'Feb 11',name:'WASDE',desc:'World Supply & Demand',time:'12:00 PM',impact:'high'},
+        {d:'Feb 20',name:'Cattle on Feed',desc:'Monthly placements',time:'3:00 PM',impact:'medium'},
+        {d:'Feb 24',name:'Ag Outlook Forum',desc:'2026 preliminary forecasts',time:'All day',impact:'high'},
+        {d:'Mar 11',name:'WASDE',desc:'World Supply & Demand',time:'12:00 PM',impact:'high'},
+        {d:'Mar 20',name:'Cattle on Feed',desc:'Monthly placements',time:'3:00 PM',impact:'medium'},
+        {d:'Mar 27',name:'Hogs & Pigs',desc:'Quarterly inventory',time:'3:00 PM',impact:'medium'},
+        {d:'Mar 31',name:'Prospective Plantings',desc:'Planting intentions',time:'12:00 PM',impact:'high'},
+        {d:'Mar 31',name:'Grain Stocks',desc:'Quarterly (Mar 1)',time:'12:00 PM',impact:'high'},
+        {d:'Apr 9',name:'WASDE',desc:'World Supply & Demand',time:'12:00 PM',impact:'high'},
+        {d:'Apr 13',name:'Crop Progress',desc:'Weekly planting begins',time:'4:00 PM',impact:'medium'},
+        {d:'Apr 17',name:'Cattle on Feed',desc:'Monthly placements',time:'3:00 PM',impact:'medium'},
+        {d:'May 12',name:'WASDE',desc:'First 2026/27 projections',time:'12:00 PM',impact:'high'},
+        {d:'May 22',name:'Cattle on Feed',desc:'Monthly placements',time:'3:00 PM',impact:'medium'},
+        {d:'Jun 11',name:'WASDE',desc:'World Supply & Demand',time:'12:00 PM',impact:'high'},
+        {d:'Jun 19',name:'Cattle on Feed',desc:'Monthly placements',time:'3:00 PM',impact:'medium'},
+        {d:'Jun 25',name:'Hogs & Pigs',desc:'Quarterly inventory',time:'3:00 PM',impact:'medium'},
+        {d:'Jun 30',name:'Acreage Report',desc:'Actual planted acres',time:'12:00 PM',impact:'high'},
+        {d:'Jun 30',name:'Grain Stocks',desc:'Quarterly (Jun 1)',time:'12:00 PM',impact:'high'},
+        {d:'Jul 11',name:'WASDE',desc:'World Supply & Demand',time:'12:00 PM',impact:'high'},
+        {d:'Jul 17',name:'Cattle on Feed',desc:'Monthly placements',time:'3:00 PM',impact:'medium'},
+        {d:'Aug 12',name:'WASDE',desc:'First yield estimates',time:'12:00 PM',impact:'high'},
+        {d:'Aug 12',name:'Crop Production',desc:'August yield forecast',time:'12:00 PM',impact:'high'},
+        {d:'Aug 21',name:'Cattle on Feed',desc:'Monthly placements',time:'3:00 PM',impact:'medium'},
+        {d:'Sep 11',name:'WASDE',desc:'World Supply & Demand',time:'12:00 PM',impact:'high'},
+        {d:'Sep 11',name:'Crop Production',desc:'September yield update',time:'12:00 PM',impact:'high'},
+        {d:'Sep 18',name:'Cattle on Feed',desc:'Monthly placements',time:'3:00 PM',impact:'medium'},
+        {d:'Sep 25',name:'Hogs & Pigs',desc:'Quarterly inventory',time:'3:00 PM',impact:'medium'},
+        {d:'Sep 30',name:'Grain Stocks',desc:'Final old-crop carryout',time:'12:00 PM',impact:'high'},
+        {d:'Oct 10',name:'WASDE',desc:'World Supply & Demand',time:'12:00 PM',impact:'high'},
+        {d:'Oct 10',name:'Crop Production',desc:'October yield update',time:'12:00 PM',impact:'high'},
+        {d:'Oct 23',name:'Cattle on Feed',desc:'Monthly placements',time:'3:00 PM',impact:'medium'},
+        {d:'Nov 10',name:'WASDE',desc:'World Supply & Demand',time:'12:00 PM',impact:'high'},
+        {d:'Nov 10',name:'Crop Production',desc:'November yield update',time:'12:00 PM',impact:'medium'},
+        {d:'Nov 20',name:'Cattle on Feed',desc:'Monthly placements',time:'3:00 PM',impact:'medium'},
+        {d:'Dec 10',name:'WASDE',desc:'Final 2026 estimates',time:'12:00 PM',impact:'high'},
+        {d:'Dec 10',name:'Crop Production',desc:'Final yield & production',time:'12:00 PM',impact:'high'},
+        {d:'Dec 18',name:'Cattle on Feed',desc:'Monthly placements',time:'3:00 PM',impact:'medium'},
+        {d:'Dec 23',name:'Hogs & Pigs',desc:'Quarterly inventory',time:'3:00 PM',impact:'medium'},
+    ];
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var curMonth = new Date().getMonth();
+
+    var tabsEl = document.getElementById('monthTabs');
+    months.forEach(function(m, i) {
+        var btn = document.createElement('button');
+        btn.className = 'month-tab' + (i < curMonth ? ' past' : '') + (i === curMonth ? ' active' : '');
+        btn.textContent = m;
+        btn.onclick = function() { showMonth(i); };
+        tabsEl.appendChild(btn);
+    });
+    var allBtn = document.createElement('button');
+    allBtn.className = 'month-tab';
+    allBtn.textContent = 'All';
+    allBtn.onclick = function() { showMonth(-1); };
+    tabsEl.appendChild(allBtn);
+
+    function showMonth(idx) {
+        document.querySelectorAll('.month-tab').forEach(function(t) { t.classList.remove('active'); });
+        if (idx === -1) tabsEl.lastChild.classList.add('active');
+        else tabsEl.children[idx].classList.add('active');
+
+        var filtered = idx === -1 ? reports : reports.filter(function(r) { return r.d.startsWith(months[idx]); });
+        var el = document.getElementById('reportList');
+        if (!filtered.length) { el.innerHTML = '<div style="color:var(--dim);padding:20px;text-align:center">No major reports this month. Weekly Export Sales (Thursdays) and Crop Progress (Mondays Apr-Nov) continue.</div>'; updateStats(filtered); return; }
+        el.innerHTML = filtered.map(function(r) {
+            return '<div class="report-row ' + r.impact + '"><div class="report-date">' + r.d + '</div><div><div class="report-name">' + r.name + '</div><div class="report-desc">' + r.desc + '</div></div><span class="impact ' + r.impact + '">' + r.impact.toUpperCase() + '</span><div class="report-time">' + r.time + '</div></div>';
+        }).join('');
+        updateStats(filtered);
+    }
+    function updateStats(arr) {
+        var h = arr.filter(function(r){return r.impact==='high'}).length;
+        var m = arr.filter(function(r){return r.impact==='medium'}).length;
+        document.getElementById('stats').innerHTML =
+            '<div><div class="cal-stat-val">' + arr.length + '</div><div class="cal-stat-lbl">Reports</div></div>' +
+            '<div><div class="cal-stat-val" style="color:#ef4444">' + h + '</div><div class="cal-stat-lbl">High Impact</div></div>' +
+            '<div><div class="cal-stat-val" style="color:#f59e0b">' + m + '</div><div class="cal-stat-lbl">Medium</div></div>';
+    }
+    showMonth(curMonth);
+    </script>
 </body>
 </html>

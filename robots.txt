@@ -1,14 +1,6 @@
-# AGSIST robots.txt
-# https://agsist.com/robots.txt
-
 User-agent: *
 Allow: /
 
-# Sitemap location
 Sitemap: https://agsist.com/sitemap.xml
 
-# Crawl-delay (optional - be nice to server)
-Crawl-delay: 1
-
-# Block common bot paths (optional)
-Disallow: /data/
+# Crawl-delay: 1

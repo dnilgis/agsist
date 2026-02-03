@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export Sales Tracker | AGSIST</title>
+    <meta name="keywords" content="grain exports, US corn exports, soybean exports, wheat exports, export sales report, FAS data">
+    <meta name="description" content="USDA export sales data for corn, soybeans, wheat. Weekly reports, top buying countries, marketing year tracking, and how exports affect local grain prices.">
+    <link rel="canonical" href="https://agsist.com/exports.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="US Grain Export Guide | AGSIST">
+    <meta property="og:description" content="US grain export data for corn, soybeans, wheat. Top buyers, market impact, weekly reports.">
+    <meta property="og:url" content="https://agsist.com/exports.html">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/components/shared.css">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    <style>
+        main { max-width: 1300px; margin: 0 auto; padding: 16px; }
+        .breadcrumb { font-size: 0.85rem; color: var(--dim); margin-bottom: 16px; }
+        .breadcrumb a { color: var(--accent); text-decoration: none; }
+
+        .hero { background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%); border: 2px solid #42a5f5; border-radius: 12px; padding: 28px; text-align: center; margin-bottom: 20px; }
+        .hero h1 { color: #fff; font-size: 1.5rem; margin: 0 0 8px; }
+        .hero p { color: rgba(255,255,255,0.85); font-size: 0.9rem; margin: 0; }
+
+        .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 6px; overflow-x: auto; }
+        .tab { padding: 12px 20px; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 600; border: none; cursor: pointer; background: transparent; color: var(--dim); white-space: nowrap; }
+        .tab.active { background: var(--accent); color: #000; }
+        .tab:hover:not(.active) { background: var(--bg); color: var(--text); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; }
+        .panel-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .panel-head h2 { font-size: 1rem; color: var(--accent); margin: 0; }
+        .panel-head .badge { font-size: 0.75rem; padding: 4px 8px; background: var(--accent); color: #000; border-radius: 12px; font-weight: 600; }
+        .panel-body { padding: 18px; }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+        .commodity-hero { border-radius: 10px; padding: 24px; margin-bottom: 16px; display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; }
+        .commodity-hero .icon { font-size: 3rem; }
+        .commodity-hero h3 { font-size: 1.2rem; color: var(--text); margin: 0 0 4px; }
+        .commodity-hero .detail { font-size: 0.8rem; color: var(--dim); }
+        .commodity-hero .cta { display: inline-block; padding: 10px 20px; background: var(--accent); color: #000; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.85rem; }
+
+        .stat-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-row .lbl { color: var(--dim); }
+        .stat-row .val { color: var(--accent); font-weight: 600; }
+
+        .buyer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+        .buyer-card { background: var(--bg); border-radius: 8px; padding: 14px; text-align: center; }
+        .buyer-card .flag { font-size: 2rem; margin-bottom: 6px; }
+        .buyer-card .name { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+        .buyer-card .desc { font-size: 0.7rem; color: var(--dim); margin-top: 2px; }
+
+        .report-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+        .report-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-decoration: none; display: block; transition: all 0.2s; }
+        .report-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .report-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
+        .report-card h3 { color: var(--text); font-size: 0.9rem; margin: 0 0 4px; }
+        .report-card p { color: var(--dim); font-size: 0.75rem; margin: 0 0 8px; }
+        .report-card .action { color: var(--accent); font-size: 0.75rem; font-weight: 600; }
+
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        .data-table th { background: var(--bg); padding: 10px; text-align: left; font-size: 0.7rem; color: var(--dim); text-transform: uppercase; border-bottom: 2px solid var(--border); }
+        .data-table td { padding: 10px; border-bottom: 1px solid var(--border); }
+        .data-table .hl { color: var(--accent); font-weight: 600; }
+
+        .info-box { background: var(--bg); border-left: 4px solid var(--accent); padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 0.85rem; color: var(--dim); }
+        .info-box strong { color: var(--text); }
+        .info-box a { color: var(--accent); }
+        .info-box.tip { border-color: #22c55e; }
+
+        .links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+        .ext-link { display: block; padding: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; text-decoration: none; }
+        .ext-link:hover { border-color: var(--accent); }
+        .ext-link strong { display: block; color: var(--text); font-size: 0.85rem; margin-bottom: 4px; }
+        .ext-link span { color: var(--dim); font-size: 0.75rem; }
+
+        @media (max-width: 768px) {
+            main { padding: 10px; }
+            .two-col, .three-col { grid-template-columns: 1fr; }
+            .commodity-hero { grid-template-columns: 1fr; text-align: center; }
+        }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "US Grain Export Guide",
+        "description": "Comprehensive US grain export data with top buyers and market impact analysis",
+        "url": "https://agsist.com/exports.html",
+        "applicationCategory": "Agriculture",
+        "operatingSystem": "Web Browser",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
+</head>
+<body>
+    <div id="header"></div>
+    <main>
+        <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Export Sales</nav>
+
+        <div class="hero">
+            <h1>🚢 Export Sales Tracker</h1>
+            <p>USDA weekly export sales data • Track grain demand from the world's largest buyers</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('corn')">🌽 Corn</button>
+            <button class="tab" onclick="showTab('soybeans')">🫘 Soybeans</button>
+            <button class="tab" onclick="showTab('wheat')">🌾 Wheat</button>
+            <button class="tab" onclick="showTab('learn')">📚 How Exports Affect You</button>
+        </div>
+
+        <!-- CORN TAB -->
+        <div class="tab-content active" id="tab-corn">
+            <div class="commodity-hero" style="background:linear-gradient(135deg,var(--card) 0%,#1a1500 100%);border:1px solid var(--accent);border-radius:10px;">
+                <div class="icon">🌽</div>
+                <div><h3>Corn Exports</h3><div class="detail">Marketing Year: Sep 1 - Aug 31 • US exports ~2.4 billion bushels annually (~15% of production)</div></div>
+                <a href="https://apps.fas.usda.gov/export-sales/esrd1.html" target="_blank" class="cta">View Weekly Data →</a>
+            </div>
+            <div class="two-col">
+                <div class="panel"><div class="panel-head"><h2>🌍 Top Corn Buyers</h2></div><div class="panel-body">
+                    <div class="buyer-grid">
+                        <div class="buyer-card"><div class="flag">🇲🇽</div><div class="name">Mexico</div><div class="desc">#1 buyer, ~700M bu/yr</div></div>
+                        <div class="buyer-card"><div class="flag">🇯🇵</div><div class="name">Japan</div><div class="desc">#2 buyer, ~400M bu/yr</div></div>
+                        <div class="buyer-card"><div class="flag">🇨🇳</div><div class="name">China</div><div class="desc">Variable, 0-500M bu</div></div>
+                        <div class="buyer-card"><div class="flag">🇨🇴</div><div class="name">Colombia</div><div class="desc">Growing market</div></div>
+                        <div class="buyer-card"><div class="flag">🇰🇷</div><div class="name">S. Korea</div><div class="desc">Feed corn demand</div></div>
+                    </div>
+                </div></div>
+                <div class="panel"><div class="panel-head"><h2>📋 Key Corn Export Facts</h2></div><div class="panel-body">
+                    <div class="stat-row"><span class="lbl">Gulf Export Basis</span><span class="val">+$0.40-0.80/bu over futures</span></div>
+                    <div class="stat-row"><span class="lbl">PNW Export Basis</span><span class="val">+$0.50-1.00/bu over futures</span></div>
+                    <div class="stat-row"><span class="lbl">Flash Sale Threshold</span><span class="val">100,000+ MT in 1 day</span></div>
+                    <div class="stat-row"><span class="lbl">Top Competitor</span><span class="val">🇧🇷 Brazil (2nd season)</span></div>
+                    <div class="stat-row"><span class="lbl">Peak Shipments</span><span class="val">Oct-Mar (post-harvest)</span></div>
+                </div></div>
+            </div>
+        </div>
+
+        <!-- SOYBEANS TAB -->
+        <div class="tab-content" id="tab-soybeans">
+            <div class="commodity-hero" style="background:linear-gradient(135deg,var(--card) 0%,#0a1a0a 100%);border:1px solid #22c55e;border-radius:10px;">
+                <div class="icon">🫘</div>
+                <div><h3>Soybean Exports</h3><div class="detail">Marketing Year: Sep 1 - Aug 31 • US exports ~1.7 billion bushels annually (~40% of production)</div></div>
+                <a href="https://apps.fas.usda.gov/export-sales/esrd1.html" target="_blank" class="cta">View Weekly Data →</a>
+            </div>
+            <div class="two-col">
+                <div class="panel"><div class="panel-head"><h2>🌍 Top Soybean Buyers</h2></div><div class="panel-body">
+                    <div class="buyer-grid">
+                        <div class="buyer-card"><div class="flag">🇨🇳</div><div class="name">China</div><div class="desc">#1 by far, ~1B bu/yr</div></div>
+                        <div class="buyer-card"><div class="flag">🇪🇺</div><div class="name">EU</div><div class="desc">~100M bu/yr</div></div>
+                        <div class="buyer-card"><div class="flag">🇲🇽</div><div class="name">Mexico</div><div class="desc">Growing demand</div></div>
+                        <div class="buyer-card"><div class="flag">🇯🇵</div><div class="name">Japan</div><div class="desc">Food-grade premium</div></div>
+                        <div class="buyer-card"><div class="flag">🇪🇬</div><div class="name">Egypt</div><div class="desc">Soybean oil demand</div></div>
+                    </div>
+                </div></div>
+                <div class="panel"><div class="panel-head"><h2>📋 Key Soybean Export Facts</h2></div><div class="panel-body">
+                    <div class="stat-row"><span class="lbl">China Dependency</span><span class="val">~60% of all US soy exports</span></div>
+                    <div class="stat-row"><span class="lbl">Gulf Basis</span><span class="val">+$0.30-0.70/bu over futures</span></div>
+                    <div class="stat-row"><span class="lbl">Peak Season</span><span class="val">Oct-Feb (US harvest)</span></div>
+                    <div class="stat-row"><span class="lbl">Off-Season</span><span class="val">Mar-Aug (Brazil ships)</span></div>
+                    <div class="stat-row"><span class="lbl">Top Competitor</span><span class="val">🇧🇷 Brazil (#1 globally)</span></div>
+                </div></div>
+            </div>
+        </div>
+
+        <!-- WHEAT TAB -->
+        <div class="tab-content" id="tab-wheat">
+            <div class="commodity-hero" style="background:linear-gradient(135deg,var(--card) 0%,#1a0a00 100%);border:1px solid #f97316;border-radius:10px;">
+                <div class="icon">🌾</div>
+                <div><h3>Wheat Exports</h3><div class="detail">Marketing Year: Jun 1 - May 31 • US exports ~800 million bushels annually (~40-50% of production)</div></div>
+                <a href="https://apps.fas.usda.gov/export-sales/esrd1.html" target="_blank" class="cta">View Weekly Data →</a>
+            </div>
+            <div class="two-col">
+                <div class="panel"><div class="panel-head"><h2>🌍 Top Wheat Buyers</h2></div><div class="panel-body">
+                    <div class="buyer-grid">
+                        <div class="buyer-card"><div class="flag">🇲🇽</div><div class="name">Mexico</div><div class="desc">#1 buyer</div></div>
+                        <div class="buyer-card"><div class="flag">🇯🇵</div><div class="name">Japan</div><div class="desc">Premium classes</div></div>
+                        <div class="buyer-card"><div class="flag">🇵🇭</div><div class="name">Philippines</div><div class="desc">Growing demand</div></div>
+                        <div class="buyer-card"><div class="flag">🇰🇷</div><div class="name">S. Korea</div><div class="desc">Feed wheat</div></div>
+                        <div class="buyer-card"><div class="flag">🇳🇬</div><div class="name">Nigeria</div><div class="desc">HRW demand</div></div>
+                    </div>
+                </div></div>
+                <div class="panel"><div class="panel-head"><h2>📋 Key Wheat Export Facts</h2></div><div class="panel-body">
+                    <div class="stat-row"><span class="lbl">US Export Classes</span><span class="val">HRW, SRW, HRS, SW, Durum</span></div>
+                    <div class="stat-row"><span class="lbl">Gulf vs PNW</span><span class="val">HRW=Gulf, HRS/SW=PNW</span></div>
+                    <div class="stat-row"><span class="lbl">Global Competitors</span><span class="val">🇷🇺 Russia, 🇨🇦 Canada, 🇦🇺 Aus</span></div>
+                    <div class="stat-row"><span class="lbl">US Global Share</span><span class="val">~12% (was 30% in 1990s)</span></div>
+                    <div class="stat-row"><span class="lbl">Peak Shipments</span><span class="val">Jul-Dec (post-harvest)</span></div>
+                </div></div>
+            </div>
+        </div>
+
+        <!-- LEARN TAB -->
+        <div class="tab-content" id="tab-learn">
+            <div class="panel">
+                <div class="panel-head"><h2>📚 How Exports Affect YOUR Grain Price</h2></div>
+                <div class="panel-body">
+                    <div class="info-box tip">
+                        <strong>🎯 Bottom Line:</strong> Export demand is a key driver of futures prices and local basis. When exports are strong, basis strengthens and cash prices rise. When exports slow, basis weakens.
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="data-table">
+                            <thead><tr><th>Export Signal</th><th>Effect on Futures</th><th>Effect on Basis</th><th>What To Do</th></tr></thead>
+                            <tbody>
+                                <tr><td class="hl">Flash Sale Announced</td><td>Usually bullish (+5-15¢)</td><td>Gulf basis firms</td><td>Consider selling into strength</td></tr>
+                                <tr><td class="hl">Weekly Sales Above Pace</td><td>Supportive</td><td>Stable to firmer</td><td>Monitor for selling opportunities</td></tr>
+                                <tr><td class="hl">Weekly Sales Below Pace</td><td>Bearish pressure</td><td>May soften</td><td>Wait for demand improvement</td></tr>
+                                <tr><td class="hl">Large Cancellation</td><td>Often bearish (-5-20¢)</td><td>Can weaken</td><td>Reassess marketing plan</td></tr>
+                                <tr><td class="hl">China Buys (Soybeans)</td><td>Very bullish</td><td>Strong</td><td>Major sell signal if large</td></tr>
+                                <tr><td class="hl">Brazil Harvest Starts</td><td>Seasonal pressure</td><td>Typically weakens</td><td>Sell US beans before Feb/Mar</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 style="color:var(--accent);margin:24px 0 12px;">📊 Understanding the Weekly Export Sales Report</h3>
+                    <div class="three-col">
+                        <div style="background:var(--bg);padding:14px;border-radius:8px;">
+                            <h4 style="color:var(--accent);margin:0 0 8px;font-size:0.9rem;">Net Sales</h4>
+                            <p style="font-size:0.8rem;color:var(--dim);">New commitments minus cancellations. Positive = new demand. Compare to weekly pace needed to meet USDA projection.</p>
+                        </div>
+                        <div style="background:var(--bg);padding:14px;border-radius:8px;">
+                            <h4 style="color:var(--accent);margin:0 0 8px;font-size:0.9rem;">Exports (Shipments)</h4>
+                            <p style="font-size:0.8rem;color:var(--dim);">Grain that actually left the US that week. Compare to outstanding sales to gauge pipeline fullness.</p>
+                        </div>
+                        <div style="background:var(--bg);padding:14px;border-radius:8px;">
+                            <h4 style="color:var(--accent);margin:0 0 8px;font-size:0.9rem;">Outstanding Sales</h4>
+                            <p style="font-size:0.8rem;color:var(--dim);">Grain sold but not yet shipped. High outstanding = future demand locked in. Low = risk of missing USDA target.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weekly Report Access -->
+        <div class="panel">
+            <div class="panel-head"><h2>📄 Weekly Export Reports</h2><span class="badge">Official USDA FAS</span></div>
+            <div class="panel-body">
+                <div class="report-grid">
+                    <a href="https://apps.fas.usda.gov/export-sales/esrd1.html" target="_blank" class="report-card"><div class="icon">📄</div><h3>Weekly Export Sales</h3><p>Current week net sales & shipments</p><span class="action">View Report →</span></a>
+                    <a href="https://apps.fas.usda.gov/export-sales/myrpt-mg.html" target="_blank" class="report-card"><div class="icon">📈</div><h3>Marketing Year Totals</h3><p>Cumulative sales vs USDA projection</p><span class="action">View Report →</span></a>
+                    <a href="https://apps.fas.usda.gov/export-sales/outstanding.html" target="_blank" class="report-card"><div class="icon">📋</div><h3>Outstanding Sales</h3><p>Unshipped commitments by country</p><span class="action">View Report →</span></a>
+                    <a href="https://apps.fas.usda.gov/export-sales/highlights.html" target="_blank" class="report-card"><div class="icon">⚡</div><h3>Sales Highlights</h3><p>Flash sales & notable transactions</p><span class="action">View Report →</span></a>
+                </div>
+                <div class="info-box" style="margin-top:16px;">
+                    <strong>📅 Report Schedule:</strong> Export Sales reports release every <strong>Thursday at 8:30 AM ET</strong>, covering the prior Friday-Thursday week. Flash sales (100,000+ MT to one destination) are reported within 24 hours.
+                </div>
+            </div>
+        </div>
+
+        <!-- External Resources -->
+        <div class="panel">
+            <div class="panel-head"><h2>🔗 Trade Data Resources</h2></div>
+            <div class="panel-body">
+                <div class="links-grid">
+                    <a href="https://apps.fas.usda.gov/gats/default.aspx" target="_blank" class="ext-link"><strong>GATS Trade Data</strong><span>Country-by-country trade flows</span></a>
+                    <a href="https://apps.fas.usda.gov/psdonline/app/index.html" target="_blank" class="ext-link"><strong>PSD Online</strong><span>World supply & demand by country</span></a>
+                    <a href="https://ipad.fas.usda.gov/" target="_blank" class="ext-link"><strong>Crop Explorer</strong><span>Global crop conditions</span></a>
+                    <a href="https://www.fas.usda.gov/data/search" target="_blank" class="ext-link"><strong>FAS Data Search</strong><span>All FAS datasets</span></a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+    <script src="/components/load-components.js"></script>
+    <script>
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + id).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

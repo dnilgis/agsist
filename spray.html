@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spray Weather Conditions | AGSIST</title>
+    <meta name="keywords" content="spray conditions, Delta-T, wind speed farming, spray weather, application conditions, inversion risk">
+    <meta name="description" content="Real-time spray conditions for farmers. Wind speed, temperature, humidity, Delta-T, inversion risk, and 7-day spray window forecast.">
+    <link rel="canonical" href="https://agsist.com/spray.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Spray Conditions Forecast | AGSIST">
+    <meta property="og:description" content="Live spray conditions with Delta-T, wind, humidity, and 7-day application forecast.">
+    <meta property="og:url" content="https://agsist.com/spray.html">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/components/shared.css">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    <style>
+        :root { --green: #22c55e; --yellow: #eab308; --red: #ef4444; --blue: #3b82f6; }
+        main { max-width: 1200px; margin: 0 auto; padding: 16px; }
+        .breadcrumb { font-size: 0.85rem; color: var(--dim); margin-bottom: 16px; }
+        .breadcrumb a { color: var(--accent); text-decoration: none; }
+        
+        .location-bar { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .location-bar input { flex: 1; min-width: 200px; padding: 12px; font-family: inherit; font-size: 0.9rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
+        .location-bar input:focus { outline: none; border-color: var(--accent); }
+        .location-bar button { padding: 12px 20px; background: var(--accent); color: #000; border: none; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+        .location-bar button:hover { opacity: 0.9; }
+        .location-bar button.secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+        
+        .status-hero { border-radius: 12px; padding: 32px; text-align: center; margin-bottom: 24px; }
+        .status-hero.good { background: linear-gradient(135deg, #14532d 0%, #166534 100%); border: 2px solid var(--green); }
+        .status-hero.caution { background: linear-gradient(135deg, #713f12 0%, #854d0e 100%); border: 2px solid var(--yellow); }
+        .status-hero.poor { background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%); border: 2px solid var(--red); }
+        .status-hero h1 { font-size: 2rem; margin: 0 0 8px 0; color: #fff; }
+        .status-hero .subtitle { color: rgba(255,255,255,0.8); font-size: 1rem; }
+        .status-hero .location { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 8px; }
+        
+        .conditions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+        .condition-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+        .condition-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
+        .condition-card .value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+        .condition-card .label { font-size: 0.75rem; color: var(--dim); margin-top: 4px; }
+        .condition-card .status { font-size: 0.7rem; padding: 4px 8px; border-radius: 12px; margin-top: 8px; display: inline-block; }
+        .condition-card .status.good { background: rgba(34,197,94,0.2); color: var(--green); }
+        .condition-card .status.caution { background: rgba(234,179,8,0.2); color: var(--yellow); }
+        .condition-card .status.poor { background: rgba(239,68,68,0.2); color: var(--red); }
+        
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; }
+        .panel-head { padding: 16px; border-bottom: 1px solid var(--border); }
+        .panel-head h2 { font-size: 1rem; color: var(--accent); margin: 0; }
+        .panel-body { padding: 16px; }
+        
+        .forecast-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+        .forecast-day { background: var(--bg); border-radius: 8px; padding: 12px; text-align: center; }
+        .forecast-day .date { font-size: 0.75rem; color: var(--dim); margin-bottom: 4px; }
+        .forecast-day .day { font-weight: 600; font-size: 0.85rem; margin-bottom: 8px; }
+        .forecast-day .icon { font-size: 1.2rem; margin-bottom: 4px; }
+        .forecast-day .temps { font-size: 0.8rem; color: var(--dim); margin-bottom: 8px; }
+        .forecast-day .wind { font-size: 0.75rem; margin-bottom: 4px; }
+        .forecast-day .spray-status { font-size: 0.75rem; padding: 4px 8px; border-radius: 10px; font-weight: 600; }
+        .forecast-day .spray-status.good { background: var(--green); color: #000; }
+        .forecast-day .spray-status.caution { background: var(--yellow); color: #000; }
+        .forecast-day .spray-status.poor { background: var(--red); color: #fff; }
+        
+        .hourly-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        .hourly-table th { background: var(--bg); padding: 10px 8px; text-align: left; font-size: 0.7rem; color: var(--dim); text-transform: uppercase; }
+        .hourly-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); }
+        .hourly-table .spray-cell { font-weight: 600; }
+        .hourly-table .spray-cell.good { color: var(--green); }
+        .hourly-table .spray-cell.caution { color: var(--yellow); }
+        .hourly-table .spray-cell.poor { color: var(--red); }
+        
+        .guidelines { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+        .guideline-box { background: var(--bg); border-radius: 8px; padding: 16px; }
+        .guideline-box h4 { color: var(--accent); font-size: 0.85rem; margin: 0 0 12px 0; }
+        .guideline-item { display: flex; justify-content: space-between; padding: 6px 0; font-size: 0.8rem; border-bottom: 1px solid var(--border); }
+        .guideline-item:last-child { border-bottom: none; }
+        .guideline-item .range { color: var(--dim); }
+        
+        .wind-rose { width: 200px; height: 200px; margin: 0 auto; position: relative; }
+        .wind-rose svg { width: 100%; height: 100%; }
+        
+        .loading { text-align: center; padding: 60px 20px; color: var(--dim); }
+        .loading .spinner { font-size: 2rem; animation: spin 1s linear infinite; display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .error-box { background: rgba(239,68,68,0.1); border: 1px solid var(--red); border-radius: 8px; padding: 20px; text-align: center; color: var(--red); }
+        
+        /* Cold weather easter egg */
+        .cold-alert {
+            background: linear-gradient(135deg, #0a1a2a 0%, #1a1a3a 100%);
+            border: 1px solid #3b82f6;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            color: #93c5fd;
+            animation: coldShiver 2s ease-in-out infinite;
+        }
+        .cold-alert.active { display: flex; }
+        .cold-alert .cold-emoji { font-size: 1.5rem; flex-shrink: 0; }
+        .cold-alert .cold-msg { flex: 1; line-height: 1.5; }
+        .cold-alert .cold-temp { font-weight: 700; color: #60a5fa; }
+        @keyframes coldShiver {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-1px); }
+            75% { transform: translateX(1px); }
+        }
+        
+        @media (max-width: 768px) {
+            main { padding: 12px; }
+            .status-hero { padding: 24px 16px; }
+            .status-hero h1 { font-size: 1.5rem; }
+            .location-bar { flex-direction: column; }
+            .location-bar input { width: 100%; }
+            .location-bar button { width: 100%; }
+        }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Spray Conditions Forecast",
+        "description": "Live spray application conditions with Delta-T calculation and 7-day forecast",
+        "url": "https://agsist.com/spray.html",
+        "applicationCategory": "Agriculture",
+        "operatingSystem": "Web Browser",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
+</head>
+<body>
+    <div id="header"></div>
+    
+    <main>
+        <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Spray Weather</nav>
+        
+        <div class="location-bar">
+            <input type="text" id="locationInput" placeholder="Enter city, zip code, or coordinates (e.g., Barron, WI)">
+            <button onclick="searchLocation()">🔍 Search</button>
+            <button class="secondary" onclick="detectLocation()">📍 Use My Location</button>
+        </div>
+        
+        <!-- Cold Weather Easter Egg -->
+        <div class="cold-alert" id="cold-alert">
+            <span class="cold-emoji" id="cold-emoji">🥶</span>
+            <span class="cold-msg" id="cold-msg"></span>
+        </div>
+        
+        <div id="content">
+            <div class="loading">
+                <div class="spinner">🌀</div>
+                <p>Detecting your location...</p>
+            </div>
+        </div>
+    </main>
+    
+    <div id="footer"></div>
+    <script src="/components/load-components.js"></script>
+    <script src="/components/geolocation.js"></script>
+    
+    <script>
+        let currentLat = 45.4;
+        let currentLon = -91.85;
+        let currentLocation = 'Barron, WI';
+        
+        // Weather condition evaluators
+        function evaluateWind(speed, gust) {
+            if (speed <= 10 && gust <= 15) return { status: 'good', label: 'Ideal' };
+            if (speed <= 15 && gust <= 20) return { status: 'caution', label: 'Marginal' };
+            return { status: 'poor', label: 'Too Windy' };
+        }
+        
+        function evaluateTemp(temp) {
+            if (temp >= 50 && temp <= 85) return { status: 'good', label: 'Ideal' };
+            if (temp >= 40 && temp <= 90) return { status: 'caution', label: 'Marginal' };
+            return { status: 'poor', label: 'Poor' };
+        }
+        
+        function evaluateHumidity(humidity) {
+            if (humidity >= 40 && humidity <= 90) return { status: 'good', label: 'Ideal' };
+            if (humidity >= 30 && humidity <= 95) return { status: 'caution', label: 'Marginal' };
+            return { status: 'poor', label: 'Poor' };
+        }
+        
+        // Delta-T calculation (simplified)
+        function calculateDeltaT(temp, humidity) {
+            // Approximate wet bulb depression
+            const wetBulb = temp - ((100 - humidity) / 5);
+            const deltaT = temp - wetBulb;
+            return deltaT;
+        }
+        
+        function evaluateDeltaT(deltaT) {
+            if (deltaT >= 2 && deltaT <= 8) return { status: 'good', label: 'Ideal' };
+            if (deltaT >= 1 && deltaT <= 10) return { status: 'caution', label: 'Marginal' };
+            return { status: 'poor', label: 'Poor' };
+        }
+        
+        // Inversion risk (temp vs dew point spread + time of day)
+        function evaluateInversion(temp, dewPoint, hour) {
+            const spread = temp - dewPoint;
+            const isNightOrEarly = hour < 7 || hour > 20;
+            
+            if (spread < 3 && isNightOrEarly) return { status: 'poor', label: 'High Risk' };
+            if (spread < 5 && isNightOrEarly) return { status: 'caution', label: 'Moderate' };
+            return { status: 'good', label: 'Low Risk' };
+        }
+        
+        // Overall spray rating
+        function getOverallRating(wind, temp, humidity, deltaT, inversion) {
+            const scores = { good: 3, caution: 2, poor: 1 };
+            const factors = [wind, temp, humidity, deltaT, inversion];
+            const avg = factors.reduce((sum, f) => sum + scores[f.status], 0) / factors.length;
+            
+            // Wind is a dealbreaker
+            if (wind.status === 'poor') return 'poor';
+            if (avg >= 2.5) return 'good';
+            if (avg >= 1.8) return 'caution';
+            return 'poor';
+        }
+        
+        function getWindDirection(degrees) {
+            const dirs = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+            return dirs[Math.round(degrees / 22.5) % 16];
+        }
+        
+        async function fetchWeather(lat, lon) {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FChicago&forecast_days=7`;
+            
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Weather API failed');
+            return await response.json();
+        }
+        
+        // Cold weather easter egg
+        function checkColdWeather(tempF) {
+            var alert = document.getElementById('cold-alert');
+            var emoji = document.getElementById('cold-emoji');
+            var msg = document.getElementById('cold-msg');
+            if (!alert) return;
+            
+            if (tempF <= -20) {
+                emoji.textContent = '💀';
+                msg.innerHTML = '<span class="cold-temp">' + tempF + '°F</span> — Even the diesel is gelling. Stay inside and trade futures from the couch. You\'re definitely not spraying today.';
+                alert.classList.add('active');
+            } else if (tempF <= 0) {
+                emoji.textContent = '🧊';
+                msg.innerHTML = '<span class="cold-temp">' + tempF + '°F</span>? That\'s tractor-won\'t-start territory. Plug in the block heater and check spray conditions again in April.';
+                alert.classList.add('active');
+            } else if (tempF <= 15) {
+                emoji.textContent = '🥶';
+                msg.innerHTML = '<span class="cold-temp">' + tempF + '°F</span> — Are you really checking spray conditions right now? The only thing spraying today is your breath.';
+                alert.classList.add('active');
+            } else if (tempF <= 32) {
+                emoji.textContent = '❄️';
+                msg.innerHTML = '<span class="cold-temp">' + tempF + '°F</span> — Below freezing! The weeds aren\'t growing and neither should your hopes of spraying. Maybe plan next season\'s passes instead.';
+                alert.classList.add('active');
+            } else {
+                alert.classList.remove('active');
+            }
+        }
+        
+        function renderWeather(data) {
+            const current = data.current;
+            const hourly = data.hourly;
+            const daily = data.daily;
+            
+            const temp = Math.round(current.temperature_2m);
+            const humidity = current.relative_humidity_2m;
+            const dewPoint = current.dew_point_2m;
+            const windSpeed = Math.round(current.wind_speed_10m);
+            const windGust = Math.round(current.wind_gusts_10m);
+            const windDir = getWindDirection(current.wind_direction_10m);
+            const deltaT = calculateDeltaT(temp, humidity);
+            const hour = new Date().getHours();
+            
+            // Cold weather easter egg
+            checkColdWeather(temp);
+            
+            const windEval = evaluateWind(windSpeed, windGust);
+            const tempEval = evaluateTemp(temp);
+            const humidityEval = evaluateHumidity(humidity);
+            const deltaTEval = evaluateDeltaT(deltaT);
+            const inversionEval = evaluateInversion(temp, dewPoint, hour);
+            const overall = getOverallRating(windEval, tempEval, humidityEval, deltaTEval, inversionEval);
+            
+            const statusText = {
+                good: '✅ GOOD SPRAY CONDITIONS',
+                caution: '⚠️ MARGINAL CONDITIONS',
+                poor: '🚫 POOR CONDITIONS - DO NOT SPRAY'
+            };
+            
+            const statusSubtext = {
+                good: 'Conditions are favorable for pesticide application',
+                caution: 'Proceed with caution - monitor conditions closely',
+                poor: 'Wait for better conditions to avoid drift and poor efficacy'
+            };
+            
+            // Build hourly forecast (next 24 hours)
+            let hourlyHtml = '';
+            const now = new Date();
+            for (let i = 0; i < 24; i++) {
+                const h = (now.getHours() + i) % 24;
+                const hTemp = Math.round(hourly.temperature_2m[i]);
+                const hHumidity = hourly.relative_humidity_2m[i];
+                const hWind = Math.round(hourly.wind_speed_10m[i]);
+                const hGust = Math.round(hourly.wind_gusts_10m[i]);
+                const hDewPoint = hourly.dew_point_2m[i];
+                const hDeltaT = calculateDeltaT(hTemp, hHumidity);
+                
+                const hWindEval = evaluateWind(hWind, hGust);
+                const hTempEval = evaluateTemp(hTemp);
+                const hHumidityEval = evaluateHumidity(hHumidity);
+                const hDeltaTEval = evaluateDeltaT(hDeltaT);
+                const hInversionEval = evaluateInversion(hTemp, hDewPoint, h);
+                const hOverall = getOverallRating(hWindEval, hTempEval, hHumidityEval, hDeltaTEval, hInversionEval);
+                
+                const timeLabel = h === 0 ? '12 AM' : h < 12 ? `${h} AM` : h === 12 ? '12 PM' : `${h-12} PM`;
+                
+                hourlyHtml += `<tr>
+                    <td>${timeLabel}</td>
+                    <td>${hTemp}°F</td>
+                    <td>${hWind} mph</td>
+                    <td>${hGust} mph</td>
+                    <td>${hHumidity}%</td>
+                    <td>${hDeltaT.toFixed(1)}°</td>
+                    <td class="spray-cell ${hOverall}">${hOverall === 'good' ? '✓ Good' : hOverall === 'caution' ? '⚠ Marginal' : '✗ Poor'}</td>
+                </tr>`;
+            }
+            
+            // Build 7-day forecast
+            let dailyHtml = '';
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(daily.time[i]);
+                const dayName = i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : dayNames[date.getDay()];
+                const high = Math.round(daily.temperature_2m_max[i]);
+                const low = Math.round(daily.temperature_2m_min[i]);
+                const maxWind = Math.round(daily.wind_speed_10m_max[i]);
+                const maxGust = Math.round(daily.wind_gusts_10m_max[i]);
+                const rainChance = daily.precipitation_probability_max[i];
+                
+                // Simplified daily rating
+                let dayRating = 'good';
+                if (maxWind > 15 || maxGust > 20 || rainChance > 50) dayRating = 'caution';
+                if (maxWind > 20 || maxGust > 25 || rainChance > 70) dayRating = 'poor';
+                
+                const weatherIcon = rainChance > 50 ? '🌧️' : rainChance > 20 ? '⛅' : '☀️';
+                
+                dailyHtml += `<div class="forecast-day">
+                    <div class="date">${(date.getMonth()+1)}/${date.getDate()}</div>
+                    <div class="day">${dayName}</div>
+                    <div class="icon">${weatherIcon}</div>
+                    <div class="temps">${high}° / ${low}°</div>
+                    <div class="wind">💨 ${maxWind}-${maxGust} mph</div>
+                    <div class="spray-status ${dayRating}">${dayRating === 'good' ? 'SPRAY' : dayRating === 'caution' ? 'MAYBE' : 'WAIT'}</div>
+                </div>`;
+            }
+            
+            document.getElementById('content').innerHTML = `
+                <div class="status-hero ${overall}">
+                    <h1>${statusText[overall]}</h1>
+                    <div class="subtitle">${statusSubtext[overall]}</div>
+                    <div class="location">📍 ${currentLocation} • Updated ${new Date().toLocaleTimeString()}</div>
+                </div>
+                
+                <div class="conditions-grid">
+                    <div class="condition-card">
+                        <div class="icon">💨</div>
+                        <div class="value">${windSpeed} mph</div>
+                        <div class="label">Wind Speed</div>
+                        <div class="status ${windEval.status}">${windEval.label}</div>
+                    </div>
+                    <div class="condition-card">
+                        <div class="icon">🌬️</div>
+                        <div class="value">${windGust} mph</div>
+                        <div class="label">Wind Gusts (${windDir})</div>
+                        <div class="status ${windEval.status}">${windEval.label}</div>
+                    </div>
+                    <div class="condition-card">
+                        <div class="icon">🌡️</div>
+                        <div class="value">${temp}°F</div>
+                        <div class="label">Temperature</div>
+                        <div class="status ${tempEval.status}">${tempEval.label}</div>
+                    </div>
+                    <div class="condition-card">
+                        <div class="icon">💧</div>
+                        <div class="value">${humidity}%</div>
+                        <div class="label">Humidity</div>
+                        <div class="status ${humidityEval.status}">${humidityEval.label}</div>
+                    </div>
+                    <div class="condition-card">
+                        <div class="icon">Δ</div>
+                        <div class="value">${deltaT.toFixed(1)}°</div>
+                        <div class="label">Delta-T</div>
+                        <div class="status ${deltaTEval.status}">${deltaTEval.label}</div>
+                    </div>
+                    <div class="condition-card">
+                        <div class="icon">🌫️</div>
+                        <div class="value">${inversionEval.label}</div>
+                        <div class="label">Inversion Risk</div>
+                        <div class="status ${inversionEval.status}">${inversionEval.label}</div>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-head"><h2>📅 7-Day Spray Forecast</h2></div>
+                    <div class="panel-body">
+                        <div class="forecast-grid">${dailyHtml}</div>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-head"><h2>⏰ Hourly Conditions (Next 24 Hours)</h2></div>
+                    <div class="panel-body" style="overflow-x: auto;">
+                        <table class="hourly-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Temp</th>
+                                    <th>Wind</th>
+                                    <th>Gusts</th>
+                                    <th>Humidity</th>
+                                    <th>Delta-T</th>
+                                    <th>Spray</th>
+                                </tr>
+                            </thead>
+                            <tbody>${hourlyHtml}</tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-head"><h2>📋 Spray Guidelines</h2></div>
+                    <div class="panel-body">
+                        <div class="guidelines">
+                            <div class="guideline-box">
+                                <h4>💨 Wind Speed</h4>
+                                <div class="guideline-item"><span>Ideal</span><span class="range">3-10 mph</span></div>
+                                <div class="guideline-item"><span>Marginal</span><span class="range">10-15 mph</span></div>
+                                <div class="guideline-item"><span>Do Not Spray</span><span class="range">&lt;3 or &gt;15 mph</span></div>
+                            </div>
+                            <div class="guideline-box">
+                                <h4>🌡️ Temperature</h4>
+                                <div class="guideline-item"><span>Ideal</span><span class="range">50-85°F</span></div>
+                                <div class="guideline-item"><span>Marginal</span><span class="range">40-50°F, 85-90°F</span></div>
+                                <div class="guideline-item"><span>Avoid</span><span class="range">&lt;40°F or &gt;90°F</span></div>
+                            </div>
+                            <div class="guideline-box">
+                                <h4>Δ Delta-T</h4>
+                                <div class="guideline-item"><span>Ideal</span><span class="range">2-8°F</span></div>
+                                <div class="guideline-item"><span>Marginal</span><span class="range">8-10°F</span></div>
+                                <div class="guideline-item"><span>Avoid</span><span class="range">&lt;2 or &gt;10°F</span></div>
+                            </div>
+                            <div class="guideline-box">
+                                <h4>💧 Humidity</h4>
+                                <div class="guideline-item"><span>Ideal</span><span class="range">40-90%</span></div>
+                                <div class="guideline-item"><span>Low (evaporation)</span><span class="range">&lt;40%</span></div>
+                                <div class="guideline-item"><span>High (slow dry)</span><span class="range">&gt;90%</span></div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 16px; padding: 12px; background: var(--bg); border-radius: 6px; font-size: 0.8rem; color: var(--dim);">
+                            <strong>⚠️ Always follow label directions.</strong> These guidelines are general recommendations. Check pesticide labels for specific application requirements. Avoid spraying when rain is expected within 2-4 hours.
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        async function loadWeather() {
+            document.getElementById('content').innerHTML = `
+                <div class="loading">
+                    <div class="spinner">🌀</div>
+                    <p>Loading weather data...</p>
+                </div>
+            `;
+            
+            try {
+                const data = await fetchWeather(currentLat, currentLon);
+                renderWeather(data);
+            } catch (err) {
+                document.getElementById('content').innerHTML = `
+                    <div class="error-box">
+                        <p>❌ Failed to load weather data</p>
+                        <p style="font-size: 0.85rem; margin-top: 8px;">${err.message}</p>
+                        <button onclick="loadWeather()" style="margin-top: 12px; padding: 10px 20px; background: var(--accent); color: #000; border: none; border-radius: 6px; cursor: pointer;">Retry</button>
+                    </div>
+                `;
+            }
+        }
+        
+        function detectLocation() {
+            if (!navigator.geolocation) {
+                alert('Geolocation not supported');
+                return;
+            }
+            
+            document.getElementById('content').innerHTML = `
+                <div class="loading">
+                    <div class="spinner">🌀</div>
+                    <p>Detecting your location...</p>
+                </div>
+            `;
+            
+            navigator.geolocation.getCurrentPosition(
+                async (pos) => {
+                    currentLat = pos.coords.latitude;
+                    currentLon = pos.coords.longitude;
+                    
+                    // Reverse geocode
+                    try {
+                        const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${currentLat}&lon=${currentLon}&format=json`);
+                        const data = await resp.json();
+                        currentLocation = `${data.address?.city || data.address?.town || data.address?.village || 'Unknown'}, ${data.address?.state || ''}`;
+                    } catch (e) {
+                        currentLocation = `${currentLat.toFixed(2)}, ${currentLon.toFixed(2)}`;
+                    }
+                    
+                    loadWeather();
+                },
+                () => {
+                    alert('Location access denied. Please enter a location manually.');
+                    loadWeather(); // Load default
+                }
+            );
+        }
+        
+        async function searchLocation() {
+            const input = document.getElementById('locationInput').value.trim();
+            if (!input) return;
+            
+            document.getElementById('content').innerHTML = `
+                <div class="loading">
+                    <div class="spinner">🌀</div>
+                    <p>Searching for ${input}...</p>
+                </div>
+            `;
+            
+            try {
+                const resp = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(input)}&format=json&limit=1&countrycodes=us`);
+                const results = await resp.json();
+                
+                if (results.length === 0) {
+                    throw new Error('Location not found');
+                }
+                
+                currentLat = parseFloat(results[0].lat);
+                currentLon = parseFloat(results[0].lon);
+                currentLocation = results[0].display_name.split(',').slice(0, 2).join(',');
+                
+                loadWeather();
+            } catch (err) {
+                document.getElementById('content').innerHTML = `
+                    <div class="error-box">
+                        <p>❌ Could not find "${input}"</p>
+                        <p style="font-size: 0.85rem; margin-top: 8px;">Try entering a city and state (e.g., "Barron, WI") or a zip code.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Enter key to search
+        document.getElementById('locationInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchLocation();
+        });
+        
+        // Auto-detect on load
+        detectLocation();
+    </script>
+</body>
+</html>

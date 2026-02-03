@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USDA Quick Stats Explorer | AGSIST</title>
+    <meta name="keywords" content="USDA Quick Stats, NASS data, agricultural statistics, crop data, county data, USDA NASS">
+    <meta name="description" content="Access official USDA NASS agricultural statistics. Query corn yields, soybean production, livestock inventory, land values by state, county, and year.">
+    <link rel="canonical" href="https://agsist.com/quickstats.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="USDA Quick Stats Explorer | AGSIST">
+    <meta property="og:description" content="Interactive USDA NASS Quick Stats query builder for agricultural data.">
+    <meta property="og:url" content="https://agsist.com/quickstats.html">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/components/shared.css">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    <style>
+        main { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .breadcrumb { font-size: 0.85rem; color: var(--dim); margin-bottom: 16px; }
+        .breadcrumb a { color: var(--accent); text-decoration: none; }
+        
+        .hero { background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%); border: 2px solid #4caf50; border-radius: 12px; padding: 32px; text-align: center; margin-bottom: 24px; }
+        .hero h1 { color: #fff; font-size: 1.5rem; margin-bottom: 8px; }
+        .hero p { color: rgba(255,255,255,0.9); font-size: 0.95rem; max-width: 700px; margin: 0 auto 16px; }
+        .hero-badges { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .hero-badge { background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; color: #fff; }
+        
+        .state-bar { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .state-bar label { color: var(--dim); font-size: 0.85rem; }
+        .state-bar select { padding: 10px 14px; font-family: inherit; font-size: 0.9rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
+        .detect-btn { padding: 10px 16px; background: var(--accent); color: #000; border: none; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+        .detect-btn:hover { opacity: 0.9; }
+        
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; }
+        .panel-head { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+        .panel-head h2 { font-size: 1.1rem; color: var(--accent); margin: 0; }
+        .panel-body { padding: 20px; }
+        
+        .quick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+        .quick-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; text-decoration: none; transition: all 0.2s; display: block; }
+        .quick-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .quick-card .icon { font-size: 2rem; margin-bottom: 10px; }
+        .quick-card h3 { color: var(--text); font-size: 0.9rem; margin-bottom: 4px; }
+        .quick-card p { color: var(--dim); font-size: 0.75rem; margin: 0 0 8px 0; }
+        .quick-card .action { color: var(--accent); font-size: 0.75rem; font-weight: 600; }
+        
+        .query-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 16px; }
+        .query-field label { display: block; color: var(--dim); font-size: 0.7rem; margin-bottom: 6px; text-transform: uppercase; }
+        .query-field select, .query-field input { width: 100%; padding: 12px; font-family: inherit; font-size: 0.9rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
+        .query-field select:focus, .query-field input:focus { outline: none; border-color: var(--accent); }
+        
+        .query-actions { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+        .btn { padding: 14px 24px; font-family: inherit; font-size: 0.9rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--accent); color: #000; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+        
+        .url-preview { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-top: 16px; }
+        .url-preview label { display: block; color: var(--dim); font-size: 0.7rem; margin-bottom: 8px; text-transform: uppercase; }
+        .url-preview code { display: block; background: var(--card); padding: 12px; border-radius: 4px; font-size: 0.7rem; color: var(--accent); word-break: break-all; }
+        
+        .info-box { background: var(--bg); border-left: 4px solid var(--accent); padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 0.85rem; color: var(--dim); }
+        .info-box strong { color: var(--text); }
+        
+        .ext-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+        .ext-link { display: block; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; text-decoration: none; }
+        .ext-link:hover { border-color: var(--accent); }
+        .ext-link strong { display: block; color: var(--text); margin-bottom: 4px; }
+        .ext-link span { color: var(--dim); font-size: 0.8rem; }
+        
+        @media (max-width: 768px) {
+            main { padding: 12px; }
+            .hero { padding: 20px; }
+            .state-bar { flex-direction: column; align-items: stretch; }
+            .query-row { grid-template-columns: 1fr; }
+        }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "USDA Quick Stats Explorer",
+        "description": "Interactive query builder for USDA NASS agricultural statistics",
+        "url": "https://agsist.com/quickstats.html",
+        "applicationCategory": "Agriculture",
+        "operatingSystem": "Web Browser",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
+</head>
+<body>
+    <div id="header"></div>
+    <main>
+        <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → USDA Quick Stats</nav>
+        
+        <div class="hero">
+            <h1>📊 USDA Quick Stats Explorer</h1>
+            <p>Build queries and access official USDA agricultural statistics. All data links directly to USDA NASS - the authoritative source.</p>
+            <div class="hero-badges">
+                <span class="hero-badge">Official USDA Data</span>
+                <span class="hero-badge">County-Level Detail</span>
+                <span class="hero-badge">1997-Present</span>
+            </div>
+        </div>
+        
+        <div class="state-bar">
+            <label>Your State:</label>
+            <select id="stateSelect"></select>
+            <button class="detect-btn" onclick="detectMyLocation()">📍 Detect Location</button>
+            <span style="color: var(--dim); font-size: 0.75rem; margin-left: auto;">Saved across all AGSIST pages</span>
+        </div>
+        
+        <div class="panel">
+            <div class="panel-head"><h2>⚡ Quick Access — View Real USDA Data</h2></div>
+            <div class="panel-body">
+                <div class="quick-grid" id="quickLinks"></div>
+                <div class="info-box">
+                    <strong>💡 How this works:</strong> Each card opens the official USDA Quick Stats website with pre-filled search parameters for <span id="stateNameDisplay">your state</span>. All data comes directly from USDA NASS.
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <div class="panel-head"><h2>🔍 Build Custom Query</h2></div>
+            <div class="panel-body">
+                <div class="query-row">
+                    <div class="query-field">
+                        <label>Commodity</label>
+                        <select id="commodity" onchange="updatePreview()">
+                            <option value="">-- Select --</option>
+                            <optgroup label="Grains & Oilseeds">
+                                <option value="CORN">Corn</option>
+                                <option value="SOYBEANS">Soybeans</option>
+                                <option value="WHEAT">Wheat</option>
+                                <option value="OATS">Oats</option>
+                                <option value="BARLEY">Barley</option>
+                                <option value="HAY">Hay</option>
+                            </optgroup>
+                            <optgroup label="Livestock">
+                                <option value="CATTLE">Cattle</option>
+                                <option value="HOGS">Hogs</option>
+                                <option value="CHICKENS">Chickens</option>
+                            </optgroup>
+                            <optgroup label="Dairy">
+                                <option value="MILK">Milk</option>
+                            </optgroup>
+                            <optgroup label="Other">
+                                <option value="AG LAND">Ag Land</option>
+                                <option value="FARM OPERATIONS">Farm Operations</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="query-field">
+                        <label>Statistic</label>
+                        <select id="statistic" onchange="updatePreview()">
+                            <option value="">-- Select --</option>
+                            <option value="YIELD">Yield</option>
+                            <option value="PRODUCTION">Production</option>
+                            <option value="AREA PLANTED">Area Planted</option>
+                            <option value="AREA HARVESTED">Area Harvested</option>
+                            <option value="INVENTORY">Inventory</option>
+                            <option value="PRICE RECEIVED">Price Received</option>
+                            <option value="VALUE">Value</option>
+                        </select>
+                    </div>
+                    <div class="query-field">
+                        <label>State</label>
+                        <select id="queryState" onchange="updatePreview()"></select>
+                    </div>
+                </div>
+                <div class="query-row">
+                    <div class="query-field">
+                        <label>Year (Start)</label>
+                        <select id="yearStart" onchange="updatePreview()">
+                            <option value="2020">2020</option>
+                            <option value="2015">2015</option>
+                            <option value="2010">2010</option>
+                            <option value="2000">2000</option>
+                        </select>
+                    </div>
+                    <div class="query-field">
+                        <label>Year (End)</label>
+                        <select id="yearEnd" onchange="updatePreview()">
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                        </select>
+                    </div>
+                    <div class="query-field">
+                        <label>Geographic Level</label>
+                        <select id="aggLevel" onchange="updatePreview()">
+                            <option value="STATE">State</option>
+                            <option value="COUNTY">County</option>
+                            <option value="NATIONAL">National</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="url-preview" id="urlPreview" style="display:none;">
+                    <label>Query URL:</label>
+                    <code id="urlCode"></code>
+                </div>
+                
+                <div class="query-actions">
+                    <a href="#" class="btn btn-primary" id="searchBtn" target="_blank">🔍 Open on USDA Quick Stats</a>
+                    <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <div class="panel-head"><h2>🔗 Official USDA Data Sources</h2></div>
+            <div class="panel-body">
+                <div class="ext-links">
+                    <a href="https://quickstats.nass.usda.gov/" target="_blank" class="ext-link">
+                        <strong>USDA Quick Stats</strong>
+                        <span>Full database with advanced filters</span>
+                    </a>
+                    <a href="https://www.nass.usda.gov/Quick_Stats/Lite/index.php" target="_blank" class="ext-link">
+                        <strong>Quick Stats Lite</strong>
+                        <span>Simplified interface</span>
+                    </a>
+                    <a href="https://www.nass.usda.gov/AgCensus/" target="_blank" class="ext-link">
+                        <strong>Census of Agriculture</strong>
+                        <span>Complete farm data (every 5 years)</span>
+                    </a>
+                    <a href="https://www.ers.usda.gov/data-products/" target="_blank" class="ext-link">
+                        <strong>ERS Data Products</strong>
+                        <span>Economic research & analysis</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div id="footer"></div>
+    
+    <script src="/components/load-components.js"></script>
+    <script src="/components/geolocation.js"></script>
+    <script>
+        let currentState = 'WI';
+        
+        const quickQueries = [
+            { icon: '🌽', title: 'Corn Yields', desc: 'Bu/acre by year', commodity: 'CORN', stat: 'YIELD' },
+            { icon: '🫘', title: 'Soybean Yields', desc: 'Bu/acre by year', commodity: 'SOYBEANS', stat: 'YIELD' },
+            { icon: '📏', title: 'Corn Acres', desc: 'Planted acres', commodity: 'CORN', stat: 'AREA PLANTED' },
+            { icon: '🐄', title: 'Cattle Inventory', desc: 'Head count', commodity: 'CATTLE', stat: 'INVENTORY' },
+            { icon: '🥛', title: 'Milk Production', desc: 'Lbs produced', commodity: 'MILK', stat: 'PRODUCTION' },
+            { icon: '🏞️', title: 'Land Values', desc: '$/acre', commodity: 'AG LAND', stat: 'VALUE' },
+            { icon: '🌾', title: 'Wheat Yields', desc: 'Bu/acre by year', commodity: 'WHEAT', stat: 'YIELD' },
+            { icon: '🐷', title: 'Hog Inventory', desc: 'Head count', commodity: 'HOGS', stat: 'INVENTORY' }
+        ];
+        
+        function buildUrl(params) {
+            const base = 'https://quickstats.nass.usda.gov/results/';
+            const qs = new URLSearchParams();
+            for (const [k, v] of Object.entries(params)) {
+                if (v) qs.append(k, v);
+            }
+            return base + '?' + qs.toString();
+        }
+        
+        function populateStateDropdowns() {
+            const options = '<option value="">All States</option>' + 
+                Object.entries(AGSIST_GEO.states)
+                    .sort((a, b) => a[1].name.localeCompare(b[1].name))
+                    .map(([abbr, data]) => `<option value="${abbr}">${data.name}</option>`)
+                    .join('');
+            document.getElementById('stateSelect').innerHTML = options;
+            document.getElementById('queryState').innerHTML = options;
+        }
+        
+        function updateQuickLinks() {
+            const html = quickQueries.map(q => {
+                const url = buildUrl({
+                    commodity_desc: q.commodity,
+                    statisticcat_desc: q.stat,
+                    state_alpha: currentState,
+                    year__GE: '2020',
+                    agg_level_desc: 'STATE'
+                });
+                return `<a href="${url}" class="quick-card" target="_blank">
+                    <div class="icon">${q.icon}</div>
+                    <h3>${q.title}</h3>
+                    <p>${q.desc}</p>
+                    <span class="action">View on USDA →</span>
+                </a>`;
+            }).join('');
+            document.getElementById('quickLinks').innerHTML = html;
+            document.getElementById('stateNameDisplay').textContent = AGSIST_GEO.getStateName(currentState);
+        }
+        
+        function updatePreview() {
+            const commodity = document.getElementById('commodity').value;
+            const statistic = document.getElementById('statistic').value;
+            
+            if (commodity && statistic) {
+                const url = buildUrl({
+                    commodity_desc: commodity,
+                    statisticcat_desc: statistic,
+                    state_alpha: document.getElementById('queryState').value,
+                    year__GE: document.getElementById('yearStart').value,
+                    year__LE: document.getElementById('yearEnd').value,
+                    agg_level_desc: document.getElementById('aggLevel').value
+                });
+                document.getElementById('urlPreview').style.display = 'block';
+                document.getElementById('urlCode').textContent = url;
+                document.getElementById('searchBtn').href = url;
+            } else {
+                document.getElementById('urlPreview').style.display = 'none';
+            }
+        }
+        
+        function clearForm() {
+            document.getElementById('commodity').value = '';
+            document.getElementById('statistic').value = '';
+            document.getElementById('queryState').value = currentState;
+            document.getElementById('yearStart').value = '2020';
+            document.getElementById('yearEnd').value = '2024';
+            document.getElementById('aggLevel').value = 'STATE';
+            document.getElementById('urlPreview').style.display = 'none';
+        }
+        
+        function detectMyLocation() {
+            const btn = document.querySelector('.detect-btn');
+            btn.textContent = '📍 Detecting...';
+            btn.disabled = true;
+            
+            AGSIST_GEO.detectLocation(
+                (abbr, name) => {
+                    currentState = abbr;
+                    document.getElementById('stateSelect').value = abbr;
+                    document.getElementById('queryState').value = abbr;
+                    updateQuickLinks();
+                    btn.textContent = '✓ ' + name;
+                    setTimeout(() => { btn.textContent = '📍 Detect Location'; btn.disabled = false; }, 2000);
+                },
+                (err) => {
+                    btn.textContent = '📍 Detect Location';
+                    btn.disabled = false;
+                    alert(err);
+                }
+            );
+        }
+        
+        function init() {
+            populateStateDropdowns();
+            currentState = AGSIST_GEO.getState();
+            document.getElementById('stateSelect').value = currentState;
+            document.getElementById('queryState').value = currentState;
+            updateQuickLinks();
+            
+            document.getElementById('stateSelect').addEventListener('change', function() {
+                currentState = this.value;
+                AGSIST_GEO.setState(currentState);
+                document.getElementById('queryState').value = currentState;
+                updateQuickLinks();
+            });
+            
+            window.addEventListener('agsist-state-change', function(e) {
+                currentState = e.detail;
+                document.getElementById('stateSelect').value = currentState;
+                document.getElementById('queryState').value = currentState;
+                updateQuickLinks();
+            });
+        }
+        
+        init();
+    </script>
+</body>
+</html>

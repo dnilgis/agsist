@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Progress & Conditions | AGSIST</title>
+    <meta name="keywords" content="crop progress, USDA crop conditions, corn growth stages, soybean growth stages, planting progress">
+    <meta name="description" content="USDA crop progress data: planting, growth stages, condition ratings, harvest progress. Visual growing season timeline with links to official NASS data.">
+    <link rel="canonical" href="https://agsist.com/crop-progress.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Crop Progress & Growth Stages | AGSIST">
+    <meta property="og:description" content="Corn, soybean, and wheat growth stage timelines with USDA crop progress links.">
+    <meta property="og:url" content="https://agsist.com/crop-progress.html">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/components/shared.css">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    <style>
+        :root { --green: #22c55e; --yellow: #eab308; --red: #ef4444; --blue: #3b82f6; }
+        main { max-width: 1300px; margin: 0 auto; padding: 16px; }
+        .breadcrumb { font-size: 0.85rem; color: var(--dim); margin-bottom: 16px; }
+        .breadcrumb a { color: var(--accent); text-decoration: none; }
+
+        .hero { background: linear-gradient(135deg, #1b5e20 0%, #388e3c 100%); border: 2px solid #4caf50; border-radius: 12px; padding: 28px; text-align: center; margin-bottom: 20px; }
+        .hero h1 { color: #fff; font-size: 1.5rem; margin: 0 0 8px; }
+        .hero p { color: rgba(255,255,255,0.85); font-size: 0.9rem; margin: 0; }
+
+        .filters { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .filters label { color: var(--dim); font-size: 0.85rem; }
+        .filters select { padding: 10px 14px; font-family: inherit; font-size: 0.9rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
+        .detect-btn { padding: 10px 14px; background: var(--accent); color: #000; border: none; border-radius: 6px; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; }
+        .panel-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .panel-head h2 { font-size: 1rem; color: var(--accent); margin: 0; }
+        .panel-head .badge { font-size: 0.75rem; padding: 4px 8px; background: var(--accent); color: #000; border-radius: 12px; font-weight: 600; }
+
+        /* Timeline */
+        .timeline { position: relative; padding: 20px 0; }
+        .timeline-track { display: flex; gap: 0; position: relative; overflow-x: auto; padding-bottom: 10px; }
+        .timeline-month { flex: 1; min-width: 80px; text-align: center; }
+        .timeline-month .label { font-size: 0.7rem; color: var(--dim); margin-bottom: 8px; font-weight: 600; }
+        .timeline-bar { height: 8px; background: var(--border); position: relative; }
+        .timeline-bar.active { background: var(--green); }
+        .timeline-bar.peak { background: var(--accent); }
+        .timeline-bar.harvest { background: #f97316; }
+        .timeline-legend { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+        .timeline-legend span { font-size: 0.7rem; display: flex; align-items: center; gap: 4px; color: var(--dim); }
+        .timeline-legend .dot { width: 10px; height: 10px; border-radius: 2px; }
+
+        /* Stage cards */
+        .stage-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+        .stage-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-decoration: none; display: block; transition: all 0.2s; }
+        .stage-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .stage-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
+        .stage-card h3 { color: var(--text); font-size: 0.9rem; margin: 0 0 4px; }
+        .stage-card p { color: var(--dim); font-size: 0.75rem; margin: 0 0 8px; }
+        .stage-card .action { color: var(--accent); font-size: 0.75rem; font-weight: 600; }
+
+        /* Condition guide */
+        .condition-bars { display: flex; gap: 4px; height: 32px; border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+        .condition-bars .seg { display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: #000; }
+        .cond-legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+        .cond-item { padding: 10px; border-radius: 6px; }
+        .cond-item h4 { font-size: 0.85rem; margin: 0 0 4px; }
+        .cond-item p { font-size: 0.75rem; margin: 0; }
+        .cond-vp { background: rgba(239,68,68,0.15); }
+        .cond-p { background: rgba(249,115,22,0.15); }
+        .cond-f { background: rgba(234,179,8,0.15); }
+        .cond-g { background: rgba(34,197,94,0.15); }
+        .cond-e { background: rgba(34,197,94,0.25); }
+
+        /* Milestone table */
+        .ms-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        .ms-table th { background: var(--bg); padding: 10px; text-align: left; font-size: 0.7rem; color: var(--dim); text-transform: uppercase; border-bottom: 2px solid var(--border); }
+        .ms-table td { padding: 10px; border-bottom: 1px solid var(--border); }
+        .ms-table tr:hover { background: var(--bg); }
+        .ms-table .hl { color: var(--accent); font-weight: 600; }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .info-box { background: var(--bg); border-left: 4px solid var(--accent); padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 0.85rem; color: var(--dim); }
+        .info-box strong { color: var(--text); }
+        .info-box a { color: var(--accent); }
+
+        .links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+        .ext-link { display: block; padding: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; text-decoration: none; }
+        .ext-link:hover { border-color: var(--accent); }
+        .ext-link strong { display: block; color: var(--text); font-size: 0.85rem; margin-bottom: 4px; }
+        .ext-link span { color: var(--dim); font-size: 0.75rem; }
+
+        @media (max-width: 768px) {
+            main { padding: 10px; }
+            .two-col { grid-template-columns: 1fr; }
+            .filters { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Crop Progress & Growth Stages",
+        "description": "Interactive crop growth timelines and USDA crop progress report links",
+        "url": "https://agsist.com/crop-progress.html",
+        "applicationCategory": "Agriculture",
+        "operatingSystem": "Web Browser",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
+</head>
+<body>
+    <div id="header"></div>
+    <main>
+        <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Crop Progress</nav>
+
+        <div class="hero">
+            <h1>🌾 Crop Progress & Conditions</h1>
+            <p>Weekly USDA reports on planting, growth, and crop conditions • Released Mondays at 4 PM ET (Apr-Nov)</p>
+        </div>
+
+        <div class="filters">
+            <label>Commodity:</label>
+            <select id="commodity" onchange="updateAll()">
+                <option value="CORN">Corn</option>
+                <option value="SOYBEANS">Soybeans</option>
+                <option value="WHEAT">Winter Wheat</option>
+            </select>
+            <label>State:</label>
+            <select id="stateSelect" onchange="updateAll()"></select>
+            <button class="detect-btn" onclick="detectMyLocation()">📍 Detect</button>
+            <a id="nassLink" href="#" target="_blank" style="margin-left: auto; color: var(--accent); font-size: 0.85rem;">View on USDA NASS →</a>
+        </div>
+
+        <!-- Growing Season Timeline -->
+        <div class="panel">
+            <div class="panel-head"><h2 id="timelineTitle">📅 Corn Growing Season Timeline — Upper Midwest</h2></div>
+            <div class="panel-body">
+                <div class="timeline" id="timelineArea"></div>
+                <div class="timeline-legend">
+                    <span><div class="dot" style="background:var(--green)"></div> Planting/Vegetative</span>
+                    <span><div class="dot" style="background:var(--accent)"></div> Reproductive/Critical</span>
+                    <span><div class="dot" style="background:#f97316"></div> Maturity/Harvest</span>
+                </div>
+                <div class="info-box" style="margin-top:12px;">
+                    <strong>💡 Typical dates vary by latitude and planting date.</strong> Northern states (WI, MN, ND) are 1-2 weeks later than central Corn Belt (IA, IL, IN).
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Data Access -->
+        <div class="panel">
+            <div class="panel-head">
+                <h2>📊 View Official USDA Data</h2>
+                <span class="badge">Opens USDA NASS</span>
+            </div>
+            <div class="panel-body">
+                <div class="stage-grid" id="stageLinks"></div>
+            </div>
+        </div>
+
+        <div class="two-col">
+            <!-- Growth Stage Milestones -->
+            <div class="panel">
+                <div class="panel-head"><h2 id="msTitle">🌽 Corn Growth Milestones</h2></div>
+                <div class="panel-body">
+                    <div id="milestoneTable"></div>
+                </div>
+            </div>
+
+            <!-- Condition Rating Guide -->
+            <div class="panel">
+                <div class="panel-head"><h2>📊 Condition Rating Guide</h2></div>
+                <div class="panel-body">
+                    <p style="color:var(--dim);font-size:0.85rem;margin-bottom:12px;">USDA crop condition ratings are based on field assessments by local reporters. Here's what each means:</p>
+
+                    <div class="condition-bars">
+                        <div class="seg" style="width:5%;background:#ef4444;">VP</div>
+                        <div class="seg" style="width:10%;background:#f97316;">P</div>
+                        <div class="seg" style="width:20%;background:#eab308;">F</div>
+                        <div class="seg" style="width:40%;background:#22c55e;">G</div>
+                        <div class="seg" style="width:25%;background:#15803d;color:#fff;">E</div>
+                    </div>
+                    <p style="font-size:0.7rem;color:var(--dim);text-align:center;margin-bottom:12px;">Example: A typical good year distribution</p>
+
+                    <div class="cond-legend">
+                        <div class="cond-item cond-vp"><h4>Very Poor</h4><p>Severe stress. Significant yield loss expected. Drought, flooding, or pest damage.</p></div>
+                        <div class="cond-item cond-p"><h4>Poor</h4><p>Below normal. Visible stress, reduced stands, or delayed development.</p></div>
+                        <div class="cond-item cond-f"><h4>Fair</h4><p>Below average but salvageable. Some stress but crop may recover.</p></div>
+                        <div class="cond-item cond-g"><h4>Good</h4><p>Normal to above normal. Healthy stands, on-track development.</p></div>
+                        <div class="cond-item cond-e"><h4>Excellent</h4><p>Exceptional conditions. Strong stands, optimal moisture, above-trend yields likely.</p></div>
+                    </div>
+
+                    <div class="info-box" style="margin-top:12px;">
+                        <strong>🎯 Market Impact:</strong> The Good + Excellent percentage is the key number traders watch. Changes of 3%+ week-over-week can move futures prices. 65%+ G/E is considered a strong crop year.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Schedule -->
+        <div class="panel">
+            <div class="panel-head"><h2>📅 Crop Report Schedule</h2></div>
+            <div class="panel-body">
+                <div style="overflow-x:auto;">
+                    <table class="ms-table">
+                        <thead><tr><th>Report</th><th>Released</th><th>Season</th><th>Key Data</th></tr></thead>
+                        <tbody>
+                            <tr><td class="hl">Crop Progress</td><td>Mondays 4 PM ET</td><td>Apr - Nov</td><td>% planted, emerged, condition, harvest</td></tr>
+                            <tr><td class="hl">WASDE</td><td>~12th of month</td><td>Year-round</td><td>Supply/demand, yield estimates, ending stocks</td></tr>
+                            <tr><td class="hl">Prospective Plantings</td><td>March 31</td><td>Annual</td><td>Intended acres for major crops</td></tr>
+                            <tr><td class="hl">Acreage Report</td><td>June 30</td><td>Annual</td><td>Actual planted acres (replaces intentions)</td></tr>
+                            <tr><td class="hl">Grain Stocks</td><td>Quarterly</td><td>Jan, Mar, Jun, Sep</td><td>Stocks in all positions</td></tr>
+                            <tr><td class="hl">Crop Production</td><td>Monthly Aug-Jan</td><td>Growing season</td><td>Yield, production estimates by state</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- External Links -->
+        <div class="panel">
+            <div class="panel-head"><h2>🔗 Official Data Sources</h2></div>
+            <div class="panel-body">
+                <div class="links-grid">
+                    <a href="https://www.nass.usda.gov/Publications/Todays_Reports/" target="_blank" class="ext-link"><strong>Today's Reports</strong><span>Latest NASS publications</span></a>
+                    <a href="https://quickstats.nass.usda.gov/" target="_blank" class="ext-link"><strong>NASS Quick Stats</strong><span>Full historical data</span></a>
+                    <a href="https://www.nass.usda.gov/Charts_and_Maps/Crop_Progress_&_Condition/" target="_blank" class="ext-link"><strong>Crop Progress Maps</strong><span>Visual data from NASS</span></a>
+                    <a href="https://www.usda.gov/oce/commodity/wasde" target="_blank" class="ext-link"><strong>WASDE Reports</strong><span>Monthly supply/demand</span></a>
+                    <a href="/calendar.html" class="ext-link"><strong>USDA Calendar</strong><span>All report dates</span></a>
+                    <a href="/gdu.html" class="ext-link"><strong>GDU Calculator</strong><span>Track growing degrees</span></a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+    <script src="/components/load-components.js"></script>
+    <script src="/components/geolocation.js"></script>
+    <script>
+        let currentState = 'WI';
+        let currentCommodity = 'CORN';
+
+        const cropTimelines = {
+            CORN: {
+                title: 'Corn Growing Season',
+                months: [
+                    { m: 'Apr', phase: 'plant', label: 'Plant Prep' },
+                    { m: 'May', phase: 'active', label: 'Planting' },
+                    { m: 'Jun', phase: 'active', label: 'Vegetative' },
+                    { m: 'Jul', phase: 'peak', label: 'Pollination ⚡' },
+                    { m: 'Aug', phase: 'peak', label: 'Grain Fill' },
+                    { m: 'Sep', phase: 'harvest', label: 'Maturity' },
+                    { m: 'Oct', phase: 'harvest', label: 'Harvest' },
+                    { m: 'Nov', phase: 'harvest', label: 'Late Harvest' }
+                ],
+                milestones: [
+                    ['Planting', 'Late Apr - May', 'VE', 'Plant when soil >50°F at 2". ~125 GDU to emerge.'],
+                    ['Emergence', 'May - early Jun', 'VE-V2', 'Seedlings visible. Stand counts important.'],
+                    ['V6 (Knee High)', 'Mid Jun', 'V6', 'Growth point above soil. Ear rows determined.'],
+                    ['Tasseling', 'Mid Jul', 'VT', 'Tassel emerges. 1,100-1,200 GDU. Critical water need.'],
+                    ['Silking', 'Late Jul', 'R1', 'Pollination. Yield potential set. ~1,400 GDU.'],
+                    ['Blister', 'Early Aug', 'R2', 'Kernels forming. Still vulnerable to stress.'],
+                    ['Dough/Dent', 'Mid-Late Aug', 'R4-R5', 'Starch accumulating. Moisture ~55%.'],
+                    ['Maturity', 'Sep', 'R6', 'Black layer. ~2,700 GDU. Moisture ~30%.'],
+                    ['Harvest', 'Oct-Nov', '--', 'Dry to <15%. Field losses increase with delay.']
+                ],
+                stages: [
+                    { icon: '🌱', name: 'Planted', stat: 'PROGRESS, MEASURED IN PCT PLANTED' },
+                    { icon: '🌿', name: 'Emerged', stat: 'PROGRESS, MEASURED IN PCT EMERGED' },
+                    { icon: '🌽', name: 'Silking', stat: 'PROGRESS, MEASURED IN PCT SILKING' },
+                    { icon: '🟡', name: 'Dough', stat: 'PROGRESS, MEASURED IN PCT DOUGH' },
+                    { icon: '⚫', name: 'Mature', stat: 'PROGRESS, MEASURED IN PCT MATURE' },
+                    { icon: '🚜', name: 'Harvested', stat: 'PROGRESS, MEASURED IN PCT HARVESTED' },
+                    { icon: '📊', name: 'Condition', stat: 'CONDITION, MEASURED IN PCT GOOD' }
+                ]
+            },
+            SOYBEANS: {
+                title: 'Soybean Growing Season',
+                months: [
+                    { m: 'Apr', phase: '', label: '' },
+                    { m: 'May', phase: 'active', label: 'Planting' },
+                    { m: 'Jun', phase: 'active', label: 'Vegetative' },
+                    { m: 'Jul', phase: 'active', label: 'Flowering' },
+                    { m: 'Aug', phase: 'peak', label: 'Pod Fill ⚡' },
+                    { m: 'Sep', phase: 'peak', label: 'Maturity' },
+                    { m: 'Oct', phase: 'harvest', label: 'Harvest' },
+                    { m: 'Nov', phase: 'harvest', label: 'Late Harvest' }
+                ],
+                milestones: [
+                    ['Planting', 'May', 'VE', 'Plant when soil >50°F. 1" depth optimal.'],
+                    ['Emergence', 'May-Jun', 'VE-VC', '~100 GDU to emerge. Stand counts at V2.'],
+                    ['First Flower', 'Late Jun', 'R1', 'Flowering begins. Photoperiod sensitive.'],
+                    ['Full Bloom', 'Early Jul', 'R2', 'Flowers at top nodes. Stress reduces pod set.'],
+                    ['Beginning Pod', 'Mid Jul', 'R3', 'Pods visible. High water demand begins.'],
+                    ['Full Pod', 'Late Jul-Aug', 'R4', 'Pods at upper nodes 3/4". Critical moisture.'],
+                    ['Beginning Seed', 'Aug', 'R5', 'Seed filling. Yield being determined.'],
+                    ['Maturity', 'Sep', 'R8', '95% of pods brown. Moisture ~15%.'],
+                    ['Harvest', 'Oct', '--', 'Target <13% moisture. Shatter risk increases.']
+                ],
+                stages: [
+                    { icon: '🌱', name: 'Planted', stat: 'PROGRESS, MEASURED IN PCT PLANTED' },
+                    { icon: '🌿', name: 'Emerged', stat: 'PROGRESS, MEASURED IN PCT EMERGED' },
+                    { icon: '🌸', name: 'Blooming', stat: 'PROGRESS, MEASURED IN PCT BLOOMING' },
+                    { icon: '🫛', name: 'Setting Pods', stat: 'PROGRESS, MEASURED IN PCT SETTING PODS' },
+                    { icon: '🍂', name: 'Dropping Leaves', stat: 'PROGRESS, MEASURED IN PCT DROPPING LEAVES' },
+                    { icon: '🚜', name: 'Harvested', stat: 'PROGRESS, MEASURED IN PCT HARVESTED' },
+                    { icon: '📊', name: 'Condition', stat: 'CONDITION, MEASURED IN PCT GOOD' }
+                ]
+            },
+            WHEAT: {
+                title: 'Winter Wheat Growing Season',
+                months: [
+                    { m: 'Sep', phase: 'active', label: 'Planting' },
+                    { m: 'Oct', phase: 'active', label: 'Emergence' },
+                    { m: 'Nov-Mar', phase: '', label: 'Dormancy' },
+                    { m: 'Apr', phase: 'active', label: 'Greenup' },
+                    { m: 'May', phase: 'active', label: 'Jointing' },
+                    { m: 'Jun', phase: 'peak', label: 'Heading ⚡' },
+                    { m: 'Jul', phase: 'harvest', label: 'Harvest' },
+                    { m: 'Aug', phase: '', label: '' }
+                ],
+                milestones: [
+                    ['Planting', 'Sep-Oct', '--', 'Plant after Hessian fly-free date.'],
+                    ['Emergence', 'Oct', '--', 'Establish root system before winter.'],
+                    ['Dormancy', 'Nov-Mar', '--', 'Winter survival. Snow cover beneficial.'],
+                    ['Greenup', 'Apr', '--', 'Spring growth resumes. First N application.'],
+                    ['Jointing', 'May', 'Feekes 6', 'Nodes detectable. Second N split.'],
+                    ['Heading', 'Jun', 'Feekes 10', 'Heads emerge. Fungicide window.'],
+                    ['Grain Fill', 'Jun-Jul', 'Feekes 11', 'Kernel development. Test weight forming.'],
+                    ['Harvest', 'Jul', '--', 'Target <14% moisture.']
+                ],
+                stages: [
+                    { icon: '🌱', name: 'Planted', stat: 'PROGRESS, MEASURED IN PCT PLANTED' },
+                    { icon: '🌿', name: 'Emerged', stat: 'PROGRESS, MEASURED IN PCT EMERGED' },
+                    { icon: '🌾', name: 'Headed', stat: 'PROGRESS, MEASURED IN PCT HEADED' },
+                    { icon: '🚜', name: 'Harvested', stat: 'PROGRESS, MEASURED IN PCT HARVESTED' },
+                    { icon: '📊', name: 'Condition', stat: 'CONDITION, MEASURED IN PCT GOOD' }
+                ]
+            }
+        };
+
+        function buildNassUrl(params) {
+            const base = 'https://quickstats.nass.usda.gov/results/';
+            const qs = new URLSearchParams();
+            for (const [k, v] of Object.entries(params)) {
+                if (v) qs.append(k, v);
+            }
+            return base + '?' + qs.toString();
+        }
+
+        function populateStates() {
+            const sel = document.getElementById('stateSelect');
+            sel.innerHTML = Object.entries(AGSIST_GEO.states).sort((a, b) => a[1].name.localeCompare(b[1].name))
+                .map(([a, d]) => `<option value="${a}">${d.name}</option>`).join('');
+        }
+
+        function updateAll() {
+            currentState = document.getElementById('stateSelect').value;
+            currentCommodity = document.getElementById('commodity').value;
+            const crop = cropTimelines[currentCommodity];
+            const stateName = AGSIST_GEO.getStateName(currentState);
+
+            // Update NASS link
+            document.getElementById('nassLink').href = buildNassUrl({
+                commodity_desc: currentCommodity, state_alpha: currentState,
+                agg_level_desc: 'STATE', year__GE: '2024', source_desc: 'SURVEY', sector_desc: 'CROPS'
+            });
+
+            // Timeline
+            document.getElementById('timelineTitle').textContent = `📅 ${crop.title} — ${stateName}`;
+            const trackHtml = crop.months.map(m => `<div class="timeline-month">
+                <div class="label">${m.m}</div>
+                <div class="timeline-bar ${m.phase}"></div>
+                <div style="font-size:0.7rem;color:var(--dim);margin-top:4px;">${m.label}</div>
+            </div>`).join('');
+            document.getElementById('timelineArea').innerHTML = `<div class="timeline-track">${trackHtml}</div>`;
+
+            // Stage links
+            const stageHtml = crop.stages.map(s => {
+                const url = buildNassUrl({
+                    commodity_desc: currentCommodity, statisticcat_desc: s.stat.split(',')[0],
+                    state_alpha: currentState, agg_level_desc: 'STATE', year__GE: '2020'
+                });
+                return `<a href="${url}" class="stage-card" target="_blank">
+                    <div class="icon">${s.icon}</div>
+                    <h3>${s.name}</h3>
+                    <p>${currentCommodity} ${s.name.toLowerCase()} data for ${stateName}</p>
+                    <span class="action">View on USDA →</span>
+                </a>`;
+            }).join('');
+            document.getElementById('stageLinks').innerHTML = stageHtml;
+
+            // Milestones
+            const cropName = currentCommodity === 'CORN' ? 'Corn' : currentCommodity === 'SOYBEANS' ? 'Soybean' : 'Wheat';
+            document.getElementById('msTitle').textContent = `${crop.stages[0].icon} ${cropName} Growth Milestones`;
+            const msHtml = `<table class="ms-table"><thead><tr><th>Stage</th><th>Typical Timing</th><th>Growth</th><th>Notes</th></tr></thead><tbody>${
+                crop.milestones.map(([stage, timing, growth, notes]) =>
+                    `<tr><td class="hl">${stage}</td><td>${timing}</td><td>${growth}</td><td>${notes}</td></tr>`
+                ).join('')
+            }</tbody></table>`;
+            document.getElementById('milestoneTable').innerHTML = msHtml;
+        }
+
+        function detectMyLocation() {
+            const btn = document.querySelector('.detect-btn');
+            btn.textContent = '...';
+            AGSIST_GEO.detectLocation(
+                (abbr) => {
+                    document.getElementById('stateSelect').value = abbr;
+                    updateAll();
+                    btn.textContent = '✓';
+                    setTimeout(() => { btn.textContent = '📍 Detect'; }, 1500);
+                },
+                () => { btn.textContent = '📍 Detect'; }
+            );
+        }
+
+        populateStates();
+        currentState = AGSIST_GEO.getState();
+        document.getElementById('stateSelect').value = currentState;
+        updateAll();
+    </script>
+</body>
+</html>

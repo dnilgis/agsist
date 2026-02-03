@@ -3,116 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USDA Office Finder - FSA & NRCS Service Centers | AGSIST</title>
-    <meta name="description" content="Find your local USDA Service Center. Locate FSA offices, NRCS contacts, and county extension services by state.">
+    <title>USDA Office Finder - All 50 States | AGSIST</title>
+    <meta name="keywords" content="USDA office finder, FSA office, NRCS service center, county extension, USDA service center locator">
+    <meta name="description" content="Find your local USDA Service Center, FSA office, and NRCS contacts. All 50 states with addresses, phone numbers, and direct links.">
     <link rel="canonical" href="https://agsist.com/offices.html">
-    
+    <meta property="og:title" content="USDA Office Finder | AGSIST">
+    <meta property="og:description" content="Find your local USDA Service Center, FSA office, and NRCS contacts by state.">
+    <meta property="og:url" content="https://agsist.com/offices.html">
+    <meta property="og:type" content="website">
     <link rel="icon" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="/components/shared.css">
-    <link rel="stylesheet" href="styles.css">
-    
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-    
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebPage","name":"USDA Office Finder","description":"Find local USDA Service Center, FSA, and NRCS offices in all 50 states","url":"https://agsist.com/offices.html"}
+    </script>
     <style>
-        .finder-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 20px; }
-        .finder-box h2 { color: var(--accent); font-size: 1rem; margin-bottom: 16px; }
-        .finder-box label { display: block; margin-bottom: 8px; }
-        .finder-box select { width: 100%; max-width: 400px; }
-        .finder-result { margin-top: 20px; padding: 20px; background: var(--bg); border-radius: 6px; display: none; }
-        .finder-result.active { display: block; }
-        .finder-result h3 { color: var(--text); font-size: 1rem; margin-bottom: 12px; }
-        .finder-result p { color: var(--dim); font-size: 0.9rem; margin-bottom: 8px; }
-        .finder-result a { color: var(--accent); }
-        .quick-links { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 20px; }
-        .quick-link { display: block; padding: 16px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; text-decoration: none; text-align: center; transition: all 0.2s; }
-        .quick-link:hover { border-color: var(--accent); }
-        .quick-link span { display: block; color: var(--text); font-size: 0.9rem; margin-bottom: 4px; }
-        .quick-link small { color: var(--dim); font-size: 0.75rem; }
+        main { max-width: 1200px; margin: 0 auto; padding: 16px; }
+        .breadcrumb { font-size: 0.85rem; color: var(--dim); margin-bottom: 16px; }
+        .breadcrumb a { color: var(--accent); text-decoration: none; }
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; }
+        .panel-head { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+        .panel-head h1, .panel-head h2 { font-size: 1.1rem; color: var(--accent); margin: 0; }
+        .panel-body { padding: 20px; }
+        .search-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-row select, .search-row button { font-family: inherit; font-size: 16px; padding: 10px 14px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+        .search-row select { flex: 1; min-width: 200px; }
+        .search-row button { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .search-row button:hover { opacity: 0.9; }
+        .office-card { background: var(--bg); border-radius: 8px; padding: 20px; margin-bottom: 16px; display: none; }
+        .office-card.active { display: block; }
+        .office-card h2 { color: var(--accent); font-size: 1.1rem; margin-bottom: 16px; }
+        .office-row { display: grid; grid-template-columns: 120px 1fr; gap: 8px; margin-bottom: 10px; font-size: 0.9rem; }
+        .office-label { color: var(--dim); }
+        .office-value { color: var(--text); }
+        .office-value a { color: var(--accent); text-decoration: none; }
+        .office-value a:hover { text-decoration: underline; }
+        .office-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+        .office-link { padding: 8px 14px; border: 1px solid var(--border); border-radius: 4px; color: var(--dim); text-decoration: none; font-size: 0.85rem; transition: all 0.2s; }
+        .office-link:hover { border-color: var(--accent); color: var(--accent); }
+        .quick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+        .quick-card { display: block; padding: 16px; background: var(--bg); border-radius: 6px; text-decoration: none; text-align: center; transition: all 0.2s; border: 1px solid transparent; }
+        .quick-card:hover { border-color: var(--accent); }
+        .quick-card span { display: block; color: var(--text); font-size: 0.9rem; margin-bottom: 4px; }
+        .quick-card small { color: var(--dim); font-size: 0.8rem; }
+        @media (max-width: 500px) {
+            .office-row { grid-template-columns: 1fr; gap: 2px; }
+            .office-label { font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body>
     <div id="header"></div>
-
     <main>
         <nav class="breadcrumb"><a href="/">Home</a> → Offices</nav>
-
         <div class="panel">
-            <div class="panel-head"><h1>🏛️ USDA OFFICE FINDER</h1></div>
+            <div class="panel-head"><h1>🏛️ USDA Office Finder — All 50 States</h1></div>
             <div class="panel-body">
-                <div class="finder-box">
-                    <h2>Find Your Service Center</h2>
-                    <label>Select Your State</label>
-                    <select id="stateSelect" onchange="showOffice()">
-                        <option value="">-- Select State --</option>
-                        <option value="IL">Illinois</option>
-                        <option value="IN">Indiana</option>
-                        <option value="IA">Iowa</option>
-                        <option value="KS">Kansas</option>
-                        <option value="MI">Michigan</option>
-                        <option value="MN">Minnesota</option>
-                        <option value="MO">Missouri</option>
-                        <option value="NE">Nebraska</option>
-                        <option value="ND">North Dakota</option>
-                        <option value="OH">Ohio</option>
-                        <option value="SD">South Dakota</option>
-                        <option value="WI">Wisconsin</option>
-                    </select>
-                    <div class="finder-result" id="result">
-                        <h3 id="stateName">Wisconsin</h3>
-                        <p><strong>USDA Service Center Locator:</strong></p>
-                        <p><a id="locatorLink" href="https://offices.sc.egov.usda.gov/locator/app?state=WI" target="_blank">Find offices in your county →</a></p>
-                        <p style="margin-top:12px"><strong>State FSA Office:</strong></p>
-                        <p id="stateOffice">8030 Excelsior Dr, Madison, WI 53717</p>
-                        <p id="statePhone">(608) 662-4422</p>
-                    </div>
+                <div class="search-row">
+                    <select id="stateSelect"><option value="">Select your state...</option></select>
+                    <button onclick="detectState()">📍 Detect</button>
                 </div>
-
-                <h3 style="color:var(--accent);margin:24px 0 16px;font-size:0.95rem">QUICK LINKS</h3>
-                <div class="quick-links">
-                    <a href="https://offices.sc.egov.usda.gov/locator/app" target="_blank" class="quick-link"><span>🔍 Service Center Locator</span><small>Find any USDA office</small></a>
-                    <a href="https://www.farmers.gov/" target="_blank" class="quick-link"><span>🌾 Farmers.gov</span><small>Programs & resources</small></a>
-                    <a href="https://www.fsa.usda.gov/programs-and-services/" target="_blank" class="quick-link"><span>📋 FSA Programs</span><small>Loans, conservation, disaster</small></a>
-                    <a href="https://www.nrcs.usda.gov/getting-assistance" target="_blank" class="quick-link"><span>🌱 NRCS Assistance</span><small>Conservation programs</small></a>
+                <div class="office-card" id="result"></div>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-head"><h2>🔗 Quick Links</h2></div>
+            <div class="panel-body">
+                <div class="quick-grid">
+                    <a href="https://offices.sc.egov.usda.gov/locator/app" target="_blank" class="quick-card"><span>🔍 Service Center Locator</span><small>Find any USDA office by address</small></a>
+                    <a href="https://www.farmers.gov/" target="_blank" class="quick-card"><span>🌾 Farmers.gov</span><small>Programs, loans, disaster assistance</small></a>
+                    <a href="https://www.fsa.usda.gov/programs-and-services/" target="_blank" class="quick-card"><span>📋 FSA Programs</span><small>CRP, ARC, PLC, loans</small></a>
+                    <a href="https://www.nrcs.usda.gov/getting-assistance" target="_blank" class="quick-card"><span>🌱 NRCS Assistance</span><small>EQIP, CSP, conservation</small></a>
+                    <a href="https://www.rd.usda.gov/" target="_blank" class="quick-card"><span>🏠 Rural Development</span><small>Housing, business, utilities</small></a>
+                    <a href="https://www.rma.usda.gov/tools" target="_blank" class="quick-card"><span>🛡️ Crop Insurance</span><small>RMA tools & agents</small></a>
                 </div>
             </div>
         </div>
     </main>
-
     <div id="footer"></div>
     <script src="/components/load-components.js"></script>
-
     <script>
-    const stateData = {
-        IL: {name:'Illinois', office:'3500 Wabash Ave, Springfield, IL 62711', phone:'(217) 241-6600 x2'},
-        IN: {name:'Indiana', office:'5981 Lakeside Blvd, Indianapolis, IN 46278', phone:'(317) 290-3315'},
-        IA: {name:'Iowa', office:'10500 Buena Vista Ct, Des Moines, IA 50322', phone:'(515) 254-1540 x2'},
-        KS: {name:'Kansas', office:'3600 Anderson Ave, Manhattan, KS 66503', phone:'(785) 539-3531'},
-        MI: {name:'Michigan', office:'3001 Coolidge Rd #100, East Lansing, MI 48823', phone:'(517) 324-5110'},
-        MN: {name:'Minnesota', office:'375 Jackson St #400, St Paul, MN 55101', phone:'(651) 602-7700'},
-        MO: {name:'Missouri', office:'601 Business Loop 70 W, Columbia, MO 65203', phone:'(573) 876-0925'},
-        NE: {name:'Nebraska', office:'7131 A St, Lincoln, NE 68510', phone:'(402) 437-5581'},
-        ND: {name:'North Dakota', office:'1025 28th St S, Fargo, ND 58103', phone:'(701) 239-5224'},
-        OH: {name:'Ohio', office:'200 N High St #522, Columbus, OH 43215', phone:'(614) 255-2500'},
-        SD: {name:'South Dakota', office:'200 4th St SW, Huron, SD 57350', phone:'(605) 352-1160'},
-        WI: {name:'Wisconsin', office:'8030 Excelsior Dr, Madison, WI 53717', phone:'(608) 662-4422'}
+    var offices = {
+        AL:{name:'Alabama',city:'Auburn',addr:'4121 Carmichael Rd, Montgomery, AL 36106',phone:'(334) 279-3500'},
+        AK:{name:'Alaska',city:'Palmer',addr:'800 W Evergreen Ave #216, Palmer, AK 99645',phone:'(907) 761-7738'},
+        AZ:{name:'Arizona',city:'Phoenix',addr:'230 N 1st Ave #509, Phoenix, AZ 85003',phone:'(602) 285-6300'},
+        AR:{name:'Arkansas',city:'Little Rock',addr:'700 W Capitol Ave #3416, Little Rock, AR 72201',phone:'(501) 301-3000'},
+        CA:{name:'California',city:'Davis',addr:'430 G St #4161, Davis, CA 95616',phone:'(530) 792-5520'},
+        CO:{name:'Colorado',city:'Lakewood',addr:'Denver Federal Center, Bldg 56, Lakewood, CO 80225',phone:'(720) 544-2876'},
+        CT:{name:'Connecticut',city:'Windsor',addr:'344 Merrow Rd #A, Tolland, CT 06084',phone:'(860) 871-4090'},
+        DE:{name:'Delaware',city:'Dover',addr:'1221 College Park Dr #200, Dover, DE 19904',phone:'(302) 678-4160'},
+        FL:{name:'Florida',city:'Gainesville',addr:'440 NW 25th Pl #1, Gainesville, FL 32606',phone:'(352) 338-3400'},
+        GA:{name:'Georgia',city:'Athens',addr:'355 E Hancock Ave, Athens, GA 30601',phone:'(706) 546-2266'},
+        HI:{name:'Hawaii',city:'Honolulu',addr:'300 Ala Moana Blvd #5-118, Honolulu, HI 96850',phone:'(808) 600-2964'},
+        ID:{name:'Idaho',city:'Boise',addr:'9173 W Barnes Dr #B, Boise, ID 83709',phone:'(208) 378-5650'},
+        IL:{name:'Illinois',city:'Springfield',addr:'3500 Wabash Ave, Springfield, IL 62711',phone:'(217) 241-6600'},
+        IN:{name:'Indiana',city:'Indianapolis',addr:'5981 Lakeside Blvd, Indianapolis, IN 46278',phone:'(317) 290-3315'},
+        IA:{name:'Iowa',city:'Des Moines',addr:'10500 Buena Vista Ct, Des Moines, IA 50322',phone:'(515) 254-1540'},
+        KS:{name:'Kansas',city:'Manhattan',addr:'3600 Anderson Ave, Manhattan, KS 66503',phone:'(785) 539-3531'},
+        KY:{name:'Kentucky',city:'Lexington',addr:'771 Corporate Dr #100, Lexington, KY 40503',phone:'(859) 224-7601'},
+        LA:{name:'Louisiana',city:'Alexandria',addr:'3737 Government St, Alexandria, LA 71302',phone:'(318) 473-7721'},
+        ME:{name:'Maine',city:'Bangor',addr:'967 Illinois Ave #3, Bangor, ME 04401',phone:'(207) 990-9100'},
+        MD:{name:'Maryland',city:'Annapolis',addr:'339 Busch\'s Frontage Rd #104, Annapolis, MD 21409',phone:'(443) 482-2760'},
+        MA:{name:'Massachusetts',city:'Amherst',addr:'463 West St, Amherst, MA 01002',phone:'(413) 253-4500'},
+        MI:{name:'Michigan',city:'East Lansing',addr:'3001 Coolidge Rd #100, East Lansing, MI 48823',phone:'(517) 324-5110'},
+        MN:{name:'Minnesota',city:'St Paul',addr:'375 Jackson St #400, St Paul, MN 55101',phone:'(651) 602-7700'},
+        MS:{name:'Mississippi',city:'Jackson',addr:'6311 Ridgewood Rd #W404, Jackson, MS 39211',phone:'(601) 965-4300'},
+        MO:{name:'Missouri',city:'Columbia',addr:'601 Business Loop 70 W, Columbia, MO 65203',phone:'(573) 876-0925'},
+        MT:{name:'Montana',city:'Bozeman',addr:'10 E Babcock St #443, Bozeman, MT 59715',phone:'(406) 587-6872'},
+        NE:{name:'Nebraska',city:'Lincoln',addr:'7131 A St, Lincoln, NE 68510',phone:'(402) 437-5581'},
+        NV:{name:'Nevada',city:'Reno',addr:'1365 Corporate Blvd, Reno, NV 89502',phone:'(775) 857-8500'},
+        NH:{name:'New Hampshire',city:'Durham',addr:'2 Madbury Rd, Durham, NH 03824',phone:'(603) 868-7581'},
+        NJ:{name:'New Jersey',city:'Annandale',addr:'163 Route 31 S, Annandale, NJ 08801',phone:'(908) 735-8555'},
+        NM:{name:'New Mexico',city:'Albuquerque',addr:'6200 Jefferson St NE, Albuquerque, NM 87109',phone:'(505) 761-4900'},
+        NY:{name:'New York',city:'Syracuse',addr:'441 S Salina St #354, Syracuse, NY 13202',phone:'(315) 477-6300'},
+        NC:{name:'North Carolina',city:'Raleigh',addr:'4407 Bland Rd #175, Raleigh, NC 27609',phone:'(919) 875-4800'},
+        ND:{name:'North Dakota',city:'Fargo',addr:'1025 28th St S, Fargo, ND 58103',phone:'(701) 239-5224'},
+        OH:{name:'Ohio',city:'Columbus',addr:'200 N High St #522, Columbus, OH 43215',phone:'(614) 255-2500'},
+        OK:{name:'Oklahoma',city:'Stillwater',addr:'100 USDA #102, Stillwater, OK 74074',phone:'(405) 742-1204'},
+        OR:{name:'Oregon',city:'Portland',addr:'7620 SW Mohawk St, Tualatin, OR 97062',phone:'(503) 692-3688'},
+        PA:{name:'Pennsylvania',city:'Harrisburg',addr:'359 E Park Dr #2, Harrisburg, PA 17111',phone:'(717) 237-2113'},
+        RI:{name:'Rhode Island',city:'Warwick',addr:'60 Quaker Ln #40, Warwick, RI 02886',phone:'(401) 828-3120'},
+        SC:{name:'South Carolina',city:'Columbia',addr:'1927 Thurmond Mall #100, Columbia, SC 29201',phone:'(803) 806-3820'},
+        SD:{name:'South Dakota',city:'Huron',addr:'200 4th St SW, Huron, SD 57350',phone:'(605) 352-1160'},
+        TN:{name:'Tennessee',city:'Nashville',addr:'579 US Courthouse, 801 Broadway, Nashville, TN 37203',phone:'(615) 277-2500'},
+        TX:{name:'Texas',city:'College Station',addr:'2405 Texas Ave S, College Station, TX 77840',phone:'(979) 680-5151'},
+        UT:{name:'Utah',city:'Salt Lake City',addr:'125 S State St #4239, Salt Lake City, UT 84138',phone:'(801) 524-4530'},
+        VT:{name:'Vermont',city:'White River Jct',addr:'356 Mountain View Dr #104, Colchester, VT 05446',phone:'(802) 658-2570'},
+        VA:{name:'Virginia',city:'Richmond',addr:'1606 Santa Rosa Rd #209, Richmond, VA 23229',phone:'(804) 287-1503'},
+        WA:{name:'Washington',city:'Spokane',addr:'316 W Boone Ave #568, Spokane, WA 99201',phone:'(509) 323-3000'},
+        WV:{name:'West Virginia',city:'Morgantown',addr:'1550 Earl Core Rd, Morgantown, WV 26505',phone:'(304) 284-4800'},
+        WI:{name:'Wisconsin',city:'Madison',addr:'8030 Excelsior Dr, Madison, WI 53717',phone:'(608) 662-4422'},
+        WY:{name:'Wyoming',city:'Casper',addr:'951 Werner Ct #130, Casper, WY 82601',phone:'(307) 261-5231'},
     };
-    function showOffice() {
-        const state = document.getElementById('stateSelect').value;
-        const result = document.getElementById('result');
-        if (state && stateData[state]) {
-            document.getElementById('stateName').textContent = stateData[state].name;
-            document.getElementById('locatorLink').href = 'https://offices.sc.egov.usda.gov/locator/app?state=' + state;
-            document.getElementById('stateOffice').textContent = stateData[state].office;
-            document.getElementById('statePhone').textContent = stateData[state].phone;
-            result.classList.add('active');
-        } else {
-            result.classList.remove('active');
-        }
+
+    // Populate select
+    var sel = document.getElementById('stateSelect');
+    Object.keys(offices).sort(function(a,b) { return offices[a].name.localeCompare(offices[b].name); }).forEach(function(code) {
+        var opt = document.createElement('option');
+        opt.value = code;
+        opt.textContent = offices[code].name;
+        sel.appendChild(opt);
+    });
+
+    sel.addEventListener('change', function() { showOffice(this.value); });
+
+    function showOffice(code) {
+        var card = document.getElementById('result');
+        if (!code || !offices[code]) { card.classList.remove('active'); return; }
+        var o = offices[code];
+        card.innerHTML =
+            '<h2>' + o.name + ' — State FSA Office</h2>' +
+            '<div class="office-row"><span class="office-label">Address</span><span class="office-value">' + o.addr + '</span></div>' +
+            '<div class="office-row"><span class="office-label">Phone</span><span class="office-value"><a href="tel:' + o.phone.replace(/[^0-9]/g,'') + '">' + o.phone + '</a></span></div>' +
+            '<div class="office-row"><span class="office-label">City</span><span class="office-value">' + o.city + ', ' + code + '</span></div>' +
+            '<div class="office-links">' +
+                '<a class="office-link" href="https://offices.sc.egov.usda.gov/locator/app?state=' + code + '" target="_blank">Find county offices in ' + code + ' →</a>' +
+                '<a class="office-link" href="https://www.nrcs.usda.gov/contact/find-a-service-center" target="_blank">NRCS offices →</a>' +
+            '</div>';
+        card.classList.add('active');
+        sel.value = code;
+    }
+
+    function detectState() {
+        if (!navigator.geolocation) return;
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            fetch('https://nominatim.openstreetmap.org/reverse?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&format=json')
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var stCode = (data.address && data.address['ISO3166-2-lvl4']) ? data.address['ISO3166-2-lvl4'].split('-')[1] : null;
+                if (stCode && offices[stCode]) showOffice(stCode);
+            });
+        });
+    }
+
+    // Auto-detect on load if geolocation available
+    if (typeof AGSIST_GEO !== 'undefined' && AGSIST_GEO.getState()) {
+        showOffice(AGSIST_GEO.getState());
     }
     </script>
 </body>

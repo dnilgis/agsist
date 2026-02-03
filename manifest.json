@@ -1,12 +1,11 @@
 {
-  "name": "AGSIST - Live Ag Dashboard",
+  "name": "AGSIST - Agricultural Dashboard",
   "short_name": "AGSIST",
-  "description": "Free live agricultural commodity prices, weather radar, and farm tools for farmers.",
+  "description": "Free agricultural prices, tools & news for farmers",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0a0a",
+  "background_color": "#121212",
   "theme_color": "#e6b042",
-  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "/favicon.png",
@@ -14,29 +13,9 @@
       "type": "image/png"
     },
     {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "categories": ["business", "finance", "utilities"],
-  "shortcuts": [
-    {
-      "name": "Tools",
-      "url": "/tools.html",
-      "description": "Farm calculators"
-    },
-    {
-      "name": "Calendar",
-      "url": "/calendar.html",
-      "description": "USDA dates & deadlines"
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ]
 }

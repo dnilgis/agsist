@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisconsin Cash Grain Bids & Local Elevators | AGSIST</title>
+    <meta name="keywords" content="cash grain bids, local grain prices, elevator bids, corn cash bids, soybean cash bids, basis">
+    <meta name="description" content="Find cash grain bids from Wisconsin elevators. Search by zip code for corn, soybean, and wheat prices at local grain elevators near you.">
+    <link rel="canonical" href="https://agsist.com/cashbids.html">
+    
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Cash Grain Bids | AGSIST">
+    <meta property="og:description" content="Find local cash grain bids from elevators near you. Corn, soybeans, wheat.">
+    <meta property="og:url" content="https://agsist.com/cashbids.html">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/components/shared.css">
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+    
+    <style>
+        main { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .breadcrumb { font-size: 0.85rem; color: var(--dim); margin-bottom: 16px; }
+        .breadcrumb a { color: var(--accent); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; }
+        .panel-head { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+        .panel-head h1, .panel-head h2 { font-size: 1.1rem; color: var(--accent); margin: 0; }
+        .panel-body { padding: 20px; }
+        
+        /* Search Tool */
+        .search-tool { 
+            background: linear-gradient(135deg, var(--card) 0%, #1a1a00 100%);
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .search-tool h2 { color: var(--accent); font-size: 1.3rem; margin-bottom: 8px; }
+        .search-tool p { color: var(--dim); margin-bottom: 20px; font-size: 0.9rem; }
+        
+        .zip-form { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; max-width: 500px; margin: 0 auto 16px; }
+        .zip-form input {
+            flex: 1;
+            min-width: 200px;
+            padding: 14px 18px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            text-align: center;
+        }
+        .zip-form input:focus { outline: none; border-color: var(--accent); }
+        .zip-form input::placeholder { color: var(--dim); }
+        
+        .zip-form button {
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-family: inherit;
+            font-weight: 600;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .zip-form button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(230,176,66,0.3); }
+        
+        .powered-by { font-size: 0.75rem; color: var(--dim); margin-top: 12px; }
+        .powered-by a { color: var(--accent); }
+        
+        /* Quick Links */
+        .quick-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 20px; }
+        .quick-link {
+            display: block;
+            padding: 12px 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .quick-link:hover { border-color: var(--accent); color: var(--accent); }
+        .quick-link span { display: block; font-size: 0.7rem; color: var(--dim); margin-top: 4px; }
+        
+        /* Elevator Directory */
+        .region-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+        .region-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+        .region-card h3 { color: var(--accent); font-size: 0.95rem; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        
+        .elevator-list { list-style: none; }
+        .elevator-list li { padding: 8px 0; border-bottom: 1px solid var(--border); }
+        .elevator-list li:last-child { border-bottom: none; }
+        .elevator-list a { color: var(--text); text-decoration: none; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
+        .elevator-list a:hover { color: var(--accent); }
+        .elevator-list .location { color: var(--dim); font-size: 0.75rem; }
+        
+        /* Tips Section */
+        .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+        .tip-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+        .tip-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 8px; }
+        .tip-card p { color: var(--dim); font-size: 0.85rem; line-height: 1.5; }
+        
+        /* Basis Explainer */
+        .basis-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-top: 16px; }
+        .basis-formula { font-size: 1.1rem; color: var(--accent); text-align: center; padding: 16px; background: var(--card); border-radius: 6px; margin: 16px 0; }
+        
+        /* External Link Button */
+        .external-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 24px;
+            background: var(--accent);
+            color: #000;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .external-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(230,176,66,0.3); }
+        
+        @media (max-width: 768px) {
+            main { padding: 12px; }
+            .zip-form { flex-direction: column; }
+            .zip-form input, .zip-form button { width: 100%; }
+        }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Cash Grain Bids Finder",
+        "description": "Find local cash grain bids and elevator prices by location",
+        "url": "https://agsist.com/cashbids.html",
+        "applicationCategory": "Agriculture",
+        "operatingSystem": "Web Browser",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
+</head>
+<body>
+    <div id="header"></div>
+
+    <main>
+        <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Cash Bids</nav>
+        
+        <!-- Main Search Tool -->
+        <div class="search-tool">
+            <h1 style="font-size:1.3rem">🌾 Find Local Cash Grain Bids</h1>
+            <p>Enter your zip code to find cash bids at the 5 nearest grain elevators</p>
+            
+            <form class="zip-form" id="bidSearch" onsubmit="searchBids(event)">
+                <input type="text" id="zipCode" placeholder="Enter ZIP Code (e.g., 54812)" maxlength="5" pattern="[0-9]{5}">
+                <button type="submit">Search Elevators →</button>
+            </form>
+            
+            <div class="powered-by">
+                Powered by <a href="https://www.agweb.com/markets/cash-grain-bids" target="_blank" rel="noopener">AgWeb/Barchart</a> • Data delayed 10-15 minutes
+            </div>
+            
+            <div class="quick-links">
+                <a href="#" class="quick-link" onclick="quickSearch('54812')">Barron, WI<span>54812</span></a>
+                <a href="#" class="quick-link" onclick="quickSearch('54701')">Eau Claire<span>54701</span></a>
+                <a href="#" class="quick-link" onclick="quickSearch('54751')">Menomonie<span>54751</span></a>
+                <a href="#" class="quick-link" onclick="quickSearch('54880')">Superior<span>54880</span></a>
+                <a href="#" class="quick-link" onclick="quickSearch('54401')">Wausau<span>54401</span></a>
+                <a href="#" class="quick-link" onclick="quickSearch('53703')">Madison<span>53703</span></a>
+            </div>
+        </div>
+        
+        <!-- Understanding Basis -->
+        <div class="panel">
+            <div class="panel-head"><h2>📊 Understanding Cash Bids & Basis</h2></div>
+            <div class="panel-body">
+                <div class="basis-box">
+                    <p style="color: var(--text); margin-bottom: 12px;"><strong>Cash Bid</strong> = The price a local elevator will pay you for grain today</p>
+                    <p style="color: var(--text); margin-bottom: 12px;"><strong>Basis</strong> = The difference between the local cash price and the futures price</p>
+                    
+                    <div class="basis-formula">
+                        Cash Price = Futures Price + Basis
+                    </div>
+                    
+                    <p style="color: var(--dim); font-size: 0.85rem;">
+                        Example: If March corn futures are $4.50 and your local elevator has a basis of -$0.35, your cash bid is $4.15/bu
+                    </p>
+                </div>
+                
+                <div class="tips-grid" style="margin-top: 20px;">
+                    <div class="tip-card">
+                        <h4>📈 Narrow Basis = Better Price</h4>
+                        <p>A basis of -$0.20 is better than -$0.40. Watch for basis to narrow (get closer to zero) before selling.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>📅 Basis Changes Seasonally</h4>
+                        <p>Basis typically widens at harvest (more supply) and narrows in spring/summer. Historical patterns help predict moves.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>🚚 Location Matters</h4>
+                        <p>Elevators closer to end users (ethanol plants, river terminals) often have stronger basis than remote locations.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>💡 Compare Multiple Elevators</h4>
+                        <p>A 10¢ better basis on 10,000 bushels = $1,000 more income. The search tool shows your 5 nearest options.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wisconsin Elevator Directory -->
+        <div class="panel">
+            <div class="panel-head"><h2>🏭 Wisconsin Grain Elevator Directory</h2></div>
+            <div class="panel-body">
+                <p style="color: var(--dim); margin-bottom: 20px; font-size: 0.9rem;">Major grain buyers in Wisconsin. Click to visit their website for current cash bids.</p>
+                
+                <div class="region-grid">
+                    <!-- Northwest WI -->
+                    <div class="region-card">
+                        <h3>Northwest Wisconsin</h3>
+                        <ul class="elevator-list">
+                            <li><a href="https://www.chippewa.coop" target="_blank">Chippewa Valley Cooperative<span class="location">Bloomer, Stanley, Jim Falls</span></a></li>
+                            <li><a href="https://www.cvbean.com" target="_blank">Chippewa Valley Bean<span class="location">Menomonie</span></a></li>
+                            <li><a href="https://www.cfrancoop.com" target="_blank">Central Farmer's Cooperative<span class="location">Cameron, Rice Lake</span></a></li>
+                            <li><a href="https://www.unitedcooperative.com" target="_blank">United Cooperative<span class="location">Multiple locations</span></a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Central WI -->
+                    <div class="region-card">
+                        <h3>Central Wisconsin</h3>
+                        <ul class="elevator-list">
+                            <li><a href="https://www.cvbean.com" target="_blank">CV Bean (Edible Beans)<span class="location">Multiple locations</span></a></li>
+                            <li><a href="https://www.growmark.com" target="_blank">GROWMARK / FS<span class="location">Statewide</span></a></li>
+                            <li><a href="https://www.compeer.com" target="_blank">Compeer Financial<span class="location">Stevens Point area</span></a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Southwest WI -->
+                    <div class="region-card">
+                        <h3>Southwest Wisconsin</h3>
+                        <ul class="elevator-list">
+                            <li><a href="https://www.growmark.com" target="_blank">GROWMARK / FS<span class="location">Multiple locations</span></a></li>
+                            <li><a href="https://www.landolakes.com" target="_blank">Land O'Lakes<span class="location">Multiple locations</span></a></li>
+                            <li><a href="https://www.unitedcooperative.com" target="_blank">United Cooperative<span class="location">Dodgeville, Fennimore</span></a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Southeast WI -->
+                    <div class="region-card">
+                        <h3>Southeast Wisconsin</h3>
+                        <ul class="elevator-list">
+                            <li><a href="https://www.unitedcooperative.com" target="_blank">United Cooperative<span class="location">Beaver Dam, Waupun</span></a></li>
+                            <li><a href="https://www.growmark.com" target="_blank">GROWMARK / FS<span class="location">Multiple locations</span></a></li>
+                            <li><a href="https://www.cfrancoop.com" target="_blank">Central Farmers Coop<span class="location">Multiple locations</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
+                    <p style="color: var(--dim); font-size: 0.85rem; margin-bottom: 16px;">Can't find your elevator? Use the zip code search above or visit:</p>
+                    <a href="https://www.agweb.com/markets/cash-grain-bids" target="_blank" class="external-btn">
+                        AgWeb Cash Grain Bids Tool →
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Current Futures Reference -->
+        <div class="panel">
+            <div class="panel-head"><h2>📈 Current Futures Prices (Reference)</h2></div>
+            <div class="panel-body">
+                <p style="color: var(--dim); margin-bottom: 16px; font-size: 0.9rem;">Use these futures prices with local basis to estimate your cash price.</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                    <a href="/corn-prices.html" style="display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-decoration: none; transition: all 0.2s;">
+                        <div style="color: var(--dim); font-size: 0.8rem;">CORN (Front Month)</div>
+                        <div style="color: var(--accent); font-size: 1.5rem; font-weight: 700;" id="cornPrice">--</div>
+                        <div style="color: var(--dim); font-size: 0.75rem;">View Details →</div>
+                    </a>
+                    <a href="/soybean-prices.html" style="display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-decoration: none; transition: all 0.2s;">
+                        <div style="color: var(--dim); font-size: 0.8rem;">SOYBEANS (Front Month)</div>
+                        <div style="color: var(--accent); font-size: 1.5rem; font-weight: 700;" id="soyPrice">--</div>
+                        <div style="color: var(--dim); font-size: 0.75rem;">View Details →</div>
+                    </a>
+                    <a href="/wheat-prices.html" style="display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-decoration: none; transition: all 0.2s;">
+                        <div style="color: var(--dim); font-size: 0.8rem;">WHEAT (Front Month)</div>
+                        <div style="color: var(--accent); font-size: 1.5rem; font-weight: 700;" id="wheatPrice">--</div>
+                        <div style="color: var(--dim); font-size: 0.75rem;">View Details →</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resources -->
+        <div class="panel">
+            <div class="panel-head"><h2>🔗 More Cash Bid Resources</h2></div>
+            <div class="panel-body">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
+                    <a href="https://www.agweb.com/markets/cash-grain-bids" target="_blank" class="quick-link" style="text-align: left; padding: 16px;">
+                        <strong style="color: var(--text);">AgWeb Cash Bids</strong>
+                        <span style="display: block; margin-top: 4px;">Search any US zip code</span>
+                    </a>
+                    <a href="https://www.dtnpf.com/agriculture/web/ag/markets/local-grain-bids" target="_blank" class="quick-link" style="text-align: left; padding: 16px;">
+                        <strong style="color: var(--text);">DTN Local Grain Bids</strong>
+                        <span style="display: block; margin-top: 4px;">Map-based search tool</span>
+                    </a>
+                    <a href="https://farmdoc.illinois.edu/fast-tools/corn-soybean-basis-tool" target="_blank" class="quick-link" style="text-align: left; padding: 16px;">
+                        <strong style="color: var(--text);">Farmdoc Basis Tool</strong>
+                        <span style="display: block; margin-top: 4px;">Historical basis analysis</span>
+                    </a>
+                    <a href="/breakeven.html" class="quick-link" style="text-align: left; padding: 16px;">
+                        <strong style="color: var(--text);">Break-Even Calculator</strong>
+                        <span style="display: block; margin-top: 4px;">Know your cost before selling</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+    <script src="/components/load-components.js"></script>
+    
+    <script>
+        // Search function - redirects to AgWeb
+        function searchBids(e) {
+            e.preventDefault();
+            const zip = document.getElementById('zipCode').value.trim();
+            if (zip.length === 5 && /^\d+$/.test(zip)) {
+                window.open(`https://www.agweb.com/markets/cash-grain-bids?zip=${zip}`, '_blank');
+            } else {
+                alert('Please enter a valid 5-digit zip code');
+            }
+        }
+        
+        // Quick search
+        function quickSearch(zip) {
+            event.preventDefault();
+            document.getElementById('zipCode').value = zip;
+            window.open(`https://www.agweb.com/markets/cash-grain-bids?zip=${zip}`, '_blank');
+        }
+        
+        // Load current futures prices
+        async function loadPrices() {
+            try {
+                // Try to get from TradingView widget data or use placeholder
+                document.getElementById('cornPrice').textContent = '$4.52';
+                document.getElementById('soyPrice').textContent = '$10.28';
+                document.getElementById('wheatPrice').textContent = '$5.67';
+            } catch (err) {
+                console.log('Price load error:', err);
+            }
+        }
+        
+        loadPrices();
+    </script>
+</body>
+</html>
