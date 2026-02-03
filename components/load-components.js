@@ -146,7 +146,6 @@
     function autoAnnotateTooltips() {
         var dict = {
             // ── Government Agencies ──
-            'USDA':  'U.S. Department of Agriculture',
             'FSA':   'Farm Service Agency — farm loans, conservation & disaster programs',
             'NRCS':  'Natural Resources Conservation Service — soil & water conservation',
             'RMA':   'Risk Management Agency — federal crop insurance oversight',
@@ -216,7 +215,6 @@
             'R5':    'Dent — dent visible on most kernels, milk line forming',
             'R6':    'Physiological Maturity — black layer formed, maximum dry weight',
             // ── Units & Measures ──
-            'bu':    'Bushel — standard grain volume (corn: 56 lbs, soybeans: 60 lbs, wheat: 60 lbs)',
             'PPM':   'Parts per million — concentration unit for soil tests & spray mixes',
             'GPA':   'Gallons per acre — spray application rate',
             'PSI':   'Pounds per square inch — nozzle/tank pressure measure',
