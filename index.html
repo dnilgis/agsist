@@ -553,6 +553,16 @@
                 </div>
             </a>
             <div class="secondary-card">
+                <div class="secondary-label">🌾 Oats</div>
+                <div class="secondary-value" id="oats-price">--</div>
+                <div class="secondary-change" id="oats-change">--</div>
+                <div class="secondary-meta"><span id="oats-prev">--</span><span id="oats-symbol">--</span></div>
+                <div class="range-bar-sm">
+                    <div class="range-bar-label"><span id="oats-range-low">--</span><span>52wk</span><span id="oats-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="oats-marker" style="left:50%"></div></div>
+                </div>
+            </div>
+            <div class="secondary-card">
                 <div class="secondary-label">🐄 Live Cattle</div>
                 <div class="secondary-value" id="cattle-price">--</div>
                 <div class="secondary-change" id="cattle-change">--</div>
@@ -646,6 +656,16 @@
                 <div class="range-bar-sm">
                     <div class="range-bar-label"><span id="kas-range-low">--</span><span>52wk</span><span id="kas-range-high">--</span></div>
                     <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="kas-marker" style="left:50%"></div></div>
+                </div>
+            </div>
+            <div class="secondary-card">
+                <div class="secondary-label">✕ XRP</div>
+                <div class="secondary-value" id="xrp-price">--</div>
+                <div class="secondary-change" id="xrp-change">--</div>
+                <div class="secondary-meta"><span id="xrp-prev">--</span><span id="xrp-symbol">--</span></div>
+                <div class="range-bar-sm">
+                    <div class="range-bar-label"><span id="xrp-range-low">--</span><span>52wk</span><span id="xrp-range-high">--</span></div>
+                    <div class="range-bar-track"><div class="range-bar-fill" style="width:100%"></div><div class="range-bar-marker" id="xrp-marker" style="left:50%"></div></div>
                 </div>
             </div>
             <div class="secondary-card">
@@ -825,6 +845,20 @@
                 }
             }
             
+            if (m.grains?.oats) {
+                const c = m.grains.oats;
+                document.getElementById('oats-price').textContent = '$' + fmt(c.price, c.unit);
+                document.getElementById('oats-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('oats-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('oats-prev').textContent = 'prev: $' + fmt(c.prevClose, c.unit);
+                if (c.symbol) document.getElementById('oats-symbol').textContent = c.symbol;
+                if (c.low52 && c.high52) {
+                    document.getElementById('oats-range-low').textContent = '$' + fmt(c.low52, c.unit);
+                    document.getElementById('oats-range-high').textContent = '$' + fmt(c.high52, c.unit);
+                    document.getElementById('oats-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
+            }
+            
             // ---- Morning Briefing Prices ----
             if (m.grains?.corn) {
                 var bc = m.grains.corn;
@@ -981,6 +1015,20 @@
                 }
             }
             
+            if (m.crypto?.xrp) {
+                const c = m.crypto.xrp;
+                document.getElementById('xrp-price').textContent = '$' + c.price.toFixed(4);
+                document.getElementById('xrp-change').textContent = chgSign(c.changePct) + c.changePct.toFixed(1) + '%';
+                document.getElementById('xrp-change').className = 'secondary-change ' + chgClass(c.change);
+                if (c.prevClose) document.getElementById('xrp-prev').textContent = 'prev: $' + c.prevClose.toFixed(4);
+                if (c.symbol) document.getElementById('xrp-symbol').textContent = c.symbol;
+                if (c.low52 && c.high52) {
+                    document.getElementById('xrp-range-low').textContent = '$' + c.low52.toFixed(4);
+                    document.getElementById('xrp-range-high').textContent = '$' + c.high52.toFixed(4);
+                    document.getElementById('xrp-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
+                }
+            }
+            
             if (m.indices?.sp500) {
                 const c = m.indices.sp500;
                 document.getElementById('sp500-price').textContent = c.price.toLocaleString(undefined, {maximumFractionDigits: 0});
@@ -1055,6 +1103,10 @@
             const c = m.grains.wheat;
             items.push(`<a href="wheat-prices.html" class="ticker-item"><span class="label">🌾 Wheat</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></a>`);
         }
+        if (m?.grains?.oats) {
+            const c = m.grains.oats;
+            items.push(`<span class="ticker-item"><span class="label">🌾 Oats</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
+        }
         if (m?.livestock?.cattle) {
             const c = m.livestock.cattle;
             items.push(`<span class="ticker-item"><span class="label">🐄 Cattle</span><span class="price">$${c.price.toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
@@ -1070,6 +1122,10 @@
         if (m?.crypto?.kaspa) {
             const c = m.crypto.kaspa;
             items.push(`<span class="ticker-item"><span class="label">KAS</span><span class="price">$${c.price.toFixed(3)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
+        }
+        if (m?.crypto?.xrp) {
+            const c = m.crypto.xrp;
+            items.push(`<span class="ticker-item"><span class="label">XRP</span><span class="price">$${c.price.toFixed(4)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
         // News items — clicking opens the summary modal
         if (news && news.length > 0) {
