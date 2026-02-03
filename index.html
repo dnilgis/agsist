@@ -1241,9 +1241,12 @@
     loadData();
     setInterval(loadData, 2 * 60 * 1000);
     
-    async function loadForecast() {
+    // Weather: use geolocation if available, fall back to Barron WI
+    var wxForecastUrl = 'https://api.weather.gov/gridpoints/DLH/75,63/forecast'; // Default: Barron, WI
+
+    async function loadForecast(url) {
         try {
-            const res = await fetch('https://api.weather.gov/gridpoints/DLH/75,63/forecast');
+            const res = await fetch(url || wxForecastUrl);
             if (!res.ok) throw new Error('Forecast unavailable');
             const data = await res.json();
             const periods = data.properties.periods;
@@ -1288,8 +1291,9 @@
         }
     }
     
+    // Load default forecast immediately, then upgrade with geolocation
     loadForecast();
-    setInterval(loadForecast, 30 * 60 * 1000);
+    setInterval(function() { loadForecast(); }, 30 * 60 * 1000);
     
     // ============================================
     // REPORTING THIS WEEK (from calendar data)
@@ -1450,7 +1454,11 @@
     if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
             (pos) => {
-                fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`)
+                var lat = pos.coords.latitude;
+                var lon = pos.coords.longitude;
+                
+                // Update location name
+                fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
                     .then(r => r.json())
                     .then(data => {
                         const city = data.address?.city || data.address?.town || data.address?.village || '';
@@ -1462,10 +1470,8 @@
                         if (locLabel && (city || county)) {
                             var short = city || county.replace(' County', '');
                             if (state) {
-                                // Abbreviate state
-                                var stAbbr = state.length > 3 ? state.substring(0, 2).toUpperCase() : state;
                                 var stateMap = {'Wisconsin':'WI','Minnesota':'MN','Iowa':'IA','Illinois':'IL','Indiana':'IN','Ohio':'OH','Michigan':'MI','North Dakota':'ND','South Dakota':'SD','Nebraska':'NE','Kansas':'KS','Missouri':'MO','Montana':'MT','Wyoming':'WY','Colorado':'CO','Texas':'TX','Oklahoma':'OK','Arkansas':'AR','Louisiana':'LA','Mississippi':'MS','Alabama':'AL','Georgia':'GA','Florida':'FL','Tennessee':'TN','Kentucky':'KY','Virginia':'VA','North Carolina':'NC','South Carolina':'SC','Pennsylvania':'PA','New York':'NY','California':'CA','Oregon':'OR','Washington':'WA','Idaho':'ID','Utah':'UT','Arizona':'AZ','Nevada':'NV','New Mexico':'NM','Maryland':'MD','Delaware':'DE','New Jersey':'NJ','Connecticut':'CT','Massachusetts':'MA','Vermont':'VT','New Hampshire':'NH','Maine':'ME','Rhode Island':'RI','West Virginia':'WV','Hawaii':'HI','Alaska':'AK'};
-                                stAbbr = stateMap[state] || stAbbr;
+                                var stAbbr = stateMap[state] || state.substring(0, 2).toUpperCase();
                                 locLabel.textContent = short + ', ' + stAbbr;
                             } else {
                                 locLabel.textContent = short;
@@ -1473,6 +1479,18 @@
                         }
                     })
                     .catch(() => setWelcome(''));
+                
+                // Get weather for user's actual location via NWS points API
+                fetch(`https://api.weather.gov/points/${lat.toFixed(4)},${lon.toFixed(4)}`)
+                    .then(r => r.ok ? r.json() : Promise.reject('NWS points failed'))
+                    .then(pointData => {
+                        var forecastUrl = pointData.properties?.forecast;
+                        if (forecastUrl) {
+                            wxForecastUrl = forecastUrl; // Update for future refreshes
+                            loadForecast(forecastUrl);   // Reload with correct location
+                        }
+                    })
+                    .catch(e => console.log('Geo weather fallback to Barron:', e));
             },
             () => setWelcome(''),
             { timeout: 5000, maximumAge: 600000 }
