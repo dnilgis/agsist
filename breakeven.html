@@ -46,7 +46,8 @@
     <style>
         /* Global overflow prevention */
         html, body { overflow-x: hidden; width: 100%; }
-        main, .panel, .panel-body { max-width: 100%; overflow-x: hidden; }
+        .panel { overflow: visible; }
+        .panel-body { overflow-x: hidden; }
 
         /* Prevent number spinners */
         input[type="number"]::-webkit-inner-spin-button,
@@ -57,7 +58,7 @@
         /* ==========================================
            INPUT HINT TOOLTIPS
            ========================================== */
-        .input-wrap { position: relative; }
+        .input-wrap { position: relative; z-index: 1; }
         .input-wrap label { display: flex; align-items: center; gap: 6px; }
         .hint-icon {
             display: inline-flex; align-items: center; justify-content: center;
@@ -72,7 +73,7 @@
         .hint-popup {
             display: none; position: absolute; bottom: calc(100% + 8px); left: 0; right: 0;
             background: #1a1a22; border: 1px solid var(--accent); border-radius: 8px;
-            padding: 12px 14px; z-index: 100; box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            padding: 12px 14px; z-index: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.6);
             animation: hintIn 0.15s ease-out; pointer-events: none;
         }
         .hint-popup::after {
