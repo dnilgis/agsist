@@ -166,24 +166,50 @@
         };
 
         var IMPACTS = [
-            { m: 'tariff', t: 'Tariffs directly impact grain export competitiveness. Higher tariffs risk retaliation against US ag exports — soybeans to China and cattle/dairy to Canada/Mexico are most exposed.' },
-            { m: 'china', t: 'China is the world\'s largest soybean importer. Trade disruptions can move soybean futures 50¢+ per bushel.' },
-            { m: 'canada', t: 'Canada is the #1 buyer of US ag exports. Tariffs risk retaliation on wheat, cattle, and dairy.' },
-            { m: 'mexico', t: 'Mexico buys ~$25B in US ag products annually — corn, dairy, pork, and beef. Trade disruption hits livestock and feed demand hard.' },
-            { m: 'rate cut', t: 'Rate cuts lower operating loan costs. A 25bp cut saves ~$2,500/yr per $1M in operating debt. Also weakens the dollar, helping grain exports.' },
+            // Tariffs & trade
+            { m: 'tariff', t: 'Tariffs directly hit grain exports. The 2018 China tariffs cut US soybean exports by $10B. Retaliatory tariffs target Corn Belt states first.' },
+            { m: 'china', t: 'China is the #1 buyer of US soybeans and a top corn importer. Any trade disruption moves bean prices 50¢–$1/bu within weeks.' },
+            { m: 'canada', t: 'Canada is the top US ag export market (~$26B/yr). Canola, cattle, dairy, and grain flow both directions — disruptions ripple fast.' },
+            { m: 'mexico', t: 'Mexico is the #1 buyer of US corn (~17M tons/yr) and a top meat market. Tariffs here directly cut corn demand.' },
+            { m: 'trade war', t: 'Trade wars crush export demand and widen basis. During 2018-19, MFP payments totaled $23B to offset farmer losses.' },
+            { m: 'trade deal', t: 'Trade agreements lock in export market access. Phase One with China committed $36.5B in ag purchases over 2 years.' },
+            { m: 'ukraine', t: 'Ukraine exports ~10% of global wheat and corn. Conflict disrupts Black Sea shipping and tightens world grain supplies.' },
+            { m: 'nato', t: 'NATO escalation in Eastern Europe threatens Black Sea grain corridors. Ukraine and Russia together export ~30% of global wheat.' },
+            { m: 'russia', t: 'Russia is the world\'s largest wheat exporter. Sanctions or conflict disruptions tighten global supply and support US wheat prices.' },
+            { m: 'sanctions', t: 'Trade sanctions can redirect global grain flows. When sanctions limit one exporter, it increases demand for US grain.' },
+            { m: 'duti', t: 'Import duties on ag products can trigger retaliation against US grain exports — the Corn Belt often takes the first hit.' },
+            { m: 'embargo', t: 'Export embargoes directly block grain shipments. The 1980 Soviet grain embargo is still remembered as a price disaster for US farmers.' },
+            // Fed & economy
+            { m: 'fed ', t: 'Fed policy drives the dollar, farm credit costs, and land values. Rate cuts weaken the dollar, making US grain cheaper for foreign buyers.' },
+            { m: 'fomc', t: 'FOMC decisions set the federal funds rate, which directly affects farm operating loans and machinery financing costs.' },
+            { m: 'rate cut', t: 'Rate cuts lower borrowing costs for operating loans and weaken the dollar — both are bullish for grain prices.' },
+            { m: 'rate hike', t: 'Rate hikes strengthen the dollar (bearish for exports) and raise costs on farm debt. Land values typically cool.' },
             { m: 'interest rate', t: 'Interest rate changes affect farm operating loans, land values, and machinery financing. Lower rates weaken the dollar, supporting exports.' },
             { m: 'recession', t: 'Recession cuts corn demand 200-300M bu via reduced ethanol and protein consumption. Farm income lags the economy by 6-12 months.' },
             { m: 'inflation', t: 'Moderate inflation supports commodity prices but raises input costs. Historically, grain prices outpace CPI during inflationary periods.' },
+            { m: 'gdp', t: 'GDP growth drives meat consumption and ethanol demand. Each 1% GDP growth adds ~50M bu corn demand through feed and fuel.' },
+            { m: 'dollar', t: 'A weaker dollar makes US grain cheaper for foreign buyers. Each 1% decline in the dollar index adds ~2¢/bu to corn export competitiveness.' },
+            { m: 'debt ceiling', t: 'Debt ceiling crises create market uncertainty and can delay USDA payments, disaster relief, and farm program disbursements.' },
+            // Ag policy
             { m: 'farm bill', t: 'A new Farm Bill could update ARC/PLC reference prices, expand crop insurance, and change conservation compliance — all affecting your bottom line.' },
-            { m: 'shutdown', t: 'Shutdowns delay USDA reports (WASDE, Crop Progress), FSA services, and CRP/ARC/PLC payments.' },
+            { m: 'shutdown', t: 'Shutdowns halt USDA market reports, FSA office services, CRP payments, and crop insurance processing. Markets trade blind.' },
             { m: 'biofuel', t: 'Higher biofuel mandates = more soybean oil for biodiesel + more corn for ethanol. Each 1B gallon RVO increase adds ~5-10¢/bu to corn.' },
             { m: 'ethanol', t: 'Year-round E15 or expanded RFS mandates boost corn demand ~300-500M bushels.' },
-            { m: 'oil price', t: 'Oil above $70 keeps input costs elevated but supports ethanol margins, putting a floor under corn.' },
-            { m: 'crude oil', t: 'Crude drives diesel and fertilizer costs. Above $70 supports ethanol profitability and corn basis.' },
+            { m: 'epa', t: 'EPA decisions on RFS volumes, pesticide registrations (like dicamba), and WOTUS directly shape what you can plant and spray.' },
+            { m: 'food price', t: 'Rising food prices increase political pressure for trade restrictions, strategic reserve releases, and farm program changes.' },
+            { m: 'grocery', t: 'Grocery inflation drives consumer and policy attention to agriculture. High food costs can trigger export restrictions in other countries.' },
+            { m: 'spending', t: 'Spending bills fund USDA programs, disaster relief, and conservation payments. Continuing resolutions freeze new program enrollment.' },
+            // Commodities & weather
+            { m: 'oil', t: 'Crude oil drives diesel and fertilizer costs. Above $70 supports ethanol profitability and puts a floor under corn prices.' },
+            { m: 'crude', t: 'Crude drives diesel and fertilizer costs. Above $70 supports ethanol profitability and corn basis.' },
             { m: 'drought', t: 'Drought is the single biggest yield risk. The 2012 drought cut corn yields to 123 bu/ac and sent prices above $8.' },
             { m: 'la ni', t: 'La Niña typically brings hot/dry to the western Corn Belt. The 2012 La Niña drought was catastrophic for corn.' },
             { m: 'el ni', t: 'El Niño brings wetter conditions to the southern US and can disrupt South American growing seasons.' },
             { m: 'gold', t: 'Gold rallies signal inflation fears and dollar weakness — both historically positive for grain prices.' },
+            { m: 'hurricane', t: 'Hurricanes disrupt Gulf port grain shipments, delay harvest, and can damage late-season crops — basis and futures both react.' },
+            { m: 'flood', t: 'Flooding delays planting, damages stored grain, and disrupts barge traffic on the Mississippi. Late planting shifts acres and tightens supply.' },
+            { m: 'brazil', t: 'Brazil is the #1 soybean exporter and #3 corn exporter. Their weather problems are US farmer opportunities — and vice versa.' },
+            { m: 'argentina', t: 'Argentina is a top soybean meal and corn exporter. Droughts in the Pampas tighten global supply and support US prices.' },
         ];
 
         function fmtVol(v) {

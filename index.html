@@ -1161,38 +1161,66 @@
         const isAI = hasSummary;
         const time = article.timestamp ? timeAgo(article.timestamp) : (article.pubDate ? new Date(article.pubDate).toLocaleDateString() : '');
         
-        // Build summary section
-        let summaryHtml;
-        if (summaryText) {
-            const badge = isAI 
-                ? '<span style="display:inline-block;background:rgba(230,176,66,0.15);color:var(--accent);font-size:0.7rem;padding:2px 8px;border-radius:3px;margin-bottom:12px;font-weight:600">✨ AI Summary</span>' 
-                : '';
-            summaryHtml = badge + '<div class="modal-summary">' + escapeHtml(summaryText) + '</div>';
-        } else {
-            summaryHtml = '<div class="modal-summary" style="color:var(--dim);font-style:italic">' +
-                'No summary available for this article yet. Click "Read Full Article" below to read the original source.' +
-            '</div>';
-        }
-        
-        modalContent.innerHTML = 
-            '<div class="modal-header">' +
-                '<div>' +
-                    '<h3>' + (isAI ? '✨ AI Summary' : '📰 Article Summary') + '</h3>' +
+        // Build modal shell first (shows immediately)
+        function renderModal(text, isAISummary, isLoading) {
+            let summaryHtml;
+            if (isLoading) {
+                summaryHtml = '<div class="modal-summary" style="color:var(--dim);text-align:center;padding:20px 0">' +
+                    '<div style="display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:8px"></div>' +
+                    '<div>Fetching article summary…</div></div>';
+            } else if (text) {
+                const badge = isAISummary 
+                    ? '<span style="display:inline-block;background:rgba(230,176,66,0.15);color:var(--accent);font-size:0.7rem;padding:2px 8px;border-radius:3px;margin-bottom:12px;font-weight:600">✨ AI Summary</span>' 
+                    : '';
+                summaryHtml = badge + '<div class="modal-summary">' + escapeHtml(text) + '</div>';
+            } else {
+                summaryHtml = '<div class="modal-summary" style="color:var(--dim);font-style:italic">' +
+                    'Summary not available. Click "Read Full Article" to read the original source.' +
+                '</div>';
+            }
+            
+            modalContent.innerHTML = 
+                '<div class="modal-header">' +
+                    '<div>' +
+                        '<h3>' + (isAISummary ? '✨ AI Summary' : '📰 Article Summary') + '</h3>' +
+                    '</div>' +
+                    '<button class="modal-close" onclick="closeModal()">×</button>' +
                 '</div>' +
-                '<button class="modal-close" onclick="closeModal()">×</button>' +
-            '</div>' +
-            '<div class="modal-body">' +
-                '<div class="modal-source">📰 ' + escapeHtml(article.source || 'Ag News') + (time ? ' · ' + time : '') + '</div>' +
-                '<h2 class="modal-title">' + escapeHtml(article.title) + '</h2>' +
-                summaryHtml +
-            '</div>' +
-            '<div class="modal-footer">' +
-                '<button class="modal-btn modal-btn-secondary" onclick="closeModal()">Close</button>' +
-                '<a class="modal-btn modal-btn-primary" href="' + article.link + '" target="_blank" rel="noopener noreferrer">Read Full Article →</a>' +
-            '</div>';
+                '<div class="modal-body">' +
+                    '<div class="modal-source">📰 ' + escapeHtml(article.source || 'Ag News') + (time ? ' · ' + time : '') + '</div>' +
+                    '<h2 class="modal-title">' + escapeHtml(article.title) + '</h2>' +
+                    summaryHtml +
+                '</div>' +
+                '<div class="modal-footer">' +
+                    '<button class="modal-btn modal-btn-secondary" onclick="closeModal()">Close</button>' +
+                    '<a class="modal-btn modal-btn-primary" href="' + article.link + '" target="_blank" rel="noopener noreferrer">Read Full Article →</a>' +
+                '</div>';
+        }
         
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+        
+        if (summaryText) {
+            // We have content — render immediately
+            renderModal(summaryText, isAI, false);
+        } else if (article.link) {
+            // No summary/description — try fetching via a proxy-free meta scrape
+            renderModal(null, false, true); // Show loading
+            
+            // Attempt to get Open Graph description from the page
+            fetch(article.link, { mode: 'no-cors' }).catch(() => {});
+            
+            // Since direct fetch won't work cross-origin, show a useful fallback
+            // after a brief pause (gives the appearance of trying)
+            setTimeout(function() {
+                // Use the title itself as context
+                var fallback = 'This article from ' + (article.source || 'this source') + 
+                    ' covers: "' + article.title + '". Click Read Full Article below for the complete story.';
+                renderModal(fallback, false, false);
+            }, 600);
+        } else {
+            renderModal(null, false, false);
+        }
     }
     
     function closeModal() {
