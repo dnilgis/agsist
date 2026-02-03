@@ -392,7 +392,7 @@
                     <div class="condition-card">
                         <div class="icon">🌬️</div>
                         <div class="value">${windGust} mph</div>
-                        <div class="label">Wind Gusts (${windDir})</div>
+                        <div class="label"><span class="tip" data-tip="Maximum instantaneous wind speed. Gusts above 15 mph cause spray drift.">Wind Gusts</span> (${windDir})</div>
                         <div class="status ${windEval.status}">${windEval.label}</div>
                     </div>
                     <div class="condition-card">
@@ -404,19 +404,19 @@
                     <div class="condition-card">
                         <div class="icon">💧</div>
                         <div class="value">${humidity}%</div>
-                        <div class="label">Humidity</div>
+                        <div class="label"><span class="tip" data-tip="Relative humidity. Below 40% causes rapid droplet evaporation. Above 90% slows drying on leaf surface.">Humidity</span></div>
                         <div class="status ${humidityEval.status}">${humidityEval.label}</div>
                     </div>
                     <div class="condition-card">
                         <div class="icon">Δ</div>
                         <div class="value">${deltaT.toFixed(1)}°</div>
-                        <div class="label">Delta-T</div>
+                        <div class="label"><span class="tip" data-tip="Difference between dry and wet bulb temperature. Measures evaporation rate — ideal is 2-8°F for spray droplet survival.">Delta-T</span></div>
                         <div class="status ${deltaTEval.status}">${deltaTEval.label}</div>
                     </div>
                     <div class="condition-card">
                         <div class="icon">🌫️</div>
                         <div class="value">${inversionEval.label}</div>
-                        <div class="label">Inversion Risk</div>
+                        <div class="label"><span class="tip" data-tip="Temperature inversion traps spray near the ground, causing off-target drift. Higher risk at night and early morning when air is still.">Inversion Risk</span></div>
                         <div class="status ${inversionEval.status}">${inversionEval.label}</div>
                     </div>
                 </div>
@@ -439,7 +439,7 @@
                                     <th>Wind</th>
                                     <th>Gusts</th>
                                     <th>Humidity</th>
-                                    <th>Delta-T</th>
+                                    <th><span class="tip" data-tip="Dry-wet bulb temperature difference. 2-8°F = ideal spray conditions.">Delta-T</span></th>
                                     <th>Spray</th>
                                 </tr>
                             </thead>
@@ -465,7 +465,7 @@
                                 <div class="guideline-item"><span>Avoid</span><span class="range">&lt;40°F or &gt;90°F</span></div>
                             </div>
                             <div class="guideline-box">
-                                <h4>Δ Delta-T</h4>
+                                <h4>Δ <span class="tip" data-tip="Difference between dry bulb and wet bulb temperature. Indicates how fast spray droplets will evaporate. Too low (&lt;2°F) = droplets drift. Too high (&gt;10°F) = droplets evaporate before hitting the target.">Delta-T</span></h4>
                                 <div class="guideline-item"><span>Ideal</span><span class="range">2-8°F</span></div>
                                 <div class="guideline-item"><span>Marginal</span><span class="range">8-10°F</span></div>
                                 <div class="guideline-item"><span>Avoid</span><span class="range">&lt;2 or &gt;10°F</span></div>

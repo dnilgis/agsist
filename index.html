@@ -73,7 +73,7 @@
         .ticker {
             display: flex;
             gap: 50px;
-            animation: ticker-scroll 120s linear infinite;
+            animation: ticker-scroll 180s linear infinite;
             white-space: nowrap;
             width: max-content;
             padding: 0 20px;
@@ -94,6 +94,10 @@
         .ticker-item .change.up { color: var(--green); }
         .ticker-item .change.down { color: var(--red); }
         .ticker-item.news { color: var(--accent); max-width: 500px; overflow: hidden; text-overflow: ellipsis; }
+        
+        a.ticker-item { text-decoration: none; color: inherit; cursor: pointer; }
+        a.ticker-item:hover { opacity: 0.85; }
+        a.ticker-item.news:hover { text-decoration: underline; }
         
         @keyframes ticker-scroll {
             0% { transform: translateX(0); }
@@ -385,6 +389,20 @@
         html, body { overflow-x: hidden; }
         .loading { color: var(--dim); font-style: italic; }
         .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+        
+        /* Quick action buttons */
+        .qa-btn {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+            padding: 6px 12px; font-size: 0.8rem; color: var(--dim);
+            text-decoration: none; font-family: inherit; transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .qa-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+        @media (max-width: 767px) { .qa-btn { font-size: 0.75rem; padding: 5px 8px; } }
+        
+        /* AI summary badge in news */
+        .news-summary-btn.ai { background: rgba(230,176,66,0.1); border-color: var(--accent); color: var(--accent); }
     </style>
 </head>
 <body>
@@ -432,7 +450,7 @@
                 </div>
             </div>
             <div class="briefing-section">
-                <div class="briefing-label">USDA Reports This Week</div>
+                <div class="briefing-label"><span class="tip" data-tip="United States Department of Agriculture">USDA</span> Reports This Week</div>
                 <div class="briefing-reports" id="briefing-reports">
                     <div style="color:var(--dim);font-size:0.85rem">Loading...</div>
                 </div>
@@ -443,6 +461,16 @@
         <div class="update-bar">
             <span>Last updated: <span id="update-time" class="loading">Loading...</span></span>
             <span>Data auto-refreshes</span>
+        </div>
+        
+        <!-- Quick Actions — sticky hooks into the site -->
+        <div class="quick-actions" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+            <a href="/spray.html" class="qa-btn">🌿 Spray Conditions</a>
+            <a href="/breakeven.html" class="qa-btn">📐 Breakeven Calc</a>
+            <a href="/cashbids.html" class="qa-btn">💰 Cash Bids</a>
+            <a href="/calendar.html" class="qa-btn">📅 <span class="tip" data-tip="United States Department of Agriculture">USDA</span> Calendar</a>
+            <a href="/drought.html" class="qa-btn">🏜️ Drought Monitor</a>
+            <a href="/tools.html" class="qa-btn">🛠️ All Tools</a>
         </div>
         
         <div class="price-grid" id="primary-prices">
@@ -973,15 +1001,21 @@
             
             if (data.news && data.news.length > 0) {
                 const newsEl = document.getElementById('news-feed');
-                newsEl.innerHTML = data.news.slice(0, 15).map((n, i) => `
-                    <div class="news-item">
+                newsEl.innerHTML = data.news.slice(0, 15).map((n, i) => {
+                    const hasSummary = n.summary && n.summary.length > 50;
+                    const hasDesc = n.description && n.description.length > 30;
+                    const btnLabel = hasSummary ? '✨ AI Summary' : (hasDesc ? 'Summary' : 'Read →');
+                    return `<div class="news-item">
                         <a href="${n.link}" target="_blank" rel="noopener noreferrer">${n.title}</a>
                         <div class="news-source">
                             <span>${n.source || 'Ag News'}</span>
-                            <button class="news-summary-btn" onclick="showSummary(${i}, 'markets')">Summary</button>
+                            ${hasSummary || hasDesc 
+                                ? `<button class="news-summary-btn" onclick="showSummary(${i}, 'markets')">${btnLabel}</button>`
+                                : `<a href="${n.link}" target="_blank" rel="noopener noreferrer" class="news-summary-btn">${btnLabel}</a>`
+                            }
                         </div>
-                    </div>
-                `).join('');
+                    </div>`;
+                }).join('');
                 window.marketsNews = data.news;
             }
             
@@ -1002,21 +1036,26 @@
         const chgClass = (val) => val >= 0 ? 'up' : 'down';
         const chgSign = (val) => val >= 0 ? '+' : '';
         
+        // Price items — link to their detail pages
         if (m?.grains?.corn) {
             const c = m.grains.corn;
-            items.push(`<span class="ticker-item"><span class="label">🌽 Corn</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
+            items.push(`<a href="corn-prices.html" class="ticker-item"><span class="label">🌽 Corn</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></a>`);
         }
         if (m?.grains?.soybeans) {
             const c = m.grains.soybeans;
-            items.push(`<span class="ticker-item"><span class="label">🫘 Beans</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
+            items.push(`<a href="soybean-prices.html" class="ticker-item"><span class="label">🫘 Beans</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></a>`);
         }
         if (m?.grains?.wheat) {
             const c = m.grains.wheat;
-            items.push(`<span class="ticker-item"><span class="label">🌾 Wheat</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
+            items.push(`<a href="wheat-prices.html" class="ticker-item"><span class="label">🌾 Wheat</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></a>`);
         }
         if (m?.livestock?.cattle) {
             const c = m.livestock.cattle;
             items.push(`<span class="ticker-item"><span class="label">🐄 Cattle</span><span class="price">$${c.price.toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
+        }
+        if (m?.livestock?.milk) {
+            const c = m.livestock.milk;
+            items.push(`<a href="milk-prices.html" class="ticker-item"><span class="label">🥛 Milk</span><span class="price">$${c.price.toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></a>`);
         }
         if (m?.crypto?.bitcoin) {
             const c = m.crypto.bitcoin;
@@ -1026,20 +1065,23 @@
             const c = m.crypto.kaspa;
             items.push(`<span class="ticker-item"><span class="label">KAS</span><span class="price">$${c.price.toFixed(3)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
+        // News items — clicking opens the summary modal
         if (news && news.length > 0) {
-            news.slice(0, 5).forEach(n => {
+            // Store ticker news for modal access
+            window.tickerNews = news.slice(0, 6);
+            news.slice(0, 6).forEach((n, i) => {
                 const title = n.title.length > 80 ? n.title.substring(0, 77) + '...' : n.title;
-                items.push(`<span class="ticker-item news">📰 ${title}</span>`);
+                items.push(`<a href="#" class="ticker-item news" onclick="showSummary(${i}, 'ticker'); return false;">📰 ${title}</a>`);
             });
         }
         // Fallback: always show something
         if (items.length === 0) {
-            items.push(`<span class="ticker-item news">🌾 AGSIST — Free Agricultural Dashboard — Live Prices, Weather, Tools & News</span>`);
+            items.push(`<a href="/tools.html" class="ticker-item news">🌾 AGSIST — Free Agricultural Dashboard — Live Prices, Weather, Tools & News</a>`);
         }
         document.getElementById('ticker').innerHTML = items.join('') + items.join('');
     }
     
-    // Fetch richer news from news.json for ticker
+    // Fetch richer news from news.json for ticker + news feed
     async function fetchNewsForTicker(markets) {
         try {
             const res = await fetch('data/news.json?t=' + Date.now());
@@ -1048,12 +1090,30 @@
                 if (data.items && data.items.length > 0) {
                     window.newsHubItems = data.items;
                     buildTicker(markets, data.items);
+                    
+                    // Also populate the homepage news feed with these (they have AI summaries)
+                    const newsEl = document.getElementById('news-feed');
+                    if (newsEl) {
+                        newsEl.innerHTML = data.items.slice(0, 15).map((n, i) => {
+                            const hasSummary = n.summary && n.summary.length > 50;
+                            const btnLabel = hasSummary ? '✨ AI Summary' : 'Summary';
+                            return `<div class="news-item">
+                                <a href="${n.link}" target="_blank" rel="noopener noreferrer">${n.title}</a>
+                                <div class="news-source">
+                                    <span>${n.source || 'Ag News'}</span>
+                                    <button class="news-summary-btn" onclick="showSummary(${i}, 'hub')">${btnLabel}</button>
+                                </div>
+                            </div>`;
+                        }).join('');
+                    }
+                    return; // Success — don't fall through to markets news
                 }
             }
         } catch (e) {
-            // Fallback to markets news if news.json fails
-            buildTicker(markets, window.marketsNews || []);
+            // Fall through to markets news
         }
+        // Fallback: use markets news for ticker (no AI summaries, but descriptions work)
+        buildTicker(markets, window.marketsNews || []);
     }
     
     // Modal functions
@@ -1080,31 +1140,49 @@
         let article;
         if (source === 'markets') {
             article = window.marketsNews?.[index];
+        } else if (source === 'ticker') {
+            article = window.tickerNews?.[index];
         } else {
             article = window.newsHubItems?.[index];
         }
         if (!article) return;
         
-        const summary = article.summary || article.description || 'No summary available. Click "Read Full Article" to view the original.';
-        const isAI = article.summary && article.summary.length > 100;
+        const hasSummary = article.summary && article.summary.length > 50;
+        const hasDescription = article.description && article.description.length > 30;
+        const summaryText = hasSummary ? article.summary 
+            : hasDescription ? article.description 
+            : null;
+        const isAI = hasSummary;
         const time = article.timestamp ? timeAgo(article.timestamp) : (article.pubDate ? new Date(article.pubDate).toLocaleDateString() : '');
+        
+        // Build summary section
+        let summaryHtml;
+        if (summaryText) {
+            const badge = isAI 
+                ? '<span style="display:inline-block;background:rgba(230,176,66,0.15);color:var(--accent);font-size:0.7rem;padding:2px 8px;border-radius:3px;margin-bottom:12px;font-weight:600">✨ AI Summary</span>' 
+                : '';
+            summaryHtml = badge + '<div class="modal-summary">' + escapeHtml(summaryText) + '</div>';
+        } else {
+            summaryHtml = '<div class="modal-summary" style="color:var(--dim);font-style:italic">' +
+                'No summary available for this article yet. Click "Read Full Article" below to read the original source.' +
+            '</div>';
+        }
         
         modalContent.innerHTML = 
             '<div class="modal-header">' +
                 '<div>' +
-                    '<h3>Summary</h3>' +
-                    '<p class="sub-note">' + escapeHtml(source) + '</p>' +
+                    '<h3>' + (isAI ? '✨ AI Summary' : '📰 Article Summary') + '</h3>' +
                 '</div>' +
                 '<button class="modal-close" onclick="closeModal()">×</button>' +
             '</div>' +
             '<div class="modal-body">' +
-                '<div class="modal-source">📰 ' + escapeHtml(article.source || 'Ag News') + (time ? ' • ' + time : '') + '</div>' +
+                '<div class="modal-source">📰 ' + escapeHtml(article.source || 'Ag News') + (time ? ' · ' + time : '') + '</div>' +
                 '<h2 class="modal-title">' + escapeHtml(article.title) + '</h2>' +
-                '<div class="modal-summary">' + escapeHtml(summary) + '</div>' +
+                summaryHtml +
             '</div>' +
             '<div class="modal-footer">' +
                 '<button class="modal-btn modal-btn-secondary" onclick="closeModal()">Close</button>' +
-                '<a class="modal-btn modal-btn-primary" href="' + article.link + '" target="_blank" rel="noopener">Read Full Article →</a>' +
+                '<a class="modal-btn modal-btn-primary" href="' + article.link + '" target="_blank" rel="noopener noreferrer">Read Full Article →</a>' +
             '</div>';
         
         modal.classList.add('active');
