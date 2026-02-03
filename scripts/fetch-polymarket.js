@@ -9,30 +9,109 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
+// ═══════════════════════════════════════════════════════════════
+// SEARCH QUERIES — ag-focused, grouped by category
+// ═══════════════════════════════════════════════════════════════
 const SEARCHES = [
-    { q: 'tariff', cat: 'tariffs' },
+    // Trade policy affecting agriculture
+    { q: 'tariff china', cat: 'tariffs' },
+    { q: 'tariff canada', cat: 'tariffs' },
+    { q: 'tariff mexico', cat: 'tariffs' },
     { q: 'trade war', cat: 'tariffs' },
-    { q: 'china trade', cat: 'tariffs' },
-    { q: 'canada tariff', cat: 'tariffs' },
-    { q: 'mexico tariff', cat: 'tariffs' },
+    { q: 'USMCA', cat: 'tariffs' },
+    { q: 'import export ban', cat: 'tariffs' },
+
+    // Fed/economy — directly impacts commodity prices & farm credit
     { q: 'fed rate cut', cat: 'fed' },
-    { q: 'fed rate', cat: 'fed' },
-    { q: 'recession', cat: 'fed' },
-    { q: 'inflation', cat: 'fed' },
+    { q: 'fed rate hike', cat: 'fed' },
+    { q: 'recession 2026', cat: 'fed' },
+    { q: 'inflation rate', cat: 'fed' },
     { q: 'interest rate', cat: 'fed' },
+
+    // Ag policy
     { q: 'farm bill', cat: 'policy' },
     { q: 'government shutdown', cat: 'policy' },
+    { q: 'ethanol mandate', cat: 'policy' },
+    { q: 'EPA agriculture', cat: 'policy' },
     { q: 'biofuel', cat: 'policy' },
-    { q: 'ethanol', cat: 'policy' },
-    { q: 'EPA regulation', cat: 'policy' },
+    { q: 'USDA', cat: 'policy' },
+    { q: 'food prices', cat: 'policy' },
+
+    // Commodities & weather
     { q: 'oil price', cat: 'commodities' },
-    { q: 'crude oil', cat: 'commodities' },
     { q: 'drought', cat: 'commodities' },
     { q: 'El Nino', cat: 'commodities' },
     { q: 'La Nina', cat: 'commodities' },
-    { q: 'gold price', cat: 'commodities' },
-    { q: 'commodity price', cat: 'commodities' },
+    { q: 'crop production', cat: 'commodities' },
+    { q: 'grain prices', cat: 'commodities' },
+    { q: 'corn soybeans wheat', cat: 'commodities' },
 ];
+
+// ═══════════════════════════════════════════════════════════════
+// RELEVANCE FILTER — reject markets that aren't ag-relevant
+// ═══════════════════════════════════════════════════════════════
+
+// If the question contains ANY of these, reject it immediately
+const BLOCKLIST = [
+    'bitcoin', 'btc', 'ethereum', 'eth ', 'crypto', 'microstrategy',
+    'nft', 'solana', 'dogecoin', 'memecoin', 'token',
+    'deport', 'deportation', 'immigration', 'immigrant', 'border wall',
+    'abortion', 'roe v wade', 'supreme court justice', 'impeach',
+    'oscar', 'grammy', 'emmy', 'super bowl winner', 'nba finals',
+    'nfl', 'mlb', 'nhl', 'world cup', 'premier league',
+    'tiktok', 'twitter', 'x.com', 'facebook', 'instagram',
+    'spacex', 'mars landing', 'moon landing',
+    'dating', 'kardashian', 'celebrity',
+    'nuclear war', 'world war',
+    'assassination', 'imprisoned',
+    'ai model', 'chatgpt', 'openai', 'google gemini',
+    'box office', 'movie', 'netflix', 'streaming',
+    'alien', 'ufo', 'uap',
+];
+
+// If the question contains at least one of these, it passes relevance
+const AG_KEYWORDS = [
+    // Direct ag
+    'tariff', 'trade', 'export', 'import', 'embargo', 'sanction',
+    'usmca', 'nafta', 'china deal', 'trade deal', 'trade agreement',
+    // Economy
+    'fed ', 'federal reserve', 'rate cut', 'rate hike', 'interest rate',
+    'recession', 'inflation', 'cpi', 'gdp', 'economic',
+    'government shutdown', 'debt ceiling', 'spending bill',
+    // Ag policy
+    'farm bill', 'usda', 'ethanol', 'biofuel', 'renewable fuel',
+    'epa', 'clean water', 'conservation', 'crop insurance',
+    'food stamp', 'snap benefit', 'food price', 'grocery',
+    // Commodities & weather
+    'oil', 'crude', 'gas price', 'energy price',
+    'drought', 'flood', 'hurricane', 'el nino', 'la nina',
+    'crop', 'grain', 'corn', 'soybean', 'wheat', 'cattle', 'hog',
+    'fertilizer', 'seed', 'pesticide', 'herbicide',
+    'commodity', 'futures',
+    'gold', 'silver',
+    // Global trade partners
+    'brazil', 'argentina', 'ukraine', 'russia grain', 'australia wheat',
+];
+
+function isRelevant(question) {
+    const q = question.toLowerCase();
+
+    // Block obvious noise
+    for (const block of BLOCKLIST) {
+        if (q.includes(block)) return false;
+    }
+
+    // Must match at least one ag keyword
+    for (const kw of AG_KEYWORDS) {
+        if (q.includes(kw)) return true;
+    }
+
+    return false;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// API HELPERS
+// ═══════════════════════════════════════════════════════════════
 
 function fetchJSON(url) {
     return new Promise((resolve, reject) => {
@@ -55,7 +134,7 @@ function fetchJSON(url) {
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 async function searchEvents(query) {
-    const url = 'https://gamma-api.polymarket.com/events?closed=false&limit=5&_q=' + encodeURIComponent(query);
+    const url = 'https://gamma-api.polymarket.com/events?closed=false&limit=8&_q=' + encodeURIComponent(query);
     try {
         const data = await fetchJSON(url);
         return Array.isArray(data) ? data : [];
@@ -71,6 +150,11 @@ function extractMarkets(events) {
         if (!evt.markets || !Array.isArray(evt.markets)) continue;
         for (const m of evt.markets) {
             if (m.closed) continue;
+            const question = m.question || evt.title || '';
+
+            // ── RELEVANCE CHECK ──
+            if (!isRelevant(question)) continue;
+
             let yesPct = 0;
             try {
                 if (m.outcomePrices) {
@@ -80,11 +164,16 @@ function extractMarkets(events) {
                 }
             } catch (e) { continue; }
             if (yesPct <= 0 || yesPct >= 100) continue;
+
             let vol = 0;
             try { vol = parseFloat(m.volume) || parseFloat(m.volumeNum) || 0; } catch(e) {}
+
+            // Skip very low volume (< $10K) — unreliable signal
+            if (vol < 10000) continue;
+
             out.push({
                 id: m.conditionId || m.id || evt.slug + '-' + out.length,
-                question: m.question || evt.title || '',
+                question: question,
                 pct: yesPct,
                 volume: Math.round(vol),
                 endDate: m.endDate || evt.endDate || null,
@@ -95,8 +184,12 @@ function extractMarkets(events) {
     return out;
 }
 
+// ═══════════════════════════════════════════════════════════════
+// MAIN
+// ═══════════════════════════════════════════════════════════════
+
 async function main() {
-    console.log('Fetching Polymarket data for AGSIST...');
+    console.log('Fetching Polymarket data for AGSIST...\n');
     const allResults = [];
     let ok = 0, fail = 0;
 
@@ -108,23 +201,27 @@ async function main() {
         for (const r of results) {
             if (r.status === 'fulfilled') {
                 ok++;
-                if (r.value.events.length > 0) console.log('  ✓ "' + r.value.q + '" → ' + r.value.events.length + ' events');
+                if (r.value.events.length > 0)
+                    console.log('  ✓ "' + r.value.q + '" → ' + r.value.events.length + ' events');
                 r.value.events.forEach(evt => allResults.push({ cat: r.value.cat, event: evt }));
             } else { fail++; }
         }
         if (i + 4 < SEARCHES.length) await sleep(200);
     }
 
-    console.log('\n' + ok + ' succeeded, ' + fail + ' failed');
+    console.log('\n' + ok + ' queries succeeded, ' + fail + ' failed');
 
     // Deduplicate and categorize
     const seen = {};
     const cats = { tariffs: [], fed: [], policy: [], commodities: [] };
+
     for (const item of allResults) {
         for (const m of extractMarkets([item.event])) {
             if (seen[m.id]) continue;
             seen[m.id] = true;
-            if (cats[item.cat]) cats[item.cat].push(m);
+            if (cats[item.cat]) {
+                cats[item.cat].push(m);
+            }
         }
     }
 
@@ -133,14 +230,20 @@ async function main() {
         cats[key].sort((a, b) => b.volume - a.volume);
         cats[key] = cats[key].slice(0, 8);
         total += cats[key].length;
-        if (cats[key].length) console.log('  ' + key + ': ' + cats[key].length);
+        if (cats[key].length) console.log('  ' + key + ': ' + cats[key].length + ' markets');
     }
 
-    const output = { updated: new Date().toISOString(), totalMarkets: total, categories: cats };
+    console.log('\n' + total + ' ag-relevant markets kept');
+
+    const output = {
+        updated: new Date().toISOString(),
+        totalMarkets: total,
+        categories: cats,
+    };
     const outPath = path.join(__dirname, '..', 'data', 'polymarket.json');
     fs.mkdirSync(path.dirname(outPath), { recursive: true });
     fs.writeFileSync(outPath, JSON.stringify(output, null, 2));
-    console.log('\n✅ ' + total + ' markets → ' + outPath);
+    console.log('✅ ' + total + ' markets → ' + outPath);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
