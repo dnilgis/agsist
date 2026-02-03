@@ -35,102 +35,67 @@
 
         .refresh-note { font-size: 0.8rem; color: var(--dim); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .live-dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+        .stale-dot { width: 8px; height: 8px; background: #f59e0b; border-radius: 50%; display: inline-block; }
         .error-dot { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; display: inline-block; }
-        .refresh-note a { color: var(--accent); text-decoration: none; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-        /* Category sections */
         .odds-category { margin-bottom: 28px; }
-        .cat-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 16px;
-        }
+        .cat-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px solid var(--border); margin-bottom:16px; }
         .cat-header h2 { font-size: 1rem; color: var(--text); }
-        .cat-header .cat-count { font-size: 0.75rem; color: var(--dim); background: var(--bg); padding: 3px 10px; border-radius: 10px; border: 1px solid var(--border); }
+        .cat-header .cat-count { font-size:0.75rem; color:var(--dim); background:var(--bg); padding:3px 10px; border-radius:10px; border:1px solid var(--border); }
 
-        /* Odds cards */
-        .odds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
-        .odds-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            transition: all 0.2s;
-        }
-        .odds-card:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(230,176,66,0.1); }
-        .odds-question { font-size: 0.95rem; color: var(--text); font-weight: 600; margin-bottom: 12px; line-height: 1.5; }
-        .odds-question a { color: var(--text); text-decoration: none; }
-        .odds-question a:hover { color: var(--accent); }
+        .odds-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:14px; }
+        .odds-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:16px; transition:all 0.2s; }
+        .odds-card:hover { border-color:var(--accent); transform:translateY(-1px); box-shadow:0 4px 12px rgba(230,176,66,0.1); }
+        .odds-question { font-size:0.95rem; color:var(--text); font-weight:600; margin-bottom:12px; line-height:1.5; }
+        .odds-question a { color:var(--text); text-decoration:none; }
+        .odds-question a:hover { color:var(--accent); }
 
-        /* Probability display */
-        .prob-bar { margin-bottom: 10px; }
-        .prob-labels { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px; }
-        .prob-yes { color: #4ade80; font-weight: 600; }
-        .prob-no { color: #ef4444; font-weight: 600; }
-        .prob-track { height: 8px; background: rgba(239,68,68,0.3); border-radius: 4px; overflow: hidden; }
-        .prob-fill { height: 100%; background: linear-gradient(90deg, #4ade80, #22c55e); border-radius: 4px; transition: width 0.5s ease; }
+        .prob-bar { margin-bottom:10px; }
+        .prob-labels { display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px; }
+        .prob-yes { color:#4ade80; font-weight:600; }
+        .prob-no { color:#ef4444; font-weight:600; }
+        .prob-track { height:8px; background:rgba(239,68,68,0.3); border-radius:4px; overflow:hidden; }
+        .prob-fill { height:100%; background:linear-gradient(90deg,#4ade80,#22c55e); border-radius:4px; transition:width 0.5s ease; }
 
-        .prob-big { display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px; }
-        .prob-pct { font-size: 2rem; font-weight: 700; }
-        .prob-pct.likely { color: #4ade80; }
-        .prob-pct.unlikely { color: #ef4444; }
-        .prob-pct.tossup { color: #f59e0b; }
-        .prob-word { font-size: 0.85rem; color: var(--dim); }
+        .prob-big { display:flex; align-items:baseline; gap:6px; margin-bottom:8px; }
+        .prob-pct { font-size:2rem; font-weight:700; }
+        .prob-pct.likely { color:#4ade80; }
+        .prob-pct.unlikely { color:#ef4444; }
+        .prob-pct.tossup { color:#f59e0b; }
+        .prob-word { font-size:0.85rem; color:var(--dim); }
 
-        /* Ag impact callout */
-        .ag-impact {
-            background: var(--bg);
-            border-radius: 6px;
-            padding: 10px 12px;
-            margin-top: 10px;
-            border-left: 2px solid var(--accent);
-        }
-        .ag-impact-label { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; font-weight: 700; }
-        .ag-impact-text { font-size: 0.85rem; color: var(--dim); line-height: 1.6; }
+        .ag-impact { background:var(--bg); border-radius:6px; padding:10px 12px; margin-top:10px; border-left:2px solid var(--accent); }
+        .ag-impact-label { font-size:0.7rem; color:var(--accent); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px; font-weight:700; }
+        .ag-impact-text { font-size:0.85rem; color:var(--dim); line-height:1.6; }
 
-        .odds-meta { display: flex; gap: 12px; font-size: 0.75rem; color: var(--dim); margin-top: 10px; flex-wrap: wrap; }
-        .odds-meta a { color: var(--accent); text-decoration: none; }
-        .odds-meta a:hover { text-decoration: underline; }
+        .odds-meta { display:flex; gap:12px; font-size:0.75rem; color:var(--dim); margin-top:10px; flex-wrap:wrap; }
+        .odds-meta a { color:var(--accent); text-decoration:none; }
+        .odds-meta a:hover { text-decoration:underline; }
 
-        /* Loading / Error states */
-        .loading-state { text-align: center; padding: 40px 20px; color: var(--dim); }
-        .loading-spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px; }
-        .mini-spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .error-state { text-align: center; padding: 30px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
-        .error-state p { color: var(--dim); font-size: 0.9rem; line-height: 1.7; }
-        .error-state a { color: var(--accent); }
+        .loading-state { text-align:center; padding:40px 20px; color:var(--dim); }
+        .loading-spinner { display:inline-block; width:24px; height:24px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; margin-bottom:12px; }
+        .mini-spinner { display:inline-block; width:12px; height:12px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; }
+        @keyframes spin { to{transform:rotate(360deg)} }
+        .error-state { text-align:center; padding:30px; background:var(--card); border:1px solid var(--border); border-radius:8px; }
+        .error-state p { color:var(--dim); font-size:0.9rem; line-height:1.7; }
+        .error-state a { color:var(--accent); }
 
-        /* Explainer */
-        .explainer {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-        .explainer h2 { font-size: 1rem; color: var(--accent); margin-bottom: 12px; }
-        .explainer p { color: var(--dim); font-size: 0.85rem; line-height: 1.8; margin-bottom: 10px; }
-        .explainer-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 14px; }
-        .explainer-step { background: var(--bg); border-radius: 6px; padding: 14px; text-align: center; }
-        .explainer-step .num { font-size: 1.5rem; margin-bottom: 6px; }
-        .explainer-step .step-title { font-size: 0.85rem; color: var(--text); font-weight: 600; margin-bottom: 4px; }
-        .explainer-step .step-desc { font-size: 0.8rem; color: var(--dim); line-height: 1.5; }
+        .explainer { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:24px; }
+        .explainer h2 { font-size:1rem; color:var(--accent); margin-bottom:12px; }
+        .explainer p { color:var(--dim); font-size:0.85rem; line-height:1.8; margin-bottom:10px; }
+        .explainer-steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:14px; }
+        .explainer-step { background:var(--bg); border-radius:6px; padding:14px; text-align:center; }
+        .explainer-step .num { font-size:1.5rem; margin-bottom:6px; }
+        .explainer-step .step-title { font-size:0.85rem; color:var(--text); font-weight:600; margin-bottom:4px; }
+        .explainer-step .step-desc { font-size:0.8rem; color:var(--dim); line-height:1.5; }
 
-        .disclaimer {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 14px;
-            font-size: 0.8rem;
-            color: var(--dim);
-            line-height: 1.7;
-        }
-        .disclaimer strong { color: var(--text); }
+        .disclaimer { background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:14px; font-size:0.8rem; color:var(--dim); line-height:1.7; }
+        .disclaimer strong { color:var(--text); }
 
-        @media (max-width: 600px) {
-            .odds-grid { grid-template-columns: 1fr; }
-            .prob-pct { font-size: 1.5rem; }
+        @media(max-width:600px) {
+            .odds-grid { grid-template-columns:1fr; }
+            .prob-pct { font-size:1.5rem; }
         }
     </style>
 </head>
@@ -141,23 +106,21 @@
 
         <div class="page-intro">
             <h1>🎯 Ag Odds & Outlook</h1>
-            <p>Live odds from <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Polymarket</a> on events that move grain prices — tariffs, trade deals, Fed rates, farm policy. Every number on this page is pulled live. We filter for what matters to agriculture and add context on farm impact.</p>
+            <p>Real odds from <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Polymarket</a> prediction markets on events that move grain prices. Every number below is real Polymarket data, updated automatically every 15 minutes. We filter for what matters to agriculture and add context on farm impact.</p>
         </div>
 
         <div class="refresh-note" id="status-bar">
             <span class="mini-spinner"></span>
-            <span id="status-text">Fetching live data from Polymarket...</span>
+            <span id="status-text">Loading market data...</span>
         </div>
 
-        <!-- Dynamic content -->
         <div id="markets-container">
             <div class="loading-state">
                 <div class="loading-spinner"></div>
-                <div>Searching Polymarket for ag-relevant markets...</div>
+                <div>Loading prediction markets...</div>
             </div>
         </div>
 
-        <!-- How Prediction Markets Work -->
         <div class="explainer">
             <h2>💡 How Prediction Markets Work</h2>
             <p>Prediction markets let people put real money on whether something will happen. The price of a "yes" share tells you how likely the crowd thinks an event is. If "yes" shares cost 62¢, the market says there's about a 62% chance it happens.</p>
@@ -174,8 +137,8 @@
                 </div>
                 <div class="explainer-step">
                     <div class="num">⚡</div>
-                    <div class="step-title">Real-Time</div>
-                    <div class="step-desc">Odds update instantly as news breaks — often hours before headlines</div>
+                    <div class="step-title">Updated Every 15 Min</div>
+                    <div class="step-desc">Our backend pulls fresh data from Polymarket automatically</div>
                 </div>
                 <div class="explainer-step">
                     <div class="num">🌾</div>
@@ -186,7 +149,7 @@
         </div>
 
         <div class="disclaimer">
-            <strong>Disclaimer:</strong> All odds shown are live from <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Polymarket</a>. AGSIST does not operate a prediction market. Prediction market odds reflect crowd sentiment, not certainty. "Ag Impact" commentary is AGSIST editorial analysis. This is not financial or trading advice. Always consult your elevator, crop insurance agent, or financial advisor before making marketing decisions.
+            <strong>Disclaimer:</strong> All odds are sourced from <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Polymarket</a> and updated every 15 minutes. AGSIST does not operate a prediction market. Odds reflect crowd sentiment, not certainty. "Ag Impact" commentary is AGSIST editorial analysis. This is not financial or trading advice. Always consult your elevator, crop insurance agent, or financial advisor before making marketing decisions.
         </div>
     </main>
     <div id="footer"></div>
@@ -195,286 +158,124 @@
     (function() {
         'use strict';
 
-        // =====================================================
-        // SEARCH QUERIES — terms we look for on Polymarket
-        // Each maps to a display category
-        // =====================================================
-        var SEARCHES = [
-            { q: 'tariff', cat: 'tariffs' },
-            { q: 'trade war', cat: 'tariffs' },
-            { q: 'china trade', cat: 'tariffs' },
-            { q: 'canada tariff', cat: 'tariffs' },
-            { q: 'mexico tariff', cat: 'tariffs' },
-            { q: 'fed rate cut', cat: 'fed' },
-            { q: 'fed rate', cat: 'fed' },
-            { q: 'recession', cat: 'fed' },
-            { q: 'inflation', cat: 'fed' },
-            { q: 'interest rate', cat: 'fed' },
-            { q: 'farm bill', cat: 'policy' },
-            { q: 'government shutdown', cat: 'policy' },
-            { q: 'biofuel', cat: 'policy' },
-            { q: 'ethanol', cat: 'policy' },
-            { q: 'EPA regulation', cat: 'policy' },
-            { q: 'oil price', cat: 'commodities' },
-            { q: 'crude oil', cat: 'commodities' },
-            { q: 'drought', cat: 'commodities' },
-            { q: 'El Nino', cat: 'commodities' },
-            { q: 'La Nina', cat: 'commodities' },
-            { q: 'gold price', cat: 'commodities' },
-            { q: 'commodity price', cat: 'commodities' },
-        ];
-
-        var CATEGORIES = {
-            tariffs:     { icon: '🚢', title: 'Tariffs & Trade', tag: 'Export demand' },
-            fed:         { icon: '🏦', title: 'Fed Rates & Economy', tag: 'Farm credit costs' },
-            policy:      { icon: '🏛️', title: 'Policy & Government', tag: 'Farm programs' },
-            commodities: { icon: '🌾', title: 'Commodities & Weather', tag: 'Prices & supply' }
+        var CATS = {
+            tariffs:     { icon: '🚢', title: 'Tariffs & Trade' },
+            fed:         { icon: '🏦', title: 'Fed Rates & Economy' },
+            policy:      { icon: '🏛️', title: 'Policy & Government' },
+            commodities: { icon: '🌾', title: 'Commodities & Weather' }
         };
 
-        // =====================================================
-        // AG IMPACT — editorial commentary keyed by keyword.
-        // Only shown when a market question matches.
-        // =====================================================
-        var AG_IMPACTS = [
-            { match: 'tariff', text: 'Tariffs directly impact grain export competitiveness. Higher tariffs risk retaliation against US ag exports — soybeans to China and cattle/dairy to Canada are most exposed.' },
-            { match: 'china', text: 'China is the world\'s largest soybean importer. Trade disruptions can move soybean futures 50¢+ per bushel. Watch for flash sales over 100K MT as a signal.' },
-            { match: 'canada', text: 'Canada is the #1 buyer of US ag exports. Tariffs risk retaliation on wheat, cattle, and dairy.' },
-            { match: 'mexico', text: 'Mexico buys ~$25B in US ag products annually — corn, dairy, pork, and beef. Trade disruption here hits livestock and feed demand hard.' },
-            { match: 'rate cut', text: 'Rate cuts lower operating loan costs. A 25bp cut saves roughly $2,500/yr per $1M in operating debt. Also weakens the dollar, which helps grain exports.' },
-            { match: 'interest rate', text: 'Interest rate changes directly affect farm operating loans, land values, and machinery financing. Lower rates also tend to weaken the dollar, supporting grain exports.' },
-            { match: 'recession', text: 'Recession cuts corn demand 200-300M bu through reduced ethanol and protein consumption. In 2008-09, corn dropped 55% and beans 38%. Farm income lags the economy by 6-12 months.' },
-            { match: 'inflation', text: 'Moderate inflation supports commodity prices but raises input costs. Historically, grain prices outpace CPI during inflationary periods.' },
-            { match: 'farm bill', text: 'A new Farm Bill could update ARC/PLC reference prices, expand crop insurance options, and change conservation compliance — all directly affecting your bottom line.' },
-            { match: 'shutdown', text: 'Shutdowns delay USDA reports (WASDE, Crop Progress), FSA office services, and CRP/ARC/PLC payments. Extended shutdown during planting season is the nightmare scenario.' },
-            { match: 'biofuel', text: 'Higher biofuel mandates = more soybean oil demand for biodiesel and more corn for ethanol. Each 1B gallon RVO increase adds roughly 5-10¢/bu to corn.' },
-            { match: 'ethanol', text: 'Year-round E15 or expanded RFS mandates boost corn demand ~300-500M bushels. Watch EPA rulemaking closely.' },
-            { match: 'oil price', text: 'Oil above $70 keeps input costs elevated (diesel, anhydrous, drying) but supports ethanol margins, putting a floor under corn. Farmer sweet spot: $65-80.' },
-            { match: 'crude oil', text: 'Crude prices drive diesel and fertilizer costs. Above $70 supports ethanol profitability and corn basis. Below $55 and ethanol plants cut production.' },
-            { match: 'drought', text: 'Drought is the single biggest yield risk. The 2012 drought cut corn yields to 123 bu/ac and sent prices above $8. Watch USDM weekly updates.' },
-            { match: 'la ni', text: 'La Niña typically brings hot/dry to the western Corn Belt and wet to the Delta. The 2012 La Niña drought was catastrophic for corn.' },
-            { match: 'el ni', text: 'El Niño tends to bring wetter conditions to the southern US and can disrupt South American growing seasons, impacting global soybean and corn supply.' },
-            { match: 'gold', text: 'Gold rallies signal inflation fears and dollar weakness — both historically positive for grain prices. Gold often leads ag commodity rallies by 3-6 months.' },
+        var IMPACTS = [
+            { m: 'tariff', t: 'Tariffs directly impact grain export competitiveness. Higher tariffs risk retaliation against US ag exports — soybeans to China and cattle/dairy to Canada/Mexico are most exposed.' },
+            { m: 'china', t: 'China is the world\'s largest soybean importer. Trade disruptions can move soybean futures 50¢+ per bushel.' },
+            { m: 'canada', t: 'Canada is the #1 buyer of US ag exports. Tariffs risk retaliation on wheat, cattle, and dairy.' },
+            { m: 'mexico', t: 'Mexico buys ~$25B in US ag products annually — corn, dairy, pork, and beef. Trade disruption hits livestock and feed demand hard.' },
+            { m: 'rate cut', t: 'Rate cuts lower operating loan costs. A 25bp cut saves ~$2,500/yr per $1M in operating debt. Also weakens the dollar, helping grain exports.' },
+            { m: 'interest rate', t: 'Interest rate changes affect farm operating loans, land values, and machinery financing. Lower rates weaken the dollar, supporting exports.' },
+            { m: 'recession', t: 'Recession cuts corn demand 200-300M bu via reduced ethanol and protein consumption. Farm income lags the economy by 6-12 months.' },
+            { m: 'inflation', t: 'Moderate inflation supports commodity prices but raises input costs. Historically, grain prices outpace CPI during inflationary periods.' },
+            { m: 'farm bill', t: 'A new Farm Bill could update ARC/PLC reference prices, expand crop insurance, and change conservation compliance — all affecting your bottom line.' },
+            { m: 'shutdown', t: 'Shutdowns delay USDA reports (WASDE, Crop Progress), FSA services, and CRP/ARC/PLC payments.' },
+            { m: 'biofuel', t: 'Higher biofuel mandates = more soybean oil for biodiesel + more corn for ethanol. Each 1B gallon RVO increase adds ~5-10¢/bu to corn.' },
+            { m: 'ethanol', t: 'Year-round E15 or expanded RFS mandates boost corn demand ~300-500M bushels.' },
+            { m: 'oil price', t: 'Oil above $70 keeps input costs elevated but supports ethanol margins, putting a floor under corn.' },
+            { m: 'crude oil', t: 'Crude drives diesel and fertilizer costs. Above $70 supports ethanol profitability and corn basis.' },
+            { m: 'drought', t: 'Drought is the single biggest yield risk. The 2012 drought cut corn yields to 123 bu/ac and sent prices above $8.' },
+            { m: 'la ni', t: 'La Niña typically brings hot/dry to the western Corn Belt. The 2012 La Niña drought was catastrophic for corn.' },
+            { m: 'el ni', t: 'El Niño brings wetter conditions to the southern US and can disrupt South American growing seasons.' },
+            { m: 'gold', t: 'Gold rallies signal inflation fears and dollar weakness — both historically positive for grain prices.' },
         ];
 
-        // =====================================================
-        // API LAYER
-        // =====================================================
-        var API = 'https://gamma-api.polymarket.com';
-
-        async function searchEvents(query) {
-            var url = API + '/events?closed=false&limit=5&_q=' + encodeURIComponent(query);
-            var res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-            if (!res.ok) throw new Error(res.status);
-            var data = await res.json();
-            return Array.isArray(data) ? data : [];
-        }
-
-        function extractMarkets(events) {
-            var out = [];
-            events.forEach(function(evt) {
-                if (!evt.markets) return;
-                evt.markets.forEach(function(m) {
-                    if (m.closed) return;
-                    var yesPct = 0;
-                    try {
-                        if (m.outcomePrices) {
-                            var p = JSON.parse(m.outcomePrices);
-                            yesPct = Math.round(parseFloat(p[0]) * 100);
-                        } else if (m.lastTradePrice) {
-                            yesPct = Math.round(parseFloat(m.lastTradePrice) * 100);
-                        }
-                    } catch (e) { return; }
-                    if (yesPct <= 0 || yesPct >= 100) return;
-
-                    var vol = 0;
-                    try { vol = parseFloat(m.volume) || parseFloat(m.volumeNum) || 0; } catch(e) {}
-
-                    out.push({
-                        id: m.conditionId || m.id || (evt.slug + '-' + out.length),
-                        question: m.question || evt.title || '',
-                        pct: yesPct,
-                        volume: vol,
-                        endDate: m.endDate || evt.endDate || null,
-                        slug: evt.slug || '',
-                    });
-                });
-            });
-            return out;
-        }
-
-        // =====================================================
-        // RENDERING
-        // =====================================================
         function fmtVol(v) {
-            if (v >= 1e6) return '$' + (v / 1e6).toFixed(1) + 'M';
-            if (v >= 1e3) return '$' + Math.round(v / 1e3) + 'K';
+            if (v >= 1e6) return '$' + (v/1e6).toFixed(1) + 'M';
+            if (v >= 1e3) return '$' + Math.round(v/1e3) + 'K';
             if (v > 0) return '$' + Math.round(v);
-            return '--';
+            return '';
         }
-
         function fmtDate(d) {
             if (!d) return '';
+            try { var dt = new Date(d); return isNaN(dt) ? '' : dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); } catch(e) { return ''; }
+        }
+        function timeAgo(iso) {
             try {
-                var dt = new Date(d);
-                return isNaN(dt) ? '' : dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                var min = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+                if (min < 1) return 'just now';
+                if (min < 60) return min + ' min ago';
+                var hrs = Math.floor(min/60);
+                if (hrs < 24) return hrs + 'h ago';
+                return Math.floor(hrs/24) + 'd ago';
             } catch(e) { return ''; }
         }
-
-        function probClass(pct) {
-            return pct >= 65 ? 'likely' : pct <= 35 ? 'unlikely' : 'tossup';
+        function probClass(p) { return p >= 65 ? 'likely' : p <= 35 ? 'unlikely' : 'tossup'; }
+        function probWord(p) {
+            if (p>=85) return 'Almost certain'; if (p>=70) return 'Likely'; if (p>=55) return 'Leaning yes';
+            if (p>=45) return 'Toss-up'; if (p>=30) return 'Leaning no'; if (p>=15) return 'Unlikely'; return 'Very unlikely';
         }
-
-        function probWord(pct) {
-            if (pct >= 85) return 'Almost certain';
-            if (pct >= 70) return 'Likely';
-            if (pct >= 55) return 'Leaning yes';
-            if (pct >= 45) return 'Toss-up';
-            if (pct >= 30) return 'Leaning no';
-            if (pct >= 15) return 'Unlikely';
-            return 'Very unlikely';
-        }
-
-        function findImpact(question) {
-            var q = question.toLowerCase();
-            for (var i = 0; i < AG_IMPACTS.length; i++) {
-                if (q.includes(AG_IMPACTS[i].match)) return AG_IMPACTS[i].text;
-            }
+        function findImpact(q) {
+            var lc = q.toLowerCase();
+            for (var i=0; i<IMPACTS.length; i++) { if (lc.indexOf(IMPACTS[i].m) !== -1) return IMPACTS[i].t; }
             return null;
         }
 
-        function renderCard(m) {
+        function card(m) {
             var impact = findImpact(m.question);
-            var impactHtml = impact
-                ? '<div class="ag-impact"><div class="ag-impact-label">🌾 Ag Impact — AGSIST Analysis</div><div class="ag-impact-text">' + impact + '</div></div>'
-                : '';
-
+            var impHtml = impact ? '<div class="ag-impact"><div class="ag-impact-label">🌾 Ag Impact — AGSIST Analysis</div><div class="ag-impact-text">'+impact+'</div></div>' : '';
             var url = 'https://polymarket.com/event/' + m.slug;
-            var endStr = fmtDate(m.endDate);
-            var endHtml = endStr ? '<span>Ends ' + endStr + '</span>' : '';
-
+            var end = fmtDate(m.endDate);
+            var vol = fmtVol(m.volume);
             return '<div class="odds-card">' +
-                '<div class="odds-question"><a href="' + url + '" target="_blank" rel="noopener noreferrer">' + m.question + '</a></div>' +
-                '<div class="prob-big">' +
-                    '<span class="prob-pct ' + probClass(m.pct) + '">' + m.pct + '%</span>' +
-                    '<span class="prob-word">' + probWord(m.pct) + '</span>' +
-                '</div>' +
-                '<div class="prob-bar">' +
-                    '<div class="prob-labels"><span class="prob-yes">Yes ' + m.pct + '%</span><span class="prob-no">No ' + (100 - m.pct) + '%</span></div>' +
-                    '<div class="prob-track"><div class="prob-fill" style="width:' + m.pct + '%"></div></div>' +
-                '</div>' +
-                impactHtml +
+                '<div class="odds-question"><a href="'+url+'" target="_blank" rel="noopener noreferrer">'+m.question+'</a></div>' +
+                '<div class="prob-big"><span class="prob-pct '+probClass(m.pct)+'">'+m.pct+'%</span><span class="prob-word">'+probWord(m.pct)+'</span></div>' +
+                '<div class="prob-bar"><div class="prob-labels"><span class="prob-yes">Yes '+m.pct+'%</span><span class="prob-no">No '+(100-m.pct)+'%</span></div>' +
+                '<div class="prob-track"><div class="prob-fill" style="width:'+m.pct+'%"></div></div></div>' +
+                impHtml +
                 '<div class="odds-meta">' +
-                    '<span>Vol: ' + fmtVol(m.volume) + '</span>' +
-                    endHtml +
-                    '<a href="' + url + '" target="_blank" rel="noopener noreferrer">Polymarket →</a>' +
-                '</div>' +
-            '</div>';
+                    (vol ? '<span>Vol: '+vol+'</span>' : '') +
+                    (end ? '<span>Ends '+end+'</span>' : '') +
+                    '<a href="'+url+'" target="_blank" rel="noopener noreferrer">Polymarket →</a>' +
+                '</div></div>';
         }
 
-        // =====================================================
-        // MAIN LOADER
-        // =====================================================
-        async function loadAllMarkets() {
-            var container = document.getElementById('markets-container');
-            var statusText = document.getElementById('status-text');
-            var statusBar = document.getElementById('status-bar');
+        // Load from local static JSON (written by GitHub Action)
+        async function load() {
+            var el = document.getElementById('markets-container');
+            var bar = document.getElementById('status-bar');
+            try {
+                var res = await fetch('/data/polymarket.json?v=' + Date.now());
+                if (!res.ok) throw new Error(res.status);
+                var data = await res.json();
 
-            var allResults = [];
-            var succeeded = 0;
-            var failed = 0;
-
-            // Run searches in batches of 4
-            for (var i = 0; i < SEARCHES.length; i += 4) {
-                var batch = SEARCHES.slice(i, i + 4);
-                var results = await Promise.allSettled(batch.map(function(s) {
-                    return searchEvents(s.q).then(function(events) {
-                        return { cat: s.cat, events: events };
-                    });
-                }));
-
-                results.forEach(function(r) {
-                    if (r.status === 'fulfilled') {
-                        succeeded++;
-                        r.value.events.forEach(function(evt) {
-                            allResults.push({ cat: r.value.cat, event: evt });
-                        });
-                    } else {
-                        failed++;
-                    }
-                });
-
-                // Small delay between batches
-                if (i + 4 < SEARCHES.length) {
-                    await new Promise(function(r) { setTimeout(r, 120); });
+                if (!data.categories || data.totalMarkets === 0) {
+                    el.innerHTML = '<div class="error-state"><p>No ag-relevant prediction markets found in the latest data pull.</p>' +
+                        '<p style="margin-top:12px">Browse all markets at <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer">polymarket.com</a></p></div>';
+                    bar.innerHTML = '<span class="stale-dot"></span> No markets found · Last checked ' + timeAgo(data.updated);
+                    return;
                 }
-            }
 
-            // Total API failure
-            if (succeeded === 0) {
-                container.innerHTML = '<div class="error-state">' +
-                    '<p>⚠️ Unable to reach the Polymarket API. This is usually a temporary issue.</p>' +
-                    '<p style="margin-top:12px">Browse markets directly at <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer">polymarket.com</a></p>' +
-                '</div>';
-                statusBar.innerHTML = '<span class="error-dot"></span> Unable to connect to Polymarket';
-                return;
-            }
-
-            // Deduplicate and categorize
-            var seen = {};
-            var cats = { tariffs: [], fed: [], policy: [], commodities: [] };
-
-            allResults.forEach(function(item) {
-                extractMarkets([item.event]).forEach(function(m) {
-                    if (seen[m.id]) return;
-                    seen[m.id] = true;
-                    if (cats[item.cat]) cats[item.cat].push(m);
+                var html = '';
+                ['tariffs','fed','policy','commodities'].forEach(function(key) {
+                    var list = data.categories[key];
+                    if (!list || !list.length) return;
+                    var c = CATS[key];
+                    html += '<div class="odds-category"><div class="cat-header"><h2>'+c.icon+' '+c.title+'</h2>' +
+                        '<span class="cat-count">'+list.length+' market'+(list.length>1?'s':'')+'</span></div><div class="odds-grid">';
+                    list.forEach(function(m) { html += card(m); });
+                    html += '</div></div>';
                 });
-            });
+                el.innerHTML = html;
 
-            // Sort by volume, limit per category
-            var totalMarkets = 0;
-            Object.keys(cats).forEach(function(k) {
-                cats[k].sort(function(a, b) { return b.volume - a.volume; });
-                cats[k] = cats[k].slice(0, 8);
-                totalMarkets += cats[k].length;
-            });
-
-            // Nothing found
-            if (totalMarkets === 0) {
-                container.innerHTML = '<div class="error-state">' +
-                    '<p>No open ag-relevant prediction markets found right now. Market selection on Polymarket changes frequently.</p>' +
-                    '<p style="margin-top:12px">Browse all markets at <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer">polymarket.com</a></p>' +
-                '</div>';
-                statusBar.innerHTML = '<span class="error-dot"></span> Connected — no ag-relevant markets currently open';
-                return;
+                var ms = Date.now() - new Date(data.updated).getTime();
+                var dot = ms > 1800000 ? 'stale-dot' : 'live-dot';
+                bar.innerHTML = '<span class="'+dot+'"></span> Polymarket data · '+data.totalMarkets+' markets · Updated '+timeAgo(data.updated);
+            } catch(e) {
+                el.innerHTML = '<div class="error-state">' +
+                    '<p>⚠️ Prediction market data is not available yet.</p>' +
+                    '<p style="margin-top:8px;font-size:0.85rem">This page displays live data from Polymarket, fetched every 15 minutes by our backend. If you just deployed, run the <strong>Fetch Polymarket Data</strong> GitHub Action to populate it.</p>' +
+                    '<p style="margin-top:12px">Browse markets directly at <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer">polymarket.com</a></p></div>';
+                bar.innerHTML = '<span class="error-dot"></span> Data not yet available';
             }
-
-            // Build HTML
-            var html = '';
-            ['tariffs', 'fed', 'policy', 'commodities'].forEach(function(key) {
-                var list = cats[key];
-                if (list.length === 0) return;
-                var cat = CATEGORIES[key];
-                html += '<div class="odds-category">' +
-                    '<div class="cat-header">' +
-                        '<h2>' + cat.icon + ' ' + cat.title + '</h2>' +
-                        '<span class="cat-count">' + list.length + ' market' + (list.length > 1 ? 's' : '') + '</span>' +
-                    '</div>' +
-                    '<div class="odds-grid">';
-                list.forEach(function(m) { html += renderCard(m); });
-                html += '</div></div>';
-            });
-
-            container.innerHTML = html;
-
-            // Status
-            var now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            statusBar.innerHTML = '<span class="live-dot"></span> Live from Polymarket · ' + totalMarkets + ' markets · Updated ' + now;
         }
-
-        // Go
-        loadAllMarkets();
-        setInterval(loadAllMarkets, 5 * 60 * 1000);
+        load();
     })();
     </script>
 </body>
