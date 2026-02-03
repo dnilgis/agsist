@@ -15,8 +15,10 @@
     --card-hover: #1c1c22;
     --border: #2a2a32;
     --text: #e8e8ec;
-    --dim: #8a8a94;
+    --dim: #9a9aa6;
     --accent: #e6b042;
+    --green: #4ade80;
+    --red: #ef4444;
     
     /* Category Colors */
     --community: #ff6b35;
@@ -46,8 +48,10 @@ body {
     font-family: 'JetBrains Mono', monospace;
     background: var(--bg);
     color: var(--text);
-    line-height: 1.6;
+    line-height: 1.7;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* ============================================
@@ -99,7 +103,7 @@ body {
     border: none;
     color: var(--dim);
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     padding: 10px 14px;
     cursor: pointer;
     border-radius: 4px;
@@ -184,7 +188,7 @@ body {
 
 .nav-mobile-section {
     color: var(--accent);
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -204,7 +208,7 @@ body {
     color: var(--dim);
     text-decoration: none;
     padding: 6px 10px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     transition: color 0.2s;
     background: var(--card);
     border-radius: 4px;
@@ -313,7 +317,7 @@ body {
 
 .footer-network h4 {
     color: var(--dim);
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 12px;
