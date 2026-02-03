@@ -377,6 +377,13 @@ main { max-width: 1200px; margin: 0 auto; padding: 16px; }
    MOBILE RESPONSIVE
    ============================================ */
 
+/* Prevent horizontal overflow globally */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: hidden; width: 100%; }
+img, video, svg { max-width: 100%; height: auto; }
+iframe { max-width: 100%; }
+
+/* Mobile base */
 @media (max-width: 768px) {
     /* Nav */
     .nav-menu {
