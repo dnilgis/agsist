@@ -1015,7 +1015,7 @@
                     const hasSummary = n.summary && n.summary.length > 50;
                     const btnLabel = hasSummary ? '✨ AI Summary' : 'Summary';
                     return `<div class="news-item">
-                        <a href="${n.link}" target="_blank" rel="noopener noreferrer">${n.title}</a>
+                        <a href="${refUrl(n.link)}" target="_blank" rel="noopener noreferrer">${n.title}</a>
                         <div class="news-source">
                             <span>${n.source || 'Ag News'}</span>
                             <button class="news-summary-btn" onclick="showSummary(${i}, 'markets')">${btnLabel}</button>
@@ -1104,7 +1104,7 @@
                             const hasSummary = n.summary && n.summary.length > 50;
                             const btnLabel = hasSummary ? '✨ AI Summary' : 'Summary';
                             return `<div class="news-item">
-                                <a href="${n.link}" target="_blank" rel="noopener noreferrer">${n.title}</a>
+                                <a href="${refUrl(n.link)}" target="_blank" rel="noopener noreferrer">${n.title}</a>
                                 <div class="news-source">
                                     <span>${n.source || 'Ag News'}</span>
                                     <button class="news-summary-btn" onclick="showSummary(${i}, 'hub')">${btnLabel}</button>
@@ -1125,6 +1125,12 @@
     // Modal functions
     const modal = document.getElementById('modal');
     const modalContent = document.getElementById('modal-content');
+    
+    // Append ?ref=agsist to outbound URLs for analytics tracking
+    function refUrl(url) {
+        if (!url || url.includes('agsist.com') || url.startsWith('#') || url.startsWith('/')) return url;
+        return url + (url.includes('?') ? '&' : '?') + 'ref=agsist';
+    }
     
     function escapeHtml(text) {
         if (!text) return '';
@@ -1193,7 +1199,7 @@
                 '</div>' +
                 '<div class="modal-footer">' +
                     '<button class="modal-btn modal-btn-secondary" onclick="closeModal()">Close</button>' +
-                    '<a class="modal-btn modal-btn-primary" href="' + article.link + '" target="_blank" rel="noopener noreferrer">Read Full Article →</a>' +
+                    '<a class="modal-btn modal-btn-primary" href="' + refUrl(article.link) + '" target="_blank" rel="noopener noreferrer">Read Full Article →</a>' +
                 '</div>';
         }
         

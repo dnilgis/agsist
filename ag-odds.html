@@ -106,7 +106,7 @@
 
         <div class="page-intro">
             <h1>🎯 Ag Odds & Outlook</h1>
-            <p>Real odds from <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Polymarket</a> prediction markets on events that move grain prices. Every number below is real Polymarket data, updated automatically every 15 minutes. We filter for what matters to agriculture and add context on farm impact.</p>
+            <p>Real odds from <a href="https://polymarket.com?ref=agsist" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Polymarket</a> prediction markets on events that move grain prices. Every number below is real Polymarket data, updated automatically every 15 minutes. We filter for what matters to agriculture and add context on farm impact.</p>
         </div>
 
         <div class="refresh-note" id="status-bar">
@@ -149,7 +149,7 @@
         </div>
 
         <div class="disclaimer">
-            <strong>Disclaimer:</strong> All odds are sourced from <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Polymarket</a> and updated every 15 minutes. AGSIST does not operate a prediction market. Odds reflect crowd sentiment, not certainty. "Ag Impact" commentary is AGSIST editorial analysis. This is not financial or trading advice. Always consult your elevator, crop insurance agent, or financial advisor before making marketing decisions.
+            <strong>Disclaimer:</strong> All odds are sourced from <a href="https://polymarket.com?ref=agsist" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Polymarket</a> and updated every 15 minutes. AGSIST does not operate a prediction market. Odds reflect crowd sentiment, not certainty. "Ag Impact" commentary is AGSIST editorial analysis. This is not financial or trading advice. Always consult your elevator, crop insurance agent, or financial advisor before making marketing decisions.
         </div>
     </main>
     <div id="footer"></div>
@@ -246,7 +246,7 @@
         function card(m) {
             var impact = findImpact(m.question);
             var impHtml = impact ? '<div class="ag-impact"><div class="ag-impact-label">🌾 Ag Impact — AGSIST Analysis</div><div class="ag-impact-text">'+impact+'</div></div>' : '';
-            var url = 'https://polymarket.com/event/' + m.slug;
+            var url = 'https://polymarket.com/event/' + m.slug + '?ref=agsist';
             var end = fmtDate(m.endDate);
             var vol = fmtVol(m.volume);
             return '<div class="odds-card">' +
@@ -273,7 +273,7 @@
 
                 if (!data.categories || data.totalMarkets === 0) {
                     el.innerHTML = '<div class="error-state"><p>No ag-relevant prediction markets found in the latest data pull.</p>' +
-                        '<p style="margin-top:12px">Browse all markets at <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer">polymarket.com</a></p></div>';
+                        '<p style="margin-top:12px">Browse all markets at <a href="https://polymarket.com?ref=agsist" target="_blank" rel="noopener noreferrer">polymarket.com</a></p></div>';
                     bar.innerHTML = '<span class="stale-dot"></span> No markets found · Last checked ' + timeAgo(data.updated);
                     return;
                 }
@@ -297,7 +297,7 @@
                 el.innerHTML = '<div class="error-state">' +
                     '<p>⚠️ Prediction market data is not available yet.</p>' +
                     '<p style="margin-top:8px;font-size:0.85rem">This page displays live data from Polymarket, fetched every 15 minutes by our backend. If you just deployed, run the <strong>Fetch Polymarket Data</strong> GitHub Action to populate it.</p>' +
-                    '<p style="margin-top:12px">Browse markets directly at <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer">polymarket.com</a></p></div>';
+                    '<p style="margin-top:12px">Browse markets directly at <a href="https://polymarket.com?ref=agsist" target="_blank" rel="noopener noreferrer">polymarket.com</a></p></div>';
                 bar.innerHTML = '<span class="error-dot"></span> Data not yet available';
             }
         }

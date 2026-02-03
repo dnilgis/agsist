@@ -248,10 +248,10 @@
             <div class="panel-head"><h2>🔗 Soil Resources</h2></div>
             <div class="panel-body">
                 <div class="links-grid">
-                    <a href="https://websoilsurvey.nrcs.usda.gov/app/" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>Web Soil Survey</strong><span>Official NRCS mapping tool</span></a>
-                    <a href="https://www.nrcs.usda.gov/resources/data-and-reports/soil-survey-geographic-database-ssurgo" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>SSURGO Database</strong><span>Downloadable soil data</span></a>
-                    <a href="https://casoilresource.lawr.ucdavis.edu/gmap/" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>SoilWeb</strong><span>UC Davis interactive map</span></a>
-                    <a href="https://www.nrcs.usda.gov/conservation-basics/natural-resource-concerns/soils" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>NRCS Soil Health</strong><span>Management guides</span></a>
+                    <a href="https://websoilsurvey.nrcs.usda.gov/app/?ref=agsist" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>Web Soil Survey</strong><span>Official NRCS mapping tool</span></a>
+                    <a href="https://www.nrcs.usda.gov/resources/data-and-reports/soil-survey-geographic-database-ssurgo?ref=agsist" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>SSURGO Database</strong><span>Downloadable soil data</span></a>
+                    <a href="https://casoilresource.lawr.ucdavis.edu/gmap/?ref=agsist" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>SoilWeb</strong><span>UC Davis interactive map</span></a>
+                    <a href="https://www.nrcs.usda.gov/conservation-basics/natural-resource-concerns/soils?ref=agsist" target="_blank" rel="noopener noreferrer" class="ext-link"><strong>NRCS Soil Health</strong><span>Management guides</span></a>
                 </div>
             </div>
         </div>
@@ -359,7 +359,7 @@
                 document.getElementById('soilTable').innerHTML = `
                     <div style="text-align:center;padding:20px;color:var(--dim);">
                         <p>No soil data found for this location. This may be an urban area, water body, or unmapped location.</p>
-                        <a href="https://websoilsurvey.nrcs.usda.gov/app/" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:12px;padding:12px 20px;background:var(--accent);color:#000;border-radius:6px;text-decoration:none;font-weight:600;">Try Web Soil Survey →</a>
+                        <a href="https://websoilsurvey.nrcs.usda.gov/app/?ref=agsist" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:12px;padding:12px 20px;background:var(--accent);color:#000;border-radius:6px;text-decoration:none;font-weight:600;">Try Web Soil Survey →</a>
                     </div>`;
             }
         }
@@ -378,7 +378,7 @@
             document.getElementById('soilTable').innerHTML = `
                 <div style="text-align:center;padding:30px;color:var(--dim);">
                     <p style="margin-bottom:12px;">NRCS Soil Data Access API is temporarily unavailable. Use the official tool:</p>
-                    <a href="https://websoilsurvey.nrcs.usda.gov/app/" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:14px 24px;background:var(--accent);color:#000;border-radius:6px;text-decoration:none;font-weight:600;">Open Web Soil Survey →</a>
+                    <a href="https://websoilsurvey.nrcs.usda.gov/app/?ref=agsist" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:14px 24px;background:var(--accent);color:#000;border-radius:6px;text-decoration:none;font-weight:600;">Open Web Soil Survey →</a>
                     <p style="margin-top:12px;font-size:0.8rem;">Coordinates: ${currentLat.toFixed(5)}, ${currentLon.toFixed(5)}</p>
                 </div>`;
         }
