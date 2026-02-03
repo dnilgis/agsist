@@ -337,6 +337,43 @@ body {
 }
 
 /* ============================================
+   COMMON LAYOUT (base fallbacks)
+   ============================================ */
+
+main { max-width: 1200px; margin: 0 auto; padding: 16px; }
+.breadcrumb { font-size: 0.85rem; color: var(--dim); margin-bottom: 16px; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+
+.panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+.panel-head { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.panel-head h1, .panel-head h2 { font-size: 1.1rem; color: var(--accent); margin: 0; }
+.panel-body { padding: 20px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* Form controls */
+.panel label { display: block; font-size: 0.8rem; color: var(--dim); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.panel input[type="number"], .panel input[type="text"], .panel select {
+    width: 100%; padding: 10px 12px; font-family: inherit; font-size: 0.9rem;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);
+}
+.panel input:focus, .panel select:focus { outline: none; border-color: var(--accent); }
+
+/* Results */
+.result-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.result-row:last-child { border-bottom: none; }
+.result-label { font-size: 0.9rem; color: var(--dim); }
+.result-value { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+.result-value.highlight { color: var(--accent); font-size: 1.3rem; }
+.result-value.positive { color: #4ade80; }
+.result-value.negative { color: #ef4444; }
+
+@media (max-width: 768px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    main { padding: 12px; }
+}
+
+/* ============================================
    MOBILE RESPONSIVE
    ============================================ */
 

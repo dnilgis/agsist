@@ -40,6 +40,12 @@
     }
     </script>
     <style>
+        /* Prevent number spinners */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+        select { cursor: pointer; }
+
         @media (max-width: 500px) {
             div[style*="grid-template-columns: 1fr 1fr"],
             div[style*="grid-template-columns:1fr 1fr"] {
