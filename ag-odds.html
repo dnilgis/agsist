@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0a0a0c">
-    <title>Ag Odds & Outlook — What the Markets Are Saying | AGSIST</title>
-    <meta name="description" content="Live prediction market odds on tariffs, trade war, Fed rates, and weather events that impact agriculture. See what the smart money thinks about farm policy.">
-    <meta name="keywords" content="agriculture prediction markets, tariff odds, trade war agriculture, farm policy odds, USDA outlook, ag market predictions">
+    <title>Ag Odds & Outlook — Live Prediction Market Data | AGSIST</title>
+    <meta name="description" content="Live prediction market odds from Polymarket on tariffs, trade, Fed rates, and events that impact agriculture. Real data, translated for farmers.">
+    <meta name="keywords" content="agriculture prediction markets, tariff odds, trade war agriculture, farm policy odds, polymarket agriculture">
     <link rel="canonical" href="https://agsist.com/ag-odds.html">
     <meta property="og:title" content="Ag Odds & Outlook | AGSIST">
-    <meta property="og:description" content="Live prediction market odds on events that move grain prices. Tariffs, trade policy, Fed rates — see what the smart money says.">
+    <meta property="og:description" content="Live prediction market odds on events that move grain prices — real data from Polymarket.">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Ag Odds & Outlook | AGSIST">
-    <meta name="twitter:description" content="Live prediction market odds on events that move grain prices. Tariffs, trade policy, Fed rates — see what the smart money says.">
+    <meta name="twitter:description" content="Live prediction market odds on events that move grain prices — real data from Polymarket.">
     <meta property="og:url" content="https://agsist.com/ag-odds.html">
     <meta property="og:type" content="website">
     <link rel="icon" href="/favicon.png">
@@ -23,7 +23,7 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
     <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"WebPage","name":"Ag Odds & Outlook","description":"Live prediction market odds on events impacting agriculture — tariffs, trade, Fed policy, weather","url":"https://agsist.com/ag-odds.html"}
+    {"@context":"https://schema.org","@type":"WebPage","name":"Ag Odds & Outlook","description":"Live prediction market odds on events impacting agriculture","url":"https://agsist.com/ag-odds.html"}
     </script>
     <style>
         main { max-width: 1200px; margin: 0 auto; padding: 16px; }
@@ -33,39 +33,20 @@
         .page-intro h1 { font-size: 1.3rem; color: var(--accent); margin-bottom: 8px; }
         .page-intro p { color: var(--dim); font-size: 0.9rem; line-height: 1.7; max-width: 800px; }
 
-        /* What the Markets Are Saying — hero banner */
-        .markets-saying {
-            background: linear-gradient(135deg, #1a1500 0%, var(--card) 50%, #0a1a0a 100%);
-            border: 1px solid var(--accent);
-            border-radius: 10px;
-            padding: 24px;
-            margin-bottom: 24px;
-            position: relative;
-            overflow: hidden;
-        }
-        .markets-saying::before {
-            content: '';
-            position: absolute;
-            top: 0; right: 0;
-            width: 200px; height: 200px;
-            background: radial-gradient(circle, rgba(230,176,66,0.08) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        .markets-saying h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-        .saying-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-        .saying-item { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 14px; border: 1px solid var(--border); }
-        .saying-label { font-size: 0.8rem; color: var(--dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
-        .saying-verdict { font-size: 1rem; color: var(--text); font-weight: 600; line-height: 1.5; }
-        .saying-detail { font-size: 0.8rem; color: var(--dim); margin-top: 6px; line-height: 1.6; }
+        .refresh-note { font-size: 0.8rem; color: var(--dim); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .live-dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+        .error-dot { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; display: inline-block; }
+        .refresh-note a { color: var(--accent); text-decoration: none; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         /* Category sections */
         .odds-category { margin-bottom: 28px; }
-        .cat-header { 
+        .cat-header {
             display: flex; justify-content: space-between; align-items: center;
             padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 16px;
         }
         .cat-header h2 { font-size: 1rem; color: var(--text); }
-        .cat-header .cat-tag { font-size: 0.75rem; color: var(--dim); background: var(--bg); padding: 3px 10px; border-radius: 10px; border: 1px solid var(--border); }
+        .cat-header .cat-count { font-size: 0.75rem; color: var(--dim); background: var(--bg); padding: 3px 10px; border-radius: 10px; border: 1px solid var(--border); }
 
         /* Odds cards */
         .odds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
@@ -77,18 +58,18 @@
             transition: all 0.2s;
         }
         .odds-card:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(230,176,66,0.1); }
-        .odds-card.highlight { border-left: 3px solid var(--accent); }
         .odds-question { font-size: 0.95rem; color: var(--text); font-weight: 600; margin-bottom: 12px; line-height: 1.5; }
-        
-        /* Probability bar */
+        .odds-question a { color: var(--text); text-decoration: none; }
+        .odds-question a:hover { color: var(--accent); }
+
+        /* Probability display */
         .prob-bar { margin-bottom: 10px; }
         .prob-labels { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px; }
         .prob-yes { color: #4ade80; font-weight: 600; }
         .prob-no { color: #ef4444; font-weight: 600; }
-        .prob-track { height: 8px; background: rgba(239,68,68,0.3); border-radius: 4px; overflow: hidden; position: relative; }
+        .prob-track { height: 8px; background: rgba(239,68,68,0.3); border-radius: 4px; overflow: hidden; }
         .prob-fill { height: 100%; background: linear-gradient(90deg, #4ade80, #22c55e); border-radius: 4px; transition: width 0.5s ease; }
-        
-        /* Big probability display */
+
         .prob-big { display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px; }
         .prob-pct { font-size: 2rem; font-weight: 700; }
         .prob-pct.likely { color: #4ade80; }
@@ -111,7 +92,16 @@
         .odds-meta a { color: var(--accent); text-decoration: none; }
         .odds-meta a:hover { text-decoration: underline; }
 
-        /* How it works explainer */
+        /* Loading / Error states */
+        .loading-state { text-align: center; padding: 40px 20px; color: var(--dim); }
+        .loading-spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px; }
+        .mini-spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .error-state { text-align: center; padding: 30px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
+        .error-state p { color: var(--dim); font-size: 0.9rem; line-height: 1.7; }
+        .error-state a { color: var(--accent); }
+
+        /* Explainer */
         .explainer {
             background: var(--card);
             border: 1px solid var(--border);
@@ -138,14 +128,9 @@
         }
         .disclaimer strong { color: var(--text); }
 
-        .refresh-note { font-size: 0.8rem; color: var(--dim); margin-bottom: 16px; }
-        .refresh-note span { color: var(--accent); }
-
         @media (max-width: 600px) {
             .odds-grid { grid-template-columns: 1fr; }
-            .saying-grid { grid-template-columns: 1fr; }
             .prob-pct { font-size: 1.5rem; }
-            .markets-saying { padding: 16px; }
         }
     </style>
 </head>
@@ -153,81 +138,29 @@
     <div id="header"></div>
     <main id="main-content">
         <nav class="breadcrumb"><a href="/">Home</a> → Ag Odds & Outlook</nav>
-        
+
         <div class="page-intro">
             <h1>🎯 Ag Odds & Outlook</h1>
-            <p>Real-time odds from prediction markets on events that move grain prices. Tariffs, trade deals, Fed rates, farm policy — translated into plain English for farmers. These aren't our guesses; they're where real money is being placed.</p>
+            <p>Live odds from <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Polymarket</a> on events that move grain prices — tariffs, trade deals, Fed rates, farm policy. Every number on this page is pulled live. We filter for what matters to agriculture and add context on farm impact.</p>
         </div>
 
-        <div class="refresh-note">📡 Data from <span class="tip" data-tip="Decentralized prediction market — $9B+ cumulative volume">Polymarket</span> prediction markets · Last checked: <span id="last-refresh">--</span></div>
-
-        <!-- What the Markets Are Saying — hero summary -->
-        <div class="markets-saying">
-            <h2>📊 What the Markets Are Saying</h2>
-            <div class="saying-grid" id="saying-grid">
-                <div class="saying-item">
-                    <div class="saying-label">🚢 Trade & Tariffs</div>
-                    <div class="saying-verdict" id="say-trade">Loading...</div>
-                    <div class="saying-detail" id="say-trade-detail"></div>
-                </div>
-                <div class="saying-item">
-                    <div class="saying-label">🏦 Fed & Interest Rates</div>
-                    <div class="saying-verdict" id="say-fed">Loading...</div>
-                    <div class="saying-detail" id="say-fed-detail"></div>
-                </div>
-                <div class="saying-item">
-                    <div class="saying-label">🌾 Farm Policy</div>
-                    <div class="saying-verdict" id="say-farm">Loading...</div>
-                    <div class="saying-detail" id="say-farm-detail"></div>
-                </div>
-                <div class="saying-item">
-                    <div class="saying-label">🌍 Overall Outlook</div>
-                    <div class="saying-verdict" id="say-outlook">Loading...</div>
-                    <div class="saying-detail" id="say-outlook-detail"></div>
-                </div>
-            </div>
+        <div class="refresh-note" id="status-bar">
+            <span class="mini-spinner"></span>
+            <span id="status-text">Fetching live data from Polymarket...</span>
         </div>
 
-        <!-- Tariffs & Trade -->
-        <div class="odds-category">
-            <div class="cat-header">
-                <h2>🚢 Tariffs & Trade War</h2>
-                <span class="cat-tag">Biggest ag impact</span>
+        <!-- Dynamic content -->
+        <div id="markets-container">
+            <div class="loading-state">
+                <div class="loading-spinner"></div>
+                <div>Searching Polymarket for ag-relevant markets...</div>
             </div>
-            <div class="odds-grid" id="tariff-odds"></div>
-        </div>
-
-        <!-- Fed & Economy -->
-        <div class="odds-category">
-            <div class="cat-header">
-                <h2>🏦 Fed Rates & Economy</h2>
-                <span class="cat-tag">Farm credit costs</span>
-            </div>
-            <div class="odds-grid" id="fed-odds"></div>
-        </div>
-
-        <!-- Policy & Government -->
-        <div class="odds-category">
-            <div class="cat-header">
-                <h2>🏛️ Farm Policy & Government</h2>
-                <span class="cat-tag">Programs & spending</span>
-            </div>
-            <div class="odds-grid" id="policy-odds"></div>
-        </div>
-
-        <!-- Commodities & Weather -->
-        <div class="odds-category">
-            <div class="cat-header">
-                <h2>🌽 Commodities & Weather</h2>
-                <span class="cat-tag">Direct price drivers</span>
-            </div>
-            <div class="odds-grid" id="commodity-odds"></div>
         </div>
 
         <!-- How Prediction Markets Work -->
         <div class="explainer">
             <h2>💡 How Prediction Markets Work</h2>
-            <p>Prediction markets let people put real money on whether something will happen. The price of a "yes" share tells you how likely the crowd thinks an event is. If "yes" shares cost 31¢, the market says there's about a 31% chance it happens. These markets have been more accurate than polls and pundits for elections, policy, and economic events.</p>
+            <p>Prediction markets let people put real money on whether something will happen. The price of a "yes" share tells you how likely the crowd thinks an event is. If "yes" shares cost 62¢, the market says there's about a 62% chance it happens.</p>
             <div class="explainer-steps">
                 <div class="explainer-step">
                     <div class="num">💰</div>
@@ -247,310 +180,302 @@
                 <div class="explainer-step">
                     <div class="num">🌾</div>
                     <div class="step-title">Ag Impact</div>
-                    <div class="step-desc">We translate what these odds mean for your grain prices and farm</div>
+                    <div class="step-desc">We add context on what these odds mean for your grain prices and farm</div>
                 </div>
             </div>
         </div>
 
-        <!-- Disclaimer -->
         <div class="disclaimer">
-            <strong>Disclaimer:</strong> AGSIST does not operate a prediction market and is not affiliated with Polymarket or Kalshi. We display publicly available prediction market data for informational purposes only. Prediction market odds reflect crowd sentiment, not certainty. This is not financial or trading advice. Always consult your elevator, crop insurance agent, or financial advisor before making marketing decisions.
+            <strong>Disclaimer:</strong> All odds shown are live from <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Polymarket</a>. AGSIST does not operate a prediction market. Prediction market odds reflect crowd sentiment, not certainty. "Ag Impact" commentary is AGSIST editorial analysis. This is not financial or trading advice. Always consult your elevator, crop insurance agent, or financial advisor before making marketing decisions.
         </div>
     </main>
     <div id="footer"></div>
     <script src="/components/load-components.js"></script>
     <script>
-    // Curated ag-relevant prediction markets
-    // Each has a farmer-friendly question, the actual market data, and an "ag impact" explainer
-    var agMarkets = {
-        tariffs: [
-            {
-                q: "Will the Supreme Court uphold Trump's tariffs?",
-                pct: 31,
-                source: 'Polymarket',
-                url: 'https://polymarket.com/event/supreme-court-rules-in-favor-of-trumps-tariffs',
-                vol: '$3M+',
-                ends: 'Within 12 months',
-                highlight: true,
-                impact: 'If tariffs are struck down, expect a boost in soybean and corn exports — especially to China. Basis could tighten at Gulf ports. If upheld, current trade patterns continue with elevated uncertainty.',
-                fetchSlug: 'supreme-court-rules-in-favor-of-trumps-tariffs'
-            },
-            {
-                q: "Will Trump impose new tariffs on Canada by Q2 2026?",
-                pct: 45,
-                source: 'Polymarket',
-                url: 'https://polymarket.com/predictions/tariffs',
-                vol: '$500K+',
-                ends: 'June 2026',
-                impact: 'Canada is the #1 buyer of US ag exports. New tariffs risk retaliation on wheat, cattle, and dairy. Watch Manitoba canola and Alberta cattle trade closely.'
-            },
-            {
-                q: "Will China increase ag purchases from the US in 2026?",
-                pct: 38,
-                source: 'Polymarket',
-                url: 'https://polymarket.com/predictions/trade-war',
-                vol: '$200K+',
-                ends: 'Dec 2026',
-                impact: 'China bought 22M MT of US soybeans last marketing year. Any increase supports basis and futures. Flash sales over 100K MT are the signal to watch.'
-            },
-            {
-                q: "Will the US raise tariff revenue above $150B in 2025?",
-                pct: 55,
-                source: 'Polymarket',
-                url: 'https://polymarket.com/predictions/trade-war',
-                vol: '$800K+',
-                ends: 'Jan 2026',
-                impact: 'Higher tariff revenue means more active trade barriers. For row crop farmers, this signals continued basis pressure on export-dependent commodities.'
-            }
-        ],
-        fed: [
-            {
-                q: "Will the Fed cut rates before July 2026?",
-                pct: 62,
-                source: 'Polymarket',
-                url: 'https://polymarket.com/predictions/fed',
-                vol: '$2M+',
-                ends: 'July 2026',
-                highlight: true,
-                impact: 'Rate cuts lower operating loan costs and land payment interest. A 25bp cut saves roughly $2,500/year per $1M in operating debt. Also weakens the dollar, which helps exports.'
-            },
-            {
-                q: "Will US GDP growth exceed 2% in 2026?",
-                pct: 58,
-                source: 'Polymarket',
-                url: 'https://polymarket.com/predictions/economy',
-                vol: '$400K+',
-                ends: 'Dec 2026',
-                impact: 'Strong GDP keeps domestic feed demand up (ethanol, livestock). A recession scenario would slash corn demand by 200-300M bushels through reduced ethanol and protein consumption.'
-            },
-            {
-                q: "Will US recession begin in 2026?",
-                pct: 22,
-                source: 'Polymarket',
-                url: 'https://polymarket.com/predictions/economy',
-                vol: '$1.5M+',
-                ends: 'Dec 2026',
-                impact: 'Recession risk is low but worth monitoring. In 2008-09, corn dropped 55% and beans 38% as demand collapsed. Farm income lags the broader economy by 6-12 months.'
-            }
-        ],
-        policy: [
-            {
-                q: "Will a new Farm Bill pass in 2026?",
-                pct: 35,
-                source: 'Consensus estimate',
-                url: 'https://www.agweb.com/news/policy',
-                vol: '--',
-                ends: 'Dec 2026',
-                impact: 'The 2018 Farm Bill has been extended twice. A new bill could update <span class="tip" data-tip="Agriculture Risk Coverage / Price Loss Coverage">ARC/PLC</span> reference prices, expand crop insurance, and address conservation compliance — all directly affecting your bottom line.'
-            },
-            {
-                q: "Will USDA finalize higher RVO biofuel mandates?",
-                pct: 72,
-                source: 'Industry consensus',
-                url: 'https://www.epa.gov/renewable-fuel-standard-program',
-                vol: '--',
-                ends: 'Mar 2026',
-                highlight: true,
-                impact: 'Higher RVO targets = more soybean oil demand for biodiesel. The proposed 5.6B gallon target for 2026 could add 15-25¢/bu to soybean prices through crush margin improvement.'
-            },
-            {
-                q: "Will government shutdown occur in 2026?",
-                pct: 40,
-                source: 'Polymarket',
-                url: 'https://polymarket.com/predictions/politics',
-                vol: '$300K+',
-                ends: 'Dec 2026',
-                impact: 'Shutdowns delay USDA reports (<span class="tip" data-tip="World Ag Supply &amp; Demand Estimates">WASDE</span>, Crop Progress), <span class="tip" data-tip="Farm Service Agency">FSA</span> office services, and <span class="tip" data-tip="Conservation Reserve Program">CRP</span>/<span class="tip" data-tip="Agriculture Risk Coverage / Price Loss Coverage">ARC/PLC</span> payments. Extended shutdown in planting season is the nightmare scenario.'
-            }
-        ],
-        commodities: [
-            {
-                q: "Will crude oil stay above $70/barrel through Q1 2026?",
-                pct: 60,
-                source: 'Polymarket',
-                url: 'https://polymarket.com/predictions/commodities',
-                vol: '$500K+',
-                ends: 'Mar 2026',
-                impact: 'Oil above $70 keeps input costs elevated (diesel, anhydrous, drying). But it also supports ethanol margins, which puts a floor under corn. The sweet spot for farmers is $65-80.'
-            },
-            {
-                q: "Will gold close 2025 above $3,200/oz?",
-                pct: 100,
-                source: 'Polymarket',
-                url: 'https://polymarket.com/event/what-price-will-gold-close-at-in-2025',
-                vol: '$10M+',
-                ends: 'Resolved',
-                impact: 'Gold above $3,200 signals inflation fears and dollar weakness — both historically positive for commodity prices including grains. Gold rally often leads ag by 3-6 months.'
-            },
-            {
-                q: "Will La Niña conditions develop by spring 2026?",
-                pct: 35,
-                source: 'NOAA/CPC + market est.',
-                url: 'https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/',
-                vol: '--',
-                ends: 'May 2026',
-                impact: 'La Niña typically brings hot/dry conditions to the western Corn Belt and wet conditions to the Delta. The 2012 La Niña-driven drought cut corn yields to 123 bu/ac and sent prices to $8+.'
-            },
-            {
-                q: "Will Brazil soybean production exceed 175 MMT?",
-                pct: 65,
-                source: 'Trade estimate',
-                url: 'https://www.usda.gov/oce/commodity/wasde',
-                vol: '--',
-                ends: 'Feb 2027',
-                impact: 'Brazil is the world\'s largest soybean exporter. Production above 175 MMT keeps global stocks comfortable and caps US export potential. Below 165 MMT and US beans rally hard.'
-            }
-        ]
-    };
+    (function() {
+        'use strict';
 
-    function probClass(pct) {
-        if (pct >= 65) return 'likely';
-        if (pct <= 35) return 'unlikely';
-        return 'tossup';
-    }
+        // =====================================================
+        // SEARCH QUERIES — terms we look for on Polymarket
+        // Each maps to a display category
+        // =====================================================
+        var SEARCHES = [
+            { q: 'tariff', cat: 'tariffs' },
+            { q: 'trade war', cat: 'tariffs' },
+            { q: 'china trade', cat: 'tariffs' },
+            { q: 'canada tariff', cat: 'tariffs' },
+            { q: 'mexico tariff', cat: 'tariffs' },
+            { q: 'fed rate cut', cat: 'fed' },
+            { q: 'fed rate', cat: 'fed' },
+            { q: 'recession', cat: 'fed' },
+            { q: 'inflation', cat: 'fed' },
+            { q: 'interest rate', cat: 'fed' },
+            { q: 'farm bill', cat: 'policy' },
+            { q: 'government shutdown', cat: 'policy' },
+            { q: 'biofuel', cat: 'policy' },
+            { q: 'ethanol', cat: 'policy' },
+            { q: 'EPA regulation', cat: 'policy' },
+            { q: 'oil price', cat: 'commodities' },
+            { q: 'crude oil', cat: 'commodities' },
+            { q: 'drought', cat: 'commodities' },
+            { q: 'El Nino', cat: 'commodities' },
+            { q: 'La Nina', cat: 'commodities' },
+            { q: 'gold price', cat: 'commodities' },
+            { q: 'commodity price', cat: 'commodities' },
+        ];
 
-    function probWord(pct) {
-        if (pct >= 85) return 'Almost certain';
-        if (pct >= 70) return 'Likely';
-        if (pct >= 55) return 'Leaning yes';
-        if (pct >= 45) return 'Toss-up';
-        if (pct >= 30) return 'Leaning no';
-        if (pct >= 15) return 'Unlikely';
-        return 'Very unlikely';
-    }
+        var CATEGORIES = {
+            tariffs:     { icon: '🚢', title: 'Tariffs & Trade', tag: 'Export demand' },
+            fed:         { icon: '🏦', title: 'Fed Rates & Economy', tag: 'Farm credit costs' },
+            policy:      { icon: '🏛️', title: 'Policy & Government', tag: 'Farm programs' },
+            commodities: { icon: '🌾', title: 'Commodities & Weather', tag: 'Prices & supply' }
+        };
 
-    function renderCard(m) {
-        return '<div class="odds-card' + (m.highlight ? ' highlight' : '') + '">' +
-            '<div class="odds-question">' + m.q + '</div>' +
-            '<div class="prob-big">' +
-                '<span class="prob-pct ' + probClass(m.pct) + '">' + m.pct + '%</span>' +
-                '<span class="prob-word">' + probWord(m.pct) + '</span>' +
-            '</div>' +
-            '<div class="prob-bar">' +
-                '<div class="prob-labels"><span class="prob-yes">YES ' + m.pct + '%</span><span class="prob-no">NO ' + (100 - m.pct) + '%</span></div>' +
-                '<div class="prob-track"><div class="prob-fill" style="width:' + m.pct + '%"></div></div>' +
-            '</div>' +
-            '<div class="ag-impact">' +
-                '<div class="ag-impact-label">🌾 What This Means for Your Farm</div>' +
-                '<div class="ag-impact-text">' + m.impact + '</div>' +
-            '</div>' +
-            '<div class="odds-meta">' +
-                '<span>Source: ' + m.source + '</span>' +
-                (m.vol !== '--' ? '<span>Volume: ' + m.vol + '</span>' : '') +
-                '<span>Ends: ' + m.ends + '</span>' +
-                '<a href="' + m.url + '" target="_blank" rel="noopener">View Market →</a>' +
-            '</div>' +
-        '</div>';
-    }
+        // =====================================================
+        // AG IMPACT — editorial commentary keyed by keyword.
+        // Only shown when a market question matches.
+        // =====================================================
+        var AG_IMPACTS = [
+            { match: 'tariff', text: 'Tariffs directly impact grain export competitiveness. Higher tariffs risk retaliation against US ag exports — soybeans to China and cattle/dairy to Canada are most exposed.' },
+            { match: 'china', text: 'China is the world\'s largest soybean importer. Trade disruptions can move soybean futures 50¢+ per bushel. Watch for flash sales over 100K MT as a signal.' },
+            { match: 'canada', text: 'Canada is the #1 buyer of US ag exports. Tariffs risk retaliation on wheat, cattle, and dairy.' },
+            { match: 'mexico', text: 'Mexico buys ~$25B in US ag products annually — corn, dairy, pork, and beef. Trade disruption here hits livestock and feed demand hard.' },
+            { match: 'rate cut', text: 'Rate cuts lower operating loan costs. A 25bp cut saves roughly $2,500/yr per $1M in operating debt. Also weakens the dollar, which helps grain exports.' },
+            { match: 'interest rate', text: 'Interest rate changes directly affect farm operating loans, land values, and machinery financing. Lower rates also tend to weaken the dollar, supporting grain exports.' },
+            { match: 'recession', text: 'Recession cuts corn demand 200-300M bu through reduced ethanol and protein consumption. In 2008-09, corn dropped 55% and beans 38%. Farm income lags the economy by 6-12 months.' },
+            { match: 'inflation', text: 'Moderate inflation supports commodity prices but raises input costs. Historically, grain prices outpace CPI during inflationary periods.' },
+            { match: 'farm bill', text: 'A new Farm Bill could update ARC/PLC reference prices, expand crop insurance options, and change conservation compliance — all directly affecting your bottom line.' },
+            { match: 'shutdown', text: 'Shutdowns delay USDA reports (WASDE, Crop Progress), FSA office services, and CRP/ARC/PLC payments. Extended shutdown during planting season is the nightmare scenario.' },
+            { match: 'biofuel', text: 'Higher biofuel mandates = more soybean oil demand for biodiesel and more corn for ethanol. Each 1B gallon RVO increase adds roughly 5-10¢/bu to corn.' },
+            { match: 'ethanol', text: 'Year-round E15 or expanded RFS mandates boost corn demand ~300-500M bushels. Watch EPA rulemaking closely.' },
+            { match: 'oil price', text: 'Oil above $70 keeps input costs elevated (diesel, anhydrous, drying) but supports ethanol margins, putting a floor under corn. Farmer sweet spot: $65-80.' },
+            { match: 'crude oil', text: 'Crude prices drive diesel and fertilizer costs. Above $70 supports ethanol profitability and corn basis. Below $55 and ethanol plants cut production.' },
+            { match: 'drought', text: 'Drought is the single biggest yield risk. The 2012 drought cut corn yields to 123 bu/ac and sent prices above $8. Watch USDM weekly updates.' },
+            { match: 'la ni', text: 'La Niña typically brings hot/dry to the western Corn Belt and wet to the Delta. The 2012 La Niña drought was catastrophic for corn.' },
+            { match: 'el ni', text: 'El Niño tends to bring wetter conditions to the southern US and can disrupt South American growing seasons, impacting global soybean and corn supply.' },
+            { match: 'gold', text: 'Gold rallies signal inflation fears and dollar weakness — both historically positive for grain prices. Gold often leads ag commodity rallies by 3-6 months.' },
+        ];
 
-    function renderSection(id, markets) {
-        var el = document.getElementById(id);
-        el.innerHTML = markets.map(renderCard).join('');
-    }
+        // =====================================================
+        // API LAYER
+        // =====================================================
+        var API = 'https://gamma-api.polymarket.com';
 
-    function updateSummary() {
-        var tariffPct = agMarkets.tariffs[0].pct;
-        var tariffVerdict = tariffPct > 50 ? 
-            'Markets think tariffs will survive — brace for continued export headwinds.' :
-            'Smart money says tariffs get struck down (' + (100 - tariffPct) + '% odds). Could open export floodgates.';
-        document.getElementById('say-trade').textContent = tariffVerdict;
-        document.getElementById('say-trade-detail').textContent = 
-            'SCOTUS tariff ruling: ' + tariffPct + '% chance upheld. Trade war markets active with $3M+ volume.';
-
-        var fedPct = agMarkets.fed[0].pct;
-        document.getElementById('say-fed').textContent = 
-            fedPct > 50 ? 
-            'Rate cuts looking likely (' + fedPct + '%) — good news for operating loans and land values.' :
-            'Fed staying put for now (' + fedPct + '% cut odds). Keep your variable rates hedged.';
-        document.getElementById('say-fed-detail').textContent = 
-            'Recession odds only ' + agMarkets.fed[2].pct + '%. Economy holding up, which supports feed demand.';
-
-        var rvoPct = agMarkets.policy[1].pct;
-        document.getElementById('say-farm').textContent = 
-            'Biofuel mandates likely expanding (' + rvoPct + '%). Bullish for bean crush margins.';
-        document.getElementById('say-farm-detail').textContent = 
-            'Farm Bill: only ' + agMarkets.policy[0].pct + '% chance of passing in 2026. Expect more extensions.';
-
-        // Overall outlook
-        var bullSignals = 0;
-        if (tariffPct < 50) bullSignals++; // tariffs struck = good for exports
-        if (fedPct > 50) bullSignals++; // rate cuts = good
-        if (agMarkets.fed[2].pct < 30) bullSignals++; // low recession = good
-        if (rvoPct > 60) bullSignals++; // biofuel mandate = good for beans
-        
-        var outlookText, outlookDetail;
-        if (bullSignals >= 3) {
-            outlookText = 'Cautiously bullish. More tailwinds than headwinds for row crop prices.';
-            outlookDetail = bullSignals + ' of 4 key indicators leaning positive. Best setup for beans via crush demand.';
-        } else if (bullSignals >= 2) {
-            outlookText = 'Mixed signals. Market uncertainty means opportunity if you pick your spots.';
-            outlookDetail = 'Split signals across trade, rates, and policy. Manage risk with a balanced marketing plan.';
-        } else {
-            outlookText = 'Defensive posture. Headwinds outweigh tailwinds right now.';
-            outlookDetail = 'Consider locking in profitable prices early. Multiple risk factors still unresolved.';
+        async function searchEvents(query) {
+            var url = API + '/events?closed=false&limit=5&_q=' + encodeURIComponent(query);
+            var res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+            if (!res.ok) throw new Error(res.status);
+            var data = await res.json();
+            return Array.isArray(data) ? data : [];
         }
-        document.getElementById('say-outlook').textContent = outlookText;
-        document.getElementById('say-outlook-detail').textContent = outlookDetail;
-    }
 
-    // Try to fetch live data from Polymarket Gamma API
-    async function fetchLiveOdds() {
-        try {
-            // Try fetching a known active market to see if CORS allows it
-            var res = await fetch('https://gamma-api.polymarket.com/markets?slug=supreme-court-rules-in-favor-of-trumps-tariffs&closed=false', {
-                headers: { 'Accept': 'application/json' }
+        function extractMarkets(events) {
+            var out = [];
+            events.forEach(function(evt) {
+                if (!evt.markets) return;
+                evt.markets.forEach(function(m) {
+                    if (m.closed) return;
+                    var yesPct = 0;
+                    try {
+                        if (m.outcomePrices) {
+                            var p = JSON.parse(m.outcomePrices);
+                            yesPct = Math.round(parseFloat(p[0]) * 100);
+                        } else if (m.lastTradePrice) {
+                            yesPct = Math.round(parseFloat(m.lastTradePrice) * 100);
+                        }
+                    } catch (e) { return; }
+                    if (yesPct <= 0 || yesPct >= 100) return;
+
+                    var vol = 0;
+                    try { vol = parseFloat(m.volume) || parseFloat(m.volumeNum) || 0; } catch(e) {}
+
+                    out.push({
+                        id: m.conditionId || m.id || (evt.slug + '-' + out.length),
+                        question: m.question || evt.title || '',
+                        pct: yesPct,
+                        volume: vol,
+                        endDate: m.endDate || evt.endDate || null,
+                        slug: evt.slug || '',
+                    });
+                });
             });
-            if (res.ok) {
-                var data = await res.json();
-                if (data && data.length > 0) {
-                    // Update tariff odds with live data
-                    var market = data[0];
-                    if (market.outcomePrices) {
-                        try {
-                            var prices = JSON.parse(market.outcomePrices);
-                            var yesPct = Math.round(parseFloat(prices[0]) * 100);
-                            if (yesPct > 0 && yesPct < 100) {
-                                agMarkets.tariffs[0].pct = yesPct;
-                                document.getElementById('last-refresh').textContent = 'Live · ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-                            }
-                        } catch(e) {}
+            return out;
+        }
+
+        // =====================================================
+        // RENDERING
+        // =====================================================
+        function fmtVol(v) {
+            if (v >= 1e6) return '$' + (v / 1e6).toFixed(1) + 'M';
+            if (v >= 1e3) return '$' + Math.round(v / 1e3) + 'K';
+            if (v > 0) return '$' + Math.round(v);
+            return '--';
+        }
+
+        function fmtDate(d) {
+            if (!d) return '';
+            try {
+                var dt = new Date(d);
+                return isNaN(dt) ? '' : dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            } catch(e) { return ''; }
+        }
+
+        function probClass(pct) {
+            return pct >= 65 ? 'likely' : pct <= 35 ? 'unlikely' : 'tossup';
+        }
+
+        function probWord(pct) {
+            if (pct >= 85) return 'Almost certain';
+            if (pct >= 70) return 'Likely';
+            if (pct >= 55) return 'Leaning yes';
+            if (pct >= 45) return 'Toss-up';
+            if (pct >= 30) return 'Leaning no';
+            if (pct >= 15) return 'Unlikely';
+            return 'Very unlikely';
+        }
+
+        function findImpact(question) {
+            var q = question.toLowerCase();
+            for (var i = 0; i < AG_IMPACTS.length; i++) {
+                if (q.includes(AG_IMPACTS[i].match)) return AG_IMPACTS[i].text;
+            }
+            return null;
+        }
+
+        function renderCard(m) {
+            var impact = findImpact(m.question);
+            var impactHtml = impact
+                ? '<div class="ag-impact"><div class="ag-impact-label">🌾 Ag Impact — AGSIST Analysis</div><div class="ag-impact-text">' + impact + '</div></div>'
+                : '';
+
+            var url = 'https://polymarket.com/event/' + m.slug;
+            var endStr = fmtDate(m.endDate);
+            var endHtml = endStr ? '<span>Ends ' + endStr + '</span>' : '';
+
+            return '<div class="odds-card">' +
+                '<div class="odds-question"><a href="' + url + '" target="_blank" rel="noopener noreferrer">' + m.question + '</a></div>' +
+                '<div class="prob-big">' +
+                    '<span class="prob-pct ' + probClass(m.pct) + '">' + m.pct + '%</span>' +
+                    '<span class="prob-word">' + probWord(m.pct) + '</span>' +
+                '</div>' +
+                '<div class="prob-bar">' +
+                    '<div class="prob-labels"><span class="prob-yes">Yes ' + m.pct + '%</span><span class="prob-no">No ' + (100 - m.pct) + '%</span></div>' +
+                    '<div class="prob-track"><div class="prob-fill" style="width:' + m.pct + '%"></div></div>' +
+                '</div>' +
+                impactHtml +
+                '<div class="odds-meta">' +
+                    '<span>Vol: ' + fmtVol(m.volume) + '</span>' +
+                    endHtml +
+                    '<a href="' + url + '" target="_blank" rel="noopener noreferrer">Polymarket →</a>' +
+                '</div>' +
+            '</div>';
+        }
+
+        // =====================================================
+        // MAIN LOADER
+        // =====================================================
+        async function loadAllMarkets() {
+            var container = document.getElementById('markets-container');
+            var statusText = document.getElementById('status-text');
+            var statusBar = document.getElementById('status-bar');
+
+            var allResults = [];
+            var succeeded = 0;
+            var failed = 0;
+
+            // Run searches in batches of 4
+            for (var i = 0; i < SEARCHES.length; i += 4) {
+                var batch = SEARCHES.slice(i, i + 4);
+                var results = await Promise.allSettled(batch.map(function(s) {
+                    return searchEvents(s.q).then(function(events) {
+                        return { cat: s.cat, events: events };
+                    });
+                }));
+
+                results.forEach(function(r) {
+                    if (r.status === 'fulfilled') {
+                        succeeded++;
+                        r.value.events.forEach(function(evt) {
+                            allResults.push({ cat: r.value.cat, event: evt });
+                        });
+                    } else {
+                        failed++;
                     }
+                });
+
+                // Small delay between batches
+                if (i + 4 < SEARCHES.length) {
+                    await new Promise(function(r) { setTimeout(r, 120); });
                 }
             }
-        } catch (e) {
-            // CORS blocked or network error — use curated data
-            document.getElementById('last-refresh').textContent = 'Curated data · ' + new Date().toLocaleDateString();
-        }
 
-        // Search for more ag-relevant markets
-        try {
-            var searches = ['tariff', 'fed rate cut', 'recession 2026', 'oil price'];
-            for (var s of searches) {
-                var r = await fetch('https://gamma-api.polymarket.com/markets?_q=' + encodeURIComponent(s) + '&closed=false&limit=3');
-                if (r.ok) {
-                    var results = await r.json();
-                    // Could update specific markets here with live data
-                    // For now, just mark as live if any request succeeds
-                }
+            // Total API failure
+            if (succeeded === 0) {
+                container.innerHTML = '<div class="error-state">' +
+                    '<p>⚠️ Unable to reach the Polymarket API. This is usually a temporary issue.</p>' +
+                    '<p style="margin-top:12px">Browse markets directly at <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer">polymarket.com</a></p>' +
+                '</div>';
+                statusBar.innerHTML = '<span class="error-dot"></span> Unable to connect to Polymarket';
+                return;
             }
-        } catch (e) {
-            // Silent fail — curated data is fine
+
+            // Deduplicate and categorize
+            var seen = {};
+            var cats = { tariffs: [], fed: [], policy: [], commodities: [] };
+
+            allResults.forEach(function(item) {
+                extractMarkets([item.event]).forEach(function(m) {
+                    if (seen[m.id]) return;
+                    seen[m.id] = true;
+                    if (cats[item.cat]) cats[item.cat].push(m);
+                });
+            });
+
+            // Sort by volume, limit per category
+            var totalMarkets = 0;
+            Object.keys(cats).forEach(function(k) {
+                cats[k].sort(function(a, b) { return b.volume - a.volume; });
+                cats[k] = cats[k].slice(0, 8);
+                totalMarkets += cats[k].length;
+            });
+
+            // Nothing found
+            if (totalMarkets === 0) {
+                container.innerHTML = '<div class="error-state">' +
+                    '<p>No open ag-relevant prediction markets found right now. Market selection on Polymarket changes frequently.</p>' +
+                    '<p style="margin-top:12px">Browse all markets at <a href="https://polymarket.com" target="_blank" rel="noopener noreferrer">polymarket.com</a></p>' +
+                '</div>';
+                statusBar.innerHTML = '<span class="error-dot"></span> Connected — no ag-relevant markets currently open';
+                return;
+            }
+
+            // Build HTML
+            var html = '';
+            ['tariffs', 'fed', 'policy', 'commodities'].forEach(function(key) {
+                var list = cats[key];
+                if (list.length === 0) return;
+                var cat = CATEGORIES[key];
+                html += '<div class="odds-category">' +
+                    '<div class="cat-header">' +
+                        '<h2>' + cat.icon + ' ' + cat.title + '</h2>' +
+                        '<span class="cat-count">' + list.length + ' market' + (list.length > 1 ? 's' : '') + '</span>' +
+                    '</div>' +
+                    '<div class="odds-grid">';
+                list.forEach(function(m) { html += renderCard(m); });
+                html += '</div></div>';
+            });
+
+            container.innerHTML = html;
+
+            // Status
+            var now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            statusBar.innerHTML = '<span class="live-dot"></span> Live from Polymarket · ' + totalMarkets + ' markets · Updated ' + now;
         }
-    }
 
-    // Render everything
-    renderSection('tariff-odds', agMarkets.tariffs);
-    renderSection('fed-odds', agMarkets.fed);
-    renderSection('policy-odds', agMarkets.policy);
-    renderSection('commodity-odds', agMarkets.commodities);
-    updateSummary();
-
-    // Try live data
-    fetchLiveOdds().then(function() {
-        // Re-render with any updated data
-        renderSection('tariff-odds', agMarkets.tariffs);
-        updateSummary();
-    });
+        // Go
+        loadAllMarkets();
+        setInterval(loadAllMarkets, 5 * 60 * 1000);
+    })();
     </script>
 </body>
 </html>
