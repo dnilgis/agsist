@@ -169,7 +169,6 @@
             'PRF':   'Pasture, Rangeland, Forage — rainfall index insurance for grazing land',
             'STAX':  'Stacked Income Protection Plan — area revenue insurance for cotton',
             'WRP':   'Wetlands Reserve Program — easements to protect wetland habitat',
-            'SNAP':  'Supplemental Nutrition Assistance Program — food assistance',
             // ── Markets & Exchanges ──
             'CBOT':  'Chicago Board of Trade — primary exchange for grain futures',
             'CME':   'Chicago Mercantile Exchange — livestock, dairy & financial futures',
@@ -177,7 +176,6 @@
             'MPR':   'Mandatory Price Reporting — USDA livestock price transparency program',
             'FMMO':  'Federal Milk Marketing Order — sets minimum milk prices by use class',
             'HTA':   'Hedge-To-Arrive — contract locking futures price, basis set later',
-            'FOB':   'Free on Board — buyer pays freight from shipping point',
             // ── Wheat Classes ──
             'SRW':   'Soft Red Winter wheat — cakes, crackers, pastries',
             'HRW':   'Hard Red Winter wheat — bread flour, most widely grown US class',
@@ -187,16 +185,13 @@
             'NDM':   'Nonfat Dry Milk — key dairy commodity in Class IV pricing',
             'NFDM':  'Nonfat Dry Milk — key dairy commodity in Class IV pricing',
             'BFP':   'Basic Formula Price — predecessor to Class III milk pricing',
-            'cwt':   'Hundredweight — 100 lbs, standard unit for milk & livestock pricing',
             // ── Crop Science ──
             'GDU':   'Growing Degree Units — accumulated heat units for crop development',
             'GDD':   'Growing Degree Days — same as GDU, heat accumulation measure',
             'IPM':   'Integrated Pest Management — science-based approach to pest control',
-            'GMO':   'Genetically Modified Organism',
             // ── Precision Ag ──
             'VRA':   'Variable Rate Application — adjusting inputs by field zone',
             'NDVI':  'Normalized Difference Vegetation Index — satellite crop health index',
-            'UAV':   'Unmanned Aerial Vehicle — drone for aerial scouting & application',
             'RTK':   'Real-Time Kinematic — GPS correction for sub-inch field accuracy',
             // ── Drought & Weather ──
             'USDM':  'U.S. Drought Monitor — weekly national drought assessment',
@@ -215,9 +210,7 @@
             'R5':    'Dent — dent visible on most kernels, milk line forming',
             'R6':    'Physiological Maturity — black layer formed, maximum dry weight',
             // ── Units & Measures ──
-            'PPM':   'Parts per million — concentration unit for soil tests & spray mixes',
             'GPA':   'Gallons per acre — spray application rate',
-            'PSI':   'Pounds per square inch — nozzle/tank pressure measure',
             // ── Insurance Terms ──
             'APH':   'Actual Production History — yield history used to set crop insurance guarantee',
             'MPCI':  'Multi-Peril Crop Insurance — basic federal crop insurance coverage',
@@ -256,6 +249,9 @@
         // Only scan inside <main> (or full body as fallback)
         var root = document.querySelector('main') || document.body;
 
+        // Skip pages that opt out of auto-tooltips
+        if (root.hasAttribute('data-no-tips')) return;
+
         // Collect text nodes that contain matches
         var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
         var textNodes = [];
@@ -266,6 +262,8 @@
             if (SKIP_TAGS[p.tagName]) continue;
             if (p.hasAttribute('data-tip')) continue;
             if (p.classList && p.classList.contains('tip')) continue;
+            // Skip inside hint popups and inert elements
+            if (p.closest && (p.closest('.hint-popup') || p.closest('[inert]'))) continue;
             // Check heading tags — skip H1 to avoid cluttering titles
             if (p.tagName === 'H1') continue;
             pattern.lastIndex = 0;
@@ -302,7 +300,6 @@
                 var span = document.createElement('span');
                 span.className = 'tip';
                 span.setAttribute('data-tip', dict[term]);
-                span.setAttribute('tabindex', '0');
                 span.textContent = term;
                 frag.appendChild(span);
 
