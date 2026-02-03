@@ -48,65 +48,51 @@ const SEARCHES = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
-// RELEVANCE FILTER — reject markets that aren't ag-relevant
+// RELEVANCE FILTER — reject markets that clearly aren't ag-relevant
+// Our search queries are already ag-focused, so we only need to
+// block noise that leaks through broad keyword matches.
 // ═══════════════════════════════════════════════════════════════
 
 // If the question contains ANY of these, reject it immediately
 const BLOCKLIST = [
+    // Crypto
     'bitcoin', 'btc', 'ethereum', 'eth ', 'crypto', 'microstrategy',
-    'nft', 'solana', 'dogecoin', 'memecoin', 'token',
+    'nft', 'solana', 'dogecoin', 'memecoin', 'token price',
+    // Immigration (not trade)
     'deport', 'deportation', 'immigration', 'immigrant', 'border wall',
-    'abortion', 'roe v wade', 'supreme court justice', 'impeach',
+    'asylum', 'migrant',
+    // Social issues unrelated to ag
+    'abortion', 'roe v wade', 'supreme court justice',
+    'marriage equality', 'gender',
+    // Entertainment & sports
     'oscar', 'grammy', 'emmy', 'super bowl winner', 'nba finals',
     'nfl', 'mlb', 'nhl', 'world cup', 'premier league',
-    'tiktok', 'twitter', 'x.com', 'facebook', 'instagram',
-    'spacex', 'mars landing', 'moon landing',
+    'box office', 'movie', 'netflix', 'streaming',
     'dating', 'kardashian', 'celebrity',
+    // Tech companies
+    'tiktok ban', 'twitter', 'x.com', 'facebook', 'instagram',
+    'spacex', 'mars landing', 'moon landing',
+    'ai model', 'chatgpt', 'openai', 'google gemini',
+    // Extreme events
     'nuclear war', 'world war',
     'assassination', 'imprisoned',
-    'ai model', 'chatgpt', 'openai', 'google gemini',
-    'box office', 'movie', 'netflix', 'streaming',
     'alien', 'ufo', 'uap',
-];
-
-// If the question contains at least one of these, it passes relevance
-const AG_KEYWORDS = [
-    // Direct ag
-    'tariff', 'trade', 'export', 'import', 'embargo', 'sanction',
-    'usmca', 'nafta', 'china deal', 'trade deal', 'trade agreement',
-    // Economy
-    'fed ', 'federal reserve', 'rate cut', 'rate hike', 'interest rate',
-    'recession', 'inflation', 'cpi', 'gdp', 'economic',
-    'government shutdown', 'debt ceiling', 'spending bill',
-    // Ag policy
-    'farm bill', 'usda', 'ethanol', 'biofuel', 'renewable fuel',
-    'epa', 'clean water', 'conservation', 'crop insurance',
-    'food stamp', 'snap benefit', 'food price', 'grocery',
-    // Commodities & weather
-    'oil', 'crude', 'gas price', 'energy price',
-    'drought', 'flood', 'hurricane', 'el nino', 'la nina',
-    'crop', 'grain', 'corn', 'soybean', 'wheat', 'cattle', 'hog',
-    'fertilizer', 'seed', 'pesticide', 'herbicide',
-    'commodity', 'futures',
-    'gold', 'silver',
-    // Global trade partners
-    'brazil', 'argentina', 'ukraine', 'russia grain', 'australia wheat',
+    // Health/pharma noise
+    'covid vaccine mandate', 'ivermectin',
+    'bird flu vaccine',
+    // Political personality noise
+    'who will win', 'approval rating',
+    'twitter followers', 'podcast',
+    'pardon', 'indictment',
 ];
 
 function isRelevant(question) {
     const q = question.toLowerCase();
-
-    // Block obvious noise
     for (const block of BLOCKLIST) {
         if (q.includes(block)) return false;
     }
-
-    // Must match at least one ag keyword
-    for (const kw of AG_KEYWORDS) {
-        if (q.includes(kw)) return true;
-    }
-
-    return false;
+    // If it passes the blocklist, trust the search query — it was ag-focused
+    return true;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -168,8 +154,8 @@ function extractMarkets(events) {
             let vol = 0;
             try { vol = parseFloat(m.volume) || parseFloat(m.volumeNum) || 0; } catch(e) {}
 
-            // Skip very low volume (< $10K) — unreliable signal
-            if (vol < 10000) continue;
+            // Skip very low volume (< $5K) — unreliable signal
+            if (vol < 5000) continue;
 
             out.push({
                 id: m.conditionId || m.id || evt.slug + '-' + out.length,
