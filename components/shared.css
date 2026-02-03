@@ -450,7 +450,13 @@ iframe { max-width: 100%; }
 .tip {
     position: relative;
     cursor: help;
-    border-bottom: 1px dotted var(--dim, #9a9aa6);
+    border-bottom: 1.5px dashed var(--accent, #e6b042);
+    color: inherit;
+    padding-bottom: 1px;
+}
+.tip:hover {
+    background: rgba(230,176,66,0.12);
+    border-radius: 2px;
 }
 .tip-icon {
     display: inline-block;

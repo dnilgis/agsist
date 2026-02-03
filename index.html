@@ -952,6 +952,8 @@
             console.error(e);
             document.getElementById('update-time').textContent = 'Offline';
             document.getElementById('update-time').classList.remove('loading');
+            // Still populate ticker with news even when markets data fails
+            fetchNewsForTicker({});
         }
     }
     
@@ -960,35 +962,39 @@
         const chgClass = (val) => val >= 0 ? 'up' : 'down';
         const chgSign = (val) => val >= 0 ? '+' : '';
         
-        if (m.grains?.corn) {
+        if (m?.grains?.corn) {
             const c = m.grains.corn;
             items.push(`<span class="ticker-item"><span class="label">🌽 Corn</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
-        if (m.grains?.soybeans) {
+        if (m?.grains?.soybeans) {
             const c = m.grains.soybeans;
             items.push(`<span class="ticker-item"><span class="label">🫘 Beans</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
-        if (m.grains?.wheat) {
+        if (m?.grains?.wheat) {
             const c = m.grains.wheat;
             items.push(`<span class="ticker-item"><span class="label">🌾 Wheat</span><span class="price">$${(c.price/100).toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
-        if (m.livestock?.cattle) {
+        if (m?.livestock?.cattle) {
             const c = m.livestock.cattle;
             items.push(`<span class="ticker-item"><span class="label">🐄 Cattle</span><span class="price">$${c.price.toFixed(2)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
-        if (m.crypto?.bitcoin) {
+        if (m?.crypto?.bitcoin) {
             const c = m.crypto.bitcoin;
             items.push(`<span class="ticker-item"><span class="label">₿ BTC</span><span class="price">$${c.price.toLocaleString(undefined,{maximumFractionDigits:0})}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
-        if (m.crypto?.kaspa) {
+        if (m?.crypto?.kaspa) {
             const c = m.crypto.kaspa;
             items.push(`<span class="ticker-item"><span class="label">KAS</span><span class="price">$${c.price.toFixed(3)}</span><span class="change ${chgClass(c.change)}">${chgSign(c.changePct)}${c.changePct.toFixed(1)}%</span></span>`);
         }
-        if (news.length > 0) {
+        if (news && news.length > 0) {
             news.slice(0, 5).forEach(n => {
                 const title = n.title.length > 80 ? n.title.substring(0, 77) + '...' : n.title;
                 items.push(`<span class="ticker-item news">📰 ${title}</span>`);
             });
+        }
+        // Fallback: always show something
+        if (items.length === 0) {
+            items.push(`<span class="ticker-item news">🌾 AGSIST — Free Agricultural Dashboard — Live Prices, Weather, Tools & News</span>`);
         }
         document.getElementById('ticker').innerHTML = items.join('') + items.join('');
     }
@@ -1221,8 +1227,9 @@
         // Show up to 4
         var html = upcoming.slice(0, 4).map(function(r) {
             var isPast = r.dateObj < now;
+            var displayName = r.name === 'WASDE' ? '<span class="tip" data-tip="World Ag Supply &amp; Demand Estimates">WASDE</span>' : r.name;
             return '<div class="br-row' + (isPast ? ' style="opacity:0.5"' : '') + '">' +
-                '<span class="br-name">' + r.name + '</span>' +
+                '<span class="br-name">' + displayName + '</span>' +
                 '<span style="display:flex;align-items:center;gap:6px">' +
                     '<span class="br-impact ' + r.impact + '">' + r.impact.charAt(0).toUpperCase() + '</span>' +
                     '<span class="br-date">' + r.date + '</span>' +
