@@ -445,13 +445,12 @@ iframe { max-width: 100%; }
 }
 
 /* ============================================
-   TOOLTIPS — hover ? for abbreviations
+   TOOLTIPS — hover for abbreviations
    ============================================ */
 .tip {
     position: relative;
     cursor: help;
     border-bottom: 1px dotted var(--dim, #9a9aa6);
-    white-space: nowrap;
 }
 .tip-icon {
     display: inline-block;
@@ -467,42 +466,25 @@ iframe { max-width: 100%; }
     margin-left: 3px;
     vertical-align: super;
     cursor: help;
-    position: relative;
 }
-.tip::after,
-.tip-icon::after {
-    content: attr(data-tip);
-    position: absolute;
-    bottom: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--card, #16161a);
-    color: var(--text, #e2e2e6);
-    border: 1px solid var(--border, #2a2a30);
+#agsist-tooltip {
+    position: fixed;
+    background: #1e1e24;
+    color: #e2e2e6;
+    border: 1px solid #3a3a42;
     padding: 6px 10px;
     border-radius: 6px;
     font-size: 0.75rem;
     font-weight: 400;
     line-height: 1.4;
-    white-space: normal;
-    width: max-content;
     max-width: 260px;
-    opacity: 0;
+    width: max-content;
+    z-index: 99999;
     pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    opacity: 0;
     transition: opacity 0.15s;
-    z-index: 1000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
-.tip:hover::after, .tip:focus::after,
-.tip-icon:hover::after, .tip-icon:focus::after {
+#agsist-tooltip.visible {
     opacity: 1;
-}
-/* Keep tooltip on-screen on mobile */
-@media (max-width: 768px) {
-    .tip::after,
-    .tip-icon::after {
-        left: 0;
-        transform: none;
-        max-width: 200px;
-    }
 }

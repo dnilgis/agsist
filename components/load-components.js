@@ -89,6 +89,57 @@
         console.log('[AGSIST] Mobile menu initialized');
     }
     
+    // Tooltip system — appends to <body> so overflow:hidden parents can't clip it
+    function initTooltips() {
+        var tt = document.createElement('div');
+        tt.id = 'agsist-tooltip';
+        document.body.appendChild(tt);
+
+        function show(e) {
+            var tip = e.target.closest('[data-tip]');
+            if (!tip) return;
+            tt.textContent = tip.getAttribute('data-tip');
+            // Force layout so offsetWidth/Height are accurate
+            tt.style.display = 'block';
+            tt.classList.remove('visible');
+            var r = tip.getBoundingClientRect();
+            var ttW = tt.offsetWidth;
+            var ttH = tt.offsetHeight;
+            // Center horizontally, keep on screen
+            var left = Math.max(8, Math.min(r.left + r.width / 2 - ttW / 2, window.innerWidth - ttW - 8));
+            // Above by default
+            var top = r.top - ttH - 6;
+            // Flip below if clipped at top
+            if (top < 4) top = r.bottom + 6;
+            tt.style.left = left + 'px';
+            tt.style.top = top + 'px';
+            tt.classList.add('visible');
+        }
+
+        function hide() {
+            tt.classList.remove('visible');
+        }
+
+        document.addEventListener('mouseover', show);
+        document.addEventListener('mouseout', function(e) {
+            if (e.target.closest('[data-tip]')) hide();
+        });
+        document.addEventListener('focusin', show);
+        document.addEventListener('focusout', function(e) {
+            if (e.target.closest('[data-tip]')) hide();
+        });
+        // Touch: toggle on tap
+        document.addEventListener('touchstart', function(e) {
+            var tip = e.target.closest('[data-tip]');
+            if (tip) {
+                if (tt.classList.contains('visible')) { hide(); }
+                else { show(e); }
+            } else { hide(); }
+        }, { passive: true });
+
+        console.log('[AGSIST] Tooltips initialized');
+    }
+
     // Main initialization
     function init() {
         console.log('[AGSIST] Loading components...');
@@ -102,6 +153,9 @@
         
         // Load footer
         loadHTML('footer', FOOTER_FILE);
+        
+        // Init tooltips
+        initTooltips();
     }
     
     // Run when DOM is ready
