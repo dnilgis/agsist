@@ -263,8 +263,10 @@
         .weather-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
         .weather-card iframe { width: 100%; height: 420px; border: none; display: block; }
         
-        .news-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
-        .news-card::-webkit-scrollbar { display: none; }
+        .news-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+        .news-card::-webkit-scrollbar { width: 4px; }
+        .news-card::-webkit-scrollbar-track { background: transparent; }
+        .news-card::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
         .news-item { padding: 10px 0; border-bottom: 1px solid var(--border); }
         .news-item:last-child { border-bottom: none; padding-bottom: 0; }
         .news-item:first-child { padding-top: 0; }
@@ -302,9 +304,9 @@
             main { padding: 16px 20px; }
             .price-grid { grid-template-columns: repeat(4, 1fr); }
             .secondary-grid { grid-template-columns: repeat(3, 1fr); }
-            .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
+            .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
             .two-col > div { display: flex; flex-direction: column; }
-            .two-col .news-card { flex: 1; }
+            .two-col .news-card { flex: 1; max-height: 700px; }
             .weather-card iframe { height: 380px; }
         }
         
@@ -436,6 +438,7 @@
                     <div class="bp-row"><span class="bp-name">🌽 Corn</span><span class="bp-vals"><span class="bp-price" id="bp-corn">--</span><span class="bp-chg flat" id="bp-corn-chg"></span></span></div>
                     <div class="bp-row"><span class="bp-name">🫘 Soybeans</span><span class="bp-vals"><span class="bp-price" id="bp-soy">--</span><span class="bp-chg flat" id="bp-soy-chg"></span></span></div>
                     <div class="bp-row"><span class="bp-name">🌾 Wheat</span><span class="bp-vals"><span class="bp-price" id="bp-wheat">--</span><span class="bp-chg flat" id="bp-wheat-chg"></span></span></div>
+                    <div class="bp-row"><span class="bp-name">🥛 Milk</span><span class="bp-vals"><span class="bp-price" id="bp-milk">--</span><span class="bp-chg flat" id="bp-milk-chg"></span></span></div>
                 </div>
             </div>
             <div class="briefing-section">
@@ -844,6 +847,13 @@
                 bwe.textContent = (bw.change >= 0 ? '▲' : '▼') + Math.abs(bw.change/100).toFixed(2);
                 bwe.className = 'bp-chg ' + (bw.change >= 0 ? 'up' : 'down');
             }
+            if (m.livestock?.milk) {
+                var bm = m.livestock.milk;
+                document.getElementById('bp-milk').textContent = '$' + bm.price.toFixed(2);
+                var bme = document.getElementById('bp-milk-chg');
+                bme.textContent = (bm.change >= 0 ? '▲' : '▼') + Math.abs(bm.change).toFixed(2);
+                bme.className = 'bp-chg ' + (bm.change >= 0 ? 'up' : 'down');
+            }
             
             if (m.livestock?.cattle) {
                 const c = m.livestock.cattle;
@@ -1001,18 +1011,14 @@
             
             if (data.news && data.news.length > 0) {
                 const newsEl = document.getElementById('news-feed');
-                newsEl.innerHTML = data.news.slice(0, 15).map((n, i) => {
+                newsEl.innerHTML = data.news.slice(0, 20).map((n, i) => {
                     const hasSummary = n.summary && n.summary.length > 50;
-                    const hasDesc = n.description && n.description.length > 30;
-                    const btnLabel = hasSummary ? '✨ AI Summary' : (hasDesc ? 'Summary' : 'Read →');
+                    const btnLabel = hasSummary ? '✨ AI Summary' : 'Summary';
                     return `<div class="news-item">
                         <a href="${n.link}" target="_blank" rel="noopener noreferrer">${n.title}</a>
                         <div class="news-source">
                             <span>${n.source || 'Ag News'}</span>
-                            ${hasSummary || hasDesc 
-                                ? `<button class="news-summary-btn" onclick="showSummary(${i}, 'markets')">${btnLabel}</button>`
-                                : `<a href="${n.link}" target="_blank" rel="noopener noreferrer" class="news-summary-btn">${btnLabel}</a>`
-                            }
+                            <button class="news-summary-btn" onclick="showSummary(${i}, 'markets')">${btnLabel}</button>
                         </div>
                     </div>`;
                 }).join('');
@@ -1094,7 +1100,7 @@
                     // Also populate the homepage news feed with these (they have AI summaries)
                     const newsEl = document.getElementById('news-feed');
                     if (newsEl) {
-                        newsEl.innerHTML = data.items.slice(0, 15).map((n, i) => {
+                        newsEl.innerHTML = data.items.slice(0, 20).map((n, i) => {
                             const hasSummary = n.summary && n.summary.length > 50;
                             const btnLabel = hasSummary ? '✨ AI Summary' : 'Summary';
                             return `<div class="news-item">
