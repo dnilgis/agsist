@@ -1355,8 +1355,9 @@
     
     // Weather: use geolocation if available, fall back to Barron WI
     var wxForecastUrl = 'https://api.weather.gov/gridpoints/DLH/75,63/forecast'; // Default: Barron, WI
+    var wxStationsUrl = 'https://api.weather.gov/gridpoints/DLH/75,63/stations'; // Default: Barron, WI
 
-    async function loadForecast(url) {
+    async function loadForecast(url, stationsUrl) {
         try {
             const res = await fetch(url || wxForecastUrl);
             if (!res.ok) throw new Error('Forecast unavailable');
@@ -1396,8 +1397,9 @@
                 document.getElementById('wx-tomnight-desc').textContent = periods[3].shortForecast.substring(0, 20);
             }
             
-            // Update morning briefing weather
-            updateBriefingWeather(periods);
+            // Fetch actual current observation, then update briefing with both
+            var observation = await fetchCurrentObservation(stationsUrl);
+            updateBriefingWeather(periods, observation);
         } catch (e) {
             console.log('Forecast error:', e);
         }
@@ -1518,22 +1520,87 @@
     // ============================================
     // MORNING BRIEFING — Weather + Prices
     // ============================================
-    function updateBriefingWeather(periods) {
+    
+    // Default observation station for Barron, WI area
+    
+    async function fetchCurrentObservation(stationsUrl) {
+        /**
+         * Fetch actual current temperature from the nearest NWS observation station.
+         * Returns {temp, unit, windSpeed, windDir, desc} or null on failure.
+         */
+        try {
+            // Get nearest station
+            var stUrl = stationsUrl || wxStationsUrl;
+            const stRes = await fetch(stUrl);
+            if (!stRes.ok) return null;
+            const stData = await stRes.json();
+            const stationId = stData.features?.[0]?.properties?.stationIdentifier;
+            if (!stationId) return null;
+            
+            // Get latest observation from that station
+            const obsRes = await fetch(`https://api.weather.gov/stations/${stationId}/observations/latest`);
+            if (!obsRes.ok) return null;
+            const obsData = await obsRes.json();
+            const props = obsData.properties;
+            
+            // Temperature comes in Celsius from NWS observations API
+            var tempC = props?.temperature?.value;
+            if (tempC === null || tempC === undefined) return null;
+            var tempF = Math.round(tempC * 9 / 5 + 32);
+            
+            // Wind
+            var windSpeedKmh = props?.windSpeed?.value;
+            var windMph = windSpeedKmh != null ? Math.round(windSpeedKmh * 0.621371) : null;
+            var windDirDeg = props?.windDirection?.value;
+            var windDir = '';
+            if (windDirDeg != null) {
+                var dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+                windDir = dirs[Math.round(windDirDeg / 22.5) % 16];
+            }
+            
+            var desc = props?.textDescription || '';
+            
+            return {
+                temp: tempF,
+                unit: 'F',
+                windSpeed: windMph != null ? windMph + ' mph' : null,
+                windDir: windDir,
+                desc: desc
+            };
+        } catch (e) {
+            console.log('Observation fetch error:', e);
+            return null;
+        }
+    }
+    
+    function updateBriefingWeather(periods, observation) {
         if (!periods || !periods[0]) return;
         var p = periods[0];
-        var temp = p.temperature;
-        var unit = p.temperatureUnit;
-        document.getElementById('bwx-temp').textContent = temp + '°' + unit;
-        document.getElementById('bwx-desc').textContent = p.shortForecast;
         
-        // Wind
-        if (p.windSpeed && p.windSpeed !== '0 mph') {
+        // Use actual observed temperature if available, otherwise fall back to forecast
+        if (observation && observation.temp != null) {
+            document.getElementById('bwx-temp').textContent = observation.temp + '°' + observation.unit;
+        } else {
+            document.getElementById('bwx-temp').textContent = p.temperature + '°' + p.temperatureUnit;
+        }
+        
+        // Use observed conditions if available
+        if (observation && observation.desc) {
+            document.getElementById('bwx-desc').textContent = observation.desc;
+        } else {
+            document.getElementById('bwx-desc').textContent = p.shortForecast;
+        }
+        
+        // Wind: prefer observation, fall back to forecast
+        if (observation && observation.windSpeed && observation.windSpeed !== '0 mph') {
+            document.getElementById('bwx-wind').textContent = '💨 ' + observation.windSpeed + ' ' + (observation.windDir || '');
+        } else if (p.windSpeed && p.windSpeed !== '0 mph') {
             document.getElementById('bwx-wind').textContent = '💨 ' + p.windSpeed + ' ' + (p.windDirection || '');
         } else {
             document.getElementById('bwx-wind').textContent = '💨 Calm';
         }
         
-        // Hi/Lo from first two periods (today + tonight)
+        // Hi/Lo from forecast periods (this is correct — forecasted high and low)
         if (periods[1]) {
             var hi, lo;
             if (p.isDaytime) {
@@ -1597,9 +1664,11 @@
                     .then(r => r.ok ? r.json() : Promise.reject('NWS points failed'))
                     .then(pointData => {
                         var forecastUrl = pointData.properties?.forecast;
+                        var stationsUrl = pointData.properties?.observationStations;
+                        if (stationsUrl) wxStationsUrl = stationsUrl; // Update for future refreshes
                         if (forecastUrl) {
                             wxForecastUrl = forecastUrl; // Update for future refreshes
-                            loadForecast(forecastUrl);   // Reload with correct location
+                            loadForecast(forecastUrl, stationsUrl);   // Reload with correct location + observations
                         }
                     })
                     .catch(e => console.log('Geo weather fallback to Barron:', e));
