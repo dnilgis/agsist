@@ -1,6 +1,20 @@
 {
   "items": [
     {
+      "id": "54dbbcd89e6dec5c",
+      "title": "Saving One of Indiana&#039;s Top Crops from Tar Spot",
+      "link": "https://www.morningagclips.com/saving-one-of-indianas-top-crops-from-tar-spot/",
+      "description": "WEST LAFAYETTE, Ind. — Tar spot looks innocuous at first, but the tiny black dots on leaves scattered across a cornfield can lead to significant yield losses — perhaps 60 bushels out of an average of 200 bushels produced per acre. For the average Indiana corn farmer, this could result in up to $65,000 in [&#8230;] The post Saving One of Indiana&#039;s Top Crops from Tar Spot appeared first on Morning Ag Clips.",
+      "date": "Wed, 04 Feb 2026 07:52:51 +0000",
+      "timestamp": 1770191571000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "https://www.morningagclips.com/wp-content/uploads/2026/02/tar-spot-225x300.jpg",
+      "summary": "Key Points:\n\n- Tar spot disease could result in up to $65,000 in lost profits for the average Indiana corn farmer.\n- The disease first appeared in Indiana in 2015 and caused widespread problems in 2018.\n- Purdue Extension educator Amy Alka organized an informational session with Purdue's Darcy Telenko that was attended by 52 farmers within 36 hours of the initial call.\n- Telenko's research on disease development, fungicides, application timing, hybrid variability, and weather conditions is helping farmers make informed decisions to protect their corn crops.\n- Certified crop advisor Betsy Bower says Telenko's work has had a financial impact of \"tens of millions of dollars\" for Indiana farms in managing tar spot.\n- Indiana farmer Thomas Lux credits the collaboration between Extension, Purdue researchers, and crop advisors as key to the future of corn production in the state.\n- Telenko's personal connection to farming and Extension work drives her dedication to supporting farmers.",
+      "summaryTimestamp": 1770194132881
+    },
+    {
       "id": "149831e74e484281",
       "title": "SDSU Extension co-hosting Cattlemen’s Education Day",
       "link": "https://www.tsln.com/news/sdsu-extension-co-hosting-cattlemens-education-day/",
@@ -125,20 +139,6 @@
       "thumbnail": "",
       "summary": "Key Highlights:\n\n- Over 325 members and industry professionals attended the 2026 OABA (Ohio AgriBusiness Association) Industry Conference in Columbus, Ohio from January 26-28.\n\n- The conference theme was \"Seize the Momentum\" and focused on helping agribusiness professionals take advantage of opportunities and tackle challenges.\n\n- Notable speakers included Arlan Suderman of StoneX Financial, Eric Snodgrass of Nutrien Agronomy, Jennifer Coleman of The Directions Group, and Lisa Woodke of Start of the West.\n\n- OABA recognized 3 individuals with Awards of Excellence:\n  - Steve Ramseyer of Deerfield Ag Services - Excellence in Customer Service Award\n  - Travis Kimmel of Advanced Agrilytics - Achievement as an Emerging Leader Award  \n  - Jed Bookman of Sunrise Cooperative - Excellence in Safety & Stewardship Award\n\n- John Ward and David C. Barrett were named OABA Honorary Members for their exemplary service.\n\n- OABA announced newly elected and re-elected Board of Directors, including Ann Staugler, Eric Barnes, Adam Conrad, and Eric Rife.\n\n- Nick Franks of Tyler Grain & Fertilizer was elected OABA President, and Clark Carroll of Gerald Grain was elected Vice President.\n\n- The 2027 OABA Industry Conference will be held January 25-27, 2027 in Columbus.\n\n- OABA is the leading advocate for Ohio agribusiness, focused on creating a sustainable business climate through policy, education, and communication.",
       "summaryTimestamp": 1770178136840
-    },
-    {
-      "id": "4f130188de19e187",
-      "title": "Turner Shorthorns Named Ohio Cattlemen’s Seedstock Producer of the Year",
-      "link": "https://www.morningagclips.com/turner-shorthorns-named-ohio-cattlemens-seedstock-producer-of-the-year/",
-      "description": "MARYSVILLE, Ohio, — Ohio Cattlemen’s Association (OCA) recognized Turner Shorthorns of Somerset, Ohio, as the Seedstock Producer of the Year during the Buckeye Cattlemen’s Summit on Jan. 24, 2026. The event was held at The Ohio State University Wooster Campus, Shisler Conference Center, in Wooster, Ohio. The award was sponsored by the Ohio Shorthorn Breeders [&#8230;] The post Turner Shorthorns Named Ohio Cattlemen’s Seedstock Producer of the Year appeared first on Morning Ag Clips.",
-      "date": "Wed, 04 Feb 2026 02:08:04 +0000",
-      "timestamp": 1770170884000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "",
-      "summary": "Turner Shorthorns, owned by Tom and Susie Turner of Somerset, Ohio, was named the Ohio Cattlemen's Association's Seedstock Producer of the Year on January 24, 2026. The operation encompasses 215 acres of reclaimed mining ground and has managed approximately 60 purebred Shorthorn cows for the past 15 years.\n\nAs a seedstock producer, Tom Turner emphasizes the importance of measuring performance at every stage of production. The operation tracks birth, weaning, and yearling weights, records frame scores on the calf crop, and annually weighs and evaluates the cow herd to monitor productivity and flushing ability. Turner Shorthorns incorporates advanced reproductive technologies, including artificial insemination and in vitro fertilization (IVF), to stay aligned with industry trends and genetic advancements.\n\nThe Turners believe the Shorthorn breed plays an important role in the commercial beef industry and emphasize selecting cattle that are moderate in size, functional, and efficient in production. They showcase their cattle in show rings across the country and note that one of the most rewarding aspects of their operation is seeing customers succeed with seedstock purchased from their program, validating their genetic and breeding decisions.\n\nThe award was sponsored by the Ohio Shorthorn Breeders Association and honors Ohio beef operations that have demonstrated exceptional breeding success through registered cattle programs, utilizing performance data and modern technologies to improve genetic predictability while meeting the expectations of beef consumers.",
-      "summaryTimestamp": 1770178140360
     },
     {
       "id": "2ceb10d954a6873a",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 3,
-  "updated": "2026-02-04T06:44:39.050Z"
+  "summariesGenerated": 1,
+  "updated": "2026-02-04T08:35:33.082Z"
 }
