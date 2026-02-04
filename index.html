@@ -442,7 +442,7 @@
                 </div>
             </div>
             <div class="briefing-section">
-                <div class="briefing-label">Weather — <span id="wx-location-label">Barron, WI</span></div>
+                <div class="briefing-label">Weather — <span id="wx-location-label">Your Location</span></div>
                 <div class="briefing-wx" id="briefing-wx">
                     <div class="wx-main">
                         <span class="wx-temp-big" id="bwx-temp">--</span>
@@ -1410,11 +1410,13 @@
     loadData();
     setInterval(loadData, 2 * 60 * 1000);
     
-    // Weather: use geolocation if available, fall back to Barron WI
-    var wxForecastUrl = 'https://api.weather.gov/gridpoints/DLH/75,63/forecast'; // Default: Barron, WI
-    var wxStationsUrl = 'https://api.weather.gov/gridpoints/DLH/75,63/stations'; // Default: Barron, WI
+    // Weather: geolocate first, never default to a specific location
+    var wxForecastUrl = null;  // No default — must be set by geolocation or zip
+    var wxStationsUrl = null;
+    var wxLoaded = false;      // Track if weather has loaded
 
     async function loadForecast(url, stationsUrl) {
+        if (!url && !wxForecastUrl) return; // No location yet, skip
         try {
             const res = await fetch(url || wxForecastUrl);
             if (!res.ok) throw new Error('Forecast unavailable');
@@ -1457,14 +1459,15 @@
             // Fetch actual current observation, then update briefing with both
             var observation = await fetchCurrentObservation(stationsUrl);
             updateBriefingWeather(periods, observation);
+            wxLoaded = true;
         } catch (e) {
             console.log('Forecast error:', e);
         }
     }
     
-    // Load default forecast immediately, then upgrade with geolocation
-    loadForecast();
-    setInterval(function() { loadForecast(); }, 30 * 60 * 1000);
+    // DON'T load weather yet — wait for geolocation
+    // Auto-refresh only runs once we have a location
+    setInterval(function() { if (wxForecastUrl) loadForecast(); }, 30 * 60 * 1000);
     
     // ============================================
     // REPORTING THIS WEEK (from calendar data)
@@ -1583,71 +1586,113 @@
     async function fetchCurrentObservation(stationsUrl) {
         /**
          * Fetch actual current temperature from the nearest NWS observation station.
-         * Returns {temp, unit, windSpeed, windDir, desc} or null on failure.
+         * Tries up to 5 stations. Checks that observation is fresh (< 3 hours).
+         * Returns {temp, unit, windSpeed, windDir, desc, station} or null on failure.
          */
         try {
-            // Get nearest station
+            // Get stations list (sorted by proximity)
             var stUrl = stationsUrl || wxStationsUrl;
+            console.log('[WX] Fetching stations from:', stUrl);
             const stRes = await fetch(stUrl);
-            if (!stRes.ok) return null;
+            if (!stRes.ok) { console.log('[WX] Stations fetch failed:', stRes.status); return null; }
             const stData = await stRes.json();
-            const stationId = stData.features?.[0]?.properties?.stationIdentifier;
-            if (!stationId) return null;
-            
-            // Get latest observation from that station
-            const obsRes = await fetch(`https://api.weather.gov/stations/${stationId}/observations/latest`);
-            if (!obsRes.ok) return null;
-            const obsData = await obsRes.json();
-            const props = obsData.properties;
-            
-            // Temperature comes in Celsius from NWS observations API
-            var tempC = props?.temperature?.value;
-            if (tempC === null || tempC === undefined) return null;
-            var tempF = Math.round(tempC * 9 / 5 + 32);
-            
-            // Wind
-            var windSpeedKmh = props?.windSpeed?.value;
-            var windMph = windSpeedKmh != null ? Math.round(windSpeedKmh * 0.621371) : null;
-            var windDirDeg = props?.windDirection?.value;
-            var windDir = '';
-            if (windDirDeg != null) {
-                var dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
-                windDir = dirs[Math.round(windDirDeg / 22.5) % 16];
+            const stations = stData.features || [];
+            if (!stations.length) { console.log('[WX] No stations returned'); return null; }
+
+            // Try up to 5 nearest stations
+            var maxStations = Math.min(5, stations.length);
+            for (var i = 0; i < maxStations; i++) {
+                var stationId = stations[i]?.properties?.stationIdentifier;
+                var stationName = stations[i]?.properties?.name || stationId;
+                if (!stationId) continue;
+
+                try {
+                    console.log('[WX] Trying station ' + (i+1) + '/' + maxStations + ': ' + stationId + ' (' + stationName + ')');
+                    const obsRes = await fetch('https://api.weather.gov/stations/' + stationId + '/observations/latest', {
+                        headers: { 'Accept': 'application/geo+json' }
+                    });
+                    if (!obsRes.ok) { console.log('[WX] ' + stationId + ' returned ' + obsRes.status); continue; }
+                    const obsData = await obsRes.json();
+                    const props = obsData.properties;
+
+                    // Check freshness — reject observations older than 3 hours
+                    var obsTime = props?.timestamp;
+                    if (obsTime) {
+                        var obsAge = (Date.now() - new Date(obsTime).getTime()) / (1000 * 60);
+                        console.log('[WX] ' + stationId + ' observation age: ' + Math.round(obsAge) + ' min');
+                        if (obsAge > 180) { console.log('[WX] Stale observation, skipping'); continue; }
+                    }
+
+                    // Temperature comes in Celsius from NWS observations API
+                    var tempC = props?.temperature?.value;
+                    if (tempC === null || tempC === undefined) { console.log('[WX] ' + stationId + ' has null temp'); continue; }
+                    var tempF = Math.round(tempC * 9 / 5 + 32);
+
+                    // Wind
+                    var windSpeedKmh = props?.windSpeed?.value;
+                    var windMph = windSpeedKmh != null ? Math.round(windSpeedKmh * 0.621371) : null;
+                    var windDirDeg = props?.windDirection?.value;
+                    var windDir = '';
+                    if (windDirDeg != null) {
+                        var dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+                        windDir = dirs[Math.round(windDirDeg / 22.5) % 16];
+                    }
+
+                    var desc = props?.textDescription || '';
+
+                    console.log('[WX] ✅ Got observation from ' + stationId + ': ' + tempF + '°F, ' + desc);
+                    return {
+                        temp: tempF,
+                        unit: 'F',
+                        windSpeed: windMph != null ? windMph + ' mph' : null,
+                        windDir: windDir,
+                        desc: desc,
+                        station: stationName
+                    };
+                } catch (e2) {
+                    console.log('[WX] Station ' + stationId + ' error:', e2.message);
+                    continue;
+                }
             }
-            
-            var desc = props?.textDescription || '';
-            
-            return {
-                temp: tempF,
-                unit: 'F',
-                windSpeed: windMph != null ? windMph + ' mph' : null,
-                windDir: windDir,
-                desc: desc
-            };
+
+            console.log('[WX] All ' + maxStations + ' stations failed');
+            return null;
         } catch (e) {
-            console.log('Observation fetch error:', e);
+            console.log('[WX] Observation fetch error:', e);
             return null;
         }
     }
-    
+
     function updateBriefingWeather(periods, observation) {
         if (!periods || !periods[0]) return;
         var p = periods[0];
-        
-        // Use actual observed temperature if available, otherwise fall back to forecast
+
+        // Use actual observed temperature if available
         if (observation && observation.temp != null) {
             document.getElementById('bwx-temp').textContent = observation.temp + '°' + observation.unit;
         } else {
-            document.getElementById('bwx-temp').textContent = p.temperature + '°' + p.temperatureUnit;
+            // Observation failed — do NOT show forecast high as "current temp"
+            // Instead show forecast temp with a label so it's not misleading
+            if (p.isDaytime) {
+                document.getElementById('bwx-temp').textContent = p.temperature + '°' + p.temperatureUnit;
+                // Add a small note that this is today's high, not current
+                var tempEl = document.getElementById('bwx-temp');
+                if (tempEl) tempEl.title = "Today's forecasted high (current observation unavailable)";
+            } else {
+                document.getElementById('bwx-temp').textContent = p.temperature + '°' + p.temperatureUnit;
+                var tempEl2 = document.getElementById('bwx-temp');
+                if (tempEl2) tempEl2.title = "Tonight's forecasted low (current observation unavailable)";
+            }
+            console.log('[WX] ⚠️ No observation available, showing forecast temp:', p.temperature + '°' + p.temperatureUnit);
         }
-        
+
         // Use observed conditions if available
         if (observation && observation.desc) {
             document.getElementById('bwx-desc').textContent = observation.desc;
         } else {
             document.getElementById('bwx-desc').textContent = p.shortForecast;
         }
-        
+
         // Wind: prefer observation, fall back to forecast
         if (observation && observation.windSpeed && observation.windSpeed !== '0 mph') {
             document.getElementById('bwx-wind').textContent = '💨 ' + observation.windSpeed + ' ' + (observation.windDir || '');
@@ -1656,7 +1701,7 @@
         } else {
             document.getElementById('bwx-wind').textContent = '💨 Calm';
         }
-        
+
         // Hi/Lo from forecast periods (this is correct — forecasted high and low)
         if (periods[1]) {
             var hi, lo;
@@ -1687,14 +1732,117 @@
         document.getElementById('welcome-msg').textContent = msg;
     }
     
+    // Load weather from NWS points API given lat/lon
+    async function loadWeatherForLocation(lat, lon) {
+        try {
+            const r = await fetch('https://api.weather.gov/points/' + lat.toFixed(4) + ',' + lon.toFixed(4));
+            if (!r.ok) throw new Error('NWS points failed: ' + r.status);
+            const pointData = await r.json();
+            var forecastUrl = pointData.properties?.forecast;
+            var stationsUrl = pointData.properties?.observationStations;
+            if (stationsUrl) wxStationsUrl = stationsUrl;
+            if (forecastUrl) {
+                wxForecastUrl = forecastUrl;
+                loadForecast(forecastUrl, stationsUrl);
+            }
+        } catch (e) {
+            console.log('Weather location error:', e);
+        }
+    }
+
+    // Load weather by US zip code via Census geocoder → NWS
+    async function loadWeatherByZip(zip) {
+        try {
+            // Use Nominatim for geocoding (free, no API key needed)
+            const r = await fetch('https://nominatim.openstreetmap.org/search?postalcode=' + zip + '&country=us&format=json&limit=1');
+            if (!r.ok) throw new Error('Geocode failed');
+            const results = await r.json();
+            if (!results.length) { alert('ZIP code not found. Please try again.'); return; }
+            var lat = parseFloat(results[0].lat);
+            var lon = parseFloat(results[0].lon);
+
+            // Update location label
+            var display = results[0].display_name || '';
+            var parts = display.split(',');
+            var locLabel = document.getElementById('wx-location-label');
+            if (parts.length >= 2 && locLabel) {
+                locLabel.textContent = parts[0].trim() + ',' + parts[1].trim();
+            }
+
+            // Save zip for future visits
+            try { localStorage.setItem('agsist_zip', zip); } catch(e) {}
+
+            // Load weather
+            await loadWeatherForLocation(lat, lon);
+        } catch (e) {
+            console.log('Zip weather error:', e);
+            alert('Could not load weather for that ZIP code.');
+        }
+    }
+
+    function showZipPrompt() {
+        var descEl = document.getElementById('bwx-desc');
+        var wxSection = document.getElementById('briefing-wx');
+        if (descEl) descEl.textContent = '';
+        // Replace weather area with zip entry
+        if (wxSection) {
+            wxSection.innerHTML = '<div style="text-align:center;padding:12px 0;">' +
+                '<div style="font-size:0.85rem;color:var(--dim);margin-bottom:10px;">📍 Enter your ZIP for local weather</div>' +
+                '<div style="display:flex;gap:8px;justify-content:center;align-items:center;">' +
+                    '<input type="text" id="wx-zip-input" placeholder="ZIP code" maxlength="5" ' +
+                        'inputmode="numeric" pattern="[0-9]{5}" ' +
+                        'style="width:100px;padding:8px 12px;background:var(--card);border:1px solid var(--border);' +
+                        'border-radius:6px;color:var(--text);font-family:inherit;font-size:0.9rem;text-align:center;">' +
+                    '<button onclick="submitZip()" ' +
+                        'style="padding:8px 16px;background:var(--accent);color:#000;border:none;border-radius:6px;' +
+                        'font-family:inherit;font-weight:600;font-size:0.8rem;cursor:pointer;">Go</button>' +
+                '</div>' +
+            '</div>';
+            // Enter key submits
+            var zipInput = document.getElementById('wx-zip-input');
+            if (zipInput) {
+                zipInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') submitZip(); });
+                zipInput.focus();
+            }
+        }
+        document.getElementById('wx-location-label').textContent = 'Set Location';
+    }
+
+    function submitZip() {
+        var input = document.getElementById('wx-zip-input');
+        if (!input) return;
+        var zip = input.value.trim();
+        if (!/^\d{5}$/.test(zip)) { alert('Please enter a 5-digit ZIP code.'); return; }
+
+        // Restore weather UI before loading
+        var wxSection = document.getElementById('briefing-wx');
+        if (wxSection) {
+            wxSection.innerHTML = '<div class="wx-main">' +
+                '<span class="wx-temp-big" id="bwx-temp">--</span>' +
+                '<span class="wx-condition" id="bwx-desc">Loading...</span>' +
+            '</div>' +
+            '<div class="wx-detail" id="bwx-wind"></div>' +
+            '<div class="wx-detail" id="bwx-hilo"></div>';
+        }
+        document.getElementById('wx-location-label').textContent = 'Loading...';
+        loadWeatherByZip(zip);
+    }
+
+    // Check for saved zip code first
+    var savedZip = null;
+    try { savedZip = localStorage.getItem('agsist_zip'); } catch(e) {}
+
     if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
             (pos) => {
                 var lat = pos.coords.latitude;
                 var lon = pos.coords.longitude;
                 
+                // Clear saved zip — user has granted location
+                try { localStorage.removeItem('agsist_zip'); } catch(e) {}
+
                 // Update location name
-                fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+                fetch('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lon + '&format=json')
                     .then(r => r.json())
                     .then(data => {
                         const city = data.address?.city || data.address?.town || data.address?.village || '';
@@ -1716,25 +1864,29 @@
                     })
                     .catch(() => setWelcome(''));
                 
-                // Get weather for user's actual location via NWS points API
-                fetch(`https://api.weather.gov/points/${lat.toFixed(4)},${lon.toFixed(4)}`)
-                    .then(r => r.ok ? r.json() : Promise.reject('NWS points failed'))
-                    .then(pointData => {
-                        var forecastUrl = pointData.properties?.forecast;
-                        var stationsUrl = pointData.properties?.observationStations;
-                        if (stationsUrl) wxStationsUrl = stationsUrl; // Update for future refreshes
-                        if (forecastUrl) {
-                            wxForecastUrl = forecastUrl; // Update for future refreshes
-                            loadForecast(forecastUrl, stationsUrl);   // Reload with correct location + observations
-                        }
-                    })
-                    .catch(e => console.log('Geo weather fallback to Barron:', e));
+                // Load weather for user's actual location
+                loadWeatherForLocation(lat, lon);
             },
-            () => setWelcome(''),
+            () => {
+                // Geolocation denied or failed
+                setWelcome('');
+                if (savedZip) {
+                    // Use saved zip code
+                    loadWeatherByZip(savedZip);
+                } else {
+                    // Show zip code prompt
+                    showZipPrompt();
+                }
+            },
             { timeout: 5000, maximumAge: 600000 }
         );
     } else {
         setWelcome('');
+        if (savedZip) {
+            loadWeatherByZip(savedZip);
+        } else {
+            showZipPrompt();
+        }
     }
     
     if ('serviceWorker' in navigator) {
