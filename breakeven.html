@@ -58,7 +58,10 @@
         /* ==========================================
            INPUT HINT TOOLTIPS
            ========================================== */
-        .input-wrap { position: relative; z-index: 1; }
+        .input-wrap { position: relative; }
+        @media (hover: hover) {
+            .input-wrap:hover, .input-wrap:focus-within { z-index: 100; }
+        }
         .input-wrap label { display: flex; align-items: center; gap: 6px; }
         .hint-icon {
             display: inline-flex; align-items: center; justify-content: center;
@@ -67,8 +70,6 @@
             font-size: 0.6rem; font-weight: 700; cursor: help;
             transition: all 0.2s; flex-shrink: 0;
         }
-        .input-wrap:hover .hint-icon,
-        .input-wrap:focus-within .hint-icon { background: var(--accent); color: #000; }
         
         .hint-popup {
             display: none; position: absolute; bottom: calc(100% + 8px); left: 0; right: 0;
@@ -83,8 +84,12 @@
             transform: rotate(45deg);
         }
         @keyframes hintIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-        .input-wrap:hover .hint-popup,
-        .input-wrap:focus-within .hint-popup { display: block; }
+        @media (hover: hover) {
+            .input-wrap:hover .hint-popup,
+            .input-wrap:focus-within .hint-popup { display: block; }
+            .input-wrap:hover .hint-icon,
+            .input-wrap:focus-within .hint-icon { background: var(--accent); color: #000; }
+        }
         .hint-title { font-size: 0.7rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
         .hint-list { list-style: none; padding: 0; margin: 0; }
         .hint-list li { font-size: 0.75rem; color: var(--text); padding: 2px 0; line-height: 1.5; }
@@ -115,15 +120,19 @@
            ========================================== */
         .cost-breakdown { margin-top: 16px; }
         .cost-breakdown-title { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600; }
-        .cost-bar { display: flex; height: 28px; border-radius: 6px; overflow: hidden; margin-bottom: 8px; }
+        .cost-bar { display: flex; height: 28px; border-radius: 6px; overflow: visible; margin-bottom: 8px; }
         .cost-bar-seg { transition: width 0.4s ease; min-width: 2px; position: relative; cursor: pointer; }
+        .cost-bar-seg:first-child { border-radius: 6px 0 0 6px; }
+        .cost-bar-seg:last-child { border-radius: 0 6px 6px 0; }
         .cost-bar-seg:hover { filter: brightness(1.3); }
         .cost-bar-seg .seg-tip {
             display: none; position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
             background: #1e1e24; border: 1px solid var(--border); border-radius: 4px;
-            padding: 4px 8px; font-size: 0.7rem; white-space: nowrap; z-index: 10;
+            padding: 4px 8px; font-size: 0.7rem; white-space: nowrap; z-index: 500;
         }
-        .cost-bar-seg:hover .seg-tip { display: block; }
+        @media (hover: hover) {
+            .cost-bar-seg:hover .seg-tip { display: block; }
+        }
         .cost-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; }
         .cost-legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--dim); }
         .cost-legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
@@ -261,15 +270,66 @@
             }
             .sens-table { font-size: 0.65rem; }
             .sens-table th, .sens-table td { padding: 4px 5px; }
-            /* On mobile: no focus popups (keyboard covers them). Tap ? icon to toggle instead via JS. */
+        }
+
+        /* Touch-device overrides: kill ALL CSS-triggered popups.
+           Uses both (hover:none) and max-width for maximum coverage. */
+        @media (hover: none), (max-width: 500px) {
+            /* Kill z-index escalation on hover/focus */
+            .input-wrap:hover,
+            .input-wrap:focus-within { z-index: auto !important; }
+
+            /* Kill ALL CSS hover/focus-triggered hint popups */
+            .input-wrap:hover .hint-popup,
             .input-wrap:focus-within .hint-popup { display: none !important; }
-            .hint-popup { position: fixed; bottom: 0; left: 0; right: 0; top: auto;
-                border-radius: 14px 14px 0 0; z-index: 9999; max-height: 45vh; overflow-y: auto;
-                padding: 20px 18px calc(env(safe-area-inset-bottom, 0px) + 20px);
-                background: #16161a; border: 1px solid var(--accent); border-bottom: none;
-                box-shadow: 0 -8px 30px rgba(0,0,0,0.7); pointer-events: auto; }
-            .hint-popup::after { display: none; }
+
+            /* Kill hover highlight on ? icon */
+            .input-wrap:hover .hint-icon,
+            .input-wrap:focus-within .hint-icon { background: var(--border) !important; color: var(--dim) !important; }
+
+            /* Kill cost bar hover tooltips */
+            .cost-bar-seg:hover .seg-tip { display: none !important; }
+
+            /* Panel overflow containment */
+            .panel { overflow: hidden !important; }
+            .panel-body { overflow-x: hidden !important; overflow-y: visible !important; }
+
+            /* Hint popup: bottom sheet style */
+            .hint-popup {
+                position: fixed !important;
+                bottom: 0 !important; left: 0 !important; right: 0 !important; top: auto !important;
+                border-radius: 14px 14px 0 0 !important;
+                z-index: 99999 !important;
+                max-height: 50vh !important;
+                overflow-y: auto !important;
+                padding: 20px 18px calc(env(safe-area-inset-bottom, 0px) + 20px) !important;
+                background: #16161a !important;
+                border: 1px solid var(--accent) !important;
+                border-bottom: none !important;
+                box-shadow: 0 -8px 30px rgba(0,0,0,0.8) !important;
+                pointer-events: auto !important;
+            }
+            .hint-popup::after { display: none !important; }
+
+            /* ONLY show via JS .mobile-open class */
             .hint-popup.mobile-open { display: block !important; }
+
+            /* Scrim overlay behind bottom sheet */
+            .hint-scrim { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99998; -webkit-tap-highlight-color: transparent; }
+            .hint-scrim.active { display: block; }
+
+            /* Cost bar tap-friendly seg-tips */
+            .cost-bar-seg .seg-tip.seg-open {
+                display: block !important; position: fixed !important; bottom: 60px !important; left: 50% !important;
+                transform: translateX(-50%) !important; z-index: 99999 !important; padding: 8px 14px !important;
+                font-size: 0.85rem !important; max-width: 80vw !important; text-align: center !important;
+            }
+
+            /* Cost bar: contain overflow */
+            .cost-bar { overflow: hidden !important; }
+
+            /* Make ? icons larger tap targets on mobile */
+            .hint-icon { width: 22px !important; height: 22px !important; font-size: 0.7rem !important; }
         }
     </style>
 </head>
@@ -832,45 +892,109 @@
 
     /* Mobile: tap ? icon to toggle hint as bottom sheet */
     (function() {
-        if (window.innerWidth > 500) return;
+        // Detect touch devices via media query (more reliable than innerWidth)
+        var isTouchDevice = window.matchMedia('(hover: none)').matches || window.innerWidth <= 500;
+        if (!isTouchDevice) return;
+
         var activePopup = null;
 
+        // Create scrim overlay
+        var scrim = document.createElement('div');
+        scrim.className = 'hint-scrim';
+        document.body.appendChild(scrim);
+
+        function closeActive() {
+            if (activePopup) {
+                activePopup.classList.remove('mobile-open');
+                activePopup.setAttribute('inert', '');
+                activePopup = null;
+                scrim.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            // Also close any open seg-tip
+            document.querySelectorAll('.seg-tip.seg-open').forEach(function(t) { t.classList.remove('seg-open'); });
+        }
+
+        // Use touchend for ? icons (more reliable on iOS than click)
         document.querySelectorAll('.hint-icon').forEach(function(icon) {
-            icon.addEventListener('click', function(e) {
+            icon.addEventListener('touchend', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 var popup = icon.closest('.input-wrap').querySelector('.hint-popup');
                 if (!popup) return;
 
-                // Close previous
-                if (activePopup && activePopup !== popup) {
-                    activePopup.classList.remove('mobile-open');
-                }
-
-                if (popup.classList.contains('mobile-open')) {
-                    popup.classList.remove('mobile-open');
-                    activePopup = null;
+                if (activePopup === popup) {
+                    closeActive();
                 } else {
+                    closeActive();
+                    popup.removeAttribute('inert');
                     popup.classList.add('mobile-open');
                     activePopup = popup;
+                    scrim.classList.add('active');
+                    document.body.style.overflow = 'hidden';
                 }
+            }, { passive: false });
+
+            // Also handle click for accessibility
+            icon.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
             });
         });
 
-        // Tap outside to close
+        // Scrim tap closes
+        scrim.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            closeActive();
+        });
+        scrim.addEventListener('click', closeActive);
+
+        // Tap outside closes (backup)
         document.addEventListener('click', function(e) {
             if (activePopup && !e.target.closest('.hint-icon') && !e.target.closest('.hint-popup')) {
-                activePopup.classList.remove('mobile-open');
-                activePopup = null;
+                closeActive();
+            }
+        });
+
+        // Cost bar segments: tap to show tooltip
+        document.addEventListener('click', function(e) {
+            var seg = e.target.closest('.cost-bar-seg');
+            if (!seg) return;
+            var tip = seg.querySelector('.seg-tip');
+            if (!tip) return;
+            e.stopPropagation();
+            document.querySelectorAll('.seg-tip.seg-open').forEach(function(t) {
+                if (t !== tip) t.classList.remove('seg-open');
+            });
+            tip.classList.toggle('seg-open');
+            if (tip.classList.contains('seg-open')) {
+                setTimeout(function() { tip.classList.remove('seg-open'); }, 3000);
             }
         });
 
         // Scroll input into view on focus (above keyboard)
         document.querySelectorAll('input[type="number"], select').forEach(function(input) {
             input.addEventListener('focus', function() {
+                // Close any active popup first
+                closeActive();
                 setTimeout(function() {
                     input.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 300);
+            });
+        });
+
+        // Also hide hint popups on any input focus (belt and suspenders)
+        document.querySelectorAll('input, select').forEach(function(input) {
+            input.addEventListener('focus', function() {
+                document.querySelectorAll('.hint-popup.mobile-open').forEach(function(p) {
+                    p.classList.remove('mobile-open');
+                    p.setAttribute('inert', '');
+                });
+                if (activePopup) {
+                    activePopup = null;
+                    scrim.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
             });
         });
     })();

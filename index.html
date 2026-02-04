@@ -766,6 +766,60 @@
     <script src="/components/load-components.js"></script>
     
     <script>
+    var oatsFallbackDone = false;
+    async function fetchOatsFallback() {
+        if (oatsFallbackDone) return;
+        oatsFallbackDone = true;
+        try {
+            // Try Yahoo Finance v8 chart API directly (CORS-friendly from browser)
+            const symbols = ['ZO=F', 'ZOH26.CBT', 'ZOK26.CBT', 'ZON26.CBT'];
+            for (const sym of symbols) {
+                try {
+                    const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=5d`);
+                    if (!r.ok) continue;
+                    const d = await r.json();
+                    const chart = d?.chart?.result?.[0];
+                    if (!chart) continue;
+
+                    const meta = chart.meta || {};
+                    let price = meta.regularMarketPrice || 0;
+                    let prevClose = meta.chartPreviousClose || meta.previousClose || price;
+
+                    if (!price) {
+                        const closes = chart.indicators?.quote?.[0]?.close || [];
+                        const valid = closes.filter(c => c && c > 0);
+                        if (valid.length) {
+                            price = valid[valid.length - 1];
+                            prevClose = valid.length >= 2 ? valid[valid.length - 2] : price;
+                        }
+                    }
+                    if (!price) continue;
+
+                    const change = price - prevClose;
+                    const changePct = prevClose ? (change / prevClose) * 100 : 0;
+                    const low52 = meta.fiftyTwoWeekLow;
+                    const high52 = meta.fiftyTwoWeekHigh;
+
+                    document.getElementById('oats-price').textContent = '$' + fmt(price, '¢/bu');
+                    document.getElementById('oats-change').textContent = chgSign(changePct) + changePct.toFixed(1) + '%';
+                    document.getElementById('oats-change').className = 'secondary-change ' + chgClass(change);
+                    if (prevClose) document.getElementById('oats-prev').textContent = 'prev: $' + fmt(prevClose, '¢/bu');
+                    document.getElementById('oats-symbol').textContent = sym;
+                    if (low52 && high52) {
+                        document.getElementById('oats-range-low').textContent = '$' + fmt(low52, '¢/bu');
+                        document.getElementById('oats-range-high').textContent = '$' + fmt(high52, '¢/bu');
+                        document.getElementById('oats-marker').style.left = rangePos(price, low52, high52) + '%';
+                    }
+                    console.log('Oats fallback succeeded via ' + sym);
+                    return;
+                } catch(e) { continue; }
+            }
+            console.log('Oats client-side fallback: all symbols failed');
+        } catch(e) {
+            console.log('Oats fallback error:', e);
+        }
+    }
+
     async function loadData() {
         try {
             const res = await fetch('data/markets.json');
@@ -877,6 +931,9 @@
                     document.getElementById('oats-range-high').textContent = '$' + fmt(c.high52, c.unit);
                     document.getElementById('oats-marker').style.left = rangePos(c.price, c.low52, c.high52) + '%';
                 }
+            } else {
+                // Client-side fallback: fetch oats directly if missing from markets.json
+                fetchOatsFallback();
             }
             
             // ---- Morning Briefing Prices ----
