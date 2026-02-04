@@ -56,40 +56,29 @@
         select { cursor: pointer; }
 
         /* ==========================================
-           INPUT HINT TOOLTIPS
+           INPUT HINT TOOLTIPS — inline click-to-expand
            ========================================== */
         .input-wrap { position: relative; }
-        @media (hover: hover) {
-            .input-wrap:hover, .input-wrap:focus-within { z-index: 100; }
-        }
         .input-wrap label { display: flex; align-items: center; gap: 6px; }
         .hint-icon {
             display: inline-flex; align-items: center; justify-content: center;
-            width: 16px; height: 16px; border-radius: 50%;
+            width: 18px; height: 18px; border-radius: 50%;
             background: var(--border); color: var(--dim);
-            font-size: 0.6rem; font-weight: 700; cursor: help;
+            font-size: 0.65rem; font-weight: 700; cursor: pointer;
             transition: all 0.2s; flex-shrink: 0;
+            user-select: none; -webkit-tap-highlight-color: transparent;
         }
-        
+        .hint-icon:hover, .hint-icon.active { background: var(--accent); color: #000; }
+
+        /* Inline expandable — no absolute positioning, no z-index, no overflow issues */
         .hint-popup {
-            display: none; position: absolute; bottom: calc(100% + 8px); left: 0; right: 0;
+            display: none; margin-top: 8px;
             background: #1a1a22; border: 1px solid var(--accent); border-radius: 8px;
-            padding: 12px 14px; z-index: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            animation: hintIn 0.15s ease-out; pointer-events: none;
+            padding: 12px 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: hintIn 0.15s ease-out;
         }
-        .hint-popup::after {
-            content: ''; position: absolute; bottom: -6px; left: 24px;
-            width: 10px; height: 10px; background: #1a1a22;
-            border-right: 1px solid var(--accent); border-bottom: 1px solid var(--accent);
-            transform: rotate(45deg);
-        }
-        @keyframes hintIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-        @media (hover: hover) {
-            .input-wrap:hover .hint-popup,
-            .input-wrap:focus-within .hint-popup { display: block; }
-            .input-wrap:hover .hint-icon,
-            .input-wrap:focus-within .hint-icon { background: var(--accent); color: #000; }
-        }
+        .hint-popup.hint-open { display: block; }
+        @keyframes hintIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
         .hint-title { font-size: 0.7rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
         .hint-list { list-style: none; padding: 0; margin: 0; }
         .hint-list li { font-size: 0.75rem; color: var(--text); padding: 2px 0; line-height: 1.5; }
@@ -272,63 +261,15 @@
             .sens-table th, .sens-table td { padding: 4px 5px; }
         }
 
-        /* Touch-device overrides: kill ALL CSS-triggered popups.
-           Uses both (hover:none) and max-width for maximum coverage. */
+        /* Touch/mobile overrides — cost bar tips + tap targets only */
         @media (hover: none), (max-width: 500px) {
-            /* Kill z-index escalation on hover/focus */
-            .input-wrap:hover,
-            .input-wrap:focus-within { z-index: auto !important; }
-
-            /* Kill ALL CSS hover/focus-triggered hint popups */
-            .input-wrap:hover .hint-popup,
-            .input-wrap:focus-within .hint-popup { display: none !important; }
-
-            /* Kill hover highlight on ? icon */
-            .input-wrap:hover .hint-icon,
-            .input-wrap:focus-within .hint-icon { background: var(--border) !important; color: var(--dim) !important; }
-
-            /* Kill cost bar hover tooltips */
             .cost-bar-seg:hover .seg-tip { display: none !important; }
-
-            /* Panel overflow containment */
-            .panel { overflow: hidden !important; }
-            .panel-body { overflow-x: hidden !important; overflow-y: visible !important; }
-
-            /* Hint popup: bottom sheet style */
-            .hint-popup {
-                position: fixed !important;
-                bottom: 0 !important; left: 0 !important; right: 0 !important; top: auto !important;
-                border-radius: 14px 14px 0 0 !important;
-                z-index: 99999 !important;
-                max-height: 50vh !important;
-                overflow-y: auto !important;
-                padding: 20px 18px calc(env(safe-area-inset-bottom, 0px) + 20px) !important;
-                background: #16161a !important;
-                border: 1px solid var(--accent) !important;
-                border-bottom: none !important;
-                box-shadow: 0 -8px 30px rgba(0,0,0,0.8) !important;
-                pointer-events: auto !important;
-            }
-            .hint-popup::after { display: none !important; }
-
-            /* ONLY show via JS .mobile-open class */
-            .hint-popup.mobile-open { display: block !important; }
-
-            /* Scrim overlay behind bottom sheet */
-            .hint-scrim { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99998; -webkit-tap-highlight-color: transparent; }
-            .hint-scrim.active { display: block; }
-
-            /* Cost bar tap-friendly seg-tips */
             .cost-bar-seg .seg-tip.seg-open {
                 display: block !important; position: fixed !important; bottom: 60px !important; left: 50% !important;
                 transform: translateX(-50%) !important; z-index: 99999 !important; padding: 8px 14px !important;
                 font-size: 0.85rem !important; max-width: 80vw !important; text-align: center !important;
             }
-
-            /* Cost bar: contain overflow */
             .cost-bar { overflow: hidden !important; }
-
-            /* Make ? icons larger tap targets on mobile */
             .hint-icon { width: 22px !important; height: 22px !important; font-size: 0.7rem !important; }
         }
     </style>
@@ -890,69 +831,38 @@
     calcBreakeven();
     fetchLivePrices();
 
-    /* Mobile: tap ? icon to toggle hint as bottom sheet */
+    /* Hint toggle — click ? to expand inline checklist (all devices, no z-index needed) */
     (function() {
-        // Detect touch devices via media query (more reliable than innerWidth)
-        var isTouchDevice = window.matchMedia('(hover: none)').matches || window.innerWidth <= 500;
-        if (!isTouchDevice) return;
-
-        var activePopup = null;
-
-        // Create scrim overlay
-        var scrim = document.createElement('div');
-        scrim.className = 'hint-scrim';
-        document.body.appendChild(scrim);
-
-        function closeActive() {
-            if (activePopup) {
-                activePopup.classList.remove('mobile-open');
-                activePopup.setAttribute('inert', '');
-                activePopup = null;
-                scrim.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-            // Also close any open seg-tip
-            document.querySelectorAll('.seg-tip.seg-open').forEach(function(t) { t.classList.remove('seg-open'); });
+        function closeAllHints() {
+            document.querySelectorAll('.hint-popup.hint-open').forEach(function(p) {
+                p.classList.remove('hint-open');
+                p.setAttribute('inert', '');
+            });
+            document.querySelectorAll('.hint-icon.active').forEach(function(i) {
+                i.classList.remove('active');
+            });
         }
 
-        // Use touchend for ? icons (more reliable on iOS than click)
         document.querySelectorAll('.hint-icon').forEach(function(icon) {
-            icon.addEventListener('touchend', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                var popup = icon.closest('.input-wrap').querySelector('.hint-popup');
-                if (!popup) return;
-
-                if (activePopup === popup) {
-                    closeActive();
-                } else {
-                    closeActive();
-                    popup.removeAttribute('inert');
-                    popup.classList.add('mobile-open');
-                    activePopup = popup;
-                    scrim.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                }
-            }, { passive: false });
-
-            // Also handle click for accessibility
             icon.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
+                var popup = this.closest('.input-wrap').querySelector('.hint-popup');
+                if (!popup) return;
+                var wasOpen = popup.classList.contains('hint-open');
+                closeAllHints();
+                if (!wasOpen) {
+                    popup.classList.add('hint-open');
+                    popup.removeAttribute('inert');
+                    this.classList.add('active');
+                }
             });
         });
 
-        // Scrim tap closes
-        scrim.addEventListener('touchend', function(e) {
-            e.preventDefault();
-            closeActive();
-        });
-        scrim.addEventListener('click', closeActive);
-
-        // Tap outside closes (backup)
+        // Click outside closes all hints
         document.addEventListener('click', function(e) {
-            if (activePopup && !e.target.closest('.hint-icon') && !e.target.closest('.hint-popup')) {
-                closeActive();
+            if (!e.target.closest('.hint-icon') && !e.target.closest('.hint-popup')) {
+                closeAllHints();
             }
         });
 
@@ -972,31 +882,17 @@
             }
         });
 
-        // Scroll input into view on focus (above keyboard)
-        document.querySelectorAll('input[type="number"], select').forEach(function(input) {
-            input.addEventListener('focus', function() {
-                // Close any active popup first
-                closeActive();
-                setTimeout(function() {
-                    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 300);
-            });
-        });
-
-        // Also hide hint popups on any input focus (belt and suspenders)
-        document.querySelectorAll('input, select').forEach(function(input) {
-            input.addEventListener('focus', function() {
-                document.querySelectorAll('.hint-popup.mobile-open').forEach(function(p) {
-                    p.classList.remove('mobile-open');
-                    p.setAttribute('inert', '');
+        // Mobile: scroll input into view above keyboard
+        if (window.matchMedia('(hover: none)').matches) {
+            document.querySelectorAll('input[type="number"], select').forEach(function(input) {
+                input.addEventListener('focus', function() {
+                    closeAllHints();
+                    setTimeout(function() {
+                        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
                 });
-                if (activePopup) {
-                    activePopup = null;
-                    scrim.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
             });
-        });
+        }
     })();
     </script>
 </body>

@@ -183,12 +183,21 @@
         </div>
 
         <div class="two-col">
-            <!-- Map -->
+            <!-- State Map -->
             <div class="panel">
-                <div class="panel-head"><h2>🗺️ National Drought Map</h2></div>
+                <div class="panel-head"><h2 id="mapTitle">🗺️ Wisconsin Drought Map</h2></div>
                 <div class="panel-body">
-                    <div class="map-wrap">
-                        <img src="https://droughtmonitor.unl.edu/data/png/current/current_usdm.png" alt="Current US Drought Monitor Map" id="droughtMap" loading="lazy">
+                    <div class="map-wrap" id="stateMapWrap">
+                        <img id="stateMap" src="" alt="State Drought Monitor Map" loading="lazy" style="display:none;">
+                        <div id="stateMapFallback" style="padding:20px;text-align:center;">
+                            <div style="color:var(--dim);margin-bottom:8px;">Loading state map...</div>
+                        </div>
+                    </div>
+                    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
+                        <div class="bar-label" style="margin-bottom:6px;">National Overview:</div>
+                        <div class="map-wrap">
+                            <img src="https://droughtmonitor.unl.edu/data/png/current/current_usdm.png" alt="Current US Drought Monitor Map" id="droughtMap" loading="lazy">
+                        </div>
                     </div>
                     <div class="map-label">Source: <a href="https://droughtmonitor.unl.edu/?ref=agsist" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">US Drought Monitor</a> (NOAA/<span class="tip" data-tip="United States Department of Agriculture">USDA</span>/UNL)</div>
                 </div>
@@ -325,14 +334,86 @@
 
         // Store fetched data
         let droughtCache = {};
+        let localDroughtData = null;
+
+        // Try loading pre-fetched data from GitHub Actions first (avoids CORS)
+        async function loadLocalDroughtData() {
+            try {
+                const r = await fetch('/data/drought.json');
+                if (!r.ok) return;
+                localDroughtData = await r.json();
+                console.log('[Drought] Loaded local data for', Object.keys(localDroughtData.states || {}).length, 'states');
+            } catch(e) {
+                console.log('[Drought] No local data file, will use API');
+            }
+        }
 
         function populateStates() {
             const sel = document.getElementById('stateSelect');
             sel.innerHTML = allStates.map(([a, n]) => `<option value="${a}">${n}</option>`).join('');
         }
 
+        // State map image URL patterns to try
+        function getStateMapUrls(abbr) {
+            const lower = abbr.toLowerCase();
+            return [
+                'https://droughtmonitor.unl.edu/data/png/current/current_' + lower + '_usdm.png',
+                'https://droughtmonitor.unl.edu/data/png/current/current_' + lower + '_trd_sec.png'
+            ];
+        }
+
+        function updateStateMap(abbr) {
+            const stateName = allStates.find(s => s[0] === abbr)?.[1] || abbr;
+            document.getElementById('mapTitle').textContent = '🗺️ ' + stateName + ' Drought Map';
+
+            const img = document.getElementById('stateMap');
+            const fallback = document.getElementById('stateMapFallback');
+            const urls = getStateMapUrls(abbr);
+
+            // Reset
+            img.style.display = 'none';
+            fallback.style.display = 'block';
+            fallback.innerHTML = '<div style="color:var(--dim);">Loading state map...</div>';
+
+            // Try loading state map image
+            var tried = 0;
+            function tryNext() {
+                if (tried >= urls.length) {
+                    // All URLs failed — show link to official page
+                    fallback.innerHTML = '<div style="padding:12px;text-align:center;">' +
+                        '<p style="color:var(--dim);margin-bottom:10px;font-size:0.85rem;">State map preview unavailable</p>' +
+                        '<a href="https://droughtmonitor.unl.edu/CurrentMap/StateDroughtMonitor.aspx?' + abbr + '" ' +
+                        'target="_blank" rel="noopener noreferrer" ' +
+                        'style="display:inline-block;padding:10px 20px;background:var(--accent);color:#000;border-radius:6px;text-decoration:none;font-weight:600;font-size:0.85rem;">' +
+                        'View ' + stateName + ' Map on USDM →</a></div>';
+                    return;
+                }
+                var testImg = new Image();
+                testImg.onload = function() {
+                    img.src = urls[tried];
+                    img.alt = stateName + ' Drought Monitor Map';
+                    img.style.display = '';
+                    fallback.style.display = 'none';
+                };
+                testImg.onerror = function() {
+                    tried++;
+                    tryNext();
+                };
+                testImg.src = urls[tried];
+            }
+            tryNext();
+        }
+
         async function fetchDroughtData(stateAbbr) {
             if (droughtCache[stateAbbr]) return droughtCache[stateAbbr];
+
+            // Try local pre-fetched data first (no CORS issues)
+            if (localDroughtData && localDroughtData.states && localDroughtData.states[stateAbbr]) {
+                var local = localDroughtData.states[stateAbbr];
+                local.live = true;
+                droughtCache[stateAbbr] = local;
+                return local;
+            }
 
             try {
                 // USDM API - fetch most recent data
@@ -341,7 +422,7 @@
                 const url = `https://usdmdataservices.unl.edu/api/StateStatistics/GetDroughtSeverityStatisticsByAreaPercent?aoi=${stateAbbr}&startdate=${start}&enddate=${end}&statisticsType=1`;
 
                 const resp = await fetch(url);
-                if (!resp.ok) throw new Error('API error');
+                if (!resp.ok) throw new Error('API error ' + resp.status);
                 const data = await resp.json();
 
                 if (data && data.length > 0) {
@@ -456,6 +537,7 @@
             const stateName = allStates.find(s => s[0] === abbr)?.[1] || abbr;
             document.getElementById('stateTitle').textContent = `📊 ${stateName} Drought Status`;
 
+            updateStateMap(abbr);
             const data = await fetchDroughtData(abbr);
             renderStats(data);
             renderCompare();
@@ -478,6 +560,7 @@
 
         async function init() {
             populateStates();
+            await loadLocalDroughtData();
             currentState = AGSIST_GEO.getState();
             document.getElementById('stateSelect').value = currentState;
             document.getElementById('stateSelect').addEventListener('change', function() {
