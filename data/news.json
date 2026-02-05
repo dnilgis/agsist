@@ -1,6 +1,20 @@
 {
   "items": [
     {
+      "id": "68d9c7d6479865ee",
+      "title": "Auglaize County Farmer Appointed to United Soybean Board",
+      "link": "https://www.morningagclips.com/auglaize-county-farmer-appointed-to-united-soybean-board/",
+      "description": "WORTHINGTON, Ohio — Jerry Bambauer of Auglaize County has been appointed by U.S. Department of Agriculture Secretary Brooke Rollins to serve on the United Soybean Board (USB). USB manages the national soybean checkoff which was created by the Soybean Promotion, Research, and Information Act. The board is composed of 73 members representing 29 states and [&#8230;] The post Auglaize County Farmer Appointed to United Soybean Board appeared first on Morning Ag Clips.",
+      "date": "Thu, 05 Feb 2026 08:29:58 +0000",
+      "timestamp": 1770280198000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "",
+      "summary": "Jerry Bambauer of Auglaize County has been appointed by U.S. Department of Agriculture Secretary Brooke Rollins to serve on the United Soybean Board (USB). The USB is composed of 73 members representing 29 states and Eastern and Western regions, and it manages the national soybean checkoff. Bambauer currently serves as chairman of the Ohio Soybean Council Board of Trustees and has previously served on the Ohio Soybean Association Board of Trustees, where he held various leadership positions. He replaces retiring USB director Steve Reinhard of Crawford County, who was the second farmer from Ohio to be elected chairman of USB in 2024. Logan County farmer Bill Bayliss was also reappointed to the USB board. The Ohio Soybean Council is headquartered in Worthington and is governed by a volunteer farmer board, which directs the Soybean Promotion and Research Program, aiming to improve soybean profitability through investment in research and development projects.",
+      "summaryTimestamp": 1770280652837
+    },
+    {
       "id": "54a5755bd7ce40a6",
       "title": "How habit stacking can improve your heart health this year",
       "link": "https://www.farmanddairy.com/columns/how-habit-stacking-improve-heart-health/903121.html",
@@ -125,20 +139,6 @@
       "thumbnail": "",
       "summary": "The Center for Rural Prosperity and Innovation, a branch of the Georgia Department of Agriculture, has awarded a $125,000 grant to Evans Memorial Hospital (EMH) in Claxton, Georgia. The grant will be used to integrate technology and medication scanning equipment in the hospital's Emergency Department.\n\nEMH is a 49-licensed bed, not-for-profit acute care hospital with around 240 employees. The hospital serves Evans County and surrounding rural communities and has experienced a period of growth and innovation in recent years.\n\nThe grant-funded investment will allow EMH to implement critical upgrades to support Emergency Department barcode medication scanning at the point of care, which is an industry standard designed to prevent medication errors and improve patient safety. These upgrades will bring the Emergency Department into compliance with national patient safety standards, significantly reduce the risk of medication errors, and support ongoing quality initiatives, including efforts to improve door-to-EKG times.\n\nBeyond medication scanning, the investment will establish a robust platform for future patient safety and quality initiatives, such as expanded telehealth services, remote patient monitoring, advanced clinical decision support tools, and improved integration with regional health information exchanges.\n\nThe grant is part of the Center for Rural Prosperity and Innovation's efforts to support rural communities in Georgia. To date, the Center's projects have resulted in a total investment of more than $408 million in rural Georgia, with a 132:1 return ratio against the Center's funds.",
       "summaryTimestamp": 1770274466393
-    },
-    {
-      "id": "f1762beb34172c86",
-      "title": "Sustainable Student Farm Celebrates First Certificate Program Graduate",
-      "link": "https://www.morningagclips.com/sustainable-student-farm-celebrates-first-certificate-program-graduate/",
-      "description": "URBANA, Ill. &#8212; As a recent communications graduate, Lia Basden missed getting her hands dirty and making things grow. “My parents have a big garden and chickens,” she said. “I missed touching dirt.” That’s why she applied to the University of Illinois Urbana-Champaign’s Small Farm Certificate Program. Last semester, after eight months of hard work, she’s [&#8230;] The post Sustainable Student Farm Celebrates First Certificate Program Graduate appeared first on Morning Ag Clips.",
-      "date": "Thu, 05 Feb 2026 04:34:44 +0000",
-      "timestamp": 1770266084000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "",
-      "summary": "The 8-month program is based at the Sustainable Student Farm (SSF) and aims to teach anyone interested in running their own small, sustainable farm. \n\nThe program consists of an 8-week online course in the spring, 3 months of hands-on work at the SSF during the summer, and 3 additional months working at a farm of the student's choice in the fall. This hybrid approach integrates classroom learning with practical experience.\n\nAs the only student in the first year, Basden worked closely with the SSF farm manager Matthew Turino and lecturer Jack McCoy. She planned, planted, and harvested her own vegetable plot, and completed a final project detailing her plan for a small sustainable farm operation.\n\nThe program complements the existing SSF internship, which provides current students with work experience. Turino and McCoy plan to expand the certificate program beyond the inaugural class of one student.\n\nBasden, a recent communications graduate, is excited to continue promoting sustainable agriculture in her future career, using the skills she gained at the SSF.",
-      "summaryTimestamp": 1770274469243
     },
     {
       "id": "22a9f59dd55c4a9a",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 13,
-  "updated": "2026-02-05T06:54:38.782Z"
+  "summariesGenerated": 1,
+  "updated": "2026-02-05T08:37:33.038Z"
 }
