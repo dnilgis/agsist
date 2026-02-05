@@ -1,6 +1,76 @@
 {
   "items": [
     {
+      "id": "97acf649a211bf0a",
+      "title": "RFF releases report on CRP",
+      "link": "https://www.tsln.com/news/rff-releases-report-on-crp/",
+      "description": "Resources for the Future has released a report on the Agriculture Department&#8217;s Conservation Reserve Program, which retires environmentally sensitive cropland in exchange for rental payments. While other reports have demonstrated CRP&#8217;s ecological benefits, this report...",
+      "date": "Thu, 05 Feb 2026 00:07:59 +0000",
+      "timestamp": 1770250079000,
+      "source": "Tri-State Livestock",
+      "category": "industry",
+      "icon": "🐄",
+      "thumbnail": "",
+      "summary": "Key points:\n\n- Resources for the Future (RFF) released a report on the U.S. Department of Agriculture's Conservation Reserve Program (CRP), which pays farmers to retire environmentally sensitive cropland.\n\n- The report focuses on the socioeconomic benefits of CRP for rural communities, in addition to its well-known ecological benefits.\n\n- Key findings:\n  - CRP generates modest but measurable gains in nearby residential property values.\n  - CRP enrollment supports rural economic activity, particularly in agricultural and local service industries.\n  - CRP does not contribute to sustained rural depopulation.\n\n- The report provides a comprehensive national assessment of CRP's impacts on property values from 2012-2022 and on rural business activity, employment, and migration from 2001-2022.\n\n- Reauthorization of the CRP is a key issue in the proposed new farm bill, as it was not included in the previous \"One Big Beautiful Bill Act.\"\n\n- Overall, the report indicates that the CRP has supported rural communities while delivering substantial environmental benefits.",
+      "summaryTimestamp": 1770255900747
+    },
+    {
+      "id": "59f739ff09f88c04",
+      "title": "EDF issues report on potential of agricultural innovation",
+      "link": "https://www.tsln.com/news/edf-issues-report-on-potential-of-agricultural-innovation/",
+      "description": "The Environmental Defense Fund (EDF) has issued a new report on the impact that agricultural innovation can have on agriculture as its faces climate change and extreme and variable weather. &#8220;Technological advancements are poised to...",
+      "date": "Thu, 05 Feb 2026 00:05:40 +0000",
+      "timestamp": 1770249940000,
+      "source": "Tri-State Livestock",
+      "category": "industry",
+      "icon": "🐄",
+      "thumbnail": "",
+      "summary": "The Environmental Defense Fund (EDF) has issued a report on the potential of agricultural innovation to help farmers address climate change and extreme weather:\n\n- The report analyzed nearly 400 companies and innovations in the climate-smart agriculture market, evaluating their climate impacts, benefits, market readiness, and environmental co-benefits.\n\n- The report \"catalogues the most promising ag tech innovations\" across 5 key areas: nutrient/fertilizer solutions, smart sensing/precision analytics, agronomic data/measurement platforms, biotech/genetic innovation, and automation/machinery.\n\n- These innovations can boost farm productivity while delivering climate and environmental benefits, particularly for field crops and some livestock applications.\n\n- The report states that \"Technological advancements are poised to help farmers stay productive in the face of more extreme and variable weather, so that they can maintain good livelihoods and feed a growing population, while reducing the climate impacts of food production.\"\n\n- The report highlights that policymakers and the private sector each have important but complementary roles to play in scaling these climate-smart agricultural innovations to deliver measurable climate and economic benefits.",
+      "summaryTimestamp": 1770255903359
+    },
+    {
+      "id": "799b788fae614dd8",
+      "title": "Northwest Horticultural Council joins brief on wage rate case",
+      "link": "https://www.tsln.com/news/northwest-horticultural-council-joins-brief-on-wage-rate-case/",
+      "description": "The Northwest Horticultural Council has joined with a number of agricultural groups across the country to file an amicus brief in a court case filed by United Farm Workers (UFW) in the U.S. District Court...",
+      "date": "Thu, 05 Feb 2026 00:00:37 +0000",
+      "timestamp": 1770249637000,
+      "source": "Tri-State Livestock",
+      "category": "industry",
+      "icon": "🐄",
+      "thumbnail": "",
+      "summary": "The Northwest Horticultural Council has joined a number of agricultural groups across the country to file an amicus brief in a court case filed by United Farm Workers (UFW) in the U.S. District Court for the Eastern District of California. The UFW lawsuit challenges the Trump administration's H-2A Adverse Effect Wage Rate methodology interim final rule (IFR) published in October 2025, and includes a request to issue a preliminary injunction staying implementation of the IFR. The brief, led by the North Carolina Chamber, supports the Labor Department's efforts to defend the rule.",
+      "summaryTimestamp": 1770255905304
+    },
+    {
+      "id": "cd3c887519309990",
+      "title": "USDA pauses biodigester, controlled environment loan applications",
+      "link": "https://www.tsln.com/news/usda-pauses-biodigester-controlled-environment-loan-applications/",
+      "description": "The Agriculture Department&#8217;s Rural Business Cooperative Service has begun a 90-day administrative pause on the acceptance, processing, and awarding of loan note guarantees for projects involving biodigesters and controlled-environment agriculture, such as vertical farming, hydroponics,...",
+      "date": "Wed, 04 Feb 2026 23:58:38 +0000",
+      "timestamp": 1770249518000,
+      "source": "Tri-State Livestock",
+      "category": "industry",
+      "icon": "🐄",
+      "thumbnail": "",
+      "summary": "Key points:\n\n- USDA's Rural Business Cooperative Service has begun a 90-day administrative pause on accepting, processing, and awarding loan note guarantees for projects involving biodigesters and controlled-environment agriculture (e.g. vertical farming, hydroponics, aeroponics, aquaponics).\n\n- This action is to allow the agency to conduct a comprehensive review of the existing portfolio of such projects, including assessing delinquency rates, project performance, operational sustainability, and underwriting guidelines.\n\n- The pause does not establish new eligibility requirements and does not constitute a determination on the merits or viability of any individual applicant or technology.\n\n- RBCS Administrator J.R. Claeys cited internal portfolio data indicating elevated rates of project underperformance, loan delinquency, and operational failure among existing projects as the reason for the pause.\n\n- The pause will last 90 days and affects loan note guarantees, not existing loans.\n\n- No specific dates, locations, or expert quotes were provided in the article.",
+      "summaryTimestamp": 1770255907798
+    },
+    {
+      "id": "804c3b1b229c89fb",
+      "title": "Farm Bureau: CBO projections show need for farm aid",
+      "link": "https://www.tsln.com/news/farm-bureau-cbo-projections-show-need-for-farm-aid/",
+      "description": "The latest Congressional Budget Office projections for spending on farm programs and the Supplemental Nutrition Assistance Program (SNAP) show that farmers need help this year, the American Farm Bureau Federation&#8217;s Market Intel service said in...",
+      "date": "Wed, 04 Feb 2026 23:56:29 +0000",
+      "timestamp": 1770249389000,
+      "source": "Tri-State Livestock",
+      "category": "industry",
+      "icon": "🐄",
+      "thumbnail": "",
+      "summary": "The American Farm Bureau Federation's Market Intel service reported that the latest Congressional Budget Office (CBO) projections show farmers need aid this year. The report by John Newton, Farm Bureau's vice president of public policy and economic analysis, states that while congressional leaders and industry stakeholders have recognized the need for additional support, the situation is urgent for some farmers, and the enhancements made in the One Big Beautiful Bill Act may come too late. The CBO projections indicate that spending on farm programs and the Supplemental Nutrition Assistance Program (SNAP) will need to increase to support farmers.",
+      "summaryTimestamp": 1770255909838
+    },
+    {
       "id": "85aa92e6b7519fea",
       "title": "American Egg Board Aims to Spur Rapid Export Growth",
       "link": "https://www.morningagclips.com/american-egg-board-aims-to-spur-rapid-export-growth/",
@@ -169,6 +239,20 @@
       "summaryTimestamp": 1770243780372
     },
     {
+      "id": "96fd26c385a7b63b",
+      "title": "ChapterBoost opens new Give FFA Day support on Feb. 26",
+      "link": "https://www.agdaily.com/ffa/chapterboost-opens-new-give-ffa-day-support-on-feb-26/",
+      "description": "National FFA’s new ChapterBoost crowdfunding program lets donors directly support local chapter projects ahead of Give FFA Day on Feb. 26. The post ChapterBoost opens new Give FFA Day support on Feb. 26 appeared first on AGDAILY.",
+      "date": "Wed, 04 Feb 2026 21:09:34 +0000",
+      "timestamp": 1770239374000,
+      "source": "AgDaily",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "https://www.agdaily.com/wp-content/uploads/2024/10/minnesota-college-fair-national-ffa-2024-300x225.jpg",
+      "summary": "ChapterBoost allows donors to directly fund projects and goals of local FFA chapters across the country, such as hands-on learning, leadership development, and agricultural education.\n\nThe National FFA has set an ambitious goal of raising $1.75 million on Give FFA Day this year, up from $1.6 million raised in 2025. In 2025, the National FFA Foundation also reached a milestone of donating its 20,000th FFA blue jacket. \n\nThis year, John Deere will match the first $50,000 donated on Give FFA Day. Donors can make gifts through mobile payment options like Apple Pay and Google Pay, or sign up for text alerts to donate directly to the National FFA Organization.\n\nThe National FFA has over 1,042,245 student members in 9,407 local chapters across all 50 U.S. states, Puerto Rico, and the U.S. Virgin Islands. Donations to Give FFA Day support meaningful programs, leadership development, career experiences, and resources for agricultural educators.\n\nOne example project is the Houseplant Hospital run by the Commerce Middle School FFA chapter in Georgia, which uses ChapterBoost funds to buy supplies to nurse struggling houseplants back to health and promote plant care education.",
+      "summaryTimestamp": 1770255913153
+    },
+    {
       "id": "ffe668bffc9c8a3d",
       "title": "Dough Boxes: A much-kneaded item of pioneer Ohio country furniture",
       "link": "https://www.farmanddairy.com/columns/dough-boxes-a-much-kneaded-item-of-pioneer-ohio-country-furniture/903045.html",
@@ -195,6 +279,20 @@
       "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/blta90611d70673b425/6694ab48baff95768343b525/Getty_afternoon_markets_LED_screen_1800x1012.jpg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
       "summary": "Soybeans prices rose 15 cents per bushel after President Trump tweeted that China had agreed to buy $40-50 billion worth of U.S. agricultural products annually. This increase followed reports of a potential U.S.-China trade deal during high-level negotiations in early October. Analysts stated the rise was likely due to optimism about a trade resolution, though details have yet to be finalized. U.S. Soy, the marketing arm of the American Soybean Association, welcomed the news but urged continued progress in trade talks to provide stability for soybean farmers who have faced depressed prices and lost export markets due to the ongoing trade dispute. While the social media announcement sparked a price surge, experts caution that actual soybean sales volumes and timelines for a trade deal remain uncertain.",
       "summaryTimestamp": 1770243782766
+    },
+    {
+      "id": "5a129db19c22d867",
+      "title": "New report: Falling crop prices and rising costs put U.S. farms at risk",
+      "link": "https://www.agdaily.com/crops/new-report-falling-crop-prices-and-rising-costs-put-u-s-farms-at-risk/",
+      "description": "A new Modern Ag Alliance analysis reveals deepening economic strain, declining confidence, and growing concerns over regulatory actions. The post New report: Falling crop prices and rising costs put U.S. farms at risk appeared first on AGDAILY.",
+      "date": "Wed, 04 Feb 2026 19:28:57 +0000",
+      "timestamp": 1770233337000,
+      "source": "AgDaily",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "https://www.agdaily.com/wp-content/uploads/2022/08/shutterstock_1830313994-300x169.jpg",
+      "summary": "Key Takeaways:\n\n- U.S. farmers are facing a crisis, caught between tightening margins, volatile markets, and regulatory uncertainty about the tools they rely on.\n\n- Findings from the \"State of the American Farmer\" report by the Modern Ag Alliance:\n  - Input costs are rising while key crop prices have declined up to 58% since 2022.\n  - Farmer bankruptcies increased 60% year-over-year, surpassing 2024 totals by mid-2025.\n  - Farmers stress maintaining access to proven crop protection tools is essential to producing enough food and keeping prices affordable.\n  - Inconsistent state-level regulations, like in California, conflict with federal pesticide laws and threaten access to important crop protection products.\n  - Farmers anticipate lower yields, higher costs, and added burdens if access to modern crop protection tools narrows.\n\n- The report emphasizes the urgency of congressional action on the Farm Bill and the need for clear, science-based agricultural policy from federal and state policymakers.\n\n- Farmers call for direct engagement with policymakers to ensure their perspectives are heard and practical policies are pursued.\n\n- The report concludes that America's farmers are \"hurting\" due to the growing financial strain, tightening regulatory pressures, and uncertainty over the availability of key inputs.",
+      "summaryTimestamp": 1770255916169
     },
     {
       "id": "eaf3b08503871b61",
@@ -225,46 +323,18 @@
       "summaryTimestamp": 1770230543827
     },
     {
-      "id": "477cb6d913a3fab1",
-      "title": "ServSafe® Food Handler Trainings offered across the Panhandle in 2026",
-      "link": "https://www.tsln.com/news/servsafe-food-handler-trainings-offered-across-the-panhandle-in-2026/",
-      "description": "Nebraska Extension will offer multiple ServSafe? Food Handler training courses across the Nebraska Panhandle in 2026. The half-day trainings are designed for food service employees who handle, prepare, or serve food and want to strengthen...",
-      "date": "Wed, 04 Feb 2026 18:03:42 +0000",
-      "timestamp": 1770228222000,
-      "source": "Tri-State Livestock",
+      "id": "14aabda84a7bf887",
+      "title": "N.M. health officials warn about raw dairy after infant death",
+      "link": "https://www.agdaily.com/livestock/n-m-health-department-warns-about-raw-dairy-following-infant-death/",
+      "description": "The New Mexico Department of Health is warning New Mexicans to avoid raw dairy products following the death of a newborn from Listeria infection. The post N.M. health officials warn about raw dairy after infant death appeared first on AGDAILY.",
+      "date": "Wed, 04 Feb 2026 18:08:06 +0000",
+      "timestamp": 1770228486000,
+      "source": "AgDaily",
       "category": "industry",
-      "icon": "🐄",
-      "thumbnail": "",
-      "summary": "Nebraska Extension will offer multiple ServSafe® Food Handler training courses across the Nebraska Panhandle in 2026. The half-day trainings are designed for food service employees who handle, prepare, or serve food and want to strengthen their understanding of safe food practices. \n\nThe ServSafe Food Handler course costs $40 per person and includes instruction, training materials, and a proctored Food Handler test. The trainings will be held on:\n- April 2 at the UNL Panhandle Research, Extension & Education Center in Scottsbluff\n- June 9 at the Platte Valley Bank Conference Room in Chadron \n- Aug. 13 at the Cheyenne County Fairgrounds in Sidney\n- Dec. 1 at the Prairie Winds Community Center in Bridgeport\n\nThe ServSafe Food Handler program helps food establishments reduce the risk of foodborne illness, improve day-to-day sanitation, and build customer confidence. Participants will learn key food safety concepts, including personal hygiene, cross-contamination and allergens, time and temperature control, and cleaning and sanitation procedures.\n\nTo register, visit https://go.unl.edu/panhandleservsafe2026 or call the Morrill County Extension Office at 308-262-1022.",
-      "summaryTimestamp": 1770230551948
-    },
-    {
-      "id": "a1316cb5e8f3ef16",
-      "title": "Nebraska Master Irrigator invites farmers to ‘Shop Talk’ on irrigation and nitrogen challenges",
-      "link": "https://www.tsln.com/news/nebraska-master-irrigator-invites-farmers-to-shop-talk-on-irrigation-and-nitrogen-challenges/",
-      "description": "Lincoln, Neb., Feb. 3 —Nebraska Extension invites farmers, agricultural professionals and conservation partners to participate in a local 2026 Nebraska Master Irrigator &#8220;Shop Talk&#8221; discussion. These will be two‑day, discussion‑based programs offered across four locations...",
-      "date": "Wed, 04 Feb 2026 17:58:42 +0000",
-      "timestamp": 1770227922000,
-      "source": "Tri-State Livestock",
-      "category": "industry",
-      "icon": "🐄",
-      "thumbnail": "",
-      "summary": "Key Points:\n\n- Nebraska Extension is inviting farmers, agricultural professionals, and conservation partners to participate in 2026 Nebraska Master Irrigator \"Shop Talk\" discussions across 4 locations in Nebraska.\n\n- The 2-day, discussion-based programs will focus on tackling the most pressing irrigation and nitrogen management challenges, with the first day covering irrigation and the second day covering nitrogen.\n\n- Themes will include profitability and regenerative agriculture, with the goal of encouraging producer-to-producer learning and connecting farmers with experts, researchers, and ag businesses.\n\n- Discussions will cover practical strategies for getting the most out of existing equipment, saving water and reducing costs, improving soil health, reducing fertilizer losses, using support tools and technologies, and connecting with incentive/cost-share programs.\n\n- The sessions will be held on the following dates and locations:\n  - Grand Island: Feb 25 and Mar 2\n  - Beatrice: Feb 27 and Mar 18 \n  - Norfolk: Mar 6 and Mar 11\n  - North Platte: Mar 13 (nitrogen only)\n\n- The program is sponsored by Nebraska Extension, USDA-NRCS, Nebraska Water Center, and Daugherty Water for Food Global Institute.\n\n- Lunch is provided thanks to ag business partners. The program qualifies for NRD Nitrogen Certification Training and CCA Continuing Education Credits.\n\n- Registration is open until Feb 20 on the UNL Water website. Contact Crystal Powers at cpowers@nebraska.edu for more information.",
-      "summaryTimestamp": 1770230560280
-    },
-    {
-      "id": "a2636c0e44063551",
-      "title": "2026 Beef Quality Assurance Award Winners Announced During CattleCon",
-      "link": "https://www.tsln.com/news/2026-beef-quality-assurance-award-winners-announced-during-cattlecon/",
-      "description": "NASHVILLE, Tenn. (Feb. 3, 2026) – Winners of the 2026 Beef Quality Assurance (BQA) Awards were announced today during CattleCon 2026 in Nashville. The BQA Awards annually recognize outstanding beef and dairy producers, marketers, and...",
-      "date": "Wed, 04 Feb 2026 17:54:43 +0000",
-      "timestamp": 1770227683000,
-      "source": "Tri-State Livestock",
-      "category": "industry",
-      "icon": "🐄",
-      "thumbnail": "",
-      "summary": "The BQA Awards recognize outstanding beef and dairy producers, marketers, and educators who demonstrate excellent animal care and handling practices.\n\nThe 2026 BQA Award winners are:\n- Cow-Calf Award: East Foundation Ranches, LLC (Hebbronville, Texas) - a 217,000-acre ranch dedicated to land stewardship and education\n- Dairy FARM Award: Singing Brook Farms (Imler, Pennsylvania) - a 300-cow dairy farm that adheres to BQA and FARM animal care standards\n- Feedyard Award: Ordway Cattle Feeders (Ordway, Colorado) - a feedyard that provides training and works with experts to continuously improve practices\n- Marketer Award: Sysco Corporation (Houston, Texas) - a major foodservice distributor promoting BQA standards with customers\n- Educator Award: Jerry Yates, West Virginia University (Wardensville, West Virginia) - an extension agent educating on animal science and BQA\n\nNCBA President Buck Wehrbein stated that BQA is the cattle industry's leading program for animal care education, and these award winners exemplify the program's commitment.",
-      "summaryTimestamp": 1770230570006
+      "icon": "📰",
+      "thumbnail": "https://www.agdaily.com/wp-content/uploads/2020/05/bg-raw_milk_bucket-001-Choksawatdikorn-300x200.jpg",
+      "summary": "The New Mexico Department of Health is warning residents to avoid raw dairy products after the death of a newborn from Listeria infection. Health officials believe the infant's mother consuming unpasteurized milk during pregnancy was the most likely source of infection. \n\nWhile the exact cause cannot be pinpointed, the death highlights the risks raw dairy poses to pregnant women, young children, elderly, and those with weakened immune systems. Pasteurization is crucial to kill disease-causing germs like Listeria, which can cause serious infections and even death in these vulnerable groups.\n\nAs of 2025, 18 states ban raw milk sales, while 32 allow it. \"New Mexico's dairy producers work hard to provide safe, wholesome products and pasteurization is a vital part of that process,\" said Jeff M. Witte, New Mexico Secretary of Agriculture. Consumers at higher risk are encouraged to choose pasteurized dairy to reduce the chance of serious foodborne illness.",
+      "summaryTimestamp": 1770255918650
     },
     {
       "id": "0c77d81b41f53c3d",
@@ -293,20 +363,6 @@
       "thumbnail": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3KnlsdBHsVzFCDGva5ibztrhOiKVlkrOIv9nugtd7IETzL4p86HXj9uP6Ut7q5nz_XSPjQW1wzEC9tqEeezve-nsmnj-PJWnkMQ2wgyBkQLWveSxBApMQofPbWI6VKWQcoygt2-tOV1leIDL5fulxSovhnz2-1fNNA_3ZFgaN_VP-CZsa4X7rMQ0G_XZI/s72-w320-h240-c/grain-bins_peltier.jpg",
       "summary": "Key points:\n- Minnesota is a major producer of crops like corn (#4 nationally), soybeans (#3), wheat (#3), sugar beets (#1), and more.\n- 2025 saw record Minnesota corn yields of over 200 bu/acre.\n- Average 2024 costs of production were $4.71/bu for corn, $11.02/bu for soybeans, and $6.26/bu for spring wheat, exceeding local cash prices.\n- Median net farm income in Minnesota hit a 25-year low of $2,400 in 2024 due to tight profit margins.\n- In 2025, the Farmer Bridge Assistance program allocated $11 billion nationally to help cover up to 35% of expected crop losses.\n- The 2026 Farm Bill will include changes like raising the annual payment limit to $155,000, increasing ARC/PLC reference prices, and allowing use of Supplemental Coverage Option with ARC.\n- U.S. corn production hit a new record in 2025, creating a surplus, but exports are expected to increase to use up the excess supply.\n\nThe article provides critical information for Minnesota farmers on costs, profitability, government support programs, and the crop market outlook.",
       "summaryTimestamp": 1770230582811
-    },
-    {
-      "id": "3b778c8834a78d1a",
-      "title": "Montana: Livestock Reports and Payments Due March 1",
-      "link": "https://www.tsln.com/news/montana-livestock-reports-and-payments-due-march-1-2/",
-      "description": "Montanans have just a few more weeks to report the number of each type of livestock they own and to pay the per capita fees set yearly by the Montana Board of Livestock. Livestock reports...",
-      "date": "Wed, 04 Feb 2026 17:27:36 +0000",
-      "timestamp": 1770226056000,
-      "source": "Tri-State Livestock",
-      "category": "industry",
-      "icon": "🐄",
-      "thumbnail": "",
-      "summary": "Key points:\n\n- Livestock reports and payments are due in Montana by March 1, 2026.\n- Livestock owners must report the number of each type of livestock they owned as of February 1, 2026.\n- Owners can report and pay online through the state's TransAction Portal or download a paper form.\n- If owners no longer have any livestock, they still need to submit a report indicating a count of zero.\n- The Montana Board of Livestock has changed the per capita fee rates for this year, but the specific new rates are not provided.\n- Owners must pay the per capita fees set yearly by the Montana Board of Livestock along with submitting their livestock reports.\n- No specific names of people or organizations are mentioned besides the Montana Board of Livestock.\n- The article provides information and deadlines for Montana livestock owners, with no broader context or impacts discussed.",
-      "summaryTimestamp": 1770230588344
     },
     {
       "id": "26ee0af4c626bbf1",
@@ -377,20 +433,6 @@
       "thumbnail": "https://www.croplife.com/wp-content/uploads/2025/06/Smart-Tech-4-150x150.jpg",
       "summary": "Key points:\n- Farmers have struggled to consistently connect IoT devices in remote rural areas due to lack of reliable broadband infrastructure. Only 65% of rural Americans have access to high-speed internet.\n- Agricultural tech expert Dave Swain says there's no \"easy button\" for complete connectivity, but steady progress is being made. New technologies like 5G and satellite internet are improving coverage.\n- Challenges include high costs, lack of standardization, and difficulty integrating disparate systems. Farmers must evaluate ROI and prioritize which IoT tools provide the most benefit.\n- Despite limitations, adoption of precision farming, remote monitoring, and autonomous equipment is growing. Swain estimates 20-30% of farms currently use some form of IoT.\n- Ongoing government funding and industry collaboration are critical to accelerate connectivity improvements and maximize IoT benefits for farmers.",
       "summaryTimestamp": 1770243790494
-    },
-    {
-      "id": "4bc27f5a9879c742",
-      "title": "National Environmental Stewardship Award Presented to Nebraska Ranch",
-      "link": "https://www.tsln.com/news/national-environmental-stewardship-award-presented-to-nebraska-ranch/",
-      "description": "NASHVILLE, Tenn. (Feb. 3, 2026) &#8211; The National Cattlemen&#8217;s Beef Association (NCBA) announced today that Wine Glass Ranch in Imperial, Nebraska, is the 2025 Environmental Stewardship Award Program (ESAP) National winner. The award, which annually...",
-      "date": "Wed, 04 Feb 2026 14:24:26 +0000",
-      "timestamp": 1770215066000,
-      "source": "Tri-State Livestock",
-      "category": "industry",
-      "icon": "🐄",
-      "thumbnail": "https://swiftmedia.s3.amazonaws.com/mountain.swiftcom.com/images/sites/13/2026/02/04072311/b09b1244-ed47-1714-ffc9-58b61a944d07.jpg",
-      "summary": "National Environmental Stewardship Award Presented to Nebraska Ranch\n\n- The 2025 Environmental Stewardship Award Program (ESAP) National winner is Wine Glass Ranch in Imperial, Nebraska.\n- The award recognizes the outstanding stewardship practices and conservation achievements of cattle producers.\n- The Pribbeno family, who owns and operates Wine Glass Ranch, was presented the award at CattleCon 2026 in Nashville, Tennessee.\n- Wine Glass Ranch has been in the Pribbeno family for 140 years. They focus on soil health, installing over 200 miles of cross-fencing to create a 90-paddock rotational grazing system, with 95% of the ranch resting at any given time.\n- This has increased plant diversity and the return of native grasses like Sand Bluestem and Indian grass, which are difficult to grow in the sandy soil.\n- The Pribbenos work closely with state and federal agencies on conservation projects to support their stewardship efforts.\n- The 2025 Regional ESAP winners were: Whispering Hills Farm (Kentucky), M&D Overstreet Ranch (Florida), Smith Family Farms (Iowa), McFaddin Ranch (Texas), G&G Livestock and Cathey Cattle Company (Montana), and Wine Glass Ranch (Nebraska).\n- Past National ESAP Honorees include Downey Ranch (Kansas, 2024), G Bar C Ranch (Texas, 2023), Carter Cattle Company, LLC (Alabama, 2022), JY Ferry & Son, Inc. (Utah, 2021), and Beatty Canyon Ranch (Colorado, 2020).\n- ESAP is sponsored by the U.S. Department of Agriculture Natural Resources Conservation Service, Corteva Agriscience, and U.S. Fish and Wildlife Service, in partnership with the National Cattlemen's Beef Association.",
-      "summaryTimestamp": 1770215943517
     },
     {
       "id": "dc508ac211ecfe25",
@@ -519,34 +561,6 @@
       "summaryTimestamp": 1770215976259
     },
     {
-      "id": "92159c03b3a20a90",
-      "title": "How a fridge could transform dairy breeding worldwide",
-      "link": "https://www.agdaily.com/livestock/fridge-transform-dairy-breeding-worldwide/",
-      "description": "A Hiroshima University–led team has received $1.8 million from the Gates Foundation to develop refrigerator-based storage for bull semen. The post How a fridge could transform dairy breeding worldwide appeared first on AGDAILY.",
-      "date": "Tue, 03 Feb 2026 21:35:42 +0000",
-      "timestamp": 1770154542000,
-      "source": "AgDaily",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "https://www.agdaily.com/wp-content/uploads/2023/02/shutterstock_1145478587-300x200.jpg",
-      "summary": "The Hiroshima University-led project has secured a $1.8 million grant from the Gates Foundation to develop a way to store bull semen using simple refrigeration instead of costly liquid nitrogen. This technology could remove a major barrier to modern dairy cattle breeding that has long excluded farmers in low-resource regions.\n\nThe project, headed by Professor Masayuki Shimada, builds on the team's 2019 discovery that identified functional differences between X-bearing (female-producing) and Y-bearing (male-producing) sperm. They developed a simplified and low-cost sex selection technique that helps farmers reliably produce more female calves. This technique has already been deployed at dairy farming sites in India.\n\nHowever, expanding the technology's use globally requires a safe method of transporting and storing the processed sperm. The new grant will allow the team to develop a storage method that allows bovine sperm to be stored at about 5 degrees Celsius, eliminating the need for liquid nitrogen. This could make artificial insemination much easier to use.\n\nThe project is being carried out in collaboration with agricultural organizations and government-affiliated research institutes in India, along with research groups within Hiroshima University. The technology is expected to increase milk production, stabilize incomes for small-scale dairy farmers, and improve children's nutritional status in regions like India and Africa.\n\nShimada's laboratory already hosts doctoral students from government agencies in countries where the technology is expected to roll out, including Nigeria, Mozambique, and Bangladesh. A framework is also in place to train local experts and roll out the technology on the ground.",
-      "summaryTimestamp": 1770169458003
-    },
-    {
-      "id": "879525336c32de7d",
-      "title": "Farmer sentiment slides as export concerns extend into 2026",
-      "link": "https://www.agdaily.com/crops/farmer-sentiment-slides-as-export-concerns-extend-into-2026/",
-      "description": "U.S. farmer sentiment fell sharply in January as producers voiced rising concerns over finances, exports, and the direction of the agricultural economy. The post Farmer sentiment slides as export concerns extend into 2026 appeared first on AGDAILY.",
-      "date": "Tue, 03 Feb 2026 21:10:07 +0000",
-      "timestamp": 1770153007000,
-      "source": "AgDaily",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "https://www.agdaily.com/wp-content/uploads/2021/11/bg-usda-barge-ship-traffic-mississippi-river-300x200.jpg",
-      "summary": "Both the Current Conditions Index (-19 points) and Future Expectations Index (-25 points) weakened substantially. \n\nHalf of producers said their operations were worse off financially than a year ago, and 30% expect their financial performance to deteriorate over the next 12 months. Operating loan needs are rising, with more producers citing carryover debt as a reason.\n\nExport concerns intensified, especially for soybeans. 16% of respondents now expect U.S. agricultural exports to decline over the next 5 years (up from 5% in December). 80% are concerned about U.S. soybean competitiveness versus Brazil.\n\nThe Farm Capital Investment Index fell to 47, its lowest since October 2024. Only 4% plan to increase machinery purchases in the coming year.\n\nLonger-term farmland value confidence slipped, dropping from a record high in December to 152 in January. Producers cited alternative investments, net farm income, and interest rates as top factors.\n\nFor the Farmer Bridge Assistance Program, over 50% said funds would go towards paying down debt, 25% for improving working capital, 10% for family living, and 12% for machinery.\n\nOverall, the January results point to a more pessimistic mindset among farmers, with rising debt concerns, export uncertainty, and cautious investment behavior.",
-      "summaryTimestamp": 1770169461309
-    },
-    {
       "id": "e62efec66b22d265",
       "title": "Adjuvants Shift From Luxury to Necessity Under New EPA Herbicide Strategy",
       "link": "https://www.croplife.com/special-reports/esa/adjuvants-shift-from-luxury-to-necessity-under-new-epa-herbicide-strategy/?utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=adjuvants-shift-from-luxury-to-necessity-under-new-epa-herbicide-strategy",
@@ -559,20 +573,6 @@
       "thumbnail": "https://www.croplife.com/wp-content/uploads/2025/11/Corn-Adjuvants-Container-150x150.jpg",
       "summary": "The Environmental Protection Agency (EPA) has implemented a new Herbicide Strategy that has elevated the importance of adjuvants for farmers. Adjuvants, which were previously considered optional add-ons, are now essential tools for reducing pesticide drift. This shift means that farmers must now factor adjuvants into their budgets and application plans. \n\nThe EPA's strategy aims to mitigate the risks associated with herbicide drift, which can damage neighboring crops and negatively impact the environment. As a result, the use of adjuvants has become a necessary component of herbicide application to ensure compliance with the new regulations.\n\nFarmers must now carefully consider the selection and use of adjuvants to optimize the performance of their herbicides while minimizing drift. This may require additional investments in equipment, training, and product costs. The impact on farmer budgets and operations will vary depending on the specific crops and herbicides used.\n\nExperts recommend that farmers work closely with their suppliers and advisors to understand the new EPA requirements and select the most appropriate adjuvants for their needs. Proper application techniques and ongoing monitoring will be crucial to ensuring compliance and protecting crops and the environment.",
       "summaryTimestamp": 1770243795660
-    },
-    {
-      "id": "784d0a242bf77ce3",
-      "title": "America&#8217;s farmers are cornerstones of Super Bowl parties",
-      "link": "https://www.agdaily.com/lifestyle/americas-farmers-will-fuel-super-bowl-parties/",
-      "description": "A new analysis shows how popular game-day foods depend on a vast farm and ranch supply chain, even as producers face mounting financial strain. The post America&#8217;s farmers are cornerstones of Super Bowl parties appeared first on AGDAILY.",
-      "date": "Tue, 03 Feb 2026 16:41:59 +0000",
-      "timestamp": 1770136919000,
-      "source": "AgDaily",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "https://www.agdaily.com/wp-content/uploads/2022/02/bg-SB-food-300x200.jpg",
-      "summary": "S., reflecting the strength and challenges of American agriculture. Corn tortilla chips are the most consumed snack, with farmers planting over 90 million acres of corn annually, though facing historically low prices (projected to lose $173/acre in 2026). Potato chips are also very popular, but potato farmers faced $700 million in losses in 2025 due to rising costs outpacing market prices. Over 1 billion chicken wings will be eaten, supplied by a $45.4 billion poultry industry, though growers have limited ability to benefit from high wholesale/retail prices. Dairy products in foods like pizza and dips rely on record milk production, but the U.S. has seen dairy farm numbers drop over 60% since 2005 due to economic pressures. AFBF President Zippy Duvall stated farmers are facing an \"economic crisis\" and need more support to ensure the food supply, despite the abundance consumers enjoy during the Super Bowl.",
-      "summaryTimestamp": 1770152962474
     },
     {
       "id": "d6d36ac10b30b8a8",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 18,
-  "updated": "2026-02-04T22:23:15.861Z"
+  "summariesGenerated": 8,
+  "updated": "2026-02-05T01:45:18.850Z"
 }
