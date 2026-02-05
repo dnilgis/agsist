@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-05T21:54:15.016Z",
+  "updated": "2026-02-05T22:25:38.219Z",
   "totalMarkets": 5,
   "categories": {
     "tariffs": [
@@ -15,7 +15,7 @@
         "id": "0xda5c517dd5b78c80dec8ceb08ca4f466317633487827d7290332b4851cc4a4fa",
         "question": "Macron out by June 30, 2026?",
         "pct": 4,
-        "volume": 197805,
+        "volume": 199091,
         "endDate": "2026-06-30T12:00:00Z",
         "slug": "macron-out-in-2025"
       },
