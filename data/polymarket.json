@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-04T23:51:27.260Z",
+  "updated": "2026-02-05T01:58:08.880Z",
   "totalMarkets": 5,
   "categories": {
     "tariffs": [
@@ -15,7 +15,7 @@
         "id": "0xda5c517dd5b78c80dec8ceb08ca4f466317633487827d7290332b4851cc4a4fa",
         "question": "Macron out by June 30, 2026?",
         "pct": 4,
-        "volume": 196355,
+        "volume": 196755,
         "endDate": "2026-06-30T12:00:00Z",
         "slug": "macron-out-in-2025"
       },
@@ -23,7 +23,7 @@
         "id": "0xced0cb8725bad43d78fda0cd0e5fa9e31804625cb3502b2c7897f8e8f7fa9e1f",
         "question": "Kraken IPO by December 31, 2026?",
         "pct": 79,
-        "volume": 133346,
+        "volume": 134865,
         "endDate": "2027-01-01T05:00:00Z",
         "slug": "kraken-ipo-in-2025"
       },
@@ -31,7 +31,7 @@
         "id": "0x6e6851f2698629795fa06869d961c986221a80cedcba10fbaf0ed220607cdada",
         "question": "China x India military clash by December 31, 2026?",
         "pct": 13,
-        "volume": 73616,
+        "volume": 73617,
         "endDate": "2026-12-31T12:00:00Z",
         "slug": "china-x-india-military-clash-by-december-31"
       },
