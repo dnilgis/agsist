@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-06T22:25:48.411347+00:00",
+  "updated": "2026-02-06T23:32:34.584111+00:00",
   "markets": {
     "grains": {
       "corn": {
@@ -220,9 +220,9 @@
         "name": "Bitcoin",
         "symbol": "BTC-USD",
         "unit": "$",
-        "price": 70570.9375,
-        "change": 7592.2539,
-        "changePct": 12.06,
+        "price": 70537.1484,
+        "change": 7558.4648,
+        "changePct": 12.0,
         "prevClose": 62978.6836,
         "contract": "Spot",
         "low52": 62353.5352,
@@ -232,9 +232,9 @@
         "name": "Ethereum",
         "symbol": "ETH-USD",
         "unit": "$",
-        "price": 2055.563,
-        "change": 233.4447,
-        "changePct": 12.81,
+        "price": 2067.2766,
+        "change": 245.1583,
+        "changePct": 13.45,
         "prevClose": 1822.1183,
         "contract": "Spot",
         "low52": 1386.7993,
@@ -244,9 +244,9 @@
         "name": "Kaspa",
         "symbol": "KAS-USD",
         "unit": "$",
-        "price": 0.0321,
-        "change": 0.0051,
-        "changePct": 18.78,
+        "price": 0.0319,
+        "change": 0.0048,
+        "changePct": 17.81,
         "prevClose": 0.0271,
         "contract": "Spot",
         "low52": 0.0139,
@@ -256,9 +256,9 @@
         "name": "XRP",
         "symbol": "XRP-USD",
         "unit": "$",
-        "price": 1.4642,
-        "change": 0.2503,
-        "changePct": 20.62,
+        "price": 1.4684,
+        "change": 0.2545,
+        "changePct": 20.97,
         "prevClose": 1.2139,
         "contract": "Spot",
         "low52": 1.1504,
@@ -267,6 +267,13 @@
     }
   },
   "news": [
+    {
+      "source": "Brownfield",
+      "title": "EPA finalizes limited two-season use of OTT dicamba on cotton and soybeans with stricter safeguards",
+      "link": "https://www.brownfieldagnews.com/news/epa-finalizes-limited-two-season-use-of-ott-dicamba-on-cotton-and-soybeans-with-stricter-safeguards/",
+      "time": "",
+      "category": "news"
+    },
     {
       "source": "Brownfield",
       "title": "Year-round E15 push continues as Renewable Fuels group eyes Congressional deal",
@@ -282,9 +289,16 @@
       "category": "news"
     },
     {
-      "source": "Brownfield",
-      "title": "American Egg Board looks to Indonesia, Southeast Asia for egg export growth",
-      "link": "https://www.brownfieldagnews.com/news/american-egg-board-looks-to-indonesia-southeast-asia-for-egg-export-growth/",
+      "source": "AGDAILY",
+      "title": "Ag on Instagram: The week\u2019s best photos on Feb. 6, 2026",
+      "link": "https://www.agdaily.com/lifestyle/ag-on-instagram-the-weeks-best-photos-on-feb-6-2026/",
+      "time": "",
+      "category": "news"
+    },
+    {
+      "source": "AGDAILY",
+      "title": "3 veterinary students awarded National DHIA scholarships",
+      "link": "https://www.agdaily.com/livestock/veterinary-students-awarded-national-dhia-scholarships/",
       "time": "",
       "category": "news"
     },
@@ -292,20 +306,6 @@
       "source": "AGDAILY",
       "title": "Enhanced rice could address iron deficiencies around the world",
       "link": "https://www.agdaily.com/crops/enhanced-rice-could-address-iron-deficiencies-around-the-world/",
-      "time": "",
-      "category": "news"
-    },
-    {
-      "source": "AGDAILY",
-      "title": "FDA OKs emergency Ivomec use for screwworm prevention",
-      "link": "https://www.agdaily.com/livestock/fda-authorizes-emergency-use-ivomec-prevent-new-world-screwworm-cattle/",
-      "time": "",
-      "category": "news"
-    },
-    {
-      "source": "AGDAILY",
-      "title": "Perspective: Who\u2019s in line to do the work in agriculture?",
-      "link": "https://www.agdaily.com/insights/perspective-whos-in-line-to-work-in-agriculture/",
       "time": "",
       "category": "news"
     },
