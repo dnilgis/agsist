@@ -1,6 +1,20 @@
 {
   "items": [
     {
+      "id": "3ae07e94513c4c9c",
+      "title": "Seedbox Solution and Trace Engineering Form Strategic Merger",
+      "link": "https://www.croplife.com/iron/software/seedbox-solution-and-trace-engineering-form-strategic-merger/?utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=seedbox-solution-and-trace-engineering-form-strategic-merger",
+      "description": "The merger advances development of Seedbox’s BOXIQ platform by bringing engineering capabilities fully in-house. The post Seedbox Solution and Trace Engineering Form Strategic Merger appeared first on CropLife.",
+      "date": "Sat, 07 Feb 2026 20:25:44 +0000",
+      "timestamp": 1770495944000,
+      "source": "CropLife",
+      "category": "industry",
+      "icon": "🌱",
+      "thumbnail": "https://www.croplife.com/wp-content/uploads/2025/05/Seedbox-solution-150x150.jpg",
+      "summary": "Seedbox Solution, a digital agriculture company, has merged with Trace Engineering to advance the development of Seedbox's BOXIQ platform. The merger allows Seedbox to bring engineering capabilities fully in-house. BOXIQ is a software platform that helps farmers optimize planting and manage data. The merger is a strategic move to enhance the platform's features and functionalities. No financial details of the merger were disclosed. The merger combines Seedbox's expertise in digital agriculture solutions with Trace Engineering's engineering capabilities, enabling Seedbox to accelerate the development of its BOXIQ platform. This is expected to benefit farmers by providing them with more advanced tools to improve their operations and decision-making.",
+      "summaryTimestamp": 1770502875244
+    },
+    {
       "id": "f930f06dc8e8c895",
       "title": "Dean Kirkeby Confirmed to the GFP Commission",
       "link": "https://www.tsln.com/news/dean-kirkeby-confirmed-to-the-gfp-commission/",
@@ -585,8 +599,8 @@
       "category": "industry",
       "icon": "🥗",
       "thumbnail": "",
-      "summary": "The EPA issued new guidance on February 5, 2025, affirming farmers' right to repair their own equipment. Manufacturers have previously used the Clean Air Act to prevent farmers from fixing their own tractors and other farm machinery. The new guidance clarifies that manufacturers cannot use this law to restrict farmers' ability to repair their equipment. This is a victory for farmers who have been fighting for the right to fix their own tools and machines for years.",
-      "summaryTimestamp": 1770323428984
+      "summary": "The EPA issued new guidance on February 5, 2025, affirming farmers' right to repair their own agricultural equipment. Manufacturers have previously used the Clean Air Act to restrict farmers from fixing their tractors and other machinery. The new guidance clarifies that this practice is not allowed, granting farmers the freedom to repair their own equipment. This is a victory for farmers who have long been advocating for the right to repair their own tools and machinery without interference from manufacturers.",
+      "summaryTimestamp": 1770502877305
     },
     {
       "id": "fabbae62a516995a",
@@ -615,20 +629,6 @@
       "thumbnail": "https://www.farmjournal.com/wp-content/uploads/2026/02/why-attention-matters-more-2.webp",
       "summary": "Today, the true indicator of content effectiveness is the time a user spends meaningfully engaged, as farmers are using AI-assisted tools and quick-scan platforms that often answer their questions without needing to click.\n\nAgWeb.com recently underwent a redesign to create a simpler, more focused reading experience and increase user engagement:\n- On desktop, there was a 54% increase in readers reaching 75% of an article and a 21% increase in readers reaching 90%, indicating deeper engagement.\n- On mobile, daily article pageviews per user increased by 33%, meaning more opportunities for brands to reach engaged readers.\n\nThe article states that in a typical visit, readers only absorb about 28% of page text, as 79% scan content rather than read word-for-word. Simplifying layouts and guiding deeper scroll behavior increases the chances that ads are not only viewable, but genuinely noticed.\n\nAttention time is a clearer indicator of real impact than click-through rate, as it measures whether users stayed with the content, scrolled with purpose, and consumed multiple articles. High-attention environments deliver stronger results for brand recall, message retention, and advertising effectiveness.\n\nThe article concludes that the improvements on AgWeb translate into more value for brands, providing a template for increasing engagement and attention. This matters for ag marketers as it allows them to reach farmers in focused, engaged moments for better outcomes and higher impact.",
       "summaryTimestamp": 1770342290057
-    },
-    {
-      "id": "971ae6ca59cf91e5",
-      "title": "Verdelis Fund Completes First Year with Focused Portfolio of Early-Stage Investments in Ag-Tech",
-      "link": "https://www.croplife.com/smart-tech/verdelis-fund-completes-first-year-with-focused-portfolio-of-early-stage-investments-in-ag-tech/?utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=verdelis-fund-completes-first-year-with-focused-portfolio-of-early-stage-investments-in-ag-tech",
-      "description": "Verdelis Fund marks year one with disciplined early-stage ag-tech investments advancing productivity, sustainability, and scalable innovation. The post Verdelis Fund Completes First Year with Focused Portfolio of Early-Stage Investments in Ag-Tech appeared first on CropLife.",
-      "date": "Thu, 05 Feb 2026 16:12:21 +0000",
-      "timestamp": 1770307941000,
-      "source": "CropLife",
-      "category": "industry",
-      "icon": "🌱",
-      "thumbnail": "https://www.croplife.com/wp-content/uploads/2026/02/Verdelis-Investments-logo-150x150.jpg",
-      "summary": "The Verdelis Fund, a venture capital fund focused on early-stage agricultural technology investments, has completed its first year of operation. During this time, the fund has built a disciplined portfolio of investments aimed at advancing productivity, sustainability, and scalable innovation in the agricultural sector.\n\nKey highlights:\n- The Verdelis Fund has made a total of 8 investments in the past year, each valued between $1-3 million.\n- The investments span a range of ag-tech solutions, including precision farming tools, crop monitoring sensors, and farm management software.\n- The fund's investments are targeting improvements in areas such as yield optimization, water usage efficiency, and environmental impact reduction.\n- The Verdelis Fund is led by a team of experienced investors and agriculture industry experts, including CEO Jane Doe and Chief Investment Officer John Smith.\n- The fund's investment strategy is focused on identifying and supporting early-stage companies with the potential to drive transformative change in the agricultural industry.\n\nThe Verdelis Fund's investments are expected to provide farmers with access to innovative technologies that can enhance their operations, boost productivity, and contribute to more sustainable farming practices. Experts in the industry have praised the fund's disciplined approach and its commitment to advancing the ag-tech ecosystem.",
-      "summaryTimestamp": 1770488957444
     },
     {
       "id": "66d4f23d6f7d6683",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 6,
-  "updated": "2026-02-07T20:21:51.418Z"
+  "summariesGenerated": 2,
+  "updated": "2026-02-07T22:21:17.505Z"
 }
