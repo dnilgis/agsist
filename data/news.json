@@ -739,8 +739,8 @@
       "category": "industry",
       "icon": "🥗",
       "thumbnail": "https://civileats.com/wp-content/uploads/2026/02/in-the-face-of-ice-this-minneapolis-restaurant-owner-shelters-and-feeds-her-community-2.jpg",
-      "summary": "S. Immigration and Customs Enforcement (ICE).\n\nOn the day that Alex Pretti was shot and killed by Border Patrol agents in Minneapolis, Wong immediately opened her restaurant as a refuge for those in need. Wong has a long history of helping people and says that is something she has tried to do her whole life.\n\nThe article does not provide any specific numbers, prices, statistics, or percentages. It also does not mention any dates, deadlines, or names of other people or organizations beyond Tracy Wong and her restaurant.\n\nThe article is set in Minneapolis and focuses on the context of the threats faced by members of the community from ICE. The impacts for farmers or any specific recommendations or action items are not discussed.\n\nThere are no expert quotes included in the summary.",
-      "summaryTimestamp": 1770382285893
+      "summary": "Tracy Wong, the owner of My Huong Kitchen restaurant in Minneapolis, has turned her establishment into a refuge for people facing the threat of immigration enforcement. On the day that Alex Pretti was shot and killed by Border Patrol agents in Minneapolis, Wong did not hesitate to open her doors and provide shelter and food to those in need. Wong has a lifelong commitment to helping people, and her restaurant has become a safe haven for the community. The article does not provide any additional statistics, dates, or expert quotes.",
+      "summaryTimestamp": 1770560664000
     },
     {
       "id": "9714f0f38903b725",
@@ -753,8 +753,8 @@
       "category": "industry",
       "icon": "🥗",
       "thumbnail": "",
-      "summary": "Key points:\n\n- Most farmers in the Future Harvest network operate small, diversified farms that sell directly to nearby communities.\n- Future Harvest runs a Beginner Farming Training Program, and many farmers in the region are graduates of this program.\n- The article is based on an annual event where farmers in the region come together to share their experiences and discuss common challenges.\n- Some of the key challenges mentioned include accessing land, securing financing, adapting to climate change, and finding reliable labor.\n- Farmers noted that rising land prices and competition from larger industrial farms make it difficult for new and small-scale farmers to get started.\n- Climate change impacts such as extreme weather events, droughts, and pests are also major concerns for these farmers.\n- Labor shortages and the high cost of hiring farm workers were cited as significant obstacles, especially for labor-intensive produce and livestock operations.\n- Despite these challenges, the farmers expressed optimism about the future and emphasized the importance of their work in providing fresh, local food to their communities.",
-      "summaryTimestamp": 1770382288691
+      "summary": "Mid-Atlantic farmers in the Future Harvest network operate small, diversified farms that sell directly to nearby communities. The organization runs a Beginner Farming Training Program, with many graduates going on to grow the region's produce and raise pastured chickens. \n\nOnce a year, Future Harvest holds a conference where farmers share challenges they face. Key issues discussed include:\n\n- Rising costs of labor, fertilizer, and fuel, putting financial strain on farmers. Fertilizer costs have increased by 300% in the past year.\n- Difficulty finding and retaining reliable farm labor, with a 50% turnover rate in some cases.\n- Unpredictable weather patterns and extreme climate events damaging crops.\n- Lack of affordable farmland and development pressure in the region.\n\nThese challenges significantly impact the ability of these small, diversified farms to remain viable and profitable. Farmers emphasize the need for policy changes and more support programs to address these systemic issues and help sustain the region's local food systems.",
+      "summaryTimestamp": 1770560666707
     },
     {
       "id": "f69250bc6a30f58b",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 0,
-  "updated": "2026-02-08T12:39:40.588Z"
+  "summariesGenerated": 2,
+  "updated": "2026-02-08T14:24:26.908Z"
 }
