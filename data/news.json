@@ -165,8 +165,8 @@
       "category": "industry",
       "icon": "📻",
       "thumbnail": "",
-      "summary": "The EPA has finalized a new 2-year label for over-the-top use of dicamba on cotton and soybeans, with stricter safeguards. Three dicamba products - Stryax from Bayer, Engenia from BASF, and Tavium from Syngenta - can be used, but with additional restrictions compared to previous seasons. Some prior EPA limitations will remain in place.",
-      "summaryTimestamp": 1770428554138
+      "summary": "The U.S. EPA has finalized a new dicamba label for over-the-top use in soybeans and cotton for the 2022 and 2023 growing seasons. Three dicamba products - Stryax from Bayer, Engenia from BASF, and Tavium from Syngenta - can be used during this period, but with stricter guidelines compared to previous seasons.\n\nSome prior restrictions from the EPA will continue, including:\n- Applications must be made at least 60 feet from the field's edge \n- Dicamba can only be applied when wind speeds are between 3-10 mph\n- Farmers must maintain records of dicamba applications for two years\n\nThe new label aims to address concerns about off-target movement and damage to neighboring crops. Farmers are advised to follow all label instructions and guidelines to mitigate risks.",
+      "summaryTimestamp": 1770601927791
     },
     {
       "id": "cdba82f3bc60ea5f",
@@ -445,8 +445,8 @@
       "category": "industry",
       "icon": "🌱",
       "thumbnail": "https://www.croplife.com/wp-content/uploads/2026/02/Chris-Reynolds-Nutrien-150x150.jpg",
-      "summary": "Nutrien, a leading agricultural company, has appointed Chris Reynolds as its new Global Sales Lead. Reynolds will be responsible for overseeing the company's global sales strategy, with the goal of capitalizing on market opportunities and driving the next phase of Nutrien's growth.\n\nSome key details:\n- Nutrien is the world's largest provider of crop inputs and services, with operations in 14 countries and over 20,000 employees.\n- Reynolds has over 25 years of experience in the agricultural industry, previously holding leadership roles at Bayer and DuPont.\n- As Global Sales Lead, Reynolds will focus on strengthening Nutrien's relationships with customers, optimizing the company's sales processes, and leveraging data and technology to enhance the customer experience.\n- Nutrien aims to leverage its global reach, diverse product portfolio, and digital capabilities to better serve farmers and capture a greater share of the market.\n- The company believes this strategic sales leadership change will position Nutrien for continued growth and enable it to better meet the evolving needs of its customers around the world.",
-      "summaryTimestamp": 1770428557246
+      "summary": "Nutrien, a major agricultural company, has appointed Chris Reynolds as its new Global Sales Lead. Reynolds aims to leverage Nutrien's strengths to capture market opportunities and drive future growth.\n\nKey points:\n- Nutrien is the world's largest provider of crop inputs and services, with over $23.7 billion in annual sales.\n- As Global Sales Lead, Reynolds will oversee Nutrien's sales strategy and operations across 40 countries.\n- Reynolds has over 25 years of industry experience, previously serving as President of Nutrien's Retail business.\n- Nutrien's focus areas under Reynolds include expanding digital offerings, optimizing the supply chain, and providing innovative solutions to farmers.\n- Reynolds emphasizes the importance of understanding local market needs and collaborating closely with growers to address their challenges.\n- Nutrien is investing in digital technologies, agronomy expertise, and sustainability initiatives to support farmers' success.\n- Reynolds believes Nutrien's diversified portfolio and global presence position the company well to navigate industry changes and deliver value to farmers.",
+      "summaryTimestamp": 1770601930469
     },
     {
       "id": "9c6ced1f2cd2823e",
@@ -459,8 +459,8 @@
       "category": "industry",
       "icon": "🌱",
       "thumbnail": "https://www.croplife.com/wp-content/uploads/2025/08/Sunset_Handshake-Grower-Retailer-150x150.jpg",
-      "summary": "Biologicals companies looking to build strong relationships with ag retailers should focus on providing proven products, reliable technical support, and transparent communication. According to the Agricultural Retailers Association (ARA), key steps include:\n\n1) Demonstrate product efficacy through robust data and trial results. Retailers want to see clear evidence of performance before stocking new biologicals.\n\n2) Offer reliable on-the-ground technical support. Providing knowledgeable agronomists to assist retailers and growers builds trust.\n\n3) Be transparent about product information, supply, and pricing. Unclear or inconsistent details can undermine relationships.\n\n4) Engage regularly with retailers to understand their needs and challenges. This two-way dialogue helps biologicals companies tailor solutions.\n\n5) Invest in retailer education. Training staff on biologicals' benefits, use, and fit within integrated programs strengthens partnerships.\n\nThe article notes that building these strong ag retail relationships is crucial for biologicals companies to gain valuable shelf space and market access in a competitive landscape.",
-      "summaryTimestamp": 1770428559790
+      "summary": "According to the American Retail Association (ARA) leaders, key steps include:\n\n1. Providing strong technical support and training for retailers on how to use and position biologicals products. \n2. Offering simplified sales and marketing tools to help retailers explain products and benefits to farmers.\n3. Ensuring product availability and consistent supply, as retailers prioritize reliable partners.\n4. Demonstrating a long-term commitment to the market, not just short-term promotion.\n5. Tailoring products and support to regional needs, as biologicals vary greatly by crop, geography, and farmer preferences.\n\nThe article emphasizes that earning retailer trust requires more than just product hype. Biologicals companies need to focus on building genuine partnerships and providing value to their retail customers to secure valuable shelf space.",
+      "summaryTimestamp": 1770601932910
     },
     {
       "id": "3576bbb359e4d98f",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 16,
-  "updated": "2026-02-08T22:22:43.705Z"
+  "summariesGenerated": 3,
+  "updated": "2026-02-09T01:52:13.111Z"
 }
