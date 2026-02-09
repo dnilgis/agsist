@@ -1,6 +1,20 @@
 {
   "items": [
     {
+      "id": "2d0906cb9a7eeab7",
+      "title": "Pollinator Day Returns on April 25",
+      "link": "https://www.morningagclips.com/pollinator-day-returns-on-april-25/",
+      "description": "NEW ALBANY, Ind. — On April 25, 2026, Purdue Extension Floyd County and Sunnyside Master Gardeners will host the 11th Annual Pollinator Day. This free, family-friendly event will be from 10:00a.m.-3p.m. on the lawn of the Purdue Research Park of Southeast Indiana (3000 Technology Ave., New Albany, IN 47150), weather permitting. Classes will be held [&#8230;] The post Pollinator Day Returns on April 25 appeared first on Morning Ag Clips.",
+      "date": "Mon, 09 Feb 2026 08:40:17 +0000",
+      "timestamp": 1770626417000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "",
+      "summary": "The 11th Annual Pollinator Day event will be held on April 25, 2026 from 10:00 a.m. to 3:00 p.m. on the lawn of the Purdue Research Park of Southeast Indiana in New Albany, Indiana. The free, family-friendly event is hosted by Purdue Extension Floyd County and Sunnyside Master Gardeners.\n\nThe event will feature classes on Prescribed Burns for Habitat Development and Pollinator Pocket Gardens. Other activities include booths on Native Bees, Butterflies, Pollinators and Our Food Supply, Hummingbirds, Native Plants, Planting for Pollinators, Beeswax Lip Balm, a Pollinator Selfie Booth, and Pollinator Games. Local vendors, including food trucks, will be on-site with pollinator-related merchandise. \n\nAttendees are advised to plan accordingly as there is no ATM on-site. For more information, contact Gina Anderson, ANR Extension Educator-Floyd County, at 812-948-5470 or [email protected].",
+      "summaryTimestamp": 1770626720839
+    },
+    {
       "id": "532d88603f5c3a8b",
       "title": "Market Outlook, Risk Management Strategies, More at Winter Cow-Calf Meetings",
       "link": "https://www.morningagclips.com/market-outlook-risk-management-strategies-more-at-winter-cow-calf-meetings/",
@@ -55,20 +69,6 @@
       "thumbnail": "",
       "summary": "Over 1 million Virginians were food insecure in 2023, the highest number on record. The food banks network has seen a 5-fold increase in food spending since 2019 due to rising prices, funding cuts, and SNAP benefit reductions. \n\nThe food banks are especially short on dairy, meat, protein, and fresh produce - the most requested pantry items. They are working to source more of these wholesome foods from local Virginia farmers through initiatives like the Virginia Agriculture Food Assistance Program (VAFAP), which compensates farmers for donated products.\n\nRecent partnerships have included sourcing local apples, peanut butter, beef, and milk. VAFAP can be used alongside Virginia's 50% farm tax credit for food donations up to $10,000 per year. The food banks encourage farmers to get involved and consumers to support through monetary donations and volunteering.\n\nKey numbers:\n- 1 million+ Virginians food insecure in 2023 (record high)\n- 5x increase in food bank spending since 2019\n- 850,500+ Virginians enrolled in SNAP as of 2025\n- 30,000+ half gallons of milk purchased in last 3 months\n- 50% farm tax credit for up to $10,000 in food donations\n\nExperts cited:\n- Eddie Oliver, Federation of Virginia Food Banks executive director",
       "summaryTimestamp": 1770589331461
-    },
-    {
-      "id": "9c8199f13bd8be90",
-      "title": "ASA and NOPA Applaud Treasury’s Updated 45Z Guidance",
-      "link": "https://www.morningagclips.com/asa-and-nopa-applaud-treasurys-updated-45z-guidance/",
-      "description": "WASHINGTON — On Feb. 3, the American Soybean Association (ASA) and National Oilseed Processors Association (NOPA) applauded the U.S. Department of the Treasury for releasing updated proposed guidance that implements critical improvements to the 45Z Clean Fuel Production Credit, including changes that support domestic feedstocks like U.S. soybeans, following congressional amendments enacted as part of [&#8230;] The post ASA and NOPA Applaud Treasury’s Updated 45Z Guidance appeared first on Mornin",
-      "date": "Sun, 08 Feb 2026 21:10:33 +0000",
-      "timestamp": 1770585033000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "",
-      "summary": "Key Takeaways:\n\n1. The American Soybean Association (ASA) and National Oilseed Processors Association (NOPA) applauded the U.S. Department of the Treasury for releasing updated proposed guidance that implements critical improvements to the 45Z Clean Fuel Production Credit.\n\n2. The changes support domestic feedstocks like U.S. soybeans, following congressional amendments enacted as part of the One Big Beautiful Bill Act (OBBBA).\n\n3. The updated guidance disqualifies imported waste feedstocks from 45Z eligibility, supporting U.S. soybean farmers, the U.S. oilseed processing industry, and rural communities.\n\n4. The guidance also removes the indirect land use change (ILUC) penalty on agricultural feedstocks, effectively doubling the value of the 45Z tax credit for soy-based biofuels.\n\n5. ASA and NOPA urged the administration to immediately finalize the Renewable Fuel Standard (RFS) proposal, which will further promote pro-farmer and pro-American biofuel production.\n\n6. Together, the revised 45Z tax credit and robust RFS renewable volume obligations will ensure that federal biofuel policies support the farm economy and rural manufacturing.",
-      "summaryTimestamp": 1770589334482
     },
     {
       "id": "3ae07e94513c4c9c",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 0,
-  "updated": "2026-02-09T06:59:52.753Z"
+  "summariesGenerated": 1,
+  "updated": "2026-02-09T08:45:21.039Z"
 }
