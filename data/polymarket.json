@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-09T05:00:34.748Z",
+  "updated": "2026-02-09T06:16:05.687Z",
   "totalMarkets": 5,
   "categories": {
     "tariffs": [
@@ -7,7 +7,7 @@
         "id": "0x9b3c3177fe473124c756b01e123b4b03e3a99880844ed8dea21b0a7879ca04aa",
         "question": "Kraken IPO by March 31, 2026?",
         "pct": 13,
-        "volume": 240682,
+        "volume": 240703,
         "endDate": "2026-04-01T04:00:00Z",
         "slug": "kraken-ipo-in-2025"
       },
@@ -39,7 +39,7 @@
         "id": "0x6beb95a01147de25b24d3ffae7a43551f392da4235a62f058515c3e99d7af199",
         "question": "NATO/EU troops fighting in Ukraine in June 30, 2026?",
         "pct": 4,
-        "volume": 55788,
+        "volume": 55799,
         "endDate": "2025-12-31T12:00:00Z",
         "slug": "natoeu-troops-fighting-in-ukraine-in-2025"
       }
