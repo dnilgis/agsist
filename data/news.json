@@ -1,6 +1,20 @@
 {
   "items": [
     {
+      "id": "9b973159bfc2a729",
+      "title": "Despite Federal Immigrant Crackdown, Food Workers Sue Over Workplace&#160;Abuses",
+      "link": "https://civileats.com/2026/02/09/despite-federal-immigrant-crackdown-food-workers-sue-over-workplace-abuses/",
+      "description": "The man in the video spoke Saint Aubin&#8217;s native language, Haitian Creole, and said you didn’t need to speak English to work in JBS’s Swift Beef Co. packing plant, where wages were high. He suggested that upon arrival, your housing and other needs would be taken care of. Convinced, Saint Aubin traveled across the country [&#8230;] The post Despite Federal Immigrant Crackdown, Food Workers Sue Over Workplace Abuses appeared first on Civil Eats.",
+      "date": "Mon, 09 Feb 2026 09:00:20 +0000",
+      "timestamp": 1770627620000,
+      "source": "Civil Eats",
+      "category": "industry",
+      "icon": "🥗",
+      "thumbnail": "",
+      "summary": "Key Points:\n\n- Haitian immigrant Valentin Saint Aubin was recruited to work at JBS's Swift Beef Co. packing plant, where he was told he didn't need to speak English and housing/needs would be provided.\n\n- However, upon arriving, Saint Aubin and other immigrant workers faced workplace abuses at the plant, including wage theft, unsafe conditions, and threats of deportation.\n\n- Amid a federal crackdown on immigration, these food industry workers have filed lawsuits against companies like JBS, Tyson, and Pilgrim's Pride over labor violations.\n\n- The lawsuits allege the companies recruited vulnerable immigrant workers, then exploited them through tactics like confiscating documents, underpaying, and threatening deportation.\n\n- Experts say the immigrant workforce is critical to the U.S. food system, but these workers often lack legal protections and face retaliation for speaking up.\n\n- Recommendations include better enforcement of labor laws, improved worker education on rights, and policies to protect immigrant workers who report abuses.",
+      "summaryTimestamp": 1770634422831
+    },
+    {
       "id": "2d0906cb9a7eeab7",
       "title": "Pollinator Day Returns on April 25",
       "link": "https://www.morningagclips.com/pollinator-day-returns-on-april-25/",
@@ -743,20 +757,6 @@
       "summaryTimestamp": 1770560664000
     },
     {
-      "id": "9714f0f38903b725",
-      "title": "Mid-Atlantic Farmers Share Challenges",
-      "link": "https://civileats.com/2026/02/04/mid-atlantic-farmers-share-challenges/",
-      "description": "Most farmers in the Future Harvest network operate small, diversified farms that sell directly to nearby communities. The organization also runs a well-known Beginner Farming Training Program, and many of the individuals who go on to grow the region’s tomatoes and raise its pastured chickens are graduates. Once a year, those farmers and others working [&#8230;] The post Mid-Atlantic Farmers Share Challenges appeared first on Civil Eats.",
-      "date": "Wed, 04 Feb 2026 09:00:48 +0000",
-      "timestamp": 1770195648000,
-      "source": "Civil Eats",
-      "category": "industry",
-      "icon": "🥗",
-      "thumbnail": "",
-      "summary": "Mid-Atlantic farmers in the Future Harvest network operate small, diversified farms that sell directly to nearby communities. The organization runs a Beginner Farming Training Program, with many graduates going on to grow the region's produce and raise pastured chickens. \n\nOnce a year, Future Harvest holds a conference where farmers share challenges they face. Key issues discussed include:\n\n- Rising costs of labor, fertilizer, and fuel, putting financial strain on farmers. Fertilizer costs have increased by 300% in the past year.\n- Difficulty finding and retaining reliable farm labor, with a 50% turnover rate in some cases.\n- Unpredictable weather patterns and extreme climate events damaging crops.\n- Lack of affordable farmland and development pressure in the region.\n\nThese challenges significantly impact the ability of these small, diversified farms to remain viable and profitable. Farmers emphasize the need for policy changes and more support programs to address these systemic issues and help sustain the region's local food systems.",
-      "summaryTimestamp": 1770560666707
-    },
-    {
       "id": "f69250bc6a30f58b",
       "title": "Announcing the 2026-27 UMN Extension Cover Crop Academy",
       "link": "https://blog-crop-news.extension.umn.edu/2026/02/announcing-2026-27-umn-extension-cover.html",
@@ -1272,5 +1272,5 @@
   "feedCount": 26,
   "successCount": 90,
   "summariesGenerated": 1,
-  "updated": "2026-02-09T08:45:21.039Z"
+  "updated": "2026-02-09T10:53:43.032Z"
 }
