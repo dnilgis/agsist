@@ -1,6 +1,20 @@
 {
   "items": [
     {
+      "id": "2b10c708fc8f491f",
+      "title": "Pittsburgh Arcade Collective breathes life back into retired Catholic church",
+      "link": "https://www.farmanddairy.com/news/2-12-church-arcade/903783.html",
+      "description": "A former Duquesne Catholic church finds new life as a community arcade, blending historic architecture with pinball, classic games and shared play. The post Pittsburgh Arcade Collective breathes life back into retired Catholic church appeared first on Farm and Dairy.",
+      "date": "Wed, 11 Feb 2026 05:00:00 +0000",
+      "timestamp": 1770786000000,
+      "source": "Farm and Dairy",
+      "category": "industry",
+      "icon": "🌾",
+      "thumbnail": "https://www.farmanddairy.com/wp-content/uploads/2026/02/6-WEB.jpg",
+      "summary": "The group of local arcade and pinball enthusiasts purchased the church in March 2025 for $95,000.\n\nThe church, built in 1899, features sandstone bricks, stained glass windows, and high ceilings over 60 feet tall. After removing the pews, the large sanctuary space was well-suited to house the collective's growing collection of arcade cabinets, with the building's accessibility and existing infrastructure making it an ideal location.\n\nThe collective, which started as a loose network in 2021, previously had to store and transport their machines for the annual Pittsburgh Gaming Expo. Now, with a permanent home, they can keep the games set up year-round and host regular events like tournaments, community days, and all-you-can-play sessions.\n\nThe arcade, dubbed the \"Church Arcade,\" features a mix of retro video games and pinball machines spanning decades, including some classic multiplayer cabinets. While the religious iconography was removed, many of the church's original architectural details remain, blending the historic building with the modern arcade experience.\n\nThe project has been generally well-received by the Duquesne community, with neighbors expressing excitement about the new local attraction. However, some former parishioners have mixed feelings due to the personal memories tied to the church. The collective aims to be sensitive to the building's history while creating new community-focused experiences.\n\nThe arcade's founders, Mike Hough and Jon Snow, hope the Church Arcade will become a hub for local events and a destination that brings people together, similar to the church's original purpose. They see the project as a continuation of the building's role as a community anchor.",
+      "summaryTimestamp": 1770793001455
+    },
+    {
       "id": "1216c3cfa808c79e",
       "title": "SDSU Extension invites public to 2026 SD Grasslands Summit",
       "link": "https://www.tsln.com/news/sdsu-extension-invites-public-to-2026-sd-grasslands-summit-2/",
@@ -869,20 +883,6 @@
       "summaryTimestamp": 1770642007617
     },
     {
-      "id": "ac49781afd961e75",
-      "title": "What to know about reseeding right-of-ways",
-      "link": "https://www.farmanddairy.com/columns/what-to-know-about-reseeding-right-of-ways/903118.html",
-      "description": "Pipeline easements can disrupt your farm. Learn how to manage reseeding, choose the right forage, and mitigate livestock health risks during land restoration. The post What to know about reseeding right-of-ways appeared first on Farm and Dairy.",
-      "date": "Thu, 05 Feb 2026 09:33:10 +0000",
-      "timestamp": 1770283990000,
-      "source": "Farm and Dairy",
-      "category": "industry",
-      "icon": "🌾",
-      "thumbnail": "",
-      "summary": "Landowners are often approached to lease their property for these projects, which can significantly impact their pastures and crops. \n\nThe timeline and priorities of the pipeline company (covering ground to prevent erosion) often conflict with the farmer's concerns over crop impacts, weeds, soil compaction, and proper seeding timing. Farmers need to be proactive in communicating their needs and ensuring the company's reseeding efforts align with their operations.\n\nRecommended seeding options vary by planting window:\n- July: Summer annuals like sudangrass, sorghum-sudangrass, pearl millet, teff grass\n- Aug/Sept: Oats, triticale, annual ryegrass\n\nLegumes like alfalfa, clovers, and birdsfoot trefoil provide benefits but also risks like bloat. A balanced grass-legume mix is ideal. \n\nKey prep steps are recommended, including soil testing, weed control, proper inoculation, and equipment calibration. Reaching out to agencies and support networks can help farmers navigate these unscheduled challenges.",
-      "summaryTimestamp": 1770642011148
-    },
-    {
       "id": "258bb0ad625cba90",
       "title": "Evaluating soybean performance in conservation systems &#8211; project report",
       "link": "https://farmdoc.illinois.edu/field-crop-production/evaluating-soybean-performance-in-conservation-systems-project-report.html",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 6,
-  "updated": "2026-02-11T04:32:11.500Z"
+  "summariesGenerated": 1,
+  "updated": "2026-02-11T06:56:41.655Z"
 }
