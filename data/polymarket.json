@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-12T20:51:27.053Z",
+  "updated": "2026-02-12T21:32:14.615Z",
   "totalMarkets": 5,
   "categories": {
     "tariffs": [
@@ -38,8 +38,8 @@
       {
         "id": "0x6beb95a01147de25b24d3ffae7a43551f392da4235a62f058515c3e99d7af199",
         "question": "NATO/EU troops fighting in Ukraine in June 30, 2026?",
-        "pct": 3,
-        "volume": 57512,
+        "pct": 4,
+        "volume": 57863,
         "endDate": "2025-12-31T12:00:00Z",
         "slug": "natoeu-troops-fighting-in-ukraine-in-2025"
       }
