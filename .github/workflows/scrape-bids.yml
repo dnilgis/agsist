@@ -1,0 +1,53 @@
+# .github/workflows/scrape-bids.yml
+#
+# Scrapes farmbucks.com + optionally Barchart API for WI/MN grain bids
+# No API key needed for Farmbucks (covers major coops).
+# Add BARCHART_API_KEY secret to also get small independents + CHS.
+# Without it, Phase 2 is simply skipped.
+#
+# Schedule:
+#   Market hours (Mon-Fri 8am-4pm CT / 14:00-22:00 UTC): every 2 hours
+#   Off-hours & weekends: every 8 hours
+#   Override: Run manually via Actions → "Run workflow"
+#
+# During harvest (Sep-Nov), consider changing market-hours cron to every hour.
+
+name: Scrape Grain Bids
+
+on:
+  schedule:
+    # Market hours: Mon-Fri, every 2h from 8am-4pm CT (14,16,18,20,22 UTC)
+    - cron: '0 14,16,18,20,22 * * 1-5'
+    # Off-hours catch-all: every 8h (covers nights + weekends)
+    - cron: '0 6 * * *'       # 12am CT daily
+    - cron: '0 22 * * 0,6'    # 4pm CT Sat/Sun
+  workflow_dispatch:  # Manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Scrape grain bids
+        env:
+          OUTPUT_PATH: bids.json
+          BARCHART_API_KEY: ${{ secrets.BARCHART_API_KEY }}
+        run: python scrape_bids.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add bids.json
+          git diff --cached --quiet || git commit -m "bids $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
