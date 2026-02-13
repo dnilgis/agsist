@@ -1,0 +1,863 @@
+{
+  "generated": "2026-02-13T18:06:11.170669+00:00",
+  "sources": [
+    "farmbucks.com"
+  ],
+  "locationCount": 47,
+  "bidCount": 84,
+  "elevators": [
+    {
+      "elevator": "Nexus Cooperative",
+      "city": "Sumner, Iowa",
+      "state": "",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": null,
+      "lng": null,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.02,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.5,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "AG Processing (AGP)",
+      "city": "AGP Dawson",
+      "state": "MN",
+      "type": "processor",
+      "source": "farmbucks",
+      "lat": 44.932661,
+      "lng": -96.057744,
+      "bids": {
+        "soy": {
+          "cashPrice": 10.9,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Nexus Cooperative",
+      "city": "Adams",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.564279,
+      "lng": -92.713925,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.09,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.8,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Adrian",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.750008,
+      "lng": -95.949912,
+      "bids": {
+        "soy": {
+          "cashPrice": 10.45,
+          "delivery": "Feb 2, 2026 \u2013 Mar 27, 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Nexus Cooperative",
+      "city": "Alden",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.670308,
+      "lng": -93.57838,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.86,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.5,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Jennie-O",
+      "city": "Atwater Feed Mill",
+      "state": "MN",
+      "type": "processor",
+      "source": "farmbucks",
+      "lat": 45.138274,
+      "lng": -94.769971,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.35,
+          "delivery": "February 2027"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Beaver Creek",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.614118,
+      "lng": -96.364836,
+      "bids": {
+        "soy": {
+          "cashPrice": 10.42,
+          "delivery": "Feb 2, 2026 \u2013 Mar 27, 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Nexus Cooperative",
+      "city": "Blooming Prairie",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.858254,
+      "lng": -93.049212,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.86,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.45,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "StateLine Coop",
+      "city": "Blue Earth",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.6352789,
+      "lng": -94.0900478,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.01,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.74,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Brewster",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.688557,
+      "lng": -95.483861,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.92,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.55,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Nexus Cooperative",
+      "city": "Brownsdale",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.745321,
+      "lng": -92.869324,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.07,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.5,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Nexus Cooperative",
+      "city": "Conger",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.615421,
+      "lng": -93.530619,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.14,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.6,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Jennie-O",
+      "city": "Dawson Feed Mill",
+      "state": "MN",
+      "type": "processor",
+      "source": "farmbucks",
+      "lat": 44.937337,
+      "lng": -96.064061,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.35,
+          "delivery": "February 2027"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Dundee",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.846214,
+      "lng": -95.467499,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.87,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.55,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Ellsworth",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.519315,
+      "lng": -96.018158,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.87,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.52,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Nexus Cooperative",
+      "city": "Emmons",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.50011,
+      "lng": -93.490911,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.16,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.6,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Jennie-O",
+      "city": "Faribault Mill",
+      "state": "MN",
+      "type": "processor",
+      "source": "farmbucks",
+      "lat": 44.303797,
+      "lng": -93.275434,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.35,
+          "delivery": "February 2027"
+        }
+      }
+    },
+    {
+      "elevator": "Michael Foods",
+      "city": "Gaylord",
+      "state": "MN",
+      "type": "processor",
+      "source": "farmbucks",
+      "lat": 44.55457,
+      "lng": -94.19881,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.93,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Heron Lake",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.796709,
+      "lng": -95.320179,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.92,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.55,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Hills Terminal",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.546156,
+      "lng": -96.368311,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.85,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.52,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Jeffers",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 44.055011,
+      "lng": -95.193718,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.9,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.55,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Nexus Cooperative",
+      "city": "Lansing",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.746901,
+      "lng": -92.972849,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.89,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.45,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Nexus Cooperative",
+      "city": "Leroy",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.508056,
+      "lng": -92.503461,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.09,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.45,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Nexus Cooperative",
+      "city": "London",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.525155,
+      "lng": -93.062444,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.06,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.55,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Magnolia",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.644475,
+      "lng": -96.098437,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.97,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.52,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Miloma",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.767921,
+      "lng": -95.363265,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.92,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.55,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Mountain Lake",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.944954,
+      "lng": -94.875967,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.92,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.55,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Nexus Cooperative",
+      "city": "Oakland",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.673414,
+      "lng": -93.087267,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.06,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.55,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Jennie-O",
+      "city": "Perham Feed Mill",
+      "state": "MN",
+      "type": "processor",
+      "source": "farmbucks",
+      "lat": 46.59282,
+      "lng": -95.569012,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.25,
+          "delivery": "February 2027"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Reading",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.704115,
+      "lng": -95.711664,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.87,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.55,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Nexus Cooperative",
+      "city": "Rose Creek",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.603111,
+      "lng": -92.831246,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.03,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.75,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Jennie-O",
+      "city": "Swanville Feed Mill",
+      "state": "MN",
+      "type": "processor",
+      "source": "farmbucks",
+      "lat": 45.914511,
+      "lng": -94.642216,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.35,
+          "delivery": "February 2027"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Wilmont",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.765935,
+      "lng": -95.82809,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.87,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.55,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Windom",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.872583,
+      "lng": -95.11108,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.95,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.52,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "New Vision Co-op",
+      "city": "Worthington",
+      "state": "MN",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.630158,
+      "lng": -95.574463,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.95,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.52,
+          "delivery": "March 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Ace Ethanol",
+      "city": "Ace Ethanol, Stanley",
+      "state": "WI",
+      "type": "ethanol",
+      "source": "farmbucks",
+      "lat": 44.959721,
+      "lng": -90.960181,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.11,
+          "delivery": "March 2027"
+        }
+      }
+    },
+    {
+      "elevator": "Allied Cooperative",
+      "city": "Adams",
+      "state": "WI",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.9510654,
+      "lng": -89.8169553,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.77,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.31,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Allied Cooperative",
+      "city": "Auburndale",
+      "state": "WI",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 44.623254,
+      "lng": -89.984991,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.71,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.24,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Jennie-O",
+      "city": "Barron Mill",
+      "state": "WI",
+      "type": "processor",
+      "source": "farmbucks",
+      "lat": 45.402802,
+      "lng": -91.846192,
+      "bids": {
+        "corn": {
+          "cashPrice": 4.35,
+          "delivery": "February 2027"
+        }
+      }
+    },
+    {
+      "elevator": "Allied Cooperative",
+      "city": "Blair",
+      "state": "WI",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 44.29449,
+      "lng": -91.214285,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.71,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.31,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Allied Cooperative",
+      "city": "Hixton",
+      "state": "WI",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 44.382205,
+      "lng": -91.007656,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.71,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.31,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Allied Cooperative",
+      "city": "Mauston",
+      "state": "WI",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.7702848,
+      "lng": -89.9550392,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.77,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.31,
+          "delivery": "February 2026"
+        },
+        "wheat": {
+          "cashPrice": 4.48,
+          "delivery": "February 2026                                              Chicago"
+        }
+      }
+    },
+    {
+      "elevator": "Allied Cooperative",
+      "city": "Seymour",
+      "state": "WI",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 44.512509,
+      "lng": -88.335039,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.79,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.24,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Allied Cooperative",
+      "city": "Stratford",
+      "state": "WI",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 44.801836,
+      "lng": -90.076629,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.65,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.19,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Allied Cooperative",
+      "city": "Tomah",
+      "state": "WI",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 44.020247,
+      "lng": -90.435174,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.77,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.31,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Allied Cooperative",
+      "city": "West Salem",
+      "state": "WI",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.895518,
+      "lng": -91.076819,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.73,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.39,
+          "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "Allied Cooperative",
+      "city": "Wisc Rapids",
+      "state": "WI",
+      "type": "coop",
+      "source": "farmbucks",
+      "lat": 43.6279482,
+      "lng": -89.7491555,
+      "bids": {
+        "corn": {
+          "cashPrice": 3.66,
+          "delivery": "February 2026"
+        },
+        "soy": {
+          "cashPrice": 10.24,
+          "delivery": "February 2026"
+        }
+      }
+    }
+  ]
+}
