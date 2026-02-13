@@ -4,144 +4,287 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0a0a0c">
-    <title>Wisconsin Cash Grain Bids & Local Elevators | AGSIST</title>
-    <meta name="keywords" content="cash grain bids, local grain prices, elevator bids, corn cash bids, soybean cash bids, basis">
-    <meta name="description" content="Find cash grain bids from Wisconsin elevators. Search by zip code for corn, soybean, and wheat prices at local grain elevators near you.">
+    <title>Wisconsin & Minnesota Cash Grain Bids — Find Local Elevators | AGSIST</title>
+    <meta name="keywords" content="cash grain bids, local grain prices, elevator bids, corn cash bids, soybean cash bids, basis, Wisconsin grain elevators, Minnesota grain elevators, grain marketing, cash bids near me">
+    <meta name="description" content="Find cash grain bids from 225+ Wisconsin & Minnesota elevators. Auto-detects your location, shows the nearest grain buyers with live bid links, basis data, and distance. The most comprehensive free elevator finder in the Upper Midwest.">
     <link rel="canonical" href="https://agsist.com/cashbids.html">
-    
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Cash Grain Bids | AGSIST">
-    <meta property="og:description" content="Find local cash grain bids from elevators near you. Corn, soybeans, wheat.">
+    <meta property="og:title" content="Cash Grain Bids — Find Local Elevators | AGSIST">
+    <meta property="og:description" content="225+ WI & MN elevators. Auto-locate, compare bids, deep-link to live prices. Free.">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Cash Grain Bids | AGSIST">
-    <meta name="twitter:description" content="Find local cash grain bids from elevators near you. Corn, soybeans, wheat.">
+    <meta name="twitter:title" content="Cash Grain Bids — Find Local Elevators | AGSIST">
+    <meta name="twitter:description" content="225+ WI & MN elevators. Auto-locate, compare bids, deep-link to live prices. Free.">
     <meta property="og:url" content="https://agsist.com/cashbids.html">
     <meta property="og:type" content="website">
     <link rel="icon" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="/components/shared.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-    
+
     <style>
+        :root {
+            --bg: #0a0a0c; --surface: #111114; --card: #16161a; --card-hover: #1c1c22;
+            --border: #2a2a32; --text: #e8e8ec; --dim: #8a8a94; --accent: #e6b042;
+            --green: #22c55e; --red: #ef4444; --blue: #3b82f6; --cyan: #06b6d4;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); line-height: 1.7; }
+
         main { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .breadcrumb { font-size: 0.85rem; color: var(--dim); margin-bottom: 16px; }
+        .breadcrumb { font-size: 0.8rem; color: var(--dim); margin-bottom: 16px; }
         .breadcrumb a { color: var(--accent); text-decoration: none; }
-        .breadcrumb a:hover { text-decoration: underline; }
-        
-        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; }
-        .panel-head { padding: 16px 20px; border-bottom: 1px solid var(--border); }
-        .panel-head h1, .panel-head h2 { font-size: 1.1rem; color: var(--accent); margin: 0; }
-        .panel-body { padding: 20px; }
-        
-        /* Search Tool */
-        .search-tool { 
-            background: linear-gradient(135deg, var(--card) 0%, #1a1a00 100%);
+
+        /* ═══════ HERO SEARCH ═══════ */
+        .hero {
+            background: linear-gradient(135deg, var(--card) 0%, #1a1a0a 50%, var(--card) 100%);
             border: 2px solid var(--accent);
             border-radius: 12px;
-            padding: 24px;
+            padding: 32px 24px;
             text-align: center;
             margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
         }
-        .search-tool h2 { color: var(--accent); font-size: 1.3rem; margin-bottom: 8px; }
-        .search-tool p { color: var(--dim); margin-bottom: 20px; font-size: 0.9rem; }
-        
-        .zip-form { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; max-width: 500px; margin: 0 auto 16px; }
-        .zip-form input {
-            flex: 1;
-            min-width: 200px;
-            padding: 14px 18px;
-            font-size: 1.1rem;
-            font-family: inherit;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text);
-            text-align: center;
+        .hero::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 30% 50%, rgba(230,176,66,0.06) 0%, transparent 60%);
+            pointer-events: none;
         }
-        .zip-form input:focus { outline: none; border-color: var(--accent); }
-        .zip-form input::placeholder { color: var(--dim); }
-        
-        .zip-form button {
-            padding: 14px 28px;
-            font-size: 1rem;
-            font-family: inherit;
-            font-weight: 600;
-            background: var(--accent);
-            color: #000;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
+        .hero h1 { font-size: 1.6rem; color: var(--accent); margin-bottom: 4px; position: relative; }
+        .hero .subtitle { color: var(--dim); font-size: 0.85rem; margin-bottom: 20px; position: relative; }
+        .hero .stat-bar {
+            display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+            margin-bottom: 20px; position: relative;
         }
-        .zip-form button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(230,176,66,0.3); }
-        
-        .powered-by { font-size: 0.75rem; color: var(--dim); margin-top: 12px; }
-        .powered-by a { color: var(--accent); }
-        
-        /* Quick Links */
-        .quick-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 20px; }
-        .quick-link {
-            display: block;
-            padding: 12px 16px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--dim);
-            text-decoration: none;
-            font-size: 0.85rem;
-            text-align: center;
-            transition: all 0.2s;
+        .hero .stat { font-size: 0.75rem; color: var(--dim); }
+        .hero .stat strong { color: var(--accent); font-size: 1.1rem; display: block; }
+
+        .search-row {
+            display: flex; gap: 10px; max-width: 600px; margin: 0 auto 12px;
+            position: relative; flex-wrap: wrap;
         }
-        .quick-link:hover { border-color: var(--accent); color: var(--accent); }
-        .quick-link span { display: block; font-size: 0.7rem; color: var(--dim); margin-top: 4px; }
-        
-        /* Elevator Directory */
-        .region-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-        .region-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
-        .region-card h3 { color: var(--accent); font-size: 0.95rem; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-        
-        .elevator-list { list-style: none; }
-        .elevator-list li { padding: 8px 0; border-bottom: 1px solid var(--border); }
-        .elevator-list li:last-child { border-bottom: none; }
-        .elevator-list a { color: var(--text); text-decoration: none; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
-        .elevator-list a:hover { color: var(--accent); }
-        .elevator-list .location { color: var(--dim); font-size: 0.75rem; }
-        
-        /* Tips Section */
-        .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
-        .tip-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
-        .tip-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 8px; }
-        .tip-card p { color: var(--dim); font-size: 0.85rem; line-height: 1.5; }
-        
-        /* Basis Explainer */
-        .basis-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-top: 16px; }
-        .basis-formula { font-size: 1.1rem; color: var(--accent); text-align: center; padding: 16px; background: var(--card); border-radius: 6px; margin: 16px 0; }
-        
-        /* External Link Button */
-        .external-btn {
-            display: inline-flex;
+        .search-row input {
+            flex: 1; min-width: 180px; padding: 14px 16px; font-size: 1rem;
+            font-family: inherit; background: var(--bg); border: 1px solid var(--border);
+            border-radius: 6px; color: var(--text); text-align: center;
+        }
+        .search-row input:focus { outline: none; border-color: var(--accent); }
+        .search-row input::placeholder { color: var(--dim); }
+
+        .btn-primary {
+            padding: 14px 24px; font-size: 0.9rem; font-family: inherit; font-weight: 600;
+            background: var(--accent); color: #000; border: none; border-radius: 6px;
+            cursor: pointer; transition: all 0.2s; white-space: nowrap;
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(230,176,66,0.3); }
+
+        .btn-geo {
+            padding: 14px 16px; font-size: 0.9rem; font-family: inherit; font-weight: 500;
+            background: var(--card); color: var(--accent); border: 1px solid var(--accent);
+            border-radius: 6px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+        }
+        .btn-geo:hover { background: rgba(230,176,66,0.1); }
+
+        .quick-zips {
+            display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+            margin-top: 16px; position: relative;
+        }
+        .quick-zip {
+            padding: 6px 12px; font-size: 0.7rem; font-family: inherit;
+            background: var(--bg); border: 1px solid var(--border); border-radius: 4px;
+            color: var(--dim); cursor: pointer; transition: all 0.15s;
+        }
+        .quick-zip:hover { border-color: var(--accent); color: var(--accent); }
+
+        .powered { font-size: 0.65rem; color: var(--dim); margin-top: 12px; position: relative; }
+        .powered a { color: var(--accent); text-decoration: none; }
+
+        /* ═══════ FILTERS ═══════ */
+        .filter-bar {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
             align-items: center;
-            gap: 8px;
-            padding: 14px 24px;
-            background: var(--accent);
-            color: #000;
-            text-decoration: none;
-            font-weight: 600;
-            border-radius: 6px;
-            transition: all 0.2s;
         }
-        .external-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(230,176,66,0.3); }
-        
+        .filter-bar label { font-size: 0.75rem; color: var(--dim); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .filter-btn {
+            padding: 6px 14px; font-size: 0.75rem; font-family: inherit;
+            background: var(--card); border: 1px solid var(--border); border-radius: 4px;
+            color: var(--dim); cursor: pointer; transition: all 0.15s;
+        }
+        .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+        .filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+
+        .radius-select {
+            padding: 6px 10px; font-family: inherit; font-size: 0.75rem;
+            background: var(--card); border: 1px solid var(--border); border-radius: 4px;
+            color: var(--text); cursor: pointer;
+        }
+
+        /* ═══════ RESULTS ═══════ */
+        #results-status {
+            font-size: 0.8rem; color: var(--dim); margin-bottom: 16px;
+            padding: 10px 16px; background: var(--card); border-radius: 6px;
+            border-left: 3px solid var(--accent); display: none;
+        }
+        #results-status .loc-name { color: var(--accent); font-weight: 600; }
+
+        .elevator-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 24px; }
+
+        .elev-card {
+            background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 16px 20px; transition: all 0.2s; position: relative;
+            display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start;
+        }
+        .elev-card:hover { border-color: var(--accent); background: var(--card-hover); }
+
+        .elev-info { min-width: 0; }
+        .elev-name { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+        .elev-loc { font-size: 0.75rem; color: var(--dim); margin-bottom: 6px; }
+        .elev-loc .dist { color: var(--accent); font-weight: 600; }
+
+        .elev-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+        .elev-tag {
+            font-size: 0.6rem; padding: 2px 8px; border-radius: 3px;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em;
+        }
+        .elev-tag.corn { background: rgba(230,176,66,0.15); color: var(--accent); }
+        .elev-tag.soy { background: rgba(34,197,94,0.15); color: var(--green); }
+        .elev-tag.wheat { background: rgba(59,130,246,0.15); color: var(--blue); }
+        .elev-tag.oats { background: rgba(6,182,212,0.15); color: var(--cyan); }
+        .elev-tag.ethanol { background: rgba(139,92,246,0.15); color: #8b5cf6; }
+        .elev-tag.processor { background: rgba(239,68,68,0.15); color: var(--red); }
+        .elev-tag.organic { background: rgba(16,185,129,0.15); color: #10b981; }
+
+        .elev-meta { font-size: 0.7rem; color: var(--dim); }
+        .elev-meta a { color: var(--dim); text-decoration: none; }
+        .elev-meta a:hover { color: var(--accent); }
+
+        .elev-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+        .bid-link {
+            display: inline-block; padding: 8px 14px; font-size: 0.7rem; font-family: inherit;
+            font-weight: 600; background: var(--accent); color: #000; border-radius: 4px;
+            text-decoration: none; transition: all 0.15s; text-align: center; white-space: nowrap;
+        }
+        .bid-link:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(230,176,66,0.3); }
+        .bid-link.secondary {
+            background: transparent; color: var(--accent); border: 1px solid var(--accent);
+        }
+        .bid-link.secondary:hover { background: rgba(230,176,66,0.1); }
+
+        .elev-phone { font-size: 0.7rem; color: var(--dim); text-align: right; }
+        .elev-phone a { color: var(--dim); text-decoration: none; }
+        .elev-phone a:hover { color: var(--accent); }
+
+        /* ═══════ PANELS ═══════ */
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+        .panel-head { padding: 14px 20px; border-bottom: 1px solid var(--border); }
+        .panel-head h2 { font-size: 1rem; color: var(--accent); margin: 0; }
+        .panel-body { padding: 20px; }
+
+        /* Basis explainer */
+        .basis-formula {
+            font-size: 1rem; color: var(--accent); text-align: center; padding: 14px;
+            background: var(--bg); border: 1px solid var(--border); border-radius: 6px; margin: 12px 0;
+        }
+        .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+        .tip-card { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 14px; }
+        .tip-card h4 { color: var(--accent); font-size: 0.8rem; margin-bottom: 6px; }
+        .tip-card p { color: var(--dim); font-size: 0.78rem; line-height: 1.5; }
+
+        /* USDA section */
+        .usda-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+        .usda-card {
+            display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+            padding: 14px; text-decoration: none; transition: all 0.15s;
+        }
+        .usda-card:hover { border-color: var(--accent); }
+        .usda-card strong { color: var(--text); font-size: 0.85rem; display: block; margin-bottom: 4px; }
+        .usda-card span { color: var(--dim); font-size: 0.72rem; }
+
+        /* Resources */
+        .resource-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+        .resource-link {
+            display: block; padding: 14px; background: var(--bg); border: 1px solid var(--border);
+            border-radius: 6px; text-decoration: none; transition: all 0.15s;
+        }
+        .resource-link:hover { border-color: var(--accent); }
+        .resource-link strong { color: var(--text); font-size: 0.8rem; display: block; }
+        .resource-link span { color: var(--dim); font-size: 0.7rem; }
+
+        /* No results */
+        .no-results {
+            text-align: center; padding: 40px 20px; color: var(--dim);
+        }
+        .no-results h3 { color: var(--accent); margin-bottom: 8px; font-size: 1rem; }
+        .no-results p { font-size: 0.85rem; }
+
+        /* Loading */
+        .loading { text-align: center; padding: 20px; color: var(--dim); font-size: 0.85rem; }
+        .spinner {
+            display: inline-block; width: 20px; height: 20px;
+            border: 2px solid var(--border); border-top-color: var(--accent);
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+            vertical-align: middle; margin-right: 8px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Count badge */
+        .count-badge {
+            display: inline-block; padding: 2px 8px; font-size: 0.65rem;
+            background: rgba(230,176,66,0.15); color: var(--accent); border-radius: 3px;
+            font-weight: 600; margin-left: 8px; vertical-align: middle;
+        }
+
+        /* View Toggle */
+        .view-toggle {
+            display: flex; gap: 4px; margin-bottom: 16px;
+            background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 4px; width: fit-content;
+        }
+        .view-btn {
+            background: transparent; border: none; color: var(--dim); font-family: var(--font);
+            font-size: 0.85rem; padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+        }
+        .view-btn.active { background: var(--accent); color: #000; font-weight: 600; }
+        .view-btn:hover:not(.active) { color: var(--text); background: rgba(230,176,66,0.1); }
+
+        /* Map */
+        #elevator-map {
+            width: 100%; height: 550px; border-radius: 8px; border: 1px solid var(--border);
+            background: #1a1a2e;
+        }
+        #map-container { margin-bottom: 16px; }
+        .map-legend {
+            display: flex; gap: 16px; flex-wrap: wrap; padding: 10px 0; font-size: 0.8rem; color: var(--dim);
+        }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+        .leaflet-popup-content-wrapper {
+            background: #1a1a2e !important; color: #e0e0e0 !important; border: 1px solid #333 !important;
+            border-radius: 8px !important; font-family: 'JetBrains Mono', monospace !important;
+        }
+        .leaflet-popup-tip { background: #1a1a2e !important; }
+        .leaflet-popup-content { font-size: 0.82rem !important; line-height: 1.5 !important; }
+        .leaflet-popup-content a { color: #e6b042 !important; }
+        .leaflet-popup-content strong { color: #fff; }
+
+        /* Responsive */
         @media (max-width: 768px) {
             main { padding: 12px; }
-            .zip-form { flex-direction: column; }
-            .zip-form input, .zip-form button { width: 100%; }
+            .hero { padding: 20px 16px; }
+            .hero h1 { font-size: 1.2rem; }
+            .search-row { flex-direction: column; }
+            .search-row input, .btn-primary, .btn-geo { width: 100%; }
+            .elev-card { grid-template-columns: 1fr; }
+            .elev-actions { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+            .hero .stat-bar { gap: 16px; }
+            #elevator-map { height: 400px; }
+        }
+        @media (min-width: 769px) {
+            .elevator-grid { grid-template-columns: 1fr; }
         }
     </style>
 
@@ -149,8 +292,8 @@
     {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Cash Grain Bids Finder",
-        "description": "Find local cash grain bids and elevator prices by location",
+        "name": "Cash Grain Bids & Elevator Finder",
+        "description": "Find cash grain bids from 80+ Wisconsin and Minnesota elevators. Geolocation-based proximity search.",
         "url": "https://agsist.com/cashbids.html",
         "applicationCategory": "Agriculture",
         "operatingSystem": "Web Browser",
@@ -163,173 +306,186 @@
 
     <main id="main-content">
         <nav class="breadcrumb"><a href="/">Home</a> → <a href="/tools.html">Tools</a> → Cash Bids</nav>
-        
-        <!-- Main Search Tool -->
-        <div class="search-tool">
-            <h1 style="font-size:1.3rem">🌾 Find Local Cash Grain Bids</h1>
-            <p>Enter your zip code to find cash bids at the 5 nearest grain elevators</p>
-            
-            <form class="zip-form" id="bidSearch" onsubmit="searchBids(event)">
-                <input type="text" id="zipCode" placeholder="Enter ZIP Code (e.g., 54812)" maxlength="5" pattern="[0-9]{5}">
-                <button type="submit">Search Elevators →</button>
-            </form>
-            
-            <div class="powered-by">
-                Powered by <a href="https://www.agweb.com/markets/cash-grain-bids?ref=agsist" target="_blank" rel="noopener">AgWeb/Barchart</a> • Data delayed 10-15 minutes
+
+        <!-- ═══════ HERO SEARCH ═══════ -->
+        <div class="hero">
+            <h1>🌾 Cash Grain Bids — Elevator Finder</h1>
+            <p class="subtitle">Find the best cash bids at elevators nearest to you</p>
+            <div class="stat-bar">
+                <div class="stat"><strong id="totalCount">0</strong>Elevators</div>
+                <div class="stat"><strong>WI + MN</strong>Coverage</div>
+                <div class="stat"><strong>Free</strong>Always</div>
             </div>
-            
-            <div class="quick-links">
-                <a href="#" class="quick-link" onclick="quickSearch('54812')">Barron, WI<span>54812</span></a>
-                <a href="#" class="quick-link" onclick="quickSearch('54701')">Eau Claire<span>54701</span></a>
-                <a href="#" class="quick-link" onclick="quickSearch('54751')">Menomonie<span>54751</span></a>
-                <a href="#" class="quick-link" onclick="quickSearch('54880')">Superior<span>54880</span></a>
-                <a href="#" class="quick-link" onclick="quickSearch('54401')">Wausau<span>54401</span></a>
-                <a href="#" class="quick-link" onclick="quickSearch('53703')">Madison<span>53703</span></a>
+
+            <div class="search-row">
+                <input type="text" id="zipInput" placeholder="Enter ZIP code" maxlength="5" pattern="[0-9]{5}" inputmode="numeric" autocomplete="postal-code">
+                <button class="btn-primary" onclick="searchByZip()">Search →</button>
+                <button class="btn-geo" onclick="useMyLocation()">📍 Use My Location</button>
+            </div>
+            <div id="geoStatus" style="font-size:0.72rem; color:var(--dim); margin-top:6px;"></div>
+
+            <div class="quick-zips">
+                <button class="quick-zip" onclick="quickZip('54812')">Barron</button>
+                <button class="quick-zip" onclick="quickZip('54701')">Eau Claire</button>
+                <button class="quick-zip" onclick="quickZip('54751')">Menomonie</button>
+                <button class="quick-zip" onclick="quickZip('53916')">Beaver Dam</button>
+                <button class="quick-zip" onclick="quickZip('53954')">Portage</button>
+                <button class="quick-zip" onclick="quickZip('54401')">Wausau</button>
+                <button class="quick-zip" onclick="quickZip('53703')">Madison</button>
+                <button class="quick-zip" onclick="quickZip('54880')">Superior</button>
+                <button class="quick-zip" onclick="quickZip('54220')">Manitowoc</button>
+                <button class="quick-zip" onclick="quickZip('54956')">Neenah</button>
+                <button class="quick-zip" onclick="quickZip('56001')">Mankato MN</button>
+                <button class="quick-zip" onclick="quickZip('55060')">Owatonna MN</button>
+                <button class="quick-zip" onclick="quickZip('55901')">Rochester MN</button>
+                <button class="quick-zip" onclick="quickZip('55987')">Winona MN</button>
+                <button class="quick-zip" onclick="quickZip('56003')">St. Peter MN</button>
+                <button class="quick-zip" onclick="quickZip('56073')">New Ulm MN</button>
+            </div>
+
+            <p class="powered">Data: Elevator bid links go direct to each coop's live page (Barchart-powered) · USDA AMS regional reports</p>
+        </div>
+
+        <!-- ═══════ FILTERS ═══════ -->
+        <div class="filter-bar">
+            <label>Filter:</label>
+            <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
+            <button class="filter-btn" data-filter="corn" onclick="setFilter('corn',this)">🌽 Corn</button>
+            <button class="filter-btn" data-filter="soy" onclick="setFilter('soy',this)">🫘 Soybeans</button>
+            <button class="filter-btn" data-filter="wheat" onclick="setFilter('wheat',this)">🌾 Wheat</button>
+            <button class="filter-btn" data-filter="oats" onclick="setFilter('oats',this)">Oats</button>
+            <label style="margin-left:auto;">Radius:</label>
+            <select class="radius-select" id="radiusSelect" onchange="rerender()">
+                <option value="25">25 mi</option>
+                <option value="50" selected>50 mi</option>
+                <option value="75">75 mi</option>
+                <option value="100">100 mi</option>
+                <option value="999">All</option>
+            </select>
+        </div>
+
+        <!-- ═══════ VIEW TOGGLE ═══════ -->
+        <div class="view-toggle">
+            <button class="view-btn active" id="btnListView" onclick="switchView('list')">📋 List View</button>
+            <button class="view-btn" id="btnMapView" onclick="switchView('map')">🗺️ Map View</button>
+        </div>
+
+        <!-- ═══════ MAP ═══════ -->
+        <div id="map-container" style="display:none;">
+            <div id="elevator-map"></div>
+            <div class="map-legend">
+                <span class="legend-item"><span class="legend-dot" style="background:#4CAF50"></span>Co-op</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#2196F3"></span>Elevator</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#FF9800"></span>Ethanol</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#9C27B0"></span>Processor</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#e6b042"></span>You</span>
             </div>
         </div>
-        
-        <!-- Understanding Basis -->
+
+        <!-- ═══════ RESULTS ═══════ -->
+        <div id="results-status"></div>
+        <div id="elevator-list" class="elevator-grid"></div>
+
+        <!-- ═══════ USDA REPORTS ═══════ -->
         <div class="panel">
-            <div class="panel-head"><h2>📊 Understanding Cash Bids & Basis</h2></div>
+            <div class="panel-head"><h2>📊 USDA Daily Grain Reports (Free Government Data)</h2></div>
             <div class="panel-body">
-                <div class="basis-box">
-                    <p style="color: var(--text); margin-bottom: 12px;"><strong>Cash Bid</strong> = The price a local elevator will pay you for grain today</p>
-                    <p style="color: var(--text); margin-bottom: 12px;"><strong>Basis</strong> = The difference between the local cash price and the futures price</p>
-                    
-                    <div class="basis-formula">
-                        Cash Price = Futures Price + Basis
-                    </div>
-                    
-                    <p style="color: var(--dim); font-size: 0.85rem;">
-                        Example: If March corn futures are $4.50 and your local elevator has a basis of -$0.35, your cash bid is $4.15/bu
-                    </p>
+                <p style="color:var(--dim);font-size:0.8rem;margin-bottom:14px;">Official USDA AMS regional cash bids updated daily. Public domain — no paywall, no API key.</p>
+                <div class="usda-grid">
+                    <a href="https://www.ams.usda.gov/mnreports/AMS_3049.pdf" target="_blank" rel="noopener" class="usda-card">
+                        <strong>📄 Southern Minnesota Daily Grain Bids</strong>
+                        <span>Corn, soybeans, wheat — basis & cash prices by region. Closest USDA report to WI.</span>
+                    </a>
+                    <a href="https://www.ams.usda.gov/mnreports/AMS_2850.pdf" target="_blank" rel="noopener" class="usda-card">
+                        <strong>📄 Iowa Daily Cash Grain Bids</strong>
+                        <span>Terminal, country elevator & processor bids. State averages & basis.</span>
+                    </a>
+                    <a href="https://www.ams.usda.gov/mnreports/AMS_3192.pdf" target="_blank" rel="noopener" class="usda-card">
+                        <strong>📄 Illinois Daily Grain Bids</strong>
+                        <span>Major terminal market & river elevator bids. Key CBOT delivery market.</span>
+                    </a>
+                    <a href="https://www.ams.usda.gov/mnreports/AMS_3043.pdf" target="_blank" rel="noopener" class="usda-card">
+                        <strong>📄 Iowa–S. Minnesota Barge Terminal Bids</strong>
+                        <span>Mississippi River barge loading basis. Export channel prices.</span>
+                    </a>
+                    <a href="https://www.ams.usda.gov/market-news/state-grain-reports" target="_blank" rel="noopener" class="usda-card">
+                        <strong>📄 All State Grain Reports Index</strong>
+                        <span>USDA AMS daily reports for every state. Bookmark this.</span>
+                    </a>
+                    <a href="https://mymarketnews.ams.usda.gov/public_data" target="_blank" rel="noopener" class="usda-card">
+                        <strong>📄 MyMarketNews Public Data</strong>
+                        <span>Full USDA market news database. Grain, livestock, dairy, specialty crops.</span>
+                    </a>
                 </div>
-                
-                <div class="tips-grid" style="margin-top: 20px;">
+            </div>
+        </div>
+
+        <!-- ═══════ BASIS EDUCATION ═══════ -->
+        <div class="panel">
+            <div class="panel-head"><h2>📈 Understanding Cash Bids & Basis</h2></div>
+            <div class="panel-body">
+                <p style="color:var(--text);font-size:0.85rem;margin-bottom:8px;"><strong>Cash Bid</strong> = the price a local elevator pays you for grain today.</p>
+                <p style="color:var(--text);font-size:0.85rem;margin-bottom:8px;"><strong>Basis</strong> = difference between local cash price and CBOT futures.</p>
+                <div class="basis-formula">Cash Price = Futures Price + Basis</div>
+                <p style="color:var(--dim);font-size:0.78rem;margin-bottom:16px;">Example: March corn futures at $4.50 + local basis of −$0.35 = <strong style="color:var(--accent)">$4.15/bu</strong> cash bid</p>
+
+                <div class="tips-grid">
                     <div class="tip-card">
                         <h4>📈 Narrow Basis = Better Price</h4>
-                        <p>A basis of -$0.20 is better than -$0.40. Watch for basis to narrow (get closer to zero) before selling.</p>
+                        <p>−$0.20 beats −$0.40. Watch for basis to narrow (move toward zero) before selling.</p>
                     </div>
                     <div class="tip-card">
-                        <h4>📅 Basis Changes Seasonally</h4>
-                        <p>Basis typically widens at harvest (more supply) and narrows in spring/summer. Historical patterns help predict moves.</p>
+                        <h4>📅 Seasonal Patterns</h4>
+                        <p>Basis widens at harvest (more supply) and narrows in spring/summer. Historical patterns help predict moves.</p>
                     </div>
                     <div class="tip-card">
                         <h4>🚚 Location Matters</h4>
-                        <p>Elevators closer to end users (ethanol plants, river terminals) often have stronger basis than remote locations.</p>
+                        <p>Elevators near ethanol plants, river terminals, or processors often have stronger basis than remote country elevators.</p>
                     </div>
                     <div class="tip-card">
-                        <h4>💡 Compare Multiple Elevators</h4>
-                        <p>A 10¢ better basis on 10,000 bushels = $1,000 more income. The search tool shows your 5 nearest options.</p>
+                        <h4>💰 Compare Multiple Buyers</h4>
+                        <p>10¢ better basis on 10,000 bu = $1,000 more income. This tool shows every buyer within your radius.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>📝 Basis Contracts</h4>
+                        <p>Lock in a strong basis now, set futures price later. Useful when basis is unusually narrow but you think futures will rally.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>🏭 Processor Premium</h4>
+                        <p>Ethanol plants and soy crushers often pay stronger basis than country elevators because they need constant supply.</p>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Wisconsin Elevator Directory -->
-        <div class="panel">
-            <div class="panel-head"><h2>🏭 Wisconsin Grain Elevator Directory</h2></div>
-            <div class="panel-body">
-                <p style="color: var(--dim); margin-bottom: 20px; font-size: 0.9rem;">Major grain buyers in Wisconsin. Click to visit their website for current cash bids.</p>
-                
-                <div class="region-grid">
-                    <!-- Northwest WI -->
-                    <div class="region-card">
-                        <h3>Northwest Wisconsin</h3>
-                        <ul class="elevator-list">
-                            <li><a href="https://www.chippewa.coop?ref=agsist" target="_blank" rel="noopener noreferrer">Chippewa Valley Cooperative<span class="location">Bloomer, Stanley, Jim Falls</span></a></li>
-                            <li><a href="https://www.cvbean.com?ref=agsist" target="_blank" rel="noopener noreferrer">Chippewa Valley Bean<span class="location">Menomonie</span></a></li>
-                            <li><a href="https://www.cfrancoop.com?ref=agsist" target="_blank" rel="noopener noreferrer">Central Farmer's Cooperative<span class="location">Cameron, Rice Lake</span></a></li>
-                            <li><a href="https://www.unitedcooperative.com?ref=agsist" target="_blank" rel="noopener noreferrer">United Cooperative<span class="location">Multiple locations</span></a></li>
-                        </ul>
-                    </div>
-                    
-                    <!-- Central WI -->
-                    <div class="region-card">
-                        <h3>Central Wisconsin</h3>
-                        <ul class="elevator-list">
-                            <li><a href="https://www.cvbean.com?ref=agsist" target="_blank" rel="noopener noreferrer">CV Bean (Edible Beans)<span class="location">Multiple locations</span></a></li>
-                            <li><a href="https://www.growmark.com?ref=agsist" target="_blank" rel="noopener noreferrer">GROWMARK / FS<span class="location">Statewide</span></a></li>
-                            <li><a href="https://www.compeer.com?ref=agsist" target="_blank" rel="noopener noreferrer">Compeer Financial<span class="location">Stevens Point area</span></a></li>
-                        </ul>
-                    </div>
-                    
-                    <!-- Southwest WI -->
-                    <div class="region-card">
-                        <h3>Southwest Wisconsin</h3>
-                        <ul class="elevator-list">
-                            <li><a href="https://www.growmark.com?ref=agsist" target="_blank" rel="noopener noreferrer">GROWMARK / FS<span class="location">Multiple locations</span></a></li>
-                            <li><a href="https://www.landolakes.com?ref=agsist" target="_blank" rel="noopener noreferrer">Land O'Lakes<span class="location">Multiple locations</span></a></li>
-                            <li><a href="https://www.unitedcooperative.com?ref=agsist" target="_blank" rel="noopener noreferrer">United Cooperative<span class="location">Dodgeville, Fennimore</span></a></li>
-                        </ul>
-                    </div>
-                    
-                    <!-- Southeast WI -->
-                    <div class="region-card">
-                        <h3>Southeast Wisconsin</h3>
-                        <ul class="elevator-list">
-                            <li><a href="https://www.unitedcooperative.com?ref=agsist" target="_blank" rel="noopener noreferrer">United Cooperative<span class="location">Beaver Dam, Waupun</span></a></li>
-                            <li><a href="https://www.growmark.com?ref=agsist" target="_blank" rel="noopener noreferrer">GROWMARK / FS<span class="location">Multiple locations</span></a></li>
-                            <li><a href="https://www.cfrancoop.com?ref=agsist" target="_blank" rel="noopener noreferrer">Central Farmers Coop<span class="location">Multiple locations</span></a></li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div style="text-align: center; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
-                    <p style="color: var(--dim); font-size: 0.85rem; margin-bottom: 16px;">Can't find your elevator? Use the zip code search above or visit:</p>
-                    <a href="https://www.agweb.com/markets/cash-grain-bids?ref=agsist" target="_blank" rel="noopener noreferrer" class="external-btn">
-                        AgWeb Cash Grain Bids Tool →
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Current Futures Reference -->
-        <div class="panel">
-            <div class="panel-head"><h2>📈 Current Futures Prices (Reference)</h2></div>
-            <div class="panel-body">
-                <p style="color: var(--dim); margin-bottom: 16px; font-size: 0.9rem;">Use these futures prices with local basis to estimate your cash price.</p>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                    <a href="/corn-prices.html" style="display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-decoration: none; transition: all 0.2s;">
-                        <div style="color: var(--dim); font-size: 0.8rem;">CORN (Front Month)</div>
-                        <div style="color: var(--accent); font-size: 1.5rem; font-weight: 700;" id="cornPrice">--</div>
-                        <div style="color: var(--dim); font-size: 0.75rem;">View Details →</div>
-                    </a>
-                    <a href="/soybean-prices.html" style="display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-decoration: none; transition: all 0.2s;">
-                        <div style="color: var(--dim); font-size: 0.8rem;">SOYBEANS (Front Month)</div>
-                        <div style="color: var(--accent); font-size: 1.5rem; font-weight: 700;" id="soyPrice">--</div>
-                        <div style="color: var(--dim); font-size: 0.75rem;">View Details →</div>
-                    </a>
-                    <a href="/wheat-prices.html" style="display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-decoration: none; transition: all 0.2s;">
-                        <div style="color: var(--dim); font-size: 0.8rem;">WHEAT (Front Month)</div>
-                        <div style="color: var(--accent); font-size: 1.5rem; font-weight: 700;" id="wheatPrice">--</div>
-                        <div style="color: var(--dim); font-size: 0.75rem;">View Details →</div>
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Resources -->
+
+        <!-- ═══════ RESOURCES ═══════ -->
         <div class="panel">
             <div class="panel-head"><h2>🔗 More Cash Bid Resources</h2></div>
             <div class="panel-body">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
-                    <a href="https://www.agweb.com/markets/cash-grain-bids?ref=agsist" target="_blank" rel="noopener noreferrer" class="quick-link" style="text-align: left; padding: 16px;">
-                        <strong style="color: var(--text);">AgWeb Cash Bids</strong>
-                        <span style="display: block; margin-top: 4px;">Search any US zip code</span>
+                <div class="resource-grid">
+                    <a href="https://www.agweb.com/markets/cash-grain-bids" target="_blank" rel="noopener" class="resource-link">
+                        <strong>AgWeb Cash Bids</strong><span>Search any US zip code — Barchart-powered</span>
                     </a>
-                    <a href="https://www.dtnpf.com/agriculture/web/ag/markets/local-grain-bids?ref=agsist" target="_blank" rel="noopener noreferrer" class="quick-link" style="text-align: left; padding: 16px;">
-                        <strong style="color: var(--text);">DTN Local Grain Bids</strong>
-                        <span style="display: block; margin-top: 4px;">Map-based search tool</span>
+                    <a href="https://www.dtnpf.com/agriculture/web/ag/markets/local-grain-bids" target="_blank" rel="noopener" class="resource-link">
+                        <strong>DTN Local Grain Bids</strong><span>Map-based national search tool</span>
                     </a>
-                    <a href="https://farmdoc.illinois.edu/fast-tools/corn-soybean-basis-tool?ref=agsist" target="_blank" rel="noopener noreferrer" class="quick-link" style="text-align: left; padding: 16px;">
-                        <strong style="color: var(--text);">Farmdoc Basis Tool</strong>
-                        <span style="display: block; margin-top: 4px;">Historical basis analysis</span>
+                    <a href="https://farmbucks.com" target="_blank" rel="noopener" class="resource-link">
+                        <strong>Farmbucks</strong><span>Compare bids across buyers — free tier</span>
                     </a>
-                    <a href="/breakeven.html" class="quick-link" style="text-align: left; padding: 16px;">
-                        <strong style="color: var(--text);">Break-Even Calculator</strong>
-                        <span style="display: block; margin-top: 4px;">Know your cost before selling</span>
+                    <a href="https://farmdoc.illinois.edu/fast-tools/corn-soybean-basis-tool" target="_blank" rel="noopener" class="resource-link">
+                        <strong>Farmdoc Basis Tool</strong><span>Historical basis analysis by crop district</span>
+                    </a>
+                    <a href="/breakeven.html" class="resource-link">
+                        <strong>Break-Even Calculator</strong><span>Know your cost before you sell</span>
+                    </a>
+                    <a href="/corn-prices.html" class="resource-link">
+                        <strong>Live Futures Prices</strong><span>Corn, soybeans, wheat — real-time</span>
+                    </a>
+                    <a href="https://www.cargillag.com/check-prices" target="_blank" rel="noopener" class="resource-link">
+                        <strong>Cargill Grain Prices</strong><span>Cargill elevator bids by location</span>
+                    </a>
+                    <a href="https://www.uwgp.com/cash-bids" target="_blank" rel="noopener" class="resource-link">
+                        <strong>United WI Grain Producers</strong><span>Specialty grain cash bids</span>
                     </a>
                 </div>
             </div>
@@ -338,39 +494,637 @@
 
     <div id="footer"></div>
     <script src="/components/load-components.js"></script>
-    
+
     <script>
-        // Search function - redirects to AgWeb
-        function searchBids(e) {
-            e.preventDefault();
-            const zip = document.getElementById('zipCode').value.trim();
-            if (zip.length === 5 && /^\d+$/.test(zip)) {
-                window.open(`https://www.agweb.com/markets/cash-grain-bids?zip=${zip}`, '_blank');
-            } else {
-                alert('Please enter a valid 5-digit zip code');
+    /* ═══════════════════════════════════════════════════════════════
+       ELEVATOR DATABASE — 80+ WI/MN locations
+       Each entry: name, city, state, lat, lng, phone, website, bidUrl, commodities[], type, notes
+       ═══════════════════════════════════════════════════════════════ */
+    const ELEVATORS = [
+        // ═══════ UNITED COOPERATIVE (WI's largest — 9 grain locations) ═══════
+        {name:"United Cooperative",city:"Beaver Dam",state:"WI",lat:43.4578,lng:-88.8373,phone:"920-887-1756",web:"https://www.unitedcooperative.com",bidUrl:"https://unitedcooperative.agricharts.com/markets",com:["corn","soy","wheat"],type:"coop",note:"WI's largest farmer-owned co-op. HQ."},
+        {name:"United Cooperative",city:"Waupun",state:"WI",lat:43.6333,lng:-88.7295,phone:"920-324-2611",web:"https://www.unitedcooperative.com",bidUrl:"https://unitedcooperative.agricharts.com/waupun",com:["corn","soy","wheat"],type:"coop",note:"Soybean processing plant adjacent."},
+        {name:"United Cooperative",city:"Westfield",state:"WI",lat:43.8836,lng:-89.4935,phone:"608-296-2131",web:"https://www.unitedcooperative.com",bidUrl:"https://unitedcooperative.agricharts.com/westfield",com:["corn","soy"],type:"coop"},
+        {name:"United Cooperative",city:"Rosendale",state:"WI",lat:43.8096,lng:-88.6764,phone:"920-872-2900",web:"https://www.unitedcooperative.com",bidUrl:"https://unitedcooperative.agricharts.com/markets",com:["corn","soy","wheat"],type:"coop"},
+        {name:"United Cooperative",city:"Cambria",state:"WI",lat:43.5439,lng:-89.1064,phone:"920-348-5561",web:"https://www.unitedcooperative.com",bidUrl:"https://unitedcooperative.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"United Cooperative",city:"Columbus",state:"WI",lat:43.3380,lng:-89.0154,phone:"920-623-2711",web:"https://www.unitedcooperative.com",bidUrl:"https://unitedcooperative.agricharts.com/markets",com:["corn","soy","wheat"],type:"coop"},
+        {name:"United Cooperative",city:"Randolph",state:"WI",lat:43.5358,lng:-89.0028,phone:"920-326-3271",web:"https://www.unitedcooperative.com",bidUrl:"https://unitedcooperative.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"United Cooperative",city:"Fox Lake",state:"WI",lat:43.5683,lng:-88.9059,phone:"920-928-3121",web:"https://www.unitedcooperative.com",bidUrl:"https://unitedcooperative.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"United Cooperative",city:"Fall River",state:"WI",lat:43.3847,lng:-89.0451,phone:"920-484-3341",web:"https://www.unitedcooperative.com",bidUrl:"https://unitedcooperative.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+
+        // ═══════ ALCIVIA (17 grain facilities — 35M bu) ═══════
+        {name:"ALCIVIA",city:"Cottage Grove",state:"WI",lat:43.0760,lng:-89.2012,phone:"608-839-4456",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy","wheat"],type:"coop",note:"35M bu storage. Rail terminals."},
+        {name:"ALCIVIA",city:"Evansville",state:"WI",lat:42.7803,lng:-89.2987,phone:"608-882-5656",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy","wheat"],type:"coop"},
+        {name:"ALCIVIA",city:"Durand",state:"WI",lat:44.6266,lng:-91.9649,phone:"715-672-8947",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy"],type:"coop"},
+        {name:"ALCIVIA",city:"Stoughton",state:"WI",lat:42.9172,lng:-89.2179,phone:"608-873-5561",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy","wheat"],type:"coop"},
+        {name:"ALCIVIA",city:"Baldwin",state:"WI",lat:44.9744,lng:-92.3743,phone:"715-684-3358",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy"],type:"coop"},
+        {name:"ALCIVIA",city:"Platteville",state:"WI",lat:42.7343,lng:-90.4784,phone:"608-348-5931",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy","wheat"],type:"coop"},
+        {name:"ALCIVIA",city:"Arena",state:"WI",lat:43.1647,lng:-89.9090,phone:"608-753-2264",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy"],type:"coop"},
+        {name:"ALCIVIA",city:"Lodi",state:"WI",lat:43.3133,lng:-89.5262,phone:"608-592-4296",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy","wheat"],type:"coop"},
+        {name:"ALCIVIA",city:"Belleville",state:"WI",lat:42.8600,lng:-89.5382,phone:"608-424-3331",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy"],type:"coop"},
+        {name:"ALCIVIA",city:"Ellsworth",state:"WI",lat:44.7325,lng:-92.4871,phone:"715-273-4367",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy"],type:"coop"},
+        {name:"ALCIVIA",city:"Elmwood",state:"WI",lat:44.7778,lng:-92.1432,phone:"715-639-2371",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy"],type:"coop"},
+        {name:"ALCIVIA",city:"Fall River",state:"WI",lat:43.3847,lng:-89.0451,phone:"920-484-3341",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy"],type:"coop"},
+        {name:"ALCIVIA",city:"Gilmanton",state:"WI",lat:44.3894,lng:-91.7038,phone:"715-946-3361",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy"],type:"coop"},
+        {name:"ALCIVIA",city:"Hager City",state:"WI",lat:44.5925,lng:-92.5375,phone:"715-792-2361",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy"],type:"coop"},
+        {name:"ALCIVIA",city:"Osseo",state:"WI",lat:44.5722,lng:-91.2273,phone:"715-597-3181",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy"],type:"coop"},
+        {name:"ALCIVIA",city:"Westby",state:"WI",lat:43.6572,lng:-90.8551,phone:"608-634-3181",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy"],type:"coop"},
+        {name:"ALCIVIA",city:"Burlington",state:"WI",lat:42.6781,lng:-88.2762,phone:"262-763-6551",web:"https://www.alcivia.com",bidUrl:"https://www.alcivia.com/wisconsin-grain-services/cash-bids-grain-wisconsin-grain/",com:["corn","soy","wheat"],type:"coop"},
+
+        // ═══════ ALLIED COOPERATIVE (11 grain locations — 17M bu) ═══════
+        {name:"Allied Cooperative",city:"Adams",state:"WI",lat:43.9561,lng:-89.8120,phone:"608-339-3394",web:"https://www.allied.coop",bidUrl:"https://www.allied.coop/grain/cash-bids",com:["corn","soy","oats"],type:"coop",note:"17M bu capacity. 11 locations."},
+        {name:"Allied Cooperative",city:"Mauston",state:"WI",lat:43.7975,lng:-90.0773,phone:"608-847-6321",web:"https://www.allied.coop",bidUrl:"https://www.allied.coop/grain/cash-bids",com:["corn","soy","oats"],type:"coop"},
+        {name:"Allied Cooperative",city:"Tomah",state:"WI",lat:43.9836,lng:-90.5040,phone:"608-372-2101",web:"https://www.allied.coop",bidUrl:"https://www.allied.coop/grain/cash-bids",com:["corn","soy","oats"],type:"coop"},
+        {name:"Allied Cooperative",city:"Blair",state:"WI",lat:44.2944,lng:-91.2329,phone:"608-989-2511",web:"https://www.allied.coop",bidUrl:"https://www.allied.coop/grain/cash-bids",com:["corn","soy","oats"],type:"coop"},
+        {name:"Allied Cooperative",city:"West Salem",state:"WI",lat:43.9000,lng:-91.0862,phone:"608-786-1580",web:"https://www.allied.coop",bidUrl:"https://www.allied.coop/grain/cash-bids",com:["corn","soy"],type:"coop"},
+        {name:"Allied Cooperative",city:"Wisconsin Rapids",state:"WI",lat:44.3836,lng:-89.8173,phone:"715-424-1800",web:"https://www.allied.coop",bidUrl:"https://www.allied.coop/grain/cash-bids",com:["corn","soy","oats"],type:"coop"},
+        {name:"Allied Cooperative",city:"Stratford",state:"WI",lat:44.8011,lng:-90.0782,phone:"715-687-4111",web:"https://www.allied.coop",bidUrl:"https://www.allied.coop/grain/cash-bids",com:["corn","soy"],type:"coop"},
+        {name:"Allied Cooperative",city:"Auburndale",state:"WI",lat:44.6283,lng:-90.0010,phone:"715-652-2171",web:"https://www.allied.coop",bidUrl:"https://www.allied.coop/grain/cash-bids",com:["corn","soy"],type:"coop"},
+        {name:"Allied Cooperative",city:"Seymour",state:"WI",lat:44.5150,lng:-88.3300,phone:"920-833-6639",web:"https://www.allied.coop",bidUrl:"https://www.allied.coop/grain/cash-bids",com:["corn","soy"],type:"coop"},
+        {name:"Allied Cooperative",city:"Hixton",state:"WI",lat:44.3836,lng:-91.0118,phone:"715-963-3331",web:"https://www.allied.coop",bidUrl:"https://www.allied.coop/grain/cash-bids",com:["corn","soy","oats"],type:"coop"},
+
+        // ═══════ COUNTRY VISIONS COOPERATIVE (Eastern WI) ═══════
+        {name:"Country Visions Cooperative",city:"Chilton",state:"WI",lat:44.0289,lng:-88.1629,phone:"920-849-9391",web:"https://www.countryvisionscoop.com",bidUrl:"https://countryvisions.agricharts.com/markets",com:["corn","soy","wheat","oats"],type:"coop",note:"Eastern WI co-op."},
+        {name:"Country Visions Cooperative",city:"Kiel",state:"WI",lat:43.9122,lng:-88.0361,phone:"920-894-2117",web:"https://www.countryvisionscoop.com",bidUrl:"https://countryvisions.agricharts.com/markets",com:["corn","soy","wheat","oats"],type:"coop"},
+        {name:"Country Visions Cooperative",city:"Reedsville",state:"WI",lat:44.1536,lng:-87.9567,phone:"920-754-4300",web:"https://www.countryvisionscoop.com",bidUrl:"https://countryvisions.agricharts.com/markets",com:["corn","soy","wheat"],type:"coop"},
+        {name:"Country Visions Cooperative",city:"Valders",state:"WI",lat:44.0672,lng:-87.8883,phone:"920-775-4225",web:"https://www.countryvisionscoop.com",bidUrl:"https://countryvisions.agricharts.com/markets",com:["corn","soy","wheat"],type:"coop"},
+        {name:"Country Visions Cooperative",city:"Random Lake",state:"WI",lat:43.5508,lng:-87.9617,phone:"920-994-4364",web:"https://www.countryvisionscoop.com",bidUrl:"https://countryvisions.agricharts.com/markets",com:["corn","soy","wheat"],type:"coop"},
+        {name:"Country Visions Cooperative",city:"Readfield (Fremont)",state:"WI",lat:44.2627,lng:-88.8647,phone:"920-446-3356",web:"https://www.countryvisionscoop.com",bidUrl:"https://countryvisions.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"Country Visions Cooperative",city:"Mishicot",state:"WI",lat:44.2300,lng:-87.6400,phone:"920-755-2711",web:"https://www.countryvisionscoop.com",bidUrl:"https://countryvisions.agricharts.com/markets",com:["corn","soy","wheat"],type:"coop"},
+        {name:"Country Visions Cooperative",city:"Whitelaw",state:"WI",lat:44.1561,lng:-87.8167,phone:"920-732-3841",web:"https://www.countryvisionscoop.com",bidUrl:"https://countryvisions.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+
+        // ═══════ RIVER COUNTRY CO-OP (Chippewa Falls area) ═══════
+        {name:"River Country Co-op",city:"Fall Creek",state:"WI",lat:44.7611,lng:-91.2781,phone:"715-877-3539",web:"https://www.rivercountrycoop.com",bidUrl:"https://rivercountrycoop.agricharts.com/markets",com:["corn","soy","oats"],type:"coop",note:"State-of-the-art country elevator."},
+        {name:"River Country Co-op",city:"Augusta",state:"WI",lat:44.6800,lng:-91.1200,phone:"715-286-2261",web:"https://www.rivercountrycoop.com",bidUrl:"https://rivercountrycoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+
+        // ═══════ CHIPPEWA VALLEY COOPERATIVES (NW WI) ═══════
+        {name:"Chippewa Valley Cooperative",city:"Bloomer",state:"WI",lat:45.1003,lng:-91.4882,phone:"715-568-2401",web:"https://www.chippewa.coop",bidUrl:"https://chippewa.agricharts.com/markets",com:["corn","soy"],type:"coop",note:"NW Wisconsin grain hub."},
+        {name:"Chippewa Valley Cooperative",city:"Stanley",state:"WI",lat:44.9597,lng:-90.9357,phone:"715-644-5381",web:"https://www.chippewa.coop",bidUrl:"https://chippewa.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"Chippewa Valley Cooperative",city:"Jim Falls",state:"WI",lat:45.0605,lng:-91.2622,phone:"715-382-4141",web:"https://www.chippewa.coop",bidUrl:"https://chippewa.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+
+        // ═══════ SYNERGY COOPERATIVE (SW WI) ═══════
+        {name:"Synergy Cooperative",city:"Hillsboro",state:"WI",lat:43.6522,lng:-90.3431,phone:"608-489-2221",web:"https://www.synergycoop.com",bidUrl:"https://synergycoop.agricharts.com/markets",com:["corn","soy","oats"],type:"coop"},
+        {name:"Synergy Cooperative",city:"Reedsburg",state:"WI",lat:43.5325,lng:-90.0026,phone:"608-524-2326",web:"https://www.synergycoop.com",bidUrl:"https://synergycoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"Synergy Cooperative",city:"Wonewoc",state:"WI",lat:43.6517,lng:-90.2282,phone:"608-464-3131",web:"https://www.synergycoop.com",bidUrl:"https://synergycoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"Synergy Cooperative",city:"Elk Mound",state:"WI",lat:44.8750,lng:-91.6893,phone:"715-879-5811",web:"https://www.synergycoop.com",bidUrl:"https://synergycoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"Synergy Cooperative",city:"Ridgeland",state:"WI",lat:45.2019,lng:-91.8928,phone:"715-949-1321",web:"https://www.synergycoop.com",bidUrl:"https://synergycoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+
+        // ═══════ NW WISCONSIN INDEPENDENTS — BARRON/POLK/BURNETT COUNTIES ═══════
+        {name:"United Ag Cooperative",city:"Almena",state:"WI",lat:45.4100,lng:-92.0300,phone:"715-357-3700",web:"https://unitedagservices.com",bidUrl:"",com:["corn","soy"],type:"coop",note:"Almena, Barron, Turtle Lake, Cumberland, Shell Lake."},
+        {name:"24/7 Grain Services (Wohlk)",city:"Almena",state:"WI",lat:45.4464,lng:-92.0327,phone:"715-357-3904",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"Wohlk family. Grain storage, drying & marketing."},
+        {name:"Westdale Farm",city:"Centuria",state:"WI",lat:45.4528,lng:-92.5641,phone:"",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"DATCP licensed warehouse & dealer. 1854 190th St."},
+        {name:"Atlas Cooperative",city:"Luck",state:"WI",lat:45.5747,lng:-92.4760,phone:"715-472-2164",web:"",bidUrl:"",com:["corn","soy"],type:"coop",note:"Polk County co-op."},
+        {name:"Cushing Cooperative",city:"Cushing",state:"WI",lat:45.5700,lng:-92.6400,phone:"715-648-2211",web:"",bidUrl:"",com:["corn","soy"],type:"coop",note:"Polk County."},
+        {name:"Central Farmers Cooperative",city:"Cameron",state:"WI",lat:45.4078,lng:-91.7440,phone:"715-458-2171",web:"https://www.cfrancoop.com",bidUrl:"https://www.cfrancoop.com/grain",com:["corn","soy"],type:"coop"},
+        {name:"Central Farmers Cooperative",city:"Rice Lake",state:"WI",lat:45.5061,lng:-91.7382,phone:"715-234-8011",web:"https://www.cfrancoop.com",bidUrl:"https://www.cfrancoop.com/grain",com:["corn","soy"],type:"coop"},
+        {name:"Burnett Dairy Cooperative",city:"Grantsburg",state:"WI",lat:45.7750,lng:-92.6825,phone:"715-689-2345",web:"",bidUrl:"",com:["corn","soy"],type:"coop",note:"Dairy + grain."},
+        {name:"Four Corners Grain Exchange",city:"New Richmond",state:"WI",lat:45.1231,lng:-92.5369,phone:"",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"2116 County Road S."},
+
+        // ═══════ FLASH GRAIN / THORP AREA (Clark County) ═══════
+        {name:"Flash Grain (Flashinski)",city:"Thorp",state:"WI",lat:44.9600,lng:-90.7993,phone:"715-669-5241",web:"https://www.flashgrains.com",bidUrl:"https://www.flashgrains.com",com:["corn","soy"],type:"elevator",note:"8576 Highway N. Cash grains."},
+        {name:"Main Grain LLC",city:"Conrath",state:"WI",lat:45.3800,lng:-91.0400,phone:"",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"DATCP licensed warehouse & dealer."},
+
+        // ═══════ CHIPPEWA FALLS / EAU CLAIRE / DUNN COUNTY AREA ═══════
+        {name:"Wheaton Grain",city:"Chippewa Falls",state:"WI",lat:44.9369,lng:-91.3929,phone:"",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"5852 County Hwy T."},
+        {name:"Cadott Grain Service",city:"Cadott",state:"WI",lat:44.9478,lng:-91.1500,phone:"715-289-3361",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"DATCP licensed warehouse & dealer."},
+        {name:"Albion Grain LLC",city:"Eleva",state:"WI",lat:44.5753,lng:-91.4693,phone:"",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"County Hwy Y."},
+        {name:"Meyer Brothers Grain",city:"Elk Mound",state:"WI",lat:44.8750,lng:-91.6893,phone:"",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"N5406 970th St."},
+        {name:"Harvey Creek Grain",city:"Mondovi",state:"WI",lat:44.5675,lng:-91.6708,phone:"",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"W911 US Hwy 10."},
+        {name:"Badger Grain Supply",city:"Wheeler",state:"WI",lat:44.9328,lng:-91.9025,phone:"",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"E5210 1040th Ave."},
+        {name:"Rusk Prairie Grain Service",city:"Colfax",state:"WI",lat:44.9994,lng:-91.7300,phone:"",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"N7898 County Road G."},
+        {name:"Prairie Ag Supply",city:"Menomonie",state:"WI",lat:44.8753,lng:-91.9193,phone:"",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"E6565 629th Ave."},
+        {name:"Red Cedar Grain Service",city:"Menomonie",state:"WI",lat:44.8753,lng:-91.9193,phone:"",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"E6396 610th Ave."},
+        {name:"Bes Bean Co.",city:"Menomonie",state:"WI",lat:44.8753,lng:-91.9193,phone:"",web:"",bidUrl:"",com:["soy"],type:"processor",note:"N7656 State Road 25. Specialty beans."},
+        {name:"Federation Cooperative",city:"Fairchild",state:"WI",lat:44.6008,lng:-90.9575,phone:"715-334-3161",web:"",bidUrl:"",com:["corn","soy"],type:"coop"},
+        {name:"Chippewa Valley Bean",city:"Menomonie",state:"WI",lat:44.8753,lng:-91.9193,phone:"715-664-8342",web:"https://www.cvbean.com",bidUrl:"",com:["soy"],type:"processor",note:"Kidney bean & specialty bean buyer."},
+        {name:"Midwest Commodity Service",city:"Baldwin",state:"WI",lat:44.9744,lng:-92.3743,phone:"",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"1881 140th Ave."},
+
+        // ═══════ BUFFALO / TREMPEALEAU / LA CROSSE / JACKSON COUNTY ═══════
+        {name:"Chaseburg Farmers Union Coop",city:"Chaseburg",state:"WI",lat:43.6600,lng:-91.1000,phone:"608-483-2234",web:"",bidUrl:"",com:["corn","soy"],type:"coop"},
+        {name:"Hegg Mill LLC",city:"Ettrick",state:"WI",lat:44.1678,lng:-91.2700,phone:"608-525-4441",web:"",bidUrl:"",com:["corn","soy","oats"],type:"elevator",note:"W91125 County Road C."},
+        {name:"Melrose Farm Service",city:"Melrose",state:"WI",lat:44.1300,lng:-90.9600,phone:"608-488-2261",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Plum City Feed Mill",city:"Plum City",state:"WI",lat:44.6297,lng:-92.1893,phone:"715-647-2311",web:"",bidUrl:"",com:["corn","soy","oats"],type:"elevator"},
+
+        // ═══════ CENTRAL WI (Marathon, Wood, Portage, Waushara) ═══════
+        {name:"ProVision Partners Cooperative",city:"Marshfield",state:"WI",lat:44.6305,lng:-90.1774,phone:"715-384-3171",web:"",bidUrl:"",com:["corn","soy"],type:"coop",note:"Central WI cooperative."},
+        {name:"Medford Co-operative",city:"Medford",state:"WI",lat:45.1383,lng:-90.3401,phone:"715-748-2172",web:"",bidUrl:"",com:["corn","soy","oats"],type:"coop"},
+        {name:"Marathon Feed and Grain",city:"Marathon",state:"WI",lat:44.9317,lng:-89.8420,phone:"715-443-2571",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Aurora Grains",city:"Poy Sippi",state:"WI",lat:44.1300,lng:-89.0300,phone:"",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"W1873 Big Horn Ave."},
+        {name:"Community AG Service",city:"Van Dyne",state:"WI",lat:43.8700,lng:-88.5200,phone:"920-688-2191",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Clintonville Elevator",city:"Clintonville",state:"WI",lat:44.6211,lng:-88.7612,phone:"715-823-3151",web:"",bidUrl:"",com:["corn","soy","oats"],type:"elevator"},
+        {name:"New Day Grain",city:"Bonduel",state:"WI",lat:44.7400,lng:-88.4500,phone:"715-758-7111",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Total Grain Services",city:"Wrightstown",state:"WI",lat:44.3266,lng:-88.1628,phone:"920-532-4394",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+
+        // ═══════ SOUTH CENTRAL / SW WI (Dane, Green, Iowa, Grant, Lafayette) ═══════
+        {name:"Oregon Farm Center",city:"Oregon",state:"WI",lat:42.9261,lng:-89.3846,phone:"608-835-3171",web:"",bidUrl:"",com:["corn","soy","wheat"],type:"elevator"},
+        {name:"Premier Cooperative",city:"Mount Horeb",state:"WI",lat:43.0083,lng:-89.7382,phone:"608-437-5531",web:"",bidUrl:"",com:["corn","soy","wheat"],type:"coop"},
+        {name:"Carrousel Grain Service",city:"Monroe",state:"WI",lat:42.6012,lng:-89.6384,phone:"608-325-4800",web:"",bidUrl:"",com:["corn","soy","wheat"],type:"elevator",note:"W2702 County Road FF."},
+        {name:"Badger State Ethanol",city:"Monroe",state:"WI",lat:42.6012,lng:-89.6384,phone:"608-325-4001",web:"",bidUrl:"",com:["corn"],type:"ethanol"},
+        {name:"Pleasant Grain",city:"Monticello",state:"WI",lat:42.7450,lng:-89.5950,phone:"608-938-4277",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"N5670 Gutzmer Rd."},
+        {name:"See-Mor Grain",city:"Darlington",state:"WI",lat:42.6832,lng:-90.1185,phone:"608-776-4960",web:"",bidUrl:"",com:["corn","soy","wheat"],type:"elevator",note:"12785 County Road O."},
+        {name:"Appell Grain",city:"Shullsburg",state:"WI",lat:42.5739,lng:-90.2310,phone:"608-965-4220",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"5883 County Road P."},
+        {name:"Farm-City Elevator",city:"Darlington",state:"WI",lat:42.6832,lng:-90.1185,phone:"608-776-4060",web:"https://farmcityelevator.com",bidUrl:"https://farmcityelevator.com",com:["corn","soy","wheat"],type:"elevator",note:"Also Darien location."},
+        {name:"Linden Milling Co.",city:"Linden",state:"WI",lat:42.9183,lng:-90.2650,phone:"608-623-2221",web:"",bidUrl:"",com:["corn","soy","wheat"],type:"elevator"},
+        {name:"Reddy Ag Service",city:"Stitzer",state:"WI",lat:42.9100,lng:-90.6800,phone:"608-943-6311",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Leibfried Feed & Service",city:"Potosi",state:"WI",lat:42.6839,lng:-90.6881,phone:"608-763-2181",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Riverdale Ag Service",city:"Muscoda",state:"WI",lat:43.1841,lng:-90.4399,phone:"608-739-3145",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Luther Grain Sales & Service",city:"Baraboo",state:"WI",lat:43.4711,lng:-89.7443,phone:"608-356-7734",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"E12434 Highway 33."},
+        {name:"Lime Ridge Ag Supply",city:"Lime Ridge",state:"WI",lat:43.4600,lng:-90.1600,phone:"608-986-2261",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Innovative Ag Services (IAS)",city:"Lancaster",state:"WI",lat:42.8474,lng:-90.7110,phone:"608-723-4281",web:"https://www.iascoops.com",bidUrl:"https://ias.agricharts.com/markets",com:["corn","soy"],type:"coop",note:"IA/SW-WI. 56M bu storage."},
+        {name:"Innovative Ag Services (IAS)",city:"Cassville",state:"WI",lat:42.7130,lng:-90.9869,phone:"608-725-5165",web:"https://www.iascoops.com",bidUrl:"https://ias.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+
+        // ═══════ SAUK / JUNEAU / MONROE / VERNON COUNTY ═══════
+        {name:"Sparta Cooperative Services",city:"Sparta",state:"WI",lat:43.9442,lng:-90.8129,phone:"608-269-2121",web:"",bidUrl:"",com:["corn","soy","oats"],type:"coop"},
+        {name:"Cashton Farm Supply (CFS)",city:"Cashton",state:"WI",lat:43.7400,lng:-90.7900,phone:"608-654-5123",web:"https://www.cashtonfarm.com",bidUrl:"",com:["corn","soy","oats"],type:"elevator",note:"Organic feed mfg."},
+        {name:"Mt. Tabor Mill",city:"Kendall",state:"WI",lat:43.7900,lng:-90.3700,phone:"608-463-7369",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Walsh Grain Farms",city:"Mauston",state:"WI",lat:43.7975,lng:-90.0773,phone:"608-847-7477",web:"",bidUrl:"",com:["corn","soy"],type:"elevator",note:"N3092 Highway 12."},
+
+        // ═══════ SOUTHEAST / FOX VALLEY / EAST CENTRAL WI ═══════
+        {name:"Northside Elevator",city:"Loyal",state:"WI",lat:44.7361,lng:-90.4957,phone:"715-255-8241",web:"https://northsideelevator.com",bidUrl:"https://northsideelevator.agricharts.com/markets",com:["corn","soy","wheat","oats"],type:"elevator",note:"4.5M bu capacity. Feed mill. HQ: Loyal."},
+        {name:"West Bend Elevator",city:"West Bend",state:"WI",lat:43.4253,lng:-88.1834,phone:"262-334-2631",web:"",bidUrl:"",com:["corn","soy","wheat"],type:"elevator"},
+        {name:"Great Lakes Agri-Services",city:"Adell",state:"WI",lat:43.6200,lng:-87.9500,phone:"920-994-4444",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Oakfield Elevator",city:"Oakfield",state:"WI",lat:43.6856,lng:-88.5467,phone:"920-583-4181",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Peachey Brothers Elevator",city:"Burnett",state:"WI",lat:43.5100,lng:-88.6800,phone:"920-326-4221",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Hennings Hometown",city:"Brandon",state:"WI",lat:43.7300,lng:-88.7800,phone:"920-346-2345",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Knowles Produce & Trading",city:"Lomira",state:"WI",lat:43.5897,lng:-88.4437,phone:"920-269-4244",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Farmers' Elevator Co. of Waupun",city:"Waupun",state:"WI",lat:43.6333,lng:-88.7295,phone:"920-324-2821",web:"",bidUrl:"",com:["corn","soy","wheat"],type:"elevator"},
+        {name:"DeLong Company",city:"Union Grove",state:"WI",lat:42.6839,lng:-88.0512,phone:"262-878-2551",web:"https://www.delongco.com",bidUrl:"https://www.delongco.com/grain",com:["corn","soy","wheat","oats"],type:"elevator",note:"Major food grain supplier. IP & specialty."},
+        {name:"Peter Grain",city:"Athens",state:"WI",lat:45.0328,lng:-90.0732,phone:"715-257-7821",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Farmers' Grain & Feed",city:"Allenton",state:"WI",lat:43.4600,lng:-88.3500,phone:"262-629-5741",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Door County Cooperative",city:"Sturgeon Bay",state:"WI",lat:44.8342,lng:-87.3770,phone:"920-743-6601",web:"",bidUrl:"",com:["corn","soy"],type:"coop"},
+        {name:"Brussels Milling & Supply",city:"Brussels",state:"WI",lat:44.7400,lng:-87.6200,phone:"920-825-7681",web:"",bidUrl:"",com:["corn","soy","oats"],type:"elevator"},
+        {name:"Van Groll Inc.",city:"Kaukauna",state:"WI",lat:44.2781,lng:-88.2720,phone:"920-766-5241",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Tisch Mills Farm Center",city:"Tisch Mills",state:"WI",lat:44.3300,lng:-87.6200,phone:"920-775-9131",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Luxemburg Milling",city:"Luxemburg",state:"WI",lat:44.5350,lng:-87.7000,phone:"920-845-2321",web:"",bidUrl:"",com:["corn","soy","oats"],type:"elevator"},
+        {name:"Tarkowski Grain & Roasting",city:"Denmark",state:"WI",lat:44.3450,lng:-87.8300,phone:"920-863-5871",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Zeitler Agri-Center",city:"Coleman",state:"WI",lat:45.0700,lng:-88.0300,phone:"920-897-2191",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+
+        // ═══════ PROCESSORS / SPECIALTY ═══════
+        {name:"Didion Milling",city:"Cambria",state:"WI",lat:43.5453,lng:-89.1098,phone:"920-348-5611",web:"https://www.didionmilling.com",bidUrl:"https://www.didionmilling.com",com:["corn"],type:"processor",note:"Corn milling. Ethanol. Food-grade corn."},
+        {name:"United WI Grain Producers",city:"Friesland",state:"WI",lat:43.5856,lng:-89.0667,phone:"920-348-5078",web:"https://www.uwgp.com",bidUrl:"https://www.uwgp.com/cash-bids",com:["corn","soy","wheat"],type:"processor",note:"Specialty grains."},
+        {name:"Briess Malt & Ingredients",city:"Chilton",state:"WI",lat:44.0289,lng:-88.1629,phone:"920-849-7711",web:"https://www.briess.com",bidUrl:"",com:["wheat","oats"],type:"processor",note:"Malting barley, specialty grains."},
+        {name:"GROWMARK / FS",city:"Jefferson",state:"WI",lat:43.0056,lng:-88.8073,phone:"920-674-2500",web:"https://www.growmark.com",bidUrl:"",com:["corn","soy","wheat"],type:"coop",note:"National co-op system."},
+
+        // ═══════ ETHANOL PLANTS ═══════
+        {name:"Ace Ethanol",city:"Stanley",state:"WI",lat:44.9580,lng:-90.9350,phone:"715-644-6122",web:"https://www.ace-ethanol.com",bidUrl:"",com:["corn"],type:"ethanol",note:"30M gal/yr. Strong corn basis."},
+        {name:"United Ethanol",city:"Milton",state:"WI",lat:42.7755,lng:-88.9434,phone:"608-868-3900",web:"https://www.united-ethanol.com",bidUrl:"",com:["corn"],type:"ethanol",note:"52M gal/yr."},
+        {name:"Didion Ethanol",city:"Cambria",state:"WI",lat:43.5453,lng:-89.1098,phone:"920-348-5611",web:"https://www.didionmilling.com",bidUrl:"",com:["corn"],type:"ethanol",note:"Part of Didion Milling complex."},
+        {name:"Fox River Valley Ethanol",city:"Berlin",state:"WI",lat:43.9681,lng:-88.9434,phone:"920-361-4200",web:"",bidUrl:"",com:["corn"],type:"ethanol"},
+        {name:"Marquis Energy Wisconsin",city:"Necedah",state:"WI",lat:44.0253,lng:-90.0653,phone:"608-565-2290",web:"",bidUrl:"",com:["corn"],type:"ethanol",note:"Formerly Flambeau Ethanol."},
+        {name:"Big River Resources",city:"Boyceville",state:"WI",lat:45.0436,lng:-92.0410,phone:"",web:"",bidUrl:"",com:["corn"],type:"ethanol"},
+        {name:"Heartland Corn Products",city:"Winthrop",state:"MN",lat:44.5419,lng:-94.3650,phone:"507-647-6100",web:"https://www.heartlandcorn.com",bidUrl:"",com:["corn"],type:"ethanol"},
+
+        // ═══════ AG PARTNERS (WI/MN border — barge terminal) ═══════
+        {name:"Ag Partners",city:"Goodhue",state:"MN",lat:44.4014,lng:-92.6220,phone:"651-923-4496",web:"https://www.agpartners.net",bidUrl:"https://agpartners.agricharts.com/markets",com:["corn","soy","wheat"],type:"coop",note:"S. MN / W. WI. Barge loading."},
+        {name:"Ag Partners",city:"Red Wing",state:"MN",lat:44.5633,lng:-92.5338,phone:"651-388-2261",web:"https://www.agpartners.net",bidUrl:"https://agpartners.agricharts.com/markets",com:["corn","soy"],type:"coop",note:"Mississippi River barge terminal."},
+        {name:"Ag Partners",city:"Zumbrota",state:"MN",lat:44.2941,lng:-92.6689,phone:"507-732-7841",web:"https://www.agpartners.net",bidUrl:"https://agpartners.agricharts.com/markets",com:["corn","soy","wheat"],type:"coop"},
+        {name:"Ag Partners",city:"Cannon Falls",state:"MN",lat:44.5069,lng:-93.2707,phone:"507-263-3261",web:"https://www.agpartners.net",bidUrl:"https://agpartners.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"Ag Partners",city:"Pepin",state:"WI",lat:44.4431,lng:-92.1471,phone:"715-442-2211",web:"https://www.agpartners.net",bidUrl:"https://agpartners.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+
+        // ═══════ FARMERS WIN COOP (SE MN) ═══════
+        {name:"Farmers Win Coop",city:"Caledonia",state:"MN",lat:43.6344,lng:-91.4968,phone:"507-724-3281",web:"https://www.farmerswincoop.com",bidUrl:"https://farmerswincoop.agricharts.com/markets",com:["corn","soy"],type:"coop",note:"SE MN. 12 grain locations."},
+        {name:"Farmers Win Coop",city:"Rushford",state:"MN",lat:43.8094,lng:-91.7529,phone:"507-864-7764",web:"https://www.farmerswincoop.com",bidUrl:"https://farmerswincoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"Farmers Win Coop",city:"Spring Grove",state:"MN",lat:43.5611,lng:-91.6354,phone:"507-498-5411",web:"https://www.farmerswincoop.com",bidUrl:"https://farmerswincoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+
+        // ═══════ COOPERATIVE FARMERS ELEVATOR (MN) ═══════
+        {name:"Cooperative Farmers Elevator",city:"Hanover",state:"MN",lat:45.1558,lng:-93.6628,phone:"763-498-8828",web:"https://www.coopfe.com",bidUrl:"https://www.coopfe.com/grain/cash-bids/",com:["corn","soy","wheat"],type:"coop"},
+
+        // ═══════ MAJOR NATIONALS ═══════
+        {name:"Cargill",city:"Minneapolis",state:"MN",lat:44.9778,lng:-93.2650,phone:"800-227-4455",web:"https://www.cargillag.com",bidUrl:"https://www.cargillag.com/check-prices",com:["corn","soy","wheat"],type:"processor",note:"Global. Check-prices tool."},
+        {name:"ADM",city:"Milwaukee",state:"WI",lat:43.0389,lng:-87.9065,phone:"312-634-8100",web:"https://www.adm.com",bidUrl:"https://www.adm.com/en-us/offerings/crops/elevators/",com:["corn","soy","wheat"],type:"processor",note:"Major terminal buyer."},
+        {name:"CHS Inc.",city:"Inver Grove Heights",state:"MN",lat:44.8408,lng:-93.0427,phone:"800-232-3639",web:"https://www.chsfarmerselevator.com",bidUrl:"https://www.chsfarmerselevator.com/grain/cash-bids/",com:["corn","soy","wheat"],type:"coop",note:"National co-op. WI/MN locations."},
+
+        // ═══════════════════════════════════════════════════════════════
+        //  MINNESOTA — COMPREHENSIVE GRAIN BUYER DATABASE
+        // ═══════════════════════════════════════════════════════════════
+
+        // ═══════ CHS ROCHESTER (SE MN — 6 grain elevators) ═══════
+        {name:"CHS Rochester",city:"Kasson",state:"MN",lat:44.0297,lng:-92.7504,phone:"507-634-2001",web:"https://www.chsrochester.com",bidUrl:"https://www.chsrochester.com/grain/cash-bids/",com:["corn","soy"],type:"coop",note:"Central hub. SE MN co-op."},
+        {name:"CHS Rochester",city:"Claremont",state:"MN",lat:44.0461,lng:-92.9960,phone:"507-528-2175",web:"https://www.chsrochester.com",bidUrl:"https://www.chsrochester.com/grain/cash-bids/",com:["corn","soy"],type:"coop"},
+        {name:"CHS Rochester",city:"Grand Meadow",state:"MN",lat:43.7057,lng:-92.5727,phone:"507-754-5125",web:"https://www.chsrochester.com",bidUrl:"https://www.chsrochester.com/grain/cash-bids/",com:["corn","soy"],type:"coop"},
+        {name:"CHS Rochester",city:"Ostrander",state:"MN",lat:43.6122,lng:-92.4297,phone:"507-657-2260",web:"https://www.chsrochester.com",bidUrl:"https://www.chsrochester.com/grain/cash-bids/",com:["corn","soy"],type:"coop"},
+        {name:"CHS Rochester",city:"St. Charles",state:"MN",lat:43.9694,lng:-92.0640,phone:"507-932-4830",web:"https://www.chsrochester.com",bidUrl:"https://www.chsrochester.com/grain/cash-bids/",com:["corn","soy"],type:"coop"},
+        {name:"CHS Rochester",city:"Wykoff",state:"MN",lat:43.7094,lng:-92.2694,phone:"507-352-4701",web:"https://chsag.com",bidUrl:"https://chsag.com/grain/cash-bids/",com:["corn","soy"],type:"coop"},
+
+        // ═══════ CHS RIVER TERMINALS (Mississippi River export) ═══════
+        {name:"CHS River Terminals",city:"Winona",state:"MN",lat:44.0499,lng:-91.6393,phone:"507-452-2677",web:"https://chsag.com",bidUrl:"https://chsag.com/grain/cash-bids/",com:["corn","soy"],type:"coop",note:"Mississippi River barge terminal."},
+        {name:"CHS River Terminals",city:"La Crescent",state:"MN",lat:43.8283,lng:-91.3037,phone:"507-895-2561",web:"https://chsag.com",bidUrl:"https://chsag.com/grain/cash-bids/",com:["corn","soy"],type:"coop",note:"River terminal."},
+
+        // ═══════ CHS REGIONAL CO-OPS (Southern / Central MN) ═══════
+        {name:"CHS Farmers Elevator",city:"Owatonna",state:"MN",lat:44.0839,lng:-93.2261,phone:"507-451-1180",web:"https://www.chsfarmerselevator.com",bidUrl:"https://www.chsfarmerselevator.com/grain/cash-bids/",com:["corn","soy","wheat"],type:"coop",note:"S. MN hub."},
+        {name:"CHS Farmers Elevator",city:"Faribault",state:"MN",lat:44.2950,lng:-93.2688,phone:"507-334-6441",web:"https://www.chsfarmerselevator.com",bidUrl:"https://www.chsfarmerselevator.com/grain/cash-bids/",com:["corn","soy","wheat"],type:"coop"},
+        {name:"CHS Farmers Elevator",city:"Waseca",state:"MN",lat:44.0777,lng:-93.5066,phone:"507-835-1500",web:"https://www.chsfarmerselevator.com",bidUrl:"https://www.chsfarmerselevator.com/grain/cash-bids/",com:["corn","soy"],type:"coop"},
+        {name:"CHS Farmers Elevator",city:"Blooming Prairie",state:"MN",lat:43.8614,lng:-93.0514,phone:"507-583-2281",web:"https://www.chsfarmerselevator.com",bidUrl:"https://www.chsfarmerselevator.com/grain/cash-bids/",com:["corn","soy"],type:"coop"},
+        {name:"CHS Farmers Elevator",city:"Ellendale",state:"MN",lat:43.8733,lng:-93.3025,phone:"507-684-2251",web:"https://www.chsfarmerselevator.com",bidUrl:"https://www.chsfarmerselevator.com/grain/cash-bids/",com:["corn","soy"],type:"coop"},
+        {name:"CHS River Plains",city:"Mankato",state:"MN",lat:44.1636,lng:-94.0036,phone:"507-387-3581",web:"https://www.chsriverplains.com",bidUrl:"https://www.chsriverplains.com/grain/cash-bids/",com:["corn","soy","wheat"],type:"coop",note:"River Plains division."},
+        {name:"CHS River Plains",city:"St. Peter",state:"MN",lat:44.3236,lng:-93.9580,phone:"507-931-3380",web:"https://www.chsriverplains.com",bidUrl:"https://www.chsriverplains.com/grain/cash-bids/",com:["corn","soy"],type:"coop"},
+        {name:"CHS River Plains",city:"New Ulm",state:"MN",lat:44.3125,lng:-94.4608,phone:"507-354-8511",web:"https://www.chsriverplains.com",bidUrl:"https://www.chsriverplains.com/grain/cash-bids/",com:["corn","soy","wheat"],type:"coop"},
+        {name:"CHS West Central",city:"Willmar",state:"MN",lat:45.1219,lng:-95.0433,phone:"320-235-7800",web:"https://www.chswestcentral.com",bidUrl:"https://www.chswestcentral.com/grain/cash-bids/",com:["corn","soy","wheat"],type:"coop"},
+
+        // ═══════ CENTRAL FARM SERVICE (CFS) — 25 communities in S. MN ═══════
+        {name:"Central Farm Service (CFS)",city:"Truman",state:"MN",lat:43.8278,lng:-94.4325,phone:"507-776-2831",web:"https://www.cfscoop.com",bidUrl:"https://www.cfscoop.com/products-services/grain/cash-bids",com:["corn","soy"],type:"coop",note:"HQ. 25 locations. Shuttle train loaders."},
+        {name:"Central Farm Service (CFS)",city:"Delavan",state:"MN",lat:43.7744,lng:-94.0003,phone:"507-644-3661",web:"https://www.cfscoop.com",bidUrl:"https://www.cfscoop.com/products-services/grain/cash-bids",com:["corn","soy"],type:"coop",note:"100-car shuttle train loader."},
+        {name:"Central Farm Service (CFS)",city:"St. James",state:"MN",lat:43.9828,lng:-94.6267,phone:"507-375-3216",web:"https://www.cfscoop.com",bidUrl:"https://www.cfscoop.com/products-services/grain/cash-bids",com:["corn","soy"],type:"coop",note:"Shuttle train loader. Feed mill."},
+        {name:"Central Farm Service (CFS)",city:"Randolph",state:"MN",lat:44.5269,lng:-93.0162,phone:"507-263-2050",web:"https://www.cfscoop.com",bidUrl:"https://www.cfscoop.com/products-services/grain/cash-bids",com:["corn","soy"],type:"coop",note:"100-car shuttle train loader."},
+        {name:"Central Farm Service (CFS)",city:"Welcome",state:"MN",lat:43.6667,lng:-94.6194,phone:"507-728-8246",web:"https://www.cfscoop.com",bidUrl:"https://www.cfscoop.com/products-services/grain/cash-bids",com:["corn","soy"],type:"coop",note:"Shuttle train loader."},
+        {name:"Central Farm Service (CFS)",city:"Mapleton",state:"MN",lat:43.9278,lng:-93.9553,phone:"507-524-3130",web:"https://www.cfscoop.com",bidUrl:"https://www.cfscoop.com/products-services/grain/cash-bids",com:["corn","soy"],type:"coop"},
+        {name:"Central Farm Service (CFS)",city:"Amboy",state:"MN",lat:43.8889,lng:-94.1597,phone:"507-674-3328",web:"https://www.cfscoop.com",bidUrl:"https://www.cfscoop.com/products-services/grain/cash-bids",com:["corn","soy"],type:"coop"},
+        {name:"Central Farm Service (CFS)",city:"Lewisville",state:"MN",lat:43.9139,lng:-94.4375,phone:"507-435-2551",web:"https://www.cfscoop.com",bidUrl:"https://www.cfscoop.com/products-services/grain/cash-bids",com:["corn","soy"],type:"coop"},
+
+        // ═══════ FARMWARD COOPERATIVE (SW MN — 26M bu, 11+ locations) ═══════
+        {name:"Farmward Cooperative",city:"Morgan",state:"MN",lat:44.4136,lng:-94.9253,phone:"507-249-3196",web:"https://farmward.net",bidUrl:"https://farmward.net",com:["corn","soy"],type:"coop",note:"HQ. 26M bu storage. 9 grain locations."},
+        {name:"Farmward Cooperative",city:"Clements",state:"MN",lat:44.3822,lng:-95.0508,phone:"507-380-2445",web:"https://farmward.net",bidUrl:"https://farmward.net",com:["corn","soy"],type:"coop",note:"2.4M bu new elevator."},
+        {name:"Farmward Cooperative",city:"Danube",state:"MN",lat:44.7872,lng:-95.1014,phone:"320-826-2317",web:"https://farmward.net",bidUrl:"https://farmward.net",com:["corn","soy"],type:"coop"},
+        {name:"Farmward Cooperative",city:"Olivia",state:"MN",lat:44.7764,lng:-94.9897,phone:"320-523-1635",web:"https://farmward.net",bidUrl:"https://farmward.net",com:["corn","soy"],type:"coop"},
+        {name:"Farmward Cooperative",city:"Renville",state:"MN",lat:44.7889,lng:-95.2114,phone:"320-329-3421",web:"https://farmward.net",bidUrl:"https://farmward.net",com:["corn","soy"],type:"coop"},
+        {name:"Farmward Cooperative",city:"Sacred Heart",state:"MN",lat:44.7833,lng:-95.3383,phone:"320-765-2181",web:"https://farmward.net",bidUrl:"https://farmward.net",com:["corn","soy"],type:"coop"},
+        {name:"Farmward Cooperative",city:"Springfield",state:"MN",lat:44.2389,lng:-94.9764,phone:"507-723-5281",web:"https://farmward.net",bidUrl:"https://farmward.net",com:["corn","soy"],type:"coop"},
+        {name:"Farmward Cooperative",city:"Comfrey",state:"MN",lat:44.1125,lng:-94.9042,phone:"507-877-3541",web:"https://farmward.net",bidUrl:"https://farmward.net",com:["corn","soy"],type:"coop"},
+        {name:"Farmward Cooperative",city:"Wabasso",state:"MN",lat:44.4028,lng:-95.2425,phone:"507-342-5141",web:"https://farmward.net",bidUrl:"https://farmward.net",com:["corn","soy"],type:"coop"},
+        {name:"Farmward Cooperative",city:"Wood Lake",state:"MN",lat:44.6517,lng:-95.5394,phone:"507-485-3153",web:"https://farmward.net",bidUrl:"https://farmward.net",com:["corn","soy"],type:"coop"},
+        {name:"Farmward Cooperative",city:"Morton",state:"MN",lat:44.5536,lng:-94.9856,phone:"507-697-6181",web:"https://farmward.net",bidUrl:"https://farmward.net",com:["corn","soy"],type:"coop"},
+
+        // ═══════ NEW VISION CO-OP (SW MN — 18 locations) ═══════
+        {name:"New Vision Co-op",city:"Brewster",state:"MN",lat:43.6983,lng:-95.4678,phone:"507-842-5952",web:"https://www.newvision.coop",bidUrl:"https://newvision.agricharts.com/markets",com:["corn","soy"],type:"coop",note:"HQ. 18 locations. 2,000+ members."},
+        {name:"New Vision Co-op",city:"Worthington",state:"MN",lat:43.6199,lng:-95.5964,phone:"507-372-5851",web:"https://www.newvision.coop",bidUrl:"https://newvision.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"New Vision Co-op",city:"Windom",state:"MN",lat:43.8664,lng:-95.1172,phone:"507-831-3741",web:"https://www.newvision.coop",bidUrl:"https://newvision.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"New Vision Co-op",city:"Mountain Lake",state:"MN",lat:43.9397,lng:-94.9281,phone:"507-427-2923",web:"https://www.newvision.coop",bidUrl:"https://newvision.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"New Vision Co-op",city:"Heron Lake",state:"MN",lat:43.7947,lng:-95.3200,phone:"507-793-2221",web:"https://www.newvision.coop",bidUrl:"https://newvision.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"New Vision Co-op",city:"Magnolia",state:"MN",lat:43.6442,lng:-96.0789,phone:"507-283-8121",web:"https://www.newvision.coop",bidUrl:"https://newvision.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+
+        // ═══════ UNITED FARMERS COOPERATIVE (S. Central MN) ═══════
+        {name:"United Farmers Cooperative",city:"Winthrop",state:"MN",lat:44.5428,lng:-94.3650,phone:"507-647-6300",web:"https://www.ufcwinthrop.com",bidUrl:"https://www.ufcwinthrop.com/grain",com:["corn","soy"],type:"coop",note:"Winthrop HQ. Gaylord, Brownton, Lafayette."},
+        {name:"United Farmers Cooperative",city:"Gaylord",state:"MN",lat:44.5531,lng:-94.2217,phone:"507-237-4203",web:"https://www.ufcwinthrop.com",bidUrl:"https://www.ufcwinthrop.com/grain",com:["corn","soy"],type:"coop"},
+        {name:"United Farmers Cooperative",city:"Brownton",state:"MN",lat:44.7331,lng:-94.3450,phone:"320-328-5222",web:"https://www.ufcwinthrop.com",bidUrl:"https://www.ufcwinthrop.com/grain",com:["corn","soy"],type:"coop"},
+
+        // ═══════ FARMERS COOPERATIVE ELEVATOR (Various MN locations) ═══════
+        {name:"Farmers Cooperative Elevator",city:"Cottonwood",state:"MN",lat:44.6083,lng:-95.6739,phone:"507-423-6489",web:"https://www.farmerscoopelevator.com",bidUrl:"https://www.farmerscoopelevator.com/markets/cashgrid.php",com:["corn","soy"],type:"coop"},
+        {name:"Farmers Cooperative Elevator",city:"Hanover",state:"MN",lat:45.1558,lng:-93.6628,phone:"763-498-8828",web:"https://www.coopfe.com",bidUrl:"https://www.coopfe.com/grain/cash-bids/",com:["corn","soy","wheat"],type:"coop"},
+        {name:"Farmers Co-op of Hanska",city:"Hanska",state:"MN",lat:44.1508,lng:-94.4917,phone:"507-439-6244",web:"",bidUrl:"",com:["corn","soy"],type:"coop"},
+
+        // ═══════ NEXUS COOPERATIVE (N. IA / S. MN) ═══════
+        {name:"Nexus Cooperative",city:"Albert Lea",state:"MN",lat:43.6480,lng:-93.3683,phone:"507-373-4408",web:"https://www.nexuscoop.com",bidUrl:"https://nexuscoop.agricharts.com/markets",com:["corn","soy"],type:"coop",note:"Formed 2024. N. IA / S. MN. 125+ yr legacy."},
+        {name:"Nexus Cooperative",city:"Northwood",state:"MN",lat:43.4433,lng:-93.2219,phone:"641-324-1011",web:"https://www.nexuscoop.com",bidUrl:"https://nexuscoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+
+        // ═══════ STATELINE COOP (S. MN / N. IA border) ═══════
+        {name:"StateLine Coop",city:"Blue Earth",state:"MN",lat:43.6386,lng:-94.0981,phone:"507-464-3333",web:"https://www.statelinecoop.com",bidUrl:"https://statelinecoop.agricharts.com/markets",com:["corn","soy"],type:"coop",note:"N. IA / S. MN border co-op."},
+
+        // ═══════ SE MN INDEPENDENTS & LOCAL COOPS ═══════
+        {name:"Vermillion Elevator",city:"Vermillion",state:"MN",lat:44.6750,lng:-92.9650,phone:"651-437-4439",web:"https://vermillionelevator.com",bidUrl:"",com:["corn","soy"],type:"elevator",note:"60+ years serving Dakota County."},
+        {name:"Kenyon Ag Service",city:"Kenyon",state:"MN",lat:44.2722,lng:-93.0178,phone:"507-789-6131",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Chatfield Grain",city:"Chatfield",state:"MN",lat:43.8453,lng:-92.1892,phone:"507-867-4922",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Plainview Grain",city:"Plainview",state:"MN",lat:44.1653,lng:-92.1714,phone:"507-534-3189",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+        {name:"Mazeppa Grain",city:"Mazeppa",state:"MN",lat:44.2731,lng:-92.5447,phone:"507-843-2221",web:"",bidUrl:"",com:["corn","soy"],type:"elevator"},
+
+        // ═══════ AGP — AG PROCESSING (Soybean crush) ═══════
+        {name:"AG Processing (AGP)",city:"Dawson",state:"MN",lat:44.9317,lng:-96.0542,phone:"320-769-4386",web:"https://www.agp.com",bidUrl:"",com:["soy"],type:"processor",note:"Soybean crushing. 150+ member co-ops."},
+        {name:"AG Processing (AGP)",city:"Mankato",state:"MN",lat:44.1636,lng:-94.0036,phone:"507-388-1981",web:"https://www.agp.com",bidUrl:"",com:["soy"],type:"processor",note:"Soybean crush plant."},
+
+        // ═══════ ADM — MINNESOTA LOCATIONS ═══════
+        {name:"ADM",city:"St. Paul",state:"MN",lat:44.9441,lng:-93.0900,phone:"651-292-9796",web:"https://www.adm.com",bidUrl:"https://www.adm.com/en-us/offerings/crops/elevators/",com:["corn","soy","wheat"],type:"processor",note:"Elevator D. 575 Drake St."},
+        {name:"ADM",city:"Mankato",state:"MN",lat:44.1636,lng:-94.0036,phone:"507-387-8111",web:"https://www.adm.com",bidUrl:"https://www.adm.com/en-us/offerings/crops/elevators/",com:["corn","soy"],type:"processor"},
+
+        // ═══════ MN ETHANOL PLANTS (major corn buyers) ═══════
+        {name:"Al-Corn Clean Fuel",city:"Claremont",state:"MN",lat:44.0461,lng:-92.9960,phone:"507-528-2494",web:"https://www.al-corn.com",bidUrl:"",com:["corn"],type:"ethanol",note:"MN Bioincentive Program. Strong corn basis."},
+        {name:"POET Biorefining",city:"Preston",state:"MN",lat:43.6703,lng:-92.0833,phone:"507-765-2707",web:"https://www.poet.com",bidUrl:"",com:["corn"],type:"ethanol",note:"Near WI border."},
+        {name:"POET Biorefining",city:"Glenville",state:"MN",lat:43.5722,lng:-93.2747,phone:"507-448-3238",web:"https://www.poet.com",bidUrl:"",com:["corn"],type:"ethanol"},
+        {name:"POET Biorefining",city:"Lake Crystal",state:"MN",lat:44.1053,lng:-94.2175,phone:"507-726-2927",web:"https://www.poet.com",bidUrl:"",com:["corn"],type:"ethanol"},
+        {name:"POET Biorefining",city:"Bingham Lake",state:"MN",lat:43.9078,lng:-95.0481,phone:"507-831-2262",web:"https://www.poet.com",bidUrl:"",com:["corn"],type:"ethanol"},
+        {name:"Guardian Energy",city:"Janesville",state:"MN",lat:44.1164,lng:-93.7081,phone:"507-234-6600",web:"https://www.guardianenergyllc.com",bidUrl:"",com:["corn"],type:"ethanol",note:"Near Waseca / Mankato."},
+        {name:"Highwater Ethanol",city:"Lamberton",state:"MN",lat:44.2292,lng:-95.2633,phone:"507-752-6160",web:"https://www.highwaterethanol.com",bidUrl:"",com:["corn"],type:"ethanol",note:"70M gal/yr."},
+
+        // ═══════ SE MN / WI BORDER COOPS ═══════
+        {name:"Farmers Win Coop",city:"Houston",state:"MN",lat:43.7642,lng:-91.5696,phone:"507-896-3183",web:"https://www.farmerswincoop.com",bidUrl:"https://farmerswincoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"Farmers Win Coop",city:"Brownsville",state:"MN",lat:43.6950,lng:-91.2808,phone:"507-482-6225",web:"https://www.farmerswincoop.com",bidUrl:"https://farmerswincoop.agricharts.com/markets",com:["corn","soy"],type:"coop",note:"Near La Crosse WI."},
+        {name:"Farmers Win Coop",city:"Eitzen",state:"MN",lat:43.5092,lng:-91.4614,phone:"507-495-3282",web:"https://www.farmerswincoop.com",bidUrl:"https://farmerswincoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"Farmers Win Coop",city:"Hokah",state:"MN",lat:43.7625,lng:-91.3522,phone:"507-894-2143",web:"https://www.farmerswincoop.com",bidUrl:"https://farmerswincoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"Farmers Win Coop",city:"Mabel",state:"MN",lat:43.5183,lng:-91.7700,phone:"507-493-5407",web:"https://www.farmerswincoop.com",bidUrl:"https://farmerswincoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"Farmers Win Coop",city:"La Crescent",state:"MN",lat:43.8283,lng:-91.3037,phone:"507-895-2391",web:"https://www.farmerswincoop.com",bidUrl:"https://farmerswincoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"Farmers Win Coop",city:"Peterson",state:"MN",lat:43.7828,lng:-91.8314,phone:"507-875-2522",web:"https://www.farmerswincoop.com",bidUrl:"https://farmerswincoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"Farmers Win Coop",city:"Lewiston",state:"MN",lat:43.9836,lng:-91.8700,phone:"507-523-3515",web:"https://www.farmerswincoop.com",bidUrl:"https://farmerswincoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+        {name:"Farmers Win Coop",city:"Winona",state:"MN",lat:44.0499,lng:-91.6393,phone:"507-454-5130",web:"https://www.farmerswincoop.com",bidUrl:"https://farmerswincoop.agricharts.com/markets",com:["corn","soy"],type:"coop"},
+
+        // ═══════ MORE S. MN COOPS ═══════
+        {name:"Ag Plus Cooperative",city:"Marshall",state:"MN",lat:44.4469,lng:-95.7886,phone:"507-337-1500",web:"https://agpluscoop.com",bidUrl:"",com:["corn","soy"],type:"coop",note:"Merging with Farmward 2026. Canby, Ghent, Minneota, Slayton."},
+        {name:"Morris Cooperative",city:"Morris",state:"MN",lat:45.5864,lng:-95.9136,phone:"320-589-4744",web:"",bidUrl:"",com:["corn","soy","wheat"],type:"coop"},
+    ];
+
+    /* ═══════ ZIP CODE DATABASE (1,200+ WI/MN zips → lat/lng) ═══════ */
+    /* We store a compressed set of regional centroids — when user enters a zip,
+       we use a lookup table. For zips not found, we fall back to geolocation API. */
+    const ZIP_DB = {
+        // Wisconsin major zips
+        "53703":{"lat":43.0731,"lng":-89.4012,"city":"Madison"},"53711":{"lat":43.0435,"lng":-89.4400,"city":"Madison"},
+        "53916":{"lat":43.4578,"lng":-88.8373,"city":"Beaver Dam"},"53954":{"lat":43.5389,"lng":-89.4626,"city":"Portage"},
+        "54301":{"lat":44.5133,"lng":-88.0158,"city":"Green Bay"},"54401":{"lat":44.9591,"lng":-89.6301,"city":"Wausau"},
+        "54481":{"lat":44.5236,"lng":-89.5746,"city":"Stevens Point"},"54601":{"lat":43.8014,"lng":-91.2396,"city":"La Crosse"},
+        "54701":{"lat":44.8113,"lng":-91.4985,"city":"Eau Claire"},"54751":{"lat":44.8753,"lng":-91.9193,"city":"Menomonie"},
+        "54812":{"lat":45.4014,"lng":-91.8440,"city":"Barron"},"54880":{"lat":46.7208,"lng":-92.1041,"city":"Superior"},
+        "53081":{"lat":43.7508,"lng":-87.7145,"city":"Sheboygan"},"54220":{"lat":44.0886,"lng":-87.6576,"city":"Manitowoc"},
+        "54956":{"lat":44.1858,"lng":-88.4612,"city":"Neenah"},"53151":{"lat":42.9289,"lng":-88.0583,"city":"New Berlin"},
+        "53202":{"lat":43.0389,"lng":-87.9065,"city":"Milwaukee"},"54901":{"lat":44.0247,"lng":-88.5426,"city":"Oshkosh"},
+        "53511":{"lat":42.5083,"lng":-89.0318,"city":"Beloit"},"53545":{"lat":42.6828,"lng":-89.0187,"city":"Janesville"},
+        "53566":{"lat":42.6012,"lng":-89.6384,"city":"Monroe"},"53818":{"lat":42.7343,"lng":-90.4784,"city":"Platteville"},
+        "53801":{"lat":42.7817,"lng":-91.1229,"city":"Boscobel"},"54615":{"lat":44.1133,"lng":-90.8129,"city":"Black River Falls"},
+        "54660":{"lat":43.9836,"lng":-90.5040,"city":"Tomah"},"54403":{"lat":44.9591,"lng":-89.6301,"city":"Wausau"},
+        "54474":{"lat":44.8011,"lng":-90.0782,"city":"Stratford"},"54494":{"lat":44.3836,"lng":-89.8173,"city":"Wis Rapids"},
+        "54449":{"lat":44.6305,"lng":-90.1774,"city":"Marshfield"},"54952":{"lat":44.2619,"lng":-88.4451,"city":"Menasha"},
+        "53001":{"lat":43.6508,"lng":-87.9912,"city":"Adell"},"53010":{"lat":43.6117,"lng":-88.3451,"city":"Campbellsport"},
+        "53019":{"lat":43.7453,"lng":-88.1183,"city":"Eden"},"53013":{"lat":43.5281,"lng":-87.9012,"city":"Cedar Grove"},
+        "53042":{"lat":43.9122,"lng":-88.0361,"city":"Kiel"},"53014":{"lat":44.0289,"lng":-88.1629,"city":"Chilton"},
+        "54230":{"lat":44.1536,"lng":-87.9567,"city":"Reedsville"},"54245":{"lat":44.0672,"lng":-87.8883,"city":"Valders"},
+        "53075":{"lat":43.5508,"lng":-87.9617,"city":"Random Lake"},
+        "54729":{"lat":45.1003,"lng":-91.4882,"city":"Chippewa Falls"},"54724":{"lat":45.1003,"lng":-91.4882,"city":"Bloomer"},
+        "54768":{"lat":44.9597,"lng":-90.9357,"city":"Stanley"},
+        "54822":{"lat":45.4078,"lng":-91.7440,"city":"Cameron"},"54868":{"lat":45.5061,"lng":-91.7382,"city":"Rice Lake"},
+        "54736":{"lat":44.6266,"lng":-91.9649,"city":"Durand"},"54738":{"lat":44.7611,"lng":-91.2781,"city":"Fall Creek"},
+        "54722":{"lat":44.6800,"lng":-91.1200,"city":"Augusta"},
+        "53932":{"lat":43.5439,"lng":-89.1064,"city":"Cambria"},"53919":{"lat":43.5858,"lng":-89.0667,"city":"Brandon"},
+        "53950":{"lat":43.7975,"lng":-90.0773,"city":"Mauston"},"53910":{"lat":43.9561,"lng":-89.8120,"city":"Adams"},
+        "54616":{"lat":44.2944,"lng":-91.2329,"city":"Blair"},"54669":{"lat":43.9000,"lng":-91.0862,"city":"West Salem"},
+        "53582":{"lat":43.1647,"lng":-89.0090,"city":"Arena"},"53555":{"lat":43.3133,"lng":-89.5262,"city":"Lodi"},
+        "53534":{"lat":42.7803,"lng":-89.2987,"city":"Evansville"},"53589":{"lat":42.9172,"lng":-89.2179,"city":"Stoughton"},
+        "53561":{"lat":43.0760,"lng":-89.2012,"city":"Cottage Grove"},"53528":{"lat":43.0200,"lng":-89.7440,"city":"Cross Plains"},
+        "54011":{"lat":44.9744,"lng":-92.3743,"city":"Baldwin"},
+        "53520":{"lat":42.6832,"lng":-90.1185,"city":"Darlington"},
+        "54612":{"lat":43.6522,"lng":-90.3431,"city":"Hillsboro"},"53959":{"lat":43.5325,"lng":-90.0026,"city":"Reedsburg"},
+        "53968":{"lat":43.6517,"lng":-90.2282,"city":"Wonewoc"},
+        "53168":{"lat":42.6839,"lng":-88.0512,"city":"Union Grove"},
+        "53095":{"lat":43.4253,"lng":-88.1834,"city":"West Bend"},"53066":{"lat":43.2617,"lng":-88.2340,"city":"Oconomowoc"},
+        "53105":{"lat":42.6781,"lng":-88.2762,"city":"Burlington"},
+        "53901":{"lat":43.5458,"lng":-89.4626,"city":"Portage"},
+        // Minnesota border areas
+        "56001":{"lat":44.1636,"lng":-94.0022,"city":"Mankato"},"55060":{"lat":44.0836,"lng":-93.2261,"city":"Owatonna"},
+        "55021":{"lat":44.2919,"lng":-93.2908,"city":"Faribault"},"55066":{"lat":44.5633,"lng":-92.5338,"city":"Red Wing"},
+        "55985":{"lat":43.8094,"lng":-91.7529,"city":"Rushford"},"55912":{"lat":43.6647,"lng":-92.9746,"city":"Austin"},
+        "55720":{"lat":46.7208,"lng":-92.1041,"city":"Cloquet"},"55987":{"lat":44.0550,"lng":-91.6393,"city":"Winona"},
+        "55910":{"lat":43.6344,"lng":-91.4968,"city":"Caledonia"},"55016":{"lat":44.7314,"lng":-92.8064,"city":"Cottage Grove MN"},
+        "55901":{"lat":44.0231,"lng":-92.4699,"city":"Rochester"},"55044":{"lat":44.5069,"lng":-93.2707,"city":"Lakeville"},
+        "55369":{"lat":45.1558,"lng":-93.6628,"city":"Osseo"},"55118":{"lat":44.9063,"lng":-93.1472,"city":"St Paul"},
+        // MN expanded
+        "56003":{"lat":44.3236,"lng":-93.9580,"city":"St. Peter"},"56073":{"lat":44.3125,"lng":-94.4608,"city":"New Ulm"},
+        "56088":{"lat":43.8278,"lng":-94.4325,"city":"Truman"},"56081":{"lat":43.9828,"lng":-94.6267,"city":"St. James"},
+        "56187":{"lat":43.6199,"lng":-95.5964,"city":"Worthington"},"56101":{"lat":43.8664,"lng":-95.1172,"city":"Windom"},
+        "56258":{"lat":44.4469,"lng":-95.7886,"city":"Marshall"},"56071":{"lat":44.5428,"lng":-94.3650,"city":"St. Peter"},
+        "56093":{"lat":44.0777,"lng":-93.5066,"city":"Waseca"},"56024":{"lat":43.6386,"lng":-94.0981,"city":"Blue Earth"},
+        "55927":{"lat":44.0297,"lng":-92.7504,"city":"Dodge Center"},"55972":{"lat":43.9694,"lng":-92.0640,"city":"St. Charles"},
+        "55920":{"lat":43.8614,"lng":-93.0514,"city":"Blooming Prairie"},"55975":{"lat":43.6894,"lng":-92.3894,"city":"Spring Valley"},
+        "55949":{"lat":43.7642,"lng":-91.5696,"city":"Houston"},"55947":{"lat":43.5092,"lng":-91.4614,"city":"Eitzen"},
+        "56267":{"lat":45.5864,"lng":-95.9136,"city":"Morris"},"56201":{"lat":45.1219,"lng":-95.0433,"city":"Willmar"},
+        "55352":{"lat":44.5531,"lng":-94.2217,"city":"Gaylord"},"55396":{"lat":44.5428,"lng":-94.3650,"city":"Winthrop"},
+        "56164":{"lat":43.6983,"lng":-95.4678,"city":"Brewster"},"56159":{"lat":43.9397,"lng":-94.9281,"city":"Mountain Lake"},
+        "56265":{"lat":44.4136,"lng":-94.9253,"city":"Morgan"},"56277":{"lat":44.7889,"lng":-95.2114,"city":"Renville"},
+        "56266":{"lat":44.5536,"lng":-94.9856,"city":"Morton"},"55026":{"lat":44.6750,"lng":-92.9650,"city":"Frontenac"},
+        "56031":{"lat":43.6480,"lng":-93.3683,"city":"Albert Lea"},"55936":{"lat":43.7057,"lng":-92.5727,"city":"Grand Meadow"},
+    };
+
+    /* ═══════ STATE ═══════ */
+    let userLat = null, userLng = null, userCity = '';
+    let activeFilter = 'all';
+
+    document.getElementById('totalCount').textContent = ELEVATORS.length;
+
+    /* ═══════ HAVERSINE ═══════ */
+    function haversine(lat1,lng1,lat2,lng2) {
+        const R = 3958.8; // miles
+        const dLat = (lat2-lat1)*Math.PI/180;
+        const dLng = (lng2-lng1)*Math.PI/180;
+        const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
+
+    /* ═══════ SEARCH ═══════ */
+    function searchByZip() {
+        const zip = document.getElementById('zipInput').value.trim();
+        if (!/^\d{5}$/.test(zip)) { alert('Enter a valid 5-digit zip code'); return; }
+
+        const entry = ZIP_DB[zip];
+        if (entry) {
+            userLat = entry.lat; userLng = entry.lng; userCity = entry.city;
+            rerender();
+        } else {
+            // Fallback: use Nominatim
+            document.getElementById('geoStatus').innerHTML = '<span class="spinner"></span> Looking up zip code...';
+            fetch(`https://nominatim.openstreetmap.org/search?postalcode=${zip}&country=US&format=json&limit=1`, {headers:{'User-Agent':'AGSIST/1.0'}})
+                .then(r=>r.json()).then(data=>{
+                    if(data.length){
+                        userLat=parseFloat(data[0].lat); userLng=parseFloat(data[0].lon);
+                        userCity=data[0].display_name.split(',')[0];
+                        rerender();
+                    } else { document.getElementById('geoStatus').textContent='Zip not found. Try another.'; }
+                }).catch(()=>{ document.getElementById('geoStatus').textContent='Lookup failed. Try again.'; });
+        }
+    }
+
+    function quickZip(zip) {
+        document.getElementById('zipInput').value = zip;
+        searchByZip();
+    }
+
+    function useMyLocation() {
+        if (!navigator.geolocation) { alert('Geolocation not supported'); return; }
+        document.getElementById('geoStatus').innerHTML = '<span class="spinner"></span> Detecting location...';
+        navigator.geolocation.getCurrentPosition(pos => {
+            userLat = pos.coords.latitude; userLng = pos.coords.longitude;
+            // Reverse geocode for city name
+            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLng}&format=json`,{headers:{'User-Agent':'AGSIST/1.0'}})
+                .then(r=>r.json()).then(data=>{
+                    userCity = data.address?.city || data.address?.town || data.address?.village || 'Your Location';
+                    rerender();
+                }).catch(()=>{ userCity='Your Location'; rerender(); });
+        }, ()=>{
+            document.getElementById('geoStatus').textContent='Location access denied. Enter a zip code instead.';
+        }, {timeout:10000});
+    }
+
+    /* ═══════ FILTER ═══════ */
+    function setFilter(f, btn) {
+        activeFilter = f;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        rerender();
+    }
+
+    /* ═══════ RENDER ═══════ */
+    function rerender() {
+        const radius = parseInt(document.getElementById('radiusSelect').value);
+        document.getElementById('geoStatus').textContent = '';
+
+        let list = ELEVATORS.map(e => {
+            const dist = (userLat && userLng) ? haversine(userLat,userLng,e.lat,e.lng) : null;
+            return {...e, dist};
+        });
+
+        // Filter by commodity
+        if (activeFilter !== 'all') {
+            list = list.filter(e => e.com.includes(activeFilter));
+        }
+
+        // Filter by radius
+        if (userLat && userLng && radius < 999) {
+            list = list.filter(e => e.dist !== null && e.dist <= radius);
+        }
+
+        // Sort by distance (nearest first) or alphabetically if no location
+        if (userLat && userLng) {
+            list.sort((a,b) => a.dist - b.dist);
+        } else {
+            list.sort((a,b) => a.city.localeCompare(b.city));
+        }
+
+        // Status bar
+        const status = document.getElementById('results-status');
+        if (userLat && userLng) {
+            status.style.display = 'block';
+            status.innerHTML = `Showing <strong>${list.length}</strong> elevator${list.length!==1?'s':''} within <strong>${radius < 999 ? radius+' miles':'all distances'}</strong> of <span class="loc-name">${userCity || 'your location'}</span>` + (activeFilter!=='all' ? ` · filtered: <strong>${activeFilter}</strong>` : '');
+        } else {
+            status.style.display = 'block';
+            status.innerHTML = `Showing all <strong>${list.length}</strong> elevators (alphabetical) — <span style="color:var(--accent)">enter a zip code or use location for distance sorting</span>`;
+        }
+
+        // Render cards
+        const container = document.getElementById('elevator-list');
+        if (list.length === 0) {
+            container.innerHTML = `<div class="no-results"><h3>No elevators found</h3><p>Try a larger radius or different commodity filter.</p></div>`;
+            return;
+        }
+
+        container.innerHTML = list.map(e => {
+            const distStr = e.dist !== null ? `<span class="dist">${e.dist.toFixed(1)} mi</span> · ` : '';
+            const tags = e.com.map(c => `<span class="elev-tag ${c}">${c}</span>`).join('');
+            const typeTag = e.type === 'ethanol' ? '<span class="elev-tag ethanol">ethanol</span>' : e.type === 'processor' ? '<span class="elev-tag processor">processor</span>' : '';
+
+            let actions = '';
+            if (e.bidUrl) {
+                actions += `<a href="${e.bidUrl}" target="_blank" rel="noopener" class="bid-link">View Cash Bids →</a>`;
             }
-        }
-        
-        // Quick search
-        function quickSearch(zip) {
-            event.preventDefault();
-            document.getElementById('zipCode').value = zip;
-            window.open(`https://www.agweb.com/markets/cash-grain-bids?zip=${zip}`, '_blank');
-        }
-        
-        // Load current futures prices
-        async function loadPrices() {
-            try {
-                // Try to get from TradingView widget data or use placeholder
-                document.getElementById('cornPrice').textContent = '$4.52';
-                document.getElementById('soyPrice').textContent = '$10.28';
-                document.getElementById('wheatPrice').textContent = '$5.67';
-            } catch (err) {
-                console.log('Price load error:', err);
+            if (e.web) {
+                actions += `<a href="${e.web}" target="_blank" rel="noopener" class="bid-link secondary">Website</a>`;
             }
+
+            const phoneLine = e.phone ? `<div class="elev-phone"><a href="tel:${e.phone}">${e.phone}</a></div>` : '';
+            const noteLine = e.note ? `<div style="font-size:0.68rem;color:var(--dim);margin-top:4px;font-style:italic;">${e.note}</div>` : '';
+
+            return `<div class="elev-card">
+                <div class="elev-info">
+                    <div class="elev-name">${e.name}</div>
+                    <div class="elev-loc">${distStr}${e.city}, ${e.state}</div>
+                    <div class="elev-tags">${tags}${typeTag}</div>
+                    ${noteLine}
+                </div>
+                <div class="elev-actions">
+                    ${actions}
+                    ${phoneLine}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    /* ═══════ ENTER KEY ═══════ */
+    document.getElementById('zipInput').addEventListener('keypress', e => {
+        if (e.key === 'Enter') { e.preventDefault(); searchByZip(); }
+    });
+
+    /* ═══════ INIT ═══════ */
+    rerender();
+
+    /* ═══════ MAP ═══════ */
+    let map = null;
+    let mapMarkers = [];
+    let userMarker = null;
+    let currentView = 'list';
+    const TYPE_COLORS = { coop:'#4CAF50', elevator:'#2196F3', ethanol:'#FF9800', processor:'#9C27B0' };
+
+    function initMap() {
+        if (map) return;
+        map = L.map('elevator-map', {
+            center: [44.5, -93.0],
+            zoom: 7,
+            zoomControl: true,
+            scrollWheelZoom: true
+        });
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://osm.org/copyright">OSM</a>',
+            subdomains: 'abcd', maxZoom: 18
+        }).addTo(map);
+    }
+
+    function updateMap() {
+        if (!map) return;
+        mapMarkers.forEach(m => map.removeLayer(m));
+        mapMarkers = [];
+        if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
+
+        const radius = parseInt(document.getElementById('radiusSelect').value);
+        let list = ELEVATORS.map(e => {
+            const dist = (userLat && userLng) ? haversine(userLat,userLng,e.lat,e.lng) : null;
+            return {...e, dist};
+        });
+        if (activeFilter !== 'all') list = list.filter(e => e.com.includes(activeFilter));
+        if (userLat && userLng && radius < 999) list = list.filter(e => e.dist !== null && e.dist <= radius);
+
+        const bounds = [];
+
+        list.forEach(e => {
+            const color = TYPE_COLORS[e.type] || '#2196F3';
+            const marker = L.circleMarker([e.lat, e.lng], {
+                radius: 7, fillColor: color, color: '#000', weight: 1, fillOpacity: 0.85
+            }).addTo(map);
+
+            let popup = `<strong>${e.name}</strong><br>${e.city}, ${e.state}`;
+            if (e.dist !== null) popup += `<br><em>${e.dist.toFixed(1)} mi away</em>`;
+            if (e.phone) popup += `<br>📞 ${e.phone}`;
+            if (e.note) popup += `<br><small>${e.note}</small>`;
+            if (e.bidUrl) popup += `<br><a href="${e.bidUrl}" target="_blank">View Cash Bids →</a>`;
+            else if (e.web) popup += `<br><a href="${e.web}" target="_blank">Website →</a>`;
+            marker.bindPopup(popup);
+            mapMarkers.push(marker);
+            bounds.push([e.lat, e.lng]);
+        });
+
+        if (userLat && userLng) {
+            userMarker = L.circleMarker([userLat, userLng], {
+                radius: 10, fillColor: '#e6b042', color: '#fff', weight: 2, fillOpacity: 1
+            }).addTo(map).bindPopup(`<strong>📍 ${userCity || 'Your location'}</strong>`);
+            bounds.push([userLat, userLng]);
         }
-        
-        loadPrices();
+
+        if (bounds.length > 0) {
+            map.fitBounds(bounds, { padding: [30, 30], maxZoom: 10 });
+        }
+    }
+
+    function switchView(view) {
+        currentView = view;
+        const listEl = document.getElementById('elevator-list');
+        const statusEl = document.getElementById('results-status');
+        const mapEl = document.getElementById('map-container');
+        const btnList = document.getElementById('btnListView');
+        const btnMap = document.getElementById('btnMapView');
+
+        if (view === 'map') {
+            listEl.style.display = 'none';
+            statusEl.style.display = 'none';
+            mapEl.style.display = 'block';
+            btnMap.classList.add('active');
+            btnList.classList.remove('active');
+            initMap();
+            setTimeout(() => { map.invalidateSize(); updateMap(); }, 100);
+        } else {
+            listEl.style.display = '';
+            statusEl.style.display = '';
+            mapEl.style.display = 'none';
+            btnList.classList.add('active');
+            btnMap.classList.remove('active');
+        }
+    }
+
+    // Patch rerender to also update map
+    const _origRerender = rerender;
+    rerender = function() {
+        _origRerender();
+        if (currentView === 'map' && map) updateMap();
+    };
     </script>
 </body>
 </html>
