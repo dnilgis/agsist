@@ -111,76 +111,121 @@ BARCHART_ZIPS = [
 # ═══════════════════════════════════════════════════════════════════════
 
 def fetch_url(url, timeout=30):
-    """GET a URL. Returns text or None."""
+    """GET a URL. Returns (text, status_code) or (None, error_string)."""
     try:
         req = Request(url, headers={
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0",
-            "Accept": "text/html,application/json",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
         })
         with urlopen(req, timeout=timeout) as r:
             if r.status == 200:
-                return r.read().decode("utf-8", errors="replace")
+                return r.read().decode("utf-8", errors="replace"), 200
+            return None, r.status
+    except HTTPError as e:
+        print(f"    ERR: HTTP Error {e.code}: {e.reason}", file=sys.stderr)
+        return None, e.code
     except Exception as e:
         print(f"    ERR: {e}", file=sys.stderr)
-    return None
+        return None, str(e)
+
+
+def _strip_tags(s):
+    """Remove HTML tags, returning just text content."""
+    return re.sub(r'<[^>]+>', '', s).strip()
 
 
 def parse_farmbucks(html):
-    """Parse Farmbucks SSR HTML → list of bid dicts."""
-    bids = []
-    p3 = re.compile(r'\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|')
-    p2 = re.compile(r'^\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|$')
+    """Parse Farmbucks SSR HTML tables → list of bid dicts.
 
-    sections = re.split(r'##\s+', html)
-    for section in sections:
-        header = section.split('\n')[0].strip()
+    Real HTML structure:
+      <h2>...#2 Yellow Corn...</h2>
+      <table>
+        <thead><tr><th>Location</th><th>Delivery</th><th>Cash Price</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="2">Adams, Wisconsin <a>Compare</a></td><td>February 2026</td><td>USD 3.77</td></tr>
+          <tr><td>December 2026</td><td>USD 4.13</td></tr>
+        </tbody>
+      </table>
+    """
+    bids = []
+
+    # Split HTML by <h2> headers to identify commodity sections
+    # Pattern: everything between one <h2> and the next <h2> (or end)
+    h2_splits = re.split(r'<h2[^>]*>', html, flags=re.I)
+
+    for chunk in h2_splits:
+        # Get header text (up to closing </h2>)
+        header_m = re.match(r'([^<]*(?:<[^>]*>[^<]*)*?)</h2>', chunk, re.I | re.S)
+        header = _strip_tags(header_m.group(1)) if header_m else ""
         com = _commodity(header)
         if not com:
             continue
 
-        cur_loc = ""
-        for line in section.split('\n'):
-            line = line.strip()
-            if not line.startswith('|'):
-                continue
+        # Find all <table> blocks in this section
+        tables = re.findall(r'<table[^>]*>(.*?)</table>', chunk, re.I | re.S)
 
-            m3 = p3.search(line)
-            if m3:
-                c1, c2, c3 = m3.group(1).strip(), m3.group(2).strip(), m3.group(3).strip()
-                if c1 == "Location" or "---" in c1:
+        for table_html in tables:
+            # Find all rows
+            rows = re.findall(r'<tr[^>]*>(.*?)</tr>', table_html, re.I | re.S)
+            cur_loc = ""
+
+            for row_html in rows:
+                # Get all <td> or <th> cells
+                cells = re.findall(r'<t[dh][^>]*>(.*?)</t[dh]>', row_html, re.I | re.S)
+                if not cells:
                     continue
-                price = _price(c3)
-                if not price:
+
+                cell_texts = [_strip_tags(c) for c in cells]
+
+                # Skip header rows
+                if any(t.lower() in ('location','delivery','cash price') for t in cell_texts):
                     continue
-                if re.search(r'(Wisconsin|Minnesota|Compare)', c1, re.I):
-                    cur_loc = c1
-                delivery = c2
-            else:
-                m2 = p2.search(line)
-                if not m2:
+
+                if len(cells) >= 3:
+                    # 3+ cell row: Location | Delivery | Cash Price
+                    loc_raw = cell_texts[0]
+                    delivery = cell_texts[1]
+                    price_str = cell_texts[2]
+
+                    # Check if this is a real location (contains state name)
+                    if re.search(r'(Wisconsin|Minnesota|WI|MN)', loc_raw, re.I):
+                        cur_loc = loc_raw
+                elif len(cells) == 2:
+                    # 2 cell row: continuation (Delivery | Cash Price)
+                    delivery = cell_texts[0]
+                    price_str = cell_texts[1]
+                else:
                     continue
-                c1, c2 = m2.group(1).strip(), m2.group(2).strip()
-                price = _price(c2)
+
+                price = _price(price_str)
                 if not price or not cur_loc:
                     continue
-                delivery = c1
 
-            if not cur_loc or not price:
-                continue
-
-            city, state = _location(cur_loc)
-            if city and _is_spot(delivery):
-                bids.append({"city": city, "state": state, "commodity": com,
-                             "cashPrice": price, "delivery": delivery.strip()})
+                city, state = _location(cur_loc)
+                if city and _is_spot(delivery):
+                    bids.append({"city": city, "state": state, "commodity": com,
+                                 "cashPrice": price, "delivery": delivery.strip()})
     return bids
 
 
 def parse_farmbucks_locations(html):
-    """Extract lat/lng from Google Maps links on Farmbucks page."""
+    """Extract lat/lng from Google Maps links on Farmbucks page.
+
+    Real HTML: <a href="https://www.google.com/maps/place/43.9510654,-89.8169553">Adams, WI</a>
+    """
     locs = {}
-    for m in re.finditer(r'\[([^]]+,\s*(WI|MN))\]\(https://www\.google\.com/maps/place/([-\d.]+),([-\d.]+)', html):
-        city = m.group(1).replace(f", {m.group(2)}", "").strip()
-        locs[f"{city}|{m.group(2)}"] = {"lat": float(m.group(3)), "lng": float(m.group(4))}
+    for m in re.finditer(
+        r'href="https://www\.google\.com/maps/place/([-\d.]+),([-\d.]+)"[^>]*>\s*([^<]+)',
+        html
+    ):
+        lat, lng, label = float(m.group(1)), float(m.group(2)), m.group(3).strip()
+        # label like "Adams, WI"
+        loc_m = re.match(r'(.+?),\s*(WI|MN)\b', label)
+        if loc_m:
+            city = loc_m.group(1).strip()
+            state = loc_m.group(2)
+            locs[f"{city}|{state}"] = {"lat": lat, "lng": lng}
     return locs
 
 
@@ -195,7 +240,7 @@ def fetch_barchart_bids(api_key, zip_code):
            f"&commodityName=Corn%20(%232%20Yellow)|Soybeans%20(%232%20Yellow)"
            f"|Wheat%20(Soft%20Red%20Winter)|Oats"
            f"&maxDistance=75&getAllBids=0&totalLocations=30&numOfDecimals=2")
-    text = fetch_url(url, timeout=15)
+    text, status = fetch_url(url, timeout=15)
     if not text:
         return None
     try:
@@ -279,8 +324,12 @@ def _price(s):
     return float(m.group(1)) if m else None
 
 def _location(raw):
-    loc = re.sub(r'\[Compare prices\]\([^)]*\)', '', raw).strip()
-    loc = re.sub(r'Compare prices.*$', '', loc).strip()
+    # After stripping HTML tags, text may be like:
+    # "Adams, Wisconsin  Compare prices near Adams, Wisconsin"
+    # "Adams, Wisconsin Compare prices"
+    # "Auburndale, Wisconsin"
+    loc = re.sub(r'Compare prices.*$', '', raw, flags=re.I).strip()
+    loc = re.sub(r'Log in.*$', '', loc, flags=re.I).strip()
     m = re.search(r',?\s*(Wisconsin|Minnesota|WI|MN)\s*$', loc, re.I)
     if m:
         state = "WI" if m.group(1).lower() in ("wisconsin","wi") else "MN"
@@ -349,7 +398,13 @@ def main():
         url = f"https://farmbucks.com/grain-prices/{slug}"
         if state:
             url += f"/{state}"
-        html = fetch_url(url)
+        html, status = fetch_url(url)
+
+        # Fallback: if state URL returned 404, try without state
+        if not html and state and status == 404:
+            url_fallback = f"https://farmbucks.com/grain-prices/{slug}"
+            print(f"404 → trying {slug}...", end=" ", flush=True)
+            html, status = fetch_url(url_fallback)
 
         if not html:
             fb_fail += 1
@@ -357,9 +412,17 @@ def main():
             time.sleep(2)
             continue
 
+        # Debug: show HTML size
+        print(f"({len(html)//1024}kb)", end=" ", flush=True)
+
         bids = parse_farmbucks(html)
         locs = parse_farmbucks_locations(html)
         all_locations.update(locs)
+
+        # If we fetched without state filter, only keep WI/MN bids
+        if state:
+            target_states = {"WI"} if "wisconsin" in state else {"MN"} if "minnesota" in state else {"WI","MN"}
+            bids = [b for b in bids if b["state"] in target_states]
 
         if not bids:
             fb_fail += 1
