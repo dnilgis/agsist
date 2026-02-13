@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-13T22:52:07.159955+00:00",
+  "updated": "2026-02-13T23:36:45.430237+00:00",
   "markets": {
     "grains": {
       "corn": {
@@ -220,9 +220,9 @@
         "name": "Bitcoin",
         "symbol": "BTC-USD",
         "unit": "$",
-        "price": 68839.7734,
-        "change": 2611.375,
-        "changePct": 3.94,
+        "price": 68922.375,
+        "change": 2693.9766,
+        "changePct": 4.07,
         "prevClose": 66228.3984,
         "contract": "Spot",
         "low52": 60074.2031,
@@ -232,9 +232,9 @@
         "name": "Ethereum",
         "symbol": "ETH-USD",
         "unit": "$",
-        "price": 2048.5066,
-        "change": 100.7859,
-        "changePct": 5.17,
+        "price": 2050.281,
+        "change": 102.5603,
+        "changePct": 5.27,
         "prevClose": 1947.7207,
         "contract": "Spot",
         "low52": 1386.7993,
@@ -244,9 +244,9 @@
         "name": "Kaspa",
         "symbol": "KAS-USD",
         "unit": "$",
-        "price": 0.0322,
-        "change": 0.0008,
-        "changePct": 2.51,
+        "price": 0.0321,
+        "change": 0.0007,
+        "changePct": 2.39,
         "prevClose": 0.0314,
         "contract": "Spot",
         "low52": 0.0139,
@@ -256,9 +256,9 @@
         "name": "XRP",
         "symbol": "XRP-USD",
         "unit": "$",
-        "price": 1.3995,
-        "change": 0.0378,
-        "changePct": 2.77,
+        "price": 1.4035,
+        "change": 0.0418,
+        "changePct": 3.07,
         "prevClose": 1.3618,
         "contract": "Spot",
         "low52": 1.1335,
@@ -290,6 +290,13 @@
     },
     {
       "source": "AGDAILY",
+      "title": "Ag on Instagram: The week\u2019s best photos on Feb. 13, 2026",
+      "link": "https://www.agdaily.com/lifestyle/ag-instagram-weeks-best-photos-feb-13-2026/",
+      "time": "",
+      "category": "news"
+    },
+    {
+      "source": "AGDAILY",
       "title": "Nominate first responders for lifesaving grain rescue tools",
       "link": "https://www.agdaily.com/crops/nominate-first-responders-lifesaving-grain-rescue-tools/",
       "time": "",
@@ -299,13 +306,6 @@
       "source": "AGDAILY",
       "title": "U.S.-Taiwan trade deal promises tariff-free dairy export access",
       "link": "https://www.agdaily.com/livestock/u-s-taiwan-trade-deal-promises-tariff-free-dairy-export-access/",
-      "time": "",
-      "category": "news"
-    },
-    {
-      "source": "AGDAILY",
-      "title": "2026 Angus Foundation Scholarship applications open",
-      "link": "https://www.agdaily.com/livestock/2026-angus-foundation-scholarship-applications-open/",
       "time": "",
       "category": "news"
     },
