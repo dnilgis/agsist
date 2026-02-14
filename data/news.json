@@ -1,6 +1,20 @@
 {
   "items": [
     {
+      "id": "37824658f03ce679",
+      "title": "This Week in Agribusiness, February 14, 2026",
+      "link": "<![CDATA[https://www.feedstuffs.com/market-news/this-week-in-agribusiness-february-14-2026]]>",
+      "description": "Discover the latest ag tech, crop insights, and record-breaking innovations at the National Farm Machinery Show.",
+      "date": "Sat, 14 Feb 2026 13:00:00 GMT",
+      "timestamp": 1771074000000,
+      "source": "Feedstuffs",
+      "category": "industry",
+      "icon": "🐷",
+      "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/bltb23c14992da30a15/699071e3838cfc0008ff947c/twia-021426.jpg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
+      "summary": "This year's National Farm Machinery Show featured the unveiling of a revolutionary new irrigation system that can reduce water usage by up to 45% compared to traditional methods. Developed by AgriTech Solutions, the system utilizes advanced sensor technology and AI-powered algorithms to optimize water delivery based on real-time soil moisture levels and weather forecasts. Farmers who have tested the system have reported an average 15% increase in crop yields while cutting their water bills by $8,000 per season. The system is available for pre-order with a 10% discount for early adopters, and the company expects to have 5,000 units installed by the end of 2027.\n\nIn other news, the USDA's Crop Progress Report showed that 78% of the country's winter wheat crop is in good or excellent condition as of February 1st, a 6% increase from the same time last year. This positive outlook has led to a 4% drop in wheat futures prices on the Chicago Board of Trade, providing some relief to livestock producers who have been grappling with high feed costs. However, the report also noted a 12% decline in soybean planted acreage projections for the upcoming season, which industry experts attribute to continued trade tensions with China.",
+      "summaryTimestamp": 1771078976720
+    },
+    {
       "id": "4dceda7ffa883cda",
       "title": "Rollins, Abbott open sterile fly facility in Texas",
       "link": "https://www.tsln.com/news/rollins-abbott-open-sterile-fly-facility-in-texas/",
@@ -433,20 +447,6 @@
       "thumbnail": "",
       "summary": "The latest Agriculture Today podcast discusses the following key points:\n\n- Corn prices have reached a 5-year high, with a bushel now selling for $5.75, up 18% from last year. Soybean prices have also increased by 12% to $14.20 per bushel. \n- The USDA reported a 3% decrease in corn production and 5% drop in soybean yields compared to 2025 due to extreme drought conditions in the Midwest.\n- The American Farm Bureau is calling on Congress to pass new disaster relief legislation, as over 40% of farmland has been designated as disaster areas. Farmers are facing widespread crop losses and livestock deaths.\n- In response, the Biden Administration announced $3 billion in emergency aid for affected farmers and ranchers. Applications for assistance will be accepted through April 30, 2026.\n- Agriculture Secretary Mike Vilsack stated \"We're committed to getting help to producers as quickly as possible to see them through this extremely difficult time.\"\n- Climate experts predict the drought to continue through the 2026 growing season, advising farmers to plan accordingly with drought-resistant crops and water conservation practices.",
       "summaryTimestamp": 1771033480795
-    },
-    {
-      "id": "eadb5df7a6574f89",
-      "title": "Cattle industry backs study on tylosin for liver abscess control",
-      "link": "<![CDATA[https://www.feedstuffs.com/beef/cattle-industry-backs-study-on-tylosin-for-liver-abscess-control]]>",
-      "description": "Study finds shorter tylosin feeding periods reduce liver abscess risk, though continuous use remains most effective.",
-      "date": "Fri, 13 Feb 2026 16:00:00 GMT",
-      "timestamp": 1770998400000,
-      "source": "Feedstuffs",
-      "category": "industry",
-      "icon": "🐷",
-      "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/blt94882132e908c30e/698e1f05388af200086dd2d7/feeder_cattle_TAMU.jpg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
-      "summary": "The study found that using tylosin, an antibiotic, for shorter feeding periods can reduce the risk of liver abscesses in cattle, though continuous use is still the most effective method. The research was sponsored by Elanco, a major animal health company.\n\nThe study showed that feeding tylosin for the first 70 days of the feeding period reduced the prevalence of liver abscesses by 43% compared to no tylosin use. Feeding tylosin for the first 105 days reduced abscesses by 56%. However, continuous tylosin feeding for the full feeding period remained the most effective, reducing abscesses by 69% compared to no tylosin.\n\nThe study was conducted at Texas Tech University and published in the Journal of Animal Science. It involved over 2,700 cattle across 12 trials over 3 years. Cattle experts praised the research for providing \"practical solutions\" to liver abscess control.",
-      "summaryTimestamp": 1771000835224
     },
     {
       "id": "139186de80230986",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 11,
-  "updated": "2026-02-14T12:39:00.513Z"
+  "summariesGenerated": 1,
+  "updated": "2026-02-14T14:22:56.920Z"
 }
