@@ -1,6 +1,20 @@
 {
   "items": [
     {
+      "id": "bc19288cf6b3f9de",
+      "title": "Florida Farm Bureau Establishes Disaster Relief Fund for Agriculture",
+      "link": "https://www.morningagclips.com/florida-farm-bureau-establishes-disaster-relief-fund-for-agriculture/",
+      "description": "GAINESVILLE, Fla. &#8212; Florida Farm Bureau has created a disaster relief fund that will assist Florida farmers and ranchers who have suffered significant agricultural losses or expenses because of weather-related events and other natural disasters. The Florida Farm Bureau Disaster Relief Fund is coordinated by the Women’s Leadership Committee. Anyone wishing to donate to the [&#8230;] The post Florida Farm Bureau Establishes Disaster Relief Fund for Agriculture appeared first on Morning Ag Cl",
+      "date": "Sun, 15 Feb 2026 14:13:42 +0000",
+      "timestamp": 1771164822000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "",
+      "summary": "The Florida Farm Bureau has established a disaster relief fund to assist Florida farmers and ranchers who have suffered significant agricultural losses or expenses due to weather-related events and other natural disasters.\n\nThe fund is coordinated by the Women's Leadership Committee, and anyone can make a tax-deductible donation online or by sending a check to the Florida Farm Bureau Women's Fund.\n\nThe historic freezes witnessed this year have been a devastating blow to the agricultural community, with many growers facing losses they haven't seen in generations. The Women's Leadership Committee aims to provide not just financial support, but also to help farmers and ranchers stand back up and continue their vital work.\n\nThe Florida Farm Bureau represents over 132,000 member-families and serves to enhance farm enterprise and improve rural communities. The organization's mission is to increase the net income of farmers and ranchers, and to improve the quality of rural life.",
+      "summaryTimestamp": 1771165389201
+    },
+    {
       "id": "b8228f058510cdd0",
       "title": "Roundup of FFA news for the week of Feb. 12",
       "link": "https://www.farmanddairy.com/news/2-12-ffa/903788.html",
@@ -449,20 +463,6 @@
       "summaryTimestamp": 1771008092839
     },
     {
-      "id": "974279ab4c7dcc7e",
-      "title": "Rutgers Showcases Research and Expertise at 2026 Northeast Agricultural Expo",
-      "link": "https://www.morningagclips.com/rutgers-showcases-research-and-expertise-at-2026-northeast-agricultural-expo/",
-      "description": "ATLANTIC CITY — Rutgers New Jersey Agricultural Experiment Station (NJAES) played a leading role in shaping the 2026 Northeast Agricultural Expo (formerly the New Jersey Agricultural Convention and Trade Show), held January 21–23 at Harrah’s Resort and Waterfront Conference Center in Atlantic City. In remarks to the delegates, NJAES Executive Director Laura Lawson expressed appreciation [&#8230;] The post Rutgers Showcases Research and Expertise at 2026 Northeast Agricultural Expo appeared first",
-      "date": "Fri, 13 Feb 2026 17:55:21 +0000",
-      "timestamp": 1771005321000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "",
-      "summary": "The event drew strong statewide participation from farmers, agricultural professionals, 4-H and FFA students, and industry partners, with a sold-out trade show floor.\n\nRutgers Cooperative Extension (RCE) co-chaired the educational program, coordinating 82 presenters across three days of workshops and sessions. Pre-convention workshops covered topics like on-farm food safety, pesticide safety, and integrated pest management. Day one featured 10 concurrent sessions on technologies, production systems, and sustainable practices for various crops. \n\nDay two was highlighted by a keynote address from world-renowned animal scientist and professor Temple Grandin. Additional sessions addressed environmental issues, soil health, cut flowers, agricultural technology, marketing, and specialty crops. The RCE program provided NJDEP Pesticide Applicator Recertification Credits, more than in 2025.\n\nRutgers underscored its commitment to supporting New Jersey's $3 billion agricultural sector through innovation, partnership, and practical solutions that strengthen farm viability and rural communities. Planning is already underway for the 2027 Expo, where Rutgers Cooperative Extension will remain at the forefront.",
-      "summaryTimestamp": 1771008097546
-    },
-    {
       "id": "b4602ee8b589516a",
       "title": "Freeze, Thaw, Seed: Timing Pasture Renovation in an Unpredictable Winter",
       "link": "https://crops.extension.iastate.edu/post/freeze-thaw-seed-timing-pasture-renovation-unpredictable-winter",
@@ -809,8 +809,8 @@
       "category": "industry",
       "icon": "🥗",
       "thumbnail": "https://civileats.com/wp-content/uploads/2026/02/through-food-and-culture-the-east-bay-ohlone-are-repairing-centuries-of-harm-1.jpg",
-      "summary": "The East Bay Ohlone community is working to repair centuries of harm by reviving their traditional food and cultural practices. Vincent Medina and Louis Trevino, who are both Ohlone, are leading this effort through their organization mak-'amham. \n\nmak-'amham operates a native plant nursery and organizes events to teach Ohlone traditions like acorn processing, basket weaving, and traditional song and dance. Their goal is to restore Ohlone land management and food systems that were disrupted by colonization.\n\nMedina and Trevino also operate a catering business that serves traditional Ohlone dishes made with locally-sourced, indigenous ingredients. This allows them to share Ohlone cuisine and culture with the wider community.\n\nThe article highlights the importance of these efforts in healing historical trauma and rebuilding Ohlone identity and sovereignty. Medina emphasizes that \"food and culture are inextricably linked\" for the Ohlone people. By reviving these practices, the community is reclaiming their heritage and healing from the harms of colonization.",
-      "summaryTimestamp": 1770986989911
+      "summary": "Key points:\n\n- Vincent Medina and Louis Trevino, both members of the Ohlone community, are working to revive Ohlone food traditions and share their culture. \n- They have established a farm and food business called Cafe Ohlone to showcase traditional Ohlone cuisine and ingredients.\n- The Ohlone people were nearly wiped out by Spanish colonization and later policies, losing much of their cultural knowledge and practices.\n- Medina and Trevino are working to reconnect their community with traditional foods, plants, and stories, as a way to heal from this history of oppression.\n- Their work includes hosting educational events, teaching traditional cooking methods, and growing indigenous crops like acorns and wild greens.\n- The goal is to not only preserve Ohlone culture, but also empower the community and share their vibrant heritage with the broader public.",
+      "summaryTimestamp": 1771165392032
     },
     {
       "id": "35703c115868386d",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 1,
-  "updated": "2026-02-15T12:40:24.488Z"
+  "summariesGenerated": 2,
+  "updated": "2026-02-15T14:23:12.233Z"
 }
