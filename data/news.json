@@ -1,6 +1,20 @@
 {
   "items": [
     {
+      "id": "8b24af63e7dd8fe3",
+      "title": "Ohio State economist says the farm safety net might have become too excessive",
+      "link": "https://www.brownfieldagnews.com/news/ohio-state-economist-says-the-farm-safety-net-might-have-become-too-excessive/",
+      "description": "An ag economist at Ohio State University says a new study shows farm safety net programs could be contributing to the industry&#8217;s economic downturn. Professor emeritus Carl Zulauf says the current timing of the support could be limiting the market&#8217;s abilities. &#8220;Losses are really important for the efficient function of the market economy,&#8221; he says. &#8220;If [&#8230;] The post Ohio State economist says the farm safety net might have become too excessive appeared first on Br",
+      "date": "Mon, 16 Feb 2026 10:30:00 +0000",
+      "timestamp": 1771237800000,
+      "source": "Brownfield",
+      "category": "industry",
+      "icon": "📻",
+      "thumbnail": "",
+      "summary": "The Ohio State University economist Carl Zulauf suggests that the current farm safety net programs may have become excessive, potentially contributing to the agricultural industry's economic downturn. \n\nThe key points are:\n\n- Zulauf's new study indicates that farm safety net programs could be limiting the market's ability to function efficiently.\n- Zulauf believes that \"losses are really important for the efficient function of the market economy.\" \n- He argues that the current timing and level of support provided by the farm safety net may be hindering the market's natural mechanisms.\n\nThe article does not provide any specific numbers, dates, or details about the study's findings. It also does not mention any impacts on farmers or recommendations for action. No expert quotes are included.\n\nIn summary, the article reports that an Ohio State economist believes the farm safety net programs have become too generous, potentially exacerbating the industry's economic challenges by interfering with market forces.",
+      "summaryTimestamp": 1771238641335
+    },
+    {
       "id": "fdf4b0531c07dac5",
       "title": "My Heart in Agriculture...",
       "link": "https://www.morningagclips.com/my-heart-in-agriculture/",
@@ -391,20 +405,6 @@
       "thumbnail": "",
       "summary": "Gob Fest Celebrates Western Pa. Dessert\n- The annual Gob Fest in Johnstown, Pennsylvania celebrates the region's traditional dessert, the gob.\n- Gobs are a type of sandwich cookie made with two round cakes filled with a creamy frosting.\n- The event features gob-themed food, drinks, and activities, attracting over 10,000 attendees each year.\n- The tradition of gobs in the Johnstown area dates back to the 1920s when Italian immigrants started selling the treats.\n\nPittsburgh Arcade Collective Revives Retired Church\n- The Pittsburgh Arcade Collective has repurposed a retired Catholic church into an arcade and entertainment venue.\n- The project cost $4.2 million and took 2 years to complete.\n- The arcade features over 100 classic and modern video games, as well as a bar, performance stage, and event space.\n- The goal is to preserve the historic church building while providing the community with a new recreational destination.\n\nPasa Conference Highlights Trees in Agriculture\n- The annual Pasa (Pennsylvania Association for Sustainable Agriculture) Conference discussed the role of trees in sustainable agriculture.\n- Speakers covered topics like agroforestry, forest farming, and the benefits of integrating trees on farms.\n- Attendees learned about programs like the USDA's Conservation Reserve Enhancement Program that provide funding to plant trees.\n- Experts emphasized the importance of diversifying agricultural systems with trees to improve soil health, provide habitat, and sequester carbon.\n\nOhio's Pioneer Sleighing Traditions\n- The history of sleighing in Ohio dates back to the state's pioneer settlement in the early 1800s.\n- Sleighs were a practical mode of winter transportation before the development of modern vehicles.\n- Sleighing was a popular social activity, with communities organizing sleigh riding parties and competitions.\n- Though less common today, some rural Ohioans still maintain sleighing traditions.",
       "summaryTimestamp": 1771206601645
-    },
-    {
-      "id": "534a0a0641749994",
-      "title": "Soybeans, wheat give back some gains ahead of Presidents Day weekend",
-      "link": "https://www.brownfieldagnews.com/market-news/soybeans-wheat-give-back-some-gains-ahead-of-presidents-day-weekend/",
-      "description": "Soybeans were lower on profit taking and technical selling but still saw a week-to-week gain. Brazil’s harvest is ongoing and while Argentina’s crop rating declined, there was more rain in the forecast. While Brazil is expected to produce a record crop, there are concerns about quality due to excessive rain during harvest in some areas. [&#8230;] The post Soybeans, wheat give back some gains ahead of Presidents Day weekend appeared first on Brownfield Ag News.",
-      "date": "Fri, 13 Feb 2026 21:26:39 +0000",
-      "timestamp": 1771017999000,
-      "source": "Brownfield",
-      "category": "industry",
-      "icon": "📻",
-      "thumbnail": "",
-      "summary": "Soybeans and wheat prices retreated slightly ahead of the Presidents Day weekend, though they remained higher on a week-over-week basis. \n\nSoybean prices were lower due to profit-taking and technical selling, but Brazil's soybean harvest is ongoing and Argentina's crop ratings declined, though more rain is expected. Brazil is forecast to produce a record soybean crop, but there are concerns about quality due to excessive rainfall during the harvest in some areas.\n\nWheat prices also gave back some recent gains, though they remained higher week-over-week. \n\nNo specific prices, statistics, dates, or expert quotes were provided in the article summary.",
-      "summaryTimestamp": 1771206604370
     },
     {
       "id": "774fc359c1863a7f",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 18,
-  "updated": "2026-02-16T08:42:42.887Z"
+  "summariesGenerated": 1,
+  "updated": "2026-02-16T10:44:01.536Z"
 }
