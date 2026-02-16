@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-16T12:59:48.263Z",
+  "updated": "2026-02-16T14:08:40.146Z",
   "totalMarkets": 5,
   "categories": {
     "tariffs": [
@@ -15,7 +15,7 @@
         "id": "0xda5c517dd5b78c80dec8ceb08ca4f466317633487827d7290332b4851cc4a4fa",
         "question": "Macron out by June 30, 2026?",
         "pct": 4,
-        "volume": 222007,
+        "volume": 224390,
         "endDate": "2026-06-30T12:00:00Z",
         "slug": "macron-out-in-2025"
       },
@@ -30,7 +30,7 @@
       {
         "id": "0x6e6851f2698629795fa06869d961c986221a80cedcba10fbaf0ed220607cdada",
         "question": "China x India military clash by December 31, 2026?",
-        "pct": 17,
+        "pct": 15,
         "volume": 76029,
         "endDate": "2026-12-31T12:00:00Z",
         "slug": "china-x-india-military-clash-by-december-31"
