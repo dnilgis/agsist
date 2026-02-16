@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-16T20:25:04.567041+00:00",
+  "updated": "2026-02-16T20:54:59.250193+00:00",
   "markets": {
     "grains": {
       "corn": {
@@ -154,8 +154,8 @@
         "name": "US Dollar Index",
         "symbol": "DX-Y.NYB",
         "unit": "$",
-        "price": 97.068,
-        "change": 0.186,
+        "price": 97.067,
+        "change": 0.185,
         "changePct": 0.19,
         "prevClose": 96.882,
         "contract": "Spot",
@@ -220,9 +220,9 @@
         "name": "Bitcoin",
         "symbol": "BTC-USD",
         "unit": "$",
-        "price": 67964.9844,
-        "change": -785.1875,
-        "changePct": -1.14,
+        "price": 68237.2266,
+        "change": -512.9453,
+        "changePct": -0.75,
         "prevClose": 68750.1719,
         "contract": "Spot",
         "low52": 60074.2031,
@@ -232,9 +232,9 @@
         "name": "Ethereum",
         "symbol": "ETH-USD",
         "unit": "$",
-        "price": 1972.6577,
-        "change": 7.7808,
-        "changePct": 0.4,
+        "price": 1984.1692,
+        "change": 19.2922,
+        "changePct": 0.98,
         "prevClose": 1964.877,
         "contract": "Spot",
         "low52": 1386.7993,
@@ -244,9 +244,9 @@
         "name": "Kaspa",
         "symbol": "KAS-USD",
         "unit": "$",
-        "price": 0.0317,
-        "change": -0.0004,
-        "changePct": -1.37,
+        "price": 0.0319,
+        "change": -0.0002,
+        "changePct": -0.63,
         "prevClose": 0.0321,
         "contract": "Spot",
         "low52": 0.0139,
@@ -256,9 +256,9 @@
         "name": "XRP",
         "symbol": "XRP-USD",
         "unit": "$",
-        "price": 1.4705,
-        "change": -0.0042,
-        "changePct": -0.28,
+        "price": 1.4803,
+        "change": 0.0057,
+        "changePct": 0.38,
         "prevClose": 1.4747,
         "contract": "Spot",
         "low52": 1.1335,
@@ -269,22 +269,22 @@
   "news": [
     {
       "source": "Brownfield",
+      "title": "Tractors built for versality",
+      "link": "https://www.brownfieldagnews.com/news/tractors-built-for-versality/",
+      "time": "",
+      "category": "news"
+    },
+    {
+      "source": "Brownfield",
+      "title": "Incoming MOFB Young Farmers chair emphasizes multi-generational farm success",
+      "link": "https://www.brownfieldagnews.com/news/incoming-mofb-young-farmers-chair-emphasizes-multi-generational-farm-success/",
+      "time": "",
+      "category": "news"
+    },
+    {
+      "source": "Brownfield",
       "title": "MO Pork Association applauds Prop 12 Fix in House Farm Bill draft",
       "link": "https://www.brownfieldagnews.com/news/mo-pork-association-applauds-prop-12-fix-in-house-farm-bill-draft/",
-      "time": "",
-      "category": "news"
-    },
-    {
-      "source": "Brownfield",
-      "title": "Smithfield Foods to build $1.3B pork processing plant in Sioux Falls",
-      "link": "https://www.brownfieldagnews.com/news/smithfield-foods-to-build-1-3b-pork-processing-plant-in-sioux-falls/",
-      "time": "",
-      "category": "news"
-    },
-    {
-      "source": "Brownfield",
-      "title": "Missouri pair charged in $220M cattle contract fraud case",
-      "link": "https://www.brownfieldagnews.com/news/missouri-pair-charged-in-220m-cattle-contract-fraud-case/",
       "time": "",
       "category": "news"
     },
