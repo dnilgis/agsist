@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-16T21:25:20.059891+00:00",
+  "updated": "2026-02-16T21:51:54.243738+00:00",
   "markets": {
     "grains": {
       "corn": {
@@ -154,9 +154,9 @@
         "name": "US Dollar Index",
         "symbol": "DX-Y.NYB",
         "unit": "$",
-        "price": 97.071,
-        "change": 0.189,
-        "changePct": 0.2,
+        "price": 97.084,
+        "change": 0.202,
+        "changePct": 0.21,
         "prevClose": 96.882,
         "contract": "Spot",
         "low52": 95.55,
@@ -220,9 +220,9 @@
         "name": "Bitcoin",
         "symbol": "BTC-USD",
         "unit": "$",
-        "price": 68509.875,
-        "change": -240.2969,
-        "changePct": -0.35,
+        "price": 68490.4141,
+        "change": -259.7578,
+        "changePct": -0.38,
         "prevClose": 68750.1719,
         "contract": "Spot",
         "low52": 60074.2031,
@@ -232,9 +232,9 @@
         "name": "Ethereum",
         "symbol": "ETH-USD",
         "unit": "$",
-        "price": 1990.2993,
-        "change": 25.4224,
-        "changePct": 1.29,
+        "price": 1987.8385,
+        "change": 22.9615,
+        "changePct": 1.17,
         "prevClose": 1964.877,
         "contract": "Spot",
         "low52": 1386.7993,
@@ -246,7 +246,7 @@
         "unit": "$",
         "price": 0.0321,
         "change": -0.0,
-        "changePct": -0.02,
+        "changePct": -0.08,
         "prevClose": 0.0321,
         "contract": "Spot",
         "low52": 0.0139,
@@ -256,9 +256,9 @@
         "name": "XRP",
         "symbol": "XRP-USD",
         "unit": "$",
-        "price": 1.4831,
-        "change": 0.0084,
-        "changePct": 0.57,
+        "price": 1.4825,
+        "change": 0.0079,
+        "changePct": 0.53,
         "prevClose": 1.4747,
         "contract": "Spot",
         "low52": 1.1335,
@@ -267,6 +267,13 @@
     }
   },
   "news": [
+    {
+      "source": "Brownfield",
+      "title": "Dual chamber balers improve field efficiency for producers",
+      "link": "https://www.brownfieldagnews.com/news/dual-chamber-balers-improve-field-efficiency-for-producers/",
+      "time": "",
+      "category": "news"
+    },
     {
       "source": "Brownfield",
       "title": "Innovation has been key to improved soil tillage efficiency",
@@ -278,13 +285,6 @@
       "source": "Brownfield",
       "title": "Case IH Puma series tractor enhances movement and operator experience",
       "link": "https://www.brownfieldagnews.com/news/case-ih-puma-series-tractor-enhances-movement-and-operator-experience/",
-      "time": "",
-      "category": "news"
-    },
-    {
-      "source": "Brownfield",
-      "title": "Tractors built for versality",
-      "link": "https://www.brownfieldagnews.com/news/tractors-built-for-versality/",
       "time": "",
       "category": "news"
     },
