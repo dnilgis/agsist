@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-17T03:13:40.823Z",
+  "updated": "2026-02-17T05:04:14.054Z",
   "totalMarkets": 5,
   "categories": {
     "tariffs": [
@@ -30,7 +30,7 @@
       {
         "id": "0x6e6851f2698629795fa06869d961c986221a80cedcba10fbaf0ed220607cdada",
         "question": "China x India military clash by December 31, 2026?",
-        "pct": 16,
+        "pct": 17,
         "volume": 76033,
         "endDate": "2026-12-31T12:00:00Z",
         "slug": "china-x-india-military-clash-by-december-31"
@@ -38,8 +38,8 @@
       {
         "id": "0x6beb95a01147de25b24d3ffae7a43551f392da4235a62f058515c3e99d7af199",
         "question": "NATO/EU troops fighting in Ukraine in June 30, 2026?",
-        "pct": 3,
-        "volume": 60081,
+        "pct": 4,
+        "volume": 60109,
         "endDate": "2025-12-31T12:00:00Z",
         "slug": "natoeu-troops-fighting-in-ukraine-in-2025"
       }
