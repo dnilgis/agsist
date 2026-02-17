@@ -1,10 +1,10 @@
 {
-  "generated": "2026-02-17T20:38:07.007270+00:00",
+  "generated": "2026-02-17T22:31:41.377584+00:00",
   "sources": [
     "farmbucks.com"
   ],
-  "locationCount": 55,
-  "bidCount": 104,
+  "locationCount": 49,
+  "bidCount": 98,
   "elevators": [
     {
       "elevator": "Nexus Cooperative",
@@ -90,21 +90,6 @@
         "soy": {
           "cashPrice": 10.54,
           "delivery": "February 2026"
-        }
-      }
-    },
-    {
-      "elevator": "Jennie-O",
-      "city": "Atwater Feed Mill",
-      "state": "MN",
-      "type": "processor",
-      "source": "farmbucks",
-      "lat": 45.138274,
-      "lng": -94.769971,
-      "bids": {
-        "corn": {
-          "cashPrice": 4.32,
-          "delivery": "February 2027"
         }
       }
     },
@@ -211,21 +196,6 @@
       }
     },
     {
-      "elevator": "Jennie-O",
-      "city": "Dawson Feed Mill",
-      "state": "MN",
-      "type": "processor",
-      "source": "farmbucks",
-      "lat": 44.937337,
-      "lng": -96.064061,
-      "bids": {
-        "corn": {
-          "cashPrice": 4.32,
-          "delivery": "February 2027"
-        }
-      }
-    },
-    {
       "elevator": "New Vision Co-op",
       "city": "Dundee",
       "state": "MN",
@@ -279,21 +249,6 @@
         "soy": {
           "cashPrice": 10.64,
           "delivery": "February 2026"
-        }
-      }
-    },
-    {
-      "elevator": "Jennie-O",
-      "city": "Faribault Mill",
-      "state": "MN",
-      "type": "processor",
-      "source": "farmbucks",
-      "lat": 44.303797,
-      "lng": -93.275434,
-      "bids": {
-        "corn": {
-          "cashPrice": 4.32,
-          "delivery": "February 2027"
         }
       }
     },
@@ -503,21 +458,6 @@
       }
     },
     {
-      "elevator": "Jennie-O",
-      "city": "Perham Feed Mill",
-      "state": "MN",
-      "type": "processor",
-      "source": "farmbucks",
-      "lat": 46.59282,
-      "lng": -95.569012,
-      "bids": {
-        "corn": {
-          "cashPrice": 4.22,
-          "delivery": "February 2027"
-        }
-      }
-    },
-    {
       "elevator": "New Vision Co-op",
       "city": "Reading",
       "state": "MN",
@@ -548,21 +488,6 @@
         "soy": {
           "cashPrice": 10.79,
           "delivery": "February 2026"
-        }
-      }
-    },
-    {
-      "elevator": "Jennie-O",
-      "city": "Swanville Feed Mill",
-      "state": "MN",
-      "type": "processor",
-      "source": "farmbucks",
-      "lat": 45.914511,
-      "lng": -94.642216,
-      "bids": {
-        "corn": {
-          "cashPrice": 4.22,
-          "delivery": "February 2027"
         }
       }
     },
@@ -673,21 +598,6 @@
         "soy": {
           "cashPrice": 10.33,
           "delivery": "March 2026"
-        }
-      }
-    },
-    {
-      "elevator": "Jennie-O",
-      "city": "Barron Mill",
-      "state": "WI",
-      "type": "processor",
-      "source": "farmbucks",
-      "lat": 45.402802,
-      "lng": -91.846192,
-      "bids": {
-        "corn": {
-          "cashPrice": 4.32,
-          "delivery": "February 2027"
         }
       }
     },
