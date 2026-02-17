@@ -1,74 +1,144 @@
 {
   "items": [
     {
-      "id": "0005b641eba06bad",
-      "title": "Farm Credit East Presents Webinar: 2026 Oyster Industry Outlook",
-      "link": "https://www.morningagclips.com/farm-credit-east-presents-webinar-2026-oyster-industry-outlook/",
-      "description": "ENFIELD, Conn. — Northeast oyster growers are invited to participate in a free Farm Credit East webinar taking place on Tuesday, March 3 at 12:00 noon. Bob Rheault of East Coast Shellfish Growers Association will provide an outlook on oyster farming approaches, challenges and markets. The U.S. oyster industry has evolved from traditional wild harvesting to [&#8230;] The post Farm Credit East Presents Webinar: 2026 Oyster Industry Outlook appeared first on Morning Ag Clips.",
-      "date": "Tue, 17 Feb 2026 18:52:12 +0000",
-      "timestamp": 1771354332000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "",
-      "summary": "Key Highlights:\n\n- The U.S. oyster industry has evolved from traditional wild harvesting to intensive, hatchery-driven aquaculture, resulting in major production growth, especially in the Northeast.\n\n- Farm Credit East is hosting a free webinar on Tuesday, March 3 at 12:00 noon to discuss the 2026 outlook for the oyster industry. \n\n- Bob Rheault of East Coast Shellfish Growers Association will provide an overview of oyster farming approaches, challenges, and markets.\n\n- Key topics to be covered include rising costs, market pressures, environmental challenges, and competition squeezing small growers and impacting the industry's expansion.\n\n- The webinar is part of Farm Credit East's Insights and Perspectives series, which covers various agricultural sectors in the Northeast.\n\n- Farm Credit East is a member-owned cooperative serving businesses involved in agriculture, forest products, and commercial fishing across 8 Northeastern states.\n\n- Registration for the free webinar is available at FarmCreditEast.com/Webinars.",
-      "summaryTimestamp": 1771354351095
-    },
-    {
-      "id": "5ec64cd9a4e1dc8f",
-      "title": "Grow Your Farm With Cornell Small Farms Courses",
-      "link": "https://www.morningagclips.com/grow-your-farm-with-cornell-small-farms-courses/",
-      "description": "ITHACA, N.Y. — Do you want to take your farm business to the next level? Enroll now in this season’s final offering of online courses from the Cornell Small Farms Program to invest in the long-term success of your operation. Learn to expand your scope of production with courses covering season extension with high tunnels, [&#8230;] The post Grow Your Farm With Cornell Small Farms Courses appeared first on Morning Ag Clips.",
-      "date": "Tue, 17 Feb 2026 18:47:53 +0000",
-      "timestamp": 1771354073000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "",
-      "summary": "Enroll now in the final block of online courses from the Cornell Small Farms Program to invest in the long-term success of your farm. Live webinars will begin in late February 2026.\n\nThe courses cover topics like:\n- Managing farm business risks and writing a business plan (BF 103 & BF 202)\n- Improving soil health and fertility (BF 110)\n- Growing uncommon fruits and integrating them into your farm (BF 123)\n- Using social media and online marketing to grow your customer base (BF 205)\n- Extending your growing season with high tunnels (BF 220)\n- Establishing and managing tree fruit orchards (BF 223)\n- Implementing effective grazing management practices (BF 231)\n\nCourses are designed to be flexible and affordable, with tiered pricing options and scholarships available for eligible farmers and veterans in New York. Registration is open now, with webinars starting the week of February 23, 2026.",
-      "summaryTimestamp": 1771354354839
-    },
-    {
-      "id": "9f4f67b73dd14e9d",
-      "title": "Amid Freezes, Drought, Wildfire, Commissioner Wilton Simpson Issues Emergency Order",
-      "link": "https://www.morningagclips.com/amid-freezes-drought-wildfire-commissioner-wilton-simpson-issues-emergency-order/",
-      "description": "TALLAHASSEE, Fla. – Amid the ongoing impacts of historic freezes, widespread drought, and increasing wildfire activity, Florida Commissioner of Agriculture Wilton Simpson today issued an emergency order to support farmers, ranchers, and growers. Effective today, the Florida Department of Agriculture and Consumer Services (FDACS) is suspending specific Best Management Practices (BMP) Program site visits that verify agricultural [&#8230;] The post Amid Freezes, Drought, Wildfire, Commissioner Wilt",
-      "date": "Tue, 17 Feb 2026 18:46:54 +0000",
-      "timestamp": 1771354014000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "",
-      "summary": "Key Summary:\n\nFlorida Commissioner of Agriculture Wilton Simpson issued an emergency order on February 17, 2026 to support the state's farmers, ranchers, and growers amid the ongoing impacts of historic freezes, widespread drought, and increasing wildfire activity. \n\nThe order temporarily suspends Best Management Practices (BMP) program site visits that verify agricultural producers' BMP implementation. This allows producers to focus on recovery efforts rather than government regulations.\n\nThe order applies to producers enrolled in the Citrus, Nursery, Specialty Fruit and Nut Crops, Vegetable and Agronomic Crops, and Sod BMP Manuals in all Florida counties. FDACS is normally required to conduct these verification visits every 2 years.\n\nThe emergency order is intended to provide practical support to Florida's agricultural community, which has faced significant crop loss, damage, and operational disruptions from the recent extreme weather events.",
-      "summaryTimestamp": 1771354358172
-    },
-    {
-      "id": "625e78f31e944b8a",
-      "title": "Farm income picture would be bleaker without aid",
-      "link": "https://www.brownfieldagnews.com/news/farm-income-picture-would-be-bleaker-without-aid/",
-      "description": "A closer look net farm income. The latest USDA forecast indicates a drop of $1.2 billionfrom 2025. Nathan Kauffman with Federal Reserve Bank of Kansas City says commodity prices have been holding steady since 2024. “They’re still higher than what they were in 2019. But, once again, expenses are much higher than they were in [&#8230;] The post Farm income picture would be bleaker without aid appeared first on Brownfield Ag News.",
-      "date": "Tue, 17 Feb 2026 18:45:35 +0000",
-      "timestamp": 1771353935000,
+      "id": "87b25122fa681209",
+      "title": "Council works to expand global understanding of U.S. commodities",
+      "link": "https://www.brownfieldagnews.com/news/council-works-to-expand-global-understanding-of-u-s-commodities/",
+      "description": "The director of industry relations for the U.S. Grains &#38; BioProducts Council says 2026 must be a milestone year for agricultural trade. Ellen Zimmerman tells Brownfield, “Especially right now when we look at the price of commodities. How can we look at profitability and that bottom line more? Trade is a big part of that [&#8230;] The post Council works to expand global understanding of U.S. commodities appeared first on Brownfield Ag News.",
+      "date": "Tue, 17 Feb 2026 20:27:10 +0000",
+      "timestamp": 1771360030000,
       "source": "Brownfield",
       "category": "industry",
       "icon": "📻",
       "thumbnail": "",
-      "summary": "The USDA forecasts a $1.2 billion drop in net farm income from 2025. Commodity prices have remained steady since 2024, still higher than 2019 levels. However, expenses have risen significantly compared to 2019. Without government aid, the farm income picture would be even bleaker. Economist Nathan Kauffman of the Federal Reserve Bank of Kansas City notes that while commodity prices are holding steady, the sharp increase in expenses is squeezing farm incomes. The article suggests that government aid is playing a crucial role in supporting farm incomes amidst the challenging economic environment.",
-      "summaryTimestamp": 1771354360308
+      "summary": "The U.S. Grains & BioProducts Council aims to expand global understanding of U.S. agricultural commodities by 2026. Council director Ellen Zimmerman emphasizes the importance of trade for farmer profitability given current high commodity prices. The Council focuses on improving international understanding of U.S. grains, ethanol, and other agricultural products to boost exports and support farm incomes. Zimmerman states that trade is a crucial component of improving farmer profitability during this period of high commodity prices.",
+      "summaryTimestamp": 1771360345420
     },
     {
-      "id": "962dfab6b70470fe",
-      "title": "Improved pace continues for sorghum, soybean export inspections",
-      "link": "https://www.brownfieldagnews.com/news/improved-pace-continues-for-sorghum-soybean-export-inspections/",
-      "description": "The USDA’s reporting a mostly positive week for export inspections. Soybeans and sorghum both saw week-to-week and year-to-year improvements as purchases made earlier in the marketing year by China start to leave U.S. ports. Wheat was down on the week, up on the year, reflecting the solid demand from several key U.S. customers. Corn inspections [&#8230;] The post Improved pace continues for sorghum, soybean export inspections appeared first on Brownfield Ag News.",
-      "date": "Tue, 17 Feb 2026 18:29:21 +0000",
-      "timestamp": 1771352961000,
+      "id": "a03e7277ea23619f",
+      "title": "Improving Waterhemp Control by Managing Spray Water pH",
+      "link": "https://www.morningagclips.com/improving-waterhemp-control-by-managing-spray-water-ph/",
+      "description": "ST. PAUL, Minn. &#8212; Most spray solutions are more than 95% water, yet water quality is rarely considered when herbicide performance comes-up short. The pH of that water and the minerals dissolved in it can directly influence how well an herbicide works once it is sprayed. Certain dissolved cations, such as calcium, magnesium, and iron, [&#8230;] The post Improving Waterhemp Control by Managing Spray Water pH appeared first on Morning Ag Clips.",
+      "date": "Tue, 17 Feb 2026 20:24:18 +0000",
+      "timestamp": 1771359858000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjJGuCD-cYaOZDGk1df_tYNJnLqUwNlyj3KnsYrXjrPXn1GYARLTb1WQ3VquBFTKeAAijZMRWJv0eNklNT0JkGO_MLnMaFn7qDpNYfIBhPW29MY1eYHCsuZxYbu-rId8aPdOr0aAtICW69ZKYC0X1iRhjCE7p0KoOvUrXlKRbcIprSYljpJWEbv_yxtfvYD/w640-h236-rw/spray-water-pH-waterhemp-control.png",
+      "summary": "The study evaluated the effects of spray water pH adjustment on waterhemp control in a corn herbicide program.\n\nKey findings:\n- Adding a pH-lowering adjuvant (AlpHa Shot) reduced spray water pH from 7.5 to 5.8\n- This pH adjustment improved waterhemp control by 10% at 24 days after treatment (DAT) and 7% at 112 DAT\n- Waterhemp density decreased by 64% and biomass was reduced by 55% in the pH-adjusted treatments\n- Timing of mixing the pH adjuster (6 days prior vs. at time of spraying) did not affect results\n- The benefits of pH adjustment were seen at both full and half rates of the herbicide Acuron GT\n\nThe article emphasizes that since most spray solutions are over 95% water, water quality can significantly impact herbicide performance. Acidic or alkaline water, and dissolved minerals, can reduce herbicide effectiveness. Simple water testing and use of pH-buffering adjuvants can help manage these issues.\n\nThe advice for applicators is that improving spray water pH is an easy but impactful step to enhance weed control, especially for problem weeds like waterhemp. Proper water conditioning can protect herbicide performance regardless of application timing or herbicide rate.",
+      "summaryTimestamp": 1771360349085
+    },
+    {
+      "id": "f60268f157ff1c4b",
+      "title": "U of I Extension Offering Master Naturalist Training",
+      "link": "https://www.morningagclips.com/u-of-i-extension-offering-master-naturalist-training/",
+      "description": "OREGON, Ill.— Individuals who are passionate about nature, conservation, and strengthening their communities are invited to apply for the Illinois Master Naturalist Program, now accepting registrations for its Spring 2026 training cohort. Pre‑registration is required by March 13. Contact Program Coordinator Connie Handel at cahandel@illinois.edu. The Illinois Master Naturalist Program connects residents with the natural world by [&#8230;] The post U of I Extension Offering Master Naturalist Trai",
+      "date": "Tue, 17 Feb 2026 20:13:48 +0000",
+      "timestamp": 1771359228000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "https://www.morningagclips.com/wp-content/uploads/2026/02/unnamed-2026-02-17T143433.327-222x300.png",
+      "summary": "The University of Illinois Extension is offering Master Naturalist training for the Spring 2026 cohort. Pre-registration is required by March 13. The training will be held on Mondays from 1 to 5 p.m. from March 30 to June 1 at the Kickapoo Mud Creek Nature Conservancy in Oregon, Illinois. There will also be a couple of Saturday field studies. The training is open to adults 18 and up, with a $250 fee. \n\nThe in-person training program covers topics such as botany, climate, forestry, geology, mammals, birds, insects, prairies, and urban and agricultural systems. To become a certified Master Naturalist, applicants must complete additional steps, including an interview, background checks, an online child-protection training, and reference submissions.\n\nGraduates of the program volunteer across a wide range of conservation and education efforts, including managing and restoring natural areas, guiding tours and educational talks, leading youth programs, promoting pollinator conservation, monitoring invasive species, and advocating for community environmental needs. For more information or to request reasonable accommodation, contact Program Coordinator Connie Handel at the provided email address or phone number.",
+      "summaryTimestamp": 1771360354182
+    },
+    {
+      "id": "a067003cffd522bc",
+      "title": "Pork Cares Farm Impact Reports help protect producers’ future",
+      "link": "https://www.brownfieldagnews.com/news/pork-cares-farm-impact-reports-help-protect-producers-future/",
+      "description": "A leader with the National Pork Board says protecting producers’ freedom to operate continues to be one of their long-term goals. Jamie Burr, chief sustainability officer, says their organization helps farmers utilize Pork Cares Farm Impact Reports. He says the reports foster valuable supply chain partnerships and elevate pork’s reputation as both nutritious and planet-friendly. [&#8230;] The post Pork Cares Farm Impact Reports help protect producers’ future appeared first on Brownfield Ag News.",
+      "date": "Tue, 17 Feb 2026 19:49:58 +0000",
+      "timestamp": 1771357798000,
       "source": "Brownfield",
       "category": "industry",
       "icon": "📻",
       "thumbnail": "",
-      "summary": "The USDA reported a mostly positive week for U.S. agricultural export inspections:\n\n- Soybean and sorghum exports saw week-over-week and year-over-year improvements, as purchases made earlier in the marketing year by China start to leave U.S. ports.\n- Wheat exports were down on the week but up on the year, reflecting solid demand from several key U.S. customers.\n- Corn export inspections remained flat.\n\nThe positive trends in soybean and sorghum exports are due to increased purchases by China earlier in the marketing year. This is a good sign for farmers, as it indicates continued strong global demand for these crops.\n\nWheat exports also remain solid, driven by demand from major U.S. trading partners. However, corn exports were unchanged from the previous week.\n\nOverall, the data suggests an improved pace of agricultural exports, particularly for soybeans and sorghum, which should benefit U.S. farmers. Continued strong international demand will be crucial as farmers plan for the upcoming growing season.",
-      "summaryTimestamp": 1771354363627
+      "summary": "The National Pork Board's Pork Cares Farm Impact Reports help protect pork producers' freedom to operate. Jamie Burr, the Chief Sustainability Officer, states that these reports foster valuable supply chain partnerships and elevate pork's reputation as a nutritious and environmentally-friendly product. The reports aim to safeguard pork producers' ability to operate in the long term.",
+      "summaryTimestamp": 1771360355962
+    },
+    {
+      "id": "3b9da7617f832c5d",
+      "title": "United Soybean Board CEO resigns",
+      "link": "https://www.brownfieldagnews.com/news/united-soybean-board-ceo-resigns/",
+      "description": "The CEO of the United Soybean Board has resigned from his leadership role effective immediately. Lucas Lentsch has been with the checkoff for two years prior to leaving his post. Darrly Chatman, executive vice president, compliance, has been named interim CEO. In a statement to Brownfield, USB says it will begin a comprehensive search for [&#8230;] The post United Soybean Board CEO resigns appeared first on Brownfield Ag News.",
+      "date": "Tue, 17 Feb 2026 19:31:28 +0000",
+      "timestamp": 1771356688000,
+      "source": "Brownfield",
+      "category": "industry",
+      "icon": "📻",
+      "thumbnail": "",
+      "summary": "Lucas Lentsch has resigned as CEO of the United Soybean Board (USB) effective immediately. Lentsch had been with the organization for 2 years prior to leaving his position. Darryl Chatman, USB's executive vice president of compliance, has been named interim CEO. USB states it will begin a comprehensive search to find a permanent replacement for the CEO role.",
+      "summaryTimestamp": 1771360357685
+    },
+    {
+      "id": "c9b82c39826d4dac",
+      "title": "Bayer proposes $7.25B Roundup cancer claims settlement",
+      "link": "https://www.brownfieldagnews.com/news/bayer-proposes-7-25b-roundup-cancer-claims-settlement/",
+      "description": "Bayer has proposed a $7.25 billion class settlement to resolve lawsuits that claim that its weed-killer Roundup causes cancer. During an investor and media call on Tuesday, Bill Dodero, head of litigation, said the agreement clears up numerous legal questions. “By that, we mean addressing all of the present and potential claims of non-Hodkins Lympohma, [&#8230;] The post Bayer proposes $7.25B Roundup cancer claims settlement appeared first on Brownfield Ag News.",
+      "date": "Tue, 17 Feb 2026 19:29:05 +0000",
+      "timestamp": 1771356545000,
+      "source": "Brownfield",
+      "category": "industry",
+      "icon": "📻",
+      "thumbnail": "",
+      "summary": "Bayer has proposed a $7.25 billion class settlement to resolve lawsuits claiming that its weed-killer Roundup causes non-Hodgkin's lymphoma. This settlement aims to address all present and potential future claims related to Roundup. The agreement was announced during an investor and media call on Tuesday by Bill Dodero, Bayer's head of litigation. This settlement, if approved, would resolve numerous legal questions surrounding the Roundup cancer claims against Bayer.",
+      "summaryTimestamp": 1771360359662
+    },
+    {
+      "id": "52d2eec5126a7ba9",
+      "title": "Using data analytics to enhance farmer productivity",
+      "link": "https://www.brownfieldagnews.com/news/using-data-analytics-to-enhance-farmer-productivity/",
+      "description": "Jon Fridgen, Chief Science Officer for Advanced Agrilytics, says research shows farmers using agronomic tools to guide their input decisions have more consistent yield results. &#8220;With these growers, we&#8217;re seeing that yield distribution shift to the right, so that gives us the yield increase,&#8221; he says. &#8220;In the case of corn, we&#8217;re cutting about 30 bushels an [&#8230;] The post Using data analytics to enhance farmer productivity appeared first on Brownfield Ag News.",
+      "date": "Tue, 17 Feb 2026 19:23:05 +0000",
+      "timestamp": 1771356185000,
+      "source": "Brownfield",
+      "category": "industry",
+      "icon": "📻",
+      "thumbnail": "",
+      "summary": "Key points:\n\n- Jon Fridgen, Chief Science Officer for Advanced Agrilytics, states that farmers using agronomic tools to guide their input decisions see more consistent yield results.\n\n- With these farmers, the yield distribution shifts to the right, resulting in yield increases. \n\n- For corn, they are seeing yield increases of about 30 bushels per acre on average.\n\n- The use of data analytics and agronomic tools helps farmers make more informed decisions on their inputs, leading to these productivity gains.\n\n- Utilizing these tools and technologies can help farmers optimize their operations and boost their overall productivity and profitability.",
+      "summaryTimestamp": 1771360362906
+    },
+    {
+      "id": "ac69016615816c6c",
+      "title": "Sprout Before You Step Out: A Warm-Weather Jump on Seed Starting",
+      "link": "https://www.morningagclips.com/sprout-before-you-step-out-a-warm-weather-jump-on-seed-starting/",
+      "description": "ALEXANDRIA, Minn. &#8212; With this week’s unusually warm weather, and an above average forecast ahead, it’s no surprise gardeners are eager to kick-off spring. The good news? You can get started now. One of the easiest, most rewarding ways is starting seeds indoors. It’s simple, affordable, and gives long-season veggies and annual flowers the head [&#8230;] The post Sprout Before You Step Out: A Warm-Weather Jump on Seed Starting appeared first on Morning Ag Clips.",
+      "date": "Tue, 17 Feb 2026 19:10:58 +0000",
+      "timestamp": 1771355458000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "",
+      "summary": "Key points:\n\n- With this week's unusually warm weather and an above-average forecast, gardeners are eager to start spring gardening early.\n- One easy and rewarding way to get a jump-start is by starting seeds indoors. This provides more variety than nursery transplants, is budget-friendly, and allows fresh seeds to germinate better.\n- The ideal indoor spot for seed starting has steady temperatures, electrical outlets for lights, and space for trays/shelves. Seedlings need sterile seed-starting mix, gentle moisture, and steady warmth around 60-70°F.\n- After sprouting, seedlings require bright, consistent light, light regular watering, and a 7-10 day \"hardening off\" process to transition them outdoors.\n- Recommended beginner seed-starting supplies include seed packets, seed trays, seed-starting mix, spray bottle, LED/fluorescent lights, and optional heat mats.\n- Even if the yard still looks like winter, starting seeds indoors can bring spring gardening closer with just a few supplies and an hour of prep.\n\nThe article is published on February 17, 2026 by the University of Minnesota Extension. It was written by Robin Trott.",
+      "summaryTimestamp": 1771360378154
+    },
+    {
+      "id": "6695d4d1f80e22e7",
+      "title": "Iowans Call on Congress &#038; President Trump to Finish Job for E15",
+      "link": "https://www.morningagclips.com/iowans-call-on-congress-president-trump-to-finish-job-for-e15/",
+      "description": "JOHNSTON, Iowa &#8212; Today, the Iowa Corn Growers Association (ICGA) and Iowa Renewable Fuels Association (IRFA) called on Congress and President Trump to finally approve nationwide, year-round E15. The recently formed Rural Domestic Energy Council was scheduled to release an E15 approval framework by February 15, but no announcements have been made. “This is no [&#8230;] The post Iowans Call on Congress &#038; President Trump to Finish Job for E15 appeared first on Morning Ag Clips.",
+      "date": "Tue, 17 Feb 2026 19:02:54 +0000",
+      "timestamp": 1771354974000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "",
+      "summary": "The recently formed Rural Domestic Energy Council was expected to release an E15 approval framework by February 15, 2026, but has not done so. \n\nIRFA Executive Director Monte Shaw stated that farmers and consumers are counting on the government to finalize E15 approval, and that a small number of foreign-owned oil refiners should not be allowed to block an E15 agreement supported by most farmers, retailers, refiners, and consumers. A recent study showed that nationwide E15 adoption would provide robust near-term demand and help return corn prices to profitable levels for farmers.\n\nICGA President Mark Mueller called on the Energy Council to release its E15 solutions, saying farmers need market access for their ethanol and consumers deserve the right to choose E15. The article notes that the time is now to get E15 legislation passed, which would benefit both American farmers and consumers.\n\nThe article provides background that the National Corn Growers Association previously supported legislation in 2025 to extend year-round consumer access to E15 fuels. It also mentions that California legalized the sale of E15 in October 2025, making it now legal in all 50 U.S. states.",
+      "summaryTimestamp": 1771360381824
+    },
+    {
+      "id": "139a62f466b5097a",
+      "title": "DCA Offers Communications Internship Opportunity for Summer 2026",
+      "link": "https://www.morningagclips.com/dca-offers-communications-internship-opportunity-for-summer-2026/",
+      "description": "GEORGETOWN, Del. &#8212; Delmarva Chicken Association, based in Georgetown, Del., is seeking an enthusiastic college or university student to join the trade association as a paid summer communications intern. The ideal candidate possesses social media engagement skills and wants to learn more about the chicken community on Delmarva and the careers involved in it. This [&#8230;] The post DCA Offers Communications Internship Opportunity for Summer 2026 appeared first on Morning Ag Clips.",
+      "date": "Tue, 17 Feb 2026 18:55:40 +0000",
+      "timestamp": 1771354540000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "",
+      "summary": "The ideal candidate should possess social media engagement skills and be interested in learning more about the chicken industry on Delmarva.\n\nThe internship responsibilities include:\n- Creating video, digital, and print content to highlight stories of Delmarva chicken growers, allied businesses, and those who prepare chicken\n- Assisting with content creation for social media platforms like Facebook, LinkedIn, and YouTube\n- Helping plan and execute a public relations campaign\n- Representing DCA at community/educational events\n- Reviewing DCA's archives for potential social media and member-communication content\n- Assisting with database management and learning the GrowthZone CMS platform\n\nRequirements for the internship include:\n- Undergraduate student with at least one year of completed study\n- Excellent written, verbal, and presentation skills\n- Ability to take initiative and manage multiple priorities/projects\n- Photography/videography skills preferred\n- Must have a vehicle and valid driver's license (mileage reimbursement provided)\n\nThe internship is a 10-week, 15-22.5 hours per week schedule (2-3 workdays per week) with a pay rate of $15 per hour, plus mileage reimbursement. Occasional weekend work may be required. The internship would begin either June 8 or June 15, 2026.\n\nApplicants should send a cover letter and resume to James Fisher, DCA's communications manager, via email ([email protected]) by March 27, 2026.\n\nDCA is a trade association that has represented the Delmarva chicken industry for over 75 years, with a vision to be the most-respected chicken organization in the United States.",
+      "summaryTimestamp": 1771360400453
     },
     {
       "id": "22938f32ed9844b6",
@@ -85,20 +155,6 @@
       "summaryTimestamp": 1771354366628
     },
     {
-      "id": "92df03eb3a59d3b4",
-      "title": "Butter steady, whey and cheese higher Tuesday",
-      "link": "https://www.brownfieldagnews.com/market-news/butter-steady-whey-and-cheese-higher-tuesday/",
-      "description": "Cash dairy prices&#160;were&#160;steady&#160;to higher&#160;on&#160;Tuesday&#160;except for powder&#160;at the&#160;Chicago Mercantile Exchange.&#160;&#160;&#160; After&#160;a long period&#160;of unchanged prices, dry whey&#160;was up $0.02&#160;at&#160;$0.74.&#160;&#160;No sales were recorded.&#160; Forty-pound cheese blocks were&#160;up $0.0625&#160;at&#160;$1.45.&#160;&#160;Six&#160;sales were recorded, ranging from $1.4150 to $1.45.&#160; Cheese barrels&#160;were up $0.01 after holding stead",
-      "date": "Tue, 17 Feb 2026 18:13:45 +0000",
-      "timestamp": 1771352025000,
-      "source": "Brownfield",
-      "category": "industry",
-      "icon": "📻",
-      "thumbnail": "",
-      "summary": "Cash dairy prices were steady to higher on Tuesday at the Chicago Mercantile Exchange. Dry whey increased by $0.02 to $0.74, with no sales recorded. Forty-pound cheese blocks rose by $0.0625 to $1.45, with six sales ranging from $1.4150 to $1.45. Cheese barrels increased by $0.01 after holding steady. Butter prices remained unchanged.",
-      "summaryTimestamp": 1771354369086
-    },
-    {
       "id": "ba80a7878fac97b7",
       "title": "January 2026 meat department sales rise 2.6%",
       "link": "<![CDATA[https://www.feedstuffs.com/livestock-and-poultry-market-news/january-2026-meat-department-sales-rise-2-6-]]>",
@@ -111,20 +167,6 @@
       "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/bltf74271408247416f/6788311ccf722a256784f296/210_Analytics_Retail_Meat_Sales_Summary.jpg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
       "summary": "Meat department sales rose 2.6% in January 2026 compared to January 2025, according to data from Feedstuffs. This was driven by a 31% surge in sales and sold-out meat cases during the week ending Jan. 25, due to an Arctic storm that hit many states.\n\nThe spike in meat sales during the storm week accounted for 42% of the month's total increase. The top-selling categories were ground beef (up 27%), chicken breasts (up 22%), and pork chops (up 19%).\n\nPrices for beef and pork increased by an average of 4.3% in January 2026 compared to the previous year, while chicken prices remained flat. Analysts expect the higher meat prices to continue through the first half of 2026 due to supply chain disruptions and increased feed and labor costs for producers.\n\nThe surge in meat sales during the storm provided a much-needed boost for retailers and processors after a slow holiday season. Industry groups are recommending that farmers and ranchers focus on improving supply chain resilience to better meet unexpected spikes in demand.",
       "summaryTimestamp": 1771354372021
-    },
-    {
-      "id": "2ceee1102c00c2b6",
-      "title": "Midday cash livestock markets",
-      "link": "https://www.brownfieldagnews.com/market-news/midday-cash-livestock-markets-2711/",
-      "description": "Direct cash cattle trade activity is quiet. Bids and asking prices haven’t surfaced. If business follows the trend of recent weeks, significant trade volume will likely be delayed until sometime Thursday or Friday. At the Joplin Regional Stockyards in Missouri, feeder steers weighing less than 800 pounds were $5 to $20 higher.&#160; Yearling steers weighing [&#8230;] The post Midday cash livestock markets appeared first on Brownfield Ag News.",
-      "date": "Tue, 17 Feb 2026 17:58:58 +0000",
-      "timestamp": 1771351138000,
-      "source": "Brownfield",
-      "category": "industry",
-      "icon": "📻",
-      "thumbnail": "",
-      "summary": "The midday cash livestock markets report shows:\n\n- Direct cash cattle trade activity is slow, with bids and asking prices not yet emerging. Significant trade volume is likely to be delayed until Thursday or Friday.\n\n- At the Joplin Regional Stockyards in Missouri, feeder steers weighing less than 800 pounds were $5 to $20 higher.\n\n- Yearling steers of unspecified weight at Joplin Regional Stockyards saw no additional details provided.\n\nThe report provides a snapshot of the current cash livestock market conditions, indicating quiet trading for direct cattle sales but higher prices for lighter weight feeder steers in the regional Joplin market. No other specific numbers, dates, or impacts were included in the brief update.",
-      "summaryTimestamp": 1771354374467
     },
     {
       "id": "2d8da836bc34ff3e",
@@ -141,24 +183,10 @@
       "summaryTimestamp": 1771354377311
     },
     {
-      "id": "ef36602e16b78b08",
-      "title": "Dairy Margin Coverage signup slow in the dairy state",
-      "link": "https://www.brownfieldagnews.com/news/dairy-margin-coverage-signup-slow-in-the-dairy-state/",
-      "description": "Most dairy producers in Wisconsin have not yet signed up for the Dairy Margin Coverage program. Katie Detra at Wisconsin FSA tells Brownfield that as of today, February 17th, only 1,616 producers have completed the DMC signup process.&#160; That’s only 31.5% of the state’s 5,116 licensed dairy farms. Detra is encouraging dairy producers to enroll [&#8230;] The post Dairy Margin Coverage signup slow in the dairy state appeared first on Brownfield Ag News.",
-      "date": "Tue, 17 Feb 2026 17:37:08 +0000",
-      "timestamp": 1771349828000,
-      "source": "Brownfield",
-      "category": "industry",
-      "icon": "📻",
-      "thumbnail": "",
-      "summary": "The Dairy Margin Coverage (DMC) program signup in Wisconsin has been slow so far. As of February 17th, only 1,616 out of the state's 5,116 licensed dairy farms (31.5%) have completed the DMC signup process. Katie Detra from the Wisconsin Farm Service Agency is encouraging more dairy producers in the state to enroll in the program before the deadline. The DMC program provides financial assistance to dairy farmers when the difference between the all-milk price and the average feed cost falls below a certain margin. Increased participation in the program could help more Wisconsin dairy farmers manage risk and stabilize their incomes during periods of low milk prices and high feed costs.",
-      "summaryTimestamp": 1771354379444
-    },
-    {
       "id": "7b595c01d09cc952",
-      "title": "Pa. to conduct first-ever state-wide firefly inventory",
+      "title": "Pa. to conduct first-ever statewide firefly inventory",
       "link": "https://www.farmanddairy.com/news/pa-to-conduct-first-ever-state-wide-firefly-inventory/904519.html",
-      "description": "There is nothing quite like a summer night lit up by lightning bugs. To ensure future generations get to enjoy that same magic, Pennsylvania is embarking on its first-ever statewide firefly inventory. Discover how this inventory will shape future conservation policies for PA's state insect and support local \"firefly tourism.\" The post Pa. to conduct first-ever state-wide firefly inventory appeared first on Farm and Dairy.",
+      "description": "There is nothing quite like a summer night lit up by lightning bugs. To ensure future generations get to enjoy that same magic, Pennsylvania is embarking on its first-ever statewide firefly inventory. Discover how this inventory will shape future conservation policies for PA's state insect and support local \"firefly tourism.\" The post Pa. to conduct first-ever statewide firefly inventory appeared first on Farm and Dairy.",
       "date": "Tue, 17 Feb 2026 17:23:08 +0000",
       "timestamp": 1771348988000,
       "source": "Farm and Dairy",
@@ -181,34 +209,6 @@
       "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/blt52a5911b017ebea2/69949d95f67cb60008335537/vet_logging_medicine_at_hog_farm_-NPB.jpg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
       "summary": "The U.S. Food and Drug Administration (FDA) has finalized guidance GFI #273, which provides recommendations on the duration of use for medically important antimicrobial drugs in food-producing animals. The guidance aims to promote the judicious use of antimicrobials and reduce the risk of antimicrobial resistance.\n\nThe key points are:\n- The guidance defines \"short-term\", \"medium-term\", and \"long-term\" durations of use for antimicrobial drugs, with short-term being 2 weeks or less, medium-term being 2 to 4 weeks, and long-term being more than 4 weeks.\n- The guidance recommends limiting the use of medically important antimicrobials to the shortest duration necessary to address the disease or condition.\n- Veterinarians should document the rationale for the selected duration of use, considering factors like disease severity, drug pharmacokinetics, and risks of resistance.\n- The guidance applies to antimicrobial new animal drug applications and supplements submitted to the FDA on or after January 3, 2024.\n\nThis guidance is expected to help farmers and veterinarians use antimicrobials more judiciously, which can reduce the development of antimicrobial resistance and protect the long-term effectiveness of these important drugs for both animal and human health.",
       "summaryTimestamp": 1771354386033
-    },
-    {
-      "id": "14c792b9e84f9dcf",
-      "title": "Nominations for Herter-O’Neal Business Scholarship",
-      "link": "https://www.morningagclips.com/nominations-for-herter-oneal-business-scholarship/",
-      "description": "LOUISBURG, N.C. &#8212; Nominations are being accepted for a $750 scholarship offered by the North Carolina Cooperative Extension Administrative Professionals Association (NCCEAPA) through March 20, 2026. The scholarship is available to North Carolina residents pursuing a college degree (Associates and/or Bachelors) or a diploma program that results in a college degree (Associates and/or Bachelors) in [&#8230;] The post Nominations for Herter-O’Neal Business Scholarship appeared first on Morning",
-      "date": "Tue, 17 Feb 2026 16:52:59 +0000",
-      "timestamp": 1771347179000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "",
-      "summary": "Nominations for the Herter-O'Neal Business Scholarship are being accepted through March 20, 2026. \n\nThe scholarship honors the work and dedication of Edith Herter and Frances O'Neal, who co-founded the NCCEAPA in 1973. Applicants must be enrolled to attend classes at a college during the 2026-2027 school year. \n\nQualified applicants can obtain an application packet from their local community college's financial aid office. Additional information is available by contacting the N.C. Cooperative Extension, Franklin County Center at 919-496-3344 or visiting franklin.ces.ncsu.edu.",
-      "summaryTimestamp": 1771354389286
-    },
-    {
-      "id": "36e620d2835c4cf4",
-      "title": "Cropland to Pasture: Linneus Workshop Offers the How &#038; Why",
-      "link": "https://www.morningagclips.com/cropland-to-pasture-linneus-workshop-offers-the-how-why/",
-      "description": "LINNEUS, Mo. – University of Missouri Extension and USDA Natural Resources Conservation Service specialists will join with the Alliance for Grassland Renewal to present a March 3 workshop on how to convert cropland to pasture. The event is 9 a.m. to 3 p.m. at MU’s Cornett Research Farm at Linneus. The 1,200-acre research farm helps to develop [&#8230;] The post Cropland to Pasture: Linneus Workshop Offers the How &#038; Why appeared first on Morning Ag Clips.",
-      "date": "Tue, 17 Feb 2026 16:38:27 +0000",
-      "timestamp": 1771346307000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "",
-      "summary": "The 6-hour event will include classroom sessions and hands-on demonstrations to help producers establish systems that benefit herd health and profits. \n\nKey details:\n- Event date: March 3, 2026\n- Location: Linneus, Missouri at the 1,200-acre MU Cornett Research Farm\n- Hosts: University of Missouri Extension, USDA NRCS, Alliance for Grassland Renewal\n- Topics covered: Soil health, regenerative agriculture, mixed grass stands, fencing, water options, economics of converting cropland to pasture\n- Presenters: MU Extension beef nutritionist Eric Bailey, forage specialists Harley Naumann and Carson Roberts, USDA NRCS' Mark Green, agricultural business specialist Wesley Tucker\n- Registration: https://bit.ly/4rlRhZD\n\nThe workshop aims to help producers take advantage of high beef cattle prices and low crop profit margins by transitioning marginal cropland back to pasture. Experts will cover establishing perennial grasses, improving infrastructure like fencing and water, and the financial considerations and government incentives.",
-      "summaryTimestamp": 1771347176836
     },
     {
       "id": "195c4b1cd8c59fc2",
@@ -711,8 +711,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "Key Points:\n\n- This winter has seen erratic weather in Iowa, with temperatures swinging from -30°F wind chills to unseasonably warm 50s.\n- Over the next week, temperatures are expected to stay above freezing during the day and below freezing at night, creating a natural freeze-thaw cycle that signals the transition to spring.\n- This weather opens an opportunity for frost seeding - broadcasting or overseeding legumes into a thinning pasture or small grain stand. Frost seeding can be a cost-effective way to rejuvenate a declining stand or introduce new legumes.\n- The freeze-thaw cycle helps work the seed into the soil, improving seed-to-soil contact. However, success depends heavily on timing, soil conditions, and the condition of the existing stand.\n- Shelby Gruss, an assistant professor and forage extension specialist at Iowa State University, joined the department in November 2023. Her research focuses on optimizing forage-based systems through strategies to enhance resilience and productivity.",
-      "summaryTimestamp": 1771186870281
+      "summary": "Key Takeaways:\n\n1. This winter has seen erratic weather in Iowa, with temperatures swinging from -30°F wind chills to unseasonably warm 50s.\n2. Over the next week, temperatures are expected to stay above freezing during the day and drop below freezing at night, creating ideal conditions for frost seeding.\n3. Frost seeding involves broadcasting or overseeding legumes into a thinning pasture or small grain stand, taking advantage of the freeze-thaw cycle to work the seed into the soil.\n4. Frost seeding can be a cost-effective way to rejuvenate a declining stand or introduce new legumes, but success depends on timing, soil conditions, and the condition of the existing stand.\n5. For more information on best practices for frost seeding, readers are encouraged to review the \"Frosting Seeding Legumes\" article in the Encyclopedia.\n6. The article was written by Shelby Gruss, an assistant professor and forage extension specialist at Iowa State University, who joined the Department of Agronomy in November 2023.",
+      "summaryTimestamp": 1771360403251
     },
     {
       "id": "9a2b8ede909ba045",
@@ -725,8 +725,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "Frost seeding can be a cost-effective way to revitalize a diminishing forage stand or introduce legumes. Timing is critical, with frost seeding typically done between mid-February and early March to coincide with freeze-thaw cycles that help incorporate the seed into the soil. \n\nA thick thatch can hinder success, so it's recommended to closely graze or hay the stand beforehand to open the canopy. Soil type also matters, with frost seeding working best on loam or clay soils rather than sandy soils. Adequate spring moisture is vital for establishing a healthy stand after frost seeding.\n\nThe article was written by Dr. Shelby Gruss, an assistant professor and forage extension specialist who joined Iowa State University in November 2023. Her research focuses on optimizing forage systems through strategies like diversification with cover crops and intercropping.",
-      "summaryTimestamp": 1771186873064
+      "summary": "Key Highlights:\n\n- Frost seeding involves strategically broadcasting or overseeding legumes, like red clover, into a tired pasture or small grain stand to revitalize the stand in a cost-effective way.\n\n- Timing is critical - frost seeding is typically done between mid-February to early March, coinciding with the freeze-thaw cycle, which helps incorporate the seed into the soil.\n\n- Soil conditions are important - a thick thatch can hinder seed-to-soil contact, so it's recommended to closely hay or overgraze in the fall/winter prior to frost seeding. Sandy soils are less ideal as they don't expand/contract as much during freeze-thaw.\n\n- Adequate spring moisture is vital for establishing a healthy stand after frost seeding. The success of frost seeded stands depends significantly on spring moisture levels.\n\n- The author is Dr. Shelby Gruss, an assistant professor and forage extension specialist who joined Iowa State University in November 2023. Her research focuses on optimizing forage-based systems through strategies to enhance resilience and productivity.",
+      "summaryTimestamp": 1771360406011
     },
     {
       "id": "13c53c2bee581a4a",
@@ -879,8 +879,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg6ieA_IYkmsgSGiBba_yqGUhpf2mmJ6ytrBrbkms7kKGAe4Rv_Qxss8noLdDw6Hf4G-YeKRi0ngwzcQrRBp_sD2V4saGhsUfphTQkHPY6BZn4ILme8b1dazjeZR_KJAV1bB3gztkBubebqp2rlgsHIgA9M87914H1ruIrnsQ1_RcVVhWjoVPG0CkT4cLxE/s72-w640-h322-c/N%20Con.jpg",
-      "summary": "Key details:\n\n- The 12th annual Nitrogen Conference is taking place on Tuesday, February 17, 2026 in St. Cloud, Minnesota. \n\n- The conference will explore how nitrogen management impacts crop production, the environment, and soil productivity. It will feature research updates and a farmer panel on nitrogen management.\n\n- Registration cost is $20. Attendees can participate in-person or virtually (with lunch included for in-person).\n\n- Presentations will cover topics like the MRTN calculator, cover crop impacts, precision irrigation, the PSNT, biologicals for nutrient management, soil organic matter, and nitrate issues in water.\n\n- Certified Crop Advisers can earn continuing education credits by attending.\n\n- To stay up to date, farmers can subscribe to the Nutrient Management Podcast, the Minnesota Crop News email, the UMN Extension Nutrient Management YouTube channel, and Facebook page.",
-      "summaryTimestamp": 1771186877938
+      "summary": "The 12th annual Nitrogen Conference is taking place on Tuesday, February 17, 2026, in St. Cloud, Minnesota. The conference will explore how nitrogen management impacts crop production, the environment, and soil productivity. It will feature research updates and a farmer panel on nitrogen management.\n\nKey details:\n- Date: Tuesday, February 17, 2026\n- Location: St. Cloud, Minnesota\n- Cost: $20\n- Format: In-person and virtual attendance options available\n- Lunch included for in-person attendees\n\nPresentations will cover topics such as:\n- The MRTN calculator for nitrogen management and crop production\n- In-season mineralization of cover crop residue in sugar beet\n- Precision irrigation and nitrogen management\n- Using the PSNT to predict in-season fertilizer needs after fall-applied manure\n- The role of soil organic matter in agricultural nitrogen sustainability\n- An overview of nitrates in water issues in southeast Minnesota\n- Minnesota's nutrient reduction strategy and nitrogen priorities for water quality\n- Evaluating nitrogen inhibitors\n\nCertified Crop Advisers can earn continuing education credits by attending the conference.\n\nFor more information or to register, visit the UMN Crop News website or contact the organizers at nutmgmt@umn.edu.",
+      "summaryTimestamp": 1771360409195
     },
     {
       "id": "7b98c49fd250be30",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 19,
-  "updated": "2026-02-17T18:53:25.049Z"
+  "summariesGenerated": 13,
+  "updated": "2026-02-17T20:33:29.395Z"
 }
