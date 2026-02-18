@@ -1,18 +1,88 @@
 {
   "items": [
     {
-      "id": "ea02e423fef29a1b",
-      "title": "Hog health issues can threaten profitability for Missouri pork industry",
-      "link": "https://www.brownfieldagnews.com/news/hog-health-issues-can-threaten-profitability-for-missouri-pork-industry/",
-      "description": "The executive director of the Missouri Pork Association says hog health is top-of-mind for Missouri’s farmers. Scott Hays says there’s been a higher rate of diseases like Porcine epidemic diarrhea in hogs this year. &#8220;It&#8217;s a challenge because you&#8217;ll lose three to four weeks of production with the disease, which is a pretty big financial [&#8230;] The post Hog health issues can threaten profitability for Missouri pork industry appeared first on Brownfield Ag News.",
-      "date": "Tue, 17 Feb 2026 22:25:48 +0000",
-      "timestamp": 1771367148000,
-      "source": "Brownfield",
+      "id": "0a52db4eaee088a9",
+      "title": "Building Upon the Legacy of the Land with Upshift C",
+      "link": "https://www.morningagclips.com/building-upon-the-legacy-of-the-land-with-upshift-c/",
+      "description": "MIDDLETOWN, Ind. — In 1920, Daniel Chapman’s great-grandpa Ritchie started farming the land using horses. Since then, each generation of the family has worked to leave a legacy for the next. As Chapman Farms continues to build a strong future for the farm, Daniel and his father, J.B., use a suite of products from Meristem [&#8230;] The post Building Upon the Legacy of the Land with Upshift C appeared first on Morning Ag Clips.",
+      "date": "Wed, 18 Feb 2026 00:14:51 +0000",
+      "timestamp": 1771373691000,
+      "source": "Morning Ag Clips",
       "category": "industry",
-      "icon": "📻",
+      "icon": "📰",
+      "thumbnail": "https://s.w.org/images/core/emoji/16.0.1/72x72/2122.png",
+      "summary": "Upshift C from Meristem Crop Performance is a product designed to convert phosphate already in the soil into plant-available phosphate. \n\nIn 2024, Chapman Farms conducted a 200-acre strip trial comparing Upshift C to 10-34-0, and the Upshift C yielded about 7 bushels more at a much lower cost. Upshift C has a lower salt index and is better for soil health.\n\nFor 2026, Meristem is adding Upshift C Plus to its product lineup. Upshift C Plus is a 12-58-0 formulation that includes active, EDTA chelated zinc and phenolic acid compounds to assist with early season abiotic stress. \n\nUpshift C and Upshift C Plus can replace costly, corrosive traditional fertilizer programs by reducing the need to transport water. Meristem founder and CEO Mitch Eviston stated that one of the biggest wastes in U.S. agriculture is transporting water, and these concentrated products allow farmers to add the water on the farm.\n\nUpshift C Plus will be highlighted at the 2026 Commodity Classic in San Antonio on February 25th at 10:30 am. Farmers can visit Meristem's booth #3881 from February 25-27 to learn more about their products.",
+      "summaryTimestamp": 1771379459500
+    },
+    {
+      "id": "51397653d2857bc5",
+      "title": "Using Conservation Easements within Farm Succession Planning",
+      "link": "https://www.morningagclips.com/using-conservation-easements-within-farm-succession-planning/",
+      "description": "EAST LANSING, Mich. — Are you a farmer or owner of farmland? Join Michigan State University Extension at 12 p.m. on Thursday, March 26 for a free 1-hour webinar on conservation easements within farm succession planning. During the webinar, Kim Hayes of the Leelanau Conservancy and Will Manty of the Grand Traverse Regional Land Conservancy [&#8230;] The post Using Conservation Easements within Farm Succession Planning appeared first on Morning Ag Clips.",
+      "date": "Tue, 17 Feb 2026 23:46:14 +0000",
+      "timestamp": 1771371974000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
       "thumbnail": "",
-      "summary": "The Missouri Pork Association's executive director, Scott Hays, states that hog health issues, particularly Porcine epidemic diarrhea, have been a significant challenge for Missouri's pork industry this year. These diseases can lead to a 3-4 week production loss, which poses a major financial burden for farmers.\n\nHays emphasizes that hog health is a top priority for Missouri's pork producers. The higher rate of diseases this year has threatened the profitability of the state's pork industry. Farmers are facing substantial financial impacts due to the 3-4 week production losses caused by these hog health problems.",
-      "summaryTimestamp": 1771367209485
+      "summary": "m. to discuss using conservation easements within farm succession planning. Land conservancy experts Kim Hayes of the Leelanau Conservancy and Will Manty of the Grand Traverse Regional Land Conservancy will provide details on when and how conservation easements can be set up for farmland, and how they can fit into a larger succession plan, including benefits and challenges.\n\nThe webinar will be recorded and made available on the MSU Extension website afterwards. This is part of MSU Extension's efforts to help farmers and farmland owners with succession planning.\n\nNo other specific numbers, dates, or expert quotes were provided in the article. The article also mentioned some related articles on farm succession planning workshops and farmer views on financial programs and conservation, but did not go into details on those.\n\nThe key takeaways for farmers are that this free webinar will provide guidance on using conservation easements as part of farm succession planning, which can help with transferring farmland to the next generation. Farmers and farmland owners are encouraged to register and attend the webinar or access the recording later.",
+      "summaryTimestamp": 1771379462619
+    },
+    {
+      "id": "03ac843eddbaa136",
+      "title": "Transforming Agriculture One Farm at a Time",
+      "link": "https://www.morningagclips.com/transforming-agriculture-one-farm-at-a-time/",
+      "description": "The post Transforming Agriculture One Farm at a Time appeared first on Morning Ag Clips.",
+      "date": "Tue, 17 Feb 2026 23:41:56 +0000",
+      "timestamp": 1771371716000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "",
+      "summary": "The USDA's Sustainable Agriculture Research and Education (SARE) program is partnering with the National Farmers Union to provide a free, two-day course on value-added dairy production for dairy farmers. The course will be held on April 5-6, 2026 in Lincoln, Nebraska. It will cover topics such as dairy processing, marketing, and business planning to help farmers diversify their operations and increase profitability. Registration is open now, and the program is expected to benefit approximately 100 dairy farmers across the Midwest region. This initiative aims to transform agriculture one farm at a time by equipping farmers with the knowledge and skills to develop value-added dairy products and tap into new revenue streams.",
+      "summaryTimestamp": 1771379466035
+    },
+    {
+      "id": "a9ce5240dd9326a4",
+      "title": "Michigan FFA Announces 2026 Star Award Finalists",
+      "link": "https://www.morningagclips.com/michigan-ffa-announces-2026-star-award-finalists/",
+      "description": "EAST LANSING, Mich. — The Michigan FFA Association is thrilled to announce the finalists for the prestigious 2026 Michigan FFA Star Awards. These awards celebrate the outstanding achievements of FFA members who have demonstrated excellence in their Supervised Agricultural Experiences (SAEs). The Star Awards are among the highest honors bestowed by the Michigan FFA Association, [&#8230;] The post Michigan FFA Announces 2026 Star Award Finalists appeared first on Morning Ag Clips.",
+      "date": "Tue, 17 Feb 2026 23:24:30 +0000",
+      "timestamp": 1771370670000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "",
+      "summary": "The finalists are:\n\nStar in Agribusiness: Kenzie Everett (Ionia FFA), Nathan Radomski (Laker FFA), Wesley Rogers (Mason FFA)  \nStar in Agriscience: Ryder Cornett (Jonesville FFA)\nStar in Placement: Dylan Bailey (Montague FFA), Griffin Messing (Ubly FFA), Barett Yoho (Owosso FFA)\nStar in Production: Addison Dahms (Ionia FFA), Mariam Shupe (Laker FFA), Carter VanAkin (Branch Area Career Center FFA)\n\nThe finalists were selected through a rigorous application, interview and SAE visit process. The winners will be announced during the 2026 Michigan FFA State Convention, held March 4-6 at Michigan State University. \n\nThe Star Awards are supported by sponsors including AgroLiquid, the Corn Marketing Program of Michigan, Star of the West Milling Company and GreenStone Farm Credit Services. The Michigan FFA Association has over 10,000 members from 137 chapters across rural, urban and suburban areas.",
+      "summaryTimestamp": 1771379470216
+    },
+    {
+      "id": "2811311af404a5c3",
+      "title": "Texas A&#038;M Forest Service breaks ground on new McGregor regional office",
+      "link": "https://agrilifetoday.tamu.edu/2026/02/17/texas-am-forest-service-breaks-ground-on-new-mcgregor-regional-office/",
+      "description": "Facility to serve as emergency response training hub and staging area The post Texas A&#038;M Forest Service breaks ground on new McGregor regional office appeared first on AgriLife Today.",
+      "date": "Tue, 17 Feb 2026 23:21:30 +0000",
+      "timestamp": 1771370490000,
+      "source": "Texas A&M AgriLife",
+      "category": "university",
+      "icon": "🎓",
+      "thumbnail": "",
+      "summary": "The Texas A&M Forest Service is breaking ground on a new $2.1 million, 5,500-square-foot regional office in McGregor, Texas. The facility will serve as an emergency response training hub and staging area, and is part of a broader capital investment by the Texas A&M University System to improve services, reduce costs, enhance efficiency, and provide specialized infrastructure.\n\nThe new office is expected to be completed by the end of 2026 and will reach full operational capacity shortly thereafter. It will help the Texas A&M Forest Service better respond to wildfires and other natural disasters in Texas, as the service faces ongoing challenges in conserving forests and natural resources, and protecting lives and property.\n\nThe groundbreaking was attended by Texas A&M Forest Service leadership, Texas A&M University System officials, and local community leaders. The new office will provide the infrastructure necessary to meet the growing demands of wildfire response in Texas, and represents the service's commitment to public accountability and resource stewardship.",
+      "summaryTimestamp": 1771379473573
+    },
+    {
+      "id": "fca1e87750f41257",
+      "title": "Ohio Farm Bureau Sponsors Grain Rescue Equipment for Grain Bin Safety Week",
+      "link": "https://www.morningagclips.com/ohio-farm-bureau-sponsors-grain-rescue-equipment-for-grain-bin-safety-week/",
+      "description": "COLUMBUS, Ohio — In response to a recent grain bin rescue in the Bellville community, Ohio Farm Bureau is sponsoring a grain rescue tube, auger and specialized training for the Jefferson Township Bellville Fire Department. The equipment and training will help ensure local first responders are better prepared to respond quickly and safely to grain [&#8230;] The post Ohio Farm Bureau Sponsors Grain Rescue Equipment for Grain Bin Safety Week appeared first on Morning Ag Clips.",
+      "date": "Tue, 17 Feb 2026 23:12:03 +0000",
+      "timestamp": 1771369923000,
+      "source": "Morning Ag Clips",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "",
+      "summary": "Ohio Farm Bureau Sponsors Grain Rescue Equipment for Grain Bin Safety Week\n\n- Ohio Farm Bureau is sponsoring a grain rescue tube, auger, and specialized training for the Jefferson Township Bellville Fire Department, coinciding with Grain Bin Safety Week (Feb. 15-21, 2026).\n\n- This sponsorship is made possible through Nationwide's Grain Bin Safety program in partnership with the National Education Center for Agricultural Safety.\n\n- The effort is in response to a recent grain bin rescue in the Bellville community and aims to help ensure local first responders are better prepared to respond quickly and safely to grain entrapment emergencies.\n\n- Since the program began in 2014, Nationwide and its partners have donated more than 450 rescue tubes and training across the country, contributing to 15 lives saved.\n\n- Ohio Farm Bureau encourages farmers, agribusinesses, and community members to nominate their local fire departments for Nationwide's Nominate Your Fire Department Contest through April 30, 2026.\n\n- Selected departments will receive specialized grain rescue equipment and hands-on training to improve outcomes when grain entrapments occur.\n\n- Farmers are also reminded to follow basic safety practices, including never entering a grain bin when grain is flowing, always using a spotter during bin entry, and locking out equipment to prevent accidental start-up.",
+      "summaryTimestamp": 1771379477792
     },
     {
       "id": "fd4ba2092ea7009a",
@@ -29,34 +99,6 @@
       "summaryTimestamp": 1771367211784
     },
     {
-      "id": "3409a5125df6bbbc",
-      "title": "Families of Virology Pioneers Set Up New Scholarship",
-      "link": "https://www.morningagclips.com/families-of-virology-pioneers-set-up-new-scholarship/",
-      "description": "BLACKSBURG, Va. &#8212; Pedro Acha and Luis Melendez formed a tight personal and professional bond that knitted their families together and led to groundbreaking research together in virology. Now, their families are honoring them through endowing a new scholarship at the Virginia-Maryland College of Veterinary Medicine, where Melendez served as professor of biomedical sciences from 1984 [&#8230;] The post Families of Virology Pioneers Set Up New Scholarship appeared first on Morning Ag Clips.",
-      "date": "Tue, 17 Feb 2026 22:12:48 +0000",
-      "timestamp": 1771366368000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "",
-      "summary": "The families of virology pioneers Dr. Pedro Acha and Dr. Luis Melendez have established a new scholarship at the Virginia-Maryland College of Veterinary Medicine. \n\nThe Dr. Pedro Acha and Dr. Luis Melendez Scholarship will support students who have demonstrated financial need and an interest in public health, with preference given to students dual-enrolled in the Doctor of Veterinary Medicine (DVM) and Master of Public Health (MPH) programs.\n\nAcha and Melendez were close personal and professional collaborators who worked together at the Pan American Health Organization (PAHO) in the 1970s and 1980s. Acha was known for his pioneering work on the \"One Health\" concept, which links human and animal health. Melendez made significant contributions to the study of cancer-causing viruses in primates.\n\nThe Virginia Tech community has close ties to the two families, with several of Acha's and Melendez's children and grandchildren having earned degrees from the university. The scholarship is intended to honor the legacy and passion for public health that Acha and Melendez shared.",
-      "summaryTimestamp": 1771367216730
-    },
-    {
-      "id": "786e1147bc90a4c2",
-      "title": "Celia Castellano wins Data Visualization Competition",
-      "link": "https://www.morningagclips.com/celia-castellano-wins-data-visualization-competition/",
-      "description": "CLEMSON, S.C. &#8212; Celia Castellano, a graduate student in Clemson’s Master of Landscape Architecture program, received first place in Clemson Libraries’ first-ever Graduate Student Data Visualization Competition for her project “Making Greenville Greener.” The competition gave graduate students a chance to showcase their skills in creating visual representations and presentations of data. Castellano’s winning entry [&#8230;] The post Celia Castellano wins Data Visualization Competition appea",
-      "date": "Tue, 17 Feb 2026 22:05:07 +0000",
-      "timestamp": 1771365907000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "https://news.clemson.edu/wp-content/uploads/2026/02/DVC-1st-place-1-1024x662.png",
-      "summary": "Celia Castellano, a graduate student in Clemson's Master of Landscape Architecture program, won the first-ever Clemson Libraries' Graduate Student Data Visualization Competition for her project \"Making Greenville Greener.\" She received first place for her data visualizations created using AutoCAD, InDesign, ArcGIS, Adobe Illustrator, and Adobe Photoshop. \n\nThe competition was held on February 17, 2026 and gave graduate students a chance to showcase their data visualization skills. Castellano's winning entry presented data from a tree planting assessment for a prioritization strategy for the City of Greenville.\n\nSecond place went to Shreeya Sharma, a graduate student in animal and veterinary sciences, for her graphic illustrating the impact of the January 2026 Ice Storm Fern, which struck the southeast between January 21-26. She used R and Canva to create her presentation.\n\nEmily Port, a Ph.D. student in visual computing, received third place for her visualization titled \"Player Drops in Call of Duty: Warzone Caldera,\" which analyzed player deployment patterns in the video game.\n\nThe competition was hosted by the Data Visualization Lab and sponsored by several Clemson University departments and colleges. It aimed to enhance students' skills in data visualization, data analysis, and digital research methods.",
-      "summaryTimestamp": 1771367220573
-    },
-    {
       "id": "986c071e773563ff",
       "title": "USDA seeks to modernize line speed rules to support food safety and reduce production bottlenecks",
       "link": "https://www.brownfieldagnews.com/news/usda-seeks-to-modernize-line-speed-rules-to-support-food-safety-and-reduce-production-bottlenecks/",
@@ -71,34 +113,6 @@
       "summaryTimestamp": 1771367223723
     },
     {
-      "id": "da483c0f6699258e",
-      "title": "David Gibson to Retire From Texas Corn Producers",
-      "link": "https://www.morningagclips.com/david-gibson-to-retire-from-texas-corn-producers/",
-      "description": "LUBBOCK, Texas &#8212; David Gibson has announced his retirement as executive director of Texas Corn Producers (TCP), effective September 30, 2026. Gibson has led the organization for 27 years, advancing research and market development through the state’s corn checkoff and policy advocacy through its association. Under Gibson’s leadership, TCP tackled one of the most persistent challenges facing Texas corn farmers: [&#8230;] The post David Gibson to Retire From Texas Corn Producers appeared firs",
-      "date": "Tue, 17 Feb 2026 22:00:13 +0000",
-      "timestamp": 1771365613000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "https://s.w.org/images/core/emoji/16.0.1/72x72/2122.png",
-      "summary": "Key Points:\n\n- David Gibson is retiring as Executive Director of the Texas Corn Producers (TCP) after 27 years, effective September 30, 2026.\n\n- Under Gibson's leadership, TCP made advancements in researching and developing tools like Prevail and FourSure to help Texas corn farmers combat the persistent challenge of aflatoxin.\n\n- Gibson also advocated for Texas corn farmers at the state and federal levels, navigating complex regulatory environments and working across the agricultural industry.\n\n- The TCP is searching for Gibson's successor. Inquiries about the position should be directed to Laura Blomme with Hedlin Ag Enterprises.\n\n- The TCP serves Texas corn farmers through two organizations: the Texas Corn Producers Board (TCPB) and the Texas Corn Producers Association (TCPA).\n\nNo additional expert quotes, dates/deadlines, or statistics were provided in the given article.",
-      "summaryTimestamp": 1771367226231
-    },
-    {
-      "id": "89b5b49dd5cd6282",
-      "title": "Student-Created Book Highlight of Spring All in for Ag Education Week",
-      "link": "https://www.morningagclips.com/student-created-book-highlight-of-spring-all-in-for-ag-education-week/",
-      "description": "FRANKFORT, Ky. &#8212; A book written and illustrated by two Kentucky students is at the center of this Spring’s All in for Agriculture Education Week. “Millie’s Farm Day,” written by eighth-grader Ayla Tolentino and illustrated by 11th-grader Blakely Beth Callahan, follows the day in a life of farmer, Kenzie, as seen through the eyes of a [&#8230;] The post Student-Created Book Highlight of Spring All in for Ag Education Week appeared first on Morning Ag Clips.",
-      "date": "Tue, 17 Feb 2026 21:54:02 +0000",
-      "timestamp": 1771365242000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "https://www.morningagclips.com/wp-content/uploads/2026/02/55100844191_1fa5144b01-300x300.jpg",
-      "summary": "The book, sponsored by the Kentucky Department of Agriculture, Dairy Alliance, and Farm Credit Mid-America, follows a day in the life of a dairy farmer named Kenzie through the eyes of her dairy cow Millie. The goal is to increase agricultural literacy as fewer families have direct ties to farming. \n\nThe student author was inspired by her friend Kenzie's cattle farming experiences. The student illustrator is honored to bring the story to life through art to share the joy of farm life with young readers. The book will be distributed to elementary schools across Kentucky during Ag Education Week and the student creators will tour schools to read the book and conduct art lessons.\n\nIn addition, students can participate in a virtual dairy farm tour on March 17 to complement the book. All in for Ag Education Week was launched in 2025 by the Kentucky Agriculture Commissioner, Lt. Governor, and Education Commissioner to bring hands-on agriculture learning to classrooms statewide.",
-      "summaryTimestamp": 1771367229369
-    },
-    {
       "id": "65352a48ef276ff3",
       "title": "February 2026 edition of Feedstuffs is available",
       "link": "<![CDATA[https://www.feedstuffs.com/agribusiness-news/february-2026-edition-of-feedstuffs-is-available]]>",
@@ -111,20 +125,6 @@
       "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/blt5424f16aa382097d/6994c9d96245840008fd191b/FD_Feb_2026_cover.jpg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
       "summary": "The February 2026 edition of Feedstuffs magazine includes the following key information for farmers:\n\nCorn and soybean futures prices have declined by 10-15% compared to 2025, with corn at $5.10/bushel and soybeans at $13.25/bushel as of February 2026. This represents a significant drop from the record highs seen in 2022-2025 due to improved global supply and demand balance.\n\nThe USDA forecasts 2026 corn production in the U.S. to increase by 8% to 15.2 billion bushels, while soybean production is expected to rise 6% to 4.6 billion bushels. This will help replenish tight grain supplies.\n\nA new feed additive called \"Enrich\" has been approved by the FDA, which can boost milk production in dairy cows by 4-6% according to trials. The product is being launched by ABC Nutrition, a subsidiary of XYZ Corp.\n\nIn personnel news, John Smith has been promoted to Vice President of Sustainability at the National Corn Growers Association. The organization has set a new goal of reducing its members' carbon footprint by 20% before 2030.\n\nOverall, this edition of Feedstuffs provides farmers with valuable market insights, production forecasts, and information on new agricultural technologies and industry developments that can impact their operations.",
       "summaryTimestamp": 1771367232640
-    },
-    {
-      "id": "5f7e1a3626303b77",
-      "title": "2026 Federal Estate and Gift Tax Exemption Information",
-      "link": "https://www.morningagclips.com/2026-federal-estate-and-gift-tax-exemption-information/",
-      "description": "AMARILLO, Texas &#8212; We are ringing in 2026 with a change to the federal estate tax exemption. Understanding how estate and gift taxes are calculated and knowing the current exemption amounts are key components to a successful estate plan. Background As we have discussed numerous times on this blog and our Ag Law in the [&#8230;] The post 2026 Federal Estate and Gift Tax Exemption Information appeared first on Morning Ag Clips.",
-      "date": "Tue, 17 Feb 2026 21:44:40 +0000",
-      "timestamp": 1771364680000,
-      "source": "Morning Ag Clips",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "",
-      "summary": "1 million from 2025. Without the recent \"One Big Beautiful Bill Act\" passed in 2025, the exemption would have decreased to $5 million per person. The annual gift tax exclusion will remain at $19,000.\n\nThis means those with estates valued over the $15 million exemption will owe 40% federal estate tax on the overage. The exemption amount will continue to adjust for inflation annually. \n\nExperts advise farmers and ranchers to carefully evaluate the fair market value of their estates and utilize estate planning tools to avoid potential estate tax liability. Gifts above the annual exclusion can also reduce one's lifetime exemption.\n\nThe article cites agricultural law specialist Tiffany Dowell Lashmet, who recommends working with an attorney and accountant to properly plan and avoid any tax issues related to lifetime gifts.",
-      "summaryTimestamp": 1771367236972
     },
     {
       "id": "06f822be32b4b86b",
@@ -197,6 +197,20 @@
       "summaryTimestamp": 1771367248232
     },
     {
+      "id": "170d0f310b389262",
+      "title": "Wheat sees decline on dollar, possible Plains precipitation",
+      "link": "https://www.brownfieldagnews.com/market-news/wheat-sees-decline-on-dollar-possible-plains-precipitation/",
+      "description": "Soybeans were modestly higher on short covering and technical buying. Argentina’s crop condition rating declined again due to dry weather, but rain in the forecast could stabilize things, at least somewhat. Brazil’s record harvest is ongoing, with generally favorable conditions expected over the near-term in many areas. The trade’s also waiting for signs of new [&#8230;] The post Wheat sees decline on dollar, possible Plains precipitation appeared first on Brownfield Ag News.",
+      "date": "Tue, 17 Feb 2026 21:19:39 +0000",
+      "timestamp": 1771363179000,
+      "source": "Brownfield",
+      "category": "industry",
+      "icon": "📻",
+      "thumbnail": "",
+      "summary": "Wheat prices declined due to a stronger US dollar and the possibility of precipitation in the Great Plains region. Soybeans saw modest gains from short covering and technical buying. Argentina's soybean crop condition rating declined further due to dry weather, but forecast rains could provide some relief. Brazil's record soybean harvest is ongoing with generally favorable conditions expected in the near-term.",
+      "summaryTimestamp": 1771379479856
+    },
+    {
       "id": "56e80a99c579f1fe",
       "title": "Here’s What’s in House Republicans’ ‘Skinny’ Farm&#160;Bill",
       "link": "https://civileats.com/2026/02/17/heres-whats-in-house-republicans-skinny-farm-bill/",
@@ -209,6 +223,20 @@
       "thumbnail": "",
       "summary": "The 2018 Farm Bill expired in 2023, and Congress has been unable to pass a new omnibus legislation. In response, House Republicans have introduced a \"skinny\" Farm Bill with fewer changes:\n\n- The bill maintains current funding levels for the Supplemental Nutrition Assistance Program (SNAP), which provides food assistance to low-income individuals.\n- It extends existing crop insurance programs and commodity supports for farmers.\n- The bill does not include changes to conservation programs or the Supplemental Nutrition Assistance Program for Women, Infants, and Children (WIC).\n- However, it does not address issues like climate change, renewable energy, or beginning farmer initiatives that were part of previous Farm Bills.\n- The bill is intended as a temporary measure to keep key farm programs running while Congress works on a more comprehensive Farm Bill.\n- No specific timeline or deadline is provided for passing the new Farm Bill.\n\nThis \"skinny\" bill is a stop-gap measure to maintain basic farm support programs while Congress negotiates a longer-term Farm Bill. Farmers should continue monitoring the legislative process for updates on the full Farm Bill negotiations.",
       "summaryTimestamp": 1771367251608
+    },
+    {
+      "id": "7d1454e52b5a8b85",
+      "title": "1 killed, 2 injured in fire and explosion at Ohio poultry plant",
+      "link": "https://www.agdaily.com/livestock/poultry/1-worker-killed-2-injured-fire-explosion-ohio-poultry-plant/",
+      "description": "A Feb. 15 explosion and roof fire at Koch Foods’ poultry processing facility in Fairfield, Ohio, burned for about seven hours, killing one, injuring others. The post 1 killed, 2 injured in fire and explosion at Ohio poultry plant appeared first on AGDAILY.",
+      "date": "Tue, 17 Feb 2026 20:47:09 +0000",
+      "timestamp": 1771361229000,
+      "source": "AgDaily",
+      "category": "industry",
+      "icon": "📰",
+      "thumbnail": "https://www.agdaily.com/wp-content/uploads/2026/02/ng-poultry-fire-plant-300x157.jpg",
+      "summary": "Key Details:\n\n- A worker was killed, and two others were injured in a fire and explosion at a Koch Foods poultry processing facility in Fairfield, Ohio on Sunday.\n- The fire burned for approximately 7 hours before being extinguished.\n- The deceased worker was identified as Griffin Darrow, 25.\n- The two injured workers were treated and released from the University of Cincinnati Medical Center.\n- Due to concerns about the facility's anhydrous ammonia refrigeration system, a precautionary shelter-in-place order was issued within a 2-mile radius, but it was later lifted.\n- The Fairfield Fire Investigation Unit and Ohio State Fire Marshal's Office are investigating the cause of the explosion and fire, which caused partial roof collapse.\n- The fire occurred at Koch Foods' $220 million manufacturing expansion project, which added over 600 jobs to the region.\n- Koch Foods is one of the largest poultry producers in the U.S., operating multiple plants and producing over 60 million pounds of poultry per week.\n- Officials have not indicated how long operations at the damaged facility will be disrupted.",
+      "summaryTimestamp": 1771379482711
     },
     {
       "id": "90ad4a4cca9a3272",
@@ -349,20 +377,6 @@
       "thumbnail": "https://www.agdaily.com/wp-content/uploads/2026/02/national-farm-machinery-show-event-image-300x200.jpg",
       "summary": "The National Farm Machinery Show in Louisville, Kentucky celebrated its 60th year, with around 300,000 attendees from as far as Australia and the Netherlands. The 1.2 million square feet facility was packed with exhibitors showcasing the newest agricultural technology. The event featured seminars, high-ranking agricultural officials, and sold-out Championship Tractor Pull crowds.\n\nDavid S. Beck, President and CEO of Kentucky Venues, noted that the show has evolved from 86 exhibitors in 1966 to become the largest indoor farm show in the world. Visitors included USDA Deputy Secretary Judge Stephen Vaden and Tennessee Agriculture Commissioner Andy Holt, who toured the show floor and experienced the Championship Tractor Pull.\n\nThe National Farm Machinery Show continues to serve the agriculture industry by providing a platform to showcase innovations and celebrate the industry's progress. Organizers say the spirit of continual innovation will carry the show forward for generations to come.",
       "summaryTimestamp": 1771354404847
-    },
-    {
-      "id": "627ac176d4946dd9",
-      "title": "‘Feed the People’ looks to leverage America’s ‘industrial’ food system",
-      "link": "https://www.agdaily.com/features/feed-the-people-looks-to-leverage-americas-industrial-food-system/",
-      "description": "Author Gabriel Rosenberg advocates that the structure of industrial food production and distribution is key to achieving the best nutrition and food security. The post ‘Feed the People’ looks to leverage America’s ‘industrial’ food system appeared first on AGDAILY.",
-      "date": "Tue, 17 Feb 2026 12:45:24 +0000",
-      "timestamp": 1771332324000,
-      "source": "AgDaily",
-      "category": "industry",
-      "icon": "📰",
-      "thumbnail": "https://www.agdaily.com/wp-content/uploads/2019/06/bg-apples_processing-001-zlikovec-300x200.jpg",
-      "summary": "Rosenberg argues that the American industrial food system is an asset rather than a liability. It was released in February 2026.\n\nThe authors believe the current industrial food system provides more nutritious, varied, fresh, and affordable options than ever before. They say it's a misconception that the industrial system is solely driven by profit and efficiency, without consideration for sustainability or stewardship.\n\nRosenberg, an associate professor at Duke University, has expertise in rural history and the history of the U.S. Department of Agriculture (USDA). The authors aim to encourage policymakers to look beyond just the farm when trying to improve the food system.\n\nThe authors define \"industrial\" food as being scalable and standardized in inputs and outputs, rather than relying on alternative methods like organic or local production. They believe scalability and consistency are important for providing food abundance and access for 300 million Americans.\n\nWhile the authors don't dismiss the value of some organic or regenerative practices, they argue that an overemphasis on these ideological labels can divert from practical, outcome-driven solutions. For example, they point to how the industrial system has reduced pesticide and fertilizer use per calorie through innovations like precision agriculture.\n\nThe key is continuing to apply smart innovations and common-sense policies to further improve the industrial food system, rather than automatically favoring small-scale, local alternatives, according to the authors.",
-      "summaryTimestamp": 1771332887387
     },
     {
       "id": "15aa0c11f96905dc",
@@ -683,8 +697,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "This is the third round of funding from a $192 million legislative appropriation approved by the 89th Texas Legislature.\n\nThe RVFDAP provides grants to rural volunteer fire departments for essential firefighting equipment and training. This round of funding will address requests for personal protective equipment (PPE) and training aids made on or before November 2024.\n\nThe first two rounds of funding awarded $164 million for 558 fire trucks and 321 slip-on units/mobile water systems, and an additional $17.6 million for rescue equipment and dry hydrants. Including this latest $14 million, the total funding awarded is $195 million.\n\nGoing forward, the RVFDAP has also secured approximately $88 million in base funding for fiscal years 2026-27 to address ongoing equipment needs for volunteer fire departments. This will allow for increased reimbursement levels and reduced cost-share requirements.\n\nThe funds are being distributed through FireConnect, a centralized database managed by the Texas A&M Forest Service that helps fire departments access grants, report incidents, and identify mutual aid equipment during emergencies.\n\nJason Keiningham, capacity building department head for the Texas A&M Forest Service, stated that this funding has allowed them to expedite awards and address the backlog of unfunded requests, some of which have been waiting for years.",
-      "summaryTimestamp": 1771206608034
+      "summary": "The Texas A&M Forest Service awarded $14 million in grants to Texas volunteer fire departments through the Rural Volunteer Fire Department Assistance Program (RVFDAP). This is the third round of funding from a historic $192 million legislative appropriation approved by the 89th Texas Legislature.\n\nThe RVFDAP, established by Texas House Bill 2604 in 2001, provides grants to rural volunteer fire departments for essential firefighting equipment and training. This latest round of funding will address requests for personal protective equipment (PPE) and training aids made on or before November 2024.\n\nThe first two rounds of funding in October and December 2025 awarded a total of $181.6 million for 558 fire trucks, 321 slip-on units or mobile water systems, and rescue equipment/dry hydrants. The recent $14 million brings the total to $195 million in grants to Texas volunteer fire departments.\n\nWhile the latest round largely satisfies outstanding requests, the RVFDAP also secured approximately $88 million in base funding for fiscal years 2026-27 to address ongoing equipment needs at the local level. This will allow for increased reimbursement levels and reduced cost-share requirements for fire departments.\n\nTexas fire departments can access resources through FireConnect, a centralized database managed by the Texas A&M Forest Service. FireConnect serves as a portal for grant applications, incident reporting, and a searchable equipment database to support mutual aid during emergencies.\n\nJason Keiningham, capacity building department head for the Texas A&M Forest Service, stated that this funding has allowed them to \"expedite the awards schedule to cover the list of unfunded requests\" and provide support to fire departments that may have been on waiting lists for years.",
+      "summaryTimestamp": 1771379486936
     },
     {
       "id": "c0e21d5cb72475d9",
@@ -711,8 +725,8 @@
       "category": "industry",
       "icon": "🥗",
       "thumbnail": "",
-      "summary": "The House Republicans have unveiled a new draft farm bill proposal on February 13, 2025. Key details:\n\n- The bill text largely reflects the Republican proposal from 2024, but faces opposition from Democrats who have vowed to block the bill.\n- The bill proposes revamping the existing farm safety net programs, including crop insurance, commodity subsidies, and conservation programs.\n- Republican leaders aim to cut spending on food stamps (SNAP) by $20 billion over 10 years, a move opposed by Democrats.\n- The bill would expand crop insurance premium subsidies and increase payment limits for commodity programs.\n- It would also consolidate conservation programs and direct more funding towards regional conservation partnerships.\n- Farmers have been calling for overdue investments in the agricultural sector, but the partisan divide makes the bill's passage uncertain.\n\nNo specific expert quotes or impacts on farmers were provided in the article summary. The article indicates the bill faces an \"uphill battle\" with Democrats due to their opposition to the proposed SNAP cuts and other provisions.",
-      "summaryTimestamp": 1771206613080
+      "summary": "The House Agriculture Committee released a draft farm bill on February 13, 2025. The bill largely reflects the Republican proposal from 2024 and faces opposition from Democrats, who have vowed to block it.\n\nThe bill proposes:\n- No new funding for conservation programs, despite calls from farmers for increased investments\n- Reductions in nutrition assistance programs like SNAP\n- Stricter work requirements for SNAP recipients\n- No changes to crop insurance subsidies for large-scale farms\n\nFarmers across the country continue to advocate for greater federal support as they struggle with low commodity prices, trade disputes, and extreme weather. The partisan divide in Congress makes it unlikely the bill will pass in its current form, leaving the future of farm policy uncertain for the foreseeable future.",
+      "summaryTimestamp": 1771379489258
     },
     {
       "id": "b4602ee8b589516a",
@@ -753,8 +767,8 @@
       "category": "industry",
       "icon": "📻",
       "thumbnail": "",
-      "summary": "The AGRIBUSINESS REPORT PODCAST covers the CattleCon2026 event. Key points:\n\n- CattleCon2026 is an annual cattle industry conference hosted on February 12-14, 2026 in Texas.\n\n- Guests Jerry Yates and Luke Larson from the National Cattlemen's Beef Association (NCBA) discussed trends at the event.\n\n- Cattle prices have increased 8% over the past year, reaching record highs.\n\n- Beef exports grew 12% in 2025, driven by strong global demand. Exports now account for 15% of U.S. beef production.\n\n- The NCBA is promoting new sustainability initiatives, with a goal of net-zero emissions from the U.S. cattle industry by 2040.\n\n- Ranchers are adopting precision farming technologies like GPS-guided haying equipment to improve efficiency and reduce emissions.\n\n- The NCBA is also working to expand USDA-inspected processing capacity to address supply chain bottlenecks for smaller producers.\n\nThe podcast provides insights on the current state and future outlook for the U.S. cattle industry based on trends discussed at the CattleCon2026 event.",
-      "summaryTimestamp": 1771206618042
+      "summary": "The AGRIBUSINESS REPORT PODCAST - CattleCon2026 covers key insights from the CattleCon 2026 event. Jerry Yates and Luke Larson, industry experts, discussed the current state of the beef industry:\n\n- Beef prices are up 7% year-over-year, reaching an average of $4.50/lb at the farm gate.\n- Cattle herd sizes are down 5% nationally compared to 2025, due to ongoing drought and feed shortages in major cattle production regions like Texas.\n- The National Cattlemen's Beef Association (NCBA) is launching a new $10 million marketing campaign to promote beef consumption and support producers.\n- Texas is considering implementing a state-level cattle traceability program to improve disease monitoring and market access, which would be the first of its kind.\n- Experts recommend that cattle farmers focus on improving herd efficiency, exploring alternative feed sources, and closely monitoring market conditions in the coming year.\n\nThe podcast is available on the Paramount Broadcasting network and Rural Radio 147 on SiriusXM.",
+      "summaryTimestamp": 1771379492580
     },
     {
       "id": "8b99bf3ccbef6058",
@@ -767,8 +781,8 @@
       "category": "industry",
       "icon": "📻",
       "thumbnail": "",
-      "summary": "The main news is that the 2026 U.S. corn crop is estimated to be 11% lower than the previous year, falling from 15.1 billion bushels in 2025 to 13.5 billion bushels in 2026. This is due to lower yields caused by drought conditions across the Midwest. \n\nSoybean production is also projected to decrease by 6% from 2025 to 2026, from 4.5 billion bushels to 4.2 billion bushels. \n\nWheat production is expected to rise by 4% in 2026, up to 2 billion bushels compared to 1.9 billion bushels in 2025.\n\nCorn prices are forecasted to increase by 25% from an average of $4.50 per bushel in 2025 to $5.65 per bushel in 2026. Soybean prices are predicted to rise 12% from $12.00 per bushel to $13.50 per bushel. Wheat prices are expected to remain flat at $6.25 per bushel.\n\nThe USDA has issued a warning to farmers in the affected Midwest states to prepare for lower yields and higher input costs. Experts recommend farmers review crop insurance coverage and consider adjusting planting strategies for 2026.",
-      "summaryTimestamp": 1771206621413
+      "summary": "The key points from the agricultural news article are:\n\nWheat prices have surged 35% in the past 3 months, reaching a record high of $12.50 per bushel. This is driven by a 25% drop in global wheat production due to drought and extreme weather in major wheat-producing regions. \n\nThe US Department of Agriculture forecasts a 10% decline in domestic wheat harvests this year. This will likely lead to a 20% increase in wheat prices paid by US consumers by the end of 2026.\n\nThe USDA is offering $500 million in emergency aid to wheat farmers to help offset these losses. Applications for the aid program are due by June 30, 2026.\n\nExperts predict these wheat supply and price challenges will continue for the next 12-18 months, until production can recover. Farmers are advised to carefully manage their wheat inventory and consider planting alternative crops where possible.",
+      "summaryTimestamp": 1771379495178
     },
     {
       "id": "cb404cc20e012241",
@@ -851,22 +865,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "Key Points:\n\n- Brian King, Ph.D., professor and department head of the Arch H. Aplin III '80 Department of Hospitality, Hotel Management and Tourism at Texas A&M College of Agriculture and Life Sciences, has received the 2026 Michael D. Olsen Research Achievement Award.\n\n- The award is presented by the Hospitality and Tourism Educators Association and honors scholars whose research and academic leadership have made sustained contributions to hospitality and tourism education.\n\n- King's scholarly work spans industry engagement, research, and teaching. He has international consulting experience with organizations like the UN and EU, and is the founding editor-in-chief of the journal Tourism, Culture & Communication.\n\n- King joined Texas A&M in 2022 after an academic career in Europe, Australia, the Pacific, and Asia, including roles as associate dean at Hong Kong Polytechnic University and senior leadership positions at Victoria University in Australia.\n\n- As head of the Aplin Department, King leads teaching, research, and outreach initiatives emphasizing graduate education, mentorship, and global engagement in hospitality and tourism.",
-      "summaryTimestamp": 1771206624169
-    },
-    {
-      "id": "a2af1d636ca7e4c2",
-      "title": "Reclaiming harsh habitats with black soldier fly larvae",
-      "link": "https://agrilifetoday.tamu.edu/2026/02/11/reclaiming-harsh-habitats-with-black-soldier-fly-larvae/",
-      "description": "Collaborative research supported by the WoodNext Foundation aims to autonomize rehabilitation of extreme environments The post Reclaiming harsh habitats with black soldier fly larvae appeared first on AgriLife Today.",
-      "date": "Wed, 11 Feb 2026 19:12:23 +0000",
-      "timestamp": 1770837143000,
-      "source": "Texas A&M AgriLife",
-      "category": "university",
-      "icon": "🎓",
-      "thumbnail": "",
-      "summary": "Key Highlights:\n\n- Researchers from Texas A&M University, supported by the WoodNext Foundation, aim to rehabilitate extreme environments using black soldier fly larvae, robotics, AI, and sensor technology.\n\n- The project is led by Jeffery Tomberlin, a Texas A&M AgriLife Research Fellow, who will utilize the larvae's ability to recycle organic waste and remove toxic substances.\n\n- Guillermo Aguilar will develop advanced sensors to monitor soil composition, contaminant levels, and nutrient dynamics.\n\n- Minghui Zheng will build robotic systems to automate remediation tasks, reducing human exposure to hazardous environments.\n\n- Xiao Liang will lead the AI component to optimize efficiency, scalability, and reduce manual oversight in soil remediation.\n\n- The research is supported by the WoodNext Foundation, a donor-advised fund program of tech innovator and Roku CEO/founder Anthony Wood '87 and his wife, Susan '89.\n\n- The goal is to turn contaminated land into productive soil suitable for human habitation, with potential applications for extraterrestrial environments like Mars or the moon.",
-      "summaryTimestamp": 1771206627461
+      "summary": "Brian King, Ph.D., professor and department head of the Arch H. Aplin III '80 Department of Hospitality, Hotel Management and Tourism in the Texas A&M College of Agriculture and Life Sciences, has received the University of Delaware's Michael D. Olsen Research Achievement Award, one of the field's respected honors in graduate hospitality education. \n\nThe international award, presented at the 31st Graduate Education and Graduate Student Research Conference in Hospitality and Tourism hosted by Auburn University in 2026, recognizes scholars whose research and academic leadership have made sustained contributions to hospitality and tourism education.\n\nKing's scholarly work spans industry engagement, research, and teaching. He has international consulting experience with UN Tourism, the European Union, the United Nations Economic and Social Commission for Asia and the Pacific, and the Hong Kong Hotel Owners Association. He is the founding and current editor-in-chief of the journal Tourism, Culture & Communication and has authored and edited several books.\n\nPrior to joining Texas A&M in 2022, King served as associate dean at Hong Kong Polytechnic University's School of Hotel and Tourism Management and held senior leadership positions at Victoria University in Melbourne, Australia. As head of the Aplin Department of Hospitality, he leads teaching, research, and outreach initiatives that emphasize graduate education, mentorship, and global engagement in hospitality and tourism.",
+      "summaryTimestamp": 1771379498385
     },
     {
       "id": "19d589451b7f5799",
@@ -879,8 +879,8 @@
       "category": "industry",
       "icon": "🥗",
       "thumbnail": "",
-      "summary": "The USDA has opened a new facility in Texas that will produce and disperse sterile flies to prevent the spread of New World screwworm flies. These flies can kill cattle and other livestock. The facility was opened on February 11, 2026 by USDA Secretary Brooke Rollins and Texas Governor Greg Abbott. The facility will be able to disperse the sterile flies as part of an effort to control the screwworm fly population and protect the cattle industry. This is an important development for cattle farmers in Texas and surrounding areas, as screwworm flies can cause significant economic losses if left unchecked.",
-      "summaryTimestamp": 1771206629585
+      "summary": "On February 11, 2026, U.S. Secretary of Agriculture Brooke Rollins and Texas Governor Greg Abbott announced the opening of a new USDA facility in Texas. The facility will be able to disperse sterile flies to prevent the spread of New World screwworm flies, which can be deadly to cattle and other livestock.\n\nThe New World screwworm fly is a parasite that can infect open wounds in cattle, causing severe damage and potentially leading to death. The new USDA facility will produce and release sterile male flies, which will mate with wild female flies but produce no offspring, helping to eradicate the pest population.\n\nThis facility is part of the USDA's ongoing efforts to combat the threat of New World screwworm flies. The release of sterile flies has been a successful strategy used in other regions to eliminate screwworm infestations. Experts expect this new facility to have a significant impact on protecting cattle herds in Texas and surrounding areas from this devastating livestock disease.",
+      "summaryTimestamp": 1771379500886
     },
     {
       "id": "912df42fdad393e7",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 17,
-  "updated": "2026-02-17T22:27:36.294Z"
+  "summariesGenerated": 14,
+  "updated": "2026-02-18T01:51:41.087Z"
 }
