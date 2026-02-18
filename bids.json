@@ -1,10 +1,10 @@
 {
-  "generated": "2026-02-18T20:39:41.643698+00:00",
+  "generated": "2026-02-18T22:33:14.029790+00:00",
   "sources": [
     "farmbucks.com"
   ],
-  "locationCount": 39,
-  "bidCount": 73,
+  "locationCount": 31,
+  "bidCount": 57,
   "elevators": [
     {
       "elevator": "Nexus Cooperative",
@@ -22,6 +22,21 @@
         "corn": {
           "cashPrice": 3.97,
           "delivery": "February 2026"
+        }
+      }
+    },
+    {
+      "elevator": "AG Processing (AGP)",
+      "city": "AGP Dawson",
+      "state": "MN",
+      "type": "processor",
+      "source": "farmbucks",
+      "lat": 44.932661,
+      "lng": -96.057744,
+      "bids": {
+        "soy": {
+          "cashPrice": 10.94,
+          "delivery": "March 2026"
         }
       }
     },
@@ -109,25 +124,6 @@
         "corn": {
           "cashPrice": 4.09,
           "delivery": "February 2026"
-        }
-      }
-    },
-    {
-      "elevator": "StateLine Coop",
-      "city": "Blue Earth",
-      "state": "MN",
-      "type": "coop",
-      "source": "farmbucks",
-      "lat": 43.6352789,
-      "lng": -94.0900478,
-      "bids": {
-        "soy": {
-          "cashPrice": 10.73,
-          "delivery": "Mar 1, 2026 \u2013 Apr 1, 2026"
-        },
-        "corn": {
-          "cashPrice": 3.97,
-          "delivery": "Mar 1, 2026 \u2013 Apr 1, 2026"
         }
       }
     },
@@ -252,7 +248,7 @@
         },
         "corn": {
           "cashPrice": 3.87,
-          "delivery": "Mar 1, 2026 \u2013 Apr 1, 2026"
+          "delivery": "Feb 1, 2026 \u2013 Mar 1, 2026"
         }
       }
     },
@@ -495,7 +491,7 @@
         },
         "corn": {
           "cashPrice": 3.95,
-          "delivery": "Mar 1, 2026 \u2013 Apr 1, 2026"
+          "delivery": "Feb 1, 2026 \u2013 Mar 1, 2026"
         }
       }
     },
@@ -534,196 +530,48 @@
       }
     },
     {
-      "elevator": "Allied Cooperative",
-      "city": "Adams",
+      "elevator": "Country Visions Cooperative",
+      "city": "Chilton",
       "state": "WI",
       "type": "coop",
       "source": "farmbucks",
-      "lat": 43.9510654,
-      "lng": -89.8169553,
+      "lat": 44.416525,
+      "lng": -89.777205,
       "bids": {
-        "soy": {
-          "cashPrice": 10.39,
-          "delivery": "March 2026"
-        },
-        "corn": {
-          "cashPrice": 3.75,
-          "delivery": "March 2026"
-        }
-      }
-    },
-    {
-      "elevator": "Allied Cooperative",
-      "city": "Auburndale",
-      "state": "WI",
-      "type": "coop",
-      "source": "farmbucks",
-      "lat": 44.623254,
-      "lng": -89.984991,
-      "bids": {
-        "soy": {
-          "cashPrice": 10.34,
-          "delivery": "March 2026"
-        },
-        "corn": {
-          "cashPrice": 3.7,
-          "delivery": "March 2026"
-        }
-      }
-    },
-    {
-      "elevator": "Allied Cooperative",
-      "city": "Blair",
-      "state": "WI",
-      "type": "coop",
-      "source": "farmbucks",
-      "lat": 44.29449,
-      "lng": -91.214285,
-      "bids": {
-        "soy": {
-          "cashPrice": 10.44,
-          "delivery": "March 2026"
-        },
-        "corn": {
-          "cashPrice": 3.72,
-          "delivery": "March 2026"
-        }
-      }
-    },
-    {
-      "elevator": "Allied Cooperative",
-      "city": "Hixton",
-      "state": "WI",
-      "type": "coop",
-      "source": "farmbucks",
-      "lat": 44.382205,
-      "lng": -91.007656,
-      "bids": {
-        "soy": {
-          "cashPrice": 10.44,
-          "delivery": "March 2026"
-        },
-        "corn": {
-          "cashPrice": 3.72,
-          "delivery": "March 2026"
-        }
-      }
-    },
-    {
-      "elevator": "Allied Cooperative",
-      "city": "Mauston",
-      "state": "WI",
-      "type": "coop",
-      "source": "farmbucks",
-      "lat": 43.7702848,
-      "lng": -89.9550392,
-      "bids": {
-        "soy": {
-          "cashPrice": 10.39,
-          "delivery": "March 2026"
-        },
-        "corn": {
-          "cashPrice": 3.75,
-          "delivery": "March 2026"
-        },
         "wheat": {
-          "cashPrice": 4.47,
+          "cashPrice": 4.57,
           "delivery": "February 2026                                              Chicago"
-        }
-      }
-    },
-    {
-      "elevator": "Allied Cooperative",
-      "city": "Seymour",
-      "state": "WI",
-      "type": "coop",
-      "source": "farmbucks",
-      "lat": 44.512509,
-      "lng": -88.335039,
-      "bids": {
-        "soy": {
-          "cashPrice": 10.34,
-          "delivery": "March 2026"
         },
-        "corn": {
-          "cashPrice": 3.78,
-          "delivery": "March 2026"
-        }
-      }
-    },
-    {
-      "elevator": "Allied Cooperative",
-      "city": "Stratford",
-      "state": "WI",
-      "type": "coop",
-      "source": "farmbucks",
-      "lat": 44.801836,
-      "lng": -90.076629,
-      "bids": {
-        "soy": {
-          "cashPrice": 10.31,
-          "delivery": "March 2026"
-        },
-        "corn": {
-          "cashPrice": 3.67,
-          "delivery": "March 2026"
-        }
-      }
-    },
-    {
-      "elevator": "Allied Cooperative",
-      "city": "Tomah",
-      "state": "WI",
-      "type": "coop",
-      "source": "farmbucks",
-      "lat": 44.020247,
-      "lng": -90.435174,
-      "bids": {
-        "soy": {
-          "cashPrice": 10.39,
-          "delivery": "March 2026"
-        },
-        "corn": {
-          "cashPrice": 3.75,
-          "delivery": "March 2026"
-        }
-      }
-    },
-    {
-      "elevator": "Allied Cooperative",
-      "city": "West Salem",
-      "state": "WI",
-      "type": "coop",
-      "source": "farmbucks",
-      "lat": 43.895518,
-      "lng": -91.076819,
-      "bids": {
         "soy": {
           "cashPrice": 10.44,
           "delivery": "February 2026"
         },
         "corn": {
-          "cashPrice": 3.75,
-          "delivery": "March 2026"
+          "cashPrice": 3.77,
+          "delivery": "February 2026"
         }
       }
     },
     {
-      "elevator": "Allied Cooperative",
-      "city": "Wisc Rapids",
+      "elevator": "Country Visions Cooperative",
+      "city": "Kiel",
       "state": "WI",
       "type": "coop",
       "source": "farmbucks",
-      "lat": 43.6279482,
-      "lng": -89.7491555,
+      "lat": 44.156288,
+      "lng": -87.960359,
       "bids": {
+        "wheat": {
+          "cashPrice": 4.47,
+          "delivery": "February 2026                                              Chicago"
+        },
         "soy": {
-          "cashPrice": 10.34,
-          "delivery": "March 2026"
+          "cashPrice": 10.44,
+          "delivery": "February 2026"
         },
         "corn": {
-          "cashPrice": 3.72,
-          "delivery": "March 2026"
+          "cashPrice": 3.77,
+          "delivery": "February 2026"
         }
       }
     }
