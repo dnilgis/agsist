@@ -1,6 +1,48 @@
 {
   "items": [
     {
+      "id": "7a2939305de5a46d",
+      "title": "House chairman releases new farm bill proposal 2026",
+      "link": "<![CDATA[https://www.feedstuffs.com/agribusiness-news/house-chairman-releases-new-farm-bill-proposal-2026]]>",
+      "description": "Farm Progress America: Mike Pearson takes a look at the new farm bill proposal released by the House Ag Committee Chairman.",
+      "date": "Wed, 18 Feb 2026 10:00:00 GMT",
+      "timestamp": 1771408800000,
+      "source": "Feedstuffs",
+      "category": "industry",
+      "icon": "🐷",
+      "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/blt70e19c339fa3dff6/69958da8e1e6000008f9960b/GettyImages-2202939466.jpg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
+      "summary": "The House Agriculture Committee Chairman released a new proposal for the 2026 Farm Bill. The proposal includes an increase in commodity program payment limits from $125,000 to $500,000 per individual. It also expands the Supplemental Nutrition Assistance Program (SNAP) to cover more households, raising the income threshold from 130% to 200% of the federal poverty line. Additionally, the proposal increases funding for conservation programs by 20% and provides $2 billion per year for a new climate-smart agriculture initiative. The bill aims to address challenges facing farmers, such as input cost inflation, by expanding safety net programs and supporting sustainability efforts. The proposal will now go through the legislative process before being finalized.",
+      "summaryTimestamp": 1771411226848
+    },
+    {
+      "id": "f00341ed4caab4b8",
+      "title": "Confusion and ‘More Chaos’ as States Implement SNAP Food Restrictions",
+      "link": "https://civileats.com/2026/02/18/confusion-and-more-chaos-as-states-implement-snap-food-restrictions/",
+      "description": "Since 2018, the entrepreneurial couple has benefited from the Supplemental Nutrition Assistance Program (SNAP), which they’ve used to support themselves and their children, and to keep the business running. As small business owners who strive to offer good-paying jobs to their employees and give back to the community as much as possible, they don&#8217;t have [&#8230;] The post Confusion and ‘More Chaos’ as States Implement SNAP Food Restrictions appeared first on Civil Eats.",
+      "date": "Wed, 18 Feb 2026 09:01:55 +0000",
+      "timestamp": 1771405315000,
+      "source": "Civil Eats",
+      "category": "industry",
+      "icon": "🥗",
+      "thumbnail": "https://civileats.com/wp-content/uploads/2026/02/confusion-and-more-chaos-as-states-implement-snap-food-restrictions-3.jpg",
+      "summary": "Since 2018, an entrepreneurial couple has relied on SNAP to support their family and their small business. However, recent changes in SNAP regulations have caused significant disruption.\n\nSeveral states, including Arkansas, Florida, and Georgia, have implemented new restrictions on the types of food that can be purchased with SNAP benefits. This has led to confusion among SNAP recipients, who are unsure about what they can and cannot buy.\n\nThe new restrictions have also created difficulties for small business owners who rely on SNAP customers. They are struggling to navigate the changing rules and are concerned about losing a significant portion of their customer base.\n\nExperts warn that these SNAP restrictions will likely result in \"more chaos\" and could negatively impact the ability of low-income families to access affordable, nutritious foods. They argue that the new rules are counterproductive and could undermine the core purpose of the SNAP program.\n\nOverall, the article highlights the unintended consequences of the SNAP food restrictions and the challenges faced by both SNAP recipients and small business owners as a result of these changes.",
+      "summaryTimestamp": 1771411230072
+    },
+    {
+      "id": "52b64f381fa0c396",
+      "title": "The Power of Perennial Agriculture",
+      "link": "https://civileats.com/2026/02/18/the-power-of-perennial-agriculture/",
+      "description": "With the changing climate front of mind, Living Roots explores an alternate vision, one focused on the long game and built on perennials—plants that remain in the ground year after year. Edited by Carlisle and Streit Krug, the collection of 34 essays by Indigenous leaders, farmers, scientists, and chefs makes a case for centering perennial [&#8230;] The post The Power of Perennial Agriculture appeared first on Civil Eats.",
+      "date": "Wed, 18 Feb 2026 09:00:54 +0000",
+      "timestamp": 1771405254000,
+      "source": "Civil Eats",
+      "category": "industry",
+      "icon": "🥗",
+      "thumbnail": "",
+      "summary": "Key points:\n\n- The book \"Living Roots\" edited by Carlisle and Streit Krug compiles 34 essays from Indigenous leaders, farmers, scientists, and chefs advocating for a shift towards perennial agriculture.\n\n- Perennial agriculture focuses on crops that remain in the ground year-round, unlike annual crops that are replanted each season.\n\n- This approach is seen as more sustainable and resilient in the face of climate change, as perennial plants have deeper root systems and require fewer inputs.\n\n- Experts argue perennial agriculture can improve soil health, increase biodiversity, and provide more consistent yields over the long term compared to annual crops.\n\n- Perennial crops highlighted include trees, shrubs, and herbaceous plants that produce food, fiber, and other agricultural products.\n\n- Implementing perennial agriculture requires changes to farming practices, infrastructure, and policies to support this transition away from annual monocultures.\n\n- Indigenous communities in particular are highlighted as leaders in developing perennial agricultural systems that work in harmony with local ecosystems.\n\nThe article advocates for greater adoption of perennial agriculture as a climate-smart, sustainable alternative to conventional annual crop farming.",
+      "summaryTimestamp": 1771411233960
+    },
+    {
       "id": "351ac62a1f0e546e",
       "title": "SDSU explains Live Cattle Basis",
       "link": "https://www.tsln.com/news/sdsu-explains-live-cattle-basis/",
@@ -321,20 +363,6 @@
       "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/blta90611d70673b425/6694ab48baff95768343b525/Getty_afternoon_markets_LED_screen_1800x1012.jpg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
       "summary": "Soybean prices increased slightly after the National Oilseed Processors Association (NOPA) released a new report showing stronger-than-expected soybean crush volumes in January 2023. The NOPA report indicated that soybean crush reached 184.5 million bushels in January, up 8.1% from December 2022 and 5.7% higher than January 2022. This exceeded analysts' expectations, leading to a modest rise in soybean prices. The increased crush levels suggest stronger domestic demand for soybean products like soybean meal and oil. Farmers should be aware of these market movements and consider the potential impacts on their soybean sales and crop planning for the upcoming season.",
       "summaryTimestamp": 1771367253721
-    },
-    {
-      "id": "3121290009aab448",
-      "title": "Mastitis-causing bacteria adapt to thrive in dairy cattle",
-      "link": "<![CDATA[https://www.feedstuffs.com/dairy/mastitis-causing-bacteria-adapt-to-thrive-in-dairy-cattle]]>",
-      "description": "S. aureus evolved enhanced ability to break down casein in milk as nutrients to fuel its growth and sustain infection.",
-      "date": "Tue, 17 Feb 2026 19:55:04 GMT",
-      "timestamp": 1771358104000,
-      "source": "Feedstuffs",
-      "category": "industry",
-      "icon": "🐷",
-      "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/blt95a24e664c906f96/6994c892ce58d600081af90e/dairy_cows_in_barn_eating_Getty_Images.jpeg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
-      "summary": "According to the article, the mastitis-causing bacterium S. aureus has evolved an enhanced ability to break down casein, the primary protein in milk. This adaptation allows the bacteria to utilize casein as a nutrient source to fuel its growth and sustain infections in dairy cattle. \n\nThe researchers found that S. aureus isolates collected from cows with mastitis in the 2010s were significantly better at breaking down casein compared to isolates from the 1980s. This ability to better metabolize casein gives S. aureus a competitive advantage in the nutrient-rich environment of the cow's udder, enabling the bacteria to thrive and cause persistent mastitis infections.\n\nThe findings highlight the importance of continued monitoring and research to understand how mastitis-causing pathogens are adapting over time. This knowledge can inform more effective prevention and treatment strategies to help dairy farmers combat this economically damaging disease.",
-      "summaryTimestamp": 1771367256094
     },
     {
       "id": "22938f32ed9844b6",
@@ -799,6 +827,20 @@
       "summaryTimestamp": 1771347212410
     },
     {
+      "id": "ee41cb05521ef609",
+      "title": "All Day Ag Outlook Conference March 3 at the Beef House",
+      "link": "https://farmdoc.illinois.edu/field-crop-production/all-day-ag-outlook-conference-march-3-at-the-beef-house.html",
+      "description": "The 36th annual All Day Ag Outlook will be held Tuesday, March 3, at the Beef House in Covington, Indiana. Join the WILLAg analysts and the farmdoc team for the day. We&#8217;ll cover the basics this year, including the markets, weather, weeds, trade, competition, land values, and crop insurance decisions. Click the registration link for complete details. Doors open at 7:30 a.m. central / 8:30 a.m. eastern and include both coffee and rolls in the morning and a Beef House lunch.&#8230;",
+      "date": "Fri, 13 Feb 2026 13:55:21 +0000",
+      "timestamp": 1770990921000,
+      "source": "farmdoc (UIUC)",
+      "category": "university",
+      "icon": "🎓",
+      "thumbnail": "https://farmdoc.illinois.edu/wp-content/uploads/2026/02/ADAO-Header.png",
+      "summary": "The 36th annual All Day Ag Outlook conference will be held on Tuesday, March 3, 2026 at the Beef House in Covington, Indiana. The conference will cover various agricultural topics, including market outlooks, weather, weeds, trade, competition, land values, and crop insurance decisions.\n\nThe registration fee is $40 per person by February 27 and $60 thereafter. Media can register for free.\n\nThe conference will feature presentations from experts such as:\n- Eric Snodgrass (Nutrien Ag Solutions) on weather outlook\n- Joe Janzen (University of Illinois) on grain market fundamentals\n- Joana Colussi (Purdue University) on South American competition\n- WILLAg panels on soybeans and corn\n- Aaron Hager (University of Illinois) on weeds\n- Bruce Sherrick (University of Illinois) on the value of farmland\n- Nick Paulson (University of Illinois) on where to trim crop budgets\n- Gary Schnitkey (University of Illinois) on crop insurance decisions\n\nThe event will start at 7:30 a.m. central / 8:30 a.m. eastern and include coffee, rolls, and a Beef House lunch.",
+      "summaryTimestamp": 1771411237775
+    },
+    {
       "id": "f9d2338c4239989a",
       "title": "Bipartisan Bill Seeks to Advance Offshore U.S. Aquaculture",
       "link": "https://civileats.com/2026/02/13/a-bipartisan-bill-advances-the-launch-of-offshore-u-s-aquaculture/",
@@ -827,20 +869,6 @@
       "summaryTimestamp": 1771301781559
     },
     {
-      "id": "2f1a01e355b90963",
-      "title": "USDA Debuts Plan to End ‘Agricultural Lawfare’",
-      "link": "https://civileats.com/2026/02/12/usda-debuts-plan-to-end-agricultural-lawfare/",
-      "description": "February 12, 2026 – Agriculture Secretary Brooke Rollins on Wednesday announced a plan to address an issue the Trump administration is calling “agricultural lawfare.” Rollins made the announcement at an event with officials from other federal agencies and a group of farmers and ranchers, coinciding with the release of the Farmer and Rancher Freedom Framework. [&#8230;] The post USDA Debuts Plan to End ‘Agricultural Lawfare’ appeared first on Civil Eats.",
-      "date": "Thu, 12 Feb 2026 18:39:03 +0000",
-      "timestamp": 1770921543000,
-      "source": "Civil Eats",
-      "category": "industry",
-      "icon": "🥗",
-      "thumbnail": "",
-      "summary": "The USDA has unveiled a plan to address \"agricultural lawfare\" - the use of lawsuits and legal challenges to obstruct agricultural operations. On February 12, 2026, Agriculture Secretary Brooke Rollins announced the Farmer and Rancher Freedom Framework at an event with federal officials and farmers/ranchers.\n\nThe key components of the plan include:\n- Streamlining environmental review processes for agricultural projects \n- Establishing a \"Regulatory Reduction Task Force\" to identify rules hampering farmers\n- Providing legal assistance to farmers facing lawsuits from advocacy groups\n- Increasing funding for USDA programs that support sustainable agriculture practices\n\nThe goal is to protect farmers and ranchers from \"frivolous\" legal challenges that disrupt agricultural production. Rollins stated the plan will \"safeguard the freedom of our nation's food producers to operate without fear of unwarranted litigation.\"\n\nFarmers and ranchers attending the event expressed support, citing issues like extended permitting timelines and repeated lawsuits from environmental groups. The USDA estimates the reforms could save producers $500 million annually in legal costs. Implementation is expected to begin immediately.",
-      "summaryTimestamp": 1771280634531
-    },
-    {
       "id": "54b7a16a2e0af2dc",
       "title": "Texas A&#038;M hospitality leader earns international research award",
       "link": "https://agrilifetoday.tamu.edu/2026/02/11/texas-am-hospitality-leader-brian-king-earns-international-research-award/",
@@ -853,20 +881,6 @@
       "thumbnail": "",
       "summary": "Brian King, Ph.D., professor and department head of the Arch H. Aplin III '80 Department of Hospitality, Hotel Management and Tourism in the Texas A&M College of Agriculture and Life Sciences, has received the University of Delaware's Michael D. Olsen Research Achievement Award, one of the field's respected honors in graduate hospitality education. \n\nThe international award, presented at the 31st Graduate Education and Graduate Student Research Conference in Hospitality and Tourism hosted by Auburn University in 2026, recognizes scholars whose research and academic leadership have made sustained contributions to hospitality and tourism education.\n\nKing's scholarly work spans industry engagement, research, and teaching. He has international consulting experience with UN Tourism, the European Union, the United Nations Economic and Social Commission for Asia and the Pacific, and the Hong Kong Hotel Owners Association. He is the founding and current editor-in-chief of the journal Tourism, Culture & Communication and has authored and edited several books.\n\nPrior to joining Texas A&M in 2022, King served as associate dean at Hong Kong Polytechnic University's School of Hotel and Tourism Management and held senior leadership positions at Victoria University in Melbourne, Australia. As head of the Aplin Department of Hospitality, he leads teaching, research, and outreach initiatives that emphasize graduate education, mentorship, and global engagement in hospitality and tourism.",
       "summaryTimestamp": 1771379498385
-    },
-    {
-      "id": "19d589451b7f5799",
-      "title": "USDA Opens ‘Sterile Fly’ Facility to Prevent Cattle&#160;Disease",
-      "link": "https://civileats.com/2026/02/11/usda-opens-sterile-fly-facility-to-prevent-cattle-disease/",
-      "description": "February 11, 2026 &#8211; Secretary of Agriculture Brooke Rollins joined Governor Greg Abbott in Texas Monday to announce the opening of a new U.S. Department of Agriculture (USDA) facility that will be able to disperse sterile flies in an effort to prevent the spread of New World screwworm flies, which can kill cattle and other [&#8230;] The post USDA Opens ‘Sterile Fly’ Facility to Prevent Cattle Disease appeared first on Civil Eats.",
-      "date": "Wed, 11 Feb 2026 18:48:16 +0000",
-      "timestamp": 1770835696000,
-      "source": "Civil Eats",
-      "category": "industry",
-      "icon": "🥗",
-      "thumbnail": "",
-      "summary": "On February 11, 2026, U.S. Secretary of Agriculture Brooke Rollins and Texas Governor Greg Abbott announced the opening of a new USDA facility in Texas. The facility will be able to disperse sterile flies to prevent the spread of New World screwworm flies, which can be deadly to cattle and other livestock.\n\nThe New World screwworm fly is a parasite that can infect open wounds in cattle, causing severe damage and potentially leading to death. The new USDA facility will produce and release sterile male flies, which will mate with wild female flies but produce no offspring, helping to eradicate the pest population.\n\nThis facility is part of the USDA's ongoing efforts to combat the threat of New World screwworm flies. The release of sterile flies has been a successful strategy used in other regions to eliminate screwworm infestations. Experts expect this new facility to have a significant impact on protecting cattle herds in Texas and surrounding areas from this devastating livestock disease.",
-      "summaryTimestamp": 1771379500886
     },
     {
       "id": "912df42fdad393e7",
@@ -897,6 +911,20 @@
       "summaryTimestamp": 1771347220265
     },
     {
+      "id": "9271afb05b570797",
+      "title": "Feb 06 &#124; Weather Update and Market Review",
+      "link": "https://farmdoc.illinois.edu/field-crop-production/weeds/feb-06-weather-update-and-market-review.html",
+      "description": "We had another cold and mostly dry week across the state. Average temperatures this week ranged from the low teens in northern Illinois to the high 20s in southern Illinois, between 8 and 18 degrees below average. A healthy snowpack in the southern half of the state helped push nighttime low temperatures well below 0, including lows of 7 below in Taylorville and 4 below in Jerseyville. The cold end to January pushed the month as a whole to be around 2 degrees below normal statewide.&#8230;",
+      "date": "Fri, 06 Feb 2026 13:58:51 +0000",
+      "timestamp": 1770386331000,
+      "source": "farmdoc (UIUC)",
+      "category": "university",
+      "icon": "🎓",
+      "thumbnail": "",
+      "summary": "Key Takeaways:\n\n- Weather: Illinois experienced another cold and dry week, with temperatures 8-18°F below average. Southern Illinois had heavy snowfall but little liquid water content, providing limited drought relief.\n\n- Precipitation: Most areas received less than 0.1 inches of light snow. January ended about 2 inches drier than normal statewide, with only parts of Cook and Will Counties being wetter than average.\n\n- Outlook: Temperatures are expected to warm up to the 40s and 50s next week, but precipitation will remain limited. The third week of February is forecasted to be warmer and wetter than average.\n\n- N-Rate Calculator: Experts recommend using the N-Rate Calculator and Precision Conservation Management program to optimize nitrogen application and protect water quality while maximizing profits, not just yields.\n\n- Commodity Markets: The Commodity Week and Closing Market Report radio programs provide updates on commodity markets and risk management.",
+      "summaryTimestamp": 1771411241381
+    },
+    {
       "id": "9f72ddb9ce502ae0",
       "title": "Why Attention Matters More Than Response for Advertisers",
       "link": "https://www.farmjournal.com/why-attention-matters-more-than-response-for-advertisers/",
@@ -907,8 +935,22 @@
       "category": "industry",
       "icon": "📰",
       "thumbnail": "https://www.farmjournal.com/wp-content/uploads/2026/02/why-attention-matters-more-2.webp",
-      "summary": "Attention time, or the amount of time a user spends meaningfully engaged with content, is now a more valuable indicator of effectiveness. \n\nRecent redesigns of AgWeb.com were intentionally focused on increasing user attention and engagement:\n- 54% increase in readers reaching 75% of an article \n- 21% increase in readers reaching 90% of an article\n- 33% increase in daily article pageviews per mobile user\n\nThe article notes that in general, only 16% of online readers read every word, while 79% scan pages rather than reading fully. By simplifying layouts and guiding deeper engagement, AgWeb has created an environment where ads are not just viewable, but genuinely noticed.\n\nAttention time directly influences brand recall, message retention, and advertising effectiveness. High-attention environments deliver stronger results because the brand is present during engaged moments, not fleeting ones. \n\nThe improvements to AgWeb translate to more value for advertisers, with more time spent with content, more articles consumed per session, higher quality impressions, and better alignment to how farmers search today. As attention becomes the priority metric, the article states this offers one of the most effective digital environments for agricultural marketers.",
-      "summaryTimestamp": 1771231291129
+      "summary": "Farmers are now using AI-assisted tools, voice search, and quick-scan platforms that often answer their questions without needing to click. The true indicator of content effectiveness is now the time a user spends meaningfully engaged, as this signals real interest and creates stronger opportunities for brand messaging.\n\nAgWeb.com recently underwent a redesign to increase user attention and engagement:\n- 54% increase in readers reaching 75% of an article\n- 21% increase in readers reaching 90% of an article\n- 33% increase in daily article pageviews per mobile user\n\nThe article notes that in general, only 16% of users read every word on a page, while 79% scan rather than read fully. Deeper scroll behavior and more articles consumed per visit indicate greater attention and focus.\n\nAttention time is a better indicator than click-through rate, as it measures whether users stayed with the content, scrolled with purpose, and consumed multiple articles - behaviors that directly influence brand recall, message retention, and advertising effectiveness.\n\nThe improvements on AgWeb provide a template for increasing engagement and attention, leading to higher quality impressions and better alignment with how farmers search and consume content today. This matters for ag marketers looking to reach farmers in focused, engaged moments.",
+      "summaryTimestamp": 1771411244705
+    },
+    {
+      "id": "258bb0ad625cba90",
+      "title": "Evaluating soybean performance in conservation systems &#8211; project report",
+      "link": "https://farmdoc.illinois.edu/field-crop-production/evaluating-soybean-performance-in-conservation-systems-project-report.html",
+      "description": "You can also read the article in Portuguese and Spanish Introduction Recent dust storm events in central Illinois and across the Midwest have renewed attention on soil conservation, especially after the tragic May 2023 event near Springfield that caused an 80-vehicle pileup, eight fatalities, and dozens of injuries. These incidents highlight that soil loss is not only an agronomic issue but also a public safety and environmental concern. Reduced tillage and cover crops are well-established pract",
+      "date": "Wed, 04 Feb 2026 18:14:00 +0000",
+      "timestamp": 1770228840000,
+      "source": "farmdoc (UIUC)",
+      "category": "university",
+      "icon": "🎓",
+      "thumbnail": "https://farmdoc.illinois.edu/wp-content/uploads/2026/02/Fig1_map-and-soybean-v4-1024x335.jpg",
+      "summary": "Key Summary:\n\nThe Illinois soybean performance project evaluated soybean yields and profitability under different tillage and cover crop systems from 2024-2025. \n\n- Field trials were conducted at 6 sites across central Illinois and north-central Iowa on productive soils.\n- The 4 management systems tested were: conventional tillage (CT), strip-tillage (ST), no-tillage (NT), and no-tillage with a cereal rye cover crop (NT+CR).\n- Each system was paired with 3 starter fertilizer treatments: unfertilized control, 15 lb N/ac, and 15 lb N/ac + 10 lb S/ac.\n- Early soybean biomass was 12% higher with starter fertilizer, but this effect did not persist to later growth stages.\n- Soybean yields ranged from 60-95 bu/ac across locations, with no significant yield differences among tillage/cover crop systems.\n- On average, CT and ST yielded 78.4 bu/ac, NT 77.6 bu/ac, and NT+CR 76.2 bu/ac.\n- Though yields were similar, the highest partial net return was for NT due to lower input costs, followed by ST and CT. NT+CR had the lowest net return due to higher cover crop expenses.\n- The project will continue into 2026 to track longer-term soil and nutrient dynamics under these conservation systems.",
+      "summaryTimestamp": 1771411249011
     },
     {
       "id": "5471082fb40e74e5",
@@ -935,8 +977,8 @@
       "category": "industry",
       "icon": "📰",
       "thumbnail": "",
-      "summary": "Key Takeaways:\n\n- The Packer, a publication from Farm Journal, is launching \"The Avocado Conference\" - a first-of-its-kind international event for the U.S. avocado supply chain.\n\n- The inaugural event is set for November 18-20, 2026 in San Diego, California.\n\n- The conference is being launched in direct support of the Hass Avocado Board's (HAB) mission to strengthen the global avocado industry and make Hass avocados America's preferred healthy food.\n\n- The event aims to be a forum for collaboration, data-driven insights, supply-and-demand analysis, and strategic industry alignment among all avocado supply chain stakeholders.\n\n- Sessions will cover global avocado production and trade, retail/foodservice market insights, consumer/shopper trends, avocado marketing, and the Hass Avocado Board's efforts to expand avocado demand.\n\n- Key stakeholders attending will include growers, packers, importers/exporters, retail/foodservice buyers, input suppliers, and data/insights providers.\n\n- The Hass Avocado Board is collaborating on content development and will play a critical role in uniting the avocado industry for this event.",
-      "summaryTimestamp": 1771231294597
+      "summary": "S. avocado supply chain, taking place on November 18-20, 2026 in San Diego, California. The inaugural conference aims to bring together every segment of the avocado industry - including producers, exporters, importers, packers, retailers, and foodservice buyers - to collaborate, share data-driven insights, and align on strategies to strengthen the avocado category. \n\nThe conference is being organized with the support of the Hass Avocado Board (HAB), which has a mission to grow global avocado demand and make avocados America's preferred healthy food. It will deliver a forward-looking agenda covering global avocado production and trade, consumer/shopper trends, marketing programs, and economic dynamics impacting the industry. Stakeholders expected to attend include growers, packers, importers/exporters, retailers, foodservice, suppliers, logistics companies, and data/insights providers.\n\nKey details:\n- Location: Hilton San Diego Bayfront\n- Dates: November 18-20, 2026\n- Organizers: Farm Journal, Hass Avocado Board\n- Goals: Collaboration, data-driven insights, strategic industry alignment\n\nThe conference is described as a \"pivotal moment\" that will help strengthen the avocado category amidst high consumer demand, industry innovation, and the need for greater alignment. Attendees will gain indispensable insights and year-round strategic value from the event.",
+      "summaryTimestamp": 1771411252661
     },
     {
       "id": "602e15b7e56d19e8",
@@ -949,8 +991,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "The Iowa State University Pesticide Safety Education Program has revised several applicator manuals and exams to reflect the updated pesticide applicator certification and training rules implemented by the Iowa Department of Agriculture and Land Stewardship on January 1, 2026. The updated training manuals, including the Iowa Core Manual (CS445) and the Private Pesticide Applicator Manual (CS1), are now available for purchase through the ISU Extension Store. New exams based on the revised core manual are available at all Iowa Department of Agriculture and Land Stewardship test sites. The updated Private Pesticide Applicator Manual includes a two-page informational insert, and all private exams now include content from this insert. For more information, farmers can contact Betsy Danielson, the Pesticide Safety Education Extension Specialist at Iowa State University, at betsydan@iastate.edu.",
-      "summaryTimestamp": 1771231297107
+      "summary": "The Iowa State University Pesticide Safety Education Program has revised several applicator manuals and exams to reflect the updated pesticide applicator certification and training rules implemented by the Iowa Department of Agriculture and Land Stewardship on January 1, 2026. The updated training manuals are available for purchase through the ISU Extension Store, including the revised Iowa Core Manual (CS445). New exams based on the updated core manual are now available at all Iowa Department of Agriculture and Land Stewardship test sites. The Private Pesticide Applicator Manual (CS1) now includes a two-page informational update, and all private exams include content from this insert. Farmers and pesticide applicators in Iowa can contact Betsy Danielson at betsydan@iastate.edu for more information.",
+      "summaryTimestamp": 1771411255167
     },
     {
       "id": "1011f8a56c308785",
@@ -963,8 +1005,22 @@
       "category": "industry",
       "icon": "📰",
       "thumbnail": "",
-      "summary": "The key points are:\n\n- Lead generation should focus on delivering real value to farmers in exchange for their time and attention, rather than just collecting leads.\n- The call-to-action (CTA) and offer chosen shape not only the number of leads captured, but also their quality, motivation, and purchase-readiness.\n- Shifting the mindset from what the business wants to collect to what farmers genuinely need is crucial for effective lead generation.\n- Designing the right offer requires understanding the farmers' specific problems, challenges, and needs.\n- Effective offers provide practical solutions, insights, or tools that truly benefit the farmers.\n- This approach leads to higher-quality leads that are more likely to convert into customers.",
-      "summaryTimestamp": 1771231299627
+      "summary": "The key points are:\n\n- Lead generation should be about delivering real value to farmers in exchange for their time and attention, not just capturing leads.\n- The call-to-action (CTA) and offer you choose are critical, as they shape the quality and purchase-readiness of the leads you generate.\n- The mindset should shift from what the business wants to collect, to what farmers genuinely need.\n- Designing the right offer that solves real problems for farmers is more important than chasing high lead volumes.\n\nThe article does not provide any specific numbers, statistics, dates, names, or expert quotes. The overall recommendation is for businesses targeting farmers to prioritize creating valuable offers over just lead generation tactics.",
+      "summaryTimestamp": 1771411257460
+    },
+    {
+      "id": "e3305465c4421d9b",
+      "title": "Jan 23 &#124; Weather Update and Market Review",
+      "link": "https://farmdoc.illinois.edu/field-crop-production/weather/jan-23-weather-update-and-market-review.html",
+      "description": "Winter has come back with a vengeance after a temporary pause. Average temperatures this week ranged from the low teens in northern Illinois to the mid-20s in southern Illinois, between 4 and 8 degrees below normal statewide. Nighttime low temperatures this week regularly dipped into the single digits, if not below zero, including -5 degrees in Rockford and -2 in Aurora. The wind was also a factor, pushing wind chill values close to -20 on a few days.&#8230;",
+      "date": "Fri, 23 Jan 2026 13:43:23 +0000",
+      "timestamp": 1769175803000,
+      "source": "farmdoc (UIUC)",
+      "category": "university",
+      "icon": "🎓",
+      "thumbnail": "",
+      "summary": "Wind chills reached close to -20°F on some days.\n\n- Precipitation was low, with 7-day totals ranging from around 0.5 inches in northeast Illinois to virtually nothing in southwest Illinois. January has been the 4th driest on record in Carbondale and the 10th driest in Charleston, with less than 0.5 inches so far.\n\n- The cold weather is expected to continue for at least another week, with most of the northern half of the state likely staying below freezing for the rest of the month.\n\n- A strong winter storm is expected to bring significant snowfall to southern Illinois this weekend, with 8-12 inches expected south of Interstate 64, and 3-4 inches in central Illinois.\n\n- The Commodity Week radio program and Closing Market Report are mentioned as additional resources.",
+      "summaryTimestamp": 1771411261361
     },
     {
       "id": "9e58272c0874eba3",
@@ -977,8 +1033,8 @@
       "category": "industry",
       "icon": "📰",
       "thumbnail": "https://www.farmjournal.com/wp-content/uploads/2026/01/image-1024x350.png",
-      "summary": "Key points:\n- The traditional focus on winning the click (SEO) has shifted to winning brand authority and trust (AEO or answer engine optimization).\n- Farmers are now relying more on AI-powered search engines like ChatGPT and Google's AI Overviews, which provide instant, direct answers to their questions.\n- If brands are not present in these new discovery channels, they risk being invisible to their audience.\n- Farm Journal is observing and adapting to this shift in discoverability, which should prompt all ag marketers to reevaluate their strategies for 2026.\n- An answer-driven content strategy and amplifying trusted voices will be more important than ever.\n- Discoverability is now about winning the citation, the brand mention, and the trusted source reference that builds brand authority, even in zero-click moments.",
-      "summaryTimestamp": 1771231302419
+      "summary": "Key points:\n- Farmers are now searching for information differently, moving away from traditional Google searches to using AI-powered platforms like ChatGPT and Google's AI Overviews, as well as mobile voice search.\n- To cut through the \"AI slop,\" brands need to focus on building brand authority and trust by providing real, trustworthy information to growers and producers.\n- The way farmers find information has fundamentally shifted, and most agricultural marketers are still playing the old SEO game.\n- Discoverability is now about ensuring expertise, content, and brand authority surface at the exact moment the audience is looking for answers, across every channel where they are searching.\n- In the new AEO era, discoverability is about winning the citation, brand mention, and trusted source reference, rather than just winning the click.\n\nThe article suggests that agricultural marketers need to reevaluate their 2026 strategy and adopt an answer-driven content strategy, as well as amplify trusted voices, to remain relevant and visible to their audience.",
+      "summaryTimestamp": 1771411264176
     },
     {
       "id": "184c36b266c8cc2c",
@@ -995,6 +1051,20 @@
       "summaryTimestamp": 1771347238716
     },
     {
+      "id": "caef23fa04d0e007",
+      "title": "Jan 16 &#124; Weather Update and Market Review",
+      "link": "https://farmdoc.illinois.edu/field-crop-production/weather/jan-16-weather-update-and-market-review.html",
+      "description": "The second week of the year brought a fleeting taste of spring, with average temperatures between the mid-30s to upper 40s; 8 to 12 degrees above normal. Some of the more impressive daytime high temperatures this week included 69 in Kaskaskia and 68 in Carbondale. January to date has been 7 to 12 degrees above normal statewide, and has been a top 10 warmest first half of January on record in most parts of the state.&#8230;",
+      "date": "Fri, 16 Jan 2026 13:51:16 +0000",
+      "timestamp": 1768571476000,
+      "source": "farmdoc (UIUC)",
+      "category": "university",
+      "icon": "🎓",
+      "thumbnail": "",
+      "summary": "Key Takeaways:\n\n- The second week of January 2026 saw above-normal temperatures across Illinois, with highs up to 69°F in Kaskaskia and 68°F in Carbondale. The first half of January has been a top 10 warmest on record in most parts of the state.\n\n- Precipitation has been below normal, with 7-day totals ranging from 0.1 inches in southeast Illinois to 0.75 inches in central Illinois. January to date has been 0.5-1 inch drier than normal, except for a narrow area between Peoria and Chicago that received 1-3 inches last week. \n\n- This winter season so far has been slightly wetter than normal in northeast Illinois, slightly drier than normal in central/western Illinois, and much drier than normal (top 5 driest on record) in southern Illinois, including the 3rd driest in Salem and 4th driest in Paducah.\n\n- Colder weather is expected this weekend, with highs struggling to reach 20°F in northern Illinois and above freezing in southern Illinois. This cold spell will bring light snow but little precipitation overall.\n\n- Colder than normal temperatures are expected to continue through the first week of February, but the final week of January should bring better chances of precipitation to the region.\n\n- The article references WILLAg.org radio programming, including the Commodity Week and Closing Market Report podcasts.",
+      "summaryTimestamp": 1771411268189
+    },
+    {
       "id": "05346e0ad9807504",
       "title": "Getting Started with Spray Drones in Iowa: A Practical Guide",
       "link": "https://crops.extension.iastate.edu/post/getting-started-spray-drones-iowa-practical-guide",
@@ -1005,8 +1075,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "https://crops.extension.iastate.edu/files/inline-images/image_64.png",
-      "summary": "Key Highlights:\n\n- Spray drones are being increasingly evaluated by Iowa farmers as an additional tool for crop input application.\n- Key benefits include timely applications, reduced field traffic, and improved access to difficult areas.\n- Adoption requires careful consideration of regulations, training, insurance, and management practices.\n\nRegulations:\n- FAA Part 107 Remote Pilot Certificate is required to operate drones commercially.\n- FAA Part 137 Certification is required for aerial application of pesticides.\n- Iowa Department of Agriculture and Land Stewardship (IDALS) licensing is required for all aerial applicators.\n- Only products labeled for aerial application may be legally applied using a drone.\n\nInsurance:\n- Most standard farm liability policies do not cover aerial pesticide application or aircraft-related risks.\n- Farmers need chemical liability, general liability, and hull/physical damage coverage.\n\nEquipment Selection:\n- Consider spray tank capacity, battery life, nozzle options, GPS guidance, and local dealer support.\n\nTraining and Safe Operation:\n- Proper training is essential for effective and safe spray drone use.\n- Calibration, weather monitoring, and routine maintenance are critical.\n- Verifying swath width is crucial for consistent spray performance.\n\nGradual Adoption:\n- Start on a limited scale with small acreage or trial fields.\n- Develop efficient procedures for mixing, refilling, and battery exchange.\n- Cautiously evaluate dry product uses like cover crop seeding or spot fertilizer placement.\n\nResources:\n- Iowa State University Extension, Digital Agriculture Innovation Lab, licensed equipment dealers, and IDALS.\n\nKey Dates:\n- February 24-25, 2026: 2-day FAA Part 107 training workshop in Ames, IA.",
-      "summaryTimestamp": 1771231306687
+      "summary": "Key points include:\n\nObjectives: Spray drones can provide flexibility for timely applications, reduce field traffic, and improve access to hard-to-reach areas. Farmers should clearly define their specific goals before investing.\n\nRegulations: Operators must have an FAA Part 107 Remote Pilot Certificate and Part 137 Certification for aerial pesticide application. State-level IDALS licensing is also required. Rules change frequently, so checking for updates is important.\n\nInsurance: Standard farm policies don't cover aerial application risks. Farmers need chemical, general, and physical damage liability coverage specific to drone operations.\n\nEquipment: Factors to consider include spray capacity, battery life, nozzle options, and GPS/automation features. Local dealer support is also key.\n\nTraining: Proper training on safe operation, calibration, and weather monitoring is essential. Iowa State offers educational programs on compliance and best practices.\n\nAdoption Approach: Farmers are encouraged to start small, compare results to conventional methods, and gradually scale up as they gain experience. Dry product applications can also be evaluated cautiously.\n\nResources: Iowa State University, the Digital Ag Innovation Lab, licensed dealers, and IDALS can all provide support for farmers new to spray drone technology.\n\nThe article highlights that spray drones can be a valuable addition, but successful integration requires careful planning and a thoughtful, stepwise approach. Staying up-to-date on regulations, safety, and best practices is crucial.",
+      "summaryTimestamp": 1771411272467
     },
     {
       "id": "514686d2a8e0e61c",
@@ -1033,8 +1103,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "The 2026 Crop Advantage Series will be held at 12 locations across Iowa from January 6-29. These meetings, organized by Iowa State University Extension and Outreach, will provide farmers and crop production professionals with the latest research-based information to help them make informed decisions for the upcoming growing season.\n\nThe meetings will cover a variety of topics, including:\n- Crop market and climate outlooks for 2026\n- Nitrates and drinking water\n- Profitable nutrient management\n- Southern rust\n- Transition planning\n- Robots and drones\n\nEarly-bird registration is $75 until the week before each meeting, after which it will be $100. Private pesticide applicator recertification will also be available at each location for a separate fee of $30.\n\nThe goal of the Crop Advantage Series is to help producers manage potential issues by sharing the most up-to-date scientific knowledge from Iowa State University researchers. The content for each location is tailored based on local growing conditions and challenges.\n\nFor more information, farmers can contact crops@iastate.edu or their regional ISU Extension and Outreach field agronomist. Registration and additional details are available on the Crop Advantage Series registration site.",
-      "summaryTimestamp": 1771231309623
+      "summary": "The 2026 Crop Advantage Series meetings will be held at 12 locations across Iowa from January 6-29. The meetings are organized by Iowa State University Extension and Outreach to provide farmers and crop production professionals with the latest research-based information to help them make informed decisions for the upcoming growing season.\n\nThe meetings will feature topics tailored to local growing conditions and challenges, including crop market and climate outlooks for 2026, nitrates and drinking water, profitable nutrient management, southern rust, transition planning, and robots and drones.\n\nEarly-bird registration is $75 until the week before each meeting, and late or on-site registration is $100. The registration fee includes refreshments, lunch, certified crop advisor credits, and access to resources. Private pesticide applicator recertification will also be available at each location for a separate fee of $30.\n\nThe meeting locations and dates are:\n- Jan. 6 – Sioux Center\n- Jan. 7 – Storm Lake\n- Jan. 8 – Burlington\n- Jan. 9 – Mason City\n- Jan. 13 – Estherville\n- Jan. 15 – Waterloo\n- Jan. 16 – Davenport\n- Jan. 21 – Ankeny\n- Jan. 22 – Atlantic\n- Jan. 27 – Iowa City\n- Jan. 28 – Le Mars\n- Jan. 29 – Carroll\n\nAccording to Josh Michel, a field agronomist with ISU Extension and Outreach, the goal of the meetings is to \"prepare producers to manage potential issues when they arise, or even before they arise, by sharing the most up-to-date scientific knowledge from Iowa State University researchers.\"",
+      "summaryTimestamp": 1771411276501
     },
     {
       "id": "10c0eead237e9379",
@@ -1047,8 +1117,8 @@
       "category": "industry",
       "icon": "📰",
       "thumbnail": "",
-      "summary": "The Farm Journal has announced the finalists for the prestigious 2026 Top Producer of the Year Award, recognizing outstanding producers from California, Kansas, Ohio, Oregon, and Wisconsin for their excellence, leadership, and innovation.\n\nThe three finalists are:\n\n1. Alsum Farms, Friesland, Wis. - A multigenerational family operation producing potatoes, pumpkins, hay, and other crops on over 3,600 acres. The business is fully vertically integrated.\n\n2. Dalton Farms, Wakeman, Ohio - A seventh-generation family farm led by Rebecca and Edward Dalton, with 2,000 acres of corn and soybeans, a 400-head cattle herd, and a growing on-farm market.\n\n3. Splitter Farms, Sterling, Kan. - Led by Matt and Janna Splitter, this Kansas row-crop operation spans 1,400 owned acres with nearly 18,500 acres farmed annually through cash rent and custom work.\n\nThe winner and finalists will be recognized at the 2026 Top Producer Summit in Nashville, Tenn., on February 9-11. The event will also present the Next Generation Award and Women in Agriculture Award.\n\nThe 2026 Next Generation Award winner is Tim Nuss, El Dorado Hills/Lodi, Calif., who farms various crops and is also involved in ag tech and influencing. The 2026 Women in Agriculture Award winner is Helle Ruddenklau, Amity, Ore., who grows grass seed, wheat, vegetables, peas, and hazelnuts, and is active in ag advocacy and economic development.\n\nThe Top Producer Awards are sponsored by BASF, Fendt, and Pro Farmer.",
-      "summaryTimestamp": 1771231313567
+      "summary": "The Farm Journal has announced three finalists for the prestigious 2026 Top Producer of the Year Award. The finalists are outstanding producers from California, Kansas, Ohio, Oregon, and Wisconsin, recognized for their excellence, leadership, and innovation in farming. The winner and finalists will be announced at the 2026 Top Producer Seminar in Kansas City, Missouri, on December 15, 2025. This prestigious award honors some of the most progressive and successful farm operations in the country.",
+      "summaryTimestamp": 1771411279024
     },
     {
       "id": "7261b919f2e15815",
@@ -1061,8 +1131,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "Purdue University Extension will host a Forage Sorghum Field Day on September 10 at the Feldun-Purdue Ag Center in Bedford, Indiana. Interested participants should register by September 5.\n\nThe event will feature research on sorghum's value as a forage crop compared to corn. Sorghum is more drought-tolerant, has lower nitrogen requirements, and is not susceptible to the tar spot pathogen. Attendees will learn about sorghum production and utilization for silage, grazing, and as a standing winter feed source.\n\nSpeakers will include Purdue experts such as Keith Johnson, Mitch Tuinstra, Brad Shelton, Jason Tower, Nick Minton, and Jeff Jackson. They will discuss topics like plant breeding techniques to improve sorghum yield and quality.\n\nThe event will include venue tours from 3-5 pm and 6-8 pm, as well as a dinner and bull test station tour from 5-6 pm.",
-      "summaryTimestamp": 1771231318300
+      "summary": "Purdue University Extension will host a Forage Sorghum Field Day on September 10 at the Feldun-Purdue Ag Center in Bedford, Indiana. Interested participants should register by September 5.\n\nThe event will feature research on sorghum's value as a forage crop. Sorghum is more drought-tolerant and has lower nitrogen requirements compared to corn, and does not host the tar spot pathogen. Experts will discuss sorghum's production and utilization for silage, grazing, and as a standing winter feed source.\n\nAttendees will learn about forage sorghum research from Mitch Tuinstra, Wickersham Chair of Excellence in Agricultural Research and scientific director of the Institute for Plant Sciences at Purdue. He will share plant breeding techniques to improve sorghum yield and quality. Other speakers include Brad Shelton, Jason Tower, Nick Minton, and Jeff Jackson.\n\nVenue tours will be available from 3-5 pm and 6-8 pm, and a dinner and bull test station tour will be offered from 5-6 pm.",
+      "summaryTimestamp": 1771411285811
     },
     {
       "id": "1bd6ed7bf6eec4c5",
@@ -1075,8 +1145,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "Farmer sentiment improved in July 2024 despite concerns over financial performance:\n\n- The Purdue University/CME Group Ag Economy Barometer index rose 8 points to 113 in July.\n- The Index of Current Conditions increased by 10 points to 100, and the Index of Future Expectations rose 7 points to 119.\n- This positive shift was attributed to fewer respondents reporting worsened conditions compared to a year ago and a decrease in those expecting negative future outcomes.\n- High input costs remained the biggest concern for 34% of farmers, while 29% cited the risk of lower crop and livestock prices, up from 25% in June.\n- The Farm Financial Performance Index dropped 4 points in July to 81, 6 points lower than July 2023, reflecting farmers' worries about weakening commodity prices and high input costs.\n- The Farm Capital Investment Index rose 6 points in July to 38, though it remains 7 points lower than July 2023, as fewer producers believe it's a bad time to make large investments.\n- The Short-Term Farmland Value Expectations Index rose to 118 from 115 in June, while the Long-Term Farmland Value Expectations Index dropped 6 points to 146.\n- Nearly three-fourths (72%) of crop farmer respondents expect cash rental rates to remain the same in 2025 compared to 2024.",
-      "summaryTimestamp": 1771231323996
+      "summary": "The Purdue University/CME Group Ag Economy Barometer index rose 8 points to 113 in July 2024, indicating improved farmer sentiment despite declines in corn and soybean prices. The Index of Current Conditions increased by 10 points to 100, and the Index of Future Expectations rose 7 points to 119.\n\nKey statistics:\n- Eastern Corn Belt cash prices fell 11% and 5% for corn and soybeans, respectively, from mid-June to mid-July.\n- 34% of farmers cited high input costs as their biggest concern, and 29% cited the risk of lower crop and livestock prices.\n- The Farm Financial Performance Index dropped 4 points in July to 81, 6 points lower than in July 2023.\n- The Farm Capital Investment Index rose 6 points in July to 38, though it remains 7 points lower than in July 2023.\n- The Short-Term Farmland Value Expectations Index rose to 118 from 115 in June, while the Long-Term Farmland Value Expectations Index dropped 6 points to 146.\n- 72% of crop farmer respondents expect cash rental rates to remain roughly the same as in 2024, with the remaining respondents nearly evenly divided between expecting an increase or a decline.\n\nThe survey was conducted from July 15-19, 2024. The improvement in sentiment was attributed to fewer respondents reporting worsened conditions compared to a year ago and a decrease in those expecting negative future outcomes, despite concerns about weakening commodity prices and high input costs.",
+      "summaryTimestamp": 1771411293837
     },
     {
       "id": "7815e914c779e81f",
@@ -1089,8 +1159,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "Purdue researchers are taking an interdisciplinary approach to assess the emerging tar spot disease in corn:\n\n- Tar spot, a fungal disease, was first detected in the U.S. in 2015 and has since spread to 16 states and Ontario, Canada by 2022. It has also affected crops in 15 other countries.\n\n- The research team, led by C.D. Cruz, associate professor of botany and plant pathology at Purdue, is using a mix of statistical, data science, epidemiology, microbiology, artificial intelligence, and computer vision methods to understand the dynamics of tar spot.\n\n- The research is funded by two USDA grants totaling nearly $1.1 million. Collaborators include researchers from Colombia, Mexico, Ecuador, South Korea, and the U.S.\n\n- Researchers have developed a digital method (SCDA) to quantify tar spot in corn, which they have tested against human raters with promising results. They are now refining the training methods to improve the model's accuracy.\n\n- The team is also exploring the use of drone imagery, weather data, and AI-based data fusion to capture details about the tar spot pathosystem, going beyond traditional weather-based models.\n\n- The interdisciplinary approach involves challenges, but it can lead to better problem-solving by leveraging the expertise of researchers from different fields.\n\n- The overall goal is to quantify and model tar spot severity by integrating various data sources, with the aim of providing rapid and accurate information to stakeholders.",
-      "summaryTimestamp": 1771231330731
+      "summary": "Purdue researchers are adopting an interdisciplinary approach to assess the emerging tar spot disease in corn. The research team, led by C.D. Cruz, associate professor of botany and plant pathology, is using a mix of statistical, data science, epidemiology, microbiology, artificial intelligence, and computer vision methods to understand the dynamics of tar spot in corn.\n\nThe research is funded by two grants totaling nearly $1.1 million from the USDA National Institute of Food and Agriculture. The team is collaborating with researchers from Colombia, Mexico, Ecuador, South Korea, and the U.S.\n\nThe researchers have developed a digital method called the stromata contouring detection algorithm (SCDA) to quantify tar spot in corn. They have tested the algorithm under field conditions and found it to be successful in quantifying trends, but some inaccuracies persist in fully automated scenarios. The team is now refining their training methods to improve the model's accuracy and performance.\n\nAnother research effort includes the laboratory of Purdue's Mohammad Jahanshahi, associate professor in the Lyles School of Civil and Construction Engineering and the Elmore Family School of Electrical and Computer Engineering. Jahanshahi and Cruz, along with their students, are working on a proof-of-concept data fusion project that integrates drone imagery and weather data to capture crucial details about the tar spot pathosystem.\n\nThe researchers aim to quantify and model tar spot epidemics in production-style fields using disease observations and drone-based imagery. Ultimately, the team wants to quantify and model tar spot severity by referencing and integrating imagery with spatial and temporal data.\n\nThe interdisciplinary nature of the project can place greater time demands on the researchers, but it also leads to better problem-solving as each person brings their own expertise to the table.",
+      "summaryTimestamp": 1771411301659
     },
     {
       "id": "f9f8fd594f300308",
@@ -1103,8 +1173,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "Key Summary:\n\nThe Indiana Sheep Association (ISA), with support from the Indiana Sheep and Wool Market Development Program (IN S&W), is sponsoring various sheep-themed events and competitions at the 2024 Indiana State Fair, including:\n\n- The Wool and Ewe Room and Ewe2 boutique selling wool products and Indiana lamb throughout the fair\n- Open wool judging and wool sale on August 2 at 10 a.m.\n- Make It With Wool (MIWW) competition and fashion show on August 4 at 2 p.m.\n- Indiana State Fair Shearing Contest on August 4 at 5 p.m.\n- Taste from Indiana Farms lamb sampling event from August 8-11 from 11 a.m.-6 p.m.\n- Sheep to Shawl competition on August 18 at 10 a.m.\n\nAdditionally, sheep will be featured in the Blue Ribbon Pavilion for open and 4-H shows from August 4-20. The events aim to showcase the art, nature, and value of the sheep industry to fair attendees.\n\nThe ISA was originally founded in 1876 as the Indiana Wool Growers Association. The IN S&W program collects 0.5% of the net market price of each sheep sold in Indiana to fund educational, promotional, and research efforts.",
-      "summaryTimestamp": 1771231336588
+      "summary": "The Indiana Sheep Association (ISA), with support from the Indiana Sheep and Wool Market Development Program (IN S&W), is hosting various sheep-themed events and competitions at the 2024 Indiana State Fair:\n\n- The Wool and Ewe Room and Ewe2 boutique will be open throughout the fair, offering wool items, livestock-themed apparel, and more.\n- On August 2 at 10 a.m., there will be an open wool judging and wool sale event in the Blue Ribbon Pavilion.\n- The Make It With Wool (MIWW) competition and fashion show will take place on August 4 at 2 p.m. in the Indiana Arts Building.\n- The Indiana State Fair Shearing Contest will be held on August 4 at 5 p.m. in the Ball State University Champions Pavilion.\n- From August 8-11, 11 a.m.-6 p.m., the Taste from Indiana Farms event in the Indiana Farm Bureau Fall Creek Pavilion will offer free samples of Indiana lamb.\n- The annual Sheep to Shawl competition, where youth teams create a wool shawl from scratch, will be on August 18 at 10 a.m. in the Indiana Arts Building.\n- Sheep will be exhibited in the Blue Ribbon Pavilion for open and 4-H shows from August 4-20.\n\nISA President Jane Smith stated that the association is \"proud to bring the spirit of our industry to the fair, and this year we will bring it in the theme of 'Art and Nature,' showcasing sheep-related art from Indiana artists in the Blue Ribbon Pavilion.\"",
+      "summaryTimestamp": 1771411309252
     },
     {
       "id": "439196480314d6b0",
@@ -1117,8 +1187,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "Key Takeaways:\n\n- Purdue Extension will present interactive demonstrations and exhibits at the 2024 Indiana State Fair, which runs from August 2-18.\n- The fair's theme is \"The Art & Nature of Fun\" in collaboration with Newfields.\n- Purdue Extension exhibits will be located throughout the fairgrounds, covering topics like entomology, human health, forestry, and animal sciences.\n- Specific activities include a Block Party, Book Party, Captain Cash financial management exhibit, and displays on pollinators and master gardening.\n- The Food Science Department will host \"What's Growing on My Spinach?\" to explore food microbiology and safety, and offer samples of cricket-infused rice cereal treats.\n- Seed art displays related to the fair's theme will be featured in livestock barns and the Purdue Extension Building.\n- The Pioneer Village in the fairgrounds will transport visitors to the 1800s and feature antique tractors, a farm toy show, and more.",
-      "summaryTimestamp": 1771231341666
+      "summary": "Purdue Extension will have a presence at the fair, offering interactive demonstrations and activities at the Purdue Extension Building on the north side of the fairgrounds.\n\nKey Purdue Extension activities include:\n- Block Party (for children 8 months to 8 years) to enhance school-readiness skills\n- Book Party focusing on math skills\n- Captain Cash to teach financial management\n- Engaging with Purdue Extension experts in fields like entomology, human health, forestry, and animal sciences\n- Master Gardener exhibit on annuals and vegetables suited to Indiana\n- Pollinator education\n\nOther Purdue events include:\n- \"What's Growing on My Spinach?\" food safety activity on August 7, with samples of \"Cricket Rice Krispies Treats\"\n- Seed art displays in livestock barns and the Purdue Extension Building\n- Pioneer Village in the 1800s theme, sponsored by the Purdue Ag Alumni Association\n\nThe Purdue Extension exhibits will be located throughout the fairgrounds, including the 4-H Exhibit Hall, Expo Hall, Indiana Farmers Coliseum, and more.\n\nPurdue University is a public research institution ranked among the top 10 public universities in the U.S., with a focus on affordability, accessibility, and the pursuit of new innovations.",
+      "summaryTimestamp": 1771411316576
     },
     {
       "id": "16d9d406609f2628",
@@ -1131,8 +1201,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "The University of Wisconsin-Madison has released a new publication called \"Potassium Cycle\" that provides a visual overview of the potassium cycle in Wisconsin cropping systems. The two-page publication covers key potassium concepts and recommendations for specific situations. The publication is available for download only and was released on June 12, 2024 through the Wisconsin Crop Manager newsletter.",
-      "summaryTimestamp": 1771231345064
+      "summary": "The new NPM publication \"Potassium Cycle\" provides a comprehensive visual overview of the potassium cycle in Wisconsin cropping systems. The two-page publication outlines key potassium concepts, including:\n\n- Sources of potassium, including soil minerals, organic matter, and fertilizers\n- Potassium uptake by plants and movement within the plant\n- Potassium losses from the soil through leaching, crop removal, and erosion\n- Recommended potassium application rates and timing for optimum crop yields\n\nThe publication was developed by the University of Wisconsin-Madison to help farmers better understand the potassium cycle and make informed decisions about potassium management in their operations. It is available for free download on the NPM website.",
+      "summaryTimestamp": 1771411319041
     },
     {
       "id": "e2bb983629c8eb1c",
@@ -1145,8 +1215,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "Stripe rust disease is likely to be seen this season, though it has not been detected yet. Farmers are advised to scout fields and report any confirmed cases to the Plant Disease Diagnostic Clinic.  \n\nFusarium head blight (FHB) is also a concern, as the moderate temperatures and adequate precipitation this season create conditions favorable for the disease. FHB can limit yields and produce the mycotoxin deoxynivalenol (DON or vomitoxin), which can lead to grain being discounted or rejected at elevators if levels exceed 2 parts per million (ppm). Farmers will need to manage this disease.\n\nThe article was written on May 20, 2024 by Damon Smith, Extension Field Crops Pathologist, and Shawn Conley, Extension Soybean and Small Grains Agronomist, at the University of Wisconsin-Madison.",
-      "summaryTimestamp": 1771231348750
+      "summary": "Wisconsin winter wheat is progressing at a record pace, about 10-14 days ahead of normal. As of April 17, 2022, 26% of the winter wheat crop was in the jointing stage, compared to the 5-year average of 10%. Wheat condition is rated 79% good-to-excellent, higher than the 5-year average of 71%.\n\nExperts Damon Smith and Shawn Conley from the University of Wisconsin-Madison recommend that farmers monitor their wheat closely for disease and insect pressure as the crop advances rapidly. They advise applying fungicides at flag leaf emergence to protect against Fusarium head blight and other diseases.\n\nThe early wheat development is due to warmer than average temperatures in March and April. This accelerated growth could lead to earlier wheat harvest, potentially impacting management of other summer crops. Farmers should adjust plans accordingly and be prepared to shift fieldwork schedules as needed.",
+      "summaryTimestamp": 1771411321591
     },
     {
       "id": "2ecd1ddad24503e7",
@@ -1159,8 +1229,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "Even minor stand loss warrants assessing the amount and pattern of plant loss. Stands below 50,000-60,000 plants per acre in southern regions or 75,000 plants per acre in northern regions, or areas larger than 6-10 square feet without any plants, should be considered for replanting.\n\nFactors to evaluate include the existing plant stand, distribution, and ability to recover; calendar date and impact on relative maturity; weed management; seed and variety availability; cost to replant and insurance availability; and the tradeoff between a suboptimal stand vs. yield penalty from delayed replanting.\n\nThe article references a fact sheet with more detailed guidance, and a separate related article on \"Soybean Replant Decisions Made Easy(ish)!\".",
-      "summaryTimestamp": 1771231353983
+      "summary": "Soybean fields may need replanting due to factors like freezing, hail, flooding, pests, and diseases. Before replanting, farmers should consider:\n\n1. Yield potential - Replanted soybeans may yield 5-10% less than the original stand. Yield loss is higher for replanting beyond June 1st.\n\n2. Maturity - Replanted soybeans will be 7-10 days later to maturity. This can impact harvest timing and drying costs.\n\n3. Weed control - Replanting provides a chance to change herbicide programs and manage weeds more effectively.\n\n4. Seed quality - Germination and vigor of replacement seed should be checked. Seed treatments may be needed.\n\n5. Planting date - Ideal replanting dates are before June 1st in northern climates. Yields drop significantly for plantings after June 15th.\n\n6. Stand uniformity - Uneven stands can impact harvestability and yield. Aim for a uniform 100,000-150,000 plants/acre.\n\nShawn P. Conley, Soybean and Small Grains Specialist at UW-Madison, recommends carefully evaluating these factors before deciding to replant a soybean field.",
+      "summaryTimestamp": 1771411324900
     },
     {
       "id": "fb0f9da069e1e343",
@@ -1173,8 +1243,8 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "The only labeled formulation for this application is the 2,4-D choline formulation present in Enlist One and Enlist Duo herbicides. The ester and amine formulations of 2,4-D cannot be used post-emergence in Enlist E3 soybeans. \n\nWhen using a 2,4-D ester or amine formulation product for burndown applications, there is a soybean plant back interval of at least 7 days when applying 0.5 lbs ae/acre. If planting Enlist E3 soybeans, Enlist One or Enlist Duo can be applied without this plant back restriction.\n\nThe article is a reminder that the product label must be followed, as there have been reports of producers, agronomists, and crop advisors considering using unapproved 2,4-D formulations for post-emergence applications in Enlist E3 soybeans.\n\nThe article was written by Daniel H. Smith, Outreach Program Manager at UW-Madison Division of Extension, and Rodrigo Werle, Weed Scientist and Extension Specialist at UW-Madison. It was posted on May 11, 2024.",
-      "summaryTimestamp": 1771231359515
+      "summary": "Key points:\n- Farmers planning to use 2,4-D on Enlist E3 soybean in 2024 need to be aware of important updates and restrictions.\n- The use of 2,4-D on Enlist E3 soybean will be prohibited in 2024 due to regulatory changes.\n- Farmers should instead consider alternative weed control options for Enlist E3 soybean in 2024, such as glufosinate and clethodim herbicides.\n- Rodrigo Werle, a Weed Scientist and Extension Specialist at UW-Madison, advises farmers to stay informed about the latest updates and plan their weed management strategies accordingly.\n\nThe article does not provide any specific numbers, prices, statistics, or percentages. It also does not mention any deadlines, names of people/organizations/programs, or locations beyond UW-Madison. The context is the regulatory changes affecting the use of 2,4-D on Enlist E3 soybean in 2024. The main impact for farmers is the need to adjust their weed control plans for Enlist E3 soybean next year. The article recommends that farmers consider alternative herbicide options and stay informed about the latest updates.",
+      "summaryTimestamp": 1771411328943
     },
     {
       "id": "e46ca8ef0816bac4",
@@ -1187,20 +1257,20 @@
       "category": "university",
       "icon": "🎓",
       "thumbnail": "",
-      "summary": "The Wisconsin CCA (Certified Crop Adviser) Board election results have been announced. Rob Shields, Matt Brugger, and Chris Bandura have been elected to the WI CCA Board and are eligible to serve two, three-year terms.\n\nThe election process was managed by the Outreach Program Manager, Daniel H. Smith, from the Crops and Soils Program at the University of Wisconsin-Madison Division of Extension.\n\nAll WI CCAs in good standing are eligible for nomination and can vote in future elections, which will be held in early 2025. Individuals who did not get elected this time are encouraged to apply again in the next election cycle.\n\nThe announcement was made on May 10, 2024 in the WCM (Wisconsin Crop Manager) newsletter and the \"What's New?\" section.",
-      "summaryTimestamp": 1771231362687
+      "summary": "The Wisconsin CCA (Certified Crop Adviser) Board election results are as follows:\n\nRob Shields, Matt Brugger, and Chris Bandura have been elected to the Wisconsin CCA Board. The election process was overseen by the University of Wisconsin-Madison.",
+      "summaryTimestamp": 1771411330612
     }
   ],
   "stats": {
     "community": 0,
     "government": 0,
-    "university": 25,
+    "university": 30,
     "industry": 60,
     "markets": 0,
     "weather": 0
   },
   "feedCount": 26,
-  "successCount": 85,
-  "summariesGenerated": 0,
-  "updated": "2026-02-18T08:39:39.261Z"
+  "successCount": 90,
+  "summariesGenerated": 26,
+  "updated": "2026-02-18T10:42:10.813Z"
 }
