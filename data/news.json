@@ -1,6 +1,48 @@
 {
   "items": [
     {
+      "id": "351ac62a1f0e546e",
+      "title": "SDSU explains Live Cattle Basis",
+      "link": "https://www.tsln.com/news/sdsu-explains-live-cattle-basis/",
+      "description": "Futures prices are from organized trades that provide price information for buyers and sellers of commodities. Local cash prices can be compared to futures prices using a basis measure. Basis is defined as a cash...",
+      "date": "Wed, 18 Feb 2026 04:40:21 +0000",
+      "timestamp": 1771389621000,
+      "source": "Tri-State Livestock",
+      "category": "industry",
+      "icon": "🐄",
+      "thumbnail": "https://swiftmedia.s3.amazonaws.com/mountain.swiftcom.com/images/sites/13/2026/02/17212021/image-60-1024x683.png",
+      "summary": "Researchers at South Dakota State University (SDSU) have analyzed the live cattle basis levels observed in 2025 at the Sioux Falls Regional Livestock market in Worthing, South Dakota.\n\nThe key points are:\n\n- In 2025, the live cattle basis levels were higher than expected, except during December. This was due to a shortage of high-quality cattle in the northern plains, leading to prices generally increasing throughout the year.\n- For 2026, there is no indication that the basis levels would be different from the historical trend.\n- A 5-year average of historic basis levels can be used to smooth out variations and incorporate seasonal patterns in the underlying cash prices.\n- The expected basis varies by month - it is typically less than the futures price early and late in the year, reflecting transportation costs, while it is higher in May due to the seasonal high in cash prices.\n- The article includes a table showing the expected live cattle basis (in $/cwt) by month, based on the 2021-2025 historical average.\n\nIn summary, the article provides farmers with insights into understanding and forecasting live cattle basis levels in their local market, which can help them make more informed marketing decisions.",
+      "summaryTimestamp": 1771397834687
+    },
+    {
+      "id": "963318790ae1ec6c",
+      "title": "Radke Land &#038; Cattle",
+      "link": "https://www.tsln.com/news/radke-land-cattle/",
+      "description": "TSLN Rep: Kelly Klein Date of Sale: Feb. 16, 2026 Location: at the ranch near Mitchell, SD Auctioneer: Wes Tiemann Sales Manager: CK6 Consulting Averages:56 Angus Bulls Avg. $6,9287 Limousin Bulls Avg. $6,25016 Embryos Avg....",
+      "date": "Wed, 18 Feb 2026 04:34:39 +0000",
+      "timestamp": 1771389279000,
+      "source": "Tri-State Livestock",
+      "category": "industry",
+      "icon": "🐄",
+      "thumbnail": "https://swiftmedia.s3.amazonaws.com/mountain.swiftcom.com/images/sites/13/2026/02/17213311/0dffe12645d2-Screenshot_20260217_070102_Facebook-1024x935.jpg",
+      "summary": "Key details from the Radke Land & Cattle news article:\n\n- The 2nd Annual Radke Production Sale was held on February 16, 2026 near Mitchell, SD. \n- The sale offered 56 Angus bulls that averaged $6,928, and 7 Limousin bulls that averaged $6,250.\n- 16 embryos averaged $731, and 3 flushes averaged $7,333.\n- Top selling bulls:\n  - Lot 22 \"RADK LANDMARK 950N\" (Angus, $12,000) sold to Cameron Puepke\n  - Lot 4 \"RADK MONTY 363M\" (Angus, $12,000) sold to Gracee Poorman\n  - Lot 15 \"RADK NATURE BOY 670 N\" (Angus, $11,000) sold to John Eichoff\n  - Lot 3 \"RADK MARITIME 832M\" (Angus, $10,500) sold to Biggins Cattle Co.\n  - Lot 16 \"RADK NO NONSENSE 072N\" (Angus, $10,000) sold to James Vermeulen\n- Top selling flush: Lot 68 (bull buyer's choice, dam Linz Lady 3125) sold for $9,500 to Pine View Angus.\n- The sale was managed by CK6 Consulting, with auctioneer Wes Tiemann.\n- A large crowd attended to support the Radke family and add quality genetics to their herds.",
+      "summaryTimestamp": 1771397838563
+    },
+    {
+      "id": "e8bb220c74e9dda8",
+      "title": "Quandt Cattle Co.",
+      "link": "https://www.tsln.com/news/quandt-cattle-co-2/",
+      "description": "TSLN Rep: Kelly Klein Date of Sale: Feb. 17, 2026 Location: at the ranch near Oakes, ND Auctioneer: Dustin Carter Averages:86 Simmental Bulls Avg. $10,77927 Reg Bred Heifers Avg. $5,707 The Quandt Family held their...",
+      "date": "Wed, 18 Feb 2026 04:30:28 +0000",
+      "timestamp": 1771389028000,
+      "source": "Tri-State Livestock",
+      "category": "industry",
+      "icon": "🐄",
+      "thumbnail": "https://swiftmedia.s3.amazonaws.com/mountain.swiftcom.com/images/sites/13/2026/02/17212821/295a76cca719-20260217_131028-1024x889.jpg",
+      "summary": "Quandt Cattle Co. held their 14th Annual Production Sale on February 17, 2026 near Oakes, North Dakota. \n\nKey highlights:\n- 86 Simmental bulls averaged $10,779\n- 27 registered bred heifers averaged $5,707\n- Top selling bull was Lot 10 (QB N89), a 2/26/25 son of KBHR Calibrate L086 x QB Ms J153, sold for $62,000 to Healy Simmentals of Irene, SD\n- Other top selling bulls included Lot 74 ($24,000), Lot 35 ($21,000), Lot 79 ($21,000), Lot 73 ($20,000), and Lot 2 ($20,000)\n- Chris Erdman of Wetonka, SD bought a new herd bull\n- Long-time customer Scott Musland of Merricourt, ND attended the sale\n- Gabe Quandt was the spokesman and sale host\n\nThe sale was held at the ranch near Oakes, ND. The offering was reported to be the best set of cattle the Quandts have ever offered. The sale facility was full of customers enjoying the great food, cattle, and hospitality.",
+      "summaryTimestamp": 1771397841862
+    },
+    {
       "id": "c217bad9bf6323fc",
       "title": "Beef Quality Assurance has high value for producers and consumers",
       "link": "https://www.tsln.com/news/beef-quality-assurance-has-high-value-for-producers-and-consumers/",
@@ -27,34 +69,6 @@
       "thumbnail": "",
       "summary": "Key Summary Points:\n\n- The South Dakota State Fair and the Department of Agriculture and Natural Resources (DANR) are encouraging educators to submit their students' work for display in the Arts & Education Building at the 2026 South Dakota State Fair.\n\n- In 2025, over 8,200 student projects were entered in the education division, which features a variety of creative and academic works including art, literature, computer graphics, and more.\n\n- Entry forms are due to the State Fair office by April 15, 2026. Projects from all classroom subjects are eligible for entry from public, private, and alternative instruction educators.\n\n- Schools interested in submitting entries should contact the fair at 605.353.7340 for assistance. The Education Department handbook and instructions on how to enter are available online at the South Dakota State Fair website.\n\n- State Fair Manager Peggy Besch stated: \"The Education Division really shines a spotlight on the creativity and effort students put into their projects. It's exciting for parents, families, and students to see their work proudly displayed at the fair.\"",
       "summaryTimestamp": 1771388318560
-    },
-    {
-      "id": "17ef1cfdc553730c",
-      "title": "Bullard: More Imports on the Way",
-      "link": "https://www.tsln.com/news/bullard-more-imports-on-the-way/",
-      "description": "One of the most common questions from journalists and reporters today is: Why are beef prices so high? President Trump provided his answer to this question in his Feb. 6, 2026, proclamation titled, &#8220;Ensuring Affordable...",
-      "date": "Wed, 18 Feb 2026 02:36:08 +0000",
-      "timestamp": 1771382168000,
-      "source": "Tri-State Livestock",
-      "category": "industry",
-      "icon": "🐄",
-      "thumbnail": "",
-      "summary": "Key Points:\n\n- President Trump issued a proclamation on February 6, 2026, to increase the in-quota quantity of lean beef trimmings that can be imported from Argentina by an additional 80,000 metric tons during 2026.\n\n- This is in addition to the existing 20,000 metric ton annual in-quota quantity limit for Argentina.\n\n- The reasons cited for the decision include:\n  - Widespread drought in 2022\n  - Wildfires disrupting grazing and hay production\n  - Closure of the U.S.-Mexico border due to a New World screwworm outbreak in Mexico\n\n- These factors have reduced the supply of cattle in the U.S., resulting in higher beef prices, including ground beef reaching $6.69 per pound in December 2025 - the highest since 1980.\n\n- The President stated he has a responsibility to ensure Americans can afford to feed themselves and their families, hence the action to temporarily increase lean beef trimming imports.\n\n- However, the article notes that the downward trend in the U.S. cattle inventory and number of cattle producers actually began over a generation ago due to a shift in national policy that handed control of the live cattle and beef industry to a tight oligopoly of global firms.\n\n- This oligopoly was able to substitute domestic cattle and beef with cheaper imports, leading to hundreds of thousands of cattle producers exiting the industry and the U.S. having the smallest cow herd in 75 years.",
-      "summaryTimestamp": 1771388322579
-    },
-    {
-      "id": "03dabc11e336833f",
-      "title": "Producer Advocacy and Engagement Highlight Black Hills Stock Show",
-      "link": "https://www.tsln.com/news/producer-advocacy-and-engagement-highlight-black-hills-stock-show/",
-      "description": "RAPID CITY, S.D., Feb. 11, 2026 — R-CALF USA and the South Dakota Stockgrowers Association (SDSGA) upheld their more than 20-year tradition of sharing a booth at the 2026 Black Hills Stock Show in Rapid City,...",
-      "date": "Wed, 18 Feb 2026 02:26:52 +0000",
-      "timestamp": 1771381612000,
-      "source": "Tri-State Livestock",
-      "category": "industry",
-      "icon": "🐄",
-      "thumbnail": "",
-      "summary": "Key points from the article:\n\n- R-CALF USA and the South Dakota Stockgrowers Association (SDSGA) shared a booth at the 2026 Black Hills Stock Show in Rapid City, South Dakota, continuing a 20+ year tradition.\n\n- The booth featured R-CALF USA merchandise like a saddle and a saddle rack, as well as an engraved commemorative rifle and revolver from SDSGA.\n\n- R-CALF USA representatives, including the CEO, VP, regional directors, and committee chairs, attended the event to engage with cattle producers.\n\n- R-CALF USA hosted a producer meeting and social during the stock show for members and attendees to discuss industry updates and challenges.\n\n- SDSGA hosted a Livestock Producer Property Rights Rally, where R-CALF USA's Property Rights Chair addressed regulatory overreach and property rights issues.\n\n- Cattle producers and industry leaders also participated in state-level discussions about HB1077, legislation regulating cell-cultured meat products in South Dakota. The bill passed but was later vetoed by the governor.\n\n- The 2026 R-CALF USA saddle raffle will continue through the organization's National Convention in June 2026 in Rapid City.",
-      "summaryTimestamp": 1771388326220
     },
     {
       "id": "0a52db4eaee088a9",
@@ -475,20 +489,6 @@
       "thumbnail": "https://modernfarmer.com/wp-content/uploads/2025/10/Fresh-spinach-plants.webp",
       "summary": "These crops feed the soil, support microorganisms, sequester carbon, and protect against erosion - providing economic benefits for farms. \n\nThe 5 cover crops recommended to plant in February are:\n\n1. Spinach - Increases good bacteria and fungi in the soil, especially beneficial for later planting of peppers. Requires soil temperature of at least 40°F.\n\n2. Kale - Feeds the soil, people, livestock, and can be a specialty market crop. Needs slightly warmer soil of at least 45°F. Resistant varieties recommended in disease-prone areas.\n\n3. Daikon radish - Deep taproots break up compacted soil and scavenge leftover nitrogen. Requires soil temperature of at least 65°F.\n\n4. Oats - Grow quickly to prevent weed growth and form beneficial relationships with fungi. Can be sown with peas for nitrogen fixing. Tolerate temperatures down to 20°F.\n\n5. Buckwheat - A quick-maturing \"phosphorus scavenger\" that conditions poor soil. Can be used as a mulch after flowering.\n\nFarmers should consider their local climate and use low tunnels if needed to provide extra warmth and protection for the cover crops during cold weather. Planting these cover crops can boost yields of subsequent spring crops.",
       "summaryTimestamp": 1771347209080
-    },
-    {
-      "id": "09055697d7b8b824",
-      "title": "TNT Simmental",
-      "link": "https://www.tsln.com/news/tnt-simmental/",
-      "description": "TSLN Rep: Kelly Klein Date of Sale: Feb. 13, 2026 Location: at the ranch near Lehr, ND Auctioneer: Seth Weishaar Averages:131 Bulls Avg. $17,55059 Registered Bred Heifers $6,642 The TNT crew held their 41st Annual...",
-      "date": "Tue, 17 Feb 2026 05:15:42 +0000",
-      "timestamp": 1771305342000,
-      "source": "Tri-State Livestock",
-      "category": "industry",
-      "icon": "🐄",
-      "thumbnail": "https://swiftmedia.s3.amazonaws.com/mountain.swiftcom.com/images/sites/13/2026/02/16221336/242c46e04035-20260213_115021-963x1024.jpg",
-      "summary": "The sale offered 86 black and 45 red Simmental and SimAngus bulls, as well as 59 registered Simmental bred heifers - the first time they have sold bred heifers. \n\nThe sale saw strong demand, with 80% of the bulls sold to repeat buyers. The top-selling bulls were:\n- Lot 73: TNT N615, sold for $175,000 to NLC Simmentals in Wessington, SD\n- Lot 72: TNT N591, sold for $125,000 to Quandt Cattle Co. in Oakes, ND and Beggers Diamond V in Wibaux, MT\n- Lot 3: TNT N810, sold for $60,000 to Hanging H Ranch in Medina, ND\n\nOverall, the 131 bulls averaged $17,550, while the 59 registered bred heifers averaged $6,642. The sale was called by auctioneer Seth Weishaar and attended by a standing room only crowd.\n\nFarmers in attendance included Hunter Larson of Larson Farms in Cleveland, ND and the crew from Eagles Nest Ranch in Lodgepole, SD. Customers praised the quality of the cattle and the excellent customer service from the TNT Simmental team.",
-      "summaryTimestamp": 1771311228025
     },
     {
       "id": "db05bba71b5dc8d4",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 4,
-  "updated": "2026-02-18T04:18:46.420Z"
+  "summariesGenerated": 3,
+  "updated": "2026-02-18T06:57:22.063Z"
 }
