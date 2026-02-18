@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-18T22:28:07.253722+00:00",
+  "updated": "2026-02-18T23:01:02.793475+00:00",
   "markets": {
     "grains": {
       "corn": {
@@ -154,9 +154,9 @@
         "name": "US Dollar Index",
         "symbol": "DX-Y.NYB",
         "unit": "$",
-        "price": 97.721,
-        "change": 0.483,
-        "changePct": 0.5,
+        "price": 97.712,
+        "change": 0.474,
+        "changePct": 0.49,
         "prevClose": 97.238,
         "contract": "Spot",
         "low52": 95.55,
@@ -220,9 +220,9 @@
         "name": "Bitcoin",
         "symbol": "BTC-USD",
         "unit": "$",
-        "price": 66261.6875,
-        "change": -1245.6328,
-        "changePct": -1.85,
+        "price": 66384.2656,
+        "change": -1123.0547,
+        "changePct": -1.66,
         "prevClose": 67507.3203,
         "contract": "Spot",
         "low52": 60074.2031,
@@ -232,9 +232,9 @@
         "name": "Ethereum",
         "symbol": "ETH-USD",
         "unit": "$",
-        "price": 1940.4685,
-        "change": -52.0602,
-        "changePct": -2.61,
+        "price": 1947.2673,
+        "change": -45.2614,
+        "changePct": -2.27,
         "prevClose": 1992.5287,
         "contract": "Spot",
         "low52": 1386.7993,
@@ -244,9 +244,9 @@
         "name": "Kaspa",
         "symbol": "KAS-USD",
         "unit": "$",
-        "price": 0.031,
-        "change": -0.0009,
-        "changePct": -2.7,
+        "price": 0.0319,
+        "change": 0.0,
+        "changePct": 0.0,
         "prevClose": 0.0319,
         "contract": "Spot",
         "low52": 0.0139,
@@ -256,9 +256,9 @@
         "name": "XRP",
         "symbol": "XRP-USD",
         "unit": "$",
-        "price": 1.4187,
-        "change": -0.0557,
-        "changePct": -3.78,
+        "price": 1.4212,
+        "change": -0.0532,
+        "changePct": -3.61,
         "prevClose": 1.4744,
         "contract": "Spot",
         "low52": 1.1335,
@@ -290,22 +290,22 @@
     },
     {
       "source": "AGDAILY",
+      "title": "Is beef x dairy needed in market data?",
+      "link": "https://www.agdaily.com/livestock/beef-x-dairy-needed-market-data/",
+      "time": "",
+      "category": "news"
+    },
+    {
+      "source": "AGDAILY",
+      "title": "Mizzou researchers uncover how plants regulate root growth",
+      "link": "https://www.agdaily.com/crops/mizzou-researchers-uncover-how-plants-regulate-root-growth/",
+      "time": "",
+      "category": "news"
+    },
+    {
+      "source": "AGDAILY",
       "title": "Extreme winds drive massive wildfires across Kansas, Oklahoma",
       "link": "https://www.agdaily.com/weather/extreme-winds-drive-massive-wildfires-across-kansas-oklahoma/",
-      "time": "",
-      "category": "news"
-    },
-    {
-      "source": "AGDAILY",
-      "title": "NCGA report warns about family farms, corn\u2019s future",
-      "link": "https://www.agdaily.com/crops/ncga-report-warns-about-family-farms-corns-future/",
-      "time": "",
-      "category": "news"
-    },
-    {
-      "source": "AGDAILY",
-      "title": "Feedlots around the globe: Where the world finishes its cattle",
-      "link": "https://www.agdaily.com/livestock/feedlots-around-globe-world-finishes-cattle/",
       "time": "",
       "category": "news"
     },
