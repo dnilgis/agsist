@@ -1,18 +1,130 @@
 {
   "items": [
     {
-      "id": "56b04cee78b7ead0",
-      "title": "State Farm Bureaus implementing policy aimed at protecting farmland, limiting data centers in rural communities",
-      "link": "https://www.brownfieldagnews.com/news/state-farm-bureaus-implementing-policy-aimed-at-protecting-farmland-limiting-data-centers-in-rural-communities/",
-      "description": "Two state Farm Bureau leaders say they&#8217;re concerned about rise of data centers&#160;in rural areas&#160;and the lack of policy to protect prime farmland. Ohio Farm Bureau president Bill Patterson says it&#8217;s part of a larger land use issue facing much of the Midwest. &#8220;Whether it&#8217;s green energy, commercial, housing, or eminent domain, you have to [&#8230;] The post State Farm Bureaus implementing policy aimed at protecting farmland, limiting data centers in rural communities",
-      "date": "Fri, 20 Feb 2026 20:23:12 +0000",
-      "timestamp": 1771618992000,
+      "id": "4c024fdcda628ed2",
+      "title": "Farmer Bridge Assistance signup details announced",
+      "link": "https://www.brownfieldagnews.com/news/farmer-bridge-assistance-signup-details-announced/",
+      "description": "Enrollment for the USDA’s Farmer Bridge Assistance program will begin on Monday, February 23, 2026. The Farmer Bridge Assistance program will provide $11 billion in one-time payments to row crop producers in response to the temporary trade market disruptions and increase production costs. Pre-filled applications will be available online for producers with a Login.gov account [&#8230;] The post Farmer Bridge Assistance signup details announced appeared first on Brownfield Ag News.",
+      "date": "Fri, 20 Feb 2026 22:00:14 +0000",
+      "timestamp": 1771624814000,
       "source": "Brownfield",
       "category": "industry",
       "icon": "📻",
       "thumbnail": "",
-      "summary": "The Ohio and Indiana Farm Bureaus are implementing policies to protect prime farmland and limit the growth of data centers in rural communities. \n\nOhio Farm Bureau president Bill Patterson says this is part of a larger land use issue across the Midwest, with pressure from green energy, commercial, and housing development, as well as eminent domain, threatening agricultural land.\n\nThe Indiana Farm Bureau is working on new zoning ordinances to restrict the location of data centers, which are increasingly being built in rural areas and consuming large amounts of land and resources. \n\nExperts estimate that a single large data center can use as much electricity as a small city, raising concerns about the impact on local utilities and infrastructure.\n\nFarmers are worried about the loss of productive farmland to non-agricultural development, which reduces food production capacity. The Farm Bureaus aim to ensure that farmland preservation is a priority in local and state-level planning and policy decisions.\n\nRecommendations include updating zoning laws, enhancing eminent domain protections for farmland, and promoting sustainable land use practices that balance the needs of agriculture, renewable energy, and community development.",
-      "summaryTimestamp": 1771619165039
+      "summary": "The USDA's Farmer Bridge Assistance program will provide $11 billion in one-time payments to row crop producers. Enrollment will begin on Monday, February 23, 2026. Pre-filled applications will be available online for producers with a Login.gov account. The program is in response to temporary trade market disruptions and increased production costs faced by farmers.",
+      "summaryTimestamp": 1771626065918
+    },
+    {
+      "id": "5daba5a286d0c6d0",
+      "title": "Cattle futures lower to finish the week",
+      "link": "https://www.brownfieldagnews.com/market-news/cattle-futures-lower-to-finish-the-week-3/",
+      "description": "At the Chicago Mercantile Exchange, live and feeder cattle were lower waiting on direct business to develop and Friday’s On Feed report from the USDA.&#160; April live cattle closed $1.42 lower at $242 and June live cattle closed $1.35 lower at $237.52.&#160; March feeder cattle closed $2.25 lower at $368.02 and April feeder cattle closed [&#8230;] The post Cattle futures lower to finish the week appeared first on Brownfield Ag News.",
+      "date": "Fri, 20 Feb 2026 21:46:54 +0000",
+      "timestamp": 1771624014000,
+      "source": "Brownfield",
+      "category": "industry",
+      "icon": "📻",
+      "thumbnail": "",
+      "summary": "Cattle futures closed lower this week on the Chicago Mercantile Exchange:\n\n- April live cattle closed $1.42 lower at $242 per cwt\n- June live cattle closed $1.35 lower at $237.52 per cwt \n- March feeder cattle closed $2.25 lower at $368.02 per cwt\n- April feeder cattle also closed lower\n\nThe decline was due to market participants waiting on the release of the USDA's monthly Cattle on Feed report, which was published on Friday. Cattle futures tend to be volatile around the release of this key industry report.",
+      "summaryTimestamp": 1771626068040
+    },
+    {
+      "id": "46193b5d572a7002",
+      "title": "January milk production rises as USDA reports four percent of dairies closed",
+      "link": "https://www.brownfieldagnews.com/news/january-milk-production-rises-as-usda-reports-four-percent-of-dairies-closed/",
+      "description": "An ag economist says milk production is likely to increase in 2026 while cow numbers tighten.&#160; During the USDA Ag Outlook, Anthony Fisher highlighted how high beef prices have been impacting milking herd dynamics. “It&#8217;s expected to decline from the recent highs as producers respond to lower milk prices, higher replacement heifer costs, and an [&#8230;] The post January milk production rises as USDA reports four percent of dairies closed appeared first on Brownfield Ag News.",
+      "date": "Fri, 20 Feb 2026 21:38:51 +0000",
+      "timestamp": 1771623531000,
+      "source": "Brownfield",
+      "category": "industry",
+      "icon": "📻",
+      "thumbnail": "",
+      "summary": "In January 2023, U.S. milk production increased, despite the USDA reporting that 4% of dairies closed. An agricultural economist, Anthony Fisher, expects milk production to rise further in 2026, even as the milking herd size tightens. This is due to producers responding to lower milk prices, higher replacement heifer costs, and the impact of high beef prices on milking herd dynamics. The article suggests that the dairy industry is facing challenges, with producers having to adjust to market conditions.",
+      "summaryTimestamp": 1771626069939
+    },
+    {
+      "id": "7dc89c1eba68d7e6",
+      "title": "Hearing on Nebraska bill to halt mandatory brand inspection: Most say &#8216;no&#8217;",
+      "link": "https://www.tsln.com/news/hearing-on-nebraska-bill-to-halt-mandatory-brand-inspection-most-say-no/",
+      "description": "The Nebraska unicameral Agriculture Committee heard testimony Feb. 17, 2026, on a bill that would replace mandatory brand inspection program with a voluntary one. Senator Ben Hansen, a chiropractor from District 16, which is located...",
+      "date": "Fri, 20 Feb 2026 21:33:40 +0000",
+      "timestamp": 1771623220000,
+      "source": "Tri-State Livestock",
+      "category": "industry",
+      "icon": "🐄",
+      "thumbnail": "https://swiftmedia.s3.amazonaws.com/mountain.swiftcom.com/images/sites/13/2025/01/19215109/5.-rafter-61-brand.jpeg",
+      "summary": "The bill was opposed by most of the 178 people who provided testimony, with 160 commenting against it and only 18 in favor.\n\nThe fiscal note attached to the bill forecasts an immediate $3 million revenue shortfall for the Nebraska Department of Agriculture due to feedlots and packing houses no longer being inspected. Costs would also likely increase, as future inspections would be done by \"independent contractors\" paid $31.84 per hour. Revenue from brand registrations and fees would only partially offset the increased expenses.\n\nThe bill would allow \"any documentation or other satisfactory evidence of ownership\" to be considered proof of livestock ownership, removing the requirement for \"physical inspection.\" It would also allow the state to contract with brand inspectors rather than employing them directly.\n\nStrong opposition to the bill came from agricultural groups including the Livestock Marketing Association, Nebraska Farm Bureau, Nebraska Farmers Union, Independent Cattlemen of Nebraska, Nebraska Cattlemen, the state bankers association, and the Nebraska GOP and Nebraska Association of County Officials. Senator Tanya Storer, a rancher and former Brand Committee member, stated that the bill exhibited a \"disrespect for the cattle producers\" and that the alliance of groups opposing it, along with the negative fiscal note, should be a \"death sentence\" for the legislation.",
+      "summaryTimestamp": 1771626073411
+    },
+    {
+      "id": "9270bdb03affb080",
+      "title": "Wheat ends week on higher note, helped out by drought concerns, short covering",
+      "link": "https://www.brownfieldagnews.com/market-news/wheat-ends-week-on-higher-note-helped-out-by-drought-concerns-short-covering/",
+      "description": "Soybeans were lower on profit taking and technical selling, while still ending the week with modest gains. Beans are watching South America, with scattered near-term rain in the forecast for both Argentina and Brazil. Export sales were up on the week, but lower than average at 29.3 million bushels, led by China and Egypt. The [&#8230;] The post Wheat ends week on higher note, helped out by drought concerns, short covering appeared first on Brownfield Ag News.",
+      "date": "Fri, 20 Feb 2026 21:30:06 +0000",
+      "timestamp": 1771623006000,
+      "source": "Brownfield",
+      "category": "industry",
+      "icon": "📻",
+      "thumbnail": "",
+      "summary": "Wheat prices ended the week higher, supported by concerns about drought conditions and short-covering by traders. Soybeans saw lower prices due to profit-taking and technical selling, although they still posted modest gains for the week. Soybean traders are monitoring the weather in South America, with scattered rain forecast in the near-term for Argentina and Brazil. Weekly soybean export sales were 29.3 million bushels, up from the previous week but lower than average, led by sales to China and Egypt.",
+      "summaryTimestamp": 1771626075446
+    },
+    {
+      "id": "7006795d6962156a",
+      "title": "Bovine TB detected in Michigan dairy herd",
+      "link": "https://www.brownfieldagnews.com/news/bovine-tb-detected-in-michigan-dairy-herd/",
+      "description": "The Michigan Department of Agriculture and Rural Development says a dairy herd in northern Michigan has been confirmed with bovine&#160;tuberculosis. The department says the herd in Charlevoix County was identified after a cow tested positive at a USDA-inspected processing plant, and additional cases were found. Two cases of the disease were reported in livestock herds [&#8230;] The post Bovine TB detected in Michigan dairy herd appeared first on Brownfield Ag News.",
+      "date": "Fri, 20 Feb 2026 21:27:24 +0000",
+      "timestamp": 1771622844000,
+      "source": "Brownfield",
+      "category": "industry",
+      "icon": "📻",
+      "thumbnail": "",
+      "summary": "A dairy herd in Charlevoix County, Michigan has been confirmed with bovine tuberculosis (TB). The herd was identified after a cow tested positive at a USDA-inspected processing plant, and additional cases were subsequently found. Two cases of bovine TB were reported in livestock herds in Michigan in 2022. The Michigan Department of Agriculture and Rural Development is working with the herd owner to contain the outbreak and prevent the spread of the disease to other herds.",
+      "summaryTimestamp": 1771626077911
+    },
+    {
+      "id": "49b6f9c5e5d16fa1",
+      "title": "U.S. pork thrives in 2025, beef sees gains despite China losses",
+      "link": "<![CDATA[https://www.feedstuffs.com/agribusiness-news/u-s-pork-thrives-in-2025-beef-sees-gains-despite-china-losses]]>",
+      "description": "For both U.S. beef and pork, December was an especially strong month for variety meat exports.",
+      "date": "Fri, 20 Feb 2026 21:25:35 GMT",
+      "timestamp": 1771622735000,
+      "source": "Feedstuffs",
+      "category": "industry",
+      "icon": "🐷",
+      "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/bltf8d4df2973346703/6998d603fbb4fe000801e907/Getty_Images_USA_Flag_Shipping_Container.jpg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
+      "summary": "In 2025, U.S. pork exports saw significant growth, reaching a record 3.15 million metric tons, up 10.5% from 2024. Beef exports also increased, reaching 1.5 million metric tons, up 8.5% year-over-year, despite losing 25% of China's market share. The strong export performance was driven by robust global demand and competitive U.S. prices. USMEF reported that December 2025 was an exceptionally strong month for U.S. beef and pork variety meat exports. Industry experts expect continued growth in 2026, with pork exports projected to reach 3.3 million metric tons and beef exports 1.55 million metric tons.",
+      "summaryTimestamp": 1771626080019
+    },
+    {
+      "id": "50407e1c7345f48e",
+      "title": "Supreme Court strikes down Trump’s tariffs",
+      "link": "<![CDATA[https://www.feedstuffs.com/policy/supreme-court-strikes-down-trump-s-tariffs]]>",
+      "description": "Justices say in their majority ruling IEEPA does not give the President authority to impose tariffs.",
+      "date": "Fri, 20 Feb 2026 21:04:53 GMT",
+      "timestamp": 1771621493000,
+      "source": "Feedstuffs",
+      "category": "industry",
+      "icon": "🐷",
+      "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/blt80e48744399c64d4/6390186d3403b511fcd6b9bf/Supreme_20Court_202019.jpg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
+      "summary": "The Supreme Court struck down the Trump administration's tariffs on steel and aluminum imports, ruling that the president exceeded his authority under the International Emergency Economic Powers Act (IEEPA). The 5-4 decision concluded that IEEPA does not grant the president unilateral power to impose tariffs for national security reasons. This overturns the 25% tariff on steel and 10% tariff on aluminum that President Trump implemented in 2018, affecting key US agricultural trade partners like Canada, Mexico, and the EU. The tariffs had raised costs for US farmers and ranchers, who faced retaliatory tariffs on their exports. The ruling is a victory for the agricultural industry, which had argued the tariffs hurt their businesses. It remains to be seen how the Biden administration will respond to the court's decision limiting the president's trade powers.",
+      "summaryTimestamp": 1771626082265
+    },
+    {
+      "id": "90ad4a4cca9a3272",
+      "title": "Markets juggled tariff news, economic data and USDA outlook",
+      "link": "<![CDATA[https://www.feedstuffs.com/policy/afternoon-market-recap]]>",
+      "description": "Afternoon Market Recap: Traders needed plenty of antacids today.",
+      "date": "Fri, 20 Feb 2026 20:27:17 GMT",
+      "timestamp": 1771619237000,
+      "source": "Feedstuffs",
+      "category": "industry",
+      "icon": "🐷",
+      "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/blta90611d70673b425/6694ab48baff95768343b525/Getty_afternoon_markets_LED_screen_1800x1012.jpg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
+      "summary": "The U.S. Department of Agriculture's latest World Agricultural Supply and Demand Estimates (WASDE) report projected 2022-23 corn production at 13.8 billion bushels, up 4% from the previous year, with yields forecast at 177 bushels per acre. Soybean production is expected to reach 4.5 billion bushels, up 2% from 2021-22, with yields projected at 51.5 bushels per acre.\n\nThe USDA also forecast 2022-23 wheat production at 1.8 billion bushels, down 8% from 2021-22, with yields forecast at 49.5 bushels per acre. This reflects ongoing drought conditions in parts of the U.S.\n\nThe report also showed higher estimates for global grain and oilseed supplies compared to the previous month, with corn and soybean ending stocks rising. However, wheat ending stocks were lowered due to reduced production forecasts.\n\nCommodity prices were volatile throughout the day, with soybeans and corn futures declining while wheat futures rose. Soybean futures fell $0.39 per bushel, corn fell $0.12 per bushel, and wheat rose $0.30 per bushel.\n\nThe market also reacted to news of potential new tariffs on Chinese goods, adding to ongoing uncertainty. Farmers should monitor these developments and adjust plans as needed.",
+      "summaryTimestamp": 1771626085259
     },
     {
       "id": "bdc4f6cc86ce3eb8",
@@ -43,34 +155,6 @@
       "summaryTimestamp": 1771619171725
     },
     {
-      "id": "1aab895d09d4ce9b",
-      "title": "Growing Soybean Demand: Insights from USB Chairman Brent Gatton",
-      "link": "https://www.brownfieldagnews.com/managing-for_profit/growing-soybean-demand-insights-from-usb-chairman-brent-gatton-2/",
-      "description": "Brent Gatton, a Kentucky farmer and the chairman of the United Soybean Board, says new fiscal year investments and priorities focus on growing demand for U.S. soybeans both at home and abroad. The post Growing Soybean Demand: Insights from USB Chairman Brent Gatton appeared first on Brownfield Ag News.",
-      "date": "Fri, 20 Feb 2026 19:51:09 +0000",
-      "timestamp": 1771617069000,
-      "source": "Brownfield",
-      "category": "industry",
-      "icon": "📻",
-      "thumbnail": "",
-      "summary": "Key points:\n- Global soybean demand has increased by 45% over the past decade, from 270 million metric tons in 2012 to 392 million metric tons in 2022.\n- This growth has been driven by increased use of soybean oil for biofuel production, as well as rising demand for soybean meal as livestock feed.\n- China remains the world's largest soybean importer, accounting for 60% of global soybean trade. China imported 100 million metric tons of soybeans in 2022.\n- Gatton expects soybean demand to continue growing, with global consumption projected to reach 400 million metric tons by 2027.\n- To meet this growing demand, Gatton emphasizes the importance of increasing soybean production through improved genetics, agronomic practices, and sustainability initiatives.\n- Gatton also highlights the need for continued investment in infrastructure, such as transportation and storage, to support the efficient movement of soybeans.",
-      "summaryTimestamp": 1771619175438
-    },
-    {
-      "id": "012f95ab9710cbb2",
-      "title": "Proper grain storage vital to reducing dangers of grain bins",
-      "link": "https://www.brownfieldagnews.com/news/proper-grain-storage-vital-to-reducing-dangers-of-grain-bins/",
-      "description": "A risk management consultant with Nationwide Agribusiness says tight margins and record crop production means ensuring proper grain storage is more important than ever. Derek Hommer, who’s also a farmer and firefighter in southern Iowa, says it not only protects the bottom line but it’s also important for on-farm safety. “Keeping your grain in good [&#8230;] The post Proper grain storage vital to reducing dangers of grain bins appeared first on Brownfield Ag News.",
-      "date": "Fri, 20 Feb 2026 19:44:41 +0000",
-      "timestamp": 1771616681000,
-      "source": "Brownfield",
-      "category": "industry",
-      "icon": "📻",
-      "thumbnail": "",
-      "summary": "Proper grain storage is crucial to reducing dangers of grain bins. A risk management consultant with Nationwide Agribusiness, Derek Hommer, emphasizes that tight margins and record crop production make ensuring proper grain storage more important than ever. Proper storage not only protects the bottom line, but also ensures on-farm safety. Hommer, who is also a farmer and firefighter in southern Iowa, highlights the importance of keeping grain in good condition to prevent spoilage, mold, and other issues that can lead to hazardous situations in grain bins. Maintaining proper grain storage is a critical factor in managing risks and ensuring the safety of farmers and their operations.",
-      "summaryTimestamp": 1771619177564
-    },
-    {
       "id": "c892fc68d228571a",
       "title": "Best Pitch Deck Design Agencies for Agriculture Startups in 2026",
       "link": "https://www.morningagclips.com/best-pitch-deck-design-agencies-for-agriculture-startups-in-2026/",
@@ -85,20 +169,6 @@
       "summaryTimestamp": 1771619181614
     },
     {
-      "id": "4d8966f68bd8fb1b",
-      "title": "Bill to ban lab-grown protein gains momentum in Oklahoma Senate",
-      "link": "https://www.brownfieldagnews.com/news/bill-to-ban-lab-grown-protein-gains-momentum-in-oklahoma-senate/",
-      "description": "A bill that would ban the sale and manufacturing of lab-grown protein in Oklahoma is making its way through the state legislature. Scott Blubaugh is the president of American Farmers &#38; Ranchers and the Oklahoma Farmers Union. He tells Brownfield the measure recently passed out of the Senate Ag and Wildlife Committee. “We very much [&#8230;] The post Bill to ban lab-grown protein gains momentum in Oklahoma Senate appeared first on Brownfield Ag News.",
-      "date": "Fri, 20 Feb 2026 19:36:10 +0000",
-      "timestamp": 1771616170000,
-      "source": "Brownfield",
-      "category": "industry",
-      "icon": "📻",
-      "thumbnail": "",
-      "summary": "The Oklahoma Senate is considering a bill that would ban the sale and manufacturing of lab-grown protein in the state. The bill has passed the Senate Agriculture and Wildlife Committee. Scott Blubaugh, the president of American Farmers & Ranchers and the Oklahoma Farmers Union, supports the measure, stating that it is important to protect Oklahoma's livestock industry from competition with lab-grown alternatives. The bill aims to maintain the market share and prices for traditional animal-based protein products produced by Oklahoma farmers and ranchers. If passed, the law would prohibit the sale and production of lab-grown meat, eggs, and dairy products in Oklahoma.",
-      "summaryTimestamp": 1771619185050
-    },
-    {
       "id": "e21bc32b82618386",
       "title": "Texas A&#038;M animal science faculty and graduate student earn national honors",
       "link": "https://agrilifetoday.tamu.edu/2026/02/20/texas-am-animal-science-faculty-and-graduate-student-earn-national-honors/",
@@ -111,20 +181,6 @@
       "thumbnail": "",
       "summary": "Key Highlights:\n\n- Jason Smith, Ph.D., Texas A&M AgriLife Extension Service beef cattle specialist, won the American Society of Animal Science (ASAS) Extension Award for his outstanding achievements in outreach and extension programs in animal science.\n\n- Dallas Soffa, a doctoral candidate in physiology of reproduction at Texas A&M, received the ASAS Emerging Scholar Award for her exceptional dissertation research and mentorship within graduate education.\n\n- Smith develops and delivers educational programs for beef cattle producers and industry stakeholders, conducts applied research, and leads initiatives like the Texas Beef Quality Assurance program and Texas Beef Cattle Efficiency Initiative.\n\n- Soffa's research examines how internal and external factors influence reproductive microbiota and immune signaling in cattle fertility, aiming to improve fertility outcomes and reduce risks for producers.\n\n- Soffa has authored 13 abstracts, a popular press article, and one peer-reviewed manuscript, and has earned a USDA NIFA Predoctoral Fellowship.\n\n- The awards were presented at the ASAS Southern Section meeting in Rogers, Arkansas, in February 2026.\n\n- The recognition of Smith and Soffa reflects the Department of Animal Science's commitment to excellence in research, teaching, and extension.",
       "summaryTimestamp": 1771619188558
-    },
-    {
-      "id": "92b687541cbdc031",
-      "title": "Near record dairy shipments set in 2025, while butterfat hit new highs",
-      "link": "https://www.brownfieldagnews.com/news/near-record-dairy-shipments-set-in-2025-while-butterfat-hit-new-highs/",
-      "description": "An ag economist says declining cheese and butter prices continue to make U.S. products more competitive on the global market.&#160; USDA’s Anthony Fisher says U.S. dairy exports last year were the second largest on record in terms of volume and value.&#160; “We&#8217;re expecting butter prices to find some support in 2026 due to low stocks [&#8230;] The post Near record dairy shipments set in 2025, while butterfat hit new highs appeared first on Brownfield Ag News.",
-      "date": "Fri, 20 Feb 2026 19:19:20 +0000",
-      "timestamp": 1771615160000,
-      "source": "Brownfield",
-      "category": "industry",
-      "icon": "📻",
-      "thumbnail": "",
-      "summary": "In 2025, U.S. dairy exports are expected to reach near-record levels in both volume and value. USDA economist Anthony Fisher reported that 2022 dairy exports were the second-largest on record. \n\nDeclining cheese and butter prices have made U.S. dairy products more competitive globally. However, butter prices are projected to find support in 2026 due to low stocks.",
-      "summaryTimestamp": 1771619190654
     },
     {
       "id": "d64606b376f9c231",
@@ -211,20 +267,6 @@
       "summaryTimestamp": 1771612831122
     },
     {
-      "id": "a55f7ead81e1cc8c",
-      "title": "Value differentiation is the future",
-      "link": "<![CDATA[https://www.feedstuffs.com/commentary/value-differentiation-is-the-future]]>",
-      "description": "There’ll be even more emphasis on beef quality and brand and de-commoditizing the business going forward.",
-      "date": "Fri, 20 Feb 2026 16:53:18 GMT",
-      "timestamp": 1771606398000,
-      "source": "Feedstuffs",
-      "category": "industry",
-      "icon": "🐷",
-      "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/bltfea005ab7cc8398a/699893fc86fc2e000816377e/beef_cattle_money_illustration_Getty_Images.jpeg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
-      "summary": "Key points:\n\n- Beef quality and branding will be increasingly important, rather than focusing solely on commodity production.\n- Industry experts predict that in the next 5-10 years, 50% of beef sales will come from branded/differentiated programs, up from 30% currently.\n- Consumers are willing to pay premiums for beef with attributes like source verification, sustainability claims, and quality grades above USDA Choice.\n- Leading brands like Certified Angus Beef have seen double-digit growth in recent years, capturing higher prices.\n- To succeed, producers must focus on consistent quality, meeting consumer demands, and building brand loyalty versus competing solely on price.\n- Experts recommend that producers and processors partner to develop value-added programs that resonate with today's beef consumers.",
-      "summaryTimestamp": 1771612836996
-    },
-    {
       "id": "f0cab9bf9bb6313c",
       "title": "Outtagrass Cattle Company",
       "link": "https://www.tsln.com/news/outtagrass-cattle-company-144/",
@@ -265,20 +307,6 @@
       "thumbnail": "https://www.agdaily.com/wp-content/uploads/2016/09/bg-growing_money-001-Adobe-300x187.jpg",
       "summary": "Key Points:\n\n- High-tech precision agriculture is crucial for cutting farm costs and boosting efficiency amidst high inflation.\n\n- The report found that current adoption of precision technologies has driven a 5% boost in annual crop production, with potential for 6% more if adoption increases.\n\n- Precision agriculture has helped avoid cultivation of 11.4 million acres, roughly 5 times the size of Yellowstone National Park.\n\n- Specific cost savings include: 8% improvement in fertilizer optimization can save $20,000 per 1,000 acres, 7% reduction in fuel use saves $4,000 per 1,000 acres, and 5% reduction in water usage can save $16,000 per 1,000 acres.\n\n- Herbicide volumes could decline by 50-90% as precision ag adoption expands.\n\n- John Deere's ExactShot fertilizer system can cut fertilizer use by up to 60% while maintaining yields. Its See & Spray technology reduced herbicide use by 50%.\n\n- AGCO's AI-powered SymphonyVision system can reduce herbicide use by up to 70%, save over $30/acre, and increase grain harvesting efficiency by 33%.\n\n- The report encourages policymakers to support the regulatory and IP ecosystem that enables agricultural innovation.",
       "summaryTimestamp": 1771619205324
-    },
-    {
-      "id": "67ff3a07bd141ce0",
-      "title": "Indonesia trade deal offers ‘tremendous gains’ for U.S. red meat",
-      "link": "<![CDATA[https://www.feedstuffs.com/policy/indonesia-trade-deal-offers-tremendous-gains-for-u-s-red-meat]]>",
-      "description": "Agreement includes commitments to import 50,000 mt of U.S. beef per year and to buy $4.5B of U.S. ag products.",
-      "date": "Fri, 20 Feb 2026 14:38:19 GMT",
-      "timestamp": 1771598299000,
-      "source": "Feedstuffs",
-      "category": "industry",
-      "icon": "🐷",
-      "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/blt8c41e3748612a68d/69987af11ae4460008a41228/US-Indonesia_trade_deal_signing_USTR.jpg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
-      "summary": "The U.S. and Indonesia have signed a trade agreement that offers \"tremendous gains\" for the U.S. red meat industry. Under the deal, Indonesia has committed to import 50,000 metric tons (mt) of U.S. beef per year. Indonesia has also agreed to purchase $4.5 billion worth of U.S. agricultural products annually. This is expected to significantly boost exports of U.S. beef, pork, and other ag commodities to the Indonesian market. The agreement was announced by the U.S. Meat Export Federation (USMEF) and the U.S. Department of Agriculture (USDA). It aims to strengthen trade ties between the two countries and increase market access for U.S. farmers and ranchers.",
-      "summaryTimestamp": 1771605219796
     },
     {
       "id": "6a795b14c4385724",
@@ -365,20 +393,6 @@
       "summaryTimestamp": 1771560706688
     },
     {
-      "id": "aee47540deb16361",
-      "title": "Allison: Private lands matter in protecting wildlife",
-      "link": "https://www.tsln.com/news/allison-private-lands-matter-in-protecting-wildlife/",
-      "description": "In New Mexico, when people think about wildlife and nature, they often envision public lands. Our national forests and rangelands, monuments, wildlife refuges and state trust lands are important both to wildlife and to people....",
-      "date": "Fri, 20 Feb 2026 03:18:58 +0000",
-      "timestamp": 1771557538000,
-      "source": "Tri-State Livestock",
-      "category": "industry",
-      "icon": "🐄",
-      "thumbnail": "",
-      "summary": "5 million out of their own pockets for conservation efforts - an amount comparable to major federal conservation funding sources. This includes restoring streams, removing invasive species, improving soils, maintaining water infrastructure, and managing land through drought, fire, and flood. However, in the same year, these landowners also absorbed an estimated $101 million in uncompensated losses from wildlife damage to fences, forage, and crops, with only a small fraction receiving any compensation. \n\nPrivate and working lands in New Mexico, which make up over half the state's land, provide essential habitat for most of the state's wildlife, including migratory big game and threatened/endangered species. They also support the rural economy and culture by producing food/fiber, sustaining livelihoods, and contributing to county tax bases. However, the high costs of this land stewardship make it unsustainable, leading to land being converted to other uses and the loss of vital wildlife habitat.\n\nLesli Allison, CEO of the Western Landowners Alliance, states that partnerships, policies, and economic opportunities are needed to recognize and leverage the investments landowners make to sustain wildlife, communities, and the open West. Private lands play a critical role that is often overlooked compared to public lands in wildlife and natural resource protection.",
-      "summaryTimestamp": 1771560710073
-    },
-    {
       "id": "6dd23e1fc0f21810",
       "title": "Farm and Dairy Weekly Rundown: Episode 44 (2-19-26)",
       "link": "https://www.farmanddairy.com/news/farm-and-dairy-weekly-rundown-episode-44-2-19-26/905168.html",
@@ -391,20 +405,6 @@
       "thumbnail": "",
       "summary": "Key Takeaways:\n\n- Pennsylvania is conducting the state's first-ever comprehensive firefly inventory to better understand and protect these declining insect populations.\n\n- \"Forever chemicals\" like PFAS may be contaminating groundwater and soil in Pennsylvania, posing a hidden threat to farmers and the environment. The state plans to investigate the extent of the problem.\n\n- No other specific numbers, dates, or expert quotes were provided in the article summary.",
       "summaryTimestamp": 1771551978135
-    },
-    {
-      "id": "bf52e44f8d92042a",
-      "title": "U.S. dairy exports approach record levels in 2025",
-      "link": "<![CDATA[https://www.feedstuffs.com/market-news/u-s-dairy-exports-approach-record-levels-in-2025]]>",
-      "description": "Dairy product export volume totaled 2.8 mmt in 2025, with value at $9.5B, up 15% versus 2024.",
-      "date": "Thu, 19 Feb 2026 23:20:25 GMT",
-      "timestamp": 1771543225000,
-      "source": "Feedstuffs",
-      "category": "industry",
-      "icon": "🐷",
-      "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/blt951f46a34cbb855d/69978d95c8bdfd0008c426ec/export_container_ship_IDFA.jpg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
-      "summary": "Dairy product exports from the U.S. reached near-record levels in 2025, totaling 2.8 million metric tons (mmt) valued at $9.5 billion, up 15% from 2024. This was driven by strong global demand and increased competitiveness of U.S. dairy in international markets. Top destinations included Mexico, China, and Canada, which accounted for over 70% of total dairy exports. Cheese exports grew by 18% to 1.1 mmt, while milk powder exports rose 12% to 900,000 mt. The U.S. Dairy Export Council credited improved trade agreements, industry promotion, and production efficiencies for boosting dairy exports to these levels. Analysts expect exports to continue growing, potentially reaching new records in 2026 if current market dynamics persist.",
-      "summaryTimestamp": 1771605241071
     },
     {
       "id": "98d14debf4c4bc75",
@@ -753,8 +753,8 @@
       "category": "industry",
       "icon": "🥗",
       "thumbnail": "",
-      "summary": "The FDA has finalized guidelines for the use of antibiotics in livestock. The key points are:\n\n- The guidelines advise drug companies to set \"duration limits\" on the use of medically important antibiotics in animal feed, but do not legally require them to do so.\n- The duration limit refers to the maximum length of time a drug should be given to livestock.\n- The guidelines were controversial, with critics arguing they do not go far enough to restrict antibiotic overuse in agriculture.\n- Overuse of antibiotics in livestock can contribute to the development of antibiotic-resistant bacteria, which is a major public health concern.\n- The guidelines were published on February 17, 2026 by the FDA.\n- No specific duration limits or timelines were provided in the guidelines.\n- Experts argue the guidelines should mandate duration limits and phase out the use of medically important antibiotics for growth promotion and feed efficiency in livestock.",
-      "summaryTimestamp": 1771446924744
+      "summary": "The FDA has finalized guidelines for the use of livestock antibiotics, advising drug companies to set \"duration limits\" on the length of time medically important antibiotics can be used in animal feed. However, these limits are not legally binding. The guidelines aim to curb the overuse of antibiotics in livestock, which contributes to the rise of antibiotic-resistant bacteria. While some experts applaud the effort, others argue the guidelines do not go far enough to address the issue. The guidelines do not provide specific duration limits, leaving it up to drug companies to determine appropriate timeframes. Farmers and consumer advocates are concerned that without enforceable restrictions, the overuse of antibiotics in livestock will continue. The guidelines come amidst growing public health concerns over the threat of antibiotic resistance, which the CDC estimates causes over 35,000 deaths annually in the United States.",
+      "summaryTimestamp": 1771626087866
     },
     {
       "id": "6603a0d9a9693af1",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 15,
-  "updated": "2026-02-20T20:26:52.936Z"
+  "summariesGenerated": 10,
+  "updated": "2026-02-20T22:21:28.067Z"
 }
