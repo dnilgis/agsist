@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-20T22:53:16.676005+00:00",
+  "updated": "2026-02-20T23:34:29.846104+00:00",
   "markets": {
     "grains": {
       "corn": {
@@ -220,9 +220,9 @@
         "name": "Bitcoin",
         "symbol": "BTC-USD",
         "unit": "$",
-        "price": 67991.7109,
-        "change": 1047.3516,
-        "changePct": 1.56,
+        "price": 67952.375,
+        "change": 1008.0156,
+        "changePct": 1.51,
         "prevClose": 66944.3594,
         "contract": "Spot",
         "low52": 60074.2031,
@@ -232,9 +232,9 @@
         "name": "Ethereum",
         "symbol": "ETH-USD",
         "unit": "$",
-        "price": 1969.7612,
-        "change": 21.899,
-        "changePct": 1.12,
+        "price": 1966.2321,
+        "change": 18.3699,
+        "changePct": 0.94,
         "prevClose": 1947.8622,
         "contract": "Spot",
         "low52": 1386.7993,
@@ -244,9 +244,9 @@
         "name": "Kaspa",
         "symbol": "KAS-USD",
         "unit": "$",
-        "price": 0.031,
-        "change": 0.0009,
-        "changePct": 3.09,
+        "price": 0.0312,
+        "change": 0.001,
+        "changePct": 3.48,
         "prevClose": 0.0301,
         "contract": "Spot",
         "low52": 0.0139,
@@ -256,9 +256,9 @@
         "name": "XRP",
         "symbol": "XRP-USD",
         "unit": "$",
-        "price": 1.4249,
-        "change": 0.0188,
-        "changePct": 1.34,
+        "price": 1.4288,
+        "change": 0.0228,
+        "changePct": 1.62,
         "prevClose": 1.4061,
         "contract": "Spot",
         "low52": 1.1335,
@@ -290,6 +290,13 @@
     },
     {
       "source": "AGDAILY",
+      "title": "Suspect in Texas cattle-fraud case shares his side of the story",
+      "link": "https://www.agdaily.com/livestock/suspect-in-texas-cattle-fraud-case-shares-his-side-of-story/",
+      "time": "",
+      "category": "news"
+    },
+    {
+      "source": "AGDAILY",
       "title": "Report: High-tech precision ag is a key to cutting farm costs",
       "link": "https://www.agdaily.com/insights/report-high-tech-precision-ag-cut-farm-costs/",
       "time": "",
@@ -299,13 +306,6 @@
       "source": "AGDAILY",
       "title": "Perspective: Why is it always Florida? Even in the food and ag sectors.",
       "link": "https://www.agdaily.com/lifestyle/perspective-why-always-florida-even-food-ag-sectors/",
-      "time": "",
-      "category": "news"
-    },
-    {
-      "source": "AGDAILY",
-      "title": "Bloom for Good launches ag advocacy savings app",
-      "link": "https://www.agdaily.com/ffa/bloom-for-good-launches-ag-advocacy-savings-app/",
       "time": "",
       "category": "news"
     },
