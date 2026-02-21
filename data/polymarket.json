@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-21T19:23:00.869Z",
+  "updated": "2026-02-21T19:44:54.908Z",
   "totalMarkets": 5,
   "categories": {
     "tariffs": [
@@ -7,7 +7,7 @@
         "id": "0x9b3c3177fe473124c756b01e123b4b03e3a99880844ed8dea21b0a7879ca04aa",
         "question": "Kraken IPO by March 31, 2026?",
         "pct": 16,
-        "volume": 300594,
+        "volume": 300614,
         "endDate": "2026-04-01T04:00:00Z",
         "slug": "kraken-ipo-in-2025"
       },
@@ -23,7 +23,7 @@
         "id": "0xced0cb8725bad43d78fda0cd0e5fa9e31804625cb3502b2c7897f8e8f7fa9e1f",
         "question": "Kraken IPO by December 31, 2026?",
         "pct": 80,
-        "volume": 198782,
+        "volume": 199961,
         "endDate": "2027-01-01T05:00:00Z",
         "slug": "kraken-ipo-in-2025"
       },
@@ -31,7 +31,7 @@
         "id": "0x6e6851f2698629795fa06869d961c986221a80cedcba10fbaf0ed220607cdada",
         "question": "China x India military clash by December 31, 2026?",
         "pct": 17,
-        "volume": 81890,
+        "volume": 81900,
         "endDate": "2026-12-31T12:00:00Z",
         "slug": "china-x-india-military-clash-by-december-31"
       },
