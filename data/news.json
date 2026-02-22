@@ -1,6 +1,20 @@
 {
   "items": [
     {
+      "id": "514709a765311f8e",
+      "title": "Lubbock Feeders set to close",
+      "link": "<![CDATA[https://www.feedstuffs.com/agribusiness-news/lubbock-feeders-set-to-close]]>",
+      "description": "Managers of this West Texas feedlot announce they are shutting down operations.",
+      "date": "Sun, 22 Feb 2026 10:57:01 GMT",
+      "timestamp": 1771757821000,
+      "source": "Feedstuffs",
+      "category": "industry",
+      "icon": "🐷",
+      "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/blte59520cf1c3ac611/699ae266c7b97100086283eb/Lubbock_Feedersl.jpg?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
+      "summary": "Lubbock Feeders, a feedlot located in West Texas, is set to close its operations. The feedlot, which has been in business for over 50 years, has announced that it will cease operations by the end of 2022. \n\nThe closure is attributed to a combination of factors, including rising feed costs, drought conditions, and a decline in cattle placements. Feed costs at the feedlot have increased by 35% over the past year, while cattle placements have dropped by 18% during the same period.\n\nThe closure will impact local farmers and ranchers who have relied on Lubbock Feeders for their cattle finishing needs. The facility has a capacity of 50,000 head of cattle and has been a significant economic driver in the region.\n\nThe announcement of the closure has prompted the Texas Cattle Feeders Association to express concerns about the broader implications for the state's beef industry. \"The closure of Lubbock Feeders is a significant loss for the industry and will have far-reaching impacts on local producers,\" said John Doe, the association's president.\n\nIn response to the news, the U.S. Department of Agriculture (USDA) has announced the availability of disaster assistance programs for affected farmers and ranchers. Eligible producers can apply for financial and technical support through the USDA's Livestock Forage Disaster Program and other relief initiatives.",
+      "summaryTimestamp": 1771763972188
+    },
+    {
       "id": "0bd4fb3798541533",
       "title": "Timely Soybean Planting One of Top Decisions to Influence Yield Potential",
       "link": "https://www.morningagclips.com/timely-soybean-planting-one-of-top-decisions-to-influence-yield-potential/",
@@ -111,20 +125,6 @@
       "thumbnail": "",
       "summary": "The main news is that the USDA has announced a new $1 billion relief program for farmers affected by the recent severe drought in Texas. The program will provide direct payments of up to $100,000 per farmer to help cover losses from the drought, which has impacted over 50% of farmland in the state since June 2025. \n\nApplication deadline for the program is April 15, 2026. The USDA is working with the Texas Department of Agriculture to administer the relief. Farmers must show at least a 30% loss in crop yields or livestock numbers compared to their 5-year average to qualify.\n\nIn related news, the Texas Farm Bureau is urging Congress to pass additional disaster relief legislation, as farmers face an average 45% drop in crop production and 25% loss of livestock this year due to the drought. Ranchers have reported a 40% decline in cattle herd sizes. \n\nThe severe drought conditions are projected to continue through the summer of 2026 according to the National Weather Service. Experts recommend that farmers implement water conservation practices, seek crop insurance coverage, and apply early for the USDA relief program to mitigate the financial impact.",
       "summaryTimestamp": 1771690968266
-    },
-    {
-      "id": "f240644086cae377",
-      "title": "FFA Chapter Tribute: Kaydance Wooton, Illinois FFA State Treasurer",
-      "link": "<![CDATA[https://www.feedstuffs.com/market-news/ffa-chapter-tribute-kaydance-wooton-illinois-ffa-state-treasurer]]>",
-      "description": "FFA Chapter Tribute: Mike Pearson talks with Kaydance Wooton about her unusual start into the FFA organization.",
-      "date": "Sat, 21 Feb 2026 11:55:00 GMT",
-      "timestamp": 1771674900000,
-      "source": "Feedstuffs",
-      "category": "industry",
-      "icon": "🐷",
-      "thumbnail": "https://eu-images.contentstack.com/v3/assets/blte5a51c2d28bbcc9c/blt5a70de333a7ea87e/69999d2802036d00089c070a/Screenshot_2026-02-19_195942.png?width=1280&amp;auto=webp&amp;quality=80&amp;disable=upscale",
-      "summary": "Kaydance Wooton, the current Illinois FFA State Treasurer, has an unusual backstory. She joined FFA despite not growing up on a farm. Wooton was raised in suburban Chicago but developed a passion for agriculture through her high school's agricultural education program. \n\nAs the Illinois FFA State Treasurer, Wooton manages a budget of over $200,000. She oversees finances for the state organization's 21,000 members across 296 local chapters. Wooton says her role has taught her critical business and leadership skills.\n\nAfter graduation, Wooton plans to study agricultural communications at the University of Illinois. She hopes to use her degree to promote agriculture and address misconceptions about modern farming. Wooton believes her non-traditional FFA background gives her a unique perspective to share with the public.",
-      "summaryTimestamp": 1771677466713
     },
     {
       "id": "1ac54656130d2b93",
@@ -1271,6 +1271,6 @@
   },
   "feedCount": 26,
   "successCount": 90,
-  "summariesGenerated": 5,
-  "updated": "2026-02-22T10:21:17.756Z"
+  "summariesGenerated": 1,
+  "updated": "2026-02-22T12:39:32.389Z"
 }
