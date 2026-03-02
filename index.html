@@ -1162,5 +1162,118 @@
 })();
 </script>
 
+<!-- ── Daily Briefing Hydration — fetches data/daily.json & populates hero ── -->
+<script>
+(function hydrateDaily() {
+  fetch('/data/daily.json?v=' + Date.now())
+    .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function(d) {
+      function $(id) { return document.getElementById(id); }
+      function txt(id, val) { var el = $(id); if (el && val) el.textContent = val; }
+
+      // ── Headline & lead ──
+      if (d.headline) {
+        var hl = $('daily-headline');
+        if (hl) hl.innerHTML = d.headline;
+      }
+      txt('daily-lead', d.subheadline || d.teaser);
+      txt('daily-date', d.date);
+
+      // ── Teaser bar (collapsed state) ──
+      if (d.date) {
+        var parts = d.date.split(',');
+        var shortDate = parts.length > 1 ? parts[1].trim() : d.date;
+        txt('daily-teaser-date', '\u{1F4F0} AGSIST Daily \u00B7 ' + shortDate);
+      }
+      txt('daily-teaser-text', d.teaser || d.subheadline);
+
+      // ── Field call badge (inject above headline) ──
+      if (d.field_call && d.field_call.label) {
+        var hl2 = $('daily-headline');
+        if (hl2 && !$('daily-field-call')) {
+          var fc = document.createElement('div');
+          fc.id = 'daily-field-call';
+          fc.style.cssText = 'display:inline-flex;align-items:center;gap:.45rem;padding:.4rem .85rem;margin-bottom:.75rem;border-radius:6px;font-size:.78rem;font-weight:700;letter-spacing:.04em;font-family:"JetBrains Mono",monospace;';
+          var label = d.field_call.label.toUpperCase();
+          if (label.indexOf('STAY OUT') >= 0 || label.indexOf('NO ') >= 0) {
+            fc.style.background = 'rgba(239,68,68,.12)'; fc.style.color = '#ef4444'; fc.style.border = '1px solid rgba(239,68,68,.25)';
+          } else if (label.indexOf('CAUTION') >= 0 || label.indexOf('PLAN') >= 0) {
+            fc.style.background = 'rgba(230,176,66,.12)'; fc.style.color = 'var(--gold)'; fc.style.border = '1px solid rgba(230,176,66,.25)';
+          } else {
+            fc.style.background = 'rgba(34,197,94,.1)'; fc.style.color = 'var(--green)'; fc.style.border = '1px solid rgba(34,197,94,.2)';
+          }
+          fc.textContent = '\u{1F69C} ' + d.field_call.label + (d.field_call.detail ? ' \u2014 ' + d.field_call.detail : '');
+          hl2.parentNode.insertBefore(fc, hl2);
+        }
+      }
+
+      // ── Top-line price strip (inject below lead) ──
+      if (d.top_line && d.top_line.length) {
+        var lead = $('daily-lead');
+        if (lead && !$('daily-topline')) {
+          var tl = document.createElement('div');
+          tl.id = 'daily-topline';
+          tl.style.cssText = 'margin-top:.85rem;padding:.65rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-family:"JetBrains Mono",monospace;font-size:.76rem;line-height:1.75;color:var(--text-dim);';
+          tl.innerHTML = d.top_line.map(function(line) {
+            return '<div>' + line + '</div>';
+          }).join('');
+          lead.parentNode.insertBefore(tl, lead.nextSibling);
+        }
+      }
+
+      // ── Sections (bullets) ──
+      var secs = d.sections || [];
+      for (var i = 0; i < secs.length && i < 5; i++) {
+        var sec = secs[i];
+        var titleEl = $('daily-section-' + (i + 1) + '-title');
+        var bodyEl  = $('daily-section-' + (i + 1) + '-body');
+        if (titleEl && sec.title) titleEl.textContent = sec.title;
+        if (bodyEl && sec.bullets && sec.bullets.length) {
+          bodyEl.innerHTML = sec.bullets.map(function(b) {
+            return '<span style="display:block;margin-bottom:.35rem">\u2022 ' + b + '</span>';
+          }).join('');
+        }
+      }
+
+      // ── One Number ──
+      if (d.one_number) {
+        txt('daily-number-value', d.one_number.value);
+        txt('daily-number-unit', d.one_number.unit);
+        txt('daily-number-context', d.one_number.why);
+      }
+
+      // ── Watch List ──
+      if (d.watch_list && d.watch_list.length) {
+        var wl = $('daily-watch-list');
+        if (wl) {
+          wl.innerHTML = d.watch_list.map(function(w) {
+            return '<li class="watch-item">'
+              + '<span class="watch-time">' + (w.label || w.time || '') + '</span>'
+              + '<span class="watch-desc">' + (w.item || w.desc || '') + '</span>'
+              + '</li>';
+          }).join('');
+        }
+      }
+
+      // ── The More You Know ──
+      if (d.the_more_you_know) {
+        txt('daily-tmyk-title', d.the_more_you_know.title);
+        txt('daily-tmyk-body', d.the_more_you_know.body);
+      }
+
+      // ── Daily Quote ──
+      if (d.daily_quote) {
+        txt('daily-quote-text', '\u201C' + d.daily_quote.text + '\u201D');
+        txt('daily-quote-attr', '\u2014 ' + d.daily_quote.attribution);
+      }
+
+      console.log('[AGSIST] Daily briefing hydrated: ' + d.headline);
+    })
+    .catch(function(err) {
+      console.warn('[AGSIST] Daily fetch failed:', err);
+    });
+})();
+</script>
+
 </body>
 </html>
