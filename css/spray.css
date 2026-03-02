@@ -2,6 +2,16 @@
    AGSIST Spray Advisory — /css/spray.css
    Page-specific styles for spray.html
    Shared base: /components/styles.css (already loaded first)
+
+   AUDIT v2 — 2026-03-02
+     FIX 1: Sidebar no longer jumps above content on mobile
+     FIX 2: .day-rating.frozen + .status-main.frozen + .rec.frozen styles
+     FIX 3: Inversion diagram arrows properly hidden on small screens
+     FIX 4: Status panel max-width on mobile prevents oversized display
+     FIX 5: .hr-item.frozen + .hr-badge.frozen styles for hourly strip
+     FIX 6: Nozzle table scroll hint improved
+     FIX 7: Cross-link overflow fix on small screens
+     FIX 8: Jump nav horizontal scroll on very small screens
    ==================================================================== */
 
 /* ── Fallback vars (in case styles.css doesn't define them) ───── */
@@ -70,8 +80,15 @@ body  { overflow-x: hidden; max-width: 100vw; }
 .status-main.good    { color: var(--green); }
 .status-main.marginal{ color: var(--gold); }
 .status-main.poor    { color: var(--red); }
+.status-main.frozen  { color: var(--blue); }
 .status-sub  { font-size: .88rem; color: var(--text-dim); line-height: 1.5; margin-bottom: .5rem; }
 .status-loc  { font-size: .75rem; color: var(--text-muted); }
+
+/* Status panel border color per rating */
+.status-panel.good     { border-color: rgba(62,207,110,.25); }
+.status-panel.marginal { border-color: rgba(230,176,66,.25); }
+.status-panel.poor     { border-color: rgba(240,96,96,.25); }
+.status-panel.frozen   { border-color: rgba(91,163,224,.25); }
 
 /* ── Location Setup Card ──────────────────────────────────────────── */
 .loc-setup {
@@ -112,17 +129,21 @@ body  { overflow-x: hidden; max-width: 100vw; }
 
 /* ── Jump Navigation ─────────────────────────────────────────────── */
 .jump-nav {
-  display: flex; gap: .5rem; flex-wrap: wrap;
+  display: flex; gap: .5rem; flex-wrap: nowrap;
   margin-bottom: 1.5rem;
   max-width: 1200px; margin-left: auto; margin-right: auto;
   padding: 0 1.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.jump-nav::-webkit-scrollbar { display: none; }
 .jump-link {
   font-size: .72rem; font-weight: 700; color: var(--text-muted);
   text-decoration: none; padding: .35rem .75rem;
   border: 1px solid var(--border); border-radius: 6px;
   transition: border-color .15s, color .15s;
-  white-space: nowrap;
+  white-space: nowrap; flex-shrink: 0;
 }
 .jump-link:hover { border-color: var(--green); color: var(--green); }
 
@@ -174,6 +195,8 @@ body  { overflow-x: hidden; max-width: 100vw; }
   display: flex; align-items: center; gap: .4rem;
   font-size: .82rem; font-weight: 700; color: var(--text);
   min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .fcard-icon { font-size: 1rem; flex-shrink: 0; }
 .fchip {
@@ -231,6 +254,7 @@ body  { overflow-x: hidden; max-width: 100vw; }
 .hr-item.good     { background: rgba(62,207,110,.06);  border-color: rgba(62,207,110,.2); }
 .hr-item.marginal { background: rgba(230,176,66,.06);  border-color: rgba(230,176,66,.2); }
 .hr-item.poor     { background: rgba(240,96,96,.06);   border-color: rgba(240,96,96,.2); }
+.hr-item.frozen   { background: rgba(91,163,224,.06);  border-color: rgba(91,163,224,.2); }
 .hr-time  { font-size: .62rem; color: var(--text-muted); font-weight: 600; }
 .hr-icon  { font-size: 1rem; line-height: 1; }
 .hr-wind  { font-size: .7rem; color: var(--text-dim); font-weight: 600; }
@@ -241,6 +265,7 @@ body  { overflow-x: hidden; max-width: 100vw; }
 .hr-badge.good     { background: rgba(62,207,110,.15); color: var(--green); }
 .hr-badge.marginal { background: rgba(230,176,66,.15); color: var(--gold); }
 .hr-badge.poor     { background: rgba(240,96,96,.15);  color: var(--red); }
+.hr-badge.frozen   { background: rgba(91,163,224,.15); color: var(--blue); }
 .window-legend {
   font-size: .68rem; color: var(--text-muted); margin-top: .6rem; line-height: 1.5;
 }
@@ -264,6 +289,7 @@ body  { overflow-x: hidden; max-width: 100vw; }
 .edu-card {
   background: var(--surface2); border: 1px solid var(--border);
   border-radius: 9px; padding: 1rem; min-width: 0;
+  overflow: hidden;
 }
 .edu-card-icon { font-size: 1.4rem; margin-bottom: .4rem; }
 .edu-card-title {
@@ -292,6 +318,7 @@ body  { overflow-x: hidden; max-width: 100vw; }
   display: flex; align-items: center; justify-content: space-between;
   padding: .6rem .75rem; border-radius: 6px; position: relative;
   flex-wrap: wrap; gap: .25rem;
+  min-width: 0;
 }
 .inv-layer-warm  { background: rgba(240,145,58,.08); border: 1px solid rgba(240,145,58,.2); }
 .inv-layer-cool  { background: rgba(59,130,246,.08); border: 1px solid rgba(59,130,246,.2); border-top: none; border-bottom: none; }
@@ -333,6 +360,7 @@ body  { overflow-x: hidden; max-width: 100vw; }
   padding: .85rem; background: var(--surface2);
   border: 1px solid var(--border); border-radius: 10px;
   transition: border-color .2s;
+  min-width: 0;
 }
 .mix-step:hover { border-color: var(--text-muted); }
 .mix-num {
@@ -362,7 +390,7 @@ body  { overflow-x: hidden; max-width: 100vw; }
 }
 .mix-tip {
   padding: .85rem; border-radius: 8px; font-size: .8rem; line-height: 1.65;
-  min-width: 0;
+  min-width: 0; overflow: hidden;
 }
 .mix-tip-title { font-weight: 700; margin-bottom: .25rem; }
 .mix-tip-do {
@@ -398,6 +426,7 @@ body  { overflow-x: hidden; max-width: 100vw; }
 .tip-card-detail {
   font-size: .75rem; color: var(--text-muted); line-height: 1.65;
   padding-top: .45rem; border-top: 1px solid var(--border);
+  overflow-wrap: break-word;
 }
 .tip-card-detail strong { color: var(--text-dim); }
 
@@ -405,10 +434,6 @@ body  { overflow-x: hidden; max-width: 100vw; }
 .nozzle-table-wrap {
   overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1rem 0;
   position: relative;
-}
-.nozzle-table-wrap::after {
-  content: '\2190 scroll \2192'; display: none;
-  font-size: .6rem; color: var(--text-muted); text-align: center; padding: .3rem 0;
 }
 .nozzle-table {
   width: 100%; min-width: 520px; border-collapse: collapse; font-size: .78rem;
@@ -456,10 +481,12 @@ body  { overflow-x: hidden; max-width: 100vw; }
 .rec.good    { background: rgba(62,207,110,.06);  border-color: rgba(62,207,110,.2); }
 .rec.marginal{ background: rgba(230,176,66,.06);  border-color: rgba(230,176,66,.2); }
 .rec.poor    { background: rgba(240,96,96,.06);   border-color: rgba(240,96,96,.2); }
+.rec.frozen  { background: rgba(91,163,224,.06);  border-color: rgba(91,163,224,.2); }
 .rec-h { font-size: .9rem; font-weight: 700; margin-bottom: .45rem; }
 .rec-h.good    { color: var(--green); }
 .rec-h.marginal{ color: var(--gold); }
 .rec-h.poor    { color: var(--red); }
+.rec-h.frozen  { color: var(--blue); }
 .rec-t { font-size: .82rem; color: var(--text-dim); line-height: 1.65; }
 
 /* ── 5-Day Strip ─────────────────────────────────────────────────── */
@@ -480,6 +507,7 @@ body  { overflow-x: hidden; max-width: 100vw; }
 .day-rating.good    { background: rgba(62,207,110,.12); color: var(--green); }
 .day-rating.marginal{ background: rgba(230,176,66,.12); color: var(--gold); }
 .day-rating.poor    { background: rgba(240,96,96,.12);  color: var(--red); }
+.day-rating.frozen  { background: rgba(91,163,224,.12); color: var(--blue); }
 
 /* ── Pre-Spray Checklist ─────────────────────────────────────────── */
 .checklist-item {
@@ -497,6 +525,7 @@ body  { overflow-x: hidden; max-width: 100vw; }
   padding: 1rem 1.1rem; background: var(--surface);
   border: 1px solid var(--border-g); border-radius: 10px;
   text-decoration: none; transition: border-color .15s, background .15s;
+  min-width: 0; overflow: hidden;
 }
 .cross-link:hover { background: var(--surface2); border-color: var(--gold); }
 .cross-link-icon  { font-size: 1.5rem; flex-shrink: 0; margin-top: .1rem; }
@@ -521,14 +550,19 @@ body  { overflow-x: hidden; max-width: 100vw; }
 .fade-up.vis { opacity: 1; transform: none; }
 
 /* ═══════════════════════════════════════════════════════════════════
-   RESPONSIVE
+   RESPONSIVE — v2 (sidebar order fix, better mobile)
 ═══════════════════════════════════════════════════════════════════ */
+
+/* Tablet: single column, sidebar stays BELOW content */
 @media (max-width: 1100px) {
   .hero-inner { grid-template-columns: 1fr; }
   .status-panel { max-width: 400px; }
   .pg { grid-template-columns: 1fr; }
-  .sidebar { order: -1; }
+  /* FIX 1: Sidebar stays AFTER main content on mobile.
+     Previously order: -1 put it above, burying the conditions. */
 }
+
+/* Mid-size phones / small tablets */
 @media (max-width: 768px) {
   .hero { padding: 2rem 1rem 1.5rem; }
   .pg { padding: 1.5rem 1rem; }
@@ -539,16 +573,24 @@ body  { overflow-x: hidden; max-width: 100vw; }
   .mix-step { grid-template-columns: 36px minmax(0, 1fr); gap: .65rem; padding: .75rem; }
   .mix-num  { width: 36px; height: 36px; font-size: .85rem; }
   .status-main { font-size: 1.3rem; }
+  .status-icon { font-size: 2.5rem; }
+  .status-panel { max-width: none; }
 }
+
+/* Phones */
 @media (max-width: 580px) {
   .factors { grid-template-columns: 1fr; }
   .edu-grid { grid-template-columns: 1fr; }
   .tips-grid { grid-template-columns: 1fr; }
   .inv-arrow { display: none; }
   .inv-layer-meta { margin-left: 0; }
+  .inv-layer-label { font-size: .65rem; }
   .loc-setup { padding: 1.25rem 1rem; }
-  .nozzle-table-wrap::after { display: block; }
+  .cross-link { gap: .6rem; padding: .85rem; }
+  .cross-link-text { font-size: .72rem; }
 }
+
+/* Small phones */
 @media (max-width: 380px) {
   .hero { padding: 1.5rem .75rem 1.25rem; }
   .hero-sub { font-size: .88rem; }
@@ -559,7 +601,8 @@ body  { overflow-x: hidden; max-width: 100vw; }
   .fcard-val { font-size: 1.5rem; }
   .fcard-desc { font-size: .72rem; }
   .status-main { font-size: 1.1rem; }
-  .status-icon { font-size: 2.5rem; }
+  .status-icon { font-size: 2rem; }
+  .status-sub { font-size: .78rem; }
   .loc-setup { padding: 1rem .85rem; }
   .loc-setup h3 { font-size: .92rem; }
   .mix-step-name { font-size: .78rem; }
@@ -568,6 +611,10 @@ body  { overflow-x: hidden; max-width: 100vw; }
   .tip-card { padding: .85rem; }
   .tip-card-title { font-size: .78rem; }
   .tip-card-text { font-size: .74rem; }
+  .edu-card { padding: .75rem; }
+  .edu-card-title { font-size: .75rem; }
+  .edu-card-text { font-size: .72rem; }
+  .sc { padding: .85rem; }
 }
 
 /* ── Print ───────────────────────────────────────────────────────── */
