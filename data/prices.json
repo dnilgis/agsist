@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-03-02T21:55:00Z",
+  "fetched": "2026-03-02T22:18:25Z",
   "ok": 19,
   "failed": 0,
   "quotes": {
@@ -86,10 +86,10 @@
     },
     "milk": {
       "ticker": "DC=F",
-      "close": 17.19,
+      "close": 17.21,
       "open": 14.92,
-      "netChange": 2.27,
-      "pctChange": 15.2145,
+      "netChange": 2.29,
+      "pctChange": 15.3485,
       "wk52_hi": 20.24,
       "wk52_lo": 14.53
     },
@@ -113,37 +113,37 @@
     },
     "crude": {
       "ticker": "CL=F",
-      "close": 71.29,
+      "close": 71.03,
       "open": 71.31,
-      "netChange": -0.02,
-      "pctChange": -0.028,
+      "netChange": -0.28,
+      "pctChange": -0.3927,
       "wk52_hi": 78.4,
       "wk52_lo": 54.98
     },
     "natgas": {
       "ticker": "NG=F",
-      "close": 2.987,
+      "close": 2.98,
       "open": 2.894,
-      "netChange": 0.093,
-      "pctChange": 3.2135,
+      "netChange": 0.086,
+      "pctChange": 2.9717,
       "wk52_hi": 7.827,
       "wk52_lo": 2.622
     },
     "gold": {
       "ticker": "GC=F",
-      "close": 5345.5,
+      "close": 5335.8999,
       "open": 5369.7998,
-      "netChange": -24.2998,
-      "pctChange": -0.4525,
+      "netChange": -33.8999,
+      "pctChange": -0.6313,
       "wk52_hi": 5586.2002,
       "wk52_lo": 2863.3999
     },
     "silver": {
       "ticker": "SI=F",
-      "close": 89.855,
+      "close": 89.61,
       "open": 94.08,
-      "netChange": -4.225,
-      "pctChange": -4.4909,
+      "netChange": -4.47,
+      "pctChange": -4.7513,
       "wk52_hi": 121.3,
       "wk52_lo": 28.31
     },
