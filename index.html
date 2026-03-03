@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://api.open-meteo.com">
-<link rel="preconnect" href="https://api.coingecko.com">
 
 <!-- ── GA4 ─────────────────────────────────────────────────────── -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
@@ -777,14 +776,14 @@
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">₿</span>Bitcoin</span><span class="pc-contract">USD</span></div>
         <div class="pc-price" id="pc-btc">--</div>
         <div class="pc-change"><span class="pc-chg-val nc" id="pcc-btc">--</span></div>
-        <div class="pc-prev">CoinGecko</div>
+        <div class="pc-prev" id="pcprev-btc"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>49,000</span><span></span><span>106,000</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:67%"></div><div class="pc-range-dot" style="left:67%"></div></div></div>
       </div>
       <div class="pc pc-sm">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">◎</span>XRP</span><span class="pc-contract">USD</span></div>
         <div class="pc-price" id="pc-xrp">--</div>
         <div class="pc-change"><span class="pc-chg-val nc" id="pcc-xrp">--</span></div>
-        <div class="pc-prev">CoinGecko</div>
+        <div class="pc-prev" id="pcprev-xrp"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>0.40</span><span></span><span>3.40</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:64%"></div><div class="pc-range-dot" style="left:64%"></div></div></div>
       </div>
     </div>
@@ -793,14 +792,22 @@
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">💎</span>Kaspa</span><span class="pc-contract">USD</span></div>
         <div class="pc-price" id="pc-kas">--</div>
         <div class="pc-change"><span class="pc-chg-val nc" id="pcc-kas">--</span></div>
-        <div class="pc-prev">CoinGecko</div>
+        <div class="pc-prev" id="pcprev-kas"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>0.048</span><span></span><span>0.201</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:23%"></div><div class="pc-range-dot" style="left:23%"></div></div></div>
       </div>
-      <div class="pc pc-sm s-card--ffai" style="display:flex;flex-direction:column">
-        <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">📊</span>FFAI Index</span><span class="pc-contract">Quarterly</span></div>
-        <div class="ffai-score" id="ffai-score-compact" style="font-size:2.4rem;margin:.3rem 0">--</div>
-        <a href="https://farmers1st.com/api/" target="_blank" rel="noopener" style="font-size:.7rem;color:var(--blue);margin-top:auto;padding-top:.5rem;opacity:.8">View full methodology →</a>
-      </div>
+      <!-- ── FFAI INDEX — Farmers First Agri Index ── -->
+      <a href="https://farmers1st.com" target="_blank" rel="noopener" class="pc pc-sm" style="display:flex;flex-direction:column;text-decoration:none;color:inherit;cursor:pointer;border-color:rgba(91,163,224,.25);background:linear-gradient(135deg,var(--surface) 0%,rgba(91,163,224,.04) 100%);transition:border-color .15s,transform .1s" onmouseenter="this.style.borderColor='var(--blue)';this.style.transform='translateY(-1px)'" onmouseleave="this.style.borderColor='rgba(91,163,224,.25)';this.style.transform='none'">
+        <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">📊</span>FFAI Index</span><span class="pc-contract" style="color:var(--blue)">Farmers First</span></div>
+        <div style="display:flex;align-items:baseline;gap:.5rem;margin:.35rem 0 .15rem">
+          <span id="ffai-score-compact" style="font-family:'Oswald',sans-serif;font-size:2.6rem;font-weight:800;color:var(--blue);line-height:1">--</span>
+          <span style="font-size:.72rem;color:var(--text-muted);font-weight:600">/ 100</span>
+        </div>
+        <div style="font-size:.68rem;color:var(--text-dim);line-height:1.5;margin-bottom:.3rem">Composite agricultural market health score — commodities, inputs, trade &amp; weather factors.</div>
+        <div style="margin-top:auto;padding-top:.45rem;border-top:1px solid rgba(91,163,224,.15);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:.62rem;color:var(--text-muted)">Updated quarterly</span>
+          <span style="font-size:.68rem;color:var(--blue);font-weight:600">View Methodology →</span>
+        </div>
+      </a>
     </div>
   </div>
 
@@ -808,7 +815,6 @@
   <div class="fade-up" id="f-kalshi">
     <div class="sec-head">
       <div class="sec-title">🎯 What's Moving Agriculture</div>
-      <span class="sec-all" style="cursor:default;font-size:.68rem;color:var(--text-muted)">Kalshi + Polymarket · Updated every 2 hrs</span>
     </div>
     <div style="font-size:.78rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;max-width:52rem">
       Live odds on events that impact your bottom line — from tariffs and trade disputes to weather events, energy policy, interest rates, and USDA reports. Each market includes an explanation of why it matters for agriculture.
@@ -817,11 +823,6 @@
       <div id="kalshi-loading" style="grid-column:1/-1;text-align:center;padding:1.5rem;font-size:.82rem;color:var(--text-muted)">
         ⏳ Scanning prediction markets for agricultural impact…
       </div>
-    </div>
-    <div style="font-size:.65rem;color:var(--text-muted);text-align:right;padding-bottom:.25rem">
-      Odds are market prices · Not investment advice ·
-      <a href="https://kalshi.com" target="_blank" rel="noopener" style="color:var(--text-muted)">Kalshi</a> ·
-      <a href="https://polymarket.com" target="_blank" rel="noopener" style="color:var(--text-muted)">Polymarket</a>
     </div>
   </div>
 
@@ -1445,18 +1446,11 @@
       });
 
       // Stats footer
-      var stats = data.count + ' markets scanned';
-      var tiers = data.tier_breakdown || {};
-      var parts = [];
-      if (tiers.direct_ag) parts.push(tiers.direct_ag + ' commodities');
-      if (tiers.trade_energy) parts.push(tiers.trade_energy + ' trade/energy');
-      if (tiers.macro_weather) parts.push(tiers.macro_weather + ' macro/weather');
-      if (parts.length) stats += ' · ' + parts.join(' · ');
+      var stats = data.count + ' markets shown';
       if (age) stats += ' · ' + age;
 
       html += '<div style="grid-column:1/-1;text-align:center;font-size:.68rem;color:var(--text-muted);padding:.5rem 0;line-height:1.65">'
-        + 'Odds from Kalshi &amp; Polymarket · ' + stats
-        + '<br>Markets shown based on agricultural relevance scoring · Not investment advice'
+        + stats
         + '</div>';
 
       grid.innerHTML = html;
