@@ -13,15 +13,15 @@
 
   <!-- SEO -->
   <title>Agricultural Fast Facts & Calculators — State Ag Data | AGSIST</title>
-  <meta name="description" content="Free ag quick reference: USDA Census data by state, bushel weights, nutrient removal rates, fertilizer calculators, seeding rates, grain storage, nitrogen guidelines, manure values, and unit conversions.">
-  <meta name="keywords"    content="agriculture statistics, farm facts, USDA Census, crop production data, state farm data, ag calculators, bushel weight, nutrient removal, nitrogen rate, seeding rate, grain bin capacity">
+  <meta name="description" content="Free ag quick reference: USDA Census data by state, bushel weights, nutrient removal rates, fertilizer calculators, seeding rates, grain storage, nitrogen guidelines, manure values, tank mix cost, land rent calculator, and unit conversions.">
+  <meta name="keywords"    content="agriculture statistics, farm facts, USDA Census, crop production data, state farm data, ag calculators, bushel weight, nutrient removal, nitrogen rate, seeding rate, grain bin capacity, tank mix cost, land rent calculator">
   <meta name="robots"      content="index, follow, max-snippet:-1, max-image-preview:large">
   <link rel="canonical"    href="https://agsist.com/fast-facts">
 
   <meta property="og:type"         content="website">
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:title"        content="Agricultural Fast Facts & Calculators — AGSIST">
-  <meta property="og:description"  content="USDA Census data by state, bushel weights, nutrient removal, fertilizer analysis, seeding rates, grain storage, and free farm calculators.">
+  <meta property="og:description"  content="USDA Census data by state, bushel weights, nutrient removal, fertilizer analysis, seeding rates, grain storage, tank mix cost, land rent, and free farm calculators.">
   <meta property="og:url"          content="https://agsist.com/fast-facts">
   <meta property="og:image"        content="https://agsist.com/img/og/fast-facts.jpg">
   <meta property="og:image:width"  content="1200">
@@ -29,7 +29,7 @@
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:title"       content="Agricultural Fast Facts & Calculators — AGSIST">
-  <meta name="twitter:description" content="USDA Census data by state, bushel weights, nutrient removal, and free farm calculators.">
+  <meta name="twitter:description" content="USDA Census data by state, bushel weights, nutrient removal, tank mix cost, land rent, and free farm calculators.">
   <meta name="twitter:image"       content="https://agsist.com/img/og/fast-facts.jpg">
 
   <script type="application/ld+json">
@@ -39,7 +39,7 @@
       {
         "@type": "SoftwareApplication",
         "name": "Agricultural Fast Facts & Calculators",
-        "description": "Interactive ag calculators and USDA Census statistics for US states. Bushel weights, nutrient removal, nitrogen guidelines, seeding rates, grain storage, fertilizer analysis, manure values, and unit conversions.",
+        "description": "Interactive ag calculators and USDA Census statistics for US states. Bushel weights, nutrient removal, nitrogen guidelines, seeding rates, grain storage, fertilizer analysis, manure values, tank mix cost, land rent calculator, and unit conversions.",
         "url": "https://agsist.com/fast-facts",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Web",
@@ -69,6 +69,16 @@
             "@type": "Question",
             "name": "What is the formula for grain bin capacity?",
             "acceptedAnswer": { "@type": "Answer", "text": "Round bin capacity in bushels = Diameter² × Height × 0.628. For example, a 30 ft diameter × 24 ft eave height bin holds approximately 13,565 bushels." }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I calculate herbicide tank mix cost per acre?",
+            "acceptedAnswer": { "@type": "Answer", "text": "For each product: (rate in fl oz per acre ÷ 128 fl oz per gallon) × price per gallon = cost per acre for that product. Sum all products for total chemical cost per acre." }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I calculate maximum affordable cash rent?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Maximum rent = (expected yield × commodity price) − total non-rent costs per acre. For example: 200 bu/ac corn × $4.50/bu = $900 revenue − $600 non-rent costs = $300/ac maximum affordable rent." }
           }
         ]
       }
@@ -273,6 +283,13 @@
     }
     .calc-result .label { font-size: 0.68rem; color: var(--text-dim); margin-top: 3px; }
 
+    /* ── Tank-mix 2-col input grid ────────────────────────── */
+    .tm-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 6px; align-items: end;
+    }
+    .tm-grid .calc-field { margin: 0; }
+
     /* ── DATA TABLE ───────────────────────────────────────── */
     .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
@@ -422,11 +439,13 @@
       .tools-grid { grid-template-columns: repeat(2, 1fr); }
       .panel-body { padding: 14px; }
       .panel-head { padding: 12px 14px; }
+      .tm-grid { gap: 4px; }
     }
 
     @media (max-width: 400px) {
       .data-grid { grid-template-columns: 1fr; }
       .state-stats { grid-template-columns: 1fr; }
+      .tm-grid { grid-template-columns: 1fr; }
     }
 
     @media print {
@@ -714,11 +733,98 @@
             </div>
           </div>
 
+          <!-- ═══ NEW: Tank Mix Cost ═══════════════════════── -->
+          <div class="calc-card">
+            <h3>Tank Mix Cost</h3>
+            <div style="font-size:0.68rem;color:var(--text-dim);margin-bottom:10px">
+              Up to 3 products — leave unused rows at 0.
+            </div>
+            <div class="tm-grid">
+              <div class="calc-field">
+                <label for="tmRate1">Product 1 Rate</label>
+                <div class="input-wrap">
+                  <input type="number" id="tmRate1" value="6" min="0" max="999" step="0.1" class="has-suffix" inputmode="decimal">
+                  <span class="unit-suffix">fl oz/ac</span>
+                </div>
+              </div>
+              <div class="calc-field">
+                <label for="tmPrice1">Product 1 Price</label>
+                <div class="input-wrap">
+                  <input type="number" id="tmPrice1" value="120" min="0" max="9999" step="0.01" class="has-suffix" inputmode="decimal">
+                  <span class="unit-suffix">$/gal</span>
+                </div>
+              </div>
+              <div class="calc-field">
+                <label for="tmRate2">Product 2 Rate</label>
+                <div class="input-wrap">
+                  <input type="number" id="tmRate2" value="32" min="0" max="999" step="0.1" class="has-suffix" inputmode="decimal">
+                  <span class="unit-suffix">fl oz/ac</span>
+                </div>
+              </div>
+              <div class="calc-field">
+                <label for="tmPrice2">Product 2 Price</label>
+                <div class="input-wrap">
+                  <input type="number" id="tmPrice2" value="45" min="0" max="9999" step="0.01" class="has-suffix" inputmode="decimal">
+                  <span class="unit-suffix">$/gal</span>
+                </div>
+              </div>
+              <div class="calc-field">
+                <label for="tmRate3">Product 3 Rate</label>
+                <div class="input-wrap">
+                  <input type="number" id="tmRate3" value="0" min="0" max="999" step="0.1" class="has-suffix" inputmode="decimal">
+                  <span class="unit-suffix">fl oz/ac</span>
+                </div>
+              </div>
+              <div class="calc-field">
+                <label for="tmPrice3">Product 3 Price</label>
+                <div class="input-wrap">
+                  <input type="number" id="tmPrice3" value="0" min="0" max="9999" step="0.01" class="has-suffix" inputmode="decimal">
+                  <span class="unit-suffix">$/gal</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-result" style="margin-top:10px">
+              <div class="value" id="tmResult">$16.88</div>
+              <div class="label" id="tmBreakdown">P1 $5.63 + P2 $11.25 + P3 $0.00</div>
+            </div>
+          </div>
+
+          <!-- ═══ NEW: Max Affordable Rent ═════════════════── -->
+          <div class="calc-card">
+            <h3>Max Affordable Rent</h3>
+            <div class="calc-field">
+              <label for="rentYield">Expected Yield</label>
+              <div class="input-wrap">
+                <input type="number" id="rentYield" value="200" min="0" max="500" class="has-suffix" inputmode="decimal">
+                <span class="unit-suffix">bu/ac</span>
+              </div>
+            </div>
+            <div class="calc-field">
+              <label for="rentPrice">Commodity Price</label>
+              <div class="input-wrap">
+                <input type="number" id="rentPrice" value="4.50" min="0" max="30" step="0.01" class="has-suffix" inputmode="decimal">
+                <span class="unit-suffix">$/bu</span>
+              </div>
+            </div>
+            <div class="calc-field">
+              <label for="rentCosts">Non-Rent Costs</label>
+              <div class="input-wrap">
+                <input type="number" id="rentCosts" value="600" min="0" max="9999" class="has-suffix" inputmode="decimal">
+                <span class="unit-suffix">$/ac</span>
+              </div>
+            </div>
+            <div class="calc-result">
+              <div class="value" id="rentResult">$300.00</div>
+              <div class="label" id="rentBreakdown">Revenue $900 − Costs $600</div>
+            </div>
+          </div>
+
         </div>
         <div style="margin-top:16px;text-align:center;font-size:0.8rem;color:var(--text-dim)">
           Full-featured tools:
           <a href="/breakeven" class="section-link" style="margin:0 8px">Break-Even Calculator →</a>
-          <a href="/grain-bin-calculator" class="section-link">Grain Bin Calculator →</a>
+          <a href="/grain-bin-calculator" class="section-link" style="margin:0 8px">Grain Bin Calculator →</a>
+          <a href="/spray" class="section-link">Spray Advisory →</a>
         </div>
       </div>
     </section>
@@ -1305,6 +1411,34 @@
       $('beqResult').textContent = '$' + (cost / yld).toFixed(2);
     }
 
+    /* ── NEW: Tank Mix Cost ────────────────────────────────── */
+    function calcTankMix() {
+      var total = 0;
+      var parts = [];
+      for (var i = 1; i <= 3; i++) {
+        var rate  = clamp(num('tmRate' + i, 0), 0, 999);
+        var price = clamp(num('tmPrice' + i, 0), 0, 9999);
+        // fl oz/ac ÷ 128 fl oz/gal × $/gal = $/ac
+        var cost  = (rate / 128) * price;
+        total += cost;
+        parts.push('P' + i + ' $' + cost.toFixed(2));
+      }
+      $('tmResult').textContent = '$' + total.toFixed(2);
+      $('tmBreakdown').textContent = parts.join(' + ');
+    }
+
+    /* ── NEW: Max Affordable Rent ──────────────────────────── */
+    function calcRentMax() {
+      var yld   = clamp(num('rentYield', 0), 0, 999);
+      var price = clamp(num('rentPrice', 0), 0, 99);
+      var costs = clamp(num('rentCosts', 0), 0, 99999);
+      var rev   = yld * price;
+      var max   = rev - costs;
+      $('rentResult').textContent = max >= 0 ? '$' + max.toFixed(2) : '−$' + Math.abs(max).toFixed(2);
+      $('rentResult').style.color = max >= 0 ? 'var(--gold)' : '#ef4444';
+      $('rentBreakdown').textContent = 'Revenue $' + rev.toFixed(0) + ' − Costs $' + costs.toFixed(0);
+    }
+
     /* ── EVENT BINDING ─────────────────────────────────────── */
     function bind(id, event, fn) {
       var el = $(id);
@@ -1325,6 +1459,19 @@
     bind('binCrop',      'change', calcBin);
     bind('beqCost',      'input',  calcBEQ);
     bind('beqYield',     'input',  calcBEQ);
+
+    // Tank Mix bindings
+    bind('tmRate1',  'input', calcTankMix);
+    bind('tmPrice1', 'input', calcTankMix);
+    bind('tmRate2',  'input', calcTankMix);
+    bind('tmPrice2', 'input', calcTankMix);
+    bind('tmRate3',  'input', calcTankMix);
+    bind('tmPrice3', 'input', calcTankMix);
+
+    // Rent Max bindings
+    bind('rentYield', 'input', calcRentMax);
+    bind('rentPrice', 'input', calcRentMax);
+    bind('rentCosts', 'input', calcRentMax);
 
     // State selector
     bind('stateSelect', 'change', function() {
@@ -1387,6 +1534,7 @@
 
     /* ── INIT CALCULATORS ──────────────────────────────────── */
     calcRemoval(); calcFertCost(); calcSeeds(); calcBushels(); calcBin(); calcBEQ();
+    calcTankMix(); calcRentMax();
 
     /* ── TOC SMOOTH SCROLL + ACTIVE TRACKING ───────────────── */
     var tocLinks = document.querySelectorAll('.toc a');
