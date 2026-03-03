@@ -1,42 +1,27 @@
 {
-  "fetched": "2026-03-03T11:40:25Z",
+  "fetched": "2026-03-03T15:04:44Z",
   "version": 2,
-  "count": 2,
-  "total_found": 2,
+  "count": 1,
+  "total_found": 1,
   "tier_breakdown": {
     "direct_ag": 0,
-    "trade_energy": 0,
-    "macro_weather": 2
+    "trade_energy": 1,
+    "macro_weather": 0
   },
   "categories": {
     "Other": [
       {
         "platform": "Kalshi",
-        "ticker": "KXMVECROSSCATEGORY-S202615B2009C012-BA0218107C4",
-        "title": "yes Bayern Munich,yes Arsenal,yes Manchester City,yes Real Madrid,yes Barcelona,yes Napoli",
-        "yes": 50,
-        "no": 50,
-        "volume_24h": 56,
-        "close_time": "2026-03-20T19:30:00Z",
-        "time_left": "Closes in 17d",
+        "ticker": "KXMVECROSSCATEGORY-S2026FDA8DCAB06F-E554D8A77B3",
+        "title": "yes Desmond Bane: 1+,yes Dennis Schr\u00f6der: 2+,yes Cade Cunningham: 8+,yes Kon Knueppel: 15+,yes Miles Bridges: 10+,yes Evan Mobley: 10+,yes Jarrett Allen: 10+,yes James Harden: 15+,yes Cade Cunningham: 20+,yes Desmond Bane: 15+,yes Paolo Banchero: 20+,yes LaMelo Ball: 2+,yes Evan Mobley: 4+,yes Jarrett Allen: 6+,yes Ausar Thompson: 4+,yes Paolo Banchero: 6+,yes Wendell Carter Jr.: 6+",
+        "yes": 4,
+        "no": 96,
+        "volume_24h": 0,
+        "close_time": "2026-03-18T00:00:00Z",
+        "time_left": "Closes in 14d",
         "url": "https://kalshi.com/markets/KXMVECROSSCATEGORY",
-        "relevance": 40,
-        "tier": 3,
-        "category": "Other",
-        "why_it_matters": "This market reflects conditions that can influence commodity prices, input costs, or trade flows."
-      },
-      {
-        "platform": "Kalshi",
-        "ticker": "KXMVECROSSCATEGORY-S20260F98586B7A4-96257EB3774",
-        "title": "yes Osasuna,yes Real Madrid,yes Barcelona,yes Atletico,yes Girona,yes Getafe,yes Sevilla,yes Villarreal",
-        "yes": 50,
-        "no": 50,
-        "volume_24h": 35,
-        "close_time": "2026-03-20T20:00:00Z",
-        "time_left": "Closes in 17d",
-        "url": "https://kalshi.com/markets/KXMVECROSSCATEGORY",
-        "relevance": 40,
-        "tier": 3,
+        "relevance": 70,
+        "tier": 2,
         "category": "Other",
         "why_it_matters": "This market reflects conditions that can influence commodity prices, input costs, or trade flows."
       }
@@ -45,31 +30,16 @@
   "markets": [
     {
       "platform": "Kalshi",
-      "ticker": "KXMVECROSSCATEGORY-S202615B2009C012-BA0218107C4",
-      "title": "yes Bayern Munich,yes Arsenal,yes Manchester City,yes Real Madrid,yes Barcelona,yes Napoli",
-      "yes": 50,
-      "no": 50,
-      "volume_24h": 56,
-      "close_time": "2026-03-20T19:30:00Z",
-      "time_left": "Closes in 17d",
+      "ticker": "KXMVECROSSCATEGORY-S2026FDA8DCAB06F-E554D8A77B3",
+      "title": "yes Desmond Bane: 1+,yes Dennis Schr\u00f6der: 2+,yes Cade Cunningham: 8+,yes Kon Knueppel: 15+,yes Miles Bridges: 10+,yes Evan Mobley: 10+,yes Jarrett Allen: 10+,yes James Harden: 15+,yes Cade Cunningham: 20+,yes Desmond Bane: 15+,yes Paolo Banchero: 20+,yes LaMelo Ball: 2+,yes Evan Mobley: 4+,yes Jarrett Allen: 6+,yes Ausar Thompson: 4+,yes Paolo Banchero: 6+,yes Wendell Carter Jr.: 6+",
+      "yes": 4,
+      "no": 96,
+      "volume_24h": 0,
+      "close_time": "2026-03-18T00:00:00Z",
+      "time_left": "Closes in 14d",
       "url": "https://kalshi.com/markets/KXMVECROSSCATEGORY",
-      "relevance": 40,
-      "tier": 3,
-      "category": "Other",
-      "why_it_matters": "This market reflects conditions that can influence commodity prices, input costs, or trade flows."
-    },
-    {
-      "platform": "Kalshi",
-      "ticker": "KXMVECROSSCATEGORY-S20260F98586B7A4-96257EB3774",
-      "title": "yes Osasuna,yes Real Madrid,yes Barcelona,yes Atletico,yes Girona,yes Getafe,yes Sevilla,yes Villarreal",
-      "yes": 50,
-      "no": 50,
-      "volume_24h": 35,
-      "close_time": "2026-03-20T20:00:00Z",
-      "time_left": "Closes in 17d",
-      "url": "https://kalshi.com/markets/KXMVECROSSCATEGORY",
-      "relevance": 40,
-      "tier": 3,
+      "relevance": 70,
+      "tier": 2,
       "category": "Other",
       "why_it_matters": "This market reflects conditions that can influence commodity prices, input costs, or trade flows."
     }
