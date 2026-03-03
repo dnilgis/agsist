@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
-AGSIST fetch_markets.py  v3
+AGSIST fetch_markets.py  v4
 ════════════════════════════
 Fetches prediction-market odds relevant to agriculture from Kalshi
 and Polymarket.  Runs once daily via GitHub Actions (6 AM CT).
 
-v3 changes (2026-03-02):
-  • Fixed Kalshi API URL → api.elections.kalshi.com (public, no auth)
-  • Fixed Polymarket URLs → uses slug field for working links
-  • Tighter relevance: minimum score 60 (was 40), meme-market filter
-  • Smarter queries: 30 targeted searches instead of 55 broad ones
-  • Better probability parsing for Polymarket outcomePrices
-  • Filters out closed, settled, and expired markets
-  • Once-daily run (markets don't move fast enough for 2hr refresh)
+v4 changes (2026-03-02):
+  • Lowered minimum relevance to 40 (was 60) — macro/weather markets
+    like interest rates, recession odds, dollar moves ARE relevant to ag
+  • Massively expanded meme/junk filter — catches sports teams, players,
+    entertainment by pattern, not just exact strings
+  • Added category-aware sports detection (team names, league patterns)
+  • Graceful empty-state: output always valid even with 0 markets
+  • Better dedup across platforms
 
 Sources (public, no API keys required):
   • Kalshi      — https://api.elections.kalshi.com/trade-api/v2/markets
@@ -36,8 +36,6 @@ except ImportError:
 # ═════════════════════════════════════════════════════════════════
 # 1. SEARCH QUERIES — targeted, deduplicated
 # ═════════════════════════════════════════════════════════════════
-# Fewer queries, higher signal. Each query should plausibly return
-# markets that a farmer would care about.
 
 SEARCH_QUERIES = [
     # Direct ag commodities
@@ -52,6 +50,7 @@ SEARCH_QUERIES = [
     "drought", "hurricane", "flood", "el nino",
     # Macro (affects exports, rates, dollar)
     "interest rate", "inflation", "recession", "federal reserve",
+    "fed funds rate", "rate cut", "rate hike",
     # Infrastructure
     "rail strike", "mississippi river", "supply chain",
     # Disease
@@ -95,8 +94,9 @@ TIER2_KEYWORDS = [
 ]
 
 TIER3_KEYWORDS = [
-    "interest rate", "fed rate", "federal reserve", "inflation",
-    "cpi", "ppi", "recession", "gdp", "unemployment",
+    "interest rate", "fed rate", "federal reserve", "fed funds",
+    "rate cut", "rate hike", "fomc", "powell",
+    "inflation", "cpi", "ppi", "recession", "gdp", "unemployment",
     "dollar", "usd", "currency", "yuan", "peso", "real",
     "government shutdown", "debt ceiling", "budget",
     "el nino", "la nina", "hurricane", "flood", "wildfire",
@@ -109,40 +109,129 @@ TIER3_KEYWORDS = [
 ]
 
 # ═════════════════════════════════════════════════════════════════
-# 3. MEME / JUNK MARKET FILTER
+# 3. MEME / JUNK MARKET FILTER — aggressive
 # ═════════════════════════════════════════════════════════════════
-# Markets that match keywords but are clearly not ag-relevant.
-# If any of these appear in the title, skip the market entirely.
 
+# Exact substrings that instantly disqualify a market
 MEME_BLACKLIST = [
-    "gta", "grand theft auto", "video game", "gaming",
-    "super bowl", "nfl", "nba", "mlb", "nhl", "world cup",
-    "oscar", "grammy", "emmy", "golden globe",
-    "bachelor", "bachelorette", "reality tv",
+    # Gaming
+    "gta", "grand theft auto", "video game", "gaming", "esports",
+    "playstation", "xbox", "nintendo", "steam", "fortnite",
+    "minecraft", "call of duty", "league of legends", "valorant",
+    # Entertainment
+    "oscar", "grammy", "emmy", "golden globe", "tony award",
+    "bachelor", "bachelorette", "reality tv", "survivor",
+    "movie", "box office", "netflix", "disney", "hulu",
+    "celebrity", "kardashian", "swift", "beyonce", "drake",
+    "album", "billboard", "spotify", "concert", "tour",
+    # Social media
     "tiktok", "instagram", "youtube", "twitch", "streamer",
-    "celebrity", "kardashian", "swift", "beyonce",
-    "movie", "box office", "netflix", "disney",
-    "spacex", "mars", "moon landing",
-    "alien", "ufo", "simulation",
-    "will * resign", "will * be fired",  # gossip markets
-    "before gta",  # catches the exact bad market we saw
+    "subscriber", "follower count", "viral",
+    # Space/sci-fi
+    "spacex", "mars colony", "moon landing", "alien", "ufo",
+    # Crypto memes (keep bitcoin/eth but filter meme coins)
+    "dogecoin", "shiba", "pepe coin", "meme coin", "nft",
+    # Politics gossip (not policy)
+    "dating", "divorce", "wedding", "baby", "pregnant",
+    "tweet", "twitter feud", "social media post",
+    # Awards/rankings
+    "time person of the year", "most popular", "best dressed",
+]
+
+# Sports teams, leagues, and patterns
+# These catch markets about games, scores, championships
+SPORTS_BLACKLIST = [
+    # Leagues
+    "nfl", "nba", "mlb", "nhl", "mls", "wnba", "xfl",
+    "premier league", "la liga", "bundesliga", "serie a",
+    "champions league", "world cup", "olympics", "ncaa",
+    "march madness", "super bowl", "world series",
+    "stanley cup", "playoff", "playoffs",
+    # NBA teams
+    "lakers", "celtics", "warriors", "nuggets", "bucks",
+    "76ers", "sixers", "knicks", "nets", "heat", "bulls",
+    "cavaliers", "mavericks", "clippers", "suns", "kings",
+    "timberwolves", "thunder", "pelicans", "grizzlies",
+    "hawks", "raptors", "pacers", "magic", "wizards",
+    "pistons", "hornets", "blazers", "spurs", "rockets",
+    "jazz",
+    # NFL teams
+    "chiefs", "eagles", "49ers", "ravens", "bills",
+    "cowboys", "packers", "lions", "dolphins", "bengals",
+    "steelers", "broncos", "chargers", "seahawks",
+    "vikings", "cardinals", "falcons", "saints",
+    "buccaneers", "raiders", "colts", "jaguars",
+    "texans", "titans", "panthers", "commanders",
+    "bears", "rams", "patriots", "jets", "giants",
+    # MLB teams
+    "yankees", "dodgers", "astros", "braves", "phillies",
+    "padres", "mets", "orioles", "guardians", "twins",
+    "rangers", "mariners", "diamondbacks", "brewers",
+    "red sox", "blue jays", "white sox", "royals",
+    "athletics", "pirates", "reds", "nationals", "marlins",
+    "rockies", "cubs", "rays",
+    # NHL teams
+    "bruins", "avalanche", "panthers", "oilers",
+    "hurricanes", "rangers", "penguins", "maple leafs",
+    "lightning", "canucks", "wild", "flames",
+    "golden knights", "islanders", "capitals", "sabres",
+    "blackhawks", "devils", "senators", "kraken",
+    "predators", "sharks", "ducks", "coyotes", "flyers",
+    # Common sports terms
+    "mvp", "touchdown", "home run", "hat trick", "slam dunk",
+    "draft pick", "free agent", "trade deadline",
+    "rushing yards", "passing yards", "batting average",
+    "championship", "finals mvp", "all-star",
+    "win total", "over/under", "point spread",
+    "regular season", "postseason",
+]
+
+# Player name patterns — sports player names that commonly appear
+SPORTS_PLAYER_PATTERNS = [
+    r"antetokounmpo", r"mahomes", r"jokic", r"luka\b", r"lebron",
+    r"curry\b", r"giannis", r"ohtani", r"tatum", r"embiid",
+    r"messi\b", r"ronaldo", r"haaland", r"mbappe",
+    r"lamar jackson", r"josh allen", r"patrick mahomes",
+    r"judge\b.*homer", r"batting\b", r"rushing\b", r"passing\b",
+]
+
+# Patterns that look like sports scores/stats
+SPORTS_STAT_PATTERNS = [
+    r"\d+\+.*points",       # "20+ points"
+    r"\d+\+.*goals",        # "3+ goals"
+    r"\d+\+.*rebounds",     # "10+ rebounds"
+    r"\d+\+.*assists",
+    r"\d+\+.*strikeouts",
+    r"\d+\+.*touchdowns",
+    r"over \d+\.?\d* (points|goals|runs|yards)",
+    r"win.*game\s*\d",      # "win game 7"
+    r"wins?\s+the\s+(title|trophy|cup|ring|belt)",
 ]
 
 
 def is_meme_market(title):
-    """Return True if market title matches meme/junk patterns."""
+    """Return True if market title matches meme/junk/sports patterns."""
     t = title.lower()
+
+    # Check exact substring blacklists
     for pattern in MEME_BLACKLIST:
-        if "*" in pattern:
-            # Simple wildcard: "will * resign" matches "will biden resign"
-            parts = pattern.split("*")
-            if len(parts) == 2 and parts[0] in t and parts[1] in t:
-                idx0 = t.index(parts[0])
-                idx1 = t.index(parts[1])
-                if idx0 < idx1:
-                    return True
-        elif pattern in t:
+        if pattern in t:
             return True
+
+    for pattern in SPORTS_BLACKLIST:
+        if pattern in t:
+            return True
+
+    # Check sports player patterns (regex)
+    for pattern in SPORTS_PLAYER_PATTERNS:
+        if re.search(pattern, t):
+            return True
+
+    # Check sports stat patterns (regex)
+    for pattern in SPORTS_STAT_PATTERNS:
+        if re.search(pattern, t):
+            return True
+
     return False
 
 
@@ -151,7 +240,12 @@ def is_meme_market(title):
 # ═════════════════════════════════════════════════════════════════
 
 def score_relevance(text):
-    """Score 0-100 how relevant a market is to agriculture."""
+    """Score 0-100 how relevant a market is to agriculture.
+    Tier 1 (100): direct ag — corn, cattle, USDA
+    Tier 2 (70):  trade/energy — tariffs, crude oil, bird flu
+    Tier 3 (40):  macro/weather — interest rates, recession, floods
+    All three tiers matter to farmers.
+    """
     t = text.lower()
     score = 0
     matched_tier = 0
@@ -160,7 +254,7 @@ def score_relevance(text):
         if kw in t:
             score = max(score, 100)
             matched_tier = max(matched_tier, 1)
-            break  # One hit is enough for max tier
+            break
 
     if score < 100:
         for kw in TIER2_KEYWORDS:
@@ -176,8 +270,7 @@ def score_relevance(text):
                 matched_tier = max(matched_tier, 3)
                 break
 
-    # Cross-tier bonus: if a Tier 3 market ALSO has Tier 1 or 2 keywords,
-    # it's more relevant than a generic macro market
+    # Cross-tier bonus
     if matched_tier == 3:
         for kw in TIER1_KEYWORDS:
             if kw in t:
@@ -192,7 +285,7 @@ def score_relevance(text):
 
 
 # ═════════════════════════════════════════════════════════════════
-# 5. "WHY IT MATTERS" + CATEGORY (unchanged from v2)
+# 5. "WHY IT MATTERS" + CATEGORY
 # ═════════════════════════════════════════════════════════════════
 
 WHY_IT_MATTERS = [
@@ -264,7 +357,7 @@ WHY_IT_MATTERS = [
      "Wildfires destroy rangeland, displace livestock, and can trigger emergency grazing on CRP land."),
     (["frost", "freeze"],
      "Late spring frost kills emerged crops. Early fall frost ends the growing season before grain reaches maturity."),
-    (["interest rate", "fed rate", "federal reserve"],
+    (["interest rate", "fed rate", "federal reserve", "fed funds", "rate cut", "rate hike", "fomc"],
      "Higher rates raise operating loan costs and farmland financing. They also strengthen the dollar, making U.S. exports less competitive."),
     (["inflation", "cpi"],
      "Inflation drives up input costs (seed, chemicals, fuel, labor) and land rents — but can also support higher commodity prices."),
@@ -294,7 +387,6 @@ WHY_IT_MATTERS = [
 
 
 def get_why_it_matters(title):
-    """Return a 'why it matters' explanation for an ag audience."""
     t = title.lower()
     for keywords, explanation in WHY_IT_MATTERS:
         if any(kw in t for kw in keywords):
@@ -303,7 +395,6 @@ def get_why_it_matters(title):
 
 
 def get_category(title):
-    """Categorize market for frontend display grouping."""
     t = title.lower()
     cats = {
         "Commodities": ["corn", "soybean", "wheat", "grain", "cattle", "hog",
@@ -320,7 +411,8 @@ def get_category(title):
                               "climate"],
         "Economy & Markets": ["interest rate", "fed", "inflation", "recession",
                               "dollar", "currency", "gdp", "unemployment",
-                              "shutdown", "debt ceiling"],
+                              "shutdown", "debt ceiling", "fomc", "rate cut",
+                              "rate hike"],
         "Infrastructure": ["rail", "mississippi", "panama", "shipping", "port",
                            "supply chain", "freight", "trucking"],
     }
@@ -335,10 +427,9 @@ def get_category(title):
 # ═════════════════════════════════════════════════════════════════
 
 def http_get_json(url, timeout=15):
-    """Fetch JSON from a URL. Returns None on failure."""
     try:
         req = urllib_request.Request(url, headers={
-            "User-Agent": "AGSIST/3.0 (agsist.com; agricultural data aggregator)",
+            "User-Agent": "AGSIST/4.0 (agsist.com; agricultural data aggregator)",
             "Accept": "application/json",
         })
         with urllib_request.urlopen(req, timeout=timeout) as r:
@@ -349,7 +440,6 @@ def http_get_json(url, timeout=15):
 
 
 def time_remaining(close_str):
-    """Human-readable time until market closes."""
     if not close_str:
         return ""
     try:
@@ -368,143 +458,111 @@ def time_remaining(close_str):
 
 
 # ═════════════════════════════════════════════════════════════════
-# 7. KALSHI FETCHER (v3 — correct API URL)
+# 7. KALSHI FETCHER
 # ═════════════════════════════════════════════════════════════════
 
 KALSHI_BASE = "https://api.elections.kalshi.com/trade-api/v2"
 
 
 def fetch_kalshi():
-    """Fetch and score ag-relevant markets from Kalshi public API."""
     print("\n[Kalshi] Fetching prediction markets…")
-    print(f"  Base: {KALSHI_BASE}")
     markets = []
     seen = set()
-    queries_tried = 0
-    api_errors = 0
 
-    for kw in SEARCH_QUERIES:
-        # Kalshi doesn't have a keyword search param on /markets —
-        # we search via /events which groups related markets
-        url = (f"{KALSHI_BASE}/events"
-               f"?limit=20&status=open"
-               f"&with_nested_markets=true")
+    url = f"{KALSHI_BASE}/markets?limit=50&status=open"
+    data = http_get_json(url)
+    if not data:
+        print("  ✗ Kalshi API unreachable")
+        return []
 
-        # For keyword filtering, we'll fetch broadly then filter locally
-        # But first try the cursor-based markets endpoint
-        url_markets = (f"{KALSHI_BASE}/markets"
-                       f"?limit=50&status=open")
+    items = data.get("markets", [])
+    print(f"  Fetched {len(items)} open markets")
 
-        if queries_tried == 0:
-            # First call: fetch a broad set of open markets
-            data = http_get_json(url_markets)
-            if not data:
-                print("  ✗ Kalshi API unreachable — trying events endpoint…")
-                data = http_get_json(url)
-                if not data:
-                    api_errors += 1
-                    print("  ✗ Both Kalshi endpoints failed")
-                    break
-
-            items = data.get("markets", [])
-            print(f"  Fetched {len(items)} open markets from Kalshi")
-
-            # Also paginate to get more
-            cursor = data.get("cursor", "")
-            page = 1
-            while cursor and page < 10:
-                url_next = f"{url_markets}&cursor={cursor}"
-                data2 = http_get_json(url_next)
-                if not data2:
-                    break
-                new_items = data2.get("markets", [])
-                if not new_items:
-                    break
-                items.extend(new_items)
-                cursor = data2.get("cursor", "")
-                page += 1
-                print(f"  Page {page}: +{len(new_items)} markets (total: {len(items)})")
-                time.sleep(0.3)  # Be polite
-
-            # Now score all of them
-            for m in items:
-                ticker = m.get("ticker", "")
-                if not ticker or ticker in seen:
-                    continue
-
-                title = m.get("title") or m.get("subtitle") or ticker
-                event_ticker = m.get("event_ticker", "")
-                full_text = f"{title} {ticker} {m.get('subtitle', '')} {event_ticker}"
-
-                # Meme filter
-                if is_meme_market(full_text):
-                    continue
-
-                relevance, tier = score_relevance(full_text)
-                if relevance < 60:
-                    continue
-
-                # Get probability from yes_price (cents)
-                yes_price = m.get("yes_price")
-                yes_bid = m.get("yes_bid")
-                yes_ask = m.get("yes_ask")
-
-                if yes_price is not None:
-                    prob = yes_price
-                elif yes_bid is not None and yes_ask is not None:
-                    prob = round((yes_bid + yes_ask) / 2)
-                elif yes_bid is not None:
-                    prob = yes_bid
-                elif yes_ask is not None:
-                    prob = yes_ask
-                else:
-                    continue
-
-                # Kalshi prices are in cents (0-99)
-                if prob <= 0 or prob >= 100:
-                    continue
-
-                volume = m.get("volume", 0) or m.get("volume_24h", 0) or 0
-                close_time = m.get("close_time") or m.get("expiration_time") or ""
-
-                # Check not expired
-                tl = time_remaining(close_time)
-                if tl == "Closed":
-                    continue
-
-                seen.add(ticker)
-                markets.append({
-                    "platform":       "Kalshi",
-                    "ticker":         ticker,
-                    "title":          title,
-                    "yes":            prob,
-                    "no":             100 - prob,
-                    "volume_24h":     volume,
-                    "close_time":     close_time,
-                    "time_left":      tl,
-                    "url":            f"https://kalshi.com/markets/{ticker.split('-')[0]}",
-                    "relevance":      relevance,
-                    "category":       get_category(full_text),
-                    "why_it_matters": get_why_it_matters(full_text),
-                })
-
-            # Only need one broad fetch from Kalshi
-            queries_tried = len(SEARCH_QUERIES)
+    # Paginate
+    cursor = data.get("cursor", "")
+    page = 1
+    while cursor and page < 10:
+        data2 = http_get_json(f"{url}&cursor={cursor}")
+        if not data2:
             break
+        new_items = data2.get("markets", [])
+        if not new_items:
+            break
+        items.extend(new_items)
+        cursor = data2.get("cursor", "")
+        page += 1
+        print(f"  Page {page}: +{len(new_items)} (total: {len(items)})")
+        time.sleep(0.3)
 
-    print(f"  → {len(markets)} Kalshi ag-relevant markets ({len(seen)} unique checked)")
+    for m in items:
+        ticker = m.get("ticker", "")
+        if not ticker or ticker in seen:
+            continue
+
+        title = m.get("title") or m.get("subtitle") or ticker
+        event_ticker = m.get("event_ticker", "")
+        full_text = f"{title} {ticker} {m.get('subtitle', '')} {event_ticker}"
+
+        if is_meme_market(full_text):
+            continue
+
+        relevance, tier = score_relevance(full_text)
+        if relevance < 40:  # v4: lowered from 60
+            continue
+
+        yes_price = m.get("yes_price")
+        yes_bid = m.get("yes_bid")
+        yes_ask = m.get("yes_ask")
+
+        if yes_price is not None:
+            prob = yes_price
+        elif yes_bid is not None and yes_ask is not None:
+            prob = round((yes_bid + yes_ask) / 2)
+        elif yes_bid is not None:
+            prob = yes_bid
+        elif yes_ask is not None:
+            prob = yes_ask
+        else:
+            continue
+
+        if prob <= 0 or prob >= 100:
+            continue
+
+        volume = m.get("volume", 0) or m.get("volume_24h", 0) or 0
+        close_time = m.get("close_time") or m.get("expiration_time") or ""
+        tl = time_remaining(close_time)
+        if tl == "Closed":
+            continue
+
+        seen.add(ticker)
+        markets.append({
+            "platform":       "Kalshi",
+            "ticker":         ticker,
+            "title":          title,
+            "yes":            prob,
+            "no":             100 - prob,
+            "volume_24h":     volume,
+            "close_time":     close_time,
+            "time_left":      tl,
+            "url":            f"https://kalshi.com/markets/{ticker.split('-')[0]}",
+            "relevance":      relevance,
+            "tier":           tier,
+            "category":       get_category(full_text),
+            "why_it_matters": get_why_it_matters(full_text),
+        })
+
+    print(f"  → {len(markets)} ag-relevant markets ({len(seen)} unique)")
     return markets
 
 
 # ═════════════════════════════════════════════════════════════════
-# 8. POLYMARKET FETCHER (v3 — slug URLs, better parsing)
+# 8. POLYMARKET FETCHER
 # ═════════════════════════════════════════════════════════════════
 
 POLYMARKET_BASE = "https://gamma-api.polymarket.com"
 
 
 def fetch_polymarket():
-    """Fetch and score ag-relevant markets from Polymarket Gamma API."""
     print("\n[Polymarket] Fetching prediction markets…")
     markets = []
     seen = set()
@@ -512,7 +570,6 @@ def fetch_polymarket():
 
     for kw in SEARCH_QUERIES:
         encoded = kw.replace(" ", "%20")
-        # Gamma API supports text_query for search
         url = (f"{POLYMARKET_BASE}/markets"
                f"?active=true&closed=false&limit=20"
                f"&_q={encoded}")
@@ -521,7 +578,6 @@ def fetch_polymarket():
         queries_tried += 1
 
         if not data:
-            # Try without _q, use tag_slug filtering
             url2 = (f"{POLYMARKET_BASE}/markets"
                     f"?active=true&closed=false&limit=20"
                     f"&keyword={encoded}")
@@ -530,7 +586,6 @@ def fetch_polymarket():
         if not data:
             continue
 
-        # Gamma API returns a list directly (not wrapped in an object)
         items = (data if isinstance(data, list)
                  else data.get("results", data.get("markets", data.get("data", []))))
 
@@ -541,7 +596,6 @@ def fetch_polymarket():
             print(f"  '{kw}': {len(items)} results")
 
         for m in items:
-            # Primary ID
             mid = m.get("id") or m.get("condition_id") or m.get("conditionId")
             if not mid or mid in seen:
                 continue
@@ -550,27 +604,22 @@ def fetch_polymarket():
             if not question:
                 continue
 
-            # Meme filter
             if is_meme_market(question):
                 continue
 
             relevance, tier = score_relevance(question)
-            if relevance < 60:
+            if relevance < 40:  # v4: lowered from 60
                 continue
 
-            # ── Parse probability ──────────────────────────────
+            # Parse probability
             prob = None
-
-            # Method 1: outcomePrices (most common)
             outcome_prices = m.get("outcomePrices")
             if outcome_prices:
                 try:
                     if isinstance(outcome_prices, str):
-                        # Sometimes it's a JSON string like '["0.55","0.45"]'
                         prices = json.loads(outcome_prices)
                     else:
                         prices = outcome_prices
-
                     if isinstance(prices, list) and prices:
                         first = prices[0]
                         if isinstance(first, str):
@@ -583,7 +632,6 @@ def fetch_polymarket():
                 except Exception:
                     pass
 
-            # Method 2: bestBid / lastTradePrice
             if prob is None:
                 for field in ["bestBid", "lastTradePrice", "best_bid"]:
                     val = m.get(field)
@@ -598,7 +646,6 @@ def fetch_polymarket():
             if prob is None or prob <= 0 or prob >= 100:
                 continue
 
-            # ── Volume ─────────────────────────────────────────
             volume = 0
             for vol_field in ["volume", "volumeNum", "volume24hr"]:
                 v = m.get(vol_field)
@@ -609,15 +656,12 @@ def fetch_polymarket():
                     except Exception:
                         pass
 
-            # ── Slug-based URL (the key v3 fix) ───────────────
             slug = m.get("slug", "")
             if slug:
                 market_url = f"https://polymarket.com/event/{slug}"
             else:
-                # Fallback: try to construct from question
                 market_url = m.get("url", f"https://polymarket.com/event/{mid}")
 
-            # ── Close date ─────────────────────────────────────
             end_date = (m.get("endDate") or m.get("end_date_iso")
                         or m.get("endDateIso") or "")
             tl = time_remaining(end_date)
@@ -637,23 +681,23 @@ def fetch_polymarket():
                 "url":            market_url,
                 "slug":           slug,
                 "relevance":      relevance,
+                "tier":           tier,
                 "category":       get_category(question),
                 "why_it_matters": get_why_it_matters(question),
             })
 
-        time.sleep(0.25)  # Be polite to Gamma API
+        time.sleep(0.25)
 
-    print(f"  → {len(markets)} Polymarket ag-relevant markets "
+    print(f"  → {len(markets)} ag-relevant markets "
           f"(from {queries_tried} queries, {len(seen)} unique)")
     return markets
 
 
 # ═════════════════════════════════════════════════════════════════
-# 9. RANKING — composite score
+# 9. RANKING
 # ═════════════════════════════════════════════════════════════════
 
 def composite_score(market):
-    """Rank by relevance first, volume second."""
     relevance = market.get("relevance", 0)
     volume = max(market.get("volume_24h", 0), 1)
     return relevance * 1.5 + math.log10(volume) * 10
@@ -665,7 +709,7 @@ def composite_score(market):
 
 def main():
     now = datetime.now(timezone.utc)
-    print(f"\nAGSIST fetch_markets.py v3 — {now.strftime('%Y-%m-%d %H:%M UTC')}")
+    print(f"\nAGSIST fetch_markets.py v4 — {now.strftime('%Y-%m-%d %H:%M UTC')}")
     print("=" * 60)
 
     kalshi = fetch_kalshi()
@@ -673,17 +717,15 @@ def main():
 
     combined = kalshi + polymarket
 
-    # Deduplicate across platforms (same title = same market)
+    # Deduplicate across platforms
     deduped = []
     seen_titles = set()
     for m in sorted(combined, key=composite_score, reverse=True):
-        # Normalize title for dedup
         norm = re.sub(r'[^a-z0-9 ]', '', m["title"].lower()).strip()
         if norm not in seen_titles:
             seen_titles.add(norm)
             deduped.append(m)
 
-    # Cap at top 20
     top_markets = deduped[:20]
 
     # Group by category
@@ -704,7 +746,7 @@ def main():
 
     output = {
         "fetched":        now.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "version":        2,  # Keep v2 for frontend compat
+        "version":        2,
         "count":          len(top_markets),
         "total_found":    len(combined),
         "tier_breakdown": {
@@ -732,11 +774,12 @@ def main():
         for i, m in enumerate(top_markets[:10], 1):
             score = composite_score(m)
             print(f"  {i:2d}. [{m['platform']:10s}] {m['yes']:3d}%  "
-                  f"(rel={m['relevance']}, score={score:.0f})  "
+                  f"(rel={m['relevance']}, cat={m['category']})  "
                   f"{m['title'][:55]}")
             print(f"      └─ {m['why_it_matters'][:75]}")
     else:
         print("\n  ⚠ No markets found — check API connectivity")
+    print(f"{'=' * 60}\nDone.\n")
 
 
 if __name__ == "__main__":
