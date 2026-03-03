@@ -1,47 +1,13 @@
 {
-  "fetched": "2026-03-03T00:01:30Z",
+  "fetched": "2026-03-03T00:06:06Z",
   "version": 2,
-  "count": 1,
-  "total_found": 1,
+  "count": 0,
+  "total_found": 0,
   "tier_breakdown": {
     "direct_ag": 0,
     "trade_energy": 0,
-    "macro_weather": 1
+    "macro_weather": 0
   },
-  "categories": {
-    "Other": [
-      {
-        "platform": "Kalshi",
-        "ticker": "KXMVECROSSCATEGORY-S20261A68845FFBA-330D3A4236D",
-        "title": "yes Everton,yes Liverpool,yes Arsenal,yes Manchester City,yes Barcelona,yes Villarreal,yes Napoli,yes Juventus,yes Bayern Munich,yes Atletico,yes Barcelona",
-        "yes": 50,
-        "no": 50,
-        "volume_24h": 0,
-        "close_time": "2026-03-17T19:30:00Z",
-        "time_left": "Closes in 14d",
-        "url": "https://kalshi.com/markets/KXMVECROSSCATEGORY",
-        "relevance": 40,
-        "tier": 3,
-        "category": "Other",
-        "why_it_matters": "This market reflects conditions that can influence commodity prices, input costs, or trade flows."
-      }
-    ]
-  },
-  "markets": [
-    {
-      "platform": "Kalshi",
-      "ticker": "KXMVECROSSCATEGORY-S20261A68845FFBA-330D3A4236D",
-      "title": "yes Everton,yes Liverpool,yes Arsenal,yes Manchester City,yes Barcelona,yes Villarreal,yes Napoli,yes Juventus,yes Bayern Munich,yes Atletico,yes Barcelona",
-      "yes": 50,
-      "no": 50,
-      "volume_24h": 0,
-      "close_time": "2026-03-17T19:30:00Z",
-      "time_left": "Closes in 14d",
-      "url": "https://kalshi.com/markets/KXMVECROSSCATEGORY",
-      "relevance": 40,
-      "tier": 3,
-      "category": "Other",
-      "why_it_matters": "This market reflects conditions that can influence commodity prices, input costs, or trade flows."
-    }
-  ]
+  "categories": {},
+  "markets": []
 }
