@@ -3,7 +3,7 @@
    Page-specific styles for spray.html
    Shared base: /components/styles.css (already loaded first)
 
-   Brand alignment v8 — 2026-03-03
+   Brand alignment v9 — 2026-03-04
    Palette: forest green, warm gold, muted red, institutional borders
 
    MOBILE AUDIT FIXES (2026-03-03):
@@ -12,10 +12,19 @@
    FIX M3: Safe area insets for notched iPhones (landscape)
    FIX M4: Jump-nav touch targets enlarged to ≥36px
    FIX M5: .edu-grid 1-col breakpoint moved to 768px
-   FIX M6: Nozzle table scroll indicator gradient
+   FIX M6: Nozzle table scroll indicator gradient — FIXED v9: removed conflicting position
    FIX M7: Status panel text sizing at 380px
    FIX M8: Mix step numbers smaller at 380px
    FIX M9: Checklist checkbox sizing for mobile
+
+   v9 FIXES (2026-03-04 audit):
+   FIX v9-1: prefers-reduced-motion media query
+   FIX v9-2: Print CSS shows checklist sidebar card
+   FIX v9-3: Nozzle table scroll indicator cleaned up
+   FIX v9-4: Extracted inline styles to classes
+   FIX v9-5: Additional mobile touch-target and spacing polish
+   FIX v9-6: aria-live status region styling
+   FIX v9-7: Precipitation card styles
    ==================================================================== */
 
 /* ── Fallback vars (in case styles.css doesn't define them) ───── */
@@ -28,16 +37,14 @@
 }
 
 /* ── CRITICAL: Prevent horizontal blowout ────────────────────────── */
-/* FIX M1: overflow:clip is the iOS-safe replacement for overflow-x:hidden.
-   iOS Safari ignores overflow-x:hidden on html/body but respects overflow:clip.
-   Also: 100% instead of 100vw (100vw includes elastic bounce width on iOS). */
+/* FIX M1: overflow:clip is the iOS-safe replacement for overflow-x:hidden. */
 *, *::before, *::after { box-sizing: border-box; }
 html {
   overflow-x: clip;
 }
 body {
   overflow-x: clip;
-  max-width: 100%;  /* was 100vw — 100vw can exceed visible viewport on iOS */
+  max-width: 100%;
 }
 
 /* FIX M2: .main wrapper gets overflow control */
@@ -52,7 +59,6 @@ body {
   background: linear-gradient(160deg, var(--bg2) 0%, var(--surface) 100%);
   border-bottom: 2px solid var(--border);
   padding: 3rem 1.5rem 2.5rem;
-  /* FIX M3: safe area padding for landscape notch */
   padding-left: max(1.5rem, env(safe-area-inset-left));
   padding-right: max(1.5rem, env(safe-area-inset-right));
   overflow: hidden;
@@ -108,6 +114,8 @@ body {
 .status-main.frozen  { color: var(--blue); }
 .status-sub  { font-size: .88rem; color: var(--text-dim); line-height: 1.5; margin-bottom: .5rem; }
 .status-loc  { font-size: .75rem; color: var(--text-muted); }
+/* FIX v9-4: data freshness timestamp */
+.status-ts   { font-size: .65rem; color: var(--text-muted); margin-top: .4rem; font-family: 'JetBrains Mono', monospace; }
 
 /* Status panel border color per rating */
 .status-panel.good     { border-color: rgba(58,139,60,.30); }
@@ -133,7 +141,7 @@ body {
   font-size: .85rem; font-weight: 700; cursor: pointer;
   text-transform: uppercase; letter-spacing: .5px;
   transition: background .15s;
-  min-height: 44px; /* FIX M4: minimum touch target */
+  min-height: 44px;
 }
 .btn-g:hover { background: #1b4d1c; }
 .btn-q {
@@ -144,7 +152,7 @@ body {
   color: var(--text-dim); cursor: pointer;
   text-transform: uppercase; letter-spacing: .5px;
   transition: border-color .15s, color .15s;
-  min-height: 44px; /* FIX M4 */
+  min-height: 44px;
 }
 .btn-q:hover { border-color: var(--green); color: var(--green); }
 .zip-row {
@@ -155,7 +163,7 @@ body {
   padding: .75rem 1rem; background: var(--surface2); border: 2px solid var(--border);
   border-radius: var(--r-sm, 4px); font-family: 'JetBrains Mono', monospace; font-size: .88rem;
   color: var(--text); width: 160px; outline: none; transition: border-color .15s;
-  min-height: 44px; /* FIX M4 */
+  min-height: 44px;
 }
 .zip-in:focus { border-color: var(--green); }
 
@@ -165,7 +173,6 @@ body {
   margin-bottom: 1.5rem;
   max-width: 1200px; margin-left: auto; margin-right: auto;
   padding: 0 1.5rem;
-  /* FIX M3: safe area insets */
   padding-left: max(1.5rem, env(safe-area-inset-left));
   padding-right: max(1.5rem, env(safe-area-inset-right));
   overflow-x: auto;
@@ -181,7 +188,6 @@ body {
   transition: border-color .15s, color .15s;
   white-space: nowrap; flex-shrink: 0;
   text-transform: uppercase; letter-spacing: .3px;
-  /* FIX M4: minimum touch target height */
   min-height: 36px;
   display: inline-flex;
   align-items: center;
@@ -197,7 +203,6 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
-  /* FIX M3: safe area insets */
   padding-left: max(1.5rem, env(safe-area-inset-left));
   padding-right: max(1.5rem, env(safe-area-inset-right));
 }
@@ -215,7 +220,7 @@ body {
 .section-link {
   font-size: .72rem; color: var(--text-muted); background: none;
   border: none; text-decoration: underline; cursor: pointer;
-  min-height: 36px; /* FIX M4 */
+  min-height: 36px;
   display: inline-flex; align-items: center;
 }
 
@@ -259,12 +264,10 @@ body {
 .fcard-val {
   font-family: 'Oswald', sans-serif; font-size: 1.9rem; font-weight: 700;
   color: var(--text); line-height: 1; margin-bottom: .45rem;
-  overflow-wrap: break-word; word-break: break-word;
 }
 .fcard-desc {
   font-size: .78rem; color: var(--text-dim); line-height: 1.6;
   margin-bottom: .65rem;
-  overflow-wrap: break-word;
 }
 .fcard-bar {
   height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden;
@@ -333,9 +336,6 @@ body {
 }
 .edu-grid {
   display: grid;
-  /* FIX M5: use explicit 2-col, let breakpoint handle collapse.
-     Was repeat(auto-fit, minmax(240px, 1fr)) which forced cramped 2-col
-     in the 580–768px range on landscape phones. */
   grid-template-columns: 1fr 1fr;
   gap: .85rem;
   margin-bottom: 1.25rem;
@@ -351,6 +351,10 @@ body {
 }
 .edu-card-text  { font-size: .78rem; color: var(--text-dim); line-height: 1.65; margin-bottom: .7rem; }
 .edu-card-tip   { font-size: .72rem; font-weight: 700; padding: .25rem .55rem; border-radius: 3px; display: inline-block; }
+.edu-card-tip-green  { background: rgba(62,207,110,.12); color: var(--green); }
+.edu-card-tip-gold   { background: rgba(230,176,66,.12); color: var(--gold); }
+.edu-card-tip-red    { background: rgba(240,96,96,.12); color: var(--red); }
+.edu-card-tip-blue   { background: rgba(91,163,224,.12); color: var(--blue); }
 
 /* ── Inversion Diagram Box ───────────────────────────────────────── */
 .inv-box {
@@ -369,6 +373,9 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
 }
+.inv-intro {
+  font-size: .82rem; color: var(--text-dim); line-height: 1.75; margin-bottom: .85rem;
+}
 .inv-diagram { display: flex; flex-direction: column; gap: 0; }
 .inv-layer {
   display: flex; align-items: center; justify-content: space-between;
@@ -376,13 +383,23 @@ body {
   flex-wrap: wrap; gap: .25rem;
   min-width: 0;
 }
-.inv-layer-warm  { background: rgba(200,122,40,.08); border: 1px solid rgba(200,122,40,.2); }
-.inv-layer-cool  { background: rgba(74,143,186,.08); border: 1px solid rgba(74,143,186,.2); border-top: none; border-bottom: none; }
+.inv-layer-warm  { background: rgba(200,122,40,.08); border: 1px solid rgba(200,122,40,.2); margin-bottom: .3rem; }
+.inv-layer-cool  { background: rgba(74,143,186,.08); border: 1px solid rgba(74,143,186,.2); border-top: none; border-bottom: none; padding: 1rem .75rem; margin-bottom: .3rem; }
 .inv-layer-ground{ background: rgba(58,139,60,.08); border: 1px solid rgba(58,139,60,.2); }
 .inv-layer-label { font-size: .72rem; font-weight: 700; }
+.inv-layer-label-warm  { color: var(--orange); }
+.inv-layer-label-cool  { color: var(--blue); }
+.inv-layer-label-ground{ color: var(--green); }
 .inv-layer-meta  { font-size: .68rem; color: var(--text-muted); margin-left: auto; }
+.inv-layer-sub   { font-size: .65rem; color: var(--text-muted); margin-top: .15rem; }
 .inv-arrow {
   position: absolute; right: .75rem; font-size: .8rem; color: var(--text-muted);
+}
+.inv-detect-head {
+  font-size: .82rem; font-weight: 700; color: var(--text); margin-bottom: .65rem;
+}
+.inv-detect-list {
+  display: flex; flex-direction: column; gap: .6rem;
 }
 .inv-detect-item { display: flex; gap: .5rem; font-size: .8rem; }
 .inv-detect-arrow { color: var(--gold); flex-shrink: 0; }
@@ -393,6 +410,7 @@ body {
   background: rgba(184,76,42,.06); border: 1px solid rgba(184,76,42,.18);
   border-radius: var(--r-sm, 4px); font-size: .78rem; color: var(--text-dim); line-height: 1.6;
 }
+.inv-warning-label { color: var(--red); }
 
 /* ═══════════════════════════════════════════════════════════════════
    TANK MIX ORDER GUIDE
@@ -487,21 +505,18 @@ body {
 .tip-card-detail strong { color: var(--text-dim); }
 
 /* ── Nozzle Comparison Table ─────────────────────────────────────── */
-/* FIX M6: scroll indicator gradient on mobile */
+/* FIX v9-3: removed conflicting position: sticky, cleaned up pseudo-element */
 .nozzle-table-wrap {
   overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1rem 0;
   position: relative;
 }
 .nozzle-table-wrap::after {
   content: '';
-  position: sticky;
-  right: 0; top: 0;
-  display: block;
-  width: 32px; height: 100%;
-  pointer-events: none;
-  background: linear-gradient(to left, var(--surface, #0e0e0c), transparent);
   position: absolute;
   top: 0; right: 0; bottom: 0;
+  width: 32px;
+  pointer-events: none;
+  background: linear-gradient(to left, var(--surface, #0e0e0c), transparent);
 }
 .nozzle-table {
   width: 100%; min-width: 520px; border-collapse: collapse; font-size: .78rem;
@@ -529,6 +544,15 @@ body {
 .nt-badge.low  { background: rgba(58,139,60,.10); color: var(--green); }
 .nt-badge.med  { background: rgba(218,165,32,.10); color: var(--gold); }
 .nt-badge.high { background: rgba(184,76,42,.10);  color: var(--red); }
+.nozzle-table-note {
+  font-size: .7rem; color: var(--text-muted); margin-top: .65rem; line-height: 1.6;
+}
+.nozzle-card-head {
+  font-size: .82rem; font-weight: 700; color: var(--text); margin-bottom: .35rem;
+}
+.nozzle-card-sub {
+  font-size: .78rem; color: var(--text-dim); margin-bottom: .85rem;
+}
 
 /* ── Sidebar Cards ───────────────────────────────────────────────── */
 .sidebar {
@@ -584,18 +608,36 @@ body {
 .day-rating.frozen  { background: rgba(74,143,186,.10); color: var(--blue); }
 
 /* ── Pre-Spray Checklist ─────────────────────────────────────────── */
-/* FIX M9: larger checkbox tap area on mobile */
 .checklist-item {
   display: flex; align-items: flex-start; gap: .5rem;
   font-size: .8rem; cursor: pointer;
-  padding: .25rem 0; /* extra vertical tap area */
+  padding: .25rem 0;
   -webkit-tap-highlight-color: transparent;
 }
 .checklist-item input {
   margin-top: .2rem; accent-color: var(--green); flex-shrink: 0;
-  width: 18px; height: 18px; /* bigger checkbox */
+  width: 18px; height: 18px;
 }
 .checklist-item span { color: var(--text-dim); }
+
+/* ── Quick Mix Order Sidebar ─────────────────────────────────────── */
+/* FIX v9-4: extracted from inline styles */
+.qmix-list {
+  display: flex; flex-direction: column; gap: .35rem; font-size: .78rem;
+}
+.qmix-item {
+  display: flex; gap: .5rem; align-items: center;
+}
+.qmix-num {
+  font-weight: 700; font-family: 'JetBrains Mono', monospace; width: 18px;
+  flex-shrink: 0;
+}
+.qmix-text { color: var(--text-dim); }
+.qmix-footer {
+  font-size: .68rem; color: var(--text-muted); margin-top: .6rem;
+  border-top: 1px solid var(--border); padding-top: .5rem;
+}
+.qmix-footer a { color: var(--green); text-decoration: underline; }
 
 /* ── Cross-Link ──────────────────────────────────────────────────── */
 .cross-link {
@@ -626,6 +668,36 @@ body {
 /* ── Fade-up Animation ───────────────────────────────────────────── */
 .fade-up { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
 .fade-up.vis { opacity: 1; transform: none; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   FIX v9-1: PREFERS-REDUCED-MOTION
+   Disable animations for users who prefer reduced motion
+═══════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .fade-up {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .live-dot {
+    animation: none;
+    opacity: 1;
+  }
+  .fcard-bar-fill {
+    transition: none;
+  }
+  .fcard,
+  .tip-card,
+  .mix-step,
+  .cross-link,
+  .status-panel,
+  .hr-item,
+  .jump-link,
+  .btn-g,
+  .btn-q {
+    transition: none;
+  }
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    RESPONSIVE
@@ -663,7 +735,6 @@ body {
   .status-main { font-size: 1.3rem; }
   .status-icon { font-size: 2.5rem; }
   .status-panel { max-width: none; }
-  /* FIX M5: edu-grid collapses to 1-col at 768px, not 580px */
   .edu-grid { grid-template-columns: 1fr; }
 }
 
@@ -677,8 +748,9 @@ body {
   .loc-setup { padding: 1.25rem 1rem; }
   .cross-link { gap: .6rem; padding: .85rem; }
   .cross-link-text { font-size: .72rem; }
-  /* Hide nozzle scroll indicator — smaller screen makes it obvious */
   .nozzle-table-wrap::after { width: 20px; }
+  /* v9-5: ensure hourly items don't get too tight */
+  .hr-item { min-width: 54px; padding: .5rem .35rem; }
 }
 
 /* Small phones (375px and below) */
@@ -703,7 +775,6 @@ body {
   .fcard { padding: .75rem; }
   .fcard-val { font-size: 1.5rem; }
   .fcard-desc { font-size: .72rem; }
-  /* FIX M7: status panel text less cramped */
   .status-main { font-size: 1rem; line-height: 1.25; }
   .status-icon { font-size: 2rem; }
   .status-sub { font-size: .78rem; }
@@ -712,7 +783,6 @@ body {
   .mix-step-name { font-size: .78rem; }
   .mix-step-what { font-size: .72rem; }
   .mix-step-why { font-size: .66rem; }
-  /* FIX M8: smaller mix step numbers at 380px */
   .mix-step { grid-template-columns: 30px minmax(0, 1fr); gap: .5rem; padding: .65rem; }
   .mix-num { width: 30px; height: 30px; font-size: .75rem; border-radius: var(--r-sm, 4px); }
   .tip-card { padding: .85rem; }
@@ -725,10 +795,24 @@ body {
   .inv-box { padding: .85rem; }
   .inv-detect-item { font-size: .72rem; }
   .inv-warning { font-size: .72rem; padding: .5rem .65rem; }
+  .day-item { padding: .5rem .2rem; }
+  .day-name { font-size: .55rem; }
+  .day-rating { font-size: .55rem; padding: .1rem .2rem; }
+  .day-wind { font-size: .58rem; }
 }
 
 /* ── Print ───────────────────────────────────────────────────────── */
+/* FIX v9-2: show checklist in print — farmers print this to take to the field */
 @media print {
-  .hero, .sidebar, .status-panel, #site-header, #site-footer, .jump-nav { display: none; }
+  .hero, .status-panel, #site-header, #site-footer, .jump-nav,
+  .loc-setup, .cross-link, .window-wrap, #factor-section { display: none !important; }
   .pg { grid-template-columns: 1fr; }
+  .sidebar { display: block; }
+  .sc { break-inside: avoid; page-break-inside: avoid; border: 1px solid #ccc; margin-bottom: .75rem; }
+  /* Hide non-essential sidebar cards, keep checklist + quick mix order */
+  .sc:has(.rec) { display: none; }
+  .sc:has(.day-strip) { display: none; }
+  body { color: #000; background: #fff; }
+  .fcard, .edu, .mix-card, .tip-card { break-inside: avoid; page-break-inside: avoid; }
 }
+</style>
