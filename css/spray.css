@@ -3,8 +3,17 @@
    Page-specific styles for spray.html
    Shared base: /components/styles.css (already loaded first)
 
-   Brand alignment v9 — 2026-03-04
+   Brand alignment v10 — 2026-03-04
    Palette: forest green, warm gold, muted red, institutional borders
+
+   v10 FIXES (mobile overflow):
+   FIX v10-1: overflow-x:hidden fallback before clip (iOS <16 compat)
+   FIX v10-2: overscroll-behavior-x:none (prevent horizontal bounce)
+   FIX v10-3: box-sizing on .hero, .main, .pg, .jump-nav
+   FIX v10-4: .jump-nav max-width:100% + scroll fade ::after hint
+   FIX v10-5: .pg max-width:100% (was 1200px — caused blowout)
+   FIX v10-6: overflow-wrap:break-word on all text containers
+   FIX v10-7: body width:100% explicit constraint
 
    MOBILE AUDIT FIXES (2026-03-03):
    FIX M1: iOS Safari overflow — overflow:clip on html/body, 100% not 100vw
@@ -40,11 +49,15 @@
 /* FIX M1: overflow:clip is the iOS-safe replacement for overflow-x:hidden. */
 *, *::before, *::after { box-sizing: border-box; }
 html {
-  overflow-x: clip;
+  overflow-x: hidden;  /* v10: fallback for iOS <16 where clip isn't supported */
+  overflow-x: clip;    /* progressive enhancement: iOS 16+ */
+  overscroll-behavior-x: none; /* v10: prevent horizontal bounce on iOS */
 }
 body {
+  overflow-x: hidden;
   overflow-x: clip;
   max-width: 100%;
+  width: 100%;         /* v10: explicit constraint */
 }
 
 /* FIX M2: .main wrapper gets overflow control */
@@ -52,6 +65,7 @@ body {
   overflow-x: hidden;
   width: 100%;
   max-width: 100%;
+  box-sizing: border-box; /* v10 */
 }
 
 /* ── Hero ─────────────────────────────────────────────────────────── */
@@ -62,6 +76,8 @@ body {
   padding-left: max(1.5rem, env(safe-area-inset-left));
   padding-right: max(1.5rem, env(safe-area-inset-right));
   overflow: hidden;
+  max-width: 100%;     /* v10: prevent blowout */
+  box-sizing: border-box;
 }
 .hero-inner {
   max-width: 1200px;
@@ -171,15 +187,28 @@ body {
 .jump-nav {
   display: flex; gap: .5rem; flex-wrap: nowrap;
   margin-bottom: 1.5rem;
-  max-width: 1200px; margin-left: auto; margin-right: auto;
+  max-width: 100%;     /* v10: was 1200px — prevents blowout on mobile */
+  margin-left: auto; margin-right: auto;
   padding: 0 1.5rem;
   padding-left: max(1.5rem, env(safe-area-inset-left));
   padding-right: max(1.5rem, env(safe-area-inset-right));
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  box-sizing: border-box; /* v10 */
 }
 .jump-nav::-webkit-scrollbar { display: none; }
+/* v10: scroll fade hint — shows there's more content to scroll */
+.jump-nav::after {
+  content: '';
+  position: sticky;
+  right: 0;
+  flex-shrink: 0;
+  width: 2.5rem;
+  align-self: stretch;
+  background: linear-gradient(to left, var(--bg, #0e0e0c) 20%, transparent);
+  pointer-events: none;
+}
 .jump-link {
   font-family: 'JetBrains Mono', monospace;
   font-size: .68rem; font-weight: 700; color: var(--text-muted);
@@ -200,11 +229,12 @@ body {
   grid-template-columns: minmax(0, 1fr) 320px;
   gap: 1.5rem;
   align-items: start;
-  max-width: 1200px;
+  max-width: 100%;     /* v10: 100% prevents blowout; inner content maxes at 1200px naturally */
   margin: 0 auto;
   padding: 2rem 1.5rem;
   padding-left: max(1.5rem, env(safe-area-inset-left));
   padding-right: max(1.5rem, env(safe-area-inset-right));
+  box-sizing: border-box; /* v10 */
 }
 
 /* ── Section Header Bar ──────────────────────────────────────────── */
@@ -268,6 +298,7 @@ body {
 .fcard-desc {
   font-size: .78rem; color: var(--text-dim); line-height: 1.6;
   margin-bottom: .65rem;
+  overflow-wrap: break-word; /* v10 */
 }
 .fcard-bar {
   height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden;
@@ -349,7 +380,7 @@ body {
 .edu-card-title {
   font-size: .82rem; font-weight: 700; color: var(--text); margin-bottom: .45rem;
 }
-.edu-card-text  { font-size: .78rem; color: var(--text-dim); line-height: 1.65; margin-bottom: .7rem; }
+.edu-card-text  { font-size: .78rem; color: var(--text-dim); line-height: 1.65; margin-bottom: .7rem; overflow-wrap: break-word; }
 .edu-card-tip   { font-size: .72rem; font-weight: 700; padding: .25rem .55rem; border-radius: 3px; display: inline-block; }
 .edu-card-tip-green  { background: rgba(62,207,110,.12); color: var(--green); }
 .edu-card-tip-gold   { background: rgba(230,176,66,.12); color: var(--gold); }
@@ -454,7 +485,7 @@ body {
 .mix-num-8 { background: rgba(218,165,32,.10); color: var(--gold); }
 .mix-num-9 { background: rgba(58,139,60,.10); color: var(--green); }
 .mix-step-name { font-size: .85rem; font-weight: 700; color: var(--text); margin-bottom: .25rem; }
-.mix-step-what { font-size: .78rem; color: var(--text-dim); line-height: 1.65; margin-bottom: .35rem; }
+.mix-step-what { font-size: .78rem; color: var(--text-dim); line-height: 1.65; margin-bottom: .35rem; overflow-wrap: break-word; }
 .mix-step-why  { font-size: .72rem; color: var(--text-muted); line-height: 1.55; font-style: italic; }
 
 .mix-tips {
@@ -496,7 +527,7 @@ body {
 .tip-card:hover { border-color: var(--border-g); }
 .tip-card-icon  { font-size: 1.3rem; margin-bottom: .5rem; }
 .tip-card-title { font-size: .85rem; font-weight: 700; color: var(--text); margin-bottom: .45rem; }
-.tip-card-text  { font-size: .8rem; color: var(--text-dim); line-height: 1.7; margin-bottom: .5rem; }
+.tip-card-text  { font-size: .8rem; color: var(--text-dim); line-height: 1.7; margin-bottom: .5rem; overflow-wrap: break-word; }
 .tip-card-detail {
   font-size: .75rem; color: var(--text-muted); line-height: 1.65;
   padding-top: .45rem; border-top: 1px solid var(--border);
