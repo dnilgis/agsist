@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-03-10T21:21:24Z",
+  "fetched": "2026-03-10T21:48:26Z",
   "ok": 22,
   "failed": 0,
   "quotes": {
@@ -47,24 +47,24 @@
     },
     "cattle": {
       "ticker": "LE=F",
-      "close": 232.425,
+      "close": 227.425,
       "open": 230.125,
-      "netChange": 2.3,
-      "pctChange": 0.9995
+      "netChange": -2.7,
+      "pctChange": -1.1733
     },
     "feeders": {
       "ticker": "GF=F",
-      "close": 349.60001,
+      "close": 332.75,
       "open": 346.75,
-      "netChange": 2.85001,
-      "pctChange": 0.8219
+      "netChange": -14.0,
+      "pctChange": -4.0375
     },
     "hogs": {
       "ticker": "HE=F",
-      "close": 96.225,
+      "close": 87.225,
       "open": 86.5,
-      "netChange": 9.725,
-      "pctChange": 11.2428
+      "netChange": 0.725,
+      "pctChange": 0.8382
     },
     "milk": {
       "ticker": "DC=F",
@@ -138,24 +138,24 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 70108.25,
+      "close": 69568.75781,
       "open": 68401.46094,
-      "netChange": 1706.78906,
-      "pctChange": 2.4953
+      "netChange": 1167.29687,
+      "pctChange": 1.7065
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.38995,
+      "close": 1.38395,
       "open": 1.36162,
-      "netChange": 0.02833,
-      "pctChange": 2.0806
+      "netChange": 0.02233,
+      "pctChange": 1.64
     },
     "kaspa": {
       "ticker": "KAS-USD",
-      "close": 0.03026,
+      "close": 0.03014,
       "open": 0.03006,
-      "netChange": 0.0002,
-      "pctChange": 0.6653
+      "netChange": 8e-05,
+      "pctChange": 0.2661
     }
   }
 }
