@@ -1,6 +1,16 @@
 {
   "briefings": [
     {
+      "date": "2026-03-16",
+      "date_display": "Monday, March 16, 2026",
+      "headline": "CRUDE SPIKES 4%, MILK EXPLODES 7% OVERNIGHT",
+      "teaser": "Energy costs surge as planting season arrives — but dairy's massive move changes everything.",
+      "market_mood": "volatile",
+      "surprise_count": 5,
+      "sections": 4,
+      "url": "/daily/2026-03-16"
+    },
+    {
       "date": "2026-03-13",
       "date_display": "Friday, March 13, 2026",
       "headline": "OATS RALLY 4½¢ WHILE STOCKS CRATER",
@@ -81,6 +91,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-03-13T11:59:30.630371+00:00",
-  "count": 8
+  "updated": "2026-03-16T12:34:58.534364+00:00",
+  "count": 9
 }
