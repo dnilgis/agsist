@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-03-18T21:00:56Z",
+  "fetched": "2026-03-18T21:55:33Z",
   "ok": 22,
   "failed": 0,
   "quotes": {
@@ -68,10 +68,10 @@
     },
     "milk": {
       "ticker": "DC=F",
-      "close": 16.66,
+      "close": 16.69,
       "open": 17.16,
-      "netChange": -0.5,
-      "pctChange": -2.9138
+      "netChange": -0.47,
+      "pctChange": -2.7389
     },
     "meal": {
       "ticker": "ZM=F",
@@ -89,31 +89,31 @@
     },
     "crude": {
       "ticker": "CL=F",
-      "close": 99.23,
+      "close": 99.05,
       "open": 92.57,
-      "netChange": 6.66,
-      "pctChange": 7.1946
+      "netChange": 6.48,
+      "pctChange": 7.0001
     },
     "natgas": {
       "ticker": "NG=F",
-      "close": 3.198,
+      "close": 3.202,
       "open": 2.946,
-      "netChange": 0.252,
-      "pctChange": 8.554
+      "netChange": 0.256,
+      "pctChange": 8.6897
     },
     "gold": {
       "ticker": "GC=F",
-      "close": 4828.3999,
+      "close": 4823.8999,
       "open": 4992.7002,
-      "netChange": -164.3003,
-      "pctChange": -3.2908
+      "netChange": -168.8003,
+      "pctChange": -3.3809
     },
     "silver": {
       "ticker": "SI=F",
-      "close": 75.515,
+      "close": 75.42,
       "open": 78.695,
-      "netChange": -3.18,
-      "pctChange": -4.0409
+      "netChange": -3.275,
+      "pctChange": -4.1616
     },
     "dollar": {
       "ticker": "DX=F",
@@ -138,24 +138,24 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 71240.72656,
+      "close": 71321.79688,
       "open": 73940.07031,
-      "netChange": -2699.34375,
-      "pctChange": -3.6507
+      "netChange": -2618.27343,
+      "pctChange": -3.5411
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.45979,
+      "close": 1.46681,
       "open": 1.51851,
-      "netChange": -0.05872,
-      "pctChange": -3.8669
+      "netChange": -0.0517,
+      "pctChange": -3.4047
     },
     "kaspa": {
       "ticker": "KAS-USD",
-      "close": 0.03828,
+      "close": 0.03877,
       "open": 0.03627,
-      "netChange": 0.00201,
-      "pctChange": 5.5418
+      "netChange": 0.0025,
+      "pctChange": 6.8927
     }
   }
 }
