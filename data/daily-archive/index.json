@@ -1,6 +1,16 @@
 {
   "briefings": [
     {
+      "date": "2026-03-19",
+      "date_display": "Thursday, March 19, 2026",
+      "headline": "ENERGY SHOCK LIFTS GRAINS AS NATGAS ROCKETS 8.4%",
+      "teaser": "Energy explosion overnight sends ripples through grain complex as input costs spike.",
+      "market_mood": "volatile",
+      "surprise_count": 11,
+      "sections": 4,
+      "url": "/daily/2026-03-19"
+    },
+    {
       "date": "2026-03-18",
       "date_display": "Wednesday, March 18, 2026",
       "headline": "HOGS EXPLODE 25% ON SUPPLY SHOCK",
@@ -111,6 +121,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-03-18T12:34:10.845101+00:00",
-  "count": 11
+  "updated": "2026-03-19T12:02:45.508776+00:00",
+  "count": 12
 }
