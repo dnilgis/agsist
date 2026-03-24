@@ -174,40 +174,19 @@
 .dv3-archive-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;padding-bottom:.75rem;border-bottom:2px solid var(--border);flex-wrap:wrap;gap:.5rem}
 .dv3-archive-title{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim)}
 .dv3-archive-count{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-muted);font-weight:600}
-
-/* Month group header */
 .dv3-arc-month{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:.35rem 0 .55rem;border-bottom:1px solid var(--border);margin-bottom:.65rem;margin-top:1.25rem}
 .dv3-arc-month:first-of-type{margin-top:0}
-
-/* Archive cards grid */
 .dv3-arc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:.7rem}
-
-.dv3-arc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:.85rem 1rem;cursor:pointer;transition:border-color .15s,background .15s;text-align:left;width:100%}
+.dv3-arc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:.85rem 1rem;transition:border-color .15s,background .15s;text-align:left;width:100%;text-decoration:none;display:block;cursor:pointer}
 .dv3-arc-card:hover{border-color:var(--gold);background:rgba(218,165,32,.03)}
-.dv3-arc-card.dv3-arc-card--active{border-color:var(--green);background:rgba(58,139,60,.04)}
 .dv3-arc-card-date{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.35rem}
 .dv3-arc-card-headline{font-size:.82rem;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:.3rem}
 .dv3-arc-card-sub{font-size:.72rem;color:var(--text-dim);line-height:1.4}
-
-/* Surprise badge on archive card */
 .dv3-arc-card-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.1rem .4rem;border-radius:2px;margin-bottom:.3rem}
 .dv3-arc-card-badge--surprise{background:var(--gold);color:#000}
-.dv3-arc-card-badge--today{background:var(--green);color:#fff}
-
-/* Show more */
 .dv3-arc-more{margin-top:1rem;text-align:center}
 .dv3-arc-more-btn{padding:.55rem 1.4rem;background:var(--surface);border:1px solid var(--border);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--text-dim);cursor:pointer;transition:border-color .15s,color .15s}
 .dv3-arc-more-btn:hover{border-color:var(--gold);color:var(--text)}
-
-/* Back to today bar */
-.dv3-arc-viewing{display:none;align-items:center;gap:.75rem;padding:.6rem 1rem;background:rgba(58,139,60,.06);border:1px solid rgba(58,139,60,.18);border-radius:var(--r-sm);margin-bottom:1.5rem;flex-wrap:wrap}
-.dv3-arc-viewing-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);flex:1}
-.dv3-arc-back-btn{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding:.35rem .9rem;background:var(--green);color:#fff;border:none;border-radius:3px;cursor:pointer;transition:background .15s;white-space:nowrap}
-.dv3-arc-back-btn:hover{background:#1b4d1c}
-
-/* Loading / empty states */
-.dv3-arc-loading{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);padding:.75rem 0;text-align:center}
-.dv3-arc-empty{font-size:.85rem;color:var(--text-muted);padding:1.25rem;text-align:center;background:var(--surface);border:1px dashed var(--border);border-radius:var(--r-sm)}
 
 /* ── FAQ ──────────────────────────────────────────────────────── */
 .dv3-faq{margin-bottom:2rem}
@@ -250,12 +229,6 @@
 <main id="main-content">
 <div class="dv3-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> / <strong>Daily Briefing</strong></nav>
-
-  <!-- "Viewing archive" bar — shown when user loads a past date -->
-  <div id="dv3-arc-viewing" class="dv3-arc-viewing">
-    <span class="dv3-arc-viewing-label" id="dv3-arc-viewing-label">📅 Viewing past briefing</span>
-    <button class="dv3-arc-back-btn" onclick="loadToday()">← Back to Today</button>
-  </div>
 
   <!-- ── Main briefing ──────────────────────────────────────── -->
   <div id="dv3-loading" class="dv3-loading">
@@ -338,30 +311,13 @@
     </div>
   </section>
 
-  <!-- ══════════════════════════════════════════════════════════
-       ARCHIVE SECTION
-       Fetches /data/daily-archive/index.json on load.
-       index.json should be an array of objects, newest first:
-       [
-         {
-           "date": "2026-03-24",          // YYYY-MM-DD
-           "headline": "CORN SLIDES...",
-           "subheadline": "Optional",      // optional
-           "file": "2026-03-24.json",      // filename in same dir
-           "surprises": 1                  // optional int
-         }, ...
-       ]
-       Each YYYY-MM-DD.json is the full briefing JSON that
-       hydrateDaily() already knows how to render.
-  ══════════════════════════════════════════════════════════════ -->
-  <section class="dv3-archive" id="dv3-archive" style="display:none">
+  <!-- ── Archive ───────────────────────────────────────────── -->
+  <section class="dv3-archive" id="dv3-archive">
     <div class="dv3-archive-header">
       <span class="dv3-archive-title">📁 Past Briefings</span>
       <span class="dv3-archive-count" id="dv3-arc-count"></span>
     </div>
-    <div id="dv3-arc-body">
-      <div class="dv3-arc-loading">Loading archive…</div>
-    </div>
+    <div id="dv3-arc-body"></div>
   </section>
 
   <!-- ── FAQ ───────────────────────────────────────────────── -->
@@ -394,7 +350,7 @@
 <script src="/components/loader.js"></script>
 <script>
 /* ════════════════════════════════════════════════════════════════
-   DAILY BRIEFING HYDRATION  (unchanged from original)
+   DAILY BRIEFING HYDRATION
 ════════════════════════════════════════════════════════════════ */
 window.hydrateDaily = function(d) {
   var el;
@@ -485,89 +441,41 @@ window.hydrateDaily = function(d) {
 };
 
 /* ════════════════════════════════════════════════════════════════
-   ARCHIVE SYSTEM
+   ARCHIVE — hardcoded list linking to existing /daily/YYYY-MM-DD
+   pages. Add new entries at the TOP (newest first) each day.
+   Format: { date:'YYYY-MM-DD', headline:'...', surprises: N }
 ════════════════════════════════════════════════════════════════ */
-var ARCHIVE_BASE   = '/data/daily-archive/';
-var ARCHIVE_INDEX  = ARCHIVE_BASE + 'index.json';
-var ARCHIVE_PAGE   = 10;          // cards per page before "Show More"
-var _arcItems      = [];          // full sorted list from index.json
-var _arcShown      = 0;           // how many are currently rendered
-var _todayData     = null;        // stash of today's briefing data
-var _viewingDate   = null;        // null = today; 'YYYY-MM-DD' = past
+var ARCHIVE_ITEMS = [
+  { date:'2026-03-24', headline:'CRUDE OIL CRATERS 10% — GRAIN COMPLEX FOLLOWS', surprises:8 },
+  { date:'2026-03-23', headline:'GOLD CRASHES HARDEST IN YEARS', surprises:6 },
+  { date:'2026-03-20', headline:'MEAL ROCKETS 2.3% ON CHINESE CRUSH DEMAND', surprises:5 },
+  { date:'2026-03-19', headline:'ENERGY SHOCK LIFTS GRAINS AS NATGAS ROCKETS 8.4%', surprises:11 },
+  { date:'2026-03-18', headline:'HOGS EXPLODE 25% ON SUPPLY SHOCK', surprises:4 },
+  { date:'2026-03-17', headline:'LIVESTOCK EXPLODES AS GRAIN COMPLEX CRATERS', surprises:11 },
+  { date:'2026-03-16', headline:'CRUDE SPIKES 4%, MILK EXPLODES 7% OVERNIGHT', surprises:5 },
+  { date:'2026-03-13', headline:'OATS RALLY 4½¢ WHILE STOCKS CRATER', surprises:1 },
+  { date:'2026-03-12', headline:'CRUDE OIL ROCKETS 11% HIGHER OVERNIGHT', surprises:7 },
+  { date:'2026-03-11', headline:'HOGS SPIKE 11% ON PORK EXPORT SURGE', surprises:3 },
+  { date:'2026-03-10', headline:'CRUDE OIL CRASHES 24% — GRAINS FOLLOW DEEPER', surprises:11 },
+  { date:'2026-03-09', headline:'CRUDE EXPLODES 14%, WHEAT SURGES 5.6%', surprises:6 },
+  { date:'2026-03-06', headline:'CORN RALLIES 9¢ ON PLANTING UNCERTAINTY', surprises:4 },
+  { date:'2026-03-05', headline:'CATTLE SURGE OVERNIGHT, GRAINS DRIFT LOWER', surprises:3 },
+  { date:'2026-03-04', headline:'CRUDE RALLIES 3% AS GRAINS DRIFT SIDEWAYS', surprises:2 }
+];
 
-function loadToday() {
-  _viewingDate = null;
-  document.getElementById('dv3-arc-viewing').style.display = 'none';
-  if (_todayData) {
-    hydrateDaily(_todayData);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } else {
-    // geo.js hasn't run yet — just reload
-    window.location.reload();
-  }
-  // deactivate all archive cards
-  document.querySelectorAll('.dv3-arc-card--active').forEach(function(c) { c.classList.remove('dv3-arc-card--active'); });
-}
+var ARCHIVE_PAGE = 10;
+var _arcShown = 0;
 
-function loadArchiveDay(file, dateStr, cardEl) {
-  _viewingDate = dateStr;
-
-  // Show loading state in briefing area
-  document.getElementById('dv3-content').style.display = 'none';
-  document.getElementById('dv3-loading').style.display = 'block';
-  document.getElementById('dv3-loading').querySelector('div:last-child').textContent = 'Loading briefing…';
-
-  // Highlight active card
-  document.querySelectorAll('.dv3-arc-card--active').forEach(function(c) { c.classList.remove('dv3-arc-card--active'); });
-  if (cardEl) cardEl.classList.add('dv3-arc-card--active');
-
-  // Show back bar
-  var bar = document.getElementById('dv3-arc-viewing');
-  var lbl = document.getElementById('dv3-arc-viewing-label');
-  try {
-    var d = new Date(dateStr + 'T12:00:00');
-    lbl.textContent = '📅 Viewing: ' + d.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
-  } catch(e) { lbl.textContent = '📅 Viewing past briefing'; }
-  bar.style.display = 'flex';
-
-  // Scroll to top of briefing
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  // Fetch the day file
-  var url = ARCHIVE_BASE + file + '?v=' + Date.now();
-  fetch(url)
-    .then(function(r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    })
-    .then(function(data) {
-      hydrateDaily(data);
-    })
-    .catch(function(err) {
-      document.getElementById('dv3-loading').style.display = 'none';
-      document.getElementById('dv3-content').style.display = 'block';
-      console.warn('[AGSIST] Archive fetch failed:', err);
-      // Show error in date line
-      var dateEl = document.getElementById('dv3-date');
-      if (dateEl) dateEl.textContent = 'Could not load briefing for ' + dateStr;
-    });
-}
-
-function buildArchiveMonth(items) {
-  /* Group items by YYYY-MM label */
-  var groups = {};
-  var order  = [];
+function buildArchiveCards(items) {
+  var groups = {}, order = [];
   items.forEach(function(item) {
-    var ym = item.date ? item.date.substring(0, 7) : 'Unknown';
+    var ym = item.date.substring(0, 7);
     if (!groups[ym]) { groups[ym] = []; order.push(ym); }
     groups[ym].push(item);
   });
 
-  var today = new Date().toISOString().substring(0, 10);
-  var frag  = document.createDocumentFragment();
-
+  var frag = document.createDocumentFragment();
   order.forEach(function(ym) {
-    /* Month label */
     var mEl = document.createElement('div');
     mEl.className = 'dv3-arc-month';
     try {
@@ -576,43 +484,30 @@ function buildArchiveMonth(items) {
     } catch(e) { mEl.textContent = ym; }
     frag.appendChild(mEl);
 
-    /* Grid */
     var grid = document.createElement('div');
     grid.className = 'dv3-arc-grid';
 
     groups[ym].forEach(function(item) {
-      var isToday = item.date === today;
-      var btn = document.createElement('button');
-      btn.className = 'dv3-arc-card';
-      if (_viewingDate === item.date) btn.classList.add('dv3-arc-card--active');
+      var a = document.createElement('a');
+      a.className = 'dv3-arc-card';
+      a.href = '/daily/' + item.date;
 
-      var badgeHtml = '';
-      if (isToday) {
-        badgeHtml = '<div class="dv3-arc-card-badge dv3-arc-card-badge--today">Today</div>';
-      } else if (item.surprises && item.surprises > 0) {
-        badgeHtml = '<div class="dv3-arc-card-badge dv3-arc-card-badge--surprise">⚡ ' + item.surprises + ' surprise' + (item.surprises > 1 ? 's' : '') + '</div>';
-      }
-
-      /* Friendly date display */
-      var dateDisplay = item.date || '—';
+      var dateDisplay = item.date;
       try {
         var d2 = new Date(item.date + 'T12:00:00');
         dateDisplay = d2.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'});
       } catch(e) {}
 
-      btn.innerHTML = badgeHtml
+      var badgeHtml = '';
+      if (item.surprises && item.surprises > 0) {
+        badgeHtml = '<div class="dv3-arc-card-badge dv3-arc-card-badge--surprise">⚡ ' + item.surprises + ' surprise' + (item.surprises > 1 ? 's' : '') + '</div>';
+      }
+
+      a.innerHTML = badgeHtml
         + '<div class="dv3-arc-card-date">' + dateDisplay + '</div>'
-        + '<div class="dv3-arc-card-headline">' + (item.headline || 'No headline') + '</div>'
-        + (item.subheadline ? '<div class="dv3-arc-card-sub">' + item.subheadline + '</div>' : '');
+        + '<div class="dv3-arc-card-headline">' + item.headline + '</div>';
 
-      var capturedFile = item.file || (item.date + '.json');
-      var capturedDate = item.date;
-      btn.addEventListener('click', function() {
-        if (isToday) { loadToday(); return; }
-        loadArchiveDay(capturedFile, capturedDate, btn);
-      });
-
-      grid.appendChild(btn);
+      grid.appendChild(a);
     });
 
     frag.appendChild(grid);
@@ -621,73 +516,35 @@ function buildArchiveMonth(items) {
   return frag;
 }
 
-function renderArchivePage() {
-  var body     = document.getElementById('dv3-arc-body');
-  var toShow   = _arcItems.slice(0, _arcShown);
-  var moreEl   = document.getElementById('dv3-arc-more');
-
+function renderArchive() {
+  var body = document.getElementById('dv3-arc-body');
+  if (!body) return;
+  var toShow = ARCHIVE_ITEMS.slice(0, _arcShown);
   body.innerHTML = '';
-  if (toShow.length === 0) {
-    body.innerHTML = '<div class="dv3-arc-empty">No past briefings yet — check back tomorrow morning.</div>';
-    return;
-  }
+  if (toShow.length === 0) return;
+  body.appendChild(buildArchiveCards(toShow));
 
-  body.appendChild(buildArchiveMonth(toShow));
-
-  /* Show More button */
-  if (_arcItems.length > _arcShown) {
-    var remaining = _arcItems.length - _arcShown;
-    var moreDiv   = document.createElement('div');
+  if (ARCHIVE_ITEMS.length > _arcShown) {
+    var remaining = ARCHIVE_ITEMS.length - _arcShown;
+    var moreDiv = document.createElement('div');
     moreDiv.className = 'dv3-arc-more';
-    moreDiv.id = 'dv3-arc-more';
     var moreBtn = document.createElement('button');
     moreBtn.className = 'dv3-arc-more-btn';
     moreBtn.textContent = 'Show ' + Math.min(remaining, ARCHIVE_PAGE) + ' More';
     moreBtn.addEventListener('click', function() {
-      _arcShown = Math.min(_arcShown + ARCHIVE_PAGE, _arcItems.length);
-      renderArchivePage();
+      _arcShown = Math.min(_arcShown + ARCHIVE_PAGE, ARCHIVE_ITEMS.length);
+      renderArchive();
     });
     moreDiv.appendChild(moreBtn);
     body.appendChild(moreDiv);
   }
 }
 
-function loadArchiveIndex() {
-  var secEl = document.getElementById('dv3-archive');
-
-  fetch(ARCHIVE_INDEX + '?v=' + Date.now())
-    .then(function(r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    })
-    .then(function(items) {
-      if (!Array.isArray(items) || items.length === 0) {
-        // No entries yet — leave archive section hidden
-        return;
-      }
-
-      // Sort newest first (they should already be, but guarantee it)
-      items.sort(function(a, b) { return (b.date || '').localeCompare(a.date || ''); });
-      _arcItems = items;
-
-      // Show section
-      secEl.style.display = 'block';
-
-      // Count label (exclude today so it reads "X past briefings")
-      var today = new Date().toISOString().substring(0, 10);
-      var pastCount = items.filter(function(i) { return i.date !== today; }).length;
-      var countEl = document.getElementById('dv3-arc-count');
-      if (countEl && pastCount > 0) {
-        countEl.textContent = pastCount + ' past briefing' + (pastCount !== 1 ? 's' : '');
-      }
-
-      _arcShown = Math.min(ARCHIVE_PAGE, items.length);
-      renderArchivePage();
-    })
-    .catch(function(err) {
-      // index.json missing or malformed — silently hide archive
-      console.info('[AGSIST] Archive index not found or empty:', err.message);
-    });
+function initArchive() {
+  var countEl = document.getElementById('dv3-arc-count');
+  if (countEl) countEl.textContent = ARCHIVE_ITEMS.length + ' past briefing' + (ARCHIVE_ITEMS.length !== 1 ? 's' : '');
+  _arcShown = Math.min(ARCHIVE_PAGE, ARCHIVE_ITEMS.length);
+  renderArchive();
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -740,20 +597,8 @@ function handleSubscribe(e) {
   } catch(e) {}
 })();
 
-/* ── Intercept hydrateDaily to stash today's data ─────────────── */
-/* geo.js calls window.hydrateDaily(data) — we wrap it so we can
-   store the today payload for "Back to Today" to use later.       */
-(function() {
-  var _orig = window.hydrateDaily;
-  window.hydrateDaily = function(data) {
-    // Only stash if we're NOT viewing a past date already
-    if (!_viewingDate) { _todayData = data; }
-    _orig(data);
-  };
-})();
-
 /* ── Init ─────────────────────────────────────────────────────── */
-loadArchiveIndex();
+initArchive();
 </script>
 <script src="/components/geo.js"></script>
 </body>
