@@ -10,21 +10,107 @@
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 
-<title>Wheat Futures Prices — Live Chart &amp; Market Data | AGSIST</title>
-<meta name="description" content="Wheat futures prices from the Chicago Board of Trade. Front-month contracts, interactive chart, contract specs, and market context.">
-<meta name="keywords" content="wheat futures, wheat futures price, wheat futures chart, CBOT wheat, ZW futures">
-<meta name="robots" content="index, follow">
+<title>Wheat Futures Prices Today — Live CBOT Chart &amp; Market Data | AGSIST</title>
+<meta name="description" content="Live wheat futures prices from CBOT updated every 30 minutes. SRW front-month contract, interactive TradingView chart, 52-week range, corn and soybean comparison, and contract specs. Free for farmers. No login required.">
+<meta name="keywords" content="wheat futures prices today, wheat futures price, CBOT wheat futures, ZW futures, wheat futures chart, wheat price today, SRW wheat futures, HRW wheat futures, wheat market data, wheat price per bushel, grain futures today, winter wheat price">
+<meta name="author" content="AGSIST — Farmers First Agri Service">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <link rel="canonical" href="https://agsist.com/wheat-futures-prices">
+
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="AGSIST">
-<meta property="og:title" content="Wheat Futures Prices — AGSIST">
-<meta property="og:description" content="Wheat futures prices, chart, and market context from CBOT.">
+<meta property="og:title" content="Wheat Futures Prices Today — Live CBOT Chart | AGSIST">
+<meta property="og:description" content="Live CBOT wheat futures prices updated every 30 minutes. SRW front-month contract with interactive chart, 52-week range, corn/wheat spread, and market context. Free for farmers.">
 <meta property="og:url" content="https://agsist.com/wheat-futures-prices">
 <meta property="og:image" content="https://agsist.com/img/og/wheat-futures-prices.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AGSIST Wheat Futures Prices Today — Live CBOT chart and market data">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agsist">
+<meta name="twitter:creator" content="@agsist">
+<meta name="twitter:title" content="Wheat Futures Prices Today — Live CBOT Chart | AGSIST">
+<meta name="twitter:description" content="Live CBOT wheat futures updated every 30 min. SRW front-month, chart, 52-week range, corn/wheat spread. Free for farmers.">
+<meta name="twitter:image" content="https://agsist.com/img/og/wheat-futures-prices.jpg">
 
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","url":"https://agsist.com/wheat-futures-prices","name":"Wheat Futures Prices — AGSIST","isPartOf":{"@id":"https://agsist.com/#website"}}
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://agsist.com/wheat-futures-prices#webpage",
+      "url": "https://agsist.com/wheat-futures-prices",
+      "name": "Wheat Futures Prices Today — Live CBOT Chart & Market Data | AGSIST",
+      "description": "Live wheat futures prices from CBOT updated every 30 minutes. SRW front-month contract with interactive chart, 52-week range, contract specs, and market context including corn/wheat spread.",
+      "isPartOf": { "@id": "https://agsist.com/#website" },
+      "about": { "@id": "https://agsist.com/#organization" },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Wheat Futures Prices", "item": "https://agsist.com/wheat-futures-prices" }
+        ]
+      }
+    },
+    {
+      "@type": "Dataset",
+      "name": "CBOT Wheat Futures Prices — Live & Historical",
+      "description": "Live CBOT soft red winter wheat futures prices (ZW) updated every 30 minutes via GitHub Actions. Includes front-month contract, net change, percent change, and 52-week high/low range.",
+      "url": "https://agsist.com/wheat-futures-prices",
+      "creator": { "@id": "https://agsist.com/#organization" },
+      "temporalCoverage": "2024/..",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "variableMeasured": [
+        { "@type": "PropertyValue", "name": "Wheat Front Month (ZW)", "unitCode": "USD", "description": "CBOT soft red winter wheat front-month futures price in cents per bushel" }
+      ]
+    },
+    {
+      "@type": "FinancialProduct",
+      "name": "CBOT Wheat Futures (ZW)",
+      "description": "Chicago Board of Trade soft red winter wheat futures contract — 5,000 bushels per contract. One of three major wheat contracts traded in the US alongside HRW (KCBT) and spring wheat (MGEX).",
+      "url": "https://agsist.com/wheat-futures-prices",
+      "provider": { "@type": "Organization", "name": "CME Group / CBOT", "url": "https://www.cmegroup.com" }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://agsist.com/#organization",
+      "name": "AGSIST",
+      "url": "https://agsist.com/",
+      "logo": { "@type": "ImageObject", "url": "https://agsist.com/img/og/agsist.jpg" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the wheat futures price today?",
+          "acceptedAnswer": { "@type": "Answer", "text": "AGSIST displays live CBOT soft red winter wheat (SRW) futures prices updated every 30 minutes Monday through Friday during trading hours. The front-month contract is shown with net change, percent change, and 52-week range. Prices are in cents per bushel — divide by 100 for dollars per bushel." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between SRW and HRW wheat futures?",
+          "acceptedAnswer": { "@type": "Answer", "text": "SRW (soft red winter) wheat trades on CBOT as the ZW contract and is grown primarily in the eastern Midwest. HRW (hard red winter) wheat trades on the Kansas City Board of Trade as the KE contract and is the dominant class grown in Kansas, Oklahoma, and Texas. HRW commands a premium for higher protein content used in bread flour. AGSIST displays the CBOT SRW contract. For HRW pricing, compare the KE premium over ZW in the market data." }
+        },
+        {
+          "@type": "Question",
+          "name": "What moves wheat futures prices?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Wheat futures prices are primarily driven by: global supply from Russia, Ukraine, and Australia (the three largest exporters), USDA WASDE monthly supply and demand estimates, winter wheat crop condition and harvest progress, drought or excess moisture in the Great Plains, export competition from Black Sea origins, and the US Dollar Index which affects export competitiveness." }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the corn/wheat price spread affect farming decisions?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The corn/wheat spread determines whether wheat is economically competitive as a feed grain versus corn. When wheat trades at a significant discount to corn on a per-bushel basis, wheat becomes attractive for livestock feeders as a corn substitute, supporting wheat demand and prices. When corn trades at a similar or lower price than wheat, feeders switch to corn, removing feed demand support from wheat." }
+        },
+        {
+          "@type": "Question",
+          "name": "When is winter wheat harvested in the US?",
+          "acceptedAnswer": { "@type": "Answer", "text": "US winter wheat harvest begins in Texas in late May and June and progresses northward through Oklahoma, Kansas, and Nebraska into July. The July CBOT wheat futures contract is the traditional winter wheat harvest benchmark. USDA publishes weekly winter wheat harvest progress reports from June through July." }
+        }
+      ]
+    }
+  ]
+}
 </script>
 
 <style>
@@ -51,13 +137,13 @@
 <div id="site-header"></div>
 
 <main class="fut">
-  <nav class="bc"><a href="/">Home</a> → Wheat Futures</nav>
+  <nav class="bc" aria-label="Breadcrumb"><a href="/">Home</a> → Wheat Futures Prices</nav>
 
   <div class="ph">
     <div class="ph-icon">🌾</div>
     <div class="ph-info">
-      <h1>Wheat Futures Prices</h1>
-      <div class="ph-exch">CBOT · CME Group · ZW=F</div>
+      <h1>Wheat Futures Prices Today</h1>
+      <div class="ph-exch">CBOT · CME Group · ZW=F (SRW) · Updated every 30 min</div>
     </div>
     <div class="ph-price">
       <div class="ph-val sk" id="hero-price">—</div>
@@ -66,7 +152,7 @@
     </div>
   </div>
 
-  <div class="ps"><span class="ps-dot"></span><span id="status">Loading prices…</span></div>
+  <div class="ps"><span class="ps-dot" aria-hidden="true"></span><span id="status">Loading prices…</span></div>
 
   <div class="cg">
     <div class="cc hi">
@@ -115,7 +201,7 @@
 
   <div class="cp">
     <div class="cp-head">
-      <h2>📈 Wheat Front Month</h2>
+      <h2>📈 Wheat Front Month — Interactive Chart</h2>
       <span class="cp-src">Chart by TradingView</span>
     </div>
     <div id="tv-chart" style="height:480px"></div>
@@ -157,12 +243,13 @@
   <div class="rg">
     <a href="/corn-futures-prices" class="ra"><div class="ra-i">🌽</div><div class="ra-n">Corn Futures</div><div class="ra-d">Feed grain spread</div></a>
     <a href="/soybean-futures-prices" class="ra"><div class="ra-i">🫘</div><div class="ra-n">Soybean Futures</div><div class="ra-d">Grain complex</div></a>
+    <a href="/cash-bids" class="ra"><div class="ra-i">💵</div><div class="ra-n">Cash Bids Near Me</div><div class="ra-d">Local elevator prices</div></a>
     <a href="/breakeven" class="ra"><div class="ra-i">📐</div><div class="ra-n">Break-Even Calc</div><div class="ra-d">Is this profitable?</div></a>
     <a href="/usda-calendar" class="ra"><div class="ra-i">📅</div><div class="ra-n">USDA Calendar</div><div class="ra-d">Next report date</div></a>
     <a href="/" class="ra"><div class="ra-i">🏠</div><div class="ra-n">Dashboard</div><div class="ra-d">Full market view</div></a>
   </div>
 
-  <div class="disc">Prices from Yahoo Finance via GitHub Actions (delayed). Not financial advice. Verify with your elevator or broker.</div>
+  <div class="disc">Prices from Yahoo Finance via GitHub Actions (delayed ~15 min). Not financial advice. Verify with your elevator or broker before making marketing decisions.</div>
 </main>
 
 <div id="site-footer"></div>
@@ -182,7 +269,7 @@ fetch('/data/prices.json', { cache: 'no-store' })
     var map = [
       { key:'wheat',  p:'p-wheat',  c:'c-wheat',  grain:true  },
       { key:'corn',   p:'p-corn',   c:'c-corn',   grain:true  },
-      { key:'beans',  p:'p-beans',  c:'c-beans',   grain:true  },
+      { key:'beans',  p:'p-beans',  c:'c-beans',  grain:true  },
       { key:'oats',   p:'p-oats',   c:'c-oats',   grain:true  },
       { key:'crude',  p:'p-crude',  c:'c-crude',  grain:false },
       { key:'dollar', p:'p-dollar', c:'c-dollar', grain:false },
