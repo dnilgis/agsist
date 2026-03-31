@@ -273,6 +273,34 @@
     .pc-spark{transition:none!important}
   }
   .noscript-banner{background:var(--gold);color:#0a1a0a;text-align:center;padding:.75rem 1rem;font-size:.88rem;font-weight:600}
+
+  /* ── Homepage prediction market compact cards ──────────────── */
+  .km-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:9px;
+    padding:.75rem .9rem;display:flex;flex-direction:column;gap:.38rem;
+    text-decoration:none;color:inherit;cursor:pointer;
+    transition:border-color .15s,transform .1s;position:relative;overflow:hidden;
+  }
+  .km-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .2s}
+  .km-card[data-tier="1"]::before{background:linear-gradient(90deg,var(--green),transparent)}
+  .km-card[data-tier="2"]::before{background:linear-gradient(90deg,var(--gold),transparent)}
+  .km-card[data-tier="3"]::before{background:linear-gradient(90deg,var(--blue),transparent)}
+  .km-card:hover{transform:translateY(-1px)}
+  .km-card[data-tier="1"]:hover{border-color:rgba(34,197,94,.35)}
+  .km-card[data-tier="2"]:hover{border-color:rgba(230,176,66,.35)}
+  .km-card[data-tier="3"]:hover{border-color:rgba(91,163,224,.35)}
+  .km-card:hover::before{opacity:1}
+  .km-card-row{display:flex;align-items:center;gap:.5rem}
+  .km-card-title{font-size:.79rem;font-weight:700;color:var(--text);line-height:1.35;flex:1}
+  .km-card-pct{font-family:'Oswald',sans-serif;font-size:1.55rem;font-weight:800;line-height:1;flex-shrink:0}
+  .km-bar-track{height:5px;border-radius:3px;background:var(--surface2);overflow:hidden}
+  .km-bar-fill{height:100%;border-radius:3px}
+  .km-card-foot{display:flex;align-items:center;gap:.5rem;margin-top:.06rem}
+  .km-plat{font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.1rem .38rem;border-radius:3px;border:1px solid}
+  .km-plat.k{color:#00c7a8;border-color:rgba(0,199,168,.22);background:rgba(0,199,168,.05)}
+  .km-plat.p{color:#5ba3e0;border-color:rgba(91,163,224,.22);background:rgba(91,163,224,.05)}
+  .km-tl{font-family:'JetBrains Mono',monospace;font-size:.57rem;color:var(--text-muted)}
+  .km-why{font-size:.68rem;color:var(--text-muted);line-height:1.45;padding:.3rem .46rem;background:rgba(255,255,255,.02);border-radius:4px;border-left:2px solid rgba(255,255,255,.07)}
 </style>
 </head>
 
@@ -940,12 +968,12 @@
 
   <!-- ══ PREDICTION MARKETS ═══════════════════════════════════════ -->
   <div class="fade-up" id="f-kalshi">
-    <div class="sec-head"><div class="sec-title">🎯 What's Moving Agriculture</div></div>
-    <div style="font-size:.78rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;max-width:52rem">
-      Live odds on events that impact your bottom line — tariffs, weather, energy policy, interest rates, and USDA reports. Each market includes an explanation of why it matters for agriculture.
+    <div class="sec-head"><div class="sec-title">🎯 What's Moving Agriculture</div><a href="/ag-odds" class="sec-all">All Markets →</a></div>
+    <div id="kalshi-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:.65rem;margin-bottom:.5rem">
+      <div id="kalshi-loading" style="grid-column:1/-1;text-align:center;padding:1.2rem;font-size:.8rem;color:var(--text-muted)">⏳ Loading markets…</div>
     </div>
-    <div id="kalshi-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem;margin-bottom:.5rem">
-      <div id="kalshi-loading" style="grid-column:1/-1;text-align:center;padding:1.5rem;font-size:.82rem;color:var(--text-muted)">⏳ Scanning prediction markets for agricultural impact…</div>
+    <div id="kalshi-footer" style="display:none;padding:.25rem 0 .15rem;text-align:right">
+      <a href="/ag-odds" style="font-size:.72rem;color:var(--gold);text-decoration:none;font-weight:600">View all ag prediction markets →</a>
     </div>
   </div>
 
@@ -1103,6 +1131,139 @@
 </script>
 
 <script src="/components/sparklines.js"></script>
+
+<!-- ── Homepage Prediction Markets Widget ───────────────────── -->
+<script>
+(function(){
+'use strict';
+var POLY='https://gamma-api.polymarket.com';
+var MAX_CARDS=6;
+var T1=['corn','soybean','wheat','grain','oat','cattle','hog','livestock','pork','beef','dairy','milk','poultry','chicken','egg','ethanol','crop','harvest','fertilizer','urea','nitrogen','usda','wasde','food price','food inflation','grocery','bushel'];
+var T2=['tariff','trade war','china trade','china import','china export','brazil','ukraine','crude oil','natural gas','diesel','oil price','opec','supply chain','rail strike','bird flu','avian influenza'];
+var T3=['interest rate','federal reserve','fed funds','rate cut','rate hike','fomc','inflation','cpi','recession','gdp','unemployment','dollar','currency','drought','hurricane','flood'];
+var SKIP=['nfl','nba','mlb','nhl','playoff','super bowl','world series','oscar','grammy','netflix','celebrity','kardashian','dogecoin','nft','tiktok','instagram','youtube','marvel','disney'];
+function scoreM(t){
+  var s=t.toLowerCase();
+  for(var i=0;i<SKIP.length;i++){if(s.indexOf(SKIP[i])>=0)return null;}
+  for(var a=0;a<T1.length;a++){if(s.indexOf(T1[a])>=0)return{score:100,tier:1};}
+  for(var b=0;b<T2.length;b++){if(s.indexOf(T2[b])>=0)return{score:70,tier:2};}
+  for(var c=0;c<T3.length;c++){if(s.indexOf(T3[c])>=0)return{score:40,tier:3};}
+  return null;
+}
+var WHY=[
+  ['egg','Egg prices signal avian flu pressure and poultry feed demand.'],
+  ['grocery','Grocery prices reflect the entire ag supply chain from field to shelf.'],
+  ['food price','Food price changes affect consumer ag demand from farm to shelf.'],
+  ['food inflation','Food inflation erodes purchasing power and shifts protein demand.'],
+  ['corn','Corn price moves affect feed costs, ethanol margins, and farm revenue.'],
+  ['soybean','Soybeans drive export revenue — any policy shift moves US ag exports.'],
+  ['wheat','Wheat prices set the tone for global food costs and compete for acres.'],
+  ['cattle','Cattle prices reflect packer demand and feed efficiency for feedlots.'],
+  ['tariff','Tariffs directly impact export demand for US grains — moves basis fast.'],
+  ['trade','Trade policy shifts can redirect global grain flows overnight.'],
+  ['china','China is the world\'s largest soybean buyer — policy shifts move markets.'],
+  ['crude oil','Oil prices drive diesel and fertilizer costs — every $10/bbl hits budgets.'],
+  ['oil','Energy costs flow to planting, spraying, drying, and hauling expenses.'],
+  ['natural gas','Natural gas is the primary input for nitrogen fertilizer — spikes raise urea costs.'],
+  ['fertilizer','Fertilizer is the largest variable input cost — price moves hit margins hard.'],
+  ['interest rate','Rate changes affect land values, operating loans, and storage carry costs.'],
+  ['fed','Fed policy drives the dollar, which affects grain export competitiveness.'],
+  ['inflation','Inflation erodes margins when input costs rise faster than commodity prices.'],
+  ['cpi','CPI drives Fed rate decisions which cascade to farm lending and land values.'],
+  ['recession','Slowdowns reduce ethanol demand and can weaken feed grain consumption.'],
+  ['drought','Drought is the single biggest yield risk — moves corn and bean prices fast.'],
+  ['hurricane','Hurricanes disrupt Gulf exports and can damage late-season crops.'],
+  ['bird flu','Bird flu outbreaks spike egg prices and cut poultry feed demand.'],
+];
+function getWhy(t){var s=t.toLowerCase();for(var i=0;i<WHY.length;i++){if(s.indexOf(WHY[i][0])>=0)return WHY[i][1];}return'Affects agricultural commodity prices, input costs, or farm policy.';}
+function pc(n){return n>=70?'var(--green)':n>=50?'var(--gold)':n>=30?'var(--text-dim)':'#ef4444';}
+function barBg(n){var rgb=n>=70?'34,197,94':n>=50?'230,176,66':n>=30?'140,140,130':'239,68,68';return'linear-gradient(90deg,rgba('+rgb+',.9),rgba('+rgb+',.3))';}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function tLeft(iso){if(!iso)return'';try{var d=(new Date(iso).getTime()-Date.now())/86400000;if(d<0)return'';if(d<1)return'Today';if(d<2)return'Tomorrow';if(d<=30)return Math.round(d)+'d left';return'~'+Math.round(d/30)+'mo';}catch(e){return'';}}
+var seenM={};
+var markets=[];
+function addItems(items){
+  items.forEach(function(m){
+    var title=(m.question||m.title||'').trim();
+    if(!title)return;
+    var id=String(m.id||m.condition_id||title).slice(0,28);
+    if(seenM[id])return;
+    var rel=scoreM(title);
+    if(!rel)return;
+    var prob=null;
+    var op=m.outcomePrices||m.outcome_prices;
+    if(op){try{var pr=typeof op==='string'?JSON.parse(op):op;if(Array.isArray(pr)&&pr.length)prob=Math.round(parseFloat(pr[0])*100);}catch(e){}}
+    if(prob==null){['yes_price','bestBid','lastTradePrice'].forEach(function(f){if(prob!=null)return;var v=m[f];if(v!=null){var n=parseFloat(v);prob=Math.round(n<=1?n*100:n);}});}
+    if(prob==null||prob<=0||prob>=100)return;
+    var vol=0;['volume','volume24hr','volume_num'].forEach(function(f){if(!vol&&m[f])try{vol=parseFloat(m[f]);}catch(e){}});
+    var slug=m.slug||'';
+    var url=slug?'https://polymarket.com/event/'+slug:(m.url||'https://polymarket.com');
+    var ed=m.endDate||m.end_date_iso||m.endDateIso||'';
+    if(ed){try{if(new Date(ed)<new Date())return;}catch(e){}}
+    seenM[id]=true;
+    markets.push({title:title.slice(0,100),yes:prob,url:url,tier:rel.tier,score:rel.score,vol:vol,ed:ed});
+  });
+}
+function renderMarkets(){
+  markets.sort(function(a,b){return(b.score*1.5+Math.log10(Math.max(b.vol,1))*10)-(a.score*1.5+Math.log10(Math.max(a.vol,1))*10);});
+  var deduped=[],nt={};
+  markets.forEach(function(m){var k=m.title.toLowerCase().replace(/[^a-z0-9]/g,'');if(!nt[k]){nt[k]=true;deduped.push(m);}});
+  markets=deduped.slice(0,MAX_CARDS);
+  var grid=document.getElementById('kalshi-grid');
+  var footer=document.getElementById('kalshi-footer');
+  if(!grid)return;
+  if(!markets.length){
+    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:1rem;font-size:.78rem;color:var(--text-muted)">No markets available · <a href=\'/ag-odds\' style=\'color:var(--gold)\'>View Ag Odds →</a></div>';
+    return;
+  }
+  grid.innerHTML='';
+  markets.forEach(function(m){
+    var pct=m.yes;
+    var tl=tLeft(m.ed);
+    var a=document.createElement('a');
+    a.className='km-card';
+    a.href=m.url;
+    a.target='_blank';
+    a.rel='noopener noreferrer';
+    a.dataset.tier=String(m.tier);
+    a.innerHTML=
+      '<div class="km-card-row">'
+        +'<div class="km-card-title">'+esc(m.title)+'</div>'
+        +'<div class="km-card-pct" style="color:'+pc(pct)+'">'+pct+'%</div>'
+      +'</div>'
+      +'<div class="km-bar-track"><div class="km-bar-fill" style="width:'+pct+'%;background:'+barBg(pct)+'"></div></div>'
+      +'<div class="km-why">'+esc(getWhy(m.title))+'</div>'
+      +'<div class="km-card-foot"><span class="km-plat p">Polymarket</span>'
+        +(tl?'<span class="km-tl">⏱ '+esc(tl)+'</span>':'')
+      +'</div>';
+    grid.appendChild(a);
+  });
+  if(footer)footer.style.display='block';
+}
+var KW=['tariff','egg price','food price','crude oil','natural gas','inflation','interest rate','drought','bird flu','corn','soybean','fertilizer','trade war','china trade'];
+var promises=KW.map(function(kw){
+  return fetch(POLY+'/markets?active=true&closed=false&limit=15&q='+encodeURIComponent(kw))
+    .then(function(r){return r.ok?r.json():[];})
+    .then(function(d){return Array.isArray(d)?d:(d.results||d.markets||[]);})
+    .catch(function(){return[];});
+});
+promises.push(
+  fetch(POLY+'/markets?active=true&closed=false&limit=50&order=volume&ascending=false')
+    .then(function(r){return r.ok?r.json():[];})
+    .then(function(d){return Array.isArray(d)?d:(d.results||d.markets||[]);})
+    .catch(function(){return[];})
+);
+Promise.all(promises).then(function(results){
+  var loading=document.getElementById('kalshi-loading');
+  if(loading)loading.style.display='none';
+  results.forEach(function(items){addItems(items);});
+  renderMarkets();
+}).catch(function(){
+  var loading=document.getElementById('kalshi-loading');
+  if(loading)loading.innerHTML='<a href="/ag-odds" style="color:var(--gold)">View ag prediction markets →</a>';
+});
+})();
+</script>
 
 <script>
 (function() {
