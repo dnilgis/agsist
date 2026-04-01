@@ -1,6 +1,16 @@
 {
   "briefings": [
     {
+      "date": "2026-04-01",
+      "date_display": "Wednesday, April 1, 2026",
+      "headline": "CATTLE SURGE 4.2% IGNITES BROAD RALLY",
+      "teaser": "Cattle surge ignites commodity rally as planting season begins.",
+      "market_mood": "bullish",
+      "surprise_count": 4,
+      "sections": 4,
+      "url": "/daily/2026-04-01"
+    },
+    {
       "date": "2026-03-31",
       "date_display": "Tuesday, March 31, 2026",
       "headline": "CORN SLIDES 8¢ AS CRUDE JUMPS 3%",
@@ -201,6 +211,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-03-31T12:39:19.599350+00:00",
-  "count": 20
+  "updated": "2026-04-01T12:41:03.725844+00:00",
+  "count": 21
 }
