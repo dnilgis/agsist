@@ -98,7 +98,8 @@
         { "@type": "ListItem", "position": 5, "name": "Urea Volatilization Risk Monitor", "url": "https://agsist.com/urea" },
         { "@type": "ListItem", "position": 6, "name": "Farm Break-Even Calculator",       "url": "https://agsist.com/breakeven" },
         { "@type": "ListItem", "position": 7, "name": "Grain Bin Calculator",             "url": "https://agsist.com/grain-bin-calculator" },
-        { "@type": "ListItem", "position": 8, "name": "AGSIST Daily Ag Briefing",         "url": "https://agsist.com/daily" }
+        { "@type": "ListItem", "position": 8, "name": "AGSIST Daily Ag Briefing",         "url": "https://agsist.com/daily" },
+        { "@type": "ListItem", "position": 9, "name": "Ag Prediction Markets",              "url": "https://agsist.com/ag-odds" }
       ]
     },
     {
@@ -591,6 +592,7 @@
                 </div>
               </div>
             </a>
+            <a href="/ag-odds" class="tool-btn"><span class="tool-name">🎯 Ag Prediction Markets</span><span class="tool-arr">→</span></a>
             <a href="/fast-facts" class="tool-btn"><span class="tool-name">⚡ Fast Facts</span><span class="tool-arr">→</span></a>
           </div>
         </div>
@@ -1138,10 +1140,13 @@
 'use strict';
 var POLY='https://gamma-api.polymarket.com';
 var MAX_CARDS=6;
+
+/* Keyword tiers */
 var T1=['corn','soybean','wheat','grain','oat','cattle','hog','livestock','pork','beef','dairy','milk','poultry','chicken','egg','ethanol','crop','harvest','fertilizer','urea','nitrogen','usda','wasde','food price','food inflation','grocery','bushel'];
 var T2=['tariff','trade war','china trade','china import','china export','brazil','ukraine','crude oil','natural gas','diesel','oil price','opec','supply chain','rail strike','bird flu','avian influenza'];
-var T3=['interest rate','federal reserve','fed funds','rate cut','rate hike','fomc','inflation','cpi','recession','gdp','unemployment','dollar','currency','drought','hurricane','flood'];
-var SKIP=['nfl','nba','mlb','nhl','playoff','super bowl','world series','oscar','grammy','netflix','celebrity','kardashian','dogecoin','nft','tiktok','instagram','youtube','marvel','disney'];
+var T3=['interest rate','federal reserve','fed funds','rate cut','rate hike','cut rate','fomc','inflation','cpi','recession','gdp','unemployment','dollar','currency','drought','hurricane','flood','fed cut','tariffs'];
+var SKIP=['nfl','nba','mlb','nhl','playoff','super bowl','world series','oscar','grammy','netflix','celebrity','kardashian','dogecoin','nft','tiktok','instagram','youtube','marvel','disney','movie','box office'];
+
 function scoreM(t){
   var s=t.toLowerCase();
   for(var i=0;i<SKIP.length;i++){if(s.indexOf(SKIP[i])>=0)return null;}
@@ -1150,6 +1155,7 @@ function scoreM(t){
   for(var c=0;c<T3.length;c++){if(s.indexOf(T3[c])>=0)return{score:40,tier:3};}
   return null;
 }
+
 var WHY=[
   ['egg','Egg prices signal avian flu pressure and poultry feed demand.'],
   ['grocery','Grocery prices reflect the entire ag supply chain from field to shelf.'],
@@ -1176,34 +1182,86 @@ var WHY=[
   ['bird flu','Bird flu outbreaks spike egg prices and cut poultry feed demand.'],
 ];
 function getWhy(t){var s=t.toLowerCase();for(var i=0;i<WHY.length;i++){if(s.indexOf(WHY[i][0])>=0)return WHY[i][1];}return'Affects agricultural commodity prices, input costs, or farm policy.';}
+
 function pc(n){return n>=70?'var(--green)':n>=50?'var(--gold)':n>=30?'var(--text-dim)':'#ef4444';}
 function barBg(n){var rgb=n>=70?'34,197,94':n>=50?'230,176,66':n>=30?'140,140,130':'239,68,68';return'linear-gradient(90deg,rgba('+rgb+',.9),rgba('+rgb+',.3))';}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function tLeft(iso){if(!iso)return'';try{var d=(new Date(iso).getTime()-Date.now())/86400000;if(d<0)return'';if(d<1)return'Today';if(d<2)return'Tomorrow';if(d<=30)return Math.round(d)+'d left';return'~'+Math.round(d/30)+'mo';}catch(e){return'';}}
+
 var seenM={};
 var markets=[];
+
+/* Parse probability from any Polymarket field — handles binary, group, and token markets */
+function parseProb(m){
+  var prob=null;
+  /* 1. outcomePrices — standard binary market field */
+  var op=m.outcomePrices||m.outcome_prices;
+  if(op){
+    try{
+      var pr=typeof op==='string'?JSON.parse(op):op;
+      if(Array.isArray(pr)&&pr.length){
+        var v=parseFloat(pr[0]);
+        if(!isNaN(v)) prob=Math.round(v<=1?v*100:v);
+      }
+    }catch(e){}
+  }
+  /* 2. tokens array — CLOB/AMM markets store price in tokens[0].price */
+  if(prob==null&&m.tokens&&Array.isArray(m.tokens)&&m.tokens.length>0){
+    try{
+      var tp=parseFloat(m.tokens[0].price);
+      if(!isNaN(tp)&&tp>0) prob=Math.round(tp<=1?tp*100:tp);
+    }catch(e){}
+  }
+  /* 3. Scalar fallback fields */
+  if(prob==null){
+    ['yes_price','bestBid','lastTradePrice','last_trade_price','price'].forEach(function(f){
+      if(prob!=null)return;
+      var v=m[f];
+      if(v!=null){try{var n=parseFloat(v);if(!isNaN(n)&&n>0)prob=Math.round(n<=1?n*100:n);}catch(e){}}
+    });
+  }
+  return (prob!=null&&prob>0&&prob<100)?prob:null;
+}
+
 function addItems(items){
   items.forEach(function(m){
-    var title=(m.question||m.title||'').trim();
+    var title=(m.question||m.title||m.name||'').trim();
     if(!title)return;
-    var id=String(m.id||m.condition_id||title).slice(0,28);
+    var id=String(m.id||m.condition_id||m.conditionId||title).slice(0,30);
     if(seenM[id])return;
     var rel=scoreM(title);
     if(!rel)return;
-    var prob=null;
-    var op=m.outcomePrices||m.outcome_prices;
-    if(op){try{var pr=typeof op==='string'?JSON.parse(op):op;if(Array.isArray(pr)&&pr.length)prob=Math.round(parseFloat(pr[0])*100);}catch(e){}}
-    if(prob==null){['yes_price','bestBid','lastTradePrice'].forEach(function(f){if(prob!=null)return;var v=m[f];if(v!=null){var n=parseFloat(v);prob=Math.round(n<=1?n*100:n);}});}
-    if(prob==null||prob<=0||prob>=100)return;
-    var vol=0;['volume','volume24hr','volume_num'].forEach(function(f){if(!vol&&m[f])try{vol=parseFloat(m[f]);}catch(e){}});
-    var slug=m.slug||'';
+    var prob=parseProb(m);
+    if(prob==null)return;
+    var vol=0;
+    ['volume','volume24hr','volume_num','volumeNum','liquidityNum'].forEach(function(f){if(!vol&&m[f])try{vol=parseFloat(m[f]);}catch(e){}});
+    var slug=m.slug||m.eventSlug||'';
     var url=slug?'https://polymarket.com/event/'+slug:(m.url||'https://polymarket.com');
-    var ed=m.endDate||m.end_date_iso||m.endDateIso||'';
+    var ed=m.endDate||m.end_date_iso||m.endDateIso||m.endDateTimestamp||'';
     if(ed){try{if(new Date(ed)<new Date())return;}catch(e){}}
     seenM[id]=true;
     markets.push({title:title.slice(0,100),yes:prob,url:url,tier:rel.tier,score:rel.score,vol:vol,ed:ed});
   });
 }
+
+/* Flatten event->markets nested structure */
+function addEvents(events){
+  events.forEach(function(ev){
+    /* Try event-level title as a single market */
+    var evTitle=(ev.title||ev.name||'').trim();
+    /* Process embedded markets array */
+    var mArr=ev.markets||[];
+    if(mArr.length>0){
+      /* Prefer binary (2-outcome) markets inside the event */
+      mArr.forEach(function(m){
+        /* Inherit event title if market question is generic */
+        if(!m.question&&evTitle) m.question=evTitle;
+        addItems([m]);
+      });
+    }
+  });
+}
+
 function renderMarkets(){
   markets.sort(function(a,b){return(b.score*1.5+Math.log10(Math.max(b.vol,1))*10)-(a.score*1.5+Math.log10(Math.max(a.vol,1))*10);});
   var deduped=[],nt={};
@@ -1240,28 +1298,68 @@ function renderMarkets(){
   });
   if(footer)footer.style.display='block';
 }
-var KW=['tariff','egg price','food price','crude oil','natural gas','inflation','interest rate','drought','bird flu','corn','soybean','fertilizer','trade war','china trade'];
-var promises=KW.map(function(kw){
-  return fetch(POLY+'/markets?active=true&closed=false&limit=15&q='+encodeURIComponent(kw))
-    .then(function(r){return r.ok?r.json():[];})
-    .then(function(d){return Array.isArray(d)?d:(d.results||d.markets||[]);})
-    .catch(function(){return[];});
-});
-promises.push(
-  fetch(POLY+'/markets?active=true&closed=false&limit=50&order=volume&ascending=false')
-    .then(function(r){return r.ok?r.json():[];})
-    .then(function(d){return Array.isArray(d)?d:(d.results||d.markets||[]);})
-    .catch(function(){return[];})
-);
-Promise.all(promises).then(function(results){
+
+function gj(url){
+  return fetch(url)
+    .then(function(r){return r.ok?r.json():null;})
+    .catch(function(){return null;});
+}
+function toArr(d){
+  if(!d)return[];
+  if(Array.isArray(d))return d;
+  return d.results||d.markets||d.events||d.data||[];
+}
+
+/* ── Fetch strategy (v2 — fixed) ──────────────────────────────
+   Problem: /markets?q= ignores the q param and returns group markets
+   with outcomePrices:null. Zero markets pass probability check.
+
+   Fix:
+   1. /events endpoint — returns events with nested binary markets,
+      each market has outcomePrices properly populated.
+   2. tag_slug browsing — economics, trade, politics tags contain
+      ag-relevant binary markets.
+   3. Top-volume sweep — broad but catches high-traffic ag markets.
+   4. parseProb() now also checks tokens[0].price as fallback.
+──────────────────────────────────────────────────────────────── */
+var fetches=[
+  /* Events endpoint — best source of structured binary markets */
+  gj(POLY+'/events?active=true&closed=false&limit=100&order=volume&ascending=false'),
+  /* Tag-based browsing */
+  gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=politics'),
+  gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=economics'),
+  gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=trade'),
+  gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=energy'),
+  gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=climate'),
+  gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=commodities'),
+  /* Top by volume — broad sweep */
+  gj(POLY+'/markets?active=true&closed=false&limit=100&order=volume&ascending=false'),
+];
+
+Promise.all(fetches).then(function(results){
   var loading=document.getElementById('kalshi-loading');
   if(loading)loading.style.display='none';
-  results.forEach(function(items){addItems(items);});
+
+  /* Process events (index 0) */
+  var evData=toArr(results[0]);
+  if(evData.length&&evData[0]&&evData[0].markets!==undefined){
+    addEvents(evData);
+  } else {
+    /* /events returned market-like objects directly */
+    addItems(evData);
+  }
+
+  /* Process market arrays (indices 1-7) */
+  for(var i=1;i<results.length;i++){
+    addItems(toArr(results[i]));
+  }
+
   renderMarkets();
 }).catch(function(){
   var loading=document.getElementById('kalshi-loading');
   if(loading)loading.innerHTML='<a href="/ag-odds" style="color:var(--gold)">View ag prediction markets →</a>';
 });
+
 })();
 </script>
 
@@ -1416,6 +1514,15 @@ Promise.all(promises).then(function(results){
       { name: 'Crop Production',       date: '2026-04-09', time: '11:00am ET', note: '' },
       { name: 'WASDE',                 date: '2026-05-12', time: '11:00am ET', note: 'Market-moving' },
       { name: 'WASDE',                 date: '2026-06-11', time: '11:00am ET', note: 'Market-moving' },
+      { name: 'Acreage Report',        date: '2026-06-30', time: '11:00am ET', note: 'Planted acres' },
+      { name: 'Grain Stocks',          date: '2026-06-30', time: '11:00am ET', note: '' },
+      { name: 'WASDE',                 date: '2026-07-10', time: '11:00am ET', note: 'Market-moving' },
+      { name: 'WASDE',                 date: '2026-08-12', time: '11:00am ET', note: 'Market-moving' },
+      { name: 'Crop Production',       date: '2026-08-12', time: '11:00am ET', note: 'First corn est.' },
+      { name: 'WASDE',                 date: '2026-09-11', time: '11:00am ET', note: 'Market-moving' },
+      { name: 'Crop Production',       date: '2026-09-11', time: '11:00am ET', note: '' },
+      { name: 'WASDE',                 date: '2026-10-09', time: '11:00am ET', note: 'Market-moving' },
+      { name: 'Crop Production',       date: '2026-10-09', time: '11:00am ET', note: 'Final corn est.' },
     ];
     for (var w = 0; w < 4; w++) {
       reports.forEach(function(r) {
@@ -1432,7 +1539,7 @@ Promise.all(promises).then(function(results){
     events.sort(function(a, b) { return a.date - b.date; });
     var seen = {}, unique = [];
     events.forEach(function(e) { var k = e.name + '-' + e.date.toDateString(); if (!seen[k]) { seen[k] = true; unique.push(e); } });
-    events = unique.slice(0, 8);
+    events = unique.slice(0, 10);
     var todayStr = now.toDateString();
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     strip.innerHTML = '';
