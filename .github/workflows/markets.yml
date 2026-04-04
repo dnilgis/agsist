@@ -1,31 +1,41 @@
-name: Fetch Prediction Markets
+# .github/workflows/markets.yml
+# Fetches Kalshi + Polymarket prediction markets relevant to agriculture
+# Runs once daily — 7 days/week (Kalshi/Polymarket trade 24/7)
+name: Fetch Markets
 
 on:
   schedule:
-    # Every 6 hours — keeps prediction markets fresher
-    - cron: '0 5,11,17,23 * * *'
-  workflow_dispatch:  # Manual trigger for testing
-
-permissions:
-  contents: write
+    # 5:30am CT (11:30 UTC) — every day, before daily briefing at 5:45am CT
+    - cron: '30 11 * * *'
+  workflow_dispatch: # Manual trigger
 
 jobs:
-  fetch-markets:
+  fetch:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          python-version: '3.11'
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Fetch prediction markets
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch markets
         run: python scripts/fetch_markets.py
 
-      - name: Commit updated markets.json
+      - name: Commit and push
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           git add data/markets.json
-          git diff --cached --quiet || git commit -m "📊 Update prediction markets $(date -u +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "🎯 Markets — $(date -u +%Y-%m-%d)"
           git push

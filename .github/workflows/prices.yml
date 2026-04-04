@@ -1,10 +1,14 @@
+# .github/workflows/prices.yml
+# Fetches commodity, futures, index, and crypto prices via yfinance
+# Runs every 30 minutes — 7 days/week including weekends and holidays
+# On closed markets, yfinance returns last known close (safe — script preserves old values)
 name: Fetch Prices
 
 on:
   schedule:
-    # Every 30 minutes, Mon–Fri, 8:00 AM – 5:30 PM Central (13:00–22:30 UTC)
-    - cron: '0,30 13-22 * * 1-5'
-  workflow_dispatch: # Manual trigger button in GitHub Actions UI
+    # Every 30 minutes, all day, every day
+    - cron: '*/30 * * * *'
+  workflow_dispatch: # Manual trigger
 
 jobs:
   fetch:
@@ -15,22 +19,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install yfinance requests
+        run: pip install yfinance
 
       - name: Fetch prices
         run: python scripts/fetch_prices.py
 
-      - name: Commit prices.json
+      - name: Commit and push
         run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
           git add data/prices.json
-          git diff --staged --quiet || git commit -m "chore: update prices.json [skip ci]"
+          git diff --staged --quiet || git commit -m "💹 Prices — $(date -u +'%Y-%m-%d %H:%M UTC')"
           git push

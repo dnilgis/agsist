@@ -1,13 +1,13 @@
 # .github/workflows/daily.yml
-# Generates the AGSIST Daily briefing every weekday morning
-# Runs AFTER prices.yml so data/prices.json is fresh
+# Generates the AGSIST Daily briefing every morning (including weekends + holidays)
+# Runs AFTER prices.yml and markets.yml so data is fresh
 name: Generate Daily Briefing
 
 on:
   schedule:
-    # 5:45am CT (11:45 UTC) — weekdays only
-    # Prices workflow runs at 5:30am CT, so prices.json is fresh
-    - cron: '45 11 * * 1-5'
+    # 5:45am CT (11:45 UTC) — every day including weekends and holidays
+    # Prices workflow runs at 5:30am CT, markets at 5:30am CT — both fresh
+    - cron: '45 11 * * *'
   workflow_dispatch: # Manual trigger for testing
 
 jobs:
@@ -35,10 +35,13 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/generate_daily.py
 
+      - name: Generate RSS feed
+        run: python scripts/generate_rss.py
+
       - name: Commit and push
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add data/daily.json data/daily-archive/ daily/
+          git add data/daily.json data/daily-archive/ daily/ feed.xml
           git diff --staged --quiet || git commit -m "📰 AGSIST Daily — $(date -u +%Y-%m-%d)"
           git push
