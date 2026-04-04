@@ -16,7 +16,6 @@
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
 <link rel="manifest"                            href="/manifest.json">
 <meta name="theme-color" content="#111a0a">
-
 <title>Corn, Soybean &amp; Wheat Prices Today — Farm Dashboard | AGSIST</title>
 <meta name="description" content="Live corn, soybean, and wheat futures updated every 30 min. Farm dashboard with spray advisory, urea risk, cash grain bids, USDA reports, and daily briefing.">
 <meta name="keywords" content="corn futures prices today, soybean futures prices today, wheat futures price today, grain prices today, farm weather, spray advisory, urea volatilization risk, cash grain bids near me, USDA reports, agricultural market dashboard, farm break even calculator, grain elevator prices, CBOT corn, crop insurance, alcivia cash bids, local grain elevator, wisconsin grain prices, minnesota grain prices">
@@ -99,7 +98,7 @@
         { "@type": "ListItem", "position": 6, "name": "Farm Break-Even Calculator",       "url": "https://agsist.com/breakeven" },
         { "@type": "ListItem", "position": 7, "name": "Grain Bin Calculator",             "url": "https://agsist.com/grain-bin-calculator" },
         { "@type": "ListItem", "position": 8, "name": "AGSIST Daily Ag Briefing",         "url": "https://agsist.com/daily" },
-        { "@type": "ListItem", "position": 9, "name": "Ag Prediction Markets",              "url": "https://agsist.com/ag-odds" }
+        { "@type": "ListItem", "position": 9, "name": "Ag Prediction Markets",            "url": "https://agsist.com/ag-odds" }
       ]
     },
     {
@@ -131,14 +130,7 @@
   .daily-pre-dismissed .daily-teaser{display:flex!important}
   .daily-pre-dismissed .daily-dismiss-row{display:none!important}
 
-  .pc-spark{
-    margin:.3rem 0 .15rem;
-    opacity:0;
-    transition:opacity .5s ease;
-    line-height:0;
-    border-radius:2px;
-    overflow:hidden;
-  }
+  .pc-spark{margin:.3rem 0 .15rem;opacity:0;transition:opacity .5s ease;line-height:0;border-radius:2px;overflow:hidden;}
   .pc-spark.loaded{opacity:1}
   @media(max-width:380px){.pc-spark{display:none}}
 
@@ -146,14 +138,10 @@
     display:flex;align-items:center;
     background:var(--surface);border:1px solid var(--border);border-radius:8px;
     padding:.4rem .65rem;margin-bottom:.85rem;
-    overflow-x:auto;white-space:nowrap;scrollbar-width:none;
-    -webkit-overflow-scrolling:touch;
+    overflow-x:auto;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;
   }
   .mkt-summary::-webkit-scrollbar{display:none}
-  .mkt-sum-item{
-    display:inline-flex;align-items:center;gap:.32rem;
-    padding:.05rem .6rem;border-right:1px solid var(--border);flex-shrink:0;
-  }
+  .mkt-sum-item{display:inline-flex;align-items:center;gap:.32rem;padding:.05rem .6rem;border-right:1px solid var(--border);flex-shrink:0;}
   .mkt-sum-item:last-child{border-right:none}
   .msi-icon{font-size:.82rem;line-height:1}
   .msi-name{font-size:.62rem;color:var(--text-muted);font-weight:700;letter-spacing:.04em;text-transform:uppercase}
@@ -162,45 +150,41 @@
   .msi-chg.up{color:var(--green)} .msi-chg.dn{color:#ef4444} .msi-chg.nc{color:var(--text-muted)}
   @media(max-width:480px){.msi-name{display:none}}
 
-  /* ── Ratio + COT side-by-side grid ─────────────────────────── */
+  /* ── Ratio + COT grid ─────────────────────────────────────── */
   .ratio-cot-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:.75rem;
-    margin:.6rem 0 .4rem;
+    display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:.6rem 0 .4rem;
   }
   .ratio-cot-grid .ratio-widget{margin:0}
   @media(max-width:720px){.ratio-cot-grid{grid-template-columns:1fr}}
 
+  /* ── Ratio Widget ───────────────────────────────────────────── */
   .ratio-widget{
     background:linear-gradient(135deg,var(--surface) 0%,rgba(34,197,94,.025) 100%);
     border:1px solid var(--border);border-radius:12px;
     padding:.9rem 1.1rem;
+    display:flex;flex-direction:column; /* fills grid height */
   }
   .ratio-widget-head{
     display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;
-    margin-bottom:.65rem;
+    margin-bottom:.55rem;
   }
-  .ratio-widget-title{
-    font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);
+  .ratio-widget-title{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
+  .ratio-body{
+    display:flex;align-items:flex-start;gap:1rem;flex-wrap:nowrap;
+    flex:1; /* fills remaining height */
   }
-  .ratio-body{display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap;}
-  .ratio-num-block{flex-shrink:0;text-align:center;min-width:70px;}
-  .ratio-big{
-    font-family:'Oswald',sans-serif;font-size:2.5rem;font-weight:800;line-height:1;color:var(--text);
-    transition:color .4s;
+  .ratio-num-block{flex-shrink:0;text-align:center;min-width:70px;padding-top:.1rem;}
+  .ratio-big{font-family:'Oswald',sans-serif;font-size:2.4rem;font-weight:800;line-height:1;color:var(--text);transition:color .4s;}
+  .ratio-colon{font-size:1.3rem;color:var(--text-muted);vertical-align:middle;margin:0 1px}
+  .ratio-one{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:600;color:var(--text-muted)}
+  .ratio-label{font-size:.58rem;color:var(--text-muted);font-weight:600;margin-top:.15rem;letter-spacing:.03em}
+  .ratio-right{
+    flex:1;min-width:0;
+    display:flex;flex-direction:column;justify-content:space-between;
   }
-  .ratio-colon{font-size:1.4rem;color:var(--text-muted);vertical-align:middle;margin:0 1px}
-  .ratio-one{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:600;color:var(--text-muted)}
-  .ratio-label{font-size:.6rem;color:var(--text-muted);font-weight:600;margin-top:.15rem;letter-spacing:.03em}
-  .ratio-right{flex:1;min-width:180px;}
   .ratio-gauge-track{
-    position:relative;height:9px;border-radius:5px;margin-bottom:.35rem;
-    background:linear-gradient(90deg,
-      rgba(230,176,66,.32) 0%,rgba(230,176,66,.32) 30%,
-      rgba(160,160,160,.12) 30%,rgba(160,160,160,.12) 55%,
-      rgba(34,197,94,.28) 55%,rgba(34,197,94,.28) 100%
-    );
+    position:relative;height:9px;border-radius:5px;margin-bottom:.3rem;
+    background:linear-gradient(90deg,rgba(230,176,66,.32) 0%,rgba(230,176,66,.32) 30%,rgba(160,160,160,.12) 30%,rgba(160,160,160,.12) 55%,rgba(34,197,94,.28) 55%,rgba(34,197,94,.28) 100%);
     border:1px solid rgba(255,255,255,.06);
   }
   .ratio-gauge-dot{
@@ -211,31 +195,34 @@
   }
   .ratio-gauge-zones{
     display:flex;justify-content:space-between;
-    font-size:.56rem;color:var(--text-muted);letter-spacing:.03em;font-weight:600;
-    padding:0 1px;margin-bottom:.45rem;
+    font-size:.54rem;color:var(--text-muted);letter-spacing:.03em;font-weight:600;
+    padding:0 1px;margin-bottom:.3rem;
   }
   .ratio-verdict{
     display:inline-flex;align-items:center;gap:.35rem;
     padding:.25rem .65rem;border-radius:20px;
-    font-size:.7rem;font-weight:700;letter-spacing:.03em;border:1px solid;
-    transition:all .3s;
+    font-size:.7rem;font-weight:700;letter-spacing:.03em;border:1px solid;transition:all .3s;
   }
   .ratio-verdict.corn{background:rgba(230,176,66,.1);color:var(--gold);border-color:rgba(230,176,66,.28)}
   .ratio-verdict.neutral{background:var(--surface2);color:var(--text-dim);border-color:var(--border)}
   .ratio-verdict.beans{background:rgba(34,197,94,.08);color:var(--green);border-color:rgba(34,197,94,.22)}
   .ratio-meta{
     font-size:.63rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;
-    margin-top:.5rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;
+    display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.2rem;
   }
   .ratio-meta-sep{color:var(--border)}
-  .ratio-links{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.55rem}
+  .ratio-links{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.4rem;}
   .ratio-link{
-    font-size:.65rem;font-weight:600;color:var(--text-muted);text-decoration:none;
-    padding:.18rem .5rem;border:1px solid var(--border);border-radius:5px;
+    font-size:.63rem;font-weight:600;color:var(--text-muted);text-decoration:none;
+    padding:.16rem .45rem;border:1px solid var(--border);border-radius:5px;
     transition:border-color .15s,color .15s;
   }
   .ratio-link:hover{border-color:var(--gold);color:var(--gold)}
-  @media(max-width:480px){.ratio-big{font-size:2rem;}.ratio-right{min-width:140px;}}
+  @media(max-width:720px){.ratio-body{flex-wrap:wrap;}.ratio-right{min-width:100%;}}
+  @media(max-width:480px){
+    .ratio-big{font-size:2rem;}
+    .ratio-widget{padding:.75rem .85rem;}
+  }
 
   /* ── COT Widget ─────────────────────────────────────────────── */
   .cot-widget{
@@ -245,67 +232,62 @@
   }
   .cot-widget-head{
     display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;
-    margin-bottom:.7rem;
+    margin-bottom:.6rem;
   }
-  .cot-widget-title{
-    font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);
-  }
+  .cot-widget-title{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
   .cot-verdict{
     display:inline-flex;align-items:center;gap:.3rem;
     padding:.25rem .65rem;border-radius:20px;
-    font-size:.7rem;font-weight:700;letter-spacing:.03em;border:1px solid;
-    transition:all .3s;
+    font-size:.7rem;font-weight:700;letter-spacing:.03em;border:1px solid;transition:all .3s;
   }
   .cot-verdict.long  {background:rgba(34,197,94,.08); color:var(--green); border-color:rgba(34,197,94,.22)}
   .cot-verdict.short {background:rgba(239,68,68,.08); color:#ef4444;      border-color:rgba(239,68,68,.22)}
   .cot-verdict.mixed {background:var(--surface2);      color:var(--text-dim); border-color:var(--border)}
-
-  .cot-rows{display:flex;flex-direction:column;gap:.65rem;flex:1}
-  .cot-row-top{display:flex;align-items:center;justify-content:space-between;gap:.4rem;margin-bottom:.22rem}
-  .cot-label{display:flex;align-items:center;gap:.35rem}
-  .cot-comm-icon{font-size:.9rem;line-height:1}
-  .cot-comm-name{font-size:.78rem;font-weight:700;color:var(--text)}
-  .cot-right{display:flex;align-items:center;gap:.45rem}
-  .cot-net{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;color:var(--text)}
-  .cot-chg{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700}
+  .cot-rows{display:flex;flex-direction:column;gap:.5rem;flex:1}
+  .cot-row-top{display:flex;align-items:center;justify-content:space-between;gap:.4rem;margin-bottom:.2rem}
+  .cot-label{display:flex;align-items:center;gap:.3rem}
+  .cot-comm-icon{font-size:.85rem;line-height:1}
+  .cot-comm-name{font-size:.76rem;font-weight:700;color:var(--text)}
+  .cot-right{display:flex;align-items:center;gap:.4rem}
+  .cot-net{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;color:var(--text)}
+  .cot-chg{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700}
   .cot-chg.up{color:var(--green)} .cot-chg.dn{color:#ef4444} .cot-chg.nc{color:var(--text-muted)}
-
   .cot-bar-wrap{position:relative;height:7px;border-radius:4px;background:var(--surface2);overflow:visible}
   .cot-bar-fill{position:absolute;top:0;height:100%;border-radius:4px;transition:left .5s,width .5s}
   .cot-zero-mark{position:absolute;top:-3px;width:2px;height:13px;background:rgba(255,255,255,.18);border-radius:1px;z-index:1}
   .cot-bar-dot{
     position:absolute;top:50%;width:11px;height:11px;border-radius:50%;
     border:2px solid var(--surface);box-shadow:0 0 0 1.5px var(--border);
-    transform:translate(-50%,-50%);
-    transition:left .5s ease,background .4s;z-index:2;
+    transform:translate(-50%,-50%);transition:left .5s ease,background .4s;z-index:2;
   }
   .cot-bar-labels{
     display:flex;justify-content:space-between;
-    font-size:.54rem;color:var(--text-muted);margin-top:.18rem;
+    font-size:.52rem;color:var(--text-muted);margin-top:.15rem;
     font-family:'JetBrains Mono',monospace;
   }
-
   .cot-footer{
     display:flex;align-items:center;justify-content:space-between;
-    margin-top:.8rem;padding-top:.6rem;border-top:1px solid var(--border);
+    margin-top:.7rem;padding-top:.55rem;border-top:1px solid var(--border);
   }
-  .cot-date{font-size:.62rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
+  .cot-date{font-size:.6rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
   .cot-full-link{
-    font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;
-    padding:.18rem .5rem;border:1px solid rgba(230,176,66,.3);border-radius:5px;
+    font-size:.66rem;font-weight:600;color:var(--gold);text-decoration:none;
+    padding:.16rem .48rem;border:1px solid rgba(230,176,66,.3);border-radius:5px;
     transition:border-color .15s;
   }
   .cot-full-link:hover{border-color:var(--gold)}
+  @media(max-width:480px){
+    .cot-widget{padding:.75rem .85rem;}
+    .cot-net{font-size:.72rem;}
+    .cot-comm-name{font-size:.7rem;}
+  }
 
-  /* ── NOAA Seasonal Outlooks ──────────────────────────────── */
+  /* ── NOAA ─────────────────────────────────────────────────── */
   .noaa-tabs{display:flex;gap:.4rem;margin-bottom:.75rem;flex-wrap:wrap}
   .noaa-tab{
-    padding:.38rem .9rem;border-radius:4px;
-    border:1px solid var(--border);background:var(--surface);
-    color:var(--text-dim);font-family:'JetBrains Mono',monospace;
-    font-size:.72rem;font-weight:700;cursor:pointer;
-    text-transform:uppercase;letter-spacing:.04em;
-    transition:all .15s;
+    padding:.38rem .9rem;border-radius:4px;border:1px solid var(--border);background:var(--surface);
+    color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;
+    cursor:pointer;text-transform:uppercase;letter-spacing:.04em;transition:all .15s;
   }
   .noaa-tab:hover{border-color:var(--gold);color:var(--text)}
   .noaa-tab.active{background:var(--gold);color:#0a1a0a;border-color:var(--gold)}
@@ -313,28 +295,17 @@
   @media(max-width:540px){.noaa-grid{grid-template-columns:1fr}}
   .noaa-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
   .noaa-card-head{
-    display:flex;align-items:center;gap:.4rem;
-    padding:.5rem .8rem;border-bottom:1px solid var(--border);
-    font-family:'JetBrains Mono',monospace;font-size:.62rem;
-    font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    display:flex;align-items:center;gap:.4rem;padding:.5rem .8rem;border-bottom:1px solid var(--border);
+    font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
   }
-  .noaa-card-head.temp{color:#f4834a}
-  .noaa-card-head.precip{color:#5bb8f5}
+  .noaa-card-head.temp{color:#f4834a} .noaa-card-head.precip{color:#5bb8f5}
   .noaa-card img{display:block;width:100%;height:auto;background:var(--surface2);min-height:100px}
-  .noaa-legend{
-    display:flex;align-items:center;flex-wrap:wrap;
-    gap:.3rem 1rem;margin-top:.55rem;
-    font-size:.68rem;color:var(--text-dim);
-  }
+  .noaa-legend{display:flex;align-items:center;flex-wrap:wrap;gap:.3rem 1rem;margin-top:.55rem;font-size:.68rem;color:var(--text-dim);}
   .noaa-swatch{display:inline-block;width:10px;height:10px;border-radius:2px;flex-shrink:0;vertical-align:middle;margin-right:3px}
   .noaa-note{margin-top:.5rem;font-size:.65rem;color:var(--text-muted);line-height:1.55}
   .noaa-note a{color:var(--gold);text-decoration:none}
   .noaa-note a:hover{text-decoration:underline}
-  .noaa-img-err{
-    display:none;align-items:center;justify-content:center;
-    min-height:100px;font-size:.78rem;color:var(--text-muted);
-    text-align:center;padding:.75rem;flex-direction:column;gap:.4rem;
-  }
+  .noaa-img-err{display:none;align-items:center;justify-content:center;min-height:100px;font-size:.78rem;color:var(--text-muted);text-align:center;padding:.75rem;flex-direction:column;gap:.4rem;}
   .noaa-img-err a{color:var(--gold);font-size:.72rem}
 
   @media(prefers-reduced-motion:reduce){
@@ -345,7 +316,7 @@
   }
   .noscript-banner{background:var(--gold);color:#0a1a0a;text-align:center;padding:.75rem 1rem;font-size:.88rem;font-weight:600}
 
-  /* ── Homepage prediction market compact cards ──────────────── */
+  /* ── Prediction market cards ──────────────────────────────── */
   .km-card{
     background:var(--surface);border:1px solid var(--border);border-radius:9px;
     padding:.75rem .9rem;display:flex;flex-direction:column;gap:.38rem;
@@ -378,10 +349,9 @@
 <body>
 <a href="#main" class="skip">Skip to content</a>
 <noscript><div class="noscript-banner">AGSIST requires JavaScript for live prices and weather. Please enable JavaScript.</div></noscript>
-
 <div id="site-header"></div>
 
-<!-- ══ TICKER STRIP ══════════════════════════════════════════════ -->
+<!-- ══ TICKER ════════════════════════════════════════════════════ -->
 <div class="prices-strip" aria-label="Live commodity prices" role="marquee">
   <div class="ticker-outer">
     <div class="ticker-live"><div class="live-dot" aria-hidden="true"></div><span>LIVE</span></div>
@@ -435,11 +405,9 @@
   </div>
 </div>
 
-<!-- ══ AGSIST DAILY HERO STYLES ══════════════════════════════════ -->
 <style>
 .dh{--dh-pad:1rem;max-width:1400px;margin:0 auto}
 .dh *{box-sizing:border-box}
-.dh-greeting{font-family:'Oswald',sans-serif;font-size:1.35rem;font-weight:600;color:var(--text-dim);letter-spacing:.03em;margin-bottom:.15rem}
 .dh-eyebrow{display:flex;align-items:center;gap:.45rem;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.15rem}
 .dh-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite}
 .dh-headline{font-family:'Oswald',sans-serif;font-size:1.65rem;font-weight:800;line-height:1.15;color:var(--text);margin:0 0 .5rem;letter-spacing:-.01em;text-transform:uppercase}
@@ -447,18 +415,15 @@
 .dh-fc--plan{background:rgba(230,176,66,.1);color:var(--gold);border:1px solid rgba(230,176,66,.2)}
 .dh-fc--go{background:rgba(34,197,94,.08);color:var(--green);border:1px solid rgba(34,197,94,.18)}
 .dh-fc--stop{background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.2)}
-.dh-fc--caution{background:rgba(230,176,66,.1);color:var(--gold);border:1px solid rgba(230,176,66,.2)}
 @media(min-width:700px){.dh{--dh-pad:1.75rem}.dh-headline{font-size:2.2rem}}
 @media(min-width:1000px){.dh-headline{font-size:2.6rem}}
 </style>
 
-<!-- ══ AGSIST DAILY HERO ═════════════════════════════════════════ -->
+<!-- ══ DAILY HERO ════════════════════════════════════════════════ -->
 <section class="daily-hero" id="daily-hero">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing">
     <div class="teaser-line1">
-      <div class="teaser-left">
-        <span class="teaser-badge" id="daily-teaser-date">📰 AGSIST Daily</span>
-      </div>
+      <div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date">📰 AGSIST Daily</span></div>
       <span class="teaser-action">Read Today's Briefing ↓</span>
     </div>
     <span class="teaser-preview" id="daily-teaser-text">Today's ag market briefing — click to read</span>
@@ -569,104 +534,97 @@
 </section>
 
 <main id="main" class="main">
-  <!-- ══ DASH GRID ═════════════════════════════════════════════════ -->
   <div class="dash-grid">
     <div class="fade-up" id="f1">
       <div class="sec-head">
         <div class="sec-title">💵 Cash Bids &amp; Basis</div>
         <a href="/cash-bids" class="sec-all">Find Elevators →</a>
       </div>
-      <div class="card">
-        <div class="card-body">
-          <div id="bids-geo-bar" style="display:flex;align-items:center;gap:.55rem;margin-bottom:.6rem;font-size:.75rem;color:var(--text-dim)">
-            <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite" aria-hidden="true"></span>
-            <span id="bids-geo-txt">Detecting your location…</span>
-            <button id="bids-enter-zip-btn" style="margin-left:auto;background:none;border:none;color:var(--text-muted);font-size:.7rem;cursor:pointer;text-decoration:underline">Enter ZIP</button>
-          </div>
-          <div id="bids-zip-row" style="display:none;gap:.55rem;margin-bottom:1.1rem">
-            <input type="text" id="bids-zip" placeholder="Enter your ZIP code" maxlength="5" aria-label="ZIP code for cash bids" style="flex:1;padding:.7rem .9rem;background:var(--surface2);border:1px solid var(--border);border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:.9rem;color:var(--text);outline:none;transition:border-color .15s">
-            <button id="bids-lookup-btn" style="padding:.7rem 1rem;background:var(--gold);color:#0a1a0a;border:none;border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s">Find Bids →</button>
-          </div>
-          <div id="bids-list-area">
-            <div class="bids-skeleton" aria-label="Loading cash bids"><div class="bids-skel-row"></div><div class="bids-skel-row"></div><div class="bids-skel-row"></div></div>
-          </div>
+      <div class="card"><div class="card-body">
+        <div id="bids-geo-bar" style="display:flex;align-items:center;gap:.55rem;margin-bottom:.6rem;font-size:.75rem;color:var(--text-dim)">
+          <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite" aria-hidden="true"></span>
+          <span id="bids-geo-txt">Detecting your location…</span>
+          <button id="bids-enter-zip-btn" style="margin-left:auto;background:none;border:none;color:var(--text-muted);font-size:.7rem;cursor:pointer;text-decoration:underline">Enter ZIP</button>
         </div>
-      </div>
+        <div id="bids-zip-row" style="display:none;gap:.55rem;margin-bottom:1.1rem">
+          <input type="text" id="bids-zip" placeholder="Enter your ZIP code" maxlength="5" aria-label="ZIP code for cash bids" style="flex:1;padding:.7rem .9rem;background:var(--surface2);border:1px solid var(--border);border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:.9rem;color:var(--text);outline:none;transition:border-color .15s">
+          <button id="bids-lookup-btn" style="padding:.7rem 1rem;background:var(--gold);color:#0a1a0a;border:none;border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s">Find Bids →</button>
+        </div>
+        <div id="bids-list-area">
+          <div class="bids-skeleton" aria-label="Loading cash bids"><div class="bids-skel-row"></div><div class="bids-skel-row"></div><div class="bids-skel-row"></div></div>
+        </div>
+      </div></div>
     </div>
     <div class="fade-up" id="f2" style="transition-delay:.08s">
       <div class="sec-head"><div class="sec-title">Local Conditions</div></div>
-      <div class="card">
-        <div class="card-body">
-          <div id="wx-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 0;gap:.65rem">
-            <div style="font-size:1.8rem" aria-hidden="true">📍</div>
-            <div style="font-size:.9rem;color:var(--text-dim);text-align:center">Getting your local weather…</div>
-            <button id="btn-allow-loc" style="padding:.55rem 1.1rem;background:var(--gold);color:#0a1a0a;border:none;border-radius:6px;font-size:.82rem;font-weight:700;cursor:pointer">Allow Location</button>
-            <button id="btn-zip-instead" style="background:none;border:none;color:var(--text-muted);font-size:.78rem;cursor:pointer;text-decoration:underline">Enter ZIP instead</button>
-          </div>
-          <div id="wx-zip-entry" style="display:none;margin-bottom:.85rem">
-            <div style="display:flex;gap:.5rem">
-              <input type="text" id="wx-zip" placeholder="ZIP code" maxlength="5" aria-label="ZIP code for weather" style="flex:1;padding:.65rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:.9rem;color:var(--text);outline:none;transition:border-color .15s">
-              <button id="btn-wx-go" style="padding:.65rem 1rem;background:var(--gold);color:#0a1a0a;border:none;border-radius:7px;font-size:.85rem;font-weight:700;cursor:pointer">Go</button>
-            </div>
-          </div>
-          <div id="wx-data" style="display:none">
-            <div class="wx-hero">
-              <div class="wx-icon" id="wx-icon" aria-hidden="true">⛅</div>
-              <div>
-                <div class="wx-temp"><span id="wx-temp">--</span></div>
-                <div class="wx-desc" id="wx-desc">Current conditions</div>
-                <div class="wx-loc" id="wx-loc">📍 Locating...</div>
-              </div>
-            </div>
-            <div class="wx-grid">
-              <div class="wstat"><div class="wstat-lbl">Wind</div><div class="wstat-val" id="wx-wind">--</div></div>
-              <div class="wstat"><div class="wstat-lbl">Humidity</div><div class="wstat-val" id="wx-humid">--</div></div>
-              <div class="wstat"><div class="wstat-lbl">Precip Chance</div><div class="wstat-val" id="wx-precip">--</div></div>
-              <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div>
-            </div>
-            <div id="wx-forecast" style="display:flex;gap:.4rem;margin-top:.85rem"></div>
-            <button id="btn-change-loc" style="margin-top:.65rem;background:none;border:none;color:var(--text-muted);font-size:.72rem;cursor:pointer;text-decoration:underline">Change location</button>
+      <div class="card"><div class="card-body">
+        <div id="wx-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 0;gap:.65rem">
+          <div style="font-size:1.8rem" aria-hidden="true">📍</div>
+          <div style="font-size:.9rem;color:var(--text-dim);text-align:center">Getting your local weather…</div>
+          <button id="btn-allow-loc" style="padding:.55rem 1.1rem;background:var(--gold);color:#0a1a0a;border:none;border-radius:6px;font-size:.82rem;font-weight:700;cursor:pointer">Allow Location</button>
+          <button id="btn-zip-instead" style="background:none;border:none;color:var(--text-muted);font-size:.78rem;cursor:pointer;text-decoration:underline">Enter ZIP instead</button>
+        </div>
+        <div id="wx-zip-entry" style="display:none;margin-bottom:.85rem">
+          <div style="display:flex;gap:.5rem">
+            <input type="text" id="wx-zip" placeholder="ZIP code" maxlength="5" aria-label="ZIP code for weather" style="flex:1;padding:.65rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:.9rem;color:var(--text);outline:none;transition:border-color .15s">
+            <button id="btn-wx-go" style="padding:.65rem 1rem;background:var(--gold);color:#0a1a0a;border:none;border-radius:7px;font-size:.85rem;font-weight:700;cursor:pointer">Go</button>
           </div>
         </div>
-      </div>
+        <div id="wx-data" style="display:none">
+          <div class="wx-hero">
+            <div class="wx-icon" id="wx-icon" aria-hidden="true">⛅</div>
+            <div>
+              <div class="wx-temp"><span id="wx-temp">--</span></div>
+              <div class="wx-desc" id="wx-desc">Current conditions</div>
+              <div class="wx-loc" id="wx-loc">📍 Locating...</div>
+            </div>
+          </div>
+          <div class="wx-grid">
+            <div class="wstat"><div class="wstat-lbl">Wind</div><div class="wstat-val" id="wx-wind">--</div></div>
+            <div class="wstat"><div class="wstat-lbl">Humidity</div><div class="wstat-val" id="wx-humid">--</div></div>
+            <div class="wstat"><div class="wstat-lbl">Precip Chance</div><div class="wstat-val" id="wx-precip">--</div></div>
+            <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div>
+          </div>
+          <div id="wx-forecast" style="display:flex;gap:.4rem;margin-top:.85rem"></div>
+          <button id="btn-change-loc" style="margin-top:.65rem;background:none;border:none;color:var(--text-muted);font-size:.72rem;cursor:pointer;text-decoration:underline">Change location</button>
+        </div>
+      </div></div>
     </div>
     <div class="fade-up" id="f3" style="transition-delay:.16s">
       <div class="sec-head"><div class="sec-title">🛠️ Quick Tools</div></div>
-      <div class="card">
-        <div class="card-body">
-          <div class="tool-list">
-            <a href="/breakeven" class="tool-btn"><span class="tool-name">📐 Break-Even Calculator</span><span class="tool-arr">→</span></a>
-            <a href="/grain-bin-calculator" class="tool-btn"><span class="tool-name">🏗️ Grain Bin Calculator</span><span class="tool-arr">→</span></a>
-            <a href="/gdu-calculator" class="tool-btn"><span class="tool-name">🌡️ GDU Calculator</span><span class="tool-arr">→</span></a>
-            <a href="/spray" id="wsp-spray" class="tool-widget">
-              <div class="tool-widget-inner">
-                <span class="tool-widget-icon" id="wsp-spray-icon">⏳</span>
-                <div class="tool-widget-body">
-                  <span class="tool-widget-status" id="wsp-spray-status">Loading spray conditions…</span>
-                  <span class="tool-widget-detail" id="wsp-spray-detail">Waiting for weather data</span>
-                </div>
+      <div class="card"><div class="card-body">
+        <div class="tool-list">
+          <a href="/breakeven" class="tool-btn"><span class="tool-name">📐 Break-Even Calculator</span><span class="tool-arr">→</span></a>
+          <a href="/grain-bin-calculator" class="tool-btn"><span class="tool-name">🏗️ Grain Bin Calculator</span><span class="tool-arr">→</span></a>
+          <a href="/gdu-calculator" class="tool-btn"><span class="tool-name">🌡️ GDU Calculator</span><span class="tool-arr">→</span></a>
+          <a href="/spray" id="wsp-spray" class="tool-widget">
+            <div class="tool-widget-inner">
+              <span class="tool-widget-icon" id="wsp-spray-icon">⏳</span>
+              <div class="tool-widget-body">
+                <span class="tool-widget-status" id="wsp-spray-status">Loading spray conditions…</span>
+                <span class="tool-widget-detail" id="wsp-spray-detail">Waiting for weather data</span>
+              </div>
+              <span class="tool-widget-arr">→</span>
+            </div>
+          </a>
+          <a href="/urea" class="tool-widget tool-widget--urea">
+            <div class="tool-widget-inner">
+              <div class="tool-widget-top">
+                <span class="tool-widget-icon">🌾</span>
+                <div class="tool-widget-body"><span class="tool-widget-status">Urea Volatilization Risk</span></div>
+                <span class="tool-widget-score" id="wsp-urea-score">--</span>
                 <span class="tool-widget-arr">→</span>
               </div>
-            </a>
-            <a href="/urea" class="tool-widget tool-widget--urea">
-              <div class="tool-widget-inner">
-                <div class="tool-widget-top">
-                  <span class="tool-widget-icon">🌾</span>
-                  <div class="tool-widget-body"><span class="tool-widget-status">Urea Volatilization Risk</span></div>
-                  <span class="tool-widget-score" id="wsp-urea-score">--</span>
-                  <span class="tool-widget-arr">→</span>
-                </div>
-                <div class="tool-widget-bottom">
-                  <span class="tool-widget-badge" id="wsp-urea-badge">Loading…</span>
-                  <span class="tool-widget-rec" id="wsp-urea-rec">Waiting for weather data</span>
-                </div>
+              <div class="tool-widget-bottom">
+                <span class="tool-widget-badge" id="wsp-urea-badge">Loading…</span>
+                <span class="tool-widget-rec" id="wsp-urea-rec">Waiting for weather data</span>
               </div>
-            </a>
-            <a href="/ag-odds" class="tool-btn"><span class="tool-name">🎯 Ag Prediction Markets</span><span class="tool-arr">→</span></a>
-            <a href="/fast-facts" class="tool-btn"><span class="tool-name">⚡ Fast Facts</span><span class="tool-arr">→</span></a>
-          </div>
+            </div>
+          </a>
+          <a href="/ag-odds" class="tool-btn"><span class="tool-name">🎯 Ag Prediction Markets</span><span class="tool-arr">→</span></a>
+          <a href="/fast-facts" class="tool-btn"><span class="tool-name">⚡ Fast Facts</span><span class="tool-arr">→</span></a>
         </div>
-      </div>
+      </div></div>
     </div>
   </div>
 
@@ -676,7 +634,6 @@
       <div class="sec-title">📈 Market Prices</div>
       <a href="/corn-futures-prices" class="sec-all">All Charts →</a>
     </div>
-
     <div class="mkt-summary" id="mkt-summary" aria-label="Market overview">
       <div class="mkt-sum-item"><span class="msi-icon">🌽</span><span class="msi-name">Corn</span><span class="msi-price" id="ms-corn-p">--</span><span class="msi-chg nc" id="ms-corn-c">--</span></div>
       <div class="mkt-sum-item"><span class="msi-icon">🫘</span><span class="msi-name">Beans</span><span class="msi-price" id="ms-beans-p">--</span><span class="msi-chg nc" id="ms-beans-c">--</span></div>
@@ -723,7 +680,7 @@
       </div>
     </div>
 
-    <!-- ══ RATIO + COT WIDGET ROW ════════════════════════════════ -->
+    <!-- ══ RATIO + COT ══════════════════════════════════════════ -->
     <div class="ratio-cot-grid">
 
       <!-- Corn/Bean Ratio -->
@@ -741,7 +698,8 @@
             <div class="ratio-label">Nov Beans ÷ Dec Corn</div>
           </div>
           <div class="ratio-right">
-            <div class="ratio-gauge-wrap">
+            <!-- top group: gauge + meta -->
+            <div>
               <div class="ratio-gauge-track" id="ratio-gauge-track">
                 <div class="ratio-gauge-dot" id="ratio-gauge-dot" style="left:50%;background:var(--text-muted)"></div>
               </div>
@@ -750,104 +708,70 @@
                 <span>Neutral</span>
                 <span style="color:var(--green)">Beans favored ▶</span>
               </div>
+              <div class="ratio-meta">
+                <span>Dec Corn: <strong id="ratio-corn-price" style="color:var(--text)">--</strong></span>
+                <span class="ratio-meta-sep">·</span>
+                <span>Nov Beans: <strong id="ratio-beans-price" style="color:var(--text)">--</strong></span>
+              </div>
             </div>
-            <div class="ratio-meta">
-              <span>Dec Corn: <strong id="ratio-corn-price" style="color:var(--text)">--</strong></span>
-              <span class="ratio-meta-sep">·</span>
-              <span>Nov Beans: <strong id="ratio-beans-price" style="color:var(--text)">--</strong></span>
-            </div>
-            <div style="font-size:.64rem;color:var(--text-muted);margin-top:.35rem;line-height:1.55">
-              Historically: <strong style="color:var(--gold)">&lt;2.4</strong> favors corn acres · <strong style="color:var(--text-dim)">2.4–2.6</strong> neutral · <strong style="color:var(--green)">&gt;2.6</strong> favors beans
-            </div>
-            <div class="ratio-links">
-              <a href="/breakeven" class="ratio-link">📐 Break-Even Calc</a>
-              <a href="/soybean-futures-prices" class="ratio-link">🫘 Bean Chart</a>
-              <a href="/corn-futures-prices" class="ratio-link">🌽 Corn Chart</a>
+            <!-- bottom group: historical note + links -->
+            <div>
+              <div style="font-size:.62rem;color:var(--text-muted);line-height:1.5;margin-bottom:.3rem">
+                Historically: <strong style="color:var(--gold)">&lt;2.4</strong> favors corn · <strong style="color:var(--text-dim)">2.4–2.6</strong> neutral · <strong style="color:var(--green)">&gt;2.6</strong> favors beans
+              </div>
+              <div class="ratio-links">
+                <a href="/breakeven" class="ratio-link">📐 Break-Even</a>
+                <a href="/soybean-futures-prices" class="ratio-link">🫘 Beans</a>
+                <a href="/corn-futures-prices" class="ratio-link">🌽 Corn</a>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- CFTC Commitment of Traders -->
+      <!-- CFTC COT -->
       <div class="cot-widget" id="cot-widget">
         <div class="cot-widget-head">
           <span class="cot-widget-title">📊 CFTC COT — Fund Positioning</span>
           <span class="cot-verdict mixed" id="cot-verdict">Loading…</span>
         </div>
         <div class="cot-rows" id="cot-rows">
-
-          <!-- Corn -->
           <div>
             <div class="cot-row-top">
-              <div class="cot-label">
-                <span class="cot-comm-icon">🌽</span>
-                <span class="cot-comm-name">Corn</span>
-              </div>
-              <div class="cot-right">
-                <span class="cot-net" id="cot-corn-net">--</span>
-                <span class="cot-chg nc" id="cot-corn-chg">--</span>
-              </div>
+              <div class="cot-label"><span class="cot-comm-icon">🌽</span><span class="cot-comm-name">Corn</span></div>
+              <div class="cot-right"><span class="cot-net" id="cot-corn-net">--</span><span class="cot-chg nc" id="cot-corn-chg">--</span></div>
             </div>
             <div class="cot-bar-wrap">
               <div class="cot-bar-fill" id="cot-corn-fill"></div>
               <div class="cot-zero-mark" id="cot-corn-zero"></div>
               <div class="cot-bar-dot" id="cot-corn-dot" style="background:var(--text-muted)"></div>
             </div>
-            <div class="cot-bar-labels">
-              <span id="cot-corn-min">--</span>
-              <span>52-wk range · contracts</span>
-              <span id="cot-corn-max">--</span>
-            </div>
+            <div class="cot-bar-labels"><span id="cot-corn-min">--</span><span>52-wk range · contracts</span><span id="cot-corn-max">--</span></div>
           </div>
-
-          <!-- Soybeans -->
           <div>
             <div class="cot-row-top">
-              <div class="cot-label">
-                <span class="cot-comm-icon">🫘</span>
-                <span class="cot-comm-name">Soybeans</span>
-              </div>
-              <div class="cot-right">
-                <span class="cot-net" id="cot-beans-net">--</span>
-                <span class="cot-chg nc" id="cot-beans-chg">--</span>
-              </div>
+              <div class="cot-label"><span class="cot-comm-icon">🫘</span><span class="cot-comm-name">Soybeans</span></div>
+              <div class="cot-right"><span class="cot-net" id="cot-beans-net">--</span><span class="cot-chg nc" id="cot-beans-chg">--</span></div>
             </div>
             <div class="cot-bar-wrap">
               <div class="cot-bar-fill" id="cot-beans-fill"></div>
               <div class="cot-zero-mark" id="cot-beans-zero"></div>
               <div class="cot-bar-dot" id="cot-beans-dot" style="background:var(--text-muted)"></div>
             </div>
-            <div class="cot-bar-labels">
-              <span id="cot-beans-min">--</span>
-              <span>52-wk range · contracts</span>
-              <span id="cot-beans-max">--</span>
-            </div>
+            <div class="cot-bar-labels"><span id="cot-beans-min">--</span><span>52-wk range · contracts</span><span id="cot-beans-max">--</span></div>
           </div>
-
-          <!-- Wheat -->
           <div>
             <div class="cot-row-top">
-              <div class="cot-label">
-                <span class="cot-comm-icon">🌾</span>
-                <span class="cot-comm-name">Wheat</span>
-              </div>
-              <div class="cot-right">
-                <span class="cot-net" id="cot-wheat-net">--</span>
-                <span class="cot-chg nc" id="cot-wheat-chg">--</span>
-              </div>
+              <div class="cot-label"><span class="cot-comm-icon">🌾</span><span class="cot-comm-name">Wheat</span></div>
+              <div class="cot-right"><span class="cot-net" id="cot-wheat-net">--</span><span class="cot-chg nc" id="cot-wheat-chg">--</span></div>
             </div>
             <div class="cot-bar-wrap">
               <div class="cot-bar-fill" id="cot-wheat-fill"></div>
               <div class="cot-zero-mark" id="cot-wheat-zero"></div>
               <div class="cot-bar-dot" id="cot-wheat-dot" style="background:var(--text-muted)"></div>
             </div>
-            <div class="cot-bar-labels">
-              <span id="cot-wheat-min">--</span>
-              <span>52-wk range · contracts</span>
-              <span id="cot-wheat-max">--</span>
-            </div>
+            <div class="cot-bar-labels"><span id="cot-wheat-min">--</span><span>52-wk range · contracts</span><span id="cot-wheat-max">--</span></div>
           </div>
-
         </div>
         <div class="cot-footer">
           <span class="cot-date" id="cot-date">CFTC · Updated weekly</span>
@@ -861,60 +785,46 @@
     <div class="price-cards-grid-2">
       <div class="pc pc-sm" data-spark="wheat">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">🌾</span>Wheat</span><span class="pc-contract">Front Month</span></div>
-        <div class="pc-price" id="pcp-wheat">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-wheat">--</span></div>
-        <div class="pc-prev" id="pcprev-wheat"></div>
-        <div class="pc-spark" data-spark="wheat"></div>
+        <div class="pc-price" id="pcp-wheat">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-wheat">--</span></div>
+        <div class="pc-prev" id="pcprev-wheat"></div><div class="pc-spark" data-spark="wheat"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$4.88</span><span></span><span>$7.20</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:42%"></div><div class="pc-range-dot" style="left:42%"></div></div></div>
       </div>
       <div class="pc pc-sm" data-spark="oats">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">🌾</span>Oats</span><span class="pc-contract">Front Month</span></div>
-        <div class="pc-price" id="pcp-oats">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-oats">--</span></div>
-        <div class="pc-prev" id="pcprev-oats"></div>
-        <div class="pc-spark" data-spark="oats"></div>
+        <div class="pc-price" id="pcp-oats">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-oats">--</span></div>
+        <div class="pc-prev" id="pcprev-oats"></div><div class="pc-spark" data-spark="oats"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$2.80</span><span></span><span>$4.50</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:32%"></div><div class="pc-range-dot" style="left:32%"></div></div></div>
       </div>
       <div class="pc pc-sm" data-spark="meal">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">🫘</span>Soy Meal</span><span class="pc-contract">Front Month</span></div>
-        <div class="pc-price" id="pcp-meal">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-meal">--</span></div>
-        <div class="pc-prev" id="pcprev-meal"></div>
-        <div class="pc-spark" data-spark="meal"></div>
+        <div class="pc-price" id="pcp-meal">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-meal">--</span></div>
+        <div class="pc-prev" id="pcprev-meal"></div><div class="pc-spark" data-spark="meal"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$285</span><span></span><span>$375</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:44%"></div><div class="pc-range-dot" style="left:44%"></div></div></div>
       </div>
     </div>
     <div class="price-cards-grid-2" style="margin-bottom:.5rem">
       <div class="pc pc-sm" data-spark="cattle">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">🐄</span>Live Cattle</span><span class="pc-contract">Front Month</span></div>
-        <div class="pc-price" id="pcp-cattle">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-cattle">--</span></div>
-        <div class="pc-prev" id="pcprev-cattle"></div>
-        <div class="pc-spark" data-spark="cattle"></div>
+        <div class="pc-price" id="pcp-cattle">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-cattle">--</span></div>
+        <div class="pc-prev" id="pcprev-cattle"></div><div class="pc-spark" data-spark="cattle"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$215</span><span></span><span>$265</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:29%"></div><div class="pc-range-dot" style="left:29%"></div></div></div>
       </div>
       <div class="pc pc-sm" data-spark="feeders">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">🐄</span>Feeder Cattle</span><span class="pc-contract">Front Month</span></div>
-        <div class="pc-price" id="pcp-feeders">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-feeders">--</span></div>
-        <div class="pc-prev" id="pcprev-feeders"></div>
-        <div class="pc-spark" data-spark="feeders"></div>
+        <div class="pc-price" id="pcp-feeders">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-feeders">--</span></div>
+        <div class="pc-prev" id="pcprev-feeders"></div><div class="pc-spark" data-spark="feeders"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$285</span><span></span><span>$385</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:52%"></div><div class="pc-range-dot" style="left:52%"></div></div></div>
       </div>
       <div class="pc pc-sm" data-spark="hogs">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">🐖</span>Lean Hogs</span><span class="pc-contract">Front Month</span></div>
-        <div class="pc-price" id="pcp-hogs">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-hogs">--</span></div>
-        <div class="pc-prev" id="pcprev-hogs"></div>
-        <div class="pc-spark" data-spark="hogs"></div>
+        <div class="pc-price" id="pcp-hogs">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-hogs">--</span></div>
+        <div class="pc-prev" id="pcprev-hogs"></div><div class="pc-spark" data-spark="hogs"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$70</span><span></span><span>$110</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:38%"></div><div class="pc-range-dot" style="left:38%"></div></div></div>
       </div>
       <div class="pc pc-sm" data-spark="milk">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">🥛</span>Class III Milk</span><span class="pc-contract">Front Month</span></div>
-        <div class="pc-price" id="pcp-milk">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-milk">--</span></div>
-        <div class="pc-prev" id="pcprev-milk"></div>
-        <div class="pc-spark" data-spark="milk"></div>
+        <div class="pc-price" id="pcp-milk">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-milk">--</span></div>
+        <div class="pc-prev" id="pcprev-milk"></div><div class="pc-spark" data-spark="milk"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$14</span><span></span><span>$21</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:30%"></div><div class="pc-range-dot" style="left:30%"></div></div></div>
       </div>
     </div>
@@ -923,40 +833,32 @@
     <div class="price-cards-grid-2">
       <div class="pc pc-sm" data-spark="crude">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">🛢️</span>Crude Oil WTI</span><span class="pc-contract">Front Month</span></div>
-        <div class="pc-price" id="pcp-crude">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-crude">--</span></div>
-        <div class="pc-prev" id="pcprev-crude"></div>
-        <div class="pc-spark" data-spark="crude"></div>
+        <div class="pc-price" id="pcp-crude">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-crude">--</span></div>
+        <div class="pc-prev" id="pcprev-crude"></div><div class="pc-spark" data-spark="crude"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$62</span><span></span><span>$106</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:68%"></div><div class="pc-range-dot" style="left:68%"></div></div></div>
       </div>
       <div class="pc pc-sm" data-spark="natgas">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">🔥</span>Natural Gas</span><span class="pc-contract">Front Month</span></div>
-        <div class="pc-price" id="pcp-natgas">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-natgas">--</span></div>
-        <div class="pc-prev" id="pcprev-natgas"></div>
-        <div class="pc-spark" data-spark="natgas"></div>
+        <div class="pc-price" id="pcp-natgas">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-natgas">--</span></div>
+        <div class="pc-prev" id="pcprev-natgas"></div><div class="pc-spark" data-spark="natgas"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$1.56</span><span></span><span>$4.88</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:40%"></div><div class="pc-range-dot" style="left:40%"></div></div></div>
       </div>
       <div class="pc pc-sm" data-spark="dollar">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">💵</span>Dollar Index</span><span class="pc-contract">Spot</span></div>
-        <div class="pc-price" id="pcp-dollar">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-dollar">--</span></div>
-        <div class="pc-prev" id="pcprev-dollar"></div>
-        <div class="pc-spark" data-spark="dollar"></div>
+        <div class="pc-price" id="pcp-dollar">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-dollar">--</span></div>
+        <div class="pc-prev" id="pcprev-dollar"></div><div class="pc-spark" data-spark="dollar"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$95.55</span><span></span><span>$107.66</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:37%"></div><div class="pc-range-dot" style="left:37%"></div></div></div>
       </div>
       <div class="pc pc-sm" data-spark="sp500">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">📈</span>S&amp;P 500</span><span class="pc-contract">Spot</span></div>
-        <div class="pc-price" id="pcp-sp500">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-sp500">--</span></div>
-        <div class="pc-prev" id="pcprev-sp500"></div>
-        <div class="pc-spark" data-spark="sp500"></div>
+        <div class="pc-price" id="pcp-sp500">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-sp500">--</span></div>
+        <div class="pc-prev" id="pcprev-sp500"></div><div class="pc-spark" data-spark="sp500"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>4,900</span><span></span><span>6,700</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:92%"></div><div class="pc-range-dot" style="left:92%"></div></div></div>
       </div>
     </div>
   </div>
 
-  <!-- ══ RADAR + WEATHER MAP ═══════════════════════════════════════ -->
+  <!-- ══ RADAR ═════════════════════════════════════════════════════ -->
   <div class="radar-section fade-up" id="f-radar">
     <div class="sec-head">
       <div class="sec-title">🗺️ Radar, Forecast &amp; Drought</div>
@@ -1002,56 +904,31 @@
     </div>
   </div>
 
-  <!-- ══ NOAA SEASONAL OUTLOOKS ════════════════════════════════════ -->
+  <!-- ══ NOAA ═══════════════════════════════════════════════════════ -->
   <div class="fade-up" id="f-noaa">
     <div class="sec-head">
       <div class="sec-title">🌡️ NOAA Seasonal Outlooks</div>
       <a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" rel="noopener" class="sec-all">CPC Full Outlooks →</a>
     </div>
-
     <div class="noaa-tabs" id="noaa-tabs">
       <button class="noaa-tab active" data-period="30" data-label="1-Month (30-Day)">1-Month</button>
       <button class="noaa-tab" data-period="90" data-label="3-Month (90-Day)">3-Month</button>
     </div>
-
     <div class="noaa-grid">
       <div class="noaa-card">
         <div class="noaa-card-head temp">🌡️ Temperature Outlook</div>
-        <img id="noaa-temp-img"
-          src="https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_temp.gif"
-          alt="NOAA 1-month temperature outlook — above/below normal probabilities for the US"
-          loading="lazy"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="noaa-img-err">
-          <span>🌡️ Image unavailable</span>
-          <a href="https://www.cpc.ncep.noaa.gov/products/predictions/30day/" target="_blank" rel="noopener">View on NOAA CPC →</a>
-        </div>
+        <img id="noaa-temp-img" src="https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_temp.gif" alt="NOAA 1-month temperature outlook" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="noaa-img-err"><span>🌡️ Image unavailable</span><a href="https://www.cpc.ncep.noaa.gov/products/predictions/30day/" target="_blank" rel="noopener">View on NOAA CPC →</a></div>
       </div>
       <div class="noaa-card">
         <div class="noaa-card-head precip">🌧️ Precipitation Outlook</div>
-        <img id="noaa-precip-img"
-          src="https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_prcp.gif"
-          alt="NOAA 1-month precipitation outlook — above/below normal probabilities for the US"
-          loading="lazy"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="noaa-img-err">
-          <span>🌧️ Image unavailable</span>
-          <a href="https://www.cpc.ncep.noaa.gov/products/predictions/30day/" target="_blank" rel="noopener">View on NOAA CPC →</a>
-        </div>
+        <img id="noaa-precip-img" src="https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_prcp.gif" alt="NOAA 1-month precipitation outlook" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="noaa-img-err"><span>🌧️ Image unavailable</span><a href="https://www.cpc.ncep.noaa.gov/products/predictions/30day/" target="_blank" rel="noopener">View on NOAA CPC →</a></div>
       </div>
     </div>
-
     <div class="noaa-legend">
-      <span>Temp:
-        <span class="noaa-swatch" style="background:#c1440e"></span>Above normal &nbsp;
-        <span class="noaa-swatch" style="background:#888;opacity:.5"></span>Equal chances &nbsp;
-        <span class="noaa-swatch" style="background:#1a7abf"></span>Below normal
-      </span>
-      <span style="margin-left:.5rem">Precip:
-        <span class="noaa-swatch" style="background:#2d8c4e"></span>Above normal &nbsp;
-        <span class="noaa-swatch" style="background:#888;opacity:.5"></span>Equal chances &nbsp;
-        <span class="noaa-swatch" style="background:#b07d2a"></span>Below normal
-      </span>
+      <span>Temp: <span class="noaa-swatch" style="background:#c1440e"></span>Above normal &nbsp;<span class="noaa-swatch" style="background:#888;opacity:.5"></span>Equal chances &nbsp;<span class="noaa-swatch" style="background:#1a7abf"></span>Below normal</span>
+      <span style="margin-left:.5rem">Precip: <span class="noaa-swatch" style="background:#2d8c4e"></span>Above normal &nbsp;<span class="noaa-swatch" style="background:#888;opacity:.5"></span>Equal chances &nbsp;<span class="noaa-swatch" style="background:#b07d2a"></span>Below normal</span>
     </div>
     <div class="noaa-note">
       Source: <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" rel="noopener">NOAA Climate Prediction Center</a> ·
@@ -1069,50 +946,40 @@
     <div class="cal-strip" id="usda-cal-strip" role="list" aria-label="Upcoming USDA report dates"></div>
   </div>
 
-  <!-- ══ METALS & DIGITAL ASSETS ═══════════════════════════════════ -->
+  <!-- ══ METALS & DIGITAL ═══════════════════════════════════════════ -->
   <div class="fade-up" id="f-crypto">
     <div class="pc-section-lbl">🥇 Metals &amp; Digital Assets</div>
     <div class="price-cards-grid-2" style="margin-bottom:1rem">
       <div class="pc pc-sm" data-spark="gold">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">🥇</span>Gold</span><span class="pc-contract">Spot</span></div>
-        <div class="pc-price" id="pcp-gold">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-gold">--</span></div>
-        <div class="pc-prev" id="pcprev-gold"></div>
-        <div class="pc-spark" data-spark="gold"></div>
+        <div class="pc-price" id="pcp-gold">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-gold">--</span></div>
+        <div class="pc-prev" id="pcprev-gold"></div><div class="pc-spark" data-spark="gold"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$2,800</span><span></span><span>$5,400</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:61%"></div><div class="pc-range-dot" style="left:61%"></div></div></div>
       </div>
       <div class="pc pc-sm" data-spark="silver">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">🥈</span>Silver</span><span class="pc-contract">Spot</span></div>
-        <div class="pc-price" id="pcp-silver">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-silver">--</span></div>
-        <div class="pc-prev" id="pcprev-silver"></div>
-        <div class="pc-spark" data-spark="silver"></div>
+        <div class="pc-price" id="pcp-silver">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-silver">--</span></div>
+        <div class="pc-prev" id="pcprev-silver"></div><div class="pc-spark" data-spark="silver"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$55</span><span></span><span>$100</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:30%"></div><div class="pc-range-dot" style="left:30%"></div></div></div>
       </div>
       <div class="pc pc-sm" data-spark="bitcoin">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">₿</span>Bitcoin</span><span class="pc-contract">USD</span></div>
-        <div class="pc-price" id="pc-btc">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-btc">--</span></div>
-        <div class="pc-prev" id="pcprev-btc"></div>
-        <div class="pc-spark" data-spark="bitcoin"></div>
+        <div class="pc-price" id="pc-btc">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-btc">--</span></div>
+        <div class="pc-prev" id="pcprev-btc"></div><div class="pc-spark" data-spark="bitcoin"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$49,000</span><span></span><span>$106,000</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:37%"></div><div class="pc-range-dot" style="left:37%"></div></div></div>
       </div>
       <div class="pc pc-sm" data-spark="ripple">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">◎</span>XRP</span><span class="pc-contract">USD</span></div>
-        <div class="pc-price" id="pc-xrp">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-xrp">--</span></div>
-        <div class="pc-prev" id="pcprev-xrp"></div>
-        <div class="pc-spark" data-spark="ripple"></div>
+        <div class="pc-price" id="pc-xrp">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-xrp">--</span></div>
+        <div class="pc-prev" id="pcprev-xrp"></div><div class="pc-spark" data-spark="ripple"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$0.40</span><span></span><span>$3.40</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:34%"></div><div class="pc-range-dot" style="left:34%"></div></div></div>
       </div>
     </div>
     <div class="price-cards-grid-2" style="margin-bottom:2rem">
       <div class="pc pc-sm" data-spark="kaspa">
         <div class="pc-head"><span class="pc-name"><span class="pc-name-icon">💎</span>Kaspa</span><span class="pc-contract">USD</span></div>
-        <div class="pc-price" id="pc-kas">--</div>
-        <div class="pc-change"><span class="pc-chg-val nc" id="pcc-kas">--</span></div>
-        <div class="pc-prev" id="pcprev-kas"></div>
-        <div class="pc-spark" data-spark="kaspa"></div>
+        <div class="pc-price" id="pc-kas">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-kas">--</span></div>
+        <div class="pc-prev" id="pcprev-kas"></div><div class="pc-spark" data-spark="kaspa"></div>
         <div class="pc-range"><div class="pc-range-labels"><span>$0.025</span><span></span><span>$0.210</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:7%"></div><div class="pc-range-dot" style="left:7%"></div></div></div>
       </div>
       <a href="https://farmers1st.com" target="_blank" rel="noopener" class="pc pc-sm" style="display:flex;flex-direction:column;text-decoration:none;color:inherit;cursor:pointer;border-color:rgba(91,163,224,.25);background:linear-gradient(135deg,var(--surface) 0%,rgba(91,163,224,.04) 100%);transition:border-color .15s,transform .1s" onmouseenter="this.style.borderColor='var(--blue)';this.style.transform='translateY(-1px)'" onmouseleave="this.style.borderColor='rgba(91,163,224,.25)';this.style.transform='none'">
@@ -1197,74 +1064,48 @@
 <script>
 (function() {
   'use strict';
-
-  function g(v, cents) {
-    if (v == null || isNaN(+v)) return '--';
-    return cents ? '$' + (+v / 100).toFixed(2) : '$' + (+v).toFixed(2);
+  function g(v,cents){if(v==null||isNaN(+v))return'--';return cents?'$'+(+v/100).toFixed(2):'$'+(+v).toFixed(2);}
+  function chgCls(n){return n>0?'up':n<0?'dn':'nc';}
+  function chgStr(n,pct){if(n==null)return'--';var a=n>0?'▲':n<0?'▼':'—';return a+(n>=0?'+':'')+(+pct).toFixed(2)+'%';}
+  function setMsi(pidEl,cidEl,price,chg,pct,cents){
+    var pe=document.getElementById(pidEl),ce=document.getElementById(cidEl);
+    if(pe&&price!=null)pe.textContent=g(price,cents);
+    if(ce&&chg!=null){ce.textContent=chgStr(chg,pct);ce.className='msi-chg '+chgCls(chg);}
   }
-  function chgCls(n) { return n > 0 ? 'up' : n < 0 ? 'dn' : 'nc'; }
-  function chgStr(n, pct) {
-    if (n == null) return '--';
-    var a = n > 0 ? '▲' : n < 0 ? '▼' : '—';
-    return a + (n >= 0 ? '+' : '') + (+pct).toFixed(2) + '%';
+  function renderMarketSummary(q){
+    setMsi('ms-corn-p','ms-corn-c',q.corn&&q.corn.close,q.corn&&q.corn.netChange,q.corn&&q.corn.pctChange,true);
+    setMsi('ms-beans-p','ms-beans-c',q.beans&&q.beans.close,q.beans&&q.beans.netChange,q.beans&&q.beans.pctChange,true);
+    setMsi('ms-wheat-p','ms-wheat-c',q.wheat&&q.wheat.close,q.wheat&&q.wheat.netChange,q.wheat&&q.wheat.pctChange,true);
+    setMsi('ms-cattle-p','ms-cattle-c',q.cattle&&q.cattle.close,q.cattle&&q.cattle.netChange,q.cattle&&q.cattle.pctChange,false);
+    setMsi('ms-crude-p','ms-crude-c',q.crude&&q.crude.close,q.crude&&q.crude.netChange,q.crude&&q.crude.pctChange,false);
+    setMsi('ms-gold-p','ms-gold-c',q.gold&&q.gold.close,q.gold&&q.gold.netChange,q.gold&&q.gold.pctChange,false);
+    setMsi('ms-dollar-p','ms-dollar-c',q.dollar&&q.dollar.close,q.dollar&&q.dollar.netChange,q.dollar&&q.dollar.pctChange,false);
   }
-  function setMsi(pidEl, cidEl, price, chg, pct, cents) {
-    var pe = document.getElementById(pidEl);
-    var ce = document.getElementById(cidEl);
-    if (pe && price != null) pe.textContent = g(price, cents);
-    if (ce && chg != null) {
-      ce.textContent = chgStr(chg, pct);
-      ce.className = 'msi-chg ' + chgCls(chg);
-    }
+  function renderRatioWidget(q){
+    var cornDec=q['corn-dec'],beansNov=q['beans-nov'];
+    if(!cornDec||!beansNov||!cornDec.close||!beansNov.close)return;
+    var cornPrice=cornDec.close/100,beansPrice=beansNov.close/100;
+    var ratio=beansPrice/cornPrice,ratioStr=ratio.toFixed(2);
+    var verdictCls,verdictTxt;
+    if(ratio<2.4){verdictCls='corn';verdictTxt='🌽 Favors Corn';}
+    else if(ratio>2.6){verdictCls='beans';verdictTxt='🫘 Favors Beans';}
+    else{verdictCls='neutral';verdictTxt='↔ Neutral';}
+    var gaugeMin=2.0,gaugeMax=3.0;
+    var gaugePct=Math.min(100,Math.max(0,((ratio-gaugeMin)/(gaugeMax-gaugeMin))*100));
+    var dotColor=verdictCls==='corn'?'var(--gold)':verdictCls==='beans'?'var(--green)':'var(--text-dim)';
+    var rv=document.getElementById('ratio-value'),rvd=document.getElementById('ratio-verdict');
+    var dot=document.getElementById('ratio-gauge-dot'),rcp=document.getElementById('ratio-corn-price');
+    var rbp=document.getElementById('ratio-beans-price'),rb=document.getElementById('ratio-big');
+    if(rv)rv.textContent=ratioStr;
+    if(rvd){rvd.className='ratio-verdict '+verdictCls;rvd.textContent=verdictTxt;}
+    if(dot){dot.style.left=gaugePct.toFixed(1)+'%';dot.style.background=dotColor;}
+    if(rcp)rcp.textContent='$'+cornPrice.toFixed(2);
+    if(rbp)rbp.textContent='$'+beansPrice.toFixed(2);
+    if(rb)rb.style.color=dotColor;
   }
-
-  function renderMarketSummary(q) {
-    setMsi('ms-corn-p',   'ms-corn-c',   q.corn   && q.corn.close,   q.corn   && q.corn.netChange,   q.corn   && q.corn.pctChange,   true);
-    setMsi('ms-beans-p',  'ms-beans-c',  q.beans  && q.beans.close,  q.beans  && q.beans.netChange,  q.beans  && q.beans.pctChange,  true);
-    setMsi('ms-wheat-p',  'ms-wheat-c',  q.wheat  && q.wheat.close,  q.wheat  && q.wheat.netChange,  q.wheat  && q.wheat.pctChange,  true);
-    setMsi('ms-cattle-p', 'ms-cattle-c', q.cattle && q.cattle.close, q.cattle && q.cattle.netChange, q.cattle && q.cattle.pctChange, false);
-    setMsi('ms-crude-p',  'ms-crude-c',  q.crude  && q.crude.close,  q.crude  && q.crude.netChange,  q.crude  && q.crude.pctChange,  false);
-    setMsi('ms-gold-p',   'ms-gold-c',   q.gold   && q.gold.close,   q.gold   && q.gold.netChange,   q.gold   && q.gold.pctChange,   false);
-    setMsi('ms-dollar-p', 'ms-dollar-c', q.dollar && q.dollar.close, q.dollar && q.dollar.netChange, q.dollar && q.dollar.pctChange, false);
-  }
-
-  function renderRatioWidget(q) {
-    var cornDec  = q['corn-dec'];
-    var beansNov = q['beans-nov'];
-    if (!cornDec || !beansNov || !cornDec.close || !beansNov.close) return;
-    var cornPrice  = cornDec.close  / 100;
-    var beansPrice = beansNov.close / 100;
-    var ratio = beansPrice / cornPrice;
-    var ratioStr = ratio.toFixed(2);
-    var verdictCls, verdictTxt;
-    if (ratio < 2.4)       { verdictCls = 'corn';    verdictTxt = '🌽 Favors Corn'; }
-    else if (ratio > 2.6)  { verdictCls = 'beans';   verdictTxt = '🫘 Favors Beans'; }
-    else                   { verdictCls = 'neutral';  verdictTxt = '↔ Neutral'; }
-    var gaugeMin = 2.0, gaugeMax = 3.0;
-    var gaugePct = Math.min(100, Math.max(0, ((ratio - gaugeMin) / (gaugeMax - gaugeMin)) * 100));
-    var dotColor = verdictCls === 'corn' ? 'var(--gold)' : verdictCls === 'beans' ? 'var(--green)' : 'var(--text-dim)';
-    var rv  = document.getElementById('ratio-value');
-    var rvd = document.getElementById('ratio-verdict');
-    var dot = document.getElementById('ratio-gauge-dot');
-    var rcp = document.getElementById('ratio-corn-price');
-    var rbp = document.getElementById('ratio-beans-price');
-    var rb  = document.getElementById('ratio-big');
-    if (rv)  rv.textContent = ratioStr;
-    if (rvd) { rvd.className = 'ratio-verdict ' + verdictCls; rvd.textContent = verdictTxt; }
-    if (dot) { dot.style.left = gaugePct.toFixed(1) + '%'; dot.style.background = dotColor; }
-    if (rcp) rcp.textContent = '$' + cornPrice.toFixed(2);
-    if (rbp) rbp.textContent = '$' + beansPrice.toFixed(2);
-    if (rb)  rb.style.color  = dotColor;
-  }
-
-  fetch('/data/prices.json')
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      var q = data.quotes || {};
-      renderMarketSummary(q);
-      renderRatioWidget(q);
-    })
-    .catch(function() {});
+  fetch('/data/prices.json').then(function(r){return r.json();}).then(function(data){
+    var q=data.quotes||{};renderMarketSummary(q);renderRatioWidget(q);
+  }).catch(function(){});
 })();
 </script>
 
@@ -1272,142 +1113,61 @@
 <script>
 (function(){
   'use strict';
-
-  function fmtK(n) {
-    if (n == null || isNaN(n)) return '--';
-    var abs = Math.abs(n);
-    var str = abs >= 1000 ? (abs / 1000).toFixed(1) + 'k' : String(abs);
-    return (n >= 0 ? '+' : '-') + str;
+  function fmtK(n){if(n==null||isNaN(n))return'--';var abs=Math.abs(n);var str=abs>=1000?(abs/1000).toFixed(1)+'k':String(abs);return(n>=0?'+':'-')+str;}
+  function fmtKShort(n){if(n==null||isNaN(n))return'--';var abs=Math.abs(n);if(abs>=1000)return(n<0?'-':'')+Math.round(abs/1000)+'k';return String(Math.round(n));}
+  function renderCOTRow(key,d){
+    var netEl=document.getElementById('cot-'+key+'-net'),chgEl=document.getElementById('cot-'+key+'-chg');
+    var fillEl=document.getElementById('cot-'+key+'-fill'),zeroEl=document.getElementById('cot-'+key+'-zero');
+    var dotEl=document.getElementById('cot-'+key+'-dot'),minEl=document.getElementById('cot-'+key+'-min'),maxEl=document.getElementById('cot-'+key+'-max');
+    var net=d.net,prev=d.prev,min52=d.min52,max52=d.max52,range=(max52-min52)||1;
+    if(netEl)netEl.textContent=fmtK(net);
+    if(chgEl&&prev!=null){var chg=net-prev;chgEl.textContent=(chg>=0?'▲':'▼')+fmtK(Math.abs(chg)).replace(/^[+-]/,'');chgEl.className='cot-chg '+(chg>0?'up':chg<0?'dn':'nc');}
+    if(minEl)minEl.textContent=fmtKShort(min52);if(maxEl)maxEl.textContent=fmtKShort(max52);
+    var zeroPct=Math.max(0,Math.min(100,((0-min52)/range)*100));
+    var currPct=Math.max(0,Math.min(100,((net-min52)/range)*100));
+    var fillStart=Math.min(zeroPct,currPct),fillWidth=Math.abs(currPct-zeroPct);
+    var isLong=net>=0,fillClr=isLong?'rgba(34,197,94,.4)':'rgba(239,68,68,.38)',dotClr=isLong?'var(--green)':'#ef4444';
+    if(zeroEl)zeroEl.style.left=zeroPct.toFixed(1)+'%';
+    if(fillEl){fillEl.style.left=fillStart.toFixed(1)+'%';fillEl.style.width=fillWidth.toFixed(1)+'%';fillEl.style.background=fillClr;}
+    if(dotEl){dotEl.style.left=currPct.toFixed(1)+'%';dotEl.style.background=dotClr;}
   }
-
-  function fmtKShort(n) {
-    if (n == null || isNaN(n)) return '--';
-    var abs = Math.abs(n);
-    if (abs >= 1000) return (n < 0 ? '-' : '') + Math.round(abs / 1000) + 'k';
-    return String(Math.round(n));
+  function renderCOT(data){
+    var keys=['corn','beans','wheat'],scores=[];
+    keys.forEach(function(key){if(!data[key])return;var d=data[key];var range=(d.max52-d.min52)||1;scores.push((d.net-d.min52)/range);renderCOTRow(key,d);});
+    var avg=scores.length?scores.reduce(function(a,b){return a+b;},0)/scores.length:0.5;
+    var netLong=keys.filter(function(k){return data[k]&&data[k].net>0;}).length;
+    var verdict=document.getElementById('cot-verdict');
+    if(verdict){
+      if(avg>0.62&&netLong>=2){verdict.className='cot-verdict long';verdict.textContent='📈 Funds Long';}
+      else if(avg<0.38||netLong===0){verdict.className='cot-verdict short';verdict.textContent='📉 Funds Short';}
+      else{verdict.className='cot-verdict mixed';verdict.textContent='↔ Mixed';}
+    }
+    var dateEl=document.getElementById('cot-date');if(dateEl&&data.report_date)dateEl.textContent='As of '+data.report_date+' · CFTC';
   }
-
-  function renderCOTRow(key, d) {
-    var netEl  = document.getElementById('cot-' + key + '-net');
-    var chgEl  = document.getElementById('cot-' + key + '-chg');
-    var fillEl = document.getElementById('cot-' + key + '-fill');
-    var zeroEl = document.getElementById('cot-' + key + '-zero');
-    var dotEl  = document.getElementById('cot-' + key + '-dot');
-    var minEl  = document.getElementById('cot-' + key + '-min');
-    var maxEl  = document.getElementById('cot-' + key + '-max');
-
-    var net   = d.net;
-    var prev  = d.prev;
-    var min52 = d.min52;
-    var max52 = d.max52;
-    var range = (max52 - min52) || 1;
-
-    if (netEl) netEl.textContent = fmtK(net);
-
-    if (chgEl && prev != null) {
-      var chg = net - prev;
-      chgEl.textContent = (chg >= 0 ? '▲' : '▼') + fmtK(Math.abs(chg)).replace(/^[+-]/, '');
-      chgEl.className = 'cot-chg ' + (chg > 0 ? 'up' : chg < 0 ? 'dn' : 'nc');
-    }
-
-    if (minEl) minEl.textContent = fmtKShort(min52);
-    if (maxEl) maxEl.textContent = fmtKShort(max52);
-
-    var zeroPct = Math.max(0, Math.min(100, ((0    - min52) / range) * 100));
-    var currPct = Math.max(0, Math.min(100, ((net  - min52) / range) * 100));
-    var fillStart = Math.min(zeroPct, currPct);
-    var fillWidth = Math.abs(currPct - zeroPct);
-    var isLong  = net >= 0;
-    var fillClr = isLong ? 'rgba(34,197,94,.4)' : 'rgba(239,68,68,.38)';
-    var dotClr  = isLong ? 'var(--green)' : '#ef4444';
-
-    if (zeroEl) zeroEl.style.left = zeroPct.toFixed(1) + '%';
-    if (fillEl) {
-      fillEl.style.left       = fillStart.toFixed(1) + '%';
-      fillEl.style.width      = fillWidth.toFixed(1) + '%';
-      fillEl.style.background = fillClr;
-    }
-    if (dotEl) {
-      dotEl.style.left       = currPct.toFixed(1) + '%';
-      dotEl.style.background = dotClr;
-    }
-  }
-
-  function renderCOT(data) {
-    var keys = ['corn', 'beans', 'wheat'];
-    var scores = [];
-
-    keys.forEach(function(key) {
-      if (!data[key]) return;
-      var d = data[key];
-      var range = (d.max52 - d.min52) || 1;
-      scores.push((d.net - d.min52) / range);
-      renderCOTRow(key, d);
+  fetch('/data/cot.json').then(function(r){if(!r.ok)throw new Error('no-cot');return r.json();}).then(renderCOT).catch(function(){
+    var verdict=document.getElementById('cot-verdict');if(verdict){verdict.className='cot-verdict mixed';verdict.textContent='Updating…';}
+    ['corn','beans','wheat'].forEach(function(k){
+      var n=document.getElementById('cot-'+k+'-net');if(n)n.textContent='—';
+      var c=document.getElementById('cot-'+k+'-chg');if(c){c.textContent='pending';c.className='cot-chg nc';}
     });
-
-    // Verdict
-    var avg = scores.length
-      ? scores.reduce(function(a, b) { return a + b; }, 0) / scores.length
-      : 0.5;
-    var netLong = keys.filter(function(k) { return data[k] && data[k].net > 0; }).length;
-    var verdict = document.getElementById('cot-verdict');
-    if (verdict) {
-      if (avg > 0.62 && netLong >= 2) {
-        verdict.className = 'cot-verdict long';
-        verdict.textContent = '📈 Funds Long';
-      } else if (avg < 0.38 || netLong === 0) {
-        verdict.className = 'cot-verdict short';
-        verdict.textContent = '📉 Funds Short';
-      } else {
-        verdict.className = 'cot-verdict mixed';
-        verdict.textContent = '↔ Mixed';
-      }
-    }
-
-    var dateEl = document.getElementById('cot-date');
-    if (dateEl && data.report_date) {
-      dateEl.textContent = 'As of ' + data.report_date + ' · CFTC';
-    }
-  }
-
-  fetch('/data/cot.json')
-    .then(function(r) { if (!r.ok) throw new Error('no-cot'); return r.json(); })
-    .then(renderCOT)
-    .catch(function() {
-      // cot.json not yet generated — show clean pending state
-      var verdict = document.getElementById('cot-verdict');
-      if (verdict) { verdict.className = 'cot-verdict mixed'; verdict.textContent = 'Updating…'; }
-      ['corn', 'beans', 'wheat'].forEach(function(k) {
-        var n = document.getElementById('cot-' + k + '-net');
-        if (n) n.textContent = '—';
-        var c = document.getElementById('cot-' + k + '-chg');
-        if (c) { c.textContent = 'pending'; c.className = 'cot-chg nc'; }
-      });
-    });
+  });
 })();
 </script>
 
-<!-- ── NOAA Outlook Tab Switcher ────────────────────────────── -->
+<!-- ── NOAA Tab Switcher ─────────────────────────────────────── -->
 <script>
 (function(){
-  var BASE = 'https://www.cpc.ncep.noaa.gov/products/predictions/';
-  var tempImg   = document.getElementById('noaa-temp-img');
-  var precipImg = document.getElementById('noaa-precip-img');
-  var label     = document.getElementById('noaa-period-label');
-
+  var BASE='https://www.cpc.ncep.noaa.gov/products/predictions/';
+  var tempImg=document.getElementById('noaa-temp-img'),precipImg=document.getElementById('noaa-precip-img'),label=document.getElementById('noaa-period-label');
   document.querySelectorAll('#noaa-tabs .noaa-tab').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      document.querySelectorAll('#noaa-tabs .noaa-tab').forEach(function(b){ b.classList.remove('active'); });
+    btn.addEventListener('click',function(){
+      document.querySelectorAll('#noaa-tabs .noaa-tab').forEach(function(b){b.classList.remove('active');});
       btn.classList.add('active');
-      var p   = btn.getAttribute('data-period');
-      var lbl = btn.getAttribute('data-label');
-      var bust = '?v=' + Date.now();
-      [tempImg, precipImg].forEach(function(img){
-        if(img){ img.style.display=''; if(img.nextElementSibling) img.nextElementSibling.style.display='none'; }
-      });
-      if(tempImg)   tempImg.src   = BASE + p + 'day/off15_temp.gif'  + bust;
-      if(precipImg) precipImg.src = BASE + p + 'day/off15_prcp.gif'  + bust;
-      if(label) label.textContent = lbl;
+      var p=btn.getAttribute('data-period'),lbl=btn.getAttribute('data-label'),bust='?v='+Date.now();
+      [tempImg,precipImg].forEach(function(img){if(img){img.style.display='';if(img.nextElementSibling)img.nextElementSibling.style.display='none';}});
+      if(tempImg)tempImg.src=BASE+p+'day/off15_temp.gif'+bust;
+      if(precipImg)precipImg.src=BASE+p+'day/off15_prcp.gif'+bust;
+      if(label)label.textContent=lbl;
     });
   });
 })();
@@ -1415,531 +1175,153 @@
 
 <script src="/components/sparklines.js"></script>
 
-<!-- ── Homepage Prediction Markets Widget ───────────────────── -->
+<!-- ── Prediction Markets ────────────────────────────────────── -->
 <script>
 (function(){
 'use strict';
-var POLY='https://gamma-api.polymarket.com';
-var MAX_CARDS=6;
-
+var POLY='https://gamma-api.polymarket.com',MAX_CARDS=6;
 var T1=['corn','soybean','wheat','grain','oat','cattle','hog','livestock','pork','beef','dairy','milk','poultry','chicken','egg','ethanol','crop','harvest','fertilizer','urea','nitrogen','usda','wasde','food price','food inflation','grocery','bushel'];
 var T2=['tariff','trade war','china trade','china import','china export','brazil','ukraine','crude oil','natural gas','diesel','oil price','opec','supply chain','rail strike','bird flu','avian influenza'];
 var T3=['interest rate','federal reserve','fed funds','rate cut','rate hike','cut rate','fomc','inflation','cpi','recession','gdp','unemployment','dollar','currency','drought','hurricane','flood','fed cut','tariffs'];
 var SKIP=['nfl','nba','mlb','nhl','playoff','super bowl','world series','oscar','grammy','netflix','celebrity','kardashian','dogecoin','nft','tiktok','instagram','youtube','marvel','disney','movie','box office'];
-
-function scoreM(t){
-  var s=t.toLowerCase();
-  for(var i=0;i<SKIP.length;i++){if(s.indexOf(SKIP[i])>=0)return null;}
-  for(var a=0;a<T1.length;a++){if(s.indexOf(T1[a])>=0)return{score:100,tier:1};}
-  for(var b=0;b<T2.length;b++){if(s.indexOf(T2[b])>=0)return{score:70,tier:2};}
-  for(var c=0;c<T3.length;c++){if(s.indexOf(T3[c])>=0)return{score:40,tier:3};}
-  return null;
-}
-
-var WHY=[
-  ['egg','Egg prices signal avian flu pressure and poultry feed demand.'],
-  ['grocery','Grocery prices reflect the entire ag supply chain from field to shelf.'],
-  ['food price','Food price changes affect consumer ag demand from farm to shelf.'],
-  ['food inflation','Food inflation erodes purchasing power and shifts protein demand.'],
-  ['corn','Corn price moves affect feed costs, ethanol margins, and farm revenue.'],
-  ['soybean','Soybeans drive export revenue — any policy shift moves US ag exports.'],
-  ['wheat','Wheat prices set the tone for global food costs and compete for acres.'],
-  ['cattle','Cattle prices reflect packer demand and feed efficiency for feedlots.'],
-  ['tariff','Tariffs directly impact export demand for US grains — moves basis fast.'],
-  ['trade','Trade policy shifts can redirect global grain flows overnight.'],
-  ['china','China is the world\'s largest soybean buyer — policy shifts move markets.'],
-  ['crude oil','Oil prices drive diesel and fertilizer costs — every $10/bbl hits budgets.'],
-  ['oil','Energy costs flow to planting, spraying, drying, and hauling expenses.'],
-  ['natural gas','Natural gas is the primary input for nitrogen fertilizer — spikes raise urea costs.'],
-  ['fertilizer','Fertilizer is the largest variable input cost — price moves hit margins hard.'],
-  ['interest rate','Rate changes affect land values, operating loans, and storage carry costs.'],
-  ['fed','Fed policy drives the dollar, which affects grain export competitiveness.'],
-  ['inflation','Inflation erodes margins when input costs rise faster than commodity prices.'],
-  ['cpi','CPI drives Fed rate decisions which cascade to farm lending and land values.'],
-  ['recession','Slowdowns reduce ethanol demand and can weaken feed grain consumption.'],
-  ['drought','Drought is the single biggest yield risk — moves corn and bean prices fast.'],
-  ['hurricane','Hurricanes disrupt Gulf exports and can damage late-season crops.'],
-  ['bird flu','Bird flu outbreaks spike egg prices and cut poultry feed demand.'],
-];
+function scoreM(t){var s=t.toLowerCase();for(var i=0;i<SKIP.length;i++){if(s.indexOf(SKIP[i])>=0)return null;}for(var a=0;a<T1.length;a++){if(s.indexOf(T1[a])>=0)return{score:100,tier:1};}for(var b=0;b<T2.length;b++){if(s.indexOf(T2[b])>=0)return{score:70,tier:2};}for(var c=0;c<T3.length;c++){if(s.indexOf(T3[c])>=0)return{score:40,tier:3};}return null;}
+var WHY=[['egg','Egg prices signal avian flu pressure and poultry feed demand.'],['grocery','Grocery prices reflect the entire ag supply chain from field to shelf.'],['food price','Food price changes affect consumer ag demand from farm to shelf.'],['food inflation','Food inflation erodes purchasing power and shifts protein demand.'],['corn','Corn price moves affect feed costs, ethanol margins, and farm revenue.'],['soybean','Soybeans drive export revenue — any policy shift moves US ag exports.'],['wheat','Wheat prices set the tone for global food costs and compete for acres.'],['cattle','Cattle prices reflect packer demand and feed efficiency for feedlots.'],['tariff','Tariffs directly impact export demand for US grains — moves basis fast.'],['trade','Trade policy shifts can redirect global grain flows overnight.'],['china','China is the world\'s largest soybean buyer — policy shifts move markets.'],['crude oil','Oil prices drive diesel and fertilizer costs — every $10/bbl hits budgets.'],['oil','Energy costs flow to planting, spraying, drying, and hauling expenses.'],['natural gas','Natural gas is the primary input for nitrogen fertilizer — spikes raise urea costs.'],['fertilizer','Fertilizer is the largest variable input cost — price moves hit margins hard.'],['interest rate','Rate changes affect land values, operating loans, and storage carry costs.'],['fed','Fed policy drives the dollar, which affects grain export competitiveness.'],['inflation','Inflation erodes margins when input costs rise faster than commodity prices.'],['cpi','CPI drives Fed rate decisions which cascade to farm lending and land values.'],['recession','Slowdowns reduce ethanol demand and can weaken feed grain consumption.'],['drought','Drought is the single biggest yield risk — moves corn and bean prices fast.'],['hurricane','Hurricanes disrupt Gulf exports and can damage late-season crops.'],['bird flu','Bird flu outbreaks spike egg prices and cut poultry feed demand.']];
 function getWhy(t){var s=t.toLowerCase();for(var i=0;i<WHY.length;i++){if(s.indexOf(WHY[i][0])>=0)return WHY[i][1];}return'Affects agricultural commodity prices, input costs, or farm policy.';}
-
 function pc(n){return n>=70?'var(--green)':n>=50?'var(--gold)':n>=30?'var(--text-dim)':'#ef4444';}
 function barBg(n){var rgb=n>=70?'34,197,94':n>=50?'230,176,66':n>=30?'140,140,130':'239,68,68';return'linear-gradient(90deg,rgba('+rgb+',.9),rgba('+rgb+',.3))';}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function tLeft(iso){if(!iso)return'';try{var d=(new Date(iso).getTime()-Date.now())/86400000;if(d<0)return'';if(d<1)return'Today';if(d<2)return'Tomorrow';if(d<=30)return Math.round(d)+'d left';return'~'+Math.round(d/30)+'mo';}catch(e){return'';}}
-
-var seenM={};
-var markets=[];
-
-function parseProb(m){
-  var prob=null;
-  var op=m.outcomePrices||m.outcome_prices;
-  if(op){
-    try{
-      var pr=typeof op==='string'?JSON.parse(op):op;
-      if(Array.isArray(pr)&&pr.length){var v=parseFloat(pr[0]);if(!isNaN(v))prob=Math.round(v<=1?v*100:v);}
-    }catch(e){}
-  }
-  if(prob==null&&m.tokens&&Array.isArray(m.tokens)&&m.tokens.length>0){
-    try{var tp=parseFloat(m.tokens[0].price);if(!isNaN(tp)&&tp>0)prob=Math.round(tp<=1?tp*100:tp);}catch(e){}
-  }
-  if(prob==null){
-    ['yes_price','bestBid','lastTradePrice','last_trade_price','price'].forEach(function(f){
-      if(prob!=null)return;
-      var v=m[f];
-      if(v!=null){try{var n=parseFloat(v);if(!isNaN(n)&&n>0)prob=Math.round(n<=1?n*100:n);}catch(e){}}
-    });
-  }
-  return(prob!=null&&prob>0&&prob<100)?prob:null;
-}
-
-function addItems(items){
-  items.forEach(function(m){
-    var title=(m.question||m.title||m.name||'').trim();
-    if(!title)return;
-    var id=String(m.id||m.condition_id||m.conditionId||title).slice(0,30);
-    if(seenM[id])return;
-    var rel=scoreM(title);
-    if(!rel)return;
-    var prob=parseProb(m);
-    if(prob==null)return;
-    var vol=0;
-    ['volume','volume24hr','volume_num','volumeNum','liquidityNum'].forEach(function(f){if(!vol&&m[f])try{vol=parseFloat(m[f]);}catch(e){}});
-    var slug=m.slug||m.eventSlug||'';
-    var url=slug?'https://polymarket.com/event/'+slug:(m.url||'https://polymarket.com');
-    var ed=m.endDate||m.end_date_iso||m.endDateIso||m.endDateTimestamp||'';
-    if(ed){try{if(new Date(ed)<new Date())return;}catch(e){}}
-    seenM[id]=true;
-    markets.push({title:title.slice(0,100),yes:prob,url:url,tier:rel.tier,score:rel.score,vol:vol,ed:ed});
-  });
-}
-
-function addEvents(events){
-  events.forEach(function(ev){
-    var evTitle=(ev.title||ev.name||'').trim();
-    var mArr=ev.markets||[];
-    if(mArr.length>0){
-      mArr.forEach(function(m){
-        if(!m.question&&evTitle)m.question=evTitle;
-        addItems([m]);
-      });
-    }
-  });
-}
-
+var seenM={},markets=[];
+function parseProb(m){var prob=null;var op=m.outcomePrices||m.outcome_prices;if(op){try{var pr=typeof op==='string'?JSON.parse(op):op;if(Array.isArray(pr)&&pr.length){var v=parseFloat(pr[0]);if(!isNaN(v))prob=Math.round(v<=1?v*100:v);}}catch(e){}}if(prob==null&&m.tokens&&Array.isArray(m.tokens)&&m.tokens.length>0){try{var tp=parseFloat(m.tokens[0].price);if(!isNaN(tp)&&tp>0)prob=Math.round(tp<=1?tp*100:tp);}catch(e){}}if(prob==null){['yes_price','bestBid','lastTradePrice','last_trade_price','price'].forEach(function(f){if(prob!=null)return;var v=m[f];if(v!=null){try{var n=parseFloat(v);if(!isNaN(n)&&n>0)prob=Math.round(n<=1?n*100:n);}catch(e){}}});}return(prob!=null&&prob>0&&prob<100)?prob:null;}
+function addItems(items){items.forEach(function(m){var title=(m.question||m.title||m.name||'').trim();if(!title)return;var id=String(m.id||m.condition_id||m.conditionId||title).slice(0,30);if(seenM[id])return;var rel=scoreM(title);if(!rel)return;var prob=parseProb(m);if(prob==null)return;var vol=0;['volume','volume24hr','volume_num','volumeNum','liquidityNum'].forEach(function(f){if(!vol&&m[f])try{vol=parseFloat(m[f]);}catch(e){}});var slug=m.slug||m.eventSlug||'';var url=slug?'https://polymarket.com/event/'+slug:(m.url||'https://polymarket.com');var ed=m.endDate||m.end_date_iso||m.endDateIso||m.endDateTimestamp||'';if(ed){try{if(new Date(ed)<new Date())return;}catch(e){}}seenM[id]=true;markets.push({title:title.slice(0,100),yes:prob,url:url,tier:rel.tier,score:rel.score,vol:vol,ed:ed});});}
+function addEvents(events){events.forEach(function(ev){var evTitle=(ev.title||ev.name||'').trim();var mArr=ev.markets||[];if(mArr.length>0){mArr.forEach(function(m){if(!m.question&&evTitle)m.question=evTitle;addItems([m]);});}});}
 function renderMarkets(){
   markets.sort(function(a,b){return(b.score*1.5+Math.log10(Math.max(b.vol,1))*10)-(a.score*1.5+Math.log10(Math.max(a.vol,1))*10);});
-  var deduped=[],nt={};
-  markets.forEach(function(m){var k=m.title.toLowerCase().replace(/[^a-z0-9]/g,'');if(!nt[k]){nt[k]=true;deduped.push(m);}});
-  markets=deduped.slice(0,MAX_CARDS);
-  var grid=document.getElementById('kalshi-grid');
-  var footer=document.getElementById('kalshi-footer');
-  if(!grid)return;
-  if(!markets.length){
-    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:1rem;font-size:.78rem;color:var(--text-muted)">No markets available · <a href=\'/ag-odds\' style=\'color:var(--gold)\'>View Ag Odds →</a></div>';
-    return;
-  }
+  var deduped=[],nt={};markets.forEach(function(m){var k=m.title.toLowerCase().replace(/[^a-z0-9]/g,'');if(!nt[k]){nt[k]=true;deduped.push(m);}});markets=deduped.slice(0,MAX_CARDS);
+  var grid=document.getElementById('kalshi-grid'),footer=document.getElementById('kalshi-footer');if(!grid)return;
+  if(!markets.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:1rem;font-size:.78rem;color:var(--text-muted)">No markets available · <a href=\'/ag-odds\' style=\'color:var(--gold)\'>View Ag Odds →</a></div>';return;}
   grid.innerHTML='';
-  markets.forEach(function(m){
-    var pct=m.yes;
-    var tl=tLeft(m.ed);
-    var a=document.createElement('a');
-    a.className='km-card';
-    a.href=m.url;
-    a.target='_blank';
-    a.rel='noopener noreferrer';
-    a.dataset.tier=String(m.tier);
-    a.innerHTML=
-      '<div class="km-card-row">'
-        +'<div class="km-card-title">'+esc(m.title)+'</div>'
-        +'<div class="km-card-pct" style="color:'+pc(pct)+'">'+pct+'%</div>'
-      +'</div>'
-      +'<div class="km-bar-track"><div class="km-bar-fill" style="width:'+pct+'%;background:'+barBg(pct)+'"></div></div>'
-      +'<div class="km-why">'+esc(getWhy(m.title))+'</div>'
-      +'<div class="km-card-foot"><span class="km-plat p">Polymarket</span>'
-        +(tl?'<span class="km-tl">⏱ '+esc(tl)+'</span>':'')
-      +'</div>';
-    grid.appendChild(a);
-  });
+  markets.forEach(function(m){var pct=m.yes,tl=tLeft(m.ed);var a=document.createElement('a');a.className='km-card';a.href=m.url;a.target='_blank';a.rel='noopener noreferrer';a.dataset.tier=String(m.tier);
+    a.innerHTML='<div class="km-card-row"><div class="km-card-title">'+esc(m.title)+'</div><div class="km-card-pct" style="color:'+pc(pct)+'">'+pct+'%</div></div><div class="km-bar-track"><div class="km-bar-fill" style="width:'+pct+'%;background:'+barBg(pct)+'"></div></div><div class="km-why">'+esc(getWhy(m.title))+'</div><div class="km-card-foot"><span class="km-plat p">Polymarket</span>'+(tl?'<span class="km-tl">⏱ '+esc(tl)+'</span>':'')+'</div>';
+    grid.appendChild(a);});
   if(footer)footer.style.display='block';
 }
-
 function gj(url){return fetch(url).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
 function toArr(d){if(!d)return[];if(Array.isArray(d))return d;return d.results||d.markets||d.events||d.data||[];}
-
-var fetches=[
-  gj(POLY+'/events?active=true&closed=false&limit=100&order=volume&ascending=false'),
-  gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=politics'),
-  gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=economics'),
-  gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=trade'),
-  gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=energy'),
-  gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=climate'),
-  gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=commodities'),
-  gj(POLY+'/markets?active=true&closed=false&limit=100&order=volume&ascending=false'),
-];
-
-Promise.all(fetches).then(function(results){
-  var loading=document.getElementById('kalshi-loading');
-  if(loading)loading.style.display='none';
-  var evData=toArr(results[0]);
-  if(evData.length&&evData[0]&&evData[0].markets!==undefined){addEvents(evData);}
-  else{addItems(evData);}
-  for(var i=1;i<results.length;i++){addItems(toArr(results[i]));}
-  renderMarkets();
-}).catch(function(){
-  var loading=document.getElementById('kalshi-loading');
-  if(loading)loading.innerHTML='<a href="/ag-odds" style="color:var(--gold)">View ag prediction markets →</a>';
-});
+var fetches=[gj(POLY+'/events?active=true&closed=false&limit=100&order=volume&ascending=false'),gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=politics'),gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=economics'),gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=trade'),gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=energy'),gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=climate'),gj(POLY+'/markets?active=true&closed=false&limit=100&tag_slug=commodities'),gj(POLY+'/markets?active=true&closed=false&limit=100&order=volume&ascending=false')];
+Promise.all(fetches).then(function(results){var loading=document.getElementById('kalshi-loading');if(loading)loading.style.display='none';var evData=toArr(results[0]);if(evData.length&&evData[0]&&evData[0].markets!==undefined){addEvents(evData);}else{addItems(evData);}for(var i=1;i<results.length;i++){addItems(toArr(results[i]));}renderMarkets();}).catch(function(){var loading=document.getElementById('kalshi-loading');if(loading)loading.innerHTML='<a href="/ag-odds" style="color:var(--gold)">View ag prediction markets →</a>';});
 })();
 </script>
 
 <script>
 (function() {
   'use strict';
+  var d=new Date();
+  var TODAY_KEY='agsist-daily-'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  window.TODAY_KEY=TODAY_KEY;
+  function dismissDaily(){try{localStorage.setItem(TODAY_KEY,'1');}catch(e){}var hero=document.getElementById('daily-hero');if(hero)hero.classList.add('dismissed');document.documentElement.classList.add('daily-pre-dismissed');setTimeout(function(){window.scrollTo({top:0,behavior:'smooth'});},50);}
+  window.dismissDaily=dismissDaily;
+  function expandDaily(){try{localStorage.removeItem(TODAY_KEY);}catch(e){}var hero=document.getElementById('daily-hero');if(hero)hero.classList.remove('dismissed');document.documentElement.classList.remove('daily-pre-dismissed');}
+  window.expandDaily=expandDaily;
+  try{if(localStorage.getItem(TODAY_KEY)==='1'){var hero=document.getElementById('daily-hero');if(hero)hero.classList.add('dismissed');}}catch(e){}
 
-  var d = new Date();
-  var TODAY_KEY = 'agsist-daily-' + d.getFullYear() + '-'
-    + String(d.getMonth()+1).padStart(2,'0') + '-'
-    + String(d.getDate()).padStart(2,'0');
-  window.TODAY_KEY = TODAY_KEY;
+  window.addEventListener('resize',function(){var single=document.getElementById('ticker-items-single'),track=document.getElementById('ticker-track');if(!single||!track)return;var w=single.scrollWidth||single.offsetWidth;if(w<200)return;track.style.animationDuration=Math.max(20,Math.round(w/45))+'s';});
 
-  function dismissDaily() {
-    try { localStorage.setItem(TODAY_KEY, '1'); } catch(e) {}
-    var hero = document.getElementById('daily-hero');
-    if (hero) hero.classList.add('dismissed');
-    document.documentElement.classList.add('daily-pre-dismissed');
-    setTimeout(function() { window.scrollTo({top:0, behavior:'smooth'}); }, 50);
-  }
-  window.dismissDaily = dismissDaily;
-
-  function expandDaily() {
-    try { localStorage.removeItem(TODAY_KEY); } catch(e) {}
-    var hero = document.getElementById('daily-hero');
-    if (hero) hero.classList.remove('dismissed');
-    document.documentElement.classList.remove('daily-pre-dismissed');
-  }
-  window.expandDaily = expandDaily;
-
-  try {
-    if (localStorage.getItem(TODAY_KEY) === '1') {
-      var hero = document.getElementById('daily-hero');
-      if (hero) hero.classList.add('dismissed');
-    }
-  } catch(e) {}
-
-  window.addEventListener('resize', function() {
-    var single = document.getElementById('ticker-items-single');
-    var track  = document.getElementById('ticker-track');
-    if (!single || !track) return;
-    var w = single.scrollWidth || single.offsetWidth;
-    if (w < 200) return;
-    track.style.animationDuration = Math.max(20, Math.round(w / 45)) + 's';
-  });
-
-  (function() {
-    var img = document.getElementById('drought-img');
-    var fallback = document.getElementById('drought-fallback');
-    if (!img) return;
-    function getMostRecentTuesday() {
-      var d = new Date(), day = d.getDay();
-      d.setDate(d.getDate() - ((day >= 2) ? (day - 2) : (day + 5)));
-      return d;
-    }
-    function fmtDate(d) { return d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0'); }
-    var tue = getMostRecentTuesday();
-    var ds = fmtDate(tue);
-    var prev = new Date(tue); prev.setDate(prev.getDate() - 7);
-    var urls = [
-      'https://droughtmonitor.unl.edu/data/png/' + ds + '/' + ds + '_usdm.png',
-      'https://droughtmonitor.unl.edu/data/png/' + fmtDate(prev) + '/' + fmtDate(prev) + '_usdm.png',
-      'https://droughtmonitor.unl.edu/data/png/current/current_usdm.png'
-    ];
-    var attempt = 0;
-    function tryNext() {
-      if (attempt >= urls.length) { img.style.display = 'none'; if (fallback) fallback.style.display = 'flex'; return; }
-      img.src = urls[attempt++];
-    }
-    img.addEventListener('error', tryNext);
-    img.addEventListener('load', function() { if (fallback) fallback.style.display = 'none'; });
-    tryNext();
+  (function(){
+    var img=document.getElementById('drought-img'),fallback=document.getElementById('drought-fallback');if(!img)return;
+    function getMostRecentTuesday(){var d=new Date(),day=d.getDay();d.setDate(d.getDate()-((day>=2)?(day-2):(day+5)));return d;}
+    function fmtDate(d){return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');}
+    var tue=getMostRecentTuesday(),ds=fmtDate(tue),prev=new Date(tue);prev.setDate(prev.getDate()-7);
+    var urls=['https://droughtmonitor.unl.edu/data/png/'+ds+'/'+ds+'_usdm.png','https://droughtmonitor.unl.edu/data/png/'+fmtDate(prev)+'/'+fmtDate(prev)+'_usdm.png','https://droughtmonitor.unl.edu/data/png/current/current_usdm.png'];
+    var attempt=0;function tryNext(){if(attempt>=urls.length){img.style.display='none';if(fallback)fallback.style.display='flex';return;}img.src=urls[attempt++];}
+    img.addEventListener('error',tryNext);img.addEventListener('load',function(){if(fallback)fallback.style.display='none';});tryNext();
   })();
 
-  var teaser = document.getElementById('daily-teaser');
-  if (teaser) {
-    teaser.addEventListener('click', expandDaily);
-    teaser.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); expandDaily(); } });
-  }
-  var btnDismiss = document.getElementById('btn-dismiss-daily');
-  if (btnDismiss) btnDismiss.addEventListener('click', dismissDaily);
+  var teaser=document.getElementById('daily-teaser');
+  if(teaser){teaser.addEventListener('click',expandDaily);teaser.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();expandDaily();}});}
+  var btnDismiss=document.getElementById('btn-dismiss-daily');if(btnDismiss)btnDismiss.addEventListener('click',dismissDaily);
 
-  var bidsEnterZip = document.getElementById('bids-enter-zip-btn');
-  if (bidsEnterZip) {
-    bidsEnterZip.addEventListener('click', function() {
-      var gb = document.getElementById('bids-geo-bar');
-      var zr = document.getElementById('bids-zip-row');
-      if (gb) gb.style.display = 'none';
-      if (zr) zr.style.display = 'flex';
-    });
-  }
-  var bidsLookup = document.getElementById('bids-lookup-btn');
-  if (bidsLookup) bidsLookup.addEventListener('click', function() { if (typeof lookupBids === 'function') lookupBids(); });
-  var bidsZip = document.getElementById('bids-zip');
-  if (bidsZip) bidsZip.addEventListener('keydown', function(e) { if (e.key === 'Enter' && typeof lookupBids === 'function') lookupBids(); });
+  var bidsEnterZip=document.getElementById('bids-enter-zip-btn');
+  if(bidsEnterZip){bidsEnterZip.addEventListener('click',function(){var gb=document.getElementById('bids-geo-bar'),zr=document.getElementById('bids-zip-row');if(gb)gb.style.display='none';if(zr)zr.style.display='flex';});}
+  var bidsLookup=document.getElementById('bids-lookup-btn');if(bidsLookup)bidsLookup.addEventListener('click',function(){if(typeof lookupBids==='function')lookupBids();});
+  var bidsZip=document.getElementById('bids-zip');if(bidsZip)bidsZip.addEventListener('keydown',function(e){if(e.key==='Enter'&&typeof lookupBids==='function')lookupBids();});
+  var btnAllowLoc=document.getElementById('btn-allow-loc');if(btnAllowLoc)btnAllowLoc.addEventListener('click',function(){if(typeof requestGeo==='function')requestGeo();});
+  var btnZipInstead=document.getElementById('btn-zip-instead');if(btnZipInstead)btnZipInstead.addEventListener('click',function(){if(typeof showZipEntry==='function')showZipEntry();});
+  var btnWxGo=document.getElementById('btn-wx-go');if(btnWxGo)btnWxGo.addEventListener('click',function(){if(typeof loadWeatherZip==='function')loadWeatherZip();});
+  var wxZip=document.getElementById('wx-zip');if(wxZip)wxZip.addEventListener('keydown',function(e){if(e.key==='Enter'&&typeof loadWeatherZip==='function')loadWeatherZip();});
+  var btnChangeLoc=document.getElementById('btn-change-loc');if(btnChangeLoc)btnChangeLoc.addEventListener('click',function(){if(typeof showZipEntry==='function')showZipEntry();});
 
-  var btnAllowLoc = document.getElementById('btn-allow-loc');
-  if (btnAllowLoc) btnAllowLoc.addEventListener('click', function() { if (typeof requestGeo === 'function') requestGeo(); });
-  var btnZipInstead = document.getElementById('btn-zip-instead');
-  if (btnZipInstead) btnZipInstead.addEventListener('click', function() { if (typeof showZipEntry === 'function') showZipEntry(); });
-  var btnWxGo = document.getElementById('btn-wx-go');
-  if (btnWxGo) btnWxGo.addEventListener('click', function() { if (typeof loadWeatherZip === 'function') loadWeatherZip(); });
-  var wxZip = document.getElementById('wx-zip');
-  if (wxZip) wxZip.addEventListener('keydown', function(e) { if (e.key === 'Enter' && typeof loadWeatherZip === 'function') loadWeatherZip(); });
-  var btnChangeLoc = document.getElementById('btn-change-loc');
-  if (btnChangeLoc) btnChangeLoc.addEventListener('click', function() { if (typeof showZipEntry === 'function') showZipEntry(); });
+  var tabEmail=document.getElementById('tab-email'),tabSms=document.getElementById('tab-sms');
+  var formEmail=document.getElementById('form-email'),formSms=document.getElementById('form-sms');
+  if(tabEmail){tabEmail.addEventListener('click',function(){tabEmail.classList.add('active');tabEmail.setAttribute('aria-selected','true');if(tabSms){tabSms.classList.remove('active');tabSms.setAttribute('aria-selected','false');}if(formEmail)formEmail.style.display='flex';if(formSms)formSms.style.display='none';});}
+  if(tabSms){tabSms.addEventListener('click',function(){tabSms.classList.add('active');tabSms.setAttribute('aria-selected','true');if(tabEmail){tabEmail.classList.remove('active');tabEmail.setAttribute('aria-selected','false');}if(formSms)formSms.style.display='flex';if(formEmail)formEmail.style.display='none';});}
 
-  var tabEmail = document.getElementById('tab-email');
-  var tabSms   = document.getElementById('tab-sms');
-  var formEmail = document.getElementById('form-email');
-  var formSms   = document.getElementById('form-sms');
-  if (tabEmail) {
-    tabEmail.addEventListener('click', function() {
-      tabEmail.classList.add('active'); tabEmail.setAttribute('aria-selected','true');
-      if (tabSms) { tabSms.classList.remove('active'); tabSms.setAttribute('aria-selected','false'); }
-      if (formEmail) formEmail.style.display = 'flex';
-      if (formSms) formSms.style.display = 'none';
-    });
-  }
-  if (tabSms) {
-    tabSms.addEventListener('click', function() {
-      tabSms.classList.add('active'); tabSms.setAttribute('aria-selected','true');
-      if (tabEmail) { tabEmail.classList.remove('active'); tabEmail.setAttribute('aria-selected','false'); }
-      if (formSms) formSms.style.display = 'flex';
-      if (formEmail) formEmail.style.display = 'none';
-    });
-  }
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target);}});},{threshold:0.08});document.querySelectorAll('.fade-up').forEach(function(el){io.observe(el);});}else{document.querySelectorAll('.fade-up').forEach(function(el){el.classList.add('vis');});}
 
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); } });
-    }, {threshold: 0.08});
-    document.querySelectorAll('.fade-up').forEach(function(el) { io.observe(el); });
-  } else {
-    document.querySelectorAll('.fade-up').forEach(function(el) { el.classList.add('vis'); });
-  }
-
-  function buildUSDACalendar() {
-    var strip = document.getElementById('usda-cal-strip');
-    if (!strip) return;
-    var now = new Date();
-    var events = [];
-    var reports = [
-      { name: 'Export Sales',       weekday: 4, time: '8:30am ET',  note: '' },
-      { name: 'Crop Progress',      weekday: 1, time: '4:00pm ET',  note: 'Growing season' },
-      { name: 'Export Inspections', weekday: 1, time: '11:00am ET', note: '' },
-    ];
-    var majors = [
-      { name: 'Prospective Plantings', date: '2026-03-31', time: '11:00am ET', note: 'Major report' },
-      { name: 'Grain Stocks',          date: '2026-03-31', time: '11:00am ET', note: '' },
-      { name: 'WASDE',                 date: '2026-04-09', time: '11:00am ET', note: 'Market-moving' },
-      { name: 'Crop Production',       date: '2026-04-09', time: '11:00am ET', note: '' },
-      { name: 'WASDE',                 date: '2026-05-12', time: '11:00am ET', note: 'Market-moving' },
-      { name: 'WASDE',                 date: '2026-06-11', time: '11:00am ET', note: 'Market-moving' },
-      { name: 'Acreage Report',        date: '2026-06-30', time: '11:00am ET', note: 'Planted acres' },
-      { name: 'Grain Stocks',          date: '2026-06-30', time: '11:00am ET', note: '' },
-      { name: 'WASDE',                 date: '2026-07-10', time: '11:00am ET', note: 'Market-moving' },
-      { name: 'WASDE',                 date: '2026-08-12', time: '11:00am ET', note: 'Market-moving' },
-      { name: 'Crop Production',       date: '2026-08-12', time: '11:00am ET', note: 'First corn est.' },
-      { name: 'WASDE',                 date: '2026-09-11', time: '11:00am ET', note: 'Market-moving' },
-      { name: 'Crop Production',       date: '2026-09-11', time: '11:00am ET', note: '' },
-      { name: 'WASDE',                 date: '2026-10-09', time: '11:00am ET', note: 'Market-moving' },
-      { name: 'Crop Production',       date: '2026-10-09', time: '11:00am ET', note: 'Final corn est.' },
-    ];
-    for (var w = 0; w < 4; w++) {
-      reports.forEach(function(r) {
-        var dt = new Date(now);
-        dt.setDate(dt.getDate() + ((r.weekday - dt.getDay() + 7) % 7) + (w * 7));
-        if (dt < now && w === 0) dt.setDate(dt.getDate() + 7);
-        events.push({ name: r.name, date: dt, time: r.time, note: r.note });
-      });
-    }
-    majors.forEach(function(m) {
-      var dt = new Date(m.date + 'T12:00:00');
-      if (dt >= new Date(now.getFullYear(), now.getMonth(), now.getDate())) events.push({ name: m.name, date: dt, time: m.time, note: m.note });
-    });
-    events.sort(function(a, b) { return a.date - b.date; });
-    var seen = {}, unique = [];
-    events.forEach(function(e) { var k = e.name + '-' + e.date.toDateString(); if (!seen[k]) { seen[k] = true; unique.push(e); } });
-    events = unique.slice(0, 10);
-    var todayStr = now.toDateString();
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    strip.innerHTML = '';
-    events.forEach(function(ev) {
-      var card = document.createElement('div');
-      var isToday = ev.date.toDateString() === todayStr;
-      card.className = 'cal-card' + (isToday ? ' today' : '');
-      card.setAttribute('role', 'listitem');
-      var dateStr = months[ev.date.getMonth()] + ' ' + ev.date.getDate();
-      var timeStr = ev.time + (ev.note ? ' · ' + ev.note : '');
-      card.innerHTML = (isToday ? '<div class="cal-today-badge">Today</div>' : '<div class="cal-date">' + dateStr + '</div>')
-        + '<div class="cal-name">' + ev.name + '</div>'
-        + '<div class="cal-time">' + timeStr + (isToday ? ' · ' + dateStr : '') + '</div>';
-      strip.appendChild(card);
-    });
+  function buildUSDACalendar(){
+    var strip=document.getElementById('usda-cal-strip');if(!strip)return;var now=new Date(),events=[];
+    var reports=[{name:'Export Sales',weekday:4,time:'8:30am ET',note:''},{name:'Crop Progress',weekday:1,time:'4:00pm ET',note:'Growing season'},{name:'Export Inspections',weekday:1,time:'11:00am ET',note:''}];
+    var majors=[{name:'WASDE',date:'2026-04-09',time:'11:00am ET',note:'Market-moving'},{name:'Crop Production',date:'2026-04-09',time:'11:00am ET',note:''},{name:'WASDE',date:'2026-05-12',time:'11:00am ET',note:'Market-moving'},{name:'WASDE',date:'2026-06-11',time:'11:00am ET',note:'Market-moving'},{name:'Acreage Report',date:'2026-06-30',time:'11:00am ET',note:'Planted acres'},{name:'Grain Stocks',date:'2026-06-30',time:'11:00am ET',note:''},{name:'WASDE',date:'2026-07-10',time:'11:00am ET',note:'Market-moving'},{name:'WASDE',date:'2026-08-12',time:'11:00am ET',note:'Market-moving'},{name:'Crop Production',date:'2026-08-12',time:'11:00am ET',note:'First corn est.'},{name:'WASDE',date:'2026-09-11',time:'11:00am ET',note:'Market-moving'},{name:'Crop Production',date:'2026-09-11',time:'11:00am ET',note:''},{name:'WASDE',date:'2026-10-09',time:'11:00am ET',note:'Market-moving'},{name:'Crop Production',date:'2026-10-09',time:'11:00am ET',note:'Final corn est.'}];
+    for(var w=0;w<4;w++){reports.forEach(function(r){var dt=new Date(now);dt.setDate(dt.getDate()+((r.weekday-dt.getDay()+7)%7)+(w*7));if(dt<now&&w===0)dt.setDate(dt.getDate()+7);events.push({name:r.name,date:dt,time:r.time,note:r.note});});}
+    majors.forEach(function(m){var dt=new Date(m.date+'T12:00:00');if(dt>=new Date(now.getFullYear(),now.getMonth(),now.getDate()))events.push({name:m.name,date:dt,time:m.time,note:m.note});});
+    events.sort(function(a,b){return a.date-b.date;});var seen={},unique=[];events.forEach(function(e){var k=e.name+'-'+e.date.toDateString();if(!seen[k]){seen[k]=true;unique.push(e);}});events=unique.slice(0,10);
+    var todayStr=now.toDateString(),months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];strip.innerHTML='';
+    events.forEach(function(ev){var card=document.createElement('div'),isToday=ev.date.toDateString()===todayStr;card.className='cal-card'+(isToday?' today':'');card.setAttribute('role','listitem');var dateStr=months[ev.date.getMonth()]+' '+ev.date.getDate(),timeStr=ev.time+(ev.note?' · '+ev.note:'');card.innerHTML=(isToday?'<div class="cal-today-badge">Today</div>':'<div class="cal-date">'+dateStr+'</div>')+'<div class="cal-name">'+ev.name+'</div>'+'<div class="cal-time">'+timeStr+(isToday?' · '+dateStr:'')+'</div>';strip.appendChild(card);});
   }
   buildUSDACalendar();
 
-  function isSignedUp() {
-    try { return document.cookie.split(';').some(function(c){ return c.trim().startsWith('agsist_subscribed='); }) || localStorage.getItem('agsist_subscribed') === '1'; } catch(e) { return false; }
-  }
-  function setSignedUp() {
-    try { var exp = new Date(); exp.setFullYear(exp.getFullYear()+2); document.cookie = 'agsist_subscribed=1;expires='+exp.toUTCString()+';path=/;SameSite=Lax'; localStorage.setItem('agsist_subscribed','1'); } catch(e) {}
-  }
-  function isDismissed(key) { try { return localStorage.getItem(key) === '1'; } catch(e) { return false; } }
-  function setDismissed(key) { try { localStorage.setItem(key, '1'); } catch(e) {} }
-
-  (function() {
-    try { var n = parseInt(localStorage.getItem('agsist_visits')||'0',10)+1; localStorage.setItem('agsist_visits', String(n)); } catch(e) {}
-    if (isSignedUp()) return;
-    var visits = (function(){ try { return parseInt(localStorage.getItem('agsist_visits')||'0',10); } catch(e) { return 0; } })();
-    if (visits <= 24) { var el = document.getElementById('signup-full'); if (el) el.style.display = 'block'; }
-    else if (visits <= 49) { if (!isDismissed('agsist_signup_compact_dismissed')) { var el2 = document.getElementById('signup-compact'); if (el2) el2.style.display = 'flex'; } }
-    else { if (!isDismissed('agsist_signup_slim_dismissed')) { var el3 = document.getElementById('signup-slim'); if (el3) el3.style.display = 'flex'; } }
+  function isSignedUp(){try{return document.cookie.split(';').some(function(c){return c.trim().startsWith('agsist_subscribed=');})||localStorage.getItem('agsist_subscribed')==='1';}catch(e){return false;}}
+  function setSignedUp(){try{var exp=new Date();exp.setFullYear(exp.getFullYear()+2);document.cookie='agsist_subscribed=1;expires='+exp.toUTCString()+';path=/;SameSite=Lax';localStorage.setItem('agsist_subscribed','1');}catch(e){}}
+  function isDismissed(key){try{return localStorage.getItem(key)==='1';}catch(e){return false;}}
+  function setDismissed(key){try{localStorage.setItem(key,'1');}catch(e){}}
+  (function(){
+    try{var n=parseInt(localStorage.getItem('agsist_visits')||'0',10)+1;localStorage.setItem('agsist_visits',String(n));}catch(e){}
+    if(isSignedUp())return;
+    var visits=(function(){try{return parseInt(localStorage.getItem('agsist_visits')||'0',10);}catch(e){return 0;}})();
+    if(visits<=24){var el=document.getElementById('signup-full');if(el)el.style.display='block';}
+    else if(visits<=49){if(!isDismissed('agsist_signup_compact_dismissed')){var el2=document.getElementById('signup-compact');if(el2)el2.style.display='flex';}}
+    else{if(!isDismissed('agsist_signup_slim_dismissed')){var el3=document.getElementById('signup-slim');if(el3)el3.style.display='flex';}}
   })();
 
-  var btnCompactDismiss = document.getElementById('btn-compact-dismiss');
-  if (btnCompactDismiss) btnCompactDismiss.addEventListener('click', function() { setDismissed('agsist_signup_compact_dismissed'); var el = document.getElementById('signup-compact'); if (el) el.style.display = 'none'; });
-  var btnSlimDismiss = document.getElementById('btn-slim-dismiss');
-  if (btnSlimDismiss) btnSlimDismiss.addEventListener('click', function() { setDismissed('agsist_signup_slim_dismissed'); var el = document.getElementById('signup-slim'); if (el) el.style.display = 'none'; });
+  var btnCompactDismiss=document.getElementById('btn-compact-dismiss');if(btnCompactDismiss)btnCompactDismiss.addEventListener('click',function(){setDismissed('agsist_signup_compact_dismissed');var el=document.getElementById('signup-compact');if(el)el.style.display='none';});
+  var btnSlimDismiss=document.getElementById('btn-slim-dismiss');if(btnSlimDismiss)btnSlimDismiss.addEventListener('click',function(){setDismissed('agsist_signup_slim_dismissed');var el=document.getElementById('signup-slim');if(el)el.style.display='none';});
 
-  function showSignupSuccess(formId, icon, headline, sub) {
-    var formEl = document.getElementById(formId); if (!formEl) return;
-    formEl.innerHTML = '<div style="text-align:center;padding:.9rem 0"><div style="font-size:2rem;margin-bottom:.4rem">'+icon+'</div><div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.25rem">'+headline+'</div><div style="font-size:.82rem;color:var(--text-muted);line-height:1.5">'+sub+'</div></div>';
-    formEl.style.display = 'block';
-  }
+  function showSignupSuccess(formId,icon,headline,sub){var formEl=document.getElementById(formId);if(!formEl)return;formEl.innerHTML='<div style="text-align:center;padding:.9rem 0"><div style="font-size:2rem;margin-bottom:.4rem">'+icon+'</div><div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.25rem">'+headline+'</div><div style="font-size:.82rem;color:var(--text-muted);line-height:1.5">'+sub+'</div></div>';formEl.style.display='block';}
 
-  var btnEmailSignup = document.getElementById('btn-email-signup');
-  if (btnEmailSignup) {
-    btnEmailSignup.addEventListener('click', function(e) {
-      e.preventDefault();
-      var name  = (document.querySelector('#form-email input[type="text"]') || {}).value || '';
-      var email = (document.querySelector('#form-email input[type="email"]') || {}).value || '';
-      if (!email.includes('@')) return;
-      setSignedUp();
-      showSignupSuccess('form-email', '✅', "You're subscribed!", 'AGSIST Daily arrives by 6am CT on weekdays. Check your spam folder once.');
-      var tabs = document.querySelector('#signup-full .signup-tabs'); if (tabs) tabs.style.display = 'none';
-      fetch('https://formspree.io/f/xnjbwepn', { method:'POST', body:JSON.stringify({name:name,email:email,source:'homepage-email'}), headers:{'Content-Type':'application/json','Accept':'application/json'} }).catch(function(){});
-    });
-  }
+  var btnEmailSignup=document.getElementById('btn-email-signup');
+  if(btnEmailSignup){btnEmailSignup.addEventListener('click',function(e){e.preventDefault();var name=(document.querySelector('#form-email input[type="text"]')||{}).value||'';var email=(document.querySelector('#form-email input[type="email"]')||{}).value||'';if(!email.includes('@'))return;setSignedUp();showSignupSuccess('form-email','✅',"You're subscribed!",'AGSIST Daily arrives by 6am CT on weekdays. Check your spam folder once.');var tabs=document.querySelector('#signup-full .signup-tabs');if(tabs)tabs.style.display='none';fetch('https://formspree.io/f/xnjbwepn',{method:'POST',body:JSON.stringify({name:name,email:email,source:'homepage-email'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});});}
 
-  var btnSmsSignup = document.getElementById('btn-sms-signup');
-  if (btnSmsSignup) {
-    btnSmsSignup.addEventListener('click', function(e) {
-      e.preventDefault();
-      var phone = (document.querySelector('#form-sms input[type="tel"]') || {}).value || '';
-      if (phone.replace(/\D/g,'').length < 10) return;
-      setSignedUp();
-      showSignupSuccess('form-sms', '📱', "You're on the list!", "Each morning you'll get a text link to the daily PDF briefing. Reply STOP anytime.");
-      var tabs = document.querySelector('#signup-full .signup-tabs'); if (tabs) tabs.style.display = 'none';
-      fetch('https://formspree.io/f/xnjbwepn', { method:'POST', body:JSON.stringify({phone:phone,source:'homepage-sms'}), headers:{'Content-Type':'application/json','Accept':'application/json'} }).catch(function(){});
-    });
-  }
+  var btnSmsSignup=document.getElementById('btn-sms-signup');
+  if(btnSmsSignup){btnSmsSignup.addEventListener('click',function(e){e.preventDefault();var phone=(document.querySelector('#form-sms input[type="tel"]')||{}).value||'';if(phone.replace(/\D/g,'').length<10)return;setSignedUp();showSignupSuccess('form-sms','📱',"You're on the list!","Each morning you'll get a text link to the daily PDF briefing. Reply STOP anytime.");var tabs=document.querySelector('#signup-full .signup-tabs');if(tabs)tabs.style.display='none';fetch('https://formspree.io/f/xnjbwepn',{method:'POST',body:JSON.stringify({phone:phone,source:'homepage-sms'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});});}
 
-  var btnCompactSignup = document.getElementById('btn-compact-signup');
-  var compactEmail = document.getElementById('compact-email');
-  if (btnCompactSignup) {
-    btnCompactSignup.addEventListener('click', function(e) {
-      e.preventDefault();
-      var email = compactEmail ? compactEmail.value.trim() : '';
-      if (!email.includes('@')) return;
-      setSignedUp();
-      var bar = document.getElementById('signup-compact');
-      if (bar) bar.innerHTML = '<span style="font-size:.88rem;color:var(--green);padding:.1rem 0">✅ Subscribed! AGSIST Daily arrives by 6am CT on weekdays.</span>';
-      fetch('https://formspree.io/f/xnjbwepn', { method:'POST', body:JSON.stringify({email:email,source:'homepage-compact'}), headers:{'Content-Type':'application/json','Accept':'application/json'} }).catch(function(){});
-    });
-  }
-  if (compactEmail) compactEmail.addEventListener('keydown', function(e) { if (e.key === 'Enter' && btnCompactSignup) btnCompactSignup.click(); });
-
+  var btnCompactSignup=document.getElementById('btn-compact-signup'),compactEmail=document.getElementById('compact-email');
+  if(btnCompactSignup){btnCompactSignup.addEventListener('click',function(e){e.preventDefault();var email=compactEmail?compactEmail.value.trim():'';if(!email.includes('@'))return;setSignedUp();var bar=document.getElementById('signup-compact');if(bar)bar.innerHTML='<span style="font-size:.88rem;color:var(--green);padding:.1rem 0">✅ Subscribed! AGSIST Daily arrives by 6am CT on weekdays.</span>';fetch('https://formspree.io/f/xnjbwepn',{method:'POST',body:JSON.stringify({email:email,source:'homepage-compact'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});});}
+  if(compactEmail)compactEmail.addEventListener('keydown',function(e){if(e.key==='Enter'&&btnCompactSignup)btnCompactSignup.click();});
 })();
 </script>
 
 <script>
-window.hydrateDaily = (function() {
-  'use strict';
-  var hydrated = false;
-  function $(id) { return document.getElementById(id); }
-  function txt(id, val) { var el = $(id); if (el && val != null) el.textContent = val; }
-
-  function hydrate(d) {
-    if (hydrated) return;
-    hydrated = true;
-    txt('daily-headline', d.headline);
-    txt('daily-subheadline', d.subheadline);
-    txt('daily-lead', d.lead);
-    txt('daily-date', d.date);
-    if (d.date) {
-      var parts = d.date.split(',');
-      txt('daily-teaser-date', '\u{1F4F0} AGSIST Daily \u00B7 ' + (parts.length > 1 ? parts[1].trim() : d.date));
-    }
-    txt('daily-teaser-text', d.teaser || d.subheadline);
-
-    var moodEl = $('daily-mood');
-    if (moodEl && d.meta && d.meta.market_mood) {
-      var mood = d.meta.market_mood;
-      var mc = {bullish:{color:'var(--green)',bg:'rgba(58,139,60,.08)',border:'rgba(58,139,60,.22)'},bearish:{color:'var(--red)',bg:'rgba(240,96,96,.08)',border:'rgba(240,96,96,.22)'},mixed:{color:'var(--gold)',bg:'rgba(218,165,32,.08)',border:'rgba(218,165,32,.22)'},cautious:{color:'var(--gold)',bg:'rgba(218,165,32,.08)',border:'rgba(218,165,32,.22)'},volatile:{color:'var(--orange)',bg:'rgba(200,122,40,.08)',border:'rgba(200,122,40,.22)'}}[mood] || {color:'var(--gold)',bg:'rgba(218,165,32,.08)',border:'rgba(218,165,32,.22)'};
-      var mi = {bullish:'\u{1F4C8}',bearish:'\u{1F4C9}',mixed:'\u2194\uFE0F',cautious:'\u26A0\uFE0F',volatile:'\u{1F525}'}[mood] || '\u2194\uFE0F';
-      moodEl.textContent = mi + ' ' + mood.charAt(0).toUpperCase() + mood.slice(1);
-      moodEl.style.color = mc.color; moodEl.style.background = mc.bg; moodEl.style.border = '1px solid ' + mc.border; moodEl.style.display = 'inline-flex';
-    }
-
-    var surpriseBanner = $('daily-surprise-banner');
-    if (surpriseBanner) {
-      var surprises = (d.surprises && d.surprises.length) ? d.surprises : ((d.meta && d.meta.overnight_surprises) || []);
-      if (surprises.length > 0) {
-        var names = surprises.map(function(s){ return s.commodity + ' ' + (s.direction==='up'?'\u25B2':'\u25BC') + Math.abs(s.pct_change).toFixed(1) + '%'; });
-        var stEl = surpriseBanner.querySelector('.surprise-text');
-        if (stEl) stEl.innerHTML = '<strong>Overnight Surprise' + (surprises.length>1?'s':'') + ':</strong> ' + names.join(' \u00B7 ');
-        surpriseBanner.style.display = 'flex';
-      } else { surpriseBanner.style.display = 'none'; }
-    }
-
-    var heatIdx = (d.meta && d.meta.heat_section != null) ? d.meta.heat_section : -1;
-    if (d.sections && Array.isArray(d.sections)) {
-      d.sections.forEach(function(sec, i) {
-        var n = i + 1;
-        txt('daily-section-' + n + '-title', sec.title);
-        var iconEl = $('daily-section-' + n + '-icon'); if (iconEl && sec.icon) iconEl.textContent = sec.icon;
-        var bodyEl = $('daily-section-' + n + '-body');
-        if (bodyEl) { if (sec.body) bodyEl.innerHTML = sec.body; else if (sec.bullets) bodyEl.innerHTML = sec.bullets.map(function(b){ return '<span>\u2022 '+b+'</span>'; }).join(''); }
-        var blEl = $('daily-section-' + n + '-bottomline'); if (blEl && sec.bottom_line) { blEl.textContent = sec.bottom_line; blEl.style.display = 'block'; }
-        var cvEl = $('daily-section-' + n + '-conviction');
-        if (cvEl && sec.conviction_level) {
-          var cv = {high:{color:'var(--green)',bg:'rgba(58,139,60,.10)',border:'rgba(58,139,60,.25)'},medium:{color:'var(--gold)',bg:'rgba(218,165,32,.10)',border:'rgba(218,165,32,.25)'},low:{color:'var(--text-muted)',bg:'var(--surface2)',border:'var(--border)'}}[sec.conviction_level] || {color:'var(--gold)',bg:'rgba(218,165,32,.10)',border:'rgba(218,165,32,.25)'};
-          cvEl.textContent = sec.conviction_level.toUpperCase() + ' CONVICTION';
-          cvEl.style.color = cv.color; cvEl.style.background = cv.bg; cvEl.style.border = '1px solid ' + cv.border; cvEl.style.display = 'inline-block';
-        }
-        var actionEl = $('daily-section-' + n + '-action'); if (actionEl && sec.farmer_action) { actionEl.textContent = '\u{1F3AF} ' + sec.farmer_action; actionEl.style.display = 'block'; }
-        var secEl = $('daily-sec-' + n);
-        if (secEl) { if (sec.overnight_surprise) secEl.classList.add('daily-sec--surprise'); if (i === heatIdx) secEl.classList.add('daily-sec--heat'); }
-      });
-    }
-    if (d.one_number) { txt('daily-number-value', d.one_number.value); txt('daily-number-unit', d.one_number.unit); txt('daily-number-context', d.one_number.context || d.one_number.why); }
-    if (d.the_more_you_know) { txt('daily-tmyk-title', d.the_more_you_know.title); txt('daily-tmyk-body', d.the_more_you_know.body); }
-    if (d.daily_quote) {
-      var qEl = $('daily-quote-text'); if (qEl && d.daily_quote.text) { var qt = d.daily_quote.text.replace(/^[\u201c""\u201d]|[\u201c""\u201d]$/g,''); qEl.textContent = '\u201c'+qt+'\u201d'; }
-      var aEl = $('daily-quote-attr'); if (aEl && d.daily_quote.attribution) { aEl.textContent = '\u2014 ' + d.daily_quote.attribution.replace(/^[\u2014\u2013-]\s*/,''); }
-    }
-    var wl = $('daily-watch-list');
-    if (wl && d.watch_list && d.watch_list.length) {
-      wl.innerHTML = '';
-      d.watch_list.forEach(function(item) {
-        var li = document.createElement('li'); li.className = 'watch-item';
-        li.innerHTML = '<span class="watch-time">'+(item.time||item.label||'')+'</span><span class="watch-desc">'+(item.desc||item.item||'')+'</span>';
-        wl.appendChild(li);
-      });
-    }
-    txt('daily-source', d.source_summary || d.source || 'USDA \u00B7 CME Group \u00B7 Open-Meteo');
+window.hydrateDaily=(function(){
+  'use strict';var hydrated=false;
+  function $(id){return document.getElementById(id);}
+  function txt(id,val){var el=$(id);if(el&&val!=null)el.textContent=val;}
+  function hydrate(d){
+    if(hydrated)return;hydrated=true;
+    txt('daily-headline',d.headline);txt('daily-subheadline',d.subheadline);txt('daily-lead',d.lead);txt('daily-date',d.date);
+    if(d.date){var parts=d.date.split(',');txt('daily-teaser-date','\u{1F4F0} AGSIST Daily \u00B7 '+(parts.length>1?parts[1].trim():d.date));}
+    txt('daily-teaser-text',d.teaser||d.subheadline);
+    var moodEl=$('daily-mood');
+    if(moodEl&&d.meta&&d.meta.market_mood){var mood=d.meta.market_mood;var mc={bullish:{color:'var(--green)',bg:'rgba(58,139,60,.08)',border:'rgba(58,139,60,.22)'},bearish:{color:'var(--red)',bg:'rgba(240,96,96,.08)',border:'rgba(240,96,96,.22)'},mixed:{color:'var(--gold)',bg:'rgba(218,165,32,.08)',border:'rgba(218,165,32,.22)'},cautious:{color:'var(--gold)',bg:'rgba(218,165,32,.08)',border:'rgba(218,165,32,.22)'},volatile:{color:'var(--orange)',bg:'rgba(200,122,40,.08)',border:'rgba(200,122,40,.22)'}}[mood]||{color:'var(--gold)',bg:'rgba(218,165,32,.08)',border:'rgba(218,165,32,.22)'};var mi={bullish:'\u{1F4C8}',bearish:'\u{1F4C9}',mixed:'\u2194\uFE0F',cautious:'\u26A0\uFE0F',volatile:'\u{1F525}'}[mood]||'\u2194\uFE0F';moodEl.textContent=mi+' '+mood.charAt(0).toUpperCase()+mood.slice(1);moodEl.style.color=mc.color;moodEl.style.background=mc.bg;moodEl.style.border='1px solid '+mc.border;moodEl.style.display='inline-flex';}
+    var surpriseBanner=$('daily-surprise-banner');
+    if(surpriseBanner){var surprises=(d.surprises&&d.surprises.length)?d.surprises:((d.meta&&d.meta.overnight_surprises)||[]);if(surprises.length>0){var names=surprises.map(function(s){return s.commodity+' '+(s.direction==='up'?'\u25B2':'\u25BC')+Math.abs(s.pct_change).toFixed(1)+'%';});var stEl=surpriseBanner.querySelector('.surprise-text');if(stEl)stEl.innerHTML='<strong>Overnight Surprise'+(surprises.length>1?'s':'')+':</strong> '+names.join(' \u00B7 ');surpriseBanner.style.display='flex';}else{surpriseBanner.style.display='none';}}
+    var heatIdx=(d.meta&&d.meta.heat_section!=null)?d.meta.heat_section:-1;
+    if(d.sections&&Array.isArray(d.sections)){d.sections.forEach(function(sec,i){var n=i+1;txt('daily-section-'+n+'-title',sec.title);var iconEl=$('daily-section-'+n+'-icon');if(iconEl&&sec.icon)iconEl.textContent=sec.icon;var bodyEl=$('daily-section-'+n+'-body');if(bodyEl){if(sec.body)bodyEl.innerHTML=sec.body;else if(sec.bullets)bodyEl.innerHTML=sec.bullets.map(function(b){return'<span>\u2022 '+b+'</span>';}).join('');}var blEl=$('daily-section-'+n+'-bottomline');if(blEl&&sec.bottom_line){blEl.textContent=sec.bottom_line;blEl.style.display='block';}var cvEl=$('daily-section-'+n+'-conviction');if(cvEl&&sec.conviction_level){var cv={high:{color:'var(--green)',bg:'rgba(58,139,60,.10)',border:'rgba(58,139,60,.25)'},medium:{color:'var(--gold)',bg:'rgba(218,165,32,.10)',border:'rgba(218,165,32,.25)'},low:{color:'var(--text-muted)',bg:'var(--surface2)',border:'var(--border)'}}[sec.conviction_level]||{color:'var(--gold)',bg:'rgba(218,165,32,.10)',border:'rgba(218,165,32,.25)'};cvEl.textContent=sec.conviction_level.toUpperCase()+' CONVICTION';cvEl.style.color=cv.color;cvEl.style.background=cv.bg;cvEl.style.border='1px solid '+cv.border;cvEl.style.display='inline-block';}var actionEl=$('daily-section-'+n+'-action');if(actionEl&&sec.farmer_action){actionEl.textContent='\u{1F3AF} '+sec.farmer_action;actionEl.style.display='block';}var secEl=$('daily-sec-'+n);if(secEl){if(sec.overnight_surprise)secEl.classList.add('daily-sec--surprise');if(i===heatIdx)secEl.classList.add('daily-sec--heat');}});}
+    if(d.one_number){txt('daily-number-value',d.one_number.value);txt('daily-number-unit',d.one_number.unit);txt('daily-number-context',d.one_number.context||d.one_number.why);}
+    if(d.the_more_you_know){txt('daily-tmyk-title',d.the_more_you_know.title);txt('daily-tmyk-body',d.the_more_you_know.body);}
+    if(d.daily_quote){var qEl=$('daily-quote-text');if(qEl&&d.daily_quote.text){var qt=d.daily_quote.text.replace(/^[\u201c""\u201d]|[\u201c""\u201d]$/g,'');qEl.textContent='\u201c'+qt+'\u201d';}var aEl=$('daily-quote-attr');if(aEl&&d.daily_quote.attribution){aEl.textContent='\u2014 '+d.daily_quote.attribution.replace(/^[\u2014\u2013-]\s*/,'');}}
+    var wl=$('daily-watch-list');if(wl&&d.watch_list&&d.watch_list.length){wl.innerHTML='';d.watch_list.forEach(function(item){var li=document.createElement('li');li.className='watch-item';li.innerHTML='<span class="watch-time">'+(item.time||item.label||'')+'</span><span class="watch-desc">'+(item.desc||item.item||'')+'</span>';wl.appendChild(li);});}
+    txt('daily-source',d.source_summary||d.source||'USDA \u00B7 CME Group \u00B7 Open-Meteo');
   }
-
   return hydrate;
 })();
 </script>
