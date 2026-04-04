@@ -59,11 +59,19 @@ def parse_rows(csv_text: str) -> list[dict]:
     """
     rows = []
     reader = csv.DictReader(io.StringIO(csv_text))
+    all_csv_rows = list(reader)
+    if all_csv_rows:
+        print(f"  CSV columns: {list(all_csv_rows[0].keys())[:10]}", flush=True)
+        wheat_names = set(r.get("Market_and_Exchange_Names","").strip()
+                         for r in all_csv_rows if "wheat" in r.get("Market_and_Exchange_Names","").lower())
+        if wheat_names:
+            for wn in sorted(wheat_names):
+                print(f"  WHEAT market found: '{wn}'", flush=True)
+        else:
+            print("  No wheat markets found in this file", flush=True)
+
     headers_printed = False
-    for row in reader:
-        if not headers_printed:
-            print(f"  CSV columns: {list(row.keys())[:10]}", flush=True)
-            headers_printed = True
+    for row in all_csv_rows:
         market = row.get("Market_and_Exchange_Names", "").strip()
         for key, targets in TARGETS.items():
             if any(t.lower() in market.lower() for t in targets):
