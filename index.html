@@ -945,7 +945,7 @@
     </div>
 
   <!-- ══ CROP PROGRESS + EXPORT SALES ═══════════════════════════ -->
-  <div class="crop-export-grid">
+  <div class="crop-export-grid" id="crop-export-grid-inner">
 
     <!-- Crop Progress -->
     <div class="crop-widget" id="crop-widget">
@@ -1545,7 +1545,15 @@ fetch('/data/export-sales.json')
       if(pctEl){pctEl.textContent=pct!=null?pct+'%':'--';pctEl.className='export-pace-pct '+cls;}
     });
   })
-  .catch(function(){var d=document.getElementById('exp-date');if(d)d.textContent='Data pending · Thu 8:30am ET';});
+  .catch(function(){
+    // No export-sales.json — hide widget and expand crop progress to full width
+    var w=document.getElementById('export-widget');
+    if(w)w.style.display='none';
+    var grid=document.getElementById('crop-export-grid-inner');
+    if(grid)grid.style.gridTemplateColumns='1fr';
+    var cw=document.getElementById('crop-widget');
+    if(cw)cw.style.maxWidth='520px';
+  });
 })();
 </script>
 
@@ -1561,11 +1569,18 @@ fetch('/data/fertilizer.json')
     var dateEl=document.getElementById('fert-date');if(dateEl)dateEl.textContent='Updated '+fmtDate(data.updated);
     var grid=document.getElementById('fert-grid');if(!grid||!data.prices||!data.prices.length)return;
     grid.innerHTML=data.prices.map(function(p){
-      var chg=p.price-p.prev;var chgCls=chg>0?'up':chg<0?'dn':'nc';var chgArrow=chg>0?'▲':chg<0?'▼':'—';var chgStr=chgArrow+(chg!==0?'$'+Math.abs(chg):'');
-      return '<div class="fert-card"><div class="fert-card-head"><span class="fert-name">'+esc(p.icon)+' '+esc(p.name)+'</span><span class="fert-sym">'+esc(p.symbol)+'</span></div><div class="fert-price">$'+p.price+'</div><div class="fert-chg"><span class="fert-chg-val '+chgCls+'">'+esc(chgStr)+'</span><span class="fert-loc"> · '+esc(p.location)+'</span></div></div>';
+      var hasPrice=p.price!=null;
+      var chg=hasPrice&&p.prev!=null?p.price-p.prev:null;
+      var chgCls=chg==null?'nc':chg>0?'up':chg<0?'dn':'nc';
+      var chgArrow=chg==null?'':chg>0?'▲':chg<0?'▼':'—';
+      var chgStr=chg!=null&&chg!==0?chgArrow+'$'+Math.abs(chg):chg===0?'—':'';
+      var priceDisplay=hasPrice?'$'+p.price:'Call';
+      return '<div class="fert-card"><div class="fert-card-head"><span class="fert-name">'+esc(p.icon)+' '+esc(p.name)+'</span><span class="fert-sym">'+esc(p.symbol)+'</span></div>'
+        +'<div class="fert-price"'+(hasPrice?'':' style="font-size:.85rem;color:var(--text-muted)"')+'>'+priceDisplay+'</div>'
+        +'<div class="fert-chg">'+(chgStr?'<span class="fert-chg-val '+chgCls+'">'+esc(chgStr)+'</span>':'')+'<span class="fert-loc">'+(chgStr?' · ':'')+esc(p.location)+'</span></div></div>';
     }).join('');
   })
-  .catch(function(){var d=document.getElementById('fert-date');if(d)d.textContent='Update data/fertilizer.json';});
+  .catch(function(){var d=document.getElementById('fert-date');if(d)d.textContent='Price data unavailable';});
 })();
 </script>
 
