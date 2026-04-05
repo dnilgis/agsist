@@ -1,57 +1,87 @@
 {
-  "updated": "2026-04-04",
-  "source": "DTN / USDA AMS indicative — update weekly from DTN or your local elevator",
-  "note": "NOLA barge = New Orleans barge price. Midwest avg = blended dealer price.",
+  "updated": "2026-01-20",
+  "source": "Midwest Dealer — Spring 2026 Price Sheet",
   "prices": [
     {
       "name": "Urea",
-      "icon": "⚗️",
-      "symbol": "N-46",
-      "price": 485,
-      "prev": 490,
+      "symbol": "46-0-0",
+      "icon": "🌾",
+      "price": 830,
+      "prev": 830,
       "unit": "$/ton",
-      "location": "NOLA barge",
-      "trend": "down"
-    },
-    {
-      "name": "Anhydrous",
-      "icon": "💨",
-      "symbol": "NH3",
-      "price": 685,
-      "prev": 665,
-      "unit": "$/ton",
-      "location": "Midwest avg",
-      "trend": "up"
-    },
-    {
-      "name": "UAN-32",
-      "icon": "🔵",
-      "symbol": "UAN-32",
-      "price": 290,
-      "prev": 282,
-      "unit": "$/ton",
-      "location": "Midwest avg",
-      "trend": "up"
-    },
-    {
-      "name": "DAP",
-      "icon": "🧪",
-      "symbol": "18-46-0",
-      "price": 615,
-      "prev": 598,
-      "unit": "$/ton",
-      "location": "NOLA barge",
-      "trend": "up"
+      "location": "Midwest dealer"
     },
     {
       "name": "Potash",
-      "icon": "🔶",
-      "symbol": "MOP-60",
-      "price": 390,
-      "prev": 385,
+      "symbol": "0-0-60",
+      "icon": "🪨",
+      "price": 450,
+      "prev": 450,
       "unit": "$/ton",
-      "location": "NOLA barge",
-      "trend": "up"
+      "location": "Midwest dealer"
+    },
+    {
+      "name": "MAP + Sulfur",
+      "symbol": "12-40-0-10S",
+      "icon": "⚗️",
+      "price": 845,
+      "prev": 845,
+      "unit": "$/ton",
+      "location": "Midwest dealer"
+    },
+    {
+      "name": "Amm. Sulfate",
+      "symbol": "21-0-0-24S",
+      "icon": "🧂",
+      "price": 520,
+      "prev": 520,
+      "unit": "$/ton",
+      "location": "Midwest dealer"
+    },
+    {
+      "name": "K-Mag Premium",
+      "symbol": "0-0-20-22S-11Mg",
+      "icon": "💎",
+      "price": 650,
+      "prev": 650,
+      "unit": "$/ton",
+      "location": "Midwest dealer"
+    },
+    {
+      "name": "Pell Lime",
+      "symbol": "SuperCal 98G",
+      "icon": "🪨",
+      "price": 280,
+      "prev": 280,
+      "unit": "$/ton",
+      "location": "Midwest dealer"
+    },
+    {
+      "name": "Cal-Sol",
+      "symbol": "SuperCal SO4",
+      "icon": "🧪",
+      "price": 340,
+      "prev": 340,
+      "unit": "$/ton",
+      "location": "Midwest dealer"
+    },
+    {
+      "name": "Aspire",
+      "symbol": "0-58-0-5B",
+      "icon": "🔬",
+      "price": 569,
+      "prev": 569,
+      "unit": "$/ton",
+      "location": "Midwest dealer"
+    },
+    {
+      "name": "N-EDGE EZ",
+      "symbol": "~ESN 44-0-0",
+      "icon": "🌿",
+      "price": null,
+      "prev": null,
+      "unit": "$/ton",
+      "location": "Midwest dealer"
     }
   ]
 }
