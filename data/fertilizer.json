@@ -55,33 +55,6 @@
       "prev": 280,
       "unit": "$/ton",
       "location": "Midwest dealer"
-    },
-    {
-      "name": "Cal-Sol",
-      "symbol": "SuperCal SO4",
-      "icon": "🧪",
-      "price": 340,
-      "prev": 340,
-      "unit": "$/ton",
-      "location": "Midwest dealer"
-    },
-    {
-      "name": "Aspire",
-      "symbol": "0-58-0-5B",
-      "icon": "🔬",
-      "price": 569,
-      "prev": 569,
-      "unit": "$/ton",
-      "location": "Midwest dealer"
-    },
-    {
-      "name": "N-EDGE EZ",
-      "symbol": "~ESN 44-0-0",
-      "icon": "🌿",
-      "price": null,
-      "prev": null,
-      "unit": "$/ton",
-      "location": "Midwest dealer"
     }
   ]
 }
