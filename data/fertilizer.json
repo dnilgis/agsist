@@ -1,0 +1,57 @@
+{
+  "updated": "2026-04-04",
+  "source": "DTN / USDA AMS indicative — update weekly from DTN or your local elevator",
+  "note": "NOLA barge = New Orleans barge price. Midwest avg = blended dealer price.",
+  "prices": [
+    {
+      "name": "Urea",
+      "icon": "⚗️",
+      "symbol": "N-46",
+      "price": 485,
+      "prev": 490,
+      "unit": "$/ton",
+      "location": "NOLA barge",
+      "trend": "down"
+    },
+    {
+      "name": "Anhydrous",
+      "icon": "💨",
+      "symbol": "NH3",
+      "price": 685,
+      "prev": 665,
+      "unit": "$/ton",
+      "location": "Midwest avg",
+      "trend": "up"
+    },
+    {
+      "name": "UAN-32",
+      "icon": "🔵",
+      "symbol": "UAN-32",
+      "price": 290,
+      "prev": 282,
+      "unit": "$/ton",
+      "location": "Midwest avg",
+      "trend": "up"
+    },
+    {
+      "name": "DAP",
+      "icon": "🧪",
+      "symbol": "18-46-0",
+      "price": 615,
+      "prev": 598,
+      "unit": "$/ton",
+      "location": "NOLA barge",
+      "trend": "up"
+    },
+    {
+      "name": "Potash",
+      "icon": "🔶",
+      "symbol": "MOP-60",
+      "price": 390,
+      "prev": 385,
+      "unit": "$/ton",
+      "location": "NOLA barge",
+      "trend": "up"
+    }
+  ]
+}

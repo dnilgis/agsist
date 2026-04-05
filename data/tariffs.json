@@ -1,0 +1,106 @@
+{
+  "updated": "2026-04-04",
+  "status": "elevated",
+  "status_label": "Trade War Active",
+  "status_note": "US–China tariff escalation in effect. Significant impact on grain export demand.",
+  "headline": "China imposed 125% retaliatory tariffs on all US goods April 4, 2026 following US tariff increases to 145%.",
+  "rows": [
+    {
+      "commodity": "Soybeans",
+      "icon": "🫘",
+      "destination": "China",
+      "rate": "125%",
+      "baseline": "3%",
+      "status": "elevated",
+      "note": "Primary buyer — severe demand risk",
+      "effective": "2026-04-04"
+    },
+    {
+      "commodity": "Corn",
+      "icon": "🌽",
+      "destination": "China",
+      "rate": "125%",
+      "baseline": "1%",
+      "status": "elevated",
+      "note": "Discretionary purchases likely halted",
+      "effective": "2026-04-04"
+    },
+    {
+      "commodity": "Wheat",
+      "icon": "🌾",
+      "destination": "China",
+      "rate": "125%",
+      "baseline": "1%",
+      "status": "elevated",
+      "note": "Minimal baseline China exposure",
+      "effective": "2026-04-04"
+    },
+    {
+      "commodity": "Pork",
+      "icon": "🐖",
+      "destination": "China",
+      "rate": "125%",
+      "baseline": "12%",
+      "status": "elevated",
+      "note": "Major US export market at risk",
+      "effective": "2026-04-04"
+    },
+    {
+      "commodity": "Soybeans",
+      "icon": "🫘",
+      "destination": "Canada / Mexico",
+      "rate": "0%",
+      "baseline": "0%",
+      "status": "normal",
+      "note": "USMCA compliant — no change",
+      "effective": "2025-01-01"
+    },
+    {
+      "commodity": "Corn",
+      "icon": "🌽",
+      "destination": "Canada / Mexico",
+      "rate": "0%",
+      "baseline": "0%",
+      "status": "normal",
+      "note": "USMCA compliant — no change",
+      "effective": "2025-01-01"
+    },
+    {
+      "commodity": "Ethanol",
+      "icon": "⛽",
+      "destination": "EU",
+      "rate": "10%",
+      "baseline": "6.5%",
+      "status": "elevated",
+      "note": "Part of broad EU tariff package",
+      "effective": "2026-04-09"
+    }
+  ],
+  "timeline": [
+    {
+      "date": "2026-04-04",
+      "event": "China raises retaliatory tariffs to 125% on all US goods",
+      "impact": "high"
+    },
+    {
+      "date": "2026-04-02",
+      "event": "US raises tariffs on Chinese goods to 145% (54% base + 91% fentanyl)",
+      "impact": "high"
+    },
+    {
+      "date": "2026-03-10",
+      "event": "US imposes 25% steel/aluminum tariffs, Canada retaliates on $20B in goods",
+      "impact": "medium"
+    },
+    {
+      "date": "2026-02-01",
+      "event": "US announces 10% blanket tariff on Chinese imports; China retaliates on select ag",
+      "impact": "medium"
+    },
+    {
+      "date": "2025-09-01",
+      "event": "Phase 1 trade deal purchase commitments expire without renewal",
+      "impact": "medium"
+    }
+  ]
+}
