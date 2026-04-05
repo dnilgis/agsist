@@ -1,0 +1,9 @@
+{
+  "updated": "2026-04-05",
+  "report_date": "2026-04-03",
+  "marketing_year": "2025/26",
+  "note": "USDA FAS Weekly Export Sales — update each Thursday from apps.fas.usda.gov/export-sales",
+  "corn":     { "weekly_net_mt": 950000,  "cumulative_mt": 43500000, "usda_target_mt": 57900000, "pct_of_target": 75.1, "report_date": "2026-04-03" },
+  "soybeans": { "weekly_net_mt": 350000,  "cumulative_mt": 47800000, "usda_target_mt": 52200000, "pct_of_target": 91.6, "report_date": "2026-04-03" },
+  "wheat":    { "weekly_net_mt": 280000,  "cumulative_mt": 19900000, "usda_target_mt": 21800000, "pct_of_target": 91.3, "report_date": "2026-04-03" }
+}
