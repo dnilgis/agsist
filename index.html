@@ -98,7 +98,6 @@
   .ratio-right{flex:1;min-width:0;display:flex;flex-direction:column;gap:.6rem;}
   .ratio-gauge-track{position:relative;height:9px;border-radius:5px;margin-bottom:.3rem;background:linear-gradient(90deg,rgba(230,176,66,.32) 0%,rgba(230,176,66,.32) 30%,rgba(160,160,160,.12) 30%,rgba(160,160,160,.12) 55%,rgba(34,197,94,.28) 55%,rgba(34,197,94,.28) 100%);border:1px solid rgba(255,255,255,.06);}
   .ratio-gauge-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:15px;height:15px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1.5px var(--border);transition:left .5s ease,background .4s;z-index:2;}
-  /* PATCHED: .6rem -> .62rem */
   .ratio-gauge-zones{display:flex;justify-content:space-between;font-size:.62rem;color:var(--text-muted);letter-spacing:.03em;font-weight:600;padding:0 1px;margin-bottom:.3rem;}
   .ratio-verdict{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .65rem;border-radius:20px;font-size:.7rem;font-weight:700;letter-spacing:.03em;border:1px solid;transition:all .3s;}
   .ratio-verdict.corn{background:rgba(230,176,66,.1);color:var(--gold);border-color:rgba(230,176,66,.28)}
@@ -107,7 +106,6 @@
   .ratio-meta{font-size:.65rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.2rem;}
   .ratio-meta-sep{color:var(--border)}
   .ratio-links{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.4rem;}
-  /* PATCHED: border-radius 5px -> 6px */
   .ratio-link{font-size:.65rem;font-weight:600;color:var(--text-muted);text-decoration:none;padding:.32rem .6rem;border:1px solid var(--border);border-radius:6px;transition:border-color .15s,color .15s;}
   .ratio-link:hover{border-color:var(--gold);color:var(--gold)}
   @media(max-width:720px){.ratio-body{flex-wrap:wrap;}.ratio-right{min-width:100%;}}
@@ -117,7 +115,6 @@
   .cot-widget-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem;}
   .cot-widget-title{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
   .cot-caption{font-size:.65rem;color:var(--text-muted);line-height:1.4;margin-bottom:.5rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
-  /* PATCHED: .6rem -> .62rem */
   .cot-dir{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.1rem .32rem;border-radius:3px;flex-shrink:0;}
   .cot-dir.long{color:var(--green);background:rgba(34,197,94,.1);}
   .cot-dir.short{color:#ef4444;background:rgba(239,68,68,.1);}
@@ -142,7 +139,6 @@
   .cot-bar-labels{display:flex;justify-content:space-between;font-size:.62rem;color:var(--text-muted);margin-top:.2rem;font-family:'JetBrains Mono',monospace;}
   .cot-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem;padding-top:.55rem;border-top:1px solid var(--border);}
   .cot-date{font-size:.65rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
-  /* PATCHED: border-radius 5px -> 6px */
   .cot-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(230,176,66,.3);border-radius:6px;transition:border-color .15s;}
   .cot-full-link:hover{border-color:var(--gold)}
 
@@ -165,14 +161,12 @@
   .tariff-row-rate.elevated{color:#ef4444;} .tariff-row-rate.normal{color:var(--green);} .tariff-row-rate.mixed{color:var(--gold);}
   .tariff-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem;padding-top:.55rem;border-top:1px solid var(--border);}
   .tariff-footer-date{font-size:.65rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
-  /* PATCHED: border-radius 5px -> 6px */
   .tariff-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(230,176,66,.3);border-radius:6px;transition:border-color .15s;}
   .tariff-full-link:hover{border-color:var(--gold);}
   @media(max-width:480px){.tariff-widget{padding:.75rem .85rem;}.tariff-row-dest{display:none;}}
 
   @media(max-width:480px){.cot-widget{padding:.75rem .85rem;}.cot-net{font-size:.72rem;}.cot-comm-name{font-size:.7rem;}}
 
-  /* PATCHED: border-radius 4px -> 6px */
   .noaa-tabs{display:flex;gap:.4rem;margin-bottom:.75rem;flex-wrap:wrap}
   .noaa-tab{padding:.38rem .9rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.04em;transition:all .15s;}
   .noaa-tab:hover{border-color:var(--gold);color:var(--text)}
@@ -254,7 +248,6 @@
   .crop-offseason{display:flex;align-items:center;justify-content:center;flex:1;font-size:.78rem;color:var(--text-muted);text-align:center;padding:.5rem 0;}
   .crop-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem;padding-top:.55rem;border-top:1px solid var(--border);}
   .crop-footer-date{font-size:.65rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
-  /* PATCHED: border-radius 5px -> 6px */
   .crop-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(230,176,66,.3);border-radius:6px;transition:border-color .15s;}
   .crop-full-link:hover{border-color:var(--gold);}
   @media(max-width:480px){.crop-widget{padding:.75rem .85rem;}}
@@ -277,7 +270,6 @@
   .export-pace-pct.on-track{color:var(--green);} .export-pace-pct.lagging{color:var(--gold);} .export-pace-pct.behind{color:#ef4444;}
   .export-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem;padding-top:.55rem;border-top:1px solid var(--border);}
   .export-footer-date{font-size:.65rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
-  /* PATCHED: border-radius 5px -> 6px */
   .export-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(230,176,66,.3);border-radius:6px;transition:border-color .15s;}
   .export-full-link:hover{border-color:var(--gold);}
   @media(max-width:480px){.export-widget{padding:.75rem .85rem;}}
@@ -289,7 +281,6 @@
   .fert-card{background:var(--surface2);border-radius:8px;padding:.5rem .65rem;}
   .fert-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.2rem;}
   .fert-name{font-size:.68rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:.25rem;}
-  /* PATCHED: .6rem -> .62rem */
   .fert-sym{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-muted);}
   .fert-price{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:700;color:var(--text);line-height:1;}
   .fert-chg{display:flex;align-items:center;gap:.2rem;margin-top:.12rem;}
@@ -298,14 +289,17 @@
   .fert-loc{font-size:.62rem;color:var(--text-muted);}
   .fert-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem;padding-top:.55rem;border-top:1px solid var(--border);}
   .fert-footer-note{font-size:.62rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
-  /* PATCHED: border-radius 5px -> 6px */
   .fert-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(230,176,66,.3);border-radius:6px;transition:border-color .15s;}
   .fert-full-link:hover{border-color:var(--gold);}
   @media(max-width:480px){.km-card{padding:.65rem .75rem;}.km-card-pct{font-size:1.35rem;}}
   @media(max-width:480px){.fert-widget{padding:.75rem .85rem;}.fert-grid{grid-template-columns:1fr 1fr;}}
+  /* ── MOBILE OVERFLOW FIXES ─────────────────────────────────── */
+  html,body{overflow-x:hidden;}
+  .main{overflow-x:clip;}
+  @media(max-width:560px){.ratio-body{flex-wrap:wrap!important;}.ratio-right{min-width:100%;}.ratio-big{font-size:2rem;}}
+  @media(max-width:380px){.dh-headline{font-size:1.2rem;}.ratio-big{font-size:1.7rem;}}
 </style>
 </head>
-
 <body>
 <a href="#main" class="skip">Skip to content</a>
 <noscript><div class="noscript-banner">AGSIST requires JavaScript for live prices and weather. Please enable JavaScript.</div></noscript>
@@ -590,6 +584,7 @@
       </div></div>
     </div>
   </div>
+
   <!-- PRICE CARDS -->
   <div class="price-cards-section fade-up" id="f-prices">
     <div class="sec-head">
@@ -725,6 +720,7 @@
         </div>
       </div>
     </div>
+
     <!-- CROP PROGRESS + EXPORT -->
     <div class="crop-export-grid" id="crop-export-grid-inner">
       <div class="crop-widget" id="crop-widget">
@@ -848,6 +844,7 @@
       <div class="pc pc-sm" data-spark="sp500"><div class="pc-head"><span class="pc-name"><span class="pc-name-icon">&#x1F4C8;</span>S&amp;P 500</span><span class="pc-contract">Spot</span></div><div class="pc-price" id="pcp-sp500">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-sp500">--</span></div><div class="pc-prev" id="pcprev-sp500"></div><div class="pc-spark" data-spark="sp500"></div><div class="pc-range"><div class="pc-range-labels"><span>4,900</span><span></span><span>6,700</span></div><div class="pc-range-track"><div class="pc-range-fill" style="width:92%"></div><div class="pc-range-dot" style="left:92%"></div></div></div></div>
     </div>
   </div>
+
   <!-- RADAR -->
   <div class="radar-section fade-up" id="f-radar">
     <div class="sec-head">
@@ -962,17 +959,16 @@
     </div>
   </div>
 
-  <!-- PREDICTION MARKETS -->
+  <!-- PREDICTION MARKETS — MAX 4 CARDS, safe mobile grid -->
   <div class="fade-up" id="f-kalshi">
     <div class="sec-head"><div class="sec-title">&#x1F3AF; What's Moving Agriculture</div><a href="/ag-odds" class="sec-all">All Markets &rarr;</a></div>
-    <div id="kalshi-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:.65rem;margin-bottom:.5rem">
+    <div id="kalshi-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(268px,100%),1fr));gap:.65rem;margin-bottom:.5rem">
       <div id="kalshi-loading" style="grid-column:1/-1;text-align:center;padding:1.2rem;font-size:.8rem;color:var(--text-muted)">&#x23F3; Loading markets&hellip;</div>
     </div>
     <div id="kalshi-footer" style="display:none;padding:.25rem 0 .15rem;text-align:right">
       <a href="/ag-odds" style="font-size:.72rem;color:var(--gold);text-decoration:none;font-weight:600">View all ag prediction markets &rarr;</a>
     </div>
   </div>
-
   <!-- SIGNUP -->
   <div class="signup fade-up" id="signup-full" style="display:none">
     <div class="signup-inner">
@@ -990,7 +986,7 @@
           <input type="email" class="signup-input" placeholder="your@email.com" autocomplete="email" aria-label="Email address" required>
           <button class="signup-submit" id="btn-email-signup">Subscribe &rarr;</button>
         </div>
-        <div class="signup-disc">Free forever. Unsubscribe any time. We never sell your data. <a href="/legal/privacy">Privacy Policy</a>.</div>
+        <div class="signup-disc">Free forever. Unsubscribe any time. We never sell your data. <a href="/privacy">Privacy Policy</a>.</div>
       </div>
       <div class="signup-form" id="form-sms" style="display:none" role="tabpanel">
         <div class="signup-row">
@@ -1001,7 +997,7 @@
           <span style="font-size:1.1rem;flex-shrink:0" aria-hidden="true">&#x1F4C4;</span>
           <span>Each morning you'll receive a text with a link to today's PDF briefing. Standard messaging rates apply. Text STOP anytime.</span>
         </div>
-        <div class="signup-disc" style="margin-top:.4rem"><a href="/legal/privacy">Privacy Policy</a> &middot; <a href="/legal/terms">Terms</a></div>
+        <div class="signup-disc" style="margin-top:.4rem"><a href="/privacy">Privacy Policy</a> &middot; <a href="/legal/terms">Terms</a></div>
       </div>
     </div>
   </div>
@@ -1262,7 +1258,7 @@ function hasKw(text,kw){var i=text.indexOf(kw);while(i>=0){var before=i===0||/[^
 var T1=['corn','soybeans','soybean','wheat','grain','grains','oat','oats','barley','cotton','sugar','rice','cattle','hogs','hog','pig','livestock','pork','beef','dairy','milk','poultry','chicken','egg','eggs','ethanol','crop','harvest','planting','acreage','fertilizer','urea','nitrogen','potash','phosphate','usda','wasde','crop insurance','food price','food inflation','grocery','bushel','yield','feedlot'];
 var T2=['tariff','tariffs','trade war','trade deal','china trade','china import','china export','brazil','argentina','ukraine','black sea grain','usmca','wto','trade dispute','export ban','retaliatory tariff','crude oil','natural gas','diesel','gasoline','oil price','opec','pipeline','biofuel','supply chain','rail strike','railroad','bird flu','avian influenza','farm labor'];
 var T3=['interest rate','rate cut','rate hike','fed funds','fomc','powell','inflation','cpi','recession','gdp','unemployment','dollar index','drought','hurricane','flood','el nino','la nina','heat wave','frost','freeze'];
-var SKIP=['nfl','nba','mlb','nhl','mls','wnba','ncaa','march madness','super bowl','world series','stanley cup','playoff','playoffs','championship game','all-star','premier league','la liga','champions league','world cup','olympics','lakers','celtics','warriors','chiefs','eagles','cowboys','yankees','dodgers','mvp award','rushing yards','batting','oscar','grammy','emmy','golden globe','eurovision','box office','netflix','disney','celebrity','kardashian','beyonce','album','spotify','tiktok','instagram','youtube','viral','dogecoin','shiba','nft','movie','marvel','dc comics','reality tv','presidential election','parliamentary election','senate race','congressional race','prime minister race','governor race','mayor race','republican primary','democratic primary'];
+var SKIP=['nfl','nba','mlb','nhl','mls','wnba','ncaa','march madness','super bowl','world series','stanley cup','playoff','playoffs','championship game','all-star','premier league','la liga','champions league','world cup','olympics','lakers','celtics','warriors','chiefs','eagles','cowboys','yankees','dodgers','mvp award','rushing yards','batting','oscar','grammy','emmy','golden globe','eurovision','box office','netflix','disney','celebrity','kardashian','beyonce','album','spotify','tiktok','instagram','youtube','viral','dogecoin','shiba','nft','movie','marvel','dc comics','reality tv','presidential election','parliamentary election','senate race','congressional race','prime minister race','governor race','mayor race','republican primary','democratic primary','remain prime minister','remain as prime minister','new prime minister','become prime minister'];
 function scoreM(t){var s=t.toLowerCase();for(var h=0;h<SKIP.length;h++){if(s.indexOf(SKIP[h])>=0)return null;}for(var a=0;a<T1.length;a++){if(hasKw(s,T1[a]))return{score:100,tier:1};}for(var b=0;b<T2.length;b++){if(s.indexOf(T2[b])>=0)return{score:70,tier:2};}for(var c=0;c<T3.length;c++){if(s.indexOf(T3[c])>=0)return{score:40,tier:3};}return null;}
 var WHY=[['egg','Egg prices signal avian flu pressure and poultry feed demand.'],['grocery','Grocery prices reflect the entire ag supply chain from field to shelf.'],['food price','Food price changes affect consumer ag demand from farm to shelf.'],['food inflation','Food inflation erodes purchasing power and shifts protein demand.'],['corn','Corn price moves affect feed costs, ethanol margins, and farm revenue.'],['soybean','Soybeans drive export revenue \u2014 any policy shift moves US ag exports.'],['wheat','Wheat prices set global food costs and compete for acres with corn.'],['cattle','Cattle prices reflect packer demand and feed efficiency for feedlots.'],['tariff','Tariffs directly impact US grain export demand \u2014 moves basis fast.'],['trade','Trade policy shifts can redirect global grain flows overnight.'],['china','China is the world\'s largest soybean buyer \u2014 policy shifts move markets.'],['crude oil','Oil prices drive diesel and fertilizer costs \u2014 every $10/bbl hits your budget.'],['oil','Energy costs flow through to planting, spraying, drying, and hauling.'],['natural gas','Natural gas is the primary input for nitrogen fertilizer \u2014 spikes raise urea.'],['fertilizer','Fertilizer is the largest variable input cost \u2014 price moves squeeze margins.'],['interest rate','Rate changes affect land values, operating loans, and grain storage carry.'],['fed','Fed policy drives the dollar, which affects grain export competitiveness.'],['inflation','Inflation erodes margins when input costs rise faster than commodity prices.'],['recession','Slowdowns reduce ethanol demand and can weaken feed grain consumption.'],['drought','Drought is the single biggest yield risk \u2014 moves corn and bean prices fast.'],['hurricane','Hurricanes disrupt Gulf exports and can damage late-season crops.'],['bird flu','Bird flu outbreaks spike egg prices and cut poultry feed demand.'],['brazil','Brazil\'s soybean crop competes directly with US exports for global buyers.'],['ukraine','Black Sea grain disruptions affect global wheat and corn supply.']];
 function getWhy(t){var s=t.toLowerCase();for(var i=0;i<WHY.length;i++){if(s.indexOf(WHY[i][0])>=0)return WHY[i][1];}return'Affects agricultural commodity prices, input costs, or farm policy.';}
@@ -1288,7 +1284,7 @@ function renderMarkets(){
   markets.forEach(function(m){
     var pct=m.yes,tl=tLeft(m.ed),tierLbl=TIER_LABELS[m.tier]||'MACRO',tierStyle=TIER_COLORS[m.tier]||TIER_COLORS[3];
     var a=document.createElement('a');a.className='km-card';a.href=m.url;a.target='_blank';a.rel='noopener noreferrer';a.dataset.tier=String(m.tier);
-    a.innerHTML='<div class="km-card-row"><div class="km-card-title">'+esc(m.title)+'</div><div class="km-card-pct" style="color:'+pc(pct)+'">'+pct+'%</div></div>'+'<div class="km-bar-track"><div class="km-bar-fill" style="width:'+pct+'%;background:'+barBg(pct)+'"></div></div>'+'<div class="km-why">'+esc(m.why)+'</div>'+'<div class="km-card-foot"><span class="km-plat p">Polymarket</span><span style="font-family:\'JetBrains Mono\',monospace;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .42rem;border-radius:3px;border:1px solid;'+tierStyle+'">'+tierLbl+'</span>'+(tl?'<span class="km-tl">\u23f1 '+esc(tl)+'</span>':'')+'</div>';
+    a.innerHTML='<div class="km-card-row"><div class="km-card-title">'+esc(m.title)+'</div><div class="km-card-pct" style="color:'+pc(pct)+'">'+pct+'%</div></div>'+'<div class="km-bar-track"><div class="km-bar-fill" style="width:'+pct+'%;background:'+barBg(pct)+'"></div></div>'+'<div class="km-why">'+esc(getWhy(m.title))+'</div>'+'<div class="km-card-foot"><span class="km-plat p">Polymarket</span><span style="font-family:\'JetBrains Mono\',monospace;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .42rem;border-radius:3px;border:1px solid;'+tierStyle+'">'+tierLbl+'</span>'+(tl?'<span class="km-tl">\u23f1 '+esc(tl)+'</span>':'')+'</div>';
     grid.appendChild(a);
   });
   if(footer)footer.style.display='block';
