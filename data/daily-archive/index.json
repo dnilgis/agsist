@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-04-06",
+      "date_display": "Monday, April 6, 2026",
+      "headline": "GRAINS GAIN GROUND AS PLANTING WINDOW OPENS",
+      "teaser": "Grains bounce back as planting season countdown begins — every day matters now.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-04-06",
+      "market_closed": false
+    },
+    {
       "date": "2026-04-05",
       "date_display": "Sunday, April 5, 2026",
       "headline": "ENERGY RALLY PAUSES — GRAINS READY FOR MONDAY TEST",
@@ -242,6 +253,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-04-05T12:00:02.090546+00:00",
-  "count": 24
+  "updated": "2026-04-06T12:37:20.522407+00:00",
+  "count": 25
 }
