@@ -15,7 +15,7 @@
 <meta name="description" content="AI-generated morning agricultural market briefing for corn, soybean, and wheat farmers. Published every weekday by 6 AM CT. Market drivers, weather, and what to watch.">
 <meta name="keywords"    content="daily ag briefing, farm morning market report, corn price today, soybean market morning, grain market briefing, agricultural market summary">
 <meta name="author"      content="Farmers First Agri Service — AGSIST">
-<meta name="robots"      content="index, follow, max-snippet:-1">
+<meta name="robots"      content="index, follow, max-snippet:-1, max-image-preview:large">
 <link rel="canonical"    href="https://agsist.com/daily">
 
 <meta property="og:type"         content="article">
@@ -38,67 +38,101 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://agsist.com/daily#webpage",
+      "url": "https://agsist.com/daily",
+      "name": "Daily Ag Briefing — Market Morning Report | AGSIST",
+      "description": "AI-generated morning agricultural market briefing for corn, soybean, and wheat farmers. Published every weekday by 6 AM CT.",
+      "isPartOf": { "@id": "https://agsist.com/#website" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home",           "item": "https://agsist.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Daily Briefing", "item": "https://agsist.com/daily" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the AGSIST Daily Ag Briefing?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The AGSIST Daily Ag Briefing is a free AI-generated morning market report for corn, soybean, and wheat farmers in Wisconsin and Minnesota. It covers overnight commodity price movements, weather outlook, and key events to watch, published every weekday by 6 AM CT." }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I subscribe to the daily farm market briefing?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Click the 'Get It in Your Inbox' button on this page. Enter your email and the AGSIST Daily will be delivered every weekday morning before 6 AM CT. Free, no ads." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <style>
 button,a,[role="button"]{touch-action:manipulation;}
 
-.dv3-page { max-width: 860px; margin: 0 auto; padding: 0 1rem 4rem; }
+.dv3-page{max-width:860px;margin:0 auto;padding:0 1rem 4rem;}
 
-/* Hero */
-.dv3-hero { padding: 1.2rem 0 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.4rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-.dv3-hero-left h1 { font-family: 'Oswald', sans-serif; font-size: 1.7rem; font-weight: 800; text-transform: uppercase; color: var(--text); margin: 0 0 .2rem; }
-.dv3-hero-left .dv3-eyebrow { font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: .3rem; }
-.dv3-hero-left .dv3-sub { font-size: .82rem; color: var(--text-dim); line-height: 1.55; }
-.dv3-subscribe-btn { padding: .5rem 1.1rem; background: var(--green); color: #fff; border: none; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: .75rem; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; transition: background .15s; }
-.dv3-subscribe-btn:hover { background: #1b4d1c; }
+.dv3-hero{padding:1.2rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.4rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.dv3-hero-left h1{font-family:'Oswald',sans-serif;font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .2rem;}
+.dv3-hero-left .dv3-eyebrow{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
+.dv3-hero-left .dv3-sub{font-size:.82rem;color:var(--text-dim);line-height:1.55;}
+.dv3-subscribe-btn{padding:.5rem 1.1rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;transition:background .15s;}
+.dv3-subscribe-btn:hover{background:#1b4d1c;}
 
-/* Today's briefing */
-.dv3-today { background: var(--surface); border: 2px solid var(--border); border-radius: 12px; padding: 1.4rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; }
-.dv3-today::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--green), var(--gold)); }
-.dv3-today-label { font-family: 'JetBrains Mono', monospace; font-size: .62rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-bottom: .5rem; display: flex; align-items: center; gap: .5rem; }
-.dv3-today-date { font-size: .82rem; color: var(--text-dim); margin-bottom: .75rem; }
-.dv3-today-headline { font-family: 'Oswald', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--text); line-height: 1.25; margin-bottom: 1rem; }
-.dv3-today-body { font-size: .9rem; color: var(--text-dim); line-height: 1.8; }
-.dv3-today-body p { margin: 0 0 .9rem; }
-.dv3-today-body p:last-child { margin-bottom: 0; }
-.dv3-today-body strong { color: var(--text); }
-.dv3-prices-row { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
-.dv3-price-pill { font-family: 'JetBrains Mono', monospace; font-size: .75rem; font-weight: 700; padding: .3rem .65rem; border-radius: 20px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); }
-.dv3-price-pill.up { border-color: rgba(34,197,94,.3); color: var(--green); }
-.dv3-price-pill.dn { border-color: rgba(239,68,68,.3); color: #ef4444; }
-.dv3-loading { text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); }
-.dv3-loading-spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto .75rem; }
-@keyframes spin { to { transform: rotate(360deg); } }
+.dv3-today{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.4rem;margin-bottom:1.5rem;position:relative;overflow:hidden;}
+.dv3-today::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--gold));}
+.dv3-today-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;}
+.dv3-today-date{font-size:.82rem;color:var(--text-dim);margin-bottom:.75rem;}
+.dv3-today-headline{font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;color:var(--text);line-height:1.25;margin-bottom:1rem;}
+.dv3-today-body{font-size:.9rem;color:var(--text-dim);line-height:1.8;}
+.dv3-today-body p{margin:0 0 .9rem;}
+.dv3-today-body p:last-child{margin-bottom:0;}
+.dv3-today-body strong{color:var(--text);}
+.dv3-prices-row{display:flex;flex-wrap:wrap;gap:.5rem;margin:.75rem 0;}
+.dv3-price-pill{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;padding:.3rem .65rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);}
+.dv3-price-pill.up{border-color:rgba(34,197,94,.3);color:var(--green);}
+.dv3-price-pill.dn{border-color:rgba(239,68,68,.3);color:#ef4444;}
+.dv3-loading{text-align:center;padding:2.5rem 1rem;color:var(--text-muted);}
+.dv3-loading-spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .75rem;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-/* Archive grid */
-.dv3-arc-label { font-size: .62rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: .75rem; }
-.dv3-arc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .75rem; margin-bottom: 2rem; }
-.dv3-arc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: .85rem 1rem; text-decoration: none; transition: border-color .15s; display: block; }
-.dv3-arc-card:hover { border-color: var(--gold); }
-.dv3-arc-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: .35rem; }
-.dv3-arc-card-date { font-family: 'JetBrains Mono', monospace; font-size: .62rem; color: var(--text-muted); }
-.dv3-arc-card-badge { font-family: 'JetBrains Mono', monospace; font-size: .62rem; font-weight: 700; padding: .1rem .4rem; border-radius: 4px; text-transform: uppercase; letter-spacing: .04em; }
-.dv3-arc-card-badge.wkday { background: rgba(58,139,60,.12); color: var(--green); border: 1px solid rgba(58,139,60,.25); }
-.dv3-arc-card-badge.wkend { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
-.dv3-arc-card-hl { font-size: .82rem; font-weight: 600; color: var(--text); line-height: 1.4; }
+.dv3-arc-label{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.75rem;}
+.dv3-arc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.75rem;margin-bottom:2rem;}
+.dv3-arc-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem;text-decoration:none;transition:border-color .15s;display:block;}
+.dv3-arc-card:hover{border-color:var(--gold);}
+.dv3-arc-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.35rem;}
+.dv3-arc-card-date{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-muted);}
+.dv3-arc-card-badge{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;}
+.dv3-arc-card-badge.wkday{background:rgba(58,139,60,.12);color:var(--green);border:1px solid rgba(58,139,60,.25);}
+.dv3-arc-card-badge.wkend{background:var(--surface2);color:var(--text-muted);border:1px solid var(--border);}
+.dv3-arc-card-hl{font-size:.82rem;font-weight:600;color:var(--text);line-height:1.4;}
 
-/* Subscribe modal */
-.dv3-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 1000; align-items: center; justify-content: center; }
-.dv3-modal-overlay.open { display: flex; }
-.dv3-modal { background: var(--surface); border: 2px solid var(--border); border-radius: 12px; padding: 1.8rem; max-width: 400px; width: 90%; position: relative; }
-.dv3-modal h2 { font-size: 1.15rem; color: var(--gold); margin: 0 0 .5rem; }
-.dv3-modal p { font-size: .85rem; color: var(--text-dim); line-height: 1.65; margin: 0 0 1rem; }
-.dv3-modal input[type="email"] { width: 100%; padding: .65rem .9rem; background: var(--bg); border: 2px solid var(--border); border-radius: 6px; color: var(--text); font-size: .9rem; outline: none; margin-bottom: .75rem; }
-.dv3-modal input[type="email"]:focus { border-color: var(--green); }
-.dv3-modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-dim); font-size: 1.2rem; cursor: pointer; line-height: 1; }
-.dv3-modal-close:hover { color: var(--text); }
-.dv3-modal-submit { width: 100%; padding: .65rem; background: var(--green); color: #fff; border: none; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: .82rem; font-weight: 700; text-transform: uppercase; cursor: pointer; letter-spacing: .04em; transition: background .15s; }
-.dv3-modal-submit:hover { background: #1b4d1c; }
-.dv3-modal-fine { font-size: .7rem; color: var(--text-muted); text-align: center; margin-top: .5rem; }
+.dv3-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;}
+.dv3-modal-overlay.open{display:flex;}
+.dv3-modal{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.8rem;max-width:400px;width:90%;position:relative;}
+.dv3-modal h2{font-size:1.15rem;color:var(--gold);margin:0 0 .5rem;}
+.dv3-modal p{font-size:.85rem;color:var(--text-dim);line-height:1.65;margin:0 0 1rem;}
+.dv3-modal input[type="email"]{width:100%;padding:.65rem .9rem;background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;outline:none;margin-bottom:.75rem;}
+.dv3-modal input[type="email"]:focus{border-color:var(--green);}
+.dv3-modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text-dim);font-size:1.2rem;cursor:pointer;line-height:1;}
+.dv3-modal-close:hover{color:var(--text);}
+.dv3-modal-submit{width:100%;padding:.65rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;text-transform:uppercase;cursor:pointer;letter-spacing:.04em;transition:background .15s;}
+.dv3-modal-submit:hover{background:#1b4d1c;}
+.dv3-modal-fine{font-size:.7rem;color:var(--text-muted);text-align:center;margin-top:.5rem;}
 
-@media (max-width: 500px) {
-  .dv3-hero { flex-direction: column; align-items: flex-start; }
-  .dv3-today-headline { font-size: 1.2rem; }
-  .dv3-arc-grid { grid-template-columns: 1fr; }
+@media(max-width:500px){
+  .dv3-hero{flex-direction:column;align-items:flex-start;}
+  .dv3-today-headline{font-size:1.2rem;}
+  .dv3-arc-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -116,20 +150,17 @@ button,a,[role="button"]{touch-action:manipulation;}
     <button class="dv3-subscribe-btn" id="dv3-sub-btn">✉ Get It in Your Inbox</button>
   </div>
 
-  <!-- Today's briefing -->
   <div class="dv3-today" id="dv3-today">
     <div class="dv3-loading"><div class="dv3-loading-spinner"></div>Loading today's briefing…</div>
   </div>
 
-  <!-- Archive -->
   <div class="dv3-arc-label">Recent Briefings — Archive</div>
   <div class="dv3-arc-grid" id="dv3-arc-grid">
-    <!-- populated by JS -->
+    <div style="grid-column:1/-1;color:var(--text-muted);font-size:.82rem;padding:.5rem 0">Loading archive…</div>
   </div>
 
 </main>
 
-<!-- Subscribe modal -->
 <div class="dv3-modal-overlay" id="dv3-modal">
   <div class="dv3-modal">
     <button class="dv3-modal-close" id="dv3-modal-close">✕</button>
@@ -150,117 +181,102 @@ button,a,[role="button"]{touch-action:manipulation;}
 (function(){
 'use strict';
 
-// Archive items — ordered newest first. Update this list as new briefings are published.
-var ARCHIVE_ITEMS = [
-  { date: '2026-03-24', slug: '2026-03-24', label: 'Mon Mar 24', type: 'wkday' },
-  { date: '2026-03-23', slug: '2026-03-23', label: 'Sun Mar 23', type: 'wkend' },
-  { date: '2026-03-22', slug: '2026-03-22', label: 'Sat Mar 22', type: 'wkend' },
-  { date: '2026-03-21', slug: '2026-03-21', label: 'Fri Mar 21', type: 'wkday' },
-  { date: '2026-03-20', slug: '2026-03-20', label: 'Thu Mar 20', type: 'wkday' },
-  { date: '2026-03-19', slug: '2026-03-19', label: 'Wed Mar 19', type: 'wkday' },
-  { date: '2026-03-18', slug: '2026-03-18', label: 'Tue Mar 18', type: 'wkday' },
-  { date: '2026-03-17', slug: '2026-03-17', label: 'Mon Mar 17', type: 'wkday' },
-  { date: '2026-03-14', slug: '2026-03-14', label: 'Fri Mar 14', type: 'wkday' },
-  { date: '2026-03-13', slug: '2026-03-13', label: 'Thu Mar 13', type: 'wkday' },
-  { date: '2026-03-12', slug: '2026-03-12', label: 'Wed Mar 12', type: 'wkday' },
-  { date: '2026-03-11', slug: '2026-03-11', label: 'Tue Mar 11', type: 'wkday' }
-];
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtDate(iso){if(!iso)return'';var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});}
 
-function escHtml(s) {
-  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function fmtDate(iso) {
-  if (!iso) return '';
-  var d = new Date(iso + 'T12:00:00');
-  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-}
-
-function renderToday(data) {
-  var el = document.getElementById('dv3-today');
-  if (!el) return;
-  if (!data || !data.headline) {
-    el.innerHTML = '<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">Today\'s briefing is not yet available. Published by 6 AM CT on weekday mornings.<br><br><a href="/" style="color:var(--gold)">← Return to dashboard</a></p></div>';
+// ── Today's briefing ──────────────────────────────────────────────────
+function renderToday(data){
+  var el=document.getElementById('dv3-today');
+  if(!el)return;
+  if(!data||!data.headline){
+    el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">Today\'s briefing is not yet available. Published by 6 AM CT on weekday mornings.<br><br><a href="/" style="color:var(--gold)">← Return to dashboard</a></p></div>';
     return;
   }
-  var priceHtml = '';
-  if (data.prices) {
-    priceHtml = '<div class="dv3-prices-row">';
-    (data.prices || []).forEach(function(p) {
-      priceHtml += '<span class="dv3-price-pill ' + (p.dir || '') + '">' + escHtml(p.label) + ': ' + escHtml(p.value) + '</span>';
-    });
-    priceHtml += '</div>';
+  var priceHtml='';
+  if(data.prices){
+    priceHtml='<div class="dv3-prices-row">';
+    (data.prices||[]).forEach(function(p){priceHtml+='<span class="dv3-price-pill '+(p.dir||'')+'">'+escHtml(p.label)+': '+escHtml(p.value)+'</span>';});
+    priceHtml+='</div>';
   }
-  var bodyHtml = (data.body || '').split('\n\n').filter(Boolean).map(function(p) {
-    return '<p>' + escHtml(p) + '</p>';
-  }).join('');
-
-  el.innerHTML =
-    '<div class="dv3-today-label"><span>📰</span>Today\'s Briefing</div>' +
-    '<div class="dv3-today-date">' + fmtDate(data.date) + '</div>' +
-    '<div class="dv3-today-headline">' + escHtml(data.headline) + '</div>' +
-    priceHtml +
-    '<div class="dv3-today-body">' + bodyHtml + '</div>';
+  var bodyHtml=(data.body||'').split('\n\n').filter(Boolean).map(function(p){return'<p>'+escHtml(p)+'</p>';}).join('');
+  el.innerHTML=
+    '<div class="dv3-today-label"><span>📰</span>Today\'s Briefing</div>'+
+    '<div class="dv3-today-date">'+fmtDate(data.date)+'</div>'+
+    '<div class="dv3-today-headline">'+escHtml(data.headline)+'</div>'+
+    priceHtml+
+    '<div class="dv3-today-body">'+bodyHtml+'</div>';
 }
 
-function renderArchive() {
-  var grid = document.getElementById('dv3-arc-grid');
-  if (!grid) return;
-  var html = '';
-  ARCHIVE_ITEMS.forEach(function(item) {
-    html +=
-      '<a href="/daily/' + escHtml(item.slug) + '" class="dv3-arc-card">' +
-        '<div class="dv3-arc-card-head">' +
-          '<span class="dv3-arc-card-date">' + escHtml(item.label) + '</span>' +
-          '<span class="dv3-arc-card-badge ' + item.type + '">' + (item.type === 'wkday' ? 'Market Day' : 'Weekend') + '</span>' +
-        '</div>' +
-        '<div class="dv3-arc-card-hl" id="arc-hl-' + escHtml(item.slug) + '">—</div>' +
-      '</a>';
-  });
-  grid.innerHTML = html;
+// ── Archive — dynamic from index.json, no hardcoding ─────────────────
+function renderArchive(){
+  var grid=document.getElementById('dv3-arc-grid');
+  if(!grid)return;
 
-  // Lazy-load headlines from archive JSONs
-  ARCHIVE_ITEMS.slice(0, 6).forEach(function(item) {
-    fetch('/data/daily-archive/' + item.slug + '.json')
-      .then(function(r) { return r.ok ? r.json() : null; })
-      .then(function(d) {
-        if (!d || !d.headline) return;
-        var el = document.getElementById('arc-hl-' + item.slug);
-        if (el) el.textContent = d.headline;
-      })
-      .catch(function(){});
-  });
+  fetch('/data/daily-archive/index.json')
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(manifest){
+      // index.json uses "briefings" array
+      if(!manifest||!manifest.briefings||!manifest.briefings.length){
+        grid.innerHTML='<p style="color:var(--text-muted);font-size:.82rem;grid-column:1/-1">Archive not yet available.</p>';
+        return;
+      }
+      var entries=manifest.briefings.slice(0,30);
+      var html='';
+      entries.forEach(function(item){
+        var d=new Date(item.date+'T12:00:00');
+        var dow=d.getDay(); // 0=Sun
+        var isWkend=dow===0||dow===6||item.market_closed;
+        var dayN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        var monN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var label=item.date_display||item.label||(dayN[dow]+' '+monN[d.getMonth()]+' '+d.getDate());
+        // Use short label for the date chip
+        var shortLabel=dayN[dow]+' '+monN[d.getMonth()]+' '+d.getDate();
+        var type=isWkend?'wkend':'wkday';
+        html+=
+          '<a href="/daily/'+item.date+'" class="dv3-arc-card">'+
+            '<div class="dv3-arc-card-head">'+
+              '<span class="dv3-arc-card-date">'+escHtml(shortLabel)+'</span>'+
+              '<span class="dv3-arc-card-badge '+type+'">'+(type==='wkday'?'Market Day':'Weekend')+'</span>'+
+            '</div>'+
+            '<div class="dv3-arc-card-hl">'+
+              (item.headline?escHtml(item.headline):'—')+
+            '</div>'+
+          '</a>';
+      });
+      grid.innerHTML=html;
+      // Headlines already in manifest — no lazy-loading needed
+    })
+    .catch(function(){
+      grid.innerHTML='<p style="color:var(--text-muted);font-size:.82rem;grid-column:1/-1">Archive unavailable.</p>';
+    });
 }
 
-function loadToday() {
-  fetch('/data/daily.json', { cache: 'no-store' })
-    .then(function(r) { return r.ok ? r.json() : null; })
-    .then(renderToday)
-    .catch(function() { renderToday(null); });
-}
-
-// Subscribe modal
-var modal = document.getElementById('dv3-modal');
-var subBtn = document.getElementById('dv3-sub-btn');
-var closeBtn = document.getElementById('dv3-modal-close');
-var form = document.getElementById('dv3-sub-form');
-
-if (subBtn) subBtn.addEventListener('click', function() { modal.classList.add('open'); });
-if (closeBtn) closeBtn.addEventListener('click', function() { modal.classList.remove('open'); });
-if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('open'); });
-if (form) {
-  form.addEventListener('submit', function(e) {
+// ── Subscribe modal ───────────────────────────────────────────────────
+var modal=document.getElementById('dv3-modal');
+var subBtn=document.getElementById('dv3-sub-btn');
+var closeBtn=document.getElementById('dv3-modal-close');
+var form=document.getElementById('dv3-sub-form');
+if(subBtn)subBtn.addEventListener('click',function(){modal.classList.add('open');});
+if(closeBtn)closeBtn.addEventListener('click',function(){modal.classList.remove('open');});
+if(modal)modal.addEventListener('click',function(e){if(e.target===modal)modal.classList.remove('open');});
+if(form){
+  form.addEventListener('submit',function(e){
     e.preventDefault();
-    var data = new FormData(form);
-    fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } })
-      .then(function(r) {
-        if (r.ok) { form.innerHTML = '<p style="color:var(--green);text-align:center;padding:.5rem 0">✓ Subscribed! Watch for your first briefing.</p>'; }
-        else { alert('Something went wrong — try again or email hello@agsist.com'); }
+    var data=new FormData(form);
+    fetch(form.action,{method:'POST',body:data,headers:{'Accept':'application/json'}})
+      .then(function(r){
+        if(r.ok){form.innerHTML='<p style="color:var(--green);text-align:center;padding:.5rem 0">✓ Subscribed! Watch for your first briefing.</p>';}
+        else{alert('Something went wrong — try again or email hello@agsist.com');}
       })
-      .catch(function() { alert('Network error — try again or email hello@agsist.com'); });
+      .catch(function(){alert('Network error — try again or email hello@agsist.com');});
   });
 }
 
-loadToday();
+fetch('/data/daily.json',{cache:'no-store'})
+  .then(function(r){return r.ok?r.json():null;})
+  .then(renderToday)
+  .catch(function(){renderToday(null);});
+
 renderArchive();
 })();
 </script>
