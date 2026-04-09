@@ -154,9 +154,23 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 .rfp-table th{padding:.65rem .85rem;text-align:left;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
 .rfp-table td{padding:.6rem .85rem;border-top:1px solid var(--border);color:var(--text-dim);vertical-align:top}
 .rfp-table td:first-child{color:var(--text);font-weight:600}
+.rfp-table td:nth-child(2),.rfp-table td:nth-child(3){white-space:nowrap;width:1%}
 .rfp-table tr:hover td{background:rgba(255,255,255,.025)}
 .rfp-min{color:var(--gold);font-weight:700}
 .rfp-opt{color:var(--green);font-weight:700}
+/* MOBILE: hide Notes col on rfp table — 3-col layout fits phone width cleanly */
+@media(max-width:640px){
+  .rfp-table th:last-child,.rfp-table td:last-child{display:none}
+  .rfp-table td:first-child{font-size:.75rem}
+}
+/* MOBILE: nozzle table — hide Droplet Size + Best For, keep Type/Drift/Coverage/Dicamba */
+@media(max-width:640px){
+  .nozzle-table th:nth-child(2),.nozzle-table td:nth-child(2),
+  .nozzle-table th:nth-child(5),.nozzle-table td:nth-child(5){display:none}
+  .nozzle-table .nt-type{white-space:normal;font-size:.72rem}
+  .nozzle-table td{padding:.5rem .55rem;font-size:.72rem}
+  .nozzle-table th{padding:.5rem .55rem;font-size:.6rem}
+}
 .season-section{margin-bottom:2rem}
 .season-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem}
 .season-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem}

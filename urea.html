@@ -75,7 +75,7 @@
         {
           "@type": "Question",
           "name": "At what temperature does urea volatilization become a risk?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Volatilization risk increases significantly above 50\u00b0F as urease enzyme activity accelerates. Below 40\u00b0F, enzyme activity is near-zero. Below 32\u00b0F (frozen ground), urease is essentially inactive and volatilization risk is negligible \u2014 though applying to frozen ground risks runoff loss instead." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Volatilization risk increases significantly above 50°F as urease enzyme activity accelerates. Below 40°F, enzyme activity is near-zero. Below 32°F (frozen ground), urease is essentially inactive and volatilization risk is negligible — though applying to frozen ground risks runoff loss instead." }
         },
         {
           "@type": "Question",
@@ -85,17 +85,17 @@
         {
           "@type": "Question",
           "name": "Is NBPT stabilizer worth using?",
-          "acceptedAnswer": { "@type": "Answer", "text": "At $8\u201312 per acre, NBPT stabilizer pays for itself if it prevents more than roughly 10 pounds of N loss per acre. At temperatures above 65\u00b0F, on no-till ground, on high-pH soils (above 7.0), or when no incorporation rain is forecast within 48 hours, stabilizer economics are strongly favorable at current nitrogen prices." }
+          "acceptedAnswer": { "@type": "Answer", "text": "At $8–12 per acre, NBPT stabilizer pays for itself if it prevents more than roughly 10 pounds of N loss per acre. At temperatures above 65°F, on no-till ground, on high-pH soils (above 7.0), or when no incorporation rain is forecast within 48 hours, stabilizer economics are strongly favorable at current nitrogen prices." }
         },
         {
           "@type": "Question",
           "name": "Does no-till increase urea volatilization risk?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes, significantly. Crop residue on no-till ground contains high concentrations of urease enzyme. Urea granules sitting on corn stalks or soybean stubble can lose 2\u20133 times more nitrogen than granules reaching bare soil, because they never contact the protective soil environment." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes, significantly. Crop residue on no-till ground contains high concentrations of urease enzyme. Urea granules sitting on corn stalks or soybean stubble can lose 2–3 times more nitrogen than granules reaching bare soil, because they never contact the protective soil environment." }
         },
         {
           "@type": "Question",
           "name": "Should I use air temperature or soil temperature to assess volatilization risk?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Both matter, but for different reasons. Air temperature drives urease enzyme activity speed \u2014 warmer air accelerates the reaction. Soil surface temperature determines whether the enzyme is active at all. In early spring, air may be 55\u201360\u00b0F while soil surface is still 38\u201342\u00b0F, which limits risk significantly. This tool uses air temperature as a proxy, which is generally conservative \u2014 actual risk may be lower on cold soils even when air is warm." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Both matter, but for different reasons. Air temperature drives urease enzyme activity speed — warmer air accelerates the reaction. Soil surface temperature determines whether the enzyme is active at all. In early spring, air may be 55–60°F while soil surface is still 38–42°F, which limits risk significantly. This tool uses air temperature as a proxy, which is generally conservative — actual risk may be lower on cold soils even when air is warm." }
         },
         {
           "@type": "Question",
@@ -114,6 +114,14 @@ button,a,[role="button"]{touch-action:manipulation;}
 h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margin:0;font-size:inherit;font-weight:inherit;line-height:inherit;}
 .zip-input{font-size:1rem!important;}
 .n-compare-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;border:1px solid var(--border);margin-bottom:1.5rem;max-width:100%}
+/* MOBILE: hide Best Applied + Key Tradeoffs cols — N Source / Analysis / Risk remain */
+@media(max-width:640px){
+  .n-compare-table th:nth-child(4),.n-compare-table td:nth-child(4),
+  .n-compare-table th:nth-child(5),.n-compare-table td:nth-child(5){display:none}
+  .n-compare-table td:first-child,.n-compare-table th:first-child{font-size:.72rem}
+  .n-compare-table td{padding:.5rem .6rem;font-size:.72rem}
+  .n-compare-table th{padding:.5rem .6rem;font-size:.6rem}
+}
 .n-compare-table{width:100%;border-collapse:collapse;font-size:.79rem;min-width:540px}
 .n-compare-table thead tr{background:rgba(58,139,60,.12)}
 .n-compare-table th{padding:.65rem .85rem;text-align:left;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
@@ -150,7 +158,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
     <div>
       <div class="hero-eyebrow"><span class="live-dot"></span>Real-Time Risk Assessment</div>
       <h1 class="hero-title">Urea <span>Volatilization</span><br>Risk Monitor</h1>
-      <p class="hero-sub">Nitrogen lost to the air is money left in the field. Surface-applied urea can lose 20\u201340% of its nitrogen within 72 hours under the wrong conditions. Get your real-time N-loss risk score before you spread \u2014 free, no account needed.</p>
+      <p class="hero-sub">Nitrogen lost to the air is money left in the field. Surface-applied urea can lose 20–40% of its nitrogen within 72 hours under the wrong conditions. Get your real-time N-loss risk score before you spread — free, no account needed.</p>
     </div>
     <div class="risk-panel" id="risk-panel" aria-live="polite" role="status">
       <div class="risk-panel-lbl"><span class="live-dot"></span>Current Risk Level</div>
@@ -164,30 +172,30 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
           <div class="gauge-unit">/ 100</div>
         </div>
       </div>
-      <div class="risk-badge moderate" id="risk-badge">\u23f3 Loading\u2026</div>
-      <div class="risk-verdict" id="risk-verdict">Getting your local conditions\u2026</div>
-      <div class="risk-location" id="risk-location">\ud83d\udccd Detecting location</div>
+      <div class="risk-badge moderate" id="risk-badge">⏳ Loading…</div>
+      <div class="risk-verdict" id="risk-verdict">Getting your local conditions…</div>
+      <div class="risk-location" id="risk-location">📍 Detecting location</div>
     </div>
   </div>
 </section>
 <main id="main" class="main">
   <div class="loc-setup" id="loc-setup">
-    <h3>\ud83c\udf0d Set Your Location</h3>
-    <p>Urea volatilization risk is highly location-specific \u2014 temperature, humidity, wind, and incoming rain all interact. Allow location access for accurate real-time conditions at your field.</p>
+    <h3>🌍 Set Your Location</h3>
+    <p>Urea volatilization risk is highly location-specific — temperature, humidity, wind, and incoming rain all interact. Allow location access for accurate real-time conditions at your field.</p>
     <div class="loc-btn-row">
-      <button class="btn-primary" onclick="requestGeo()">\ud83d\udccd Use My Location</button>
+      <button class="btn-primary" onclick="requestGeo()">📍 Use My Location</button>
       <button class="btn-secondary" onclick="document.getElementById('zip-row').style.display='flex'">Enter ZIP Instead</button>
     </div>
     <div class="zip-row" id="zip-row">
       <input type="text" class="zip-input" id="urea-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" style="font-size:1rem" onkeydown="if(event.key==='Enter')loadZip()">
-      <button class="btn-primary" onclick="loadZip()">Go \u2192</button>
+      <button class="btn-primary" onclick="loadZip()">Go →</button>
     </div>
   </div>
   <div class="page-grid">
     <div>
       <div class="tg-banner" id="tg-banner">
-        <span class="tg-icon" id="tg-icon">\u2744\ufe0f</span>
-        <div id="tg-text">Ground is frozen \u2014 urease enzyme is completely inactive. Risk score is capped at 8 regardless of other conditions. Volatilization is not your concern; runoff loss is.</div>
+        <span class="tg-icon" id="tg-icon">❄️</span>
+        <div id="tg-text">Ground is frozen — urease enzyme is completely inactive. Risk score is capped at 8 regardless of other conditions. Volatilization is not your concern; runoff loss is.</div>
       </div>
       <div id="factor-section" style="display:none">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem">
@@ -196,171 +204,171 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
         </div>
         <div class="factors-grid">
           <div class="factor" id="f-temp">
-            <div class="factor-head"><div class="factor-title"><span class="factor-icon">\ud83c\udf21\ufe0f</span>Temperature</div><span class="factor-score mod" id="fs-temp">MODERATE</span></div>
-            <div class="factor-val" id="fv-temp">--\u00b0F</div>
-            <div class="factor-desc" id="fd-temp">Urease enzyme activity increases exponentially above 50\u00b0F. Above 65\u00b0F, volatilization accelerates rapidly. Below 40\u00b0F, enzyme is near-inactive.</div>
+            <div class="factor-head"><div class="factor-title"><span class="factor-icon">🌡️</span>Temperature</div><span class="factor-score mod" id="fs-temp">MODERATE</span></div>
+            <div class="factor-val" id="fv-temp">--°F</div>
+            <div class="factor-desc" id="fd-temp">Urease enzyme activity increases exponentially above 50°F. Above 65°F, volatilization accelerates rapidly. Below 40°F, enzyme is near-inactive.</div>
             <div class="factor-bar"><div class="factor-bar-fill" id="fb-temp" style="width:0%"></div></div>
           </div>
           <div class="factor" id="f-humid">
-            <div class="factor-head"><div class="factor-title"><span class="factor-icon">\ud83d\udca7</span>Surface Moisture</div><span class="factor-score low" id="fs-humid">LOW</span></div>
+            <div class="factor-head"><div class="factor-title"><span class="factor-icon">💧</span>Surface Moisture</div><span class="factor-score low" id="fs-humid">LOW</span></div>
             <div class="factor-val" id="fv-humid">--%</div>
             <div class="factor-desc" id="fd-humid">Moist (not saturated) surfaces accelerate urease activity. Dry soils slow dissolution; very wet soils dilute and move urea into the soil.</div>
             <div class="factor-bar"><div class="factor-bar-fill" id="fb-humid" style="width:0%"></div></div>
           </div>
           <div class="factor" id="f-wind">
-            <div class="factor-head"><div class="factor-title"><span class="factor-icon">\ud83d\udca8</span>Wind Speed</div><span class="factor-score low" id="fs-wind">LOW</span></div>
+            <div class="factor-head"><div class="factor-title"><span class="factor-icon">💨</span>Wind Speed</div><span class="factor-score low" id="fs-wind">LOW</span></div>
             <div class="factor-val" id="fv-wind">-- mph</div>
             <div class="factor-desc" id="fd-wind">Wind continuously disperses the ammonia layer above the soil surface, maintaining the concentration gradient that pulls more N into the air.</div>
             <div class="factor-bar"><div class="factor-bar-fill" id="fb-wind" style="width:0%"></div></div>
           </div>
           <div class="factor" id="f-rain">
-            <div class="factor-head"><div class="factor-title"><span class="factor-icon">\ud83c\udf27\ufe0f</span>Rain Forecast</div><span class="factor-score low" id="fs-rain">LOW</span></div>
+            <div class="factor-head"><div class="factor-title"><span class="factor-icon">🌧️</span>Rain Forecast</div><span class="factor-score low" id="fs-rain">LOW</span></div>
             <div class="factor-val" id="fv-rain">--%</div>
-            <div class="factor-desc" id="fd-rain">\u00bd inch within 48h incorporates urea and stops volatilization. Less than \u00bc inch can wet the surface and accelerate loss without moving N into soil.</div>
+            <div class="factor-desc" id="fd-rain">½ inch within 48h incorporates urea and stops volatilization. Less than ¼ inch can wet the surface and accelerate loss without moving N into soil.</div>
             <div class="factor-bar"><div class="factor-bar-fill" id="fb-rain" style="width:0%"></div></div>
           </div>
           <div class="factor">
-            <div class="factor-head"><div class="factor-title"><span class="factor-icon">\ud83c\udf31</span>Soil pH</div><span class="factor-score note">NOTE</span></div>
+            <div class="factor-head"><div class="factor-title"><span class="factor-icon">🌱</span>Soil pH</div><span class="factor-score note">NOTE</span></div>
             <div class="factor-val">Variable</div>
             <div class="factor-desc">Higher pH dramatically increases urease activity. At pH 7.0, risk doubles vs pH 6.0. Above pH 7.5 with warm, moist conditions, losses can exceed 30%. Know your field pH.</div>
             <div class="factor-bar"><div class="factor-bar-fill" style="width:55%;background:var(--risk-mod)"></div></div>
           </div>
           <div class="factor">
-            <div class="factor-head"><div class="factor-title"><span class="factor-icon">\ud83c\udf3e</span>Crop Residue</div><span class="factor-score hig">HIGH (no-till)</span></div>
-            <div class="factor-val">2\u20133\u00d7 Risk</div>
-            <div class="factor-desc">Crop residue contains urease enzyme. No-till fields lose 2\u20133\u00d7 more N than tilled ground \u2014 urea sitting on a corn stalk never even reaches soil.</div>
+            <div class="factor-head"><div class="factor-title"><span class="factor-icon">🌾</span>Crop Residue</div><span class="factor-score hig">HIGH (no-till)</span></div>
+            <div class="factor-val">2–3× Risk</div>
+            <div class="factor-desc">Crop residue contains urease enzyme. No-till fields lose 2–3× more N than tilled ground — urea sitting on a corn stalk never even reaches soil.</div>
             <div class="factor-bar"><div class="factor-bar-fill" style="width:75%;background:var(--risk-high)"></div></div>
           </div>
         </div>
       </div>
       <div class="soil-air-box fade-up">
-        <h2 class="soil-air-head">\ud83c\udf21\ufe0f Air Temperature vs. Soil Surface Temperature \u2014 What to Know</h2>
+        <h2 class="soil-air-head">🌡️ Air Temperature vs. Soil Surface Temperature — What to Know</h2>
         <div class="soil-air-grid">
           <div class="soil-air-card">
             <div class="soil-air-card-title">Air Temperature</div>
-            <div class="soil-air-card-body">Drives <strong>enzyme activity speed</strong> \u2014 how fast urease converts urea to ammonia. This tool uses air temperature as its primary input because it\u2019s what your phone\u2019s weather shows. Warmer air = faster reaction once the granule dissolves.</div>
+            <div class="soil-air-card-body">Drives <strong>enzyme activity speed</strong> — how fast urease converts urea to ammonia. This tool uses air temperature as its primary input because it’s what your phone’s weather shows. Warmer air = faster reaction once the granule dissolves.</div>
           </div>
           <div class="soil-air-card">
             <div class="soil-air-card-title">Soil Surface Temperature</div>
-            <div class="soil-air-card-body">Determines whether <strong>enzyme is active at all</strong>. In early spring, air may be 58\u00b0F but soil surface is still 38\u201342\u00b0F \u2014 risk is genuinely lower than this tool shows. Conversely, a black soil surface in full sun can be 15\u201320\u00b0F warmer than air temperature, making risk higher. Use air temp as a starting point, but know your soils.</div>
+            <div class="soil-air-card-body">Determines whether <strong>enzyme is active at all</strong>. In early spring, air may be 58°F but soil surface is still 38–42°F — risk is genuinely lower than this tool shows. Conversely, a black soil surface in full sun can be 15–20°F warmer than air temperature, making risk higher. Use air temp as a starting point, but know your soils.</div>
           </div>
         </div>
-        <div style="margin-top:.85rem;font-size:.79rem;color:var(--text-dim);line-height:1.65"><strong style="color:var(--text)">Spring application note (WI/MN):</strong> When daytime air hits 50\u201355\u00b0F but soils are still cold from winter (under 40\u00b0F), risk is lower than the score suggests. Once soils warm above 50\u00b0F \u2014 typically late April in southern WI/MN, mid-May further north \u2014 risk rises quickly and the score becomes your most reliable guide.</div>
+        <div style="margin-top:.85rem;font-size:.79rem;color:var(--text-dim);line-height:1.65"><strong style="color:var(--text)">Spring application note (WI/MN):</strong> When daytime air hits 50–55°F but soils are still cold from winter (under 40°F), risk is lower than the score suggests. Once soils warm above 50°F — typically late April in southern WI/MN, mid-May further north — risk rises quickly and the score becomes your most reliable guide.</div>
       </div>
       <div class="fade-up" style="margin-bottom:2rem">
-        <h2 class="edu-head" style="margin-bottom:.9rem">\u2697\ufe0f Urea vs. UAN vs. ESN \u2014 Choosing the Right N Source</h2>
+        <h2 class="edu-head" style="margin-bottom:.9rem">⚗️ Urea vs. UAN vs. ESN — Choosing the Right N Source</h2>
         <p style="font-size:.82rem;color:var(--text-dim);line-height:1.7;margin-bottom:.9rem">All three are common nitrogen sources for corn and small grains. Volatilization risk, application flexibility, and cost differ significantly. Match the product to your application method and timing window.</p>
         <div class="n-compare-wrap">
           <table class="n-compare-table">
             <thead><tr><th scope="col">N Source</th><th scope="col">Analysis</th><th scope="col">Volatilization Risk</th><th scope="col">Best Applied</th><th scope="col">Key Tradeoffs</th></tr></thead>
             <tbody>
-              <tr><td>Urea (granular)</td><td>46-0-0</td><td class="risk-high-tag">HIGH (surface)</td><td>Incorporated by \u00bd\u201d+ rain within 48h; or use NBPT stabilizer; or inject/till-in</td><td>Highest N analysis = lowest cost per lb N. Most versatile for spreading. Surface application without stabilizer carries real loss risk above 50\u00b0F.</td></tr>
-              <tr><td>UAN (liquid)</td><td>28-0-0 or 32-0-0</td><td class="risk-mod-tag">MODERATE</td><td>Banded or dribbled \u2014 reduces volatilization vs broadcast. Can be injected for lowest risk.</td><td>Contains ~50% urea, ~25% ammonium, ~25% nitrate. Ammonium and nitrate fractions do not volatilize. Can be blended with herbicides and applied in-season. Requires liquid applicator.</td></tr>
-              <tr><td>ESN (polymer-coated urea)</td><td>44-0-0</td><td class="risk-low-tag">LOW</td><td>Fall or early spring \u2014 coating delays release by weeks. Soil temperature controls release rate.</td><td>Significantly more expensive per lb N. Release is temperature-driven \u2014 in a cold spring, may release slowly. Excellent for no-till or high-pH fields where surface urea loss is high. Strong ROI when N prices are high.</td></tr>
-              <tr><td>Anhydrous Ammonia</td><td>82-0-0</td><td class="risk-low-tag">VERY LOW</td><td>Injected below soil surface \u2014 volatilization negligible when properly applied.</td><td>Highest N analysis available. Requires specialized injection equipment. Best applied fall or early spring when soils are not too wet or frozen. Cold injection preferred to minimize nitrification before spring uptake.</td></tr>
+              <tr><td>Urea (granular)</td><td>46-0-0</td><td class="risk-high-tag">HIGH (surface)</td><td>Incorporated by ½”+ rain within 48h; or use NBPT stabilizer; or inject/till-in</td><td>Highest N analysis = lowest cost per lb N. Most versatile for spreading. Surface application without stabilizer carries real loss risk above 50°F.</td></tr>
+              <tr><td>UAN (liquid)</td><td>28-0-0 or 32-0-0</td><td class="risk-mod-tag">MODERATE</td><td>Banded or dribbled — reduces volatilization vs broadcast. Can be injected for lowest risk.</td><td>Contains ~50% urea, ~25% ammonium, ~25% nitrate. Ammonium and nitrate fractions do not volatilize. Can be blended with herbicides and applied in-season. Requires liquid applicator.</td></tr>
+              <tr><td>ESN (polymer-coated urea)</td><td>44-0-0</td><td class="risk-low-tag">LOW</td><td>Fall or early spring — coating delays release by weeks. Soil temperature controls release rate.</td><td>Significantly more expensive per lb N. Release is temperature-driven — in a cold spring, may release slowly. Excellent for no-till or high-pH fields where surface urea loss is high. Strong ROI when N prices are high.</td></tr>
+              <tr><td>Anhydrous Ammonia</td><td>82-0-0</td><td class="risk-low-tag">VERY LOW</td><td>Injected below soil surface — volatilization negligible when properly applied.</td><td>Highest N analysis available. Requires specialized injection equipment. Best applied fall or early spring when soils are not too wet or frozen. Cold injection preferred to minimize nitrification before spring uptake.</td></tr>
             </tbody>
           </table>
         </div>
       </div>
       <div class="edu-section fade-up" id="edu1">
-        <h2 class="edu-head">\u2697\ufe0f Why Urea Volatilizes \u2014 The Science Explained</h2>
+        <h2 class="edu-head">⚗️ Why Urea Volatilizes — The Science Explained</h2>
         <div class="chem-box">
           <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.85rem">The Volatilization Reaction</div>
           <div class="chem-eq">
-            <span class="molecule">CO(NH\u2082)\u2082</span>
-            <span class="arrow">+ H\u2082O</span>
-            <span style="color:var(--text-muted);font-size:.85rem">\u2014\u2014urease\u2014\u2014\u25b6</span>
-            <span class="molecule">2NH\u2083</span>
+            <span class="molecule">CO(NH₂)₂</span>
+            <span class="arrow">+ H₂O</span>
+            <span style="color:var(--text-muted);font-size:.85rem">——urease——▶</span>
+            <span class="molecule">2NH₃</span>
             <span class="arrow">+</span>
-            <span class="molecule">CO\u2082</span>
+            <span class="molecule">CO₂</span>
           </div>
           <div class="chem-eq" style="margin-top:.4rem">
-            <span class="molecule">NH\u2083</span>
+            <span class="molecule">NH₃</span>
             <span class="arrow">(dissolved)</span>
-            <span style="color:var(--text-muted);font-size:.85rem">\u21cc</span>
-            <span class="loss">NH\u2083\u2191</span>
-            <span style="color:var(--text-muted);font-size:.82rem">(escapes to atmosphere \u2014 N lost permanently)</span>
+            <span style="color:var(--text-muted);font-size:.85rem">⇌</span>
+            <span class="loss">NH₃↑</span>
+            <span style="color:var(--text-muted);font-size:.82rem">(escapes to atmosphere — N lost permanently)</span>
           </div>
-          <div class="chem-note">Urease enzyme \u2014 present in soil and especially in crop residue \u2014 converts urea to ammonia. At the soil surface, that ammonia gas escapes into the air rather than converting to plant-available ammonium (NH\u2084\u207a). The granule looks intact. The nitrogen is gone.</div>
+          <div class="chem-note">Urease enzyme — present in soil and especially in crop residue — converts urea to ammonia. At the soil surface, that ammonia gas escapes into the air rather than converting to plant-available ammonium (NH₄⁺). The granule looks intact. The nitrogen is gone.</div>
         </div>
         <div class="edu-grid">
-          <div class="edu-card"><div class="edu-card-icon">\ud83c\udf21\ufe0f</div><div class="edu-card-title">Temperature: The Primary Driver</div><div class="edu-card-text">Urease enzyme activity increases exponentially with temperature above 50\u00b0F \u2014 a pattern consistent with standard enzyme kinetics (Q10 \u2248 2 per 10\u00b0C). At 50\u00b0F you have days to incorporate. At 80\u00b0F you may have only hours. Cold weather is your best friend; frozen ground means urease is essentially shut down.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">Exponential increase above 65\u00b0F</div></div>
-          <div class="edu-card"><div class="edu-card-icon">\ud83d\udca7</div><div class="edu-card-title">Moisture: The Double-Edged Sword</div><div class="edu-card-text">The most dangerous scenario: 0.1\u20130.4 inches of rain after application \u2014 just enough to dissolve the granule and activate the enzyme, but not enough to move N below the surface.</div><div class="edu-card-risk" style="background:rgba(230,176,66,.12);color:var(--risk-mod)">\u00bc\u201d rain without \u00bd\u201d = worst case</div></div>
-          <div class="edu-card"><div class="edu-card-icon">\ud83d\udca8</div><div class="edu-card-title">Wind: The Silent Thief</div><div class="edu-card-text">Ammonia gas builds up in a thin layer above the soil surface. Wind continuously removes that layer, maintaining the concentration gradient that pulls more N from the soil into the air. Even light winds of 3\u20135 mph keep volatilization moving at full speed.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">Amplifies all other risk factors</div></div>
-          <div class="edu-card"><div class="edu-card-icon">\ud83c\udf31</div><div class="edu-card-title">Soil pH: The Invisible Multiplier</div><div class="edu-card-text">Alkaline soils (pH 7+) favor ammonia gas over the stable, plant-available ammonium ion. At pH 7.5, you may lose 30\u201350% of surface-applied urea in warm, moist conditions.</div><div class="edu-card-risk" style="background:rgba(240,96,96,.12);color:var(--risk-extreme)">pH 7.5+ = extreme background risk</div></div>
-          <div class="edu-card"><div class="edu-card-icon">\ud83c\udf3e</div><div class="edu-card-title">Crop Residue: Hidden Urease Factory</div><div class="edu-card-text">No-till and minimum-till fields can lose 2\u20133\u00d7 more N than bare, tilled soil \u2014 because urea granules sitting on stalk fragments or leaf litter are in direct, concentrated contact with enzyme.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">No-till: always assume 2\u00d7 risk</div></div>
-          <div class="edu-card"><div class="edu-card-icon">\ud83d\udcc5</div><div class="edu-card-title">The 72-Hour Decision Window</div><div class="edu-card-text">Roughly 80% of volatilization loss happens in the first 72 hours after application. The decision you make at application time \u2014 conditions, product choice, timing \u2014 is the one that matters most.</div><div class="edu-card-risk" style="background:rgba(230,176,66,.12);color:var(--risk-mod)">80% of loss in first 72 hours</div></div>
+          <div class="edu-card"><div class="edu-card-icon">🌡️</div><div class="edu-card-title">Temperature: The Primary Driver</div><div class="edu-card-text">Urease enzyme activity increases exponentially with temperature above 50°F — a pattern consistent with standard enzyme kinetics (Q10 ≈ 2 per 10°C). At 50°F you have days to incorporate. At 80°F you may have only hours. Cold weather is your best friend; frozen ground means urease is essentially shut down.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">Exponential increase above 65°F</div></div>
+          <div class="edu-card"><div class="edu-card-icon">💧</div><div class="edu-card-title">Moisture: The Double-Edged Sword</div><div class="edu-card-text">The most dangerous scenario: 0.1–0.4 inches of rain after application — just enough to dissolve the granule and activate the enzyme, but not enough to move N below the surface.</div><div class="edu-card-risk" style="background:rgba(230,176,66,.12);color:var(--risk-mod)">¼” rain without ½” = worst case</div></div>
+          <div class="edu-card"><div class="edu-card-icon">💨</div><div class="edu-card-title">Wind: The Silent Thief</div><div class="edu-card-text">Ammonia gas builds up in a thin layer above the soil surface. Wind continuously removes that layer, maintaining the concentration gradient that pulls more N from the soil into the air. Even light winds of 3–5 mph keep volatilization moving at full speed.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">Amplifies all other risk factors</div></div>
+          <div class="edu-card"><div class="edu-card-icon">🌱</div><div class="edu-card-title">Soil pH: The Invisible Multiplier</div><div class="edu-card-text">Alkaline soils (pH 7+) favor ammonia gas over the stable, plant-available ammonium ion. At pH 7.5, you may lose 30–50% of surface-applied urea in warm, moist conditions.</div><div class="edu-card-risk" style="background:rgba(240,96,96,.12);color:var(--risk-extreme)">pH 7.5+ = extreme background risk</div></div>
+          <div class="edu-card"><div class="edu-card-icon">🌾</div><div class="edu-card-title">Crop Residue: Hidden Urease Factory</div><div class="edu-card-text">No-till and minimum-till fields can lose 2–3× more N than bare, tilled soil — because urea granules sitting on stalk fragments or leaf litter are in direct, concentrated contact with enzyme.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">No-till: always assume 2× risk</div></div>
+          <div class="edu-card"><div class="edu-card-icon">📅</div><div class="edu-card-title">The 72-Hour Decision Window</div><div class="edu-card-text">Roughly 80% of volatilization loss happens in the first 72 hours after application. The decision you make at application time — conditions, product choice, timing — is the one that matters most.</div><div class="edu-card-risk" style="background:rgba(230,176,66,.12);color:var(--risk-mod)">80% of loss in first 72 hours</div></div>
         </div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem">
-          <h3 style="font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:.85rem">\ud83d\udee1\ufe0f NBPT Stabilizer \u2014 How It Works and When It\u2019s Worth It</h3>
+          <h3 style="font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:.85rem">🛡️ NBPT Stabilizer — How It Works and When It’s Worth It</h3>
           <div class="stab-grid">
             <div>
               <div style="font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.5rem">What NBPT Does</div>
-              <div style="font-size:.83rem;color:var(--text-dim);line-height:1.75">NBPT (N-butyl thiophosphoric triamide) \u2014 the active ingredient in Agrotain and most generic stabilizers \u2014 temporarily blocks urease enzyme activity. It buys you 10\u201314 days of protection: long enough for incorporation rain or irrigation.</div>
+              <div style="font-size:.83rem;color:var(--text-dim);line-height:1.75">NBPT (N-butyl thiophosphoric triamide) — the active ingredient in Agrotain and most generic stabilizers — temporarily blocks urease enzyme activity. It buys you 10–14 days of protection: long enough for incorporation rain or irrigation.</div>
             </div>
             <div>
               <div style="font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.5rem">The Economics</div>
-              <div style="font-size:.83rem;color:var(--text-dim);line-height:1.75">At $8\u201312/acre, NBPT pays for itself if it prevents more than roughly 10 lbs N/acre of loss. At any score above Moderate \u2014 or on no-till ground, high-pH soils, or when forecasts show no incorporation rain \u2014 the economics strongly favor treatment.</div>
+              <div style="font-size:.83rem;color:var(--text-dim);line-height:1.75">At $8–12/acre, NBPT pays for itself if it prevents more than roughly 10 lbs N/acre of loss. At any score above Moderate — or on no-till ground, high-pH soils, or when forecasts show no incorporation rain — the economics strongly favor treatment.</div>
             </div>
           </div>
           <div style="margin-top:1.1rem;padding:.8rem 1rem;background:rgba(62,207,110,.06);border:1px solid rgba(62,207,110,.15);border-radius:7px;font-size:.82rem;color:var(--text-dim);line-height:1.65">
-            <strong style="color:var(--green)">Bottom line:</strong> Stabilizer is insurance. You don\u2019t always need it \u2014 but when you do, you really do. Use this tool to make that call objectively on every application.
+            <strong style="color:var(--green)">Bottom line:</strong> Stabilizer is insurance. You don’t always need it — but when you do, you really do. Use this tool to make that call objectively on every application.
           </div>
         </div>
       </div>
       <div class="faq-section fade-up" id="section-faq">
-        <h2 class="edu-head" style="margin-bottom:.9rem">\u2753 Frequently Asked Questions</h2>
+        <h2 class="edu-head" style="margin-bottom:.9rem">❓ Frequently Asked Questions</h2>
         <div class="faq-list" id="faq-list">
-          <div class="faq-item"><button class="faq-q" aria-expanded="false">At what temperature does urea volatilization become a real risk?<span class="faq-chevron" aria-hidden="true">\u25b6</span></button><div class="faq-a">Risk increases meaningfully above <strong>50\u00b0F air temperature</strong>, and accelerates sharply above 65\u00b0F. At 80\u00b0F+, losses can begin within hours of application. Below 40\u00b0F, urease enzyme activity is near-zero. Below 32\u00b0F (frozen ground), urease is essentially inactive \u2014 volatilization risk is negligible, though runoff loss on slopes becomes the concern instead. Early spring in Wisconsin and Minnesota is the most dangerous window: air warms quickly but soils are still cold, and rain patterns are unpredictable. See the soil vs. air temperature section above for the full picture.</div></div>
-          <div class="faq-item"><button class="faq-q" aria-expanded="false">How much rain do I need to incorporate urea and stop volatilization?<span class="faq-chevron" aria-hidden="true">\u25b6</span></button><div class="faq-a"><strong>At least \u00bd inch within 48 hours</strong> will incorporate urea into the soil and stop the volatilization reaction. This is the incorporation threshold \u2014 once N is in the soil, it converts to ammonium (NH\u2084\u207a) and is protected. <strong>Less than \u00bc inch can actually make things worse</strong> \u2014 just enough moisture to dissolve the granule and activate the urease enzyme, but not enough to move N below the surface. The quarter-inch rule is the most misunderstood concept in spring N management. If the forecast shows scattered showers under \u00bc inch, that is not your incorporation event.</div></div>
-          <div class="faq-item"><button class="faq-q" aria-expanded="false">Is NBPT stabilizer (Agrotain) worth the cost?<span class="faq-chevron" aria-hidden="true">\u25b6</span></button><div class="faq-a">At <strong>$8\u201312 per acre</strong>, NBPT pays for itself if it prevents more than roughly 10 lbs of N loss per acre. At current nitrogen prices ($0.40\u20130.60/lb N depending on market), that math becomes a no-brainer when the risk score is Moderate or higher. On <strong>no-till ground</strong> (assume 2\u20133\u00d7 baseline loss rate), on <strong>soils above pH 7.0</strong>, or when the 48-hour forecast shows no incorporation rain \u2014 NBPT is almost always economic. On cold soils with a solid rain forecast and tilled ground, you can safely skip it. Use this risk score to make the call on every load.</div></div>
-          <div class="faq-item"><button class="faq-q" aria-expanded="false">Does no-till ground really lose that much more nitrogen?<span class="faq-chevron" aria-hidden="true">\u25b6</span></button><div class="faq-a">Yes \u2014 consistently 2 to 3 times more N loss than tilled ground under the same conditions. The reason: <strong>crop residue contains concentrated urease enzyme</strong>. A urea granule that lands on a corn stalk fragment or soybean stubble is in direct contact with enzyme and never reaches the protective soil environment. The granule can be fully hydrolyzed to ammonia while sitting on the residue surface \u2014 and that ammonia escapes into the air rather than converting to plant-available ammonium. On no-till or strip-till ground, always assume higher baseline risk and use NBPT stabilizer or plan for reliable incorporation rain.</div></div>
-          <div class="faq-item"><button class="faq-q" aria-expanded="false">Should I use urea, UAN, or ESN for spring application?<span class="faq-chevron" aria-hidden="true">\u25b6</span></button><div class="faq-a"><strong>Urea (46-0-0)</strong> is the most cost-effective but carries the highest volatilization risk when surface-applied. <strong>UAN (28 or 32-0-0)</strong> is liquid \u2014 contains roughly half urea nitrogen plus ammonium and nitrate fractions that don\u2019t volatilize. Can be banded to reduce surface contact. <strong>ESN (polymer-coated urea, 44-0-0)</strong> releases N slowly over weeks with very low volatilization risk \u2014 excellent for no-till and high-pH fields, but significantly more expensive per pound of N. For most corn acres in WI/MN, the economical answer is: use urea with NBPT stabilizer when risk is Moderate or higher, and save ESN for the highest-risk fields where protection has the biggest payoff. See the comparison table above.</div></div>
-          <div class="faq-item"><button class="faq-q" aria-expanded="false">What if I apply urea to frozen or near-frozen ground?<span class="faq-chevron" aria-hidden="true">\u25b6</span></button><div class="faq-a">Volatilization risk is essentially zero on frozen ground \u2014 urease is inactive at sub-32\u00b0F temperatures. But a <strong>different loss mechanism takes over: runoff</strong>. If frozen ground thaws quickly or if rain falls on saturated, frozen soil, urea granules sitting on the surface can wash off the field entirely before any incorporation occurs. On sloped or tile-drained fields, fall and early spring applications to frozen ground carry real runoff risk. The score from this tool will show very low volatilization risk on frozen ground \u2014 that\u2019s accurate \u2014 but it does not account for runoff, which can be a much larger loss on the wrong landscape.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">At what temperature does urea volatilization become a real risk?<span class="faq-chevron" aria-hidden="true">▶</span></button><div class="faq-a">Risk increases meaningfully above <strong>50°F air temperature</strong>, and accelerates sharply above 65°F. At 80°F+, losses can begin within hours of application. Below 40°F, urease enzyme activity is near-zero. Below 32°F (frozen ground), urease is essentially inactive — volatilization risk is negligible, though runoff loss on slopes becomes the concern instead. Early spring in Wisconsin and Minnesota is the most dangerous window: air warms quickly but soils are still cold, and rain patterns are unpredictable. See the soil vs. air temperature section above for the full picture.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">How much rain do I need to incorporate urea and stop volatilization?<span class="faq-chevron" aria-hidden="true">▶</span></button><div class="faq-a"><strong>At least ½ inch within 48 hours</strong> will incorporate urea into the soil and stop the volatilization reaction. This is the incorporation threshold — once N is in the soil, it converts to ammonium (NH₄⁺) and is protected. <strong>Less than ¼ inch can actually make things worse</strong> — just enough moisture to dissolve the granule and activate the urease enzyme, but not enough to move N below the surface. The quarter-inch rule is the most misunderstood concept in spring N management. If the forecast shows scattered showers under ¼ inch, that is not your incorporation event.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">Is NBPT stabilizer (Agrotain) worth the cost?<span class="faq-chevron" aria-hidden="true">▶</span></button><div class="faq-a">At <strong>$8–12 per acre</strong>, NBPT pays for itself if it prevents more than roughly 10 lbs of N loss per acre. At current nitrogen prices ($0.40–0.60/lb N depending on market), that math becomes a no-brainer when the risk score is Moderate or higher. On <strong>no-till ground</strong> (assume 2–3× baseline loss rate), on <strong>soils above pH 7.0</strong>, or when the 48-hour forecast shows no incorporation rain — NBPT is almost always economic. On cold soils with a solid rain forecast and tilled ground, you can safely skip it. Use this risk score to make the call on every load.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">Does no-till ground really lose that much more nitrogen?<span class="faq-chevron" aria-hidden="true">▶</span></button><div class="faq-a">Yes — consistently 2 to 3 times more N loss than tilled ground under the same conditions. The reason: <strong>crop residue contains concentrated urease enzyme</strong>. A urea granule that lands on a corn stalk fragment or soybean stubble is in direct contact with enzyme and never reaches the protective soil environment. The granule can be fully hydrolyzed to ammonia while sitting on the residue surface — and that ammonia escapes into the air rather than converting to plant-available ammonium. On no-till or strip-till ground, always assume higher baseline risk and use NBPT stabilizer or plan for reliable incorporation rain.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">Should I use urea, UAN, or ESN for spring application?<span class="faq-chevron" aria-hidden="true">▶</span></button><div class="faq-a"><strong>Urea (46-0-0)</strong> is the most cost-effective but carries the highest volatilization risk when surface-applied. <strong>UAN (28 or 32-0-0)</strong> is liquid — contains roughly half urea nitrogen plus ammonium and nitrate fractions that don’t volatilize. Can be banded to reduce surface contact. <strong>ESN (polymer-coated urea, 44-0-0)</strong> releases N slowly over weeks with very low volatilization risk — excellent for no-till and high-pH fields, but significantly more expensive per pound of N. For most corn acres in WI/MN, the economical answer is: use urea with NBPT stabilizer when risk is Moderate or higher, and save ESN for the highest-risk fields where protection has the biggest payoff. See the comparison table above.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">What if I apply urea to frozen or near-frozen ground?<span class="faq-chevron" aria-hidden="true">▶</span></button><div class="faq-a">Volatilization risk is essentially zero on frozen ground — urease is inactive at sub-32°F temperatures. But a <strong>different loss mechanism takes over: runoff</strong>. If frozen ground thaws quickly or if rain falls on saturated, frozen soil, urea granules sitting on the surface can wash off the field entirely before any incorporation occurs. On sloped or tile-drained fields, fall and early spring applications to frozen ground carry real runoff risk. The score from this tool will show very low volatilization risk on frozen ground — that’s accurate — but it does not account for runoff, which can be a much larger loss on the wrong landscape.</div></div>
         </div>
       </div>
     </div>
     <div class="sidebar fade-up" id="edu2">
       <div class="s-card">
-        <div class="s-card-title">\ud83d\udccb Recommendation</div>
+        <div class="s-card-title">📋 Recommendation</div>
         <div class="rec-box moderate" id="rec-box">
           <div class="rec-head moderate" id="rec-head">Awaiting Location</div>
           <div class="rec-text" id="rec-text">Set your location above to get a real-time application recommendation based on local conditions.</div>
         </div>
       </div>
       <div class="s-card">
-        <div class="s-card-title">\ud83d\udcc5 5-Day Volatilization Forecast</div>
+        <div class="s-card-title">📅 5-Day Volatilization Forecast</div>
         <div class="forecast-strip" id="fc-strip">
-          <div class="fc-day"><div class="fc-day-name">Today</div><div class="fc-day-icon">\u23f3</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
-          <div class="fc-day"><div class="fc-day-name">Day 2</div><div class="fc-day-icon">\u23f3</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
-          <div class="fc-day"><div class="fc-day-name">Day 3</div><div class="fc-day-icon">\u23f3</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
-          <div class="fc-day"><div class="fc-day-name">Day 4</div><div class="fc-day-icon">\u23f3</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
-          <div class="fc-day"><div class="fc-day-name">Day 5</div><div class="fc-day-icon">\u23f3</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
+          <div class="fc-day"><div class="fc-day-name">Today</div><div class="fc-day-icon">⏳</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
+          <div class="fc-day"><div class="fc-day-name">Day 2</div><div class="fc-day-icon">⏳</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
+          <div class="fc-day"><div class="fc-day-name">Day 3</div><div class="fc-day-icon">⏳</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
+          <div class="fc-day"><div class="fc-day-name">Day 4</div><div class="fc-day-icon">⏳</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
+          <div class="fc-day"><div class="fc-day-name">Day 5</div><div class="fc-day-icon">⏳</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
         </div>
         <div style="font-size:.68rem;color:var(--text-muted);margin-top:.65rem;line-height:1.6">Based on forecast temperature and rain. Scores are temperature-gated. Daily strip uses actual forecast precipitation totals when available.</div>
       </div>
       <div class="s-card">
-        <div class="s-card-title">\u26a1 Rules of Thumb</div>
+        <div class="s-card-title">⚡ Rules of Thumb</div>
         <div style="display:flex;flex-direction:column;gap:.55rem">
-          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-low);flex-shrink:0">\u2713</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Apply before \u00bd\u201d+ rain</strong> \u2014 incorporation within 48h shuts down volatilization</span></div>
-          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-extreme);flex-shrink:0">\u2717</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Avoid 70\u00b0F+ days</strong> without stabilizer \u2014 urease runs hot and fast</span></div>
-          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-extreme);flex-shrink:0">\u2717</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Never rely on \u00bc\u201d rain</strong> \u2014 it activates urea without incorporating it</span></div>
-          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-high);flex-shrink:0">\u26a0</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">No-till ground</strong> \u2014 always use stabilizer, assume 2\u20133\u00d7 tilled soil loss rate</span></div>
-          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-high);flex-shrink:0">\u26a0</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">pH above 7.0</strong> \u2014 use stabilizer on every surface application, period</span></div>
-          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-low);flex-shrink:0">\u2713</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Cool mornings under 50\u00b0F</strong> \u2014 lowest risk window, especially in early spring</span></div>
-          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--blue);flex-shrink:0">\u2744</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Frozen ground</strong> \u2014 urease inactive, but watch for runoff loss on slopes</span></div>
+          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-low);flex-shrink:0">✓</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Apply before ½”+ rain</strong> — incorporation within 48h shuts down volatilization</span></div>
+          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-extreme);flex-shrink:0">✗</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Avoid 70°F+ days</strong> without stabilizer — urease runs hot and fast</span></div>
+          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-extreme);flex-shrink:0">✗</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Never rely on ¼” rain</strong> — it activates urea without incorporating it</span></div>
+          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-high);flex-shrink:0">⚠</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">No-till ground</strong> — always use stabilizer, assume 2–3× tilled soil loss rate</span></div>
+          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-high);flex-shrink:0">⚠</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">pH above 7.0</strong> — use stabilizer on every surface application, period</span></div>
+          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-low);flex-shrink:0">✓</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Cool mornings under 50°F</strong> — lowest risk window, especially in early spring</span></div>
+          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--blue);flex-shrink:0">❄</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Frozen ground</strong> — urease inactive, but watch for runoff loss on slopes</span></div>
         </div>
       </div>
       <div class="stabilizer-cta">
-        <div class="stab-badge">\ud83d\udcb0 ROI Calculation</div>
+        <div class="stab-badge">💰 ROI Calculation</div>
         <div class="stab-title">Is Stabilizer Worth It Today?</div>
-        <div class="stab-text">At current nitrogen prices, losing 15 lbs N/acre to volatilization costs $8\u201315/acre. NBPT stabilizer runs $8\u201312/acre. When the risk score is Moderate or higher, the math often makes it a no-brainer \u2014 especially on no-till or high-pH ground.</div>
-        <a href="/breakeven" style="display:inline-block;padding:.6rem 1.2rem;background:var(--orange);color:#fff;border-radius:7px;font-size:.82rem;font-weight:700;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Open Break-Even Calculator \u2192</a>
+        <div class="stab-text">At current nitrogen prices, losing 15 lbs N/acre to volatilization costs $8–15/acre. NBPT stabilizer runs $8–12/acre. When the risk score is Moderate or higher, the math often makes it a no-brainer — especially on no-till or high-pH ground.</div>
+        <a href="/breakeven" style="display:inline-block;padding:.6rem 1.2rem;background:var(--orange);color:#fff;border-radius:7px;font-size:.82rem;font-weight:700;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Open Break-Even Calculator →</a>
       </div>
       <a href="/spray" class="cross-link">
-        <span class="cross-link-icon">\ud83c\udf3f</span>
+        <span class="cross-link-icon">🌿</span>
         <div><div class="cross-link-title">Also Spraying Today?</div><div class="cross-link-text">Check the spray advisory for wind speed, inversion risk, and a 24-hour spray window forecast.</div></div>
-        <span class="cross-link-arrow">\u2192</span>
+        <span class="cross-link-arrow">→</span>
       </a>
     </div>
   </div>
