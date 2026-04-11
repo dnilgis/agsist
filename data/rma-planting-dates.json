@@ -1,0 +1,6256 @@
+{
+  "crop_year": 2026,
+  "updated": "2026-04-11",
+  "source": "USDA RMA Actuarial Data Master \u2014 Final Planting Dates",
+  "source_url": "https://www.rma.usda.gov/tools-apps/actuarial-data-master",
+  "note": "Hardcoded from RMA ADM. Verify annually at source_url. Run fetch_rma_dates.py to update.",
+  "fetch_method": "hardcoded",
+  "counties": {
+    "55021": {
+      "state": "WI",
+      "county": "Columbia",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55023": {
+      "state": "WI",
+      "county": "Crawford",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55025": {
+      "state": "WI",
+      "county": "Dane",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55027": {
+      "state": "WI",
+      "county": "Dodge",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55039": {
+      "state": "WI",
+      "county": "Fond du Lac",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55043": {
+      "state": "WI",
+      "county": "Grant",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55045": {
+      "state": "WI",
+      "county": "Green",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55047": {
+      "state": "WI",
+      "county": "Green Lake",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55049": {
+      "state": "WI",
+      "county": "Iowa",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55055": {
+      "state": "WI",
+      "county": "Jefferson",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55059": {
+      "state": "WI",
+      "county": "Kenosha",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55065": {
+      "state": "WI",
+      "county": "Lafayette",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55079": {
+      "state": "WI",
+      "county": "Milwaukee",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55089": {
+      "state": "WI",
+      "county": "Ozaukee",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55101": {
+      "state": "WI",
+      "county": "Racine",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55103": {
+      "state": "WI",
+      "county": "Richland",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55105": {
+      "state": "WI",
+      "county": "Rock",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55111": {
+      "state": "WI",
+      "county": "Sauk",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55117": {
+      "state": "WI",
+      "county": "Sheboygan",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55127": {
+      "state": "WI",
+      "county": "Walworth",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55131": {
+      "state": "WI",
+      "county": "Washington",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55133": {
+      "state": "WI",
+      "county": "Waukesha",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55139": {
+      "state": "WI",
+      "county": "Winnebago",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "55001": {
+      "state": "WI",
+      "county": "Adams",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55009": {
+      "state": "WI",
+      "county": "Brown",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55011": {
+      "state": "WI",
+      "county": "Buffalo",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55015": {
+      "state": "WI",
+      "county": "Calumet",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55029": {
+      "state": "WI",
+      "county": "Door",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55033": {
+      "state": "WI",
+      "county": "Dunn",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55035": {
+      "state": "WI",
+      "county": "Eau Claire",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55053": {
+      "state": "WI",
+      "county": "Jackson",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55057": {
+      "state": "WI",
+      "county": "Juneau",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55061": {
+      "state": "WI",
+      "county": "Kewaunee",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55063": {
+      "state": "WI",
+      "county": "La Crosse",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55071": {
+      "state": "WI",
+      "county": "Manitowoc",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55073": {
+      "state": "WI",
+      "county": "Marathon",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55077": {
+      "state": "WI",
+      "county": "Marquette",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55078": {
+      "state": "WI",
+      "county": "Menominee",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55081": {
+      "state": "WI",
+      "county": "Monroe",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55087": {
+      "state": "WI",
+      "county": "Outagamie",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55091": {
+      "state": "WI",
+      "county": "Pepin",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55093": {
+      "state": "WI",
+      "county": "Pierce",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55097": {
+      "state": "WI",
+      "county": "Portage",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55109": {
+      "state": "WI",
+      "county": "St. Croix",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55121": {
+      "state": "WI",
+      "county": "Trempealeau",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55123": {
+      "state": "WI",
+      "county": "Vernon",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55135": {
+      "state": "WI",
+      "county": "Waupaca",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55137": {
+      "state": "WI",
+      "county": "Waushara",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55141": {
+      "state": "WI",
+      "county": "Wood",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "55005": {
+      "state": "WI",
+      "county": "Barron",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "55013": {
+      "state": "WI",
+      "county": "Burnett",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "55017": {
+      "state": "WI",
+      "county": "Chippewa",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "55019": {
+      "state": "WI",
+      "county": "Clark",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "55075": {
+      "state": "WI",
+      "county": "Marinette",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "55083": {
+      "state": "WI",
+      "county": "Oconto",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "55095": {
+      "state": "WI",
+      "county": "Polk",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "55107": {
+      "state": "WI",
+      "county": "Rusk",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "55115": {
+      "state": "WI",
+      "county": "Shawano",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "55119": {
+      "state": "WI",
+      "county": "Taylor",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "55003": {
+      "state": "WI",
+      "county": "Ashland",
+      "corn": "Jun 15",
+      "soybeans": "Jun 30"
+    },
+    "55007": {
+      "state": "WI",
+      "county": "Bayfield",
+      "corn": "Jun 15",
+      "soybeans": "Jun 30"
+    },
+    "55031": {
+      "state": "WI",
+      "county": "Douglas",
+      "corn": "Jun 15",
+      "soybeans": "Jun 30"
+    },
+    "55037": {
+      "state": "WI",
+      "county": "Florence",
+      "corn": "Jun 15",
+      "soybeans": "Jul 5"
+    },
+    "55041": {
+      "state": "WI",
+      "county": "Forest",
+      "corn": "Jun 15",
+      "soybeans": "Jul 5"
+    },
+    "55051": {
+      "state": "WI",
+      "county": "Iron",
+      "corn": "Jun 15",
+      "soybeans": "Jul 5"
+    },
+    "55067": {
+      "state": "WI",
+      "county": "Langlade",
+      "corn": "Jun 15",
+      "soybeans": "Jun 30"
+    },
+    "55069": {
+      "state": "WI",
+      "county": "Lincoln",
+      "corn": "Jun 15",
+      "soybeans": "Jun 30"
+    },
+    "55085": {
+      "state": "WI",
+      "county": "Oneida",
+      "corn": "Jun 15",
+      "soybeans": "Jul 5"
+    },
+    "55099": {
+      "state": "WI",
+      "county": "Price",
+      "corn": "Jun 15",
+      "soybeans": "Jun 30"
+    },
+    "55113": {
+      "state": "WI",
+      "county": "Sawyer",
+      "corn": "Jun 15",
+      "soybeans": "Jun 30"
+    },
+    "55125": {
+      "state": "WI",
+      "county": "Vilas",
+      "corn": "Jun 15",
+      "soybeans": "Jul 5"
+    },
+    "55129": {
+      "state": "WI",
+      "county": "Washburn",
+      "corn": "Jun 15",
+      "soybeans": "Jun 30"
+    },
+    "27013": {
+      "state": "MN",
+      "county": "Blue Earth",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27015": {
+      "state": "MN",
+      "county": "Brown",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27033": {
+      "state": "MN",
+      "county": "Cottonwood",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27037": {
+      "state": "MN",
+      "county": "Dakota",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27039": {
+      "state": "MN",
+      "county": "Dodge",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27043": {
+      "state": "MN",
+      "county": "Faribault",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27045": {
+      "state": "MN",
+      "county": "Fillmore",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27047": {
+      "state": "MN",
+      "county": "Freeborn",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27049": {
+      "state": "MN",
+      "county": "Goodhue",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27053": {
+      "state": "MN",
+      "county": "Hennepin",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27055": {
+      "state": "MN",
+      "county": "Houston",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27063": {
+      "state": "MN",
+      "county": "Jackson",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27079": {
+      "state": "MN",
+      "county": "Le Sueur",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27091": {
+      "state": "MN",
+      "county": "Martin",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27099": {
+      "state": "MN",
+      "county": "Mower",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27101": {
+      "state": "MN",
+      "county": "Murray",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27103": {
+      "state": "MN",
+      "county": "Nicollet",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27105": {
+      "state": "MN",
+      "county": "Nobles",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27109": {
+      "state": "MN",
+      "county": "Olmsted",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27117": {
+      "state": "MN",
+      "county": "Pipestone",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27123": {
+      "state": "MN",
+      "county": "Ramsey",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27127": {
+      "state": "MN",
+      "county": "Redwood",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27131": {
+      "state": "MN",
+      "county": "Rice",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27133": {
+      "state": "MN",
+      "county": "Rock",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27139": {
+      "state": "MN",
+      "county": "Scott",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27143": {
+      "state": "MN",
+      "county": "Sibley",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27147": {
+      "state": "MN",
+      "county": "Steele",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27157": {
+      "state": "MN",
+      "county": "Wabasha",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27161": {
+      "state": "MN",
+      "county": "Waseca",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27163": {
+      "state": "MN",
+      "county": "Washington",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27165": {
+      "state": "MN",
+      "county": "Watonwan",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27169": {
+      "state": "MN",
+      "county": "Winona",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "27003": {
+      "state": "MN",
+      "county": "Anoka",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27005": {
+      "state": "MN",
+      "county": "Becker",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27009": {
+      "state": "MN",
+      "county": "Benton",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27011": {
+      "state": "MN",
+      "county": "Big Stone",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27019": {
+      "state": "MN",
+      "county": "Carver",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27023": {
+      "state": "MN",
+      "county": "Chippewa",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27025": {
+      "state": "MN",
+      "county": "Chisago",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27027": {
+      "state": "MN",
+      "county": "Clay",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27041": {
+      "state": "MN",
+      "county": "Douglas",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27051": {
+      "state": "MN",
+      "county": "Grant",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27059": {
+      "state": "MN",
+      "county": "Isanti",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27067": {
+      "state": "MN",
+      "county": "Kandiyohi",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27073": {
+      "state": "MN",
+      "county": "Lac qui Parle",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27081": {
+      "state": "MN",
+      "county": "Lincoln",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27083": {
+      "state": "MN",
+      "county": "Lyon",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27085": {
+      "state": "MN",
+      "county": "McLeod",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27093": {
+      "state": "MN",
+      "county": "Meeker",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27111": {
+      "state": "MN",
+      "county": "Otter Tail",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27119": {
+      "state": "MN",
+      "county": "Polk \u2014 S portion",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27121": {
+      "state": "MN",
+      "county": "Pope",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27129": {
+      "state": "MN",
+      "county": "Renville",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27141": {
+      "state": "MN",
+      "county": "Sherburne",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27145": {
+      "state": "MN",
+      "county": "Stearns",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27149": {
+      "state": "MN",
+      "county": "Stevens",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27151": {
+      "state": "MN",
+      "county": "Swift",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27155": {
+      "state": "MN",
+      "county": "Traverse",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27159": {
+      "state": "MN",
+      "county": "Wadena",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27167": {
+      "state": "MN",
+      "county": "Wilkin",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27171": {
+      "state": "MN",
+      "county": "Wright",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27173": {
+      "state": "MN",
+      "county": "Yellow Medicine",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "27001": {
+      "state": "MN",
+      "county": "Aitkin",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27007": {
+      "state": "MN",
+      "county": "Beltrami",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27017": {
+      "state": "MN",
+      "county": "Carlton",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27021": {
+      "state": "MN",
+      "county": "Cass",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27029": {
+      "state": "MN",
+      "county": "Clearwater",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27035": {
+      "state": "MN",
+      "county": "Crow Wing",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27057": {
+      "state": "MN",
+      "county": "Hubbard",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27061": {
+      "state": "MN",
+      "county": "Itasca",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27065": {
+      "state": "MN",
+      "county": "Kanabec",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27069": {
+      "state": "MN",
+      "county": "Kittson",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27087": {
+      "state": "MN",
+      "county": "Mahnomen",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27089": {
+      "state": "MN",
+      "county": "Marshall",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27095": {
+      "state": "MN",
+      "county": "Mille Lacs",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27097": {
+      "state": "MN",
+      "county": "Morrison",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27107": {
+      "state": "MN",
+      "county": "Norman",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27113": {
+      "state": "MN",
+      "county": "Pennington",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27115": {
+      "state": "MN",
+      "county": "Pine",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27125": {
+      "state": "MN",
+      "county": "Red Lake",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27135": {
+      "state": "MN",
+      "county": "Roseau",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27153": {
+      "state": "MN",
+      "county": "Todd",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "27031": {
+      "state": "MN",
+      "county": "Cook",
+      "corn": "Jun 15",
+      "soybeans": "Jul 5"
+    },
+    "27071": {
+      "state": "MN",
+      "county": "Koochiching",
+      "corn": "Jun 15",
+      "soybeans": "Jul 5"
+    },
+    "27075": {
+      "state": "MN",
+      "county": "Lake",
+      "corn": "Jun 15",
+      "soybeans": "Jul 5"
+    },
+    "27077": {
+      "state": "MN",
+      "county": "Lake of the Woods",
+      "corn": "Jun 15",
+      "soybeans": "Jul 5"
+    },
+    "27137": {
+      "state": "MN",
+      "county": "St. Louis",
+      "corn": "Jun 15",
+      "soybeans": "Jul 5"
+    },
+    "19001": {
+      "state": "IA",
+      "county": "Adair",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19003": {
+      "state": "IA",
+      "county": "Adams",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19011": {
+      "state": "IA",
+      "county": "Benton",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19013": {
+      "state": "IA",
+      "county": "Black Hawk",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19015": {
+      "state": "IA",
+      "county": "Boone",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19019": {
+      "state": "IA",
+      "county": "Buchanan",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19021": {
+      "state": "IA",
+      "county": "Buena Vista",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19029": {
+      "state": "IA",
+      "county": "Calhoun",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19033": {
+      "state": "IA",
+      "county": "Cerro Gordo",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19039": {
+      "state": "IA",
+      "county": "Clarke",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19043": {
+      "state": "IA",
+      "county": "Clayton",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19045": {
+      "state": "IA",
+      "county": "Clinton",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19047": {
+      "state": "IA",
+      "county": "Crawford",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19049": {
+      "state": "IA",
+      "county": "Dallas",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19051": {
+      "state": "IA",
+      "county": "Davis",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19053": {
+      "state": "IA",
+      "county": "Decatur",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19055": {
+      "state": "IA",
+      "county": "Delaware",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19057": {
+      "state": "IA",
+      "county": "Des Moines",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19059": {
+      "state": "IA",
+      "county": "Dickinson",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19061": {
+      "state": "IA",
+      "county": "Dubuque",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19063": {
+      "state": "IA",
+      "county": "Emmet",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19065": {
+      "state": "IA",
+      "county": "Fayette",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19067": {
+      "state": "IA",
+      "county": "Floyd",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19069": {
+      "state": "IA",
+      "county": "Franklin",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19073": {
+      "state": "IA",
+      "county": "Greene",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19075": {
+      "state": "IA",
+      "county": "Grundy",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19077": {
+      "state": "IA",
+      "county": "Guthrie",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19079": {
+      "state": "IA",
+      "county": "Hamilton",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19081": {
+      "state": "IA",
+      "county": "Hancock",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19083": {
+      "state": "IA",
+      "county": "Hardin",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19085": {
+      "state": "IA",
+      "county": "Harrison",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19087": {
+      "state": "IA",
+      "county": "Henry",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19089": {
+      "state": "IA",
+      "county": "Howard",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19091": {
+      "state": "IA",
+      "county": "Humboldt",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19093": {
+      "state": "IA",
+      "county": "Ida",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19095": {
+      "state": "IA",
+      "county": "Iowa",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19097": {
+      "state": "IA",
+      "county": "Jackson",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19099": {
+      "state": "IA",
+      "county": "Jasper",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19101": {
+      "state": "IA",
+      "county": "Jefferson",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19103": {
+      "state": "IA",
+      "county": "Johnson",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19105": {
+      "state": "IA",
+      "county": "Jones",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19107": {
+      "state": "IA",
+      "county": "Keokuk",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19109": {
+      "state": "IA",
+      "county": "Kossuth",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19113": {
+      "state": "IA",
+      "county": "Linn",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19115": {
+      "state": "IA",
+      "county": "Louisa",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19117": {
+      "state": "IA",
+      "county": "Lucas",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19119": {
+      "state": "IA",
+      "county": "Lyon",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19121": {
+      "state": "IA",
+      "county": "Madison",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19123": {
+      "state": "IA",
+      "county": "Mahaska",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19125": {
+      "state": "IA",
+      "county": "Marion",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19127": {
+      "state": "IA",
+      "county": "Marshall",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19129": {
+      "state": "IA",
+      "county": "Mills",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19131": {
+      "state": "IA",
+      "county": "Mitchell",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19133": {
+      "state": "IA",
+      "county": "Monona",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19135": {
+      "state": "IA",
+      "county": "Monroe",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19137": {
+      "state": "IA",
+      "county": "Montgomery",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19139": {
+      "state": "IA",
+      "county": "Muscatine",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19141": {
+      "state": "IA",
+      "county": "O'Brien",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19143": {
+      "state": "IA",
+      "county": "Osceola",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19145": {
+      "state": "IA",
+      "county": "Page",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19147": {
+      "state": "IA",
+      "county": "Palo Alto",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19149": {
+      "state": "IA",
+      "county": "Plymouth",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19151": {
+      "state": "IA",
+      "county": "Pocahontas",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19153": {
+      "state": "IA",
+      "county": "Polk",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19155": {
+      "state": "IA",
+      "county": "Pottawattamie",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19157": {
+      "state": "IA",
+      "county": "Poweshiek",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19159": {
+      "state": "IA",
+      "county": "Ringgold",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19161": {
+      "state": "IA",
+      "county": "Sac",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19163": {
+      "state": "IA",
+      "county": "Scott",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19165": {
+      "state": "IA",
+      "county": "Shelby",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19167": {
+      "state": "IA",
+      "county": "Sioux",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19169": {
+      "state": "IA",
+      "county": "Story",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19171": {
+      "state": "IA",
+      "county": "Tama",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19173": {
+      "state": "IA",
+      "county": "Taylor",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19175": {
+      "state": "IA",
+      "county": "Union",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19177": {
+      "state": "IA",
+      "county": "Van Buren",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19179": {
+      "state": "IA",
+      "county": "Wapello",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19181": {
+      "state": "IA",
+      "county": "Warren",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19183": {
+      "state": "IA",
+      "county": "Washington",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19185": {
+      "state": "IA",
+      "county": "Wayne",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19187": {
+      "state": "IA",
+      "county": "Webster",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19189": {
+      "state": "IA",
+      "county": "Winnebago",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19191": {
+      "state": "IA",
+      "county": "Winneshiek",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19193": {
+      "state": "IA",
+      "county": "Woodbury",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19195": {
+      "state": "IA",
+      "county": "Worth",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "19197": {
+      "state": "IA",
+      "county": "Wright",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "17001": {
+      "state": "IL",
+      "county": "Adams",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17003": {
+      "state": "IL",
+      "county": "Alexander",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17005": {
+      "state": "IL",
+      "county": "Bond",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17007": {
+      "state": "IL",
+      "county": "Boone \u2014 N",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17009": {
+      "state": "IL",
+      "county": "Brown",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17011": {
+      "state": "IL",
+      "county": "Bureau",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17013": {
+      "state": "IL",
+      "county": "Calhoun",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17015": {
+      "state": "IL",
+      "county": "Carroll",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17017": {
+      "state": "IL",
+      "county": "Cass",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17019": {
+      "state": "IL",
+      "county": "Champaign",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17021": {
+      "state": "IL",
+      "county": "Christian",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17023": {
+      "state": "IL",
+      "county": "Clark",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17025": {
+      "state": "IL",
+      "county": "Clay",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17027": {
+      "state": "IL",
+      "county": "Clinton",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17029": {
+      "state": "IL",
+      "county": "Coles",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17031": {
+      "state": "IL",
+      "county": "Cook",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17033": {
+      "state": "IL",
+      "county": "Crawford",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17035": {
+      "state": "IL",
+      "county": "Cumberland",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17037": {
+      "state": "IL",
+      "county": "DeKalb",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17039": {
+      "state": "IL",
+      "county": "DeWitt",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17041": {
+      "state": "IL",
+      "county": "Douglas",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17043": {
+      "state": "IL",
+      "county": "DuPage",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17045": {
+      "state": "IL",
+      "county": "Edgar",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17047": {
+      "state": "IL",
+      "county": "Edwards",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17049": {
+      "state": "IL",
+      "county": "Effingham",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17051": {
+      "state": "IL",
+      "county": "Fayette",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17053": {
+      "state": "IL",
+      "county": "Ford",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17055": {
+      "state": "IL",
+      "county": "Franklin",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17057": {
+      "state": "IL",
+      "county": "Fulton",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17059": {
+      "state": "IL",
+      "county": "Gallatin",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17061": {
+      "state": "IL",
+      "county": "Greene",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17063": {
+      "state": "IL",
+      "county": "Grundy",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17065": {
+      "state": "IL",
+      "county": "Hamilton",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17067": {
+      "state": "IL",
+      "county": "Hancock",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17069": {
+      "state": "IL",
+      "county": "Hardin",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17071": {
+      "state": "IL",
+      "county": "Henderson",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17073": {
+      "state": "IL",
+      "county": "Henry",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17075": {
+      "state": "IL",
+      "county": "Iroquois",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17077": {
+      "state": "IL",
+      "county": "Jackson",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17079": {
+      "state": "IL",
+      "county": "Jasper",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17081": {
+      "state": "IL",
+      "county": "Jefferson",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17083": {
+      "state": "IL",
+      "county": "Jersey",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17085": {
+      "state": "IL",
+      "county": "Jo Daviess",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17087": {
+      "state": "IL",
+      "county": "Johnson",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17089": {
+      "state": "IL",
+      "county": "Kane",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17091": {
+      "state": "IL",
+      "county": "Kankakee",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17093": {
+      "state": "IL",
+      "county": "Kendall",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17095": {
+      "state": "IL",
+      "county": "Knox",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17097": {
+      "state": "IL",
+      "county": "Lake",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17099": {
+      "state": "IL",
+      "county": "LaSalle",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17101": {
+      "state": "IL",
+      "county": "Lawrence",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17103": {
+      "state": "IL",
+      "county": "Lee",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17105": {
+      "state": "IL",
+      "county": "Livingston",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17107": {
+      "state": "IL",
+      "county": "Logan",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17109": {
+      "state": "IL",
+      "county": "McDonough",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17111": {
+      "state": "IL",
+      "county": "McHenry",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17113": {
+      "state": "IL",
+      "county": "McLean",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17115": {
+      "state": "IL",
+      "county": "Macon",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17117": {
+      "state": "IL",
+      "county": "Macoupin",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17119": {
+      "state": "IL",
+      "county": "Madison",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17121": {
+      "state": "IL",
+      "county": "Marion",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17123": {
+      "state": "IL",
+      "county": "Marshall",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17125": {
+      "state": "IL",
+      "county": "Mason",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17127": {
+      "state": "IL",
+      "county": "Massac",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17129": {
+      "state": "IL",
+      "county": "Menard",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17131": {
+      "state": "IL",
+      "county": "Mercer",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17133": {
+      "state": "IL",
+      "county": "Monroe",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17135": {
+      "state": "IL",
+      "county": "Montgomery",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17137": {
+      "state": "IL",
+      "county": "Morgan",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17139": {
+      "state": "IL",
+      "county": "Moultrie",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17141": {
+      "state": "IL",
+      "county": "Ogle",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17143": {
+      "state": "IL",
+      "county": "Peoria",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17145": {
+      "state": "IL",
+      "county": "Perry",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17147": {
+      "state": "IL",
+      "county": "Piatt",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17149": {
+      "state": "IL",
+      "county": "Pike",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17151": {
+      "state": "IL",
+      "county": "Pope",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17153": {
+      "state": "IL",
+      "county": "Pulaski",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17155": {
+      "state": "IL",
+      "county": "Putnam",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17157": {
+      "state": "IL",
+      "county": "Randolph",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17159": {
+      "state": "IL",
+      "county": "Richland",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17161": {
+      "state": "IL",
+      "county": "Rock Island",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17163": {
+      "state": "IL",
+      "county": "St. Clair",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17165": {
+      "state": "IL",
+      "county": "Saline",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17167": {
+      "state": "IL",
+      "county": "Sangamon",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17169": {
+      "state": "IL",
+      "county": "Schuyler",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17171": {
+      "state": "IL",
+      "county": "Scott",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17173": {
+      "state": "IL",
+      "county": "Shelby",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17175": {
+      "state": "IL",
+      "county": "Stark",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17177": {
+      "state": "IL",
+      "county": "Stephenson",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17179": {
+      "state": "IL",
+      "county": "Tazewell",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17181": {
+      "state": "IL",
+      "county": "Union",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17183": {
+      "state": "IL",
+      "county": "Vermilion",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17185": {
+      "state": "IL",
+      "county": "Wabash",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17187": {
+      "state": "IL",
+      "county": "Warren",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17189": {
+      "state": "IL",
+      "county": "Washington",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17191": {
+      "state": "IL",
+      "county": "Wayne",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17193": {
+      "state": "IL",
+      "county": "White",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17195": {
+      "state": "IL",
+      "county": "Whiteside",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17197": {
+      "state": "IL",
+      "county": "Will",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17199": {
+      "state": "IL",
+      "county": "Williamson",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17201": {
+      "state": "IL",
+      "county": "Winnebago",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "17203": {
+      "state": "IL",
+      "county": "Woodford",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18001": {
+      "state": "IN",
+      "county": "Adams",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18003": {
+      "state": "IN",
+      "county": "Allen",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18005": {
+      "state": "IN",
+      "county": "Bartholomew",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18007": {
+      "state": "IN",
+      "county": "Benton",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18009": {
+      "state": "IN",
+      "county": "Blackford",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18011": {
+      "state": "IN",
+      "county": "Boone",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18013": {
+      "state": "IN",
+      "county": "Brown",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18015": {
+      "state": "IN",
+      "county": "Carroll",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18017": {
+      "state": "IN",
+      "county": "Cass",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18019": {
+      "state": "IN",
+      "county": "Clark",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18021": {
+      "state": "IN",
+      "county": "Clay",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18023": {
+      "state": "IN",
+      "county": "Clinton",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18025": {
+      "state": "IN",
+      "county": "Crawford",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18027": {
+      "state": "IN",
+      "county": "Daviess",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18029": {
+      "state": "IN",
+      "county": "Dearborn",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18031": {
+      "state": "IN",
+      "county": "Decatur",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18033": {
+      "state": "IN",
+      "county": "DeKalb",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18035": {
+      "state": "IN",
+      "county": "Delaware",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18037": {
+      "state": "IN",
+      "county": "Dubois",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18039": {
+      "state": "IN",
+      "county": "Elkhart",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18041": {
+      "state": "IN",
+      "county": "Fayette",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18043": {
+      "state": "IN",
+      "county": "Floyd",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18045": {
+      "state": "IN",
+      "county": "Fountain",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18047": {
+      "state": "IN",
+      "county": "Franklin",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18049": {
+      "state": "IN",
+      "county": "Fulton",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18051": {
+      "state": "IN",
+      "county": "Gibson",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18053": {
+      "state": "IN",
+      "county": "Grant",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18055": {
+      "state": "IN",
+      "county": "Greene",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18057": {
+      "state": "IN",
+      "county": "Hamilton",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18059": {
+      "state": "IN",
+      "county": "Hancock",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18061": {
+      "state": "IN",
+      "county": "Harrison",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18063": {
+      "state": "IN",
+      "county": "Hendricks",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18065": {
+      "state": "IN",
+      "county": "Henry",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18067": {
+      "state": "IN",
+      "county": "Howard",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18069": {
+      "state": "IN",
+      "county": "Huntington",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18071": {
+      "state": "IN",
+      "county": "Jackson",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18073": {
+      "state": "IN",
+      "county": "Jasper",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18075": {
+      "state": "IN",
+      "county": "Jay",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18077": {
+      "state": "IN",
+      "county": "Jefferson",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18079": {
+      "state": "IN",
+      "county": "Jennings",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18081": {
+      "state": "IN",
+      "county": "Johnson",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18083": {
+      "state": "IN",
+      "county": "Knox",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18085": {
+      "state": "IN",
+      "county": "Kosciusko",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18087": {
+      "state": "IN",
+      "county": "LaGrange",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18089": {
+      "state": "IN",
+      "county": "Lake",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18091": {
+      "state": "IN",
+      "county": "LaPorte",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18093": {
+      "state": "IN",
+      "county": "Lawrence",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18095": {
+      "state": "IN",
+      "county": "Madison",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18097": {
+      "state": "IN",
+      "county": "Marion",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18099": {
+      "state": "IN",
+      "county": "Marshall",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18101": {
+      "state": "IN",
+      "county": "Martin",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18103": {
+      "state": "IN",
+      "county": "Miami",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18105": {
+      "state": "IN",
+      "county": "Monroe",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18107": {
+      "state": "IN",
+      "county": "Montgomery",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18109": {
+      "state": "IN",
+      "county": "Morgan",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18111": {
+      "state": "IN",
+      "county": "Newton",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18113": {
+      "state": "IN",
+      "county": "Noble",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18115": {
+      "state": "IN",
+      "county": "Ohio",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18117": {
+      "state": "IN",
+      "county": "Orange",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18119": {
+      "state": "IN",
+      "county": "Owen",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18121": {
+      "state": "IN",
+      "county": "Parke",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18123": {
+      "state": "IN",
+      "county": "Perry",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18125": {
+      "state": "IN",
+      "county": "Pike",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18127": {
+      "state": "IN",
+      "county": "Porter",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18129": {
+      "state": "IN",
+      "county": "Posey",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18131": {
+      "state": "IN",
+      "county": "Pulaski",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18133": {
+      "state": "IN",
+      "county": "Putnam",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18135": {
+      "state": "IN",
+      "county": "Randolph",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18137": {
+      "state": "IN",
+      "county": "Ripley",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18139": {
+      "state": "IN",
+      "county": "Rush",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18141": {
+      "state": "IN",
+      "county": "St. Joseph",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18143": {
+      "state": "IN",
+      "county": "Scott",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18145": {
+      "state": "IN",
+      "county": "Shelby",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18147": {
+      "state": "IN",
+      "county": "Spencer",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18149": {
+      "state": "IN",
+      "county": "Starke",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18151": {
+      "state": "IN",
+      "county": "Steuben",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18153": {
+      "state": "IN",
+      "county": "Sullivan",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18155": {
+      "state": "IN",
+      "county": "Switzerland",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18157": {
+      "state": "IN",
+      "county": "Tippecanoe",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18159": {
+      "state": "IN",
+      "county": "Tipton",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18161": {
+      "state": "IN",
+      "county": "Union",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18163": {
+      "state": "IN",
+      "county": "Vanderburgh",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18165": {
+      "state": "IN",
+      "county": "Vermillion",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18167": {
+      "state": "IN",
+      "county": "Vigo",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18169": {
+      "state": "IN",
+      "county": "Wabash",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18171": {
+      "state": "IN",
+      "county": "Warren",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18173": {
+      "state": "IN",
+      "county": "Warrick",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18175": {
+      "state": "IN",
+      "county": "Washington",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18177": {
+      "state": "IN",
+      "county": "Wayne",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18179": {
+      "state": "IN",
+      "county": "Wells",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18181": {
+      "state": "IN",
+      "county": "White",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "18183": {
+      "state": "IN",
+      "county": "Whitley",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39001": {
+      "state": "OH",
+      "county": "Adams",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39003": {
+      "state": "OH",
+      "county": "Allen",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39005": {
+      "state": "OH",
+      "county": "Ashland",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39007": {
+      "state": "OH",
+      "county": "Ashtabula",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39009": {
+      "state": "OH",
+      "county": "Athens",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39011": {
+      "state": "OH",
+      "county": "Auglaize",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39013": {
+      "state": "OH",
+      "county": "Belmont",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39015": {
+      "state": "OH",
+      "county": "Brown",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39017": {
+      "state": "OH",
+      "county": "Butler",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39019": {
+      "state": "OH",
+      "county": "Carroll",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39021": {
+      "state": "OH",
+      "county": "Champaign",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39023": {
+      "state": "OH",
+      "county": "Clark",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39025": {
+      "state": "OH",
+      "county": "Clermont",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39027": {
+      "state": "OH",
+      "county": "Clinton",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39029": {
+      "state": "OH",
+      "county": "Columbiana",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39031": {
+      "state": "OH",
+      "county": "Coshocton",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39033": {
+      "state": "OH",
+      "county": "Crawford",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39035": {
+      "state": "OH",
+      "county": "Cuyahoga",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39037": {
+      "state": "OH",
+      "county": "Darke",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39039": {
+      "state": "OH",
+      "county": "Defiance",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39041": {
+      "state": "OH",
+      "county": "Delaware",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39043": {
+      "state": "OH",
+      "county": "Erie",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39045": {
+      "state": "OH",
+      "county": "Fairfield",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39047": {
+      "state": "OH",
+      "county": "Fayette",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39049": {
+      "state": "OH",
+      "county": "Franklin",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39051": {
+      "state": "OH",
+      "county": "Fulton",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39053": {
+      "state": "OH",
+      "county": "Gallia",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39055": {
+      "state": "OH",
+      "county": "Geauga",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39057": {
+      "state": "OH",
+      "county": "Greene",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39059": {
+      "state": "OH",
+      "county": "Guernsey",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39061": {
+      "state": "OH",
+      "county": "Hamilton",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39063": {
+      "state": "OH",
+      "county": "Hancock",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39065": {
+      "state": "OH",
+      "county": "Hardin",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39067": {
+      "state": "OH",
+      "county": "Harrison",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39069": {
+      "state": "OH",
+      "county": "Henry",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39071": {
+      "state": "OH",
+      "county": "Highland",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39073": {
+      "state": "OH",
+      "county": "Hocking",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39075": {
+      "state": "OH",
+      "county": "Holmes",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39077": {
+      "state": "OH",
+      "county": "Huron",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39079": {
+      "state": "OH",
+      "county": "Jackson",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39081": {
+      "state": "OH",
+      "county": "Jefferson",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39083": {
+      "state": "OH",
+      "county": "Knox",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39085": {
+      "state": "OH",
+      "county": "Lake",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39087": {
+      "state": "OH",
+      "county": "Lawrence",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39089": {
+      "state": "OH",
+      "county": "Licking",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39091": {
+      "state": "OH",
+      "county": "Logan",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39093": {
+      "state": "OH",
+      "county": "Lorain",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39095": {
+      "state": "OH",
+      "county": "Lucas",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39097": {
+      "state": "OH",
+      "county": "Madison",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39099": {
+      "state": "OH",
+      "county": "Mahoning",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39101": {
+      "state": "OH",
+      "county": "Marion",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39103": {
+      "state": "OH",
+      "county": "Medina",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39105": {
+      "state": "OH",
+      "county": "Meigs",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39107": {
+      "state": "OH",
+      "county": "Mercer",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39109": {
+      "state": "OH",
+      "county": "Miami",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39111": {
+      "state": "OH",
+      "county": "Monroe",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39113": {
+      "state": "OH",
+      "county": "Montgomery",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39115": {
+      "state": "OH",
+      "county": "Morgan",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39117": {
+      "state": "OH",
+      "county": "Morrow",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39119": {
+      "state": "OH",
+      "county": "Muskingum",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39121": {
+      "state": "OH",
+      "county": "Noble",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39123": {
+      "state": "OH",
+      "county": "Ottawa",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39125": {
+      "state": "OH",
+      "county": "Paulding",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39127": {
+      "state": "OH",
+      "county": "Perry",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39129": {
+      "state": "OH",
+      "county": "Pickaway",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39131": {
+      "state": "OH",
+      "county": "Pike",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39133": {
+      "state": "OH",
+      "county": "Portage",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39135": {
+      "state": "OH",
+      "county": "Preble",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39137": {
+      "state": "OH",
+      "county": "Putnam",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39139": {
+      "state": "OH",
+      "county": "Richland",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39141": {
+      "state": "OH",
+      "county": "Ross",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39143": {
+      "state": "OH",
+      "county": "Sandusky",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39145": {
+      "state": "OH",
+      "county": "Scioto",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39147": {
+      "state": "OH",
+      "county": "Seneca",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39149": {
+      "state": "OH",
+      "county": "Shelby",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39151": {
+      "state": "OH",
+      "county": "Stark",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39153": {
+      "state": "OH",
+      "county": "Summit",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39155": {
+      "state": "OH",
+      "county": "Trumbull",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39157": {
+      "state": "OH",
+      "county": "Tuscarawas",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39159": {
+      "state": "OH",
+      "county": "Union",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39161": {
+      "state": "OH",
+      "county": "Van Wert",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39163": {
+      "state": "OH",
+      "county": "Vinton",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39165": {
+      "state": "OH",
+      "county": "Warren",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39167": {
+      "state": "OH",
+      "county": "Washington",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39169": {
+      "state": "OH",
+      "county": "Wayne",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39171": {
+      "state": "OH",
+      "county": "Williams",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39173": {
+      "state": "OH",
+      "county": "Wood",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "39175": {
+      "state": "OH",
+      "county": "Wyandot",
+      "corn": "May 31",
+      "soybeans": "Jun 20"
+    },
+    "26001": {
+      "state": "MI",
+      "county": "Alcona",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26003": {
+      "state": "MI",
+      "county": "Alger",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "26005": {
+      "state": "MI",
+      "county": "Allegan",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26007": {
+      "state": "MI",
+      "county": "Alpena",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26009": {
+      "state": "MI",
+      "county": "Antrim",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26011": {
+      "state": "MI",
+      "county": "Arenac",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26013": {
+      "state": "MI",
+      "county": "Baraga",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "26015": {
+      "state": "MI",
+      "county": "Barry",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26017": {
+      "state": "MI",
+      "county": "Bay",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26019": {
+      "state": "MI",
+      "county": "Benzie",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26021": {
+      "state": "MI",
+      "county": "Berrien",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26023": {
+      "state": "MI",
+      "county": "Branch",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26025": {
+      "state": "MI",
+      "county": "Calhoun",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26027": {
+      "state": "MI",
+      "county": "Cass",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26029": {
+      "state": "MI",
+      "county": "Charlevoix",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26031": {
+      "state": "MI",
+      "county": "Cheboygan",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26035": {
+      "state": "MI",
+      "county": "Clare",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26037": {
+      "state": "MI",
+      "county": "Clinton",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26039": {
+      "state": "MI",
+      "county": "Crawford",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26041": {
+      "state": "MI",
+      "county": "Delta",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "26043": {
+      "state": "MI",
+      "county": "Dickinson",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "26045": {
+      "state": "MI",
+      "county": "Eaton",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26047": {
+      "state": "MI",
+      "county": "Emmet",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26049": {
+      "state": "MI",
+      "county": "Genesee",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26051": {
+      "state": "MI",
+      "county": "Gladwin",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26053": {
+      "state": "MI",
+      "county": "Gogebic",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "26055": {
+      "state": "MI",
+      "county": "Grand Traverse",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26057": {
+      "state": "MI",
+      "county": "Gratiot",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26059": {
+      "state": "MI",
+      "county": "Hillsdale",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26061": {
+      "state": "MI",
+      "county": "Houghton",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "26063": {
+      "state": "MI",
+      "county": "Huron",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26065": {
+      "state": "MI",
+      "county": "Ingham",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26067": {
+      "state": "MI",
+      "county": "Ionia",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26069": {
+      "state": "MI",
+      "county": "Iosco",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26071": {
+      "state": "MI",
+      "county": "Iron",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "26073": {
+      "state": "MI",
+      "county": "Isabella",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26075": {
+      "state": "MI",
+      "county": "Jackson",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26077": {
+      "state": "MI",
+      "county": "Kalamazoo",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26079": {
+      "state": "MI",
+      "county": "Kalkaska",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26081": {
+      "state": "MI",
+      "county": "Kent",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26083": {
+      "state": "MI",
+      "county": "Keweenaw",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "26085": {
+      "state": "MI",
+      "county": "Lake",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26087": {
+      "state": "MI",
+      "county": "Lapeer",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26089": {
+      "state": "MI",
+      "county": "Leelanau",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26091": {
+      "state": "MI",
+      "county": "Lenawee",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26093": {
+      "state": "MI",
+      "county": "Livingston",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26095": {
+      "state": "MI",
+      "county": "Luce",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "26097": {
+      "state": "MI",
+      "county": "Mackinac",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "26099": {
+      "state": "MI",
+      "county": "Macomb",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26101": {
+      "state": "MI",
+      "county": "Manistee",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26103": {
+      "state": "MI",
+      "county": "Marquette",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "26105": {
+      "state": "MI",
+      "county": "Mason",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26107": {
+      "state": "MI",
+      "county": "Mecosta",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26109": {
+      "state": "MI",
+      "county": "Menominee",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "26111": {
+      "state": "MI",
+      "county": "Midland",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26113": {
+      "state": "MI",
+      "county": "Missaukee",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26115": {
+      "state": "MI",
+      "county": "Monroe",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26117": {
+      "state": "MI",
+      "county": "Montcalm",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26119": {
+      "state": "MI",
+      "county": "Montmorency",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26121": {
+      "state": "MI",
+      "county": "Muskegon",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26123": {
+      "state": "MI",
+      "county": "Newaygo",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26125": {
+      "state": "MI",
+      "county": "Oakland",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26127": {
+      "state": "MI",
+      "county": "Oceana",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26129": {
+      "state": "MI",
+      "county": "Ogemaw",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26131": {
+      "state": "MI",
+      "county": "Ontonagon",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "26133": {
+      "state": "MI",
+      "county": "Osceola",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26135": {
+      "state": "MI",
+      "county": "Oscoda",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26137": {
+      "state": "MI",
+      "county": "Otsego",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26139": {
+      "state": "MI",
+      "county": "Ottawa",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26141": {
+      "state": "MI",
+      "county": "Presque Isle",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26143": {
+      "state": "MI",
+      "county": "Roscommon",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26145": {
+      "state": "MI",
+      "county": "Saginaw",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26147": {
+      "state": "MI",
+      "county": "St. Clair",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26149": {
+      "state": "MI",
+      "county": "St. Joseph",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26151": {
+      "state": "MI",
+      "county": "Sanilac",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26153": {
+      "state": "MI",
+      "county": "Schoolcraft",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "26155": {
+      "state": "MI",
+      "county": "Shiawassee",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26157": {
+      "state": "MI",
+      "county": "Tuscola",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26159": {
+      "state": "MI",
+      "county": "Van Buren",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26161": {
+      "state": "MI",
+      "county": "Washtenaw",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26163": {
+      "state": "MI",
+      "county": "Wayne",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "26165": {
+      "state": "MI",
+      "county": "Wexford",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46003": {
+      "state": "SD",
+      "county": "Aurora",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46005": {
+      "state": "SD",
+      "county": "Beadle",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46007": {
+      "state": "SD",
+      "county": "Bennett skip",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46009": {
+      "state": "SD",
+      "county": "Bon Homme",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46011": {
+      "state": "SD",
+      "county": "Brookings",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46013": {
+      "state": "SD",
+      "county": "Brown",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46015": {
+      "state": "SD",
+      "county": "Brule",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46017": {
+      "state": "SD",
+      "county": "Buffalo",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46019": {
+      "state": "SD",
+      "county": "Butte",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46021": {
+      "state": "SD",
+      "county": "Campbell",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46023": {
+      "state": "SD",
+      "county": "Charles Mix",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46025": {
+      "state": "SD",
+      "county": "Clark",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46027": {
+      "state": "SD",
+      "county": "Clay",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46029": {
+      "state": "SD",
+      "county": "Codington",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46031": {
+      "state": "SD",
+      "county": "Corson",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46033": {
+      "state": "SD",
+      "county": "Custer",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46035": {
+      "state": "SD",
+      "county": "Davison",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46037": {
+      "state": "SD",
+      "county": "Day",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46039": {
+      "state": "SD",
+      "county": "Deuel",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46041": {
+      "state": "SD",
+      "county": "Dewey",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46043": {
+      "state": "SD",
+      "county": "Douglas",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46045": {
+      "state": "SD",
+      "county": "Edmunds",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46047": {
+      "state": "SD",
+      "county": "Fall River",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46049": {
+      "state": "SD",
+      "county": "Faulk",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46051": {
+      "state": "SD",
+      "county": "Grant",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46053": {
+      "state": "SD",
+      "county": "Gregory",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46055": {
+      "state": "SD",
+      "county": "Haakon",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46057": {
+      "state": "SD",
+      "county": "Hamlin",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46059": {
+      "state": "SD",
+      "county": "Hand",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46061": {
+      "state": "SD",
+      "county": "Hanson",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46063": {
+      "state": "SD",
+      "county": "Harding",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46065": {
+      "state": "SD",
+      "county": "Hughes",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46067": {
+      "state": "SD",
+      "county": "Hutchinson",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46069": {
+      "state": "SD",
+      "county": "Hyde",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46071": {
+      "state": "SD",
+      "county": "Jackson",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46073": {
+      "state": "SD",
+      "county": "Jerauld",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46075": {
+      "state": "SD",
+      "county": "Jones",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46077": {
+      "state": "SD",
+      "county": "Kingsbury",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46079": {
+      "state": "SD",
+      "county": "Lake",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46081": {
+      "state": "SD",
+      "county": "Lawrence",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46083": {
+      "state": "SD",
+      "county": "Lincoln",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46085": {
+      "state": "SD",
+      "county": "Lyman",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46087": {
+      "state": "SD",
+      "county": "McCook",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46089": {
+      "state": "SD",
+      "county": "McPherson",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46091": {
+      "state": "SD",
+      "county": "Marshall",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46093": {
+      "state": "SD",
+      "county": "Meade",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46095": {
+      "state": "SD",
+      "county": "Mellette",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46097": {
+      "state": "SD",
+      "county": "Miner",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46099": {
+      "state": "SD",
+      "county": "Minnehaha",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46101": {
+      "state": "SD",
+      "county": "Moody",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46103": {
+      "state": "SD",
+      "county": "Pennington",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46105": {
+      "state": "SD",
+      "county": "Perkins",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46107": {
+      "state": "SD",
+      "county": "Potter",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46109": {
+      "state": "SD",
+      "county": "Roberts",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46111": {
+      "state": "SD",
+      "county": "Sanborn",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46113": {
+      "state": "SD",
+      "county": "Shannon",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46115": {
+      "state": "SD",
+      "county": "Spink",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46117": {
+      "state": "SD",
+      "county": "Stanley",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46119": {
+      "state": "SD",
+      "county": "Sully",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46121": {
+      "state": "SD",
+      "county": "Todd",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "46123": {
+      "state": "SD",
+      "county": "Tripp",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46125": {
+      "state": "SD",
+      "county": "Turner",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46127": {
+      "state": "SD",
+      "county": "Union",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46129": {
+      "state": "SD",
+      "county": "Walworth",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46135": {
+      "state": "SD",
+      "county": "Yankton",
+      "corn": "Jun 5",
+      "soybeans": "Jun 25"
+    },
+    "46137": {
+      "state": "SD",
+      "county": "Ziebach",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38001": {
+      "state": "ND",
+      "county": "Adams",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38003": {
+      "state": "ND",
+      "county": "Barnes",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38005": {
+      "state": "ND",
+      "county": "Benson",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38007": {
+      "state": "ND",
+      "county": "Billings",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38009": {
+      "state": "ND",
+      "county": "Bottineau",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38011": {
+      "state": "ND",
+      "county": "Bowman",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38013": {
+      "state": "ND",
+      "county": "Burke",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38015": {
+      "state": "ND",
+      "county": "Burleigh",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38017": {
+      "state": "ND",
+      "county": "Cass",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38019": {
+      "state": "ND",
+      "county": "Cavalier",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38021": {
+      "state": "ND",
+      "county": "Dickey",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38023": {
+      "state": "ND",
+      "county": "Divide",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38025": {
+      "state": "ND",
+      "county": "Dunn",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38027": {
+      "state": "ND",
+      "county": "Eddy",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38029": {
+      "state": "ND",
+      "county": "Emmons",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38031": {
+      "state": "ND",
+      "county": "Foster",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38033": {
+      "state": "ND",
+      "county": "Golden Valley",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38035": {
+      "state": "ND",
+      "county": "Grand Forks",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38037": {
+      "state": "ND",
+      "county": "Grant",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38039": {
+      "state": "ND",
+      "county": "Griggs",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38041": {
+      "state": "ND",
+      "county": "Hettinger",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38043": {
+      "state": "ND",
+      "county": "Kidder",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38045": {
+      "state": "ND",
+      "county": "LaMoure",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38047": {
+      "state": "ND",
+      "county": "Logan",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38049": {
+      "state": "ND",
+      "county": "McHenry",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38051": {
+      "state": "ND",
+      "county": "McIntosh",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38053": {
+      "state": "ND",
+      "county": "McKenzie",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38055": {
+      "state": "ND",
+      "county": "McLean",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38057": {
+      "state": "ND",
+      "county": "Mercer",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38059": {
+      "state": "ND",
+      "county": "Morton",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38061": {
+      "state": "ND",
+      "county": "Mountrail",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38063": {
+      "state": "ND",
+      "county": "Nelson",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38065": {
+      "state": "ND",
+      "county": "Oliver",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38067": {
+      "state": "ND",
+      "county": "Pembina",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38069": {
+      "state": "ND",
+      "county": "Pierce",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38071": {
+      "state": "ND",
+      "county": "Ramsey",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38073": {
+      "state": "ND",
+      "county": "Ransom",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38075": {
+      "state": "ND",
+      "county": "Renville",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38077": {
+      "state": "ND",
+      "county": "Richland",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38079": {
+      "state": "ND",
+      "county": "Rolette",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38081": {
+      "state": "ND",
+      "county": "Sargent",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38083": {
+      "state": "ND",
+      "county": "Sheridan",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38085": {
+      "state": "ND",
+      "county": "Sioux",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38087": {
+      "state": "ND",
+      "county": "Slope",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38089": {
+      "state": "ND",
+      "county": "Stark",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38091": {
+      "state": "ND",
+      "county": "Steele",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38093": {
+      "state": "ND",
+      "county": "Stutsman",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38095": {
+      "state": "ND",
+      "county": "Towner",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38097": {
+      "state": "ND",
+      "county": "Traill",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38099": {
+      "state": "ND",
+      "county": "Walsh",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38101": {
+      "state": "ND",
+      "county": "Ward",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38103": {
+      "state": "ND",
+      "county": "Wells",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "38105": {
+      "state": "ND",
+      "county": "Williams",
+      "corn": "Jun 10",
+      "soybeans": "Jun 30"
+    },
+    "31001": {
+      "state": "NE",
+      "county": "Adams",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31003": {
+      "state": "NE",
+      "county": "Antelope",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31005": {
+      "state": "NE",
+      "county": "Arthur",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31007": {
+      "state": "NE",
+      "county": "Banner",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31009": {
+      "state": "NE",
+      "county": "Blaine",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31011": {
+      "state": "NE",
+      "county": "Boone",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31013": {
+      "state": "NE",
+      "county": "Box Butte",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31015": {
+      "state": "NE",
+      "county": "Boyd",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31017": {
+      "state": "NE",
+      "county": "Brown",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31019": {
+      "state": "NE",
+      "county": "Buffalo",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31021": {
+      "state": "NE",
+      "county": "Burt",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31023": {
+      "state": "NE",
+      "county": "Butler",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31025": {
+      "state": "NE",
+      "county": "Cass",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31027": {
+      "state": "NE",
+      "county": "Cedar",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31029": {
+      "state": "NE",
+      "county": "Chase",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31031": {
+      "state": "NE",
+      "county": "Cherry",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31033": {
+      "state": "NE",
+      "county": "Cheyenne",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31035": {
+      "state": "NE",
+      "county": "Clay",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31037": {
+      "state": "NE",
+      "county": "Colfax",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31039": {
+      "state": "NE",
+      "county": "Cuming",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31041": {
+      "state": "NE",
+      "county": "Custer",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31043": {
+      "state": "NE",
+      "county": "Dakota",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31045": {
+      "state": "NE",
+      "county": "Dawes",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31047": {
+      "state": "NE",
+      "county": "Dawson",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31049": {
+      "state": "NE",
+      "county": "Deuel",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31051": {
+      "state": "NE",
+      "county": "Dixon",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31053": {
+      "state": "NE",
+      "county": "Dodge",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31055": {
+      "state": "NE",
+      "county": "Douglas",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31057": {
+      "state": "NE",
+      "county": "Dundy",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31059": {
+      "state": "NE",
+      "county": "Fillmore",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31061": {
+      "state": "NE",
+      "county": "Franklin",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31063": {
+      "state": "NE",
+      "county": "Frontier",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31065": {
+      "state": "NE",
+      "county": "Furnas",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31067": {
+      "state": "NE",
+      "county": "Gage",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31069": {
+      "state": "NE",
+      "county": "Garden",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31071": {
+      "state": "NE",
+      "county": "Garfield",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31073": {
+      "state": "NE",
+      "county": "Gosper",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31075": {
+      "state": "NE",
+      "county": "Grant",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31077": {
+      "state": "NE",
+      "county": "Greeley",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31079": {
+      "state": "NE",
+      "county": "Hall",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31081": {
+      "state": "NE",
+      "county": "Hamilton",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31083": {
+      "state": "NE",
+      "county": "Harlan",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31085": {
+      "state": "NE",
+      "county": "Hayes",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31087": {
+      "state": "NE",
+      "county": "Hitchcock",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31089": {
+      "state": "NE",
+      "county": "Holt",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31091": {
+      "state": "NE",
+      "county": "Hooker",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31093": {
+      "state": "NE",
+      "county": "Howard",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31095": {
+      "state": "NE",
+      "county": "Jefferson",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31097": {
+      "state": "NE",
+      "county": "Johnson",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31099": {
+      "state": "NE",
+      "county": "Kearney",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31101": {
+      "state": "NE",
+      "county": "Keith",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31103": {
+      "state": "NE",
+      "county": "Keya Paha",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31105": {
+      "state": "NE",
+      "county": "Kimball",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31107": {
+      "state": "NE",
+      "county": "Knox",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31109": {
+      "state": "NE",
+      "county": "Lancaster",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31111": {
+      "state": "NE",
+      "county": "Lincoln",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31113": {
+      "state": "NE",
+      "county": "Logan",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31115": {
+      "state": "NE",
+      "county": "Loup",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31117": {
+      "state": "NE",
+      "county": "McPherson",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31119": {
+      "state": "NE",
+      "county": "Madison",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31121": {
+      "state": "NE",
+      "county": "Merrick",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31123": {
+      "state": "NE",
+      "county": "Morrill",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31125": {
+      "state": "NE",
+      "county": "Nance",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31127": {
+      "state": "NE",
+      "county": "Nemaha",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31129": {
+      "state": "NE",
+      "county": "Nuckolls",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31131": {
+      "state": "NE",
+      "county": "Otoe",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31133": {
+      "state": "NE",
+      "county": "Pawnee",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31135": {
+      "state": "NE",
+      "county": "Perkins",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31137": {
+      "state": "NE",
+      "county": "Phelps",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31139": {
+      "state": "NE",
+      "county": "Pierce",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31141": {
+      "state": "NE",
+      "county": "Platte",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31143": {
+      "state": "NE",
+      "county": "Polk",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31145": {
+      "state": "NE",
+      "county": "Red Willow",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31147": {
+      "state": "NE",
+      "county": "Richardson",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31149": {
+      "state": "NE",
+      "county": "Rock",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31151": {
+      "state": "NE",
+      "county": "Saline",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31153": {
+      "state": "NE",
+      "county": "Sarpy",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31155": {
+      "state": "NE",
+      "county": "Saunders",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31157": {
+      "state": "NE",
+      "county": "Scotts Bluff",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31159": {
+      "state": "NE",
+      "county": "Seward",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31161": {
+      "state": "NE",
+      "county": "Sheridan",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31163": {
+      "state": "NE",
+      "county": "Sherman",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31165": {
+      "state": "NE",
+      "county": "Sioux",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31167": {
+      "state": "NE",
+      "county": "Stanton",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31169": {
+      "state": "NE",
+      "county": "Thayer",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31171": {
+      "state": "NE",
+      "county": "Thomas",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31173": {
+      "state": "NE",
+      "county": "Thurston",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31175": {
+      "state": "NE",
+      "county": "Valley",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31177": {
+      "state": "NE",
+      "county": "Washington",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31179": {
+      "state": "NE",
+      "county": "Wayne",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31181": {
+      "state": "NE",
+      "county": "Webster",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31183": {
+      "state": "NE",
+      "county": "Wheeler",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "31185": {
+      "state": "NE",
+      "county": "York",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29001": {
+      "state": "MO",
+      "county": "Adair",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29003": {
+      "state": "MO",
+      "county": "Andrew",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29005": {
+      "state": "MO",
+      "county": "Atchison",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29007": {
+      "state": "MO",
+      "county": "Audrain",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29009": {
+      "state": "MO",
+      "county": "Barry",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29011": {
+      "state": "MO",
+      "county": "Barton",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29013": {
+      "state": "MO",
+      "county": "Bates",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29015": {
+      "state": "MO",
+      "county": "Benton",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29017": {
+      "state": "MO",
+      "county": "Bollinger",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29019": {
+      "state": "MO",
+      "county": "Boone",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29021": {
+      "state": "MO",
+      "county": "Buchanan",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29023": {
+      "state": "MO",
+      "county": "Butler",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29025": {
+      "state": "MO",
+      "county": "Caldwell",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29027": {
+      "state": "MO",
+      "county": "Callaway",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29029": {
+      "state": "MO",
+      "county": "Camden",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29031": {
+      "state": "MO",
+      "county": "Cape Girardeau",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29033": {
+      "state": "MO",
+      "county": "Carroll",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29035": {
+      "state": "MO",
+      "county": "Carter",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29037": {
+      "state": "MO",
+      "county": "Cass",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29039": {
+      "state": "MO",
+      "county": "Cedar",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29041": {
+      "state": "MO",
+      "county": "Chariton",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29043": {
+      "state": "MO",
+      "county": "Christian",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29045": {
+      "state": "MO",
+      "county": "Clark",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29047": {
+      "state": "MO",
+      "county": "Clay",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29049": {
+      "state": "MO",
+      "county": "Clinton",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29051": {
+      "state": "MO",
+      "county": "Cole",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29053": {
+      "state": "MO",
+      "county": "Cooper",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29055": {
+      "state": "MO",
+      "county": "Crawford",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29057": {
+      "state": "MO",
+      "county": "Dade",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29059": {
+      "state": "MO",
+      "county": "Dallas",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29061": {
+      "state": "MO",
+      "county": "Daviess",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29063": {
+      "state": "MO",
+      "county": "DeKalb",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29065": {
+      "state": "MO",
+      "county": "Dent",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29067": {
+      "state": "MO",
+      "county": "Douglas",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29069": {
+      "state": "MO",
+      "county": "Dunklin",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29071": {
+      "state": "MO",
+      "county": "Franklin",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29073": {
+      "state": "MO",
+      "county": "Gasconade",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29075": {
+      "state": "MO",
+      "county": "Gentry",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29077": {
+      "state": "MO",
+      "county": "Greene",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29079": {
+      "state": "MO",
+      "county": "Grundy",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29081": {
+      "state": "MO",
+      "county": "Harrison",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29083": {
+      "state": "MO",
+      "county": "Henry",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29085": {
+      "state": "MO",
+      "county": "Hickory",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29087": {
+      "state": "MO",
+      "county": "Holt",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29089": {
+      "state": "MO",
+      "county": "Howard",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29091": {
+      "state": "MO",
+      "county": "Howell",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29093": {
+      "state": "MO",
+      "county": "Iron",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29095": {
+      "state": "MO",
+      "county": "Jackson",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29097": {
+      "state": "MO",
+      "county": "Jasper",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29099": {
+      "state": "MO",
+      "county": "Jefferson",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29101": {
+      "state": "MO",
+      "county": "Johnson",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29103": {
+      "state": "MO",
+      "county": "Knox",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29105": {
+      "state": "MO",
+      "county": "Laclede",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29107": {
+      "state": "MO",
+      "county": "Lafayette",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29109": {
+      "state": "MO",
+      "county": "Lawrence",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29111": {
+      "state": "MO",
+      "county": "Lewis",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29113": {
+      "state": "MO",
+      "county": "Lincoln",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29115": {
+      "state": "MO",
+      "county": "Linn",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29117": {
+      "state": "MO",
+      "county": "Livingston",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29119": {
+      "state": "MO",
+      "county": "McDonald",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29121": {
+      "state": "MO",
+      "county": "Macon",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29123": {
+      "state": "MO",
+      "county": "Madison",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29125": {
+      "state": "MO",
+      "county": "Maries",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29127": {
+      "state": "MO",
+      "county": "Marion",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29129": {
+      "state": "MO",
+      "county": "Mercer",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29131": {
+      "state": "MO",
+      "county": "Miller",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29133": {
+      "state": "MO",
+      "county": "Mississippi",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29135": {
+      "state": "MO",
+      "county": "Moniteau",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29137": {
+      "state": "MO",
+      "county": "Monroe",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29139": {
+      "state": "MO",
+      "county": "Montgomery",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29141": {
+      "state": "MO",
+      "county": "Morgan",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29143": {
+      "state": "MO",
+      "county": "New Madrid",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29145": {
+      "state": "MO",
+      "county": "Newton",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29147": {
+      "state": "MO",
+      "county": "Nodaway",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29149": {
+      "state": "MO",
+      "county": "Oregon",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29151": {
+      "state": "MO",
+      "county": "Osage",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29153": {
+      "state": "MO",
+      "county": "Ozark",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29155": {
+      "state": "MO",
+      "county": "Pemiscot",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29157": {
+      "state": "MO",
+      "county": "Perry",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29159": {
+      "state": "MO",
+      "county": "Pettis",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29161": {
+      "state": "MO",
+      "county": "Phelps",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29163": {
+      "state": "MO",
+      "county": "Pike",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29165": {
+      "state": "MO",
+      "county": "Platte",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29167": {
+      "state": "MO",
+      "county": "Polk",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29169": {
+      "state": "MO",
+      "county": "Pulaski",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29171": {
+      "state": "MO",
+      "county": "Putnam",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29173": {
+      "state": "MO",
+      "county": "Ralls",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29175": {
+      "state": "MO",
+      "county": "Randolph",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29177": {
+      "state": "MO",
+      "county": "Ray",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29179": {
+      "state": "MO",
+      "county": "Reynolds",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29181": {
+      "state": "MO",
+      "county": "Ripley",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29183": {
+      "state": "MO",
+      "county": "St. Charles",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29185": {
+      "state": "MO",
+      "county": "St. Clair",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29186": {
+      "state": "MO",
+      "county": "Ste. Genevieve",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29187": {
+      "state": "MO",
+      "county": "St. Francois",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29189": {
+      "state": "MO",
+      "county": "St. Louis",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29510": {
+      "state": "MO",
+      "county": "St. Louis City",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29195": {
+      "state": "MO",
+      "county": "Saline",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29197": {
+      "state": "MO",
+      "county": "Schuyler",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29199": {
+      "state": "MO",
+      "county": "Scotland",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29201": {
+      "state": "MO",
+      "county": "Scott",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29203": {
+      "state": "MO",
+      "county": "Shannon",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29205": {
+      "state": "MO",
+      "county": "Shelby",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29207": {
+      "state": "MO",
+      "county": "Stoddard",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29209": {
+      "state": "MO",
+      "county": "Stone",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29211": {
+      "state": "MO",
+      "county": "Sullivan",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29213": {
+      "state": "MO",
+      "county": "Taney",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29215": {
+      "state": "MO",
+      "county": "Texas",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29217": {
+      "state": "MO",
+      "county": "Vernon",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29219": {
+      "state": "MO",
+      "county": "Warren",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29221": {
+      "state": "MO",
+      "county": "Washington",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29223": {
+      "state": "MO",
+      "county": "Wayne",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29225": {
+      "state": "MO",
+      "county": "Webster",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29227": {
+      "state": "MO",
+      "county": "Worth",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "29229": {
+      "state": "MO",
+      "county": "Wright",
+      "corn": "May 25",
+      "soybeans": "Jun 15"
+    },
+    "20001": {
+      "state": "KS",
+      "county": "Allen",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20003": {
+      "state": "KS",
+      "county": "Anderson",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20005": {
+      "state": "KS",
+      "county": "Atchison",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20007": {
+      "state": "KS",
+      "county": "Barber",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20009": {
+      "state": "KS",
+      "county": "Barton",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20011": {
+      "state": "KS",
+      "county": "Bourbon",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20013": {
+      "state": "KS",
+      "county": "Brown",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20015": {
+      "state": "KS",
+      "county": "Butler",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20017": {
+      "state": "KS",
+      "county": "Chase",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20019": {
+      "state": "KS",
+      "county": "Chautauqua",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20021": {
+      "state": "KS",
+      "county": "Cherokee",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20023": {
+      "state": "KS",
+      "county": "Cheyenne",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20025": {
+      "state": "KS",
+      "county": "Clark",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20027": {
+      "state": "KS",
+      "county": "Clay",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20029": {
+      "state": "KS",
+      "county": "Cloud",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20031": {
+      "state": "KS",
+      "county": "Coffey",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20033": {
+      "state": "KS",
+      "county": "Comanche",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20035": {
+      "state": "KS",
+      "county": "Cowley",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20037": {
+      "state": "KS",
+      "county": "Crawford",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20039": {
+      "state": "KS",
+      "county": "Decatur",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20041": {
+      "state": "KS",
+      "county": "Dickinson",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20043": {
+      "state": "KS",
+      "county": "Doniphan",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20045": {
+      "state": "KS",
+      "county": "Douglas",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20047": {
+      "state": "KS",
+      "county": "Edwards",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20049": {
+      "state": "KS",
+      "county": "Elk",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20051": {
+      "state": "KS",
+      "county": "Ellis",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20053": {
+      "state": "KS",
+      "county": "Ellsworth",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20055": {
+      "state": "KS",
+      "county": "Finney",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20057": {
+      "state": "KS",
+      "county": "Ford",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20059": {
+      "state": "KS",
+      "county": "Franklin",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20061": {
+      "state": "KS",
+      "county": "Geary",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20063": {
+      "state": "KS",
+      "county": "Gove",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20065": {
+      "state": "KS",
+      "county": "Graham",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20067": {
+      "state": "KS",
+      "county": "Grant",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20069": {
+      "state": "KS",
+      "county": "Gray",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20071": {
+      "state": "KS",
+      "county": "Greeley",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20073": {
+      "state": "KS",
+      "county": "Greenwood",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20075": {
+      "state": "KS",
+      "county": "Hamilton",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20077": {
+      "state": "KS",
+      "county": "Harper",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20079": {
+      "state": "KS",
+      "county": "Harvey",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20081": {
+      "state": "KS",
+      "county": "Haskell",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20083": {
+      "state": "KS",
+      "county": "Hodgeman",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20085": {
+      "state": "KS",
+      "county": "Jackson",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20087": {
+      "state": "KS",
+      "county": "Jefferson",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20089": {
+      "state": "KS",
+      "county": "Jewell",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20091": {
+      "state": "KS",
+      "county": "Johnson",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20093": {
+      "state": "KS",
+      "county": "Kearny",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20095": {
+      "state": "KS",
+      "county": "Kingman",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20097": {
+      "state": "KS",
+      "county": "Kiowa",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20099": {
+      "state": "KS",
+      "county": "Labette",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20101": {
+      "state": "KS",
+      "county": "Lane",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20103": {
+      "state": "KS",
+      "county": "Leavenworth",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20105": {
+      "state": "KS",
+      "county": "Lincoln",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20107": {
+      "state": "KS",
+      "county": "Linn",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20109": {
+      "state": "KS",
+      "county": "Logan",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20111": {
+      "state": "KS",
+      "county": "Lyon",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20113": {
+      "state": "KS",
+      "county": "McPherson",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20115": {
+      "state": "KS",
+      "county": "Marion",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20117": {
+      "state": "KS",
+      "county": "Marshall",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20119": {
+      "state": "KS",
+      "county": "Meade",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20121": {
+      "state": "KS",
+      "county": "Miami",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20123": {
+      "state": "KS",
+      "county": "Mitchell",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20125": {
+      "state": "KS",
+      "county": "Montgomery",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20127": {
+      "state": "KS",
+      "county": "Morris",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20129": {
+      "state": "KS",
+      "county": "Morton",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20131": {
+      "state": "KS",
+      "county": "Nemaha",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20133": {
+      "state": "KS",
+      "county": "Neosho",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20135": {
+      "state": "KS",
+      "county": "Ness",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20137": {
+      "state": "KS",
+      "county": "Norton",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20139": {
+      "state": "KS",
+      "county": "Osage",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20141": {
+      "state": "KS",
+      "county": "Osborne",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20143": {
+      "state": "KS",
+      "county": "Ottawa",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20145": {
+      "state": "KS",
+      "county": "Pawnee",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20147": {
+      "state": "KS",
+      "county": "Phillips",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20149": {
+      "state": "KS",
+      "county": "Pottawatomie",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20151": {
+      "state": "KS",
+      "county": "Pratt",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20153": {
+      "state": "KS",
+      "county": "Rawlins",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20155": {
+      "state": "KS",
+      "county": "Reno",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20157": {
+      "state": "KS",
+      "county": "Republic",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20159": {
+      "state": "KS",
+      "county": "Rice",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20161": {
+      "state": "KS",
+      "county": "Riley",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20163": {
+      "state": "KS",
+      "county": "Rooks",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20165": {
+      "state": "KS",
+      "county": "Rush",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20167": {
+      "state": "KS",
+      "county": "Russell",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20169": {
+      "state": "KS",
+      "county": "Saline",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20171": {
+      "state": "KS",
+      "county": "Scott",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20173": {
+      "state": "KS",
+      "county": "Sedgwick",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20175": {
+      "state": "KS",
+      "county": "Seward",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20177": {
+      "state": "KS",
+      "county": "Shawnee",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20179": {
+      "state": "KS",
+      "county": "Sheridan",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20181": {
+      "state": "KS",
+      "county": "Sherman",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20183": {
+      "state": "KS",
+      "county": "Smith",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20185": {
+      "state": "KS",
+      "county": "Stafford",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20187": {
+      "state": "KS",
+      "county": "Stanton",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20189": {
+      "state": "KS",
+      "county": "Stevens",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20191": {
+      "state": "KS",
+      "county": "Sumner",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20193": {
+      "state": "KS",
+      "county": "Thomas",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20195": {
+      "state": "KS",
+      "county": "Trego",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20197": {
+      "state": "KS",
+      "county": "Wabaunsee",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20199": {
+      "state": "KS",
+      "county": "Wallace",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20201": {
+      "state": "KS",
+      "county": "Washington",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20203": {
+      "state": "KS",
+      "county": "Wichita",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20205": {
+      "state": "KS",
+      "county": "Wilson",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20207": {
+      "state": "KS",
+      "county": "Woodson",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    },
+    "20209": {
+      "state": "KS",
+      "county": "Wyandotte",
+      "corn": "May 20",
+      "soybeans": "Jun 5"
+    }
+  }
+}
