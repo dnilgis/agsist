@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-04-13",
+      "date_display": "Monday, April 13, 2026",
+      "headline": "CORN HOLDS STEADY AS PLANTING PRESSURE BUILDS",
+      "teaser": "Corn steady at $4.44 as critical planting week begins — weather about to take the wheel.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-04-13",
+      "market_closed": false
+    },
+    {
       "date": "2026-04-12",
       "date_display": "Sunday, April 12, 2026",
       "headline": "WEATHER FOCUS AS PLANTING WEEK BEGINS",
@@ -319,6 +330,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-04-12T12:03:18.287071+00:00",
-  "count": 31
+  "updated": "2026-04-13T12:45:41.357849+00:00",
+  "count": 32
 }

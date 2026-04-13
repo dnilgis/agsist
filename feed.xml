@@ -5,13 +5,28 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 12 Apr 2026 12:03:18 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 13 Apr 2026 12:45:41 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN HOLDS STEADY AS PLANTING PRESSURE BUILDS</title>
+      <link>https://agsist.com/daily/2026-04-13</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-04-13</guid>
+      <pubDate>Mon, 13 Apr 2026 05:00:00 -0600</pubDate>
+      <description>Corn held flat at $4.44/bu as producers gear up for what could be a make-or-break planting week across the Corn Belt. Soybeans eased slightly to $11.74/bu on profit-taking, while wheat gained ground at $5.83/bu. With optimal planting windows opening, weather will increasingly drive price action over fundamentals.
+Grains mixed in quiet Monday session while cattle maintain historic strength.
+• Grains &amp; Oilseeds
+  → Monitor 7-day forecasts obsessively — any wet weather threats could spark quick rallies to price remaining bushels.
+• Livestock &amp; Dairy
+  → Lock remaining cattle exposure immediately — margins this extreme have short shelf lives in volatile markets.
+• Energy &amp; Inputs
+  → Secure remaining diesel contracts this week — planting season demand spikes can move prices fast.
+Read more: https://agsist.com/daily/2026-04-13</description>
+    </item>
     <item>
       <title>WEATHER FOCUS AS PLANTING WEEK BEGINS</title>
       <link>https://agsist.com/daily/2026-04-12</link>
@@ -446,21 +461,6 @@ Wheat jumps 14¢ while crude oil surge signals input cost pressure ahead of spri
 • ENERGY &amp; INPUTS
   → Secure diesel and NH3 needs for next 60 days before prices climb further.
 Read more: https://agsist.com/daily/2026-03-06</description>
-    </item>
-    <item>
-      <title>CATTLE SURGE OVERNIGHT, GRAINS DRIFT LOWER</title>
-      <link>https://agsist.com/daily/2026-03-05</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-03-05</guid>
-      <pubDate>Thu, 05 Mar 2026 05:00:00 -0600</pubDate>
-      <description>Livestock markets caught fire overnight with cattle futures up nearly 2% on renewed beef demand strength, while grains drifted lower in lackluster trade. The dollar's weakness couldn't spark export interest in corn or beans, suggesting domestic fundamentals are driving this market. With March planting intentions looming, producers face critical acreage decisions in a sideways price environment.
-Live cattle jumped 1.8% on stronger beef demand signals while corn and wheat lost ground ahead of spring planting decisions.
-• GRAINS &amp; OILSEEDS
-  → Hold current pricing positions — no compelling reason to act on today's modest moves.
-• LIVESTOCK &amp; DAIRY
-  → Livestock producers should consider protecting these higher prices — cattle rallies this sharp often correct quickly.
-• ENERGY &amp; INPUTS
-  → Delay additional nitrogen purchases if possible — prices should improve through March.
-Read more: https://agsist.com/daily/2026-03-05</description>
     </item>
   </channel>
 </rss>
