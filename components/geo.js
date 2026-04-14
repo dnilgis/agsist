@@ -8,6 +8,13 @@
  *   3. Open-Meteo         — weather
  *   4. Nominatim OSM      — reverse geocoding
  *
+ * v14 — 2026-04-14
+ *   FIX: loadWeatherZip() ZIP city label truncation.
+ *   Open-Meteo geocoding returns the postal code itself as r.name (e.g. "61801")
+ *   with the city name as r.admin1 (e.g. "Urbana"), causing labels like "61801, Ur"
+ *   (admin1 truncated to 2 chars was interpreted as a state code).
+ *   Fix: detect when r.name is all digits (postal code), use r.admin1 as city name.
+ *
  * AUDIT v13 — 2026-04-13
  *   FIX: fetchWeather() now sets window.AGSIST_STATE.weather = {lat, lon}
  *   so that waitForGeo() in index.html can resolve soil temp and planting
@@ -72,7 +79,15 @@ function loadWeatherZip() {
     .then(function(d) {
       if (d.results && d.results.length) {
         var r = d.results[0];
-        fetchWeather(r.latitude, r.longitude, r.name + (r.admin1 ? ', ' + r.admin1.substring(0,2) : ''));
+        // FIX v14: Open-Meteo may return the ZIP code as r.name (e.g. "61801")
+        // with the city name as r.admin1 (e.g. "Urbana"), causing "61801, Ur"
+        // (admin1.substring(0,2) was being treated as a state abbreviation).
+        // Detect postal-code name and use admin1 as city label instead.
+        var _isZip = /^\d+$/.test((r.name || '').trim());
+        var _city = _isZip ? (r.admin1 || r.name) : r.name;
+        var _state = _isZip ? '' : (r.admin1 ? r.admin1.substring(0, 2).toUpperCase() : '');
+        var _label = _city + (_state ? ', ' + _state : '');
+        fetchWeather(r.latitude, r.longitude, _label);
       }
     }).catch(function() {});
 }
@@ -133,11 +148,9 @@ function fetchWeather(lat, lon, label) {
   // Expose geo globally for bids-homepage.js and other scripts
   window.AGSIST_GEO = { lat: lat, lng: lon, city: '', state: '', zip: '' };
 
-  // ── FIX v13: Expose lat/lon on AGSIST_STATE.weather so that waitForGeo()
+  // FIX v13: Expose lat/lon on AGSIST_STATE.weather so that waitForGeo()
   // in index.html can resolve. Previously only AGSIST_GEO was set here,
   // causing soil temp and planting date logic to stall indefinitely.
-  // AGSIST_STATE is defined by state.js as a methods object — we safely
-  // add a .weather property without disturbing getState/setState/detectLocation.
   if (window.AGSIST_STATE && typeof window.AGSIST_STATE === 'object') {
     window.AGSIST_STATE.weather = { lat: lat, lon: lon };
   }
@@ -265,14 +278,12 @@ function propagateLocation(lat, lon, label) {
       var zip  = geo.address.postcode || '';
       var name = city + (st ? ', '+st : '');
 
-      // Update global geo object for bids-homepage.js
       if (window.AGSIST_GEO) {
         window.AGSIST_GEO.city = city;
         window.AGSIST_GEO.state = st;
         window.AGSIST_GEO.zip = zip;
       }
 
-      // Trigger homepage bids with resolved ZIP
       if (typeof window.loadHomepageBids === 'function' && zip) {
         window.loadHomepageBids(lat, lon, name, zip);
       }
@@ -283,7 +294,6 @@ function propagateLocation(lat, lon, label) {
       var radarLbl = document.getElementById('wx-loc-label');
       if (radarLbl && name) radarLbl.textContent = name;
 
-      // Update bids geo bar
       var bidsGeoTxt = document.getElementById('bids-geo-txt');
       if (bidsGeoTxt && name) {
         var cur = bidsGeoTxt.textContent || '';
@@ -632,9 +642,7 @@ function rebuildTickerLoop() {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// PREDICTION MARKETS v2 — used by ag-odds.html and other dedicated
-// market pages. NOT called on pages with data-markets-handled="true"
-// on their #kalshi-grid element (e.g. homepage).
+// PREDICTION MARKETS v2
 // ─────────────────────────────────────────────────────────────────
 
 var MARKET_CATEGORIES = {
@@ -998,12 +1006,6 @@ function loadDailyBriefing() {
     fetchFFAILive();
     if (document.getElementById('dv3-headline') || document.getElementById('daily-headline')) loadDailyBriefing();
 
-    // ── FIX v12: Only call fetchKalshiMarkets() on pages that have NOT set
-    // data-markets-handled="true" on their #kalshi-grid element.
-    // The homepage (index.html) and ag-odds.html manage their own market display,
-    // so they set this attribute to prevent geo.js from overwriting with the
-    // full markets.json category view (25 markets). Pages like /markets that
-    // want the full category rendering should NOT set this attribute.
     var _kg = document.getElementById('kalshi-grid');
     if (_kg && _kg.getAttribute('data-markets-handled') !== 'true') {
       fetchKalshiMarkets();
