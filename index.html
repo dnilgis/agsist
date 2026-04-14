@@ -783,13 +783,13 @@
   <div style="font-size:.68rem;color:var(--text-muted);line-height:1.65;border-top:1px solid var(--border);padding-top:.75rem;margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.4rem .9rem;align-items:center">
     <span>Prices from Yahoo Finance via AGSIST pipeline &middot; Cash bids via Barchart OnDemand &middot; Weather via Open-Meteo &middot; USDA NASS &middot; NOAA CPC</span>
     <span style="color:var(--border)">|</span>
-    <span>Not financial or trading advice &mdash; verify all prices with your elevator or broker before marketing decisions. Questions? <a href="tel:+17157972428" style="color:var(--gold)">715-797-2428</a> &middot; <a href="mailto:sig@farmers1st.com" style="color:var(--gold)">sig@farmers1st.com</a></span>
+    <span>Not financial or trading advice &mdash; verify all prices with your elevator or broker before marketing decisions. Questions? <a href="tel:+17157972428" style="color:var(--gold)">715-797-2428</a> &middot; <a href="/cdn-cgi/l/email-protection#1d6e747a5d7b7c6f70786f6e2c6e69337e7270" style="color:var(--gold)"><span class="__cf_email__" data-cfemail="6f1c06082f090e1d020a1d1c5e1c1b410c0002">[email&#160;protected]</span></a></span>
     <span style="color:var(--border)">|</span>
     <a href="/privacy" style="color:var(--gold)">Privacy Policy</a>
   </div>
 </div>
 <div id="site-footer"></div>
-<script src="/components/loader.js" defer></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/components/loader.js" defer></script>
 <script src="/components/geo.js" defer></script>
 <script src="/components/bids-homepage.js" defer></script>
 <script>
@@ -1412,6 +1412,17 @@ function loadWeatherEnhancements(state){
   }).catch(function(){});
 }
 waitForGeo(function(state){loadWeatherEnhancements(state);});
+// Planting dates are pure date math — render immediately, no geo needed
+(function(){
+  var cornDays=daysUntil(RMA_DATES.corn.insurance_final),beanDays=daysUntil(RMA_DATES.soybeans.insurance_final);
+  var sbCorn=document.getElementById('sb-corn-days'),sbBean=document.getElementById('sb-bean-days');
+  var cdCorn=document.getElementById('sb-cd-corn'),cdBean=document.getElementById('sb-cd-bean');
+  if(sbCorn)sbCorn.textContent=formatCountdown(cornDays);
+  if(sbBean)sbBean.textContent=formatCountdown(beanDays);
+  if(cdCorn&&cornDays!=null&&cornDays<7)cdCorn.classList.add('urgent');
+  if(cdBean&&beanDays!=null&&beanDays<7)cdBean.classList.add('urgent');
+  var rmaNote=document.getElementById('sb-rma-note');if(rmaNote)rmaNote.style.display='block';
+})();
 (function(){
   var banner=document.getElementById('seasonal-banner');
   if(!banner)return;
@@ -1422,11 +1433,4 @@ waitForGeo(function(state){loadWeatherEnhancements(state);});
   else if((mo===6&&day>15)||(mo===7)||(mo===8)||(mo===9&&day<=15)){seasonMode='GROWING SEASON \u2014 POLLINATION RISK';seasonIcon='\uD83C\uDF3D';seasonClass='growing';headline='Watching GDU accumulation, rainfall, and pollination weather';}
   else if((mo===9&&day>15)||(mo===10)||(mo===11)){seasonMode='HARVEST SEASON';seasonIcon='\uD83C\uDFDE\uFE0F';seasonClass='harvest';headline='Drying costs, bin space, and basis before December delivery';}
   banner.className='seasonal-banner '+seasonClass;
-  var sbMode=document.getElementById('sb-mode');if(sbMode)sbMode.textContent=seasonMode;
-  var sbIcon=document.getElementById('sb-icon');if(sbIcon)sbIcon.textContent=seasonIcon;
-  var sbHeadline=document.getElementById('sb-headline');if(sbHeadline)sbHeadline.textContent=headline;
-})();
-})();
-</script>
-</body>
-</html>
+  var sbMode=document.getElementById('sb-mode');if(sbMode)sbMode.textContent=
