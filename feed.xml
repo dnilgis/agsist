@@ -5,13 +5,28 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 14 Apr 2026 12:45:35 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 15 Apr 2026 12:45:10 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS INCH HIGHER AS PLANTING BEGINS</title>
+      <link>https://agsist.com/daily/2026-04-15</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-04-15</guid>
+      <pubDate>Wed, 15 Apr 2026 05:00:00 -0600</pubDate>
+      <description>Corn nearby futures gained 1.25 cents to $4.46/bu as producers begin planting across the Corn Belt, with soybeans adding 1.75 cents to $11.63/bu. Both markets remain in cautious mode as every field day becomes precious, while Class III milk crashed 5.2% overnight on renewed oversupply concerns.
+Corn and soybeans gain modestly while dairy crashes 5% overnight.
+• Grains &amp; Oilseeds
+  → Price remaining old crop aggressively on any weather scares — planting delays could spark sharp rallies in already tight supplies.
+• Livestock &amp; Dairy
+  → Lock remaining cattle protection immediately — margins this strong don't last. Dairy producers should reassess expansion plans after this overnight reality check.
+• Energy &amp; Inputs
+  → Lock remaining diesel needs this week — planting season typically drives prices higher as regional demand concentrates.
+Read more: https://agsist.com/daily/2026-04-15</description>
+    </item>
     <item>
       <title>GRAINS DRIFT AS PLANTING WINDOW OPENS</title>
       <link>https://agsist.com/daily/2026-04-14</link>
@@ -446,21 +461,6 @@ Corn drops 21¢ and wheat collapses 35¢ as energy rout ripples through commodit
 • ENERGY &amp; INPUTS
   → Reassess fertilizer purchasing — energy crash may have created buying opportunities for spring application.
 Read more: https://agsist.com/daily/2026-03-10</description>
-    </item>
-    <item>
-      <title>CRUDE EXPLODES 14%, WHEAT SURGES 5.6%</title>
-      <link>https://agsist.com/daily/2026-03-09</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-03-09</guid>
-      <pubDate>Mon, 09 Mar 2026 05:00:00 -0600</pubDate>
-      <description>Crude oil's 14% overnight explosion is reshaping your input costs — fertilizer and diesel are about to get expensive fast. Meanwhile, wheat's 33¢ surge signals serious supply concerns, pulling corn and beans along for the ride. This isn't just a commodity rally; it's an inflation warning shot three weeks before planting season.
-Energy shock ripples through ag inputs as wheat catches fire on Black Sea tensions.
-• GRAINS &amp; OILSEEDS
-  → Consider pricing 10-15% of stored corn on this rally — momentum could carry through USDA's March 31 planting report.
-• LIVESTOCK &amp; DAIRY
-  → Cattle feeders should lock feed costs immediately — corn rally plus energy shock creates perfect storm for margins.
-• ENERGY &amp; INPUTS
-  → Lock remaining nitrogen needs immediately — this energy surge will flow through to fertilizer within days.
-Read more: https://agsist.com/daily/2026-03-09</description>
     </item>
   </channel>
 </rss>

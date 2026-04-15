@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-04-15",
+      "date_display": "Wednesday, April 15, 2026",
+      "headline": "GRAINS INCH HIGHER AS PLANTING BEGINS",
+      "teaser": "Grains drift higher as planting begins, but dairy takes a 5% hit overnight.",
+      "market_mood": "cautious",
+      "surprise_count": 1,
+      "sections": 4,
+      "url": "/daily/2026-04-15",
+      "market_closed": false
+    },
+    {
       "date": "2026-04-14",
       "date_display": "Tuesday, April 14, 2026",
       "headline": "GRAINS DRIFT AS PLANTING WINDOW OPENS",
@@ -341,6 +352,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-04-14T12:45:35.439054+00:00",
-  "count": 33
+  "updated": "2026-04-15T12:45:10.219868+00:00",
+  "count": 34
 }
