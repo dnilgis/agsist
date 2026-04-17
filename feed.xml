@@ -5,13 +5,28 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 16 Apr 2026 12:48:35 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 17 Apr 2026 12:43:39 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS DRIFT LOWER AS PLANTING PICKS UP</title>
+      <link>https://agsist.com/daily/2026-04-17</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-04-17</guid>
+      <pubDate>Fri, 17 Apr 2026 05:00:00 -0600</pubDate>
+      <description>Corn futures eased fractionally to $4.58 nearby while soybeans slipped to $11.59 as early planting progress removes some weather premium. The action remains muted as farmers balance between field work and pricing decisions, though oats bucked the trend with a solid 1.7% gain to $3.48 on persistent quality concerns from last year's challenging harvest.
+Small declines across corn and soybeans while oats rally 1.7% on quality concerns.
+• Grains Ease Gently
+  → Use any weather scares to price remaining old crop aggressively — these steady levels won't last if we hit extended wet weather.
+• Cattle Retreat
+  → Cattle producers should view any significant weakness as protection-buying opportunities — margins remain historically strong.
+• Energy Mixed Story
+  → Lock remaining diesel needs while prices soften — planting season demand typically reverses crude weakness quickly.
+Read more: https://agsist.com/daily/2026-04-17</description>
+    </item>
     <item>
       <title>MILK CRASHES 5% AS GRAINS STAY STEADY</title>
       <link>https://agsist.com/daily/2026-04-16</link>
@@ -446,21 +461,6 @@ Energy surge lifts corn and oats while cattle slide on higher feed costs.
 • ENERGY &amp; INPUTS
   → Lock in remaining fuel and nitrogen needs TODAY if you haven't already — this energy rally has legs.
 Read more: https://agsist.com/daily/2026-03-12</description>
-    </item>
-    <item>
-      <title>HOGS SPIKE 11% ON PORK EXPORT SURGE</title>
-      <link>https://agsist.com/daily/2026-03-11</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-03-11</guid>
-      <pubDate>Wed, 11 Mar 2026 05:00:00 -0600</pubDate>
-      <description>Lean hogs exploded 11.2% overnight — the biggest single-day move in eight months — as surprise Asian demand hit just as seasonal production tightens. Corn rode the coattails with feed demand optimism, gaining 4¢ to $4.54. But dairy told a different story: Class III milk plunged 5.1% as spring flush production meets weakening demand.
-Corn and beans follow with modest gains while milk crashes on oversupply concerns.
-• GRAINS &amp; OILSEEDS
-  → Watch April hog futures — if they hold above $96, consider pricing 10-15% of stored corn on this feed demand story.
-• LIVESTOCK &amp; DAIRY
-  → Hog producers should price aggressively on this rally — moves like this don't last long.
-• ENERGY &amp; INPUTS
-  → No immediate action — diesel savings help but won't change planting decisions already made.
-Read more: https://agsist.com/daily/2026-03-11</description>
     </item>
   </channel>
 </rss>

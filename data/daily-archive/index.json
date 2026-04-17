@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-04-17",
+      "date_display": "Friday, April 17, 2026",
+      "headline": "GRAINS DRIFT LOWER AS PLANTING PICKS UP",
+      "teaser": "Quiet drift lower in grains as planting season builds momentum — but weather still holds the cards.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-04-17",
+      "market_closed": false
+    },
+    {
       "date": "2026-04-16",
       "date_display": "Thursday, April 16, 2026",
       "headline": "MILK CRASHES 5% AS GRAINS STAY STEADY",
@@ -363,6 +374,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-04-16T12:48:35.708995+00:00",
-  "count": 35
+  "updated": "2026-04-17T12:43:39.678914+00:00",
+  "count": 36
 }
