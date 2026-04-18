@@ -30,6 +30,11 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/generate_daily.py
 
+      - name: Validate schema
+        # Fails the workflow if daily.json drifts from canonical field names
+        # or contains filler content like "Unknown" attributions.
+        run: python scripts/daily_schema.py data/daily.json
+
       - name: Generate RSS feed
         run: python scripts/generate_rss.py
 
