@@ -68,6 +68,9 @@
   .signup--hidden{display:none!important;}
   html { overflow-x: hidden; overflow-x: clip; width: 100%; }
   body { overflow-x: hidden; overflow-x: clip; width: 100%; }
+  /* v3.5 DAILY BRIEFING FIXES — ensure quote/number/TMYK visible on mobile */
+  .hero-sidebar > .s-card { display: block !important; }
+  #daily-quote-text, #daily-quote-attr { display: block !important; }
   .main{overflow-x:clip;padding-left:max(0px,env(safe-area-inset-left));padding-right:max(0px,env(safe-area-inset-right));}
   .soil-temp-row{display:flex;align-items:center;gap:.55rem;padding:.55rem .65rem;border-radius:6px;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.18);margin-top:.6rem;display:none;}
   .soil-temp-row.loaded{display:flex;}
@@ -1207,12 +1210,17 @@ gj('/data/markets.json').then(function(cached){
 })();
 </script>
 <script>
+/* hydrateDaily v3.5 — canonical field names (daily_quote, the_more_you_know, one_number,
+   farmer_action, conviction_level, meta.market_mood, source_summary) with legacy fallback.
+   Also: flexible 2–5 section support — unused section divs hidden. */
 window.hydrateDaily = function(data) {
   'use strict';
   if(!data||!data.headline) return;
   var el = function(id){return document.getElementById(id);};
-  function setText(id,v){var e=el(id);if(e&&v)e.textContent=v;}
-  function setHTML(id,v){var e=el(id);if(e&&v)e.innerHTML=v;}
+  function setText(id,v){var e=el(id);if(e&&v!=null)e.textContent=v;}
+  function setHTML(id,v){var e=el(id);if(e&&v!=null)e.innerHTML=v;}
+  function pick(){for(var i=0;i<arguments.length;i++){if(arguments[i]!=null)return arguments[i];}return null;}
+
   var headline=data.headline||'',subheadline=data.subheadline||'',lead=data.lead||'';
   var dateStr=data.date||'';
   setText('daily-headline',headline);
@@ -1221,10 +1229,12 @@ window.hydrateDaily = function(data) {
   var dh=el('daily-headline');if(dh)dh.innerHTML=headline;
   var dl=el('daily-lead');if(dl)dl.innerHTML=lead;
   var dsh=el('daily-subheadline');if(dsh)dsh.textContent=subheadline;
+
   var now=new Date();
   var h=now.getHours();
   var greeting=h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening';
   setText('site-greeting',greeting);
+
   if(dateStr){
     try{
       var d=/^\d{4}-\d{2}-\d{2}$/.test(dateStr)?new Date(dateStr+'T12:00:00'):new Date(dateStr);
@@ -1237,30 +1247,62 @@ window.hydrateDaily = function(data) {
     }catch(e){}
   }
   if(data.teaser)setText('daily-teaser-text',data.teaser);
+
+  // Flexible section rendering — hide unused section divs for 2–5 section support
   var sections=data.sections||[];
-  sections.forEach(function(sec,i){
-    var n=i+1;
-    setText('daily-section-'+n+'-title',sec.title||'');
-    setHTML('daily-section-'+n+'-body',sec.body||'');
-    setText('daily-section-'+n+'-bottomline',sec.bottom_line||'');
-    setText('daily-section-'+n+'-action',sec.action||'');
-    if(sec.icon){var ic=el('daily-section-'+n+'-icon');if(ic)ic.textContent=sec.icon;}
-    var conv=el('daily-section-'+n+'-conviction');
-    if(conv&&sec.conviction){
-      var cls=sec.conviction==='bullish'?'conviction--bull':sec.conviction==='bearish'?'conviction--bear':'conviction--mixed';
-      var lbl=sec.conviction==='bullish'?'\u25b2 Bullish':sec.conviction==='bearish'?'\u25bc Bearish':'\u2194 Mixed';
-      conv.className='daily-sec-conviction '+cls;conv.textContent=lbl;conv.style.display='inline-flex';
+  for(var si=1;si<=4;si++){
+    var secEl=el('daily-sec-'+si);
+    if(!secEl)continue;
+    if(si<=sections.length){
+      secEl.style.display='';
+      var sec=sections[si-1];
+      setText('daily-section-'+si+'-title',sec.title||'');
+      setHTML('daily-section-'+si+'-body',sec.body||'');
+      setText('daily-section-'+si+'-bottomline',sec.bottom_line||'');
+      setText('daily-section-'+si+'-action',pick(sec.farmer_action,sec.action)||'');
+      if(sec.icon){var ic=el('daily-section-'+si+'-icon');if(ic)ic.textContent=sec.icon;}
+      var conv=el('daily-section-'+si+'-conviction');
+      if(conv){
+        var clv=sec.conviction_level;
+        if(clv){
+          var clsA=clv==='high'?'conviction--bull':clv==='low'?'conviction--bear':'conviction--mixed';
+          var lblA=clv==='high'?'\u25b2 High':clv==='low'?'\u25bc Low':'\u2194 Medium';
+          conv.className='daily-sec-conviction '+clsA;conv.textContent=lblA;conv.style.display='inline-flex';
+        } else if(sec.conviction){
+          var clsB=sec.conviction==='bullish'?'conviction--bull':sec.conviction==='bearish'?'conviction--bear':'conviction--mixed';
+          var lblB=sec.conviction==='bullish'?'\u25b2 Bullish':sec.conviction==='bearish'?'\u25bc Bearish':'\u2194 Mixed';
+          conv.className='daily-sec-conviction '+clsB;conv.textContent=lblB;conv.style.display='inline-flex';
+        }
+      }
+    } else {
+      secEl.style.display='none';
     }
-  });
-  if(data.tmyk&&(data.tmyk.title||data.tmyk.body)){
-    setText('daily-tmyk-title',data.tmyk.title||'');
-    setHTML('daily-tmyk-body',data.tmyk.body||'');
+  }
+
+  // TMYK — canonical: the_more_you_know, legacy: tmyk
+  var tmyk=pick(data.the_more_you_know,data.tmyk);
+  var tmykWrap=el('daily-tmyk-wrap');
+  if(tmyk&&(tmyk.title||tmyk.body)){
+    setText('daily-tmyk-title',tmyk.title||'');
+    setHTML('daily-tmyk-body',tmyk.body||'');
+    if(tmykWrap)tmykWrap.style.display='';
   } else {
-    // Hide TMYK section gracefully if data not available
-    var tmykWrap=document.getElementById('daily-tmyk-wrap');
     if(tmykWrap)tmykWrap.style.display='none';
   }
-  if(data.quote&&(data.quote.text||data.quote.attribution)){setHTML('daily-quote-text','\u201c'+(data.quote.text||'')+'\u201d');setText('daily-quote-attr','\u2014 '+(data.quote.attribution||''));}else{var _qc=el('daily-quote-text')&&el('daily-quote-text').closest('.s-card');if(_qc)_qc.style.display='none';}
+
+  // Daily Quote — canonical: daily_quote, legacy: quote
+  var quote=pick(data.daily_quote,data.quote);
+  var qText=el('daily-quote-text');
+  var qCard=qText&&qText.closest('.s-card');
+  if(quote&&(quote.text||quote.attribution)){
+    setHTML('daily-quote-text','\u201c'+(quote.text||'')+'\u201d');
+    setText('daily-quote-attr','\u2014 '+(quote.attribution||''));
+    if(qCard)qCard.style.display='';
+  } else {
+    if(qCard)qCard.style.display='none';
+  }
+
+  // Watch list
   if(data.watch_list){
     var wl=el('daily-watch-list');
     if(wl&&Array.isArray(data.watch_list)&&data.watch_list.length){
@@ -1269,19 +1311,26 @@ window.hydrateDaily = function(data) {
       }).join('');
     }
   }
-  // FIX: support both 'the_number' and 'number' field names; show dash if absent
-  var _num=data.the_number||data.number||null;
+
+  // The Number — canonical: one_number, legacy: the_number or number
+  var _num=pick(data.one_number,data.the_number,data.number);
   var nv=el('daily-number-value'),nu=el('daily-number-unit'),nc=el('daily-number-context');
+  var numCard=nv&&nv.closest('.s-card');
   if(_num){
     if(nv)nv.textContent=_num.value||'\u2014';
     if(nu)nu.textContent=_num.unit||'';
     if(nc)nc.textContent=_num.context||'';
+    if(numCard)numCard.style.display='';
   } else {
-    // No number data — hide the card cleanly
-    var _numCard=nv&&nv.closest('.s-card');if(_numCard)_numCard.style.display='none';
+    if(numCard)numCard.style.display='none';
   }
+
+  // Mood — canonical: meta.market_mood, legacy: mood
+  var mood=pick(data.mood,(data.meta&&data.meta.market_mood));
   var moodEl=el('daily-mood');
-  if(moodEl&&data.mood){moodEl.textContent=data.mood;moodEl.style.display='inline-block';}
+  if(moodEl&&mood){moodEl.textContent=mood;moodEl.style.display='inline-block';}
+
+  // Surprise banner
   if(data.surprise_magnitude&&data.surprise_magnitude!=='none'){
     var sb=el('daily-surprise-banner');
     if(sb){
@@ -1293,7 +1342,10 @@ window.hydrateDaily = function(data) {
       sb.style.display='flex';
     }
   }
-  if(data.source_line)setText('daily-source',data.source_line);
+
+  // Source line — canonical: source_summary, legacy: source_line
+  var src=pick(data.source_summary,data.source_line);
+  if(src)setText('daily-source',src);
 };
 (function(){
   fetch('/data/daily.json').then(function(r){if(!r.ok)throw new Error('no-daily');return r.json();})
