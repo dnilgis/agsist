@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 18 Apr 2026 11:38:31 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 19 Apr 2026 11:39:03 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>MIXED WEEK SETS STAGE FOR WEATHER WATCH</title>
+      <link>https://agsist.com/daily/2026-04-19</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-04-19</guid>
+      <pubDate>Sun, 19 Apr 2026 05:00:00 -0600</pubDate>
+      <description>Grains ended the week with mixed signals as corn eased to $4.49 while soybeans gained to $11.83 on Friday's close. The divergence reflects different planting timelines and weather sensitivities heading into a critical week for field conditions. Livestock struggled across the board with live cattle at $247.35 and hogs sliding to $101.05.
+Corn dipped to $4.49 as planting accelerated while beans gained ground ahead of Monday's open.
+• Week Ahead Weather Focus
+• Livestock Pressure Builds
+  → Cattle producers should lock protection if live futures break below $245 Monday morning.
+• Energy Story Shifts
+Read more: https://agsist.com/daily/2026-04-19</description>
+    </item>
     <item>
       <title>GRAINS CAP CHOPPY WEEK AS PLANTING ACCELERATES</title>
       <link>https://agsist.com/daily/2026-04-18</link>
@@ -444,21 +457,6 @@ Energy rally pressures input costs while dairy surge creates livestock feed dyna
 • ENERGY &amp; INPUTS
   → Prioritize diesel and liquid fertilizer purchases this week before crude breaks $100 — prices only go one way from here.
 Read more: https://agsist.com/daily/2026-03-16</description>
-    </item>
-    <item>
-      <title>OATS RALLY 4½¢ WHILE STOCKS CRATER</title>
-      <link>https://agsist.com/daily/2026-03-13</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-03-13</guid>
-      <pubDate>Fri, 13 Mar 2026 05:00:00 -0600</pubDate>
-      <description>Oats jumped 4½¢ to $3.71 while the S&amp;P 500 cratered 1.5% in its worst session since December. Corn held surprisingly steady despite new-crop December slipping 2¾¢ as pre-plant positioning intensifies. With fieldwork starting across the South and Prospective Plantings three weeks out, the real question isn't today's moves—it's whether this financial market chaos changes planting intentions.
-Wall Street's worst day in months sends safe-haven flows into commodities as spring planting window opens.
-• GRAINS &amp; OILSEEDS
-  → Hold pricing decisions until Prospective Plantings—too much volatility to chase today's moves.
-• LIVESTOCK &amp; DAIRY
-  → Dairy producers should lock in feed costs on any grain weakness—margins are too tight for speculation.
-• ENERGY &amp; INPUTS
-  → Lock in diesel needs now if you haven't—oil's momentum suggests higher prices ahead.
-Read more: https://agsist.com/daily/2026-03-13</description>
     </item>
   </channel>
 </rss>
