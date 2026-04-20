@@ -12,18 +12,13 @@
 //   window.loadHomepageBids(lat, lng, label, zip)
 //
 // DEPLOY: /components/bids-homepage.js
-//
-// ⚠️ BEFORE DEPLOYING: replace the PROXY_URL placeholder below with your
-// actual Cloudflare Worker URL (from the Cloudflare dashboard after the
-// worker is deployed). See DEPLOY-CLOUDFLARE-WORKER.md.
 // ═══════════════════════════════════════════════════════════════════
 
 (function(){
   'use strict';
 
-  // ⚠️ REPLACE with your Cloudflare Worker URL after deployment.
-  // Format: https://<worker-name>.<your-account>.workers.dev/barchart/getGrainBids
-  var PROXY_URL = 'https://agsist-barchart.YOUR-SUBDOMAIN.workers.dev/barchart/getGrainBids';
+  // Cloudflare Worker proxy — API key is held server-side, never exposed.
+  var PROXY_URL = 'https://agsist-barchart.dnilgis.workers.dev/barchart/getGrainBids';
 
   var MAX_ELEVATORS = 3;
   var MAX_BIDS_PER_COMMODITY = 3;
