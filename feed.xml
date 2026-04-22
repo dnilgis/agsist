@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 21 Apr 2026 12:02:04 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 22 Apr 2026 12:00:56 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS DRIFT AS PLANTING PRESSURE MOUNTS</title>
+      <link>https://agsist.com/daily/2026-04-22</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-04-22</guid>
+      <pubDate>Wed, 22 Apr 2026 05:00:00 -0600</pubDate>
+      <description>Corn futures crept higher with nearby contracts at $4.64, up a penny on the session. Soybeans softened modestly to $11.96 as planting season momentum builds across the Corn Belt. The grain complex showed little conviction as producers focus shifts from price action to field conditions.
+Corn holds narrow gains while beans ease slightly amid steady weather conditions.
+• Grains Mark Time
+• Livestock Mixed Signals
+• Energy Firms Modestly
+Read more: https://agsist.com/daily/2026-04-22</description>
+    </item>
     <item>
       <title>CORN HOLDS GAINS AS BEANS EDGE HIGHER</title>
       <link>https://agsist.com/daily/2026-04-21</link>
@@ -438,21 +450,6 @@ Crude up $5+ overnight sends input costs soaring while corn rallies on productio
 • ENERGY &amp; INPUTS
   → Secure remaining nitrogen needs immediately — prices climbing $50-75/ton this week.
 Read more: https://agsist.com/daily/2026-03-19</description>
-    </item>
-    <item>
-      <title>HOGS EXPLODE 25% ON SUPPLY SHOCK</title>
-      <link>https://agsist.com/daily/2026-03-18</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-03-18</guid>
-      <pubDate>Wed, 18 Mar 2026 05:00:00 -0600</pubDate>
-      <description>Lean hogs rocketed 25% overnight — the biggest single-day move in two years — as African Swine Fever reports from key production regions sent shockwaves through protein markets. Meanwhile, wheat collapsed 15¼¢ as Ukrainian exports flooded the market just as Upper Midwest producers finalize spring planting plans. The dollar's retreat is helping corn and beans hold support above key technical levels.
-Wheat tumbles 15¢ as Black Sea competition intensifies before spring planting decisions.
-• GRAINS &amp; OILSEEDS
-  → Hold current corn positions — this defensive action suggests good underlying demand. Consider spring wheat acreage cuts if margins look tight.
-• LIVESTOCK &amp; DAIRY
-  → Watch for ASF confirmation reports — could dramatically alter corn demand projections for 2026-27.
-• ENERGY &amp; INPUTS
-  → Lock in diesel and propane needs for spring — current levels may be as good as it gets this season.
-Read more: https://agsist.com/daily/2026-03-18</description>
     </item>
   </channel>
 </rss>
