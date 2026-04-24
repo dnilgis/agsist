@@ -109,8 +109,8 @@
   .wx-chart-title{font-size:.62rem;color:var(--text-muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem;}
   .wx-chart-legend{display:flex;gap:.85rem;font-size:.6rem;color:var(--text-dim);margin-top:.25rem;flex-wrap:wrap;}
   .wx-chart-legend-sw{display:inline-block;width:.55rem;height:.55rem;border-radius:2px;margin-right:.25rem;vertical-align:middle;}
-  /* 7-day forecast strip */
-  .wx-7day-strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.25rem;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;padding:.15rem 0;}
+  /* 5-day forecast strip (class names kept as wx-7day-* for backward-compat) */
+  .wx-7day-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.3rem;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;padding:.15rem 0;}
   .wx-7day-cell{background:var(--surface2);border-radius:6px;padding:.4rem .3rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.1rem;min-width:0;}
   .wx-7day-name{font-size:.62rem;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;}
   .wx-7day-icon{font-size:1.1rem;line-height:1;margin:.1rem 0;}
@@ -566,8 +566,6 @@
             <div class="wx-summary-title">&#x1F4C5; 7-Day Forecast</div>
             <div id="wx-forecast-7day" class="wx-7day-strip">
               <div class="wx-7day-cell"><div class="wx-7day-name">Today</div><div class="wx-7day-icon">&#x26C5;</div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon">&#x26C5;</div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon">&#x26C5;</div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
               <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon">&#x26C5;</div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
               <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon">&#x26C5;</div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
               <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon">&#x26C5;</div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
@@ -1706,7 +1704,7 @@ function loadWeatherEnhancements(state){
   // Extend archive back 5 full years (Jan 1 of year-5) for monthly comparisons
   var fiveYrsAgo=new Date(today.getFullYear()-5,0,1);
   var d_5yr=fiveYrsAgo.toISOString().split('T')[0];
-  var soilUrl='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,windspeed_10m_max,winddirection_10m_dominant,relative_humidity_2m_mean,weathercode&hourly=temperature_2m,precipitation,precipitation_probability,wind_speed_10m,wind_direction_10m,weathercode,soil_temperature_6cm&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=7';
+  var soilUrl='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,windspeed_10m_max,winddirection_10m_dominant,relative_humidity_2m_mean,weathercode&hourly=temperature_2m,precipitation,precipitation_probability,wind_speed_10m,wind_direction_10m,weathercode,soil_temperature_6cm&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=5';
   var histUrl='https://archive-api.open-meteo.com/v1/archive?latitude='+lat+'&longitude='+lon+'&start_date='+d_5yr+'&end_date='+d_yest+'&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&temperature_unit=fahrenheit&precipitation_unit=inch&timezone=auto';
   // Fetch independently — archive failure must not kill forecast/soil temp
   var fcastPromise=fetch(soilUrl).then(function(r){return r.json();}).then(function(d){
@@ -1892,7 +1890,7 @@ function loadWeatherEnhancements(state){
       var dayNames7=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
       var todayDow7=new Date().getDay();
       var cells7=sevenEl.querySelectorAll('.wx-7day-cell');
-      for(var fd2=0;fd2<Math.min(7,cells7.length,forecastMaxArr.length);fd2++){
+      for(var fd2=0;fd2<Math.min(5,cells7.length,forecastMaxArr.length);fd2++){
         var mx2=forecastMaxArr[fd2],mn2=forecastMinArr[fd2];
         var pr2=forecastPrecipArr[fd2],prPct=forecastPrPctArr[fd2];
         var wd2=forecastWindArr[fd2],wdir=forecastWdirArr[fd2];
