@@ -938,24 +938,26 @@
 (function(){
   var BASE='https://www.cpc.ncep.noaa.gov/products/predictions/';
   var tempImg=document.getElementById('noaa-temp-img'),precipImg=document.getElementById('noaa-precip-img'),label=document.getElementById('noaa-period-label');
-  function show3MonthFallback(){
-    [tempImg,precipImg].forEach(function(img,i){
-      if(!img)return;
-      img.style.display='none';
-      var err=img.nextElementSibling;
-      if(err&&err.classList.contains('noaa-img-err')){
-        err.style.display='flex';
-        err.innerHTML='<span style="font-size:1.6rem;margin-bottom:.35rem">'+(i===0?'\uD83C\uDF21\uFE0F':'\uD83C\uDF27\uFE0F')+'</span>'
-          +'<span style="font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:.2rem">'+(i===0?'Temperature':'Precipitation')+' Seasonal Outlook</span>'
-          +'<span style="font-size:.72rem;color:var(--text-muted);text-align:center;line-height:1.55;margin-bottom:.65rem">'
-          +'3-month seasonal outlook images update monthly<br>and require a direct NOAA visit to view.</span>'
-          +'<a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/seasonal.php" '
-          +'target="_blank" rel="noopener" '
-          +'style="font-size:.76rem;color:var(--gold);font-weight:700;border:1px solid rgba(218,165,32,.35);'
-          +'border-radius:6px;padding:.38rem .9rem;text-decoration:none;transition:border-color .15s">'
-          +'View 3-Month Outlook on NOAA \u2192</a>';
-      }
-    });
+  // URL patterns differ by period:
+  //   30-day monthly: /30day/off15_temp.gif  + /30day/off15_prcp.gif
+  //   90-day seasonal (lead 1, nearest 3-month window): /long_range/lead01/off01_temp.gif + /long_range/lead01/off01_prcp.gif
+  function urlsFor(period){
+    if(period==='90'){
+      return {temp:BASE+'long_range/lead01/off01_temp.gif',precip:BASE+'long_range/lead01/off01_prcp.gif',alt_t:'NOAA 3-month seasonal temperature outlook',alt_p:'NOAA 3-month seasonal precipitation outlook',fallback:'https://www.cpc.ncep.noaa.gov/products/predictions/long_range/seasonal.php'};
+    }
+    return {temp:BASE+'30day/off15_temp.gif',precip:BASE+'30day/off15_prcp.gif',alt_t:'NOAA 1-month temperature outlook',alt_p:'NOAA 1-month precipitation outlook',fallback:'https://www.cpc.ncep.noaa.gov/products/predictions/30day/'};
+  }
+  function setImg(img,src,alt,fallbackUrl){
+    if(!img)return;
+    var err=img.nextElementSibling;
+    img.style.display='';
+    if(err&&err.classList.contains('noaa-img-err')){
+      err.style.display='none';
+      // update fallback link target to match current period so manual onerror still lands right
+      var a=err.querySelector('a');if(a)a.setAttribute('href',fallbackUrl);
+    }
+    img.alt=alt;
+    img.src=src;
   }
   document.querySelectorAll('#noaa-tabs .noaa-tab').forEach(function(btn){
     btn.addEventListener('click',function(){
@@ -963,12 +965,9 @@
       btn.classList.add('active');
       var p=btn.getAttribute('data-period'),lbl=btn.getAttribute('data-label');
       if(label)label.textContent=lbl;
-      if(p==='90'){show3MonthFallback();}
-      else{
-        [tempImg,precipImg].forEach(function(img){if(img){img.style.display='';if(img.nextElementSibling)img.nextElementSibling.style.display='none';}});
-        if(tempImg)tempImg.src=BASE+p+'day/off15_temp.gif';
-        if(precipImg)precipImg.src=BASE+p+'day/off15_prcp.gif';
-      }
+      var u=urlsFor(p);
+      setImg(tempImg,u.temp,u.alt_t,u.fallback);
+      setImg(precipImg,u.precip,u.alt_p,u.fallback);
     });
   });
 })();
