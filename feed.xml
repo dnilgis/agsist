@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 23 Apr 2026 12:00:57 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 24 Apr 2026 12:01:08 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>MILK CRASHES 6% AS GRAINS INCH HIGHER</title>
+      <link>https://agsist.com/daily/2026-04-24</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-04-24</guid>
+      <pubDate>Fri, 24 Apr 2026 05:00:00 -0600</pubDate>
+      <description>Class III milk crashed 6.4% overnight to $16.86, the sharpest drop in months as dairy margins compress heading into summer. Corn managed a modest gain to $4.65 while soybeans edged to $11.75, both marking time as planting season enters its critical phase.
+Class III tumbled overnight while corn crept to $4.65 amid quiet trade.
+• Grains Mark Time
+• Dairy Disaster
+  → Dairy producers should hedge remaining 2026 production if Class III bounces above $17.50 next week.
+• Energy Softens
+Read more: https://agsist.com/daily/2026-04-24</description>
+    </item>
     <item>
       <title>NATURAL GAS SPIKES AS GRAINS HOLD STEADY</title>
       <link>https://agsist.com/daily/2026-04-23</link>
@@ -433,21 +446,6 @@ Precious metals bloodbath sends cattle soaring as crude oil spikes on Middle Eas
 • ENERGY SPIKE HITS INPUTS
   → Lock in diesel prices this week if you haven't already — $98 crude won't stay here long either direction.
 Read more: https://agsist.com/daily/2026-03-23</description>
-    </item>
-    <item>
-      <title>MEAL ROCKETS 2.3% ON CHINESE CRUSH DEMAND</title>
-      <link>https://agsist.com/daily/2026-03-20</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-03-20</guid>
-      <pubDate>Fri, 20 Mar 2026 05:00:00 -0600</pubDate>
-      <description>Soybean meal exploded 2.3% overnight as Chinese crushers scrambled for protein ahead of their seasonal rebuild. The meal rally dragged soybeans up 8½¢ despite lackluster export inspections. Meanwhile, gold and silver got hammered — down 4.1% and 4.4% respectively — as the dollar flexed and speculators fled commodities.
-Soybeans follow meal higher while precious metals crater on dollar strength.
-• GRAINS &amp; OILSEEDS
-  → Consider pricing 10-15% of new-crop beans on this meal-driven rally — protein premiums won't last forever.
-• LIVESTOCK &amp; DAIRY
-  → Lock in milk pricing if you can — feed costs are climbing faster than meat prices.
-• ENERGY &amp; INPUTS
-  → Watch for diesel price drops in 1-2 weeks — good timing for spring fieldwork prep.
-Read more: https://agsist.com/daily/2026-03-20</description>
     </item>
   </channel>
 </rss>
