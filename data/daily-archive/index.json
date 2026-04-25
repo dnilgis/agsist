@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-04-25",
+      "date_display": "Saturday, April 25, 2026",
+      "headline": "PLANTING PRESSURE BUILDS AS GRAINS SLIDE",
+      "teaser": "Grain weakness meets cattle strength as planting window tightens across the Corn Belt.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-04-25",
+      "market_closed": true
+    },
+    {
       "date": "2026-04-24",
       "date_display": "Friday, April 24, 2026",
       "headline": "MILK CRASHES 6% AS GRAINS INCH HIGHER",
@@ -451,6 +462,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-04-24T12:01:08.099051+00:00",
-  "count": 43
+  "updated": "2026-04-25T11:41:59.409305+00:00",
+  "count": 44
 }

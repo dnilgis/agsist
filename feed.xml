@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 24 Apr 2026 12:01:08 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 25 Apr 2026 11:41:59 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>PLANTING PRESSURE BUILDS AS GRAINS SLIDE</title>
+      <link>https://agsist.com/daily/2026-04-25</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-04-25</guid>
+      <pubDate>Sat, 25 Apr 2026 05:00:00 -0600</pubDate>
+      <description>Spring planting pressure finally showed in grain futures as the week closed, with nearby corn sliding to $4.55 and Chicago wheat dropping to $6.08. Live cattle bucked the trend, rallying 2% to $248.30 on strong demand fundamentals. The week showcased the classic April tension: planting season price weakness meets seasonal demand strength.
+Corn and wheat fell sharply Friday while cattle surged to 52-week highs.
+• WEEK IN REVIEW
+• CATTLE SURGE CONTINUES
+  → Cattle feeders should price summer cattle if futures hold above $245 when markets open Monday.
+• WHAT TO WATCH MONDAY
+Read more: https://agsist.com/daily/2026-04-25</description>
+    </item>
     <item>
       <title>MILK CRASHES 6% AS GRAINS INCH HIGHER</title>
       <link>https://agsist.com/daily/2026-04-24</link>
@@ -431,21 +444,6 @@ Energy collapse drags corn and wheat lower as input cost relief battles demand d
 • ENERGY &amp; INPUTS
   → Don't rush into fertilizer purchases — let dealers adjust prices first, but start having conversations about locking lower rates.
 Read more: https://agsist.com/daily/2026-03-24</description>
-    </item>
-    <item>
-      <title>GOLD CRASHES HARDEST IN YEARS</title>
-      <link>https://agsist.com/daily/2026-03-23</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-03-23</guid>
-      <pubDate>Mon, 23 Mar 2026 05:00:00 -0600</pubDate>
-      <description>Gold plunged 4.9% overnight — its worst drop since 2022 — while silver got obliterated with an 8.6% collapse as institutional money fled safe havens. The metals massacre coincided with crude oil spiking 4.6% to $98 on escalating Middle East tensions, creating a perfect storm for input costs. Meanwhile, live cattle jumped 2.5% as protein demand stays strong despite grain pressure.
-Precious metals bloodbath sends cattle soaring as crude oil spikes on Middle East tensions.
-• GRAINS UNDER PRESSURE
-  → Hold current grain sales — this looks like financial selling, not fundamental weakness.
-• LIVESTOCK DIVERGES SHARPLY
-  → Consider forward contracting cattle if you have them — this move has legs.
-• ENERGY SPIKE HITS INPUTS
-  → Lock in diesel prices this week if you haven't already — $98 crude won't stay here long either direction.
-Read more: https://agsist.com/daily/2026-03-23</description>
     </item>
   </channel>
 </rss>
