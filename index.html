@@ -770,8 +770,8 @@
       <button class="noaa-tab" data-period="90" data-label="3-Month (Seasonal)">3-Month</button>
     </div>
     <div class="noaa-grid">
-      <div class="noaa-card"><div class="noaa-card-head temp">&#x1F321;&#xFE0F; Temperature Outlook</div><img id="noaa-temp-img" data-src="https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_temp.gif" alt="NOAA 1-month temperature outlook" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="noaa-img-err"><span>&#x1F321;&#xFE0F; Image unavailable</span><a href="https://www.cpc.ncep.noaa.gov/products/predictions/30day/" target="_blank" rel="noopener">View on NOAA CPC &rarr;</a></div></div>
-      <div class="noaa-card"><div class="noaa-card-head precip">&#x1F327;&#xFE0F; Precipitation Outlook</div><img id="noaa-precip-img" data-src="https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_prcp.gif" alt="NOAA 1-month precipitation outlook" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="noaa-img-err"><span>&#x1F327;&#xFE0F; Image unavailable</span><a href="https://www.cpc.ncep.noaa.gov/products/predictions/30day/" target="_blank" rel="noopener">View on NOAA CPC &rarr;</a></div></div>
+      <div class="noaa-card"><div class="noaa-card-head temp">&#x1F321;&#xFE0F; Temperature Outlook</div><img id="noaa-temp-img" data-src="/data/outlooks/noaa_temp_30day.gif" alt="NOAA 1-month temperature outlook" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="noaa-img-err"><span>&#x1F321;&#xFE0F; Image unavailable</span><a href="https://www.cpc.ncep.noaa.gov/products/predictions/30day/" target="_blank" rel="noopener">View on NOAA CPC &rarr;</a></div></div>
+      <div class="noaa-card"><div class="noaa-card-head precip">&#x1F327;&#xFE0F; Precipitation Outlook</div><img id="noaa-precip-img" data-src="/data/outlooks/noaa_prcp_30day.gif" alt="NOAA 1-month precipitation outlook" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="noaa-img-err"><span>&#x1F327;&#xFE0F; Image unavailable</span><a href="https://www.cpc.ncep.noaa.gov/products/predictions/30day/" target="_blank" rel="noopener">View on NOAA CPC &rarr;</a></div></div>
     </div>
     <div class="noaa-note">Source: <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" rel="noopener">NOAA Climate Prediction Center</a> &middot; 1-Month issued last day of month &middot; 3-Month issued 3rd Thursday &middot; <span id="noaa-period-label">1-Month (30-Day)</span></div>
   </div>
@@ -992,9 +992,9 @@
   //   90-day seasonal (lead 1, nearest 3-month window): /long_range/lead01/off01_temp.gif + /long_range/lead01/off01_prcp.gif
   function urlsFor(period){
     if(period==='90'){
-      return {temp:BASE+'long_range/lead01/off01_temp.gif',precip:BASE+'long_range/lead01/off01_prcp.gif',alt_t:'NOAA 3-month seasonal temperature outlook',alt_p:'NOAA 3-month seasonal precipitation outlook',fallback:'https://www.cpc.ncep.noaa.gov/products/predictions/long_range/seasonal.php'};
+      return {temp:'/data/outlooks/noaa_temp_90day.gif',precip:'/data/outlooks/noaa_prcp_90day.gif',alt_t:'NOAA 3-month seasonal temperature outlook',alt_p:'NOAA 3-month seasonal precipitation outlook',fallback:'https://www.cpc.ncep.noaa.gov/products/predictions/long_range/seasonal.php'};
     }
-    return {temp:BASE+'30day/off15_temp.gif',precip:BASE+'30day/off15_prcp.gif',alt_t:'NOAA 1-month temperature outlook',alt_p:'NOAA 1-month precipitation outlook',fallback:'https://www.cpc.ncep.noaa.gov/products/predictions/30day/'};
+    return {temp:'/data/outlooks/noaa_temp_30day.gif',precip:'/data/outlooks/noaa_prcp_30day.gif',alt_t:'NOAA 1-month temperature outlook',alt_p:'NOAA 1-month precipitation outlook',fallback:'https://www.cpc.ncep.noaa.gov/products/predictions/30day/'};
   }
   function setImg(img,src,alt,fallbackUrl){
     if(!img)return;
@@ -1233,10 +1233,9 @@ gj('/data/markets.json').then(function(cached){
   window.addEventListener('resize',function(){var single=document.getElementById('ticker-items-single'),track=document.getElementById('ticker-track');if(!single||!track)return;var w=single.scrollWidth||single.offsetWidth;if(w<200)return;track.style.animationDuration=Math.max(20,Math.round(w/45))+'s';});
   (function(){
     var img=document.getElementById('drought-img'),fallback=document.getElementById('drought-fallback');if(!img)return;
-    function getMostRecentTuesday(){var d=new Date(),day=d.getDay();d.setDate(d.getDate()-((day>=2)?(day-2):(day+5)));return d;}
-    function fmtDate(d){return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');}
-    var tue=getMostRecentTuesday(),ds=fmtDate(tue),prev=new Date(tue);prev.setDate(prev.getDate()-7);
-    var urls=['https://droughtmonitor.unl.edu/data/png/'+ds+'/'+ds+'_usdm.png','https://droughtmonitor.unl.edu/data/png/'+fmtDate(prev)+'/'+fmtDate(prev)+'_usdm.png','https://droughtmonitor.unl.edu/data/png/current/current_usdm.png'];
+    // USDM image is mirrored to /data/outlooks/ by scripts/fetch_outlooks.py.
+    // Upstream fallback is kept for the rare case the mirror file is missing.
+    var urls=['/data/outlooks/usdm_latest.png','https://droughtmonitor.unl.edu/data/png/current/current_usdm.png'];
     var attempt=0;function tryNext(){if(attempt>=urls.length){img.style.display='none';if(fallback)fallback.style.display='flex';return;}img.src=urls[attempt++];}
     img.addEventListener('error',tryNext);img.addEventListener('load',function(){if(fallback)fallback.style.display='none';});
     if('IntersectionObserver' in window){
