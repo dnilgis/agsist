@@ -1,0 +1,41 @@
+{
+  "fetched_at": "2026-04-26T23:51:21+00:00",
+  "files": {
+    "noaa_prcp_30day.gif": {
+      "bytes": 263732,
+      "changed": true,
+      "sha256": "a481b9b7dc3841a9ef7069f2140acf3a2940146ea9fd1d0ed10dcc47667c0a9e",
+      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_prcp.gif",
+      "status": "ok"
+    },
+    "noaa_prcp_90day.gif": {
+      "bytes": 235514,
+      "changed": true,
+      "sha256": "ea1e041c85ac73b0e1d779022e0373ce26c4f48f7f6e762476e7fd9f2c2bd81c",
+      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead01/off01_prcp.gif",
+      "status": "ok"
+    },
+    "noaa_temp_30day.gif": {
+      "bytes": 230519,
+      "changed": true,
+      "sha256": "de28a1da58812f057d46c841cc389fc00e9cdab758791e6c4953dc1516140aa8",
+      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_temp.gif",
+      "status": "ok"
+    },
+    "noaa_temp_90day.gif": {
+      "bytes": 231677,
+      "changed": true,
+      "sha256": "dd8fa9552795264ebe24dd90642072f08bb015aafee1b30a8a0e69f2ae02ed72",
+      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead01/off01_temp.gif",
+      "status": "ok"
+    },
+    "usdm_latest.png": {
+      "bytes": 375670,
+      "changed": true,
+      "data_valid": "2026-04-21",
+      "sha256": "fcaf6dd69dd5987b849be3666ecd790260ec2a4c0d107a5263f0ca5c5d7ec6e1",
+      "source": "https://droughtmonitor.unl.edu/data/png/20260421/20260421_usdm.png",
+      "status": "ok"
+    }
+  }
+}
