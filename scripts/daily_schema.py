@@ -6,6 +6,10 @@ Single source of truth for daily.json field names. Both the generator
 
 Run directly to validate: python scripts/daily_schema.py data/daily.json
 Exit code 0 = valid, 1 = invalid (causes workflow to fail).
+
+v4.0 update: knows about yesterdays_call, spread_to_watch, weekly_thread,
+critic_pass. Validates outcome enum (played_out/didnt/pending) and weekly
+thread day enum (1-5). All v3.x checks preserved unchanged.
 """
 import sys
 import json
@@ -42,6 +46,15 @@ OPTIONAL_TOP_LEVEL = [
     "prices",
     "chart_series",        # v3.6: {corn, soybeans, wheat} rolling arrays
     "locked_prices",       # v3.6: {corn, beans, wheat, ...} today's closes
+    # v3.9
+    "basis",               # {headline, body} — directional only, weekday-required
+    "sponsor",             # {advertiser, headline, body, cta_text, cta_url, is_house_ad}
+    "issue_number",        # int, archive count + 1
+    # v4.0 (the unmissable upgrade)
+    "yesterdays_call",     # {summary, outcome: played_out|didnt|pending, note}
+    "spread_to_watch",     # {label, level, commentary}
+    "weekly_thread",       # {question, day: 1-5, status_text}
+    "critic_pass",         # {version, ran_at, threshold, final_scores, rewrites_applied, dry_run}
 ]
 
 # Deprecated field names — if present, validation warns but does not fail.
@@ -72,6 +85,10 @@ QUOTE_REQUIRED = ["text", "attribution"]
 WATCH_ITEM_REQUIRED = ["desc"]  # time is optional
 
 CHART_SERIES_KEYS = {"corn", "soybeans", "wheat"}
+
+# v4.0 enums — strict values the generator and renderer agree on
+YC_OUTCOMES = {"played_out", "didnt", "pending"}
+WEEKLY_THREAD_DAYS = {1, 2, 3, 4, 5}  # Mon=1, Fri=5
 
 
 def validate(data: dict) -> tuple[bool, list[str], list[str]]:
@@ -202,12 +219,126 @@ def validate(data: dict) -> tuple[bool, list[str], list[str]]:
     if lp is not None and not isinstance(lp, dict):
         errors.append("'locked_prices' must be an object")
 
+    # ─────────────────────────────────────────────────────────────────────
+    # v3.9 + v4.0 BLOCKS — shape and enum validation
+    # ─────────────────────────────────────────────────────────────────────
+
+    # basis (v3.9) — directional language only, weekday-required, weekend-empty
+    bs = data.get("basis")
+    if bs is not None:
+        if not isinstance(bs, dict):
+            errors.append("'basis' must be an object")
+        elif bs:
+            h = (bs.get("headline") or "").strip()
+            b = (bs.get("body") or "").strip()
+            # Either both populated (weekday) or both empty (weekend/holiday).
+            # One-of asymmetry is a generator bug.
+            if (h and not b) or (b and not h):
+                warnings.append(
+                    f"basis has only one of headline/body set — "
+                    f"both should be populated (weekday) or both empty (weekend)"
+                )
+
+    # yesterdays_call (v4.0) — outcome must be valid enum when summary is set
+    yc = data.get("yesterdays_call")
+    if yc is not None:
+        if not isinstance(yc, dict):
+            errors.append("'yesterdays_call' must be an object")
+        elif yc:
+            summary = (yc.get("summary") or "").strip()
+            if summary:
+                outcome = (yc.get("outcome") or "").strip().lower()
+                if outcome not in YC_OUTCOMES:
+                    errors.append(
+                        f"yesterdays_call.outcome must be one of "
+                        f"{sorted(YC_OUTCOMES)} when summary is set "
+                        f"(got {yc.get('outcome')!r})"
+                    )
+
+    # spread_to_watch (v4.0) — coherent shape
+    sp = data.get("spread_to_watch")
+    if sp is not None:
+        if not isinstance(sp, dict):
+            errors.append("'spread_to_watch' must be an object")
+        elif sp:
+            label = (sp.get("label") or "").strip()
+            commentary = (sp.get("commentary") or "").strip()
+            # Both should be present together, or both omitted (weekend/holiday).
+            # One without the other suggests the model only half-filled the block.
+            if label and not commentary:
+                warnings.append(
+                    "spread_to_watch.label set but commentary is empty"
+                )
+            if commentary and not label:
+                warnings.append(
+                    "spread_to_watch.commentary set but label is empty"
+                )
+
+    # weekly_thread (v4.0) — day must be int 1-5 when question is set
+    wt = data.get("weekly_thread")
+    if wt is not None:
+        if not isinstance(wt, dict):
+            errors.append("'weekly_thread' must be an object")
+        elif wt:
+            question = (wt.get("question") or "").strip()
+            if question:
+                day = wt.get("day")
+                if not isinstance(day, int) or day not in WEEKLY_THREAD_DAYS:
+                    errors.append(
+                        f"weekly_thread.day must be an integer in "
+                        f"{sorted(WEEKLY_THREAD_DAYS)} when question is set "
+                        f"(got {day!r})"
+                    )
+                if not (wt.get("status_text") or "").strip():
+                    warnings.append(
+                        "weekly_thread.question set but status_text is empty — "
+                        "Mon should set up, Tue-Thu progress, Fri resolve"
+                    )
+
+    # critic_pass (v4.0) — written by scripts/critique_briefing.py after generate
+    cp = data.get("critic_pass")
+    if cp is not None:
+        if not isinstance(cp, dict):
+            errors.append("'critic_pass' must be an object")
+        elif cp:
+            if not cp.get("version"):
+                warnings.append("critic_pass missing 'version' field")
+            scores = cp.get("final_scores")
+            if scores is not None:
+                if not isinstance(scores, dict):
+                    errors.append("critic_pass.final_scores must be an object")
+                else:
+                    for rule, score in scores.items():
+                        if not isinstance(score, (int, float)):
+                            warnings.append(
+                                f"critic_pass.final_scores.{rule} is not numeric "
+                                f"({score!r})"
+                            )
+                        elif score < 0 or score > 10:
+                            warnings.append(
+                                f"critic_pass.final_scores.{rule} = {score} "
+                                f"out of expected range 0-10"
+                            )
+
     # Em-dash detection — optional, informational
     prose_fields = [data.get("lead", ""), data.get("subheadline", "")]
     for s in data.get("sections") or []:
         if isinstance(s, dict):
             prose_fields.append(s.get("body", ""))
             prose_fields.append(s.get("bottom_line", ""))
+    # v4.0: also scan the new prose fields for em-dashes
+    for blk_key, blk_fields in [
+        ("yesterdays_call", ("summary", "note")),
+        ("spread_to_watch", ("commentary",)),
+        ("basis", ("body",)),
+        ("weekly_thread", ("status_text",)),
+    ]:
+        blk = data.get(blk_key)
+        if isinstance(blk, dict):
+            for f in blk_fields:
+                v = blk.get(f)
+                if isinstance(v, str):
+                    prose_fields.append(v)
     em_count = sum(t.count("\u2014") for t in prose_fields if isinstance(t, str))
     if em_count > 6:
         warnings.append(
@@ -244,8 +375,19 @@ def main() -> int:
     if ok:
         cs = data.get("chart_series") or {}
         cs_note = f", chart_series={list(cs.keys())}" if cs else ""
+        # v4.0: surface critic scores in the OK line if present
+        cp = data.get("critic_pass") or {}
+        cp_note = ""
+        if cp.get("final_scores"):
+            scores = cp["final_scores"]
+            if isinstance(scores, dict) and scores:
+                avg = sum(s for s in scores.values() if isinstance(s, (int, float))) / max(len(scores), 1)
+                rewrites = len(cp.get("rewrites_applied") or [])
+                cp_note = f", critic_avg={avg:.1f}/10"
+                if rewrites:
+                    cp_note += f" ({rewrites} rewrite{'s' if rewrites != 1 else ''})"
         print(f"OK    {path} — {len(data.get('sections', []))} sections, "
-              f"{len(warnings)} warning(s){cs_note}")
+              f"{len(warnings)} warning(s){cs_note}{cp_note}")
         return 0
     return 1
 
