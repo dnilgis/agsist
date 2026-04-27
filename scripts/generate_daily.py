@@ -1,45 +1,44 @@
 #!/usr/bin/env python3
 """
-AGSIST Daily Briefing Generator — v3.6
+AGSIST Daily Briefing Generator — v4.0
 ═══════════════════════════════════════════════════════════════════
 Generates the daily agricultural intelligence briefing via Claude API.
-Runs every morning at 5:45 AM CT via GitHub Actions (7 days/week).
 
-v3.6 changes (2026-04-20):
-  - CHART SERIES: briefing["chart_series"] built post-generation from
-    the last ~10 days of archive JSONs (corn / soybeans / wheat).
-    Powers sparklines on daily.html and archive pages.
-  - LOCKED PRICES PERSISTED: briefing["locked_prices"] is now written
-    to daily.json and every archive JSON so chart_series can be
-    reconstructed for any future day.
-  - ARCHIVE HTML HYGIENE: generate_archive_html() emits pages with:
-    * GA tag (G-6KXCTD5Z9H)
-    * viewport-fit=cover + theme-color
-    * <meta name="author" content="Sigurd Lindquist">
-    * loader.js with defer
-    * /components/styles.css?v=10 (versioned)
-    * Twitter card + proper OG image meta
-    * Favicons matching main site (/img/favicon* + manifest.json)
-    * skip-link target #main (matches site standard)
-    * Inter font removed from Google Fonts URL
-  - SHARE BUTTONS: every archive page gets Post / Copy link / Email
-    buttons wired inline. Identical pattern to daily.html.
-  - SPARKLINE RENDER: when chart_series is present, archive HTML
-    emits a pre-rendered SVG row (no JS fetch needed).
-  - OG IMAGE HOOK: og:image defaults to /img/og/agsist.jpg. When the
-    agsist-og Worker ships, swap the OG_IMAGE_BASE constant to
-    https://agsist-og.dnilgis.workers.dev/og/ and archives auto-use
-    per-day images (agsist-og/<date>.png).
+v4.0 (the unmissable upgrade):
+  - VOICE TRANSPLANT: system prompt now contains 200+ words of actual
+    sample paragraphs in the AGSIST voice. Pattern matching beats
+    rule recitation. Real ag-operator vocabulary, imperative voice,
+    embedded thesis, no academic register.
+  - YESTERDAY'S CALL: new schema field. Generator pulls the highest-
+    conviction call from yesterday's briefing and the model assesses
+    "played out / didn't / pending" in today's context. Renders as
+    a dedicated block above sections. Continuity proof.
+  - SPREAD TO WATCH: new recurring named beat between sections and
+    basis. Specific futures spread (calendar, inter-commodity, dairy)
+    capturing the day's tension. The thing the headline price isn't
+    saying.
+  - STORY-OF-THE-WEEK THREAD: new schema field. On Mondays, the model
+    identifies the week's unresolved question. Tue-Fri, the generator
+    passes Monday's question back to the model so each lead threads
+    forward through the week. Renders as a chapter marker above the
+    lead. Resolves on Friday.
+  - 11 IMPACT RULES (was 8): added Voice (rule 9), Forward Test
+    (rule 10), and Thread Coherence (rule 11).
 
-v3.5 changes (2026-04-17):
-  - QUOTE POOL from data/quote-pool.json; filler attribution rejected.
-  - NATIONAL SCOPE; no Wisconsin/Minnesota language in prompt.
-  - NO EM-DASH RULE enforced in prompt + validator.
-  - FLEXIBLE SECTIONS (2–5 instead of fixed 4).
-  - CONDITIONAL FARMER ACTIONS (thresholds required or omit).
-  - STRICTER one_number (no trivial non-events).
-  - TMYK topic exclusion over last 3 days.
-  - CANONICAL FIELD NAMES (daily_quote / the_more_you_know / one_number / watch_list).
+v4.0 also requires `scripts/critique_briefing.py` to run as a second
+step after generate. Critic scores the draft 1-10 on each rule and
+rewrites the weakest section if 2+ rules score below 7. This is the
+quality gate that keeps the rules from drifting.
+
+v3.9 (rolled in below):
+  - 8 IMPACT RULES (lead so-what, conviction earned, TMYK ties to
+    today, watch list conditional, bottom lines synthesize, quiet
+    days quiet, continuity, basis pulse directional)
+  - Sponsor block (paid + house-ad fallback via data/sponsor.json)
+  - Basis Pulse (weekend-suppressed)
+  - Forward block with /daily?subscribe=1 deep link
+  - Byline (Sigurd Lindquist, founder)
+  - Issue number in archive eyebrow
 
 Env vars required:
   ANTHROPIC_API_KEY
@@ -65,64 +64,33 @@ except ImportError:
     import urllib.error
     requests = None
 
-# ═══════════════════════════════════════════════════════════════════
-# CONFIGURATION
-# ═══════════════════════════════════════════════════════════════════
-
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PRICES_PATH = REPO_ROOT / "data" / "prices.json"
 OUTPUT_PATH = REPO_ROOT / "data" / "daily.json"
 QUOTE_POOL_PATH = REPO_ROOT / "data" / "quote-pool.json"
 ANTHROPIC_API = "https://api.anthropic.com/v1/messages"
 MODEL = "claude-sonnet-4-20250514"
-
-# When the agsist-og Worker ships, change to:
-#   OG_IMAGE_BASE = "https://agsist-og.dnilgis.workers.dev/og/"
-# and og_image_url will become {base}{date_iso}.png. Until then, generic.
-OG_IMAGE_BASE = None  # None => use /img/og/agsist.jpg fallback
+OG_IMAGE_BASE = None
 
 SURPRISE_THRESHOLDS = {
-    "corn":      1.5,
-    "corn-dec":  1.5,
-    "beans":     1.5,
-    "beans-nov": 1.5,
-    "wheat":     2.0,
-    "oats":      2.5,
-    "cattle":    1.5,
-    "feeders":   1.5,
-    "hogs":      2.0,
-    "milk":      3.0,
-    "meal":      2.0,
-    "soyoil":    2.5,
-    "crude":     3.0,
-    "natgas":    4.0,
-    "gold":      1.5,
-    "silver":    2.5,
-    "dollar":    0.5,
-    "sp500":     1.5,
-    "bitcoin":   4.0,
+    "corn": 1.5, "corn-dec": 1.5, "beans": 1.5, "beans-nov": 1.5,
+    "wheat": 2.0, "oats": 2.5, "cattle": 1.5, "feeders": 1.5,
+    "hogs": 2.0, "milk": 3.0, "meal": 2.0, "soyoil": 2.5,
+    "crude": 3.0, "natgas": 4.0, "gold": 1.5, "silver": 2.5,
+    "dollar": 0.5, "sp500": 1.5, "bitcoin": 4.0,
 }
 
 COMMODITY_LABELS = {
-    "corn":      "Corn (nearby)",
-    "corn-dec":  "Corn Dec '26",
-    "beans":     "Soybeans (nearby)",
-    "beans-nov": "Soybeans Nov '26",
-    "wheat":     "Chicago Wheat",
-    "oats":      "Oats",
-    "cattle":    "Live Cattle",
-    "feeders":   "Feeder Cattle",
-    "hogs":      "Lean Hogs",
-    "milk":      "Class III Milk",
-    "meal":      "Soybean Meal",
-    "soyoil":    "Soybean Oil",
-    "crude":     "WTI Crude Oil",
-    "natgas":    "Natural Gas",
-    "gold":      "Gold",
-    "silver":    "Silver",
-    "dollar":    "US Dollar Index",
-    "sp500":     "S&P 500",
-    "bitcoin":   "Bitcoin",
+    "corn": "Corn (nearby)", "corn-dec": "Corn Dec '26",
+    "beans": "Soybeans (nearby)", "beans-nov": "Soybeans Nov '26",
+    "wheat": "Chicago Wheat", "oats": "Oats",
+    "cattle": "Live Cattle", "feeders": "Feeder Cattle",
+    "hogs": "Lean Hogs", "milk": "Class III Milk",
+    "meal": "Soybean Meal", "soyoil": "Soybean Oil",
+    "crude": "WTI Crude Oil", "natgas": "Natural Gas",
+    "gold": "Gold", "silver": "Silver",
+    "dollar": "US Dollar Index", "sp500": "S&P 500",
+    "bitcoin": "Bitcoin",
 }
 
 GRAIN_KEYS = {"corn", "corn-dec", "beans", "beans-nov", "wheat", "oats"}
@@ -137,103 +105,33 @@ AG_RSS_FEEDS = [
 
 FILLER_ATTRIBUTIONS = {"unknown", "anonymous", "n/a", "", "\u2014", "\u2013", "-"}
 
-# ═══════════════════════════════════════════════════════════════════
-# WEEKEND / HOLIDAY DETECTION
-# ═══════════════════════════════════════════════════════════════════
+
 
 def get_market_status():
-    """
-    Determine whether US commodity markets (CME/CBOT) are open or closed.
-    """
     now = datetime.now()
     weekday = now.weekday()
     month, day = now.month, now.day
-
     if weekday == 5:
-        return {
-            "is_closed": True,
-            "reason": "weekend",
-            "day_name": "Saturday",
-            "note": (
-                "TODAY IS SATURDAY. Commodity markets are CLOSED. "
-                "All prices below are Friday's closing values. "
-                "Write this as a WEEKEND RECAP and WEEK-AHEAD OUTLOOK, not an overnight recap. "
-                "Say 'as of Friday's close' when referencing prices. "
-                "Lead with what happened this week, and what it means going into next week. "
-                "Do NOT use language like 'overnight' or 'this morning's session.' "
-                "The farmer reading this on Saturday morning wants to know what to think about before markets open Monday."
-            ),
-        }
+        return {"is_closed": True, "reason": "weekend", "day_name": "Saturday",
+            "note": "TODAY IS SATURDAY. Markets CLOSED. Write WEEKEND RECAP and WEEK-AHEAD OUTLOOK. Reference 'Friday's close'. No overnight language."}
     if weekday == 6:
-        return {
-            "is_closed": True,
-            "reason": "weekend",
-            "day_name": "Sunday",
-            "note": (
-                "TODAY IS SUNDAY. Commodity markets are CLOSED. "
-                "All prices below are Friday's closing values. "
-                "Write this as a SUNDAY PREVIEW and WEEK-AHEAD OUTLOOK, not an overnight recap. "
-                "Say 'as of Friday's close' when referencing prices. "
-                "Lead with what to watch when markets open Monday morning. "
-                "Do NOT use language like 'overnight' or 'this morning's session.' "
-                "The farmer reading this Sunday wants to be ready for Monday's open."
-            ),
-        }
-
-    fixed_holidays = {
-        (1, 1):   "New Year's Day",
-        (7, 4):   "Independence Day",
-        (12, 25): "Christmas Day",
-    }
+        return {"is_closed": True, "reason": "weekend", "day_name": "Sunday",
+            "note": "TODAY IS SUNDAY. Markets CLOSED. Write SUNDAY PREVIEW and WEEK AHEAD. Reference 'Friday's close'. No overnight language."}
+    fixed_holidays = {(1, 1): "New Year's Day", (7, 4): "Independence Day", (12, 25): "Christmas Day"}
     for (hm, hd), hname in fixed_holidays.items():
         if month == hm and day == hd:
-            return {
-                "is_closed": True,
-                "reason": "holiday",
-                "day_name": hname,
-                "note": (
-                    f"TODAY IS {hname.upper()}. Commodity markets are CLOSED. "
-                    "All prices below are from the last trading session. "
-                    "Write this as a HOLIDAY RECAP and OUTLOOK, not an overnight recap. "
-                    "Acknowledge the holiday briefly, then cover what matters for farmers returning Monday. "
-                    "Do NOT use language like 'overnight' or 'this morning's session.'"
-                ),
-            }
+            return {"is_closed": True, "reason": "holiday", "day_name": hname,
+                "note": f"TODAY IS {hname.upper()}. Markets CLOSED."}
         if weekday == 4 and month == hm and day == hd - 1:
-            return {
-                "is_closed": True,
-                "reason": "holiday",
-                "day_name": f"{hname} (observed)",
-                "note": (
-                    f"TODAY IS {hname.upper()} OBSERVED. Commodity markets are CLOSED. "
-                    "All prices below are from the last trading session. "
-                    "Write as a holiday outlook. Do NOT reference overnight sessions."
-                ),
-            }
+            return {"is_closed": True, "reason": "holiday", "day_name": f"{hname} (observed)",
+                "note": f"TODAY IS {hname.upper()} OBSERVED. Markets CLOSED."}
         if weekday == 0 and month == hm and day == hd + 1:
-            return {
-                "is_closed": True,
-                "reason": "holiday",
-                "day_name": f"{hname} (observed)",
-                "note": (
-                    f"TODAY IS {hname.upper()} OBSERVED. Commodity markets are CLOSED. "
-                    "All prices below are from the last trading session. "
-                    "Write as a holiday outlook. Do NOT reference overnight sessions."
-                ),
-            }
-
-    # Good Friday (Butcher's Easter algorithm)
+            return {"is_closed": True, "reason": "holiday", "day_name": f"{hname} (observed)",
+                "note": f"TODAY IS {hname.upper()} OBSERVED. Markets CLOSED."}
     y = now.year
-    a = y % 19
-    b = y // 100
-    c = y % 100
-    d = b // 4
-    e = b % 4
-    f = (b + 8) // 25
-    g = (b - f + 1) // 3
-    h = (19 * a + b - d - g + 15) % 30
-    i = c // 4
-    k = c % 4
+    a = y % 19; b = y // 100; c = y % 100; d = b // 4; e = b % 4
+    f = (b + 8) // 25; g = (b - f + 1) // 3
+    h = (19 * a + b - d - g + 15) % 30; i = c // 4; k = c % 4
     l = (32 + 2 * e + 2 * i - h - k) % 7
     m_val = (a + 11 * h + 22 * l) // 451
     easter_month = (h + l - 7 * m_val + 114) // 31
@@ -241,770 +139,794 @@ def get_market_status():
     easter = datetime(y, easter_month, easter_day)
     good_friday = easter - timedelta(days=2)
     if now.month == good_friday.month and now.day == good_friday.day:
-        return {
-            "is_closed": True,
-            "reason": "holiday",
-            "day_name": "Good Friday",
-            "note": (
-                "TODAY IS GOOD FRIDAY. Commodity markets are CLOSED. "
-                "All prices below are from Thursday's session. "
-                "Write as a holiday outlook. Do NOT reference overnight sessions."
-            ),
-        }
-
+        return {"is_closed": True, "reason": "holiday", "day_name": "Good Friday",
+            "note": "TODAY IS GOOD FRIDAY. Markets CLOSED."}
     day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-    return {
-        "is_closed": False,
-        "reason": "open",
-        "day_name": day_names[weekday],
-        "note": "",
-    }
+    return {"is_closed": False, "reason": "open", "day_name": day_names[weekday], "note": ""}
 
-
-# ═══════════════════════════════════════════════════════════════════
-# QUOTE SELECTION
-# ═══════════════════════════════════════════════════════════════════
 
 def get_todays_quote():
-    """
-    Pick today's quote from data/quote-pool.json. Seeded by day-of-year
-    so the same quote shows on every run within the same day.
-    """
-    if not QUOTE_POOL_PATH.exists():
-        print(f"  [warn] quote pool not found at {QUOTE_POOL_PATH} — using fallback", file=sys.stderr)
-        return {
-            "text": "Agriculture is our wisest pursuit, because it will in the end contribute most to real wealth, good morals, and happiness.",
-            "attribution": "Thomas Jefferson",
-        }
-
+    fallback = {"text": "Agriculture is our wisest pursuit, because it will in the end contribute most to real wealth, good morals, and happiness.",
+                "attribution": "Thomas Jefferson"}
+    if not QUOTE_POOL_PATH.exists(): return fallback
     try:
-        with open(QUOTE_POOL_PATH) as f:
-            pool = json.load(f)
-    except Exception as e:
-        print(f"  [warn] quote pool unreadable: {e}", file=sys.stderr)
-        return {
-            "text": "Agriculture is our wisest pursuit, because it will in the end contribute most to real wealth, good morals, and happiness.",
-            "attribution": "Thomas Jefferson",
-        }
-
-    quotes = pool.get("quotes", [])
-    quotes = [
-        q for q in quotes
-        if q.get("text") and q.get("attribution")
-        and q["attribution"].strip().lower() not in FILLER_ATTRIBUTIONS
-    ]
-
-    if not quotes:
-        return {
-            "text": "Agriculture is our wisest pursuit, because it will in the end contribute most to real wealth, good morals, and happiness.",
-            "attribution": "Thomas Jefferson",
-        }
-
+        with open(QUOTE_POOL_PATH) as f: pool = json.load(f)
+    except Exception: return fallback
+    quotes = [q for q in pool.get("quotes", [])
+              if q.get("text") and q.get("attribution")
+              and q["attribution"].strip().lower() not in FILLER_ATTRIBUTIONS]
+    if not quotes: return fallback
     now = datetime.now()
-    seed = now.timetuple().tm_yday + now.year * 1000
-    random.seed(seed)
+    random.seed(now.timetuple().tm_yday + now.year * 1000)
     q = random.choice(quotes)
     random.seed()
     return {"text": q["text"], "attribution": q["attribution"]}
 
 
-# ═══════════════════════════════════════════════════════════════════
-# DATA COLLECTION
-# ═══════════════════════════════════════════════════════════════════
-
 def http_get(url, timeout=10):
     if requests:
         try:
-            r = requests.get(url, timeout=timeout)
-            r.raise_for_status()
-            return r.text
+            r = requests.get(url, timeout=timeout); r.raise_for_status(); return r.text
         except Exception as e:
-            print(f"  [warn] fetch failed: {url} — {e}", file=sys.stderr)
-            return None
-    else:
-        try:
-            req = urllib.request.Request(url, headers={"User-Agent": "AGSIST-Daily/3.6"})
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
-                return resp.read().decode("utf-8", errors="replace")
-        except Exception as e:
-            print(f"  [warn] fetch failed: {url} — {e}", file=sys.stderr)
-            return None
+            print(f"  [warn] fetch failed: {url}: {e}", file=sys.stderr); return None
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "AGSIST-Daily/3.9"})
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return resp.read().decode("utf-8", errors="replace")
+    except Exception as e:
+        print(f"  [warn] fetch failed: {url}: {e}", file=sys.stderr); return None
 
 
 def load_prices():
     if not PRICES_PATH.exists():
-        print("[error] prices.json not found", file=sys.stderr)
-        return {}, []
-
-    with open(PRICES_PATH) as f:
-        data = json.load(f)
-
-    quotes = data.get("quotes", {})
-    fetched = data.get("fetched", "")
-
-    price_lines = []
-    locked_prices = {}
-    surprises = []
-
+        print("[error] prices.json not found", file=sys.stderr); return {}, []
+    with open(PRICES_PATH) as f: data = json.load(f)
+    quotes = data.get("quotes", {}); fetched = data.get("fetched", "")
+    price_lines = []; locked_prices = {}; surprises = []
     for key, label in COMMODITY_LABELS.items():
         q = quotes.get(key)
-        if not q or q.get("close") is None:
-            continue
-
-        close = float(q["close"])
-        opn = float(q.get("open", close))
-        net = q.get("netChange")
-        pct = q.get("pctChange")
-
-        if net is not None:
-            net = float(net)
-        else:
-            net = close - opn
-
-        if pct is not None:
-            pct = float(pct)
-        elif opn != 0:
-            pct = (net / opn) * 100
-        else:
-            pct = 0.0
-
+        if not q or q.get("close") is None: continue
+        close = float(q["close"]); opn = float(q.get("open", close))
+        net = q.get("netChange"); pct = q.get("pctChange")
+        net = float(net) if net is not None else (close - opn)
+        pct = float(pct) if pct is not None else ((net / opn) * 100 if opn != 0 else 0.0)
         is_grain = key in GRAIN_KEYS
         if is_grain:
-            price_str = f"${close / 100:.2f}/bu"
-            chg_str = f"{net / 100:+.4f} ({pct:+.1f}%)"
+            price_str = f"${close / 100:.2f}/bu"; chg_str = f"{net / 100:+.4f} ({pct:+.1f}%)"
             locked_prices[key] = close / 100
         elif key in ("gold", "bitcoin"):
-            price_str = f"${close:,.0f}"
-            chg_str = f"{pct:+.1f}%"
-            locked_prices[key] = close
+            price_str = f"${close:,.0f}"; chg_str = f"{pct:+.1f}%"; locked_prices[key] = close
         elif key == "treasury10":
-            price_str = f"{close:.2f}%"
-            chg_str = f"{pct:+.1f}%"
-            locked_prices[key] = close
+            price_str = f"{close:.2f}%"; chg_str = f"{pct:+.1f}%"; locked_prices[key] = close
         else:
-            price_str = f"${close:.2f}"
-            chg_str = f"{pct:+.1f}%"
-            locked_prices[key] = close
-
-        direction_up = pct > 0
-        direction_dn = pct < 0
-        arrow = "UP" if direction_up else ("DN" if direction_dn else "FLAT")
+            price_str = f"${close:.2f}"; chg_str = f"{pct:+.1f}%"; locked_prices[key] = close
+        arrow = "UP" if pct > 0 else ("DN" if pct < 0 else "FLAT")
         line = f"  {label}: {price_str} ({arrow} {chg_str})"
-
-        wk52_hi = q.get("wk52_hi")
-        wk52_lo = q.get("wk52_lo")
+        wk52_hi = q.get("wk52_hi"); wk52_lo = q.get("wk52_lo")
         if wk52_hi and wk52_lo:
             hi, lo = float(wk52_hi), float(wk52_lo)
             if hi > lo:
                 position = ((close - lo) / (hi - lo)) * 100
                 line += f" [52wk: {position:.0f}% from low]"
-
         price_lines.append(line)
-
         threshold = SURPRISE_THRESHOLDS.get(key, 2.0)
         if abs(pct) >= threshold:
-            surprises.append({
-                "commodity": label,
-                "key": key,
-                "price": price_str,
-                "pct_change": pct,
-                "direction": "up" if pct > 0 else "down",
-                "surprise_magnitude": round(abs(pct) / threshold, 1),
-            })
-
+            surprises.append({"commodity": label, "key": key, "price": price_str,
+                "pct_change": pct, "direction": "up" if pct > 0 else "down",
+                "surprise_magnitude": round(abs(pct) / threshold, 1)})
     surprises.sort(key=lambda x: x["surprise_magnitude"], reverse=True)
-
-    return {
-        "price_block": "\n".join(price_lines),
-        "locked_prices": locked_prices,
-        "fetched": fetched,
-        "surprises": surprises,
-        "quotes": quotes,
-    }, surprises
+    return ({"price_block": "\n".join(price_lines), "locked_prices": locked_prices,
+             "fetched": fetched, "surprises": surprises, "quotes": quotes}, surprises)
 
 
 def load_past_dailies(num_days=3):
-    """Load last N briefings for narrative continuity and to avoid repeats."""
     archive_dir = REPO_ROOT / "data" / "daily-archive"
-    index_path  = archive_dir / "index.json"
-
-    if not index_path.exists():
-        return "", []
-
+    index_path = archive_dir / "index.json"
+    if not index_path.exists(): return "", []
     try:
-        with open(index_path) as f:
-            index = json.load(f)
-    except Exception:
-        return "", []
-
+        with open(index_path) as f: index = json.load(f)
+    except Exception: return "", []
     briefings = index.get("briefings", [])
-    if not briefings:
-        return "", []
-
+    if not briefings: return "", []
     today_iso = datetime.now().strftime("%Y-%m-%d")
-    past = [b for b in briefings if b.get("date") != today_iso]
-    past = sorted(past, key=lambda x: x.get("date", ""), reverse=True)[:num_days]
-
-    if not past:
-        return "", []
-
-    blocks = []
-    past_tmyk_topics = []
+    past = sorted([b for b in briefings if b.get("date") != today_iso],
+                  key=lambda x: x.get("date", ""), reverse=True)[:num_days]
+    if not past: return "", []
+    blocks = []; past_tmyk_topics = []
     for entry in past:
         date_iso = entry.get("date", "")
         json_path = archive_dir / f"{date_iso}.json"
-
         if json_path.exists():
             try:
-                with open(json_path) as f:
-                    b = json.load(f)
-                headline      = b.get("headline", entry.get("headline", ""))
-                mood          = b.get("meta", {}).get("market_mood", "")
-                surprises     = b.get("surprises", [])
-                surprise_names = [s.get("commodity","") + f" {s.get('pct_change',0):+.1f}%" for s in surprises[:4]]
+                with open(json_path) as f: b = json.load(f)
+                headline = b.get("headline", entry.get("headline", ""))
+                mood = b.get("meta", {}).get("market_mood", "")
+                surprises_p = b.get("surprises", [])
+                surprise_names = [s.get("commodity","") + f" {s.get('pct_change',0):+.1f}%" for s in surprises_p[:4]]
                 tmyk = b.get("the_more_you_know") or b.get("tmyk") or {}
                 tmyk_title = tmyk.get("title", "")
-                if tmyk_title:
-                    past_tmyk_topics.append(tmyk_title)
+                if tmyk_title: past_tmyk_topics.append(tmyk_title)
                 section_titles = [s.get("title","") for s in b.get("sections", [])]
-                actions        = [s.get("farmer_action","") for s in b.get("sections", []) if s.get("farmer_action")]
-                block = f"  DATE: {date_iso}"
-                block += f"\n  HEADLINE: {headline}"
-                if mood:
-                    block += f"\n  MOOD: {mood}"
-                if surprise_names:
-                    block += f"\n  OVERNIGHT SURPRISES: {' / '.join(surprise_names)}"
-                if tmyk_title:
-                    block += f"\n  THE MORE YOU KNOW topic: {tmyk_title}"
-                if section_titles:
-                    block += f"\n  SECTIONS COVERED: {', '.join(section_titles)}"
-                if actions:
-                    block += f"\n  FARMER ACTIONS GIVEN: {' | '.join(actions[:3])}"
+                actions = [s.get("farmer_action","") for s in b.get("sections", []) if s.get("farmer_action")]
+                block = f"  DATE: {date_iso}\n  HEADLINE: {headline}"
+                if mood: block += f"\n  MOOD: {mood}"
+                if surprise_names: block += f"\n  OVERNIGHT SURPRISES: {' / '.join(surprise_names)}"
+                if tmyk_title: block += f"\n  THE MORE YOU KNOW topic: {tmyk_title}"
+                if section_titles: block += f"\n  SECTIONS COVERED: {', '.join(section_titles)}"
+                if actions: block += f"\n  FARMER ACTIONS GIVEN: {' | '.join(actions[:3])}"
             except Exception:
                 block = f"  DATE: {date_iso}\n  HEADLINE: {entry.get('headline','')}"
         else:
             block = f"  DATE: {date_iso}\n  HEADLINE: {entry.get('headline','')}"
-
         blocks.append(block)
-
-    header = (
-        "═══ PAST BRIEFINGS (last 3 days) ═══\n"
-        "Use for narrative continuity and to AVOID repeating topics.\n"
-        "Do NOT use past prices. Use ONLY today's LOCKED PRICE TABLE.\n"
-        "TMYK topic MUST be different from any listed above.\n"
-        "Do not recount yesterday's story as if it were fresh news.\n\n"
-    )
+    header = ("PAST BRIEFINGS (last 3 days)\n"
+              "Use for narrative continuity and to AVOID repeating topics.\n"
+              "Do NOT use past prices. Use ONLY today's LOCKED PRICE TABLE.\n"
+              "TMYK topic MUST be different from any listed above.\n\n")
     return header + "\n\n".join(blocks), past_tmyk_topics
 
 
 def build_chart_series(today_locked_prices, num_days=9):
-    """
-    Assemble rolling grain price series (corn, soybeans, wheat) from archive
-    JSONs plus today's locked_prices. Returns dict like:
-        {"corn": [4.49, 4.50, ..., 4.58], "soybeans": [...], "wheat": [...]}
-    Values in dollars, rounded to 2 decimals.
-
-    Requires archive JSONs to carry `locked_prices` (added in v3.6). Days
-    archived before v3.6 are silently skipped; sparklines just start shorter.
-    Series with fewer than 2 points are dropped — daily.html hides them
-    automatically.
-    """
     archive_dir = REPO_ROOT / "data" / "daily-archive"
     index_path = archive_dir / "index.json"
-    if not index_path.exists():
-        return {}
-
+    if not index_path.exists(): return {}
     try:
-        with open(index_path) as f:
-            idx = json.load(f)
-    except Exception:
-        return {}
-
+        with open(index_path) as f: idx = json.load(f)
+    except Exception: return {}
     entries = idx.get("briefings", [])
     today_iso = datetime.now().strftime("%Y-%m-%d")
-    past = sorted(
-        [e for e in entries if e.get("date") and e["date"] != today_iso],
-        key=lambda e: e["date"]
-    )[-num_days:]
-
-    # External key -> source key in locked_prices
+    past = sorted([e for e in entries if e.get("date") and e["date"] != today_iso],
+                  key=lambda e: e["date"])[-num_days:]
     key_map = {"corn": "corn", "soybeans": "beans", "wheat": "wheat"}
     series = {k: [] for k in key_map}
-
     for entry in past:
-        date_iso = entry.get("date", "")
-        json_path = archive_dir / f"{date_iso}.json"
-        if not json_path.exists():
-            continue
+        json_path = archive_dir / f"{entry.get('date', '')}.json"
+        if not json_path.exists(): continue
         try:
-            with open(json_path) as f:
-                b = json.load(f)
+            with open(json_path) as f: b = json.load(f)
             lp = b.get("locked_prices", {})
             for ser_key, src_key in key_map.items():
                 v = lp.get(src_key)
-                if v and v > 0:
-                    series[ser_key].append(round(float(v), 2))
-        except Exception:
-            continue
-
-    # Append today
+                if v and v > 0: series[ser_key].append(round(float(v), 2))
+        except Exception: continue
     for ser_key, src_key in key_map.items():
         v = today_locked_prices.get(src_key)
-        if v and v > 0:
-            series[ser_key].append(round(float(v), 2))
-
-    # Drop series that can't render a sparkline
+        if v and v > 0: series[ser_key].append(round(float(v), 2))
     return {k: v for k, v in series.items() if len(v) >= 2}
+
+
+def load_issue_number():
+    """Total briefing count from archive index. Returns 0 if missing."""
+    index_path = REPO_ROOT / "data" / "daily-archive" / "index.json"
+    if not index_path.exists(): return 0
+    try:
+        with open(index_path) as f: idx = json.load(f)
+        if isinstance(idx.get("count"), int): return idx["count"]
+        return len(idx.get("briefings", []))
+    except Exception: return 0
+
+
+def load_yesterdays_call_context():
+    """Pull highest-conviction call from most recent prior weekday briefing.
+    Skips weekends/holidays. Returns dict with prior_date, section_title,
+    conviction, and call text — or None on Mondays after a long weekend
+    where there's nothing recent enough to thread back to."""
+    archive_dir = REPO_ROOT / "data" / "daily-archive"
+    index_path = archive_dir / "index.json"
+    if not index_path.exists(): return None
+    try:
+        with open(index_path) as f: idx = json.load(f)
+    except Exception: return None
+    briefings = idx.get("briefings", [])
+    today_iso = datetime.now().strftime("%Y-%m-%d")
+    candidates = sorted(
+        [b for b in briefings if b.get("date") and b["date"] != today_iso],
+        key=lambda x: x.get("date", ""), reverse=True
+    )
+    for entry in candidates[:5]:  # Look back up to 5 days
+        if entry.get("market_closed"): continue
+        date_iso = entry.get("date", "")
+        json_path = archive_dir / f"{date_iso}.json"
+        if not json_path.exists(): continue
+        try:
+            with open(json_path) as f: b = json.load(f)
+        except Exception: continue
+        sections = b.get("sections", [])
+        if not sections: continue
+        priority = {"high": 3, "medium": 2, "low": 1}
+        ranked = sorted(sections,
+                        key=lambda s: priority.get((s.get("conviction_level") or "").lower(), 1),
+                        reverse=True)
+        top = ranked[0]
+        # Prefer farmer_action (most specific), fall back to bottom_line, then title
+        call = (top.get("farmer_action") or "").strip()
+        if not call: call = (top.get("bottom_line") or "").strip()
+        if not call: call = (top.get("title") or "").strip()
+        if not call: continue
+        return {
+            "prior_date": date_iso,
+            "section_title": top.get("title", ""),
+            "conviction": top.get("conviction_level", ""),
+            "call": call,
+            "headline": b.get("headline", ""),
+        }
+    return None
+
+
+def load_weekly_thread():
+    """On Tue-Fri, return Monday's weekly_thread.question (the week's setup)
+    plus the day-of-week index. Returns None on Mondays (no thread yet) or
+    when this week's Monday briefing is missing."""
+    today = datetime.now()
+    weekday = today.weekday()  # 0=Mon, 4=Fri, 5=Sat, 6=Sun
+    if weekday == 0 or weekday >= 5: return None  # Monday or weekend
+    # Find this week's Monday
+    monday = today - timedelta(days=weekday)
+    monday_iso = monday.strftime("%Y-%m-%d")
+    archive_dir = REPO_ROOT / "data" / "daily-archive"
+    json_path = archive_dir / f"{monday_iso}.json"
+    if not json_path.exists(): return None
+    try:
+        with open(json_path) as f: b = json.load(f)
+    except Exception: return None
+    thread = b.get("weekly_thread") or {}
+    question = (thread.get("question") or "").strip()
+    if not question: return None
+    return {
+        "monday_date": monday_iso,
+        "question": question,
+        "today_day_of_week": weekday + 1,  # 1=Mon, 2=Tue, ..., 5=Fri
+        "is_resolution_day": weekday == 4,  # Friday
+    }
 
 
 def fetch_ag_news():
     if not feedparser:
         return "No RSS feeds available. Focus on price action and seasonal context."
-
     headlines = []
     for feed_url in AG_RSS_FEEDS:
         try:
             text = http_get(feed_url, timeout=8)
-            if not text:
-                continue
+            if not text: continue
             feed = feedparser.parse(text)
             for entry in feed.entries[:5]:
                 title = entry.get("title", "").strip()
                 pub = entry.get("published", entry.get("updated", ""))
-                if title:
-                    headlines.append(f"  * {title} ({pub[:16]})")
-        except Exception:
-            continue
-
+                if title: headlines.append(f"  * {title} ({pub[:16]})")
+        except Exception: continue
     if not headlines:
         return "No fresh RSS headlines. Focus on price action and seasonal context."
-
-    seen = set()
-    unique = []
+    seen = set(); unique = []
     for h in headlines:
         key = h[:60].lower()
-        if key not in seen:
-            seen.add(key)
-            unique.append(h)
+        if key not in seen: seen.add(key); unique.append(h)
     return "\n".join(unique[:25])
 
 
 def get_seasonal_context():
     month = datetime.now().month
     contexts = {
-        1: "Mid-winter: South American crop development (Brazil safrinha, Argentina soybeans). Cattle markets seasonally strong. Input purchasing decisions for spring.",
-        2: "Late winter: USDA Ag Outlook Forum typically this month. South American harvest beginning. Final input purchasing before spring.",
-        3: "Pre-planting: USDA Prospective Plantings at end of March is THE report. Fieldwork starting in South. Nitrogen applications beginning.",
-        4: "Planting season: Corn planting underway (April 15 to May 15 optimal in Corn Belt). Every day of delay costs roughly 1 bu/acre. Weather dominance begins.",
-        5: "Peak planting: Soybean planting (May 1 to June 5 optimal). Prevent plant deadline approaching. First crop condition ratings.",
-        6: "Growing season: Crop conditions drive markets. Pollination approaching for early-planted corn. Wheat harvest beginning in Southern Plains.",
-        7: "Critical: Corn pollination (most critical 2 weeks of the year). USDA Acreage report (June 30). Soybean bloom/pod set. Weather premium at peak.",
-        8: "Yield formation: Corn in dough/dent. Soybean pod fill critical. USDA Pro Farmer crop tour. Fall crop insurance pricing.",
-        9: "Early harvest: Corn harvest beginning. USDA September WASDE. Basis narrows as harvest pressure builds.",
-        10: "Harvest: Full corn/soybean harvest. Basis at seasonal lows. Storage vs. sell decisions. Fall fieldwork. Wheat planting.",
-        11: "Post-harvest: Final USDA yield estimates. South American planting. Grain storage management. Tax planning.",
-        12: "Year-end: Final crop production estimates. USDA supply/demand tables. Tax deadlines. South American weather watch.",
+        1: "Mid-winter: South American crop development. Cattle markets seasonally strong.",
+        2: "Late winter: USDA Ag Outlook Forum. South American harvest beginning.",
+        3: "Pre-planting: USDA Prospective Plantings end of March. Fieldwork starting in South.",
+        4: "Planting season: Corn planting underway (April 15 to May 15 optimal Corn Belt).",
+        5: "Peak planting: Soybean planting (May 1 to June 5). Prevent plant deadline approaching.",
+        6: "Growing season: Crop conditions drive markets. Pollination approaching.",
+        7: "Critical: Corn pollination. USDA Acreage report (June 30). Weather premium at peak.",
+        8: "Yield formation: Corn in dough/dent. Pro Farmer crop tour.",
+        9: "Early harvest: Corn harvest beginning. September WASDE.",
+        10: "Harvest: Full corn/soybean harvest. Basis at seasonal lows. Wheat planting.",
+        11: "Post-harvest: Final USDA yield estimates. South American planting.",
+        12: "Year-end: Final crop production estimates. Tax deadlines.",
     }
     return contexts.get(month, "Monitor markets and seasonal patterns.")
 
 
-# ═══════════════════════════════════════════════════════════════════
-# CLAUDE API CALL
-# ═══════════════════════════════════════════════════════════════════
-
-def build_system_prompt(market_status, past_tmyk_topics):
+def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, weekly_thread=None):
     weekend_instructions = ""
     if market_status["is_closed"]:
-        day = market_status["day_name"]
-        reason = market_status["reason"]
+        day = market_status["day_name"]; reason = market_status["reason"]
         if reason == "weekend" and "Saturday" in day:
-            weekend_instructions = """
-══ WEEKEND MODE: SATURDAY ══
-Markets are CLOSED. Write a WEEK IN REVIEW plus WEEKEND OUTLOOK:
-- Lead with what defined this week in ag markets.
-- Reference prices as "as of Friday's close", not "overnight" or "this morning".
-- What should farmers think about this weekend?
-- The 2 or 3 most important things to watch when markets open Monday.
-- Section titles should reflect this, for example "WEEK IN REVIEW", "WHAT TO WATCH MONDAY".
-- market_mood should reflect the week's tone, not a single session.
-- Do NOT use language implying active markets or overnight sessions."""
+            weekend_instructions = "\nWEEKEND MODE SATURDAY: Markets CLOSED. Write WEEK IN REVIEW + WEEKEND OUTLOOK. Reference 'Friday's close'. No overnight language. Skip basis, yesterdays_call, spread_to_watch, weekly_thread (set to empty objects).\n"
         elif reason == "weekend" and "Sunday" in day:
-            weekend_instructions = """
-══ WEEKEND MODE: SUNDAY ══
-Markets are CLOSED. Write a SUNDAY PREVIEW plus WEEK AHEAD BRIEFING:
-- Lead with what to expect when markets open Monday morning.
-- Reference prices as "as of Friday's close".
-- What risks and catalysts should farmers be aware of this coming week?
-- Section titles should reflect this, for example "WEEK AHEAD", "MONDAY WATCH LIST".
-- market_mood should reflect outlook for the coming week.
-- Do NOT use language implying active markets or overnight sessions."""
+            weekend_instructions = "\nWEEKEND MODE SUNDAY: Markets CLOSED. Write SUNDAY PREVIEW + WEEK AHEAD. Reference 'Friday's close'. No overnight language. Skip basis, yesterdays_call, spread_to_watch, weekly_thread (set to empty objects).\n"
         else:
-            weekend_instructions = f"""
-══ HOLIDAY MODE: {day.upper()} ══
-Markets are CLOSED. Write a HOLIDAY OUTLOOK:
-- Briefly acknowledge the holiday.
-- Reference prices as "as of the last trading session".
-- What should farmers think about before markets reopen?
-- Do NOT use overnight or session language."""
+            weekend_instructions = f"\nHOLIDAY MODE {day.upper()}: Markets CLOSED. Holiday outlook framing. Skip basis, yesterdays_call, spread_to_watch, weekly_thread (set to empty objects).\n"
 
     banned_tmyk = ""
     if past_tmyk_topics:
-        banned_tmyk = (
-            "\n\n══ TMYK TOPIC EXCLUSION ══\n"
-            "The following topics were covered in the last 3 briefings. "
-            "You MUST pick a different angle today:\n  - "
-            + "\n  - ".join(past_tmyk_topics)
-        )
+        banned_tmyk = "\n\nTMYK TOPIC EXCLUSION (last 3 briefings):\n  - " + "\n  - ".join(past_tmyk_topics) + "\nPick a different angle today."
+
+    yesterdays_block = ""
+    if yesterdays_call and not market_status["is_closed"]:
+        yesterdays_block = f"""
+
+══ YESTERDAY'S CALL (for the yesterdays_call block) ══
+On {yesterdays_call['prior_date']}, the highest-conviction section was {yesterdays_call['section_title']!r} ({yesterdays_call['conviction']} conviction). The call was:
+
+  "{yesterdays_call['call']}"
+
+Today's job: assess whether that call PLAYED OUT, DIDN'T, or is STILL PENDING based on today's price action and data. Be honest. If it didn't work, say so directly. Readers respect accountability more than victory laps.
+
+Output as the yesterdays_call object in the JSON. Use outcome value 'played_out', 'didnt', or 'pending'.
+"""
+
+    thread_block = ""
+    day_names_full = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    if weekly_thread and not market_status["is_closed"]:
+        day_label = day_names_full[weekly_thread["today_day_of_week"] - 1] if weekly_thread["today_day_of_week"] <= 5 else "Friday"
+        if weekly_thread["is_resolution_day"]:
+            thread_block = f"""
+
+══ WEEKLY THREAD — FRIDAY RESOLUTION ══
+Monday's question for the week was: "{weekly_thread['question']}"
+
+Today is FRIDAY. RESOLVE the question. Did it play out? What's the answer? Use the weekly_thread.status_text field for a 1-2 sentence resolution. Lead paragraph should pay off the week's arc — the reader who has been reading all week should feel the story landed.
+
+Set weekly_thread.day = 5 and weekly_thread.question = (Monday's question, copied forward).
+"""
+        else:
+            thread_block = f"""
+
+══ WEEKLY THREAD — {day_label.upper()} UPDATE ══
+Monday's question for the week was: "{weekly_thread['question']}"
+
+Today is {day_label}. PROGRESS the thread. New data, new development, where does the question stand right now? Use the weekly_thread.status_text field for a 1-2 sentence update. Lead paragraph can briefly reference where the thread sits without over-explaining (the chapter marker handles framing).
+
+Set weekly_thread.day = {weekly_thread['today_day_of_week']} and weekly_thread.question = (Monday's question, copied forward).
+"""
+    elif not market_status["is_closed"]:
+        # Today is Monday: model identifies the question
+        if datetime.now().weekday() == 0:
+            thread_block = """
+
+══ WEEKLY THREAD — MONDAY SETUP ══
+Today is MONDAY. IDENTIFY the single biggest unresolved question for the week ahead. The question should be:
+  - Specific enough to track day-by-day (not "where will markets go")
+  - Resolvable by Friday's data (not multi-week)
+  - About the dominant story arc, not a side issue
+
+Examples of strong weekly questions:
+  - "Will planting hit 50% by Friday?"
+  - "Will the funds defend the long in corn through this week's data?"
+  - "Does soybean basis crack before the export sales print?"
+  - "Will live cattle hold $245 through Tuesday's Cattle on Feed?"
+
+Set weekly_thread.day = 1, weekly_thread.question = (your question), weekly_thread.status_text = (1-2 sentence setup explaining why this is the week's question).
+"""
 
     return f"""You are the voice of AGSIST Daily, a trusted morning agricultural intelligence briefing read every weekday by US grain and livestock producers.
 
-YOUR VOICE:
-- The sharp friend who actually trades grain AND reads the WASDE. Not an academic. Not a reporter.
-- Direct, opinionated, honest about uncertainty.
-- Connect dots that farmers wouldn't connect on their own.
-- Plain language. "Managed money" needs a parenthetical "(hedge funds)" on first use.
-- Calibrated tone. Most days are normal. A 1% corn move is not "dramatic".
-- Reference ongoing story arcs when past briefings are provided.
+══ THE VOICE ══
 
-GEOGRAPHIC SCOPE: National. AGSIST readers are across the US. NEVER narrow to "Wisconsin and Minnesota farmers" or any specific state. Use "US producers", "Corn Belt farmers", or "farmers across the country" when scope matters.
+You are NOT a wire-service summarizer. You are the sharp friend who actually trades grain AND reads the WASDE — direct, opinionated, honest about uncertainty, willing to commit when the evidence is there. Plain language. Imperative when it matters. Embedded thesis in every paragraph. National scope.
+
+You write like THIS:
+
+LEAD example:
+"Corn's stuck at $4.85¼ for a fourth straight session and the funds are running out of patience. Open interest dropped 12,000 contracts Friday — somebody's taking profits, not adding conviction. The chart says coiled spring. The funds say maybe. Tuesday's planting print decides which one's right."
+
+SECTION BODY example (medium conviction):
+"Soybeans ran into the 200-day at $10.42 and bounced like they were supposed to. But the bounce is thin — managed money (hedge funds) is still net long 64,000 contracts and crush margins eased a nickel from last week's high. The chart wants to retest $10.50 resistance. The fundamentals don't have a new catalyst. Watch the export sales Thursday: under 300K MT, the chart's bluffing."
+
+BOTTOM LINE examples (synthesis, not restatement):
+- "Coiled range plus Tuesday catalyst equals directional resolution this week."
+- "Cattle still acting like the buyer is patient, not gone."
+- "Carry's working in soybeans, old crop into new crop just rolled wider for a third week."
+
+BASIS example (directional only):
+"Eastern Belt corn basis is firming as ethanol grind comes back online after maintenance. Producers east of the Mississippi with old-crop bushels in storage have a window the futures board alone isn't pricing. Western Belt staying soft, consistent with the seasonal."
+
+WATCH LIST example (conditional, not calendar):
+- "Tuesday: USDA Crop Progress; corn above 40% planted confirms the Belt is on pace, below 30% adds weather premium."
+- "Thursday: Weekly export sales; soy under 300K MT keeps the chart in charge of the story."
+
+VOCABULARY — use these:
+- "the funds got lost" / "the funds are running out of patience" / "managed money (hedge funds)"
+- "carry's working" / "carry's broken" (re: futures spread structure)
+- "basis is talking" / "basis is firming/widening/yelling"
+- "the chart wants to..." / "the chart's bluffing" / "the chart's in charge"
+- "above/below [level] is the line"
+- numbers with cents fractions when relevant: "$4.85¼" not "$4.85"
+- "drag-day" / "yield drag"
+- "the seasonal didn't price this"
+
+VOCABULARY — avoid these (academic register):
+- "indicates," "suggests," "reflects" → use "says," "tells you," "is yelling"
+- "elevated levels" → use the actual level
+- "amid concerns" / "against the backdrop of" → cut entirely
+- "investors are watching closely" → empty phrase, never use
+- "in light of recent developments" → empty phrase, never use
+- "market participants" → "the funds," "merchandisers," "producers" (be specific)
+
+GEOGRAPHIC SCOPE: National. NEVER narrow to "Wisconsin and Minnesota farmers" or any specific state.
 {weekend_instructions}
 {banned_tmyk}
+{yesterdays_block}
+{thread_block}
 
 ══ WRITING RULES ══
-1. NO EM DASHES (U+2014) OR EN DASHES (U+2013) anywhere in your prose. Use periods, commas, semicolons, colons, or parentheses instead.
-   - WRONG: "Corn eased to $4.58 — planting pressure builds"
-   - RIGHT: "Corn eased to $4.58. Planting pressure builds."
-   - RIGHT: "Corn eased to $4.58 (planting pressure builds)."
-2. No hyphen-word-hyphen constructions used as pseudo em dashes (for example " - ").
-3. Every specific price must come from the LOCKED PRICE TABLE. No exceptions.
-4. If a price isn't in the table, don't mention it specifically.
-5. Never invent, estimate, or recall prices from training data.
-6. Describe moves exactly as shown. Don't round or reframe.
-7. Vary sentence structure across the briefing. Avoid the template "X did Y because Z, while Q did R" repeating in every section.
+1. NO EM DASHES (U+2014) OR EN DASHES (U+2013). Use periods, commas, semicolons, colons, parentheses. (Exception: standard hyphenated compounds like "old-crop" are fine.)
+2. Every specific price comes from the LOCKED PRICE TABLE. No exceptions.
+3. Never invent or recall prices from training data.
+4. Describe moves exactly as shown.
 
 ══ TONE CALIBRATION ══
-- magnitude below 1.5: "moved", "gained", "eased", "dipped"
-- magnitude 1.5 to 2.5: "jumped", "fell", "rallied", "slid"
-- magnitude 2.5 to 3.5: "surged", "dropped sharply", "spiked"
-- magnitude above 3.5: "exploded", "crashed", "historic move". Genuinely rare only.
+- below 1.5%: "moved", "gained", "eased", "dipped"
+- 1.5-2.5%: "jumped", "fell", "rallied", "slid"
+- 2.5-3.5%: "surged", "dropped sharply", "spiked"
+- above 3.5%: "exploded", "crashed", "historic". Genuinely rare.
 
-══ OUTPUT STRUCTURE ══
-Return valid JSON. Use EXACTLY these field names:
+══ THE 11 IMPACT RULES ══
+
+1. THE LEAD MUST DELIVER A "SO WHAT". Not a price recap. Specific price + synthesizing observation that interprets, contextualizes, or connects.
+
+2. CONVICTION MUST BE EARNED. "Medium" is the cop-out. Default to "low" on quiet days. Reserve "high" for genuine directional thesis with data behind it.
+
+3. THE MORE YOU KNOW MUST TIE TO TODAY'S DATA. TMYK opens with a hook tied to a number from today's briefing. Title and body reference at least one number/level/percentage/condition from today.
+
+4. WATCH LIST ITEMS MUST BE CONDITIONAL. At least HALF of items must include a specific level, threshold, or trigger. Calendar entries are weakest.
+
+5. BOTTOM LINES MUST SYNTHESIZE, NOT RESTATE. Add information beyond the section title. If inferable from title alone, rewrite.
+
+6. QUIET DAYS DESERVE QUIET BRIEFINGS. Do not manufacture drama. Acceptable: "Most days don't move markets. Today is one of them." Prefer 2 sections to 4. A reader who sees you call quiet days quiet trusts your loud days.
+
+7. CONTINUITY: REWARD THE REGULAR READER. When past briefings are provided, surface prior calls that today's data confirmed or invalidated.
+
+8. BASIS PULSE — INCLUDE EVERY WEEKDAY. Local basis is the moat. Directional language only ("tightening", "widening", "firm", "weak"). Do NOT invent specific cents-over/under numbers. On weekends/holidays, set both fields to empty strings.
+
+9. VOICE — ABSOLUTELY NON-NEGOTIABLE. The briefing must sound like the VOICE SAMPLES above. If a paragraph could appear unchanged in a Reuters or Bloomberg wire summary, REWRITE it with the operator vocabulary, embedded thesis, and imperative tone shown in the samples. The single most common failure mode is regression to wire-service neutral. Reject your own first draft if it reads neutral.
+
+10. THE FORWARD TEST. Before you finalize the lead, ask: would a working farmer forward this lead with one line of context to another farmer? If the answer is no, rewrite. The lead is the entire product.
+
+11. THREAD COHERENCE (Tue-Fri only). When weekly_thread context is provided, today's lead must materially advance the thread — new data, new development, new angle. Do NOT just rehash Monday's setup with the same evidence. Friday must resolve, not summarize.
+
+══ OUTPUT — return valid JSON with EXACTLY these fields ══
 
 {{
-  "headline": "ALL CAPS, 6 to 10 words. The single biggest story.",
+  "headline": "ALL CAPS, 6-10 words.",
   "subheadline": "One sentence adding context.",
-  "lead": "2 or 3 sentences. Must contain at least one specific price from the table.",
+  "lead": "2-3 sentences. Specific price from table + synthesizing observation (RULE 1). Voice samples (RULE 9). Forward test (RULE 10). On Tue-Fri, advances the thread (RULE 11).",
   "teaser": "One punchy sentence for the collapsed hero bar.",
-  "one_number": {{
-    "value": "The most interesting number of the day. Must be from the LOCKED PRICE TABLE or be a meaningful composite (streak count, days since, ratio). Trivial non-events (for example 'down 0.2%') must NOT be the one number. Pick something a farmer would actually find illuminating.",
-    "unit": "3 to 6 words describing what the number represents.",
-    "context": "2 or 3 sentences explaining why it matters."
+  "one_number": {{"value": "Most interesting number", "unit": "3-6 words", "context": "2-3 sentences"}},
+  "yesterdays_call": {{
+    "summary": "1 sentence describing the prior call (use the call text I gave you above as starting material; can be paraphrased for fit).",
+    "outcome": "played_out | didnt | pending",
+    "note": "1 sentence on what it means for today. OMIT field entirely on Mondays after long weekends or when no prior call was provided."
   }},
   "sections": [
-    {{
-      "title": "3 to 5 words",
-      "icon": "Single emoji",
-      "body": "3 to 5 sentences. Bold a key phrase with <strong> tags. All prices from the LOCKED TABLE.",
-      "bottom_line": "One sentence TL;DR, max 20 words.",
-      "conviction_level": "low | medium | high",
+    {{"title": "3-5 words", "icon": "Single emoji", "body": "3-5 sentences with <strong> tags. All prices from LOCKED TABLE. VOICE.",
+      "bottom_line": "TL;DR adding info beyond title (RULE 5). Max 20 words.",
+      "conviction_level": "low | medium | high (earned per RULE 2)",
       "overnight_surprise": true/false,
-      "farmer_action": "OPTIONAL. Include ONLY when you have a specific, thresholded recommendation tied to today's data. Examples of WHAT TO INCLUDE: 'Price old crop if Dec corn closes above $4.85 on Monday.' 'Lock 50% of projected diesel if WTI breaks below $85.' Examples of WHAT NOT TO INCLUDE: 'Lock in diesel when prices soften.' 'Price remaining old crop aggressively on any weather scare.' Generic recommendations without a specific threshold are not allowed. If you cannot produce a genuinely specific action, OMIT this field entirely from the section."
-    }}
+      "farmer_action": "OPTIONAL. Specific thresholded recommendation only. Otherwise OMIT entirely."}}
   ],
-  "the_more_you_know": {{
-    "title": "Educational topic. MUST differ from any past TMYK topic listed above.",
-    "body": "3 or 4 sentences. Smart friend over coffee. Teach something specific that ties to today's data if possible."
+  "spread_to_watch": {{
+    "label": "Specific spread name. Examples: 'November beans / July beans inverse', 'Dec corn / Jul wheat ratio', 'Cheese block / barrel', 'Live cattle / feeder ratio', 'Front-month crude / Brent'.",
+    "level": "Where it is now plus direction. Examples: '$0.34 inverse, widening', '1.02 ratio, tight', '8 cents wide and rolling out'.",
+    "commentary": "2 sentences. What is this spread saying that the headline price isn't? Embedded thesis. VOICE."
   }},
-  "watch_list": [
-    {{"time": "Time or timeframe", "desc": "What to watch. <strong> tags ok."}}
-  ],
-  "daily_quote": {{
-    "text": "EXACT quote provided. Do not modify.",
-    "attribution": "EXACT attribution provided. Do not modify."
+  "basis": {{"headline": "Short line capturing basis story (max 12 words).",
+             "body": "2-4 sentences. Directional only (RULE 8). Bold key phrase with <strong>."}},
+  "weekly_thread": {{
+    "question": "Monday's question (copy forward Tue-Fri verbatim, set fresh on Mondays).",
+    "day": "1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri",
+    "status_text": "Today's contribution to the arc. 1-2 sentences. Setup on Mon, progress Tue-Thu, resolution on Fri (RULE 11)."
   }},
+  "the_more_you_know": {{"title": "Differs from past TMYK topics. Tied to today's data (RULE 3).",
+                          "body": "3-4 sentences. Open with reference to today's number/level/condition."}},
+  "watch_list": [{{"time": "Time", "desc": "What. Half must include level/threshold (RULE 4)."}}],
+  "daily_quote": {{"text": "EXACT quote.", "attribution": "EXACT attribution."}},
   "source_summary": "Data sources",
-  "date": "Full date like 'Saturday, April 4, 2026'",
-  "meta": {{
-    "market_mood": "bullish | bearish | mixed | cautious | volatile",
-    "heat_section": 0,
-    "overnight_surprises_count": 0
-  }}
+  "date": "Like 'Monday, April 27, 2026'",
+  "meta": {{"market_mood": "bullish|bearish|mixed|cautious|volatile", "heat_section": 0, "overnight_surprises_count": 0}}
 }}
 
-══ SECTIONS ══
-- Weekday default: Grains & Oilseeds / Livestock & Dairy / Energy & Inputs / Macro & Trade
-- MINIMUM 2 sections, MAXIMUM 5. If there is no real story in one bucket (for example a flat Macro day), fold it into an adjacent section or OMIT IT entirely. Do not pad.
-- Weekend/holiday: adjust titles to reflect review or outlook framing.
+SECTIONS:
+- Default weekday: Grains & Oilseeds / Livestock & Dairy / Energy & Inputs / Macro & Trade
+- MIN 2, MAX 5. If no story in a bucket, fold or OMIT. No padding.
+- Quiet days: prefer 2-3 sections (RULE 6).
 
-RESPOND WITH ONLY THE JSON OBJECT. No markdown. No preamble. No em dashes."""
+OMISSIONS — set fields to null or empty objects when not applicable:
+- yesterdays_call: omit on Mondays after long weekends if no recent call provided. Otherwise required Tue-Fri.
+- spread_to_watch: required every weekday. Pick something meaningful, not filler.
+- weekly_thread: required every weekday. Monday sets, Tue-Thu advance, Fri resolves.
+- basis: required every weekday. Empty strings on weekends/holidays.
+
+RESPOND WITH ONLY THE JSON OBJECT. No markdown. No preamble. No em dashes. VOICE OR DEATH."""
 
 
-def call_claude(price_data, surprises, news_block, seasonal_ctx, todays_quote, past_dailies_block, past_tmyk_topics, market_status):
+def call_claude(price_data, surprises, news_block, seasonal_ctx, todays_quote, past_dailies_block, past_tmyk_topics, market_status, yesterdays_call=None, weekly_thread=None):
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
-        print("[error] ANTHROPIC_API_KEY not set", file=sys.stderr)
-        sys.exit(1)
-
+        print("[error] ANTHROPIC_API_KEY not set", file=sys.stderr); sys.exit(1)
     now = datetime.now()
     date_str = now.strftime("%A, %B %-d, %Y")
-
     if surprises and not market_status["is_closed"]:
         lines = []
         for s in surprises:
-            if s["surprise_magnitude"] >= 3.5:
-                tier = "MAJOR"
-            elif s["surprise_magnitude"] >= 2.5:
-                tier = "SIGNIFICANT"
-            elif s["surprise_magnitude"] >= 1.5:
-                tier = "Notable"
-            else:
-                tier = "Mild"
-            lines.append(
-                f"  {tier}: {s['commodity']} moved {s['pct_change']:+.1f}% "
-                f"({s['direction']}), magnitude {s['surprise_magnitude']}x threshold"
-            )
-        surprise_block = (
-            f"OVERNIGHT SURPRISES ({len(surprises)} moves above threshold):\n"
-            + "\n".join(lines)
-            + "\nFlag these in relevant sections with overnight_surprise: true."
-        )
+            tier = "MAJOR" if s["surprise_magnitude"] >= 3.5 else ("SIGNIFICANT" if s["surprise_magnitude"] >= 2.5 else ("Notable" if s["surprise_magnitude"] >= 1.5 else "Mild"))
+            lines.append(f"  {tier}: {s['commodity']} moved {s['pct_change']:+.1f}% ({s['direction']}), magnitude {s['surprise_magnitude']}x")
+        surprise_block = f"OVERNIGHT SURPRISES ({len(surprises)} above threshold):\n" + "\n".join(lines) + "\nFlag in relevant sections with overnight_surprise: true."
     elif market_status["is_closed"]:
-        surprise_block = (
-            "Markets are closed. Do not frame any price moves as 'overnight surprises.' "
-            "These are simply Friday's closing prices vs Thursday's."
-        )
+        surprise_block = "Markets closed. Do not frame as 'overnight surprises.' Friday's close vs Thursday's."
     else:
-        surprise_block = (
-            "No overnight surprises. All moves within normal ranges. "
-            "Write an honest, measured briefing. Quiet days deserve quiet briefings. "
-            "Use fewer sections if warranted."
-        )
+        surprise_block = "No overnight surprises. Quiet days deserve quiet briefings (RULE 6). Fewer sections if warranted."
 
     locked_table = price_data.get("price_block", "Price data unavailable")
-
-    market_note = ""
-    if market_status["is_closed"]:
-        market_note = f"\nMARKET STATUS NOTE: {market_status['note']}\n"
-
+    market_note = f"\nMARKET STATUS: {market_status['note']}\n" if market_status["is_closed"] else ""
     past_section = f"\n{past_dailies_block}\n" if past_dailies_block else ""
 
     user_message = f"""Generate today's AGSIST Daily briefing.
 
 DATE: {date_str}
 {market_note}
-LOCKED PRICE TABLE (use ONLY these prices; do not invent or estimate):
+LOCKED PRICE TABLE (use ONLY these; do not invent):
 {locked_table}
 
-OVERNIGHT SURPRISE ANALYSIS:
+OVERNIGHT SURPRISES:
 {surprise_block}
 
-SEASONAL CONTEXT:
-{seasonal_ctx}
+SEASONAL: {seasonal_ctx}
 {past_section}
-AG NEWS HEADLINES (context only, use prices above):
+AG NEWS HEADLINES (context only):
 {news_block}
 
-TODAY'S QUOTE (copy exactly, do not modify):
+TODAY'S QUOTE (copy exactly):
 Text: "{todays_quote['text']}"
 Attribution: "{todays_quote['attribution']}"
 
-Your job: explain what these prices MEAN for US grain and livestock producers, what they SHOULD consider doing, and what's COMING NEXT. Remember: no em dashes, flexible section count, farmer_action only when genuinely specific."""
+Apply all 11 IMPACT RULES. Voice samples are NON-NEGOTIABLE — no wire-service neutral. Forward test the lead before you finalize. If today is Tue-Fri, advance the weekly thread, do NOT rehash."""
 
-    payload = {
-        "model": MODEL,
-        "max_tokens": 4000,
-        "system": build_system_prompt(market_status, past_tmyk_topics),
-        "messages": [{"role": "user", "content": user_message}],
-    }
-
-    headers = {
-        "Content-Type": "application/json",
-        "x-api-key": api_key,
-        "anthropic-version": "2023-06-01",
-    }
-
+    payload = {"model": MODEL, "max_tokens": 4500,
+               "system": build_system_prompt(market_status, past_tmyk_topics, yesterdays_call, weekly_thread),
+               "messages": [{"role": "user", "content": user_message}]}
+    headers = {"Content-Type": "application/json", "x-api-key": api_key, "anthropic-version": "2023-06-01"}
     if requests:
         resp = requests.post(ANTHROPIC_API, json=payload, headers=headers, timeout=60)
-        resp.raise_for_status()
-        result = resp.json()
+        resp.raise_for_status(); result = resp.json()
     else:
         data_bytes = json.dumps(payload).encode("utf-8")
         req = urllib.request.Request(ANTHROPIC_API, data=data_bytes, headers=headers, method="POST")
         with urllib.request.urlopen(req, timeout=60) as resp:
             result = json.loads(resp.read().decode("utf-8"))
-
     text = ""
     for block in result.get("content", []):
-        if block.get("type") == "text":
-            text += block["text"]
-
+        if block.get("type") == "text": text += block["text"]
     text = text.strip()
-    if text.startswith("```"):
-        text = text.split("\n", 1)[1] if "\n" in text else text[3:]
-    if text.endswith("```"):
-        text = text[:-3]
+    if text.startswith("```"): text = text.split("\n", 1)[1] if "\n" in text else text[3:]
+    if text.endswith("```"): text = text[:-3]
     text = text.strip()
-    if text.startswith("json"):
-        text = text[4:].strip()
-
+    if text.startswith("json"): text = text[4:].strip()
     return json.loads(text)
 
-
-# ═══════════════════════════════════════════════════════════════════
-# POST-GENERATION VALIDATION
-# ═══════════════════════════════════════════════════════════════════
 
 def validate_briefing(briefing, locked_prices):
     warnings = []
     known_values = {k: v for k, v in locked_prices.items() if v and v > 0}
-
-    all_text = []
-    all_text.append(briefing.get("headline", ""))
-    all_text.append(briefing.get("lead", ""))
-    all_text.append(briefing.get("subheadline", ""))
-    if briefing.get("one_number"):
-        all_text.append(briefing["one_number"].get("context", ""))
+    parts = [briefing.get("headline", ""), briefing.get("lead", ""), briefing.get("subheadline", "")]
+    if briefing.get("one_number"): parts.append(briefing["one_number"].get("context", ""))
     for sec in briefing.get("sections", []):
-        all_text.append(sec.get("body", ""))
-        all_text.append(sec.get("bottom_line", ""))
+        parts.append(sec.get("body", "")); parts.append(sec.get("bottom_line", ""))
     tmyk = briefing.get("the_more_you_know") or briefing.get("tmyk") or {}
-    all_text.append(tmyk.get("body", ""))
-    full_text = " ".join(all_text)
-
-    em_count = full_text.count("\u2014")
-    en_count = full_text.count("\u2013")
-    if em_count > 0:
-        warnings.append(f"Em dash (U+2014) found {em_count} times. Prompt rule violation.")
-    if en_count > 0:
-        warnings.append(f"En dash (U+2013) found {en_count} times. Prompt rule violation.")
-
+    parts.append(tmyk.get("body", ""))
+    basis = briefing.get("basis") or {}
+    parts.append(basis.get("body", ""))
+    full_text = " ".join(parts)
+    em = full_text.count("\u2014"); en = full_text.count("\u2013")
+    if em: warnings.append(f"Em dash {em}x")
+    if en: warnings.append(f"En dash {en}x")
     lower = full_text.lower()
-    for phrase in ("wisconsin", "minnesota", "wi/mn", "wi and mn"):
-        if phrase in lower:
-            warnings.append(f"Geographic scope violation: '{phrase}' found. AGSIST is national.")
-
+    for phrase in ("wisconsin", "minnesota", "wi/mn"):
+        if phrase in lower: warnings.append(f"Geo scope: '{phrase}'")
     q = briefing.get("daily_quote") or briefing.get("quote") or {}
     attr = (q.get("attribution") or "").strip().lower()
     if attr in FILLER_ATTRIBUTIONS:
-        warnings.append(f"daily_quote.attribution is filler ({q.get('attribution')!r}).")
-
+        warnings.append(f"Quote attribution filler ({q.get('attribution')!r})")
     dollar_pattern = re.compile(r'\$([0-9,]+(?:\.[0-9]+)?)')
     found_values = []
-    for match in dollar_pattern.finditer(full_text):
-        try:
-            val = float(match.group(1).replace(",", ""))
-            found_values.append((val, match.group(0)))
-        except ValueError:
-            pass
-
-    COMMODITY_RANGES = {
-        "corn":    (2.0, 9.0),
-        "beans":   (7.0, 20.0),
-        "wheat":   (3.0, 12.0),
-        "crude":   (30.0, 200.0),
-        "natgas":  (1.0, 15.0),
-        "gold":    (500.0, 10000.0),
-        "silver":  (5.0, 200.0),
-        "cattle":  (100.0, 350.0),
-        "hogs":    (40.0, 150.0),
-        "milk":    (10.0, 35.0),
-    }
-
-    for found_val, found_str in found_values:
-        matched = any(
-            known_val > 0 and abs(found_val - known_val) / known_val <= 0.05
-            for known_val in known_values.values()
-        )
+    for m in dollar_pattern.finditer(full_text):
+        try: found_values.append((float(m.group(1).replace(",", "")), m.group(0)))
+        except ValueError: pass
+    COMMODITY_RANGES = {"corn": (2.0, 9.0), "beans": (7.0, 20.0), "wheat": (3.0, 12.0),
+                        "crude": (30.0, 200.0), "natgas": (1.0, 15.0), "gold": (500.0, 10000.0),
+                        "silver": (5.0, 200.0), "cattle": (100.0, 350.0), "hogs": (40.0, 150.0),
+                        "milk": (10.0, 35.0)}
+    for fv, fs in found_values:
+        matched = any(kv > 0 and abs(fv - kv) / kv <= 0.05 for kv in known_values.values())
         if not matched:
             for key, (lo, hi) in COMMODITY_RANGES.items():
-                if lo <= found_val <= hi:
-                    warnings.append(f"Price {found_str} not in prices.json (possible {key})")
+                if lo <= fv <= hi:
+                    warnings.append(f"Price {fs} not in prices.json (possible {key})")
                     break
-
     return len(warnings) == 0, warnings
 
 
-# ═══════════════════════════════════════════════════════════════════
-# SPARKLINE RENDERING (used by archive HTML template)
-# ═══════════════════════════════════════════════════════════════════
+SPONSOR_OVERRIDE = None
+
+SPONSOR_HOUSE_AD = {
+    "active": False, "label": "SPONSORED", "advertiser": "AGSIST",
+    "headline": "This slot reaches US grain producers at 6 AM CT — before the open.",
+    "body": "AGSIST Daily lands in the inbox of working US grain and livestock farmers every weekday morning, before the first call to the elevator. One sponsor per briefing. No retargeting. No programmatic auctions. Just your message, the morning routine of producers who actually move the markets we cover.",
+    "cta_text": "Inquire about sponsorship",
+    "cta_url": "mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20sponsorship%20inquiry",
+    "disclosure": "Single placement. Contact for pricing and availability.",
+    "is_house_ad": True,
+}
+
+
+def build_sponsor_block():
+    if SPONSOR_OVERRIDE:
+        out = dict(SPONSOR_OVERRIDE)
+        out.setdefault("label", "SPONSORED"); out.setdefault("active", True)
+        out.setdefault("is_house_ad", False)
+        return out
+    sponsor_path = REPO_ROOT / "data" / "sponsor.json"
+    if sponsor_path.exists():
+        try:
+            with open(sponsor_path) as f: data = json.load(f)
+            if data.get("active"):
+                data.setdefault("label", "SPONSORED"); data.setdefault("is_house_ad", False)
+                return data
+        except Exception as e:
+            print(f"  [warn] sponsor.json unreadable: {e}", file=sys.stderr)
+    return dict(SPONSOR_HOUSE_AD)
+
 
 def render_sparkline_svg(series, width=180, height=32):
-    """Inline SVG sparkline. Green if up, red if down. Filled area + stroke."""
-    if not series or len(series) < 2:
-        return ""
-    mn, mx = min(series), max(series)
-    rng = (mx - mn) or 1
-    p = 3
-    step = (width - p * 2) / (len(series) - 1)
-    pts = [(p + i * step, height - p - ((v - mn) / rng) * (height - p * 2))
-           for i, v in enumerate(series)]
+    if not series or len(series) < 2: return ""
+    mn, mx = min(series), max(series); rng = (mx - mn) or 1
+    p = 3; step = (width - p * 2) / (len(series) - 1)
+    pts = [(p + i * step, height - p - ((v - mn) / rng) * (height - p * 2)) for i, v in enumerate(series)]
     first, last = series[0], series[-1]
     stroke = "#4aab4c" if last >= first else "#e05a42"
     fill = "rgba(74,171,76,.14)" if last >= first else "rgba(224,90,66,.14)"
     pts_str = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
     last_x, last_y = pts[-1]
     area_pts = pts_str + f" {last_x:.1f},{height} {p},{height}"
-    return (
-        f'<svg viewBox="0 0 {width} {height}" preserveAspectRatio="none" '
-        f'aria-hidden="true" style="width:100%;height:30px;display:block">'
-        f'<polyline points="{area_pts}" fill="{fill}" stroke="none"/>'
-        f'<polyline points="{pts_str}" fill="none" stroke="{stroke}" '
-        f'stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>'
-        f'<circle cx="{last_x:.1f}" cy="{last_y:.1f}" r="2" fill="{stroke}"/>'
-        f'</svg>'
-    )
+    return (f'<svg viewBox="0 0 {width} {height}" preserveAspectRatio="none" aria-hidden="true" style="width:100%;height:30px;display:block">'
+            f'<polyline points="{area_pts}" fill="{fill}" stroke="none"/>'
+            f'<polyline points="{pts_str}" fill="none" stroke="{stroke}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>'
+            f'<circle cx="{last_x:.1f}" cy="{last_y:.1f}" r="2" fill="{stroke}"/></svg>')
 
-
-# ═══════════════════════════════════════════════════════════════════
-# ARCHIVE HTML (v3.6 — hygiene + share + sparklines + OG)
-# ═══════════════════════════════════════════════════════════════════
 
 ARCHIVE_JSON_DIR = REPO_ROOT / "data" / "daily-archive"
 ARCHIVE_HTML_DIR = REPO_ROOT / "daily"
 
 
 def html_esc(s):
-    if not s:
-        return ""
+    if not s: return ""
     return str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
 
 
 def html_esc_preserve_strong(s):
-    if not s:
-        return ""
+    if not s: return ""
     parts = re.split(r'(</?strong>)', s, flags=re.IGNORECASE)
-    result = []
+    out = []
     for part in parts:
-        if part.lower() in ('<strong>', '</strong>'):
-            result.append(part.lower())
-        else:
-            result.append(html_esc(part))
-    return "".join(result)
+        if part.lower() in ('<strong>', '</strong>'): out.append(part.lower())
+        else: out.append(html_esc(part))
+    return "".join(out)
 
 
 def js_esc(s):
-    """Escape string for embedding inside a single-quoted JS string literal."""
-    if s is None:
-        return ""
-    return (str(s)
-            .replace("\\", "\\\\")
-            .replace("'", "\\'")
-            .replace("\n", " ")
-            .replace("\r", " ")
-            .replace("\u2028", " ")
-            .replace("\u2029", " "))
+    if s is None: return ""
+    return (str(s).replace("\\", "\\\\").replace("'", "\\'").replace("\n", " ")
+            .replace("\r", " ").replace("\u2028", " ").replace("\u2029", " "))
 
 
 def og_image_for(date_iso):
-    """Return the OG image URL for a given date.
-
-    When OG_IMAGE_BASE is set (the agsist-og Cloudflare Worker is live),
-    emits a per-day image URL. Until then, falls back to the generic image.
-    """
-    if OG_IMAGE_BASE:
-        return f"{OG_IMAGE_BASE}{date_iso}.png"
+    if OG_IMAGE_BASE: return f"{OG_IMAGE_BASE}{date_iso}.png"
     return "https://agsist.com/img/og/agsist.jpg"
+
+
+def render_sponsor_block_html(sponsor):
+    if not sponsor: return ""
+    label = html_esc(sponsor.get("label", "SPONSORED"))
+    advertiser = html_esc(sponsor.get("advertiser", ""))
+    headline = html_esc(sponsor.get("headline", ""))
+    body = html_esc(sponsor.get("body", ""))
+    cta_text = html_esc(sponsor.get("cta_text", "Learn more"))
+    cta_url = html_esc(sponsor.get("cta_url", "#"))
+    disclosure = html_esc(sponsor.get("disclosure", ""))
+    is_house = sponsor.get("is_house_ad", False)
+    house_class = " dv3-sponsor--house" if is_house else ""
+    advertiser_html = f'<span class="dv3-sponsor-by">{advertiser}</span>' if advertiser and not is_house else ""
+    disclosure_html = f'<div class="dv3-sponsor-disclosure">{disclosure}</div>' if disclosure else ""
+    target = ' target="_blank"' if cta_url.startswith('http') else ''
+    return (f'<aside class="dv3-sponsor{house_class}" aria-label="Sponsored content">'
+            f'<div class="dv3-sponsor-label-row"><span class="dv3-sponsor-label">{label}</span>{advertiser_html}</div>'
+            f'<div class="dv3-sponsor-headline">{headline}</div>'
+            f'<div class="dv3-sponsor-body">{body}</div>'
+            f'<a class="dv3-sponsor-cta" href="{cta_url}" rel="sponsored noopener"{target}>{cta_text} &rarr;</a>'
+            f'{disclosure_html}</aside>')
+
+
+def render_basis_block_html(basis, market_closed=False):
+    if not basis or market_closed: return ""
+    headline = html_esc(basis.get("headline", "")).strip()
+    body = html_esc_preserve_strong(basis.get("body", "")).strip()
+    if not headline and not body: return ""
+    headline_html = f'<div class="dv3-basis-headline">{headline}</div>' if headline else ""
+    body_html = f'<div class="dv3-basis-body">{body}</div>' if body else ""
+    return (f'<div class="dv3-basis"><div class="dv3-basis-label">&#x1F4CD; BASIS PULSE</div>'
+            f'{headline_html}{body_html}</div>')
+
+
+def render_forward_block_html(date_iso):
+    return ('<div class="dv3-forward">'
+            '<span class="dv3-forward-icon">&#x1F4E8;</span>'
+            '<div class="dv3-forward-content">'
+            '<div class="dv3-forward-headline">Know a farmer who&rsquo;d want this?</div>'
+            '<div class="dv3-forward-sub">Forward this briefing. Or new here? Subscribe in one tap.</div>'
+            '</div>'
+            '<a class="dv3-forward-cta" href="https://agsist.com/daily?subscribe=1">Subscribe &rarr;</a>'
+            '</div>')
+
+
+def render_byline_block_html():
+    return ('<div class="dv3-byline">'
+            'Written by <strong>Sigurd Lindquist</strong>, founder. Reply at '
+            '<a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &mdash; I read everything.'
+            '</div>')
+
+
+def render_yesterdays_call_block_html(yc, market_closed=False):
+    """yc is briefing.get('yesterdays_call') dict. Skip on weekends/holidays
+    or when summary is empty (no prior call to thread)."""
+    if not yc or market_closed: return ""
+    summary = html_esc((yc.get("summary") or "").strip())
+    outcome = (yc.get("outcome") or "").strip().lower()
+    note = html_esc_preserve_strong((yc.get("note") or "").strip())
+    if not summary: return ""
+    outcome_map = {
+        "played_out": ("PLAYED OUT", "#4aab4c", "rgba(74,171,76,.10)", "rgba(74,171,76,.32)"),
+        "didnt": ("DIDN'T", "#e05a42", "rgba(224,90,66,.10)", "rgba(224,90,66,.32)"),
+        "pending": ("STILL PENDING", "#e6b042", "rgba(218,165,32,.10)", "rgba(218,165,32,.32)"),
+    }
+    label, color, bg, border = outcome_map.get(outcome, outcome_map["pending"])
+    note_html = f'<div class="dv3-yc-note">{note}</div>' if note else ""
+    return (f'<div class="dv3-yc">'
+            f'<div class="dv3-yc-label">&#x21BA; YESTERDAY\'S CALL '
+            f'<span class="dv3-yc-outcome" style="color:{color};background:{bg};border:1px solid {border}">{label}</span>'
+            f'</div>'
+            f'<div class="dv3-yc-summary">{summary}</div>'
+            f'{note_html}'
+            f'</div>')
+
+
+def render_spread_block_html(spread, market_closed=False):
+    """spread is briefing.get('spread_to_watch') dict."""
+    if not spread or market_closed: return ""
+    label = html_esc((spread.get("label") or "").strip())
+    level = html_esc((spread.get("level") or "").strip())
+    commentary = html_esc_preserve_strong((spread.get("commentary") or "").strip())
+    if not label and not commentary: return ""
+    label_html = f'<div class="dv3-spread-label-text">{label}</div>' if label else ""
+    level_html = f'<div class="dv3-spread-level">{level}</div>' if level else ""
+    body_html = f'<div class="dv3-spread-body">{commentary}</div>' if commentary else ""
+    return (f'<div class="dv3-spread">'
+            f'<div class="dv3-spread-label">&#x21C4; THE SPREAD TO WATCH</div>'
+            f'{label_html}{level_html}{body_html}'
+            f'</div>')
+
+
+def render_thread_marker_html(thread, market_closed=False):
+    """thread is briefing.get('weekly_thread') dict. Renders as a small
+    chapter-marker above the lead. Quietly fades on Tue-Thu, gets emphasis
+    on Mon (setup) and Fri (resolution)."""
+    if not thread or market_closed: return ""
+    question = html_esc((thread.get("question") or "").strip())
+    day = thread.get("day") or 0
+    if not question: return ""
+    day_labels = {1: "MONDAY SETUP", 2: "TUE UPDATE", 3: "WED UPDATE", 4: "THU UPDATE", 5: "FRIDAY RESOLUTION"}
+    day_text = day_labels.get(day, "THIS WEEK")
+    is_anchor = day in (1, 5)  # Setup or resolution = stronger emphasis
+    cls = "dv3-thread dv3-thread--anchor" if is_anchor else "dv3-thread"
+    return (f'<div class="{cls}">'
+            f'<span class="dv3-thread-day">&#x1F9F5; {day_text}</span>'
+            f'<span class="dv3-thread-q">{question}</span>'
+            f'</div>')
 
 
 def generate_archive_html(briefing, date_iso):
@@ -1019,11 +941,13 @@ def generate_archive_html(briefing, date_iso):
     surprise_count = meta.get("overnight_surprises_count", 0)
     is_weekend_brief = briefing.get("market_closed", False)
     gen_at = briefing.get("generated_at", "")
+    issue_num = briefing.get("issue_number", 0)
 
     og_image_url = og_image_for(date_iso)
     og_description_raw = briefing.get("teaser") or briefing.get("lead") or briefing.get("subheadline") or "AGSIST Daily morning market briefing"
     og_description = html_esc(og_description_raw[:180])
     desc_escaped = html_esc(lead[:160]) if lead else og_description
+    issue_suffix = f" &middot; ISSUE #{issue_num}" if issue_num else ""
 
     surprise_html = ""
     if surprise_count > 0 and not is_weekend_brief:
@@ -1031,14 +955,11 @@ def generate_archive_html(briefing, date_iso):
         for s in surprises:
             arrow = "UP" if s.get("direction") == "up" else "DN"
             names.append(f'{s.get("commodity","")} {arrow} {abs(s.get("pct_change",0)):.1f}%')
-        surprise_html = (
-            f'<div class="dv3-surprise-banner" style="display:flex">\n'
-            f'      <span class="surprise-icon">&#x26A1;</span>\n'
-            f'      <span class="surprise-text"><strong>Overnight Surprise'
-            f'{"s" if surprise_count > 1 else ""}:</strong> '
-            f'{" / ".join(names) if names else str(surprise_count) + " unusual move" + ("s" if surprise_count > 1 else "")}'
-            f'</span>\n    </div>'
-        )
+        surprise_html = (f'<div class="dv3-surprise-banner" style="display:flex">'
+                         f'<span class="surprise-icon">&#x26A1;</span>'
+                         f'<span class="surprise-text"><strong>Overnight Surprise{"s" if surprise_count > 1 else ""}:</strong> '
+                         f'{" / ".join(names) if names else str(surprise_count) + " unusual move"}'
+                         f'</span></div>')
 
     mood_html = ""
     if mood:
@@ -1052,13 +973,9 @@ def generate_archive_html(briefing, date_iso):
         mood_icons = {"bullish": "\u2197", "bearish": "\u2198", "mixed": "\u2194", "cautious": "\u26A0\uFE0F", "volatile": "\U0001F525"}
         mc = mood_colors.get(mood, mood_colors["mixed"])
         mi = mood_icons.get(mood, "\U0001F4CA")
-        mood_html = (
-            f'<span class="dv3-mood" style="display:inline-flex;'
-            f'color:{mc[0]};background:{mc[1]};border:1px solid {mc[2]}">'
-            f'{mi} {mood.capitalize()}</span>'
-        )
+        mood_html = (f'<span class="dv3-mood" style="display:inline-flex;color:{mc[0]};background:{mc[1]};border:1px solid {mc[2]}">'
+                     f'{mi} {mood.capitalize()}</span>')
 
-    # Sparklines (pre-rendered inline SVG)
     chart_series = briefing.get("chart_series") or {}
     sparks_html = ""
     if chart_series:
@@ -1068,38 +985,25 @@ def generate_archive_html(briefing, date_iso):
             ser = chart_series.get(key) or []
             if len(ser) >= 2:
                 last = ser[-1]
-                try:
-                    last_str = f"${float(last):.2f}"
-                except (TypeError, ValueError):
-                    last_str = str(last)
+                try: last_str = f"${float(last):.2f}"
+                except (TypeError, ValueError): last_str = str(last)
                 svg = render_sparkline_svg(ser)
-                cells.append(
-                    f'<div class="dv3-spark">'
-                    f'<div class="dv3-spark-head">'
-                    f'<span class="dv3-spark-label">{label}</span>'
-                    f'<span class="dv3-spark-last">{last_str}</span>'
-                    f'</div>'
-                    f'{svg}'
-                    f'</div>'
-                )
-        if cells:
-            sparks_html = '<div class="dv3-sparks">' + "".join(cells) + '</div>'
+                cells.append(f'<div class="dv3-spark"><div class="dv3-spark-head">'
+                             f'<span class="dv3-spark-label">{label}</span>'
+                             f'<span class="dv3-spark-last">{last_str}</span></div>{svg}</div>')
+        if cells: sparks_html = '<div class="dv3-sparks">' + "".join(cells) + '</div>'
 
     sections_html = ""
     for i, sec in enumerate(briefing.get("sections", [])):
         cls = "dv3-sec"
-        if sec.get("overnight_surprise") and not is_weekend_brief:
-            cls += " dv3-sec--surprise"
-        if i == heat_idx:
-            cls += " dv3-sec--heat"
-
+        if sec.get("overnight_surprise") and not is_weekend_brief: cls += " dv3-sec--surprise"
+        if i == heat_idx: cls += " dv3-sec--heat"
         icon = html_esc(sec.get("icon", "\U0001F4CA"))
         title = html_esc(sec.get("title", ""))
         body = html_esc_preserve_strong(sec.get("body", ""))
         bottom_line = html_esc(sec.get("bottom_line", ""))
         farmer_action = html_esc(sec.get("farmer_action", ""))
         conviction = sec.get("conviction_level", "")
-
         conviction_html = ""
         if conviction:
             cv_colors = {
@@ -1108,81 +1012,49 @@ def generate_archive_html(briefing, date_iso):
                 "low":    ("var(--text-muted)", "var(--surface2)", "var(--border)"),
             }
             cv = cv_colors.get(conviction, cv_colors["medium"])
-            conviction_html = (
-                f'<span class="dv3-sec-conviction" style="color:{cv[0]};'
-                f'background:{cv[1]};border:1px solid {cv[2]}">'
-                f'{conviction.upper()} CONVICTION</span>'
-            )
-
+            conviction_html = f'<span class="dv3-sec-conviction" style="color:{cv[0]};background:{cv[1]};border:1px solid {cv[2]}">{conviction.upper()} CONVICTION</span>'
         bottom_html = f'<div class="dv3-sec-bottomline">{bottom_line}</div>' if bottom_line else ""
         action_html = f'<div class="dv3-sec-action">&#x1F3AF; {farmer_action}</div>' if farmer_action else ""
-
-        sections_html += f'''
-    <div class="{cls}" style="position:relative">
-      <div class="dv3-sec-header">
-        <span class="dv3-sec-icon">{icon}</span>
-        <span class="dv3-sec-title">{title}</span>
-        {conviction_html}
-      </div>
-      <div class="dv3-sec-body">{body}</div>
-      {bottom_html}
-      {action_html}
-    </div>'''
+        sections_html += (f'<div class="{cls}" style="position:relative">'
+                          f'<div class="dv3-sec-header"><span class="dv3-sec-icon">{icon}</span>'
+                          f'<span class="dv3-sec-title">{title}</span>{conviction_html}</div>'
+                          f'<div class="dv3-sec-body">{body}</div>{bottom_html}{action_html}</div>')
 
     one_num = briefing.get("one_number", {})
     one_num_html = ""
     if one_num:
-        one_num_html = (
-            f'<div class="dv3-one-number">\n'
-            f'        <div class="dv3-one-number-label">&#x1F4CA; THE NUMBER</div>\n'
-            f'        <div class="dv3-one-number-val">{html_esc(one_num.get("value", "\u2014"))}</div>\n'
-            f'        <div class="dv3-one-number-unit">{html_esc(one_num.get("unit", ""))}</div>\n'
-            f'        <div class="dv3-one-number-ctx">{html_esc(one_num.get("context", ""))}</div>\n'
-            f'      </div>'
-        )
+        one_num_html = (f'<div class="dv3-one-number">'
+                        f'<div class="dv3-one-number-label">&#x1F4CA; THE NUMBER</div>'
+                        f'<div class="dv3-one-number-val">{html_esc(one_num.get("value", "\u2014"))}</div>'
+                        f'<div class="dv3-one-number-unit">{html_esc(one_num.get("unit", ""))}</div>'
+                        f'<div class="dv3-one-number-ctx">{html_esc(one_num.get("context", ""))}</div>'
+                        f'</div>')
 
     quote = briefing.get("daily_quote", {})
     quote_html = ""
     if quote:
         qt = quote.get("text", "").strip('"\u201c\u201d')
         qa = quote.get("attribution", "").lstrip("\u2014\u2013- ")
-        quote_html = (
-            f'<div class="dv3-quote-card">\n'
-            f'        <div class="dv3-quote-label">&#x1F4AC; DAILY QUOTE</div>\n'
-            f'        <p class="dv3-quote-text">\u201c{html_esc(qt)}\u201d</p>\n'
-            f'        <cite class="dv3-quote-attr">{html_esc(qa)}</cite>\n'
-            f'      </div>'
-        )
+        quote_html = (f'<div class="dv3-quote-card">'
+                      f'<div class="dv3-quote-label">&#x1F4AC; DAILY QUOTE</div>'
+                      f'<p class="dv3-quote-text">\u201c{html_esc(qt)}\u201d</p>'
+                      f'<cite class="dv3-quote-attr">{html_esc(qa)}</cite></div>')
 
     tmyk = briefing.get("the_more_you_know", {})
     tmyk_html = ""
     if tmyk:
-        tmyk_html = (
-            f'<div class="dv3-tmyk">\n'
-            f'      <div class="dv3-tmyk-label">&#x1F9E0; THE MORE YOU KNOW</div>\n'
-            f'      <div class="dv3-tmyk-title">{html_esc(tmyk.get("title", ""))}</div>\n'
-            f'      <div class="dv3-tmyk-body">{html_esc(tmyk.get("body", ""))}</div>\n'
-            f'    </div>'
-        )
+        tmyk_html = (f'<div class="dv3-tmyk">'
+                     f'<div class="dv3-tmyk-label">&#x1F9E0; THE MORE YOU KNOW</div>'
+                     f'<div class="dv3-tmyk-title">{html_esc(tmyk.get("title", ""))}</div>'
+                     f'<div class="dv3-tmyk-body">{html_esc(tmyk.get("body", ""))}</div></div>')
 
     watch = briefing.get("watch_list", [])
     watch_items = ""
     for item in watch:
-        watch_items += (
-            f'<li class="dv3-watch-item">\n'
-            f'        <span class="dv3-watch-time">{html_esc(item.get("time", ""))}</span>\n'
-            f'        <span class="dv3-watch-desc">'
-            f'{html_esc_preserve_strong(item.get("desc", ""))}'
-            f'</span>\n      </li>'
-        )
-    watch_html = ""
-    if watch:
-        watch_html = (
-            f'<div class="dv3-watch">\n'
-            f'      <div class="dv3-watch-label">&#x1F4C5; TODAY\'S WATCH LIST</div>\n'
-            f'      <ul class="dv3-watch-list">{watch_items}</ul>\n'
-            f'    </div>'
-        )
+        watch_items += (f'<li class="dv3-watch-item">'
+                        f'<span class="dv3-watch-time">{html_esc(item.get("time", ""))}</span>'
+                        f'<span class="dv3-watch-desc">{html_esc_preserve_strong(item.get("desc", ""))}</span></li>')
+    watch_html = f'<div class="dv3-watch"><div class="dv3-watch-label">&#x1F4C5; TODAY\'S WATCH LIST</div><ul class="dv3-watch-list">{watch_items}</ul></div>' if watch else ""
 
     source = html_esc(briefing.get("source_summary", "USDA / CME Group / Open-Meteo"))
 
@@ -1190,39 +1062,39 @@ def generate_archive_html(briefing, date_iso):
     if is_weekend_brief:
         reason = briefing.get("market_status_reason", "")
         label = "WEEKEND EDITION" if reason == "weekend" else "HOLIDAY EDITION"
-        weekend_badge = (
-            f'<span style="display:inline-flex;align-items:center;gap:.3rem;'
-            f'font-family:\'JetBrains Mono\',monospace;font-size:.58rem;font-weight:700;'
-            f'letter-spacing:.1em;text-transform:uppercase;color:var(--gold);'
-            f'background:rgba(218,165,32,.08);border:1px solid rgba(218,165,32,.22);'
-            f'border-radius:3px;padding:.18rem .55rem;margin-left:.5rem">'
-            f'&#x1F4C5; {label}</span>'
-        )
+        weekend_badge = (f'<span style="display:inline-flex;align-items:center;gap:.3rem;'
+                         f'font-family:\'JetBrains Mono\',monospace;font-size:.58rem;font-weight:700;'
+                         f'letter-spacing:.1em;text-transform:uppercase;color:var(--gold);'
+                         f'background:rgba(218,165,32,.08);border:1px solid rgba(218,165,32,.22);'
+                         f'border-radius:3px;padding:.18rem .55rem;margin-left:.5rem">&#x1F4C5; {label}</span>')
 
-    topbar_html = ""
-    if one_num_html or quote_html:
-        topbar_html = f'<div class="dv3-topbar">\n      {one_num_html}\n      {quote_html}\n    </div>'
+    topbar_html = f'<div class="dv3-topbar">{one_num_html}{quote_html}</div>' if (one_num_html or quote_html) else ""
 
-    # Share block — identical pattern to daily.html
+    sponsor = briefing.get("sponsor") or build_sponsor_block()
+    sponsor_html = render_sponsor_block_html(sponsor)
+    basis_html = render_basis_block_html(briefing.get("basis"), is_weekend_brief)
+    forward_html = render_forward_block_html(date_iso)
+    byline_html = render_byline_block_html()
+    yc_html = render_yesterdays_call_block_html(briefing.get("yesterdays_call"), is_weekend_brief)
+    spread_html = render_spread_block_html(briefing.get("spread_to_watch"), is_weekend_brief)
+    thread_html = render_thread_marker_html(briefing.get("weekly_thread"), is_weekend_brief)
+
     share_html = (
         '<div class="dv3-share" role="group" aria-label="Share this briefing">'
         '<span class="dv3-share-label">Share</span>'
         '<button class="dv3-share-btn" data-share="twitter" type="button" aria-label="Post on X">'
         '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">'
         '<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>'
-        '</svg> Post'
-        '</button>'
+        '</svg> Post</button>'
         '<button class="dv3-share-btn" data-share="copy" type="button" aria-label="Copy link to this briefing">&#x1F517; Copy link</button>'
         '<button class="dv3-share-btn" data-share="email" type="button" aria-label="Email this briefing">&#x2709; Email</button>'
-        '</div>'
-    )
+        '</div>')
 
-    # Data for share JS (escape for single-quoted JS literal)
     js_permalink = f"https://agsist.com/daily/{date_iso}"
     js_headline  = js_esc(briefing.get("headline", "AGSIST Daily Briefing"))
     js_datedisp  = js_esc(date_display)
 
-    page = f'''<!DOCTYPE html>
+    page = f"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
@@ -1233,7 +1105,6 @@ def generate_archive_html(briefing, date_iso):
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <link rel="canonical" href="https://agsist.com/daily/{date_iso}">
-
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="AGSIST">
 <meta property="og:locale" content="en_US">
@@ -1247,14 +1118,12 @@ def generate_archive_html(briefing, date_iso):
 <meta property="article:published_time" content="{date_iso}">
 <meta property="article:modified_time" content="{gen_at}">
 <meta property="article:author" content="Sigurd Lindquist">
-
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@agsist">
 <meta name="twitter:creator" content="@agsist">
 <meta name="twitter:title" content="AGSIST Daily &mdash; {html_esc(date_display)}">
 <meta name="twitter:description" content="{og_description}">
 <meta name="twitter:image" content="{og_image_url}">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" href="/components/styles.css?v=10" as="style">
@@ -1265,10 +1134,8 @@ def generate_archive_html(briefing, date_iso):
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
-
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-
 <script type="application/ld+json">
 {{
   "@context": "https://schema.org",
@@ -1280,22 +1147,12 @@ def generate_archive_html(briefing, date_iso):
   "image": "{og_image_url}",
   "author": {{"@type": "Person", "name": "Sigurd Lindquist", "url": "https://agsist.com"}},
   "publisher": {{"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"}},
-  "mainEntityOfPage": {{"@type": "WebPage", "@id": "https://agsist.com/daily/{date_iso}"}},
-  "isPartOf": {{"@type": "WebSite", "name": "AGSIST", "url": "https://agsist.com"}},
-  "breadcrumb": {{
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com"}},
-      {{"@type": "ListItem", "position": 2, "name": "Daily Briefing", "item": "https://agsist.com/daily"}},
-      {{"@type": "ListItem", "position": 3, "name": "{html_esc(date_display)}", "item": "https://agsist.com/daily/{date_iso}"}}
-    ]
-  }}
+  "mainEntityOfPage": {{"@type": "WebPage", "@id": "https://agsist.com/daily/{date_iso}"}}
 }}
 </script>
 <style>
 button,a,[role="button"]{{touch-action:manipulation;}}
-html{{overflow-x:hidden;overflow-x:clip;width:100%;}}
-body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
+html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-page{{max-width:900px;margin:0 auto;padding:2rem 1.25rem}}
 .dv3-header{{margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:2px solid var(--border)}}
 .dv3-eyebrow{{display:inline-flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:.75rem;padding:.3rem .75rem;background:rgba(74,171,76,.06);border:1px solid rgba(74,171,76,.18);border-radius:3px}}
@@ -1304,28 +1161,28 @@ body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-headline{{font-family:'Oswald',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:.6rem;letter-spacing:-.01em;text-transform:uppercase}}
 .dv3-subheadline{{font-size:.92rem;color:var(--gold);font-weight:600;margin-bottom:.75rem}}
 .dv3-lead{{font-size:1.05rem;line-height:1.75;color:var(--text-dim);max-width:720px}}
-.dv3-surprise-banner{{display:none;align-items:center;gap:.6rem;padding:.65rem 1rem;background:linear-gradient(135deg,rgba(218,165,32,.06) 0%,rgba(240,145,58,.04) 100%);border:1px solid rgba(218,165,32,.20);border-radius:var(--r-md);margin-bottom:1.25rem}}
+.dv3-surprise-banner{{display:none;align-items:center;gap:.6rem;padding:.65rem 1rem;background:linear-gradient(135deg,rgba(218,165,32,.06) 0%,rgba(240,145,58,.04) 100%);border:1px solid rgba(218,165,32,.20);border-radius:8px;margin-bottom:1.25rem}}
 .dv3-surprise-banner .surprise-icon{{font-size:1.1rem;flex-shrink:0}}
 .dv3-surprise-banner .surprise-text{{font-size:.85rem;color:var(--text-dim);line-height:1.45}}
 .dv3-surprise-banner .surprise-text strong{{color:var(--gold);font-weight:700}}
 .dv3-mood{{display:none;align-items:center;gap:.3rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.22rem .6rem;border-radius:3px;white-space:nowrap;margin-left:.75rem}}
-.dv3-sparks{{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem;margin:0 0 1.5rem;padding:1rem;background:rgba(5,10,5,.35);border:1px solid var(--border);border-radius:var(--r-md)}}
+.dv3-sparks{{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem;margin:0 0 1.5rem;padding:1rem;background:rgba(5,10,5,.35);border:1px solid var(--border);border-radius:8px}}
 .dv3-spark{{display:flex;flex-direction:column;gap:.2rem}}
 .dv3-spark-head{{display:flex;justify-content:space-between;align-items:baseline;gap:.4rem}}
 .dv3-spark-label{{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}}
 .dv3-spark-last{{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;color:var(--text)}}
 .dv3-topbar{{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.25rem;margin-bottom:2rem}}
-.dv3-one-number{{background:var(--surface);border:2px solid var(--border-g);border-radius:var(--r-md);padding:1.2rem 1.4rem}}
+.dv3-one-number{{background:var(--surface);border:2px solid var(--border-g);border-radius:8px;padding:1.2rem 1.4rem}}
 .dv3-one-number-label{{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem}}
 .dv3-one-number-val{{font-family:'Oswald',sans-serif;font-size:3.2rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:.15rem}}
 .dv3-one-number-unit{{font-size:.85rem;color:var(--text-dim);margin-bottom:.4rem}}
 .dv3-one-number-ctx{{font-size:.88rem;line-height:1.6;color:var(--text-dim)}}
-.dv3-quote-card{{background:var(--surface);border:2px solid rgba(218,165,32,.15);border-radius:var(--r-md);padding:1.2rem 1.4rem;display:flex;flex-direction:column;justify-content:center}}
+.dv3-quote-card{{background:var(--surface);border:2px solid rgba(218,165,32,.15);border-radius:8px;padding:1.2rem 1.4rem;display:flex;flex-direction:column;justify-content:center}}
 .dv3-quote-label{{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}}
 .dv3-quote-text{{font-size:.95rem;font-style:italic;color:var(--text-dim);line-height:1.65;margin-bottom:.35rem}}
 .dv3-quote-attr{{font-size:.76rem;color:var(--text-muted)}}
 .dv3-sections{{display:flex;flex-direction:column;gap:1.25rem;margin-bottom:2rem}}
-.dv3-sec{{background:var(--surface);border:2px solid var(--border);border-radius:var(--r-md);padding:1.2rem 1.4rem;position:relative;transition:border-color .2s}}
+.dv3-sec{{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1.2rem 1.4rem;position:relative;transition:border-color .2s}}
 .dv3-sec:hover{{border-color:var(--border-g)}}
 .dv3-sec--surprise{{border-color:rgba(218,165,32,.30)!important;background:linear-gradient(135deg,var(--surface) 0%,rgba(218,165,32,.03) 100%)}}
 .dv3-sec--surprise::before{{content:'\u26A1 OVERNIGHT SURPRISE';position:absolute;top:-.55rem;right:.75rem;font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--gold);padding:.12rem .55rem;border-radius:2px}}
@@ -1337,13 +1194,13 @@ body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-sec-conviction{{font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .45rem;border-radius:3px;white-space:nowrap}}
 .dv3-sec-body{{font-size:.95rem;line-height:1.75;color:var(--text-dim);margin-bottom:.65rem}}
 .dv3-sec-body strong{{color:var(--text)}}
-.dv3-sec-bottomline{{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;color:var(--text);padding:.5rem .75rem;background:var(--surface2);border-radius:var(--r-sm);border-left:3px solid var(--gold);margin-bottom:.5rem;line-height:1.45}}
-.dv3-sec-action{{font-size:.82rem;font-weight:600;color:var(--green);padding:.45rem .7rem;background:rgba(74,171,76,.04);border:1px solid rgba(74,171,76,.15);border-radius:var(--r-sm);line-height:1.45}}
-.dv3-tmyk{{background:linear-gradient(135deg,var(--surface) 0%,rgba(74,143,186,.03) 100%);border:2px solid rgba(74,143,186,.20);border-radius:var(--r-md);padding:1.2rem 1.4rem;margin-bottom:2rem}}
+.dv3-sec-bottomline{{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;color:var(--text);padding:.5rem .75rem;background:var(--surface2);border-radius:6px;border-left:3px solid var(--gold);margin-bottom:.5rem;line-height:1.45}}
+.dv3-sec-action{{font-size:.82rem;font-weight:600;color:var(--green);padding:.45rem .7rem;background:rgba(74,171,76,.04);border:1px solid rgba(74,171,76,.15);border-radius:6px;line-height:1.45}}
+.dv3-tmyk{{background:linear-gradient(135deg,var(--surface) 0%,rgba(74,143,186,.03) 100%);border:2px solid rgba(74,143,186,.20);border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:2rem}}
 .dv3-tmyk-label{{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:.55rem}}
 .dv3-tmyk-title{{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.35rem}}
 .dv3-tmyk-body{{font-size:.92rem;line-height:1.75;color:var(--text-dim)}}
-.dv3-watch{{background:var(--surface);border:2px solid var(--border);border-radius:var(--r-md);padding:1.2rem 1.4rem;margin-bottom:2rem}}
+.dv3-watch{{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:2rem}}
 .dv3-watch-label{{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:.75rem}}
 .dv3-watch-list{{list-style:none;padding:0;margin:0}}
 .dv3-watch-item{{display:flex;gap:.75rem;align-items:flex-start;padding:.55rem 0;border-bottom:1px solid var(--border)}}
@@ -1361,7 +1218,56 @@ body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-nav a{{display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;font-weight:600;color:var(--green);transition:opacity .15s}}
 .dv3-nav a:hover{{opacity:.8}}
 .dv3-nav-center{{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em}}
-@media(max-width:640px){{.dv3-page{{padding:1.25rem .9rem}}.dv3-topbar{{grid-template-columns:minmax(0,1fr)}}.dv3-one-number-val{{font-size:2.4rem}}.dv3-sec{{padding:.85rem 1rem}}.dv3-sec--surprise::before,.dv3-sec--heat::after{{font-size:.45rem;padding:.08rem .4rem}}}}
+.dv3-sponsor{{background:linear-gradient(135deg,var(--surface) 0%,rgba(218,165,32,.04) 100%);border:2px solid rgba(218,165,32,.30);border-radius:8px;padding:1.4rem 1.6rem;margin-bottom:1.75rem;position:relative;overflow:hidden}}
+.dv3-sponsor::before{{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold) 0%,rgba(218,165,32,.3) 60%,transparent 100%)}}
+
+/* WEEKLY THREAD chapter marker — sits above the lead */
+.dv3-thread{{display:flex;align-items:center;gap:.65rem;padding:.45rem .85rem;background:rgba(74,143,186,.06);border:1px solid rgba(74,143,186,.20);border-radius:6px;margin-bottom:1rem;flex-wrap:wrap}}
+.dv3-thread--anchor{{background:rgba(74,143,186,.10);border-color:rgba(74,143,186,.32)}}
+.dv3-thread-day{{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5aa0d2;white-space:nowrap;padding:.18rem .5rem;background:rgba(74,143,186,.08);border-radius:3px}}
+.dv3-thread-q{{font-size:.86rem;font-weight:600;color:var(--text);line-height:1.4;flex:1;min-width:200px}}
+
+/* YESTERDAY'S CALL — sits between sponsor and sections */
+.dv3-yc{{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1rem 1.2rem;margin-bottom:1.5rem;border-left:4px solid var(--green)}}
+.dv3-yc-label{{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.45rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}}
+.dv3-yc-outcome{{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.08em;padding:.18rem .55rem;border-radius:3px;white-space:nowrap}}
+.dv3-yc-summary{{font-size:.92rem;color:var(--text);line-height:1.65;font-weight:600;margin-bottom:.35rem}}
+.dv3-yc-note{{font-size:.85rem;color:var(--text-dim);line-height:1.65}}
+
+/* SPREAD TO WATCH — sits between sections and basis */
+.dv3-spread{{background:linear-gradient(135deg,var(--surface) 0%,rgba(132,89,176,.04) 100%);border:2px solid rgba(132,89,176,.28);border-radius:8px;padding:1.1rem 1.3rem;margin:1.5rem 0 1.5rem}}
+.dv3-spread-label{{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9b7fc4;margin-bottom:.5rem}}
+.dv3-spread-label-text{{font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.3rem;letter-spacing:-.005em}}
+.dv3-spread-level{{font-family:'JetBrains Mono',monospace;font-size:.86rem;font-weight:700;color:var(--gold);margin-bottom:.5rem;letter-spacing:.02em}}
+.dv3-spread-body{{font-size:.9rem;line-height:1.7;color:var(--text-dim)}}
+.dv3-spread-body strong{{color:var(--text)}}
+
+.dv3-sponsor--house{{border-style:dashed;border-color:rgba(218,165,32,.34)}}
+.dv3-sponsor-label-row{{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.65rem;flex-wrap:wrap}}
+.dv3-sponsor-label{{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);padding:.2rem .6rem;border:1px solid rgba(218,165,32,.42);border-radius:3px;background:rgba(218,165,32,.06)}}
+.dv3-sponsor-by{{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;color:var(--text-muted);letter-spacing:.04em}}
+.dv3-sponsor-headline{{font-family:'Oswald',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.6rem;letter-spacing:-.005em}}
+.dv3-sponsor-body{{font-size:.93rem;line-height:1.7;color:var(--text-dim);margin-bottom:.95rem}}
+.dv3-sponsor-cta{{display:inline-flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;color:#0a1a0a;background:var(--gold);padding:.65rem 1.05rem;border-radius:6px;transition:background .15s,transform .1s;min-height:44px}}
+.dv3-sponsor-cta:hover{{background:#c9941d;transform:translateY(-1px)}}
+.dv3-sponsor-disclosure{{font-size:.66rem;color:var(--text-muted);margin-top:.7rem;letter-spacing:.02em;line-height:1.5}}
+.dv3-basis{{background:linear-gradient(135deg,var(--surface) 0%,rgba(185,122,58,.04) 100%);border:2px solid rgba(185,122,58,.28);border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:2rem}}
+.dv3-basis-label{{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#c98a4a;margin-bottom:.55rem}}
+.dv3-basis-headline{{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.4rem;line-height:1.4}}
+.dv3-basis-body{{font-size:.92rem;line-height:1.75;color:var(--text-dim)}}
+.dv3-basis-body strong{{color:var(--text)}}
+.dv3-forward{{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;background:rgba(58,139,60,.05);border:1px solid rgba(58,139,60,.22);border-radius:8px;margin:1.25rem 0 .75rem;flex-wrap:wrap}}
+.dv3-forward-icon{{font-size:1.5rem;flex-shrink:0;line-height:1}}
+.dv3-forward-content{{flex:1;min-width:200px}}
+.dv3-forward-headline{{font-size:.95rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.18rem}}
+.dv3-forward-sub{{font-size:.82rem;color:var(--text-dim);line-height:1.5}}
+.dv3-forward-cta{{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;color:#fff;background:var(--green);padding:.55rem .95rem;border-radius:6px;transition:background .15s;min-height:42px;white-space:nowrap}}
+.dv3-forward-cta:hover{{background:#1b4d1c}}
+.dv3-byline{{font-size:.86rem;color:var(--text-dim);line-height:1.65;padding:.85rem 0;border-top:1px solid var(--border);margin-top:.5rem}}
+.dv3-byline strong{{color:var(--text);font-weight:700}}
+.dv3-byline a{{color:var(--gold);text-decoration:none}}
+.dv3-byline a:hover{{text-decoration:underline}}
+@media(max-width:640px){{.dv3-page{{padding:1.25rem .9rem}}.dv3-topbar{{grid-template-columns:minmax(0,1fr)}}.dv3-one-number-val{{font-size:2.4rem}}.dv3-sec{{padding:.85rem 1rem}}.dv3-sponsor{{padding:1.1rem 1.2rem}}.dv3-sponsor-headline{{font-size:1.05rem}}.dv3-forward{{flex-direction:column;align-items:flex-start;gap:.7rem}}.dv3-forward-cta{{width:100%;justify-content:center}}}}
 @media(max-width:380px){{.dv3-headline{{font-size:1.6rem}}.dv3-one-number-val{{font-size:2rem}}.dv3-sec-action{{display:none}}}}
 </style>
 </head>
@@ -1371,50 +1277,42 @@ body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 <main id="main" tabindex="-1">
 <div class="dv3-page">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/daily">Daily Briefing</a> / <strong>{html_esc(date_display)}</strong></nav>
-
   <article>
     <header class="dv3-header">
       <div style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem">
-        <div class="dv3-eyebrow"><span class="dv3-eyebrow-dot"></span> AGSIST DAILY &mdash; ARCHIVE</div>
+        <div class="dv3-eyebrow"><span class="dv3-eyebrow-dot"></span> AGSIST DAILY{issue_suffix} &mdash; ARCHIVE</div>
         {mood_html}
         {weekend_badge}
       </div>
       <div class="dv3-date">{html_esc(date_display)}</div>
       <h1 class="dv3-headline">{headline}</h1>
       {"<p class='dv3-subheadline'>" + subheadline + "</p>" if subheadline else ""}
+      {thread_html}
       {surprise_html}
       <p class="dv3-lead">{lead}</p>
     </header>
-
     {sparks_html}
-
     {topbar_html}
-
-    <div class="dv3-sections">
-      {sections_html}
-    </div>
-
+    {sponsor_html}
+    {yc_html}
+    <div class="dv3-sections">{sections_html}</div>
+    {spread_html}
+    {basis_html}
     {tmyk_html}
     {watch_html}
-
+    {byline_html}
+    {forward_html}
     {share_html}
-
-    <div class="dv3-source">
-      {source} &middot; Auto-compiled at 6:02 AM CT
-    </div>
+    <div class="dv3-source">{source} &middot; Auto-compiled at 6:02 AM CT</div>
   </article>
-
   <nav class="dv3-nav" aria-label="Briefing navigation" id="dv3-archive-nav">
     <span></span>
     <span class="dv3-nav-center"><a href="/daily">&larr; Latest Briefing</a></span>
     <span></span>
   </nav>
-
   <div style="text-align:center;padding:1.5rem 0">
     <a href="/daily" class="btn-gold">Today's Briefing &rarr;</a>
-    <div style="margin-top:.75rem">
-      <a href="/daily#archive" style="font-size:.82rem;color:var(--text-muted)">Browse All Briefings &rarr;</a>
-    </div>
+    <div style="margin-top:.75rem"><a href="/daily#archive" style="font-size:.82rem;color:var(--text-muted)">Browse All Briefings &rarr;</a></div>
   </div>
 </div>
 </main>
@@ -1422,26 +1320,21 @@ body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 <script src="/components/loader.js" defer></script>
 <script>
 (function(){{
-  // Prev/next navigation via index.json
-  fetch('/data/daily-archive/index.json',{{cache:'no-store'}})
-    .then(function(r){{return r.ok?r.json():null;}})
-    .then(function(idx){{
-      if(!idx||!idx.briefings)return;
-      var current='{date_iso}';
-      var entries=idx.briefings;
-      var curIdx=-1;
-      for(var i=0;i<entries.length;i++){{if(entries[i].date===current){{curIdx=i;break;}}}}
-      if(curIdx<0)return;
-      var nav=document.getElementById('dv3-archive-nav');
-      if(!nav)return;
-      var prev=curIdx<entries.length-1?entries[curIdx+1]:null;
-      var next=curIdx>0?entries[curIdx-1]:null;
-      var spans=nav.querySelectorAll('span');
-      if(prev&&spans[0])spans[0].innerHTML='<a href="/daily/'+prev.date+'">\u2190 '+prev.date+'</a>';
-      if(next&&spans[2])spans[2].innerHTML='<a href="/daily/'+next.date+'">'+next.date+' \u2192</a>';
-    }}).catch(function(){{}});
-
-  // Share buttons
+  fetch('/data/daily-archive/index.json',{{cache:'no-store'}}).then(function(r){{return r.ok?r.json():null;}}).then(function(idx){{
+    if(!idx||!idx.briefings)return;
+    var current='{date_iso}';
+    var entries=idx.briefings;
+    var curIdx=-1;
+    for(var i=0;i<entries.length;i++){{if(entries[i].date===current){{curIdx=i;break;}}}}
+    if(curIdx<0)return;
+    var nav=document.getElementById('dv3-archive-nav');
+    if(!nav)return;
+    var prev=curIdx<entries.length-1?entries[curIdx+1]:null;
+    var next=curIdx>0?entries[curIdx-1]:null;
+    var spans=nav.querySelectorAll('span');
+    if(prev&&spans[0])spans[0].innerHTML='<a href="/daily/'+prev.date+'">\u2190 '+prev.date+'</a>';
+    if(next&&spans[2])spans[2].innerHTML='<a href="/daily/'+next.date+'">'+next.date+' \u2192</a>';
+  }}).catch(function(){{}});
   var permalink='{js_permalink}';
   var headline='{js_headline}';
   var dateDisplay='{js_datedisp}';
@@ -1455,9 +1348,7 @@ body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
         window.open('https://twitter.com/intent/tweet?text='+text+'&url='+url,'_blank','noopener,noreferrer');
       }} else if(kind==='copy'){{
         var doCopy=function(){{
-          if(navigator.clipboard&&navigator.clipboard.writeText){{
-            return navigator.clipboard.writeText(permalink);
-          }}
+          if(navigator.clipboard&&navigator.clipboard.writeText){{return navigator.clipboard.writeText(permalink);}}
           return new Promise(function(res,rej){{
             var ta=document.createElement('textarea');
             ta.value=permalink;ta.style.position='fixed';ta.style.opacity='0';
@@ -1481,56 +1372,44 @@ body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 }})();
 </script>
 </body>
-</html>'''
-
+</html>"""
     return page
 
 
 def update_archive_index(briefing, date_iso):
     index_path = ARCHIVE_JSON_DIR / "index.json"
-
     if index_path.exists():
-        with open(index_path) as f:
-            index = json.load(f)
+        with open(index_path) as f: index = json.load(f)
     else:
         index = {"briefings": [], "updated": ""}
-
     entries = index.get("briefings", [])
     headline = briefing.get("headline", "")
     teaser = briefing.get("teaser", "")
     if not teaser and briefing.get("lead"):
         teaser = briefing["lead"][:140] + ("..." if len(briefing.get("lead", "")) > 140 else "")
     meta = briefing.get("meta", {})
-
-    entry = {
-        "date": date_iso,
-        "date_display": briefing.get("date", date_iso),
-        "headline": headline,
-        "teaser": teaser,
-        "market_mood": meta.get("market_mood", ""),
-        "surprise_count": meta.get("overnight_surprises_count", 0),
-        "sections": len(briefing.get("sections", [])),
-        "url": f"/daily/{date_iso}",
-        "market_closed": briefing.get("market_closed", False),
-    }
-
+    entry = {"date": date_iso, "date_display": briefing.get("date", date_iso),
+             "headline": headline, "teaser": teaser,
+             "market_mood": meta.get("market_mood", ""),
+             "surprise_count": meta.get("overnight_surprises_count", 0),
+             "sections": len(briefing.get("sections", [])),
+             "url": f"/daily/{date_iso}",
+             "market_closed": briefing.get("market_closed", False)}
+    # v4.1: surface YC outcome on archive entries for the homepage grid dots
+    yc = briefing.get("yesterdays_call") or {}
+    if yc.get("outcome") and yc.get("summary"):
+        entry["yc_outcome"] = yc["outcome"]  # played_out | didnt | pending
     found = False
     for i, e in enumerate(entries):
         if e.get("date") == date_iso:
-            entries[i] = entry
-            found = True
-            break
-    if not found:
-        entries.insert(0, entry)
-
+            entries[i] = entry; found = True; break
+    if not found: entries.insert(0, entry)
     entries.sort(key=lambda x: x.get("date", ""), reverse=True)
     index["briefings"] = entries
     index["updated"] = datetime.now(timezone.utc).isoformat()
     index["count"] = len(entries)
-
     with open(index_path, "w") as f:
         json.dump(index, f, indent=2, ensure_ascii=False)
-
     return len(entries)
 
 
@@ -1538,118 +1417,119 @@ def save_archive(briefing):
     date_iso = datetime.now().strftime("%Y-%m-%d")
     ARCHIVE_JSON_DIR.mkdir(parents=True, exist_ok=True)
     ARCHIVE_HTML_DIR.mkdir(parents=True, exist_ok=True)
-
     json_path = ARCHIVE_JSON_DIR / f"{date_iso}.json"
     with open(json_path, "w") as f:
         json.dump(briefing, f, indent=2, ensure_ascii=False)
     print(f"  Archive JSON: {json_path}")
-
     html_content = generate_archive_html(briefing, date_iso)
     html_path = ARCHIVE_HTML_DIR / f"{date_iso}.html"
-    with open(html_path, "w") as f:
-        f.write(html_content)
+    with open(html_path, "w") as f: f.write(html_content)
     print(f"  Archive HTML: {html_path}")
-
     count = update_archive_index(briefing, date_iso)
     print(f"  Archive index: {count} briefings")
 
 
-# ═══════════════════════════════════════════════════════════════════
-# MAIN
-# ═══════════════════════════════════════════════════════════════════
-
 def main():
-    print("=== AGSIST Daily Briefing Generator v3.6 ===")
+    print("=== AGSIST Daily Briefing Generator v4.1 ===")
     print(f"  Time: {datetime.now().isoformat()}")
-
     market_status = get_market_status()
     if market_status["is_closed"]:
         print(f"  Markets CLOSED: {market_status['day_name']} ({market_status['reason']})")
     else:
         print(f"  Markets OPEN: {market_status['day_name']}")
-
     print("  Loading prices.json...")
     price_data, surprises = load_prices()
-
     if market_status["is_closed"]:
         surprises = []
-        print("  Weekend/holiday: overnight surprise detection suppressed")
+        print("  Weekend/holiday: surprise detection suppressed")
     elif surprises:
-        print(f"  {len(surprises)} overnight surprise(s):")
+        print(f"  {len(surprises)} overnight surprise(s)")
         for s in surprises:
-            print(f"    {s['commodity']}: {s['pct_change']:+.1f}% (magnitude {s['surprise_magnitude']}x)")
+            print(f"    {s['commodity']}: {s['pct_change']:+.1f}%")
     else:
-        print("  No overnight surprises: normal trading day.")
-
-    print("  Loading past dailies for continuity...")
+        print("  No overnight surprises")
+    print("  Loading past dailies...")
     past_dailies_block, past_tmyk_topics = load_past_dailies(num_days=3)
     if past_dailies_block:
-        print(f"  Past daily context loaded ({len(past_tmyk_topics)} prior TMYK topics to avoid)")
-    else:
-        print("  No past dailies found")
+        print(f"  Past context loaded ({len(past_tmyk_topics)} prior TMYK to avoid)")
 
-    print("  Fetching ag news RSS...")
+    # v4.0: load yesterday's call + weekly thread context
+    yesterdays_call_ctx = None
+    weekly_thread_ctx = None
+    if not market_status["is_closed"]:
+        yesterdays_call_ctx = load_yesterdays_call_context()
+        if yesterdays_call_ctx:
+            print(f"  Yesterday's call: {yesterdays_call_ctx['section_title']!r} ({yesterdays_call_ctx['conviction']}) from {yesterdays_call_ctx['prior_date']}")
+        else:
+            print("  Yesterday's call: none found (Monday after long weekend or fresh archive)")
+        weekly_thread_ctx = load_weekly_thread()
+        if weekly_thread_ctx:
+            print(f"  Weekly thread: day {weekly_thread_ctx['today_day_of_week']}/5, Monday's question: {weekly_thread_ctx['question'][:60]}...")
+        elif datetime.now().weekday() == 0:
+            print("  Weekly thread: Monday — model will set this week's question")
+        else:
+            print("  Weekly thread: no Monday briefing found")
+
+    print("  Fetching ag news...")
     news_block = fetch_ag_news()
-
     seasonal_ctx = get_seasonal_context()
-
-    print("  Selecting today's quote from pool...")
+    print("  Selecting today's quote...")
     todays_quote = get_todays_quote()
     print(f"  Quote: \"{todays_quote['text'][:60]}...\" ({todays_quote['attribution']})")
-
-    print("  Calling Claude API...")
-    briefing = call_claude(
-        price_data, surprises, news_block, seasonal_ctx,
-        todays_quote, past_dailies_block, past_tmyk_topics, market_status
-    )
-
+    print("  Calling Claude API (v4.0 prompt)...")
+    briefing = call_claude(price_data, surprises, news_block, seasonal_ctx,
+                           todays_quote, past_dailies_block, past_tmyk_topics,
+                           market_status, yesterdays_call_ctx, weekly_thread_ctx)
     locked_prices = price_data.get("locked_prices", {})
     is_clean, val_warnings = validate_briefing(briefing, locked_prices)
     if val_warnings:
         print(f"  Validation warnings ({len(val_warnings)}):")
-        for w in val_warnings:
-            print(f"    - {w}")
+        for w in val_warnings: print(f"    - {w}")
     else:
-        print("  Validation passed (no em dashes, no scope creep, no filler attributions)")
-
-    # Persist locked_prices so future chart_series builds can reach back.
+        print("  Validation passed")
     briefing["locked_prices"] = locked_prices
-
-    # Build rolling sparkline series from archived locked_prices + today.
     chart_series = build_chart_series(locked_prices)
     if chart_series:
         briefing["chart_series"] = chart_series
-        series_depths = {k: len(v) for k, v in chart_series.items()}
-        print(f"  Chart series built: {series_depths}")
+        print(f"  Chart series: {{k: len(v) for k, v in chart_series.items()}}")
+    sponsor = build_sponsor_block()
+    briefing["sponsor"] = sponsor
+    if sponsor.get("is_house_ad"):
+        print("  Sponsor: HOUSE AD (no paid sponsor active)")
     else:
-        print("  Chart series: not enough history yet (need 2+ days with locked_prices)")
+        print(f"  Sponsor: {sponsor.get('advertiser', 'unnamed')} (PAID)")
+    pre_issue = load_issue_number()
+    briefing["issue_number"] = pre_issue + 1
+    print(f"  Issue number for today: #{briefing['issue_number']}")
+
+    # v4.0: log new block presence for verification
+    if briefing.get("yesterdays_call", {}).get("summary"):
+        outcome = briefing["yesterdays_call"].get("outcome", "?")
+        print(f"  Yesterday's call assessed: {outcome.upper()}")
+    if briefing.get("spread_to_watch", {}).get("label"):
+        print(f"  Spread to watch: {briefing['spread_to_watch']['label']}")
+    wt = briefing.get("weekly_thread") or {}
+    if wt.get("question"):
+        print(f"  Weekly thread day {wt.get('day','?')}: {wt['question'][:60]}...")
 
     briefing["generated_at"] = datetime.now(timezone.utc).isoformat()
-    briefing["generator_version"] = "3.6"
+    briefing["generator_version"] = "4.1"
     briefing["surprise_count"] = len(surprises)
     briefing["surprises"] = surprises
     briefing["price_validation_clean"] = is_clean
     briefing["market_closed"] = market_status["is_closed"]
     briefing["market_status_reason"] = market_status["reason"]
-    if "meta" not in briefing:
-        briefing["meta"] = {}
+    if "meta" not in briefing: briefing["meta"] = {}
     briefing["meta"]["overnight_surprises_count"] = len(surprises)
-
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(OUTPUT_PATH, "w") as f:
         json.dump(briefing, f, indent=2, ensure_ascii=False)
     print(f"  Written to {OUTPUT_PATH}")
-
     print("  Archiving briefing...")
     save_archive(briefing)
-
     print(f"  Headline: {briefing.get('headline', 'N/A')}")
     print(f"  Sections: {len(briefing.get('sections', []))}")
-    print(f"  Market status: {'CLOSED (' + market_status['day_name'] + ')' if market_status['is_closed'] else 'open'}")
-    print(f"  Surprises: {len(surprises)}")
-    print(f"  Chart series: {list(chart_series.keys()) if chart_series else 'none yet'}")
-    print(f"  Validation: {'clean' if is_clean else str(len(val_warnings)) + ' warning(s)'}")
-    print("=== Done ===")
+    print("=== Done. Run scripts/critique_briefing.py next for the v4.0 quality gate. ===")
 
 
 if __name__ == "__main__":
