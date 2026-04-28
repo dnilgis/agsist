@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 27 Apr 2026 12:21:45 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 28 Apr 2026 12:25:40 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE BREAK THROUGH AS CRUDE SURGES</title>
+      <link>https://agsist.com/daily/2026-04-28</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-04-28</guid>
+      <pubDate>Tue, 28 Apr 2026 05:00:00 -0600</pubDate>
+      <description>Live cattle exploded to $248.97, up 1.7% and the third consecutive close above $245 — yesterday's pricing trigger just delivered. The funds added 8,000 contracts overnight as feedlots finally capitulated to summer demand that's been building since March. Crude's 3% surge to $100.54 is dragging corn along for the ride, but the real story is cattle momentum that's now undeniable.
+Live futures hit $248.97, triggering yesterday's pricing call while WTI jumps 3%.
+• Cattle Breakout Confirmed
+  → Price remaining summer cattle — the breakout above $245 for three sessions confirms the uptrend.
+• Crude Drags Corn Higher
+• Planting Window Tightens
+Read more: https://agsist.com/daily/2026-04-28</description>
+    </item>
     <item>
       <title>GRAINS FLATLINE AS PLANTING WINDOW TIGHTENS</title>
       <link>https://agsist.com/daily/2026-04-27</link>
@@ -425,21 +438,6 @@ Oats jump 2% on small volume while corn and beans drift lower ahead of weekend.
 • Energy Costs Climb
   → Consider locking diesel prices if you haven't — crude oil momentum looks bullish short-term.
 Read more: https://agsist.com/daily/2026-03-27</description>
-    </item>
-    <item>
-      <title>GRAINS RALLY AHEAD OF PLANTING REPORT</title>
-      <link>https://agsist.com/daily/2026-03-26</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-03-26</guid>
-      <pubDate>Thu, 26 Mar 2026 05:00:00 -0600</pubDate>
-      <description>Grain markets found their footing Thursday with corn up 7½¢ to $4.67 and soybeans gaining nearly 20¢ to $11.73. The rally comes as crude oil spiked 2.5% to $91.13, adding input cost pressure while traders position ahead of the USDA's critical Prospective Plantings report due next week. With fieldwork starting in southern areas and nitrogen applications beginning across the Corn Belt, the market is pricing in both input inflation and potential acreage surprises.
-Corn, soybeans, and wheat all gained as energy costs climbed and pre-plant positioning heats up.
-• GRAINS &amp; OILSEEDS
-  → Consider pricing 10-15% of new-crop corn on this rally if you haven't already — pre-plant strength often fades once actual acres are confirmed.
-• LIVESTOCK &amp; DAIRY
-  → Cattle feeders should monitor corn basis closely — local elevator premiums likely to widen as planting approaches.
-• ENERGY &amp; INPUTS
-  → Lock in any remaining diesel and fertilizer needs immediately — energy momentum suggests higher input costs ahead.
-Read more: https://agsist.com/daily/2026-03-26</description>
     </item>
   </channel>
 </rss>
