@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 30 Apr 2026 12:17:48 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 01 May 2026 12:02:07 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE FADE AS GRAINS MARK TIME</title>
+      <link>https://agsist.com/daily/2026-05-01</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-01</guid>
+      <pubDate>Fri, 01 May 2026 05:00:00 -0600</pubDate>
+      <description>Cattle dropped 0.4% to $254.03, the first real test since breaking above $250 on momentum three days ago. The pullback is mild but the funds are watching — managed money added 8,000 contracts this week and needs to see the floor hold. Grains stayed pinned in place with corn at $4.78 and beans flat at $12.03, waiting for next week's planting progress to matter.
+Live cattle slip from breakout levels while corn and beans hold tight ranges.
+• Cattle Test Breakout
+  → Hold pricing discipline above $252 — below that level questions the breakout thesis.
+• Grains Mark Time
+Read more: https://agsist.com/daily/2026-05-01</description>
+    </item>
     <item>
       <title>CRUDE CRASHES AS CATTLE HOLD GAINS</title>
       <link>https://agsist.com/daily/2026-04-30</link>
@@ -419,21 +431,6 @@ Grains climb with live cattle while precious metals spike on broader risk appeti
 • ENERGY &amp; INPUTS
   → Lock in fuel now if you haven't — crude at $102 is workable but vulnerable to geopolitical spikes.
 Read more: https://agsist.com/daily/2026-04-01</description>
-    </item>
-    <item>
-      <title>CORN SLIDES 8¢ AS CRUDE JUMPS 3%</title>
-      <link>https://agsist.com/daily/2026-03-31</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-03-31</guid>
-      <pubDate>Tue, 31 Mar 2026 05:00:00 -0600</pubDate>
-      <description>Corn dropped 8¢ to $4.55/bu overnight while WTI crude spiked 3.2% to $104.84, creating a classic squeeze on farm margins just as spring fieldwork ramps up. The divergence highlights the seasonal tug-of-war between energy costs and grain prices that defines March profitability. December corn at $4.83/bu held better than nearby, suggesting the market still expects seasonal strength through summer.
-Energy surge squeezes grain margins while cattle rally ahead of planting season.
-• Grains Under Pressure
-  → Hold off on new-crop corn sales until this technical selling exhausts itself — likely within a week.
-• Cattle Rally Strong
-  → Consider hedging cattle positions — this rally may have limited upside with feed costs climbing.
-• Energy Costs Surge
-  → Lock diesel contracts now if you haven't — this crude rally has more room to run.
-Read more: https://agsist.com/daily/2026-03-31</description>
     </item>
   </channel>
 </rss>

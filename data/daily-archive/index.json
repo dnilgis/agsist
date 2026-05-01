@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-05-01",
+      "date_display": "Friday, May 1, 2026",
+      "headline": "CATTLE FADE AS GRAINS MARK TIME",
+      "teaser": "Cattle test breakout support while grains wait for planting data to drive direction.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-05-01",
+      "market_closed": false,
+      "yc_outcome": "pending"
+    },
+    {
       "date": "2026-04-30",
       "date_display": "Thursday, April 30, 2026",
       "headline": "CRUDE CRASHES AS CATTLE HOLD GAINS",
@@ -520,6 +532,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-04-30T12:17:43.309113+00:00",
-  "count": 49
+  "updated": "2026-05-01T12:02:03.385210+00:00",
+  "count": 50
 }
