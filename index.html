@@ -412,7 +412,7 @@
   .daily-byline a{color:var(--gold);text-decoration:none}
   .daily-byline a:hover{text-decoration:underline}
   /* v4.1 sponsor block — billboard for empty state, restrained for paid sponsor */
-  .daily-sponsor{position:relative;margin:1.5rem auto 0;max-width:1400px;padding:1.5rem 1.75rem;background:linear-gradient(135deg,rgba(218,165,32,.10) 0%,rgba(218,165,32,.02) 50%,var(--surface) 100%);border:2px solid var(--gold);border-radius:12px;box-shadow:0 0 0 1px rgba(218,165,32,.15),0 8px 24px rgba(0,0,0,.25)}
+  .daily-sponsor{position:relative;margin:1.25rem 0 1.5rem;padding:1.5rem 1.75rem;background:linear-gradient(135deg,rgba(218,165,32,.10) 0%,rgba(218,165,32,.02) 50%,var(--surface) 100%);border:2px solid var(--gold);border-radius:12px;box-shadow:0 0 0 1px rgba(218,165,32,.15),0 8px 24px rgba(0,0,0,.25)}
   .daily-hero.dismissed .daily-sponsor{display:none}
   .dsp-empty,.dsp-filled{display:block}
   /* Empty state — billboard treatment */
@@ -441,7 +441,7 @@
   .dsp-sponsor-cta:hover{background:var(--gold);color:#0d1117}
   /* Mobile */
   @media(max-width:520px){
-    .daily-sponsor{margin:1rem 0 0;padding:1.15rem 1rem;border-radius:8px;border-width:2px}
+    .daily-sponsor{margin:1rem 0 1.25rem;padding:1.15rem 1rem;border-radius:8px;border-width:2px}
     .dsp-headline{font-size:1.45rem}
     .dsp-pitch{font-size:.85rem;line-height:1.55;margin-bottom:1rem}
     .dsp-tag{font-size:.6rem;padding:.32rem .6rem;letter-spacing:.1em}
@@ -562,6 +562,32 @@
           <h1 id="daily-headline" class="daily-headline">Loading Today's Briefing&hellip;</h1>
           <p id="daily-subheadline" style="font-size:.88rem;color:var(--gold);font-weight:600;margin-bottom:.5rem;letter-spacing:.02em"></p>
           <p id="daily-lead" class="daily-lead"></p>
+          <div class="daily-sponsor" id="daily-sponsor" role="region" aria-label="Sponsor slot">
+            <!-- Empty state: billboard for finding the founding sponsor -->
+            <div class="dsp-empty" id="dsp-empty">
+              <div class="dsp-tags">
+                <span class="dsp-tag dsp-tag-available">&#x26A1; Available</span>
+                <span class="dsp-tag dsp-tag-founding">Founding Sponsor &middot; 1 Slot &middot; $150/week</span>
+              </div>
+              <h2 class="dsp-headline">Sponsor the AGSIST Daily Briefing.</h2>
+              <p class="dsp-pitch">One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations &mdash; read every morning before the open. <strong>Founding rate locked in for 12 months. Six-week minimum ($900).</strong></p>
+              <div class="dsp-actions">
+                <a class="dsp-cta-primary" href="mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20founding%20sponsor%20inquiry">&#x1F4DE; Become the founding sponsor &rarr;</a>
+              </div>
+              <div class="dsp-contact">
+                <a href="mailto:sig@farmers1st.com" aria-label="Email Sigurd at sig@farmers1st.com">sig@farmers1st.com</a>
+                <span class="dsp-contact-sep">&middot;</span>
+                <a href="tel:+17157972428" aria-label="Call Sigurd at 715-797-2428">715-797-2428</a>
+              </div>
+            </div>
+            <!-- Filled state: shown when data.sponsor is populated -->
+            <div class="dsp-filled" id="dsp-filled" style="display:none">
+              <div class="dsp-label" id="dsp-filled-label">&#x1F4F0; Today&rsquo;s Sponsor</div>
+              <div class="dsp-sponsor-name" id="dsp-filled-name"></div>
+              <div class="dsp-sponsor-tag" id="dsp-filled-tag"></div>
+              <a class="dsp-sponsor-cta" id="dsp-filled-cta" href="mailto:sig@farmers1st.com">Visit sponsor &rarr;</a>
+            </div>
+          </div>
           <div id="daily-yc" class="daily-yc">
             <div class="daily-yc-head"><span class="daily-yc-label">YESTERDAY'S CALL</span><span class="daily-yc-pill yc-pill--pending" id="daily-yc-pill">--</span></div>
             <div class="daily-yc-body"><span id="daily-yc-summary"></span><span id="daily-yc-note" class="daily-yc-note"></span></div>
@@ -590,32 +616,6 @@
           <div class="s-card"><div class="s-card-label">&#x1F4C5; TODAY'S WATCH LIST</div><ul id="daily-watch-list" class="watch-list" role="list"><li class="watch-item"><span class="watch-time">&mdash;</span><span class="watch-desc">Loading watch list&hellip;</span></li></ul></div>
           <div class="s-card" style="border-color:rgba(218,165,32,.15)"><div class="s-card-label" style="color:var(--gold)">&#x1F4AC; DAILY QUOTE</div><blockquote style="margin:0;padding:0"><p id="daily-quote-text" style="font-size:.92rem;font-style:italic;color:var(--text-dim);line-height:1.65;margin-bottom:.4rem">"&mdash;"</p><cite id="daily-quote-attr" style="font-size:.76rem;color:var(--text-muted);font-style:normal"></cite></blockquote></div>
           <div style="font-size:.62rem;color:var(--text-muted);text-align:center;padding:.2rem 0"><span id="daily-source">USDA &middot; CME Group &middot; Open-Meteo</span></div>
-        </div>
-      </div>
-      <div class="daily-sponsor" id="daily-sponsor" role="region" aria-label="Sponsor slot">
-        <!-- Empty state: billboard for finding the founding sponsor -->
-        <div class="dsp-empty" id="dsp-empty">
-          <div class="dsp-tags">
-            <span class="dsp-tag dsp-tag-available">&#x26A1; Available</span>
-            <span class="dsp-tag dsp-tag-founding">Founding Sponsor &middot; 1 Slot &middot; $150/week</span>
-          </div>
-          <h2 class="dsp-headline">Sponsor the AGSIST Daily Briefing.</h2>
-          <p class="dsp-pitch">One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations &mdash; read every morning before the open. <strong>Founding rate locked in for 12 months. Six-week minimum ($900).</strong></p>
-          <div class="dsp-actions">
-            <a class="dsp-cta-primary" href="mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20founding%20sponsor%20inquiry">&#x1F4DE; Become the founding sponsor &rarr;</a>
-          </div>
-          <div class="dsp-contact">
-            <a href="mailto:sig@farmers1st.com" aria-label="Email Sigurd at sig@farmers1st.com">sig@farmers1st.com</a>
-            <span class="dsp-contact-sep">&middot;</span>
-            <a href="tel:+17157972428" aria-label="Call Sigurd at 715-797-2428">715-797-2428</a>
-          </div>
-        </div>
-        <!-- Filled state: shown when data.sponsor is populated -->
-        <div class="dsp-filled" id="dsp-filled" style="display:none">
-          <div class="dsp-label" id="dsp-filled-label">&#x1F4F0; Today&rsquo;s Sponsor</div>
-          <div class="dsp-sponsor-name" id="dsp-filled-name"></div>
-          <div class="dsp-sponsor-tag" id="dsp-filled-tag"></div>
-          <a class="dsp-sponsor-cta" id="dsp-filled-cta" href="mailto:sig@farmers1st.com">Visit sponsor &rarr;</a>
         </div>
       </div>
       <div class="daily-share" id="daily-share" role="region" aria-label="Share today's briefing">
