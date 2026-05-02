@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AGSIST Daily Briefing Generator — v4.0
+AGSIST Daily Briefing Generator — v4.2
 ═══════════════════════════════════════════════════════════════════
 Generates the daily agricultural intelligence briefing via Claude API.
 
@@ -145,7 +145,29 @@ def get_market_status():
     return {"is_closed": False, "reason": "open", "day_name": day_names[weekday], "note": ""}
 
 
-def get_todays_quote():
+# Mood-affinity table for mood-aware quote selection (v4.2 / Phase 2 C2).
+# When market_mood is set on the briefing meta, the generator can re-pick
+# a quote from a tag-affinity bucket. If no tagged quote matches, falls
+# back to full pool — never blocks the briefing on a mood mismatch.
+QUOTE_MOOD_AFFINITY = {
+    "bullish":   ["markets", "planting", "work", "innovation", "mindset"],
+    "bearish":   ["risk", "wisdom", "thrift", "markets", "philosophy"],
+    "mixed":     ["wisdom", "mindset", "strategy", "philosophy"],
+    "cautious":  ["risk", "wisdom", "thrift", "planning"],
+    "volatile":  ["risk", "markets", "mindset", "wisdom"],
+}
+
+
+def get_todays_quote(market_mood=None):
+    """Pick a quote from the pool. If market_mood is given, prefer
+    quotes whose tags match the mood's affinity table. Falls back to
+    full-pool random if no mood match. Daily-deterministic seed so
+    the same day always picks the same quote (idempotent reruns).
+
+    v4.2: market_mood parameter added for two-pass selection. Generator
+    calls this once before generation with mood=None, then re-calls after
+    generation with the briefing's actual market_mood and overrides.
+    """
     fallback = {"text": "Agriculture is our wisest pursuit, because it will in the end contribute most to real wealth, good morals, and happiness.",
                 "attribution": "Thomas Jefferson"}
     if not QUOTE_POOL_PATH.exists(): return fallback
@@ -156,9 +178,23 @@ def get_todays_quote():
               if q.get("text") and q.get("attribution")
               and q["attribution"].strip().lower() not in FILLER_ATTRIBUTIONS]
     if not quotes: return fallback
+
+    # Mood-affinity filter — soft preference, not hard requirement
+    candidates = quotes
+    if market_mood:
+        wanted = set(QUOTE_MOOD_AFFINITY.get(market_mood.lower(), []))
+        if wanted:
+            tagged = [q for q in quotes
+                      if wanted.intersection(set(q.get("tags") or []))]
+            if tagged: candidates = tagged
+
     now = datetime.now()
-    random.seed(now.timetuple().tm_yday + now.year * 1000)
-    q = random.choice(quotes)
+    seed = now.timetuple().tm_yday + now.year * 1000
+    if market_mood:
+        # Different mood → different seed → different pick on the same day
+        seed += sum(ord(c) for c in market_mood)
+    random.seed(seed)
+    q = random.choice(candidates)
     random.seed()
     return {"text": q["text"], "attribution": q["attribution"]}
 
@@ -503,16 +539,26 @@ You are NOT a wire-service summarizer. You are the sharp friend who actually tra
 
 You write like THIS:
 
-LEAD example:
+LEAD example (active day):
 "Corn's stuck at $4.85¼ for a fourth straight session and the funds are running out of patience. Open interest dropped 12,000 contracts Friday — somebody's taking profits, not adding conviction. The chart says coiled spring. The funds say maybe. Tuesday's planting print decides which one's right."
+
+LEAD example (quiet day — equally valid AGSIST voice):
+"Most days don't move markets. Today is one of them. Corn closed $4.62, off a penny. Beans flat at $11.74. Cattle held $248.50 with no real action. The story today is what didn't happen: no fund flow, no weather news, no surprise from yesterday's export sales. Days like this are how the market builds the next move. Wait."
+
+LEAD example (range-bound consolidation):
+"Wheat closed $5.91, the fifth straight session inside a 12-cent band. Range-bound isn't drama, but it's information: the funds aren't selling, the commercials aren't buying, and nobody has new news. When wheat decides which way it's leaving the range, it'll be on data the calendar already shows."
 
 SECTION BODY example (medium conviction):
 "Soybeans ran into the 200-day at $10.42 and bounced like they were supposed to. But the bounce is thin — managed money (hedge funds) is still net long 64,000 contracts and crush margins eased a nickel from last week's high. The chart wants to retest $10.50 resistance. The fundamentals don't have a new catalyst. Watch the export sales Thursday: under 300K MT, the chart's bluffing."
+
+SECTION BODY example (low conviction, quiet day):
+"Cattle marked time at $248.50, give or take a quarter. Nothing in the box-beef cutout said anything new. Feeders held within a 50-cent range. The fed cattle trade hasn't reset since the last Cattle on Feed and there's no reason to push the contract until it does. Watch is the right verb here."
 
 BOTTOM LINE examples (synthesis, not restatement):
 - "Coiled range plus Tuesday catalyst equals directional resolution this week."
 - "Cattle still acting like the buyer is patient, not gone."
 - "Carry's working in soybeans, old crop into new crop just rolled wider for a third week."
+- "No move worth narrating; the data calendar will reset the story."
 
 BASIS example (directional only):
 "Eastern Belt corn basis is firming as ethanol grind comes back online after maintenance. Producers east of the Mississippi with old-crop bushels in storage have a window the futures board alone isn't pricing. Western Belt staying soft, consistent with the seasonal."
@@ -527,19 +573,26 @@ VOCABULARY — use these:
 - "basis is talking" / "basis is firming/widening/yelling"
 - "the chart wants to..." / "the chart's bluffing" / "the chart's in charge"
 - "above/below [level] is the line"
+- "wait" / "watch" / "hold" / "lock" — operator imperatives
 - numbers with cents fractions when relevant: "$4.85¼" not "$4.85"
 - "drag-day" / "yield drag"
 - "the seasonal didn't price this"
 
-VOCABULARY — avoid these (academic register):
+VOCABULARY — avoid these (academic register / AI tells):
 - "indicates," "suggests," "reflects" → use "says," "tells you," "is yelling"
 - "elevated levels" → use the actual level
 - "amid concerns" / "against the backdrop of" → cut entirely
 - "investors are watching closely" → empty phrase, never use
 - "in light of recent developments" → empty phrase, never use
 - "market participants" → "the funds," "merchandisers," "producers" (be specific)
+- "it's worth noting that" / "crucially" / "notably" / "underscores" → AI-tell phrases, never use
+- "in conclusion" / "ultimately" → never use
 
 GEOGRAPHIC SCOPE: National. NEVER narrow to "Wisconsin and Minnesota farmers" or any specific state.
+
+HEADLINE NUMERALS: Always digit format. Write "9.2%" or "9%", not "NINE PERCENT". AI search engines query digits, not spelled-out numbers. The headline is the canonical anchor and must be queryable.
+
+NEWS DISCIPLINE: The briefing's spine is PRICE ACTION. News headlines fed in below are CONTEXT for color, not CONTENT to recap. If a USDA report or news event happened, mention it in the relevant section as a price-driver. Do NOT make news the lead unless price actually moved on it. Never lead with "USDA reported X today" without a corresponding price reaction.
 {weekend_instructions}
 {banned_tmyk}
 {yesterdays_block}
@@ -564,6 +617,15 @@ GEOGRAPHIC SCOPE: National. NEVER narrow to "Wisconsin and Minnesota farmers" or
 2. CONVICTION MUST BE EARNED. "Medium" is the cop-out. Default to "low" on quiet days. Reserve "high" for genuine directional thesis with data behind it.
 
 3. THE MORE YOU KNOW MUST TIE TO TODAY'S DATA. TMYK opens with a hook tied to a number from today's briefing. Title and body reference at least one number/level/percentage/condition from today.
+
+3a. TMYK RHETORICAL SHAPE. Vary the title shape across briefings. Do NOT default to "Why X Y" titles more than once per five briefings. Acceptable shapes:
+  - Thesis statement: "The carry trade is the planting calendar's tell."
+  - Question: "What does open interest say that price doesn't?"
+  - Counterintuitive claim: "Quiet days price the next move, not the noise."
+  - Number-first: "12 cents. The spread that's running the corn market."
+  - Named concept: "The 'planting paradox' explained."
+  - Historical parallel: "The 2012 drought premium showed up first in the calendar spread."
+Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their shape OR topic.
 
 4. WATCH LIST ITEMS MUST BE CONDITIONAL. At least HALF of items must include a specific level, threshold, or trigger. Calendar entries are weakest.
 
@@ -682,14 +744,37 @@ Apply all 11 IMPACT RULES. Voice samples are NON-NEGOTIABLE — no wire-service 
                "system": build_system_prompt(market_status, past_tmyk_topics, yesterdays_call, weekly_thread),
                "messages": [{"role": "user", "content": user_message}]}
     headers = {"Content-Type": "application/json", "x-api-key": api_key, "anthropic-version": "2023-06-01"}
-    if requests:
-        resp = requests.post(ANTHROPIC_API, json=payload, headers=headers, timeout=60)
-        resp.raise_for_status(); result = resp.json()
-    else:
-        data_bytes = json.dumps(payload).encode("utf-8")
-        req = urllib.request.Request(ANTHROPIC_API, data=data_bytes, headers=headers, method="POST")
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            result = json.loads(resp.read().decode("utf-8"))
+
+    # v4.2 (Phase 2 C5): retry with exponential backoff on transient failures.
+    # 429 (rate-limited) and 5xx are retryable. 4xx auth/format errors are not.
+    import time as _time
+    MAX_RETRIES = 3
+    BACKOFF_SECONDS = [4, 12, 30]
+    last_err = None
+    result = None
+    for attempt in range(MAX_RETRIES):
+        try:
+            if requests:
+                resp = requests.post(ANTHROPIC_API, json=payload, headers=headers, timeout=60)
+                if resp.status_code == 429 or 500 <= resp.status_code < 600:
+                    raise requests.exceptions.HTTPError(f"retryable HTTP {resp.status_code}")
+                resp.raise_for_status()
+                result = resp.json()
+            else:
+                data_bytes = json.dumps(payload).encode("utf-8")
+                req = urllib.request.Request(ANTHROPIC_API, data=data_bytes, headers=headers, method="POST")
+                with urllib.request.urlopen(req, timeout=60) as resp:
+                    result = json.loads(resp.read().decode("utf-8"))
+            break
+        except Exception as e:
+            last_err = e
+            if attempt < MAX_RETRIES - 1:
+                wait = BACKOFF_SECONDS[attempt]
+                print(f"  [warn] API call failed ({e}); retrying in {wait}s "
+                      f"(attempt {attempt + 1}/{MAX_RETRIES})", file=sys.stderr)
+                _time.sleep(wait)
+    if result is None:
+        raise last_err if last_err else RuntimeError("API call failed with no error captured")
     text = ""
     for block in result.get("content", []):
         if block.get("type") == "text": text += block["text"]
@@ -1458,8 +1543,24 @@ def save_archive(briefing):
     print(f"  Archive index: {count} briefings")
 
 
+def sanitize_weekend_blocks(briefing, market_status):
+    """v4.2 (Phase 2 C4): the prompt instructs the model to set
+    weekend-disallowed fields to empty on Sat/Sun/holidays. Models
+    occasionally violate. Wipe them in post to enforce the contract
+    regardless of what the model returned. Only acts when market_closed;
+    weekday data is untouched."""
+    if not market_status.get("is_closed"):
+        return briefing
+    weekend_disallowed = ["yesterdays_call", "spread_to_watch",
+                          "weekly_thread", "basis"]
+    for key in weekend_disallowed:
+        if key in briefing:
+            briefing[key] = {}
+    return briefing
+
+
 def main():
-    print("=== AGSIST Daily Briefing Generator v4.1 ===")
+    print("=== AGSIST Daily Briefing Generator v4.2 ===")
     print(f"  Time: {datetime.now().isoformat()}")
     market_status = get_market_status()
     if market_status["is_closed"]:
@@ -1503,12 +1604,21 @@ def main():
     news_block = fetch_ag_news()
     seasonal_ctx = get_seasonal_context()
     print("  Selecting today's quote...")
+    # Phase 2 (v4.2): two-pass quote selection. First pass picks a
+    # default quote (mood unknown pre-generation). After generation,
+    # if the briefing has a market_mood, we re-pick from a mood-affinity
+    # bucket and override briefing.daily_quote before save.
     todays_quote = get_todays_quote()
     print(f"  Quote: \"{todays_quote['text'][:60]}...\" ({todays_quote['attribution']})")
     print("  Calling Claude API (v4.0 prompt)...")
     briefing = call_claude(price_data, surprises, news_block, seasonal_ctx,
                            todays_quote, past_dailies_block, past_tmyk_topics,
                            market_status, yesterdays_call_ctx, weekly_thread_ctx)
+
+    # v4.2 (Phase 2 C4): enforce weekend block contract regardless of
+    # what the model returned. On weekdays this is a no-op.
+    briefing = sanitize_weekend_blocks(briefing, market_status)
+
     locked_prices = price_data.get("locked_prices", {})
     is_clean, val_warnings = validate_briefing(briefing, locked_prices)
     if val_warnings:
@@ -1542,7 +1652,7 @@ def main():
         print(f"  Weekly thread day {wt.get('day','?')}: {wt['question'][:60]}...")
 
     briefing["generated_at"] = datetime.now(timezone.utc).isoformat()
-    briefing["generator_version"] = "4.1"
+    briefing["generator_version"] = "4.2"
     briefing["surprise_count"] = len(surprises)
     briefing["surprises"] = surprises
     briefing["price_validation_clean"] = is_clean
@@ -1550,6 +1660,22 @@ def main():
     briefing["market_status_reason"] = market_status["reason"]
     if "meta" not in briefing: briefing["meta"] = {}
     briefing["meta"]["overnight_surprises_count"] = len(surprises)
+
+    # v4.2 (Phase 2 C2): two-pass quote re-selection. Now that we know the
+    # market_mood the model assigned, re-pick from a mood-affinity bucket.
+    # If the new pick is the same as the first pass (deterministic seeds),
+    # this is a no-op. If the mood-bucket has no quotes, falls back to full
+    # pool. Override briefing.daily_quote with the mood-aware pick.
+    market_mood = (briefing.get("meta") or {}).get("market_mood", "")
+    if market_mood:
+        mood_quote = get_todays_quote(market_mood=market_mood)
+        if mood_quote and mood_quote.get("text"):
+            prev = briefing.get("daily_quote") or {}
+            if prev.get("text") != mood_quote["text"]:
+                print(f"  Quote re-picked for mood={market_mood!r}: "
+                      f"\"{mood_quote['text'][:50]}...\" ({mood_quote['attribution']})")
+            briefing["daily_quote"] = mood_quote
+
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(OUTPUT_PATH, "w") as f:
         json.dump(briefing, f, indent=2, ensure_ascii=False)
