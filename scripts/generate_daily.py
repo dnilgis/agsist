@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AGSIST Daily Briefing Generator — v4.2
+AGSIST Daily Briefing Generator — v4.3
 ═══════════════════════════════════════════════════════════════════
 Generates the daily agricultural intelligence briefing via Claude API.
 
@@ -643,12 +643,17 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
 
 11. THREAD COHERENCE (Tue-Fri only). When weekly_thread context is provided, today's lead must materially advance the thread — new data, new development, new angle. Do NOT just rehash Monday's setup with the same evidence. Friday must resolve, not summarize.
 
+12. THE TAKEAWAY MUST BE COMMITTABLE. The_takeaway is the briefing's commitment to the reader: if you forget everything else, remember this. Single sentence, max 18 words. Must be operational — a producer should be able to say it out loud at the elevator and have it mean something. NOT a price recap ("hogs crashed 9%"), NOT a vague mood ("markets are uncertain"). DO say something like: "Cattle still acting like the buyer is patient, not gone." or "Wait — quiet days price the next move, not this one." If you can't write a takeaway sharper than the headline, leave the field empty (set the_takeaway to "").
+
+13. VS_YESTERDAY MUST BE NEW INFO. The vs_yesterday field on each section is OPTIONAL — only include it when today's data confirmed, contradicted, or materially advanced what yesterday's section said about the same commodity. Keep it under 12 words. Format: "[Commodity]: [what changed since yesterday]." Examples: "Cattle: narrative held — momentum fading exactly as called." "Hogs: yesterday's drift broke into outright crash." Do NOT pad — if there's no continuity worth noting, OMIT the field. Empty vs_yesterday is a feature, not a failure. (Skip entirely on Mondays after long weekends or when no prior briefing exists.)
+
 ══ OUTPUT — return valid JSON with EXACTLY these fields ══
 
 {{
   "headline": "ALL CAPS, 6-10 words.",
   "subheadline": "One sentence adding context.",
   "lead": "2-3 sentences. Specific price from table + synthesizing observation (RULE 1). Voice samples (RULE 9). Forward test (RULE 10). On Tue-Fri, advances the thread (RULE 11).",
+  "the_takeaway": "Single sentence, max 18 words. The if-you-remember-one-thing (RULE 12). Empty string if you cannot write one sharper than the headline.",
   "teaser": "One punchy sentence for the collapsed hero bar.",
   "one_number": {{"value": "Most interesting number", "unit": "3-6 words", "context": "2-3 sentences"}},
   "yesterdays_call": {{
@@ -661,7 +666,8 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
       "bottom_line": "TL;DR adding info beyond title (RULE 5). Max 20 words.",
       "conviction_level": "low | medium | high (earned per RULE 2)",
       "overnight_surprise": true/false,
-      "farmer_action": "OPTIONAL. Specific thresholded recommendation only. Otherwise OMIT entirely."}}
+      "farmer_action": "OPTIONAL. Specific thresholded recommendation only. Otherwise OMIT entirely.",
+      "vs_yesterday": "OPTIONAL. Continuity marker per RULE 13. Under 12 words. OMIT if no real continuity to flag."}}
   ],
   "spread_to_watch": {{
     "label": "Specific spread name. Examples: 'November beans / July beans inverse', 'Dec corn / Jul wheat ratio', 'Cheese block / barrel', 'Live cattle / feeder ratio', 'Front-month crude / Brent'.",
@@ -688,12 +694,17 @@ SECTIONS:
 - Default weekday: Grains & Oilseeds / Livestock & Dairy / Energy & Inputs / Macro & Trade
 - MIN 2, MAX 5. If no story in a bucket, fold or OMIT. No padding.
 - Quiet days: prefer 2-3 sections (RULE 6).
+- vs_yesterday is OPTIONAL per section. Only include it when today's data
+  meaningfully advanced or contradicted yesterday's coverage of the same
+  commodity. Empty fields are correct when there's no continuity to note.
 
 OMISSIONS — set fields to null or empty objects when not applicable:
 - yesterdays_call: omit on Mondays after long weekends if no recent call provided. Otherwise required Tue-Fri.
 - spread_to_watch: required every weekday. Pick something meaningful, not filler.
 - weekly_thread: required every weekday. Monday sets, Tue-Thu advance, Fri resolves.
 - basis: required every weekday. Empty strings on weekends/holidays.
+- the_takeaway: STRING field. If you cannot write something committable per RULE 12, set to empty string "". Better empty than weak.
+- vs_yesterday (per section): OMIT the field entirely when no continuity to mark (per RULE 13). Do not emit empty strings.
 
 RESPOND WITH ONLY THE JSON OBJECT. No markdown. No preamble. No em dashes. VOICE OR DEATH."""
 
@@ -789,10 +800,12 @@ Apply all 11 IMPACT RULES. Voice samples are NON-NEGOTIABLE — no wire-service 
 def validate_briefing(briefing, locked_prices):
     warnings = []
     known_values = {k: v for k, v in locked_prices.items() if v and v > 0}
-    parts = [briefing.get("headline", ""), briefing.get("lead", ""), briefing.get("subheadline", "")]
+    parts = [briefing.get("headline", ""), briefing.get("lead", ""), briefing.get("subheadline", ""),
+             briefing.get("the_takeaway", "")]  # v4.3
     if briefing.get("one_number"): parts.append(briefing["one_number"].get("context", ""))
     for sec in briefing.get("sections", []):
         parts.append(sec.get("body", "")); parts.append(sec.get("bottom_line", ""))
+        parts.append(sec.get("vs_yesterday", ""))  # v4.3
     tmyk = briefing.get("the_more_you_know") or briefing.get("tmyk") or {}
     parts.append(tmyk.get("body", ""))
     basis = briefing.get("basis") or {}
@@ -1036,6 +1049,33 @@ def render_thread_marker_html(thread, market_closed=False):
             f'</div>')
 
 
+def render_takeaway_block_html(takeaway):
+    """v4.3: render the_takeaway as a prominent committable-statement card.
+    Empty string or missing field → no render."""
+    if not takeaway or not isinstance(takeaway, str):
+        return ""
+    text = takeaway.strip()
+    if not text:
+        return ""
+    return (f'<div class="dv3-takeaway" role="note" aria-label="Today\'s key takeaway">'
+            f'<span class="dv3-takeaway-label">&#x1F3AF; THE TAKEAWAY</span>'
+            f'<p class="dv3-takeaway-text">{html_esc(text)}</p>'
+            f'</div>')
+
+
+def render_cashbids_footer_html(market_closed):
+    """v4.3: weekday-only inline cash-bids conversion footer.
+    Sits below byline, above share row. Skipped on weekends/holidays."""
+    if market_closed:
+        return ""
+    return ('<a class="dv3-cashbids-cta" href="/cash-bids" '
+            'aria-label="View your local cash bids">'
+            '<span class="dv3-cashbids-icon">&#x1F4B5;</span>'
+            '<span class="dv3-cashbids-text"><strong>Your local elevator bids</strong> '
+            '<span class="dv3-cashbids-arrow">&rarr;</span></span>'
+            '</a>')
+
+
 def generate_archive_html(briefing, date_iso):
     date_display = briefing.get("date", date_iso)
     headline = html_esc(briefing.get("headline", "AGSIST Daily Briefing"))
@@ -1122,9 +1162,18 @@ def generate_archive_html(briefing, date_iso):
             conviction_html = f'<span class="dv3-sec-conviction" style="color:{cv[0]};background:{cv[1]};border:1px solid {cv[2]}">{conviction.upper()} CONVICTION</span>'
         bottom_html = f'<div class="dv3-sec-bottomline">{bottom_line}</div>' if bottom_line else ""
         action_html = f'<div class="dv3-sec-action">&#x1F3AF; {farmer_action}</div>' if farmer_action else ""
+        # v4.3: per-section continuity marker (vs_yesterday)
+        vs_y = (sec.get("vs_yesterday") or "").strip()
+        vs_y_html = ""
+        if vs_y and not is_weekend_brief:
+            vs_y_html = (f'<div class="dv3-sec-vs" aria-label="vs yesterday">'
+                         f'<span class="dv3-sec-vs-icon">&#x21BA;</span>'
+                         f'<span class="dv3-sec-vs-text">{html_esc(vs_y)}</span>'
+                         f'</div>')
         sections_html += (f'<div class="{cls}" style="position:relative">'
                           f'<div class="dv3-sec-header"><span class="dv3-sec-icon">{icon}</span>'
                           f'<span class="dv3-sec-title">{title}</span>{conviction_html}</div>'
+                          f'{vs_y_html}'
                           f'<div class="dv3-sec-body">{body}</div>{bottom_html}{action_html}</div>')
 
     one_num = briefing.get("one_number", {})
@@ -1161,7 +1210,9 @@ def generate_archive_html(briefing, date_iso):
         watch_items += (f'<li class="dv3-watch-item">'
                         f'<span class="dv3-watch-time">{html_esc(item.get("time", ""))}</span>'
                         f'<span class="dv3-watch-desc">{html_esc_preserve_strong(item.get("desc", ""))}</span></li>')
-    watch_html = f'<div class="dv3-watch"><div class="dv3-watch-label">&#x1F4C5; TODAY\'S WATCH LIST</div><ul class="dv3-watch-list">{watch_items}</ul></div>' if watch else ""
+    # v4.3: weekend editions show forward-week list, weekday show today
+    watch_label = "THIS WEEK\'S WATCH LIST" if is_weekend_brief else "TODAY\'S WATCH LIST"
+    watch_html = f'<div class="dv3-watch"><div class="dv3-watch-label">&#x1F4C5; {watch_label}</div><ul class="dv3-watch-list">{watch_items}</ul></div>' if watch else ""
 
     source = html_esc(briefing.get("source_summary", "USDA / CME Group / Open-Meteo"))
 
@@ -1182,6 +1233,9 @@ def generate_archive_html(briefing, date_iso):
     basis_html = render_basis_block_html(briefing.get("basis"), is_weekend_brief)
     forward_html = render_forward_block_html(date_iso)
     byline_html = render_byline_block_html()
+    # v4.3: new render helpers
+    takeaway_html = render_takeaway_block_html(briefing.get("the_takeaway", ""))
+    cashbids_html = render_cashbids_footer_html(is_weekend_brief)
     yc_html = render_yesterdays_call_block_html(briefing.get("yesterdays_call"), is_weekend_brief)
     spread_html = render_spread_block_html(briefing.get("spread_to_watch"), is_weekend_brief)
     thread_html = render_thread_marker_html(briefing.get("weekly_thread"), is_weekend_brief)
@@ -1308,6 +1362,22 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-sec-body{{font-size:.95rem;line-height:1.75;color:var(--text-dim);margin-bottom:.65rem}}
 .dv3-sec-body strong{{color:var(--text)}}
 .dv3-sec-bottomline{{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;color:var(--text);padding:.5rem .75rem;background:var(--surface2);border-radius:6px;border-left:3px solid var(--gold);margin-bottom:.5rem;line-height:1.45}}
+/* v4.3: takeaway card — committable statement, sits between lead and sparks */
+.dv3-takeaway{{margin:1.1rem 0 0;padding:1rem 1.15rem;background:linear-gradient(135deg,rgba(218,165,32,.08) 0%,rgba(218,165,32,.02) 60%,var(--surface2) 100%);border:1px solid rgba(218,165,32,.3);border-left:4px solid var(--gold);border-radius:8px}}
+.dv3-takeaway-label{{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.45rem}}
+.dv3-takeaway-text{{font-family:'Oswald',sans-serif;font-size:1.1rem;line-height:1.45;color:var(--text);margin:0;font-weight:600;letter-spacing:-.005em}}
+@media(max-width:640px){{.dv3-takeaway-text{{font-size:1rem}}}}
+/* v4.3: per-section vs_yesterday continuity chip */
+.dv3-sec-vs{{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);margin:0 0 .55rem;padding:.3rem .55rem;background:rgba(74,143,186,.04);border-left:2px solid rgba(74,143,186,.32);border-radius:0 4px 4px 0}}
+.dv3-sec-vs-icon{{color:#5aa0d2;font-size:.72rem;flex-shrink:0}}
+.dv3-sec-vs-text{{font-weight:600;letter-spacing:.01em}}
+/* v4.3: cash-bids inline conversion footer — weekday-only */
+.dv3-cashbids-cta{{display:flex;align-items:center;gap:.65rem;padding:.85rem 1.15rem;background:rgba(74,171,76,.06);border:1px solid rgba(74,171,76,.22);border-radius:8px;margin:1rem 0 .65rem;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s;min-height:44px}}
+.dv3-cashbids-cta:hover{{border-color:var(--green);background:rgba(74,171,76,.10)}}
+.dv3-cashbids-icon{{font-size:1.1rem;flex-shrink:0}}
+.dv3-cashbids-text{{font-size:.88rem;line-height:1.4}}
+.dv3-cashbids-text strong{{color:var(--text);font-weight:700}}
+.dv3-cashbids-arrow{{color:var(--green);font-weight:700;margin-left:.2rem}}
 .dv3-sec-action{{font-size:.82rem;font-weight:600;color:var(--green);padding:.45rem .7rem;background:rgba(74,171,76,.04);border:1px solid rgba(74,171,76,.15);border-radius:6px;line-height:1.45}}
 .dv3-tmyk{{background:linear-gradient(135deg,var(--surface) 0%,rgba(74,143,186,.03) 100%);border:2px solid rgba(74,143,186,.20);border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:2rem}}
 .dv3-tmyk-label{{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:.55rem}}
@@ -1404,6 +1474,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
       {thread_html}
       {surprise_html}
       <p class="dv3-lead">{lead}</p>
+      {takeaway_html}
     </header>
     {sparks_html}
     {topbar_html}
@@ -1415,6 +1486,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
     {tmyk_html}
     {watch_html}
     {byline_html}
+    {cashbids_html}
     {forward_html}
     {share_html}
     <div class="dv3-source">{source} &middot; Auto-compiled at 6:02 AM CT</div>
@@ -1560,7 +1632,7 @@ def sanitize_weekend_blocks(briefing, market_status):
 
 
 def main():
-    print("=== AGSIST Daily Briefing Generator v4.2 ===")
+    print("=== AGSIST Daily Briefing Generator v4.3 ===")
     print(f"  Time: {datetime.now().isoformat()}")
     market_status = get_market_status()
     if market_status["is_closed"]:
@@ -1652,7 +1724,7 @@ def main():
         print(f"  Weekly thread day {wt.get('day','?')}: {wt['question'][:60]}...")
 
     briefing["generated_at"] = datetime.now(timezone.utc).isoformat()
-    briefing["generator_version"] = "4.2"
+    briefing["generator_version"] = "4.3"
     briefing["surprise_count"] = len(surprises)
     briefing["surprises"] = surprises
     briefing["price_validation_clean"] = is_clean
