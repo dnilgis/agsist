@@ -1,0 +1,50 @@
+name: IndexNow Submit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.html'
+      - '**.md'
+      - 'sitemap.xml'
+  schedule:
+    # 14:30 UTC daily = 09:30 CT (after daily briefing has published)
+    - cron: '30 14 * * *'
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: 'Comma-separated URLs (leave empty to submit full sitemap)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow-submit
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Submit to IndexNow
+        env:
+          MANUAL_URLS: ${{ github.event.inputs.urls }}
+        run: |
+          if [ -n "$MANUAL_URLS" ]; then
+            # shellcheck disable=SC2086
+            URLS=$(echo "$MANUAL_URLS" | tr ',' ' ')
+            python scripts/indexnow_submit.py --urls $URLS
+          else
+            python scripts/indexnow_submit.py
+          fi
