@@ -181,6 +181,22 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-watch-time{font-family:'JetBrains Mono',monospace;color:var(--gold);font-weight:600;font-size:.8rem;white-space:nowrap;flex-shrink:0;min-width:110px;}
 .dv3-watch-desc{color:var(--text-dim);font-size:.84rem;line-height:1.55;}
 .dv3-watch-desc strong{color:var(--text);}
+/* v4.3: takeaway card */
+.dv3-takeaway{margin:1rem 0 .25rem;padding:.95rem 1.1rem;background:linear-gradient(135deg,rgba(218,165,32,.08) 0%,rgba(218,165,32,.02) 60%,var(--surface2) 100%);border:1px solid rgba(218,165,32,.3);border-left:4px solid var(--gold);border-radius:8px;}
+.dv3-takeaway-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;}
+.dv3-takeaway-text{font-family:'Oswald',sans-serif;font-size:1.05rem;line-height:1.45;color:var(--text);margin:0;font-weight:600;letter-spacing:-.005em;}
+@media(max-width:640px){.dv3-takeaway-text{font-size:.95rem;}}
+/* v4.3: per-section vs_yesterday continuity chip */
+.dv3-sec-vs{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);margin:.4rem 0 .55rem;padding:.3rem .55rem;background:rgba(74,143,186,.04);border-left:2px solid rgba(74,143,186,.32);border-radius:0 4px 4px 0;}
+.dv3-sec-vs-icon{color:#5aa0d2;font-size:.72rem;flex-shrink:0;}
+.dv3-sec-vs-text{font-weight:600;letter-spacing:.01em;line-height:1.4;}
+/* v4.3: cash-bids inline conversion footer (weekday only) */
+.dv3-cashbids-cta{display:flex;align-items:center;gap:.65rem;padding:.85rem 1.15rem;background:rgba(74,171,76,.06);border:1px solid rgba(74,171,76,.22);border-radius:8px;margin:.85rem 0 .55rem;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s;min-height:44px;}
+.dv3-cashbids-cta:hover{border-color:var(--green);background:rgba(74,171,76,.10);}
+.dv3-cashbids-icon{font-size:1.1rem;flex-shrink:0;}
+.dv3-cashbids-text{font-size:.88rem;line-height:1.4;}
+.dv3-cashbids-text strong{color:var(--text);font-weight:700;}
+.dv3-cashbids-arrow{color:var(--green);font-weight:700;margin-left:.2rem;}
 
 /* Share row */
 .dv3-share{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:1.25rem 0 .75rem;padding:.75rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
@@ -320,7 +336,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 
   <div class="dv3-hero">
     <div class="dv3-hero-left">
-      <div class="dv3-eyebrow"><span class="dv3-eyebrow-dot"></span> AGSIST Daily &middot; Published every weekday by 6 AM CT</div>
+      <div class="dv3-eyebrow"><span class="dv3-eyebrow-dot"></span> AGSIST Daily &middot; Published Mon–Fri by 6 AM CT, with weekend recaps</div>
       <h1>Daily Ag Briefing</h1>
       <p class="dv3-sub">Morning market intelligence for working US ag producers &mdash; grain, livestock, dairy, and specialty operations. Available at no charge, no account required.</p>
       <div class="dv3-hero-meta" id="dv3-hero-meta" aria-live="polite"></div>
@@ -448,7 +464,9 @@ function renderToday(data){
   var aUrl=(spA&&spA.cta_url)||(spA&&spA.url)||'mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20founding%20sponsor%20inquiry';
   var aTarget=aUrl.indexOf('http')===0?' target="_blank" rel="sponsored noopener"':' rel="sponsored"';
   if(aIsHouse){
-    attribution='<a class="dv3-spattr dv3-spattr--house" href="'+escHtml(aUrl)+'"'+aTarget+' aria-label="Sponsor information">\uD83D\uDFE1 Sponsor this slot \u2192</a>';
+    // v4.3: house-ad pill suppressed — the in-flow sponsor card carries the pitch.
+    // Paid-sponsor pill stays because announcing WHO is sponsoring today is meaningful.
+    attribution='';
   } else {
     var aName=escHtml(spA.advertiser||spA.name||'').trim();
     if(aName){
@@ -477,6 +495,16 @@ function renderToday(data){
   else if(data.body){
     var paras=(data.body||'').split('\n\n').filter(Boolean);
     lead='<p class="dv3-today-lead">'+paras.map(escHtml).join('<br><br>')+'</p>';
+  }
+
+  // v4.3: takeaway block — committable single-sentence "if you remember one thing"
+  var takeaway='';
+  var taTxt=(data.the_takeaway||'').trim();
+  if(taTxt){
+    takeaway='<div class="dv3-takeaway" role="note" aria-label="Today\u2019s key takeaway">'+
+      '<span class="dv3-takeaway-label">\u{1F3AF} THE TAKEAWAY</span>'+
+      '<p class="dv3-takeaway-text">'+escHtml(taTxt)+'</p>'+
+    '</div>';
   }
 
   // Topbar: one number + daily quote
@@ -539,12 +567,18 @@ function renderToday(data){
       if(sec.overnight_surprise)classes.push('dv3-sec--surprise');
       var cnv=sec.conviction_level||'';
       var cnvCls=convictionClass(cnv);
+      // v4.3: vs_yesterday continuity chip (per-section, optional, weekday only)
+      var vsY=(sec.vs_yesterday||'').trim();
+      var vsHtml=(vsY && !marketClosed)
+        ? '<div class="dv3-sec-vs"><span class="dv3-sec-vs-icon">\u21BA</span><span class="dv3-sec-vs-text">'+escHtml(vsY)+'</span></div>'
+        : '';
       sections+='<div class="'+classes.join(' ')+'">'+
         '<div class="dv3-sec-header">'+
           (sec.icon?'<span class="dv3-sec-icon">'+escHtml(sec.icon)+'</span>':'')+
           '<span class="dv3-sec-title">'+escHtml(sec.title||'')+'</span>'+
           (cnv?'<span class="dv3-sec-cnv dv3-sec-cnv--'+cnvCls+'">'+escHtml(cnv)+' CONVICTION</span>':'')+
         '</div>'+
+        vsHtml+
         (sec.body?'<div class="dv3-sec-body">'+escHtml(sec.body)+'</div>':'')+
         (sec.bottom_line?'<div class="dv3-sec-bottomline">'+escHtml(sec.bottom_line)+'</div>':'')+
         (sec.farmer_action?'<div class="dv3-sec-action">\u{1F3AF} '+escHtml(sec.farmer_action)+'</div>':'')+
@@ -567,8 +601,10 @@ function renderToday(data){
   // Watch list
   var watch='';
   if(data.watch_list&&data.watch_list.length){
+    // v4.3: weekend editions show forward-week list
+    var watchLabel=marketClosed?"This week\u2019s watch list":"Today\u2019s watch list";
     watch='<div class="dv3-watch">'+
-      '<div class="dv3-watch-label">\u{1F4C5} Today\'s watch list</div>'+
+      '<div class="dv3-watch-label">\u{1F4C5} '+watchLabel+'</div>'+
       '<ul class="dv3-watch-list">';
     data.watch_list.forEach(function(w){
       watch+='<li class="dv3-watch-item">'+
@@ -577,6 +613,16 @@ function renderToday(data){
       '</li>';
     });
     watch+='</ul></div>';
+  }
+
+  // v4.3: cash-bids conversion footer (weekday-only)
+  var cashbids='';
+  if(!marketClosed){
+    cashbids='<a class="dv3-cashbids-cta" href="/cash-bids" aria-label="View your local cash bids">'+
+      '<span class="dv3-cashbids-icon">\u{1F4B5}</span>'+
+      '<span class="dv3-cashbids-text"><strong>Your local elevator bids</strong> '+
+      '<span class="dv3-cashbids-arrow">\u2192</span></span>'+
+    '</a>';
   }
 
   // Share row
@@ -709,7 +755,7 @@ function renderToday(data){
   var src='<div class="dv3-source">CME futures &middot; EIA energy data &middot; USDA crop data &middot; Auto-compiled at 6:02 AM CT</div>';
   var perm=iso?'<div class="dv3-perm"><a href="/daily/'+escHtml(iso)+'">Permalink to this briefing \u2192</a></div>':'';
 
-  el.innerHTML=header+attribution+thread+ticker+surprise+lead+topbar+sponsor+yc+sparks+sections+spread+basis+tmyk+watch+byline+forward+share+src+perm;
+  el.innerHTML=header+attribution+thread+ticker+surprise+lead+takeaway+topbar+sponsor+yc+sparks+sections+spread+basis+tmyk+watch+byline+cashbids+forward+share+src+perm;
 
   // Wire share buttons
   var btns=el.querySelectorAll('.dv3-share-btn');

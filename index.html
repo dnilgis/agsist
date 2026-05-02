@@ -379,11 +379,27 @@
   @media(max-width:480px){.fert-widget{padding:.75rem .85rem;}.fert-grid{grid-template-columns:1fr 1fr;}}
   @media(max-width:560px){.ratio-body{flex-wrap:wrap!important;}.ratio-right{min-width:100%;}.ratio-big{font-size:2rem;}}
   /* v4.0 daily-hero blocks ── thread marker / yesterday's call / spread / basis / byline */
-  .daily-spattr{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;letter-spacing:.04em;color:var(--gold);text-decoration:none;padding:.3rem .65rem;border:1px solid rgba(218,165,32,.25);border-radius:4px;background:rgba(218,165,32,.04);margin-bottom:.85rem;transition:border-color .15s,background .15s,color .15s;max-width:fit-content}
-  .daily-spattr:hover{border-color:var(--gold);background:rgba(218,165,32,.10);color:var(--gold)}
-  .daily-spattr--house{opacity:.75;color:var(--text-muted);border-color:var(--border)}
-  .daily-spattr--house:hover{opacity:1;color:var(--gold);border-color:rgba(218,165,32,.4)}
-  .daily-spattr strong{color:var(--text);font-weight:700}
+  /* daily-spattr legacy CSS retained for compat; element removed in v4.3 */
+  .daily-spattr{display:none}
+  /* v4.3: takeaway card — committable statement between lead and sponsor */
+  .daily-takeaway{margin:1rem 0 .25rem;padding:.95rem 1.1rem;background:linear-gradient(135deg,rgba(218,165,32,.08) 0%,rgba(218,165,32,.02) 60%,var(--surface2) 100%);border:1px solid rgba(218,165,32,.3);border-left:4px solid var(--gold);border-radius:8px}
+  .daily-takeaway-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
+  .daily-takeaway-text{font-family:'Oswald',sans-serif;font-size:1.05rem;line-height:1.45;color:var(--text);margin:0;font-weight:600;letter-spacing:-.005em}
+  @media(max-width:640px){.daily-takeaway-text{font-size:.95rem}}
+  /* v4.3: per-section vs_yesterday continuity chip */
+  .daily-sec-vs{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);margin:.4rem 0 .6rem;padding:.3rem .55rem;background:rgba(74,143,186,.04);border-left:2px solid rgba(74,143,186,.32);border-radius:0 4px 4px 0}
+  .daily-sec-vs-icon{color:#5aa0d2;font-size:.72rem;flex-shrink:0}
+  .daily-sec-vs-text{font-weight:600;letter-spacing:.01em;line-height:1.4}
+  /* v4.3: cash-bids inline conversion footer (weekday only) */
+  .daily-cashbids-cta{display:flex;align-items:center;gap:.65rem;padding:.85rem 1.15rem;background:rgba(74,171,76,.06);border:1px solid rgba(74,171,76,.22);border-radius:8px;margin:.5rem var(--sp-lg,1.5rem) .5rem;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s;min-height:44px;max-width:1400px}
+  .daily-cashbids-cta:hover{border-color:var(--green);background:rgba(74,171,76,.10)}
+  .daily-cashbids-icon{font-size:1.1rem;flex-shrink:0}
+  .daily-cashbids-text{font-size:.88rem;line-height:1.4}
+  .daily-cashbids-text strong{color:var(--text);font-weight:700}
+  .daily-cashbids-arrow{color:var(--green);font-weight:700;margin-left:.2rem}
+  /* v4.3: Copy The Number button */
+  .dn-copy-btn{background:none;border:1px solid var(--border);color:var(--text-muted);font-size:.78rem;line-height:1;padding:.3rem .5rem;border-radius:4px;cursor:pointer;transition:border-color .15s,color .15s,background .15s;min-height:28px;min-width:28px;display:inline-flex;align-items:center;justify-content:center}
+  .dn-copy-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(218,165,32,.06)}
   .daily-thread-marker{display:none;align-items:center;gap:.5rem;margin-bottom:.45rem;padding:.32rem .7rem;background:rgba(91,163,224,.06);border:1px solid rgba(91,163,224,.22);border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);max-width:fit-content}
   .daily-thread-marker .dtm-day{color:var(--blue);font-weight:800}
   .daily-thread-marker .dtm-q{color:var(--text-dim);text-transform:none;letter-spacing:0;font-weight:600}
@@ -556,12 +572,15 @@
           <div style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.9rem"><div class="daily-eyebrow"><span class="daily-eyebrow-dot"></span> AGSIST DAILY</div><span id="daily-mood" class="daily-mood" style="display:none"></span></div>
           <div id="daily-date" class="daily-date"></div>
           <div class="daily-snapshot-note" aria-label="Briefing snapshot context" style="font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin:-.4rem 0 .8rem;line-height:1.5">Snapshot at briefing publish &middot; <span style="color:var(--gold)">live ticker above shows current prices</span></div>
-          <a class="daily-spattr daily-spattr--house" id="daily-spattr" href="mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20founding%20sponsor%20inquiry" aria-label="Sponsor information">&#x1F7E1; Sponsor this slot &rarr;</a>
           <div id="site-greeting" class="daily-greeting">Good Morning</div>
           <div id="daily-thread-marker" class="daily-thread-marker"><span class="dtm-day">Day <span id="daily-thread-day">--</span>/5</span><span class="dtm-q" id="daily-thread-q"></span></div>
           <h1 id="daily-headline" class="daily-headline">Loading Today's Briefing&hellip;</h1>
           <p id="daily-subheadline" style="font-size:.88rem;color:var(--gold);font-weight:600;margin-bottom:.5rem;letter-spacing:.02em"></p>
           <p id="daily-lead" class="daily-lead"></p>
+          <div id="daily-takeaway" class="daily-takeaway" role="note" aria-label="Today's key takeaway" style="display:none">
+            <span class="daily-takeaway-label">&#x1F3AF; THE TAKEAWAY</span>
+            <p id="daily-takeaway-text" class="daily-takeaway-text"></p>
+          </div>
           <div class="daily-sponsor" id="daily-sponsor" role="region" aria-label="Sponsor slot">
             <!-- Empty state: billboard for finding the founding sponsor -->
             <div class="dsp-empty" id="dsp-empty">
@@ -593,10 +612,10 @@
             <div class="daily-yc-body"><span id="daily-yc-summary"></span><span id="daily-yc-note" class="daily-yc-note"></span></div>
           </div>
           <div class="daily-sections">
-            <div id="daily-sec-1" class="daily-sec" style="position:relative"><span id="daily-section-1-icon" class="daily-sec-icon">&#x1F33E;</span><div><div class="daily-sec-label-row"><div id="daily-section-1-title" class="daily-sec-label">GRAINS &amp; OILSEEDS</div><span id="daily-section-1-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-1-body" class="daily-sec-text"></div><div id="daily-section-1-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-1-action" class="daily-sec-action"></div></div></div>
-            <div id="daily-sec-2" class="daily-sec" style="position:relative"><span id="daily-section-2-icon" class="daily-sec-icon">&#x1F404;</span><div><div class="daily-sec-label-row"><div id="daily-section-2-title" class="daily-sec-label">LIVESTOCK &amp; DAIRY</div><span id="daily-section-2-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-2-body" class="daily-sec-text"></div><div id="daily-section-2-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-2-action" class="daily-sec-action"></div></div></div>
-            <div id="daily-sec-3" class="daily-sec" style="position:relative"><span id="daily-section-3-icon" class="daily-sec-icon">&#x26FD;</span><div><div class="daily-sec-label-row"><div id="daily-section-3-title" class="daily-sec-label">ENERGY &amp; INPUTS</div><span id="daily-section-3-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-3-body" class="daily-sec-text"></div><div id="daily-section-3-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-3-action" class="daily-sec-action"></div></div></div>
-            <div id="daily-sec-4" class="daily-sec" style="position:relative"><span id="daily-section-4-icon" class="daily-sec-icon">&#x1F3DB;&#xFE0F;</span><div><div class="daily-sec-label-row"><div id="daily-section-4-title" class="daily-sec-label">MACRO &amp; TRADE</div><span id="daily-section-4-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-4-body" class="daily-sec-text"></div><div id="daily-section-4-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-4-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-1" class="daily-sec" style="position:relative"><span id="daily-section-1-icon" class="daily-sec-icon">&#x1F33E;</span><div><div class="daily-sec-label-row"><div id="daily-section-1-title" class="daily-sec-label">GRAINS &amp; OILSEEDS</div><span id="daily-section-1-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-1-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon">&#x21BA;</span><span class="daily-sec-vs-text" id="daily-section-1-vs-text"></span></div><div id="daily-section-1-body" class="daily-sec-text"></div><div id="daily-section-1-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-1-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-2" class="daily-sec" style="position:relative"><span id="daily-section-2-icon" class="daily-sec-icon">&#x1F404;</span><div><div class="daily-sec-label-row"><div id="daily-section-2-title" class="daily-sec-label">LIVESTOCK &amp; DAIRY</div><span id="daily-section-2-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-2-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon">&#x21BA;</span><span class="daily-sec-vs-text" id="daily-section-2-vs-text"></span></div><div id="daily-section-2-body" class="daily-sec-text"></div><div id="daily-section-2-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-2-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-3" class="daily-sec" style="position:relative"><span id="daily-section-3-icon" class="daily-sec-icon">&#x26FD;</span><div><div class="daily-sec-label-row"><div id="daily-section-3-title" class="daily-sec-label">ENERGY &amp; INPUTS</div><span id="daily-section-3-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-3-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon">&#x21BA;</span><span class="daily-sec-vs-text" id="daily-section-3-vs-text"></span></div><div id="daily-section-3-body" class="daily-sec-text"></div><div id="daily-section-3-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-3-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-4" class="daily-sec" style="position:relative"><span id="daily-section-4-icon" class="daily-sec-icon">&#x1F3DB;&#xFE0F;</span><div><div class="daily-sec-label-row"><div id="daily-section-4-title" class="daily-sec-label">MACRO &amp; TRADE</div><span id="daily-section-4-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-4-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon">&#x21BA;</span><span class="daily-sec-vs-text" id="daily-section-4-vs-text"></span></div><div id="daily-section-4-body" class="daily-sec-text"></div><div id="daily-section-4-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-4-action" class="daily-sec-action"></div></div></div>
           </div>
           <div id="daily-spread" class="daily-spread">
             <div class="daily-spread-head"><span class="daily-spread-label">SPREAD TO WATCH</span><span class="daily-spread-level" id="daily-spread-level"></span></div>
@@ -612,12 +631,16 @@
           <div class="daily-byline" id="daily-byline">By <strong>Sigurd Lindquist</strong>, founder &middot; <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a></div>
         </div>
         <div class="hero-sidebar">
-          <div class="s-card s-card--gold"><div class="s-card-label">&#x1F4CA; THE NUMBER</div><div id="daily-number-value" class="one-num">&mdash;</div><div id="daily-number-unit" class="one-num-unit"></div><div id="daily-number-context" class="one-num-ctx"></div></div>
-          <div class="s-card"><div class="s-card-label">&#x1F4C5; TODAY'S WATCH LIST</div><ul id="daily-watch-list" class="watch-list" role="list"><li class="watch-item"><span class="watch-time">&mdash;</span><span class="watch-desc">Loading watch list&hellip;</span></li></ul></div>
+          <div class="s-card s-card--gold"><div class="s-card-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><span class="s-card-label">&#x1F4CA; THE NUMBER</span><button id="daily-number-copy" class="dn-copy-btn" type="button" aria-label="Copy The Number to clipboard" title="Copy">&#x1F4CB;</button></div><div id="daily-number-value" class="one-num">&mdash;</div><div id="daily-number-unit" class="one-num-unit"></div><div id="daily-number-context" class="one-num-ctx"></div></div>
+          <div class="s-card"><div class="s-card-label">&#x1F4C5; <span id="daily-watch-label-text">TODAY'S WATCH LIST</span></div><ul id="daily-watch-list" class="watch-list" role="list"><li class="watch-item"><span class="watch-time">&mdash;</span><span class="watch-desc">Loading watch list&hellip;</span></li></ul></div>
           <div class="s-card" style="border-color:rgba(218,165,32,.15)"><div class="s-card-label" style="color:var(--gold)">&#x1F4AC; DAILY QUOTE</div><blockquote style="margin:0;padding:0"><p id="daily-quote-text" style="font-size:.92rem;font-style:italic;color:var(--text-dim);line-height:1.65;margin-bottom:.4rem">"&mdash;"</p><cite id="daily-quote-attr" style="font-size:.76rem;color:var(--text-muted);font-style:normal"></cite></blockquote></div>
           <div style="font-size:.62rem;color:var(--text-muted);text-align:center;padding:.2rem 0"><span id="daily-source">USDA &middot; CME Group &middot; Open-Meteo</span></div>
         </div>
       </div>
+      <a id="daily-cashbids-cta" class="daily-cashbids-cta" href="/cash-bids" aria-label="View your local cash bids" style="display:none">
+        <span class="daily-cashbids-icon">&#x1F4B5;</span>
+        <span class="daily-cashbids-text"><strong>Your local elevator bids</strong> <span class="daily-cashbids-arrow">&rarr;</span></span>
+      </a>
       <div class="daily-share" id="daily-share" role="region" aria-label="Share today's briefing">
         <span class="daily-share-lbl">&#x1F4E2; Share</span>
         <button class="daily-share-btn" id="dsb-native" data-net="native" style="display:none" aria-label="Share via system share sheet"><span class="dsb-icon">&#x1F4E4;</span> Share</button>
@@ -628,7 +651,7 @@
         <button class="daily-share-btn" id="dsb-copy" data-net="copy" aria-label="Copy link to clipboard"><span class="dsb-icon">&#x1F517;</span> Copy Link</button>
       </div>
       <div class="daily-dismiss-row" id="daily-dismiss-row">
-        <div style="display:flex;align-items:center;gap:.5rem"><span style="font-size:.82rem;color:var(--text-muted)">Published every weekday by 6am CT.</span></div>
+        <div style="display:flex;align-items:center;gap:.5rem"><span style="font-size:.82rem;color:var(--text-muted)">Published Monday–Friday by 6am CT, with weekend recaps.</span></div>
         <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">
           <a href="/daily#subscribe" class="btn-dismiss" style="text-decoration:none">&#x1F4E7; Get Daily Alerts</a>
           <a href="/daily" class="btn-dismiss" style="text-decoration:none">&#x1F4F0; Today's Briefing</a>
@@ -1473,6 +1496,27 @@ window.hydrateDaily = function(data) {
   var dl=el('daily-lead');if(dl)dl.innerHTML=lead;
   var dsh=el('daily-subheadline');if(dsh)dsh.textContent=subheadline;
 
+  // v4.3: render the_takeaway if present and non-empty
+  var takeaway=(data.the_takeaway||'').trim();
+  var taEl=el('daily-takeaway');
+  var taText=el('daily-takeaway-text');
+  if(taEl){if(takeaway){if(taText)taText.textContent=takeaway;taEl.style.display='block';}else{taEl.style.display='none';}}
+
+  // v4.3: Copy The Number button — copies "VALUE UNIT" to clipboard
+  var dnCopyBtn=el('daily-number-copy');
+  if(dnCopyBtn && !dnCopyBtn._wired){
+    dnCopyBtn._wired=true;
+    dnCopyBtn.addEventListener('click',function(){
+      var v=(el('daily-number-value')||{}).textContent||'';
+      var u=(el('daily-number-unit')||{}).textContent||'';
+      var txt=(v+(u?' '+u:'')).trim();
+      if(!txt||txt==='—')return;
+      var done=function(){var orig=dnCopyBtn.innerHTML;dnCopyBtn.innerHTML='✓';setTimeout(function(){dnCopyBtn.innerHTML=orig;},1500);};
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(function(){prompt('Copy:',txt);});}
+      else{var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){prompt('Copy:',txt);}document.body.removeChild(ta);}
+    });
+  }
+
   var now=new Date();
   var h=now.getHours();
   var greeting=h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening';
@@ -1491,6 +1535,14 @@ window.hydrateDaily = function(data) {
   }
   if(data.teaser)setText('daily-teaser-text',data.teaser);
 
+  // v4.3: weekend-aware watch list label
+  var watchLblEl=el('daily-watch-label-text');
+  if(watchLblEl){watchLblEl.textContent=data.market_closed?"THIS WEEK'S WATCH LIST":"TODAY'S WATCH LIST";}
+
+  // v4.3: cash-bids conversion footer — visible on weekdays only
+  var cbEl=el('daily-cashbids-cta');
+  if(cbEl){cbEl.style.display=data.market_closed?'none':'flex';}
+
   // Flexible section rendering — hide unused section divs for 2–5 section support
   var sections=data.sections||[];
   for(var si=1;si<=4;si++){
@@ -1508,6 +1560,11 @@ window.hydrateDaily = function(data) {
       var acTxt=pick(sec.farmer_action,sec.action);
       if(acEl){if(acTxt){acEl.textContent=acTxt;acEl.style.display='block';}else{acEl.style.display='none';}}
       if(sec.icon){var ic=el('daily-section-'+si+'-icon');if(ic)ic.textContent=sec.icon;}
+      // v4.3: per-section vs_yesterday continuity marker
+      var vsEl=el('daily-section-'+si+'-vs');
+      var vsTxtEl=el('daily-section-'+si+'-vs-text');
+      var vsTxt=(sec.vs_yesterday||'').trim();
+      if(vsEl){if(vsTxt&&!data.market_closed){if(vsTxtEl)vsTxtEl.textContent=vsTxt;vsEl.style.display='flex';}else{vsEl.style.display='none';}}
       var conv=el('daily-section-'+si+'-conviction');
       if(conv){
         var clv=sec.conviction_level;
