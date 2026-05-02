@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 01 May 2026 12:02:07 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 02 May 2026 11:50:08 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>HOGS CRASH NINE PERCENT AS WEEK ENDS MIXED</title>
+      <link>https://agsist.com/daily/2026-05-02</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-02</guid>
+      <pubDate>Sat, 02 May 2026 05:00:00 -0600</pubDate>
+      <description>Lean hogs crashed 9.2% to $92.83 Friday, the worst single-day drop in eight weeks and a brutal end to what started as cattle's breakout week. The livestock complex is splitting: cattle still holding above $250 but momentum's gone, hogs getting hammered on seasonal pressure, and dairy marking time at $17.08. Friday's close says the commodity rally that started Monday is running out of conviction.
+Cattle breakout stalls while energy reverses Friday's crude selloff.
+• Livestock Complex Splits
+  → Cattle above $250: momentum's gone but support holds. Hogs below $95: seasonal pressure accelerating.
+• Grains Mark Time Again
+• Energy Whipsaws
+Read more: https://agsist.com/daily/2026-05-02</description>
+    </item>
     <item>
       <title>CATTLE FADE AS GRAINS MARK TIME</title>
       <link>https://agsist.com/daily/2026-05-01</link>
@@ -416,21 +429,6 @@ Disease fears trigger historic hog rally while grain complex softens ahead of pl
 • ENERGY &amp; INPUTS
   → Lock diesel prices now if you haven't already — this relief may be temporary with summer driving season ahead.
 Read more: https://agsist.com/daily/2026-04-02</description>
-    </item>
-    <item>
-      <title>CATTLE SURGE 4.2% IGNITES BROAD RALLY</title>
-      <link>https://agsist.com/daily/2026-04-01</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-01</guid>
-      <pubDate>Wed, 01 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Live cattle exploded 4.2% higher to $243.30, leading a broad commodity rally that pulled grains and oils along for the ride. Soybeans gained 12½¢ to $11.72 while corn added 2½¢ to $4.58, but the real story is growing protein demand meeting tight cattle supplies. With April planting season opening, input costs remain manageable despite energy's mixed signals.
-Grains climb with live cattle while precious metals spike on broader risk appetite.
-• GRAINS &amp; OILSEEDS
-  → Hold current positions — this looks like technical buying, not demand-driven strength.
-• LIVESTOCK &amp; DAIRY
-  → Consider forward-selling cattle on this rally — margins are attractive and volatility is high.
-• ENERGY &amp; INPUTS
-  → Lock in fuel now if you haven't — crude at $102 is workable but vulnerable to geopolitical spikes.
-Read more: https://agsist.com/daily/2026-04-01</description>
     </item>
   </channel>
 </rss>

@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-05-02",
+      "date_display": "Saturday, May 2, 2026",
+      "headline": "HOGS CRASH NINE PERCENT AS WEEK ENDS MIXED",
+      "teaser": "Hogs crashed 9.2% while cattle's breakout momentum fades at week's end.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-05-02",
+      "market_closed": true
+    },
+    {
       "date": "2026-05-01",
       "date_display": "Friday, May 1, 2026",
       "headline": "CATTLE FADE AS GRAINS MARK TIME",
@@ -532,6 +543,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-05-01T12:02:03.385210+00:00",
-  "count": 50
+  "updated": "2026-05-02T11:50:03.350847+00:00",
+  "count": 51
 }

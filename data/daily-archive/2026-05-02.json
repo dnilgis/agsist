@@ -153,27 +153,5 @@
   "surprises": [],
   "price_validation_clean": false,
   "market_closed": true,
-  "market_status_reason": "weekend",
-  "critic_pass": {
-    "version": "1.0",
-    "ran_at": "2026-05-02T11:50:08.422612+00:00",
-    "threshold": 7,
-    "final_scores": {
-      "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 7,
-      "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 8,
-      "rule_5_bottom_lines_synthesize": 7,
-      "rule_6_quiet_days_quiet": 6,
-      "rule_7_continuity": 10,
-      "rule_8_basis_directional": 10,
-      "rule_9_voice": 8,
-      "rule_10_forward_test": 8,
-      "rule_11_thread_coherence": 10,
-      "rule_12_spread_quality": 8,
-      "rule_13_yc_honesty": 10
-    },
-    "rewrites_applied": [],
-    "dry_run": false
-  }
+  "market_status_reason": "weekend"
 }
