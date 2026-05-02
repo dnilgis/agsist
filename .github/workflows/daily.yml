@@ -49,6 +49,10 @@ jobs:
       # rate limit) does NOT block the briefing from shipping. The original
       # generator output is what gets validated and committed.
       #
+      # v4.2 (Phase 2 C5): the critic itself now retries up to 3 times with
+      # exponential backoff before giving up. continue-on-error remains as
+      # belt-and-suspenders for catastrophic failures.
+      #
       # First few days: consider adding `--dry-run` to the run command to see
       # what the critic flags before letting it rewrite anything. Remove the
       # flag once you trust the scoring calibration.
@@ -58,17 +62,36 @@ jobs:
         continue-on-error: true
         run: python scripts/critique_briefing.py
 
+      # v4.2 (Phase 2 C7): post-critic ops alert. Reads daily.json's
+      # critic_pass.final_scores; emails sig@farmers1st.com if any rule
+      # scored below 7, if rewrites were applied, or if the critic step
+      # failed silently. Quiet success = no email. Catches the silent-drift
+      # failure mode that continue-on-error: true otherwise hides.
+      #
+      # Requires GMAIL_USER + GMAIL_APP_PASS repo secrets. If unset, the
+      # script logs the alert content to the workflow log instead of failing.
+      #
+      # always() runs this even if previous steps failed — that's the point.
+      # if: always() so the alert reports generator failures too.
+      - name: Notify critic status
+        if: always()
+        env:
+          GMAIL_USER:     ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
+        run: python scripts/notify_critic_status.py
+        continue-on-error: true
+
       - name: Validate schema
         # Fails the workflow if daily.json drifts from canonical field
         # names or contains filler content like "Unknown" attributions.
         # On failure, yesterday's briefing stays live until the next
         # successful run. GitHub emails the workflow owner on failure.
         #
-        # NOTE (v4.0): daily.json now has new top-level fields:
-        #   yesterdays_call, spread_to_watch, weekly_thread, critic_pass
-        # If daily_schema.py is strict about field names, it will need
-        # to be updated to know about these. See INDEX_HTML_EDITS.md and
-        # HANDOFF_v40.md for the new schema shape.
+        # NOTE (v4.2): daily.json supports new optional fields:
+        #   the_takeaway, subject_line, named_week (top-level)
+        #   vs_yesterday (per-section)
+        # Schema knows about these — generator will start emitting them
+        # as the prompt is updated.
         run: python scripts/daily_schema.py data/daily.json
 
       - name: Generate RSS feed
