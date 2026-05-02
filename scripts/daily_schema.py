@@ -10,6 +10,11 @@ Exit code 0 = valid, 1 = invalid (causes workflow to fail).
 v4.0 update: knows about yesterdays_call, spread_to_watch, weekly_thread,
 critic_pass. Validates outcome enum (played_out/didnt/pending) and weekly
 thread day enum (1-5). All v3.x checks preserved unchanged.
+
+v4.2 update (Phase 2): adds optional fields the_takeaway, subject_line,
+named_week (top-level), and vs_yesterday (per-section). Schema slots are
+ready before the prompt emits them — the renderer can read these as soon
+as the generator starts producing them.
 """
 import sys
 import json
@@ -55,6 +60,10 @@ OPTIONAL_TOP_LEVEL = [
     "spread_to_watch",     # {label, level, commentary}
     "weekly_thread",       # {question, day: 1-5, status_text}
     "critic_pass",         # {version, ran_at, threshold, final_scores, rewrites_applied, dry_run}
+    # v4.2 (Phase 2)
+    "the_takeaway",        # str: single-sentence "if you remember one thing"
+    "subject_line",        # str: AI-suggested email subject for daily send
+    "named_week",          # {title, started_at, theme} — Mon-Fri week-arc title
 ]
 
 # Deprecated field names — if present, validation warns but does not fail.
@@ -73,6 +82,7 @@ SECTION_OPTIONAL = [
     "conviction_level",
     "overnight_surprise",
     "farmer_action",
+    "vs_yesterday",        # v4.2 (Phase 2): per-section continuity marker
 ]
 
 ONE_NUMBER_REQUIRED = ["value"]

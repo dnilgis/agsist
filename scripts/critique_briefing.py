@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AGSIST Daily — Critic Pass (v1.0)
+AGSIST Daily — Critic Pass (v1.1)
 ═══════════════════════════════════════════════════════════════════
 Runs as the second step in the morning cron, after generate_daily.py.
 
@@ -49,14 +49,34 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 
 def http_post_json(url, payload, headers, timeout=60):
-    if requests:
-        r = requests.post(url, json=payload, headers=headers, timeout=timeout)
-        r.raise_for_status()
-        return r.json()
-    data_bytes = json.dumps(payload).encode("utf-8")
-    req = urllib.request.Request(url, data=data_bytes, headers=headers, method="POST")
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    """v1.1 (Phase 2 C5): retry with exponential backoff on transient
+    failures. 429 (rate-limited) and 5xx are retryable. 4xx errors are
+    surfaced immediately (auth/format issues won't fix themselves)."""
+    import time as _time
+    MAX_RETRIES = 3
+    BACKOFF_SECONDS = [4, 12, 30]
+    last_err = None
+    for attempt in range(MAX_RETRIES):
+        try:
+            if requests:
+                r = requests.post(url, json=payload, headers=headers, timeout=timeout)
+                if r.status_code == 429 or 500 <= r.status_code < 600:
+                    raise requests.exceptions.HTTPError(f"retryable HTTP {r.status_code}")
+                r.raise_for_status()
+                return r.json()
+            data_bytes = json.dumps(payload).encode("utf-8")
+            req = urllib.request.Request(url, data=data_bytes, headers=headers, method="POST")
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except Exception as e:
+            last_err = e
+            if attempt < MAX_RETRIES - 1:
+                wait = BACKOFF_SECONDS[attempt]
+                print(f"  [warn] critic API call failed ({e}); "
+                      f"retrying in {wait}s (attempt {attempt + 1}/{MAX_RETRIES})",
+                      file=sys.stderr)
+                _time.sleep(wait)
+    raise last_err if last_err else RuntimeError("critic API call failed")
 
 
 CRITIC_SYSTEM = """You are the editor of AGSIST Daily, a morning agricultural intelligence briefing read every weekday by US grain and livestock producers. You are reviewing a draft before it ships at 6 AM CT.
@@ -330,7 +350,7 @@ def main():
 
     # Persist critic metadata on the briefing
     briefing["critic_pass"] = {
-        "version": "1.0",
+        "version": "1.1",
         "ran_at": datetime.now(timezone.utc).isoformat(),
         "threshold": args.threshold,
         "final_scores": critique.get("scores", {}) if 'critique' in dir() else {},
