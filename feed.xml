@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 02 May 2026 22:35:11 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 03 May 2026 11:48:15 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WEEK AHEAD: CATTLE TEST $250 FLOOR</title>
+      <link>https://agsist.com/daily/2026-05-03</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-03</guid>
+      <pubDate>Sun, 03 May 2026 05:00:00 -0600</pubDate>
+      <description>Cattle closed Friday at $253.00, down from Thursday's highs but still holding above the $250 level that's become the market's line in the sand. The livestock selloff that crushed hogs 9% over two days is testing whether cattle's breakout has real conviction or just borrowed momentum from energy's rally. This week's fed cattle trade and Friday's Cattle on Feed report will decide which story the market believes.
+Friday's livestock selloff sets the stage for a make-or-break week in the cattle complex.
+• Cattle Floor Test
+• Grains Coil Tighter
+• Week Ahead Setup
+Read more: https://agsist.com/daily/2026-05-03</description>
+    </item>
     <item>
       <title>HOGS CRASH 9% AS CATTLE BREAKOUT STALLS</title>
       <link>https://agsist.com/daily/2026-05-02</link>
@@ -414,21 +426,6 @@ Energy surge adds $15/acre to input costs while corn and beans ease after recent
 • Energy Shock
   → Lock diesel prices now if you haven't already — this energy spike has legs and spring demand is about to peak.
 Read more: https://agsist.com/daily/2026-04-03</description>
-    </item>
-    <item>
-      <title>HOGS EXPLODE 22% AS WHEAT DROPS 22¢</title>
-      <link>https://agsist.com/daily/2026-04-02</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-02</guid>
-      <pubDate>Thu, 02 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Lean hogs exploded 22.1% to $105.20 in overnight trading — the kind of move that happens maybe twice a decade — while Chicago wheat dropped 22¢ to $5.97/bu on improving global supply prospects. Corn eased 5½¢ to $4.53/bu and soybeans slipped 6¢ to $11.67/bu as the market shifts focus from South American harvest delays to Midwest planting conditions. With optimal corn planting just two weeks away, weather will soon trump everything else.
-Disease fears trigger historic hog rally while grain complex softens ahead of planting season.
-• GRAINS &amp; OILSEEDS
-  → Hold current pricing positions. Weather premium building season starts in two weeks — don't get caught short if conditions turn.
-• LIVESTOCK &amp; DAIRY
-  → Hog producers: Lock profits immediately on this rally. Cattle feeders: Monitor feed costs but margins remain healthy.
-• ENERGY &amp; INPUTS
-  → Lock diesel prices now if you haven't already — this relief may be temporary with summer driving season ahead.
-Read more: https://agsist.com/daily/2026-04-02</description>
     </item>
   </channel>
 </rss>
