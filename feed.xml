@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 04 May 2026 12:23:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 05 May 2026 12:06:35 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE HOLD $251 AS MARKETS MARK TIME</title>
+      <link>https://agsist.com/daily/2026-05-05</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-05</guid>
+      <pubDate>Tue, 05 May 2026 05:00:00 -0600</pubDate>
+      <description>Live cattle closed $251.95, holding the line one day after breaking Monday's $252 support. The bounce is thin but it's there — feeders dropped harder at $366.98, down 1.4%, suggesting the correction isn't finished but maybe pausing. Yesterday's breakdown call is still live: next real support sits at $245, and today's action doesn't change that math.
+Live cattle found buyers just above yesterday's breakdown level while grains drifted lower in thin trade.
+• Cattle Find Thin Support
+• Grains Drift Quietly Lower
+Read more: https://agsist.com/daily/2026-05-05</description>
+    </item>
     <item>
       <title>CATTLE BREAK $252 AS OIL SURGES 3%</title>
       <link>https://agsist.com/daily/2026-05-04</link>
@@ -409,21 +420,6 @@ Corn, beans, and wheat all move higher on modest buying interest ahead of critic
 • Energy &amp; Inputs
   → Lock remaining diesel needs if you haven't already — current levels are workable but vulnerable to spring demand spikes.
 Read more: https://agsist.com/daily/2026-04-06</description>
-    </item>
-    <item>
-      <title>ENERGY RALLY PAUSES — GRAINS READY FOR MONDAY TEST</title>
-      <link>https://agsist.com/daily/2026-04-05</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-05</guid>
-      <pubDate>Sun, 05 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Friday's grain weakness — corn dropped to $4.52/bu and beans fell to $11.63/bu — sets up a critical test when markets reopen Monday morning. With crude oil holding near $112 despite energy's pause, farmers face elevated input costs just as planting pressure builds across the Upper Midwest.
-Crude's 7% surge cools but leaves input costs elevated as planting season intensifies.
-• WEEK AHEAD: GRAIN REBOUND WATCH
-  → Hold current positions but watch Monday's open closely — buying interest below $4.50 corn would signal strong technical support.
-• LIVESTOCK DIVERGENCE CONTINUES
-  → Cattle producers should consider pricing protection on current positions — margins are historically strong but volatility is increasing.
-• MONDAY WATCH LIST: INPUT COSTS
-  → Lock remaining diesel needs now — current levels are workable but vulnerable to geopolitical spikes during driving season.
-Read more: https://agsist.com/daily/2026-04-05</description>
     </item>
   </channel>
 </rss>
