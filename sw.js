@@ -14,7 +14,7 @@
  * ─────────────────────────────────────────────────────────────────
  * BUMP THIS ON EVERY DEPLOY:
  */
-var CACHE_VERSION = 1;
+var CACHE_VERSION = 2;
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;
