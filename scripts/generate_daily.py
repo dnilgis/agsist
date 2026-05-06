@@ -1,44 +1,62 @@
 #!/usr/bin/env python3
 """
-AGSIST Daily Briefing Generator — v4.3
+AGSIST Daily Briefing Generator — v4.4
 ═══════════════════════════════════════════════════════════════════
 Generates the daily agricultural intelligence briefing via Claude API.
 
-v4.0 (the unmissable upgrade):
-  - VOICE TRANSPLANT: system prompt now contains 200+ words of actual
-    sample paragraphs in the AGSIST voice. Pattern matching beats
-    rule recitation. Real ag-operator vocabulary, imperative voice,
-    embedded thesis, no academic register.
-  - YESTERDAY'S CALL: new schema field. Generator pulls the highest-
-    conviction call from yesterday's briefing and the model assesses
-    "played out / didn't / pending" in today's context. Renders as
-    a dedicated block above sections. Continuity proof.
-  - SPREAD TO WATCH: new recurring named beat between sections and
-    basis. Specific futures spread (calendar, inter-commodity, dairy)
-    capturing the day's tension. The thing the headline price isn't
-    saying.
-  - STORY-OF-THE-WEEK THREAD: new schema field. On Mondays, the model
-    identifies the week's unresolved question. Tue-Fri, the generator
-    passes Monday's question back to the model so each lead threads
-    forward through the week. Renders as a chapter marker above the
-    lead. Resolves on Friday.
-  - 11 IMPACT RULES (was 8): added Voice (rule 9), Forward Test
-    (rule 10), and Thread Coherence (rule 11).
+v4.4 (the addictive-newsroom upgrade):
+  - NEWS PIPELINE OVERHAUL: fetch_ag_news now pulls article summaries
+    (not just titles), scores by recency, drops items >5 days old,
+    and clusters into 6 buckets (GRAINS, LIVESTOCK, ENERGY, POLICY,
+    WEATHER, MACRO). 15 RSS sources up from 5. The model gets
+    structured news per category, not a wall of headlines.
+  - NEWS DISCIPLINE FLIPPED: prompt no longer labels news "context
+    only." News is INPUT. Every section with conviction>=medium MUST
+    identify the catalyst from the relevant bucket.
+  - OUTSIDE THE PIT: new top-level field (3 items, ag news in the
+    calculus that isn't moving today's prices but matters for what's
+    coming). Renders as a 3-up grid below the watch list. Required
+    every day including weekends (week-ahead framing on weekends).
+  - SECTION CATALYST CHIP: optional per-section field surfacing the
+    specific driver behind the price move. Renders as a gold-bordered
+    chip beneath the section title.
+  - BANNED PHRASES BLOCK: explicit list of trader-blog clichés the
+    model has been drifting into ("managed money stayed on the
+    sidelines," "the chart wants to test," "doesn't argue otherwise,"
+    "confirms on-pace timing," "remains the test," "no specific
+    catalyst" except when news bucket is empty). Each gets a plainer
+    substitute. Fixes 3 days of voice-drift complaints.
+  - ONE NUMBER RUBRIC: explicit rule that the value cannot be a price
+    already in the closes table. Must pull from news, USDA data, fund
+    positioning, export pace, basis, ratios, weather, or macro.
+    Coherence check: value and unit must describe the same thing
+    (fixes the May 5 'live cattle decline' label-on-feeder-number bug).
+  - YESTERDAY'S CALL OUTCOME RUBRIC: expanded with examples of
+    PLAYED OUT vs DIDN'T vs PENDING, plus an explicit warning against
+    defaulting to DIDN'T because the magnitude was modest (fixes the
+    May 6 mis-classification).
+  - VOCABULARY CONTRADICTION FIX: removed "the chart wants to..." from
+    the use-these list (it was simultaneously listed under banned
+    phrases per Sigurd's handoff notes).
 
-v4.0 also requires `scripts/critique_briefing.py` to run as a second
-step after generate. Critic scores the draft 1-10 on each rule and
-rewrites the weakest section if 2+ rules score below 7. This is the
-quality gate that keeps the rules from drifting.
+v4.3 carried over:
+  - the_takeaway committable single-line callout
+  - per-section vs_yesterday continuity chip
+  - cash-bids inline conversion footer
+  - weekend block sanitization
 
-v3.9 (rolled in below):
-  - 8 IMPACT RULES (lead so-what, conviction earned, TMYK ties to
-    today, watch list conditional, bottom lines synthesize, quiet
-    days quiet, continuity, basis pulse directional)
-  - Sponsor block (paid + house-ad fallback via data/sponsor.json)
-  - Basis Pulse (weekend-suppressed)
-  - Forward block with /daily?subscribe=1 deep link
-  - Byline (Sigurd Lindquist, founder)
-  - Issue number in archive eyebrow
+v4.2 carried over:
+  - mood-aware quote re-selection
+  - retry with exponential backoff on transient API failures
+
+v4.0 carried over:
+  - voice transplant in system prompt
+  - yesterdays_call block + render
+  - spread_to_watch
+  - weekly thread (Mon sets, Tue-Fri advance, Fri resolves)
+
+v4.4 still requires `scripts/critique_briefing.py` to run as a second
+step. Critic should be updated separately to score the new fields.
 
 Env vars required:
   ANTHROPIC_API_KEY
@@ -101,7 +119,52 @@ AG_RSS_FEEDS = [
     "https://www.agriculture.com/rss/news",
     "https://www.farms.com/rss/agriculture-news.aspx",
     "https://www.reuters.com/arc/outboundfeeds/v3/all/tag%3Aagriculture/?outputType=xml&size=10",
+    "https://www.agweb.com/rss",
+    "https://brownfieldagnews.com/feed/",
+    "https://www.drovers.com/rss",
+    "https://www.feedstuffs.com/rss.xml",
+    "https://www.thefencepost.com/feed/",
+    "https://www.no-tillfarmer.com/rss/articles",
+    "https://www.porkbusiness.com/rss",
+    "https://www.dairyherd.com/rss",
+    "https://www.beefmagazine.com/rss.xml",
+    "https://www.feednavigator.com/Info/Feed-Navigator-RSS",
 ]
+
+# v4.4: news clustering buckets — every story tags into one bucket so the
+# model gets news organized by relevance to each section, not as a wall.
+NEWS_BUCKETS = {
+    "GRAINS & OILSEEDS": [
+        "corn", "soybean", "soy ", "wheat", "oats", "barley", "sorghum",
+        "grain", "planting", "crop progress", "harvest", "ethanol",
+        "crush", "meal", "soyoil", "soybean oil", "yield", "acres",
+    ],
+    "LIVESTOCK & DAIRY": [
+        "cattle", "beef", "feedlot", "feeder", "hog", "pork", "swine",
+        "dairy", "milk", "cheese", "whey", "butter", "lean", "boxed beef",
+        "cattle on feed", "cold storage", "bird flu", "h5n1", "avian",
+    ],
+    "ENERGY & INPUTS": [
+        "crude", "wti", "brent", "ethanol mandate", "rfs", "fertilizer",
+        "urea", "uan", "anhydrous", "potash", "phosphate", "diesel",
+        "natural gas", "biofuel", "renewable diesel", "saf",
+    ],
+    "POLICY & TRADE": [
+        "china", "tariff", "trade", "export", "import", "wasde", "usda",
+        "epa", "farm bill", "policy", "rule", "regulation", "ustr",
+        "section 232", "section 301", "phase one", "shipment", "vessel",
+        "panama", "mississippi river", "rail strike", "stb",
+    ],
+    "WEATHER & CLIMATE": [
+        "drought", "rain", "weather", "frost", "freeze", "flood",
+        "la nina", "el nino", "noaa", "monsoon", "heat dome",
+        "polar vortex", "blizzard", "hurricane", "tropical",
+    ],
+    "MACRO": [
+        "dollar", "fed ", "fomc", "inflation", "recession", "treasury",
+        "cpi", "ppi", "jobs report", "rate cut", "rate hike",
+    ],
+}
 
 FILLER_ATTRIBUTIONS = {"unknown", "anonymous", "n/a", "", "\u2014", "\u2013", "-"}
 
@@ -416,27 +479,131 @@ def load_weekly_thread():
     }
 
 
+def _strip_html(s):
+    """Strip HTML tags + entities from RSS summary text."""
+    if not s:
+        return ""
+    s = re.sub(r"<[^>]+>", " ", s)
+    s = s.replace("&nbsp;", " ").replace("&amp;", "&").replace("&quot;", '"')
+    s = s.replace("&#8217;", "'").replace("&#8216;", "'")
+    s = s.replace("&#8220;", '"').replace("&#8221;", '"')
+    s = re.sub(r"&#?\w+;", " ", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
+
+
+def _bucket_for(text_lower):
+    """Return the first matching news bucket, or None."""
+    for bucket, kws in NEWS_BUCKETS.items():
+        for kw in kws:
+            if kw in text_lower:
+                return bucket
+    return None
+
+
 def fetch_ag_news():
+    """v4.4: pull RSS entries, extract summaries, score by recency,
+    cluster into buckets. Returns a structured prompt string the model
+    is instructed to USE (not just consider as context).
+
+    Each bucket gets up to 5 items, sorted recent first. Items are
+    title + 1-2 line summary + relative age. Bucket-less items go in
+    OTHER. Empty buckets are omitted from the output."""
     if not feedparser:
-        return "No RSS feeds available. Focus on price action and seasonal context."
-    headlines = []
+        return "NO NEWS PIPELINE AVAILABLE. Focus on price action and seasonal context. Acceptable to write 'no news driving today' if applicable."
+
+    raw_items = []
+    now_ts = datetime.now().timestamp()
     for feed_url in AG_RSS_FEEDS:
         try:
             text = http_get(feed_url, timeout=8)
-            if not text: continue
+            if not text:
+                continue
             feed = feedparser.parse(text)
-            for entry in feed.entries[:5]:
+            source = (feed.feed.get("title", "") or "")[:30]
+            for entry in feed.entries[:8]:
                 title = entry.get("title", "").strip()
-                pub = entry.get("published", entry.get("updated", ""))
-                if title: headlines.append(f"  * {title} ({pub[:16]})")
-        except Exception: continue
-    if not headlines:
-        return "No fresh RSS headlines. Focus on price action and seasonal context."
-    seen = set(); unique = []
-    for h in headlines:
-        key = h[:60].lower()
-        if key not in seen: seen.add(key); unique.append(h)
-    return "\n".join(unique[:25])
+                if not title:
+                    continue
+                summary = entry.get("summary", "") or entry.get("description", "")
+                summary = _strip_html(summary)[:240]
+                pub_struct = entry.get("published_parsed") or entry.get("updated_parsed")
+                age_h = None
+                if pub_struct:
+                    try:
+                        ts = datetime(*pub_struct[:6]).timestamp()
+                        age_h = max(0, (now_ts - ts) / 3600)
+                    except Exception:
+                        age_h = None
+                # drop items older than 5 days; they're not "news" anymore
+                if age_h is not None and age_h > 120:
+                    continue
+                raw_items.append({
+                    "title": title,
+                    "summary": summary,
+                    "source": source,
+                    "age_h": age_h if age_h is not None else 60,
+                })
+        except Exception:
+            continue
+
+    if not raw_items:
+        return "NO FRESH AG NEWS RETRIEVED. Focus on price action and seasonal context. Acceptable to write 'no news driving today' if applicable."
+
+    # dedupe by title prefix
+    seen = set()
+    unique = []
+    for it in raw_items:
+        key = re.sub(r"\W+", "", it["title"].lower())[:50]
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(it)
+
+    # cluster by bucket
+    clustered = {b: [] for b in NEWS_BUCKETS}
+    other = []
+    for it in sorted(unique, key=lambda x: x["age_h"]):
+        text = (it["title"] + " " + it["summary"]).lower()
+        bucket = _bucket_for(text)
+        if bucket and len(clustered[bucket]) < 5:
+            clustered[bucket].append(it)
+        elif not bucket and len(other) < 4:
+            other.append(it)
+
+    # format
+    out = []
+    for bucket, items in clustered.items():
+        if not items:
+            continue
+        out.append(f"\n[{bucket}]")
+        for it in items:
+            age = it["age_h"]
+            if age < 1:
+                age_str = f"{int(age*60)}m ago"
+            elif age < 24:
+                age_str = f"{int(age)}h ago"
+            else:
+                age_str = f"{int(age/24)}d ago"
+            src = it["source"]
+            src_str = f" ({src}, {age_str})" if src else f" ({age_str})"
+            line = f"  - {it['title']}{src_str}"
+            if it["summary"]:
+                line += f"\n    {it['summary']}"
+            out.append(line)
+    if other:
+        out.append("\n[OTHER AG / RURAL]")
+        for it in other:
+            age = it["age_h"]
+            age_str = f"{int(age)}h ago" if age < 24 else f"{int(age/24)}d ago"
+            line = f"  - {it['title']} ({age_str})"
+            if it["summary"]:
+                line += f"\n    {it['summary'][:160]}"
+            out.append(line)
+
+    if not out:
+        return "NO RELEVANT AG NEWS RETRIEVED. Focus on price action and seasonal context."
+    return "\n".join(out)
 
 
 def get_seasonal_context():
@@ -482,7 +649,32 @@ On {yesterdays_call['prior_date']}, the highest-conviction section was {yesterda
 
   "{yesterdays_call['call']}"
 
-Today's job: assess whether that call PLAYED OUT, DIDN'T, or is STILL PENDING based on today's price action and data. Be honest. If it didn't work, say so directly. Readers respect accountability more than victory laps.
+Today's job: assess whether that call PLAYED OUT, DIDN'T, or is STILL PENDING based on today's price action and data.
+
+OUTCOME RUBRIC — be honest, but be accurate. Most calls are PARTIAL. Choose the closest fit:
+
+  played_out — the call's directional thesis was confirmed by today's data.
+    Examples:
+    - Yesterday: "Cattle bounce real but thin, feeder weakness keeps breakdown alive."
+      Today: feeders FLIPPED to leading higher → PLAYED OUT (the conditional resolved cleanly:
+      the breakdown thesis required feeder weakness; feeder strength removed it).
+    - Yesterday: "Wheat heading to $6.10 if funds keep liquidating."
+      Today: wheat closes $6.13 → PLAYED OUT.
+
+  didnt — the call was directionally wrong OR the conditional resolved against the thesis.
+    Examples:
+    - Yesterday: "Cattle holding $250 floor, bounce coming."
+      Today: cattle breaks $248 → DIDN'T.
+    - Yesterday: "Corn coiled spring, breakout this week."
+      Today: corn drifts another penny lower in the same range → DIDN'T (the breakout didn't come).
+
+  pending — not yet resolvable. Use sparingly. ONLY when:
+    - The call's resolution requires a future event that hasn't happened yet
+      (e.g., "watch Thursday's exports" and today is Wednesday)
+    - The market is still inside the call's range and hasn't tested either edge
+
+DO NOT default to "didnt" because "the bounce was thin" or "the move was small."
+A directional call that resolved in the called direction is PLAYED OUT, even if the magnitude was modest. Readers respect accountability — both for being right AND for being wrong. Mislabeling a win as a loss undermines trust as much as the reverse.
 
 Output as the yesterdays_call object in the JSON. Use outcome value 'played_out', 'didnt', or 'pending'.
 """
@@ -568,15 +760,16 @@ WATCH LIST example (conditional, not calendar):
 - "Thursday: Weekly export sales; soy under 300K MT keeps the chart in charge of the story."
 
 VOCABULARY — use these:
-- "the funds got lost" / "the funds are running out of patience" / "managed money (hedge funds)"
+- "the funds got lost" / "the funds are out" / "funds rotating out of X into Y" — be specific
 - "carry's working" / "carry's broken" (re: futures spread structure)
 - "basis is talking" / "basis is firming/widening/yelling"
-- "the chart wants to..." / "the chart's bluffing" / "the chart's in charge"
 - "above/below [level] is the line"
 - "wait" / "watch" / "hold" / "lock" — operator imperatives
 - numbers with cents fractions when relevant: "$4.85¼" not "$4.85"
 - "drag-day" / "yield drag"
 - "the seasonal didn't price this"
+- "no clean catalyst" — when news bucket is empty AND price still moved
+- "Looks like fund liquidation" — when no news driver
 
 VOCABULARY — avoid these (academic register / AI tells):
 - "indicates," "suggests," "reflects" → use "says," "tells you," "is yelling"
@@ -588,11 +781,33 @@ VOCABULARY — avoid these (academic register / AI tells):
 - "it's worth noting that" / "crucially" / "notably" / "underscores" → AI-tell phrases, never use
 - "in conclusion" / "ultimately" → never use
 
+══ BANNED PHRASES (regression markers — DO NOT USE) ══
+These are the specific clichés that signal you've drifted into trader-blog wire-service voice. Each one must be rewritten plainer. NO exceptions.
+
+  - "managed money stayed on the sidelines" / "managed money is on the sidelines"
+  - "the chart wants to test" / "the chart wants to" (anything)
+  - "doesn't argue otherwise" / "doesn't change the math"
+  - "confirms on-pace timing" / "confirms the Belt is on schedule"
+  - "the seasonal says" (use "the seasonal didn't price this" only when it earns its place)
+  - "remains the test" / "remains the line"
+  - "no specific catalyst" — banned UNLESS the news bucket for that commodity returned EMPTY
+  - "the chart's bluffing" (overused)
+  - "thin trade" without saying WHY thin
+  - "fund flow drives action more than weather" — wire filler
+
+Acceptable substitutes — write like an operator, not a trader-blog:
+  - "managed money is rotating" → "funds are getting out of corn, into beans"
+  - "the chart wants to test $245" → "Next real support is $245"
+  - "doesn't change the math" → "Doesn't change anything"
+  - "no specific catalyst" → "Looks like fund liquidation, no news driving it"
+  - "confirms on-pace" → "Belt is on schedule, no weather premium yet"
+  - "remains the test" → "the line that has to break for the next leg"
+
 GEOGRAPHIC SCOPE: National. NEVER narrow to "Wisconsin and Minnesota farmers" or any specific state.
 
 HEADLINE NUMERALS: Always digit format. Write "9.2%" or "9%", not "NINE PERCENT". AI search engines query digits, not spelled-out numbers. The headline is the canonical anchor and must be queryable.
 
-NEWS DISCIPLINE: The briefing's spine is PRICE ACTION. News headlines fed in below are CONTEXT for color, not CONTENT to recap. If a USDA report or news event happened, mention it in the relevant section as a price-driver. Do NOT make news the lead unless price actually moved on it. Never lead with "USDA reported X today" without a corresponding price reaction.
+NEWS DISCIPLINE: News is INPUT, not flavor. The news block below is organized by bucket (GRAINS, LIVESTOCK, ENERGY, POLICY, WEATHER, MACRO). Every section with medium or high conviction MUST identify the catalyst — the news / data / event / report that drove or contextualizes the price action. If the relevant news bucket has NO recent items, you may write "no clean catalyst, looks like fund liquidation" or similar — but only if the bucket was actually empty. Default behavior: thread a specific news item from the relevant bucket into each section's body. Do NOT recap the news; weave it into the price story as the why. Lead with the price + so-what; the catalyst is the why behind it.
 {weekend_instructions}
 {banned_tmyk}
 {yesterdays_block}
@@ -647,6 +862,23 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
 
 13. VS_YESTERDAY MUST BE NEW INFO. The vs_yesterday field on each section is OPTIONAL — only include it when today's data confirmed, contradicted, or materially advanced what yesterday's section said about the same commodity. Keep it under 12 words. Format: "[Commodity]: [what changed since yesterday]." Examples: "Cattle: narrative held — momentum fading exactly as called." "Hogs: yesterday's drift broke into outright crash." Do NOT pad — if there's no continuity worth noting, OMIT the field. Empty vs_yesterday is a feature, not a failure. (Skip entirely on Mondays after long weekends or when no prior briefing exists.)
 
+14. NEWS CATALYST OR HONEST ABSENCE. Every section with conviction medium or high MUST identify the catalyst — a specific news item, USDA report, weather event, policy change, geopolitical move, fund-positioning shift, basis development, or cross-commodity move. The news block is structured by bucket. Pull from the relevant bucket. If the relevant bucket has nothing — and only then — write "no clean catalyst" or "looks like fund liquidation." Generic "managed money positioning" or "technical selling" without a specific tie is wire filler. Reject it. The reader's question every section must answer: WHY did this move (or not move) today? The body must answer that question.
+
+15. ONE NUMBER RUBRIC — CANNOT BE A PRICE FROM THE CLOSES TABLE. The Number is the day's most interesting STAT. It earns its place by adding information beyond what the closes table already shows. Acceptable sources:
+    - News headlines (export volumes, USDA report numbers, fund positioning changes)
+    - Cross-commodity ratios (feeder/live ratio, crude/diesel crack, soyoil/meal share)
+    - Week-over-week or year-over-year deltas (export pace vs last year, planting % vs 5-year avg)
+    - Open interest changes, calendar spread widths, basis levels
+    - Weather data (drought monitor %, GDD accumulation, precip totals)
+    - Macro inputs (DXY change, rate path, freight rates)
+  REJECT THESE one_number values:
+    - A closing price already in the closes table
+    - A daily % change already shown in the closes table
+    - A vague "$X billion" without specific context
+  COHERENCE CHECK: value and unit must describe the SAME thing. If value=1.4%, unit must describe what 1.4% IS — not a different commodity, not a different metric. Self-test before finalizing: read value + unit aloud. Does it parse as a single fact?
+
+16. OUTSIDE THE PIT — ALWAYS POPULATE WEEKDAYS. The outside_the_pit array is the briefing's "what else mattered today in ag" block. 3 items, each one a piece of ag news that is NOT directly moving today's prices but IS in the calculus for what's coming. Examples of strong items: a structural China/Brazil shipment shift, a USDA staffing or methodology change, an EPA/RFS rule update, a packer concentration story, a drought monitor expansion, a freight or logistics development, a farm bill provision, an animal disease outbreak. Each item is 1-2 sentences. Pull from the news block — especially the POLICY & TRADE, WEATHER & CLIMATE, and OTHER buckets. Source attribution optional but encouraged. On weekends, populate with week-ahead context items instead of empty.
+
 ══ OUTPUT — return valid JSON with EXACTLY these fields ══
 
 {{
@@ -655,19 +887,25 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
   "lead": "2-3 sentences. Specific price from table + synthesizing observation (RULE 1). Voice samples (RULE 9). Forward test (RULE 10). On Tue-Fri, advances the thread (RULE 11).",
   "the_takeaway": "Single sentence, max 18 words. The if-you-remember-one-thing (RULE 12). Empty string if you cannot write one sharper than the headline.",
   "teaser": "One punchy sentence for the collapsed hero bar.",
-  "one_number": {{"value": "Most interesting number", "unit": "3-6 words", "context": "2-3 sentences"}},
+  "one_number": {{"value": "The day's most interesting number — see ONE NUMBER RUBRIC below.", "unit": "3-6 words DESCRIBING WHAT THE VALUE IS. Must be coherent with value. Wrong: value=1.4%, unit='live cattle decline' when the actual mover was feeders. Right: value=1.4%, unit='feeder cattle decline'.", "context": "2-3 sentences. Why this number matters today and what it tells you that prices alone don't."}},
   "yesterdays_call": {{
     "summary": "1 sentence describing the prior call (use the call text I gave you above as starting material; can be paraphrased for fit).",
     "outcome": "played_out | didnt | pending",
     "note": "1 sentence on what it means for today. OMIT field entirely on Mondays after long weekends or when no prior call was provided."
   }},
   "sections": [
-    {{"title": "3-5 words", "icon": "Single emoji", "body": "3-5 sentences with <strong> tags. All prices from LOCKED TABLE. VOICE.",
+    {{"title": "3-5 words", "icon": "Single emoji", "body": "3-5 sentences with <strong> tags. All prices from LOCKED TABLE. VOICE. MUST thread the catalyst (RULE 14) into the body prose — do not just append it.",
+      "catalyst": "OPTIONAL but recommended. 8-15 words naming the specific news/data/event that drove or contextualizes this section's price action. Example: 'USDA crop progress shows corn at 42%, ahead of 5-year avg.' Empty string allowed only when no relevant news in bucket.",
       "bottom_line": "TL;DR adding info beyond title (RULE 5). Max 20 words.",
       "conviction_level": "low | medium | high (earned per RULE 2)",
       "overnight_surprise": true/false,
       "farmer_action": "OPTIONAL. Specific thresholded recommendation only. Otherwise OMIT entirely.",
       "vs_yesterday": "OPTIONAL. Continuity marker per RULE 13. Under 12 words. OMIT if no real continuity to flag."}}
+  ],
+  "outside_the_pit": [
+    {{"title": "Short headline of the news item, 6-12 words.",
+      "body": "1-2 sentences in AGSIST voice. Why this matters even though it's not in today's prices.",
+      "tag": "OPTIONAL. One-word category: POLICY, TRADE, WEATHER, DISEASE, LOGISTICS, INPUTS, MACRO, RURAL."}}
   ],
   "spread_to_watch": {{
     "label": "Specific spread name. Examples: 'November beans / July beans inverse', 'Dec corn / Jul wheat ratio', 'Cheese block / barrel', 'Live cattle / feeder ratio', 'Front-month crude / Brent'.",
@@ -703,6 +941,8 @@ OMISSIONS — set fields to null or empty objects when not applicable:
 - spread_to_watch: required every weekday. Pick something meaningful, not filler.
 - weekly_thread: required every weekday. Monday sets, Tue-Thu advance, Fri resolves.
 - basis: required every weekday. Empty strings on weekends/holidays.
+- outside_the_pit: REQUIRED every day, weekday and weekend. 3 items. Pull from news block. (Per RULE 16.)
+- catalyst (per section): OPTIONAL field. Empty string allowed only when relevant news bucket is empty (per RULE 14).
 - the_takeaway: STRING field. If you cannot write something committable per RULE 12, set to empty string "". Better empty than weak.
 - vs_yesterday (per section): OMIT the field entirely when no continuity to mark (per RULE 13). Do not emit empty strings.
 
@@ -742,14 +982,14 @@ OVERNIGHT SURPRISES:
 
 SEASONAL: {seasonal_ctx}
 {past_section}
-AG NEWS HEADLINES (context only):
+TODAY'S AG NEWS DIGEST — USE THIS to thread catalysts into sections (RULE 14) and to populate outside_the_pit (RULE 16). Items are clustered by bucket and sorted recent-first. Each item has title + summary + age:
 {news_block}
 
 TODAY'S QUOTE (copy exactly):
 Text: "{todays_quote['text']}"
 Attribution: "{todays_quote['attribution']}"
 
-Apply all 11 IMPACT RULES. Voice samples are NON-NEGOTIABLE — no wire-service neutral. Forward test the lead before you finalize. If today is Tue-Fri, advance the weekly thread, do NOT rehash."""
+Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE — no wire-service neutral. Forward test the lead before you finalize. If today is Tue-Fri, advance the weekly thread, do NOT rehash. Thread NEWS into every section's body — generic "fund positioning" without a specific catalyst tie is wire filler."""
 
     payload = {"model": MODEL, "max_tokens": 4500,
                "system": build_system_prompt(market_status, past_tmyk_topics, yesterdays_call, weekly_thread),
@@ -1049,6 +1289,44 @@ def render_thread_marker_html(thread, market_closed=False):
             f'</div>')
 
 
+def render_outside_the_pit_html(items, market_closed=False):
+    """v4.4: render outside_the_pit block — ag news in the calculus that
+    isn't moving today's prices but matters for what's coming. 3 items
+    expected; renders whatever's provided. Empty/missing → no render."""
+    if not items or not isinstance(items, list):
+        return ""
+    rendered_items = []
+    for it in items:
+        if not isinstance(it, dict):
+            continue
+        title = (it.get("title") or "").strip()
+        body = (it.get("body") or "").strip()
+        tag = (it.get("tag") or "").strip().upper()
+        if not title and not body:
+            continue
+        tag_html = ""
+        if tag:
+            tag_html = (f'<span class="dv3-otp-tag">{html_esc(tag)}</span>')
+        title_html = f'<div class="dv3-otp-title">{html_esc(title)}</div>' if title else ""
+        body_html = f'<div class="dv3-otp-body">{html_esc_preserve_strong(body)}</div>' if body else ""
+        rendered_items.append(
+            f'<div class="dv3-otp-item">{tag_html}{title_html}{body_html}</div>'
+        )
+    if not rendered_items:
+        return ""
+    label_text = "WEEK AHEAD IN AG" if market_closed else "OUTSIDE THE PIT"
+    label_sub = ("News not moving prices today but in the calculus."
+                 if not market_closed else
+                 "What's brewing for next week.")
+    return (f'<div class="dv3-otp" aria-label="{label_text}">'
+            f'<div class="dv3-otp-header">'
+            f'<span class="dv3-otp-label">&#x1F4F0; {label_text}</span>'
+            f'<span class="dv3-otp-sub">{label_sub}</span>'
+            f'</div>'
+            f'<div class="dv3-otp-grid">' + "".join(rendered_items) + '</div>'
+            f'</div>')
+
+
 def render_takeaway_block_html(takeaway):
     """v4.3: render the_takeaway as a prominent committable-statement card.
     Empty string or missing field → no render."""
@@ -1162,6 +1440,15 @@ def generate_archive_html(briefing, date_iso):
             conviction_html = f'<span class="dv3-sec-conviction" style="color:{cv[0]};background:{cv[1]};border:1px solid {cv[2]}">{conviction.upper()} CONVICTION</span>'
         bottom_html = f'<div class="dv3-sec-bottomline">{bottom_line}</div>' if bottom_line else ""
         action_html = f'<div class="dv3-sec-action">&#x1F3AF; {farmer_action}</div>' if farmer_action else ""
+        # v4.4: per-section catalyst marker (RULE 14)
+        catalyst = (sec.get("catalyst") or "").strip()
+        catalyst_html = ""
+        if catalyst and not is_weekend_brief:
+            catalyst_html = (f'<div class="dv3-sec-catalyst" aria-label="catalyst">'
+                             f'<span class="dv3-sec-catalyst-icon">&#x1F4E1;</span>'
+                             f'<span class="dv3-sec-catalyst-label">DRIVER</span>'
+                             f'<span class="dv3-sec-catalyst-text">{html_esc(catalyst)}</span>'
+                             f'</div>')
         # v4.3: per-section continuity marker (vs_yesterday)
         vs_y = (sec.get("vs_yesterday") or "").strip()
         vs_y_html = ""
@@ -1173,6 +1460,7 @@ def generate_archive_html(briefing, date_iso):
         sections_html += (f'<div class="{cls}" style="position:relative">'
                           f'<div class="dv3-sec-header"><span class="dv3-sec-icon">{icon}</span>'
                           f'<span class="dv3-sec-title">{title}</span>{conviction_html}</div>'
+                          f'{catalyst_html}'
                           f'{vs_y_html}'
                           f'<div class="dv3-sec-body">{body}</div>{bottom_html}{action_html}</div>')
 
@@ -1240,6 +1528,8 @@ def generate_archive_html(briefing, date_iso):
     spread_html = render_spread_block_html(briefing.get("spread_to_watch"), is_weekend_brief)
     thread_html = render_thread_marker_html(briefing.get("weekly_thread"), is_weekend_brief)
     sponsor_attr_html = render_sponsor_attribution_html(sponsor)
+    # v4.4: outside_the_pit (news in the calculus, not in today's prices)
+    outside_pit_html = render_outside_the_pit_html(briefing.get("outside_the_pit"), is_weekend_brief)
 
     share_html = (
         '<div class="dv3-share" role="group" aria-label="Share this briefing">'
@@ -1371,6 +1661,22 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-sec-vs{{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);margin:0 0 .55rem;padding:.3rem .55rem;background:rgba(74,143,186,.04);border-left:2px solid rgba(74,143,186,.32);border-radius:0 4px 4px 0}}
 .dv3-sec-vs-icon{{color:#5aa0d2;font-size:.72rem;flex-shrink:0}}
 .dv3-sec-vs-text{{font-weight:600;letter-spacing:.01em}}
+/* v4.4: per-section catalyst (driver) chip */
+.dv3-sec-catalyst{{display:flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-dim);margin:0 0 .55rem;padding:.35rem .6rem;background:rgba(218,165,32,.05);border-left:2px solid rgba(218,165,32,.4);border-radius:0 4px 4px 0;flex-wrap:wrap}}
+.dv3-sec-catalyst-icon{{color:var(--gold);font-size:.72rem;flex-shrink:0}}
+.dv3-sec-catalyst-label{{color:var(--gold);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.6rem;flex-shrink:0}}
+.dv3-sec-catalyst-text{{font-weight:500;letter-spacing:.01em;line-height:1.4}}
+/* v4.4: outside_the_pit — news in the calculus, not in today's prices */
+.dv3-otp{{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:2rem}}
+.dv3-otp-header{{display:flex;flex-direction:column;gap:.25rem;margin-bottom:1rem;padding-bottom:.85rem;border-bottom:1px solid var(--border)}}
+.dv3-otp-label{{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}}
+.dv3-otp-sub{{font-size:.74rem;color:var(--text-muted);font-style:italic}}
+.dv3-otp-grid{{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem}}
+@media(min-width:640px){{.dv3-otp-grid{{grid-template-columns:repeat(3,minmax(0,1fr))}}}}
+.dv3-otp-item{{padding:.85rem 1rem;background:rgba(218,165,32,.03);border:1px solid rgba(218,165,32,.12);border-radius:6px;display:flex;flex-direction:column;gap:.4rem}}
+.dv3-otp-tag{{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(218,165,32,.08);padding:.2rem .55rem;border-radius:3px;align-self:flex-start;border:1px solid rgba(218,165,32,.22)}}
+.dv3-otp-title{{font-size:.9rem;font-weight:700;color:var(--text);line-height:1.35}}
+.dv3-otp-body{{font-size:.82rem;line-height:1.55;color:var(--text-dim)}}
 /* v4.3: cash-bids inline conversion footer — weekday-only */
 .dv3-cashbids-cta{{display:flex;align-items:center;gap:.65rem;padding:.85rem 1.15rem;background:rgba(74,171,76,.06);border:1px solid rgba(74,171,76,.22);border-radius:8px;margin:1rem 0 .65rem;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s;min-height:44px}}
 .dv3-cashbids-cta:hover{{border-color:var(--green);background:rgba(74,171,76,.10)}}
@@ -1485,6 +1791,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
     {basis_html}
     {tmyk_html}
     {watch_html}
+    {outside_pit_html}
     {byline_html}
     {cashbids_html}
     {forward_html}
@@ -1632,7 +1939,7 @@ def sanitize_weekend_blocks(briefing, market_status):
 
 
 def main():
-    print("=== AGSIST Daily Briefing Generator v4.3 ===")
+    print("=== AGSIST Daily Briefing Generator v4.4 ===")
     print(f"  Time: {datetime.now().isoformat()}")
     market_status = get_market_status()
     if market_status["is_closed"]:
@@ -1674,6 +1981,11 @@ def main():
 
     print("  Fetching ag news...")
     news_block = fetch_ag_news()
+    # v4.4: log how many bucketed sections came back so we can see if news
+    # is dry vs the model just isn't using it
+    bucket_count = sum(1 for line in news_block.split("\n") if line.startswith("["))
+    print(f"  News block: {bucket_count} populated buckets, "
+          f"{len(news_block)} chars")
     seasonal_ctx = get_seasonal_context()
     print("  Selecting today's quote...")
     # Phase 2 (v4.2): two-pass quote selection. First pass picks a
@@ -1722,9 +2034,24 @@ def main():
     wt = briefing.get("weekly_thread") or {}
     if wt.get("question"):
         print(f"  Weekly thread day {wt.get('day','?')}: {wt['question'][:60]}...")
+    # v4.4: outside_the_pit + section catalyst presence
+    otp = briefing.get("outside_the_pit") or []
+    if otp:
+        print(f"  Outside the Pit: {len(otp)} item(s)")
+        for it in otp[:3]:
+            tag = it.get("tag", "")
+            tag_str = f"[{tag}] " if tag else ""
+            print(f"    - {tag_str}{(it.get('title') or '')[:60]}")
+    else:
+        print("  Outside the Pit: EMPTY (model violated RULE 16)")
+    cats_with = sum(1 for s in briefing.get("sections", [])
+                    if (s.get("catalyst") or "").strip())
+    cats_total = len(briefing.get("sections", []))
+    if cats_total:
+        print(f"  Section catalysts: {cats_with}/{cats_total} sections name a driver")
 
     briefing["generated_at"] = datetime.now(timezone.utc).isoformat()
-    briefing["generator_version"] = "4.3"
+    briefing["generator_version"] = "4.4"
     briefing["surprise_count"] = len(surprises)
     briefing["surprises"] = surprises
     briefing["price_validation_clean"] = is_clean
