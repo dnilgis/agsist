@@ -8,6 +8,33 @@
  *   3. Open-Meteo         — weather
  *   4. Nominatim OSM      — reverse geocoding
  *
+ * v17 — 2026-05-06
+ *   FIX: Cash bids stuck at "Detecting your location…" on iPhone, requiring
+ *   manual ZIP entry. Three paths into bids autolocation were leaking:
+ *
+ *   (a) CACHE PATH NEVER TRIGGERED BIDS DIRECTLY. Boot read lat/lon from
+ *       localStorage and re-called fetchWeather → propagateLocation →
+ *       Nominatim → loadHomepageBids. Five sequential network calls,
+ *       any one of which can hang on flaky cell data, and bids never
+ *       loaded because Nominatim was slow. Now: if cache contains a ZIP,
+ *       boot calls loadHomepageBids() IMMEDIATELY before any network
+ *       calls. Bids show up in <1s on warm cache.
+ *
+ *   (b) OPEN-METEO FAILURE KILLED THE WHOLE CHAIN. propagateLocation was
+ *       inside fetchWeather's .then() block, so a weather API hiccup
+ *       (5xx, timeout, network drop) prevented Nominatim from ever
+ *       running, and bids never autoloaded. Now: propagateLocation runs
+ *       in a separate then-chain that fires regardless of weather success.
+ *
+ *   (c) GEO PERMISSION DENIAL DIDN'T NOTIFY BIDS WIDGET. requestGeo's
+ *       error callback called showZipEntry() for the weather card but
+ *       left the bids widget showing its skeleton loader forever. Now:
+ *       new _signalBidsGeoFailed() exposes the bids ZIP entry too.
+ *
+ *   Also: new public window.AGSIST_GEO_READY callback hook so other
+ *   widgets that need refined geo (county/state/zip) can subscribe
+ *   instead of polling.
+ *
  * v16 — 2026-04-28
  *   FIX: Stale localStorage cache made the site stick to whatever location
  *   was first detected (e.g. office) even after the user had physically
@@ -79,6 +106,40 @@ var WX_ICONS = {
 var WX_CACHE_TTL_MS = 30 * 60 * 1000;  // 30 minutes
 var WX_REFRESH_DISTANCE_MI = 3;        // re-fetch if user has moved this far
 
+// v17: Track whether we've already kicked off bids load this session, so
+// cache-path + propagateLocation don't double-fire on the same coords.
+var _bidsLoadedThisSession = false;
+
+// v17: Helper used by both cache-path boot AND propagateLocation. Calls
+// loadHomepageBids if the cash-bids module is present. Idempotent guard.
+function _loadBidsOnce(lat, lon, name, zip) {
+  if (typeof window.loadHomepageBids !== 'function') return;
+  if (!zip) return;
+  if (_bidsLoadedThisSession) return;
+  _bidsLoadedThisSession = true;
+  try { window.loadHomepageBids(lat, lon, name || '', zip); } catch(e) {}
+}
+
+// v17: When geolocation fails completely (permission denied or timeout AND
+// no cache present), the bids widget should reveal its ZIP entry rather
+// than sitting on the skeleton loader forever. Mirrors showZipEntry() but
+// for bids-geo-bar / bids-zip-row.
+function _signalBidsGeoFailed() {
+  var bar = document.getElementById('bids-geo-bar');
+  var row = document.getElementById('bids-zip-row');
+  if (bar) bar.style.display = 'none';
+  if (row) row.style.display = 'block';
+  // Also clear the skeleton inside bids-list-area if it's still showing
+  var listArea = document.getElementById('bids-list-area');
+  if (listArea) {
+    var skel = listArea.querySelector('.bids-skeleton');
+    if (skel) {
+      listArea.innerHTML = '<div style="font-size:.78rem;color:var(--text-muted);'
+        + 'padding:1rem 0;text-align:center">Enter your ZIP above to find local cash bids.</div>';
+    }
+  }
+}
+
 // v16: Haversine great-circle distance in miles between two coordinates.
 function _wxDist(lat1, lon1, lat2, lon2) {
   function toRad(d) { return d * Math.PI / 180; }
@@ -112,6 +173,9 @@ function _wxRefreshIfMoved(cachedLat, cachedLon) {
       // Has cache — only update if user has moved meaningfully.
       var dist = _wxDist(cachedLat, cachedLon, freshLat, freshLon);
       if (dist > WX_REFRESH_DISTANCE_MI) {
+        // v17: User moved significantly — clear bids guard so loadHomepageBids
+        // re-fires with the new ZIP from the next propagateLocation cycle.
+        _bidsLoadedThisSession = false;
         fetchWeather(freshLat, freshLon, null);
       }
     },
@@ -125,6 +189,8 @@ function _wxRefreshIfMoved(cachedLat, cachedLon) {
 // location" button or for callers that need to break out of cache.
 function refreshLocation() {
   if (!navigator.geolocation) { showZipEntry(); return; }
+  // v17: clear bids guard so a manual refresh re-fires bids autoload too
+  _bidsLoadedThisSession = false;
   navigator.geolocation.getCurrentPosition(
     function(pos) { fetchWeather(pos.coords.latitude, pos.coords.longitude, null); },
     function() { /* silent — keep current view */ },
@@ -137,13 +203,20 @@ window.refreshLocation = refreshLocation;
 // GEOLOCATION + WEATHER
 // ─────────────────────────────────────────────────────────────────
 function requestGeo() {
-  if (!navigator.geolocation) { showZipEntry(); return; }
+  if (!navigator.geolocation) {
+    showZipEntry();
+    _signalBidsGeoFailed(); // v17
+    return;
+  }
   var wl = document.getElementById('wx-loading');
   if (wl) wl.innerHTML = '<div style="font-size:1.5rem;margin-bottom:.5rem">\u{1F4CD}</div>'
     + '<div style="font-size:.88rem;color:var(--text-dim)">Detecting location\u2026</div>';
   navigator.geolocation.getCurrentPosition(
     function(pos) { fetchWeather(pos.coords.latitude, pos.coords.longitude, null); },
-    function() { showZipEntry(); },
+    function() {
+      showZipEntry();
+      _signalBidsGeoFailed(); // v17: also reveal bids ZIP entry
+    },
     { timeout: 8000, maximumAge: 0 }
   );
 }
@@ -171,6 +244,8 @@ function loadWeatherZip() {
         var _city = _isZip ? (r.admin1 || r.name) : r.name;
         var _state = _isZip ? '' : (r.admin1 ? r.admin1.substring(0, 2).toUpperCase() : '');
         var _label = _city + (_state ? ', ' + _state : '');
+        // v17: User-entered ZIP — clear guard so bids reload with new ZIP
+        _bidsLoadedThisSession = false;
         fetchWeather(r.latitude, r.longitude, _label);
       }
     }).catch(function() {});
@@ -228,18 +303,54 @@ function calcSprayRating(tempF, humid, wind) {
 
 function fetchWeather(lat, lon, label) {
   // v16: stamp localStorage save with ts so boot() can detect stale cache.
-  try { localStorage.setItem('agsist-wx-loc', JSON.stringify({lat:lat, lon:lon, label:label, ts: Date.now()})); } catch(e) {}
+  // v17 FIX: MERGE into cache instead of replacing it. Previously each
+  // fetchWeather call wiped zip/state/county and waited for propagateLocation
+  // to repopulate. If propagateLocation failed (Nominatim down, network drop),
+  // the cache got stuck with empty fields and bids autoload was permanently
+  // broken on subsequent loads. Now we preserve prior zip/state/county if
+  // the coords haven't moved, and propagateLocation overwrites them only
+  // when it has fresh values.
+  var _cachedZip = '', _cachedState = '', _cachedCounty = '';
+  try {
+    var prior = JSON.parse(localStorage.getItem('agsist-wx-loc') || '{}');
+    // Only inherit cached zip/state/county if coords match (close enough).
+    // Float comparison with toFixed(4) avoids spurious mismatches from
+    // browser geo precision drift on identical positions.
+    if (prior && prior.lat != null && prior.lon != null &&
+        Number(prior.lat).toFixed(4) === Number(lat).toFixed(4) &&
+        Number(prior.lon).toFixed(4) === Number(lon).toFixed(4)) {
+      _cachedZip = prior.zip || '';
+      _cachedState = prior.state || '';
+      _cachedCounty = prior.county || '';
+    }
+    localStorage.setItem('agsist-wx-loc', JSON.stringify({
+      lat: lat, lon: lon, label: label, ts: Date.now(),
+      zip: _cachedZip, state: _cachedState, county: _cachedCounty
+    }));
+  } catch(e) {}
 
-  // Expose geo globally for bids-homepage.js and other scripts
-  window.AGSIST_GEO = { lat: lat, lng: lon, city: '', state: '', zip: '', county: '' };
+  // v17 FIX: when initializing AGSIST_GEO, preload zip/state/county from
+  // cache if same coords. Previously this was hardcoded to empty strings,
+  // which clobbered the optimistic preload set by boot() before
+  // fetchWeather ran. propagateLocation will overwrite these with fresh
+  // values once Nominatim resolves, but until then any widget that reads
+  // AGSIST_GEO.zip synchronously gets the cached value, not an empty string.
+  window.AGSIST_GEO = {
+    lat: lat, lng: lon,
+    city: '', state: _cachedState, zip: _cachedZip, county: _cachedCounty
+  };
 
   // FIX v13: Expose lat/lon on AGSIST_STATE.weather so that waitForGeo()
   // in index.html can resolve. Previously only AGSIST_GEO was set here,
   // causing soil temp and planting date logic to stall indefinitely.
   // v15: city/state/county/zip are filled in later by propagateLocation() once
   // Nominatim reverse-geocode resolves — pages that need them should poll.
+  // v17: preload zip/state/county from cache if same coords.
   if (!window.AGSIST_STATE || typeof window.AGSIST_STATE !== 'object') window.AGSIST_STATE = {};
-  window.AGSIST_STATE.weather = { lat: lat, lon: lon };
+  window.AGSIST_STATE.weather = {
+    lat: lat, lon: lon,
+    state: _cachedState, county: _cachedCounty, zip: _cachedZip
+  };
 
   var wl = document.getElementById('wx-loading');
   var ze = document.getElementById('wx-zip-entry');
@@ -276,6 +387,14 @@ function fetchWeather(lat, lon, label) {
     var el = document.getElementById('site-greeting');
     if (el) el.textContent = g;
   })();
+
+  // v17: FIX (b) — kick off propagateLocation IN PARALLEL with weather fetch,
+  // not chained behind it. Previously, an Open-Meteo failure (5xx, timeout,
+  // network drop) prevented Nominatim from running, which prevented bids
+  // from autoloading. Now bids autoload even when the weather API is down.
+  // Weather and reverse-geocode are independent network calls; treating
+  // them as a sequence was a bug.
+  propagateLocation(lat, lon, label);
 
   var url = 'https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon
     + '&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,weather_code,wind_speed_10m,wind_direction_10m,dew_point_2m'
@@ -340,7 +459,7 @@ function fetchWeather(lat, lon, label) {
       }
 
       updateWidgetPreviews(tempF, humid, wind, precip);
-      propagateLocation(lat, lon, label);
+      // v17: propagateLocation now runs in parallel above, not from here.
     })
     .catch(function() {
       if (wd) wd.style.display = 'none';
@@ -358,6 +477,8 @@ function fetchWeather(lat, lon, label) {
         wl2.appendChild(msg);
         wl2.style.display = 'block';
       }
+      // v17: weather failed but propagateLocation already kicked off above,
+      // so bids autoload still happens once Nominatim resolves.
     });
 
   renderForecast(lat, lon);
@@ -405,9 +526,9 @@ function propagateLocation(lat, lon, label) {
         window.AGSIST_STATE.weather.zip = zip;
       }
 
-      if (typeof window.loadHomepageBids === 'function' && zip) {
-        window.loadHomepageBids(lat, lon, name, zip);
-      }
+      // v17: route through guarded helper so cache-path + Nominatim path
+      // don't double-fire for the same coords.
+      _loadBidsOnce(lat, lon, name, zip);
 
       var wxLoc = document.getElementById('wx-loc');
       if (wxLoc && name) wxLoc.textContent = '\u{1F4CD} ' + name;
@@ -432,10 +553,44 @@ function propagateLocation(lat, lon, label) {
         var saved = JSON.parse(localStorage.getItem('agsist-wx-loc') || '{}');
         if (name) saved.label = name;
         if (zip)  saved.zip   = zip;
+        if (st)   saved.state = st;
+        if (county) saved.county = county;
         localStorage.setItem('agsist-wx-loc', JSON.stringify(saved));
       } catch(e) {}
-    }).catch(function() {});
+
+      // v17: fire AGSIST_GEO_READY callbacks so widgets that need refined
+      // location can subscribe instead of polling.
+      if (Array.isArray(window._AGSIST_GEO_CALLBACKS)) {
+        var payload = { lat: lat, lon: lon, city: city, state: st, county: county, zip: zip, name: name };
+        window._AGSIST_GEO_CALLBACKS.forEach(function(cb) {
+          try { cb(payload); } catch(e) {}
+        });
+      }
+    }).catch(function() {
+      // v17: if Nominatim fails, we still have lat/lon. Try cache for last
+      // known ZIP and fire bids with that. Better stale data than no bids.
+      try {
+        var saved = JSON.parse(localStorage.getItem('agsist-wx-loc') || '{}');
+        if (saved.zip) {
+          _loadBidsOnce(lat, lon, saved.label || '', saved.zip);
+        }
+      } catch(e) {}
+    });
 }
+
+// v17: Public subscription API. Widgets that need refined geo (state, county,
+// ZIP) can register a callback rather than polling AGSIST_STATE.weather.
+window._AGSIST_GEO_CALLBACKS = window._AGSIST_GEO_CALLBACKS || [];
+window.AGSIST_GEO_READY = function(cb) {
+  if (typeof cb !== 'function') return;
+  // Already resolved? Fire immediately.
+  if (window.AGSIST_STATE && window.AGSIST_STATE.weather && window.AGSIST_STATE.weather.zip) {
+    var w = window.AGSIST_STATE.weather;
+    try { cb({ lat: w.lat, lon: w.lon, city: w.city, state: w.state, county: w.county, zip: w.zip }); } catch(e) {}
+    return;
+  }
+  window._AGSIST_GEO_CALLBACKS.push(cb);
+};
 
 function updateWidgetPreviews(tempF, humid, wind, pop) {
   var sprayRating = calcSprayRating(tempF, humid, wind);
@@ -1137,7 +1292,7 @@ function loadDailyBriefing() {
       fetchFFAILive();
     }, 5 * 60 * 1000);
 
-    // v16: Stale-cache-aware boot. Read cache for instant render only if it
+    // v16/v17: Stale-cache-aware boot. Read cache for instant render only if it
     // has a timestamp and is within WX_CACHE_TTL_MS. Always fire a background
     // geo fix to detect if user has moved more than WX_REFRESH_DISTANCE_MI
     // since the cached coords were saved.
@@ -1149,7 +1304,32 @@ function loadDailyBriefing() {
           var p = JSON.parse(saved);
           var age = (typeof p.ts === 'number') ? (Date.now() - p.ts) : Infinity;
           if (p.lat && p.lon && age < WX_CACHE_TTL_MS) {
-            // Fresh-enough cache — render instantly, then verify in background.
+            // v17 FIX (a): if cache has a ZIP, fire bids autoload IMMEDIATELY
+            // before any network calls. fetchWeather will re-fire propagateLocation
+            // which is guarded by _bidsLoadedThisSession so bids only load once.
+            // This is the single change that takes "Detecting your location..."
+            // from "30 seconds, sometimes never" to "<1 second on warm cache."
+            if (p.zip) {
+              _loadBidsOnce(p.lat, p.lon, p.label || '', p.zip);
+              // Also preload AGSIST_GEO so any widget that reads it sync sees a value.
+              window.AGSIST_GEO = {
+                lat: p.lat, lng: p.lon,
+                city: '', state: p.state || '', zip: p.zip, county: p.county || ''
+              };
+              if (!window.AGSIST_STATE || typeof window.AGSIST_STATE !== 'object') window.AGSIST_STATE = {};
+              window.AGSIST_STATE.weather = {
+                lat: p.lat, lon: p.lon,
+                city: '', state: p.state || '', county: p.county || '', zip: p.zip
+              };
+              // Update the bids-geo-txt label optimistically — propagateLocation
+              // will refine it once Nominatim responds.
+              var bidsGeoTxt = document.getElementById('bids-geo-txt');
+              if (bidsGeoTxt && p.label) {
+                bidsGeoTxt.textContent = '\u{1F4CD} ' + p.label;
+              }
+            }
+
+            // Fresh-enough cache — render weather instantly, then verify in background.
             fetchWeather(p.lat, p.lon, p.label);
             _wxRefreshIfMoved(p.lat, p.lon);
             usedCache = true;
