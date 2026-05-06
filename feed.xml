@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 05 May 2026 12:06:35 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 06 May 2026 12:58:30 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE RALLY FROM $250 FLOOR DESPITE OIL CRASH</title>
+      <link>https://agsist.com/daily/2026-05-06</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-06</guid>
+      <pubDate>Wed, 06 May 2026 05:00:00 -0600</pubDate>
+      <description>Live cattle held the $250 floor and bounced to $252.93, up 0.4%, while crude oil crashed 6% overnight to $94.54. The cattle complex is acting like Monday's breakdown was a flush, not a structural break — feeders jumped 1.4% to $372.23 and the funds aren't adding short pressure. Oil's collapse removes input cost pressure but the cattle story is now about whether this bounce has legs or runs into the same selling that's been capping rallies since March.
+Live cattle gained 0.4% to $252.93 while crude oil crashed 6% overnight.
+• Cattle Rally From Floor
+• Oil Crashes Six Percent
+  → Monitor diesel basis — retail prices lag futures by 7-10 days.
+• Grains Ease on Fund Flow
+Read more: https://agsist.com/daily/2026-05-06</description>
+    </item>
     <item>
       <title>CATTLE HOLD $251 AS MARKETS MARK TIME</title>
       <link>https://agsist.com/daily/2026-05-05</link>
@@ -405,21 +418,6 @@ Grains drift sideways as focus shifts to planting conditions ahead.
 • Energy &amp; Inputs
   → Lock remaining diesel needs now — current levels are manageable but vulnerable to demand-driven spikes during peak planting.
 Read more: https://agsist.com/daily/2026-04-07</description>
-    </item>
-    <item>
-      <title>GRAINS GAIN GROUND AS PLANTING WINDOW OPENS</title>
-      <link>https://agsist.com/daily/2026-04-06</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-06</guid>
-      <pubDate>Mon, 06 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Corn gained 2.75¢ to $4.51/bu this morning while soybeans added 8.5¢ to $11.68/bu as the grain complex found its footing after last week's profit-taking. With optimal planting window opening in two weeks, weather premiums are starting to creep back into the market even on these modest moves.
-Corn, beans, and wheat all move higher on modest buying interest ahead of critical planting season.
-• Grains &amp; Oilseeds
-  → Hold current positions but watch planting weather closely — this bounce suggests good underlying demand support.
-• Livestock &amp; Dairy
-  → Cattle producers should consider locking some protection on these strong margins — volatility tends to increase from here.
-• Energy &amp; Inputs
-  → Lock remaining diesel needs if you haven't already — current levels are workable but vulnerable to spring demand spikes.
-Read more: https://agsist.com/daily/2026-04-06</description>
     </item>
   </channel>
 </rss>

@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-05-06",
+      "date_display": "Wednesday, May 6, 2026",
+      "headline": "CATTLE RALLY FROM $250 FLOOR DESPITE OIL CRASH",
+      "teaser": "Live cattle found buyers at $250 while oil crashed 6% overnight.",
+      "market_mood": "mixed",
+      "surprise_count": 2,
+      "sections": 3,
+      "url": "/daily/2026-05-06",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-05-05",
       "date_display": "Tuesday, May 5, 2026",
       "headline": "CATTLE HOLD $251 AS MARKETS MARK TIME",
@@ -578,6 +590,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-05-05T12:06:30.454308+00:00",
-  "count": 54
+  "updated": "2026-05-06T12:58:24.672735+00:00",
+  "count": 55
 }
