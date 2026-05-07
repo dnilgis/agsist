@@ -1,5 +1,11 @@
 /* ═══════════════════════════════════════════════════════════════════
-   AGSIST — Shared Stylesheet v9.4 — 2026-04-28
+   AGSIST — Shared Stylesheet v9.5 — 2026-05-06
+   v9.5: 44px minimum tap targets on mobile-visible interactive elements
+     per WCAG 2.5.5 (enhanced) and iOS HIG. Affected selectors:
+     .hamburger (40 → 44), .draw-close (32 → 44), .draw-item (block
+     ~33px → flex 44px min), .theme-btn (~28 → 44 min). Desktop-only
+     .nav-btn and .nav-panel a unchanged in this pass — they never
+     render below the mobile breakpoint where tap targets matter.
    v9.4: Mood + conviction pill variants
      `.daily-mood` was activated inline by JS but had no color rules,
      so "BULLISH" rendered as bare white text with no pill background.
@@ -99,13 +105,13 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .nav-panel-div { height: 1px; background: var(--border); margin: .3rem 0 }
 .nav-panel a.all { color: var(--green); font-size: .82rem; font-weight: 700 }
 .nav-actions { display: flex; align-items: center; gap: .5rem; margin-left: auto; flex-shrink: 0 }
-.theme-btn { display: flex; align-items: center; gap: .4rem; padding: .32rem .55rem; background: none; border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--text-dim); font-size: .78rem; font-weight: 600; transition: border-color .15s, color .15s; }
+.theme-btn { display: flex; align-items: center; gap: .4rem; min-height: 44px; padding: .32rem .55rem; background: none; border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--text-dim); font-size: .78rem; font-weight: 600; transition: border-color .15s, color .15s; }
 .theme-btn:hover { border-color: var(--green); color: var(--green) }
 .t-track { width: 30px; height: 16px; border-radius: 8px; background: rgba(255,255,255,.12); position: relative; transition: background .25s; flex-shrink: 0 }
 [data-theme="light"] .t-track { background: rgba(45,106,46,.35) }
 .t-thumb { position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,.75); transition: transform .25s }
 [data-theme="light"] .t-thumb { transform: translateX(14px); background: var(--green) }
-.hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 40px; height: 40px; padding: .45rem; background: none; border: 1px solid var(--border); border-radius: var(--r-sm) }
+.hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 44px; height: 44px; padding: .45rem; background: none; border: 1px solid var(--border); border-radius: var(--r-sm) }
 .hamburger:hover { border-color: var(--green) }
 .h-bar { width: 100%; height: 2px; background: var(--text); opacity: .75; border-radius: 1px; transition: transform .2s, opacity .2s }
 .hamburger.open .h-bar:nth-child(1) { transform: translateY(7px) rotate(45deg) }
@@ -119,11 +125,11 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .draw-ov { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 499; opacity: 0; pointer-events: none; transition: opacity .25s; backdrop-filter: blur(2px) }
 .draw-ov.vis { opacity: 1; pointer-events: all }
 .draw-head { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.1rem; border-bottom: 2px solid var(--border) }
-.draw-close { background: none; border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--text-dim); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 1rem }
+.draw-close { background: none; border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--text-dim); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 1rem }
 .draw-close:hover { color: var(--green); border-color: var(--green) }
 .draw-sec { padding: .6rem 0; border-bottom: 1px solid var(--border) }
 .draw-lbl { padding: .2rem 1.1rem .5rem; font-family: 'JetBrains Mono', monospace; font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--green); opacity: .85; }
-.draw-item { display: block; padding: .6rem 1.1rem; font-size: .88rem; color: var(--text-dim); transition: color .12s }
+.draw-item { display: flex; align-items: center; min-height: 44px; padding: .6rem 1.1rem; font-size: .88rem; color: var(--text-dim); transition: color .12s }
 .draw-item:hover { color: var(--green) }
 .draw-item.active { color: var(--green) }
 
