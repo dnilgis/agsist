@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#111a0a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="/components/styles.css?v=10" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=10">
+<link rel="preload" href="/components/styles.css?v=12" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=12">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -396,6 +396,18 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 
 // ── helpers ────────────────────────────────────────────────────────────
 function escHtml(s){return(s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+// v4.4.2: mdInline — escapes HTML, then promotes both legacy <strong>/<em>
+// tags (which the daily generator has been emitting literally into JSON
+// body fields) and **markdown** asterisks to real <strong>/<em> elements.
+// Defensive against either format; safe regardless of generator output.
+function mdInline(s){
+  if(s==null)return'';
+  var t=String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  t=t.replace(/&lt;strong&gt;([\s\S]+?)&lt;\/strong&gt;/g,'<strong>$1</strong>');
+  t=t.replace(/&lt;em&gt;([\s\S]+?)&lt;\/em&gt;/g,'<em>$1</em>');
+  t=t.replace(/\*\*([^*]+?)\*\*/g,'<strong>$1</strong>');
+  return t;
+}
 function dateOnly(iso){if(!iso)return'';return iso.indexOf('T')>-1?iso.split('T')[0]:iso;}
 function fmtDate(iso){
   if(!iso)return'';
@@ -513,10 +525,10 @@ function renderToday(data){
 
   // Lead paragraph
   var lead='';
-  if(data.lead){lead='<p class="dv3-today-lead">'+escHtml(data.lead)+'</p>';}
+  if(data.lead){lead='<p class="dv3-today-lead">'+mdInline(data.lead)+'</p>';}
   else if(data.body){
     var paras=(data.body||'').split('\n\n').filter(Boolean);
-    lead='<p class="dv3-today-lead">'+paras.map(escHtml).join('<br><br>')+'</p>';
+    lead='<p class="dv3-today-lead">'+paras.map(mdInline).join('<br><br>')+'</p>';
   }
 
   // v4.3: takeaway block — committable single-sentence "if you remember one thing"
@@ -607,8 +619,8 @@ function renderToday(data){
         '</div>'+
         catHtml+
         vsHtml+
-        (sec.body?'<div class="dv3-sec-body">'+escHtml(sec.body)+'</div>':'')+
-        (sec.bottom_line?'<div class="dv3-sec-bottomline">'+escHtml(sec.bottom_line)+'</div>':'')+
+        (sec.body?'<div class="dv3-sec-body">'+mdInline(sec.body)+'</div>':'')+
+        (sec.bottom_line?'<div class="dv3-sec-bottomline">'+mdInline(sec.bottom_line)+'</div>':'')+
         (sec.farmer_action?'<div class="dv3-sec-action">\u{1F3AF} '+escHtml(sec.farmer_action)+'</div>':'')+
       '</div>';
     });
@@ -622,7 +634,7 @@ function renderToday(data){
     tmyk='<div class="dv3-tmyk">'+
       '<div class="dv3-tmyk-label">\u{1F9E0} The more you know</div>'+
       (t.title?'<div class="dv3-tmyk-title">'+escHtml(t.title)+'</div>':'')+
-      '<div class="dv3-tmyk-body">'+escHtml(t.body||t.text||'')+'</div>'+
+      '<div class="dv3-tmyk-body">'+mdInline(t.body||t.text||'')+'</div>'+
     '</div>';
   }
 
@@ -637,7 +649,7 @@ function renderToday(data){
     data.watch_list.forEach(function(w){
       watch+='<li class="dv3-watch-item">'+
         '<span class="dv3-watch-time">'+escHtml(w.time||'')+'</span>'+
-        '<span class="dv3-watch-desc">'+escHtml(w.desc||'').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')+'</span>'+
+        '<span class="dv3-watch-desc">'+mdInline(w.desc||'')+'</span>'+
       '</li>';
     });
     watch+='</ul></div>';
@@ -666,7 +678,7 @@ function renderToday(data){
       if(!otpTitle && !otpBody)continue;
       var tagH=otpTag?'<span class="dv3-otp-tag">'+escHtml(otpTag)+'</span>':'';
       var titleH=otpTitle?'<div class="dv3-otp-title">'+escHtml(otpTitle)+'</div>':'';
-      var bodyH=otpBody?'<div class="dv3-otp-body">'+escHtml(otpBody).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')+'</div>':'';
+      var bodyH=otpBody?'<div class="dv3-otp-body">'+mdInline(otpBody)+'</div>':'';
       otpRendered.push('<div class="dv3-otp-item">'+tagH+titleH+bodyH+'</div>');
     }
     if(otpRendered.length){
@@ -717,7 +729,7 @@ function renderToday(data){
       pending:['STILL PENDING','#e6b042','rgba(218,165,32,.10)','rgba(218,165,32,.32)']
     };
     var oCfg=outcomeMap[outcome]||outcomeMap.pending;
-    var ycNote=ycData.note?'<div class="dv3-yc-note">'+escHtml(ycData.note).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')+'</div>':'';
+    var ycNote=ycData.note?'<div class="dv3-yc-note">'+mdInline(ycData.note)+'</div>':'';
     yc='<div class="dv3-yc">'+
       '<div class="dv3-yc-label">\u21BA YESTERDAY\u2019S CALL '+
         '<span class="dv3-yc-outcome" style="color:'+oCfg[1]+';background:'+oCfg[2]+';border:1px solid '+oCfg[3]+';">'+oCfg[0]+'</span>'+
@@ -733,7 +745,7 @@ function renderToday(data){
   if(spData && (spData.label||spData.commentary) && !marketClosed){
     var spLabelText=spData.label?'<div class="dv3-spread-label-text">'+escHtml(spData.label)+'</div>':'';
     var spLevel=spData.level?'<div class="dv3-spread-level">'+escHtml(spData.level)+'</div>':'';
-    var spBody=spData.commentary?'<div class="dv3-spread-body">'+escHtml(spData.commentary).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')+'</div>':'';
+    var spBody=spData.commentary?'<div class="dv3-spread-body">'+mdInline(spData.commentary)+'</div>':'';
     spread='<div class="dv3-spread">'+
       '<div class="dv3-spread-label">\u21C4 THE SPREAD TO WATCH</div>'+
       spLabelText+spLevel+spBody+
@@ -758,7 +770,7 @@ function renderToday(data){
   var spLabel=escHtml(sp.label||'SPONSORED');
   var spAdv=escHtml(sp.advertiser||'');
   var spHeadline=escHtml(sp.headline||'');
-  var spBody=escHtml(sp.body||'');
+  var spBody=mdInline(sp.body||'');
   var spCtaText=escHtml(sp.cta_text||'Learn more');
   var spCtaUrl=escHtml(sp.cta_url||'#');
   var spDisclosure=escHtml(sp.disclosure||'');
@@ -779,7 +791,7 @@ function renderToday(data){
   var basisData=data.basis||null;
   if(basisData && !marketClosed){
     var bH=escHtml((basisData.headline||'').trim());
-    var bB=escHtml((basisData.body||'').trim()).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+    var bB=mdInline((basisData.body||'').trim());
     if(bH||bB){
       basis='<div class="dv3-basis">'+
         '<div class="dv3-basis-label">\u{1F4CD} BASIS PULSE</div>'+

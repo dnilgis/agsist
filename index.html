@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://api.open-meteo.com">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-<link rel="preload" href="/components/styles.css?v=11" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=11">
+<link rel="preload" href="/components/styles.css?v=12" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=12">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -749,7 +749,6 @@
   </div>
 </section>
 <main id="main" class="main" role="main" tabindex="-1">
-  <h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);clip-path:inset(50%);white-space:nowrap;border:0">Corn, Soybean &amp; Wheat Prices Today &mdash; Free Farm Dashboard | AGSIST</h1>
   <div class="dash-grid">
     <div class="fade-up" id="f1">
       <div class="sec-head"><div class="sec-title">&#x1F4B5; Cash Bids &amp; Basis <span style="font-size:.62rem;font-weight:600;color:var(--gold);letter-spacing:.04em">+ Worth the Drive&trade;</span></div><a href="/cash-bids" class="sec-all">Find Elevators &rarr;</a></div>
@@ -1796,15 +1795,26 @@ window.hydrateDaily = function(data) {
   // v4.4: local HTML-escape helper (used by outside_the_pit hydration which
   // builds innerHTML manually — kept scoped to this function to avoid global pollution)
   function escHtml(s){return(s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  // v4.4.2: mdInline — escape + promote legacy <strong>/<em> tags
+  // (model-emitted HTML in JSON body fields) and **markdown** asterisks.
+  function mdInline(s){
+    if(s==null)return'';
+    var t=String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    t=t.replace(/&lt;strong&gt;([\s\S]+?)&lt;\/strong&gt;/g,'<strong>$1</strong>');
+    t=t.replace(/&lt;em&gt;([\s\S]+?)&lt;\/em&gt;/g,'<em>$1</em>');
+    t=t.replace(/\*\*([^*]+?)\*\*/g,'<strong>$1</strong>');
+    return t;
+  }
 
   var headline=data.headline||'',subheadline=data.subheadline||'',lead=data.lead||'';
   var dateStr=data.date||'';
-  setText('daily-headline',headline);
-  setText('daily-subheadline',subheadline);
-  setText('daily-lead',lead);
-  var dh=el('daily-headline');if(dh)dh.innerHTML=headline;
-  var dl=el('daily-lead');if(dl)dl.innerHTML=lead;
+  // v4.4.2: clean render block. headline/subheadline are plain text
+  // (no bold expected, matches daily.html). lead uses mdInline so model
+  // can emit **bold** or <strong> safely without XSS surface (was raw
+  // innerHTML — that bypassed escaping entirely).
+  var dh=el('daily-headline');if(dh)dh.textContent=headline;
   var dsh=el('daily-subheadline');if(dsh)dsh.textContent=subheadline;
+  var dl=el('daily-lead');if(dl)dl.innerHTML=mdInline(lead);
 
   // v4.3: render the_takeaway if present and non-empty
   var takeaway=(data.the_takeaway||'').trim();
@@ -1869,7 +1879,7 @@ window.hydrateDaily = function(data) {
       if(!oTitle&&!oBody)continue;
       var oTagH=oTag?'<span class="daily-otp-tag">'+escHtml(oTag)+'</span>':'';
       var oTitleH=oTitle?'<div class="daily-otp-title">'+escHtml(oTitle)+'</div>':'';
-      var oBodyH=oBody?'<div class="daily-otp-body">'+escHtml(oBody).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')+'</div>':'';
+      var oBodyH=oBody?'<div class="daily-otp-body">'+mdInline(oBody)+'</div>':'';
       otpHtml+='<div class="daily-otp-item">'+oTagH+oTitleH+oBodyH+'</div>';
     }
     if(otpHtml){
@@ -2050,7 +2060,7 @@ window.hydrateDaily = function(data) {
     if(bs&&bs.headline&&bs.body&&!isClosed){
       var bsH=el('daily-basis-headline'),bsB=el('daily-basis-body');
       if(bsH)bsH.textContent=bs.headline;
-      if(bsB)bsB.innerHTML=bs.body;
+      if(bsB)bsB.innerHTML=mdInline(bs.body);
       bsEl.style.display='block';
     } else { bsEl.style.display='none'; }
   }
