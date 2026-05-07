@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 06 May 2026 14:12:17 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 07 May 2026 13:00:41 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE HOLD $253 AS OIL CRASH EASES INPUT COSTS</title>
+      <link>https://agsist.com/daily/2026-05-07</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-07</guid>
+      <pubDate>Thu, 07 May 2026 05:00:00 -0600</pubDate>
+      <description>Live cattle held $253.47, up two-tenths, with feeders tracking right alongside at $372.95. The cattle complex is acting like yesterday's call was right: feeder leadership changes everything, breakdown thesis officially dead. Crude's 3% crash to $92.88 takes immediate pressure off diesel and freight costs, giving cattle feeders room to stay patient with their bids.
+Feeder strength confirms the breakdown thesis is dead while crude's 3% drop cuts diesel pressure.
+• Cattle Hold Above $252
+• Grains Drift Higher on Energy Relief
+• Energy Costs Crater on Iran Deal Talk
+Read more: https://agsist.com/daily/2026-05-07</description>
+    </item>
     <item>
       <title>CATTLE SURGE PAST $252 AS CRUDE CRASHES</title>
       <link>https://agsist.com/daily/2026-05-06</link>
@@ -402,21 +414,6 @@ Energy volatility returns while corn holds near $4.44 ahead of planting push.
 • Energy &amp; Inputs
   → Lock remaining diesel needs immediately — this dip won't last once planting demand hits.
 Read more: https://agsist.com/daily/2026-04-08</description>
-    </item>
-    <item>
-      <title>LEAN HOGS SURGE 3% ON TIGHT SUPPLIES</title>
-      <link>https://agsist.com/daily/2026-04-07</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-07</guid>
-      <pubDate>Tue, 07 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Lean hogs jumped 3.1% to $107.70 in the overnight session, the strongest move across agricultural markets as tight hog supplies collide with steady pork demand. Nearby corn eased 1.75 cents to $4.52 per bushel while soybeans held nearly flat at $11.68, with traders shifting attention from price action to weather forecasts as planting season approaches.
-Grains drift sideways as focus shifts to planting conditions ahead.
-• Grains &amp; Oilseeds
-  → Hold current positions and monitor 7-day forecasts closely — planting delays could quickly shift this market dynamic.
-• Livestock &amp; Dairy
-  → Hog producers should price unpriced inventory immediately — this volatility suggests more upside potential with limited downside protection.
-• Energy &amp; Inputs
-  → Lock remaining diesel needs now — current levels are manageable but vulnerable to demand-driven spikes during peak planting.
-Read more: https://agsist.com/daily/2026-04-07</description>
     </item>
   </channel>
 </rss>
