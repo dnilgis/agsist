@@ -1,43 +1,45 @@
 #!/usr/bin/env python3
 """
-AGSIST Daily Briefing Generator, v4.4.1
+AGSIST Daily Briefing Generator, v4.5.0
 ═══════════════════════════════════════════════════════════════════
 Generates the daily agricultural intelligence briefing via Claude API.
 
-v4.4 (the addictive-newsroom upgrade):
-  - NEWS PIPELINE OVERHAUL: fetch_ag_news now pulls article summaries
-    (not just titles), scores by recency, drops items >5 days old,
-    and clusters into 6 buckets (GRAINS, LIVESTOCK, ENERGY, POLICY,
-    WEATHER, MACRO). 15 RSS sources up from 5. The model gets
-    structured news per category, not a wall of headlines.
-  - NEWS DISCIPLINE FLIPPED: prompt no longer labels news "context
-    only." News is INPUT. Every section with conviction>=medium MUST
-    identify the catalyst from the relevant bucket.
-  - OUTSIDE THE PIT: new top-level field (3 items, ag news in the
-    calculus that isn't moving today's prices but matters for what's
-    coming). Renders as a 3-up grid below the watch list. Required
-    every day including weekends (week-ahead framing on weekends).
-  - SECTION CATALYST CHIP: optional per-section field surfacing the
-    specific driver behind the price move. Renders as a gold-bordered
-    chip beneath the section title.
-  - BANNED PHRASES BLOCK: explicit list of trader-blog clichés the
-    model has been drifting into ("managed money stayed on the
-    sidelines," "the chart wants to test," "doesn't argue otherwise,"
-    "confirms on-pace timing," "remains the test," "no specific
-    catalyst" except when news bucket is empty). Each gets a plainer
-    substitute. Fixes 3 days of voice-drift complaints.
-  - ONE NUMBER RUBRIC: explicit rule that the value cannot be a price
-    already in the closes table. Must pull from news, USDA data, fund
-    positioning, export pace, basis, ratios, weather, or macro.
-    Coherence check: value and unit must describe the same thing
-    (fixes the May 5 'live cattle decline' label-on-feeder-number bug).
-  - YESTERDAY'S CALL OUTCOME RUBRIC: expanded with examples of
-    PLAYED OUT vs DIDN'T vs PENDING, plus an explicit warning against
-    defaulting to DIDN'T because the magnitude was modest (fixes the
-    May 6 mis-classification).
-  - VOCABULARY CONTRADICTION FIX: removed "the chart wants to..." from
-    the use-these list (it was simultaneously listed under banned
-    phrases per Sigurd's handoff notes).
+v4.5.0 (the math-sanity + markdown-cleanup upgrade, 2026-05-08):
+  - LEVEL COHERENCE VALIDATOR: new validate_level_coherence() function
+    runs after generation. Scans body prose for "broke $X" / "below $X"
+    / "above $X" patterns, matches against the locked close for the
+    cited commodity, and warns on contradictions. Catches the failure
+    mode that hit Monday 2026-05-04 (cattle close $253 paired with
+    headline "BREAK $252"). 0.2% tolerance allows editorial framing of
+    round-number breaks without false positives. Tested against actual
+    Monday failure plus 9 control cases.
+  - HTML-TO-MARKDOWN SANITIZER: new sanitize_html_tags() converts any
+    literal <strong>/<em> in body fields to **markdown**/*emphasis*.
+    Frontend mdInline (daily.html v4.4.2, index.html v4.4.2) renders
+    either format, but storing markdown in JSON keeps the source of
+    truth clean for downstream consumers (email, RSS, AI crawlers).
+    Idempotent. Field-scoped to body fields, leaves structural fields
+    untouched.
+  - PROMPT SCHEMA UPDATED: section.body and basis.body schema descriptions
+    now require **markdown** instead of <strong> tags. Pairs with the
+    sanitizer for defense in depth.
+  - RULES 17 + 18 ADDED:
+    * Rule 17 (LEVEL COHERENCE): math-sanity rule with explicit
+      examples of valid/invalid framing. Reinforces the validator.
+    * Rule 18 (MACRO EVENT ANCHORING): first reference to ongoing
+      geopolitical thread per week requires a one-clause anchor (e.g.,
+      "Iran-Iraq tensions over Hormuz, ongoing since March"). Helps new
+      readers and improves AI citation context.
+  - BANNED PHRASES EXTENDED: added "binary"/"binary level"/"binary
+    week" (trader-tech jargon Sigurd flagged Sunday 2026-05-03),
+    "decisively below"/"decisively above" (the math-contradiction
+    risk), "referendum on" and "categorical" (press-release register).
+
+v4.4 carried over:
+  - News pipeline overhaul, news discipline flip
+  - Outside the Pit, section catalyst chip
+  - Banned phrases block
+  - One Number rubric, Yesterday's Call outcome rubric
 
 v4.3 carried over:
   - the_takeaway committable single-line callout
@@ -55,8 +57,10 @@ v4.0 carried over:
   - spread_to_watch
   - weekly thread (Mon sets, Tue-Fri advance, Fri resolves)
 
-v4.4 still requires `scripts/critique_briefing.py` to run as a second
-step. Critic should be updated separately to score the new fields.
+v4.5.0 pairs with critique_briefing.py v1.2 which adds matching critic
+rules (14: level coherence, 15: one-number coherence, 16: markdown not
+HTML, 17: macro anchoring). Run order unchanged: generator first, then
+critic. Both must run for the full quality gate.
 
 Env vars required:
   ANTHROPIC_API_KEY
@@ -677,11 +681,44 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
     if market_status["is_closed"]:
         day = market_status["day_name"]; reason = market_status["reason"]
         if reason == "weekend" and "Saturday" in day:
-            weekend_instructions = "\nWEEKEND MODE SATURDAY: Markets CLOSED. Write WEEK IN REVIEW + WEEKEND OUTLOOK. Reference 'Friday's close'. No overnight language. Skip basis, yesterdays_call, spread_to_watch, weekly_thread (set to empty objects).\n"
+            weekend_instructions = (
+                "\nWEEKEND MODE SATURDAY: Markets CLOSED. Write WEEK IN REVIEW + WEEKEND OUTLOOK. "
+                "Reference 'Friday's close'. No overnight language. Skip basis, yesterdays_call, "
+                "spread_to_watch, weekly_thread (set to empty objects).\n"
+                "RULE 17 ON WEEKENDS: the post-gen level-coherence validator checks every "
+                "'broke $X'/'below $X'/'above $X' claim against FRIDAY'S CLOSE (the only close "
+                "in locked_prices on weekends). Retrospective prose with explicit day-of-week "
+                "markers ('Wednesday', 'midweek', 'earlier this week') is auto-skipped by the "
+                "validator, so retrospective recaps are safe. But any present-tense break claim "
+                "in headline or lead WILL be checked against Friday's close.\n"
+                "RULE 18 ON WEEKENDS: macro-event anchoring matters MORE on Saturday than weekdays. "
+                "The Saturday Week-in-Review is many readers' first briefing of the week. Any "
+                "reference to ongoing geopolitical or macro threads (Iran tensions, Hormuz, Fed "
+                "pivot, trade negotiations, etc.) needs a one-clause anchor establishing what "
+                "the event is and roughly when it began.\n"
+            )
         elif reason == "weekend" and "Sunday" in day:
-            weekend_instructions = "\nWEEKEND MODE SUNDAY: Markets CLOSED. Write SUNDAY PREVIEW + WEEK AHEAD. Reference 'Friday's close'. No overnight language. Skip basis, yesterdays_call, spread_to_watch, weekly_thread (set to empty objects).\n"
+            weekend_instructions = (
+                "\nWEEKEND MODE SUNDAY: Markets CLOSED. Write SUNDAY PREVIEW + WEEK AHEAD. "
+                "Reference 'Friday's close'. No overnight language. Skip basis, yesterdays_call, "
+                "spread_to_watch, weekly_thread (set to empty objects).\n"
+                "RULE 17 ON SUNDAYS: forecast and conditional prose is the dominant mode "
+                "('if cattle break $X next week', 'a move below $Y would target $Z'). The "
+                "validator auto-skips claims wrapped in 'if/would/should/could/next week/might/may' "
+                "markers, so forecast prose is safe. But any present-tense claim that contradicts "
+                "Friday's actual close WILL be flagged - don't write 'cattle currently below $X' "
+                "if Friday closed above $X.\n"
+                "RULE 18 ON SUNDAYS: macro-event anchoring is critical. The Sunday Preview "
+                "frames the week's macro context. First references to ongoing geopolitical or "
+                "macro threads need a one-clause anchor (what + roughly when).\n"
+            )
         else:
-            weekend_instructions = f"\nHOLIDAY MODE {day.upper()}: Markets CLOSED. Holiday outlook framing. Skip basis, yesterdays_call, spread_to_watch, weekly_thread (set to empty objects).\n"
+            weekend_instructions = (
+                f"\nHOLIDAY MODE {day.upper()}: Markets CLOSED. Holiday outlook framing. "
+                f"Skip basis, yesterdays_call, spread_to_watch, weekly_thread (set to empty objects). "
+                f"Rule 17 (level coherence) references the most recent close in locked_prices. "
+                f"Rule 18 (macro anchoring) applies normally.\n"
+            )
 
     banned_tmyk = ""
     if past_tmyk_topics:
@@ -841,6 +878,10 @@ These are the specific clichés that signal you've drifted into trader-blog wire
   - "the chart's bluffing" (overused)
   - "thin trade" without saying WHY thin
   - "fund flow drives action more than weather", wire filler
+  - "binary" / "binary level" / "binary week" / "binary support" — trader-tech jargon, use "line in the sand", "make-or-break", "either/or" instead
+  - "decisively below" / "decisively above" / "decisively through" — risks claiming a break that the close contradicts; just describe the move ("right back to $X", "tested $X")
+  - "referendum on" — wire-blog cliche
+  - "categorical" / "categorically" — sounds like a press release
 
 Acceptable substitutes, write like an operator, not a trader-blog:
   - "managed money is rotating" → "funds are getting out of corn, into beans"
@@ -872,7 +913,7 @@ NEWS DISCIPLINE: News is INPUT, not flavor. The news block below is organized by
 - 2.5-3.5%: "surged", "dropped sharply", "spiked"
 - above 3.5%: "exploded", "crashed", "historic". Genuinely rare.
 
-══ THE 11 IMPACT RULES ══
+══ THE 18 IMPACT RULES ══
 
 1. THE LEAD MUST DELIVER A "SO WHAT". Not a price recap. Specific price + synthesizing observation that interprets, contextualizes, or connects.
 
@@ -926,6 +967,14 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
 
 16. OUTSIDE THE PIT: ALWAYS POPULATE WEEKDAYS. The outside_the_pit array is the briefing's "what else mattered today in ag" block. 3 items, each one a piece of ag news that is NOT directly moving today's prices but IS in the calculus for what's coming. Examples of strong items: a structural China/Brazil shipment shift, a USDA staffing or methodology change, an EPA/RFS rule update, a packer concentration story, a drought monitor expansion, a freight or logistics development, a farm bill provision, an animal disease outbreak. Each item is 1-2 sentences. Pull from the news block, especially the POLICY & TRADE, WEATHER & CLIMATE, and OTHER buckets. Source attribution optional but encouraged. On weekends, populate with week-ahead context items instead of empty.
 
+17. LEVEL COHERENCE — MATH SANITY ON SUPPORT/RESISTANCE CLAIMS. If the briefing claims a price level was BROKEN, BREACHED, BELOW, UNDER, ABOVE, or THROUGH a support/resistance level, the LOCKED CLOSE PRICE for that contract MUST be on the breaking side of that level. Self-check before finalizing every section, lead, and TMYK:
+  - If the close is HIGHER than the level cited, you may NOT write "broke $X", "below $X", "under $X", "decisively through $X", or "crashed through $X". Use instead: "tested $X", "pulled back to $X", "right back to $X", "held above $X by a hair".
+  - If the close is LOWER than the level cited, you may NOT write "above $X", "held $X", "defended $X", "reclaimed $X". Use instead: "broke $X", "lost $X", "fell through $X".
+  - The post-generation validator scans for "broke|below|under|above|over|through $XX.XX" patterns and cross-checks against the LOCKED PRICE TABLE. If it finds a contradiction, the briefing fails validation and you wasted a generation. Get this right the first time.
+  - This rule applies retroactively too: when continuity-referencing prior briefings (e.g., "one day after Monday broke $252"), do NOT carry forward false break claims. If you cannot verify the prior close from the past_dailies block, soften to "one day after Monday tested $252".
+
+18. MACRO EVENT ANCHORING. The first time any briefing in a given week references an ongoing geopolitical or macro event (Iran tensions, Hormuz disruption, election cycle, Fed pivot, trade war, etc.), include a single anchoring clause that establishes what the event is and roughly when it began. Example: "...as Iran-Iraq tensions over the Strait of Hormuz, ongoing since March, eased on diplomatic progress." Subsequent briefings in the same week can reference shorthand. The reader who lands on this briefing for the first time should be able to follow the macro thread. This also helps AI search engines and LLM crawlers cite AGSIST as a primary source rather than getting stuck on uncited shorthand.
+
 ══ OUTPUT, return valid JSON with EXACTLY these fields ══
 
 {{
@@ -941,7 +990,7 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
     "note": "1 sentence on what it means for today. OMIT field entirely on Mondays after long weekends or when no prior call was provided."
   }},
   "sections": [
-    {{"title": "3-5 words", "icon": "Single emoji", "body": "3-5 sentences with <strong> tags. All prices from LOCKED TABLE. VOICE. MUST thread the catalyst (RULE 14) into the body prose, do not just append it.",
+    {{"title": "3-5 words", "icon": "Single emoji", "body": "3-5 sentences with **bold** markdown for emphasis (NEVER <strong> HTML tags). All prices from LOCKED TABLE. VOICE. MUST thread the catalyst (RULE 14) into the body prose, do not just append it.",
       "catalyst": "OPTIONAL but recommended. 8-15 words naming the specific news/data/event that drove or contextualizes this section's price action. Example: 'USDA crop progress shows corn at 42%, ahead of 5-year avg.' Empty string allowed only when no relevant news in bucket.",
       "bottom_line": "TL;DR adding info beyond title (RULE 5). Max 20 words.",
       "conviction_level": "low | medium | high (earned per RULE 2)",
@@ -960,7 +1009,7 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
     "commentary": "2 sentences. What is this spread saying that the headline price isn't? Embedded thesis. VOICE."
   }},
   "basis": {{"headline": "Short line capturing basis story (max 12 words).",
-             "body": "2-4 sentences. Directional only (RULE 8). Bold key phrase with <strong>."}},
+             "body": "2-4 sentences. Directional only (RULE 8). Bold key phrase with **markdown** (NEVER <strong> HTML tags)."}},
   "weekly_thread": {{
     "question": "Monday's question (copy forward Tue-Fri verbatim, set fresh on Mondays).",
     "day": "1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri",
@@ -1036,7 +1085,7 @@ TODAY'S QUOTE (copy exactly):
 Text: "{todays_quote['text']}"
 Attribution: "{todays_quote['attribution']}"
 
-Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE, no wire-service neutral. Forward test the lead before you finalize. If today is Tue-Fri, advance the weekly thread, do NOT rehash. Thread NEWS into every section's body, generic "fund positioning" without a specific catalyst tie is wire filler."""
+Apply all 18 IMPACT RULES. Voice samples are NON-NEGOTIABLE, no wire-service neutral. Forward test the lead before you finalize. If today is Tue-Fri, advance the weekly thread, do NOT rehash. Thread NEWS into every section's body, generic "fund positioning" without a specific catalyst tie is wire filler. Rule 17 (level coherence) is failure-mode-zero: the post-gen validator will reject contradictory break claims."""
 
     payload = {"model": MODEL, "max_tokens": 4500,
                "system": build_system_prompt(market_status, past_tmyk_topics, yesterdays_call, weekly_thread),
@@ -2004,6 +2053,291 @@ def sanitize_em_dashes(briefing):
     return briefing
 
 
+# v4.5.0: BODY FIELDS that may contain prose with bold emphasis. The
+# sanitize_html_tags walker only converts <strong>/<em> in these fields,
+# leaving the rest of the briefing untouched (icons, IDs, etc).
+_BOLD_BODY_FIELDS = {
+    "lead", "subheadline", "the_takeaway", "teaser",
+    "body", "bottom_line", "vs_yesterday", "catalyst",
+    "context", "commentary", "status_text", "note", "summary",
+}
+
+
+def sanitize_html_tags(briefing):
+    """v4.5.0: convert any literal <strong>...</strong> or <em>...</em>
+    HTML tags in body fields to **markdown** equivalents.
+
+    The model has historically emitted <strong> in body JSON fields
+    despite the prompt asking for markdown. The frontend mdInline()
+    helper (daily.html v4.4.2, index.html v4.4.2) handles either format
+    so user-facing rendering is unaffected, but storing markdown in the
+    JSON keeps the source of truth clean and prevents downstream
+    consumers (email pipeline, RSS, AI crawlers) from having to do the
+    same conversion.
+
+    Only operates on the recognized body fields (_BOLD_BODY_FIELDS).
+    Leaves headline, icon, label, and structural fields untouched.
+    Idempotent: running twice produces the same result as once."""
+    strong_re = re.compile(r"<strong>(.+?)</strong>", re.DOTALL | re.IGNORECASE)
+    em_re = re.compile(r"<em>(.+?)</em>", re.DOTALL | re.IGNORECASE)
+
+    def clean(s):
+        if not isinstance(s, str):
+            return s
+        s = strong_re.sub(r"**\1**", s)
+        s = em_re.sub(r"*\1*", s)
+        return s
+
+    def walk(obj):
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                if k in _BOLD_BODY_FIELDS and isinstance(v, str):
+                    obj[k] = clean(v)
+                else:
+                    obj[k] = walk(v)
+            return obj
+        if isinstance(obj, list):
+            return [walk(item) for item in obj]
+        return obj
+
+    walk(briefing)
+    return briefing
+
+
+# v4.5.0: lookup table mapping commodity keywords found in prose to the
+# locked_prices key. Only includes commodities Sigurd's audience trades
+# in dollar-level support/resistance terms. Grain levels (per-bushel) and
+# livestock levels (per-cwt) are the high-risk surface for false break
+# claims; energy and milk get added defensively. Order matters - more
+# specific words first so "feeder cattle" wins over generic "cattle".
+_LEVEL_COMMODITY_KEYWORDS = [
+    ("feeder cattle", "feeder_cattle"),
+    ("feeders", "feeder_cattle"),
+    ("live cattle", "live_cattle"),
+    ("lean hogs", "hogs"),
+    ("class iii milk", "milk"),
+    ("natural gas", "natgas"),
+    ("natgas", "natgas"),
+    ("cattle", "live_cattle"),
+    ("hogs", "hogs"),
+    ("corn", "corn"),
+    ("soybeans", "beans"),
+    ("soybean", "beans"),
+    ("beans", "beans"),
+    ("wheat", "wheat"),
+    ("crude", "crude"),
+    ("oil", "crude"),
+    ("milk", "milk"),
+]
+
+# Words that, when found preceding "$X" in close proximity, claim the
+# close is BELOW the level. Pairing a "below" claim with a close ABOVE
+# the level is the failure mode (see Monday 2026-05-04: cattle close $253,
+# headline claimed broke $252).
+_BREAK_BELOW_VERBS = (
+    "broke", "broken", "breaking", "break", "breaks",
+    "breach", "breached", "breaches",
+    "below", "under", "beneath",
+    "fell through", "lost", "crashed through", "crashed below",
+    "fell below", "dropped below", "dropped through",
+    "decisively below", "decisively through",
+)
+
+# Words claiming the close is ABOVE the level. Pairing an "above" claim
+# with a close BELOW the level is the inverse failure mode.
+_BREAK_ABOVE_VERBS = (
+    "above", "over", "reclaimed", "defended",
+    "held above", "back above", "rallied through",
+    "decisively above",
+)
+
+
+def _find_close_for_text(text_window, locked_prices):
+    """Given a slice of prose, return the locked close that matches the
+    commodity referenced in that slice, or None if no match."""
+    tw = text_window.lower()
+    for keyword, lp_key in _LEVEL_COMMODITY_KEYWORDS:
+        if keyword in tw:
+            close = locked_prices.get(lp_key)
+            if close and close > 0:
+                return lp_key, float(close)
+    return None, None
+
+
+# v4.5.0: tense markers that signal a level claim is NOT about today's
+# close. When any of these appear in the window around a verb+level
+# match, the validator skips the contradiction check.
+#
+# This prevents false positives on:
+#   - Saturday retrospective prose ("held above $258 Wednesday" with
+#     Friday close $253: claim is past-tense, not a today contradiction).
+#   - Sunday forecast prose ("if cattle break $250 next week" with
+#     current close $253: claim is conditional, not a now contradiction).
+#   - Mid-week continuity references ("Monday's break of $252 still in
+#     play"): the validator can't verify Monday's close from
+#     locked_prices, so soften by skipping rather than flagging.
+#
+# Cost: a Saturday recap that falsely claims a Friday break which the
+# Friday close contradicts will get caught only if it's stated in
+# present-tense, header, or lead form (which is the loud failure mode
+# we actually care about).
+_TENSE_SKIP_MARKERS = (
+    # Conditional / forecast
+    " if ", " if,", " if cattle ", " if corn ", " if beans ", " if wheat ",
+    " would ", " could ", " should ", " might ", " may ",
+    "next week", "this week's", "watch for", "looking for",
+    "needs to", "has to", "would target", "could test",
+    # Retrospective day markers (past-tense relative to today)
+    "monday", "tuesday", "wednesday", "thursday",
+    "midweek", "mid-week", "midweek's", "mid-week's",
+    "earlier this week", "early in the week",
+    "last week", "prior week",
+)
+
+
+def _has_tense_skip_marker(window):
+    """Return True if any tense-skip marker appears in the window."""
+    w = window.lower()
+    return any(m in w for m in _TENSE_SKIP_MARKERS)
+
+
+def validate_level_coherence(briefing, locked_prices):
+    """v4.5.0: deterministic check for the math contradiction class
+    (close above $X paired with claim that the level was broken).
+
+    Scans body prose for patterns like 'broke $252' or 'above $250',
+    matches the cited level against the locked close for the surrounding
+    commodity, and warns when they contradict.
+
+    Tolerance: 0.2% slack on the level comparison. At a $250 level that's
+    50 cents - tight enough to catch the Monday 2026-05-04 contradiction
+    (close $253 vs claim 'below $252', $1.00 differential) but loose
+    enough to allow editorial framing like 'broke $250' when the close
+    is $250.05 (5 cent differential, ~0.02% off the level).
+
+    Returns a list of human-readable warnings (empty if all coherent)."""
+    if not locked_prices:
+        return []
+
+    warnings = []
+    parts = []
+
+    # Build (text, location_label) tuples for each scannable field. Keep
+    # the surrounding context tight so commodity inference works - we
+    # don't want a section about cattle to inherit a level claim from a
+    # different section's prose.
+    for field in ("headline", "subheadline", "lead", "the_takeaway"):
+        v = briefing.get(field, "")
+        if isinstance(v, str) and v:
+            parts.append((v, field))
+    one_num = briefing.get("one_number") or {}
+    if isinstance(one_num, dict):
+        ctx = one_num.get("context", "")
+        if isinstance(ctx, str) and ctx:
+            parts.append((ctx, "one_number.context"))
+    for i, sec in enumerate(briefing.get("sections", []) or []):
+        if not isinstance(sec, dict):
+            continue
+        title = sec.get("title", "")
+        for fname in ("body", "bottom_line", "catalyst", "vs_yesterday"):
+            v = sec.get(fname, "")
+            if isinstance(v, str) and v:
+                # Carry the section title forward as commodity context;
+                # it often names the commodity even when the body is
+                # mid-sentence.
+                parts.append((f"{title}. {v}", f"section[{i}].{fname}"))
+    yc = briefing.get("yesterdays_call") or {}
+    if isinstance(yc, dict):
+        for fname in ("summary", "note"):
+            v = yc.get(fname, "")
+            if isinstance(v, str) and v:
+                parts.append((v, f"yesterdays_call.{fname}"))
+    tmyk = briefing.get("the_more_you_know") or briefing.get("tmyk") or {}
+    if isinstance(tmyk, dict):
+        v = tmyk.get("body", "")
+        if isinstance(v, str) and v:
+            parts.append((v, "the_more_you_know.body"))
+
+    # Pattern: any of the break verbs, then up to 30 chars, then $XX or
+    # $XX.XX. The 30-char gap is generous enough to catch "broke through
+    # the $252 floor" but tight enough to not cross sentence boundaries
+    # most of the time.
+    verb_alt_below = "|".join(re.escape(v) for v in _BREAK_BELOW_VERBS)
+    verb_alt_above = "|".join(re.escape(v) for v in _BREAK_ABOVE_VERBS)
+    re_below = re.compile(
+        r"\b(" + verb_alt_below + r")\b[^\$]{0,30}\$([0-9]+(?:\.[0-9]+)?)",
+        re.IGNORECASE,
+    )
+    re_above = re.compile(
+        r"\b(" + verb_alt_above + r")\b[^\$]{0,30}\$([0-9]+(?:\.[0-9]+)?)",
+        re.IGNORECASE,
+    )
+
+    for text, label in parts:
+        for m in re_below.finditer(text):
+            verb = m.group(1)
+            try:
+                level = float(m.group(2))
+            except ValueError:
+                continue
+            # Look at a window around the match to find the commodity
+            window_start = max(0, m.start() - 80)
+            window_end = min(len(text), m.end() + 40)
+            window = text[window_start:window_end]
+            # v4.5.0: skip if tense markers indicate this is retrospective
+            # ("Wednesday's break"), conditional ("if cattle break"), or
+            # forward-looking ("next week's $250 test"). Prevents weekend
+            # false positives without losing the present-tense Monday-style
+            # contradiction catch.
+            if _has_tense_skip_marker(window):
+                continue
+            commodity, close = _find_close_for_text(window, locked_prices)
+            if not commodity or close is None:
+                continue
+            # Range guard: levels far outside any commodity's plausible
+            # range are probably calendar dates ($101.94 in a sentence
+            # about "Friday $101.94 close" is the close itself, not a
+            # level reference). Use the commodity's locked close as the
+            # anchor and require the cited level to be within 25% of it
+            # for the contradiction check to apply.
+            if close > 0 and (level < close * 0.75 or level > close * 1.25):
+                continue
+            # Tolerance: 0.2% of the level. At $250 that's 50 cents -
+            # tight enough to catch the Monday $253-vs-$252 case, loose
+            # enough to allow 'broke $250' when close is $250.05.
+            tol = level * 0.002
+            if close > level + tol:
+                warnings.append(
+                    f"Level coherence: {label!r} says {verb!r} ${level:g} "
+                    f"but {commodity} close is ${close:.2f} (above)."
+                )
+        for m in re_above.finditer(text):
+            verb = m.group(1)
+            try:
+                level = float(m.group(2))
+            except ValueError:
+                continue
+            window_start = max(0, m.start() - 80)
+            window_end = min(len(text), m.end() + 40)
+            window = text[window_start:window_end]
+            # v4.5.0: same tense-skip filter as the below-claim path.
+            if _has_tense_skip_marker(window):
+                continue
+            commodity, close = _find_close_for_text(window, locked_prices)
+            if not commodity or close is None:
+                continue
+            if close > 0 and (level < close * 0.75 or level > close * 1.25):
+                continue
+            tol = level * 0.002
+            if close < level - tol:
+                warnings.append(
+                    f"Level coherence: {label!r} says {verb!r} ${level:g} "
+                    f"but {commodity} close is ${close:.2f} (below)."
+                )
+
+    return warnings
+
+
 def sanitize_weekend_blocks(briefing, market_status):
     """v4.2 (Phase 2 C4): the prompt instructs the model to set
     weekend-disallowed fields to empty on Sat/Sun/holidays. Models
@@ -2021,7 +2355,7 @@ def sanitize_weekend_blocks(briefing, market_status):
 
 
 def main():
-    print("=== AGSIST Daily Briefing Generator v4.4.1 ===")
+    print("=== AGSIST Daily Briefing Generator v4.5.0 ===")
     print(f"  Time: {datetime.now().isoformat()}")
     market_status = get_market_status()
     if market_status["is_closed"]:
@@ -2087,9 +2421,22 @@ def main():
     # v4.4.1: strip any em/en dashes that slipped through despite the
     # prompt rule. Final defense before validation.
     briefing = sanitize_em_dashes(briefing)
+    # v4.5.0: convert any literal <strong>/<em> HTML tags in body fields
+    # to **markdown**. The frontend mdInline helper handles either format
+    # but storing markdown keeps the JSON clean for downstream consumers
+    # (email pipeline, RSS, AI crawlers). Idempotent.
+    briefing = sanitize_html_tags(briefing)
 
     locked_prices = price_data.get("locked_prices", {})
     is_clean, val_warnings = validate_briefing(briefing, locked_prices)
+    # v4.5.0: deterministic level coherence check. Catches the math
+    # contradiction class (close above $X paired with claim that $X was
+    # broken) that hit Monday 2026-05-04 and propagated forward via the
+    # continuity feature for two days.
+    level_warnings = validate_level_coherence(briefing, locked_prices)
+    if level_warnings:
+        val_warnings.extend(level_warnings)
+        is_clean = False
     if val_warnings:
         print(f"  Validation warnings ({len(val_warnings)}):")
         for w in val_warnings: print(f"    - {w}")
@@ -2136,7 +2483,7 @@ def main():
         print(f"  Section catalysts: {cats_with}/{cats_total} sections name a driver")
 
     briefing["generated_at"] = datetime.now(timezone.utc).isoformat()
-    briefing["generator_version"] = "4.4.1"
+    briefing["generator_version"] = "4.5.0"
     briefing["surprise_count"] = len(surprises)
     briefing["surprises"] = surprises
     briefing["price_validation_clean"] = is_clean
@@ -2168,7 +2515,7 @@ def main():
     save_archive(briefing)
     print(f"  Headline: {briefing.get('headline', 'N/A')}")
     print(f"  Sections: {len(briefing.get('sections', []))}")
-    print("=== Done. Run scripts/critique_briefing.py next for the v4.0 quality gate. ===")
+    print("=== Done. Run scripts/critique_briefing.py next for the v1.2 quality gate. ===")
 
 
 if __name__ == "__main__":
