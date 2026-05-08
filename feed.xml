@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 07 May 2026 13:00:41 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 08 May 2026 12:11:32 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE CRASH THROUGH $250 FLOOR ON FEEDER BREAKDOWN</title>
+      <link>https://agsist.com/daily/2026-05-08</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-08</guid>
+      <pubDate>Fri, 08 May 2026 05:00:00 -0600</pubDate>
+      <description>Live cattle broke $250.05, down 1.4%, with feeders leading the breakdown at $366.18, off 1.8%. The feeder weakness confirms what Monday's question asked: the support at $250 didn't hold, and the breakdown through key technical levels is real. Boxed beef dropped sharply and the Iran oil premium is evaporating as diplomatic channels open, removing the energy cost tailwind that propped up the complex all week.
+Both complexes fold as boxed beef drops and Iran tensions ease energy premium.
+• Cattle Complex Breaks
+• Grains Mark Time
+• Energy Premium Evaporates
+Read more: https://agsist.com/daily/2026-05-08</description>
+    </item>
     <item>
       <title>CATTLE HOLD $253 AS OIL CRASH EASES INPUT COSTS</title>
       <link>https://agsist.com/daily/2026-05-07</link>
@@ -399,21 +411,6 @@ Broad-based gains suggest improving market confidence heading into peak planting
 • Energy &amp; Inputs
   → Lock remaining diesel needs now — current levels are workable but vulnerable to spring demand spikes.
 Read more: https://agsist.com/daily/2026-04-09</description>
-    </item>
-    <item>
-      <title>CRUDE OIL DROPS 3% AS GRAINS DRIFT</title>
-      <link>https://agsist.com/daily/2026-04-08</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-08</guid>
-      <pubDate>Wed, 08 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Crude oil's 3.3% overnight drop to $93.27 signals fresh volatility in input costs just as corn planting season hits full stride. Corn barely budged at $4.44/bu, down just half a cent, while soybeans managed a modest 2.5-cent gain to $11.57/bu. The divergence between energy weakness and grain stability suggests markets are calibrating for different spring narratives.
-Energy volatility returns while corn holds near $4.44 ahead of planting push.
-• Grains &amp; Oilseeds
-  → Hold current positions and prep for planting — this stability suggests good underlying support.
-• Livestock &amp; Dairy
-  → Consider locking protection on current positions — volatility suggests more chop ahead.
-• Energy &amp; Inputs
-  → Lock remaining diesel needs immediately — this dip won't last once planting demand hits.
-Read more: https://agsist.com/daily/2026-04-08</description>
     </item>
   </channel>
 </rss>
