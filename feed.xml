@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 08 May 2026 12:11:32 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 09 May 2026 11:54:39 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>HOGS CRASH NINE PERCENT AS FEEDERS FLIP SCRIPT</title>
+      <link>https://agsist.com/daily/2026-05-09</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-09</guid>
+      <pubDate>Sat, 09 May 2026 05:00:00 -0600</pubDate>
+      <description>Lean hogs crashed 8.6% Friday to $90.88, the worst single-session drop in six months as the technical floor finally gave way. Live cattle held $248.90, down just a half percent, but feeders flipped positive at $367.38, up three-tenths on the week. The cattle complex is telling two different stories now, and hogs just told theirs loud.
+Cattle complex splits as feeder momentum turns while lean hogs crater on technical breakdown.
+• Hogs Crater, Cattle Split
+• Grains End Week Mixed
+• Energy Costs Stay Elevated
+Read more: https://agsist.com/daily/2026-05-09</description>
+    </item>
     <item>
       <title>CATTLE CRASH THROUGH $250 FLOOR ON FEEDER BREAKDOWN</title>
       <link>https://agsist.com/daily/2026-05-08</link>
@@ -396,21 +408,6 @@ Markets mark time ahead of crucial weather-driven weeks.
 • Energy &amp; Inputs
   → Lock remaining diesel needs immediately — current levels are manageable before seasonal demand spike.
 Read more: https://agsist.com/daily/2026-04-10</description>
-    </item>
-    <item>
-      <title>STOCKS SURGE AS GRAINS INCH HIGHER</title>
-      <link>https://agsist.com/daily/2026-04-09</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-09</guid>
-      <pubDate>Thu, 09 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Corn futures gained 1.25¢ to $4.50/bu while soybeans added 4.25¢ to $11.66/bu in quiet trade, as attention shifted to the S&amp;P 500's 2.5% rally. The modest grain gains reflect steady underlying demand as planting season approaches, with weather remaining the key wild card.
-Broad-based gains suggest improving market confidence heading into peak planting season.
-• Grains &amp; Oilseeds
-  → Hold current positions and monitor 7-day weather forecasts — any planting delays could quickly shift price dynamics.
-• Livestock &amp; Dairy
-  → Cattle producers should consider locking some protection on these historically strong margins.
-• Energy &amp; Inputs
-  → Lock remaining diesel needs now — current levels are workable but vulnerable to spring demand spikes.
-Read more: https://agsist.com/daily/2026-04-09</description>
     </item>
   </channel>
 </rss>

@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-05-09",
+      "date_display": "Saturday, May 9, 2026",
+      "headline": "HOGS CRASH NINE PERCENT AS FEEDERS FLIP SCRIPT",
+      "teaser": "Hogs crater while feeders turn green in a week that split the livestock story.",
+      "market_mood": "bearish",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-05-09",
+      "market_closed": true
+    },
+    {
       "date": "2026-05-08",
       "date_display": "Friday, May 8, 2026",
       "headline": "CATTLE CRASH THROUGH $250 FLOOR ON FEEDER BREAKDOWN",
@@ -614,6 +625,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-05-08T12:11:27.612726+00:00",
-  "count": 57
+  "updated": "2026-05-09T11:54:38.020740+00:00",
+  "count": 58
 }
