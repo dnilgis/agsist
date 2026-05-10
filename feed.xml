@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 09 May 2026 11:54:39 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 10 May 2026 11:56:50 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS RALLY SETS UP PLANTING WEEK SHOWDOWN</title>
+      <link>https://agsist.com/daily/2026-05-10</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-10</guid>
+      <pubDate>Sun, 10 May 2026 05:00:00 -0600</pubDate>
+      <description>Corn jumped to $4.71, its best close since March, as soybeans surged 1.5% to $12.08 on Friday's short covering ahead of China trade talks. The grains complex is coiled at the highest levels in eight weeks, but the real test comes this week: prevent-plant deadlines hit across the Belt starting Memorial Day, and 40% of intended soybean acres remain unplanted. Either the weather cooperates or the calendar starts pricing disaster.
+Corn and beans close at weekly highs as Iran tensions ease, but prevent-plant deadline looms over Memorial Day.
+• Grains Rally Into Calendar Crunch
+• Livestock Closes Week Red
+Read more: https://agsist.com/daily/2026-05-10</description>
+    </item>
     <item>
       <title>HOGS CRASH NINE PERCENT AS FEEDERS FLIP SCRIPT</title>
       <link>https://agsist.com/daily/2026-05-09</link>
@@ -393,21 +404,6 @@ Corn slipped while soybeans gained ground as farmers eye critical weather window
 • WHAT TO WATCH MONDAY
   → Have contingency pricing plans ready — weather-driven moves can be swift and significant during planting season.
 Read more: https://agsist.com/daily/2026-04-11</description>
-    </item>
-    <item>
-      <title>GRAINS STEADY AS PLANTING WINDOW OPENS</title>
-      <link>https://agsist.com/daily/2026-04-10</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-10</guid>
-      <pubDate>Fri, 10 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Corn held $4.43 while soybeans barely budged at $11.68 as traders await the real action: planting season weather patterns. With optimal corn planting starting Monday across the Corn Belt, every forecast becomes market-moving. Chicago wheat fell a penny to $5.71 on global competition concerns.
-Markets mark time ahead of crucial weather-driven weeks.
-• Grains &amp; Oilseeds
-  → Monitor 7-14 day forecasts religiously — pricing windows will open and close rapidly based on weather.
-• Livestock &amp; Dairy
-  → Cattle producers should price remaining unhedged inventory — these historically strong levels deserve protection.
-• Energy &amp; Inputs
-  → Lock remaining diesel needs immediately — current levels are manageable before seasonal demand spike.
-Read more: https://agsist.com/daily/2026-04-10</description>
     </item>
   </channel>
 </rss>
