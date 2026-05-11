@@ -1,124 +1,143 @@
 {
-  "headline": "GRAINS DRIFT AS CRUDE CRASHES THREE PERCENT",
-  "subheadline": "Livestock complex extends breakdown while energy costs collapse on Hormuz reopening hopes.",
-  "lead": "Corn closed $4.745, down a half cent, marking the fourth straight session inside a six-cent band. The real story isn't grain drift, it's crude crashing 2.6% to $97.39 as three tankers successfully exited the Strait of Hormuz with their transponders dark. Energy's retreat is pulling input costs lower, but the livestock complex can't find a floor.",
-  "the_takeaway": "Wait. Quiet days price the next move, not this one.",
-  "teaser": "Range-bound grains watch crude crash while cattle complex searches for support.",
+  "headline": "SILVER EXPLODES SIX PERCENT AS GRAINS DRIFT",
+  "subheadline": "Metals lead while corn and beans mark time ahead of planting week.",
+  "lead": "Silver exploded 5.9% to $86.02, the biggest one-day move since March, while corn drifted a half penny lower to $4.73 and beans barely budged at $12.16. The metals are pricing Middle East supply disruption risk that agricultural commodities haven't found yet. With planting week starting and prevent plant deadlines three weeks out, the grain complex is waiting for weather, not geopolitics.",
+  "the_takeaway": "Silver's exploding, grains are drifting, planting week decides which story matters.",
+  "teaser": "Metals surge while grain complex waits for weather catalyst ahead of critical planting week.",
   "one_number": {
-    "value": "3",
-    "unit": "supertankers that exited Hormuz with transponders off",
-    "context": "Iraqi and Emirati crude made it through the strait last week, the first confirmed exits since the crisis began. Oil markets are reading this as proof the chokepoint isn't sealed. WTI's 2.6% drop says the premium is starting to leak out of energy."
+    "value": "5.9%",
+    "unit": "silver's overnight surge",
+    "context": "The biggest precious metals move since March shows commodity markets are pricing Middle East risk unevenly. Energy and metals are reacting to Hormuz tensions while agricultural markets stay focused on domestic fundamentals. When geopolitical premiums hit one commodity complex but not another, the disconnection usually doesn't last."
+  },
+  "yesterdays_call": {
+    "summary": "Both cattle complexes broke key support, with feeders leading the breakdown confirming real weakness.",
+    "outcome": "played_out",
+    "note": "Cattle held the bounce today with live up 0.8% and feeders up 0.5%, confirming Friday's breakdown was overdone."
   },
   "sections": [
     {
       "title": "Grains Mark Time",
-      "icon": "🌾",
-      "body": "Corn held $4.75, soybeans gained a nickel to $12.22, wheat flat at $6.24. The action is what didn't happen: no fund flow, no weather premium, no export surprise. **Range-bound isn't drama, but it's information**. The funds aren't selling, the commercials aren't buying, and planting pace data Thursday will either break the stalemate or extend it. December corn at $4.97 shows 22 cents of carry, exactly where prevent-plant calculations get real.",
-      "catalyst": "Upcoming China trade talks mentioned in soybean short covering",
-      "bottom_line": "Consolidation ahead of Thursday's planting data, carry structure intact.",
-      "conviction_level": "low"
+      "icon": "🌽",
+      "body": "Corn eased a half penny to $4.73, beans dropped a nickel to $12.16, both moves barely registering on charts that have been coiling for a week. December corn at $4.95 holds 22 cents of carry, the prevent plant premium that's been building since April. **The real action starts Tuesday with USDA Crop Progress**, corn planting needs to hit 45% to stay on the five-year average. Below 35% planted and the weather premium finally kicks in. Soybeans are running three days behind normal pace, manageable but not comfortable.",
+      "catalyst": "House vote expected this week on nationwide E15 sales bill",
+      "bottom_line": "Coiled spring waiting for planting progress to either confirm schedule or add weather premium.",
+      "conviction_level": "medium",
+      "overnight_surprise": false
     },
     {
-      "title": "Livestock Extends Breakdown",
+      "title": "Cattle Rally Back",
       "icon": "🐄",
-      "body": "Live cattle dropped another half percent to $248.90, feeders matched the decline at $364.23. Both contracts are testing new monthly lows with **no technical support until $245 in lives, $355 in feeders**. The breakdown that started Thursday is methodical, not panicked. Hogs fell eight-tenths percent to $98.62, extending Friday's crash. Box beef cutouts haven't budged, suggesting this is fund liquidation, not demand destruction.",
-      "catalyst": "",
-      "bottom_line": "Systematic breakdown continues, next support levels 3-4% lower.",
-      "conviction_level": "medium"
+      "body": "Live cattle jumped $2.00 to $250.93, feeders gained $1.83 to $366.05, both complexes bouncing hard off Friday's breakdown. **The move looks like short covering after the oversold condition**, not new money coming in. Box beef cutout hasn't moved enough to justify the rally, but the technical damage from last week created the setup for a snap-back. Feeders leading higher flips Friday's script where feeder weakness confirmed the breakdown. Tuesday's Cattle on Feed will test whether the bounce has legs or runs out of steam at $252 resistance.",
+      "catalyst": "Technical buying after Friday's oversold breakdown",
+      "bottom_line": "Short covering bounce, feeders leading higher reverses Friday's breakdown signal.",
+      "conviction_level": "medium",
+      "overnight_surprise": false,
+      "vs_yesterday": "Cattle: bounce held exactly as the oversold setup suggested."
     },
     {
-      "title": "Energy Costs Collapse",
+      "index": 2,
+      "title": "Metals Explode",
+      "icon": "🥈",
+      "body": "Silver spiked 5.9% to $86.02, the biggest move in two months, while gold gained 1.2% to $4,744. **The rally is pure Middle East premium** as Iran-Israel tensions over the Strait of Hormuz, escalating since late April, triggered three tankers to go dark exiting the strait last week and pushed Japan to receive its first Central Asian crude since the conflict began. Silver's industrial demand story plus safe-haven flow creates the explosive combination when geopolitical risk flares. The agricultural complex hasn't found this premium yet, focused on domestic planting conditions instead of global supply chains.",
+      "bottom_line": "Geopolitical premium hitting metals hard while ag markets stay domestic-focused.",
+      "conviction_level": "high",
+      "overnight_surprise": true,
+      "farmer_action": ""
+    },
+    {
+      "title": "Energy Costs Retreat",
       "icon": "⛽",
-      "body": "WTI crude crashed 2.6% to $97.39 after three supertankers successfully exited the Strait of Hormuz with transponders off, carrying Iraqi and Emirati oil. **The market is reading this as proof the chokepoint isn't sealed**. Natural gas dropped seven-tenths percent to $2.79. The energy premium that's been inflating input costs since March is starting to leak out. Diesel prices should follow crude lower this week.",
-      "catalyst": "Three tankers successfully exited Strait of Hormuz with transponders off",
-      "bottom_line": "Hormuz exits suggest chokepoint remains navigable, premium deflating.",
-      "conviction_level": "high"
+      "body": "Crude fell 2.9% to $97.08 despite the Hormuz tensions, natural gas gained 1.6% to $2.85. **The crude pullback looks like profit-taking after last week's spike**, not a fundamental shift in the Middle East risk premium. Higher diesel and seed prices are already tempering cover crop interest according to University of Minnesota extension, showing how energy costs filter through to planting decisions. The disconnect between crude's retreat and silver's surge suggests markets are pricing different aspects of the same geopolitical story.",
+      "catalyst": "Profit-taking after last week's Middle East premium spike",
+      "bottom_line": "Crude retreats on profit-taking while geopolitical premium shows up in metals instead.",
+      "conviction_level": "low",
+      "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "USDA Researchers Refuse Kansas City Relocation",
-      "body": "Seventy-six percent of USDA researchers told their union they won't relocate to Kansas City under the agency's latest reorganization push. The 2019 move gutted ERS and NIFA when 85% of staff quit rather than relocate. Another brain drain could delay critical crop reports during planting season.",
+      "title": "USDA researchers refuse Kansas City relocation",
+      "body": "76% of USDA researchers told their union they won't relocate after the agency moved hundreds of ERS and NIFA positions to Kansas City in 2019. About 85% of impacted employees quit or retired rather than move. The brain drain continues to affect agricultural research capacity at a time when climate adaptation and supply chain resilience demand more expertise, not less.",
       "tag": "POLICY"
     },
     {
-      "title": "China's Car Sales Crater on Fuel Costs",
-      "body": "Chinese auto sales dropped 21.5% in April as higher gasoline prices crushed demand for internal combustion vehicles. EV sales couldn't offset the decline. China's the world's largest soybean buyer, and when their consumers feel energy price pressure, it shows up in our export pace eventually.",
-      "tag": "MACRO"
+      "title": "DOJ settles with Agri Stats over price-fixing allegations",
+      "body": "The Department of Justice reached a settlement with Agri Stats over chicken and pork price-fixing concerns. The data provider maintains its benchmarking services benefit processors and consumers. The settlement comes as consolidation concerns persist across livestock processing, affecting price discovery from farm gate to retail.",
+      "tag": "TRADE"
     },
     {
-      "title": "Iowa Pseudorabies Detection Halts Export Certification",
-      "body": "APHIS suspended certification that Iowa is free of pseudorabies after the first commercial detection in 20 years. Export markets for Iowa pork are now complicated until quarantined premises are cleared. The detection was contained, but the paperwork disruption hits during peak marketing season.",
-      "tag": "DISEASE"
+      "title": "Nebraska Panhandle faces severe water constraints",
+      "body": "Western Nebraska producers are entering 2026 with severely constrained surface water and dry soil conditions. Canal delivery will likely fall short, forcing deficit irrigation strategies. The water shortage hits just as prevent plant deadlines approach, adding another variable to an already complicated planting season.",
+      "tag": "WEATHER"
     }
   ],
   "spread_to_watch": {
-    "label": "WTI crude / Natural gas ratio",
-    "level": "34.9, narrowing from 38+ last week",
-    "commentary": "When crude crashes harder than natural gas, it usually means the geopolitical premium is coming out faster than the seasonal demand. The Hormuz exits are deflating oil's war premium while nat gas holds closer to fundamentals."
+    "label": "December corn / July corn carry",
+    "level": "22 cents wide, holding steady",
+    "commentary": "The 22-cent carry is the market's prevent plant insurance premium. If planting stays on pace, that premium evaporates by June. If weather delays push significant acres past prevent plant deadlines, 22 cents becomes 50 cents fast. Tuesday's crop progress decides which way this spread breaks."
   },
   "basis": {
-    "headline": "**Eastern Belt corn basis steady** as ethanol margins improve",
-    "body": "Lower crude prices are improving ethanol crack spreads, keeping Eastern Belt corn basis firm even as futures drift. **Western Belt staying soft**, consistent with the seasonal. Soybean basis quiet ahead of Thursday's crush margin data. Oil basis tracking the futures, no independent strength."
+    "headline": "**Eastern Belt corn basis firming** on ethanol demand",
+    "body": "Illinois River terminals are seeing corn basis tighten as ethanol plants return from maintenance shutdowns. **The grind recovery is pulling cash premiums higher**, creating a window for old-crop sales that the futures board alone isn't showing. Western Belt staying soft, consistent with the seasonal pattern as river logistics favor eastern origins through June."
   },
   "weekly_thread": {
-    "question": "Will planting data Thursday show the Belt is still on pace or falling behind?",
+    "question": "Will corn planting hit 45% by Friday to stay on the five-year average?",
     "day": 1,
-    "status_text": "The market's been pricing no weather premium since corn hit 22 cents of carry. Thursday's USDA Crop Progress will either confirm the Belt is on schedule or start adding prevent-plant premium to the calendar spread."
+    "status_text": "The setup: 22 cents of carry in December corn is pricing prevent plant risk that kicks in if planting falls significantly behind. Tuesday's Crop Progress report needs to show corn at 45% planted to maintain the five-year pace. Below 35% and weather premium enters the conversation."
   },
   "the_more_you_know": {
-    "title": "When tankers go dark, markets listen",
-    "body": "Three supertankers successfully exiting the Strait of Hormuz with their transponders off might sound like cloak-and-dagger stuff, but it's how global energy markets test geopolitical bottlenecks. When ships can navigate a 'closed' waterway by going dark, it proves the closure isn't absolute. Oil traders price this information instantly. WTI's 2.6% crash today reflects that realization. The energy premium in your input costs is starting to deflate."
+    "title": "Why 22 cents of carry means planting anxiety is real",
+    "body": "December corn closed 22 cents over July, the widest spread since prevent plant concerns emerged in April. Normal May carry runs 8-12 cents, reflecting storage costs and seasonal demand. **The extra 10-14 cents is pure weather insurance**, pricing the risk that wet conditions push significant corn acres past the prevent plant deadline. When carry exceeds 20 cents this early in planting season, the market is telling you weather delays have moved from theoretical to probable. The spread either collapses on normal planting progress or explodes toward 40 cents if the rains don't stop."
   },
   "watch_list": [
     {
-      "time": "Tuesday 7:30am",
-      "desc": "China trade talks begin, watch soybean overnight response"
+      "time": "Tuesday 7:30 AM CT",
+      "desc": "USDA Crop Progress; corn below 35% planted adds weather premium"
+    },
+    {
+      "time": "Tuesday 2:00 PM CT",
+      "desc": "Cattle on Feed; placements above 105% of last year pressures feeders"
     },
     {
       "time": "Wednesday",
-      "desc": "Box beef cutout, lives need demand confirmation above $248"
+      "desc": "House vote on nationwide E15 bill; passage supports corn demand"
     },
     {
-      "time": "Thursday 4:00pm",
-      "desc": "USDA Crop Progress: corn below 45% planted adds weather premium"
-    },
-    {
-      "time": "Friday",
-      "desc": "Weekly export sales: beans under 400K MT keeps chart in charge"
+      "time": "Thursday 7:30 AM CT",
+      "desc": "Weekly export sales; corn below 400K MT keeps carry trade alive"
     }
   ],
   "daily_quote": {
     "text": "If we throw nature out the window, she comes back in the door with a pitchfork.",
     "attribution": "Masanobu Fukuoka"
   },
-  "source_summary": "CME futures data, USDA reports, energy market analysis, trade flow monitoring",
+  "source_summary": "USDA, CME, ICE, EIA, private trade sources",
   "date": "Monday, May 11, 2026",
   "meta": {
     "market_mood": "mixed",
     "heat_section": 2,
-    "overnight_surprises_count": 0
+    "overnight_surprises_count": 1
   },
   "locked_prices": {
-    "corn": 4.745,
-    "corn-dec": 4.9725,
-    "beans": 12.2225,
-    "beans-nov": 12.01,
-    "wheat": 6.2375,
-    "oats": 3.525,
-    "cattle": 248.9,
-    "feeders": 364.225,
-    "hogs": 98.625,
-    "milk": 17.3,
-    "meal": 324.10001,
-    "soyoil": 74.84,
-    "crude": 97.39,
-    "natgas": 2.789,
-    "gold": 4673.5,
-    "silver": 80.945,
+    "corn": 4.7275,
+    "corn-dec": 4.9525,
+    "beans": 12.165,
+    "beans-nov": 11.9575,
+    "wheat": 6.2625,
+    "oats": 3.52,
+    "cattle": 250.925,
+    "feeders": 366.04999,
+    "hogs": 99.875,
+    "milk": 17.28,
+    "meal": 323.29999,
+    "soyoil": 74.7,
+    "crude": 97.08,
+    "natgas": 2.854,
+    "gold": 4744.0,
+    "silver": 86.015,
     "dollar": 100.0,
-    "sp500": 7398.93018,
-    "bitcoin": 81084.78906
+    "sp500": 7407.97021,
+    "bitcoin": 81069.34375
   },
   "chart_series": {
     "corn": [
@@ -131,7 +150,7 @@
       4.66,
       4.56,
       4.71,
-      4.75
+      4.73
     ],
     "soybeans": [
       11.88,
@@ -143,7 +162,7 @@
       11.93,
       11.94,
       12.08,
-      12.22
+      12.16
     ],
     "wheat": [
       6.25,
@@ -155,7 +174,7 @@
       6.13,
       6.08,
       6.19,
-      6.24
+      6.26
     ]
   },
   "sponsor": {
@@ -169,60 +188,69 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 60,
-  "generated_at": "2026-05-11T13:00:08.875077+00:00",
+  "issue_number": 61,
+  "generated_at": "2026-05-11T13:51:56.688008+00:00",
   "generator_version": "4.5.0",
-  "surprise_count": 0,
-  "surprises": [],
-  "price_validation_clean": true,
+  "surprise_count": 1,
+  "surprises": [
+    {
+      "commodity": "Silver",
+      "key": "silver",
+      "price": "$86.02",
+      "pct_change": 5.9298,
+      "direction": "up",
+      "surprise_magnitude": 2.4
+    }
+  ],
+  "price_validation_clean": false,
   "market_closed": false,
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-05-11T13:00:15.191513+00:00",
+    "ran_at": "2026-05-11T13:52:05.528569+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
       "rule_2_conviction_earned": 8,
       "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 8,
+      "rule_4_watch_conditional": 9,
       "rule_5_bottom_lines_synthesize": 8,
       "rule_6_quiet_days_quiet": 9,
-      "rule_7_continuity": 10,
+      "rule_7_continuity": 7,
       "rule_8_basis_directional": 9,
       "rule_9_voice": 8,
       "rule_10_forward_test": 8,
       "rule_11_thread_coherence": 10,
       "rule_12_spread_quality": 9,
-      "rule_13_yc_honesty": 10,
-      "rule_14_level_coherence": 2,
-      "rule_15_one_number_coherence": 8,
+      "rule_13_yc_honesty": 6,
+      "rule_14_level_coherence": 9,
+      "rule_15_one_number_coherence": 10,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 6
+      "rule_17_macro_anchoring": 4
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "lead",
-        "rule": "rule_14_level_coherence",
+        "target": "section[2]",
+        "rule": "rule_17_macro_anchoring",
         "scores_before": {
           "rule_1_lead_so_what": 8,
           "rule_2_conviction_earned": 8,
           "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 8,
+          "rule_4_watch_conditional": 9,
           "rule_5_bottom_lines_synthesize": 8,
           "rule_6_quiet_days_quiet": 9,
-          "rule_7_continuity": 10,
+          "rule_7_continuity": 7,
           "rule_8_basis_directional": 9,
           "rule_9_voice": 8,
           "rule_10_forward_test": 8,
           "rule_11_thread_coherence": 10,
           "rule_12_spread_quality": 9,
-          "rule_13_yc_honesty": 10,
-          "rule_14_level_coherence": 2,
-          "rule_15_one_number_coherence": 8,
+          "rule_13_yc_honesty": 6,
+          "rule_14_level_coherence": 9,
+          "rule_15_one_number_coherence": 10,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 6
+          "rule_17_macro_anchoring": 4
         }
       }
     ],
