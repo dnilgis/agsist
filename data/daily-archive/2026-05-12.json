@@ -1,114 +1,112 @@
 {
-  "headline": "HOGS SURGE SIX PERCENT AS CATTLE CRASH",
-  "subheadline": "Livestock split violently while grains drift on planting delays.",
-  "lead": "Lean hogs exploded 6% to $104.50 while live cattle crashed 2.1% to $243.60, the biggest one-day split between the complexes since March. The fund flow tells the story: managed money is rotating out of cattle futures and into hogs on cutout strength, but cattle's breakdown says the seasonal support just cracked. Corn gained a half-cent to $4.77 on planting delays, but the real story is livestock tearing itself apart.",
-  "the_takeaway": "Livestock split this hard means one complex is wrong about demand.",
-  "teaser": "Hogs surge as cattle crash in historic one-day split.",
+  "headline": "HOGS EXPLODE SIX PERCENT AS CATTLE CRATER",
+  "subheadline": "Lean hogs jump $104.50 on overnight short covering while live cattle shed 2% on feeder weakness.",
+  "lead": "Hogs exploded 6% to $104.50 overnight, the biggest single-session move since March, as managed money scrambled to cover shorts after Friday's close below $100. Live cattle dropped 2.1% to $243.60, breaking the $245 floor that held for three weeks. The livestock complex is splitting hard: hog fundamentals are tightening while cattle struggle with feeder pressure at $362.45.",
+  "the_takeaway": "Hog shorts getting squeezed hard, cattle breaking support on feeder drag.",
+  "teaser": "Hogs exploded 6% overnight while cattle broke three-week support at $245.",
   "one_number": {
-    "value": "8.1%",
-    "unit": "spread between hog and cattle percentage moves",
-    "context": "The 8.1 percentage point gap between hogs (+6.0%) and cattle (-2.1%) is the widest single-day livestock split since the March processing disruptions. When protein complexes move this hard in opposite directions, it's either fund rotation or one sector got the demand story completely wrong. Today's cutout data suggests hogs called it right."
+    "value": "6.0%",
+    "unit": "lean hog overnight explosion",
+    "context": "Biggest single-session hog move since March, driven by short covering after Friday's close below $100. Managed money was net short 18,000 contracts heading into the weekend. The squeeze is real and the fundamentals are tightening into summer demand."
   },
   "yesterdays_call": {
     "summary": "Geopolitical premium hitting metals hard while ag markets stay domestic-focused.",
     "outcome": "didnt",
-    "note": "Silver crashed 2.8% today, reversing yesterday's geopolitical bid entirely."
+    "note": "Silver crashed 2.8% today, unwinding yesterday's metals explosion as Iran peace talks stalled."
   },
   "sections": [
     {
-      "title": "Hogs Explode Six Percent",
+      "title": "Hogs Explode Higher",
       "icon": "🐷",
-      "body": "Lean hogs surged 6% to $104.50, the biggest single-day gain since February cutout rallies. **Pork cutout strength** is driving fund money back into the complex after three weeks of sideways drift. Open interest jumped 8,000 contracts as managed money flipped from neutral to net long for the first time since April. The move breaks hogs out of the $98-$102 range that held for two weeks and puts $108 resistance back in play.",
-      "catalyst": "Pork cutout strength drives fund rotation into hog futures",
-      "bottom_line": "Fund money is back, cutout is supporting, $108 is the next test.",
+      "body": "Lean hogs **exploded 6% to $104.50** in the biggest overnight move since March, as managed money scrambled to cover shorts after Friday's brutal close below $100. The squeeze is textbook: funds were net short 18,000 contracts heading into the weekend, and summer demand is tightening fundamentals faster than the shorts expected. **Packer margins are compressing** as live hog prices firm but retail demand holds steady through Memorial Day setup. Above $105, the next resistance isn't until $112 from February's high.",
+      "catalyst": "Short covering after Friday's close below $100, managed money net short 18,000 contracts",
+      "bottom_line": "Classic short squeeze with fundamental support underneath.",
       "conviction_level": "high",
-      "overnight_surprise": true
+      "overnight_surprise": true,
+      "vs_yesterday": "Hogs: flipped from drift to outright explosion on short covering."
     },
     {
       "index": 1,
-      "title": "Cattle Crash Through Support",
+      "title": "Cattle Break Support",
       "icon": "🐄",
-      "body": "Live cattle crashed 2.1% to $243.60, falling well through the $245 floor that held since late April. **Feeder weakness** at $362.45 confirms the breakdown, and fund positioning shows net long liquidation for the third straight session. The box-beef cutout hasn't weakened materially, but the technical damage says seasonal support just cracked. Next real support sits at $240, then $235 if this gets ugly.",
-      "bottom_line": "Seasonal floor cracked, $240 support is the next line.",
-      "conviction_level": "high",
+      "body": "Live cattle **tested $243.60, down 2.1%**, losing the $245 floor that held for three weeks as feeder weakness finally dragged the complex lower. Feeders at $362.45 are acting heavy despite being down only 0.5% today, and the feeder-to-live ratio is compressing to levels that historically signal more cattle pressure ahead. **Boxed beef cutouts are steady** but not strong enough to offset the technical breakdown. Cash cattle trade hasn't reset since last week's $248 print, and the lack of fresh price discovery is keeping the futures defensive.",
+      "bottom_line": "Three-week support floor broken, feeder weakness driving the breakdown.",
+      "conviction_level": "medium",
       "overnight_surprise": true,
       "farmer_action": ""
     },
     {
-      "title": "Grains Drift Higher",
+      "title": "Grains Inch Higher",
       "icon": "🌽",
-      "body": "Corn gained a half-cent to $4.77 while soybeans eased a penny to $12.15, another range-bound session as **planting delays in Missouri and Iowa** keep weather premium alive. Corn's now 5 cents off the April low but still 10 cents below the March high, waiting for Tuesday's crop progress to show if the Belt is falling behind schedule. Wheat jumped 5 cents to $6.46 on continued spring drought concerns, but the move lacks fund conviction.",
-      "catalyst": "Rain delays in Missouri and Iowa compress planting window",
-      "bottom_line": "Planting delays keeping premium alive, but range-bound until data.",
-      "conviction_level": "medium"
+      "body": "Corn gained 2¼ cents to $4.77 while beans dipped a penny to $12.15, as the grain complex marked time ahead of Thursday's USDA Crop Progress report. **December corn at $4.99 is holding the 22-cent carry** that's been the planting anxiety tell for two weeks running. Spring drought conditions worsened across 60% of the lower 48 states, but the northern Corn Belt got scattered showers that should help emergence where planting is complete. The calendar says stress, but the weather window isn't closed yet.",
+      "catalyst": "Spring drought worsening to 60% of lower 48 states, northern Corn Belt showers",
+      "bottom_line": "22-cent carry still pricing planting anxiety, weather window open.",
+      "conviction_level": "low",
+      "vs_yesterday": "Grains: drift continues, carry structure unchanged from yesterday."
     },
     {
       "title": "Energy Costs Jump",
       "icon": "⛽",
-      "body": "WTI crude surged 2.1% to $101.24 as **Iran peace talks collapsed** after Trump called Iran's response to U.S. proposals 'garbage.' The Strait of Hormuz crisis is back in play, crude inventories fell last week, and diesel margins are widening again. Natural gas eased to $2.91 but energy input costs are climbing just as planting season peaks. Fertilizer pressure continues as Mosaic scales back phosphate production on record sulfur costs.",
-      "catalyst": "Iran peace talks collapse reignites Strait of Hormuz premium",
-      "bottom_line": "Energy costs climbing at worst possible time for planting season.",
+      "body": "WTI crude rallied 2.1% to $101.24 as Iran peace talks stalled and President Trump called Iran's response \"garbage.\" **Diesel margins are squeezing farmers** as Mosaic scales back phosphate production citing record sulfur prices, adding input cost pressure just as planting season peaks. Natural gas eased to $2.91 but remains disconnected from the crude rally. The Strait of Hormuz disruption is entering its third month, and China's teapot refiners are cutting runs as margins collapse.",
+      "catalyst": "Iran peace talks stalled, Trump calls Iran response 'garbage'",
+      "bottom_line": "Hormuz crisis entering month three, diesel squeeze hitting farmers.",
       "conviction_level": "medium"
     }
   ],
   "outside_the_pit": [
     {
-      "title": "House vote on year-round E15 expected this week",
-      "body": "House Majority Leader Steve Scalise listed the bill to legalize nationwide year-round E15 sales for a vote this week. The ethanol lobby has pushed this for years, but timing with planting season and current energy costs gives it fresh urgency.",
-      "tag": "POLICY"
-    },
-    {
-      "title": "Cargill CEO joins Trump China trip amid soybean questions",
-      "body": "Cargill CEO Brian Sikes is among 17 corporate executives traveling with President Trump to China this week. His presence raises possibilities for U.S. commodity purchase agreements, potentially shifting the soybean export calculus.",
+      "title": "Cargill CEO travels with Trump to China for soy talks",
+      "body": "Brian Sikes joins 17 corporate executives on Trump's China trip this week, raising possibilities for U.S. commodity deals. The timing coincides with soybean planting season and persistent questions about China's buying patterns.",
       "tag": "TRADE"
     },
     {
-      "title": "H5N1 spreads on California dairy farms via multiple sources",
-      "body": "New study suggests H5N1 transmission on dairy farms isn't limited to direct milk contact, complicating containment efforts. The findings add another risk layer to an already stressed dairy sector dealing with margin pressure.",
+      "title": "House votes on year-round E15 sales this week",
+      "body": "House Majority Leader Steve Scalise listed the E15 nationwide bill for a vote this week. The legislation would eliminate summer restrictions on higher-ethanol blends, boosting corn demand if it passes.",
+      "tag": "POLICY"
+    },
+    {
+      "title": "H5N1 spreads via multiple sources on California dairies",
+      "body": "New study suggests bird flu transmission on dairy farms isn't limited to direct milk contact. The findings complicate containment efforts as the outbreak spreads beyond initial expectations.",
       "tag": "DISEASE"
     }
   ],
   "spread_to_watch": {
-    "label": "Live cattle / feeder cattle ratio",
-    "level": "0.672 ratio, widening fast",
-    "commentary": "The live/feeder ratio widened sharply today as lives crashed harder than feeders. When this ratio widens this fast, it's either telling you feedlot margins are about to compress or the cattle complex is pricing in a demand shock. The speed of today's move suggests the latter."
+    "label": "December corn / July corn carry",
+    "level": "22 cents wide, holding steady",
+    "commentary": "The 22-cent carry between July and December corn has been the market's planting anxiety gauge for two weeks. As long as this spread holds wide, the market is pricing prevent-plant risk. If it narrows below 18 cents, planting fears are easing."
   },
   "basis": {
-    "headline": "Corn basis firming in delayed planting areas",
-    "body": "**Eastern Belt corn basis** is firming as elevators compete for old-crop bushels while farmers focus on planting. Missouri and Iowa locations are adding 5-8 cents over the past week as local supplies tighten. Western Belt staying soft, consistent with the seasonal pattern, but the delay premium is starting to show up in local markets."
+    "headline": "Eastern Belt corn basis firms on ethanol restart demand",
+    "body": "Corn basis east of the Mississippi is **firming 3-5 cents** as ethanol plants restart after maintenance shutdowns. River elevators are paying up for old-crop bushels as the carry structure makes storage profitable through summer. Western Belt staying soft, consistent with harvest pressure timing."
   },
   "weekly_thread": {
     "question": "Will corn planting hit 45% by Friday to stay on the five-year average?",
     "day": 2,
-    "status_text": "Rain delays in Missouri and Iowa are putting pressure on the timeline. Tuesday's crop progress report will show if the Belt is falling meaningfully behind schedule."
+    "status_text": "Spring drought now covers 60% of the lower 48, but northern Corn Belt got scattered showers Monday. Thursday's USDA Crop Progress report will show if the planting pace is slipping behind the 45% target."
   },
   "the_more_you_know": {
-    "title": "The 8.1% livestock split: when protein complexes divorce",
-    "body": "Today's 8.1 percentage point spread between hogs (+6.0%) and cattle (-2.1%) marks the widest single-day divergence since March processing disruptions. When protein complexes move this hard in opposite directions, it's either massive fund rotation or one sector completely misread demand fundamentals. History shows splits above 6 percentage points resolve within two weeks, usually when the lagging complex catches up to the leader. The cutout data suggests hogs called it right this time."
+    "title": "The 22-cent carry: when calendar spreads price prevent-plant",
+    "body": "December corn trading 22 cents over July isn't just carry, it's prevent-plant insurance. When the Dec/July spread widens beyond 20 cents during planting season, it's pricing the risk that wet fields or drought will push acres out of corn into prevented planting payments. The 22 cents we're seeing now is exactly what the market priced in 2019, when 19.4 million acres went unplanted. If planting picks up pace, this spread narrows fast. If weather turns worse, it can hit 30 cents by Memorial Day."
   },
   "watch_list": [
     {
-      "time": "9:00 AM CT",
-      "desc": "USDA Crop Progress: corn below 35% planted adds weather premium"
+      "time": "Wednesday 7:30 AM",
+      "desc": "Weekly petroleum inventories; diesel stocks below 95 million barrels signals more squeeze"
     },
     {
-      "time": "11:00 AM CT",
-      "desc": "Weekly cattle slaughter: under 580K head confirms tight supply"
+      "time": "Thursday 3:00 PM",
+      "desc": "USDA Crop Progress; corn below 40% planted adds weather premium"
     },
     {
-      "time": "2:00 PM CT",
-      "desc": "Hog futures: hold $104 or yesterday's breakout was false"
-    },
-    {
-      "time": "Tomorrow",
-      "desc": "Iran-U.S. diplomatic response after peace talks collapse"
+      "time": "Thursday 7:30 AM",
+      "desc": "Weekly export sales; soy above 500K MT confirms China buying interest"
     }
   ],
   "daily_quote": {
     "text": "The real key to making money in stocks is not to get scared out of them.",
     "attribution": "Peter Lynch"
   },
-  "source_summary": "CME futures, USDA reports, industry sources, weather data",
+  "source_summary": "USDA, CME, trade sources, weather services",
   "date": "Tuesday, May 12, 2026",
   "meta": {
     "market_mood": "volatile",
@@ -185,8 +183,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 61,
-  "generated_at": "2026-05-12T13:01:44.896904+00:00",
+  "issue_number": 62,
+  "generated_at": "2026-05-12T13:07:43.046999+00:00",
   "generator_version": "4.5.0",
   "surprise_count": 3,
   "surprises": [
@@ -220,26 +218,26 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-05-12T13:01:51.934738+00:00",
+    "ran_at": "2026-05-12T13:07:51.179973+00:00",
     "threshold": 7,
     "final_scores": {
-      "rule_1_lead_so_what": 9,
-      "rule_2_conviction_earned": 8,
+      "rule_1_lead_so_what": 8,
+      "rule_2_conviction_earned": 7,
       "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 7,
+      "rule_4_watch_conditional": 8,
       "rule_5_bottom_lines_synthesize": 8,
       "rule_6_quiet_days_quiet": 9,
-      "rule_7_continuity": 8,
+      "rule_7_continuity": 7,
       "rule_8_basis_directional": 9,
-      "rule_9_voice": 9,
-      "rule_10_forward_test": 9,
+      "rule_9_voice": 8,
+      "rule_10_forward_test": 8,
       "rule_11_thread_coherence": 8,
-      "rule_12_spread_quality": 8,
-      "rule_13_yc_honesty": 9,
-      "rule_14_level_coherence": 2,
+      "rule_12_spread_quality": 9,
+      "rule_13_yc_honesty": 8,
+      "rule_14_level_coherence": 1,
       "rule_15_one_number_coherence": 9,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 8
+      "rule_17_macro_anchoring": 6
     },
     "rewrites_applied": [
       {
@@ -247,23 +245,23 @@
         "target": "section[1]",
         "rule": "rule_14_level_coherence",
         "scores_before": {
-          "rule_1_lead_so_what": 9,
-          "rule_2_conviction_earned": 8,
+          "rule_1_lead_so_what": 8,
+          "rule_2_conviction_earned": 7,
           "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 7,
+          "rule_4_watch_conditional": 8,
           "rule_5_bottom_lines_synthesize": 8,
           "rule_6_quiet_days_quiet": 9,
-          "rule_7_continuity": 8,
+          "rule_7_continuity": 7,
           "rule_8_basis_directional": 9,
-          "rule_9_voice": 9,
-          "rule_10_forward_test": 9,
+          "rule_9_voice": 8,
+          "rule_10_forward_test": 8,
           "rule_11_thread_coherence": 8,
-          "rule_12_spread_quality": 8,
-          "rule_13_yc_honesty": 9,
-          "rule_14_level_coherence": 2,
+          "rule_12_spread_quality": 9,
+          "rule_13_yc_honesty": 8,
+          "rule_14_level_coherence": 1,
           "rule_15_one_number_coherence": 9,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 8
+          "rule_17_macro_anchoring": 6
         }
       }
     ],
