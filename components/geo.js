@@ -110,14 +110,28 @@ var WX_REFRESH_DISTANCE_MI = 3;        // re-fetch if user has moved this far
 // cache-path + propagateLocation don't double-fire on the same coords.
 var _bidsLoadedThisSession = false;
 
-// v17: Helper used by both cache-path boot AND propagateLocation. Calls
-// loadHomepageBids if the cash-bids module is present. Idempotent guard.
+// v18: Helper used by both cache-path boot AND propagateLocation. Calls
+// loadHomepageBids if the cash-bids module is present.
+//
+// v18 fix (2026-05-12): Nominatim does not always return a postcode even at
+// zoom=18 — rural townships (Town of Sioux Creek, WI etc.) often resolve to
+// city+county+state with no address.postcode. The old `if (!zip) return`
+// silently aborted, leaving the skeleton bars up forever. Now: pass through
+// to loadHomepageBids regardless — it renders its own "Enter your ZIP"
+// prompt when zip is empty, which clears the skeleton and reveals the
+// manual ZIP entry row. Only lock the idempotency guard when we had a real
+// zip, so a later resolution (cache → Nominatim) can still succeed.
 function _loadBidsOnce(lat, lon, name, zip) {
   if (typeof window.loadHomepageBids !== 'function') return;
-  if (!zip) return;
-  if (_bidsLoadedThisSession) return;
-  _bidsLoadedThisSession = true;
-  try { window.loadHomepageBids(lat, lon, name || '', zip); } catch(e) {}
+  if (_bidsLoadedThisSession && zip) return;
+  try { window.loadHomepageBids(lat, lon, name || '', zip || ''); } catch(e) {}
+  if (zip) {
+    _bidsLoadedThisSession = true;
+  } else {
+    // Reveal the manual ZIP entry row so the user has a path forward
+    var zipRow = document.getElementById('bids-zip-row');
+    if (zipRow) zipRow.style.display = 'block';
+  }
 }
 
 // v17: When geolocation fails completely (permission denied or timeout AND
