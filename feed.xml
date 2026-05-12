@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 11 May 2026 13:52:06 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 12 May 2026 13:01:53 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>HOGS SURGE SIX PERCENT AS CATTLE CRASH</title>
+      <link>https://agsist.com/daily/2026-05-12</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-12</guid>
+      <pubDate>Tue, 12 May 2026 05:00:00 -0600</pubDate>
+      <description>Lean hogs exploded 6% to $104.50 while live cattle crashed 2.1% to $243.60, the biggest one-day split between the complexes since March. The fund flow tells the story: managed money is rotating out of cattle futures and into hogs on cutout strength, but cattle's breakdown says the seasonal support just cracked. Corn gained a half-cent to $4.77 on planting delays, but the real story is livestock tearing itself apart.
+Livestock split violently while grains drift on planting delays.
+• Hogs Explode Six Percent
+• Cattle Crash Through Support
+• Grains Drift Higher
+Read more: https://agsist.com/daily/2026-05-12</description>
+    </item>
     <item>
       <title>SILVER EXPLODES SIX PERCENT AS GRAINS DRIFT</title>
       <link>https://agsist.com/daily/2026-05-11</link>
@@ -386,21 +398,6 @@ Grains mixed in quiet Monday session while cattle maintain historic strength.
 • Energy &amp; Inputs
   → Secure remaining diesel contracts this week — planting season demand spikes can move prices fast.
 Read more: https://agsist.com/daily/2026-04-13</description>
-    </item>
-    <item>
-      <title>WEATHER FOCUS AS PLANTING WEEK BEGINS</title>
-      <link>https://agsist.com/daily/2026-04-12</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-12</guid>
-      <pubDate>Sun, 12 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Markets enter the most weather-sensitive week of spring with corn at $4.41 and soybeans at $11.76 as of Friday's close. The next five days will determine whether Corn Belt farmers get their optimal planting window — or face the first delays that could reshape grain markets. Live cattle at $249.20 represent near-record territory that demands attention.
-Corn holds $4.41 into critical planting window while cattle sit at historic highs.
-• WEEK AHEAD GRAIN WATCH
-  → Watch 7-day forecasts obsessively and be ready to price any weather rallies — optimal planting windows don't wait.
-• LIVESTOCK AT EXTREMES
-  → Lock protection on remaining cattle immediately — margins this strong rarely sustain for long.
-• INPUT COST PRESSURE
-  → Secure remaining diesel contracts this week — current levels are workable but vulnerable to demand spikes.
-Read more: https://agsist.com/daily/2026-04-12</description>
     </item>
   </channel>
 </rss>

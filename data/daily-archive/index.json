@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-05-12",
+      "date_display": "Tuesday, May 12, 2026",
+      "headline": "HOGS SURGE SIX PERCENT AS CATTLE CRASH",
+      "teaser": "Hogs surge as cattle crash in historic one-day split.",
+      "market_mood": "volatile",
+      "surprise_count": 3,
+      "sections": 4,
+      "url": "/daily/2026-05-12",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-05-11",
       "date_display": "Monday, May 11, 2026",
       "headline": "SILVER EXPLODES SIX PERCENT AS GRAINS DRIFT",
@@ -648,6 +660,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-05-11T13:52:05.570131+00:00",
-  "count": 60
+  "updated": "2026-05-12T13:01:51.970830+00:00",
+  "count": 61
 }
