@@ -1,106 +1,103 @@
 {
-  "headline": "FEEDERS CRASH TWO PERCENT AS PLANTING STALLS",
-  "subheadline": "Cattle complex breaks down while grains mark time in narrow ranges.",
-  "lead": "Feeder cattle crashed 1.8% to $356.00, breaking the three-week consolidation that held the complex together since late April. Live cattle followed feeders down, losing 1.1% to $240.85, and the spread between them widened to $115.15, the most stressed it's been since March. The breakdown comes as delayed beef tariff cuts remove the policy support that's been propping up the cattle trade for two weeks.",
-  "the_takeaway": "Cattle breakdown is real now, feeders leading the way down.",
-  "teaser": "Feeders crash through support as tariff delay removes cattle's policy floor.",
+  "headline": "CATTLE CRATER WHILE GRAINS MARK TIME",
+  "subheadline": "Feeder cattle drop 1.8% as livestock complex unravels, grains stay range-bound ahead of Thursday's planting data.",
+  "lead": "Cattle fell through $241 to close at $240.85 while corn held flat at $4.79 for a fifth straight session, and the divergence is getting loud. Feeder cattle dropped 1.8% to $356, dragging live cattle down 1.1% in a coordinated livestock selloff that has no weather excuse, no disease catalyst, just technical damage feeding on itself. The grain complex refuses to follow, wheat up six cents, beans gaining a penny, acting like the planting calendar still matters more than fund flows.",
+  "the_takeaway": "Cattle breakdown accelerating while grains ignore the livestock mess entirely.",
+  "teaser": "Cattle crash continues while corn holds the line in a split-personality session.",
   "one_number": {
-    "value": "$115.15",
-    "unit": "feeder-to-live cattle spread",
-    "context": "That's the widest spread since March, telling you feeders are getting hit harder than fat cattle. When feeders lead cattle down, it's signaling problems with replacement demand, not just packer margins. The spread says the cattle cycle is turning."
+    "value": "73%",
+    "unit": "Japan refinery utilization rate recovery",
+    "context": "Japan's refineries hit 73% utilization for the first time since March as strategic oil releases and non-Middle East crude supplies ease the supply crunch. The recovery signals global energy markets are adapting to Strait of Hormuz tensions, which helps explain why crude held above $101 despite ongoing geopolitical uncertainty."
   },
   "yesterdays_call": {
-    "summary": "Called hogs' explosive move higher a classic short squeeze with fundamental support underneath.",
+    "summary": "Called hogs' six percent explosion a classic short squeeze with fundamental support underneath.",
     "outcome": "didnt",
-    "note": "Hogs gave back 1.5% today, the squeeze momentum didn't hold into Wednesday."
+    "note": "Hogs gave it all back today, falling 1.5% as the squeeze reversed into technical selling."
   },
   "sections": [
     {
-      "title": "Feeders Lead Cattle Breakdown",
+      "title": "Cattle Breakdown Accelerates",
       "icon": "🐄",
-      "body": "Feeder cattle crashed 1.8% to $356.00, the worst single-day drop since April 15th and a clean break of the $360 support that held for three weeks. Live cattle followed but couldn't keep pace, down 1.1% to $240.85, which means the **feeder-to-live spread blew out to $115.15**. That's stress pricing. When feeders lead cattle down, it's replacement demand getting hit, not just packer margins. The overnight action accelerated into the close with no buying interest showing up.",
-      "catalyst": "Trump delays beef tariff cuts amid congressional criticism",
-      "bottom_line": "Feeder weakness leading means the cycle is turning, not just a packer squeeze.",
+      "body": "Live cattle broke $241 and never looked back, closing $240.85 down 1.1% in the heaviest volume of the month. **Feeder cattle led the damage at $356, down 1.8%**, as the entire livestock complex unraveled without a fundamental catalyst to blame. The breakdown has technical momentum now, managed money liquidating long positions built when cattle was trading $252 two weeks ago. Box beef cutouts haven't moved, fed cattle trade hasn't reset, but the chart's in charge and the funds are getting out.",
+      "catalyst": "Trump delays beef tariff suspension amid political criticism",
+      "bottom_line": "Technical damage feeding on itself, no fundamental excuse needed anymore.",
       "conviction_level": "high",
-      "overnight_surprise": true,
-      "vs_yesterday": "Yesterday's thin bounce broke into outright breakdown, feeders confirming the call."
+      "overnight_surprise": true
     },
     {
-      "index": 1,
-      "title": "Grains Hold Tight Range",
+      "title": "Grains Ignore The Mess",
       "icon": "🌽",
-      "body": "Corn flat at $4.79, soybeans up a penny and three-quarters to $12.28, wheat up 2.5 cents to $6.78. Nothing here that changes the bigger picture: corn's stuck in a 15-cent band for two weeks, beans holding above $12.00 but can't get through $12.50, wheat bouncing inside the $6.50-$7.00 channel. **December corn at $5.02 keeps the 23-cent carry intact**, still pricing prevent-plant anxiety even as the Belt stays on pace. The funds aren't adding conviction either direction.",
-      "bottom_line": "Carry structure says prevent-plant premium intact despite on-pace planting.",
-      "conviction_level": "low",
-      "overnight_surprise": false,
-      "farmer_action": ""
+      "body": "Corn closed flat at $4.79, the fifth session inside a 15-cent range, acting like the livestock crater isn't happening three screens over. **Wheat gained six cents to $6.78, beans up a penny to $12.28**, both showing the grain complex has its own calendar and it's called Thursday's planting progress report. December corn-July spread held 23 cents of carry, pricing prevent-plant risk that cattle traders aren't thinking about. The funds that fled livestock aren't rotating into grain, they're going to cash.",
+      "catalyst": "House votes today on nationwide E15 expansion legislation",
+      "bottom_line": "Range-bound patience while livestock burns, planting calendar still runs the show.",
+      "conviction_level": "medium"
     },
     {
-      "title": "Energy Costs Edge Higher",
+      "title": "Energy Holds Geopolitical Premium",
       "icon": "⛽",
-      "body": "WTI crude up 80 cents to $101.85, the highest close in three weeks as Hormuz tensions ease just enough to let Chinese tankers test passage but not enough to remove the premium. Natural gas gained 2% to $2.83, still historically cheap but **fertilizer costs stay elevated** according to Senate Ag Committee testimony. The disconnect between cheap gas and expensive fertilizer isn't resolving, which keeps input costs sticky even as energy markets normalize.",
-      "catalyst": "Chinese tanker tests safe passage through Strait of Hormuz",
-      "bottom_line": "Energy higher but fertilizer costs still sticky, input inflation persists.",
+      "body": "Crude gained 80 cents to $101.85 as a Chinese tanker tested safe passage through the Strait of Hormuz, proving the chokepoint is navigable but still pricing risk premium. **Natural gas added half a cent to $2.83**, barely moving as Europe's storage mandate fight with Brussels stays theoretical. Japan's refinery utilization hitting 73% shows the market is adapting to non-Middle East supply chains, but the adaptation costs money and crude's holding above $100 until the Hormuz situation resolves completely.",
+      "catalyst": "Chinese tanker tests Strait of Hormuz passage amid ongoing tensions",
+      "bottom_line": "Premium stays until Hormuz tensions actually resolve, not just adapt.",
       "conviction_level": "medium"
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Senate Ag finds no short-term fertilizer price relief",
-      "body": "Committee hearing confirmed what farmers already know: high fertilizer prices aren't going away soon despite cheap natural gas. The disconnect between $2.83 gas and expensive fertilizer reflects capacity constraints, not feedstock costs.",
+      "title": "Senate Agriculture plans Farm Bill 2.0 text in June",
+      "body": "Chairman Boozman says he'll release the Senate's version of the skinny farm bill next month with markup to follow. The timeline puts final passage into late summer, which means 2026 crop marketing decisions get made under current law assumptions.",
       "tag": "POLICY"
     },
     {
-      "title": "Ohio State research targets planting depth for profit",
-      "body": "New OSU work shows uniform emergence from precise planting depth can reduce replant needs. With prevent-plant deadlines approaching, anything that improves stand establishment gets attention in the Belt.",
-      "tag": "INPUTS"
+      "title": "Food inflation jumps 0.5% in April CPI report",
+      "body": "Food-at-home prices rose 0.7% as grocery inflation returns after March's flat reading. The acceleration gives the Fed another reason to keep rates elevated, which keeps the dollar strong and export sales under pressure.",
+      "tag": "MACRO"
     },
     {
-      "title": "Class III milk jumps 66 cents to $16.82",
-      "body": "April Federal order pricing came in 66 cents above March at $16.82 per hundredweight, the highest since November 2025. Dairy prices firming even as other livestock sectors weaken shows the complex isn't moving together.",
-      "tag": "DAIRY"
+      "title": "BP takes 40% stake in Uzbekistan oil blocks",
+      "body": "The energy giant's move into Central Asian production is part of the broader supply chain diversification away from Middle East dependence. More non-OPEC production coming online means less leverage for traditional oil exporters.",
+      "tag": "TRADE"
     }
   ],
   "spread_to_watch": {
-    "label": "Feeder cattle / live cattle spread",
-    "level": "$115.15, widest since March",
-    "commentary": "This spread tells you more about cattle cycle direction than either contract alone. When feeders underperform live cattle by this much, replacement demand is drying up. The spread says the cattle herd is about to start shrinking, which means higher prices later but lower prices now as the liquidation begins."
+    "label": "Live cattle / feeder ratio",
+    "level": "0.677 ratio, compressing fast",
+    "commentary": "The ratio dropped below 0.68 for the first time since March as feeders fell harder than live cattle. When feeders lead lower, it signals problems with the replacement cattle market, which means the entire cattle cycle is repricing downward."
   },
   "basis": {
-    "headline": "Eastern Belt corn basis firming as ethanol plants restart",
-    "body": "**Corn basis tightening** east of the Mississippi as ethanol grind comes back online after spring maintenance. Western Belt staying soft, consistent with the seasonal. Soybean basis holding steady with crush margins giving processors no reason to chase old crop."
+    "headline": "Corn basis steady, livestock basis widening on cash pressure",
+    "body": "Eastern Belt corn basis holding firm as ethanol plants return from spring maintenance, keeping local premiums intact despite flat futures. **Cattle basis widening to discounts** as packers pull bids lower, cash trade struggling to find footing after the futures breakdown. Hog basis following cattle wider as the entire meat complex reprices."
   },
   "weekly_thread": {
     "question": "Will corn planting hit 45% by Friday to stay on the five-year average?",
     "day": 3,
-    "status_text": "Still on track with good weather forecast through Friday. The 23-cent carry in December corn says the market isn't convinced yet, but no weather premium building in the front months."
+    "status_text": "Tomorrow's USDA report becomes the week's pivot point. Early state reports suggest the Belt is tracking close to normal pace, but Thursday's national number decides whether the 22-cent carry stays or collapses."
   },
   "the_more_you_know": {
-    "title": "When feeder spreads predict the cattle cycle",
-    "body": "Today's $115.15 feeder-to-live spread is the widest since March and it's telling a story about replacement demand. When feeders underperform live cattle by this margin, ranchers are liquidating breeding stock instead of retaining replacements. The spread historically leads the cattle cycle by six months. A sustained spread above $110 has preceded every major herd liquidation since 1980. Today's breakdown puts that threshold firmly in the rearview mirror."
+    "title": "When livestock leads grain volatility (and when it doesn't)",
+    "body": "Today's 1.8% feeder crash had zero impact on corn, which stayed flat at $4.79 despite cattle and hogs selling off hard. The disconnect shows grain's got its own fundamental drivers right now, planting pace and weather, that matter more than cross-commodity fund flows. But when grain harvest starts in September, livestock feed demand becomes the tail that wags the corn dog. The seasonal determines which market leads."
   },
   "watch_list": [
     {
-      "time": "Thursday 8:30 AM",
-      "desc": "Export sales; corn under 400K MT keeps the range intact"
+      "time": "Thursday 11:00 AM CT",
+      "desc": "USDA Crop Progress report; corn above 40% planted keeps the calendar on track"
     },
     {
-      "time": "Thursday 3:00 PM",
-      "desc": "USDA Crop Progress; corn above 45% planted confirms on-pace timing"
+      "time": "Thursday 7:30 AM CT",
+      "desc": "Weekly export sales; corn under 500K MT signals demand concern"
     },
     {
-      "time": "Friday close",
-      "desc": "Live cattle below $240 confirms the breakdown is real"
+      "time": "Friday",
+      "desc": "Fed cattle cash trade; under $240 breaks another technical floor"
     }
   ],
   "daily_quote": {
-    "text": "To forget how to dig the earth and to tend the soil is to forget ourselves.",
-    "attribution": "Mahatma Gandhi"
+    "text": "Success is to be measured not so much by the position that one has reached in life as by the obstacles which he has overcome.",
+    "attribution": "Booker T. Washington"
   },
-  "source_summary": "CME Group, USDA, Energy Information Administration, commodity news services",
+  "source_summary": "USDA futures settlements, livestock cash markets, energy complex, CPI data, commodity positioning reports, ag policy developments",
   "date": "Wednesday, May 13, 2026",
   "meta": {
-    "market_mood": "bearish",
+    "market_mood": "mixed",
     "heat_section": 0,
     "overnight_surprises_count": 1
   },
@@ -174,8 +171,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 62,
-  "generated_at": "2026-05-13T13:10:45.077368+00:00",
+  "issue_number": 63,
+  "generated_at": "2026-05-13T13:16:55.127486+00:00",
   "generator_version": "4.5.0",
   "surprise_count": 1,
   "surprises": [
@@ -188,55 +185,55 @@
       "surprise_magnitude": 1.2
     }
   ],
-  "price_validation_clean": false,
+  "price_validation_clean": true,
   "market_closed": false,
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-05-13T13:10:52.652282+00:00",
+    "ran_at": "2026-05-13T13:17:02.974538+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 9,
       "rule_2_conviction_earned": 8,
-      "rule_3_tmyk_today": 10,
+      "rule_3_tmyk_today": 8,
       "rule_4_watch_conditional": 9,
       "rule_5_bottom_lines_synthesize": 9,
-      "rule_6_quiet_days_quiet": 9,
-      "rule_7_continuity": 8,
+      "rule_6_quiet_days_quiet": 8,
+      "rule_7_continuity": 7,
       "rule_8_basis_directional": 9,
       "rule_9_voice": 9,
       "rule_10_forward_test": 9,
       "rule_11_thread_coherence": 8,
-      "rule_12_spread_quality": 10,
-      "rule_13_yc_honesty": 9,
-      "rule_14_level_coherence": 2,
-      "rule_15_one_number_coherence": 10,
+      "rule_12_spread_quality": 9,
+      "rule_13_yc_honesty": 8,
+      "rule_14_level_coherence": 1,
+      "rule_15_one_number_coherence": 1,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 8
+      "rule_17_macro_anchoring": 7
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "section[1]",
+        "target": "lead",
         "rule": "rule_14_level_coherence",
         "scores_before": {
           "rule_1_lead_so_what": 9,
           "rule_2_conviction_earned": 8,
-          "rule_3_tmyk_today": 10,
+          "rule_3_tmyk_today": 8,
           "rule_4_watch_conditional": 9,
           "rule_5_bottom_lines_synthesize": 9,
-          "rule_6_quiet_days_quiet": 9,
-          "rule_7_continuity": 8,
+          "rule_6_quiet_days_quiet": 8,
+          "rule_7_continuity": 7,
           "rule_8_basis_directional": 9,
           "rule_9_voice": 9,
           "rule_10_forward_test": 9,
           "rule_11_thread_coherence": 8,
-          "rule_12_spread_quality": 10,
-          "rule_13_yc_honesty": 9,
-          "rule_14_level_coherence": 2,
-          "rule_15_one_number_coherence": 10,
+          "rule_12_spread_quality": 9,
+          "rule_13_yc_honesty": 8,
+          "rule_14_level_coherence": 1,
+          "rule_15_one_number_coherence": 1,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 8
+          "rule_17_macro_anchoring": 7
         }
       }
     ],
