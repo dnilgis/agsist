@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-05-13",
+      "date_display": "Wednesday, May 13, 2026",
+      "headline": "FEEDERS CRASH TWO PERCENT AS PLANTING STALLS",
+      "teaser": "Feeders crash through support as tariff delay removes cattle's policy floor.",
+      "market_mood": "bearish",
+      "surprise_count": 1,
+      "sections": 3,
+      "url": "/daily/2026-05-13",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-05-12",
       "date_display": "Tuesday, May 12, 2026",
       "headline": "HOGS EXPLODE SIX PERCENT AS CATTLE CRATER",
@@ -660,6 +672,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-05-12T13:07:51.219985+00:00",
-  "count": 61
+  "updated": "2026-05-13T13:10:52.692970+00:00",
+  "count": 62
 }

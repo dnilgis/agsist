@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 12 May 2026 13:07:52 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 13 May 2026 13:10:54 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>FEEDERS CRASH TWO PERCENT AS PLANTING STALLS</title>
+      <link>https://agsist.com/daily/2026-05-13</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-13</guid>
+      <pubDate>Wed, 13 May 2026 05:00:00 -0600</pubDate>
+      <description>Feeder cattle crashed 1.8% to $356.00, breaking the three-week consolidation that held the complex together since late April. Live cattle followed feeders down, losing 1.1% to $240.85, and the spread between them widened to $115.15, the most stressed it's been since March. The breakdown comes as delayed beef tariff cuts remove the policy support that's been propping up the cattle trade for two weeks.
+Cattle complex breaks down while grains mark time in narrow ranges.
+• Feeders Lead Cattle Breakdown
+• Grains Hold Tight Range
+• Energy Costs Edge Higher
+Read more: https://agsist.com/daily/2026-05-13</description>
+    </item>
     <item>
       <title>HOGS EXPLODE SIX PERCENT AS CATTLE CRATER</title>
       <link>https://agsist.com/daily/2026-05-12</link>
@@ -383,21 +395,6 @@ Corn holds near $4.42 while soybeans edge higher ahead of critical weather week.
 • Energy &amp; Inputs
   → Lock remaining diesel needs this week — planting demand surge typically moves prices higher through May.
 Read more: https://agsist.com/daily/2026-04-14</description>
-    </item>
-    <item>
-      <title>CORN HOLDS STEADY AS PLANTING PRESSURE BUILDS</title>
-      <link>https://agsist.com/daily/2026-04-13</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-13</guid>
-      <pubDate>Mon, 13 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Corn held flat at $4.44/bu as producers gear up for what could be a make-or-break planting week across the Corn Belt. Soybeans eased slightly to $11.74/bu on profit-taking, while wheat gained ground at $5.83/bu. With optimal planting windows opening, weather will increasingly drive price action over fundamentals.
-Grains mixed in quiet Monday session while cattle maintain historic strength.
-• Grains &amp; Oilseeds
-  → Monitor 7-day forecasts obsessively — any wet weather threats could spark quick rallies to price remaining bushels.
-• Livestock &amp; Dairy
-  → Lock remaining cattle exposure immediately — margins this extreme have short shelf lives in volatile markets.
-• Energy &amp; Inputs
-  → Secure remaining diesel contracts this week — planting season demand spikes can move prices fast.
-Read more: https://agsist.com/daily/2026-04-13</description>
     </item>
   </channel>
 </rss>
