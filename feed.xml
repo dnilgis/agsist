@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 13 May 2026 13:17:05 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 14 May 2026 12:29:03 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>HOGS SURGE THREE PERCENT AS GRAINS FADE</title>
+      <link>https://agsist.com/daily/2026-05-14</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-14</guid>
+      <pubDate>Thu, 14 May 2026 05:00:00 -0600</pubDate>
+      <description>Lean hogs jumped $3.07 to $105.95 as the protein complex stays wild while grains can't find direction. Corn fell back to $4.77 and beans dropped $2.33 to $12.09 with no export catalyst and funds still rotating out of grain positions. The livestock tail is wagging the commodity dog this week and there's no sign it stops here.
+Livestock volatility continues while crop futures drift lower on quiet export demand.
+• Hogs Explode Higher
+• Grains Lose Steam
+• Cattle Mixed Signals
+Read more: https://agsist.com/daily/2026-05-14</description>
+    </item>
     <item>
       <title>CATTLE CRATER WHILE GRAINS MARK TIME</title>
       <link>https://agsist.com/daily/2026-05-13</link>
@@ -380,21 +392,6 @@ Corn and soybeans gain modestly while dairy crashes 5% overnight.
 • Energy &amp; Inputs
   → Lock remaining diesel needs this week — planting season typically drives prices higher as regional demand concentrates.
 Read more: https://agsist.com/daily/2026-04-15</description>
-    </item>
-    <item>
-      <title>GRAINS DRIFT AS PLANTING WINDOW OPENS</title>
-      <link>https://agsist.com/daily/2026-04-14</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-14</guid>
-      <pubDate>Tue, 14 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Grain markets treaded water Tuesday as planting season officially arrives, with corn futures barely budging at $4.42/bu while soybeans gained a modest 3.5 cents to $11.66/bu. The action reflects a market caught between seasonal planting pressure and uncertainty about weather patterns that will define the next 30 days.
-Corn holds near $4.42 while soybeans edge higher ahead of critical weather week.
-• Grains &amp; Oilseeds
-  → Monitor 7-day forecasts closely — any significant rain threats could spark quick rallies to price remaining old crop.
-• Livestock &amp; Dairy
-  → Cattle producers should use any strength to extend protection — these margin levels rarely sustain through volatile periods.
-• Energy &amp; Inputs
-  → Lock remaining diesel needs this week — planting demand surge typically moves prices higher through May.
-Read more: https://agsist.com/daily/2026-04-14</description>
     </item>
   </channel>
 </rss>

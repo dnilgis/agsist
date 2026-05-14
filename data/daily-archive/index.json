@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-05-14",
+      "date_display": "Thursday, May 14, 2026",
+      "headline": "HOGS SURGE THREE PERCENT AS GRAINS FADE",
+      "teaser": "Hogs explode higher while grains drift as livestock drives commodity action.",
+      "market_mood": "mixed",
+      "surprise_count": 1,
+      "sections": 4,
+      "url": "/daily/2026-05-14",
+      "market_closed": false,
+      "yc_outcome": "played_out"
+    },
+    {
       "date": "2026-05-13",
       "date_display": "Wednesday, May 13, 2026",
       "headline": "CATTLE CRATER WHILE GRAINS MARK TIME",
@@ -672,6 +684,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-05-13T13:17:03.015843+00:00",
-  "count": 62
+  "updated": "2026-05-14T12:29:02.861194+00:00",
+  "count": 63
 }
