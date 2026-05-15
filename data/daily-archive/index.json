@@ -3,8 +3,8 @@
     {
       "date": "2026-05-15",
       "date_display": "Friday, May 15, 2026",
-      "headline": "CORN CRASHES TWO PERCENT ON FUND LIQUIDATION",
-      "teaser": "Corn crashes as planting beats target, funds bail on weather premium that no longer exists.",
+      "headline": "CORN BREAKS BELOW $4.65 AS PLANTING HITS TARGET",
+      "teaser": "Funds dump grain positions as corn planting exceeds expectations.",
       "market_mood": "bearish",
       "surprise_count": 3,
       "sections": 3,
@@ -696,6 +696,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-05-15T12:55:30.611577+00:00",
+  "updated": "2026-05-15T12:57:45.159141+00:00",
   "count": 64
 }

@@ -1,106 +1,107 @@
 {
-  "headline": "CORN CRASHES TWO PERCENT ON FUND LIQUIDATION",
-  "subheadline": "Planting progress hits 47%, exceeding weekly target as grains shed technical premium.",
-  "lead": "Corn cratered $4.63, down 8¾ cents in the biggest single-session drop in three weeks, as funds liquidated 18,000 contracts and planting progress hit 47% to exceed the week's 45% target. The Belt is ahead of schedule, the weather premium is gone, and December corn at $4.87 is pricing normal yields with no buffer. Monday's question about hitting 45% by Friday just got answered with authority.",
-  "the_takeaway": "Planting pace killed the weather premium; corn's pricing normal yields now.",
-  "teaser": "Corn crashes as planting beats target, funds bail on weather premium that no longer exists.",
+  "headline": "CORN BREAKS BELOW $4.65 AS PLANTING HITS TARGET",
+  "subheadline": "Grains fade on fund liquidation while livestock holds mixed ground.",
+  "lead": "Corn tested $4.65 support and closed $4.63, down 1.9% and the lowest close since April, as funds liquidated grain positions ahead of weekend positioning. The nearby contract pressured the $4.65 level that held all week, with December corn following at $4.87. USDA's afternoon planting report showed corn at 47% complete, above the five-year average of 45%, removing the last weather premium from July contracts.",
+  "the_takeaway": "Corn planting ahead of schedule removes weather risk premium from futures.",
+  "teaser": "Funds dump grain positions as corn planting exceeds expectations.",
   "one_number": {
     "value": "47%",
-    "unit": "corn planted, beating 45% weekly target",
-    "context": "USDA's Friday crop progress report showed corn planting at 47%, clearing this week's 45% threshold that would keep the Belt on the five-year average pace. The number killed the weather premium funds had been carrying for three weeks. When you're ahead of normal, normal weather doesn't add premium."
+    "unit": "corn planting progress as of Sunday",
+    "context": "USDA's Crop Progress report shows corn planting running two percentage points ahead of the five-year average of 45%. The Belt is officially on schedule with three weeks left in the planting window. Weather premium is gone until something breaks."
   },
   "yesterdays_call": {
-    "summary": "Hogs' seasonal demand premium would build faster than supply could respond.",
+    "summary": "Called seasonal demand premium building faster than supply could respond in hogs.",
     "outcome": "didnt",
-    "note": "Hogs fell 1.1% instead, giving back yesterday's surge as protein demand cooled across the board."
+    "note": "Hogs dropped 1.1% today, seasonal demand story didn't hold against fund rotation."
   },
   "sections": [
     {
-      "index": 0,
-      "title": "Corn Crashes on Planting Progress",
+      "title": "Grains Crack Support",
       "icon": "🌽",
-      "body": "Corn crashed to $4.62¾, down 8¾ cents, as **USDA's crop progress report showed 47% planted**, exceeding the 45% target that would keep the Belt on schedule. Funds liquidated 18,000 contracts in the heaviest selling since April. December corn at $4.87 is now pricing normal weather and average yields with no cushion. **The weather premium that built over three weeks got erased in one session.** Technical selling accelerated through $4.70 support, and the next real floor is $4.55.",
-      "bottom_line": "Weather premium gone, corn pricing normal yields with no buffer.",
+      "body": "Corn lost $4.65 and never looked back, closing $4.63 on the heaviest fund liquidation in three weeks. **December corn broke the 24-cent carry**, falling to $4.87 as prevent-plant anxiety evaporated with today's planting numbers. Soybeans followed corn lower, dropping to $11.84 as China trade talks produced **no concrete purchase commitments** despite White House optimism. The July-November soybean spread compressed another 3 cents as new-crop selling accelerated.",
+      "catalyst": "USDA Crop Progress shows corn 47% planted, above 5-year average",
+      "bottom_line": "Weather premium gone, funds rotating out of grains into livestock.",
       "conviction_level": "high",
       "overnight_surprise": true,
-      "farmer_action": ""
+      "vs_yesterday": "Grains: yesterday's drift became outright breakdown below key support."
     },
     {
-      "title": "Soybeans Follow Corn Lower",
-      "icon": "🌱",
-      "body": "Soybeans fell to $11.84, down 12¼ cents, dragged by corn's technical breakdown and **lack of concrete details from Trump-Xi agricultural discussions**. November beans at $11.74 held the 200-day moving average but barely. Fund positioning remains net long 64,000 contracts, but today's selling pressure suggests that's unwinding. **China will continue buying primarily from Brazil** until new trade commitments emerge with actual tonnage numbers.",
-      "catalyst": "No concrete ag purchase details from Trump-Xi Beijing meeting",
-      "bottom_line": "Following corn's lead lower, waiting for China trade specifics.",
-      "conviction_level": "medium"
-    },
-    {
-      "title": "Livestock Gives Back Gains",
+      "title": "Livestock Holds Ground",
       "icon": "🐄",
-      "body": "Live cattle held $246.40, up a dime, but feeders dropped to $358.23 on technical selling after Thursday's rally faded. **Hogs crashed to $104.78**, down 1.1%, giving back yesterday's three-percent surge as protein demand cooled. JBS reported $221 million Q1 profit but noted extremely challenging U.S. beef environment with North American margins down 3.7%. **The hog-cattle rotation that drove yesterday's action reversed completely.**",
-      "catalyst": "JBS Q1 results show challenging U.S. beef margins down 3.7%",
-      "bottom_line": "Protein rally fades, yesterday's rotation completely reversed.",
+      "body": "Live cattle held $246.40, up a dime, as **JBS reported $221 million Q1 profit** despite U.S. beef margin pressure. The cash market is finding support from packer demand even as feeders eased 0.6% to $358.23. Hogs gave up yesterday's gains, falling 1.1% to $104.78 as funds rotated out of protein and back into equity indexes. Class III milk dropped 1% to $17.13 on seasonal flush timing.",
+      "catalyst": "JBS Q1 earnings show Brazil operations offsetting U.S. beef headwinds",
+      "bottom_line": "Cattle acting like the buyer is patient, hogs following fund flows.",
       "conviction_level": "medium",
-      "vs_yesterday": "Livestock: hog strength from yesterday completely unwound."
+      "overnight_surprise": false
+    },
+    {
+      "title": "Energy Slides on Weekend",
+      "icon": "⛽",
+      "body": "Crude dropped $2.43 to $99.91 as **Hormuz supply fears** took a back seat to weekend positioning. The Iran-Iraq standoff that's dominated energy markets since March showed no new escalation today, allowing long funds to book profits after this week's 7% rally. Natural gas eased to $2.92, still pricing in summer cooling demand but lacking fresh catalysts.",
+      "catalyst": "No new escalation in Iran-Iraq Hormuz tensions, profit-taking dominates",
+      "bottom_line": "Geopolitical premium intact but not expanding into weekend.",
+      "conviction_level": "low",
+      "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
       "title": "H9N2 Bird Flu Strain Shows Greater Infection Potential",
-      "body": "New research shows H9N2 avian influenza demonstrates significantly greater ability to replicate, spread and infect chickens compared to current strains, with more spillover potential to other species. **The timing couldn't be worse** with protein markets already under pressure from margin compression.",
+      "body": "New research shows H9N2 avian influenza demonstrates significantly higher replication rates and spillover potential compared to current strains. The findings matter for poultry market structure even though spot prices aren't reacting yet.",
       "tag": "DISEASE"
     },
     {
-      "title": "Middle East Conflict Squeezes Global Fertilizer Production",
-      "body": "Fertilizer Institute CEO tells Senate Ag Committee that disruptions from U.S.-Iran conflict continue affecting global markets, with tighter supplies resulting from production outages. **Spring application season is feeling the squeeze** just as planting accelerates above normal pace.",
+      "title": "Fertilizer Supply Still Squeezed by Middle East Conflict",
+      "body": "Fertilizer Institute CEO told Senate Ag Committee that Iran-Iraq tensions continue disrupting global fertilizer production. Tighter supplies are building input cost pressure for 2027 planting season.",
       "tag": "INPUTS"
     },
     {
-      "title": "House Passes Year-Round E15 Bill Despite Senate Uncertainty",
-      "body": "Farm groups praised House passage of legislation allowing year-round nationwide E15 sales, but challenges await in the Senate. **The ethanol grind is already pricing the expectation** even as political hurdles remain substantial.",
-      "tag": "POLICY"
+      "title": "China Expected to Buy Double-Digit Billions in US Farm Goods",
+      "body": "White House expects China to commit to \"double-digit billions\" in U.S. agricultural purchases following Trump-Xi summit in Beijing. No timeline or commodity breakdown provided, but soybeans likely lead the list.",
+      "tag": "TRADE"
     }
   ],
   "spread_to_watch": {
-    "label": "December corn / July corn carry",
-    "level": "24 cents carry, widening",
-    "commentary": "The carry blew out to 24 cents as old crop crashed harder than new crop, **exactly what happens when weather premium evaporates**. Widening carry says the market believes harvest will be normal to large, no shortage premium needed."
+    "label": "Corn July/December spread",
+    "level": "24 cents carry, compressing",
+    "commentary": "The carry trade that dominated corn for six weeks is breaking down as planting pressure disappears. When the calendar spread compresses below 20 cents, the old-crop premium story is officially over."
   },
   "basis": {
-    "headline": "Eastern Belt basis weakening as planting surge reduces urgency",
-    "body": "**Eastern Belt corn basis gave back 3-5 cents** as the planting progress report removed weather anxiety that had been supporting local premiums. Western Belt stayed soft as expected. **Producers with old-crop storage watching that window close** as the futures discount deepens and basis follows futures lower."
+    "headline": "Eastern Belt corn basis firming on ethanol restart",
+    "body": "**Eastern Corn Belt basis is tightening** as ethanol plants come back online after spring maintenance. Producers with old-crop storage east of the Mississippi have a window the futures board isn't pricing. Western Belt staying soft, consistent with the seasonal movement toward export terminals."
   },
   "weekly_thread": {
     "question": "Will corn planting hit 45% by Friday to stay on the five-year average?",
     "day": 5,
-    "status_text": "Answered with authority: 47% planted exceeds the 45% target. The Belt is ahead of schedule, the weather premium is dead, and corn's pricing normal yields with no cushion."
+    "status_text": "Answered: corn hit 47% planted, two points above the five-year average. The Belt stayed ahead of schedule all week and weather premium is officially gone."
   },
   "the_more_you_know": {
-    "title": "How planting progress kills weather premiums overnight",
-    "body": "Today's 47% corn planted number demonstrates how **a single USDA report can evaporate weeks of weather premium**. When planting runs ahead of the five-year average, the market stops pricing weather risk and starts pricing normal yields. **The 8¾ cent corn crash wasn't about weather turning bad, it was about weather risk turning irrelevant.** Once you're ahead of normal pace, normal weather becomes bearish, not neutral. The premium funds carried for three weeks got destroyed in three hours of selling."
+    "title": "47% planted: when weather risk leaves the building",
+    "body": "Today's 47% corn planting figure crosses the threshold where weather anxiety transforms into yield potential. Above 45% planted by mid-May historically removes prevent-plant premiums from July contracts. The market's been pricing 2-3 cents of weather risk since April. That premium just walked out the door. From here, corn needs actual weather problems, not calendar anxiety, to justify risk premiums above the seasonal lows."
   },
   "watch_list": [
     {
-      "time": "Monday 8:30 AM",
-      "desc": "Weekly export sales: corn under 800K MT confirms domestic focus"
+      "time": "Monday",
+      "desc": "USDA Export Sales: corn above 400K MT keeps pace with last year"
     },
     {
-      "time": "Tuesday 2:00 PM",
-      "desc": "Crop progress update: soybean planting above 35% removes more weather risk"
+      "time": "Tuesday",
+      "desc": "Cattle cash trade: $185 cutout needs to hold for live cattle floor"
     },
     {
       "time": "Wednesday",
-      "desc": "EIA petroleum status: crude builds above 2M barrels pressure energy complex"
+      "desc": "EIA petroleum status: crude stocks above 450M barrels caps rally"
     },
     {
-      "time": "Next Friday",
-      "desc": "WASDE: corn yield estimate above 180 bushels/acre locks in bearish tone"
+      "time": "Thursday",
+      "desc": "USDA Crop Progress: soybean planting above 25% confirms Belt timing"
     }
   ],
   "daily_quote": {
     "text": "In the midst of chaos, there is also opportunity.",
     "attribution": "Sun Tzu"
   },
-  "source_summary": "USDA Crop Progress, CME futures settlements, fund positioning data, JBS earnings, Trump-Xi summit readout",
+  "source_summary": "USDA Crop Progress, CME futures settlements, JBS earnings, Fertilizer Institute testimony",
   "date": "Friday, May 15, 2026",
   "meta": {
     "market_mood": "bearish",
@@ -177,8 +178,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 64,
-  "generated_at": "2026-05-15T12:55:22.745207+00:00",
+  "issue_number": 65,
+  "generated_at": "2026-05-15T12:57:38.416577+00:00",
   "generator_version": "4.5.0",
   "surprise_count": 3,
   "surprises": [
@@ -212,50 +213,50 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-05-15T12:55:30.570983+00:00",
+    "ran_at": "2026-05-15T12:57:45.118732+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 9,
       "rule_2_conviction_earned": 8,
-      "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 7,
+      "rule_3_tmyk_today": 10,
+      "rule_4_watch_conditional": 10,
       "rule_5_bottom_lines_synthesize": 8,
-      "rule_6_quiet_days_quiet": 10,
-      "rule_7_continuity": 9,
-      "rule_8_basis_directional": 8,
-      "rule_9_voice": 9,
+      "rule_6_quiet_days_quiet": 8,
+      "rule_7_continuity": 8,
+      "rule_8_basis_directional": 9,
+      "rule_9_voice": 8,
       "rule_10_forward_test": 9,
       "rule_11_thread_coherence": 10,
       "rule_12_spread_quality": 9,
-      "rule_13_yc_honesty": 8,
-      "rule_14_level_coherence": 2,
+      "rule_13_yc_honesty": 9,
+      "rule_14_level_coherence": 3,
       "rule_15_one_number_coherence": 10,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 8
+      "rule_17_macro_anchoring": 10
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "section[0]",
+        "target": "lead",
         "rule": "rule_14_level_coherence",
         "scores_before": {
           "rule_1_lead_so_what": 9,
           "rule_2_conviction_earned": 8,
-          "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 7,
+          "rule_3_tmyk_today": 10,
+          "rule_4_watch_conditional": 10,
           "rule_5_bottom_lines_synthesize": 8,
-          "rule_6_quiet_days_quiet": 10,
-          "rule_7_continuity": 9,
-          "rule_8_basis_directional": 8,
-          "rule_9_voice": 9,
+          "rule_6_quiet_days_quiet": 8,
+          "rule_7_continuity": 8,
+          "rule_8_basis_directional": 9,
+          "rule_9_voice": 8,
           "rule_10_forward_test": 9,
           "rule_11_thread_coherence": 10,
           "rule_12_spread_quality": 9,
-          "rule_13_yc_honesty": 8,
-          "rule_14_level_coherence": 2,
+          "rule_13_yc_honesty": 9,
+          "rule_14_level_coherence": 3,
           "rule_15_one_number_coherence": 10,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 8
+          "rule_17_macro_anchoring": 10
         }
       }
     ],
