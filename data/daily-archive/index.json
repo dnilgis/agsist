@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-05-15",
+      "date_display": "Friday, May 15, 2026",
+      "headline": "CORN CRASHES TWO PERCENT ON FUND LIQUIDATION",
+      "teaser": "Corn crashes as planting beats target, funds bail on weather premium that no longer exists.",
+      "market_mood": "bearish",
+      "surprise_count": 3,
+      "sections": 3,
+      "url": "/daily/2026-05-15",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-05-14",
       "date_display": "Thursday, May 14, 2026",
       "headline": "HOGS SURGE THREE PERCENT AS GRAINS FADE",
@@ -684,6 +696,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-05-14T12:29:02.861194+00:00",
-  "count": 63
+  "updated": "2026-05-15T12:55:30.611577+00:00",
+  "count": 64
 }

@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 14 May 2026 12:29:03 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 15 May 2026 12:55:31 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN CRASHES TWO PERCENT ON FUND LIQUIDATION</title>
+      <link>https://agsist.com/daily/2026-05-15</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-15</guid>
+      <pubDate>Fri, 15 May 2026 05:00:00 -0600</pubDate>
+      <description>Corn cratered $4.63, down 8¾ cents in the biggest single-session drop in three weeks, as funds liquidated 18,000 contracts and planting progress hit 47% to exceed the week's 45% target. The Belt is ahead of schedule, the weather premium is gone, and December corn at $4.87 is pricing normal yields with no buffer. Monday's question about hitting 45% by Friday just got answered with authority.
+Planting progress hits 47%, exceeding weekly target as grains shed technical premium.
+• Corn Crashes on Planting Progress
+• Soybeans Follow Corn Lower
+• Livestock Gives Back Gains
+Read more: https://agsist.com/daily/2026-05-15</description>
+    </item>
     <item>
       <title>HOGS SURGE THREE PERCENT AS GRAINS FADE</title>
       <link>https://agsist.com/daily/2026-05-14</link>
@@ -377,21 +389,6 @@ Dairy producers face reality check while corn and beans hold pattern through ear
 • Energy Inputs Slip
   → Lock remaining diesel needs this week — planting season demand concentration can override broader crude weakness.
 Read more: https://agsist.com/daily/2026-04-16</description>
-    </item>
-    <item>
-      <title>GRAINS INCH HIGHER AS PLANTING BEGINS</title>
-      <link>https://agsist.com/daily/2026-04-15</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-15</guid>
-      <pubDate>Wed, 15 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Corn nearby futures gained 1.25 cents to $4.46/bu as producers begin planting across the Corn Belt, with soybeans adding 1.75 cents to $11.63/bu. Both markets remain in cautious mode as every field day becomes precious, while Class III milk crashed 5.2% overnight on renewed oversupply concerns.
-Corn and soybeans gain modestly while dairy crashes 5% overnight.
-• Grains &amp; Oilseeds
-  → Price remaining old crop aggressively on any weather scares — planting delays could spark sharp rallies in already tight supplies.
-• Livestock &amp; Dairy
-  → Lock remaining cattle protection immediately — margins this strong don't last. Dairy producers should reassess expansion plans after this overnight reality check.
-• Energy &amp; Inputs
-  → Lock remaining diesel needs this week — planting season typically drives prices higher as regional demand concentrates.
-Read more: https://agsist.com/daily/2026-04-15</description>
     </item>
   </channel>
 </rss>
