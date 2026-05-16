@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 15 May 2026 12:57:46 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 16 May 2026 11:56:07 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN CRATERS TO $4.56 AS FUNDS FLEE</title>
+      <link>https://agsist.com/daily/2026-05-16</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-16</guid>
+      <pubDate>Sat, 16 May 2026 05:00:00 -0600</pubDate>
+      <description>Corn collapsed through $4.60 support to close $4.56, down 3.3% and the lowest in three weeks. The funds liquidated another 18,000 contracts as Missouri farmers finally got back to planting after weeks of rain delays. When the weather risk leaves the building this late in May, the carry trade does all the talking.
+Grains crashed Friday while cattle surged on tight supplies and energy rallied on Iran tensions.
+• Grains Crater on Fund Exit
+• Cattle Surge on Supply Squeeze
+• Energy Rallies on Iran Risk
+Read more: https://agsist.com/daily/2026-05-16</description>
+    </item>
     <item>
       <title>CORN BREAKS BELOW $4.65 AS PLANTING HITS TARGET</title>
       <link>https://agsist.com/daily/2026-05-15</link>
@@ -374,21 +386,6 @@ Small declines across corn and soybeans while oats rally 1.7% on quality concern
 • Energy Mixed Story
   → Lock remaining diesel needs while prices soften — planting season demand typically reverses crude weakness quickly.
 Read more: https://agsist.com/daily/2026-04-17</description>
-    </item>
-    <item>
-      <title>MILK CRASHES 5% AS GRAINS STAY STEADY</title>
-      <link>https://agsist.com/daily/2026-04-16</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-16</guid>
-      <pubDate>Thu, 16 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Class III milk crashed to $17.34 overnight, down a brutal 5.1% in a stark reminder of dairy's volatility problem we discussed yesterday. Meanwhile, corn barely budged at $4.51 per bushel and soybeans held $11.65 as planting season begins in earnest across the Corn Belt.
-Dairy producers face reality check while corn and beans hold pattern through early planting.
-• Grains Hold Steady
-  → Keep weather radars open and pricing fingers ready — any significant rain threats could spark quick rallies to move remaining old crop.
-• Dairy Reality Check
-  → Dairy producers should reassess risk management strategies immediately — this volatility demands active hedging, not hope.
-• Energy Inputs Slip
-  → Lock remaining diesel needs this week — planting season demand concentration can override broader crude weakness.
-Read more: https://agsist.com/daily/2026-04-16</description>
     </item>
   </channel>
 </rss>
