@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 16 May 2026 11:56:07 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 17 May 2026 12:02:23 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN SITS AT $4.56 AFTER FRIDAY'S FUND EXODUS</title>
+      <link>https://agsist.com/daily/2026-05-17</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-17</guid>
+      <pubDate>Sun, 17 May 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed Friday at $4.56 after a 3.3% crater that cleared out the last fund length. The December contract at $4.81 is telling the story: 25 cents of carry disappeared as commercials stepped away from new-crop buying. This week decides whether the planting calendar adds weather premium or the funds find another leg lower.
+Week ahead brings USDA crop progress as planting window tightens across the Midwest.
+• Grains Set for Weather Test
+• Cattle Defy the Grain Crash
+• Energy Holds Geopolitical Floor
+Read more: https://agsist.com/daily/2026-05-17</description>
+    </item>
     <item>
       <title>CORN CRATERS TO $4.56 AS FUNDS FLEE</title>
       <link>https://agsist.com/daily/2026-05-16</link>
@@ -371,21 +383,6 @@ Corn and wheat finished lower while livestock diverged sharply in volatile Frida
   → Cattle producers should lock protection if live futures break below $245 on Monday. Hog producers consider aggressive forward pricing if June futures rally above $95.
 • Energy Pressure
 Read more: https://agsist.com/daily/2026-04-18</description>
-    </item>
-    <item>
-      <title>GRAINS DRIFT LOWER AS PLANTING PICKS UP</title>
-      <link>https://agsist.com/daily/2026-04-17</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-17</guid>
-      <pubDate>Fri, 17 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Corn futures eased fractionally to $4.58 nearby while soybeans slipped to $11.59 as early planting progress removes some weather premium. The action remains muted as farmers balance between field work and pricing decisions, though oats bucked the trend with a solid 1.7% gain to $3.48 on persistent quality concerns from last year's challenging harvest.
-Small declines across corn and soybeans while oats rally 1.7% on quality concerns.
-• Grains Ease Gently
-  → Use any weather scares to price remaining old crop aggressively — these steady levels won't last if we hit extended wet weather.
-• Cattle Retreat
-  → Cattle producers should view any significant weakness as protection-buying opportunities — margins remain historically strong.
-• Energy Mixed Story
-  → Lock remaining diesel needs while prices soften — planting season demand typically reverses crude weakness quickly.
-Read more: https://agsist.com/daily/2026-04-17</description>
     </item>
   </channel>
 </rss>
