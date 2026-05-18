@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 17 May 2026 12:02:23 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 18 May 2026 13:11:59 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>HOGS EXPLODE 3.7% AS PORK RALLY IGNITES</title>
+      <link>https://agsist.com/daily/2026-05-18</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-18</guid>
+      <pubDate>Mon, 18 May 2026 05:00:00 -0600</pubDate>
+      <description>Lean hogs exploded 3.7% to $103.35, the biggest single-session move in six weeks, as the pork complex finally caught fire after months of sideways drift. The overnight surge came with no specific catalyst beyond what looks like short-covering panic in thin Monday morning trade. Grains tagged along for modest gains, corn up a quarter to $4.70 as China's $17 billion annual ag purchase commitment through 2028 adds fresh buying interest to the fundamental story.
+Lean hogs surge to $103.35 while grains grind higher on China trade optimism.
+• Hogs Lead Protein Surge
+• Grains Rise on China Deal
+• Energy Slides on Demand Fears
+Read more: https://agsist.com/daily/2026-05-18</description>
+    </item>
     <item>
       <title>CORN SITS AT $4.56 AFTER FRIDAY'S FUND EXODUS</title>
       <link>https://agsist.com/daily/2026-05-17</link>
@@ -370,19 +382,6 @@ Corn dipped to $4.49 as planting accelerated while beans gained ground ahead of 
   → Cattle producers should lock protection if live futures break below $245 Monday morning.
 • Energy Story Shifts
 Read more: https://agsist.com/daily/2026-04-19</description>
-    </item>
-    <item>
-      <title>GRAINS CAP CHOPPY WEEK AS PLANTING ACCELERATES</title>
-      <link>https://agsist.com/daily/2026-04-18</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-18</guid>
-      <pubDate>Sat, 18 Apr 2026 05:00:00 -0600</pubDate>
-      <description>A turbulent week in ag markets wrapped up with grain futures pulling back as spring planting gained momentum across the Corn Belt. Corn closed at $4.49 per bushel, down 10 cents Friday, while Chicago wheat dropped to $5.91. The week's bigger story played out in livestock, where cattle strength collided with an 8% hog collapse that left lean hogs at $93.40.
-Corn and wheat finished lower while livestock diverged sharply in volatile Friday trading.
-• Week In Review
-• Livestock Divide
-  → Cattle producers should lock protection if live futures break below $245 on Monday. Hog producers consider aggressive forward pricing if June futures rally above $95.
-• Energy Pressure
-Read more: https://agsist.com/daily/2026-04-18</description>
     </item>
   </channel>
 </rss>
