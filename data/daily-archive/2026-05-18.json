@@ -1,121 +1,129 @@
 {
-  "headline": "HOGS EXPLODE 3.7% AS PORK RALLY IGNITES",
-  "subheadline": "Lean hogs surge to $103.35 while grains grind higher on China trade optimism.",
-  "lead": "Lean hogs exploded 3.7% to $103.35, the biggest single-session move in six weeks, as the pork complex finally caught fire after months of sideways drift. The overnight surge came with no specific catalyst beyond what looks like short-covering panic in thin Monday morning trade. Grains tagged along for modest gains, corn up a quarter to $4.70 as China's $17 billion annual ag purchase commitment through 2028 adds fresh buying interest to the fundamental story.",
-  "the_takeaway": "Hogs lead the protein complex higher, grains follow on China optimism.",
-  "teaser": "Hogs surge 3.7% in overnight explosion, corn climbs on China trade momentum.",
+  "headline": "CORN JUMPS TO $4.72 AS CHINA COMMITS $17 BILLION",
+  "subheadline": "Grains rally on Beijing trade deal while crude crashes on Russian sanction waiver expiry.",
+  "lead": "Corn jumped 4¼ cents to $4.72, the highest close in six sessions, after China committed to $17 billion in annual US agricultural purchases through 2028. The funds that fled grains last week are suddenly looking at a structural demand shift that changes the math on carry and storage. December corn gained 1¾ cents to $4.94, the calendar spread narrowing as old-crop finally found a floor worth defending.",
+  "the_takeaway": "China's $17 billion ag commitment gives grains a structural floor the funds didn't price.",
+  "teaser": "China's trade deal flips the grain narrative just as crude crashes on Russian sanctions.",
   "one_number": {
     "value": "$17 billion",
-    "unit": "China's annual US ag purchase commitment through 2028",
-    "context": "The White House announced China will buy at least $17 billion in US agricultural products annually through 2028, beyond existing soybean commitments. That's real money flowing into the grain complex just as planting season peaks and the funds have been net short. The commitment spans beans, beef, and poultry, giving the livestock rally fresh fundamental legs."
+    "unit": "annual Chinese ag purchases committed through 2028",
+    "context": "The White House announcement changes the structural demand picture for US grains after weeks of fund liquidation. This isn't spot buying, it's a three-year commitment that puts a floor under the market the carry trade wasn't pricing. Corn's 4¼ cent jump says the funds are recalibrating fast."
+  },
+  "yesterdays_call": {
+    "summary": "Weather premium gone, funds rotating out of grains into livestock.",
+    "outcome": "didnt",
+    "note": "China's trade commitment reversed the fund rotation narrative completely."
   },
   "sections": [
     {
-      "title": "Hogs Lead Protein Surge",
-      "icon": "🐷",
-      "body": "Lean hogs exploded 3.7% to $103.35 in the overnight session, the biggest single-day move since early April. The surge came with **no specific news catalyst**, suggesting short-covering panic in thin holiday-adjacent trade. Feeders joined the party, up 0.9% to $361.45, while live cattle gained a more modest 0.6% to $247.93. The protein complex has been coiled for weeks after the grain crash failed to drag livestock down with it.",
-      "catalyst": "No clean catalyst, looks like short-covering in thin overnight trade",
-      "bottom_line": "Protein complex finally breaks higher after weeks of consolidation.",
-      "conviction_level": "medium",
+      "title": "Grains Find Chinese Floor",
+      "icon": "🌽",
+      "body": "Corn led the charge, up 4¼ cents to $4.72 on the China commitment to $17 billion in annual ag purchases through 2028. **This isn't weather premium returning, it's structural demand repricing**. Soybeans gained 6¾ cents to $12.04, the highest close since Thursday's fund exodus began. Wheat jumped 11 cents to $6.64, the biggest single-day gain in two weeks. The December corn spread to July narrowed to 22 cents, down from Friday's 24-cent carry as storage suddenly looks less burdensome with guaranteed Chinese demand.",
+      "catalyst": "White House announces China commits $17B annual US ag purchases through 2028",
+      "bottom_line": "China deal gives grains structural support the carry trade wasn't pricing.",
+      "conviction_level": "high",
+      "overnight_surprise": false,
+      "vs_yesterday": "Grains: complete reversal from fund exodus to structural repricing."
+    },
+    {
+      "title": "Energy Crashes on Russia Reset",
+      "icon": "🛢️",
+      "body": "WTI crude crashed $3.26 to $99.80, the biggest single-day drop in three weeks, as Trump allowed the Russian oil sanctions waiver to expire. **The market's betting on supply disruption but getting supply normalization instead**. Chinese refiners slashed crude runs to the lowest since 2022, down 5.8% as high prices finally hit demand. Natural gas eased 1½ cents to $3.01, still range-bound but watching the crude collapse for directional cues. The energy complex is repricing geopolitical risk downward for the first time since March.",
+      "catalyst": "Trump administration lets Russian oil sanctions waiver expire",
+      "bottom_line": "Russian supply normalization crashes crude, China demand destruction accelerates.",
+      "conviction_level": "high",
       "overnight_surprise": true
     },
     {
-      "title": "Grains Rise on China Deal",
-      "icon": "🌽",
-      "body": "Corn climbed a quarter to $4.70 as China's $17 billion annual ag purchase commitment gave the grain complex fresh fundamental support. Soybeans gained 3.5¢ to $12.01, with the November contract up 2.25¢ to $11.95, as the carry trade continues working in beans. Chicago wheat added 1.75¢ to $6.55. The moves are modest but **directionally important**: the funds have been net short grains for two weeks, and China buying interest changes the supply-demand calculus heading into prevent plant season.",
-      "catalyst": "China commits to $17B annual US ag purchases through 2028",
-      "bottom_line": "China deal adds buying interest just as funds turn net short.",
-      "conviction_level": "medium"
-    },
-    {
-      "title": "Energy Slides on Demand Fears",
-      "icon": "⛽",
-      "body": "Crude fell 1.1% to $102.07 as Chinese refiners slashed crude runs to the lowest level since August 2022, cutting demand despite ongoing Middle East supply concerns. Natural gas bucked the trend, gaining 1.0% to $3.05 on weekend storage data showing draws above the five-year average. The **crude-natgas divergence** reflects different demand dynamics: China's refinery cuts are demand destruction, while US gas storage remains tight heading into summer cooling season.",
-      "catalyst": "Chinese refiners cut crude runs to lowest since Aug 2022",
-      "bottom_line": "Crude demand concerns outweigh supply risk for now.",
-      "conviction_level": "low"
+      "title": "Livestock Steady Amid Grain Rally",
+      "icon": "🐄",
+      "body": "Live cattle gained $1.45 to $249.35, holding the $250 area even as grain prices jumped and feed costs rose. **The cattle market's acting like protein demand is strong enough to absorb higher input costs**. Feeders added 65 cents to $362.30, the cattle-feeder spread staying near $113 as both contracts move together. Hogs gained 55 cents to $103.83, still working toward the $105 resistance that's held all month. Class III milk eased 7 cents to $16.96, the only protein complex not participating in today's risk-on move.",
+      "catalyst": "",
+      "bottom_line": "Protein demand absorbing higher grain costs, milk the exception.",
+      "conviction_level": "medium",
+      "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Missouri farmers resume planting after weeks of rain delays",
-      "body": "Missouri producers finally got back in the field after multiple weeks of cool, wet conditions left some fields too saturated for equipment. Some areas so wet they need replanting, which tightens the window for prevent plant decisions across the central Belt.",
-      "tag": "WEATHER"
+      "title": "Kevin Warsh Confirmed as New Fed Chair in Polarized Vote",
+      "body": "Former Fed governor Kevin Warsh won Senate confirmation 54-45 to replace Jerome Powell, taking over just as oil-driven inflation pressures mount. The Trump ally faces immediate pressure on rate policy as energy volatility complicates the Fed's inflation fight.",
+      "tag": "MACRO"
     },
     {
-      "title": "South Africa FMD crisis escalates as cattle reinfected post-vaccination",
-      "body": "Vaccinated cattle in South Africa are becoming reinfected with foot-and-mouth disease, raising questions about vaccine efficacy and putting global beef trade protocols under scrutiny. The outbreak highlights disease risk premiums in protein markets.",
+      "title": "South Africa's Cattle Reinfected Despite FMD Vaccination Program",
+      "body": "Vaccinated cattle herds are contracting foot-and-mouth disease again, escalating tensions as the government's vaccination program proves ineffective. The crisis threatens South Africa's beef export capacity and raises questions about vaccine efficacy across developing markets.",
       "tag": "DISEASE"
     },
     {
-      "title": "Colorado River gets $47M federal funding for crisis management",
-      "body": "Four Colorado projects receive federal funding to address ongoing water shortages in the Colorado River system. Western water scarcity continues reshaping crop selection and acreage decisions from Arizona to Wyoming.",
-      "tag": "POLICY"
+      "title": "Missouri Farmers Resume Planting After Weeks of Rain Delays",
+      "body": "Cool, wet conditions forced multiple replants across Cooper County and central Missouri, extending planting season well into May. Some fields remain too wet to work, creating prevent-plant decisions that will tighten planted acreage numbers when USDA releases next week's progress report.",
+      "tag": "WEATHER"
     }
   ],
   "spread_to_watch": {
-    "label": "July corn / December corn calendar spread",
-    "level": "24¢ carry, holding steady",
-    "commentary": "The Dec-July spread is holding 24 cents of carry as old crop supply stays tight and new crop weather premium starts building. When this carry starts narrowing, it signals either old crop loosening up or new crop getting too cheap. Right now it's pricing normal seasonal patterns, no stress signals yet."
+    "label": "December corn / July corn carry",
+    "level": "22 cents wide, narrowing from Friday's 24 cents",
+    "commentary": "The carry trade is breaking down as China's $17 billion commitment changes the storage math. When guaranteed demand meets existing supply, the calendar stops paying you to hold grain. This spread narrowing faster than the seasonal suggests the funds are covering shorts."
   },
   "basis": {
-    "headline": "Central Belt basis firms on China optimism, Gulf steady",
-    "body": "**Corn basis is talking** in the central Belt as the China purchase commitment adds fresh demand to an already tight old-crop situation. Eastern elevators firming bids by 5-8 cents over the weekend. Gulf basis holding steady as export pace remains strong but not accelerating. Western Belt still soft, consistent with harvest pressure timing."
+    "headline": "Eastern Belt corn basis firming on China optimism",
+    "body": "**Basis is talking louder than futures** as elevators price in Chinese demand acceleration. Eastern Belt corn basis firming 2-3 cents over Friday's levels as merchandisers compete for old-crop supplies. Western Belt staying softer, consistent with the transportation advantage to Pacific ports. Soybean basis holding steady, waiting for China to specify purchase timing and logistics."
   },
   "weekly_thread": {
-    "question": "Will the China trade momentum carry through to Thursday's export sales?",
+    "question": "Will China's $17 billion ag commitment shift fund positioning back into grains this week?",
     "day": 1,
-    "status_text": "China's $17 billion annual commitment gives grain bulls fresh ammunition, but the real test is whether weekly export sales start reflecting actual purchases versus promises. Thursday's data will show if the optimism is backed by boats."
+    "status_text": "Today's 4¼ cent corn rally suggests the funds are already recalibrating after last week's exodus. The commitment through 2028 changes the structural demand story, but the real test comes when China starts specifying purchase timing and commodity splits."
   },
   "the_more_you_know": {
-    "title": "Why overnight moves stick (and when they don't)",
-    "body": "Hogs' 3.7% overnight surge happened in thin trade with no specific catalyst, classic short-covering panic. These moves stick when they align with fundamentals (tight pork supplies, China buying interest) and fail when they're purely technical. The key tell: does the cash market follow? If pork cutouts start climbing this week, the futures move was real. If not, expect the gains to fade by Wednesday."
+    "title": "Why $17 billion matters more than the daily export sales",
+    "body": "China's commitment to $17 billion annually through 2028 equals roughly 630 million bushels of corn at today's prices, or about 4.5% of total US production. But the real impact isn't the volume, it's the certainty. Weekly export sales show what happened last week. Three-year purchase agreements price what's coming for the next 156 weeks. The funds that dumped grain positions betting on oversupply suddenly face structural demand that makes carry irrelevant."
   },
   "watch_list": [
     {
-      "time": "Tuesday 7:30 AM",
-      "desc": "USDA Crop Progress: corn planting above 85% removes weather premium"
+      "time": "Tuesday 8:30am",
+      "desc": "USDA Crop Progress: corn above 45% planted keeps weather premium out"
     },
     {
-      "time": "Thursday 7:30 AM",
-      "desc": "Weekly export sales: soy sales above 500K MT confirms China momentum"
+      "time": "Thursday 8:30am",
+      "desc": "Weekly export sales: above 800K MT corn confirms China commitment is real"
     },
     {
-      "time": "Daily",
-      "desc": "Pork cutout values: need to confirm futures surge with cash strength"
+      "time": "This week",
+      "desc": "December corn above $5.00 breaks the range, targets $5.15"
     }
   ],
   "daily_quote": {
     "text": "Optimism is the faith that leads to achievement. Nothing can be done without hope and confidence.",
     "attribution": "Helen Keller"
   },
-  "source_summary": "USDA, CME, EIA, White House trade announcement, industry reports",
+  "source_summary": "CBOT/CME settlements, USDA reports, White House fact sheet, commodity trade publications",
   "date": "Monday, May 18, 2026",
   "meta": {
     "market_mood": "bullish",
     "heat_section": 0,
-    "overnight_surprises_count": 1
+    "overnight_surprises_count": 2
   },
   "locked_prices": {
-    "corn": 4.7,
+    "corn": 4.7175,
     "corn-dec": 4.9375,
-    "beans": 12.0125,
-    "beans-nov": 11.95,
-    "wheat": 6.5475,
-    "oats": 3.72,
-    "cattle": 247.925,
-    "feeders": 361.45,
-    "hogs": 103.35,
-    "milk": 16.99,
-    "meal": 338.79999,
-    "soyoil": 74.9,
-    "crude": 102.07,
-    "natgas": 3.053,
-    "gold": 4547.0,
-    "silver": 76.145,
+    "beans": 12.045,
+    "beans-nov": 11.9675,
+    "wheat": 6.64,
+    "oats": 3.7225,
+    "cattle": 249.35001,
+    "feeders": 362.29999,
+    "hogs": 103.825,
+    "milk": 16.96,
+    "meal": 338.89999,
+    "soyoil": 74.97,
+    "crude": 99.8,
+    "natgas": 3.009,
+    "gold": 4577.6001,
+    "silver": 78.005,
     "dollar": 100.0,
-    "sp500": 7408.5,
-    "bitcoin": 76868.42969
+    "sp500": 7408.56982,
+    "bitcoin": 76840.17969
   },
   "chart_series": {
     "corn": [
@@ -128,7 +136,7 @@
       4.63,
       4.56,
       4.56,
-      4.7
+      4.72
     ],
     "soybeans": [
       11.94,
@@ -140,7 +148,7 @@
       11.84,
       11.77,
       11.77,
-      12.01
+      12.04
     ],
     "wheat": [
       6.08,
@@ -152,7 +160,7 @@
       6.5,
       6.36,
       6.36,
-      6.55
+      6.64
     ]
   },
   "sponsor": {
@@ -166,21 +174,29 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 67,
-  "generated_at": "2026-05-18T13:11:51.938770+00:00",
+  "issue_number": 68,
+  "generated_at": "2026-05-18T14:33:36.515607+00:00",
   "generator_version": "4.5.0",
-  "surprise_count": 1,
+  "surprise_count": 2,
   "surprises": [
     {
-      "commodity": "Lean Hogs",
-      "key": "hogs",
-      "price": "$103.35",
-      "pct_change": 3.713,
+      "commodity": "Silver",
+      "key": "silver",
+      "price": "$78.00",
+      "pct_change": 3.2427,
       "direction": "up",
-      "surprise_magnitude": 1.9
+      "surprise_magnitude": 1.3
+    },
+    {
+      "commodity": "WTI Crude Oil",
+      "key": "crude",
+      "price": "$99.80",
+      "pct_change": -3.2852,
+      "direction": "down",
+      "surprise_magnitude": 1.1
     }
   ],
-  "price_validation_clean": true,
+  "price_validation_clean": false,
   "market_closed": false,
   "market_status_reason": "open"
 }
