@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 18 May 2026 14:33:42 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 19 May 2026 12:55:05 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN FLAT AT $4.79 AS CHINA DEAL PROPS RANGE</title>
+      <link>https://agsist.com/daily/2026-05-19</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-19</guid>
+      <pubDate>Tue, 19 May 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed at $4.79 for a second session after Monday's China bounce, the funds digesting whether $17 billion in commitments changes the planting weather equation. Soybeans gained a penny to $12.17 on steady crush margins. The USDA says 76% of corn is planted, six points ahead of average, which takes weather premium off the table until June heat arrives. Range-bound isn't drama, but it's information: the money is positioned, just waiting for a catalyst the calendar shows.
+Planting progress on schedule, funds wait for weather premium catalyst.
+• Grains Hold China Floor
+• Cattle Drift Lower on Feed Costs
+Read more: https://agsist.com/daily/2026-05-19</description>
+    </item>
     <item>
       <title>CORN JUMPS TO $4.72 AS CHINA COMMITS $17 BILLION</title>
       <link>https://agsist.com/daily/2026-05-18</link>
@@ -369,19 +380,6 @@ Nearby corn rallied sharply while energy spiked, but livestock struggled across 
 • Energy Shock
   → Lock remaining diesel needs if WTI breaks above $88 on Tuesday morning.
 Read more: https://agsist.com/daily/2026-04-20</description>
-    </item>
-    <item>
-      <title>MIXED WEEK SETS STAGE FOR WEATHER WATCH</title>
-      <link>https://agsist.com/daily/2026-04-19</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-19</guid>
-      <pubDate>Sun, 19 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Grains ended the week with mixed signals as corn eased to $4.49 while soybeans gained to $11.83 on Friday's close. The divergence reflects different planting timelines and weather sensitivities heading into a critical week for field conditions. Livestock struggled across the board with live cattle at $247.35 and hogs sliding to $101.05.
-Corn dipped to $4.49 as planting accelerated while beans gained ground ahead of Monday's open.
-• Week Ahead Weather Focus
-• Livestock Pressure Builds
-  → Cattle producers should lock protection if live futures break below $245 Monday morning.
-• Energy Story Shifts
-Read more: https://agsist.com/daily/2026-04-19</description>
     </item>
   </channel>
 </rss>
