@@ -1,94 +1,94 @@
 {
-  "headline": "CORN FLAT AT $4.79 AS CHINA DEAL PROPS RANGE",
-  "subheadline": "Planting progress on schedule, funds wait for weather premium catalyst.",
-  "lead": "Corn closed at $4.79 for a second session after Monday's China bounce, the funds digesting whether $17 billion in commitments changes the planting weather equation. Soybeans gained a penny to $12.17 on steady crush margins. The USDA says 76% of corn is planted, six points ahead of average, which takes weather premium off the table until June heat arrives. Range-bound isn't drama, but it's information: the money is positioned, just waiting for a catalyst the calendar shows.",
-  "the_takeaway": "China deal holds the floor, but weather needs to cooperate for the next leg.",
-  "teaser": "Corn consolidates Monday's China bounce as planting runs ahead of schedule nationwide.",
+  "headline": "GRAINS FLAT AS CHINA PROMISE FADES",
+  "subheadline": "Corn holds $4.79 while funds wait for follow-through on Beijing's $17 billion commitment.",
+  "lead": "Corn closed $4.79, dead flat for a second straight session, and the China bounce is already looking tired. Yesterday's $17 billion promise got grains off the mat, but without actual purchase confirmations, the funds aren't adding length. USDA's planting report shows 76% of corn in the ground, ahead of the five-year average, and that's keeping any weather premium off the table.",
+  "the_takeaway": "China deal needs purchase confirmations to stick, not just promises.",
+  "teaser": "Grains hold yesterday's China bounce but funds want proof, not promises.",
   "one_number": {
     "value": "76%",
-    "unit": "U.S. corn planted as of Sunday",
-    "context": "Six percentage points ahead of the five-year average of 70%, which explains why weather premiums aren't building yet. The Belt is on schedule, no stress, no premium. The funds are positioned for the next weather event, but the calendar says June for heat stress to matter."
+    "unit": "of U.S. corn planted as of Sunday",
+    "context": "Running six percentage points ahead of the five-year average of 70%, the fast planting pace is keeping weather premium out of the market. With most of the Belt on schedule, corn needs actual demand confirmations from China's $17 billion promise, not just planting delays, to build the next leg higher."
   },
   "yesterdays_call": {
     "summary": "China deal gives grains structural support the carry trade wasn't pricing.",
-    "outcome": "played_out",
-    "note": "Corn held the $4.79 level exactly as the structural support thesis predicted."
+    "outcome": "pending",
+    "note": "The initial bounce held but funds are waiting for actual purchase confirmations before adding conviction."
   },
   "sections": [
     {
-      "title": "Grains Hold China Floor",
+      "title": "Grains Mark Time",
       "icon": "🌽",
-      "body": "Corn closed exactly where it opened at $4.79, the second session of consolidation after Monday's China bounce. The **76% planting pace** removes weather premium from the near-term equation, funds know this. Soybeans gained a penny to $12.17 on steady meal demand, November beans up two cents to $12.05 as the carry structure stays intact. The range is $4.70 to $4.85 in corn until weather matters, which the calendar says is June heat, not May mud.",
-      "catalyst": "USDA crop progress shows corn planting at 76%, ahead of 70% five-year average",
-      "bottom_line": "China deal holds the floor, weather calendar controls the ceiling.",
-      "conviction_level": "medium",
-      "overnight_surprise": false,
-      "vs_yesterday": "Grains: exactly the structural support behavior the China deal was supposed to deliver"
-    },
-    {
-      "title": "Cattle Drift Lower on Feed Costs",
-      "icon": "🐄",
-      "body": "Live cattle eased 75 cents to $247.12, feeder cattle down $2.50 to $358.77, both giving back ground as grain strength weighs on margins. The **feeder weakness** is the tell here, cash feeders still above $245 but the June contract acting heavy. Beef demand stays strong according to wholesale cutouts, but input costs are biting. The China beef facility access from Monday's deal helps long-term, doesn't change today's feed math.",
-      "catalyst": "China beef facility access restored in Trump-Xi meeting",
-      "bottom_line": "Strong beef demand meets rising feed costs, feeders show the strain first.",
+      "body": "Corn closed $4.79, unchanged for the second session, while soybeans eked out a penny and three-quarters to $12.17. The China bounce is real but **thin**, funds took Monday's promise as reason to cover shorts, not add longs. Dec corn held $4.99, the carry unchanged at 20 cents, and that's telling you storage is still getting paid. Without actual purchase confirmations, the rally's on borrowed time.",
+      "catalyst": "USDA planting report shows 76% of corn planted, ahead of 5-year average",
+      "bottom_line": "Holding yesterday's China bounce but needs follow-through confirmation.",
       "conviction_level": "low",
       "overnight_surprise": false
+    },
+    {
+      "index": 1,
+      "title": "Livestock Drifts Lower",
+      "icon": "🐄",
+      "body": "Live cattle eased to $247.13, off three-tenths percent, while feeders dropped seven-tenths to $358.77. The **grain rally didn't help feed costs**, and the box-beef cutout stayed flat around $468. China's beef access restoration from yesterday's deal is structural positive, but the immediate trade is still about domestic demand. Fed cattle supplies are current, not tight.",
+      "bottom_line": "China beef access is future positive, current trade stays domestic focused.",
+      "conviction_level": "low",
+      "overnight_surprise": false,
+      "farmer_action": ""
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Deere Right-to-Repair Settlement Gets Court Approval",
-      "body": "Federal court granted preliminary approval to John Deere's antitrust settlement with farmers, giving producers until September to object. The right-to-repair fight isn't going away, but this settles one piece of the legal puzzle.",
+      "title": "Iran's floating oil stockpile jumps 65% as naval blockade bites",
+      "body": "Iranian tankers are stacking crude in the Strait of Hormuz as the U.S. naval blockade in the Gulf of Oman chokes export routes. The floating storage spike signals supply disruption that's keeping energy floors under ag input costs.",
       "tag": "POLICY"
     },
     {
-      "title": "Asia's Energy Crunch Opens Door for Australian LNG",
-      "body": "Middle East supply disruptions are pushing Asian buyers toward Australian natural gas as a more reliable alternative. The shift could reshape global energy flows for years, not just months.",
-      "tag": "ENERGY"
+      "title": "Deere right-to-repair settlement gets preliminary court approval",
+      "body": "Federal court cleared John Deere's antitrust settlement with farmers over equipment repair restrictions, with producers having until September 2026 to file objections. The deal could reshape equipment service costs across rural America.",
+      "tag": "POLICY"
     },
     {
-      "title": "Nigeria Seeks New Oil Buyers as UAE Leaves OPEC",
-      "body": "UAE's OPEC exit is forcing Nigeria to hunt for new crude customers, disrupting the cartel's production balance. Another sign that OPEC discipline is cracking under geopolitical pressure.",
-      "tag": "ENERGY"
+      "title": "WOAH publishes global African swine fever vaccine guidelines",
+      "body": "New guidelines address gaps in field evaluation of ASF vaccines as the disease continues spreading globally. The framework could accelerate vaccine approval timelines for pork producers facing ongoing herd threats.",
+      "tag": "DISEASE"
     }
   ],
   "spread_to_watch": {
-    "label": "December corn / July corn carry",
-    "level": "20 cents carry, steady",
-    "commentary": "The carry structure is holding despite Monday's rally, which means the funds see this as a short-term China bounce, not a structural shift. If planting stays on pace, this spread widens back to 25 cents by Memorial Day."
+    "label": "Dec corn / July corn carry",
+    "level": "20 cents wide, unchanged",
+    "commentary": "The carry held steady through yesterday's China rally, storage still getting paid. Real China buying tightens this spread before futures move."
   },
   "basis": {
-    "headline": "Eastern Belt corn basis firming on ethanol demand",
-    "body": "**Ethanol plants** are coming back online after maintenance season, tightening local corn supplies east of the Mississippi. Western Belt staying soft as river logistics improve. Producers with old-crop storage east of I-35 have a window the futures board isn't fully pricing."
+    "headline": "Eastern Belt firms as ethanol plants restart after maintenance",
+    "body": "**Eastern Corn Belt basis is tightening** as ethanol grind comes back online following seasonal maintenance outages. Producers east of the Mississippi with old-crop bushels in storage have a window the futures board isn't fully pricing. Western Belt staying soft, consistent with the seasonal pattern."
   },
   "weekly_thread": {
     "question": "Will China's $17 billion ag commitment shift fund positioning back into grains this week?",
     "day": 2,
-    "status_text": "The commitment is holding corn above $4.70, but funds aren't adding length yet. They're waiting to see if weather cooperates with the demand story."
+    "status_text": "Monday's promise got shorts covered but longs aren't adding yet. Funds are waiting for actual purchase confirmations before shifting positioning meaningfully into grains."
   },
   "the_more_you_know": {
-    "title": "Why 76% planted kills weather premium (for now)",
-    "body": "Today's USDA number shows corn planting six points ahead of average, which explains why weather premium isn't building. **The market prices stress, not success.** When planting runs ahead of schedule, the probability of prevented plant acres drops, and so does the weather risk premium. The premium comes back in June when heat matters for pollination, but May wetness doesn't move futures when 76% is already in the ground. The funds know this math."
+    "title": "The 6-point gap that matters more than the daily close",
+    "body": "Today's USDA planting report shows corn at 76% planted, six percentage points ahead of the five-year average of 70%. That gap is why corn can't hold weather premium even with Hormuz tensions keeping energy elevated. Fast planting pace means the Belt is on schedule, and scheduled crops don't price scarcity. The market needs either planting delays or actual demand confirmations from China's promises to build the next leg higher."
   },
   "watch_list": [
     {
+      "time": "Wednesday 2:00 PM",
+      "desc": "USDA Export Sales: corn under 800K MT keeps chart in charge"
+    },
+    {
       "time": "Thursday",
-      "desc": "Weekly export sales: corn under 800K MT keeps China deal skeptics in play"
+      "desc": "China purchase confirmations from $17B commitment"
     },
     {
       "time": "Friday",
-      "desc": "USDA crop progress: corn above 80% planted locks in the no-weather-premium trade"
-    },
-    {
-      "time": "Next week",
-      "desc": "Memorial Day weekend weather models for June heat pattern setup"
+      "desc": "Crop Progress: corn above 80% planted removes weather premium entirely"
     }
   ],
   "daily_quote": {
     "text": "The big money is not in the buying and selling, but in the waiting.",
     "attribution": "Charlie Munger"
   },
-  "source_summary": "USDA crop progress reports, daily futures settlements, China trade commitments",
+  "source_summary": "USDA reports, commodity exchanges, agricultural news services",
   "date": "Tuesday, May 19, 2026",
   "meta": {
     "market_mood": "cautious",
@@ -165,60 +165,60 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 68,
-  "generated_at": "2026-05-19T12:54:57.979856+00:00",
+  "issue_number": 69,
+  "generated_at": "2026-05-19T13:57:23.676233+00:00",
   "generator_version": "4.5.0",
   "surprise_count": 0,
   "surprises": [],
-  "price_validation_clean": false,
+  "price_validation_clean": true,
   "market_closed": false,
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-05-19T12:55:04.519705+00:00",
+    "ran_at": "2026-05-19T13:57:30.446657+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 7,
+      "rule_2_conviction_earned": 8,
       "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 6,
+      "rule_4_watch_conditional": 7,
       "rule_5_bottom_lines_synthesize": 8,
-      "rule_6_quiet_days_quiet": 8,
+      "rule_6_quiet_days_quiet": 9,
       "rule_7_continuity": 8,
       "rule_8_basis_directional": 9,
-      "rule_9_voice": 8,
+      "rule_9_voice": 9,
       "rule_10_forward_test": 8,
-      "rule_11_thread_coherence": 7,
+      "rule_11_thread_coherence": 8,
       "rule_12_spread_quality": 8,
       "rule_13_yc_honesty": 8,
-      "rule_14_level_coherence": 2,
+      "rule_14_level_coherence": 1,
       "rule_15_one_number_coherence": 10,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 10
+      "rule_17_macro_anchoring": 8
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "lead",
+        "target": "section[1]",
         "rule": "rule_14_level_coherence",
         "scores_before": {
           "rule_1_lead_so_what": 8,
-          "rule_2_conviction_earned": 7,
+          "rule_2_conviction_earned": 8,
           "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 6,
+          "rule_4_watch_conditional": 7,
           "rule_5_bottom_lines_synthesize": 8,
-          "rule_6_quiet_days_quiet": 8,
+          "rule_6_quiet_days_quiet": 9,
           "rule_7_continuity": 8,
           "rule_8_basis_directional": 9,
-          "rule_9_voice": 8,
+          "rule_9_voice": 9,
           "rule_10_forward_test": 8,
-          "rule_11_thread_coherence": 7,
+          "rule_11_thread_coherence": 8,
           "rule_12_spread_quality": 8,
           "rule_13_yc_honesty": 8,
-          "rule_14_level_coherence": 2,
+          "rule_14_level_coherence": 1,
           "rule_15_one_number_coherence": 10,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 10
+          "rule_17_macro_anchoring": 8
         }
       }
     ],
