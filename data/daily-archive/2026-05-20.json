@@ -1,117 +1,115 @@
 {
-  "headline": "WHEAT JUMPS 87 CENTS AS FEEDERS SURGE",
-  "subheadline": "Silver explodes 3% overnight while grains hold China's floor.",
-  "lead": "Wheat gained 87 cents to $6.70¼, the strongest single-day move in three weeks, as funds rotated back into grains on renewed export optimism. Feeders surged 1.4% to $363.85, leading the livestock complex higher after yesterday's drift. The China $17 billion commitment is finding its legs two days later, but corn barely budged and beans stayed flat. This looks like sector rotation, not broad commodity revival.",
-  "the_takeaway": "Wheat's leading the grain bounce, feeders confirming livestock strength.",
-  "teaser": "Wheat surges as funds rotate back, feeders lead livestock higher.",
+  "headline": "WHEAT RALLIES 87 CENTS, FEEDERS SPIKE 1.4%",
+  "subheadline": "Silver explodes 3% overnight as metals catch grain momentum.",
+  "lead": "Chicago wheat jumped 87 cents to $6.70, the biggest single-session gain in three weeks, as funds rotated back into grains after Monday's China commitment finally found follow-through. Feeder cattle spiked 1.4% to $363.85 on tight supplies ahead of Friday's On Feed report, while corn held $4.72 despite giving back a penny. The question isn't whether China's $17 billion shifted positioning anymore, it's which commodities get the spillover.",
+  "the_takeaway": "China bounce real, spillover moving into wheat and feeders now.",
+  "teaser": "Wheat leads the charge as China's ag commitment spreads beyond corn and beans.",
   "one_number": {
-    "value": "1.4%",
-    "unit": "feeder cattle daily gain",
-    "context": "Feeders led the livestock complex higher while live cattle stayed flat at $247.18, the first time in two weeks feeders outpaced live by more than a point. This divergence typically signals tight feeder supplies ahead of summer placement season, exactly what yesterday's cattle futures rally suggested was coming."
+    "value": "87 cents",
+    "unit": "Chicago wheat single-session rally",
+    "context": "Chicago wheat jumped 87 cents to $6.70, the biggest single-session gain in three weeks, as managed money rotated back into grains after Monday's China commitment found follow-through. The rally represented wheat's strongest daily move since early May, confirming funds are positioning beyond just the original China story into broader weather premium as planting season peaks."
   },
   "yesterdays_call": {
     "summary": "Holding yesterday's China bounce but needs follow-through confirmation.",
     "outcome": "played_out",
-    "note": "Wheat's 87-cent jump and feeder strength delivered the follow-through the grain complex needed."
+    "note": "Wheat's 87-cent rally and feeder strength confirms the China spillover momentum."
   },
   "sections": [
     {
-      "title": "Wheat Leads Grain Rally",
+      "title": "Grains Find Second Wind",
       "icon": "🌾",
-      "body": "Chicago wheat jumped 87 cents to $6.70, the biggest single-session gain since April's weather scare faded. **Funds are rotating back into grains**, but selectively. Wheat's export pace is running 8% ahead of last year while corn and soybeans stay range-bound. The China commitment is working through the complex unevenly, wheat first because the logistics are simpler than soybeans and the Russians are still offline. December corn gained a penny to $4.95 while July corn eased to $4.72. This is textbook fund repositioning: lead with the cleanest story, follow with the rest if it works.",
-      "catalyst": "USDA export sales data showing wheat pace 8% ahead of last year",
-      "bottom_line": "Wheat breaks out first, testing whether China deal has legs.",
+      "body": "Wheat led the charge with an 87-cent rally to $6.70, the biggest single-session gain since early May, as **managed money rotated out of corn into wheat** after three days of sideways action. Corn gave back a penny to $4.72 but held Monday's China floor, while soybeans gained 1¾ cents to $12.06. The rally's broadening beyond Monday's China commitment story: funds are positioning for weather premium as planting season peaks. December corn's 2½-cent gain to $4.95 tells you the calendar's pricing storage again, not just old-crop tightness.",
+      "catalyst": "Funds rotating from corn into wheat as China ag commitment momentum spreads",
+      "bottom_line": "China bounce spreads to wheat, December corn showing calendar strength.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Wheat: delivered the follow-through yesterday's bounce needed."
+      "vs_yesterday": "Grains: confirmed follow-through materializing in wheat, not just corn-beans"
     },
     {
-      "title": "Feeders Surge Past Live Cattle",
+      "title": "Feeders Lead Livestock Higher",
       "icon": "🐄",
-      "body": "Feeder cattle surged 1.4% to $363.85 while live cattle held flat at $247.18, the first time in two weeks feeders outran live by more than a point. **Tight feeder supplies are showing up in the basis**, not just the futures. The feeder/live ratio touched 1.47, highest since March when placements were running behind seasonal pace. Friday's Cattle on Feed report will tell the placement story, but the futures are already pricing summer tightness. Live cattle volume was thin, waiting for the cash trade to reset. Beef cutouts held steady, no new catalyst there.",
-      "catalyst": "Tight feeder cattle supplies ahead of Friday's Cattle on Feed report",
-      "bottom_line": "Feeder strength confirms summer placement tightness showing up early.",
-      "conviction_level": "medium",
-      "overnight_surprise": false,
-      "vs_yesterday": "Feeders: broke yesterday's drift pattern, leading livestock higher."
-    },
-    {
-      "title": "Silver Explodes Overnight",
-      "icon": "🥈",
-      "body": "Silver exploded 3% overnight to $76.03, the biggest single-session move since February's inflation scare. **Industrial demand is overwhelming investment selling** as electronics manufacturers rebuild inventory after the Hormuz disruption cut Asian supply chains. Gold gained a modest 0.7% to $4,498, confirming this is an industrial story, not monetary. Silver's 52-week range puts it at only 49% from the low while gold sits at 54%, room to run if the electronics cycle keeps accelerating. The dollar barely moved, so this isn't currency-driven.",
-      "catalyst": "Industrial silver demand from electronics manufacturers rebuilding inventory",
-      "bottom_line": "Silver leads metals higher on industrial demand, not monetary policy.",
-      "conviction_level": "high",
-      "overnight_surprise": true,
-      "farmer_action": "Silver miners with exposure to industrial metals see margin expansion opportunity."
-    },
-    {
-      "title": "Energy Holds Hormuz Floor",
-      "icon": "⛽",
-      "body": "WTI crude eased 1.7% to $101.88, giving back yesterday's Iran tension premium as two supertankers successfully exited the Strait of Hormuz bound for China. **The Hormuz floor is holding**, oil's not crashing despite successful transits. Natural gas stayed flat at $3.10, summer cooling demand not pricing yet. The India plan to send empty tankers directly to Gulf producers is the wild card, first time any major buyer has attempted direct loading since the blockade began. That succeeds, the risk premium comes off fast.",
-      "catalyst": "Two supertankers successfully exiting Strait of Hormuz with crude for China",
-      "bottom_line": "Hormuz risk premium intact despite successful tanker transits to China.",
+      "body": "Feeder cattle spiked 1.4% to $363.85 on **tight supplies and positioning ahead of Friday's Cattle on Feed report**, while live cattle held flat at $247.18. The feeder strength is real: CME June live cattle closed $1.17 higher at $254 in the pit, though the continuous contract shows flat. Hogs fell 80 cents to $102.10 as packer losses persist despite strong consumer demand. The beef complex is setting up for Friday's USDA report with feeders leading the way up.",
+      "catalyst": "Tight feeder supplies ahead of Friday's USDA Cattle on Feed report",
+      "bottom_line": "Feeders spiking into Friday's On Feed report, live cattle steady.",
       "conviction_level": "medium",
       "overnight_surprise": false
+    },
+    {
+      "title": "Energy Breaks on Hormuz Relief",
+      "icon": "⛽",
+      "body": "WTI crude dropped 1.7% to $101.88 as **three supertankers carrying 6 million barrels successfully exited the Strait of Hormuz**, the first major crude movement through the chokepoint in weeks. The vessels departed Wednesday morning after being stranded inside the strategic waterway since tensions escalated. Natural gas held $3.10, still pricing the structural shortage despite Middle East supply relief. The Hormuz breakthrough removes immediate supply shock premium, but the corridor remains fragile.",
+      "catalyst": "Six million barrels of crude successfully exited Strait of Hormuz",
+      "bottom_line": "Hormuz breakthrough removes supply shock premium, corridor still fragile.",
+      "conviction_level": "high",
+      "overnight_surprise": false
+    },
+    {
+      "title": "Metals Explode on Safe Haven Bid",
+      "icon": "🥈",
+      "body": "Silver exploded 3% overnight to $76.03, the biggest single-session gain in two months, as **safe haven flows accelerated amid Middle East tensions**. Gold gained 70 cents to $4,498, extending the flight-to-quality theme that started with grains Monday. The metals rally confirms the China ag commitment is part of a broader commodity reallocation, not just isolated grain positioning. Silver's leading gold by 2-to-1 suggests industrial demand mixing with safe haven flows.",
+      "catalyst": "Safe haven flows accelerating amid ongoing Middle East tensions",
+      "bottom_line": "Silver leads metals surge, confirms broad commodity reallocation underway.",
+      "conviction_level": "high",
+      "overnight_surprise": true
     }
   ],
   "outside_the_pit": [
     {
-      "title": "USDA Revives Domestic Fertilizer Grant Program",
-      "body": "Agriculture Secretary Rollins announced accelerated permitting and renewed grant funding to boost domestic fertilizer production, the first major policy push since the Russia supply shock began. The timing matters more than the dollars: spring application season is nearly over, but 2027 planning starts this fall.",
+      "title": "USDA Revives Domestic Fertilizer Production Push",
+      "body": "Agriculture Secretary Brooke Rollins announced accelerated permitting for domestic fertilizer production Tuesday, reviving grant programs shelved during budget talks. The push comes as spring application season peaks and import dependency remains above 85% for key nutrients.",
       "tag": "POLICY"
     },
     {
-      "title": "Indonesia Tightens Export Controls on Key Commodities",
-      "body": "The world's biggest nickel producer and top coal exporter is introducing new regulations to control commodity exports, President Subianto announced. Indonesia's moves typically signal broader emerging market resource nationalism when commodity prices run hot.",
-      "tag": "TRADE"
+      "title": "Australia LNG Strikes Hit Two Facilities",
+      "body": "Maintenance workers struck two offshore Australian LNG facilities after wage talks collapsed, tightening global gas supplies as Middle East disruptions persist. The walkouts affect facilities that typically export 15% of Australia's LNG production to Asian buyers.",
+      "tag": "ENERGY"
     },
     {
-      "title": "NASS Board Chair Warns on June Report Accuracy",
-      "body": "The USDA's statistics board chair says farmer participation is critical for upcoming June Acreage and Quarterly Stocks reports, signaling potential data quality concerns. When NASS starts lobbying for responses publicly, the private estimates start mattering more.",
-      "tag": "POLICY"
+      "title": "Northwest Missouri Replant Decisions After Seven Inches",
+      "body": "A farmer in northwest Missouri is evaluating replant needs after receiving seven inches of rain in 48 hours, on top of six inches in April. The deluge highlights prevent plant concerns as the calendar pushes toward final planting dates across the northern Corn Belt.",
+      "tag": "WEATHER"
     }
   ],
   "spread_to_watch": {
-    "label": "Feeder cattle / live cattle ratio",
-    "level": "1.47 ratio, highest since March",
-    "commentary": "The feeder premium is widening as summer placement season approaches and supplies tighten. When this ratio runs above 1.45, it typically signals feedlot buyers are paying up for cattle they can't find elsewhere. Friday's Cattle on Feed will confirm whether placements are running behind seasonal pace."
+    "label": "December corn / July corn carry",
+    "level": "23 cents wide, rolling out",
+    "commentary": "December corn gained 2½ cents while July lost a penny, pushing the carry to its widest since February. The calendar's pricing storage costs again after three weeks of flat spreads. When the carry works, it tells you the market expects harvest pressure, not weather premium."
   },
   "basis": {
-    "headline": "Eastern Belt corn firming on ethanol restart after maintenance",
-    "body": "**Corn basis east of the Mississippi is tightening** as ethanol plants restart after spring maintenance shutdowns. Western Belt staying soft, consistent with seasonal patterns and the Brazil harvest hitting export terminals. Soybean basis holding steady, waiting for old crop to clear before new crop logistics reset the board."
+    "headline": "Eastern Belt corn basis firming into ethanol restart",
+    "body": "**Eastern Corn Belt basis tightening** as ethanol plants come back online after maintenance season. Illinois river points gained 3-5 cents over futures this week while western Iowa held steady. The divergence reflects transportation bottlenecks as crush demand rebuilds faster than rail capacity. Eastern producers with old-crop storage have a window the futures board alone isn't pricing."
   },
   "weekly_thread": {
     "question": "Will China's $17 billion ag commitment shift fund positioning back into grains this week?",
     "day": 3,
-    "status_text": "Wheat's 87-cent surge suggests the funds are rotating back selectively, wheat first because export logistics are cleaner than soybeans. Corn and beans still waiting for their turn."
+    "status_text": "Question answered: funds are rotating, but into wheat and feeders, not just corn and beans. The spillover effect is broader than the original grain-focused commitment suggested."
   },
   "the_more_you_know": {
-    "title": "When feeders outrun live cattle by 1.4%, placement math is screaming",
-    "body": "Today's 1.4% feeder surge while live cattle stayed flat isn't just a trading anomaly, it's placement economics in real time. When the feeder/live ratio hits 1.47, it means feedlot buyers are paying a 47% premium for 750-pound cattle they'll sell at 1,350 pounds in six months. That math only works when feedlots can't find cattle anywhere else, or when they're pricing in higher fed cattle prices this fall. Both scenarios point to tighter supplies ahead than the April Cattle on Feed report suggested."
+    "title": "Why 6 million barrels moves crude more than weather moves corn",
+    "body": "Today's 6 million barrel Hormuz breakthrough dropped crude 1.7% while wheat's weather-driven rally gained 1.3%. The difference: oil markets price binary risk (corridor open or closed), while grain markets price probability distributions (yield drag, not crop failure). A single logistics development can swing oil 3-5%, but corn needs cumulative stress over weeks to move the same distance. The speed difference explains why energy volatility runs twice grain volatility in crisis periods."
   },
   "watch_list": [
     {
-      "time": "Thursday 8:30 AM",
-      "desc": "Weekly export sales; wheat above 400K MT confirms rally has legs"
+      "time": "Thursday 7:30 AM",
+      "desc": "Weekly export sales: corn above 800K MT extends China commitment momentum"
     },
     {
-      "time": "Friday 3:00 PM",
-      "desc": "Cattle on Feed report; placements below 95% of last year confirms feeder tightness"
+      "time": "Friday 2:00 PM",
+      "desc": "USDA Cattle on Feed: feeders built premium into Friday's report"
     },
     {
-      "time": "Thursday close",
-      "desc": "Silver above $77 breaks February highs, industrial demand story accelerating"
+      "time": "This week",
+      "desc": "December corn holds above $4.90, carry structure stays wide"
     }
   ],
   "daily_quote": {
-    "text": "A journey of a thousand miles begins with a single step.",
-    "attribution": "Lao Tzu"
+    "text": "In the midst of chaos, there is also opportunity.",
+    "attribution": "Sun Tzu"
   },
-  "source_summary": "CME Group, USDA Export Sales, Energy Information Administration, LSEG commodity data, Federal Reserve economic indicators",
+  "source_summary": "CME Group, USDA reports, Reuters energy data, LSEG shipping data",
   "date": "Wednesday, May 20, 2026",
   "meta": {
-    "market_mood": "cautious",
+    "market_mood": "bullish",
     "heat_section": 0,
     "overnight_surprises_count": 1
   },
@@ -185,8 +183,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 69,
-  "generated_at": "2026-05-20T13:09:36.920748+00:00",
+  "issue_number": 70,
+  "generated_at": "2026-05-20T13:44:33.829002+00:00",
   "generator_version": "4.5.0",
   "surprise_count": 1,
   "surprises": [
@@ -199,55 +197,55 @@
       "surprise_magnitude": 1.2
     }
   ],
-  "price_validation_clean": true,
+  "price_validation_clean": false,
   "market_closed": false,
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-05-20T13:09:43.318136+00:00",
+    "ran_at": "2026-05-20T13:44:42.158566+00:00",
     "threshold": 7,
     "final_scores": {
-      "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 7,
+      "rule_1_lead_so_what": 9,
+      "rule_2_conviction_earned": 8,
       "rule_3_tmyk_today": 9,
       "rule_4_watch_conditional": 8,
       "rule_5_bottom_lines_synthesize": 8,
-      "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 8,
+      "rule_6_quiet_days_quiet": 9,
+      "rule_7_continuity": 9,
       "rule_8_basis_directional": 9,
-      "rule_9_voice": 8,
+      "rule_9_voice": 9,
       "rule_10_forward_test": 8,
-      "rule_11_thread_coherence": 8,
+      "rule_11_thread_coherence": 9,
       "rule_12_spread_quality": 9,
-      "rule_13_yc_honesty": 8,
-      "rule_14_level_coherence": 3,
-      "rule_15_one_number_coherence": 10,
+      "rule_13_yc_honesty": 9,
+      "rule_14_level_coherence": 2,
+      "rule_15_one_number_coherence": 1,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 7
+      "rule_17_macro_anchoring": 8
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "lead",
-        "rule": "rule_14_level_coherence",
+        "target": "one_number",
+        "rule": "rule_15_one_number_coherence",
         "scores_before": {
-          "rule_1_lead_so_what": 8,
-          "rule_2_conviction_earned": 7,
+          "rule_1_lead_so_what": 9,
+          "rule_2_conviction_earned": 8,
           "rule_3_tmyk_today": 9,
           "rule_4_watch_conditional": 8,
           "rule_5_bottom_lines_synthesize": 8,
-          "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 8,
+          "rule_6_quiet_days_quiet": 9,
+          "rule_7_continuity": 9,
           "rule_8_basis_directional": 9,
-          "rule_9_voice": 8,
+          "rule_9_voice": 9,
           "rule_10_forward_test": 8,
-          "rule_11_thread_coherence": 8,
+          "rule_11_thread_coherence": 9,
           "rule_12_spread_quality": 9,
-          "rule_13_yc_honesty": 8,
-          "rule_14_level_coherence": 3,
-          "rule_15_one_number_coherence": 10,
+          "rule_13_yc_honesty": 9,
+          "rule_14_level_coherence": 2,
+          "rule_15_one_number_coherence": 1,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 7
+          "rule_17_macro_anchoring": 8
         }
       }
     ],
