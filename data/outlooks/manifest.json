@@ -1,39 +1,37 @@
 {
-  "fetched_at": "2026-05-20T15:55:46+00:00",
+  "fetched_at": "2026-05-20T18:31:33+00:00",
   "files": {
     "noaa_prcp_30day.gif": {
-      "bytes": 227214,
-      "changed": false,
-      "last_modified": "2026-04-30T19:00:27+00:00",
-      "sha256": "6ba0f1216c63ca967ea38c1d926ab9165728a0f85ab6076d85da784d8f06fd7b",
-      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_prcp.gif",
-      "status": "ok",
-      "variant": "lead15"
+      "attempts": [
+        [
+          "lead14",
+          "prcp fetch failed: <urlopen error timed out>"
+        ],
+        [
+          "lead15",
+          "prcp fetch failed: <urlopen error timed out>"
+        ]
+      ],
+      "status": "failed"
     },
     "noaa_prcp_90day.gif": {
-      "bytes": 235514,
-      "changed": false,
-      "last_modified": "2026-04-16T12:31:29+00:00",
-      "sha256": "ea1e041c85ac73b0e1d779022e0373ce26c4f48f7f6e762476e7fd9f2c2bd81c",
-      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead01/off01_prcp.gif",
-      "status": "ok"
+      "status": "failed: prcp fetch failed: <urlopen error timed out>"
     },
     "noaa_temp_30day.gif": {
-      "bytes": 246633,
-      "changed": false,
-      "last_modified": "2026-04-30T19:00:27+00:00",
-      "sha256": "ec19df4d0b84e752b7071de2f9884cda089c0da22bebbdf6442106e2124fb37e",
-      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_temp.gif",
-      "status": "ok",
-      "variant": "lead15"
+      "attempts": [
+        [
+          "lead14",
+          "prcp fetch failed: <urlopen error timed out>"
+        ],
+        [
+          "lead15",
+          "prcp fetch failed: <urlopen error timed out>"
+        ]
+      ],
+      "status": "failed"
     },
     "noaa_temp_90day.gif": {
-      "bytes": 231677,
-      "changed": false,
-      "last_modified": "2026-04-16T12:31:29+00:00",
-      "sha256": "dd8fa9552795264ebe24dd90642072f08bb015aafee1b30a8a0e69f2ae02ed72",
-      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead01/off01_temp.gif",
-      "status": "ok"
+      "status": "failed: prcp fetch failed: <urlopen error timed out>"
     },
     "usdm_latest.png": {
       "bytes": 378180,
