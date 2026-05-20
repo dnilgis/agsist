@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 19 May 2026 13:57:32 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 20 May 2026 13:09:44 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WHEAT JUMPS 87 CENTS AS FEEDERS SURGE</title>
+      <link>https://agsist.com/daily/2026-05-20</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-20</guid>
+      <pubDate>Wed, 20 May 2026 05:00:00 -0600</pubDate>
+      <description>Wheat gained 87 cents to $6.70¼, the strongest single-day move in three weeks, as funds rotated back into grains on renewed export optimism. Feeders surged 1.4% to $363.85, leading the livestock complex higher after yesterday's drift. The China $17 billion commitment is finding its legs two days later, but corn barely budged and beans stayed flat. This looks like sector rotation, not broad commodity revival.
+Silver explodes 3% overnight while grains hold China's floor.
+• Wheat Leads Grain Rally
+• Feeders Surge Past Live Cattle
+• Silver Explodes Overnight
+  → Silver miners with exposure to industrial metals see margin expansion opportunity.
+Read more: https://agsist.com/daily/2026-05-20</description>
+    </item>
     <item>
       <title>GRAINS FLAT AS CHINA PROMISE FADES</title>
       <link>https://agsist.com/daily/2026-05-19</link>
@@ -366,20 +379,6 @@ Markets consolidate after Monday's planting scare as weather watch intensifies.
 • Livestock Divergence
 • Energy Steady
 Read more: https://agsist.com/daily/2026-04-21</description>
-    </item>
-    <item>
-      <title>CORN JUMPS ON PLANTING CONCERNS</title>
-      <link>https://agsist.com/daily/2026-04-20</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-20</guid>
-      <pubDate>Mon, 20 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Corn nearby futures jumped to $4.58, up 8.5 cents in a move that caught traders off guard as planting window pressure builds. The rally came as crude oil spiked 5.7% to $87.26, adding input cost concerns to weather worries. December corn held steady at $4.78, suggesting the market sees this as a short-term squeeze rather than a fundamental shift.
-Nearby corn rallied sharply while energy spiked, but livestock struggled across the board.
-• Grains Split Story
-  → Price 25% of remaining old crop corn if nearby futures hold above $4.55 through Wednesday close.
-• Livestock Pressure
-• Energy Shock
-  → Lock remaining diesel needs if WTI breaks above $88 on Tuesday morning.
-Read more: https://agsist.com/daily/2026-04-20</description>
     </item>
   </channel>
 </rss>
