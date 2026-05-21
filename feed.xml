@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 20 May 2026 13:44:43 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 21 May 2026 13:31:51 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS DRIFT LOWER, GAS SPIKES ON CHINA FUEL CAPS</title>
+      <link>https://agsist.com/daily/2026-05-21</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-21</guid>
+      <pubDate>Thu, 21 May 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed $4.63, down a nickel, as fund liquidation continued without weather premium to support it. Natural gas spiked 4.6% to $3.17 after China raised fuel price caps for the second time this month, signaling Beijing's struggle with war-driven energy costs. The grain weakness looks like position-clearing ahead of tomorrow's crop progress report, not new fundamental pressure.
+Corn drops a nickel while natural gas explodes 4.6% as Beijing raises fuel price ceilings again.
+• Grains Fade on Fund Flow
+• Energy Splits on China Demand
+• Livestock Holds Amid Grain Weakness
+Read more: https://agsist.com/daily/2026-05-21</description>
+    </item>
     <item>
       <title>WHEAT RALLIES 87 CENTS, FEEDERS SPIKE 1.4%</title>
       <link>https://agsist.com/daily/2026-05-20</link>
@@ -366,18 +378,6 @@ Corn holds narrow gains while beans ease slightly amid steady weather conditions
 • Livestock Mixed Signals
 • Energy Firms Modestly
 Read more: https://agsist.com/daily/2026-04-22</description>
-    </item>
-    <item>
-      <title>CORN HOLDS GAINS AS BEANS EDGE HIGHER</title>
-      <link>https://agsist.com/daily/2026-04-21</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-21</guid>
-      <pubDate>Tue, 21 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Corn held steady at $4.59 after Monday's weather-driven rally, while soybeans added 2.75 cents to $11.87 on continued South American tightness. Livestock struggled with feeder cattle dropping 1.1% as producers face margin pressure.
-Markets consolidate after Monday's planting scare as weather watch intensifies.
-• Grains Hold Steady
-• Livestock Divergence
-• Energy Steady
-Read more: https://agsist.com/daily/2026-04-21</description>
     </item>
   </channel>
 </rss>
