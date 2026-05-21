@@ -1,9 +1,9 @@
 {
-  "fetched_at": "2026-05-21T13:32:08+00:00",
+  "fetched_at": "2026-05-21T16:48:56+00:00",
   "files": {
     "noaa_prcp_30day.gif": {
       "bytes": 225019,
-      "changed": true,
+      "changed": false,
       "last_modified": "2026-05-21T12:31:28+00:00",
       "sha256": "35afd6f2abcfcf9536fa0ab24d30a76aa6569b332fba3009861a8751f9ec6689",
       "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead14/off14_prcp.gif",
@@ -12,7 +12,7 @@
     },
     "noaa_prcp_90day.gif": {
       "bytes": 230469,
-      "changed": true,
+      "changed": false,
       "last_modified": "2026-05-21T12:31:27+00:00",
       "sha256": "bd68831147606f68249f75b6d8e9ef2584ece7b73f5fdbd34bca6f90416ab973",
       "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead01/off01_prcp.gif",
@@ -20,7 +20,7 @@
     },
     "noaa_temp_30day.gif": {
       "bytes": 241038,
-      "changed": true,
+      "changed": false,
       "last_modified": "2026-05-21T12:31:28+00:00",
       "sha256": "20144866c1b6aa6cd939648f06712600a9d3b3e01d56c4b2c67fb6d5a350e0c6",
       "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead14/off14_temp.gif",
@@ -29,18 +29,18 @@
     },
     "noaa_temp_90day.gif": {
       "bytes": 233016,
-      "changed": true,
+      "changed": false,
       "last_modified": "2026-05-21T12:31:27+00:00",
       "sha256": "1e6c4786f6fd3d6aff731d27985d77576de7dec2b5290a135a92fc8fc6ebbadd",
       "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead01/off01_temp.gif",
       "status": "ok"
     },
     "usdm_latest.png": {
-      "bytes": 378180,
-      "changed": false,
-      "data_valid": "2026-05-12",
-      "sha256": "c9e96737e8bab410a4003a3169c298eb8f3f6267c84292e7969ff8b22d982be8",
-      "source": "https://droughtmonitor.unl.edu/data/png/20260512/20260512_usdm.png",
+      "bytes": 378854,
+      "changed": true,
+      "data_valid": "2026-05-19",
+      "sha256": "48d4d28b689948871b513033b4b9a26ff23c15f3aaeb5d7497eed7b0cf5ba7a3",
+      "source": "https://droughtmonitor.unl.edu/data/png/20260519/20260519_usdm.png",
       "status": "ok"
     }
   }
