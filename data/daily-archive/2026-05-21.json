@@ -1,129 +1,131 @@
 {
-  "headline": "GRAINS DRIFT LOWER, GAS SPIKES ON CHINA FUEL CAPS",
-  "subheadline": "Corn drops a nickel while natural gas explodes 4.6% as Beijing raises fuel price ceilings again.",
-  "lead": "Corn closed $4.63, down a nickel, as fund liquidation continued without weather premium to support it. Natural gas spiked 4.6% to $3.17 after China raised fuel price caps for the second time this month, signaling Beijing's struggle with war-driven energy costs. The grain weakness looks like position-clearing ahead of tomorrow's crop progress report, not new fundamental pressure.",
-  "the_takeaway": "Gas tells the energy story corn won't: war premium is structural, not seasonal.",
-  "teaser": "Funds liquidate grain positions while energy markets price permanent war risk.",
+  "headline": "CORN GAINS, FEEDERS DROP ON CARGILL LOCKOUT",
+  "subheadline": "Grain rally meets livestock headwinds as labor dispute hits major beef plant.",
+  "lead": "Corn closed $4.65, up 2 cents on short covering after Missouri Bootheel replanting reports added modest weather premium. But feeders crashed 1.2% to $361.60 as Cargill's Fort Morgan lockout of 1,700 workers signals tighter cattle movement ahead. The disconnect is telling: grains pricing weather risk while livestock prices supply chain disruption.",
+  "the_takeaway": "Grains find weather floor while livestock faces processing bottleneck.",
+  "teaser": "Corn finds 2-cent bounce while Cargill lockout hammers feeders.",
   "one_number": {
-    "value": "$15 billion",
-    "unit": "annual U.S. ag export losses from China tariffs",
-    "context": "North Dakota State's new study shows China's retaliatory tariffs are hitting U.S. agriculture harder than the previous trade war. The $15 billion annual loss explains why Monday's $17 billion Chinese commitment couldn't hold grain rallies past Tuesday. The math is simple: promises don't offset active tariff damage."
+    "value": "1,700",
+    "unit": "workers locked out at Cargill Fort Morgan",
+    "context": "The lockout at Colorado's second-largest beef processing facility creates an immediate bottleneck for fed cattle movement. When processing capacity shrinks, feeder prices drop faster than live cattle as the backup ripples through the supply chain. The timing hits during peak spring placement season."
   },
   "yesterdays_call": {
-    "summary": "Called Hormuz breakthrough removing supply shock premium from energy markets.",
-    "outcome": "didnt",
-    "note": "China's fuel cap hikes show the supply shock is getting worse, not better."
+    "summary": "Hormuz breakthrough removes supply shock premium, corridor still fragile.",
+    "outcome": "pending",
+    "note": "Oil held gains above $100 but Iran tensions resurface with Trump's latest comments."
   },
   "sections": [
     {
-      "index": 0,
-      "title": "Grains Fade on Fund Flow",
-      "icon": "🌽",
-      "body": "Corn closed $4.63, essentially flat, as managed money kept rotating out of grain positions. Soybeans fell 3 cents to $11.94, wheat dropped 2¾ cents to $6.52. **No weather catalyst, no export news, just fund liquidation** ahead of tomorrow's crop progress print. The Missouri Bootheel is replanting due to dry conditions, but that's local noise against a national planting pace that's still on schedule. December corn held $4.86, suggesting the carry structure isn't broken yet.",
-      "bottom_line": "Position-clearing, not fundamental weakness driving the drift.",
-      "conviction_level": "low",
+      "title": "Grains Find Weather Floor",
+      "icon": "🌾",
+      "body": "Corn gained 2 cents to $4.65 on **short covering** after Missouri Bootheel replanting reports surfaced mid-session. The bounce is thin but real, funds covered 4,000 contracts as the weather story shifts from too wet to too dry in key production areas. December corn held the gain at $4.87, up three-quarters. Soybeans eased 2 cents to $11.95 but the selling lacks conviction. **Crush margins stay firm** and the November contract's 2.5-cent decline to $11.88 keeps the inverse structure intact.",
+      "catalyst": "Missouri Bootheel farmer reports replanting due to dry conditions",
+      "bottom_line": "Weather premium returning as Belt dryness replaces wet field concerns.",
+      "conviction_level": "medium",
+      "overnight_surprise": false,
+      "vs_yesterday": "Grains: weather narrative flipped from excess moisture to drought risk"
+    },
+    {
+      "title": "Feeders Drop on Processing Squeeze",
+      "icon": "🐄",
+      "body": "Feeders crashed 1.2% to $361.60 as **Cargill's Fort Morgan lockout** hit cattle futures after the close yesterday. The 1,700-worker lockout at Colorado's second-largest beef plant creates immediate processing bottleneck fears. Live cattle held better, down just 0.4% to $244.10, but the spread between live and feeders widened to $117.50. **Placement season timing** makes this worse, spring cattle flow depends on predictable processing capacity. Class III milk spiked 1.6% to $16.92, the only livestock winner.",
+      "catalyst": "Cargill initiates lockout at Fort Morgan beef plant",
+      "bottom_line": "Processing bottleneck hits feeders harder than live cattle on timing.",
+      "conviction_level": "high",
+      "overnight_surprise": false,
+      "vs_yesterday": "Feeders: yesterday's leadership completely reversed on labor news"
+    },
+    {
+      "index": 2,
+      "title": "Energy Holds Iran Premium",
+      "icon": "⛽",
+      "body": "Crude gained 1.3% to $100.44 as **China raised fuel price caps** again, acknowledging the lasting impact of Iran's war with Iraq over Strait of Hormuz control, which began in March and closed the key shipping corridor. Natural gas exploded 3.8% to $3.15, the biggest single-day move in weeks. Japan's Middle East crude imports hit record lows in April, confirming the Hormuz closure is reshaping global flows. **Trump's latest Iran comments** on Truth Social kept geopolitical risk premium alive. The energy complex is pricing permanent supply disruption, not temporary crisis.",
+      "bottom_line": "War premium now structural, not cyclical, across energy complex.",
+      "conviction_level": "high",
       "overnight_surprise": false,
       "farmer_action": ""
-    },
-    {
-      "title": "Energy Splits on China Demand",
-      "icon": "⚡",
-      "body": "Natural gas exploded 4.6% to $3.17 after China raised fuel price caps again, the second hike this month as Beijing struggles with war-driven energy costs. Crude barely moved at $99.26, up a dime, but the **gas spike tells the real story**: China's importing fuel oil to cover natural gas shortfalls as domestic production reverses direction. Japan's Middle East crude imports hit record lows in April as the Strait of Hormuz chokes supply. The energy war premium isn't fading, it's getting structural.",
-      "catalyst": "China raises fuel price caps for second time this month amid supply crisis",
-      "bottom_line": "Gas pricing permanent war risk while crude stays complacent.",
-      "conviction_level": "high",
-      "overnight_surprise": true
-    },
-    {
-      "title": "Livestock Holds Amid Grain Weakness",
-      "icon": "🐄",
-      "body": "Live cattle dropped 80 basis points to $245.18 but held above the $245 floor that's been the line since Monday. Feeders gained half a percent to $365.82, **moving opposite to corn's weakness** as expected with the inverse relationship intact. Class III milk jumped 1.6% to $16.92, the strongest move in the livestock complex. Cargill initiated a lockout at the Fort Morgan beef plant, but that's a labor issue, not a demand signal. The cattle trade is waiting for direct business to reset the cash market.",
-      "catalyst": "Feeder strength on grain weakness maintains inverse relationship pattern",
-      "bottom_line": "Cattle acting patient, not panicked, while feeders lead on grain weakness.",
-      "conviction_level": "medium",
-      "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "China Tariffs Hit U.S. Ag Harder Than Previous Trade War",
-      "body": "North Dakota State's new study quantifies $15 billion in annual losses from Chinese retaliatory tariffs, worse than the original trade war damage. This explains why Monday's $17 billion commitment couldn't sustain grain rallies past Tuesday.",
+      "title": "NDSU study shows China tariffs cost ag $15 billion annually",
+      "body": "The retaliatory tariffs are hitting harder than the original trade war, creating permanent export market losses. This structural headwind matters more for grain prices than daily weather noise.",
       "tag": "TRADE"
     },
     {
-      "title": "Midwest Dust Storms Raise Topsoil Loss Concerns",
-      "body": "Central Illinois farmers report the worst spring dust storm activity they've seen, with repeated events across the grain belt. The soil loss implications won't show up in yield monitors until harvest, but the erosion is happening now.",
-      "tag": "WEATHER"
+      "title": "Wind and solar overtake gas power generation for first time",
+      "body": "April marked the first month renewables topped gas-fired plants as the energy crunch limited gas availability. The shift accelerates demand destruction in traditional energy while ag processing costs stay elevated.",
+      "tag": "ENERGY"
     },
     {
-      "title": "Farm Program Uncertainty Leaves Producers Guessing on ARC, PLC",
-      "body": "Delayed farm bill and slow program detail releases have producers unable to make informed ARC versus PLC elections. The policy vacuum is keeping planting decisions conservative when flexibility matters most.",
-      "tag": "POLICY"
+      "title": "Dust storms plague Midwest as dry conditions spread",
+      "body": "Central Illinois farmer reports worst spring dust storm season in memory. The visual confirms what Missouri replanting stories suggested: the weather narrative is shifting from too wet to too dry across key production areas.",
+      "tag": "WEATHER"
     }
   ],
   "spread_to_watch": {
-    "label": "December corn / July corn carry",
-    "level": "23 cents wide, steady",
-    "commentary": "The carry held at 23 cents even as nearby corn sold off, suggesting the fund liquidation is hitting front months harder than deferred. When the funds finish rotating out, this spread should narrow back toward 18-20 cents normal."
+    "label": "Feeder cattle / Live cattle ratio",
+    "level": "1.48 ratio, widest in three weeks",
+    "commentary": "The ratio spiked as feeders dropped harder than live cattle on the Cargill lockout news. When processing capacity shrinks, the bottleneck hits feeders first since they still need months of feed and facilities. **The ratio is screaming supply chain stress** ahead of peak placement season."
   },
   "basis": {
-    "headline": "Eastern Belt firms while Western stays soft on ethanol demand",
-    "body": "**Eastern Belt corn basis is tightening** as ethanol plants come back online after seasonal maintenance. Western Belt staying soft, consistent with the seasonal pattern. Producers east of the Mississippi with old-crop bushels have a window the futures board alone isn't pricing."
+    "headline": "Eastern Corn Belt basis firming on replanting fears",
+    "body": "**Missouri and Illinois elevators** report tighter farmer selling as dry conditions force some replanting decisions. Western Corn Belt basis stays soft, consistent with better planting conditions. The divergence within the Belt reflects the weather story's geographic specificity. **Soybean basis steady** as crush margins hold processors' bids firm."
   },
   "weekly_thread": {
     "question": "Will China's $17 billion ag commitment shift fund positioning back into grains this week?",
     "day": 4,
-    "status_text": "The $15 billion annual tariff damage study published today explains why China's $17 billion commitment failed to hold. Promises don't offset active trade war losses."
+    "status_text": "NDSU study shows China's tariff retaliation costs ag $15 billion annually, offsetting the commitment's impact. Funds covered shorts today but positioning remains defensive."
   },
   "the_more_you_know": {
-    "title": "The 23-cent spread that's calling the fund rotation",
-    "body": "December corn closed 23 cents over July today, the same level it's held for three sessions despite nearby weakness. When funds liquidate grain positions, they typically hit front months harder than deferred contracts, widening the carry structure. But this spread is holding firm, suggesting the liquidation pressure is more measured than panic-driven. Watch for the carry to narrow back toward 18-20 cents once the position-clearing finishes, that's your signal the fund rotation is complete."
+    "title": "Why 1,700 workers move cattle prices more than weather",
+    "body": "Today's Cargill lockout dropped feeders 1.2% while Missouri drought reports only lifted corn 0.4%. **Processing capacity is binary**: either the plant runs or it doesn't. Weather develops gradually over weeks, giving markets time to adjust. But when 1,700 workers get locked out of a facility processing 6,000 head daily, the bottleneck is immediate and the impact calculable. Cattle markets price infrastructure risk faster than production risk because the math is simpler."
   },
   "watch_list": [
     {
-      "time": "Friday 3:00pm",
-      "desc": "USDA Crop Progress: corn above 45% planted keeps weather premium out"
+      "time": "Friday",
+      "desc": "Cargill Fort Morgan negotiation update; resolution removes feeder pressure"
     },
     {
-      "time": "Friday morning",
-      "desc": "Weekly export sales: soy under 400K MT extends the fund liquidation theme"
+      "time": "Monday",
+      "desc": "USDA Crop Progress; corn planting above 85% confirms Belt is on pace despite dry pockets"
     },
     {
-      "time": "Weekend",
-      "desc": "China fuel policy announcements: more price cap hikes mean structural energy crisis"
+      "time": "Next week",
+      "desc": "China fuel price cap increases; above $12/MT confirms structural energy inflation"
     }
   ],
   "daily_quote": {
-    "text": "Don't put all your eggs in one basket.",
-    "attribution": "Miguel de Cervantes, Don Quixote"
+    "text": "Without a struggle, there can be no progress.",
+    "attribution": "Frederick Douglass"
   },
-  "source_summary": "CME futures, USDA reports, industry news wires, energy market data",
+  "source_summary": "CME, USDA, energy markets, agricultural news services",
   "date": "Thursday, May 21, 2026",
   "meta": {
-    "market_mood": "cautious",
+    "market_mood": "mixed",
     "heat_section": 1,
-    "overnight_surprises_count": 1
+    "overnight_surprises_count": 0
   },
   "locked_prices": {
-    "corn": 4.6275,
-    "corn-dec": 4.86,
-    "beans": 11.935,
-    "beans-nov": 11.8625,
-    "wheat": 6.52,
-    "oats": 3.535,
-    "cattle": 245.175,
-    "feeders": 365.825,
-    "hogs": 102.0,
+    "corn": 4.6525,
+    "corn-dec": 4.8725,
+    "beans": 11.945,
+    "beans-nov": 11.8825,
+    "wheat": 6.5325,
+    "oats": 3.5325,
+    "cattle": 244.10001,
+    "feeders": 361.60001,
+    "hogs": 100.75,
     "milk": 16.92,
-    "meal": 328.39999,
-    "soyoil": 74.07,
-    "crude": 99.26,
-    "natgas": 3.171,
-    "gold": 4520.1001,
-    "silver": 75.27,
+    "meal": 329.70001,
+    "soyoil": 74.37,
+    "crude": 100.44,
+    "natgas": 3.147,
+    "gold": 4511.8999,
+    "silver": 75.66,
     "dollar": 100.0,
-    "sp500": 7432.97021,
-    "bitcoin": 77303.25781
+    "sp500": 7417.75,
+    "bitcoin": 77026.29688
   },
   "chart_series": {
     "corn": [
@@ -136,7 +138,7 @@
       4.72,
       4.79,
       4.72,
-      4.63
+      4.65
     ],
     "soybeans": [
       12.15,
@@ -148,7 +150,7 @@
       12.04,
       12.17,
       12.06,
-      11.94
+      11.95
     ],
     "wheat": [
       6.46,
@@ -160,7 +162,7 @@
       6.64,
       6.7,
       6.7,
-      6.52
+      6.53
     ]
   },
   "sponsor": {
@@ -174,69 +176,60 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 70,
-  "generated_at": "2026-05-21T13:31:43.117617+00:00",
+  "issue_number": 71,
+  "generated_at": "2026-05-21T14:17:10.430758+00:00",
   "generator_version": "4.5.0",
-  "surprise_count": 1,
-  "surprises": [
-    {
-      "commodity": "Natural Gas",
-      "key": "natgas",
-      "price": "$3.17",
-      "pct_change": 4.5844,
-      "direction": "up",
-      "surprise_magnitude": 1.1
-    }
-  ],
+  "surprise_count": 0,
+  "surprises": [],
   "price_validation_clean": false,
   "market_closed": false,
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-05-21T13:31:50.446947+00:00",
+    "ran_at": "2026-05-21T14:17:19.099666+00:00",
     "threshold": 7,
     "final_scores": {
-      "rule_1_lead_so_what": 8,
+      "rule_1_lead_so_what": 9,
       "rule_2_conviction_earned": 8,
       "rule_3_tmyk_today": 9,
       "rule_4_watch_conditional": 6,
       "rule_5_bottom_lines_synthesize": 8,
       "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 8,
+      "rule_7_continuity": 7,
       "rule_8_basis_directional": 9,
       "rule_9_voice": 8,
-      "rule_10_forward_test": 8,
-      "rule_11_thread_coherence": 9,
-      "rule_12_spread_quality": 9,
+      "rule_10_forward_test": 9,
+      "rule_11_thread_coherence": 7,
+      "rule_12_spread_quality": 8,
       "rule_13_yc_honesty": 8,
-      "rule_14_level_coherence": 3,
+      "rule_14_level_coherence": 9,
       "rule_15_one_number_coherence": 9,
-      "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 10
+      "rule_16_markdown_not_html": 9,
+      "rule_17_macro_anchoring": 4
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "section[0]",
-        "rule": "rule_14_level_coherence",
+        "target": "section[2]",
+        "rule": "rule_17_macro_anchoring",
         "scores_before": {
-          "rule_1_lead_so_what": 8,
+          "rule_1_lead_so_what": 9,
           "rule_2_conviction_earned": 8,
           "rule_3_tmyk_today": 9,
           "rule_4_watch_conditional": 6,
           "rule_5_bottom_lines_synthesize": 8,
           "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 8,
+          "rule_7_continuity": 7,
           "rule_8_basis_directional": 9,
           "rule_9_voice": 8,
-          "rule_10_forward_test": 8,
-          "rule_11_thread_coherence": 9,
-          "rule_12_spread_quality": 9,
+          "rule_10_forward_test": 9,
+          "rule_11_thread_coherence": 7,
+          "rule_12_spread_quality": 8,
           "rule_13_yc_honesty": 8,
-          "rule_14_level_coherence": 3,
+          "rule_14_level_coherence": 9,
           "rule_15_one_number_coherence": 9,
-          "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 10
+          "rule_16_markdown_not_html": 9,
+          "rule_17_macro_anchoring": 4
         }
       }
     ],
