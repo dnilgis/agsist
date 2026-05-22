@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 21 May 2026 14:17:20 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 22 May 2026 13:34:33 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE CRASH 2%, GRAINS INCH HIGHER</title>
+      <link>https://agsist.com/daily/2026-05-22</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-22</guid>
+      <pubDate>Fri, 22 May 2026 05:00:00 -0600</pubDate>
+      <description>Live cattle dropped $4.85 to $240.15 and feeders fell $9.15 to $356.52 as the Cargill Fort Morgan lockout entered day two. The 1,700-worker shutdown is forcing cattle into a bottleneck exactly when fed supplies were already tight. Meanwhile, corn gained 1¾ cents to $4.63 and beans added 4 cents to $11.98 as funds rotated back into grains after this week's China commitment reset. The divergence tells you everything: livestock is fighting logistics, grains are pricing the next leg.
+Processing lockout hits livestock while grain funds rotate back after China reset.
+• Grains Find Quiet Buying
+• Livestock Crashes on Processing Jam
+• Energy Holds Iran Premium
+Read more: https://agsist.com/daily/2026-05-22</description>
+    </item>
     <item>
       <title>CORN GAINS, FEEDERS DROP ON CARGILL LOCKOUT</title>
       <link>https://agsist.com/daily/2026-05-21</link>
@@ -366,18 +378,6 @@ Energy volatility returns while crop futures mark time during planting season.
 • Energy Volatility Returns
   → Lock remaining propane and diesel if natural gas holds above $2.75 through Friday close.
 Read more: https://agsist.com/daily/2026-04-23</description>
-    </item>
-    <item>
-      <title>GRAINS DRIFT AS PLANTING PRESSURE MOUNTS</title>
-      <link>https://agsist.com/daily/2026-04-22</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-22</guid>
-      <pubDate>Wed, 22 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Corn futures crept higher with nearby contracts at $4.64, up a penny on the session. Soybeans softened modestly to $11.96 as planting season momentum builds across the Corn Belt. The grain complex showed little conviction as producers focus shifts from price action to field conditions.
-Corn holds narrow gains while beans ease slightly amid steady weather conditions.
-• Grains Mark Time
-• Livestock Mixed Signals
-• Energy Firms Modestly
-Read more: https://agsist.com/daily/2026-04-22</description>
     </item>
   </channel>
 </rss>
