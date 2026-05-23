@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 22 May 2026 13:34:33 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 23 May 2026 12:03:02 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE SURGE 3.8%, GRAINS STEADY INTO HOLIDAY</title>
+      <link>https://agsist.com/daily/2026-05-23</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-23</guid>
+      <pubDate>Sat, 23 May 2026 05:00:00 -0600</pubDate>
+      <description>Live cattle closed Friday at $249.30, up 3.8% in their strongest weekly showing since March as the Cargill plant lockout that hammered feeders all week finally drove funds into live contracts. Grains stayed range-bound with corn at $4.63 and soybeans at $11.96, both inching higher on technical buying but still waiting for China demand signals. The week's story was livestock divergence: live cattle found their floor while feeders crashed 1.9% Friday as processing bottlenecks squeezed the entire complex.
+Live cattle posted biggest weekly gain in two months while grains consolidated ahead of Memorial Day.
+• Grains Mark Time
+• Cattle Split Widens
+• Energy Holds Iran Premium
+Read more: https://agsist.com/daily/2026-05-23</description>
+    </item>
     <item>
       <title>CATTLE CRASH 2%, GRAINS INCH HIGHER</title>
       <link>https://agsist.com/daily/2026-05-22</link>
@@ -365,19 +377,6 @@ Class III tumbled overnight while corn crept to $4.65 amid quiet trade.
   → Dairy producers should hedge remaining 2026 production if Class III bounces above $17.50 next week.
 • Energy Softens
 Read more: https://agsist.com/daily/2026-04-24</description>
-    </item>
-    <item>
-      <title>NATURAL GAS SPIKES AS GRAINS HOLD STEADY</title>
-      <link>https://agsist.com/daily/2026-04-23</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-23</guid>
-      <pubDate>Thu, 23 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Grain futures drifted in narrow ranges Thursday as corn reached $4.64 per bushel and December corn climbed to $4.84. Natural gas provided the day's fireworks with a 5.5% surge to $2.87, breaking a string of quiet energy sessions. Planting pressure kept crop futures anchored despite decent demand underneath.
-Energy volatility returns while crop futures mark time during planting season.
-• Grains Mark Time
-• Livestock Pressure
-• Energy Volatility Returns
-  → Lock remaining propane and diesel if natural gas holds above $2.75 through Friday close.
-Read more: https://agsist.com/daily/2026-04-23</description>
     </item>
   </channel>
 </rss>
