@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-05-23T10:51:11Z",
+  "fetched": "2026-05-23T11:57:48Z",
   "ok": 40,
   "failed": 1,
   "quotes": {
@@ -345,28 +345,28 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 74619.03125,
+      "close": 74721.89062,
       "open": 75439.96875,
-      "netChange": -820.9375,
-      "pctChange": -1.0882,
+      "netChange": -718.07813,
+      "pctChange": -0.9519,
       "wk52_hi": 126198.0703,
       "wk52_lo": 60074.2031
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.3212,
+      "close": 1.3236,
       "open": 1.3324,
-      "netChange": -0.0112,
-      "pctChange": -0.8406,
+      "netChange": -0.0088,
+      "pctChange": -0.6605,
       "wk52_hi": 3.6502,
       "wk52_lo": 1.1335
     },
     "kaspa": {
       "ticker": "KAS-USD",
-      "close": 0.03266,
+      "close": 0.03264,
       "open": 0.03371,
-      "netChange": -0.00105,
-      "pctChange": -3.1148,
+      "netChange": -0.00107,
+      "pctChange": -3.1741,
       "wk52_hi": 0.1185,
       "wk52_lo": 0.0139
     }
