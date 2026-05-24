@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 23 May 2026 12:03:02 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 24 May 2026 12:03:35 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE SPLIT WIDENS, GRAINS HOLD GAINS INTO HOLIDAY</title>
+      <link>https://agsist.com/daily/2026-05-24</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-24</guid>
+      <pubDate>Sun, 24 May 2026 05:00:00 -0600</pubDate>
+      <description>The cattle market can't decide if it's broken or just bent. Live cattle closed Friday at $239.60, down a nickel, while feeders crashed 1.9% to $349.85. That 34-point spread between the two contracts is the widest since March and it's telling a story about processing capacity that next week's Cattle on Feed report will either confirm or contradict. The funds liquidated 8,000 feeder contracts Friday with no news driving it.
+Feeders drop 1.9% Friday while live cattle barely move, setting up Memorial Day week binary test.
+• Grains Mark Holiday Time
+• Cattle Split Widens
+• Energy Holds Iran Premium
+Read more: https://agsist.com/daily/2026-05-24</description>
+    </item>
     <item>
       <title>CATTLE SURGE 3.8%, GRAINS STEADY INTO HOLIDAY</title>
       <link>https://agsist.com/daily/2026-05-23</link>
@@ -364,19 +376,6 @@ Corn and wheat fell sharply Friday while cattle surged to 52-week highs.
   → Cattle feeders should price summer cattle if futures hold above $245 when markets open Monday.
 • WHAT TO WATCH MONDAY
 Read more: https://agsist.com/daily/2026-04-25</description>
-    </item>
-    <item>
-      <title>MILK CRASHES 6% AS GRAINS INCH HIGHER</title>
-      <link>https://agsist.com/daily/2026-04-24</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-24</guid>
-      <pubDate>Fri, 24 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Class III milk crashed 6.4% overnight to $16.86, the sharpest drop in months as dairy margins compress heading into summer. Corn managed a modest gain to $4.65 while soybeans edged to $11.75, both marking time as planting season enters its critical phase.
-Class III tumbled overnight while corn crept to $4.65 amid quiet trade.
-• Grains Mark Time
-• Dairy Disaster
-  → Dairy producers should hedge remaining 2026 production if Class III bounces above $17.50 next week.
-• Energy Softens
-Read more: https://agsist.com/daily/2026-04-24</description>
     </item>
   </channel>
 </rss>
