@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 24 May 2026 12:03:35 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 25 May 2026 14:14:05 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE REVERSE FRIDAY'S CRASH, HOGS DIVE 4%</title>
+      <link>https://agsist.com/daily/2026-05-25</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-25</guid>
+      <pubDate>Mon, 25 May 2026 05:00:00 -0600</pubDate>
+      <description>Live cattle exploded 3.8% to $249.30, erasing Friday's processing crash and then some. But feeders dropped 1.9% to $349.85, opening the spread to 34 points and counting. The reversal happened on no new catalyst, which means Friday's sellers got stopped out or the funds rotated hard into live cattle futures. Either way, the complex is acting like two different markets now.
+Live cattle surge 3.8% while feeders fall 1.9%, splitting the complex wider than Friday's jam.
+• Cattle Complex Splits Wide
+• Grains Mark Holiday Time
+• Energy Eases Iran Premium
+Read more: https://agsist.com/daily/2026-05-25</description>
+    </item>
     <item>
       <title>CATTLE SPLIT WIDENS, GRAINS HOLD GAINS INTO HOLIDAY</title>
       <link>https://agsist.com/daily/2026-05-24</link>
@@ -363,19 +375,6 @@ Grains steady, cattle strong, energy weak as weather takes command.
   → Price remaining fed cattle if live futures hold above $245 through Wednesday's close.
 • Energy Divergence
 Read more: https://agsist.com/daily/2026-04-26</description>
-    </item>
-    <item>
-      <title>PLANTING PRESSURE BUILDS AS GRAINS SLIDE</title>
-      <link>https://agsist.com/daily/2026-04-25</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-25</guid>
-      <pubDate>Sat, 25 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Spring planting pressure finally showed in grain futures as the week closed, with nearby corn sliding to $4.55 and Chicago wheat dropping to $6.08. Live cattle bucked the trend, rallying 2% to $248.30 on strong demand fundamentals. The week showcased the classic April tension: planting season price weakness meets seasonal demand strength.
-Corn and wheat fell sharply Friday while cattle surged to 52-week highs.
-• WEEK IN REVIEW
-• CATTLE SURGE CONTINUES
-  → Cattle feeders should price summer cattle if futures hold above $245 when markets open Monday.
-• WHAT TO WATCH MONDAY
-Read more: https://agsist.com/daily/2026-04-25</description>
     </item>
   </channel>
 </rss>
