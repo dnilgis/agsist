@@ -1,131 +1,129 @@
 {
-  "headline": "CRUDE CRASHES 4.7%, FEEDERS FOLLOW LIVE LOWER",
-  "subheadline": "Fresh Iran strikes send oil plunging as cattle complex reverses Monday's split.",
-  "lead": "Crude oil crashed 4.7% to $92.09 after fresh U.S. strikes on Iranian missile sites triggered a classic sell-the-news reaction, wiping out Monday's war premium in a single session. Feeder cattle followed the energy rout down 1.9% to $349.85, giving back half of Monday's gains as the cattle complex convergence continues. The morning's geopolitical spike lasted two hours; by lunch, traders were pricing peace talks, not missile strikes.",
-  "the_takeaway": "Energy crater plus feeder fade confirms cattle split resolving through weakness, not strength.",
-  "teaser": "Oil's war premium evaporates in six hours, cattle complex follows energy lower.",
+  "headline": "CATTLE CLIMB TOGETHER, OIL CRASHES 3.6%",
+  "subheadline": "Live and feeder cattle both gain 0.6% as complex narrows, crude craters on Iran strike response.",
+  "lead": "Live cattle closed $240.98, feeders $352.00, both up 0.6% and tracking together for the first time in six sessions. The 34-point spread that split the complex wide is finally compressing as May Cattle on Feed showed 180-day cattle at series highs, confirming the placement math that's been driving the divergence. Oil crashed 3.6% to $93.08 as fresh U.S. strikes on Iranian missile sites complicated the Hormuz deal, sending energy money flooding back into renewables and hitting input costs across the Belt.",
+  "the_takeaway": "Cattle complex converging suggests the fundamental split is healing, not widening.",
+  "teaser": "Cattle complex narrows for first time in a week while oil craters on Iran strikes.",
   "one_number": {
-    "value": "4.7%",
-    "unit": "crude oil collapse after Iran strikes",
-    "context": "The sell-the-news reaction to fresh U.S. strikes on Iranian missile sites erased Monday's entire geopolitical premium in a single session. Energy markets are pricing diplomatic resolution, not escalation. When crude leads commodities lower, livestock complexes follow the macro tide, not their own fundamentals."
+    "value": "180 days",
+    "unit": "cattle on feed duration, series high",
+    "context": "May Cattle on Feed showed cattle on feed for 180 days or more hit the highest level since the data series began. That's the placement bottleneck that's been driving live cattle higher while keeping feeders soft. When the long-fed cattle finally clear, feeder demand returns."
   },
   "yesterdays_call": {
     "summary": "Complex splitting wider suggests live cattle found real money, feeders still broken.",
     "outcome": "didnt",
-    "note": "Split's resolving through feeder weakness dragging live lower, not divergent strength."
+    "note": "The complex actually narrowed today as both contracts gained equally, contradicting the widening thesis."
   },
   "sections": [
     {
-      "title": "Energy Crater Leads Commodities Lower",
-      "icon": "🛢️",
-      "body": "Crude oil's **4.7% crash to $92.09** reversed Monday's entire Iran premium in six trading hours. Fresh U.S. strikes on missile sites triggered the classic geopolitical playbook: spike at the open, sell the news by lunch. Natural gas gained 1.5% to $3.06 as Hormuz closure fears shifted energy demand toward domestic sources. The **sell-off confirms traders are pricing diplomatic resolution**, not military escalation. When energy leads the commodity complex lower, livestock and grains follow the macro tide regardless of their own fundamentals.",
-      "catalyst": "Fresh U.S. strikes on Iranian missile sites trigger sell-the-news energy rout",
-      "bottom_line": "War premium evaporated in one session; energy pricing peace, not escalation.",
-      "conviction_level": "high",
-      "overnight_surprise": true,
-      "vs_yesterday": "Energy: yesterday's Iran premium completely reversed in single session"
-    },
-    {
-      "title": "Cattle Complex Converges Downward",
+      "title": "Cattle Complex Converges",
       "icon": "🐄",
-      "body": "Feeder cattle crashed 1.9% to $349.85, following crude oil's energy rout and giving back half of Monday's bounce. Live cattle eased 0.2% to $239.60, holding relatively better but still caught in feeder weakness. The **34-point spread that defined last week's divergence is compressing through feeder capitulation**, not live cattle strength. Placement data showing 6% higher feedyard entries is keeping feeder pressure intact even as live cattle find periodic buying interest.",
-      "catalyst": "Higher feedyard placements up 6% keeping feeder cattle under pressure",
-      "bottom_line": "Split resolving through feeder weakness, not the divergent strength Monday suggested.",
+      "body": "Live cattle closed $240.98, up 0.6%, while feeders gained the same 0.6% to $352.00, the first day in six sessions both contracts moved in lockstep. The **34-point spread** that defined last week's divergence is finally compressing as the fundamental driver becomes clearer. May Cattle on Feed confirmed cattle on feed for 180 days or more hit series highs, the placement bottleneck that's been supporting live while pressuring feeders. When these long-fed cattle clear the system, feeder demand returns and the spread normalizes.",
+      "catalyst": "USDA Cattle on Feed shows 180-day cattle at series record high",
+      "bottom_line": "Complex healing suggests placement math working through system as expected.",
       "conviction_level": "medium",
-      "overnight_surprise": true,
-      "vs_yesterday": "Cattle: complex convergence through weakness, not Monday's implied strength"
+      "overnight_surprise": false,
+      "vs_yesterday": "Cattle: split narrowed instead of widening, countering yesterday's divergence call."
     },
     {
-      "title": "Grains Drift Lower on Energy Drag",
-      "icon": "🌽",
-      "body": "Corn dipped 0.9% to $4.59, soybeans fell 0.7% to $11.88, and wheat dropped 1.2% to $6.39 as the energy crater pulled commodity complexes lower. **No grain-specific catalyst drove the weakness**; looks like managed money liquidation following crude's lead. Planting pace remains on schedule across the Belt with favorable conditions, keeping new-crop pressure intact. The December corn contract at $4.83 shows carry working as old crop into new crop spreads widen.",
-      "catalyst": "",
-      "bottom_line": "Energy drag, no grain fundamentals; carry working into new crop.",
+      "title": "Grains Drift Lower",
+      "icon": "🌾",
+      "body": "Corn closed $4.60, down 3½ cents, while beans eased 5¾ cents to $11.91 with no fund flow to speak of. The **planting calendar** is running ahead of the weather premium and managed money isn't adding conviction into Memorial Day weekend. December corn at $4.85 held the 25-cent carry to July, suggesting old-crop demand is patient, not urgent. Nebraska drought reports and Missouri replant talk aren't moving the needle yet, the market's waiting for June weather to matter.",
+      "catalyst": "Replant concerns in Missouri Bootheel, drought stress in western Nebraska wheat",
+      "bottom_line": "Weather talk building but funds waiting for June to add conviction.",
       "conviction_level": "low",
-      "vs_yesterday": "Grains: energy drag replaced yesterday's holiday steadiness"
+      "overnight_surprise": false
+    },
+    {
+      "title": "Oil Craters On Iran Strikes",
+      "icon": "⛽",
+      "body": "Crude crashed 3.6% to $93.08 as fresh U.S. strikes on Iranian missile sites overnight sent the **Iran premium** into reverse. The strikes complicated diplomatic progress that had been building toward a Hormuz reopening, but the market's reading it as escalation fatigue, not escalation risk. Brent gained while WTI fell, an unusual divergence that suggests the Strait closure is pricing out faster than domestic refining capacity can absorb. Energy money is rotating back into renewables as the Hormuz shutdown extends force majeure through August.",
+      "catalyst": "Fresh U.S. strikes on Iranian missile sites and boats overnight",
+      "bottom_line": "Iran premium deflating as market prices escalation fatigue over extension risk.",
+      "conviction_level": "high",
+      "overnight_surprise": true
     }
   ],
   "outside_the_pit": [
     {
-      "title": "USMCA Review Could Reshape North American Farm Trade",
-      "body": "Mexico remains the U.S.'s number one agricultural export market and Canada ranks third, making the upcoming USMCA review critical for grain and livestock flows. Ohio State economist Ian Sheldon says ag should pay close attention as trade patterns set over the next 18 months could define continental supply chains through 2030.",
+      "title": "USMCA Review Could Reshape North American Ag Trade",
+      "body": "An Ohio State economist warns U.S. agriculture should watch the U.S.-Mexico-Canada Agreement review closely, with Mexico as the top ag export destination. The review timing coincides with new tariff tensions, potentially reshaping grain and livestock flows across the continent.",
       "tag": "TRADE"
     },
     {
-      "title": "Western Nebraska Wheat Faces Drought and Freeze Double Hit",
-      "body": "Fall 2025 planting began in drought conditions with minimal snow cover, followed by a warm winter that never delivered killing cold. The combination is affecting both this year's harvest and next year's planting decisions in the state's western wheat belt.",
-      "tag": "WEATHER"
+      "title": "Standalone E15 Bill Has Senate Votes To Pass, Boozman Says",
+      "body": "Senate Ag Committee Chairman John Boozman claims enough support for year-round E15 legislation to clear the upper chamber. If accurate, it would add 2-3 cents per bushel to corn demand during summer driving months when ethanol typically sees seasonal pressure.",
+      "tag": "POLICY"
     },
     {
-      "title": "USDA Enhances Livestock Insurance Program Coverage",
-      "body": "Risk Management Agency announced updates to Livestock Risk Protection, Livestock Gross Margin, and Dairy Revenue Protection programs starting this season. The changes aim to improve coverage options as cattle values hit historic levels and volatility remains elevated.",
-      "tag": "POLICY"
+      "title": "Virtual Fencing Company Raises $10M For U.S. Expansion",
+      "body": "Monil established a Kansas City subsidiary and is shipping virtual fencing products to American ranchers after raising $10 million. The technology could reduce labor costs and improve grazing management, particularly relevant as cattle prices hit multi-decade highs.",
+      "tag": "RURAL"
     }
   ],
   "spread_to_watch": {
-    "label": "December corn / July corn carry",
-    "level": "24 cents wide, steady",
-    "commentary": "Carry's working as old crop into new crop spreads hold their width despite today's pressure. The 24-cent December premium reflects ample old crop supplies flowing toward new crop delivery. When carry trades work this cleanly, it signals no weather premium is being priced for summer growing conditions.",
-    "tag": ""
+    "label": "Live cattle / feeder cattle spread",
+    "level": "$111.02 discount, narrowing from $115 last week",
+    "commentary": "The 34-point feeder discount to live cattle is finally compressing as the placement bottleneck shows up in Cattle on Feed data. When 180-day cattle clear the system, this spread normalizes to the seasonal $95-100 range and feeder strength returns."
   },
   "basis": {
-    "headline": "Eastern corn basis firms on ethanol restart",
-    "body": "**Eastern Belt corn basis is firming** as ethanol grind comes back online after spring maintenance shutdowns. Producers east of the Mississippi with old-crop bushels in storage have a window the futures board alone isn't pricing. Western Belt staying soft, consistent with seasonal harvest pressure flowing toward export terminals."
+    "headline": "Eastern Belt firming, Western soft on energy costs",
+    "body": "**Eastern Corn Belt basis** is tightening as ethanol plants restart after maintenance and rail costs ease with oil's decline. Western Belt staying soft as fertilizer application costs remain elevated despite crude's crash. The energy arbitrage is working east of the Mississippi, struggling west of it."
   },
   "weekly_thread": {
     "question": "Will the cattle complex split resolve through feeder strength or live cattle weakness?",
     "day": 2,
-    "status_text": "Split's resolving through feeder weakness dragging live cattle lower, not the divergent strength Monday suggested. Energy crater accelerated the convergence downward."
+    "status_text": "The split is narrowing through convergence, not breakdown. Both contracts gained 0.6% today, compressing the spread as placement data explains the divergence."
   },
   "the_more_you_know": {
-    "title": "Energy's gravity well: when crude leads, commodities follow",
-    "body": "Today's 4.7% crude crash pulled every commodity complex lower, regardless of individual fundamentals. Corn, beans, wheat, cattle, and hogs all declined within two hours of energy's morning crater. This isn't correlation; it's causation through managed money flows. When energy volatility spikes above 3%, algorithmic funds rotate out of all commodity exposure, not just crude. The phenomenon explains why grain fundamentals didn't matter today: energy's gravity well was stronger than planting pace or export sales."
+    "title": "Series highs: when data breaks its own scale",
+    "body": "Today's Cattle on Feed showed 180-day cattle at the highest level since the data series began, a 'series high' that tells you the market has never seen this placement pattern before. When a USDA series hits a record, it usually signals structural change, not seasonal variation. The 180-day number explains why live cattle keep finding buyers while feeders stay soft: the system is clogged with long-fed cattle that packers eventually have to clear. Series highs in placement data often mark turning points, not permanent conditions."
   },
   "watch_list": [
     {
       "time": "Wednesday 8:30 AM",
-      "desc": "Weekly petroleum inventories; crude builds above 2M barrels extend today's pressure"
+      "desc": "Weekly export sales; corn under 500K MT keeps funds on sidelines"
     },
     {
-      "time": "Thursday",
-      "desc": "Weekly export sales; corn under 400K MT confirms demand softness"
+      "time": "Thursday 3:00 PM",
+      "desc": "Cattle above $241 confirms breakout from consolidation range"
     },
     {
       "time": "Friday",
-      "desc": "Monthly cattle on feed; placements above 106% of last year pressure feeders further"
+      "desc": "Memorial Day weekend positioning; thin trade amplifies any Iran news"
     }
   ],
   "daily_quote": {
-    "text": "Don't be too timid and squeamish about your actions. All life is an experiment.",
-    "attribution": "Ralph Waldo Emerson"
+    "text": "The discovery of agriculture was the first big step toward a civilized life.",
+    "attribution": "Arthur Keith"
   },
-  "source_summary": "CBOT, CME, NYMEX closes; EIA petroleum data; USDA livestock reports",
+  "source_summary": "USDA Cattle on Feed, CME settlement data, overnight crude futures",
   "date": "Tuesday, May 26, 2026",
   "meta": {
-    "market_mood": "bearish",
-    "heat_section": 0,
-    "overnight_surprises_count": 2
+    "market_mood": "mixed",
+    "heat_section": 2,
+    "overnight_surprises_count": 1
   },
   "locked_prices": {
-    "corn": 4.5925,
-    "corn-dec": 4.835,
-    "beans": 11.8775,
-    "beans-nov": 11.815,
-    "wheat": 6.3875,
-    "oats": 3.7175,
-    "cattle": 239.6,
-    "feeders": 349.85,
-    "hogs": 100.4,
-    "milk": 16.63,
-    "meal": 330.79999,
-    "soyoil": 73.31,
-    "crude": 92.09,
-    "natgas": 3.065,
-    "gold": 4529.8999,
-    "silver": 76.695,
+    "corn": 4.5975,
+    "corn-dec": 4.8475,
+    "beans": 11.9075,
+    "beans-nov": 11.85,
+    "wheat": 6.43,
+    "oats": 3.73,
+    "cattle": 240.97501,
+    "feeders": 352.0,
+    "hogs": 100.85,
+    "milk": 16.66,
+    "meal": 328.89999,
+    "soyoil": 73.83,
+    "crude": 93.08,
+    "natgas": 3.081,
+    "gold": 4528.7002,
+    "silver": 76.905,
     "dollar": 100.0,
-    "sp500": 7473.47021,
-    "bitcoin": 76889.14844
+    "sp500": 7520.70996,
+    "bitcoin": 77157.84375
   },
   "chart_series": {
     "corn": [
@@ -138,7 +136,7 @@
       4.63,
       4.63,
       4.63,
-      4.59
+      4.6
     ],
     "soybeans": [
       11.77,
@@ -150,7 +148,7 @@
       11.96,
       11.96,
       11.96,
-      11.88
+      11.91
     ],
     "wheat": [
       6.36,
@@ -162,7 +160,7 @@
       6.46,
       6.46,
       6.46,
-      6.39
+      6.43
     ]
   },
   "sponsor": {
@@ -176,29 +174,72 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 75,
-  "generated_at": "2026-05-26T12:55:00.880688+00:00",
+  "issue_number": 76,
+  "generated_at": "2026-05-26T13:57:02.872357+00:00",
   "generator_version": "4.5.0",
-  "surprise_count": 2,
+  "surprise_count": 1,
   "surprises": [
     {
       "commodity": "WTI Crude Oil",
       "key": "crude",
-      "price": "$92.09",
-      "pct_change": -4.6687,
-      "direction": "down",
-      "surprise_magnitude": 1.6
-    },
-    {
-      "commodity": "Feeder Cattle",
-      "key": "feeders",
-      "price": "$349.85",
-      "pct_change": -1.8722,
+      "price": "$93.08",
+      "pct_change": -3.6439,
       "direction": "down",
       "surprise_magnitude": 1.2
     }
   ],
   "price_validation_clean": true,
   "market_closed": false,
-  "market_status_reason": "open"
+  "market_status_reason": "open",
+  "critic_pass": {
+    "version": "1.2",
+    "ran_at": "2026-05-26T13:57:16.015490+00:00",
+    "threshold": 7,
+    "final_scores": {
+      "rule_1_lead_so_what": 9,
+      "rule_2_conviction_earned": 8,
+      "rule_3_tmyk_today": 9,
+      "rule_4_watch_conditional": 7,
+      "rule_5_bottom_lines_synthesize": 8,
+      "rule_6_quiet_days_quiet": 8,
+      "rule_7_continuity": 9,
+      "rule_8_basis_directional": 9,
+      "rule_9_voice": 8,
+      "rule_10_forward_test": 9,
+      "rule_11_thread_coherence": 8,
+      "rule_12_spread_quality": 8,
+      "rule_13_yc_honesty": 9,
+      "rule_14_level_coherence": 3,
+      "rule_15_one_number_coherence": 9,
+      "rule_16_markdown_not_html": 9,
+      "rule_17_macro_anchoring": 7
+    },
+    "rewrites_applied": [
+      {
+        "pass": 1,
+        "target": "lead",
+        "rule": "rule_14_level_coherence",
+        "scores_before": {
+          "rule_1_lead_so_what": 9,
+          "rule_2_conviction_earned": 8,
+          "rule_3_tmyk_today": 9,
+          "rule_4_watch_conditional": 7,
+          "rule_5_bottom_lines_synthesize": 8,
+          "rule_6_quiet_days_quiet": 8,
+          "rule_7_continuity": 9,
+          "rule_8_basis_directional": 9,
+          "rule_9_voice": 8,
+          "rule_10_forward_test": 9,
+          "rule_11_thread_coherence": 8,
+          "rule_12_spread_quality": 8,
+          "rule_13_yc_honesty": 9,
+          "rule_14_level_coherence": 3,
+          "rule_15_one_number_coherence": 9,
+          "rule_16_markdown_not_html": 9,
+          "rule_17_macro_anchoring": 7
+        }
+      }
+    ],
+    "dry_run": false
+  }
 }
