@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-05-26",
+      "date_display": "Tuesday, May 26, 2026",
+      "headline": "CRUDE CRASHES 4.7%, FEEDERS FOLLOW LIVE LOWER",
+      "teaser": "Oil's war premium evaporates in six hours, cattle complex follows energy lower.",
+      "market_mood": "bearish",
+      "surprise_count": 2,
+      "sections": 3,
+      "url": "/daily/2026-05-26",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-05-25",
       "date_display": "Monday, May 25, 2026",
       "headline": "CATTLE REVERSE FRIDAY'S CRASH, HOGS DIVE 4%",
@@ -812,6 +824,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-05-25T14:13:55.133642+00:00",
-  "count": 74
+  "updated": "2026-05-26T12:55:00.882272+00:00",
+  "count": 75
 }

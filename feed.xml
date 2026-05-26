@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 25 May 2026 14:14:05 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 26 May 2026 12:55:09 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CRUDE CRASHES 4.7%, FEEDERS FOLLOW LIVE LOWER</title>
+      <link>https://agsist.com/daily/2026-05-26</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-26</guid>
+      <pubDate>Tue, 26 May 2026 05:00:00 -0600</pubDate>
+      <description>Crude oil crashed 4.7% to $92.09 after fresh U.S. strikes on Iranian missile sites triggered a classic sell-the-news reaction, wiping out Monday's war premium in a single session. Feeder cattle followed the energy rout down 1.9% to $349.85, giving back half of Monday's gains as the cattle complex convergence continues. The morning's geopolitical spike lasted two hours; by lunch, traders were pricing peace talks, not missile strikes.
+Fresh Iran strikes send oil plunging as cattle complex reverses Monday's split.
+• Energy Crater Leads Commodities Lower
+• Cattle Complex Converges Downward
+• Grains Drift Lower on Energy Drag
+Read more: https://agsist.com/daily/2026-05-26</description>
+    </item>
     <item>
       <title>CATTLE REVERSE FRIDAY'S CRASH, HOGS DIVE 4%</title>
       <link>https://agsist.com/daily/2026-05-25</link>
@@ -362,19 +374,6 @@ Corn and beans drift sideways while cattle hold recent gains and energy weakens.
   → Price summer cattle if live futures close above $245 for three consecutive sessions.
 • Energy Retreat
 Read more: https://agsist.com/daily/2026-04-27</description>
-    </item>
-    <item>
-      <title>MIXED SIGNALS AHEAD OF CRITICAL PLANTING WEEK</title>
-      <link>https://agsist.com/daily/2026-04-26</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-26</guid>
-      <pubDate>Sun, 26 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Commodity markets enter a pivotal week with mixed signals across the board. Corn held flat at $4.63 as of Friday's close while December contracts edged higher to $4.84, suggesting cautious optimism despite planting pressure. With optimal planting windows narrowing and weather forecasts becoming the primary driver, producers face tough decisions on pricing and risk management.
-Grains steady, cattle strong, energy weak as weather takes command.
-• Week Ahead Setup
-• Cattle Momentum Continues
-  → Price remaining fed cattle if live futures hold above $245 through Wednesday's close.
-• Energy Divergence
-Read more: https://agsist.com/daily/2026-04-26</description>
     </item>
   </channel>
 </rss>
