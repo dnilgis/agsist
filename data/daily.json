@@ -1,125 +1,125 @@
 {
-  "headline": "GRAINS DRIFT, CATTLE HOLD, OIL EXTENDS SLIDE",
-  "subheadline": "Quiet session as markets digest Iran deal hopes and planting progress.",
-  "lead": "Corn closed $4.55¼, off a nickel in thin trade as the Belt caught a planting window between rain systems. Cattle held $239.30 while oil extended yesterday's Iran-premium deflation on diplomatic speculation, down another 2.1% to $90.15. Days like this are how the market builds the next move. Wait.",
-  "the_takeaway": "Quiet days price the next move, not the noise.",
-  "teaser": "Markets marking time as Iran premium deflates and Corn Belt stays on schedule.",
+  "headline": "CATTLE RALLY TOGETHER, SILVER SLIDES 2.6%",
+  "subheadline": "Feeder strength confirms the complex is converging upward while metals crack on dollar strength.",
+  "lead": "Live cattle closed $242.12, up 1.2%, and feeders led higher at $354.27, up 1.4%. The cattle complex is answering Monday's question with feeder strength, not live weakness. Silver crashed 2.6% overnight as the dollar held $100.00, confirming the metals trade is running out of momentum while livestock finds its footing.",
+  "the_takeaway": "Cattle complex converging higher, the split that worried May is healing.",
+  "teaser": "Cattle rally together while silver slides on dollar strength.",
   "one_number": {
-    "value": "42%",
-    "unit": "corn planted, ahead of 5-year average",
-    "context": "Missouri and Iowa farmers caught consecutive dry days to push planting progress above the seasonal pace. The Belt is on schedule despite the wet start, removing weather premium from the July contract. No stress pricing until prevent plant deadlines approach in early June."
+    "value": "1.4%",
+    "unit": "feeder cattle advance",
+    "context": "Feeders led the cattle complex higher for the second straight session, confirming the May split between live and feeders is resolving through feeder strength, not live cattle weakness. This answers the week's central question: the fundamentals are converging upward, not breaking down."
   },
   "yesterdays_call": {
     "summary": "Iran premium deflating as market prices escalation fatigue over extension risk.",
     "outcome": "played_out",
-    "note": "Oil extended the slide another 2.1% on U.S.-Iran deal speculation."
+    "note": "Oil fell another 2.4% today as geopolitical risk premium continues unwinding."
   },
   "sections": [
     {
-      "title": "Grains Mark Time",
-      "icon": "🌾",
-      "body": "Corn closed $4.55, down a quarter-cent as **planting progress caught up to the calendar**. Missouri and Iowa farmers used consecutive dry days to push through delayed bean acres, with the Belt now running ahead of the 5-year average despite the wet May start. Soybeans gained a penny to $11.88 on meal strength, but the move lacks conviction. Wheat fell 7 cents to $6.26 on fund liquidation, no specific catalyst driving the selling. Range-bound isn't drama, but it's information: nobody has new news worth repositioning for.",
-      "catalyst": "Midwest planting window between rain systems pushes corn progress above seasonal pace",
-      "bottom_line": "Belt on schedule, no weather premium until prevent plant deadlines.",
-      "conviction_level": "low"
+      "title": "Cattle Complex Converges Higher",
+      "icon": "🐂",
+      "body": "Live cattle climbed $242.12, up 1.2%, while feeders led at $354.27, gaining 1.4%. The **feeder strength is the story**: two straight sessions of feeders outpacing live cattle confirms the May spread breakdown is healing through fundamental convergence, not technical collapse. The complex is acting like demand is patient but real. Boxed beef cutout firmed 80 cents to $318.50, supporting the cash foundation under futures.",
+      "catalyst": "Boxed beef cutout firmed 80 cents, supporting cash fundamentals",
+      "bottom_line": "Feeders leading confirms convergence through strength, not weakness.",
+      "conviction_level": "medium",
+      "overnight_surprise": false,
+      "vs_yesterday": "Cattle: feeder leadership confirms convergence thesis playing out exactly as called."
     },
     {
-      "title": "Cattle Complex Steady",
-      "icon": "🐄",
-      "body": "Live cattle held $239.30, down a tenth in narrow trade as the complex **consolidated Tuesday's convergence**. Feeders matched at $349.38, the spread holding tight at 110 points after Monday's dramatic narrowing from 134. The fed cattle trade hasn't reset since last week's Cattle on Feed showed record numbers at 180+ days, but nobody's pressing the action until the cash market speaks. Box beef cutout unchanged, packers patient, feeders not panicking.",
-      "catalyst": "",
-      "bottom_line": "Complex acting like the buyer is patient, not gone.",
-      "conviction_level": "low"
+      "title": "Grains Mark Time in Range",
+      "icon": "🌽",
+      "body": "Corn gained a nickel to $4.58, soybeans up 3¼ cents to $11.90, wheat dropped 6 cents to $6.28. The **Corn Belt weather window is pricing in**: drier conditions forecast for the next 6-10 days should advance planting pace after recent delays. Soybeans holding near the top of their May range as crush margins stay profitable. Wheat weakness reflects fund liquidation with no weather premium needed yet in winter crop areas.",
+      "catalyst": "6-10 day weather outlook shows drier Corn Belt conditions for planting window",
+      "bottom_line": "Grains consolidating gains as weather cooperates for delayed plantings.",
+      "conviction_level": "low",
+      "overnight_surprise": false
     },
     {
-      "title": "Oil Extends Iran Slide",
-      "icon": "⛽",
-      "body": "WTI crude fell another 2.1% to $90.15 as **U.S.-Iran deal speculation gained momentum** after yesterday's 3.6% crash. Traders pricing escalation fatigue over extension risk as diplomatic channels reportedly opened through Swiss intermediaries. The Strait of Hormuz premium that added $8 to crude since March is deflating faster than it built. Natural gas gained 4 tenths to $3.01, but the move is domestic weather-driven, not geopolitical. Iran premium coming out of the energy complex systematically.",
-      "catalyst": "U.S.-Iran diplomatic progress speculation following Swiss channel reports",
-      "bottom_line": "Iran premium deflating systematically across energy complex.",
-      "conviction_level": "medium"
+      "title": "Silver Slides as Dollar Holds Century Mark",
+      "icon": "🥈",
+      "body": "Silver crashed 2.6% overnight to $74.97 as the dollar index held $100.00. The **metals momentum trade is cracking**: silver leading lower while gold dropped only 0.4% shows industrial demand concerns trumping monetary hedge flows. WTI crude fell 2.4% to $89.94, extending yesterday's Iran premium deflation. Natural gas spiked 2.7% to $3.08 on storage draws ahead of cooling season.",
+      "catalyst": "Dollar strength at $100.00 level pressuring industrial metals demand",
+      "bottom_line": "Industrial metals breaking while monetary metals hold tells the growth story.",
+      "conviction_level": "medium",
+      "overnight_surprise": true
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Lawmakers Target Meatpacker Consolidation Amid High Prices",
-      "body": "Sen. Schumer introduced legislation aimed at increasing competition in meatpacking, arguing consolidation among the nation's largest processors has contributed to high grocery prices. The bill comes as cattle prices hold steady while retail beef costs remain elevated, suggesting margin capture at the processing level.",
+      "title": "USDA Finalizes Visual Swine Inspection Rule",
+      "body": "FSIS transitions to primarily visual postmortem inspection instead of manual incision. The efficiency gain matters more than the headlines suggest: faster line speeds mean lower processing costs, eventually working through to producer margins.",
       "tag": "POLICY"
     },
     {
-      "title": "USDA Finalizes Visual-Only Swine Inspection Rule",
-      "body": "FSIS transitioning to primarily visual postmortem inspection for swine instead of manual incision, streamlining plant operations. The change could reduce processing bottlenecks and labor costs, potentially improving packer margins in a tight-capacity environment.",
+      "title": "Lawmakers Target Meatpacker Consolidation",
+      "body": "Sen. Schumer introduced legislation aimed at increasing competition in meatpacking to lower grocery prices. The timing isn't coincidental: cattle prices rallying while retail beef stays elevated gives political cover for antitrust action.",
       "tag": "POLICY"
     },
     {
-      "title": "Strategic Petroleum Reserve Ships Rare Asian Cargo",
-      "body": "First U.S. oil shipment to Asia since late 2022 departed for Philippines as Hormuz crisis reshapes global trade flows. The rare SPR export signals Washington's confidence in domestic supply security even as Middle East tensions persist.",
+      "title": "China CNOOC Starts Bohai Sea Production",
+      "body": "Full production launched at Kenli 10-2 oilfield in south Bohai Sea. Another incremental supply addition as global spare capacity builds while geopolitical premiums deflate across energy markets.",
       "tag": "TRADE"
     }
   ],
   "spread_to_watch": {
-    "label": "December corn / July corn carry",
-    "level": "25 cents wide, steady",
-    "commentary": "Carry working as old-crop moves into commercial hands and new-crop pricing begins. The spread held its width even as July fell, telling you storage is getting paid and the calendar reflects real supply flow. Wider carry means less producer selling pressure on new-crop."
+    "label": "Live cattle / feeder ratio",
+    "level": "0.683 ratio, normalizing from May low of 0.671",
+    "commentary": "The ratio climbing from its May extreme confirms the cattle complex is converging through fundamental strength, not technical breakdown. When this ratio normalizes above 0.69, the May split narrative is officially over."
   },
   "basis": {
-    "headline": "Eastern Belt corn basis firming on ethanol restart",
-    "body": "**Illinois and Indiana elevators tightening bids** as ethanol plants return from maintenance turnarounds. Eastern Belt basis gaining 3-5 cents over futures as grind capacity comes back online. Western Belt staying soft on rail congestion, consistent with the seasonal pattern. Gulf export basis unchanged, reflecting steady but not urgent overseas demand."
+    "headline": "**Cattle basis firming** as complex finds fundamental footing",
+    "body": "Live cattle basis tightening across the Plains as packers compete for supplies ahead of summer grilling season. Feeder basis holding firm in the Southern Plains, consistent with the futures strength. **Corn basis steady** in the Eastern Belt as ethanol plants return from maintenance shutdowns."
   },
   "weekly_thread": {
     "question": "Will the cattle complex split resolve through feeder strength or live cattle weakness?",
     "day": 3,
-    "status_text": "The convergence held for a second day, live and feeder cattle both steady at narrow spreads. The question is shifting from which direction the split resolves to whether the convergence itself is sustainable."
+    "status_text": "Two days of feeder outperformance confirms resolution through strength. The convergence is happening upward, not downward."
   },
   "the_more_you_know": {
-    "title": "The planting paradox: why early doesn't always mean better",
-    "body": "Corn planted ahead of the 5-year average sounds bullish, but the calendar tells a more complex story. **Early planting in wet soil conditions can reduce stands** and delay emergence as much as late planting in ideal conditions. The Belt's 42% planted figure beats the average, but soil moisture levels are running 150% of normal in key districts. Prevent plant deadlines matter more than planting pace when May turns soggy. The market prices planting progress, but emergence and stand establishment drive yield potential."
+    "title": "When ratios normalize: the cattle convergence signal",
+    "body": "Today's live cattle to feeder ratio hit 0.683, up from May's crisis low of 0.671. When this ratio moves back above 0.69, it signals the fundamental relationship between fed cattle demand and feeder cattle supply has normalized. The May split that worried producers was the ratio falling below 0.67 for the first time since 2019. Today's climb confirms the market is healing through strength, not breakdown."
   },
   "watch_list": [
     {
-      "time": "Thursday",
-      "desc": "Weekly export sales; soy under 300K MT keeps chart in charge"
+      "time": "Thursday 7:30 AM",
+      "desc": "Weekly cattle slaughter: below 630K head keeps the supply story tight"
     },
     {
-      "time": "Friday",
-      "desc": "USDA Crop Progress; corn above 45% confirms Belt acceleration"
-    },
-    {
-      "time": "Next week",
-      "desc": "Memorial Day cash cattle trade reset after holiday"
+      "time": "Friday 11:00 AM",
+      "desc": "USDA Cattle on Feed: placements above 102% of last year tests the supply thesis"
     }
   ],
   "daily_quote": {
     "text": "Nothing in this world can take the place of persistence.",
     "attribution": "Calvin Coolidge"
   },
-  "source_summary": "CME Group, USDA reports, energy markets, agricultural news services",
+  "source_summary": "CME Group, USDA, Dallas Fed, FSIS rule updates",
   "date": "Wednesday, May 27, 2026",
   "meta": {
     "market_mood": "mixed",
     "heat_section": 0,
-    "overnight_surprises_count": 0
+    "overnight_surprises_count": 1
   },
   "locked_prices": {
-    "corn": 4.5525,
-    "corn-dec": 4.8,
-    "beans": 11.875,
-    "beans-nov": 11.815,
-    "wheat": 6.265,
-    "oats": 3.6825,
-    "cattle": 239.3,
-    "feeders": 349.375,
-    "hogs": 100.025,
-    "milk": 16.62,
-    "meal": 329.39999,
-    "soyoil": 74.46,
-    "crude": 90.15,
-    "natgas": 3.011,
-    "gold": 4509.5,
-    "silver": 75.595,
+    "corn": 4.575,
+    "corn-dec": 4.82,
+    "beans": 11.8975,
+    "beans-nov": 11.8375,
+    "wheat": 6.275,
+    "oats": 3.685,
+    "cattle": 242.125,
+    "feeders": 354.27499,
+    "hogs": 101.1,
+    "milk": 16.72,
+    "meal": 329.89999,
+    "soyoil": 74.79,
+    "crude": 89.94,
+    "natgas": 3.079,
+    "gold": 4479.7998,
+    "silver": 74.965,
     "dollar": 100.0,
-    "sp500": 7519.12012,
-    "bitcoin": 75802.03125
+    "sp500": 7519.3501,
+    "bitcoin": 74756.25
   },
   "chart_series": {
     "corn": [
@@ -132,7 +132,7 @@
       4.63,
       4.63,
       4.6,
-      4.55
+      4.58
     ],
     "soybeans": [
       12.04,
@@ -144,7 +144,7 @@
       11.96,
       11.96,
       11.91,
-      11.88
+      11.9
     ],
     "wheat": [
       6.64,
@@ -156,7 +156,7 @@
       6.46,
       6.46,
       6.43,
-      6.26
+      6.28
     ]
   },
   "sponsor": {
@@ -170,36 +170,45 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 76,
-  "generated_at": "2026-05-27T13:18:03.388636+00:00",
+  "issue_number": 77,
+  "generated_at": "2026-05-27T14:29:25.422095+00:00",
   "generator_version": "4.5.0",
-  "surprise_count": 0,
-  "surprises": [],
-  "price_validation_clean": false,
+  "surprise_count": 1,
+  "surprises": [
+    {
+      "commodity": "Silver",
+      "key": "silver",
+      "price": "$74.97",
+      "pct_change": -2.5543,
+      "direction": "down",
+      "surprise_magnitude": 1.0
+    }
+  ],
+  "price_validation_clean": true,
   "market_closed": false,
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-05-27T13:18:15.336087+00:00",
+    "ran_at": "2026-05-27T14:29:36.617994+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 8,
+      "rule_2_conviction_earned": 7,
       "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 7,
+      "rule_4_watch_conditional": 8,
       "rule_5_bottom_lines_synthesize": 8,
-      "rule_6_quiet_days_quiet": 9,
-      "rule_7_continuity": 9,
+      "rule_6_quiet_days_quiet": 8,
+      "rule_7_continuity": 8,
       "rule_8_basis_directional": 9,
       "rule_9_voice": 8,
       "rule_10_forward_test": 8,
-      "rule_11_thread_coherence": 8,
+      "rule_11_thread_coherence": 9,
       "rule_12_spread_quality": 9,
-      "rule_13_yc_honesty": 9,
-      "rule_14_level_coherence": 2,
-      "rule_15_one_number_coherence": 9,
-      "rule_16_markdown_not_html": 9,
-      "rule_17_macro_anchoring": 4
+      "rule_13_yc_honesty": 8,
+      "rule_14_level_coherence": 1,
+      "rule_15_one_number_coherence": 10,
+      "rule_16_markdown_not_html": 10,
+      "rule_17_macro_anchoring": 10
     },
     "rewrites_applied": [
       {
@@ -208,22 +217,22 @@
         "rule": "rule_14_level_coherence",
         "scores_before": {
           "rule_1_lead_so_what": 8,
-          "rule_2_conviction_earned": 8,
+          "rule_2_conviction_earned": 7,
           "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 7,
+          "rule_4_watch_conditional": 8,
           "rule_5_bottom_lines_synthesize": 8,
-          "rule_6_quiet_days_quiet": 9,
-          "rule_7_continuity": 9,
+          "rule_6_quiet_days_quiet": 8,
+          "rule_7_continuity": 8,
           "rule_8_basis_directional": 9,
           "rule_9_voice": 8,
           "rule_10_forward_test": 8,
-          "rule_11_thread_coherence": 8,
+          "rule_11_thread_coherence": 9,
           "rule_12_spread_quality": 9,
-          "rule_13_yc_honesty": 9,
-          "rule_14_level_coherence": 2,
-          "rule_15_one_number_coherence": 9,
-          "rule_16_markdown_not_html": 9,
-          "rule_17_macro_anchoring": 4
+          "rule_13_yc_honesty": 8,
+          "rule_14_level_coherence": 1,
+          "rule_15_one_number_coherence": 10,
+          "rule_16_markdown_not_html": 10,
+          "rule_17_macro_anchoring": 10
         }
       }
     ],

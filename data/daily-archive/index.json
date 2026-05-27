@@ -3,10 +3,10 @@
     {
       "date": "2026-05-27",
       "date_display": "Wednesday, May 27, 2026",
-      "headline": "GRAINS DRIFT, CATTLE HOLD, OIL EXTENDS SLIDE",
-      "teaser": "Markets marking time as Iran premium deflates and Corn Belt stays on schedule.",
+      "headline": "CATTLE RALLY TOGETHER, SILVER SLIDES 2.6%",
+      "teaser": "Cattle rally together while silver slides on dollar strength.",
       "market_mood": "mixed",
-      "surprise_count": 0,
+      "surprise_count": 1,
       "sections": 3,
       "url": "/daily/2026-05-27",
       "market_closed": false,
@@ -836,6 +836,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-05-27T13:18:15.378831+00:00",
+  "updated": "2026-05-27T14:29:36.658726+00:00",
   "count": 76
 }
