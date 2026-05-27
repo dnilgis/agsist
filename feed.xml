@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 26 May 2026 13:57:18 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 27 May 2026 13:18:18 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS DRIFT, CATTLE HOLD, OIL EXTENDS SLIDE</title>
+      <link>https://agsist.com/daily/2026-05-27</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-27</guid>
+      <pubDate>Wed, 27 May 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed $4.55¼, off a nickel in thin trade as the Belt caught a planting window between rain systems. Cattle held $239.30 while oil extended yesterday's Iran-premium deflation on diplomatic speculation, down another 2.1% to $90.15. Days like this are how the market builds the next move. Wait.
+Quiet session as markets digest Iran deal hopes and planting progress.
+• Grains Mark Time
+• Cattle Complex Steady
+• Oil Extends Iran Slide
+Read more: https://agsist.com/daily/2026-05-27</description>
+    </item>
     <item>
       <title>CATTLE CLIMB TOGETHER, OIL CRASHES 3.6%</title>
       <link>https://agsist.com/daily/2026-05-26</link>
@@ -361,19 +373,6 @@ Live futures hit $248.97, triggering yesterday's pricing call while WTI jumps 3%
 • Crude Drags Corn Higher
 • Planting Window Tightens
 Read more: https://agsist.com/daily/2026-04-28</description>
-    </item>
-    <item>
-      <title>GRAINS FLATLINE AS PLANTING WINDOW TIGHTENS</title>
-      <link>https://agsist.com/daily/2026-04-27</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-27</guid>
-      <pubDate>Mon, 27 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Corn barely moved to $4.67, up just 1.5 cents, as traders wait for weather drama that hasn't arrived yet. Soybeans sat virtually unchanged at $11.80 while cattle futures extended last week's surge, with live cattle adding another 0.7% to $245.22. The grain complex is marking time in narrow ranges, but planting pressure builds with each passing day.
-Corn and beans drift sideways while cattle hold recent gains and energy weakens.
-• Grains Mark Time
-• Cattle Momentum Holds
-  → Price summer cattle if live futures close above $245 for three consecutive sessions.
-• Energy Retreat
-Read more: https://agsist.com/daily/2026-04-27</description>
     </item>
   </channel>
 </rss>

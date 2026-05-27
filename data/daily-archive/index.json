@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-05-27",
+      "date_display": "Wednesday, May 27, 2026",
+      "headline": "GRAINS DRIFT, CATTLE HOLD, OIL EXTENDS SLIDE",
+      "teaser": "Markets marking time as Iran premium deflates and Corn Belt stays on schedule.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-05-27",
+      "market_closed": false,
+      "yc_outcome": "played_out"
+    },
+    {
       "date": "2026-05-26",
       "date_display": "Tuesday, May 26, 2026",
       "headline": "CATTLE CLIMB TOGETHER, OIL CRASHES 3.6%",
@@ -824,6 +836,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-05-26T13:57:16.051525+00:00",
-  "count": 75
+  "updated": "2026-05-27T13:18:15.378831+00:00",
+  "count": 76
 }
