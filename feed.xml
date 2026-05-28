@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 27 May 2026 14:29:38 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 28 May 2026 12:58:43 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE CONVERGE HIGHER, HOGS SPIKE 2%</title>
+      <link>https://agsist.com/daily/2026-05-28</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-28</guid>
+      <pubDate>Thu, 28 May 2026 05:00:00 -0600</pubDate>
+      <description>Live cattle jumped $242.47, feeders led at $354.52, and hogs spiked 2% to $102.05 in the biggest livestock rally this week. The cattle complex is converging through strength, not breakdown, as Iran-Hormuz tensions ease and corn drops 3 cents to $4.57. Thursday's rally answers the week's question: feeder strength is driving convergence, live cattle weakness isn't.
+Livestock complex surges as Iran tensions ease and feed costs drop.
+• Livestock Surges Together
+• Grains Ease on Iran Premium Fade
+• Energy Premium Unwinds
+Read more: https://agsist.com/daily/2026-05-28</description>
+    </item>
     <item>
       <title>CATTLE RALLY TOGETHER, SILVER SLIDES 2.6%</title>
       <link>https://agsist.com/daily/2026-05-27</link>
@@ -360,19 +372,6 @@ Live cattle reached $253.45 while crude oil surged 4% overnight on Middle East t
 • Crude Oil Explodes Higher
 • Grains Mark Time
 Read more: https://agsist.com/daily/2026-04-29</description>
-    </item>
-    <item>
-      <title>CATTLE BREAK THROUGH AS CRUDE SURGES</title>
-      <link>https://agsist.com/daily/2026-04-28</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-28</guid>
-      <pubDate>Tue, 28 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Live cattle exploded to $248.97, up 1.7% and the third consecutive close above $245 — yesterday's pricing trigger just delivered. The funds added 8,000 contracts overnight as feedlots finally capitulated to summer demand that's been building since March. Crude's 3% surge to $100.54 is dragging corn along for the ride, but the real story is cattle momentum that's now undeniable.
-Live futures hit $248.97, triggering yesterday's pricing call while WTI jumps 3%.
-• Cattle Breakout Confirmed
-  → Price remaining summer cattle — the breakout above $245 for three sessions confirms the uptrend.
-• Crude Drags Corn Higher
-• Planting Window Tightens
-Read more: https://agsist.com/daily/2026-04-28</description>
     </item>
   </channel>
 </rss>
