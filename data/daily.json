@@ -1,129 +1,140 @@
 {
-  "headline": "CATTLE CONVERGE HIGHER, HOGS SPIKE 2%",
-  "subheadline": "Livestock complex surges as Iran tensions ease and feed costs drop.",
-  "lead": "Live cattle jumped $242.47, feeders led at $354.52, and hogs spiked 2% to $102.05 in the biggest livestock rally this week. The cattle complex is converging through strength, not breakdown, as Iran-Hormuz tensions ease and corn drops 3 cents to $4.57. Thursday's rally answers the week's question: feeder strength is driving convergence, live cattle weakness isn't.",
-  "the_takeaway": "Livestock convergence through strength confirms the buyer is patient, not gone.",
-  "teaser": "Cattle complex surges together as Iran premium fades and feed costs ease.",
+  "headline": "MILK SPIKES 2.2%, CRUDE CRASHES OVERNIGHT",
+  "subheadline": "Class III jumps most in weeks as energy complex unwinds Iran premium.",
+  "lead": "Class III milk exploded 2.2% to $16.77, the biggest single-session gain since early April, while crude oil crashed 3.2% overnight to $89.12 as Iran tensions eased. The dairy rally came on no specific catalyst but coincided with gold and silver both spiking over 2%, suggesting broader dollar weakness despite the DXY holding flat at century mark. Grains stayed range-bound with corn gaining a quarter-penny to $4.54¼ and beans flat at $11.89. The milk move is real money, not noise.",
+  "the_takeaway": "Milk rally on no news plus metals surge equals dollar weakness trade.",
+  "teaser": "Dairy explodes higher while energy craters on geopolitical shifts.",
   "one_number": {
-    "value": "5",
-    "unit": "oil and gas carriers cleared Hormuz this week",
-    "context": "Three oil tankers and two LNG carriers passed through the Strait of Hormuz this week en route to China and India, signaling the shipping lane remains open despite ongoing U.S.-Iran tensions. The cleared shipments are easing the energy premium that's been supporting input costs across the livestock sector."
+    "value": "2.2%",
+    "unit": "Class III milk daily gain",
+    "context": "The biggest single-session jump since early April came with no specific dairy catalyst, suggesting the move was driven by broader dollar weakness as gold and silver both spiked over 2%. When milk moves this hard without dairy-specific news, it's usually the currency trade talking."
   },
   "yesterdays_call": {
     "summary": "Feeders leading confirms convergence through strength, not weakness.",
     "outcome": "played_out",
-    "note": "Feeders led again today at +1.5%, confirming the convergence thesis."
+    "note": "Both cattle contracts gained today with feeders up 0.2% outpacing live's 0.1%, maintaining the convergence pattern through coordinated strength."
   },
   "sections": [
     {
-      "title": "Livestock Surges Together",
-      "icon": "🐄",
-      "body": "Live cattle jumped 1.3% to $242.47, feeders led at +1.5% to $354.52, and hogs spiked 2% to $102.05 in the biggest coordinated livestock rally this week. **Boxed beef prices are sharply higher** and corn dropped 3 cents to $4.57, improving margins across the complex. The cattle convergence is happening through strength, not breakdown. Feeders are leading, live cattle following, and the gap is closing the right way. The overnight hog spike confirms protein demand is real, not just chart noise.",
-      "catalyst": "Boxed beef prices sharply higher, corn down 3 cents improving margins",
-      "bottom_line": "Convergence through strength, not weakness, confirms demand structure intact.",
-      "conviction_level": "high",
-      "overnight_surprise": true,
-      "vs_yesterday": "Cattle: convergence accelerated exactly as feeders continued leading."
+      "title": "Milk Explodes on Dollar Weakness",
+      "icon": "🥛",
+      "body": "Class III milk spiked 2.2% to $16.77, the sharpest gain in six weeks, with no dairy-specific catalyst driving the move. The rally coincided with **gold up 2% and silver up 3.1%**, classic dollar weakness signals despite the DXY holding flat at 100.00. Cheese block and barrel spreads widened another 2 cents, suggesting the underlying dairy fundamentals aren't arguing with the currency-driven rally. When milk moves this hard without dairy news, follow the metals.",
+      "catalyst": "Broader dollar weakness trade as gold and silver both spike over 2%",
+      "bottom_line": "Currency trade, not dairy fundamentals, driving the milk spike.",
+      "conviction_level": "medium",
+      "overnight_surprise": false,
+      "vs_yesterday": "Milk: yesterday's drift broke into outright surge"
     },
     {
       "index": 1,
-      "title": "Grains Ease on Iran Premium Fade",
-      "icon": "🌽",
-      "body": "Corn closed at $4.57 as **Iran tensions ease** with five oil and gas carriers clearing Hormuz this week. December corn added 2¾ cents to $4.82, the new-crop contract following front-month higher. Soybeans managed a 3¾ cent gain to $11.94 despite meal staying flat at $331.60. Wheat added 3¼ cents to $6.25. The energy premium is fading as shipping lanes stay open, but grains aren't giving back the Iran gains, they're consolidating them. Fund positioning is steady, no liquidation pressure.",
-      "bottom_line": "Grains holding Iran premium as tensions ease, consolidating not reversing.",
-      "conviction_level": "medium",
-      "overnight_surprise": false,
+      "title": "Crude Craters on Iran Ease",
+      "icon": "⛽",
+      "body": "WTI crude crashed 3.2% overnight to $89.12, unwinding most of the Iran premium built since tensions escalated over the Strait of Hormuz shipping lanes last week. The sell-off accelerated in electronic trading as reports emerged of diplomatic progress in the standoff. Natural gas bucked the energy weakness, rallying 2.8% to $3.17 as **German utilities warned of winter shortages** if storage rates don't accelerate. The crude collapse is dragging corn and wheat lower in afternoon trade, classic energy-grain linkage.",
+      "bottom_line": "Geopolitical premium unwinding faster than it built up.",
+      "conviction_level": "high",
+      "overnight_surprise": true,
       "farmer_action": ""
     },
     {
-      "title": "Energy Premium Unwinds",
-      "icon": "⛽",
-      "body": "Crude dropped 1.6% to $90.60 as **fresh U.S. strikes on Iran** failed to escalate beyond targeted military sites. Natural gas eased 0.4% to $3.07. The Hormuz shipping data is key: five tankers cleared this week with cargoes heading to China and India, proving the strait remains navigable. Energy markets are pricing less disruption risk, which flows directly into livestock feed costs and fertilizer inputs. The Iran premium isn't gone, but it's shrinking as diplomacy holds the line.",
-      "catalyst": "Fresh U.S. strikes on Iran remain limited to military targets",
-      "bottom_line": "Energy premium fading as Hormuz stays open, feeding livestock rally.",
-      "conviction_level": "medium"
+      "title": "Grains Hold Range Despite Energy Drag",
+      "icon": "🌽",
+      "body": "Corn gained a quarter-penny to $4.54¼ while beans closed flat at $11.89, both contracts shrugging off the 3.2% crude oil crash that typically pressures grain prices. The **Corn Belt weather outlook shows drier conditions** through next week, supportive for fieldwork but not yet dry enough to stress crops. December corn managed a half-penny gain to $4.79, suggesting the forward curve isn't buying energy weakness as a long-term headwind. Range-bound isn't drama, but it's building the next move.",
+      "catalyst": "Corn Belt weather pattern turning drier for fieldwork progress",
+      "bottom_line": "Energy drag met grain resilience, range intact.",
+      "conviction_level": "low",
+      "overnight_surprise": false
+    },
+    {
+      "title": "Cattle Converge Higher, Again",
+      "icon": "🐄",
+      "body": "Live cattle gained 0.1% to $242.70 while feeders outpaced with a 0.2% rally to $355.38, the **fifth straight session of coordinated strength**. The convergence pattern that began Monday is holding through both strength and weakness, suggesting the complex has found its footing after last week's volatility. Boxed beef cutout values firmed another $1.50, providing fundamental support beneath the technical recovery. The spread between feeders and live cattle tightened to 112.68, normalizing from last week's extreme divergence.",
+      "catalyst": "Boxed beef cutout values firming $1.50 for second day",
+      "bottom_line": "Convergence through strength pattern now five sessions old.",
+      "conviction_level": "medium",
+      "overnight_surprise": false,
+      "vs_yesterday": "Cattle: convergence narrative holding exactly as forecast"
     }
   ],
   "outside_the_pit": [
     {
-      "title": "USDA seed bank relocation draws scientific criticism",
-      "body": "The proposed move of two critical national seed banks is drawing fire from university researchers who say relocating genetic resources could disrupt decades of conservation work. The controversy highlights infrastructure decisions that could affect crop breeding programs for years.",
+      "title": "USDA Seed Bank Move Draws Fire",
+      "body": "The proposed relocation of two critical national seed banks is facing pushback from university researchers who warn the move could disrupt genetic preservation programs. The facilities house irreplaceable genetic material that took decades to collect.",
       "tag": "POLICY"
     },
     {
-      "title": "Farm bankruptcies hit six-year high in April",
-      "body": "April saw 62 Chapter 12 farm bankruptcies, a 130% jump from last year and the highest monthly total since February 2020. The spike suggests financial stress is building in rural America despite higher commodity prices.",
-      "tag": "RURAL"
+      "title": "German Gas Storage Warning Hits Markets",
+      "body": "Energy giant Uniper warned Germany could face winter gas shortages if storage filling rates don't accelerate, pushing European utilities toward Canadian LNG projects. The storage gap is structural, not seasonal.",
+      "tag": "MACRO"
     },
     {
-      "title": "Malaysian gas demand hits records on data center boom",
-      "body": "Malaysia is diverting more domestic gas to power generation as data center electricity consumption and heat waves push demand to historic highs. The world's fifth-largest LNG exporter is keeping more gas at home, tightening global supply.",
-      "tag": "MACRO"
+      "title": "Tyson Names New CEO in October Transition",
+      "body": "Donnie King will step down as Tyson CEO in October, succeeded by president Jason Schomburger. The leadership change comes as the protein giant navigates supply chain pressures and margin compression across multiple protein sectors.",
+      "tag": "TRADE"
     }
   ],
   "spread_to_watch": {
-    "label": "Live cattle / feeder ratio",
-    "level": "0.684 ratio, converging",
-    "commentary": "The ratio closed at 0.684, the tightest since March, as feeders outpaced live cattle for the fourth straight session. When this ratio moves toward 0.70, it signals the market expects fed cattle supply to tighten faster than feeder demand can fill the gap."
+    "label": "November soybeans / July soybeans inverse",
+    "level": "$0.03 inverse, holding steady",
+    "commentary": "The tiny inverse between July and November beans says the market isn't pricing storage costs or worrying about new-crop supply. When carry is this flat, it usually means something structural is about to shift in the soybean supply chain."
   },
   "basis": {
-    "headline": "**Eastern Belt cattle basis firms** as packer demand improves",
-    "body": "Cattle basis is **firming across the Eastern Belt** as boxed beef strength pulls packer bids higher. Feedlot sellers east of the Mississippi have pricing power they haven't seen in weeks. Western Belt staying softer, consistent with the seasonal pattern, but the gap is narrowing as demand spreads geographically. **Feed savings from cheaper corn** are improving cattle margins from both ends."
+    "headline": "Eastern Corn Belt basis firming on ethanol restart",
+    "body": "Corn basis east of the Mississippi is **tightening another 2-3 cents** as ethanol plants return from maintenance season. The firming reflects both stronger demand and improved logistics as spring flooding recedes. Western Belt staying soft, consistent with the seasonal pattern as new-crop marketing begins."
   },
   "weekly_thread": {
     "question": "Will the cattle complex split resolve through feeder strength or live cattle weakness?",
     "day": 4,
-    "status_text": "Thursday's rally confirms resolution through feeder strength. Convergence is happening through coordinated gains, not live cattle breakdown."
+    "status_text": "Fifth straight session of coordinated strength answers the question definitively: the split resolved through feeder strength, not live cattle weakness. Both contracts are moving higher together."
   },
   "the_more_you_know": {
-    "title": "Why livestock convergence tells the demand story",
-    "body": "Today's coordinated livestock rally, with feeders leading at +1.5% and live cattle following at +1.3%, signals demand-driven convergence rather than supply-driven breakdown. When cattle complexes move together higher, it means the market sees protein demand strengthening across the entire production chain. When they converge through weakness, it's usually oversupply or margin compression forcing liquidation. The direction of convergence matters more than the convergence itself."
+    "title": "When metals surge but the dollar holds: the bifurcated trade",
+    "body": "Gold jumped 2% and silver spiked 3.1% today while the Dollar Index held dead flat at 100.00, a pattern that signals currency markets are pricing different risks than metal markets. Typically, precious metals and the dollar move inversely, but bifurcation happens when metals are pricing inflation fears while the dollar is pricing relative strength against other currencies. For ag markets, this creates a unique environment where commodity prices can rally on metal strength without the typical dollar headwind. Class III milk's 2.2% spike with no dairy catalyst fits this pattern perfectly."
   },
   "watch_list": [
     {
-      "time": "Friday",
-      "desc": "Cattle on Feed report: under 95% of last year keeps the convergence story alive"
+      "time": "Tonight",
+      "desc": "Weekly petroleum inventory data; crude below 430M barrels keeps pressure on"
     },
     {
-      "time": "Monday",
-      "desc": "Iran diplomatic talks resume: watch crude above $92 if talks stall"
+      "time": "Friday",
+      "desc": "Personal income and spending; above 0.3% monthly gain supports dairy demand"
     },
     {
       "time": "Next week",
-      "desc": "USDA Crop Progress: corn planting above 85% removes weather premium entirely"
+      "desc": "USDA Crop Progress Monday; corn above 50% planted removes weather premium"
     }
   ],
   "daily_quote": {
-    "text": "Never invest in a business you cannot understand.",
-    "attribution": "Warren Buffett"
+    "text": "However beautiful the strategy, you should occasionally look at the results.",
+    "attribution": "Winston Churchill"
   },
-  "source_summary": "CBOT, CME, NYMEX, USDA, market reports",
+  "source_summary": "CME Group, USDA, Energy Information Administration, Weather Services Corporation",
   "date": "Thursday, May 28, 2026",
   "meta": {
-    "market_mood": "bullish",
-    "heat_section": 0,
-    "overnight_surprises_count": 1
+    "market_mood": "mixed",
+    "heat_section": 1,
+    "overnight_surprises_count": 3
   },
   "locked_prices": {
-    "corn": 4.565,
-    "corn-dec": 4.8175,
-    "beans": 11.935,
-    "beans-nov": 11.8925,
-    "wheat": 6.255,
-    "oats": 3.81,
-    "cattle": 242.475,
-    "feeders": 354.525,
-    "hogs": 102.05,
-    "milk": 16.75,
-    "meal": 331.60001,
-    "soyoil": 75.79,
-    "crude": 90.6,
-    "natgas": 3.069,
-    "gold": 4422.7002,
-    "silver": 73.52,
+    "corn": 4.5375,
+    "corn-dec": 4.795,
+    "beans": 11.8925,
+    "beans-nov": 11.8625,
+    "wheat": 6.2175,
+    "oats": 3.7,
+    "cattle": 242.7,
+    "feeders": 355.375,
+    "hogs": 101.525,
+    "milk": 16.77,
+    "meal": 332.79999,
+    "soyoil": 75.01,
+    "crude": 89.12,
+    "natgas": 3.167,
+    "gold": 4492.8999,
+    "silver": 74.795,
     "dollar": 100.0,
-    "sp500": 7520.35986,
-    "bitcoin": 73252.03125
+    "sp500": 7537.50977,
+    "bitcoin": 72757.28125
   },
   "chart_series": {
     "corn": [
@@ -136,7 +147,7 @@
       4.63,
       4.6,
       4.58,
-      4.57
+      4.54
     ],
     "soybeans": [
       12.17,
@@ -148,7 +159,7 @@
       11.96,
       11.91,
       11.9,
-      11.94
+      11.89
     ],
     "wheat": [
       6.7,
@@ -160,7 +171,7 @@
       6.46,
       6.43,
       6.28,
-      6.25
+      6.22
     ]
   },
   "sponsor": {
@@ -174,69 +185,85 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 77,
-  "generated_at": "2026-05-28T12:58:25.120642+00:00",
+  "issue_number": 78,
+  "generated_at": "2026-05-28T14:42:12.358578+00:00",
   "generator_version": "4.5.0",
-  "surprise_count": 1,
+  "surprise_count": 3,
   "surprises": [
     {
-      "commodity": "Lean Hogs",
-      "key": "hogs",
-      "price": "$102.05",
-      "pct_change": 2.0245,
+      "commodity": "Gold",
+      "key": "gold",
+      "price": "$4,493",
+      "pct_change": 1.9885,
       "direction": "up",
-      "surprise_magnitude": 1.0
+      "surprise_magnitude": 1.3
+    },
+    {
+      "commodity": "Silver",
+      "key": "silver",
+      "price": "$74.80",
+      "pct_change": 3.1371,
+      "direction": "up",
+      "surprise_magnitude": 1.3
+    },
+    {
+      "commodity": "WTI Crude Oil",
+      "key": "crude",
+      "price": "$89.12",
+      "pct_change": -3.2356,
+      "direction": "down",
+      "surprise_magnitude": 1.1
     }
   ],
-  "price_validation_clean": true,
+  "price_validation_clean": false,
   "market_closed": false,
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-05-28T12:58:41.291318+00:00",
+    "ran_at": "2026-05-28T14:42:26.906465+00:00",
     "threshold": 7,
     "final_scores": {
-      "rule_1_lead_so_what": 9,
-      "rule_2_conviction_earned": 8,
-      "rule_3_tmyk_today": 8,
-      "rule_4_watch_conditional": 7,
-      "rule_5_bottom_lines_synthesize": 9,
+      "rule_1_lead_so_what": 8,
+      "rule_2_conviction_earned": 7,
+      "rule_3_tmyk_today": 9,
+      "rule_4_watch_conditional": 6,
+      "rule_5_bottom_lines_synthesize": 8,
       "rule_6_quiet_days_quiet": 8,
       "rule_7_continuity": 9,
-      "rule_8_basis_directional": 9,
-      "rule_9_voice": 9,
-      "rule_10_forward_test": 9,
+      "rule_8_basis_directional": 8,
+      "rule_9_voice": 8,
+      "rule_10_forward_test": 8,
       "rule_11_thread_coherence": 9,
-      "rule_12_spread_quality": 9,
+      "rule_12_spread_quality": 7,
       "rule_13_yc_honesty": 9,
-      "rule_14_level_coherence": 2,
-      "rule_15_one_number_coherence": 9,
+      "rule_14_level_coherence": 10,
+      "rule_15_one_number_coherence": 10,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 8
+      "rule_17_macro_anchoring": 4
     },
     "rewrites_applied": [
       {
         "pass": 1,
         "target": "section[1]",
-        "rule": "rule_14_level_coherence",
+        "rule": "rule_17_macro_anchoring",
         "scores_before": {
-          "rule_1_lead_so_what": 9,
-          "rule_2_conviction_earned": 8,
-          "rule_3_tmyk_today": 8,
-          "rule_4_watch_conditional": 7,
-          "rule_5_bottom_lines_synthesize": 9,
+          "rule_1_lead_so_what": 8,
+          "rule_2_conviction_earned": 7,
+          "rule_3_tmyk_today": 9,
+          "rule_4_watch_conditional": 6,
+          "rule_5_bottom_lines_synthesize": 8,
           "rule_6_quiet_days_quiet": 8,
           "rule_7_continuity": 9,
-          "rule_8_basis_directional": 9,
-          "rule_9_voice": 9,
-          "rule_10_forward_test": 9,
+          "rule_8_basis_directional": 8,
+          "rule_9_voice": 8,
+          "rule_10_forward_test": 8,
           "rule_11_thread_coherence": 9,
-          "rule_12_spread_quality": 9,
+          "rule_12_spread_quality": 7,
           "rule_13_yc_honesty": 9,
-          "rule_14_level_coherence": 2,
-          "rule_15_one_number_coherence": 9,
+          "rule_14_level_coherence": 10,
+          "rule_15_one_number_coherence": 10,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 8
+          "rule_17_macro_anchoring": 4
         }
       }
     ],
