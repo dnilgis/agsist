@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 28 May 2026 14:42:28 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 29 May 2026 13:01:17 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE COMPLEX SPLITS WIDER AS WEEK ENDS</title>
+      <link>https://agsist.com/daily/2026-05-29</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-29</guid>
+      <pubDate>Fri, 29 May 2026 05:00:00 -0600</pubDate>
+      <description>The cattle complex answered this week's question the hard way: live cattle broke $242 support to close at $241.15, down half a percent, while feeders held $352.88 on the same decline. The 4.6% spread between live and feeders that looked ready to compress Monday is now widening again. Five days of watching for convergence through strength got convergence through synchronized weakness instead.
+Live cattle breaks $242 floor while feeders hold $352, resolving week's convergence question through weakness.
+• Cattle Break Support Together
+• Grains Drift in Memorial Lull
+Read more: https://agsist.com/daily/2026-05-29</description>
+    </item>
     <item>
       <title>MILK SPIKES 2.2%, CRUDE CRASHES OVERNIGHT</title>
       <link>https://agsist.com/daily/2026-05-28</link>
@@ -359,19 +370,6 @@ Oil's 4.4% plunge reverses Tuesday's energy rally while livestock extends breako
 • Energy Complex Reverses
 • Grains Track Lower
 Read more: https://agsist.com/daily/2026-04-30</description>
-    </item>
-    <item>
-      <title>CATTLE HIT 52-WEEK HIGH AS CRUDE EXPLODES</title>
-      <link>https://agsist.com/daily/2026-04-29</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-29</guid>
-      <pubDate>Wed, 29 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Live cattle hit a 52-week high at $253.45, up 1.8%, extending Monday's breakout call to an eighth straight session above $245. The funds are backing the move with fresh length as crude oil exploded 4% overnight to $103.34, dragging energy costs higher just as planting season hits the critical May window. Yesterday's cattle breakout call is paying off, but the energy surge changes the input cost equation for producers racing against calendar pressure.
-Live cattle reached $253.45 while crude oil surged 4% overnight on Middle East tensions.
-• Cattle Extend Breakout
-  → Hold remaining fed cattle inventory — momentum is accelerating with fund support.
-• Crude Oil Explodes Higher
-• Grains Mark Time
-Read more: https://agsist.com/daily/2026-04-29</description>
     </item>
   </channel>
 </rss>
