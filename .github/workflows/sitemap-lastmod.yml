@@ -1,0 +1,108 @@
+name: Sitemap Lastmod Auto-Bump
+
+# Two triggers:
+#   1. push to main — bumps lastmod for any HTML files in the commit
+#   2. daily cron at 17:00 UTC (~noon CT CDT, ~11am CT CST, both safely after
+#      the morning daily-briefing publish window) — bumps the hardcoded list
+#      of high-frequency dynamic pages whose underlying data refreshes daily
+#      even when the HTML doesn't change
+#
+# Loop prevention: paths-ignore excludes sitemap.xml itself, so the commit
+# this workflow makes won't re-trigger the workflow.
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'sitemap.xml'
+      - '.github/workflows/sitemap-lastmod.yml'
+  schedule:
+    - cron: '0 17 * * *'   # 17:00 UTC daily — noon CDT / 11am CST
+  workflow_dispatch:        # manual trigger from Actions tab if needed
+
+# Need write permission to commit sitemap.xml back to the repo
+permissions:
+  contents: write
+
+# Don't run multiple instances in parallel — they'd race on sitemap.xml
+concurrency:
+  group: sitemap-lastmod
+  cancel-in-progress: false
+
+jobs:
+  bump-lastmod:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          # Need 2 commits of history so push events can diff HEAD~1..HEAD
+          fetch-depth: 2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          # zoneinfo is stdlib in 3.9+, no requirements needed
+
+      - name: Determine bump mode
+        id: mode
+        run: |
+          # On schedule or manual dispatch → bump dynamic pages
+          # On push → bump just the HTML files that changed
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "mode=dynamic" >> $GITHUB_OUTPUT
+          else
+            echo "mode=push" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run dynamic-pages bump (schedule / manual)
+        if: steps.mode.outputs.mode == 'dynamic'
+        run: |
+          python scripts/update_sitemap_lastmod.py --dynamic
+
+      - name: Run push bump (HTML files only)
+        if: steps.mode.outputs.mode == 'push'
+        run: |
+          # Get HTML files that changed in this push.
+          # Compare HEAD~1..HEAD. For the very first commit or shallow clone
+          # edge cases, fall back to listing all HTML files in the tree.
+          if git rev-parse HEAD~1 >/dev/null 2>&1; then
+            changed_html=$(git diff --name-only HEAD~1 HEAD | grep '\.html$' || true)
+          else
+            echo "No prior commit available — treating as no-op"
+            changed_html=""
+          fi
+
+          if [ -z "$changed_html" ]; then
+            echo "No HTML files changed in this push — nothing to bump."
+            exit 0
+          fi
+
+          echo "Changed HTML files:"
+          echo "$changed_html"
+
+          # Pass to Python script as space-separated args
+          # shellcheck disable=SC2086
+          python scripts/update_sitemap_lastmod.py --html-files $changed_html
+
+      - name: Commit and push if sitemap changed
+        run: |
+          if git diff --quiet sitemap.xml; then
+            echo "sitemap.xml unchanged — nothing to commit."
+            exit 0
+          fi
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml
+
+          # Use [skip ci] in commit message as additional safety against any
+          # workflows watching commits (the paths-ignore above is the primary
+          # loop guard, but belt-and-suspenders is cheap).
+          if [ "${{ steps.mode.outputs.mode }}" = "dynamic" ]; then
+            git commit -m "chore(sitemap): daily lastmod bump for dynamic pages [skip ci]"
+          else
+            git commit -m "chore(sitemap): lastmod bump for changed HTML [skip ci]"
+          fi
+          git push
