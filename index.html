@@ -641,7 +641,7 @@
 </style>
 <section class="daily-hero" id="daily-hero" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full">
-    <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date">&#x1F4F0; AGSIST Daily</span></div><a class="teaser-sponsor empty-state" id="daily-teaser-sponsor" href="mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20Founding%20Sponsor" onclick="event.stopPropagation()">Sponsor this &rarr;</a><span class="teaser-action">Read Today's Briefing &#x2193;</span></div>
+    <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date">&#x1F4F0; AGSIST Daily</span></div><a class="teaser-sponsor empty-state" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()">Sponsor this &rarr;</a><span class="teaser-action">Read Today's Briefing &#x2193;</span></div>
     <span class="teaser-preview" id="daily-teaser-text">Today's ag market briefing &mdash; click to read</span>
   </div>
   <div class="daily-full" id="daily-full">
@@ -671,7 +671,7 @@
               <h2 class="dsp-headline">Sponsor the AGSIST Daily Briefing.</h2>
               <p class="dsp-pitch">One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations &mdash; read every morning before the open. <strong>Founding rate locked in for 12 months. Six-week minimum ($900).</strong></p>
               <div class="dsp-actions">
-                <a class="dsp-cta-primary" href="mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20founding%20sponsor%20inquiry">&#x1F4DE; Become the founding sponsor &rarr;</a>
+                <a class="dsp-cta-primary" href="/sponsor">&#x1F4F0; See the founding sponsor pitch &rarr;</a>
               </div>
               <div class="dsp-contact">
                 <a href="mailto:sig@farmers1st.com" aria-label="Email Sigurd at sig@farmers1st.com">sig@farmers1st.com</a>
@@ -2096,7 +2096,7 @@ window.hydrateDaily = function(data) {
         spTeaser.classList.add('has-sponsor');
         spTeaser.textContent='Sponsored by '+(sp.name||'partner');
         if(sp.url){spTeaser.href=sp.url;spTeaser.target='_blank';spTeaser.rel='noopener';}
-        else{spTeaser.removeAttribute('target');spTeaser.removeAttribute('rel');spTeaser.href='mailto:sig@farmers1st.com';}
+        else{spTeaser.removeAttribute('target');spTeaser.removeAttribute('rel');spTeaser.href='/sponsor';}
       }
       // Inline attribution above greeting — paid state
       if(spAttr&&sp.name){

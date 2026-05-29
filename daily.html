@@ -495,7 +495,7 @@ function renderToday(data){
   var attribution='';
   var spA=data.sponsor;
   var aIsHouse=!spA||spA.is_house_ad===true||(!spA.advertiser&&!spA.name);
-  var aUrl=(spA&&spA.cta_url)||(spA&&spA.url)||'mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20founding%20sponsor%20inquiry';
+  var aUrl=(spA&&spA.cta_url)||(spA&&spA.url)||'/sponsor';
   var aTarget=aUrl.indexOf('http')===0?' target="_blank" rel="sponsored noopener"':' rel="sponsored"';
   if(aIsHouse){
     // v4.3: house-ad pill suppressed — the in-flow sponsor card carries the pitch.
@@ -761,8 +761,8 @@ function renderToday(data){
       advertiser:'AGSIST',
       headline:'Sponsor the AGSIST Daily Briefing \u2014 $150/week.',
       body:'One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations \u2014 read every morning before the open. Founding rate locked in for 12 months. Six-week minimum ($900). After that, week-to-week.',
-      cta_text:'Become the founding sponsor',
-      cta_url:'mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20founding%20sponsor%20inquiry',
+      cta_text:'See the founding sponsor pitch',
+      cta_url:'/sponsor',
       disclosure:'One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.',
       is_house_ad:true
     };

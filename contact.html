@@ -58,7 +58,22 @@
     .sponsor-card{background:var(--surface);border:1px solid var(--border-g);border-radius:8px;padding:1.25rem 1.4rem;margin:1rem 0;}
     .sponsor-card h3{font-size:1rem;color:var(--gold);margin-bottom:.5rem;font-weight:700;}
     .sponsor-card p{font-size:.88rem;color:var(--text-dim);line-height:1.8;margin:0;}
-    .sponsor-card a{color:var(--gold);}
+    .sponsor-card a { color: var(--gold); }
+    .sponsor-card .sponsor-cta-btn {
+      display: inline-block;
+      margin-top: .85rem;
+      padding: .6rem 1.15rem;
+      background: var(--gold);
+      color: #0a1a0a;
+      border-radius: 6px;
+      font-size: .88rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: opacity .15s;
+    }
+    .sponsor-card .sponsor-cta-btn:hover { opacity: .85; color: #0a1a0a; }
+    .sponsor-card .sponsor-secondary { font-size: .82rem; color: var(--text-muted); margin-top: .6rem; }
+    .sponsor-card .sponsor-secondary a { color: var(--text-dim); }
     @media(max-width:520px){
       .info-page{padding:1.5rem .9rem 3rem;}
       .info-page h1{font-size:1.6rem;}
@@ -94,7 +109,9 @@
 
       <div class="sponsor-card">
         <h3>&#x1F4F0; Sponsoring the Daily Briefing</h3>
-        <p>The AGSIST Daily goes out every weekday morning to grain producers who signed up for it. I'm looking for a founding sponsor — one ag company, one line per issue. If you sell to farmers and want to be in their inbox every morning during planting and growing season, reach out. <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> or <a href="tel:+17157972428">715-797-2428</a>.</p>
+        <p>The AGSIST Daily goes out every weekday morning to grain producers who signed up for it. I'm looking for a founding sponsor &mdash; one ag company, one line per issue. If you sell to farmers and want to be in their inbox every morning during planting and growing season, see the full pitch.</p>
+        <a href="/sponsor" class="sponsor-cta-btn">See the sponsor page &rarr;</a>
+        <p class="sponsor-secondary">Or skip ahead: <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &middot; <a href="tel:+17157972428">715-797-2428</a></p>
       </div>
 
       <div class="info-card">
