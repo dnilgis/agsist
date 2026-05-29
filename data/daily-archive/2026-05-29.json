@@ -1,130 +1,129 @@
 {
-  "headline": "CATTLE SPLIT RESOLVES THROUGH JOINT WEAKNESS",
-  "subheadline": "Both live and feeders fall half percent as buyers step back.",
-  "lead": "The cattle complex resolved this week's question by falling together, not rising. Live cattle closed $241.15, down half a percent, with feeders at $352.88, matching the decline. After three days of convergent strength, both contracts lost momentum as commercial buyers backed away ahead of the long weekend. The split didn't resolve through feeder strength or live weakness. It resolved through joint retreat from buyers who found their levels.",
-  "the_takeaway": "Cattle buyers found their price ceiling, both contracts retreated together.",
-  "teaser": "The week's cattle convergence story ended with both sides stepping back from the highs.",
+  "headline": "GRAINS SHED WEEK'S GAINS, MILK CRASHES 3%",
+  "subheadline": "Technical selling overwhelms corn and beans as dairy futures post their worst session in two months.",
+  "lead": "Corn closed $4.47, down 9 cents and surrendering most of the week's gains as profit-taking turned into technical selling. The July contract broke through $4.50 support and managed money liquidated into the long weekend. Dairy crashed harder-Class III milk fell 3% to $16.24, its biggest drop since March as volatility frustrates the entire livestock complex heading into summer heat stress season.",
+  "the_takeaway": "Wait, profit-taking into three-day weekends prices the pause, not the reversal.",
+  "teaser": "Grains give back the week as funds cash out ahead of Memorial Day.",
   "one_number": {
-    "value": "66%",
-    "unit": "year-over-year decline in Japan's crude oil imports during April",
-    "context": "Japan's crude imports cratered 66% year-over-year in April as Middle East supply disruptions forced the world's third-largest oil consumer to scramble for alternatives. When a major importer cuts two-thirds of its crude intake, that's not market noise. That's structural demand destruction that keeps energy input costs soft even as geopolitical premiums unwind."
+    "value": "9 cents",
+    "unit": "corn's daily drop, biggest in three weeks",
+    "context": "July corn hadn't fallen this hard since early May, when planting delays drove weather premium out of the market. Today's move wasn't weather, wasn't fundamentals-it was pure profit-taking ahead of the long weekend. The funds held their conviction through Thursday, then blinked all at once."
   },
   "yesterdays_call": {
-    "summary": "Called geopolitical premium unwinding faster than it built up in crude.",
+    "summary": "Called geopolitical premium unwinding faster than it built up as crude crashed.",
     "outcome": "played_out",
-    "note": "WTI fell another 0.7% today, extending the Iran-ease selloff into a fifth session."
+    "note": "Oil held the decline, gave back another half percent today as Iran tensions continue to ease."
   },
   "sections": [
     {
-      "title": "Cattle Buyers Find Ceiling",
-      "icon": "🐄",
-      "body": "Live cattle closed $241.15, down 0.5%, with feeders matching the decline at $352.88. After Monday's surge and three days of convergent strength, **both contracts hit a buyer ceiling** around current levels. The complex didn't split through feeder strength or live weakness. It split through joint retreat. Commercial buyers who pushed both contracts higher this week found their price tolerance and stepped back. The convergence trade worked, but it worked both ways. When buyers withdraw, even strong technicals don't matter.",
-      "catalyst": "Commercial cattle buyers stepping back from elevated price levels",
-      "bottom_line": "Buyers found their ceiling, both contracts retreated in unison.",
-      "conviction_level": "medium",
-      "overnight_surprise": false,
-      "vs_yesterday": "Cattle: convergence narrative held but momentum faded exactly as buyer patience ran out."
-    },
-    {
-      "title": "Grains Mark Time Again",
+      "title": "Grains Shed Week's Gains",
       "icon": "🌽",
-      "body": "Corn closed $4.53, down 3 cents, with beans at $11.98, barely changed. The same range-bound drift that's defined the complex for two weeks. **No catalyst in either direction**, no fund flow worth tracking, no weather premium building despite the eastern Corn Belt staying dry. Dec corn at $4.80 tells you the market isn't worried about yield drag yet. The carry's working, basis is quiet, and the funds are somewhere else. Days like this are how markets build the next move, not make it.",
-      "catalyst": "",
-      "bottom_line": "Range-bound drift continues, no catalyst driving direction.",
-      "conviction_level": "low",
-      "overnight_surprise": false
+      "body": "Corn lost 9 cents to $4.47, its worst day in three weeks as **profit-taking turned into technical selling**. The July contract broke through $4.50 support and didn't find buyers until the close. Soybeans fell 12 cents to $11.87, giving back most of Thursday's weather premium as unknown destination buyers couldn't offset managed money liquidation. The funds cashed out ahead of the long weekend after holding positions through Thursday's volatile session.",
+      "catalyst": "Profit taking and technical selling as funds liquidate into Memorial Day weekend",
+      "bottom_line": "Technical break, not fundamental shift, funds booking profits into three-day weekend.",
+      "conviction_level": "medium",
+      "overnight_surprise": true,
+      "vs_yesterday": "Grains: yesterday's weather hold broke into outright liquidation"
     },
     {
-      "title": "Milk Crashes Back to Earth",
+      "index": 1,
+      "title": "Dairy Falls Into Heat Season",
       "icon": "🥛",
-      "body": "Class III milk crashed 2.2% to $16.38, giving back yesterday's spike and then some. **The dollar strength that hammered milk yesterday reversed**, but the damage held. Milk's sitting 42% up from its 52-week low, which sounds bullish until you realize that's still historically weak for spring flush season. The overnight currency move that drove yesterday's surge unwound faster than it built. Dairy markets are thin, currency-driven moves don't stick without fundamental backing.",
-      "catalyst": "Dollar strength reversal unwound yesterday's currency-driven milk spike",
-      "bottom_line": "Yesterday's currency spike unwound, fundamentals still weak.",
+      "body": "Class III milk fell 3% to $16.24, its biggest drop since March as **market volatility frustrates the entire livestock complex**. The dairy board is acting like summer heat stress is already priced but producers aren't convinced-feed costs staying elevated while milk prices whipsaw daily. Live cattle fell 80 cents to $239.20, feeders dropped $3.70 to $348.92. The convergence trade that worked all week reversed hard as cash business stayed light heading into the weekend.",
+      "bottom_line": "Livestock convergence reversed hard, dairy leading the decline into heat season.",
       "conviction_level": "medium",
-      "overnight_surprise": false,
-      "vs_yesterday": "Milk: yesterday's dollar-driven spike reversed as currency move unwound."
+      "overnight_surprise": true,
+      "farmer_action": ""
+    },
+    {
+      "title": "Crude Extends Iran Ease",
+      "icon": "🛢️",
+      "body": "WTI crude eased another 50 cents to $87.76 as **the 60-day ceasefire extension and partial Hormuz reopening** continue to drain geopolitical premium from the complex. Oil is posting its biggest weekly drop in two months, down almost 4% since Monday's tensions peaked. Natural gas slipped to $3.27 as the energy complex broadly retreated from geopolitical highs. The Kansas City Fed warned this oil shock might not be transitory, but the market's acting like it already is.",
+      "catalyst": "60-day ceasefire extension and partial Strait of Hormuz reopening draining geopolitical premium",
+      "bottom_line": "Geopolitical premium unwinding faster than it built, energy complex in full retreat.",
+      "conviction_level": "high"
     }
   ],
   "outside_the_pit": [
     {
-      "title": "FTC launches formal fertilizer antitrust investigation",
-      "body": "The Federal Trade Commission opened a formal probe into anti-competitive practices in the U.S. fertilizer industry, targeting pricing that's squeezed farmer margins for two years running. When the feds start digging into input cost manipulation, that's not just regulatory theater. That's structural cost relief potentially coming down the pipeline.",
+      "title": "FTC Opens Fertilizer Price Probe",
+      "body": "The Federal Trade Commission launched an antitrust investigation into rising fertilizer costs, with Iowa farmers telling commissioners current prices aren't sustainable. The probe targets concentration in the fertilizer supply chain as input costs continue squeezing farm margins. This isn't just regulatory theater-it's acknowledgment that fertilizer pricing has moved beyond normal market dynamics.",
       "tag": "POLICY"
     },
     {
-      "title": "Screwworm detected within 60 miles of US border",
-      "body": "New World screwworm was found in Mexico within 60 miles of the U.S. border, keeping all southern livestock import ports closed. The parasite hasn't been seen in the U.S. since 1966, but proximity this close means biosecurity protocols are about to get expensive for border-state producers.",
+      "title": "Tick-Borne Cattle Disease Hits Nebraska",
+      "body": "Theileria, a tick-borne parasite carried by Asian Longhorned Ticks, was detected in several Nebraska counties. The disease affects cattle productivity and adds another layer of herd management costs as producers already deal with high feed prices and volatile markets. Nebraska cattlemen now have another reason to worry about pasture conditions this summer.",
       "tag": "DISEASE"
     },
     {
-      "title": "Farm bankruptcies hit six-year high in April",
-      "body": "April farm bankruptcies reached a six-year high as the ag economy continues to weaken under margin pressure. When bankruptcy filings spike, that's not a lagging indicator. That's the leading edge of consolidation pressure that reshapes who's left farming when commodity prices finally recover.",
-      "tag": "RURAL"
+      "title": "Railroad Merger Gets Conditional Approval",
+      "body": "The Surface Transportation Board conditionally accepted the Union Pacific-Norfolk Southern merger application but wants more information by July 27. The rail consolidation could reshape grain transportation costs across the Midwest, but the conditional approval suggests regulatory hurdles remain. Shippers are watching closely as rail competition continues to shrink.",
+      "tag": "LOGISTICS"
     }
   ],
   "spread_to_watch": {
-    "label": "Live cattle / feeder ratio",
-    "level": "0.684 ratio, stable",
-    "commentary": "The ratio held steady even as both contracts fell together, confirming the convergence story played out as a coordinated retreat rather than a relative value shift. When both sides of a spread move in lockstep, the ratio stability tells you the buyers left the entire complex, not just one side of it."
+    "label": "July corn / December corn calendar",
+    "level": "28 cents inverse, widening",
+    "commentary": "The inverse widened 3 cents today as front-month technical selling outpaced new-crop liquidation. Old-crop corn is acting tight despite the profit-taking, telling you the physical market isn't as weak as the July chart suggests. Watch this spread Monday-if it keeps widening, the technical damage is real."
   },
   "basis": {
-    "headline": "Corn basis steady, crush margins holding gains",
-    "body": "**Eastern Belt corn basis holding firm** as ethanol demand stays consistent and river logistics run smooth into the long weekend. Soybean processing margins stayed near recent highs despite flat futures, indicating **crush demand is real**, not just paper positioning. When basis holds while futures drift, that's local demand saying something futures aren't hearing."
+    "headline": "Midwest basis holding despite futures break",
+    "body": "Eastern Corn Belt basis stayed firm even as July corn broke technical support, with elevators **reluctant to chase the futures lower** ahead of the holiday weekend. Western basis softened 2-3 cents as country elevators adjusted to the break. Soybean basis held better than expected given the 12-cent futures decline. River terminals keeping bids steady, suggesting the physical market sees this as fund flow, not fundamental weakness."
   },
   "weekly_thread": {
     "question": "Will the cattle complex split resolve through feeder strength or live cattle weakness?",
     "day": 5,
-    "status_text": "Neither. The split resolved through joint weakness as commercial buyers found their price ceiling and stepped back from both contracts. The convergence trade worked both ways, up earlier in the week, down together today."
+    "status_text": "The question resolved through neither-both sides broke lower together today, ending the convergence trade that defined the week. The complex moved as one unit, just in the wrong direction."
   },
   "the_more_you_know": {
-    "title": "Range-bound markets: the coiled spring myth",
-    "body": "Corn's traded in a 12-cent range for two weeks, and every trader-blog is calling it a 'coiled spring ready to explode.' But range-bound markets aren't automatically bullish setups. They're information vacuums where price discovery stops because nobody has new conviction. The eastern Corn Belt is dry, but not drought-dry. The funds are positioned, but not heavy. Export demand is steady, but not surging. When every fundamental factor is 'yeah, but,' the range isn't coiling energy. It's waiting for actual news."
+    "title": "Memorial Day liquidation: why funds book profits early",
+    "body": "Corn's 9-cent drop came with classic three-day weekend signatures: profit-taking that accelerated into technical selling once support broke. Managed money doesn't like holding positions through extended market closures, especially after a volatile week. The pattern repeats every major holiday-funds book gains ahead of time rather than risk gap moves on reopening. Today's action tells you more about calendar management than crop fundamentals."
   },
   "watch_list": [
     {
-      "time": "Tuesday",
-      "desc": "USDA Crop Progress: corn above 70% planted keeps weather premium minimal"
+      "time": "Tuesday 3:00 PM CT",
+      "desc": "USDA Crop Progress: corn planting above 85% confirms on-pace timing"
     },
     {
-      "time": "Thursday",
-      "desc": "Weekly export sales: soy under 400K MT confirms range-bound fundamentals"
+      "time": "Thursday 7:30 AM CT",
+      "desc": "Weekly Export Sales: soy under 200K MT keeps technical pressure on"
     },
     {
       "time": "Next week",
-      "desc": "Fed cattle trade: reset after long weekend tells if buyers are patient or gone"
+      "desc": "July corn back above $4.50 negates today's technical damage"
     }
   ],
   "daily_quote": {
-    "text": "Learn from yesterday, live for today, hope for tomorrow.",
-    "attribution": "Albert Einstein"
+    "text": "The stock market is a device for transferring money from the impatient to the patient.",
+    "attribution": "Warren Buffett"
   },
-  "source_summary": "USDA, CME Group, Energy Information Administration, Federal Trade Commission",
+  "source_summary": "CME Group, CBOT, grain trade reports, livestock market analysis, USDA data, energy futures",
   "date": "Friday, May 29, 2026",
   "meta": {
-    "market_mood": "cautious",
+    "market_mood": "bearish",
     "heat_section": 0,
-    "overnight_surprises_count": 0
+    "overnight_surprises_count": 4
   },
   "locked_prices": {
-    "corn": 4.5275,
-    "corn-dec": 4.8,
-    "beans": 11.9775,
-    "beans-nov": 11.9675,
-    "wheat": 6.23,
-    "oats": 3.675,
-    "cattle": 241.15,
-    "feeders": 352.875,
-    "hogs": 102.0,
-    "milk": 16.38,
-    "meal": 333.70001,
-    "soyoil": 77.2,
-    "crude": 87.58,
-    "natgas": 3.336,
-    "gold": 4560.7998,
-    "silver": 75.81,
+    "corn": 4.47,
+    "corn-dec": 4.7475,
+    "beans": 11.865,
+    "beans-nov": 11.9025,
+    "wheat": 6.1025,
+    "oats": 3.61,
+    "cattle": 239.2,
+    "feeders": 348.92499,
+    "hogs": 99.775,
+    "milk": 16.24,
+    "meal": 329.60001,
+    "soyoil": 77.66,
+    "crude": 87.76,
+    "natgas": 3.273,
+    "gold": 4569.8999,
+    "silver": 75.585,
     "dollar": 100.0,
-    "sp500": 7563.62988,
-    "bitcoin": 73265.60156
+    "sp500": 7580.06006,
+    "bitcoin": 73596.22656
   },
   "chart_series": {
     "corn": [
@@ -137,7 +136,7 @@
       4.6,
       4.58,
       4.54,
-      4.53
+      4.47
     ],
     "soybeans": [
       12.06,
@@ -149,7 +148,7 @@
       11.91,
       11.9,
       11.89,
-      11.98
+      11.87
     ],
     "wheat": [
       6.7,
@@ -161,7 +160,7 @@
       6.43,
       6.28,
       6.22,
-      6.23
+      6.1
     ]
   },
   "sponsor": {
@@ -176,57 +175,90 @@
     "is_house_ad": true
   },
   "issue_number": 79,
-  "generated_at": "2026-05-29T14:11:33.902693+00:00",
-  "generator_version": "4.5.0",
-  "surprise_count": 0,
-  "surprises": [],
+  "generated_at": "2026-05-29T21:52:54.277984+00:00",
+  "generator_version": "4.6.0",
+  "surprise_count": 4,
+  "surprises": [
+    {
+      "commodity": "Corn (nearby)",
+      "key": "corn",
+      "price": "$4.47/bu",
+      "pct_change": -1.9199,
+      "direction": "down",
+      "surprise_magnitude": 1.3
+    },
+    {
+      "commodity": "Corn Dec '26",
+      "key": "corn-dec",
+      "price": "$4.75/bu",
+      "pct_change": -1.6062,
+      "direction": "down",
+      "surprise_magnitude": 1.1
+    },
+    {
+      "commodity": "Lean Hogs",
+      "key": "hogs",
+      "price": "$99.78",
+      "pct_change": -2.1814,
+      "direction": "down",
+      "surprise_magnitude": 1.1
+    },
+    {
+      "commodity": "Class III Milk",
+      "key": "milk",
+      "price": "$16.24",
+      "pct_change": -3.0448,
+      "direction": "down",
+      "surprise_magnitude": 1.0
+    }
+  ],
   "price_validation_clean": true,
   "market_closed": false,
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-05-29T14:11:41.030506+00:00",
+    "ran_at": "2026-05-29T21:53:08.148055+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 8,
-      "rule_3_tmyk_today": 6,
-      "rule_4_watch_conditional": 7,
+      "rule_2_conviction_earned": 7,
+      "rule_3_tmyk_today": 9,
+      "rule_4_watch_conditional": 6,
       "rule_5_bottom_lines_synthesize": 8,
       "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 9,
-      "rule_8_basis_directional": 8,
-      "rule_9_voice": 9,
-      "rule_10_forward_test": 8,
-      "rule_11_thread_coherence": 10,
+      "rule_7_continuity": 8,
+      "rule_8_basis_directional": 9,
+      "rule_9_voice": 4,
+      "rule_10_forward_test": 7,
+      "rule_11_thread_coherence": 8,
       "rule_12_spread_quality": 9,
-      "rule_13_yc_honesty": 9,
+      "rule_13_yc_honesty": 8,
       "rule_14_level_coherence": 8,
-      "rule_15_one_number_coherence": 4,
+      "rule_15_one_number_coherence": 10,
       "rule_16_markdown_not_html": 10,
       "rule_17_macro_anchoring": 8
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "one_number",
-        "rule": "rule_15_one_number_coherence",
+        "target": "section[1]",
+        "rule": "rule_9_voice",
         "scores_before": {
           "rule_1_lead_so_what": 8,
-          "rule_2_conviction_earned": 8,
-          "rule_3_tmyk_today": 6,
-          "rule_4_watch_conditional": 7,
+          "rule_2_conviction_earned": 7,
+          "rule_3_tmyk_today": 9,
+          "rule_4_watch_conditional": 6,
           "rule_5_bottom_lines_synthesize": 8,
           "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 9,
-          "rule_8_basis_directional": 8,
-          "rule_9_voice": 9,
-          "rule_10_forward_test": 8,
-          "rule_11_thread_coherence": 10,
+          "rule_7_continuity": 8,
+          "rule_8_basis_directional": 9,
+          "rule_9_voice": 4,
+          "rule_10_forward_test": 7,
+          "rule_11_thread_coherence": 8,
           "rule_12_spread_quality": 9,
-          "rule_13_yc_honesty": 9,
+          "rule_13_yc_honesty": 8,
           "rule_14_level_coherence": 8,
-          "rule_15_one_number_coherence": 4,
+          "rule_15_one_number_coherence": 10,
           "rule_16_markdown_not_html": 10,
           "rule_17_macro_anchoring": 8
         }
