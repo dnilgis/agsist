@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """
-AGSIST Daily — Critic Pass (v1.2)
+AGSIST Daily — Critic Pass (v1.3)
 ═══════════════════════════════════════════════════════════════════
 Runs as the second step in the morning cron, after generate_daily.py.
 
 Reads the just-generated data/daily.json. Sends the briefing back to
 Claude as an editor. The editor scores 1-10 on each of the 17 IMPACT
-RULES plus the Forward Test and the Voice Test. If 2+ rules score
+RULES plus the Forward Test and the Voice Test. v1.3 (2026-05-18)
+extends Rule 9 voice-failure auto-fail list with CNBC drama vocabulary
+(explode, crater, surge, soar, plunge, slash, exodus, ignite, etc.)
+to match generator v4.6.0's editorial-hardening upgrade. If 2+ rules score
 below 7, the editor rewrites the weakest section (or lead, or basis,
 or yesterdays_call, or weekly_thread.status_text) and the result is
 re-saved + re-archived.
@@ -118,6 +121,19 @@ ADDITIONAL VOICE FAILURES (auto score below 5 if any present):
   - "referendum on" — wire-blog cliche
   - "categorical" / "categorically" — press-release register
   - "decisively below" / "decisively above" / "decisively through" — risks the math contradiction in Rule 14
+  - "exploded" / "explode" / "explosion" — CNBC drama verb
+  - "crater" / "cratered" / "cratering" — same
+  - "crashed" / "crash" used as verb form — same; "the crash of [year]" as noun is permissible
+  - "surge" / "surged" / "surging" — wire-service drama
+  - "soared" / "soaring" / "rocketed" / "skyrocketed" — same
+  - "plunged" / "plunging" / "plummeted" — same
+  - "slashed" used as a price/volume verb — wire register
+  - "exodus" / "fleeing" / "panic" — drama, not analysis
+  - "ignited" / "caught fire" / "torched" — drama
+  - "bloodbath" / "carnage" / "meltdown" / "rout" — never appropriate
+  - "vaulted" / "leaped" (in price context) — drama
+
+CNBC DRAMA VERB PRINCIPLE: AGSIST is a Wisconsin crop insurance guy talking to working farmers. Big moves get described by size and rarity ("biggest day in three weeks"), not by drama verbs. Any drama verb found in lead, sections, basis, takeaway, TMYK, or one_number context = auto Rule 9 below 5 = forced rewrite.
 
 10. THE FORWARD TEST. Would a working farmer forward this LEAD with one line of context to another farmer? If the lead is forgettable, score below 6. If it's the kind of line a producer would screenshot and text to a buddy, score 9-10.
 
@@ -353,7 +369,7 @@ def main():
     parser.add_argument("--max-rewrites", type=int, default=1, help="Max passes per run (default 1)")
     args = parser.parse_args()
 
-    print("=== AGSIST Daily Critic Pass v1.2 ===")
+    print("=== AGSIST Daily Critic Pass v1.3 ===")
     print(f"  Time: {datetime.now().isoformat()}")
     print(f"  Threshold: {args.threshold}/10")
     print(f"  Mode: {'DRY RUN' if args.dry_run else 'REWRITE ENABLED'}")

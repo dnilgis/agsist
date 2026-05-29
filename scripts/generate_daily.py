@@ -1,8 +1,49 @@
 #!/usr/bin/env python3
 """
-AGSIST Daily Briefing Generator, v4.5.0
+AGSIST Daily Briefing Generator, v4.6.0
 ═══════════════════════════════════════════════════════════════════
 Generates the daily agricultural intelligence briefing via Claude API.
+
+v4.6.0 (the editorial-hardening upgrade, 2026-05-18):
+  - TONE CALIBRATION REPLACED. The old table at 877-880 prescribed
+    "exploded"/"crashed" for moves above 3.5% and "surged"/"spiked"
+    for 2.5-3.5%. Those are CNBC drama verbs, not how a Wisconsin
+    crop insurance guy talks to working farmers. New table stays in
+    the working-ag register at every magnitude. Big moves get
+    described by size + rarity ("biggest day in three weeks"), not
+    by drama verbs. Banned-phrases list extended with all standard
+    financial-media drama vocabulary (explode, crater, surge, soar,
+    plunge, slash, exodus, ignite, bloodbath, etc.) and mirrored in
+    critic Rule 9 voice failures.
+  - CALENDAR_FACTS_2026 hardcoded reference block. Generator was
+    inferring USDA release times and US market holidays from training
+    data and getting them wrong (Memorial Day placed May 11 instead
+    of May 25; Crop Progress shown as Tuesday 7:30AM instead of
+    Monday 3PM CT). Hardcoded list eliminates the entire class. Holiday
+    list valid through 2026; refresh annually.
+  - ONGOING SITUATIONS file (data/ongoing-situations.json). Standing
+    macro/geopolitical facts that propagate across briefings to prevent
+    continuity drift (Hormuz tanker counts contradicting between Mon
+    and Thu briefings; "Iran crisis" appearing without anchor). Manually
+    maintained editorial input; loader injects active situations into
+    the system prompt.
+  - EDITORIAL NOTES file (data/editorial-notes.md). Cumulative log of
+    corrections/preferences from prior reviews. Loader pulls last 15
+    bullets and injects into prompt. Turns ongoing editorial feedback
+    into compounding prompt quality without bloating the static rules.
+  - ANTI-REPETITION on one_number topic. past_one_number_topics loader
+    mirrors past_tmyk_topics pattern; prompt explicitly excludes prior
+    Number anchors. Forces editorial range on the most-prominent block.
+  - ANTI-CLICHE check (light). past_phrases loader extracts 3-grams
+    appearing 3+ times in the last 2 briefings, injects as "overused
+    phrases" exclusion. Catches repetition of approved-but-overused
+    vocabulary ("the funds got out of", "managed money rotating", etc.)
+    without adding a new critic rule.
+  - USDA RELEASE-DAY AWARENESS. get_usda_release_today() checks today's
+    date against hardcoded 2026 release calendar (Crop Progress, WASDE,
+    Export Sales, Cattle on Feed, Quarterly Stocks, Prospective Plantings,
+    Acreage). On release days, the prompt directs anticipation framing
+    rather than result-pretending. Refresh dates annually.
 
 v4.5.0 (the math-sanity + markdown-cleanup upgrade, 2026-05-08):
   - LEVEL COHERENCE VALIDATOR: new validate_level_coherence() function
@@ -185,6 +226,48 @@ NEWS_BUCKETS = {
 }
 
 FILLER_ATTRIBUTIONS = {"unknown", "anonymous", "n/a", "", "\u2014", "\u2013", "-"}
+
+
+# v4.6: Hardcoded calendar facts. Generator was inferring USDA release times
+# and US market holidays from training data and getting them wrong (Memorial
+# Day placed May 11 instead of May 25; Crop Progress shown as Tuesday 7:30AM
+# instead of Monday 3PM CT). Hardcoded reference eliminates the entire class.
+CALENDAR_FACTS_2026 = """
+══ CALENDAR REFERENCE (2026) ══
+
+US 2026 holidays (markets closed; never schedule events on these dates):
+  - Jan 1 Thu       New Year's Day
+  - Jan 19 Mon      MLK Day
+  - Feb 16 Mon      Presidents Day
+  - Apr 3 Fri       Good Friday (equities only; CME grain closed)
+  - May 25 Mon      Memorial Day
+  - Jun 19 Fri      Juneteenth
+  - Jul 3 Fri       Independence Day observed (Jul 4 falls on Sat)
+  - Sep 7 Mon       Labor Day
+  - Nov 26 Thu      Thanksgiving
+  - Nov 27 Fri      Early close (1 PM CT equities, 12:05 PM CT CBOT)
+  - Dec 25 Fri      Christmas
+
+USDA recurring report release times (use these exact day/time pairings):
+  - Crop Progress:        Monday 3:00 PM CT during planting/growing/harvest season.
+                          If Monday is a holiday, releases Tuesday 3:00 PM CT.
+  - WASDE:                Monthly, around the 9th-12th, 11:00 AM CT.
+  - Weekly Export Sales:  Every Thursday, 7:30 AM CT.
+  - Cattle on Feed:       Monthly, third or fourth Friday, 2:00 PM CT.
+  - Quarterly Stocks:     Jan/Mar/Jun/Sep, 11:00 AM CT.
+  - Prospective Plantings: Late March (around Mar 31), 11:00 AM CT.
+  - Acreage report:       Late June (around Jun 30), 11:00 AM CT.
+  - Cold Storage:         Around 22nd of each month, 2:00 PM CT.
+
+CME settlement times (relevant for "Friday's close" framing):
+  - CBOT grain: 1:20 PM CT
+  - CME livestock: 1:00 PM CT
+  - NYMEX crude: 1:30 PM CT
+
+If a watch_list item references one of these releases, the day-of-week and
+time MUST match this table. Never invent alternate release times.
+"""
+
 
 
 
@@ -489,6 +572,184 @@ def load_yesterdays_call_context():
     return None
 
 
+def load_ongoing_situations():
+    """Load standing macro/geopolitical situations from data/ongoing-situations.json.
+    These are facts the generator must respect across briefings, preventing
+    cross-day continuity drift (Hormuz tanker counts contradicting between
+    Monday and Thursday briefings, "Iran crisis" appearing without anchor, etc.).
+    Returns formatted block string or empty string if file missing."""
+    path = REPO_ROOT / "data" / "ongoing-situations.json"
+    if not path.exists():
+        return ""
+    try:
+        with open(path) as f:
+            data = json.load(f)
+    except Exception:
+        return ""
+    situations = data.get("situations", {}) if isinstance(data, dict) else {}
+    active = []
+    for key, sit in situations.items():
+        if (sit.get("status") or "").lower() != "active":
+            continue
+        anchor = sit.get("anchor", "").strip()
+        facts = sit.get("facts", []) or []
+        if not anchor and not facts:
+            continue
+        block = f"  [{key}]"
+        if anchor:
+            block += f"\n    Anchor phrase: \"{anchor}\""
+        if facts:
+            block += "\n    Standing facts (do NOT contradict):"
+            for fact in facts[:6]:  # cap at 6 to keep prompt tight
+                block += f"\n      - {fact}"
+        active.append(block)
+    if not active:
+        return ""
+    header = (
+        "STANDING SITUATIONS (cross-briefing continuity)\n"
+        "These are facts the briefing must respect. Use the anchor phrase on FIRST reference\n"
+        "each week (Rule 18). Do NOT contradict the standing facts; do NOT invent tanker counts,\n"
+        "casualty figures, dates, or claim a situation has changed status if it hasn't.\n"
+        "If today's news block contradicts a standing fact, prefer today's news but flag the\n"
+        "shift explicitly (e.g., \"Iran tensions, ongoing since late April, escalated overnight as...\")\n"
+    )
+    return header + "\n" + "\n\n".join(active) + "\n"
+
+
+def load_editorial_notes(n=15):
+    """Load the most recent N editorial notes from data/editorial-notes.md.
+    Notes accrue over time as Sigurd flags issues; injected into the prompt
+    so the generator's instructions grow organically with editorial judgment.
+    Returns formatted block string or empty string if file missing/empty."""
+    path = REPO_ROOT / "data" / "editorial-notes.md"
+    if not path.exists():
+        return ""
+    try:
+        text = path.read_text()
+    except Exception:
+        return ""
+    # Parse markdown: headings starting with ## are date markers; bullets under them are notes.
+    # Pull the last N bullets across all date sections, newest first.
+    lines = text.splitlines()
+    notes = []  # list of (date, note)
+    current_date = ""
+    for line in lines:
+        s = line.strip()
+        if s.startswith("## "):
+            current_date = s[3:].strip()
+        elif s.startswith("- ") and current_date:
+            notes.append((current_date, s[2:].strip()))
+    if not notes:
+        return ""
+    # File convention: newest sections at top, so parse order IS newest-first.
+    # No reversal needed; just cap to n.
+    recent = notes[:n]
+    body_lines = [f"  - ({d}) {note}" for d, note in recent]
+    header = (
+        "EDITORIAL NOTES (cumulative from prior reviews)\n"
+        "These are corrections, preferences, and red lines from past briefings. Apply ALL of them.\n"
+        "Each note overrides any conflicting default in the rules below.\n"
+    )
+    return header + "\n" + "\n".join(body_lines) + "\n"
+
+
+def load_past_one_number_topics(n=3):
+    """Pull one_number.unit fields from the last N briefings so the prompt can
+    explicitly exclude repeat angles. Mirrors past_tmyk_topics pattern."""
+    archive_dir = REPO_ROOT / "data" / "daily-archive"
+    index_path = archive_dir / "index.json"
+    if not index_path.exists():
+        return []
+    try:
+        with open(index_path) as f:
+            idx = json.load(f)
+    except Exception:
+        return []
+    briefings = idx.get("briefings", [])
+    today_iso = datetime.now().strftime("%Y-%m-%d")
+    past = sorted(
+        [b for b in briefings if b.get("date") and b["date"] != today_iso],
+        key=lambda x: x.get("date", ""), reverse=True
+    )[:n]
+    topics = []
+    for entry in past:
+        date_iso = entry.get("date", "")
+        json_path = archive_dir / f"{date_iso}.json"
+        if not json_path.exists():
+            continue
+        try:
+            with open(json_path) as f:
+                b = json.load(f)
+            onum = b.get("one_number") or {}
+            unit = (onum.get("unit") or "").strip()
+            value = (onum.get("value") or "").strip()
+            if unit:
+                topics.append(f"{value} — {unit}")
+        except Exception:
+            continue
+    return topics
+
+
+def load_past_phrases(n=2, top_k=12):
+    """Extract recurring 3-4 word phrases from the last N briefings so the
+    prompt can flag them as overused. Light-touch anti-cliche check."""
+    archive_dir = REPO_ROOT / "data" / "daily-archive"
+    index_path = archive_dir / "index.json"
+    if not index_path.exists():
+        return []
+    try:
+        with open(index_path) as f:
+            idx = json.load(f)
+    except Exception:
+        return []
+    briefings = idx.get("briefings", [])
+    today_iso = datetime.now().strftime("%Y-%m-%d")
+    past = sorted(
+        [b for b in briefings if b.get("date") and b["date"] != today_iso],
+        key=lambda x: x.get("date", ""), reverse=True
+    )[:n]
+    # Stitch all body prose from past briefings
+    corpus = []
+    for entry in past:
+        date_iso = entry.get("date", "")
+        json_path = archive_dir / f"{date_iso}.json"
+        if not json_path.exists():
+            continue
+        try:
+            with open(json_path) as f:
+                b = json.load(f)
+            corpus.append((b.get("lead") or "").lower())
+            for s in (b.get("sections") or []):
+                corpus.append((s.get("body") or "").lower())
+                corpus.append((s.get("bottom_line") or "").lower())
+            tmyk = b.get("the_more_you_know") or {}
+            corpus.append((tmyk.get("body") or "").lower())
+        except Exception:
+            continue
+    text = " ".join(corpus)
+    # Strip price/level patterns so $4.62, 1.5%, $250 don't dominate
+    text = re.sub(r"\$[\d.,]+", " ", text)
+    text = re.sub(r"\d+\.?\d*%", " ", text)
+    text = re.sub(r"[^a-z\s]", " ", text)
+    words = text.split()
+    # Stop words to skip when starting a phrase
+    stop = {"the", "and", "of", "a", "to", "in", "is", "it", "that", "for",
+            "on", "as", "with", "but", "or", "if", "this", "than", "from",
+            "at", "by", "be", "an", "are", "was", "were"}
+    from collections import Counter
+    cnt = Counter()
+    for i in range(len(words) - 3):
+        if words[i] in stop:
+            continue
+        # 3-gram
+        tri = " ".join(words[i:i+3])
+        if len(tri) > 8:
+            cnt[tri] += 1
+    # Phrases appearing 3+ times are worth flagging
+    flagged = [phr for phr, c in cnt.most_common(40) if c >= 3][:top_k]
+    return flagged
+
+
 def load_weekly_thread():
     """On Tue-Fri, return Monday's weekly_thread.question (the week's setup)
     plus the day-of-week index. Returns None on Mondays (no thread yet) or
@@ -676,7 +937,65 @@ def get_seasonal_context():
     return contexts.get(month, "Monitor markets and seasonal patterns.")
 
 
-def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, weekly_thread=None):
+def get_usda_release_today():
+    """Return a string describing any USDA release scheduled for today, or empty
+    string if none. Hardcoded calendar for 2026; revisit annually.
+
+    This injects awareness into the prompt so the briefing can lead with
+    anticipation framing on release days ("today's WASDE at 11 AM CT will...").
+    """
+    today = datetime.now()
+    weekday = today.weekday()  # 0=Mon ... 6=Sun
+    md = today.strftime("%m-%d")
+
+    # Weekly recurring
+    releases = []
+    if weekday == 0:  # Monday: Crop Progress during planting/growing/harvest
+        # Crop Progress typically runs April through November
+        if 4 <= today.month <= 11:
+            releases.append("USDA Crop Progress, 3:00 PM CT")
+    if weekday == 3:  # Thursday: Weekly Export Sales
+        releases.append("USDA Weekly Export Sales, 7:30 AM CT")
+
+    # Monthly: Cattle on Feed (3rd or 4th Friday). Hardcoded 2026 dates:
+    cof_2026 = {"01-23", "02-20", "03-20", "04-24", "05-22",
+                "06-19", "07-24", "08-21", "09-25", "10-23",
+                "11-20", "12-18"}
+    if md in cof_2026:
+        releases.append("USDA Cattle on Feed, 2:00 PM CT")
+
+    # Monthly: WASDE (around 9th-12th). Hardcoded 2026 dates:
+    wasde_2026 = {"01-12", "02-10", "03-10", "04-09", "05-12",
+                  "06-11", "07-10", "08-12", "09-11", "10-09",
+                  "11-10", "12-10"}
+    if md in wasde_2026:
+        releases.append("USDA WASDE (World Ag Supply/Demand Estimates), 11:00 AM CT")
+
+    # Quarterly stocks (Jan/Mar/Jun/Sep around 30th-31st):
+    qs_2026 = {"01-30", "03-31", "06-30", "09-30"}
+    if md in qs_2026:
+        releases.append("USDA Quarterly Grain Stocks, 11:00 AM CT")
+
+    # Prospective Plantings (late March):
+    if md == "03-31":
+        releases.append("USDA Prospective Plantings, 11:00 AM CT")
+
+    # Acreage report (late June):
+    if md == "06-30":
+        releases.append("USDA Acreage Report, 11:00 AM CT")
+
+    if not releases:
+        return ""
+    header = "TODAY IS A USDA RELEASE DAY:\n  - " + "\n  - ".join(releases)
+    header += (
+        "\nLead with anticipation framing (\"...with [report] coming at [time], the market "
+        "is positioning for...\"). Don't pretend to know the result. Reserve interpretation "
+        "for tomorrow's briefing once the data is in."
+    )
+    return header
+
+
+def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, weekly_thread=None, ongoing_situations="", editorial_notes="", past_one_number_topics=None, past_phrases=None, usda_release=""):
     weekend_instructions = ""
     if market_status["is_closed"]:
         day = market_status["day_name"]; reason = market_status["reason"]
@@ -723,6 +1042,14 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
     banned_tmyk = ""
     if past_tmyk_topics:
         banned_tmyk = "\n\nTMYK TOPIC EXCLUSION (last 3 briefings):\n  - " + "\n  - ".join(past_tmyk_topics) + "\nPick a different angle today."
+
+    banned_one_number = ""
+    if past_one_number_topics:
+        banned_one_number = "ONE NUMBER TOPIC EXCLUSION (last 3 briefings):\n  - " + "\n  - ".join(past_one_number_topics) + "\nPick a different angle. The Number should be a fresh stat, not a repeat anchor."
+
+    overused_phrases = ""
+    if past_phrases:
+        overused_phrases = "OVERUSED PHRASES (appeared 3+ times in the last 2 briefings):\n  - " + "\n  - ".join(past_phrases) + "\nAvoid these exact phrases today. Reach for different framing."
 
     yesterdays_block = ""
     if yesterdays_call and not market_status["is_closed"]:
@@ -807,6 +1134,25 @@ Examples of strong weekly questions:
 Set weekly_thread.day = 1, weekly_thread.question = (your question), weekly_thread.status_text = (1-2 sentence setup explaining why this is the week's question).
 """
 
+    # v4.6: collect ALL non-empty optional blocks and join with double-newline.
+    # This avoids the wall-of-blanks problem when several blocks are empty
+    # on a fresh deploy (no archive, no editorial notes, weekend, etc.).
+    # Must run AFTER yesterdays_block and thread_block are defined.
+    _optional_blocks = [b for b in (
+        weekend_instructions.strip() if weekend_instructions else "",
+        editorial_notes.strip() if editorial_notes else "",
+        ongoing_situations.strip() if ongoing_situations else "",
+        usda_release.strip() if usda_release else "",
+        banned_tmyk.strip() if banned_tmyk else "",
+        banned_one_number,
+        overused_phrases,
+        yesterdays_block.strip() if yesterdays_block else "",
+        thread_block.strip() if thread_block else "",
+    ) if b]
+    context_blocks = "\n\n".join(_optional_blocks) if _optional_blocks else ""
+
+    # v4.6: alias the module-level constants into local scope for the f-string below.
+    CALENDAR_FACTS_2026_LOCAL = CALENDAR_FACTS_2026
     return f"""You are the voice of AGSIST Daily, a trusted morning agricultural intelligence briefing read every day by US producers across grain, livestock, dairy, and specialty operations.
 
 ══ THE VOICE ══
@@ -882,6 +1228,17 @@ These are the specific clichés that signal you've drifted into trader-blog wire
   - "decisively below" / "decisively above" / "decisively through" — risks claiming a break that the close contradicts; just describe the move ("right back to $X", "tested $X")
   - "referendum on" — wire-blog cliche
   - "categorical" / "categorically" — sounds like a press release
+  - "exploded" / "explode" / "explosion" — CNBC drama verb, use "ran", "moved hard", "had its biggest day in [N]" instead
+  - "crater" / "cratered" / "cratering" — same; use "fell hard", "dropped sharply", "lost [N] cents"
+  - "crashed" / "crash" (as verb form) — same; use "broke lower", "tumbled", "had its biggest drop in [N]"
+  - "surge" / "surged" / "surging" — wire-service drama; use "ran higher", "rose sharply", "pushed up [N]"
+  - "soared" / "soaring" / "rocketed" / "skyrocketed" / "rocketed" — same
+  - "plunged" / "plunging" / "plummeted" — same; use "fell hard" or state the size
+  - "slashed" (verb) — wire register; use "cut", "reduced", "pulled back"
+  - "exodus" / "fleeing" / "panic" — drama, not analysis; use "stepping out", "rotating", "liquidating"
+  - "ignited" / "caught fire" / "torched" / "incinerated" — drama
+  - "bloodbath" / "carnage" / "meltdown" / "rout" — never appropriate
+  - "vaulted" / "leaped" / "leaped" — drama verbs
 
 Acceptable substitutes, write like an operator, not a trader-blog:
   - "managed money is rotating" → "funds are getting out of corn, into beans"
@@ -896,10 +1253,9 @@ GEOGRAPHIC SCOPE: National. NEVER narrow to "Wisconsin and Minnesota farmers" or
 HEADLINE NUMERALS: Always digit format. Write "9.2%" or "9%", not "NINE PERCENT". AI search engines query digits, not spelled-out numbers. The headline is the canonical anchor and must be queryable.
 
 NEWS DISCIPLINE: News is INPUT, not flavor. The news block below is organized by bucket (GRAINS, LIVESTOCK, ENERGY, POLICY, WEATHER, MACRO). Every section with medium or high conviction MUST identify the catalyst, the news / data / event / report that drove or contextualizes the price action. If the relevant news bucket has NO recent items, you may write "no clean catalyst, looks like fund liquidation" or similar, but only if the bucket was actually empty. Default behavior: thread a specific news item from the relevant bucket into each section's body. Do NOT recap the news; weave it into the price story as the why. Lead with the price + so-what; the catalyst is the why behind it.
-{weekend_instructions}
-{banned_tmyk}
-{yesterdays_block}
-{thread_block}
+{context_blocks}
+
+{CALENDAR_FACTS_2026_LOCAL}
 
 ══ WRITING RULES ══
 1. NO EM DASHES (U+2014) OR EN DASHES (U+2013). Use periods, commas, semicolons, colons, parentheses. (Exception: standard hyphenated compounds like "old-crop" are fine.)
@@ -908,10 +1264,14 @@ NEWS DISCIPLINE: News is INPUT, not flavor. The news block below is organized by
 4. Describe moves exactly as shown.
 
 ══ TONE CALIBRATION ══
-- below 1.5%: "moved", "gained", "eased", "dipped"
-- 1.5-2.5%: "jumped", "fell", "rallied", "slid"
-- 2.5-3.5%: "surged", "dropped sharply", "spiked"
-- above 3.5%: "exploded", "crashed", "historic". Genuinely rare.
+The vocabulary stays in the working-ag register at EVERY magnitude. Big moves get described by their size and rarity ("biggest day in three weeks"), NOT by drama verbs. This is a Wisconsin crop insurance guy talking to working farmers, not a CNBC anchor.
+
+- below 1.5%:    "eased", "ticked", "moved", "drifted", "ground", "settled"
+- 1.5-2.5%:      "gained" / "fell", "added" / "gave back", "firmed" / "softened", "lifted" / "slipped"
+- 2.5-3.5%:      "rose sharply" / "dropped sharply", "ran higher" / "broke lower", "pushed higher" / "pulled back hard"
+- above 3.5%:    "ran" / "tumbled", "moved hard", "had its biggest day in [N] weeks/months". State the rarity, not the drama.
+
+For genuinely once-a-decade events, you may use "historic" once. Otherwise describe the move by the size of the move ("9% in a single session, the biggest since [date]") and let the reader feel the weight. NEVER use drama verbs at any magnitude.
 
 ══ THE 18 IMPACT RULES ══
 
@@ -1045,7 +1405,7 @@ OMISSIONS, set fields to null or empty objects when not applicable:
 RESPOND WITH ONLY THE JSON OBJECT. No markdown. No preamble. No em dashes. VOICE OR DEATH."""
 
 
-def call_claude(price_data, surprises, news_block, seasonal_ctx, todays_quote, past_dailies_block, past_tmyk_topics, market_status, yesterdays_call=None, weekly_thread=None):
+def call_claude(price_data, surprises, news_block, seasonal_ctx, todays_quote, past_dailies_block, past_tmyk_topics, market_status, yesterdays_call=None, weekly_thread=None, ongoing_situations="", editorial_notes="", past_one_number_topics=None, past_phrases=None, usda_release=""):
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
         print("[error] ANTHROPIC_API_KEY not set", file=sys.stderr); sys.exit(1)
@@ -1088,7 +1448,7 @@ Attribution: "{todays_quote['attribution']}"
 Apply all 18 IMPACT RULES. Voice samples are NON-NEGOTIABLE, no wire-service neutral. Forward test the lead before you finalize. If today is Tue-Fri, advance the weekly thread, do NOT rehash. Thread NEWS into every section's body, generic "fund positioning" without a specific catalyst tie is wire filler. Rule 17 (level coherence) is failure-mode-zero: the post-gen validator will reject contradictory break claims."""
 
     payload = {"model": MODEL, "max_tokens": 4500,
-               "system": build_system_prompt(market_status, past_tmyk_topics, yesterdays_call, weekly_thread),
+               "system": build_system_prompt(market_status, past_tmyk_topics, yesterdays_call, weekly_thread, ongoing_situations, editorial_notes, past_one_number_topics, past_phrases, usda_release),
                "messages": [{"role": "user", "content": user_message}]}
     headers = {"Content-Type": "application/json", "x-api-key": api_key, "anthropic-version": "2023-06-01"}
 
@@ -2355,7 +2715,7 @@ def sanitize_weekend_blocks(briefing, market_status):
 
 
 def main():
-    print("=== AGSIST Daily Briefing Generator v4.5.0 ===")
+    print("=== AGSIST Daily Briefing Generator v4.6.0 ===")
     print(f"  Time: {datetime.now().isoformat()}")
     market_status = get_market_status()
     if market_status["is_closed"]:
@@ -2377,6 +2737,24 @@ def main():
     past_dailies_block, past_tmyk_topics = load_past_dailies(num_days=3)
     if past_dailies_block:
         print(f"  Past context loaded ({len(past_tmyk_topics)} prior TMYK to avoid)")
+    # v4.6: new loaders for cross-day continuity, anti-cliche, anti-repetition,
+    # editorial-notes cumulative learning, and USDA release-day awareness.
+    ongoing_situations = load_ongoing_situations()
+    editorial_notes = load_editorial_notes()
+    past_one_number_topics = load_past_one_number_topics()
+    past_phrases = load_past_phrases()
+    usda_release = get_usda_release_today()
+    if ongoing_situations:
+        print(f"  [v4.6] loaded {ongoing_situations.count(chr(91))} ongoing situation(s)")
+    if editorial_notes:
+        n_notes = editorial_notes.count("- (")
+        print(f"  [v4.6] loaded editorial notes ({n_notes} entries)")
+    if past_one_number_topics:
+        print(f"  [v4.6] excluded {len(past_one_number_topics)} prior one_number topics")
+    if past_phrases:
+        print(f"  [v4.6] flagged {len(past_phrases)} overused phrases for exclusion")
+    if usda_release:
+        print(f"  [v4.6] today is a USDA release day")
 
     # v4.0: load yesterday's call + weekly thread context
     yesterdays_call_ctx = None
@@ -2413,7 +2791,12 @@ def main():
     print("  Calling Claude API (v4.0 prompt)...")
     briefing = call_claude(price_data, surprises, news_block, seasonal_ctx,
                            todays_quote, past_dailies_block, past_tmyk_topics,
-                           market_status, yesterdays_call_ctx, weekly_thread_ctx)
+                           market_status, yesterdays_call_ctx, weekly_thread_ctx,
+                           ongoing_situations=ongoing_situations,
+                           editorial_notes=editorial_notes,
+                           past_one_number_topics=past_one_number_topics,
+                           past_phrases=past_phrases,
+                           usda_release=usda_release)
 
     # v4.2 (Phase 2 C4): enforce weekend block contract regardless of
     # what the model returned. On weekdays this is a no-op.
@@ -2483,7 +2866,7 @@ def main():
         print(f"  Section catalysts: {cats_with}/{cats_total} sections name a driver")
 
     briefing["generated_at"] = datetime.now(timezone.utc).isoformat()
-    briefing["generator_version"] = "4.5.0"
+    briefing["generator_version"] = "4.6.0"
     briefing["surprise_count"] = len(surprises)
     briefing["surprises"] = surprises
     briefing["price_validation_clean"] = is_clean
