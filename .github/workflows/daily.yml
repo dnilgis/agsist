@@ -12,6 +12,17 @@ on:
     # even with typical GitHub Actions cron delays (occasionally 30+ min
     # during peak load).
     - cron: '2 11 * * *'
+    # v4.6: Friday post-close regeneration.
+    # 20:00 UTC Fri = 3:00 PM Central (CDT) / 2:00 PM Central (CST).
+    # CBOT grain settles 1:20 PM CT, CME livestock 1:00 PM CT, NYMEX
+    # crude 1:30 PM CT. Running at 2:00 PM CT (winter) / 3:00 PM CT
+    # (summer) puts us safely past all settlement windows year-round so
+    # locked_prices reflects actual Friday closes. This replaces the
+    # morning Friday briefing with the corrected one, eliminating the
+    # failure mode where Friday's email goes out with intraday prices
+    # and Saturday's recap shows different numbers. Saturday's 11:02
+    # UTC run still happens normally on top of this.
+    - cron: '0 20 * * 5'
   workflow_dispatch:
 
 jobs:
@@ -41,9 +52,11 @@ jobs:
 
       # v4.0: Critic pass — runs after generate, before schema validation.
       # Sends the briefing back to Claude as the editor, scores 1-10 on each
-      # of 13 rules (8 IMPACT + voice, forward test, thread coherence + spread
-      # quality + YC honesty). If 2+ rules score below 7 OR voice<5 OR forward
-      # test<5, rewrites the weakest target and re-saves daily.json + archive HTML.
+      # of 17 rules (8 IMPACT + voice, forward test, thread coherence + spread
+      # quality + YC honesty + level coherence + one-number coherence +
+      # markdown-not-HTML + macro anchoring). If 2+ rules score below 7 OR
+      # voice<5 OR forward test<5 OR level coherence<7 OR markdown<7, rewrites
+      # the weakest target and re-saves daily.json + archive HTML.
       #
       # continue-on-error: true means a critic API failure (network, bad response,
       # rate limit) does NOT block the briefing from shipping. The original
@@ -52,6 +65,10 @@ jobs:
       # v4.2 (Phase 2 C5): the critic itself now retries up to 3 times with
       # exponential backoff before giving up. continue-on-error remains as
       # belt-and-suspenders for catastrophic failures.
+      #
+      # v4.6 (2026-05-18): critic Rule 9 voice-failure list extended with
+      # CNBC drama verbs (explode, crater, surge, soar, plunge, slash, etc.)
+      # to match generator v4.6.0's editorial-hardening upgrade.
       #
       # First few days: consider adding `--dry-run` to the run command to see
       # what the critic flags before letting it rewrite anything. Remove the
