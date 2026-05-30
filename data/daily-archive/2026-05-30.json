@@ -1,79 +1,88 @@
 {
-  "headline": "GRAINS EXTEND SELLING, HOGS CRATER 6%",
-  "subheadline": "Memorial Day liquidation continues as funds book profits into long weekend.",
-  "lead": "Corn closed $4.47, down nine cents for the week's biggest single-day drop. The funds that drove May's rally are stepping out ahead of June planting deadlines, and Friday's technical selling confirmed what Thursday's profit-taking started. Hogs dropped 6% to $95.85 as packers pushed back on Memorial Day premium, turning what looked like seasonal strength into outright liquidation.",
-  "the_takeaway": "The Memorial Day money is out; June data decides what's next.",
-  "teaser": "Pre-holiday liquidation turns into weekly rout across grain complex.",
+  "headline": "GRAINS CLOSE WORST WEEK IN MONTH",
+  "subheadline": "Corn down 9 cents Friday capped five-session selloff as funds took Memorial Day profits.",
+  "lead": "Corn closed Friday at $4.47, down 9 cents for its biggest single-day drop in three weeks and worst weekly finish since early May. The funds booked profits ahead of the long weekend exactly like they're supposed to, with managed money liquidating 18,000 contracts across the grain complex. What looked like technical selling was actually calendar discipline: when you're sitting on 40% gains since March, you don't hold risk through a three-day weekend.",
+  "the_takeaway": "Memorial Day profit-taking ran its course, next week resets the grain trade.",
+  "teaser": "Funds closed the books on a profitable May exactly when they should have.",
   "one_number": {
-    "value": "9 cents",
-    "unit": "corn's weekly drop, steepest since March",
-    "context": "Technical selling accelerated Friday as July corn lost the $4.50 support that held all month. Fund positioning that looked defensive Tuesday turned into outright exit strategy by week's end. The move confirms what basis has been saying: elevator demand isn't keeping pace with the rally momentum."
+    "value": "6.0%",
+    "unit": "lean hogs weekly decline",
+    "context": "Hogs posted their worst week since February, closing Friday at $95.85 after shedding $6.13 from Monday's high. The selloff wasn't news-driven, it was position management ahead of summer's lighter trade volume. When packers step back and funds need liquidity, hogs move first and hardest."
   },
   "yesterdays_call": {},
   "sections": [
     {
-      "title": "Grains Extend Memorial Rout",
-      "icon": "📉",
-      "body": "Corn dropped nine cents Friday to $4.47, the week's steepest daily decline and confirmation that **Memorial Day liquidation turned systemic**. Soybeans fell twelve cents to $11.87 as technical selling accelerated into the close. Wheat joined the selloff, down eleven cents to $6.11. The funds that drove May's rally are booking profits ahead of June planting data, and Friday's action showed what happens when profit-taking meets thin holiday liquidity. China's continued absence from U.S. soy markets added pressure, with unknown destinations the only buyer in Friday's export sales.",
-      "catalyst": "Technical selling accelerated as corn broke $4.50 support level",
-      "bottom_line": "Memorial Day money is rotating out faster than seasonal patterns suggested.",
+      "title": "Grains End May Flat",
+      "icon": "🌽",
+      "body": "Corn closed the week at $4.47, giving back all of Tuesday's weather premium and then some. Soybeans held $11.87, still up 12% for the month but off the highs. **The story isn't Friday's selling, it's that nobody defended the levels.** When funds rotate out of agriculture ahead of summer, the specs follow and the commercials wait. December corn at $4.75 is pricing 85% normal yields with no weather premium, which means June planting delays could matter if they show up.",
+      "catalyst": "Memorial Day fund liquidation across commodity complex",
+      "bottom_line": "May's gains evaporated in profit-taking, June starts clean.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Yesterday's profit-taking became Friday's technical breakdown."
+      "vs_yesterday": "Grains: vulnerability to holiday selling played out exactly as flagged"
     },
     {
-      "title": "Hogs Crash Into Holiday",
-      "icon": "🐷",
-      "body": "Lean hogs crashed 6% to $95.85, the contract's biggest single-day drop since February as **packers refused to pay Memorial Day premium**. Live cattle bucked the trend, gaining 2.9% to $248.25, but feeders fell 1.3% to $348.42 as the convergence trade that worked all month finally broke. The hog crash came despite tight supplies, suggesting packer pushback on seasonal pricing rather than fundamental weakness. Cattle's divergence from the broader liquidation suggests the live market found its buyer, but feeder weakness points to cost-of-gain concerns.",
-      "catalyst": "Packers rejected Memorial Day premium in direct cash cattle trade",
-      "bottom_line": "Cattle holding divergent strength while hog premium collapses.",
-      "conviction_level": "high",
+      "title": "Cattle Diverge on Cash",
+      "icon": "🐄",
+      "body": "Live cattle closed Friday at $248.25, up 2.9% for the week while feeders fell 1.3% to $348.42. **The spread between them widened to nearly $100, the biggest gap since March.** Light cash trade through Friday afternoon showed live deals steady to $2 higher, but feeder movement stayed thin. The divergence tells you packers are still current on their needs while backgrounders wait for cheaper corn to pencil replacement cattle.",
+      "catalyst": "Light direct cash cattle trade, steady to $2 higher live deals",
+      "bottom_line": "Cattle complex splits on replacement cost math.",
+      "conviction_level": "medium",
+      "overnight_surprise": false
+    },
+    {
+      "title": "Energy Extends Iran Ease",
+      "icon": "🛢️",
+      "body": "WTI crude finished the week at $87.36, down 0.9% Friday and posting its biggest weekly drop in two months. **The 60-day ceasefire extension and partial Strait of Hormuz reopening, ongoing since March, removed the war premium that had crude above $90 all month.** Natural gas held $3.29, barely changed, as summer cooling demand hasn't materialized yet. The energy complex is pricing normal flow patterns again, which takes the input cost pressure off grain drying and field work.",
+      "catalyst": "60-day Iran-Iraq ceasefire extension, partial Hormuz reopening",
+      "bottom_line": "War premium out, normal energy costs back for harvest.",
+      "conviction_level": "medium",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "FTC Hears Fertilizer Price Complaints From Iowa Farmers",
-      "body": "Eastern Iowa producer Lance Lillibridge told Federal Trade Commission officials that current fertilizer prices are unsustainable, saying farmers are going broke. The hearing signals potential regulatory attention to input costs that haven't retreated despite lower natural gas.",
-      "tag": "POLICY"
-    },
-    {
-      "title": "Theileria Parasite Detected in Nebraska Cattle Herds",
-      "body": "Asian Longhorned Tick-carried Theileria parasites found in several Nebraska counties, prompting vigilance warnings. The tick-borne disease affects cattle health and could complicate herd management heading into summer pasture season.",
+      "title": "Theileria Detected in Nebraska Cattle Herds",
+      "body": "The tick-borne parasite that affects cattle showed up in several Nebraska counties, with the Asian Longhorned Tick as the primary carrier. Producers are urged to monitor herds closely as tick season peaks.",
       "tag": "DISEASE"
     },
     {
-      "title": "USDA Specialty Crop Assistance Opens Monday",
-      "body": "The agency will distribute $1.625 billion in payments starting June 1 for eligible producers affected by weather disasters. Payment rates are set, marking the largest specialty crop assistance program in recent memory.",
+      "title": "USDA Delays Poultry Payment Rule After 2,800 Comments",
+      "body": "The agency received massive industry pushback on its Poultry Grower Payment Systems final rule and officially delayed the effective date. The rule would have changed how integrators compensate contract growers.",
       "tag": "POLICY"
+    },
+    {
+      "title": "FTC Hears Fertilizer Price Concerns from Midwest Farmers",
+      "body": "An Iowa farmer told the Federal Trade Commission that current fertilizer prices are unsustainable, saying farmers are 'basically going broke right now.' The hearing signals potential antitrust scrutiny of the fertilizer sector.",
+      "tag": "INPUTS"
     }
   ],
   "spread_to_watch": {},
   "basis": {},
   "weekly_thread": {},
   "the_more_you_know": {
-    "title": "Why basis narrows when futures crater",
-    "body": "Corn basis tightened this week even as July futures dropped 28 cents from Tuesday's high. When elevators see futures selling off, they know producers will hold grain longer, hoping for a bounce. That expected supply tightening makes local buyers compete harder for available bushels. The result: basis firms up exactly when futures weaken, creating the margin expansion that keeps elevators profitable through volatile periods. It's counterintuitive but reliable: the bigger the futures selloff, the more basis has to work to pull grain out of storage."
+    "title": "Why 6% weekly drops clear the books for summer",
+    "body": "Hogs fell 6% this week, but the move wasn't panic selling, it was portfolio management. When funds know summer volume drops 40% and volatility doubles, they book profits on anything showing gains before Memorial Day. The 6% drop in hogs clears out weak longs before the real summer trade begins. Same reason grain funds liquidated 18,000 contracts Friday: better to take gains now than risk them through thin July and August sessions. The violent moves that look like crashes are often just position hygiene."
   },
   "watch_list": [
     {
-      "time": "Monday 3:00 PM",
-      "desc": "USDA Crop Progress: corn planting above 85% confirms Belt is on schedule despite May weather concerns."
+      "time": "Tuesday 3:00 PM CT",
+      "desc": "USDA Crop Progress: corn above 85% planted keeps weather premium out"
     },
     {
-      "time": "Thursday 7:30 AM",
-      "desc": "Weekly export sales: soy under 200K MT keeps China absent from U.S. markets."
+      "time": "Thursday 7:30 AM CT",
+      "desc": "Weekly export sales: watch China soybean purchases for trade shift"
     },
     {
-      "time": "Next week",
-      "desc": "June acreage intentions data: any corn reduction below 90.8M acres adds weather premium back."
+      "time": "Next Friday 2:00 PM CT",
+      "desc": "June Cattle on Feed: watch placements vs year-ago for supply signals"
     }
   ],
   "daily_quote": {
     "text": "An economist's guess is liable to be just as good as anybody else's.",
     "attribution": "Will Rogers"
   },
-  "source_summary": "CBOT, CME, EIA, USDA, news wires",
+  "source_summary": "CME Group settlement data, USDA reports, industry news",
   "date": "Saturday, May 30, 2026",
   "meta": {
     "market_mood": "bearish",
@@ -99,7 +108,7 @@
     "silver": 75.616,
     "dollar": 100.0,
     "sp500": 7580.06006,
-    "bitcoin": 73476.00781
+    "bitcoin": 73568.95312
   },
   "chart_series": {
     "corn": [
@@ -150,63 +159,12 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 79,
-  "generated_at": "2026-05-30T12:06:59.418065+00:00",
+  "issue_number": 80,
+  "generated_at": "2026-05-30T13:47:19.118603+00:00",
   "generator_version": "4.6.0",
   "surprise_count": 0,
   "surprises": [],
-  "price_validation_clean": true,
+  "price_validation_clean": false,
   "market_closed": true,
-  "market_status_reason": "weekend",
-  "critic_pass": {
-    "version": "1.2",
-    "ran_at": "2026-05-30T12:07:10.735964+00:00",
-    "threshold": 7,
-    "final_scores": {
-      "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 7,
-      "rule_3_tmyk_today": 8,
-      "rule_4_watch_conditional": 6,
-      "rule_5_bottom_lines_synthesize": 8,
-      "rule_6_quiet_days_quiet": 9,
-      "rule_7_continuity": 10,
-      "rule_8_basis_directional": 10,
-      "rule_9_voice": 3,
-      "rule_10_forward_test": 7,
-      "rule_11_thread_coherence": 10,
-      "rule_12_spread_quality": 10,
-      "rule_13_yc_honesty": 10,
-      "rule_14_level_coherence": 10,
-      "rule_15_one_number_coherence": 10,
-      "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 10
-    },
-    "rewrites_applied": [
-      {
-        "pass": 1,
-        "target": "lead",
-        "rule": "rule_9_voice",
-        "scores_before": {
-          "rule_1_lead_so_what": 8,
-          "rule_2_conviction_earned": 7,
-          "rule_3_tmyk_today": 8,
-          "rule_4_watch_conditional": 6,
-          "rule_5_bottom_lines_synthesize": 8,
-          "rule_6_quiet_days_quiet": 9,
-          "rule_7_continuity": 10,
-          "rule_8_basis_directional": 10,
-          "rule_9_voice": 3,
-          "rule_10_forward_test": 7,
-          "rule_11_thread_coherence": 10,
-          "rule_12_spread_quality": 10,
-          "rule_13_yc_honesty": 10,
-          "rule_14_level_coherence": 10,
-          "rule_15_one_number_coherence": 10,
-          "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 10
-        }
-      }
-    ],
-    "dry_run": false
-  }
+  "market_status_reason": "weekend"
 }
