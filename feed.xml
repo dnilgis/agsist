@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 29 May 2026 21:53:09 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 30 May 2026 12:07:12 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS EXTEND SELLING, HOGS CRATER 6%</title>
+      <link>https://agsist.com/daily/2026-05-30</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-30</guid>
+      <pubDate>Sat, 30 May 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed $4.47, down nine cents for the week's biggest single-day drop. The funds that drove May's rally are stepping out ahead of June planting deadlines, and Friday's technical selling confirmed what Thursday's profit-taking started. Hogs dropped 6% to $95.85 as packers pushed back on Memorial Day premium, turning what looked like seasonal strength into outright liquidation.
+Memorial Day liquidation continues as funds book profits into long weekend.
+• Grains Extend Memorial Rout
+• Hogs Crash Into Holiday
+Read more: https://agsist.com/daily/2026-05-30</description>
+    </item>
     <item>
       <title>GRAINS SHED WEEK'S GAINS, MILK CRASHES 3%</title>
       <link>https://agsist.com/daily/2026-05-29</link>
@@ -358,19 +369,6 @@ Live cattle slip from breakout levels while corn and beans hold tight ranges.
   → Hold pricing discipline above $252 — below that level questions the breakout thesis.
 • Grains Mark Time
 Read more: https://agsist.com/daily/2026-05-01</description>
-    </item>
-    <item>
-      <title>CRUDE CRASHES AS CATTLE HOLD GAINS</title>
-      <link>https://agsist.com/daily/2026-04-30</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-04-30</guid>
-      <pubDate>Thu, 30 Apr 2026 05:00:00 -0600</pubDate>
-      <description>Crude oil crashed $4.81 to $104.22 — its worst single-day drop in three months — but cattle shrugged off the energy selloff and held yesterday's breakout above $255. The divergence says something important: cattle's momentum has fund support that crude's flash rally never earned. Live futures closed at $255.10, down just 70 cents from yesterday's 52-week high.
-Oil's 4.4% plunge reverses Tuesday's energy rally while livestock extends breakout.
-• Cattle Hold Breakout
-  → Price remaining summer cattle inventory above $250 — the breakout has legs.
-• Energy Complex Reverses
-• Grains Track Lower
-Read more: https://agsist.com/daily/2026-04-30</description>
     </item>
   </channel>
 </rss>

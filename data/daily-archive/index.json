@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-05-30",
+      "date_display": "Saturday, May 30, 2026",
+      "headline": "GRAINS EXTEND SELLING, HOGS CRATER 6%",
+      "teaser": "Pre-holiday liquidation turns into weekly rout across grain complex.",
+      "market_mood": "bearish",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-05-30",
+      "market_closed": true
+    },
+    {
       "date": "2026-05-29",
       "date_display": "Friday, May 29, 2026",
       "headline": "GRAINS SHED WEEK'S GAINS, MILK CRASHES 3%",
@@ -860,6 +871,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-05-29T21:53:08.194927+00:00",
-  "count": 78
+  "updated": "2026-05-30T12:07:10.779975+00:00",
+  "count": 79
 }
