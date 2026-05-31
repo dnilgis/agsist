@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 30 May 2026 13:47:30 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 31 May 2026 12:14:32 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS CLOSE MAY AT LOWS, JUNE PLANTING WINDOW NARROWS</title>
+      <link>https://agsist.com/daily/2026-05-31</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-05-31</guid>
+      <pubDate>Sun, 31 May 2026 05:00:00 -0600</pubDate>
+      <description>May's done and grains closed at the month's lows. Corn at $4.47 finished down 2%, beans at $11.87 gave back 1%. The selloff heading into Memorial Day cleared weak hands but left the real question: can the Belt get beans in the ground before the prevent plant deadline hits June 5th? Drought monitor shows stress building across Nebraska wheat country, and the planting window is tighter than the funds want to price.
+Corn, beans end month down 2% as prevent plant deadline approaches June 5th.
+• Grains End May Weak
+• Livestock Diverges on Heat
+• Energy Holds Iran Ease
+Read more: https://agsist.com/daily/2026-05-31</description>
+    </item>
     <item>
       <title>GRAINS CLOSE WORST WEEK IN MONTH</title>
       <link>https://agsist.com/daily/2026-05-30</link>
@@ -358,18 +370,6 @@ Energy complex unwound Friday's gains while grains stayed range-bound.
 • Energy Gives Back
 • Grains Mark Time
 Read more: https://agsist.com/daily/2026-05-02</description>
-    </item>
-    <item>
-      <title>CATTLE FADE AS GRAINS MARK TIME</title>
-      <link>https://agsist.com/daily/2026-05-01</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-01</guid>
-      <pubDate>Fri, 01 May 2026 05:00:00 -0600</pubDate>
-      <description>Cattle dropped 0.4% to $254.03, the first real test since breaking above $250 on momentum three days ago. The pullback is mild but the funds are watching — managed money added 8,000 contracts this week and needs to see the floor hold. Grains stayed pinned in place with corn at $4.78 and beans flat at $12.03, waiting for next week's planting progress to matter.
-Live cattle slip from breakout levels while corn and beans hold tight ranges.
-• Cattle Test Breakout
-  → Hold pricing discipline above $252 — below that level questions the breakout thesis.
-• Grains Mark Time
-Read more: https://agsist.com/daily/2026-05-01</description>
     </item>
   </channel>
 </rss>
