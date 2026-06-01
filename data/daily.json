@@ -1,141 +1,127 @@
 {
-  "headline": "JUNE STARTS QUIET, HOGS CRACK BELOW $100",
-  "subheadline": "Funds in liquidation mode as growing season begins with little drama.",
-  "lead": "Lean hogs broke through $100 for the first time since March, closing $99.50 after a 2.5% drop that looks like fund liquidation, not demand destruction. Grains barely budged with corn at $4.46 and beans holding $11.92, the kind of quiet that builds the next move rather than making one. June's opening session confirms what May's close warned: the funds are booking profits ahead of summer's data-light weeks.",
-  "the_takeaway": "Quiet days price the next move, not the noise.",
-  "teaser": "Hogs crash through $100 as funds liquidate into June's data void.",
+  "headline": "CRUDE EXPLODES 5% ON IRAN CLOSURE THREAT",
+  "subheadline": "Energy leads commodities higher as Tehran cuts diplomatic ties, threatens Hormuz blockade.",
+  "lead": "Crude hit $94.30, up 5.1% and the biggest single-day move since March, after Iran cut diplomatic channels with Washington and threatened full Strait of Hormuz closure. The geopolitical premium that unwound through Memorial Day is back with interest, energy dragging the entire commodity complex higher except grains, which shed another 1% as the funds liquidate into June. The question this week: does the Iran flare sustain or fade like the last three iterations since 2024.",
+  "the_takeaway": "Iran premium back, but grain liquidation continues through planting's end.",
+  "teaser": "Energy explodes on Iran threats while grain funds keep booking Memorial profits.",
   "one_number": {
-    "value": "31",
-    "unit": "miles from US border where New World Screwworm was found",
-    "context": "The parasitic fly that eats livestock alive was detected just 31 miles south of the Texas border, the closest threat to US cattle operations since the 1960s eradication program. While not in today's prices, it's exactly the kind of binary risk cattle producers are pricing into summer risk premiums."
+    "value": "7%",
+    "unit": "crude's intraday spike before settling at 5.1%",
+    "context": "The overnight move hit 7% before profit-taking pulled it back, still the biggest energy move since March's Iran escalation. Shows the market's hair-trigger on Hormuz threats. Last time crude spiked this hard on geopolitical news, it gave back half the gain within a week."
   },
   "yesterdays_call": {
-    "summary": "Called energy's geopolitical premium unwinding faster than it built, with the energy complex in full retreat.",
-    "outcome": "played_out",
-    "note": "Crude closed above $90 but the Iran peace process kept the premium from rebuilding despite Trump's revision demands."
+    "summary": "Geopolitical premium unwinding faster than it built, energy complex in full retreat.",
+    "outcome": "didnt",
+    "note": "Iran flipped the script overnight with diplomatic cutoff and Hormuz threats."
   },
   "sections": [
     {
-      "title": "Hogs Break Key $100 Floor",
-      "icon": "🐷",
-      "body": "Lean hogs dropped 2.5% to $99.50, the first close under $100 since March and the clearest sign that **summer liquidation is real**. No news drove it, just managed money stepping out ahead of June's lighter data flow. The break through $100 psychological support puts the next test at $97, where seasonal demand typically shows up. Pork cutout values haven't cracked, this is purely positioning.",
-      "catalyst": "No clean catalyst, looks like fund liquidation ahead of summer",
-      "bottom_line": "First sub-$100 close in three months signals fund exodus, not demand weakness.",
-      "conviction_level": "medium",
+      "title": "Energy Explodes on Iran Escalation",
+      "icon": "🛢️",
+      "body": "Crude ran to $94.30, up 5.1%, after Iran's state media reported Tehran is cutting diplomatic channels with Washington and moving to **fully block the Strait of Hormuz**. The overnight spike hit 7% before settling, still the biggest energy move since March. Natural gas fell 5.3% on the same news, funds rotating out of domestic supply stories into crude's geopolitical premium. Soybean oil caught the energy bid, up 2.5% as biodiesel math improves with higher petroleum prices.",
+      "catalyst": "Iran cuts U.S. diplomatic ties, threatens complete Hormuz closure",
+      "bottom_line": "Geopolitical premium back after three weeks of unwinding.",
+      "conviction_level": "high",
       "overnight_surprise": true
     },
     {
-      "title": "Grains Mark Time Into Growing Season",
-      "icon": "🌾",
-      "body": "Corn eased to $4.46, beans added a quarter-cent to $11.92, and wheat ticked up a penny to $6.14. **Nobody's making moves** with crop conditions still developing and no weather premium in sight. December corn at $4.75 shows the market's pricing normal yields, normal weather, normal everything. The real action starts when pollination weather shows up in July, not now.",
-      "catalyst": "USDA Crop Progress due Monday 3:00 PM, market positioning for update",
-      "bottom_line": "Range-bound consolidation while waiting for weather to matter.",
-      "conviction_level": "low"
+      "title": "Grains Extend Memorial Liquidation",
+      "icon": "🌽",
+      "body": "Corn dropped another 6 cents to $4.42, down 1.3% and the fourth straight session of fund selling into June. December corn shed 5¼ cents to $4.71, the carry still working as managed money books Memorial profits ahead of summer weather season. Soybeans eased 6 cents to $11.83, meal down 1.6% as crush margins compress on higher oil costs. **The grain liquidation is calendar-driven**, not fundamental, funds cleaning books before planting finishes and weather takes over.",
+      "catalyst": "Memorial Day fund liquidation extending into June planting finish",
+      "bottom_line": "Fund selling continues, calendar-driven through planting's end.",
+      "conviction_level": "medium"
     },
     {
-      "title": "Oats Hit Hardest in Grain Complex",
-      "icon": "🥣",
-      "body": "Oats fell 2.6% to $3.47, the day's biggest grain loser as **thin trade amplified selling pressure**. Open interest in oats is a fraction of corn or wheat, so when the few funds positioned there decide to book profits, the moves get outsized. At 57% of the 52-week range, oats are pricing in adequate supplies without the weather premium that might develop later in summer.",
-      "catalyst": "",
-      "bottom_line": "Thin trade makes small selling look big, no fundamental shift.",
-      "conviction_level": "low",
-      "overnight_surprise": true
-    },
-    {
-      "index": 3,
-      "title": "Crude Holds Above $90 Despite Iran Revisions",
-      "icon": "⛽",
-      "body": "WTI gained $0.80 to $90.51 after Trump sent the Iran peace agreement back for revisions, but the **geopolitical premium stayed capped** rather than rebuilding. The Iran-Israel conflict that's roiled energy markets since April cooled with diplomatic progress, but the market's learned not to price full disruption risk until it sees actual supply cuts, not just diplomatic friction. Russia's jet fuel export ban through November adds some supply tightness, but that's aviation fuel, not crude.",
-      "bottom_line": "Iran tensions contained, crude holding $90 without rebuilding premium.",
+      "title": "Livestock Diverges Higher",
+      "icon": "🐄",
+      "body": "Live cattle gained 75 cents to $239.75, up 0.3%, feeders rose $2.48 to $350.98, up 0.7%, both breaking from the grain weakness. Lean hogs added 60 cents to $100.10, up 0.6%. **Class III milk exploded 3.7%** to $16.83, the biggest dairy move in a month as summer heat season begins and feed costs ease with grain liquidation. The livestock complex is pricing its own fundamentals, not following grain's Memorial fade.",
+      "catalyst": "Summer heat season begins, feed costs ease with grain liquidation",
+      "bottom_line": "Livestock pricing its own story, not following grain liquidation.",
       "conviction_level": "medium",
-      "overnight_surprise": false,
-      "farmer_action": ""
+      "overnight_surprise": true
     }
   ],
   "outside_the_pit": [
     {
-      "title": "FTC opens antitrust probe into fertilizer pricing",
-      "body": "The Federal Trade Commission confirmed it's investigating rising fertilizer costs as potential antitrust violations. Producers who locked in spring nitrogen at $600+ per ton are watching this one closely, even though investigations take years to resolve.",
+      "title": "New World Screwworm Found 31 Miles from U.S. Border",
+      "body": "The parasitic fly that eats warm-blooded animals alive showed up in Mexico, close enough to threaten U.S. cattle operations. Could cost millions in economic damage if it crosses, beef producers on high alert.",
+      "tag": "DISEASE"
+    },
+    {
+      "title": "FTC Confirms Probe of Rising Fertilizer Prices",
+      "body": "Federal Trade Commission launching antitrust investigation into fertilizer costs, looking at concentration in the industry. Input costs stayed elevated even as commodity prices pulled back from 2024 highs.",
       "tag": "POLICY"
     },
     {
-      "title": "Russia bans jet fuel exports through November",
-      "body": "Ukrainian drone attacks on Russian refineries have forced Moscow to halt jet fuel exports to ensure domestic supply. Won't move diesel or gasoline prices directly, but shows how the war keeps crimping global energy flows.",
+      "title": "Russia Bans Jet Fuel Exports Through November",
+      "body": "Moscow restricting aviation fuel exports as Ukrainian drone strikes hit refining capacity. Another supply disruption in global energy markets, supporting the Iran premium in crude.",
       "tag": "TRADE"
-    },
-    {
-      "title": "New World Screwworm detected 31 miles from Texas",
-      "body": "The parasitic fly that devastated US livestock before the 1960s eradication program has been found just 31 miles south of the border. Not in cattle prices yet, but exactly the kind of binary disease risk that builds risk premiums slowly.",
-      "tag": "DISEASE"
     }
   ],
   "spread_to_watch": {
     "label": "December corn / July corn carry",
-    "level": "29 cents carry, normal seasonal",
-    "commentary": "The 29-cent carry from July to December corn is **exactly where the seasonal says it should be**, pricing normal yields and normal harvest pressure. When this spread starts moving, it'll tell you whether the market's pricing weather risk or harvest abundance before the weather does."
+    "level": "29 cents wide, working",
+    "commentary": "The carry trade is Memorial liquidation's tell. Funds selling front months into storage, pushing December premium wider as they book profits before weather season. When the carry stops working, the liquidation is done."
   },
   "basis": {
-    "headline": "Eastern Belt corn basis steady, western locations soft",
-    "body": "Corn basis east of the Mississippi **holding firm** as ethanol plants return from maintenance turnarounds. Western Belt locations staying soft with ample farmer selling and rail capacity opening up. The spread between eastern and western basis is back to seasonal normal after May's tightness."
+    "headline": "Eastern Belt corn basis steady as ethanol grind recovers",
+    "body": "**Processor demand firming** east of the Mississippi as ethanol plants finish maintenance, basis holding despite futures weakness. Western Belt staying soft, consistent with the seasonal as river systems open for summer barge traffic. The local bid is pricing its own fundamentals while futures follow fund flow."
   },
   "weekly_thread": {
-    "question": "Will planting progress hit 95% complete by Friday?",
+    "question": "Will the grain liquidation finish before weather takes control of the story?",
     "day": 1,
-    "status_text": "USDA Crop Progress at 3:00 PM today gives the first June planting update. Above 90% corn planted confirms the Belt finished on schedule, below 85% suggests weather delays that could matter for pollination timing."
+    "status_text": "Fourth straight session of fund selling suggests Memorial profits still getting booked. The carry trade is working, December corn premium widening as front months get dumped. Weather season starts when the selling stops."
   },
   "the_more_you_know": {
-    "title": "Why $100 hogs matter more than the round number",
-    "body": "Today's break below $100 lean hogs isn't about psychology, it's about **positioning mechanics**. Managed money holds its biggest hog long since 2023, nearly 40,000 contracts net long. When funds liquidate concentrated positions in thin contracts like hogs, the moves amplify. The $100 level matters because it's where technical stops cluster, and breaking it forces the next wave of selling. That's why today's 2.5% drop happened with no news catalyst-it's the positioning, not the pork."
+    "title": "The carry trade is the planting calendar's tell",
+    "body": "December corn traded 29 cents over July today, the widest carry since April. That spread tells you more about fund positioning than the headline price: when managed money liquidates front months into storage, the calendar spread widens. It's the most reliable signal that Memorial profits are still getting booked, not that fundamentals changed. When the carry stops working, the liquidation is done and weather takes control of the story."
   },
   "watch_list": [
     {
-      "time": "Monday 3:00 PM",
-      "desc": "USDA Crop Progress; above 90% corn planted keeps weather premium out"
-    },
-    {
-      "time": "Tuesday morning",
-      "desc": "Lean hogs at $97 support level, breaks here target $94"
+      "time": "Tuesday 3:00 PM CT",
+      "desc": "USDA Crop Progress: corn above 85% planted removes weather premium, below 80% adds it back"
     },
     {
       "time": "Wednesday",
-      "desc": "Iran peace talks resume; above $92 crude rebuilds geopolitical premium"
+      "desc": "Iran diplomatic response to Hormuz closure threats"
     },
     {
-      "time": "Thursday 7:30 AM",
-      "desc": "Weekly export sales; corn under 800K MT confirms slow pace"
+      "time": "Thursday 7:30 AM CT",
+      "desc": "Weekly export sales: soy under 400K MT keeps liquidation in charge"
     }
   ],
   "daily_quote": {
-    "text": "When one tugs at a single thing in nature, he finds it attached to the rest of the world.",
-    "attribution": "John Muir"
+    "text": "An investment in knowledge pays the best interest.",
+    "attribution": "Benjamin Franklin"
   },
-  "source_summary": "CME Group, USDA reports, Reuters energy desk, agricultural trade publications",
+  "source_summary": "CBOT, CME, NYMEX closes; Iran state media; USDA reports; trade flow data",
   "date": "Monday, June 1, 2026",
   "meta": {
-    "market_mood": "cautious",
+    "market_mood": "volatile",
     "heat_section": 0,
-    "overnight_surprises_count": 2
+    "overnight_surprises_count": 3
   },
   "locked_prices": {
-    "corn": 4.4625,
-    "corn-dec": 4.745,
-    "beans": 11.9175,
-    "beans-nov": 11.9525,
-    "wheat": 6.14,
-    "oats": 3.47,
-    "cattle": 239.05,
-    "feeders": 348.425,
-    "hogs": 99.5,
-    "milk": 16.66,
-    "meal": 330.70001,
-    "soyoil": 78.12,
-    "crude": 90.51,
-    "natgas": 3.355,
-    "gold": 4530.7998,
-    "silver": 76.18,
+    "corn": 4.42,
+    "corn-dec": 4.7075,
+    "beans": 11.8325,
+    "beans-nov": 11.8975,
+    "wheat": 6.105,
+    "oats": 3.5225,
+    "cattle": 239.75,
+    "feeders": 350.97501,
+    "hogs": 100.1,
+    "milk": 16.83,
+    "meal": 326.29999,
+    "soyoil": 79.37,
+    "crude": 94.3,
+    "natgas": 3.192,
+    "gold": 4498.7002,
+    "silver": 75.0,
     "dollar": 100.0,
-    "sp500": 7580.06006,
-    "bitcoin": 72552.72656
+    "sp500": 7588.77979,
+    "bitcoin": 71036.71094
   },
   "chart_series": {
     "corn": [
@@ -148,7 +134,7 @@
       4.47,
       4.47,
       4.47,
-      4.46
+      4.42
     ],
     "soybeans": [
       11.96,
@@ -160,7 +146,7 @@
       11.87,
       11.87,
       11.87,
-      11.92
+      11.83
     ],
     "wheat": [
       6.46,
@@ -172,7 +158,7 @@
       6.1,
       6.11,
       6.11,
-      6.14
+      6.11
     ]
   },
   "sponsor": {
@@ -186,75 +172,83 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 81,
-  "generated_at": "2026-06-01T13:44:39.744159+00:00",
+  "issue_number": 82,
+  "generated_at": "2026-06-01T16:41:53.441028+00:00",
   "generator_version": "4.6.0",
-  "surprise_count": 2,
+  "surprise_count": 3,
   "surprises": [
     {
-      "commodity": "Lean Hogs",
-      "key": "hogs",
-      "price": "$99.50",
-      "pct_change": -2.451,
-      "direction": "down",
-      "surprise_magnitude": 1.2
+      "commodity": "WTI Crude Oil",
+      "key": "crude",
+      "price": "$94.30",
+      "pct_change": 5.0813,
+      "direction": "up",
+      "surprise_magnitude": 1.7
     },
     {
-      "commodity": "Oats",
-      "key": "oats",
-      "price": "$3.47/bu",
-      "pct_change": -2.5965,
+      "commodity": "Natural Gas",
+      "key": "natgas",
+      "price": "$3.19",
+      "pct_change": -5.2538,
       "direction": "down",
-      "surprise_magnitude": 1.0
+      "surprise_magnitude": 1.3
+    },
+    {
+      "commodity": "Class III Milk",
+      "key": "milk",
+      "price": "$16.83",
+      "pct_change": 3.6969,
+      "direction": "up",
+      "surprise_magnitude": 1.2
     }
   ],
-  "price_validation_clean": true,
+  "price_validation_clean": false,
   "market_closed": false,
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-06-01T13:44:53.035237+00:00",
+    "ran_at": "2026-06-01T16:42:07.138757+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 8,
+      "rule_2_conviction_earned": 7,
       "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 9,
-      "rule_5_bottom_lines_synthesize": 7,
-      "rule_6_quiet_days_quiet": 8,
+      "rule_4_watch_conditional": 8,
+      "rule_5_bottom_lines_synthesize": 8,
+      "rule_6_quiet_days_quiet": 9,
       "rule_7_continuity": 8,
       "rule_8_basis_directional": 8,
-      "rule_9_voice": 8,
+      "rule_9_voice": 3,
       "rule_10_forward_test": 7,
       "rule_11_thread_coherence": 10,
       "rule_12_spread_quality": 8,
       "rule_13_yc_honesty": 8,
       "rule_14_level_coherence": 10,
-      "rule_15_one_number_coherence": 10,
+      "rule_15_one_number_coherence": 8,
       "rule_16_markdown_not_html": 10,
       "rule_17_macro_anchoring": 6
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "section[3]",
-        "rule": "rule_17_macro_anchoring",
+        "target": "lead",
+        "rule": "rule_9_voice",
         "scores_before": {
           "rule_1_lead_so_what": 8,
-          "rule_2_conviction_earned": 8,
+          "rule_2_conviction_earned": 7,
           "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 9,
-          "rule_5_bottom_lines_synthesize": 7,
-          "rule_6_quiet_days_quiet": 8,
+          "rule_4_watch_conditional": 8,
+          "rule_5_bottom_lines_synthesize": 8,
+          "rule_6_quiet_days_quiet": 9,
           "rule_7_continuity": 8,
           "rule_8_basis_directional": 8,
-          "rule_9_voice": 8,
+          "rule_9_voice": 3,
           "rule_10_forward_test": 7,
           "rule_11_thread_coherence": 10,
           "rule_12_spread_quality": 8,
           "rule_13_yc_honesty": 8,
           "rule_14_level_coherence": 10,
-          "rule_15_one_number_coherence": 10,
+          "rule_15_one_number_coherence": 8,
           "rule_16_markdown_not_html": 10,
           "rule_17_macro_anchoring": 6
         }
