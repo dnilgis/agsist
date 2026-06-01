@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 31 May 2026 13:56:30 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 01 Jun 2026 13:44:54 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>JUNE STARTS QUIET, HOGS CRACK BELOW $100</title>
+      <link>https://agsist.com/daily/2026-06-01</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-01</guid>
+      <pubDate>Mon, 01 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Lean hogs broke through $100 for the first time since March, closing $99.50 after a 2.5% drop that looks like fund liquidation, not demand destruction. Grains barely budged with corn at $4.46 and beans holding $11.92, the kind of quiet that builds the next move rather than making one. June's opening session confirms what May's close warned: the funds are booking profits ahead of summer's data-light weeks.
+Funds in liquidation mode as growing season begins with little drama.
+• Hogs Break Key $100 Floor
+• Grains Mark Time Into Growing Season
+• Oats Hit Hardest in Grain Complex
+Read more: https://agsist.com/daily/2026-06-01</description>
+    </item>
     <item>
       <title>FUNDS LIQUIDATE INTO JUNE, CATTLE DIVERGE</title>
       <link>https://agsist.com/daily/2026-05-31</link>
@@ -357,19 +369,6 @@ Friday's livestock selloff sets the stage for a make-or-break week in the cattle
 • Grains Coil Tighter
 • Week Ahead Setup
 Read more: https://agsist.com/daily/2026-05-03</description>
-    </item>
-    <item>
-      <title>HOGS CRASH 9% AS CATTLE BREAKOUT STALLS</title>
-      <link>https://agsist.com/daily/2026-05-02</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-02</guid>
-      <pubDate>Sat, 02 May 2026 05:00:00 -0600</pubDate>
-      <description>Lean hogs crashed 9.2% to $92.83 Friday, the biggest single-day drop since January, as the weekly cutout report finally caught up with reality. Live cattle gave back ground to $253.00, testing whether last week's breakout above $252 has real conviction or just momentum money looking for an exit. The week that started with cattle hitting 52-week highs ended with livestock selling and nowhere to hide.
-Energy complex unwound Friday's gains while grains stayed range-bound.
-• Livestock Correction
-  → Watch $252 in cattle — break closes the breakout story.
-• Energy Gives Back
-• Grains Mark Time
-Read more: https://agsist.com/daily/2026-05-02</description>
     </item>
   </channel>
 </rss>
