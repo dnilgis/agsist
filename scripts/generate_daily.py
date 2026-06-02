@@ -1,8 +1,22 @@
 #!/usr/bin/env python3
 """
-AGSIST Daily Briefing Generator, v4.6.0
+AGSIST Daily Briefing Generator, v4.6.1
 ═══════════════════════════════════════════════════════════════════
 Generates the daily agricultural intelligence briefing via Claude API.
+
+v4.6.1 (the deterministic-scrubber patch, 2026-05-30):
+  - DRAMA-VERB SCRUBBER added as deterministic post-pass. The critic's
+    rewrite is single-target (one weakest_target per pass: lead OR
+    section_N OR basis OR ...). When voice fails across 5+ blocks
+    (headline, section titles, takeaways, TMYK titles, Number unit)
+    the critic rewrites the worst one and leaves the others. Plus the
+    critic cannot rewrite headlines at all - they're not in the
+    weakest_target enum. Scrubber walks every text field, applies
+    word-boundary regex substitutions for all banned CNBC drama verbs
+    (crashed, crater, exploded, surged, plunged, soared, rocketed,
+    skyrocketed, slashed, collapsed, rout, exodus, ignited, bloodbath,
+    carnage, meltdown, vaulted, binary). Case-preserving (UPPER, Title,
+    lower). Idempotent. Audit log of substitutions printed to workflow.
 
 v4.6.0 (the editorial-hardening upgrade, 2026-05-18):
   - TONE CALIBRATION REPLACED. The old table at 877-880 prescribed
@@ -2464,6 +2478,253 @@ def sanitize_html_tags(briefing):
     return briefing
 
 
+# v4.6.1: DRAMA VERB SCRUBBER. Deterministic catch-all that runs AFTER the
+# critic rewrite, before save_briefing(). The critic rewrites the single
+# weakest_target per pass (lead OR section_N OR basis OR ...), which means
+# drama verbs in headlines, section titles, takeaways, TMYK titles, and the
+# Number unit text can survive the critic pass. The critic also cannot rewrite
+# the headline at all (not in the weakest_target enum). This scrubber catches
+# every banned drama verb in every text field, deterministically, with no
+# model judgment.
+#
+# Design choices:
+# - Word-boundary regex prevents matching inside compounds (uncrashed, etc.)
+# - Verb forms only: "crashed" matches, "crash" the noun in "the crash of 2020"
+#   is preserved (no -ed/-ing/-es suffix means likely noun, leave it).
+# - Case preserving: "CRATER" in headline becomes "FALL HARD" (upper).
+#   "Crater" becomes "Fall hard" (title). "crater" becomes "fall hard" (lower).
+# - Idempotent: replacements never reintroduce banned words.
+# - Walks ALL text fields, not just body fields. Headlines/titles included.
+# - Records substitutions made for audit logging.
+_DRAMA_SUBSTITUTIONS = [
+    # (pattern, replacement) - replacement is lowercase form;
+    # case is restored from the matched span by _drama_sub_case_preserve.
+    # Pattern uses \b word boundaries on BOTH sides and requires verb form.
+
+    # CRASH family
+    (r"\bcrashed\b", "fell sharply"),
+    (r"\bcrashes\b", "falls sharply"),
+    (r"\bcrashing\b", "falling sharply"),
+    # Bare "crash" used as verb in headline-shorthand: "HOGS CRASH 6%", "CATTLE CRASH"
+    # Verb interpretation is dominant in briefing context. "The crash of 2020" type
+    # noun usage doesn't appear in this generator's vocabulary.
+    (r"\bcrash\b", "fall"),
+
+    # CRATER family (all forms - "crater" in price context is always verb/drama)
+    (r"\bcratered\b", "fell sharply"),
+    (r"\bcraters\b", "falls sharply"),
+    (r"\bcratering\b", "falling sharply"),
+    (r"\bcrater\b", "fall sharply"),
+
+    # EXPLODE family
+    (r"\bexploded\b", "ran higher"),
+    (r"\bexplodes\b", "runs higher"),
+    (r"\bexploding\b", "running higher"),
+    (r"\bexplode\b", "run higher"),
+    (r"\bexplosion\b", "sharp gain"),
+
+    # SURGE family
+    (r"\bsurged\b", "gained"),
+    (r"\bsurges\b", "gains"),
+    (r"\bsurging\b", "gaining"),
+    (r"\bsurge\b", "move higher"),
+
+    # SOAR family
+    (r"\bsoared\b", "moved higher"),
+    (r"\bsoars\b", "moves higher"),
+    (r"\bsoaring\b", "moving higher"),
+    (r"\bsoar\b", "rise"),
+
+    # ROCKET / SKYROCKET
+    (r"\brocketed\b", "ran higher"),
+    (r"\brocketing\b", "running higher"),
+    (r"\bskyrocketed\b", "ran higher"),
+    (r"\bskyrocketing\b", "running higher"),
+
+    # PLUNGE family
+    (r"\bplunged\b", "fell"),
+    (r"\bplunges\b", "falls"),
+    (r"\bplunging\b", "falling"),
+    (r"\bplunge\b", "drop"),
+
+    # PLUMMET family
+    (r"\bplummeted\b", "fell sharply"),
+    (r"\bplummets\b", "falls sharply"),
+    (r"\bplummeting\b", "falling sharply"),
+
+    # SPIKE family - flagged as headline failure on 2026-05-28 (hogs spike 2%)
+    # "Spike" verb form is drama; "spike" noun ("a spike in volatility") is fine
+    # but rare in briefing language. Bare form treated as verb here.
+    (r"\bspiked\b", "gained"),
+    (r"\bspikes\b", "gains"),
+    (r"\bspiking\b", "gaining"),
+    (r"\bspike\b", "move higher"),
+
+    # JUMP / JUMPS (verb form only - drama in headline/lead context)
+    # The editorial-notes May 28 entry flagged "jumped" in lead specifically.
+    (r"\bjumped\b", "gained"),
+    (r"\bjumps\b", "gains"),
+    (r"\bjumping\b", "gaining"),
+
+    # TUMBLE - "tumble" is in my replacement vocabulary so this is intentionally NOT scrubbed.
+    # It's working-ag voice for big drops, distinct from CNBC "crash/plunge/crater".
+
+    # SLASH (verb form only, "slash" as noun e.g. "/" preserved)
+    (r"\bslashed\b", "cut"),
+    (r"\bslashes\b", "cuts"),
+    (r"\bslashing\b", "cutting"),
+
+    # COLLAPSE family
+    (r"\bcollapsed\b", "broke down"),
+    (r"\bcollapses\b", "breaks down"),
+    (r"\bcollapsing\b", "breaking down"),
+    (r"\bcollapse\b", "breakdown"),
+
+    # ROUT
+    (r"\brout\b", "selling"),
+    (r"\brouted\b", "sold off"),
+
+    # EXODUS / FLEEING / PANIC
+    (r"\bexodus\b", "stepping out"),
+    (r"\bfleeing\b", "rotating out"),
+    (r"\bpanic\b", "selling pressure"),
+    (r"\bpanicked\b", "stepped out"),
+
+    # IGNITED / CAUGHT FIRE / TORCHED
+    (r"\bignited\b", "started"),
+    (r"\bignites\b", "starts"),
+    (r"\bigniting\b", "starting"),
+    (r"\bignite\b", "kick off"),
+    (r"\btorched\b", "broke"),
+    (r"\btorches\b", "breaks"),
+
+    # BLOODBATH / CARNAGE / MELTDOWN
+    (r"\bbloodbath\b", "heavy selling"),
+    (r"\bcarnage\b", "heavy selling"),
+    (r"\bmeltdown\b", "selloff"),
+
+    # VAULTED / LEAPED
+    (r"\bvaulted\b", "moved up"),
+    (r"\bleaped\b", "moved up"),
+    (r"\bleapt\b", "moved up"),
+
+    # CAUGHT FIRE (multi-word - must come before single-word patterns)
+    (r"\bcaught fire\b", "took off"),
+
+    # BINARY (already in critic ban list, mechanically scrub anyway)
+    (r"\bbinary level\b", "make-or-break level"),
+    (r"\bbinary week\b", "make-or-break week"),
+    (r"\bbinary support\b", "key support"),
+    (r"\bbinary test\b", "make-or-break test"),
+    (r"\bbinary\b", "make-or-break"),
+]
+
+# Pre-compile patterns once
+_DRAMA_COMPILED = [(re.compile(pat, re.IGNORECASE), repl) for pat, repl in _DRAMA_SUBSTITUTIONS]
+
+
+def _drama_sub_case_preserve(match, replacement):
+    """Match case of the original token: upper -> upper, title -> title, lower -> lower.
+    For multi-word replacements, applies case to first word; subsequent words follow
+    the same case style if the match was all-caps, otherwise lowercase."""
+    matched = match.group(0)
+    if matched.isupper():
+        return replacement.upper()
+    if matched[0].isupper() and matched[1:].islower():
+        # Title case: capitalize first letter only
+        return replacement[0].upper() + replacement[1:].lower()
+    return replacement.lower()
+
+
+# Fields where we walk and scrub. Includes EVERY text-bearing field, not just
+# body fields, because drama verbs in headlines/titles are exactly the failure
+# mode the critic cannot fix.
+_SCRUBBED_FIELDS = {
+    # Top-level
+    "headline", "subheadline", "lead", "subhead",
+    "the_takeaway", "teaser", "title", "label", "name",
+    # Section fields
+    "body", "bottom_line", "vs_yesterday", "catalyst", "driver",
+    "context", "commentary", "note", "status_text", "summary",
+    "farmer_action", "action", "story",
+    # Watch list / spread / basis
+    "headline", "commentary", "question",
+    # The Number
+    "value", "unit", "explanation",
+    # TMYK
+    "title", "body",
+    # Outside the Pit
+    "headline", "summary",
+    # Misc
+    "call", "outcome_note", "level",
+}
+
+
+def scrub_drama_verbs(briefing):
+    """v4.6.1: deterministic post-pass to remove banned CNBC drama verbs from
+    every text field in the briefing. Runs AFTER the critic rewrite, before
+    save_briefing(), as a belt-and-suspenders catch for fields the critic
+    cannot rewrite (headlines, section titles) or chose not to rewrite (the
+    critic rewrites only ONE weakest_target per pass).
+
+    Records all substitutions made and prints a summary for the workflow log.
+    Returns (modified_briefing, substitution_log) where log is a list of
+    dicts: [{field_path, before_phrase, after_phrase}, ...].
+
+    Idempotent: running this twice produces the same result as running once,
+    because the replacements never reintroduce banned words.
+
+    Case-preserving: handles UPPER, Title, and lower case input correctly.
+    Headline "HOGS CRATER 6%" becomes "HOGS SHARP DROP 6%" (preserves caps).
+    """
+    log = []
+
+    def scrub_string(s, field_path):
+        if not isinstance(s, str) or not s:
+            return s
+        original = s
+        for pattern, replacement in _DRAMA_COMPILED:
+            def _sub(m):
+                substituted = _drama_sub_case_preserve(m, replacement)
+                log.append({
+                    "field": field_path,
+                    "before": m.group(0),
+                    "after": substituted,
+                })
+                return substituted
+            s = pattern.sub(_sub, s)
+        return s
+
+    def walk(obj, path="$"):
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                child_path = f"{path}.{k}"
+                if isinstance(v, str) and k in _SCRUBBED_FIELDS:
+                    obj[k] = scrub_string(v, child_path)
+                else:
+                    obj[k] = walk(v, child_path)
+            return obj
+        if isinstance(obj, list):
+            return [walk(item, f"{path}[{i}]") for i, item in enumerate(obj)]
+        return obj
+
+    walk(briefing)
+
+    if log:
+        print(f"  [v4.6.1 scrubber] applied {len(log)} drama-verb substitution(s):")
+        # Group by field for readable output
+        from collections import defaultdict
+        by_field = defaultdict(list)
+        for entry in log:
+            by_field[entry["field"]].append((entry["before"], entry["after"]))
+        for field, subs in by_field.items():
+            print(f"    {field}: " + ", ".join(f"\"{b}\" -> \"{a}\"" for b, a in subs))
+    else:
+        print(f"  [v4.6.1 scrubber] no drama verbs found, briefing clean")
+
+    return briefing, log
+
+
 # v4.5.0: lookup table mapping commodity keywords found in prose to the
 # locked_prices key. Only includes commodities Sigurd's audience trades
 # in dollar-level support/resistance terms. Grain levels (per-bushel) and
@@ -2715,7 +2976,7 @@ def sanitize_weekend_blocks(briefing, market_status):
 
 
 def main():
-    print("=== AGSIST Daily Briefing Generator v4.6.0 ===")
+    print("=== AGSIST Daily Briefing Generator v4.6.1 ===")
     print(f"  Time: {datetime.now().isoformat()}")
     market_status = get_market_status()
     if market_status["is_closed"]:
@@ -2810,6 +3071,11 @@ def main():
     # (email pipeline, RSS, AI crawlers). Idempotent.
     briefing = sanitize_html_tags(briefing)
 
+    # v4.6.1: drama-verb scrubber - deterministic post-pass after critic rewrite.
+    # Catches drama verbs in headlines/section titles/takeaways/TMYK titles that
+    # the critic cannot rewrite (not in weakest_target enum) or chose not to.
+    briefing, _scrub_log = scrub_drama_verbs(briefing)
+
     locked_prices = price_data.get("locked_prices", {})
     is_clean, val_warnings = validate_briefing(briefing, locked_prices)
     # v4.5.0: deterministic level coherence check. Catches the math
@@ -2866,7 +3132,7 @@ def main():
         print(f"  Section catalysts: {cats_with}/{cats_total} sections name a driver")
 
     briefing["generated_at"] = datetime.now(timezone.utc).isoformat()
-    briefing["generator_version"] = "4.6.0"
+    briefing["generator_version"] = "4.6.1"
     briefing["surprise_count"] = len(surprises)
     briefing["surprises"] = surprises
     briefing["price_validation_clean"] = is_clean
