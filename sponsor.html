@@ -56,18 +56,34 @@
         "description": "Exclusive daily sponsor slot in the AGSIST Daily morning ag market briefing. One sponsor per issue.",
         "provider": { "@type": "Person", "name": "Sigurd Lindquist", "url": "https://agsist.com/about" },
         "areaServed": "United States",
-        "offers": {
-          "@type": "Offer",
-          "priceCurrency": "USD",
-          "price": "150",
-          "priceSpecification": {
-            "@type": "UnitPriceSpecification",
-            "price": "150",
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "Founding Sponsor — AGSIST Daily Briefing",
             "priceCurrency": "USD",
-            "unitText": "WEEK"
+            "price": "150",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "150",
+              "priceCurrency": "USD",
+              "unitText": "WEEK"
+            },
+            "availability": "https://schema.org/InStock"
           },
-          "availability": "https://schema.org/InStock"
-        }
+          {
+            "@type": "Offer",
+            "name": "Supporter Tier — site-wide footer strip",
+            "priceCurrency": "USD",
+            "price": "50",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "50",
+              "priceCurrency": "USD",
+              "unitText": "WEEK"
+            },
+            "availability": "https://schema.org/InStock"
+          }
+        ]
       },
       {
         "@type": "FAQPage",
@@ -91,6 +107,11 @@
             "@type": "Question",
             "name": "Who is the audience?",
             "acceptedAnswer": { "@type": "Answer", "text": "Working US grain producers &mdash; primarily corn, soybean, and wheat operations &mdash; plus livestock, dairy, and specialty operators who track grain markets for feed costs. Heaviest concentration is in Iowa, Illinois, Indiana, Minnesota, Nebraska, Ohio, Michigan, Wisconsin, Missouri, Kansas, and the Dakotas." }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there a cheaper option than the founding slot?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Supporter tier is $50/week, month-to-month, with no minimum. Your logo joins a shared Supporters strip in the footer of every AGSIST page. It is non-exclusive and the roster is capped at a handful of names. The founding slot is the premium, single-sponsor, above-the-fold placement; the Supporter tier is the smaller door for companies that want to back AGSIST without the full commitment." }
           }
         ]
       }
@@ -214,6 +235,27 @@
     .sp-pricing-contact a:hover{text-decoration:underline;}
     .sp-pricing-contact-sep{margin:0 .55rem;opacity:.4;}
 
+    /* ───────── Annual anchor on the founding price ───────── */
+    .sp-pricing-annual{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;color:var(--text);letter-spacing:.02em;width:100%;margin-top:.15rem;}
+    .sp-pricing-annual span{color:var(--text-muted);font-weight:600;}
+
+    /* ───────── Supporter tier (subordinate, green) ───────── */
+    .sp-support{background:var(--surface);border:1px solid rgba(58,139,60,.32);border-left:3px solid var(--green);border-radius:12px;padding:1.4rem 1.6rem;margin:0 0 1.5rem;}
+    .sp-support-head{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center;margin-bottom:.7rem;}
+    .sp-support-tag{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.32rem .7rem;border-radius:4px;color:var(--green);background:rgba(58,139,60,.08);border:1px solid rgba(58,139,60,.4);}
+    .sp-support-headline{font-family:'Oswald',sans-serif;font-size:1.25rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:-.005em;line-height:1.15;margin-bottom:.5rem;}
+    .sp-support-price-row{display:flex;align-items:baseline;gap:.6rem;margin:.4rem 0 .8rem;flex-wrap:wrap;}
+    .sp-support-price{font-family:'Oswald',sans-serif;font-size:2.2rem;font-weight:800;color:var(--green);line-height:1;letter-spacing:-.02em;}
+    .sp-support-period{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--text-dim);font-weight:600;}
+    .sp-support-meta{font-size:.85rem;line-height:1.7;color:var(--text-dim);margin-bottom:.9rem;}
+    .sp-support-meta strong{color:var(--text);font-weight:700;}
+    .sp-support-list{list-style:none;padding:0;margin:0 0 1.1rem;display:grid;gap:.4rem;}
+    .sp-support-list li{font-size:.86rem;line-height:1.55;color:var(--text-dim);padding-left:1.4rem;position:relative;}
+    .sp-support-list li::before{content:'\2713';position:absolute;left:0;top:0;color:var(--green);font-weight:700;}
+    .sp-support-list li strong{color:var(--text);}
+    .sp-support-cta{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;padding:.85rem 1.5rem;background:transparent;color:var(--green);border:2px solid var(--green);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:background .15s,color .15s;min-height:46px;}
+    .sp-support-cta:hover{background:var(--green);color:#fff;}
+
     /* ───────── Operator card ───────── */
     .sp-operator{background:var(--surface);border:1px solid var(--border-g);border-radius:10px;padding:1.4rem 1.5rem;margin:1.1rem 0 1.5rem;}
     .sp-operator-name{font-family:'Oswald',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);letter-spacing:.01em;margin-bottom:.2rem;}
@@ -297,7 +339,7 @@
 
       <!-- ───────────── THE SPOT ───────────── -->
       <h2 class="sp-h2"><span class="sp-h2-num">1</span> The Spot</h2>
-      <p>One sponsor card. Above the fold of every Daily Briefing. Your logo, a headline, your message, and your URL. No rotation, no programmatic auction, no competing ads on the page. <strong>The first thing a reader sees after the date and the headline</strong> &mdash; and before they read today&rsquo;s market view.</p>
+      <p>One sponsor card. Above the fold of every Daily Briefing &mdash; <strong>and above the fold on the AGSIST homepage</strong>, where the same briefing leads the page all day. Your logo, a headline, your message, and your URL. No rotation, no programmatic auction, no competing ads on the page. <strong>The first thing a reader sees after the date and the headline</strong> &mdash; and before they read today&rsquo;s market view.</p>
 
       <div class="sp-mockup-card">
         <div class="sp-mockup-lbl">&#x1F4F1; What it looks like &middot; live preview</div>
@@ -310,7 +352,7 @@
           <div class="sp-mockup-body">A short paragraph &mdash; up to about 50 words &mdash; describing what you do for working US producers. Plus a strong call to action below.</div>
           <a class="sp-mockup-cta" href="#" onclick="event.preventDefault()">Your call to action &rarr;</a>
         </div>
-        <div class="sp-mockup-caption">Appears above the fold on every issue. Mobile + desktop. Web + email.</div>
+        <div class="sp-mockup-caption">Above the fold on every briefing <em>and</em> the homepage. Mobile + desktop. Web + email.</div>
       </div>
 
       <!-- ───────────── BY THE NUMBERS ───────────── -->
@@ -457,17 +499,18 @@
         <div class="sp-pricing-price-row">
           <span class="sp-pricing-price">$150</span>
           <span class="sp-pricing-period">/ week</span>
+          <span class="sp-pricing-annual">$7,800 / year <span>&middot; above the fold every market morning</span></span>
         </div>
-        <p class="sp-pricing-meta"><strong>Six-week minimum</strong> ($900 total to start). After that, runs week-to-week &mdash; cancel any time, no penalty. The <strong>founding rate of $150/week is locked in for 12 months</strong> regardless of future rate changes.</p>
+        <p class="sp-pricing-meta"><strong>Six-week minimum</strong> ($900 to start, or $750 with the founding trial below). After that it runs week-to-week &mdash; cancel any time, no penalty. That works out to <strong>$7,800 for a full year</strong> of above-the-fold placement every market morning &mdash; less than a single quarter-page ad in one trade magazine, running every day instead of once. The <strong>founding rate is locked for 12 months</strong> regardless of future increases.</p>
 
         <div class="sp-pricing-incl">What&rsquo;s included</div>
         <ul class="sp-pricing-list">
-          <li><strong>Above-the-fold placement</strong> on every Daily Briefing for the full term</li>
+          <li><strong>Above-the-fold placement</strong> on every Daily Briefing <strong>and the AGSIST homepage</strong>, for the full term</li>
           <li><strong>Logo, headline, body copy, and CTA URL</strong> of your choice (one free copy refresh per quarter)</li>
           <li><strong>Monthly performance report</strong> &mdash; impressions, click-throughs, and AI citation count</li>
           <li><strong>Founding-sponsor trial:</strong> first sponsor only &mdash; <strong>50% off the first 2 weeks</strong> ($75 each), so your six-week start is $750 instead of $900</li>
           <li><strong>Direct access to the founder.</strong> No agency, no account manager, no media-buyer middleman &mdash; reply to my email and you're talking to the person who writes the briefing and built the site</li>
-          <li><strong>Cancel after 30 days, no penalty</strong> if it isn&rsquo;t working for you</li>
+          <li><strong>Cancel any time after the six-week start, no penalty</strong> if it isn&rsquo;t working for you</li>
           <li><strong>Right of first refusal on renewal</strong> at your founding rate</li>
         </ul>
 
@@ -477,6 +520,26 @@
           <span class="sp-pricing-contact-sep">&middot;</span>
           <a href="tel:+17157972428">715-797-2428</a>
         </div>
+      </div>
+
+      <!-- ───────────── SUPPORTER TIER ───────────── -->
+      <div class="sp-support" id="supporter">
+        <div class="sp-support-head">
+          <span class="sp-support-tag">Smaller budget &middot; Supporter tier</span>
+        </div>
+        <div class="sp-support-headline">Not ready for the founding slot? Back AGSIST.</div>
+        <div class="sp-support-price-row">
+          <span class="sp-support-price">$50</span>
+          <span class="sp-support-period">/ week &middot; $2,600 / year &middot; month-to-month</span>
+        </div>
+        <p class="sp-support-meta">For companies that want their name in front of the same producers without the full founding commitment. Your logo joins the <strong>Supporters strip in the footer of every AGSIST page</strong> &mdash; homepage, briefing, and every tool. Shared and non-exclusive, but the roster is <strong>capped at a handful of names</strong> so it stays a short list of backers, not an ad rail. This is a different surface from the founding slot &mdash; it doesn&rsquo;t touch the single-sponsor briefing placement.</p>
+        <ul class="sp-support-list">
+          <li><strong>Logo + link</strong> in the site-wide footer Supporters strip</li>
+          <li><strong>Month-to-month.</strong> No minimum, cancel any time</li>
+          <li><strong>Capped roster</strong> &mdash; a short list of backers, not a network</li>
+          <li>First in line for the founding slot when you&rsquo;re ready to own the briefing</li>
+        </ul>
+        <a class="sp-support-cta" href="mailto:sig@farmers1st.com?subject=AGSIST%20Supporter%20tier%20inquiry&amp;body=Hi%20Sig%20%E2%80%94%20I%27d%20like%20to%20back%20AGSIST%20on%20the%20Supporter%20tier.%0A%0ACompany%3A%0AWhat%20we%20sell%3A%0ALogo%20%2B%20URL%3A%0A%0AThanks%2C">&#x2709; Ask about the Supporter tier &rarr;</a>
       </div>
 
       <!-- ───────────── OPERATOR ───────────── -->
@@ -521,6 +584,10 @@
         <details>
           <summary>Can I sponsor specific issues or weekdays only?</summary>
           <div class="sp-faq-body">Right now, no &mdash; the founding sponsor takes every issue. As subscriber count grows I may open per-issue and per-weekday slots, but founding sponsors will keep right of first refusal on those windows.</div>
+        </details>
+        <details>
+          <summary>Is there a cheaper option than the founding slot?</summary>
+          <div class="sp-faq-body">Yes &mdash; the <strong>Supporter tier at $50/week</strong>, month-to-month, no minimum. Your logo joins a shared Supporters strip in the footer of every page. It&rsquo;s non-exclusive and the roster is capped at a handful of names. The founding slot stays the premium single-sponsor placement above the fold; the Supporter tier is the smaller door. <a href="#supporter">See the Supporter tier &uarr;</a></div>
         </details>
       </div>
 
