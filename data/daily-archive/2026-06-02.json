@@ -1,92 +1,105 @@
 {
-  "headline": "GRAINS DRIFT LOWER ON WELCOME RAINS",
-  "subheadline": "Belt moisture ends dry spell, removes weather premium from July contracts.",
-  "lead": "Corn closed $4.41, down a half-cent, as welcome rains across the middle Mississippi Valley removed the last weather premium from July contracts. The Belt got its first meaningful moisture in two weeks and temperatures moderated to seasonal warmth, exactly what pollinating corn needed. Funds liquidated another 8,000 grain contracts Monday, finishing the Memorial cleanup that started last week.",
-  "the_takeaway": "Weather premium gone, funds finishing cleanup, summer range taking shape.",
-  "teaser": "Belt rains kill weather premium, funds finish Memorial liquidation.",
+  "headline": "GRAINS GRIND LOWER, CRUDE HOLDS IRAN GAINS",
+  "subheadline": "Corn and beans extend Memorial week liquidation as energy complex consolidates yesterday's geopolitical move higher.",
+  "lead": "Corn closed $4.41, testing the $4.40 floor as funds liquidated another 8,000 contracts Monday. The fifth straight session below $4.45 isn't finished-this is methodical selling, not stepped out. Beans at $11.66 gave back 13 cents, testing the 200-day moving average that's been support since April. The Memorial liquidation isn't pressure selling, it's systematic fund exodus.",
+  "the_takeaway": "Memorial liquidation stays methodical, not done until the calendar says it's done.",
+  "teaser": "Grain funds keep liquidating while crude holds yesterday's Iran premium.",
   "one_number": {
-    "value": "42%",
-    "unit": "corn planting completion as of May 24",
-    "context": "The planting season that looked behind schedule through early May caught up between rain systems. Belt farmers pushed through 42% completion by Memorial Day, ahead of the 5-year average despite the wet start. Now welcome rains are hitting at exactly the right time for pollination, not planting pressure."
+    "value": "13",
+    "unit": "cents soybeans gave back, testing 200-day support",
+    "context": "Beans at $11.66 are right at the 200-day moving average that's held as support since the April lows. The 13-cent drop puts the technical floor in play. If the 200-day breaks, next support isn't until $11.40, where the March low sits. The chart's talking louder than the fundamentals right now."
   },
   "yesterdays_call": {
-    "summary": "Geopolitical premium back after three weeks of unwinding in energy markets.",
-    "outcome": "didnt",
-    "note": "Crude gave back yesterday's Iran move higher, premium deflating again on diplomatic progress."
+    "summary": "Geopolitical premium back after three weeks of unwinding.",
+    "outcome": "played_out",
+    "note": "Crude held most of yesterday's 5% Iran move higher, consolidating at $92.17 rather than giving it all back."
   },
   "sections": [
     {
-      "title": "GRAINS EASE ON BELT MOISTURE",
-      "icon": "🌧️",
-      "body": "Corn lost a half-cent to $4.41 as the first meaningful **Belt rains in two weeks** hit the middle Mississippi Valley. Soybeans dropped 12¾ cents to $11.66, the biggest decline in the complex. Chicago wheat eased 3½ cents to $6.01. The moisture couldn't have timed better for pollinating corn, removing the weather premium that built through late May. Fund liquidation continues from Memorial week, another 8,000 contracts cleared Monday according to trader estimates.",
-      "catalyst": "Welcome rains across Plains and Mississippi Valley end two-week dry spell",
-      "bottom_line": "Weather premium gone, funds cleaning books, July contracts finding summer floor.",
+      "title": "GRAINS EXTEND LIQUIDATION",
+      "icon": "🌽",
+      "body": "Corn at $4.41 marked the fifth straight session below $4.45, down a half-cent on fund liquidation that's **methodical, not finished**. Soybeans lost 13 cents to $11.66, testing the 200-day moving average for the first time since April. Wheat held better at $6.01, off 3 cents, but still trapped in the same liquidation that's been running since Memorial Day. The calendar spread tells the story: December corn at $4.67 is holding a 26-cent carry over July, wider than it was a week ago. When the funds liquidate old crop, they're not rolling into new crop.",
+      "catalyst": "Memorial week fund liquidation extends into second week",
+      "bottom_line": "The liquidation that started Memorial Day isn't selling pressure selling, it's methodical and ongoing.",
       "conviction_level": "medium",
       "overnight_surprise": false
     },
     {
-      "title": "CATTLE DRIFT ON LIGHT VOLUME",
+      "title": "CRUDE CONSOLIDATES IRAN MOVE HIGHER",
+      "icon": "🛢️",
+      "body": "WTI crude at $92.17 held most of yesterday's 5% Iran move higher, adding another 75 cents overnight before settling flat. The **geopolitical premium that deflated through May is back**, but it's not building on itself. Natural gas gave back 1.5% to $3.14, cooling from yesterday's Iran-driven sympathy rally. The IEA warned global oil stocks are heading for historical lows ahead of summer peak demand, but that's structural, not geopolitical. Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now partially restored, are keeping $90 crude as the new floor.",
+      "catalyst": "IEA warning on global oil stocks ahead of summer demand peak",
+      "bottom_line": "Iran premium restored but not building; $90 crude is the new floor.",
+      "conviction_level": "medium",
+      "overnight_surprise": false
+    },
+    {
+      "title": "LIVESTOCK MARKS TIME",
       "icon": "🐄",
-      "body": "Live cattle closed $238.70, down $1.65 in thin trade. Feeders lost $3.50 to $347.60, the ongoing Cargill Fort Morgan/Schuyler plant lockout that began Tuesday May 19 still pressuring the complex. No fresh news on the **1,700-worker lockout** that's removed roughly 6,000 head daily from processing capacity. Box-beef cutout held steady, no catalyst for directional moves. Cash trade hasn't reset since the last disruption.",
-      "catalyst": "",
-      "bottom_line": "Processing disruption narrative unchanged, no catalyst for breakout moves.",
+      "body": "Live cattle at $238.70 lost 0.7%, testing the $240 floor that's held for two weeks. Feeders at $347.60 dropped 1%, following the grains lower but not breaking any meaningful support. Class III milk had the day's worst showing at $16.46, down 2.5% on **dairy protein partnership news that's reshaping the supply chain**. Lean hogs barely moved at $99.65, off a dime. The livestock complex is waiting for the ongoing Cargill Fort Morgan/Schuyler plant lockout that began Tuesday May 19 to resolve before making any directional commitment.",
+      "catalyst": "Darigold-Actus specialty dairy protein partnership announced",
+      "bottom_line": "Livestock waiting on Cargill lockout resolution, no directional commitment yet.",
       "conviction_level": "low",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "FTC launches antitrust probe into fertilizer pricing",
-      "body": "The Federal Trade Commission confirmed an investigation into rising fertilizer costs, the agency head announced Thursday. Input costs that stayed elevated through spring planting season now face regulatory scrutiny for potential anti-competitive practices.",
+      "title": "Trump cuts ag equipment tariffs to 15%",
+      "body": "President Trump reduced tariffs on heating, cooling, and certain heavy industrial and agricultural equipment Monday. The move should ease input costs for producers who've been dealing with elevated machinery prices since 2024.",
       "tag": "POLICY"
     },
     {
-      "title": "New World Screwworm found 31 miles from US border",
-      "body": "The parasitic fly that eats warm-blooded animals alive was detected just south of the border. Could cause millions in economic damage if it crosses into US livestock operations, triggering enhanced border monitoring protocols.",
-      "tag": "DISEASE"
+      "title": "Brazil faces new Section 301 trade determination",
+      "body": "USTR issued a Section 301 determination for Brazil with responsive action proposed for public comment. The U.S. continues seeking resolution of trade concerns while keeping pressure on South American ag competition.",
+      "tag": "TRADE"
     },
     {
-      "title": "Missouri agronomist warns heavy rains fuel nitrogen loss",
-      "body": "Recent rainfall timing creates challenges for crop nutrition and weed control, according to Cropwise Consulting. Excess moisture leaching nitrogen from fields while fueling weed pressure, forcing replanning of sidedress applications.",
-      "tag": "INPUTS"
+      "title": "New World Screwworm found 31 miles from border",
+      "body": "The devastating parasitic fly that eats warm-blooded animals alive was detected just 31 miles from the U.S. border. If it crosses, it could cause millions in economic damage to livestock operations.",
+      "tag": "DISEASE"
     }
   ],
   "spread_to_watch": {
-    "label": "July corn / December corn carry",
-    "level": "26-cent carry, holding steady",
-    "commentary": "The carry trade stayed locked through Memorial liquidation, telling you the funds aren't panicking out of new-crop positions. December corn at $4.67 versus July at $4.41 prices normal harvest pressure, not weather fear. When the carry starts moving, the weather story changes."
+    "label": "December corn / July corn carry",
+    "level": "26 cents wide, holding steady",
+    "commentary": "The carry between December and July corn at 26 cents is telling you the funds are liquidating old crop without rolling into new crop. When liquidation is this clean-selling nearby without buying deferred-it means the money is leaving agriculture entirely, not just switching contracts. Watch for the carry to narrow when the liquidation ends."
   },
   "basis": {
-    "headline": "Eastern Belt corn basis firming on ethanol restart",
-    "body": "**Ethanol plants coming back online** after maintenance is tightening corn basis east of the Mississippi. Producers with old-crop bushels in storage have a window the futures alone aren't pricing. Western Belt staying soft, consistent with seasonal patterns as harvest approaches."
+    "headline": "Eastern Belt firming, Western Belt soft",
+    "body": "Eastern Belt corn basis is **firming modestly** as river logistics improve after Memorial weekend maintenance. Soybean basis holding steady across the Belt with no major shifts. Western Belt staying soft, consistent with the seasonal pattern heading into summer. The basis action is quiet, tracking the futures weakness without adding premium or discount."
   },
   "weekly_thread": {
     "question": "Will the grain liquidation finish before weather takes control of the story?",
     "day": 2,
-    "status_text": "Liquidation's still the driver. Monday's fund selling cleared another 8,000 contracts while Belt rains removed weather premium, suggesting the cleanup has more room to run before July weather becomes the story."
+    "status_text": "The liquidation is proving more methodical than expected. Funds pulled another 8,000 corn contracts Monday and the calendar spread is widening, not narrowing. Weather isn't a factor yet-too early for pollination stress."
   },
   "the_more_you_know": {
-    "title": "Modern corn makes 'knee-high by July 4th' obsolete",
-    "body": "Today's corn at 42% planted is already outpacing the old timing rules. A Wisconsin farmer notes modern genetics and fertility have corn growing faster than the traditional \"knee-high by July 4th\" benchmark. Current hybrids routinely hit shoulder-high by Independence Day in good conditions. The old sayings price weather risk from a different era of genetics. Today's corn handles stress better but moves faster through growth stages, compressing the critical pollination window that drives July weather premiums."
+    "title": "When calendar spreads talk louder than weather",
+    "body": "December corn trading 26 cents over July corn tells you more about fund intentions than any weather forecast right now. That carry has widened 4 cents in the past week while funds liquidate old crop. A normal market would see money rotating from July into December, keeping the carry stable. Instead, the widening carry says funds are exiting agriculture entirely, not just switching contracts. When the carry starts to narrow again, that's your signal the liquidation is ending and weather can take control of the story."
   },
   "watch_list": [
     {
-      "time": "Thursday 7:30 AM CT",
-      "desc": "Weekly export sales; beans under 300K MT keeps chart in charge"
+      "time": "Thursday 7:30 AM",
+      "desc": "Weekly export sales; soy under 300K MT keeps chart in control"
     },
     {
-      "time": "This week",
-      "desc": "Belt temps above 90°F for 3+ days adds pollination stress premium"
+      "time": "Monday 3:00 PM",
+      "desc": "USDA Crop Progress; corn above 80% planted removes weather premium"
+    },
+    {
+      "time": "All week",
+      "desc": "Dec corn/July spread; narrowing below 24 cents signals liquidation ending"
     }
   ],
   "daily_quote": {
-    "text": "Lost time is never found again.",
-    "attribution": "Benjamin Franklin"
+    "text": "Never invest in a business you cannot understand.",
+    "attribution": "Warren Buffett"
   },
-  "source_summary": "USDA NASS, CME Group, Brownfield Ag News, Feedstuffs",
+  "source_summary": "CME futures, USDA reports, energy markets, trade policy",
   "date": "Tuesday, June 2, 2026",
   "meta": {
-    "market_mood": "mixed",
+    "market_mood": "bearish",
     "heat_section": 0,
     "overnight_surprises_count": 0
   },
@@ -161,22 +174,22 @@
     "is_house_ad": true
   },
   "issue_number": 83,
-  "generated_at": "2026-06-02T14:07:36.891269+00:00",
+  "generated_at": "2026-06-02T14:58:31.200646+00:00",
   "generator_version": "4.6.1",
   "surprise_count": 0,
   "surprises": [],
-  "price_validation_clean": false,
+  "price_validation_clean": true,
   "market_closed": false,
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-06-02T14:07:48.467927+00:00",
+    "ran_at": "2026-06-02T14:58:43.140038+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 7,
+      "rule_2_conviction_earned": 8,
       "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 6,
+      "rule_4_watch_conditional": 9,
       "rule_5_bottom_lines_synthesize": 7,
       "rule_6_quiet_days_quiet": 8,
       "rule_7_continuity": 8,
@@ -184,12 +197,12 @@
       "rule_9_voice": 8,
       "rule_10_forward_test": 7,
       "rule_11_thread_coherence": 8,
-      "rule_12_spread_quality": 8,
+      "rule_12_spread_quality": 9,
       "rule_13_yc_honesty": 9,
-      "rule_14_level_coherence": 3,
-      "rule_15_one_number_coherence": 10,
+      "rule_14_level_coherence": 2,
+      "rule_15_one_number_coherence": 9,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 10
+      "rule_17_macro_anchoring": 9
     },
     "rewrites_applied": [
       {
@@ -198,9 +211,9 @@
         "rule": "rule_14_level_coherence",
         "scores_before": {
           "rule_1_lead_so_what": 8,
-          "rule_2_conviction_earned": 7,
+          "rule_2_conviction_earned": 8,
           "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 6,
+          "rule_4_watch_conditional": 9,
           "rule_5_bottom_lines_synthesize": 7,
           "rule_6_quiet_days_quiet": 8,
           "rule_7_continuity": 8,
@@ -208,12 +221,12 @@
           "rule_9_voice": 8,
           "rule_10_forward_test": 7,
           "rule_11_thread_coherence": 8,
-          "rule_12_spread_quality": 8,
+          "rule_12_spread_quality": 9,
           "rule_13_yc_honesty": 9,
-          "rule_14_level_coherence": 3,
-          "rule_15_one_number_coherence": 10,
+          "rule_14_level_coherence": 2,
+          "rule_15_one_number_coherence": 9,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 10
+          "rule_17_macro_anchoring": 9
         }
       }
     ],
