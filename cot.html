@@ -57,12 +57,40 @@
   }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "What is the COT Report?", "acceptedAnswer": { "@type": "Answer", "text": "The CFTC releases Commitments of Traders data every Friday afternoon. It shows the net position of managed money \u2014 hedge funds and large speculators \u2014 in each commodity futures market. When funds are heavily long, prices are often stretched and vulnerable to selling. When they are heavily short, there is potential for a short-covering rally." } },
+    { "@type": "Question", "name": "How to Use It", "acceptedAnswer": { "@type": "Answer", "text": "COT data is a sentiment indicator, not a timing tool. Extreme long positioning (near the 52-week high) can signal crowded trades that may unwind. Extreme short positioning can indicate pessimism that may reverse. Use it alongside fundamentals \u2014 a fund-short market with bullish supply news can move fast." } },
+    { "@type": "Question", "name": "What \"Managed Money\" Means", "acceptedAnswer": { "@type": "Answer", "text": "This is the speculative money: CTAs, commodity pools, and hedge funds. They do not own grain \u2014 they trade paper. Their positions move prices in the short term, which affects basis and cash prices at your elevator. Large fund selling often corresponds to basis weakness at harvest." } },
+    { "@type": "Question", "name": "52-Week Range Context", "acceptedAnswer": { "@type": "Answer", "text": "The bar gauge shows where current positioning sits within the last year\u2019s range. A dot near the top means funds are historically long \u2014 grain is more priced for good news. A dot near the bottom means funds are historically short \u2014 there is room for price improvement if fundamentals support it." } }
+  ]
+}
+</script>
 
 <style>
 button,a,[role="button"]{touch-action:manipulation;}
 
 /* ── Page layout ── */
 .cot-page { max-width: 900px; margin: 0 auto; padding: 0 1rem 3rem; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+.cot-chart-tab { min-height:44px; }
+.cot-chart-tab:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
+
+.cot-pctl { font-family:'JetBrains Mono',monospace; font-size:.6rem; font-weight:700; letter-spacing:.02em; color:var(--text-muted); margin:-.15rem 0 .35rem; }
+.cot-pctl.hot  { color:var(--gold); }
+.cot-pctl.cold { color:#5ba3e0; }
+.cot-insight { font-size:.66rem; line-height:1.5; color:var(--text-dim); margin-top:.5rem; padding-top:.5rem; border-top:1px solid var(--border); }
+.cot-insight b { color:var(--text); font-weight:700; }
+.cot-insight .up { color:var(--green); } .cot-insight .dn { color:#ef4444; }
+.cot-read { border:1px solid rgba(218,165,32,.3); background:rgba(218,165,32,.05); border-radius:10px; padding:.9rem 1.1rem; margin-bottom:1.25rem; }
+.cot-read-tag { font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:.35rem; }
+.cot-read-body { font-size:.86rem; line-height:1.6; color:var(--text); }
+.cot-read-body b { color:var(--gold); }
+@media (max-width:560px){ .cot-read-body{ font-size:.82rem; } }
+
 
 /* ── Page hero ── */
 .cot-hero {
@@ -90,7 +118,7 @@ button,a,[role="button"]{touch-action:manipulation;}
   padding: .7rem 1rem; border-radius: 10px; margin-bottom: 1.25rem;
   border: 1px solid;
 }
-.cot-verdict-banner.long  { background: rgba(34,197,94,.06);  border-color: rgba(34,197,94,.2);  }
+.cot-verdict-banner.long  { background: rgba(74,171,76,.06);  border-color: rgba(74,171,76,.2);  }
 .cot-verdict-banner.short { background: rgba(239,68,68,.06);  border-color: rgba(239,68,68,.2);  }
 .cot-verdict-banner.mixed { background: var(--surface);       border-color: var(--border);       }
 .cvb-badge {
@@ -122,7 +150,7 @@ button,a,[role="button"]{touch-action:manipulation;}
   font-size: .62rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
   padding: .12rem .45rem; border-radius: 12px; border: 1px solid;
 }
-.cot-card-verdict.long  { color: var(--green); background: rgba(34,197,94,.08);  border-color: rgba(34,197,94,.25); }
+.cot-card-verdict.long  { color: var(--green); background: rgba(74,171,76,.08);  border-color: rgba(74,171,76,.25); }
 .cot-card-verdict.short { color: #ef4444;      background: rgba(239,68,68,.08);  border-color: rgba(239,68,68,.25); }
 .cot-card-verdict.flat  { color: var(--text-muted); background: var(--surface2); border-color: var(--border); }
 
@@ -215,6 +243,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
 
 <body>
 <a href="#main" class="skip">Skip to content</a>
+<noscript><div style="text-align:center;padding:1.5rem;margin:1rem;font-family:sans-serif;color:#ccc;background:#111;border-radius:8px">This page loads live CFTC Commitment of Traders data with JavaScript. Please enable JavaScript, or view the weekly report directly at <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" style="color:#4aab4c">cftc.gov</a>.</div></noscript>
 <div id="site-header"></div>
 
 <main id="main" class="main cot-page">
@@ -224,6 +253,12 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
     <div class="cot-eyebrow">📊 Market Intelligence · Updated Weekly</div>
     <h1 class="cot-page-title">CFTC Commitment of Traders</h1>
     <p class="cot-page-sub">What are the big funds doing in corn, soybean, and wheat futures? Managed money net positioning from the CFTC's weekly Disaggregated Futures-Only report. Updated every Saturday after Friday's release.</p>
+  </div>
+
+  <!-- The Read: single most important positioning signal -->
+  <div class="cot-read" id="cot-read" style="display:none">
+    <div class="cot-read-tag">⚡ The Read</div>
+    <div class="cot-read-body" id="cot-read-body"></div>
   </div>
 
   <!-- Verdict banner -->
@@ -240,6 +275,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
         <span class="cot-card-name">🌽 Corn</span>
         <span class="cot-card-verdict flat" id="verdict-corn">—</span>
       </div>
+      <div class="cot-pctl" id="pctl-corn"></div>
       <div class="cot-card-net flat" id="net-corn">--</div>
       <div class="cot-card-chg nc" id="chg-corn">Loading…</div>
       <div class="cot-card-bar-wrap">
@@ -250,6 +286,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
       <div class="cot-card-range-labels">
         <span id="min-corn">--</span><span>52-wk range</span><span id="max-corn">--</span>
       </div>
+      <div class="cot-insight" id="insight-corn"></div>
     </div>
 
     <div class="cot-card" id="card-beans">
@@ -257,6 +294,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
         <span class="cot-card-name">🫘 Soybeans</span>
         <span class="cot-card-verdict flat" id="verdict-beans">—</span>
       </div>
+      <div class="cot-pctl" id="pctl-beans"></div>
       <div class="cot-card-net flat" id="net-beans">--</div>
       <div class="cot-card-chg nc" id="chg-beans">Loading…</div>
       <div class="cot-card-bar-wrap">
@@ -267,6 +305,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
       <div class="cot-card-range-labels">
         <span id="min-beans">--</span><span>52-wk range</span><span id="max-beans">--</span>
       </div>
+      <div class="cot-insight" id="insight-beans"></div>
     </div>
 
     <div class="cot-card" id="card-wheat">
@@ -274,6 +313,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
         <span class="cot-card-name">🌾 Wheat</span>
         <span class="cot-card-verdict flat" id="verdict-wheat">—</span>
       </div>
+      <div class="cot-pctl" id="pctl-wheat"></div>
       <div class="cot-card-net flat" id="net-wheat">--</div>
       <div class="cot-card-chg nc" id="chg-wheat">Loading…</div>
       <div class="cot-card-bar-wrap">
@@ -284,6 +324,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
       <div class="cot-card-range-labels">
         <span id="min-wheat">--</span><span>52-wk range</span><span id="max-wheat">--</span>
       </div>
+      <div class="cot-insight" id="insight-wheat"></div>
     </div>
   </div>
 
@@ -300,36 +341,52 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
     </div>
     <div class="cot-legend" id="cot-legend">
       <span class="cot-legend-item"><span class="cot-legend-dot" style="background:#e6b042"></span>Corn</span>
-      <span class="cot-legend-item"><span class="cot-legend-dot" style="background:#22c55e"></span>Soybeans</span>
+      <span class="cot-legend-item"><span class="cot-legend-dot" style="background:#4aab4c"></span>Soybeans</span>
       <span class="cot-legend-item"><span class="cot-legend-dot" style="background:#5ba3e0"></span>Wheat</span>
-      <span class="cot-legend-item" style="margin-left:auto;font-size:.6rem">Contracts (thousands) · Source: CFTC</span>
+      <span class="cot-legend-item" id="legend-price" style="display:none"><span class="cot-legend-dot" style="background:rgba(240,240,235,.9)"></span>Price (right axis)</span><span class="cot-legend-item" style="margin-left:auto;font-size:.6rem">Contracts (thousands) · Source: CFTC</span>
     </div>
-    <div class="cot-canvas-wrap">
-      <canvas id="cot-chart"></canvas>
+    <div class="cot-canvas-wrap" style="position:relative">
+      <canvas id="cot-chart" role="img" aria-label="52-week chart of managed money net futures positioning for corn, soybeans, and wheat"></canvas>
+      <div id="cot-xhair" style="position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,.35);pointer-events:none;display:none"></div>
+      <div id="cot-tip" role="status" aria-live="polite" style="position:absolute;pointer-events:none;display:none;background:var(--surface3,#26261f);border:1px solid var(--border);border-radius:6px;padding:.45rem .6rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;line-height:1.5;color:var(--text);white-space:nowrap;z-index:5;box-shadow:0 4px 14px rgba(0,0,0,.4)"></div>
+      <div id="cot-chart-a11y" class="sr-only" aria-live="polite"></div>
     </div>
     <div id="cot-chart-msg" style="text-align:center;padding:2rem 0;font-size:.8rem;color:var(--text-muted)">Loading chart data…</div>
   </div>
 
   <!-- Explainer -->
   <div class="cot-explainer">
-    <div class="cot-explainer-title">🧠 What Does This Mean for Farmers?</div>
+    <h2 class="cot-explainer-title">🧠 What Does This Mean for Farmers?</h2>
     <div class="cot-explainer-grid">
       <div class="cot-explainer-item">
-        <h4>What is the COT Report?</h4>
+        <h3>What is the COT Report?</h3>
         <p>The CFTC releases Commitments of Traders data every Friday afternoon. It shows the net position of managed money — hedge funds and large speculators — in each commodity futures market. When funds are heavily long, prices are often stretched and vulnerable to selling. When they're heavily short, there's potential for a short-covering rally.</p>
       </div>
       <div class="cot-explainer-item">
-        <h4>How to Use It</h4>
+        <h3>How to Use It</h3>
         <p>COT data is a sentiment indicator, not a timing tool. Extreme long positioning (near the 52-week high) can signal crowded trades that may unwind. Extreme short positioning can indicate pessimism that may reverse. Use it alongside fundamentals — a fund-short market with bullish supply news can move fast.</p>
       </div>
       <div class="cot-explainer-item">
-        <h4>What "Managed Money" Means</h4>
+        <h3>What "Managed Money" Means</h3>
         <p>This is the speculative money: CTAs, commodity pools, and hedge funds. They don't own grain — they trade paper. Their positions move prices in the short term, which affects basis and cash prices at your elevator. Large fund selling often corresponds to basis weakness at harvest.</p>
       </div>
       <div class="cot-explainer-item">
-        <h4>52-Week Range Context</h4>
+        <h3>52-Week Range Context</h3>
         <p>The bar gauge shows where current positioning sits within the last year's range. A dot near the top means funds are historically long — grain is more priced for good news. A dot near the bottom means funds are historically short — there's room for price improvement if fundamentals support it.</p>
       </div>
+    </div>
+  </div>
+
+  <!-- Email capture -->
+  <div id="signup-card" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem;margin:1.5rem 0">
+    <div style="font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:.5rem">📧 Get the AGSIST Daily</div>
+    <div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem;max-width:420px">
+      <p style="font-size:.8rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, fund positioning shifts, and what to watch — by 6am CT on weekdays. Available at no charge.</p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="flex:1;min-width:180px;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px">
+        <button id="signup-btn" style="padding:.6rem 1.1rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free →</button>
+      </div>
+      <div style="font-size:.66rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div>
     </div>
   </div>
 
@@ -349,7 +406,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
 (function(){
 'use strict';
 
-var COLORS = { corn: '#e6b042', beans: '#22c55e', wheat: '#5ba3e0' };
+var COLORS = { corn: '#e6b042', beans: '#4aab4c', wheat: '#5ba3e0' };
 var LABELS = { corn: 'Corn', beans: 'Soybeans', wheat: 'Wheat' };
 
 function fmtK(n) {
@@ -361,6 +418,165 @@ function fmtKShort(n) {
   if (n == null || isNaN(n)) return '--';
   var abs = Math.abs(n);
   return (n < 0 ? '-' : '') + (abs >= 1000 ? Math.round(abs/1000)+'k' : Math.round(abs));
+}
+
+
+// ---- Positioning intelligence (computed from 52-week history; no price data) ----
+function pstdev(a){var m=a.reduce(function(x,y){return x+y;},0)/a.length;var v=a.reduce(function(s,y){return s+(y-m)*(y-m);},0)/a.length;return {mean:m,sd:Math.sqrt(v)};}
+function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
+function computeInsight(key){
+  if(!historyData||!historyData.history||!historyData.history[key])return null;
+  var arr=historyData.history[key]; if(arr.length<6)return null;
+  var nets=arr.map(function(r){return r.net;});
+  var n=nets.length, last=arr[n-1], prev=arr[n-2], curNet=last.net;
+  // percentile within trailing window
+  var below=0; for(var i=0;i<n-1;i++){ if(nets[i]<curNet) below++; }
+  var pct=Math.round(below/(n-1)*100);
+  // z-score (population)
+  var ms=pstdev(nets); var z=ms.sd?((curNet-ms.mean)/ms.sd):0;
+  // weekly changes
+  var chgs=[]; for(var j=1;j<n;j++) chgs.push(arr[j].net-arr[j-1].net);
+  var curChg=chgs[chgs.length-1];
+  // weeks since an equal-or-larger move in the SAME direction (=> "sharpest in X weeks")
+  var weeksSince=chgs.length;
+  for(var p=chgs.length-2;p>=0;p--){
+    var prior=chgs.length-1-p;
+    if((curChg<0&&chgs[p]<=curChg)||(curChg>0&&chgs[p]>=curChg)){ weeksSince=prior; break; }
+  }
+  // streak of consecutive same-direction weekly moves
+  var streak=1;
+  for(var q=chgs.length-2;q>=0;q--){ if(chgs[q]!==0 && (chgs[q]>0)===(curChg>0)) streak++; else break; }
+  // long/short decomposition of this week's move
+  var dL=last.long-prev.long, dS=last.short-prev.short, driver, driverShort;
+  if(curChg<0){ if(Math.abs(dL)>=Math.abs(dS)){driver='long liquidation';driverShort='longs exiting';} else {driver='new short selling';driverShort='fresh shorts';} }
+  else if(curChg>0){ if(Math.abs(dL)>=Math.abs(dS)){driver='new long buying';driverShort='fresh buying';} else {driver='short covering';driverShort='shorts covering';} }
+  else {driver='no net change';driverShort='flat';}
+  var vel=n>=5?(arr[n-1].net-arr[n-5].net):null;
+  var crowded = pct>=85 ? 'long' : pct<=15 ? 'short' : null;
+  // most-recent net flip (zero cross) and weeks since
+  var flip=null;
+  for(var f=n-1;f>0;f--){ if(nets[f]!==0&&nets[f-1]!==0&&((nets[f]>0)!==(nets[f-1]>0))){ flip={date:arr[f].date,dir:(nets[f]>0?'bullish':'bearish'),weeksAgo:(n-1-f)}; break; } }
+  // peak / trough within window
+  var mxI=0,mnI=0; for(var g=1;g<n;g++){ if(nets[g]>nets[mxI])mxI=g; if(nets[g]<nets[mnI])mnI=g; }
+  var peak=nets[mxI], trough=nets[mnI], wkSincePeak=(n-1-mxI), wkSinceTrough=(n-1-mnI), offPeak=peak-curNet, offTrough=curNet-trough;
+  return {key:key,net:curNet,chg:curChg,pct:pct,z:z,weeksSince:weeksSince,streak:streak,
+          dL:dL,dS:dS,driver:driver,driverShort:driverShort,vel:vel,crowded:crowded,total:n-1,
+          flip:flip,peak:peak,trough:trough,wkSincePeak:wkSincePeak,wkSinceTrough:wkSinceTrough,offPeak:offPeak,offTrough:offTrough};
+}
+function fmtSigned(n){var a=Math.abs(n);var s=(n<0?'-':'+');return s+(a>=1000?(a/1000).toFixed(0)+'k':a);}
+
+// ---- Price tier (activates only when records carry a 'price' field) ----
+function computePriceRead(key){
+  if(!historyData||!historyData.history||!historyData.history[key])return null;
+  var arr=historyData.history[key]; if(arr.length<6)return null;
+  // require price on the recent window
+  var withP=arr.filter(function(r){return typeof r.price==='number'&&isFinite(r.price);});
+  if(withP.length<6)return null;
+  var n=arr.length, W=4; if(n<W+2)return null;
+  var last=arr[n-1], base=arr[n-1-W];
+  if(typeof last.price!=='number'||typeof base.price!=='number')return null;
+  var netDir=last.net>base.net?1:last.net<base.net?-1:0;
+  var priceDir=last.price>base.price?1:last.price<base.price?-1:0;
+  var pPct=base.price?Math.round((last.price-base.price)/Math.abs(base.price)*1000)/10:0;
+  var div=null;
+  if(netDir>0&&priceDir<0)div='bearish';
+  else if(netDir<0&&priceDir>0)div='bullish';
+  else if(netDir>0&&priceDir>0)div='confirmed-up';
+  else if(netDir<0&&priceDir<0)div='confirmed-down';
+  // forward-return analogs: weeks at similar net-percentile, 4wk forward price move (observational)
+  var nets=arr.map(function(r){return r.net;});
+  var curNet=last.net;
+  var curPctl=0,b=0; for(var i=0;i<n-1;i++){ if(nets[i]<curNet)b++; } curPctl=b/(n-1)*100;
+  var aN=0,aDown=0,aUp=0,fwd=[];
+  for(var j=0;j<n-W;j++){
+    if(typeof arr[j].price!=='number'||typeof arr[j+W].price!=='number')continue;
+    var bj=0; for(var m=0;m<n-1;m++){ if(nets[m]<nets[j])bj++; } var pj=bj/(n-1)*100;
+    if(Math.abs(pj-curPctl)<=10){
+      var ch=arr[j+W].price-arr[j].price; fwd.push(ch); aN++;
+      if(ch<0)aDown++; else if(ch>0)aUp++;
+    }
+  }
+  var med=null; if(fwd.length){ var s=fwd.slice().sort(function(x,y){return x-y;}); var mid=Math.floor(s.length/2); med=s.length%2?s[mid]:(s[mid-1]+s[mid])/2; }
+  return {key:key,netDir:netDir,priceDir:priceDir,pPct:pPct,divergence:div,
+          analogN:aN,analogDown:aDown,analogUp:aUp,analogMedian:med,curPctl:Math.round(curPctl),window:W};
+}
+function divLabel(d){return d==='bearish'?'bearish divergence':d==='bullish'?'bullish divergence':d==='confirmed-up'?'confirmed uptrend':d==='confirmed-down'?'confirmed downtrend':'';}
+
+function renderInsight(key){
+  var ins=computeInsight(key); if(!ins)return null;
+  // percentile pill
+  var pill=document.getElementById('pctl-'+key);
+  if(pill){
+    pill.textContent=ordinal(ins.pct)+' percentile \u00b7 52wk';
+    pill.className='cot-pctl'+(ins.crowded==='long'?' hot':ins.crowded==='short'?' cold':'');
+  }
+  // insight sentence
+  var el=document.getElementById('insight-'+key); if(!el)return ins;
+  var dirWord=ins.chg<0?'<span class="dn">cut</span>':ins.chg>0?'<span class="up">added</span>':'held';
+  var sharp='';
+  if(Math.abs(ins.chg)>=3000){
+    if(ins.weeksSince>=ins.total) sharp=' \u2014 the '+(ins.chg<0?'largest weekly exit':'largest weekly build')+' in the past year';
+    else if(ins.weeksSince>=4) sharp=' \u2014 sharpest '+(ins.chg<0?'exit':'build')+' in '+ins.weeksSince+' weeks';
+  }
+  var driveTxt = (Math.abs(ins.chg)>=3000)?(', driven by <b>'+ins.driver+'</b>'):'';
+  var flipTxt='';if(ins.flip&&ins.flip.weeksAgo<=6){flipTxt=' Funds flipped <b class="'+(ins.flip.dir==='bullish'?'up':'dn')+'">net '+(ins.flip.dir==='bullish'?'long':'short')+'</b> '+(ins.flip.weeksAgo===0?'this week':ins.flip.weeksAgo+' week'+(ins.flip.weeksAgo>1?'s':'')+' ago')+'.';}el.innerHTML='Funds '+dirWord+' <b>'+fmtSigned(Math.abs(ins.chg)).replace(/^[+]/,'')+'</b> contracts this week'+sharp+driveTxt+'. Net positioning sits at the <b>'+ordinal(ins.pct)+' percentile</b> of the last year ('+(ins.z>=0?'+':'')+ins.z.toFixed(1)+'\u03c3).'+flipTxt;
+  var pr=computePriceRead(key);
+  if(pr&&pr.divergence){
+    var dvCls=(pr.divergence==='bearish'||pr.divergence==='confirmed-down')?'dn':(pr.divergence==='bullish'||pr.divergence==='confirmed-up')?'up':'';
+    var arrow=pr.priceDir>0?'\u2191':pr.priceDir<0?'\u2193':'\u2192';
+    var dvTxt=' Over 4 weeks, net is '+(pr.netDir>0?'rising':pr.netDir<0?'falling':'flat')+' while price is '+(pr.priceDir>0?'rising':pr.priceDir<0?'falling':'flat')+' ('+(pr.pPct>=0?'+':'')+pr.pPct+'%) \u2014 <b class="'+dvCls+'">'+divLabel(pr.divergence)+'</b>.';
+    if(pr.analogN>=4){var lean=pr.analogDown>pr.analogUp?'lower':pr.analogUp>pr.analogDown?'higher':'mixed';dvTxt+=' <span style="color:var(--text-muted)">In the past year, similar positioning ('+pr.analogN+' weeks) was followed by '+lean+' prices 4 weeks later in '+Math.max(pr.analogDown,pr.analogUp)+' of '+pr.analogN+' cases \u2014 small sample, an observation, not a forecast.</span>';}
+    el.innerHTML+=dvTxt;
+  }
+  return ins;
+}
+function renderTheRead(){
+  var all=['corn','beans','wheat'].map(computeInsight).filter(Boolean);
+  if(!all.length)return;
+  var LBL={corn:'Corn',beans:'Soybean',wheat:'Wheat'};
+  // score each for "newsworthiness": extreme percentile + sharp move
+  function score(x){var s=0; if(x.crowded)s+=2; s+=Math.min(2,Math.abs(x.z)); if(x.weeksSince>=x.total)s+=3; else if(x.weeksSince>=8)s+=2; else if(x.weeksSince>=4)s+=1; if(Math.abs(x.chg)>=50000)s+=1; if(x.flip&&x.flip.weeksAgo<=2)s+=2; return s;}
+  all.sort(function(a,b){return score(b)-score(a);});
+  var x=all[0]; if(score(x)<2){document.getElementById('cot-read').style.display='none';return;}
+  // price divergence can override when present and meaningful
+  var LBL2={corn:'Corn',beans:'Soybean',wheat:'Wheat'};
+  var divCand=['corn','beans','wheat'].map(computePriceRead).filter(function(p){return p&&(p.divergence==='bearish'||p.divergence==='bullish');});
+  if(divCand.length){
+    var dc=divCand.sort(function(a,b){return Math.abs(b.pPct)-Math.abs(a.pPct);})[0];
+    var ci=computeInsight(dc.key);
+    if(ci&&(ci.crowded||Math.abs(ci.z)>=1)){
+      var msg2='<b>'+LBL2[dc.key]+'</b> is flashing a <b>'+divLabel(dc.divergence)+'</b>: funds are '+(dc.netDir>0?'still adding to a '+ordinal(ci.pct)+'-percentile long':'cutting their position')+' while price is '+(dc.priceDir>0?'rising':'falling')+' ('+(dc.pPct>=0?'+':'')+dc.pPct+'% over 4 weeks). '+(dc.divergence==='bearish'?'A long position that price is no longer confirming is vulnerable to liquidation.':'Funds bailing into rising price often signals short-covering strength rather than fresh conviction.');
+      document.getElementById('cot-read-body').innerHTML=msg2;
+      document.getElementById('cot-read').style.display='block';
+      return;
+    }
+  }
+  var msg='';
+  if(x.flip&&x.flip.weeksAgo<=2){
+    var fl=x.flip;
+    msg='<b>'+LBL[x.key]+'</b> funds just flipped <b>net '+(fl.dir==='bullish'?'long':'short')+'</b> '+(fl.weeksAgo===0?'this week':fl.weeksAgo+' week'+(fl.weeksAgo>1?'s':'')+' ago')+' \u2014 a structural shift in sentiment after '+(fl.dir==='bullish'?'an extended bearish stance':'an extended bullish stance')+'. Positioning now sits at the '+ordinal(x.pct)+' percentile of the last year.';
+    document.getElementById('cot-read-body').innerHTML=msg;
+    document.getElementById('cot-read').style.display='block';
+    return;
+  }
+  var crowdTxt = x.crowded==='long' ? 'historically crowded long ('+ordinal(x.pct)+' percentile)' :
+                 x.crowded==='short'? 'historically crowded short ('+ordinal(x.pct)+' percentile)' :
+                 'at the '+ordinal(x.pct)+' percentile';
+  if(x.weeksSince>=x.total && Math.abs(x.chg)>=3000){
+    msg='<b>'+LBL[x.key]+'</b> funds just posted their '+(x.chg<0?'largest weekly exit':'largest weekly build')+' in the past year ('+fmtSigned(x.chg)+'), '+
+        (x.chg<0?'unwinding from':'pushing toward')+' a position that is '+crowdTxt+'. This move was driven by <b>'+x.driver+'</b>'+
+        (x.chg<0 && x.driver==='long liquidation'?' \u2014 profit-taking off a stretched high, not fresh bearish conviction.':
+         x.chg>0 && x.driver==='short covering'?' \u2014 a squeeze, not fresh bullish conviction.':'.');
+  } else if(x.weeksSince>=4 && Math.abs(x.chg)>=3000){
+    msg='<b>'+LBL[x.key]+'</b> funds '+(x.chg<0?'cut':'added')+' '+fmtSigned(Math.abs(x.chg)).replace(/^[+]/,'')+' contracts this week \u2014 the sharpest '+(x.chg<0?'exit':'build')+' in '+x.weeksSince+' weeks \u2014 from a position '+crowdTxt+', driven by <b>'+x.driver+'</b>.';
+  } else if(x.crowded){
+    msg='<b>'+LBL[x.key]+'</b> managed money is '+crowdTxt+' ('+(x.z>=0?'+':'')+x.z.toFixed(1)+'\u03c3 from the 1-year average). '+
+        (x.crowded==='long'?'Crowded longs are vulnerable to liquidation if fundamentals disappoint.':'Crowded shorts can fuel a short-covering rally on any bullish surprise.');
+  } else {
+    document.getElementById('cot-read').style.display='none'; return;
+  }
+  document.getElementById('cot-read-body').innerHTML=msg;
+  document.getElementById('cot-read').style.display='block';
 }
 
 function renderCard(key, d) {
@@ -394,7 +610,7 @@ function renderCard(key, d) {
   var currPct = Math.max(0, Math.min(100, ((net  - min52) / range) * 100));
   var fillStart = Math.min(zeroPct, currPct);
   var fillWidth = Math.abs(currPct - zeroPct);
-  var fillClr = isLong ? 'rgba(34,197,94,.35)' : 'rgba(239,68,68,.32)';
+  var fillClr = isLong ? 'rgba(74,171,76,.35)' : 'rgba(239,68,68,.32)';
   var dotClr  = isLong ? 'var(--green)' : '#ef4444';
 
   var zeroEl = document.getElementById('zero-' + key);
@@ -437,7 +653,7 @@ function renderVerdict(summary) {
   if (banner) banner.className = 'cot-verdict-banner ' + cls;
   if (badge)  { badge.textContent = badgeTxt; badge.className = 'cvb-badge ' + cls; }
   if (text)   text.textContent = desc;
-  if (date && summary.report_date) date.textContent = 'As of ' + summary.report_date + ' · CFTC Disaggregated';
+  if (date && summary.report_date) date.textContent = 'Positions as of ' + summary.report_date + ' (Tuesday) · released Friday · CFTC Disaggregated';
 }
 
 var historyData = null;
@@ -465,6 +681,7 @@ function drawChart(key) {
 
   canvas.style.display = 'block';
   if (msg) msg.style.display = 'none';
+  try{var a11y=document.getElementById('cot-chart-a11y');if(a11y){var parts=[];keys.forEach(function(k){var arr=history[k]||[];if(arr.length){var f=arr[0],l=arr[arr.length-1];parts.push(LABELS[k]+': net moved from '+f.net+' on '+f.date+' to '+l.net+' on '+l.date);}});a11y.textContent='52-week managed money net positioning. '+parts.join('. ')+'.';}}catch(e){}
 
   var dpr = window.devicePixelRatio || 1;
   var W = canvas.offsetWidth || 700;
@@ -578,6 +795,33 @@ function drawChart(key) {
       ctx.fill();
     }
   });
+  // ---- price overlay (single-commodity view, only when price present) ----
+  var priceMeta=null;
+  if(keys.length===1){
+    var pk=keys[0], parr=history[pk]||[];
+    var pricedVis=[]; allDates.forEach(function(dt){ for(var z=0;z<parr.length;z++){ if(parr[z].date===dt&&typeof parr[z].price==='number'){pricedVis.push({date:dt,price:parr[z].price}); break;} } });
+    if(pricedVis.length>=2){
+      var pVals=pricedVis.map(function(r){return r.price;});
+      var pMin=Math.min.apply(null,pVals), pMax=Math.max.apply(null,pVals);
+      var pPad=(pMax-pMin)*0.12||1; pMin-=pPad; pMax+=pPad; var pRange=pMax-pMin||1;
+      function yOfP(p){ return PAD.top + (1-(p-pMin)/pRange)*cH; }
+      // price line (white, thin, over the net area)
+      ctx.beginPath(); ctx.strokeStyle='rgba(240,240,235,.85)'; ctx.lineWidth=1.5; ctx.lineJoin='round'; ctx.setLineDash([]);
+      var started=false;
+      pricedVis.forEach(function(r){ var xi=allDates.indexOf(r.date); var x=xOf(xi),y=yOfP(r.price); if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y); });
+      ctx.stroke();
+      // last price dot
+      var lastP=pricedVis[pricedVis.length-1]; var lpx=xOf(allDates.indexOf(lastP.date)), lpy=yOfP(lastP.price);
+      ctx.beginPath(); ctx.arc(lpx,lpy,3,0,Math.PI*2); ctx.fillStyle='rgba(240,240,235,.95)'; ctx.fill();
+      // right-axis price ticks
+      ctx.fillStyle='rgba(255,255,255,.45)'; ctx.font='9px JetBrains Mono, monospace'; ctx.textAlign='left';
+      for(var pt=0;pt<=3;pt++){ var pv=pMin+(pt/3)*pRange; var py=yOfP(pv); ctx.fillText(Math.round(pv).toString(), PAD.left+cW+4, py+3); }
+      priceMeta={min:pMin,max:pMax,last:lastP.price,n:pricedVis.length};
+    }
+  }
+  CHART_GEO = { keys:keys, allDates:allDates, history:history, W:W, H:H,
+    PADleft:PAD.left, cW:cW, xOf:xOf, yOf:yOf, colors:COLORS, labels:LABELS, priceMeta:priceMeta };
+  var lp=document.getElementById('legend-price'); if(lp) lp.style.display=priceMeta?'inline-flex':'none';
 }
 
 function setActiveTab(key) {
@@ -591,6 +835,50 @@ function setActiveTab(key) {
 document.querySelectorAll('.cot-chart-tab').forEach(function(btn) {
   btn.addEventListener('click', function() { setActiveTab(btn.dataset.key); });
 });
+
+var CHART_GEO = null;
+(function(){
+  var canvas = document.getElementById('cot-chart');
+  var xhair  = document.getElementById('cot-xhair');
+  var tip    = document.getElementById('cot-tip');
+  if (!canvas || !xhair || !tip) return;
+  function fmtTip(n){ var a=Math.abs(n); var s=n<0?'-':'+'; return s+(a>=1000?(a/1000).toFixed(1)+'k':a); }
+  function nearestIndex(px){
+    var g=CHART_GEO; if(!g||!g.allDates.length) return -1;
+    var best=0,bd=1e9;
+    for(var i=0;i<g.allDates.length;i++){ var dx=Math.abs(g.xOf(i)-px); if(dx<bd){bd=dx;best=i;} }
+    return best;
+  }
+  function show(clientX){
+    var g=CHART_GEO; if(!g) return;
+    var rect=canvas.getBoundingClientRect();
+    var px=clientX-rect.left;
+    if(px<g.PADleft||px>g.PADleft+g.cW){ hide(); return; }
+    var i=nearestIndex(px); if(i<0) return;
+    var date=g.allDates[i];
+    var x=g.xOf(i);
+    xhair.style.left=x+'px'; xhair.style.display='block';
+    var rows=['<b>'+date+'</b>'];
+    g.keys.forEach(function(k){
+      var arr=g.history[k]||[]; var rec=null;
+      for(var j=0;j<arr.length;j++){ if(arr[j].date===date){rec=arr[j];break;} }
+      if(rec){ var line='<span style="color:'+g.colors[k]+'">\u25CF</span> '+g.labels[k]+': '+fmtTip(rec.net); if(g.keys.length===1&&typeof rec.price==='number'){ line+='  \u00b7  px '+rec.price; } rows.push(line); }
+    });
+    tip.innerHTML=rows.join('<br>');
+    tip.style.display='block';
+    // position tip: flip to left side near right edge
+    var tw=tip.offsetWidth||120;
+    var left=x+12; if(left+tw>g.W) left=x-tw-12; if(left<0) left=4;
+    tip.style.left=left+'px'; tip.style.top='8px';
+  }
+  function hide(){ xhair.style.display='none'; tip.style.display='none'; }
+  canvas.addEventListener('mousemove',function(e){ show(e.clientX); });
+  canvas.addEventListener('mouseleave',hide);
+  canvas.addEventListener('touchstart',function(e){ if(e.touches[0]) show(e.touches[0].clientX); },{passive:true});
+  canvas.addEventListener('touchmove',function(e){ if(e.touches[0]) show(e.touches[0].clientX); },{passive:true});
+  canvas.addEventListener('touchend',hide);
+})();
+
 
 fetch('/data/cot.json')
   .then(function(r) { if (!r.ok) throw new Error('no-cot'); return r.json(); })
@@ -612,6 +900,8 @@ fetch('/data/cot-history.json')
   .then(function(data) {
     historyData = data;
     drawChart(activeKey);
+    ['corn','beans','wheat'].forEach(renderInsight);
+    renderTheRead();
   })
   .catch(function() {
     var msg = document.getElementById('cot-chart-msg');
@@ -627,5 +917,17 @@ window.addEventListener('resize', function() {
 })();
 </script>
 
+<script>
+(function(){
+  function _su(){try{return document.cookie.split(';').some(function(c){return c.trim().indexOf('agsist_subscribed=')===0;})||localStorage.getItem('agsist_subscribed')==='1';}catch(e){return false;}}
+  function _ss(){try{var x=new Date();x.setFullYear(x.getFullYear()+2);document.cookie='agsist_subscribed=1;expires='+x.toUTCString()+';path=/;SameSite=Lax';localStorage.setItem('agsist_subscribed','1');}catch(e){}}
+  var card=document.getElementById('signup-card');if(!card)return;
+  if(_su()){card.style.display='none';return;}
+  var btn=document.getElementById('signup-btn'),inp=document.getElementById('signup-email'),form=document.getElementById('signup-form');
+  function submit(){var email=(inp&&inp.value||'').trim();if(email.indexOf('@')<1)return;_ss();try{if(typeof gtag==='function')gtag('event','email_signup',{source:'cot-tool'});}catch(e){}if(form){form.innerHTML='<div style=\"text-align:center;padding:.4rem 0\"><div style=\"font-size:1.6rem\">\u2705</div><div style=\"font-size:.85rem;font-weight:700;color:var(--text);margin-top:.2rem\">You\u2019re subscribed!</div><div style=\"font-size:.74rem;color:var(--text-muted);line-height:1.5;margin-top:.2rem\">AGSIST Daily arrives by 6am CT on weekdays. Check your spam folder once.</div></div>';}fetch('https://formspree.io/f/xnjbwepn',{method:'POST',body:JSON.stringify({email:email,source:'cot-tool'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});}
+  if(btn)btn.addEventListener('click',function(e){e.preventDefault();submit();});
+  if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submit();}});
+})();
+</script>
 </body>
 </html>
