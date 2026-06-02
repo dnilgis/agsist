@@ -332,7 +332,7 @@
       var labelHtml = entry.label ? escHtml(entry.label) + ' ' : '';
       if (stalenessRatio >= 3) {
         stateClasses.push('agt-offline');
-        html = '<span class="agt-dot agt-dot-offline"></span><span class="agt-tag">offline</span> · ' +
+        html = '<span class="agt-dot agt-dot-offline"></span><span class="agt-tag">delayed</span> · ' +
                labelHtml + relAgo(ageMin);
       } else if (stalenessRatio >= 1.5) {
         stateClasses.push('agt-stale');
