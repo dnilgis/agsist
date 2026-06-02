@@ -202,10 +202,68 @@
     if (typeof window.onNavReady === 'function') window.onNavReady();
   }
 
+  // Footer "Supporters" strip ($50/wk Supporter tier). Reads /data/supporters.json,
+  // renders active logos/names site-wide; shows a single house prompt when none are active.
+  function renderSupporters() {
+    var mount = document.getElementById('footer-supporters');
+    if (!mount) return;
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+    fetch(BASE + '/data/supporters.json', { cache: 'no-cache' })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (d) {
+        var cap = (d && d.cap) || 6;
+        var ctaUrl = (d && d.cta_url) || '/sponsor#supporter';
+        var houseLabel = (d && d.house_label) || 'Support AGSIST \u2192';
+        var list = (((d && d.supporters) || []).filter(function (s) {
+          return s && s.active === true;
+        })).slice(0, cap);
+
+        if (list.length) {
+          var items = list.map(function (s) {
+            var inner = s.logo
+              ? '<img src="' + esc(s.logo) + '" alt="' + esc(s.name) + '">'
+              : esc(s.name);
+            var href = esc(s.url || ctaUrl);
+            var ext = String(s.url || '').indexOf('http') === 0;
+            return '<a class="footer-supporter" href="' + href + '"'
+              + (ext ? ' target="_blank" rel="sponsored noopener"' : ' rel="sponsored"')
+              + '>' + inner + '</a>';
+          }).join('');
+          mount.className = 'footer-supporters';
+          mount.innerHTML =
+            '<span class="footer-supporters-lbl">Supported by</span>'
+            + '<span class="footer-supporters-list">' + items + '</span>'
+            + '<a class="footer-supporters-cta" href="' + esc(ctaUrl) + '"'
+            + ' onclick="if(typeof gtag===&quot;function&quot;)gtag(&quot;event&quot;,&quot;sponsor_cta_click&quot;,{cta_source:&quot;footer_supporters&quot;})">Back AGSIST \u2192</a>';
+          // GA per-supporter click (bound, not inlined, since names are data-driven)
+          var links = mount.querySelectorAll('.footer-supporter');
+          Array.prototype.forEach.call(links, function (a, i) {
+            a.addEventListener('click', function () {
+              if (typeof gtag === 'function') {
+                gtag('event', 'supporter_click', { supporter: (list[i] && list[i].name) || '' });
+              }
+            });
+          });
+        } else {
+          mount.className = 'footer-supporters footer-supporters--house';
+          mount.innerHTML =
+            '<a class="footer-supporters-cta" href="' + esc(ctaUrl) + '"'
+            + ' onclick="if(typeof gtag===&quot;function&quot;)gtag(&quot;event&quot;,&quot;sponsor_cta_click&quot;,{cta_source:&quot;footer_supporters_house&quot;})">'
+            + esc(houseLabel) + '</a>';
+        }
+        mount.removeAttribute('hidden');
+      })
+      .catch(function () { /* leave the strip hidden on any failure */ });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     injectAnalytics();
     loadComponent('site-header', '/components/header.html', initNav);
-    loadComponent('site-footer', '/components/footer.html', null);
+    loadComponent('site-footer', '/components/footer.html', renderSupporters);
   });
 })();
 

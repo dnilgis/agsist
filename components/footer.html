@@ -1,4 +1,15 @@
 <!-- AGSIST Footer — injected by loader.js into #site-footer -->
+<style>
+  .footer-supporters{border-top:1px solid var(--border);margin-top:1rem;padding-top:1rem;display:flex;align-items:center;gap:.85rem;flex-wrap:wrap;justify-content:center;}
+  .footer-supporters[hidden]{display:none;}
+  .footer-supporters-lbl{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);}
+  .footer-supporters-list{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;justify-content:center;}
+  .footer-supporter{display:inline-flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--text-dim);text-decoration:none;padding:.3rem .6rem;border:1px solid var(--border);border-radius:6px;transition:border-color .15s,color .15s;}
+  .footer-supporter:hover{border-color:var(--green);color:var(--text);}
+  .footer-supporter img{height:22px;width:auto;max-width:96px;object-fit:contain;display:block;}
+  .footer-supporters-cta{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--green);text-decoration:none;padding:.32rem .65rem;border:1px solid rgba(58,139,60,.4);border-radius:6px;transition:background .15s,color .15s;}
+  .footer-supporters-cta:hover{background:var(--green);color:#fff;}
+</style>
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-top">
@@ -67,6 +78,7 @@
         </a>
       </div>
     </div>
+    <div class="footer-supporters" id="footer-supporters" hidden aria-label="AGSIST supporters"></div>
     <div class="footer-bottom">
       <div class="footer-legal">
         <span>© 2026 AGSIST</span><span class="footer-sep">·</span>
