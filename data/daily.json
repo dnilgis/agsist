@@ -1,95 +1,89 @@
 {
-  "headline": "GRAINS DRIFT AS IRAN PREMIUM UNWINDS",
-  "subheadline": "Crude pulls back on Lebanon ceasefire progress while Belt weather stays cooperative.",
-  "lead": "Corn closed $4.41, up a quarter-cent on nothing worth mentioning. The real story is crude's pullback from yesterday's Iran spike-WTI gave back 72 cents to $90.74 as Trump's Lebanon diplomacy cooled the geopolitical premium. Grains are following energy's lead lower, but the moves are thin, managed money still sorting out whether yesterday's 5% crude explosion was signal or noise.",
-  "the_takeaway": "Energy drives grain sentiment more than weather right now.",
-  "teaser": "Iran premium unwinds as diplomatic progress cools commodity markets.",
+  "headline": "GRAINS DRIFT LOWER ON WELCOME RAINS",
+  "subheadline": "Belt moisture ends dry spell, removes weather premium from July contracts.",
+  "lead": "Corn closed $4.41, down a half-cent, as welcome rains across the middle Mississippi Valley removed the last weather premium from July contracts. The Belt got its first meaningful moisture in two weeks and temperatures moderated to seasonal warmth, exactly what pollinating corn needed. Funds liquidated another 8,000 grain contracts Monday, finishing the Memorial cleanup that started last week.",
+  "the_takeaway": "Weather premium gone, funds finishing cleanup, summer range taking shape.",
+  "teaser": "Belt rains kill weather premium, funds finish Memorial liquidation.",
   "one_number": {
-    "value": "72",
-    "unit": "cents crude gave back from yesterday's spike",
-    "context": "Trump's Lebanon ceasefire progress pulled crude off multi-week highs, dragging grain sentiment with it. The 72-cent reversal shows how fast geopolitical premiums can unwind when diplomacy works. Grains are still following energy's narrative more than their own fundamentals."
+    "value": "42%",
+    "unit": "corn planting completion as of May 24",
+    "context": "The planting season that looked behind schedule through early May caught up between rain systems. Belt farmers pushed through 42% completion by Memorial Day, ahead of the 5-year average despite the wet start. Now welcome rains are hitting at exactly the right time for pollination, not planting pressure."
   },
   "yesterdays_call": {
-    "summary": "Called geopolitical premium back after three weeks of unwinding.",
+    "summary": "Geopolitical premium back after three weeks of unwinding in energy markets.",
     "outcome": "didnt",
-    "note": "The premium came and went in 24 hours, diplomacy reset the story."
+    "note": "Crude gave back yesterday's Iran move higher, premium deflating again on diplomatic progress."
   },
   "sections": [
     {
-      "title": "Grains Follow Energy Lower",
-      "icon": "🌾",
-      "body": "Corn managed a quarter-cent gain to $4.42 but beans slipped a penny and a half to $11.78. **The action is thin, driven more by crude's 72-cent pullback than anything happening in the fields.** Welcome rains hit parts of the Plains overnight while Belt conditions stay cooperative for early development. December corn held flat at $4.70, telling you the front months are trading energy correlation, not crop fundamentals. Funds are still digesting yesterday's Iran spike, no conviction either direction.",
-      "catalyst": "Crude oil pullback on Trump Lebanon ceasefire progress",
-      "bottom_line": "Energy drives grain sentiment, not weather yet.",
-      "conviction_level": "low",
-      "overnight_surprise": false,
-      "vs_yesterday": "Grains: Iran premium unwind exactly as fast as it built."
+      "title": "GRAINS EASE ON BELT MOISTURE",
+      "icon": "🌧️",
+      "body": "Corn lost a half-cent to $4.41 as the first meaningful **Belt rains in two weeks** hit the middle Mississippi Valley. Soybeans dropped 12¾ cents to $11.66, the biggest decline in the complex. Chicago wheat eased 3½ cents to $6.01. The moisture couldn't have timed better for pollinating corn, removing the weather premium that built through late May. Fund liquidation continues from Memorial week, another 8,000 contracts cleared Monday according to trader estimates.",
+      "catalyst": "Welcome rains across Plains and Mississippi Valley end two-week dry spell",
+      "bottom_line": "Weather premium gone, funds cleaning books, July contracts finding summer floor.",
+      "conviction_level": "medium",
+      "overnight_surprise": false
     },
     {
-      "title": "Cattle Rally Extends",
+      "title": "CATTLE DRIFT ON LIGHT VOLUME",
       "icon": "🐄",
-      "body": "Live cattle added another 60 cents to $240.40, **the third straight session of steady gains despite no change in the fed cattle trade.** Feeders led higher, up $2.80 to $351.18, as grass conditions improve across the Plains. The rally looks technical-shorts covering after last week's breakdown attempt failed. Cash trade hasn't reset since the Memorial Day break, but packers aren't pushing lower either. Box beef cutout steady, no new catalyst driving this move.",
+      "body": "Live cattle closed $238.70, down $1.65 in thin trade. Feeders lost $3.50 to $347.60, the ongoing Cargill Fort Morgan/Schuyler plant lockout that began Tuesday May 19 still pressuring the complex. No fresh news on the **1,700-worker lockout** that's removed roughly 6,000 head daily from processing capacity. Box-beef cutout held steady, no catalyst for directional moves. Cash trade hasn't reset since the last disruption.",
       "catalyst": "",
-      "bottom_line": "Rally on short covering, no fundamental driver yet.",
-      "conviction_level": "medium",
-      "overnight_surprise": false,
-      "vs_yesterday": "Cattle: momentum building exactly as called Monday."
+      "bottom_line": "Processing disruption narrative unchanged, no catalyst for breakout moves.",
+      "conviction_level": "low",
+      "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "USTR Issues Section 301 Determination for Brazil",
-      "body": "Trade Representative launches formal review of Brazilian trade practices affecting US ag exports. The probe targets intellectual property and market access barriers that have cost US farmers billions in lost sales opportunities.",
-      "tag": "TRADE"
-    },
-    {
-      "title": "FTC Confirms Fertilizer Price Investigation",
-      "body": "Federal antitrust investigators are probing rising fertilizer costs that have squeezed farm margins nationwide. The investigation targets potential price coordination among major suppliers during the post-pandemic input cost surge.",
+      "title": "FTC launches antitrust probe into fertilizer pricing",
+      "body": "The Federal Trade Commission confirmed an investigation into rising fertilizer costs, the agency head announced Thursday. Input costs that stayed elevated through spring planting season now face regulatory scrutiny for potential anti-competitive practices.",
       "tag": "POLICY"
     },
     {
-      "title": "New World Screwworm Found Near US Border",
-      "body": "Devastating livestock parasite detected just 31 miles from the border could threaten US cattle industry. The fly eats warm-blooded animals alive and represents millions in potential economic damage if it crosses into domestic herds.",
+      "title": "New World Screwworm found 31 miles from US border",
+      "body": "The parasitic fly that eats warm-blooded animals alive was detected just south of the border. Could cause millions in economic damage if it crosses into US livestock operations, triggering enhanced border monitoring protocols.",
       "tag": "DISEASE"
+    },
+    {
+      "title": "Missouri agronomist warns heavy rains fuel nitrogen loss",
+      "body": "Recent rainfall timing creates challenges for crop nutrition and weed control, according to Cropwise Consulting. Excess moisture leaching nitrogen from fields while fueling weed pressure, forcing replanning of sidedress applications.",
+      "tag": "INPUTS"
     }
   ],
   "spread_to_watch": {
-    "label": "December corn / July corn carry",
-    "level": "28 cents wide, holding steady",
-    "commentary": "The carry's not collapsing despite cooperative weather because old-crop supplies are still tight. **When new-crop starts pricing weather instead of energy correlation, this spread tells the story first.** Watch for compression if Belt conditions stay ideal through pollination."
+    "label": "July corn / December corn carry",
+    "level": "26-cent carry, holding steady",
+    "commentary": "The carry trade stayed locked through Memorial liquidation, telling you the funds aren't panicking out of new-crop positions. December corn at $4.67 versus July at $4.41 prices normal harvest pressure, not weather fear. When the carry starts moving, the weather story changes."
   },
   "basis": {
-    "headline": "Eastern Belt firming on ethanol demand recovery",
-    "body": "Corn basis east of the Mississippi is **adding 2-3 cents** as ethanol plants return from maintenance shutdowns. Western Belt staying soft, consistent with the seasonal as river logistics improve. **The divergence says old-crop supplies are tighter than the futures alone suggest.** Producers with on-farm storage have a window the board isn't fully pricing."
+    "headline": "Eastern Belt corn basis firming on ethanol restart",
+    "body": "**Ethanol plants coming back online** after maintenance is tightening corn basis east of the Mississippi. Producers with old-crop bushels in storage have a window the futures alone aren't pricing. Western Belt staying soft, consistent with seasonal patterns as harvest approaches."
   },
   "weekly_thread": {
     "question": "Will the grain liquidation finish before weather takes control of the story?",
     "day": 2,
-    "status_text": "The liquidation paused as energy volatility grabbed the steering wheel. Grains are following crude's lead, not their own fundamentals, which suggests the fund positioning reset isn't finished yet."
+    "status_text": "Liquidation's still the driver. Monday's fund selling cleared another 8,000 contracts while Belt rains removed weather premium, suggesting the cleanup has more room to run before July weather becomes the story."
   },
   "the_more_you_know": {
-    "title": "Why crude's 72-cent reversal matters for grain traders",
-    "body": "Yesterday's 5% crude spike and today's 72-cent pullback show how fast geopolitical premiums can build and collapse in modern markets. **Grains followed both moves despite no change in Belt weather or USDA data.** The correlation runs through the energy input cost channel-higher crude means higher diesel, nitrogen, and transport costs, which eventually shows up in planted acreage decisions. When energy swings 5% in a day, grain traders price the tail risk even when the fundamentals haven't changed. The speed of today's reversal tells you Trump's diplomacy works faster than the old playbook assumed."
+    "title": "Modern corn makes 'knee-high by July 4th' obsolete",
+    "body": "Today's corn at 42% planted is already outpacing the old timing rules. A Wisconsin farmer notes modern genetics and fertility have corn growing faster than the traditional \"knee-high by July 4th\" benchmark. Current hybrids routinely hit shoulder-high by Independence Day in good conditions. The old sayings price weather risk from a different era of genetics. Today's corn handles stress better but moves faster through growth stages, compressing the critical pollination window that drives July weather premiums."
   },
   "watch_list": [
     {
-      "time": "Wednesday 7:30 AM",
-      "desc": "USDA weekly export sales; soybeans under 400K MT keeps chart in control"
-    },
-    {
-      "time": "Thursday afternoon",
-      "desc": "Fed cattle trade reset; packers bidding $245 or higher breaks the range"
+      "time": "Thursday 7:30 AM CT",
+      "desc": "Weekly export sales; beans under 300K MT keeps chart in charge"
     },
     {
       "time": "This week",
-      "desc": "December corn below $4.65 signals new-crop weather premium building"
+      "desc": "Belt temps above 90°F for 3+ days adds pollination stress premium"
     }
   ],
   "daily_quote": {
     "text": "Lost time is never found again.",
     "attribution": "Benjamin Franklin"
   },
-  "source_summary": "CME Group, USDA, energy markets, weather services",
+  "source_summary": "USDA NASS, CME Group, Brownfield Ag News, Feedstuffs",
   "date": "Tuesday, June 2, 2026",
   "meta": {
     "market_mood": "mixed",
@@ -97,25 +91,25 @@
     "overnight_surprises_count": 0
   },
   "locked_prices": {
-    "corn": 4.415,
-    "corn-dec": 4.695,
-    "beans": 11.7775,
-    "beans-nov": 11.86,
-    "wheat": 6.0475,
-    "oats": 3.4,
-    "cattle": 240.4,
-    "feeders": 351.175,
-    "hogs": 99.725,
-    "milk": 17.01,
-    "meal": 326.39999,
-    "soyoil": 78.63,
-    "crude": 90.74,
-    "natgas": 3.21,
-    "gold": 4554.7998,
-    "silver": 76.585,
+    "corn": 4.4075,
+    "corn-dec": 4.675,
+    "beans": 11.665,
+    "beans-nov": 11.805,
+    "wheat": 6.0125,
+    "oats": 3.425,
+    "cattle": 238.7,
+    "feeders": 347.60001,
+    "hogs": 99.65,
+    "milk": 16.46,
+    "meal": 324.70001,
+    "soyoil": 78.59,
+    "crude": 92.17,
+    "natgas": 3.139,
+    "gold": 4538.2002,
+    "silver": 76.4,
     "dollar": 100.0,
-    "sp500": 7599.95996,
-    "bitcoin": 69299.0
+    "sp500": 7593.37012,
+    "bitcoin": 68637.28906
   },
   "chart_series": {
     "corn": [
@@ -128,7 +122,7 @@
       4.47,
       4.47,
       4.42,
-      4.42
+      4.41
     ],
     "soybeans": [
       11.96,
@@ -140,7 +134,7 @@
       11.87,
       11.87,
       11.83,
-      11.78
+      11.66
     ],
     "wheat": [
       6.46,
@@ -152,7 +146,7 @@
       6.11,
       6.11,
       6.11,
-      6.05
+      6.01
     ]
   },
   "sponsor": {
@@ -166,9 +160,9 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 82,
-  "generated_at": "2026-06-02T13:38:51.505092+00:00",
-  "generator_version": "4.6.0",
+  "issue_number": 83,
+  "generated_at": "2026-06-02T14:07:36.891269+00:00",
+  "generator_version": "4.6.1",
   "surprise_count": 0,
   "surprises": [],
   "price_validation_clean": false,
@@ -176,26 +170,26 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-06-02T13:39:04.147071+00:00",
+    "ran_at": "2026-06-02T14:07:48.467927+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
       "rule_2_conviction_earned": 7,
-      "rule_3_tmyk_today": 8,
-      "rule_4_watch_conditional": 7,
-      "rule_5_bottom_lines_synthesize": 8,
+      "rule_3_tmyk_today": 9,
+      "rule_4_watch_conditional": 6,
+      "rule_5_bottom_lines_synthesize": 7,
       "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 7,
-      "rule_8_basis_directional": 8,
+      "rule_7_continuity": 8,
+      "rule_8_basis_directional": 9,
       "rule_9_voice": 8,
       "rule_10_forward_test": 7,
-      "rule_11_thread_coherence": 7,
+      "rule_11_thread_coherence": 8,
       "rule_12_spread_quality": 8,
-      "rule_13_yc_honesty": 8,
-      "rule_14_level_coherence": 2,
-      "rule_15_one_number_coherence": 8,
+      "rule_13_yc_honesty": 9,
+      "rule_14_level_coherence": 3,
+      "rule_15_one_number_coherence": 10,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 7
+      "rule_17_macro_anchoring": 10
     },
     "rewrites_applied": [
       {
@@ -205,21 +199,21 @@
         "scores_before": {
           "rule_1_lead_so_what": 8,
           "rule_2_conviction_earned": 7,
-          "rule_3_tmyk_today": 8,
-          "rule_4_watch_conditional": 7,
-          "rule_5_bottom_lines_synthesize": 8,
+          "rule_3_tmyk_today": 9,
+          "rule_4_watch_conditional": 6,
+          "rule_5_bottom_lines_synthesize": 7,
           "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 7,
-          "rule_8_basis_directional": 8,
+          "rule_7_continuity": 8,
+          "rule_8_basis_directional": 9,
           "rule_9_voice": 8,
           "rule_10_forward_test": 7,
-          "rule_11_thread_coherence": 7,
+          "rule_11_thread_coherence": 8,
           "rule_12_spread_quality": 8,
-          "rule_13_yc_honesty": 8,
-          "rule_14_level_coherence": 2,
-          "rule_15_one_number_coherence": 8,
+          "rule_13_yc_honesty": 9,
+          "rule_14_level_coherence": 3,
+          "rule_15_one_number_coherence": 10,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 7
+          "rule_17_macro_anchoring": 10
         }
       }
     ],
