@@ -2,8 +2,18 @@ name: Fetch Prices
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    # GitHub throttles/drops high-frequency scheduled runs under load, so a
+    # single */30 cron routinely skips cycles. Two offset crons roughly halve
+    # the odds of a long gap (if one is dropped, the other often still fires).
+    # This is mitigation, not a guarantee — see note at bottom for a reliable fix.
+    - cron: '0,30 * * * *'
+    - cron: '15,45 * * * *'
   workflow_dispatch:
+
+# Prevent two price runs from overlapping and racing each other to push.
+concurrency:
+  group: fetch-prices
+  cancel-in-progress: false
 
 jobs:
   fetch:
@@ -28,11 +38,63 @@ jobs:
       - name: Fetch prices
         run: python scripts/fetch_prices.py
 
-      - name: Commit and push
+      - name: Commit and push (rebase-safe, retried)
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
+
+          # Nothing changed? Exit clean — a no-op run is not a failure.
           git add data/prices.json
-          git diff --staged --quiet || git commit -m "💹 Prices — $(date -u +'%Y-%m-%d %H:%M UTC')"
-          git pull --rebase origin main
-          git push
+          if git diff --staged --quiet; then
+            echo "No price change to commit."
+            exit 0
+          fi
+
+          git commit -m "💹 Prices — $(date -u +'%Y-%m-%d %H:%M UTC')"
+
+          # Another bot (COT, sitemap, briefing) may push to main between our
+          # checkout and our push. Retry pull --rebase + push a few times so a
+          # transient race doesn't fail the run and skip the price update.
+          # prices.json is bot-generated and fully regenerated each run, so on
+          # the rare content conflict we keep OUR freshly-fetched copy.
+          n=0
+          until [ "$n" -ge 5 ]; do
+            if git pull --rebase --autostash origin main; then
+              :
+            else
+              # conflict on the generated file -> ours wins, then continue rebase
+              git checkout --ours data/prices.json 2>/dev/null || true
+              git add data/prices.json 2>/dev/null || true
+              git rebase --continue 2>/dev/null || git rebase --abort 2>/dev/null || true
+            fi
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt $((n+1))."
+              exit 0
+            fi
+            n=$((n+1))
+            echo "Push attempt $n failed (likely a concurrent push); retrying in 5s..."
+            sleep 5
+          done
+
+          echo "::error::Could not push prices after 5 attempts."
+          exit 1
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Why prices can still go stale, and the only reliable fix
+# ─────────────────────────────────────────────────────────────────────────────
+# GitHub Actions scheduled crons are best-effort. During peak load GitHub
+# delays or SILENTLY DROPS scheduled runs — a documented limitation — so even
+# this workflow can miss cycles and leave data hours old during open markets.
+# The dual offset crons above reduce, but do not eliminate, the gaps.
+#
+# If reliable ~30-min freshness matters, drive it externally instead of relying
+# on GitHub's scheduler:
+#   1. Create a fine-grained PAT (or use the existing token) with "actions: write".
+#   2. Point a free external scheduler (cron-job.org, UptimeRobot, Val Town, a
+#      Cloudflare Worker cron, etc.) at the workflow_dispatch REST endpoint every
+#      30 min:
+#        POST https://api.github.com/repos/dnilgis/agsist/actions/workflows/prices.yml/dispatches
+#        Authorization: Bearer <PAT>
+#        Body: {"ref":"main"}
+#   External schedulers fire far more reliably than GitHub's internal cron.
+#   Keep the schedule: block above as a backstop.
