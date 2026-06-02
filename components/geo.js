@@ -855,6 +855,22 @@ function applyPriceResult(key, q, close, open, netChg, pctChg) {
     if (pe) pe.textContent = tickerPriceTxt;
     if (ce) { ce.textContent = tickerChgObj.text; ce.className = 't-chg ' + tickerChgObj.cls; }
   });
+  // per-contract staleness: dim card + ticker item when this quote is held (fetch_prices v3.2)
+  var __stale = !!(q && q.stale);
+  if (meta.priceEl) {
+    var __pe = document.getElementById(meta.priceEl);
+    var __card = (__pe && __pe.closest) ? __pe.closest('.pc') : null;
+    if (__card) {
+      __card.classList.toggle('stale-tile', __stale);
+      if (__stale) __card.title = 'Last known value \u2014 did not refresh this cycle';
+      else __card.removeAttribute('title');
+    }
+  }
+  document.querySelectorAll('[data-sym="' + key + '"]').forEach(function(el) {
+    el.classList.toggle('stale-tile', __stale);
+    if (__stale) el.title = 'Last known value \u2014 did not refresh this cycle';
+    else el.removeAttribute('title');
+  });
   rebuildTickerLoop();
 }
 
