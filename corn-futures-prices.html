@@ -274,6 +274,28 @@ button,a,[role="button"]{touch-action:manipulation;}
 .basis-src a{color:var(--gold);text-decoration:none}
 @media(max-width:480px){.basis-grid{grid-template-columns:1fr}.basis-cell{flex-direction:row;text-align:left;padding:9px 12px;min-height:42px;justify-content:space-between}.basis-cell-lbl{margin-bottom:0}}
 
+/* Pricing Situation scorecard */
+.scorecard{background:linear-gradient(135deg,var(--surface) 0%,rgba(218,165,32,.04) 100%);border:1px solid var(--border-g,var(--border));border-left:3px solid var(--gold);border-radius:12px;padding:13px 16px;margin-bottom:14px}
+.sc-hd{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.sc-lbl{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold)}
+.sc-sit{font-size:.72rem;font-weight:700;color:var(--text)}
+.sc-factors{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:10px}
+.sc-f{background:var(--surface2,rgba(255,255,255,.02));border:1px solid var(--border);border-radius:8px;padding:8px 10px}
+.sc-f-lbl{font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:700;margin-bottom:3px}
+.sc-f-val{font-size:.8rem;font-weight:700;color:var(--text);line-height:1.3}
+.sc-f-val.up{color:var(--green)}.sc-f-val.dn{color:var(--red)}.sc-f-val.nu{color:var(--text)}
+.sc-f-meter{height:4px;border-radius:2px;background:var(--border);margin-top:5px;overflow:hidden;position:relative}
+.sc-f-meter i{display:block;height:100%;border-radius:2px;background:var(--gold)}
+.sc-f-det{font-size:.6rem;color:var(--text-dim);margin-top:4px;line-height:1.45}
+.sc-cash{font-size:.78rem;color:var(--text-dim);background:rgba(58,139,60,.06);border-radius:6px;padding:8px 10px;margin-bottom:10px;line-height:1.6}
+.sc-cash strong{color:var(--text)}
+.sc-priced{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.72rem;color:var(--text-dim);padding-top:8px;border-top:1px solid var(--border)}
+.sc-priced label{font-weight:600}
+.sc-priced input{width:88px;background:var(--surface2,rgba(255,255,255,.03));border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.85rem;padding:6px 8px;min-height:38px}
+.sc-priced-result{flex:1;min-width:0;font-size:.72rem;color:var(--text)}
+.sc-edu{font-size:.66rem;color:var(--text-dim);line-height:1.6;margin-top:8px}
+.sc-edu strong{color:var(--text)}
+.sc-disc{font-size:.58rem;color:var(--text-muted);margin-top:8px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -339,6 +361,20 @@ button,a,[role="button"]{touch-action:manipulation;}
       <span class="snap-cat" id="snap-wasde-wrap">📅 Next WASDE: <strong id="snap-wasde">—</strong></span>
       <a href="/usda-calendar" class="snap-link">Full USDA Calendar →</a>
     </div>
+  </div>
+
+  <div class="scorecard" id="scorecard" style="display:none">
+    <div class="sc-hd"><span class="sc-lbl">🎯 Your Pricing Situation</span><span class="sc-sit" id="sc-situation"></span></div>
+    <div class="sc-factors" id="sc-factors"></div>
+    <div class="sc-cash" id="sc-cash" style="display:none"></div>
+    <div class="sc-priced">
+      <label for="priced-input">% of new crop already priced:</label>
+      <input type="number" id="priced-input" min="0" max="100" step="5" inputmode="numeric" placeholder="0–100" aria-label="Percent of new crop already priced">
+      <span class="sc-priced-result" id="priced-result"></span>
+      <button type="button" class="be-clear" id="priced-clear">clear</button>
+    </div>
+    <div class="sc-edu" id="sc-edu"></div>
+    <div class="sc-disc">Educational context built from your own inputs — not financial advice. Verify with your broker or advisor before any pricing decision.</div>
   </div>
 
   <div class="cg">
@@ -594,7 +630,7 @@ button,a,[role="button"]{touch-action:manipulation;}
     <div class="author-avatar" aria-hidden="true">SL</div>
     <div class="author-text">
       <div class="author-name">Built by Sigurd Lindquist</div>
-      <div class="author-role">A farmer in Wisconsin and Minnesota who couldn't find a market dashboard that made sense from a tractor cab. So I built one.</div>
+      <div class="author-role">A farmer who couldn't find a market dashboard that made sense from a tractor cab. So I built one.</div>
       <div class="author-meta">Questions, corrections, partnership? <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> · <a href="/about">About AGSIST</a></div>
     </div>
   </div>
@@ -941,6 +977,7 @@ function renderMarketRead(){
   if(mr.basis&&mr.basis.length)whatPhrases=whatPhrases.concat(mr.basis);
   whatEl.innerHTML=whatPhrases.length?(cap(whatPhrases.join('; '))+'.'):'<em style="opacity:.6">Loading fundamentals\u2026</em>';
 
+  try{renderScorecard();}catch(e){}
   // DO — action-oriented synthesis using breakeven + signal shape
   var actionLine=buildActionLine(mr);
   if(actionLine){
@@ -952,6 +989,101 @@ function renderMarketRead(){
 }
 
 function cap(s){if(!s)return s;return s.charAt(0).toUpperCase()+s.slice(1);}
+
+// ============ PRICING SITUATION SCORECARD (visualizes existing __agsistMR factors) ============
+var SC_SEAS=[55,62,72,82,100,95,70,45,22,10,35,52]; // historical seasonal strength index by month
+var SC_SEAS_TIP=['carry market','pre-planting','planting rally window','weather premium building','peak weather market','pollination risk','condition-driven','early harvest pressure','harvest pressure','seasonal low (weakest)','post-harvest recovery','year-end positioning'];
+function scMeter(pct){pct=Math.max(0,Math.min(100,pct));return '<div class="sc-f-meter"><i style="width:'+pct+'%"></i></div>';}
+function computeScorecard(){
+  var mr=window.__agsistMR; if(!mr)return null;
+  var p=mr.priceCtx, be=mr.breakeven, cot=mr.cotCtx, basis=mr.basisCtx;
+  if(!p)return null;
+  var factors=[];
+  // 1. Price position in 52wk range
+  var zone=p.pct<25?'lower quartile':p.pct<50?'lower half':p.pct<75?'upper half':'upper quartile';
+  factors.push({lbl:'52-Week Position',val:p.pct+ord(p.pct)+' pct',cls:'nu',meter:p.pct,det:zone+' of its range'});
+  // 2. Margin vs breakeven
+  if(be){
+    var d=be.diff;
+    factors.push({lbl:'Margin vs Breakeven',val:(d>=0?'+':'\u2212')+'$'+Math.abs(d).toFixed(2)+'/bu',cls:d>=0?'up':'dn',meter:Math.max(0,Math.min(100,50+d*25)),det:(d>=0?'above':'below')+' your $'+be.be.toFixed(2)+' cost'});
+  }else{
+    factors.push({lbl:'Margin vs Breakeven',val:'\u2014',cls:'nu',meter:0,det:'enter cost of production above'});
+  }
+  // 3. Fund positioning
+  if(cot&&cot.pct!=null){
+    factors.push({lbl:'Fund Positioning',val:cot.pct+ord(cot.pct)+' pct',cls:'nu',meter:cot.pct,det:cot.pct>=85?'crowded long \u2014 unwind risk':cot.pct<=15?'crowded short \u2014 squeeze risk':'mid-range'});
+  }
+  // 4. Seasonal
+  var mo=new Date().getMonth();
+  factors.push({lbl:'Seasonal Tendency',val:SC_SEAS[mo]+'/100',cls:'nu',meter:SC_SEAS[mo],det:SC_SEAS_TIP[mo]});
+  // composite descriptive situation (NOT a recommendation)
+  var sit='';
+  if(be){
+    if(be.diff>=0&&p.pct>=70)sit='Above breakeven \u00b7 upper range';
+    else if(be.diff>=0&&p.pct>=40)sit='Above breakeven \u00b7 mid-range';
+    else if(be.diff>=0)sit='Above breakeven \u00b7 weak range';
+    else if(p.pct<25)sit='Below breakeven \u00b7 lower quartile';
+    else sit='Below breakeven';
+  }else{
+    sit=p.pct>=75?'Upper range':p.pct<25?'Lower range':'Mid-range';
+  }
+  return {factors:factors,situation:sit,priceCents:(window.__agsistLastQ&&window.__agsistLastQ[CROP_KEY]?window.__agsistLastQ[CROP_KEY].close:null),be:be,basis:basis};
+}
+function renderScorecard(){
+  var sc=computeScorecard(); var card=document.getElementById('scorecard');
+  if(!sc||!card)return;
+  card.style.display='block';
+  var sitEl=document.getElementById('sc-situation'); if(sitEl)sitEl.textContent=sc.situation;
+  var fEl=document.getElementById('sc-factors');
+  if(fEl){
+    fEl.innerHTML=sc.factors.map(function(f){
+      return '<div class="sc-f"><div class="sc-f-lbl">'+f.lbl+'</div><div class="sc-f-val '+f.cls+'">'+f.val+'</div>'+scMeter(f.meter)+'<div class="sc-f-det">'+f.det+'</div></div>';
+    }).join('');
+  }
+  // basis-to-cash bridge
+  var cashEl=document.getElementById('sc-cash');
+  if(cashEl){
+    if(sc.basis&&sc.priceCents!=null&&sc.basis.basis!=null){
+      var futures=sc.priceCents/100, bv=Number(sc.basis.basis), cash=(sc.basis.bidPrice!=null?Number(sc.basis.bidPrice):futures+bv);
+      var line='<strong>Your local cash:</strong> futures $'+futures.toFixed(2)+' '+(bv>=0?'+':'\u2212')+' $'+Math.abs(bv).toFixed(2)+' basis = <strong>$'+cash.toFixed(2)+'/bu</strong>';
+      if(sc.be){var cd=cash-sc.be.be;line+=' \u2014 <strong class="'+(cd>=0?'sc-f-val up':'sc-f-val dn')+'" style="font-weight:700">'+(cd>=0?'+':'\u2212')+'$'+Math.abs(cd).toFixed(2)+'/bu vs your breakeven</strong>';}
+      cashEl.innerHTML=line; cashEl.style.display='block';
+    }else{ cashEl.style.display='none'; }
+  }
+  renderPricedResult(sc);
+}
+// ---- percent priced (self-tracking + educational, NOT advice) ----
+function getPriced(){try{var v=localStorage.getItem('agsist_priced_'+CROP_KEY);if(v!=null&&v!=='')return Math.max(0,Math.min(100,parseFloat(v)));}catch(e){}return null;}
+function renderPricedResult(sc){
+  var resEl=document.getElementById('priced-result'), eduEl=document.getElementById('sc-edu');
+  var pct=getPriced();
+  if(resEl){
+    if(pct==null){resEl.textContent='';}
+    else if(sc&&sc.be&&sc.priceCents!=null){
+      var futures=sc.priceCents/100, margin=futures-sc.be.be;
+      resEl.innerHTML='<strong>'+pct+'% priced</strong> \u00b7 '+(100-pct)+'% still market-exposed \u00b7 ~'+(margin>=0?'+':'\u2212')+'$'+Math.abs(margin).toFixed(2)+'/bu margin at today\u2019s level';
+    }else{ resEl.innerHTML='<strong>'+pct+'% priced</strong> \u00b7 '+(100-pct)+'% still market-exposed'; }
+  }
+  if(eduEl){
+    if(pct==null){eduEl.innerHTML='';}
+    else{
+      var note;
+      if(pct===0)note='Nothing priced yet \u2014 all bushels are exposed to the market. Extension marketing programs generally favor pricing in <strong>increments</strong> through the pre-harvest window rather than one all-or-nothing decision, to avoid pricing everything at a low.';
+      else if(pct<100)note='You\u2019ve scaled in on '+pct+'% and left '+(100-pct)+'% open. Scaled, incremental pricing is the discipline most extension programs teach \u2014 it trades the chance of a perfect top for protection against a bad one.';
+      else note='Fully priced \u2014 no remaining market exposure on new crop. Remember basis and any unpriced stored old crop still move your final number.';
+      eduEl.innerHTML=note;
+    }
+  }
+}
+function initPriced(){
+  var inp=document.getElementById('priced-input'), clr=document.getElementById('priced-clear');
+  if(!inp)return;
+  var v=getPriced(); if(v!=null)inp.value=v;
+  function save(){var n=parseFloat(inp.value);if(isNaN(n)){try{localStorage.removeItem('agsist_priced_'+CROP_KEY);}catch(e){}}else{n=Math.max(0,Math.min(100,n));try{localStorage.setItem('agsist_priced_'+CROP_KEY,n);}catch(e){}}renderScorecard();if(typeof gaEvent==='function')gaEvent('percent_priced_set',{page:CROP_KEY,pct:isNaN(n)?null:n});}
+  inp.addEventListener('input',save);
+  if(clr)clr.addEventListener('click',function(){inp.value='';try{localStorage.removeItem('agsist_priced_'+CROP_KEY);}catch(e){}renderScorecard();});
+}
+
 
 function getBreakevenPhrase(currentPriceDollars){
   var be=null;
@@ -1244,6 +1376,7 @@ function renderBasisCard(data){
     }
 
     if(bidEl)bidEl.textContent=bidPrice!=null?'$'+Number(bidPrice).toFixed(2):'\u2014';
+    try{window.__agsistMR.basisCtx={basis:(basis!=null?Number(basis):null),bidPrice:(bidPrice!=null?Number(bidPrice):null),loc:(document.getElementById('basis-loc')?document.getElementById('basis-loc').textContent:null)};renderScorecard();}catch(e){}
     if(spreadEl){
       if(basis!=null){
         var bv=Number(basis);
@@ -1487,7 +1620,7 @@ function initSignup(){
 }
 
 // Boot widget subsystems on DOMContentLoaded
-document.addEventListener('DOMContentLoaded',function(){renderMarketSession();setInterval(renderMarketSession,60000);loadBriefingStrip();loadCropProgress();loadCOT();fetchAndRenderBasis();initZipPrompt();initBreakeven(CROP_KEY,CROP_LABEL);initSignup();});
+document.addEventListener('DOMContentLoaded',function(){renderMarketSession();setInterval(renderMarketSession,60000);loadBriefingStrip();loadCropProgress();loadCOT();fetchAndRenderBasis();initZipPrompt();initBreakeven(CROP_KEY,CROP_LABEL);initSignup();initPriced();});
 
 function grain$(v){return '$'+(v/100).toFixed(2);}
 function raw$(v,d){return v.toFixed(d||2);}
