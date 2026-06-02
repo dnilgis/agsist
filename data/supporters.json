@@ -1,0 +1,16 @@
+{
+  "_comment": "Footer Supporters strip (Supporter tier, $50/wk). Rendered site-wide via the footer component. Keep the roster short (see cap) to preserve value. Set active:false to hide an entry without deleting it. 'logo' is an optional image path under /img/supporters/; if empty, the strip renders the name as text. When NO entry is active, the strip shows a single house prompt linking to cta_url instead of logos.",
+  "_last_updated": "2026-06-02",
+  "cap": 6,
+  "house_label": "Support AGSIST \u2192",
+  "cta_url": "/sponsor#supporter",
+  "supporters": [
+    {
+      "name": "Your company here",
+      "url": "/sponsor#supporter",
+      "logo": "",
+      "active": false,
+      "_note": "Example/house entry. Replace with a real supporter and set active:true when one signs."
+    }
+  ]
+}
