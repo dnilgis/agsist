@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 01 Jun 2026 16:42:08 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 02 Jun 2026 13:39:05 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS DRIFT AS IRAN PREMIUM UNWINDS</title>
+      <link>https://agsist.com/daily/2026-06-02</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-02</guid>
+      <pubDate>Tue, 02 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed $4.41, up a quarter-cent on nothing worth mentioning. The real story is crude's pullback from yesterday's Iran spike-WTI gave back 72 cents to $90.74 as Trump's Lebanon diplomacy cooled the geopolitical premium. Grains are following energy's lead lower, but the moves are thin, managed money still sorting out whether yesterday's 5% crude explosion was signal or noise.
+Crude pulls back on Lebanon ceasefire progress while Belt weather stays cooperative.
+• Grains Follow Energy Lower
+• Cattle Rally Extends
+Read more: https://agsist.com/daily/2026-06-02</description>
+    </item>
     <item>
       <title>CRUDE EXPLODES 5% ON IRAN CLOSURE THREAT</title>
       <link>https://agsist.com/daily/2026-06-01</link>
@@ -357,18 +368,6 @@ Live cattle crashed through Friday's floor while crude oil spiked on supply conc
 • Oil Spike Pressures Costs
 • Grains Hold Pattern
 Read more: https://agsist.com/daily/2026-05-04</description>
-    </item>
-    <item>
-      <title>WEEK AHEAD: CATTLE TEST $250 FLOOR</title>
-      <link>https://agsist.com/daily/2026-05-03</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-03</guid>
-      <pubDate>Sun, 03 May 2026 05:00:00 -0600</pubDate>
-      <description>Cattle closed Friday at $253.00, down from Thursday's highs but still holding above the $250 level that's become the market's line in the sand. The livestock selloff that crushed hogs 9% over two days is testing whether cattle's breakout has real conviction or just borrowed momentum from energy's rally. This week's fed cattle trade and Friday's Cattle on Feed report will decide which story the market believes.
-Friday's livestock selloff sets the stage for a make-or-break week in the cattle complex.
-• Cattle Floor Test
-• Grains Coil Tighter
-• Week Ahead Setup
-Read more: https://agsist.com/daily/2026-05-03</description>
     </item>
   </channel>
 </rss>
