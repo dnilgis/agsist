@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');window.gaEvent=function(n,p){try{gtag('event',n,p||{});}catch(e){}};</script>
 <link rel="preload" href="/components/styles.css?v=10" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=10">
 <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
@@ -194,9 +194,19 @@ button,a,[role="button"] { touch-action: manipulation; }
 .tariff-source { font-size: .65rem; color: var(--text-muted); text-align: center; padding-top: .65rem; border-top: 1px solid var(--border); }
 .tariff-source a { color: var(--gold); text-decoration: none; }
 .tariff-source a:hover { text-decoration: underline; }
+.tariff-stale.warn{background:rgba(218,165,32,.1);border:1px solid rgba(218,165,32,.45);color:var(--gold)}
+.tariff-stale.alert{background:rgba(224,107,66,.12);border:1px solid rgba(224,107,66,.5);color:var(--red,#e06b42)}
+.tariff-stale a{color:inherit;font-weight:800;text-decoration:underline}
+.tt-meta{display:block;margin-top:.35rem;font-size:.62rem;color:var(--text-muted);line-height:1.5}
+.tt-meta a{color:var(--gold);text-decoration:none}
+.tt-meta a:hover{text-decoration:underline}
+.tt-watch{display:block;margin-top:.35rem;font-size:.66rem;color:var(--text-dim);line-height:1.55}
+.tt-watch a{color:var(--green);text-decoration:none;font-weight:700;white-space:nowrap}
+.tt-watch a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
+<noscript><div style="max-width:640px;margin:1rem auto;padding:1rem;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-size:.85rem">This tariff tracker loads current rates with JavaScript. For official rates see <a href="https://ustr.gov" style="color:var(--gold)">ustr.gov</a> and <a href="https://apps.fas.usda.gov/gats/default.aspx" style="color:var(--gold)">USDA GATS</a>.</div></noscript>
 <a href="#main" class="skip">Skip to content</a>
 <div id="site-header"></div>
 
@@ -220,6 +230,8 @@ button,a,[role="button"] { touch-action: manipulation; }
       <div class="tsb-date" id="tsb-date">Updated —</div>
     </div>
   </div>
+
+  <div id="tariff-stale" class="tariff-stale" style="display:none;margin:0 0 1rem;border-radius:10px;padding:.7rem 1rem;font-size:.8rem;line-height:1.55;font-weight:600"></div>
 
   <div class="tariff-section">
     <div class="tariff-section-head">
@@ -298,7 +310,9 @@ button,a,[role="button"] { touch-action: manipulation; }
     <a href="/">← AGSIST Dashboard</a>
   </div>
 
+<div id="signup-card" style="max-width:640px;margin:1.5rem auto;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem"><div style="font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:.5rem">📧 Get trade-policy alerts in the daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:.8rem;color:var(--text-dim);line-height:1.6;margin:0">When tariffs or trade policy shift, you’ll see it in the morning briefing with what it means for grain basis and demand. Available at no charge.</p><div style="display:flex;gap:.5rem;flex-wrap:wrap"><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="flex:1;min-width:180px;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,rgba(255,255,255,.03));border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" type="button" style="padding:.6rem 1.1rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free →</button></div><div style="font-size:.66rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
 </main>
+<script>(function(){function _su(){try{return document.cookie.indexOf('agsist_subscribed=')>-1||localStorage.getItem('agsist_subscribed')==='1';}catch(e){return false;}}function _ss(){try{var x=new Date();x.setFullYear(x.getFullYear()+2);document.cookie='agsist_subscribed=1;expires='+x.toUTCString()+';path=/;SameSite=Lax';localStorage.setItem('agsist_subscribed','1');}catch(e){}}var card=document.getElementById('signup-card');if(!card)return;if(_su()){card.style.display='none';return;}var btn=document.getElementById('signup-btn'),inp=document.getElementById('signup-email'),form=document.getElementById('signup-form');function submit(){var email=(inp&&inp.value||'').trim();if(email.indexOf('@')<1)return;_ss();try{if(typeof gaEvent==='function')gaEvent('email_signup',{source:'tariffs'});}catch(e){}if(form){form.innerHTML='<div style=\"text-align:center;padding:.4rem 0\"><div style=\"font-size:1.6rem\">\u2705</div><div style=\"font-size:.85rem;font-weight:700;color:var(--text);margin-top:.2rem\">You\u2019re subscribed!</div><div style=\"font-size:.74rem;color:var(--text-muted);line-height:1.5;margin-top:.2rem\">The AGSIST Daily arrives by 6am CT on weekdays.</div></div>';}fetch('https://formspree.io/f/xnjbwepn',{method:'POST',body:JSON.stringify({email:email,source:'tariffs'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});}if(btn)btn.addEventListener('click',function(e){e.preventDefault();submit();});if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submit();}});})();</script>
 
 <div id="site-footer"></div>
 <script src="/components/loader.js" defer></script>
@@ -320,6 +334,12 @@ function fmtDate(iso){
 }
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function watchLinks(commodity){
+  var c=(commodity||'').toLowerCase();
+  var map={'soybeans':{f:'/soybean-futures-prices',w:'Soybeans are the most China-exposed US grain export \u2014 watch demand and harvest basis.'},'corn':{f:'/corn-futures-prices',w:'Corn export exposure to China is smaller, but policy still moves futures and basis.'},'wheat':{f:'/wheat-futures-prices',w:'Wheat has modest direct China exposure; global trade flows matter more.'}};
+  var m=map[c]; if(!m)return '';
+  return m.w+' <a href="'+m.f+'" class="tariff-act">'+esc(commodity)+' futures \u2192</a> \u00b7 <a href="/cash-bids" class="tariff-act">your local basis \u2192</a>';
+}
 
 fetch('/data/tariffs.json')
   .then(function(r){if(!r.ok)throw new Error('no-tariffs');return r.json();})
@@ -337,20 +357,27 @@ fetch('/data/tariffs.json')
 
     var upd = document.getElementById('tariff-updated');
     if(upd) upd.textContent = 'As of '+fmtDate(data.updated);
+    try{var ageDays=Math.floor((Date.now()-new Date(data.updated+'T12:00:00').getTime())/86400000);var sb=document.getElementById('tariff-stale');if(sb){if(ageDays>45){sb.className='tariff-stale alert';sb.style.display='block';sb.innerHTML='\u26A0\uFE0F <strong>This tariff data is '+ageDays+' days old.</strong> Trade policy can shift in days \u2014 these rates may no longer be current. Confirm against <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> and the <a href=\"https://www.federalregister.gov\" target=\"_blank\" rel=\"noopener\">Federal Register</a> before any trading decision.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'alert'});}else if(ageDays>14){sb.className='tariff-stale warn';sb.style.display='block';sb.innerHTML='\u26A0\uFE0F This data is '+ageDays+' days old. Trade policy changes quickly \u2014 verify current rates at <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> or <a href=\"https://apps.fas.usda.gov/gats/default.aspx\" target=\"_blank\" rel=\"noopener\">USDA GATS</a> before acting.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'warn'});}}}catch(e){}
 
     var tbody = document.getElementById('tariff-tbody');
     if(tbody && data.rows && data.rows.length){
       tbody.innerHTML = data.rows.map(function(row){
         var sc = statusCls(row.status);
+        var meta='';
+        if(row.effective){meta+='In effect since '+esc(fmtDate(row.effective))+'. ';}
+        if(row.source_url){meta+='<a href="'+esc(row.source_url)+'" target="_blank" rel="noopener" class="tariff-src">Source \u2197</a>';}
+        var watch=watchLinks(row.commodity);
+        var noteCell='<td class="tt-note">'+esc(row.note)+(meta?'<span class="tt-meta">'+meta+'</span>':'')+(watch?'<span class="tt-watch">'+watch+'</span>':'')+'</td>';
         return '<tr>'
           +'<td><div class="tt-comm"><span class="tt-icon">'+esc(row.icon)+'</span>'+esc(row.commodity)+'</div></td>'
           +'<td style="color:var(--text-muted)">'+esc(row.destination)+'</td>'
           +'<td class="tt-baseline">'+esc(row.baseline)+'</td>'
           +'<td class="tt-rate '+sc+'">'+esc(row.rate)+'</td>'
           +'<td><span class="tt-badge '+sc+'">'+statusBadgeTxt(row.status)+'</span></td>'
-          +'<td class="tt-note">'+esc(row.note)+'</td>'
+          +noteCell
           +'</tr>';
       }).join('');
+      (function(){var ls=document.querySelectorAll('#tariff-tbody a.tariff-src, #tariff-tbody a.tariff-act');for(var i=0;i<ls.length;i++){ls[i].addEventListener('click',function(e){try{if(typeof gaEvent==='function')gaEvent(e.target.className.indexOf('tariff-act')>-1?'tariff_action_click':'tariff_source_click',{href:e.target.href});}catch(x){}});}})();
     }
 
     var tl = document.getElementById('tariff-timeline');
