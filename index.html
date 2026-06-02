@@ -568,6 +568,9 @@
     .pwa-step-desc{font-size:.78rem}
     .pwa-visual{padding:.5rem}
   }
+
+/* per-contract staleness — a held quote must not pose as live */
+.stale-tile{opacity:.55}
 </style>
 </head>
 <body>
@@ -1397,6 +1400,18 @@
     // Wire sparklines if geo.js hasn't already — REMOVED (sparklines disabled)
     // window.AGSIST_PRICE_DATA exposed for any future charting
     window.AGSIST_PRICE_DATA=q;
+    // ---- staleness: ratio-widget flag + GA (per-tile dimming handled authoritatively in geo.js) ----
+    try{
+      var __sk=(data.stale_keys||[]);
+      function __st(k){return (q[k]&&q[k].stale===true)||__sk.indexOf(k)>-1;}
+      if(__st('corn-dec')||__st('beans-nov')){
+        var __rv=document.getElementById('ratio-verdict');
+        if(__rv&&__rv.innerHTML.indexOf('held price')<0){__rv.innerHTML='<span style="color:var(--gold);font-weight:700">\u26A0 held price</span> \u00b7 '+__rv.innerHTML;}
+      }
+      var __anyAg=['corn','beans','wheat','corn-dec','beans-nov'].some(__st);
+      if(__anyAg&&typeof gaEvent==='function'){gaEvent('quote_stale_shown',{page:'home'});}
+    }catch(e){}
+
   }).catch(function(){});
 })();
 </script>
