@@ -4,6 +4,32 @@ fetch_prices.py — fetches commodity/futures/index/crypto prices via yfinance
 Writes to data/prices.json. Run by GitHub Actions every 30min on weekdays.
 All free, no API key needed.
 
+v3.4 — 2026-06-02 (evening)
+  Ticker fallback chains. A SYMBOLS value may now be a LIST of candidate tickers;
+  fetch tries each in order and uses the first that returns data. Used for the
+  dollar (DX=F delisted) so the fix doesn't depend on a single replacement symbol
+  resolving via yfinance's API — if DX-Y.NYB works it wins, otherwise it falls
+  through to DX=F/DXY, and only if ALL fail does it KEEP the last value. The
+  ticker actually used is recorded in prices.json so you can see which resolved.
+
+v3.3 — 2026-06-02 (evening)
+  Dollar ticker fix. Yahoo stopped serving DX=F (the ICE dollar-index future):
+  'Quote not found for symbol: DX=F ... possibly delisted', so every run logged
+  "1 failed" and kept the dollar frozen on its last value. Swapped to DX-Y.NYB
+  (the US Dollar Index spot), which is actively quoting. Note DX-Y.NYB has no
+  fast_info year_high/year_low, so wk52 may be null for the dollar — handled
+  (the page already guards the dollar tile for a missing 52wk range).
+
+v3.2 — 2026-06-02
+  Silent-staleness defense. A failed fetch was preserved from the prior run
+  ("KEPT") but the file still reported a fresh top-level "fetched" time, so a
+  stale (or expired-contract) quote looked current to the page. Now: preserved
+  quotes are tagged {"stale": true, "stale_since": <ISO>}; the run log NAMES
+  every failed ticker; and any quote stale longer than STALE_ALERT_DAYS is
+  flagged as a LIKELY-EXPIRED contract needing a ticker update. A top-level
+  "stale_keys" list lets the front-end surface per-quote staleness if desired.
+  Fresh fetches clear any prior stale tags.
+
 v3.1 — 2026-04-26 (afternoon)
   yfinance fast_info can return float('nan') for missing fields
   (e.g. previous_close on a thin-volume crypto). The old `... or ...`
@@ -76,6 +102,19 @@ def _num(v):
         return None
     return f
 
+
+# A transient yfinance hiccup clears within hours; a quote that cannot be
+# fetched for this many days is almost certainly an expired/rolled contract
+# whose ticker needs advancing (see ANNUAL CONTRACT MAINTENANCE above).
+STALE_ALERT_DAYS = 3
+
+
+def candidates(spec):
+    """A SYMBOLS value may be a single ticker string or a list of fallback
+    tickers to try in order (first that returns data wins). Lets a delisted
+    symbol degrade to alternatives instead of silently freezing the quote."""
+    return spec if isinstance(spec, list) else [spec]
+
 # Map our internal keys → Yahoo Finance ticker symbols
 SYMBOLS = {
     # ── Grains: front month + new-crop benchmark aliases ──
@@ -127,7 +166,7 @@ SYMBOLS = {
     "gold":       "GC=F",
     "silver":     "SI=F",
     # ── Macro / Indices ──
-    "dollar":     "DX=F",
+    "dollar":     ["DX-Y.NYB", "DX=F", "DXY"],  # DX=F was delisted on Yahoo ~mid-2026; try the index spot first, then fallbacks. First that resolves wins.
     "treasury10": "^TNX",
     "sp500":      "^GSPC",
     # ── Crypto (replaces client-side CoinGecko) ──
@@ -195,6 +234,14 @@ def fetch_quote(key, ticker):
         return None
 
 
+def _days_since(iso):
+    try:
+        t = datetime.strptime(iso, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+        return (datetime.now(timezone.utc) - t).total_seconds() / 86400.0
+    except Exception:
+        return None
+
+
 def main():
     print(f"\nAGSIST fetch_prices.py v3 — {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}")
     print("-" * 70)
@@ -211,23 +258,52 @@ def main():
     ok = 0
     fail = 0
 
-    for key, ticker in SYMBOLS.items():
-        result = fetch_quote(key, ticker)
+    now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    failed_keys = []
+    stale_keys = []
+    expired_suspects = []
+
+    for key, spec in SYMBOLS.items():
+        cands = candidates(spec)
+        result = None
+        for ticker in cands:
+            result = fetch_quote(key, ticker)
+            if result:
+                if len(cands) > 1 and ticker != cands[0]:
+                    print(f"  NOTE {key}: primary {cands[0]} failed; using fallback {ticker}")
+                break
+        ticker = cands[-1]  # for failure logging below
         if result:
-            quotes[key] = result
+            quotes[key] = result   # fresh fetch: no stale tag (prior tags dropped)
             ok += 1
         else:
-            # Preserve last known value rather than wiping it
-            if key in old_quotes:
-                quotes[key] = old_quotes[key]
-                print(f"  KEPT {key} — using previous value")
+            failed_keys.append(f"{key} ({', '.join(cands)})")
             fail += 1
+            # Preserve last known value rather than wiping it — but TAG it so a
+            # stale quote can never masquerade as fresh.
+            if key in old_quotes:
+                kept = dict(old_quotes[key])
+                since = kept.get("stale_since") or now_iso
+                kept["stale"] = True
+                kept["stale_since"] = since
+                quotes[key] = kept
+                stale_keys.append(key)
+                days = _days_since(since)
+                if days is not None and days >= STALE_ALERT_DAYS:
+                    expired_suspects.append((key, ticker, days))
+                    print(f"  STALE {key} ({ticker}) — preserved {days}d "
+                          f"\u2014 LIKELY EXPIRED CONTRACT, update ticker")
+                else:
+                    print(f"  KEPT {key} ({ticker}) — preserved (stale since {since})")
+            else:
+                print(f"  LOST {key} ({ticker}) — failed and no prior value to keep")
 
     output = {
-        "fetched": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "ok":      ok,
-        "failed":  fail,
-        "quotes":  quotes
+        "fetched":    datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "ok":         ok,
+        "failed":     fail,
+        "stale_keys": stale_keys,
+        "quotes":     quotes
     }
 
     # allow_nan=False raises ValueError if any NaN/inf slipped past _num().
@@ -236,7 +312,14 @@ def main():
     with open("data/prices.json", "w") as f:
         json.dump(output, f, indent=2, allow_nan=False)
 
-    print(f"\nDone: {ok} fetched, {fail} failed → data/prices.json updated")
+    if failed_keys:
+        print(f"\n  Failed this run: {', '.join(failed_keys)}")
+    if expired_suspects:
+        print("\n  \u26A0\uFE0F  LIKELY-EXPIRED CONTRACTS (preserved >= "
+              f"{STALE_ALERT_DAYS}d) — advance the year suffix in SYMBOLS:")
+        for k, tk, d in expired_suspects:
+            print(f"       {k:14s} {tk:14s}  stale {d:.1f}d")
+    print(f"\nDone: {ok} fetched, {fail} failed, {len(stale_keys)} preserved-stale \u2192 data/prices.json updated")
     if ok == 0:
         print("WARNING: All fetches failed — prices.json unchanged from seed")
         sys.exit(1)
