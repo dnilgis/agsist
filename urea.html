@@ -795,6 +795,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
         <div id="tg-text">Ground is frozen — urease enzyme is completely inactive. Risk score is capped at 8 regardless of other conditions. Volatilization is not your concern; runoff loss is.</div>
       </div>
       <div id="factor-section" style="display:none">
+        <div class="s-card" id="field-tune" style="margin-bottom:1rem"><div class="s-card-title">🎯 Tune to Your Field (optional)</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem"><label style="display:flex;flex-direction:column;gap:.25rem;font-size:.66rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil pH<select id="in-ph" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / 6.5–7.0</option><option value="0.7">Acidic (under 6.0)</option><option value="0.85">Slightly acidic (6.0–6.5)</option><option value="1.25">Neutral–alkaline (7.0–7.5)</option><option value="1.55">Alkaline (over 7.5)</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:.66rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Tillage / residue<select id="in-till" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / reduced-till</option><option value="0.7">Conventional (bare, tilled)</option><option value="1.5">No-till / heavy residue</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:.66rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil temp °F (optional)<input type="number" id="in-soil" inputmode="numeric" placeholder="uses air temp" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"></label></div><div style="font-size:.66rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem">These refine the score for your field. Soil pH and residue are the two biggest levers in the volatilization science. A soil-surface probe reading, if you have one, overrides the air-temperature estimate.</div></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem">
           <div style="font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)">Risk Factor Breakdown</div>
           <button id="btn-change-loc" style="font-size:.72rem;color:var(--text-muted);background:none;border:none;text-decoration:underline;cursor:pointer;min-height:44px">Change location</button>
@@ -998,6 +999,13 @@ var WX_ICONS={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌦️
 // <32°F: enzyme inactive (frozen ground); <40°F: near-zero; <50°F: low-moderate;
 // 50-80°F: steep climb matching Q10≈2 per 10°C enzyme kinetics;
 // 80°F+: near-maximum enzyme activity, rapid loss possible within hours
+var UREA_CUR=null,UREA_DAILY=null;
+function phMult(){var e=document.getElementById('in-ph');return e?(parseFloat(e.value)||1):1;}
+function tillMult(){var e=document.getElementById('in-till');return e?(parseFloat(e.value)||1):1;}
+function soilTempOverride(airF){var e=document.getElementById('in-soil');if(e&&e.value!==''){var v=parseFloat(e.value);if(!isNaN(v))return Math.round(v);}return airF;}
+function saveFieldInputs(){try{var o={ph:(document.getElementById('in-ph')||{}).value,till:(document.getElementById('in-till')||{}).value,soil:(document.getElementById('in-soil')||{}).value};localStorage.setItem('agsist-urea-field',JSON.stringify(o));}catch(e){}}
+function restoreFieldInputs(){try{var s=localStorage.getItem('agsist-urea-field');if(!s)return;var o=JSON.parse(s);var p=document.getElementById('in-ph');if(p&&o.ph)p.value=o.ph;var t=document.getElementById('in-till');if(t&&o.till)t.value=o.till;var so=document.getElementById('in-soil');if(so&&o.soil!=null)so.value=o.soil;}catch(e){}}
+function renderScore(){if(!UREA_CUR)return;var c=UREA_CUR,airF=Math.round(c.temperature_2m),tempF=soilTempOverride(airF);var tR=tempRisk(tempF),hR=humidRisk(c.relative_humidity_2m),wR=windRisk(Math.round(c.wind_speed_10m)),rR=rainRisk(c.precipitation_probability||0);updateGauge(Math.round(Math.min(100,compositeScore(tR,hR,wR,rR)*phMult()*tillMult())),tempF);if(tempF!==airF){setFactor('temp',tempF+'°F soil','Using your soil-surface probe reading instead of air temperature. '+(tempF<50?'Low urease activity.':tempF<65?'Moderate enzyme activity — stabilizer worth considering.':tempF<80?'High enzyme activity — stabilizer strongly recommended.':'Extreme enzyme activity — losses likely without protection.'),tR,tR);}if(UREA_DAILY)buildForecastStrip(UREA_DAILY,phMult(),tillMult());}
 function tempRisk(f){
   if(f<32)return 2;
   if(f<40)return 5;
@@ -1139,7 +1147,7 @@ function updateGauge(rawScore,tempF){
   if(rt)rt.textContent=recText;
 }
 
-function buildForecastStrip(dailyData){
+function buildForecastStrip(dailyData,ph,till){
   var strip=document.getElementById('fc-strip');
   if(!strip||!dailyData)return;
   var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -1156,7 +1164,7 @@ function buildForecastStrip(dailyData){
     var precipMm=dailyData.precipitation_sum&&dailyData.precipitation_sum[i]!=null?dailyData.precipitation_sum[i]:0;
     var tR=tempRisk(tAvg);
     var rR=rainRiskDaily(pop,precipMm); // uses actual mm totals, not just probability
-    var dayScore=Math.round(tR*0.55+rR*0.45);
+    var dayScore=Math.round(Math.min(100,(tR*0.55+rR*0.45)*(ph||1)*(till||1)));
     var gated=applyTempGate(dayScore,tAvg);
     var level=scoreToLevel(gated);
     var precipInches=precipMm/25.4;
@@ -1176,16 +1184,17 @@ function loadWeather(lat,lon,label){
   // precipitation_sum added to daily — used in rainRiskDaily() for accurate incorporation assessment
   var url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=5';
   fetch(url).then(function(r){return r.json();}).then(function(d){
+    UREA_CUR=d.current;UREA_DAILY=d.daily;
     var c=d.current;
     var tempF=Math.round(c.temperature_2m);
     var humid=c.relative_humidity_2m;
     var wind=Math.round(c.wind_speed_10m);
     var pop=c.precipitation_probability||0;
-    var tR=tempRisk(tempF);
+    tempF=soilTempOverride(tempF);var tR=tempRisk(tempF);
     var hR=humidRisk(humid);
     var wR=windRisk(wind);
     var rR=rainRisk(pop);
-    var rawTotal=compositeScore(tR,hR,wR,rR);
+    var rawTotal=Math.round(Math.min(100,compositeScore(tR,hR,wR,rR)*phMult()*tillMult()));
     updateGauge(rawTotal,tempF);
     var tDesc=tempF<32?'Below freezing. Urease enzyme is completely inactive. No hydrolysis occurring at the soil surface.':tempF<40?'Near-frozen. Urease activity approaching zero. Very low N-loss risk from volatilization.':tempF<50?'Cold. Low urease activity. Safe to apply without stabilizer if no warm-up is forecast.':tempF<65?'Moderate enzyme activity. Consider stabilizer, especially on no-till or high-pH fields.':tempF<80?'High enzyme activity. Stabilizer strongly recommended. Losses can begin within hours.':'Extreme enzyme activity. Urease near peak efficiency. Significant losses likely without protection.';
     setFactor('temp',tempF+'°F',tDesc,tR,tR);
@@ -1195,7 +1204,7 @@ function loadWeather(lat,lon,label){
     setFactor('wind',wind+' mph',wDesc,wR,wR);
     var rDesc=pop<20?'No significant rain in the forecast window. Urea exposed to full 72-hour volatilization window.':pop<40?'Some rain possible but unlikely. If less than ¼", risk of activating urea without incorporation.':pop<60?'Rain likely. Amount matters — ½"+ will incorporate; less can accelerate loss. Check totals.':'High rain probability. If forecast verifies ½"+, urea will be incorporated. Good application timing.';
     setFactor('rain',pop+'% rain',rDesc,rR,rR);
-    buildForecastStrip(d.daily);
+    buildForecastStrip(d.daily,phMult(),tillMult());
     try{localStorage.setItem('agsist-wx-loc',JSON.stringify({lat:lat,lon:lon,label:label||null}));}catch(e){}
     if(!label){fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json').then(function(r){return r.json();}).then(function(geo){var city=geo.address.city||geo.address.town||geo.address.village||geo.address.county||'';var st=geo.address.state_code||'';if(city)document.getElementById('risk-location').textContent='📍 '+city+(st?', '+st:'');}).catch(function(){});}
   }).catch(function(){document.getElementById('risk-verdict').textContent='Weather data unavailable. Check your connection and try again.';});
@@ -1219,6 +1228,8 @@ document.getElementById('btn-zip-go').addEventListener('click',loadZip);
 document.getElementById('urea-zip').addEventListener('keydown',function(e){if(e.key==='Enter')loadZip();});
 document.getElementById('btn-change-loc').addEventListener('click',function(){document.getElementById('zip-row').style.display='flex';document.getElementById('loc-setup').style.display='block';});
 
+restoreFieldInputs();
+['in-ph','in-till','in-soil'].forEach(function(id){var e=document.getElementById(id);if(e){e.addEventListener('change',function(){saveFieldInputs();renderScore();});if(id==='in-soil')e.addEventListener('input',function(){saveFieldInputs();renderScore();});}});
 setTimeout(function(){
   try{var saved=localStorage.getItem('agsist-wx-loc');if(saved){var p=JSON.parse(saved);loadWeather(p.lat,p.lon,p.label);return;}}catch(e){}
   requestGeo();
