@@ -1,0 +1,60 @@
+name: COT price enrichment
+
+# Adds COT-date-aligned futures prices to data/cot-history.json and data/cot.json
+# so the /cot page can show net-vs-price divergence. Runs after the weekly CFTC
+# release, and on demand.
+#
+# IF YOU ALREADY HAVE A COT-FETCH WORKFLOW:
+#   Don't run this as a separate schedule. Instead, add the two steps marked
+#   "── core step ──" below to the END of that workflow (after it writes
+#   cot.json / cot-history.json), so price enrichment happens in the same run
+#   right after the COT data refreshes. Delete this file in that case.
+
+on:
+  schedule:
+    # CFTC COT releases Friday ~3:30pm ET. Run Saturday 12:10 UTC (~6-7am CT)
+    # so prices attach right after your COT fetch updates the JSON.
+    - cron: '10 12 * * 6'
+  workflow_dispatch: {}        # manual "Run workflow" button
+  push:
+    paths:
+      - 'scripts/enrich_cot_prices.py'   # re-run when the script itself changes
+
+permissions:
+  contents: write              # needed to commit the updated data files back
+
+concurrency:
+  group: cot-prices
+  cancel-in-progress: false
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # ── core step ── install deps
+      - name: Install dependencies
+        run: pip install --quiet yfinance pandas
+
+      # ── core step ── run the enrichment
+      - name: Enrich COT data with prices
+        run: python scripts/enrich_cot_prices.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name  "agsist-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/cot.json data/cot-history.json
+          if git diff --cached --quiet; then
+            echo "No price changes to commit."
+          else
+            git commit -m "chore: refresh COT prices [skip ci]"
+            git push
+          fi
