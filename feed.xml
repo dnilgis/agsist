@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 02 Jun 2026 14:58:45 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 03 Jun 2026 13:02:38 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>HOGS LEAD CHARGE AS GRAINS STABILIZE</title>
+      <link>https://agsist.com/daily/2026-06-03</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-03</guid>
+      <pubDate>Wed, 03 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Lean hogs ran to $101.50, up 1.8% in the session's biggest livestock move, as Class III milk followed with a 3.1% overnight move that held through the close at $17.25. The grain complex found its feet after five straight days of fund liquidation, corn adding 3 cents to $4.41 and beans firming 3½ cents to $11.72. Yesterday's methodical selling pressure took a breather, but volume stayed thin and the funds haven't committed new length.
+Lean hogs added 1.8% while corn and beans found footing after Memorial liquidation.
+• LIVESTOCK LEADS HIGHER
+• GRAINS PAUSE LIQUIDATION
+• CRUDE HOLDS IRAN GAINS
+Read more: https://agsist.com/daily/2026-06-03</description>
+    </item>
     <item>
       <title>GRAINS GRIND LOWER, CRUDE HOLDS IRAN GAINS</title>
       <link>https://agsist.com/daily/2026-06-02</link>
@@ -356,19 +368,6 @@ Live cattle found buyers just above yesterday's breakdown level while grains dri
 • Cattle Find Thin Support
 • Grains Drift Quietly Lower
 Read more: https://agsist.com/daily/2026-05-05</description>
-    </item>
-    <item>
-      <title>CATTLE BREAK $252 AS OIL SURGES 3%</title>
-      <link>https://agsist.com/daily/2026-05-04</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-04</guid>
-      <pubDate>Mon, 04 May 2026 05:00:00 -0600</pubDate>
-      <description>Live cattle closed $253.00, down 98 cents and decisively below the $252 floor that was supposed to hold the breakout story together. The break happened with volume and conviction — not the drift we've been watching, but actual selling. Friday's call on holding pricing discipline above $252 didn't make it through the weekend. The breakout thesis is off the table.
-Live cattle crashed through Friday's floor while crude oil spiked on supply concerns.
-• Cattle Break Support
-  → Lock remaining cattle above $250 — next support isn't until $245.
-• Oil Spike Pressures Costs
-• Grains Hold Pattern
-Read more: https://agsist.com/daily/2026-05-04</description>
     </item>
   </channel>
 </rss>
