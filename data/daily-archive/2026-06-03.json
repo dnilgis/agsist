@@ -1,129 +1,125 @@
 {
-  "headline": "HOGS LEAD CHARGE AS GRAINS STABILIZE",
-  "subheadline": "Lean hogs added 1.8% while corn and beans found footing after Memorial liquidation.",
-  "lead": "Lean hogs ran to $101.50, up 1.8% in the session's biggest livestock move, as Class III milk followed with a 3.1% overnight move that held through the close at $17.25. The grain complex found its feet after five straight days of fund liquidation, corn adding 3 cents to $4.41 and beans firming 3½ cents to $11.72. Yesterday's methodical selling pressure took a breather, but volume stayed thin and the funds haven't committed new length.",
-  "the_takeaway": "Livestock leads while grains pause the liquidation, but funds still sidelined.",
-  "teaser": "Hogs run 1.8% as grains find footing after Memorial fund exit.",
+  "headline": "GRAINS DRIFT LOWER, MILK GAINS OVERNIGHT",
+  "subheadline": "Corn and beans extend Memorial week liquidation while dairy complex catches bid on processing margins.",
+  "lead": "Corn closed $4.37, down 3 cents for the third straight session of quiet selling that's starting to look methodical. Soybeans held $11.66, off 2 cents, while nearby milk ran to $17.25 on a 3% overnight move higher that caught the complex off guard. The grain liquidation that started Memorial Day is grinding through old-crop positioning without weather premium to stop it.",
+  "the_takeaway": "Grain liquidation deepens, dairy breaks higher, but volume stays thin.",
+  "teaser": "Corn extends three-session slide while milk posts biggest overnight move in weeks.",
   "one_number": {
-    "value": "3.1%",
-    "unit": "Class III milk overnight move",
-    "context": "Milk futures ran overnight on technical buying after breaking resistance, then held gains through the session close. The move signals dairy's seasonal strength heading into peak demand months, with butter production paying premium margins. Class IV strength is pulling the complex higher as summer cooling demand builds."
+    "value": "8.0",
+    "unit": "million barrels crude oil inventory draw",
+    "context": "EIA reported the biggest weekly crude draw since March, bringing commercial stocks to five-week lows. Iraq's plan to triple pipeline exports through Kurdistan as Hormuz stays closed is reshaping Middle East crude flows. The inventory tightness is keeping crude supported even as Iran tensions cool from last week's move higher."
   },
   "yesterdays_call": {
-    "summary": "Called ongoing grain liquidation as methodical fund exit, not selling pressure.",
+    "summary": "The liquidation that started Memorial Day isn't selling pressure selling, it's methodical and ongoing.",
     "outcome": "played_out",
-    "note": "Grain volume stayed thin today with funds still out, exactly the methodical exit pattern predicted."
+    "note": "Corn and beans both extended the slide exactly as called, no weather premium emerging to stop it."
   },
   "sections": [
     {
-      "title": "LIVESTOCK LEADS HIGHER",
-      "icon": "🐄",
-      "body": "**Lean hogs broke the livestock stalemate**, adding $1.84 to $101.50 on technical buying after three days of sideways drift. Class III milk led overnight with a 3.1% move that held through the session, closing $17.25 as **butter margins stay premium** heading into peak cooling season. Live cattle slipped 40 cents to $239.80 but held above Monday's $238 test, while feeders gave back $2.10 to $348.90. The **livestock complex is pricing summer demand** while grains mark time.",
-      "catalyst": "Class III milk technical breakout overnight, butter production margins staying premium",
-      "bottom_line": "Hogs and milk lead livestock higher as summer demand patterns emerge.",
+      "title": "GRAINS GRIND THROUGH SUPPORT",
+      "icon": "🌽",
+      "body": "Corn lost another 3 cents to $4.37, the third consecutive session below $4.40 and the lowest close since April. December corn gave up 3 cents to $4.63, widening the carry to 26 cents as old-crop liquidation continues. **Deputy Agriculture Secretary Vaden's comments on China honoring soybean purchase commitments** didn't lift beans, which closed $11.66, down 2 cents. The managed money position that built through April is unwinding methodically, no weather stress to interrupt the flow. Belt rainfall overnight was **spotty at best**, not enough to shift the conversation from fund flow to crop conditions.",
+      "catalyst": "USDA's Vaden comments on China soybean commitments, scattered Belt rainfall",
+      "bottom_line": "Fund liquidation deepening, China talk not enough to reverse the slide.",
       "conviction_level": "medium",
-      "overnight_surprise": true,
-      "vs_yesterday": "Livestock: broke sideways drift exactly as thin volume suggested it would"
+      "overnight_surprise": false,
+      "vs_yesterday": "Grains: liquidation extended exactly as called, no weather catalyst emerging"
     },
     {
-      "title": "GRAINS PAUSE LIQUIDATION",
-      "icon": "🌽",
-      "body": "Corn firmed 1½ cents to $4.41 and beans added 3½ cents to $11.72, the first meaningful bounce since Memorial Day fund liquidation began. **Volume stayed thin**, managed money still sidelined after five straight sessions of selling. Chicago wheat gained 6½ cents to $6.06 on technical buying, but the move lacks conviction with **no new weather premium** building despite scattered Plains showers. Deputy Ag Secretary Vaden's comments on China soybean orders provided a headline but no fresh tonnage.",
-      "catalyst": "USDA's Vaden expects China to honor soybean purchase commitments this year",
-      "bottom_line": "First bounce since Memorial liquidation, but funds haven't committed new money.",
-      "conviction_level": "low",
-      "overnight_surprise": false
+      "title": "MILK GAINS ON PROCESSING STRENGTH",
+      "icon": "🥛",
+      "body": "Class III milk ran to $17.25, up 3% overnight in the session's biggest surprise move. The move higher came on **butter production margins staying north of profitable levels** as Class IV pricing holds firm. Ever.ag's North noted the butter premium is paying well ahead of summer demand patterns. Live cattle eased 50 cents to $238.60, feeders dropped $3.75 to $345.15 as the processing chain stays constrained. The **Cargill Fort Morgan lockout entering its third week** is keeping the cattle complex split between tight processing capacity and steady feed costs.",
+      "catalyst": "Strong butter margins, ongoing Cargill plant lockout",
+      "bottom_line": "Dairy breaks higher while cattle processing stays constrained.",
+      "conviction_level": "medium",
+      "overnight_surprise": true
     },
     {
       "title": "CRUDE HOLDS IRAN GAINS",
       "icon": "🛢️",
-      "body": "WTI crude added $1.54 to $96.20, holding most of Monday's 5% Iran escalation premium as **overnight strikes on Kuwait airport** kept geopolitical risk bid alive. Natural gas eased a penny to $3.16 as domestic supply concerns fade with seasonal demand still weeks away. The **crude complex is pricing convoy risk** through the Persian Gulf shipping lanes, not fundamental supply disruption. Iran tensions, ongoing since early April, shifted from Strait of Hormuz threats to direct strikes on Gulf state infrastructure.",
-      "catalyst": "Iranian drone strikes on Kuwait International Airport overnight, escalating regional tensions",
-      "bottom_line": "Crude holds Iran premium as Gulf tensions escalate beyond shipping lanes.",
+      "body": "WTI crude added 85 cents to $95.59, holding most of Monday's Iran-driven move higher as **EIA reported an 8 million barrel inventory draw**. The draw was the biggest since March, bringing commercial stocks to five-week lows. Iraq's plan to triple pipeline exports through Kurdistan is reshaping crude flows as the Strait of Hormuz stays closed to tanker traffic. Natural gas ticked up 2 cents to $3.18, but the energy complex is trading inventory fundamentals more than geopolitical premium now that Iran tensions have cooled from last week's peak.",
+      "catalyst": "EIA 8 million barrel crude inventory draw, Iraq pipeline expansion",
+      "bottom_line": "Inventory tightness keeps crude supported as Iran premium fades.",
       "conviction_level": "medium",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "North Dakota cattlemen seek CME activity investigation",
-      "body": "The state's cattle group asked Justice and USDA to probe commodity futures trading patterns, claiming insurance programs have become liabilities for producers. When risk management tools work against the user, the market structure needs scrutiny.",
+      "title": "Data centers competing with cattle for land, water",
+      "body": "Virginia cattle producers say data centers are making land acquisition extremely difficult as tech infrastructure expands across rural areas. The competition for resources is driving up costs and limiting expansion options for livestock operations.",
+      "tag": "RURAL"
+    },
+    {
+      "title": "Trump defends Chinese farmland purchases amid security concerns",
+      "body": "President Trump defended Chinese purchases of U.S. farmland in a Fox News interview, breaking with some Republican calls for stricter foreign ownership limits. The position signals continued focus on agricultural trade relationships over land security restrictions.",
       "tag": "POLICY"
     },
     {
-      "title": "New World Screwworm found 31 miles from Texas border",
-      "body": "The parasitic fly that eats livestock alive surfaced in Mexico, close enough to threaten US herds. USDA Secretary Rollins dismissed immediate border concerns, but the economic damage potential runs to millions if it crosses.",
+      "title": "New World Screwworm found 31 miles from US border",
+      "body": "The parasitic fly that eats warm-blooded animals alive was detected just south of the Texas border, raising concerns about potential livestock industry damage. The screwworm could cause millions in economic losses if it crosses into U.S. territory.",
       "tag": "DISEASE"
-    },
-    {
-      "title": "Japan commits $19.4 billion to energy crisis cushion",
-      "body": "Tokyo will spend to shield households from Middle East oil disruption inflation. The package signals how global energy markets are pricing regional conflict into structural costs, not just spot premiums.",
-      "tag": "MACRO"
     }
   ],
   "spread_to_watch": {
-    "label": "July corn / December corn carry",
-    "level": "27 cents inverse, narrowing from 31 cents Monday",
-    "commentary": "The inversion is shrinking as new crop December gains on old crop July, signaling the market expects normal weather through pollination. When the carry flips positive, weather premium season is over and harvest pressure pricing begins."
+    "label": "December corn / July corn carry",
+    "level": "26 cents wide and rolling out",
+    "commentary": "The carry between old crop and new crop corn widened another cent as fund liquidation hits nearby contracts harder than deferred. When the carry rolls this wide in June, it's telling you the market expects no weather premium until pollination stress actually shows up on the radar."
   },
   "basis": {
-    "headline": "Eastern Corn Belt firming on ethanol restart demand",
-    "body": "**Illinois and Indiana elevators** are adding 2-4 cents to posted bids as ethanol plants restart after maintenance shutdowns. Western Belt staying soft with farmer selling light ahead of June tax deadlines. The **regional split** reflects logistics more than fundamental corn demand, but eastern producers with old-crop storage have a window the futures board isn't pricing."
+    "headline": "Eastern Belt corn basis firming as river logistics tighten",
+    "body": "**Eastern Corn Belt basis is adding 2-3 cents** as barge rates firm and ethanol plants restart after maintenance. Western Belt staying soft, consistent with the seasonal pattern. Soybean basis holding steady with export pace still running behind last year's commitments to China."
   },
   "weekly_thread": {
     "question": "Will the grain liquidation finish before weather takes control of the story?",
     "day": 3,
-    "status_text": "Liquidation paused today but volume stayed thin, suggesting funds are waiting not buying. Weather season starts with pollination in three weeks."
+    "status_text": "Liquidation deepened again today, corn breaking $4.40 support with no weather catalyst emerging. Belt rainfall stayed scattered, not enough to shift focus from fund flow to crop stress."
   },
   "the_more_you_know": {
-    "title": "Why thin volume tells the liquidation story better than price",
-    "body": "Today's 3-cent corn bounce came on volume 40% below the 20-day average, typical of a pause not a reversal. Real fund re-entry shows up as volume gains before price moves, as position sizes matter more than direction to managed money. When the selling resumes, look for volume to confirm it. When buying starts, volume will lead price by at least a session."
+    "title": "Why inventory draws matter more than headlines suggest",
+    "body": "Today's 8 million barrel crude draw wasn't just a number, it was information about how Middle East supply chains are actually working. When Iraq triples pipeline exports to offset Hormuz closures, the inventory system shows the strain before prices do. The same logic applies to grain stocks: the monthly USDA numbers tell you where supply really stands versus where the daily headlines say it should be."
   },
   "watch_list": [
     {
-      "time": "Thursday 7:30 AM",
-      "desc": "Weekly export sales; soybeans under 300K MT keeps technical selling alive"
+      "time": "Thursday 7:30 AM CT",
+      "desc": "Weekly export sales; soy under 300K MT keeps chart in charge"
     },
     {
-      "time": "Monday 3 PM",
-      "desc": "USDA Crop Progress; corn above 45% planted removes weather premium catalyst"
-    },
-    {
-      "time": "This week",
-      "desc": "Live cattle above $242 tests whether yesterday's bounce has conviction"
+      "time": "Friday settlement",
+      "desc": "Corn below $4.35 tests April lows, weather premium or bust"
     }
   ],
   "daily_quote": {
-    "text": "Optimism is the faith that leads to achievement. Nothing can be done without hope and confidence.",
-    "attribution": "Helen Keller"
+    "text": "The worst thing about being wrong is the lesson you learn.",
+    "attribution": "Will Rogers"
   },
-  "source_summary": "CME/CBOT settlement data, USDA reports, industry news",
+  "source_summary": "CME settlement data, EIA petroleum inventory report, USDA Deputy Secretary remarks, weather services",
   "date": "Wednesday, June 3, 2026",
   "meta": {
-    "market_mood": "mixed",
+    "market_mood": "bearish",
     "heat_section": 0,
     "overnight_surprises_count": 1
   },
   "locked_prices": {
-    "corn": 4.41,
-    "corn-dec": 4.68,
-    "beans": 11.7175,
-    "beans-nov": 11.83,
-    "wheat": 6.0575,
-    "oats": 3.3725,
-    "cattle": 239.8,
-    "feeders": 348.9,
-    "hogs": 101.5,
+    "corn": 4.3675,
+    "corn-dec": 4.6275,
+    "beans": 11.66,
+    "beans-nov": 11.8025,
+    "wheat": 5.94,
+    "oats": 3.29,
+    "cattle": 238.60001,
+    "feeders": 345.14999,
+    "hogs": 101.6,
     "milk": 17.25,
-    "meal": 327.5,
-    "soyoil": 79.39,
-    "crude": 96.2,
-    "natgas": 3.156,
-    "gold": 4487.1001,
-    "silver": 74.335,
-    "dollar": 99.449,
-    "sp500": 7609.77979,
-    "bitcoin": 66998.95312
+    "meal": 324.60001,
+    "soyoil": 79.24,
+    "crude": 95.59,
+    "natgas": 3.184,
+    "gold": 4481.8999,
+    "silver": 74.015,
+    "dollar": 99.515,
+    "sp500": 7576.56982,
+    "bitcoin": 66762.35156
   },
   "chart_series": {
     "corn": [
@@ -136,7 +132,7 @@
       4.47,
       4.42,
       4.41,
-      4.41
+      4.37
     ],
     "soybeans": [
       11.96,
@@ -148,7 +144,7 @@
       11.87,
       11.83,
       11.66,
-      11.72
+      11.66
     ],
     "wheat": [
       6.46,
@@ -160,7 +156,7 @@
       6.11,
       6.11,
       6.01,
-      6.06
+      5.94
     ]
   },
   "sponsor": {
@@ -174,8 +170,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 83,
-  "generated_at": "2026-06-03T13:02:30.167852+00:00",
+  "issue_number": 84,
+  "generated_at": "2026-06-03T15:29:35.911729+00:00",
   "generator_version": "4.6.1",
   "surprise_count": 1,
   "surprises": [

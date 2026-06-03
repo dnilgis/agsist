@@ -3,9 +3,9 @@
     {
       "date": "2026-06-03",
       "date_display": "Wednesday, June 3, 2026",
-      "headline": "HOGS LEAD CHARGE AS GRAINS STABILIZE",
-      "teaser": "Hogs run 1.8% as grains find footing after Memorial fund exit.",
-      "market_mood": "mixed",
+      "headline": "GRAINS DRIFT LOWER, MILK GAINS OVERNIGHT",
+      "teaser": "Corn extends three-session slide while milk posts biggest overnight move in weeks.",
+      "market_mood": "bearish",
       "surprise_count": 1,
       "sections": 3,
       "url": "/daily/2026-06-03",
@@ -918,6 +918,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-03T13:02:30.169908+00:00",
+  "updated": "2026-06-03T15:29:35.913773+00:00",
   "count": 83
 }
