@@ -1,128 +1,129 @@
 {
-  "headline": "FEEDERS TUMBLE, GRAINS DRIFT SIDEWAYS",
-  "subheadline": "Cattle complex breaks as screwworm quarantine hits South Texas.",
-  "lead": "Feeder cattle led the complex lower, down 1.8% to $342.57 as USDA confirmed the first New World screwworm case in decades, triggering quarantines in South Texas. Grains marked time in narrow ranges with corn up a penny at $4.26 and beans off 3 cents at $11.47, fund liquidation slowing but demand still sluggish. The screwworm news shifts cattle psychology from seasonal strength to biological risk, while grain's sideways drift suggests the liquidation question might be answering itself through exhaustion rather than weather catalysts.",
-  "the_takeaway": "Screwworm shifts cattle from seasonal to biological risk, grains drifting toward resolution.",
-  "teaser": "Cattle breaks on screwworm news while grains grind toward liquidation exhaustion.",
+  "headline": "CATTLE COMPLEX FLIPS HIGHER, GRAINS EXTEND SLIDE",
+  "subheadline": "Feeders lead livestock move higher as grain liquidation deepens into fourth session.",
+  "lead": "Feeder cattle ran to $349.95, up 2.2%, breaking four sessions of drift and flipping the livestock narrative overnight. Live cattle followed to $241.57, both contracts reversing the breakdown thesis that dominated the week. Corn held $4.25 but soybeans lost another 9 cents to $11.40, extending the fund liquidation that's now stripped 47 cents since Friday's close.",
+  "the_takeaway": "Livestock found buyers, grains didn't; the divergence is the story now.",
+  "teaser": "Cattle complex gains while grain liquidation enters day four.",
   "one_number": {
-    "value": "31",
-    "unit": "miles from US border where screwworm was first detected",
-    "context": "The parasitic fly was found in Mexico just 31 miles from the US border in November 2024, making today's confirmed case in South Texas the feared progression cattle markets had been pricing since then. The proximity explains why USDA moved so fast on quarantines and why feeder cattle dropped harder than live cattle."
+    "value": "47",
+    "unit": "cents soybeans lost since Friday's close",
+    "context": "The four-session slide in soybeans represents the deepest fund liquidation since March, with managed money rotating out of grain positions ahead of planting season's end. Thursday's export sales at 7:30 AM will test whether physical demand can step in where financial buyers stepped out. Corn's held better, down just 12 cents over the same span."
   },
   "yesterdays_call": {
-    "summary": "Fund liquidation deepening, China talk not enough to reverse the slide.",
+    "summary": "Fund liquidation deepening in grains, with China talk insufficient to reverse the slide.",
     "outcome": "played_out",
-    "note": "Grains continued grinding lower on sluggish demand, confirming the liquidation thesis held control."
+    "note": "Soybeans extended the decline exactly as called, losing another 10 cents today."
   },
   "sections": [
     {
-      "index": 0,
-      "title": "CATTLE BREAKS ON SCREWWORM",
-      "icon": "🐄",
-      "body": "Feeder cattle fell to $342.57, down 1.8% as **USDA confirmed the first New World screwworm case in the US since the 1980s**. A 3-week-old calf in La Pryor, Texas tested positive for the parasitic fly that eats warm-blooded animals alive. Live cattle held better at $237.85, down 0.8%, but the damage is psychological more than immediate. Screwworm was detected 31 miles from the US border in Mexico last November, so this progression was always the fear scenario. USDA moved fast with quarantines and movement restrictions, but **the cattle complex just shifted from pricing seasonal strength to biological containment risk**.",
-      "bottom_line": "Biological risk replaces seasonal strength as the cattle story.",
+      "title": "CATTLE COMPLEX GAINS HIGHER",
+      "icon": "🐂",
+      "body": "Feeders **flipped the script** at $349.95, up 2.2%, after four sessions of drift that had the breakdown thesis looking inevitable. Live cattle followed to $241.57, up 1.6%, both contracts reversing Wednesday's weakness on no specific catalyst. The move came on thin overnight action but held through the session, suggesting the selling pressure that dominated the week finally exhausted itself. **Cattle producers meeting with Congressional representatives on Capitol Hill today** brought policy concerns that may be supporting the complex, though the rally looks more technical than fundamental.",
+      "catalyst": "Cattle producers advocacy meetings on Capitol Hill, technical oversold bounce",
+      "bottom_line": "Liquidation exhausted, both contracts bounced hard off Wednesday's lows.",
       "conviction_level": "medium",
-      "overnight_surprise": true,
-      "farmer_action": ""
-    },
-    {
-      "title": "GRAINS DRIFT THROUGH RANGE",
-      "icon": "🌾",
-      "body": "Corn ticked up a penny to $4.26 while beans eased 3 cents to $11.47, both moving inside yesterday's ranges on **sluggish demand and slowing fund liquidation**. December corn held $4.54, suggesting the selling pressure that drove the complex lower all week is finally running out of steam. China's renewed soybean purchase commitments still aren't translating to sustained futures support, but the technical selling isn't accelerating either. Weather across the Belt remains conducive to crop development with **no stress premium being priced yet**. The grain liquidation question from Monday might be answering itself through exhaustion rather than weather catalyst.",
-      "catalyst": "Sluggish demand continues but fund liquidation pace slowing",
-      "bottom_line": "Sideways drift suggests liquidation exhausting itself, not weather taking control yet.",
-      "conviction_level": "low"
-    },
-    {
-      "title": "MILK DROPS ON PARLOR PRESSURE",
-      "icon": "🥛",
-      "body": "Class III milk tumbled 3.2% to $16.16, giving back yesterday's overnight gains as **parlor monitoring technology and mastitis detection systems hit adoption curves**. The drop reverses Tuesday's processing strength story, suggesting the milk complex is more volatile than directional right now. Block cheese and barrel spreads are widening again, indicating the processing margin squeeze that drove yesterday's strength was temporary. **Dairy remains the most volatile protein complex**, swinging between processing optimism and feed cost pressure week to week.",
-      "catalyst": "Parlor technology adoption and processing margin shifts",
-      "bottom_line": "Milk volatility continues, yesterday's gains erased on processing pressure.",
-      "conviction_level": "low",
       "overnight_surprise": true
+    },
+    {
+      "title": "GRAINS EXTEND FOUR-DAY SLIDE",
+      "icon": "🌽",
+      "body": "Soybeans lost another 10 cents to $11.40, the **fourth straight session** of fund liquidation that's now stripped 47 cents since Friday. Corn held better at $4.25, down just 2 cents, but the selling pressure remains relentless with managed money rotating out ahead of planting season's peak. Deputy Ag Secretary Vaden's comments that China will honor its soybean purchase commitments provided no support, the market pricing execution risk over promises. **Thursday's export sales at 7:30 AM** represent the last chance for physical demand to step in where financial buyers stepped out.",
+      "catalyst": "Continued fund liquidation, Deputy Ag Secretary Vaden China purchase comments",
+      "bottom_line": "Four sessions, 47 cents lower; export sales must deliver or slide continues.",
+      "conviction_level": "medium",
+      "vs_yesterday": "Soybeans: slide accelerated exactly as fund liquidation thesis predicted."
+    },
+    {
+      "index": 2,
+      "title": "ENERGY GIVES BACK IRAN GAINS",
+      "icon": "🛢️",
+      "body": "Crude fell 2.9% to $92.39, giving back most of Tuesday's Iran-driven rally as **diplomatic progress via Swiss intermediaries** continues defusing Strait of Hormuz tensions that began escalating in early May over shipping lane disputes. Natural gas bucked the trend, gaining 3.2% to $3.33 on storage draw expectations ahead of summer cooling season. The Iran premium that built through May is systematically unwinding, with five tankers clearing the Strait last week confirming shipping lanes remain navigable. Oil's 19% decline from May highs shows how quickly geopolitical premiums can deflate when the actual disruption doesn't materialize.",
+      "bottom_line": "Iran premium deflating as diplomatic channels stay open, gas finds seasonal support.",
+      "conviction_level": "medium",
+      "overnight_surprise": false,
+      "farmer_action": ""
     }
   ],
   "outside_the_pit": [
     {
-      "title": "MASCHIO GASPARDO opens first full North American store in Corn Belt",
-      "body": "The Italian equipment manufacturer is betting on US farmer demand for specialty tillage and seeding equipment. Location in the heart of corn country signals confidence in domestic market growth.",
+      "title": "USDA Confirms First New World Screwworm Case in Decades",
+      "body": "Agriculture Secretary Rollins confirmed the parasitic fly in a 3-week-old calf in South Texas, 31 miles from the Mexican border. The detection triggers quarantine protocols and could disrupt livestock movement patterns if it spreads, though USDA's rapid response suggests containment remains possible.",
+      "tag": "DISEASE"
+    },
+    {
+      "title": "Small Processor Support Package Launches with $60M Funding",
+      "body": "USDA's new action plan reduces regulatory burdens on small meat and poultry plants while providing $60 million through the MPPEP program. The initiative addresses processing capacity constraints that have kept cattle-hog spreads compressed, though infrastructure buildout takes years not months.",
+      "tag": "POLICY"
+    },
+    {
+      "title": "Equipment Tariff Cuts Won't Translate to Farmer Savings",
+      "body": "Agricultural economist David Widmar says tariff reductions on ag equipment haven't shown up in farmer pricing data, suggesting manufacturers capture the benefit rather than passing savings through. The finding complicates arguments about trade policy's direct impact on farm input costs.",
       "tag": "TRADE"
-    },
-    {
-      "title": "USDA launches $60M processor action plan for small meat plants",
-      "body": "New funding aims to reduce regulatory burdens and support very small processing operations. The move addresses concentration concerns but won't immediately change cattle pricing dynamics.",
-      "tag": "POLICY"
-    },
-    {
-      "title": "Equipment tariff reductions won't translate to farmer savings, economist says",
-      "body": "Agricultural Economic Insights reports no evidence that equipment tariff cuts pass through to farm-level pricing. The finding suggests trade policy benefits flow to dealers and manufacturers, not producers.",
-      "tag": "POLICY"
     }
   ],
   "spread_to_watch": {
-    "label": "August live cattle / August feeder ratio",
-    "level": "0.694 ratio, historically wide gap",
-    "commentary": "Feeders dropping faster than live cattle creates an unusually wide ratio, pricing biological risk into the feeder complex specifically. **This spread should narrow if screwworm containment holds**, but stay wide if movement restrictions persist through summer grazing season."
+    "label": "Live cattle / feeder cattle ratio",
+    "level": "0.69 ratio, compressed from normal 0.72",
+    "commentary": "The ratio's been running tight since the Fort Morgan lockout began two weeks ago, pricing processing constraints rather than supply dynamics. Today's move higher in both contracts kept the ratio compressed, confirming the constraint story rather than resolving it."
   },
   "basis": {
-    "headline": "Corn basis steady, cattle basis yelling in South Texas",
-    "body": "**Eastern Belt corn basis holding firm** as ethanol demand stays consistent and river logistics work smoothly. **South Texas cattle basis fall sharply expected** as quarantine restrictions limit movement options and create artificial supply concentration. Western cattle basis staying defensive until screwworm containment story clarifies. Soybean basis soft but not deteriorating, matching the futures drift."
+    "headline": "Corn basis holds firm in Eastern Belt, soybean basis weakening",
+    "body": "Eastern Corn Belt basis is holding despite the futures slide as **ethanol grind comes back online** after spring maintenance shutdowns. Soybean basis is following futures lower, with crushers stepping back as the meal-oil complex weakens. Gulf basis for both commodities remains soft, consistent with export demand concerns that Thursday's sales report should clarify."
   },
   "weekly_thread": {
     "question": "Will the grain liquidation finish before weather takes control of the story?",
     "day": 4,
-    "status_text": "Thursday's sideways action suggests liquidation exhausting itself through drift rather than drama. Grains are grinding toward resolution but weather still isn't providing a catalyst."
+    "status_text": "The liquidation is deepening, not finishing. Soybeans down 47 cents in four sessions suggests funds still have positions to unwind before weather premium can build."
   },
   "the_more_you_know": {
-    "title": "Why screwworm spreads faster than markets price",
-    "body": "Today's 1.8% feeder drop on the Texas screwworm case looks measured, but the biology argues for more concern. **New World screwworm was eradicated from the US in 1982 after causing $750 million annually in cattle losses**. The female fly lays 200-300 eggs in wounds on warm-blooded animals, with larvae eating the host alive. A single generation cycle takes 21 days, meaning exponential spread without aggressive containment. Markets are pricing quarantine success, not biological reality."
+    "title": "Why overnight reversals tell you more than session volume",
+    "body": "Feeders gained 2.2% and live cattle 1.6% in thin overnight trade, moves that held through the full session despite low volume. **Thin-trade reversals often signal genuine exhaustion** of the prior trend rather than news-driven moves. When a market that's been grinding lower suddenly gaps higher on no catalyst and holds the gap, it's usually because the last sellers finally stepped away. The volume confirms it: real buying doesn't need heavy trade to stick."
   },
   "watch_list": [
     {
-      "time": "7:30 AM CT",
-      "desc": "USDA Weekly Export Sales - soybeans under 300K MT keeps the chart in charge"
+      "time": "Thursday 7:30 AM CT",
+      "desc": "USDA Weekly Export Sales; soybeans under 300K MT confirms demand concerns."
     },
     {
-      "time": "Friday",
-      "desc": "Screwworm quarantine expansion - additional Texas counties would crater cattle basis"
+      "time": "Friday settlement",
+      "desc": "Live cattle above $242 confirms the bounce, below $240 resumes breakdown."
     },
     {
-      "time": "Next week",
-      "desc": "Weather forecast shift - heat stress models become relevant if temps spike"
+      "time": "Weekend",
+      "desc": "New World screwworm quarantine expansion could disrupt cattle movement Monday."
     }
   ],
   "daily_quote": {
-    "text": "A journey of a thousand miles begins with a single step.",
-    "attribution": "Lao Tzu"
+    "text": "Success is stumbling from failure to failure with no loss of enthusiasm.",
+    "attribution": "Winston Churchill"
   },
-  "source_summary": "CME settlement prices, USDA screwworm confirmation, weekly export sales pending",
+  "source_summary": "USDA, CME, news wires, basis dealers",
   "date": "Thursday, June 4, 2026",
   "meta": {
-    "market_mood": "bearish",
+    "market_mood": "mixed",
     "heat_section": 0,
     "overnight_surprises_count": 2
   },
   "locked_prices": {
-    "corn": 4.2625,
-    "corn-dec": 4.545,
-    "beans": 11.4725,
-    "beans-nov": 11.61,
-    "wheat": 5.855,
-    "oats": 3.25,
-    "cattle": 237.85,
-    "feeders": 342.575,
-    "hogs": 101.925,
-    "milk": 16.16,
-    "meal": 320.39999,
-    "soyoil": 78.36,
-    "crude": 94.28,
-    "natgas": 3.27,
-    "gold": 4505.6001,
-    "silver": 73.8,
-    "dollar": 99.223,
-    "sp500": 7553.68018,
-    "bitcoin": 62569.37109
+    "corn": 4.2525,
+    "corn-dec": 4.5325,
+    "beans": 11.4,
+    "beans-nov": 11.53,
+    "wheat": 5.8825,
+    "oats": 3.215,
+    "cattle": 241.575,
+    "feeders": 349.95001,
+    "hogs": 101.525,
+    "milk": 16.76,
+    "meal": 316.5,
+    "soyoil": 77.76,
+    "crude": 92.39,
+    "natgas": 3.335,
+    "gold": 4538.2002,
+    "silver": 74.96,
+    "dollar": 99.232,
+    "sp500": 7547.85986,
+    "bitcoin": 64200.71875
   },
   "chart_series": {
     "corn": [
@@ -135,7 +136,7 @@
       4.42,
       4.41,
       4.37,
-      4.26
+      4.25
     ],
     "soybeans": [
       11.91,
@@ -147,7 +148,7 @@
       11.83,
       11.66,
       11.66,
-      11.47
+      11.4
     ],
     "wheat": [
       6.43,
@@ -159,7 +160,7 @@
       6.11,
       6.01,
       5.94,
-      5.86
+      5.88
     ]
   },
   "sponsor": {
@@ -173,77 +174,77 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 84,
-  "generated_at": "2026-06-04T13:30:31.676067+00:00",
+  "issue_number": 85,
+  "generated_at": "2026-06-04T14:07:34.831564+00:00",
   "generator_version": "4.6.1",
   "surprise_count": 2,
   "surprises": [
     {
       "commodity": "Feeder Cattle",
       "key": "feeders",
-      "price": "$342.57",
-      "pct_change": -1.8128,
-      "direction": "down",
-      "surprise_magnitude": 1.2
+      "price": "$349.95",
+      "pct_change": 2.1528,
+      "direction": "up",
+      "surprise_magnitude": 1.4
     },
     {
-      "commodity": "Class III Milk",
-      "key": "milk",
-      "price": "$16.16",
-      "pct_change": -3.1756,
-      "direction": "down",
-      "surprise_magnitude": 1.1
+      "commodity": "Live Cattle",
+      "key": "cattle",
+      "price": "$241.57",
+      "pct_change": 1.5661,
+      "direction": "up",
+      "surprise_magnitude": 1.0
     }
   ],
-  "price_validation_clean": false,
+  "price_validation_clean": true,
   "market_closed": false,
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-06-04T13:30:47.371731+00:00",
+    "ran_at": "2026-06-04T14:07:42.857003+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
       "rule_2_conviction_earned": 7,
       "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 6,
+      "rule_4_watch_conditional": 8,
       "rule_5_bottom_lines_synthesize": 8,
       "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 8,
+      "rule_7_continuity": 9,
       "rule_8_basis_directional": 7,
       "rule_9_voice": 8,
       "rule_10_forward_test": 8,
-      "rule_11_thread_coherence": 7,
+      "rule_11_thread_coherence": 8,
       "rule_12_spread_quality": 8,
       "rule_13_yc_honesty": 8,
-      "rule_14_level_coherence": 1,
-      "rule_15_one_number_coherence": 9,
+      "rule_14_level_coherence": 9,
+      "rule_15_one_number_coherence": 10,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 10
+      "rule_17_macro_anchoring": 6
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "section[0]",
-        "rule": "rule_14_level_coherence",
+        "target": "section[2]",
+        "rule": "rule_17_macro_anchoring",
         "scores_before": {
           "rule_1_lead_so_what": 8,
           "rule_2_conviction_earned": 7,
           "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 6,
+          "rule_4_watch_conditional": 8,
           "rule_5_bottom_lines_synthesize": 8,
           "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 8,
+          "rule_7_continuity": 9,
           "rule_8_basis_directional": 7,
           "rule_9_voice": 8,
           "rule_10_forward_test": 8,
-          "rule_11_thread_coherence": 7,
+          "rule_11_thread_coherence": 8,
           "rule_12_spread_quality": 8,
           "rule_13_yc_honesty": 8,
-          "rule_14_level_coherence": 1,
-          "rule_15_one_number_coherence": 9,
+          "rule_14_level_coherence": 9,
+          "rule_15_one_number_coherence": 10,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 10
+          "rule_17_macro_anchoring": 6
         }
       }
     ],
