@@ -1458,9 +1458,15 @@
       var daysOld=rdOk?Math.round((Date.now()-rd.getTime())/86400000):null;
       var _cmo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       var _cDisp=rdOk?_cmo[rd.getMonth()]+' '+rd.getDate()+', '+rd.getFullYear():_rds;
-      var ageNote=daysOld==null?'pending':daysOld<=3?'fresh':daysOld<=7?daysOld+'d old':'\u26a0\ufe0f '+daysOld+'d old';
-      dateEl.textContent='As of '+_cDisp+' ('+ageNote+') \u00b7 CFTC';
-      if(daysOld!=null&&daysOld>7){dateEl.style.color='#f0913a';}
+      var ageNote=daysOld==null?'pending':daysOld<=13?'current':'\u26a0\ufe0f '+daysOld+'d old';
+      dateEl.innerHTML='As of '+_cDisp+' ('+ageNote+') \u00b7 CFTC <span id="cot-countdown" style="color:var(--gold);font-weight:700"></span>';
+      if(daysOld!=null&&daysOld>=14){dateEl.style.color='#f0913a';}
+      (function(){
+        function nx(now){var t=new Date(Date.UTC(new Date(now).getUTCFullYear(),new Date(now).getUTCMonth(),new Date(now).getUTCDate(),21,30,0));while(t.getUTCDay()!==5||t.getTime()<=now){t=new Date(t.getTime()+86400000);t.setUTCHours(21,30,0,0);}return t.getTime();}
+        function fmt(ms){if(ms<=0)return null;var s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor((s%86400)/3600),m=Math.floor((s%3600)/60);return d>0?d+'d '+h+'h':h>0?h+'h '+m+'m':(m>0?m+'m':'<1m');}
+        function tick(){var el=document.getElementById('cot-countdown');if(!el)return;var now=Date.now(),f=fmt(nx(now)-now);el.textContent=f?('\u00b7 next in '+f):'\u00b7 update due';}
+        tick();setInterval(tick,60000);
+      })();
     }
   }
   fetch('/data/cot.json').then(function(r){if(!r.ok)throw new Error('no-cot');return r.json();}).then(renderCOT).catch(function(){
