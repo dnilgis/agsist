@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-06-04",
+      "date_display": "Thursday, June 4, 2026",
+      "headline": "FEEDERS TUMBLE, GRAINS DRIFT SIDEWAYS",
+      "teaser": "Cattle breaks on screwworm news while grains grind toward liquidation exhaustion.",
+      "market_mood": "bearish",
+      "surprise_count": 2,
+      "sections": 3,
+      "url": "/daily/2026-06-04",
+      "market_closed": false,
+      "yc_outcome": "played_out"
+    },
+    {
       "date": "2026-06-03",
       "date_display": "Wednesday, June 3, 2026",
       "headline": "GRAINS DRIFT LOWER, MILK GAINS OVERNIGHT",
@@ -918,6 +930,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-03T15:29:35.913773+00:00",
-  "count": 83
+  "updated": "2026-06-04T13:30:47.420441+00:00",
+  "count": 84
 }

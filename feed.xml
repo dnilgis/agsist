@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 03 Jun 2026 15:29:49 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 04 Jun 2026 13:30:48 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>FEEDERS TUMBLE, GRAINS DRIFT SIDEWAYS</title>
+      <link>https://agsist.com/daily/2026-06-04</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-04</guid>
+      <pubDate>Thu, 04 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Feeder cattle led the complex lower, down 1.8% to $342.57 as USDA confirmed the first New World screwworm case in decades, triggering quarantines in South Texas. Grains marked time in narrow ranges with corn up a penny at $4.26 and beans off 3 cents at $11.47, fund liquidation slowing but demand still sluggish. The screwworm news shifts cattle psychology from seasonal strength to biological risk, while grain's sideways drift suggests the liquidation question might be answering itself through exhaustion rather than weather catalysts.
+Cattle complex breaks as screwworm quarantine hits South Texas.
+• CATTLE BREAKS ON SCREWWORM
+• GRAINS DRIFT THROUGH RANGE
+• MILK DROPS ON PARLOR PRESSURE
+Read more: https://agsist.com/daily/2026-06-04</description>
+    </item>
     <item>
       <title>GRAINS DRIFT LOWER, MILK GAINS OVERNIGHT</title>
       <link>https://agsist.com/daily/2026-06-03</link>
@@ -357,17 +369,6 @@ Feeder strength flips the script while oil's 6% drop eases cost pressures across
 • Grains Drift on Profit Taking
 • Oil Crash Eases Costs
 Read more: https://agsist.com/daily/2026-05-06</description>
-    </item>
-    <item>
-      <title>CATTLE HOLD $251 AS MARKETS MARK TIME</title>
-      <link>https://agsist.com/daily/2026-05-05</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-05</guid>
-      <pubDate>Tue, 05 May 2026 05:00:00 -0600</pubDate>
-      <description>Live cattle closed $251.95, holding the line one day after breaking Monday's $252 support. The bounce is thin but it's there — feeders dropped harder at $366.98, down 1.4%, suggesting the correction isn't finished but maybe pausing. Yesterday's breakdown call is still live: next real support sits at $245, and today's action doesn't change that math.
-Live cattle found buyers just above yesterday's breakdown level while grains drifted lower in thin trade.
-• Cattle Find Thin Support
-• Grains Drift Quietly Lower
-Read more: https://agsist.com/daily/2026-05-05</description>
     </item>
   </channel>
 </rss>
