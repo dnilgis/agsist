@@ -2,10 +2,21 @@
 """
 fetch_cot.py — CFTC Commitments of Traders (Disaggregated Futures-Only) fetcher
 Writes:
-  data/cot.json         — current week summary (homepage widget)
+  data/cot.json         — current week summary (homepage widget + /cot page)
   data/cot-history.json — last 52 weeks per commodity (chart page)
 
-Runs Saturdays via GitHub Actions after Friday 3:30 PM ET CFTC release.
+Runs daily via GitHub Actions (commit is a no-op until the weekly CFTC release
+lands). Positions are as-of Tuesday; CFTC releases the following Friday ~3:30pm ET.
+
+COMMODITY SET (grain board + crush + livestock + dairy):
+  corn, beans, wheat (SRW/Chicago), kcwheat (HRW), mplswheat (HRS/Minneapolis),
+  soymeal, soyoil, livecattle, feedercattle, leanhogs, milk (Class III)
+
+Matcher note: CFTC names Chicago wheat "WHEAT-SRW - CHICAGO BOARD OF TRADE" and
+KC wheat "WHEAT-HRW - CHICAGO BOARD OF TRADE" — both contain "wheat"+"chicago",
+so we disambiguate on the CLASS TOKEN (srw/hrw/hrspring), which is stable even
+if the exchange is renamed (MGEX -> MIAX Futures). We also use startswith() for
+corn/soybeans so MINI-SIZED CORN / MINI SOYBEANS don't get mis-bucketed.
 """
 
 import csv
@@ -20,7 +31,14 @@ import urllib.request
 OUT_FILE     = "data/cot.json"
 HISTORY_FILE = "data/cot-history.json"
 CFTC_URL     = "https://www.cftc.gov/files/dea/history/fut_disagg_txt_{year}.zip"
-COMMODITIES  = ["corn", "beans", "wheat"]
+
+# Order here is the canonical display order downstream (grouped logically).
+COMMODITIES = [
+    "corn", "beans", "wheat", "kcwheat", "mplswheat",   # grain board
+    "soymeal", "soyoil",                                 # crush
+    "livecattle", "feedercattle", "leanhogs",            # livestock
+    "milk",                                              # dairy
+]
 
 
 def fetch_zip(year: int) -> str | None:
@@ -40,13 +58,44 @@ def fetch_zip(year: int) -> str | None:
 
 
 def match_commodity(market: str) -> str | None:
-    m = market.lower()
-    if "corn - chicago board of trade" in m:
+    """Map a CFTC Market_and_Exchange_Names string to our commodity key.
+
+    Token/startswith based so it's robust to exchange renames and excludes
+    mini-sized contracts. Order matters: check specific tokens before generics.
+    """
+    m = market.lower().strip()
+
+    # ── grains ──
+    if m.startswith("corn - chicago"):
         return "corn"
-    if "soybeans - chicago board of trade" in m:
+    if m.startswith("soybeans - chicago"):
         return "beans"
-    if "wheat" in m and "chicago" in m:
-        return "wheat"
+    # wheats: disambiguate on class token (exchange-rename safe)
+    if "wheat-srw" in m or m.startswith("wheat - chicago"):
+        return "wheat"          # SRW / Chicago
+    if "wheat-hrw" in m:
+        return "kcwheat"        # HRW / Kansas City
+    if "wheat-hrspring" in m or ("spring" in m and "wheat" in m):
+        return "mplswheat"      # HRS / Minneapolis (MGEX / MIAX)
+
+    # ── crush complex ──
+    if m.startswith("soybean oil"):
+        return "soyoil"
+    if m.startswith("soybean meal"):
+        return "soymeal"
+
+    # ── livestock ──
+    if m.startswith("live cattle"):
+        return "livecattle"
+    if m.startswith("feeder cattle"):
+        return "feedercattle"
+    if m.startswith("lean hogs"):
+        return "leanhogs"
+
+    # ── dairy ──
+    if ("class iii" in m and "milk" in m) or m.startswith("milk, class iii"):
+        return "milk"
+
     return None
 
 
@@ -65,15 +114,20 @@ def parse_rows(csv_text: str) -> list[dict]:
 
     if all_rows:
         print(f"  Columns (first 10): {list(all_rows[0].keys())[:10]}", flush=True)
-        wheat_names = sorted({
-            r.get("Market_and_Exchange_Names", "").strip()
-            for r in all_rows
-            if "wheat" in r.get("Market_and_Exchange_Names", "").lower()
-        })
-        for wn in wheat_names:
-            print(f"  WHEAT found: '{wn}'", flush=True)
-        if not wheat_names:
-            print("  No wheat markets in this file", flush=True)
+        # Log every market we matched, so CI output verifies the name strings.
+        matched_names: dict[str, set] = {}
+        for r in all_rows:
+            nm = r.get("Market_and_Exchange_Names", "").strip()
+            k = match_commodity(nm)
+            if k:
+                matched_names.setdefault(k, set()).add(nm)
+        for k in COMMODITIES:
+            names = matched_names.get(k)
+            if names:
+                for nm in sorted(names):
+                    print(f"  MATCH {k:12s} <- '{nm}'", flush=True)
+            else:
+                print(f"  (no market matched key '{k}' in this file)", flush=True)
 
     rows = []
     for row in all_rows:
@@ -155,7 +209,7 @@ def main():
             "max52": max(nets),
         }
         chg = (latest["net"] - prior["net"]) if prior else 0
-        print(f"  {key:6s}: net={fmt_k(latest['net']):>8s} chg={fmt_k(chg):>8s} | "
+        print(f"  {key:12s}: net={fmt_k(latest['net']):>8s} chg={fmt_k(chg):>8s} | "
               f"52w [{fmt_k(min(nets))} → {fmt_k(max(nets))}]", flush=True)
 
     with open(OUT_FILE, "w") as f:

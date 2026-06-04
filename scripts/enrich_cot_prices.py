@@ -48,11 +48,25 @@ DATA = os.path.normpath(os.path.join(HERE, "..", "data"))
 HIST_PATH = os.path.join(DATA, "cot-history.json")
 CUR_PATH = os.path.join(DATA, "cot.json")
 
-# COT commodity key -> yfinance front-month continuous symbol
+# COT commodity key -> yfinance front-month continuous symbol.
+# Units differ by complex (cents/bu grains, cents/lb livestock, $/cwt milk) but
+# the /cot divergence math uses only direction + percentile, so units are fine
+# as long as each series is internally consistent.
+# NOTE: MGEX/MIAX spring wheat (MW=F) is not always carried by Yahoo; if it
+# returns nothing the record is simply left without a price (handled below) and
+# the COT positioning still shows — only the price-divergence overlay is blank.
 SYMBOLS = {
-    "corn": "ZC=F",
-    "beans": "ZS=F",
-    "wheat": "ZW=F",
+    "corn":         "ZC=F",
+    "beans":        "ZS=F",
+    "wheat":        "ZW=F",   # SRW / Chicago
+    "kcwheat":      "KE=F",   # HRW / Kansas City
+    "mplswheat":    "MW=F",   # HRS / Minneapolis (may be unavailable on Yahoo)
+    "soymeal":      "ZM=F",
+    "soyoil":       "ZL=F",
+    "livecattle":   "LE=F",
+    "feedercattle": "GF=F",
+    "leanhogs":     "HE=F",
+    "milk":         "DC=F",   # Class III milk
 }
 
 
