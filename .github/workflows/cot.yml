@@ -2,15 +2,24 @@ name: Fetch COT Data
 
 on:
   schedule:
-    - cron: '0 14 * * 6'
+    # CFTC COT releases Friday ~3:30pm ET; positions are as-of the prior Tuesday.
+    # Run DAILY at 21:30 UTC (after the Friday release window, DST-safe). COT
+    # changes once a week, so the commit step is a no-op ~6 days out of 7 — but a
+    # daily run means a holiday-delayed release OR a skipped weekly cron self-heals
+    # the next day instead of leaving the page stale for a full extra week.
+    - cron: '30 21 * * *'
   workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-cot
+  cancel-in-progress: false
 
 jobs:
   fetch-cot:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -20,16 +29,49 @@ jobs:
         with:
           python-version: '3.11'
 
+      # yfinance + pandas are needed by the price-enrichment step below.
+      - name: Install dependencies
+        run: pip install --quiet yfinance pandas
+
       - name: Fetch CFTC COT data
         run: python scripts/fetch_cot.py
 
+      # Enrichment MUST run AFTER fetch_cot.py, in the same job: fetch_cot.py
+      # rewrites cot.json / cot-history.json fresh with no price field, so the
+      # COT-date-aligned prices have to be re-attached here. (Replaces the old
+      # standalone cot-prices.yml — DELETE that file; running both races this job
+      # over the same data files, which is what caused the rebase conflict.)
+      - name: Enrich COT data with prices
+        run: python scripts/enrich_cot_prices.py
+
       - name: Commit COT data
         run: |
-          git config user.name "AGSIST Bot"
+          git config user.name  "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          # FIX: was only adding cot.json — cot-history.json (used by COT chart page)
-          # was never committed, leaving the chart page perpetually stale
-          git add data/cot.json data/cot-history.json
-          git diff --staged --quiet || git commit -m "chore: update COT data $(date +%F)"
-          git pull --rebase origin main
-          git push
+          # cot.json / cot-history.json are FULLY regenerated each run, so our
+          # copies are always authoritative. Rather than rebase (which conflicts
+          # when another run committed the same files mid-job), snapshot our
+          # files, hard-sync to the latest remote, lay ours back on top, and
+          # commit a clean delta. Retry the push if the remote moves again.
+          cp data/cot.json          /tmp/cot.json
+          cp data/cot-history.json  /tmp/cot-history.json
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/cot.json         data/cot.json
+            cp /tmp/cot-history.json data/cot-history.json
+            git add data/cot.json data/cot-history.json
+            if git diff --staged --quiet; then
+              echo "No COT changes today — nothing to commit (expected ~6 days/week)."
+              exit 0
+            fi
+            git commit -m "chore: update COT data $(date +%F) [skip ci]"
+            if git push; then
+              echo "pushed (attempt $i)"
+              exit 0
+            fi
+            echo "push failed (attempt $i) — remote moved, retrying after backoff"
+            sleep $((RANDOM % 4 + 3))
+          done
+          echo "ERROR: could not push after 5 attempts"
+          exit 1
