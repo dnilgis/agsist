@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 04 Jun 2026 14:07:45 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 05 Jun 2026 13:17:27 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>FEEDERS MOVE HIGHER 3.2%, CATTLE COMPLEX SNAPS HIGHER</title>
+      <link>https://agsist.com/daily/2026-06-05</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-05</guid>
+      <pubDate>Fri, 05 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Feeder cattle closed $353.38, up 3.2% in the biggest session since the Cargill lockout began. Live cattle followed with a 1.6% gain to $241.68, both contracts bouncing hard off Wednesday's lows on reports the Fort Morgan situation might finally resolve. The grain liquidation that dominated the week stayed liquid-corn lost another penny to $4.21-but cattle just answered the week's question: liquidation finished, weather takes control next week.
+Cargill lockout pressure finally breaks, live cattle follow feeders up 1.6% in the biggest session since May.
+• CATTLE COMPLEX RUNS HIGHER
+• GRAINS FINISH LIQUIDATION WEEK
+• CRUDE LOSES IRAN PREMIUM
+Read more: https://agsist.com/daily/2026-06-05</description>
+    </item>
     <item>
       <title>CATTLE COMPLEX FLIPS HIGHER, GRAINS EXTEND SLIDE</title>
       <link>https://agsist.com/daily/2026-06-04</link>
@@ -357,18 +369,6 @@ Feeder strength confirms the breakdown thesis is dead while crude's 3% drop cuts
 • Grains Drift Higher on Energy Relief
 • Energy Costs Crater on Iran Deal Talk
 Read more: https://agsist.com/daily/2026-05-07</description>
-    </item>
-    <item>
-      <title>CATTLE SURGE PAST $252 AS CRUDE CRASHES</title>
-      <link>https://agsist.com/daily/2026-05-06</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-06</guid>
-      <pubDate>Wed, 06 May 2026 05:00:00 -0600</pubDate>
-      <description>Cattle closed $252.93, up 4% and back above the $252 line that broke last week. But the real story is feeders: $372.23, up 1.4% and finally leading higher instead of dragging the complex down. When the laggard becomes the leader, the breakdown thesis dies. Oil's 6% crash to $94.54 removes the cost squeeze that's been pressuring margins.
-Feeder strength flips the script while oil's 6% drop eases cost pressures across the board.
-• Cattle Rally Past $252
-• Grains Drift on Profit Taking
-• Oil Crash Eases Costs
-Read more: https://agsist.com/daily/2026-05-06</description>
     </item>
   </channel>
 </rss>
