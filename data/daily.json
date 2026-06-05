@@ -1,104 +1,104 @@
 {
-  "headline": "FEEDERS MOVE HIGHER 3.2%, CATTLE COMPLEX SNAPS HIGHER",
-  "subheadline": "Cargill lockout pressure finally breaks, live cattle follow feeders up 1.6% in the biggest session since May.",
-  "lead": "Feeder cattle closed $353.38, up 3.2% in the biggest session since the Cargill lockout began. Live cattle followed with a 1.6% gain to $241.68, both contracts bouncing hard off Wednesday's lows on reports the Fort Morgan situation might finally resolve. The grain liquidation that dominated the week stayed liquid-corn lost another penny to $4.21-but cattle just answered the week's question: liquidation finished, weather takes control next week.",
-  "the_takeaway": "Cattle lockout pressure breaks, feeders lead the complex higher.",
-  "teaser": "Feeders move higher 3.2% as Cargill lockout pressure finally cracks.",
+  "headline": "CATTLE COMPLEX LEADS, GRAINS FINISH LIQUIDATION WEEK",
+  "subheadline": "Feeders run 3.2% higher as livestock breaks four-day slide, grains close week mixed after fund stepping out.",
+  "lead": "Feeders closed $353.38, up 3.2% in their biggest session gain in three weeks, dragging live cattle $241.68 higher by 1.6% as the livestock complex finally answered the question that's been hanging over the week. The grain liquidation that started Monday finished quietly: corn down a penny to $4.21, beans flat at $11.28, wheat the only winner at $5.83. The funds found their exit door in grains and slammed it shut. Cattle found buyers willing to step up after Wednesday's breakdown.",
+  "the_takeaway": "Grain liquidation finished, cattle complex found its floor, week's question answered.",
+  "teaser": "Feeders move higher 3.2% as livestock breaks slide, grain stepping out ends quietly.",
   "one_number": {
-    "value": "11",
-    "unit": "days since the Cargill lockout began",
-    "context": "Fort Morgan and Schuyler plants locked out 1,700 workers on May 19, removing 6,000 head of daily processing capacity. Today's 3.2% feeder move higher suggests the market believes resolution is coming. The lockout created a processing bottleneck that drove feeders down 8% while live cattle held-today that spread snapped back hard."
+    "value": "3.2%",
+    "unit": "feeder cattle session gain",
+    "context": "Biggest one-day move in three weeks for feeders, breaking four straight sessions of weakness that had traders questioning whether the livestock complex had found support. Live cattle followed with 1.6%, confirming the reversal wasn't just thin trade but actual buying interest stepping in after Wednesday's breakdown tested $240."
   },
   "yesterdays_call": {
-    "summary": "Called that cattle liquidation was exhausted and both contracts would bounce hard off Wednesday's lows.",
+    "summary": "Called livestock liquidation exhausted, both contracts bouncing hard off Wednesday's lows.",
     "outcome": "played_out",
-    "note": "The bounce came bigger and cleaner than expected, feeders leading live by 160 basis points."
+    "note": "Feeders led exactly as the reversal scenario required, live cattle confirmed the call."
   },
   "sections": [
     {
       "index": 0,
-      "title": "CATTLE COMPLEX RUNS HIGHER",
+      "title": "CATTLE COMPLEX GAINS HIGHER",
       "icon": "🐂",
-      "body": "Feeders **ran 3.2%** to $353.38, the biggest session since the Cargill lockout began eleven days ago. Live cattle followed with a 1.6% gain to $241.68, both contracts reversing Wednesday's breakdown in convincing fashion. The **lockout premium is deflating**-reports suggest Fort Morgan negotiations are advancing, though no official resolution yet. Funds that sold the processing bottleneck are covering into strength. The feeder/live ratio tightened to 1.46 from 1.48 Wednesday, normal seasonal behavior when processing constraints ease.",
-      "bottom_line": "Processing bottleneck premium unwinding, both contracts bouncing hard.",
-      "conviction_level": "high",
+      "body": "Feeders closed $353.38, up 3.2% in their biggest session in three weeks, dragging live cattle $241.68 higher by 1.6% as buyers finally stepped in after Wednesday's breakdown. The **New World screwworm discovery in south Texas** triggered movement restrictions but Agriculture Secretary Rollins said it won't compromise cattle movement, calming disease fears that had been weighing on the complex. Feeders led the bounce exactly like they should when the selling pressure exhausts. Live cattle followed, confirming this wasn't thin trade but real buying interest at these levels.",
+      "bottom_line": "Liquidation finished, buyers stepped in, feeders leading the way back up.",
+      "conviction_level": "medium",
       "overnight_surprise": true,
       "farmer_action": ""
     },
     {
-      "title": "GRAINS FINISH LIQUIDATION WEEK",
-      "icon": "🌾",
-      "body": "Corn closed $4.21, down another penny in the **fourth straight session** of fund selling. Soybeans held $11.28, off just a penny, but the Dec contract lost 1.5 cents as the carry widened again. Wheat bucked the trend, gaining 2 cents to $5.83 on short covering ahead of the weekend. **Open interest dropped 15,000 contracts** across the grain complex Friday-somebody finished taking profits. The planting season behind-schedule premium is gone, replaced by normal June weather watch.",
-      "catalyst": "No specific catalyst, fund liquidation completing weekly selling cycle",
-      "bottom_line": "Fund selling cycle completes, normal June weather watch begins Monday.",
-      "conviction_level": "medium",
+      "title": "GRAINS CLOSE LIQUIDATION WEEK",
+      "icon": "🌽",
+      "body": "Corn closed $4.21, down a penny and 0.3% to finish a week that saw the funds rotate out with no drama. Soybeans managed $11.28, flat on the session after giving back 47 cents since Monday's high. Wheat bucked the trend at $5.83, up 2¼ cents as **Oman oil terminal attacks** reminded traders the Middle East isn't calm yet. The grain liquidation that started Monday finished exactly like it should: quietly, with no new selling pressure and no weather premium building yet. Fund rotation complete, new buyers wait for a catalyst.",
+      "catalyst": "Oman oil terminal attack adds geopolitical premium to wheat",
+      "bottom_line": "Fund stepping out finished quietly, waiting for new catalyst to drive next move.",
+      "conviction_level": "low",
       "overnight_surprise": false,
-      "vs_yesterday": "Grains: liquidation extended exactly as flagged, wheat showing first resistance"
+      "vs_yesterday": "Grains: liquidation week ended exactly as called, funds rotated out clean."
     },
     {
-      "title": "CRUDE LOSES IRAN PREMIUM",
+      "title": "ENERGY MARKS TIME",
       "icon": "⛽",
-      "body": "WTI crude closed $92.86, down 30 cents as **Iran-Hormuz tensions continue easing** on diplomatic progress. The strait premium that built since early April is deflating methodically-crude lost 19% in May and gave back another 0.3% today. Natural gas dropped 1.1% to $3.31 on storage builds and mild weather forecasts. Energy's the mirror image of cattle: geopolitical premium deflating while processing premiums (refineries running hard into summer) firm the crack spreads.",
-      "catalyst": "Continued Iran-Hormuz diplomatic progress via Swiss intermediaries",
-      "bottom_line": "Geopolitical premium keeps deflating, crack spreads firm on refinery runs.",
-      "conviction_level": "medium",
+      "body": "Crude closed $92.86, down 29 cents as **Oman terminal attacks** added geopolitical risk but couldn't sustain the Iran premium that's been deflating since May. Natural gas fell to $3.31, down 1.1% on storage builds running ahead of seasonal. The energy complex is marking time between the Iran tensions that peaked in April and whatever catalyst comes next. Crude's holding above $90 but the conviction isn't there for another run at $100.",
+      "catalyst": "Oman oil terminal attack adds risk but fails to sustain premium",
+      "bottom_line": "Geopolitical risk present but not driving sustained energy rally.",
+      "conviction_level": "low",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "New World screwworm confirmed in south Texas calf",
-      "body": "USDA confirmed the parasitic fly 31 miles from the US border, triggering livestock movement restrictions. Agriculture Secretary Rollins says cattle movement won't be 'compromised,' but the discovery adds regulatory uncertainty to an already volatile cattle market.",
-      "tag": "DISEASE"
-    },
-    {
       "title": "EU suspends fertilizer tariffs for one year",
-      "body": "European Commission drops all import tariffs on nitrogen fertilizers to cut farmer input costs by €60 million. The move signals continued global pressure on fertilizer supply chains, potentially affecting US nitrogen pricing as European demand shifts.",
+      "body": "European Commission dropped all import tariffs on fertilizer to cut farmer input costs by €60 million annually. The move signals growing recognition that food security requires affordable inputs, not trade protection.",
       "tag": "POLICY"
     },
     {
-      "title": "House passes FY2027 Ag appropriations along party lines",
-      "body": "The bill passed 213-210 Thursday with five Republicans crossing party lines. The vote sets up Senate negotiations on farm program funding levels and rural development priorities heading into the next growing season.",
+      "title": "House passes FY2027 Ag appropriations bill",
+      "body": "The bill cleared 213-210 along party lines Thursday, setting up Senate negotiations on rural development and conservation funding. Partisan split suggests farm bill negotiations will stay messy through election season.",
+      "tag": "POLICY"
+    },
+    {
+      "title": "USDA staff won't relocate, survey shows",
+      "body": "Over 80% of Food and Nutrition Service employees say they won't move if required, according to union survey. The resistance could complicate any administration plans to reorganize USDA operations outside Washington.",
       "tag": "POLICY"
     }
   ],
   "spread_to_watch": {
-    "label": "Feeder cattle / live cattle ratio",
-    "level": "1.46 ratio, tightening from Wednesday's 1.48",
-    "commentary": "The ratio gained during the Cargill lockout as processing bottlenecks hurt feeders more than live cattle. Today's tightening says the market believes the processing constraint is easing. Watch for a move toward the seasonal 1.44 if lockout resolution becomes official."
+    "label": "Live cattle / feeder ratio",
+    "level": "0.684 ratio, tightening",
+    "commentary": "Feeders outrunning live cattle today means the feeder discount is shrinking, exactly what happens when buyers step back into the complex after liquidation. When feeders lead higher, it's usually real money, not just short covering."
   },
   "basis": {
-    "headline": "Eastern Belt corn basis firms on ethanol maintenance return",
-    "body": "**Eastern Belt corn basis tightening** as ethanol plants finish scheduled maintenance and restart operations. Producers east of the Mississippi with old-crop inventory have a window the futures board alone isn't pricing. Western Belt staying soft, consistent with the seasonal as river system opens transportation capacity."
+    "headline": "Eastern Belt corn basis steady, feedlots bidding cattle higher",
+    "body": "Corn basis holding firm in Ohio and Indiana as ethanol plants maintain grind pace through summer maintenance season. **Cattle basis tightening** in Nebraska and Kansas as feedlots compete for replacement cattle after this week's price break. The livestock basis move confirms the futures bounce has cash market support."
   },
   "weekly_thread": {
     "question": "Will the grain liquidation finish before weather takes control of the story?",
     "day": 5,
-    "status_text": "The answer is yes. Fund selling cycle completed this week with 15,000 contracts of open interest liquidated Friday. Normal June weather watch begins Monday-the calendar hands control back to Mother Nature."
+    "status_text": "Answer: Yes. The grain liquidation finished this week exactly as quiet fund rotation, no weather premium building yet. Weather takes over when prevent-plant deadlines start hitting in two weeks."
   },
   "the_more_you_know": {
-    "title": "Why lockout premiums snap back faster than they build",
-    "body": "Today's 3.2% feeder move higher on lockout resolution reports shows why processing bottlenecks create asymmetric risk. The Cargill Fort Morgan lockout took eleven days to drive feeders down 8%, but just one session of resolution hope brought back 3.2%. Markets price worst-case scenarios into processing disruptions, then unwind the premium violently when normal operations return. The 1,700 locked-out workers represent 2% of weekly US slaughter capacity-small in aggregate, massive in local markets where the plants operate."
+    "title": "Why feeder cattle leads the livestock complex back up",
+    "body": "Today's 3.2% feeder move higher versus 1.6% live cattle gain shows the replacement cattle market driving the recovery. When feedlots need cattle, they bid feeders first because that's where the supply constraint hits. Live cattle follows because packer demand stays steady, but feeders lead because that's where the marginal buyer has to pay up. The 0.684 ratio tightening to its narrowest in two weeks confirms real buying interest, not just short covering."
   },
   "watch_list": [
     {
-      "time": "Monday 3 PM CT",
-      "desc": "USDA Crop Progress: corn above 50% planted keeps normal weather watch, below 45% adds prevent-plant premium"
-    },
-    {
-      "time": "Tuesday morning",
-      "desc": "Cargill Fort Morgan lockout resolution announcement"
+      "time": "Monday 3:00 PM CT",
+      "desc": "USDA Crop Progress: corn planting above 50% confirms Belt on schedule"
     },
     {
       "time": "Thursday 7:30 AM CT",
-      "desc": "Weekly export sales: soy under 400K MT keeps fund pressure on beans"
+      "desc": "Weekly export sales: beans under 200K MT keeps demand story quiet"
+    },
+    {
+      "time": "Next week",
+      "desc": "Iran-Hormuz diplomatic progress: any escalation brings energy premium back"
     }
   ],
   "daily_quote": {
     "text": "Don't count your chickens before they hatch.",
     "attribution": "Aesop"
   },
-  "source_summary": "CBOT/CME settlement prices, USDA reports, industry trade publications",
+  "source_summary": "CME Group, USDA, news wires, industry reports",
   "date": "Friday, June 5, 2026",
   "meta": {
     "market_mood": "mixed",
@@ -175,8 +175,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 85,
-  "generated_at": "2026-06-05T13:17:11.942148+00:00",
+  "issue_number": 86,
+  "generated_at": "2026-06-05T13:54:22.799101+00:00",
   "generator_version": "4.6.1",
   "surprise_count": 2,
   "surprises": [
@@ -202,26 +202,26 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-06-05T13:17:26.440164+00:00",
+    "ran_at": "2026-06-05T13:54:42.436358+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
       "rule_2_conviction_earned": 7,
       "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 8,
-      "rule_5_bottom_lines_synthesize": 7,
+      "rule_4_watch_conditional": 6,
+      "rule_5_bottom_lines_synthesize": 8,
       "rule_6_quiet_days_quiet": 8,
       "rule_7_continuity": 8,
       "rule_8_basis_directional": 9,
       "rule_9_voice": 8,
-      "rule_10_forward_test": 8,
-      "rule_11_thread_coherence": 9,
+      "rule_10_forward_test": 7,
+      "rule_11_thread_coherence": 8,
       "rule_12_spread_quality": 9,
       "rule_13_yc_honesty": 9,
       "rule_14_level_coherence": 1,
-      "rule_15_one_number_coherence": 9,
+      "rule_15_one_number_coherence": 10,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 8
+      "rule_17_macro_anchoring": 7
     },
     "rewrites_applied": [
       {
@@ -232,20 +232,20 @@
           "rule_1_lead_so_what": 8,
           "rule_2_conviction_earned": 7,
           "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 8,
-          "rule_5_bottom_lines_synthesize": 7,
+          "rule_4_watch_conditional": 6,
+          "rule_5_bottom_lines_synthesize": 8,
           "rule_6_quiet_days_quiet": 8,
           "rule_7_continuity": 8,
           "rule_8_basis_directional": 9,
           "rule_9_voice": 8,
-          "rule_10_forward_test": 8,
-          "rule_11_thread_coherence": 9,
+          "rule_10_forward_test": 7,
+          "rule_11_thread_coherence": 8,
           "rule_12_spread_quality": 9,
           "rule_13_yc_honesty": 9,
           "rule_14_level_coherence": 1,
-          "rule_15_one_number_coherence": 9,
+          "rule_15_one_number_coherence": 10,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 8
+          "rule_17_macro_anchoring": 7
         }
       }
     ],
