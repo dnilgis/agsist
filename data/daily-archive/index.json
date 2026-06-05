@@ -3,10 +3,10 @@
     {
       "date": "2026-06-05",
       "date_display": "Friday, June 5, 2026",
-      "headline": "CATTLE COMPLEX LEADS, GRAINS FINISH LIQUIDATION WEEK",
-      "teaser": "Feeders move higher 3.2% as livestock breaks slide, grain stepping out ends quietly.",
-      "market_mood": "mixed",
-      "surprise_count": 2,
+      "headline": "GRAINS FINISH FOUR-DAY SLIDE, METALS FALL SHARPLY",
+      "teaser": "Four-day grain slide concludes as fund liquidation overwhelms weather support.",
+      "market_mood": "bearish",
+      "surprise_count": 8,
       "sections": 3,
       "url": "/daily/2026-06-05",
       "market_closed": false,
@@ -942,6 +942,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-05T13:54:42.483587+00:00",
+  "updated": "2026-06-05T21:23:34.544097+00:00",
   "count": 85
 }

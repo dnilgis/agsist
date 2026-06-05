@@ -1,130 +1,131 @@
 {
-  "headline": "CATTLE COMPLEX LEADS, GRAINS FINISH LIQUIDATION WEEK",
-  "subheadline": "Feeders run 3.2% higher as livestock breaks four-day slide, grains close week mixed after fund stepping out.",
-  "lead": "Feeders closed $353.38, up 3.2% in their biggest session gain in three weeks, dragging live cattle $241.68 higher by 1.6% as the livestock complex finally answered the question that's been hanging over the week. The grain liquidation that started Monday finished quietly: corn down a penny to $4.21, beans flat at $11.28, wheat the only winner at $5.83. The funds found their exit door in grains and slammed it shut. Cattle found buyers willing to step up after Wednesday's breakdown.",
-  "the_takeaway": "Grain liquidation finished, cattle complex found its floor, week's question answered.",
-  "teaser": "Feeders move higher 3.2% as livestock breaks slide, grain stepping out ends quietly.",
+  "headline": "GRAINS FINISH FOUR-DAY SLIDE, METALS FALL SHARPLY",
+  "subheadline": "Silver leads commodity selling as dollar strength and fund liquidation converge.",
+  "lead": "Corn closed $4.18, down 4 cents and finishing a four-day slide that's erased 18 cents since Monday's open. The grain liquidation finally got its answer this week: weather didn't take control, fund selling did. Silver's 6.8% fall sharply led the commodity selling as dollar strength hit everything from gold to crude, but grains were already bleeding before the macro storm hit.",
+  "the_takeaway": "The grain liquidation finished before weather could rescue it.",
+  "teaser": "Four-day grain slide concludes as fund liquidation overwhelms weather support.",
   "one_number": {
-    "value": "3.2%",
-    "unit": "feeder cattle session gain",
-    "context": "Biggest one-day move in three weeks for feeders, breaking four straight sessions of weakness that had traders questioning whether the livestock complex had found support. Live cattle followed with 1.6%, confirming the reversal wasn't just thin trade but actual buying interest stepping in after Wednesday's breakdown tested $240."
+    "value": "18",
+    "unit": "cents corn lost this week",
+    "context": "Corn dropped 18 cents from Monday's open through today's close, the sharpest four-session decline since March. Fund liquidation drove the move, not weather, as crop conditions remain generally favorable and export demand stays weak. The selling exhausted itself today with corn holding above the $4.15 technical floor."
   },
   "yesterdays_call": {
-    "summary": "Called livestock liquidation exhausted, both contracts bouncing hard off Wednesday's lows.",
+    "summary": "Cattle liquidation exhausted, both contracts bounced hard off Wednesday's lows.",
     "outcome": "played_out",
-    "note": "Feeders led exactly as the reversal scenario required, live cattle confirmed the call."
+    "note": "Cattle held gains from yesterday's bounce while broader commodities fell apart."
   },
   "sections": [
     {
-      "index": 0,
-      "title": "CATTLE COMPLEX GAINS HIGHER",
-      "icon": "🐂",
-      "body": "Feeders closed $353.38, up 3.2% in their biggest session in three weeks, dragging live cattle $241.68 higher by 1.6% as buyers finally stepped in after Wednesday's breakdown. The **New World screwworm discovery in south Texas** triggered movement restrictions but Agriculture Secretary Rollins said it won't compromise cattle movement, calming disease fears that had been weighing on the complex. Feeders led the bounce exactly like they should when the selling pressure exhausts. Live cattle followed, confirming this wasn't thin trade but real buying interest at these levels.",
-      "bottom_line": "Liquidation finished, buyers stepped in, feeders leading the way back up.",
+      "title": "GRAINS FINISH FOUR-DAY SLIDE",
+      "icon": "🌾",
+      "body": "Corn finished $4.18, down 4 cents in the lightest volume of the week. The four-day liquidation that started Monday finally ran out of sellers, but not before erasing 18 cents from the July contract. Soybeans closed $11.22, down 7 cents, with **favorable crop conditions** removing any weather premium from the board. Export demand remains weak and the funds are done rotating out of grains into other sectors. December corn's 25-cent discount to July widened another penny, telling you the carry trade is working exactly as it should when nobody wants to own old crop.",
+      "catalyst": "Weather favorable for crop development, export demand remains weak",
+      "bottom_line": "Four-day slide exhausted, but no catalyst to reverse it yet.",
       "conviction_level": "medium",
+      "overnight_surprise": false,
+      "vs_yesterday": "Grains: selling finally exhausted, volume lightest of the week"
+    },
+    {
+      "index": 1,
+      "title": "METALS FALL SHARPLY ON DOLLAR STRENGTH",
+      "icon": "🥈",
+      "body": "Silver dropped 6.8% to $67.91, its biggest single-session fall since February, as **dollar strength** hit every precious metal on the board. Gold fell 2.6% to $4,350, giving back this week's premium from Iran-Iraq tensions over Strait of Hormuz shipping lanes, ongoing since late May, as diplomatic progress deflates the geopolitical bid. The DXY pushed above $100 for the first time in six weeks, and metals got the message. Industrial demand for silver remains strong, but when the dollar moves 70 basis points in a session, fundamentals take a back seat to fund positioning.",
+      "bottom_line": "Dollar strength overwhelmed industrial silver demand fundamentals.",
+      "conviction_level": "high",
       "overnight_surprise": true,
       "farmer_action": ""
     },
     {
-      "title": "GRAINS CLOSE LIQUIDATION WEEK",
-      "icon": "🌽",
-      "body": "Corn closed $4.21, down a penny and 0.3% to finish a week that saw the funds rotate out with no drama. Soybeans managed $11.28, flat on the session after giving back 47 cents since Monday's high. Wheat bucked the trend at $5.83, up 2¼ cents as **Oman oil terminal attacks** reminded traders the Middle East isn't calm yet. The grain liquidation that started Monday finished exactly like it should: quietly, with no new selling pressure and no weather premium building yet. Fund rotation complete, new buyers wait for a catalyst.",
-      "catalyst": "Oman oil terminal attack adds geopolitical premium to wheat",
-      "bottom_line": "Fund stepping out finished quietly, waiting for new catalyst to drive next move.",
-      "conviction_level": "low",
+      "title": "CATTLE HOLDS YESTERDAY'S BOUNCE",
+      "icon": "🐄",
+      "body": "Live cattle closed $241.62, flat on the day but holding yesterday's bounce from the $240 floor. Feeders added 10 cents to $353.73, showing the **tight ready supplies** that drove both contracts higher Thursday. The ongoing Cargill Fort Morgan/Schuyler plant lockout that began Tuesday May 19 continues to constrain processing, keeping fed supplies tight even as feeder demand stays patient. Box beef cutout held steady, no new information from the cash trade, and the contracts marked time while the rest of the commodity complex fell apart.",
+      "catalyst": "Tight ready supplies from ongoing plant lockout",
+      "bottom_line": "Processing constraints still supporting both cattle contracts.",
+      "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Grains: liquidation week ended exactly as called, funds rotated out clean."
-    },
-    {
-      "title": "ENERGY MARKS TIME",
-      "icon": "⛽",
-      "body": "Crude closed $92.86, down 29 cents as **Oman terminal attacks** added geopolitical risk but couldn't sustain the Iran premium that's been deflating since May. Natural gas fell to $3.31, down 1.1% on storage builds running ahead of seasonal. The energy complex is marking time between the Iran tensions that peaked in April and whatever catalyst comes next. Crude's holding above $90 but the conviction isn't there for another run at $100.",
-      "catalyst": "Oman oil terminal attack adds risk but fails to sustain premium",
-      "bottom_line": "Geopolitical risk present but not driving sustained energy rally.",
-      "conviction_level": "low",
-      "overnight_surprise": false
+      "vs_yesterday": "Cattle: held yesterday's bounce while broader commodities fell sharply"
     }
   ],
   "outside_the_pit": [
     {
-      "title": "EU suspends fertilizer tariffs for one year",
-      "body": "European Commission dropped all import tariffs on fertilizer to cut farmer input costs by €60 million annually. The move signals growing recognition that food security requires affordable inputs, not trade protection.",
+      "title": "New World Screwworm Detected in South Texas",
+      "body": "Livestock vets urge calm after confirmation of the parasitic fly 31 miles from the US border. The screwworm eats warm-blooded animals alive and was eradicated from the US decades ago, but Mexico cases are climbing.",
+      "tag": "DISEASE"
+    },
+    {
+      "title": "EU Suspends Fertilizer Tariffs for One Year",
+      "body": "European Commission drops import tariffs to help farmers cut input costs, saving around €60 million on nitrogen fertilizers. Move signals global input cost pressure remains elevated despite lower commodity prices.",
       "tag": "POLICY"
     },
     {
-      "title": "House passes FY2027 Ag appropriations bill",
-      "body": "The bill cleared 213-210 along party lines Thursday, setting up Senate negotiations on rural development and conservation funding. Partisan split suggests farm bill negotiations will stay messy through election season.",
-      "tag": "POLICY"
-    },
-    {
-      "title": "USDA staff won't relocate, survey shows",
-      "body": "Over 80% of Food and Nutrition Service employees say they won't move if required, according to union survey. The resistance could complicate any administration plans to reorganize USDA operations outside Washington.",
-      "tag": "POLICY"
+      "title": "SPR Borrowers Owe 40 Million Extra Barrels",
+      "body": "Energy Secretary Wright says companies that borrowed crude from Strategic Petroleum Reserve during Iran conflict owe Uncle Sam 40 million more barrels than expected. The government's emergency oil refill could be surprisingly lucrative.",
+      "tag": "TRADE"
     }
   ],
   "spread_to_watch": {
-    "label": "Live cattle / feeder ratio",
-    "level": "0.684 ratio, tightening",
-    "commentary": "Feeders outrunning live cattle today means the feeder discount is shrinking, exactly what happens when buyers step back into the complex after liquidation. When feeders lead higher, it's usually real money, not just short covering."
+    "label": "December corn / July corn carry",
+    "level": "25 cents wide, widening",
+    "commentary": "Old crop wants out, new crop can wait. The carry widened another penny today to 25 cents, exactly what you'd expect when funds are liquidating front months and producers aren't ready to price December bushels. When this spread stops widening, the grain liquidation is done."
   },
   "basis": {
-    "headline": "Eastern Belt corn basis steady, feedlots bidding cattle higher",
-    "body": "Corn basis holding firm in Ohio and Indiana as ethanol plants maintain grind pace through summer maintenance season. **Cattle basis tightening** in Nebraska and Kansas as feedlots compete for replacement cattle after this week's price break. The livestock basis move confirms the futures bounce has cash market support."
+    "headline": "Eastern Belt corn basis firming on ethanol restart",
+    "body": "Ethanol grind is coming back online after spring maintenance shutdowns, and **Eastern Belt basis is responding**. Producers east of the Mississippi with old-crop bushels in storage have a window the futures board alone isn't pricing. Western Belt staying soft, consistent with the seasonal pattern."
   },
   "weekly_thread": {
     "question": "Will the grain liquidation finish before weather takes control of the story?",
     "day": 5,
-    "status_text": "Answer: Yes. The grain liquidation finished this week exactly as quiet fund rotation, no weather premium building yet. Weather takes over when prevent-plant deadlines start hitting in two weeks."
+    "status_text": "The grain liquidation finished first. Weather stayed favorable all week, no premium built, and fund selling exhausted itself today in light volume. The answer was clear by Wednesday, confirmed by Friday's close."
   },
   "the_more_you_know": {
-    "title": "Why feeder cattle leads the livestock complex back up",
-    "body": "Today's 3.2% feeder move higher versus 1.6% live cattle gain shows the replacement cattle market driving the recovery. When feedlots need cattle, they bid feeders first because that's where the supply constraint hits. Live cattle follows because packer demand stays steady, but feeders lead because that's where the marginal buyer has to pay up. The 0.684 ratio tightening to its narrowest in two weeks confirms real buying interest, not just short covering."
+    "title": "18 cents in four days: when selling has no catalyst",
+    "body": "Corn's 18-cent drop this week had no weather catalyst, no USDA surprise, no export shock. Just systematic fund liquidation as managed money rotated out of grains into other sectors. When selling pressure builds without news, it tends to exhaust itself quickly-exactly what happened today in the lightest volume of the week. The market's telling you the liquidation ran its course, even if it hasn't found a reason to reverse yet."
   },
   "watch_list": [
     {
-      "time": "Monday 3:00 PM CT",
-      "desc": "USDA Crop Progress: corn planting above 50% confirms Belt on schedule"
+      "time": "Monday 3:00 PM",
+      "desc": "USDA Crop Progress: corn above 85% planted confirms Belt is ahead of schedule"
     },
     {
-      "time": "Thursday 7:30 AM CT",
-      "desc": "Weekly export sales: beans under 200K MT keeps demand story quiet"
+      "time": "Tuesday morning",
+      "desc": "Cattle cash trade: above $242 live confirms processing constraint premium"
     },
     {
-      "time": "Next week",
-      "desc": "Iran-Hormuz diplomatic progress: any escalation brings energy premium back"
+      "time": "Thursday 7:30 AM",
+      "desc": "Weekly export sales: corn above 800K MT suggests demand finally firming"
     }
   ],
   "daily_quote": {
-    "text": "Don't count your chickens before they hatch.",
-    "attribution": "Aesop"
+    "text": "It's tough to make predictions, especially about the future.",
+    "attribution": "Yogi Berra"
   },
-  "source_summary": "CME Group, USDA, news wires, industry reports",
+  "source_summary": "USDA, CME, news wires",
   "date": "Friday, June 5, 2026",
   "meta": {
-    "market_mood": "mixed",
-    "heat_section": 0,
-    "overnight_surprises_count": 2
+    "market_mood": "bearish",
+    "heat_section": 1,
+    "overnight_surprises_count": 8
   },
   "locked_prices": {
-    "corn": 4.2075,
-    "corn-dec": 4.485,
-    "beans": 11.28,
-    "beans-nov": 11.4275,
-    "wheat": 5.8325,
-    "oats": 3.205,
-    "cattle": 241.675,
-    "feeders": 353.375,
-    "hogs": 101.625,
-    "milk": 16.86,
-    "meal": 314.10001,
-    "soyoil": 76.42,
-    "crude": 92.86,
-    "natgas": 3.315,
-    "gold": 4493.3999,
-    "silver": 73.0,
-    "dollar": 99.201,
-    "sp500": 7584.31006,
-    "bitcoin": 62277.32031
+    "corn": 4.18,
+    "corn-dec": 4.4675,
+    "beans": 11.2225,
+    "beans-nov": 11.39,
+    "wheat": 5.8025,
+    "oats": 3.13,
+    "cattle": 241.625,
+    "feeders": 353.72501,
+    "hogs": 98.7,
+    "milk": 16.75,
+    "meal": 308.70001,
+    "soyoil": 74.14,
+    "crude": 90.25,
+    "natgas": 3.221,
+    "gold": 4350.2998,
+    "silver": 67.905,
+    "dollar": 100.067,
+    "sp500": 7383.74023,
+    "bitcoin": 61640.0
   },
   "chart_series": {
     "corn": [
@@ -137,7 +138,7 @@
       4.41,
       4.37,
       4.25,
-      4.21
+      4.18
     ],
     "soybeans": [
       11.9,
@@ -149,7 +150,7 @@
       11.66,
       11.66,
       11.4,
-      11.28
+      11.22
     ],
     "wheat": [
       6.28,
@@ -161,7 +162,7 @@
       6.01,
       5.94,
       5.88,
-      5.83
+      5.8
     ]
   },
   "sponsor": {
@@ -176,25 +177,73 @@
     "is_house_ad": true
   },
   "issue_number": 86,
-  "generated_at": "2026-06-05T13:54:22.799101+00:00",
+  "generated_at": "2026-06-05T21:23:19.295021+00:00",
   "generator_version": "4.6.1",
-  "surprise_count": 2,
+  "surprise_count": 8,
   "surprises": [
     {
-      "commodity": "Feeder Cattle",
-      "key": "feeders",
-      "price": "$353.38",
-      "pct_change": 3.1526,
-      "direction": "up",
-      "surprise_magnitude": 2.1
+      "commodity": "Silver",
+      "key": "silver",
+      "price": "$67.91",
+      "pct_change": -6.8455,
+      "direction": "down",
+      "surprise_magnitude": 2.7
     },
     {
-      "commodity": "Live Cattle",
-      "key": "cattle",
-      "price": "$241.68",
-      "pct_change": 1.6082,
+      "commodity": "Gold",
+      "key": "gold",
+      "price": "$4,350",
+      "pct_change": -2.643,
+      "direction": "down",
+      "surprise_magnitude": 1.8
+    },
+    {
+      "commodity": "S&P 500",
+      "key": "sp500",
+      "price": "$7383.74",
+      "pct_change": -2.6445,
+      "direction": "down",
+      "surprise_magnitude": 1.8
+    },
+    {
+      "commodity": "Lean Hogs",
+      "key": "hogs",
+      "price": "$98.70",
+      "pct_change": -2.8782,
+      "direction": "down",
+      "surprise_magnitude": 1.4
+    },
+    {
+      "commodity": "US Dollar Index",
+      "key": "dollar",
+      "price": "$100.07",
+      "pct_change": 0.6558,
       "direction": "up",
+      "surprise_magnitude": 1.3
+    },
+    {
+      "commodity": "Soybean Oil",
+      "key": "soyoil",
+      "price": "$74.14",
+      "pct_change": -3.1103,
+      "direction": "down",
+      "surprise_magnitude": 1.2
+    },
+    {
+      "commodity": "Oats",
+      "key": "oats",
+      "price": "$3.13/bu",
+      "pct_change": -2.7195,
+      "direction": "down",
       "surprise_magnitude": 1.1
+    },
+    {
+      "commodity": "WTI Crude Oil",
+      "key": "crude",
+      "price": "$90.25",
+      "pct_change": -3.1029,
+      "direction": "down",
+      "surprise_magnitude": 1.0
     }
   ],
   "price_validation_clean": true,
@@ -202,50 +251,50 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-06-05T13:54:42.436358+00:00",
+    "ran_at": "2026-06-05T21:23:34.495267+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
       "rule_2_conviction_earned": 7,
       "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 6,
-      "rule_5_bottom_lines_synthesize": 8,
+      "rule_4_watch_conditional": 8,
+      "rule_5_bottom_lines_synthesize": 7,
       "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 8,
+      "rule_7_continuity": 9,
       "rule_8_basis_directional": 9,
       "rule_9_voice": 8,
-      "rule_10_forward_test": 7,
-      "rule_11_thread_coherence": 8,
+      "rule_10_forward_test": 8,
+      "rule_11_thread_coherence": 9,
       "rule_12_spread_quality": 9,
       "rule_13_yc_honesty": 9,
-      "rule_14_level_coherence": 1,
-      "rule_15_one_number_coherence": 10,
+      "rule_14_level_coherence": 9,
+      "rule_15_one_number_coherence": 9,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 7
+      "rule_17_macro_anchoring": 5
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "section[0]",
-        "rule": "rule_14_level_coherence",
+        "target": "section[1]",
+        "rule": "rule_17_macro_anchoring",
         "scores_before": {
           "rule_1_lead_so_what": 8,
           "rule_2_conviction_earned": 7,
           "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 6,
-          "rule_5_bottom_lines_synthesize": 8,
+          "rule_4_watch_conditional": 8,
+          "rule_5_bottom_lines_synthesize": 7,
           "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 8,
+          "rule_7_continuity": 9,
           "rule_8_basis_directional": 9,
           "rule_9_voice": 8,
-          "rule_10_forward_test": 7,
-          "rule_11_thread_coherence": 8,
+          "rule_10_forward_test": 8,
+          "rule_11_thread_coherence": 9,
           "rule_12_spread_quality": 9,
           "rule_13_yc_honesty": 9,
-          "rule_14_level_coherence": 1,
-          "rule_15_one_number_coherence": 10,
+          "rule_14_level_coherence": 9,
+          "rule_15_one_number_coherence": 9,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 7
+          "rule_17_macro_anchoring": 5
         }
       }
     ],
