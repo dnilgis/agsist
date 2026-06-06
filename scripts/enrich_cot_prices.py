@@ -60,7 +60,7 @@ SYMBOLS = {
     "beans":        "ZS=F",
     "wheat":        "ZW=F",   # SRW / Chicago
     "kcwheat":      "KE=F",   # HRW / Kansas City
-    "mplswheat":    "MW=F",   # HRS / Minneapolis (may be unavailable on Yahoo)
+    "mplswheat":    "MWE=F",  # HRS / Minneapolis (Yahoo coverage unreliable since MGEX->MIAX; failure handled gracefully below)
     "soymeal":      "ZM=F",
     "soyoil":       "ZL=F",
     "livecattle":   "LE=F",
@@ -159,7 +159,17 @@ def main():
         if not rows:
             continue
         log("fetching %s (%s) ..." % (k, sym))
-        daily = fetch_daily(sym, start, end)
+        try:
+            daily = fetch_daily(sym, start, end)
+        except Exception as e:
+            # One unavailable symbol (e.g. MPLS spring wheat on Yahoo) must NOT
+            # abort the whole job. Leave that commodity without a price -- its COT
+            # positioning still renders, only the price-divergence overlay is blank.
+            log("  WARN: %s (%s) price fetch failed: %s -- leaving without price" % (k, sym, e))
+            for r in rows:
+                r.pop("price", None)
+            missing_total += len(rows)
+            continue
         miss = 0
         for r in rows:
             p = snap_price(daily, r["date"])
