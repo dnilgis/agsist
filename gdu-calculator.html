@@ -50,6 +50,9 @@
   {"@type":"Question","name":"How do I use this GDU calculator?","acceptedAnswer":{"@type":"Answer","text":"Enter your planting date and click \u2018Fetch Real GDUs\u2019 \u2014 the calculator automatically retrieves historical weather data for your location and computes exact accumulated GDUs from planting to today. Or enter your relative maturity and average daily temperatures for a manual estimate."}}
 ]}
 </script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"AGSIST GDU Calculator","url":"https://agsist.com/gdu-calculator","applicationCategory":"Agricultural heat-unit calculator","operatingSystem":"Web browser","browserRequirements":"Requires JavaScript","description":"Free growing degree unit (GDU/GDD) calculator that auto-fetches real accumulated heat units from your planting date and location using historical weather data, projects corn and soybean crop stage and physiological maturity (black layer), and flags first-fall-frost risk.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"featureList":["Auto-fetch real GDU accumulation from historical weather","Corn and soybean growth-stage tracking","Physiological maturity / black layer projection","First fall frost risk check","Shareable per-field link"]}
+</script>
 <style>
 /* ── LAYOUT ──────────────────────────────────────────────────────────── */
 html { overflow-x: hidden; overflow-x: clip; width: 100%; }
@@ -192,6 +195,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 }
 .gdu-source { font-size:.65rem; color:var(--text-muted); text-align:center; margin-top:1.5rem; padding-top:.75rem; border-top:1px solid var(--border); }
 .gdu-source a { color:var(--gold); text-decoration:none; }
+@media (prefers-reduced-motion: reduce){ .live-dot{animation:none;} #arc-fill,.prog-fill,.prog-marker,.ms{transition:none !important;} }
 </style>
 </head>
 <body>
@@ -204,7 +208,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 <div class="gdu-hero">
   <div class="gdu-eyebrow">&#127813; Heat Unit Tracker &middot; Real Weather Data &middot; Any US Location</div>
   <h1>GDU Calculator</h1>
-  <p>Auto-fetches <em>actual</em> accumulated heat units from your planting date using real historical weather data &mdash; no manual temperature entry needed. Track corn and soybean crop stage, project black layer date, and monitor season progress by field. Works anywhere in the continental US.</p>
+  <p>Auto-fetches <em>actual</em> accumulated heat units from your planting date using real historical weather data &mdash; no manual temperature entry needed. Track corn and soybean crop stage, project black layer date, check whether your crop will mature before first fall frost, and monitor season progress by field. Works anywhere in the continental US.</p>
 </div>
 
 <div class="gdu-layout">
@@ -214,8 +218,8 @@ button,a,[role="button"]{touch-action:manipulation;}
       <div class="gdu-card-title">&#9728;&#65039; Setup</div>
 
       <div class="crop-pills">
-        <button class="crop-pill active" id="pill-corn" data-crop="corn">&#127805; Corn</button>
-        <button class="crop-pill" id="pill-bean" data-crop="bean">&#127807; Soybeans</button>
+        <button class="crop-pill active" id="pill-corn" data-crop="corn" aria-pressed="true">&#127805; Corn</button>
+        <button class="crop-pill" id="pill-bean" data-crop="bean" aria-pressed="false">&#127807; Soybeans</button>
       </div>
 
       <div class="f-group">
@@ -233,6 +237,12 @@ button,a,[role="button"]{touch-action:manipulation;}
         <label class="f-label" for="g-today">Today / End Date</label>
         <input class="f-input" id="g-today" type="date">
       </div>
+
+      <div class="f-group">
+        <label class="f-label" for="g-frost">Avg First Fall Frost (optional)</label>
+        <input class="f-input" id="g-frost" type="date">
+        <div class="f-hint">For a frost-risk check. Typical first 28&deg;F freeze: Upper Midwest ~Sep 25&ndash;Oct 5; central Corn Belt ~Oct 10&ndash;20. Check your local NWS climate normals.</div>
+      </div>
     </div>
 
     <!-- ── THE HERO FEATURE ──────────────────────────────────────── -->
@@ -244,7 +254,7 @@ button,a,[role="button"]{touch-action:manipulation;}
         <label class="f-label" for="g-zip">Your Location (ZIP or City)</label>
         <div style="display:flex;gap:.4rem">
           <input class="f-input" id="g-zip" type="text" placeholder="ZIP code or city name" maxlength="40" style="flex:1">
-          <button id="g-locate-btn" style="padding:.42rem .75rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--gold);font-size:.7rem;font-weight:700;cursor:pointer;white-space:nowrap;min-height:44px" title="Use my location">&#127757; Auto</button>
+          <button id="g-locate-btn" style="padding:.42rem .75rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--gold);font-size:.7rem;font-weight:700;cursor:pointer;white-space:nowrap;min-height:44px" aria-label="Use my current location" title="Use my location">&#127757; Auto</button>
         </div>
         <div class="f-hint" id="g-loc-display">Your location appears here after fetching</div>
       </div>
@@ -356,16 +366,18 @@ button,a,[role="button"]{touch-action:manipulation;}
         <div class="mat-card"><div class="mat-card-lbl">Days Left</div><div class="mat-card-val" id="r-days-left">&mdash;</div><div class="mat-card-sub">at current rate</div></div>
       </div>
       <div class="r-row" style="margin-top:.6rem"><span class="r-lbl">Progress to maturity</span><span class="r-val gold" id="r-pct">&mdash;</span></div>
-      <div class="r-row"><span class="r-lbl">Estimated maturity date</span><span class="r-val green" id="r-mat-date">&mdash;</span></div>
-      <div class="r-row"><span class="r-lbl">Est. black layer date</span><span class="r-val" id="r-bl-date">&mdash;</span></div>
+      <div class="r-row"><span class="r-lbl" id="r-mat-lbl">Est. maturity (black layer)</span><span class="r-val green" id="r-mat-date">&mdash;</span></div>
+      <div class="r-row"><span class="r-lbl">Frost risk</span><span class="r-val" id="r-frost-verdict">&mdash;</span></div>
       <div class="f-hint" id="r-mat-note" style="margin-top:.5rem"></div>
+      <button id="g-share-btn" type="button" style="margin-top:.7rem;width:100%;padding:.55rem;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;letter-spacing:.04em;cursor:pointer;min-height:44px">&#128279; Copy shareable link to this field</button>
+      <div class="f-hint" id="g-share-status" style="text-align:center;margin-top:.3rem" role="status" aria-live="polite"></div>
     </div>
 
     <!-- Milestones -->
     <div class="gdu-card">
       <div class="gdu-card-title" id="ms-title">&#127805; Key Growth Stage Milestones</div>
       <div class="milestones-grid" id="milestones"></div>
-      <div class="f-hint" style="margin-top:.65rem">GDU requirements vary &plusmn;100&ndash;200 by hybrid. Verify with your seed company&#8217;s published GDU chart.</div>
+      <div class="f-hint" style="margin-top:.65rem">Scaled to your selected RM/MG. GDU requirements still vary &plusmn;100&ndash;200 by hybrid &mdash; verify with your seed company&#8217;s published GDU chart.</div>
     </div>
   </div>
 </div>
@@ -505,7 +517,10 @@ var WI_HIST=[7.5,15.5,21.5,19.5,10.0]; // May-Sep avg GDU/day
 /* ─── STATE ─────────────────────────────────────────────────────────── */
 var crop='corn';
 var realAccum=null; // set when fetch succeeds
+var realDays=null;  // actual measured days from the archive (excludes pending/missing)
+var realThrough=null; // last date with real data
 var userLat=null, userLon=null;
+var ready=false; // gates persistence so initial defaults don't clobber saved state
 
 /* ─── INIT ──────────────────────────────────────────────────────────── */
 (function(){
@@ -520,7 +535,7 @@ var userLat=null, userLon=null;
       userLon=window.AGSIST_STATE.lon;
       var city=window.AGSIST_STATE.city||'';
       var state=window.AGSIST_STATE.state||'';
-      if(city){
+      if(city && !document.getElementById('g-zip').value){
         document.getElementById('g-zip').value=city+(state?', '+state:'');
         document.getElementById('g-loc-display').textContent='Location: '+city+(state?', '+state:'');
       }
@@ -535,7 +550,9 @@ document.getElementById('pill-corn').addEventListener('click',function(){
   if(crop==='corn')return; // no-op if already selected
   crop='corn';
   document.getElementById('pill-corn').classList.add('active');
+  document.getElementById('pill-corn').setAttribute('aria-pressed','true');
   document.getElementById('pill-bean').classList.remove('active');
+  document.getElementById('pill-bean').setAttribute('aria-pressed','false');
   document.getElementById('rm-lbl').textContent='Relative Maturity (RM days)';
   document.getElementById('rm-hint').textContent='Corn 80\u2013130 RM \u00b7 GDU to black layer \u2248 RM \u00d7 22 + 250';
   document.getElementById('g-rm').value=108;
@@ -546,7 +563,9 @@ document.getElementById('pill-bean').addEventListener('click',function(){
   if(crop==='bean')return;
   crop='bean';
   document.getElementById('pill-bean').classList.add('active');
+  document.getElementById('pill-bean').setAttribute('aria-pressed','true');
   document.getElementById('pill-corn').classList.remove('active');
+  document.getElementById('pill-corn').setAttribute('aria-pressed','false');
   document.getElementById('rm-lbl').textContent='Maturity Group (e.g. 3.0)';
   document.getElementById('rm-hint').textContent='MG 0.5\u20135.5 range \u00b7 GDU to maturity \u2248 MG \u00d7 500 + 800';
   document.getElementById('g-rm').value=3;
@@ -630,18 +649,26 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
     if(!data.daily||!data.daily.temperature_2m_max){throw new Error('Unexpected data format');}
     var maxArr=data.daily.temperature_2m_max;
     var minArr=data.daily.temperature_2m_min;
-    var accum=0,days=0;
+    var timeArr=data.daily.time||[];
+    var accum=0,days=0,lastValid=null;
     for(var i=0;i<maxArr.length;i++){
       if(maxArr[i]==null||minArr[i]==null)continue;
       var hi=Math.min(maxArr[i],86);
       var lo=Math.max(minArr[i],50);
       var gdu=Math.max(0,(hi+lo)/2-50);
       accum+=gdu;days++;
+      if(timeArr[i])lastValid=timeArr[i];
     }
-    realAccum=accum;
+    if(days===0){throw new Error('No usable weather days returned for that range');}
+    realAccum=accum;realDays=days;realThrough=lastValid;
     var badge=document.getElementById('live-badge');if(badge)badge.style.display='inline-flex';
-    setStatus('\u2705 Real data loaded \u2014 '+days+' days, '+accum.toFixed(0)+' GDUs from actual weather','ok');
-    document.getElementById('r-source').textContent='Open-Meteo ERA5 (actual weather)';
+    var pending=0;
+    if(lastValid){ pending=Math.round((new Date(todayStr+'T00:00:00')-new Date(lastValid+'T00:00:00'))/86400000); }
+    var thru=lastValid?new Date(lastValid+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+    var msg='\u2705 Real data through '+thru+' \u2014 '+days+' days, '+accum.toFixed(0)+' GDUs';
+    if(pending>0){ msg+=' \u00b7 last '+pending+' day'+(pending>1?'s':'')+' not yet in the archive'; }
+    setStatus(msg,'ok');
+    document.getElementById('r-source').textContent='Open-Meteo ERA5 \u2014 through '+(thru||'n/a');
     calcGDU();
   }).catch(function(err){
     setStatus('\u274C '+err.message,'err');
@@ -656,13 +683,13 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
 ['g-plant','g-today'].forEach(function(id){
   var el=document.getElementById(id);
   if(el)el.addEventListener('input',function(){
-    realAccum=null;
+    realAccum=null;realDays=null;realThrough=null;
     var badge=document.getElementById('live-badge');if(badge)badge.style.display='none';
     calcGDU();
   });
 });
 // Inputs that DO NOT invalidate real weather data (RM, manual fields)
-['g-rm','g-hi','g-lo','g-cumgdu'].forEach(function(id){
+['g-rm','g-hi','g-lo','g-cumgdu','g-frost'].forEach(function(id){
   var el=document.getElementById(id);
   if(el)el.addEventListener('input',calcGDU);
 });
@@ -679,7 +706,7 @@ function calcGDU(){
 
   if(realAccum!=null){
     accumGDU=realAccum;
-    gduPerDay=daysSincePlant>0?accumGDU/daysSincePlant:0;
+    gduPerDay=(realDays&&realDays>0)?accumGDU/realDays:(daysSincePlant>0?accumGDU/daysSincePlant:0);
   } else {
     var method=document.getElementById('g-method').value;
     if(method==='cumulative'){
@@ -712,19 +739,23 @@ function calcGDU(){
     gduTarget=Math.round(rm*500+800);
     gduTarget=Math.min(Math.max(gduTarget,1600),2400);
   }
+  // Reconcile the stage table to THIS hybrid: scale every threshold so the final
+  // stage (black layer / R8) equals the hybrid's rated GDU target. Keeps the gauge %,
+  // the stage badge, and the milestones internally consistent at every RM/MG.
+  var refBL=stages[stages.length-1].gdu;
+  var scale=refBL>0?gduTarget/refBL:1;
+  var scaledStages=stages.map(function(st){return {s:st.s,gdu:Math.round(st.gdu*scale),key:st.key,icon:st.icon,desc:st.desc};});
 
   var gduRemaining=Math.max(0,gduTarget-accumGDU);
   var pctDone=Math.min(100,(accumGDU/gduTarget)*100);
   var daysLeft=gduPerDay>0?Math.round(gduRemaining/gduPerDay):null;
   var matDate=daysLeft!=null?new Date(todayD.getTime()+daysLeft*86400000):null;
 
-  // Black layer is slightly before R6 for corn (2700 GDU is maturity)
-  var blDaysLeft=gduPerDay>0?Math.round(Math.max(0,2700-accumGDU)/gduPerDay):null;
-  var blDate=blDaysLeft!=null&&crop==='corn'?new Date(todayD.getTime()+blDaysLeft*86400000):null;
+  // Physiological maturity = black layer (R6) = the hybrid GDU target. Same event; no separate hardcoded value.
 
-  // Current stage
-  var currentStage=stages[0].s;
-  for(var i=0;i<stages.length;i++){if(accumGDU>=stages[i].gdu)currentStage=stages[i].s;}
+  // Current stage (hybrid-scaled, so it agrees with the gauge)
+  var currentStage=scaledStages[0].s;
+  for(var i=0;i<scaledStages.length;i++){if(accumGDU>=scaledStages[i].gdu)currentStage=scaledStages[i].s;}
 
   // Update DOM
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
@@ -737,7 +768,18 @@ function calcGDU(){
   s('r-days-left',daysLeft!=null?daysLeft+' days':'\u2014');
   s('r-pct',pctDone.toFixed(1)+'% complete');
   s('r-mat-date',matDate?matDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'\u2014');
-  s('r-bl-date',blDate?blDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):crop==='corn'?'\u2014':'N/A for soybeans');
+  s('r-mat-lbl',crop==='corn'?'Est. maturity (black layer)':'Est. full maturity (R8)');
+  // Frost-risk verdict: optional user frost date vs projected maturity
+  var frostStr=document.getElementById('g-frost')?document.getElementById('g-frost').value:'';
+  var fv=document.getElementById('r-frost-verdict');
+  if(fv){
+    if(!frostStr){ fv.textContent='Add frost date'; fv.style.color='var(--text-muted)'; }
+    else if(!matDate){ fv.textContent='\u2014'; fv.style.color='var(--text-muted)'; }
+    else { var frostD=new Date(frostStr+'T00:00:00'); var margin=Math.round((frostD-matDate)/86400000);
+      if(margin>=7){ fv.textContent='\u2713 '+margin+' days to spare'; fv.style.color='var(--green)'; }
+      else if(margin>=0){ fv.textContent='\u26A0 '+margin+'-day margin'; fv.style.color='var(--gold)'; }
+      else { fv.textContent='\u26A0 '+Math.abs(margin)+' days short'; fv.style.color='#e05c5c'; } }
+  }
 
   var note='';
   if(pctDone>=100){note='Crop has reached physiological maturity. Monitor for harvest timing.';}
@@ -751,12 +793,13 @@ function calcGDU(){
   var arcEl=document.getElementById('arc-fill');
   if(arcEl){
     arcEl.style.strokeDashoffset=offset.toFixed(1);
-    arcEl.style.stroke=pctDone>=100?'var(--green)':pctDone>60?'var(--gold)':'var(--green)';
+    arcEl.style.stroke=pctDone>=100?'var(--green)':'var(--gold)';
   }
   var pf=document.getElementById('prog-fill');if(pf)pf.style.width=pctDone.toFixed(1)+'%';
   var pm=document.getElementById('prog-marker');if(pm)pm.style.left=Math.min(97,pctDone).toFixed(1)+'%';
 
-  renderMilestones(stages,accumGDU);
+  renderMilestones(scaledStages,accumGDU);
+  saveState();
 }
 
 /* ─── MILESTONES ────────────────────────────────────────────────────── */
@@ -778,6 +821,50 @@ function renderMilestones(stages,accum){
   }).join('');
   var el=document.getElementById('milestones');if(el)el.innerHTML=html;
 }
+
+/* ─── STATE PERSISTENCE + SHAREABLE LINK ───────────────────────────── */
+function getParam(k){try{return new URLSearchParams(location.search).get(k);}catch(e){return null;}}
+function restoreState(){
+  var src=null;
+  try{
+    if(location.search&&/[?&](crop|plant|rm|zip|frost|today)=/.test(location.search)){src='url';}
+    else{var ls=localStorage.getItem('agsist_gdu');if(ls)src=JSON.parse(ls);}
+  }catch(e){src=null;}
+  function val(k){ if(src==='url')return getParam(k); if(src&&typeof src==='object')return src[k]; return null; }
+  if(!src)return;
+  var c=val('crop'); if(c==='bean'){var pb=document.getElementById('pill-bean'); if(pb)pb.click();}
+  var p=val('plant'); if(p)document.getElementById('g-plant').value=p;
+  var t=val('today'); if(t)document.getElementById('g-today').value=t;
+  var r=val('rm'); if(r)document.getElementById('g-rm').value=r;
+  var z=val('zip'); if(z)document.getElementById('g-zip').value=z;
+  var f=val('frost'); if(f)document.getElementById('g-frost').value=f;
+}
+function saveState(){
+  if(!ready)return;
+  try{ localStorage.setItem('agsist_gdu',JSON.stringify({
+    crop:crop, plant:document.getElementById('g-plant').value, today:document.getElementById('g-today').value,
+    rm:document.getElementById('g-rm').value, zip:(document.getElementById('g-zip').value||'').trim(),
+    frost:document.getElementById('g-frost').value })); }catch(e){}
+}
+function shareURL(){
+  var q=new URLSearchParams(); q.set('crop',crop);
+  var p=document.getElementById('g-plant').value; if(p)q.set('plant',p);
+  var t=document.getElementById('g-today').value; if(t)q.set('today',t);
+  var r=document.getElementById('g-rm').value; if(r)q.set('rm',r);
+  var z=(document.getElementById('g-zip').value||'').trim(); if(z)q.set('zip',z);
+  var f=document.getElementById('g-frost').value; if(f)q.set('frost',f);
+  return location.origin+location.pathname+'?'+q.toString();
+}
+var shareBtn=document.getElementById('g-share-btn');
+if(shareBtn)shareBtn.addEventListener('click',function(){
+  var url=shareURL(); var st=document.getElementById('g-share-status');
+  function done(ok){ if(st){ st.textContent=ok?'\u2713 Link copied':url; st.style.color=ok?'var(--green)':'var(--text-muted)'; } }
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(function(){done(true);},function(){done(false);}); } else { done(false); }
+});
+/* restore AFTER all listeners are attached, then mark ready and recompute */
+try{restoreState();}catch(e){}
+ready=true;
+calcGDU();
 
 })();
 </script>
