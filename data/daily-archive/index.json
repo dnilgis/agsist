@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-06-06",
+      "date_display": "Saturday, June 6, 2026",
+      "headline": "HOGS FALL 7.2%, CATTLE HOLDS GAINS",
+      "teaser": "Hogs had their worst day in weeks while cattle held Friday's bounce.",
+      "market_mood": "bearish",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-06-06",
+      "market_closed": true
+    },
+    {
       "date": "2026-06-05",
       "date_display": "Friday, June 5, 2026",
       "headline": "GRAINS FINISH FOUR-DAY SLIDE, METALS FALL SHARPLY",
@@ -942,6 +953,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-05T21:23:34.544097+00:00",
-  "count": 85
+  "updated": "2026-06-06T12:09:31.490372+00:00",
+  "count": 86
 }

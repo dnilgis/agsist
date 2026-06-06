@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 05 Jun 2026 21:23:35 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 06 Jun 2026 12:09:40 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>HOGS FALL 7.2%, CATTLE HOLDS GAINS</title>
+      <link>https://agsist.com/daily/2026-06-06</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-06</guid>
+      <pubDate>Sat, 06 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Lean hogs fell sharply 7.2% to $94.30 Friday, the biggest single-session drop in three weeks, as processing constraints rippled through protein markets. Live cattle held $250.07, up 3.5% for the session, creating the widest cattle-hog spread since March. The split tells you everything: cattle's got the buyer, hogs are fighting the calendar.
+Livestock complex splits as processing disruption spreads through protein markets.
+• LIVESTOCK SPLITS ON PROCESSING WOES
+• GRAINS FINISH FOUR-DAY SLIDE
+• METALS FALL ON DOLLAR STRENGTH
+Read more: https://agsist.com/daily/2026-06-06</description>
+    </item>
     <item>
       <title>GRAINS FINISH FOUR-DAY SLIDE, METALS FALL SHARPLY</title>
       <link>https://agsist.com/daily/2026-06-05</link>
@@ -357,18 +369,6 @@ Both complexes fold as boxed beef drops and Iran tensions ease energy premium.
 • Grains Mark Time
 • Energy Premium Evaporates
 Read more: https://agsist.com/daily/2026-05-08</description>
-    </item>
-    <item>
-      <title>CATTLE HOLD $253 AS OIL CRASH EASES INPUT COSTS</title>
-      <link>https://agsist.com/daily/2026-05-07</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-07</guid>
-      <pubDate>Thu, 07 May 2026 05:00:00 -0600</pubDate>
-      <description>Live cattle held $253.47, up two-tenths, with feeders tracking right alongside at $372.95. The cattle complex is acting like yesterday's call was right: feeder leadership changes everything, breakdown thesis officially dead. Crude's 3% crash to $92.88 takes immediate pressure off diesel and freight costs, giving cattle feeders room to stay patient with their bids.
-Feeder strength confirms the breakdown thesis is dead while crude's 3% drop cuts diesel pressure.
-• Cattle Hold Above $252
-• Grains Drift Higher on Energy Relief
-• Energy Costs Crater on Iran Deal Talk
-Read more: https://agsist.com/daily/2026-05-07</description>
     </item>
   </channel>
 </rss>
