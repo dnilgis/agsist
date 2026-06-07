@@ -223,13 +223,8 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .sec-title img { height: 24px; width: 24px; object-fit: contain; border-radius: 3px; background: #f5f1e8; padding: 2px }
 .sec-all { font-size: .8rem; color: var(--text-muted); transition: color .15s; white-space: nowrap; flex-shrink: 0 }
 .sec-all:hover { color: var(--green) }
-/* Homepage intro masthead: static keyword H1 + value prop + authorship */
-.home-intro { margin: .2rem 0 1.15rem; padding: 0 0 .95rem; border-bottom: 1px solid var(--border); }
-.home-h1 { font-family: 'Oswald', sans-serif; font-size: clamp(1.15rem, 3.6vw, 1.6rem); font-weight: 800; text-transform: uppercase; letter-spacing: .01em; color: var(--text); margin: 0 0 .4rem; line-height: 1.18; }
-.home-intro-p { font-size: .85rem; line-height: 1.6; color: var(--text-dim); margin: 0; max-width: 72ch; }
-.home-byline { color: var(--text-muted); }
-.home-byline a { color: var(--green); text-decoration: none; font-weight: 600; }
-.home-byline a:hover { text-decoration: underline; }
+/* Homepage H1: kept in the DOM for SEO + screen readers, visually hidden per design */
+.home-h1 { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: var(--sp-lg); margin-bottom: var(--sp-xl); }
 .dash-grid > .fade-up { display: flex; flex-direction: column; min-width: 0 }
 .dash-grid > .fade-up > .card { flex: 1; display: flex; flex-direction: column }
@@ -242,6 +237,11 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .price-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 1rem; margin-bottom: 1rem; }
 .price-cards-grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 1rem; margin-bottom: .5rem; }
 .pc { background: var(--surface); border: 2px solid var(--border); border-radius: var(--r-md); padding: 1.1rem 1.2rem; transition: border-color .2s; cursor: default; position: relative; overflow: hidden; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+/* price-card hover glow — restored from legacy root stylesheet so /components/ is a complete superset */
+.pc::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 200px 100px at 50% 0%, rgba(230,176,66,.04) 0%, transparent 70%); opacity: 0; transition: opacity .25s; pointer-events: none; }
+.pc:hover::before { opacity: 1 }
+.pc--highlight::before { opacity: .5 }
+@media (hover: none) { .pc:hover::before { opacity: 0 } }
 .pc:hover { border-color: var(--border-g); }
 .pc--highlight { border-color: var(--border-g) }
 .pc-head { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: .55rem; gap: .25rem; min-width: 0 }
@@ -598,3 +598,37 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
 .daily-sec-conviction.conviction--bull { color: var(--green); background: rgba(74,171,76,.08); border: 1px solid rgba(74,171,76,.22); }
 .daily-sec-conviction.conviction--bear { color: var(--red); background: rgba(200,86,46,.08); border: 1px solid rgba(200,86,46,.22); }
 .daily-sec-conviction.conviction--mixed { color: var(--gold); background: rgba(218,165,32,.08); border: 1px solid rgba(218,165,32,.22); }
+
+/* ================================================================
+   PREMIUM POLISH PACK — pure CSS · no JS · reduced-motion safe
+   ================================================================ */
+
+/* 1) Direction-aware price cards: the border quietly takes on the day's
+      color (green up / red down), derived from your tokens via color-mix. */
+.pc:has(.pc-chg-val.up) { border-color: color-mix(in srgb, var(--green) 32%, var(--border)); animation: pcFlashUp .9s ease-out; }
+.pc:has(.pc-chg-val.dn) { border-color: color-mix(in srgb, var(--red) 34%, var(--border)); animation: pcFlashDn .9s ease-out; }
+/* one-shot tile flash — fires automatically when geo.js swaps .nc -> .up/.dn (initial load, and any future re-poll) */
+@keyframes pcFlashUp { from { background-color: color-mix(in srgb, var(--green) 20%, var(--surface)); } }
+@keyframes pcFlashDn { from { background-color: color-mix(in srgb, var(--red) 20%, var(--surface)); } }
+@media (prefers-reduced-motion: reduce) {
+  .pc:has(.pc-chg-val.up), .pc:has(.pc-chg-val.dn) { animation: none; }
+}
+
+/* 2) Typographic finish — balanced headlines, pretty body wrap (kills orphans/ragged lines). */
+.daily-headline, .sec-title, .pc-name, .home-h1, .faq-item summary { text-wrap: balance; }
+p, .faq-a, .pc-prev, .wx-today-text, .daily-sec-bottomline { text-wrap: pretty; }
+
+/* 3) Tactile horizontal scroll on the forecast strips. */
+.wx-7day-strip, .wx-hourly-strip { scroll-snap-type: x proximity; scroll-padding-left: .25rem; }
+.wx-7day-cell, .wx-hourly-cell { scroll-snap-align: start; }
+
+/* 4) On-brand text selection + visible focus rings. */
+::selection { background: var(--gold); color: #0a1a0a; }
+a:focus-visible, button:focus-visible, [role="button"]:focus-visible,
+input:focus-visible, select:focus-visible, textarea:focus-visible,
+summary:focus-visible, .pc:focus-visible {
+  outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px;
+}
+
+/* 5) Native form controls (checkboxes, radios, range) inherit the brand green. */
+:root { accent-color: var(--green); }
