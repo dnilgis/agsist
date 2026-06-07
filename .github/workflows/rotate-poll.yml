@@ -1,0 +1,41 @@
+name: Rotate Grower Pulse poll
+
+on:
+  schedule:
+    # 12:00 UTC every Monday (~6-7am Central). GitHub cron can run a bit late; that's fine.
+    - cron: "0 12 * * 1"
+  workflow_dispatch: {}   # lets you run it by hand from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rotate-poll
+  cancel-in-progress: false
+
+jobs:
+  rotate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Rotate poll + regenerate page
+        run: python scripts/rotate_poll.py
+
+      - name: Commit changes (if any)
+        run: |
+          git config user.name  "agsist-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/poll.json data/poll-queue.json grower-pulse.html sitemap.xml
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Rotate Grower Pulse poll [skip ci]"
+            git push
+          fi
