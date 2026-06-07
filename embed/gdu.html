@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GDU Calculator Widget | AGSIST</title>
+<meta name="robots" content="noindex"><!-- embed target; canonical tool is /gdu-calculator -->
+<link rel="canonical" href="https://agsist.com/gdu-calculator">
+<style>
+  :root{
+    --bg:#0d140a; --surface:#141c10; --border:#2a3320;
+    --text:#eef0e6; --dim:#a9b29a; --muted:#7d846f;
+    --gold:#e6b042; --green:#4aab4c; --red:#e05c5c;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:transparent;}
+  .w{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);
+     border:1px solid var(--border);border-radius:12px;padding:14px 15px;max-width:480px;margin:0 auto;}
+  .w-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;}
+  .w-brand{font-family:Georgia,serif;font-weight:bold;letter-spacing:2px;color:var(--green);font-size:15px;}
+  .w-brand small{display:block;font-family:'Courier New',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);font-weight:normal;margin-top:2px;}
+  .w-tag{font-family:'Courier New',monospace;font-size:9px;letter-spacing:1px;color:var(--gold);text-transform:uppercase;font-weight:bold;}
+  .pills{display:flex;gap:6px;margin-bottom:11px;}
+  .pill{flex:1;min-height:40px;border:2px solid var(--border);background:var(--bg);color:var(--dim);
+        border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;}
+  .pill[aria-pressed="true"]{border-color:var(--gold);background:rgba(230,176,66,.12);color:var(--text);}
+  .row{display:flex;gap:8px;}
+  .fg{margin-bottom:9px;flex:1;}
+  label{display:block;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);margin-bottom:3px;}
+  input{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);
+        font-family:'Courier New',monospace;font-size:15px;padding:7px 8px;outline:none;}
+  input:focus{border-color:var(--gold);}
+  .btn{width:100%;min-height:44px;border:0;border-radius:8px;background:var(--gold);color:#0a1a0a;
+       font-weight:800;font-size:13px;cursor:pointer;margin:3px 0 8px;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .status{font-size:11px;color:var(--muted);text-align:center;min-height:14px;margin-bottom:8px;line-height:1.4;}
+  .status.ok{color:var(--green);} .status.err{color:var(--red);}
+  .res{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center;margin-bottom:10px;}
+  .big{font-family:Georgia,serif;font-size:38px;font-weight:800;line-height:1;color:var(--text);}
+  .big small{font-size:12px;color:var(--dim);font-weight:normal;}
+  .stage{display:inline-block;margin-top:7px;padding:3px 12px;border-radius:20px;background:rgba(230,176,66,.12);
+         border:1px solid rgba(230,176,66,.35);font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--gold);}
+  .rr{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px;}
+  .rr:last-child{border-bottom:0;} .rr .l{color:var(--dim);} .rr .v{font-family:'Courier New',monospace;font-weight:700;}
+  .foot{text-align:right;margin-top:10px;}
+  .foot a{font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--green);text-decoration:none;}
+  .foot a:hover{text-decoration:underline;}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="w" id="w">
+  <div class="w-head">
+    <div class="w-brand">AGSIST<small>GDU CALCULATOR</small></div>
+    <div class="w-tag">Real weather data</div>
+  </div>
+
+  <div class="pills">
+    <button class="pill" id="p-corn" aria-pressed="true">🌽 Corn</button>
+    <button class="pill" id="p-bean" aria-pressed="false">🌱 Soybeans</button>
+  </div>
+
+  <div class="row">
+    <div class="fg"><label id="rm-l" for="rm">Relative Maturity</label><input id="rm" type="number" value="108" min="70" max="135" step="1"></div>
+    <div class="fg"><label for="plant">Planting Date</label><input id="plant" type="date"></div>
+  </div>
+  <div class="row">
+    <div class="fg"><label for="zip">ZIP or City</label><input id="zip" type="text" placeholder="e.g. 54728" maxlength="40"></div>
+    <div class="fg"><label for="frost">Frost Date (opt.)</label><input id="frost" type="date"></div>
+  </div>
+
+  <button class="btn" id="fetch">⚡ Fetch Real GDUs</button>
+  <div class="status" id="status" role="status" aria-live="polite">Enter a planting date and location, then fetch.</div>
+
+  <div class="res">
+    <div class="big" id="total">0 <small>GDUs</small></div>
+    <div class="stage" id="stage">—</div>
+  </div>
+  <div class="rr"><span class="l">GDU/day</span><span class="v" id="rate" style="color:var(--gold)">—</span></div>
+  <div class="rr"><span class="l" id="mat-l">Est. maturity (black layer)</span><span class="v" id="mat" style="color:var(--green)">—</span></div>
+  <div class="rr"><span class="l">Frost risk</span><span class="v" id="frostv">Add frost date</span></div>
+
+  <div class="foot"><a id="pb" href="https://agsist.com/gdu-calculator?utm_source=embed" target="_blank" rel="noopener">Powered by AGSIST →</a></div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var CORN=[{s:'VE',g:100},{s:'V3',g:200},{s:'V5',g:350},{s:'V6',g:475},{s:'V8',g:700},{s:'VT',g:1135},{s:'R1',g:1400},{s:'R2',g:1560},{s:'R3',g:1750},{s:'R4',g:1925},{s:'R5',g:2190},{s:'R6',g:2700}];
+var BEAN=[{s:'VE',g:130},{s:'V1',g:200},{s:'V3',g:400},{s:'V5',g:600},{s:'R1',g:800},{s:'R2',g:1000},{s:'R3',g:1200},{s:'R4',g:1400},{s:'R5',g:1600},{s:'R6',g:1750},{s:'R7',g:1900},{s:'R8',g:2000}];
+var crop='corn', realAccum=null, realDays=null, lat=null, lon=null;
+function $(id){return document.getElementById(id);}
+function postHeight(){try{parent.postMessage({agsist:'gdu',height:document.body.scrollHeight},'*');}catch(e){}}
+
+(function init(){
+  var t=new Date();
+  $('plant').value=new Date(t.getFullYear(),4,1).toISOString().slice(0,10);
+  // restore from URL params if present (shareable / pre-filled embeds)
+  try{var q=new URLSearchParams(location.search);
+    if(q.get('crop')==='bean')$('p-bean').click();
+    ['rm','plant','frost','zip'].forEach(function(k){if(q.get(k))$(k).value=q.get(k);});
+  }catch(e){}
+  calc(); postHeight();
+})();
+
+$('p-corn').addEventListener('click',function(){if(crop==='corn')return;crop='corn';
+  $('p-corn').setAttribute('aria-pressed','true');$('p-bean').setAttribute('aria-pressed','false');
+  $('rm-l').textContent='Relative Maturity';$('rm').value=108;calc();});
+$('p-bean').addEventListener('click',function(){if(crop==='bean')return;crop='bean';
+  $('p-bean').setAttribute('aria-pressed','true');$('p-corn').setAttribute('aria-pressed','false');
+  $('rm-l').textContent='Maturity Group';$('rm').value=3;calc();});
+
+['rm','frost'].forEach(function(id){$(id).addEventListener('input',calc);});
+$('plant').addEventListener('input',function(){realAccum=null;realDays=null;calc();});
+
+function setStatus(m,c){var e=$('status');e.textContent=m;e.className='status'+(c?' '+c:'');postHeight();}
+
+$('fetch').addEventListener('click',function(){
+  var plantStr=$('plant').value;
+  if(!plantStr){setStatus('Enter a planting date first','err');return;}
+  var todayStr=new Date().toISOString().slice(0,10);
+  if(new Date(todayStr)<=new Date(plantStr)){setStatus('Planting date must be in the past','err');return;}
+  var zip=($('zip').value||'').trim();
+  var btn=$('fetch');btn.disabled=true;btn.textContent='⏳ Fetching…';setStatus('Loading…','');
+  var locP=(lat&&lon)?Promise.resolve({lat:lat,lon:lon}):(zip?
+    fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(zip)+'&countrycodes=us&format=json&limit=1')
+      .then(function(r){return r.json();}).then(function(d){if(!d||!d[0])throw new Error('Location not found');lat=parseFloat(d[0].lat);lon=parseFloat(d[0].lon);return{lat:lat,lon:lon};})
+    :Promise.reject(new Error('Enter a ZIP code or city')));
+  locP.then(function(loc){
+    var u='https://archive-api.open-meteo.com/v1/archive?latitude='+loc.lat+'&longitude='+loc.lon+'&start_date='+plantStr+'&end_date='+todayStr+'&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=auto';
+    return fetch(u).then(function(r){if(!r.ok)throw new Error('Weather API error');return r.json();});
+  }).then(function(data){
+    if(!data.daily||!data.daily.temperature_2m_max)throw new Error('Unexpected data');
+    var mx=data.daily.temperature_2m_max,mn=data.daily.temperature_2m_min,tm=data.daily.time||[];
+    var acc=0,n=0,last=null;
+    for(var i=0;i<mx.length;i++){if(mx[i]==null||mn[i]==null)continue;
+      acc+=Math.max(0,(Math.min(mx[i],86)+Math.max(mn[i],50))/2-50);n++;if(tm[i])last=tm[i];}
+    if(n===0)throw new Error('No usable weather days returned');
+    realAccum=acc;realDays=n;
+    var pend=last?Math.round((new Date(todayStr)-new Date(last))/86400000):0;
+    var thru=last?new Date(last+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+    setStatus('✅ Through '+thru+' — '+n+' days, '+acc.toFixed(0)+' GDUs'+(pend>0?' · last '+pend+'d pending':''),'ok');
+    calc();
+  }).catch(function(err){setStatus('❌ '+err.message,'err');})
+   .finally(function(){btn.disabled=false;btn.textContent='⚡ Fetch Real GDUs';postHeight();});
+});
+
+function calc(){
+  var plantStr=$('plant').value;if(!plantStr)return;
+  var todayStr=new Date().toISOString().slice(0,10);
+  var days=Math.max(0,Math.round((new Date(todayStr)-new Date(plantStr))/86400000));
+  var accum,rate;
+  if(realAccum!=null){accum=realAccum;rate=(realDays>0)?accum/realDays:0;}
+  else{accum=0;rate=0;} // no estimate without a fetch in the compact widget
+  var rm=parseFloat($('rm').value)||(crop==='corn'?108:3);
+  var stages=crop==='corn'?CORN:BEAN;
+  var target=crop==='corn'?Math.round(rm*22+250):Math.min(Math.max(Math.round(rm*500+800),1600),2400);
+  var refBL=stages[stages.length-1].g, scale=refBL>0?target/refBL:1;
+  var scaled=stages.map(function(st){return {s:st.s,g:Math.round(st.g*scale)};});
+  var pct=target>0?Math.min(100,accum/target*100):0;
+  var rem=Math.max(0,target-accum), dleft=rate>0?Math.round(rem/rate):null;
+  var matD=dleft!=null?new Date(new Date(todayStr).getTime()+dleft*86400000):null;
+  var cur=scaled[0].s;for(var i=0;i<scaled.length;i++){if(accum>=scaled[i].g)cur=scaled[i].s;}
+
+  $('total').innerHTML=Math.round(accum).toLocaleString()+' <small>GDUs · '+pct.toFixed(0)+'%</small>';
+  $('stage').textContent=realAccum!=null?'Stage: '+cur:'Fetch to see stage';
+  $('rate').textContent=rate>0?rate.toFixed(1)+'/day':'—';
+  $('mat-l').textContent=crop==='corn'?'Est. maturity (black layer)':'Est. full maturity (R8)';
+  $('mat').textContent=matD?matD.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
+
+  var fStr=$('frost').value, fv=$('frostv');
+  if(!fStr){fv.textContent='Add frost date';fv.style.color='var(--muted)';}
+  else if(!matD){fv.textContent='Fetch first';fv.style.color='var(--muted)';}
+  else{var m=Math.round((new Date(fStr+'T00:00:00')-matD)/86400000);
+    if(m>=7){fv.textContent='✓ '+m+'d to spare';fv.style.color='var(--green)';}
+    else if(m>=0){fv.textContent='⚠ '+m+'d margin';fv.style.color='var(--gold)';}
+    else{fv.textContent='⚠ '+Math.abs(m)+'d short';fv.style.color='var(--red)';}}
+  postHeight();
+}
+window.addEventListener('resize',postHeight);
+})();
+</script>
+</body>
+</html>
