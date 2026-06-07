@@ -117,14 +117,15 @@
   .wx-chart-takeaway{font-size:.76rem;line-height:1.55;color:var(--text-dim);margin-top:.55rem;padding-top:.55rem;border-top:1px solid rgba(255,255,255,.07);}
   .wx-chart-takeaway strong{color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:700;}
   /* 5-day forecast strip (class names kept as wx-7day-* for backward-compat) */
-  .wx-7day-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.45rem;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;padding:.2rem 0;}
-  .wx-7day-cell{background:var(--surface2);border-radius:8px;padding:.65rem .35rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.28rem;min-width:0;}
-  .wx-7day-name{font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;}
-  .wx-7day-icon{font-size:1.7rem;line-height:1;margin:.15rem 0;}
-  .wx-7day-temps{font-family:'Oswald',sans-serif;font-size:1.05rem;font-weight:700;color:var(--text);}
+  .wx-7day-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.35rem;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;padding:.2rem 0;}
+  .wx-7day-cell{background:var(--surface2);border-radius:8px;padding:.65rem .25rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.28rem;min-width:0;}
+  .wx-7day-name{font-size:clamp(.66rem,2.6vw,.74rem);font-weight:700;color:var(--text-muted);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;}
+  .wx-7day-icon{font-size:clamp(1.35rem,5.5vw,1.7rem);line-height:1;margin:.15rem 0;}
+  /* temps locked to one line; size scales with width; hi prominent / lo smaller+muted for at-a-glance read */
+  .wx-7day-temps{font-family:'Oswald',sans-serif;font-weight:700;color:var(--text);white-space:nowrap;font-size:clamp(.82rem,4.1vw,1.12rem);letter-spacing:-.01em;display:flex;justify-content:center;align-items:baseline;gap:.26rem;line-height:1.1;}
   .wx-7day-temps .hi{color:var(--text);}
-  .wx-7day-temps .lo{color:var(--text-muted);margin-left:.25rem;}
-  .wx-7day-meta{font-size:.72rem;font-family:'JetBrains Mono',monospace;color:var(--text-dim);margin-top:.15rem;line-height:1.5;}
+  .wx-7day-temps .lo{color:var(--text-muted);font-size:.82em;}
+  .wx-7day-meta{font-size:clamp(.6rem,2.7vw,.72rem);font-family:'JetBrains Mono',monospace;color:var(--text-dim);margin-top:.15rem;line-height:1.5;}
   .wx-7day-meta .rain-hi{color:#5ba3e0;}
   .wx-7day-meta .wind-hi{color:var(--gold);}
   /* Hourly collapsible */
