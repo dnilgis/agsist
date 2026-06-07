@@ -21,7 +21,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="AGSIST">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Corn, Soybean &amp; Wheat Prices Today &#8212; Farm Dashboard | AGSIST</title>
+<title>Corn, Soybean &amp; Wheat Prices Today | AGSIST</title>
 <meta name="description" content="Live corn, soybean, and wheat futures updated every 30 min. Farm dashboard with spray advisory, urea risk, cash grain bids, USDA reports, and daily briefing.">
 <meta name="keywords" content="corn futures prices today, soybean futures prices today, wheat futures price today, grain prices today, farm weather, spray advisory, urea volatilization risk, cash grain bids near me, USDA reports, agricultural market dashboard, farm break even calculator, grain elevator prices, CBOT corn, crop insurance, grain elevator prices near me">
 <meta name="author"  content="Sigurd Lindquist">
@@ -100,20 +100,22 @@
   .spray-day.stop .spray-day-status{color:#ef4444;}
   .spray-day-reason{font-size:.52rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-top:.1rem;}
   .wx-data-extra{display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;}
-  .wx-extra-stat{flex:1;min-width:120px;background:var(--surface2);border-radius:6px;padding:.45rem .65rem;display:none;}
+  .wx-extra-stat{flex:1;min-width:140px;background:var(--surface2);border-radius:8px;padding:.65rem .8rem;display:none;}
   .wx-extra-stat.loaded{display:block;}
-  .wx-extra-lbl{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.15rem;}
-  .wx-extra-val{font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:700;color:var(--text);}
-  .wx-extra-ctx{font-size:.62rem;color:var(--text-dim);margin-top:.08rem;}
+  .wx-extra-lbl{font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem;}
+  .wx-extra-val{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--text);line-height:1.1;}
+  .wx-extra-ctx{font-size:.74rem;color:var(--text-dim);margin-top:.2rem;}
   /* Historical chart expandable (GDU + Precip) */
   .wx-extra-stat.with-chart{cursor:pointer;transition:background .15s;}
   .wx-extra-stat.with-chart:hover{background:var(--surface3,#2a2a2a);}
-  .wx-extra-stat .wx-chart-toggle{font-size:.58rem;color:var(--gold);margin-top:.2rem;letter-spacing:.05em;display:flex;align-items:center;gap:.2rem;font-weight:600;}
-  .wx-chart-panel{display:none;padding:.55rem .4rem .3rem;background:var(--surface2);border-radius:6px;margin-top:.4rem;overflow-x:hidden;overflow-x:clip;}
+  .wx-extra-stat .wx-chart-toggle{font-size:.66rem;color:var(--gold);margin-top:.35rem;letter-spacing:.05em;display:flex;align-items:center;gap:.25rem;font-weight:700;min-height:24px;}
+  .wx-chart-panel{display:none;padding:.8rem .7rem .65rem;background:var(--surface2);border-radius:8px;margin-top:.5rem;overflow-x:hidden;overflow-x:clip;}
   .wx-chart-panel.expanded{display:block;}
-  .wx-chart-title{font-size:.62rem;color:var(--text-muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem;}
-  .wx-chart-legend{display:flex;gap:.85rem;font-size:.6rem;color:var(--text-dim);margin-top:.25rem;flex-wrap:wrap;}
-  .wx-chart-legend-sw{display:inline-block;width:.55rem;height:.55rem;border-radius:2px;margin-right:.25rem;vertical-align:middle;}
+  .wx-chart-title{font-size:.72rem;color:var(--text-dim);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem;}
+  .wx-chart-legend{display:flex;gap:1rem;font-size:.72rem;color:var(--text-dim);margin-top:.45rem;flex-wrap:wrap;}
+  .wx-chart-legend-sw{display:inline-block;width:.7rem;height:.7rem;border-radius:2px;margin-right:.3rem;vertical-align:middle;}
+  .wx-chart-takeaway{font-size:.76rem;line-height:1.55;color:var(--text-dim);margin-top:.55rem;padding-top:.55rem;border-top:1px solid rgba(255,255,255,.07);}
+  .wx-chart-takeaway strong{color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:700;}
   /* 5-day forecast strip (class names kept as wx-7day-* for backward-compat) */
   .wx-7day-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.3rem;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;padding:.15rem 0;}
   .wx-7day-cell{background:var(--surface2);border-radius:6px;padding:.4rem .3rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.1rem;min-width:0;}
@@ -657,7 +659,7 @@
           <div class="daily-snapshot-note" aria-label="Briefing snapshot context" style="font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin:-.4rem 0 .8rem;line-height:1.5">Snapshot at briefing publish &middot; <span style="color:var(--gold)">live ticker above shows current prices</span></div>
           <div id="site-greeting" class="daily-greeting">Good Morning</div>
           <div id="daily-thread-marker" class="daily-thread-marker"><span class="dtm-day">Day <span id="daily-thread-day">--</span>/5</span><span class="dtm-q" id="daily-thread-q"></span></div>
-          <h1 id="daily-headline" class="daily-headline">Loading Today's Briefing&hellip;</h1>
+          <h2 id="daily-headline" class="daily-headline">Loading Today's Briefing&hellip;</h2>
           <p id="daily-subheadline" style="font-size:.88rem;color:var(--gold);font-weight:600;margin-bottom:.5rem;letter-spacing:.02em"></p>
           <p id="daily-lead" class="daily-lead"></p>
           <div id="daily-takeaway" class="daily-takeaway" role="note" aria-label="Today's key takeaway" style="display:none">
@@ -752,9 +754,13 @@
   </div>
 </section>
 <main id="main" class="main" role="main" tabindex="-1">
+  <div class="home-intro">
+    <h1 class="home-h1">Corn, Soybean &amp; Wheat Prices, Farm Weather &amp; Cash Bids</h1>
+    <p class="home-intro-p">Free, live agricultural data for U.S. growers &mdash; grain futures and local cash bids, spray &amp; weather advisories, USDA reports, and a daily market briefing, updated every 30 minutes. <span class="home-byline">Built by Sigurd Lindquist, a crop-insurance agent in northern Wisconsin. <a href="/about">More about AGSIST &rarr;</a></span></p>
+  </div>
   <div class="dash-grid">
     <div class="fade-up" id="f1">
-      <div class="sec-head"><div class="sec-title">&#x1F4B5; Cash Bids &amp; Basis <span style="font-size:.62rem;font-weight:600;color:var(--gold);letter-spacing:.04em">+ Worth the Drive&trade;</span></div><a href="/cash-bids" class="sec-all">Find Elevators &rarr;</a></div>
+      <div class="sec-head"><h2 class="sec-title">&#x1F4B5; Cash Bids &amp; Basis <span style="font-size:.62rem;font-weight:600;color:var(--gold);letter-spacing:.04em">+ Worth the Drive&trade;</span></h2><a href="/cash-bids" class="sec-all">Find Elevators &rarr;</a></div>
       <div class="card"><div class="card-body">
         <div id="bids-geo-bar" style="display:flex;align-items:center;gap:.55rem;margin-bottom:.6rem;font-size:.75rem;color:var(--text-dim)">
           <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite" aria-hidden="true"></span>
@@ -771,7 +777,7 @@
       </div></div>
     </div>
     <div class="fade-up" id="f2" style="transition-delay:.08s">
-      <div class="sec-head"><div class="sec-title">Local Conditions</div></div>
+      <div class="sec-head"><h2 class="sec-title">Local Conditions</h2></div>
       <div class="card"><div class="card-body">
         <div id="wx-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 0;gap:.65rem">
           <div style="font-size:1.8rem" aria-hidden="true">&#x1F4CD;</div>
@@ -794,6 +800,7 @@
               <div class="wx-loc" id="wx-loc">&#x1F4CD; Locating...</div>
             </div>
           </div>
+          <div class="wx-today" id="wx-today-summary"></div>
           <div class="wx-grid">
             <div class="wstat"><div class="wstat-lbl">Wind</div><div class="wstat-val" id="wx-wind">--</div></div>
             <div class="wstat"><div class="wstat-lbl">Humidity</div><div class="wstat-val" id="wx-humid">--</div></div>
@@ -807,18 +814,20 @@
             <span class="soil-temp-ctx" id="soil-temp-ctx">--</span>
           </div>
           <div class="wx-data-extra">
-            <div class="wx-extra-stat with-chart" id="gdu-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="gdu-chart-panel"><div class="wx-extra-lbl">&#x1F321;&#xFE0F; GDU Since Apr 1</div><div class="wx-extra-val" id="gdu-val">--</div><div class="wx-extra-ctx" id="gdu-ctx">Growing degree units</div><div class="wx-chart-toggle" id="gdu-chart-toggle">&#x25BC; Show 5-yr history</div></div>
+            <div class="wx-extra-stat with-chart" id="gdu-stat" role="button" tabindex="0" aria-expanded="true" aria-controls="gdu-chart-panel"><div class="wx-extra-lbl">&#x1F321;&#xFE0F; GDU Since Apr 1</div><div class="wx-extra-val" id="gdu-val">--</div><div class="wx-extra-ctx" id="gdu-ctx">Growing degree units</div><div class="wx-chart-toggle" id="gdu-chart-toggle">&#x25B2; Hide 5-yr history</div></div>
             <div class="wx-extra-stat with-chart" id="precip-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="precip-chart-panel"><div class="wx-extra-lbl">&#x1F327;&#xFE0F; 30-Day Precip</div><div class="wx-extra-val" id="precip-val">--</div><div class="wx-extra-ctx" id="precip-ctx">Trailing 30 days</div><div class="wx-chart-toggle" id="precip-chart-toggle">&#x25BC; Show monthly history</div></div>
           </div>
-          <div class="wx-chart-panel" id="gdu-chart-panel" role="region" aria-label="5-year GDU monthly history">
+          <div class="wx-chart-panel expanded" id="gdu-chart-panel" role="region" aria-label="5-year GDU monthly history">
             <div class="wx-chart-title" id="gdu-chart-title">GDU by month &middot; Apr&ndash;Oct &middot; 5-yr avg vs this year</div>
             <div id="gdu-chart-svg"></div>
             <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold)"></span>This year</span></div>
+            <div class="wx-chart-takeaway" id="gdu-takeaway"></div>
           </div>
           <div class="wx-chart-panel" id="precip-chart-panel" role="region" aria-label="5-year precipitation monthly history">
             <div class="wx-chart-title" id="precip-chart-title">Precip by month &middot; Jan&ndash;Dec &middot; 5-yr avg vs this year</div>
             <div id="precip-chart-svg"></div>
             <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold)"></span>This year</span></div>
+            <div class="wx-chart-takeaway" id="precip-takeaway"></div>
           </div>
           <div class="wx-summary-card" style="margin-top:.85rem">
             <div class="wx-summary-title">&#x1F4C5; 5-Day Forecast</div>
@@ -844,7 +853,7 @@
       </div></div>
     </div>
     <div class="fade-up" id="f3" style="transition-delay:.16s">
-      <div class="sec-head"><div class="sec-title">&#x1F6E0;&#xFE0F; Quick Tools</div></div>
+      <div class="sec-head"><h2 class="sec-title">&#x1F6E0;&#xFE0F; Quick Tools</h2></div>
       <div class="card"><div class="card-body">
         <div class="plant-dates-panel" id="plant-dates-panel">
           <div class="plant-dates-loc" id="plant-dates-loc">&#x1F4CD; RMA Final Planting Dates</div>
@@ -894,8 +903,39 @@
       </div></div>
     </div>
   </div>
+  <div class="radar-section fade-up" id="f-radar">
+    <div class="sec-head"><h2 class="sec-title">&#x1F5FA;&#xFE0F; Radar, Forecast &amp; Drought</h2><a href="/drought-monitor" class="sec-all">Drought Monitor &rarr;</a></div>
+    <div class="radar-grid">
+      <div class="radar-card">
+        <div style="padding:.6rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)"><span class="live-dot" style="display:inline-block" aria-hidden="true"></span> Live Radar</span>
+          <span style="font-size:.68rem;color:var(--text-muted)">Powered by Windy</span>
+        </div>
+        <iframe id="windy-frame" src="" data-src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=5&overlay=radar&product=radar&level=surface&lat=42.0&lon=-93.5&detailLat=42.0&detailLon=-93.5&detail=false&pressure=false&menu=false&message=false&marker=false&calendar=now&thunder=false" width="100%" style="border:none;display:block;min-height:320px;height:100%;aspect-ratio:unset" loading="lazy" title="Live Radar &mdash; Windy" allow="geolocation; fullscreen" allowfullscreen></iframe>
+      </div>
+      <div class="radar-sidebar" style="display:flex;flex-direction:column;">
+        <div class="drought-embed" style="flex:1;display:flex;flex-direction:column;">
+          <div style="padding:.6rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)">Drought Monitor</span>
+            <a href="/drought-monitor" style="font-size:.68rem;color:var(--text-muted)">Full Map &rarr;</a>
+          </div>
+          <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener" title="View full interactive drought map" style="flex:1;display:flex;align-items:center;">
+            <img id="drought-img" src="" alt="US Drought Monitor &mdash; current week" style="display:block;width:100%;height:auto" loading="lazy">
+          </a>
+          <div id="drought-fallback" class="drought-fallback" style="display:none">
+            <span style="font-size:1.5rem">&#x1F3DC;&#xFE0F;</span>
+            <span style="font-size:.82rem;color:var(--text-dim)">Drought map loading&hellip;</span>
+            <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener">View on droughtmonitor.unl.edu &rarr;</a>
+          </div>
+          <div style="padding:.4rem .8rem;font-size:.68rem;color:var(--text-muted);text-align:right;border-top:1px solid var(--border)">
+            Source: USDA NDMC &middot; Updated Thursday &middot; <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;">Full Interactive Map &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="price-cards-section fade-up" id="f-prices">
-    <div class="sec-head"><div class="sec-title">&#x1F4C8; Market Prices</div><div style="display:flex;align-items:center;gap:.75rem"><span id="prices-age" style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text-muted)">Updated every 30 min</span><a href="/corn-futures-prices" class="sec-all">All Charts &rarr;</a></div></div>
+    <div class="sec-head"><h2 class="sec-title">&#x1F4C8; Market Prices</h2><div style="display:flex;align-items:center;gap:.75rem"><span id="prices-age" style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text-muted)">Updated every 30 min</span><a href="/corn-futures-prices" class="sec-all">All Charts &rarr;</a></div></div>
     <div class="pc-section-lbl">&#x1F33D; Grains &mdash; Key Contracts</div>
     <div class="price-cards-grid">
       <div class="pc pc--highlight" data-spark="corn"><div class="pc-head"><span class="pc-name"><span class="pc-name-icon">&#x1F33D;</span>Corn</span><span class="pc-contract">Front Month</span></div><div class="pc-price" id="pcp-corn-near">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-corn-near">--</span></div><div class="pc-prev" id="pcprev-corn-near"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-corn-lo">$3.69</span><span>52-Wk Range</span><span id="pcrl-corn-hi">$4.81</span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-corn" style="width:84.8%"></div><div class="pc-range-dot" id="pcrd-corn" style="left:84.8%"></div></div></div></div>
@@ -989,39 +1029,8 @@
       <div class="pc pc-sm" data-spark="treasury10"><div class="pc-head"><span class="pc-name"><span class="pc-name-icon">&#x1F3E6;</span>10-Yr Treasury</span><span class="pc-contract">Yield %</span></div><div class="pc-price" id="pcp-treasury">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-treasury">--</span></div><div class="pc-prev" id="pcprev-treasury"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-treasury10-lo">3.9%</span><span>Land &amp; Loan Rates</span><span id="pcrl-treasury10-hi">4.6%</span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-treasury10" style="width:56.6%"></div><div class="pc-range-dot" id="pcrd-treasury10" style="left:56.6%"></div></div></div></div>
     </div>
   </div>
-  <div class="radar-section fade-up" id="f-radar">
-    <div class="sec-head"><div class="sec-title">&#x1F5FA;&#xFE0F; Radar, Forecast &amp; Drought</div><a href="/drought-monitor" class="sec-all">Drought Monitor &rarr;</a></div>
-    <div class="radar-grid">
-      <div class="radar-card">
-        <div style="padding:.6rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)"><span class="live-dot" style="display:inline-block" aria-hidden="true"></span> Live Radar</span>
-          <span style="font-size:.68rem;color:var(--text-muted)">Powered by Windy</span>
-        </div>
-        <iframe id="windy-frame" src="" data-src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=5&overlay=radar&product=radar&level=surface&lat=42.0&lon=-93.5&detailLat=42.0&detailLon=-93.5&detail=false&pressure=false&menu=false&message=false&marker=false&calendar=now&thunder=false" width="100%" style="border:none;display:block;min-height:320px;height:100%;aspect-ratio:unset" loading="lazy" title="Live Radar &mdash; Windy" allow="geolocation; fullscreen" allowfullscreen></iframe>
-      </div>
-      <div class="radar-sidebar" style="display:flex;flex-direction:column;">
-        <div class="drought-embed" style="flex:1;display:flex;flex-direction:column;">
-          <div style="padding:.6rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)">Drought Monitor</span>
-            <a href="/drought-monitor" style="font-size:.68rem;color:var(--text-muted)">Full Map &rarr;</a>
-          </div>
-          <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener" title="View full interactive drought map" style="flex:1;display:flex;align-items:center;">
-            <img id="drought-img" src="" alt="US Drought Monitor &mdash; current week" style="display:block;width:100%;height:auto" loading="lazy">
-          </a>
-          <div id="drought-fallback" class="drought-fallback" style="display:none">
-            <span style="font-size:1.5rem">&#x1F3DC;&#xFE0F;</span>
-            <span style="font-size:.82rem;color:var(--text-dim)">Drought map loading&hellip;</span>
-            <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener">View on droughtmonitor.unl.edu &rarr;</a>
-          </div>
-          <div style="padding:.4rem .8rem;font-size:.68rem;color:var(--text-muted);text-align:right;border-top:1px solid var(--border)">
-            Source: USDA NDMC &middot; Updated Thursday &middot; <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;">Full Interactive Map &rarr;</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   <div class="fade-up" id="f-noaa">
-    <div class="sec-head"><div class="sec-title">&#x1F321;&#xFE0F; NOAA Seasonal Outlooks</div><a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" rel="noopener" class="sec-all">CPC Full Outlooks &rarr;</a></div>
+    <div class="sec-head"><h2 class="sec-title">&#x1F321;&#xFE0F; NOAA Seasonal Outlooks</h2><a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" rel="noopener" class="sec-all">CPC Full Outlooks &rarr;</a></div>
     <div class="noaa-tabs" id="noaa-tabs">
       <button class="noaa-tab active" data-period="30" data-label="1-Month (30-Day)">1-Month</button>
       <button class="noaa-tab" data-period="90" data-label="3-Month (Seasonal)">3-Month</button>
@@ -1033,7 +1042,7 @@
     <div class="noaa-note">Source: <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" rel="noopener">NOAA Climate Prediction Center</a> &middot; 1-Month issued last day of month &middot; 3-Month issued 3rd Thursday &middot; <span id="noaa-period-label">1-Month (30-Day)</span></div>
   </div>
   <div class="fade-up" id="f5">
-    <div class="sec-head"><div class="sec-title">&#x1F4C5; Upcoming USDA Reports</div><a href="/usda-calendar" class="sec-all">Full Calendar &rarr;</a></div>
+    <div class="sec-head"><h2 class="sec-title">&#x1F4C5; Upcoming USDA Reports</h2><a href="/usda-calendar" class="sec-all">Full Calendar &rarr;</a></div>
     <div class="usda-cal-card"><div class="cal-strip" id="usda-cal-strip" role="list" tabindex="0" aria-label="Upcoming USDA report dates — scroll for more"></div></div>
   </div>
   <div class="fade-up" id="f-crypto">
@@ -1055,10 +1064,36 @@
     </div>
   </div>
   <div class="fade-up" id="f-kalshi">
-    <div class="sec-head"><div class="sec-title">&#x1F3AF; What's Moving Agriculture</div><a href="/ag-odds" class="sec-all">All Markets &rarr;</a></div>
+    <div class="sec-head"><h2 class="sec-title">&#x1F3AF; What's Moving Agriculture</h2><a href="/ag-odds" class="sec-all">All Markets &rarr;</a></div>
     <div id="kalshi-grid" data-markets-handled="true" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(268px,100%),1fr));gap:.65rem;margin-bottom:.5rem"><div id="kalshi-loading" style="grid-column:1/-1;text-align:center;padding:1.2rem;font-size:.8rem;color:var(--text-muted)">&#x23F3; Loading markets&hellip;</div></div>
     <div id="kalshi-footer" style="display:none;padding:.25rem 0 .15rem;text-align:right"><a href="/ag-odds" style="font-size:.72rem;color:var(--gold);text-decoration:none;font-weight:600">View all ag prediction markets &rarr;</a></div>
   </div>
+  <section class="fade-up" id="f-faq" aria-labelledby="faq-heading">
+    <style>
+      #f-faq .faq-list{margin-top:.5rem;}
+      #f-faq .faq-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:.55rem;overflow:hidden;}
+      #f-faq .faq-item summary{list-style:none;cursor:pointer;display:flex;align-items:flex-start;justify-content:space-between;gap:.85rem;padding:.85rem 1rem;min-height:44px;font-family:'Oswald',sans-serif;font-size:.98rem;font-weight:600;color:var(--text);line-height:1.4;}
+      #f-faq .faq-item summary::-webkit-details-marker{display:none;}
+      #f-faq .faq-item summary::after{content:'+';font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--gold);flex-shrink:0;line-height:1.1;transition:transform .2s ease;}
+      #f-faq .faq-item[open] summary::after{content:'\2212';}
+      #f-faq .faq-item summary:hover{color:var(--gold);}
+      #f-faq .faq-item summary:focus-visible{outline:2px solid var(--gold);outline-offset:-2px;}
+      #f-faq .faq-a{padding:0 1rem 1rem;font-size:.86rem;line-height:1.7;color:var(--text-dim);}
+      #f-faq .faq-a a{color:var(--gold);text-decoration:underline;font-weight:600;}
+      @media (prefers-reduced-motion:reduce){#f-faq .faq-item summary::after{transition:none;}}
+    </style>
+    <div class="sec-head"><h2 class="sec-title" id="faq-heading">&#x2753; Frequently Asked Questions</h2><a href="/cash-bids" class="sec-all">Cash bids near you &rarr;</a></div>
+    <div class="faq-list">
+      <details class="faq-item"><summary>What are corn futures prices today?</summary><div class="faq-a">AGSIST displays live CBOT corn futures prices updated every 30 minutes via Yahoo Finance. Both the nearby front-month contract and the December new-crop harvest contract are shown with net change, percent change, and 52-week range. Prices are in dollars per bushel. <a href="/corn-futures-prices">See full corn futures &rarr;</a></div></details>
+      <details class="faq-item"><summary>How do I find cash grain bids near me?</summary><div class="faq-a">Enter any US ZIP code on AGSIST's Cash Bids page at agsist.com/cash-bids to see live corn, soybean, and wheat elevator prices from every reporting grain elevator within 50 miles. Basis is shown alongside cash price for each location. <a href="/cash-bids">Find cash bids &rarr;</a></div></details>
+      <details class="faq-item"><summary>Is AGSIST free?</summary><div class="faq-a">Yes. AGSIST is available at no charge with no account or subscription required. Tools on the site &mdash; spray advisory, urea volatilization risk monitor, break-even calculator, grain bin calculator, cash bids, and the AGSIST Daily briefing &mdash; are available at no charge for non-commercial use.</div></details>
+      <details class="faq-item"><summary>How often are grain prices updated on AGSIST?</summary><div class="faq-a">Grain futures prices on AGSIST are updated every 30 minutes during trading hours Monday through Friday via GitHub Actions. The AGSIST Daily briefing is published by 6 AM CT every weekday with overnight market analysis.</div></details>
+      <details class="faq-item"><summary>What is urea volatilization risk?</summary><div class="faq-a">Urea volatilization is the loss of nitrogen fertilizer as ammonia gas when urea is surface-applied without incorporation. Risk is highest when soil temperatures exceed 50&deg;F, humidity is high, and no rain is forecast within 2&ndash;4 days. AGSIST's free urea risk monitor scores your real-time local conditions from 0&ndash;100. <a href="/urea">Check urea risk &rarr;</a></div></details>
+      <details class="faq-item"><summary>What is grain basis and why does it matter?</summary><div class="faq-a">Grain basis is the difference between your local cash elevator price and the nearby CME futures contract price. A basis of -30 cents means the elevator pays 30 cents below futures. Stronger (less negative) basis signals higher local demand. AGSIST displays live basis alongside cash price for every elevator in the cash bids tool.</div></details>
+      <details class="faq-item"><summary>When is the WASDE report released?</summary><div class="faq-a">The USDA WASDE (World Agricultural Supply and Demand Estimates) report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time. It is the most market-moving USDA report, often moving corn and soybean futures 10-40 cents at release. AGSIST's USDA Calendar tracks all report dates with market impact ratings. <a href="/usda-calendar">USDA calendar &rarr;</a></div></details>
+      <details class="faq-item"><summary>What is the corn-to-soybean price ratio and how do farmers use it?</summary><div class="faq-a">The corn-to-soybean price ratio compares November soybean futures divided by December corn futures. Across historical USDA price data, ratios above 2.6:1 have typically favored soybean profitability per acre; below 2.4:1, corn; between 2.4 and 2.6 is neutral. Actual thresholds shift with local yield potential, input costs, and basis &mdash; individual operations should run break-even math on their own numbers. AGSIST calculates this ratio live so producers can track it during winter planting decisions. <a href="/breakeven">Break-even calculator &rarr;</a></div></details>
+    </div>
+  </section>
   <div class="signup fade-up" id="signup-full" style="display:none">
     <div class="signup-inner">
       <div class="signup-icon" aria-hidden="true">&#x1F33E;</div>
@@ -1311,7 +1346,13 @@
     </div>
   </div>
 </div>
-<div id="site-footer"></div>
+<div id="site-footer">
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails. -->
+  <nav aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <a href="/corn-futures-prices" style="color:var(--green);text-decoration:none">Corn Futures</a> &middot; <a href="/soybean-futures-prices" style="color:var(--green);text-decoration:none">Soybean Futures</a> &middot; <a href="/wheat-futures-prices" style="color:var(--green);text-decoration:none">Wheat Futures</a> &middot; <a href="/cash-bids" style="color:var(--green);text-decoration:none">Cash Grain Bids</a> &middot; <a href="/cot" style="color:var(--green);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--green);text-decoration:none">Ag Prediction Markets</a> &middot; <a href="/markets" style="color:var(--green);text-decoration:none">All Markets</a> &middot; <a href="/spray" style="color:var(--green);text-decoration:none">Spray Conditions</a> &middot; <a href="/urea" style="color:var(--green);text-decoration:none">Urea Risk</a> &middot; <a href="/drought-monitor" style="color:var(--green);text-decoration:none">Drought Monitor</a> &middot; <a href="/breakeven" style="color:var(--green);text-decoration:none">Break-Even Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--green);text-decoration:none">Grain Bin Calculator</a> &middot; <a href="/gdu-calculator" style="color:var(--green);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--green);text-decoration:none">Planting Dates</a> &middot; <a href="/fertilizer" style="color:var(--green);text-decoration:none">Fertilizer</a> &middot; <a href="/fast-facts" style="color:var(--green);text-decoration:none">Fast Facts</a> &middot; <a href="/yield-estimator" style="color:var(--green);text-decoration:none">Yield Estimator</a> &middot; <a href="/daily" style="color:var(--green);text-decoration:none">AGSIST Daily</a> &middot; <a href="/usda-calendar" style="color:var(--green);text-decoration:none">USDA Calendar</a> &middot; <a href="/usda-quick-stats" style="color:var(--green);text-decoration:none">USDA Quick Stats</a> &middot; <a href="/tariffs" style="color:var(--green);text-decoration:none">Tariffs</a> &middot; <a href="/data-sources" style="color:var(--green);text-decoration:none">Data Sources</a> &middot; <a href="/about" style="color:var(--green);text-decoration:none">About</a> &middot; <a href="/contact" style="color:var(--green);text-decoration:none">Contact</a> &middot; <a href="/sponsor" style="color:var(--green);text-decoration:none">Sponsor</a>
+  </nav>
+</div>
 <script src="/components/loader.js" defer></script>
 <script src="/components/geo.js" defer></script>
 <script src="/components/bids-homepage.js" defer></script>
@@ -2397,28 +2438,34 @@ function monthlyChartSvg(current,avg,monthLabels,fmtFn){
     if(avg[i]>mx)mx=avg[i];
   }
   if(mx<0.01)mx=1; // avoid divide-by-zero
-  var W=320,H=96,PL=22,PR=4,PT=10,PB=18;
+  var W=360,H=150,PL=30,PR=8,PT=18,PB=24;
   var cw=W-PL-PR,ch=H-PT-PB;
-  var gw=cw/monthLabels.length;
-  var bw=Math.max(3,Math.min(9,gw*0.34));
-  var gap=1.2;
-  var out='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block" role="img" aria-label="Monthly comparison chart">';
-  // baseline
-  out+='<line x1="'+PL+'" y1="'+(PT+ch)+'" x2="'+(W-PR)+'" y2="'+(PT+ch)+'" stroke="#333" stroke-width="0.5"/>';
-  // y-axis max label
-  out+='<text x="2" y="'+(PT+4)+'" font-size="7" fill="#666" font-family="JetBrains Mono,monospace">'+fmtFn(mx)+'</text>';
-  out+='<text x="2" y="'+(PT+ch)+'" font-size="7" fill="#666" font-family="JetBrains Mono,monospace">0</text>';
-  for(var j=0;j<monthLabels.length;j++){
+  var n=monthLabels.length;
+  var gw=cw/n;
+  var bw=Math.max(4,Math.min(14,gw*0.36));
+  var gap=1.6;
+  var vf=(n<=8)?7:6; // value-label font; smaller when 12 months so they don't crowd
+  var out='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block" role="img" aria-label="Monthly comparison: this year vs 5-year average">';
+  // horizontal gridlines + y-axis value labels at 0/25/50/75/100% of max
+  var fracs=[0,0.25,0.5,0.75,1];
+  for(var g=0;g<fracs.length;g++){
+    var gy=PT+ch-(fracs[g]*ch);
+    out+='<line x1="'+PL+'" y1="'+gy.toFixed(1)+'" x2="'+(W-PR)+'" y2="'+gy.toFixed(1)+'" stroke="#ffffff" stroke-opacity="'+(g===0?'0.20':'0.06')+'" stroke-width="0.5"/>';
+    out+='<text x="'+(PL-4)+'" y="'+(gy+2.6).toFixed(1)+'" font-size="8" fill="#8f8f8f" text-anchor="end" font-family="JetBrains Mono,monospace">'+fmtFn(mx*fracs[g])+'</text>';
+  }
+  for(var j=0;j<n;j++){
     var gx=PL+gw*j+gw/2;
     var aH=(avg[j]/mx)*ch,aY=PT+ch-aH;
     var aX=gx-bw-gap/2;
-    out+='<rect x="'+aX.toFixed(1)+'" y="'+aY.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(0.5,aH).toFixed(1)+'" fill="#3a8b3c" fill-opacity="0.45" rx="1"/>';
+    out+='<rect x="'+aX.toFixed(1)+'" y="'+aY.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(0.5,aH).toFixed(1)+'" fill="#3a8b3c" fill-opacity="0.5" rx="1.2"/>';
     if(current[j]>0){
       var cH=(current[j]/mx)*ch,cY=PT+ch-cH;
       var cX=gx+gap/2;
-      out+='<rect x="'+cX.toFixed(1)+'" y="'+cY.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(0.5,cH).toFixed(1)+'" fill="#daa520" rx="1"/>';
+      out+='<rect x="'+cX.toFixed(1)+'" y="'+cY.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(0.5,cH).toFixed(1)+'" fill="#daa520" rx="1.2"/>';
+      var vY=Math.max(PT+7,cY-3);
+      out+='<text x="'+(cX+bw/2).toFixed(1)+'" y="'+vY.toFixed(1)+'" font-size="'+vf+'" fill="#f3cf72" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700">'+fmtFn(current[j])+'</text>';
     }
-    out+='<text x="'+gx.toFixed(1)+'" y="'+(H-6)+'" font-size="7.5" fill="#888" text-anchor="middle" font-family="JetBrains Mono,monospace">'+monthLabels[j]+'</text>';
+    out+='<text x="'+gx.toFixed(1)+'" y="'+(H-7)+'" font-size="9" fill="#9a9a9a" text-anchor="middle" font-family="JetBrains Mono,monospace">'+monthLabels[j]+'</text>';
   }
   out+='</svg>';
   return out;
@@ -2626,6 +2673,25 @@ function loadWeatherEnhancements(state){
     } else if(prCtxEl){
       prCtxEl.textContent='Trailing 30 days';
     }
+    // ----- Plain-language takeaways: absolute delta + vs-normal + what it means -----
+    var gduTk=document.getElementById('gdu-takeaway');
+    if(gduTk){
+      if(gduPct!=null){
+        var dGdu=Math.round(curGDU-gduAvg5);
+        var gduDir=gduPct>2?'ahead of':(gduPct<-2?'behind':'on pace with');
+        var gduMsg=gduPct>2?'Heat is building faster than normal \u2014 crops are developing ahead of schedule.':(gduPct<-2?'Heat units are running behind \u2014 slower crop development so far this year.':'Heat accumulation is right about average for this point in the season.');
+        gduTk.innerHTML='<strong>'+(dGdu>0?'+':'')+dGdu+' GDU</strong> '+gduDir+' the 5-yr average ('+(gduPct>0?'+':'')+gduPct+'%). '+gduMsg;
+      } else { gduTk.textContent=''; }
+    }
+    var prTk=document.getElementById('precip-takeaway');
+    if(prTk){
+      if(prPct!=null){
+        var dPr=Math.round((curPrecip-prAvg5)*10)/10;
+        var prDir=prPct>5?'above':(prPct<-5?'below':'near');
+        var prMsg=prPct>15?'Notably wetter than normal \u2014 watch fields for saturation and delayed work.':(prPct>5?'A bit wetter than the 5-yr norm.':(prPct<-15?'Running dry versus normal \u2014 keep an eye on moisture stress.':(prPct<-5?'Slightly drier than the 5-yr norm.':'Rainfall is close to the 5-yr normal over the last 30 days.')));
+        prTk.innerHTML='<strong>'+(dPr>0?'+':'')+dPr+'\"</strong> '+prDir+' the 5-yr average ('+(prPct>0?'+':'')+prPct+'%). '+prMsg;
+      } else { prTk.textContent=''; }
+    }
     // Override the basic values with cleaner display (already set earlier in loop above)
     var gduEl2=document.getElementById('gdu-val');if(gduEl2)gduEl2.textContent=Math.round(curGDU)+' GDU';
     var prEl2=document.getElementById('precip-val');if(prEl2)prEl2.textContent=(Math.round(curPrecip*10)/10)+'"';
@@ -2656,6 +2722,34 @@ function loadWeatherEnhancements(state){
       }).join('');
       var sprayW=document.getElementById('spray-windows');if(sprayW)sprayW.classList.add('loaded');
     }
+
+    // ========== "WHAT THIS MEANS FOR YOU TODAY" — synthesized plain-language read ==========
+    (function(){
+      var el=document.getElementById('wx-today-summary'); if(!el)return;
+      var t_mx=forecastMaxArr[0],t_mn=forecastMinArr[0];
+      var t_pr=forecastPrecipArr[0]||0,t_wd=forecastWindArr[0]||0,t_hm=forecastHumidArr[0]||0;
+      var icon,lead;
+      if(t_pr>0.25){icon='\uD83C\uDF27\uFE0F';lead='not a spray day \u2014 rain in the forecast.';}
+      else if(t_wd>15){icon='\uD83C\uDF2C\uFE0F';lead='hold off spraying \u2014 winds are up near '+Math.round(t_wd)+' mph.';}
+      else if(t_hm>85){icon='\u26A0\uFE0F';lead='spray with caution \u2014 humidity is running high.';}
+      else if(t_mx!=null&&t_mx>90){icon='\uD83D\uDD25';lead='spray early \u2014 it turns hot ('+Math.round(t_mx)+'\u00B0F) this afternoon.';}
+      else if(t_mn!=null&&t_mn<45){icon='\u2744\uFE0F';lead='cool start \u2014 let temps come up before spraying.';}
+      else {icon='\u2705';lead='a good window for field work and spraying.';}
+      var clauses=[];
+      if(typeof gduPct==='number'){
+        clauses.push(gduPct>2?'season heat is running <strong>'+gduPct+'% ahead of</strong> the 5-yr normal':(gduPct<-2?'season heat is running <strong>'+Math.abs(gduPct)+'% behind</strong> the 5-yr normal':'season heat is right at the 5-yr normal'));
+      }
+      if(typeof prPct==='number'){
+        var pn=(prPct>5?'<strong>'+prPct+'% above</strong>':(prPct<-5?'<strong>'+Math.abs(prPct)+'% below</strong>':'near'));
+        var tail=(prPct<-15?' \u2014 keep an eye on soil moisture':(prPct>15?' \u2014 fields may run wet':''));
+        clauses.push('30-day rain is '+pn+' normal'+tail);
+      }
+      var ctx='';
+      if(clauses.length){var j=clauses.join(', and ');j=j.charAt(0).toUpperCase()+j.slice(1);ctx=' '+j+'.';}
+      el.innerHTML='<span class="wx-today-icon" aria-hidden="true">'+icon+'</span>'+
+        '<span class="wx-today-text"><strong>Today:</strong> '+lead.charAt(0).toUpperCase()+lead.slice(1)+ctx+'</span>';
+      el.classList.add('loaded');
+    })();
 
     // ========== 7-DAY FORECAST ==========
     var forecastWcodeArr=dailyF.weathercode||[];

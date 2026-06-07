@@ -44,6 +44,9 @@
   {"@type":"Question","name":"How do I estimate soybean yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"Count plants per acre, then count pods per plant and seeds per pod on 10 representative plants. Formula: plants/ac \u00d7 pods/plant \u00d7 seeds/pod / (seeds/lb \u00d7 60). The AGSIST estimator calculates this automatically."}}
 ]}
 </script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"AGSIST Corn & Soybean Yield Estimator","url":"https://agsist.com/yield-estimator","applicationCategory":"Agricultural yield calculator","operatingSystem":"Web browser","description":"Free pre-harvest yield estimator for corn (ear-count / yield-component method) and soybeans (pod-count method), with a break-even profit-and-loss check that auto-fills price from live cash data.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"featureList":["Corn ear-count yield estimate with test-weight adjustment","Soybean pod-count yield estimate","Break-even / profit per acre at estimated yield","Auto-filled cash price by crop"]}
+</script>
 
 <style>
 html { overflow-x: hidden; overflow-x: clip; width: 100%; }
@@ -129,6 +132,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 .ye-source a:hover{text-decoration:underline;}
 
 .ye-disclaimer{font-size:.65rem;color:var(--text-muted);line-height:1.55;margin-top:1rem;padding:.7rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important;} }
 </style>
 </head>
 
@@ -363,7 +367,7 @@ button,a,[role="button"]{touch-action:manipulation;}
           <div class="field-group">
             <label class="field-label" for="bm-yield">Est. Yield (bu/ac)</label>
             <input class="field-input" id="bm-yield" type="number" value="185" step="1" min="0" max="400">
-            <span class="field-note">Auto-fills from corn tab</span>
+            <span class="field-note">Auto-fills from the active crop tab</span>
           </div>
           <div class="field-group">
             <label class="field-label" for="bm-price">Sale Price ($/bu)</label>
@@ -447,6 +451,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 var tabs=document.querySelectorAll('.ye-tab');
 var panels=document.querySelectorAll('.ye-panel');
 function switchTab(t){
+  if(t==='corn'||t==='bean'){activeCrop=t;}
   tabs.forEach(function(b){var a=b.dataset.tab===t;b.classList.toggle('active',a);b.setAttribute('aria-selected',a);});
   panels.forEach(function(p){
     var id=p.id.replace('ye-','');var a=id===t;
@@ -455,6 +460,25 @@ function switchTab(t){
   });
 }
 tabs.forEach(function(b){b.addEventListener('click',function(){switchTab(b.dataset.tab);});});
+// Keyboard arrow navigation across the tablist (WCAG tab pattern)
+tabs.forEach(function(b,i){b.addEventListener('keydown',function(e){
+  var n=null;
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')n=tabs[(i+1)%tabs.length];
+  else if(e.key==='ArrowLeft'||e.key==='ArrowUp')n=tabs[(i-1+tabs.length)%tabs.length];
+  else if(e.key==='Home')n=tabs[0]; else if(e.key==='End')n=tabs[tabs.length-1];
+  if(n){e.preventDefault();switchTab(n.dataset.tab);n.focus();}
+});});
+
+/* Break-even auto-fill is crop-aware: yield + cash price track the active crop. */
+var activeCrop='corn';
+var BE={corn:{yield:null,price:null},bean:{yield:null,price:null}};
+function syncBreakeven(){
+  var bmY=document.getElementById('bm-yield'), bmP=document.getElementById('bm-price');
+  var d=BE[activeCrop]||{};
+  if(bmY&&!bmY._manual&&d.yield!=null)bmY.value=Math.round(d.yield);
+  if(bmP&&!bmP._manual&&d.price!=null)bmP.value=d.price.toFixed(2);
+  if(typeof calcBreakeven==='function')calcBreakeven();
+}
 
 /* ROW LENGTH LOOKUP (1/1000 acre for given row width) */
 var ROW_LENGTHS={20:'26\'1"',30:'17\'5"',36:'14\'6"',38:'13\'9"',40:'13\'1"',15:'34\'10"',7.5:'69\'8"'};
@@ -479,9 +503,8 @@ function calcCorn(){
   s('c-pop-val',(pop/1000).toFixed(0)+'k');
   s('c-kpe-val',kpe.toFixed(0));
   s('c-range-val',Math.round(yield_bu*0.85)+'–'+Math.round(yield_bu*1.15));
-  var bm=document.getElementById('bm-yield');
-  if(bm&&!bm._manual)bm.value=Math.round(yield_bu);
-  calcBreakeven();
+  activeCrop='corn'; BE.corn.yield=yield_bu;
+  syncBreakeven();
 }
 ['c-row-width','c-ear-count','c-kernel-rows','c-kernels-row','c-test-weight'].forEach(function(id){
   var el=document.getElementById(id);if(el)el.addEventListener('input',calcCorn);
@@ -522,6 +545,8 @@ function calcBean(){
   s('b-pop-val',(pop/1000).toFixed(0)+'k');
   s('b-spp-val',spp.toFixed(0));
   s('b-range-val',Math.round(yield_bu*0.85)+'–'+Math.round(yield_bu*1.15));
+  activeCrop='bean'; BE.bean.yield=yield_bu;
+  syncBreakeven();
 }
 ['b-row-width','b-plant-count','b-pods-plant','b-seeds-pod','b-seeds-lb'].forEach(function(id){
   var el=document.getElementById(id);if(el)el.addEventListener('input',calcBean);
@@ -583,15 +608,11 @@ calcBreakeven();
 fetch('/data/prices.json').then(function(r){return r.ok?r.json():null;}).then(function(data){
   if(!data||!data.quotes)return;
   var q=data.quotes;
-  var corn=q.corn&&q.corn.close?parseFloat(q.corn.close):null;
-  if(corn!=null&&!isNaN(corn)){
-    if(corn>100)corn=corn/100;
-    var p=document.getElementById('bm-price');
-    if(p&&!p._manual){
-      p.value=corn.toFixed(2);
-      calcBreakeven();
-    }
-  }
+  // prices.json stores grain prices in CENTS -> divide by 100. Soybean key is 'beans'.
+  function px(o){ if(!o||o.close==null)return null; var v=parseFloat(o.close); if(isNaN(v))return null; return v>100?v/100:v; }
+  BE.corn.price=px(q.corn);
+  BE.bean.price=px(q.beans);
+  syncBreakeven();
 }).catch(function(){});
 
 })();

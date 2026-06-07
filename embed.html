@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#111a0a">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+<title>Embed AGSIST Tools — Free Ag Widgets for Your Site | AGSIST</title>
+<meta name="description" content="Add AGSIST's free agricultural tools to your own website. Embed the GDU calculator, crop calendar, cash bids, and daily market briefing with one line of code. No charge, no account.">
+<meta name="author" content="Sigurd Lindquist">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://agsist.com/embed">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:title" content="Embed AGSIST Tools — Free Ag Widgets for Your Site">
+<meta property="og:description" content="Add AGSIST's free ag tools to your site with one line of code. GDU calculator, crop calendar, cash bids, daily briefing.">
+<meta property="og:url" content="https://agsist.com/embed">
+<meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","@id":"https://agsist.com/embed#webpage","url":"https://agsist.com/embed","name":"Embed AGSIST Tools","description":"Free embeddable agricultural widgets — GDU calculator, crop calendar, cash bids, and daily market briefing.","isPartOf":{"@id":"https://agsist.com/#website"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="/components/styles.css?v=12" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=12">
+<link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+<link rel="manifest" href="/manifest.json">
+<style>
+  .em-page{max-width:920px;margin:0 auto;padding:1.4rem 1.1rem 5rem;}
+  .em-hero{padding:1.3rem 0 1.4rem;border-bottom:1px solid var(--border);margin-bottom:1.8rem;}
+  .em-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;}
+  .em-hero h1{font-family:'Oswald',sans-serif;font-size:clamp(1.7rem,5vw,2.4rem);font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .7rem;line-height:1.1;}
+  .em-hero p{font-size:.95rem;line-height:1.65;color:var(--text-dim);max-width:64ch;margin:0;}
+  .em-hero p strong{color:var(--text);}
+  .em-h2{font-family:'Oswald',sans-serif;font-size:1.25rem;font-weight:700;text-transform:uppercase;color:var(--text);margin:2.2rem 0 .9rem;padding-bottom:.45rem;border-bottom:1px solid var(--border);}
+  .em-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.3rem;margin-bottom:1.1rem;}
+  .em-card.soon{opacity:.62;}
+  .em-card-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin-bottom:.4rem;}
+  .em-card-title{font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);}
+  .em-badge{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .6rem;border-radius:4px;}
+  .em-badge.live{background:rgba(74,171,76,.14);color:var(--green);border:1px solid rgba(74,171,76,.4);}
+  .em-badge.soon{background:rgba(125,132,111,.14);color:var(--text-muted);border:1px solid var(--border);}
+  .em-card p{font-size:.85rem;color:var(--text-dim);line-height:1.6;margin:.2rem 0 .9rem;}
+  .em-snip-lbl{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:.8rem 0 .35rem;}
+  .em-snip{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.8rem .9rem;overflow-x:auto;}
+  .em-snip code{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--green);white-space:pre;line-height:1.6;}
+  .em-copy{position:absolute;top:.5rem;right:.5rem;background:var(--surface);border:1px solid var(--border);border-radius:5px;color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;padding:.3rem .55rem;cursor:pointer;min-height:32px;}
+  .em-copy:hover{border-color:var(--gold);}
+  .em-prev{margin-top:1rem;border:1px dashed var(--border);border-radius:8px;padding:.9rem;}
+  .em-prev-lbl{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;}
+  .em-note{font-size:.82rem;line-height:1.65;color:var(--text-dim);background:var(--surface);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:.8rem 1rem;margin:1rem 0;}
+  .em-note strong{color:var(--text);}
+  .em-cta{text-align:center;margin-top:2rem;padding:1.4rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;}
+  .em-cta a{color:var(--gold);text-decoration:none;font-weight:700;}
+  .em-iframe{width:100%;max-width:480px;border:0;display:block;margin:0 auto;min-height:560px;}
+</style>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" tabindex="-1">
+<div class="em-page">
+
+  <div class="em-hero">
+    <div class="em-eyebrow">Free Widgets · One Line of Code · No Account</div>
+    <h1>Put AGSIST tools on your site</h1>
+    <p>Run a co-op, elevator, ag-retail, or extension site? Drop a working AGSIST tool straight onto your page &mdash; <strong>free, no account, no API key.</strong> Your visitors get the live tool; you get a useful page without building anything. Copy a snippet, paste it, done.</p>
+  </div>
+
+  <!-- GDU — LIVE -->
+  <h2 class="em-h2">Available now</h2>
+  <div class="em-card">
+    <div class="em-card-head">
+      <span class="em-card-title">🌽 GDU Calculator</span>
+      <span class="em-badge live">● Live</span>
+    </div>
+    <p>Auto-fetches real growing degree units from a planting date and location, tracks corn &amp; soybean stage, projects black layer, and flags first-frost risk. The most-used tool on AGSIST.</p>
+
+    <div class="em-snip-lbl">Option A — iframe (simplest, most robust)</div>
+    <div class="em-snip">
+      <button class="em-copy" data-copy="ifr-gdu">Copy</button>
+      <code id="ifr-gdu">&lt;iframe src="https://agsist.com/embed/gdu"
+        title="AGSIST GDU Calculator"
+        style="width:100%;max-width:480px;height:560px;border:0"
+        loading="lazy"&gt;&lt;/iframe&gt;
+&lt;p style="font:600 11px sans-serif;text-align:right;max-width:480px"&gt;
+  &lt;a href="https://agsist.com/gdu-calculator"&gt;Powered by AGSIST&lt;/a&gt;
+&lt;/p&gt;</code>
+    </div>
+
+    <div class="em-snip-lbl">Option B — script (auto-resizes, adds the link for you)</div>
+    <div class="em-snip">
+      <button class="em-copy" data-copy="scr-gdu">Copy</button>
+      <code id="scr-gdu">&lt;div data-agsist-widget="gdu"&gt;&lt;/div&gt;
+&lt;script async src="https://agsist.com/embed.js"&gt;&lt;/script&gt;</code>
+    </div>
+
+    <div class="em-prev">
+      <div class="em-prev-lbl">Live preview</div>
+      <iframe class="em-iframe" src="/embed/gdu" title="AGSIST GDU Calculator preview" loading="lazy"></iframe>
+    </div>
+  </div>
+
+  <!-- ROLLING OUT -->
+  <h2 class="em-h2">Rolling out</h2>
+  <div class="em-card soon">
+    <div class="em-card-head"><span class="em-card-title">📅 Crop Calendar</span><span class="em-badge soon">Soon</span></div>
+    <p>Corn &amp; soybean growth-stage reference with GDU thresholds and management notes.</p>
+  </div>
+  <div class="em-card soon">
+    <div class="em-card-head"><span class="em-card-title">💵 Cash Bids</span><span class="em-badge soon">Soon</span></div>
+    <p>Local cash grain bids by ZIP, sourced from the Barchart OnDemand API.</p>
+  </div>
+  <div class="em-card soon">
+    <div class="em-card-head"><span class="em-card-title">📰 Daily Briefing Strip</span><span class="em-badge soon">Soon</span></div>
+    <p>A compact headline + takeaway strip from the AGSIST Daily morning briefing.</p>
+  </div>
+
+  <div class="em-note">
+    <strong>A note on the link.</strong> The script option places a real &ldquo;Powered by AGSIST&rdquo; link in your page. We&rsquo;d appreciate you keeping it &mdash; it&rsquo;s how a free tool stays free. The iframe option includes the same suggested link below it. Either way, there&rsquo;s no tracking of your visitors beyond standard, anonymized usage stats on the tool itself.
+  </div>
+
+  <div class="em-cta">
+    <p style="margin:0 0 .5rem;color:var(--text-dim);font-size:.9rem">Want a widget customized for your operation, or one that isn&rsquo;t listed yet?</p>
+    <a href="mailto:sig@farmers1st.com?subject=AGSIST%20embed%20widget">Email Sigurd → sig@farmers1st.com</a>
+  </div>
+
+</div>
+</main>
+
+<div id="site-footer"></div>
+<script src="/components/loader.js" defer></script>
+<script>
+(function(){
+  function dec(s){var t=document.createElement('textarea');t.innerHTML=s;return t.value;}
+  document.querySelectorAll('.em-copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var code=document.getElementById(btn.getAttribute('data-copy'));
+      if(!code)return;
+      var text=dec(code.innerHTML);
+      function done(ok){btn.textContent=ok?'Copied ✓':'Copy';setTimeout(function(){btn.textContent='Copy';},1600);}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){done(true);},function(){done(false);});}
+      else{done(false);}
+    });
+  });
+})();
+</script>
+</body>
+</html>
