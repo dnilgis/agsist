@@ -513,6 +513,28 @@
   .daily-share-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green);color:#fff;padding:.65rem 1.25rem;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;z-index:9999;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;box-shadow:0 4px 16px rgba(0,0,0,.3)}
   .daily-share-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   @media(max-width:520px){.daily-share{padding:.65rem .9rem;gap:.4rem}.daily-share-lbl{display:none}.daily-share-btn{padding:.4rem .65rem;font-size:.62rem;gap:.3rem}}
+  /* Grower Pulse weekly poll — lives inside the daily briefing, rides its collapse */
+  .daily-poll{margin:1rem auto 0;max-width:680px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg,10px);padding:1rem 1.1rem .9rem}
+  .daily-poll-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+  .daily-poll-kicker{font-family:'Oswald',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+  .daily-poll-week{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-muted)}
+  .daily-poll-q{font-family:'Oswald',sans-serif;font-weight:600;font-size:1.1rem;line-height:1.25;color:var(--text);margin:.35rem 0 .8rem;text-wrap:balance}
+  .daily-poll-opts{display:flex;flex-direction:column;gap:.5rem}
+  .daily-poll-opt{width:100%;min-height:46px;display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md,6px);color:var(--text-dim);font-family:'Inter',sans-serif;font-size:.95rem;font-weight:600;padding:.6rem .85rem;cursor:pointer;text-align:left;transition:border-color .15s,background .15s,color .15s}
+  .daily-poll-opt:hover{border-color:var(--border-g);background:var(--surface3);color:var(--text)}
+  .daily-poll-opt:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .daily-poll-result{position:relative;width:100%;min-height:46px;display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md,6px);padding:.6rem .85rem;overflow:hidden;margin-bottom:.5rem}
+  .daily-poll-result:last-child{margin-bottom:0}
+  .daily-poll-result .dp-fill{position:absolute;inset:0 auto 0 0;width:0;background:rgba(255,255,255,.05);transition:width .65s cubic-bezier(.22,1,.36,1)}
+  .daily-poll-result.mine{border-color:var(--border-g)}
+  .daily-poll-result.mine .dp-fill{background:color-mix(in srgb,var(--green) 26%,transparent)}
+  .daily-poll-result .dp-lbl{position:relative;font-family:'Inter',sans-serif;font-weight:600;font-size:.92rem;color:var(--text-dim);display:flex;align-items:center;gap:.4rem}
+  .daily-poll-result.mine .dp-lbl{color:var(--text)}
+  .daily-poll-result .dp-check{color:var(--green);font-weight:700}
+  .daily-poll-result .dp-pct{position:relative;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.95rem;color:var(--text)}
+  .daily-poll-foot{margin-top:.8rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-muted);flex-wrap:wrap}
+  .daily-poll-total{color:var(--text-dim)}
+  @media (prefers-reduced-motion:reduce){.daily-poll-result .dp-fill{transition:none}}
   /* PWA install hint — banner + visual modal (v2, May 4 2026) */
   .pwa-hint{position:fixed;bottom:0;left:0;right:0;z-index:1000;background:linear-gradient(180deg,rgba(58,139,60,.96) 0%,rgba(38,90,40,.98) 100%);border-top:2px solid var(--gold);padding:.85rem 1rem;padding-bottom:max(.85rem,env(safe-area-inset-bottom));display:none;align-items:center;gap:.75rem;flex-wrap:wrap;box-shadow:0 -6px 20px rgba(0,0,0,.4);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#fff}
   .pwa-hint.show{display:flex;animation:pwa-slide-up .35s ease-out}
@@ -742,6 +764,18 @@
         <a class="daily-share-btn" id="dsb-li" data-net="li" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><span class="dsb-icon">in</span> LinkedIn</a>
         <a class="daily-share-btn" id="dsb-em" data-net="em" href="#" aria-label="Share via email"><span class="dsb-icon">&#x2709;&#xFE0F;</span> Email</a>
         <button class="daily-share-btn" id="dsb-copy" data-net="copy" aria-label="Copy link to clipboard"><span class="dsb-icon">&#x1F517;</span> Copy Link</button>
+      </div>
+      <div class="daily-poll" id="daily-poll" aria-label="Grower Pulse weekly poll" style="display:none">
+        <div class="daily-poll-head">
+          <span class="daily-poll-kicker">&#x1F33E; Grower Pulse</span>
+          <span class="daily-poll-week" id="daily-poll-week"></span>
+        </div>
+        <h3 class="daily-poll-q" id="daily-poll-q"></h3>
+        <div id="daily-poll-body"></div>
+        <div class="daily-poll-foot">
+          <span class="daily-poll-total" id="daily-poll-total"></span>
+          <span class="daily-poll-reset">New question every Monday</span>
+        </div>
       </div>
       <div class="daily-dismiss-row" id="daily-dismiss-row">
         <div style="display:flex;align-items:center;gap:.5rem"><span style="font-size:.82rem;color:var(--text-muted)">Published Monday–Friday by 6am CT, with weekend recaps.</span></div>
@@ -2980,6 +3014,91 @@ setTimeout(function(){
     dismissHint(false);
     if(window.gtag) try{ window.gtag('event','pwa_installed',{event_category:'engagement'}); }catch(e){}
   });
+})();
+</script>
+<script>
+/* ===== Grower Pulse weekly poll (inside daily briefing) ===== */
+(function(){
+  'use strict';
+
+  // ---- CONFIG: paste your deployed Worker URL here to go live. ----
+  // While this contains REPLACE, the poll stays hidden, so index.html is safe
+  // to deploy before the Worker exists.
+  var POLL_API = 'https://agsist-poll.REPLACE.workers.dev';
+
+  // ---- This week's question. Edit weekly; change the id each week too. ----
+  var POLL = {
+    id: '2026-w23-cropcondition',
+    question: 'How do your crops look right now compared to a normal year?',
+    options: ['Behind normal', 'About normal', 'Ahead of normal']
+  };
+  var REVEAL_THRESHOLD = 25; // below this, label as "early results" (no implied representativeness)
+
+  var card = document.getElementById('daily-poll');
+  if(!card) return;
+  if(POLL_API.indexOf('REPLACE') > -1) return; // not configured yet -> stay hidden
+
+  function weekLabel(){
+    var d=new Date(); var off=(d.getDay()+6)%7; var mon=new Date(d); mon.setDate(d.getDate()-off);
+    var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return 'Week of '+mo[mon.getMonth()]+' '+mon.getDate();
+  }
+  function pct(n,t){ return t>0 ? Math.round((n/t)*100) : 0; }
+  function votedKey(){ return 'agsist_poll_'+POLL.id; }
+  function hasVoted(){ try{ return localStorage.getItem(votedKey()); }catch(e){ return null; } }
+  function markVoted(c){ try{ localStorage.setItem(votedKey(), String(c)); }catch(e){} }
+  function pollGet(){ return fetch(POLL_API+'/?id='+encodeURIComponent(POLL.id)).then(function(r){return r.json();}); }
+  function pollVote(c){ return fetch(POLL_API+'/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:POLL.id,choice:String(c)})}).then(function(r){return r.json();}); }
+
+  var bodyEl=document.getElementById('daily-poll-body');
+  var totalEl=document.getElementById('daily-poll-total');
+  var qEl=document.getElementById('daily-poll-q');
+  var weekEl=document.getElementById('daily-poll-week');
+  if(qEl) qEl.textContent=POLL.question;
+  if(weekEl) weekEl.textContent=weekLabel();
+
+  function renderResults(tally,my){
+    var counts=POLL.options.map(function(_,i){return (tally&&tally[String(i)])||0;});
+    var total=counts.reduce(function(a,b){return a+b;},0);
+    bodyEl.innerHTML='';
+    POLL.options.forEach(function(opt,i){
+      var p=pct(counts[i],total);
+      var row=document.createElement('div');
+      row.className='daily-poll-result'+(String(i)===String(my)?' mine':'');
+      row.innerHTML='<div class="dp-fill"></div><span class="dp-lbl">'+opt+(String(i)===String(my)?' <span class="dp-check">\u2713</span>':'')+'</span><span class="dp-pct">'+p+'%</span>';
+      bodyEl.appendChild(row);
+      requestAnimationFrame(function(){requestAnimationFrame(function(){row.querySelector('.dp-fill').style.width=p+'%';});});
+    });
+    totalEl.textContent = total>=REVEAL_THRESHOLD ? (total.toLocaleString()+' grower responses this week') : ('Early results \u2014 '+total+' so far');
+  }
+
+  function renderOptions(){
+    bodyEl.innerHTML='';
+    var wrap=document.createElement('div'); wrap.className='daily-poll-opts';
+    POLL.options.forEach(function(opt,i){
+      var b=document.createElement('button'); b.type='button'; b.className='daily-poll-opt'; b.textContent=opt;
+      b.addEventListener('click',function(){
+        b.disabled=true;
+        pollVote(i).then(function(res){
+          markVoted(i);
+          if(typeof gaEvent==='function') gaEvent('poll_vote',{poll:POLL.id,choice:i});
+          renderResults(res.tally,i);
+        }).catch(function(){
+          pollGet().then(function(res){renderResults(res.tally,i);}).catch(function(){
+            totalEl.textContent='Couldn\u2019t reach the poll \u2014 try again later'; b.disabled=false;
+          });
+        });
+      });
+      wrap.appendChild(b);
+    });
+    bodyEl.appendChild(wrap);
+    totalEl.textContent='Tap to vote and see how growers are leaning';
+  }
+
+  card.style.display=''; // configured -> reveal
+  var v=hasVoted();
+  if(v!==null && v!==undefined){ pollGet().then(function(res){renderResults(res.tally,v);}).catch(renderOptions); }
+  else { renderOptions(); }
 })();
 </script>
 </body>
