@@ -117,14 +117,14 @@
   .wx-chart-takeaway{font-size:.76rem;line-height:1.55;color:var(--text-dim);margin-top:.55rem;padding-top:.55rem;border-top:1px solid rgba(255,255,255,.07);}
   .wx-chart-takeaway strong{color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:700;}
   /* 5-day forecast strip (class names kept as wx-7day-* for backward-compat) */
-  .wx-7day-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.3rem;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;padding:.15rem 0;}
-  .wx-7day-cell{background:var(--surface2);border-radius:6px;padding:.4rem .3rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.1rem;min-width:0;}
-  .wx-7day-name{font-size:.62rem;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;}
-  .wx-7day-icon{font-size:1.1rem;line-height:1;margin:.1rem 0;}
-  .wx-7day-temps{font-family:'Oswald',sans-serif;font-size:.78rem;font-weight:700;color:var(--text);}
+  .wx-7day-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.45rem;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;padding:.2rem 0;}
+  .wx-7day-cell{background:var(--surface2);border-radius:8px;padding:.65rem .35rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.28rem;min-width:0;}
+  .wx-7day-name{font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;}
+  .wx-7day-icon{font-size:1.7rem;line-height:1;margin:.15rem 0;}
+  .wx-7day-temps{font-family:'Oswald',sans-serif;font-size:1.05rem;font-weight:700;color:var(--text);}
   .wx-7day-temps .hi{color:var(--text);}
   .wx-7day-temps .lo{color:var(--text-muted);margin-left:.25rem;}
-  .wx-7day-meta{font-size:.62rem;font-family:'JetBrains Mono',monospace;color:var(--text-dim);margin-top:.1rem;line-height:1.25;}
+  .wx-7day-meta{font-size:.72rem;font-family:'JetBrains Mono',monospace;color:var(--text-dim);margin-top:.15rem;line-height:1.5;}
   .wx-7day-meta .rain-hi{color:#5ba3e0;}
   .wx-7day-meta .wind-hi{color:var(--gold);}
   /* Hourly collapsible */
@@ -754,10 +754,7 @@
   </div>
 </section>
 <main id="main" class="main" role="main" tabindex="-1">
-  <div class="home-intro">
-    <h1 class="home-h1">Corn, Soybean &amp; Wheat Prices, Farm Weather &amp; Cash Bids</h1>
-    <p class="home-intro-p">Free, live agricultural data for U.S. growers &mdash; grain futures and local cash bids, spray &amp; weather advisories, USDA reports, and a daily market briefing, updated every 30 minutes. <span class="home-byline">Built by Sigurd Lindquist, a crop-insurance agent in northern Wisconsin. <a href="/about">More about AGSIST &rarr;</a></span></p>
-  </div>
+  <h1 class="home-h1">Corn, Soybean &amp; Wheat Prices, Farm Weather &amp; Cash Bids</h1>
   <div class="dash-grid">
     <div class="fade-up" id="f1">
       <div class="sec-head"><h2 class="sec-title">&#x1F4B5; Cash Bids &amp; Basis <span style="font-size:.62rem;font-weight:600;color:var(--gold);letter-spacing:.04em">+ Worth the Drive&trade;</span></h2><a href="/cash-bids" class="sec-all">Find Elevators &rarr;</a></div>
