@@ -219,10 +219,17 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 /* ── MAIN, CARDS, PRICE CARDS ─────────────────────────────────────── */
 .main { max-width: 1400px; margin: 0 auto; padding: var(--sp-xl) var(--sp-lg); min-width: 0; overflow-x: clip; overflow-wrap: anywhere; }
 .sec-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.1rem; gap: .5rem }
-.sec-title { display: flex; align-items: center; gap: .6rem; font-family: 'JetBrains Mono', monospace; font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--green); }
+.sec-title { display: flex; align-items: center; gap: .6rem; font-family: 'JetBrains Mono', monospace; font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--green); margin: 0; }
 .sec-title img { height: 24px; width: 24px; object-fit: contain; border-radius: 3px; background: #f5f1e8; padding: 2px }
 .sec-all { font-size: .8rem; color: var(--text-muted); transition: color .15s; white-space: nowrap; flex-shrink: 0 }
 .sec-all:hover { color: var(--green) }
+/* Homepage intro masthead: static keyword H1 + value prop + authorship */
+.home-intro { margin: .2rem 0 1.15rem; padding: 0 0 .95rem; border-bottom: 1px solid var(--border); }
+.home-h1 { font-family: 'Oswald', sans-serif; font-size: clamp(1.15rem, 3.6vw, 1.6rem); font-weight: 800; text-transform: uppercase; letter-spacing: .01em; color: var(--text); margin: 0 0 .4rem; line-height: 1.18; }
+.home-intro-p { font-size: .85rem; line-height: 1.6; color: var(--text-dim); margin: 0; max-width: 72ch; }
+.home-byline { color: var(--text-muted); }
+.home-byline a { color: var(--green); text-decoration: none; font-weight: 600; }
+.home-byline a:hover { text-decoration: underline; }
 .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: var(--sp-lg); margin-bottom: var(--sp-xl); }
 .dash-grid > .fade-up { display: flex; flex-direction: column; min-width: 0 }
 .dash-grid > .fade-up > .card { flex: 1; display: flex; flex-direction: column }
@@ -255,14 +262,20 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 
 /* ── WEATHER ──────────────────────────────────────────────────────── */
 .wx-hero { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border) }
-.wx-icon { font-size: 3rem; line-height: 1; flex-shrink: 0 }
-.wx-temp { font-family: 'Oswald', sans-serif; font-size: 2.6rem; font-weight: 700; color: var(--text); line-height: 1 }
-.wx-desc { font-size: .88rem; color: var(--text-dim); margin-top: .2rem }
-.wx-loc { font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--text-muted); }
-.wx-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem }
-.wstat { background: var(--surface2); border-radius: var(--r-sm); padding: .65rem .85rem; border: 1px solid var(--border) }
-.wstat-lbl { font-family: 'JetBrains Mono', monospace; font-size: .64rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: .15rem; }
-.wstat-val { font-family: 'JetBrains Mono', monospace; font-size: .95rem; font-weight: 700; color: var(--text) }
+.wx-icon { font-size: 3.4rem; line-height: 1; flex-shrink: 0 }
+.wx-temp { font-family: 'Oswald', sans-serif; font-size: 3.1rem; font-weight: 700; color: var(--text); line-height: 1 }
+.wx-desc { font-size: .96rem; color: var(--text-dim); margin-top: .25rem }
+.wx-loc { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--text-muted); margin-top: .15rem; }
+.wx-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem }
+.wstat { background: var(--surface2); border-radius: var(--r-sm); padding: .75rem .9rem; border: 1px solid var(--border) }
+.wstat-lbl { font-family: 'JetBrains Mono', monospace; font-size: .66rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: .2rem; }
+.wstat-val { font-family: 'JetBrains Mono', monospace; font-size: 1.25rem; font-weight: 700; color: var(--text); line-height: 1.1 }
+/* 'What this means today' synthesized summary banner */
+.wx-today { display: none; gap: .6rem; align-items: flex-start; margin: 0 0 1rem; padding: .75rem .9rem; background: linear-gradient(135deg, rgba(218,165,32,.11), rgba(218,165,32,.03)); border: 1px solid rgba(218,165,32,.28); border-left: 3px solid var(--gold); border-radius: var(--r-sm); }
+.wx-today.loaded { display: flex; }
+.wx-today-icon { font-size: 1.2rem; line-height: 1.4; flex-shrink: 0; }
+.wx-today-text { font-size: .9rem; line-height: 1.55; color: var(--text); }
+.wx-today-text strong { color: var(--gold); font-weight: 700; }
 .spray-badge { display: inline-flex; align-items: center; gap: .4rem; padding: .38rem .75rem; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: .75rem; font-weight: 700; margin-top: .85rem; }
 .spray-badge.caution { background: rgba(218,165,32,.08); color: var(--gold); border: 1px solid rgba(218,165,32,.22) }
 .spray-badge.good { background: rgba(74,171,76,.08); color: var(--green); border: 1px solid rgba(74,171,76,.22) }
