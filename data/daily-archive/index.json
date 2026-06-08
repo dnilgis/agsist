@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-06-08",
+      "date_display": "Monday, June 8, 2026",
+      "headline": "GRAINS EXTEND SLIDE, SILVER FALLS SHARPLY FIVE PERCENT",
+      "teaser": "Four-day grain slide deepens as dollar strength overwhelms the complex.",
+      "market_mood": "bearish",
+      "surprise_count": 7,
+      "sections": 3,
+      "url": "/daily/2026-06-08",
+      "market_closed": false,
+      "yc_outcome": "played_out"
+    },
+    {
       "date": "2026-06-07",
       "date_display": "Sunday, June 7, 2026",
       "headline": "BEANS BREAK $11 SUPPORT, HOGS FALL SHARPLY",
@@ -964,6 +976,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-07T12:24:09.723310+00:00",
-  "count": 87
+  "updated": "2026-06-08T14:08:00.857119+00:00",
+  "count": 88
 }
