@@ -1,116 +1,276 @@
 {
   "_comment": "Season-aware Grower Pulse queue. The rotation pops item [0] each Monday, so ORDER = calendar. Questions are timed to what's top-of-mind that week (field stage, weather, USDA reports, marketing season). 'window' is a human note only (the script ignores it). Reorder freely if weather/news makes a different question urgent (e.g., jump the moisture question up in a drought). Keep at least ~10 in the runway. See grower-pulse-question-audit.md for the reasoning.",
   "upcoming": [
-    { "window": "mid-Jun - soil moisture", "key": "soil-moisture-jun",
-      "question": "How's soil moisture on your farm right now?",
-      "options": ["Too dry", "About right", "Too wet"] },
-
-    { "window": "mid-Jun - replant", "key": "replant-spring",
+    {
+      "window": "mid-Jun - replant",
+      "key": "replant-spring",
       "question": "Did you have to replant any acres this spring?",
-      "options": ["None", "A few", "A lot"] },
-
-    { "window": "late-Jun - crop pace", "key": "crop-pace-jun",
+      "options": [
+        "None",
+        "A few",
+        "A lot"
+      ]
+    },
+    {
+      "window": "late-Jun - crop pace",
+      "key": "crop-pace-jun",
       "question": "Where are your crops vs. the calendar right now?",
-      "options": ["Behind", "On schedule", "Ahead"] },
-
-    { "window": "late-Jun - pollination lead-in", "key": "pollination-worry",
+      "options": [
+        "Behind",
+        "On schedule",
+        "Ahead"
+      ]
+    },
+    {
+      "window": "late-Jun - pollination lead-in",
+      "key": "pollination-worry",
       "question": "How worried are you about heat stress at pollination?",
-      "options": ["Not worried", "Somewhat", "Very worried"] },
-
-    { "window": "mid-Jul - pollination weather", "key": "pollination-weather",
+      "options": [
+        "Not worried",
+        "Somewhat",
+        "Very worried"
+      ]
+    },
+    {
+      "window": "mid-Jul - pollination weather",
+      "key": "pollination-weather",
       "question": "How has pollination weather been on your farm?",
-      "options": ["Stressful", "Mixed", "Favorable"] },
-
-    { "window": "mid-Jul - early corn outlook", "key": "corn-outlook-jul",
+      "options": [
+        "Stressful",
+        "Mixed",
+        "Favorable"
+      ]
+    },
+    {
+      "window": "mid-Jul - early corn outlook",
+      "key": "corn-outlook-jul",
       "question": "Your early corn yield outlook vs. a normal year?",
-      "options": ["Below normal", "About normal", "Above normal"] },
-
-    { "window": "late-Jul - bean outlook", "key": "bean-outlook-jul",
+      "options": [
+        "Below normal",
+        "About normal",
+        "Above normal"
+      ]
+    },
+    {
+      "window": "late-Jul - bean outlook",
+      "key": "bean-outlook-jul",
       "question": "Your soybean outlook vs. a normal year?",
-      "options": ["Below normal", "About normal", "Above normal"] },
-
-    { "window": "early-Aug - yield confidence", "key": "yield-confidence-aug",
+      "options": [
+        "Below normal",
+        "About normal",
+        "Above normal"
+      ]
+    },
+    {
+      "window": "early-Aug - yield confidence",
+      "key": "yield-confidence-aug",
       "question": "How confident are you in this year's yield right now?",
-      "options": ["Not confident", "Somewhat", "Very confident"] },
-
-    { "window": "mid-Aug - WASDE field-check (high-citation)", "key": "usda-vs-field-aug",
+      "options": [
+        "Not confident",
+        "Somewhat",
+        "Very confident"
+      ]
+    },
+    {
+      "window": "mid-Aug - WASDE field-check (high-citation)",
+      "key": "usda-vs-field-aug",
       "question": "Does USDA's crop size match what you see in your fields?",
-      "options": ["USDA too high", "About right", "USDA too low"] },
-
-    { "window": "late-Aug - old-crop sales", "key": "oldcrop-left-aug",
+      "options": [
+        "USDA too high",
+        "About right",
+        "USDA too low"
+      ]
+    },
+    {
+      "window": "late-Aug - old-crop sales",
+      "key": "oldcrop-left-aug",
       "question": "How much old-crop grain do you still have to sell?",
-      "options": ["None", "Some", "A lot"] },
-
-    { "window": "late-Aug - harvest readiness", "key": "harvest-ready",
+      "options": [
+        "None",
+        "Some",
+        "A lot"
+      ]
+    },
+    {
+      "window": "late-Aug - harvest readiness",
+      "key": "harvest-ready",
       "question": "How ready are you for harvest?",
-      "options": ["Behind", "On track", "Ready to roll"] },
-
-    { "window": "early-Sep - harvest start", "key": "harvest-started",
+      "options": [
+        "Behind",
+        "On track",
+        "Ready to roll"
+      ]
+    },
+    {
+      "window": "early-Sep - harvest start",
+      "key": "harvest-started",
       "question": "Have you started harvesting yet?",
-      "options": ["Not yet", "Just starting", "Underway"] },
-
-    { "window": "mid-Sep - harvest pace", "key": "harvest-pace",
+      "options": [
+        "Not yet",
+        "Just starting",
+        "Underway"
+      ]
+    },
+    {
+      "window": "mid-Sep - harvest pace",
+      "key": "harvest-pace",
       "question": "How's harvest progressing vs. a normal year?",
-      "options": ["Behind", "On pace", "Ahead"] },
-
-    { "window": "mid-Sep - early yields", "key": "early-yields",
+      "options": [
+        "Behind",
+        "On pace",
+        "Ahead"
+      ]
+    },
+    {
+      "window": "mid-Sep - early yields",
+      "key": "early-yields",
       "question": "How are early yields coming in vs. your expectations?",
-      "options": ["Below", "As expected", "Above"] },
-
-    { "window": "late-Sep - storage", "key": "storage-full",
+      "options": [
+        "Below",
+        "As expected",
+        "Above"
+      ]
+    },
+    {
+      "window": "late-Sep - storage",
+      "key": "storage-full",
       "question": "How full is your on-farm storage right now?",
-      "options": ["Mostly empty", "About half", "Mostly full"] },
-
-    { "window": "late-Sep - sell vs store", "key": "sell-or-store",
+      "options": [
+        "Mostly empty",
+        "About half",
+        "Mostly full"
+      ]
+    },
+    {
+      "window": "late-Sep - sell vs store",
+      "key": "sell-or-store",
       "question": "Selling at harvest or storing this year?",
-      "options": ["Selling most", "Mixed", "Storing most"] },
-
-    { "window": "early-Oct - basis", "key": "basis-harvest",
+      "options": [
+        "Selling most",
+        "Mixed",
+        "Storing most"
+      ]
+    },
+    {
+      "window": "early-Oct - basis",
+      "key": "basis-harvest",
       "question": "Your local basis vs. a normal harvest?",
-      "options": ["Weaker", "About normal", "Stronger"] },
-
-    { "window": "mid-Oct - harvest progress", "key": "harvest-done",
+      "options": [
+        "Weaker",
+        "About normal",
+        "Stronger"
+      ]
+    },
+    {
+      "window": "mid-Oct - harvest progress",
+      "key": "harvest-done",
       "question": "How close are you to finishing harvest?",
-      "options": ["Under halfway", "Most of the way", "Finished"] },
-
-    { "window": "late-Oct - final yield verdict", "key": "final-yield",
+      "options": [
+        "Under halfway",
+        "Most of the way",
+        "Finished"
+      ]
+    },
+    {
+      "window": "late-Oct - final yield verdict",
+      "key": "final-yield",
       "question": "Final yields vs. your normal (APH)?",
-      "options": ["Below", "About normal", "Above"] },
-
-    { "window": "Nov - new-crop pricing", "key": "newcrop-priced-nov",
+      "options": [
+        "Below",
+        "About normal",
+        "Above"
+      ]
+    },
+    {
+      "window": "Nov - new-crop pricing",
+      "key": "newcrop-priced-nov",
       "question": "How much of your 2026 crop is priced so far?",
-      "options": ["None yet", "Under half", "More than half"] },
-
-    { "window": "Dec - input buying", "key": "input-buying-dec",
+      "options": [
+        "None yet",
+        "Under half",
+        "More than half"
+      ]
+    },
+    {
+      "window": "Dec - input buying",
+      "key": "input-buying-dec",
       "question": "Have you bought next year's inputs yet?",
-      "options": ["Not yet", "Some locked in", "Mostly bought"] },
-
-    { "window": "Dec/Jan - equipment", "key": "equipment-plans",
+      "options": [
+        "Not yet",
+        "Some locked in",
+        "Mostly bought"
+      ]
+    },
+    {
+      "window": "Dec/Jan - equipment",
+      "key": "equipment-plans",
       "question": "Buying any major equipment in the next 12 months?",
-      "options": ["No", "Maybe", "Yes"] },
-
-    { "window": "Jan - input cost read", "key": "input-costs-yoy",
+      "options": [
+        "No",
+        "Maybe",
+        "Yes"
+      ]
+    },
+    {
+      "window": "Jan - input cost read",
+      "key": "input-costs-yoy",
       "question": "Your input costs for next year vs. this year?",
-      "options": ["Lower", "About the same", "Higher"] },
-
-    { "window": "Jan - season concern", "key": "biggest-worry-2027",
+      "options": [
+        "Lower",
+        "About the same",
+        "Higher"
+      ]
+    },
+    {
+      "window": "Jan - season concern",
+      "key": "biggest-worry-2027",
       "question": "Your biggest worry heading into next season?",
-      "options": ["Weather", "Prices", "Input costs", "Trade/policy"] },
-
-    { "window": "Feb - acreage intent", "key": "acres-next-year",
+      "options": [
+        "Weather",
+        "Prices",
+        "Input costs",
+        "Trade/policy"
+      ]
+    },
+    {
+      "window": "Feb - acreage intent",
+      "key": "acres-next-year",
       "question": "Planning to change your planted acres next year?",
-      "options": ["Cutting back", "About the same", "Expanding"] },
-
-    { "window": "Mar - corn/bean shift (Prospective Plantings)", "key": "corn-bean-shift",
+      "options": [
+        "Cutting back",
+        "About the same",
+        "Expanding"
+      ]
+    },
+    {
+      "window": "Mar - corn/bean shift (Prospective Plantings)",
+      "key": "corn-bean-shift",
       "question": "Shifting acres between corn and beans this year?",
-      "options": ["More corn", "About the same", "More beans"] },
-
-    { "window": "Apr - planting prep", "key": "planting-prep",
+      "options": [
+        "More corn",
+        "About the same",
+        "More beans"
+      ]
+    },
+    {
+      "window": "Apr - planting prep",
+      "key": "planting-prep",
       "question": "Are you rolling with spring planting yet?",
-      "options": ["Not yet", "Just started", "Well underway"] },
-
-    { "window": "May - planting pace", "key": "planting-pace",
+      "options": [
+        "Not yet",
+        "Just started",
+        "Well underway"
+      ]
+    },
+    {
+      "window": "May - planting pace",
+      "key": "planting-pace",
       "question": "Your planting progress vs. a normal spring?",
-      "options": ["Behind", "On pace", "Ahead"] }
+      "options": [
+        "Behind",
+        "On pace",
+        "Ahead"
+      ]
+    }
   ]
 }

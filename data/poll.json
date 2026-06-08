@@ -1,10 +1,31 @@
 {
   "_comment": "AGSIST Grower Pulse — single source of truth for the homepage poll. To run a new week: move the current block into archive (with its final results+total pulled from the Worker), then write the new question into current with a new id. Stage 2 automation will do this on a schedule.",
   "current": {
-    "id": "2026-w23-cropcondition",
-    "week": "2026-06-01",
-    "question": "How do your crops look right now compared to a normal year?",
-    "options": ["Behind normal", "About normal", "Ahead of normal"]
+    "id": "2026-w24-soil-moisture-jun",
+    "week": "2026-06-08",
+    "question": "How's soil moisture on your farm right now?",
+    "options": [
+      "Too dry",
+      "About right",
+      "Too wet"
+    ]
   },
-  "archive": []
+  "archive": [
+    {
+      "id": "2026-w23-cropcondition",
+      "week": "2026-06-01",
+      "question": "How do your crops look right now compared to a normal year?",
+      "options": [
+        "Behind normal",
+        "About normal",
+        "Ahead of normal"
+      ],
+      "results": [
+        2,
+        1,
+        1
+      ],
+      "total": 4
+    }
+  ]
 }
