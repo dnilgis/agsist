@@ -40,7 +40,9 @@ from zoneinfo import ZoneInfo
 DYNAMIC_PATHS = [
     "/",
     "/daily",
+    "/archive",
     "/markets",
+    "/spray",
     "/cash-bids",
     "/ag-odds",
     "/corn-futures-prices",
@@ -60,6 +62,9 @@ def html_to_path(filename: str) -> str:
     # index.html in root → /
     if filename == "index.html":
         return "/"
+    # Nested index.html (e.g., foo/bar/index.html → /foo/bar)
+    if filename.endswith("/index.html"):
+        return "/" + filename[: -len("/index.html")]
     # Otherwise strip .html
     if filename.endswith(".html"):
         return "/" + filename[:-5]
