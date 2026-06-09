@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#111a0a">
-<link rel="preload" href="/components/styles.css" as="style">
-<link rel="stylesheet" href="/components/styles.css">
+<link rel="preload" href="/components/styles.css?v=12" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=12">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -16,7 +16,7 @@
 <meta name="description" content="Developer documentation for AGSIST. Embed agricultural market intelligence widgets — price tickers, spray advisory, urea risk, break-even calculators — on any website. Live data feed specs and JSON endpoint documentation.">
 <meta name="keywords"    content="AGSIST developer docs, agricultural widget embed, grain price widget, farm market data API, spray advisory widget, urea risk widget, break-even calculator embed">
 <meta name="author"      content="Sigurd Lindquist — Farmers First Agri Service">
-<meta name="robots"      content="index, follow">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <link rel="canonical"    href="https://agsist.com/developer">
 
 <meta property="og:type"         content="website">
@@ -109,6 +109,9 @@ button,a,[role="button"]{touch-action:manipulation;}
   .ep-top{gap:.5rem}
 }
 </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","url":"https://agsist.com/developer","name":"Developer Docs","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Developer","item":"https://agsist.com/developer"}]}}
+</script>
 </head>
 <body>
 <a href="#main" class="skip">Skip to content</a>
@@ -316,7 +319,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 
 <!-- ═══ LIVE DATA FEEDS ══════════════════════════════════════════════ -->
 <h2>Live Data Feeds</h2>
-<p>These JSON endpoints update automatically via GitHub Actions. Consume them directly to build your own UI without waiting for embed scripts.</p>
+<p>These JSON endpoints update automatically. Consume them directly to build your own UI without waiting for embed scripts.</p>
 
 <div class="ep-list">
 
@@ -413,6 +416,6 @@ button,a,[role="button"]{touch-action:manipulation;}
 </div>
 </main>
 <div id="site-footer"></div>
-<script src="/components/loader.js"></script>
+<script src="/components/loader.js" defer></script>
 </body>
 </html>
