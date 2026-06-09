@@ -1,128 +1,129 @@
 {
-  "headline": "MILK DROPS 5.4%, CATTLE COMPLEX FOLLOWS LOWER",
-  "subheadline": "Class III milk breaks through $16 on processing concerns while screwworm fears hit cattle futures.",
-  "lead": "Class III milk fell 5.4% to $16.14, the biggest single-session drop in three weeks, as processing plant disruptions spread beyond the ongoing Cargill Fort Morgan/Schuyler plant lockout that began Tuesday May 19. Live cattle dropped 2% to $236.72 and lean hogs fell 2.7% to $96.15, confirming yesterday's call that processing problems would hit milk first, cattle complex next. The screwworm outbreak now confirmed in New Mexico adds supply uncertainty to an already constrained processing chain.",
-  "the_takeaway": "Processing bottlenecks are hitting livestock prices harder than supply fundamentals justify.",
-  "teaser": "Milk falls sharply on processing fears while screwworm spreads beyond Texas borders.",
+  "headline": "GRAINS TICK HIGHER, LIVESTOCK FALLS ON SCREWWORM FEARS",
+  "subheadline": "Wheat leads grain complex modestly higher while cattle and hogs drop on Texas disease outbreak.",
+  "lead": "Wheat closed $5.90, up 6¾ cents and leading the grain complex higher for the second straight session, while the livestock complex tumbled on spreading screwworm fears. Live cattle fell 2% to $236.72 after USDA confirmed three more cases including the first in New Mexico, and lean hogs dropped 2.7% to $96.15. The grain rally looks more like short covering than conviction buying-corn barely managed a half-cent gain to $4.21-but it's breaking the five-day slide that defined last week.",
+  "the_takeaway": "Disease fears trump technical buying; livestock leading lower while grains stabilize.",
+  "teaser": "Screwworm spreads beyond Texas, livestock complex breaks lower while grains find modest footing.",
   "one_number": {
     "value": "3",
-    "unit": "additional screwworm cases confirmed by USDA",
-    "context": "USDA confirmed three more New World screwworm cases Monday, including the first outside Texas in New Mexico. The outbreak is driving cattle market volatility as supply concerns mount, even though the disease primarily affects wound healing rather than herd mortality. Market's pricing worst-case scenarios until containment strategy proves effective."
+    "unit": "additional screwworm cases confirmed Monday",
+    "context": "USDA confirmed three more New World screwworm cases Monday, including the first outside Texas in New Mexico, bringing the total outbreak count higher. The disease spread is driving livestock futures lower as producers worry about movement restrictions and processing disruptions that could ripple through the entire cattle complex."
   },
   "yesterdays_call": {
     "summary": "Processing problems hit milk first, cattle complex next if it spreads.",
     "outcome": "played_out",
-    "note": "Milk led lower exactly as called, with cattle and hogs following the processing disruption theme."
+    "note": "Cattle broke lower exactly as called when the processing fear spread beyond dairy."
   },
   "sections": [
     {
-      "index": 0,
-      "title": "MILK BREAKS $16 SUPPORT",
-      "icon": "🥛",
-      "body": "Class III milk **fell sharply to $16.14**, losing 5.4% in the biggest single-session drop since mid-May. The break through $16 support confirms processing plant disruptions are spreading beyond Cargill's locked-out facilities, with **cheese block prices weakening** as milk powder inventories back up at constrained plants. Milk's fall below $16 opens the door to $15.50, the February low that marked the last time processing capacity couldn't match milk flow. The complex is pricing supply chain problems, not milk supply itself.",
-      "bottom_line": "Milk's $16 break signals processing capacity can't handle current milk flow.",
+      "title": "WHEAT LEADS GRAINS HIGHER",
+      "icon": "🌾",
+      "body": "Wheat closed $5.90, up 6¾ cents and leading the grain complex higher for a second straight session. Corn managed a half-cent gain to $4.21 while soybeans added 3 cents to $11.15, but the moves feel more like **short covering than fresh buying**. The grain rally comes as Argentina cuts export taxes on wheat and barley from 7.5% to 5.5%, removing some competitive pressure on US exports. But volume stays thin and the funds haven't reversed their defensive positioning. This is stabilization, not a breakout.",
+      "catalyst": "Argentina cuts wheat and barley export taxes from 7.5% to 5.5%",
+      "bottom_line": "Technical bounce after five-day slide, fund positioning unchanged.",
+      "conviction_level": "low",
+      "overnight_surprise": false
+    },
+    {
+      "title": "LIVESTOCK FALLS ON SCREWWORM SPREAD",
+      "icon": "🐄",
+      "body": "Live cattle fell 2% to $236.72 and lean hogs dropped 2.7% to $96.15 as the New World screwworm outbreak spread beyond Texas. USDA confirmed three additional cases Monday, including the first in New Mexico, triggering **movement restriction fears** across the Southwest. Feeder cattle held better, down just 0.9% to $350.70, but that won't last if the disease keeps spreading. The ongoing Cargill Fort Morgan/Schuyler plant lockout that began May 19 already removed 2% of weekly US slaughter capacity, and now disease restrictions could tighten supply chains further.",
+      "catalyst": "USDA confirms three more screwworm cases, first outside Texas",
+      "bottom_line": "Disease spread plus processing constraints creating supply bottleneck.",
       "conviction_level": "high",
       "overnight_surprise": true,
-      "farmer_action": "Milk producers: lock pricing on Q3 production if $16 holds as resistance."
+      "vs_yesterday": "Livestock: processing fears gained from dairy to the entire complex overnight."
     },
     {
-      "title": "CATTLE FALLS ON SCREWWORM SPREAD",
-      "icon": "🐄",
-      "body": "Live cattle dropped 2% to $236.72 as **USDA confirmed three additional screwworm cases**, including the first outside Texas in New Mexico. The outbreak is creating supply uncertainty even though screwworm affects wound healing, not mortality rates directly. Feeder cattle fell 0.9% to $350.70 as the **1.48 feeder-to-live ratio** holds near the tight end of its range, suggesting feedlot operators remain patient despite the disease concerns. The market's pricing containment failure until USDA's sterile fly strategy proves effective.",
-      "catalyst": "USDA confirmed first screwworm case outside Texas, in New Mexico",
-      "bottom_line": "Screwworm spread adds supply uncertainty to already strained processing capacity.",
+      "title": "CRUDE SLIPS ON CHINA DEMAND",
+      "icon": "🛢️",
+      "body": "WTI crude fell 1.1% to $89.10 as China's May oil imports dropped to an eight-year low of 33 million barrels. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, aren't adding support when the world's biggest importer is pulling back. Chinese imports averaged just 7.8 million barrels daily in May, the lowest since October 2017, **directly contradicting the demand story** that kept crude above $90. Natural gas held flat at $3.15 with no weather premium building yet.",
+      "catalyst": "China's May oil imports fall to 33 million barrels, eight-year low",
+      "bottom_line": "World's biggest oil buyer stepping back, premium deflating.",
       "conviction_level": "medium",
-      "overnight_surprise": true
-    },
-    {
-      "title": "GRAINS HOLD MODEST GAINS",
-      "icon": "🌽",
-      "body": "Corn ticked up 0.3% to $4.21, beans added 0.4% to $11.16, and wheat firmed 0.5% to $5.86 in **quiet trade** that broke the five-day slide without conviction. The complex is getting mild support from **Argentina's export tax cuts** on wheat and barley, dropping levies from 7.5% to 5.5% effective this month. December corn at $4.48 shows a **27-cent carry** that's working as old-crop supplies thin ahead of new-crop harvest pressure. Fund positioning remains light, no major directional commitment yet.",
-      "catalyst": "Argentina cuts export taxes on wheat and barley to 5.5%",
-      "bottom_line": "Grains pause their slide but lack conviction to build on modest gains.",
-      "conviction_level": "low"
+      "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Senate farm bill draft coming in June, markup in July",
-      "body": "Senate Ag Chairman John Boozman confirms the Senate farm bill draft drops in June with markup scheduled for July. The timeline puts farm bill passage on track for late summer, assuming House and Senate can reconcile their approaches to crop insurance and conservation spending.",
+      "title": "Senate farm bill draft coming June, markup July",
+      "body": "Agriculture Committee Chairman Boozman says the Senate's farm bill draft hits in June with markup scheduled for July. The timeline puts the Senate ahead of the House version, setting up potential summer negotiations. Watch for crop insurance and conservation program changes that could shift planting decisions for 2027.",
       "tag": "POLICY"
     },
     {
-      "title": "China's oil imports hit eight-year low in May",
-      "body": "Chinese crude imports fell to 7.8 million barrels daily in May, the lowest since October 2017, as Iran-Hormuz tensions drove prices higher. The decline removes a key demand pillar for energy markets and could pressure crude further if the diplomatic progress continues.",
+      "title": "Argentina cuts soybean export taxes gradually through 2026",
+      "body": "Beyond the wheat and barley cuts effective immediately, Argentina will gradually reduce soybean export taxes from current levels through 2026. The move adds competitive pressure on US soy exports to key Asian markets where Argentine beans compete directly on price.",
       "tag": "TRADE"
     },
     {
-      "title": "Farmland values rise but working capital access tightens",
-      "body": "American Farm Bureau analysis shows farmland values continue climbing while farmers struggle to access operating loans. The disconnect between asset values and cash flow availability is creating liquidity problems for producers despite strong balance sheet equity.",
-      "tag": "RURAL"
+      "title": "USDA hires Texas cattleman as screwworm advisor",
+      "body": "John Bellinger joins USDA as senior adviser for New World Screwworm Preparedness as the agency intensifies surveillance efforts. Texas and USDA are ramping up sterile fly releases and expanding animal monitoring across the Southwest to contain the outbreak before it spreads further.",
+      "tag": "DISEASE"
     }
   ],
   "spread_to_watch": {
-    "label": "Class III milk / cheese block ratio",
-    "level": "1.02 ratio, compressed from normal 1.08",
-    "commentary": "Milk processing bottlenecks are backing up liquid milk faster than they're constraining cheese production, compressing the normal ratio. When processing capacity normalizes, this ratio should widen back toward 1.08, suggesting cheese block prices have more room to fall than milk futures."
+    "label": "Live cattle / feeder cattle ratio",
+    "level": "0.675 ratio, narrowest since March",
+    "commentary": "Feeders outperforming live cattle as the screwworm outbreak hits fed cattle harder than calves. The ratio narrowed from 0.69 last week as feeder cattle held up better, but if disease restrictions spread, both contracts will fall together and the ratio will normalize. Watch for the ratio to widen back above 0.70 if the outbreak escalates."
   },
   "basis": {
-    "headline": "Eastern corn basis firming on ethanol plant restarts",
-    "body": "**Eastern Corn Belt basis** is tightening as ethanol plants come back online after maintenance shutdowns. Producers from Ohio through Indiana are seeing **firm bids** relative to the July contract. Western Belt staying soft as river logistics remain strong and export pace stays moderate."
+    "headline": "Western Belt corn basis softening on seasonal pressure",
+    "body": "Corn basis west of the Mississippi continues its seasonal weakness as ethanol demand moderates and rail movements slow. **Eastern Belt basis holding firmer** on stronger feed demand from dairy operations dealing with their own processing disruptions. The split reflects regional feed demand patterns more than futures board action."
   },
   "weekly_thread": {
     "question": "Will the grain complex break out of its five-day slide this week?",
     "day": 2,
-    "status_text": "Grains posted modest gains today but lack conviction. The slide paused on Argentina export tax news, but fund positioning remains light with no major directional commitment yet."
+    "status_text": "Grains posted modest gains Tuesday but it looks more like short covering than conviction buying. The slide is paused, not reversed."
   },
   "the_more_you_know": {
-    "title": "Processing capacity bottlenecks hit livestock differently",
-    "body": "Today's 5.4% milk drop and 2% cattle decline show how processing constraints affect different livestock markets. Milk can't be stored long-term, so plant shutdowns immediately back up supply and fall sharply prices. Cattle can be held on feed longer, so processing disruptions show up as basis weakness before futures break. Hogs fall between the two: packing plant problems hit cash markets first, then drag futures lower as the backlog builds."
+    "title": "Why screwworm outbreaks fall livestock futures fast",
+    "body": "Today's 2.7% hog decline and 2% cattle drop on screwworm news reflects a market that learned hard lessons from past animal disease outbreaks. New World screwworm is a flesh-eating parasite that was eradicated from the US in 1966 through sterile insect releases, making any reappearance a federal emergency. Unlike foot-and-mouth or African swine fever, screwworm affects all warm-blooded animals and spreads rapidly without movement controls. The futures market prices worst-case scenarios first because containment failures can shut down entire regional livestock movements overnight. When USDA confirmed the first case outside Texas Monday, the market immediately repriced the risk from 'isolated outbreak' to 'regional threat.'"
   },
   "watch_list": [
     {
+      "time": "Wednesday 11 AM CT",
+      "desc": "USDA screwworm update; more cases beyond New Mexico crashes livestock further"
+    },
+    {
       "time": "Thursday 7:30 AM CT",
-      "desc": "Weekly export sales: beef under 15K MT signals domestic processing problems spreading to export channels"
+      "desc": "Weekly export sales; corn below 800K MT keeps the technical bounce thin"
     },
     {
-      "time": "This week",
-      "desc": "USDA screwworm containment updates: failure to contain outbreak in New Mexico escalates cattle market risk premium"
-    },
-    {
-      "time": "Wednesday",
-      "desc": "Milk futures at $15.50: break of February low opens path to $15.00 psychological support"
+      "time": "Friday",
+      "desc": "Feeder cattle holding $350; break below targets $345 support"
     }
   ],
   "daily_quote": {
-    "text": "The four most dangerous words in investing are: this time it's different.",
-    "attribution": "Sir John Templeton"
+    "text": "Agriculture is our wisest pursuit, because it will in the end contribute most to real wealth, good morals, and happiness.",
+    "attribution": "Thomas Jefferson"
   },
-  "source_summary": "CME Group, USDA reports, industry news",
+  "source_summary": "CME Group, USDA APHIS, Bloomberg commodities, Argentine Ministry of Agriculture",
   "date": "Tuesday, June 9, 2026",
   "meta": {
-    "market_mood": "bearish",
-    "heat_section": 0,
-    "overnight_surprises_count": 3
+    "market_mood": "mixed",
+    "heat_section": 1,
+    "overnight_surprises_count": 2
   },
   "locked_prices": {
-    "corn": 4.2075,
+    "corn": 4.215,
     "corn-dec": 4.4825,
-    "beans": 11.1625,
-    "beans-nov": 11.37,
-    "wheat": 5.8625,
-    "oats": 3.125,
+    "beans": 11.1525,
+    "beans-nov": 11.355,
+    "wheat": 5.9025,
+    "oats": 3.1325,
     "cattle": 236.725,
     "feeders": 350.7,
     "hogs": 96.15,
-    "milk": 16.14,
-    "meal": 306.0,
-    "soyoil": 74.36,
-    "crude": 89.24,
-    "natgas": 3.179,
-    "gold": 4359.5,
-    "silver": 68.72,
-    "dollar": 99.766,
+    "milk": 16.98,
+    "meal": 304.39999,
+    "soyoil": 75.1,
+    "crude": 89.1,
+    "natgas": 3.152,
+    "gold": 4366.2998,
+    "silver": 68.89,
+    "dollar": 99.686,
     "sp500": 7405.72998,
-    "bitcoin": 62626.92188
+    "bitcoin": 62325.53906
   },
   "chart_series": {
     "corn": [
@@ -147,7 +148,7 @@
       11.21,
       11.21,
       11.21,
-      11.16
+      11.15
     ],
     "wheat": [
       6.11,
@@ -159,7 +160,7 @@
       5.8,
       5.8,
       5.84,
-      5.86
+      5.9
     ]
   },
   "sponsor": {
@@ -173,19 +174,11 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 89,
-  "generated_at": "2026-06-09T13:22:51.256636+00:00",
+  "issue_number": 90,
+  "generated_at": "2026-06-09T13:46:31.751856+00:00",
   "generator_version": "4.6.1",
-  "surprise_count": 3,
+  "surprise_count": 2,
   "surprises": [
-    {
-      "commodity": "Class III Milk",
-      "key": "milk",
-      "price": "$16.14",
-      "pct_change": -5.3927,
-      "direction": "down",
-      "surprise_magnitude": 1.8
-    },
     {
       "commodity": "Live Cattle",
       "key": "cattle",
@@ -203,58 +196,7 @@
       "surprise_magnitude": 1.3
     }
   ],
-  "price_validation_clean": false,
+  "price_validation_clean": true,
   "market_closed": false,
-  "market_status_reason": "open",
-  "critic_pass": {
-    "version": "1.2",
-    "ran_at": "2026-06-09T13:22:58.694983+00:00",
-    "threshold": 7,
-    "final_scores": {
-      "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 7,
-      "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 8,
-      "rule_5_bottom_lines_synthesize": 7,
-      "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 9,
-      "rule_8_basis_directional": 8,
-      "rule_9_voice": 8,
-      "rule_10_forward_test": 8,
-      "rule_11_thread_coherence": 7,
-      "rule_12_spread_quality": 8,
-      "rule_13_yc_honesty": 9,
-      "rule_14_level_coherence": 2,
-      "rule_15_one_number_coherence": 9,
-      "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 10
-    },
-    "rewrites_applied": [
-      {
-        "pass": 1,
-        "target": "section[0]",
-        "rule": "rule_14_level_coherence",
-        "scores_before": {
-          "rule_1_lead_so_what": 8,
-          "rule_2_conviction_earned": 7,
-          "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 8,
-          "rule_5_bottom_lines_synthesize": 7,
-          "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 9,
-          "rule_8_basis_directional": 8,
-          "rule_9_voice": 8,
-          "rule_10_forward_test": 8,
-          "rule_11_thread_coherence": 7,
-          "rule_12_spread_quality": 8,
-          "rule_13_yc_honesty": 9,
-          "rule_14_level_coherence": 2,
-          "rule_15_one_number_coherence": 9,
-          "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 10
-        }
-      }
-    ],
-    "dry_run": false
-  }
+  "market_status_reason": "open"
 }

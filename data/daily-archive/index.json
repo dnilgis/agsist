@@ -3,10 +3,10 @@
     {
       "date": "2026-06-09",
       "date_display": "Tuesday, June 9, 2026",
-      "headline": "MILK DROPS 5.4%, CATTLE COMPLEX FOLLOWS LOWER",
-      "teaser": "Milk falls sharply on processing fears while screwworm spreads beyond Texas borders.",
-      "market_mood": "bearish",
-      "surprise_count": 3,
+      "headline": "GRAINS TICK HIGHER, LIVESTOCK FALLS ON SCREWWORM FEARS",
+      "teaser": "Screwworm spreads beyond Texas, livestock complex breaks lower while grains find modest footing.",
+      "market_mood": "mixed",
+      "surprise_count": 2,
       "sections": 3,
       "url": "/daily/2026-06-09",
       "market_closed": false,
@@ -988,6 +988,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-09T13:22:58.738354+00:00",
+  "updated": "2026-06-09T13:46:31.754053+00:00",
   "count": 89
 }
