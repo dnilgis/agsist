@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 08 Jun 2026 14:52:15 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 09 Jun 2026 13:22:59 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>MILK DROPS 5.4%, CATTLE COMPLEX FOLLOWS LOWER</title>
+      <link>https://agsist.com/daily/2026-06-09</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-09</guid>
+      <pubDate>Tue, 09 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Class III milk fell 5.4% to $16.14, the biggest single-session drop in three weeks, as processing plant disruptions spread beyond the ongoing Cargill Fort Morgan/Schuyler plant lockout that began Tuesday May 19. Live cattle dropped 2% to $236.72 and lean hogs fell 2.7% to $96.15, confirming yesterday's call that processing problems would hit milk first, cattle complex next. The screwworm outbreak now confirmed in New Mexico adds supply uncertainty to an already constrained processing chain.
+Class III milk breaks through $16 on processing concerns while screwworm fears hit cattle futures.
+• MILK BREAKS $16 SUPPORT
+  → Milk producers: lock pricing on Q3 production if $16 holds as resistance.
+• CATTLE FALLS ON SCREWWORM SPREAD
+• GRAINS HOLD MODEST GAINS
+Read more: https://agsist.com/daily/2026-06-09</description>
+    </item>
     <item>
       <title>WHEAT LEADS GRAINS HIGHER, MILK FALLS SHARPLY</title>
       <link>https://agsist.com/daily/2026-06-08</link>
@@ -358,17 +371,6 @@ Metals lead while corn and beans mark time ahead of planting week.
 • Cattle Rally Back
 • Metals Explode
 Read more: https://agsist.com/daily/2026-05-11</description>
-    </item>
-    <item>
-      <title>GRAINS RALLY SETS UP PLANTING WEEK SHOWDOWN</title>
-      <link>https://agsist.com/daily/2026-05-10</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-10</guid>
-      <pubDate>Sun, 10 May 2026 05:00:00 -0600</pubDate>
-      <description>Corn jumped to $4.71, its best close since March, as soybeans surged 1.5% to $12.08 on Friday's short covering ahead of China trade talks. The grains complex is coiled at the highest levels in eight weeks, but the real test comes this week: prevent-plant deadlines hit across the Belt starting Memorial Day, and 40% of intended soybean acres remain unplanted. Either the weather cooperates or the calendar starts pricing disaster.
-Corn and beans close at weekly highs as Iran tensions ease, but prevent-plant deadline looms over Memorial Day.
-• Grains Rally Into Calendar Crunch
-• Livestock Closes Week Red
-Read more: https://agsist.com/daily/2026-05-10</description>
     </item>
   </channel>
 </rss>
