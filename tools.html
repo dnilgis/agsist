@@ -2,14 +2,14 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#111a0a">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-  <link rel="preload" href="/components/styles.css" as="style">
-  <link rel="stylesheet" href="/components/styles.css">
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <link rel="preload" href="/components/styles.css?v=12" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=12">
   <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32"  href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16"  href="/img/favicon-16.png">
@@ -47,23 +47,20 @@
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home",  "item": "https://agsist.com/" },
-          { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://agsist.com/tools" }
-        ]
-      },
-      {
-        "@type": "ItemList",
-        "name": "Free Farm Tools & Calculators",
-        "url": "https://agsist.com/tools",
-        "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Spray Timing Advisor",      "url": "https://agsist.com/spray" },
-          { "@type": "ListItem", "position": 2, "name": "Urea Volatilization Risk",  "url": "https://agsist.com/urea" },
-          { "@type": "ListItem", "position": 3, "name": "Break-Even Calculator",     "url": "https://agsist.com/breakeven" },
-          { "@type": "ListItem", "position": 4, "name": "Grain Bin Calculator",      "url": "https://agsist.com/grain-bin-calculator" },
-          { "@type": "ListItem", "position": 5, "name": "Agricultural Fast Facts",   "url": "https://agsist.com/fast-facts" },
-          { "@type": "ListItem", "position": 6, "name": "GDU Tracker",               "url": "https://agsist.com/gdu-calculator" },
-          { "@type": "ListItem", "position": 7, "name": "USDA Report Calendar",      "url": "https://agsist.com/usda-calendar" },
-          { "@type": "ListItem", "position": 8, "name": "Crop Yield Estimator",      "url": "https://agsist.com/yield-estimator" }
+                    { "@type": "ListItem", "position": 1,  "name": "Spray Timing Advisor",     "url": "https://agsist.com/spray" },
+          { "@type": "ListItem", "position": 2,  "name": "Urea Volatilization Risk", "url": "https://agsist.com/urea" },
+          { "@type": "ListItem", "position": 3,  "name": "Fertilizer Prices",        "url": "https://agsist.com/fertilizer" },
+          { "@type": "ListItem", "position": 4,  "name": "Break-Even Calculator",    "url": "https://agsist.com/breakeven" },
+          { "@type": "ListItem", "position": 5,  "name": "Cash Bids",                "url": "https://agsist.com/cash-bids" },
+          { "@type": "ListItem", "position": 6,  "name": "Grain Bin Calculator",     "url": "https://agsist.com/grain-bin-calculator" },
+          { "@type": "ListItem", "position": 7,  "name": "Agricultural Fast Facts",  "url": "https://agsist.com/fast-facts" },
+          { "@type": "ListItem", "position": 8,  "name": "Crop Yield Estimator",     "url": "https://agsist.com/yield-estimator" },
+          { "@type": "ListItem", "position": 9,  "name": "Data Sources",             "url": "https://agsist.com/data-sources" },
+          { "@type": "ListItem", "position": 10, "name": "USDA Data Explorer",       "url": "https://agsist.com/usda-quick-stats" },
+          { "@type": "ListItem", "position": 11, "name": "GDU Tracker",              "url": "https://agsist.com/gdu-calculator" },
+          { "@type": "ListItem", "position": 12, "name": "Dashboard",                "url": "https://agsist.com/" },
+          { "@type": "ListItem", "position": 13, "name": "USDA Report Calendar",     "url": "https://agsist.com/usda-calendar" },
+          { "@type": "ListItem", "position": 14, "name": "Ag Tariff Tracker",        "url": "https://agsist.com/tariffs" }
         ]
       }
     ]
@@ -223,6 +220,12 @@
         <div class="desc">Daily risk index for nitrogen loss from surface-applied urea. Based on temp, moisture, and soil conditions.</div>
         <span class="tag">Nitrogen Management</span>
       </a>
+      <a href="/fertilizer" class="tool-card">
+        <div class="icon">🌱</div>
+        <div class="name">Fertilizer Prices &amp; Fertility Bill</div>
+        <div class="desc">This week's N-P-K-S prices with $/lb-nutrient comparison, plus a calculator that builds the cheapest fertility program for your crop and yield goal.</div>
+        <span class="tag">Inputs · Per-Acre Cost</span>
+      </a>
     </div>
 
     <!-- Financial Calculators -->
@@ -250,7 +253,7 @@
         <span class="badge-new">New</span>
         <div class="icon">🏗️</div>
         <div class="name">Grain Bin Calculator</div>
-        <div class="desc">Calculate bushel capacity, moisture shrink, and dollar value of your grain inventory. Round and rectangular bins.</div>
+        <div class="desc">Calculate bushel capacity, moisture shrink, and dollar value of your grain inventory. Round, hopper, and flat-floor bins.</div>
         <span class="tag">Capacity + Shrink + Value</span>
       </a>
     </div>
@@ -277,6 +280,13 @@
         <div class="name">Data Sources</div>
         <div class="desc">Where AGSIST gets its data. Yahoo Finance, Open-Meteo, NOAA, USDA, and more — all explained.</div>
         <span class="tag">Transparency</span>
+      </a>
+      <a href="/usda-quick-stats" class="tool-card">
+        <span class="badge-new">New</span>
+        <div class="icon">📊</div>
+        <div class="name">USDA Data Explorer</div>
+        <div class="desc">Pull NASS crop yields, planted acres, and prices received by state. Pre-loaded tables plus a query builder that opens custom pulls on USDA Quick Stats.</div>
+        <span class="tag">NASS · By State</span>
       </a>
     </div>
 
@@ -323,7 +333,10 @@
   </main>
 
   <div id="site-footer"></div>
-  <script src="/components/loader.js"></script>
+  <script src="/components/loader.js?v=2"></script>
+<script>
+document.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('.tool-card');if(c&&!c.classList.contains('coming-soon')&&window.gaEvent){var n=c.querySelector('.name');gaEvent('tool_click',{tool:(n?n.textContent:'').trim(),href:c.getAttribute('href')||''});}},true);
+</script>
 
 </body>
 </html>

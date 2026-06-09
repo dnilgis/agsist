@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crop Insurance Harvest &amp; Projected Price Tracker | AGSIST</title>
+<meta name="description" content="Live tracker of RMA projected and harvest prices for corn and soybeans - the numbers that set every revenue policy's guarantee. Watch the October discovery average build, day by day. Free, national.">
+<link rel="canonical" href="https://agsist.com/harvest-price-tracker">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Crop Insurance Harvest & Projected Price Tracker | AGSIST">
+<meta property="og:description" content="The projected and harvest prices that set your revenue guarantee, tracked live during each discovery window.">
+<meta property="og:url" content="https://agsist.com/harvest-price-tracker">
+<meta name="robots" content="index,follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/components/styles.css?v=12">
+<style>
+:root{--hp-green:#4aab4c;--hp-gold:#daa520;--hp-gold2:#e6b042;--hp-bg:#0f1311;--hp-panel:#161b18;--hp-panel2:#1d2420;--hp-line:#2a332d;--hp-txt:#e7ece8;--hp-mut:#9bb0a3;--hp-up:#4aab4c;--hp-dn:#d9534f;}
+.hp-wrap{max-width:920px;margin:0 auto;padding:1.25rem 1rem 3rem;color:var(--hp-txt);font-family:Inter,system-ui,sans-serif;}
+.hp-wrap h1{font-family:Oswald,sans-serif;font-weight:700;font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.08;margin:.2rem 0 .4rem;text-wrap:balance;}
+.hp-wrap h2{font-family:Oswald,sans-serif;font-weight:600;font-size:1.25rem;margin:2rem 0 .6rem;color:var(--hp-gold2);}
+.hp-lede{color:var(--hp-mut);font-size:1.05rem;line-height:1.5;max-width:64ch;margin:.2rem 0 1.2rem;}
+.hp-banner{display:flex;gap:.6rem;align-items:flex-start;background:linear-gradient(180deg,rgba(218,165,32,.10),rgba(218,165,32,.03));border:1px solid var(--hp-gold);border-radius:12px;padding:.85rem 1rem;margin:0 0 1.4rem;font-size:.95rem;line-height:1.45;}
+.hp-banner b{color:var(--hp-gold2);}
+.hp-cards{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:640px){.hp-cards{grid-template-columns:1fr;}}
+.hp-card{background:var(--hp-panel);border:1px solid var(--hp-line);border-radius:14px;padding:1.05rem 1.1rem 1.15rem;}
+.hp-card .top{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;}
+.hp-card .cname{font-family:Oswald,sans-serif;font-weight:700;font-size:1.45rem;color:#fff;}
+.hp-card .ctr{font-size:.78rem;color:var(--hp-mut);font-family:'JetBrains Mono',monospace;}
+.hp-row{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:.9rem;}
+.hp-box{background:var(--hp-panel2);border:1px solid var(--hp-line);border-radius:11px;padding:.75rem .8rem;border-top:3px solid var(--hp-line);}
+.hp-box.proj{border-top-color:var(--hp-gold);}
+.hp-box.harv{border-top-color:var(--hp-green);}
+.hp-box .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;color:var(--hp-mut);}
+.hp-box .px{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.55rem;color:#fff;line-height:1.1;margin:.2rem 0 .1rem;}
+.hp-box .sub{font-size:.76rem;color:var(--hp-mut);line-height:1.3;}
+.hp-box .pend{font-family:Oswald,sans-serif;font-weight:600;font-size:1.05rem;color:var(--hp-gold2);margin:.2rem 0 .1rem;}
+.hp-delta{margin-top:.85rem;font-size:.92rem;line-height:1.45;color:var(--hp-txt);background:var(--hp-bg);border:1px solid var(--hp-line);border-radius:10px;padding:.7rem .8rem;}
+.hp-delta b{color:var(--hp-gold2);}
+.hp-delta .up{color:var(--hp-up);font-weight:700;}
+.hp-delta .dn{color:var(--hp-dn);font-weight:700;}
+.hp-spark{display:block;width:100%;height:38px;margin-top:.6rem;}
+.hp-meta{font-size:.74rem;color:var(--hp-mut);margin-top:.7rem;font-family:'JetBrains Mono',monospace;}
+.hp-cal{background:var(--hp-panel);border:1px solid var(--hp-line);border-radius:12px;padding:1rem 1.1rem;margin:.4rem 0 0;}
+.hp-cal .yr{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.7rem;}
+.hp-cal .mo{flex:1 1 60px;text-align:center;font-size:.72rem;font-family:'JetBrains Mono',monospace;color:var(--hp-mut);background:var(--hp-panel2);border:1px solid var(--hp-line);border-radius:8px;padding:.4rem .2rem;min-width:54px;}
+.hp-cal .mo.proj{border-color:var(--hp-gold);color:var(--hp-gold2);}
+.hp-cal .mo.harv{border-color:var(--hp-green);color:var(--hp-green);}
+.hp-cal .mo b{display:block;font-size:.64rem;font-weight:700;margin-top:.15rem;}
+.hp-faq details{border:1px solid var(--hp-line);border-radius:10px;background:var(--hp-panel);margin:.5rem 0;padding:0 1rem;}
+.hp-faq summary{cursor:pointer;padding:.85rem 0;font-weight:600;list-style:none;}
+.hp-faq summary::-webkit-details-marker{display:none;}
+.hp-faq summary::after{content:"+";float:right;color:var(--hp-gold2);font-weight:700;}
+.hp-faq details[open] summary::after{content:"\2212";}
+.hp-faq p{margin:0 0 .9rem;color:var(--hp-mut);line-height:1.55;font-size:.95rem;}
+.hp-cred{margin-top:1.6rem;font-size:.86rem;color:var(--hp-mut);line-height:1.5;border-top:1px solid var(--hp-line);padding-top:1rem;}
+.hp-cred a{color:var(--hp-gold2);}
+.hp-err{color:var(--hp-mut);background:var(--hp-panel);border:1px solid var(--hp-line);border-radius:10px;padding:1rem;}
+.hp-cta{margin-top:1rem;font-size:.95rem;}
+.hp-cta a{color:var(--hp-gold2);font-weight:600;}
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<main class="hp-wrap">
+  <h1>Harvest &amp; projected price tracker</h1>
+  <p class="hp-lede">These are the prices that set your revenue guarantee. The <b style="color:var(--hp-gold2)">projected price</b> is locked each February; the <b style="color:var(--hp-green)">harvest price</b> is built day by day each October. When the harvest price climbs above your projected floor, your Revenue Protection guarantee climbs with it. Here's where it stands &mdash; updated daily during each discovery window.</p>
+
+  <div class="hp-banner" id="hp-banner" hidden></div>
+
+  <div class="hp-cards" id="hp-cards">
+    <div class="hp-err" id="hp-loading">Loading current discovery prices&hellip;</div>
+  </div>
+
+  <h2>The discovery calendar</h2>
+  <div class="hp-cal">
+    <p class="hp-lede" style="margin:0 .2rem .2rem;font-size:.95rem">Corn &amp; soybeans: projected price set in February, harvest price set in October (December corn / November soybean contracts). Other crops and regions discover in different windows &mdash; added as they're configured.</p>
+    <div class="yr">
+      <div class="mo">Jan</div>
+      <div class="mo proj">Feb<b>PROJECTED</b></div>
+      <div class="mo">Mar</div><div class="mo">Apr</div><div class="mo">May</div><div class="mo">Jun</div>
+      <div class="mo">Jul</div><div class="mo">Aug</div><div class="mo">Sep</div>
+      <div class="mo harv">Oct<b>HARVEST</b></div>
+      <div class="mo">Nov</div><div class="mo">Dec</div>
+    </div>
+  </div>
+
+  <h2>What this means for you</h2>
+  <p class="hp-lede" style="margin-bottom:.4rem">If you carry Revenue Protection, watch the October harvest price against your February projected price. Above it, your guarantee escalates &mdash; good news whether you're selling or holding. Below it, the price side of your policy is doing its job. Want to see how many bushels your guarantee lets you forward-price?</p>
+  <p class="hp-cta"><a href="/presell-calculator">&rarr; Run the insurance-backed pre-sell calculator</a></p>
+
+  <h2>Common questions</h2>
+  <div class="hp-faq" id="hp-faq">
+    <details><summary>How is the projected price set?</summary><p>It's the average daily settlement of the December corn (or November soybean) futures contract across every trading day in February, rounded to the nearest cent. That number, times your coverage level, times your APH yield, is your per-acre revenue guarantee for the year.</p></details>
+    <details><summary>How is the harvest price set?</summary><p>The same contract, averaged across every trading day in October. Revenue Protection uses the higher of the projected or harvest price, so an October rally raises your guarantee; a decline does not lower it.</p></details>
+    <details><summary>Why do other crops show different months?</summary><p>Each crop &mdash; and sometimes each region within a crop &mdash; has its own contract and discovery window under RMA's Commodity Exchange Price Provisions. Winter wheat keys off September Chicago futures; spring wheat off Minneapolis. Those windows are added here as they're configured.</p></details>
+    <details><summary>Are these the official RMA prices?</summary><p>This tracks the same publicly traded futures RMA uses and applies the same averaging. Treat in-window figures as running estimates until the window closes; the USDA Risk Management Agency publishes the official prices. Always verify with your agent and policy documents.</p></details>
+  </div>
+
+  <div class="hp-cred">
+    Built and maintained by a licensed crop-insurance agent, available at no charge for non-commercial use. Questions: <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &middot; 715-797-2428. Nothing here is insurance, marketing, or financial advice; official prices are set by the USDA Risk Management Agency.
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"Dataset",
+  "name":"RMA Crop Insurance Projected and Harvest Prices",
+  "description":"Projected and harvest prices for corn and soybeans used to set Revenue Protection crop insurance guarantees, tracked during the February and October discovery periods.",
+  "url":"https://agsist.com/harvest-price-tracker",
+  "creator":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Licensed Crop Insurance Agent"},
+  "isAccessibleForFree":true,
+  "keywords":["crop insurance","projected price","harvest price","Revenue Protection","corn","soybeans","RMA"]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"How is the projected price set?","acceptedAnswer":{"@type":"Answer","text":"The average daily settlement of the December corn or November soybean futures contract across every trading day in February, rounded to the nearest cent. Times coverage level times APH equals the per-acre revenue guarantee."}},
+    {"@type":"Question","name":"How is the harvest price set?","acceptedAnswer":{"@type":"Answer","text":"The same contract averaged across every trading day in October. Revenue Protection uses the higher of projected or harvest price."}},
+    {"@type":"Question","name":"Why do other crops show different months?","acceptedAnswer":{"@type":"Answer","text":"Each crop and region has its own contract and discovery window under RMA's Commodity Exchange Price Provisions. Winter wheat uses September Chicago futures; spring wheat uses Minneapolis."}}
+  ]
+}
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');
+function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
+</script>
+
+<script>
+(function(){
+  var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function px(n){return '$'+Number(n).toFixed(2);}
+  function spark(series){
+    if(!series||series.length<2)return '';
+    var w=180,h=38,min=Math.min.apply(null,series),max=Math.max.apply(null,series),rng=(max-min)||1;
+    var pts=series.map(function(v,i){var x=(i/(series.length-1))*w;var y=h-((v-min)/rng)*(h-6)-3;return x.toFixed(1)+','+y.toFixed(1);}).join(' ');
+    return '<svg class="hp-spark" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" aria-hidden="true"><polyline points="'+pts+'" fill="none" stroke="var(--hp-gold)" stroke-width="2" stroke-linejoin="round"/></svg>';
+  }
+  function harvestBox(c){
+    var hv=c.harvest;
+    if(hv.status==='final'&&hv.price!=null){
+      return '<div class="lbl">Harvest price</div><div class="px">'+px(hv.price)+'</div><div class="sub">'+hv.window+' final</div>';
+    }
+    if(hv.status==='active'&&hv.running_avg!=null){
+      return '<div class="lbl">Harvest price (running)</div><div class="px">'+px(hv.running_avg)+'</div><div class="sub">day '+hv.days_counted+' of ~'+hv.days_total+'</div>'+spark(hv.series);
+    }
+    return '<div class="lbl">Harvest price</div><div class="pend">Opens '+hv.window+'</div><div class="sub">~'+hv.days_total+' trading days</div>';
+  }
+  function deltaLine(c){
+    var pp=c.projected.price, hv=c.harvest;
+    var hval=(hv.status==='final')?hv.price:(hv.status==='active'?hv.running_avg:null);
+    if(pp==null)return '';
+    if(hval==null){
+      return '<div class="hp-delta">Your guarantee floor is locked at the projected price of <b>'+px(pp)+'</b>. When '+hv.window+' discovery opens, watch whether the harvest price runs above it.</div>';
+    }
+    var d=hval-pp, pct=(d/pp*100);
+    if(d>0.0049){
+      return '<div class="hp-delta">Harvest price is <span class="up">'+px(d)+' ('+pct.toFixed(1)+'%) above</span> the projected floor &mdash; Revenue Protection guarantees are <b>escalating</b> toward the harvest price.</div>';
+    }else if(d<-0.0049){
+      return '<div class="hp-delta">Harvest price is <span class="dn">'+px(Math.abs(d))+' ('+Math.abs(pct).toFixed(1)+'%) below</span> the projected floor &mdash; guarantees <b>hold at the projected price</b>; the price side of the policy is engaged.</div>';
+    }
+    return '<div class="hp-delta">Harvest price is right at the projected floor of <b>'+px(pp)+'</b>.</div>';
+  }
+  function card(c){
+    var pj=c.projected;
+    var projInner = (pj.status==='final'&&pj.price!=null)
+      ? '<div class="lbl">Projected price</div><div class="px">'+px(pj.price)+'</div><div class="sub">'+pj.window+' final</div>'+spark(pj.series)
+      : '<div class="lbl">Projected price</div><div class="pend">Opens '+pj.window+'</div><div class="sub">~'+pj.days_total+' trading days</div>';
+    return '<div class="hp-card"><div class="top"><span class="cname">'+c.label+'</span>'
+      +'<span class="ctr">'+c.contract+' &middot; '+c.exchange+'</span></div>'
+      +'<div class="hp-row"><div class="hp-box proj">'+projInner+'</div>'
+      +'<div class="hp-box harv">'+harvestBox(c)+'</div></div>'
+      +deltaLine(c)
+      +'<div class="hp-meta">'+(c.projected.window)+' &amp; '+(c.harvest.window)+' discovery</div></div>';
+  }
+  function banner(data){
+    var b=document.getElementById('hp-banner');
+    var anyActive=data.commodities.some(function(c){return c.harvest.status==='active';});
+    var anyPending=data.commodities.some(function(c){return c.harvest.status==='pending';});
+    if(anyActive){b.innerHTML='<span>\uD83D\uDFE2</span><div><b>Harvest discovery is open.</b> The harvest-price averages below are building day by day this month.</div>';b.hidden=false;}
+    else if(anyPending){b.innerHTML='<span>\uD83D\uDD12</span><div><b>Projected prices are locked.</b> Harvest discovery for corn &amp; soybeans opens in October &mdash; that\u2019s when the harvest-price averages start building.</div>';b.hidden=false;}
+  }
+  fetch('/data/harvest-prices.json',{cache:'no-store'}).then(function(r){
+    if(!r.ok)throw new Error('status '+r.status);return r.json();
+  }).then(function(data){
+    var host=document.getElementById('hp-cards');
+    host.innerHTML=data.commodities.map(card).join('');
+    banner(data);
+    gaEvent('harvest_view',{crop_year:data.crop_year});
+  }).catch(function(){
+    document.getElementById('hp-cards').innerHTML='<div class="hp-err">Discovery prices are briefly unavailable. The projected price is the February average of the December corn / November soybean futures; the harvest price is the October average. Check back shortly, or see <a href="/corn-futures-prices" style="color:var(--hp-gold2)">corn futures</a>.</div>';
+  });
+  document.querySelectorAll('#hp-faq details').forEach(function(d){
+    d.addEventListener('toggle',function(){if(d.open)gaEvent('faq_open',{page:'harvest-tracker'});});
+  });
+})();
+</script>
+<script src="/components/loader.js" defer></script>
+</body>
+</html>

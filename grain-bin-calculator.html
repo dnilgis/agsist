@@ -2,14 +2,14 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0e0e0c">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" href="/components/styles.css" as="style">
-  <link rel="stylesheet" href="/components/styles.css">
+  <link rel="preload" href="/components/styles.css?v=12" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=12">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -42,10 +42,10 @@
     {"@type":"SoftwareApplication","name":"Grain Bin Calculator","description":"Free grain bin storage calculator for bushel capacity, moisture shrink, drying cost, and net market value.","url":"https://agsist.com/grain-bin-calculator","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
     {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Grain Bin Calculator","item":"https://agsist.com/grain-bin-calculator"}]},
     {"@type":"FAQPage","mainEntity":[
-      {"@type":"Question","name":"How many bushels does a 30-foot grain bin hold?","acceptedAnswer":{"@type":"Answer","text":"A 30-foot diameter round bin with a 24-foot eave height holds approximately 11,317 bushels at level fill and standard moisture. Add a peaked cone surface to get roughly 12,700 bushels."}},
+      {"@type":"Question","name":"How many bushels does a 30-foot grain bin hold?","acceptedAnswer":{"@type":"Answer","text":"A 30-foot diameter round bin with a 24-foot eave height holds approximately 13,600 bushels at level fill (one bushel = 1.244 cubic feet). Adding a peaked cone surface brings it to roughly 14,950 bushels."}},
       {"@type":"Question","name":"What is the grain shrink formula?","acceptedAnswer":{"@type":"Answer","text":"The standard formula is: Shrink % = (Moisture In minus Standard Moisture) times 1.3. For corn at 18% moisture, shrink = (18 - 15.5) x 1.3 = 3.25%. This accounts for both water removal and handling loss."}},
       {"@type":"Question","name":"What is pack factor in a grain bin?","acceptedAnswer":{"@type":"Answer","text":"Pack factor is the additional compaction of grain that occurs as the bin fills and grain settles over time. For corn, a typical pack factor is 0.5 to 1.5%. Leave it at 0 if you want a conservative baseline estimate."}},
-      {"@type":"Question","name":"How do hopper-bottom bins differ from flat-floor bins?","acceptedAnswer":{"@type":"Answer","text":"Hopper-bottom bins have an inverted cone at the bottom that drains grain by gravity. Because the cone takes up space that a flat floor would not, a hopper-bottom bin holds slightly fewer bushels than a flat-floor bin of the same diameter and wall height."}},
+      {"@type":"Question","name":"How do hopper-bottom bins differ from flat-floor bins?","acceptedAnswer":{"@type":"Answer","text":"Hopper-bottom bins have an inverted cone at the bottom that empties grain by gravity, so they need no sweep auger. That cone also stores grain, so for the same diameter and cylinder (wall) height a hopper-bottom bin actually holds somewhat more than a flat-floor bin — this calculator adds the hopper cone to the cylinder volume. Hopper bins are usually chosen for hands-off gravity unloading and are most common at smaller diameters, not for extra capacity."}},
       {"@type":"Question","name":"How is drying cost calculated for corn?","acceptedAnswer":{"@type":"Answer","text":"Drying cost is typically quoted in dollars per point (1 percentage point of moisture) per bushel. A common range is $0.03 to $0.05 per point per bushel. To dry corn from 18% to 15.5% costs 2.5 points, so roughly $0.09 per bushel at $0.035/point."}}
     ]}
   ]}
@@ -321,11 +321,11 @@
               <table class="ref-table">
                 <thead><tr><th>&#8960;</th><th>18 ft</th><th>21 ft</th><th>24 ft</th><th>27 ft</th></tr></thead>
                 <tbody>
-                  <tr><td>18 ft</td><td class="hl">3,050</td><td>3,561</td><td>4,072</td><td>4,583</td></tr>
-                  <tr><td>24 ft</td><td>5,432</td><td class="hl">6,338</td><td>7,244</td><td>8,150</td></tr>
-                  <tr><td>30 ft</td><td>8,488</td><td>9,903</td><td class="hl">11,317</td><td>12,732</td></tr>
-                  <tr><td>36 ft</td><td>12,222</td><td>14,259</td><td>16,297</td><td class="hl">18,334</td></tr>
-                  <tr><td>48 ft</td><td>21,728</td><td>25,350</td><td>28,971</td><td>32,593</td></tr>
+                  <tr><td>18 ft</td><td class="hl">3,681</td><td>4,294</td><td>4,908</td><td>5,521</td></tr>
+                  <tr><td>24 ft</td><td>6,544</td><td class="hl">7,634</td><td>8,725</td><td>9,816</td></tr>
+                  <tr><td>30 ft</td><td>10,225</td><td>11,929</td><td class="hl">13,633</td><td>15,337</td></tr>
+                  <tr><td>36 ft</td><td>14,723</td><td>17,177</td><td>19,631</td><td class="hl">22,085</td></tr>
+                  <tr><td>48 ft</td><td>26,175</td><td>30,537</td><td>34,900</td><td>39,262</td></tr>
                 </tbody>
               </table>
             </div>
@@ -403,7 +403,7 @@
       <dl class="faq-grid">
         <div class="faq-item">
           <dt>How many bushels in a 30-foot bin?</dt>
-          <dd>A 30&times;24 ft round bin holds about 11,317 bu level-fill at standard moisture. Add a peaked cone surface for ~12,700 bu.</dd>
+          <dd>A 30&times;24 ft round bin holds about 13,600 bu level-fill (1 bu = 1.244 ft&sup3;). Add a peaked cone surface for ~14,950 bu.</dd>
         </div>
         <div class="faq-item">
           <dt>What is pack factor?</dt>
@@ -411,7 +411,7 @@
         </div>
         <div class="faq-item">
           <dt>Hopper bottom vs. flat floor?</dt>
-          <dd>A hopper bin holds slightly less than a flat-floor bin of the same wall height because the cone takes space a flat floor would fill solidly.</dd>
+          <dd>A hopper bin&rsquo;s cone stores grain below the cylinder, so for the same wall height it actually holds a bit more than a flat floor &mdash; the calculator adds that cone volume. Hoppers are chosen for gravity unloading (no sweep auger), usually at smaller diameters.</dd>
         </div>
         <div class="faq-item">
           <dt>How do I figure drying cost?</dt>
@@ -737,6 +737,18 @@
   loadState();
   toggleShape();
   calc();
+
+  // v2: GA usage tracking — one calc_use per session on first real interaction.
+  // Bound after the initial programmatic calc() so page-load never counts.
+  (function(){
+    var fired=false;
+    function track(){
+      if(fired) return; fired=true;
+      if(window.gtag){ try{ gtag('event','calc_use',{calculator:'grain-bin'}); }catch(e){} }
+    }
+    document.addEventListener('input', track, true);
+    document.addEventListener('change', track, true);
+  })();
   </script>
 </body>
 </html>

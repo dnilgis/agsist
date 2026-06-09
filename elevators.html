@@ -6,9 +6,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-<link rel="preload" href="/components/styles.css?v=10" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=10">
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+<link rel="preload" href="/components/styles.css?v=12" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=12">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -133,7 +133,7 @@ button,a,[role="button"]{touch-action:manipulation}
   <div class="el-state-grid">
 
     <div class="el-state-card">
-      <div class="el-state-head"><span class="el-state-icon">&#127974;</span><span class="el-state-name">Wisconsin</span><span class="el-state-sub">Primary coverage</span></div>
+      <div class="el-state-head"><span class="el-state-icon">&#127974;</span><span class="el-state-name">Wisconsin</span><span class="el-state-sub">Representative facilities</span></div>
       <ul class="el-elevator-list">
         <li>Alcivia co-op system (statewide)</li>
         <li>Landmark Services Co-op</li>
@@ -145,7 +145,7 @@ button,a,[role="button"]{touch-action:manipulation}
     </div>
 
     <div class="el-state-card">
-      <div class="el-state-head"><span class="el-state-icon">&#127807;</span><span class="el-state-name">Minnesota</span><span class="el-state-sub">Primary coverage</span></div>
+      <div class="el-state-head"><span class="el-state-icon">&#127807;</span><span class="el-state-name">Minnesota</span><span class="el-state-sub">Representative facilities</span></div>
       <ul class="el-elevator-list">
         <li>CHS / Cenex Harvest States facilities</li>
         <li>Heartland Corn Products</li>
@@ -157,7 +157,7 @@ button,a,[role="button"]{touch-action:manipulation}
     </div>
 
     <div class="el-state-card">
-      <div class="el-state-head"><span class="el-state-icon">&#127805;</span><span class="el-state-name">Illinois</span><span class="el-state-sub">Broad coverage</span></div>
+      <div class="el-state-head"><span class="el-state-icon">&#127805;</span><span class="el-state-name">Illinois</span><span class="el-state-sub">Representative facilities</span></div>
       <ul class="el-elevator-list">
         <li>Primient (formerly Tate &amp; Lyle) Corn Processing</li>
         <li>Big Gain / Gold Standard Nutrition</li>
@@ -169,7 +169,7 @@ button,a,[role="button"]{touch-action:manipulation}
     </div>
 
     <div class="el-state-card">
-      <div class="el-state-head"><span class="el-state-icon">&#127806;</span><span class="el-state-name">Iowa</span><span class="el-state-sub">Broad coverage</span></div>
+      <div class="el-state-head"><span class="el-state-icon">&#127806;</span><span class="el-state-name">Iowa</span><span class="el-state-sub">Representative facilities</span></div>
       <ul class="el-elevator-list">
         <li>Heartland Co-op</li>
         <li>West Central Co-op</li>
@@ -181,7 +181,7 @@ button,a,[role="button"]{touch-action:manipulation}
     </div>
 
     <div class="el-state-card">
-      <div class="el-state-head"><span class="el-state-icon">&#127968;</span><span class="el-state-name">Indiana</span><span class="el-state-sub">Growing coverage</span></div>
+      <div class="el-state-head"><span class="el-state-icon">&#127968;</span><span class="el-state-name">Indiana</span><span class="el-state-sub">Representative facilities</span></div>
       <ul class="el-elevator-list">
         <li>South Indiana grain facilities</li>
         <li>Hopkinsville-area elevators</li>
@@ -191,7 +191,7 @@ button,a,[role="button"]{touch-action:manipulation}
     </div>
 
     <div class="el-state-card">
-      <div class="el-state-head"><span class="el-state-icon">&#9881;&#65039;</span><span class="el-state-name">Ohio</span><span class="el-state-sub">Partial coverage</span></div>
+      <div class="el-state-head"><span class="el-state-icon">&#9881;&#65039;</span><span class="el-state-name">Ohio</span><span class="el-state-sub">Representative facilities</span></div>
       <ul class="el-elevator-list">
         <li>Northwest Ohio grain corridors</li>
         <li>Nexus Cash Bids locations</li>
@@ -234,17 +234,18 @@ button,a,[role="button"]{touch-action:manipulation}
   </div>
 </main>
 <div id="site-footer"></div>
-<script src="/components/loader.js" defer></script>
+<script src="/components/loader.js?v=2" defer></script>
 <script src="/components/geo.js" defer></script>
 <script>
 document.querySelectorAll('.el-faq-q').forEach(function(q){
   q.addEventListener('click',function(){
     var it=this.closest('.el-faq-item'),op=it.classList.contains('open');
     document.querySelectorAll('.el-faq-item').forEach(function(i){i.classList.remove('open');i.querySelector('.el-faq-q').setAttribute('aria-expanded','false');});
-    if(!op){it.classList.add('open');q.setAttribute('aria-expanded','true');}
+    if(!op){it.classList.add('open');q.setAttribute('aria-expanded','true');if(window.gaEvent)gaEvent('faq_open',{q:q.textContent.trim().slice(0,60)});}
   });
   q.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();q.click();}});
 });
+document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/cash-bids"]');if(a&&window.gaEvent)gaEvent('elevators_cta',{label:(a.textContent||'').trim().slice(0,40)});},true);
 </script>
 </body>
 </html>

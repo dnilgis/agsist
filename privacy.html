@@ -9,7 +9,7 @@
   <title>Privacy Policy — AGSIST</title>
   <meta name="description" content="Privacy Policy for AGSIST. Short version: almost nothing is collected, nothing is sold, and your location never leaves your browser.">
   <meta name="author" content="Sigurd Lindquist — Farmers First Agri Service">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://agsist.com/privacy">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AGSIST">
@@ -24,8 +24,8 @@
   <meta name="twitter:title" content="Privacy Policy — AGSIST">
   <meta name="twitter:description" content="AGSIST collects almost nothing and sells nothing. Your location never leaves your browser.">
   <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
-  <link rel="preload" href="/components/styles.css" as="style">
-  <link rel="stylesheet" href="/components/styles.css">
+  <link rel="preload" href="/components/styles.css?v=12" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=12">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -113,6 +113,9 @@
       .legal-page p, .legal-page li { font-size: .82rem }
     }
   </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","url":"https://agsist.com/privacy","name":"Privacy Policy","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Privacy","item":"https://agsist.com/privacy"}]}}
+</script>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -148,8 +151,13 @@
         <li><strong>CoinGecko</strong> — cryptocurrency prices</li>
       </ul>
 
-      <h2>Cookies</h2>
-      <p>AGSIST stores one preference — your dark/light theme choice — using <code>localStorage</code>. It's not a tracking cookie and contains zero personal data.</p>
+      <h2>Cookies &amp; Local Storage</h2>
+      <p>AGSIST uses minimal browser storage &mdash; no advertising cookies, no cross-site tracking, no retargeting pixels.</p>
+      <ul>
+        <li><strong>Theme preference</strong> &mdash; <code>agsist-theme</code> in <code>localStorage</code> stores your dark/light choice. It never leaves your browser and holds no personal data.</li>
+        <li><strong>Google Analytics</strong> &mdash; <code>_ga</code> (2-year expiry, distinguishes users) and <code>_ga_*</code> (session persistence). No personally identifiable information. Opt out with the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics Opt-out Add-on</a>.</li>
+      </ul>
+      <p>You can clear all cookies and localStorage anytime in your browser settings; clearing localStorage resets your theme to dark.</p>
 
       <h2>Data Retention</h2>
       <p>Location data: never stored. Email: kept until you unsubscribe. Analytics: retained per Google's defaults (14 months).</p>
@@ -164,6 +172,6 @@
     </div>
   </main>
   <div id="site-footer"></div>
-  <script src="/components/loader.js"></script>
+  <script src="/components/loader.js" defer></script>
 </body>
 </html>

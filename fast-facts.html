@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#111a0a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="/components/styles.css?v=10" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=10">
+<link rel="preload" href="/components/styles.css?v=12" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=12">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -44,8 +44,22 @@
   {"@type":"Question","name":"How do I calculate growing degree units for corn?","acceptedAnswer":{"@type":"Answer","text":"GDU (base 50\u00b0F) = [(daily max temp, capped at 86\u00b0F) + (daily min temp, floor at 50\u00b0F)] / 2 - 50. Accumulate daily from planting."}}
 ]}
 </script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebPage","@id":"https://agsist.com/fast-facts#webpage","url":"https://agsist.com/fast-facts","name":"Agricultural Fast Facts \u2014 Complete On-Farm Reference","description":"National agricultural reference: corn N rates, P&K by soil test, manure nutrient value, crop staging, GDU, pest thresholds, herbicide MOA, lime, and state production stats.","inLanguage":"en-US","isPartOf":{"@type":"WebSite","name":"AGSIST","url":"https://agsist.com/"},"author":{"@type":"Person","name":"Sigurd Lindquist"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"dateModified":"2026-06-08","isAccessibleForFree":true},
+{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Fast Facts","item":"https://agsist.com/fast-facts"}]}
+]}
+</script>
 <style>
 button,a,[role="button"]{touch-action:manipulation;}
+.ff-scope{font-size:.72rem;color:var(--text-muted);line-height:1.5;max-width:680px;margin:.6rem 0 0;border-left:2px solid var(--gold);padding-left:.6rem;}
+.ff-scope strong{color:var(--text-dim);}
+.ff-meta{font-size:.66rem;color:var(--text-muted);margin-top:.55rem;}
+.ff-meta strong{color:var(--text-dim);}
+.ff-meta a{color:var(--gold);text-decoration:none;}
+.ff-related-strip{font-size:.72rem;color:var(--text-muted);margin:-.4rem 0 1.4rem;}
+.ff-related-strip a{color:var(--gold);font-weight:700;text-decoration:none;}
+.ff-related-strip a:hover{text-decoration:underline;}
 @media print{.ff-tabs,.ff-hero p,.skip,#site-header,#site-footer{display:none!important;}.ff-panel{display:block!important;page-break-inside:avoid;}.ff-page{padding:0;max-width:100%;}}
 .ff-page{max-width:980px;margin:0 auto;padding:0 1rem 4rem;}
 .ff-hero{padding:1.2rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
@@ -298,8 +312,11 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 <div class="ff-hero">
   <div class="ff-eyebrow">&#128203; Nutrient Management &middot; Economics &middot; Crop Staging &middot; Pest &amp; Weed &middot; Soil Health &middot; State Stats</div>
   <h1>Agricultural Fast Facts</h1>
-  <p>The complete on-farm reference &mdash; built on UW-Extension A2809 guidelines and integrated with live commodity and fertilizer prices. Corn N rates, manure nutrient value calculator, P&amp;K by soil test, crop staging, GDU, pest thresholds, herbicide MOA, breakeven calculator, and state production data. Free for farmers.</p>
+  <p>The complete on-farm reference &mdash; corn N rates, a manure nutrient value calculator, P&amp;K by soil test, crop staging, GDU, pest thresholds, herbicide MOA, a breakeven calculator, and state production data, integrated with live commodity and fertilizer prices. Free for every US farmer.</p>
+  <p class="ff-scope">Agronomic recommendations are calibrated to Upper-Midwest guidelines (UW Extension <strong>A2809</strong>). Growers in other regions should confirm rates, lime, and calendar dates with their state land-grant extension &mdash; values shift by region.</p>
+  <div class="ff-meta">Maintained by <strong>Sigurd Lindquist</strong> &middot; last reviewed June 8, 2026 &middot; <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a></div>
 </div>
+<div class="ff-related-strip" aria-label="Related AGSIST tools">Related tools: <a href="/fertilizer">Fertilizer Prices</a> &middot; <a href="/breakeven">Break-Even Calculator</a> &middot; <a href="/gdu-calculator">GDU &amp; Weather History</a></div>
 <nav class="ff-tabs" role="tablist" aria-label="Fast Facts sections">
   <button id="tab-btn-nitrogen"   class="ff-tab active" role="tab" aria-selected="true"  aria-controls="tab-nitrogen"   data-tab="nitrogen">&#127805; Nitrogen</button>
   <button id="tab-btn-economics"  class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-economics"  data-tab="economics">&#128181; Economics</button>
@@ -446,7 +463,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 <!-- P&K TAB -->
 <div class="ff-panel" id="tab-pk" role="tabpanel" aria-labelledby="tab-btn-pk" tabindex="0" aria-hidden="true">
 <div class="ff-h2">Soil Test Interpreter</div>
-<p class="ff-sub">Enter your soil test values &mdash; get your P&#x2082;O&#x2085; / K&#x2082;O recommendation. Uses Bray P1 (standard WI/MN). Olsen P users: multiply &times; 1.6.</p>
+<p class="ff-sub">Enter your soil test values &mdash; get your P&#x2082;O&#x2085; / K&#x2082;O recommendation. Uses the Bray P1 method (common across the Corn Belt). High-pH or Western soils tested by Olsen P: multiply &times; 1.6.</p>
 <div class="ff-calc">
   <div class="ff-calc-title">&#129518; Soil Test &rarr; Recommendation Calculator</div>
   <div class="ff-cr">
@@ -708,7 +725,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     <div class="ff-row"><span class="ff-rl">Blueberries / Cranberries</span><span class="ff-rv">4.5&ndash;5.5</span></div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon">&#9878;&#65039;</span><span class="ff-card-title">Liming Rules (Wisconsin)</span></div>
+    <div class="ff-card-head"><span class="ff-card-icon">&#9878;&#65039;</span><span class="ff-card-title">Liming Rules (Upper Midwest)</span></div>
     <div class="ff-row"><span class="ff-rl">Max lime rate (all soils)</span><span class="ff-rv">12 ton/ac</span></div>
     <div class="ff-row"><span class="ff-rl">Max lime rate (potatoes)</span><span class="ff-rv">8 ton/ac</span></div>
     <div class="ff-row"><span class="ff-rl">Min rate &mdash; sandy &lt;1% OM</span><span class="ff-rv">1 ton/ac</span></div>
@@ -719,7 +736,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 </div>
 <div class="ff-h2">Lime Requirement Calculator</div>
 <div class="ff-calc">
-  <div class="ff-calc-title">&#129683; Lime Rate Estimator (SMP Buffer — WI Calibration)</div>
+  <div class="ff-calc-title">&#129683; Lime Rate Estimator (SMP Buffer — Upper-Midwest Calibration)</div>
   <div class="ff-cr">
     <div class="ff-cf"><label class="ff-cl" for="lime-buf">SMP Buffer pH</label><input class="ff-ci" id="lime-buf" type="number" value="6.5" step="0.1" min="5.0" max="7.0"></div>
     <div class="ff-cf"><label class="ff-cl" for="lime-target">Target pH</label>
@@ -740,9 +757,9 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     <div class="ff-ri"><div class="ff-ril">Guidance</div><div class="ff-riv dim" id="lime-note">&mdash;</div></div>
     <div class="ff-ri"><div class="ff-ril">Est. Cost/Acre</div><div class="ff-riv gold" id="lime-cost">&mdash;</div></div>
   </div>
-  <div class="ff-cn">Based on WI A2809 SMP buffer calibration. MN soils may differ by 0.5&ndash;1.0 ton/ac &mdash; consult UMN Extension for MN-calibrated recommendations.</div>
+  <div class="ff-cn">Based on UW Extension A2809 SMP-buffer calibration (Upper Midwest). Other regions vary &mdash; consult your state land-grant extension for locally calibrated lime recommendations.</div>
 </div>
-<div class="ff-h2">Micronutrient Reference &mdash; WI / MN</div>
+<div class="ff-h2">Micronutrient Reference &mdash; Upper Midwest</div>
 <div class="ff-tw"><table class="ff-t">
 <thead><tr><th>Nutrient</th><th class="tl">Responsive Crops</th><th>Deficient</th><th>Method</th><th>Typical Rate</th><th class="tl">Key Notes</th></tr></thead>
 <tbody>
@@ -750,7 +767,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
   <tr><td><strong>Zn</strong></td><td class="tl">Corn, beans, soybeans</td><td>&lt;0.5 ppm DTPA</td><td>DTPA</td><td>1&ndash;2 lb Zn/ac</td><td class="tl" style="font-size:.7rem">High pH (&gt;7.0), high P, cold wet spring. Corn &#8220;white bud.&#8221;</td></tr>
   <tr><td><strong>B</strong></td><td class="tl">Alfalfa, clover, sunflower</td><td>&lt;0.5 ppm</td><td>Hot water</td><td>0.5&ndash;1 lb B/ac</td><td class="tl" style="font-size:.7rem">Sandy soils, low OM. Toxic range narrow &mdash; do not over-apply.</td></tr>
   <tr><td><strong>Mn</strong></td><td class="tl">Soybeans, oats, wheat</td><td>&lt;5 ppm DTPA</td><td>DTPA</td><td>0.5&ndash;1 lb Mn foliar</td><td class="tl" style="font-size:.7rem">High pH (&gt;6.5), organic soils. Foliar preferred.</td></tr>
-  <tr><td><strong>Fe (IDC)</strong></td><td class="tl">Soybeans</td><td>pH &gt;7.3 + CaCO&#x2083;</td><td>SPAD</td><td>IDC-tolerant varieties</td><td class="tl" style="font-size:.7rem">Most common on calcareous soils in MN.</td></tr>
+  <tr><td><strong>Fe (IDC)</strong></td><td class="tl">Soybeans</td><td>pH &gt;7.3 + CaCO&#x2083;</td><td>SPAD</td><td>IDC-tolerant varieties</td><td class="tl" style="font-size:.7rem">Most common on calcareous (high-pH) soils.</td></tr>
 </tbody></table></div>
 <div class="ff-h2">Tissue Test Critical Levels</div>
 <div class="ff-g2">
@@ -869,23 +886,23 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
   <tr><td class="tl">Soybean Aphid</td><td class="tl">Soybean</td><td class="tl"><span class="sev-high">250 aphids/plant on &ge;80% of plants, increasing</span></td><td class="tl">V4&ndash;R5</td><td class="tl" style="font-size:.7rem">Count 20 plants per field. Only treat if population increasing &amp; before R5.</td></tr>
   <tr><td class="tl">Bean Leaf Beetle</td><td class="tl">Soybean</td><td class="tl"><span class="sev-low">20&ndash;30% defoliation</span></td><td class="tl">V stages</td><td class="tl" style="font-size:.7rem">Pod feeding at R3&ndash;R5 can warrant action at lower thresholds.</td></tr>
   <tr><td class="tl">Japanese Beetle (soybean)</td><td class="tl">Soybean</td><td class="tl"><span class="sev-med">20% defoliation before bloom; 15% during/after</span></td><td class="tl">V&ndash;R6</td><td class="tl" style="font-size:.7rem">Canopy closure reduces access &mdash; focus on field edges.</td></tr>
-  <tr><td class="tl">Soybean Gall Midge</td><td class="tl">Soybean</td><td class="tl"><span class="sev-high">Any presence &mdash; no established ET</span></td><td class="tl">V1&ndash;R2</td><td class="tl" style="font-size:.7rem">Emerging pest in MN/WI. Orange larvae at stem base. Scout field edges.</td></tr>
+  <tr><td class="tl">Soybean Gall Midge</td><td class="tl">Soybean</td><td class="tl"><span class="sev-high">Any presence &mdash; no established ET</span></td><td class="tl">V1&ndash;R2</td><td class="tl" style="font-size:.7rem">Emerging pest in the upper Corn Belt. Orange larvae at stem base. Scout field edges.</td></tr>
   <tr><td class="tl">Two-Spotted Spider Mite</td><td class="tl">Both</td><td class="tl"><span class="sev-med">25&ndash;50% leaf stippling, mites present, hot &amp; dry</span></td><td class="tl">R1&ndash;R5</td><td class="tl" style="font-size:.7rem">Hot dry conditions favor rapid buildup. Check field edges first.</td></tr>
 </tbody></table></div>
 <div class="ff-h2">Herbicide MOA Reference &mdash; Common Classes</div>
 <div class="ff-tw"><table class="ff-t">
 <thead><tr><th class="tl">MOA Group</th><th class="tl">Site of Action</th><th class="tl">Common AI / Products</th><th class="tl">Crops</th><th class="tl">Resistance Notes</th></tr></thead>
 <tbody>
-  <tr><td class="tl"><span class="moa-badge moa-9">Group 9</span></td><td class="tl">EPSPS inhibitor</td><td class="tl">Glyphosate (Roundup)</td><td class="tl">RR corn &amp; soybean</td><td class="tl" style="font-size:.7rem;color:#e05c5c">Most common resistance in WI/MN &mdash; confirm weed ID before relying on glyphosate alone</td></tr>
+  <tr><td class="tl"><span class="moa-badge moa-9">Group 9</span></td><td class="tl">EPSPS inhibitor</td><td class="tl">Glyphosate (Roundup)</td><td class="tl">RR corn &amp; soybean</td><td class="tl" style="font-size:.7rem;color:#e05c5c">Widespread resistance across the Corn Belt &mdash; confirm weed ID before relying on glyphosate alone</td></tr>
   <tr><td class="tl"><span class="moa-badge moa-2">Group 2</span></td><td class="tl">ALS inhibitor</td><td class="tl">Classic (chlorimuron), FirstRate (cloransulam), Pursuit (imazethapyr), Harmony GT (thifensulfuron)</td><td class="tl">Corn, soybean, others</td><td class="tl" style="font-size:.7rem;color:#e05c5c">Widespread resistance in waterhemp, horseweed, giant ragweed</td></tr>
   <tr><td class="tl"><span class="moa-badge moa-14">Group 14</span></td><td class="tl">PPO inhibitor</td><td class="tl">Flexstar, Ultra Blazer, Cobra, Authority</td><td class="tl">Soybean, corn (Authority)</td><td class="tl" style="font-size:.7rem;color:var(--gold)">Increasing waterhemp resistance &mdash; rotate with other MOAs</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-5">Group 5</span></td><td class="tl">PSII inhibitor</td><td class="tl">Atrazine, Aatrex, metribuzin</td><td class="tl">Corn primarily; metribuzin on soybeans</td><td class="tl" style="font-size:.7rem;color:var(--gold)">Some resistance; 1 lb ai/ac annual limit in WI</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-1">Group 1</span></td><td class="tl">ACCase inhibitor</td><td class="tl">Select Max, Poast, Assure II</td><td class="tl">Broadleaf crops</td><td class="tl" style="font-size:.7rem">Controls grasses. Little resistance currently in WI/MN</td></tr>
+  <tr><td class="tl"><span class="moa-badge moa-5">Group 5</span></td><td class="tl">PSII inhibitor</td><td class="tl">Atrazine, Aatrex, metribuzin</td><td class="tl">Corn primarily; metribuzin on soybeans</td><td class="tl" style="font-size:.7rem;color:var(--gold)">Some resistance; atrazine rate and use limits vary by state &mdash; check your label and state rules</td></tr>
+  <tr><td class="tl"><span class="moa-badge moa-1">Group 1</span></td><td class="tl">ACCase inhibitor</td><td class="tl">Select Max, Poast, Assure II</td><td class="tl">Broadleaf crops</td><td class="tl" style="font-size:.7rem">Controls grasses. Little resistance currently in the Corn Belt</td></tr>
   <tr><td class="tl"><span class="moa-badge moa-3">Group 3</span></td><td class="tl">Microtubule inhibitor</td><td class="tl">Treflan, Sonalan (trifluralin)</td><td class="tl">Soybean, corn</td><td class="tl" style="font-size:.7rem">Pre-emergent only. Incorporate into soil.</td></tr>
   <tr><td class="tl"><span class="moa-badge moa-4">Group 4</span></td><td class="tl">Synthetic auxin</td><td class="tl">2,4-D, dicamba, MCPA</td><td class="tl">Corn, small grains; Xtend soybeans</td><td class="tl" style="font-size:.7rem">Drift risk high. Strict label requirements. Watch vapor temp.</td></tr>
   <tr><td class="tl"><span class="moa-badge moa-other">Group 27</span></td><td class="tl">HPPD inhibitor</td><td class="tl">Callisto, Laudis, Impact, Balance</td><td class="tl">Corn</td><td class="tl" style="font-size:.7rem">Excellent waterhemp activity. Rotate with Group 2 avoided fields.</td></tr>
 </tbody></table></div>
-<div class="ff-alert"><strong>Waterhemp management priority in WI/MN:</strong> Confirmed resistance to Groups 2, 5, 9, 14 (and in some populations, 27) makes waterhemp the highest-resistance-management priority in the region. Use 3+ MOA programs with effective soil residual, and do not rely on post-only programs.</div>
+<div class="ff-alert"><strong>Waterhemp management priority across the Corn Belt:</strong> Confirmed resistance to Groups 2, 5, 9, 14 (and in some populations, 27) makes waterhemp the highest resistance-management priority in most corn and soybean regions. Use 3+ MOA programs with effective soil residual, and do not rely on post-only programs.</div>
 </div><!-- /tab-pest -->
 
 <!-- REFERENCE TAB -->
@@ -955,16 +972,16 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     <div class="ff-row"><span class="ff-rl">USDA NASS Crop Reports</span><span class="ff-rv dim">nass.usda.gov</span></div>
   </div>
 </div>
-<div class="ff-h2">Important Dates &mdash; WI/MN Crop Calendar</div>
+<div class="ff-h2">Seasonal Crop Calendar &mdash; Upper Midwest reference</div>
 <div class="ff-tw"><table class="ff-t">
 <thead><tr><th class="tl">Date / Window</th><th class="tl">Corn</th><th class="tl">Soybean</th><th class="tl">Notes</th></tr></thead>
 <tbody>
-  <tr><td class="tl">Apr 20 &ndash; May 15</td><td class="tl">Optimal planting window WI/MN</td><td class="tl">&mdash;</td><td class="tl" style="font-size:.7rem">Soil temp &ge;50&deg;F at 2" depth for 3 consecutive days</td></tr>
-  <tr><td class="tl">May 1 &ndash; May 20</td><td class="tl">&mdash;</td><td class="tl">Optimal planting window WI/MN</td><td class="tl" style="font-size:.7rem">Soil temp &ge;50&deg;F; avoid Sudden Death Syndrome risk from cold early planting</td></tr>
+  <tr><td class="tl">Apr 20 &ndash; May 15</td><td class="tl">Optimal planting window</td><td class="tl">&mdash;</td><td class="tl" style="font-size:.7rem">Soil temp &ge;50&deg;F at 2" depth for 3 consecutive days</td></tr>
+  <tr><td class="tl">May 1 &ndash; May 20</td><td class="tl">&mdash;</td><td class="tl">Optimal planting window</td><td class="tl" style="font-size:.7rem">Soil temp &ge;50&deg;F; avoid Sudden Death Syndrome risk from cold early planting</td></tr>
   <tr><td class="tl">June 1</td><td class="tl">Significant yield drag begins</td><td class="tl">Moderate yield drag</td><td class="tl" style="font-size:.7rem">~1% yield loss per day after June 1 for corn; beans more flexible to June 10</td></tr>
   <tr><td class="tl">Late June &ndash; July</td><td class="tl">Critical pollination window</td><td class="tl">Bloom &amp; pod set</td><td class="tl" style="font-size:.7rem">Drought or heat stress during this window has largest yield impact</td></tr>
-  <tr><td class="tl">Late Aug &ndash; early Sep</td><td class="tl">Black layer / physiological maturity</td><td class="tl">R7 (begin maturity)</td><td class="tl" style="font-size:.7rem">Monitor for early frost risk &mdash; especially north WI/MN</td></tr>
-  <tr><td class="tl">Sep 15</td><td class="tl">Average first frost (north WI/MN)</td><td class="tl">Harvest window opens</td><td class="tl" style="font-size:.7rem">Frost before black layer can cause quality issues</td></tr>
+  <tr><td class="tl">Late Aug &ndash; early Sep</td><td class="tl">Black layer / physiological maturity</td><td class="tl">R7 (begin maturity)</td><td class="tl" style="font-size:.7rem">Monitor for early frost risk &mdash; especially in northern areas</td></tr>
+  <tr><td class="tl">Sep 15</td><td class="tl">Average first frost (northern areas)</td><td class="tl">Harvest window opens</td><td class="tl" style="font-size:.7rem">Frost before black layer can cause quality issues</td></tr>
 </tbody></table></div>
 <button onclick="window.print()" class="ff-print-btn">&#128424;&#65039; Print This Reference Page</button>
 </div><!-- /tab-reference -->
@@ -1000,20 +1017,33 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 /* ─── TAB SYSTEM ─────────────────────────────────────────────────────── */
 var tabs=document.querySelectorAll('.ff-tab');
 var panels=document.querySelectorAll('.ff-panel');
+function ffEvent(name,params){try{if(window.gtag)gtag('event',name,params||{});}catch(e){}}
 function switchTab(tab){
+  if(!tab)return;
   var t=tab.dataset.tab;
-  tabs.forEach(function(b){b.classList.toggle('active',b.dataset.tab===t);b.setAttribute('aria-selected',b.dataset.tab===t);});
+  tabs.forEach(function(b){var on=b.dataset.tab===t;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;});
   panels.forEach(function(p){var a=p.id==='tab-'+t;p.classList.toggle('active',a);if(a)p.removeAttribute('aria-hidden');else p.setAttribute('aria-hidden','true');});
   if(t==='stages')initStages();
   if(t==='statestats')initStateStats();
+  ffEvent('tab_view',{section:t});
 }
-tabs.forEach(function(b){b.addEventListener('click',function(){switchTab(b);});});
+tabs.forEach(function(b){b.addEventListener('click',function(){switchTab(b);if(history&&history.replaceState){try{history.replaceState(null,'','#'+b.dataset.tab);}catch(e){}}});});
 document.addEventListener('keydown',function(e){
-  if(!e.target.classList.contains('ff-tab'))return;
-  var arr=Array.from(tabs);var i=arr.indexOf(e.target);
-  if(e.key==='ArrowRight'){arr[(i+1)%arr.length].focus();}
-  if(e.key==='ArrowLeft'){arr[(i-1+arr.length)%arr.length].focus();}
+  if(!e.target.classList||!e.target.classList.contains('ff-tab'))return;
+  var arr=Array.prototype.slice.call(tabs);var i=arr.indexOf(e.target);var n=null;
+  if(e.key==='ArrowRight')n=arr[(i+1)%arr.length];
+  else if(e.key==='ArrowLeft')n=arr[(i-1+arr.length)%arr.length];
+  else if(e.key==='Home')n=arr[0];
+  else if(e.key==='End')n=arr[arr.length-1];
+  if(n){e.preventDefault();n.focus();}
 });
+/* calculator usage tracking — panel-level, once per session */
+var _ffCalcFired={};
+function _ffTrackCalc(e){var el=e.target;if(!el||!el.closest)return;var panel=el.closest('.ff-panel');if(!panel||!panel.id||_ffCalcFired[panel.id])return;_ffCalcFired[panel.id]=1;ffEvent('calc_use',{calculator:panel.id.replace('tab-','')});}
+document.addEventListener('input',_ffTrackCalc,true);
+document.addEventListener('change',_ffTrackCalc,true);
+/* deep-link: open tab from URL hash on load (deferred so all init fns are defined) */
+setTimeout(function(){var h=(location.hash||'').replace('#','');var b=(h&&document.getElementById('tab-btn-'+h))||document.querySelector('.ff-tab.active')||tabs[0];switchTab(b);},0);
 
 /* ─── FERTILIZER PRICES ─────────────────────────────────────────────── */
 var PRICES={};
@@ -1023,11 +1053,13 @@ function loadFertPrices(){
     var el=document.getElementById('fert-date');
     if(el&&data.updated){var d=new Date(data.updated+'T12:00:00');el.textContent='Updated '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
     // Name-based lookups — fertilizer.json uses product name field, not legacy symbol codes
-    var urea  =data.prices.find(function(p){return p.name==='Urea';});
-    var potash=data.prices.find(function(p){return p.name==='Potash';});
-    var mapS  =data.prices.find(function(p){return p.name==='MAP + Sulfur';});
-    var ams   =data.prices.find(function(p){return p.name==='Amm. Sulfate';});
-    var kmag  =data.prices.find(function(p){return p.name==='K-Mag Premium';});
+    function _pg(sym){if(!sym)return null;var a=String(sym).trim().split('-');if(a.length<3)return null;var n=parseFloat(a[0]),pp=parseFloat(a[1]),k=parseFloat(a[2]);if(isNaN(n)||isNaN(pp)||isNaN(k))return null;var g={N:n,P:pp,K:k,S:0,Mg:0};for(var i=3;i<a.length;i++){var m=String(a[i]).match(/([\d.]+)\s*([A-Za-z]+)/);if(m){var u=m[2].toLowerCase();if(u==='s')g.S=parseFloat(m[1]);else if(u==='mg')g.Mg=parseFloat(m[1]);}}return g;}
+    function _find(nm,pred){return data.prices.find(function(p){return p.name===nm;})||data.prices.find(function(p){var g=_pg(p.symbol);return g?pred(g):false;});}
+    var urea  =_find('Urea',         function(g){return g.N>0&&g.P===0&&g.K===0&&g.S===0;});
+    var potash=_find('Potash',       function(g){return g.K>0&&g.N===0&&g.P===0&&g.S===0;});
+    var mapS  =_find('MAP + Sulfur', function(g){return g.P>0&&g.S>0;});
+    var ams   =_find('Amm. Sulfate', function(g){return g.N>0&&g.S>0&&g.P===0&&g.K===0;});
+    var kmag  =_find('K-Mag Premium',function(g){return g.K>0&&g.S>0&&g.Mg>0;});
     var lime  =data.prices.find(function(p){return p.name==='Pell Lime';});
     if(lime&&lime.price)PRICES['LIME']=lime.price;
     var wrap=document.getElementById('fert-pills');

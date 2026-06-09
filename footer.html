@@ -1,6 +1,15 @@
 <!-- AGSIST Footer — injected by loader.js into #site-footer -->
-<!-- v6: 4-column grid to match components/styles.css repeat(4,1fr);
-         + Tariff Tracker, AGSIST Daily, Ag Odds; col headers tidied -->
+<style>
+  .footer-supporters{border-top:1px solid var(--border);margin-top:1rem;padding-top:1rem;display:flex;align-items:center;gap:.85rem;flex-wrap:wrap;justify-content:center;}
+  .footer-supporters[hidden]{display:none;}
+  .footer-supporters-lbl{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);}
+  .footer-supporters-list{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;justify-content:center;}
+  .footer-supporter{display:inline-flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--text-dim);text-decoration:none;padding:.3rem .6rem;border:1px solid var(--border);border-radius:6px;transition:border-color .15s,color .15s;}
+  .footer-supporter:hover{border-color:var(--green);color:var(--text);}
+  .footer-supporter img{height:22px;width:auto;max-width:96px;object-fit:contain;display:block;}
+  .footer-supporters-cta{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--green);text-decoration:none;padding:.32rem .65rem;border:1px solid rgba(58,139,60,.4);border-radius:6px;transition:background .15s,color .15s;}
+  .footer-supporters-cta:hover{background:var(--green);color:#fff;}
+</style>
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-top">
@@ -16,34 +25,38 @@
     <div class="footer-cols">
       <div class="footer-col">
         <h4>Prices</h4>
-        <a href="/corn-futures-prices">Corn Futures</a>
-        <a href="/soybean-futures-prices">Soybean Futures</a>
-        <a href="/wheat-futures-prices">Wheat Futures</a>
-        <a href="/cash-bids">Cash Bids</a>
-        <a href="/tariffs">Tariff Tracker</a>
+        <a href="/corn-futures-prices">🌽 Corn Futures</a>
+        <a href="/soybean-futures-prices">🫘 Soybean Futures</a>
+        <a href="/wheat-futures-prices">🌾 Wheat Futures</a>
+        <a href="/cash-bids">💵 Cash Bids</a>
+        <a href="/cot">📊 COT Report</a>
+        <a href="/ag-odds">🎯 Ag Prediction Markets</a>
       </div>
       <div class="footer-col">
-        <h4>Weather &amp; Advisory</h4>
-        <a href="/spray">Spray Conditions</a>
-        <a href="/urea">Urea Risk Monitor</a>
-        <a href="/drought-monitor">Drought Monitor</a>
-        <a href="/gdu-calculator">GDU Tracker</a>
+        <h4>Weather</h4>
+        <a href="/spray">🌿 Spray Conditions</a>
+        <a href="/urea">🧪 Urea Risk</a>
+        <a href="/drought-monitor">🏜️ Drought Monitor</a>
+        <a href="/gdu-calculator">🌡️ GDU Calculator</a>
       </div>
       <div class="footer-col">
         <h4>Tools</h4>
-        <a href="/breakeven">Break-Even Calc</a>
-        <a href="/grain-bin-calculator">Grain Bin Calc</a>
-        <a href="/fast-facts">Fast Facts</a>
-        <a href="/yield-estimator">Yield Estimator</a>
-        <a href="/tools">All Tools</a>
+        <a href="/breakeven">📐 Break-Even Calc</a>
+        <a href="/grain-bin-calculator">🏗️ Grain Bin Calc</a>
+        <a href="/planting-date">📆 Planting Date</a>
+        <a href="/fertilizer">🌱 Fertilizer</a>
+        <a href="/fast-facts">⚡ Fast Facts</a>
+        <a href="/yield-estimator">🌾 Yield Estimator</a>
       </div>
       <div class="footer-col">
-        <h4>Data &amp; Daily</h4>
-        <a href="/daily">AGSIST Daily</a>
-        <a href="/usda-calendar">USDA Calendar</a>
-        <a href="/usda-quick-stats">USDA Quick Stats</a>
-        <a href="/ag-odds">Ag Odds</a>
-        <a href="/data-sources">Data Sources</a>
+        <h4>Daily &amp; Data</h4>
+        <a href="/daily">📰 AGSIST Daily</a>
+        <a href="/usda-calendar">📅 USDA Calendar</a>
+        <a href="/usda-quick-stats">📋 USDA Quick Stats</a>
+        <a href="/tariffs">🏛️ Tariffs</a>
+        <a href="/data-sources">🔗 Data Sources</a>
+        <a href="/embed">🧩 Embed Widgets</a>
+        <a href="/markets">📈 All Markets</a>
       </div>
     </div>
     <div class="footer-net">
@@ -66,11 +79,15 @@
         </a>
       </div>
     </div>
+    <div class="footer-supporters" id="footer-supporters" hidden aria-label="AGSIST supporters"></div>
     <div class="footer-bottom">
       <div class="footer-legal">
         <span>© 2026 AGSIST</span><span class="footer-sep">·</span>
         <a href="/about">About</a><span class="footer-sep">·</span>
+        <a href="/contact">Contact</a><span class="footer-sep">·</span>
+        <a href="/sponsor" onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'footer_legal'})">Sponsor</a><span class="footer-sep">·</span>
         <a href="/privacy">Privacy</a><span class="footer-sep">·</span>
+        <a href="/accessibility">Accessibility</a><span class="footer-sep">·</span>
         <a href="/terms">Terms</a><span class="footer-sep">·</span>
         <a href="/developer">Developer/API</a>
       </div>

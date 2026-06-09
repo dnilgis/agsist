@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-  <link rel="preload" href="/components/styles.css?v=10" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=10">
+  <link rel="preload" href="/components/styles.css?v=12" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=12">
   <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32"  href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16"  href="/img/favicon-16.png">
@@ -43,9 +43,9 @@
   <script type="application/ld+json">
   {
     "@context":"https://schema.org","@graph":[
-      {"@type":"WebPage","url":"https://agsist.com/usda-calendar","name":"USDA Report Calendar 2025\u20132026 \u2014 WASDE & Crop Dates | AGSIST","description":"Complete USDA agricultural report calendar with market impact ratings for corn and soybean producers. WASDE, Crop Progress, Prospective Plantings, Grain Stocks, Acreage, and Export Sales dates for 2025\u20132026.","dateModified":"2026-04-10","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"USDA Calendar","item":"https://agsist.com/usda-calendar"}]}},
+      {"@type":"WebPage","url":"https://agsist.com/usda-calendar","name":"USDA Report Calendar 2025\u20132026 \u2014 WASDE & Crop Dates | AGSIST","description":"Complete USDA agricultural report calendar with market impact ratings for corn and soybean producers. WASDE, Crop Progress, Prospective Plantings, Grain Stocks, Acreage, and Export Sales dates for 2025\u20132026.","dateModified":"2026-06-08","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"USDA Calendar","item":"https://agsist.com/usda-calendar"}]}},
       {"@type":"FAQPage","mainEntity":[
-        {"@type":"Question","name":"When is the WASDE report released?","acceptedAnswer":{"@type":"Answer","text":"The USDA WASDE report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time (11:00 AM ET during daylight saving months). It frequently moves corn and soybean futures 10\u201340 cents at release."}},
+        {"@type":"Question","name":"When is the WASDE report released?","acceptedAnswer":{"@type":"Answer","text":"The USDA WASDE report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time (11:00 AM Central). It frequently moves corn and soybean futures 10\u201340 cents at release."}},
         {"@type":"Question","name":"When is the USDA Export Sales report released?","acceptedAnswer":{"@type":"Answer","text":"The USDA Export Sales report is released every Thursday at 8:30 AM Eastern Time by the USDA Foreign Agricultural Service. It covers weekly net export sales of corn, soybeans, and wheat."}},
         {"@type":"Question","name":"When is the Prospective Plantings report?","acceptedAnswer":{"@type":"Answer","text":"The USDA Prospective Plantings report is typically released in late March \u2014 usually the last business day of the month. It surveys farmers on intended corn, soybean, and wheat planting acres and is one of the most market-moving reports of the year."}},
         {"@type":"Question","name":"When is Crop Progress released?","acceptedAnswer":{"@type":"Answer","text":"USDA Crop Progress is released every Monday at 4:00 PM Eastern Time during the growing season, from early April through late November. It provides weekly condition ratings and planting and harvest progress percentages by state."}}
@@ -108,6 +108,7 @@
     .cal-rname{font-size:.88rem;font-weight:700;color:var(--text);}
     .cal-tag{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:.1rem .38rem;border-radius:3px;white-space:nowrap;flex-shrink:0;}
     .tag-wasde   {background:rgba(248,113,113,.12);color:#f87171;}
+    .tag-intl    {background:rgba(167,139,250,.14);color:#a78bfa;}
     .tag-croprog {background:rgba(74,222,128,.12); color:#4ade80;}
     .tag-plantings{background:rgba(218,165,32,.12);color:var(--gold);}
     .tag-stocks  {background:rgba(96,165,250,.12); color:#60a5fa;}
@@ -145,6 +146,16 @@
     @media(max-width:380px){.cal-hero{padding:1.5rem .65rem;}.cal-h1{font-size:1.6rem;}.cal-cd-num{font-size:2.4rem;}.cal-date{min-width:40px;padding:.3rem .35rem;}.cal-day{font-size:1rem;}.cal-row{padding:.5rem .6rem;gap:.5rem;}}
     @media(prefers-reduced-motion:reduce){.live-dot{animation:none;}.cal-row,.cal-filter,.cal-exp-card{transition:none;}}
     @media print{.cal-hero,#site-header,#site-footer,.cal-nav,.cal-legend{display:none!important;}.cal-month{border:1px solid #ccc;break-inside:avoid;margin-bottom:.5rem;}body{color:#000;background:#fff;}.cal-row.is-past{opacity:1;}}
+  
+    .cal-cd-cal{display:inline-block;margin-top:.7rem;font-size:.72rem;font-weight:700;color:var(--gold);text-decoration:none;border:1px solid rgba(218,165,32,.4);border-radius:6px;padding:.4rem .7rem;min-height:36px;}
+    .cal-cd-cal:hover{background:rgba(218,165,32,.12);text-decoration:none;}
+    .cal-related{font-size:.78rem;color:var(--text-muted);margin:1.5rem 0 .5rem;line-height:1.7;}
+    .cal-related a{color:var(--gold);font-weight:700;text-decoration:none;}
+    .cal-related a:hover{text-decoration:underline;}
+      .cal-next-pill{display:inline-block;font-family:'Oswald',sans-serif;font-size:.54rem;font-weight:700;letter-spacing:.08em;color:var(--gold);border:1px solid rgba(218,165,32,.5);border-radius:3px;padding:.05rem .3rem;margin-left:.35rem;vertical-align:middle;}
+    .cal-empty{text-align:center;color:var(--text-muted);font-size:.85rem;padding:2.5rem 1rem;line-height:1.7;}
+    .cal-empty-btn{background:none;border:1px solid var(--border);color:var(--gold);border-radius:6px;padding:.35rem .7rem;font:inherit;font-size:.78rem;cursor:pointer;min-height:36px;margin-top:.4rem;}
+    .cal-empty-btn:hover{background:rgba(218,165,32,.1);}
   </style>
 </head>
 <body>
@@ -156,14 +167,15 @@
       <div>
         <div class="cal-eyebrow">&#128197; USDA REPORT SCHEDULE</div>
         <h1 class="cal-h1">USDA Report <span>Calendar</span></h1>
-        <p class="cal-sub">Every major USDA report date &mdash; WASDE, Crop Progress, Export Sales, Prospective Plantings, and Grain Stocks &mdash; with market impact ratings for corn, soybean, and grain producers.</p>
+        <p class="cal-sub">Every major USDA report date &mdash; WASDE, Crop Progress, Export Sales, Prospective Plantings, and Grain Stocks &mdash; plus market-moving international releases from Brazil (CONAB) and Canada (StatCan), with market impact ratings for corn, soybean, and grain producers.</p>
       </div>
-      <div class="cal-countdown">
+      <div class="cal-countdown" aria-live="polite">
         <div class="cal-cd-label"><span class="live-dot"></span> NEXT USDA REPORT</div>
         <div class="cal-cd-name" id="next-name">&mdash;</div>
         <div class="cal-cd-date" id="next-date">&mdash;</div>
         <div class="cal-cd-num" id="next-num">&mdash;</div>
         <div class="cal-cd-unit" id="next-unit"></div>
+        <a class="cal-cd-cal" id="next-cal" href="#" target="_blank" rel="noopener" hidden>&#128197; Add to Google Calendar</a>
       </div>
     </div>
   </section>
@@ -180,7 +192,8 @@
         <button class="cal-filter" onclick="filterReports('plantings',this)">Plantings</button>
         <button class="cal-filter" onclick="filterReports('stocks',this)">Grain Stocks</button>
         <button class="cal-filter" onclick="filterReports('outlook',this)">Outlook</button>
-        <button class="cal-filter" id="toggle-past" onclick="togglePast(this)">Hide Past</button>
+        <button class="cal-filter" onclick="filterReports('intl',this)">International</button>
+        <button class="cal-filter active" id="toggle-past" onclick="togglePast(this)" aria-pressed="true">Show Past</button>
       </div>
 
       <div class="cal-legend" aria-label="Report type legend">
@@ -189,9 +202,11 @@
         <div class="leg-item"><div class="leg-dot" style="background:#e6b042"></div>Plantings / Acreage</div>
         <div class="leg-item"><div class="leg-dot" style="background:#3b82f6"></div>Grain Stocks</div>
         <div class="leg-item"><div class="leg-dot" style="background:#06b6d4"></div>Outlook Forum</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#a78bfa"></div>International (CONAB / StatCan)</div>
       </div>
 
       <div id="cal-container"></div>
+      <div class="cal-related">Plan around the data: <a href="/daily">Daily Briefing</a> &middot; <a href="/markets">Live Markets</a> &middot; <a href="/fast-facts">Fast Facts</a> &middot; <a href="/cash-bids">Cash Bids</a></div>
 
       <div class="cal-section-head">About These Reports</div>
       <div class="cal-exp-grid">
@@ -240,7 +255,7 @@
       <div class="cal-foot">
         Release times are approximate. USDA may shift dates around holidays.
         Always verify at <a href="https://www.usda.gov/media/agency-reports" target="_blank" rel="noopener">usda.gov</a>.
-        2026 dates marked &ldquo;est.&rdquo; are estimates based on prior-year patterns. All times Eastern.
+        Dates verified against issuing-agency calendars. All times Eastern unless noted.<br>Sources: <a href="https://www.usda.gov/oce/commodity-markets/wasde" target="_blank" rel="noopener">USDA WASDE</a> &middot; <a href="https://www.nass.usda.gov/Publications/Calendar/" target="_blank" rel="noopener">NASS</a> &middot; <a href="https://www.gov.br/conab" target="_blank" rel="noopener">CONAB</a> &middot; <a href="https://www150.statcan.gc.ca/n1/dai-quo/cal1-eng.htm" target="_blank" rel="noopener">StatCan</a>.
       </div>
     </div>
   </main>
@@ -273,31 +288,34 @@
     {date:'2025-11-12',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
     {date:'2025-11-12',name:'Crop Production',type:'supply',time:'12:00 PM ET',desc:'November crop production estimates'},
     {date:'2025-12-10',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
-    {date:'2026-01-09',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates \u2014 est.'},
-    {date:'2026-01-09',name:'Crop Production Annual',type:'supply',time:'12:00 PM ET',desc:'Final 2025 crop production estimates \u2014 est.'},
-    {date:'2026-01-16',name:'Grain Stocks (Dec 1)',type:'stocks',time:'12:00 PM ET',desc:'Quarterly grain stocks \u2014 est.'},
-    {date:'2026-02-11',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates \u2014 est.'},
-    {date:'2026-02-19',name:'USDA Ag Outlook Forum',type:'outlook',time:'All Day',desc:"USDA's first new-crop projections for 2026/27 marketing year \u2014 est."},
-    {date:'2026-03-11',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates \u2014 est.'},
-    {date:'2026-03-31',name:'Prospective Plantings',type:'plantings',time:'11:00 AM ET',desc:'Farmer survey of intended 2026 corn, soybean, and wheat acres'},
-    {date:'2026-03-31',name:'Grain Stocks (Mar 1)',type:'stocks',time:'11:00 AM ET',desc:'Quarterly grain stocks report'},
-    {date:'2026-04-09',name:'WASDE Report',type:'wasde',time:'11:00 AM ET',desc:'Monthly world supply/demand estimates'},
-    {date:'2026-04-09',name:'Crop Production',type:'supply',time:'11:00 AM ET',desc:'April crop production update'},
-    {date:'2026-05-12',name:'WASDE Report',type:'wasde',time:'11:00 AM ET',desc:"First 2026/27 new-crop supply/demand projections \u2014 est."},
-    {date:'2026-06-10',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates \u2014 est.'},
-    {date:'2026-06-30',name:'Acreage Report',type:'plantings',time:'12:00 PM ET',desc:'Actual planted acreage for 2026 crops \u2014 est.'},
-    {date:'2026-06-30',name:'Grain Stocks (Jun 1)',type:'stocks',time:'12:00 PM ET',desc:'Quarterly grain stocks \u2014 est.'},
-    {date:'2026-07-10',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates \u2014 est.'},
-    {date:'2026-08-12',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates \u2014 first 2026 corn/soy yield survey \u2014 est.'},
-    {date:'2026-08-12',name:'Crop Production',type:'supply',time:'12:00 PM ET',desc:'First objective yield estimates for 2026 corn and soybeans \u2014 est.'},
-    {date:'2026-09-11',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates \u2014 est.'},
-    {date:'2026-09-30',name:'Grain Stocks (Sep 1)',type:'stocks',time:'12:00 PM ET',desc:'Quarterly grain stocks \u2014 critical for 2026 carry-out \u2014 est.'},
-    {date:'2026-09-30',name:'Small Grains Summary',type:'supply',time:'12:00 PM ET',desc:'Final 2026 winter wheat and oat production \u2014 est.'},
-    {date:'2026-10-09',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates \u2014 est.'},
-    {date:'2026-10-09',name:'Crop Production',type:'supply',time:'12:00 PM ET',desc:'October 2026 corn and soybean production estimates \u2014 est.'},
-    {date:'2026-11-10',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates \u2014 est.'},
-    {date:'2026-11-10',name:'Crop Production',type:'supply',time:'12:00 PM ET',desc:'November 2026 crop production estimates \u2014 est.'},
-    {date:'2026-12-10',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates \u2014 est.'},
+    {date:'2026-01-12',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2026-01-12',name:'Crop Production Annual',type:'supply',time:'12:00 PM ET',desc:'Final 2025 crop production estimates'},
+    {date:'2026-01-12',name:'Grain Stocks (Dec 1)',type:'stocks',time:'12:00 PM ET',desc:'Quarterly grain stocks \u2014 corn, soybeans, wheat'},
+    {date:'2026-02-10',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2026-02-19',name:'USDA Ag Outlook Forum',type:'outlook',time:'All Day',desc:"USDA's first new-crop projections for 2026/27 marketing year"},
+    {date:'2026-03-10',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2026-03-31',name:'Prospective Plantings',type:'plantings',time:'12:00 PM ET',desc:'Farmer survey of intended 2026 corn, soybean, and wheat acres'},
+    {date:'2026-03-31',name:'Grain Stocks (Mar 1)',type:'stocks',time:'12:00 PM ET',desc:'Quarterly grain stocks report'},
+    {date:'2026-04-09',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2026-04-09',name:'Crop Production',type:'supply',time:'12:00 PM ET',desc:'April crop production update'},
+    {date:'2026-05-12',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:"First 2026/27 new-crop supply/demand projections"},
+    {date:'2026-06-11',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2026-06-30',name:'Acreage Report',type:'plantings',time:'12:00 PM ET',desc:'Actual planted acreage for 2026 crops'},
+    {date:'2026-06-30',name:'Grain Stocks (Jun 1)',type:'stocks',time:'12:00 PM ET',desc:'Quarterly grain stocks'},
+    {date:'2026-07-10',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2026-08-12',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates \u2014 first 2026 corn/soy yield survey'},
+    {date:'2026-08-12',name:'Crop Production',type:'supply',time:'12:00 PM ET',desc:'First objective yield estimates for 2026 corn and soybeans'},
+    {date:'2026-09-11',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2026-09-30',name:'Grain Stocks (Sep 1)',type:'stocks',time:'12:00 PM ET',desc:'Quarterly grain stocks \u2014 critical for 2026 carry-out'},
+    {date:'2026-09-30',name:'Small Grains Summary',type:'supply',time:'12:00 PM ET',desc:'Final 2026 winter wheat and oat production'},
+    {date:'2026-10-09',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2026-10-09',name:'Crop Production',type:'supply',time:'12:00 PM ET',desc:'October 2026 corn and soybean production estimates'},
+    {date:'2026-11-10',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2026-11-10',name:'Crop Production',type:'supply',time:'12:00 PM ET',desc:'November 2026 crop production estimates'},
+    {date:'2026-12-10',name:'WASDE Report',type:'wasde',time:'12:00 PM ET',desc:'Monthly world supply/demand estimates'},
+    {date:'2026-09-15',name:'CONAB Grain Survey (Brazil)',type:'intl',time:'All Day',desc:'Final 2025/26 Brazilian grain estimate \u2014 corn & soybeans \u2014 CONAB'},
+    {date:'2026-10-15',name:'CONAB Grain Survey (Brazil)',type:'intl',time:'All Day',desc:'First 2026/27 Brazilian crop estimate \u2014 new-crop soybeans & corn \u2014 CONAB'},
+    {date:'2026-12-04',name:'StatCan Crop Production (Canada)',type:'intl',time:'8:30 AM ET',desc:'Final 2026 Canadian production \u2014 wheat, canola, barley \u2014 Statistics Canada'},
   ];
 
   (function(){
@@ -318,7 +336,7 @@
       while(cur<=end){
         const iso=cur.toISOString().slice(0,10);
         if(!REPORTS.find(r=>r.date===iso&&r.type==='croprog')){
-          REPORTS.push({date:iso,name:'Crop Progress Report',type:'croprog',time:'4:00 PM ET',desc:'Weekly condition ratings and planting/harvest progress by state'+(yr===2026?' \u2014 est.':'')});
+          REPORTS.push({date:iso,name:'Crop Progress Report',type:'croprog',time:'4:00 PM ET',desc:'Weekly condition ratings and planting/harvest progress by state'});
         }
         cur.setDate(cur.getDate()+7);
       }
@@ -328,6 +346,22 @@
   const today=new Date(); today.setHours(0,0,0,0);
   const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function calEvent(n,pp){try{if(window.gtag)gtag('event',n,pp||{});}catch(e){}}
+  function etOffset(ds){var y=parseInt(ds.slice(0,4),10);function nthSun(mo,nn){var d=new Date(Date.UTC(y,mo,1));var add=(7-d.getUTCDay())%7;return 1+add+(nn-1)*7;}var st=Date.UTC(y,2,nthSun(2,2)),en=Date.UTC(y,10,nthSun(10,1)),t=Date.UTC(y,parseInt(ds.slice(5,7),10)-1,parseInt(ds.slice(8,10),10));return(t>=st&&t<en)?'-04:00':'-05:00';}
+  function parseTime24(ts){var m=String(ts).match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);if(!m)return null;var h=parseInt(m[1],10);if(/PM/i.test(m[3])&&h!==12)h+=12;if(/AM/i.test(m[3])&&h===12)h=0;return(h<10?'0'+h:''+h)+':'+m[2]+':00';}
+  function isoStart(r){var t=parseTime24(r.time);return t?r.date+'T'+t+etOffset(r.date):r.date;}
+  function gcalDates(r){var t=parseTime24(r.time);if(!t){var d0=r.date.replace(/-/g,'');return d0+'/'+d0;}var st=new Date(r.date+'T'+t+etOffset(r.date)),en=new Date(st.getTime()+3600000);function f(d){return d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');}return f(st)+'/'+f(en);}
+  function fmtCountdown(target){
+    if(!target||isNaN(target.getTime()))return{num:'\u2014',unit:''};
+    var d=target.getTime()-Date.now();
+    if(d<=0)return{num:'NOW',unit:'live'};
+    function p(n){return(n<10?'0':'')+n;}
+    if(d>=86400000){var days=Math.round(d/86400000);return{num:days,unit:(days===1?'day':'days')+' away'};}
+    var hrs=Math.floor(d/3600000),mins=Math.floor((d%3600000)/60000),secs=Math.floor((d%60000)/1000);
+    if(d>=3600000)return{num:hrs+':'+p(mins),unit:'hrs : min'};
+    return{num:mins+':'+p(secs),unit:'min : sec'};
+  }
+  function buildEventSchema(){var ti=today.toISOString().slice(0,10);var ups=REPORTS.filter(function(r){return r.type!=='export'&&r.type!=='croprog'&&r.date>=ti;}).sort(function(a,b){return a.date.localeCompare(b.date);}).slice(0,24);if(!ups.length)return;var nodes=ups.map(function(r){var il=r.type==='intl';var org=il?(/CONAB/.test(r.name)?{name:'CONAB',url:'https://www.gov.br/conab/'}:{name:'Statistics Canada',url:'https://www.statcan.gc.ca/'}):{name:'USDA',url:'https://www.usda.gov/'};return{"@type":"Event",name:il?r.name:r.name+' (USDA)',startDate:isoStart(r),eventAttendanceMode:'https://schema.org/OnlineEventAttendanceMode',eventStatus:'https://schema.org/EventScheduled',description:r.desc||'',organizer:{"@type":"GovernmentOrganization",name:org.name,url:org.url},location:{"@type":"VirtualLocation",url:'https://agsist.com/usda-calendar'}};});var sc=document.createElement('script');sc.type='application/ld+json';sc.textContent=JSON.stringify({"@context":"https://schema.org","@graph":nodes});document.head.appendChild(sc);}
 
   function getImpact(r){
     if(r.name.includes('Acreage'))        return{level:'extreme',score:5,label:'EXTREME'};
@@ -342,6 +376,7 @@
       export:   {level:'moderate',score:3,label:'MODERATE'},
       croprog:  {level:'low',     score:2,label:'LOW-MOD'},
       outlook:  {level:'low',     score:2,label:'LOW-MOD'},
+      intl:     {level:'high',    score:4,label:'HIGH'},
       census:   {level:'low',     score:1,label:'LOW'},
     };
     return MAP[r.type]||{level:'moderate',score:3,label:'MOD'};
@@ -358,7 +393,8 @@
     return g;
   }
 
-  let showPast=true, activeFilter='all';
+  let showPast=false, activeFilter='all';
+  var nextTarget=null;
 
   function renderCalendar(){
     const container=document.getElementById('cal-container');
@@ -373,12 +409,17 @@
       const d=new Date(next.date+'T12:00:00');
       const diff=Math.ceil((d-today)/86400000);
       document.getElementById('next-name').textContent=next.name;
-      document.getElementById('next-date').textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})+' \u00b7 '+next.time;
-      document.getElementById('next-num').textContent=diff===0?'TODAY':diff;
-      document.getElementById('next-unit').textContent=diff===0?'':diff===1?'day away':'days away';
+      var _ti=isoStart(next);
+      nextTarget=new Date(/T/.test(_ti)?_ti:next.date+'T12:00:00-05:00');
+      var _lt=parseTime24(next.time)?' \u00b7 '+new Date(_ti).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})+' your time':'';
+      document.getElementById('next-date').textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})+' \u00b7 '+next.time+_lt;
+      var _cd=fmtCountdown(nextTarget);
+      document.getElementById('next-num').textContent=_cd.num;
+      document.getElementById('next-unit').textContent=_cd.unit;
+      var cal=document.getElementById('next-cal');if(cal){cal.href='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('USDA: '+next.name)+'&dates='+gcalDates(next)+'&details='+encodeURIComponent((next.desc||'')+' \u2014 via AGSIST')+'&location=USDA';cal.hidden=false;cal.onclick=function(){calEvent('add_to_calendar',{report:next.name});};}
     }
 
-    const tagLabels={wasde:'WASDE',croprog:'Crop Progress',plantings:'Plantings',stocks:'Grain Stocks',census:'Census',supply:'Crop Production',outlook:'Outlook',export:'Export Sales'};
+    const tagLabels={wasde:'WASDE',croprog:'Crop Progress',plantings:'Plantings',stocks:'Grain Stocks',census:'Census',supply:'Crop Production',outlook:'Outlook',export:'Export Sales',intl:'International'};
     let html='';
     Object.keys(groups).sort().forEach(key=>{
       const[yr,mo]=key.split('-').map(Number);
@@ -405,12 +446,12 @@
   <div class="cal-info">
     <div class="cal-name-row">
       <span class="cal-rname">${r.name}</span>
-      <span class="cal-tag tag-${r.type}">${tagLabels[r.type]||r.type}</span>
+      <span class="cal-tag tag-${r.type}">${tagLabels[r.type]||r.type}</span>${isNext?'<span class="cal-next-pill">&#9656; NEXT</span>':''}
     </div>
     <div class="cal-meta-row">
       <span class="cal-time">&#128336; ${r.time}</span>
       <div class="cal-impact">
-        <div class="imp-dots">${mkDots(r)}</div>
+        <div class="imp-dots" aria-hidden="true">${mkDots(r)}</div>
         <span class="imp-lbl ${imp.level}">${imp.label}</span>
       </div>
     </div>
@@ -420,13 +461,15 @@
       });
       html+='</div>';
     });
+    if(!html){html='<div class="cal-empty">No upcoming '+(activeFilter==='all'?'reports':((tagLabels[activeFilter]||activeFilter)+' reports'))+'. <button type="button" class="cal-empty-btn" onclick="document.getElementById(\'toggle-past\').click()">Show past reports</button></div>';}
     container.innerHTML=html;
   }
 
   function filterReports(type,btn){
     activeFilter=type;
-    document.querySelectorAll('.cal-filter:not(#toggle-past)').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
+    document.querySelectorAll('.cal-filter:not(#toggle-past)').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false');});
+    btn.classList.add('active');btn.setAttribute('aria-pressed','true');
+    calEvent('calendar_filter',{type:type});
     renderCalendar();
   }
 
@@ -434,10 +477,16 @@
     showPast=!showPast;
     btn.textContent=showPast?'Hide Past':'Show Past';
     btn.classList.toggle('active',!showPast);
+    btn.setAttribute('aria-pressed',!showPast?'true':'false');
+    calEvent('calendar_toggle_past',{showing_past:showPast});
     renderCalendar();
   }
 
+  document.querySelectorAll('.cal-filter:not(#toggle-past)').forEach(function(b){b.setAttribute('aria-pressed',b.classList.contains('active')?'true':'false');});
+  buildEventSchema();
   renderCalendar();
+  function tickCountdown(){if(!nextTarget)return;if(Date.now()>=nextTarget.getTime()){renderCalendar();return;}var c=fmtCountdown(nextTarget);var nn=document.getElementById('next-num'),nu=document.getElementById('next-unit');if(nn)nn.textContent=c.num;if(nu)nu.textContent=c.unit;}
+  setInterval(tickCountdown,1000);
   </script>
 </body>
 </html>
