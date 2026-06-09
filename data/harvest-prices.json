@@ -1,0 +1,49 @@
+{
+  "crop_year": 2026,
+  "updated": "2026-06-08",
+  "source": "CBOT futures settlements averaged per RMA Commodity Exchange Price Provisions",
+  "commodities": [
+    {
+      "label": "Corn",
+      "contract": "Dec '26",
+      "exchange": "CBOT",
+      "projected": {
+        "status": "final",
+        "price": 4.62,
+        "window": "February",
+        "series": [],
+        "days_total": 19
+      },
+      "harvest": {
+        "status": "pending",
+        "price": null,
+        "running_avg": null,
+        "window": "October",
+        "series": [],
+        "days_counted": 0,
+        "days_total": 23
+      }
+    },
+    {
+      "label": "Soybeans",
+      "contract": "Nov '26",
+      "exchange": "CBOT",
+      "projected": {
+        "status": "final",
+        "price": 11.09,
+        "window": "February",
+        "series": [],
+        "days_total": 19
+      },
+      "harvest": {
+        "status": "pending",
+        "price": null,
+        "running_avg": null,
+        "window": "October",
+        "series": [],
+        "days_counted": 0,
+        "days_total": 23
+      }
+    }
+  ]
+}

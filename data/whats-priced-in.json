@@ -1,0 +1,29 @@
+{
+  "updated": "2026-06-08",
+  "sample": true,
+  "upcoming": {
+    "report": "WASDE",
+    "date": "2026-06-11",
+    "time": "12:00 ET",
+    "commodity": "Corn",
+    "metric": "2026/27 US corn ending stocks",
+    "expectation": "The trade goes in looking for ending stocks near <b>1.80 bil bu</b> &mdash; comfortable but not burdensome. A print under the range is the bullish surprise; a build above it is bearish.",
+    "estimate_low": 1.62,
+    "estimate_high": 1.98,
+    "estimate_avg": 1.80,
+    "unit": "bil bu",
+    "implied_odds": [
+      {"label": "Below 1.65 (bullish)", "pct": 24},
+      {"label": "In line 1.65 to 1.92", "pct": 51},
+      {"label": "Above 1.92 (bearish)", "pct": 25}
+    ],
+    "positioning": "managed money holding a modest net short into the report",
+    "bullish_threshold": "below ~1.65 bil bu",
+    "bearish_threshold": "above ~1.92 bil bu"
+  },
+  "history": [
+    {"date": "2026-05-12", "report": "WASDE", "metric": "2026/27 corn ending stocks", "expected": 1.85, "actual": 1.80, "unit": "bil bu", "surprise": "bullish", "reaction": "Dec corn +7c"},
+    {"date": "2026-04-09", "report": "WASDE", "metric": "2025/26 corn ending stocks", "expected": 1.47, "actual": 1.47, "unit": "bil bu", "surprise": "in line", "reaction": "Dec corn +1c"},
+    {"date": "2026-03-31", "report": "Prospective Plantings", "metric": "corn acres", "expected": 94.4, "actual": 95.3, "unit": "mil ac", "surprise": "bearish", "reaction": "Dec corn -14c"}
+  ]
+}

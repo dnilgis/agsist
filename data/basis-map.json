@@ -1,0 +1,78 @@
+{
+  "updated": "2026-06-08",
+  "sample": true,
+  "commodities": {
+    "corn": {
+      "futures_ref": "Jul '26 CBOT",
+      "states": [
+        {"state": "NC", "name": "North Carolina", "basis": 0.35, "n": 9},
+        {"state": "GA", "name": "Georgia", "basis": 0.28, "n": 7},
+        {"state": "TX", "name": "Texas", "basis": 0.18, "n": 12},
+        {"state": "IL", "name": "Illinois", "basis": 0.04, "n": 38},
+        {"state": "OH", "name": "Ohio", "basis": -0.02, "n": 21},
+        {"state": "IN", "name": "Indiana", "basis": -0.06, "n": 24},
+        {"state": "IA", "name": "Iowa", "basis": -0.14, "n": 44},
+        {"state": "MN", "name": "Minnesota", "basis": -0.22, "n": 31},
+        {"state": "WI", "name": "Wisconsin", "basis": -0.26, "n": 16},
+        {"state": "NE", "name": "Nebraska", "basis": -0.31, "n": 28},
+        {"state": "SD", "name": "South Dakota", "basis": -0.39, "n": 19},
+        {"state": "ND", "name": "North Dakota", "basis": -0.52, "n": 14},
+        {"state": "KS", "name": "Kansas", "basis": -0.34, "n": 22}
+      ],
+      "locations": [
+        {"name": "Faison, NC", "basis": 0.42},
+        {"name": "Cordele, GA", "basis": 0.34},
+        {"name": "Amarillo, TX", "basis": 0.22},
+        {"name": "Morris, IL (river)", "basis": 0.12},
+        {"name": "Cedar Rapids, IA", "basis": -0.05},
+        {"name": "Mason City, IA", "basis": -0.18},
+        {"name": "Marshall, MN", "basis": -0.28},
+        {"name": "Aberdeen, SD", "basis": -0.41},
+        {"name": "Jamestown, ND", "basis": -0.55},
+        {"name": "Colby, KS", "basis": -0.46}
+      ]
+    },
+    "soybeans": {
+      "futures_ref": "Jul '26 CBOT",
+      "states": [
+        {"state": "NC", "name": "North Carolina", "basis": 0.15, "n": 8},
+        {"state": "IL", "name": "Illinois", "basis": -0.08, "n": 36},
+        {"state": "IN", "name": "Indiana", "basis": -0.12, "n": 22},
+        {"state": "IA", "name": "Iowa", "basis": -0.24, "n": 41},
+        {"state": "OH", "name": "Ohio", "basis": -0.14, "n": 19},
+        {"state": "MN", "name": "Minnesota", "basis": -0.36, "n": 29},
+        {"state": "NE", "name": "Nebraska", "basis": -0.42, "n": 24},
+        {"state": "SD", "name": "South Dakota", "basis": -0.55, "n": 17},
+        {"state": "ND", "name": "North Dakota", "basis": -0.78, "n": 13},
+        {"state": "KS", "name": "Kansas", "basis": -0.40, "n": 18}
+      ],
+      "locations": [
+        {"name": "Fayetteville, NC", "basis": 0.20},
+        {"name": "Decatur, IL (crush)", "basis": 0.02},
+        {"name": "Lafayette, IN", "basis": -0.10},
+        {"name": "Cedar Rapids, IA", "basis": -0.18},
+        {"name": "Mankato, MN", "basis": -0.40},
+        {"name": "Aberdeen, SD", "basis": -0.58},
+        {"name": "Jamestown, ND", "basis": -0.82}
+      ]
+    },
+    "wheat": {
+      "futures_ref": "Jul '26 KC HRW",
+      "states": [
+        {"state": "KS", "name": "Kansas", "basis": -0.20, "n": 26},
+        {"state": "OK", "name": "Oklahoma", "basis": -0.28, "n": 14},
+        {"state": "TX", "name": "Texas", "basis": -0.15, "n": 11},
+        {"state": "NE", "name": "Nebraska", "basis": -0.34, "n": 9},
+        {"state": "CO", "name": "Colorado", "basis": -0.42, "n": 8},
+        {"state": "MT", "name": "Montana", "basis": -0.58, "n": 12},
+        {"state": "ND", "name": "North Dakota", "basis": -0.50, "n": 15}
+      ],
+      "locations": [
+        {"name": "Hutchinson, KS", "basis": -0.12},
+        {"name": "Enid, OK", "basis": -0.24},
+        {"name": "Amarillo, TX", "basis": -0.10},
+        {"name": "Great Falls, MT", "basis": -0.62}
+      ]
+    }
+  }
+}
