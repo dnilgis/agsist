@@ -3,10 +3,14 @@
 fetch_bids.py — Barchart OnDemand getGrainBids fetcher for AGSIST
 Runs via GitHub Actions every 30 min during market hours.
 Fetches cash grain bids for a national grid of ZIP codes,
-deduplicates, and writes /data/bids.json for the homepage preview card.
+deduplicates, and writes /data/bids.json for the homepage preview card
+and the National Basis map (build_basis_map.py reads this file).
 
 The full cash-bids.html page calls Barchart directly (client-side)
-for any ZIP — this file only powers the homepage preview widget.
+for any ZIP — this file only powers the homepage preview widget and
+the basis map. Its parsing MUST stay in lockstep with cash-bids.html's
+flatten()/classify()/unit-normalization, because that page is the
+ground-truth reader of the live response shape.
 
 Environment:
   BARCHART_API_KEY — OnDemand API key (GitHub Secret)
@@ -16,7 +20,6 @@ import json
 import os
 import sys
 import time
-import math
 from datetime import datetime, timezone
 from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
@@ -93,11 +96,16 @@ ZIP_GRID = [
 
 
 def fetch_bids_for_zip(zip_code, max_distance=MAX_DISTANCE):
-    """Fetch grain bids for a single ZIP code."""
+    """Fetch grain bids for a single ZIP code.
+
+    Mirrors cash-bids.html: passes getAllBids=1 so Barchart returns the
+    full per-elevator payload (without it the response shape is thinner).
+    """
     params = urlencode({
         "apikey": API_KEY,
         "zipCode": zip_code,
         "maxDistance": max_distance,
+        "getAllBids": 1,
     })
     url = f"{BASE_URL}?{params}"
     try:
@@ -110,65 +118,151 @@ def fetch_bids_for_zip(zip_code, max_distance=MAX_DISTANCE):
         return None
 
 
-def normalize_bid(bid, source_zip):
-    """Normalize a single bid record from the Barchart response."""
-    location = bid.get("location", {})
-    if isinstance(location, str):
-        location = {}
-    return {
-        "id": bid.get("id", ""),
-        "facility": location.get("name", bid.get("facility", bid.get("locationName", "Unknown"))),
-        "city": location.get("city", bid.get("city", "")),
-        "state": location.get("state", bid.get("state", "")),
-        "zip": location.get("zip", bid.get("zip", "")),
-        "lat": _float(location.get("lat", bid.get("latitude"))),
-        "lng": _float(location.get("lng", bid.get("longitude"))),
-        "phone": location.get("phone", bid.get("phone", "")),
-        "distance": _float(bid.get("distance", location.get("distance"))),
-        "commodity": bid.get("commodity", bid.get("commodityName", "")),
-        "symbol": bid.get("symbol", bid.get("basisSymbol", "")),
-        "cashPrice": _float(bid.get("cashPrice")),
-        "basis": _float(bid.get("basis")),
-        "notes": bid.get("notes", ""),
-        "deliveryStart": bid.get("delivery_start", bid.get("deliveryStart", "")),
-        "deliveryEnd": bid.get("delivery_end", bid.get("deliveryEnd", "")),
-        "deliveryMonth": bid.get("deliveryMonth", ""),
-        "sourceZip": source_zip,
-    }
-
-
 def _float(val):
     if val is None:
         return None
     try:
-        return round(float(val), 4)
+        return float(val)
     except (ValueError, TypeError):
         return None
 
 
-def deduplicate(bids):
-    """Deduplicate by facility + commodity + delivery. Keep closest."""
-    seen = {}
-    for b in bids:
-        key = f"{b['facility']}|{b['commodity']}|{b['deliveryStart']}|{b['deliveryEnd']}|{b['deliveryMonth']}"
-        if key not in seen or (b["distance"] or 999) < (seen[key]["distance"] or 999):
-            seen[key] = b
-    return list(seen.values())
+def _norm_cash(raw):
+    """Normalize cash price to dollars/bu.
+    Barchart sometimes returns cents (e.g. 370) — mirror cash-bids.html ppu():
+    values >30 are treated as cents."""
+    v = _float(raw)
+    if v is None:
+        return None
+    if v > 30:
+        v = v / 100.0
+    return round(v, 4)
+
+
+def _norm_basis(raw):
+    """Normalize basis to dollars/bu.
+    Mirror cash-bids.html basisCents() inverted: the feed may send basis in
+    cents (e.g. -56) or dollars (e.g. -0.56). basisCents() treats |b|>=5 as
+    already-cents, so anything with |b|>=5 is cents → divide by 100. The
+    basis map (build_basis_map.py) and fmtB() both expect DOLLARS."""
+    v = _float(raw)
+    if v is None:
+        return None
+    if abs(v) >= 5:
+        v = v / 100.0
+    return round(v, 4)
 
 
 def classify_commodity(name):
+    """Identical logic to cash-bids.html classify()."""
     n = (name or "").lower()
     if "corn" in n:
         return "corn"
     if "soy" in n or "bean" in n:
         return "soybeans"
-    if "wheat" in n or "hrw" in n or "srw" in n or "hrsw" in n:
+    if "wheat" in n or "hrw" in n or "srw" in n or "hrs" in n:
         return "wheat"
     if "oat" in n:
         return "oats"
     if "sorghum" in n or "milo" in n:
         return "sorghum"
     return "other"
+
+
+def _commodity_name(obj):
+    return (obj.get("commodity")
+            or obj.get("commodity_display_name")
+            or obj.get("commodityName")
+            or "")
+
+
+def flatten(data, source_zip):
+    """Flatten the Barchart response into per-bid records.
+
+    Ground-truth port of cash-bids.html flatten(): handles BOTH shapes —
+    (1) per-elevator objects carrying a `bids` array, and
+    (2) already-flat bid objects — using the exact same field fallbacks.
+    Keeps a bid only if it has a cash price OR a basis (matching the page).
+    """
+    flat = []
+    raw = (data.get("results")
+           or data.get("bids")
+           or data.get("data")
+           or [])
+    if not isinstance(raw, list):
+        return flat
+
+    for item in raw:
+        if not isinstance(item, dict):
+            continue
+        nested = item.get("bids")
+        if isinstance(nested, list):
+            fac = item.get("company") or item.get("name") or item.get("locationName") or "Unknown"
+            loc = item.get("location")
+            branch = loc if isinstance(loc, str) else ""
+            for bid in nested:
+                if not isinstance(bid, dict):
+                    continue
+                cname = _commodity_name(bid)
+                flat.append({
+                    "facility": fac,
+                    "branch": branch,
+                    "city": item.get("city") or bid.get("city") or "",
+                    "state": (item.get("state") or bid.get("state") or "").upper(),
+                    "zip": item.get("zip") or bid.get("zip") or "",
+                    "distance": _float(item.get("distance") if item.get("distance") is not None else bid.get("distance")),
+                    "phone": item.get("phone") or bid.get("phone") or "",
+                    "commodity": cname,
+                    "symbol": bid.get("symbol") or bid.get("basisSymbol") or "",
+                    "cashPrice": _norm_cash(bid.get("cashprice", bid.get("cashPrice"))),
+                    "basis": _norm_basis(bid.get("basis")),
+                    "notes": bid.get("notes", ""),
+                    "deliveryMonth": bid.get("deliveryMonth") or bid.get("delivery_month") or "",
+                    "deliveryStart": bid.get("deliveryStart") or bid.get("delivery_start") or "",
+                    "deliveryEnd": bid.get("deliveryEnd") or bid.get("delivery_end") or "",
+                    "category": classify_commodity(cname),
+                    "sourceZip": source_zip,
+                })
+        elif (item.get("commodity") or item.get("commodityName")
+              or item.get("cashprice") is not None or item.get("cashPrice") is not None):
+            cname = _commodity_name(item)
+            loc = item.get("location")
+            branch = loc if isinstance(loc, str) else ""
+            flat.append({
+                "facility": item.get("company") or item.get("name") or item.get("facility") or item.get("locationName") or "Unknown",
+                "branch": branch,
+                "city": item.get("city") or "",
+                "state": (item.get("state") or "").upper(),
+                "zip": item.get("zip") or "",
+                "distance": _float(item.get("distance")),
+                "phone": item.get("phone") or "",
+                "commodity": cname,
+                "symbol": item.get("symbol") or item.get("basisSymbol") or "",
+                "cashPrice": _norm_cash(item.get("cashprice", item.get("cashPrice"))),
+                "basis": _norm_basis(item.get("basis")),
+                "notes": item.get("notes", ""),
+                "deliveryMonth": item.get("deliveryMonth") or item.get("delivery_month") or "",
+                "deliveryStart": item.get("deliveryStart") or item.get("delivery_start") or "",
+                "deliveryEnd": item.get("deliveryEnd") or item.get("delivery_end") or "",
+                "category": classify_commodity(cname),
+                "sourceZip": source_zip,
+            })
+
+    # keep filter — identical to cash-bids.html fetchBids()
+    return [b for b in flat if b["cashPrice"] is not None or b["basis"] is not None]
+
+
+def deduplicate(bids):
+    """Deduplicate by facility + branch + commodity + delivery. Keep closest."""
+    seen = {}
+    for b in bids:
+        key = "|".join([
+            b.get("facility", ""), b.get("branch", ""), b.get("commodity", ""),
+            b.get("deliveryStart", ""), b.get("deliveryEnd", ""), b.get("deliveryMonth", ""),
+        ])
+        if key not in seen or (b.get("distance") or 999) < (seen[key].get("distance") or 999):
+            seen[key] = b
+    return list(seen.values())
 
 
 def main():
@@ -181,6 +275,7 @@ def main():
 
     all_bids = []
     errors = 0
+    raw_total = 0  # bids Barchart returned (kept), for sanity vs. drops
 
     for entry in ZIP_GRID:
         z = entry["zip"]
@@ -192,29 +287,19 @@ def main():
             print("FAIL")
             continue
 
-        results = (data.get("results", []) or
-                   data.get("bids", []) or
-                   data.get("data", []) or [])
-
-        if not results:
-            print("0 bids")
-            continue
-
-        for bid in results:
-            normalized = normalize_bid(bid, z)
-            if normalized["cashPrice"] is not None or normalized["basis"] is not None:
-                normalized["category"] = classify_commodity(normalized["commodity"])
-                all_bids.append(normalized)
-
-        print(f"{len(results)} bids")
+        kept = flatten(data, z)
+        raw_total += len(kept)
+        all_bids.extend(kept)
+        # KEPT count, not raw response length — a green-but-empty run is now visible per ZIP
+        print(f"{len(kept)} bids")
         time.sleep(0.3)
 
     before = len(all_bids)
     all_bids = deduplicate(all_bids)
-    print(f"\n[fetch_bids] {before} raw → {len(all_bids)} after dedup")
+    print(f"\n[fetch_bids] {before} kept → {len(all_bids)} after dedup")
     print(f"[fetch_bids] Errors: {errors}/{len(ZIP_GRID)} ZIPs")
 
-    all_bids.sort(key=lambda b: (b["state"] or "", b["city"] or "", b["commodity"] or ""))
+    all_bids.sort(key=lambda b: (b.get("state") or "", b.get("city") or "", b.get("commodity") or ""))
 
     zip_index = [{"zip": e["zip"], "lat": e["lat"], "lng": e["lng"], "label": e["label"]} for e in ZIP_GRID]
 
@@ -227,6 +312,21 @@ def main():
         st = b.get("state", "??")
         states[st] = states.get(st, 0) + 1
         facilities.add(b.get("facility", ""))
+
+    # ── Safety guard ───────────────────────────────────────────────
+    # Every ZIP errored, OR the feed returned bids but parsing kept none.
+    # Either way: do NOT overwrite a good committed bids.json with an
+    # empty one. Exit non-zero so the Action fails loudly instead of
+    # going green-while-empty (the bug that hid for weeks).
+    if errors == len(ZIP_GRID):
+        print(f"ERROR: all {errors} ZIPs failed to fetch — not overwriting "
+              f"{OUTPUT_PATH}", file=sys.stderr)
+        sys.exit(2)
+    if not all_bids:
+        print("ERROR: fetch succeeded but ZERO bids parsed — likely a "
+              "response-shape/field-name change. Refusing to overwrite "
+              f"{OUTPUT_PATH} with an empty file.", file=sys.stderr)
+        sys.exit(3)
 
     output = {
         "fetched": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
