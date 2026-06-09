@@ -1,0 +1,42 @@
+name: Build National Basis Map
+
+on:
+  schedule:
+    # 10 min past each half-hour, weekdays, ~US market hours (UTC).
+    # Runs just after fetch_bids.py commits fresh data/bids.json.
+    - cron: "10,40 12-21 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: basis-map
+  cancel-in-progress: false
+
+jobs:
+  build-basis-map:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build basis map from latest cash bids
+        run: python scripts/build_basis_map.py
+
+      - name: Commit basis-map.json if it changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/basis-map.json
+          if git diff --cached --quiet; then
+            echo "No basis change — nothing to commit."
+          else
+            git commit -m "Update national basis map [skip ci]"
+            git push
+          fi
