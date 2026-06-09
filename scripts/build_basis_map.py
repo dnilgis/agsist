@@ -1,102 +1,106 @@
 #!/usr/bin/env python3
 """
-build_basis_map.py  -  AGSIST basis heatmap pipeline.
+build_basis_map.py — National basis map for the AGSIST cash-bids page.
 
-Reads your cash-bid locations, computes basis = cash - futures for each, aggregates
-by state, and writes data/basis-map.json (what /basis-map reads).
+Reads data/bids.json (produced by fetch_bids.py from Barchart OnDemand),
+aggregates the Barchart-provided `basis` ($/bu, cash minus nearby futures)
+by location -> state -> commodity for corn, soybeans, and wheat, and writes
+data/basis-map.json, consumed by the "National Basis" section of cash-bids.html.
 
-THE ONE ADAPTER POINT: load_cash_bids() below. Point it at whatever your cash-bids
-pipeline already produces (the Barchart OnDemand pull). It must return a flat list of
-records, one per location/commodity, each a dict with:
-    commodity : "corn" | "soybeans" | "wheat"
-    state     : 2-letter postal code, e.g. "IA"
-    name      : display location, e.g. "Mason City, IA"
-    cash      : cash bid ($/bu, float)
-    futures   : the nearby futures price the bid is quoted against ($/bu, float)
-Everything downstream is generic and needs no changes.
+Barchart returns `basis` directly on each bid, so no futures lookup or
+cents conversion is needed here. No API key required — this runs on the
+already-fetched bids.json. In a GitHub Action, run it right after fetch_bids.py.
 """
-
-import json
-import os
-import datetime as dt
+import json, os, sys
+from datetime import datetime, timezone
 from collections import defaultdict
 
-DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "basis-map.json")
+BIDS_PATH = "data/bids.json"
+OUT_PATH  = "data/basis-map.json"
+COMMODITIES = ["corn", "soybeans", "wheat"]
+FUTURES_REF = {"corn": "nearby CBOT futures",
+               "soybeans": "nearby CBOT futures",
+               "wheat": "nearby CBOT wheat"}
+MIN_STATE_LOC = 2   # a state needs at least this many distinct locations to show
 
 STATE_NAMES = {
-    "AL": "Alabama", "AR": "Arkansas", "CO": "Colorado", "GA": "Georgia",
-    "IA": "Iowa", "IL": "Illinois", "IN": "Indiana", "KS": "Kansas",
-    "KY": "Kentucky", "MI": "Michigan", "MN": "Minnesota", "MO": "Missouri",
-    "MT": "Montana", "NC": "North Carolina", "ND": "North Dakota", "NE": "Nebraska",
-    "OH": "Ohio", "OK": "Oklahoma", "SD": "South Dakota", "TN": "Tennessee",
-    "TX": "Texas", "WI": "Wisconsin",
+ "AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California",
+ "CO":"Colorado","CT":"Connecticut","DE":"Delaware","FL":"Florida","GA":"Georgia",
+ "HI":"Hawaii","ID":"Idaho","IL":"Illinois","IN":"Indiana","IA":"Iowa","KS":"Kansas",
+ "KY":"Kentucky","LA":"Louisiana","ME":"Maine","MD":"Maryland","MA":"Massachusetts",
+ "MI":"Michigan","MN":"Minnesota","MS":"Mississippi","MO":"Missouri","MT":"Montana",
+ "NE":"Nebraska","NV":"Nevada","NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico",
+ "NY":"New York","NC":"North Carolina","ND":"North Dakota","OH":"Ohio","OK":"Oklahoma",
+ "OR":"Oregon","PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina",
+ "SD":"South Dakota","TN":"Tennessee","TX":"Texas","UT":"Utah","VT":"Vermont",
+ "VA":"Virginia","WA":"Washington","WV":"West Virginia","WI":"Wisconsin","WY":"Wyoming",
 }
 
-# nearby futures label shown on the page, per commodity (cosmetic only)
-FUTURES_REF = {
-    "corn": "nearby CBOT",
-    "soybeans": "nearby CBOT",
-    "wheat": "nearby KC HRW",
-}
-
-
-def load_cash_bids():
-    """ADAPTER -- replace this with a read of your real cash-bids data.
-
-    Example shape of what it should return:
-        [{"commodity":"corn","state":"IA","name":"Mason City, IA",
-          "cash":4.32,"futures":4.50}, ...]
-    """
-    raise NotImplementedError(
-        "Point load_cash_bids() at your Barchart cash-bids output. "
-        "Until then, data/basis-map.json keeps its seeded sample."
-    )
-
+def load_cash_bids(path=BIDS_PATH):
+    """Adapter over fetch_bids.py output. Returns basis records:
+    {commodity, state, city, facility, name, basis}. Keeps only bids with a
+    real basis value and a known state + tracked commodity."""
+    with open(path) as f:
+        data = json.load(f)
+    out = []
+    for b in data.get("bids", []):
+        cat   = (b.get("category") or "").strip().lower()
+        state = (b.get("state") or "").strip().upper()
+        basis = b.get("basis")
+        if cat not in COMMODITIES:      continue
+        if state not in STATE_NAMES:    continue
+        if basis is None:               continue
+        try:    basis = float(basis)
+        except (TypeError, ValueError): continue
+        city = (b.get("city") or "").strip()
+        name = f"{city}, {state}" if city else (b.get("facility") or state)
+        out.append({"commodity": cat, "state": state, "city": city,
+                    "facility": b.get("facility", ""), "name": name,
+                    "basis": round(basis, 4)})
+    return out
 
 def build(records):
-    by_c = defaultdict(list)
-    for r in records:
-        try:
-            basis = round(float(r["cash"]) - float(r["futures"]), 2)
-        except (KeyError, TypeError, ValueError):
-            continue
-        by_c[r["commodity"]].append({"state": r["state"], "name": r.get("name", ""), "basis": basis})
-
     commodities = {}
-    for c, rows in by_c.items():
-        st_acc = defaultdict(list)
-        for row in rows:
-            st_acc[row["state"]].append(row["basis"])
-        states = []
-        for st, vals in st_acc.items():
-            states.append({
-                "state": st,
-                "name": STATE_NAMES.get(st, st),
-                "basis": round(sum(vals) / len(vals), 2),
-                "n": len(vals),
-            })
+    for c in COMMODITIES:
+        recs = [r for r in records if r["commodity"] == c]
+        # location-level average (dedupe repeated delivery rows at one place)
+        loc = defaultdict(list); loc_state = {}
+        for r in recs:
+            loc[r["name"]].append(r["basis"]); loc_state[r["name"]] = r["state"]
+        locations = [{"name": nm, "basis": round(sum(v)/len(v), 2), "_st": loc_state[nm]}
+                     for nm, v in loc.items()]
+        # state-level from location averages; n = distinct locations
+        byst = defaultdict(list)
+        for L in locations: byst[L["_st"]].append(L["basis"])
+        states = [{"state": st, "name": STATE_NAMES[st],
+                   "basis": round(sum(v)/len(v), 2), "n": len(v)}
+                  for st, v in byst.items() if len(v) >= MIN_STATE_LOC]
         states.sort(key=lambda s: s["basis"], reverse=True)
-        locations = sorted(rows, key=lambda x: x["basis"], reverse=True)
-        commodities[c] = {
-            "futures_ref": FUTURES_REF.get(c, "nearby futures"),
-            "states": states,
-            "locations": [{"name": x["name"], "basis": x["basis"]} for x in locations if x["name"]],
-        }
+        loclist = sorted(({"name": L["name"], "basis": L["basis"]} for L in locations),
+                         key=lambda x: x["basis"], reverse=True)
+        commodities[c] = {"futures_ref": FUTURES_REF[c],
+                          "states": states, "locations": loclist}
     return commodities
 
-
 def main():
+    if not os.path.exists(BIDS_PATH):
+        print(f"ERROR: {BIDS_PATH} not found — run fetch_bids.py first", file=sys.stderr)
+        sys.exit(1)
     records = load_cash_bids()
-    out = {
-        "updated": dt.date.today().isoformat(),
-        "sample": False,
-        "commodities": build(records),
-    }
-    os.makedirs(os.path.dirname(DATA_PATH), exist_ok=True)
-    with open(DATA_PATH, "w", encoding="utf-8") as f:
-        json.dump(out, f, indent=2)
-    print(f"wrote {DATA_PATH}")
-
+    commodities = build(records)
+    has_data = any(commodities[c]["states"] for c in COMMODITIES)
+    out = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+           "sample": (not has_data),
+           "commodities": commodities}
+    os.makedirs(os.path.dirname(OUT_PATH) or ".", exist_ok=True)
+    with open(OUT_PATH, "w") as f:
+        json.dump(out, f, separators=(",", ":"))
+    total_states = sum(len(commodities[c]["states"]) for c in COMMODITIES)
+    print(f"[basis-map] {len(records)} basis records -> {total_states} state rows")
+    for c in COMMODITIES:
+        print(f"  {c}: {len(commodities[c]['states'])} states, "
+              f"{len(commodities[c]['locations'])} locations")
+    print(f"[basis-map] sample={out['sample']} -> wrote {OUT_PATH}")
 
 if __name__ == "__main__":
     main()
