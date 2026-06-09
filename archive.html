@@ -6,26 +6,35 @@
 <meta name="theme-color" content="#111a0a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="/components/styles.css?v=10" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=10">
+<link rel="preload" href="/components/styles.css?v=12" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=12">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
 <link rel="manifest"                            href="/manifest.json">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
 
 <title>Daily Briefing Archive &#8212; AGSIST</title>
 <meta name="description" content="Archive of AGSIST Daily Ag Briefings. Browse past corn, soybean, and wheat market morning reports by date.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://agsist.com/daily/archive">
+<link rel="canonical" href="https://agsist.com/archive">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="AGSIST">
 <meta property="og:title" content="Daily Briefing Archive &#8212; AGSIST">
 <meta property="og:description" content="Archive of AGSIST Daily Ag Briefings. Browse past market morning reports.">
-<meta property="og:url" content="https://agsist.com/daily/archive">
+<meta property="og:url" content="https://agsist.com/archive">
 <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+  {"@type":"CollectionPage","@id":"https://agsist.com/archive#webpage","url":"https://agsist.com/archive","name":"Daily Briefing Archive \u2014 AGSIST","description":"Archive of AGSIST Daily Ag Briefings. Browse past corn, soybean, and wheat market morning reports by date.","isPartOf":{"@type":"WebSite","name":"AGSIST","url":"https://agsist.com/"}},
+  {"@type":"BreadcrumbList","itemListElement":[
+    {"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},
+    {"@type":"ListItem","position":2,"name":"Daily Briefing","item":"https://agsist.com/daily"},
+    {"@type":"ListItem","position":3,"name":"Archive","item":"https://agsist.com/archive"}]}
+]}
+</script>
 
 <style>
 button,a,[role="button"]{touch-action:manipulation;}
@@ -44,7 +53,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 /* Search */
 .arc-search-bar{display:flex;align-items:center;gap:.65rem;margin-bottom:1.5rem;flex-wrap:wrap;}
 .arc-search-wrap{position:relative;flex:1;min-width:200px;}
-.arc-search-wrap input{width:100%;padding:.6rem .9rem .6rem 2.1rem;background:var(--surface);border:2px solid var(--border);border-radius:6px;color:var(--text);font-size:.85rem;font-family:'JetBrains Mono',monospace;outline:none;transition:border-color .15s;box-sizing:border-box;}
+.arc-search-wrap input{width:100%;padding:.6rem .9rem .6rem 2.1rem;background:var(--surface);border:2px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;font-family:'JetBrains Mono',monospace;outline:none;transition:border-color .15s;box-sizing:border-box;}
 .arc-search-wrap input:focus{border-color:var(--green);}
 .arc-search-icon{position:absolute;left:.65rem;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.9rem;pointer-events:none;}
 .arc-search-clear{position:absolute;right:.65rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.9rem;display:none;padding:0;line-height:1;}
@@ -131,7 +140,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 
 </main>
 <div id="site-footer"></div>
-<script src="/components/loader.js" defer></script>
+<script src="/components/loader.js?v=2" defer></script>
 <script>
 (function(){
 'use strict';
@@ -205,7 +214,7 @@ function render(){
     grp.forEach(function(e){
       var hasHL = e.headline && e.headline.trim();
       html +=
-        '<a href="/daily" class="arc-card'+(e.isWkend?' wkend':'')+'" title="'+escHtml(e.shortLabel)+' briefing">'+
+        '<a href="/daily'+(e.date?'/'+e.date.split('T')[0]:'')+'" class="arc-card'+(e.isWkend?' wkend':'')+'" title="Read the '+escHtml(e.shortLabel)+' briefing">'+
           '<div class="arc-card-head">'+
             '<span class="arc-card-date">'+escHtml(e.shortLabel)+'</span>'+
             '<span class="arc-card-badge '+(e.isWkend?'wkend':'wkday')+'">'+(e.isWkend?'Weekend':'Market Day')+'</span>'+
@@ -296,6 +305,13 @@ fetch('/data/daily-archive/index.json', {cache:'no-store'})
     if(loadEl) loadEl.innerHTML = '<div class="arc-empty"><strong>Archive unavailable</strong>Check back later or <a href="/daily" style="color:var(--gold)">read today\'s briefing \u2192</a></div>';
   });
 
+})();
+</script>
+<script>
+(function(){
+  var st;
+  document.addEventListener('input',function(e){if(e.target&&e.target.id==='arc-search'){clearTimeout(st);var v=(e.target.value||'').trim();st=setTimeout(function(){if(window.gaEvent&&v)gaEvent('archive_search',{q:v.slice(0,40)});},800);}},true);
+  document.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('.arc-card');if(c&&window.gaEvent){var dt=c.querySelector('.arc-card-date');gaEvent('briefing_open',{date:dt?dt.textContent:''});}},true);
 })();
 </script>
 </body>

@@ -7,8 +7,8 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="/components/styles.css?v=10" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=10">
+<link rel="preload" href="/components/styles.css?v=12" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=12">
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -280,6 +280,29 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .bid-del-spot{color:var(--green);font-weight:700;font-size:.72rem;letter-spacing:.04em}
 .bid-del-fwd{color:var(--text-dim);font-size:.74rem}
 .cb-skel::after{content:'';display:block;height:140px}
+/* ===== National basis (merged from /basis-map) ===== */
+.bm-section{margin:1.5rem 0 0;padding-top:1.25rem;border-top:1px solid var(--border)}
+.bm-h{font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--text);margin:0 0 .35rem}
+.bm-h3{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:600;color:var(--text);margin:1.4rem 0 .5rem}
+.bm-intro{color:var(--text-muted);font-size:.92rem;line-height:1.5;max-width:64ch;margin:0 0 .9rem}
+.bm-sample{display:none;font-size:.8rem;color:#e6b042;background:rgba(218,165,32,.08);border:1px solid #daa520;border-radius:8px;padding:.5rem .75rem;margin:0 0 .8rem}
+.bm-toggle{display:flex;gap:.4rem;flex-wrap:wrap;margin:0 0 .8rem}
+.bm-toggle button{font-family:'Oswald',sans-serif;font-weight:600;font-size:.88rem;background:var(--surface2);color:var(--text-muted);border:1px solid var(--border);border-radius:9px;padding:.5rem .95rem;min-height:44px;cursor:pointer}
+.bm-toggle button[aria-pressed="true"]{background:#3a8b3c;color:#fff;border-color:#3a8b3c}
+.bm-meta{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);margin:0 0 .7rem}
+.bm-scale{display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--text-muted);margin:0 0 .8rem}
+.bm-scale .bar{flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,hsl(0 60% 45%),hsl(48 60% 45%),hsl(130 55% 42%));max-width:240px}
+.bm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:.5rem}
+.bm-tile{border-radius:10px;padding:.6rem .65rem;border:1px solid rgba(255,255,255,.08)}
+.bm-tile .st{font-family:'Oswald',sans-serif;font-weight:700;font-size:1.05rem;color:#fff;line-height:1}
+.bm-tile .bs{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;margin:.25rem 0 .05rem}
+.bm-tile .nm{font-size:.66rem;opacity:.8;line-height:1.2}
+.bm-board{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.bm-li{display:flex;justify-content:space-between;gap:.5rem;align-items:baseline;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:.5rem .7rem;margin:0 0 .4rem;font-size:.88rem}
+.bm-li .b{font-family:'JetBrains Mono',monospace;font-weight:700}
+.bm-col h4{font-family:'Oswald',sans-serif;font-weight:600;font-size:.95rem;margin:0 0 .5rem;color:var(--text)}
+.bm-err{color:var(--text-muted);background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem}
+@media(max-width:600px){.bm-board{grid-template-columns:1fr}}
 </style>
 </head><body>
 <a href="#main" class="skip">Skip to content</a>
@@ -432,6 +455,22 @@ button,a,[role="button"],input,select{touch-action:manipulation}
         <p>Enter your ZIP code above &#8212; or allow location access &#8212; to see live cash bids from grain elevators near your farm.</p>
       </div>
     </div>
+        <!-- ===== NATIONAL BASIS (merged from /basis-map) ===== -->
+    <section id="national-basis" class="bm-section" aria-label="National grain basis by state">
+      <h2 class="bm-h">Where basis is strongest nationally</h2>
+      <p class="bm-intro">Your local bids are above. Zoomed out, here&rsquo;s corn, soybean, and wheat basis ranked by state &mdash; cash minus futures &mdash; so you can see where it pays to sell across the country.</p>
+      <div class="bm-sample" id="bm-sample">Sample layout &mdash; live basis data pending. Numbers shown are illustrative.</div>
+      <div class="bm-toggle" id="bm-toggle" role="group" aria-label="Commodity">
+        <button data-c="corn" aria-pressed="true">Corn</button>
+        <button data-c="soybeans" aria-pressed="false">Soybeans</button>
+        <button data-c="wheat" aria-pressed="false">Wheat</button>
+      </div>
+      <p class="bm-meta" id="bm-meta"></p>
+      <div class="bm-scale"><span>Weak</span><span class="bar"></span><span>Strong</span></div>
+      <div class="bm-grid" id="bm-grid"><div class="bm-err" id="bm-loading">Loading basis&hellip;</div></div>
+      <h3 class="bm-h3">Strongest &amp; weakest locations</h3>
+      <div class="bm-board" id="bm-board"></div>
+    </section>
     <div class="internal-links" id="internal-links-block" style="display:none">
       <h3>Related Tools on AGSIST</h3>
       <div class="il-grid">
@@ -507,9 +546,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 <script>
 (function(){
 'use strict';
-// Barchart API key is held server-side by the Cloudflare Worker proxy.
-// Worker source: /components/worker.js (deployed to Cloudflare Workers).
-// If proxy is unreachable, bids list shows an error state — never a raw key.
+// Cash bids load from the AGSIST data proxy; no credentials ship in the client.
 var BASE_URL='https://agsist-barchart.dnilgis.workers.dev/barchart/getGrainBids';
 var currentBids=[],currentElevators=[],currentFilter='all',currentSort='distance',pinnedKeys=[],wtdComm='corn';
 var hasSearched=false,detectedLabel='',preFilter='all',lastFetchTime=null;
@@ -1030,6 +1067,27 @@ if(window.AGSIST_STATE&&window.AGSIST_STATE.lat&&window.AGSIST_STATE.zip){
     }catch(e){}
   }
 })();
+})();
+</script>
+<script>
+(function(){
+  var DATA=null,current='corn';
+  function fmtB(n){var s=(n>=0?'+':'\u2212');return s+'$'+Math.abs(n).toFixed(2);}
+  function color(b,min,max){var t=(max>min)?(b-min)/(max-min):0.5;var h=Math.round(t*130);return {bg:'hsl('+h+' 42% 18%)',bd:'hsl('+h+' 55% 38%)',tx:'hsl('+h+' 60% 70%)'};}
+  function render(c){
+    var blk=DATA.commodities[c],grid=document.getElementById('bm-grid');if(!grid)return;
+    if(!blk||!blk.states||!blk.states.length){grid.innerHTML='<div class="bm-err">No basis reported for '+c+' right now.</div>';document.getElementById('bm-board').innerHTML='';return;}
+    var states=blk.states.slice().sort(function(a,b){return b.basis-a.basis;});
+    var vals=states.map(function(s){return s.basis;}),min=Math.min.apply(null,vals),max=Math.max.apply(null,vals);
+    grid.innerHTML=states.map(function(s){var col=color(s.basis,min,max);return '<div class="bm-tile" style="background:'+col.bg+';border-color:'+col.bd+'"><div class="st">'+s.state+'</div><div class="bs" style="color:'+col.tx+'">'+fmtB(s.basis)+'</div><div class="nm">'+(s.name||'')+(s.n?(' \u00b7 '+s.n+' loc'):'')+'</div></div>';}).join('');
+    document.getElementById('bm-meta').textContent='Basis vs '+(blk.futures_ref||'nearby futures')+'  \u00b7  '+states.length+' states  \u00b7  as of '+(DATA.updated||'');
+    var locs=(blk.locations||[]).slice().sort(function(a,b){return b.basis-a.basis;}),strong=locs.slice(0,5),weak=locs.slice(-5).reverse();
+    function li(x){return '<div class="bm-li"><span>'+x.name+'</span><span class="b">'+fmtB(x.basis)+'</span></div>';}
+    document.getElementById('bm-board').innerHTML='<div class="bm-col"><h4>Strongest basis</h4>'+(strong.map(li).join('')||'<div class="bm-err">&mdash;</div>')+'</div><div class="bm-col"><h4>Weakest basis</h4>'+(weak.map(li).join('')||'<div class="bm-err">&mdash;</div>')+'</div>';
+  }
+  var tg=document.getElementById('bm-toggle');
+  if(tg)tg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;current=b.getAttribute('data-c');this.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});render(current);if(window.gaEvent)gaEvent('basis_commodity',{commodity:current,page:'cash-bids'});});
+  fetch('/data/basis-map.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){DATA=d;if(d.sample){var s=document.getElementById('bm-sample');if(s)s.style.display='block';}render(current);if(window.gaEvent)gaEvent('basis_view',{page:'cash-bids'});}).catch(function(){var g=document.getElementById('bm-grid');if(g)g.innerHTML='<div class="bm-err">National basis data is briefly unavailable.</div>';});
 })();
 </script>
 </body>
