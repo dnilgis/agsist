@@ -1,0 +1,69 @@
+name: Sitemap lastmod
+
+on:
+  push:
+    paths:
+      - "**.html"
+  schedule:
+    - cron: "17 9 * * *"   # 09:17 UTC daily — refreshes data-driven pages on their cadence
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sitemap-lastmod
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # need the previous commit to diff changed HTML on push
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Bump lastmod
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            base="${{ github.event.before }}"
+            if ! git cat-file -e "${base}^{commit}" 2>/dev/null; then base="HEAD~1"; fi
+            files=$(git diff --name-only "$base" HEAD -- '*.html' | tr '\n' ' ')
+            echo "changed HTML: ${files:-<none>}"
+            if [ -n "$files" ]; then
+              python scripts/update_sitemap.py --changed $files --out /tmp/bumped.txt
+            else
+              echo "[sitemap] no HTML changes to map"; : > /tmp/bumped.txt
+            fi
+          else
+            python scripts/update_sitemap.py --daily --out /tmp/bumped.txt
+          fi
+
+      - name: Commit if changed
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add sitemap.xml
+          if git diff --staged --quiet; then
+            echo "no sitemap change"
+          else
+            git commit -m "Bump sitemap lastmod $(date -u +%F)"
+            git push
+          fi
+
+      # Bing/Yandex via IndexNow for exactly the URLs we just bumped. Best-effort:
+      # never fails the job. If you run IndexNow from a separate workflow, delete this step.
+      - name: Ping IndexNow for bumped URLs
+        continue-on-error: true
+        run: |
+          if [ -s /tmp/bumped.txt ]; then
+            urls=$(tr '\n' ' ' < /tmp/bumped.txt)
+            echo "IndexNow: $urls"
+            python scripts/indexnow_submit.py --urls $urls || true
+          else
+            echo "nothing bumped; skipping IndexNow"
+          fi
