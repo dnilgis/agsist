@@ -55,11 +55,13 @@
 .wp-thr .k{font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;color:var(--wp-mut);}
 .wp-thr .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.05rem;color:#fff;margin:.2rem 0 0;}
 .wp-pos{font-size:.9rem;color:var(--wp-mut);margin:1rem 0 0;border-top:1px solid var(--wp-line);padding-top:.8rem;}
-.wp-tbl{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:.4rem;}
-.wp-tbl th,.wp-tbl td{text-align:left;padding:.55rem .5rem;border-bottom:1px solid var(--wp-line);}
-.wp-tbl th{font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;color:var(--wp-mut);font-weight:600;}
+#wp-history{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.wp-tbl{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:.4rem;min-width:560px;}
+.wp-tbl th,.wp-tbl td{text-align:left;padding:.55rem .5rem;border-bottom:1px solid var(--wp-line);vertical-align:top;}
+.wp-tbl th{font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;color:var(--wp-mut);font-weight:600;white-space:nowrap;}
+.wp-tbl td:first-child,.wp-tbl td.num{white-space:nowrap;}
 .wp-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;}
-.wp-tag{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.78rem;}
+.wp-tag{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.78rem;white-space:nowrap;}
 .wp-tag.bull{color:var(--wp-up);} .wp-tag.bear{color:var(--wp-dn);} .wp-tag.flat{color:var(--wp-mut);}
 .wp-faq details{border:1px solid var(--wp-line);border-radius:10px;background:var(--wp-panel);margin:.5rem 0;padding:0 1rem;}
 .wp-faq summary{cursor:pointer;padding:.85rem 0;font-weight:600;list-style:none;}
