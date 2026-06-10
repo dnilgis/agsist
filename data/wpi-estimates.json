@@ -1,0 +1,53 @@
+{
+  "_note": "Maintained by hand in the GitHub editor. Each entry under 'reports' is a scheduled USDA report. Fill estimate_low / estimate_avg / estimate_high (and optionally implied_odds and positioning) from the pre-report trade survey once it publishes (usually 1-2 days before the release). When the range is filled, the page shows the range bar + surprise thresholds automatically. Leave estimate_* as null until you have real survey numbers - do not invent them. After a report releases, move it into wpi-history.json with the actual print.",
+  "reports": [
+    {
+      "report": "June WASDE",
+      "date": "2026-06-11",
+      "time": "12:00 PM ET",
+      "commodity": "Corn, soybeans & wheat",
+      "metric": "2025/26 U.S. ending stocks",
+      "expectation": "The June report is historically a quiet one for corn and soybeans. May already delivered the first new-crop balance sheets, and the year's real acreage shake-up doesn't land until the <a href=\"/usda-calendar\" style=\"color:var(--wp-gold2)\">June 30 Acreage and Grain Stocks reports</a> - so the trade is looking for only minor old-crop demand tweaks here. May left old-crop carryout at <b>2.14 bil bu</b> corn and <b>340 mil bu</b> soybeans; new-crop 2026/27 sits at <b>1.96 bil bu</b> corn and <b>310 mil bu</b> soybeans after a tight first look. With no acreage update due, new-crop changes this month hinge on early-season weather and the export pace.",
+      "estimate_low": null,
+      "estimate_avg": null,
+      "estimate_high": null,
+      "unit": "bil bu",
+      "implied_odds": [],
+      "bullish_threshold": null,
+      "bearish_threshold": null,
+      "positioning": null
+    },
+    {
+      "report": "July WASDE",
+      "date": "2026-07-10",
+      "time": "12:00 PM ET",
+      "commodity": "Corn, soybeans & wheat",
+      "metric": "2026/27 U.S. ending stocks",
+      "expectation": "First WASDE to fold in the June 30 Acreage survey - typically the report's first real new-crop reset of the summer.",
+      "estimate_low": null,
+      "estimate_avg": null,
+      "estimate_high": null,
+      "unit": "bil bu",
+      "implied_odds": [],
+      "bullish_threshold": null,
+      "bearish_threshold": null,
+      "positioning": null
+    },
+    {
+      "report": "August WASDE",
+      "date": "2026-08-12",
+      "time": "12:00 PM ET",
+      "commodity": "Corn & soybeans",
+      "metric": "2026/27 yield & production",
+      "expectation": "The August report carries the first field-survey-based corn and soybean yield estimates - one of the highest-impact supply reports of the year.",
+      "estimate_low": null,
+      "estimate_avg": null,
+      "estimate_high": null,
+      "unit": "bu/acre",
+      "implied_odds": [],
+      "bullish_threshold": null,
+      "bearish_threshold": null,
+      "positioning": null
+    }
+  ]
+}

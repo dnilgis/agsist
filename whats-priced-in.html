@@ -4,13 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>What's Priced In &#8212; USDA Report Expectations &amp; Surprise Levels | AGSIST</title>
-<meta name="description" content="Before each USDA crop report, see what the market expects - the trade estimate range, implied odds, and fund positioning - plus the surprise threshold that moves price. Scored after each release. Free, national.">
+<meta name="description" content="What the market expects from the next USDA crop report — the trade estimate range and the surprise level that moves price, scored after each release.">
 <link rel="canonical" href="https://agsist.com/whats-priced-in">
 <meta property="og:type" content="website">
 <meta property="og:title" content="What's Priced In - USDA Report Expectations | AGSIST">
 <meta property="og:description" content="What the market expects from the next USDA report, and the number that would surprise it.">
 <meta property="og:url" content="https://agsist.com/whats-priced-in">
-<meta name="robots" content="index,follow">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:image" content="https://agsist.com/img/whats-priced-in.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="What's Priced In — USDA report expectations and surprise levels, by AGSIST">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="What's Priced In — USDA Report Expectations | AGSIST">
+<meta name="twitter:description" content="What the market expects from the next USDA crop report, and the number that would surprise it. Scored after each release.">
+<meta name="twitter:image" content="https://agsist.com/img/whats-priced-in.png">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -58,6 +67,16 @@
 .wp-faq summary::after{content:"+";float:right;color:var(--wp-gold2);font-weight:700;}
 .wp-faq details[open] summary::after{content:"\2212";}
 .wp-faq p{margin:0 0 .9rem;color:var(--wp-mut);line-height:1.55;font-size:.95rem;}
+.wp-xlink{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1.2rem;font-size:.85rem;}
+.wp-xlink a{display:inline-flex;align-items:center;gap:.3rem;background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:999px;padding:.35rem .8rem;color:var(--wp-gold2);text-decoration:none;min-height:32px;}
+.wp-xlink a:hover{border-color:var(--wp-gold);}
+.wp-method{background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:14px;padding:1.1rem 1.15rem;}
+.wp-method p{color:var(--wp-mut);line-height:1.55;font-size:.95rem;margin:0 0 .8rem;}
+.wp-method p:last-child{margin-bottom:0;}
+.wp-method b{color:var(--wp-txt);}
+.wp-method .src{font-size:.82rem;border-top:1px solid var(--wp-line);padding-top:.7rem;}
+.wp-method .tag{font-family:'JetBrains Mono',monospace;font-weight:700;}
+.wp-method .tag.bull{color:var(--wp-up);} .wp-method .tag.bear{color:var(--wp-dn);} .wp-method .tag.flat{color:var(--wp-mut);}
 .wp-cred{margin-top:1.6rem;font-size:.86rem;color:var(--wp-mut);line-height:1.5;border-top:1px solid var(--wp-line);padding-top:1rem;}
 .wp-cred a{color:var(--wp-gold2);}
 .wp-err{color:var(--wp-mut);background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:10px;padding:1rem;}
@@ -70,6 +89,11 @@
   <h1>What's priced in?</h1>
   <p class="wp-lede">Before every major USDA report, the market has already placed its bet. This is what the trade expects &mdash; the estimate range, the implied odds, and how the funds are positioned &mdash; and the number that would actually surprise it. After each release, it gets scored.</p>
 
+  <nav class="wp-xlink" aria-label="Related pages">
+    <a href="/usda-calendar">&#128197; Full USDA report calendar</a>
+    <a href="/ag-odds">&#127922; Market odds</a>
+  </nav>
+
   <div class="wp-sample" id="wp-sample">Sample layout &mdash; live report data pending. Figures shown are illustrative.</div>
 
   <h2>Next report</h2>
@@ -78,6 +102,14 @@
   <h2>Track record</h2>
   <p class="wp-lede" style="margin-bottom:.4rem">How the expectation lined up against the actual print, and which way price moved.</p>
   <div id="wp-history"></div>
+
+  <h2>Methodology</h2>
+  <div class="wp-method">
+    <p><b>What "expected" means.</b> The estimate is the pre-report trade survey &mdash; the average of the figures grain analysts and trade firms submit in the days before a USDA report, the same numbers the wire services aggregate and the market trades into ahead of the release. The range is the spread of those guesses. It is what the market has already assumed, before USDA says a word.</p>
+    <p><b>What gets measured.</b> The headline supply figures that move price: U.S. ending stocks (carryout) for corn, soybeans, and wheat, plus production and yield in the months USDA reports them. These are the numbers traders watch first, because a surprise there ripples through the whole balance sheet.</p>
+    <p><b>How a report is scored.</b> Each figure is graded against the actual USDA print: within <b>2%</b> of the trade average is <span class="tag flat">in line</span>; a print <b>below</b> the trade estimate is <span class="tag bull">bullish</span> (less supply than expected); <b>above</b> is <span class="tag bear">bearish</span> (more supply than expected). The bullish and bearish <b>surprise thresholds</b> on the report card are the edges of the trade range &mdash; the levels a print has to clear to genuinely move the market rather than confirm what was already priced in.</p>
+    <p class="src"><b>Sources.</b> Report dates from the USDA WASDE and NASS release schedules; trade estimates from the published pre-report surveys; actuals from the USDA print itself. Compiled and scored by a licensed crop-insurance agent. This is a map of expectations, not a trade recommendation or financial advice.</p>
+  </div>
 
   <h2>Common questions</h2>
   <div class="wp-faq" id="wp-faq">
@@ -94,16 +126,24 @@
 
 <div id="site-footer"></div>
 
-<script type="application/ld+json">
+<script type="application/ld+json" id="wp-dataset-ld">
 {
   "@context":"https://schema.org",
   "@type":"Dataset",
+  "@id":"https://agsist.com/whats-priced-in#dataset",
   "name":"USDA Report Market Expectations",
-  "description":"Pre-report market expectations - trade estimate ranges, implied odds, and fund positioning - and surprise thresholds for major USDA crop reports, scored after each release.",
+  "description":"Pre-report market expectations and surprise thresholds for major USDA crop reports — the trade estimate range for corn, soybean, and wheat ending stocks and production — each scored against the actual USDA print after release.",
   "url":"https://agsist.com/whats-priced-in",
-  "creator":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Licensed Crop Insurance Agent"},
+  "creator":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Licensed Crop Insurance Agent","url":"https://agsist.com/about"},
+  "publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},
   "isAccessibleForFree":true,
-  "keywords":["WASDE","USDA report","priced in","trade estimate","market expectations","corn","soybeans"]
+  "license":"https://agsist.com/terms",
+  "datePublished":"2026-06-09",
+  "dateModified":"2026-06-09",
+  "temporalCoverage":"2026/..",
+  "measurementTechnique":"Pre-report trade survey averages and ranges compared against the USDA released figure; a print within 2% of the trade average is scored in line, below the range bullish, and above the range bearish.",
+  "variableMeasured":["Trade estimate range","Trade estimate average","USDA actual","Surprise direction"],
+  "keywords":["WASDE","USDA report","priced in","trade estimate","market expectations","ending stocks","corn","soybeans","wheat"]
 }
 </script>
 <script type="application/ld+json">
@@ -114,6 +154,16 @@
     {"@type":"Question","name":"What does priced in mean?","acceptedAnswer":{"@type":"Answer","text":"Markets move on surprises. If the trade already expects a number, that expectation is built into today's price. Price reacts to the gap between the report and what was expected."}},
     {"@type":"Question","name":"Where do the expectations come from?","acceptedAnswer":{"@type":"Answer","text":"The estimate range is the pre-report trade survey; implied odds come from prediction markets; positioning comes from the weekly Commitments of Traders report."}},
     {"@type":"Question","name":"What is a surprise threshold?","acceptedAnswer":{"@type":"Answer","text":"The level beyond which a report breaks from expectations enough to move price. Past the bullish threshold tends to rally; past the bearish threshold tends to sink; inside the range is roughly as expected."}}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"BreadcrumbList",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},
+    {"@type":"ListItem","position":2,"name":"What's Priced In","item":"https://agsist.com/whats-priced-in"}
   ]
 }
 </script>
@@ -145,9 +195,12 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
         return '<div class="o"><div class="ol"><span>'+o.label+'</span><span>'+o.pct+'%</span></div><div class="ot"><span class="of" style="width:'+o.pct+'%"></span></div></div>';
       }).join('')+'</div>';
     }
-    var thr='<div class="wp-thr">'
-      +'<div class="t bull"><div class="k">Bullish surprise</div><div class="v">'+(n.bullish_threshold||'\u2014')+'</div></div>'
-      +'<div class="t bear"><div class="k">Bearish surprise</div><div class="v">'+(n.bearish_threshold||'\u2014')+'</div></div></div>';
+    var thr='';
+    if(n.bullish_threshold||n.bearish_threshold){
+      thr='<div class="wp-thr">'
+        +'<div class="t bull"><div class="k">Bullish surprise</div><div class="v">'+(n.bullish_threshold||'\u2014')+'</div></div>'
+        +'<div class="t bear"><div class="k">Bearish surprise</div><div class="v">'+(n.bearish_threshold||'\u2014')+'</div></div></div>';
+    }
     var pos=n.positioning?('<div class="wp-pos">Fund positioning: '+n.positioning+'</div>'):'';
     return '<div class="wp-card"><div class="hd"><span class="rpt">'+n.report+'</span><span class="cd">'+n.date+(n.time?(' \u00b7 '+n.time):'')+' \u00b7 '+cd+'</span></div>'
       +(n.commodity?'<div class="wp-metric">'+n.commodity+' \u2014 '+(n.metric||'')+'</div>':'')
@@ -168,10 +221,17 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
     if(d.sample)document.getElementById('wp-sample').style.display='block';
     document.getElementById('wp-next').innerHTML=nextCard(d.upcoming);
     document.getElementById('wp-history').innerHTML=historyTbl(d.history);
-    gaEvent('wpi_view',{report:(d.upcoming&&d.upcoming.report)||''});
+    try{
+      var s=document.getElementById('wp-dataset-ld');
+      if(s&&d.updated){var ld=JSON.parse(s.textContent);ld.dateModified=d.updated;s.textContent=JSON.stringify(ld);}
+    }catch(e){}
+    var up=d.upcoming||{};
+    gaEvent('wpi_view',{report:up.report||'',range_live:!!(up.estimate_low!=null&&up.estimate_high!=null)});
   }).catch(function(){
     document.getElementById('wp-next').innerHTML='<div class="wp-err">Report expectations are briefly unavailable. See the <a href="/usda-calendar" style="color:var(--wp-gold2)">USDA report calendar</a> and <a href="/ag-odds" style="color:var(--wp-gold2)">market odds</a>.</div>';
   });
+  var wrap=document.querySelector('.wp-wrap');
+  if(wrap)wrap.addEventListener('click',function(e){var a=e.target.closest('a[href^="/"]');if(a)gaEvent('wpi_link',{to:a.getAttribute('href'),page:'whats-priced-in'});});
   document.querySelectorAll('#wp-faq details').forEach(function(d){d.addEventListener('toggle',function(){if(d.open)gaEvent('faq_open',{page:'whats-priced-in'});});});
 })();
 </script>

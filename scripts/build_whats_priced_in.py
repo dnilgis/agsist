@@ -1,105 +1,127 @@
 #!/usr/bin/env python3
 """
-build_whats_priced_in.py  -  AGSIST "what's priced in" pipeline.
+build_whats_priced_in.py — assembles data/whats-priced-in.json for the
+"What's Priced In" page (whats-priced-in.html).
 
-Assembles data/whats-priced-in.json (what /whats-priced-in reads) from four inputs.
-Three are automated from data you already have; one is a small manual file you keep.
+Reads two human-maintained source files (edited in the GitHub browser):
+  data/wpi-estimates.json — scheduled reports + pre-report trade expectations
+  data/wpi-history.json   — past reports scored against the actual print
 
-ADAPTER POINTS (wire these to your existing data):
-  1. next_report()      -> read your USDA report calendar, return the next report
-                           {report, date (YYYY-MM-DD), time, commodity}.
-  2. implied_odds()     -> read your ag-odds / prediction-market data, return a list of
-                           {label, pct} buckets for the report's headline metric.
-  3. positioning()      -> read your COT data, return a one-line net-position summary.
+and emits data/whats-priced-in.json in the exact shape the page consumes:
+  { updated, sample, upcoming{...}, history[...] }
 
-MANUAL INPUT (the one human step, by design):
-  data/wpi-estimates.json  -- you enter the pre-report trade estimate per release:
-    {
-      "2026-06-11": {
-        "metric": "2026/27 US corn ending stocks",
-        "estimate_low": 1.62, "estimate_high": 1.98, "estimate_avg": 1.80, "unit": "bil bu",
-        "expectation": "Trade looks for ...",
-        "bullish_threshold": "below ~1.65 bil bu",
-        "bearish_threshold": "above ~1.92 bil bu"
-      }
-    }
-  After the report, move that release into data/wpi-history.json with the actual + reaction,
-  and this script appends it to the page's track record.
+What it does beyond pass-through:
+  • Picks the next report whose date is today-or-later as `upcoming`
+    (so the card rolls over automatically as report dates pass — run daily).
+  • Derives the bullish/bearish surprise thresholds from the trade range
+    when they aren't spelled out (convention: a print BELOW the low end is
+    bullish — less supply — and ABOVE the high end is bearish; this holds
+    for both ending-stocks and production metrics).
+  • Scores each history row's surprise from expected vs. actual when the
+    row doesn't already carry a `surprise` (|gap| <= IN_LINE_PCT -> in line;
+    actual < expected -> bullish; actual > expected -> bearish).
+  • Sets `sample` to false whenever any real report/history is present, so
+    the page's "illustrative" ribbon turns itself off.
+
+Stdlib only. No secrets, no network. Safe to run on every push + daily cron.
 """
-
 import json
 import os
-import datetime as dt
+import sys
+from datetime import datetime, timezone
 
-HERE = os.path.dirname(__file__)
-DATA_PATH = os.path.join(HERE, "..", "data", "whats-priced-in.json")
-EST_PATH = os.path.join(HERE, "..", "data", "wpi-estimates.json")
-HIST_PATH = os.path.join(HERE, "..", "data", "wpi-history.json")
+EST_PATH  = "data/wpi-estimates.json"
+HIST_PATH = "data/wpi-history.json"
+OUT_PATH  = "data/whats-priced-in.json"
+IN_LINE_PCT = 0.02   # within 2% of the trade estimate counts as "in line"
 
-
-def _load(path, default):
-    try:
-        with open(path, encoding="utf-8") as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return default
-
-
-# ---- ADAPTER POINTS -------------------------------------------------------
-def next_report():
-    """Return the next scheduled report dict, or None. Wire to your USDA calendar."""
-    raise NotImplementedError("Wire next_report() to your USDA report calendar data.")
+UPCOMING_FIELDS = ["report", "date", "time", "commodity", "metric", "expectation",
+                   "estimate_low", "estimate_high", "estimate_avg", "unit",
+                   "implied_odds", "bullish_threshold", "bearish_threshold",
+                   "positioning"]
+HISTORY_FIELDS  = ["date", "report", "metric", "expected", "actual", "unit",
+                   "surprise", "reaction"]
 
 
-def implied_odds(report_date):
-    """Return a list of {label, pct}. Wire to your ag-odds / prediction-market data."""
-    return []
+def _load(path, key):
+    if not os.path.exists(path):
+        return []
+    with open(path) as f:
+        data = json.load(f)
+    rows = data.get(key, [])
+    return rows if isinstance(rows, list) else []
 
 
-def positioning(commodity):
-    """Return a one-line fund-positioning summary. Wire to your COT data."""
-    return ""
-# ---------------------------------------------------------------------------
+def _fmt(v, unit):
+    """Compact number for threshold strings (drops a trailing .0)."""
+    if isinstance(v, float) and v.is_integer():
+        v = int(v)
+    return f"{v}{(' ' + unit) if unit else ''}"
 
 
-def build():
-    nxt = next_report()
-    upcoming = None
-    if nxt:
-        est = _load(EST_PATH, {}).get(nxt["date"], {})
-        upcoming = {
-            "report": nxt.get("report"),
-            "date": nxt.get("date"),
-            "time": nxt.get("time", ""),
-            "commodity": nxt.get("commodity", ""),
-            "metric": est.get("metric", ""),
-            "expectation": est.get("expectation", ""),
-            "estimate_low": est.get("estimate_low"),
-            "estimate_high": est.get("estimate_high"),
-            "estimate_avg": est.get("estimate_avg"),
-            "unit": est.get("unit", ""),
-            "implied_odds": implied_odds(nxt["date"]),
-            "positioning": positioning(nxt.get("commodity", "")),
-            "bullish_threshold": est.get("bullish_threshold", ""),
-            "bearish_threshold": est.get("bearish_threshold", ""),
-        }
+def build_upcoming(reports, today):
+    future = sorted((r for r in reports if (r.get("date") or "") >= today),
+                    key=lambda r: r["date"])
+    if not future:
+        return None
+    r = dict(future[0])
+    out = {k: r.get(k) for k in UPCOMING_FIELDS}
+    if not isinstance(out.get("implied_odds"), list):
+        out["implied_odds"] = []
+    lo, hi, unit = out.get("estimate_low"), out.get("estimate_high"), out.get("unit") or ""
+    # Derive surprise thresholds from the range only when both bounds exist
+    # and the author hasn't supplied explicit threshold text.
+    if lo is not None and hi is not None:
+        if not out.get("bullish_threshold"):
+            out["bullish_threshold"] = "Below " + _fmt(lo, unit)
+        if not out.get("bearish_threshold"):
+            out["bearish_threshold"] = "Above " + _fmt(hi, unit)
+    return out
 
-    history = sorted(_load(HIST_PATH, []), key=lambda r: r.get("date", ""), reverse=True)
 
-    return {
-        "updated": dt.date.today().isoformat(),
-        "sample": False,
-        "upcoming": upcoming,
-        "history": history,
-    }
+def score(expected, actual):
+    if expected in (None, 0) or actual is None:
+        return "in line"
+    gap = (actual - expected) / abs(expected)
+    if abs(gap) <= IN_LINE_PCT:
+        return "in line"
+    return "bullish" if actual < expected else "bearish"
+
+
+def build_history(rows):
+    out = []
+    for r in rows:
+        row = {k: r.get(k) for k in HISTORY_FIELDS}
+        if not row.get("surprise"):
+            row["surprise"] = score(r.get("expected"), r.get("actual"))
+        out.append(row)
+    # newest first
+    out.sort(key=lambda x: x.get("date") or "", reverse=True)
+    return out
 
 
 def main():
-    out = build()
-    os.makedirs(os.path.dirname(DATA_PATH), exist_ok=True)
-    with open(DATA_PATH, "w", encoding="utf-8") as f:
-        json.dump(out, f, indent=2)
-    print(f"wrote {DATA_PATH}")
+    reports = _load(EST_PATH, "reports")
+    hist_rows = _load(HIST_PATH, "history")
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+    upcoming = build_upcoming(reports, today)
+    history = build_history(hist_rows)
+    has_real = bool(upcoming) or bool(history)
+
+    out = {
+        "updated": today,
+        "sample": (not has_real),
+        "upcoming": upcoming,
+        "history": history,
+    }
+    os.makedirs(os.path.dirname(OUT_PATH) or ".", exist_ok=True)
+    with open(OUT_PATH, "w") as f:
+        json.dump(out, f, separators=(",", ":"))
+
+    nxt = upcoming["report"] + " " + upcoming["date"] if upcoming else "none scheduled"
+    print(f"[whats-priced-in] upcoming={nxt} | history={len(history)} rows | "
+          f"sample={out['sample']} -> wrote {OUT_PATH}")
 
 
 if __name__ == "__main__":
