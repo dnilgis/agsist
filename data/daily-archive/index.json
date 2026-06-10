@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-06-10",
+      "date_display": "Wednesday, June 10, 2026",
+      "headline": "CATTLE BOUNCE SHARP, MILK LEADS COMPLEX HIGHER",
+      "teaser": "Live cattle post biggest bounce in two weeks as processing fears ease slightly.",
+      "market_mood": "mixed",
+      "surprise_count": 2,
+      "sections": 3,
+      "url": "/daily/2026-06-10",
+      "market_closed": false,
+      "yc_outcome": "played_out"
+    },
+    {
       "date": "2026-06-09",
       "date_display": "Tuesday, June 9, 2026",
       "headline": "GRAINS TICK HIGHER, LIVESTOCK FALLS ON SCREWWORM FEARS",
@@ -988,6 +1000,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-09T13:46:31.754053+00:00",
-  "count": 89
+  "updated": "2026-06-10T14:30:00.017552+00:00",
+  "count": 90
 }

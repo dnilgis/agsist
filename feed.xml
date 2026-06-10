@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 09 Jun 2026 13:46:40 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 10 Jun 2026 14:30:01 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE BOUNCE SHARP, MILK LEADS COMPLEX HIGHER</title>
+      <link>https://agsist.com/daily/2026-06-10</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-10</guid>
+      <pubDate>Wed, 10 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Live cattle closed $239.70, up 1.3%, the biggest bounce in two weeks after Monday's screwworm breakdown tested $235. Class III milk ran 3.4% to $17.64, leading the livestock complex higher as processing constraints show signs of easing. The cattle bounce is real but narrow: feeders gained just 1%, suggesting the market is pricing selective strength, not broad livestock recovery.
+Live cattle up 1.3% as processing fears ease, while hogs fall 2.9% on different demand dynamics.
+• CATTLE BOUNCE ON PROCESSING RELIEF
+• MILK LEADS HIGHER, HOGS DIVERGE
+• GRAINS TICK HIGHER ON FUND ROTATION
+Read more: https://agsist.com/daily/2026-06-10</description>
+    </item>
     <item>
       <title>GRAINS TICK HIGHER, LIVESTOCK FALLS ON SCREWWORM FEARS</title>
       <link>https://agsist.com/daily/2026-06-09</link>
@@ -358,18 +370,6 @@ Lean hogs jump $104.50 on overnight short covering while live cattle shed 2% on 
 • Cattle Break Support
 • Grains Inch Higher
 Read more: https://agsist.com/daily/2026-05-12</description>
-    </item>
-    <item>
-      <title>SILVER EXPLODES SIX PERCENT AS GRAINS DRIFT</title>
-      <link>https://agsist.com/daily/2026-05-11</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-11</guid>
-      <pubDate>Mon, 11 May 2026 05:00:00 -0600</pubDate>
-      <description>Silver exploded 5.9% to $86.02, the biggest one-day move since March, while corn drifted a half penny lower to $4.73 and beans barely budged at $12.16. The metals are pricing Middle East supply disruption risk that agricultural commodities haven't found yet. With planting week starting and prevent plant deadlines three weeks out, the grain complex is waiting for weather, not geopolitics.
-Metals lead while corn and beans mark time ahead of planting week.
-• Grains Mark Time
-• Cattle Rally Back
-• Metals Explode
-Read more: https://agsist.com/daily/2026-05-11</description>
     </item>
   </channel>
 </rss>
