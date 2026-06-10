@@ -1,0 +1,39 @@
+name: Build Analyst Scorecard
+
+on:
+  push:
+    paths:
+      - "data/analyst-estimates.json"
+      - "scripts/build_analyst_scorecard.py"
+  schedule:
+    - cron: "25 11 * * *"   # 11:25 UTC daily — rolls the "next report" panel as dates pass
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: analyst-scorecard
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build analyst-scorecard.json
+        run: python scripts/build_analyst_scorecard.py
+      - name: Commit if changed
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add data/analyst-scorecard.json
+          if git diff --staged --quiet; then
+            echo "No change."
+          else
+            git commit -m "Update analyst scorecard $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push
+          fi
