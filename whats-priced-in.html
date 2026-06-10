@@ -63,6 +63,19 @@
 .wp-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;}
 .wp-tag{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.78rem;white-space:nowrap;}
 .wp-tag.bull{color:var(--wp-up);} .wp-tag.bear{color:var(--wp-dn);} .wp-tag.flat{color:var(--wp-mut);}
+@media(max-width:640px){
+  #wp-history{overflow-x:visible;}
+  .wp-tbl{min-width:0;display:block;font-size:.92rem;}
+  .wp-tbl thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  .wp-tbl tbody{display:block;}
+  .wp-tbl tr{display:block;background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:10px;padding:.7rem .85rem;margin:0 0 .7rem;}
+  .wp-tbl td{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;border:none;padding:.25rem 0;white-space:normal;text-align:right;}
+  .wp-tbl td::before{content:attr(data-label);color:var(--wp-mut);font-size:.7rem;text-transform:uppercase;letter-spacing:.03em;font-weight:600;text-align:left;flex:0 0 auto;}
+  .wp-tbl td.num{font-family:'JetBrains Mono',monospace;}
+  .wp-tbl td[data-label="Metric"],.wp-tbl td[data-label="Reaction"]{display:block;text-align:left;}
+  .wp-tbl td[data-label="Metric"]::before,.wp-tbl td[data-label="Reaction"]::before{display:block;margin-bottom:.15rem;}
+  .wp-tbl td[data-label="Reaction"]{border-top:1px solid var(--wp-line);margin-top:.35rem;padding-top:.5rem;color:var(--wp-mut);}
+}
 .wp-faq details{border:1px solid var(--wp-line);border-radius:10px;background:var(--wp-panel);margin:.5rem 0;padding:0 1rem;}
 .wp-faq summary{cursor:pointer;padding:.85rem 0;font-weight:600;list-style:none;}
 .wp-faq summary::-webkit-details-marker{display:none;}
@@ -82,6 +95,88 @@
 .wp-cred{margin-top:1.6rem;font-size:.86rem;color:var(--wp-mut);line-height:1.5;border-top:1px solid var(--wp-line);padding-top:1rem;}
 .wp-cred a{color:var(--wp-gold2);}
 .wp-err{color:var(--wp-mut);background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:10px;padding:1rem;}
+
+:root{--as-green:#4aab4c;--as-gold:#daa520;--as-gold2:#e6b042;--as-bg:#0f1311;--as-panel:#161b18;--as-panel2:#1d2420;--as-line:#2a332d;--as-txt:#e7ece8;--as-mut:#9bb0a3;--as-up:#4aab4c;--as-dn:#d9534f;}
+.as-ribbon{font-size:.85rem;color:var(--as-gold2);background:rgba(218,165,32,.08);border:1px solid var(--as-gold);border-radius:8px;padding:.6rem .8rem;margin:0 0 1.1rem;}
+.as-err{color:var(--as-mut);background:var(--as-panel);border:1px solid var(--as-line);border-radius:10px;padding:1rem;}
+.as-tbl{width:100%;border-collapse:collapse;font-size:.92rem;margin-top:.4rem;}
+.as-tbl th,.as-tbl td{text-align:left;padding:.6rem .55rem;border-bottom:1px solid var(--as-line);vertical-align:top;}
+.as-tbl th{font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;color:var(--as-mut);font-weight:600;white-space:nowrap;}
+.as-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;white-space:nowrap;}
+.as-tbl .rk{font-family:'JetBrains Mono',monospace;color:var(--as-mut);width:1.6rem;}
+.as-tbl .who{font-weight:600;color:#fff;}
+.as-tbl .firm{display:block;font-weight:400;font-size:.8rem;color:var(--as-mut);}
+.as-acc{color:var(--as-gold2);font-weight:700;}
+.as-beat{color:var(--as-up);} .as-beat.lo{color:var(--as-mut);}
+.as-bias{color:var(--as-mut);}
+.as-bias .hi{color:var(--as-dn);} .as-bias .lo{color:var(--as-up);}
+.as-legend{font-size:.8rem;color:var(--as-mut);line-height:1.5;margin-top:.6rem;}
+.as-legend b{color:var(--as-txt);}
+.as-panelbox{background:var(--as-panel);border:1px solid var(--as-line);border-radius:12px;padding:1rem 1.1rem;}
+.as-pa{padding:.5rem 0;border-bottom:1px solid var(--as-line);}
+.as-pa:last-child{border-bottom:none;}
+.as-pa .nm{font-weight:600;color:#fff;}
+.as-pa .fm{color:var(--as-mut);font-size:.82rem;}
+.as-pa .vals{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--as-txt);margin-top:.25rem;}
+.as-pa .vals span{color:var(--as-mut);}
+.as-rep{background:var(--as-panel);border:1px solid var(--as-line);border-radius:12px;padding:1rem 1.1rem;margin-bottom:.8rem;}
+.as-rep .hd{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;flex-wrap:wrap;}
+.as-rep .rpt{font-family:Oswald,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;}
+.as-rep .cd{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--as-gold2);}
+.as-met{margin-top:.9rem;border-top:1px solid var(--as-line);padding-top:.7rem;}
+.as-met .ml{font-weight:600;color:var(--as-txt);}
+.as-met .mc{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--as-mut);}
+.as-tag{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.76rem;white-space:nowrap;}
+.as-tag.bull{color:var(--as-up);} .as-tag.bear{color:var(--as-dn);} .as-tag.flat{color:var(--as-mut);}
+.as-roster{display:flex;flex-wrap:wrap;gap:.5rem;}
+.as-chip{display:inline-flex;flex-direction:column;background:var(--as-panel2);border:1px solid var(--as-line);border-radius:8px;padding:.45rem .7rem;}
+.as-chip b{font-size:.88rem;color:#fff;} .as-chip span{font-size:.75rem;color:var(--as-mut);}
+.as-method{background:var(--as-panel);border:1px solid var(--as-line);border-radius:14px;padding:1.1rem 1.15rem;}
+.as-method p{color:var(--as-mut);line-height:1.55;font-size:.95rem;margin:0 0 .8rem;}
+.as-method p:last-child{margin-bottom:0;}
+.as-method b{color:var(--as-txt);}
+.as-method .src{font-size:.82rem;border-top:1px solid var(--as-line);padding-top:.7rem;}
+.as-faq details{border:1px solid var(--as-line);border-radius:10px;background:var(--as-panel);margin:.5rem 0;padding:0 1rem;}
+.as-faq summary{cursor:pointer;padding:.85rem 0;font-weight:600;list-style:none;}
+.as-faq summary::-webkit-details-marker{display:none;}
+.as-faq summary::after{content:"+";float:right;color:var(--as-gold2);font-weight:700;}
+.as-faq details[open] summary::after{content:"\2212";}
+.as-faq p{margin:0 0 .9rem;color:var(--as-mut);line-height:1.55;font-size:.95rem;}
+.as-cred{margin-top:1.6rem;font-size:.86rem;color:var(--as-mut);line-height:1.5;border-top:1px solid var(--as-line);padding-top:1rem;}
+.as-cred a{color:var(--as-gold2);}
+@media(max-width:640px){
+  #as-board{overflow-x:visible;}
+  .as-tbl{display:block;min-width:0;}
+  .as-tbl thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  .as-tbl tbody{display:block;}
+  .as-tbl tr{display:block;background:var(--as-panel);border:1px solid var(--as-line);border-radius:10px;padding:.7rem .85rem;margin:0 0 .7rem;}
+  .as-tbl td{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;border:none;padding:.25rem 0;white-space:normal;text-align:right;}
+  .as-tbl td::before{content:attr(data-label);color:var(--as-mut);font-size:.7rem;text-transform:uppercase;letter-spacing:.03em;font-weight:600;text-align:left;flex:0 0 auto;}
+  .as-tbl td.num{font-family:'JetBrains Mono',monospace;}
+  .as-tbl td[data-label="Analyst"]{display:block;text-align:left;border-bottom:1px solid var(--as-line);margin-bottom:.35rem;padding-bottom:.4rem;}
+  .as-tbl td[data-label="Analyst"]::before{display:none;}
+  .as-tbl td[data-label="Analyst"] .who{font-size:1.05rem;}
+}
+.as-sub{font-family:Oswald,sans-serif;font-weight:600;font-size:1.05rem;margin:1.5rem 0 .5rem;color:var(--wp-txt);}
+.as-pl-rep{background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:12px;padding:.9rem 1rem;margin-bottom:.7rem;}
+.as-pl-hd{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;margin-bottom:.55rem;padding-bottom:.5rem;border-bottom:1px solid var(--wp-line);}
+.as-pl-rep-name{font-family:Oswald,sans-serif;font-weight:700;font-size:1.08rem;color:#fff;}
+.as-pl-date{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--wp-gold2);}
+.as-pl-met{padding-top:.6rem;}
+.as-pl-met+.as-pl-met{border-top:1px solid var(--wp-line);margin-top:.55rem;}
+.as-pl-met-lbl{font-size:.82rem;color:var(--wp-mut);margin-bottom:.35rem;}
+.as-pl-met-lbl b{color:var(--wp-txt);font-size:.92rem;}
+.as-pl-call{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;padding:.28rem 0;}
+.as-pl-who{font-weight:600;color:#fff;font-size:.92rem;}
+.as-pl-link{color:#fff;text-decoration:none;border-bottom:1px dotted var(--wp-mut);}
+.as-pl-link:hover{border-bottom-color:var(--wp-gold2);}
+.as-pl-firm{color:var(--wp-mut);font-size:.78rem;}
+.as-pl-val{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--wp-txt);margin-left:auto;}
+.as-pl-badge{font-family:'JetBrains Mono',monospace;font-size:.73rem;font-weight:700;padding:.12rem .5rem;border-radius:5px;white-space:nowrap;}
+.as-pl-badge.bull{color:var(--wp-up);background:rgba(74,171,76,.13);}
+.as-pl-badge.bear{color:var(--wp-dn);background:rgba(217,83,79,.13);}
+.as-pl-badge.neut{color:var(--wp-mut);background:rgba(155,176,163,.1);}
+@media(max-width:560px){.as-pl-val{margin-left:0;}.as-pl-call{gap:.4rem;}}
 </style>
 </head>
 <body>
@@ -104,6 +199,27 @@
   <h2>Track record</h2>
   <p class="wp-lede" style="margin-bottom:.4rem">How the expectation lined up against the actual print, and which way price moved.</p>
   <div id="wp-history"></div>
+
+  <h2>Forecaster scorecard</h2>
+  <p class="wp-lede" style="margin-bottom:.6rem">Who calls these reports best &mdash; public forecasters scored against the actual print on accuracy, how often they beat the trade consensus, and which way they lean.</p>
+  <div class="as-ribbon" id="as-ribbon" style="display:none">Scoring begins with the June 11 WASDE &mdash; the ranked board posts once the first report is scored against the actual print. Below is who's tracked and on record.</div>
+
+  <h3 class="as-sub">Leaderboard</h3>
+  <div id="as-board"><div class="as-err" id="as-board-loading">Loading the scorecard&hellip;</div></div>
+  <div class="as-legend" id="as-legend" style="display:none"><b>Accuracy</b> = average % off the USDA actual (lower is better, the ranking driver). <b>Beat trade</b> = share of calls closer than the trade consensus. <b>Bias</b> = average signed % error &mdash; <span style="color:var(--wp-dn)">high</span> means systematically over, <span style="color:var(--wp-up)">low</span> means under. <b>Calls</b> = scored metrics; an analyst needs <span id="as-minn">3</span>+ before being ranked.</div>
+
+  <h3 class="as-sub">Calls on the board</h3>
+  <p class="as-legend" style="margin:.1rem 0 .5rem">Every forecast already filed for an upcoming report &mdash; timestamped now, graded automatically once USDA prints. Lean is versus the trade consensus, or USDA's standing projection where no survey exists yet.</p>
+  <div id="as-upcoming"></div>
+
+  <h3 class="as-sub">Tracked forecasters</h3>
+  <div id="as-roster"></div>
+
+  <h3 class="as-sub">By report</h3>
+  <div id="as-reports"></div>
+
+  <p class="as-legend" style="margin-top:1rem">How it's scored: public pre-report forecasts measured against the USDA actual &mdash; accuracy is mean absolute % error, beat-trade is the share landing closer than the consensus, bias is mean signed % error. A forecaster needs 3+ scored calls to be ranked. It tracks the most <i>public</i> forecasters, not necessarily the best, and is a track record &mdash; not advice or an endorsement.</p>
+
 
   <h2>Methodology</h2>
   <div class="wp-method">
@@ -213,9 +329,9 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
     if(!h||!h.length)return '<div class="wp-err">No scored reports yet.</div>';
     var rows=h.map(function(r){
       var cls=(r.surprise==='bullish')?'bull':(r.surprise==='bearish'?'bear':'flat');
-      return '<tr><td>'+r.date+'</td><td>'+r.report+'</td><td>'+r.metric+'</td>'
-        +'<td class="num">'+num(r.expected,r.unit)+'</td><td class="num">'+num(r.actual,r.unit)+'</td>'
-        +'<td><span class="wp-tag '+cls+'">'+(r.surprise||'in line')+'</span></td><td>'+(r.reaction||'')+'</td></tr>';
+      return '<tr><td data-label="Date">'+r.date+'</td><td data-label="Report">'+r.report+'</td><td data-label="Metric">'+r.metric+'</td>'
+        +'<td class="num" data-label="Expected">'+num(r.expected,r.unit)+'</td><td class="num" data-label="Actual">'+num(r.actual,r.unit)+'</td>'
+        +'<td data-label="Result"><span class="wp-tag '+cls+'">'+(r.surprise||'in line')+'</span></td><td data-label="Reaction">'+(r.reaction||'')+'</td></tr>';
     }).join('');
     return '<table class="wp-tbl"><thead><tr><th>Date</th><th>Report</th><th>Metric</th><th class="num">Expected</th><th class="num">Actual</th><th>Result</th><th>Reaction</th></tr></thead><tbody>'+rows+'</tbody></table>';
   }
@@ -235,6 +351,89 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
   var wrap=document.querySelector('.wp-wrap');
   if(wrap)wrap.addEventListener('click',function(e){var a=e.target.closest('a[href^="/"]');if(a)gaEvent('wpi_link',{to:a.getAttribute('href'),page:'whats-priced-in'});});
   document.querySelectorAll('#wp-faq details').forEach(function(d){d.addEventListener('toggle',function(){if(d.open)gaEvent('faq_open',{page:'whats-priced-in'});});});
+})();
+</script>
+<script>
+(function(){
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function biasCell(b){
+    if(b==null)return '<span class="as-bias">&mdash;</span>';
+    if(Math.abs(b)<0.25)return '<span class="as-bias">&#8776; even</span>';
+    var hi=b>0;return '<span class="as-bias"><span class="'+(hi?'hi':'lo')+'">'+(hi?'+':'')+b.toFixed(2)+'% '+(hi?'high':'low')+'</span></span>';
+  }
+  function boardTbl(rows){
+    if(!rows||!rows.length)return '<div class="as-err">No ranked forecasters yet &mdash; the board posts after the first report is scored.</div>';
+    var body=rows.map(function(r,i){
+      var beatCls=(r.beat_rate!=null&&r.beat_rate>=50)?'as-beat':'as-beat lo';
+      return '<tr><td class="rk" data-label="#">'+(i+1)+'</td>'
+        +'<td data-label="Analyst"><span class="who">'+esc(r.analyst)+'</span><span class="firm">'+esc(r.firm)+'</span></td>'
+        +'<td class="num" data-label="Calls">'+r.n+'</td>'
+        +'<td class="num" data-label="Accuracy"><span class="as-acc">'+r.mape.toFixed(2)+'%</span></td>'
+        +'<td class="num" data-label="Beat trade">'+(r.beat_rate==null?'&mdash;':'<span class="'+beatCls+'">'+r.beat_rate+'%</span>')+'</td>'
+        +'<td class="num" data-label="Bias">'+biasCell(r.bias)+'</td></tr>';
+    }).join('');
+    return '<table class="as-tbl"><thead><tr><th>#</th><th>Analyst</th><th class="num">Calls</th><th class="num">Accuracy</th><th class="num">Beat trade</th><th class="num">Bias</th></tr></thead><tbody>'+body+'</tbody></table>';
+  }
+  function upcomingPanel(u){
+    if(!u||!u.panel||!u.panel.length)return '<div class="as-err">No forecasts logged yet for the next report. Check back as analysts publish ahead of the release.</div>';
+    var rows=u.panel.map(function(p){
+      var vals=p.metrics.map(function(m){return '<span>'+esc(m.label)+':</span> '+esc(m.value)+(m.unit?(' '+esc(m.unit)):'');}).join(' &nbsp; ');
+      var nm=p.source?('<a href="'+esc(p.source)+'" target="_blank" rel="noopener" style="color:#fff;text-decoration:none">'+esc(p.analyst)+'</a>'):esc(p.analyst);
+      return '<div class="as-pa"><span class="nm">'+nm+'</span> <span class="fm">'+esc(p.firm)+'</span><div class="vals">'+vals+'</div></div>';
+    }).join('');
+    return '<div class="as-panelbox"><div style="font-family:\'JetBrains Mono\',monospace;font-size:.8rem;color:var(--as-gold2);margin-bottom:.4rem">'+esc(u.report)+' &middot; '+esc(u.date)+'</div>'+rows+'</div>';
+  }
+  function pipelineEl(pl){
+    if(!pl||!pl.length)return '<div class="as-err">No calls filed yet. As forecasters post numbers ahead of a report, they land here &mdash; timestamped, and graded automatically once USDA prints.</div>';
+    return pl.map(function(r){
+      var mets=r.metrics.map(function(m){
+        var ref=(m.consensus!=null)?('trade '+m.consensus):(m.usda_current!=null?('USDA '+m.usda_current):'');
+        var calls=m.calls.map(function(c){
+          var lc=(c.lean==='bullish')?'bull':(c.lean==='bearish'?'bear':'neut');
+          var dev=(c.dev_pct!=null)?((c.dev_pct>0?'+':'')+c.dev_pct+'% '+esc(c.ref_label)):'';
+          var nm=c.source?('<a href="'+esc(c.source)+'" target="_blank" rel="noopener" class="as-pl-link">'+esc(c.analyst)+'</a>'):esc(c.analyst);
+          return '<div class="as-pl-call"><span class="as-pl-who">'+nm+'</span><span class="as-pl-firm">'+esc(c.firm)+'</span>'
+            +'<span class="as-pl-val">'+esc(c.value)+(m.unit?(' '+esc(m.unit)):'')+'</span>'
+            +'<span class="as-pl-badge '+lc+'">'+(dev?dev+' &middot; ':'')+esc(c.lean)+'</span></div>';
+        }).join('');
+        return '<div class="as-pl-met"><div class="as-pl-met-lbl"><b>'+esc(m.label)+'</b>'+(ref?(' &middot; '+esc(ref)):'')+'</div>'+calls+'</div>';
+      }).join('');
+      return '<div class="as-pl-rep"><div class="as-pl-hd"><span class="as-pl-rep-name">'+esc(r.report)+'</span><span class="as-pl-date">'+esc(r.date)+'</span></div>'+mets+'</div>';
+    }).join('');
+  }
+  function rosterEl(list){
+    if(!list||!list.length)return '';
+    return '<div class="as-roster">'+list.map(function(a){return '<span class="as-chip"><b>'+esc(a.firm||a.analyst)+'</b><span>'+esc(a.analyst)+'</span></span>';}).join('')+'</div>';
+  }
+  function reportsEl(reps){
+    if(!reps||!reps.length)return '<div class="as-err">No scored reports yet. The first lands after the June 11 WASDE.</div>';
+    return reps.map(function(r){
+      var mets=r.metrics.map(function(m){
+        var cls=(m.surprise==='bullish')?'bull':(m.surprise==='bearish'?'bear':'flat');
+        var res=m.results.map(function(x){
+          return '<div style="display:flex;justify-content:space-between;gap:1rem;font-size:.86rem;padding:.15rem 0;color:var(--as-mut)"><span'+(x.closest?' style="color:var(--as-up)"':'')+'>'+(x.closest?'&#9733; ':'')+esc(x.analyst)+'</span><span style="font-family:\'JetBrains Mono\',monospace">'+esc(x.value)+' &middot; '+x.err_pct.toFixed(2)+'% off'+(x.beat?' &middot; <span style="color:var(--as-up)">beat</span>':'')+'</span></div>';
+        }).join('');
+        return '<div class="as-met"><div style="display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap"><span class="ml">'+esc(m.label)+'</span><span class="as-tag '+cls+'">'+esc(m.surprise||'in line')+'</span></div>'
+          +'<div class="mc">consensus '+esc(m.consensus==null?'&mdash;':m.consensus)+' &middot; actual '+esc(m.actual)+(m.unit?(' '+esc(m.unit)):'')+'</div>'+res+'</div>';
+      }).join('');
+      return '<div class="as-rep"><div class="hd"><span class="rpt">'+esc(r.report)+'</span><span class="cd">'+esc(r.date)+'</span></div>'+mets+'</div>';
+    }).join('');
+  }
+  fetch('/data/analyst-scorecard.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
+    if(d.sample){document.getElementById('as-ribbon').style.display='block';}
+    document.getElementById('as-board').innerHTML=boardTbl(d.leaderboard);
+    if(d.leaderboard&&d.leaderboard.length){document.getElementById('as-legend').style.display='block';document.getElementById('as-minn').textContent=d.min_n||3;}
+    document.getElementById('as-upcoming').innerHTML=pipelineEl(d.pipeline);
+    document.getElementById('as-roster').innerHTML=rosterEl(d.roster)||'<div class="as-err">Roster loading&hellip;</div>';
+    document.getElementById('as-reports').innerHTML=reportsEl(d.reports);
+    try{var s=document.getElementById('as-dataset-ld');if(s&&d.updated){var ld=JSON.parse(s.textContent);ld.dateModified=d.updated;s.textContent=JSON.stringify(ld);}}catch(e){}
+    gaEvent('scorecard_view',{ranked:(d.leaderboard||[]).length,scored_reports:(d.reports||[]).length});
+  }).catch(function(){
+    document.getElementById('as-board').innerHTML='<div class="as-err">The scorecard is briefly unavailable. See <a href="/whats-priced-in" style="color:var(--as-gold2)">what\'s priced in</a> and the <a href="/usda-calendar" style="color:var(--as-gold2)">USDA calendar</a>.</div>';
+  });
+  var wrap=document.querySelector('.as-wrap');
+  if(wrap)wrap.addEventListener('click',function(e){var a=e.target.closest('a[href^="/"]');if(a)gaEvent('scorecard_link',{to:a.getAttribute('href'),page:'analyst-scorecard'});});
+  document.querySelectorAll('#as-faq details').forEach(function(x){x.addEventListener('toggle',function(){if(x.open)gaEvent('faq_open',{page:'analyst-scorecard'});});});
 })();
 </script>
 <script src="/components/loader.js" defer></script>
