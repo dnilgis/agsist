@@ -61,8 +61,26 @@
 .wp-tbl th{font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;color:var(--wp-mut);font-weight:600;white-space:nowrap;}
 .wp-tbl td:first-child,.wp-tbl td.num{white-space:nowrap;}
 .wp-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;}
-.wp-tag{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.78rem;white-space:nowrap;}
-.wp-tag.bull{color:var(--wp-up);} .wp-tag.bear{color:var(--wp-dn);} .wp-tag.flat{color:var(--wp-mut);}
+.wp-tag{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.7rem;white-space:nowrap;text-transform:uppercase;letter-spacing:.02em;padding:.13rem .5rem;border-radius:5px;}
+.wp-tag.bull{color:var(--wp-up);background:rgba(74,171,76,.13);}
+.wp-tag.bear{color:var(--wp-dn);background:rgba(217,83,79,.13);}
+.wp-tag.flat{color:var(--wp-mut);background:rgba(155,176,163,.1);}
+.wp-hg{background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:14px;padding:.65rem .95rem .35rem;margin:0 0 .9rem;}
+.wp-hg-hd{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;padding-bottom:.5rem;border-bottom:1px solid var(--wp-line);}
+.wp-hg-rpt{font-family:Oswald,sans-serif;font-weight:700;font-size:1.1rem;color:#fff;}
+.wp-hg-meta{display:flex;align-items:center;gap:.5rem;flex-shrink:0;}
+.wp-hg-pill{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:.13rem .5rem;border-radius:999px;white-space:nowrap;}
+.wp-hg-pill.surp{color:var(--wp-gold2);background:rgba(230,176,66,.13);}
+.wp-hg-pill.line{color:var(--wp-mut);background:rgba(155,176,163,.1);}
+.wp-hg-date{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--wp-gold2);white-space:nowrap;}
+.wp-hr{padding:.6rem 0;border-top:1px solid var(--wp-line);}
+.wp-hr:first-of-type{border-top:none;}
+.wp-hr-top{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;}
+.wp-hr-metric{font-weight:600;color:var(--wp-txt);font-size:.95rem;}
+.wp-hr-nums{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--wp-mut);margin:.3rem 0 .25rem;}
+.wp-hr-nums b.bull{color:var(--wp-up);} .wp-hr-nums b.bear{color:var(--wp-dn);} .wp-hr-nums b.flat{color:var(--wp-txt);}
+.wp-arrow{color:var(--wp-mut);padding:0 .15rem;}
+.wp-hr-reaction{font-size:.88rem;color:var(--wp-mut);line-height:1.45;}
 .wp-result{background:var(--wp-panel);border:1px solid var(--wp-line);border-left-width:4px;border-radius:12px;padding:.9rem 1.05rem;margin:.2rem 0 1.4rem;}
 .wp-result.bull{border-left-color:var(--wp-up);} .wp-result.bear{border-left-color:var(--wp-dn);} .wp-result.flat{border-left-color:var(--wp-mut);}
 .wp-res-hd{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;margin-bottom:.4rem;}
@@ -144,8 +162,14 @@
 .as-met{margin-top:.9rem;border-top:1px solid var(--as-line);padding-top:.7rem;}
 .as-met .ml{font-weight:600;color:var(--as-txt);}
 .as-met .mc{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--as-mut);}
-.as-tag{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.76rem;white-space:nowrap;}
-.as-tag.bull{color:var(--as-up);} .as-tag.bear{color:var(--as-dn);} .as-tag.flat{color:var(--as-mut);}
+.as-tag{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.68rem;white-space:nowrap;text-transform:uppercase;letter-spacing:.02em;padding:.13rem .5rem;border-radius:5px;}
+.as-tag.bull{color:var(--as-up);background:rgba(74,171,76,.13);} .as-tag.bear{color:var(--as-dn);background:rgba(217,83,79,.13);} .as-tag.flat{color:var(--as-mut);background:rgba(155,176,163,.1);}
+.as-met-hd{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap;align-items:baseline;}
+.as-arrow{color:var(--as-mut);padding:0 .1rem;}
+.as-res-row{display:flex;justify-content:space-between;gap:.6rem;font-size:.84rem;padding:.22rem 0;color:var(--as-mut);flex-wrap:wrap;}
+.as-res-who{color:var(--as-txt);} .as-res-who.best{color:var(--as-up);font-weight:600;}
+.as-res-stat{font-family:'JetBrains Mono',monospace;}
+.as-res-beat{color:var(--as-up);}
 .as-roster{display:flex;flex-wrap:wrap;gap:.5rem;}
 .as-chip{display:inline-flex;flex-direction:column;background:var(--as-panel2);border:1px solid var(--as-line);border-radius:8px;padding:.45rem .7rem;}
 .as-chip b{font-size:.88rem;color:#fff;} .as-chip span{font-size:.75rem;color:var(--as-mut);}
@@ -235,7 +259,8 @@
   <h3 class="as-sub">Tracked forecasters</h3>
   <div id="as-roster"></div>
 
-  <h3 class="as-sub">By report</h3>
+  <h3 class="as-sub">Graded calls</h3>
+  <p class="as-legend" style="margin:.1rem 0 .5rem">Forecasters who went on record, scored against the print. &#9733; marks the closest call; &ldquo;beat trade&rdquo; means closer than the consensus.</p>
   <div id="as-reports"></div>
 
   <p class="as-legend" style="margin-top:1rem">How it's scored: public pre-report forecasts measured against the USDA actual &mdash; accuracy is mean absolute % error, beat-trade is the share landing closer than the consensus, bias is mean signed % error. A forecaster needs 3+ scored calls to be ranked. It tracks the most <i>public</i> forecasters, not necessarily the best, and is a track record &mdash; not advice or an endorsement.</p>
@@ -367,21 +392,31 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
       +'<div class="wp-res-sum">'+sum+'</div>'+big
       +'<div class="wp-res-foot">Every figure, scored, in the <a href="#track-record">track record</a> below.</div></div>';
   }
-  function historyTbl(h){
+  function fmtNum(n,u){return (n==null)?'\u2014':(n+(u?('\u00a0'+u):''));}
+  function historyEl(h){
     if(!h||!h.length)return '<div class="wp-err">No scored reports yet.</div>';
-    var rows=h.map(function(r){
-      var cls=(r.surprise==='bullish')?'bull':(r.surprise==='bearish'?'bear':'flat');
-      return '<tr><td data-label="Date">'+r.date+'</td><td data-label="Report">'+r.report+'</td><td data-label="Metric">'+r.metric+'</td>'
-        +'<td class="num" data-label="Expected">'+num(r.expected,r.unit)+'</td><td class="num" data-label="Actual">'+num(r.actual,r.unit)+'</td>'
-        +'<td data-label="Result"><span class="wp-tag '+cls+'">'+(r.surprise||'in line')+'</span></td><td data-label="Reaction">'+(r.reaction||'')+'</td></tr>';
+    var groups=[],idx={};
+    h.forEach(function(r){var k=r.date+'|'+r.report;if(!(k in idx)){idx[k]=groups.length;groups.push({date:r.date,report:r.report,rows:[]});}groups[idx[k]].rows.push(r);});
+    return groups.map(function(g){
+      var surp=g.rows.filter(function(r){return r.surprise&&r.surprise!=='in line';});
+      var pill=surp.length?(surp.length+' surprise'+(surp.length>1?'s':'')):'all in line';
+      var pillCls=surp.length?'surp':'line';
+      var ordered=g.rows.slice().sort(function(a,b){var av=(a.surprise&&a.surprise!=='in line')?0:1,bv=(b.surprise&&b.surprise!=='in line')?0:1;return av-bv;});
+      var body=ordered.map(function(r){
+        var cls=(r.surprise==='bullish')?'bull':(r.surprise==='bearish'?'bear':'flat');
+        return '<div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">'+r.metric+'</span><span class="wp-tag '+cls+'">'+(r.surprise||'in line')+'</span></div>'
+          +'<div class="wp-hr-nums">'+fmtNum(r.expected,r.unit)+' <span class="wp-arrow">\u2192</span> <b class="'+cls+'">'+fmtNum(r.actual,r.unit)+'</b></div>'
+          +(r.reaction?'<div class="wp-hr-reaction">'+r.reaction+'</div>':'')+'</div>';
+      }).join('');
+      return '<div class="wp-hg"><div class="wp-hg-hd"><span class="wp-hg-rpt">'+g.report+'</span>'
+        +'<span class="wp-hg-meta"><span class="wp-hg-pill '+pillCls+'">'+pill+'</span><span class="wp-hg-date">'+g.date+'</span></span></div>'+body+'</div>';
     }).join('');
-    return '<table class="wp-tbl"><thead><tr><th>Date</th><th>Report</th><th>Metric</th><th class="num">Expected</th><th class="num">Actual</th><th>Result</th><th>Reaction</th></tr></thead><tbody>'+rows+'</tbody></table>';
   }
   fetch('/data/whats-priced-in.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
     if(d.sample)document.getElementById('wp-sample').style.display='block';
     document.getElementById('wp-result').innerHTML=resultBanner(d.latest_result);
     document.getElementById('wp-next').innerHTML=nextCard(d.upcoming);
-    document.getElementById('wp-history').innerHTML=historyTbl(d.history);
+    document.getElementById('wp-history').innerHTML=historyEl(d.history);
     try{
       var s=document.getElementById('wp-dataset-ld');
       if(s&&d.updated){var ld=JSON.parse(s.textContent);ld.dateModified=d.updated;s.textContent=JSON.stringify(ld);}
@@ -453,18 +488,23 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
     return '<div class="as-roster">'+list.map(function(a){return '<span class="as-chip"><b>'+esc(a.firm||a.analyst)+'</b><span>'+esc(a.analyst)+'</span></span>';}).join('')+'</div>';
   }
   function reportsEl(reps){
-    if(!reps||!reps.length)return '<div class="as-err">No scored reports yet. The first lands after the June 11 WASDE.</div>';
-    return reps.map(function(r){
-      var mets=r.metrics.map(function(m){
+    if(!reps||!reps.length)return '<div class="as-err">No graded forecaster calls yet \u2014 these fill in as forecasters on record get scored against the print.</div>';
+    var blocks=reps.map(function(r){
+      var mets=(r.metrics||[]).filter(function(m){return m.results&&m.results.length;});
+      if(!mets.length)return '';
+      var ms=mets.map(function(m){
         var cls=(m.surprise==='bullish')?'bull':(m.surprise==='bearish'?'bear':'flat');
         var res=m.results.map(function(x){
-          return '<div style="display:flex;justify-content:space-between;gap:1rem;font-size:.86rem;padding:.15rem 0;color:var(--as-mut)"><span'+(x.closest?' style="color:var(--as-up)"':'')+'>'+(x.closest?'&#9733; ':'')+esc(x.analyst)+'</span><span style="font-family:\'JetBrains Mono\',monospace">'+esc(x.value)+' &middot; '+x.err_pct.toFixed(2)+'% off'+(x.beat?' &middot; <span style="color:var(--as-up)">beat</span>':'')+'</span></div>';
+          return '<div class="as-res-row"><span class="as-res-who'+(x.closest?' best':'')+'">'+(x.closest?'\u2605 ':'')+esc(x.analyst)+'</span>'
+            +'<span class="as-res-stat">'+esc(x.value)+' &middot; '+x.err_pct.toFixed(2)+'% off'+(x.beat?' &middot; <span class="as-res-beat">beat trade</span>':'')+'</span></div>';
         }).join('');
-        return '<div class="as-met"><div style="display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap"><span class="ml">'+esc(m.label)+'</span><span class="as-tag '+cls+'">'+esc(m.surprise||'in line')+'</span></div>'
-          +'<div class="mc">consensus '+esc(m.consensus==null?'&mdash;':m.consensus)+' &middot; actual '+esc(m.actual)+(m.unit?(' '+esc(m.unit)):'')+'</div>'+res+'</div>';
+        var cons=(m.consensus==null)?'\u2014':m.consensus;
+        return '<div class="as-met"><div class="as-met-hd"><span class="ml">'+esc(m.label)+'</span><span class="as-tag '+cls+'">'+esc(m.surprise||'in line')+'</span></div>'
+          +'<div class="mc">trade '+esc(cons)+' <span class="as-arrow">\u2192</span> actual '+esc(m.actual)+(m.unit?('\u00a0'+esc(m.unit)):'')+'</div>'+res+'</div>';
       }).join('');
-      return '<div class="as-rep"><div class="hd"><span class="rpt">'+esc(r.report)+'</span><span class="cd">'+esc(r.date)+'</span></div>'+mets+'</div>';
-    }).join('');
+      return '<div class="as-rep"><div class="hd"><span class="rpt">'+esc(r.report)+'</span><span class="cd">'+esc(r.date)+'</span></div>'+ms+'</div>';
+    }).filter(Boolean).join('');
+    return blocks||'<div class="as-err">No graded forecaster calls yet \u2014 these fill in as forecasters on record get scored against the print.</div>';
   }
   fetch('/data/analyst-scorecard.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
     if(d.sample){document.getElementById('as-ribbon').style.display='block';}
