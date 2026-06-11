@@ -123,7 +123,7 @@ def score(data, roster, today):
                     a["beat_n"] += 1
                     if beat:
                         a["beat_yes"] += 1
-                if closest:
+                if closest and len(ests) >= 2:
                     a["wins"] += 1
             results.sort(key=lambda x: x["err_pct"])
             rep_metrics.append({"label": met.get("label", met.get("key", "")),
@@ -158,6 +158,8 @@ def build_pipeline(reports, roster, today):
                     key=lambda x: x["date"]):
         mets = []
         for met in r.get("metrics", []):
+            if met.get("actual") is not None:
+                continue   # already released & scored -> it's on the scorecard, not the board
             ref = met.get("consensus")
             ref_label = "vs trade"
             if ref is None:

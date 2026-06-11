@@ -100,6 +100,40 @@ def build_history(rows):
     return out
 
 
+def _gap_pct(expected, actual):
+    if expected in (None, 0) or actual is None:
+        return None
+    return round((actual - expected) / abs(expected) * 100, 1)
+
+
+def build_latest_result(history):
+    """Summarize the most recently released report (the newest history date) so the
+    page can show a report-day 'how it landed' banner. Picks the biggest surprise by
+    absolute gap vs. the trade, and counts how many metrics landed in line. The page
+    decides whether to show it based on how recent the date is, so this stays generic
+    for every future report."""
+    if not history:
+        return None
+    latest_date = history[0].get("date")          # history is newest-first
+    rows = [r for r in history if r.get("date") == latest_date]
+    enriched = []
+    for r in rows:
+        gp = _gap_pct(r.get("expected"), r.get("actual"))
+        enriched.append({**{k: r.get(k) for k in HISTORY_FIELDS}, "gap_pct": gp})
+    surprises = [r for r in enriched if r.get("surprise") not in ("in line", None)]
+    pool = surprises or enriched
+    biggest = max(pool, key=lambda r: abs(r.get("gap_pct") or 0)) if pool else None
+    in_line = sum(1 for r in enriched if r.get("surprise") == "in line")
+    return {
+        "date": latest_date,
+        "report": rows[0].get("report") if rows else "",
+        "metric_count": len(enriched),
+        "in_line_count": in_line,
+        "all_in_line": (in_line == len(enriched)),
+        "biggest_surprise": biggest,
+    }
+
+
 def main():
     reports = _load(EST_PATH, "reports")
     hist_rows = _load(HIST_PATH, "history")
@@ -107,12 +141,14 @@ def main():
 
     upcoming = build_upcoming(reports, today)
     history = build_history(hist_rows)
+    latest_result = build_latest_result(history)
     has_real = bool(upcoming) or bool(history)
 
     out = {
         "updated": today,
         "sample": (not has_real),
         "upcoming": upcoming,
+        "latest_result": latest_result,
         "history": history,
     }
     os.makedirs(os.path.dirname(OUT_PATH) or ".", exist_ok=True)
