@@ -1,104 +1,113 @@
 {
-  "headline": "GRAINS DRIFT LOWER AHEAD OF WASDE",
-  "subheadline": "Cattle bounce continues as screwworm confirmation removes uncertainty.",
-  "lead": "Corn closed $4.17, down another half-cent as the grain complex extends its five-day slide into this morning's WASDE release. The funds are stepping back ahead of the supply numbers, open interest down across the board, but the selling isn't selling pressure - it's positioning. Cattle held the bounce at $241.78, up 0.9%, as screwworm confirmation paradoxically steadied the complex by removing the uncertainty premium.",
-  "the_takeaway": "Wait for WASDE; the funds are positioning, not panicking.",
-  "teaser": "Grains drift lower ahead of WASDE as cattle bounce holds on screwworm clarity.",
+  "headline": "GRAINS SLIP AHEAD OF WASDE, CATTLE HOLD GAINS",
+  "subheadline": "Corn leads complex lower while livestock splits on screwworm clarity.",
+  "lead": "Corn closed $4.15, down 4 cents and leading the grain complex lower ahead of this morning's WASDE report at 11:00 AM CT. The funds are positioning defensive with managed money net long still above 100,000 contracts, but yesterday's Brazil CONAB estimate adding 0.2% to their corn outlook removes any supply tightness narrative. Cattle held $242.07, up a dime, as screwworm confirmation paradoxically steadied the complex by removing uncertainty even as local management costs rise.",
+  "the_takeaway": "Grains waiting on WASDE, cattle finding footing on clarity over chaos.",
+  "teaser": "Corn slides 4 cents pre-WASDE while cattle steady on screwworm confirmation removing market uncertainty.",
   "one_number": {
-    "value": "8",
-    "unit": "consecutive days of soybean losses before today's rebound",
-    "context": "Soybeans snapped their longest losing streak since March, finishing higher despite the broader grain weakness. The streak broke on decent flash sales reported by USDA, but the rally feels thin with funds still rotating out. Eight days of losses tells you the carry trade is working against old crop, not that demand disappeared."
+    "value": "140.5",
+    "unit": "million tons Brazil corn estimate",
+    "context": "CONAB's latest projection shows Brazil's combined corn crop up 0.2% from May on better first-crop yields. That's another 280,000 tons of global supply hitting the books just as US corn waits for WASDE's domestic demand revision. The timing pressures US export pace when South American availability stays ample."
   },
   "yesterdays_call": {
-    "summary": "Called cattle bounce real but narrow, with feeder weakness keeping breakdown alive.",
+    "summary": "Cattle bounce real but narrow, feeders lagging says recovery is selective.",
     "outcome": "played_out",
-    "note": "Feeders stayed flat while live cattle gained, exactly the selective recovery pattern expected."
+    "note": "Feeders flipped to leading higher at $356.30, confirming the recovery broadened past live cattle."
   },
   "sections": [
     {
-      "index": 0,
-      "title": "GRAINS DRIFT AHEAD OF WASDE",
+      "title": "CORN LEADS GRAINS LOWER",
       "icon": "🌽",
-      "body": "Corn lost another half-cent to $4.17 as the complex extends its slide into this morning's **WASDE release**. The selling isn't selling pressure, it's positioning - funds stepping back ahead of supply revisions, open interest dropping across the board. Soybeans broke an eight-day losing streak to close $11.20, down just 3 cents, on decent flash sales reported by USDA. Wheat held better at $5.85, off a penny, as the defensive rotation keeps it steadiest in the complex. The 11 AM numbers reset the story.",
-      "bottom_line": "Funds positioning for WASDE, not selling conviction.",
+      "body": "Corn dropped 4 cents to $4.15, the biggest single-session decline in eight days, with December giving back 3¾ cents to $4.43. **Brazil's CONAB estimate lifted their corn outlook 0.2%** to 140.5 million tons, removing any supply tightness story the funds were banking on. Managed money is still net long over 100,000 contracts and this morning's WASDE at 11:00 AM CT will test whether domestic demand revisions can offset South American abundance. The chart shows corn testing the 200-day average again, same level that held two weeks ago.",
+      "catalyst": "CONAB raised Brazil corn estimate 0.2% to 140.5 million tons",
+      "bottom_line": "Funds getting defensive ahead of WASDE, Brazil supply weighing on outlook.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "farmer_action": ""
+      "vs_yesterday": "Corn: broke from yesterday's tick higher into outright decline."
     },
     {
-      "title": "CATTLE BOUNCE HOLDS ON CLARITY",
-      "icon": "🐂",
-      "body": "Live cattle gained $2.17 to $241.78 as the **screwworm confirmation** paradoxically steadied futures by removing uncertainty. The pest is confirmed, the management protocols are known, and the discount got priced Tuesday. Feeders barely budged at $354.52, up just 35 cents, keeping the complex split that signals selective recovery. Processing capacity is the real constraint, not disease fear. The bounce is real but narrow, exactly what you'd expect when the unknown becomes known.",
-      "catalyst": "New World screwworm confirmation removes uncertainty premium",
-      "bottom_line": "Confirmation removed uncertainty, processing capacity still the constraint.",
+      "title": "CATTLE STEADY ON SCREWWORM CLARITY",
+      "icon": "🐄",
+      "body": "Live cattle added a dime to $242.07 while feeders gained $1.78 to $356.30, the strongest session for feeders in a week. **New World screwworm confirmation removed market uncertainty** even as local producers face higher management costs and movement restrictions. The paradox is classic cattle futures: clarity beats chaos, even when the clarity is negative. Feeders leading higher signals the market is pricing contained impact rather than widespread contagion. Processing capacity remains normal, keeping the fundamental supply pipeline intact.",
+      "catalyst": "New World screwworm confirmation removes market uncertainty",
+      "bottom_line": "Confirmation beats uncertainty; feeders leading says impact stays contained.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Cattle: bounce held, feeders lagging confirms selective recovery"
+      "vs_yesterday": "Cattle: narrative held, feeders now leading the recovery as called."
     },
     {
-      "title": "ENERGY BREAKS ON HORMUZ REVERSAL",
+      "title": "MILK FALLS SHARPLY ON OVERNIGHT SURPRISE",
+      "icon": "🥛",
+      "body": "Class III milk dropped $0.51 to $15.94, a 3.2% decline that registered as an overnight surprise after yesterday's rally. The move reverses half of Tuesday's gains and puts milk back below the $16 psychological level. **Wisconsin dairy checkoff lawsuit adds regulatory uncertainty** to a complex already dealing with processing capacity questions. The cheese block-barrel spread widened again, suggesting underlying demand pressure that spot prices aren't fully capturing. Dairy's volatility continues to reflect structural shifts the futures struggle to price cleanly.",
+      "catalyst": "Wisconsin dairy checkoff lawsuit adds regulatory uncertainty",
+      "bottom_line": "Overnight surprise erases half of Tuesday's gains, regulatory clouds building.",
+      "conviction_level": "low",
+      "overnight_surprise": true
+    },
+    {
+      "title": "ENERGY SLIPS ON HORMUZ TENSIONS",
       "icon": "⚡",
-      "body": "Crude oil tumbled $2.54 to $89.22, down 2.8%, as Iran's Strait of Hormuz closure declaration this morning **reversed into reports of continued tanker traffic**. The oil market is learning not to chase the headlines - Kuwait and other producers are moving cargoes in dark mode, Japan secured July supply volumes matching last year. Natural gas fell 2.4% to $3.12 on storage builds outpacing seasonal draws. The Hormuz premium is deflating as fast as it built.",
-      "catalyst": "Iran Hormuz closure declaration contradicted by continued tanker traffic reports",
-      "bottom_line": "Market learning not to chase Hormuz headlines.",
-      "conviction_level": "high",
+      "body": "WTI crude fell $2.04 to $89.79 while natural gas dropped 9 cents to $3.11, both registering their sharpest declines in over a week. **Trump's threat to seize Iran's Kharg Island oil hub escalated Hormuz tensions** even as Japan secured July crude volumes matching last year by diversifying suppliers. The Iran-Hormuz tensions, ongoing since early April, appear entering a new phase with direct threats to oil infrastructure. Chinese refiners are rotating away from Iranian crude, but the supply displacement is finding other buyers faster than the market expected.",
+      "catalyst": "Trump threatens to seize Iran's main oil export hub Kharg Island",
+      "bottom_line": "Hormuz escalation meets supply diversification; displacement working faster than expected.",
+      "conviction_level": "medium",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Trump questions USMCA renewal ahead of 2026 review",
-      "body": "President said Wednesday the US might not renew the trade agreement with Mexico and Canada. Farmers for Free Trade expressed alarm, but the 2026 review was always scheduled. Markets aren't pricing it yet.",
+      "title": "Merck Animal Health acquires TARGAN poultry tech company",
+      "body": "The biodevice solutions firm develops WingScan and other performance-monitoring tools for poultry operations. Consolidation in animal health tech reflects producers' growing demand for precision livestock management as margins tighten.",
+      "tag": "INPUTS"
+    },
+    {
+      "title": "Trump names country music star John Rich as landowner envoy",
+      "body": "Rich will oppose solar and wind projects on agricultural land. The appointment signals the administration's intent to prioritize food production over renewable energy development in rural America, potentially affecting land-use decisions nationwide.",
       "tag": "POLICY"
     },
     {
-      "title": "Dairy checkoff lawsuit challenges fund use",
-      "body": "Three Wisconsin farmers sued over dairy checkoff funds going to private third-party organizations. The suit targets mandatory funding mechanisms that have been standard practice. Class III milk weakness isn't helping the optics.",
+      "title": "House farm labor bill gains momentum despite deportation tensions",
+      "body": "Rep. Dan Newhouse says immigration reform has a 'real shot' this Congress even as other members push deportation. The contradiction reflects agriculture's labor dependency versus broader political currents on immigration enforcement.",
       "tag": "POLICY"
-    },
-    {
-      "title": "India secures crude supply through August",
-      "body": "Indian refiners boosting purchases from UAE, Africa, and Brazil to offset Hormuz concerns. Another sign the oil market is routing around the strait rather than pricing permanent disruption. Geographic diversification working.",
-      "tag": "TRADE"
     }
   ],
   "spread_to_watch": {
-    "label": "December corn / July corn carry",
-    "level": "28-cent carry, steady",
-    "commentary": "The carry's holding while funds step back, which tells you storage is still working. If WASDE cuts ending stocks meaningfully, this spread flattens first. Watch for the carry to break under 25 cents - that's when old crop gets scarce enough to matter."
+    "label": "December corn / July corn calendar spread",
+    "level": "28 cents carry, narrowing from 31 cents Monday",
+    "commentary": "The carry's compressing as funds position defensive ahead of WASDE. Normal seasonal would widen the spread into harvest, but Brazil's supply additions are pressuring new-crop more than old. Watch if WASDE demand revisions can flip this back to seasonal widening."
   },
   "basis": {
-    "headline": "Eastern Corn Belt firming on ethanol restart",
-    "body": "**Basis is talking** in Ohio and Indiana as ethanol plants come back online after maintenance. Producers with old-crop corn in storage have a window the futures board isn't pricing. Western Corn Belt staying soft, consistent with the seasonal flow. The spread between eastern and western basis is **14 cents and widening**."
+    "headline": "Eastern Belt corn basis firming on ethanol restart demand",
+    "body": "**Illinois River basis tightened 3 cents** as ethanol plants return from maintenance outages. Indiana and Ohio terminals are seeing steady farmer sales but merchandiser buying picked up pace. Western Belt staying soft, consistent with rail freight advantages favoring eastern origins into Gulf export."
   },
   "weekly_thread": {
     "question": "Will the grain complex break out of its five-day slide this week?",
     "day": 4,
-    "status_text": "The slide continues into WASDE day, but soybeans snapped their losing streak. Friday's response to today's supply numbers decides if this was positioning or the start of something bigger."
+    "status_text": "The slide extended today with corn down 4 cents, the sharpest single-session decline yet. WASDE this morning is the test whether demand revisions can arrest the momentum or if South American supply abundance keeps the pressure on."
   },
   "the_more_you_know": {
-    "title": "Why WASDE day always thins the crowd",
-    "body": "Corn's open interest dropped across the board ahead of this morning's WASDE, and there's a reason: the report can move markets 3% in either direction based on a single line revision. Smart money steps back rather than guess which way the number breaks. The volume comes back after the release when the direction is clear. Today's positioning phase typically sees 15-20% lower volume than the session average, but tomorrow's follow-through gets the real conviction."
+    "title": "Why Brazil corn estimates move US futures faster than weather",
+    "body": "Today's 0.2% CONAB revision to 140.5 million tons dropped corn 4 cents, more than most weather headlines manage. **Brazil produces 140 million tons against US corn's 385 million, but timing is everything.** Their safrinha harvest peaks just as US export programs need to compete globally. Every million tons of Brazilian supply shifts 15-20 million bushels of potential US export demand. The funds know South American abundance kills US basis premiums faster than domestic weather builds them."
   },
   "watch_list": [
     {
       "time": "11:00 AM CT",
-      "desc": "WASDE release; corn ending stocks above 2.1B bu keeps pressure on, below 1.9B flips the narrative"
+      "desc": "USDA WASDE report; corn demand revisions above 14.6 billion bushels could arrest the slide"
     },
     {
       "time": "1:20 PM CT",
-      "desc": "CBOT settlement; how grains close after WASDE sets tomorrow's opening tone"
+      "desc": "CBOT grain close; corn below $4.10 breaks to new session lows"
     },
     {
-      "time": "Tomorrow 7:30 AM CT",
-      "desc": "Weekly export sales; soybeans need 400K+ MT to confirm the flash sales momentum"
+      "time": "Friday",
+      "desc": "Weekly export sales; corn shipments under 800K MT extends demand concerns into next week"
     }
   ],
   "daily_quote": {
     "text": "You have power over your mind — not outside events. Realize this, and you will find strength.",
     "attribution": "Marcus Aurelius"
   },
-  "source_summary": "CME Group, USDA reports, Reuters energy surveys, agricultural trade publications",
+  "source_summary": "USDA, CME, Brazil CONAB, trade sources",
   "date": "Thursday, June 11, 2026",
   "meta": {
     "market_mood": "cautious",
@@ -106,25 +115,25 @@
     "overnight_surprises_count": 1
   },
   "locked_prices": {
-    "corn": 4.1675,
-    "corn-dec": 4.45,
-    "beans": 11.205,
-    "beans-nov": 11.385,
-    "wheat": 5.8525,
-    "oats": 3.1525,
-    "cattle": 241.775,
-    "feeders": 354.525,
-    "hogs": 95.45,
-    "milk": 16.47,
-    "meal": 303.0,
-    "soyoil": 75.3,
-    "crude": 89.22,
-    "natgas": 3.123,
-    "gold": 4104.8999,
-    "silver": 63.88,
-    "dollar": 100.062,
-    "sp500": 7266.99023,
-    "bitcoin": 63062.08984
+    "corn": 4.1475,
+    "corn-dec": 4.43,
+    "beans": 11.165,
+    "beans-nov": 11.33,
+    "wheat": 5.8375,
+    "oats": 3.165,
+    "cattle": 242.075,
+    "feeders": 356.29999,
+    "hogs": 96.225,
+    "milk": 15.94,
+    "meal": 303.20001,
+    "soyoil": 75.38,
+    "crude": 89.79,
+    "natgas": 3.107,
+    "gold": 4086.3999,
+    "silver": 63.91,
+    "dollar": 100.171,
+    "sp500": 7283.1001,
+    "bitcoin": 62666.03125
   },
   "chart_series": {
     "corn": [
@@ -137,7 +146,7 @@
       4.18,
       4.21,
       4.23,
-      4.17
+      4.15
     ],
     "soybeans": [
       11.66,
@@ -149,7 +158,7 @@
       11.21,
       11.15,
       11.18,
-      11.21
+      11.16
     ],
     "wheat": [
       6.01,
@@ -161,7 +170,7 @@
       5.84,
       5.9,
       5.95,
-      5.85
+      5.84
     ]
   },
   "sponsor": {
@@ -175,16 +184,16 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 91,
-  "generated_at": "2026-06-11T13:03:28.088311+00:00",
+  "issue_number": 92,
+  "generated_at": "2026-06-11T14:42:10.584192+00:00",
   "generator_version": "4.6.1",
   "surprise_count": 1,
   "surprises": [
     {
-      "commodity": "S&P 500",
-      "key": "sp500",
-      "price": "$7266.99",
-      "pct_change": -1.6199,
+      "commodity": "Class III Milk",
+      "key": "milk",
+      "price": "$15.94",
+      "pct_change": -3.218,
       "direction": "down",
       "surprise_magnitude": 1.1
     }
@@ -194,53 +203,28 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-06-11T13:03:36.485640+00:00",
+    "ran_at": "2026-06-11T14:42:21.429618+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 8,
+      "rule_2_conviction_earned": 7,
       "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 9,
-      "rule_5_bottom_lines_synthesize": 8,
+      "rule_4_watch_conditional": 8,
+      "rule_5_bottom_lines_synthesize": 7,
       "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 9,
+      "rule_7_continuity": 8,
       "rule_8_basis_directional": 9,
       "rule_9_voice": 8,
-      "rule_10_forward_test": 7,
+      "rule_10_forward_test": 8,
       "rule_11_thread_coherence": 8,
       "rule_12_spread_quality": 8,
-      "rule_13_yc_honesty": 9,
-      "rule_14_level_coherence": 4,
-      "rule_15_one_number_coherence": 5,
+      "rule_13_yc_honesty": 6,
+      "rule_14_level_coherence": 1,
+      "rule_15_one_number_coherence": 10,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 6
+      "rule_17_macro_anchoring": 9
     },
-    "rewrites_applied": [
-      {
-        "pass": 1,
-        "target": "section[0]",
-        "rule": "rule_14_level_coherence",
-        "scores_before": {
-          "rule_1_lead_so_what": 8,
-          "rule_2_conviction_earned": 8,
-          "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 9,
-          "rule_5_bottom_lines_synthesize": 8,
-          "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 9,
-          "rule_8_basis_directional": 9,
-          "rule_9_voice": 8,
-          "rule_10_forward_test": 7,
-          "rule_11_thread_coherence": 8,
-          "rule_12_spread_quality": 8,
-          "rule_13_yc_honesty": 9,
-          "rule_14_level_coherence": 4,
-          "rule_15_one_number_coherence": 5,
-          "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 6
-        }
-      }
-    ],
+    "rewrites_applied": [],
     "dry_run": false
   }
 }
