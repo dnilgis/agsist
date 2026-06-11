@@ -1,0 +1,392 @@
+{
+  "_note": "Maintained by hand in the GitHub editor. THREE steps per report cycle: (1) before the report, fill each analyst's `value` and a `source` link for the metrics they publicly posted, and the `consensus` (trade average) per metric; (2) after USDA releases, fill each metric's `actual`; (3) the build script scores everyone automatically. Only keep analysts whose numbers you can source from a public post/interview/survey \u2014 leave a value null if you don't have it. Never invent a number. Add a new block under `reports` for each future report.",
+  "analysts": [
+    {
+      "id": "stonex",
+      "analyst": "Arlan Suderman",
+      "firm": "StoneX"
+    },
+    {
+      "id": "allendale",
+      "analyst": "Rich Nelson",
+      "firm": "Allendale"
+    },
+    {
+      "id": "profarmer",
+      "analyst": "Pro Farmer",
+      "firm": "Pro Farmer"
+    },
+    {
+      "id": "tfm",
+      "analyst": "Naomi Blohm",
+      "firm": "Total Farm Marketing"
+    },
+    {
+      "id": "gulke",
+      "analyst": "Jerry Gulke",
+      "firm": "Gulke Group"
+    },
+    {
+      "id": "hueber",
+      "analyst": "Dan Hueber",
+      "firm": "The Hueber Report"
+    },
+    {
+      "id": "agmarket",
+      "analyst": "Matt Bennett",
+      "firm": "AgMarket.Net"
+    },
+    {
+      "id": "mcclure",
+      "analyst": "Robert McClure",
+      "firm": "McClure Trades"
+    }
+  ],
+  "reports": [
+    {
+      "report": "June WASDE",
+      "date": "2026-06-11",
+      "metrics": [
+        {
+          "key": "corn_2526",
+          "label": "2025/26 corn ending stocks",
+          "unit": "bil bu",
+          "direction": "supply",
+          "consensus": 2.138,
+          "actual": 2.145,
+          "estimates": [
+            {
+              "id": "stonex",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "allendale",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "profarmer",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "tfm",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "gulke",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "hueber",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "agmarket",
+              "value": null,
+              "source": null
+            }
+          ],
+          "consensus_range": [
+            2.087,
+            2.297
+          ],
+          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide"
+        },
+        {
+          "key": "soy_2526",
+          "label": "2025/26 soybean ending stocks",
+          "unit": "mil bu",
+          "direction": "supply",
+          "consensus": 338,
+          "actual": 340,
+          "estimates": [
+            {
+              "id": "stonex",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "allendale",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "profarmer",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "tfm",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "gulke",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "hueber",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "agmarket",
+              "value": null,
+              "source": null
+            }
+          ],
+          "consensus_range": [
+            320,
+            365
+          ],
+          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide"
+        },
+        {
+          "key": "wheat_2526",
+          "label": "2025/26 wheat ending stocks",
+          "unit": "mil bu",
+          "direction": "supply",
+          "consensus": 942,
+          "actual": 935,
+          "estimates": [
+            {
+              "id": "stonex",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "allendale",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "profarmer",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "tfm",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "gulke",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "hueber",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "agmarket",
+              "value": null,
+              "source": null
+            }
+          ],
+          "consensus_range": [
+            924,
+            985
+          ],
+          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide"
+        },
+        {
+          "key": "corn_2627",
+          "label": "2026/27 corn ending stocks",
+          "unit": "bil bu",
+          "direction": "supply",
+          "consensus": 1.947,
+          "actual": 1.96,
+          "estimates": [
+            {
+              "id": "stonex",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "allendale",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "profarmer",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "tfm",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "gulke",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "hueber",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "agmarket",
+              "value": null,
+              "source": null
+            }
+          ],
+          "consensus_range": [
+            1.847,
+            2.119
+          ],
+          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide"
+        },
+        {
+          "key": "soy_2627",
+          "label": "2026/27 soybean ending stocks",
+          "unit": "mil bu",
+          "direction": "supply",
+          "consensus": 312,
+          "actual": 310,
+          "estimates": [
+            {
+              "id": "stonex",
+              "value": 318,
+              "source": "https://www.stonex.com/en-us/insights/perspective-mid-day-commentary-for-june-5-2026-06-05/"
+            },
+            {
+              "id": "allendale",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "profarmer",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "tfm",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "gulke",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "hueber",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "agmarket",
+              "value": null,
+              "source": null
+            }
+          ],
+          "consensus_range": [
+            293,
+            342
+          ],
+          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide"
+        },
+        {
+          "key": "wheat_2627",
+          "label": "2026/27 wheat ending stocks",
+          "unit": "mil bu",
+          "direction": "supply",
+          "consensus": 765,
+          "actual": 744,
+          "estimates": [
+            {
+              "id": "stonex",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "allendale",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "profarmer",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "tfm",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "gulke",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "hueber",
+              "value": null,
+              "source": null
+            },
+            {
+              "id": "agmarket",
+              "value": null,
+              "source": null
+            }
+          ],
+          "consensus_range": [
+            740,
+            804
+          ],
+          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide"
+        }
+      ]
+    },
+    {
+      "report": "August WASDE",
+      "date": "2026-08-12",
+      "metrics": [
+        {
+          "key": "corn_yield_2627",
+          "label": "2026/27 corn yield",
+          "unit": "bu/acre",
+          "direction": "supply",
+          "consensus": null,
+          "actual": null,
+          "usda_current": 183.0,
+          "estimates": [
+            {
+              "id": "mcclure",
+              "value": 180.8,
+              "source": "https://x.com/mcclure_trades"
+            }
+          ]
+        },
+        {
+          "key": "soy_yield_2627",
+          "label": "2026/27 soybean yield",
+          "unit": "bu/acre",
+          "direction": "supply",
+          "consensus": null,
+          "actual": null,
+          "usda_current": 53.0,
+          "estimates": [
+            {
+              "id": "mcclure",
+              "value": 51.7,
+              "source": "https://x.com/mcclure_trades"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "_consensus_source": "Reuters pre-report analyst poll, via Pro Farmer 2026-06-09: https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide"
+}
