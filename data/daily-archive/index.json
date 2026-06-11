@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-06-11",
+      "date_display": "Thursday, June 11, 2026",
+      "headline": "GRAINS DRIFT LOWER AHEAD OF WASDE",
+      "teaser": "Grains drift lower ahead of WASDE as cattle bounce holds on screwworm clarity.",
+      "market_mood": "cautious",
+      "surprise_count": 1,
+      "sections": 3,
+      "url": "/daily/2026-06-11",
+      "market_closed": false,
+      "yc_outcome": "played_out"
+    },
+    {
       "date": "2026-06-10",
       "date_display": "Wednesday, June 10, 2026",
       "headline": "CATTLE BOUNCE SHARP, MILK LEADS COMPLEX HIGHER",
@@ -1000,6 +1012,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-10T14:30:00.017552+00:00",
-  "count": 90
+  "updated": "2026-06-11T13:03:36.516112+00:00",
+  "count": 91
 }
