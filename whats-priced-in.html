@@ -63,6 +63,24 @@
 .wp-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;}
 .wp-tag{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.78rem;white-space:nowrap;}
 .wp-tag.bull{color:var(--wp-up);} .wp-tag.bear{color:var(--wp-dn);} .wp-tag.flat{color:var(--wp-mut);}
+.wp-result{background:var(--wp-panel);border:1px solid var(--wp-line);border-left-width:4px;border-radius:12px;padding:.9rem 1.05rem;margin:.2rem 0 1.4rem;}
+.wp-result.bull{border-left-color:var(--wp-up);} .wp-result.bear{border-left-color:var(--wp-dn);} .wp-result.flat{border-left-color:var(--wp-mut);}
+.wp-res-hd{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;margin-bottom:.4rem;}
+.wp-res-k{font-family:Oswald,sans-serif;font-weight:700;font-size:1.08rem;color:#fff;}
+.wp-res-d{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--wp-gold2);white-space:nowrap;}
+.wp-res-sum{font-size:.96rem;color:var(--wp-txt);margin-bottom:.55rem;line-height:1.45;}
+.wp-res-big{border-top:1px solid var(--wp-line);padding-top:.55rem;}
+.wp-res-row{display:flex;align-items:center;gap:.5rem;justify-content:space-between;flex-wrap:wrap;}
+.wp-res-metric{font-weight:600;color:#fff;}
+.wp-res-tag{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;padding:.12rem .5rem;border-radius:5px;text-transform:uppercase;white-space:nowrap;}
+.wp-res-tag.bull{color:var(--wp-up);background:rgba(74,171,76,.13);}
+.wp-res-tag.bear{color:var(--wp-dn);background:rgba(217,83,79,.13);}
+.wp-res-tag.flat{color:var(--wp-mut);background:rgba(155,176,163,.1);}
+.wp-res-nums{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--wp-mut);margin:.3rem 0;}
+.wp-res-nums b{color:var(--wp-txt);}
+.wp-res-reaction{font-size:.92rem;color:var(--wp-txt);line-height:1.5;margin-top:.3rem;}
+.wp-res-foot{font-size:.8rem;color:var(--wp-mut);margin-top:.55rem;}
+.wp-res-foot a{color:var(--wp-gold2);}
 @media(max-width:640px){
   #wp-history{overflow-x:visible;}
   .wp-tbl{min-width:0;display:block;font-size:.92rem;}
@@ -193,10 +211,12 @@
 
   <div class="wp-sample" id="wp-sample">Sample layout &mdash; live report data pending. Figures shown are illustrative.</div>
 
+  <div id="wp-result"></div>
+
   <h2>Next report</h2>
   <div id="wp-next"><div class="wp-err" id="wp-loading">Loading the next report&hellip;</div></div>
 
-  <h2>Track record</h2>
+  <h2 id="track-record">Track record</h2>
   <p class="wp-lede" style="margin-bottom:.4rem">How the expectation lined up against the actual print, and which way price moved.</p>
   <div id="wp-history"></div>
 
@@ -325,6 +345,28 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
       +(n.expectation?'<div class="wp-exp">'+n.expectation+'</div>':'')
       +rangeHtml+odds+thr+pos+'</div>';
   }
+  function resultBanner(lr){
+    if(!lr||!lr.date)return '';
+    var age=Math.floor((new Date()-new Date(lr.date+'T12:00:00'))/86400000);
+    if(age<0||age>5)return '';   // show only on/just after report day, then it lives in the track record
+    var b=lr.biggest_surprise||{};
+    var sc=(b.surprise==='bullish')?'bull':(b.surprise==='bearish'?'bear':'flat');
+    var sum=lr.all_in_line
+      ? 'Landed in line across the board &mdash; no real surprise versus what the trade had priced in.'
+      : lr.in_line_count+' of '+lr.metric_count+' figures landed in line with the trade. The one that didn\u2019t:';
+    var big='';
+    if(b.metric && !lr.all_in_line){
+      var gp=(b.gap_pct!=null)?((b.gap_pct>0?'+':'')+b.gap_pct+'% vs trade'):'';
+      big='<div class="wp-res-big">'
+        +'<div class="wp-res-row"><span class="wp-res-metric">'+b.metric+'</span>'
+        +'<span class="wp-res-tag '+sc+'">'+(b.surprise||'in line')+'</span></div>'
+        +'<div class="wp-res-nums"><b>'+num(b.actual,b.unit)+'</b> actual &middot; '+num(b.expected,b.unit)+' expected'+(gp?(' &middot; '+gp):'')+'</div>'
+        +(b.reaction?'<div class="wp-res-reaction">'+b.reaction+'</div>':'')+'</div>';
+    }
+    return '<div class="wp-result '+sc+'"><div class="wp-res-hd"><span class="wp-res-k">\uD83D\uDCCB How the '+lr.report+' landed</span><span class="wp-res-d">'+lr.date+'</span></div>'
+      +'<div class="wp-res-sum">'+sum+'</div>'+big
+      +'<div class="wp-res-foot">Every figure, scored, in the <a href="#track-record">track record</a> below.</div></div>';
+  }
   function historyTbl(h){
     if(!h||!h.length)return '<div class="wp-err">No scored reports yet.</div>';
     var rows=h.map(function(r){
@@ -337,6 +379,7 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
   }
   fetch('/data/whats-priced-in.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
     if(d.sample)document.getElementById('wp-sample').style.display='block';
+    document.getElementById('wp-result').innerHTML=resultBanner(d.latest_result);
     document.getElementById('wp-next').innerHTML=nextCard(d.upcoming);
     document.getElementById('wp-history').innerHTML=historyTbl(d.history);
     try{
@@ -345,6 +388,10 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
     }catch(e){}
     var up=d.upcoming||{};
     gaEvent('wpi_view',{report:up.report||'',range_live:!!(up.estimate_low!=null&&up.estimate_high!=null)});
+    var lr=d.latest_result;
+    if(lr&&document.getElementById('wp-result').innerHTML){
+      gaEvent('wpi_result',{report:lr.report||'',in_line:lr.in_line_count,of:lr.metric_count});
+    }
   }).catch(function(){
     document.getElementById('wp-next').innerHTML='<div class="wp-err">Report expectations are briefly unavailable. See the <a href="/usda-calendar" style="color:var(--wp-gold2)">USDA report calendar</a> and <a href="/ag-odds" style="color:var(--wp-gold2)">market odds</a>.</div>';
   });
