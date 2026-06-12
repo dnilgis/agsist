@@ -53,6 +53,39 @@
 ]}</script>
 </head>
 <body>
+<style id="ct-base">
+@media(max-width:520px){.ph{padding:.9rem}.ph-icon{font-size:2rem}.ph-val{font-size:1.7rem}}
+.fut{max-width:1100px;margin:0 auto;padding:0 16px 2.5rem}
+.bc{font-size:.75rem;color:var(--text-dim);margin:12px 0}
+.bc a{color:var(--gold);text-decoration:none}
+.ph{background:linear-gradient(135deg,var(--surface) 0%,rgba(230,176,66,.05) 100%);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:8px;display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
+.ph-icon{font-size:2.6rem;flex-shrink:0}
+.ph-exch{font-size:.7rem;color:var(--text-dim)}
+.ph-price{margin-left:auto;text-align:right}
+.ph-val{font-family:'Oswald',sans-serif;font-size:2.2rem;font-weight:700;color:var(--text);line-height:1}
+.ph-unit{font-size:.72rem;color:var(--text-dim)}
+.ph-chg{font-size:.88rem;font-weight:700;margin-top:2px}
+.ps{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--text-dim);margin-bottom:10px}
+.ps-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.sk{color:var(--text-dim);animation:blink 1.4s ease-in-out infinite}
+.faq-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px}
+.faq-head{padding:10px 14px;border-bottom:1px solid var(--border);font-size:.78rem;font-weight:700;color:var(--gold)}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--text);gap:8px;user-select:none;line-height:1.4;min-height:44px}
+.faq-q::after{content:'+';color:var(--gold);font-size:1.1rem;flex-shrink:0;width:16px;text-align:center}
+.faq-item.open .faq-q::after{content:'−'}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.faq-item.open .faq-a{max-height:500px}
+.faq-a-inner{padding:0 14px 12px;font-size:.78rem;color:var(--text-dim);line-height:1.68}
+.rl{font-size:.68rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin:14px 0 6px}
+.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:6px}
+.ra{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;text-decoration:none;transition:border-color .2s;min-height:44px;justify-content:center}
+.ra:hover{border-color:var(--border-g)}
+.ra-i{font-size:1.2rem;margin-bottom:3px}
+.ra-n{font-size:.8rem;font-weight:600;color:var(--text)}
+.ra-d{font-size:.65rem;color:var(--text-dim);margin-top:1px}
+</style>
 <style id="ct-furniture">
 .brief-strip{display:flex;gap:10px;align-items:center;background:linear-gradient(135deg,rgba(230,176,66,.08) 0%,var(--surface) 100%);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;padding:10px 12px;margin:0 0 10px}
 .brief-icon{font-size:1.3rem;flex-shrink:0}.brief-text{flex:1;min-width:0}
