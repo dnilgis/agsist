@@ -1,11 +1,1061 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark"><head><meta charset="UTF-8">
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Spray Toolkit — preview</title>
-<style>body{margin:0;background:#0f140c;color:#e7ece8;font-family:Inter,system-ui,sans-serif;padding:1rem}.wrap{max-width:680px;margin:0 auto}</style>
-</head><body><div class="wrap">
+<meta name="theme-color" content="#111a0a">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');window.gaEvent=function(n,p){try{gtag('event',n,p||{});}catch(e){}};</script>
+<link rel="preconnect" href="https://api.open-meteo.com">
+<link rel="preconnect" href="https://nominatim.openstreetmap.org">
+<link rel="preconnect" href="https://geocoding-api.open-meteo.com">
+<link rel="preload" href="/components/styles.css?v=10" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=10">
+<link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<title>Can I Spray Today? Conditions + Tank Mix Calculator | AGSIST</title>
+<meta name="description" content="Live spray conditions at your location — wind, temperature, humidity, inversion risk and a 24-hour window — plus a tank mix calculator (oz, pints, quarts, lbs, % v/v, per 100 gal) and a sprayer calibration GPA calculator. Free, no account.">
+<meta name="keywords" content="tank mix calculator, spray mix calculator, how many oz per acre, ounces per acre calculator, sprayer calibration calculator, GPA calculator, gallons per acre, AMS per 100 gallons, acres per 1000 gallon tank, spray tank calculator, can I spray today, thermal inversion">
+<meta name="author" content="Sigurd Lindquist">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://agsist.com/spray">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Can I Spray Today? Conditions + Tank Mix Calculator | AGSIST">
+<meta property="og:description" content="Live spray conditions plus a tank mix calculator and sprayer calibration GPA calculator. Free, no account.">
+<meta property="og:url" content="https://agsist.com/spray">
+<meta property="og:image" content="https://agsist.com/img/og/spray.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AGSIST Spray Advisory &#8212; Real-time wind, inversion risk and tank mix guide">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agsist">
+<meta name="twitter:creator" content="@agsist">
+<meta name="twitter:title" content="Spray Conditions + Tank Mix Calculator | AGSIST">
+<meta name="twitter:description" content="Live wind, temperature, humidity, and inversion check at your location. 24-hour spray window forecast. No account.">
+<meta name="twitter:image" content="https://agsist.com/img/og/spray.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "SoftwareApplication", "name": "AGSIST Spray Advisory", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "url": "https://agsist.com/spray", "description": "Real-time spray advisory tool for farmers. Shows wind speed, temperature, humidity, thermal inversion risk, and a 24-hour spray window forecast based on your exact location.", "isPartOf": {"@id": "https://agsist.com/#website"}}, {"@type": "WebPage", "@id": "https://agsist.com/spray#webpage", "url": "https://agsist.com/spray", "name": "Can I Spray Today? Spray Conditions + Tank Mix Calculator | AGSIST", "description": "Live spray conditions plus a tank mix calculator and sprayer calibration GPA calculator.", "dateModified": "2026-06-01", "isPartOf": {"@id": "https://agsist.com/#website"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Spray Advisory", "item": "https://agsist.com/spray"}]}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What wind speed is safe for spraying herbicides?", "acceptedAnswer": {"@type": "Answer", "text": "The ideal wind speed for spraying herbicides is 3 to 10 mph. Below 3 mph, thermal inversions can trap fine droplets near the ground, causing unpredictable drift. Above 10 mph, mechanical drift can carry spray off-target. Above 15 mph, most applications should be stopped entirely. Always check your specific product label, as some herbicides like dicamba require winds under 10 mph by law."}}, {"@type": "Question", "name": "What is a thermal inversion and how do I know if one is present?", "acceptedAnswer": {"@type": "Answer", "text": "A thermal inversion occurs when a layer of warm air sits above cooler air near the ground, trapping fine spray droplets in a stable, non-mixing air layer. Instead of dispersing upward, droplets remain suspended near the surface and can drift horizontally for miles. Inversions are most common on calm, clear evenings after sunset and during early morning hours. Signs include smoke that rises then flattens horizontally, dust that hangs and moves sideways, and ground fog in low areas. Do not spray when any inversion indicator is present."}}, {"@type": "Question", "name": "What temperature is too hot to spray dicamba?", "acceptedAnswer": {"@type": "Answer", "text": "Most dicamba product labels restrict applications when temperatures are at or above 85–90°F or when temperatures are forecast to exceed those levels within a few hours of application. Above 85°F, dicamba and 2,4-D ester can volatilize off the leaf surface hours after application. Always follow the specific label requirements for the product you are using."}}, {"@type": "Question", "name": "What is the best time of day to spray?", "acceptedAnswer": {"@type": "Answer", "text": "Mid-morning — roughly 9 a.m. to noon — is typically the best spray window. By mid-morning, overnight thermal inversions have usually broken, temperatures are still moderate, morning dew has dried, and winds are beginning to pick up to the ideal 3–10 mph range. Avoid evening applications, which carry high inversion risk as the ground cools."}}, {"@type": "Question", "name": "How long after spraying does it need to stay dry?", "acceptedAnswer": {"@type": "Answer", "text": "The rain-free period varies by herbicide class. Contact herbicides require at least 30 minutes to 4 hours. Systemic herbicides like glyphosate need 4–6 hours minimum. Dicamba formulations typically require 1–4 hours. Always check your product label for the specific rain-free period."}}, {"@type": "Question", "name": "What humidity is too low for spraying?", "acceptedAnswer": {"@type": "Answer", "text": "Relative humidity below 40% creates conditions where fine spray droplets evaporate rapidly in flight before reaching the leaf surface. Below 30% humidity, switch to larger droplet nozzles. Below 20% RH, application is generally not recommended for contact herbicides."}}, {"@type": "Question", "name": "Do I need special nozzles for dicamba?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. All three EPA-approved dicamba formulations for Xtend soybeans require use of approved nozzles that produce ultra-coarse to extremely coarse droplets. Air induction nozzles are the most commonly approved type. Standard flat fan nozzles are not approved for dicamba applications in soybeans. Using an unapproved nozzle is a federal label violation."}}, {"@type": "Question", "name": "Can I spray if rain is in the forecast?", "acceptedAnswer": {"@type": "Answer", "text": "It depends on timing and amount. Check the rain-free period for your specific product. If you can complete the required dry window before rain arrives, you can proceed. The risk is rain arriving earlier than forecast — always build in a buffer. Some herbicides need 6 or more hours to translocate adequately."}}, {"@type": "Question", "name": "How do I calculate a spray tank mix?", "acceptedAnswer": {"@type": "Answer", "text": "Enter your carrier rate (gallons per acre), tank size, and each product's label rate — per acre, per 100 gallons, or % v/v — into the Spray Mix Calculator above. It returns exactly how much of every product and how much water goes in each tank, the partial last tank, and totals for the whole field. Always confirm against the product label."}}, {"@type": "Question", "name": "How many acres does a 1,000-gallon sprayer tank cover?", "acceptedAnswer": {"@type": "Answer", "text": "Divide tank size by your carrier rate. At 15 gallons per acre a 1,000-gallon tank covers about 67 acres; at 20 GPA it covers 50 acres; at 10 GPA, 100 acres. The Spray Mix Calculator shows acres per tank automatically."}}, {"@type": "Question", "name": "How much AMS do I add per 100 gallons?", "acceptedAnswer": {"@type": "Answer", "text": "Ammonium sulfate is typically used at 8.5 to 17 pounds per 100 gallons of spray solution — the higher end for hard water or tough weeds like waterhemp and Palmer amaranth. For a 1,000-gallon tank at 17 lb per 100 gallons, that is 170 pounds. Add AMS before the herbicide."}}, {"@type": "Question", "name": "How do I calibrate my sprayer and calculate GPA?", "acceptedAnswer": {"@type": "Answer", "text": "Use the broadcast formula GPA = 5,940 × GPM ÷ (mph × nozzle spacing in inches). Enter ground speed, nozzle spacing, and measured nozzle output in the Sprayer Calibration Calculator above to get your actual gallons per acre, or work backward to the nozzle output a target rate needs. Catch each nozzle for one minute and replace any more than 10% off the average."}}, {"@type": "Question", "name": "How do I convert a per-acre rate to a full tank?", "acceptedAnswer": {"@type": "Answer", "text": "Multiply the per-acre rate by the acres one tank covers (tank size ÷ carrier rate). At 32 fl oz per acre and 67 acres per tank, that is about 2,133 fl oz, or 16.7 gallons, per tank. The Spray Mix Calculator converts and totals this for every product automatically."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Can I Spray Today?", "item": "https://agsist.com/spray"}]}, {"@type": "HowTo", "name": "Tank Mix Order: How to Mix Spray Products in the Correct Sequence", "description": "The correct order to add products to a spray tank — water, conditioners, dry formulations, liquids, then adjuvants — to prevent incompatibility, clumping, and reduced efficacy.", "step": [{"@type": "HowToStep", "position": 1, "name": "Fill the tank 50–75% with clean water", "text": "Fill the spray tank halfway to three-quarters with clean water before adding any product."}, {"@type": "HowToStep", "position": 2, "name": "Add water conditioners and AMS", "text": "Add ammonium sulfate (AMS) at 8.5–17 lbs per 100 gallons. Add pH buffers if water is hard or alkaline."}, {"@type": "HowToStep", "position": 3, "name": "Start agitation", "text": "Begin continuous mechanical or hydraulic agitation before adding any pesticide products."}, {"@type": "HowToStep", "position": 4, "name": "Add dry formulations (WP, WDG, DF)", "text": "Add wettable powders and water-dispersible granules first among the pesticide products."}, {"@type": "HowToStep", "position": 5, "name": "Add liquid flowables and suspension concentrates (SC)", "text": "Add suspension concentrates and flowable formulations. Shake containers first."}, {"@type": "HowToStep", "position": 6, "name": "Add emulsifiable concentrates (EC)", "text": "Add EC formulations dissolved in oil-based solvent with emulsifiers."}, {"@type": "HowToStep", "position": 7, "name": "Add water-soluble liquids (SL, S)", "text": "Add soluble liquid formulations, including many glyphosate products."}, {"@type": "HowToStep", "position": 8, "name": "Add adjuvants, surfactants and crop oils", "text": "Add NIS, COC, MSO, drift-reduction agents, defoamers, and compatibility agents last."}, {"@type": "HowToStep", "position": 9, "name": "Top off water to final volume", "text": "Fill to target volume, continue agitation, and begin spraying as soon as possible."}]}, {"@type": "HowTo", "name": "How to Calibrate a Sprayer (Calculate GPA)", "description": "Find a sprayer's actual application rate in gallons per acre from ground speed, nozzle spacing, and measured nozzle output.", "step": [{"@type": "HowToStep", "position": 1, "name": "Measure ground speed", "text": "Record actual ground speed in mph at spraying throttle and gear."}, {"@type": "HowToStep", "position": 2, "name": "Note nozzle spacing", "text": "Measure spacing between nozzles on the boom in inches (commonly 15, 20, or 30)."}, {"@type": "HowToStep", "position": 3, "name": "Catch nozzle output", "text": "Catch one nozzle's output for 60 seconds in ounces per minute (or GPM). Average several nozzles."}, {"@type": "HowToStep", "position": 4, "name": "Calculate GPA", "text": "Apply GPA = 5,940 × GPM ÷ (mph × spacing). Convert oz/min to GPM by dividing by 128."}, {"@type": "HowToStep", "position": 5, "name": "Adjust if needed", "text": "To raise GPA slow down or use larger nozzles; to lower it speed up or use smaller nozzles. Replace any nozzle 10% off the average."}]}]}</script>
+<link rel="manifest" href="/manifest.json">
+<style>
+/* Inlined from spray__5_.css to match the site-wide CSS pattern (shared styles.css + inline page styles). */
+/* ====================================================================
+   AGSIST Spray Advisory — /css/spray.css
+   Page-specific styles for spray.html
+   Shared base: /components/styles.css (already loaded first)
 
-<!-- ░░░░░░░░░░ DROP-IN: SPRAY MIX CALCULATOR (v2) ░░░░░░░░░░ -->
+   Brand alignment v10 — 2026-03-04
+
+   v12 FIXES (2026-04-09):
+   FIX v12-1: .main overflow-x:hidden → clip — hidden creates a BFC which
+              breaks position:sticky children (ticker strip, nav). Matches
+              the same fix applied to styles.css globally in the April 9 session.
+   FIX v12-2: .sc overflow:hidden REMOVED — killed iOS touch scroll on .day-strip
+              child inside sidebar card (same iOS BFC pattern as .window-wrap v11-1)
+   FIX v12-3: Font floor enforcement — .hr-badge (.6→.62rem), .nt-badge (.58→.62rem),
+              .day-name/.day-rating/.day-wind at 380px (.55/.55/.58→.62rem)
+   FIX v12-4: .day-strip overflow-x:auto + .day-item min-width:48px — 5-day strip
+              now scrolls on narrow phones instead of wrapping/collapsing
+
+   v11 FIXES (iOS Safari scroll / grid blowout):
+   FIX v11-1: .window-wrap overflow:hidden REMOVED — killed iOS touch scroll on .hourly-scroll
+   FIX v11-2: .mix-card overflow:hidden REMOVED — killed iOS touch scroll on .nozzle-table-wrap
+   FIX v11-3: .pg mobile grid-template-columns: 1fr → minmax(0,1fr) — 1fr has auto min-size
+              which allowed nozzle table (min-width:520px) to blow out viewport
+   FIX v11-4: .nozzle-table-wrap max-width:100% added as belt-and-suspenders
+   FIX v11-5: .pg > div { min-width:0 } — anonymous left column missing this, could expand past viewport
+
+   v10 FIXES (mobile overflow):
+   FIX v10-1: overflow-x:hidden fallback before clip (iOS <16 compat)
+   FIX v10-2: overscroll-behavior-x:none (prevent horizontal bounce)
+   FIX v10-3: box-sizing on .hero, .main, .pg, .jump-nav
+   FIX v10-4: .jump-nav max-width:100% + scroll fade ::after hint
+   FIX v10-5: .pg max-width:100% (was 1200px — caused blowout)
+   FIX v10-6: overflow-wrap:break-word on all text containers
+   FIX v10-7: body width:100% explicit constraint
+
+   MOBILE AUDIT FIXES (2026-03-03):
+   FIX M1: iOS Safari overflow — overflow:clip on html/body, 100% not 100vw
+   FIX M2: .main wrapper — overflow-x control on <main>
+   FIX M3: Safe area insets for notched iPhones (landscape)
+   FIX M4: Jump-nav touch targets enlarged to ≥36px
+   FIX M5: .edu-grid 1-col breakpoint moved to 768px
+   FIX M6: Nozzle table scroll indicator gradient — FIXED v9: removed conflicting position
+   FIX M7: Status panel text sizing at 380px
+   FIX M8: Mix step numbers smaller at 380px
+   FIX M9: Checklist checkbox sizing for mobile
+   ==================================================================== */
+
+/* ── Fallback vars (in case styles.css doesn't define them) ───── */
+:root {
+  --blue:     #4a8fba;
+  --orange:   #c87a28;
+  --bg2:      var(--bg, #0e0e0c);
+  --border-g: var(--border, rgba(218,165,32,.30));
+  --surface3: var(--surface2, #1e1e1a);
+}
+
+/* ── CRITICAL: Prevent horizontal blowout ────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  overflow-x: hidden;  /* fallback for iOS <16 where clip isn't supported */
+  overflow-x: clip;    /* progressive enhancement: iOS 16+ */
+  overscroll-behavior-x: none;
+}
+body {
+  overflow-x: hidden;
+  overflow-x: clip;
+  max-width: 100%;
+  width: 100%;
+}
+
+/* FIX M2 + v12-1: .main — overflow-x:clip (NOT hidden)
+   overflow-x:hidden creates a Block Formatting Context which breaks
+   position:sticky children (ticker strip, site nav).
+   overflow-x:clip does not create a BFC. */
+.main {
+  overflow-x: hidden;  /* fallback iOS <16 */
+  overflow-x: clip;    /* v12: no BFC — sticky children work correctly */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Hero ─────────────────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(160deg, var(--bg2) 0%, var(--surface) 100%);
+  border-bottom: 2px solid var(--border);
+  padding: 3rem 1.5rem 2.5rem;
+  padding-left: max(1.5rem, env(safe-area-inset-left));
+  padding-right: max(1.5rem, env(safe-area-inset-right));
+  overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 340px;
+  gap: 2.5rem;
+  align-items: center;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: .45rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--green); background: rgba(58,139,60,.06);
+  border: 1px solid rgba(58,139,60,.18); border-radius: 3px;
+  padding: .3rem .75rem; margin-bottom: .85rem;
+}
+.hero-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  font-weight: 700; line-height: 1.15; color: var(--text);
+  margin-bottom: .85rem; text-transform: uppercase; letter-spacing: .01em;
+}
+.hero-title span { color: var(--green); }
+.hero-sub {
+  font-size: 1rem; line-height: 1.75; color: var(--text-dim); max-width: 540px;
+}
+
+/* ── Status Panel (hero right) ────────────────────────────────────── */
+.status-panel {
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: var(--r-md, 6px); padding: 1.5rem; text-align: center;
+  min-width: 0;
+  transition: border-color .2s;
+}
+.status-lbl {
+  display: flex; align-items: center; justify-content: center; gap: .4rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 1rem;
+}
+.status-icon { font-size: 3.5rem; line-height: 1; margin-bottom: .6rem; }
+.status-main {
+  font-family: 'Oswald', sans-serif; font-size: 1.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .03em; margin-bottom: .4rem;
+}
+.status-main.good    { color: var(--green); }
+.status-main.marginal{ color: var(--gold); }
+.status-main.poor    { color: var(--red); }
+.status-main.frozen  { color: var(--blue); }
+.status-sub  { font-size: .88rem; color: var(--text-dim); line-height: 1.5; margin-bottom: .5rem; }
+.status-loc  { font-size: .75rem; color: var(--text-muted); }
+.status-ts   { font-size: .65rem; color: var(--text-muted); margin-top: .4rem; font-family: 'JetBrains Mono', monospace; }
+
+.status-panel.good     { border-color: rgba(58,139,60,.30); }
+.status-panel.marginal { border-color: rgba(218,165,32,.30); }
+.status-panel.poor     { border-color: rgba(184,76,42,.30); }
+.status-panel.frozen   { border-color: rgba(74,143,186,.30); }
+
+/* ── Location Setup Card ──────────────────────────────────────────── */
+.loc-setup {
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: var(--r-md, 6px); padding: 2rem; text-align: center;
+  max-width: 560px; margin: 0 auto 1.5rem;
+}
+.loc-setup h3 { font-size: 1.05rem; color: var(--text); margin-bottom: .55rem; }
+.loc-setup p  { font-size: .9rem; color: var(--text-dim); line-height: 1.65; margin-bottom: 1.25rem; }
+.loc-btns {
+  display: flex; gap: .65rem; justify-content: center; flex-wrap: wrap;
+}
+.btn-g {
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .75rem 1.4rem; background: var(--green); color: #fff;
+  border: none; border-radius: var(--r-sm, 4px); font-family: 'JetBrains Mono', monospace;
+  font-size: .85rem; font-weight: 700; cursor: pointer;
+  text-transform: uppercase; letter-spacing: .5px;
+  transition: background .15s;
+  min-height: 44px;
+}
+.btn-g:hover { background: #1b4d1c; }
+.btn-q {
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .75rem 1.3rem; background: none;
+  border: 2px solid var(--border); border-radius: var(--r-sm, 4px);
+  font-family: 'JetBrains Mono', monospace; font-size: .85rem; font-weight: 600;
+  color: var(--text-dim); cursor: pointer;
+  text-transform: uppercase; letter-spacing: .5px;
+  transition: border-color .15s, color .15s;
+  min-height: 44px;
+}
+.btn-q:hover { border-color: var(--green); color: var(--green); }
+.zip-row {
+  display: none; flex-direction: row; gap: .6rem; justify-content: center;
+  margin-top: .9rem; flex-wrap: wrap;
+}
+.zip-in {
+  padding: .75rem 1rem; background: var(--surface2); border: 2px solid var(--border);
+  border-radius: var(--r-sm, 4px); font-family: 'JetBrains Mono', monospace; font-size: .88rem;
+  color: var(--text); width: 160px; outline: none; transition: border-color .15s;
+  min-height: 44px;
+}
+.zip-in:focus { border-color: var(--green); }
+
+/* ── Jump Navigation ─────────────────────────────────────────────── */
+.jump-nav {
+  display: flex; gap: .5rem; flex-wrap: nowrap;
+  margin-bottom: 1.5rem;
+  max-width: 100%;
+  margin-left: auto; margin-right: auto;
+  padding: 0 1.5rem;
+  padding-left: max(1.5rem, env(safe-area-inset-left));
+  padding-right: max(1.5rem, env(safe-area-inset-right));
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  box-sizing: border-box;
+}
+.jump-nav::-webkit-scrollbar { display: none; }
+.jump-nav::after {
+  content: '';
+  position: sticky;
+  right: 0;
+  flex-shrink: 0;
+  width: 2.5rem;
+  align-self: stretch;
+  background: linear-gradient(to left, var(--bg, #0e0e0c) 20%, transparent);
+  pointer-events: none;
+}
+.jump-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem; font-weight: 700; color: var(--text-muted);
+  text-decoration: none; padding: .35rem .75rem;
+  border: 2px solid var(--border); border-radius: var(--r-sm, 4px);
+  transition: border-color .15s, color .15s;
+  white-space: nowrap; flex-shrink: 0;
+  text-transform: uppercase; letter-spacing: .3px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+}
+.jump-link:hover { border-color: var(--green); color: var(--green); }
+
+/* ── Page Grid (two-column layout) ───────────────────────────────── */
+.pg {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 320px;
+  gap: 1.5rem;
+  align-items: start;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  padding-left: max(1.5rem, env(safe-area-inset-left));
+  padding-right: max(1.5rem, env(safe-area-inset-right));
+  box-sizing: border-box;
+}
+.pg > div { min-width: 0; }
+
+/* ── Section Header Bar ──────────────────────────────────────────── */
+.section-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: .85rem; flex-wrap: wrap; gap: .5rem;
+}
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--text-muted);
+}
+.section-link {
+  font-size: .72rem; color: var(--text-muted); background: none;
+  border: none; text-decoration: underline; cursor: pointer;
+  min-height: 36px;
+  display: inline-flex; align-items: center;
+}
+
+/* ── Factor Cards ────────────────────────────────────────────────── */
+.factors {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: .9rem;
+  margin-bottom: 1.5rem;
+}
+.fcard {
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: var(--r-md, 6px); padding: 1rem 1.1rem;
+  transition: border-color .2s;
+  min-width: 0;
+  overflow: hidden;
+}
+.fcard:hover { border-color: var(--border-g); }
+.fcard-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: .55rem; gap: .5rem;
+}
+.fcard-name {
+  display: flex; align-items: center; gap: .4rem;
+  font-size: .82rem; font-weight: 700; color: var(--text);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fcard-icon { font-size: 1rem; flex-shrink: 0; }
+.fchip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .62rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  padding: .18rem .5rem; border-radius: 3px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.fchip.good    { background: rgba(58,139,60,.10);  color: var(--green); }
+.fchip.marginal{ background: rgba(218,165,32,.10);  color: var(--gold); }
+.fchip.poor    { background: rgba(184,76,42,.10);   color: var(--red); }
+.fchip.frozen  { background: rgba(74,143,186,.10);  color: var(--blue); }
+.fcard-val {
+  font-family: 'Oswald', sans-serif; font-size: 1.9rem; font-weight: 700;
+  color: var(--text); line-height: 1; margin-bottom: .45rem;
+}
+.fcard-desc {
+  font-size: .78rem; color: var(--text-dim); line-height: 1.6;
+  margin-bottom: .65rem;
+  overflow-wrap: break-word;
+}
+.fcard-bar {
+  height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden;
+}
+.fcard-bar-fill {
+  height: 100%; border-radius: 3px;
+  transition: width .6s cubic-bezier(.4,0,.2,1), background .3s;
+}
+
+/* ── Hourly Spray Window ─────────────────────────────────────────── */
+.window-wrap {
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: var(--r-md, 6px); padding: 1.1rem;
+  margin-bottom: 1.5rem;
+  /* overflow:hidden intentionally OMITTED — kills iOS touch scroll on .hourly-scroll child */
+}
+.window-head {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: .75rem;
+}
+.hourly-scroll {
+  display: flex; gap: .4rem; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+  padding-bottom: .35rem;
+}
+.hourly-scroll::-webkit-scrollbar { height: 4px; }
+.hourly-scroll::-webkit-scrollbar-track { background: transparent; }
+.hourly-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.hr-item {
+  flex-shrink: 0; display: flex; flex-direction: column; align-items: center;
+  gap: .2rem; padding: .55rem .45rem; border-radius: var(--r-sm, 4px);
+  border: 2px solid var(--border); min-width: 58px; text-align: center;
+  transition: border-color .15s;
+}
+.hr-item.good     { background: rgba(58,139,60,.05);  border-color: rgba(58,139,60,.22); }
+.hr-item.marginal { background: rgba(218,165,32,.05); border-color: rgba(218,165,32,.22); }
+.hr-item.poor     { background: rgba(184,76,42,.05);  border-color: rgba(184,76,42,.22); }
+.hr-item.frozen   { background: rgba(74,143,186,.05); border-color: rgba(74,143,186,.22); }
+.hr-time  { font-family: 'JetBrains Mono', monospace; font-size: .62rem; color: var(--text-muted); font-weight: 600; }
+.hr-icon  { font-size: 1rem; line-height: 1; }
+.hr-wind  { font-family: 'JetBrains Mono', monospace; font-size: .7rem; color: var(--text-dim); font-weight: 600; }
+.hr-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .62rem; font-weight: 700; letter-spacing: .04em;
+  padding: .1rem .3rem; border-radius: 3px;
+}
+.hr-badge.good     { background: rgba(58,139,60,.12); color: var(--green); }
+.hr-badge.marginal { background: rgba(218,165,32,.12); color: var(--gold); }
+.hr-badge.poor     { background: rgba(184,76,42,.12);  color: var(--red); }
+.hr-badge.frozen   { background: rgba(74,143,186,.12); color: var(--blue); }
+.window-legend {
+  font-size: .68rem; color: var(--text-muted); margin-top: .6rem; line-height: 1.5;
+}
+
+/* ── Education Section ───────────────────────────────────────────── */
+.edu {
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: var(--r-md, 6px); padding: 1.5rem; margin-bottom: 1.5rem;
+  min-width: 0; overflow: hidden;
+}
+.edu-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--green); margin-bottom: 1.25rem; opacity: .9;
+}
+.edu-grid {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: .85rem;
+  margin-bottom: 1.25rem;
+}
+.edu-card {
+  background: var(--surface2); border: 2px solid var(--border);
+  border-radius: var(--r-sm, 4px); padding: 1rem; min-width: 0;
+  overflow: hidden;
+}
+.edu-card-icon { font-size: 1.4rem; margin-bottom: .4rem; }
+.edu-card-title {
+  font-size: .82rem; font-weight: 700; color: var(--text); margin-bottom: .45rem;
+}
+.edu-card-text  { font-size: .78rem; color: var(--text-dim); line-height: 1.65; margin-bottom: .7rem; overflow-wrap: break-word; }
+.edu-card-tip   { font-size: .72rem; font-weight: 700; padding: .25rem .55rem; border-radius: 3px; display: inline-block; }
+.edu-card-tip-green  { background: rgba(62,207,110,.12); color: var(--green); }
+.edu-card-tip-gold   { background: rgba(230,176,66,.12); color: var(--gold); }
+.edu-card-tip-red    { background: rgba(240,96,96,.12); color: var(--red); }
+.edu-card-tip-blue   { background: rgba(91,163,224,.12); color: var(--blue); }
+
+/* ── Inversion Diagram Box ───────────────────────────────────────── */
+.inv-box {
+  background: var(--surface2); border: 2px solid rgba(184,76,42,.18);
+  border-radius: var(--r-md, 6px); padding: 1.25rem; margin-top: 1rem;
+  overflow: hidden;
+}
+.inv-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem; font-weight: 700; color: var(--red);
+  letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 1rem; opacity: .9;
+}
+.inv-grid {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: 1.5rem;
+}
+.inv-intro {
+  font-size: .82rem; color: var(--text-dim); line-height: 1.75; margin-bottom: .85rem;
+}
+.inv-diagram { display: flex; flex-direction: column; gap: 0; }
+.inv-layer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .6rem .75rem; border-radius: var(--r-sm, 4px); position: relative;
+  flex-wrap: wrap; gap: .25rem;
+  min-width: 0;
+}
+.inv-layer-warm  { background: rgba(200,122,40,.08); border: 1px solid rgba(200,122,40,.2); margin-bottom: .3rem; }
+.inv-layer-cool  { background: rgba(74,143,186,.08); border: 1px solid rgba(74,143,186,.2); border-top: none; border-bottom: none; padding: 1rem .75rem; margin-bottom: .3rem; }
+.inv-layer-ground{ background: rgba(58,139,60,.08); border: 1px solid rgba(58,139,60,.2); }
+.inv-layer-label { font-size: .72rem; font-weight: 700; }
+.inv-layer-label-warm  { color: var(--orange); }
+.inv-layer-label-cool  { color: var(--blue); }
+.inv-layer-label-ground{ color: var(--green); }
+.inv-layer-meta  { font-size: .68rem; color: var(--text-muted); margin-left: auto; }
+.inv-layer-sub   { font-size: .65rem; color: var(--text-muted); margin-top: .15rem; }
+.inv-arrow {
+  position: absolute; right: .75rem; font-size: .8rem; color: var(--text-muted);
+}
+.inv-detect-head {
+  font-size: .82rem; font-weight: 700; color: var(--text); margin-bottom: .65rem;
+}
+.inv-detect-list {
+  display: flex; flex-direction: column; gap: .6rem;
+}
+.inv-detect-item { display: flex; gap: .5rem; font-size: .8rem; }
+.inv-detect-arrow { color: var(--gold); flex-shrink: 0; }
+.inv-detect-text { color: var(--text-dim); }
+.inv-detect-text strong { color: var(--text); }
+.inv-warning {
+  margin-top: .85rem; padding: .65rem .85rem;
+  background: rgba(184,76,42,.06); border: 1px solid rgba(184,76,42,.18);
+  border-radius: var(--r-sm, 4px); font-size: .78rem; color: var(--text-dim); line-height: 1.6;
+}
+.inv-warning-label { color: var(--red); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   TANK MIX ORDER GUIDE
+═══════════════════════════════════════════════════════════════════ */
+.mix-section { margin-top: 2.5rem; min-width: 0; }
+.mix-card {
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: var(--r-md, 6px); padding: 1.5rem;
+  /* overflow:hidden intentionally OMITTED — kills iOS touch scroll on .nozzle-table-wrap child */
+}
+.mix-intro {
+  font-size: .85rem; color: var(--text-dim); line-height: 1.75;
+  margin-bottom: 1.5rem; max-width: 680px;
+}
+.mix-steps {
+  display: flex; flex-direction: column; gap: .65rem; margin-bottom: 1.5rem;
+}
+.mix-step {
+  display: grid;
+  grid-template-columns: 44px minmax(0,1fr);
+  gap: .85rem; align-items: start;
+  padding: .85rem; background: var(--surface2);
+  border: 2px solid var(--border); border-radius: var(--r-md, 6px);
+  transition: border-color .2s;
+  min-width: 0;
+}
+.mix-step:hover { border-color: var(--border-g); }
+.mix-num {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--r-md, 6px);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem; font-weight: 800; flex-shrink: 0;
+}
+.mix-num-1 { background: rgba(74,143,186,.10); color: var(--blue); }
+.mix-num-2 { background: rgba(218,165,32,.10); color: var(--gold); }
+.mix-num-3 { background: rgba(159,122,234,.10); color: #9f7aea; }
+.mix-num-4 { background: rgba(200,122,40,.10); color: var(--orange); }
+.mix-num-5 { background: rgba(58,139,60,.10); color: var(--green); }
+.mix-num-6 { background: rgba(184,76,42,.10); color: var(--red); }
+.mix-num-7 { background: rgba(74,143,186,.10); color: var(--blue); }
+.mix-num-8 { background: rgba(218,165,32,.10); color: var(--gold); }
+.mix-num-9 { background: rgba(58,139,60,.10); color: var(--green); }
+.mix-step-name { font-size: .85rem; font-weight: 700; color: var(--text); margin-bottom: .25rem; }
+.mix-step-what { font-size: .78rem; color: var(--text-dim); line-height: 1.65; margin-bottom: .35rem; overflow-wrap: break-word; }
+.mix-step-why  { font-size: .72rem; color: var(--text-muted); line-height: 1.55; font-style: italic; }
+
+.mix-tips {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: .75rem;
+}
+.mix-tip {
+  padding: .85rem; border-radius: var(--r-sm, 4px); font-size: .8rem; line-height: 1.65;
+  min-width: 0; overflow: hidden;
+}
+.mix-tip-title { font-weight: 700; margin-bottom: .25rem; }
+.mix-tip-do {
+  background: rgba(58,139,60,.05); border: 1px solid rgba(58,139,60,.18);
+  color: var(--text-dim);
+}
+.mix-tip-do .mix-tip-title { color: var(--green); }
+.mix-tip-dont {
+  background: rgba(184,76,42,.05); border: 1px solid rgba(184,76,42,.18);
+  color: var(--text-dim);
+}
+.mix-tip-dont .mix-tip-title { color: var(--red); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   TIPS & TRICKS
+═══════════════════════════════════════════════════════════════════ */
+.tips-section { margin-top: 2.5rem; min-width: 0; }
+.tips-grid {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: .85rem; margin-bottom: 1rem;
+}
+.tip-card {
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: var(--r-md, 6px); padding: 1.15rem;
+  transition: border-color .2s;
+  min-width: 0; overflow: hidden;
+}
+.tip-card:hover { border-color: var(--border-g); }
+.tip-card-icon  { font-size: 1.3rem; margin-bottom: .5rem; }
+.tip-card-title { font-size: .85rem; font-weight: 700; color: var(--text); margin-bottom: .45rem; }
+.tip-card-text  { font-size: .8rem; color: var(--text-dim); line-height: 1.7; margin-bottom: .5rem; overflow-wrap: break-word; }
+.tip-card-detail {
+  font-size: .75rem; color: var(--text-muted); line-height: 1.65;
+  padding-top: .45rem; border-top: 1px solid var(--border);
+  overflow-wrap: break-word;
+}
+.tip-card-detail strong { color: var(--text-dim); }
+
+/* ── Nozzle Comparison Table ─────────────────────────────────────── */
+.nozzle-table-wrap {
+  overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1rem 0;
+  position: relative;
+  max-width: 100%;
+}
+.nozzle-table-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 32px;
+  pointer-events: none;
+  background: linear-gradient(to left, var(--surface, #0e0e0c), transparent);
+}
+.nozzle-table {
+  width: 100%; border-collapse: collapse; font-size: .78rem;
+}
+.nozzle-table th {
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .62rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-muted); padding: .55rem .65rem;
+  border-bottom: 2px solid var(--border); white-space: nowrap;
+}
+.nozzle-table td {
+  padding: .6rem .65rem; border-bottom: 1px solid var(--border);
+  color: var(--text-dim); vertical-align: top;
+}
+.nozzle-table tr:hover td { background: var(--surface2); }
+.nozzle-table .nt-type { font-weight: 700; color: var(--text); white-space: nowrap; }
+.nt-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .62rem; font-weight: 700;
+  padding: .15rem .4rem; border-radius: 3px; white-space: nowrap;
+}
+.nt-badge.low  { background: rgba(58,139,60,.10); color: var(--green); }
+.nt-badge.med  { background: rgba(218,165,32,.10); color: var(--gold); }
+.nt-badge.high { background: rgba(184,76,42,.10);  color: var(--red); }
+.nozzle-table-note {
+  font-size: .7rem; color: var(--text-muted); margin-top: .65rem; line-height: 1.6;
+}
+.nozzle-card-head {
+  font-size: .82rem; font-weight: 700; color: var(--text); margin-bottom: .35rem;
+}
+.nozzle-card-sub {
+  font-size: .78rem; color: var(--text-dim); margin-bottom: .85rem;
+}
+
+/* ── Sidebar Cards ───────────────────────────────────────────────── */
+.sidebar {
+  display: flex; flex-direction: column; gap: 1rem;
+  min-width: 0;
+}
+.sc {
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: var(--r-md, 6px); padding: 1.1rem 1.2rem;
+  min-width: 0;
+  /* overflow:hidden intentionally OMITTED — kills iOS touch scroll on .day-strip child.
+     border-radius does not require overflow:hidden in modern browsers. */
+}
+.sc-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .64rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--green); margin-bottom: .9rem; opacity: .9;
+}
+
+/* ── Recommendation Box ──────────────────────────────────────────── */
+.rec {
+  border-radius: var(--r-sm, 4px); padding: 1rem; margin-bottom: .7rem;
+  border: 2px solid var(--border);
+}
+.rec.good    { background: rgba(58,139,60,.05);  border-color: rgba(58,139,60,.22); }
+.rec.marginal{ background: rgba(218,165,32,.05); border-color: rgba(218,165,32,.22); }
+.rec.poor    { background: rgba(184,76,42,.05);  border-color: rgba(184,76,42,.22); }
+.rec.frozen  { background: rgba(74,143,186,.05); border-color: rgba(74,143,186,.22); }
+.rec-h { font-size: .9rem; font-weight: 700; margin-bottom: .45rem; }
+.rec-h.good    { color: var(--green); }
+.rec-h.marginal{ color: var(--gold); }
+.rec-h.poor    { color: var(--red); }
+.rec-h.frozen  { color: var(--blue); }
+.rec-t { font-size: .82rem; color: var(--text-dim); line-height: 1.65; }
+
+/* ── 5-Day Strip ─────────────────────────────────────────────────── */
+.day-strip {
+  display: flex; gap: .45rem; margin-top: .3rem;
+  overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.day-strip::-webkit-scrollbar { display: none; }
+.day-item {
+  flex: 1; flex-shrink: 0; min-width: 48px;
+  display: flex; flex-direction: column; align-items: center;
+  gap: .2rem; padding: .65rem .3rem;
+  background: var(--surface2); border: 2px solid var(--border);
+  border-radius: var(--r-sm, 4px); text-align: center;
+}
+.day-name   { font-family: 'JetBrains Mono', monospace; font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); }
+.day-icon   { font-size: 1.2rem; line-height: 1; }
+.day-wind   { font-family: 'JetBrains Mono', monospace; font-size: .65rem; color: var(--text-muted); }
+.day-rating {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .62rem; font-weight: 700; padding: .12rem .3rem;
+  border-radius: 3px; letter-spacing: .03em;
+}
+.day-rating.good    { background: rgba(58,139,60,.10); color: var(--green); }
+.day-rating.marginal{ background: rgba(218,165,32,.10); color: var(--gold); }
+.day-rating.poor    { background: rgba(184,76,42,.10);  color: var(--red); }
+.day-rating.frozen  { background: rgba(74,143,186,.10); color: var(--blue); }
+
+/* ── Pre-Spray Checklist ─────────────────────────────────────────── */
+.checklist-item {
+  display: flex; align-items: flex-start; gap: .5rem;
+  font-size: .8rem; cursor: pointer;
+  padding: .25rem 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.checklist-item input {
+  margin-top: .2rem; accent-color: var(--green); flex-shrink: 0;
+  width: 18px; height: 18px;
+}
+.checklist-item span { color: var(--text-dim); }
+
+/* ── Quick Mix Order Sidebar ─────────────────────────────────────── */
+.qmix-list {
+  display: flex; flex-direction: column; gap: .35rem; font-size: .78rem;
+}
+.qmix-item {
+  display: flex; gap: .5rem; align-items: center;
+}
+.qmix-num {
+  font-weight: 700; font-family: 'JetBrains Mono', monospace; width: 18px;
+  flex-shrink: 0;
+}
+.qmix-text { color: var(--text-dim); }
+.qmix-footer {
+  font-size: .68rem; color: var(--text-muted); margin-top: .6rem;
+  border-top: 1px solid var(--border); padding-top: .5rem;
+}
+.qmix-footer a { color: var(--green); text-decoration: underline; }
+
+/* ── Cross-Link ──────────────────────────────────────────────────── */
+.cross-link {
+  display: flex; align-items: flex-start; gap: .9rem;
+  padding: 1rem 1.1rem; background: var(--surface);
+  border: 2px solid var(--border); border-radius: var(--r-md, 6px);
+  text-decoration: none; transition: border-color .15s, background .15s;
+  min-width: 0; overflow: hidden;
+}
+.cross-link:hover { background: var(--surface2); border-color: var(--green); }
+.cross-link-icon  { font-size: 1.5rem; flex-shrink: 0; margin-top: .1rem; }
+.cross-link-title { font-size: .88rem; font-weight: 700; color: var(--green); margin-bottom: .2rem; }
+.cross-link-text  { font-size: .78rem; color: var(--text-dim); line-height: 1.55; }
+.cross-link-arrow { margin-left: auto; color: var(--text-muted); font-size: 1.1rem; align-self: center; flex-shrink: 0; transition: transform .15s, color .15s; }
+.cross-link:hover .cross-link-arrow { transform: translateX(3px); color: var(--green); }
+
+/* ── Live Dot ────────────────────────────────────────────────────── */
+.live-dot {
+  display: inline-block; width: 7px; height: 7px;
+  border-radius: 50%; background: var(--green);
+  animation: pulse 1.8s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%     { opacity: .5; transform: scale(.8); }
+}
+
+/* ── Fade-up Animation ───────────────────────────────────────────── */
+.fade-up { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+.fade-up.vis { opacity: 1; transform: none; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   PREFERS-REDUCED-MOTION
+═══════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .fade-up { opacity: 1; transform: none; transition: none; }
+  .live-dot { animation: none; opacity: 1; }
+  .fcard-bar-fill { transition: none; }
+  .fcard, .tip-card, .mix-step, .cross-link, .status-panel,
+  .hr-item, .jump-link, .btn-g, .btn-q { transition: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .hero-inner { grid-template-columns: minmax(0,1fr); }
+  .status-panel { max-width: 400px; }
+  .pg { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 768px) {
+  .hero {
+    padding: 2rem 1rem 1.5rem;
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+  .pg {
+    padding: 1.5rem 1rem;
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+  .jump-nav {
+    padding: 0 1rem;
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+  .inv-grid { grid-template-columns: minmax(0,1fr); }
+  .mix-tips { grid-template-columns: minmax(0,1fr); }
+  .mix-card { padding: 1.1rem; }
+  .mix-step { grid-template-columns: 36px minmax(0,1fr); gap: .65rem; padding: .75rem; }
+  .mix-num  { width: 36px; height: 36px; font-size: .85rem; }
+  .status-main { font-size: 1.3rem; }
+  .status-icon { font-size: 2.5rem; }
+  .status-panel { max-width: none; }
+  .edu-grid { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 580px) {
+  .factors { grid-template-columns: minmax(0,1fr); }
+  .tips-grid { grid-template-columns: minmax(0,1fr); }
+  .inv-arrow { display: none; }
+  .inv-layer-meta { margin-left: 0; }
+  .inv-layer-label { font-size: .65rem; }
+  .loc-setup { padding: 1.25rem 1rem; }
+  .cross-link { gap: .6rem; padding: .85rem; }
+  .cross-link-text { font-size: .72rem; }
+  .nozzle-table-wrap::after { width: 20px; }
+  .hr-item { min-width: 54px; padding: .5rem .35rem; }
+}
+@media (max-width: 380px) {
+  .hero {
+    padding: 1.5rem .75rem 1.25rem;
+    padding-left: max(.75rem, env(safe-area-inset-left));
+    padding-right: max(.75rem, env(safe-area-inset-right));
+  }
+  .hero-sub { font-size: .88rem; }
+  .pg {
+    padding: 1rem .75rem;
+    padding-left: max(.75rem, env(safe-area-inset-left));
+    padding-right: max(.75rem, env(safe-area-inset-right));
+  }
+  .jump-nav {
+    padding: 0 .75rem;
+    padding-left: max(.75rem, env(safe-area-inset-left));
+    padding-right: max(.75rem, env(safe-area-inset-right));
+  }
+  .jump-link { font-size: .65rem; padding: .3rem .55rem; }
+  .fcard { padding: .75rem; }
+  .fcard-val { font-size: 1.5rem; }
+  .fcard-desc { font-size: .72rem; }
+  .status-main { font-size: 1rem; line-height: 1.25; }
+  .status-icon { font-size: 2rem; }
+  .status-sub { font-size: .78rem; }
+  .loc-setup { padding: 1rem .85rem; }
+  .loc-setup h3 { font-size: .92rem; }
+  .mix-step-name { font-size: .78rem; }
+  .mix-step-what { font-size: .72rem; }
+  .mix-step-why { font-size: .66rem; }
+  .mix-step { grid-template-columns: 30px minmax(0,1fr); gap: .5rem; padding: .65rem; }
+  .mix-num { width: 30px; height: 30px; font-size: .75rem; border-radius: var(--r-sm, 4px); }
+  .tip-card { padding: .85rem; }
+  .tip-card-title { font-size: .78rem; }
+  .tip-card-text { font-size: .74rem; }
+  .edu-card { padding: .75rem; }
+  .edu-card-title { font-size: .75rem; }
+  .edu-card-text { font-size: .72rem; }
+  .sc { padding: .85rem; }
+  .inv-box { padding: .85rem; }
+  .inv-detect-item { font-size: .72rem; }
+  .inv-warning { font-size: .72rem; padding: .5rem .65rem; }
+  .day-item { padding: .5rem .2rem; }
+  .day-name { font-size: .62rem; }
+  .day-rating { font-size: .62rem; padding: .1rem .2rem; }
+  .day-wind { font-size: .62rem; }
+}
+
+/* ── Print ───────────────────────────────────────────────────────── */
+@media print {
+  .hero, .status-panel, #site-header, #site-footer, .jump-nav,
+  .loc-setup, .cross-link, .window-wrap, #factor-section { display: none !important; }
+  .pg { grid-template-columns: 1fr; }
+  .sidebar { display: block; }
+  .sc { break-inside: avoid; page-break-inside: avoid; border: 1px solid #ccc; margin-bottom: .75rem; }
+  .sc:has(.rec) { display: none; }
+  .sc:has(.day-strip) { display: none; }
+  body { color: #000; background: #fff; }
+  .fcard, .edu, .mix-card, .tip-card { break-inside: avoid; page-break-inside: avoid; }
+}
+
+/* WCAG AA: brighten danger red for chip/label text contrast on dark (was #c8562e 3.7:1 -> #e06b42 ~4.9:1). Scoped to this page. */
+[data-theme="dark"]{--red:#e06b42;--risk-extreme:#e06b42;}
+</style>
+<style>button,a,[role="button"]{touch-action:manipulation;}
+h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head,h3.s-card-title,h3.sc-title{margin:0;font-size:inherit;font-weight:inherit;line-height:inherit;}
+.zip-in,.spray-zip-input{font-size:1rem!important;}
+.dicamba-box{background:rgba(240,96,96,.07);border:1.5px solid rgba(240,96,96,.3);border-radius:12px;padding:1.4rem 1.5rem;margin-bottom:1.5rem}
+.dicamba-box-head{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:.8rem;display:flex;align-items:center;gap:.45rem}
+.dicamba-rules{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.7rem}
+@media(max-width:600px){.dicamba-rules{grid-template-columns:minmax(0,1fr)}}
+.dicamba-rule{background:rgba(240,96,96,.06);border:1px solid rgba(240,96,96,.15);border-radius:8px;padding:.7rem .85rem;font-size:.8rem;line-height:1.6;color:var(--text-dim)}
+.dicamba-rule strong{color:var(--text);display:block;margin-bottom:.15rem}
+.rfp-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;border:1px solid var(--border);margin-bottom:1.5rem;max-width:100%}
+.rfp-table{width:100%;border-collapse:collapse;font-size:.79rem}
+.rfp-table thead tr{background:rgba(58,139,60,.12)}
+.rfp-table th{padding:.65rem .85rem;text-align:left;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
+.rfp-table td{padding:.6rem .85rem;border-top:1px solid var(--border);color:var(--text-dim);vertical-align:top}
+.rfp-table td:first-child{color:var(--text);font-weight:600}
+.rfp-table td:nth-child(2),.rfp-table td:nth-child(3){white-space:nowrap;width:1%}
+.rfp-table tr:hover td{background:rgba(255,255,255,.025)}
+.rfp-min{color:var(--gold);font-weight:700}
+.rfp-opt{color:var(--green);font-weight:700}
+@media(max-width:640px){.rfp-table th:last-child,.rfp-table td:last-child{display:none}.rfp-table td:first-child{font-size:.75rem}}
+@media(max-width:640px){.nozzle-table th:nth-child(2),.nozzle-table td:nth-child(2),.nozzle-table th:nth-child(5),.nozzle-table td:nth-child(5){display:none}.nozzle-table .nt-type{white-space:normal;font-size:.72rem}.nozzle-table td{padding:.5rem .55rem;font-size:.72rem}.nozzle-table th{padding:.5rem .55rem;font-size:.6rem}}
+.season-section{margin-bottom:2rem}
+.season-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem}
+.season-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem}
+.season-card-month{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
+.season-card-title{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.4rem}
+.season-card-body{font-size:.78rem;color:var(--text-dim);line-height:1.65}
+.season-card-tag{display:inline-block;margin-top:.5rem;padding:.15rem .55rem;border-radius:20px;font-size:.64rem;font-weight:700;letter-spacing:.06em}
+.tag-pre{background:rgba(91,163,224,.15);color:var(--blue)}
+.tag-post{background:rgba(62,207,110,.15);color:var(--green)}
+.tag-fung{background:rgba(230,176,66,.15);color:var(--gold)}
+.tag-burn{background:rgba(240,96,96,.15);color:var(--red)}
+.faq-section{margin-bottom:2rem}
+.faq-list{display:flex;flex-direction:column;gap:.6rem}
+.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.9rem 1.1rem;background:none;border:none;color:var(--text);font-size:.86rem;font-weight:700;text-align:left;cursor:pointer;touch-action:manipulation;min-height:44px;}
+.faq-q:hover{background:rgba(255,255,255,.035)}
+.faq-chevron{color:var(--text-muted);font-size:.75rem;transition:transform .2s;flex-shrink:0}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .2s ease;font-size:.82rem;color:var(--text-dim);line-height:1.75;padding:0 1.1rem}
+.faq-item.open .faq-a{max-height:1200px;padding:.1rem 1.1rem .9rem}
+.faq-item.open .faq-chevron{transform:rotate(90deg)}
+</style>
+</head>
+<body>
+<noscript><div style="text-align:center;padding:2rem;font-family:sans-serif;color:#ccc;background:#111;margin:1rem">JavaScript is required for real-time spray conditions. Please enable JavaScript in your browser.</div></noscript>
+<a href="#main" class="skip">Skip to content</a>
+<div id="site-header"></div>
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow"><span class="live-dot" aria-hidden="true"></span>Real-Time Spray Advisory</div>
+      <h1 class="hero-title">Is It <span>Safe to Spray</span><br>Right Now?</h1>
+      <p class="hero-sub">Wind speed, temperature, humidity, thermal inversion risk, 24-hour window forecast, tank mix order, and pro tips &mdash; everything a sprayer needs. Free. No account. No app.</p>
+    </div>
+    <div class="status-panel" id="status-panel" aria-live="polite" role="status">
+      <div class="status-lbl"><span class="live-dot" aria-hidden="true"></span>Current Spray Status</div>
+      <div class="status-icon" id="st-icon" aria-hidden="true">&#128205;</div>
+      <div class="status-main marginal" id="st-main">Detecting&hellip;</div>
+      <div class="status-sub" id="st-sub">Getting your local conditions</div>
+      <div class="status-loc" id="st-loc">&#128205; Locating&hellip;</div>
+      <div class="status-ts" id="st-ts"></div>
+    </div>
+  </div>
+</section>
+<main id="main" class="main">
+  <nav class="jump-nav" aria-label="Page sections">
+    <a href="#section-conditions" class="jump-link">&#128202; Conditions</a>
+    <a href="#section-factors" class="jump-link">&#127891; Why It Matters</a>
+    <a href="#section-mixorder" class="jump-link">&#129514; Tank Mix Order</a>
+    <a href="#section-tips" class="jump-link">&#128161; Tips &amp; Tricks</a>
+    <a href="#section-nozzles" class="jump-link">&#128296; Nozzle Guide</a>
+    <a href="#section-season" class="jump-link">&#128197; Spray Calendar</a>
+    <a href="#section-faq" class="jump-link">&#10067; FAQ</a>
+  </nav>
+  <div class="loc-setup" id="loc-setup">
+    <h3>&#127758; Set Your Location</h3>
+    <p>Spray conditions vary significantly by location. Share your location or enter a ZIP for accurate wind, temperature, humidity, and inversion risk at your field.</p>
+    <div class="loc-btns">
+      <button class="btn-g" id="btn-geo" style="min-height:44px;">&#128205; Use My Location</button>
+      <button class="btn-q" id="btn-show-zip" style="min-height:44px;">Enter ZIP Instead</button>
+    </div>
+    <div class="zip-row" id="spray-zip-row">
+      <input type="text" class="zip-in" id="spray-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" style="font-size:1rem">
+      <button class="btn-g" id="btn-zip-go" style="min-height:44px;">Go &rarr;</button>
+    </div>
+  </div>
+  <div class="pg">
+    <div>
+      <div id="factor-section" style="display:none"><div class="s-card" id="product-tune" style="margin-bottom:1rem"><div class="s-card-title">&#129516; Tune to Your Product (optional)</div><label style="display:flex;flex-direction:column;gap:.3rem;font-size:.66rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Herbicide / product<select id="in-product" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="general" selected>General guidance (no product)</option><option value="enlist">Enlist One / Enlist Duo (2,4-D choline)</option><option value="dicamba">Engenia / XtendiMax / Tavium (dicamba OTT)</option><option value="glyphosate">Glyphosate (Roundup PowerMAX, etc.)</option><option value="24d_ester">2,4-D / 2,4-D ester (generic Group 4)</option><option value="contact">Contact products (Liberty, Cobra, Gramoxone)</option></select></label><div id="product-note" style="font-size:.68rem;color:var(--text-dim);line-height:1.6;margin-top:.5rem;display:none"></div><div style="font-size:.64rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem"><strong>The label is the law.</strong> These thresholds reflect federal label guidance and may be outdated or superseded by your state’s rules and your product’s current label. State restrictions are often stricter. Always read and follow the actual label and check Bulletins Live! Two before applying.</div></div>
+        <div class="section-bar" id="section-conditions">
+          <div class="section-label">Factor Breakdown</div>
+          <button class="section-link" id="btn-change-loc" style="min-height:44px;">Change location</button>
+        </div>
+        <div class="factors">
+          <div class="fcard" id="fc-wind"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true">&#128168;</span>Wind Speed</div><span class="fchip good" id="fc-wind-chip">Good</span></div><div class="fcard-val" id="fc-wind-val">-- mph</div><div class="fcard-desc" id="fc-wind-desc">Ideal: 3&ndash;10 mph. Below 3 mph, inversion risk rises. Above 10 mph, mechanical drift moves spray off-target.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-wind-bar" style="width:0%;background:var(--green)"></div></div></div>
+          <div class="fcard" id="fc-dir"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true">&#129517;</span>Wind Direction</div><span class="fchip marginal" id="fc-dir-chip">Note</span></div><div class="fcard-val" id="fc-dir-val">--&deg;</div><div class="fcard-desc" id="fc-dir-desc">Always check what is downwind &mdash; neighboring fields, waterways, residential areas, and sensitive crops.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dir-bar" style="width:50%;background:var(--gold)"></div></div></div>
+          <div class="fcard" id="fc-temp"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true">&#127777;&#65039;</span>Temperature</div><span class="fchip good" id="fc-temp-chip">Good</span></div><div class="fcard-val" id="fc-temp-val">--&deg;F</div><div class="fcard-desc" id="fc-temp-desc">Spray between 50&ndash;85&deg;F. Heat causes volatilization of dicamba/2,4-D; cold slows uptake and risks frost injury.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-temp-bar" style="width:0%;background:var(--green)"></div></div></div>
+          <div class="fcard" id="fc-humid"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true">&#128167;</span>Humidity</div><span class="fchip good" id="fc-humid-chip">Good</span></div><div class="fcard-val" id="fc-humid-val">--%</div><div class="fcard-desc" id="fc-humid-desc">Target 40&ndash;90% RH. Below 40%, droplets evaporate before reaching the leaf. Above 90%, disease risk increases.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-humid-bar" style="width:0%;background:var(--green)"></div></div></div>
+          <div class="fcard" id="fc-dt"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true">&#127786;&#65039;</span>Delta T</div><span class="fchip good" id="fc-dt-chip">Good</span></div><div class="fcard-val" id="fc-dt-val">--</div><div class="fcard-desc" id="fc-dt-desc">Delta T (wet-bulb depression) estimates how fast droplets evaporate &mdash; the metric professional applicators watch. Ideal 2&ndash;8&deg;C. Above 10, fines evaporate before reaching the target and drift; below 2 means very humid air or inversion risk.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dt-bar" style="width:0%;background:var(--green)"></div></div></div>
+          <div class="fcard" id="fc-inv"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true">&#127787;&#65039;</span>Thermal Inversion</div><span class="fchip marginal" id="fc-inv-chip">Low Risk</span></div><div class="fcard-val" id="fc-inv-val">Low</div><div class="fcard-desc" id="fc-inv-desc">Inversions trap fine spray droplets near the ground, causing them to drift unpredictably &mdash; sometimes miles.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-inv-bar" style="width:25%;background:var(--gold)"></div></div></div>
+          <div class="fcard" id="fc-dew"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true">&#127807;</span>Dew Point Risk</div><span class="fchip good" id="fc-dew-chip">Good</span></div><div class="fcard-val" id="fc-dew-val">--&deg;F dew</div><div class="fcard-desc" id="fc-dew-desc">If temp approaches dew point, dew formation is imminent. Spraying onto wet leaves reduces efficacy of contact herbicides.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dew-bar" style="width:0%;background:var(--green)"></div></div></div>
+          <div class="fcard" id="fc-precip" style="display:none"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true">&#127783;&#65039;</span>Precipitation</div><span class="fchip poor" id="fc-precip-chip">Active</span></div><div class="fcard-val" id="fc-precip-val">Rain</div><div class="fcard-desc" id="fc-precip-desc">Active precipitation washes product off leaves before absorption. Wait for dry conditions and foliage to dry.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-precip-bar" style="width:90%;background:var(--red)"></div></div></div>
+        </div>
+        <div class="window-wrap">
+          <div class="window-head"><span aria-hidden="true">&#9201;&#65039;</span> 24-Hour Spray Window</div>
+          <div class="hourly-scroll" id="hourly-strip"><div style="color:var(--text-muted);font-size:.82rem;padding:.5rem">Loading forecast&hellip;</div></div>
+          <div class="window-legend">&#129001; Good window &middot; &#129000; Marginal &mdash; proceed with care &middot; &#128308; Do not spray &middot; &#129398; Frozen &middot; Scroll to see full 24h</div>
+        </div>
+      </div>
+      <div class="edu fade-up" id="section-factors">
+        <h2 class="edu-title"><span aria-hidden="true">&#127891;</span> Why These Conditions Matter</h2>
+        <div class="edu-grid">
+          <div class="edu-card"><div class="edu-card-icon" aria-hidden="true">&#128168;</div><div class="edu-card-title">The Wind Window: 3&ndash;10 mph</div><div class="edu-card-text">Calm conditions under 3 mph allow fine droplets to hang in the air and drift unpredictably. Over 10 mph, mechanical drift carries droplets off-target. The 3&ndash;10 mph range is your safe zone.</div><div class="edu-card-tip edu-card-tip-green">Ideal: 3&ndash;10 mph &middot; Consistent direction</div></div>
+          <div class="edu-card"><div class="edu-card-icon" aria-hidden="true">&#127777;&#65039;</div><div class="edu-card-title">Temperature &amp; Volatilization</div><div class="edu-card-text">Heat causes certain active ingredients &mdash; particularly dicamba, 2,4-D ester, and clopyralid &mdash; to volatilize off the leaf surface hours after application. Above 85&deg;F this off-gassing risk increases sharply.</div><div class="edu-card-tip edu-card-tip-gold">Critical above 85&deg;F for dicamba/2,4-D</div></div>
+          <div class="edu-card"><div class="edu-card-icon" aria-hidden="true">&#128167;</div><div class="edu-card-title">Humidity &amp; Droplet Evaporation</div><div class="edu-card-text">In low humidity (under 40%), fine spray droplets evaporate rapidly in flight. Match nozzle size to conditions &mdash; larger droplets resist evaporation but may reduce canopy penetration.</div><div class="edu-card-tip edu-card-tip-red">Below 40% RH &mdash; use larger nozzles</div></div>
+          <div class="edu-card"><div class="edu-card-icon" aria-hidden="true">&#127787;&#65039;</div><div class="edu-card-title">Thermal Inversions &mdash; The Hidden Danger</div><div class="edu-card-text">A thermal inversion forms when warm air sits above cooler air near the ground, trapping spray droplets in a stable layer. Indicators: smoke that flattens horizontally, dust that hangs sideways, early morning mist in low spots.</div><div class="edu-card-tip edu-card-tip-red">Can drift miles &mdash; no label override</div></div>
+          <div class="edu-card"><div class="edu-card-icon" aria-hidden="true">&#9200;</div><div class="edu-card-title">Best Times of Day to Spray</div><div class="edu-card-text">Mid-morning (9am&ndash;noon) is typically the best window: overnight inversions have broken, temperatures are still moderate, winds are picking up, and morning dew has dried. Evening applications carry high inversion risk.</div><div class="edu-card-tip edu-card-tip-green">Best window: 9am&ndash;noon in most conditions</div></div>
+          <div class="edu-card"><div class="edu-card-icon" aria-hidden="true">&#127991;&#65039;</div><div class="edu-card-title">The Label is the Law &mdash; Always</div><div class="edu-card-text">Every pesticide label specifies wind speed limits, temperature restrictions, and mandatory buffer distances. This tool provides general guidance &mdash; but the product label is the legal requirement and the final word.</div><div class="edu-card-tip edu-card-tip-blue">Label requirements supersede all general guidance</div></div>
+        </div>
+        <div class="inv-box">
+          <h3 class="inv-title"><span aria-hidden="true">&#127787;&#65039;</span> Understanding Thermal Inversions</h3>
+          <div class="inv-grid">
+            <div>
+              <div class="inv-intro">A thermal inversion traps fine spray droplets in a shallow, stable air layer close to the ground. Those droplets ride horizontal air movement &mdash; potentially drifting miles before settling on sensitive crops, waterways, or residences.</div>
+              <div class="inv-diagram">
+                <div class="inv-layer inv-layer-warm"><span class="inv-layer-label inv-layer-label-warm">WARM AIR (inverted layer)</span><span class="inv-layer-meta">~75&deg;F &middot; Capping lid</span><span class="inv-arrow">&#8593; lid</span></div>
+                <div class="inv-layer inv-layer-cool"><div><div class="inv-layer-label inv-layer-label-cool">TRAPPED COOL AIR + SPRAY DROPLETS</div><div class="inv-layer-sub">Fine particles trapped &middot; drift unpredictably in any direction</div></div><span class="inv-arrow" style="right:1.5rem">&#8596; drift</span></div>
+                <div class="inv-layer inv-layer-ground"><span class="inv-layer-label inv-layer-label-ground">GROUND SURFACE (cooled)</span><span class="inv-layer-meta">~58&ndash;65&deg;F</span></div>
+              </div>
+            </div>
+            <div>
+              <div class="inv-detect-head">How to Detect an Inversion in the Field</div>
+              <div class="inv-detect-list">
+                <div class="inv-detect-item"><span class="inv-detect-arrow">&rarr;</span><span class="inv-detect-text"><strong>Smoke test:</strong> If smoke rises then flattens and moves horizontally, an inversion is present &mdash; do not spray.</span></div>
+                <div class="inv-detect-item"><span class="inv-detect-arrow">&rarr;</span><span class="inv-detect-text"><strong>Tractor dust:</strong> Dust that hangs and moves sideways rather than rising is a clear inversion sign.</span></div>
+                <div class="inv-detect-item"><span class="inv-detect-arrow">&rarr;</span><span class="inv-detect-text"><strong>Ground fog:</strong> Low mist clinging to drainage areas indicates stable, non-mixing air.</span></div>
+                <div class="inv-detect-item"><span class="inv-detect-arrow">&rarr;</span><span class="inv-detect-text"><strong>Time of day:</strong> Any calm, clear evening after sunset creates near-surface inversion conditions.</span></div>
+              </div>
+              <div class="inv-warning"><span aria-hidden="true">&#9940;</span> <strong class="inv-warning-label">Do not spray</strong> when any inversion indicator is present, regardless of what the wind meter reads.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fade-up" style="margin-bottom:2rem">
+        <div class="dicamba-box">
+          <h2 class="dicamba-box-head">&#9940; Dicamba Application Rules &mdash; Know Before You Spray</h2>
+          <p style="font-size:.82rem;color:var(--text-dim);line-height:1.7;margin-bottom:.9rem">Dicamba drift complaints have resulted in billions in crop damage claims and ongoing regulatory pressure. These are EPA label requirements &mdash; violations carry civil and criminal penalties. Verify against your specific product label before every application.</p>
+          <div class="dicamba-rules">
+            <div class="dicamba-rule"><strong>Wind Speed</strong>Under 10 mph at application time. No gusty, variable wind conditions. Measure at boom height, not cab height.</div>
+            <div class="dicamba-rule"><strong>Temperature</strong>Most labels restrict application at or above 85&ndash;90&deg;F. Check your specific product. Volatilization can occur hours after application on hot days.</div>
+            <div class="dicamba-rule"><strong>Nozzles</strong>Only EPA-approved air induction nozzles (AITTJ, TTI, AI). Standard flat fan nozzles are a federal label violation. Verify against the approved nozzle list on your label.</div>
+            <div class="dicamba-rule"><strong>Buffer Zones</strong>Mandatory downwind buffer distances vary by label and application site. Typically 110&ndash;220 ft from non-target areas. Check your specific label.</div>
+            <div class="dicamba-rule"><strong>Application Timing</strong>No application within 45 days of soybean harvest. R1 (flowering) is often the cutoff &mdash; check your label for the specific growth stage restriction.</div>
+            <div class="dicamba-rule"><strong>Record Keeping</strong>All three approved dicamba products require detailed application records including wind speed, direction, temperature, and nozzle type. Keep records for a minimum of 2 years.</div>
+          </div>
+        </div>
+      </div>
+      <div class="fade-up" style="margin-bottom:2rem">
+        <h2 class="edu-title"><span aria-hidden="true">&#127783;&#65039;</span> Rain-Free Period by Herbicide Class</h2>
+        <p style="font-size:.82rem;color:var(--text-dim);line-height:1.7;margin-bottom:.9rem">Rain-free periods are the minimum time needed after application for adequate product absorption. Always check your specific product label &mdash; these are general guidelines by class, not legal requirements. Systemic herbicides need more time to translocate through the plant.</p>
+        <div class="rfp-table-wrap">
+          <table class="rfp-table">
+            <thead><tr><th>Herbicide Class / Example Products</th><th>Minimum Rain-Free</th><th>Optimal Dry Time</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>Contact &mdash; Glufosinate (Liberty)</td><td class="rfp-min">4 hrs</td><td class="rfp-opt">4&ndash;8 hrs</td><td>Contact action &mdash; needs full leaf coverage. Rain before 4 hrs significantly reduces activity. Sunlight needed for activation.</td></tr>
+              <tr><td>Contact &mdash; Paraquat (Gramoxone)</td><td class="rfp-min">30 min</td><td class="rfp-opt">1&ndash;2 hrs</td><td>Very fast uptake &mdash; most effective when absorbed before rain. Cell destruction begins within minutes of contact.</td></tr>
+              <tr><td>Systemic &mdash; Glyphosate (Roundup)</td><td class="rfp-min">4 hrs</td><td class="rfp-opt">6&ndash;8 hrs</td><td>Must translocate through phloem &mdash; needs more time than contact products. 6+ hrs in cool, cloudy conditions.</td></tr>
+              <tr><td>Dicamba (XtendiMax, Engenia, Tavium)</td><td class="rfp-min">1 hr</td><td class="rfp-opt">4 hrs</td><td>Check your specific label &mdash; some require 4 hrs minimum. Volatilization risk continues after rain if temps rise.</td></tr>
+              <tr><td>ALS Inhibitors &mdash; Sulfonylureas, IMIs</td><td class="rfp-min">1 hr</td><td class="rfp-opt">2&ndash;4 hrs</td><td>Absorbed relatively quickly. Some sulfonylureas have soil activity that continues post-rain regardless.</td></tr>
+              <tr><td>PPO Inhibitors &mdash; Cobra, Flexstar, Cadet</td><td class="rfp-min">4 hrs</td><td class="rfp-opt">4&ndash;8 hrs</td><td>Contact + some systemic activity. Efficacy drops sharply with early rainfall. Best when applied to dry canopy.</td></tr>
+              <tr><td>ACCase Inhibitors &mdash; Select, Poast</td><td class="rfp-min">1 hr</td><td class="rfp-opt">2 hrs</td><td>Grass herbicides with rapid uptake. Relatively forgiving &mdash; rain after 1 hr typically maintains good performance.</td></tr>
+              <tr><td>Fungicides &mdash; Strobilurins, Triazoles</td><td class="rfp-min">1&ndash;2 hrs</td><td class="rfp-opt">2&ndash;4 hrs</td><td>Systemic fungicides are absorbed quickly. Protectant fungicides (contact) need longer dry periods to form a residual film on the leaf.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 <section class="smc" id="spray-mix-calculator" aria-labelledby="smc-h">
   <style>
   .smc,.scal{--c-green:#6ab04c;--c-gold:#e6b042;--c-up:#4aab4c;--c-warn:#d9534f;
@@ -305,4 +1355,292 @@
 })();
 </script>
 
-</div></body></html>
+      <div class="mix-section fade-up" id="section-mixorder">
+        <h2 class="edu-title"><span aria-hidden="true">&#129514;</span> Tank Mix Order Guide</h2>
+        <div class="mix-card">
+          <div class="mix-intro">Getting the mix order wrong causes clumping, gelling, clogged nozzles, reduced efficacy, and crop damage. Always do a jar test first.</div>
+          <div class="mix-steps">
+            <div class="mix-step"><div class="mix-num mix-num-1">1</div><div><div class="mix-step-name">&#128167; Water &mdash; Fill Tank 50&ndash;75%</div><div class="mix-step-what">Fill the spray tank halfway to three-quarters with clean water.</div><div class="mix-step-why">Starting with water ensures even dispersion and prevents incompatibility reactions.</div></div></div>
+            <div class="mix-step"><div class="mix-num mix-num-2">2</div><div><div class="mix-step-name">&#129454; Water Conditioners &amp; AMS</div><div class="mix-step-what">Add ammonium sulfate (AMS) at 8.5&ndash;17 lbs per 100 gallons. Add pH buffers if water is hard or alkaline.</div><div class="mix-step-why">AMS binds calcium and magnesium ions that tie up glyphosate and other weak-acid herbicides.</div></div></div>
+            <div class="mix-step"><div class="mix-num mix-num-3">3</div><div><div class="mix-step-name">&#128260; Start Agitation</div><div class="mix-step-what">Begin continuous mechanical or hydraulic agitation before adding any pesticide products.</div><div class="mix-step-why">Agitation keeps dry particles suspended and prevents settling and gelling.</div></div></div>
+            <div class="mix-step"><div class="mix-num mix-num-4">4</div><div><div class="mix-step-name">&#128230; Dry Formulations (WP, WDG, DF)</div><div class="mix-step-what">Add wettable powders and water-dispersible granules first among the pesticide products.</div><div class="mix-step-why">Dry formulations need the most water volume and agitation to disperse properly.</div></div></div>
+            <div class="mix-step"><div class="mix-num mix-num-5">5</div><div><div class="mix-step-name">&#129516; Liquid Flowables &amp; Suspension Concentrates (SC)</div><div class="mix-step-what">Add suspension concentrates and flowable formulations. Shake containers first.</div><div class="mix-step-why">Flowables disperse better in water that already contains dissolved dry products.</div></div></div>
+            <div class="mix-step"><div class="mix-num mix-num-6">6</div><div><div class="mix-step-name">&#128754; Emulsifiable Concentrates (EC)</div><div class="mix-step-what">Add EC formulations dissolved in oil-based solvent with emulsifiers.</div><div class="mix-step-why">ECs create an oil-in-water emulsion; position minimizes compatibility risks.</div></div></div>
+            <div class="mix-step"><div class="mix-num mix-num-7">7</div><div><div class="mix-step-name">&#128137; Water-Soluble Liquids (SL, S)</div><div class="mix-step-what">Add soluble liquid formulations. These include many glyphosate formulations.</div><div class="mix-step-why">Soluble liquids mix readily and are least likely to cause compatibility issues.</div></div></div>
+            <div class="mix-step"><div class="mix-num mix-num-8">8</div><div><div class="mix-step-name">&#129351; Adjuvants, Surfactants &amp; Crop Oils</div><div class="mix-step-what">Add NIS, COC, MSO, drift reduction agents, defoamers, and compatibility agents last.</div><div class="mix-step-why">Adjuvants affect the surface tension of the entire spray solution.</div></div></div>
+            <div class="mix-step"><div class="mix-num mix-num-9">9</div><div><div class="mix-step-name">&#128287; Top Off Water to Final Volume</div><div class="mix-step-what">Fill to target volume. Continue agitation. Begin spraying as soon as possible.</div><div class="mix-step-why">Mix only what you will spray that day.</div></div></div>
+          </div>
+          <div class="mix-tips">
+            <div class="mix-tip mix-tip-do">
+              <div class="mix-tip-title">&#10003; Always Do</div>
+              <strong>Jar test first</strong> &mdash; combine small amounts in the correct order in a clear jar. Wait 15 minutes.<br><br>
+              <strong>Shake containers</strong> &mdash; flowables and SCs settle in storage.<br><br>
+              <strong>Triple-rinse empties</strong> &mdash; that rinse water is product you paid for.<br><br>
+              <strong>Record everything</strong> &mdash; products, rates, order, weather. Required for most certifications.
+            </div>
+            <div class="mix-tip mix-tip-dont">
+              <div class="mix-tip-title">&#9940; Never Do</div>
+              <strong>Never mix concentrates directly</strong> &mdash; violent reactions, gelling, and equipment damage.<br><br>
+              <strong>Never skip agitation</strong> &mdash; some products separate in under 5 minutes.<br><br>
+              <strong>Never add dry products to an oily mix</strong> &mdash; always add dries before ECs.<br><br>
+              <strong>Never assume compatibility</strong> &mdash; even familiar mixes can react differently with a new water source.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tips-section fade-up" id="section-tips">
+        <h2 class="edu-title"><span aria-hidden="true">&#128161;</span> Sprayer Tips &amp; Tricks</h2>
+        <div class="tips-grid">
+          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true">&#128296;</div><div class="tip-card-title">Nozzle Selection Makes or Breaks Your Application</div><div class="tip-card-text">Air induction nozzles (AITTJ, AI, TTI) produce larger, air-filled droplets that resist drift and are required on most dicamba labels. Flat fan nozzles give better coverage for contact herbicides but produce more fines. Dual-fan nozzles split the pattern for better canopy penetration.</div><div class="tip-card-detail"><strong>Rule of thumb:</strong> In wind over 8 mph or humidity under 50%, move up one nozzle size from your standard.</div></div>
+          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true">&#9889;</div><div class="tip-card-title">Speed &amp; Pressure &mdash; The Drift Multipliers</div><div class="tip-card-text">Higher pressure creates smaller droplets. A 10% increase in pressure can increase the volume of drift-prone fines by 20&ndash;30%. Keep pressure at the low end of the nozzle manufacturer&rsquo;s recommended range.</div><div class="tip-card-detail"><strong>Target:</strong> 30&ndash;40 PSI for most flat fans, 40&ndash;60 PSI for air induction. Boom height: 18&ndash;20 inches above target for 110&deg; nozzles.</div></div>
+          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true">&#128167;</div><div class="tip-card-title">Carrier Volume &mdash; More Water, Better Coverage</div><div class="tip-card-text">University research consistently shows higher carrier volumes (15&ndash;20 GPA) improve both contact and systemic herbicide performance. More water means more droplets reaching the target and better canopy penetration.</div><div class="tip-card-detail"><strong>Contact herbicides</strong> benefit most from 15+ GPA. <strong>Systemic herbicides</strong> are more forgiving at 10&ndash;15 GPA.</div></div>
+          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true">&#129454;</div><div class="tip-card-title">AMS &mdash; The Cheapest Performance Booster in Your Shed</div><div class="tip-card-text">Ammonium sulfate binds hard-water cations that antagonize glyphosate. Even in soft water, AMS enhances glyphosate efficacy by 15&ndash;25% on tough weeds like waterhemp and Palmer amaranth.</div><div class="tip-card-detail"><strong>Rates:</strong> 8.5&ndash;17 lbs dry AMS per 100 gallons. <strong>Always add AMS before herbicide.</strong></div></div>
+          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true">&#9200;</div><div class="tip-card-title">Spray Timing &mdash; Weed Size Matters More Than Speed</div><div class="tip-card-text">Spraying 2-inch waterhemp is 3&ndash;4x more effective than spraying 6-inch waterhemp with the same product and rate. Scout fields and prioritize those closest to the weed size threshold.</div><div class="tip-card-detail"><strong>Target weed height:</strong> Most POST herbicides are labeled for 2&ndash;4 inch weeds.</div></div>
+          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true">&#129351;</div><div class="tip-card-title">Adjuvant Selection &mdash; NIS vs. COC vs. MSO</div><div class="tip-card-text">NIS reduces surface tension at 0.25% v/v. COC penetrates waxy cuticles at 1% v/v. MSO is required on most dicamba labels and provides both penetration and retention.</div><div class="tip-card-detail"><strong>When in doubt, read the label.</strong> Using COC when the label calls for NIS can cause crop injury.</div></div>
+          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true">&#128703;</div><div class="tip-card-title">Tank Cleanout &mdash; Prevent Carryover Damage</div><div class="tip-card-text">Dicamba, sulfonylureas, and fomesafen bind to tank walls and hoses. A simple water rinse will not remove them. Clean thoroughly between every product change.</div><div class="tip-card-detail"><strong>Cleanout protocol:</strong> Drain &rarr; Rinse &rarr; Fill 10% with water + tank cleaner, agitate 15 min, spray through boom, drain &rarr; Repeat rinse.</div></div>
+          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true">&#128203;</div><div class="tip-card-title">Spray Records &mdash; Your Legal Shield</div><div class="tip-card-text">Detailed spray records are legally required in most states and are your first line of defense if a neighbor alleges drift damage. Records also let you compare product performance across fields and years.</div><div class="tip-card-detail"><strong>Record every application:</strong> Date, time, products, rates, carrier volume, nozzle, pressure, speed, wind, temp, humidity, field, crop stage, weeds, adjuvants, applicator license.</div></div>
+          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true">&#128207;</div><div class="tip-card-title">Boom Height &mdash; Every Inch Counts</div><div class="tip-card-text">Doubling your boom height above the target quadruples the area your spray can drift into. On rough fields, slow down &mdash; boom bounce at speed launches drift-prone fines.</div><div class="tip-card-detail"><strong>Measure it:</strong> 18&ndash;20 inches for 110&deg; nozzles, 24 inches for 80&deg; nozzles.</div></div>
+          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true">&#129516;</div><div class="tip-card-title">Resistance Management &mdash; Rotate or Lose</div><div class="tip-card-text">Waterhemp, Palmer amaranth, and marestail now have populations resistant to 5+ herbicide groups in parts of the Midwest. Rotating modes of action is the only way to preserve the chemistry that still works.</div><div class="tip-card-detail"><strong>Practical rotation:</strong> Use PRE residuals (Group 15 + Group 14 or 27) to reduce POST weed pressure.</div></div>
+        </div>
+        <div class="mix-card" id="section-nozzles" style="margin-top:1rem">
+          <h3 class="nozzle-card-head"><span aria-hidden="true">&#128296;</span> Nozzle Type Comparison</h3>
+          <div class="nozzle-card-sub">Droplet size classification follows ASABE S572.3. Always verify against the specific product label.</div>
+          <div class="nozzle-table-wrap">
+            <table class="nozzle-table">
+              <thead><tr><th scope="col">Nozzle Type</th><th scope="col">Droplet Size</th><th scope="col">Drift Risk</th><th scope="col">Coverage</th><th scope="col">Best For</th><th scope="col">Dicamba Approved</th></tr></thead>
+              <tbody>
+                <tr><td class="nt-type">Air Induction (AITTJ, AI, TTI)</td><td>Ultra Coarse &ndash; Extremely Coarse</td><td><span class="nt-badge low">LOW</span></td><td>Moderate</td><td>Dicamba, 2,4-D, systemic herbicides, high-wind conditions</td><td style="color:var(--green);font-weight:700">&#10003; Yes</td></tr>
+                <tr><td class="nt-type">Turbo TeeJet (TT, TTJ)</td><td>Coarse &ndash; Very Coarse</td><td><span class="nt-badge low">LOW</span></td><td>Good</td><td>General POST herbicides, fungicides, balanced drift/coverage</td><td style="color:var(--text-muted)">Some models</td></tr>
+                <tr><td class="nt-type">Dual Fan (Guardian Air, TADF)</td><td>Coarse</td><td><span class="nt-badge med">MED</span></td><td>Very Good</td><td>Contact herbicides, canopy penetration in thick stands</td><td style="color:var(--text-muted)">Check label</td></tr>
+                <tr><td class="nt-type">Extended Range Flat Fan (XR)</td><td>Medium &ndash; Coarse</td><td><span class="nt-badge med">MED</span></td><td>Excellent</td><td>Contact herbicides, fungicides, insecticides in calm conditions</td><td style="color:var(--red);font-weight:700">&#10007; No</td></tr>
+                <tr><td class="nt-type">Standard Flat Fan (TP, DG)</td><td>Fine &ndash; Medium</td><td><span class="nt-badge high">HIGH</span></td><td>Excellent</td><td>Low-wind contact apps, maximum coverage needed</td><td style="color:var(--red);font-weight:700">&#10007; No</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="nozzle-table-note">Source: ASABE S572.3 standards. Dicamba approval based on EPA-approved labels for XtendiMax, Engenia, and Tavium as of 2025. Always verify against your specific product label before application.</div>
+        </div>
+      </div>
+      <div class="season-section fade-up" id="section-season">
+        <h2 class="edu-title"><span aria-hidden="true">&#128197;</span> Seasonal Spray Calendar &mdash; Corn Belt &amp; Upper Midwest</h2>
+        <p style="font-size:.82rem;color:var(--text-dim);line-height:1.7;margin-bottom:.9rem">Application windows by month for corn and soybean producers. Timing and conditions shift year to year &mdash; use this as a planning reference and always confirm current conditions before application.</p>
+        <div class="season-grid">
+          <div class="season-card"><div class="season-card-month">April</div><div class="season-card-title">Burndown &amp; Pre-Emerge Corn</div><div class="season-card-body">Burndown glyphosate/2,4-D on cereal rye and winter annuals. Pre-emerge corn (atrazine, acetochlor). Variable temps &mdash; watch for frost. Inversion risk high on cold, calm nights.</div><span class="season-card-tag tag-pre">PRE</span> <span class="season-card-tag tag-burn">BURNDOWN</span></div>
+          <div class="season-card"><div class="season-card-month">May</div><div class="season-card-title">Pre-Emerge Beans &amp; Post Corn</div><div class="season-card-body">Pre-emerge soybean programs (PPO + chlorimuron). POST corn V2&ndash;V5. Wind and temp stabilizing. Watch for rapid temperature swings &mdash; prime inversion risk period in cool, dry springs.</div><span class="season-card-tag tag-pre">PRE</span> <span class="season-card-tag tag-post">POST</span></div>
+          <div class="season-card"><div class="season-card-month">June</div><div class="season-card-title">POST Soybeans &amp; Residual Layby</div><div class="season-card-body">POST soybean V1&ndash;V3 before canopy closure. Dicamba window (V2&ndash;R1). Waterhemp pressure peaks. Hot, windy days &mdash; afternoon applications high risk for dicamba volatilization.</div><span class="season-card-tag tag-post">POST</span></div>
+          <div class="season-card"><div class="season-card-month">July</div><div class="season-card-title">Corn Fungicide &amp; Late POST</div><div class="season-card-body">Corn fungicide window VT&ndash;R1. Late POST soybean before R1. Peak heat risk. Early morning applications critical &mdash; dicamba often prohibited above 85&deg;F. Scout for escape weeds.</div><span class="season-card-tag tag-post">POST</span> <span class="season-card-tag tag-fung">FUNGICIDE</span></div>
+          <div class="season-card"><div class="season-card-month">August</div><div class="season-card-title">Soybean Fungicide &amp; Layby</div><div class="season-card-body">Soybean fungicide R3 if disease pressure warrants. Monitoring for late season escapes. Minimal herbicide opportunities as canopy is closed. Still watch inversion risk on warm, clear nights.</div><span class="season-card-tag tag-fung">FUNGICIDE</span></div>
+          <div class="season-card"><div class="season-card-month">Sept&ndash;Oct</div><div class="season-card-title">Harvest Aid &amp; Cover Crop Burndown</div><div class="season-card-body">Harvest aid soybeans (paraquat, sodium chlorate). Cover crop burndown post-harvest. Cool temps return &mdash; inversions common in calm fall nights. Watch for early frost timing and label restrictions.</div><span class="season-card-tag tag-burn">BURNDOWN</span></div>
+        </div>
+      </div>
+      <div class="faq-section fade-up" id="section-faq">
+        <h2 class="edu-title"><span aria-hidden="true">&#10067;</span> Frequently Asked Questions</h2>
+        <div class="faq-list" id="faq-list">
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">What wind speed is safe for spraying herbicides?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a">The ideal window is <strong>3 to 10 mph</strong>. Below 3 mph, calm air allows thermal inversions to trap fine droplets near the ground &mdash; they drift unpredictably. Above 10 mph, mechanical drift carries product off-target. Above 15 mph, most applications should stop. Dicamba labels legally require winds under 10 mph. Always measure at boom height, not in the cab.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">What is a thermal inversion and how do I know if one is present?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a">An inversion occurs when warm air traps cooler air (and your spray) near the ground in a stable, non-mixing layer. Spray droplets can drift miles horizontally. Look for: <strong>smoke that rises then flattens</strong>, dust that hangs sideways rather than dispersing, or ground fog in low spots and drainage areas. Inversions are most common on calm, clear evenings after sunset. If you see any of these signs, do not spray &mdash; no label override exists for inversion conditions.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">What temperature is too hot to spray dicamba?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a">Most approved dicamba labels restrict application at or above <strong>85&ndash;90&deg;F</strong>, or when temperatures are forecast to reach those levels within a few hours of application. Above 85&deg;F, dicamba can volatilize off the leaf surface hours after application &mdash; this is a secondary, invisible drift that is separate from mechanical drift. Volatilization drift can travel farther than wind-driven mechanical drift. Check your specific product label.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">What is the best time of day to spray?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a"><strong>Mid-morning &mdash; 9 a.m. to noon</strong> &mdash; is typically the best window. Overnight inversions have broken as the sun heats the ground. Temperatures are still moderate before afternoon peaks. Morning dew has dried. Winds are picking up into the ideal 3&ndash;10 mph range. Avoid evening applications: inversions form quickly after sunset on calm, clear evenings.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">How long after spraying does it need to stay dry?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a">Rain-free periods vary by product class. Contact herbicides like glufosinate need <strong>4+ hours</strong>. Glyphosate needs <strong>4&ndash;6 hours</strong> minimum for translocation. Dicamba labels typically require <strong>1&ndash;4 hours</strong> &mdash; check your specific label. ALS inhibitors need <strong>1&ndash;2 hours</strong>. See the rain-free period table above for a full breakdown by class.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">What humidity is too low for spraying?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a">Below <strong>40% relative humidity</strong>, fine spray droplets evaporate in flight before reaching the leaf &mdash; reducing efficacy and increasing drift-prone particles. Below 30%, switch to larger droplet nozzles (coarse or very coarse classification). This tool will flag low humidity conditions in the factor breakdown.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">Do I need special nozzles for dicamba?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a">Yes &mdash; it is a federal label requirement. All three EPA-approved dicamba formulations require air induction nozzles that produce ultra-coarse to extremely coarse droplets (ASABE classification). The AITTJ, TTI, and AI nozzle series are most commonly approved. <strong>Standard flat fan nozzles are a violation.</strong> The approved nozzle list is printed on your product label.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">Can I spray if rain is in the forecast?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a">It depends on timing and amount. Check the rain-free period for your specific product (see table above). If you can complete the required dry window before rain arrives, you can proceed. The risk is if rain arrives earlier than forecast &mdash; always build in a buffer. Some herbicides need 6+ hours to translocate adequately.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">How do I calculate a spray tank mix?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a">Enter your carrier rate (gallons per acre), tank size, and each product's label rate — per acre, per 100 gallons, or % v/v — into the Spray Mix Calculator above. It returns exactly how much of every product and how much water goes in each tank, the partial last tank, and totals for the whole field. Always confirm against the product label.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">How many acres does a 1,000-gallon sprayer tank cover?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a">Divide tank size by your carrier rate. At 15 gallons per acre a 1,000-gallon tank covers about 67 acres; at 20 GPA it covers 50 acres; at 10 GPA, 100 acres. The Spray Mix Calculator shows acres per tank automatically.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">How much AMS do I add per 100 gallons?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a">Ammonium sulfate is typically used at 8.5 to 17 pounds per 100 gallons of spray solution — the higher end for hard water or tough weeds like waterhemp and Palmer amaranth. For a 1,000-gallon tank at 17 lb per 100 gallons, that is 170 pounds. Add AMS before the herbicide.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">How do I calibrate my sprayer and calculate GPA?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a">Use the broadcast formula GPA = 5,940 × GPM ÷ (mph × nozzle spacing in inches). Enter ground speed, nozzle spacing, and measured nozzle output in the Sprayer Calibration Calculator above to get your actual gallons per acre, or work backward to the nozzle output a target rate needs. Catch each nozzle for one minute and replace any more than 10% off the average.</div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">How do I convert a per-acre rate to a full tank?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a">Multiply the per-acre rate by the acres one tank covers (tank size ÷ carrier rate). At 32 fl oz per acre and 67 acres per tank, that is about 2,133 fl oz, or 16.7 gallons, per tank. The Spray Mix Calculator converts and totals this for every product automatically.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar fade-up" id="edu2">
+      <div class="sc"><div class="sc-title">&#128203; Recommendation</div><div class="rec marginal" id="rec-box"><div class="rec-h marginal" id="rec-head">Awaiting Location</div><div class="rec-t" id="rec-text">Set your location above to receive a real-time spray recommendation for your field conditions.</div></div></div>
+      <div class="sc" id="signup-card"><div class="sc-title">&#128231; Get the AGSIST Daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:.78rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, what to watch, and farm weather &mdash; by 6am CT on weekdays. Available at no charge.</p><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="width:100%;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,#1a1a14);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" style="width:100%;padding:.6rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free &rarr;</button><div style="font-size:.66rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
+      <div class="sc"><div class="sc-title">&#128197; 5-Day Spray Outlook</div><div class="day-strip" id="day-strip"><div class="day-item"><div class="day-name">Today</div><div class="day-icon" aria-hidden="true">&#9203;</div><div class="day-rating marginal">--</div><div class="day-wind">--</div></div><div class="day-item"><div class="day-name">Day 2</div><div class="day-icon" aria-hidden="true">&#9203;</div><div class="day-rating marginal">--</div><div class="day-wind">--</div></div><div class="day-item"><div class="day-name">Day 3</div><div class="day-icon" aria-hidden="true">&#9203;</div><div class="day-rating marginal">--</div><div class="day-wind">--</div></div><div class="day-item"><div class="day-name">Day 4</div><div class="day-icon" aria-hidden="true">&#9203;</div><div class="day-rating marginal">--</div><div class="day-wind">--</div></div><div class="day-item"><div class="day-name">Day 5</div><div class="day-icon" aria-hidden="true">&#9203;</div><div class="day-rating marginal">--</div><div class="day-wind">--</div></div></div><div style="font-size:.68rem;color:var(--text-muted);margin-top:.6rem;line-height:1.6">Based on forecast wind, temp, and humidity. Always verify conditions on the day of application.</div></div>
+      <div class="sc"><div class="sc-title">&#10003; Pre-Spray Checklist</div><div style="display:flex;flex-direction:column;gap:.5rem"><label class="checklist-item"><input type="checkbox"><span>Wind 3&ndash;10 mph, consistent direction away from sensitive areas</span></label><label class="checklist-item"><input type="checkbox"><span>Temperature 50&ndash;85&deg;F (check specific product label)</span></label><label class="checklist-item"><input type="checkbox"><span>Humidity above 40% RH (adjust nozzle if dry)</span></label><label class="checklist-item"><input type="checkbox"><span>No inversion indicators &mdash; smoke, hanging dust, ground fog</span></label><label class="checklist-item"><input type="checkbox"><span>Leaves are dry &mdash; no dew, no recent rain on canopy</span></label><label class="checklist-item"><input type="checkbox"><span>Re-read product label restrictions before starting</span></label><label class="checklist-item"><input type="checkbox"><span>Notified neighbors / checked buffer zones</span></label><label class="checklist-item"><input type="checkbox"><span>Equipment calibrated &mdash; nozzles clean, pressure checked</span></label><label class="checklist-item"><input type="checkbox"><span>Jar test completed for new tank mix combinations</span></label><label class="checklist-item"><input type="checkbox"><span>Spray records sheet ready &mdash; wind, temp, products, rates</span></label></div></div>
+      <div class="sc"><div class="sc-title">&#129514; Quick Mix Order</div><div class="qmix-list"><div class="qmix-item"><span class="qmix-num" style="color:var(--blue)">1.</span><span class="qmix-text">Water (50&ndash;75%)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--gold)">2.</span><span class="qmix-text">AMS / water conditioner</span></div><div class="qmix-item"><span class="qmix-num" style="color:#9f7aea">3.</span><span class="qmix-text">Agitation ON</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--orange)">4.</span><span class="qmix-text">Dry (WP, WDG, DF)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--green)">5.</span><span class="qmix-text">Liquid flowables (SC)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--red)">6.</span><span class="qmix-text">Emulsifiable (EC)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--blue)">7.</span><span class="qmix-text">Soluble liquids (SL)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--gold)">8.</span><span class="qmix-text">Adjuvants / surfactants</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--green)">9.</span><span class="qmix-text">Top off water</span></div></div><div class="qmix-footer">Always jar test new combinations. <a href="#section-mixorder">Full guide &#8593;</a></div></div>
+      <a href="/urea" class="cross-link"><span class="cross-link-icon" aria-hidden="true">&#127806;</span><div><div class="cross-link-title">Planning to Apply Urea?</div><div class="cross-link-text">Temperature and wind affect nitrogen loss just as much as spray drift. Check volatilization risk before you spread.</div></div><span class="cross-link-arrow" aria-hidden="true">&rarr;</span></a>
+      <a href="/breakeven" class="cross-link"><span class="cross-link-icon" aria-hidden="true">&#128202;</span><div><div class="cross-link-title">Breakeven Calculator</div><div class="cross-link-text">Know your cost per acre before you make input decisions. Run the numbers on your operation.</div></div><span class="cross-link-arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+  </div>
+</main>
+<div id="site-footer"></div>
+<script src="/components/loader.js" defer></script>
+<script src="/components/geo.js" defer></script>
+<script>
+(function(){
+  'use strict';
+  document.getElementById('faq-list').addEventListener('click',function(e){
+    var btn=e.target.closest('.faq-q');
+    if(!btn)return;
+    var item=btn.closest('.faq-item');
+    var open=item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(function(x){x.classList.remove('open');x.querySelector('.faq-q').setAttribute('aria-expanded','false');});
+    if(!open){item.classList.add('open');btn.setAttribute('aria-expanded','true');}
+  });
+  var prefersReducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!prefersReducedMotion){var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){x.target.classList.add('vis');io.unobserve(x.target);}});},{threshold:.08});document.querySelectorAll('.fade-up').forEach(function(el){io.observe(el);});}
+  else{document.querySelectorAll('.fade-up').forEach(function(el){el.classList.add('vis');});}
+  var WX={0:'&#9728;&#65039;',1:'&#127780;&#65039;',2:'&#9925;',3:'&#9729;',45:'&#127787;&#65039;',48:'&#127787;&#65039;',51:'&#127746;',53:'&#127783;&#65039;',55:'&#127783;&#65039;',61:'&#127746;',63:'&#127783;&#65039;',65:'&#9928;&#65039;',71:'&#127784;&#65039;',73:'&#10052;&#65039;',75:'&#10052;&#65039;',80:'&#127746;',81:'&#127783;&#65039;',82:'&#9928;&#65039;',95:'&#9928;&#65039;'};
+  var WX_PRECIP={51:'Light drizzle',53:'Moderate drizzle',55:'Heavy drizzle',61:'Light rain',63:'Moderate rain',65:'Heavy rain',71:'Light snow',73:'Moderate snow',75:'Heavy snow',80:'Light showers',81:'Moderate showers',82:'Heavy showers',95:'Thunderstorm'};
+  function windRating(mph){if(mph<3)return'poor';if(mph<=10)return'good';if(mph<=15)return'marginal';return'poor';}
+  function tempRating(f){if(f<32)return'frozen';if(f<40)return'poor';if(f<50)return'marginal';if(f<=85)return'good';if(f<=90)return'marginal';return'poor';}
+  function humidRating(h){if(h<30)return'poor';if(h<40)return'marginal';if(h<=90)return'good';return'marginal';}
+  function inversionRisk(wind,hour,cloud,tempTrend){
+    var calm=wind<5,veryCalm=wind<3,clearSky=cloud<30;
+    var peakSolar=hour>=10&&hour<=16;
+    var inverseProne=hour>=18||hour<=8;
+    var rapidCooling=(typeof tempTrend==='number')&&tempTrend<=-1.5;
+    if(!calm)return'good';
+    if(peakSolar&&!veryCalm)return'good';
+    if(peakSolar)return'marginal';
+    if(clearSky&&inverseProne&&(rapidCooling||veryCalm))return'poor';
+    if(clearSky&&inverseProne)return'marginal';
+    if(rapidCooling&&clearSky)return'poor';
+    return'marginal';
+  }
+  var SPRAY_LAST=null;
+  function rerenderSpray(){if(SPRAY_LAST){renderSprayCurrent(SPRAY_LAST.d,SPRAY_LAST.lat,SPRAY_LAST.lon,SPRAY_LAST.label);}}
+  function dewRisk(temp,dew){var gap=temp-dew;if(gap<3)return'poor';if(gap<7)return'marginal';return'good';}
+  function wetBulbF(tempF,rh){var T=(tempF-32)*5/9;rh=Math.max(1,Math.min(100,rh));var Tw=T*Math.atan(0.151977*Math.sqrt(rh+8.313659))+Math.atan(T+rh)-Math.atan(rh-1.676331)+0.00391838*Math.pow(rh,1.5)*Math.atan(0.023101*rh)-4.686035;return Tw*9/5+32;}
+  function deltaTC(tempF,rh){return ((tempF-32)*5/9)-((wetBulbF(tempF,rh)-32)*5/9);}
+  function deltaTRating(dt){if(dt<2)return'marginal';if(dt<=8)return'good';if(dt<=10)return'marginal';return'poor';}
+  var PRODUCTS={
+    general:{label:'General guidance',wMin:3,wHiCaution:10,wMax:15,tMax:null,tMaxHard:null,note:'General drift-prevention guidance: target 3\u201310 mph, avoid below 3 mph (inversion risk) and above 10\u201315 mph. Select your specific product for label-based limits.'},
+    enlist:{label:'Enlist One / Duo',wMin:3,wHiCaution:10,wMax:15,tMax:null,tMaxHard:null,note:'Enlist label: do not apply above 15 mph; target 3\u201310 mph; no aerial application; 30-ft downwind in-field buffer; do not apply if runoff-causing rain is forecast within 48 hours or soil is at field capacity. No federal temperature cutoff, but volatility rises with heat.'},
+    dicamba:{label:'Dicamba (OTT)',wMin:3,wHiCaution:10,wMax:10,tMax:85,tMaxHard:95,note:'OTT dicamba (Engenia/XtendiMax/Tavium/Stryax) 2026 labels: apply only 3\u201310 mph, 1 hr after sunrise to 2 hrs before sunset; never during an inversion; VRA + DRA required every application; AMS prohibited. Temperature: no application if forecast high is 95\u00b0F+; at 85\u201394\u00b0F only part of the acreage may be treated before a required delay. Large downwind buffer. Many states are stricter \u2014 check yours.'},
+    glyphosate:{label:'Glyphosate',wMin:2,wHiCaution:10,wMax:15,tMax:null,tMaxHard:null,note:'Glyphosate: lowest drift 2\u201310 mph; avoid below 2 mph (variable direction) and gusty/inversion conditions. Rainfast can be as little as 30 min on some formulations \u2014 check yours. Coarse droplets preferred.'},
+    '24d_ester':{label:'2,4-D ester (generic)',wMin:3,wHiCaution:10,wMax:15,tMax:85,tMaxHard:null,note:'Generic 2,4-D (Group 4): do not apply above 15 mph; 250-ft buffer typical; below 3 mph only if no inversion is confirmed. Ester formulations are volatile \u2014 avoid hot conditions (rough 85\u00b0F+ guide). NOT the same as Enlist 2,4-D choline. Check your specific label.'},
+    contact:{label:'Contact herbicides',wMin:3,wHiCaution:8,wMax:10,tMax:null,tMaxHard:null,note:'Many contact products (Liberty/glufosinate, Cobra, Gramoxone) cap near 10 mph and need fine-to-medium droplets for coverage \u2014 the opposite of drift-reduction coarse sprays. Check the label.'}
+  };
+  function currentProduct(){var e=document.getElementById('in-product');return PRODUCTS[(e&&e.value)||'general']||PRODUCTS.general;}
+  function windRatingP(mph,p){if(mph<p.wMin)return'poor';if(mph<=p.wHiCaution)return'good';if(mph<=p.wMax)return'marginal';return'poor';}
+  function tempRatingP(f,p){var base=tempRating(f);if(p.tMaxHard&&f>=p.tMaxHard)return'poor';if(p.tMax&&f>=p.tMax)return(base==='good'||base==='marginal')?'poor':base;return base;}
+  function nextHourTrend(hourly){try{if(!hourly||!hourly.time)return null;var now=new Date();for(var i=0;i<hourly.time.length-1;i++){var t2=new Date(hourly.time[i+1]);if(t2>now){return Math.round((hourly.temperature_2m[i+1]-hourly.temperature_2m[i])*10)/10;}}return null;}catch(e){return null;}}
+
+  function overallRating(wR,tR,hR,iR,dR,wxCode,dtR){if(tR==='frozen')return'frozen';var r=[wR,tR,hR,iR,dR];if(dtR)r.push(dtR);if(wxCode>=51&&wxCode<=95)return'poor';if(r.indexOf('poor')!==-1)return'poor';if(r.indexOf('marginal')!==-1)return'marginal';return'good';}
+  function ratingToWord(r){return{good:'Good',marginal:'Marginal',poor:'Poor',frozen:'Frozen'}[r]||r;}
+  function ratingAbbr(r){return{good:'GOOD',marginal:'FAIR',poor:'POOR',frozen:'FROZEN'}[r]||'--';}
+  // FIX: Use Unicode character literals not HTML entities.
+  // HTML entities like '&#128683;' in a JS string assigned via .textContent
+  // render as literal text ("&#128683;") instead of the emoji (\ud83d\udeab).
+  // Unicode escapes are parsed by the JS engine at parse time \u2014 correct.
+  var rIcons={good:'\u2705\ufe0f',marginal:'\u26a0\ufe0f',poor:'\uD83D\uDEAB',frozen:'\uD83E\uDD76'};
+  var rMainText={good:'Good \u2014 Safe to Apply',marginal:'Marginal \u2014 Use Caution',poor:'Poor \u2014 Do Not Spray',frozen:'Frozen \u2014 No Application'};
+  var rSubs={good:'Conditions are within acceptable spray parameters. Monitor wind direction and watch for inversion indicators.',marginal:'One or more factors are outside the ideal range. Review the breakdown below and check your product label before proceeding.',poor:'Conditions are unfavorable for spray application. Risk of drift, volatilization, or reduced efficacy is significant.',frozen:'Below freezing \u2014 ground and plant tissue are frozen. No spray applications are possible or effective under these conditions.'};
+  var rRec={good:'Conditions are currently favorable. Ensure wind is directed away from sensitive areas, double-check your product label restrictions, and run through the checklist before starting the boom.',marginal:'One or more conditions are borderline. If wind is under 3 mph, possible inversion \u2014 wait and watch for mixing. If wind is over 10 mph, mechanical drift risk is elevated.',poor:'Do not apply under current conditions. Check the 24-hour hourly forecast for a better window today, or plan for a different day.',frozen:'Ground is frozen and plant tissue cannot absorb product. No herbicide or fungicide application is effective under frozen conditions.'};
+  function setFcard(id,val,desc,rating,barPct){var chip=document.getElementById('fc-'+id+'-chip'),valEl=document.getElementById('fc-'+id+'-val'),descEl=document.getElementById('fc-'+id+'-desc'),barEl=document.getElementById('fc-'+id+'-bar'),cardEl=document.getElementById('fc-'+id);if(chip){chip.textContent=ratingToWord(rating);chip.className='fchip '+rating;}if(valEl)valEl.textContent=val;if(descEl)descEl.textContent=desc;var barColors={good:'var(--green)',marginal:'var(--gold)',poor:'var(--red)',frozen:'var(--blue)'};if(barEl){barEl.style.width=barPct+'%';barEl.style.background=barColors[rating]||'var(--red)';}if(cardEl){var bc={poor:'rgba(240,96,96,.25)',good:'rgba(62,207,110,.18)',frozen:'rgba(91,163,224,.25)',marginal:'rgba(230,176,66,.2)'};cardEl.style.borderColor=bc[rating]||'';}}
+  function degToCompass(d){if(d==null||isNaN(d))return'--';var dirs=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];return dirs[Math.floor((d/22.5)+0.5)%16];}
+  function buildHourly(hourly){var strip=document.getElementById('hourly-strip');if(!strip||!hourly)return;strip.innerHTML='';var now=new Date(),count=0;for(var i=0;i<hourly.time.length&&count<24;i++){var t=new Date(hourly.time[i]);if(t<now)continue;count++;var h=t.getHours(),wind=Math.round(hourly.wind_speed_10m[i]),temp=Math.round(hourly.temperature_2m[i]),humid=hourly.relative_humidity_2m[i],code=hourly.weather_code[i],dew=hourly.dew_point_2m?Math.round(hourly.dew_point_2m[i]):temp-10,cloud=hourly.cloud_cover?hourly.cloud_cover[i]:50;var Ph=currentProduct(),htrend=(i+1<hourly.time.length)?Math.round((hourly.temperature_2m[i+1]-hourly.temperature_2m[i])*10)/10:null;var wR=windRatingP(wind,Ph),tR=tempRatingP(temp,Ph),hR=humidRating(humid),iR=inversionRisk(wind,h,cloud,htrend),dR=dewRisk(temp,dew),hdt=deltaTC(temp,humid),hdtR=deltaTRating(hdt),overall=overallRating(wR,tR,hR,iR,dR,code,hdtR);var timeStr=t.toLocaleTimeString('en-US',{hour:'numeric',hour12:true}).replace(' ','');var el=document.createElement('div');el.className='hr-item '+overall;el.title=timeStr+': Wind '+wind+' mph, '+temp+'\u00b0F, '+humid+'% RH, \u0394T '+hdt.toFixed(1)+'\u00b0C';el.innerHTML='<div class="hr-time">'+timeStr+'</div><div class="hr-icon" aria-hidden="true">'+(WX[code]||'&#127777;&#65039;')+'</div><div class="hr-wind">'+wind+' mph</div><div class="hr-badge '+overall+'">'+ratingAbbr(overall)+'</div>';strip.appendChild(el);}}
+  function buildDayStrip(daily){var strip=document.getElementById('day-strip');if(!strip||!daily)return;var dnames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];strip.innerHTML='';for(var i=0;i<5;i++){var d=new Date(daily.time[i]+'T12:00:00'),name=i===0?'Today':dnames[d.getDay()],wR=windRating(daily.wind_speed_10m_max[i]||8),tR=tempRating(daily.temperature_2m_max[i]||70);var overall=tR==='frozen'?'frozen':((wR==='poor'||tR==='poor')?'poor':((wR==='marginal'||tR==='marginal')?'marginal':'good'));var el=document.createElement('div');el.className='day-item';el.innerHTML='<div class="day-name">'+name+'</div><div class="day-icon" aria-hidden="true">'+(WX[daily.weather_code[i]]||'&#127777;&#65039;')+'</div><div class="day-rating '+overall+'">'+ratingAbbr(overall)+'</div><div class="day-wind">'+(daily.wind_speed_10m_max[i]?Math.round(daily.wind_speed_10m_max[i]):'--')+' mph</div>';strip.appendChild(el);}}
+  function loadWeather(lat,lon,label){
+    document.getElementById('loc-setup').style.display='none';
+    document.getElementById('factor-section').style.display='block';
+    document.getElementById('st-loc').textContent='\uD83D\uDCCD '+(label||'Your Location');if(window.gaEvent)gaEvent('spray_location_set');
+    var url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation_probability,weather_code,wind_speed_10m,wind_direction_10m,cloud_cover&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,wind_speed_10m,wind_direction_10m,weather_code,cloud_cover&daily=weather_code,temperature_2m_max,wind_speed_10m_max,precipitation_probability_max&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=5';
+    fetch(url).then(function(r){return r.json();}).then(function(d){
+      SPRAY_LAST={d:d,lat:lat,lon:lon,label:label};
+      renderSprayCurrent(d,lat,lon,label);
+    }).catch(function(e){console.warn('[AGSIST] Weather fetch error:',e);var es=document.getElementById('st-sub');if(es)es.textContent='Weather data unavailable. Check your connection and try again.';});
+  }
+  function renderSprayCurrent(d,lat,lon,label){
+      var c=d.current,wind=Math.round(c.wind_speed_10m),dir=c.wind_direction_10m,temp=Math.round(c.temperature_2m),humid=c.relative_humidity_2m,dew=Math.round(c.dew_point_2m),cloud=c.cloud_cover||0,hour=new Date().getHours(),code=c.weather_code||0;
+      var P=currentProduct(),trend=nextHourTrend(d.hourly);
+      var wR=windRatingP(wind,P),tR=tempRatingP(temp,P),hR=humidRating(humid),iR=inversionRisk(wind,hour,cloud,trend),dR=dewRisk(temp,dew),dt=deltaTC(temp,humid),dtR=deltaTRating(dt),overall=overallRating(wR,tR,hR,iR,dR,code,dtR);
+      var si=document.getElementById('st-icon'),sm=document.getElementById('st-main'),ss=document.getElementById('st-sub'),sp=document.getElementById('status-panel'),ts=document.getElementById('st-ts');
+      if(si)si.textContent=rIcons[overall];if(sm){sm.textContent=rMainText[overall];sm.className='status-main '+overall;}if(ss)ss.textContent=rSubs[overall];if(sp)sp.className='status-panel '+overall;if(ts)ts.textContent='Updated '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+      var windDesc=wind<3?'Calm conditions \u2014 below 3 mph. Thermal inversions trap spray droplets near the ground. Do not spray until wind picks up to 3+ mph.':wind<=10?'Within the ideal window. Good mechanical dispersion. Stay aware of downwind sensitive areas.':wind<=15?'Getting high \u2014 mechanical drift risk is elevated. Consider larger nozzle size or waiting.':'Too high for safe application. Significant off-target drift likely. Do not spray.';
+      var wLimit=(P.label==='General guidance')?'':(' '+P.label+' limit: '+P.wMin+'\u2013'+P.wHiCaution+' mph ideal, '+P.wMax+' mph max.');setFcard('wind',wind+' mph',windDesc+wLimit+' Reading is at 10 m — at boom height (~3 ft) wind usually runs lower; confirm on-site.',wR,Math.min(100,wind*6));
+      var compass=degToCompass(dir),dirDesc='Wind from the '+compass+' ('+Math.round(dir)+'\u00b0). Always spray with direction away from non-target areas.';
+      setFcard('dir',compass+' ('+Math.round(dir)+'\u00b0)',dirDesc,'marginal',50);
+      var tempDesc=temp<32?'Below freezing \u2014 no spray application is effective. Wait for thaw and active plant growth above 40\u00b0F.':temp<40?'Too cold for most products.':temp<=50?'Cool but acceptable for hardy products. Check label.':temp<=75?'Ideal temperature range. Good efficacy and low volatilization risk.':temp<=85?'Warm but acceptable for most products. Watch dicamba/2,4-D label restrictions.':'Hot. Volatilization risk elevated for dicamba and ester formulations.';
+      var tNote='';if(P.tMaxHard&&temp>=P.tMaxHard)tNote=' '+P.label+': above '+P.tMaxHard+'\u00b0F application is prohibited.';else if(P.tMax&&temp>=P.tMax)tNote=' '+P.label+': at/above '+P.tMax+'\u00b0F label restrictions apply \u2014 check acreage limits / volatility rules.';setFcard('temp',temp+'\u00b0F',tempDesc+tNote,tR,Math.min(100,Math.max(0,(temp-40)*3)));
+      var humidDesc=humid<30?'Very dry. Fine droplets evaporate rapidly. Switch to large-droplet nozzles.':humid<40?'Dry. Larger nozzles recommended.':humid<60?'Low-moderate humidity. Acceptable.':humid<=90?'Ideal humidity range.':'Very humid. Leaf surfaces may be wet or close to dew point.';
+      setFcard('humid',humid+'% RH',humidDesc,hR,humid);
+      var dtDesc=dt<2?'Very humid or inversion-prone — fine droplets stay aloft and can drift. Watch for inversion indicators.':dt<=8?'Ideal evaporation range. Droplets reach the target before drying out.':dt<=10?'Getting high — fines evaporate quickly. Move up a nozzle size and raise carrier volume.':'Too high — rapid evaporation cuts efficacy and makes drift-prone fines. Use coarse/ultra-coarse nozzles or wait.';
+      setFcard('dt',dt.toFixed(1)+'°C',dtDesc,dtR,Math.min(100,Math.max(4,dt*8)));
+      var invDesc=iR==='poor'?'High inversion risk. Fine droplets will trap near ground and drift unpredictably. Do not spray.':iR==='marginal'?'Some inversion indicators possible. Watch for smoke/dust behavior before starting.':'Low inversion risk. Atmosphere is mixing adequately \u2014 solar heating or sufficient wind.';
+      var invLabels={good:'Low Risk',marginal:'Moderate',poor:'High Risk'};
+      var invEl=document.getElementById('fc-inv-chip');if(invEl){invEl.textContent=invLabels[iR];invEl.className='fchip '+iR;}
+      var invValEl=document.getElementById('fc-inv-val');if(invValEl)invValEl.textContent=invLabels[iR];
+      var invDescEl=document.getElementById('fc-inv-desc');if(invDescEl)invDescEl.textContent=invDesc;
+      var invBarEl=document.getElementById('fc-inv-bar');if(invBarEl){invBarEl.style.width=(iR==='poor'?85:iR==='marginal'?50:20)+'%';invBarEl.style.background=iR==='poor'?'var(--red)':iR==='marginal'?'var(--gold)':'var(--green)';}
+      var invCardEl=document.getElementById('fc-inv');if(invCardEl){if(iR==='poor')invCardEl.style.borderColor='rgba(240,96,96,.25)';else if(iR==='good')invCardEl.style.borderColor='rgba(62,207,110,.18)';}
+      var dewGap=temp-dew,dewDesc=dewGap<3?'Dew forming or imminent. Leaves likely wet. Contact herbicide efficacy significantly reduced.':dewGap<7?'Dew point is close. Check crop canopy for moisture before applying contact products.':'Good margin between temperature and dew point. Low dew formation risk.';
+      setFcard('dew',dew+'\u00b0F dew pt',dewDesc,dR,Math.max(0,100-dewGap*8));
+      var precipCard=document.getElementById('fc-precip');if(precipCard){if(code>=51&&code<=95){precipCard.style.display='';var precipName=WX_PRECIP[code]||'Active precipitation';setFcard('precip',precipName,'Active precipitation washes product off leaves before absorption. Wait for dry conditions.','poor',90);}else{precipCard.style.display='none';}}
+      var rb=document.getElementById('rec-box'),rh=document.getElementById('rec-head'),rt=document.getElementById('rec-text');
+      if(rb)rb.className='rec '+overall;if(rh){rh.className='rec-h '+overall;rh.textContent={good:'\u2705 Good Window',marginal:'\u26A0\uFE0F Use Caution',poor:'\u26D4 Do Not Apply',frozen:'\uD83E\uDD76 Frozen \u2014 No Application'}[overall];}if(rt)rt.textContent=rRec[overall];
+      var pn=document.getElementById('product-note');if(pn){if(P.label==='General guidance'){pn.style.display='none';}else{pn.style.display='block';pn.textContent=P.note;}}buildHourly(d.hourly);buildDayStrip(d.daily);
+      try{localStorage.setItem('agsist-wx-loc',JSON.stringify({lat:lat,lon:lon,label:label||null}));}catch(e){}
+      if(!label){fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json',{headers:{'User-Agent':'AGSIST/1.0'}}).then(function(r){return r.json();}).then(function(geo){var city=geo.address.city||geo.address.town||geo.address.village||geo.address.county||'',st=geo.address.state_code||'';if(city){document.getElementById('st-loc').textContent='\uD83D\uDCCD '+city+(st?', '+st:'');}}).catch(function(){});}
+  }
+  function requestGeo(){if(!navigator.geolocation){document.getElementById('spray-zip-row').style.display='flex';return;}document.getElementById('st-sub').textContent='Detecting your location\u2026';navigator.geolocation.getCurrentPosition(function(p){loadWeather(p.coords.latitude,p.coords.longitude,null);},function(){document.getElementById('spray-zip-row').style.display='flex';document.getElementById('loc-setup').style.display='block';var sm=document.getElementById('st-main'),ss=document.getElementById('st-sub');if(sm){sm.textContent='Enter Your ZIP';sm.className='status-main marginal';}if(ss)ss.textContent='Location access denied \u2014 enter a ZIP code below for local conditions.';},{timeout:8000});}
+  function loadZip(){
+    var zip=document.getElementById('spray-zip').value.trim();
+    if(zip.length!==5||isNaN(zip))return;
+    // Try Nominatim first
+    fetch('https://nominatim.openstreetmap.org/search?postalcode='+zip+'&country=US&format=json&limit=1',{headers:{'User-Agent':'AGSIST/1.0'}})
+      .then(function(r){return r.json();})
+      .then(function(results){
+        if(results&&results.length){
+          var r=results[0];
+          // FIX: Nominatim postal code search returns display_name like
+          // "61801, Champaign County, Illinois, United States"
+          // parts[0]=ZIP, parts[1]=County, parts[2]=State \u2014 not city, Ch
+          // Detect postal code name and build a clean label
+          var parts=(r.display_name||'').split(',');
+          var p0=(parts[0]||'').trim();
+          var isZipName=/^\d{4,5}$/.test(p0);
+          var lbl;
+          if(isZipName){
+            // Use ZIP + state abbreviation (parts[2] is usually state name)
+            var stateName=(parts[2]||'').trim();
+            lbl=p0+(stateName?', '+stateName.substring(0,2).toUpperCase():'');
+          } else {
+            // City name in parts[0], state code in parts[2]
+            var statePart=(parts[2]||'').trim();
+            lbl=p0+(statePart?', '+statePart.substring(0,2).toUpperCase():'');
+          }
+          loadWeather(parseFloat(r.lat),parseFloat(r.lon),lbl);
+        } else {
+          // Fallback to Open-Meteo geocoding
+          fetch('https://geocoding-api.open-meteo.com/v1/search?name='+zip+'&count=1&language=en&format=json&countryCode=US')
+            .then(function(r2){return r2.json();})
+            .then(function(d){
+              if(d.results&&d.results.length){
+                var r2=d.results[0];
+                // FIX: Open-Meteo may return postal code as r2.name with city as r2.admin1
+                // e.g. name="61801", admin1="Urbana" -> was showing "61801, Ur"
+                var _isZip=/^\d+$/.test((r2.name||'').trim());
+                var _city=_isZip?(r2.admin1||r2.name):r2.name;
+                var _state=_isZip?'':(r2.admin1?r2.admin1.substring(0,2).toUpperCase():'');
+                var lbl2=_city+(_state?', '+_state:'');
+                loadWeather(r2.latitude,r2.longitude,lbl2);
+              }
+            }).catch(function(){});
+        }
+      }).catch(function(e){console.warn('[AGSIST] ZIP geocode error:',e);});
+  }
+  document.getElementById('btn-geo').addEventListener('click',requestGeo);
+  document.getElementById('btn-show-zip').addEventListener('click',function(){document.getElementById('spray-zip-row').style.display='flex';});
+  document.getElementById('btn-zip-go').addEventListener('click',loadZip);
+  document.getElementById('spray-zip').addEventListener('keydown',function(e){if(e.key==='Enter')loadZip();});
+  document.getElementById('btn-change-loc').addEventListener('click',function(){document.getElementById('loc-setup').style.display='block';});
+  (function(){var ps=document.getElementById('in-product');if(ps){try{var sv=localStorage.getItem('agsist-spray-product');if(sv&&PRODUCTS[sv])ps.value=sv;}catch(e){}ps.addEventListener('change',function(){try{localStorage.setItem('agsist-spray-product',ps.value);}catch(e){}rerenderSpray();});}})();
+  function autoLoad(){try{var s=localStorage.getItem('agsist-wx-loc');if(s){var p=JSON.parse(s);if(p&&p.lat&&p.lon){loadWeather(p.lat,p.lon,p.label);return;}}}catch(e){}requestGeo();}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',autoLoad);}else{setTimeout(autoLoad,100);}
+})();
+</script>
+<script>
+(function(){
+  function _su(){try{return document.cookie.split(';').some(function(c){return c.trim().indexOf('agsist_subscribed=')===0;})||localStorage.getItem('agsist_subscribed')==='1';}catch(e){return false;}}
+  function _ss(){try{var x=new Date();x.setFullYear(x.getFullYear()+2);document.cookie='agsist_subscribed=1;expires='+x.toUTCString()+';path=/;SameSite=Lax';localStorage.setItem('agsist_subscribed','1');}catch(e){}}
+  var card=document.getElementById('signup-card');if(!card)return;
+  if(_su()){card.style.display='none';return;}
+  var btn=document.getElementById('signup-btn'),inp=document.getElementById('signup-email'),form=document.getElementById('signup-form');
+  function submit(){var email=(inp&&inp.value||'').trim();if(email.indexOf('@')<1)return;_ss();if(form){form.innerHTML='<div style="text-align:center;padding:.4rem 0"><div style="font-size:1.6rem">\u2705</div><div style="font-size:.85rem;font-weight:700;color:var(--text);margin-top:.2rem">You\u2019re subscribed!</div><div style="font-size:.74rem;color:var(--text-muted);line-height:1.5;margin-top:.2rem">AGSIST Daily arrives by 6am CT on weekdays. Check your spam folder once.</div></div>';}if(window.gaEvent)gaEvent('email_signup',{page:'spray',source:'spray-tool'});fetch('https://formspree.io/f/xnjbwepn',{method:'POST',body:JSON.stringify({email:email,source:'spray-tool'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});}
+  if(btn)btn.addEventListener('click',function(e){e.preventDefault();submit();});
+  if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submit();}});
+})();
+</script>
+</body>
+</html>
