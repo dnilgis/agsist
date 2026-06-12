@@ -1,0 +1,53 @@
+{
+  "updated": "2026-06-12T21:29:39Z",
+  "corn": {
+    "pct": 11,
+    "cur": 4.1325,
+    "lo": 3.6775,
+    "hi": 8.1825,
+    "median": 4.7625,
+    "n": 261,
+    "years": 5,
+    "read": "At the 11th percentile of the last 5 years \u2014 historically low \u2014 below most of the last 5 years."
+  },
+  "soybean": {
+    "pct": 31,
+    "cur": 11.1325,
+    "lo": 9.3875,
+    "hi": 17.455,
+    "median": 12.3575,
+    "n": 261,
+    "years": 5,
+    "read": "At the 31st percentile of the last 5 years \u2014 below the 5-year midpoint."
+  },
+  "wheat": {
+    "pct": 42,
+    "cur": 5.8525,
+    "lo": 4.985,
+    "hi": 13.48,
+    "median": 6.0825,
+    "n": 261,
+    "years": 5,
+    "read": "At the 42nd percentile of the last 5 years \u2014 below the 5-year midpoint."
+  },
+  "cattle": {
+    "pct": 95,
+    "cur": 240.95,
+    "lo": 119.225,
+    "hi": 253.9,
+    "median": 180.375,
+    "n": 261,
+    "years": 5,
+    "read": "At the 95th percentile of the last 5 years \u2014 historically very high \u2014 near a 5-year peak."
+  },
+  "feeders": {
+    "pct": 91,
+    "cur": 357.05,
+    "lo": 152.75,
+    "hi": 375.5,
+    "median": 243.3,
+    "n": 261,
+    "years": 5,
+    "read": "At the 91st percentile of the last 5 years \u2014 historically very high \u2014 near a 5-year peak."
+  }
+}
