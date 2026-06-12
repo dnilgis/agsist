@@ -156,6 +156,17 @@ SYMBOLS = {
     "feeders":    "GF=F",
     "hogs":       "HE=F",
     "milk":       "DC=F",
+
+    # ── Live cattle forward curve (CME; active months Feb G, Apr J, Jun M, Aug Q, Oct V, Dec Z) ──
+    # Yahoo livestock deferred format is {ROOT}{MONTH}{YY}.CME. VERIFY on first run:
+    # if any cattle-* key logs SKIP/LOST, the suffix/format needs adjusting (see note below).
+    # UPDATE ANNUALLY like the grain contracts — advance the year suffix as months expire.
+    "cattle-aug26": "LEQ26.CME",
+    "cattle-oct26": "LEV26.CME",
+    "cattle-dec26": "LEZ26.CME",
+    "cattle-feb27": "LEG27.CME",
+    "cattle-apr27": "LEJ27.CME",
+    "cattle-jun27": "LEM27.CME",
     # ── Oilseeds / Feed ──
     "meal":       "ZM=F",
     "soyoil":     "ZL=F",
