@@ -1112,6 +1112,72 @@
       </div>
     </div>
   </div>
+  <section class="fade-up" id="f-read" aria-labelledby="read-heading">
+    <style>
+    #f-read .read-sub{font-size:.74rem;color:var(--text-dim)}
+    #f-read .sig-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px}
+    #f-read .sig{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:1.05rem 1.1rem;display:flex;flex-direction:column;gap:.5rem;text-decoration:none;color:inherit;transition:border-color .18s,transform .18s}
+    #f-read .sig:hover{border-color:var(--gold);transform:translateY(-2px)}
+    #f-read .sig-top{display:flex;align-items:center;justify-content:space-between}
+    #f-read .sig-name{font-weight:700;font-size:.92rem;color:var(--text);display:flex;align-items:center;gap:.4rem}
+    #f-read .sig-tag{font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.1em;color:var(--text-dim);border:1px solid var(--border);border-radius:5px;padding:2px 6px}
+    #f-read .sig-num{font-family:'Oswald',sans-serif;font-weight:700;font-size:2.4rem;line-height:1;color:var(--gold);display:flex;align-items:baseline;gap:.3rem}
+    #f-read .sig-num small{font-size:.78rem;color:var(--text-dim);font-weight:400;font-family:'Inter',sans-serif}
+    #f-read .sig-price{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-dim)}
+    #f-read .sig-bar{position:relative;height:5px;background:rgba(255,255,255,.07);border-radius:3px;margin:.1rem 0}
+    #f-read .sig-fill{position:absolute;left:0;top:0;height:100%;border-radius:3px;background:var(--gold);transition:width .5s}
+    #f-read .sig-dot{position:absolute;top:-3px;width:11px;height:11px;border-radius:50%;background:var(--gold);border:2px solid var(--surface);transition:left .5s}
+    #f-read .sig-read{font-size:.77rem;line-height:1.45;color:var(--text);min-height:2.1em}
+    #f-read .sig-read b{color:var(--gold)}
+    #f-read .sig-link{font-size:.71rem;color:var(--text-dim);font-weight:600;margin-top:auto}
+    #f-read .sig:hover .sig-link{color:var(--gold)}
+    </style>
+    <div class="sec-head"><h2 class="sec-title">&#x1F4CA; The Read</h2><span class="read-sub">What today's prices actually mean</span></div>
+    <div class="sig-grid">
+      <a href="/corn-futures-prices" class="sig" id="sig-corn"><div class="sig-top"><span class="sig-name">&#x1F33D; Corn</span><span class="sig-tag" id="sig-corn-tag">&middot;</span></div><div class="sig-num"><span id="sig-corn-num">&mdash;</span><small id="sig-corn-sub"></small></div><div class="sig-price" id="sig-corn-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-corn-fill" style="width:0"></div><div class="sig-dot" id="sig-corn-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-corn-read"></div><div class="sig-link">Corn deep dive &rarr;</div></a>
+      <a href="/soybean-futures-prices" class="sig" id="sig-beans"><div class="sig-top"><span class="sig-name">&#x1FAD8; Soybeans</span><span class="sig-tag" id="sig-beans-tag">&middot;</span></div><div class="sig-num"><span id="sig-beans-num">&mdash;</span><small id="sig-beans-sub"></small></div><div class="sig-price" id="sig-beans-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-beans-fill" style="width:0"></div><div class="sig-dot" id="sig-beans-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-beans-read"></div><div class="sig-link">Soybean deep dive &rarr;</div></a>
+      <a href="/wheat-futures-prices" class="sig" id="sig-wheat"><div class="sig-top"><span class="sig-name">&#x1F33E; Wheat</span><span class="sig-tag" id="sig-wheat-tag">&middot;</span></div><div class="sig-num"><span id="sig-wheat-num">&mdash;</span><small id="sig-wheat-sub"></small></div><div class="sig-price" id="sig-wheat-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-wheat-fill" style="width:0"></div><div class="sig-dot" id="sig-wheat-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-wheat-read"></div><div class="sig-link">Wheat deep dive &rarr;</div></a>
+      <a href="/cattle-futures-prices" class="sig" id="sig-cattle"><div class="sig-top"><span class="sig-name">&#x1F402; Cattle</span><span class="sig-tag" id="sig-cattle-tag">&middot;</span></div><div class="sig-num"><span id="sig-cattle-num">&mdash;</span><small id="sig-cattle-sub"></small></div><div class="sig-price" id="sig-cattle-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-cattle-fill" style="width:0"></div><div class="sig-dot" id="sig-cattle-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-cattle-read"></div><div class="sig-link">Cattle deep dive &rarr;</div></a>
+    </div>
+  </section>
+  <script>
+  (function(){
+    var GR={corn:{s:0.01,sk:'corn'},beans:{s:0.01,sk:'soybean'},wheat:{s:0.01,sk:'wheat'}};
+    function $(i){return document.getElementById(i);}
+    function ord(n){var v=n%100;if(v>=11&&v<=13)return'th';return({1:'st',2:'nd',3:'rd'})[n%10]||'th';}
+    function bar(pre,f){f=Math.max(0,Math.min(100,f));var a=$(pre+'-fill'),b=$(pre+'-dot');if(a)a.style.width=f+'%';if(b)b.style.left='calc('+f+'% - 5px)';}
+    function r5(p){if(p<10)return['Near a 5-yr low','&mdash; rare territory.'];if(p<25)return['Historically low','&mdash; below most of the last 5 years.'];if(p<45)return['Below the 5-yr midpoint','.'];if(p<=55)return['Around the 5-yr midpoint','.'];if(p<75)return['Above the 5-yr midpoint','.'];if(p<90)return['Historically high','&mdash; above most of the last 5 years.'];return['Near a 5-yr high','&mdash; rare territory.'];}
+    function r52(p){if(p<25)return['Lower quartile','of its 52-week range.'];if(p<50)return['Lower half','of its 52-week range.'];if(p<75)return['Upper half','of its 52-week range.'];return['Upper quartile','of its 52-week range.'];}
+    function get(u){return fetch(u,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
+    Promise.all([get('/data/prices.json'),get('/data/price-stats.json'),get('/data/cot.json')]).then(function(R){
+      var px=(R[0]&&R[0].quotes)||{},stats=R[1]||{},cot=R[2]||{};
+      Object.keys(GR).forEach(function(k){
+        var g=GR[k],pre='sig-'+k,st=stats[g.sk],q=px[k],pct,lo,hi,cur,tag,rd;
+        if(st&&st.pct!=null){pct=st.pct;lo=st.lo;hi=st.hi;cur=st.cur;tag='5-YR';rd=r5(pct);}
+        else if(q&&q.close!=null&&q.wk52_hi!=null&&q.wk52_lo!=null&&q.wk52_hi>q.wk52_lo){cur=q.close*g.s;lo=q.wk52_lo*g.s;hi=q.wk52_hi*g.s;pct=Math.round((q.close-q.wk52_lo)/(q.wk52_hi-q.wk52_lo)*100);tag='52-WK';rd=r52(pct);}
+        else return;
+        pct=Math.max(0,Math.min(100,pct));
+        if($(pre+'-num'))$(pre+'-num').textContent=pct;
+        if($(pre+'-sub'))$(pre+'-sub').textContent=ord(pct)+' pctile';
+        if($(pre+'-tag'))$(pre+'-tag').textContent=tag;
+        if($(pre+'-price'))$(pre+'-price').textContent='$'+cur.toFixed(2)+' \u00b7 range $'+lo.toFixed(2)+'\u2013$'+hi.toFixed(2);
+        bar(pre,(cur-lo)/(hi-lo)*100);
+        if($(pre+'-read'))$(pre+'-read').innerHTML='<b>'+rd[0]+'</b> '+rd[1];
+      });
+      var le=px.cattle,gf=px.feeders,lc=cot.livecattle,pre='sig-cattle';
+      if(le&&gf&&le.close!=null&&gf.close!=null){
+        var ratio=gf.close/le.close;
+        if($(pre+'-num'))$(pre+'-num').textContent=ratio.toFixed(2);
+        if($(pre+'-sub'))$(pre+'-sub').textContent=': 1 feeder/live';
+        if($(pre+'-price'))$(pre+'-price').textContent='Live $'+le.close.toFixed(2)+' \u00b7 Feeder $'+gf.close.toFixed(2);
+        var cp=null;if(lc&&lc.min52!=null&&lc.max52!=null&&lc.max52>lc.min52){cp=Math.round((lc.net-lc.min52)/(lc.max52-lc.min52)*100);cp=Math.max(0,Math.min(100,cp));}
+        bar(pre,cp!=null?cp:50);
+        if(cp!=null){if($(pre+'-tag'))$(pre+'-tag').textContent='COT';if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Funds '+(lc.net>=0?'net long':'net short')+' fed cattle</b> ('+cp+'%) &mdash; feeders near a 52-wk low.';}
+        else{if($(pre+'-tag'))$(pre+'-tag').textContent='RATIO';if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Feeder/live '+ratio.toFixed(2)+':1.</b> Value split between cow-calf and feedlots.';}
+      }
+    });
+  })();
+  </script>
   <div class="fade-up" id="f-kalshi">
     <div class="sec-head"><h2 class="sec-title">&#x1F3AF; What's Moving Agriculture</h2><a href="/ag-odds" class="sec-all">All Markets &rarr;</a></div>
     <div id="kalshi-grid" data-markets-handled="true" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(268px,100%),1fr));gap:.65rem;margin-bottom:.5rem"><div id="kalshi-loading" style="grid-column:1/-1;text-align:center;padding:1.2rem;font-size:.8rem;color:var(--text-muted)">&#x23F3; Loading markets&hellip;</div></div>
