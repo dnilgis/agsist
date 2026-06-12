@@ -1198,12 +1198,12 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 /* ===== Spray Mix Calculator (v2) ===== */
 (function(){
   var FLOZ={floz:1,pt:16,qt:32,gal:128};
-  var per100={floz100:'floz',qt100:'qt'};
+  var per100={floz100:'floz',pt100:'pt',qt100:'qt',gal100:'gal'};
   var UNITS=[
     {v:'floz',t:'fl oz / acre',kind:'acre-liq'},{v:'pt',t:'pints / acre',kind:'acre-liq'},
     {v:'qt',t:'quarts / acre',kind:'acre-liq'},{v:'gal',t:'gallons / acre',kind:'acre-liq'},
-    {v:'lb',t:'lbs / acre',kind:'acre-dry'},
-    {v:'floz100',t:'fl oz / 100 gal',kind:'100-liq'},{v:'qt100',t:'quarts / 100 gal',kind:'100-liq'},
+    {v:'lb',t:'lbs / acre',kind:'acre-dry'},{v:'ozdry',t:'oz (dry) / acre',kind:'acre-dry-oz'},
+    {v:'floz100',t:'fl oz / 100 gal',kind:'100-liq'},{v:'pt100',t:'pints / 100 gal',kind:'100-liq'},{v:'qt100',t:'quarts / 100 gal',kind:'100-liq'},{v:'gal100',t:'gallons / 100 gal',kind:'100-liq'},
     {v:'lb100',t:'lbs / 100 gal (AMS)',kind:'100-dry'},{v:'pct',t:'% v/v',kind:'pct'}
   ];
   var products=[];var _used=false;function use(){if(!_used&&window.gaEvent){_used=true;gaEvent('spray_calc_use');}}
@@ -1226,13 +1226,13 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     var val=parseFloat(p.val);if(!isFinite(val)||val<=0)return null;
     var u=UNITS.filter(function(x){return x.v===p.unit;})[0]||UNITS[0];
     if(u.kind==='acre-liq')return {floz:val*FLOZ[u.v]*acres,unit:'floz'};
-    if(u.kind==='acre-dry')return {lb:val*acres,unit:'lb'};
+    if(u.kind==='acre-dry')return {lb:val*acres,unit:'lb'};if(u.kind==='acre-dry-oz')return {ozdry:val*acres,unit:'ozdry'};
     if(u.kind==='100-liq')return {floz:val*FLOZ[per100[u.v]]*(gal/100),unit:'floz'};
     if(u.kind==='100-dry')return {lb:val*(gal/100),unit:'lb'};
     if(u.kind==='pct')return {floz:(val/100)*gal*128,unit:'floz'};
     return null;
   }
-  function outStr(a){if(!a)return null;if(a.unit==='lb')return {amt:fmt(a.lb)+' lb',conv:''};return {amt:friendly(a.floz),conv:(a.floz>=16?('= '+fmt(a.floz)+' fl oz'):'')};}
+  function outStr(a){if(!a)return null;if(a.unit==='lb')return {amt:fmt(a.lb)+' lb',conv:''};if(a.unit==='ozdry')return {amt:fmt(a.ozdry)+' oz',conv:(a.ozdry>=16?('= '+fmt(a.ozdry/16)+' lb'):'')};return {amt:friendly(a.floz),conv:(a.floz>=16?('= '+fmt(a.floz)+' fl oz'):'')};}
   function waterFor(acres,gal){var liq=0;products.forEach(function(p){var a=amtFor(p,acres,gal);if(a&&a.unit==='floz')liq+=a.floz;});return Math.max(0,gal-liq/128);}
 
   var STATE={};
@@ -1355,6 +1355,34 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 })();
 </script>
 
+      <section class="spr-prep" aria-labelledby="spr-prep-h">
+        <style>
+        .spr-prep{--p-gold:#e6b042;--p-panel:var(--card,#161b14);--p-panel2:var(--card-2,#1d2419);--p-line:var(--border,#2a3324);--p-txt:var(--text,#e7ece8);--p-mut:var(--text-muted,#9bb0a3);background:var(--p-panel);border:1px solid var(--p-line);border-radius:14px;padding:1rem 1.05rem;margin:1.25rem 0;}
+        .spr-prep h3{font-family:Oswald,sans-serif;font-weight:700;font-size:1.15rem;margin:0 0 .6rem;color:#fff;display:flex;align-items:center;gap:.4rem;}
+        .spr-prep details{border:1px solid var(--p-line);border-radius:10px;background:var(--p-panel2);margin:0 0 .7rem;padding:0 .9rem;}
+        .spr-prep summary{cursor:pointer;list-style:none;padding:.8rem 0;font-weight:700;color:var(--p-txt);font-size:.92rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;min-height:44px;}
+        .spr-prep summary::-webkit-details-marker{display:none;}
+        .spr-prep summary::after{content:"+";color:var(--p-gold);font-weight:700;font-size:1.3rem;line-height:1;}
+        .spr-prep details[open] summary::after{content:"\2212";}
+        .spr-prep ol{margin:0 0 .9rem;padding:0 0 0 1.2rem;color:var(--p-mut);font-size:.88rem;line-height:1.6;}
+        .spr-prep ol li{margin-bottom:.4rem;} .spr-prep ol li b{color:var(--p-txt);}
+        .spr-prep .dw{font-size:.88rem;color:var(--p-mut);line-height:1.55;background:var(--p-panel2);border:1px solid var(--p-line);border-left:3px solid var(--p-gold);border-radius:10px;padding:.7rem .85rem;}
+        .spr-prep .dw a{color:var(--p-gold);font-weight:700;text-decoration:none;} .spr-prep .dw a:hover{text-decoration:underline;} .spr-prep .dw b{color:var(--p-txt);}
+        </style>
+        <h3 id="spr-prep-h"><span aria-hidden="true">&#129514;</span> Before you load the tank</h3>
+        <details>
+          <summary>How to run a jar test (compatibility check)</summary>
+          <ol>
+            <li>Fill a clear quart jar with the <b>same water</b> you&rsquo;ll spray with, scaled to your tank &mdash; for a 100-gal tank, about 1 quart is the right proportion.</li>
+            <li>Add each product in your <b>tank-mix order</b> &mdash; conditioners/AMS first, then dry products, then liquids, then adjuvants &mdash; one at a time.</li>
+            <li>Cap and gently <b>invert 10 times</b> after each addition.</li>
+            <li>Let it <b>stand 15&ndash;30 minutes</b>.</li>
+            <li>Look for <b>clumps, gels, oily layers, crystals, sludge, or separation</b> that won&rsquo;t re-mix. If it looks bad in the jar, it will plug your boom &mdash; don&rsquo;t load the tank.</li>
+          </ol>
+        </details>
+        <div class="dw"><b>Spraying near sensitive areas?</b> Check the free <a href="https://driftwatch.org" target="_blank" rel="noopener" id="spr-dw">DriftWatch / FieldWatch registry</a> for mapped sensitive crops, beehives, and organic fields near you, and confirm your label&rsquo;s downwind buffer before you start.</div>
+      </section>
+
       <div class="mix-section fade-up" id="section-mixorder">
         <h2 class="edu-title"><span aria-hidden="true">&#129514;</span> Tank Mix Order Guide</h2>
         <div class="mix-card">
@@ -1462,6 +1490,27 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     </div>
   </div>
 </main>
+
+<section class="spr-rel" aria-labelledby="spr-rel-h">
+  <style>
+  .spr-rel{--r-line:var(--border,#2a3324);--r-txt:var(--text,#e7ece8);--r-mut:var(--text-muted,#9bb0a3);--r-surface:var(--card,#161b14);--r-green:#6ab04c;max-width:900px;margin:1.25rem auto 0;padding:0 1rem 1.5rem;}
+  .spr-rel h2{font-family:Oswald,sans-serif;font-weight:700;font-size:1.2rem;margin:0 0 .8rem;color:#fff;}
+  .spr-rel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.6rem;}
+  .spr-rel a{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--r-surface);border:1px solid var(--r-line);border-radius:10px;padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center;transition:border-color .2s;}
+  .spr-rel a:hover{border-color:var(--r-green);}
+  .spr-rel .i{font-size:1.3rem;margin-bottom:.25rem;} .spr-rel .n{font-size:.85rem;font-weight:700;color:var(--r-txt);} .spr-rel .d{font-size:.7rem;color:var(--r-mut);margin-top:.1rem;}
+  </style>
+  <h2 id="spr-rel-h">More AGSIST tools</h2>
+  <div class="spr-rel-grid">
+    <a href="/cash-bids"><span class="i">&#128181;</span><span class="n">Cash Bids</span><span class="d">Local elevator prices</span></a>
+    <a href="/corn-futures-prices"><span class="i">&#127809;</span><span class="n">Corn Futures</span><span class="d">Live CBOT + market read</span></a>
+    <a href="/whats-priced-in"><span class="i">&#127919;</span><span class="n">What&rsquo;s Priced In</span><span class="d">USDA report odds</span></a>
+    <a href="/breakeven"><span class="i">&#128208;</span><span class="n">Break-Even</span><span class="d">Is this profitable?</span></a>
+    <a href="/daily"><span class="i">&#128236;</span><span class="n">Daily Briefing</span><span class="d">Markets by 6am CT</span></a>
+    <a href="/usda-calendar"><span class="i">&#128197;</span><span class="n">USDA Calendar</span><span class="d">Next report date</span></a>
+  </div>
+  <script>(function(){var g=document.querySelector('.spr-rel');if(g)g.addEventListener('click',function(e){var a=e.target.closest('a[href^="/"]');if(a&&window.gaEvent)gaEvent('spray_related',{to:a.getAttribute('href')});});var dw=document.getElementById('spr-dw');if(dw)dw.addEventListener('click',function(){if(window.gaEvent)gaEvent('spray_outbound',{to:'driftwatch'});});})();</script>
+</section>
 <div id="site-footer"></div>
 <script src="/components/loader.js" defer></script>
 <script src="/components/geo.js" defer></script>
