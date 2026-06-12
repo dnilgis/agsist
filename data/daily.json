@@ -1,139 +1,119 @@
 {
-  "headline": "GRAINS SETTLE WEEK LOWER, CATTLE COMPLEX LEADS HIGHER",
-  "subheadline": "Five-day slide ends with funds still defensive ahead of next week's WASDE.",
-  "lead": "Corn closed $4.098, down 1.75 cents and capping the complex's weakest week in three months. The funds got defensive ahead of Tuesday's WASDE, with managed money net long down 15,000 contracts from last Friday. But cattle flipped the script: feeders ran 1.4% to $359.52 on screwworm clarity after Tuesday's seventh case confirmation removed the uncertainty premium that had been weighing on the complex.",
-  "the_takeaway": "Week's grain slide confirmed, cattle found its floor on disease clarity.",
-  "teaser": "Grains end five-day slide with funds still cautious, cattle complex finds footing on screwworm news.",
+  "headline": "GRAINS GRIND HIGHER, LIVESTOCK HOLDS STEADY",
+  "subheadline": "Corn leads the complex up 1.3% as winter wheat crop hits 61-year low.",
+  "lead": "Corn closed $4.17, up 5¼ cents and leading the grain complex higher for a second straight session. USDA's winter wheat crop estimate dropped to its smallest since 1965, adding supply tightness to a market that's been grinding higher all week. The funds aren't chasing yet-open interest stayed flat-but the price action says somebody's accumulating on this five-day slide turned bounce.",
+  "the_takeaway": "Grain complex breaking out of its week-long slide on tightening supply.",
+  "teaser": "Winter wheat hits 61-year production low as grains reverse the week's decline.",
   "one_number": {
-    "value": "1965",
-    "unit": "last time US winter wheat crop was this small",
-    "context": "USDA cut winter wheat outlook another 2% Thursday, Plains drought making this the smallest crop in 61 years. That's structural support for wheat that the futures board isn't pricing yet. When funds rotate back into grains post-WASDE, wheat's the tightest story in the complex."
+    "value": "61",
+    "unit": "years since winter wheat production was this low",
+    "context": "USDA cut winter wheat outlook another 2% Thursday, marking the smallest crop since 1965. Plains drought carved yield estimates deeper than expected. The move adds structural tightness to wheat fundamentals just as corn starts showing seasonal strength into pollination season."
   },
   "yesterdays_call": {
     "summary": "Funds getting defensive ahead of WASDE, Brazil supply weighing on outlook.",
-    "outcome": "played_out",
-    "note": "The defensive positioning materialized exactly as called, with managed money reducing corn longs by 15,000 contracts."
+    "outcome": "didnt",
+    "note": "Grains reversed higher instead of continuing the slide, winter wheat supply tightness changed the story."
   },
   "sections": [
     {
-      "title": "GRAINS END WEEK LOWER",
+      "title": "GRAINS REVERSE HIGHER",
       "icon": "🌾",
-      "body": "Corn led the slide, down 1.75 cents to $4.10 and **15,000 contracts of managed money liquidation** since Monday. Soybeans held flat at $11.13 but November gave back three-quarters of a cent. Wheat fell hardest, off 6.25 cents to $5.83 despite USDA cutting winter wheat production another 2% Thursday. The carry's working in corn: December at $4.37 holds a 27-cent premium to July, widest it's been since April. Fund positioning ahead of Tuesday's WASDE is keeping the pressure on.",
-      "catalyst": "USDA winter wheat cut to smallest crop since 1965, managed money liquidation ahead of WASDE",
-      "bottom_line": "Five-day slide complete, funds waiting for Tuesday's WASDE to reset positioning.",
+      "body": "Corn gained 5¼ cents to $4.17, leading the complex out of this week's slide. Soybeans added a nickel to $11.19, wheat firmed 4¼ cents to $5.94. **The winter wheat story is the catalyst**: USDA cut the crop estimate another 2%, putting 2026 production at the smallest since 1965. Plains drought cut deeper than the market priced. Fund positioning stayed neutral-no big money chasing the move yet-but the accumulation pattern is building. Dec corn at $4.43 tells you the carry's still working, old crop into new crop isn't pricing weather premium.",
+      "catalyst": "USDA winter wheat crop estimate cut to smallest since 1965",
+      "bottom_line": "Supply tightness overrode fund defensiveness, grains found their footing.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Grains: defensive thesis played out in managed money data, liquidation confirmed."
+      "vs_yesterday": "Grains: reversed the Brazil supply drag, winter wheat tightness reset the story."
     },
     {
-      "title": "CATTLE COMPLEX REVERSES HIGHER",
+      "index": 1,
+      "title": "LIVESTOCK HOLDS GROUND",
       "icon": "🐂",
-      "body": "Feeders ran 1.4% to $359.52, the strongest day in two weeks after **Tuesday's seventh screwworm case confirmation** removed the uncertainty that had been weighing on the complex. Live cattle added modest gains to $242.62, up four-tenths of a percent. The screwworm story is now priced: seven confirmed cases in South Texas, USDA response underway with sterile fly releases. Cattle basis is firming in the Plains as the uncertainty discount disappears. The feeder/live ratio at 1.48 is back to pre-outbreak levels.",
-      "catalyst": "Seventh screwworm case confirmed Tuesday, uncertainty premium removed from cattle complex",
-      "bottom_line": "Disease clarity ends cattle discount, complex finding footing above recent lows.",
-      "conviction_level": "medium",
-      "overnight_surprise": false,
-      "vs_yesterday": "Cattle: narrative held exactly as called, momentum building on screwworm clarity."
-    },
-    {
-      "title": "ENERGY FALLS ON DIPLOMACY",
-      "icon": "🛢️",
-      "body": "WTI crude tumbled 2% to $84.58, the biggest single-day drop in three weeks as **Iran-U.S. diplomatic progress via Swiss intermediaries** deflated the Strait of Hormuz premium. Natural gas slipped 1.2% to $3.04 on storage builds ahead of peak demand season. The energy complex is unwinding the geopolitical premium that built through May, with crude losing roughly 19% from its $105 peak as tensions ease. Front-month crude trading at 46% of its 52-week range tells you the war premium is mostly gone.",
-      "catalyst": "Iran-U.S. diplomatic progress via Swiss intermediaries deflating Hormuz premium",
-      "bottom_line": "Geopolitical premium unwinding faster than supply fundamentals can support prices.",
-      "conviction_level": "medium",
-      "overnight_surprise": false
-    },
-    {
-      "title": "EQUITIES LEAD MACRO HIGHER",
-      "icon": "📈",
-      "body": "S&P 500 ran 1.8% to $7,394, the biggest day in two weeks and **an overnight surprise that carried through the session**. Dollar index held flat at $99.77, still near 52-week highs but not adding pressure. Gold ticked higher to $4,227 as rate cut expectations firmed on softer economic data. The equity bounce is rotating money back into risk assets, which typically supports commodity demand, but grain funds aren't participating yet.",
-      "catalyst": "S&P 500 overnight surprise +1.8%, strongest session in two weeks",
-      "bottom_line": "Risk-on rotation supporting commodities broadly, but grain funds still waiting.",
+      "body": "Live cattle eased 40 cents to $241.65, feeders dropped $1.40 to $358.12, but the selling stayed orderly. **Seventh screwworm case confirmed** brought New Mexico into the outbreak zone, but the market's already priced the processing disruption risk. Hogs slipped 75 cents to $95.00 on quiet trade. The cattle complex isn't breaking down, it's just not finding new buyers at these levels. Screwworm containment efforts ramped up with sterile fly releases, and Secretary Rollins made the Texas trip to show federal priority.",
+      "bottom_line": "Disease spread contained in price, cattle holding support levels.",
       "conviction_level": "low",
-      "overnight_surprise": true
+      "overnight_surprise": false,
+      "farmer_action": ""
     }
   ],
   "outside_the_pit": [
     {
-      "title": "EPA Faces RFS Challenge Over Record-High Costs",
-      "body": "American Fuel & Petrochemical Manufacturers filed suit against EPA's RFS Set 2 rule, claiming record-high compliance costs for biofuel blending mandates. The challenge comes as 2026-2027 renewable volume obligations hit final form, potentially reshaping biomass diesel production requirements that underpin soybean oil demand.",
-      "tag": "POLICY"
+      "title": "University of Florida gets $9.5M for cattle pest research",
+      "body": "The funding targets mosquito and fly-borne disease prevention, coming as screwworm cases climb to seven across Texas and New Mexico. Research money flows faster when the threat lands on ranchers' doorsteps.",
+      "tag": "DISEASE"
     },
     {
-      "title": "Marshall Withdraws Prop 12 Sponsorship",
-      "body": "Sen. Roger Marshall dropped co-sponsorship of the Save Our Bacon Act that would negate California's Proposition 12. The Kansas Republican's move signals shifting politics around livestock housing mandates as the pork industry adapts to compliance requirements rather than fighting them in Congress.",
-      "tag": "POLICY"
+      "title": "Sen. Marshall drops co-sponsorship of Prop 12 challenge bill",
+      "body": "The Kansas Republican withdrew from the Save Our Bacon Act that would negate California's hog housing requirements. Political calculus shifting as implementation costs get clearer for producers."
     },
     {
-      "title": "Trump Questions USMCA Renewal",
-      "body": "President said Wednesday the U.S. might not renew the free trade agreement with Canada and Mexico, criticizing trade deficits with both countries. Agricultural groups at House hearings called for USMCA continuation with minor modifications, but uncertainty around the 2026 review is building.",
-      "tag": "TRADE"
+      "title": "EPA faces lawsuit challenge to RFS Set 2 rule",
+      "body": "American Fuel & Petrochemical Manufacturers filed suit claiming record-high compliance costs for biofuel blending mandates. RFS regulations keep getting costlier to implement, squeezing refinery margins that eventually flow back to ethanol demand."
     }
   ],
   "spread_to_watch": {
-    "label": "December corn / July corn carry",
-    "level": "27 cents wide, widest since April",
-    "commentary": "The carry's working as funds liquidate front-month and storage economics improve. When the carry gets this wide, it's pricing abundant supply and telling you the market expects lower prices through harvest. Watch for the carry to narrow if WASDE Tuesday brings any supply surprises."
+    "label": "July wheat / November soybeans ratio",
+    "level": "0.53 ratio, compressing",
+    "commentary": "Wheat's winter crop tightness is closing the gap with beans faster than usual for this time of year. When this ratio drops below 0.50, wheat typically finds fresh money rotating out of other grains. The compression says somebody thinks wheat's the better drought play heading into summer."
   },
   "basis": {
-    "headline": "Eastern Belt corn basis firming, cattle basis recovering",
-    "body": "Corn basis **tightening east of the Mississippi** as ethanol plants return from maintenance and river logistics improve with higher water levels. Cattle basis in the Plains is **firming after two weeks of screwworm discount**, with Texas and Oklahoma feedlots seeing the uncertainty premium disappear. Western Belt staying soft on harvest pressure, consistent with the seasonal."
+    "headline": "Eastern Belt corn basis firming on ethanol demand pickup",
+    "body": "**Corn basis east of the Mississippi is tightening** as ethanol plants come back online after maintenance season. Indiana and Ohio elevators reporting stronger local demand. Western Belt staying soft, consistent with the seasonal pattern. Soybean basis holding steady, processors working through old-crop inventory before new-crop concerns build."
   },
   "weekly_thread": {
     "question": "Will the grain complex break out of its five-day slide this week?",
     "day": 5,
-    "status_text": "The slide concluded exactly as the week began: funds defensive, WASDE ahead, no weather catalyst to change the story. Answer: no breakout, the five-day decline held through Friday's close."
+    "status_text": "The answer is yes. Grains reversed the week's losses on winter wheat supply tightness, corn leading the bounce. The slide broke Thursday on USDA production cuts."
   },
   "the_more_you_know": {
-    "title": "Why the corn carry tells you more than the close",
-    "body": "December corn trading 27 cents over July isn't just a calendar spread-it's the market's vote on harvest abundance. When the carry gets this wide, it's pricing storage as profitable and telling you funds expect lower prices through October. The 27-cent gap is the widest since April and matches the carry structure from 2023's large crop year. Front-month weakness with wide carry means the market is pricing time as an enemy, not a friend."
+    "title": "Why 61-year winter wheat lows matter more than the headline",
+    "body": "Today's 61-year winter wheat production low isn't just a Plains drought story-it's a structural shift. Winter wheat used to be the backstop when spring crops got tight. Now it's spring wheat and corn carrying that role. The 1965 comparison matters because that was the last time wheat acres contracted this hard without a federal program driving it. Today's contraction is purely economic: farmers choosing corn and beans over wheat because the margins work better. When the backstop crop becomes the problem crop, the whole rotation math changes."
   },
   "watch_list": [
     {
-      "time": "Tuesday 11:00 AM CT",
-      "desc": "WASDE report; corn yield above 183 bushels adds pressure, below 180 flips the story"
+      "time": "Monday 3 PM CT",
+      "desc": "USDA Crop Progress: corn planting above 75% confirms Belt caught up from May rains"
     },
     {
       "time": "Thursday 7:30 AM CT",
-      "desc": "Weekly export sales; corn under 800K MT keeps funds defensive"
+      "desc": "Weekly export sales: wheat above 500K MT tests if winter crop tightness draws buying"
     },
     {
       "time": "Next week",
-      "desc": "Fed decision Wednesday; any dovish shift supports commodity complex"
+      "desc": "Screwworm sterile fly release results in affected Texas counties"
     }
   ],
   "daily_quote": {
-    "text": "By failing to prepare, you are preparing to fail.",
-    "attribution": "Benjamin Franklin"
+    "text": "A journey of a thousand miles begins with a single step.",
+    "attribution": "Lao Tzu"
   },
-  "source_summary": "CME Group, USDA reports, managed money positioning data, crude oil diplomatic developments",
+  "source_summary": "USDA reports, CME futures, industry news",
   "date": "Friday, June 12, 2026",
   "meta": {
-    "market_mood": "cautious",
-    "heat_section": 1,
-    "overnight_surprises_count": 1
+    "market_mood": "mixed",
+    "heat_section": 0,
+    "overnight_surprises_count": 0
   },
   "locked_prices": {
-    "corn": 4.0975,
-    "corn-dec": 4.3725,
-    "beans": 11.135,
-    "beans-nov": 11.3175,
-    "wheat": 5.835,
-    "oats": 3.1475,
-    "cattle": 242.625,
-    "feeders": 359.525,
-    "hogs": 95.8,
-    "milk": 16.69,
-    "meal": 303.70001,
-    "soyoil": 73.46,
-    "crude": 84.58,
-    "natgas": 3.035,
-    "gold": 4227.3999,
-    "silver": 67.05,
-    "dollar": 99.769,
-    "sp500": 7394.2998,
-    "bitcoin": 63755.17188
+    "corn": 4.1675,
+    "corn-dec": 4.435,
+    "beans": 11.1875,
+    "beans-nov": 11.3625,
+    "wheat": 5.94,
+    "oats": 3.15,
+    "cattle": 241.64999,
+    "feeders": 358.125,
+    "hogs": 95.0,
+    "milk": 16.66,
+    "meal": 302.39999,
+    "soyoil": 74.21,
+    "crude": 86.5,
+    "natgas": 3.093,
+    "gold": 4207.7002,
+    "silver": 66.54,
+    "dollar": 99.807,
+    "sp500": 7381.93018,
+    "bitcoin": 63144.0
   },
   "chart_series": {
     "corn": [
@@ -146,7 +126,7 @@
       4.21,
       4.23,
       4.15,
-      4.1
+      4.17
     ],
     "soybeans": [
       11.66,
@@ -158,7 +138,7 @@
       11.15,
       11.18,
       11.16,
-      11.13
+      11.19
     ],
     "wheat": [
       5.94,
@@ -170,7 +150,7 @@
       5.9,
       5.95,
       5.84,
-      5.83
+      5.94
     ]
   },
   "sponsor": {
@@ -184,69 +164,60 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 92,
-  "generated_at": "2026-06-12T13:01:33.859398+00:00",
+  "issue_number": 93,
+  "generated_at": "2026-06-12T14:12:19.467247+00:00",
   "generator_version": "4.6.1",
-  "surprise_count": 1,
-  "surprises": [
-    {
-      "commodity": "S&P 500",
-      "key": "sp500",
-      "price": "$7394.30",
-      "pct_change": 1.7519,
-      "direction": "up",
-      "surprise_magnitude": 1.2
-    }
-  ],
+  "surprise_count": 0,
+  "surprises": [],
   "price_validation_clean": false,
   "market_closed": false,
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-06-12T13:01:39.673534+00:00",
+    "ran_at": "2026-06-12T14:12:31.722135+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
       "rule_2_conviction_earned": 7,
       "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 8,
-      "rule_5_bottom_lines_synthesize": 7,
+      "rule_4_watch_conditional": 6,
+      "rule_5_bottom_lines_synthesize": 8,
       "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 9,
+      "rule_7_continuity": 8,
       "rule_8_basis_directional": 9,
       "rule_9_voice": 8,
-      "rule_10_forward_test": 8,
+      "rule_10_forward_test": 7,
       "rule_11_thread_coherence": 9,
-      "rule_12_spread_quality": 9,
-      "rule_13_yc_honesty": 9,
-      "rule_14_level_coherence": 3,
+      "rule_12_spread_quality": 8,
+      "rule_13_yc_honesty": 8,
+      "rule_14_level_coherence": 1,
       "rule_15_one_number_coherence": 10,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 8
+      "rule_17_macro_anchoring": 10
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "lead",
+        "target": "section[1]",
         "rule": "rule_14_level_coherence",
         "scores_before": {
           "rule_1_lead_so_what": 8,
           "rule_2_conviction_earned": 7,
           "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 8,
-          "rule_5_bottom_lines_synthesize": 7,
+          "rule_4_watch_conditional": 6,
+          "rule_5_bottom_lines_synthesize": 8,
           "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 9,
+          "rule_7_continuity": 8,
           "rule_8_basis_directional": 9,
           "rule_9_voice": 8,
-          "rule_10_forward_test": 8,
+          "rule_10_forward_test": 7,
           "rule_11_thread_coherence": 9,
-          "rule_12_spread_quality": 9,
-          "rule_13_yc_honesty": 9,
-          "rule_14_level_coherence": 3,
+          "rule_12_spread_quality": 8,
+          "rule_13_yc_honesty": 8,
+          "rule_14_level_coherence": 1,
           "rule_15_one_number_coherence": 10,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 8
+          "rule_17_macro_anchoring": 10
         }
       }
     ],
