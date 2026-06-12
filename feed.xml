@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 11 Jun 2026 14:42:22 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 12 Jun 2026 13:01:41 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS SETTLE WEEK LOWER, CATTLE COMPLEX LEADS HIGHER</title>
+      <link>https://agsist.com/daily/2026-06-12</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-12</guid>
+      <pubDate>Fri, 12 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed $4.098, down 1.75 cents and capping the complex's weakest week in three months. The funds got defensive ahead of Tuesday's WASDE, with managed money net long down 15,000 contracts from last Friday. But cattle flipped the script: feeders ran 1.4% to $359.52 on screwworm clarity after Tuesday's seventh case confirmation removed the uncertainty premium that had been weighing on the complex.
+Five-day slide ends with funds still defensive ahead of next week's WASDE.
+• GRAINS END WEEK LOWER
+• CATTLE COMPLEX REVERSES HIGHER
+• ENERGY FALLS ON DIPLOMACY
+Read more: https://agsist.com/daily/2026-06-12</description>
+    </item>
     <item>
       <title>GRAINS SLIP AHEAD OF WASDE, CATTLE HOLD GAINS</title>
       <link>https://agsist.com/daily/2026-06-11</link>
@@ -358,18 +370,6 @@ Livestock volatility continues while crop futures drift lower on quiet export de
 • Grains Lose Steam
 • Cattle Mixed Signals
 Read more: https://agsist.com/daily/2026-05-14</description>
-    </item>
-    <item>
-      <title>CATTLE CRATER WHILE GRAINS MARK TIME</title>
-      <link>https://agsist.com/daily/2026-05-13</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-13</guid>
-      <pubDate>Wed, 13 May 2026 05:00:00 -0600</pubDate>
-      <description>Cattle fell through $241 to close at $240.85 while corn held flat at $4.79 for a fifth straight session, and the divergence is getting loud. Feeder cattle dropped 1.8% to $356, dragging live cattle down 1.1% in a coordinated livestock selloff that has no weather excuse, no disease catalyst, just technical damage feeding on itself. The grain complex refuses to follow, wheat up six cents, beans gaining a penny, acting like the planting calendar still matters more than fund flows.
-Feeder cattle drop 1.8% as livestock complex unravels, grains stay range-bound ahead of Thursday's planting data.
-• Cattle Breakdown Accelerates
-• Grains Ignore The Mess
-• Energy Holds Geopolitical Premium
-Read more: https://agsist.com/daily/2026-05-13</description>
     </item>
   </channel>
 </rss>
