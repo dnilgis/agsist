@@ -53,9 +53,59 @@
 ]}</script>
 </head>
 <body>
+<style id="ct-furniture">
+.brief-strip{display:flex;gap:10px;align-items:center;background:linear-gradient(135deg,rgba(230,176,66,.08) 0%,var(--surface) 100%);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;padding:10px 12px;margin:0 0 10px}
+.brief-icon{font-size:1.3rem;flex-shrink:0}.brief-text{flex:1;min-width:0}
+.brief-hd{font-size:.78rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:2px}
+.brief-teaser{font-size:.68rem;color:var(--text-dim);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.brief-cta{font-size:.68rem;color:var(--gold);text-decoration:none;white-space:nowrap;padding:6px 10px;border:1px solid var(--border);border-radius:6px;flex-shrink:0;min-height:32px;display:flex;align-items:center}
+.brief-cta:hover{border-color:var(--gold)}
+.signup-card{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.05) 100%);border:1px solid var(--border-g,var(--border));border-radius:12px;padding:14px;margin:16px 0;text-align:center}
+.signup-card h3{font-size:.85rem;color:var(--gold);margin:0 0 4px 0}.signup-card p{font-size:.72rem;color:var(--text-dim);margin:0 0 10px 0;line-height:1.5}
+.signup-form{display:flex;gap:6px;max-width:420px;margin:0 auto;flex-wrap:wrap}
+.signup-form input{flex:1;min-width:180px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:1rem;color:var(--text);min-height:40px}
+.signup-form input:focus{outline:1px solid var(--gold);border-color:var(--gold)}
+.signup-form button{background:var(--green);color:#fff;border:none;border-radius:6px;padding:10px 16px;font-size:.78rem;font-weight:700;cursor:pointer;min-height:40px}
+.signup-form button:hover{background:#4aab4c}
+.signup-ok{color:var(--green);font-size:.78rem;margin-top:8px;font-weight:600;display:none}
+.signup-sub{font-size:.62rem;color:var(--text-dim);margin-top:6px}
+.author-block{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.03) 100%);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin:16px 0 0;display:flex;align-items:flex-start;gap:12px}
+.author-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green) 0%,#5dbf61 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;flex-shrink:0;border:2px solid rgba(255,255,255,.1)}
+.author-text{flex:1;min-width:0}.author-name{font-size:.78rem;font-weight:700;color:var(--text);margin:0 0 2px 0}
+.author-meta{font-size:.66rem;color:var(--text-dim);line-height:1.5}.author-meta a{color:var(--gold);text-decoration:none}.author-meta a:hover{text-decoration:underline}
+.disc{font-size:.68rem;color:var(--text-dim);text-align:center;padding:8px;border-top:1px solid var(--border);margin-top:14px}
+@media(max-width:480px){.author-block{flex-direction:column;gap:8px}.author-avatar{width:38px;height:38px;font-size:1rem}}
+.fwd-card{background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:13px 14px;margin:12px 0}
+.fwd-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.fwd-title{font-size:.78rem;font-weight:700;color:var(--gold,#e6b042)}
+.fwd-shape{font-size:.68rem;color:var(--text-dim,#9bb0a3);font-family:'JetBrains Mono',monospace}
+.fwd-svg{width:100%;height:auto;display:block;max-height:180px}
+.fwd-interp{font-size:.72rem;color:var(--text-dim,#9bb0a3);line-height:1.55;margin-top:8px;border-top:1px solid var(--border,#2a3324);padding-top:7px}.fwd-interp strong{color:var(--text,#e7ece8)}
+.fwd-empty{font-size:.72rem;color:var(--text-dim,#9bb0a3);padding:20px;text-align:center}
+.seas-wrap{background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:13px 14px;margin:12px 0}
+.seas-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:4px}
+.seas-title{font-size:.78rem;font-weight:700;color:var(--gold,#e6b042)}
+.seas-note{font-size:.62rem;color:var(--text-dim,#9bb0a3)}
+.seas-chart{display:flex;align-items:flex-end;gap:3px;height:70px;margin-bottom:4px;overflow:hidden}
+.seas-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;cursor:default}
+.seas-bar{width:100%;border-radius:2px 2px 0 0;background:rgba(58,139,60,.4);transition:opacity .2s}
+.seas-col.cur .seas-bar{background:var(--gold,#e6b042)}.seas-col:hover .seas-bar{opacity:.6}
+.seas-mo{font-size:.52rem;color:var(--text-dim,#9bb0a3);margin-top:3px;text-align:center}
+.seas-col.cur .seas-mo{color:var(--gold,#e6b042);font-weight:700}
+.seas-caption{font-size:.65rem;color:var(--text-dim,#9bb0a3);margin-top:6px;line-height:1.5}
+</style>
+
 <div id="site-header"></div>
 <main id="main" class="fut" tabindex="-1">
   <nav class="bc" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Cattle Futures Prices</nav>
+  <div class="brief-strip" id="brief-strip" style="display:none">
+    <div class="brief-icon">📰</div>
+    <div class="brief-text">
+      <div class="brief-hd" id="brief-hd">—</div>
+      <div class="brief-teaser" id="brief-teaser">—</div>
+    </div>
+    <a href="/daily" class="brief-cta">Read →</a>
+  </div>
 
   <div class="ph">
     <div class="ph-icon">🐂</div>
@@ -63,7 +113,13 @@
       <h1>Live &amp; Feeder Cattle Futures Prices Today</h1>
       <div class="ph-exch">CME Group · LE=F &amp; GF=F · Updated every 30 min</div>
     </div>
+    <div class="ph-price">
+      <div class="ph-val sk" id="hero-price">—</div>
+      <div class="ph-unit">$ / cwt · Live Cattle</div>
+      <div class="ph-chg" id="hero-chg"></div>
+    </div>
   </div>
+  <div class="ps"><span id="status"><span class="ps-dot" aria-hidden="true"></span>Loading prices…</span></div>
 
   <!-- ░░ static, AI-readable lead ░░ -->
   <div class="qa">
@@ -104,7 +160,6 @@
     .ct-ratio .interp{font-size:.8rem;color:var(--mut);line-height:1.5;margin-top:.4rem}
     .ct-ratio .interp b{color:var(--tx)}
     </style>
-    <div class="ct-status" id="ct-status">Loading live prices…</div>
     <div class="ct-grid">
       <div class="ct-card">
         <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="lbl">Live Cattle</span><span class="tk">LE=F · $/cwt</span></div>
@@ -133,6 +188,117 @@
       <div class="interp" id="ct-ratio-interp">Loads with live prices.</div>
     </div>
   </section>
+
+  <!-- ░░ forward curve · live cattle ░░ -->
+  <section class="fwd-card" id="fwd-card" style="display:none" aria-label="Live cattle forward curve">
+    <div class="fwd-head"><span class="fwd-title">📈 Forward Curve · Live Cattle</span><span class="fwd-shape" id="fwd-shape">—</span></div>
+    <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="fwd-empty" id="fwd-empty" style="display:none">Deferred contracts not available right now.</div>
+    <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
+  </section>
+  <script>
+  (function(){
+    var FWD=[{k:"cattle",m:"Front",idx:318},{k:"cattle-aug26",m:"Aug 26",idx:320},{k:"cattle-oct26",m:"Oct 26",idx:322},{k:"cattle-dec26",m:"Dec 26",idx:324},{k:"cattle-feb27",m:"Feb 27",idx:326},{k:"cattle-apr27",m:"Apr 27",idx:328},{k:"cattle-jun27",m:"Jun 27",idx:330}];
+    var card=document.getElementById('fwd-card');
+    fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+      if(!d||!d.quotes)return;var q=d.quotes,pts=[];
+      FWD.forEach(function(c){var x=q[c.k];if(x&&x.close!=null&&!x.stale)pts.push({label:c.m,idx:c.idx,price:x.close});});
+      var svg=document.getElementById('fwd-svg'),shape=document.getElementById('fwd-shape'),interp=document.getElementById('fwd-interp'),empty=document.getElementById('fwd-empty');
+      if(pts.length<2){if(card)card.style.display='none';return;}
+      if(card)card.style.display='block';
+      var minP=Math.min.apply(null,pts.map(function(p){return p.price;})),maxP=Math.max.apply(null,pts.map(function(p){return p.price;}));
+      var pad=(maxP-minP)*0.18||1;minP-=pad;maxP+=pad;
+      var W=700,H=140,mL=52,mR=18,mT=14,mB=26,pw=W-mL-mR,ph=H-mT-mB;
+      function X(i){return mL+(i/(pts.length-1))*pw;}function Y(v){return mT+ph-((v-minP)/(maxP-minP))*ph;}
+      var a=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'];
+      a.push('<text x="4" y="'+(mT+8)+'" fill="#9bb0a3" font-size="12" font-family="JetBrains Mono,monospace">$'+maxP.toFixed(0)+'</text>');
+      a.push('<text x="4" y="'+(mT+ph)+'" fill="#9bb0a3" font-size="12" font-family="JetBrains Mono,monospace">$'+minP.toFixed(0)+'</text>');
+      var path='';pts.forEach(function(p,i){path+=(i===0?'M':'L')+X(i).toFixed(1)+','+Y(p.price).toFixed(1);});
+      a.push('<path d="'+path+'" stroke="#e6b042" stroke-width="2" fill="none"/>');
+      pts.forEach(function(p,i){
+        a.push('<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(p.price).toFixed(1)+'" r="4" fill="#e6b042"/>');
+        a.push('<text x="'+X(i).toFixed(1)+'" y="'+(Y(p.price)-8).toFixed(1)+'" fill="#e7ece8" font-size="12" font-family="Oswald,sans-serif" text-anchor="middle" font-weight="700">'+p.price.toFixed(2)+'</text>');
+        a.push('<text x="'+X(i).toFixed(1)+'" y="'+(H-7)+'" fill="#9bb0a3" font-size="11" text-anchor="middle">'+p.label+'</text>');
+      });
+      a.push('</svg>');
+      if(svg)svg.outerHTML=a.join('');
+      var first=pts[0],last=pts[pts.length-1],diff=last.price-first.price,span=last.idx-first.idx;if(span<=0)span=1;var perMo=diff/span;
+      var st,it;
+      if(diff>1){st='upward / contango';it='<strong>Deferred live cattle trade $'+diff.toFixed(2)+'/cwt above the front</strong> (about $'+perMo.toFixed(2)+'/cwt per month) — the board expects firmer fed prices into '+last.label+', often seasonal strength or tighter future supply. You can lock higher hedges on cattle marketed later.';}
+      else if(diff<-1){st='inverted / backwardation';it='<strong>The front month is $'+Math.abs(diff).toFixed(2)+'/cwt above '+last.label+'</strong> — the board expects fed prices to ease from here. Current cash is tight; hedging deferred months locks in less than the spot, so marketing sooner can pay.';}
+      else{st='flat';it='<strong>Flat curve</strong> — deferred contracts price near the front month. The board is neutral on where fed cattle head from here.';}
+      if(shape)shape.textContent=st;if(interp)interp.innerHTML=it;
+    }).catch(function(){if(card)card.style.display='none';});
+  })();
+  </script>
+
+  <!-- ░░ managed money positioning (COT) ░░ -->
+  <section class="ctcot" id="cot-cattle" aria-label="Managed money positioning">
+    <style>
+    .ctcot{--g:var(--gold,#e6b042);--up:var(--up,#4aab4c);--dn:var(--dn,#d9534f);--pnl:var(--surface,#161b14);--ln:var(--border,#2a3324);--tx:var(--text,#e7ece8);--mut:var(--text-dim,#9bb0a3);
+      background:var(--pnl);border:1px solid var(--ln);border-radius:14px;padding:1rem 1.1rem;margin:12px 0;display:none}
+    .ctcot *{box-sizing:border-box}
+    .ctcot-head{font-size:.78rem;font-weight:700;color:var(--g);display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+    .ctcot-asof{font-size:.62rem;color:var(--mut);font-weight:400;font-family:'JetBrains Mono',monospace}
+    .ctcot-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+    @media(max-width:560px){.ctcot-grid{grid-template-columns:1fr}}
+    .ctcot-box{background:rgba(255,255,255,.02);border:1px solid var(--ln);border-radius:10px;padding:.8rem .9rem}
+    .ctcot-name{font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:700}
+    .ctcot-net{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.5rem;line-height:1.1;margin-top:.15rem;color:var(--tx)}
+    .ctcot-net.long{color:var(--up)} .ctcot-net.short{color:var(--dn)}
+    .ctcot-sub{font-size:.66rem;color:var(--mut);margin-bottom:.6rem}
+    .ctcot-gauge{position:relative;height:7px;background:linear-gradient(to right,rgba(217,83,79,.5),rgba(230,176,66,.5),rgba(74,171,76,.5));border-radius:4px;margin-top:.3rem}
+    .ctcot-dot{position:absolute;top:-3px;width:13px;height:13px;border-radius:50%;background:var(--pnl);border:2px solid #fff;box-shadow:0 0 0 2px var(--g);transition:left .5s}
+    .ctcot-labels{display:flex;justify-content:space-between;font-size:.58rem;color:var(--mut);margin-top:5px;font-family:'JetBrains Mono',monospace}
+    .ctcot-pct{font-size:.7rem;color:var(--tx);margin-top:.4rem;line-height:1.4}.ctcot-pct strong{color:var(--g)}
+    .ctcot-chg{font-size:.68rem;color:var(--mut);margin-top:.3rem}
+    .ctcot-chg .d{font-family:'JetBrains Mono',monospace;font-weight:700}.ctcot-chg .d.up{color:var(--up)}.ctcot-chg .d.dn{color:var(--dn)}
+    .ctcot-interp{font-size:.74rem;color:var(--mut);line-height:1.6;margin-top:.9rem;border-top:1px solid var(--ln);padding-top:.7rem}.ctcot-interp strong{color:var(--tx)}
+    .ctcot-src{font-size:.6rem;color:var(--mut);margin-top:.7rem;line-height:1.5}.ctcot-src a{color:var(--g);text-decoration:none}
+    </style>
+    <div class="ctcot-head"><span>📊 Managed Money Positioning · Cattle</span><span class="ctcot-asof" id="cot-asof"></span></div>
+    <div class="ctcot-grid">
+      <div class="ctcot-box">
+        <div class="ctcot-name">Live Cattle (LE)</div>
+        <div class="ctcot-net" id="le-cot-net">—</div>
+        <div class="ctcot-sub" id="le-cot-sub">net contracts</div>
+        <div class="ctcot-gauge"><div class="ctcot-dot" id="le-cot-dot" style="left:50%"></div></div>
+        <div class="ctcot-labels"><span id="le-cot-lo">—</span><span id="le-cot-hi">—</span></div>
+        <div class="ctcot-pct" id="le-cot-pct"></div>
+        <div class="ctcot-chg" id="le-cot-chg"></div>
+      </div>
+      <div class="ctcot-box">
+        <div class="ctcot-name">Feeder Cattle (GF)</div>
+        <div class="ctcot-net" id="gf-cot-net">—</div>
+        <div class="ctcot-sub" id="gf-cot-sub">net contracts</div>
+        <div class="ctcot-gauge"><div class="ctcot-dot" id="gf-cot-dot" style="left:50%"></div></div>
+        <div class="ctcot-labels"><span id="gf-cot-lo">—</span><span id="gf-cot-hi">—</span></div>
+        <div class="ctcot-pct" id="gf-cot-pct"></div>
+        <div class="ctcot-chg" id="gf-cot-chg"></div>
+      </div>
+    </div>
+    <div class="ctcot-interp" id="cot-interp"></div>
+    <div class="ctcot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET · <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC ↗</a></div>
+  </section>
+
+  <!-- ░░ seasonal price tendency ░░ -->
+  <section class="seas-wrap" aria-label="Cattle seasonal price tendency">
+    <div class="seas-head">
+      <span class="seas-title">📅 Cattle Seasonal Price Tendency</span>
+      <span class="seas-note">Typical pattern · live cattle · current month highlighted</span>
+    </div>
+    <div id="seas-chart" class="seas-chart"></div>
+    <div class="seas-caption">Fed cattle prices typically peak in spring (Mar–Apr) on grilling-season demand and tight winter-fed supplies, then soften to a fall low (Oct–Nov). Feeder cattle follow a similar path but bottom harder in fall, when the calf run floods the market — historically a weak window to sell calves and a stronger one to buy them. Typical seasonal tendency only; weather, herd size, and feed costs move any single year.</div>
+  </section>
+  <script>
+  (function(){
+    var SEAS=[58,78,92,100,88,70,55,50,58,45,40,52];
+    var TIPS=['Winter demand building','Spring rally underway','Spring high approaching','Seasonal peak — grilling demand, tight fed supply','Strong but fading','Summer slide begins','Midsummer softness','Late-summer low','Fall recovery attempt','Fall placement pressure','Seasonal low — heaviest marketings','Year-end firming'];
+    var MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var cm=new Date().getMonth(),ch=document.getElementById('seas-chart');
+    if(ch){SEAS.forEach(function(v,i){var c=document.createElement('div');c.className='seas-col'+(i===cm?' cur':'');c.title=MOS[i]+': '+TIPS[i];c.innerHTML='<div style="flex:1"></div><div class="seas-bar" style="height:'+Math.max(4,v*.5)+'px"></div><div class="seas-mo">'+MOS[i]+'</div>';ch.appendChild(c);});}
+  })();
+  </script>
 
   <!-- ░░ cost-of-gain / breakeven calculator ░░ -->
   <section class="cog" id="cost-of-gain-calculator" aria-labelledby="cog-h">
@@ -203,6 +369,17 @@
     </div>
   </div>
 
+  <div class="signup-card">
+    <h3>📬 Daily market briefing, direct from me</h3>
+    <p>Weekday market read with the numbers, the USDA calendar, and the context — no fluff, no affiliate links. Written by a farmer, for farmers.</p>
+    <form class="signup-form" id="signup-form" novalidate>
+      <input type="email" name="email" placeholder="you@example.com" required autocomplete="email">
+      <button type="submit">Subscribe</button>
+    </form>
+    <div class="signup-ok" id="signup-ok">✓ Subscribed. Next briefing arrives weekday 6am CT.</div>
+    <div class="signup-sub">Free · unsubscribe anytime · I read every reply</div>
+  </div>
+
   <div class="rl">Related Tools</div>
   <div class="rg">
     <a href="/corn-futures-prices" class="ra"><div class="ra-i">🌽</div><div class="ra-n">Corn Futures</div><div class="ra-d">Your feed cost</div></a>
@@ -213,10 +390,14 @@
     <a href="/usda-calendar" class="ra"><div class="ra-i">📅</div><div class="ra-n">USDA Calendar</div><div class="ra-d">Next report date</div></a>
   </div>
 
-  <p style="font-size:.74rem;color:var(--text-dim,#9bb0a3);line-height:1.6;margin:18px 0 0">
-    By <b style="color:var(--text,#e7ece8)">Sigurd Lindquist</b>, founder · <a href="mailto:sig@farmers1st.com" style="color:var(--green,#4aab4c)">sig@farmers1st.com</a><br>
-    Prices: CME Group via market data feed, refreshed every 30 minutes during the trading day; 5-year range from weekly settlements. Quoted in $/cwt. Decision-support only — nothing here is financial advice.
-  </p>
+  <div class="author-block">
+    <div class="author-avatar" aria-hidden="true">SL</div>
+    <div class="author-text">
+      <div class="author-name">Built by Sigurd Lindquist</div>
+      <div class="author-meta">Licensed crop-insurance agent · cattle, dairy &amp; grain producers nationwide. Questions, corrections, partnership? <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> · <a href="/about">About AGSIST</a></div>
+    </div>
+  </div>
+  <div class="disc">Prices from CME Group via market data feed (delayed ~15 min); 5-year range from weekly settlements. Quoted in $/cwt. Decision-support only — not financial advice. Verify with your broker before making marketing decisions.</div>
 </main>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=2" defer></script>
@@ -243,9 +424,12 @@
   fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
     var q=d.quotes||{},le=q.cattle,gf=q.feeders;
     setQuote('le',le);setQuote('gf',gf);
-    var st=$('ct-status');
-    if(d.fetched){var t=new Date(d.fetched);st.textContent='Live CME futures · updated '+t.toLocaleString('en-US',{hour:'numeric',minute:'2-digit',month:'short',day:'numeric'});}
-    else st.textContent='Live CME futures · updated through the trading day';
+    var st=$('status');var dot='<span class="ps-dot" aria-hidden="true"></span>';
+    if(d.fetched){var t=new Date(d.fetched);if(st)st.innerHTML=dot+'Live CME futures · updated '+t.toLocaleString('en-US',{hour:'numeric',minute:'2-digit',month:'short',day:'numeric'});}
+    else if(st)st.innerHTML=dot+'Live CME futures · updated through the trading day';
+    // hero price = live cattle
+    var hp=$('hero-price');if(hp&&le&&le.close!=null)hp.textContent='$'+Number(le.close).toFixed(2);
+    var hc=$('hero-chg');if(hc&&le&&le.pctChange!=null){var hu=le.netChange>=0;hc.textContent=(hu?'▲ +':'▼ ')+le.pctChange.toFixed(2)+'%';hc.className='ph-chg '+(hu?'up':'dn');}
     // feeder/live ratio
     if(le&&gf&&le.close&&gf.close){
       var r=gf.close/le.close;$('ct-ratio-val').textContent=r.toFixed(3)+' : 1';
@@ -261,7 +445,7 @@
     if(gf&&gf.close){$('cog-pin').value=gf.close.toFixed(2);}
     if(le&&le.close){$('cog-fed').value=le.close.toFixed(2);}
     cog();
-  }).catch(function(){var st=$('ct-status');if(st)st.textContent='Live prices unavailable right now — calculator still works.';});
+  }).catch(function(){var st=$('status');if(st)st.innerHTML='<span class="ps-dot" aria-hidden="true"></span>Live prices unavailable right now — calculator still works.';});
 
   fetch('/data/price-stats.json',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
     [['le','cattle'],['gf','feeders']].forEach(function(p){
@@ -298,6 +482,56 @@
   /* ===== FAQ accordion ===== */
   var fl=$('faq-list');
   if(fl)fl.addEventListener('click',function(e){var q=e.target.closest('.faq-q');if(!q)return;var it=q.closest('.faq-item');var open=it.classList.toggle('open');q.setAttribute('aria-expanded',open?'true':'false');if(open&&window.gaEvent)gaEvent('faq_open');});
+})();
+</script>
+<script>
+(function(){
+  fetch('/data/daily.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+    if(!d||!d.date||!d.headline)return;
+    if(d.date!==new Date().toISOString().slice(0,10))return;
+    var strip=document.getElementById('brief-strip'),hd=document.getElementById('brief-hd'),t=document.getElementById('brief-teaser');
+    if(strip&&hd&&t){hd.textContent=d.headline;t.textContent=d.teaser||d.subheadline||d.lead||'';strip.style.display='flex';}
+  }).catch(function(){});
+  var form=document.getElementById('signup-form'),ok=document.getElementById('signup-ok');
+  if(form)form.addEventListener('submit',function(e){e.preventDefault();var data=new FormData(form);
+    fetch('https://formspree.io/f/xnjbwepn',{method:'POST',body:data,headers:{'Accept':'application/json'}})
+      .then(function(r){if(r.ok){form.style.display='none';if(ok)ok.style.display='block';if(typeof gaEvent==='function')gaEvent('briefing_signup',{page:location.pathname});}}).catch(function(){});
+  });
+})();
+</script>
+<script>
+(function(){
+  function $(i){return document.getElementById(i);}
+  function fmtK(n){if(n==null)return '—';var s=n>=0?'+':'−';var a=Math.abs(n);return s+(a>=1000?(a/1000).toFixed(1)+'k':a);}
+  function ord(n){var s=['th','st','nd','rd'],v=n%100;return s[(v-20)%10]||s[v]||s[0];}
+  function one(pre,d){
+    if(!d||d.net==null)return null;
+    var net=$(pre+'-cot-net');net.textContent=fmtK(d.net);net.className='ctcot-net '+(d.net>=0?'long':'short');
+    $(pre+'-cot-sub').textContent=(d.net>=0?'net long':'net short')+' (managed money)';
+    var pct=null;
+    if(d.min52!=null&&d.max52!=null&&d.max52>d.min52){
+      pct=Math.round((d.net-d.min52)/(d.max52-d.min52)*100);pct=Math.max(0,Math.min(100,pct));
+      $(pre+'-cot-dot').style.left='calc('+pct+'% - 6px)';
+      $(pre+'-cot-lo').textContent=fmtK(d.min52);$(pre+'-cot-hi').textContent=fmtK(d.max52);
+      $(pre+'-cot-pct').innerHTML='<strong>'+pct+ord(pct)+' percentile</strong> of 52-wk range';
+    }
+    if(d.prev!=null){var dl=d.net-d.prev,dir;
+      if(dl>0&&d.net>=0)dir='added longs';else if(dl>0)dir='covered shorts';
+      else if(dl<0&&d.net>0)dir='trimmed longs';else if(dl<0)dir='added shorts';else dir='unchanged';
+      $(pre+'-cot-chg').innerHTML='Week: <span class="d '+(dl>=0?'up':'dn')+'">'+fmtK(dl)+'</span> ('+dir+')';}
+    return pct;
+  }
+  fetch('/data/cot.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+    if(!d)return;var le=d.livecattle,gf=d.feedercattle;
+    if((!le||le.net==null)&&(!gf||gf.net==null))return;
+    var card=$('cot-cattle');if(card)card.style.display='block';
+    if(d.report_date&&$('cot-asof'))$('cot-asof').textContent='As of '+d.report_date;
+    var lp=one('le',le),fp=one('gf',gf),parts=[];
+    if(le&&le.net!=null&&lp!=null)parts.push('Funds are <strong>net '+(le.net>=0?'long':'short')+' live cattle</strong> at the '+lp+ord(lp)+' percentile of the 52-week range');
+    if(gf&&gf.net!=null&&fp!=null)parts.push((parts.length?'and ':'Funds are ')+'<strong>'+(fp<=20?'near the 52-week low':fp>=80?'near the 52-week high':'mid-range')+'</strong> on feeders ('+fp+ord(fp)+' percentile)');
+    var t=parts.join(' ')+'. High net-long positioning can amplify the downside if funds liquidate; a low reading leaves room for them to add. This is positioning, not a price forecast.';
+    if($('cot-interp'))$('cot-interp').innerHTML=t;
+  }).catch(function(){});
 })();
 </script>
 </body>
