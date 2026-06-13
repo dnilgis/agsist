@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+
+  <title>National Hail Map &mdash; 5 Years of US Hail History | AGSIST</title>
+  <meta name="description" content="See where hail hits across the US. An interactive heatmap of five years of NWS hail reports — watch the hail alleys light up in the same places year after year. Free, no login.">
+  <meta name="author" content="Sigurd Lindquist &mdash; Farmers First Agri Service">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://agsist.com/hail-map">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AGSIST">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="National Hail Map &mdash; 5 Years of US Hail History">
+  <meta property="og:description" content="Interactive heatmap of five years of US hail reports. Watch the hail alleys light up in the same places year after year.">
+  <meta property="og:url" content="https://agsist.com/hail-map">
+  <meta property="og:image" content="https://agsist.com/img/og/hail-map.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="AGSIST National Hail Map">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@agsist">
+  <meta name="twitter:title" content="National Hail Map &mdash; 5 Years of US Hail History">
+  <meta name="twitter:description" content="Where hail hits, year after year. An interactive heatmap of five years of US hail reports.">
+  <meta name="twitter:image" content="https://agsist.com/img/og/hail-map.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="/components/styles.css?v=13" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=13">
+
+  <!-- Leaflet (map engine) + Leaflet.heat (density heatmap) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <style>
+    .hm-wrap{max-width:1100px;margin:0 auto;padding:1.2rem 1rem 3rem}
+    .hm-bc{font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem}
+    .hm-bc a{color:var(--text-dim);text-decoration:none}
+    .hm-head{margin-bottom:1rem}
+    .hm-title{font-family:'Oswald',sans-serif;font-size:clamp(1.7rem,4vw,2.5rem);font-weight:700;line-height:1.05;margin:0 0 .5rem;text-transform:uppercase;letter-spacing:.01em}
+    .hm-title em{color:var(--brand,var(--gold));font-style:normal}
+    .hm-sub{color:var(--text-dim);max-width:62ch;line-height:1.5;margin:0}
+    #hm-map{height:60vh;min-height:420px;border-radius:12px;border:1px solid var(--border);background:#070b05;z-index:1}
+    .hm-controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.9rem 0 .4rem}
+    .hm-chip{font-family:inherit;font-size:.86rem;background:var(--surface);color:var(--text-dim);border:1px solid var(--border);border-radius:999px;padding:.42rem .8rem;cursor:pointer;transition:.12s;white-space:nowrap}
+    .hm-chip:hover{color:var(--text)}
+    .hm-chip.on{background:var(--brand,var(--gold));color:#1a1206;border-color:var(--brand,var(--gold));font-weight:600}
+    .hm-chip[disabled]{opacity:.4;cursor:default}
+    .hm-play{font-family:inherit;font-size:.86rem;background:var(--surface2,var(--surface));color:var(--text);border:1px solid var(--border);border-radius:999px;padding:.42rem .9rem;cursor:pointer}
+    .hm-play.on{background:#7cd2ff;color:#04263a;border-color:#7cd2ff;font-weight:600}
+    .hm-meta{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;align-items:center;color:var(--text-muted);font-size:.82rem;margin-top:.4rem}
+    .hm-count{color:var(--text);font-weight:600}
+    .hm-legend{display:inline-flex;align-items:center;gap:.5rem}
+    .hm-legend-bar{width:140px;height:9px;border-radius:5px;background:linear-gradient(90deg,#2c7fb8,#41b6c4,#7fcdbb,#fed976,#fd8d3c,#e31a1c)}
+    .hm-note{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;margin-top:1.1rem;color:var(--text-dim);line-height:1.55;font-size:.92rem}
+    .hm-note strong{color:var(--text)}
+    .hm-src{color:var(--text-muted);font-size:.78rem;margin-top:.9rem}
+    .hm-src a{color:var(--brand,var(--gold))}
+    .hm-banner{background:var(--surface);border:1px dashed var(--border);border-radius:10px;padding:1rem;color:var(--text-dim);text-align:center;margin-top:.6rem}
+    @media(max-width:640px){#hm-map{height:54vh}}
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Dataset",
+    "name":"AGSIST National Hail Map",
+    "description":"Interactive heatmap of five years of US National Weather Service hail Local Storm Reports, showing the geographic frequency of hail across the country.",
+    "url":"https://agsist.com/hail-map",
+    "creator":{"@type":"Person","name":"Sigurd Lindquist"},
+    "isAccessibleForFree":true,
+    "license":"https://creativecommons.org/licenses/by/4.0/",
+    "spatialCoverage":{"@type":"Place","name":"Contiguous United States"},
+    "includedInDataCatalog":{"@type":"DataCatalog","name":"NWS Local Storm Reports via Iowa Environmental Mesonet"}
+  }
+  </script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header"></div>
+
+  <main id="main" tabindex="-1">
+    <div class="hm-wrap">
+      <nav class="hm-bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> &rsaquo; <a href="/tools">Tools</a> &rsaquo; Hail Map</nav>
+
+      <div class="hm-head">
+        <h1 class="hm-title">National Hail Map &mdash; <em>where it hits, year after year</em></h1>
+        <p class="hm-sub">Five years of National Weather Service hail reports on one map. Step through the years or hit play, and watch the same hail corridors light up season after season &mdash; the High Plains, the Front Range, the southern Plains. Risk has a geography. This is it.</p>
+      </div>
+
+      <div id="hm-map" role="application" aria-label="National hail report heatmap. Use the year buttons below to change the year shown."></div>
+
+      <div class="hm-controls" id="hm-controls" role="group" aria-label="Select year"></div>
+
+      <div class="hm-meta">
+        <span><span class="hm-count" id="hm-count">&hellip;</span> hail reports <span id="hm-scope"></span></span>
+        <span class="hm-legend"><span>Less</span><span class="hm-legend-bar" aria-hidden="true"></span><span>More frequent</span></span>
+      </div>
+
+      <div id="hm-banner" class="hm-banner" hidden></div>
+
+      <div class="hm-note">
+        <strong>What you're looking at.</strong> Each point is a hail report logged by a National Weather Service office &mdash; a trained spotter, law enforcement, or the public called it in. Brighter areas got more reports. Because reporting tracks population and storm spotters too, this is a map of <em>reported</em> hail, not a perfect physical record &mdash; but the persistent corridors are real, and they're exactly the ground where hail coverage earns its keep.
+        <div class="hm-src">Source: NWS Local Storm Reports via the <a href="https://mesonet.agron.iastate.edu/lsr/" target="_blank" rel="noopener">Iowa Environmental Mesonet</a>. Updated monthly. <span id="hm-gen"></span> &nbsp;&middot;&nbsp; Want a per-field read? <a href="/field-scout">Draw your field in Field Scout &rarr;</a></div>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <script src="/components/loader.js" defer></script>
+  <script>
+  (function(){
+    'use strict';
+    var DATA = '/data/hail/';
+    var HEAT = { radius:15, blur:20, max:2.0, minOpacity:0.28, maxZoom:9,
+      gradient:{0.2:'#2c7fb8',0.4:'#41b6c4',0.55:'#7fcdbb',0.7:'#fed976',0.85:'#fd8d3c',1.0:'#e31a1c'} };
+
+    var map, heat=null, cache={}, manifest=null, current=null, anim=null;
+
+    function ga(n,p){ try{ if(typeof window.gtag==='function') gtag('event',n,p||{}); }catch(e){} }
+
+    function init(){
+      if(typeof L==='undefined' || typeof L.heatLayer==='undefined'){ banner('The map library failed to load &mdash; refresh the page.'); return; }
+      map = L.map('hm-map', { zoomControl:true, minZoom:3, maxZoom:9, worldCopyJump:false })
+        .setView([39.5, -98.35], 4); // CONUS
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        { maxZoom:9, attribution:'&copy; OpenStreetMap, &copy; CARTO' }).addTo(map);
+
+      fetch(DATA+'manifest.json', {cache:'no-cache'})
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(m){
+          if(!m || !m.years || !m.years.length){ banner('The hail data is being prepared &mdash; check back shortly.'); return; }
+          manifest = m;
+          buildControls();
+          var gen=document.getElementById('hm-gen'); if(gen && m.generated) gen.textContent='Data through '+m.generated+'.';
+          setView('all'); // open on the full 5-year picture — the strongest view
+        })
+        .catch(function(){ banner('Couldn\u2019t load the hail data just now &mdash; refresh to try again.'); });
+    }
+
+    function banner(html){ var b=document.getElementById('hm-banner'); if(b){ b.innerHTML=html; b.hidden=false; } }
+
+    function buildControls(){
+      var wrap=document.getElementById('hm-controls'); if(!wrap) return;
+      var html='';
+      manifest.years.forEach(function(y){
+        html += '<button class="hm-chip" type="button" data-year="'+y+'">'+y+'</button>';
+      });
+      html += '<button class="hm-chip" type="button" data-year="all">All '+manifest.years.length+' years</button>';
+      html += '<button class="hm-play" id="hm-play" type="button" aria-pressed="false">&#9654; Play</button>';
+      wrap.innerHTML = html;
+      wrap.querySelectorAll('[data-year]').forEach(function(b){
+        b.addEventListener('click', function(){ stopAnim(); setView(b.getAttribute('data-year')); });
+      });
+      document.getElementById('hm-play').addEventListener('click', toggleAnim);
+    }
+
+    function markActive(key){
+      var wrap=document.getElementById('hm-controls'); if(!wrap) return;
+      wrap.querySelectorAll('[data-year]').forEach(function(b){
+        b.classList.toggle('on', b.getAttribute('data-year')===String(key));
+      });
+    }
+
+    function loadYear(y){
+      y=String(y);
+      if(cache[y]) return Promise.resolve(cache[y]);
+      return fetch(DATA+y+'.json').then(function(r){ return r.ok ? r.json() : {points:[],count:0}; })
+        .then(function(d){ cache[y] = d.points||[]; return cache[y]; })
+        .catch(function(){ cache[y]=[]; return cache[y]; });
+    }
+
+    function setView(key){
+      current=key;
+      markActive(key);
+      var scope=document.getElementById('hm-scope'), cnt=document.getElementById('hm-count');
+      if(key==='all'){
+        scope.textContent='across '+manifest.years.length+' years';
+        Promise.all(manifest.years.map(loadYear)).then(function(arr){
+          if(current!=='all') return; // a newer selection won
+          var pts=[]; arr.forEach(function(a){ pts=pts.concat(a); });
+          render(pts); cnt.textContent=pts.length.toLocaleString();
+        });
+      } else {
+        scope.textContent='in '+key;
+        loadYear(key).then(function(pts){
+          if(current!==key) return;
+          render(pts); cnt.textContent=pts.length.toLocaleString();
+        });
+      }
+      ga('hail_year', { year:key });
+    }
+
+    function render(points){
+      if(heat){ map.removeLayer(heat); heat=null; }
+      heat = L.heatLayer(points, HEAT).addTo(map);
+    }
+
+    // ── Animate: cycle the years so the persistent corridors pop ──
+    function toggleAnim(){ anim ? stopAnim() : startAnim(); }
+    function startAnim(){
+      var btn=document.getElementById('hm-play'); btn.classList.add('on'); btn.setAttribute('aria-pressed','true');
+      btn.innerHTML='&#10073;&#10073; Pause';
+      var i = manifest.years.indexOf(Number(current));
+      if(i<0) i=0;
+      var step=function(){
+        setView(manifest.years[i % manifest.years.length]);
+        i++;
+      };
+      step();
+      anim = setInterval(step, 1400);
+      ga('hail_animate', {});
+    }
+    function stopAnim(){
+      if(!anim) return;
+      clearInterval(anim); anim=null;
+      var btn=document.getElementById('hm-play');
+      if(btn){ btn.classList.remove('on'); btn.setAttribute('aria-pressed','false'); btn.innerHTML='&#9654; Play'; }
+    }
+
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+  })();
+  </script>
+</body>
+</html>
