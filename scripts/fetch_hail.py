@@ -11,12 +11,15 @@ Run by .github/workflows/hail-data.yml on a monthly schedule. No API key needed.
 Stdlib only — nothing to pip install.
 
 Design notes:
-- We request fmt=geojson so we parse structured features, not guessed CSV columns.
+- We request fmt=csv (the format IEM documents) and read columns by header name,
+  so the parser self-adapts instead of guessing positions. (geojson returns 422.)
 - We NEVER overwrite a good year file with an empty one: a failed fetch keeps the
   existing file, and a fully empty run exits non-zero so the Action won't commit
   emptiness silently (same hard lesson as the cash-bids pipeline).
 """
 
+import csv
+import io
 import json
 import os
 import sys
@@ -34,33 +37,49 @@ UA = "AGSIST-hail-pipeline/1.0 (sig@farmers1st.com)"
 
 
 def fetch_year(year):
+    """Return CSV rows (list of dicts) of national LSRs for the given year.
+
+    IEM documents two formats for this endpoint: fmt=csv, or omit fmt for a
+    zipped shapefile. (geojson is NOT a valid value here — it returns HTTP 422.)
+    We use CSV and read columns by name so we adapt to IEM's exact headers.
+    """
     sts = "%d-01-01T00:00Z" % year
     ets = "%d-01-01T00:00Z" % (year + 1)
-    url = "%s?wfo=ALL&sts=%s&ets=%s&fmt=geojson" % (IEM, sts, ets)
+    url = "%s?wfo=ALL&sts=%s&ets=%s&fmt=csv" % (IEM, sts, ets)
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
         raw = r.read().decode("utf-8", "replace")
-    data = json.loads(raw)
-    if not isinstance(data, dict) or data.get("type") != "FeatureCollection":
-        raise ValueError("unexpected response (not a FeatureCollection)")
-    return data
+    reader = csv.DictReader(io.StringIO(raw))
+    if not reader.fieldnames:
+        raise ValueError("empty/headerless CSV response")
+    # normalize header names: lowercase, strip
+    rows = []
+    for row in reader:
+        rows.append({(k or "").strip().lower(): v for k, v in row.items()})
+    return rows
 
 
-def is_hail(props):
-    t = str(props.get("type", "")).upper()
-    tt = str(props.get("typetext", "")).upper()
+def _get(row, *names):
+    for n in names:
+        if n in row and row[n] not in (None, ""):
+            return row[n]
+    return None
+
+
+def is_hail(row):
+    t = str(_get(row, "type", "typecode") or "").upper()
+    tt = str(_get(row, "typetext", "type_text") or "").upper()
     return t == "H" or "HAIL" in tt
 
 
-def mag_of(props):
-    for k in ("magnitude", "magf", "mag"):
-        v = props.get(k)
-        if v not in (None, "", "M"):
-            try:
-                return float(v)
-            except (TypeError, ValueError):
-                pass
-    return None
+def mag_of(row):
+    v = _get(row, "magnitude", "magf", "mag")
+    if v in (None, "", "M"):
+        return None
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return None
 
 
 def intensity(mag):
@@ -70,24 +89,23 @@ def intensity(mag):
     return max(0.15, min(1.0, mag / 3.0))
 
 
-def reduce_year(gj):
+def reduce_year(rows):
     pts = []
-    for f in (gj or {}).get("features", []):
-        props = f.get("properties") or {}
-        if not is_hail(props):
+    for row in rows or []:
+        if not is_hail(row):
             continue
-        geom = f.get("geometry") or {}
-        coords = geom.get("coordinates") or []
-        if len(coords) < 2:
+        latv = _get(row, "lat", "latitude")
+        lonv = _get(row, "lon", "long", "longitude")
+        if latv is None or lonv is None:
             continue
         try:
-            lon = round(float(coords[0]), COORD_DP)
-            lat = round(float(coords[1]), COORD_DP)
+            lat = round(float(latv), COORD_DP)
+            lon = round(float(lonv), COORD_DP)
         except (TypeError, ValueError):
             continue
         if not (-180 <= lon <= 180 and -90 <= lat <= 90):
             continue
-        pts.append([lat, lon, round(intensity(mag_of(props)), 2)])
+        pts.append([lat, lon, round(intensity(mag_of(row)), 2)])
     return pts
 
 
@@ -110,7 +128,7 @@ def main():
 
     for y in years:
         try:
-            gj = fetch_year(y)
+            rows = fetch_year(y)
         except (urllib.error.URLError, TimeoutError, ValueError, OSError) as e:
             print("[%d] fetch failed: %s" % (y, e), file=sys.stderr)
             keep = existing_count(y)
@@ -121,7 +139,12 @@ def main():
                 counts[str(y)] = 0
             continue
 
-        pts = reduce_year(gj)
+        pts = reduce_year(rows)
+        # Self-diagnosis: if IEM returned rows but none parsed as hail, the column
+        # names differ from what we expect — dump them so the next run reveals the fix.
+        if rows and not pts:
+            print("[%d] %d rows but 0 hail parsed. Columns seen: %s"
+                  % (y, len(rows), ",".join(sorted(rows[0].keys()))), file=sys.stderr)
         # Guard: an empty parse for a year we previously had data for is suspect —
         # keep the older, good file rather than blanking it.
         if not pts and existing_count(y):
