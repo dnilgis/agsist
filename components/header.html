@@ -66,13 +66,13 @@
     </div>
 
     <div class="nav-actions">
-      <select class="brand-pick" id="brand-pick" aria-label="Color theme">
-        <option value="">Prairie Gold</option>
-        <option value="classic">Classic Green</option>
-        <option value="redpower">Red Power</option>
-        <option value="bigblue">Big Blue</option>
-        <option value="orange">Orange</option>
-      </select>
+      <div class="brand-pick" id="brand-pick" role="radiogroup" aria-label="Color theme">
+        <button class="brand-sw" data-brand="" title="Prairie Gold" aria-label="Prairie Gold" style="--sw:#daa520"></button>
+        <button class="brand-sw" data-brand="biggreen" title="Big Green" aria-label="Big Green" style="--sw:#5cb83a"></button>
+        <button class="brand-sw" data-brand="red" title="Red" aria-label="Red" style="--sw:#f5453f"></button>
+        <button class="brand-sw" data-brand="blue" title="Blue" aria-label="Blue" style="--sw:#5a9fe0"></button>
+        <button class="brand-sw" data-brand="orange" title="Orange" aria-label="Orange" style="--sw:#ff9326"></button>
+      </div>
       <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">
         <span id="theme-icon" aria-hidden="true">🌙</span>
         <div class="t-track"><div class="t-thumb"></div></div>
@@ -141,13 +141,13 @@
   <div class="draw-sec" style="border-bottom:none">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.1rem">
       <span style="font-size:.82rem;color:var(--text-dim)"><span class="brand-dot" aria-hidden="true"></span>Color theme</span>
-      <select class="brand-pick" id="brand-pick-d" aria-label="Color theme">
-        <option value="">Prairie Gold</option>
-        <option value="classic">Classic Green</option>
-        <option value="redpower">Red Power</option>
-        <option value="bigblue">Big Blue</option>
-        <option value="orange">Orange</option>
-      </select>
+      <div class="brand-pick" id="brand-pick-d" role="radiogroup" aria-label="Color theme">
+        <button class="brand-sw" data-brand="" title="Prairie Gold" aria-label="Prairie Gold" style="--sw:#daa520"></button>
+        <button class="brand-sw" data-brand="biggreen" title="Big Green" aria-label="Big Green" style="--sw:#5cb83a"></button>
+        <button class="brand-sw" data-brand="red" title="Red" aria-label="Red" style="--sw:#f5453f"></button>
+        <button class="brand-sw" data-brand="blue" title="Blue" aria-label="Blue" style="--sw:#5a9fe0"></button>
+        <button class="brand-sw" data-brand="orange" title="Orange" aria-label="Orange" style="--sw:#ff9326"></button>
+      </div>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.1rem">
       <span style="font-size:.82rem;color:var(--text-dim)">Display mode</span>

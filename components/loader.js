@@ -87,19 +87,26 @@
       if (b) document.documentElement.setAttribute('data-brand', b);
       else document.documentElement.removeAttribute('data-brand');
       try { localStorage.setItem('agsist-brand', b || ''); } catch (e) {}
-      ['brand-pick', 'brand-pick-d'].forEach(function (id) {
-        var sel = document.getElementById(id);
-        if (sel && sel.value !== b) sel.value = b;
+      document.querySelectorAll('.brand-sw').forEach(function (sw) {
+        sw.setAttribute('aria-checked', (sw.getAttribute('data-brand') || '') === b ? 'true' : 'false');
       });
       try { if (typeof window.gtag === 'function') gtag('event', 'brand_theme', { brand: b || 'prairie' }); } catch (e) {}
     }
     var curBrand = document.documentElement.getAttribute('data-brand') || '';
-    ['brand-pick', 'brand-pick-d'].forEach(function (id) {
-      var sel = document.getElementById(id);
-      if (!sel) return;
-      sel.value = curBrand;
-      sel.addEventListener('change', function () { applyBrand(sel.value); });
+    function syncSwatches(b) {
+      document.querySelectorAll('.brand-sw').forEach(function (sw) {
+        sw.setAttribute('aria-checked', (sw.getAttribute('data-brand') || '') === b ? 'true' : 'false');
+      });
+    }
+    document.querySelectorAll('.brand-sw').forEach(function (sw) {
+      sw.setAttribute('role', 'radio');
+      sw.addEventListener('click', function () {
+        var b = sw.getAttribute('data-brand') || '';
+        applyBrand(b);
+        syncSwatches(b);
+      });
     });
+    syncSwatches(curBrand);
 
     // ── Dropdowns — with aria-haspopup + aria-expanded ───────────
     // FIX P10: screen readers now know these buttons control popup menus
