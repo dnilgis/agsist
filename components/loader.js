@@ -8,6 +8,13 @@
     document.documentElement.setAttribute('data-theme', t);
   } catch (e) {}
 
+  // Apply saved brand theme immediately (before paint). No saved value =
+  // default Prairie Gold (no attribute). Values: classic|redpower|bigblue|orange.
+  try {
+    var bSaved = localStorage.getItem('agsist-brand') || '';
+    if (bSaved) document.documentElement.setAttribute('data-brand', bSaved);
+  } catch (e) {}
+
   var BASE = (function () {
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
@@ -73,6 +80,25 @@
       if (btn) btn.addEventListener('click', function () {
         applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
       });
+    });
+
+    // ── Brand theme picker (header select + drawer select, kept in sync) ──
+    function applyBrand(b) {
+      if (b) document.documentElement.setAttribute('data-brand', b);
+      else document.documentElement.removeAttribute('data-brand');
+      try { localStorage.setItem('agsist-brand', b || ''); } catch (e) {}
+      ['brand-pick', 'brand-pick-d'].forEach(function (id) {
+        var sel = document.getElementById(id);
+        if (sel && sel.value !== b) sel.value = b;
+      });
+      try { if (typeof window.gtag === 'function') gtag('event', 'brand_theme', { brand: b || 'prairie' }); } catch (e) {}
+    }
+    var curBrand = document.documentElement.getAttribute('data-brand') || '';
+    ['brand-pick', 'brand-pick-d'].forEach(function (id) {
+      var sel = document.getElementById(id);
+      if (!sel) return;
+      sel.value = curBrand;
+      sel.addEventListener('change', function () { applyBrand(sel.value); });
     });
 
     // ── Dropdowns — with aria-haspopup + aria-expanded ───────────

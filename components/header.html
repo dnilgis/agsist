@@ -65,6 +65,13 @@
     </div>
 
     <div class="nav-actions">
+      <select class="brand-pick" id="brand-pick" aria-label="Color theme">
+        <option value="">Prairie Gold</option>
+        <option value="classic">Classic Green</option>
+        <option value="redpower">Red Power</option>
+        <option value="bigblue">Big Blue</option>
+        <option value="orange">Orange</option>
+      </select>
       <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">
         <span id="theme-icon" aria-hidden="true">🌙</span>
         <div class="t-track"><div class="t-thumb"></div></div>
@@ -130,6 +137,16 @@
     <a href="/developer" class="draw-item">Developer API</a>
   </div>
   <div class="draw-sec" style="border-bottom:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.1rem">
+      <span style="font-size:.82rem;color:var(--text-dim)"><span class="brand-dot" aria-hidden="true"></span>Color theme</span>
+      <select class="brand-pick" id="brand-pick-d" aria-label="Color theme">
+        <option value="">Prairie Gold</option>
+        <option value="classic">Classic Green</option>
+        <option value="redpower">Red Power</option>
+        <option value="bigblue">Big Blue</option>
+        <option value="orange">Orange</option>
+      </select>
+    </div>
     <div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.1rem">
       <span style="font-size:.82rem;color:var(--text-dim)">Display mode</span>
       <button class="theme-btn" id="theme-btn-d" aria-label="Toggle theme">

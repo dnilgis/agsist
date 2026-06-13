@@ -27,6 +27,7 @@
 
 :root {
   --gold:     #daa520;
+  --gold-rgb: 218,165,32;
   --green:    #4aab4c;
   --red:      #c8562e;
   --blue:     #4a8fba;
@@ -41,14 +42,14 @@
   --surface2: #1e1e1a;
   --surface3: #26261f;
   --border:   rgba(255,255,255,0.10);
-  --border-g: rgba(218,165,32,0.30);
+  --border-g: rgba(var(--gold-rgb),0.30);
   --text:     #f0ebe0;
   --text-dim: rgba(240,235,224,0.82);
   --text-muted:rgba(240,235,224,0.62);
   --cream:    #f5f1e8;
-  --glow-gold:  0 0 20px rgba(218,165,32,.08);
+  --glow-gold:  0 0 20px rgba(var(--gold-rgb),.08);
   --glow-card:  0 2px 12px rgba(0,0,0,.30), 0 1px 3px rgba(0,0,0,.15);
-  --glow-lift:  0 4px 20px rgba(0,0,0,.35), 0 0 0 1px rgba(218,165,32,.12);
+  --glow-lift:  0 4px 20px rgba(0,0,0,.35), 0 0 0 1px rgba(var(--gold-rgb),.12);
   --base: 17px;
   --sp-xs: .35rem; --sp-sm: .65rem; --sp-md: 1rem; --sp-lg: 1.5rem;
   --sp-xl: 2rem; --sp-2xl: 3rem;
@@ -61,7 +62,7 @@
   --text:     #1a1a1a;
   --text-dim: rgba(26,26,26,0.68);
   --text-muted:rgba(26,26,26,0.50);
-  --green: #2d6a2e; --gold: #b8860b; --red: #a63030; --blue: #2c6f9e;
+  --green: #2d6a2e; --gold: #b8860b; --gold-rgb: 184,134,11; --red: #a63030; --blue: #2c6f9e;
   --glow-gold: none;
   --glow-card: 0 1px 6px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
   --glow-lift: 0 3px 12px rgba(0,0,0,.08), 0 0 0 1px rgba(45,106,46,.12);
@@ -78,7 +79,7 @@ button, a, [role="button"], input, select, textarea, label { touch-action: manip
 ::-webkit-scrollbar { width: 8px; height: 8px }
 ::-webkit-scrollbar-track { background: var(--bg) }
 ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px }
-::-webkit-scrollbar-thumb:hover { background: rgba(218,165,32,.3) }
+::-webkit-scrollbar-thumb:hover { background: rgba(var(--gold-rgb),.3) }
 .skip { position: absolute; top: -100%; left: 1rem; z-index: 9999; padding: .5rem 1rem; background: var(--green); color: #fff; font-size: .875rem; font-weight: 700; border-radius: 0 0 4px 4px }
 .skip:focus { top: 0 }
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px }
@@ -166,7 +167,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .daily-hero-inner { overflow: hidden; max-width: 1400px; margin: 0 auto; padding: var(--sp-2xl) var(--sp-lg); transition: padding .35s; min-width: 0; min-height: 0; }
 .daily-hero.dismissed .daily-hero-inner { padding-top: 0; padding-bottom: 0 }
 .daily-teaser { display: none; flex-direction: column; gap: .2rem; padding: .45rem var(--sp-lg); cursor: pointer; transition: background .15s; border-bottom: 1px solid var(--border); max-width: 100%; overflow: hidden; }
-.daily-teaser:hover { background: rgba(218,165,32,.03) }
+.daily-teaser:hover { background: rgba(var(--gold-rgb),.03) }
 .daily-hero.dismissed .daily-teaser { display: flex }
 .teaser-line1 { display: flex; align-items: center; justify-content: space-between; gap: .5rem; width: 100%; }
 .teaser-left { display: flex; align-items: center; gap: .6rem; min-width: 0; overflow: hidden; flex: 1 1 0%; }
@@ -271,13 +272,13 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .wstat-lbl { font-family: 'JetBrains Mono', monospace; font-size: .66rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: .2rem; }
 .wstat-val { font-family: 'JetBrains Mono', monospace; font-size: 1.25rem; font-weight: 700; color: var(--text); line-height: 1.1 }
 /* 'What this means today' synthesized summary banner */
-.wx-today { display: none; gap: .6rem; align-items: flex-start; margin: 0 0 1rem; padding: .75rem .9rem; background: linear-gradient(135deg, rgba(218,165,32,.11), rgba(218,165,32,.03)); border: 1px solid rgba(218,165,32,.28); border-left: 3px solid var(--gold); border-radius: var(--r-sm); }
+.wx-today { display: none; gap: .6rem; align-items: flex-start; margin: 0 0 1rem; padding: .75rem .9rem; background: linear-gradient(135deg, rgba(var(--gold-rgb),.11), rgba(var(--gold-rgb),.03)); border: 1px solid rgba(var(--gold-rgb),.28); border-left: 3px solid var(--gold); border-radius: var(--r-sm); }
 .wx-today.loaded { display: flex; }
 .wx-today-icon { font-size: 1.2rem; line-height: 1.4; flex-shrink: 0; }
 .wx-today-text { font-size: .9rem; line-height: 1.55; color: var(--text); }
 .wx-today-text strong { color: var(--gold); font-weight: 700; }
 .spray-badge { display: inline-flex; align-items: center; gap: .4rem; padding: .38rem .75rem; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: .75rem; font-weight: 700; margin-top: .85rem; }
-.spray-badge.caution { background: rgba(218,165,32,.08); color: var(--gold); border: 1px solid rgba(218,165,32,.22) }
+.spray-badge.caution { background: rgba(var(--gold-rgb),.08); color: var(--gold); border: 1px solid rgba(var(--gold-rgb),.22) }
 .spray-badge.good { background: rgba(74,171,76,.08); color: var(--green); border: 1px solid rgba(74,171,76,.22) }
 .spray-badge.poor { background: rgba(200,86,46,.08); color: var(--red); border: 1px solid rgba(200,86,46,.22) }
 
@@ -367,7 +368,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .signup-submit { padding: .8rem 1.5rem; background: var(--green); color: #fff; border: none; border-radius: var(--r-sm); font-family: 'JetBrains Mono', monospace; font-size: .88rem; font-weight: 700; white-space: nowrap; text-transform: uppercase; letter-spacing: .5px; transition: background .15s; flex-shrink: 0; }
 .signup-submit:hover { background: #1b4d1c }
 .signup-disc { font-size: .75rem; color: var(--text-muted) } .signup-disc a { color: var(--text-dim); border-bottom: 1px solid var(--border) }
-.sms-note { display: flex; align-items: flex-start; gap: .65rem; background: rgba(218,165,32,.05); border: 1px solid rgba(218,165,32,.15); border-radius: var(--r-sm); padding: .9rem 1.1rem; text-align: left; font-size: .88rem; color: var(--text-dim); line-height: 1.6; }
+.sms-note { display: flex; align-items: flex-start; gap: .65rem; background: rgba(var(--gold-rgb),.05); border: 1px solid rgba(var(--gold-rgb),.15); border-radius: var(--r-sm); padding: .9rem 1.1rem; text-align: left; font-size: .88rem; color: var(--text-dim); line-height: 1.6; }
 .signup--compact { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: var(--sp-xl); background: var(--surface); border: 2px solid var(--green); border-radius: var(--r-md); padding: .85rem 1.25rem; position: relative; overflow: hidden; }
 .signup--compact::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 600px 120px at 50% -50%, rgba(74,171,76,.03) 0%, transparent 70%); pointer-events: none }
 .signup--compact .scu-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: .62rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--green); white-space: nowrap; flex-shrink: 0; }
@@ -550,14 +551,14 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
 }
 
 /* ── DAILY BRIEFING v3 — Overnight Surprises, Conviction, Actions ── */
-.daily-surprise-banner { display: none; align-items: center; gap: .65rem; padding: .65rem 1.1rem; margin-bottom: 1rem; background: linear-gradient(135deg, rgba(218,165,32,.06) 0%, rgba(218,165,32,.02) 100%); border: 2px solid rgba(218,165,32,.25); border-radius: var(--r-md); animation: surprise-glow 3s ease-in-out infinite alternate; }
-@keyframes surprise-glow { 0% { border-color: rgba(218,165,32,.25); box-shadow: none } 100% { border-color: rgba(218,165,32,.40); box-shadow: 0 0 12px rgba(218,165,32,.08) } }
+.daily-surprise-banner { display: none; align-items: center; gap: .65rem; padding: .65rem 1.1rem; margin-bottom: 1rem; background: linear-gradient(135deg, rgba(var(--gold-rgb),.06) 0%, rgba(var(--gold-rgb),.02) 100%); border: 2px solid rgba(var(--gold-rgb),.25); border-radius: var(--r-md); animation: surprise-glow 3s ease-in-out infinite alternate; }
+@keyframes surprise-glow { 0% { border-color: rgba(var(--gold-rgb),.25); box-shadow: none } 100% { border-color: rgba(var(--gold-rgb),.40); box-shadow: 0 0 12px rgba(var(--gold-rgb),.08) } }
 .surprise-icon { font-size: 1.3rem; flex-shrink: 0; animation: surprise-pulse 2s ease-in-out infinite; }
 @keyframes surprise-pulse { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.15) } }
 .surprise-text { font-size: .85rem; color: var(--text-dim); line-height: 1.5; }
 .surprise-text strong { color: var(--gold); font-weight: 700; }
 .daily-mood { display: none; align-items: center; gap: .3rem; font-family: 'JetBrains Mono', monospace; font-size: .62rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: .2rem .55rem; border-radius: 3px; white-space: nowrap; margin-left: .5rem; }
-.daily-sec--surprise { border-color: rgba(218,165,32,.35) !important; background: linear-gradient(135deg, var(--surface) 0%, rgba(218,165,32,.04) 100%); position: relative; }
+.daily-sec--surprise { border-color: rgba(var(--gold-rgb),.35) !important; background: linear-gradient(135deg, var(--surface) 0%, rgba(var(--gold-rgb),.04) 100%); position: relative; }
 .daily-sec--surprise::after { content: '\26A1'; position: absolute; top: .45rem; right: .55rem; font-size: .85rem; opacity: .7; }
 .daily-sec--heat { border-color: rgba(74,171,76,.35) !important; border-width: 2px; position: relative; }
 .daily-sec--heat::before { content: 'TOP STORY'; position: absolute; top: -.55rem; left: .8rem; font-family: 'JetBrains Mono', monospace; font-size: .52rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--green); background: var(--bg2); padding: .05rem .45rem; border-radius: 2px; }
@@ -590,14 +591,14 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
 .daily-mood.bearish { color: var(--red); background: rgba(200,86,46,.08); border-color: rgba(200,86,46,.22); }
 .daily-mood.mixed,
 .daily-mood.neutral,
-.daily-mood.cautious { color: var(--gold); background: rgba(218,165,32,.08); border-color: rgba(218,165,32,.22); }
+.daily-mood.cautious { color: var(--gold); background: rgba(var(--gold-rgb),.08); border-color: rgba(var(--gold-rgb),.22); }
 
 /* `.daily-sec-conviction` — class names emitted by hydrateDaily v4.0.
    Without these, all conviction pills used the default `.daily-sec-conviction`
    styling (no background, no color differentiation between high/medium/low). */
 .daily-sec-conviction.conviction--bull { color: var(--green); background: rgba(74,171,76,.08); border: 1px solid rgba(74,171,76,.22); }
 .daily-sec-conviction.conviction--bear { color: var(--red); background: rgba(200,86,46,.08); border: 1px solid rgba(200,86,46,.22); }
-.daily-sec-conviction.conviction--mixed { color: var(--gold); background: rgba(218,165,32,.08); border: 1px solid rgba(218,165,32,.22); }
+.daily-sec-conviction.conviction--mixed { color: var(--gold); background: rgba(var(--gold-rgb),.08); border: 1px solid rgba(var(--gold-rgb),.22); }
 
 /* ================================================================
    PREMIUM POLISH PACK — pure CSS · no JS · reduced-motion safe
@@ -632,3 +633,27 @@ summary:focus-visible, .pc:focus-visible {
 
 /* 5) Native form controls (checkboxes, radios, range) inherit the brand green. */
 :root { accent-color: var(--green); }
+
+
+/* ══ BRAND THEMES (2026-06-12) ════════════════════════════════════════
+   Swaps the brand ACCENT only (--gold / --gold-rgb). Semantic colors
+   (--green up, --red down, risk scale) never change — a Red Power user
+   still reads green-up / red-down. --border-g and the glows derive from
+   --gold-rgb, so they follow automatically. Default (no data-brand attr)
+   is the original Prairie Gold look. Names are colors, not trademarks. */
+[data-brand="classic"]   { --gold:#ffd61f; --gold-rgb:255,214,31; }
+[data-brand="redpower"]  { --gold:#ff6a52; --gold-rgb:255,106,82; }
+[data-brand="bigblue"]   { --gold:#6fb3e8; --gold-rgb:111,179,232; }
+[data-brand="orange"]    { --gold:#ff9a3c; --gold-rgb:255,154,60; }
+/* Light-mode variants — darker accents for contrast on light surfaces.
+   Classic goes green in light mode: yellow text on white fails contrast. */
+[data-theme="light"][data-brand="classic"]  { --gold:#2d6a2e; --gold-rgb:45,106,46; }
+[data-theme="light"][data-brand="redpower"] { --gold:#b8240f; --gold-rgb:184,36,15; }
+[data-theme="light"][data-brand="bigblue"]  { --gold:#1b5e9e; --gold-rgb:27,94,158; }
+[data-theme="light"][data-brand="orange"]   { --gold:#b35a00; --gold-rgb:179,90,0; }
+
+/* Brand picker control (header + drawer) */
+.brand-pick{appearance:none;-webkit-appearance:none;background:var(--surface2);color:var(--text-dim);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.03em;padding:.35rem 1.4rem .35rem .55rem;cursor:pointer;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23999'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .45rem center}
+.brand-pick:hover{border-color:var(--border-g);color:var(--text)}
+.brand-pick:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.brand-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--gold);margin-right:.45rem;vertical-align:-1px;box-shadow:0 0 6px rgba(var(--gold-rgb),.5)}

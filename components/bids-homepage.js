@@ -267,6 +267,10 @@
     var zip = zipEl ? zipEl.value.trim() : '';
     if(!zip || zip.length !== 5 || isNaN(zip)) return;
 
+    // Intent signal: a deliberate ZIP search on the homepage bid card.
+    // Same event name as the cash-bids page so reporting unifies.
+    try { if (typeof window.gtag === 'function') gtag('event', 'bids_search', { page: 'home', method: 'zip' }); } catch(e) {}
+
     // Geocode ZIP for label, then load bids
     fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + zip + '&count=1&language=en&format=json&countryCode=US')
       .then(function(r){ return r.json(); })
