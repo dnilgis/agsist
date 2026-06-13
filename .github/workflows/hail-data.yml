@@ -1,0 +1,44 @@
+name: Hail data refresh
+
+# Bakes the national hail heatmap data consumed by /hail-map.
+# Monthly is plenty — this is historical climatology, not live data.
+# Run it manually (workflow_dispatch) the first time to seed data/hail/.
+
+on:
+  schedule:
+    - cron: '0 7 1 * *'      # 1st of each month, 07:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hail-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch national hail LSRs
+        run: python scripts/fetch_hail.py
+
+      - name: Commit updated hail data
+        run: |
+          git config user.name "agsist-bot"
+          git config user.email "sig@farmers1st.com"
+          git add data/hail
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "data: refresh national hail LSRs [skip ci]"
+            git push
+          fi
