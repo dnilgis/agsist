@@ -61,9 +61,12 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-header{margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:2px solid var(--border)}
 .dv3-eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:.75rem;padding:.3rem .75rem;background:rgba(74,171,76,.06);border:1px solid rgba(74,171,76,.18);border-radius:3px}
 .dv3-eyebrow-dot{width:7px;height:7px;border-radius:50%;background:var(--text-muted)}
-.dv3-date{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase}
-.dv3-date-row{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:.5rem 1rem;margin-bottom:.6rem}
-.dv3-publish-age{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted);letter-spacing:.04em;opacity:.75}
+.dv3-date{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.6rem;text-transform:uppercase}
+.dv3-spattr{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;letter-spacing:.04em;color:var(--gold);text-decoration:none;padding:.3rem .65rem;border:1px solid rgba(218,165,32,.25);border-radius:4px;background:rgba(218,165,32,.04);margin-bottom:.85rem;transition:border-color .15s,background .15s,color .15s}
+.dv3-spattr:hover{border-color:var(--gold);background:rgba(218,165,32,.10);color:var(--gold)}
+.dv3-spattr--house{opacity:.75;color:var(--text-muted);border-color:var(--border)}
+.dv3-spattr--house:hover{opacity:1;color:var(--gold);border-color:rgba(218,165,32,.4)}
+.dv3-spattr strong{color:var(--text);font-weight:700}
 .dv3-headline{font-family:'Oswald',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:.6rem;letter-spacing:-.01em;text-transform:uppercase}
 .dv3-subheadline{font-size:.92rem;color:var(--gold);font-weight:600;margin-bottom:.75rem}
 .dv3-lead{font-size:1.05rem;line-height:1.75;color:var(--text-dim);max-width:720px}
@@ -101,6 +104,38 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-sec-body{font-size:.95rem;line-height:1.75;color:var(--text-dim);margin-bottom:.65rem}
 .dv3-sec-body strong{color:var(--text)}
 .dv3-sec-bottomline{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;color:var(--text);padding:.5rem .75rem;background:var(--surface2);border-radius:6px;border-left:3px solid var(--gold);margin-bottom:.5rem;line-height:1.45}
+/* v4.3: takeaway card, committable statement, sits between lead and sparks */
+.dv3-takeaway{margin:1.1rem 0 0;padding:1rem 1.15rem;background:linear-gradient(135deg,rgba(218,165,32,.08) 0%,rgba(218,165,32,.02) 60%,var(--surface2) 100%);border:1px solid rgba(218,165,32,.3);border-left:4px solid var(--gold);border-radius:8px}
+.dv3-takeaway-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.45rem}
+.dv3-takeaway-text{font-family:'Oswald',sans-serif;font-size:1.1rem;line-height:1.45;color:var(--text);margin:0;font-weight:600;letter-spacing:-.005em}
+@media(max-width:640px){.dv3-takeaway-text{font-size:1rem}}
+/* v4.3: per-section vs_yesterday continuity chip */
+.dv3-sec-vs{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);margin:0 0 .55rem;padding:.3rem .55rem;background:rgba(74,143,186,.04);border-left:2px solid rgba(74,143,186,.32);border-radius:0 4px 4px 0}
+.dv3-sec-vs-icon{color:#5aa0d2;font-size:.72rem;flex-shrink:0}
+.dv3-sec-vs-text{font-weight:600;letter-spacing:.01em}
+/* v4.4: per-section catalyst (driver) chip */
+.dv3-sec-catalyst{display:flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-dim);margin:0 0 .55rem;padding:.35rem .6rem;background:rgba(218,165,32,.05);border-left:2px solid rgba(218,165,32,.4);border-radius:0 4px 4px 0;flex-wrap:wrap}
+.dv3-sec-catalyst-icon{color:var(--gold);font-size:.72rem;flex-shrink:0}
+.dv3-sec-catalyst-label{color:var(--gold);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.6rem;flex-shrink:0}
+.dv3-sec-catalyst-text{font-weight:500;letter-spacing:.01em;line-height:1.4}
+/* v4.4: outside_the_pit, news in the calculus, not in today's prices */
+.dv3-otp{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:2rem}
+.dv3-otp-header{display:flex;flex-direction:column;gap:.25rem;margin-bottom:1rem;padding-bottom:.85rem;border-bottom:1px solid var(--border)}
+.dv3-otp-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.dv3-otp-sub{font-size:.74rem;color:var(--text-muted);font-style:italic}
+.dv3-otp-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem}
+@media(min-width:640px){.dv3-otp-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.dv3-otp-item{padding:.85rem 1rem;background:rgba(218,165,32,.03);border:1px solid rgba(218,165,32,.12);border-radius:6px;display:flex;flex-direction:column;gap:.4rem}
+.dv3-otp-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(218,165,32,.08);padding:.2rem .55rem;border-radius:3px;align-self:flex-start;border:1px solid rgba(218,165,32,.22)}
+.dv3-otp-title{font-size:.9rem;font-weight:700;color:var(--text);line-height:1.35}
+.dv3-otp-body{font-size:.82rem;line-height:1.55;color:var(--text-dim)}
+/* v4.3: cash-bids inline conversion footer, weekday-only */
+.dv3-cashbids-cta{display:flex;align-items:center;gap:.65rem;padding:.85rem 1.15rem;background:rgba(74,171,76,.06);border:1px solid rgba(74,171,76,.22);border-radius:8px;margin:1rem 0 .65rem;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s;min-height:44px}
+.dv3-cashbids-cta:hover{border-color:var(--green);background:rgba(74,171,76,.10)}
+.dv3-cashbids-icon{font-size:1.1rem;flex-shrink:0}
+.dv3-cashbids-text{font-size:.88rem;line-height:1.4}
+.dv3-cashbids-text strong{color:var(--text);font-weight:700}
+.dv3-cashbids-arrow{color:var(--green);font-weight:700;margin-left:.2rem}
 .dv3-sec-action{font-size:.82rem;font-weight:600;color:var(--green);padding:.45rem .7rem;background:rgba(74,171,76,.04);border:1px solid rgba(74,171,76,.15);border-radius:6px;line-height:1.45}
 .dv3-tmyk{background:linear-gradient(135deg,var(--surface) 0%,rgba(74,143,186,.03) 100%);border:2px solid rgba(74,143,186,.20);border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:2rem}
 .dv3-tmyk-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:.55rem}
@@ -119,6 +154,10 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-share-btn{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;padding:.45rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);cursor:pointer;transition:border-color .15s,color .15s;min-height:38px;touch-action:manipulation}
 .dv3-share-btn:hover{border-color:var(--gold);color:var(--text)}
 .dv3-share-btn svg{flex-shrink:0}
+.dv3-archnav{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;margin:.4rem 0 1.2rem}
+.dv3-archnav-a{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--text-dim);padding:.45rem .7rem;border:1px solid var(--border);border-radius:6px;min-height:38px;display:inline-flex;align-items:center}
+.dv3-archnav-a:hover{border-color:var(--gold);color:var(--text)}
+.dv3-archnav-all{color:var(--text-muted)}
 .dv3-source{font-size:.68rem;color:var(--text-muted);text-align:center;padding:.75rem 0;border-top:1px solid var(--border);margin-bottom:2rem}
 .dv3-nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-top:2px solid var(--border);border-bottom:2px solid var(--border);margin-bottom:2rem}
 .dv3-nav a{display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;font-weight:600;color:var(--green);transition:opacity .15s}
@@ -127,20 +166,20 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-sponsor{background:linear-gradient(135deg,var(--surface) 0%,rgba(218,165,32,.04) 100%);border:2px solid rgba(218,165,32,.30);border-radius:8px;padding:1.4rem 1.6rem;margin-bottom:1.75rem;position:relative;overflow:hidden}
 .dv3-sponsor::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold) 0%,rgba(218,165,32,.3) 60%,transparent 100%)}
 
-/* WEEKLY THREAD chapter marker — sits above the lead */
+/* WEEKLY THREAD chapter marker, sits above the lead */
 .dv3-thread{display:flex;align-items:center;gap:.65rem;padding:.45rem .85rem;background:rgba(74,143,186,.06);border:1px solid rgba(74,143,186,.20);border-radius:6px;margin-bottom:1rem;flex-wrap:wrap}
 .dv3-thread--anchor{background:rgba(74,143,186,.10);border-color:rgba(74,143,186,.32)}
 .dv3-thread-day{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5aa0d2;white-space:nowrap;padding:.18rem .5rem;background:rgba(74,143,186,.08);border-radius:3px}
 .dv3-thread-q{font-size:.86rem;font-weight:600;color:var(--text);line-height:1.4;flex:1;min-width:200px}
 
-/* YESTERDAY'S CALL — sits between sponsor and sections */
+/* YESTERDAY'S CALL, sits between sponsor and sections */
 .dv3-yc{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1rem 1.2rem;margin-bottom:1.5rem;border-left:4px solid var(--green)}
 .dv3-yc-label{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.45rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
 .dv3-yc-outcome{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.08em;padding:.18rem .55rem;border-radius:3px;white-space:nowrap}
 .dv3-yc-summary{font-size:.92rem;color:var(--text);line-height:1.65;font-weight:600;margin-bottom:.35rem}
 .dv3-yc-note{font-size:.85rem;color:var(--text-dim);line-height:1.65}
 
-/* SPREAD TO WATCH — sits between sections and basis */
+/* SPREAD TO WATCH, sits between sections and basis */
 .dv3-spread{background:linear-gradient(135deg,var(--surface) 0%,rgba(132,89,176,.04) 100%);border:2px solid rgba(132,89,176,.28);border-radius:8px;padding:1.1rem 1.3rem;margin:1.5rem 0 1.5rem}
 .dv3-spread-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9b7fc4;margin-bottom:.5rem}
 .dv3-spread-label-text{font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.3rem;letter-spacing:-.005em}
@@ -190,15 +229,14 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
         <span class="dv3-mood" style="display:inline-flex;color:var(--blue);background:rgba(74,143,186,.08);border:1px solid rgba(74,143,186,.22)">⚠️ Cautious</span>
         
       </div>
-      <div class="dv3-date-row">
-        <span class="dv3-date">Friday, May 1, 2026</span>
-        <span class="dv3-publish-age" data-agsist-timer data-mode="since" data-target="2026-05-01T12:02:03.383771+00:00" data-label="Published" data-show-next="false"></span>
-      </div>
+      <div class="dv3-date">Friday, May 1, 2026</div>
+      <a class="dv3-spattr dv3-spattr--house" href="mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20sponsorship%20inquiry" aria-label="Sponsor information">&#x1F7E1; Sponsor this slot &rarr;</a>
       <h1 class="dv3-headline">CATTLE FADE AS GRAINS MARK TIME</h1>
       <p class='dv3-subheadline'>Live cattle slip from breakout levels while corn and beans hold tight ranges.</p>
       <div class="dv3-thread dv3-thread--anchor"><span class="dv3-thread-day">&#x1F9F5; FRIDAY RESOLUTION</span><span class="dv3-thread-q">Can cattle hold above $250 or was this week's breakout just a head fake?</span></div>
       
       <p class="dv3-lead">Cattle dropped 0.4% to $254.03, the first real test since breaking above $250 on momentum three days ago. The pullback is mild but the funds are watching — managed money added 8,000 contracts this week and needs to see the floor hold. Grains stayed pinned in place with corn at $4.78 and beans flat at $12.03, waiting for next week's planting progress to matter.</p>
+      
     </header>
     <div class="dv3-sparks"><div class="dv3-spark"><div class="dv3-spark-head"><span class="dv3-spark-label">Corn</span><span class="dv3-spark-last">$4.78</span></div><svg viewBox="0 0 180 32" preserveAspectRatio="none" aria-hidden="true" style="width:100%;height:30px;display:block"><polyline points="3.0,17.7 27.9,29.0 52.7,20.0 77.6,15.4 102.4,8.7 127.3,4.1 152.1,6.4 177.0,3.0 177.0,32 3,32" fill="rgba(74,171,76,.14)" stroke="none"/><polyline points="3.0,17.7 27.9,29.0 52.7,20.0 77.6,15.4 102.4,8.7 127.3,4.1 152.1,6.4 177.0,3.0" fill="none" stroke="#4aab4c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="177.0" cy="3.0" r="2" fill="#4aab4c"/></svg></div><div class="dv3-spark"><div class="dv3-spark-head"><span class="dv3-spark-label">Soybeans</span><span class="dv3-spark-last">$12.03</span></div><svg viewBox="0 0 180 32" preserveAspectRatio="none" aria-hidden="true" style="width:100%;height:30px;display:block"><polyline points="3.0,21.7 27.9,29.0 52.7,19.0 77.6,18.3 102.4,11.7 127.3,9.0 152.1,10.3 177.0,3.0 177.0,32 3,32" fill="rgba(74,171,76,.14)" stroke="none"/><polyline points="3.0,21.7 27.9,29.0 52.7,19.0 77.6,18.3 102.4,11.7 127.3,9.0 152.1,10.3 177.0,3.0" fill="none" stroke="#4aab4c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="177.0" cy="3.0" r="2" fill="#4aab4c"/></svg></div><div class="dv3-spark"><div class="dv3-spark-head"><span class="dv3-spark-label">Wheat</span><span class="dv3-spark-last">$6.37</span></div><svg viewBox="0 0 180 32" preserveAspectRatio="none" aria-hidden="true" style="width:100%;height:30px;display:block"><polyline points="3.0,24.3 27.9,29.0 52.7,24.7 77.6,23.8 102.4,13.9 127.3,3.0 152.1,12.0 177.0,15.3 177.0,32 3,32" fill="rgba(74,171,76,.14)" stroke="none"/><polyline points="3.0,24.3 27.9,29.0 52.7,24.7 77.6,23.8 102.4,13.9 127.3,3.0 152.1,12.0 177.0,15.3" fill="none" stroke="#4aab4c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="177.0" cy="15.3" r="2" fill="#4aab4c"/></svg></div></div>
     <div class="dv3-topbar"><div class="dv3-one-number"><div class="dv3-one-number-label">&#x1F4CA; THE NUMBER</div><div class="dv3-one-number-val">$254.03</div><div class="dv3-one-number-unit">Live cattle price</div><div class="dv3-one-number-ctx">First pullback since the breakout above $250 three sessions ago. The level is holding but fund money that drove the rally is testing patience. Below $252 breaks the pattern.</div></div><div class="dv3-quote-card"><div class="dv3-quote-label">&#x1F4AC; DAILY QUOTE</div><p class="dv3-quote-text">“Plans are nothing; planning is everything.”</p><cite class="dv3-quote-attr">Dwight D. Eisenhower</cite></div></div>
@@ -209,9 +247,12 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
     <div class="dv3-basis"><div class="dv3-basis-label">&#x1F4CD; BASIS PULSE</div><div class="dv3-basis-headline">Corn basis steady as ethanol margins hold firm</div><div class="dv3-basis-body">Eastern Corn Belt basis staying <strong>flat to 5 over</strong> as ethanol grind maintains pace after maintenance season. Western basis eased a nickel but remains within seasonal norms. Soybean basis firmed 2-3 cents as crush plants compete for remaining old-crop supplies ahead of new-crop availability.</div></div>
     <div class="dv3-tmyk"><div class="dv3-tmyk-label">&#x1F9E0; THE MORE YOU KNOW</div><div class="dv3-tmyk-title">Why Quiet Days Matter More Than Volatile Ones</div><div class="dv3-tmyk-body">Today's flat grain action with corn at $4.78 and beans at $12.03 tells you more than big moves. When volatility drops and ranges compress, it signals the market is waiting for new information rather than processing old news. The funds aren't adding positions — corn open interest dropped for three straight sessions — which means conviction is low. These quiet periods often precede significant moves when catalysts arrive, like next week's planting progress data.</div></div>
     <div class="dv3-watch"><div class="dv3-watch-label">&#x1F4C5; TODAY'S WATCH LIST</div><ul class="dv3-watch-list"><li class="dv3-watch-item"><span class="dv3-watch-time">Monday</span><span class="dv3-watch-desc">USDA Crop Progress; corn planting below 35% nationally adds weather premium</span></li><li class="dv3-watch-item"><span class="dv3-watch-time">Tuesday</span><span class="dv3-watch-desc">Weekly cattle cash trade; mid-$190s maintains premium structure</span></li><li class="dv3-watch-item"><span class="dv3-watch-time">Thursday</span><span class="dv3-watch-desc">Weekly export sales; soybeans under 200K MT keeps chart in charge</span></li></ul></div>
+    
     <div class="dv3-byline">Written by <strong>Sigurd Lindquist</strong>, founder. Reply at <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &mdash; I read everything.</div>
+    <a class="dv3-cashbids-cta" href="/cash-bids" aria-label="View your local cash bids"><span class="dv3-cashbids-icon">&#x1F4B5;</span><span class="dv3-cashbids-text"><strong>Your local elevator bids</strong> <span class="dv3-cashbids-arrow">&rarr;</span></span></a>
     <div class="dv3-forward"><span class="dv3-forward-icon">&#x1F4E8;</span><div class="dv3-forward-content"><div class="dv3-forward-headline">Know a farmer who&rsquo;d want this?</div><div class="dv3-forward-sub">Forward this briefing. Or new here? Subscribe in one tap.</div></div><a class="dv3-forward-cta" href="https://agsist.com/daily?subscribe=1">Subscribe &rarr;</a></div>
     <div class="dv3-share" role="group" aria-label="Share this briefing"><span class="dv3-share-label">Share</span><button class="dv3-share-btn" data-share="twitter" type="button" aria-label="Post on X"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> Post</button><button class="dv3-share-btn" data-share="copy" type="button" aria-label="Copy link to this briefing">&#x1F517; Copy link</button><button class="dv3-share-btn" data-share="email" type="button" aria-label="Email this briefing">&#x2709; Email</button></div>
+    <nav class="dv3-archnav" aria-label="Briefing archive"><a class="dv3-archnav-a" href="/daily/2026-04-30" rel="prev">&larr; Apr 30 briefing</a><a class="dv3-archnav-a dv3-archnav-all" href="/archive">All briefings</a><a class="dv3-archnav-a" href="/daily/2026-05-02" rel="next">May 2 briefing &rarr;</a></nav>
     <div class="dv3-source">CME futures, USDA reports, cash market data &middot; Auto-compiled at 6:02 AM CT</div>
   </article>
   <nav class="dv3-nav" aria-label="Briefing navigation" id="dv3-archive-nav">
@@ -226,7 +267,7 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 </div>
 </main>
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=2" defer></script>
+<script src="/components/loader.js" defer></script>
 <script>
 (function(){
   fetch('/data/daily-archive/index.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(idx){

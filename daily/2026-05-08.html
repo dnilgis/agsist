@@ -154,6 +154,10 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-share-btn{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;padding:.45rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);cursor:pointer;transition:border-color .15s,color .15s;min-height:38px;touch-action:manipulation}
 .dv3-share-btn:hover{border-color:var(--gold);color:var(--text)}
 .dv3-share-btn svg{flex-shrink:0}
+.dv3-archnav{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;margin:.4rem 0 1.2rem}
+.dv3-archnav-a{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--text-dim);padding:.45rem .7rem;border:1px solid var(--border);border-radius:6px;min-height:38px;display:inline-flex;align-items:center}
+.dv3-archnav-a:hover{border-color:var(--gold);color:var(--text)}
+.dv3-archnav-all{color:var(--text-muted)}
 .dv3-source{font-size:.68rem;color:var(--text-muted);text-align:center;padding:.75rem 0;border-top:1px solid var(--border);margin-bottom:2rem}
 .dv3-nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-top:2px solid var(--border);border-bottom:2px solid var(--border);margin-bottom:2rem}
 .dv3-nav a{display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;font-weight:600;color:var(--green);transition:opacity .15s}
@@ -248,6 +252,7 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
     <a class="dv3-cashbids-cta" href="/cash-bids" aria-label="View your local cash bids"><span class="dv3-cashbids-icon">&#x1F4B5;</span><span class="dv3-cashbids-text"><strong>Your local elevator bids</strong> <span class="dv3-cashbids-arrow">&rarr;</span></span></a>
     <div class="dv3-forward"><span class="dv3-forward-icon">&#x1F4E8;</span><div class="dv3-forward-content"><div class="dv3-forward-headline">Know a farmer who&rsquo;d want this?</div><div class="dv3-forward-sub">Forward this briefing. Or new here? Subscribe in one tap.</div></div><a class="dv3-forward-cta" href="https://agsist.com/daily?subscribe=1">Subscribe &rarr;</a></div>
     <div class="dv3-share" role="group" aria-label="Share this briefing"><span class="dv3-share-label">Share</span><button class="dv3-share-btn" data-share="twitter" type="button" aria-label="Post on X"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> Post</button><button class="dv3-share-btn" data-share="copy" type="button" aria-label="Copy link to this briefing">&#x1F517; Copy link</button><button class="dv3-share-btn" data-share="email" type="button" aria-label="Email this briefing">&#x2709; Email</button></div>
+    <nav class="dv3-archnav" aria-label="Briefing archive"><a class="dv3-archnav-a" href="/daily/2026-05-07" rel="prev">&larr; May 7 briefing</a><a class="dv3-archnav-a dv3-archnav-all" href="/archive">All briefings</a><a class="dv3-archnav-a" href="/daily/2026-05-09" rel="next">May 9 briefing &rarr;</a></nav>
     <div class="dv3-source">CME Group, USDA, Brownfield Ag News, Oil Price, Farm Policy News &middot; Auto-compiled at 6:02 AM CT</div>
   </article>
   <nav class="dv3-nav" aria-label="Briefing navigation" id="dv3-archive-nav">

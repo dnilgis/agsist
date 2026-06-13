@@ -104,6 +104,38 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-sec-body{font-size:.95rem;line-height:1.75;color:var(--text-dim);margin-bottom:.65rem}
 .dv3-sec-body strong{color:var(--text)}
 .dv3-sec-bottomline{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;color:var(--text);padding:.5rem .75rem;background:var(--surface2);border-radius:6px;border-left:3px solid var(--gold);margin-bottom:.5rem;line-height:1.45}
+/* v4.3: takeaway card, committable statement, sits between lead and sparks */
+.dv3-takeaway{margin:1.1rem 0 0;padding:1rem 1.15rem;background:linear-gradient(135deg,rgba(218,165,32,.08) 0%,rgba(218,165,32,.02) 60%,var(--surface2) 100%);border:1px solid rgba(218,165,32,.3);border-left:4px solid var(--gold);border-radius:8px}
+.dv3-takeaway-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.45rem}
+.dv3-takeaway-text{font-family:'Oswald',sans-serif;font-size:1.1rem;line-height:1.45;color:var(--text);margin:0;font-weight:600;letter-spacing:-.005em}
+@media(max-width:640px){.dv3-takeaway-text{font-size:1rem}}
+/* v4.3: per-section vs_yesterday continuity chip */
+.dv3-sec-vs{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);margin:0 0 .55rem;padding:.3rem .55rem;background:rgba(74,143,186,.04);border-left:2px solid rgba(74,143,186,.32);border-radius:0 4px 4px 0}
+.dv3-sec-vs-icon{color:#5aa0d2;font-size:.72rem;flex-shrink:0}
+.dv3-sec-vs-text{font-weight:600;letter-spacing:.01em}
+/* v4.4: per-section catalyst (driver) chip */
+.dv3-sec-catalyst{display:flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-dim);margin:0 0 .55rem;padding:.35rem .6rem;background:rgba(218,165,32,.05);border-left:2px solid rgba(218,165,32,.4);border-radius:0 4px 4px 0;flex-wrap:wrap}
+.dv3-sec-catalyst-icon{color:var(--gold);font-size:.72rem;flex-shrink:0}
+.dv3-sec-catalyst-label{color:var(--gold);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.6rem;flex-shrink:0}
+.dv3-sec-catalyst-text{font-weight:500;letter-spacing:.01em;line-height:1.4}
+/* v4.4: outside_the_pit, news in the calculus, not in today's prices */
+.dv3-otp{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:2rem}
+.dv3-otp-header{display:flex;flex-direction:column;gap:.25rem;margin-bottom:1rem;padding-bottom:.85rem;border-bottom:1px solid var(--border)}
+.dv3-otp-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.dv3-otp-sub{font-size:.74rem;color:var(--text-muted);font-style:italic}
+.dv3-otp-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem}
+@media(min-width:640px){.dv3-otp-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.dv3-otp-item{padding:.85rem 1rem;background:rgba(218,165,32,.03);border:1px solid rgba(218,165,32,.12);border-radius:6px;display:flex;flex-direction:column;gap:.4rem}
+.dv3-otp-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(218,165,32,.08);padding:.2rem .55rem;border-radius:3px;align-self:flex-start;border:1px solid rgba(218,165,32,.22)}
+.dv3-otp-title{font-size:.9rem;font-weight:700;color:var(--text);line-height:1.35}
+.dv3-otp-body{font-size:.82rem;line-height:1.55;color:var(--text-dim)}
+/* v4.3: cash-bids inline conversion footer, weekday-only */
+.dv3-cashbids-cta{display:flex;align-items:center;gap:.65rem;padding:.85rem 1.15rem;background:rgba(74,171,76,.06);border:1px solid rgba(74,171,76,.22);border-radius:8px;margin:1rem 0 .65rem;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s;min-height:44px}
+.dv3-cashbids-cta:hover{border-color:var(--green);background:rgba(74,171,76,.10)}
+.dv3-cashbids-icon{font-size:1.1rem;flex-shrink:0}
+.dv3-cashbids-text{font-size:.88rem;line-height:1.4}
+.dv3-cashbids-text strong{color:var(--text);font-weight:700}
+.dv3-cashbids-arrow{color:var(--green);font-weight:700;margin-left:.2rem}
 .dv3-sec-action{font-size:.82rem;font-weight:600;color:var(--green);padding:.45rem .7rem;background:rgba(74,171,76,.04);border:1px solid rgba(74,171,76,.15);border-radius:6px;line-height:1.45}
 .dv3-tmyk{background:linear-gradient(135deg,var(--surface) 0%,rgba(74,143,186,.03) 100%);border:2px solid rgba(74,143,186,.20);border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:2rem}
 .dv3-tmyk-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:.55rem}
@@ -122,6 +154,10 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-share-btn{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;padding:.45rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);cursor:pointer;transition:border-color .15s,color .15s;min-height:38px;touch-action:manipulation}
 .dv3-share-btn:hover{border-color:var(--gold);color:var(--text)}
 .dv3-share-btn svg{flex-shrink:0}
+.dv3-archnav{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;margin:.4rem 0 1.2rem}
+.dv3-archnav-a{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--text-dim);padding:.45rem .7rem;border:1px solid var(--border);border-radius:6px;min-height:38px;display:inline-flex;align-items:center}
+.dv3-archnav-a:hover{border-color:var(--gold);color:var(--text)}
+.dv3-archnav-all{color:var(--text-muted)}
 .dv3-source{font-size:.68rem;color:var(--text-muted);text-align:center;padding:.75rem 0;border-top:1px solid var(--border);margin-bottom:2rem}
 .dv3-nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-top:2px solid var(--border);border-bottom:2px solid var(--border);margin-bottom:2rem}
 .dv3-nav a{display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;font-weight:600;color:var(--green);transition:opacity .15s}
@@ -130,20 +166,20 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-sponsor{background:linear-gradient(135deg,var(--surface) 0%,rgba(218,165,32,.04) 100%);border:2px solid rgba(218,165,32,.30);border-radius:8px;padding:1.4rem 1.6rem;margin-bottom:1.75rem;position:relative;overflow:hidden}
 .dv3-sponsor::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold) 0%,rgba(218,165,32,.3) 60%,transparent 100%)}
 
-/* WEEKLY THREAD chapter marker — sits above the lead */
+/* WEEKLY THREAD chapter marker, sits above the lead */
 .dv3-thread{display:flex;align-items:center;gap:.65rem;padding:.45rem .85rem;background:rgba(74,143,186,.06);border:1px solid rgba(74,143,186,.20);border-radius:6px;margin-bottom:1rem;flex-wrap:wrap}
 .dv3-thread--anchor{background:rgba(74,143,186,.10);border-color:rgba(74,143,186,.32)}
 .dv3-thread-day{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5aa0d2;white-space:nowrap;padding:.18rem .5rem;background:rgba(74,143,186,.08);border-radius:3px}
 .dv3-thread-q{font-size:.86rem;font-weight:600;color:var(--text);line-height:1.4;flex:1;min-width:200px}
 
-/* YESTERDAY'S CALL — sits between sponsor and sections */
+/* YESTERDAY'S CALL, sits between sponsor and sections */
 .dv3-yc{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1rem 1.2rem;margin-bottom:1.5rem;border-left:4px solid var(--green)}
 .dv3-yc-label{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.45rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
 .dv3-yc-outcome{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.08em;padding:.18rem .55rem;border-radius:3px;white-space:nowrap}
 .dv3-yc-summary{font-size:.92rem;color:var(--text);line-height:1.65;font-weight:600;margin-bottom:.35rem}
 .dv3-yc-note{font-size:.85rem;color:var(--text-dim);line-height:1.65}
 
-/* SPREAD TO WATCH — sits between sections and basis */
+/* SPREAD TO WATCH, sits between sections and basis */
 .dv3-spread{background:linear-gradient(135deg,var(--surface) 0%,rgba(132,89,176,.04) 100%);border:2px solid rgba(132,89,176,.28);border-radius:8px;padding:1.1rem 1.3rem;margin:1.5rem 0 1.5rem}
 .dv3-spread-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9b7fc4;margin-bottom:.5rem}
 .dv3-spread-label-text{font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.3rem;letter-spacing:-.005em}
@@ -200,6 +236,7 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
       
       
       <p class="dv3-lead">Lean hogs crashed 9.2% to $92.83 Friday, the biggest single-day drop since January, as the weekly cutout report finally caught up with reality. Live cattle gave back ground to $253.00, testing whether last week's breakout above $252 has real conviction or just momentum money looking for an exit. The week that started with cattle hitting 52-week highs ended with livestock selling and nowhere to hide.</p>
+      
     </header>
     <div class="dv3-sparks"><div class="dv3-spark"><div class="dv3-spark-head"><span class="dv3-spark-label">Corn</span><span class="dv3-spark-last">$4.68</span></div><svg viewBox="0 0 180 32" preserveAspectRatio="none" aria-hidden="true" style="width:100%;height:30px;display:block"><polyline points="3.0,17.7 24.8,29.0 46.5,20.0 68.2,15.4 90.0,8.7 111.8,4.1 133.5,6.4 155.2,3.0 177.0,14.3 177.0,32 3,32" fill="rgba(74,171,76,.14)" stroke="none"/><polyline points="3.0,17.7 24.8,29.0 46.5,20.0 68.2,15.4 90.0,8.7 111.8,4.1 133.5,6.4 155.2,3.0 177.0,14.3" fill="none" stroke="#4aab4c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="177.0" cy="14.3" r="2" fill="#4aab4c"/></svg></div><div class="dv3-spark"><div class="dv3-spark-head"><span class="dv3-spark-label">Soybeans</span><span class="dv3-spark-last">$11.88</span></div><svg viewBox="0 0 180 32" preserveAspectRatio="none" aria-hidden="true" style="width:100%;height:30px;display:block"><polyline points="3.0,21.7 24.8,29.0 46.5,19.0 68.2,18.3 90.0,11.7 111.8,9.0 133.5,10.3 155.2,3.0 177.0,13.0 177.0,32 3,32" fill="rgba(74,171,76,.14)" stroke="none"/><polyline points="3.0,21.7 24.8,29.0 46.5,19.0 68.2,18.3 90.0,11.7 111.8,9.0 133.5,10.3 155.2,3.0 177.0,13.0" fill="none" stroke="#4aab4c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="177.0" cy="13.0" r="2" fill="#4aab4c"/></svg></div><div class="dv3-spark"><div class="dv3-spark-head"><span class="dv3-spark-label">Wheat</span><span class="dv3-spark-last">$6.25</span></div><svg viewBox="0 0 180 32" preserveAspectRatio="none" aria-hidden="true" style="width:100%;height:30px;display:block"><polyline points="3.0,24.3 24.8,29.0 46.5,24.7 68.2,23.8 90.0,13.9 111.8,3.0 133.5,12.0 155.2,15.3 177.0,21.0 177.0,32 3,32" fill="rgba(74,171,76,.14)" stroke="none"/><polyline points="3.0,24.3 24.8,29.0 46.5,24.7 68.2,23.8 90.0,13.9 111.8,3.0 133.5,12.0 155.2,15.3 177.0,21.0" fill="none" stroke="#4aab4c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="177.0" cy="21.0" r="2" fill="#4aab4c"/></svg></div></div>
     <div class="dv3-topbar"><div class="dv3-one-number"><div class="dv3-one-number-label">&#x1F4CA; THE NUMBER</div><div class="dv3-one-number-val">$92.83</div><div class="dv3-one-number-unit">lean hogs Friday close</div><div class="dv3-one-number-ctx">The 9.2% crash wiped out two weeks of gains in one session. Weekly cutout data showed the cash market wasn't following the futures rally, and when the disconnect got too wide, the correction came fast. This is what Hemingway meant about going bankrupt gradually, then suddenly.</div></div><div class="dv3-quote-card"><div class="dv3-quote-label">&#x1F4AC; DAILY QUOTE</div><p class="dv3-quote-text">“Risk comes from not knowing what you're doing.”</p><cite class="dv3-quote-attr">Warren Buffett</cite></div></div>
@@ -209,10 +246,13 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
     
     
     <div class="dv3-tmyk"><div class="dv3-tmyk-label">&#x1F9E0; THE MORE YOU KNOW</div><div class="dv3-tmyk-title">The Cash-Futures Disconnect: When Reality Checks In</div><div class="dv3-tmyk-body">Lean hogs' 9.2% crash Friday started with a number: the weekly cutout report showed cash hogs trading $8 under the futures close, the widest discount in six weeks. Futures can ignore cash for a while — momentum, fund flow, technical levels all matter. But eventually, cash is the truth teller. When lean hog futures hit $102 two weeks ago while cash hogs stayed stuck at $94, that $8 gap was borrowing from the future. Friday was payback day. The bigger the disconnect, the harder the snap-back. Watch this dynamic across all commodities: when futures get too far ahead of cash, the correction comes fast.</div></div>
-    <div class="dv3-watch"><div class="dv3-watch-label">&#x1F4C5; TODAY'S WATCH LIST</div><ul class="dv3-watch-list"><li class="dv3-watch-item"><span class="dv3-watch-time">Monday morning</span><span class="dv3-watch-desc">Live cattle futures at $252 — break invalidates the breakout</span></li><li class="dv3-watch-item"><span class="dv3-watch-time">Tuesday</span><span class="dv3-watch-desc">USDA Crop Progress report; corn planting above 60% removes weather premium</span></li><li class="dv3-watch-item"><span class="dv3-watch-time">Wednesday</span><span class="dv3-watch-desc">Weekly petroleum inventories; crude needs bullish data to restart rally</span></li><li class="dv3-watch-item"><span class="dv3-watch-time">This week</span><span class="dv3-watch-desc">May prevent plant deadline approaching for corn in northern Belt</span></li></ul></div>
+    <div class="dv3-watch"><div class="dv3-watch-label">&#x1F4C5; THIS WEEK'S WATCH LIST</div><ul class="dv3-watch-list"><li class="dv3-watch-item"><span class="dv3-watch-time">Monday morning</span><span class="dv3-watch-desc">Live cattle futures at $252 — break invalidates the breakout</span></li><li class="dv3-watch-item"><span class="dv3-watch-time">Tuesday</span><span class="dv3-watch-desc">USDA Crop Progress report; corn planting above 60% removes weather premium</span></li><li class="dv3-watch-item"><span class="dv3-watch-time">Wednesday</span><span class="dv3-watch-desc">Weekly petroleum inventories; crude needs bullish data to restart rally</span></li><li class="dv3-watch-item"><span class="dv3-watch-time">This week</span><span class="dv3-watch-desc">May prevent plant deadline approaching for corn in northern Belt</span></li></ul></div>
+    
     <div class="dv3-byline">Written by <strong>Sigurd Lindquist</strong>, founder. Reply at <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &mdash; I read everything.</div>
+    
     <div class="dv3-forward"><span class="dv3-forward-icon">&#x1F4E8;</span><div class="dv3-forward-content"><div class="dv3-forward-headline">Know a farmer who&rsquo;d want this?</div><div class="dv3-forward-sub">Forward this briefing. Or new here? Subscribe in one tap.</div></div><a class="dv3-forward-cta" href="https://agsist.com/daily?subscribe=1">Subscribe &rarr;</a></div>
     <div class="dv3-share" role="group" aria-label="Share this briefing"><span class="dv3-share-label">Share</span><button class="dv3-share-btn" data-share="twitter" type="button" aria-label="Post on X"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> Post</button><button class="dv3-share-btn" data-share="copy" type="button" aria-label="Copy link to this briefing">&#x1F517; Copy link</button><button class="dv3-share-btn" data-share="email" type="button" aria-label="Email this briefing">&#x2709; Email</button></div>
+    <nav class="dv3-archnav" aria-label="Briefing archive"><a class="dv3-archnav-a" href="/daily/2026-05-01" rel="prev">&larr; May 1 briefing</a><a class="dv3-archnav-a dv3-archnav-all" href="/archive">All briefings</a><a class="dv3-archnav-a" href="/daily/2026-05-03" rel="next">May 3 briefing &rarr;</a></nav>
     <div class="dv3-source">CME Group, USDA, EIA, various exchanges &middot; Auto-compiled at 6:02 AM CT</div>
   </article>
   <nav class="dv3-nav" aria-label="Briefing navigation" id="dv3-archive-nav">
