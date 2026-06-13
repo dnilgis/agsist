@@ -1,0 +1,50 @@
+name: Rebuild Archive HTML (one-time)
+
+# One-shot utility workflow. Re-renders every /daily/YYYY-MM-DD.html from its
+# archive JSON using the CURRENT generate_archive_html() template in
+# scripts/generate_daily.py. Run it manually (Actions tab -> this workflow ->
+# Run workflow) after deploying the v4.6.2 markdown-render fix. One run:
+#   - converts the raw **markdown** in every historical briefing to <strong>
+#   - backfills the GA4 tag on the 42 pre-tag archive pages (Mar 4 - Apr 23)
+# Idempotent and safe to re-run. After a successful run this workflow can be
+# deleted, or kept for future template upgrades.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rebuild-archive
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        # rebuild_archive_html.py imports generate_daily.py at module level,
+        # which imports requests + feedparser. No API keys needed — the
+        # rebuild only calls the HTML template function, never the generator.
+        run: pip install feedparser requests
+
+      - name: Rebuild all archive pages
+        run: python scripts/rebuild_archive_html.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add daily/
+          git diff --staged --quiet || git commit -m "🔧 Rebuild archive HTML — markdown fix + GA4 backfill"
+          git pull --rebase origin main
+          git push

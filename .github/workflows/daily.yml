@@ -114,11 +114,44 @@ jobs:
       - name: Generate RSS feed
         run: python scripts/generate_rss.py
 
+      # Strategic ladder (2026-06-12): public call scorecard, rebuilt from the
+      # archive JSONs after every briefing. Honest by construction — outcomes
+      # come straight from each day's yesterdays_call block, misses included.
+      # continue-on-error: the scorecard is an enhancement. A failure here
+      # must NEVER block the briefing from publishing.
+      - name: Build call scorecard
+        continue-on-error: true
+        run: python scripts/build_scorecard.py
+
+      # Static-bake today's briefing + The Read into index.html so AI crawlers
+      # (GPTBot, ClaudeBot, PerplexityBot — none execute JS) and Googlebot's
+      # first pass see the actual content. Client JS hydrates live data on top.
+      # continue-on-error: if index.html's markup ever drifts from the bake
+      # anchors, bake_homepage.py exits 3 — that must show as a red step, not
+      # stop the briefing publish. The homepage still works via JS hydration.
+      - name: Bake briefing into homepage
+        continue-on-error: true
+        run: python scripts/bake_homepage.py
+
+      # Audit fix 2026-06-12: each new /daily/YYYY-MM-DD archive page gets a
+      # sitemap entry the moment it publishes (Google discovery for the
+      # briefing archive). Guarded: weekend/holiday runs that don't write an
+      # archive HTML page add nothing. Idempotent: the Friday post-close
+      # regeneration re-run is a no-op for an already-listed URL.
+      - name: Add today's archive page to sitemap
+        run: |
+          d=$(date -u +%Y-%m-%d)
+          if [ -f "daily/${d}.html" ]; then
+            python scripts/update_sitemap.py --add "https://agsist.com/daily/${d}"
+          else
+            echo "no daily/${d}.html — skipping sitemap add"
+          fi
+
       - name: Commit and push
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add data/daily.json data/daily-archive/ daily/ feed.xml
+          git add data/daily.json data/daily-archive/ daily/ feed.xml sitemap.xml data/scorecard.json index.html
           git diff --staged --quiet || git commit -m "📰 AGSIST Daily — $(date -u +%Y-%m-%d)"
           git pull --rebase origin main
           git push
