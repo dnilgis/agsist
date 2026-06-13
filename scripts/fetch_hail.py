@@ -26,7 +26,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 IEM = "https://mesonet.agron.iastate.edu/cgi-bin/request/gis/lsr.py"
 OUT_DIR = "data/hail"
@@ -34,6 +34,7 @@ YEARS_BACK = 5
 COORD_DP = 2          # ~1 km — plenty for a national heatmap, keeps files small
 TIMEOUT = 240         # a full year of national LSRs is a large response
 UA = "AGSIST-hail-pipeline/1.0 (sig@farmers1st.com)"
+RECENT_DAYS = 30      # rolling window for the "recent hail" events layer
 
 
 def fetch_year(year):
@@ -109,6 +110,130 @@ def reduce_year(rows):
     return pts
 
 
+def _date_of(row):
+    # Prefer the human-formatted valid2 (YYYY-MM-DD HH:MM); fall back to valid.
+    v2 = _get(row, "valid2", "valid_2")
+    if v2 and len(v2) >= 10:
+        return v2[:10]
+    v = _get(row, "valid")
+    if v and len(v) >= 8 and v[:8].isdigit():
+        return "%s-%s-%s" % (v[:4], v[4:6], v[6:8])
+    return None
+
+
+def fetch_recent():
+    """Last RECENT_DAYS of national hail, with date/size/place kept for markers."""
+    now = datetime.now(timezone.utc)
+    sts = (now - timedelta(days=RECENT_DAYS)).strftime("%Y-%m-%dT00:00Z")
+    ets = now.strftime("%Y-%m-%dT%H:%MZ")
+    url = "%s?wfo=ALL&sts=%s&ets=%s&fmt=csv" % (IEM, sts, ets)
+    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+        raw = r.read().decode("utf-8", "replace")
+    reader = csv.DictReader(io.StringIO(raw))
+    rows = [{(k or "").strip().lower(): v for k, v in row.items()} for row in reader]
+    return rows
+
+
+def reduce_recent(rows):
+    out = []
+    for row in rows or []:
+        if not is_hail(row):
+            continue
+        latv = _get(row, "lat", "latitude")
+        lonv = _get(row, "lon", "long", "longitude")
+        if latv is None or lonv is None:
+            continue
+        try:
+            lat = round(float(latv), 3)
+            lon = round(float(lonv), 3)
+        except (TypeError, ValueError):
+            continue
+        if not (-180 <= lon <= 180 and -90 <= lat <= 90):
+            continue
+        mag = mag_of(row)
+        out.append({
+            "lat": lat, "lon": lon,
+            "mag": round(mag, 2) if mag is not None else None,
+            "date": _date_of(row),
+            "city": (_get(row, "city") or "").strip()[:40],
+            "st": (_get(row, "state", "st") or "").strip()[:2].upper(),
+        })
+    # newest first so the map can show "latest" naturally
+    out.sort(key=lambda r: (r["date"] or ""), reverse=True)
+    return out
+
+
+DAMAGING_IN = 1.5     # hail >= this (inches) is treated as crop-damaging
+_MONTHS = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
+def _month_of(row):
+    v = _get(row, "valid")
+    if v and len(v) >= 6 and v[:6].isdigit():
+        m = int(v[4:6])
+        if 1 <= m <= 12:
+            return m
+    v2 = _get(row, "valid2", "valid_2")
+    if v2 and len(v2) >= 7:
+        try:
+            return int(v2[5:7])
+        except ValueError:
+            pass
+    return None
+
+
+def tally_counties(rows, acc):
+    """Fold one year's hail rows into the cross-year county accumulator `acc`.
+
+    acc[(ST, COUNTY)] = {"total":int, "dmg":int, "months":[13 ints]}.
+    Rows with no county (~1% IEM can't match to a boundary) are skipped.
+    """
+    for row in rows or []:
+        if not is_hail(row):
+            continue
+        st = (_get(row, "state", "st") or "").strip().upper()[:2]
+        county = (_get(row, "county") or "").strip()
+        if not st or not county:
+            continue
+        key = (st, county)
+        rec = acc.get(key)
+        if rec is None:
+            rec = {"total": 0, "dmg": 0, "months": [0] * 13}
+            acc[key] = rec
+        rec["total"] += 1
+        mag = mag_of(row)
+        if mag is not None and mag >= DAMAGING_IN:
+            rec["dmg"] += 1
+        mo = _month_of(row)
+        if mo:
+            rec["months"][mo] += 1
+
+
+def finalize_counties(acc, years, per_state=12):
+    """Turn the accumulator into {ST: [ranked county rows]} for the page."""
+    n_years = max(1, len(years))
+    by_state = {}
+    for (st, county), rec in acc.items():
+        peak_i = 0
+        for i in range(1, 13):
+            if rec["months"][i] > rec["months"][peak_i]:
+                peak_i = i
+        row = {
+            "county": county,
+            "total": rec["total"],
+            "avg": round(rec["total"] / n_years, 1),
+            "peak": _MONTHS[peak_i] if peak_i else "\u2014",
+            "dmg_pct": round(100.0 * rec["dmg"] / rec["total"]) if rec["total"] else 0,
+        }
+        by_state.setdefault(st, []).append(row)
+    for st in by_state:
+        by_state[st].sort(key=lambda r: r["total"], reverse=True)
+        by_state[st] = by_state[st][:per_state]
+    return by_state
+
+
 def existing_count(year):
     path = "%s/%d.json" % (OUT_DIR, year)
     if not os.path.exists(path):
@@ -125,6 +250,8 @@ def main():
     this_year = datetime.now(timezone.utc).year
     years = list(range(this_year - YEARS_BACK + 1, this_year + 1))
     counts = {}
+    cty_acc = {}          # cross-year county accumulator
+    cty_years = []        # years that actually contributed to the tally
 
     for y in years:
         try:
@@ -152,16 +279,48 @@ def main():
             counts[str(y)] = existing_count(y)
             continue
 
+        tally_counties(rows, cty_acc)
+        cty_years.append(y)
         counts[str(y)] = len(pts)
         with open("%s/%d.json" % (OUT_DIR, y), "w") as fh:
             json.dump({"year": y, "count": len(pts), "points": pts}, fh, separators=(",", ":"))
         print("[%d] %d hail reports" % (y, len(pts)))
         time.sleep(2)  # be polite to IEM between large requests
 
+    # ── County rankings per state (only rewrite if we got fresh rows) ──
+    if cty_acc:
+        by_state = finalize_counties(cty_acc, cty_years)
+        with open("%s/state-counties.json" % OUT_DIR, "w") as fh:
+            json.dump({
+                "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                "years": cty_years,
+                "damaging_in": DAMAGING_IN,
+                "states": by_state,
+            }, fh, separators=(",", ":"))
+        print("[counties] ranked counties for %d states" % len(by_state))
+    else:
+        print("[counties] no fresh rows — keeping existing state-counties.json", file=sys.stderr)
+
+    # ── Recent hail events (last 30 days) for the markers layer ──
+    recent_count = None
+    try:
+        recent = reduce_recent(fetch_recent())
+        with open("%s/recent.json" % OUT_DIR, "w") as fh:
+            json.dump({
+                "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                "days": RECENT_DAYS, "count": len(recent), "reports": recent,
+            }, fh, separators=(",", ":"))
+        recent_count = len(recent)
+        print("[recent] %d hail reports in the last %d days" % (recent_count, RECENT_DAYS))
+    except (urllib.error.URLError, TimeoutError, ValueError, OSError) as e:
+        print("[recent] fetch failed: %s (keeping any existing recent.json)" % e, file=sys.stderr)
+
     manifest = {
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
         "years": years,
         "counts": counts,
+        "recent_days": RECENT_DAYS,
+        "recent_count": recent_count,
     }
     with open("%s/manifest.json" % OUT_DIR, "w") as fh:
         json.dump(manifest, fh, separators=(",", ":"))
