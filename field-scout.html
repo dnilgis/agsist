@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+
+  <title>Field Scout &mdash; Draw a Field, Get Its Whole Story | AGSIST</title>
+  <meta name="description" content="Draw any US field and instantly see its soil types, 5-year crop rotation, weather, drought, and nearby cash grain bids. Free, no login.">
+  <meta name="author" content="Sigurd Lindquist &mdash; Farmers First Agri Service">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://agsist.com/field-scout">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AGSIST">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="Field Scout &mdash; Draw a Field, Get Soil, Crop History &amp; Weather">
+  <meta property="og:description" content="Draw any field and instantly see soil types, 5-year crop rotation, weather, drought, and nearby cash bids. Free, no login.">
+  <meta property="og:url" content="https://agsist.com/field-scout">
+  <meta property="og:image" content="https://agsist.com/img/og/field-scout.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="AGSIST Field Scout">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@agsist">
+  <meta name="twitter:title" content="Field Scout &mdash; Draw a Field, Get Its Whole Story">
+  <meta name="twitter:description" content="Soil, 5-year crop rotation, weather, drought, and cash bids for any field you draw. Free.">
+  <meta name="twitter:image" content="https://agsist.com/img/og/field-scout.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="/components/styles.css?v=13" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=13">
+
+  <!-- Leaflet (map engine) + Leaflet.draw (polygon drawing) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css">
+
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <style>
+    button,a,[role="button"]{touch-action:manipulation;}
+
+    /* ── Field Scout layout ───────────────────────────────────────── */
+    .fs-wrap{max-width:1280px;margin:0 auto;padding:1rem 1rem 4rem}
+    .fs-bc{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);margin:.4rem 0 1rem}
+    .fs-bc a{color:var(--text-muted);text-decoration:none}
+    .fs-bc a:hover{color:var(--brand,var(--gold))}
+
+    .fs-head{margin-bottom:1.1rem}
+    .fs-title{font-family:'Oswald',sans-serif;font-size:clamp(1.7rem,4.5vw,2.5rem);font-weight:700;letter-spacing:.01em;color:var(--text);line-height:1.05;margin:0 0 .35rem;text-transform:uppercase}
+    .fs-title em{font-style:normal;color:var(--brand,var(--gold))}
+    .fs-sub{color:var(--text-dim);font-size:.96rem;line-height:1.6;max-width:680px;margin:0}
+
+    /* The split: map left, intel panel right; stacks on mobile */
+    .fs-split{display:grid;grid-template-columns:1fr 380px;gap:1rem;align-items:start}
+    @media(max-width:900px){.fs-split{grid-template-columns:1fr}}
+
+    .fs-mapcol{position:relative}
+    #fs-map{height:560px;border-radius:12px;border:1px solid var(--border);background:#0d1408;z-index:1}
+    @media(max-width:900px){#fs-map{height:62vh;min-height:380px}}
+
+    /* Map toolbar — search + draw controls riding on top of the map */
+    .fs-toolbar{position:absolute;top:12px;left:12px;right:12px;z-index:600;display:flex;gap:.5rem;flex-wrap:wrap;pointer-events:none}
+    .fs-toolbar > *{pointer-events:auto}
+    .fs-search{flex:1;min-width:180px;display:flex;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.4)}
+    .fs-search input{flex:1;background:transparent;border:none;color:var(--text);font-family:inherit;font-size:.9rem;padding:.6rem .8rem;outline:none}
+    .fs-search input::placeholder{color:var(--text-muted)}
+    .fs-search button{background:var(--brand,var(--gold));color:#0a1206;border:none;padding:0 .9rem;font-weight:700;cursor:pointer;font-size:.85rem}
+    .fs-draw-hint{display:inline-flex;align-items:center;gap:.45rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .8rem;font-size:.78rem;color:var(--text-dim);box-shadow:0 2px 10px rgba(0,0,0,.4);font-family:'JetBrains Mono',monospace}
+    .fs-draw-hint b{color:var(--brand,var(--gold))}
+
+    .fs-actionbar{position:absolute;bottom:12px;left:12px;right:12px;z-index:600;display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;pointer-events:none}
+    .fs-actionbar > *{pointer-events:auto}
+    .fs-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;padding:.6rem 1rem;cursor:pointer;min-height:42px;box-shadow:0 2px 10px rgba(0,0,0,.4);display:inline-flex;align-items:center;gap:.45rem}
+    .fs-btn:hover{border-color:var(--brand,var(--gold));color:var(--brand,var(--gold))}
+    .fs-btn--primary{background:var(--brand,var(--gold));color:#0a1206;border-color:transparent}
+    .fs-btn--primary:hover{color:#0a1206;opacity:.92}
+    .fs-btn:disabled{opacity:.4;cursor:not-allowed}
+
+    /* Basemap toggle */
+    .fs-basemap{position:absolute;top:60px;right:12px;z-index:600;display:flex;flex-direction:column;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.4)}
+    .fs-basemap button{background:transparent;border:none;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.45rem .6rem;cursor:pointer}
+    .fs-basemap button.on{background:var(--brand,var(--gold));color:#0a1206;font-weight:700}
+
+    /* ── Intel panel ──────────────────────────────────────────────── */
+    .fs-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:sticky;top:1rem}
+    @media(max-width:900px){.fs-panel{position:static}}
+    .fs-panel-empty{padding:2.2rem 1.4rem;text-align:center;color:var(--text-muted)}
+    .fs-panel-empty svg{width:46px;height:46px;opacity:.5;margin-bottom:.8rem}
+    .fs-panel-empty h3{font-family:'Oswald',sans-serif;font-size:1.15rem;color:var(--text-dim);margin:0 0 .4rem;text-transform:uppercase;letter-spacing:.03em}
+    .fs-panel-empty p{font-size:.86rem;line-height:1.6;margin:0}
+
+    .fs-fieldhead{padding:1rem 1.2rem;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(var(--brand-rgb,218,165,32),.08),transparent)}
+    .fs-fieldhead .acres{font-family:'Oswald',sans-serif;font-size:2.1rem;font-weight:700;color:var(--brand,var(--gold));line-height:1}
+    .fs-fieldhead .acres small{font-size:.9rem;color:var(--text-dim);font-weight:400;font-family:'JetBrains Mono',monospace}
+    .fs-fieldhead .coords{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);margin-top:.35rem}
+
+    .fs-section{border-bottom:1px solid var(--border)}
+    .fs-section-h{display:flex;align-items:center;gap:.5rem;padding:.7rem 1.2rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brand,var(--gold));font-weight:700}
+    .fs-section-h .ico{font-size:.95rem}
+    .fs-section-body{padding:0 1.2rem 1rem}
+
+    .fs-loading{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-muted);padding:.3rem 0}
+    .fs-loading::after{content:'';display:inline-block;width:1em;text-align:left;animation:fsdot 1.2s steps(4,end) infinite}
+    @keyframes fsdot{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
+    .fs-err{font-size:.8rem;color:var(--red);line-height:1.5}
+
+    /* Soil rows */
+    .fs-soil-row{display:flex;align-items:center;gap:.6rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04)}
+    .fs-soil-row:last-child{border-bottom:none}
+    .fs-soil-bar{width:38px;height:38px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.7rem;color:#0a1206}
+    .fs-soil-info{flex:1;min-width:0}
+    .fs-soil-name{font-size:.85rem;color:var(--text);font-weight:600;line-height:1.25}
+    .fs-soil-meta{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted);margin-top:.15rem}
+    .fs-soil-pct{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text-dim);flex-shrink:0}
+
+    /* Crop rotation timeline */
+    .fs-rotation{display:flex;gap:.4rem}
+    .fs-rot-year{flex:1;text-align:center}
+    .fs-rot-chip{height:54px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;border:1px solid rgba(255,255,255,.08)}
+    .fs-rot-crop{font-size:.66rem;color:var(--text-dim);margin-top:.25rem;font-family:'JetBrains Mono',monospace;line-height:1.1}
+    .fs-rot-yr{font-size:.62rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-top:.1rem}
+
+    /* Stat grid (weather/drought) */
+    .fs-stats{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+    .fs-stat{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .7rem}
+    .fs-stat-v{font-family:'Oswald',sans-serif;font-size:1.35rem;font-weight:700;color:var(--text);line-height:1}
+    .fs-stat-l{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-top:.25rem}
+    .fs-drought{display:inline-flex;align-items:center;gap:.45rem;padding:.3rem .6rem;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700}
+
+    /* Cash bids */
+    .fs-bid-row{display:flex;justify-content:space-between;align-items:baseline;padding:.45rem 0;border-bottom:1px solid rgba(255,255,255,.04);gap:.5rem}
+    .fs-bid-row:last-child{border-bottom:none}
+    .fs-bid-el{font-size:.82rem;color:var(--text);min-width:0}
+    .fs-bid-el small{display:block;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted)}
+    .fs-bid-px{font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:700;color:var(--text);white-space:nowrap}
+    .fs-bid-basis{font-family:'JetBrains Mono',monospace;font-size:.68rem}
+
+    .fs-disc{font-size:.72rem;color:var(--text-muted);line-height:1.6;padding:1rem 1.2rem;background:var(--surface2)}
+    .fs-src{font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--text-muted);margin-top:.3rem}
+
+    /* Leaflet dark-mode polish */
+    .leaflet-container{background:#0d1408;font-family:inherit}
+    .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+    .leaflet-bar a{background:var(--surface);color:var(--text);border-bottom-color:var(--border)}
+    .leaflet-bar a:hover{background:var(--surface2)}
+    .leaflet-draw-toolbar a{background-color:var(--surface)!important}
+    .fs-spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(var(--brand-rgb,218,165,32),.3);border-top-color:var(--brand,var(--gold));border-radius:50%;animation:fsspin .7s linear infinite;vertical-align:-2px;margin-right:.4rem}
+    @keyframes fsspin{to{transform:rotate(360deg)}}
+
+    /* ── Saved fields ─────────────────────────────────────────────── */
+    .fs-saved{margin-top:.8rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem}
+    .fs-saved-label{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brand,var(--gold));font-weight:700;margin-bottom:.55rem}
+    .fs-saved-label small{color:var(--text-muted);text-transform:none;letter-spacing:0}
+    .fs-saved-list{display:flex;gap:.5rem;flex-wrap:wrap}
+    .fs-saved-chip{display:inline-flex;align-items:stretch;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+    .fs-saved-open{background:var(--surface2);border:none;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;padding:.45rem .7rem;cursor:pointer}
+    .fs-saved-open small{color:var(--text-muted);font-weight:400}
+    .fs-saved-open:hover{color:var(--brand,var(--gold))}
+    .fs-saved-del{background:var(--surface2);border:none;border-left:1px solid var(--border);color:var(--text-muted);font-size:1rem;line-height:1;padding:0 .5rem;cursor:pointer}
+    .fs-saved-del:hover{color:var(--red);background:rgba(217,83,79,.1)}
+    .fs-save-btn{background:transparent;border:1px solid var(--brand,var(--gold));border-radius:7px;color:var(--brand,var(--gold));font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;padding:.4rem .7rem;cursor:pointer;white-space:nowrap;flex-shrink:0}
+    .fs-save-btn:hover{background:var(--brand,var(--gold));color:#0a1206}
+
+    /* ── The Read / insight brain ─────────────────────────────────── */
+    .fs-insight-section{background:linear-gradient(180deg,rgba(var(--brand-rgb,218,165,32),.10),transparent)}
+    .fs-insight-p{font-size:.92rem;color:var(--text);line-height:1.6;margin:0 0 .6rem}
+    .fs-insight-p strong{color:var(--brand,var(--gold))}
+    .fs-insight-flags{display:flex;flex-direction:column;gap:.55rem;margin-top:.4rem}
+    .fs-insight-flag{display:flex;gap:.6rem;align-items:flex-start;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--brand,var(--gold));border-radius:0 8px 8px 0;padding:.6rem .75rem;font-size:.85rem;color:var(--text-dim);line-height:1.55}
+    .fs-insight-flag strong{color:var(--text)}
+    .fs-flag-mark{flex-shrink:0;width:18px;height:18px;border-radius:50%;background:var(--brand,var(--gold));color:#0a1206;font-weight:700;font-size:.72rem;display:flex;align-items:center;justify-content:center;margin-top:.1rem}
+
+    /* ── Risk profile (the insurance moat) ────────────────────────── */
+    .fs-risk-row{display:flex;align-items:center;gap:.6rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04)}
+    .fs-risk-row:last-child{border-bottom:none}
+    .fs-risk-label{flex:1;font-size:.85rem;color:var(--text);font-weight:600;line-height:1.3}
+    .fs-risk-label small{display:block;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);font-weight:400;margin-top:.15rem}
+    .fs-risk-badge{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.04em;padding:.22rem .6rem;border-radius:20px;flex-shrink:0}
+
+    /* "How it works" strip below */
+    .fs-how{margin-top:2rem;display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem}
+
+    /* ── God layers ───────────────────────────────────────────────── */
+    .fs-god{margin-top:.8rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem}
+    .fs-god-label{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--brand,var(--gold));font-weight:700;margin-bottom:.55rem}
+    .fs-god-chips{display:flex;gap:.5rem;flex-wrap:wrap}
+    .fs-god-chip{display:inline-flex;align-items:center;gap:.45rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;padding:.5rem .8rem;cursor:pointer;min-height:40px}
+    .fs-god-chip:hover{border-color:var(--brand,var(--gold));color:var(--text)}
+    .fs-god-chip.on{background:var(--brand,var(--gold));color:#0a1206;border-color:transparent}
+    .fs-god-chip .dot{width:14px;height:14px;border-radius:4px;flex-shrink:0}
+    .fs-god-controls{margin-top:.8rem;display:flex;gap:1.2rem;flex-wrap:wrap}
+    .fs-god-slider{flex:1;min-width:180px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-dim)}
+    .fs-god-slider span{display:block;margin-bottom:.3rem}
+    .fs-god-slider b{color:var(--brand,var(--gold))}
+    .fs-god-slider input[type=range]{width:100%;accent-color:var(--brand,var(--gold))}
+    @media(max-width:760px){.fs-how{grid-template-columns:1fr 1fr}}
+    .fs-how-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem}
+    .fs-how-n{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--brand,var(--gold));font-weight:700}
+    .fs-how-card h4{font-size:.9rem;color:var(--text);margin:.4rem 0 .3rem}
+    .fs-how-card p{font-size:.78rem;color:var(--text-dim);line-height:1.55;margin:0}
+  </style>
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[
+    {"@type":"WebApplication","name":"AGSIST Field Scout","url":"https://agsist.com/field-scout","applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Draw any US field on a map and instantly see its soil types and productivity, 5-year crop rotation history, live weather, drought status, and nearby cash grain bids.","author":{"@type":"Person","name":"Sigurd Lindquist","worksFor":{"@type":"Organization","name":"Farmers First Agri Service","url":"https://farmers1st.com"}}},
+    {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Field Scout","item":"https://agsist.com/field-scout"}]},
+    {"@type":"FAQPage","mainEntity":[
+      {"@type":"Question","name":"How do I see a field's soil types?","acceptedAnswer":{"@type":"Answer","text":"Draw the field boundary on the map (or search your address and draw it), and Field Scout queries the USDA SSURGO soil survey for every soil map unit inside the polygon, showing each soil series, its share of the field, and its productivity rating."}},
+      {"@type":"Question","name":"Where does the crop rotation history come from?","acceptedAnswer":{"@type":"Answer","text":"From the USDA Cropland Data Layer (CDL), a satellite-derived record of what crop grew on each pixel each year. Field Scout reads the dominant crop inside your drawn field for the last five available years."}},
+      {"@type":"Question","name":"Is Field Scout free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Field Scout is available at no charge, with no login. It runs on free public data from USDA, Open-Meteo, and the US Drought Monitor, plus AGSIST's own cash-bid feed."}}
+    ]}
+  ]}
+  </script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header"></div>
+
+  <main id="main" tabindex="-1">
+    <div class="fs-wrap">
+      <nav class="fs-bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> &rsaquo; <a href="/tools">Tools</a> &rsaquo; Field Scout</nav>
+
+      <div class="fs-head">
+        <h1 class="fs-title">Field Scout &mdash; draw a field, <em>get its whole story</em></h1>
+        <p class="fs-sub">Search your address or pan to your ground, trace the field, and read what the land is: every soil type and its productivity, the last five years of crops grown on it, live weather and drought, and the closest cash bids. All from public data. No login, no cost.</p>
+      </div>
+
+      <div class="fs-split">
+        <!-- MAP -->
+        <div class="fs-mapcol">
+          <div id="fs-map" role="application" aria-label="Interactive field map. Use the Draw a field button to trace a boundary, or search your location above. Field details appear in the panel beside the map."></div>
+
+          <div class="fs-toolbar">
+            <div class="fs-search">
+              <input id="fs-addr" type="text" placeholder="Search address, town, or ZIP&hellip;" aria-label="Search location" autocomplete="off">
+              <button id="fs-addr-go" type="button">Go</button>
+            </div>
+            <span class="fs-draw-hint" id="fs-hint"><b>&#9998; Draw</b>&nbsp;your field&rarr;</span>
+          </div>
+
+          <div class="fs-basemap" role="group" aria-label="Basemap">
+            <button id="fs-bm-sat" class="on" type="button">Satellite</button>
+            <button id="fs-bm-map" type="button">Map</button>
+          </div>
+
+          <div class="fs-actionbar">
+            <button class="fs-btn fs-btn--primary" id="fs-draw" type="button">&#9998; Draw a field</button>
+            <button class="fs-btn" id="fs-gps" type="button">&#9678; My location</button>
+            <button class="fs-btn" id="fs-clear" type="button" disabled>&#10005; Clear</button>
+          </div>
+          </div><!-- /fs-mapcol -->
+
+          <!-- GOD LAYERS: see what the eye can't (sits BELOW the map) -->
+          <div class="fs-god">
+            <div class="fs-god-label">See the invisible</div>
+            <div class="fs-god-chips">
+              <button class="fs-god-chip" data-god="ndvi" type="button"><span class="dot" style="background:linear-gradient(90deg,#8c6638,#34a834)"></span>Crop vigor</button>
+              <button class="fs-god-chip" data-god="moisture" type="button"><span class="dot" style="background:linear-gradient(90deg,#c7ae73,#2a7fd6)"></span>Soil moisture</button>
+              <button class="fs-god-chip" id="fs-hail-toggle" type="button"><span class="dot" style="background:#7cd2ff"></span>Hail history</button>
+            </div>
+            <div class="fs-god-controls" id="fs-god-controls" hidden>
+              <label class="fs-god-slider">
+                <span>Opacity <b id="fs-opacity-val">75%</b></span>
+                <input id="fs-opacity" type="range" min="20" max="100" value="75" aria-label="Layer opacity">
+              </label>
+              <label class="fs-god-slider" id="fs-scrub-wrap" hidden>
+                <span>Back in time <b id="fs-scrub-val">Latest</b></span>
+                <input id="fs-scrub" type="range" min="0" max="26" value="0" step="1" aria-label="Weeks back in the season">
+              </label>
+            </div>
+          </div>
+          <div class="fs-saved" id="fs-saved" hidden></div>
+        </div><!-- /fs-mapwrap left column -->
+
+        <!-- INTEL PANEL -->
+        <aside class="fs-panel" id="fs-panel" aria-live="polite">
+          <div class="fs-panel-empty" id="fs-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 20l-5.5 2.5v-15L9 5m0 15l6-2.5m-6 2.5v-15m6 12.5l5.5 2.5v-15L15 5m0 12.5v-15m0 0L9 5"/></svg>
+            <h3>No field yet</h3>
+            <p>Hit <b>Draw a field</b> and trace your boundary on the map. Field Scout will pull its soil, crop history, weather, drought, and nearby cash bids.</p>
+          </div>
+          <div id="fs-results" hidden></div>
+          <div class="fs-disc">
+            Field Scout reads public survey data for the area you draw &mdash; it doesn&rsquo;t know who owns the land. Saved fields are stored on your device only, never on our servers. Soil and crop layers are survey estimates, not a substitute for sampling your own ground. Nothing here is financial advice.
+            <div class="fs-src">Sources: USDA SSURGO soil survey &middot; USDA Cropland Data Layer &middot; Open-Meteo &middot; US Drought Monitor &middot; AGSIST cash-bid feed</div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- How it works -->
+      <div class="fs-how">
+        <div class="fs-how-card"><div class="fs-how-n">01</div><h4>Find your ground</h4><p>Search an address or ZIP, tap <em>My location</em>, or just pan the satellite map to your fields.</p></div>
+        <div class="fs-how-card"><div class="fs-how-n">02</div><h4>Trace the boundary</h4><p>Click <em>Draw a field</em> and drop points around the edge. Double-click to close it.</p></div>
+        <div class="fs-how-card"><div class="fs-how-n">03</div><h4>Read the land</h4><p>Acreage, soil types and productivity, and five years of crop rotation populate instantly.</p></div>
+        <div class="fs-how-card"><div class="fs-how-n">04</div><h4>Check the market</h4><p>Live weather, drought status, and the nearest cash grain bids round out the picture.</p></div>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.min.js"></script>
+  <script src="/components/loader.js" defer></script>
+  <script src="/field-scout.js" defer></script>
+</body>
+</html>
