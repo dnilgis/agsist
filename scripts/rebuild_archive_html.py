@@ -26,7 +26,7 @@ from pathlib import Path
 # Import the current template from generate_daily.py
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from generate_daily import generate_archive_html
+from generate_daily import generate_archive_html, archive_neighbor_dates
 
 REPO_ROOT = HERE.parent
 ARCHIVE_JSON_DIR = REPO_ROOT / "data" / "daily-archive"
@@ -54,7 +54,8 @@ def rebuild_one(date_iso: str, dry_run: bool = False) -> bool:
         print(f"  [dry]  {date_iso}  chart_series={has_cs}  locked_prices={has_lp}")
         return True
 
-    html = generate_archive_html(briefing, date_iso)
+    prev_d, next_d = archive_neighbor_dates(date_iso)
+    html = generate_archive_html(briefing, date_iso, prev_d, next_d)
     ARCHIVE_HTML_DIR.mkdir(parents=True, exist_ok=True)
     with open(html_path, "w") as f:
         f.write(html)

@@ -40,6 +40,8 @@ CADENCE = {
     "/wheat-futures-prices": 1,
     "/ag-odds": 1,
     "/whats-priced-in": 1,
+    "/cattle-futures-prices": 1,
+    "/scorecard": 1,
     "/drought-monitor": 7,
     "/cot": 7,
 }
@@ -69,6 +71,10 @@ def main():
     ap.add_argument("--daily", action="store_true")
     ap.add_argument("--changed", nargs="*", default=[])
     ap.add_argument("--out", default=None, help="write bumped URLs here (for IndexNow)")
+    ap.add_argument("--add", nargs="*", default=[],
+                    help="ensure these full URLs exist in the sitemap; insert (lastmod=today) "
+                         "if missing, bump lastmod if already present. Used by daily.yml to "
+                         "append each new /daily/YYYY-MM-DD archive page.")
     args = ap.parse_args()
 
     today = datetime.date.today().isoformat()
@@ -113,6 +119,31 @@ def main():
                       block, count=1)
 
     new = re.sub(r"<url>.*?</url>", process, content, flags=re.S)
+
+    # --add mode: ensure URLs exist. Existing URL -> bump lastmod to today.
+    # Missing URL -> insert a new single-line <url> block just before </urlset>,
+    # matching the file's existing one-line entry style. Never duplicates.
+    for url in args.add:
+        url = url.strip().rstrip("/") if url.strip() != HOST + "/" else url.strip()
+        if not url:
+            continue
+        if f"<loc>{url}</loc>" in new:
+            def bump_existing(m, _url=url):
+                block = m.group(0)
+                if f"<loc>{_url}</loc>" not in block:
+                    return block
+                if f"<lastmod>{today}</lastmod>" in block:
+                    return block
+                bumped.append(_url)
+                return re.sub(r"<lastmod>\s*.*?\s*</lastmod>",
+                              f"<lastmod>{today}</lastmod>", block, count=1, flags=re.S)
+            new = re.sub(r"<url>.*?</url>", bump_existing, new, flags=re.S)
+        else:
+            entry = (f"  <url><loc>{url}</loc><lastmod>{today}</lastmod>"
+                     f"<changefreq>never</changefreq><priority>0.4</priority></url>\n")
+            new = new.replace("</urlset>", entry + "</urlset>", 1)
+            bumped.append(url)
+            print(f"[sitemap] added {url}")
 
     if bumped:
         Path(SITEMAP).write_text(new, encoding="utf-8")

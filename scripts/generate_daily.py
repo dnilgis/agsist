@@ -1609,12 +1609,17 @@ def html_esc(s):
 
 def html_esc_preserve_strong(s):
     if not s: return ""
-    parts = re.split(r'(</?strong>)', s, flags=re.IGNORECASE)
+    parts = re.split(r'(</?(?:strong|em)>)', s, flags=re.IGNORECASE)
     out = []
     for part in parts:
-        if part.lower() in ('<strong>', '</strong>'): out.append(part.lower())
+        if part.lower() in ('<strong>', '</strong>', '<em>', '</em>'): out.append(part.lower())
         else: out.append(html_esc(part))
-    return "".join(out)
+    joined = "".join(out)
+    # v4.6.2: generator stores **markdown** emphasis in JSON by design
+    # (v4.5.0 "markdown not HTML"). Convert to <strong> at render time so
+    # archive pages match mdInline() in index.html / daily.html exactly.
+    joined = re.sub(r'\*\*([^*]+?)\*\*', r'<strong>\1</strong>', joined)
+    return joined
 
 
 def js_esc(s):
@@ -1824,7 +1829,30 @@ def render_cashbids_footer_html(market_closed):
             '</a>')
 
 
-def generate_archive_html(briefing, date_iso):
+def archive_neighbor_dates(date_iso):
+    """Previous/next published briefing dates around date_iso (ISO strings or None)."""
+    try:
+        dates = sorted(p.stem for p in ARCHIVE_JSON_DIR.glob("*.json") if p.stem != "index")
+    except Exception:
+        return None, None
+    if date_iso in dates:
+        i = dates.index(date_iso)
+        return (dates[i-1] if i > 0 else None,
+                dates[i+1] if i < len(dates)-1 else None)
+    earlier = [d for d in dates if d < date_iso]
+    later = [d for d in dates if d > date_iso]
+    return (earlier[-1] if earlier else None, later[0] if later else None)
+
+
+def _nav_date_label(d):
+    try:
+        dt = datetime.strptime(d, "%Y-%m-%d")
+        return dt.strftime("%b ") + str(dt.day)
+    except Exception:
+        return d
+
+
+def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
     date_display = briefing.get("date", date_iso)
     headline = html_esc(briefing.get("headline", "AGSIST Daily Briefing"))
     subheadline = html_esc(briefing.get("subheadline", ""))
@@ -1960,7 +1988,7 @@ def generate_archive_html(briefing, date_iso):
         tmyk_html = (f'<div class="dv3-tmyk">'
                      f'<div class="dv3-tmyk-label">&#x1F9E0; THE MORE YOU KNOW</div>'
                      f'<div class="dv3-tmyk-title">{html_esc(tmyk.get("title", ""))}</div>'
-                     f'<div class="dv3-tmyk-body">{html_esc(tmyk.get("body", ""))}</div></div>')
+                     f'<div class="dv3-tmyk-body">{html_esc_preserve_strong(tmyk.get("body", ""))}</div></div>')
 
     watch = briefing.get("watch_list", [])
     watch_items = ""
@@ -2000,6 +2028,19 @@ def generate_archive_html(briefing, date_iso):
     sponsor_attr_html = render_sponsor_attribution_html(sponsor)
     # v4.4: outside_the_pit (news in the calculus, not in today's prices)
     outside_pit_html = render_outside_the_pit_html(briefing.get("outside_the_pit"), is_weekend_brief)
+
+    # v4.6.3: archive interlinking — static prev/next so crawlers (and
+    # readers) can walk the briefing corpus. next_date is filled in for
+    # yesterday's page by save_archive's re-render, and for the whole
+    # backlog by rebuild_archive_html.py.
+    nav_parts = []
+    if prev_date:
+        nav_parts.append(f'<a class="dv3-archnav-a" href="/daily/{prev_date}" rel="prev">&larr; {_nav_date_label(prev_date)} briefing</a>')
+    nav_parts.append('<a class="dv3-archnav-a dv3-archnav-all" href="/archive">All briefings</a>')
+    if next_date:
+        nav_parts.append(f'<a class="dv3-archnav-a" href="/daily/{next_date}" rel="next">{_nav_date_label(next_date)} briefing &rarr;</a>')
+    archive_nav_html = ('<nav class="dv3-archnav" aria-label="Briefing archive">'
+                        + "".join(nav_parts) + '</nav>')
 
     share_html = (
         '<div class="dv3-share" role="group" aria-label="Share this briefing">'
@@ -2172,6 +2213,10 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-share-btn{{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;padding:.45rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);cursor:pointer;transition:border-color .15s,color .15s;min-height:38px;touch-action:manipulation}}
 .dv3-share-btn:hover{{border-color:var(--gold);color:var(--text)}}
 .dv3-share-btn svg{{flex-shrink:0}}
+.dv3-archnav{{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;margin:.4rem 0 1.2rem}}
+.dv3-archnav-a{{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--text-dim);padding:.45rem .7rem;border:1px solid var(--border);border-radius:6px;min-height:38px;display:inline-flex;align-items:center}}
+.dv3-archnav-a:hover{{border-color:var(--gold);color:var(--text)}}
+.dv3-archnav-all{{color:var(--text-muted)}}
 .dv3-source{{font-size:.68rem;color:var(--text-muted);text-align:center;padding:.75rem 0;border-top:1px solid var(--border);margin-bottom:2rem}}
 .dv3-nav{{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-top:2px solid var(--border);border-bottom:2px solid var(--border);margin-bottom:2rem}}
 .dv3-nav a{{display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;font-weight:600;color:var(--green);transition:opacity .15s}}
@@ -2266,6 +2311,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
     {cashbids_html}
     {forward_html}
     {share_html}
+    {archive_nav_html}
     <div class="dv3-source">{source} &middot; Auto-compiled at 6:02 AM CT</div>
   </article>
   <nav class="dv3-nav" aria-label="Briefing navigation" id="dv3-archive-nav">
@@ -2384,10 +2430,22 @@ def save_archive(briefing):
     with open(json_path, "w") as f:
         json.dump(briefing, f, indent=2, ensure_ascii=False)
     print(f"  Archive JSON: {json_path}")
-    html_content = generate_archive_html(briefing, date_iso)
+    prev_d, next_d = archive_neighbor_dates(date_iso)
+    html_content = generate_archive_html(briefing, date_iso, prev_d, next_d)
     html_path = ARCHIVE_HTML_DIR / f"{date_iso}.html"
     with open(html_path, "w") as f: f.write(html_content)
     print(f"  Archive HTML: {html_path}")
+    # Re-render yesterday's page so its "next" link points at today.
+    if prev_d:
+        try:
+            with open(ARCHIVE_JSON_DIR / f"{prev_d}.json") as pf:
+                prev_briefing = json.load(pf)
+            pp, pn = archive_neighbor_dates(prev_d)
+            with open(ARCHIVE_HTML_DIR / f"{prev_d}.html", "w") as pf:
+                pf.write(generate_archive_html(prev_briefing, prev_d, pp, pn))
+            print(f"  Re-rendered {prev_d} (next -> {date_iso})")
+        except Exception as e:
+            print(f"  [warn] could not re-render {prev_d}: {e}")
     count = update_archive_index(briefing, date_iso)
     print(f"  Archive index: {count} briefings")
 
