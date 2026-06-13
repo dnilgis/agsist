@@ -387,18 +387,24 @@
   }
 
   // ── 2. CROP ROTATION (USDA Cropland Data Layer) ─────────────────────
-  // CDL GetCDLStat returns pixel-count histogram by class for a bbox/year.
-  // We take the dominant non-background class per year for the last 5 yrs.
+  // One Identify on the worker's /cdl route returns this point's CDL crop code
+  // for every published year at once (worker hands back rotation[] most-recent-first
+  // plus a byYear map). We flip to oldest→newest for the timeline, treat unrecognized
+  // codes (developed / water / forest pixel noise) as gaps, and detect corn-on-corn.
   function loadRotation(poly){
-    var bb=bboxOf(poly);
-    var year=new Date().getFullYear()-1; // CDL publishes ~Feb for prior year
-    var years=[year-4,year-3,year-2,year-1,year];
-    Promise.all(years.map(function(y){ return cdlYear(bb,y); }))
-      .then(function(res){
-        var any=res.some(function(r){ return r && r.code; });
-        if(!any){ setBody('fs-rot','<div class="fs-err">CDL crop history isn\u2019t resolving for this field size. Try drawing a slightly larger boundary.</div>'); return; }
-        // record for insight: detect corn-on-corn and continuous-corn streaks
-        var codes = res.map(function(r){ return r&&r.code?r.code:null; });
+    var c = polyCentroid(poly);
+    var url = FS_WORKER + '/cdl?lat='+c.lat.toFixed(5)+'&lon='+c.lng.toFixed(5);
+    fetch(url).then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if(!d || d.error || !d.rotation || !d.rotation.length){
+          setBody('fs-rot','<div class="fs-err">USDA crop history isn\u2019t resolving for this spot. CDL covers the Lower 48; coverage thins at field edges and outside CONUS.</div>'); return;
+        }
+        // worker returns most-recent-first; flip to oldest→newest for the timeline + streak math
+        var recent = d.rotation.slice().reverse();
+        var years = recent.map(function(x){ return x.year; });
+        // only recognized row/forage crops count toward the headline & streak;
+        // CDL noise (developed/water/forest) shows as a gap and breaks any streak
+        var codes = recent.map(function(x){ return CDL_CROPS[x.code] ? x.code : null; });
         var cornStreak=0, maxCornStreak=0;
         codes.forEach(function(cd){ if(cd===1){cornStreak++; maxCornStreak=Math.max(maxCornStreak,cornStreak);} else cornStreak=0; });
         var cornCount = codes.filter(function(c){return c===1;}).length;
@@ -406,35 +412,17 @@
         FIELD.rotation = { codes:codes, years:years, maxCornStreak:maxCornStreak, cornCount:cornCount,
           beanCount:beanCount, lastCrop: codes[codes.length-1], cornOnCorn: maxCornStreak>=2 };
         recomputeInsight();
-        var html='<div class="fs-rotation">'+ res.map(function(r,i){
-          var info = r && r.code ? crop(r.code) : {l:'—',e:'·',c:'#333'};
+        var html='<div class="fs-rotation">'+ codes.map(function(code,i){
+          var info = code ? crop(code) : {l:'—',e:'·',c:'#333'};
           return '<div class="fs-rot-year">'+
             '<div class="fs-rot-chip" style="background:'+hexA(info.c,.18)+';border-color:'+hexA(info.c,.5)+'">'+info.e+'</div>'+
             '<div class="fs-rot-crop">'+esc(info.l)+'</div>'+
             '<div class="fs-rot-yr">\''+String(years[i]).slice(2)+'</div></div>';
         }).join('') + '</div>'+
-        '<div class="fs-src" style="margin-top:.6rem">USDA Cropland Data Layer · dominant cover per year</div>';
+        '<div class="fs-src" style="margin-top:.6rem">USDA Cropland Data Layer · dominant cover at field center</div>';
         setBody('fs-rot', html);
       })
       .catch(function(){ setErr('fs-rot','Couldn\u2019t reach the USDA crop-history service just now.'); });
-  }
-  function cdlYear(bb, year){
-    // Worker handles the 4326→Albers(5070) reprojection the CDL service needs.
-    var url = FS_WORKER + '/cdl?year='+year+'&bbox='+bb.minlng+','+bb.minlat+','+bb.maxlng+','+bb.maxlat;
-    return fetch(url).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
-      if(!d) return null;
-      // response shape: { results:[ {value, category, count, acreage}, ... ] }
-      var list = d.results || d.Results || d.data || [];
-      var best=null;
-      list.forEach(function(it){
-        var code = parseInt(it.value||it.Value||it.code,10);
-        var cnt = parseFloat(it.count||it.Count||it.acreage||it.Acreage||0);
-        if(!CDL_CROPS[code]) return;            // skip water/dev/forest noise for the headline
-        if(code===61||code===176||code===37) cnt*=0.6; // de-weight fallow/grass/hay vs row crops
-        if(!best || cnt>best.cnt){ best={code:code,cnt:cnt}; }
-      });
-      return best;
-    }).catch(function(){ return null; });
   }
 
   // ── 3. WEATHER (Open-Meteo) ─────────────────────────────────────────
