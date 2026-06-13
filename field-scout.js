@@ -56,6 +56,7 @@
   // ── Boot ────────────────────────────────────────────────────────────
   function init() {
     if (typeof L === 'undefined') { showFatal('Map library failed to load. Check your connection and refresh.'); return; }
+    if (typeof L.Draw === 'undefined' || !L.Draw.Polygon) { showFatal('The field-drawing tool failed to load. Refresh the page; if it persists, your network may be blocking unpkg.com.'); return; }
 
     map = L.map('fs-map', { zoomControl:true, attributionControl:true }).setView([41.878, -93.0977], 6); // Iowa-ish center
 
@@ -144,7 +145,7 @@
     if(!activePoly && !map.getCenter()){ return; }
     var c = activePoly ? polyCentroid(activePoly) : map.getCenter();
     btn.classList.add('on');
-    fetch(FS_WORKER + '/hail?lat='+(c.lat).toFixed(4)+'&lon='+(c.lng!=null?c.lng:c.lng).toFixed(4)+'&years=5')
+    fetch(FS_WORKER + '/hail?lat='+(c.lat).toFixed(4)+'&lon='+(c.lng).toFixed(4)+'&years=5')
       .then(function(r){ return r.json(); })
       .then(function(gj){
         var feats = (gj && gj.features) || [];
