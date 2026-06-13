@@ -120,7 +120,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .hamburger.open .h-bar:nth-child(1) { transform: translateY(7px) rotate(45deg) }
 .hamburger.open .h-bar:nth-child(2) { opacity: 0 }
 .hamburger.open .h-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg) }
-@media (max-width: 960px) { .nav-menu { display: none } .hamburger { display: flex } }
+@media (max-width: 960px) { .nav-menu { display: none } .hamburger { display: flex } #brand-pick { display: none } }
 
 /* ── DRAWER ───────────────────────────────────────────────────────── */
 .drawer { position: fixed; inset: 0 0 0 auto; width: min(320px, 90vw); background: var(--surface); border-left: 2px solid var(--brand); z-index: 500; overflow-y: auto; transform: translateX(100%); transition: transform .25s cubic-bezier(.4,0,.2,1) }
