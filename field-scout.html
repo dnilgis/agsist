@@ -71,7 +71,7 @@
     .fs-toolbar{position:absolute;top:12px;left:12px;right:12px;z-index:600;display:flex;gap:.5rem;flex-wrap:wrap;pointer-events:none}
     .fs-toolbar > *{pointer-events:auto}
     .fs-search{flex:1;min-width:180px;display:flex;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.4)}
-    .fs-search input{flex:1;background:transparent;border:none;color:var(--text);font-family:inherit;font-size:.9rem;padding:.6rem .8rem;outline:none}
+    .fs-search input{flex:1;background:transparent;border:none;color:var(--text);font-family:inherit;font-size:16px;padding:.6rem .8rem;outline:none}
     .fs-search input::placeholder{color:var(--text-muted)}
     .fs-search button{background:var(--brand,var(--gold));color:#0a1206;border:none;padding:0 .9rem;font-weight:700;cursor:pointer;font-size:.85rem}
     .fs-draw-hint{display:inline-flex;align-items:center;gap:.45rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .8rem;font-size:.78rem;color:var(--text-dim);box-shadow:0 2px 10px rgba(0,0,0,.4);font-family:'JetBrains Mono',monospace}
@@ -170,10 +170,22 @@
     .fs-save-btn{background:transparent;border:1px solid var(--brand,var(--gold));border-radius:7px;color:var(--brand,var(--gold));font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;padding:.4rem .7rem;cursor:pointer;white-space:nowrap;flex-shrink:0}
     .fs-save-btn:hover{background:var(--brand,var(--gold));color:#0a1206}
 
-    /* ── The Read / insight brain ─────────────────────────────────── */
-    .fs-insight-section{background:linear-gradient(180deg,rgba(var(--brand-rgb,218,165,32),.10),transparent)}
+    /* ── The Read / insight brain — the hero of the page ──────────────── */
+    .fs-insight-section{background:linear-gradient(180deg,rgba(var(--brand-rgb,218,165,32),.14),transparent);border:1px solid rgba(var(--brand-rgb,218,165,32),.35);box-shadow:0 0 0 1px rgba(var(--brand-rgb,218,165,32),.08),0 6px 22px rgba(0,0,0,.25)}
+    .fs-insight-section .fs-section-h{font-size:1.02rem}
     .fs-insight-p{font-size:.92rem;color:var(--text);line-height:1.6;margin:0 0 .6rem}
     .fs-insight-p strong{color:var(--brand,var(--gold))}
+    .fs-verdict{margin:0 0 .9rem;padding:.85rem 1rem;background:var(--surface2);border:1px solid rgba(var(--brand-rgb,218,165,32),.4);border-left:4px solid var(--brand,var(--gold));border-radius:0 10px 10px 0;color:var(--text)}
+    .fs-verdict span{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:.72rem;color:var(--brand,var(--gold));display:block;margin-bottom:.25rem}
+    .fs-verdict b{font-weight:600;font-size:1.12rem;line-height:1.4;display:block}
+    .fs-soil-slope{margin-top:.6rem;font-size:.85rem;color:var(--text-dim);line-height:1.5}
+    .fs-demo-btn{margin-top:1rem;background:var(--brand,var(--gold));color:#0a1206;border:none;border-radius:8px;font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:.02em;font-size:.92rem;padding:.6rem 1.1rem;cursor:pointer}
+    .fs-demo-btn:hover{filter:brightness(1.08)}
+    .fs-demo-hint{font-size:.78rem;color:var(--text-muted);margin:.55rem 0 0;line-height:1.4}
+    .fs-boxbtn{margin-left:.6rem;background:transparent;border:1px solid var(--brand,var(--gold));color:var(--brand,var(--gold));border-radius:6px;font-size:.78rem;font-weight:600;padding:.25rem .6rem;cursor:pointer;vertical-align:middle}
+    .fs-boxbtn:hover{background:var(--brand,var(--gold));color:#0a1206}
+    .fs-soil-slope strong{color:var(--text)}
+    .fs-caveat{font-size:.74rem;color:var(--text-muted);line-height:1.45;margin-top:.5rem;font-style:italic}
     .fs-insight-flags{display:flex;flex-direction:column;gap:.55rem;margin-top:.4rem}
     .fs-insight-flag{display:flex;gap:.6rem;align-items:flex-start;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--brand,var(--gold));border-radius:0 8px 8px 0;padding:.6rem .75rem;font-size:.85rem;color:var(--text-dim);line-height:1.55}
     .fs-insight-flag strong{color:var(--text)}
@@ -263,9 +275,9 @@
           <div class="fs-god">
             <div class="fs-god-label">See the invisible</div>
             <div class="fs-god-chips">
-              <button class="fs-god-chip" data-god="ndvi" type="button"><span class="dot" style="background:linear-gradient(90deg,#8c6638,#34a834)"></span>Crop vigor</button>
-              <button class="fs-god-chip" data-god="moisture" type="button"><span class="dot" style="background:linear-gradient(90deg,#c7ae73,#2a7fd6)"></span>Soil moisture</button>
-              <button class="fs-god-chip" id="fs-hail-toggle" type="button"><span class="dot" style="background:#7cd2ff"></span>Hail history</button>
+              <button class="fs-god-chip" data-god="ndvi" type="button" aria-pressed="false"><span class="dot" aria-hidden="true" style="background:linear-gradient(90deg,#8c6638,#34a834)"></span>Crop vigor</button>
+              <button class="fs-god-chip" data-god="moisture" type="button" aria-pressed="false"><span class="dot" aria-hidden="true" style="background:linear-gradient(90deg,#c7ae73,#2a7fd6)"></span>Soil moisture</button>
+              <button class="fs-god-chip" id="fs-hail-toggle" type="button" aria-pressed="false"><span class="dot" aria-hidden="true" style="background:#7cd2ff"></span>Hail history</button>
             </div>
             <div class="fs-god-controls" id="fs-god-controls" hidden>
               <label class="fs-god-slider">
@@ -287,6 +299,8 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 20l-5.5 2.5v-15L9 5m0 15l6-2.5m-6 2.5v-15m6 12.5l5.5 2.5v-15L15 5m0 12.5v-15m0 0L9 5"/></svg>
             <h3>No field yet</h3>
             <p>Hit <b>Draw a field</b> and trace your boundary on the map. Field Scout will pull its soil, crop history, weather, drought, and nearby cash bids.</p>
+            <button type="button" id="fs-demo" class="fs-demo-btn">&#9654;&nbsp;See an example field</button>
+            <p class="fs-demo-hint">New here? Load a real Iowa field to see the full read &mdash; no drawing needed.</p>
           </div>
           <div id="fs-results" hidden></div>
           <div class="fs-disc">

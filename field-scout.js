@@ -48,7 +48,12 @@
   // ── FIELD: shared fact store the insight engine reads across all layers ──
   // Each loader writes its findings here; recomputeInsight() crosses them.
   var FIELD = null;
+  // Generation token: bumped on every new draw. Each loader captures the gen it
+  // was fired under and discards its result if a newer field has since been drawn,
+  // so an in-flight fetch from a previous field can never write into the new one.
+  var fieldGen = 0;
   function resetField(acres, c){
+    fieldGen++;
     FIELD = { acres:acres, lat:c.lat, lng:c.lng,
       soil:null, rotation:null, weather:null, drought:null, bids:null, hail:null };
   }
@@ -75,12 +80,7 @@
     });
 
     map.on(L.Draw.Event.CREATED, function (e) {
-      drawnLayer.clearLayers();
-      activePoly = e.layer;
-      drawnLayer.addLayer(activePoly);
-      document.getElementById('fs-clear').disabled = false;
-      runAll(activePoly);
-      ga('field_drawn', { acres: Math.round(polyAcres(activePoly)) });
+      commitField(e.layer, 'draw');
     });
 
     wireControls();
@@ -112,7 +112,9 @@
     if(godActive===which) which='';
     godActive=which;
     document.querySelectorAll('[data-god]').forEach(function(b){
-      b.classList.toggle('on', b.getAttribute('data-god')===which);
+      var on = b.getAttribute('data-god')===which;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
     if(godLayer){ map.removeLayer(godLayer); godLayer=null; }
     var panel=document.getElementById('fs-god-controls');
@@ -120,8 +122,11 @@
     if(panel) panel.hidden=false;
 
     var url = FS_WORKER + '/' + which + '/{z}/{x}/{y}' + (godDate?('?date='+godDate):'');
-    godLayer = L.tileLayer(url, { opacity:godOpacity, maxZoom:18, tileSize:256, crossOrigin:true,
+    godLayer = L.tileLayer(url, { opacity:godOpacity, maxZoom:18, minZoom:9, tileSize:256, crossOrigin:true,
       attribution: which==='ndvi' ? 'NDVI: Sentinel-2 / Copernicus' : 'Moisture: Sentinel-1 / Copernicus' }).addTo(map);
+    // These layers only render at field scale (zoom 9+): a national-view request
+    // would fire dozens of Sentinel tiles at once and hit the processing rate limit.
+    if(map.getZoom() < 9){ var hh=document.getElementById('fs-hint'); if(hh) hh.innerHTML='<b>&#128269;</b>&nbsp;Zoom in to your field to see '+(which==='ndvi'?'crop vigor':'soil moisture'); }
     // scrub label visibility: NDVI/moisture both time-aware
     var scrubWrap=document.getElementById('fs-scrub-wrap'); if(scrubWrap) scrubWrap.hidden=false;
     ga('god_layer', { layer: which });
@@ -136,15 +141,15 @@
     if(godActive && godLayer){
       map.removeLayer(godLayer);
       var url = FS_WORKER + '/' + godActive + '/{z}/{x}/{y}?date='+godDate;
-      godLayer = L.tileLayer(url, { opacity:godOpacity, maxZoom:18, tileSize:256, crossOrigin:true }).addTo(map);
+      godLayer = L.tileLayer(url, { opacity:godOpacity, maxZoom:18, minZoom:9, tileSize:256, crossOrigin:true }).addTo(map);
     }
   }
 
   function toggleHail(btn){
-    if(hailLayer){ map.removeLayer(hailLayer); hailLayer=null; btn.classList.remove('on'); return; }
+    if(hailLayer){ map.removeLayer(hailLayer); hailLayer=null; btn.classList.remove('on'); btn.setAttribute('aria-pressed','false'); return; }
     if(!activePoly && !map.getCenter()){ return; }
     var c = activePoly ? polyCentroid(activePoly) : map.getCenter();
-    btn.classList.add('on');
+    btn.classList.add('on'); btn.setAttribute('aria-pressed','true');
     fetch(FS_WORKER + '/hail?lat='+(c.lat).toFixed(4)+'&lon='+(c.lng).toFixed(4)+'&years=5')
       .then(function(r){ return r.json(); })
       .then(function(gj){
@@ -167,6 +172,7 @@
     document.getElementById('fs-clear').addEventListener('click', clearField);
     document.getElementById('fs-gps').addEventListener('click', locateMe);
     document.getElementById('fs-addr-go').addEventListener('click', searchAddr);
+    var demoBtn=document.getElementById('fs-demo'); if(demoBtn) demoBtn.addEventListener('click', loadDemoField);
     document.getElementById('fs-addr').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); searchAddr(); }});
     document.getElementById('fs-bm-sat').addEventListener('click', function(){ setBasemap('sat'); });
     document.getElementById('fs-bm-map').addEventListener('click', function(){ setBasemap('map'); });
@@ -178,9 +184,9 @@
     else { map.removeLayer(satLayer); mapLayer.addTo(map); mp.classList.add('on'); sat.classList.remove('on'); }
   }
 
-  function flashHint(){
+  function flashHint(msg){
     var h=document.getElementById('fs-hint');
-    if(h){ h.innerHTML='<b>&#9998;</b>&nbsp;Click corners, double-click to finish'; }
+    if(h){ h.innerHTML='<b>&#9998;</b>&nbsp;'+(msg||'Click corners, double-click to finish'); }
   }
 
   function clearField(){
@@ -265,8 +271,62 @@
       .then(function(r){return r.json();})
       .then(function(d){
         btn.textContent='Go';
-        if(d && d[0]){ map.setView([+d[0].lat, +d[0].lon], 15); }
-      }).catch(function(){ btn.textContent='Go'; });
+        if(d && d[0]){
+          map.setView([+d[0].lat, +d[0].lon], 16);
+          // One-step flow: drop you on your ground, then prompt the trace and offer a
+          // no-mouse fallback (a default box you can analyze or adjust).
+          afterLocate(+d[0].lat, +d[0].lon);
+        } else {
+          flashHint('No match — try a town + state, or pan the map and trace your field.');
+        }
+      }).catch(function(){ btn.textContent='Go'; flashHint('Address lookup is busy — pan the map and trace your field.'); });
+  }
+
+  // After we land on a spot (search or GPS), prompt the draw and surface a keyboard-
+  // accessible "analyze a default field box here" affordance so drawing isn't the
+  // only way in.
+  function afterLocate(lat, lng){
+    try { drawControl.enable(); } catch(e){}
+    flashHint('Trace your field on the map &mdash; or use “Analyze a field box here.”');
+    var host=document.getElementById('fs-hint'); if(!host) return;
+    if(document.getElementById('fs-boxbtn')) return;
+    var b=document.createElement('button');
+    b.id='fs-boxbtn'; b.type='button'; b.className='fs-boxbtn';
+    b.textContent='Analyze a field box here';
+    b.addEventListener('click', function(){ dropFieldBox(lat, lng); });
+    host.appendChild(b);
+  }
+
+  // A ~40-acre square centered on a point — a real, analyzable field for keyboard
+  // users and a fast start anyone can nudge. Honest: it's an approximate box, not a
+  // surveyed boundary.
+  function dropFieldBox(lat, lng){
+    var dLat=0.00255, dLng=0.00255/Math.max(0.2,Math.cos(lat*Math.PI/180)); // ~40ac
+    var ring=[[lat+dLat,lng-dLng],[lat+dLat,lng+dLng],[lat-dLat,lng+dLng],[lat-dLat,lng-dLng]];
+    var poly=L.polygon(ring, { color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:0.15 });
+    try { drawControl.disable(); } catch(e){}
+    commitField(poly, 'box');
+  }
+
+  // The demo field — a real central-Iowa field so first-time visitors see the whole
+  // payoff before drawing anything (also the keyboard/screen-reader way to evaluate).
+  function loadDemoField(){
+    var ring=[[42.0220,-93.6250],[42.0220,-93.6170],[42.0170,-93.6170],[42.0170,-93.6250]];
+    var poly=L.polygon(ring, { color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:0.15 });
+    map.setView([42.0195,-93.6210], 15);
+    commitField(poly, 'demo');
+    ga('field_demo', {});
+  }
+
+  // Shared commit path for every way a field enters: draw, demo, box.
+  function commitField(poly, src){
+    drawnLayer.clearLayers();
+    activePoly = poly;
+    drawnLayer.addLayer(poly);
+    try { map.fitBounds(poly.getBounds(), { padding:[40,40], maxZoom:16 }); } catch(e){}
+    var cb=document.getElementById('fs-clear'); if(cb) cb.disabled=false;
+    runAll(poly);
+    if(src==='draw') ga('field_drawn', { acres: Math.round(polyAcres(poly)) });
   }
 
   // ── Polygon math (acreage via spherical excess approximation) ───────
@@ -319,15 +379,18 @@
       section('soil','🌱','Soil & Productivity','fs-soil') +
       section('rot','🌽','5-Year Crop Rotation','fs-rot') +
       section('wx','🌤️','Weather & Drought','fs-wx') +
+      section('season','📈','Season vs Normal','fs-season') +
       section('risk','🛡️','Risk Profile','fs-risk') +
       section('bids','💰','Nearby Cash Bids','fs-bids');
 
     // fire all sources independently — fail soft; each calls recomputeInsight()
     var sb=document.getElementById('fs-save'); if(sb) sb.addEventListener('click', saveCurrentField);
+    var rb=document.getElementById('fs-report'); if(rb) rb.addEventListener('click', generateReport);
     loadSoil(poly);
     loadRotation(poly);
     loadWeather(c);
     loadDrought(c);
+    loadSeason(c);
     loadBids(c);
     loadHailData(c);
   }
@@ -338,6 +401,7 @@
         '<div><div class="acres">'+acres.toFixed(1)+' <small>acres</small></div>'+
         '<div class="coords">center '+c.lat.toFixed(4)+', '+c.lng.toFixed(4)+'</div></div>'+
         '<button class="fs-save-btn" id="fs-save" type="button">&#9733; Save field</button>'+
+        '<button class="fs-save-btn" id="fs-report" type="button" style="margin-left:.4rem">&#11015; Field report</button>'+
       '</div>'+
     '</div>';
   }
@@ -352,18 +416,25 @@
   // Spatial query: intersect the drawn polygon with SSURGO map units,
   // aggregate area by soil series, pull the national productivity index.
   function loadSoil(poly){
+    var gen = fieldGen;
     var wkt = wktPolygon(poly);
     postJSON(FS_WORKER + '/soil', { wkt: wkt })
       .then(function(d){
+        if(gen !== fieldGen) return;
         var rows = (d && d.Table) ? d.Table : null;
         if(!rows || !rows.length){ setBody('fs-soil','<div class="fs-err">No SSURGO soil survey published for this spot. Coverage gaps exist in parts of the West and Alaska.</div>'); return; }
         var total=0; rows.forEach(function(r){ total += parseFloat(r[3])||0; });
         // record for the insight engine: dominant class, worst class, prime share
-        var classes = rows.map(function(r){ return { name:r[2]||r[1], ac:parseFloat(r[3])||0, nicc:parseInt(r[4],10)||null }; });
+        var classes = rows.map(function(r){ return { name:r[2]||r[1], ac:parseFloat(r[3])||0, nicc:parseInt(r[4],10)||null, slope:(r[5]==null||r[5]==='')?null:parseFloat(r[5]) }; });
         var worst = classes.reduce(function(m,x){ return (x.nicc&&(!m||x.nicc>m.nicc))?x:m; }, null);
         var primeAc = classes.filter(function(x){ return x.nicc&&x.nicc<=2; }).reduce(function(s,x){return s+x.ac;},0);
-        FIELD.soil = { classes:classes, total:total, worst:worst, primePct: total?Math.round(primeAc/total*100):null, top:classes[0]||null };
-        recomputeInsight();
+        // Area-weighted field slope + steepest mapunit (erosion is largely slope-driven)
+        var slAc=0, slSum=0, maxSlope=null;
+        classes.forEach(function(x){ if(x.slope!=null){ slSum+=x.slope*x.ac; slAc+=x.ac; if(maxSlope==null||x.slope>maxSlope)maxSlope=x.slope; } });
+        var avgSlope = slAc>0 ? Math.round(slSum/slAc*10)/10 : null;
+        FIELD.soil = { classes:classes, total:total, worst:worst, primePct: total?Math.round(primeAc/total*100):null,
+                       top:classes[0]||null, slope:avgSlope, maxSlope:maxSlope };
+        recomputeInsight(); renderRisk();
         var palette=['#7c5a2e','#9c7339','#b58d4f','#c9a878','#8a6a3b','#a37d45'];
         var html = rows.slice(0,6).map(function(r,i){
           var ac=parseFloat(r[3])||0, pct= total? Math.round(ac/total*100):0;
@@ -375,9 +446,15 @@
             '<div class="fs-soil-meta">'+(cls?cls+' · ':'')+ac.toFixed(1)+' ac</div></div>'+
             '<div class="fs-soil-pct">'+pct+'%</div></div>';
         }).join('');
-        setBody('fs-soil', html + '<div class="fs-src" style="margin-top:.5rem">USDA SSURGO · number = land capability class (1 best, 8 poorest)</div>');
+        var slopeNote = '';
+        if(FIELD.soil.slope!=null){
+          var sl=FIELD.soil.slope, er = sl<2?'minimal erosion risk':sl<6?'moderate erosion risk':sl<12?'high erosion risk':'severe erosion risk';
+          slopeNote = '<div class="fs-soil-slope"><strong>'+sl+'% average slope</strong>'+(FIELD.soil.maxSlope!=null&&FIELD.soil.maxSlope>sl?' (up to '+FIELD.soil.maxSlope+'%)':'')+' &mdash; '+er+'</div>'+
+            '<div class="fs-caveat">Slope is SSURGO\u2019s representative value for each soil map unit, not a measurement of your exact acres &mdash; flat bottomland beside a hill can read steeper than it farms.</div>';
+        }
+        setBody('fs-soil', html + slopeNote + '<div class="fs-src" style="margin-top:.5rem">USDA SSURGO · number = land capability class (1 best, 8 poorest) · slope drives water erosion</div>');
       })
-      .catch(function(){ setErr('fs-soil','Couldn\u2019t reach the USDA soil survey just now. Try again in a moment.'); });
+      .catch(function(){ if(gen!==fieldGen) return; setErr('fs-soil','Couldn\u2019t reach the USDA soil survey just now. Try again in a moment.'); });
   }
   function classText(n){
     n=parseInt(n,10);
@@ -393,10 +470,12 @@
   // plus a byYear map). We flip to oldest→newest for the timeline, treat unrecognized
   // codes (developed / water / forest pixel noise) as gaps, and detect corn-on-corn.
   function loadRotation(poly){
+    var gen = fieldGen;
     var c = polyCentroid(poly);
     var url = FS_WORKER + '/cdl?lat='+c.lat.toFixed(5)+'&lon='+c.lng.toFixed(5);
     fetch(url).then(function(r){ return r.ok ? r.json() : null; })
       .then(function(d){
+        if(gen !== fieldGen) return;
         if(!d || d.error || !d.rotation || !d.rotation.length){
           setBody('fs-rot','<div class="fs-err">USDA crop history isn\u2019t resolving for this spot. CDL covers the Lower 48; coverage thins at field edges and outside CONUS.</div>'); return;
         }
@@ -416,23 +495,26 @@
         var html='<div class="fs-rotation">'+ codes.map(function(code,i){
           var info = code ? crop(code) : {l:'—',e:'·',c:'#333'};
           return '<div class="fs-rot-year">'+
-            '<div class="fs-rot-chip" style="background:'+hexA(info.c,.18)+';border-color:'+hexA(info.c,.5)+'">'+info.e+'</div>'+
+            '<div class="fs-rot-chip" aria-hidden="true" style="background:'+hexA(info.c,.18)+';border-color:'+hexA(info.c,.5)+'">'+info.e+'</div>'+
             '<div class="fs-rot-crop">'+esc(info.l)+'</div>'+
             '<div class="fs-rot-yr">\''+String(years[i]).slice(2)+'</div></div>';
         }).join('') + '</div>'+
-        '<div class="fs-src" style="margin-top:.6rem">USDA Cropland Data Layer · dominant cover at field center</div>';
+        '<div class="fs-src" style="margin-top:.6rem">USDA Cropland Data Layer · dominant cover at field center</div>'+
+        '<div class="fs-caveat">CDL is satellite-classified (~85&ndash;90% accurate per pixel) and sampled at the field\u2019s center point, so a single odd year may be a classification miss rather than a real planting.</div>';
         setBody('fs-rot', html);
       })
-      .catch(function(){ setErr('fs-rot','Couldn\u2019t reach the USDA crop-history service just now.'); });
+      .catch(function(){ if(gen!==fieldGen) return; setErr('fs-rot','Couldn\u2019t reach the USDA crop-history service just now.'); });
   }
 
   // ── 3. WEATHER (Open-Meteo) ─────────────────────────────────────────
   function loadWeather(c){
+    var gen = fieldGen;
     var url=METEO_URL+'?latitude='+c.lat.toFixed(4)+'&longitude='+c.lng.toFixed(4)+
       '&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m'+
       '&daily=precipitation_sum,temperature_2m_max,temperature_2m_min'+
       '&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&past_days=7&forecast_days=1';
     fetch(url).then(function(r){return r.json();}).then(function(d){
+      if(gen !== fieldGen) return;
       if(!d || !d.current){ setErr('fs-wx-weather','Weather unavailable.'); return; }
       var cur=d.current;
       var wk=0; if(d.daily&&d.daily.precipitation_sum){ d.daily.precipitation_sum.forEach(function(v){ wk+=(v||0); }); }
@@ -442,25 +524,132 @@
       };
       FIELD.weather = window.__fsWx; recomputeInsight();
       renderWx();
-    }).catch(function(){ window.__fsWx={err:1}; renderWx(); });
+    }).catch(function(){ if(gen!==fieldGen) return; window.__fsWx={err:1}; renderWx(); });
   }
   function loadDrought(c){
-    // US Drought Monitor point service (public). If unreachable, the panel
-    // simply omits the drought chip rather than blocking weather.
-    var url='https://droughtmonitor.unl.edu/DmData/GetDroughtSeverityStatisticsByPoint.ashx?lon='+c.lng.toFixed(4)+'&lat='+c.lat.toFixed(4);
+    var gen = fieldGen;
+    // US Drought Monitor point service, proxied through the worker (the USDM
+    // endpoint sends no CORS headers, so a direct browser call is blocked).
+    // If unreachable, the panel omits the drought chip rather than blocking weather.
+    var url=FS_WORKER+'/drought?lat='+c.lat.toFixed(4)+'&lon='+c.lng.toFixed(4);
     fetch(url).then(function(r){return r.ok?r.json():null;}).then(function(d){
+      if(gen !== fieldGen) return;
       var cat='None';
       if(d){
         var lvl = d.DroughtClass!=null ? d.DroughtClass : (d.dm!=null?d.dm:(Array.isArray(d)&&d[0]?d[0].DroughtClass:null));
         cat = droughtLabel(lvl);
       }
       window.__fsDr={cat:cat}; FIELD.drought={cat:cat}; recomputeInsight(); renderWx();
-    }).catch(function(){ window.__fsDr={cat:null}; if(FIELD)FIELD.drought={cat:null}; recomputeInsight(); renderWx(); });
+    }).catch(function(){ if(gen!==fieldGen) return; window.__fsDr={cat:null}; if(FIELD)FIELD.drought={cat:null}; recomputeInsight(); renderWx(); });
   }
   function droughtLabel(lvl){
     if(lvl==null||lvl<0) return 'None';
     return ['Abnormally Dry (D0)','Moderate (D1)','Severe (D2)','Extreme (D3)','Exceptional (D4)'][lvl] || 'None';
   }
+
+  // ── 3b. SEASON vs NORMAL — year-to-date rain & GDUs against the 5-yr avg ──
+  // One Open-Meteo archive call returns ~5 yrs of daily precip + temps at the
+  // field center. We accumulate Jan 1 → the latest available date for each year
+  // (same calendar window every year = a fair compare), then cross this season
+  // against the average of the prior years. GDUs use corn base 50°F, 86° cap.
+  function loadSeason(c){
+    var gen = fieldGen;
+    var yNow = new Date().getFullYear();
+    var start = (yNow-5)+'-01-01';
+    // ERA5 archive lags a few days; clamp the end back so we never ask past coverage.
+    var end = new Date(Date.now() - 6*864e5).toISOString().slice(0,10);
+    var url = 'https://archive-api.open-meteo.com/v1/archive?latitude='+c.lat.toFixed(4)+'&longitude='+c.lng.toFixed(4)+
+      '&start_date='+start+'&end_date='+end+
+      '&daily=precipitation_sum,temperature_2m_max,temperature_2m_min'+
+      '&temperature_unit=fahrenheit&precipitation_unit=inch&timezone=auto';
+    fetch(url).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+      if(gen !== fieldGen) return;
+      if(!d || !d.daily || !d.daily.time || !d.daily.time.length){
+        setBody('fs-season','<div class="fs-src">Season-to-date history isn\u2019t available for this spot.</div>'); return;
+      }
+      var t=d.daily.time, pr=d.daily.precipitation_sum||[], tx=d.daily.temperature_2m_max||[], tn=d.daily.temperature_2m_min||[];
+      var cutoff = t[t.length-1].slice(5); // MM-DD: only count Jan 1 → this MM-DD each year
+      var acc={};        // year → {precip, gdu}
+      var cumMap={};     // year → { 'MM-DD': cumulativePrecip }
+      for(var i=0;i<t.length;i++){
+        var md=t[i].slice(5); if(md>cutoff) continue;       // MM-DD sorts chronologically
+        var yr=+t[i].slice(0,4);
+        var p=(pr[i]==null?0:pr[i]);
+        var g=0;
+        if(tx[i]!=null && tn[i]!=null){ var hi=Math.min(tx[i],86), lo=Math.max(tn[i],50); g=Math.max(0,(hi+lo)/2-50); }
+        if(!acc[yr]){ acc[yr]={precip:0,gdu:0}; cumMap[yr]={}; }
+        acc[yr].precip+=p; acc[yr].gdu+=g;
+        cumMap[yr][md]=acc[yr].precip;
+      }
+      var ys=Object.keys(acc).map(Number).sort(function(a,b){return a-b;});
+      var cur=ys[ys.length-1], prior=ys.filter(function(y){return y<cur;});
+      if(!prior.length){ setBody('fs-season','<div class="fs-src">Not enough archive history here to compare.</div>'); return; }
+      var avg=function(a){ return a.reduce(function(s,x){return s+x;},0)/a.length; };
+      var pNorm=avg(prior.map(function(y){return acc[y].precip;}));
+      var gNorm=avg(prior.map(function(y){return acc[y].gdu;}));
+      FIELD.season = { thru:t[t.length-1], year:cur, n:prior.length,
+        pNow:acc[cur].precip, pNorm:pNorm, pDep:acc[cur].precip-pNorm,
+        gNow:acc[cur].gdu, gNorm:gNorm, gDep:acc[cur].gdu-gNorm };
+      recomputeInsight(); renderRisk();
+      setBody('fs-season', seasonHtml(FIELD.season, cumMap, cur, prior));
+    }).catch(function(){ if(gen!==fieldGen) return; setErr('fs-season','Couldn\u2019t reach the weather archive just now.'); });
+  }
+
+  function seasonHtml(s, cumMap, cur, prior){
+    var fmtDate=function(iso){ var d=new Date(iso+'T00:00'); return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}); };
+    var depTxt=function(v,unit){ var a=Math.abs(v).toFixed(unit==='in'?1:0);
+      if(Math.abs(v) < (unit==='in'?0.25:15)) return '<span style="color:#9aa">≈ normal</span>';
+      var up=v>0, col=(unit==='in')?(up?'#4aab4c':'#d9534f'):(up?'#4aab4c':'#e0a32e');
+      return '<span style="color:'+col+'">'+(up?'+':'−')+a+(unit==='in'?'″':'')+' vs normal</span>'; };
+    var rainBlock='<div class="fs-stat"><div class="fs-stat-v">'+s.pNow.toFixed(1)+'″</div>'+
+      '<div class="fs-stat-l">Rain YTD &nbsp;·&nbsp; '+depTxt(s.pDep,'in')+'</div></div>';
+    var gduBlock='<div class="fs-stat"><div class="fs-stat-v">'+Math.round(s.gNow)+'</div>'+
+      '<div class="fs-stat-l">GDUs YTD &nbsp;·&nbsp; '+depTxt(s.gDep,'gdu')+'</div></div>';
+    var spark = precipSparkline(cumMap, cur, prior);
+    return '<div class="fs-stats" style="grid-template-columns:1fr 1fr">'+rainBlock+gduBlock+'</div>'+
+      spark +
+      '<div class="fs-src" style="margin-top:.55rem">Open-Meteo ERA5 · this season vs '+s.n+'-yr average, Jan 1 through '+fmtDate(s.thru)+' · GDU base 50°F</div>';
+  }
+
+  // Cumulative-precip sparkline: this year's curve riding inside the prior-years
+  // min/max band — the at-a-glance "ahead of / behind normal" read.
+  function precipSparkline(cumMap, cur, prior){
+    var mds=Object.keys(cumMap[cur]).sort();           // Jan 1 → cutoff, this year
+    if(mds.length<8) return '';
+    var W=520, H=92, padL=4, padR=4, padT=8, padB=4;
+    var iw=W-padL-padR, ih=H-padT-padB;
+    var lo=[], hi=[], now=[], maxV=0;
+    mds.forEach(function(md){
+      var nv=cumMap[cur][md]; now.push(nv);
+      var pv=prior.map(function(y){ return cumMap[y][md]; }).filter(function(v){ return v!=null; });
+      var mn=pv.length?Math.min.apply(null,pv):nv, mx=pv.length?Math.max.apply(null,pv):nv;
+      lo.push(mn); hi.push(mx);
+      maxV=Math.max(maxV,nv,mx);
+    });
+    if(maxV<=0) maxV=1;
+    var X=function(i){ return padL + iw*(i/(mds.length-1)); };
+    var Y=function(v){ return padT + ih*(1 - v/maxV); };
+    var lineOf=function(arr){ return arr.map(function(v,i){ return (i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1); }).join(' '); };
+    // band polygon: hi forward, lo backward
+    var band='M'+X(0).toFixed(1)+' '+Y(hi[0]).toFixed(1)+' '+
+      hi.map(function(v,i){ return 'L'+X(i).toFixed(1)+' '+Y(v).toFixed(1); }).join(' ')+' '+
+      lo.slice().reverse().map(function(v,i){ var idx=lo.length-1-i; return 'L'+X(idx).toFixed(1)+' '+Y(v).toFixed(1); }).join(' ')+' Z';
+    var ahead = now[now.length-1] >= hi[hi.length-1];
+    var behind = now[now.length-1] <= lo[lo.length-1];
+    var lineCol = behind ? '#e0a32e' : (ahead ? '#4aab4c' : '#9fd2ff');
+    return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="none" '+
+      'role="img" aria-label="Cumulative rainfall this season versus the prior-years range" style="display:block;margin-top:.5rem">'+
+      '<path d="'+band+'" fill="rgba(159,210,255,.14)" stroke="none"></path>'+
+      '<path d="'+lineOf(hi)+'" fill="none" stroke="rgba(159,210,255,.35)" stroke-width="1"></path>'+
+      '<path d="'+lineOf(lo)+'" fill="none" stroke="rgba(159,210,255,.35)" stroke-width="1"></path>'+
+      '<path d="'+lineOf(now)+'" fill="none" stroke="'+lineCol+'" stroke-width="2.4" stroke-linejoin="round"></path>'+
+      '</svg>'+
+      '<div class="fs-src" style="margin-top:.15rem;display:flex;gap:1rem;flex-wrap:wrap">'+
+        '<span style="color:'+lineCol+'">▬ This season</span>'+
+        '<span style="color:#9fd2ff">▤ Prior-years range</span>'+
+      '</div>';
+  }
+
   function droughtColor(cat){
     if(!cat||cat==='None') return '#4aab4c';
     if(cat.indexOf('D0')>=0) return '#ffff00';
@@ -498,9 +687,11 @@
 
   // ── Hail history → FIELD + Risk Profile section ─────────────────────
   function loadHailData(c){
+    var gen = fieldGen;
     fetch(FS_WORKER + '/hail?lat='+c.lat.toFixed(4)+'&lon='+c.lng.toFixed(4)+'&years=5')
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(gj){
+        if(gen !== fieldGen) return;
         var feats = (gj && gj.features) || [];
         var days={}, maxStone=0;
         feats.forEach(function(f){
@@ -511,12 +702,12 @@
         FIELD.hail = { events:feats.length, days:Object.keys(days).length, maxStone:maxStone, years:5 };
         recomputeInsight(); renderRisk();
       })
-      .catch(function(){ if(FIELD)FIELD.hail={err:1}; renderRisk(); });
+      .catch(function(){ if(gen!==fieldGen) return; if(FIELD)FIELD.hail={err:1}; renderRisk(); });
   }
 
   function renderRisk(){
     if(!FIELD) return;
-    var soil=FIELD.soil, hail=FIELD.hail, rot=FIELD.rotation, dr=FIELD.drought;
+    var soil=FIELD.soil, hail=FIELD.hail, rot=FIELD.rotation, dr=FIELD.drought, se=FIELD.season;
     var rows=[];
     if(soil && soil.worst){
       var wc=soil.worst.nicc;
@@ -524,10 +715,17 @@
       var sc = wc<=2?'#4aab4c':wc<=4?'#ffd400':wc<=6?'#ff9326':'#d9534f';
       rows.push(riskRow('Soil limitation', sv, sc, 'Worst ground on the field is class '+wc+(soil.primePct!=null?' · '+soil.primePct+'% prime':'')));
     }
+    if(soil && soil.slope!=null && soil.slope>=2){
+      var sl=soil.slope, ev=sl<6?'Moderate':sl<12?'Elevated':'High', ec=sl<6?'#ffd400':sl<12?'#ff9326':'#d9534f';
+      rows.push(riskRow('Erosion (slope)', ev, ec, sl+'% average slope'+(soil.maxSlope>sl?' · up to '+soil.maxSlope+'%':'')+' — water-erosion exposure'));
+    }
     if(hail && !hail.err){
       var hv = hail.days===0?'Low':hail.days<=1?'Moderate':hail.days<=3?'Elevated':'High';
       var hc = hail.days===0?'#4aab4c':hail.days<=1?'#ffd400':hail.days<=3?'#ff9326':'#d9534f';
-      rows.push(riskRow('Hail exposure', hv, hc, hail.days+' hail day'+(hail.days===1?'':'s')+' within ~40mi in 5 yrs'+(hail.maxStone?' · max '+hail.maxStone+'"':'')));
+      var hband = hail.days===0?'no reported hail nearby' : hail.days<=2?'below the active-hail range' : hail.days<=5?'an active hail area' : hail.days<=9?'hail-alley-level frequency' : 'extreme hail frequency';
+      rows.push(riskRow('Hail exposure', hv, hc,
+        hail.days+' hail day'+(hail.days===1?'':'s')+' within ~40mi in 5 yrs'+(hail.maxStone?' · max '+hail.maxStone+'"':'')+' — '+hband+
+        ' · <a href="/hail-map" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">see the national map &rarr;</a>'));
     }
     if(rot && rot.cornOnCorn){
       rows.push(riskRow('Rotation stress', 'Elevated', '#ff9326', rot.maxCornStreak+' yrs continuous corn detected — yield-drag & disease pressure'));
@@ -536,8 +734,19 @@
       rows.push(riskRow('Drought', (dr.cat.indexOf('D3')>=0||dr.cat.indexOf('D4')>=0)?'High':'Moderate',
         (dr.cat.indexOf('D3')>=0||dr.cat.indexOf('D4')>=0)?'#d9534f':'#ffd400', 'Currently '+dr.cat));
     }
+    // Season rainfall deficit vs the 5-yr normal (independent of the USDM snapshot —
+    // a field can be tracking dry before it shows up as a drought category).
+    if(se && se.pDep <= -2){
+      var md = se.pDep<=-5, mv = md?'High':'Elevated', mc = md?'#d9534f':'#ff9326';
+      rows.push(riskRow('Moisture deficit', mv, mc, Math.abs(se.pDep).toFixed(1)+'″ below the '+se.n+'-yr rainfall normal season-to-date'));
+    }
     if(!rows.length){
-      setBody('fs-risk', (hail&&hail.err) ? '<div class="fs-err">Hail history unavailable right now.</div>' : '<div class="fs-loading"><span class="fs-spin"></span>assessing</div>');
+      var resolved = (FIELD.soil!==null) && (FIELD.hail!==null);
+      if(!resolved){ setBody('fs-risk','<div class="fs-loading"><span class="fs-spin"></span>assessing</div>'); return; }
+      var note = (hail&&hail.err)
+        ? 'No major risk flags surfaced from public data &mdash; hail history was unavailable.'
+        : 'No major risk flags surfaced from public data for this field.';
+      setBody('fs-risk','<div class="fs-src">'+note+'</div>');
       return;
     }
     setBody('fs-risk', rows.join('') +
@@ -554,19 +763,22 @@
 
   // ── 5. CASH BIDS (AGSIST proxy → Barchart getGrainBids) ─────────────
   function loadBids(c){
+    var gen = fieldGen;
     // Reverse-geocode to a ZIP, then the same call cash-bids.html uses.
     fetch(NOMINATIM.replace('/search','/reverse')+'?format=json&lat='+c.lat.toFixed(4)+'&lon='+c.lng.toFixed(4))
       .then(function(r){return r.json();})
       .then(function(g){
+        if(gen !== fieldGen) return;
         var zip = g && g.address ? (g.address.postcode||'').slice(0,5) : '';
         if(!zip){ setErr('fs-bids','Couldn\u2019t resolve a ZIP for this field to pull bids.'); return; }
         return fetch(BIDS_PROXY+'?zip='+zip+'&radius=75&getAllBids=1')
           .then(function(r){return r.json();})
-          .then(function(d){ renderBids(d, zip); });
+          .then(function(d){ if(gen!==fieldGen) return; renderBids(d, zip, gen); });
       })
-      .catch(function(){ setErr('fs-bids','Couldn\u2019t reach the cash-bid feed just now.'); });
+      .catch(function(){ if(gen!==fieldGen) return; setErr('fs-bids','Couldn\u2019t reach the cash-bid feed just now.'); });
   }
-  function renderBids(d, zip){
+  function renderBids(d, zip, gen){
+    if(gen!==fieldGen) return;
     // Mirror cash-bids.html flatten(): bids nested under item.bids[],
     // fields cashprice & commodity_display_name.
     var items = (d && (d.results||d.data||d.bids)) || [];
@@ -606,7 +818,7 @@
   // ═══════════════════════════════════════════════════════════════════
   function recomputeInsight(){
     if(!FIELD) return;
-    var s=FIELD.soil, r=FIELD.rotation, w=FIELD.weather, d=FIELD.drought, b=FIELD.bids, h=FIELD.hail;
+    var s=FIELD.soil, r=FIELD.rotation, w=FIELD.weather, d=FIELD.drought, b=FIELD.bids, h=FIELD.hail, se=FIELD.season;
     var lines=[], flags=[];
 
     // ── Headline: the field's fundamental character (soil × rotation) ──
@@ -618,26 +830,58 @@
       lines.push(lead);
     }
 
-    // ── The cross-reference insights (where the magic is) ──
+    // ── The cross-reference insights (where the magic is). Each flag carries a
+    // severity so the field's #1 issue can lead, plus a short verdict phrase that
+    // feeds the one-line "Bottom line" at the top of The Read. ──
+    function flag(sev, html, verdict){ flags.push({ sev:sev, html:html, verdict:verdict }); }
+
     // Worst soil + corn-on-corn = double yield drag
     if(s && s.worst && r && r.cornOnCorn){
       if(s.worst.nicc>=4){
-        flags.push('Your weaker ground (class '+s.worst.nicc+') is also carrying <strong>'+r.maxCornStreak+' years of continuous corn</strong> — that\u2019s two strikes against yield in the same spot. A rotation break there is the highest-ROI change on this field.');
+        flag(5, 'Your weaker ground (class '+s.worst.nicc+') is also carrying <strong>'+r.maxCornStreak+' years of continuous corn</strong> — that\u2019s two strikes against yield in the same spot. A rotation break there is the highest-ROI change on this field.',
+          'break the rotation on your class-'+s.worst.nicc+' acres — it\u2019s the highest-ROI move on this field');
       } else {
-        flags.push('Good soil, but <strong>'+r.maxCornStreak+' years corn-on-corn</strong> is building disease and nitrogen pressure — worth a rotation break before it costs you.');
+        flag(3, 'Good soil, but <strong>'+r.maxCornStreak+' years corn-on-corn</strong> is building disease and nitrogen pressure — worth a rotation break before it costs you.',
+          'plan a rotation break to stop the corn-on-corn yield drag');
       }
     } else if(r && r.cornOnCorn){
-      flags.push('CDL shows <strong>'+r.maxCornStreak+' straight years of corn</strong> here — watch for rootworm and the corn-on-corn yield drag.');
+      flag(3, 'CDL shows <strong>'+r.maxCornStreak+' straight years of corn</strong> here — watch for rootworm and the corn-on-corn yield drag.',
+        'plan a rotation break and scout for rootworm');
     }
 
-    // Hail history + this is insurance country (the moat)
-    if(h && !h.err && h.days>=2){
-      flags.push('This ground has taken <strong>'+h.days+' hail days in five years</strong>'+(h.maxStone?' (up to '+h.maxStone+'" stones)':'')+' — a real factor for your coverage decisions.');
-    }
-
-    // Drought + current crop
+    // Drought (acute, current)
     if(d && d.cat && d.cat!=='None' && (d.cat.indexOf('D2')>=0||d.cat.indexOf('D3')>=0||d.cat.indexOf('D4')>=0)){
-      flags.push('Currently in <strong>'+esc(d.cat)+'</strong> — moisture is the variable to watch on this field right now.');
+      flag(4, 'Currently in <strong>'+esc(d.cat)+'</strong> — moisture is the variable to watch on this field right now.',
+        'moisture is the acute variable right now — prioritize it');
+    }
+
+    // Season vs normal — rain and GDU departures together tell the sharper story.
+    if(se){
+      var dryEnough = se.pDep <= -2, wetEnough = se.pDep >= 2;
+      var hot = se.gDep >= 100, cool = se.gDep <= -100;
+      if(dryEnough && hot){
+        flag(4, 'Rain is running <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below</strong> the '+se.n+'-yr normal while GDUs run '+Math.round(se.gDep)+' ahead — the crop is developing fast into a moisture deficit. Watch this one.',
+          'the crop is racing into a moisture deficit — watch it closely');
+      } else if(dryEnough){
+        flag(3, 'Season-to-date rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below normal</strong> here — the field is starting the season drier than its 5-yr baseline.',
+          'the field is starting dry — keep an eye on moisture');
+      } else if(wetEnough && cool){
+        lines.push('A wet, cool start — rain '+se.pDep.toFixed(1)+'″ above normal and GDUs '+Math.round(se.gDep)+' behind, so development is running slow.');
+      } else if(wetEnough){
+        lines.push('Rain is running '+se.pDep.toFixed(1)+'″ above the '+se.n+'-yr normal so far this season.');
+      }
+    }
+
+    // Erosion (slope-driven) — only flag genuinely sloped ground.
+    if(s && s.slope!=null && s.slope>=6){
+      flag(s.slope>=12?4:3, 'Slope here averages <strong>'+s.slope+'%</strong>'+(s.maxSlope>s.slope?' (up to '+s.maxSlope+'%)':'')+' — that\u2019s real water-erosion exposure on the steeper acres.',
+        'consider erosion control (residue, contouring) on the steeper acres');
+    }
+
+    // Hail history + this is insurance country (the moat) → bridge to the Hail Map.
+    if(h && !h.err && h.days>=2){
+      flag(2, 'This ground has taken <strong>'+h.days+' hail days in five years</strong>'+(h.maxStone?' (up to '+h.maxStone+'" stones)':'')+' — a real factor for your coverage decisions. <a href="/hail-map" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">See it on the national hail map &rarr;</a>',
+        'make sure your hail coverage matches this field\u2019s history');
     }
 
     // Marketing nudge: what it could sell for nearby
@@ -655,15 +899,104 @@
 
     if(!lines.length && !flags.length) return; // nothing meaningful yet
 
+    flags.sort(function(a,b){ return b.sev - a.sev; });  // most urgent leads
+    FIELD.read = { verdict: flags.length?flags[0].verdict:null,
+                   flags: flags.map(function(f){ return f.html; }),
+                   lines: lines.slice() };
+
     var wrap=document.getElementById('fs-insight-wrap');
     if(wrap) wrap.hidden=false;
-    var html = lines.map(function(l){ return '<p class="fs-insight-p">'+l+'</p>'; }).join('');
+    var html='';
+    if(flags.length){
+      var v=flags[0].verdict;
+      html += '<p class="fs-verdict"><span>Bottom line</span><b>'+v.charAt(0).toUpperCase()+v.slice(1)+'.</b></p>';
+    }
+    html += lines.map(function(l){ return '<p class="fs-insight-p">'+l+'</p>'; }).join('');
     if(flags.length){
       html += '<div class="fs-insight-flags">'+ flags.map(function(f){
-        return '<div class="fs-insight-flag"><span class="fs-flag-mark">!</span><div>'+f+'</div></div>';
+        return '<div class="fs-insight-flag"><span class="fs-flag-mark">!</span><div>'+f.html+'</div></div>';
       }).join('') +'</div>';
     }
     setBody('fs-insight', html);
+  }
+
+  // ── Shareable one-page field report (print / save-as-PDF) ───────────
+  function generateReport(){
+    if(!FIELD){ return; }
+    var d=FIELD, s=d.soil, r=d.rotation, dr=d.drought, se=d.season, h=d.hail, b=d.bids, rd=d.read;
+    var dateStr=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+    function strip(html){ return String(html||'').replace(/<a\b[^>]*>(.*?)<\/a>/gi,'$1'); }
+    function kv(label,val){ return val?('<tr><th>'+esc(label)+'</th><td>'+val+'</td></tr>'):''; }
+    function sect(title,body){ return body?('<section class="r-sec"><h2>'+esc(title)+'</h2>'+body+'</section>'):''; }
+
+    var verdictHtml = (rd&&rd.verdict) ? '<div class="r-verdict"><span>Bottom line</span>'+esc(rd.verdict.charAt(0).toUpperCase()+rd.verdict.slice(1))+'.</div>' : '';
+    var lead = (rd&&rd.lines&&rd.lines.length) ? rd.lines.map(function(l){return '<p class="r-p">'+strip(l)+'</p>';}).join('') : '';
+    var flagsHtml = (rd&&rd.flags&&rd.flags.length) ? '<ul class="r-flags">'+rd.flags.map(function(f){return '<li>'+strip(f)+'</li>';}).join('')+'</ul>' : '';
+
+    var soilHtml='';
+    if(s&&s.classes&&s.classes.length){
+      soilHtml='<table class="r-tbl">'+s.classes.slice(0,6).map(function(c){
+        var pct=s.total?Math.round(c.ac/s.total*100):0;
+        return '<tr><td>'+esc(c.name)+'</td><td>class '+(c.nicc||'?')+'</td><td class="r-num">'+c.ac.toFixed(1)+' ac</td><td class="r-num">'+pct+'%</td></tr>';
+      }).join('')+'</table>';
+      var bits=[];
+      if(s.primePct!=null) bits.push(s.primePct+'% prime cropland');
+      if(s.slope!=null) bits.push(s.slope+'% average slope'+(s.maxSlope>s.slope?' (up to '+s.maxSlope+'%)':''));
+      if(bits.length) soilHtml+='<p class="r-note">'+bits.join(' &middot; ')+'</p>';
+    }
+
+    var rotHtml='';
+    if(r&&r.codes&&r.codes.length){
+      rotHtml='<div class="r-rot">'+r.codes.map(function(code,i){
+        var nm = code ? crop(code).l : '\u2014';
+        return '<span><b>\u2019'+String(r.years[i]).slice(2)+'</b> '+esc(nm)+'</span>';
+      }).join('')+'</div>';
+      if(r.cornOnCorn) rotHtml+='<p class="r-note">'+r.maxCornStreak+' years continuous corn detected</p>';
+    }
+
+    var condRows='';
+    if(dr&&dr.cat&&dr.cat!=='None') condRows+=kv('Drought status', esc(dr.cat));
+    if(se){
+      condRows+=kv('Season rainfall', se.pNow.toFixed(1)+'\u2033 vs '+se.pNorm.toFixed(1)+'\u2033 '+se.n+'-yr normal ('+(se.pDep>=0?'+':'')+se.pDep.toFixed(1)+'\u2033)');
+      condRows+=kv('Growing degree units', Math.round(se.gNow)+' vs '+Math.round(se.gNorm)+' normal ('+(se.gDep>=0?'+':'')+Math.round(se.gDep)+')');
+    }
+    if(h&&!h.err) condRows+=kv('Hail (5 yr, ~40 mi)', h.days+' hail day'+(h.days===1?'':'s')+(h.maxStone?' \u00b7 max '+h.maxStone+'\u2033':''));
+
+    var bidRows='';
+    if(b&&b.corn) bidRows+=kv('Corn cash bid', '$'+b.corn.cash.toFixed(2)+' \u00b7 '+esc(b.corn.elev));
+    if(b&&b.bean) bidRows+=kv('Soybean cash bid', '$'+b.bean.cash.toFixed(2)+' \u00b7 '+esc(b.bean.elev));
+
+    var css='*{box-sizing:border-box}body{font:14px/1.5 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;max-width:760px;margin:0 auto;padding:28px 32px}'
+      +'h1{font-size:24px;margin:.1em 0 .1em}h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#7a6a2e;border-bottom:1px solid #e3ddc7;padding-bottom:4px;margin:22px 0 10px}'
+      +'.r-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #c9a227;padding-bottom:8px;margin-bottom:16px}'
+      +'.r-brand{font-weight:700;color:#6b5a13;letter-spacing:.02em}.r-date{color:#777;font-size:12px}.r-loc{color:#777;font-size:12px;margin-bottom:14px}'
+      +'.r-verdict{background:#fbf6e3;border:1px solid #e6d8a0;border-left:4px solid #c9a227;border-radius:0 8px 8px 0;padding:12px 14px;margin:8px 0 14px}'
+      +'.r-verdict span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#9a7d1e;font-weight:700;margin-bottom:3px}'
+      +'.r-verdict{font-size:16px;font-weight:600}.r-p{margin:.3em 0}.r-flags{margin:.4em 0;padding-left:18px}.r-flags li{margin:.3em 0}'
+      +'.r-tbl,.r-kv{width:100%;border-collapse:collapse;font-size:13px}.r-tbl td{padding:4px 6px;border-bottom:1px solid #eee}.r-num{text-align:right;white-space:nowrap}'
+      +'.r-kv th{text-align:left;font-weight:600;color:#555;padding:4px 10px 4px 0;width:40%;vertical-align:top}.r-kv td{padding:4px 0}'
+      +'.r-rot{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}.r-rot b{color:#6b5a13}.r-note{font-size:12px;color:#777;margin:6px 0 0}'
+      +'.r-foot{margin-top:24px;border-top:1px solid #e3ddc7;padding-top:10px;font-size:11px;color:#888;line-height:1.5}'
+      +'.r-actions{margin-bottom:16px}.r-actions button{background:#c9a227;color:#1a1206;border:none;border-radius:7px;font-weight:700;padding:9px 16px;font-size:14px;cursor:pointer}'
+      +'@media print{.no-print{display:none}body{padding:0}}';
+
+    var html='<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+      +'<title>Field Report \u2014 '+d.acres.toFixed(0)+' acres \u2014 AGSIST</title><style>'+css+'</style></head><body>'
+      +'<div class="r-actions no-print"><button type="button" onclick="window.print()">\u2399 Print / Save as PDF</button></div>'
+      +'<div class="r-head"><div class="r-brand">AGSIST \u00b7 Field Scout</div><div class="r-date">'+esc(dateStr)+'</div></div>'
+      +'<h1>'+d.acres.toFixed(1)+'-acre field</h1><div class="r-loc">Center '+d.lat.toFixed(4)+', '+d.lng.toFixed(4)+'</div>'
+      +verdictHtml+lead+flagsHtml
+      +sect('Soil & productivity', soilHtml)
+      +sect('5-year crop rotation', rotHtml)
+      +sect('Conditions', condRows?'<table class="r-kv">'+condRows+'</table>':'')
+      +sect('Nearby cash bids', bidRows?'<table class="r-kv">'+bidRows+'</table>':'')
+      +'<div class="r-foot">Compiled by AGSIST Field Scout from public data &mdash; USDA SSURGO soil survey, USDA Cropland Data Layer, Open-Meteo, US Drought Monitor &mdash; plus the AGSIST cash-bid feed. Soil and crop layers are survey estimates, not a substitute for sampling your own ground. This is a starting read, not an underwriting decision or financial advice. Questions about coverage? Farmers First Agri Service \u00b7 farmers1st.com</div>'
+      +'</body></html>';
+
+    var w=window.open('','_blank');
+    if(!w){ flashHint('Allow pop-ups to open the printable field report.'); return; }
+    w.document.open(); w.document.write(html); w.document.close();
+    ga('field_report', { acres: Math.round(d.acres) });
   }
 
   // ── utils ───────────────────────────────────────────────────────────
