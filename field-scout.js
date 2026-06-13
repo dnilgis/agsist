@@ -415,7 +415,7 @@
   // ── 1. SOIL (USDA SSURGO via Soil Data Access) ──────────────────────
   // Spatial query: intersect the drawn polygon with SSURGO map units,
   // aggregate area by soil series, pull the national productivity index.
-  function loadSoil(poly){
+  function loadSoil(poly, tries){
     var gen = fieldGen;
     var wkt = wktPolygon(poly);
     postJSON(FS_WORKER + '/soil', { wkt: wkt })
@@ -454,7 +454,12 @@
         }
         setBody('fs-soil', html + slopeNote + '<div class="fs-src" style="margin-top:.5rem">USDA SSURGO · number = land capability class (1 best, 8 poorest) · slope drives water erosion</div>');
       })
-      .catch(function(){ if(gen!==fieldGen) return; setErr('fs-soil','Couldn\u2019t reach the USDA soil survey just now. Try again in a moment.'); });
+      .catch(function(){
+        if(gen!==fieldGen) return;
+        // SSURGO upstream flakes transiently (502/504) — retry once before giving up.
+        if(!tries){ setTimeout(function(){ if(gen===fieldGen) loadSoil(poly, 1); }, 1500); return; }
+        setErr('fs-soil','Couldn\u2019t reach the USDA soil survey just now. Try again in a moment.');
+      });
   }
   function classText(n){
     n=parseInt(n,10);
@@ -724,7 +729,7 @@
       var hc = hail.days===0?'#4aab4c':hail.days<=1?'#ffd400':hail.days<=3?'#ff9326':'#d9534f';
       var hband = hail.days===0?'no reported hail nearby' : hail.days<=2?'below the active-hail range' : hail.days<=5?'an active hail area' : hail.days<=9?'hail-alley-level frequency' : 'extreme hail frequency';
       rows.push(riskRow('Hail exposure', hv, hc,
-        hail.days+' hail day'+(hail.days===1?'':'s')+' within ~40mi in 5 yrs'+(hail.maxStone?' · max '+hail.maxStone+'"':'')+' — '+hband+
+        hail.days+' hail day'+(hail.days===1?'':'s')+' within ~40mi in 5 yrs'+(hail.maxStone?' · max '+hail.maxStone+'"':'')+' — '+hband,
         ' · <a href="/hail-map" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">see the national map &rarr;</a>'));
     }
     if(rot && rot.cornOnCorn){
@@ -752,11 +757,13 @@
     setBody('fs-risk', rows.join('') +
       '<div class="fs-src" style="margin-top:.5rem">A starting risk read from public data &mdash; not an underwriting decision. Questions? <a href="https://farmers1st.com/" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">Farmers First &rarr;</a></div>');
   }
-  function riskRow(label, level, color, detail){
+  function riskRow(label, level, color, detail, link){
     // Colorblind-safe: a symbol carries severity independent of color.
+    // `detail` is always escaped (it carries upstream survey/bid text). `link` is an
+    // optional, trusted HTML snippet appended after it — never user data.
     var mark = level==='Low'?'●':level==='Moderate'?'◐':level==='Elevated'?'◕':'■';
     return '<div class="fs-risk-row">'+
-      '<div class="fs-risk-label">'+esc(label)+'<small>'+esc(detail)+'</small></div>'+
+      '<div class="fs-risk-label">'+esc(label)+'<small>'+esc(detail)+(link||'')+'</small></div>'+
       '<span class="fs-risk-badge" style="background:'+hexA(color,.16)+';color:'+color+';border:1px solid '+hexA(color,.45)+'"><span aria-hidden="true">'+mark+'</span> '+esc(level)+'</span>'+
     '</div>';
   }
