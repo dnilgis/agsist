@@ -1,0 +1,10 @@
+Contact: mailto:sig@farmers1st.com
+Expires: 2027-06-12T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://agsist.com/.well-known/security.txt
+Policy: https://agsist.com/contact
+
+# AGSIST (agsist.com) is a static GitHub Pages site built and maintained
+# by one person. If you find a security issue — a leaking endpoint, an
+# exposed key, an XSS vector — email the address above with details.
+# Good-faith reports are appreciated and will get a human reply.
