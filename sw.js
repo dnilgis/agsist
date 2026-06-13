@@ -23,7 +23,7 @@
 // defines --gold-rgb, which the June 12 page updates depend on; ?v=12
 // asset URLs are cacheFirst, so without this bump returning PWA users
 // would keep the old stylesheet and lose the themed accent colors.
-var CACHE_VERSION = 5;
+var CACHE_VERSION = 6;
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;
