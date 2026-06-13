@@ -19,7 +19,11 @@
  * ─────────────────────────────────────────────────────────────────
  * BUMP THIS ON EVERY DEPLOY:
  */
-var CACHE_VERSION = 4;
+// v5 (2026-06-12): bumped for the brand-theme styles.css. The new CSS
+// defines --gold-rgb, which the June 12 page updates depend on; ?v=12
+// asset URLs are cacheFirst, so without this bump returning PWA users
+// would keep the old stylesheet and lose the themed accent colors.
+var CACHE_VERSION = 5;
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;

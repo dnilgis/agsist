@@ -16,7 +16,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <title>Can I Spray Today? Conditions + Tank Mix Calculator | AGSIST</title>
-<meta name="description" content="Live spray conditions at your location — wind, temperature, humidity, inversion risk and a 24-hour window — plus a tank mix calculator (oz, pints, quarts, lbs, % v/v, per 100 gal) and a sprayer calibration GPA calculator. Free, no account.">
+<meta name="description" content="Live spray conditions at your location &mdash; wind, temperature, humidity, inversion risk, 24-hour windows &mdash; plus tank mix and calibration calculators.">
 <meta name="keywords" content="tank mix calculator, spray mix calculator, how many oz per acre, ounces per acre calculator, sprayer calibration calculator, GPA calculator, gallons per acre, AMS per 100 gallons, acres per 1000 gallon tank, spray tank calculator, can I spray today, thermal inversion">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -93,7 +93,7 @@
   --blue:     #4a8fba;
   --orange:   #c87a28;
   --bg2:      var(--bg, #0e0e0c);
-  --border-g: var(--border, rgba(218,165,32,.30));
+  --border-g: var(--border, rgba(var(--gold-rgb),.30));
   --surface3: var(--surface2, #1e1e1a);
 }
 
@@ -188,7 +188,7 @@ body {
 .status-ts   { font-size: .65rem; color: var(--text-muted); margin-top: .4rem; font-family: 'JetBrains Mono', monospace; }
 
 .status-panel.good     { border-color: rgba(58,139,60,.30); }
-.status-panel.marginal { border-color: rgba(218,165,32,.30); }
+.status-panel.marginal { border-color: rgba(var(--gold-rgb),.30); }
 .status-panel.poor     { border-color: rgba(184,76,42,.30); }
 .status-panel.frozen   { border-color: rgba(74,143,186,.30); }
 
@@ -341,7 +341,7 @@ body {
   white-space: nowrap; flex-shrink: 0;
 }
 .fchip.good    { background: rgba(58,139,60,.10);  color: var(--green); }
-.fchip.marginal{ background: rgba(218,165,32,.10);  color: var(--gold); }
+.fchip.marginal{ background: rgba(var(--gold-rgb),.10);  color: var(--gold); }
 .fchip.poor    { background: rgba(184,76,42,.10);   color: var(--red); }
 .fchip.frozen  { background: rgba(74,143,186,.10);  color: var(--blue); }
 .fcard-val {
@@ -388,7 +388,7 @@ body {
   transition: border-color .15s;
 }
 .hr-item.good     { background: rgba(58,139,60,.05);  border-color: rgba(58,139,60,.22); }
-.hr-item.marginal { background: rgba(218,165,32,.05); border-color: rgba(218,165,32,.22); }
+.hr-item.marginal { background: rgba(var(--gold-rgb),.05); border-color: rgba(var(--gold-rgb),.22); }
 .hr-item.poor     { background: rgba(184,76,42,.05);  border-color: rgba(184,76,42,.22); }
 .hr-item.frozen   { background: rgba(74,143,186,.05); border-color: rgba(74,143,186,.22); }
 .hr-time  { font-family: 'JetBrains Mono', monospace; font-size: .62rem; color: var(--text-muted); font-weight: 600; }
@@ -400,7 +400,7 @@ body {
   padding: .1rem .3rem; border-radius: 3px;
 }
 .hr-badge.good     { background: rgba(58,139,60,.12); color: var(--green); }
-.hr-badge.marginal { background: rgba(218,165,32,.12); color: var(--gold); }
+.hr-badge.marginal { background: rgba(var(--gold-rgb),.12); color: var(--gold); }
 .hr-badge.poor     { background: rgba(184,76,42,.12);  color: var(--red); }
 .hr-badge.frozen   { background: rgba(74,143,186,.12); color: var(--blue); }
 .window-legend {
@@ -530,13 +530,13 @@ body {
   font-size: 1rem; font-weight: 800; flex-shrink: 0;
 }
 .mix-num-1 { background: rgba(74,143,186,.10); color: var(--blue); }
-.mix-num-2 { background: rgba(218,165,32,.10); color: var(--gold); }
+.mix-num-2 { background: rgba(var(--gold-rgb),.10); color: var(--gold); }
 .mix-num-3 { background: rgba(159,122,234,.10); color: #9f7aea; }
 .mix-num-4 { background: rgba(200,122,40,.10); color: var(--orange); }
 .mix-num-5 { background: rgba(58,139,60,.10); color: var(--green); }
 .mix-num-6 { background: rgba(184,76,42,.10); color: var(--red); }
 .mix-num-7 { background: rgba(74,143,186,.10); color: var(--blue); }
-.mix-num-8 { background: rgba(218,165,32,.10); color: var(--gold); }
+.mix-num-8 { background: rgba(var(--gold-rgb),.10); color: var(--gold); }
 .mix-num-9 { background: rgba(58,139,60,.10); color: var(--green); }
 .mix-step-name { font-size: .85rem; font-weight: 700; color: var(--text); margin-bottom: .25rem; }
 .mix-step-what { font-size: .78rem; color: var(--text-dim); line-height: 1.65; margin-bottom: .35rem; overflow-wrap: break-word; }
@@ -627,7 +627,7 @@ body {
   padding: .15rem .4rem; border-radius: 3px; white-space: nowrap;
 }
 .nt-badge.low  { background: rgba(58,139,60,.10); color: var(--green); }
-.nt-badge.med  { background: rgba(218,165,32,.10); color: var(--gold); }
+.nt-badge.med  { background: rgba(var(--gold-rgb),.10); color: var(--gold); }
 .nt-badge.high { background: rgba(184,76,42,.10);  color: var(--red); }
 .nozzle-table-note {
   font-size: .7rem; color: var(--text-muted); margin-top: .65rem; line-height: 1.6;
@@ -663,7 +663,7 @@ body {
   border: 2px solid var(--border);
 }
 .rec.good    { background: rgba(58,139,60,.05);  border-color: rgba(58,139,60,.22); }
-.rec.marginal{ background: rgba(218,165,32,.05); border-color: rgba(218,165,32,.22); }
+.rec.marginal{ background: rgba(var(--gold-rgb),.05); border-color: rgba(var(--gold-rgb),.22); }
 .rec.poor    { background: rgba(184,76,42,.05);  border-color: rgba(184,76,42,.22); }
 .rec.frozen  { background: rgba(74,143,186,.05); border-color: rgba(74,143,186,.22); }
 .rec-h { font-size: .9rem; font-weight: 700; margin-bottom: .45rem; }
@@ -695,7 +695,7 @@ body {
   border-radius: 3px; letter-spacing: .03em;
 }
 .day-rating.good    { background: rgba(58,139,60,.10); color: var(--green); }
-.day-rating.marginal{ background: rgba(218,165,32,.10); color: var(--gold); }
+.day-rating.marginal{ background: rgba(var(--gold-rgb),.10); color: var(--gold); }
 .day-rating.poor    { background: rgba(184,76,42,.10);  color: var(--red); }
 .day-rating.frozen  { background: rgba(74,143,186,.10); color: var(--blue); }
 

@@ -2,10 +2,13 @@
 User-agent: *
 Allow: /
 
-# Block non-public paths
+# Block non-public paths.
+# NOTE (2026-06-12): /data/ is deliberately NOT disallowed. Pages render
+# their content client-side from /data/*.json — blocking it stopped
+# Googlebot's renderer (and AI crawlers) from seeing any live content.
+# There is nothing in /data/ that isn't already painted on the pages.
 Disallow: /api/
 Disallow: /dev/
-Disallow: /data/
 
 # Sitemaps
 Sitemap: https://agsist.com/sitemap.xml

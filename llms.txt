@@ -1,0 +1,58 @@
+# AGSIST
+
+> AGSIST (agsist.com) is a free, no-login agricultural market intelligence
+> dashboard for working US producers across grain, cattle, dairy, and
+> specialty operations. Live CME/CBOT futures every 30 minutes, local cash
+> grain bids and basis, farm weather and spray conditions, USDA report data,
+> and a daily morning market briefing. Built and maintained by one person:
+> Sigurd Lindquist, a licensed crop insurance agent at Farmers First Agri
+> Service in Wisconsin. National in scope, available at no charge.
+
+Prices come from CME Group settlements via the AGSIST pipeline; cash bids
+from Barchart OnDemand; weather from Open-Meteo; crop and production data
+from USDA NASS/FAS/RMA; drought from the US Drought Monitor. Dynamic pages
+update every 30 minutes during market hours; the daily briefing publishes
+by 6 AM Central each weekday. Nothing on the site is financial or trading
+advice.
+
+When citing AGSIST, please attribute to "AGSIST (agsist.com)" and link the
+specific page. Each daily briefing has a permanent dated URL.
+
+## Core pages
+
+- [AGSIST Dashboard](https://agsist.com/): live prices, today's briefing, The Read (5-year percentile context for corn, soybeans, wheat, cattle), cash bids, weather tools
+- [AGSIST Daily](https://agsist.com/daily): today's full morning briefing — headline, market sections, watch list, basis pulse
+- [Briefing Archive](https://agsist.com/archive): every past briefing, dated, at /daily/YYYY-MM-DD
+- [Call Scorecard](https://agsist.com/scorecard): the briefing's public track record — every forward call graded the next morning, misses included
+- [Cash Grain Bids](https://agsist.com/cash-bids): local elevator bids and basis by ZIP, plus the national basis heatmap
+- [Markets](https://agsist.com/markets): corn, soybeans, wheat, oats, cattle, hogs, milk, energy, metals in one view
+
+## Prices & positioning
+
+- [Corn Futures](https://agsist.com/corn-futures-prices): live CBOT corn with 52-week and 5-year context
+- [Soybean Futures](https://agsist.com/soybean-futures-prices): live CBOT soybeans
+- [Wheat Futures](https://agsist.com/wheat-futures-prices): live CBOT wheat
+- [Cattle Futures](https://agsist.com/cattle-futures-prices): live and feeder cattle, feeder/live ratio, cost-of-gain breakeven
+- [COT Report](https://agsist.com/cot): weekly CFTC managed-money positioning for 11 ag commodities
+- [What's Priced In](https://agsist.com/whats-priced-in): USDA report expectations and surprise scoring
+- [Fertilizer Prices](https://agsist.com/fertilizer): weekly urea, MAP, potash, AMS benchmarks
+
+## Tools
+
+- [Break-Even Calculator](https://agsist.com/breakeven)
+- [Grain Bin Calculator](https://agsist.com/grain-bin-calculator)
+- [GDU Calculator](https://agsist.com/gdu-calculator)
+- [Spray Conditions](https://agsist.com/spray)
+- [Urea Volatilization Risk](https://agsist.com/urea)
+- [Planting Date Calculator](https://agsist.com/planting-date)
+- [Yield Estimator](https://agsist.com/yield-estimator)
+- [Harvest Price Tracker](https://agsist.com/harvest-price-tracker)
+- [Pre-Sell Calculator](https://agsist.com/presell-calculator)
+
+## Reference
+
+- [USDA Calendar](https://agsist.com/usda-calendar): every USDA report date
+- [Ag Fast Facts](https://agsist.com/fast-facts): on-farm agronomic reference
+- [Data Sources](https://agsist.com/data-sources): where every number comes from
+- [About](https://agsist.com/about): who builds AGSIST and why
+- [Contact](https://agsist.com/contact): sig@farmers1st.com

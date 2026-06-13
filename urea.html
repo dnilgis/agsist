@@ -174,7 +174,7 @@ body {
   --orange:       #c87a28;
   --blue:         #4a8fba;
   --bg2:          var(--bg, #0e0e0c);
-  --border-g:     var(--border, rgba(218,165,32,.30));
+  --border-g:     var(--border, rgba(var(--gold-rgb),.30));
   --surface3:     var(--surface2, #1e1e1a);
 }
 
@@ -200,8 +200,8 @@ body {
   display: inline-flex; align-items: center; gap: .45rem;
   font-family: 'JetBrains Mono', monospace;
   font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--gold); background: rgba(218,165,32,.06);
-  border: 1px solid rgba(218,165,32,.18); border-radius: 3px;
+  color: var(--gold); background: rgba(var(--gold-rgb),.06);
+  border: 1px solid rgba(var(--gold-rgb),.18); border-radius: 3px;
   padding: .3rem .75rem; margin-bottom: .85rem;
 }
 .hero-title {
@@ -270,7 +270,7 @@ body {
   transition: background .3s, color .3s;
 }
 .risk-badge.low      { background: rgba(58,139,60,.10);  color: var(--risk-low); }
-.risk-badge.moderate { background: rgba(218,165,32,.10); color: var(--risk-mod); }
+.risk-badge.moderate { background: rgba(var(--gold-rgb),.10); color: var(--risk-mod); }
 .risk-badge.high     { background: rgba(200,122,40,.10); color: var(--risk-high); }
 .risk-badge.extreme  { background: rgba(184,76,42,.10);  color: var(--risk-extreme); }
 
@@ -379,7 +379,7 @@ body {
   padding: .17rem .48rem; border-radius: 3px; white-space: nowrap; flex-shrink: 0;
 }
 .factor-score.low  { background: rgba(58,139,60,.10);  color: var(--risk-low); }
-.factor-score.mod  { background: rgba(218,165,32,.10); color: var(--risk-mod); }
+.factor-score.mod  { background: rgba(var(--gold-rgb),.10); color: var(--risk-mod); }
 .factor-score.hig  { background: rgba(200,122,40,.10); color: var(--risk-high); }
 .factor-score.ext  { background: rgba(184,76,42,.10);  color: var(--risk-extreme); }
 .factor-score.note { background: rgba(74,143,186,.08); color: var(--blue); }
@@ -491,7 +491,7 @@ body {
   border-radius: var(--r-sm, 4px); padding: 1rem; margin-bottom: .65rem;
 }
 .rec-box.low      { background: rgba(58,139,60,.05);  border: 2px solid rgba(58,139,60,.22); }
-.rec-box.moderate { background: rgba(218,165,32,.05); border: 2px solid rgba(218,165,32,.22); }
+.rec-box.moderate { background: rgba(var(--gold-rgb),.05); border: 2px solid rgba(var(--gold-rgb),.22); }
 .rec-box.high     { background: rgba(200,122,40,.05); border: 2px solid rgba(200,122,40,.22); }
 .rec-box.extreme  { background: rgba(184,76,42,.05);  border: 2px solid rgba(184,76,42,.22); }
 .rec-head { font-size: .9rem; font-weight: 700; margin-bottom: .4rem; }
@@ -521,7 +521,7 @@ body {
   border-radius: 3px; margin-bottom: .2rem;
 }
 .fc-day-risk.low      { background: rgba(58,139,60,.12); color: var(--risk-low); }
-.fc-day-risk.moderate { background: rgba(218,165,32,.12); color: var(--risk-mod); }
+.fc-day-risk.moderate { background: rgba(var(--gold-rgb),.12); color: var(--risk-mod); }
 .fc-day-risk.high     { background: rgba(200,122,40,.12); color: var(--risk-high); }
 .fc-day-risk.extreme  { background: rgba(184,76,42,.12); color: var(--risk-extreme); }
 .fc-day-temp { font-size: .62rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }

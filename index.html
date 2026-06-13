@@ -78,7 +78,7 @@
   .spray-days{display:flex;gap:.3rem;}
   .spray-day{flex:1;display:flex;flex-direction:column;align-items:center;gap:.18rem;padding:.38rem .2rem;border-radius:6px;border:1px solid;}
   .spray-day.go{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);}
-  .spray-day.caution{background:rgba(218,165,32,.08);border-color:rgba(218,165,32,.25);}
+  .spray-day.caution{background:rgba(var(--gold-rgb),.08);border-color:rgba(var(--gold-rgb),.25);}
   .spray-day.stop{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.20);}
   .spray-day-name{font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);}
   .spray-day-icon{font-size:.85rem;line-height:1;}
@@ -118,12 +118,12 @@
   .wx-7day-meta .wind-hi{color:var(--gold);}
   /* Hourly collapsible */
   .wx-hourly-toggle{background:none;border:1px solid rgba(255,255,255,.1);color:var(--text-muted);font-size:.68rem;font-weight:600;cursor:pointer;padding:.5rem .85rem;border-radius:6px;margin-top:.55rem;width:100%;display:flex;align-items:center;justify-content:center;gap:.3rem;min-height:44px;transition:background .15s,border-color .15s;}
-  .wx-hourly-toggle:hover{background:var(--surface2);border-color:rgba(218,165,32,.35);color:var(--text);}
+  .wx-hourly-toggle:hover{background:var(--surface2);border-color:rgba(var(--gold-rgb),.35);color:var(--text);}
   .wx-hourly-panel{display:none;margin-top:.55rem;background:var(--surface2);border-radius:8px;padding:.5rem .3rem;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;}
   .wx-hourly-panel.expanded{display:block;}
   .wx-hourly-strip{display:flex;gap:.2rem;min-width:max-content;}
   .wx-hourly-cell{display:flex;flex-direction:column;align-items:center;gap:.12rem;padding:.3rem .22rem;background:var(--surface3,rgba(255,255,255,.02));border-radius:4px;min-width:42px;}
-  .wx-hourly-cell.now{background:rgba(218,165,32,.12);border:1px solid rgba(218,165,32,.35);}
+  .wx-hourly-cell.now{background:rgba(var(--gold-rgb),.12);border:1px solid rgba(var(--gold-rgb),.35);}
   .wx-hourly-hr{font-size:.58rem;color:var(--text-muted);font-weight:600;letter-spacing:.03em;}
   .wx-hourly-icon{font-size:.92rem;line-height:1;}
   .wx-hourly-temp{font-family:'Oswald',sans-serif;font-size:.78rem;font-weight:700;color:var(--text);}
@@ -182,11 +182,11 @@
   .ratio-one{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:600;color:var(--text-muted)}
   .ratio-label{font-size:.62rem;color:var(--text-muted);font-weight:600;margin-top:.15rem;letter-spacing:.03em}
   .ratio-right{flex:1;min-width:0;display:flex;flex-direction:column;gap:.6rem;}
-  .ratio-gauge-track{position:relative;height:9px;border-radius:5px;margin-bottom:.3rem;background:linear-gradient(90deg,rgba(218,165,32,.32) 0%,rgba(218,165,32,.32) 30%,rgba(160,160,160,.12) 30%,rgba(160,160,160,.12) 55%,rgba(34,197,94,.28) 55%,rgba(34,197,94,.28) 100%);border:1px solid rgba(255,255,255,.06);}
+  .ratio-gauge-track{position:relative;height:9px;border-radius:5px;margin-bottom:.3rem;background:linear-gradient(90deg,rgba(var(--gold-rgb),.32) 0%,rgba(var(--gold-rgb),.32) 30%,rgba(160,160,160,.12) 30%,rgba(160,160,160,.12) 55%,rgba(34,197,94,.28) 55%,rgba(34,197,94,.28) 100%);border:1px solid rgba(255,255,255,.06);}
   .ratio-gauge-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:15px;height:15px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1.5px var(--border);transition:left .5s ease,background .4s;z-index:2;}
   .ratio-gauge-zones{display:flex;justify-content:space-between;font-size:.62rem;color:var(--text-muted);letter-spacing:.03em;font-weight:600;padding:0 1px;margin-bottom:.3rem;}
   .ratio-verdict{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .65rem;border-radius:20px;font-size:.7rem;font-weight:700;letter-spacing:.03em;border:1px solid;transition:all .3s;}
-  .ratio-verdict.corn{background:rgba(218,165,32,.1);color:var(--gold);border-color:rgba(218,165,32,.28)}
+  .ratio-verdict.corn{background:rgba(var(--gold-rgb),.1);color:var(--gold);border-color:rgba(var(--gold-rgb),.28)}
   .ratio-verdict.neutral{background:var(--surface2);color:var(--text-dim);border-color:var(--border)}
   .ratio-verdict.beans{background:rgba(34,197,94,.08);color:var(--green);border-color:rgba(34,197,94,.22)}
   .ratio-meta{font-size:.65rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.2rem;}
@@ -224,7 +224,7 @@
   .cot-bar-labels{display:flex;justify-content:space-between;font-size:.62rem;color:var(--text-muted);margin-top:.2rem;font-family:'JetBrains Mono',monospace;}
   .cot-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem;padding-top:.55rem;border-top:1px solid var(--border);}
   .cot-date{font-size:.68rem;color:var(--gold);font-family:'JetBrains Mono',monospace;font-weight:700;}
-  .cot-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(218,165,32,.3);border-radius:6px;transition:border-color .15s;}
+  .cot-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(var(--gold-rgb),.3);border-radius:6px;transition:border-color .15s;}
   .cot-full-link:hover{border-color:var(--gold)}
   .tariff-fert-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.75rem;margin:.5rem 0;}
   @media(max-width:720px){.tariff-fert-grid{grid-template-columns:1fr}}
@@ -234,7 +234,7 @@
   .tariff-status-badge{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .65rem;border-radius:20px;font-size:.7rem;font-weight:700;letter-spacing:.03em;border:1px solid;}
   .tariff-status-badge.elevated{background:rgba(239,68,68,.08);color:#ef4444;border-color:rgba(239,68,68,.25);}
   .tariff-status-badge.normal{background:rgba(34,197,94,.08);color:var(--green);border-color:rgba(34,197,94,.22);}
-  .tariff-status-badge.mixed{background:rgba(218,165,32,.08);color:var(--gold);border-color:rgba(218,165,32,.22);}
+  .tariff-status-badge.mixed{background:rgba(var(--gold-rgb),.08);color:var(--gold);border-color:rgba(var(--gold-rgb),.22);}
   .tariff-rows{display:flex;flex-direction:column;gap:.38rem;flex:1;}
   .tariff-row{display:flex;align-items:center;gap:.5rem;padding:.32rem .5rem;border-radius:6px;background:var(--surface2);}
   .tariff-row-icon{font-size:.85rem;line-height:1;flex-shrink:0;}
@@ -244,7 +244,7 @@
   .tariff-row-rate.elevated{color:#ef4444;} .tariff-row-rate.normal{color:var(--green);} .tariff-row-rate.mixed{color:var(--gold);}
   .tariff-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem;padding-top:.55rem;border-top:1px solid var(--border);}
   .tariff-footer-date{font-size:.65rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
-  .tariff-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(218,165,32,.3);border-radius:6px;transition:border-color .15s;}
+  .tariff-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(var(--gold-rgb),.3);border-radius:6px;transition:border-color .15s;}
   .tariff-full-link:hover{border-color:var(--gold);}
   @media(max-width:480px){.tariff-widget{padding:.75rem .85rem;}.tariff-row-dest{display:none;}}
   @media(max-width:480px){.cot-widget{padding:.75rem .85rem;}.cot-net{font-size:.72rem;}.cot-comm-name{font-size:.7rem;}}
@@ -290,7 +290,7 @@
   .km-card[data-tier="3"]::before{background:linear-gradient(90deg,var(--blue),transparent)}
   .km-card:hover{transform:translateY(-1px)}
   .km-card[data-tier="1"]:hover{border-color:rgba(34,197,94,.35)}
-  .km-card[data-tier="2"]:hover{border-color:rgba(218,165,32,.35)}
+  .km-card[data-tier="2"]:hover{border-color:rgba(var(--gold-rgb),.35)}
   .km-card[data-tier="3"]:hover{border-color:rgba(91,163,224,.35)}
   .km-card:hover::before{opacity:1}
   .km-card-row{display:flex;align-items:center;gap:.5rem}
@@ -330,7 +330,7 @@
   .crop-offseason{display:flex;align-items:center;justify-content:center;flex:1;font-size:.78rem;color:var(--text-muted);text-align:center;padding:.5rem 0;}
   .crop-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem;padding-top:.55rem;border-top:1px solid var(--border);}
   .crop-footer-date{font-size:.65rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
-  .crop-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(218,165,32,.3);border-radius:6px;transition:border-color .15s;}
+  .crop-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(var(--gold-rgb),.3);border-radius:6px;transition:border-color .15s;}
   .crop-full-link:hover{border-color:var(--gold);}
   @media(max-width:480px){.crop-widget{padding:.75rem .85rem;}}
   .export-widget{background:linear-gradient(135deg,var(--surface) 0%,rgba(59,130,246,.025) 100%);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-direction:column;}
@@ -351,10 +351,10 @@
   .export-pace-pct.on-track{color:var(--green);} .export-pace-pct.lagging{color:var(--gold);} .export-pace-pct.behind{color:#ef4444;}
   .export-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem;padding-top:.55rem;border-top:1px solid var(--border);}
   .export-footer-date{font-size:.65rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
-  .export-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(218,165,32,.3);border-radius:6px;transition:border-color .15s;}
+  .export-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(var(--gold-rgb),.3);border-radius:6px;transition:border-color .15s;}
   .export-full-link:hover{border-color:var(--gold);}
   @media(max-width:480px){.export-widget{padding:.75rem .85rem;}}
-  .fert-widget{background:linear-gradient(135deg,var(--surface) 0%,rgba(218,165,32,.02) 100%);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-direction:column;}
+  .fert-widget{background:linear-gradient(135deg,var(--surface) 0%,rgba(var(--gold-rgb),.02) 100%);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-direction:column;}
   .fert-widget-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem;}
   .fert-widget-title{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
   .fert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.4rem;flex:1;}
@@ -369,7 +369,7 @@
   .fert-loc{font-size:.62rem;color:var(--text-muted);}
   .fert-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem;padding-top:.55rem;border-top:1px solid var(--border);}
   .fert-footer-note{font-size:.62rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
-  .fert-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(218,165,32,.3);border-radius:6px;transition:border-color .15s;}
+  .fert-full-link{font-size:.68rem;font-weight:600;color:var(--gold);text-decoration:none;padding:.22rem .52rem;border:1px solid rgba(var(--gold-rgb),.3);border-radius:6px;transition:border-color .15s;}
   .fert-full-link:hover{border-color:var(--gold);}
   @media(max-width:480px){.km-card{padding:.65rem .75rem;}.km-card-pct{font-size:1.35rem;}}
   @media(max-width:480px){.fert-widget{padding:.75rem .85rem;}.fert-grid{grid-template-columns:1fr 1fr;}}
@@ -378,7 +378,7 @@
   /* daily-spattr legacy CSS retained for compat; element removed in v4.3 */
   .daily-spattr{display:none}
   /* v4.3: takeaway card — committable statement between lead and sponsor */
-  .daily-takeaway{margin:1rem 0 .25rem;padding:.95rem 1.1rem;background:linear-gradient(135deg,rgba(218,165,32,.08) 0%,rgba(218,165,32,.02) 60%,var(--surface2) 100%);border:1px solid rgba(218,165,32,.3);border-left:4px solid var(--gold);border-radius:8px}
+  .daily-takeaway{margin:1rem 0 .25rem;padding:.95rem 1.1rem;background:linear-gradient(135deg,rgba(var(--gold-rgb),.08) 0%,rgba(var(--gold-rgb),.02) 60%,var(--surface2) 100%);border:1px solid rgba(var(--gold-rgb),.3);border-left:4px solid var(--gold);border-radius:8px}
   .daily-takeaway-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
   .daily-takeaway-text{font-family:'Oswald',sans-serif;font-size:1.05rem;line-height:1.45;color:var(--text);margin:0;font-weight:600;letter-spacing:-.005em}
   @media(max-width:640px){.daily-takeaway-text{font-size:.95rem}}
@@ -387,7 +387,7 @@
   .daily-sec-vs-icon{color:#5aa0d2;font-size:.72rem;flex-shrink:0}
   .daily-sec-vs-text{font-weight:600;letter-spacing:.01em;line-height:1.4}
   /* v4.4: per-section catalyst (driver) chip — names the news/data driving this move */
-  .daily-sec-catalyst{display:flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-dim);margin:.4rem 0 .55rem;padding:.35rem .6rem;background:rgba(218,165,32,.05);border-left:2px solid rgba(218,165,32,.4);border-radius:0 4px 4px 0;flex-wrap:wrap}
+  .daily-sec-catalyst{display:flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-dim);margin:.4rem 0 .55rem;padding:.35rem .6rem;background:rgba(var(--gold-rgb),.05);border-left:2px solid rgba(var(--gold-rgb),.4);border-radius:0 4px 4px 0;flex-wrap:wrap}
   .daily-sec-catalyst-icon{color:var(--gold);font-size:.72rem;flex-shrink:0}
   .daily-sec-catalyst-label{color:var(--gold);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.6rem;flex-shrink:0}
   .daily-sec-catalyst-text{font-weight:500;letter-spacing:.01em;line-height:1.4}
@@ -399,8 +399,8 @@
   .daily-otp-sub{font-size:.72rem;color:var(--text-muted);font-style:italic}
   .daily-otp-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:.85rem}
   @media(min-width:640px){.daily-otp-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-  .daily-otp-item{padding:.8rem .95rem;background:rgba(218,165,32,.03);border:1px solid rgba(218,165,32,.12);border-radius:6px;display:flex;flex-direction:column;gap:.4rem}
-  .daily-otp-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(218,165,32,.08);padding:.18rem .5rem;border-radius:3px;align-self:flex-start;border:1px solid rgba(218,165,32,.22)}
+  .daily-otp-item{padding:.8rem .95rem;background:rgba(var(--gold-rgb),.03);border:1px solid rgba(var(--gold-rgb),.12);border-radius:6px;display:flex;flex-direction:column;gap:.4rem}
+  .daily-otp-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(var(--gold-rgb),.08);padding:.18rem .5rem;border-radius:3px;align-self:flex-start;border:1px solid rgba(var(--gold-rgb),.22)}
   .daily-otp-title{font-size:.88rem;font-weight:700;color:var(--text);line-height:1.35}
   .daily-otp-body{font-size:.8rem;line-height:1.55;color:var(--text-dim)}
   /* v4.3: cash-bids inline conversion footer (weekday only) */
@@ -412,7 +412,7 @@
   .daily-cashbids-arrow{color:var(--green);font-weight:700;margin-left:.2rem}
   /* v4.3: Copy The Number button */
   .dn-copy-btn{background:none;border:1px solid var(--border);color:var(--text-muted);font-size:.78rem;line-height:1;padding:.3rem .5rem;border-radius:4px;cursor:pointer;transition:border-color .15s,color .15s,background .15s;min-height:28px;min-width:28px;display:inline-flex;align-items:center;justify-content:center}
-  .dn-copy-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(218,165,32,.06)}
+  .dn-copy-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(var(--gold-rgb),.06)}
   .daily-thread-marker{display:none;align-items:center;gap:.5rem;margin-bottom:.45rem;padding:.32rem .7rem;background:rgba(91,163,224,.06);border:1px solid rgba(91,163,224,.22);border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);max-width:fit-content}
   .daily-thread-marker .dtm-day{color:var(--blue);font-weight:800}
   .daily-thread-marker .dtm-q{color:var(--text-dim);text-transform:none;letter-spacing:0;font-weight:600}
@@ -422,7 +422,7 @@
   .daily-yc-pill{display:inline-flex;align-items:center;gap:.3rem;padding:.18rem .55rem;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border:1px solid;white-space:nowrap}
   .yc-pill--good{color:var(--green);background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.28)}
   .yc-pill--bad{color:#ef4444;background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.28)}
-  .yc-pill--pending{color:var(--gold);background:rgba(218,165,32,.08);border-color:rgba(218,165,32,.28)}
+  .yc-pill--pending{color:var(--gold);background:rgba(var(--gold-rgb),.08);border-color:rgba(var(--gold-rgb),.28)}
   .daily-yc-body{font-size:.86rem;line-height:1.6;color:var(--text-dim)}
   .daily-yc-note{color:var(--text-muted);font-style:italic}
   .daily-spread{display:none;margin:1rem 0;padding:.85rem 1rem;background:linear-gradient(135deg,var(--surface) 0%,rgba(160,120,200,.04) 100%);border:1px solid rgba(160,120,200,.22);border-radius:8px}
@@ -441,7 +441,7 @@
   .daily-byline a{color:var(--gold);text-decoration:none}
   .daily-byline a:hover{text-decoration:underline}
   /* v4.1 sponsor block — billboard for empty state, restrained for paid sponsor */
-  .daily-sponsor{position:relative;margin:1.25rem 0 1.5rem;padding:1.5rem 1.75rem;background:linear-gradient(135deg,rgba(218,165,32,.10) 0%,rgba(218,165,32,.02) 50%,var(--surface) 100%);border:2px solid var(--gold);border-radius:12px;box-shadow:0 0 0 1px rgba(218,165,32,.15),0 8px 24px rgba(0,0,0,.25)}
+  .daily-sponsor{position:relative;margin:1.25rem 0 1.5rem;padding:1.5rem 1.75rem;background:linear-gradient(135deg,rgba(var(--gold-rgb),.10) 0%,rgba(var(--gold-rgb),.02) 50%,var(--surface) 100%);border:2px solid var(--gold);border-radius:12px;box-shadow:0 0 0 1px rgba(var(--gold-rgb),.15),0 8px 24px rgba(0,0,0,.25)}
   .daily-hero.dismissed .daily-sponsor{display:none}
   .dsp-empty,.dsp-filled{display:block}
   /* Empty state — billboard treatment */
@@ -450,19 +450,19 @@
   .dsp-tag-available{background:var(--gold);color:#0d1117;position:relative;z-index:1}
   .dsp-tag-available::before{content:'';position:absolute;inset:-4px;border:2px solid var(--gold);border-radius:7px;opacity:0;animation:dsp-pulse 2.6s ease-in-out infinite;z-index:-1;pointer-events:none}
   @keyframes dsp-pulse{0%,100%{opacity:0;transform:scale(1)}50%{opacity:.45;transform:scale(1.06)}}
-  .dsp-tag-founding{background:rgba(218,165,32,.10);color:var(--gold);border:1px solid rgba(218,165,32,.4)}
+  .dsp-tag-founding{background:rgba(var(--gold-rgb),.10);color:var(--gold);border:1px solid rgba(var(--gold-rgb),.4)}
   .dsp-headline{font-family:'Oswald',sans-serif;font-size:1.95rem;font-weight:600;letter-spacing:.005em;color:var(--text);margin-bottom:.7rem;line-height:1.1}
   .dsp-pitch{font-size:.95rem;line-height:1.65;color:var(--text-dim);margin-bottom:1.25rem;max-width:58rem}
   .dsp-pitch strong{color:var(--text);font-weight:700}
   .dsp-actions{margin-bottom:.85rem}
-  .dsp-cta-primary{display:inline-flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--gold);color:#0d1117;text-decoration:none;padding:.85rem 1.5rem;border:2px solid var(--gold);border-radius:6px;transition:background .15s,transform .1s,box-shadow .15s,border-color .15s;min-height:44px;box-shadow:0 4px 12px rgba(218,165,32,.22)}
-  .dsp-cta-primary:hover{background:#f0c84a;border-color:#f0c84a;transform:translateY(-1px);box-shadow:0 6px 18px rgba(218,165,32,.38)}
+  .dsp-cta-primary{display:inline-flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--gold);color:#0d1117;text-decoration:none;padding:.85rem 1.5rem;border:2px solid var(--gold);border-radius:6px;transition:background .15s,transform .1s,box-shadow .15s,border-color .15s;min-height:44px;box-shadow:0 4px 12px rgba(var(--gold-rgb),.22)}
+  .dsp-cta-primary:hover{background:#f0c84a;border-color:#f0c84a;transform:translateY(-1px);box-shadow:0 6px 18px rgba(var(--gold-rgb),.38)}
   .dsp-contact{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);letter-spacing:.03em}
   .dsp-contact a{color:var(--gold);text-decoration:none}
   .dsp-contact a:hover{text-decoration:underline}
   .dsp-contact-sep{margin:0 .55rem;opacity:.5}
   /* Filled state — subdued so sponsor brand can breathe */
-  .daily-sponsor.filled{border-width:1px;border-color:rgba(218,165,32,.3);border-left:3px solid var(--gold);background:linear-gradient(135deg,var(--surface) 0%,rgba(218,165,32,.04) 100%);box-shadow:none;padding:1.1rem 1.4rem}
+  .daily-sponsor.filled{border-width:1px;border-color:rgba(var(--gold-rgb),.3);border-left:3px solid var(--gold);background:linear-gradient(135deg,var(--surface) 0%,rgba(var(--gold-rgb),.04) 100%);box-shadow:none;padding:1.1rem 1.4rem}
   .dsp-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;display:flex;align-items:center;gap:.35rem}
   .dsp-sponsor-name{font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:600;color:var(--text);margin-bottom:.3rem;line-height:1.15}
   .dsp-sponsor-tag{font-size:.92rem;line-height:1.55;color:var(--text-dim);margin-bottom:.9rem;max-width:54rem}
@@ -484,10 +484,10 @@
     .dsp-sponsor-cta{font-size:.66rem;padding:.45rem .8rem}
   }
   /* v4.1 collapsed-state teaser sponsor — tiny inline element on the collapsed bar */
-  .teaser-sponsor{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:.22rem .55rem;border:1px solid rgba(218,165,32,.25);border-radius:4px;white-space:nowrap;transition:border-color .15s,background .15s,color .15s,opacity .15s;margin:0 .55rem 0 auto;flex-shrink:0;line-height:1.2}
-  .teaser-sponsor:hover{border-color:var(--gold);background:rgba(218,165,32,.08)}
+  .teaser-sponsor{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:.22rem .55rem;border:1px solid rgba(var(--gold-rgb),.25);border-radius:4px;white-space:nowrap;transition:border-color .15s,background .15s,color .15s,opacity .15s;margin:0 .55rem 0 auto;flex-shrink:0;line-height:1.2}
+  .teaser-sponsor:hover{border-color:var(--gold);background:rgba(var(--gold-rgb),.08)}
   .teaser-sponsor.empty-state{opacity:.7;color:var(--text-muted);border-color:var(--border)}
-  .teaser-sponsor.empty-state:hover{opacity:1;color:var(--gold);border-color:rgba(218,165,32,.45);background:rgba(218,165,32,.06)}
+  .teaser-sponsor.empty-state:hover{opacity:1;color:var(--gold);border-color:rgba(var(--gold-rgb),.45);background:rgba(var(--gold-rgb),.06)}
   .teaser-sponsor.has-sponsor{opacity:.9}
   @media(max-width:520px){.teaser-sponsor{font-size:.56rem;padding:.18rem .45rem;letter-spacing:.03em;margin:0 .4rem 0 auto}}
   @media(max-width:380px){.teaser-sponsor{display:none}}
@@ -557,7 +557,7 @@
   .pwa-hint-body em{color:rgba(255,255,255,.88);font-style:normal}
   .pwa-hint-actions{display:flex;gap:.45rem;flex-shrink:0}
   .pwa-hint-btn{padding:.55rem 1.05rem;border-radius:6px;font-size:.78rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;min-height:38px;transition:background .15s,transform .1s;letter-spacing:.02em}
-  .pwa-hint-btn--primary{background:#daa520;color:#0a1a0a}
+  .pwa-hint-btn--primary{background:var(--gold);color:#0a1a0a}
   .pwa-hint-btn--primary:hover{background:#f0c84a}
   .pwa-hint-btn--primary:active{transform:scale(.97)}
   .pwa-hint-close{background:none;border:none;color:rgba(255,255,255,.75);font-size:1.2rem;cursor:pointer;padding:.25rem .45rem;line-height:1;border-radius:4px;flex-shrink:0;min-height:38px;min-width:38px;font-family:inherit}
@@ -568,32 +568,32 @@
   .pwa-modal{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;padding:1rem;background:rgba(0,0,0,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow-y:auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
   .pwa-modal.show{display:flex;animation:pwa-fade-in .25s ease-out}
   @keyframes pwa-fade-in{from{opacity:0}to{opacity:1}}
-  .pwa-modal-card{position:relative;background:#0a1a0a;border:1px solid rgba(218,165,32,.45);border-radius:14px;max-width:430px;width:100%;max-height:calc(100vh - 2rem);overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.6);color:#fff}
+  .pwa-modal-card{position:relative;background:#0a1a0a;border:1px solid rgba(var(--gold-rgb),.45);border-radius:14px;max-width:430px;width:100%;max-height:calc(100vh - 2rem);overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.6);color:#fff}
   .pwa-modal-close{position:absolute;top:.6rem;right:.6rem;background:rgba(255,255,255,.1);border:none;width:36px;height:36px;border-radius:50%;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .15s}
   .pwa-modal-close:hover{background:rgba(255,255,255,.22)}
-  .pwa-modal-head{padding:1.4rem 1.4rem 1rem;border-bottom:1px solid rgba(218,165,32,.18);text-align:center}
+  .pwa-modal-head{padding:1.4rem 1.4rem 1rem;border-bottom:1px solid rgba(var(--gold-rgb),.18);text-align:center}
   .pwa-modal-head h3{margin:0 0 .35rem;font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;letter-spacing:.005em;color:#fff}
   .pwa-modal-head p{margin:0;font-size:.85rem;color:rgba(255,255,255,.78);line-height:1.5}
   .pwa-modal-body{padding:1rem 1.2rem 1.4rem}
   /* Step-by-step blocks */
   .pwa-step{display:flex;gap:.85rem;padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.06)}
   .pwa-step:last-child{border-bottom:none}
-  .pwa-step-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:#daa520;color:#0a1a0a;font-family:'Oswald',sans-serif;font-size:1.05rem;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
+  .pwa-step-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--gold);color:#0a1a0a;font-family:'Oswald',sans-serif;font-size:1.05rem;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
   .pwa-step-content{flex:1;min-width:0}
   .pwa-step-title{font-size:.96rem;font-weight:700;color:#fff;margin-bottom:.25rem;line-height:1.35}
   .pwa-step-desc{font-size:.82rem;color:rgba(255,255,255,.78);line-height:1.55}
   .pwa-step-desc strong{color:#fff;font-weight:600}
-  .pwa-step-desc kbd{display:inline-block;padding:.05rem .42rem;margin:0 .12rem;background:rgba(218,165,32,.18);border:1px solid rgba(218,165,32,.35);border-radius:4px;font-family:inherit;font-size:.82rem;font-weight:700;color:#daa520;vertical-align:baseline}
+  .pwa-step-desc kbd{display:inline-block;padding:.05rem .42rem;margin:0 .12rem;background:rgba(var(--gold-rgb),.18);border:1px solid rgba(var(--gold-rgb),.35);border-radius:4px;font-family:inherit;font-size:.82rem;font-weight:700;color:var(--gold);vertical-align:baseline}
   /* Visual diagrams (inline SVG) */
-  .pwa-visual{margin:.7rem 0 .2rem;background:#1a2510;border:1px solid rgba(218,165,32,.18);border-radius:8px;padding:.7rem;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .pwa-visual{margin:.7rem 0 .2rem;background:#1a2510;border:1px solid rgba(var(--gold-rgb),.18);border-radius:8px;padding:.7rem;display:flex;align-items:center;justify-content:center;overflow:hidden}
   .pwa-visual svg{display:block;max-width:100%;height:auto}
   /* Pulsing finger / arrow indicator on the diagram */
   @keyframes pwa-pulse-tap{0%,100%{transform:translate(0,0);opacity:1}50%{transform:translate(0,3px);opacity:.55}}
-  @keyframes pwa-pulse-glow{0%,100%{filter:drop-shadow(0 0 0 rgba(218,165,32,.9))}50%{filter:drop-shadow(0 0 6px rgba(218,165,32,.95))}}
+  @keyframes pwa-pulse-glow{0%,100%{filter:drop-shadow(0 0 0 rgba(var(--gold-rgb),.9))}50%{filter:drop-shadow(0 0 6px rgba(var(--gold-rgb),.95))}}
   .pwa-arrow-anim{animation:pwa-pulse-tap 1.4s ease-in-out infinite,pwa-pulse-glow 1.4s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
   .pwa-modal-footer{padding:.85rem 1.2rem 1.2rem;text-align:center;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.25)}
   .pwa-modal-footer-text{font-size:.78rem;color:rgba(255,255,255,.62);line-height:1.5}
-  .pwa-modal-footer-text strong{color:#daa520;font-weight:600}
+  .pwa-modal-footer-text strong{color:var(--gold);font-weight:600}
   /* Mobile tweaks */
   @media(max-width:480px){
     .pwa-modal{padding:.5rem;align-items:flex-end}
@@ -673,7 +673,7 @@
 .dh-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite}
 .dh-headline{font-family:'Oswald',sans-serif;font-size:1.65rem;font-weight:800;line-height:1.15;color:var(--text);margin:0 0 .5rem;letter-spacing:-.01em;text-transform:uppercase}
 .dh-field-call{display:flex;align-items:center;gap:.5rem;padding:.5rem .9rem;margin-bottom:.85rem;border-radius:8px;font-size:.78rem;font-weight:700;letter-spacing:.03em;font-family:'JetBrains Mono',monospace;line-height:1.45}
-.dh-fc--plan{background:rgba(218,165,32,.1);color:var(--gold);border:1px solid rgba(218,165,32,.2)}
+.dh-fc--plan{background:rgba(var(--gold-rgb),.1);color:var(--gold);border:1px solid rgba(var(--gold-rgb),.2)}
 .dh-fc--go{background:rgba(34,197,94,.08);color:var(--green);border:1px solid rgba(34,197,94,.18)}
 .dh-fc--stop{background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.2)}
 @media(min-width:700px){.dh{--dh-pad:1.75rem}.dh-headline{font-size:2.2rem}}
@@ -694,12 +694,12 @@
           <div class="daily-snapshot-note" aria-label="Briefing snapshot context" style="font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin:-.4rem 0 .8rem;line-height:1.5">Snapshot at briefing publish &middot; <span style="color:var(--gold)">live ticker above shows current prices</span></div>
           <div id="site-greeting" class="daily-greeting">Good Morning</div>
           <div id="daily-thread-marker" class="daily-thread-marker"><span class="dtm-day">Day <span id="daily-thread-day">--</span>/5</span><span class="dtm-q" id="daily-thread-q"></span></div>
-          <h2 id="daily-headline" class="daily-headline">Loading Today's Briefing&hellip;</h2>
-          <p id="daily-subheadline" style="font-size:.88rem;color:var(--gold);font-weight:600;margin-bottom:.5rem;letter-spacing:.02em"></p>
-          <p id="daily-lead" class="daily-lead"></p>
-          <div id="daily-takeaway" class="daily-takeaway" role="note" aria-label="Today's key takeaway" style="display:none">
+          <h2 id="daily-headline" class="daily-headline">GRAINS FIND BOTTOM, LIVESTOCK SLIPS ON USDA SUPPLY VIEW</h2>
+          <p id="daily-subheadline" style="font-size:.88rem;color:var(--gold);font-weight:600;margin-bottom:.5rem;letter-spacing:.02em">Corn leads grain bounce while cattle complex falls on milk production outlook.</p>
+          <p id="daily-lead" class="daily-lead">Corn closed $4.13, up half a cent and looking like it finally found the floor the funds have been hunting for three weeks. December corn at $4.41 tells the story better: new-crop's firming while old-crop stays defensive, the calendar spread working exactly like it should when planting's done and the weather hasn't turned. The grain complex answered this week's question with a definitive yes, breaking the five-day slide on fund rotation and fresh energy in the ethanol story.</p>
+          <div id="daily-takeaway" class="daily-takeaway" role="note" aria-label="Today's key takeaway">
             <span class="daily-takeaway-label">&#x1F3AF; THE TAKEAWAY</span>
-            <p id="daily-takeaway-text" class="daily-takeaway-text"></p>
+            <p id="daily-takeaway-text" class="daily-takeaway-text">Corn found its bottom, cattle didn't.</p>
           </div>
           <div class="daily-sponsor" id="daily-sponsor" role="region" aria-label="Sponsor slot">
             <!-- Empty state: billboard for finding the founding sponsor -->
@@ -728,14 +728,14 @@
             </div>
           </div>
           <div id="daily-yc" class="daily-yc">
-            <div class="daily-yc-head"><span class="daily-yc-label">YESTERDAY'S CALL</span><span class="daily-yc-pill yc-pill--pending" id="daily-yc-pill">--</span></div>
+            <div class="daily-yc-head"><span class="daily-yc-label">YESTERDAY'S CALL</span><span class="daily-yc-pill yc-pill--pending" id="daily-yc-pill">--</span><a href="/scorecard" style="margin-left:auto;font-size:.68rem;font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--text-muted)" aria-label="Full call track record">Track record &rarr;</a></div>
             <div class="daily-yc-body"><span id="daily-yc-summary"></span><span id="daily-yc-note" class="daily-yc-note"></span></div>
           </div>
           <div class="daily-sections">
-            <div id="daily-sec-1" class="daily-sec" style="position:relative"><span id="daily-section-1-icon" class="daily-sec-icon">&#x1F33E;</span><div><div class="daily-sec-label-row"><div id="daily-section-1-title" class="daily-sec-label">GRAINS &amp; OILSEEDS</div><span id="daily-section-1-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-1-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon">&#x21BA;</span><span class="daily-sec-vs-text" id="daily-section-1-vs-text"></span></div><div id="daily-section-1-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-icon">&#x1F4E1;</span><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-1-catalyst-text"></span></div><div id="daily-section-1-body" class="daily-sec-text"></div><div id="daily-section-1-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-1-action" class="daily-sec-action"></div></div></div>
-            <div id="daily-sec-2" class="daily-sec" style="position:relative"><span id="daily-section-2-icon" class="daily-sec-icon">&#x1F404;</span><div><div class="daily-sec-label-row"><div id="daily-section-2-title" class="daily-sec-label">LIVESTOCK &amp; DAIRY</div><span id="daily-section-2-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-2-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon">&#x21BA;</span><span class="daily-sec-vs-text" id="daily-section-2-vs-text"></span></div><div id="daily-section-2-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-icon">&#x1F4E1;</span><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-2-catalyst-text"></span></div><div id="daily-section-2-body" class="daily-sec-text"></div><div id="daily-section-2-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-2-action" class="daily-sec-action"></div></div></div>
-            <div id="daily-sec-3" class="daily-sec" style="position:relative"><span id="daily-section-3-icon" class="daily-sec-icon">&#x26FD;</span><div><div class="daily-sec-label-row"><div id="daily-section-3-title" class="daily-sec-label">ENERGY &amp; INPUTS</div><span id="daily-section-3-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-3-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon">&#x21BA;</span><span class="daily-sec-vs-text" id="daily-section-3-vs-text"></span></div><div id="daily-section-3-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-icon">&#x1F4E1;</span><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-3-catalyst-text"></span></div><div id="daily-section-3-body" class="daily-sec-text"></div><div id="daily-section-3-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-3-action" class="daily-sec-action"></div></div></div>
-            <div id="daily-sec-4" class="daily-sec" style="position:relative"><span id="daily-section-4-icon" class="daily-sec-icon">&#x1F3DB;&#xFE0F;</span><div><div class="daily-sec-label-row"><div id="daily-section-4-title" class="daily-sec-label">MACRO &amp; TRADE</div><span id="daily-section-4-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-4-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon">&#x21BA;</span><span class="daily-sec-vs-text" id="daily-section-4-vs-text"></span></div><div id="daily-section-4-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-icon">&#x1F4E1;</span><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-4-catalyst-text"></span></div><div id="daily-section-4-body" class="daily-sec-text"></div><div id="daily-section-4-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-4-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-1" class="daily-sec" style="position:relative"><span id="daily-section-1-icon" class="daily-sec-icon">&#x1F33E;</span><div><div class="daily-sec-label-row"><div id="daily-section-1-title" class="daily-sec-label">CORN LEADS GRAINS HIGHER</div><span id="daily-section-1-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-1-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon">&#x21BA;</span><span class="daily-sec-vs-text" id="daily-section-1-vs-text"></span></div><div id="daily-section-1-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-icon">&#x1F4E1;</span><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-1-catalyst-text"></span></div><div id="daily-section-1-body" class="daily-sec-text">Corn closed $4.13, up half a cent and finally acting like it wants to stay above $4.10. December corn gained a nickel to $4.41, the new-crop spread telling you the market's done going down and ready to price the weather again. <strong>Fund rotation out of beans into corn</strong> drove the action, managed money adding 8,000 contracts while soybeans stayed flat at $11.13. The 45Z GREET model update from Energy gave ethanol bulls something to work with, biofuel groups calling it a 'major win' for the industry. Rootless corn syndrome confirmed in Indiana adds a production risk premium the market wasn't pricing yesterday.</div><div id="daily-section-1-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-1-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-2" class="daily-sec" style="position:relative"><span id="daily-section-2-icon" class="daily-sec-icon">&#x1F404;</span><div><div class="daily-sec-label-row"><div id="daily-section-2-title" class="daily-sec-label">CATTLE COMPLEX FALLS ON USDA OUTLOOK</div><span id="daily-section-2-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-2-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon">&#x21BA;</span><span class="daily-sec-vs-text" id="daily-section-2-vs-text"></span></div><div id="daily-section-2-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-icon">&#x1F4E1;</span><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-2-catalyst-text"></span></div><div id="daily-section-2-body" class="daily-sec-text">Live cattle dropped $1.50 to $240.95, feeders fell $2.00 to $357.05, both breaking yesterday's bounce on USDA's latest supply and demand report. <strong>Increased milk production per cow and larger cow inventories</strong> are the department's base case for 2026-27, putting pressure on the entire protein complex. The direct business stayed quiet, no cash trade to support the futures, and high beef prices are shifting consumer habits toward ground beef and away from premium cuts. JBS closing the Souderton and Memphis plants removes capacity but the market's pricing oversupply, not processing constraints.</div><div id="daily-section-2-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-2-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-3" class="daily-sec" style="position:relative"><span id="daily-section-3-icon" class="daily-sec-icon">&#x26FD;</span><div><div class="daily-sec-label-row"><div id="daily-section-3-title" class="daily-sec-label">OATS FALL ON OVERNIGHT SELLING</div><span id="daily-section-3-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-3-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon">&#x21BA;</span><span class="daily-sec-vs-text" id="daily-section-3-vs-text"></span></div><div id="daily-section-3-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-icon">&#x1F4E1;</span><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-3-catalyst-text"></span></div><div id="daily-section-3-body" class="daily-sec-text">Oats fell 9.5 cents to $3.08, a 3% drop that caught the market off-guard in overnight trading. <strong>No specific catalyst drove the selling</strong>, looks like fund liquidation in a thin market where small position changes move prices hard. The grain's been trading in a narrow range for weeks, sitting 28% off its 52-week high, and somebody decided Friday morning was the day to get out. Volume was light, the kind of move that happens when liquidity dries up and one fund hits the exit.</div><div id="daily-section-3-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-3-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-4" class="daily-sec" style="position:relative"><span id="daily-section-4-icon" class="daily-sec-icon">&#x1F3DB;&#xFE0F;</span><div><div class="daily-sec-label-row"><div id="daily-section-4-title" class="daily-sec-label"></div><span id="daily-section-4-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-4-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon">&#x21BA;</span><span class="daily-sec-vs-text" id="daily-section-4-vs-text"></span></div><div id="daily-section-4-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-icon">&#x1F4E1;</span><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-4-catalyst-text"></span></div><div id="daily-section-4-body" class="daily-sec-text"></div><div id="daily-section-4-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-4-action" class="daily-sec-action"></div></div></div>
           </div>
           <div id="daily-spread" class="daily-spread">
             <div class="daily-spread-head"><span class="daily-spread-label">SPREAD TO WATCH</span><span class="daily-spread-level" id="daily-spread-level"></span></div>
@@ -753,7 +753,7 @@
         <div class="hero-sidebar">
           <div class="s-card s-card--gold"><div class="s-card-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><span class="s-card-label">&#x1F4CA; THE NUMBER</span><button id="daily-number-copy" class="dn-copy-btn" type="button" aria-label="Copy The Number to clipboard" title="Copy">&#x1F4CB;</button></div><div id="daily-number-value" class="one-num">&mdash;</div><div id="daily-number-unit" class="one-num-unit"></div><div id="daily-number-context" class="one-num-ctx"></div></div>
           <div class="s-card"><div class="s-card-label">&#x1F4C5; <span id="daily-watch-label-text">TODAY'S WATCH LIST</span></div><ul id="daily-watch-list" class="watch-list" role="list"><li class="watch-item"><span class="watch-time">&mdash;</span><span class="watch-desc">Loading watch list&hellip;</span></li></ul></div>
-          <div class="s-card" style="border-color:rgba(218,165,32,.15)"><div class="s-card-label" style="color:var(--gold)">&#x1F4AC; DAILY QUOTE</div><blockquote style="margin:0;padding:0"><p id="daily-quote-text" style="font-size:.92rem;font-style:italic;color:var(--text-dim);line-height:1.65;margin-bottom:.4rem">"&mdash;"</p><cite id="daily-quote-attr" style="font-size:.76rem;color:var(--text-muted);font-style:normal"></cite></blockquote></div>
+          <div class="s-card" style="border-color:rgba(var(--gold-rgb),.15)"><div class="s-card-label" style="color:var(--gold)">&#x1F4AC; DAILY QUOTE</div><blockquote style="margin:0;padding:0"><p id="daily-quote-text" style="font-size:.92rem;font-style:italic;color:var(--text-dim);line-height:1.65;margin-bottom:.4rem">"&mdash;"</p><cite id="daily-quote-attr" style="font-size:.76rem;color:var(--text-muted);font-style:normal"></cite></blockquote></div>
           <div style="font-size:.62rem;color:var(--text-muted);text-align:center;padding:.2rem 0"><span id="daily-source">USDA &middot; CME Group &middot; Open-Meteo</span></div>
         </div>
       </div>
@@ -1134,10 +1134,10 @@
     </style>
     <div class="sec-head"><h2 class="sec-title">&#x1F4CA; The Read</h2><span class="read-sub">What today's prices actually mean</span></div>
     <div class="sig-grid">
-      <a href="/corn-futures-prices" class="sig" id="sig-corn"><div class="sig-top"><span class="sig-name">&#x1F33D; Corn</span><span class="sig-tag" id="sig-corn-tag">&middot;</span></div><div class="sig-num"><span id="sig-corn-num">&mdash;</span><small id="sig-corn-sub"></small></div><div class="sig-price" id="sig-corn-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-corn-fill" style="width:0"></div><div class="sig-dot" id="sig-corn-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-corn-read"></div><div class="sig-link">Corn deep dive &rarr;</div></a>
-      <a href="/soybean-futures-prices" class="sig" id="sig-beans"><div class="sig-top"><span class="sig-name">&#x1FAD8; Soybeans</span><span class="sig-tag" id="sig-beans-tag">&middot;</span></div><div class="sig-num"><span id="sig-beans-num">&mdash;</span><small id="sig-beans-sub"></small></div><div class="sig-price" id="sig-beans-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-beans-fill" style="width:0"></div><div class="sig-dot" id="sig-beans-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-beans-read"></div><div class="sig-link">Soybean deep dive &rarr;</div></a>
-      <a href="/wheat-futures-prices" class="sig" id="sig-wheat"><div class="sig-top"><span class="sig-name">&#x1F33E; Wheat</span><span class="sig-tag" id="sig-wheat-tag">&middot;</span></div><div class="sig-num"><span id="sig-wheat-num">&mdash;</span><small id="sig-wheat-sub"></small></div><div class="sig-price" id="sig-wheat-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-wheat-fill" style="width:0"></div><div class="sig-dot" id="sig-wheat-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-wheat-read"></div><div class="sig-link">Wheat deep dive &rarr;</div></a>
-      <a href="/cattle-futures-prices" class="sig" id="sig-cattle"><div class="sig-top"><span class="sig-name">&#x1F402; Cattle</span><span class="sig-tag" id="sig-cattle-tag">&middot;</span></div><div class="sig-num"><span id="sig-cattle-num">&mdash;</span><small id="sig-cattle-sub"></small></div><div class="sig-price" id="sig-cattle-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-cattle-fill" style="width:0"></div><div class="sig-dot" id="sig-cattle-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-cattle-read"></div><div class="sig-link">Cattle deep dive &rarr;</div></a>
+      <a href="/corn-futures-prices" class="sig" id="sig-corn"><div class="sig-top"><span class="sig-name">&#x1F33D; Corn</span><span class="sig-tag" id="sig-corn-tag">&middot;</span></div><div class="sig-num"><span id="sig-corn-num">11</span><small id="sig-corn-sub">11th pctile</small></div><div class="sig-price" id="sig-corn-price">$4.13 &middot; range $3.68&ndash;$8.18</div><div class="sig-bar"><div class="sig-fill" id="sig-corn-fill" style="width:0"></div><div class="sig-dot" id="sig-corn-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-corn-read">At the 11th percentile of the last 5 years — historically low — below most of the last 5 years.</div><div class="sig-link">Corn deep dive &rarr;</div></a>
+      <a href="/soybean-futures-prices" class="sig" id="sig-beans"><div class="sig-top"><span class="sig-name">&#x1FAD8; Soybeans</span><span class="sig-tag" id="sig-beans-tag">&middot;</span></div><div class="sig-num"><span id="sig-beans-num">31</span><small id="sig-beans-sub">31st pctile</small></div><div class="sig-price" id="sig-beans-price">$11.13 &middot; range $9.39&ndash;$17.45</div><div class="sig-bar"><div class="sig-fill" id="sig-beans-fill" style="width:0"></div><div class="sig-dot" id="sig-beans-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-beans-read">At the 31st percentile of the last 5 years — below the 5-year midpoint.</div><div class="sig-link">Soybean deep dive &rarr;</div></a>
+      <a href="/wheat-futures-prices" class="sig" id="sig-wheat"><div class="sig-top"><span class="sig-name">&#x1F33E; Wheat</span><span class="sig-tag" id="sig-wheat-tag">&middot;</span></div><div class="sig-num"><span id="sig-wheat-num">42</span><small id="sig-wheat-sub">42nd pctile</small></div><div class="sig-price" id="sig-wheat-price">$5.85 &middot; range $4.99&ndash;$13.48</div><div class="sig-bar"><div class="sig-fill" id="sig-wheat-fill" style="width:0"></div><div class="sig-dot" id="sig-wheat-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-wheat-read">At the 42nd percentile of the last 5 years — below the 5-year midpoint.</div><div class="sig-link">Wheat deep dive &rarr;</div></a>
+      <a href="/cattle-futures-prices" class="sig" id="sig-cattle"><div class="sig-top"><span class="sig-name">&#x1F402; Cattle</span><span class="sig-tag" id="sig-cattle-tag">&middot;</span></div><div class="sig-num"><span id="sig-cattle-num">&mdash;</span><small id="sig-cattle-sub"></small></div><div class="sig-price" id="sig-cattle-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-cattle-fill" style="width:0"></div><div class="sig-dot" id="sig-cattle-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-cattle-read">At the 95th percentile of the last 5 years — historically very high — near a 5-year peak.</div><div class="sig-link">Cattle deep dive &rarr;</div></a>
     </div>
   </section>
   <script>
@@ -1343,7 +1343,7 @@
               <text x="320" y="118" text-anchor="end" fill="#666" font-family="-apple-system,sans-serif" font-size="14">&#128214;</text>
               <line x1="30" y1="128" x2="330" y2="128" stroke="#3a3a3a" stroke-width="1"/>
               <!-- HIGHLIGHTED ROW -->
-              <rect x="22" y="130" width="316" height="28" rx="4" fill="rgba(218,165,32,0.15)" stroke="#daa520" stroke-width="1.5"/>
+              <rect x="22" y="130" width="316" height="28" rx="4" fill="rgba(var(--gold-rgb),0.15)" stroke="#daa520" stroke-width="1.5"/>
               <text x="40" y="148" fill="#daa520" font-family="-apple-system,sans-serif" font-size="11.5" font-weight="600">Add to Home Screen</text>
               <g transform="translate(316 144)">
                 <rect x="-9" y="-9" width="18" height="18" rx="3.5" fill="none" stroke="#daa520" stroke-width="1.5"/>
@@ -1431,7 +1431,7 @@
               <text x="135" y="110" fill="#aaa" font-family="-apple-system,sans-serif" font-size="11">Recent tabs</text>
               <line x1="125" y1="120" x2="335" y2="120" stroke="#3a3a3a" stroke-width="0.5"/>
               <!-- HIGHLIGHTED Install app -->
-              <rect x="122" y="124" width="216" height="26" rx="4" fill="rgba(218,165,32,0.15)" stroke="#daa520" stroke-width="1.5"/>
+              <rect x="122" y="124" width="216" height="26" rx="4" fill="rgba(var(--gold-rgb),0.15)" stroke="#daa520" stroke-width="1.5"/>
               <text x="135" y="142" fill="#daa520" font-family="-apple-system,sans-serif" font-size="11.5" font-weight="600">Install app</text>
               <g transform="translate(322 137)">
                 <path d="M-5 -2 L0 3 L5 -2" stroke="#daa520" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1468,6 +1468,28 @@
     <a href="/corn-futures-prices" style="color:var(--green);text-decoration:none">Corn Futures</a> &middot; <a href="/soybean-futures-prices" style="color:var(--green);text-decoration:none">Soybean Futures</a> &middot; <a href="/wheat-futures-prices" style="color:var(--green);text-decoration:none">Wheat Futures</a> &middot; <a href="/cattle-futures-prices" style="color:var(--green);text-decoration:none">Cattle Futures</a> &middot; <a href="/cash-bids" style="color:var(--green);text-decoration:none">Cash Grain Bids</a> &middot; <a href="/cot" style="color:var(--green);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--green);text-decoration:none">Ag Prediction Markets</a> &middot; <a href="/markets" style="color:var(--green);text-decoration:none">All Markets</a> &middot; <a href="/spray" style="color:var(--green);text-decoration:none">Spray Conditions</a> &middot; <a href="/urea" style="color:var(--green);text-decoration:none">Urea Risk</a> &middot; <a href="/drought-monitor" style="color:var(--green);text-decoration:none">Drought Monitor</a> &middot; <a href="/breakeven" style="color:var(--green);text-decoration:none">Break-Even Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--green);text-decoration:none">Grain Bin Calculator</a> &middot; <a href="/gdu-calculator" style="color:var(--green);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--green);text-decoration:none">Planting Dates</a> &middot; <a href="/fertilizer" style="color:var(--green);text-decoration:none">Fertilizer</a> &middot; <a href="/fast-facts" style="color:var(--green);text-decoration:none">Fast Facts</a> &middot; <a href="/yield-estimator" style="color:var(--green);text-decoration:none">Yield Estimator</a> &middot; <a href="/daily" style="color:var(--green);text-decoration:none">AGSIST Daily</a> &middot; <a href="/usda-calendar" style="color:var(--green);text-decoration:none">USDA Calendar</a> &middot; <a href="/usda-quick-stats" style="color:var(--green);text-decoration:none">USDA Quick Stats</a> &middot; <a href="/tariffs" style="color:var(--green);text-decoration:none">Tariffs</a> &middot; <a href="/data-sources" style="color:var(--green);text-decoration:none">Data Sources</a> &middot; <a href="/about" style="color:var(--green);text-decoration:none">About</a> &middot; <a href="/contact" style="color:var(--green);text-decoration:none">Contact</a> &middot; <a href="/sponsor" style="color:var(--green);text-decoration:none">Sponsor</a>
   </nav>
 </div>
+  <script>
+  /* Intent analytics (2026-06-12): The Read deep-dive clicks + sponsor slot
+     impression. Tiny, delegated, fails silent if gtag is blocked. */
+  (function(){
+    'use strict';
+    function ga(n,p){try{if(typeof window.gtag==='function')gtag('event',n,p||{});}catch(e){}}
+    document.addEventListener('click',function(e){
+      var a=e.target&&e.target.closest?e.target.closest('#f-read a.sig'):null;
+      if(a&&a.id)ga('read_deepdive',{commodity:a.id.replace('sig-','')});
+    });
+    var sp=document.getElementById('daily-sponsor');
+    if(sp&&'IntersectionObserver'in window){
+      var seen=false;
+      var io=new IntersectionObserver(function(en){
+        en.forEach(function(x){
+          if(x.isIntersecting&&!seen){seen=true;ga('sponsor_impression',{page:'home'});io.disconnect();}
+        });
+      },{threshold:.5});
+      io.observe(sp);
+    }
+  })();
+  </script>
 <script src="/components/loader.js" defer></script>
 <script src="/components/geo.js" defer></script>
 <script src="/components/bids-homepage.js" defer></script>
@@ -1808,7 +1830,7 @@ function pc(n){return n>=70?'var(--green)':n>=50?'var(--gold)':n>=30?'var(--text
 function barBg(n){var rgb=n>=70?'34,197,94':n>=50?'218,165,32':n>=30?'140,140,130':'239,68,68';return'linear-gradient(90deg,rgba('+rgb+',.9),rgba('+rgb+',.3))';}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function tLeft(iso){if(!iso)return'';try{var d=(new Date(iso).getTime()-Date.now())/86400000;if(d<0)return'';if(d<1)return'Today';if(d<2)return'Tomorrow';if(d<=30)return Math.round(d)+'d left';return'~'+Math.round(d/30)+'mo';}catch(e){return'';}}
-var TIER_COLORS={1:'color:var(--green);border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.06)',2:'color:var(--gold);border-color:rgba(218,165,32,.25);background:rgba(218,165,32,.06)',3:'color:var(--blue);border-color:rgba(91,163,224,.25);background:rgba(91,163,224,.06)'};
+var TIER_COLORS={1:'color:var(--green);border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.06)',2:'color:var(--gold);border-color:rgba(var(--gold-rgb),.25);background:rgba(var(--gold-rgb),.06)',3:'color:var(--blue);border-color:rgba(91,163,224,.25);background:rgba(91,163,224,.06)'};
 var TIER_LABELS={1:'DIRECT AG',2:'TRADE / ENERGY',3:'MACRO'};
 var seenM={},markets=[];
 function parseProb(m){var prob=null;var op=m.outcomePrices||m.outcome_prices;if(op){try{var pr=typeof op==='string'?JSON.parse(op):op;if(Array.isArray(pr)&&pr.length){var v=parseFloat(pr[0]);if(!isNaN(v))prob=Math.round(v<=1?v*100:v);}}catch(e){}}if(prob==null&&m.tokens&&Array.isArray(m.tokens)&&m.tokens.length>0){try{var tp=parseFloat(m.tokens[0].price);if(!isNaN(tp)&&tp>0)prob=Math.round(tp<=1?tp*100:tp);}catch(e){}}if(prob==null){['yes_price','bestBid','lastTradePrice','last_trade_price','price'].forEach(function(f){if(prob!=null)return;var v=m[f];if(v!=null){try{var n=parseFloat(v);if(!isNaN(n)&&n>0)prob=Math.round(n<=1?n*100:n);}catch(e){}}});}return(prob!=null&&prob>0&&prob<100)?prob:null;}
@@ -2078,7 +2100,7 @@ window.hydrateDaily = function(data) {
       secEl.style.display='';
       var sec=sections[si-1];
       setText('daily-section-'+si+'-title',sec.title||'');
-      setHTML('daily-section-'+si+'-body',sec.body||'');
+      setHTML('daily-section-'+si+'-body',mdInline(sec.body||''));
       // bottom_line + farmer_action default to display:none in CSS — must flip when populated
       var blEl=el('daily-section-'+si+'-bottomline');
       if(blEl){if(sec.bottom_line){blEl.textContent=sec.bottom_line;blEl.style.display='block';}else{blEl.style.display='none';}}
@@ -2119,7 +2141,7 @@ window.hydrateDaily = function(data) {
   var tmykWrap=el('daily-tmyk-wrap');
   if(tmyk&&(tmyk.title||tmyk.body)){
     setText('daily-tmyk-title',tmyk.title||'');
-    setHTML('daily-tmyk-body',tmyk.body||'');
+    setHTML('daily-tmyk-body',mdInline(tmyk.body||''));
     if(tmykWrap)tmykWrap.style.display='';
   } else {
     if(tmykWrap)tmykWrap.style.display='none';
@@ -2142,7 +2164,7 @@ window.hydrateDaily = function(data) {
     var wl=el('daily-watch-list');
     if(wl&&Array.isArray(data.watch_list)&&data.watch_list.length){
       wl.innerHTML=data.watch_list.map(function(item){
-        return '<li class="watch-item"><span class="watch-time">'+(item.time||'')+'</span><span class="watch-desc">'+(item.desc||item.event||'')+'</span></li>';
+        return '<li class="watch-item"><span class="watch-time">'+escHtml(item.time||'')+'</span><span class="watch-desc">'+mdInline(item.desc||item.event||'')+'</span></li>';
       }).join('');
     }
   }
@@ -2226,7 +2248,7 @@ window.hydrateDaily = function(data) {
       var spLbl=el('daily-spread-label-text'),spLvl=el('daily-spread-level'),spBody=el('daily-spread-commentary');
       if(spLbl)spLbl.textContent=sp.label;
       if(spLvl)spLvl.textContent=sp.level||'';
-      if(spBody)spBody.textContent=sp.commentary;
+      if(spBody)spBody.innerHTML=mdInline(sp.commentary);
       spEl.style.display='block';
     } else { spEl.style.display='none'; }
   }

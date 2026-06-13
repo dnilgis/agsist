@@ -16,8 +16,8 @@
 <link rel="manifest"                            href="/manifest.json">
 <meta name="theme-color" content="#111a0a">
 
-<title>CFTC Commitment of Traders — Corn, Soybean &amp; Wheat Fund Positioning | AGSIST</title>
-<meta name="description" content="Weekly CFTC Commitment of Traders data for corn, soybeans, SRW/KC/Minneapolis wheat, soybean meal and oil, live cattle, feeder cattle, lean hogs, and Class III milk. Managed money net positioning with 52-week charts. Free for farmers.">
+<title>CFTC COT Report &mdash; Corn, Soybean &amp; Wheat Positioning | AGSIST</title>
+<meta name="description" content="Weekly CFTC Commitment of Traders for 11 ag commodities &mdash; managed money net positioning, 52-week percentile, and week-over-week change, charted.">
 <meta name="keywords"    content="CFTC commitment of traders, COT report corn, managed money positioning, grain fund positioning, soybean COT, wheat COT, KC wheat HRW COT, soybean meal COT, soybean oil COT, live cattle COT, feeder cattle COT, lean hogs COT, Class III milk COT, speculative positioning">
 <meta name="author"      content="Farmers First Agri Service — AGSIST">
 <meta name="robots"      content="index, follow">
@@ -85,7 +85,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 .cot-insight { font-size:.66rem; line-height:1.5; color:var(--text-dim); margin-top:.5rem; padding-top:.5rem; border-top:1px solid var(--border); }
 .cot-insight b { color:var(--text); font-weight:700; }
 .cot-insight .up { color:var(--green); } .cot-insight .dn { color:#ef4444; }
-.cot-read { border:1px solid rgba(218,165,32,.3); background:rgba(218,165,32,.05); border-radius:10px; padding:.9rem 1.1rem; margin-bottom:1.25rem; }
+.cot-read { border:1px solid rgba(var(--gold-rgb),.3); background:rgba(var(--gold-rgb),.05); border-radius:10px; padding:.9rem 1.1rem; margin-bottom:1.25rem; }
 .cot-read-tag { font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:.35rem; }
 .cot-read-body { font-size:.86rem; line-height:1.6; color:var(--text); }
 .cot-read-body b { color:var(--gold); }
@@ -949,6 +949,13 @@ cotTick(); setInterval(cotTick, 60000);
   if(btn)btn.addEventListener('click',function(e){e.preventDefault();submit();});
   if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submit();}});
 })();
+</script>
+<script>
+/* COT chart-tab interaction event (2026-06-12) */
+(function(){document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest?e.target.closest('.cot-chart-tab'):null;
+  if(t){try{if(typeof window.gtag==='function')gtag('event','cot_tab',{tab:(t.textContent||'').trim().slice(0,40)});}catch(err){}}
+});})();
 </script>
 </body>
 </html>

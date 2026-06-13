@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+
+  <title>Call Scorecard &mdash; AGSIST Daily Track Record</title>
+  <meta name="description" content="Every forward call the AGSIST Daily briefing has made — dated, graded the next morning, misses included. The full public track record.">
+  <meta name="author" content="Sigurd Lindquist &mdash; Farmers First Agri Service">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://agsist.com/scorecard">
+
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="AGSIST">
+  <meta property="og:locale"      content="en_US">
+  <meta property="og:title"       content="Call Scorecard &mdash; AGSIST Daily Track Record">
+  <meta property="og:description" content="Every forward call the AGSIST Daily briefing has made — dated, graded the next morning, misses included.">
+  <meta property="og:url"         content="https://agsist.com/scorecard">
+  <meta property="og:image"       content="https://agsist.com/img/og/agsist.jpg">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt"    content="AGSIST Call Scorecard">
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:site"        content="@agsist">
+  <meta name="twitter:creator"     content="@agsist">
+  <meta name="twitter:title"       content="Call Scorecard &mdash; AGSIST Daily Track Record">
+  <meta name="twitter:description" content="Every forward call, dated and graded the next morning — misses included.">
+  <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="/components/styles.css?v=12" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=12">
+  <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
+  <link rel="manifest"                            href="/manifest.json">
+
+  <style>
+    button,a,[role="button"]{touch-action:manipulation;}
+
+    .info-page{max-width:780px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .info-page h1{font-family:'Oswald',sans-serif;font-size:clamp(1.8rem,4vw,2.4rem);font-weight:700;color:var(--gold);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.02em}
+    .info-page .sub{color:var(--text-dim);font-size:.95rem;line-height:1.7;margin-bottom:1.6rem;max-width:600px}
+    .info-page h2{font-size:1.05rem;color:var(--text);font-weight:700;margin:2rem 0 .6rem;padding-bottom:.35rem;border-bottom:1px solid var(--border)}
+    .info-page p,.info-page li{color:var(--text-dim);line-height:1.8;font-size:.92rem}
+    .info-page p+p{margin-top:.75rem}
+    .info-page a{color:var(--gold);transition:opacity .15s}
+    .info-page a:hover{opacity:.8}
+
+    .bc{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);margin-bottom:1.2rem}
+    .bc a{color:var(--text-muted);text-decoration:none}
+    .bc a:hover{color:var(--gold)}
+
+    .sc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;margin:0 0 1.8rem}
+    .sc-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;text-align:center}
+    .sc-stat-num{font-family:'Oswald',sans-serif;font-size:2rem;font-weight:700;color:var(--gold);line-height:1.1}
+    .sc-stat-num.good{color:var(--green)}
+    .sc-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-top:.35rem}
+
+    .sc-honest{background:var(--surface);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:0 0 1.8rem;font-size:.88rem;color:var(--text-dim);line-height:1.7}
+
+    .sc-list{display:flex;flex-direction:column;gap:.6rem;margin-top:.4rem}
+    .sc-row{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem}
+    .sc-row-top{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin-bottom:.35rem}
+    .sc-date{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted)}
+    .sc-pill{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .55rem;border-radius:20px;margin-left:auto}
+    .sc-pill--good{background:rgba(74,171,76,.14);color:var(--green);border:1px solid rgba(74,171,76,.35)}
+    .sc-pill--bad{background:rgba(200,86,46,.14);color:var(--red);border:1px solid rgba(200,86,46,.35)}
+    .sc-pill--pending{background:var(--surface2);color:var(--text-muted);border:1px solid var(--border)}
+    .sc-call{font-size:.9rem;color:var(--text);font-weight:600;line-height:1.55}
+    .sc-note{font-size:.82rem;color:var(--text-dim);font-style:italic;margin-top:.3rem;line-height:1.6}
+    .sc-note a{font-style:normal}
+    .sc-loading{color:var(--text-muted);font-size:.88rem;padding:1.2rem 0}
+    .sc-more{margin-top:1rem;width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;padding:.7rem;min-height:44px}
+    .sc-more:hover{border-color:var(--gold);color:var(--text)}
+
+    .disc{font-size:.78rem;color:var(--text-muted);line-height:1.7;border-top:1px solid var(--border);margin-top:2.2rem;padding-top:1rem}
+
+    @media(max-width:560px){
+      .sc-stats{grid-template-columns:repeat(2,1fr)}
+    }
+  </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"WebPage","url":"https://agsist.com/scorecard","name":"Call Scorecard — AGSIST Daily Track Record","description":"Every forward call the AGSIST Daily briefing has made — dated, graded the next morning, misses included.","isPartOf":{"@type":"WebSite","url":"https://agsist.com/","name":"AGSIST"},"author":{"@type":"Person","name":"Sigurd Lindquist","worksFor":{"@type":"Organization","name":"Farmers First Agri Service","url":"https://farmers1st.com"}},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Call Scorecard","item":"https://agsist.com/scorecard"}]}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the AGSIST Call Scorecard?","acceptedAnswer":{"@type":"Answer","text":"Every weekday the AGSIST Daily briefing makes a forward call about the next session. The following morning's briefing grades it — played out, didn't, or pending. The scorecard is the complete, dated record of those calls and outcomes, misses included."}},{"@type":"Question","name":"Can past calls be edited?","acceptedAnswer":{"@type":"Answer","text":"No. The scorecard is compiled automatically from the same published archive JSON that renders each day's briefing page. The grading text readers saw on publish day is the grading text shown here."}},{"@type":"Question","name":"Is this trading advice?","acceptedAnswer":{"@type":"Answer","text":"No. The calls are short directional reads in a free morning briefing, published for context. They are not financial or trading advice — verify prices with your elevator or broker before making marketing decisions."}}]}]}
+</script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header"></div>
+
+  <main id="main" tabindex="-1">
+    <div class="info-page">
+
+      <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> &rsaquo; Call Scorecard</nav>
+
+      <h1>Call Scorecard</h1>
+      <p class="sub">Every weekday the <a href="/daily">AGSIST Daily</a> makes a forward call. The next morning's briefing grades it &mdash; in public, on the record. This is the complete list. Nothing edited, misses included.</p>
+
+      <div class="sc-stats" id="sc-stats" aria-live="polite">
+        <div class="sc-stat"><div class="sc-stat-num good" id="sc-hit">&mdash;</div><div class="sc-stat-lbl">Hit rate</div></div>
+        <div class="sc-stat"><div class="sc-stat-num" id="sc-record">&mdash;</div><div class="sc-stat-lbl">W &ndash; L &ndash; pending</div></div>
+        <div class="sc-stat"><div class="sc-stat-num" id="sc-streak">&mdash;</div><div class="sc-stat-lbl">Current streak</div></div>
+        <div class="sc-stat"><div class="sc-stat-num" id="sc-total">&mdash;</div><div class="sc-stat-lbl">Calls graded</div></div>
+      </div>
+
+      <div class="sc-honest">
+        <strong>How to read this honestly:</strong> these are short directional reads from a free morning briefing, graded by the same briefing one session later. The misses are listed exactly like the hits &mdash; that's the point. Compiled automatically from the published <a href="/archive">briefing archive</a>; nothing here can be edited after the fact.
+      </div>
+
+      <h2>The Record</h2>
+      <div class="sc-list" id="sc-list">
+        <div class="sc-loading">Loading the record&hellip; If this doesn't load, the full history is readable briefing-by-briefing in the <a href="/archive">archive</a>.</div>
+      </div>
+
+      <h2>How It Works</h2>
+      <p>Each morning's briefing ends with a forward look at the next session. The next published briefing opens by grading it: <strong>played out</strong>, <strong>didn't</strong>, or <strong>pending</strong> when the verdict isn't in yet. That grading block has shipped on every briefing since late April 2026, and this page is simply those blocks collected in one place &mdash; the call, the date it was made, the date it was judged, and the one-line reasoning readers saw that morning.</p>
+      <p>Hit rate counts graded calls only (pending excluded). The streak is consecutive graded wins ending at the most recent graded call.</p>
+
+      <h2>What This Is Not</h2>
+      <p>Not a trading system, not a signal service, and not advice. A one-session directional read is the lowest-stakes call in markets &mdash; the value here isn't the percentage, it's that the record exists at all, in public, with the losses left in. Verify prices with your elevator or broker before making marketing decisions.</p>
+
+      <p class="disc">Not financial or trading advice. Compiled automatically from the AGSIST Daily archive. Questions: <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &middot; <a href="tel:+17157972428">715-797-2428</a>.</p>
+
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="/components/loader.js" defer></script>
+  <script>
+  (function(){
+    'use strict';
+    var PAGE = 25;
+    function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+    function fdate(iso){
+      if(!iso)return '';
+      var p=iso.split('-');
+      var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return M[parseInt(p[1],10)-1]+' '+parseInt(p[2],10)+', '+p[0];
+    }
+    fetch('/data/scorecard.json',{cache:'no-cache'})
+      .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
+      .then(function(d){
+        var hit=document.getElementById('sc-hit');
+        if(hit)hit.textContent=(d.hit_rate!=null?d.hit_rate+'%':'\u2014');
+        var rec=document.getElementById('sc-record');
+        if(rec)rec.textContent=(d.played_out||0)+'\u2013'+(d.didnt||0)+'\u2013'+(d.pending||0);
+        var st=document.getElementById('sc-streak');
+        if(st)st.textContent=(d.current_streak||0)+(d.current_streak===1?' call':' calls');
+        var tot=document.getElementById('sc-total');
+        if(tot)tot.textContent=(d.played_out||0)+(d.didnt||0);
+
+        var list=document.getElementById('sc-list');
+        if(!list)return;
+        var recs=Array.isArray(d.records)?d.records:[];
+        if(!recs.length){list.innerHTML='<div class="sc-loading">No graded calls yet \u2014 check back after the next briefing.</div>';return;}
+        var shown=0;
+        function pill(o){
+          if(o==='played_out')return '<span class="sc-pill sc-pill--good">\u2713 Played out</span>';
+          if(o==='didnt')return '<span class="sc-pill sc-pill--bad">\u2717 Didn\u2019t</span>';
+          return '<span class="sc-pill sc-pill--pending">\u23F3 Pending</span>';
+        }
+        function rowHtml(r){
+          var dateTxt = r.made
+            ? 'Called '+fdate(r.made)+' \u00b7 graded '+fdate(r.judged)
+            : 'Graded '+fdate(r.judged);
+          var madeLink = r.made ? '<a href="/daily/'+esc(r.made)+'" class="sc-date" aria-label="Read the briefing this call appeared in">'+esc(dateTxt)+'</a>'
+                                : '<span class="sc-date">'+esc(dateTxt)+'</span>';
+          return '<div class="sc-row">'+
+            '<div class="sc-row-top">'+madeLink+pill(r.outcome)+'</div>'+
+            '<div class="sc-call">'+esc(r.call)+'</div>'+
+            (r.note?'<div class="sc-note">'+esc(r.note)+'</div>':'')+
+          '</div>';
+        }
+        function render(){
+          var slice=recs.slice(0,shown+PAGE); shown=slice.length;
+          var html=slice.map(rowHtml).join('');
+          if(shown<recs.length){
+            html+='<button class="sc-more" id="sc-more" type="button">Show '+Math.min(PAGE,recs.length-shown)+' more ('+(recs.length-shown)+' remaining)</button>';
+          }
+          list.innerHTML=html;
+          var more=document.getElementById('sc-more');
+          if(more)more.addEventListener('click',render);
+        }
+        render();
+      })
+      .catch(function(){
+        var list=document.getElementById('sc-list');
+        if(list)list.innerHTML='<div class="sc-loading">Couldn\u2019t load the record right now \u2014 the full history is readable in the <a href="/archive">archive</a>.</div>';
+      });
+  })();
+  </script>
+</body>
+</html>
