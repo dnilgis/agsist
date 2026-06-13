@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 12 Jun 2026 21:30:25 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 13 Jun 2026 12:29:18 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE BOUNCES BACK, GRAINS FIND FOOTING AFTER WEEK OF SLIDES</title>
+      <link>https://agsist.com/daily/2026-06-13</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-13</guid>
+      <pubDate>Sat, 13 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Live cattle closed Friday at $249.88, up 3% in the session and marking the sharpest single-day gain since early May. The bounce came as processing capacity concerns that hammered the complex earlier this week showed signs of easing. Corn held $4.13, steady to firm despite reports of rootless syndrome spreading through Indiana and eastern Illinois. The week that started with slides across both complexes ended with cattle finding its legs and grains grinding toward what might finally be a floor.
+Live cattle rallied 3% Friday as processing concerns ease, corn steadied despite rootless syndrome spreading in Belt.
+• CATTLE COMPLEX BOUNCES HARD
+• CORN STEADIES DESPITE DISEASE PRESSURE
+• SOYBEANS SOFTEN ON FUND SELLING
+Read more: https://agsist.com/daily/2026-06-13</description>
+    </item>
     <item>
       <title>GRAINS FIND BOTTOM, LIVESTOCK SLIPS ON USDA SUPPLY VIEW</title>
       <link>https://agsist.com/daily/2026-06-12</link>
@@ -358,18 +370,6 @@ Grains fade on fund liquidation while livestock holds mixed ground.
 • Livestock Holds Ground
 • Energy Slides on Weekend
 Read more: https://agsist.com/daily/2026-05-15</description>
-    </item>
-    <item>
-      <title>HOGS SURGE THREE PERCENT AS GRAINS FADE</title>
-      <link>https://agsist.com/daily/2026-05-14</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-14</guid>
-      <pubDate>Thu, 14 May 2026 05:00:00 -0600</pubDate>
-      <description>Lean hogs jumped $3.07 to $105.95 as the protein complex stays wild while grains can't find direction. Corn fell back to $4.77 and beans dropped $2.33 to $12.09 with no export catalyst and funds still rotating out of grain positions. The livestock tail is wagging the commodity dog this week and there's no sign it stops here.
-Livestock volatility continues while crop futures drift lower on quiet export demand.
-• Hogs Explode Higher
-• Grains Lose Steam
-• Cattle Mixed Signals
-Read more: https://agsist.com/daily/2026-05-14</description>
     </item>
   </channel>
 </rss>
