@@ -1,0 +1,249 @@
+{
+ "updated": "2026-06-13T00:34:32+00:00",
+ "total": 34,
+ "played_out": 22,
+ "didnt": 8,
+ "pending": 4,
+ "hit_rate": 73.3,
+ "current_streak": 9,
+ "records": [
+  {
+   "made": "2026-06-11",
+   "judged": "2026-06-12",
+   "call": "Funds getting defensive ahead of WASDE, Brazil supply weighing on outlook.",
+   "outcome": "played_out",
+   "note": "The defensive positioning paid off as grains found their floor right where fund liquidation suggested."
+  },
+  {
+   "made": "2026-06-10",
+   "judged": "2026-06-11",
+   "call": "Cattle bounce real but narrow, feeders lagging says recovery is selective.",
+   "outcome": "played_out",
+   "note": "Feeders flipped to leading higher at $356.30, confirming the recovery broadened past live cattle."
+  },
+  {
+   "made": "2026-06-09",
+   "judged": "2026-06-10",
+   "call": "Disease spread plus processing constraints creating supply bottleneck.",
+   "outcome": "played_out",
+   "note": "Today's cattle bounce doesn't invalidate the bottleneck thesis, just shows markets price fear faster than resolution."
+  },
+  {
+   "made": "2026-06-08",
+   "judged": "2026-06-09",
+   "call": "Processing problems hit milk first, cattle complex next if it spreads.",
+   "outcome": "played_out",
+   "note": "Cattle broke lower exactly as called when the processing fear spread beyond dairy."
+  },
+  {
+   "made": "2026-06-07",
+   "judged": "2026-06-08",
+   "call": "Dollar strength overwhelmed industrial silver demand fundamentals.",
+   "outcome": "played_out",
+   "note": "Silver held its ground today despite the dollar staying strong, confirming the thesis worked through."
+  },
+  {
+   "made": "2026-06-04",
+   "judged": "2026-06-05",
+   "call": "Cattle liquidation exhausted, both contracts bounced hard off Wednesday's lows.",
+   "outcome": "played_out",
+   "note": "Cattle held gains from yesterday's bounce while broader commodities fell apart."
+  },
+  {
+   "made": "2026-06-03",
+   "judged": "2026-06-04",
+   "call": "Fund liquidation deepening in grains, with China talk insufficient to reverse the slide.",
+   "outcome": "played_out",
+   "note": "Soybeans extended the decline exactly as called, losing another 10 cents today."
+  },
+  {
+   "made": "2026-06-02",
+   "judged": "2026-06-03",
+   "call": "The liquidation that started Memorial Day isn't selling pressure selling, it's methodical and ongoing.",
+   "outcome": "played_out",
+   "note": "Corn and beans both extended the slide exactly as called, no weather premium emerging to stop it."
+  },
+  {
+   "made": "2026-06-01",
+   "judged": "2026-06-02",
+   "call": "Geopolitical premium back after three weeks of unwinding.",
+   "outcome": "played_out",
+   "note": "Crude held most of yesterday's 5% Iran move higher, consolidating at $92.17 rather than giving it all back."
+  },
+  {
+   "made": "2026-05-31",
+   "judged": "2026-06-01",
+   "call": "Geopolitical premium unwinding faster than it built, energy complex in full retreat.",
+   "outcome": "didnt",
+   "note": "Iran flipped the script overnight with diplomatic cutoff and Hormuz threats."
+  },
+  {
+   "made": "2026-05-28",
+   "judged": "2026-05-29",
+   "call": "Called geopolitical premium unwinding faster than it built up as crude crashed.",
+   "outcome": "played_out",
+   "note": "Oil held the decline, gave back another half percent today as Iran tensions continue to ease."
+  },
+  {
+   "made": "2026-05-27",
+   "judged": "2026-05-28",
+   "call": "Feeders leading confirms convergence through strength, not weakness.",
+   "outcome": "played_out",
+   "note": "Both cattle contracts gained today with feeders up 0.2% outpacing live's 0.1%, maintaining the convergence pattern through coordinated strength."
+  },
+  {
+   "made": "2026-05-26",
+   "judged": "2026-05-27",
+   "call": "Iran premium deflating as market prices escalation fatigue over extension risk.",
+   "outcome": "played_out",
+   "note": "Oil fell another 2.4% today as geopolitical risk premium continues unwinding."
+  },
+  {
+   "made": "2026-05-25",
+   "judged": "2026-05-26",
+   "call": "Complex splitting wider suggests live cattle found real money, feeders still broken.",
+   "outcome": "didnt",
+   "note": "The complex actually narrowed today as both contracts gained equally, contradicting the widening thesis."
+  },
+  {
+   "made": "2026-05-24",
+   "judged": "2026-05-25",
+   "call": "Processing bottleneck reprices cattle faster than weather ever could.",
+   "outcome": "played_out",
+   "note": "The bottleneck thesis held through the weekend and live cattle bounced exactly as processing constraints eased."
+  },
+  {
+   "made": "2026-05-21",
+   "judged": "2026-05-22",
+   "call": "Processing bottleneck hits feeders harder than live cattle on timing.",
+   "outcome": "played_out",
+   "note": "Feeders dropped 2.5% versus live cattle's 2.0%, exactly the differential the timing suggested."
+  },
+  {
+   "made": "2026-05-20",
+   "judged": "2026-05-21",
+   "call": "Hormuz breakthrough removes supply shock premium, corridor still fragile.",
+   "outcome": "pending",
+   "note": "Oil held gains above $100 but Iran tensions resurface with Trump's latest comments."
+  },
+  {
+   "made": "2026-05-19",
+   "judged": "2026-05-20",
+   "call": "Holding yesterday's China bounce but needs follow-through confirmation.",
+   "outcome": "played_out",
+   "note": "Wheat's 87-cent rally and feeder strength confirms the China spillover momentum."
+  },
+  {
+   "made": "2026-05-18",
+   "judged": "2026-05-19",
+   "call": "China deal gives grains structural support the carry trade wasn't pricing.",
+   "outcome": "pending",
+   "note": "The initial bounce held but funds are waiting for actual purchase confirmations before adding conviction."
+  },
+  {
+   "made": "2026-05-17",
+   "judged": "2026-05-18",
+   "call": "Weather premium gone, funds rotating out of grains into livestock.",
+   "outcome": "didnt",
+   "note": "China's trade commitment reversed the fund rotation narrative completely."
+  },
+  {
+   "made": "2026-05-14",
+   "judged": "2026-05-15",
+   "call": "Called seasonal demand premium building faster than supply could respond in hogs.",
+   "outcome": "didnt",
+   "note": "Hogs dropped 1.1% today, seasonal demand story didn't hold against fund rotation."
+  },
+  {
+   "made": "2026-05-13",
+   "judged": "2026-05-14",
+   "call": "Technical damage feeding on itself in cattle, no fundamental excuse needed anymore.",
+   "outcome": "played_out",
+   "note": "Cattle dropped another 50 cents to $246.25 while feeders reversed sharply higher, confirming the breakdown narrative."
+  },
+  {
+   "made": "2026-05-12",
+   "judged": "2026-05-13",
+   "call": "Called hogs' six percent explosion a classic short squeeze with fundamental support underneath.",
+   "outcome": "didnt",
+   "note": "Hogs gave it all back today, falling 1.5% as the squeeze reversed into technical selling."
+  },
+  {
+   "made": "2026-05-11",
+   "judged": "2026-05-12",
+   "call": "Geopolitical premium hitting metals hard while ag markets stay domestic-focused.",
+   "outcome": "didnt",
+   "note": "Silver crashed 2.8% today, unwinding yesterday's metals explosion as Iran peace talks stalled."
+  },
+  {
+   "made": "2026-05-10",
+   "judged": "2026-05-11",
+   "call": "Both cattle complexes broke key support, with feeders leading the breakdown confirming real weakness.",
+   "outcome": "played_out",
+   "note": "Cattle held the bounce today with live up 0.8% and feeders up 0.5%, confirming Friday's breakdown was overdone."
+  },
+  {
+   "made": "2026-05-07",
+   "judged": "2026-05-08",
+   "call": "Called that feeder strength confirmed the $252 floor with Brazilian import dynamics explaining the rally's momentum.",
+   "outcome": "didnt",
+   "note": "Today's feeder breakdown invalidated the thesis completely, confirming the complex couldn't hold technical support."
+  },
+  {
+   "made": "2026-05-06",
+   "judged": "2026-05-07",
+   "call": "Yesterday's high-conviction call was that feeder leadership changes everything, breakdown thesis officially dead.",
+   "outcome": "played_out",
+   "note": "Feeders held the gain and cattle stayed above $252, exactly the pattern that kills the breakdown narrative."
+  },
+  {
+   "made": "2026-05-05",
+   "judged": "2026-05-06",
+   "call": "Called cattle bounce real but thin, with feeder weakness keeping breakdown thesis alive.",
+   "outcome": "played_out",
+   "note": "Feeders flipped to leading higher, removing the breakdown thesis exactly as the conditional required."
+  },
+  {
+   "made": "2026-05-04",
+   "judged": "2026-05-05",
+   "call": "Lock remaining cattle above $250 as next support wasn't expected until $245.",
+   "outcome": "pending",
+   "note": "Today's $251.95 hold keeps the call live but feeder weakness suggests more downside ahead."
+  },
+  {
+   "made": "2026-05-03",
+   "judged": "2026-05-04",
+   "call": "Hold pricing discipline above $252 — below that level questions the breakout thesis.",
+   "outcome": "didnt",
+   "note": "The break was clean and decisive, not the slow drift we expected."
+  },
+  {
+   "made": "2026-04-30",
+   "judged": "2026-05-01",
+   "call": "Price remaining summer cattle inventory above $250 as the breakout had legs.",
+   "outcome": "pending",
+   "note": "Cattle closed at $254.03, holding the breakout level but showing first real weakness since the rally began."
+  },
+  {
+   "made": "2026-04-29",
+   "judged": "2026-04-30",
+   "call": "Hold remaining fed cattle inventory as momentum accelerates with fund support.",
+   "outcome": "played_out",
+   "note": "Cattle held the breakout even as crude crashed — exactly the kind of independent strength that confirms fund conviction."
+  },
+  {
+   "made": "2026-04-28",
+   "judged": "2026-04-29",
+   "call": "Called pricing remaining summer cattle on the breakout above $245 for three sessions.",
+   "outcome": "played_out",
+   "note": "Eight sessions above $245 and a 52-week high validates the directional call with room to run."
+  },
+  {
+   "made": "2026-04-27",
+   "judged": "2026-04-28",
+   "call": "Price summer cattle if live futures close above $245 for three consecutive sessions.",
+   "outcome": "played_out",
+   "note": "Third consecutive close above $245 at $248.97 confirms the breakout thesis — time to price summer cattle."
+  }
+ ]
+}

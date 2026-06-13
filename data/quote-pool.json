@@ -1,965 +1,3389 @@
 {
-  "_comment": "Curated ag and economic quotes for AGSIST Daily briefing. Generator picks from this pool — never synthesizes. Fail-loud on missing attribution. Remove any quote that becomes overused; add new ones freely. Structure: {text, attribution, tags}. Tags drive mood-aware selection in v4.2.",
-  "_version": "1.1",
-  "_updated": "2026-05-02",
-  "quotes": [
-    {
-      "text": "Farming looks mighty easy when your plow is a pencil and you're a thousand miles from the corn field.",
-      "attribution": "Dwight D. Eisenhower",
-      "tags": [
-        "policy",
-        "classic"
-      ]
-    },
-    {
-      "text": "The farmer is the only man in our economy who buys everything at retail, sells everything at wholesale, and pays the freight both ways.",
-      "attribution": "John F. Kennedy",
-      "tags": [
-        "economics",
-        "classic"
-      ]
-    },
-    {
-      "text": "Agriculture is our wisest pursuit, because it will in the end contribute most to real wealth, good morals, and happiness.",
-      "attribution": "Thomas Jefferson",
-      "tags": [
-        "philosophy",
-        "classic"
-      ]
-    },
-    {
-      "text": "The discovery of agriculture was the first big step toward a civilized life.",
-      "attribution": "Arthur Keith",
-      "tags": [
-        "philosophy"
-      ]
-    },
-    {
-      "text": "If agriculture goes wrong, nothing else will have a chance to go right.",
-      "attribution": "M. S. Swaminathan",
-      "tags": [
-        "policy"
-      ]
-    },
-    {
-      "text": "I believe in the future of agriculture, with a faith born not of words but of deeds.",
-      "attribution": "E. M. Tiffany, FFA Creed",
-      "tags": [
-        "faith",
-        "ffa"
-      ]
-    },
-    {
-      "text": "You have to know the past to understand the present.",
-      "attribution": "Carl Sagan",
-      "tags": [
-        "wisdom"
-      ]
-    },
-    {
-      "text": "Without agriculture it is not possible to have a city, stock market, banks, university, church or army.",
-      "attribution": "Allan Savory",
-      "tags": [
-        "economics"
-      ]
-    },
-    {
-      "text": "The ultimate goal of farming is not the growing of crops, but the cultivation and perfection of human beings.",
-      "attribution": "Masanobu Fukuoka",
-      "tags": [
-        "philosophy"
-      ]
-    },
-    {
-      "text": "To forget how to dig the earth and to tend the soil is to forget ourselves.",
-      "attribution": "Mahatma Gandhi",
-      "tags": [
-        "philosophy"
-      ]
-    },
-    {
-      "text": "We abuse land because we regard it as a commodity belonging to us. When we see land as a community to which we belong, we may begin to use it with love and respect.",
-      "attribution": "Aldo Leopold",
-      "tags": [
-        "conservation"
-      ]
-    },
-    {
-      "text": "The soil is the great connector of our lives, the source and destination of all.",
-      "attribution": "Wendell Berry",
-      "tags": [
-        "soil",
-        "classic"
-      ]
-    },
-    {
-      "text": "Eating is an agricultural act.",
-      "attribution": "Wendell Berry",
-      "tags": [
-        "food"
-      ]
-    },
-    {
-      "text": "A good farmer is nothing more nor less than a handy man with a sense of humus.",
-      "attribution": "E. B. White",
-      "tags": [
-        "soil",
-        "humor"
-      ]
-    },
-    {
-      "text": "Food is the moral right of all who are born into this world.",
-      "attribution": "Norman Borlaug",
-      "tags": [
-        "food",
-        "policy"
-      ]
-    },
-    {
-      "text": "You can't eat potential.",
-      "attribution": "Norman Borlaug",
-      "tags": [
-        "practical"
-      ]
-    },
-    {
-      "text": "Take good care of the earth. It was not given to you by your parents. It was loaned to you by your children.",
-      "attribution": "Kenyan Proverb",
-      "tags": [
-        "conservation"
-      ]
-    },
-    {
-      "text": "Learn from yesterday, live for today, hope for tomorrow.",
-      "attribution": "Albert Einstein",
-      "tags": [
-        "wisdom"
-      ]
-    },
-    {
-      "text": "The best time to plant a tree was twenty years ago. The second best time is now.",
-      "attribution": "Chinese Proverb",
-      "tags": [
-        "planting",
-        "classic"
-      ]
-    },
-    {
-      "text": "In seed time learn, in harvest teach, in winter enjoy.",
-      "attribution": "William Blake",
-      "tags": [
-        "seasons"
-      ]
-    },
-    {
-      "text": "Agriculture is the most healthful, most useful and most noble employment of man.",
-      "attribution": "George Washington",
-      "tags": [
-        "classic"
-      ]
-    },
-    {
-      "text": "I'd rather be on my farm than be emperor of the world.",
-      "attribution": "George Washington",
-      "tags": [
-        "classic"
-      ]
-    },
-    {
-      "text": "Never invest in a business you cannot understand.",
-      "attribution": "Warren Buffett",
-      "tags": [
-        "markets"
-      ]
-    },
-    {
-      "text": "The stock market is a device for transferring money from the impatient to the patient.",
-      "attribution": "Warren Buffett",
-      "tags": [
-        "markets"
-      ]
-    },
-    {
-      "text": "Price is what you pay. Value is what you get.",
-      "attribution": "Warren Buffett",
-      "tags": [
-        "markets"
-      ]
-    },
-    {
-      "text": "Risk comes from not knowing what you're doing.",
-      "attribution": "Warren Buffett",
-      "tags": [
-        "markets",
-        "risk"
-      ]
-    },
-    {
-      "text": "In the business world, the rearview mirror is always clearer than the windshield.",
-      "attribution": "Warren Buffett",
-      "tags": [
-        "markets"
-      ]
-    },
-    {
-      "text": "The markets can remain irrational longer than you can remain solvent.",
-      "attribution": "John Maynard Keynes",
-      "tags": [
-        "markets"
-      ]
-    },
-    {
-      "text": "When the facts change, I change my mind. What do you do, sir?",
-      "attribution": "John Maynard Keynes",
-      "tags": [
-        "markets"
-      ]
-    },
-    {
-      "text": "The four most dangerous words in investing are: this time it's different.",
-      "attribution": "Sir John Templeton",
-      "tags": [
-        "markets"
-      ]
-    },
-    {
-      "text": "How did you go bankrupt? Two ways. Gradually, then suddenly.",
-      "attribution": "Ernest Hemingway, The Sun Also Rises",
-      "tags": [
-        "markets"
-      ]
-    },
-    {
-      "text": "If a problem cannot be solved, enlarge it.",
-      "attribution": "Dwight D. Eisenhower",
-      "tags": [
-        "wisdom"
-      ]
-    },
-    {
-      "text": "Plans are nothing; planning is everything.",
-      "attribution": "Dwight D. Eisenhower",
-      "tags": [
-        "wisdom"
-      ]
-    },
-    {
-      "text": "The best fertilizer on any farm is the footsteps of the farmer.",
-      "attribution": "Confucius",
-      "tags": [
-        "classic"
-      ]
-    },
-    {
-      "text": "Good weather is the greatest gift in farming, and it cannot be purchased.",
-      "attribution": "American Farm Proverb",
-      "tags": [
-        "weather"
-      ]
-    },
-    {
-      "text": "Don't judge each day by the harvest you reap but by the seeds that you plant.",
-      "attribution": "Robert Louis Stevenson",
-      "tags": [
-        "planting"
-      ]
-    },
-    {
-      "text": "Hard work beats talent when talent doesn't work hard.",
-      "attribution": "Tim Notke",
-      "tags": [
-        "work"
-      ]
-    },
-    {
-      "text": "The frost is on the pumpkin and the fodder's in the shock.",
-      "attribution": "James Whitcomb Riley",
-      "tags": [
-        "harvest",
-        "seasons"
-      ]
-    },
-    {
-      "text": "It is only the farmer who faithfully plants seeds in the spring, who reaps a harvest in the autumn.",
-      "attribution": "B. C. Forbes",
-      "tags": [
-        "planting"
-      ]
-    },
-    {
-      "text": "The glory of gardening: hands in the dirt, head in the sun, heart with nature.",
-      "attribution": "Alfred Austin",
-      "tags": [
-        "philosophy"
-      ]
-    },
-    {
-      "text": "The farmer has to be an optimist or he wouldn't still be a farmer.",
-      "attribution": "Will Rogers",
-      "tags": [
-        "humor"
-      ]
-    },
-    {
-      "text": "Buy land, they ain't making any more of it.",
-      "attribution": "Will Rogers",
-      "tags": [
-        "land",
-        "classic"
-      ]
-    },
-    {
-      "text": "The worst thing about being wrong is the lesson you learn.",
-      "attribution": "Will Rogers",
-      "tags": [
-        "wisdom"
-      ]
-    },
-    {
-      "text": "Good judgment comes from experience, and experience comes from bad judgment.",
-      "attribution": "Rita Mae Brown",
-      "tags": [
-        "wisdom"
-      ]
-    },
-    {
-      "text": "The more I want to get something done, the less I call it work.",
-      "attribution": "Richard Bach",
-      "tags": [
-        "work"
-      ]
-    },
-    {
-      "text": "It is better to hear the rebuke of the wise than for a man to hear the song of fools.",
-      "attribution": "Ecclesiastes 7:5",
-      "tags": [
-        "wisdom"
-      ]
-    },
-    {
-      "text": "To every thing there is a season, and a time to every purpose under the heaven: a time to plant, and a time to pluck up that which is planted.",
-      "attribution": "Ecclesiastes 3:1-2",
-      "tags": [
-        "seasons"
-      ]
-    },
-    {
-      "text": "He that observeth the wind shall not sow; and he that regardeth the clouds shall not reap.",
-      "attribution": "Ecclesiastes 11:4",
-      "tags": [
-        "planting",
-        "weather"
-      ]
-    },
-    {
-      "text": "The land is the only thing in the world worth working for, worth fighting for, worth dying for, because it's the only thing that lasts.",
-      "attribution": "Gerald O'Hara, Gone With The Wind",
-      "tags": [
-        "land"
-      ]
-    },
-    {
-      "text": "The harvest is past, the summer is ended, and we are not saved.",
-      "attribution": "Jeremiah 8:20",
-      "tags": [
-        "harvest"
-      ]
-    },
-    {
-      "text": "He who plants a tree plants a hope.",
-      "attribution": "Lucy Larcom",
-      "tags": [
-        "planting"
-      ]
-    },
-    {
-      "text": "Successful farming requires not the abandonment but the creative development of tradition.",
-      "attribution": "Wendell Berry",
-      "tags": [
-        "philosophy"
-      ]
-    },
-    {
-      "text": "A farmer is a magician who produces money from mud.",
-      "attribution": "Amit Kalantri",
-      "tags": [
-        "humor"
-      ]
-    },
-    {
-      "text": "We are stuck with technology when what we really want is just stuff that works.",
-      "attribution": "Douglas Adams",
-      "tags": [
-        "technology"
-      ]
-    },
-    {
-      "text": "Never memorize something that you can look up.",
-      "attribution": "Albert Einstein",
-      "tags": [
-        "wisdom"
-      ]
-    },
-    {
-      "text": "The most dangerous phrase in the language is: we've always done it this way.",
-      "attribution": "Grace Hopper",
-      "tags": [
-        "innovation"
-      ]
-    },
-    {
-      "text": "Cash is king, but cash flow is the kingdom.",
-      "attribution": "Old Banking Proverb",
-      "tags": [
-        "markets"
-      ]
-    },
-    {
-      "text": "Don't put all your eggs in one basket.",
-      "attribution": "Miguel de Cervantes, Don Quixote",
-      "tags": [
-        "risk"
-      ]
-    },
-    {
-      "text": "Many a mickle makes a muckle.",
-      "attribution": "Scottish Proverb",
-      "tags": [
-        "thrift"
-      ]
-    },
-    {
-      "text": "Penny wise and pound foolish.",
-      "attribution": "English Proverb",
-      "tags": [
-        "markets"
-      ]
-    },
-    {
-      "text": "A stitch in time saves nine.",
-      "attribution": "English Proverb",
-      "tags": [
-        "wisdom"
-      ]
-    },
-    {
-      "text": "Make hay while the sun shines.",
-      "attribution": "John Heywood, 1546",
-      "tags": [
-        "seasons",
-        "classic"
-      ]
-    },
-    {
-      "text": "Red sky at night, shepherd's delight; red sky in morning, shepherd's warning.",
-      "attribution": "English Weather Lore",
-      "tags": [
-        "weather"
-      ]
-    },
-    {
-      "text": "When March blows its horn, your barn will be filled with hay and corn.",
-      "attribution": "Farmers' Almanac",
-      "tags": [
-        "weather"
-      ]
-    },
-    {
-      "text": "A good farmer never dies; he just goes back to the soil.",
-      "attribution": "American Farm Saying",
-      "tags": [
-        "philosophy"
-      ]
-    },
-    {
-      "text": "The discovery of a new dish confers more happiness on humanity than the discovery of a new star.",
-      "attribution": "Jean Anthelme Brillat-Savarin",
-      "tags": [
-        "food"
-      ]
-    },
-    {
-      "text": "Beware of little expenses. A small leak will sink a great ship.",
-      "attribution": "Benjamin Franklin",
-      "tags": [
-        "thrift"
-      ]
-    },
-    {
-      "text": "An investment in knowledge pays the best interest.",
-      "attribution": "Benjamin Franklin",
-      "tags": [
-        "markets"
-      ]
-    },
-    {
-      "text": "Well done is better than well said.",
-      "attribution": "Benjamin Franklin",
-      "tags": [
-        "work"
-      ]
-    },
-    {
-      "text": "By failing to prepare, you are preparing to fail.",
-      "attribution": "Benjamin Franklin",
-      "tags": [
-        "planning"
-      ]
-    },
-    {
-      "text": "Diligence is the mother of good luck.",
-      "attribution": "Benjamin Franklin",
-      "tags": [
-        "work"
-      ]
-    },
-    {
-      "text": "Lost time is never found again.",
-      "attribution": "Benjamin Franklin",
-      "tags": [
-        "wisdom"
-      ]
-    },
-    {
-      "text": "It is a mistake to try to look too far ahead. The chain of destiny can only be grasped one link at a time.",
-      "attribution": "Winston Churchill",
-      "tags": [
-        "wisdom"
-      ]
-    },
-    {
-      "text": "However beautiful the strategy, you should occasionally look at the results.",
-      "attribution": "Winston Churchill",
-      "tags": [
-        "strategy"
-      ]
-    },
-    {
-      "text": "The pessimist sees difficulty in every opportunity. The optimist sees opportunity in every difficulty.",
-      "attribution": "Winston Churchill",
-      "tags": [
-        "mindset"
-      ]
-    },
-    {
-      "text": "Success is stumbling from failure to failure with no loss of enthusiasm.",
-      "attribution": "Winston Churchill",
-      "tags": [
-        "mindset"
-      ]
-    },
-    {
-      "text": "You must be the change you wish to see in the world.",
-      "attribution": "Mahatma Gandhi",
-      "tags": [
-        "philosophy"
-      ]
-    },
-    {
-      "text": "A rising tide lifts all boats.",
-      "attribution": "John F. Kennedy",
-      "tags": [
-        "economics"
-      ]
-    },
-    {
-      "text": "The ability to simplify means to eliminate the unnecessary so that the necessary may speak.",
-      "attribution": "Hans Hofmann",
-      "tags": [
-        "wisdom"
-      ]
-    },
-    {
-      "text": "What gets measured gets managed.",
-      "attribution": "Peter Drucker",
-      "tags": [
-        "business"
-      ]
-    },
-    {
-      "text": "The best way to predict the future is to create it.",
-      "attribution": "Peter Drucker",
-      "tags": [
-        "business"
-      ]
-    },
-    {
-      "text": "Culture eats strategy for breakfast.",
-      "attribution": "Peter Drucker",
-      "tags": [
-        "business"
-      ]
-    },
-    {
-      "text": "In God we trust. All others must bring data.",
-      "attribution": "W. Edwards Deming",
-      "tags": [
-        "data"
-      ]
-    },
-    {
-      "text": "The care of the Earth is our most ancient and most worthy and, after all, our most pleasing responsibility.",
-      "attribution": "Wendell Berry",
-      "tags": [
-        "conservation",
-        "philosophy"
-      ]
-    },
-    {
-      "text": "A good farmer who is dedicated to that work makes a kind of music in the daily round.",
-      "attribution": "Wendell Berry",
-      "tags": [
-        "work",
-        "philosophy"
-      ]
-    },
-    {
-      "text": "We learn from our gardens to deal with the most urgent question of the time: How much is enough?",
-      "attribution": "Wendell Berry",
-      "tags": [
-        "philosophy",
-        "wisdom"
-      ]
-    },
-    {
-      "text": "Land is a community is the basic concept of ecology, but that land is to be loved and respected is an extension of ethics.",
-      "attribution": "Aldo Leopold",
-      "tags": [
-        "conservation",
-        "land",
-        "philosophy"
-      ]
-    },
-    {
-      "text": "We can be ethical only in relation to something we can see, feel, understand, love, or otherwise have faith in.",
-      "attribution": "Aldo Leopold",
-      "tags": [
-        "philosophy",
-        "conservation"
-      ]
-    },
-    {
-      "text": "There are two spiritual dangers in not owning a farm. One is the danger of supposing that breakfast comes from the grocery, and the other that heat comes from the furnace.",
-      "attribution": "Aldo Leopold",
-      "tags": [
-        "classic",
-        "philosophy"
-      ]
-    },
-    {
-      "text": "The nation behaves well if it treats the natural resources as assets which it must turn over to the next generation increased, and not impaired, in value.",
-      "attribution": "Theodore Roosevelt",
-      "tags": [
-        "conservation",
-        "policy"
-      ]
-    },
-    {
-      "text": "Far and away the best prize that life has to offer is the chance to work hard at work worth doing.",
-      "attribution": "Theodore Roosevelt",
-      "tags": [
-        "work"
-      ]
-    },
-    {
-      "text": "Education is the key to unlock the golden door of freedom.",
-      "attribution": "George Washington Carver",
-      "tags": [
-        "wisdom"
-      ]
-    },
-    {
-      "text": "Where there is no vision, there is no hope.",
-      "attribution": "George Washington Carver",
-      "tags": [
-        "mindset"
-      ]
-    },
-    {
-      "text": "Success is to be measured not so much by the position that one has reached in life as by the obstacles which he has overcome.",
-      "attribution": "Booker T. Washington",
-      "tags": [
-        "mindset",
-        "work"
-      ]
-    },
-    {
-      "text": "What is the use of a house if you haven't got a tolerable planet to put it on?",
-      "attribution": "Henry David Thoreau",
-      "tags": [
-        "conservation",
-        "philosophy"
-      ]
-    },
-    {
-      "text": "We can never have enough of nature.",
-      "attribution": "Henry David Thoreau",
-      "tags": [
-        "philosophy"
-      ]
-    },
-    {
-      "text": "The first farmer was the first man, and all historic nobility rests on possession and use of land.",
-      "attribution": "Ralph Waldo Emerson",
-      "tags": [
-        "land",
-        "classic"
-      ]
-    },
-    {
-      "text": "Don't be too timid and squeamish about your actions. All life is an experiment.",
-      "attribution": "Ralph Waldo Emerson",
-      "tags": [
-        "mindset",
-        "wisdom"
-      ]
-    },
-    {
-      "text": "It ain't what you don't know that gets you into trouble. It's what you know for sure that just ain't so.",
-      "attribution": "Mark Twain",
-      "tags": [
-        "wisdom",
-        "markets"
-      ]
-    },
-    {
-      "text": "Buy land — they're not making it anymore.",
-      "attribution": "Mark Twain",
-      "tags": [
-        "land",
-        "markets"
-      ]
-    },
-    {
-      "text": "The big money is not in the buying and selling, but in the waiting.",
-      "attribution": "Charlie Munger",
-      "tags": [
-        "markets",
-        "wisdom"
-      ]
-    },
-    {
-      "text": "Knowing what you don't know is more useful than being brilliant.",
-      "attribution": "Charlie Munger",
-      "tags": [
-        "wisdom",
-        "markets"
-      ]
-    },
-    {
-      "text": "It's remarkable how much long-term advantage people like us have gotten by trying to be consistently not stupid, instead of trying to be very intelligent.",
-      "attribution": "Charlie Munger",
-      "tags": [
-        "markets",
-        "mindset"
-      ]
-    },
-    {
-      "text": "The real key to making money in stocks is not to get scared out of them.",
-      "attribution": "Peter Lynch",
-      "tags": [
-        "markets",
-        "mindset"
-      ]
-    },
-    {
-      "text": "Know what you own, and know why you own it.",
-      "attribution": "Peter Lynch",
-      "tags": [
-        "markets",
-        "wisdom"
-      ]
-    },
-    {
-      "text": "It was never my thinking that made the big money for me. It always was my sitting.",
-      "attribution": "Jesse Livermore",
-      "tags": [
-        "markets",
-        "wisdom"
-      ]
-    },
-    {
-      "text": "Markets are never wrong; opinions often are.",
-      "attribution": "Jesse Livermore",
-      "tags": [
-        "markets"
-      ]
-    },
-    {
-      "text": "An economist's guess is liable to be just as good as anybody else's.",
-      "attribution": "Will Rogers",
-      "tags": [
-        "humor",
-        "markets"
-      ]
-    },
-    {
-      "text": "Even if you're on the right track, you'll get run over if you just sit there.",
-      "attribution": "Will Rogers",
-      "tags": [
-        "mindset",
-        "wisdom"
-      ]
-    },
-    {
-      "text": "Nothing in this world can take the place of persistence.",
-      "attribution": "Calvin Coolidge",
-      "tags": [
-        "work",
-        "mindset"
-      ]
-    },
-    {
-      "text": "The wise man puts all his eggs in one basket and watches the basket.",
-      "attribution": "Andrew Carnegie",
-      "tags": [
-        "risk",
-        "markets"
-      ]
-    },
-    {
-      "text": "If you desire peace, cultivate justice, but at the same time cultivate the fields to produce more bread.",
-      "attribution": "Norman Borlaug",
-      "tags": [
-        "philosophy",
-        "policy"
-      ]
-    },
-    {
-      "text": "If we throw nature out the window, she comes back in the door with a pitchfork.",
-      "attribution": "Masanobu Fukuoka",
-      "tags": [
-        "conservation",
-        "wisdom"
-      ]
-    },
-    {
-      "text": "A garden requires patient labor and attention. Plants do not grow merely to satisfy ambitions or to fulfill good intentions.",
-      "attribution": "Liberty Hyde Bailey",
-      "tags": [
-        "work",
-        "patience",
-        "planting"
-      ]
-    },
-    {
-      "text": "In the midst of chaos, there is also opportunity.",
-      "attribution": "Sun Tzu",
-      "tags": [
-        "markets",
-        "mindset"
-      ]
-    },
-    {
-      "text": "He who knows when he can fight and when he cannot, will be victorious.",
-      "attribution": "Sun Tzu",
-      "tags": [
-        "wisdom",
-        "strategy"
-      ]
-    },
-    {
-      "text": "Bottoms in the investment world don't end with four-year lows; they end with 10- or 15-year lows.",
-      "attribution": "Jim Rogers",
-      "tags": [
-        "markets"
-      ]
-    },
-    {
-      "text": "It's tough to make predictions, especially about the future.",
-      "attribution": "Yogi Berra",
-      "tags": [
-        "markets",
-        "humor",
-        "wisdom"
-      ]
-    },
-    {
-      "text": "When you come to a fork in the road, take it.",
-      "attribution": "Yogi Berra",
-      "tags": [
-        "humor",
-        "wisdom"
-      ]
-    },
-    {
-      "text": "Optimism is the faith that leads to achievement. Nothing can be done without hope and confidence.",
-      "attribution": "Helen Keller",
-      "tags": [
-        "mindset"
-      ]
-    },
-    {
-      "text": "When one tugs at a single thing in nature, he finds it attached to the rest of the world.",
-      "attribution": "John Muir",
-      "tags": [
-        "conservation",
-        "wisdom"
-      ]
-    },
-    {
-      "text": "You have power over your mind — not outside events. Realize this, and you will find strength.",
-      "attribution": "Marcus Aurelius",
-      "tags": [
-        "mindset",
-        "wisdom"
-      ]
-    },
-    {
-      "text": "The impediment to action advances action. What stands in the way becomes the way.",
-      "attribution": "Marcus Aurelius",
-      "tags": [
-        "mindset",
-        "philosophy"
-      ]
-    },
-    {
-      "text": "It does not matter how slowly you go as long as you do not stop.",
-      "attribution": "Confucius",
-      "tags": [
-        "work",
-        "mindset"
-      ]
-    },
-    {
-      "text": "A journey of a thousand miles begins with a single step.",
-      "attribution": "Lao Tzu",
-      "tags": [
-        "wisdom",
-        "planning"
-      ]
-    },
-    {
-      "text": "Don't count your chickens before they hatch.",
-      "attribution": "Aesop",
-      "tags": [
-        "wisdom",
-        "risk"
-      ]
-    },
-    {
-      "text": "The early bird catches the worm.",
-      "attribution": "English Proverb",
-      "tags": [
-        "work",
-        "wisdom"
-      ]
-    },
-    {
-      "text": "A bird in the hand is worth two in the bush.",
-      "attribution": "English Proverb",
-      "tags": [
-        "risk",
-        "wisdom"
-      ]
-    },
-    {
-      "text": "Without a struggle, there can be no progress.",
-      "attribution": "Frederick Douglass",
-      "tags": [
-        "work",
-        "mindset"
-      ]
-    }
-  ]
+ "_comment": "Curated ag and economic quotes for AGSIST Daily briefing. Generator picks from this pool — never synthesizes. Fail-loud on missing attribution. Remove any quote that becomes overused; add new ones freely. Structure: {text, attribution, tags}. Tags drive mood-aware selection in v4.2.",
+ "_version": "2.1",
+ "_updated": "2026-06-12",
+ "quotes": [
+  {
+   "text": "Farming looks mighty easy when your plow is a pencil and you're a thousand miles from the corn field.",
+   "attribution": "Dwight D. Eisenhower",
+   "tags": [
+    "policy",
+    "classic"
+   ]
+  },
+  {
+   "text": "The farmer is the only man in our economy who buys everything at retail, sells everything at wholesale, and pays the freight both ways.",
+   "attribution": "John F. Kennedy",
+   "tags": [
+    "economics",
+    "classic"
+   ]
+  },
+  {
+   "text": "Agriculture is our wisest pursuit, because it will in the end contribute most to real wealth, good morals, and happiness.",
+   "attribution": "Thomas Jefferson",
+   "tags": [
+    "philosophy",
+    "classic"
+   ]
+  },
+  {
+   "text": "The discovery of agriculture was the first big step toward a civilized life.",
+   "attribution": "Arthur Keith",
+   "tags": [
+    "philosophy"
+   ]
+  },
+  {
+   "text": "If agriculture goes wrong, nothing else will have a chance to go right.",
+   "attribution": "M. S. Swaminathan",
+   "tags": [
+    "policy"
+   ]
+  },
+  {
+   "text": "I believe in the future of agriculture, with a faith born not of words but of deeds.",
+   "attribution": "E. M. Tiffany, FFA Creed",
+   "tags": [
+    "faith",
+    "ffa"
+   ]
+  },
+  {
+   "text": "You have to know the past to understand the present.",
+   "attribution": "Carl Sagan",
+   "tags": [
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Without agriculture it is not possible to have a city, stock market, banks, university, church or army.",
+   "attribution": "Allan Savory",
+   "tags": [
+    "economics"
+   ]
+  },
+  {
+   "text": "The ultimate goal of farming is not the growing of crops, but the cultivation and perfection of human beings.",
+   "attribution": "Masanobu Fukuoka",
+   "tags": [
+    "philosophy"
+   ]
+  },
+  {
+   "text": "To forget how to dig the earth and to tend the soil is to forget ourselves.",
+   "attribution": "Mahatma Gandhi",
+   "tags": [
+    "philosophy"
+   ]
+  },
+  {
+   "text": "We abuse land because we regard it as a commodity belonging to us. When we see land as a community to which we belong, we may begin to use it with love and respect.",
+   "attribution": "Aldo Leopold",
+   "tags": [
+    "conservation"
+   ]
+  },
+  {
+   "text": "The soil is the great connector of our lives, the source and destination of all.",
+   "attribution": "Wendell Berry",
+   "tags": [
+    "soil",
+    "classic"
+   ]
+  },
+  {
+   "text": "Eating is an agricultural act.",
+   "attribution": "Wendell Berry",
+   "tags": [
+    "food"
+   ]
+  },
+  {
+   "text": "A good farmer is nothing more nor less than a handy man with a sense of humus.",
+   "attribution": "E. B. White",
+   "tags": [
+    "soil",
+    "humor"
+   ]
+  },
+  {
+   "text": "Food is the moral right of all who are born into this world.",
+   "attribution": "Norman Borlaug",
+   "tags": [
+    "food",
+    "policy"
+   ]
+  },
+  {
+   "text": "You can't eat potential.",
+   "attribution": "Norman Borlaug",
+   "tags": [
+    "practical"
+   ]
+  },
+  {
+   "text": "Take good care of the earth. It was not given to you by your parents. It was loaned to you by your children.",
+   "attribution": "Kenyan Proverb",
+   "tags": [
+    "conservation"
+   ]
+  },
+  {
+   "text": "Learn from yesterday, live for today, hope for tomorrow.",
+   "attribution": "Albert Einstein",
+   "tags": [
+    "wisdom"
+   ]
+  },
+  {
+   "text": "The best time to plant a tree was twenty years ago. The second best time is now.",
+   "attribution": "Chinese Proverb",
+   "tags": [
+    "planting",
+    "classic"
+   ]
+  },
+  {
+   "text": "In seed time learn, in harvest teach, in winter enjoy.",
+   "attribution": "William Blake",
+   "tags": [
+    "seasons"
+   ]
+  },
+  {
+   "text": "Agriculture is the most healthful, most useful and most noble employment of man.",
+   "attribution": "George Washington",
+   "tags": [
+    "classic"
+   ]
+  },
+  {
+   "text": "I'd rather be on my farm than be emperor of the world.",
+   "attribution": "George Washington",
+   "tags": [
+    "classic"
+   ]
+  },
+  {
+   "text": "Never invest in a business you cannot understand.",
+   "attribution": "Warren Buffett",
+   "tags": [
+    "markets"
+   ]
+  },
+  {
+   "text": "The stock market is a device for transferring money from the impatient to the patient.",
+   "attribution": "Warren Buffett",
+   "tags": [
+    "markets"
+   ]
+  },
+  {
+   "text": "Price is what you pay. Value is what you get.",
+   "attribution": "Warren Buffett",
+   "tags": [
+    "markets"
+   ]
+  },
+  {
+   "text": "Risk comes from not knowing what you're doing.",
+   "attribution": "Warren Buffett",
+   "tags": [
+    "markets",
+    "risk"
+   ]
+  },
+  {
+   "text": "In the business world, the rearview mirror is always clearer than the windshield.",
+   "attribution": "Warren Buffett",
+   "tags": [
+    "markets"
+   ]
+  },
+  {
+   "text": "The markets can remain irrational longer than you can remain solvent.",
+   "attribution": "John Maynard Keynes",
+   "tags": [
+    "markets"
+   ]
+  },
+  {
+   "text": "When the facts change, I change my mind. What do you do, sir?",
+   "attribution": "John Maynard Keynes",
+   "tags": [
+    "markets"
+   ]
+  },
+  {
+   "text": "The four most dangerous words in investing are: this time it's different.",
+   "attribution": "Sir John Templeton",
+   "tags": [
+    "markets"
+   ]
+  },
+  {
+   "text": "How did you go bankrupt? Two ways. Gradually, then suddenly.",
+   "attribution": "Ernest Hemingway, The Sun Also Rises",
+   "tags": [
+    "markets"
+   ]
+  },
+  {
+   "text": "If a problem cannot be solved, enlarge it.",
+   "attribution": "Dwight D. Eisenhower",
+   "tags": [
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Plans are nothing; planning is everything.",
+   "attribution": "Dwight D. Eisenhower",
+   "tags": [
+    "wisdom"
+   ]
+  },
+  {
+   "text": "The best fertilizer on any farm is the footsteps of the farmer.",
+   "attribution": "Confucius",
+   "tags": [
+    "classic"
+   ]
+  },
+  {
+   "text": "Good weather is the greatest gift in farming, and it cannot be purchased.",
+   "attribution": "American Farm Proverb",
+   "tags": [
+    "weather"
+   ]
+  },
+  {
+   "text": "Don't judge each day by the harvest you reap but by the seeds that you plant.",
+   "attribution": "Robert Louis Stevenson",
+   "tags": [
+    "planting"
+   ]
+  },
+  {
+   "text": "Hard work beats talent when talent doesn't work hard.",
+   "attribution": "Tim Notke",
+   "tags": [
+    "work"
+   ]
+  },
+  {
+   "text": "The frost is on the pumpkin and the fodder's in the shock.",
+   "attribution": "James Whitcomb Riley",
+   "tags": [
+    "harvest",
+    "seasons"
+   ]
+  },
+  {
+   "text": "It is only the farmer who faithfully plants seeds in the spring, who reaps a harvest in the autumn.",
+   "attribution": "B. C. Forbes",
+   "tags": [
+    "planting"
+   ]
+  },
+  {
+   "text": "The glory of gardening: hands in the dirt, head in the sun, heart with nature.",
+   "attribution": "Alfred Austin",
+   "tags": [
+    "philosophy"
+   ]
+  },
+  {
+   "text": "The farmer has to be an optimist or he wouldn't still be a farmer.",
+   "attribution": "Will Rogers",
+   "tags": [
+    "humor"
+   ]
+  },
+  {
+   "text": "Buy land, they ain't making any more of it.",
+   "attribution": "Will Rogers",
+   "tags": [
+    "land",
+    "classic"
+   ]
+  },
+  {
+   "text": "The worst thing about being wrong is the lesson you learn.",
+   "attribution": "Will Rogers",
+   "tags": [
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Good judgment comes from experience, and experience comes from bad judgment.",
+   "attribution": "Rita Mae Brown",
+   "tags": [
+    "wisdom"
+   ]
+  },
+  {
+   "text": "The more I want to get something done, the less I call it work.",
+   "attribution": "Richard Bach",
+   "tags": [
+    "work"
+   ]
+  },
+  {
+   "text": "It is better to hear the rebuke of the wise than for a man to hear the song of fools.",
+   "attribution": "Ecclesiastes 7:5",
+   "tags": [
+    "wisdom"
+   ]
+  },
+  {
+   "text": "To every thing there is a season, and a time to every purpose under the heaven: a time to plant, and a time to pluck up that which is planted.",
+   "attribution": "Ecclesiastes 3:1-2",
+   "tags": [
+    "seasons"
+   ]
+  },
+  {
+   "text": "He that observeth the wind shall not sow; and he that regardeth the clouds shall not reap.",
+   "attribution": "Ecclesiastes 11:4",
+   "tags": [
+    "planting",
+    "weather"
+   ]
+  },
+  {
+   "text": "The land is the only thing in the world worth working for, worth fighting for, worth dying for, because it's the only thing that lasts.",
+   "attribution": "Gerald O'Hara, Gone With The Wind",
+   "tags": [
+    "land"
+   ]
+  },
+  {
+   "text": "The harvest is past, the summer is ended, and we are not saved.",
+   "attribution": "Jeremiah 8:20",
+   "tags": [
+    "harvest"
+   ]
+  },
+  {
+   "text": "He who plants a tree plants a hope.",
+   "attribution": "Lucy Larcom",
+   "tags": [
+    "planting"
+   ]
+  },
+  {
+   "text": "Successful farming requires not the abandonment but the creative development of tradition.",
+   "attribution": "Wendell Berry",
+   "tags": [
+    "philosophy"
+   ]
+  },
+  {
+   "text": "A farmer is a magician who produces money from mud.",
+   "attribution": "Amit Kalantri",
+   "tags": [
+    "humor"
+   ]
+  },
+  {
+   "text": "We are stuck with technology when what we really want is just stuff that works.",
+   "attribution": "Douglas Adams",
+   "tags": [
+    "technology"
+   ]
+  },
+  {
+   "text": "Never memorize something that you can look up.",
+   "attribution": "Albert Einstein",
+   "tags": [
+    "wisdom"
+   ]
+  },
+  {
+   "text": "The most dangerous phrase in the language is: we've always done it this way.",
+   "attribution": "Grace Hopper",
+   "tags": [
+    "innovation"
+   ]
+  },
+  {
+   "text": "Cash is king, but cash flow is the kingdom.",
+   "attribution": "Old Banking Proverb",
+   "tags": [
+    "markets"
+   ]
+  },
+  {
+   "text": "Don't put all your eggs in one basket.",
+   "attribution": "Miguel de Cervantes, Don Quixote",
+   "tags": [
+    "risk"
+   ]
+  },
+  {
+   "text": "Many a mickle makes a muckle.",
+   "attribution": "Scottish Proverb",
+   "tags": [
+    "thrift"
+   ]
+  },
+  {
+   "text": "Penny wise and pound foolish.",
+   "attribution": "English Proverb",
+   "tags": [
+    "markets"
+   ]
+  },
+  {
+   "text": "A stitch in time saves nine.",
+   "attribution": "English Proverb",
+   "tags": [
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Make hay while the sun shines.",
+   "attribution": "John Heywood, 1546",
+   "tags": [
+    "seasons",
+    "classic"
+   ]
+  },
+  {
+   "text": "Red sky at night, shepherd's delight; red sky in morning, shepherd's warning.",
+   "attribution": "English Weather Lore",
+   "tags": [
+    "weather"
+   ]
+  },
+  {
+   "text": "When March blows its horn, your barn will be filled with hay and corn.",
+   "attribution": "Farmers' Almanac",
+   "tags": [
+    "weather"
+   ]
+  },
+  {
+   "text": "A good farmer never dies; he just goes back to the soil.",
+   "attribution": "American Farm Saying",
+   "tags": [
+    "philosophy"
+   ]
+  },
+  {
+   "text": "The discovery of a new dish confers more happiness on humanity than the discovery of a new star.",
+   "attribution": "Jean Anthelme Brillat-Savarin",
+   "tags": [
+    "food"
+   ]
+  },
+  {
+   "text": "Beware of little expenses. A small leak will sink a great ship.",
+   "attribution": "Benjamin Franklin",
+   "tags": [
+    "thrift"
+   ]
+  },
+  {
+   "text": "An investment in knowledge pays the best interest.",
+   "attribution": "Benjamin Franklin",
+   "tags": [
+    "markets"
+   ]
+  },
+  {
+   "text": "Well done is better than well said.",
+   "attribution": "Benjamin Franklin",
+   "tags": [
+    "work"
+   ]
+  },
+  {
+   "text": "By failing to prepare, you are preparing to fail.",
+   "attribution": "Benjamin Franklin",
+   "tags": [
+    "planning"
+   ]
+  },
+  {
+   "text": "Diligence is the mother of good luck.",
+   "attribution": "Benjamin Franklin",
+   "tags": [
+    "work"
+   ]
+  },
+  {
+   "text": "Lost time is never found again.",
+   "attribution": "Benjamin Franklin",
+   "tags": [
+    "wisdom"
+   ]
+  },
+  {
+   "text": "It is a mistake to try to look too far ahead. The chain of destiny can only be grasped one link at a time.",
+   "attribution": "Winston Churchill",
+   "tags": [
+    "wisdom"
+   ]
+  },
+  {
+   "text": "However beautiful the strategy, you should occasionally look at the results.",
+   "attribution": "Winston Churchill",
+   "tags": [
+    "strategy"
+   ]
+  },
+  {
+   "text": "The pessimist sees difficulty in every opportunity. The optimist sees opportunity in every difficulty.",
+   "attribution": "Winston Churchill",
+   "tags": [
+    "mindset"
+   ]
+  },
+  {
+   "text": "Success is stumbling from failure to failure with no loss of enthusiasm.",
+   "attribution": "Winston Churchill",
+   "tags": [
+    "mindset"
+   ]
+  },
+  {
+   "text": "You must be the change you wish to see in the world.",
+   "attribution": "Mahatma Gandhi",
+   "tags": [
+    "philosophy"
+   ]
+  },
+  {
+   "text": "A rising tide lifts all boats.",
+   "attribution": "John F. Kennedy",
+   "tags": [
+    "economics"
+   ]
+  },
+  {
+   "text": "The ability to simplify means to eliminate the unnecessary so that the necessary may speak.",
+   "attribution": "Hans Hofmann",
+   "tags": [
+    "wisdom"
+   ]
+  },
+  {
+   "text": "What gets measured gets managed.",
+   "attribution": "Peter Drucker",
+   "tags": [
+    "business"
+   ]
+  },
+  {
+   "text": "The best way to predict the future is to create it.",
+   "attribution": "Peter Drucker",
+   "tags": [
+    "business"
+   ]
+  },
+  {
+   "text": "Culture eats strategy for breakfast.",
+   "attribution": "Peter Drucker",
+   "tags": [
+    "business"
+   ]
+  },
+  {
+   "text": "In God we trust. All others must bring data.",
+   "attribution": "W. Edwards Deming",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "text": "The care of the Earth is our most ancient and most worthy and, after all, our most pleasing responsibility.",
+   "attribution": "Wendell Berry",
+   "tags": [
+    "conservation",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "A good farmer who is dedicated to that work makes a kind of music in the daily round.",
+   "attribution": "Wendell Berry",
+   "tags": [
+    "work",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "We learn from our gardens to deal with the most urgent question of the time: How much is enough?",
+   "attribution": "Wendell Berry",
+   "tags": [
+    "philosophy",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Land is a community is the basic concept of ecology, but that land is to be loved and respected is an extension of ethics.",
+   "attribution": "Aldo Leopold",
+   "tags": [
+    "conservation",
+    "land",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "We can be ethical only in relation to something we can see, feel, understand, love, or otherwise have faith in.",
+   "attribution": "Aldo Leopold",
+   "tags": [
+    "philosophy",
+    "conservation"
+   ]
+  },
+  {
+   "text": "There are two spiritual dangers in not owning a farm. One is the danger of supposing that breakfast comes from the grocery, and the other that heat comes from the furnace.",
+   "attribution": "Aldo Leopold",
+   "tags": [
+    "classic",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "The nation behaves well if it treats the natural resources as assets which it must turn over to the next generation increased, and not impaired, in value.",
+   "attribution": "Theodore Roosevelt",
+   "tags": [
+    "conservation",
+    "policy"
+   ]
+  },
+  {
+   "text": "Far and away the best prize that life has to offer is the chance to work hard at work worth doing.",
+   "attribution": "Theodore Roosevelt",
+   "tags": [
+    "work"
+   ]
+  },
+  {
+   "text": "Education is the key to unlock the golden door of freedom.",
+   "attribution": "George Washington Carver",
+   "tags": [
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Where there is no vision, there is no hope.",
+   "attribution": "George Washington Carver",
+   "tags": [
+    "mindset"
+   ]
+  },
+  {
+   "text": "Success is to be measured not so much by the position that one has reached in life as by the obstacles which he has overcome.",
+   "attribution": "Booker T. Washington",
+   "tags": [
+    "mindset",
+    "work"
+   ]
+  },
+  {
+   "text": "What is the use of a house if you haven't got a tolerable planet to put it on?",
+   "attribution": "Henry David Thoreau",
+   "tags": [
+    "conservation",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "We can never have enough of nature.",
+   "attribution": "Henry David Thoreau",
+   "tags": [
+    "philosophy"
+   ]
+  },
+  {
+   "text": "The first farmer was the first man, and all historic nobility rests on possession and use of land.",
+   "attribution": "Ralph Waldo Emerson",
+   "tags": [
+    "land",
+    "classic"
+   ]
+  },
+  {
+   "text": "Don't be too timid and squeamish about your actions. All life is an experiment.",
+   "attribution": "Ralph Waldo Emerson",
+   "tags": [
+    "mindset",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "It ain't what you don't know that gets you into trouble. It's what you know for sure that just ain't so.",
+   "attribution": "Mark Twain",
+   "tags": [
+    "wisdom",
+    "markets"
+   ]
+  },
+  {
+   "text": "Buy land — they're not making it anymore.",
+   "attribution": "Mark Twain",
+   "tags": [
+    "land",
+    "markets"
+   ]
+  },
+  {
+   "text": "The big money is not in the buying and selling, but in the waiting.",
+   "attribution": "Charlie Munger",
+   "tags": [
+    "markets",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Knowing what you don't know is more useful than being brilliant.",
+   "attribution": "Charlie Munger",
+   "tags": [
+    "wisdom",
+    "markets"
+   ]
+  },
+  {
+   "text": "It's remarkable how much long-term advantage people like us have gotten by trying to be consistently not stupid, instead of trying to be very intelligent.",
+   "attribution": "Charlie Munger",
+   "tags": [
+    "markets",
+    "mindset"
+   ]
+  },
+  {
+   "text": "The real key to making money in stocks is not to get scared out of them.",
+   "attribution": "Peter Lynch",
+   "tags": [
+    "markets",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Know what you own, and know why you own it.",
+   "attribution": "Peter Lynch",
+   "tags": [
+    "markets",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "It was never my thinking that made the big money for me. It always was my sitting.",
+   "attribution": "Jesse Livermore",
+   "tags": [
+    "markets",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Markets are never wrong; opinions often are.",
+   "attribution": "Jesse Livermore",
+   "tags": [
+    "markets"
+   ]
+  },
+  {
+   "text": "An economist's guess is liable to be just as good as anybody else's.",
+   "attribution": "Will Rogers",
+   "tags": [
+    "humor",
+    "markets"
+   ]
+  },
+  {
+   "text": "Even if you're on the right track, you'll get run over if you just sit there.",
+   "attribution": "Will Rogers",
+   "tags": [
+    "mindset",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Nothing in this world can take the place of persistence.",
+   "attribution": "Calvin Coolidge",
+   "tags": [
+    "work",
+    "mindset"
+   ]
+  },
+  {
+   "text": "The wise man puts all his eggs in one basket and watches the basket.",
+   "attribution": "Andrew Carnegie",
+   "tags": [
+    "risk",
+    "markets"
+   ]
+  },
+  {
+   "text": "If you desire peace, cultivate justice, but at the same time cultivate the fields to produce more bread.",
+   "attribution": "Norman Borlaug",
+   "tags": [
+    "philosophy",
+    "policy"
+   ]
+  },
+  {
+   "text": "If we throw nature out the window, she comes back in the door with a pitchfork.",
+   "attribution": "Masanobu Fukuoka",
+   "tags": [
+    "conservation",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "A garden requires patient labor and attention. Plants do not grow merely to satisfy ambitions or to fulfill good intentions.",
+   "attribution": "Liberty Hyde Bailey",
+   "tags": [
+    "work",
+    "patience",
+    "planting"
+   ]
+  },
+  {
+   "text": "In the midst of chaos, there is also opportunity.",
+   "attribution": "Sun Tzu",
+   "tags": [
+    "markets",
+    "mindset"
+   ]
+  },
+  {
+   "text": "He who knows when he can fight and when he cannot, will be victorious.",
+   "attribution": "Sun Tzu",
+   "tags": [
+    "wisdom",
+    "strategy"
+   ]
+  },
+  {
+   "text": "Bottoms in the investment world don't end with four-year lows; they end with 10- or 15-year lows.",
+   "attribution": "Jim Rogers",
+   "tags": [
+    "markets"
+   ]
+  },
+  {
+   "text": "It's tough to make predictions, especially about the future.",
+   "attribution": "Yogi Berra",
+   "tags": [
+    "markets",
+    "humor",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "When you come to a fork in the road, take it.",
+   "attribution": "Yogi Berra",
+   "tags": [
+    "humor",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Optimism is the faith that leads to achievement. Nothing can be done without hope and confidence.",
+   "attribution": "Helen Keller",
+   "tags": [
+    "mindset"
+   ]
+  },
+  {
+   "text": "When one tugs at a single thing in nature, he finds it attached to the rest of the world.",
+   "attribution": "John Muir",
+   "tags": [
+    "conservation",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "You have power over your mind — not outside events. Realize this, and you will find strength.",
+   "attribution": "Marcus Aurelius",
+   "tags": [
+    "mindset",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "The impediment to action advances action. What stands in the way becomes the way.",
+   "attribution": "Marcus Aurelius",
+   "tags": [
+    "mindset",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "It does not matter how slowly you go as long as you do not stop.",
+   "attribution": "Confucius",
+   "tags": [
+    "work",
+    "mindset"
+   ]
+  },
+  {
+   "text": "A journey of a thousand miles begins with a single step.",
+   "attribution": "Lao Tzu",
+   "tags": [
+    "wisdom",
+    "planning"
+   ]
+  },
+  {
+   "text": "Don't count your chickens before they hatch.",
+   "attribution": "Aesop",
+   "tags": [
+    "wisdom",
+    "risk"
+   ]
+  },
+  {
+   "text": "The early bird catches the worm.",
+   "attribution": "English Proverb",
+   "tags": [
+    "work",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "A bird in the hand is worth two in the bush.",
+   "attribution": "English Proverb",
+   "tags": [
+    "risk",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Without a struggle, there can be no progress.",
+   "attribution": "Frederick Douglass",
+   "tags": [
+    "work",
+    "mindset"
+   ]
+  },
+  {
+   "text": "It is thus with farming: if you do one thing late, you will be late in all your work.",
+   "attribution": "Cato the Elder",
+   "tags": [
+    "classic",
+    "work",
+    "planning"
+   ]
+  },
+  {
+   "text": "The forefathers praised a farm when it had a good neighbor.",
+   "attribution": "Cato the Elder",
+   "tags": [
+    "classic",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Praise large farms, but cultivate a small one.",
+   "attribution": "Virgil",
+   "tags": [
+    "classic",
+    "thrift",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "The farmer's year is a circle, and his work is never done.",
+   "attribution": "Hesiod",
+   "tags": [
+    "classic",
+    "seasons",
+    "work"
+   ]
+  },
+  {
+   "text": "Observe due measure, for right timing is in all things the most important factor.",
+   "attribution": "Hesiod",
+   "tags": [
+    "classic",
+    "planning",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Do not put all your goods in one ship.",
+   "attribution": "Erasmus",
+   "tags": [
+    "risk",
+    "classic",
+    "strategy"
+   ]
+  },
+  {
+   "text": "Agriculture is the mother and nurse of the other arts.",
+   "attribution": "Xenophon",
+   "tags": [
+    "classic",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "Of all the occupations by which gain is secured, none is better than agriculture, none more profitable, none more delightful, none more becoming to a free man.",
+   "attribution": "Cicero",
+   "tags": [
+    "classic",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "While the farmer holds the title to the land, actually it belongs to all the people because civilization itself rests upon the soil.",
+   "attribution": "Thomas Jefferson",
+   "tags": [
+    "soil",
+    "philosophy",
+    "classic"
+   ]
+  },
+  {
+   "text": "Luck is what happens when preparation meets opportunity.",
+   "attribution": "Seneca",
+   "tags": [
+    "mindset",
+    "planning",
+    "classic"
+   ]
+  },
+  {
+   "text": "It is not because things are difficult that we do not dare; it is because we do not dare that things are difficult.",
+   "attribution": "Seneca",
+   "tags": [
+    "mindset",
+    "classic"
+   ]
+  },
+  {
+   "text": "No man was ever wise by chance.",
+   "attribution": "Seneca",
+   "tags": [
+    "wisdom",
+    "classic"
+   ]
+  },
+  {
+   "text": "It's not what happens to you, but how you react to it that matters.",
+   "attribution": "Epictetus",
+   "tags": [
+    "mindset",
+    "classic"
+   ]
+  },
+  {
+   "text": "Wealth consists not in having great possessions, but in having few wants.",
+   "attribution": "Epictetus",
+   "tags": [
+    "thrift",
+    "philosophy",
+    "classic"
+   ]
+  },
+  {
+   "text": "The best revenge is not to be like your enemy.",
+   "attribution": "Marcus Aurelius",
+   "tags": [
+    "wisdom",
+    "classic"
+   ]
+  },
+  {
+   "text": "Confine yourself to the present.",
+   "attribution": "Marcus Aurelius",
+   "tags": [
+    "mindset",
+    "classic"
+   ]
+  },
+  {
+   "text": "Those who labor in the earth are the chosen people of God, if ever He had a chosen people.",
+   "attribution": "Thomas Jefferson",
+   "tags": [
+    "classic",
+    "faith",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "The greatest service which can be rendered any country is to add a useful plant to its culture.",
+   "attribution": "Thomas Jefferson",
+   "tags": [
+    "classic",
+    "innovation",
+    "planting"
+   ]
+  },
+  {
+   "text": "I am entirely a farmer, soul and body, never scarcely admitting a sentiment on any other subject.",
+   "attribution": "Thomas Jefferson",
+   "tags": [
+    "classic",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "I know of no pursuit in which more real and important services can be rendered to any country than by improving its agriculture.",
+   "attribution": "George Washington",
+   "tags": [
+    "classic",
+    "policy"
+   ]
+  },
+  {
+   "text": "I shall prepare and perhaps my time will come.",
+   "attribution": "Abraham Lincoln",
+   "tags": [
+    "planning",
+    "mindset",
+    "classic"
+   ]
+  },
+  {
+   "text": "Give me six hours to chop down a tree and I will spend the first four sharpening the axe.",
+   "attribution": "Attributed to Abraham Lincoln",
+   "tags": [
+    "planning",
+    "work",
+    "classic"
+   ]
+  },
+  {
+   "text": "Things may come to those who wait, but only the things left by those who hustle.",
+   "attribution": "American saying",
+   "tags": [
+    "work",
+    "humor"
+   ]
+  },
+  {
+   "text": "Population must increase rapidly, more rapidly than in former times, and ere long the most valuable of all arts will be the art of deriving a comfortable subsistence from the smallest area of soil.",
+   "attribution": "Abraham Lincoln",
+   "tags": [
+    "classic",
+    "soil",
+    "policy"
+   ]
+  },
+  {
+   "text": "No other human occupation opens so wide a field for the profitable and agreeable combination of labor with cultivated thought as agriculture.",
+   "attribution": "Abraham Lincoln",
+   "tags": [
+    "classic",
+    "philosophy",
+    "work"
+   ]
+  },
+  {
+   "text": "An ounce of prevention is worth a pound of cure.",
+   "attribution": "Benjamin Franklin",
+   "tags": [
+    "risk",
+    "thrift",
+    "classic"
+   ]
+  },
+  {
+   "text": "Plough deep while sluggards sleep, and you shall have corn to sell and to keep.",
+   "attribution": "Benjamin Franklin",
+   "tags": [
+    "work",
+    "classic",
+    "thrift"
+   ]
+  },
+  {
+   "text": "He that can have patience can have what he will.",
+   "attribution": "Benjamin Franklin",
+   "tags": [
+    "patience",
+    "classic"
+   ]
+  },
+  {
+   "text": "Energy and persistence conquer all things.",
+   "attribution": "Benjamin Franklin",
+   "tags": [
+    "work",
+    "mindset",
+    "classic"
+   ]
+  },
+  {
+   "text": "Don't gamble; take all your savings and buy some good stock and hold it till it goes up, then sell it. If it don't go up, don't buy it.",
+   "attribution": "Will Rogers",
+   "tags": [
+    "humor",
+    "markets"
+   ]
+  },
+  {
+   "text": "Good judgment comes from experience, and a lot of that comes from bad judgment.",
+   "attribution": "Will Rogers",
+   "tags": [
+    "humor",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Buy land. They ain't making any more of the stuff.",
+   "attribution": "Will Rogers",
+   "tags": [
+    "humor",
+    "land",
+    "markets"
+   ]
+  },
+  {
+   "text": "The time to repair the roof is when the sun is shining.",
+   "attribution": "John F. Kennedy",
+   "tags": [
+    "planning",
+    "risk",
+    "classic"
+   ]
+  },
+  {
+   "text": "Farmers are the only indispensable people on the face of the earth.",
+   "attribution": "Li Zhaoxing",
+   "tags": [
+    "philosophy"
+   ]
+  },
+  {
+   "text": "Plans are worthless, but planning is everything.",
+   "attribution": "Dwight D. Eisenhower",
+   "tags": [
+    "planning",
+    "strategy",
+    "classic"
+   ]
+  },
+  {
+   "text": "The nation that destroys its soil destroys itself.",
+   "attribution": "Franklin D. Roosevelt",
+   "tags": [
+    "soil",
+    "conservation",
+    "policy",
+    "classic"
+   ]
+  },
+  {
+   "text": "It is common sense to take a method and try it. If it fails, admit it frankly and try another. But above all, try something.",
+   "attribution": "Franklin D. Roosevelt",
+   "tags": [
+    "mindset",
+    "innovation",
+    "classic"
+   ]
+  },
+  {
+   "text": "Far better is it to dare mighty things, to win glorious triumphs, even though checkered by failure, than to rank with those poor spirits who neither enjoy much nor suffer much.",
+   "attribution": "Theodore Roosevelt",
+   "tags": [
+    "mindset",
+    "classic"
+   ]
+  },
+  {
+   "text": "Do what you can, with what you have, where you are.",
+   "attribution": "Theodore Roosevelt",
+   "tags": [
+    "mindset",
+    "practical",
+    "classic"
+   ]
+  },
+  {
+   "text": "Comparison is the thief of joy.",
+   "attribution": "Attributed to Theodore Roosevelt",
+   "tags": [
+    "mindset",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "The only thing new in the world is the history you do not know.",
+   "attribution": "Harry S. Truman",
+   "tags": [
+    "wisdom",
+    "classic"
+   ]
+  },
+  {
+   "text": "If you can't stand the heat, get out of the kitchen.",
+   "attribution": "Harry S. Truman",
+   "tags": [
+    "humor",
+    "mindset"
+   ]
+  },
+  {
+   "text": "No person was ever honored for what he received. Honor has been the reward for what he gave.",
+   "attribution": "Calvin Coolidge",
+   "tags": [
+    "wisdom",
+    "classic"
+   ]
+  },
+  {
+   "text": "Adopt the pace of nature: her secret is patience.",
+   "attribution": "Ralph Waldo Emerson",
+   "tags": [
+    "patience",
+    "philosophy",
+    "seasons"
+   ]
+  },
+  {
+   "text": "The creation of a thousand forests is in one acorn.",
+   "attribution": "Ralph Waldo Emerson",
+   "tags": [
+    "philosophy",
+    "planting"
+   ]
+  },
+  {
+   "text": "Do not go where the path may lead, go instead where there is no path and leave a trail.",
+   "attribution": "Ralph Waldo Emerson",
+   "tags": [
+    "mindset",
+    "innovation"
+   ]
+  },
+  {
+   "text": "What lies behind us and what lies before us are tiny matters compared to what lies within us.",
+   "attribution": "Attributed to Ralph Waldo Emerson",
+   "tags": [
+    "mindset"
+   ]
+  },
+  {
+   "text": "Heaven is under our feet as well as over our heads.",
+   "attribution": "Henry David Thoreau",
+   "tags": [
+    "philosophy",
+    "land"
+   ]
+  },
+  {
+   "text": "Success usually comes to those who are too busy to be looking for it.",
+   "attribution": "Henry David Thoreau",
+   "tags": [
+    "work",
+    "mindset"
+   ]
+  },
+  {
+   "text": "What you get by achieving your goals is not as important as what you become by achieving your goals.",
+   "attribution": "Attributed to Henry David Thoreau",
+   "tags": [
+    "mindset"
+   ]
+  },
+  {
+   "text": "Convictions are more dangerous foes of truth than lies.",
+   "attribution": "Friedrich Nietzsche",
+   "tags": [
+    "wisdom",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "October: this is one of the peculiarly dangerous months to speculate in stocks. The others are July, January, September, April, November, May, March, June, December, August, and February.",
+   "attribution": "Mark Twain",
+   "tags": [
+    "humor",
+    "markets",
+    "classic"
+   ]
+  },
+  {
+   "text": "The secret of getting ahead is getting started.",
+   "attribution": "Attributed to Mark Twain",
+   "tags": [
+    "work",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Climate is what we expect, weather is what we get.",
+   "attribution": "Attributed to Mark Twain",
+   "tags": [
+    "weather",
+    "humor"
+   ]
+  },
+  {
+   "text": "Everybody talks about the weather, but nobody does anything about it.",
+   "attribution": "Charles Dudley Warner",
+   "tags": [
+    "weather",
+    "humor",
+    "classic"
+   ]
+  },
+  {
+   "text": "A man of words and not of deeds is like a garden full of weeds.",
+   "attribution": "English Proverb",
+   "tags": [
+    "work",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "If a man loses pace with his companions, perhaps it is because he hears a different drummer.",
+   "attribution": "Henry David Thoreau",
+   "tags": [
+    "mindset",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "To plant a garden is to believe in tomorrow.",
+   "attribution": "Audrey Hepburn",
+   "tags": [
+    "planting",
+    "mindset"
+   ]
+  },
+  {
+   "text": "When tillage begins, other arts follow. The farmers, therefore, are the founders of human civilization.",
+   "attribution": "Daniel Webster",
+   "tags": [
+    "classic",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "Let us never forget that the cultivation of the earth is the most important labor of man.",
+   "attribution": "Daniel Webster",
+   "tags": [
+    "classic",
+    "philosophy",
+    "work"
+   ]
+  },
+  {
+   "text": "There seem to be but three ways for a nation to acquire wealth: war, commerce, and agriculture. The first is robbery, the second cheating, and the third the only honest way.",
+   "attribution": "Benjamin Franklin",
+   "tags": [
+    "classic",
+    "economics",
+    "humor"
+   ]
+  },
+  {
+   "text": "No occupation is so delightful to me as the culture of the earth, and no culture comparable to that of the garden.",
+   "attribution": "Thomas Jefferson",
+   "tags": [
+    "classic",
+    "philosophy",
+    "planting"
+   ]
+  },
+  {
+   "text": "If we do not permit the earth to produce beauty and joy, it will in the end not produce food, either.",
+   "attribution": "Joseph Wood Krutch",
+   "tags": [
+    "conservation",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "The soil is the great connector of lives, the source and destination of all.",
+   "attribution": "Wendell Berry",
+   "tags": [
+    "soil",
+    "philosophy",
+    "conservation"
+   ]
+  },
+  {
+   "text": "I would feel more optimistic about a bright future for man if he spent less time proving that he can outwit Nature and more time tasting her sweetness and respecting her seniority.",
+   "attribution": "E.B. White",
+   "tags": [
+    "conservation",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "In every walk with nature one receives far more than he seeks.",
+   "attribution": "John Muir",
+   "tags": [
+    "philosophy",
+    "conservation"
+   ]
+  },
+  {
+   "text": "When we try to pick out anything by itself, we find it hitched to everything else in the universe.",
+   "attribution": "John Muir",
+   "tags": [
+    "philosophy",
+    "conservation"
+   ]
+  },
+  {
+   "text": "A society grows great when old men plant trees whose shade they know they shall never sit in.",
+   "attribution": "Greek Proverb",
+   "tags": [
+    "planting",
+    "philosophy",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Cast your bread upon the waters, for you will find it after many days.",
+   "attribution": "Ecclesiastes 11:1",
+   "tags": [
+    "faith",
+    "patience",
+    "classic"
+   ]
+  },
+  {
+   "text": "Whoever watches the wind will not plant; whoever looks at the clouds will not reap.",
+   "attribution": "Ecclesiastes 11:4",
+   "tags": [
+    "faith",
+    "planting",
+    "risk",
+    "classic"
+   ]
+  },
+  {
+   "text": "As you sow, so shall you reap.",
+   "attribution": "Galatians 6:7 (paraphrase)",
+   "tags": [
+    "faith",
+    "planting",
+    "harvest",
+    "classic"
+   ]
+  },
+  {
+   "text": "The farmer waits for the precious fruit of the earth, being patient about it, until it receives the early and the late rains.",
+   "attribution": "James 5:7",
+   "tags": [
+    "faith",
+    "patience",
+    "weather",
+    "classic"
+   ]
+  },
+  {
+   "text": "He who works his land will have abundant food, but he who chases fantasies lacks judgment.",
+   "attribution": "Proverbs 12:11",
+   "tags": [
+    "faith",
+    "work",
+    "classic"
+   ]
+  },
+  {
+   "text": "Education is the ability to listen to almost anything without losing your temper or your self-confidence.",
+   "attribution": "Robert Frost",
+   "tags": [
+    "wisdom",
+    "humor"
+   ]
+  },
+  {
+   "text": "The best way out is always through.",
+   "attribution": "Robert Frost",
+   "tags": [
+    "mindset",
+    "classic"
+   ]
+  },
+  {
+   "text": "In three words I can sum up everything I've learned about life: it goes on.",
+   "attribution": "Robert Frost",
+   "tags": [
+    "mindset",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Farming is a profession of hope.",
+   "attribution": "Brian Brett",
+   "tags": [
+    "mindset",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "The master's eye is the best fertilizer.",
+   "attribution": "Pliny the Elder",
+   "tags": [
+    "classic",
+    "work",
+    "practical"
+   ]
+  },
+  {
+   "text": "Fortune favors the bold.",
+   "attribution": "Virgil",
+   "tags": [
+    "classic",
+    "mindset",
+    "risk"
+   ]
+  },
+  {
+   "text": "They can because they think they can.",
+   "attribution": "Virgil",
+   "tags": [
+    "classic",
+    "mindset"
+   ]
+  },
+  {
+   "text": "However difficult life may seem, there is always something you can do and succeed at.",
+   "attribution": "Stephen Hawking",
+   "tags": [
+    "mindset"
+   ]
+  },
+  {
+   "text": "Out of clutter, find simplicity. From discord, find harmony. In the middle of difficulty lies opportunity.",
+   "attribution": "Attributed to Albert Einstein",
+   "tags": [
+    "mindset",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Look deep into nature, and then you will understand everything better.",
+   "attribution": "Albert Einstein",
+   "tags": [
+    "philosophy",
+    "conservation"
+   ]
+  },
+  {
+   "text": "Life is like riding a bicycle. To keep your balance you must keep moving.",
+   "attribution": "Albert Einstein",
+   "tags": [
+    "mindset"
+   ]
+  },
+  {
+   "text": "The man who moves a mountain begins by carrying away small stones.",
+   "attribution": "Confucius",
+   "tags": [
+    "work",
+    "patience",
+    "classic"
+   ]
+  },
+  {
+   "text": "Nature does not hurry, yet everything is accomplished.",
+   "attribution": "Lao Tzu",
+   "tags": [
+    "patience",
+    "philosophy",
+    "classic"
+   ]
+  },
+  {
+   "text": "A journey of a thousand miles must begin with a single step.",
+   "attribution": "Lao Tzu",
+   "tags": [
+    "mindset",
+    "classic"
+   ]
+  },
+  {
+   "text": "He who knows that enough is enough will always have enough.",
+   "attribution": "Lao Tzu",
+   "tags": [
+    "thrift",
+    "philosophy",
+    "classic"
+   ]
+  },
+  {
+   "text": "When the root is deep, there is no reason to fear the wind.",
+   "attribution": "Japanese Proverb",
+   "tags": [
+    "wisdom",
+    "risk",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Fall seven times, stand up eight.",
+   "attribution": "Japanese Proverb",
+   "tags": [
+    "mindset",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Vision without action is a daydream. Action without vision is a nightmare.",
+   "attribution": "Japanese Proverb",
+   "tags": [
+    "planning",
+    "strategy",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "No man ever stepped in the same river twice, for it's not the same river and he's not the same man.",
+   "attribution": "Heraclitus",
+   "tags": [
+    "philosophy",
+    "classic"
+   ]
+  },
+  {
+   "text": "The only constant in life is change.",
+   "attribution": "Heraclitus",
+   "tags": [
+    "philosophy",
+    "classic",
+    "markets"
+   ]
+  },
+  {
+   "text": "Character is destiny.",
+   "attribution": "Heraclitus",
+   "tags": [
+    "philosophy",
+    "classic",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Quality is not an act, it is a habit.",
+   "attribution": "Aristotle (paraphrase by Will Durant)",
+   "tags": [
+    "work",
+    "classic",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Patience is bitter, but its fruit is sweet.",
+   "attribution": "Attributed to Jean-Jacques Rousseau",
+   "tags": [
+    "patience",
+    "harvest",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "He who has a why to live can bear almost any how.",
+   "attribution": "Friedrich Nietzsche",
+   "tags": [
+    "mindset",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "What does not kill me makes me stronger.",
+   "attribution": "Friedrich Nietzsche",
+   "tags": [
+    "mindset",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "Knowing trees, I understand the meaning of patience. Knowing grass, I can appreciate persistence.",
+   "attribution": "Hal Borland",
+   "tags": [
+    "patience",
+    "philosophy",
+    "conservation"
+   ]
+  },
+  {
+   "text": "No winter lasts forever; no spring skips its turn.",
+   "attribution": "Hal Borland",
+   "tags": [
+    "seasons",
+    "mindset",
+    "weather"
+   ]
+  },
+  {
+   "text": "Anyone who thinks gardening begins in the spring and ends in the fall is missing the best part of the whole year.",
+   "attribution": "Josephine Nuese",
+   "tags": [
+    "seasons",
+    "planting"
+   ]
+  },
+  {
+   "text": "The love of dirt is among the earliest of passions, as it is the latest.",
+   "attribution": "Charles Dudley Warner",
+   "tags": [
+    "soil",
+    "humor",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "What is a weed? A plant whose virtues have not yet been discovered.",
+   "attribution": "Ralph Waldo Emerson",
+   "tags": [
+    "humor",
+    "philosophy",
+    "planting"
+   ]
+  },
+  {
+   "text": "Why try to explain miracles to your kids when you can just have them plant a garden.",
+   "attribution": "Robert Brault",
+   "tags": [
+    "planting",
+    "humor",
+    "faith"
+   ]
+  },
+  {
+   "text": "Despite all our accomplishments we owe our existence to a six-inch layer of topsoil and the fact that it rains.",
+   "attribution": "Farm Equipment Association of Minnesota and South Dakota",
+   "tags": [
+    "soil",
+    "weather",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "When the well is dry, we know the worth of water.",
+   "attribution": "Benjamin Franklin",
+   "tags": [
+    "conservation",
+    "thrift",
+    "classic"
+   ]
+  },
+  {
+   "text": "Land, then, is not merely soil; it is a fountain of energy flowing through a circuit of soils, plants, and animals.",
+   "attribution": "Aldo Leopold",
+   "tags": [
+    "land",
+    "soil",
+    "conservation"
+   ]
+  },
+  {
+   "text": "There is nothing new in Wall Street. There can't be because speculation is as old as the hills. Whatever happens in the stock market today has happened before and will happen again.",
+   "attribution": "Jesse Livermore",
+   "tags": [
+    "markets",
+    "wisdom",
+    "classic"
+   ]
+  },
+  {
+   "text": "The big money is not in the buying and the selling, but in the waiting.",
+   "attribution": "Charlie Munger",
+   "tags": [
+    "markets",
+    "patience"
+   ]
+  },
+  {
+   "text": "It is remarkable how much long-term advantage people like us have gotten by trying to be consistently not stupid, instead of trying to be very intelligent.",
+   "attribution": "Charlie Munger",
+   "tags": [
+    "markets",
+    "wisdom",
+    "humor"
+   ]
+  },
+  {
+   "text": "The main thing about money is to keep it. The second thing is to make it.",
+   "attribution": "Bernard Baruch",
+   "tags": [
+    "markets",
+    "thrift",
+    "classic"
+   ]
+  },
+  {
+   "text": "Don't try to buy at the bottom and sell at the top. It can't be done except by liars.",
+   "attribution": "Bernard Baruch",
+   "tags": [
+    "markets",
+    "humor",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "The main purpose of the stock market is to make fools of as many men as possible.",
+   "attribution": "Bernard Baruch",
+   "tags": [
+    "markets",
+    "humor",
+    "classic"
+   ]
+  },
+  {
+   "text": "In the short run, the market is a voting machine but in the long run, it is a weighing machine.",
+   "attribution": "Benjamin Graham",
+   "tags": [
+    "markets",
+    "wisdom",
+    "classic"
+   ]
+  },
+  {
+   "text": "The investor's chief problem — and even his worst enemy — is likely to be himself.",
+   "attribution": "Benjamin Graham",
+   "tags": [
+    "markets",
+    "mindset",
+    "risk"
+   ]
+  },
+  {
+   "text": "Bull markets are born on pessimism, grow on skepticism, mature on optimism, and die on euphoria.",
+   "attribution": "John Templeton",
+   "tags": [
+    "markets",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Be fearful when others are greedy and greedy when others are fearful.",
+   "attribution": "Warren Buffett",
+   "tags": [
+    "markets",
+    "mindset",
+    "risk"
+   ]
+  },
+  {
+   "text": "Someone's sitting in the shade today because someone planted a tree a long time ago.",
+   "attribution": "Warren Buffett",
+   "tags": [
+    "planting",
+    "patience",
+    "markets"
+   ]
+  },
+  {
+   "text": "Only when the tide goes out do you discover who's been swimming naked.",
+   "attribution": "Warren Buffett",
+   "tags": [
+    "markets",
+    "risk",
+    "humor"
+   ]
+  },
+  {
+   "text": "Markets can remain irrational longer than you can remain solvent.",
+   "attribution": "Attributed to John Maynard Keynes",
+   "tags": [
+    "markets",
+    "risk",
+    "classic"
+   ]
+  },
+  {
+   "text": "Far more money has been lost by investors preparing for corrections than has been lost in corrections themselves.",
+   "attribution": "Peter Lynch",
+   "tags": [
+    "markets",
+    "risk",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "The time to buy is when there's blood in the streets.",
+   "attribution": "Attributed to Baron Rothschild",
+   "tags": [
+    "markets",
+    "risk",
+    "classic"
+   ]
+  },
+  {
+   "text": "It's not whether you're right or wrong that's important, but how much money you make when you're right and how much you lose when you're wrong.",
+   "attribution": "George Soros",
+   "tags": [
+    "markets",
+    "risk"
+   ]
+  },
+  {
+   "text": "An economist is an expert who will know tomorrow why the things he predicted yesterday didn't happen today.",
+   "attribution": "Laurence J. Peter",
+   "tags": [
+    "humor",
+    "economics",
+    "markets"
+   ]
+  },
+  {
+   "text": "The stock market is filled with individuals who know the price of everything, but the value of nothing.",
+   "attribution": "Philip Fisher",
+   "tags": [
+    "markets",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "You get recessions, you have stock market declines. If you don't understand that's going to happen, then you're not ready, you won't do well in the markets.",
+   "attribution": "Peter Lynch",
+   "tags": [
+    "markets",
+    "risk",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Plan your trade and trade your plan.",
+   "attribution": "Trading maxim",
+   "tags": [
+    "markets",
+    "planning",
+    "strategy"
+   ]
+  },
+  {
+   "text": "Cut your losses short and let your winners run.",
+   "attribution": "Trading maxim",
+   "tags": [
+    "markets",
+    "risk",
+    "strategy"
+   ]
+  },
+  {
+   "text": "Bulls make money, bears make money, pigs get slaughtered.",
+   "attribution": "Wall Street maxim",
+   "tags": [
+    "markets",
+    "humor",
+    "risk"
+   ]
+  },
+  {
+   "text": "The trend is your friend, until the end when it bends.",
+   "attribution": "Trading maxim",
+   "tags": [
+    "markets",
+    "humor",
+    "strategy"
+   ]
+  },
+  {
+   "text": "Nobody ever went broke taking a profit.",
+   "attribution": "Wall Street maxim",
+   "tags": [
+    "markets",
+    "thrift",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Sell down to the sleeping point.",
+   "attribution": "Wall Street maxim",
+   "tags": [
+    "markets",
+    "risk",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Don't catch a falling knife.",
+   "attribution": "Wall Street maxim",
+   "tags": [
+    "markets",
+    "risk"
+   ]
+  },
+  {
+   "text": "Buy the rumor, sell the fact.",
+   "attribution": "Trading maxim",
+   "tags": [
+    "markets",
+    "strategy"
+   ]
+  },
+  {
+   "text": "The market can do anything.",
+   "attribution": "Trading maxim",
+   "tags": [
+    "markets",
+    "risk",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Amateurs want to be right. Professionals want to make money.",
+   "attribution": "Trading maxim",
+   "tags": [
+    "markets",
+    "mindset"
+   ]
+  },
+  {
+   "text": "There is no such thing as a sure thing in the commodity markets.",
+   "attribution": "Trading maxim",
+   "tags": [
+    "markets",
+    "risk"
+   ]
+  },
+  {
+   "text": "Rain makes grain.",
+   "attribution": "Grain trade saying",
+   "tags": [
+    "markets",
+    "weather",
+    "harvest"
+   ]
+  },
+  {
+   "text": "Big crops get bigger; small crops get smaller.",
+   "attribution": "Grain trade saying",
+   "tags": [
+    "markets",
+    "harvest",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "A short crop has a long tail.",
+   "attribution": "Grain trade saying",
+   "tags": [
+    "markets",
+    "harvest",
+    "classic"
+   ]
+  },
+  {
+   "text": "The cure for high prices is high prices. The cure for low prices is low prices.",
+   "attribution": "Commodity trade saying",
+   "tags": [
+    "markets",
+    "economics",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Sell in May and go away.",
+   "attribution": "Trading maxim",
+   "tags": [
+    "markets",
+    "seasons",
+    "humor"
+   ]
+  },
+  {
+   "text": "The first loss is the best loss.",
+   "attribution": "Trading maxim",
+   "tags": [
+    "markets",
+    "risk",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Whether you think you can, or you think you can't — you're right.",
+   "attribution": "Henry Ford",
+   "tags": [
+    "mindset",
+    "classic"
+   ]
+  },
+  {
+   "text": "Obstacles are those frightful things you see when you take your eyes off your goal.",
+   "attribution": "Attributed to Henry Ford",
+   "tags": [
+    "mindset",
+    "work"
+   ]
+  },
+  {
+   "text": "Quality means doing it right when no one is looking.",
+   "attribution": "Attributed to Henry Ford",
+   "tags": [
+    "work",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Coming together is a beginning; keeping together is progress; working together is success.",
+   "attribution": "Attributed to Henry Ford",
+   "tags": [
+    "work",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Failure is simply the opportunity to begin again, this time more intelligently.",
+   "attribution": "Henry Ford",
+   "tags": [
+    "mindset",
+    "innovation"
+   ]
+  },
+  {
+   "text": "I have not failed. I've just found 10,000 ways that won't work.",
+   "attribution": "Attributed to Thomas Edison",
+   "tags": [
+    "innovation",
+    "mindset",
+    "humor"
+   ]
+  },
+  {
+   "text": "Opportunity is missed by most people because it is dressed in overalls and looks like work.",
+   "attribution": "Attributed to Thomas Edison",
+   "tags": [
+    "work",
+    "humor",
+    "classic"
+   ]
+  },
+  {
+   "text": "Genius is one percent inspiration and ninety-nine percent perspiration.",
+   "attribution": "Thomas Edison",
+   "tags": [
+    "work",
+    "innovation",
+    "classic"
+   ]
+  },
+  {
+   "text": "There is no substitute for hard work.",
+   "attribution": "Thomas Edison",
+   "tags": [
+    "work",
+    "classic"
+   ]
+  },
+  {
+   "text": "The way to get started is to quit talking and begin doing.",
+   "attribution": "Walt Disney",
+   "tags": [
+    "work",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Efficiency is doing things right; effectiveness is doing the right things.",
+   "attribution": "Peter Drucker",
+   "tags": [
+    "business",
+    "strategy",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Whenever you see a successful business, someone once made a courageous decision.",
+   "attribution": "Peter Drucker",
+   "tags": [
+    "business",
+    "risk",
+    "mindset"
+   ]
+  },
+  {
+   "text": "If you cannot do great things, do small things in a great way.",
+   "attribution": "Napoleon Hill",
+   "tags": [
+    "work",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Don't wait. The time will never be just right.",
+   "attribution": "Napoleon Hill",
+   "tags": [
+    "mindset",
+    "work"
+   ]
+  },
+  {
+   "text": "It's fine to celebrate success but it is more important to heed the lessons of failure.",
+   "attribution": "Bill Gates",
+   "tags": [
+    "business",
+    "wisdom",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Your most unhappy customers are your greatest source of learning.",
+   "attribution": "Bill Gates",
+   "tags": [
+    "business",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Without data, you're just another person with an opinion.",
+   "attribution": "Attributed to W. Edwards Deming",
+   "tags": [
+    "data",
+    "business",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "It is not necessary to change. Survival is not mandatory.",
+   "attribution": "W. Edwards Deming",
+   "tags": [
+    "business",
+    "innovation",
+    "humor"
+   ]
+  },
+  {
+   "text": "Every battle is won before it is ever fought.",
+   "attribution": "Sun Tzu",
+   "tags": [
+    "strategy",
+    "planning",
+    "classic"
+   ]
+  },
+  {
+   "text": "He will win who knows when to fight and when not to fight.",
+   "attribution": "Sun Tzu",
+   "tags": [
+    "strategy",
+    "wisdom",
+    "classic"
+   ]
+  },
+  {
+   "text": "Never let a good crisis go to waste.",
+   "attribution": "Attributed to Winston Churchill",
+   "tags": [
+    "strategy",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+   "attribution": "Attributed to Winston Churchill",
+   "tags": [
+    "mindset",
+    "classic"
+   ]
+  },
+  {
+   "text": "It ain't over till it's over.",
+   "attribution": "Yogi Berra",
+   "tags": [
+    "humor",
+    "mindset"
+   ]
+  },
+  {
+   "text": "You can observe a lot by just watching.",
+   "attribution": "Yogi Berra",
+   "tags": [
+    "humor",
+    "data",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "The future ain't what it used to be.",
+   "attribution": "Yogi Berra",
+   "tags": [
+    "humor",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "If you don't know where you are going, you'll end up someplace else.",
+   "attribution": "Yogi Berra",
+   "tags": [
+    "humor",
+    "planning"
+   ]
+  },
+  {
+   "text": "I am a great believer in luck, and I find the harder I work, the more I have of it.",
+   "attribution": "Attributed to Stephen Leacock",
+   "tags": [
+    "work",
+    "humor",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Chance favors the prepared mind.",
+   "attribution": "Louis Pasteur",
+   "tags": [
+    "planning",
+    "classic",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away.",
+   "attribution": "Antoine de Saint-Exupéry",
+   "tags": [
+    "wisdom",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "A goal without a plan is just a wish.",
+   "attribution": "Antoine de Saint-Exupéry",
+   "tags": [
+    "planning",
+    "strategy"
+   ]
+  },
+  {
+   "text": "You miss 100% of the shots you don't take.",
+   "attribution": "Wayne Gretzky",
+   "tags": [
+    "mindset",
+    "risk"
+   ]
+  },
+  {
+   "text": "The harder the conflict, the more glorious the triumph.",
+   "attribution": "Thomas Paine",
+   "tags": [
+    "mindset",
+    "classic"
+   ]
+  },
+  {
+   "text": "Those who expect to reap the blessings of freedom must, like men, undergo the fatigue of supporting it.",
+   "attribution": "Thomas Paine",
+   "tags": [
+    "classic",
+    "work",
+    "policy"
+   ]
+  },
+  {
+   "text": "Success is the sum of small efforts, repeated day in and day out.",
+   "attribution": "Robert Collier",
+   "tags": [
+    "work",
+    "patience",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Character cannot be developed in ease and quiet. Only through experience of trial and suffering can the soul be strengthened.",
+   "attribution": "Helen Keller",
+   "tags": [
+    "mindset",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Optimism is the faith that leads to achievement.",
+   "attribution": "Helen Keller",
+   "tags": [
+    "mindset",
+    "faith"
+   ]
+  },
+  {
+   "text": "No one has ever drowned in sweat.",
+   "attribution": "Lou Holtz",
+   "tags": [
+    "work",
+    "humor",
+    "mindset"
+   ]
+  },
+  {
+   "text": "It's not the will to win that matters — everyone has that. It's the will to prepare to win that matters.",
+   "attribution": "Paul \"Bear\" Bryant",
+   "tags": [
+    "planning",
+    "work",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Success at anything will always come down to this: focus and effort. And we control both.",
+   "attribution": "Dwayne Johnson",
+   "tags": [
+    "work",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Education is the most powerful weapon which you can use to change the world.",
+   "attribution": "Nelson Mandela",
+   "tags": [
+    "wisdom",
+    "mindset"
+   ]
+  },
+  {
+   "text": "It always seems impossible until it's done.",
+   "attribution": "Nelson Mandela",
+   "tags": [
+    "mindset",
+    "work"
+   ]
+  },
+  {
+   "text": "No problem can withstand the assault of sustained thinking.",
+   "attribution": "Voltaire",
+   "tags": [
+    "wisdom",
+    "mindset",
+    "classic"
+   ]
+  },
+  {
+   "text": "Judge a man by his questions rather than his answers.",
+   "attribution": "Voltaire",
+   "tags": [
+    "wisdom",
+    "classic"
+   ]
+  },
+  {
+   "text": "The best fertilizer is the farmer's footsteps.",
+   "attribution": "Chinese Proverb",
+   "tags": [
+    "work",
+    "practical",
+    "soil"
+   ]
+  },
+  {
+   "text": "You reap what you sow.",
+   "attribution": "English Proverb",
+   "tags": [
+    "planting",
+    "harvest",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Great oaks from little acorns grow.",
+   "attribution": "English Proverb",
+   "tags": [
+    "patience",
+    "planting",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Look before you leap.",
+   "attribution": "English Proverb",
+   "tags": [
+    "risk",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Strike while the iron is hot.",
+   "attribution": "English Proverb",
+   "tags": [
+    "work",
+    "strategy",
+    "markets"
+   ]
+  },
+  {
+   "text": "Many hands make light work.",
+   "attribution": "English Proverb",
+   "tags": [
+    "work",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Waste not, want not.",
+   "attribution": "English Proverb",
+   "tags": [
+    "thrift",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "A bad penny always turns up.",
+   "attribution": "English Proverb",
+   "tags": [
+    "humor",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Don't change horses in midstream.",
+   "attribution": "English Proverb",
+   "tags": [
+    "strategy",
+    "risk",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "You can lead a horse to water, but you can't make him drink.",
+   "attribution": "English Proverb",
+   "tags": [
+    "wisdom",
+    "humor"
+   ]
+  },
+  {
+   "text": "Don't look a gift horse in the mouth.",
+   "attribution": "English Proverb",
+   "tags": [
+    "wisdom",
+    "humor"
+   ]
+  },
+  {
+   "text": "While the cat's away, the mice will play.",
+   "attribution": "English Proverb",
+   "tags": [
+    "humor",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Every cloud has a silver lining.",
+   "attribution": "English Proverb",
+   "tags": [
+    "mindset",
+    "weather",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "After the rain comes the sun.",
+   "attribution": "English Proverb",
+   "tags": [
+    "weather",
+    "mindset",
+    "seasons"
+   ]
+  },
+  {
+   "text": "April showers bring May flowers.",
+   "attribution": "English Proverb",
+   "tags": [
+    "weather",
+    "seasons",
+    "planting"
+   ]
+  },
+  {
+   "text": "One swallow does not make a summer.",
+   "attribution": "English Proverb",
+   "tags": [
+    "seasons",
+    "wisdom",
+    "risk"
+   ]
+  },
+  {
+   "text": "He that by the plough would thrive, himself must either hold or drive.",
+   "attribution": "English Proverb",
+   "tags": [
+    "work",
+    "classic",
+    "practical"
+   ]
+  },
+  {
+   "text": "Sow dry and set wet.",
+   "attribution": "English Proverb",
+   "tags": [
+    "planting",
+    "practical",
+    "weather"
+   ]
+  },
+  {
+   "text": "Who has land has war.",
+   "attribution": "Italian Proverb",
+   "tags": [
+    "land",
+    "humor",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Between saying and doing, many a pair of shoes is worn out.",
+   "attribution": "Italian Proverb",
+   "tags": [
+    "work",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Since the house is on fire let us warm ourselves.",
+   "attribution": "Italian Proverb",
+   "tags": [
+    "humor",
+    "mindset"
+   ]
+  },
+  {
+   "text": "The best word is the unspoken word.",
+   "attribution": "Spanish Proverb",
+   "tags": [
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Tomorrow is often the busiest day of the week.",
+   "attribution": "Spanish Proverb",
+   "tags": [
+    "humor",
+    "work",
+    "planning"
+   ]
+  },
+  {
+   "text": "More grows in the garden than the gardener sows.",
+   "attribution": "Spanish Proverb",
+   "tags": [
+    "planting",
+    "humor",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "A wise man changes his mind, a fool never will.",
+   "attribution": "Spanish Proverb",
+   "tags": [
+    "wisdom",
+    "mindset"
+   ]
+  },
+  {
+   "text": "It is not enough to know how to ride; you must also know how to fall.",
+   "attribution": "Mexican Proverb",
+   "tags": [
+    "risk",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "He who doesn't look ahead remains behind.",
+   "attribution": "Spanish Proverb",
+   "tags": [
+    "planning",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "However long the night, the dawn will break.",
+   "attribution": "African Proverb",
+   "tags": [
+    "mindset",
+    "patience",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Smooth seas do not make skillful sailors.",
+   "attribution": "African Proverb",
+   "tags": [
+    "mindset",
+    "risk",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "If you want to go fast, go alone. If you want to go far, go together.",
+   "attribution": "African Proverb",
+   "tags": [
+    "wisdom",
+    "work",
+    "strategy"
+   ]
+  },
+  {
+   "text": "Rain does not fall on one roof alone.",
+   "attribution": "African Proverb",
+   "tags": [
+    "weather",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "The best time to plant a tree is during the rainy season.",
+   "attribution": "African Proverb",
+   "tags": [
+    "planting",
+    "weather",
+    "planning"
+   ]
+  },
+  {
+   "text": "Wisdom is like a baobab tree; no one individual can embrace it.",
+   "attribution": "African Proverb",
+   "tags": [
+    "wisdom",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "A patient man will eat ripe fruit.",
+   "attribution": "African Proverb",
+   "tags": [
+    "patience",
+    "harvest",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Cross the river in a crowd and the crocodile won't eat you.",
+   "attribution": "African Proverb",
+   "tags": [
+    "risk",
+    "wisdom",
+    "humor"
+   ]
+  },
+  {
+   "text": "When the music changes, so does the dance.",
+   "attribution": "African Proverb",
+   "tags": [
+    "markets",
+    "strategy",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "No matter how long the winter, spring is sure to follow.",
+   "attribution": "African Proverb",
+   "tags": [
+    "seasons",
+    "mindset",
+    "patience"
+   ]
+  },
+  {
+   "text": "What the fool does in the end, the wise man does in the beginning.",
+   "attribution": "Irish Proverb",
+   "tags": [
+    "wisdom",
+    "planning",
+    "humor"
+   ]
+  },
+  {
+   "text": "It is in the shelter of each other that the people live.",
+   "attribution": "Irish Proverb",
+   "tags": [
+    "wisdom",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "A good beginning is half the work.",
+   "attribution": "Irish Proverb",
+   "tags": [
+    "work",
+    "planning",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "There is no luck except where there is discipline.",
+   "attribution": "Irish Proverb",
+   "tags": [
+    "work",
+    "wisdom",
+    "mindset"
+   ]
+  },
+  {
+   "text": "You'll never plough a field by turning it over in your mind.",
+   "attribution": "Irish Proverb",
+   "tags": [
+    "work",
+    "mindset",
+    "humor"
+   ]
+  },
+  {
+   "text": "A windy day is not the day for thatching.",
+   "attribution": "Irish Proverb",
+   "tags": [
+    "weather",
+    "planning",
+    "practical"
+   ]
+  },
+  {
+   "text": "He who is not in the habit of riding forgets the spurs.",
+   "attribution": "Scottish Proverb",
+   "tags": [
+    "work",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Willful waste makes woeful want.",
+   "attribution": "Scottish Proverb",
+   "tags": [
+    "thrift",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "What may be done at any time will be done at no time.",
+   "attribution": "Scottish Proverb",
+   "tags": [
+    "work",
+    "planning",
+    "humor"
+   ]
+  },
+  {
+   "text": "Trees often transplanted seldom prosper.",
+   "attribution": "Dutch Proverb",
+   "tags": [
+    "planting",
+    "patience",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "He who is outside the door has already a good part of his journey behind him.",
+   "attribution": "Dutch Proverb",
+   "tags": [
+    "work",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Throw no stones into the well that gives you water.",
+   "attribution": "Danish Proverb",
+   "tags": [
+    "wisdom",
+    "conservation"
+   ]
+  },
+  {
+   "text": "He who builds according to every man's advice will have a crooked house.",
+   "attribution": "Danish Proverb",
+   "tags": [
+    "wisdom",
+    "strategy",
+    "humor"
+   ]
+  },
+  {
+   "text": "Bad is never good until worse happens.",
+   "attribution": "Danish Proverb",
+   "tags": [
+    "humor",
+    "wisdom",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Begin to weave and God will give the thread.",
+   "attribution": "German Proverb",
+   "tags": [
+    "faith",
+    "work",
+    "mindset"
+   ]
+  },
+  {
+   "text": "The cheapest is always the most expensive.",
+   "attribution": "German Proverb",
+   "tags": [
+    "thrift",
+    "wisdom",
+    "economics"
+   ]
+  },
+  {
+   "text": "To change and to change for the better are two different things.",
+   "attribution": "German Proverb",
+   "tags": [
+    "wisdom",
+    "strategy"
+   ]
+  },
+  {
+   "text": "God gives the nuts, but he does not crack them.",
+   "attribution": "German Proverb",
+   "tags": [
+    "faith",
+    "work",
+    "humor"
+   ]
+  },
+  {
+   "text": "Trust, but verify.",
+   "attribution": "Russian Proverb",
+   "tags": [
+    "data",
+    "risk",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Measure seven times, cut once.",
+   "attribution": "Russian Proverb",
+   "tags": [
+    "planning",
+    "practical",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Pray to God, but keep rowing to shore.",
+   "attribution": "Russian Proverb",
+   "tags": [
+    "faith",
+    "work",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "The slower you go, the farther you will be.",
+   "attribution": "Russian Proverb",
+   "tags": [
+    "patience",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Don't sell the bear's skin before you've caught the bear.",
+   "attribution": "Russian Proverb",
+   "tags": [
+    "risk",
+    "humor",
+    "markets"
+   ]
+  },
+  {
+   "text": "A spring day feeds a year.",
+   "attribution": "Russian Proverb",
+   "tags": [
+    "seasons",
+    "planting",
+    "work"
+   ]
+  },
+  {
+   "text": "Sow a seed today; harvest a crop tomorrow.",
+   "attribution": "Indian Proverb",
+   "tags": [
+    "planting",
+    "harvest",
+    "patience"
+   ]
+  },
+  {
+   "text": "The one who plants the tree is not the one who will enjoy its shade.",
+   "attribution": "Chinese Proverb",
+   "tags": [
+    "planting",
+    "philosophy",
+    "patience"
+   ]
+  },
+  {
+   "text": "A little impatience will spoil great plans.",
+   "attribution": "Chinese Proverb",
+   "tags": [
+    "patience",
+    "planning",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Dig the well before you are thirsty.",
+   "attribution": "Chinese Proverb",
+   "tags": [
+    "planning",
+    "risk",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Talk doesn't cook rice.",
+   "attribution": "Chinese Proverb",
+   "tags": [
+    "work",
+    "humor",
+    "practical"
+   ]
+  },
+  {
+   "text": "When the winds of change blow, some people build walls and others build windmills.",
+   "attribution": "Chinese Proverb",
+   "tags": [
+    "innovation",
+    "mindset",
+    "strategy"
+   ]
+  },
+  {
+   "text": "A crisis is an opportunity riding the dangerous wind.",
+   "attribution": "Chinese Proverb",
+   "tags": [
+    "risk",
+    "mindset",
+    "strategy"
+   ]
+  },
+  {
+   "text": "If you are patient in one moment of anger, you will escape a hundred days of sorrow.",
+   "attribution": "Chinese Proverb",
+   "tags": [
+    "patience",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "He who asks is a fool for five minutes, but he who does not ask remains a fool forever.",
+   "attribution": "Chinese Proverb",
+   "tags": [
+    "wisdom",
+    "humor"
+   ]
+  },
+  {
+   "text": "Better to light a candle than to curse the darkness.",
+   "attribution": "Chinese Proverb",
+   "tags": [
+    "mindset",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Give a man a fish and you feed him for a day; teach a man to fish and you feed him for a lifetime.",
+   "attribution": "Proverb (often cited as Chinese)",
+   "tags": [
+    "wisdom",
+    "food",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "Fool me once, shame on you; fool me twice, shame on me.",
+   "attribution": "English Proverb",
+   "tags": [
+    "wisdom",
+    "risk"
+   ]
+  },
+  {
+   "text": "Hope for the best, prepare for the worst.",
+   "attribution": "English Proverb",
+   "tags": [
+    "planning",
+    "risk",
+    "mindset"
+   ]
+  },
+  {
+   "text": "Red sky at night, sailor's delight; red sky in morning, sailor's warning.",
+   "attribution": "Weather lore",
+   "tags": [
+    "weather",
+    "classic"
+   ]
+  },
+  {
+   "text": "Rain before seven, fine before eleven.",
+   "attribution": "Weather lore",
+   "tags": [
+    "weather"
+   ]
+  },
+  {
+   "text": "When the dew is on the grass, rain will never come to pass.",
+   "attribution": "Weather lore",
+   "tags": [
+    "weather"
+   ]
+  },
+  {
+   "text": "Clear moon, frost soon.",
+   "attribution": "Weather lore",
+   "tags": [
+    "weather",
+    "seasons"
+   ]
+  },
+  {
+   "text": "Ring around the moon, rain or snow soon.",
+   "attribution": "Weather lore",
+   "tags": [
+    "weather"
+   ]
+  },
+  {
+   "text": "When clouds appear like rocks and towers, the earth's refreshed by frequent showers.",
+   "attribution": "Weather lore",
+   "tags": [
+    "weather"
+   ]
+  },
+  {
+   "text": "Mare's tails and mackerel scales make tall ships carry low sails.",
+   "attribution": "Weather lore",
+   "tags": [
+    "weather",
+    "classic"
+   ]
+  },
+  {
+   "text": "When the wind is out of the east, 'tis neither good for man nor beast.",
+   "attribution": "Weather lore",
+   "tags": [
+    "weather",
+    "classic"
+   ]
+  },
+  {
+   "text": "If March comes in like a lion, it will go out like a lamb.",
+   "attribution": "Weather lore",
+   "tags": [
+    "weather",
+    "seasons"
+   ]
+  },
+  {
+   "text": "When leaves show their undersides, be very sure that rain betides.",
+   "attribution": "Weather lore",
+   "tags": [
+    "weather"
+   ]
+  },
+  {
+   "text": "Knee-high by the Fourth of July.",
+   "attribution": "Corn Belt saying",
+   "tags": [
+    "planting",
+    "seasons",
+    "classic"
+   ]
+  },
+  {
+   "text": "Plant corn when oak leaves are the size of a squirrel's ear.",
+   "attribution": "Old farm saying",
+   "tags": [
+    "planting",
+    "seasons",
+    "practical"
+   ]
+  },
+  {
+   "text": "A dry May and a dripping June brings all things into tune.",
+   "attribution": "Old farm saying",
+   "tags": [
+    "weather",
+    "seasons",
+    "planting"
+   ]
+  },
+  {
+   "text": "A cold April the barn will fill.",
+   "attribution": "Old farm saying",
+   "tags": [
+    "weather",
+    "seasons",
+    "harvest"
+   ]
+  },
+  {
+   "text": "If the rooster crows on going to bed, you may rise with a watery head.",
+   "attribution": "Old farm saying",
+   "tags": [
+    "weather",
+    "humor"
+   ]
+  },
+  {
+   "text": "Onion skins very thin, mild winter coming in; onion skins thick and tough, coming winter cold and rough.",
+   "attribution": "Old farm saying",
+   "tags": [
+    "weather",
+    "seasons",
+    "humor"
+   ]
+  },
+  {
+   "text": "A farmer's heart beats with the seasons.",
+   "attribution": "Old farm saying",
+   "tags": [
+    "seasons",
+    "philosophy"
+   ]
+  },
+  {
+   "text": "A good harvest answers many questions.",
+   "attribution": "Old farm saying",
+   "tags": [
+    "harvest",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "The corn doesn't grow by worrying about the weather.",
+   "attribution": "Old farm saying",
+   "tags": [
+    "weather",
+    "mindset",
+    "work"
+   ]
+  },
+  {
+   "text": "Never name a calf you plan to sell.",
+   "attribution": "Old farm saying",
+   "tags": [
+    "humor",
+    "markets",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "You can't plow a field with words.",
+   "attribution": "Old farm saying",
+   "tags": [
+    "work",
+    "practical"
+   ]
+  },
+  {
+   "text": "The fence needs mending before the cattle get out.",
+   "attribution": "Old farm saying",
+   "tags": [
+    "planning",
+    "risk",
+    "practical"
+   ]
+  },
+  {
+   "text": "Feed your land before it feeds you.",
+   "attribution": "Old farm saying",
+   "tags": [
+    "soil",
+    "practical",
+    "wisdom"
+   ]
+  },
+  {
+   "text": "Live as if you'll die tomorrow; farm as if you'll live forever.",
+   "attribution": "Old farm saying",
+   "tags": [
+    "philosophy",
+    "conservation",
+    "mindset"
+   ]
+  }
+ ]
 }
