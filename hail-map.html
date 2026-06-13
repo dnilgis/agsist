@@ -52,7 +52,7 @@
     .hm-title{font-family:'Oswald',sans-serif;font-size:clamp(1.7rem,4vw,2.5rem);font-weight:700;line-height:1.05;margin:0 0 .5rem;text-transform:uppercase;letter-spacing:.01em}
     .hm-title em{color:var(--brand,var(--gold));font-style:normal}
     .hm-sub{color:var(--text-dim);max-width:62ch;line-height:1.5;margin:0}
-    #hm-map{height:60vh;min-height:420px;border-radius:12px;border:1px solid var(--border);background:#070b05;z-index:1}
+    #hm-map{height:60vh;min-height:420px;border-radius:12px;border:1px solid var(--border);background:#e9e9e3;z-index:1}
     .hm-controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.9rem 0 .4rem}
     .hm-chip{font-family:inherit;font-size:.86rem;background:var(--surface);color:var(--text-dim);border:1px solid var(--border);border-radius:999px;padding:.42rem .8rem;cursor:pointer;transition:.12s;white-space:nowrap}
     .hm-chip:hover{color:var(--text)}
@@ -70,6 +70,41 @@
     .hm-src a{color:var(--brand,var(--gold))}
     .hm-banner{background:var(--surface);border:1px dashed var(--border);border-radius:10px;padding:1rem;color:var(--text-dim);text-align:center;margin-top:.6rem}
     @media(max-width:640px){#hm-map{height:54vh}}
+    .hm-mapwrap{position:relative}
+    .hm-yearbadge{position:absolute;top:10px;right:14px;z-index:450;pointer-events:none;
+      font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(1.6rem,4.5vw,3rem);
+      line-height:1;color:#15240d;text-shadow:0 1px 10px rgba(255,255,255,.95),0 0 3px rgba(255,255,255,.95);
+      letter-spacing:.02em;opacity:.95;transition:opacity .25s}
+    .hm-yearbadge small{display:block;text-align:right;font-size:.32em;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+    .hm-yearbadge.playing{color:var(--brand,var(--gold))}
+    .hm-dot{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:-1px;margin:0 .25rem 0 .6rem}
+    .hm-legend-size{gap:.15rem}
+    .hm-faq{margin-top:2rem;border-top:1px solid var(--border);padding-top:1.4rem}
+    .hm-faq h2{font-family:'Oswald',sans-serif;font-size:1.3rem;text-transform:uppercase;letter-spacing:.02em;margin:0 0 .9rem}
+    .hm-faq details{border:1px solid var(--border);border-radius:9px;padding:.2rem .9rem;margin-bottom:.55rem;background:var(--surface)}
+    .hm-faq summary{cursor:pointer;font-weight:600;color:var(--text);padding:.55rem 0;list-style:none}
+    .hm-faq summary::-webkit-details-marker{display:none}
+    .hm-faq summary::before{content:'+';color:var(--brand,var(--gold));font-weight:700;margin-right:.55rem}
+    .hm-faq details[open] summary::before{content:'\2212'}
+    .hm-faq p{color:var(--text-dim);line-height:1.55;margin:.1rem 0 .7rem;font-size:.93rem}
+    .hm-faq a{color:var(--brand,var(--gold))}
+    .hm-cty{margin-top:1.6rem}
+    .hm-cty-head{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:baseline;justify-content:space-between}
+    .hm-cty-head h2{font-family:'Oswald',sans-serif;font-size:1.3rem;text-transform:uppercase;letter-spacing:.02em;margin:0}
+    .hm-cty-head h2 span{color:var(--brand,var(--gold))}
+    .hm-cty-pick{font-size:.82rem;color:var(--text-muted);display:inline-flex;align-items:center;gap:.4rem}
+    .hm-cty-pick select{font-family:inherit;font-size:.86rem;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:.35rem .5rem}
+    .hm-cty-hint{color:var(--text-muted);font-size:.83rem;line-height:1.5;margin:.5rem 0 .8rem;max-width:70ch}
+    .hm-cty-hint strong{color:var(--text-dim)}
+    .hm-cty-tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+    .hm-cty-table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:520px}
+    .hm-cty-table th,.hm-cty-table td{text-align:left;padding:.55rem .75rem;border-bottom:1px solid var(--border)}
+    .hm-cty-table thead th{background:var(--surface);color:var(--text-muted);font-size:.76rem;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0}
+    .hm-cty-table tbody tr:last-child td{border-bottom:none}
+    .hm-cty-table tbody tr:nth-child(odd){background:rgba(255,255,255,.015)}
+    .hm-cty-table td.num,.hm-cty-table th.num{text-align:right;font-variant-numeric:tabular-nums}
+    .hm-cty-table .dmg{font-weight:600}
+    .hm-cty-empty{color:var(--text-muted);text-align:center;padding:1.1rem!important}
   </style>
 
   <script type="application/ld+json">
@@ -86,6 +121,25 @@
     "includedInDataCatalog":{"@type":"DataCatalog","name":"NWS Local Storm Reports via Iowa Environmental Mesonet"}
   }
   </script>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Where does hail happen most in the US?",
+       "acceptedAnswer":{"@type":"Answer","text":"Hail is most frequent across the Great Plains. The corridor from west Texas and the Oklahoma/Kansas panhandles north through Nebraska, eastern Colorado, and into Wyoming — often called hail alley — sees the most large-hail days in the country, along with the Colorado Front Range and the southern Plains."}},
+      {"@type":"Question","name":"What is hail alley?",
+       "acceptedAnswer":{"@type":"Answer","text":"Hail alley is the high-frequency hail region centered on northeastern Colorado, southeastern Wyoming, and western Nebraska, where some areas average seven to nine or more hail days a year, driven by altitude, strong updrafts, and a low freezing level."}},
+      {"@type":"Question","name":"When is hail season in the United States?",
+       "acceptedAnswer":{"@type":"Answer","text":"Hail tracks the severe-thunderstorm season. Across most of the country the peak runs spring through mid-summer, generally April through July, with May and June busiest in the central Plains; the southern Plains and Southeast can begin earlier."}},
+      {"@type":"Question","name":"Does this map show every hailstorm?",
+       "acceptedAnswer":{"@type":"Answer","text":"No. It shows reported hail — NWS Local Storm Reports from spotters, law enforcement, and the public — so it carries a population and spotter bias. The persistent geographic corridors are physically real and align with radar-based hail climatologies such as NSSL MESH analyses."}},
+      {"@type":"Question","name":"How is hail damage to crops insured?",
+       "acceptedAnswer":{"@type":"Answer","text":"Hail is covered by crop-hail insurance, a named-peril product separate from federal Multi-Peril Crop Insurance (MPCI). Because hail risk is geographically concentrated, growers on high-frequency corridors often carry crop-hail to cover the gap."}}
+    ]
+  }
+  </script>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -100,13 +154,22 @@
         <p class="hm-sub">Five years of National Weather Service hail reports on one map. Step through the years or hit play, and watch the same hail corridors light up season after season &mdash; the High Plains, the Front Range, the southern Plains. Risk has a geography. This is it.</p>
       </div>
 
-      <div id="hm-map" role="application" aria-label="National hail report heatmap. Use the year buttons below to change the year shown."></div>
+      <div class="hm-mapwrap">
+        <div id="hm-map" role="application" aria-label="National hail report map. Use the buttons below to change the year or switch to recent reports."></div>
+        <div class="hm-yearbadge" id="hm-yearbadge" aria-hidden="true"></div>
+      </div>
 
-      <div class="hm-controls" id="hm-controls" role="group" aria-label="Select year"></div>
+      <div class="hm-controls" id="hm-controls" role="group" aria-label="Select view"></div>
 
       <div class="hm-meta">
         <span><span class="hm-count" id="hm-count">&hellip;</span> hail reports <span id="hm-scope"></span></span>
-        <span class="hm-legend"><span>Less</span><span class="hm-legend-bar" aria-hidden="true"></span><span>More frequent</span></span>
+        <span class="hm-legend" id="hm-legend-freq"><span>Less</span><span class="hm-legend-bar" aria-hidden="true"></span><span>More frequent</span></span>
+        <span class="hm-legend hm-legend-size" id="hm-legend-size" hidden>
+          <span class="hm-dot" style="background:#7cd2ff"></span>pea&ndash;penny
+          <span class="hm-dot" style="background:#fed976"></span>quarter+
+          <span class="hm-dot" style="background:#fd8d3c"></span>golf ball+
+          <span class="hm-dot" style="background:#e31a1c"></span>baseball+
+        </span>
       </div>
 
       <div id="hm-banner" class="hm-banner" hidden></div>
@@ -115,6 +178,42 @@
         <strong>What you're looking at.</strong> Each point is a hail report logged by a National Weather Service office &mdash; a trained spotter, law enforcement, or the public called it in. Brighter areas got more reports. Because reporting tracks population and storm spotters too, this is a map of <em>reported</em> hail, not a perfect physical record &mdash; but the persistent corridors are real, and they're exactly the ground where hail coverage earns its keep.
         <div class="hm-src">Source: NWS Local Storm Reports via the <a href="https://mesonet.agron.iastate.edu/lsr/" target="_blank" rel="noopener">Iowa Environmental Mesonet</a>. Updated monthly. <span id="hm-gen"></span> &nbsp;&middot;&nbsp; Want a per-field read? <a href="/field-scout">Draw your field in Field Scout &rarr;</a></div>
       </div>
+
+      <section class="hm-cty" aria-labelledby="hm-cty-h">
+        <div class="hm-cty-head">
+          <h2 id="hm-cty-h">Top hail counties &mdash; <span id="hm-cty-state">United States</span></h2>
+          <label class="hm-cty-pick">State
+            <select id="hm-cty-select" aria-label="Choose a state"></select>
+          </label>
+        </div>
+        <p class="hm-cty-hint">Updates as you pan the map. Ranked by total reported hail over the last five years. <strong>% damaging</strong> is the share that were 1.5&Prime; or larger &mdash; a partial way to see past the fact that more people means more reports.</p>
+        <div class="hm-cty-tablewrap">
+          <table class="hm-cty-table" id="hm-cty-table">
+            <thead><tr>
+              <th scope="col">County</th><th scope="col">State</th>
+              <th scope="col" class="num">Total (5&#8209;yr)</th>
+              <th scope="col" class="num">Avg/yr</th>
+              <th scope="col">Peak month</th>
+              <th scope="col" class="num">% damaging</th>
+            </tr></thead>
+            <tbody id="hm-cty-body"><tr><td colspan="6" class="hm-cty-empty">Loading county rankings&hellip;</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="hm-faq" aria-labelledby="hm-faq-h">
+        <h2 id="hm-faq-h">Hail in the United States &mdash; the questions people ask</h2>
+        <details open><summary>Where does hail happen most in the US?</summary>
+          <p>Hail is most frequent across the Great Plains. The corridor running from west Texas and the Oklahoma/Kansas panhandles north through Nebraska, eastern Colorado, and into Wyoming &mdash; often called <strong>"hail alley"</strong> &mdash; sees the most large-hail days in the country. The Front Range of Colorado and the southern Plains light up year after year on this map.</p></details>
+        <details><summary>What is "hail alley"?</summary>
+          <p>"Hail alley" is the informal name for the high-frequency hail region centered on northeastern Colorado, southeastern Wyoming, and western Nebraska, where some areas average seven to nine or more hail days a year. The combination of altitude, strong updrafts, and a freezing level close to the ground produces frequent, often large hail.</p></details>
+        <details><summary>When is hail season?</summary>
+          <p>Hail tracks the severe-thunderstorm season. Across most of the country the peak runs <strong>spring through mid-summer</strong>, generally April&ndash;July, with May and June the busiest in the central Plains. The southern Plains and Southeast can begin earlier in spring.</p></details>
+        <details><summary>Is this map every hailstorm that happened?</summary>
+          <p>No. It shows <em>reported</em> hail &mdash; National Weather Service Local Storm Reports called in by spotters, law enforcement, and the public. Reporting is denser where more people and trained spotters are, so the map carries a population bias. The persistent geographic corridors, though, are physically real and line up with radar-based hail climatologies such as NSSL's MESH analyses.</p></details>
+        <details><summary>How is hail damage to crops insured?</summary>
+          <p>Hail is covered by <strong>crop-hail insurance</strong>, a named-peril product that's separate from federal Multi-Peril Crop Insurance (MPCI). Because hail risk is so geographically concentrated, growers on the high-frequency corridors often carry crop-hail to cover the gap. If your ground sits in a bright zone here, that's a conversation worth having &mdash; <a href="https://farmers1st.com/" target="_blank" rel="noopener">Farmers First Agri Service</a> writes crop-hail in WI and MN.</p></details>
+      </section>
     </div>
   </main>
 
@@ -130,16 +229,45 @@
     var HEAT = { radius:15, blur:20, max:2.0, minOpacity:0.28, maxZoom:9,
       gradient:{0.2:'#2c7fb8',0.4:'#41b6c4',0.55:'#7fcdbb',0.7:'#fed976',0.85:'#fd8d3c',1.0:'#e31a1c'} };
 
-    var map, heat=null, cache={}, manifest=null, current=null, anim=null;
+    var map, heat=null, markers=null, cache={}, recentCache=null,
+        manifest=null, current=null, anim=null,
+        countyData=null, countyState=null;
+
+    // Approximate state bounding boxes [minLng,minLat,maxLng,maxLat] for a
+    // dependency-free "which state is the map centered on" lookup. Imperfect near
+    // borders by design — the dropdown is the precise fallback.
+    var STATE_BBOX = {
+      AL:[-88.47,30.22,-84.89,35.01],AZ:[-114.82,31.33,-109.04,37.00],AR:[-94.62,33.00,-89.64,36.50],
+      CA:[-124.41,32.53,-114.13,42.01],CO:[-109.06,36.99,-102.04,41.00],CT:[-73.73,40.98,-71.79,42.05],
+      DE:[-75.79,38.45,-75.05,39.84],DC:[-77.12,38.79,-76.91,39.00],FL:[-87.63,24.52,-80.03,31.00],
+      GA:[-85.61,30.36,-80.84,35.00],ID:[-117.24,41.99,-111.04,49.00],IL:[-91.51,36.97,-87.02,42.51],
+      IN:[-88.10,37.77,-84.78,41.76],IA:[-96.64,40.38,-90.14,43.50],KS:[-102.05,36.99,-94.59,40.00],
+      KY:[-89.57,36.50,-81.96,39.15],LA:[-94.04,28.93,-88.82,33.02],ME:[-71.08,42.98,-66.95,47.46],
+      MD:[-79.49,37.91,-75.05,39.72],MA:[-73.51,41.24,-69.93,42.89],MI:[-90.42,41.70,-82.41,48.31],
+      MN:[-97.24,43.50,-89.49,49.38],MS:[-91.66,30.17,-88.10,35.00],MO:[-95.77,35.96,-89.10,40.61],
+      MT:[-116.05,44.36,-104.04,49.00],NE:[-104.05,40.00,-95.31,43.00],NV:[-120.01,35.00,-114.04,42.00],
+      NH:[-72.56,42.70,-70.61,45.31],NJ:[-75.56,38.93,-73.89,41.36],NM:[-109.05,31.33,-103.00,37.00],
+      NY:[-79.76,40.50,-71.86,45.02],NC:[-84.32,33.84,-75.46,36.59],ND:[-104.05,45.94,-96.55,49.00],
+      OH:[-84.82,38.40,-80.52,42.32],OK:[-103.00,33.62,-94.43,37.00],OR:[-124.57,41.99,-116.46,46.29],
+      PA:[-80.52,39.72,-74.69,42.27],RI:[-71.86,41.15,-71.12,42.02],SC:[-83.35,32.03,-78.54,35.22],
+      SD:[-104.06,42.48,-96.44,45.94],TN:[-90.31,34.98,-81.65,36.68],TX:[-106.65,25.84,-93.51,36.50],
+      UT:[-114.05,37.00,-109.04,42.00],VT:[-73.44,42.73,-71.46,45.02],VA:[-83.68,36.54,-75.24,39.47],
+      WA:[-124.85,45.54,-116.92,49.00],WV:[-82.64,37.20,-77.72,40.64],WI:[-92.89,42.49,-86.81,47.31],
+      WY:[-111.06,40.99,-104.05,45.01],AK:[-168.00,54.00,-130.00,71.50],HI:[-160.56,18.91,-154.81,22.24]
+    };
+    var STATE_NAME = {AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',DC:'District of Columbia',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
 
     function ga(n,p){ try{ if(typeof window.gtag==='function') gtag('event',n,p||{}); }catch(e){} }
+    function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
 
     function init(){
       if(typeof L==='undefined' || typeof L.heatLayer==='undefined'){ banner('The map library failed to load &mdash; refresh the page.'); return; }
-      map = L.map('hm-map', { zoomControl:true, minZoom:3, maxZoom:9, worldCopyJump:false })
+      map = L.map('hm-map', { zoomControl:true, minZoom:3, maxZoom:9, worldCopyJump:false, preferCanvas:true })
         .setView([39.5, -98.35], 4); // CONUS
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
         { maxZoom:9, attribution:'&copy; OpenStreetMap, &copy; CARTO' }).addTo(map);
+
+      loadCounties();
 
       fetch(DATA+'manifest.json', {cache:'no-cache'})
         .then(function(r){ return r.ok ? r.json() : null; })
@@ -154,27 +282,44 @@
     }
 
     function banner(html){ var b=document.getElementById('hm-banner'); if(b){ b.innerHTML=html; b.hidden=false; } }
+    function clearBanner(){ var b=document.getElementById('hm-banner'); if(b){ b.hidden=true; } }
 
     function buildControls(){
       var wrap=document.getElementById('hm-controls'); if(!wrap) return;
       var html='';
       manifest.years.forEach(function(y){
-        html += '<button class="hm-chip" type="button" data-year="'+y+'">'+y+'</button>';
+        html += '<button class="hm-chip" type="button" data-key="'+y+'">'+y+'</button>';
       });
-      html += '<button class="hm-chip" type="button" data-year="all">All '+manifest.years.length+' years</button>';
+      html += '<button class="hm-chip" type="button" data-key="all">All '+manifest.years.length+' years</button>';
+      html += '<button class="hm-chip" type="button" data-key="recent">&#9888; Recent (30 days)</button>';
       html += '<button class="hm-play" id="hm-play" type="button" aria-pressed="false">&#9654; Play</button>';
       wrap.innerHTML = html;
-      wrap.querySelectorAll('[data-year]').forEach(function(b){
-        b.addEventListener('click', function(){ stopAnim(); setView(b.getAttribute('data-year')); });
+      wrap.querySelectorAll('[data-key]').forEach(function(b){
+        b.addEventListener('click', function(){ stopAnim(); setView(b.getAttribute('data-key')); });
       });
       document.getElementById('hm-play').addEventListener('click', toggleAnim);
     }
 
     function markActive(key){
       var wrap=document.getElementById('hm-controls'); if(!wrap) return;
-      wrap.querySelectorAll('[data-year]').forEach(function(b){
-        b.classList.toggle('on', b.getAttribute('data-year')===String(key));
+      wrap.querySelectorAll('[data-key]').forEach(function(b){
+        b.classList.toggle('on', b.getAttribute('data-key')===String(key));
       });
+    }
+
+    function badge(key){
+      var el=document.getElementById('hm-yearbadge'); if(!el) return;
+      if(key==='all'){ el.innerHTML='5-Year<small>hail frequency</small>'; }
+      else if(key==='recent'){ el.innerHTML='Recent<small>last 30 days</small>'; }
+      else { el.innerHTML=esc(key)+'<small>hail reports</small>'; }
+      el.classList.toggle('playing', !!anim);
+    }
+
+    // Frequency legend for heat views; size legend for the recent-events view.
+    function showLegend(which){
+      var f=document.getElementById('hm-legend-freq'), s=document.getElementById('hm-legend-size');
+      if(f) f.hidden = (which!=='freq');
+      if(s) s.hidden = (which!=='size');
     }
 
     function loadYear(y){
@@ -185,30 +330,86 @@
         .catch(function(){ cache[y]=[]; return cache[y]; });
     }
 
+    function loadRecent(){
+      if(recentCache) return Promise.resolve(recentCache);
+      return fetch(DATA+'recent.json', {cache:'no-cache'})
+        .then(function(r){ if(!r.ok) throw new Error('404'); return r.json(); })
+        .then(function(d){ recentCache = d; return d; });
+    }
+
     function setView(key){
       current=key;
-      markActive(key);
+      markActive(key); badge(key);
       var scope=document.getElementById('hm-scope'), cnt=document.getElementById('hm-count');
+      if(key==='recent'){
+        showLegend('size');
+        scope.textContent='in the last 30 days';
+        cnt.textContent='\u2026';
+        clearBanner();
+        loadRecent().then(function(d){
+          if(current!=='recent') return;
+          renderMarkers(d.reports||[]);
+          cnt.textContent=(d.count||(d.reports||[]).length).toLocaleString();
+        }).catch(function(){
+          if(current!=='recent') return;
+          clearOverlays();
+          cnt.textContent='0';
+          banner('Recent hail is refreshing &mdash; the last-30-days layer updates with the monthly data run. Check back shortly.');
+        });
+        ga('hail_view', { view:'recent' });
+        return;
+      }
+      showLegend('freq');
       if(key==='all'){
         scope.textContent='across '+manifest.years.length+' years';
         Promise.all(manifest.years.map(loadYear)).then(function(arr){
           if(current!=='all') return; // a newer selection won
           var pts=[]; arr.forEach(function(a){ pts=pts.concat(a); });
-          render(pts); cnt.textContent=pts.length.toLocaleString();
+          renderHeat(pts); cnt.textContent=pts.length.toLocaleString();
         });
       } else {
         scope.textContent='in '+key;
         loadYear(key).then(function(pts){
           if(current!==key) return;
-          render(pts); cnt.textContent=pts.length.toLocaleString();
+          renderHeat(pts); cnt.textContent=pts.length.toLocaleString();
         });
       }
-      ga('hail_year', { year:key });
+      ga('hail_view', { view:key });
     }
 
-    function render(points){
+    function clearOverlays(){
       if(heat){ map.removeLayer(heat); heat=null; }
+      if(markers){ map.removeLayer(markers); markers=null; }
+    }
+
+    function renderHeat(points){
+      clearOverlays();
       heat = L.heatLayer(points, HEAT).addTo(map);
+    }
+
+    // Stone-size buckets: pea–penny / quarter+ / golf ball+ / baseball+
+    function markerStyle(mag){
+      if(mag==null)    return { c:'#9aa6b2', r:3.5 };
+      if(mag>=2.75)    return { c:'#e31a1c', r:9 };
+      if(mag>=1.75)    return { c:'#fd8d3c', r:7 };
+      if(mag>=1.0)     return { c:'#fed976', r:5.5 };
+      return                  { c:'#7cd2ff', r:4 };
+    }
+
+    function renderMarkers(reports){
+      clearOverlays();
+      markers = L.layerGroup();
+      reports.forEach(function(r){
+        if(typeof r.lat!=='number' || typeof r.lon!=='number') return;
+        var s=markerStyle(r.mag);
+        var size = (r.mag!=null) ? (r.mag.toFixed(2)+'\u2033 hail') : 'Hail (size not reported)';
+        var place = [r.city, r.st].filter(Boolean).map(esc).join(', ');
+        L.circleMarker([r.lat, r.lon], {
+          radius:s.r, color:'#0a0f06', weight:0.6, fillColor:s.c, fillOpacity:0.82
+        }).bindPopup('<b>'+esc(size)+'</b>'+(r.date?'<br>'+esc(r.date):'')+(place?'<br>'+place:''))
+          .addTo(markers);
+      });
+      markers.addTo(map);
     }
 
     // ── Animate: cycle the years so the persistent corridors pop ──
@@ -218,10 +419,7 @@
       btn.innerHTML='&#10073;&#10073; Pause';
       var i = manifest.years.indexOf(Number(current));
       if(i<0) i=0;
-      var step=function(){
-        setView(manifest.years[i % manifest.years.length]);
-        i++;
-      };
+      var step=function(){ setView(manifest.years[i % manifest.years.length]); i++; };
       step();
       anim = setInterval(step, 1400);
       ga('hail_animate', {});
@@ -231,6 +429,98 @@
       clearInterval(anim); anim=null;
       var btn=document.getElementById('hm-play');
       if(btn){ btn.classList.remove('on'); btn.setAttribute('aria-pressed','false'); btn.innerHTML='&#9654; Play'; }
+      badge(current);
+    }
+
+    // ── County rankings that follow the map view ──
+    function stateAt(lat, lng){
+      var best=null, bestD=Infinity;
+      for(var st in STATE_BBOX){
+        var b=STATE_BBOX[st];
+        if(lng>=b[0] && lng<=b[2] && lat>=b[1] && lat<=b[3]){
+          var cx=(b[0]+b[2])/2, cy=(b[1]+b[3])/2;
+          var d=(lng-cx)*(lng-cx)+(lat-cy)*(lat-cy);
+          if(d<bestD){ bestD=d; best=st; }
+        }
+      }
+      return best;
+    }
+
+    function titleCase(s){
+      return String(s||'').toLowerCase().replace(/\b([a-z])/g, function(_,c){ return c.toUpperCase(); });
+    }
+
+    function loadCounties(){
+      fetch(DATA+'state-counties.json', {cache:'no-cache'})
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(d){
+          if(!d || !d.states){ countyEmpty('County rankings are being prepared.'); return; }
+          countyData=d;
+          buildStateSelect();
+          var c=map.getCenter();
+          var st=stateAt(c.lat, c.lng);
+          if(!st || !countyData.states[st]) st=topState();
+          renderCountyTable(st);
+          map.on('moveend', onMove);
+        })
+        .catch(function(){ countyEmpty('County rankings couldn\u2019t load just now.'); });
+    }
+
+    function topState(){
+      var best=null, bestN=-1;
+      for(var st in countyData.states){
+        var rows=countyData.states[st], n=0;
+        for(var i=0;i<rows.length;i++) n+=rows[i].total;
+        if(n>bestN){ bestN=n; best=st; }
+      }
+      return best;
+    }
+
+    function buildStateSelect(){
+      var sel=document.getElementById('hm-cty-select'); if(!sel) return;
+      var sts=Object.keys(countyData.states).sort(function(a,b){
+        return (STATE_NAME[a]||a).localeCompare(STATE_NAME[b]||b);
+      });
+      sel.innerHTML = sts.map(function(s){
+        return '<option value="'+s+'">'+esc(STATE_NAME[s]||s)+'</option>';
+      }).join('');
+      sel.addEventListener('change', function(){
+        var st=sel.value;
+        renderCountyTable(st);
+        var b=STATE_BBOX[st];
+        if(b) map.fitBounds([[b[1],b[0]],[b[3],b[2]]], {padding:[20,20]});
+      });
+    }
+
+    function onMove(){
+      if(!countyData) return;
+      var c=map.getCenter();
+      var st=stateAt(c.lat, c.lng);
+      if(st && countyData.states[st] && st!==countyState) renderCountyTable(st);
+    }
+
+    function countyEmpty(msg){
+      var body=document.getElementById('hm-cty-body');
+      if(body) body.innerHTML='<tr><td colspan="6" class="hm-cty-empty">'+esc(msg)+'</td></tr>';
+    }
+
+    function renderCountyTable(st){
+      countyState=st;
+      var nm=STATE_NAME[st]||st;
+      var label=document.getElementById('hm-cty-state'); if(label) label.textContent=nm;
+      var sel=document.getElementById('hm-cty-select'); if(sel && sel.value!==st) sel.value=st;
+      var rows=(countyData.states[st]||[]);
+      var body=document.getElementById('hm-cty-body'); if(!body) return;
+      if(!rows.length){ countyEmpty('No ranked hail reports for '+nm+' in the last five years.'); return; }
+      body.innerHTML = rows.map(function(r){
+        var dmgColor = r.dmg_pct>=40 ? '#fd8d3c' : (r.dmg_pct>=25 ? '#fed976' : 'var(--text-dim)');
+        return '<tr><td>'+esc(titleCase(r.county))+'</td><td>'+esc(st)+'</td>'
+          + '<td class="num">'+r.total.toLocaleString()+'</td>'
+          + '<td class="num">'+r.avg+'</td>'
+          + '<td>'+esc(r.peak)+'</td>'
+          + '<td class="num dmg" style="color:'+dmgColor+'">'+r.dmg_pct+'%</td></tr>';
+      }).join('');
+      ga('hail_county_state', { state:st });
     }
 
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
