@@ -397,11 +397,13 @@
 
   function fieldHead(acres, c){
     return '<div class="fs-fieldhead">'+
-      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem">'+
-        '<div><div class="acres">'+acres.toFixed(1)+' <small>acres</small></div>'+
+      '<div class="fs-fh-row">'+
+        '<div class="fs-fh-main"><div class="acres">'+acres.toFixed(1)+' <small>acres</small></div>'+
         '<div class="coords">center '+c.lat.toFixed(4)+', '+c.lng.toFixed(4)+'</div></div>'+
+        '<div class="fs-fh-btns">'+
         '<button class="fs-save-btn" id="fs-save" type="button">&#9733; Save field</button>'+
-        '<button class="fs-save-btn" id="fs-report" type="button" style="margin-left:.4rem">&#11015; Field report</button>'+
+        '<button class="fs-save-btn" id="fs-report" type="button">&#11015; Field report</button>'+
+        '</div>'+
       '</div>'+
     '</div>';
   }
