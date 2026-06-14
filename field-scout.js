@@ -425,15 +425,18 @@
         if(!rows || !rows.length){ setBody('fs-soil','<div class="fs-err">No SSURGO soil survey published for this spot. Coverage gaps exist in parts of the West and Alaska.</div>'); return; }
         var total=0; rows.forEach(function(r){ total += parseFloat(r[3])||0; });
         // record for the insight engine: dominant class, worst class, prime share
-        var classes = rows.map(function(r){ return { name:r[2]||r[1], ac:parseFloat(r[3])||0, nicc:parseInt(r[4],10)||null, slope:(r[5]==null||r[5]==='')?null:parseFloat(r[5]) }; });
+        var classes = rows.map(function(r){ return { name:r[2]||r[1], ac:parseFloat(r[3])||0, nicc:parseInt(r[4],10)||null, slope:(r[5]==null||r[5]==='')?null:parseFloat(r[5]), nccpi:(r[6]==null||r[6]==='')?null:parseFloat(r[6]), nccpiCorn:(r[7]==null||r[7]==='')?null:parseFloat(r[7]), nccpiSoy:(r[8]==null||r[8]==='')?null:parseFloat(r[8]) }; });
         var worst = classes.reduce(function(m,x){ return (x.nicc&&(!m||x.nicc>m.nicc))?x:m; }, null);
         var primeAc = classes.filter(function(x){ return x.nicc&&x.nicc<=2; }).reduce(function(s,x){return s+x.ac;},0);
         // Area-weighted field slope + steepest mapunit (erosion is largely slope-driven)
         var slAc=0, slSum=0, maxSlope=null;
         classes.forEach(function(x){ if(x.slope!=null){ slSum+=x.slope*x.ac; slAc+=x.ac; if(maxSlope==null||x.slope>maxSlope)maxSlope=x.slope; } });
         var avgSlope = slAc>0 ? Math.round(slSum/slAc*10)/10 : null;
+        // Area-weighted NCCPI (productivity index, 0-1) — overall + corn + soy
+        function wNccpi(key){ var a=0,s=0; classes.forEach(function(x){ if(x[key]!=null){ s+=x[key]*x.ac; a+=x.ac; } }); return a>0?Math.round(s/a*1000)/1000:null; }
         FIELD.soil = { classes:classes, total:total, worst:worst, primePct: total?Math.round(primeAc/total*100):null,
-                       top:classes[0]||null, slope:avgSlope, maxSlope:maxSlope };
+                       top:classes[0]||null, slope:avgSlope, maxSlope:maxSlope,
+                       nccpi:wNccpi('nccpi'), nccpiCorn:wNccpi('nccpiCorn'), nccpiSoy:wNccpi('nccpiSoy') };
         recomputeInsight(); renderRisk();
         var palette=['#7c5a2e','#9c7339','#b58d4f','#c9a878','#8a6a3b','#a37d45'];
         var html = rows.slice(0,6).map(function(r,i){
@@ -447,9 +450,15 @@
             '<div class="fs-soil-pct">'+pct+'%</div></div>';
         }).join('');
         var slopeNote = '';
+        if(FIELD.soil.nccpi!=null){
+          var nc=FIELD.soil.nccpi, tier = nc>=0.65?'upper tier':nc>=0.5?'above the national midpoint':nc>=0.35?'mid-range':nc>=0.2?'lower-middle':'lower end';
+          var pct=Math.round(nc*100);
+          slopeNote += '<div class="fs-soil-slope"><strong>NCCPI '+nc.toFixed(2)+'</strong> &mdash; '+tier+' of USDA\u2019s national row-crop productivity index ('+pct+'/100). The index is weighted toward Corn Belt soils, so strong regional ground can still sit mid-scale here'+
+            (FIELD.soil.nccpiCorn!=null?'. Corn '+FIELD.soil.nccpiCorn.toFixed(2)+(FIELD.soil.nccpiSoy!=null?' · soy '+FIELD.soil.nccpiSoy.toFixed(2):''):'')+'.</div>';
+        }
         if(FIELD.soil.slope!=null){
           var sl=FIELD.soil.slope, er = sl<2?'minimal erosion risk':sl<6?'moderate erosion risk':sl<12?'high erosion risk':'severe erosion risk';
-          slopeNote = '<div class="fs-soil-slope"><strong>'+sl+'% average slope</strong>'+(FIELD.soil.maxSlope!=null&&FIELD.soil.maxSlope>sl?' (up to '+FIELD.soil.maxSlope+'%)':'')+' &mdash; '+er+'</div>'+
+          slopeNote += '<div class="fs-soil-slope"><strong>'+sl+'% average slope</strong>'+(FIELD.soil.maxSlope!=null&&FIELD.soil.maxSlope>sl?' (up to '+FIELD.soil.maxSlope+'%)':'')+' &mdash; '+er+'</div>'+
             '<div class="fs-caveat">Slope is SSURGO\u2019s representative value for each soil map unit, not a measurement of your exact acres &mdash; flat bottomland beside a hill can read steeper than it farms.</div>';
         }
         setBody('fs-soil', html + slopeNote + '<div class="fs-src" style="margin-top:.5rem">USDA SSURGO · number = land capability class (1 best, 8 poorest) · slope drives water erosion</div>');
@@ -458,7 +467,7 @@
         if(gen!==fieldGen) return;
         // SSURGO upstream flakes transiently (502/504) — retry once before giving up.
         if(!tries){ setTimeout(function(){ if(gen===fieldGen) loadSoil(poly, 1); }, 1500); return; }
-        setErr('fs-soil','Couldn\u2019t reach the USDA soil survey just now. Try again in a moment.');
+        setErr('fs-soil','The USDA soil survey server (SSURGO) isn\u2019t responding right now &mdash; this is a known-flaky government service, not your field. Redraw the field in a few minutes and it usually loads.');
       });
   }
   function classText(n){
@@ -508,7 +517,7 @@
         '<div class="fs-caveat">CDL is satellite-classified (~85&ndash;90% accurate per pixel) and sampled at the field\u2019s center point, so a single odd year may be a classification miss rather than a real planting.</div>';
         setBody('fs-rot', html);
       })
-      .catch(function(){ if(gen!==fieldGen) return; setErr('fs-rot','Couldn\u2019t reach the USDA crop-history service just now.'); });
+      .catch(function(){ if(gen!==fieldGen) return; setErr('fs-rot','The USDA crop-history service isn\u2019t responding right now &mdash; a temporary government-server hiccup, not your field. Redraw in a few minutes.'); });
   }
 
   // ── 3. WEATHER (Open-Meteo) ─────────────────────────────────────────
@@ -804,7 +813,7 @@
       });
     });
     flat = flat.filter(function(x){ return !isNaN(x.cash); }).sort(function(a,b){ return (a.dist||999)-(b.dist||999); });
-    if(!flat.length){ setBody('fs-bids','<div class="fs-err">No cash bids reporting near ZIP '+esc(zip)+' right now.</div>'); return; }
+    if(!flat.length){ setBody('fs-bids','<div class="fs-src">No elevators are reporting cash bids near ZIP '+esc(zip)+' right now. Bid coverage is densest across the Corn Belt and thins out elsewhere &mdash; this isn\u2019t an error.</div>'); return; }
     // record best corn & bean bid for the insight engine
     var corn=flat.filter(function(x){return /corn/i.test(x.commodity);}).sort(function(a,b){return b.cash-a.cash;})[0];
     var bean=flat.filter(function(x){return /bean|soy/i.test(x.commodity);}).sort(function(a,b){return b.cash-a.cash;})[0];
@@ -842,18 +851,38 @@
     // feeds the one-line "Bottom line" at the top of The Read. ──
     function flag(sev, html, verdict){ flags.push({ sev:sev, html:html, verdict:verdict }); }
 
-    // Worst soil + corn-on-corn = double yield drag
+    // Worst soil + corn-on-corn = double yield drag. NCCPI sharpens the read: the
+    // higher the productivity index, the more yield a continuous-corn drag leaves on
+    // the table — and a break to soybeans credits nitrogen into next year's corn.
+    var nFix = '. Soybeans in the rotation would also credit roughly 30–40 lb N/ac to next year\u2019s corn';
     if(s && s.worst && r && r.cornOnCorn){
       if(s.worst.nicc>=4){
-        flag(5, 'Your weaker ground (class '+s.worst.nicc+') is also carrying <strong>'+r.maxCornStreak+' years of continuous corn</strong> — that\u2019s two strikes against yield in the same spot. A rotation break there is the highest-ROI change on this field.',
+        flag(5, 'Your weaker ground (class '+s.worst.nicc+') is also carrying <strong>'+r.maxCornStreak+' years of continuous corn</strong> — two strikes against yield in the same spot. A rotation break there is the highest-ROI change on this field'+nFix+'.',
           'break the rotation on your class-'+s.worst.nicc+' acres — it\u2019s the highest-ROI move on this field');
       } else {
-        flag(3, 'Good soil, but <strong>'+r.maxCornStreak+' years corn-on-corn</strong> is building disease and nitrogen pressure — worth a rotation break before it costs you.',
-          'plan a rotation break to stop the corn-on-corn yield drag');
+        var prod = (s.nccpi!=null && s.nccpi>=0.55) ? 'This is productive ground (NCCPI '+s.nccpi.toFixed(2)+'), so the continuous-corn drag is costing more bushels here than it would on weaker soil' : 'Good soil, but '+r.maxCornStreak+' years corn-on-corn is building disease and nitrogen pressure';
+        flag(s.nccpi!=null && s.nccpi>=0.55 ? 4 : 3, prod+' — worth a rotation break before it compounds'+nFix+'.',
+          'plan a rotation break to stop the corn-on-corn yield drag on this productive ground');
       }
     } else if(r && r.cornOnCorn){
-      flag(3, 'CDL shows <strong>'+r.maxCornStreak+' straight years of corn</strong> here — watch for rootworm and the corn-on-corn yield drag.',
+      flag(3, 'CDL shows <strong>'+r.maxCornStreak+' straight years of corn</strong> here — watch for rootworm and the corn-on-corn yield drag'+nFix+'.',
         'plan a rotation break and scout for rootworm');
+    }
+
+    // Productivity context on its own. NCCPI is a *national* scale, so we state it as
+    // context ("on the national index"), never as a verdict on the farmer's choices —
+    // good ground for a dry or sandy region can still read low against Corn Belt mollisols.
+    // Descriptive, not prescriptive.
+    if(s && s.nccpi!=null && !(r && r.cornOnCorn)){
+      if(s.nccpi>=0.65){
+        var favors = (s.nccpiCorn!=null && s.nccpiSoy!=null && Math.abs(s.nccpiCorn-s.nccpiSoy)>=0.05)
+          ? ' For row crops, the index runs a touch higher for '+(s.nccpiCorn>s.nccpiSoy?'corn':'soybeans')+' on this ground.' : '';
+        flag(1, 'This rates as <strong>highly productive row-crop ground</strong> — NCCPI '+s.nccpi.toFixed(2)+', upper tier on USDA\u2019s national index. The soil here can carry strong yields; the limiting factors are the ones you manage.'+favors,
+          'productive ground (NCCPI '+s.nccpi.toFixed(2)+') — the soil can carry strong yields here');
+      } else if(s.nccpi<0.3){
+        flag(2, 'On USDA\u2019s <strong>national</strong> productivity index this rates NCCPI '+s.nccpi.toFixed(2)+' — toward the lower end of that scale, which is weighted heavily by Corn Belt ground. In its own region this can still be solid; nationally it suggests matching yield goals and input spend to what the soil reliably returns.',
+          'NCCPI '+s.nccpi.toFixed(2)+' nationally — worth matching yield goals and inputs to what this soil reliably returns');
+      }
     }
 
     // Drought (acute, current)
@@ -948,6 +977,7 @@
       }).join('')+'</table>';
       var bits=[];
       if(s.primePct!=null) bits.push(s.primePct+'% prime cropland');
+      if(s.nccpi!=null) bits.push('NCCPI '+s.nccpi.toFixed(2)+'/1.00 productivity');
       if(s.slope!=null) bits.push(s.slope+'% average slope'+(s.maxSlope>s.slope?' (up to '+s.maxSlope+'%)':''));
       if(bits.length) soilHtml+='<p class="r-note">'+bits.join(' &middot; ')+'</p>';
     }

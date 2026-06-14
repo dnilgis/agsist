@@ -58,6 +58,7 @@
     .fs-title{font-family:'Oswald',sans-serif;font-size:clamp(1.7rem,4.5vw,2.5rem);font-weight:700;letter-spacing:.01em;color:var(--text);line-height:1.05;margin:0 0 .35rem;text-transform:uppercase}
     .fs-title em{font-style:normal;color:var(--brand,var(--gold))}
     .fs-sub{color:var(--text-dim);font-size:.96rem;line-height:1.6;max-width:680px;margin:0}
+    .fs-note{color:var(--text-muted);font-size:.82rem;line-height:1.55;max-width:680px;margin:.7rem 0 0}
 
     /* The split: map left, intel panel right; stacks on mobile */
     .fs-split{display:grid;grid-template-columns:1fr 380px;gap:1rem;align-items:start}
@@ -127,13 +128,13 @@
     .fs-rot-year{flex:1;text-align:center}
     .fs-rot-chip{height:54px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;border:1px solid rgba(255,255,255,.08)}
     .fs-rot-crop{font-size:.66rem;color:var(--text-dim);margin-top:.25rem;font-family:'JetBrains Mono',monospace;line-height:1.1}
-    .fs-rot-yr{font-size:.62rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-top:.1rem}
+    .fs-rot-yr{font-size:.68rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-top:.1rem}
 
     /* Stat grid (weather/drought) */
     .fs-stats{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
     .fs-stat{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .7rem}
     .fs-stat-v{font-family:'Oswald',sans-serif;font-size:1.35rem;font-weight:700;color:var(--text);line-height:1}
-    .fs-stat-l{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-top:.25rem}
+    .fs-stat-l{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-top:.25rem}
     .fs-drought{display:inline-flex;align-items:center;gap:.45rem;padding:.3rem .6rem;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700}
 
     /* Cash bids */
@@ -205,7 +206,7 @@
     .fs-god{margin-top:.8rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem}
     .fs-god-label{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--brand,var(--gold));font-weight:700;margin-bottom:.55rem}
     .fs-god-chips{display:flex;gap:.5rem;flex-wrap:wrap}
-    .fs-god-chip{display:inline-flex;align-items:center;gap:.45rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;padding:.5rem .8rem;cursor:pointer;min-height:40px}
+    .fs-god-chip{display:inline-flex;align-items:center;gap:.45rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;padding:.5rem .8rem;cursor:pointer;min-height:44px}
     .fs-god-chip:hover{border-color:var(--brand,var(--gold));color:var(--text)}
     .fs-god-chip.on{background:var(--brand,var(--gold));color:#0a1206;border-color:transparent}
     .fs-god-chip .dot{width:14px;height:14px;border-radius:4px;flex-shrink:0}
@@ -244,6 +245,7 @@
       <div class="fs-head">
         <h1 class="fs-title">Field Scout &mdash; draw a field, <em>get its whole story</em></h1>
         <p class="fs-sub">Search your address or pan to your ground, trace the field, and read what the land is: every soil type and its productivity, the last five years of crops grown on it, live weather and drought, and the closest cash bids. All from public data. No login, no cost.</p>
+        <p class="fs-note">Each panel below loads on its own from a separate public source (USDA, Open-Meteo, US Drought Monitor). If one says a government server isn&rsquo;t responding, that source is just having a moment &mdash; the rest still work, and redrawing in a few minutes usually clears it.</p>
       </div>
 
       <div class="fs-split">
