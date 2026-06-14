@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 13 Jun 2026 12:29:18 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 14 Jun 2026 13:01:49 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE HOLDS GAINS, CORN STEADIES AHEAD OF KEY WEEK</title>
+      <link>https://agsist.com/daily/2026-06-14</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-14</guid>
+      <pubDate>Sun, 14 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Cattle closed Friday at $249.88, up 3% for the week, and the momentum looks sticky heading into Monday. The Cargill Fort Morgan lockout that hammered feeders three weeks ago is showing resolution signs, and the processing chain is catching up to the backlog. Corn held $4.13 after finding its footing above contract lows, but the real test comes Tuesday when USDA drops Crop Progress with pollination season approaching.
+Live cattle closed Friday at $249.88, up 3% for the week as processing disruptions ease.
+• CATTLE COMPLEX HOLDS MOMENTUM
+• CORN STEADIES BEFORE TUESDAY TEST
+• ENERGY EASES ON HORMUZ PROGRESS
+Read more: https://agsist.com/daily/2026-06-14</description>
+    </item>
     <item>
       <title>CATTLE BOUNCES BACK, GRAINS FIND FOOTING AFTER WEEK OF SLIDES</title>
       <link>https://agsist.com/daily/2026-06-13</link>
@@ -358,18 +370,6 @@ Grains crashed Friday while cattle surged on tight supplies and energy rallied o
 • Cattle Surge on Supply Squeeze
 • Energy Rallies on Iran Risk
 Read more: https://agsist.com/daily/2026-05-16</description>
-    </item>
-    <item>
-      <title>CORN BREAKS BELOW $4.65 AS PLANTING HITS TARGET</title>
-      <link>https://agsist.com/daily/2026-05-15</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-15</guid>
-      <pubDate>Fri, 15 May 2026 05:00:00 -0600</pubDate>
-      <description>Corn tested $4.65 support and closed $4.63, down 1.9% and the lowest close since April, as funds liquidated grain positions ahead of weekend positioning. The nearby contract pressured the $4.65 level that held all week, with December corn following at $4.87. USDA's afternoon planting report showed corn at 47% complete, above the five-year average of 45%, removing the last weather premium from July contracts.
-Grains fade on fund liquidation while livestock holds mixed ground.
-• Grains Crack Support
-• Livestock Holds Ground
-• Energy Slides on Weekend
-Read more: https://agsist.com/daily/2026-05-15</description>
     </item>
   </channel>
 </rss>

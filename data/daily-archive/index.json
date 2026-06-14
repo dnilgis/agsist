@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-06-14",
+      "date_display": "Sunday, June 14, 2026",
+      "headline": "CATTLE HOLDS GAINS, CORN STEADIES AHEAD OF KEY WEEK",
+      "teaser": "Live cattle's 3% weekly gain has legs, while corn steadies before Tuesday's USDA test.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-06-14",
+      "market_closed": true
+    },
+    {
       "date": "2026-06-13",
       "date_display": "Saturday, June 13, 2026",
       "headline": "CATTLE BOUNCES BACK, GRAINS FIND FOOTING AFTER WEEK OF SLIDES",
@@ -1035,6 +1046,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-13T12:29:17.349941+00:00",
-  "count": 93
+  "updated": "2026-06-14T13:01:43.710546+00:00",
+  "count": 94
 }
