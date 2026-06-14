@@ -61,8 +61,8 @@
     .fs-note{color:var(--text-muted);font-size:.82rem;line-height:1.55;max-width:680px;margin:.7rem 0 0}
 
     /* The split: map left, intel panel right; stacks on mobile */
-    .fs-split{display:grid;grid-template-columns:1fr 380px;gap:1rem;align-items:start}
-    @media(max-width:900px){.fs-split{grid-template-columns:1fr}}
+    .fs-split{display:block}
+    .fs-split > *{margin-bottom:1rem}
 
     .fs-mapcol{position:relative}
     #fs-map{height:560px;border-radius:12px;border:1px solid var(--border);background:#0d1408;z-index:1}
@@ -293,7 +293,6 @@
             </div>
           </div>
           <div class="fs-saved" id="fs-saved" hidden></div>
-        </div><!-- /fs-mapwrap left column -->
 
         <!-- INTEL PANEL -->
         <aside class="fs-panel" id="fs-panel" aria-live="polite">
