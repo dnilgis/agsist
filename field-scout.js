@@ -37,6 +37,7 @@
 
   // ── State ───────────────────────────────────────────────────────────
   var map, drawnLayer, drawControl, satLayer, mapLayer, gpsMarker;
+  var pinArmed=false, cornerHandles=[];
   var activePoly = null;
   // God-layer overlays
   var godLayer = null;          // current Leaflet tileLayer overlay
@@ -83,8 +84,19 @@
       commitField(e.layer, 'draw');
     });
 
+    // Graceful pin-drop: when armed, the next map tap drops an editable field box.
+    map.on('click', function(e){
+      if(pinArmed){ disarmPin(); dropFieldBox(e.latlng.lat, e.latlng.lng); }
+    });
+
     wireControls();
     wireGodLayers();
+    // Track clicks on the in-Read "Run the presell math" call-to-action (delegated,
+    // since The Read's HTML is re-rendered on every field).
+    document.addEventListener('click', function(e){
+      var a = e.target && e.target.closest && e.target.closest('.fs-act-link');
+      if(a) ga('presell_click', {});
+    });
     renderSavedFields();
     tryAutoLocate();
   }
@@ -168,6 +180,7 @@
   }
 
   function wireControls() {
+    var pinBtn=document.getElementById('fs-pin'); if(pinBtn) pinBtn.addEventListener('click', armPinDrop);
     document.getElementById('fs-draw').addEventListener('click', function(){ drawControl.enable(); flashHint(); });
     document.getElementById('fs-clear').addEventListener('click', clearField);
     document.getElementById('fs-gps').addEventListener('click', locateMe);
@@ -191,6 +204,7 @@
 
   function clearField(){
     drawnLayer.clearLayers(); activePoly=null;
+    clearHandles(); disarmPin();
     document.getElementById('fs-clear').disabled=true;
     document.getElementById('fs-results').hidden=true;
     document.getElementById('fs-empty').hidden=false;
@@ -300,12 +314,57 @@
   // A ~40-acre square centered on a point — a real, analyzable field for keyboard
   // users and a fast start anyone can nudge. Honest: it's an approximate box, not a
   // surveyed boundary.
+  // ── Graceful pin-drop: tap once to drop an editable field box, drag corners to fit ──
+  function armPinDrop(){
+    pinArmed=true;
+    try { drawControl.disable(); } catch(e){}
+    flashHint('Tap your field on the map');
+    try { map.getContainer().style.cursor='crosshair'; } catch(e){}
+    ga('field_pin', {});
+  }
+  function disarmPin(){
+    pinArmed=false;
+    try { map.getContainer().style.cursor=''; } catch(e){}
+  }
+  function clearHandles(){
+    cornerHandles.forEach(function(h){ try{ map.removeLayer(h); }catch(e){} });
+    cornerHandles=[];
+  }
+  function cornerIcon(){
+    return L.divIcon({ className:'fs-corner-handle', iconSize:[16,16], iconAnchor:[8,8] });
+  }
+  // Add draggable corner handles so a dropped box can be nudged to fit the real field.
+  // Dragging reshapes the polygon live; releasing re-runs the analysis on the new shape.
+  function makeEditable(poly){
+    clearHandles();
+    var ring = poly.getLatLngs()[0];
+    ring.forEach(function(pt, i){
+      var h = L.marker(pt, { draggable:true, icon:cornerIcon(), zIndexOffset:1000, keyboard:false });
+      h.on('drag', function(ev){
+        var pts = poly.getLatLngs()[0];
+        pts[i] = ev.target.getLatLng();
+        poly.setLatLngs(pts);
+        var hd=document.getElementById('fs-hint'); if(hd) hd.innerHTML='<b>&#9998;</b>&nbsp;'+Math.round(polyAcres(poly))+' ac &middot; drag corners to fit';
+      });
+      h.on('dragend', function(){
+        activePoly = poly;
+        runAll(poly);
+        ga('field_edit', {});
+      });
+      h.addTo(map);
+      cornerHandles.push(h);
+    });
+  }
+
   function dropFieldBox(lat, lng){
     var dLat=0.00255, dLng=0.00255/Math.max(0.2,Math.cos(lat*Math.PI/180)); // ~40ac
     var ring=[[lat+dLat,lng-dLng],[lat+dLat,lng+dLng],[lat-dLat,lng+dLng],[lat-dLat,lng-dLng]];
     var poly=L.polygon(ring, { color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:0.15 });
     try { drawControl.disable(); } catch(e){}
     commitField(poly, 'box');
+    makeEditable(poly);
+    flashHint(Math.round(polyAcres(poly))+' ac &middot; drag corners to fit');
+    ga('field_box', { acres: Math.round(polyAcres(poly)) });
   }
 
   // The demo field — a real central-Iowa field so first-time visitors see the whole
@@ -323,6 +382,7 @@
   // Shared commit path for every way a field enters: draw, demo, box.
   function commitField(poly, src){
     drawnLayer.clearLayers();
+    if(src!=='box') clearHandles();
     activePoly = poly;
     drawnLayer.addLayer(poly);
     try { map.fitBounds(poly.getBounds(), { padding:[40,40], maxZoom:16 }); } catch(e){}
@@ -444,13 +504,19 @@
         var classes = rows.map(function(r){ return { name:r[2]||r[1], ac:parseFloat(r[3])||0, nicc:parseInt(r[4],10)||null, slope:(r[5]==null||r[5]==='')?null:parseFloat(r[5]), nccpi:(r[6]==null||r[6]==='')?null:parseFloat(r[6]), nccpiCorn:(r[7]==null||r[7]==='')?null:parseFloat(r[7]), nccpiSoy:(r[8]==null||r[8]==='')?null:parseFloat(r[8]) }; });
         var worst = classes.reduce(function(m,x){ return (x.nicc&&(!m||x.nicc>m.nicc))?x:m; }, null);
         var primeAc = classes.filter(function(x){ return x.nicc&&x.nicc<=2; }).reduce(function(s,x){return s+x.ac;},0);
-        // Area-weighted field slope + steepest mapunit (erosion is largely slope-driven)
-        var slAc=0, slSum=0, maxSlope=null;
-        classes.forEach(function(x){ if(x.slope!=null){ slSum+=x.slope*x.ac; slAc+=x.ac; if(maxSlope==null||x.slope>maxSlope)maxSlope=x.slope; } });
-        var avgSlope = slAc>0 ? Math.round(slSum/slAc*10)/10 : null;
-        // Area-weighted NCCPI (productivity index, 0-1) — overall + corn + soy
-        function wNccpi(key){ var a=0,s=0; classes.forEach(function(x){ if(x[key]!=null){ s+=x[key]*x.ac; a+=x.ac; } }); return a>0?Math.round(s/a*1000)/1000:null; }
-        FIELD.soil = { classes:classes, total:total, worst:worst, primePct: total?Math.round(primeAc/total*100):null,
+        // Field slope + steepest mapunit (erosion is largely slope-driven). Prefer
+        // area-weighting; when acreage is unavailable (helper query returns no per-
+        // mapunit area), fall back to an equal-weight average so slope still reads.
+        var hasAc = total>0;
+        var slAc=0, slSum=0, slN=0, slPlain=0, maxSlope=null;
+        classes.forEach(function(x){ if(x.slope!=null){ slSum+=x.slope*x.ac; slAc+=x.ac; slPlain+=x.slope; slN++; if(maxSlope==null||x.slope>maxSlope)maxSlope=x.slope; } });
+        var avgSlope = slAc>0 ? Math.round(slSum/slAc*10)/10 : (slN>0 ? Math.round(slPlain/slN*10)/10 : null);
+        // Prime ground %: by acreage when known, else by share of mapunits that are class<=2.
+        var primeClassN = classes.filter(function(x){ return x.nicc&&x.nicc<=2; }).length;
+        var primePct = hasAc ? Math.round(primeAc/total*100) : (classes.length ? Math.round(primeClassN/classes.length*100) : null);
+        // NCCPI (productivity index, 0-1): area-weighted when known, else equal-weight.
+        function wNccpi(key){ var a=0,s=0,p=0,n=0; classes.forEach(function(x){ if(x[key]!=null){ s+=x[key]*x.ac; a+=x.ac; p+=x[key]; n++; } }); return a>0?Math.round(s/a*1000)/1000:(n>0?Math.round(p/n*1000)/1000:null); }
+        FIELD.soil = { classes:classes, total:total, hasAc:hasAc, worst:worst, primePct:primePct,
                        top:classes[0]||null, slope:avgSlope, maxSlope:maxSlope,
                        nccpi:wNccpi('nccpi'), nccpiCorn:wNccpi('nccpiCorn'), nccpiSoy:wNccpi('nccpiSoy') };
         recomputeInsight(); renderRisk();
@@ -856,75 +922,141 @@
   // This is the move from "dashboard of facts" to "what your field is
   // telling you." Honest hedging: it speaks only to what it actually knows.
   // ═══════════════════════════════════════════════════════════════════
+  // GDU→corn-stage thresholds (cumulative, ~base 50°F). Soybeans are photoperiod-
+  // driven, so we deliberately do NOT map them to GDU stages.
+  var CORN_STAGES = [[125,'emergence (VE)'],[345,'V4'],[475,'V6'],[610,'V8'],[740,'V10'],
+    [870,'V12'],[1000,'V14'],[1135,'tasseling (VT)'],[1400,'silking (R1)'],[1660,'blister (R2)'],
+    [1925,'dough (R4)'],[2190,'dent (R5)'],[2700,'maturity (R6)']];
+  var GDU_PER_DAY = 22;            // rough midsummer pace, for "days to" estimates
+  var POLLEN_GDU  = 1400;          // ~silking (R1), the weather-critical window
+
   function recomputeInsight(){
     if(!FIELD) return;
     var s=FIELD.soil, r=FIELD.rotation, w=FIELD.weather, d=FIELD.drought, b=FIELD.bids, h=FIELD.hail, se=FIELD.season;
-    var lines=[], flags=[];
+    var lines=[], stress=[];
+
+    // A stressor is a structured concern: severity, whether it's act-now vs monitor,
+    // a one-line verdict (`title`), the full `detail`, an optional `watch` (consequence
+    // + timing — depth item #2), a `topic` for de-duping, and a `tag` (a few words used
+    // to build the compounding-stress narrative — depth item #1).
+    function push(o){ stress.push(o); }
+
+    // ── Crop-stage intelligence (depth #3) — approximate corn development from this
+    // season's cumulative GDU. Honest framing: it's modeled from temperature, not
+    // field scouting, and corn-only. ──
+    function estCornStage(g){
+      var label='pre-emergence';
+      for(var i=0;i<CORN_STAGES.length;i++){ if(g>=CORN_STAGES[i][0]) label=CORN_STAGES[i][1]; }
+      var toPollen=POLLEN_GDU-g;
+      return { label:label, toPollen:toPollen, daysToPollen: toPollen>0?Math.round(toPollen/GDU_PER_DAY):0, pastPollen: g>=POLLEN_GDU };
+    }
+    var isCorn = r && (r.lastCrop===1 || r.cornOnCorn);
+    var cropStage = (se && se.gNow!=null && isCorn) ? estCornStage(se.gNow) : null;
+    function pollenWindow(){ return cropStage && !cropStage.pastPollen ? cropStage.daysToPollen : null; }
+    function pacePhrase(){
+      if(!se||se.gDep==null) return null;
+      var dd=Math.abs(Math.round(se.gDep/GDU_PER_DAY));
+      if(se.gDep>=100) return 'running about '+dd+' day'+(dd===1?'':'s')+' ahead of a normal year';
+      if(se.gDep<=-100) return 'running about '+dd+' day'+(dd===1?'':'s')+' behind a normal year';
+      return 'tracking close to the normal pace';
+    }
+
+    // Depth #3 (dollars + a Monday action): translate a corn-on-corn yield drag into a
+    // $/ac range using THIS field's nearest cash corn bid, then point at the presell
+    // tool. Honest: the bu/ac range is from university continuous-corn trial work, not
+    // this field's measured yield — so it's framed as an estimate.
+    function dragAction(loBu, hiBu){
+      if(!b || !b.corn) return null;
+      var p=b.corn.cash, lo=Math.round(loBu*p), hi=Math.round(hiBu*p);
+      return 'At <strong>$'+p.toFixed(2)+'</strong> nearby cash corn, a '+loBu+'–'+hiBu+' bu/ac drag is roughly <strong>$'+lo+'–$'+hi+'/ac</strong> left on the table. '
+        + '<a href="/presell-calculator" target="_blank" rel="noopener" class="fs-act-link">Run the presell math &rarr;</a>'
+        + '<span class="fs-src">est. from university continuous-corn trial ranges &times; your local bid</span>';
+    }
 
     // ── Headline: the field's fundamental character (soil × rotation) ──
     if(s && s.top){
       var headSoil = s.primePct!=null && s.primePct>=70 ? 'mostly prime ground'
         : (s.worst && s.worst.nicc>=5) ? 'mixed ground with some marginal acres'
         : 'solid, workable ground';
-      var lead = 'This '+FIELD.acres.toFixed(0)+'-acre field is <strong>'+headSoil+'</strong>, led by '+esc(s.top.name)+'.';
-      lines.push(lead);
+      lines.push('This '+FIELD.acres.toFixed(0)+'-acre field is <strong>'+headSoil+'</strong>, led by '+esc(s.top.name)+'.');
     }
 
-    // ── The cross-reference insights (where the magic is). Each flag carries a
-    // severity so the field's #1 issue can lead, plus a short verdict phrase that
-    // feeds the one-line "Bottom line" at the top of The Read. ──
-    function flag(sev, html, verdict){ flags.push({ sev:sev, html:html, verdict:verdict }); }
+    // ── Where the crop likely is right now (depth #3) ──
+    if(cropStage){
+      var stg = cropStage.pastPollen
+        ? 'Corn is likely past pollination and into grain fill — the weeks that set final yield.'
+        : (cropStage.toPollen<=0
+            ? 'Corn is at or entering pollination — the single most weather-sensitive window of the year.'
+            : 'For corn, that heat-unit pace puts development around <strong>'+cropStage.label+'</strong>, roughly '+cropStage.daysToPollen+' day'+(cropStage.daysToPollen===1?'':'s')+' from pollination at a typical midsummer pace.');
+      var pp=pacePhrase();
+      lines.push(stg+(pp?' The season is '+pp+'.':'')+' <span class="fs-approx">(approximate — modeled from temperature, not field scouting)</span>');
+    } else if(se && se.gDep!=null && Math.abs(se.gDep)>=100){
+      var pp2=pacePhrase(); if(pp2) lines.push('Heat-unit accumulation is '+pp2+' this season.');
+    }
 
-    // Worst soil + corn-on-corn = double yield drag. NCCPI sharpens the read: the
-    // higher the productivity index, the more yield a continuous-corn drag leaves on
-    // the table — and a break to soybeans credits nitrogen into next year's corn.
-    var nFix = '. Soybeans in the rotation would also credit roughly 30–40 lb N/ac to next year\u2019s corn';
+    var nFix='. Soybeans in the rotation would also credit roughly 30–40 lb N/ac to next year\u2019s corn';
+
+    // ── corn-on-corn × soil (the highest-value cross-reference) ──
     if(s && s.worst && r && r.cornOnCorn){
       if(s.worst.nicc>=4){
-        flag(5, 'Your weaker ground (class '+s.worst.nicc+') is also carrying <strong>'+r.maxCornStreak+' years of continuous corn</strong> — two strikes against yield in the same spot. A rotation break there is the highest-ROI change on this field'+nFix+'.',
-          'break the rotation on your class-'+s.worst.nicc+' acres — it\u2019s the highest-ROI move on this field');
+        push({ sev:5, act:true, topic:'rotation', tag:'continuous corn on your class-'+s.worst.nicc+' ground',
+          title:'break the rotation on your class-'+s.worst.nicc+' acres — it\u2019s the highest-ROI move on this field',
+          detail:'Your weaker ground (class '+s.worst.nicc+') is also carrying <strong>'+r.maxCornStreak+' years of continuous corn</strong> — two strikes against yield in the same spot. A rotation break there is the highest-ROI change on this field'+nFix+'.',
+          action: dragAction(5,12),
+          watch: pollenWindow()!=null ? 'Rootworm feeding shows at silking (~'+pollenWindow()+' days out) — pull and check roots before then.' : 'Scout roots for rootworm before pollination, and plan beans on these acres next year.' });
       } else {
-        var prod = (s.nccpi!=null && s.nccpi>=0.55) ? 'This is productive ground (NCCPI '+s.nccpi.toFixed(2)+'), so the continuous-corn drag is costing more bushels here than it would on weaker soil' : 'Good soil, but '+r.maxCornStreak+' years corn-on-corn is building disease and nitrogen pressure';
-        flag(s.nccpi!=null && s.nccpi>=0.55 ? 4 : 3, prod+' — worth a rotation break before it compounds'+nFix+'.',
-          'plan a rotation break to stop the corn-on-corn yield drag on this productive ground');
+        var productive = s.nccpi!=null && s.nccpi>=0.55;
+        push({ sev:productive?4:3, act:true, topic:'rotation', tag:'corn-on-corn pressure',
+          title:'plan a rotation break to stop the corn-on-corn yield drag'+(productive?' on this productive ground':''),
+          detail:(productive?'This is productive ground (NCCPI '+s.nccpi.toFixed(2)+'), so the continuous-corn drag is leaving more bushels on the table here than it would on weaker soil':'Good soil, but '+r.maxCornStreak+' years corn-on-corn is building disease and nitrogen pressure')+' — worth a rotation break before it compounds'+nFix+'.',
+          action: dragAction(productive?8:5, productive?15:10),
+          watch: pollenWindow()!=null ? 'Rootworm pressure peaks near silking (~'+pollenWindow()+' days out) — scout this season; plan beans next.' : 'Scout for rootworm this season; plan beans on these acres next year.' });
       }
     } else if(r && r.cornOnCorn){
-      flag(3, 'CDL shows <strong>'+r.maxCornStreak+' straight years of corn</strong> here — watch for rootworm and the corn-on-corn yield drag'+nFix+'.',
-        'plan a rotation break and scout for rootworm');
+      push({ sev:3, act:true, topic:'rotation', tag:'a multi-year corn streak',
+        title:'plan a rotation break and scout for rootworm',
+        detail:'CDL shows <strong>'+r.maxCornStreak+' straight years of corn</strong> here — watch for rootworm and the corn-on-corn yield drag'+nFix+'.',
+        action: dragAction(5,10),
+        watch: pollenWindow()!=null ? 'Rootworm pressure peaks near silking (~'+pollenWindow()+' days out).' : null });
     }
 
-    // Productivity context on its own. NCCPI is a *national* scale, so we state it as
-    // context ("on the national index"), never as a verdict on the farmer's choices —
-    // good ground for a dry or sandy region can still read low against Corn Belt mollisols.
-    // Descriptive, not prescriptive.
+    // ── NCCPI context on its own (descriptive, national scale) ──
     if(s && s.nccpi!=null && !(r && r.cornOnCorn)){
       if(s.nccpi>=0.65){
-        var favors = (s.nccpiCorn!=null && s.nccpiSoy!=null && Math.abs(s.nccpiCorn-s.nccpiSoy)>=0.05)
-          ? ' For row crops, the index runs a touch higher for '+(s.nccpiCorn>s.nccpiSoy?'corn':'soybeans')+' on this ground.' : '';
-        flag(1, 'This rates as <strong>highly productive row-crop ground</strong> — NCCPI '+s.nccpi.toFixed(2)+', upper tier on USDA\u2019s national index. The soil here can carry strong yields; the limiting factors are the ones you manage.'+favors,
-          'productive ground (NCCPI '+s.nccpi.toFixed(2)+') — the soil can carry strong yields here');
+        var favors=(s.nccpiCorn!=null && s.nccpiSoy!=null && Math.abs(s.nccpiCorn-s.nccpiSoy)>=0.05)
+          ? ' For row crops, the index runs a touch higher for '+(s.nccpiCorn>s.nccpiSoy?'corn':'soybeans')+' on this ground.':'';
+        push({ sev:1, act:false, topic:'soil', tag:null,
+          title:'productive ground (NCCPI '+s.nccpi.toFixed(2)+') — the soil can carry strong yields here',
+          detail:'This rates as <strong>highly productive row-crop ground</strong> — NCCPI '+s.nccpi.toFixed(2)+', upper tier on USDA\u2019s national index. The limiting factors here are the ones you manage.'+favors+' <span class="fs-src">source: USDA NCCPI, a national 0–1 productivity index</span>', watch:null });
       } else if(s.nccpi<0.3){
-        flag(2, 'On USDA\u2019s <strong>national</strong> productivity index this rates NCCPI '+s.nccpi.toFixed(2)+' — toward the lower end of that scale, which is weighted heavily by Corn Belt ground. In its own region this can still be solid; nationally it suggests matching yield goals and input spend to what the soil reliably returns.',
-          'NCCPI '+s.nccpi.toFixed(2)+' nationally — worth matching yield goals and inputs to what this soil reliably returns');
+        push({ sev:2, act:false, topic:'soil', tag:null,
+          title:'NCCPI '+s.nccpi.toFixed(2)+' nationally — match yield goals and inputs to what this soil reliably returns',
+          detail:'On USDA\u2019s <strong>national</strong> index this rates NCCPI '+s.nccpi.toFixed(2)+' — the lower end of a scale weighted heavily by Corn Belt ground. In its own region this can still be solid.'+' <span class="fs-src">source: USDA NCCPI, a national 0–1 productivity index</span>', watch:null });
       }
     }
 
-    // Drought (acute, current)
-    if(d && d.cat && d.cat!=='None' && (d.cat.indexOf('D2')>=0||d.cat.indexOf('D3')>=0||d.cat.indexOf('D4')>=0)){
-      flag(4, 'Currently in <strong>'+esc(d.cat)+'</strong> — moisture is the variable to watch on this field right now.',
-        'moisture is the acute variable right now — prioritize it');
+    // ── Drought (acute) ──
+    var inDrought = d && d.cat && d.cat!=='None' && (d.cat.indexOf('D2')>=0||d.cat.indexOf('D3')>=0||d.cat.indexOf('D4')>=0);
+    if(inDrought){
+      push({ sev:4, act:true, topic:'moisture', tag:esc(d.cat)+' drought',
+        title:'moisture is the acute variable right now — prioritize it',
+        detail:'Currently in <strong>'+esc(d.cat)+'</strong> — the field is under real moisture stress.',
+        watch: (pollenWindow()!=null && pollenWindow()<=21) ? 'Drought through pollination (~'+pollenWindow()+' days out) is the worst-timed stress there is — that window sets kernel count.' : 'Watch soil moisture closely into the next rain.' });
     }
 
-    // Season vs normal — rain and GDU departures together tell the sharper story.
+    // ── Season rain × GDU (skip a second moisture stressor if already in drought) ──
     if(se){
-      var dryEnough = se.pDep <= -2, wetEnough = se.pDep >= 2;
-      var hot = se.gDep >= 100, cool = se.gDep <= -100;
-      if(dryEnough && hot){
-        flag(4, 'Rain is running <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below</strong> the '+se.n+'-yr normal while GDUs run '+Math.round(se.gDep)+' ahead — the crop is developing fast into a moisture deficit. Watch this one.',
-          'the crop is racing into a moisture deficit — watch it closely');
-      } else if(dryEnough){
-        flag(3, 'Season-to-date rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below normal</strong> here — the field is starting the season drier than its 5-yr baseline.',
-          'the field is starting dry — keep an eye on moisture');
+      var dryEnough=se.pDep<=-2, wetEnough=se.pDep>=2, hot=se.gDep>=100, cool=se.gDep<=-100;
+      if(dryEnough && hot && !inDrought){
+        push({ sev:4, act:true, topic:'moisture', tag:'a widening rain deficit',
+          title:'the crop is developing fast into a moisture deficit — watch it closely',
+          detail:'Rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below</strong> the '+se.n+'-yr normal while GDUs run '+Math.round(se.gDep)+' ahead — fast development into a drying profile.',
+          watch: pollenWindow()!=null ? 'The next 2–3 weeks toward pollination (~'+pollenWindow()+' days out) are when a deficit bites hardest.' : 'A timely rain over the next two weeks matters most.' });
+      } else if(dryEnough && !inDrought){
+        push({ sev:3, act:false, topic:'moisture', tag:'a dry start',
+          title:'the field is starting dry — keep an eye on moisture',
+          detail:'Season-to-date rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below normal</strong> — drier than its '+se.n+'-yr baseline.',
+          watch:'Watch the forecast; a return to normal rainfall still recovers this.' });
       } else if(wetEnough && cool){
         lines.push('A wet, cool start — rain '+se.pDep.toFixed(1)+'″ above normal and GDUs '+Math.round(se.gDep)+' behind, so development is running slow.');
       } else if(wetEnough){
@@ -932,19 +1064,21 @@
       }
     }
 
-    // Erosion (slope-driven) — only flag genuinely sloped ground.
+    // ── Erosion (slope-driven) ──
     if(s && s.slope!=null && s.slope>=6){
-      flag(s.slope>=12?4:3, 'Slope here averages <strong>'+s.slope+'%</strong>'+(s.maxSlope>s.slope?' (up to '+s.maxSlope+'%)':'')+' — that\u2019s real water-erosion exposure on the steeper acres.',
-        'consider erosion control (residue, contouring) on the steeper acres');
+      push({ sev:s.slope>=12?4:3, act:s.slope>=12, topic:'erosion', tag:'erosion exposure on the steep acres',
+        title:'consider erosion control (residue, contouring) on the steeper acres',
+        detail:'Slope averages <strong>'+s.slope+'%</strong>'+(s.maxSlope>s.slope?' (up to '+s.maxSlope+'%)':'')+' — real water-erosion exposure on the steeper acres.', watch:null });
     }
 
-    // Hail history + this is insurance country (the moat) → bridge to the Hail Map.
+    // ── Hail history → bridge to the Hail Map ──
     if(h && !h.err && h.days>=2){
-      flag(2, 'This ground has taken <strong>'+h.days+' hail days in five years</strong>'+(h.maxStone?' (up to '+h.maxStone+'" stones)':'')+' — a real factor for your coverage decisions. <a href="/hail-map" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">See it on the national hail map &rarr;</a>',
-        'make sure your hail coverage matches this field\u2019s history');
+      push({ sev:2, act:false, topic:'hail', tag:null,
+        title:'make sure your hail coverage matches this field\u2019s history',
+        detail:'This ground has taken <strong>'+h.days+' hail days in five years</strong>'+(h.maxStone?' (up to '+h.maxStone+'" stones)':'')+' — a real factor for your coverage decisions. <a href="/hail-map" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">See it on the national hail map &rarr;</a>', watch:null });
     }
 
-    // Marketing nudge: what it could sell for nearby
+    // ── Marketing context line ──
     if(b && (b.corn||b.bean)){
       var mk=[];
       if(b.corn) mk.push('corn near $'+b.corn.cash.toFixed(2));
@@ -952,30 +1086,56 @@
       if(mk.length) lines.push('Closest cash market: '+mk.join(', ')+' ('+esc((b.corn||b.bean).elev)+').');
     }
 
-    // Vigor prompt (NDVI is a visual layer, so nudge them to it)
-    if(s && r && !flags.length){
+    if(!lines.length && !stress.length) return;
+
+    // No concerns at all → nudge toward the visual NDVI layer.
+    if(!stress.length && s && r){
       lines.push('No red flags in the soil and rotation here — flip on <strong>Crop vigor</strong> to see how the stand is actually doing this season.');
     }
 
-    if(!lines.length && !flags.length) return; // nothing meaningful yet
+    stress.sort(function(a,b){ return b.sev-a.sev; });
+    var acts = stress.filter(function(x){ return x.act; });
+    var mons = stress.filter(function(x){ return !x.act; });
 
-    flags.sort(function(a,b){ return b.sev - a.sev; });  // most urgent leads
-    FIELD.read = { verdict: flags.length?flags[0].verdict:null,
-                   flags: flags.map(function(f){ return f.html; }),
+    // ── Compounding-stress narrative (depth #1): when 2+ act-level concerns hit the
+    // same field, name them together as a stack rather than scattering them as bullets. ──
+    var compound=null;
+    if(acts.length>=2){
+      var seen={}, tags=[];
+      acts.forEach(function(x){ if(x.tag && !seen[x.topic]){ seen[x.topic]=1; tags.push(x.tag); } });
+      if(tags.length>=2){
+        var list = tags.length===2 ? tags[0]+' and '+tags[1]
+          : tags.slice(0,-1).join(', ')+', and '+tags[tags.length-1];
+        var cnt = tags.length===2?'Two':(tags.length===3?'Three':'Several');
+        compound = cnt+' things are stacking up on this field at once: '+list+'. '
+          + 'Any one is manageable on its own — together they compound, which is why the first item below is the priority.';
+      }
+    }
+
+    // verdict = top act-now concern (falls back to top stressor)
+    var lead = acts[0] || stress[0] || null;
+    FIELD.read = { verdict: lead?lead.title:null,
+                   flags: stress.map(function(x){ return x.detail; }),
                    lines: lines.slice() };
 
-    var wrap=document.getElementById('fs-insight-wrap');
-    if(wrap) wrap.hidden=false;
+    // ── render ──
+    var wrap=document.getElementById('fs-insight-wrap'); if(wrap) wrap.hidden=false;
     var html='';
-    if(flags.length){
-      var v=flags[0].verdict;
-      html += '<p class="fs-verdict"><span>Bottom line</span><b>'+v.charAt(0).toUpperCase()+v.slice(1)+'.</b></p>';
-    }
+    if(lead) html += '<p class="fs-verdict"><span>Bottom line</span><b>'+lead.title.charAt(0).toUpperCase()+lead.title.slice(1)+'.</b></p>';
     html += lines.map(function(l){ return '<p class="fs-insight-p">'+l+'</p>'; }).join('');
-    if(flags.length){
-      html += '<div class="fs-insight-flags">'+ flags.map(function(f){
-        return '<div class="fs-insight-flag"><span class="fs-flag-mark">!</span><div>'+f.html+'</div></div>';
-      }).join('') +'</div>';
+    if(compound) html += '<p class="fs-insight-p fs-compound">'+compound+'</p>';
+
+    function block(items, label, cls){
+      if(!items.length) return '';
+      var rows = items.map(function(x){
+        var watch = x.watch ? '<div class="fs-watch"><span>What to watch</span>'+x.watch+'</div>' : '';
+        var act = x.action ? '<div class="fs-act-dollar">'+x.action+'</div>' : '';
+        return '<div class="fs-insight-flag fs-'+cls+'"><span class="fs-flag-mark">'+(cls==='act'?'!':'\u2022')+'</span><div>'+x.detail+act+watch+'</div></div>';
+      }).join('');
+      return '<div class="fs-flag-group"><div class="fs-flag-label">'+label+'</div>'+rows+'</div>';
+    }
+    if(acts.length||mons.length){
+      html += '<div class="fs-insight-flags">'+ block(acts,'Act on this','act') + block(mons,'Keep an eye on','mon') +'</div>';
     }
     setBody('fs-insight', html);
   }

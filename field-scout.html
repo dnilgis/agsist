@@ -29,6 +29,7 @@
   <meta name="twitter:title" content="Field Scout &mdash; Draw a Field, Get Its Whole Story">
   <meta name="twitter:description" content="Soil, 5-year crop rotation, weather, drought, and cash bids for any field you draw. Free.">
   <meta name="twitter:image" content="https://agsist.com/img/og/field-scout.jpg">
+  <meta name="twitter:image:alt" content="AGSIST Field Scout — soil, crop history, weather and cash bids for any US field">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -77,6 +78,8 @@
     .fs-search button{background:var(--brand,var(--gold));color:#0a1206;border:none;padding:0 .9rem;font-weight:700;cursor:pointer;font-size:.85rem}
     .fs-draw-hint{display:inline-flex;align-items:center;gap:.45rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .8rem;font-size:.78rem;color:var(--text-dim);box-shadow:0 2px 10px rgba(0,0,0,.4);font-family:'JetBrains Mono',monospace}
     .fs-draw-hint b{color:var(--brand,var(--gold))}
+    .fs-corner-handle{background:var(--brand,#daa520);border:2px solid #0a1206;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.5);cursor:grab}
+    .fs-corner-handle:active{cursor:grabbing}
 
     .fs-actionbar{position:absolute;bottom:12px;left:12px;right:12px;z-index:600;display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;pointer-events:none}
     .fs-actionbar > *{pointer-events:auto}
@@ -198,6 +201,21 @@
     .fs-insight-flag{display:flex;gap:.6rem;align-items:flex-start;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--brand,var(--gold));border-radius:0 8px 8px 0;padding:.6rem .75rem;font-size:.85rem;color:var(--text-dim);line-height:1.55}
     .fs-insight-flag strong{color:var(--text)}
     .fs-flag-mark{flex-shrink:0;width:18px;height:18px;border-radius:50%;background:var(--brand,var(--gold));color:#0a1206;font-weight:700;font-size:.72rem;display:flex;align-items:center;justify-content:center;margin-top:.1rem}
+    /* ── The Read depth: crop-stage caveat, compounding stack, what-to-watch, act/monitor ── */
+    .fs-approx{font-size:.78rem;color:var(--text-dim);opacity:.75;white-space:nowrap}
+    .fs-compound{background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--brand,var(--gold));border-radius:0 8px 8px 0;padding:.6rem .8rem;font-size:.9rem;color:var(--text)}
+    .fs-flag-group{display:flex;flex-direction:column;gap:.5rem}
+    .fs-flag-group + .fs-flag-group{margin-top:.7rem}
+    .fs-flag-label{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.07em;font-size:.7rem;color:var(--text-dim)}
+    .fs-insight-flag.fs-act{border-left-color:var(--brand,var(--gold))}
+    .fs-insight-flag.fs-mon{border-left-color:var(--border)}
+    .fs-insight-flag.fs-mon .fs-flag-mark{background:var(--text-dim);color:var(--surface2)}
+    .fs-watch{margin-top:.5rem;padding-top:.45rem;border-top:1px dashed var(--border);font-size:.8rem;color:var(--text-dim);line-height:1.5}
+    .fs-watch span{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:.66rem;color:var(--brand,var(--gold));display:block;margin-bottom:.15rem}
+    .fs-act-dollar{margin-top:.5rem;padding:.5rem .65rem;background:rgba(var(--brand-rgb,218,165,32),.1);border-radius:6px;font-size:.84rem;color:var(--text);line-height:1.5}
+    .fs-act-link{display:inline-block;margin-top:.15rem;color:var(--brand,var(--gold));font-weight:600;text-decoration:none;white-space:nowrap}
+    .fs-act-link:hover{text-decoration:underline}
+    .fs-src{display:block;margin-top:.3rem;font-size:.72rem;color:var(--text-dim);opacity:.7;font-style:italic}
 
     /* ── Risk profile (the insurance moat) ────────────────────────── */
     .fs-risk-row{display:flex;align-items:center;gap:.6rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04)}
@@ -227,16 +245,45 @@
     .fs-how-n{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--brand,var(--gold));font-weight:700}
     .fs-how-card h4{font-size:.9rem;color:var(--text);margin:.4rem 0 .3rem}
     .fs-how-card p{font-size:.78rem;color:var(--text-dim);line-height:1.55;margin:0}
+    /* FAQ */
+    .fs-faq{margin-top:2.5rem;max-width:860px}
+    .fs-faq-title{font-family:'Oswald',sans-serif;font-size:1.4rem;color:var(--text);margin:0 0 1rem;letter-spacing:.01em}
+    .fs-faq-item{border:1px solid var(--border);border-radius:10px;margin-bottom:.6rem;background:var(--surface);overflow:hidden}
+    .fs-faq-item summary{cursor:pointer;padding:.85rem 1rem;font-weight:600;font-size:.95rem;color:var(--text);list-style:none;position:relative;padding-right:2.2rem}
+    .fs-faq-item summary::-webkit-details-marker{display:none}
+    .fs-faq-item summary::after{content:'+';position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--brand,var(--gold));font-weight:400}
+    .fs-faq-item[open] summary::after{content:'\2212'}
+    .fs-faq-item[open] summary{border-bottom:1px solid var(--border)}
+    .fs-faq-item p{margin:0;padding:.85rem 1rem;font-size:.88rem;color:var(--text-dim);line-height:1.65}
+    /* Data sources */
+    .fs-sources{margin-top:2.5rem;max-width:860px}
+    .fs-sources-lead{font-size:.9rem;color:var(--text-dim);line-height:1.6;margin:0 0 1rem}
+    .fs-sources-list{list-style:none;padding:0;margin:0;display:grid;gap:.55rem}
+    .fs-sources-list li{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--brand,var(--gold));border-radius:0 8px 8px 0;padding:.6rem .8rem;font-size:.86rem;color:var(--text-dim);line-height:1.55}
+    .fs-sources-list strong{color:var(--text)}
+    .fs-sources-list a{color:var(--brand,var(--gold));text-decoration:none}
+    .fs-sources-list a:hover{text-decoration:underline}
+    .fs-sources-note{margin:1rem 0 0;font-size:.82rem;color:var(--text-dim);opacity:.8;font-style:italic;line-height:1.55}
   </style>
 
   <script type="application/ld+json">
   {"@context":"https://schema.org","@graph":[
-    {"@type":"WebApplication","name":"AGSIST Field Scout","url":"https://agsist.com/field-scout","applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Draw any US field on a map and instantly see its soil types and productivity, 5-year crop rotation history, live weather, drought status, and nearby cash grain bids.","author":{"@type":"Person","name":"Sigurd Lindquist","worksFor":{"@type":"Organization","name":"Farmers First Agri Service","url":"https://farmers1st.com"}}},
+    {"@type":"WebApplication","name":"AGSIST Field Scout","url":"https://agsist.com/field-scout","applicationCategory":"BusinessApplication","operatingSystem":"Web","browserRequirements":"Requires JavaScript","inLanguage":"en-US","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["USDA SSURGO soil types, land capability class and slope for any field","Five-year crop rotation history from the USDA Cropland Data Layer","National Commodity Crop Productivity Index (NCCPI) context","Live weather and growing-degree-unit pace","US Drought Monitor status","Five-year severe hail history","Nearest cash corn and soybean bids","Field-level agronomic read with what-to-watch timing"],"screenshot":"https://agsist.com/img/og/field-scout.jpg","description":"Drop a pin or draw any US field on a map and instantly see its soil types and productivity, 5-year crop rotation history, live weather, drought status, hail history, and nearby cash grain bids.","provider":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"author":{"@type":"Person","name":"Sigurd Lindquist","worksFor":{"@type":"Organization","name":"Farmers First Agri Service","url":"https://farmers1st.com"}},"isBasedOn":[{"@type":"Dataset","name":"USDA SSURGO Soil Survey","url":"https://www.nrcs.usda.gov/resources/data-and-reports/soil-survey-geographic-database-ssurgo"},{"@type":"Dataset","name":"USDA Cropland Data Layer","url":"https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php"}]},
     {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Field Scout","item":"https://agsist.com/field-scout"}]},
+    {"@type":"HowTo","name":"How to look up your field's soil, crop history and productivity","description":"Use AGSIST Field Scout to pull USDA soil survey, five-year crop rotation, weather, drought and cash bids for any US field, free and with no login.","totalTime":"PT1M","step":[{"@type":"HowToStep","position":1,"name":"Find your ground","text":"Search an address or ZIP, tap My location, or pan the satellite map to your field."},{"@type":"HowToStep","position":2,"name":"Drop a pin or trace","text":"Tap Drop a pin for an instant field box you can drag to fit, or Trace exact to draw an irregular boundary by hand."},{"@type":"HowToStep","position":3,"name":"Read the land","text":"Acreage, soil types with land capability class and slope, and five years of crop rotation populate instantly."},{"@type":"HowToStep","position":4,"name":"Check the market","text":"Review live weather, drought status, hail history and the nearest cash grain bids."}]},
     {"@type":"FAQPage","mainEntity":[
-      {"@type":"Question","name":"How do I see a field's soil types?","acceptedAnswer":{"@type":"Answer","text":"Draw the field boundary on the map (or search your address and draw it), and Field Scout queries the USDA SSURGO soil survey for every soil map unit inside the polygon, showing each soil series, its share of the field, and its productivity rating."}},
-      {"@type":"Question","name":"Where does the crop rotation history come from?","acceptedAnswer":{"@type":"Answer","text":"From the USDA Cropland Data Layer (CDL), a satellite-derived record of what crop grew on each pixel each year. Field Scout reads the dominant crop inside your drawn field for the last five available years."}},
-      {"@type":"Question","name":"Is Field Scout free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Field Scout is available at no charge, with no login. It runs on free public data from USDA, Open-Meteo, and the US Drought Monitor, plus AGSIST's own cash-bid feed."}}
+      {"@type":"Question","name":"How do I find out what soil type my field is?","acceptedAnswer":{"@type":"Answer","text":"Drop a pin on your field or trace its boundary, and Field Scout queries the USDA SSURGO soil survey for every soil map unit inside it, showing each soil series by name along with its land capability class and slope. No login, no charge."}},
+      {"@type":"Question","name":"Where can I see what crops were grown on a field in past years?","acceptedAnswer":{"@type":"Answer","text":"Field Scout reads the USDA Cropland Data Layer and shows the dominant crop inside your field for the last five available years, the fastest way to check a field's rotation or spot a corn-on-corn streak."}},
+      {"@type":"Question","name":"What is a soil's land capability class?","acceptedAnswer":{"@type":"Answer","text":"Land capability class is a USDA rating from 1 to 8 describing how suited a soil is to row crops. Class 1 has few limitations; classes 5 to 8 suit pasture, range or woodland better. Field Scout shows the non-irrigated capability class for each soil on your field."}},
+      {"@type":"Question","name":"What is NCCPI, the soil productivity index?","acceptedAnswer":{"@type":"Answer","text":"The National Commodity Crop Productivity Index rates inherent soil productivity for commodity crops on a single national 0 to 1 scale. Because it is national, strong ground in a dry region can read lower than Corn Belt soils, so Field Scout presents it as context, not a verdict on management."}},
+      {"@type":"Question","name":"How accurate is the crop history?","acceptedAnswer":{"@type":"Answer","text":"The Cropland Data Layer is satellite-classified at roughly 85 to 90 percent per-pixel accuracy, sampled at the field's center point. Read the five-year pattern rather than any single season, since one odd year is often a classification miss."}},
+      {"@type":"Question","name":"Is corn-on-corn bad for my field?","acceptedAnswer":{"@type":"Answer","text":"Continuous corn carries a measurable yield drag, commonly several to fifteen bushels an acre versus rotated corn, plus rising rootworm and disease pressure and no soybean nitrogen credit. Field Scout flags a streak and, where a cash bid is nearby, estimates what the drag is worth per acre."}},
+      {"@type":"Question","name":"How do I check the drought status of my field?","acceptedAnswer":{"@type":"Answer","text":"Field Scout pulls the current US Drought Monitor classification, None through D4, for your field's location, the same nationally recognized scale used for federal disaster and program eligibility."}},
+      {"@type":"Question","name":"Can I see hail history for my area?","acceptedAnswer":{"@type":"Answer","text":"Turn on the Hail history layer and Field Scout maps severe-hail storm reports near your field over the last five years, including the largest stone sizes reported, with a link to the national hail map."}},
+      {"@type":"Question","name":"Where do the nearby cash grain bids come from?","acceptedAnswer":{"@type":"Answer","text":"Field Scout shows the closest cash corn and soybean bids to your field from AGSIST's own cash-bid feed, with the posting elevator named, so the agronomic read connects to a marketing decision."}},
+      {"@type":"Question","name":"Does Field Scout work anywhere in the US?","acceptedAnswer":{"@type":"Answer","text":"Field Scout is national. Soil and crop-history coverage follow the USDA SSURGO and Cropland Data Layer datasets, which blanket the country's cropland regions. A few areas in the mountain West and parts of Alaska have soil-survey gaps, and the soil panel says so plainly when a field falls in one."}},
+      {"@type":"Question","name":"Is Field Scout free? Do I need an account?","acceptedAnswer":{"@type":"Answer","text":"Field Scout is available at no charge, with no login and no account. It runs on free public data from the USDA, Open-Meteo and the US Drought Monitor, alongside AGSIST's own cash-bid feed."}},
+      {"@type":"Question","name":"Is my field data private?","acceptedAnswer":{"@type":"Answer","text":"Fields you save are stored only in your own browser on the device you are using, not on any server. Clearing your browser data removes them, and Field Scout does not require an account."}}
     ]}
   ]}
   </script>
@@ -274,7 +321,8 @@
           </div>
 
           <div class="fs-actionbar">
-            <button class="fs-btn fs-btn--primary" id="fs-draw" type="button">&#9998; Draw a field</button>
+            <button class="fs-btn fs-btn--primary" id="fs-pin" type="button">&#128205; Drop a pin</button>
+            <button class="fs-btn" id="fs-draw" type="button">&#9998; Trace exact</button>
             <button class="fs-btn" id="fs-gps" type="button">&#9678; My location</button>
             <button class="fs-btn" id="fs-clear" type="button" disabled>&#10005; Clear</button>
           </div>
@@ -321,10 +369,67 @@
       <!-- How it works -->
       <div class="fs-how">
         <div class="fs-how-card"><div class="fs-how-n">01</div><h4>Find your ground</h4><p>Search an address or ZIP, tap <em>My location</em>, or just pan the satellite map to your fields.</p></div>
-        <div class="fs-how-card"><div class="fs-how-n">02</div><h4>Trace the boundary</h4><p>Click <em>Draw a field</em> and drop points around the edge. Double-click to close it.</p></div>
+        <div class="fs-how-card"><div class="fs-how-n">02</div><h4>Drop a pin or trace</h4><p>Tap <em>Drop a pin</em> for an instant field box you can drag to fit &mdash; or <em>Trace exact</em> to draw an irregular boundary by hand.</p></div>
         <div class="fs-how-card"><div class="fs-how-n">03</div><h4>Read the land</h4><p>Acreage, soil types and productivity, and five years of crop rotation populate instantly.</p></div>
         <div class="fs-how-card"><div class="fs-how-n">04</div><h4>Check the market</h4><p>Live weather, drought status, and the nearest cash grain bids round out the picture.</p></div>
       </div>
+
+      <!-- Data sources (E-E-A-T: authoritative attribution) -->
+      <section class="fs-sources" aria-labelledby="fs-src-h">
+        <h2 id="fs-src-h" class="fs-faq-title">Where the data comes from</h2>
+        <p class="fs-sources-lead">Field Scout reads public, authoritative datasets in real time &mdash; nothing is invented. Every read is only as good as its source, so here's exactly where each piece comes from:</p>
+        <ul class="fs-sources-list">
+          <li><strong>Soil types, capability class &amp; slope</strong> &mdash; <a href="https://www.nrcs.usda.gov/resources/data-and-reports/soil-survey-geographic-database-ssurgo" target="_blank" rel="noopener">USDA NRCS SSURGO</a> soil survey, queried for every map unit inside your field.</li>
+          <li><strong>Soil productivity (NCCPI)</strong> &mdash; USDA's National Commodity Crop Productivity Index, a national 0&ndash;1 scale derived from SSURGO.</li>
+          <li><strong>5-year crop rotation</strong> &mdash; <a href="https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php" target="_blank" rel="noopener">USDA NASS Cropland Data Layer</a>, satellite-classified at roughly 85&ndash;90% per-pixel accuracy.</li>
+          <li><strong>Weather &amp; growing-degree units</strong> &mdash; <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>, including the ERA5 reanalysis archive for season-vs-normal comparisons.</li>
+          <li><strong>Drought status</strong> &mdash; the <a href="https://droughtmonitor.unl.edu/" target="_blank" rel="noopener">US Drought Monitor</a>, the nationally-recognized D0&ndash;D4 scale.</li>
+          <li><strong>Hail history</strong> &mdash; severe-storm reports via the <a href="https://mesonet.agron.iastate.edu/" target="_blank" rel="noopener">Iowa Environmental Mesonet</a>, sourced from NOAA.</li>
+          <li><strong>Cash grain bids</strong> &mdash; AGSIST's own cash-bid feed, showing the nearest posting elevators.</li>
+        </ul>
+        <p class="fs-sources-note">Field Scout reads public survey and forecast data &mdash; it can't see what's actually happening in your field, your inputs, or your agronomist's plan. It's decision support, not a substitute for boots on the ground.</p>
+      </section>
+
+      <!-- FAQ (mirrors the FAQPage schema in <head>) -->
+      <section class="fs-faq" aria-labelledby="fs-faq-h">
+        <h2 id="fs-faq-h" class="fs-faq-title">Field Scout &mdash; Frequently Asked Questions</h2>
+
+        <details class="fs-faq-item"><summary>How do I find out what soil type my field is?</summary>
+          <p>Drop a pin on your field (or trace its boundary), and Field Scout queries the USDA SSURGO soil survey for every soil map unit inside the polygon. You get each soil series by name &mdash; Clarion loam, Webster clay loam, and so on &mdash; along with its land capability class and slope, so you can see exactly how the ground varies across the field. No login, no charge.</p></details>
+
+        <details class="fs-faq-item"><summary>Where can I see what crops were grown on a field in past years?</summary>
+          <p>Field Scout reads the USDA Cropland Data Layer (CDL), a satellite-classified record of what grew on each parcel each season, and shows the dominant crop inside your field for the last five available years. It's the fastest way to check a field's rotation &mdash; useful for scouting, due diligence on rented or purchased ground, or spotting a corn-on-corn streak.</p></details>
+
+        <details class="fs-faq-item"><summary>What is a soil's land capability class?</summary>
+          <p>Land capability class is a USDA rating from 1 to 8 that describes how suited a soil is to row-crop production. Class 1 has few limitations; class 2&ndash;4 ground faces progressively more (slope, wetness, erosion risk); classes 5&ndash;8 are better suited to pasture, range, or woodland. Field Scout shows the non-irrigated capability class for each soil on your field so you can see where your strongest and weakest acres are.</p></details>
+
+        <details class="fs-faq-item"><summary>What is NCCPI, the soil productivity index?</summary>
+          <p>The National Commodity Crop Productivity Index (NCCPI) is a USDA index from 0 to 1 that rates inherent soil productivity for commodity crops on a single national scale. Because it's national, strong ground in a dry or sandy region can still read lower than Corn Belt mollisols &mdash; so Field Scout presents it as context, never as a verdict on your management.</p></details>
+
+        <details class="fs-faq-item"><summary>How accurate is the crop history?</summary>
+          <p>The Cropland Data Layer is satellite-classified at roughly 85&ndash;90% per-pixel accuracy, and Field Scout samples the dominant cover at your field's center point. A single odd year in the sequence is more often a classification miss than a real planting change, so read the five-year pattern rather than any one season.</p></details>
+
+        <details class="fs-faq-item"><summary>Is corn-on-corn bad for my field?</summary>
+          <p>Continuous corn isn't automatically wrong, but it carries a measurable yield drag &mdash; commonly several to fifteen bushels an acre versus rotated corn &mdash; plus rising rootworm and disease pressure, and it forgoes the nitrogen a soybean year credits back. The drag tends to cost more on productive ground, because there are more bushels to lose. Field Scout flags a streak and, where a cash bid is nearby, estimates what the drag is worth per acre.</p></details>
+
+        <details class="fs-faq-item"><summary>How do I check the drought status of my field?</summary>
+          <p>Field Scout pulls the current US Drought Monitor classification (None through D4, Exceptional Drought) for your field's location, so you can see at a glance whether moisture is an acute concern this week. It's the same nationally-recognized scale used for federal disaster and program eligibility.</p></details>
+
+        <details class="fs-faq-item"><summary>Can I see hail history for my area?</summary>
+          <p>Yes &mdash; turn on the Hail history layer and Field Scout maps severe-hail storm reports near your field over the last five years, including the largest stone sizes reported. It's a useful gut-check for crop-hail coverage decisions, with a direct link to the national hail map for the wider picture.</p></details>
+
+        <details class="fs-faq-item"><summary>Where do the nearby cash grain bids come from?</summary>
+          <p>Field Scout shows the closest cash corn and soybean bids to your field from AGSIST's own cash-bid feed, with the posting elevator named. It's there so the agronomic read connects to a marketing decision &mdash; what the ground can grow, and what it's worth at the nearest point of sale today.</p></details>
+
+        <details class="fs-faq-item"><summary>Does Field Scout work anywhere in the US?</summary>
+          <p>Field Scout is national. Soil and crop-history coverage follow the underlying USDA datasets &mdash; SSURGO soil survey and the Cropland Data Layer &mdash; which blanket the cropland regions of the country. A few areas in the mountain West and parts of Alaska have soil-survey gaps; if a field falls in one, the soil panel will say so plainly rather than guess.</p></details>
+
+        <details class="fs-faq-item"><summary>Is Field Scout free? Do I need an account?</summary>
+          <p>Field Scout is available at no charge, with no login and no account. It runs on free public data from the USDA, Open-Meteo, and the US Drought Monitor, alongside AGSIST's own cash-bid feed. I built it for working US producers to use as often as they like.</p></details>
+
+        <details class="fs-faq-item"><summary>Is my field data private?</summary>
+          <p>Fields you save are stored only in your own browser on the device you're using &mdash; not on any server. Clearing your browser data removes them. Field Scout doesn't require an account and isn't tracking which fields you look at against your name. Questions? Reach me at sig@farmers1st.com.</p></details>
+      </section>
     </div>
   </main>
 
