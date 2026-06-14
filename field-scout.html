@@ -35,6 +35,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" href="/components/styles.css?v=13" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=13">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <!-- Leaflet (map engine) + Leaflet.draw (polygon drawing) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -49,6 +50,43 @@
   <style>
     button,a,[role="button"]{touch-action:manipulation;}
 
+    /* ════════════════════════════════════════════════════════════════════
+       AGSIST DESIGN SYSTEM — "Survey × Terminal" (refined dark instrument)
+       Proving ground: scoped to this page via html[data-theme] so it wins
+       over the shared stylesheet. Once approved, these tokens move to
+       components/styles.css and every page inherits them.
+       Principles: accent like a scalpel · numbers always mono · hairlines
+       not boxes · The Read is the hero · legibility first (high contrast).
+       ════════════════════════════════════════════════════════════════════ */
+    html[data-theme="dark"]{
+      --bg:#0a0c0d; --page:#0a0c0d;
+      --surface:#101415; --surface2:#161b1c; --raised:#161b1c;
+      --brand:#d4a23f; --gold:#d4a23f; --brand-rgb:212,162,63; --accent-dim:#8a6e2e;
+      --pos:#5fc28a; --neg:#e0685f; --red:#e0685f;
+      --text:#e9edeb; --text-dim:#9aa39d; --text-muted:#79827d;
+      --border:rgba(132,160,168,.13); --line:rgba(132,160,168,.13); --line-2:rgba(132,160,168,.24);
+      --font-display:'Archivo',system-ui,sans-serif;
+      --font-body:'Inter',system-ui,sans-serif;
+      --font-mono:'JetBrains Mono',ui-monospace,monospace;
+      /* spacing scale: 4·8·12·16·24·32·48 */
+      --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s6:24px; --s8:32px; --s12:48px;
+      --r-sm:6px; --r-md:10px; --r-lg:14px;
+    }
+    /* base typography — body prose Inter, display Archivo, data Mono */
+    body{ font-family:var(--font-body); }
+    h1,h2,h3,h4,.fs-title,.fs-section-h,.fs-faq-title,.fs-verdict b,.fs-map-headline,
+    .fs-how-card h4{ font-family:var(--font-display); letter-spacing:-.01em; background:none; -webkit-text-fill-color:currentColor; }
+    /* eyebrows & labels → mono, letter-spaced (terminal precision) */
+    .fs-verdict span,.fs-flag-label,.fs-watch span,.fs-mh-tag,.fs-cb-tag,
+    .fs-how-n,.fs-bc,.fs-src{ font-family:var(--font-mono)!important; }
+    /* all numeric/data readouts → mono with tabular figures */
+    .acres,.fs-stat-v,.fs-big,.fs-num,.fs-act-dollar,.fs-soil-class,
+    .fs-rot-yr,.fs-stat .v,[data-num]{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+    /* interactive controls keep a visible edge (hairlines are for panels, not buttons) */
+    .fs-btn{ border-color:var(--line-2); border-radius:var(--r-md); }
+    .fs-search{ border-color:var(--line-2); border-radius:var(--r-md); }
+    .fs-search button{ border-radius:0; }
+
     /* ── Field Scout layout ───────────────────────────────────────── */
     .fs-wrap{max-width:1280px;margin:0 auto;padding:1rem 1rem 4rem}
     .fs-bc{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);margin:.4rem 0 1rem}
@@ -56,8 +94,8 @@
     .fs-bc a:hover{color:var(--brand,var(--gold))}
 
     .fs-head{margin-bottom:1.1rem}
-    .fs-title{font-family:'Oswald',sans-serif;font-size:clamp(1.7rem,4.5vw,2.5rem);font-weight:700;letter-spacing:.01em;color:var(--text);line-height:1.05;margin:0 0 .35rem;text-transform:uppercase}
-    .fs-title em{font-style:normal;color:var(--brand,var(--gold))}
+    .fs-title{font-family:'Oswald',sans-serif;font-size:clamp(1.7rem,4.5vw,2.5rem);font-weight:700;letter-spacing:.01em;line-height:1.05;margin:0 0 .35rem;text-transform:uppercase;background:none!important;color:var(--text)!important;-webkit-text-fill-color:var(--text)!important}
+    .fs-title em{font-style:normal;color:var(--brand,var(--gold))!important;-webkit-text-fill-color:var(--brand,var(--gold))!important}
     .fs-sub{color:var(--text-dim);font-size:.96rem;line-height:1.6;max-width:680px;margin:0}
     .fs-note{color:var(--text-muted);font-size:.82rem;line-height:1.55;max-width:680px;margin:.7rem 0 0}
 
@@ -80,6 +118,10 @@
     .fs-draw-hint b{color:var(--brand,var(--gold))}
     .fs-corner-handle{background:var(--brand,#daa520);border:2px solid #0a1206;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.5);cursor:grab}
     .fs-corner-handle:active{cursor:grabbing}
+    .fs-map-headline{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:1000;max-width:90%;background:rgba(10,18,6,.93);border:1px solid var(--brand,var(--gold));border-radius:10px;padding:.5rem .9rem;color:#fff;font-size:.92rem;font-weight:600;line-height:1.35;box-shadow:0 4px 18px rgba(0,0,0,.55);pointer-events:none;animation:fsMapHead .45s cubic-bezier(.2,.7,.2,1);text-align:center}
+    .fs-mh-tag{display:block;font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.62rem;letter-spacing:.09em;color:var(--brand,var(--gold));margin-bottom:.12rem;font-weight:600}
+    @keyframes fsMapHead{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translateX(-50%)}}
+    @media(max-width:600px){.fs-map-headline{font-size:.82rem;top:8px;padding:.42rem .7rem}}
 
     .fs-actionbar{position:absolute;bottom:12px;left:12px;right:12px;z-index:600;display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;pointer-events:none}
     .fs-actionbar > *{pointer-events:auto}
@@ -186,6 +228,11 @@
     .fs-insight-section .fs-section-h{font-size:1.02rem}
     .fs-insight-p{font-size:.92rem;color:var(--text);line-height:1.6;margin:0 0 .6rem}
     .fs-insight-p strong{color:var(--brand,var(--gold))}
+    /* Changed-since-last-visit banner */
+    .fs-change-banner{background:rgba(var(--brand-rgb,218,165,32),.12);border:1px solid rgba(var(--brand-rgb,218,165,32),.4);border-radius:8px;padding:.6rem .8rem;margin:0 0 .8rem;animation:fsMapHead .4s ease}
+    .fs-cb-tag{display:block;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.07em;font-size:.66rem;color:var(--brand,var(--gold));margin-bottom:.35rem;font-weight:600}
+    .fs-cb-line{font-size:.86rem;color:var(--text);line-height:1.5;margin-top:.2rem}
+    .fs-cb-line strong{color:var(--brand,var(--gold))}
     .fs-verdict{margin:0 0 .9rem;padding:.85rem 1rem;background:var(--surface2);border:1px solid rgba(var(--brand-rgb,218,165,32),.4);border-left:4px solid var(--brand,var(--gold));border-radius:0 10px 10px 0;color:var(--text)}
     .fs-verdict span{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:.72rem;color:var(--brand,var(--gold));display:block;margin-bottom:.25rem}
     .fs-verdict b{font-weight:600;font-size:1.12rem;line-height:1.4;display:block}
