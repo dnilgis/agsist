@@ -65,6 +65,9 @@
     if (typeof L.Draw === 'undefined' || !L.Draw.Polygon) { showFatal('The field-drawing tool failed to load. Refresh the page; if it persists, your network may be blocking unpkg.com.'); return; }
 
     map = L.map('fs-map', { zoomControl:true, attributionControl:true }).setView([41.878, -93.0977], 6); // Iowa-ish center
+    try{ map.zoomControl.setPosition('bottomleft'); }catch(e){}
+    setTimeout(function(){ try{ map.invalidateSize(); }catch(e){} }, 60);
+    window.addEventListener('resize', function(){ try{ map.invalidateSize(); }catch(e){} });
 
     satLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       maxZoom:19, attribution:'Imagery &copy; Esri'
@@ -204,10 +207,12 @@
 
   function clearField(){
     drawnLayer.clearLayers(); activePoly=null;
-    clearHandles(); disarmPin();
+    clearHandles(); disarmPin(); setMapHeadline(null);
+    _activeFieldId=null; _priorSnap=null; removeChangeBanner();
     document.getElementById('fs-clear').disabled=true;
     document.getElementById('fs-results').hidden=true;
     document.getElementById('fs-empty').hidden=false;
+    setFieldChrome(false);
     var h=document.getElementById('fs-hint'); if(h) h.innerHTML='<b>&#9998; Draw</b>&nbsp;your field&rarr;';
   }
 
@@ -227,6 +232,8 @@
     var arr = loadSavedFields();
     arr.unshift({ id:Date.now(), name:(name||'Untitled').slice(0,40), pts:pts, acres:+polyAcres(activePoly).toFixed(1) });
     persistSavedFields(arr);
+    _activeFieldId = arr[0].id;        // start tracking this field for changed-since
+    saveSnap(_activeFieldId, fieldSnapshot());  // baseline = current conditions
     renderSavedFields();
     ga('field_saved', {});
   }
@@ -237,6 +244,9 @@
   function openSavedField(id){
     var f = loadSavedFields().filter(function(x){ return x.id===id; })[0];
     if(!f) return;
+    removeChangeBanner();
+    _activeFieldId = id;           // saved field → eligible for changed-since
+    _priorSnap = loadSnap(id);     // last visit's conditions, if any
     drawnLayer.clearLayers();
     activePoly = L.polygon(f.pts.map(function(p){ return L.latLng(p[0],p[1]); }), { color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:.15 });
     drawnLayer.addLayer(activePoly);
@@ -356,6 +366,90 @@
     });
   }
 
+  // ── On-map headline: the bottom-line verdict, revealed onto the map itself ──
+  var mapHeadlineEl=null;
+  function setMapHeadline(text){
+    if(!map) return;
+    if(!mapHeadlineEl){
+      mapHeadlineEl=document.createElement('div');
+      mapHeadlineEl.className='fs-map-headline';
+      mapHeadlineEl.style.display='none';
+      try { map.getContainer().appendChild(mapHeadlineEl); } catch(e){ return; }
+    }
+    if(text){
+      mapHeadlineEl.innerHTML='<span class="fs-mh-tag">Bottom line</span>'+text;
+      mapHeadlineEl.style.display='';
+    } else {
+      mapHeadlineEl.style.display='none';
+    }
+  }
+
+  // Instrument chrome: hide the empty-state invitation + set the app-bar context
+  // when a field is active; restore when cleared.
+  function setFieldChrome(on, acres){
+    var inv=document.getElementById('fs-invite'); if(inv) inv.hidden=!!on;
+    document.documentElement.classList.toggle('fs-has-field', !!on);
+    var cx=document.getElementById('fs-appbar-ctx');
+    if(cx){
+      if(on && acres!=null){ cx.textContent=(+acres).toFixed(1)+' ac'; cx.hidden=false; }
+      else { cx.hidden=true; cx.textContent=''; }
+    }
+  }
+
+  // ── Changed-since-last-visit: for SAVED fields, snapshot key conditions and, on the
+  // next open, surface what moved (drought, rain, the bottom line). This is the reason
+  // to come back tomorrow. Stored per-field in the browser only — never on a server. ──
+  var _settleTimer=null, _activeFieldId=null, _priorSnap=null;
+  function fieldSnapshot(){
+    if(!FIELD) return null;
+    var se=FIELD.season||{}, d=FIELD.drought||{}, rd=FIELD.read||{};
+    return { drought: d.cat||null,
+             pDep: (se.pDep!=null? +(+se.pDep).toFixed(1):null),
+             gDep: (se.gDep!=null? Math.round(se.gDep):null),
+             verdict: rd.verdict||null, ts: Date.now() };
+  }
+  function snapKey(id){ return 'agsist-fs-snap-'+id; }
+  function loadSnap(id){ try{ return JSON.parse(localStorage.getItem(snapKey(id))||'null'); }catch(e){ return null; } }
+  function saveSnap(id, snap){ try{ if(snap) localStorage.setItem(snapKey(id), JSON.stringify(snap)); }catch(e){} }
+  function diffSnap(prev, cur){
+    var out=[];
+    if(!prev||!cur) return out;
+    var was=prev.drought||'None', now=cur.drought||'None';
+    if(was!==now){
+      var worse = (now!=='None') && (was==='None' || now>was);
+      out.push((worse?'&#9650; ':'&#9660; ')+'Drought status moved from <strong>'+esc(was)+'</strong> to <strong>'+esc(now)+'</strong>.');
+    }
+    if(prev.pDep!=null && cur.pDep!=null){
+      var dd=+(cur.pDep-prev.pDep).toFixed(1);
+      if(Math.abs(dd)>=0.3){
+        if(dd<0) out.push('&#9650; The field got drier &mdash; rain ran <strong>'+Math.abs(dd)+'&Prime; further below normal</strong> since your last look.');
+        else out.push('&#9660; The field caught rain &mdash; running <strong>'+dd+'&Prime; wetter</strong> than at your last look.');
+      }
+    }
+    if(prev.verdict && cur.verdict && prev.verdict!==cur.verdict){
+      out.push('&bull; The bottom line changed: <strong>'+esc(cur.verdict)+'</strong>.');
+    }
+    return out;
+  }
+  function removeChangeBanner(){ var ex=document.getElementById('fs-change-banner'); if(ex&&ex.parentNode) ex.parentNode.removeChild(ex); }
+  function renderChangeBanner(changes){
+    removeChangeBanner();
+    if(!changes||!changes.length) return;
+    var body=document.getElementById('fs-insight'); if(!body||!body.parentNode) return;
+    var div=document.createElement('div');
+    div.id='fs-change-banner'; div.className='fs-change-banner';
+    div.innerHTML='<span class="fs-cb-tag">&#128338; Since you last looked</span>'+
+      changes.map(function(c){ return '<div class="fs-cb-line">'+c+'</div>'; }).join('');
+    body.parentNode.insertBefore(div, body);
+  }
+  function scheduleSettle(){ clearTimeout(_settleTimer); _settleTimer=setTimeout(onReadSettled, 1500); }
+  function onReadSettled(){
+    if(_activeFieldId==null) return;          // only saved fields have a stable identity
+    var cur=fieldSnapshot(); if(!cur) return;
+    if(_priorSnap){ renderChangeBanner(diffSnap(_priorSnap, cur)); _priorSnap=null; }
+    saveSnap(_activeFieldId, cur);
+  }
+
   function dropFieldBox(lat, lng){
     var dLat=0.00255, dLng=0.00255/Math.max(0.2,Math.cos(lat*Math.PI/180)); // ~40ac
     var ring=[[lat+dLat,lng-dLng],[lat+dLat,lng+dLng],[lat-dLat,lng+dLng],[lat-dLat,lng-dLng]];
@@ -383,6 +477,7 @@
   function commitField(poly, src){
     drawnLayer.clearLayers();
     if(src!=='box') clearHandles();
+    _activeFieldId=null; _priorSnap=null; removeChangeBanner();  // fresh unsaved field
     activePoly = poly;
     drawnLayer.addLayer(poly);
     try { map.fitBounds(poly.getBounds(), { padding:[40,40], maxZoom:16 }); } catch(e){}
@@ -430,6 +525,7 @@
     var c=polyCentroid(poly), acres=polyAcres(poly);
     resetField(acres, c);
     document.getElementById('fs-empty').hidden=true;
+    setFieldChrome(true, acres);
     var R=document.getElementById('fs-results');
     R.hidden=false;
     R.innerHTML =
@@ -1138,6 +1234,8 @@
       html += '<div class="fs-insight-flags">'+ block(acts,'Act on this','act') + block(mons,'Keep an eye on','mon') +'</div>';
     }
     setBody('fs-insight', html);
+    setMapHeadline(lead ? (lead.title.charAt(0).toUpperCase()+lead.title.slice(1)+'.') : null);
+    scheduleSettle();
   }
 
   // ── Shareable one-page field report (print / save-as-PDF) ───────────

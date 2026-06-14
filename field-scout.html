@@ -107,6 +107,52 @@
     #fs-map{height:560px;border-radius:12px;border:1px solid var(--border);background:#0d1408;z-index:1}
     @media(max-width:900px){#fs-map{height:62vh;min-height:380px}}
 
+    /* ════════ INSTRUMENT SHELL — app-grade layout ════════ */
+    .fs-app{ background:var(--bg); border:1px solid var(--line-2); border-radius:var(--r-lg); overflow:hidden; margin:.5rem 0 1.25rem; }
+    .fs-appbar{ display:flex; align-items:center; justify-content:space-between; height:54px; padding:0 18px; border-bottom:1px solid var(--line); background:var(--surface); }
+    .fs-mark{ display:flex; align-items:center; gap:9px; }
+    .fs-mark-dot{ width:7px; height:7px; border-radius:50%; background:var(--brand); box-shadow:0 0 0 3px rgba(var(--brand-rgb),.16); }
+    .fs-wordmark{ font-family:var(--font-display); font-weight:700; font-size:14px; letter-spacing:.16em; color:var(--text); }
+    .fs-appbar-ctx{ font-family:var(--font-mono); font-size:11px; color:var(--text-dim); letter-spacing:.02em; }
+    .fs-appbar-right{ display:flex; align-items:center; gap:14px; }
+    .fs-pill{ font-family:var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); border:1px solid var(--line); border-radius:20px; padding:4px 10px; }
+    /* stage + rail */
+    .fs-stage-wrap{ display:grid; grid-template-columns:1fr 372px; }
+    .fs-stage{ position:relative; height:560px; background:#0a0e0d; overflow:hidden; }
+    .fs-stage #fs-map{ position:absolute!important; inset:0; height:100%!important; width:100%!important; border:none!important; border-radius:0!important; z-index:1; }
+    /* floating command bar */
+    .fs-cmd{ position:absolute; top:14px; left:14px; right:14px; z-index:600; display:flex; gap:8px; pointer-events:none; }
+    .fs-cmd>*{ pointer-events:auto; }
+    .fs-cmd .fs-search{ flex:1; max-width:430px; background:rgba(13,18,17,.88); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border:1px solid var(--line-2); border-radius:11px; min-width:0; }
+    .fs-cmd .fs-basemap{ margin-left:auto; }
+    /* invitation (empty-state hero) */
+    .fs-invite{ position:absolute; inset:0; z-index:400; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px; pointer-events:none; }
+    .fs-invite-glyph{ width:46px; height:46px; border:1.5px solid var(--accent-dim); border-radius:12px; display:grid; place-items:center; color:var(--brand); margin-bottom:16px; animation:fsRise .7s cubic-bezier(.2,.7,.2,1) both; }
+    .fs-invite-glyph svg{ width:22px; height:22px; }
+    .fs-invite-h{ font-family:var(--font-display); font-weight:700; font-size:clamp(20px,3.4vw,26px); letter-spacing:-.02em; color:var(--text); margin:0; animation:fsRise .7s .05s cubic-bezier(.2,.7,.2,1) both; }
+    .fs-invite-p{ color:var(--text-dim); font-size:14px; line-height:1.6; max-width:440px; margin:10px 0 0; animation:fsRise .7s .1s cubic-bezier(.2,.7,.2,1) both; }
+    .fs-invite-or{ margin-top:16px; font-family:var(--font-mono); font-size:11px; color:var(--text-muted); letter-spacing:.03em; animation:fsRise .7s .15s cubic-bezier(.2,.7,.2,1) both; }
+    .fs-invite-or b{ color:var(--brand); font-weight:500; }
+    .fs-has-field .fs-invite{ display:none; }
+    @keyframes fsRise{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    /* action dock */
+    .fs-dock{ position:absolute; left:50%; bottom:14px; transform:translateX(-50%); z-index:600; display:flex; gap:7px; flex-wrap:wrap; justify-content:center; max-width:94%; }
+    .fs-dock .fs-btn:not(.fs-btn--primary){ background:rgba(13,18,17,.88); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:0 2px 12px rgba(0,0,0,.45); }
+    .fs-dock .fs-btn--primary{ background:var(--brand); box-shadow:0 2px 14px rgba(0,0,0,.45); }
+    /* rail */
+    .fs-rail{ border-left:1px solid var(--line); background:var(--surface); max-height:560px; overflow-y:auto; display:flex; flex-direction:column; }
+    /* undertray (see-the-invisible + saved) */
+    .fs-undertray{ display:flex; flex-wrap:wrap; gap:14px; align-items:flex-start; padding:14px 18px; border-top:1px solid var(--line); background:var(--surface); }
+    .fs-undertray .fs-god{ margin:0; flex:1 1 260px; }
+    .fs-undertray .fs-saved{ flex:1 1 260px; }
+    @media(max-width:820px){
+      .fs-stage-wrap{ grid-template-columns:1fr; }
+      .fs-stage{ height:62vh; min-height:380px; }
+      .fs-rail{ border-left:none; border-top:1px solid var(--line); max-height:none; }
+      .fs-cmd{ flex-wrap:wrap; }
+      .fs-cmd .fs-basemap{ margin-left:0; }
+    }
+
     /* Map toolbar — search + draw controls riding on top of the map */
     .fs-toolbar{position:absolute;top:12px;left:12px;right:12px;z-index:600;display:flex;gap:.5rem;flex-wrap:wrap;pointer-events:none}
     .fs-toolbar > *{pointer-events:auto}
@@ -343,39 +389,68 @@
     <div class="fs-wrap">
       <nav class="fs-bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> &rsaquo; <a href="/tools">Tools</a> &rsaquo; Field Scout</nav>
 
-      <div class="fs-head">
-        <h1 class="fs-title">Field Scout &mdash; draw a field, <em>get its whole story</em></h1>
-        <p class="fs-sub">Search your address or pan to your ground, trace the field, and read what the land is: every soil type and its productivity, the last five years of crops grown on it, live weather and drought, and the closest cash bids. All from public data. No login, no cost.</p>
-        <p class="fs-note">Each panel below loads on its own from a separate public source (USDA, Open-Meteo, US Drought Monitor). If one says a government server isn&rsquo;t responding, that source is just having a moment &mdash; the rest still work, and redrawing in a few minutes usually clears it.</p>
-      </div>
+      <div class="fs-app">
+        <!-- APP BAR -->
+        <div class="fs-appbar">
+          <div class="fs-mark"><span class="fs-mark-dot" aria-hidden="true"></span><span class="fs-wordmark">FIELD SCOUT</span></div>
+          <div class="fs-appbar-ctx" id="fs-appbar-ctx" hidden></div>
+          <div class="fs-appbar-right"><span class="fs-pill">No login &middot; No cost</span></div>
+        </div>
 
-      <div class="fs-split">
-        <!-- MAP -->
-        <div class="fs-mapcol">
-          <div id="fs-map" role="application" aria-label="Interactive field map. Use the Draw a field button to trace a boundary, or search your location above. Field details appear in the panel beside the map."></div>
+        <!-- STAGE + RAIL -->
+        <div class="fs-stage-wrap">
+          <div class="fs-stage">
+            <div id="fs-map" role="application" aria-label="Interactive field map. Search your location or drop a pin to trace a field boundary; the read appears in the panel beside the map."></div>
 
-          <div class="fs-toolbar">
-            <div class="fs-search">
-              <input id="fs-addr" type="text" placeholder="Search address, town, or ZIP&hellip;" aria-label="Search location" autocomplete="off">
-              <button id="fs-addr-go" type="button">Go</button>
+            <!-- floating command bar -->
+            <div class="fs-cmd">
+              <div class="fs-search">
+                <input id="fs-addr" type="text" placeholder="Search address, town, or ZIP&hellip;" aria-label="Search location" autocomplete="off">
+                <button id="fs-addr-go" type="button">Go</button>
+              </div>
+              <div class="fs-basemap" role="group" aria-label="Basemap">
+                <button id="fs-bm-sat" class="on" type="button">Satellite</button>
+                <button id="fs-bm-map" type="button">Map</button>
+              </div>
             </div>
-            <span class="fs-draw-hint" id="fs-hint"><b>&#9998; Draw</b>&nbsp;your field&rarr;</span>
+
+            <!-- empty-state invitation (hidden once a field is active) -->
+            <div class="fs-invite" id="fs-invite">
+              <div class="fs-invite-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z"/><path d="M3 7 L12 12 L21 7 M12 12 V22" opacity=".5"/></svg></div>
+              <h2 class="fs-invite-h">Read any field in the country</h2>
+              <p class="fs-invite-p">Search your ground or drop a pin. I&rsquo;ll pull every soil type and its productivity, the last five years of crops, live weather and drought, and the nearest cash bids.</p>
+              <div class="fs-invite-or">or use <b>Drop a pin</b> below &mdash; tap the map, then drag to fit</div>
+            </div>
+
+            <!-- action dock -->
+            <div class="fs-dock">
+              <button class="fs-btn fs-btn--primary" id="fs-pin" type="button">&#128205; Drop a pin</button>
+              <button class="fs-btn" id="fs-draw" type="button">&#9998; Trace exact</button>
+              <button class="fs-btn" id="fs-gps" type="button">&#9678; My location</button>
+              <button class="fs-btn" id="fs-clear" type="button" disabled>&#10005; Clear</button>
+            </div>
+            <span class="fs-draw-hint" id="fs-hint" hidden><b>&#9998; Draw</b>&nbsp;your field&rarr;</span>
           </div>
 
-          <div class="fs-basemap" role="group" aria-label="Basemap">
-            <button id="fs-bm-sat" class="on" type="button">Satellite</button>
-            <button id="fs-bm-map" type="button">Map</button>
-          </div>
+          <!-- RAIL -->
+          <aside class="fs-rail" id="fs-panel" aria-live="polite">
+            <div class="fs-panel-empty" id="fs-empty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 20l-5.5 2.5v-15L9 5m0 15l6-2.5m-6 2.5v-15m6 12.5l5.5 2.5v-15L15 5m0 12.5v-15m0 0L9 5"/></svg>
+              <h3>No field yet</h3>
+              <p>Search your ground, then <b>drop a pin</b> or <b>trace</b> a boundary on the map. The read &mdash; soil, crop history, weather, drought, and nearby cash bids &mdash; appears here.</p>
+              <button type="button" id="fs-demo" class="fs-demo-btn">&#9654;&nbsp;See an example field</button>
+              <p class="fs-demo-hint">New here? Load a real Iowa field to see the full read &mdash; no drawing needed.</p>
+            </div>
+            <div id="fs-results" hidden></div>
+            <div class="fs-disc">
+              Field Scout reads public survey data for the area you draw &mdash; it doesn&rsquo;t know who owns the land. Saved fields are stored on your device only, never on our servers. Soil and crop layers are survey estimates, not a substitute for sampling your own ground. Nothing here is financial advice.
+              <div class="fs-src">Sources: USDA SSURGO soil survey &middot; USDA Cropland Data Layer &middot; Open-Meteo &middot; US Drought Monitor &middot; AGSIST cash-bid feed</div>
+            </div>
+          </aside>
+        </div>
 
-          <div class="fs-actionbar">
-            <button class="fs-btn fs-btn--primary" id="fs-pin" type="button">&#128205; Drop a pin</button>
-            <button class="fs-btn" id="fs-draw" type="button">&#9998; Trace exact</button>
-            <button class="fs-btn" id="fs-gps" type="button">&#9678; My location</button>
-            <button class="fs-btn" id="fs-clear" type="button" disabled>&#10005; Clear</button>
-          </div>
-          </div><!-- /fs-mapcol -->
-
-          <!-- GOD LAYERS: see what the eye can't (sits BELOW the map) -->
+        <!-- UNDERTRAY: see-the-invisible layers + saved fields -->
+        <div class="fs-undertray">
           <div class="fs-god">
             <div class="fs-god-label">See the invisible</div>
             <div class="fs-god-chips">
@@ -395,22 +470,7 @@
             </div>
           </div>
           <div class="fs-saved" id="fs-saved" hidden></div>
-
-        <!-- INTEL PANEL -->
-        <aside class="fs-panel" id="fs-panel" aria-live="polite">
-          <div class="fs-panel-empty" id="fs-empty">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 20l-5.5 2.5v-15L9 5m0 15l6-2.5m-6 2.5v-15m6 12.5l5.5 2.5v-15L15 5m0 12.5v-15m0 0L9 5"/></svg>
-            <h3>No field yet</h3>
-            <p>Hit <b>Draw a field</b> and trace your boundary on the map. Field Scout will pull its soil, crop history, weather, drought, and nearby cash bids.</p>
-            <button type="button" id="fs-demo" class="fs-demo-btn">&#9654;&nbsp;See an example field</button>
-            <p class="fs-demo-hint">New here? Load a real Iowa field to see the full read &mdash; no drawing needed.</p>
-          </div>
-          <div id="fs-results" hidden></div>
-          <div class="fs-disc">
-            Field Scout reads public survey data for the area you draw &mdash; it doesn&rsquo;t know who owns the land. Saved fields are stored on your device only, never on our servers. Soil and crop layers are survey estimates, not a substitute for sampling your own ground. Nothing here is financial advice.
-            <div class="fs-src">Sources: USDA SSURGO soil survey &middot; USDA Cropland Data Layer &middot; Open-Meteo &middot; US Drought Monitor &middot; AGSIST cash-bid feed</div>
-          </div>
-        </aside>
+        </div>
       </div>
 
       <!-- How it works -->
