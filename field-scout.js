@@ -311,9 +311,11 @@
   // The demo field — a real central-Iowa field so first-time visitors see the whole
   // payoff before drawing anything (also the keyboard/screen-reader way to evaluate).
   function loadDemoField(){
-    var ring=[[42.0220,-93.6250],[42.0220,-93.6170],[42.0170,-93.6170],[42.0170,-93.6250]];
+    // Rural row-crop ground in Sherman Township, Hardin County, Iowa (~13 people/sq mi —
+    // gridded corn/soybean section land, full SSURGO + CDL coverage). ~40-acre box.
+    var ring=[[42.3468,-93.3924],[42.3468,-93.3876],[42.3432,-93.3876],[42.3432,-93.3924]];
     var poly=L.polygon(ring, { color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:0.15 });
-    map.setView([42.0195,-93.6210], 15);
+    map.setView([42.3450,-93.3900], 15);
     commitField(poly, 'demo');
     ga('field_demo', {});
   }
