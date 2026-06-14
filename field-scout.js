@@ -68,6 +68,10 @@
     try{ map.zoomControl.setPosition('bottomleft'); }catch(e){}
     setTimeout(function(){ try{ map.invalidateSize(); }catch(e){} }, 60);
     window.addEventListener('resize', function(){ try{ map.invalidateSize(); }catch(e){} });
+    // the invitation clears the moment the user engages the map — pan, zoom, or tap
+    map.on('movestart', dismissInvite);
+    map.on('zoomstart', dismissInvite);
+    try{ map.getContainer().addEventListener('pointerdown', dismissInvite, { once:true }); }catch(e){}
 
     satLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       maxZoom:19, attribution:'Imagery &copy; Esri'
@@ -384,6 +388,8 @@
     }
   }
 
+  function dismissInvite(){ document.documentElement.classList.add('fs-invite-off'); }
+
   // Instrument chrome: hide the empty-state invitation + set the app-bar context
   // when a field is active; restore when cleared.
   function setFieldChrome(on, acres){
@@ -394,6 +400,49 @@
       if(on && acres!=null){ cx.textContent=(+acres).toFixed(1)+' ac'; cx.hidden=false; }
       else { cx.hidden=true; cx.textContent=''; }
     }
+  }
+
+  // ── SIGNATURE: the land scan ──────────────────────────────────────────────
+  // When a field commits, sweep a scan-line across it, spotlight it, and flash a
+  // readout — the instrument reading the ground. Self-removing; respects reduced motion.
+  function runFieldScan(poly){
+    if(!map || !poly) return;
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    try{
+      var b=poly.getBounds();
+      var p1=map.latLngToContainerPoint(b.getNorthWest());
+      var p2=map.latLngToContainerPoint(b.getSouthEast());
+      var pad=16;
+      var x=Math.min(p1.x,p2.x)-pad, y=Math.min(p1.y,p2.y)-pad;
+      var w=Math.abs(p2.x-p1.x)+pad*2, h=Math.abs(p2.y-p1.y)+pad*2;
+      if(w<8||h<8) return;
+      var host=map.getContainer();
+      var prev=host.querySelector('.fs-scan'); if(prev) prev.parentNode.removeChild(prev);
+      var ov=document.createElement('div');
+      ov.className='fs-scan';
+      ov.style.left=x+'px'; ov.style.top=y+'px'; ov.style.width=w+'px'; ov.style.height=h+'px';
+      ov.innerHTML='<div class="fs-scan-grid"></div><div class="fs-scan-line"></div>'+
+                   '<div class="fs-scan-tag">Reading the ground&hellip;</div>';
+      host.appendChild(ov);
+      setTimeout(function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); }, 1350);
+    }catch(e){}
+  }
+
+  // Numbers tally up rather than just appearing — reinforces "the instrument is reading".
+  function countUp(el, target, decimals){
+    if(!el) return;
+    decimals = decimals||0;
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      el.textContent=(+target).toFixed(decimals); return;
+    }
+    var start=null, dur=750;
+    function step(now){
+      if(start===null) start=now;
+      var t=Math.min(1,(now-start)/dur), e=1-Math.pow(1-t,3);
+      el.textContent=(target*e).toFixed(decimals);
+      if(t<1) requestAnimationFrame(step); else el.textContent=(+target).toFixed(decimals);
+    }
+    requestAnimationFrame(step);
   }
 
   // ── Changed-since-last-visit: for SAVED fields, snapshot key conditions and, on the
@@ -523,6 +572,7 @@
   // ── Orchestrator ────────────────────────────────────────────────────
   function runAll(poly){
     var c=polyCentroid(poly), acres=polyAcres(poly);
+    runFieldScan(poly);
     resetField(acres, c);
     document.getElementById('fs-empty').hidden=true;
     setFieldChrome(true, acres);
@@ -541,6 +591,7 @@
       section('risk',ICONS.risk,'Risk Profile','fs-risk') +
       section('bids',ICONS.bids,'Nearby Cash Bids','fs-bids');
 
+    var _an=R.querySelector('.acres-n'); if(_an){ _an.textContent='0.0'; setTimeout(function(){ countUp(_an, acres, 1); }, 320); }
     // fire all sources independently — fail soft; each calls recomputeInsight()
     var sb=document.getElementById('fs-save'); if(sb) sb.addEventListener('click', saveCurrentField);
     var rb=document.getElementById('fs-report'); if(rb) rb.addEventListener('click', generateReport);
@@ -556,11 +607,11 @@
   function fieldHead(acres, c){
     return '<div class="fs-fieldhead">'+
       '<div class="fs-fh-row">'+
-        '<div class="fs-fh-main"><div class="acres">'+acres.toFixed(1)+' <small>acres</small></div>'+
+        '<div class="fs-fh-main"><div class="acres"><span class="acres-n">'+acres.toFixed(1)+'</span> <small>acres</small></div>'+
         '<div class="coords">center '+c.lat.toFixed(4)+', '+c.lng.toFixed(4)+'</div></div>'+
         '<div class="fs-fh-btns">'+
-        '<button class="fs-save-btn" id="fs-save" type="button">&#9733; Save field</button>'+
-        '<button class="fs-save-btn" id="fs-report" type="button">&#11015; Field report</button>'+
+        '<button class="fs-save-btn" id="fs-save" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 17l-5.3 2.8 1-5.8L3.5 9.7l5.9-.9z"/></svg>Save field</button>'+
+        '<button class="fs-save-btn" id="fs-report" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"/></svg>Field report</button>'+
         '</div>'+
       '</div>'+
     '</div>';
