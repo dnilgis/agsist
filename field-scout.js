@@ -653,16 +653,17 @@
     var ahead = now[now.length-1] >= hi[hi.length-1];
     var behind = now[now.length-1] <= lo[lo.length-1];
     var lineCol = behind ? '#e0a32e' : (ahead ? '#4aab4c' : '#9fd2ff');
-    return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="none" '+
-      'role="img" aria-label="Cumulative rainfall this season versus the prior-years range" style="display:block;margin-top:.5rem">'+
+    return '<div class="fs-chart-title">Cumulative rainfall &mdash; Jan 1 to date</div>'+
+      '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="none" '+
+      'role="img" aria-label="Cumulative rainfall this season versus the prior-years range" style="display:block;margin-top:.35rem">'+
       '<path d="'+band+'" fill="rgba(159,210,255,.14)" stroke="none"></path>'+
       '<path d="'+lineOf(hi)+'" fill="none" stroke="rgba(159,210,255,.35)" stroke-width="1"></path>'+
       '<path d="'+lineOf(lo)+'" fill="none" stroke="rgba(159,210,255,.35)" stroke-width="1"></path>'+
       '<path d="'+lineOf(now)+'" fill="none" stroke="'+lineCol+'" stroke-width="2.4" stroke-linejoin="round"></path>'+
       '</svg>'+
       '<div class="fs-src" style="margin-top:.15rem;display:flex;gap:1rem;flex-wrap:wrap">'+
-        '<span style="color:'+lineCol+'">▬ This season</span>'+
-        '<span style="color:#9fd2ff">▤ Prior-years range</span>'+
+        '<span style="color:'+lineCol+'">&#9644; This season&rsquo;s rain</span>'+
+        '<span style="color:#9fd2ff">&#9636; Normal range (prior '+(prior.length)+' yrs)</span>'+
       '</div>';
   }
 
@@ -788,7 +789,7 @@
       .then(function(g){
         if(gen !== fieldGen) return;
         var zip = g && g.address ? (g.address.postcode||'').slice(0,5) : '';
-        if(!zip){ setErr('fs-bids','Couldn\u2019t resolve a ZIP for this field to pull bids.'); return; }
+        if(!zip){ setBody('fs-bids','<div class="fs-src">This field sits far enough from a mapped ZIP that we can\u2019t pull nearby bids for it &mdash; common for remote parcels. Try the cash-bids page directly for your area.</div>'); return; }
         return fetch(BIDS_PROXY+'?zip='+zip+'&radius=75&getAllBids=1')
           .then(function(r){return r.json();})
           .then(function(d){ if(gen!==fieldGen) return; renderBids(d, zip, gen); });
