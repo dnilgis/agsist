@@ -508,6 +508,13 @@
         FIELD.rotation = { codes:codes, years:years, maxCornStreak:maxCornStreak, cornCount:cornCount,
           beanCount:beanCount, lastCrop: codes[codes.length-1], cornOnCorn: maxCornStreak>=2 };
         recomputeInsight();
+        // If not one year resolved to a recognized row/forage crop, this field isn't
+        // cropland in CDL (pasture, forest, developed, water). Say so plainly rather
+        // than render five empty placeholder tiles that look broken.
+        if(codes.every(function(c){ return c===null; })){
+          setBody('fs-rot','<div class="fs-src">USDA\u2019s Cropland Data Layer doesn\u2019t classify this spot as row-crop or forage ground over the last five years &mdash; it reads as pasture, forest, developed, or water at the field center. Draw over active cropland to see a rotation.</div>');
+          return;
+        }
         var html='<div class="fs-rotation">'+ codes.map(function(code,i){
           var info = code ? crop(code) : {l:'—',e:'·',c:'#333'};
           return '<div class="fs-rot-year">'+
