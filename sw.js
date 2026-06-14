@@ -19,11 +19,11 @@
  * ─────────────────────────────────────────────────────────────────
  * BUMP THIS ON EVERY DEPLOY:
  */
-// v5 (2026-06-12): bumped for the brand-theme styles.css. The new CSS
-// defines --gold-rgb, which the June 12 page updates depend on; ?v=12
-// asset URLs are cacheFirst, so without this bump returning PWA users
-// would keep the old stylesheet and lose the themed accent colors.
-var CACHE_VERSION = 6;
+// v7 (2026-06-14): networkFirst now revalidates with the server (cache:'no-cache'),
+// so bare JS/HTML deploys (field-scout.js etc.) show up immediately instead of
+// staying stale for up to 10 min behind the browser HTTP cache. Version bump also
+// clears any stale entries cached during today's rapid deploys.
+var CACHE_VERSION = 7;
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;
@@ -110,8 +110,14 @@ function handleFetch(request) {
 }
 
 // ── Network first: try network, fall back to cache ────────────────
+// `cache: 'no-cache'` forces the SW's fetch to revalidate with the server
+// instead of silently accepting the browser's HTTP-cached copy (GitHub Pages
+// sets max-age=600). Changed files come back fresh; unchanged files return a
+// cheap 304. Without this, a fresh deploy stays invisible for up to 10 minutes
+// even though this is "network first" — the staleness lived in the HTTP cache,
+// not the SW cache.
 function networkFirst(request) {
-  return fetch(request).then(function(response) {
+  return fetch(request, { cache: 'no-cache' }).then(function(response) {
     if (response && response.ok) {
       var copy = response.clone(); // clone SYNCHRONOUSLY before any await
       caches.open(CACHE_NAME).then(function(cache) {
