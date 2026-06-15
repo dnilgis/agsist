@@ -42,7 +42,7 @@
   <!-- Daily Briefing -->
   <url><loc>https://agsist.com/daily</loc><lastmod>2026-06-14</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/archive</loc><lastmod>2026-06-12</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/grower-pulse</loc><lastmod>2026-06-08</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://agsist.com/grower-pulse</loc><lastmod>2026-06-15</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
 
   <!-- Info -->
   <url><loc>https://agsist.com/about</loc><lastmod>2026-06-12</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>

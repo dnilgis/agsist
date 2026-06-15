@@ -1,16 +1,32 @@
 {
   "_comment": "AGSIST Grower Pulse — single source of truth for the homepage poll. To run a new week: move the current block into archive (with its final results+total pulled from the Worker), then write the new question into current with a new id. Stage 2 automation will do this on a schedule.",
   "current": {
-    "id": "2026-w24-soil-moisture-jun",
-    "week": "2026-06-08",
-    "question": "How's soil moisture on your farm right now?",
+    "id": "2026-w25-replant-spring",
+    "week": "2026-06-15",
+    "question": "Did you have to replant any acres this spring?",
     "options": [
-      "Too dry",
-      "About right",
-      "Too wet"
+      "None",
+      "A few",
+      "A lot"
     ]
   },
   "archive": [
+    {
+      "id": "2026-w24-soil-moisture-jun",
+      "week": "2026-06-08",
+      "question": "How's soil moisture on your farm right now?",
+      "options": [
+        "Too dry",
+        "About right",
+        "Too wet"
+      ],
+      "results": [
+        6,
+        2,
+        0
+      ],
+      "total": 8
+    },
     {
       "id": "2026-w23-cropcondition",
       "week": "2026-06-01",

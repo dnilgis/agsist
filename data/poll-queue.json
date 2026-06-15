@@ -2,16 +2,6 @@
   "_comment": "Season-aware Grower Pulse queue. The rotation pops item [0] each Monday, so ORDER = calendar. Questions are timed to what's top-of-mind that week (field stage, weather, USDA reports, marketing season). 'window' is a human note only (the script ignores it). Reorder freely if weather/news makes a different question urgent (e.g., jump the moisture question up in a drought). Keep at least ~10 in the runway. See grower-pulse-question-audit.md for the reasoning.",
   "upcoming": [
     {
-      "window": "mid-Jun - replant",
-      "key": "replant-spring",
-      "question": "Did you have to replant any acres this spring?",
-      "options": [
-        "None",
-        "A few",
-        "A lot"
-      ]
-    },
-    {
       "window": "late-Jun - crop pace",
       "key": "crop-pace-jun",
       "question": "Where are your crops vs. the calendar right now?",
