@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 14 Jun 2026 13:01:49 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 15 Jun 2026 13:46:45 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>BEANS BOUNCE, CATTLE DRIFTS AS HORMUZ DEAL EASES</title>
+      <link>https://agsist.com/daily/2026-06-15</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-15</guid>
+      <pubDate>Mon, 15 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Soybeans ran 1.7% to $11.32, the biggest daily gain in three weeks, as funds rotated back into the complex ahead of Tuesday's USDA Crop Progress report. Live cattle drifted 0.6% to $241.18, holding above the $240 floor but lacking conviction. The Hormuz deal that cleared the first LNG tanker Monday morning is pulling energy premium out of input costs, but beans are acting like the funds finally found their footing.
+Soybeans lead grains higher on fund rotation while livestock marks time ahead of crop data.
+• BEANS LEAD GRAINS HIGHER
+• CATTLE DRIFTS, FEEDERS TRACK
+• OATS FALL ON OVERNIGHT SELLING
+Read more: https://agsist.com/daily/2026-06-15</description>
+    </item>
     <item>
       <title>CATTLE HOLDS GAINS, CORN STEADIES AHEAD OF KEY WEEK</title>
       <link>https://agsist.com/daily/2026-06-14</link>
@@ -358,18 +370,6 @@ Week ahead brings USDA crop progress as planting window tightens across the Midw
 • Cattle Defy the Grain Crash
 • Energy Holds Geopolitical Floor
 Read more: https://agsist.com/daily/2026-05-17</description>
-    </item>
-    <item>
-      <title>CORN CRATERS TO $4.56 AS FUNDS FLEE</title>
-      <link>https://agsist.com/daily/2026-05-16</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-16</guid>
-      <pubDate>Sat, 16 May 2026 05:00:00 -0600</pubDate>
-      <description>Corn collapsed through $4.60 support to close $4.56, down 3.3% and the lowest in three weeks. The funds liquidated another 18,000 contracts as Missouri farmers finally got back to planting after weeks of rain delays. When the weather risk leaves the building this late in May, the carry trade does all the talking.
-Grains crashed Friday while cattle surged on tight supplies and energy rallied on Iran tensions.
-• Grains Crater on Fund Exit
-• Cattle Surge on Supply Squeeze
-• Energy Rallies on Iran Risk
-Read more: https://agsist.com/daily/2026-05-16</description>
     </item>
   </channel>
 </rss>

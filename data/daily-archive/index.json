@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-06-15",
+      "date_display": "Monday, June 15, 2026",
+      "headline": "BEANS BOUNCE, CATTLE DRIFTS AS HORMUZ DEAL EASES",
+      "teaser": "Fund rotation drives beans higher while cattle holds pattern ahead of crop data.",
+      "market_mood": "mixed",
+      "surprise_count": 2,
+      "sections": 4,
+      "url": "/daily/2026-06-15",
+      "market_closed": false,
+      "yc_outcome": "pending"
+    },
+    {
       "date": "2026-06-14",
       "date_display": "Sunday, June 14, 2026",
       "headline": "CATTLE HOLDS GAINS, CORN STEADIES AHEAD OF KEY WEEK",
@@ -1046,6 +1058,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-14T13:01:43.710546+00:00",
-  "count": 94
+  "updated": "2026-06-15T13:46:43.740288+00:00",
+  "count": 95
 }
