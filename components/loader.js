@@ -8,22 +8,21 @@
     document.documentElement.setAttribute('data-theme', t);
   } catch (e) {}
 
-  // Apply saved brand theme immediately (before paint). No saved value =
-  // default Prairie Gold (no attribute). Values: classic|redpower|bigblue|orange.
-  try {
-    var bSaved = localStorage.getItem('agsist-brand') || '';
-    if (bSaved) document.documentElement.setAttribute('data-brand', bSaved);
-  } catch (e) {}
-
   var BASE = (function () {
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
 
+  // Component cache version. Bump on every chrome deploy so browsers fetch the
+  // new header/footer; between deploys the files cache normally (no refetch /
+  // no nav-flash on each page navigation).
+  var CV = '14';
+  function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
+
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
     if (!el) { if (onDone) onDone(); return; }
-    fetch(BASE + path, { cache: 'no-cache' })
+    fetch(BASE + cv(path))
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
       .then(function (html) {
         var tmp = document.createElement('div');
@@ -41,7 +40,7 @@
   // Inject GA4 analytics unless the page already has gtag loaded inline
   function injectAnalytics() {
     if (typeof window.gtag === 'function') return;
-    fetch(BASE + '/components/analytics.html', { cache: 'no-cache' })
+    fetch(BASE + cv('/components/analytics.html'))
       .then(function (r) { return r.text(); })
       .then(function (html) {
         var tmp = document.createElement('div');
@@ -58,19 +57,27 @@
 
   function initNav() {
 
+    // ── Skip-link target ─────────────────────────────────────────
+    // Ensure the page's main content is focusable so the header skip-link
+    // works site-wide without per-page edits.
+    (function () {
+      var main = document.querySelector('main, [role="main"], #main, #content, #main-content');
+      if (main) {
+        if (!main.id) main.id = 'main';
+        if (!main.hasAttribute('tabindex')) main.setAttribute('tabindex', '-1');
+      }
+    })();
+
     // ── Theme toggle ─────────────────────────────────────────────
     function applyTheme(th) {
       document.documentElement.setAttribute('data-theme', th);
       try { localStorage.setItem('agsist-theme', th); } catch (e) {}
-      var icon = th === 'light' ? '☀️' : '🌙';
+      // Icon (moon/sun) is now a CSS-toggled SVG pair keyed off [data-theme];
+      // no textContent here so the inline <svg>s aren't clobbered on toggle.
       var lbl  = th === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
       ['theme-btn', 'theme-btn-d'].forEach(function (id) {
         var btn = document.getElementById(id);
         if (btn) btn.setAttribute('aria-label', lbl);
-      });
-      ['theme-icon', 'theme-icon-d'].forEach(function (id) {
-        var el = document.getElementById(id);
-        if (el) el.textContent = icon;
       });
     }
     applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
@@ -82,31 +89,7 @@
       });
     });
 
-    // ── Brand theme picker (header select + drawer select, kept in sync) ──
-    function applyBrand(b) {
-      if (b) document.documentElement.setAttribute('data-brand', b);
-      else document.documentElement.removeAttribute('data-brand');
-      try { localStorage.setItem('agsist-brand', b || ''); } catch (e) {}
-      document.querySelectorAll('.brand-sw').forEach(function (sw) {
-        sw.setAttribute('aria-checked', (sw.getAttribute('data-brand') || '') === b ? 'true' : 'false');
-      });
-      try { if (typeof window.gtag === 'function') gtag('event', 'brand_theme', { brand: b || 'prairie' }); } catch (e) {}
-    }
-    var curBrand = document.documentElement.getAttribute('data-brand') || '';
-    function syncSwatches(b) {
-      document.querySelectorAll('.brand-sw').forEach(function (sw) {
-        sw.setAttribute('aria-checked', (sw.getAttribute('data-brand') || '') === b ? 'true' : 'false');
-      });
-    }
-    document.querySelectorAll('.brand-sw').forEach(function (sw) {
-      sw.setAttribute('role', 'radio');
-      sw.addEventListener('click', function () {
-        var b = sw.getAttribute('data-brand') || '';
-        applyBrand(b);
-        syncSwatches(b);
-      });
-    });
-    syncSwatches(curBrand);
+    // ── Brand theme picker retired (committed single-gold identity) ──
 
     // ── Dropdowns — with aria-haspopup + aria-expanded ───────────
     // FIX P10: screen readers now know these buttons control popup menus

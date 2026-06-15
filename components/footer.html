@@ -5,10 +5,10 @@
   .footer-supporters-lbl{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);}
   .footer-supporters-list{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;justify-content:center;}
   .footer-supporter{display:inline-flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--text-dim);text-decoration:none;padding:.3rem .6rem;border:1px solid var(--border);border-radius:6px;transition:border-color .15s,color .15s;}
-  .footer-supporter:hover{border-color:var(--green);color:var(--text);}
+  .footer-supporter:hover{border-color:var(--brand);color:var(--text);}
   .footer-supporter img{height:22px;width:auto;max-width:96px;object-fit:contain;display:block;}
-  .footer-supporters-cta{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--green);text-decoration:none;padding:.32rem .65rem;border:1px solid rgba(58,139,60,.4);border-radius:6px;transition:background .15s,color .15s;}
-  .footer-supporters-cta:hover{background:var(--green);color:#fff;}
+  .footer-supporters-cta{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--brand);text-decoration:none;padding:.32rem .65rem;border:1px solid rgba(var(--brand-rgb),.4);border-radius:6px;transition:background .15s,color .15s;}
+  .footer-supporters-cta:hover{background:var(--brand);color:var(--bg);}
 </style>
 <footer class="footer">
   <div class="footer-inner">
@@ -24,63 +24,69 @@
     </div>
     <div class="footer-cols">
       <div class="footer-col">
-        <h4>Prices</h4>
-        <a href="/corn-futures-prices">🌽 Corn Futures</a>
-        <a href="/soybean-futures-prices">🫘 Soybean Futures</a>
-        <a href="/wheat-futures-prices">🌾 Wheat Futures</a>
-        <a href="/cattle-futures-prices">🐂 Cattle Futures</a>
-        <a href="/cash-bids">💵 Cash Bids</a>
-        <a href="/ag-odds">🎯 Ag Prediction Markets</a>
-        <a href="/cot">📊 COT Report</a>
-        <a href="/whats-priced-in">🎲 What's Priced In</a>
+        <h4>Markets</h4>
+        <a href="/corn-futures-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Corn</a>
+        <a href="/soybean-futures-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bean"/></svg>Soybeans</a>
+        <a href="/wheat-futures-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wheat"/></svg>Wheat</a>
+        <a href="/cattle-futures-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-beef"/></svg>Cattle</a>
+        <a href="/cash-bids"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Cash Bids</a>
+        <a href="/cot"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>COT Report</a>
+        <a href="/ag-odds"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target"/></svg>Prediction Markets</a>
+        <a href="/whats-priced-in"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-dices"/></svg>What's Priced In</a>
+        <a href="/tariffs"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-landmark"/></svg>Tariffs</a>
+        <a href="/usda-quick-stats"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-database"/></svg>USDA Quick Stats</a>
+        <a href="/usda-calendar"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg>USDA Calendar</a>
       </div>
       <div class="footer-col">
-        <h4>Weather</h4>
-        <a href="/spray">🌿 Spray Conditions</a>
-        <a href="/urea">🧪 Urea Risk</a>
-        <a href="/drought-monitor">🏜️ Drought Monitor</a>
-        <a href="/hail-map">🧊 Hail Map</a>
+        <h4>Numbers</h4>
+        <a href="/breakeven"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scale"/></svg>Break-Even Calc</a>
+        <a href="/presell-calculator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield-check"/></svg>Pre-Sell Calculator</a>
+        <a href="/grain-bin-calculator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Grain Bin Calc</a>
+        <a href="/harvest-price-tracker"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trending-up"/></svg>Harvest Price Tracker</a>
       </div>
       <div class="footer-col">
-        <h4>Tools</h4>
-        <a href="/breakeven">📐 Break-Even Calc</a>
-        <a href="/presell-calculator">🛡️ Pre-Sell Calculator</a>
-        <a href="/harvest-price-tracker">📈 Harvest Price Tracker</a>
-        <a href="/grain-bin-calculator">🏗️ Grain Bin Calc</a>
-        <a href="/gdu-calculator">🌡️ GDU Calculator</a>
-        <a href="/planting-date">📆 Planting Date</a>
-        <a href="/fertilizer">🌱 Fertilizer</a>
-        <a href="/fast-facts">⚡ Fast Facts</a>
-        <a href="/yield-estimator">🌾 Yield Estimator</a>
-        <a href="/field-scout">🛰️ Field Scout</a>
+        <h4>Field</h4>
+        <a href="/spray"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-spray-can"/></svg>Spray Conditions</a>
+        <a href="/urea"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flask-conical"/></svg>Urea Risk</a>
+        <a href="/drought-monitor"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg>Drought Monitor</a>
+        <a href="/hail-map"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-hail"/></svg>Hail Map</a>
+        <a href="/gdu-calculator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-thermometer"/></svg>GDU Calculator</a>
+        <a href="/planting-date"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar-days"/></svg>Planting Date</a>
+        <a href="/fertilizer"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-leaf"/></svg>Fertilizer</a>
+        <a href="/yield-estimator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-package"/></svg>Yield Estimator</a>
+        <a href="/field-scout"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-satellite"/></svg>Field Scout</a>
+        <a href="/fast-facts"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book-open"/></svg>Fast Facts</a>
       </div>
       <div class="footer-col">
-        <h4>Daily &amp; Data</h4>
-        <a href="/daily">📰 AGSIST Daily</a>
-        <a href="/scorecard">🎯 Call Scorecard</a>
-        <a href="/grower-pulse">🗳️ Grower Pulse</a>
-        <a href="/usda-calendar">📅 USDA Calendar</a>
-        <a href="/usda-quick-stats">📋 USDA Quick Stats</a>
-        <a href="/tariffs">🏛️ Tariffs</a>
-        <a href="/data-sources">🔗 Data Sources</a>
-        <a href="/embed">🧩 Embed Widgets</a>
+        <h4>Daily</h4>
+        <a href="/daily"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-newspaper"/></svg>AGSIST Daily</a>
+        <a href="/scorecard"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clipboard-check"/></svg>Call Scorecard</a>
+        <a href="/grower-pulse"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-vote"/></svg>Grower Pulse</a>
+      </div>
+      <div class="footer-col">
+        <h4>Reference</h4>
+        <a href="/data-sources"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>Data Sources</a>
+        <a href="/embed"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-code"/></svg>Embed Widgets</a>
+        <a href="/developer"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-terminal"/></svg>Developer API</a>
       </div>
     </div>
+
+
     <div class="footer-net">
       <span class="footer-net-lbl">Farmers First Network</span>
       <div class="footer-net-links">
         <a href="https://farmers1st.com" target="_blank" rel="noopener" class="footer-net-link footer-net-link--gold">
-          <img src="/img/logo-farmers1st.png" alt="Farmers First Agri Service" style="height:38px;width:auto;max-width:140px;object-fit:contain;border-radius:3px">
+          <img src="/img/logo-farmers1st.png" alt="Farmers First Agri Service" style="height:24px;width:auto;max-width:104px;object-fit:contain;border-radius:3px">
           <div class="net-text"><strong>Farmers First Agri</strong><em>Crop Insurance</em></div>
           <span class="net-arr">↗</span>
         </a>
         <a href="https://lokedrone.com" target="_blank" rel="noopener" class="footer-net-link">
-          <img src="/img/logo-loke-drone.png" alt="Loke Drone" style="height:38px;width:auto;max-width:100px;object-fit:contain;border-radius:3px;background:#1a1a1a;padding:2px">
+          <img src="/img/logo-loke-drone.png" alt="Loke Drone" style="height:24px;width:auto;max-width:100px;object-fit:contain;border-radius:3px;background:#1a1a1a;padding:2px">
           <div class="net-text"><strong>Loke Drone</strong><em>Ag Spraying</em></div>
           <span class="net-arr">↗</span>
         </a>
         <a href="https://usdronemap.com" target="_blank" rel="noopener" class="footer-net-link">
-          <img src="/img/logo-usdronemap.png" alt="US Drone Map" style="height:38px;width:auto;max-width:140px;object-fit:contain;border-radius:3px">
+          <img src="/img/logo-usdronemap.png" alt="US Drone Map" style="height:24px;width:auto;max-width:104px;object-fit:contain;border-radius:3px">
           <div class="net-text"><strong>US Drone Map</strong><em>Find Pilots</em></div>
           <span class="net-arr">↗</span>
         </a>

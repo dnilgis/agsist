@@ -1,4 +1,19 @@
 /* ═══════════════════════════════════════════════════════════════════
+   AGSIST — Shared Stylesheet v10.3 — 2026-06-14
+   v10.3: Polish pass — removed dead PNG nav-icon CSS; resolved duplicate
+     .net-text rule (cards now correctly compact); raised sub-group label
+     size + contrast for sunlight legibility; reserved #site-header height
+     (CLS); added .skip-link.
+   v10.2: Mega-menu sub-group labels (.nav-grp-lbl/.draw-grp-lbl) + Lucide
+     section markers (.nav-ic/.draw-lbl-ic) for the Markets/Numbers/Field/
+     Daily IA. Footer expanded to 5 columns (added Reference).
+   v10.1: Lucide inline-icon support (.lic) for nav/drawer/footer links;
+     retired emoji from chrome. draw-item + footer-col links now flex rows.
+   v10.0: COMMITTED IDENTITY. One gold accent (#d4a23f), cool slate dark
+     (#0a0c0d). Retired the 5-color brand picker (--brand/--gold unified;
+     --green/--red stay semantic). Display font Archivo (was Oswald).
+     Light mode refined to single gold. Spacing/radius on the design scale.
+   ── prior ──
    AGSIST — Shared Stylesheet v9.5 — 2026-05-06
    v9.5: 44px minimum tap targets on mobile-visible interactive elements
      per WCAG 2.5.5 (enhanced) and iOS HIG. Affected selectors:
@@ -23,51 +38,56 @@
      --text-muted dark: opacity 0.52 → 0.62
      --text-muted light: opacity 0.40 → 0.50
    ═══════════════════════════════════════════════════════════════════ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Archivo:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --gold:     #daa520;
-  --gold-rgb: 218,165,32;
-  --green:    #4aab4c;
-  --brand:    #4aab4c;
-  --brand-rgb: 74,171,76;
-  --red:      #c8562e;
-  --blue:     #4a8fba;
-  --orange:   #c87a28;
-  --risk-low:     #4aab4c;
-  --risk-mod:     #daa520;
-  --risk-high:    #c87a28;
-  --risk-extreme: #c8562e;
-  --bg:       #0e0e0c;
-  --bg2:      #121210;
-  --surface:  #181816;
-  --surface2: #1e1e1a;
-  --surface3: #26261f;
-  --border:   rgba(255,255,255,0.10);
+  --gold:     #d4a23f;
+  --gold-rgb: 212,162,63;
+  --green:    #5fc28a;
+  --green-rgb:95,194,138;
+  --brand:    #d4a23f;
+  --brand-rgb: 212,162,63;
+  --red:      #e0685f;
+  --red-rgb:  224,104,95;
+  --blue:     #6f9fc2;
+  --orange:   #d08a3c;
+  --risk-low:     #5fc28a;
+  --risk-mod:     #d4a23f;
+  --risk-high:    #d08a3c;
+  --risk-extreme: #e0685f;
+  --bg:       #0a0c0d;
+  --bg2:      #0c0f10;
+  --surface:  #101415;
+  --surface2: #161b1c;
+  --surface3: #1d2324;
+  --border:   rgba(132,160,168,0.13);
+  --border-2: rgba(132,160,168,0.24);
   --border-g: rgba(var(--gold-rgb),0.30);
-  --text:     #f0ebe0;
-  --text-dim: rgba(240,235,224,0.82);
-  --text-muted:rgba(240,235,224,0.62);
-  --cream:    #f5f1e8;
-  --glow-gold:  0 0 20px rgba(var(--gold-rgb),.08);
-  --glow-card:  0 2px 12px rgba(0,0,0,.30), 0 1px 3px rgba(0,0,0,.15);
-  --glow-lift:  0 4px 20px rgba(0,0,0,.35), 0 0 0 1px rgba(var(--gold-rgb),.12);
+  --text:     #e9edeb;
+  --text-dim: rgba(233,237,235,0.80);
+  --text-muted:rgba(233,237,235,0.56);
+  --cream:    #e9edeb;
+  --glow-gold:  none;
+  --glow-card:  0 2px 12px rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.2);
+  --glow-lift:  0 1px 0 rgba(255,255,255,.025) inset, 0 24px 60px -30px rgba(0,0,0,.7);
   --base: 17px;
   --sp-xs: .35rem; --sp-sm: .65rem; --sp-md: 1rem; --sp-lg: 1.5rem;
   --sp-xl: 2rem; --sp-2xl: 3rem;
-  --r-sm: 4px; --r-md: 6px; --r-lg: 10px;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px;
+  --font-display:'Archivo',system-ui,sans-serif; --font-body:'Inter',system-ui,sans-serif; --font-mono:'JetBrains Mono',ui-monospace,monospace;
 }
 [data-theme="light"] {
-  --bg:       #f5f5f0; --bg2: #eeece6; --surface: #ffffff;
-  --surface2: #f5f5f0; --surface3: #e8e8e2; --border: #e8e8e2;
-  --border-g: rgba(var(--brand-rgb),0.30);
-  --text:     #1a1a1a;
-  --text-dim: rgba(26,26,26,0.68);
-  --text-muted:rgba(26,26,26,0.50);
-  --green: #2d6a2e; --brand: #2d6a2e; --brand-rgb: 45,106,46; --gold: #b8860b; --gold-rgb: 184,134,11; --red: #a63030; --blue: #2c6f9e;
+  --bg:       #f6f7f5; --bg2: #eef0ed; --surface: #ffffff;
+  --surface2: #f3f5f2; --surface3: #e9ece8; --border: rgba(20,30,28,0.12);
+  --border-2: rgba(20,30,28,0.20);
+  --border-g: rgba(var(--gold-rgb),0.34);
+  --text:     #161a18;
+  --text-dim: rgba(22,26,24,0.70);
+  --text-muted:rgba(22,26,24,0.52);
+  --green: #2e7d4f; --green-rgb:46,125,79; --brand: #a87d1e; --brand-rgb: 168,125,30; --gold: #a87d1e; --gold-rgb: 168,125,30; --red: #c0492f; --red-rgb:192,73,47;
   --glow-gold: none;
   --glow-card: 0 1px 6px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-  --glow-lift: 0 3px 12px rgba(0,0,0,.08), 0 0 0 1px rgba(45,106,46,.12);
+  --glow-lift: 0 3px 12px rgba(0,0,0,.08), 0 0 0 1px rgba(166,124,38,.14);
 }
 
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0 }
@@ -78,6 +98,7 @@ img { display: block; max-width: 100% }
 button { cursor: pointer; font-family: inherit }
 button, a, [role="button"], input, select, textarea, label { touch-action: manipulation; }
 .mono { font-family: 'JetBrains Mono', monospace }
+input, select, textarea { border-color: var(--border-2); }
 ::-webkit-scrollbar { width: 8px; height: 8px }
 ::-webkit-scrollbar-track { background: var(--bg) }
 ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px }
@@ -120,7 +141,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .hamburger.open .h-bar:nth-child(1) { transform: translateY(7px) rotate(45deg) }
 .hamburger.open .h-bar:nth-child(2) { opacity: 0 }
 .hamburger.open .h-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg) }
-@media (max-width: 960px) { .nav-menu { display: none } .hamburger { display: flex } #brand-pick { display: none } }
+@media (max-width: 960px) { .nav-menu { display: none } .hamburger { display: flex } }
 
 /* ── DRAWER ───────────────────────────────────────────────────────── */
 .drawer { position: fixed; inset: 0 0 0 auto; width: min(320px, 90vw); background: var(--surface); border-left: 2px solid var(--brand); z-index: 500; overflow-y: auto; transform: translateX(100%); transition: transform .25s cubic-bezier(.4,0,.2,1) }
@@ -182,8 +203,8 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .daily-eyebrow { display: inline-flex; align-items: center; gap: .5rem; font-family: 'JetBrains Mono', monospace; font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--brand); margin-bottom: .9rem; padding: .3rem .75rem; background: rgba(var(--brand-rgb),.06); border: 1px solid rgba(var(--brand-rgb),.18); border-radius: 3px; }
 .daily-eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand); animation: blink 2s ease-in-out infinite }
 .daily-date { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--text-muted); letter-spacing: .08em; margin-bottom: .6rem; text-transform: uppercase; }
-.daily-greeting { font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 600; color: var(--text-dim); margin-bottom: .75rem; letter-spacing: .03em }
-.daily-headline { font-family: 'Oswald', sans-serif; font-size: clamp(2.4rem, 4.5vw, 3.6rem); font-weight: 700; line-height: 1.15; color: var(--text); margin-bottom: 1rem; letter-spacing: -.01em; text-transform: uppercase; }
+.daily-greeting { font-family: 'Archivo', sans-serif; font-size: 1.5rem; font-weight: 600; color: var(--text-dim); margin-bottom: .75rem; letter-spacing: .03em }
+.daily-headline { font-family: 'Archivo', sans-serif; font-size: clamp(2.4rem, 4.5vw, 3.6rem); font-weight: 700; line-height: 1.15; color: var(--text); margin-bottom: 1rem; letter-spacing: -.01em; text-transform: uppercase; }
 .daily-headline span { color: var(--gold) }
 .daily-lead { font-size: 1.02rem; line-height: 1.75; color: var(--text-dim); max-width: 580px; margin-bottom: 1.5rem }
 .daily-sections { display: flex; flex-direction: column; gap: .85rem; margin-bottom: 1.75rem }
@@ -203,7 +224,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .s-card--gold { border-color: var(--border-g) }
 .s-card--ffai { border-color: rgba(74,143,186,0.25); background: linear-gradient(135deg, var(--surface) 0%, rgba(74,143,186,0.04) 100%) }
 .s-card-label { font-family: 'JetBrains Mono', monospace; font-size: .64rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--brand); margin-bottom: .7rem; opacity: .9; }
-.one-num { font-family: 'Oswald', sans-serif; font-size: 4rem; font-weight: 700; color: var(--gold); line-height: 1; margin-bottom: .2rem; letter-spacing: -.01em }
+.one-num { font-family: 'Archivo', sans-serif; font-size: 4rem; font-weight: 700; color: var(--gold); line-height: 1; margin-bottom: .2rem; letter-spacing: -.01em }
 .one-num-unit { font-size: .88rem; color: var(--text-dim); margin-bottom: .5rem }
 .one-num-ctx { font-size: .88rem; line-height: 1.65; color: var(--text-dim) }
 .watch-list { display: flex; flex-direction: column; gap: .5rem }
@@ -266,7 +287,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 /* ── WEATHER ──────────────────────────────────────────────────────── */
 .wx-hero { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border) }
 .wx-icon { font-size: 3.4rem; line-height: 1; flex-shrink: 0 }
-.wx-temp { font-family: 'Oswald', sans-serif; font-size: 3.1rem; font-weight: 700; color: var(--text); line-height: 1 }
+.wx-temp { font-family: 'Archivo', sans-serif; font-size: 3.1rem; font-weight: 700; color: var(--text); line-height: 1 }
 .wx-desc { font-size: .96rem; color: var(--text-dim); margin-top: .25rem }
 .wx-loc { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--text-muted); margin-top: .15rem; }
 .wx-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem }
@@ -339,7 +360,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .cal-name { font-size: .88rem; font-weight: 700; color: var(--text); margin-bottom: .2rem }
 .cal-time { font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--text-muted); }
 @media (max-width: 520px) { .cal-strip { gap: .45rem; margin-bottom: 1.25rem } .cal-card { min-width: 140px; padding: .5rem .65rem; border-radius: var(--r-sm) } .cal-today-badge { font-size: .55rem; padding: .08rem .3rem; margin-bottom: .2rem } .cal-date { font-size: .62rem; margin-bottom: .15rem } .cal-name { font-size: .75rem; margin-bottom: .1rem } .cal-time { font-size: .62rem; line-height: 1.3 } }
-.ffai-score { font-family: 'Oswald', sans-serif; font-size: 3.8rem; font-weight: 700; color: var(--blue); line-height: 1; margin-bottom: .35rem }
+.ffai-score { font-family: 'Archivo', sans-serif; font-size: 3.8rem; font-weight: 700; color: var(--blue); line-height: 1; margin-bottom: .35rem }
 .ffai-bar-wrap { height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; margin-bottom: .5rem }
 .ffai-bar-fill { height: 100%; background: linear-gradient(to right, var(--blue), #6aafda); border-radius: 3px; transition: width .8s cubic-bezier(.4,0,.2,1) }
 .ffai-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: .45rem }
@@ -358,7 +379,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .signup-inner { max-width: 680px; margin: 0 auto; text-align: center; position: relative; z-index: 1 }
 .signup-icon { font-size: 2.2rem; margin-bottom: .75rem }
 .signup-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: .68rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--brand); margin-bottom: .65rem; display: block; }
-.signup-headline { font-family: 'Oswald', sans-serif; font-size: clamp(1.9rem, 3.5vw, 2.8rem); font-weight: 700; text-transform: uppercase; color: var(--text); line-height: 1.15; margin-bottom: .75rem; letter-spacing: .02em; }
+.signup-headline { font-family: 'Archivo', sans-serif; font-size: clamp(1.9rem, 3.5vw, 2.8rem); font-weight: 700; text-transform: uppercase; color: var(--text); line-height: 1.15; margin-bottom: .75rem; letter-spacing: .02em; }
 .signup-sub { font-size: 1rem; line-height: 1.75; color: var(--text-dim); margin-bottom: 2rem }
 .signup-tabs { display: flex; background: var(--surface2); border-radius: var(--r-sm); padding: .22rem; gap: .22rem; margin-bottom: 1.5rem; border: 2px solid var(--border); max-width: 320px; margin-left: auto; margin-right: auto; }
 .signup-tab { flex: 1; padding: .55rem .75rem; border: none; background: none; border-radius: var(--r-sm); font-family: 'JetBrains Mono', monospace; font-size: .78rem; font-weight: 700; color: var(--text-dim); transition: all .15s; text-transform: uppercase; letter-spacing: .3px; }
@@ -397,18 +418,21 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .footer-tagline { font-size: .8rem; color: var(--text-dim) } .footer-built { font-size: .72rem; color: var(--text-muted) }
 .footer-status { display: flex; align-items: center; gap: .4rem; font-size: .72rem; color: var(--text-dim) }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand); animation: blink 2s ease-in-out infinite }
-.footer-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; padding-bottom: .75rem; border-bottom: 1px solid var(--border); margin-bottom: .75rem }
+.footer-cols { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; padding-bottom: .75rem; border-bottom: 1px solid var(--border); margin-bottom: .75rem }
 .footer-col h4 { font-family: 'JetBrains Mono', monospace; font-size: .64rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--brand); margin-bottom: .45rem; opacity: .9; }
 .footer-col a { display: block; font-size: .82rem; color: var(--text-dim); padding: .12rem 0; transition: color .15s }
 .footer-col a:hover { color: var(--text) }
 .footer-net { padding-bottom: .75rem; border-bottom: 1px solid var(--border); margin-bottom: .6rem }
 .footer-net-lbl { font-family: 'JetBrains Mono', monospace; font-size: .62rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: .5rem; display: block; }
 .footer-net-links { display: flex; gap: .55rem; flex-wrap: wrap }
-.footer-net-link { display: flex; align-items: center; gap: .65rem; padding: .45rem .9rem; background: var(--surface2); border: 2px solid var(--border); border-radius: var(--r-md); transition: border-color .15s; flex: 1 1 180px; min-width: 0; }
+.footer-net-link { display: flex; align-items: center; gap: .55rem; padding: .38rem .65rem; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-sm); transition: border-color .15s; flex: 0 1 auto; min-width: 0; }
 .footer-net-link:hover { border-color: var(--brand) } .footer-net-link--gold { border-color: var(--brand) }
 .footer-net-link img { flex-shrink: 0; border-radius: 3px }
-.net-text { min-width: 0 } .net-text strong { font-size: .82rem; color: var(--text); font-weight: 700; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis } .net-text em { font-size: .74rem; color: var(--text-dim); font-style: normal }
-.net-arr { font-size: .78rem; color: var(--text-muted); margin-left: auto; flex-shrink: 0 }
+.net-text { display: flex; flex-direction: column; line-height: 1.18; min-width: 0 }
+.net-text strong { font-size: .78rem; font-weight: 700; color: var(--text); white-space: nowrap }
+.net-text em { font-size: .64rem; font-style: normal; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; letter-spacing: .03em; text-transform: uppercase }
+.net-arr { margin-left: .4rem; color: var(--text-muted); font-size: .8rem; flex-shrink: 0; transition: color .15s }
+.footer-net-link:hover .net-arr { color: var(--brand) }
 .footer-bottom { display: flex; justify-content: center; align-items: center; padding: .5rem 0 }
 .footer-legal { display: flex; align-items: center; gap: .4rem; font-size: .72rem; color: var(--text-muted); flex-wrap: wrap; }
 .footer-legal a { color: var(--text-muted); transition: color .15s } .footer-legal a:hover { color: var(--text-dim) }
@@ -437,13 +461,6 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 }
 @media (hover: none) { .pc:hover { border-color: var(--border) } .market-card:hover { border-color: var(--border) } }
 
-/* ── NAV ICONS ────────────────────────────────────────────────────── */
-.nav-icon { height: 18px; width: 18px; object-fit: contain; flex-shrink: 0; border-radius: 2px; opacity: .7; filter: drop-shadow(0 0 1px rgba(255,255,255,.08)); transition: filter .15s, opacity .15s }
-.nav-btn:hover .nav-icon, .nav-dd.open > .nav-btn .nav-icon { opacity: .9; filter: drop-shadow(0 0 2px rgba(74,171,76,.15)) }
-[data-theme="light"] .nav-icon { filter: none; opacity: .65 }
-[data-theme="light"] .nav-btn:hover .nav-icon { opacity: .85; filter: drop-shadow(0 0 1px rgba(45,106,46,.12)) }
-.draw-lbl-icon { height: 16px; width: 16px; object-fit: contain; display: inline-block; vertical-align: middle; margin-right: .3rem; border-radius: 2px; opacity: .7 }
-@media (max-width: 960px) { .nav-icon { display: none } }
 #bids-zip:focus, #wx-zip:focus, #compact-email:focus { border-color: var(--brand) !important }
 
 /* ── SHARED TOOL / CALCULATOR UI ─────────────────────────────────── */
@@ -637,54 +654,44 @@ summary:focus-visible, .pc:focus-visible {
 :root { accent-color: var(--brand); }
 
 
-/* ══ BRAND THEMES (2026-06-12) ════════════════════════════════════════
-   Swaps the brand ACCENT only (--gold / --gold-rgb). Semantic colors
-   (--green up, --red down, risk scale) never change — a Red Power user
-   still reads green-up / red-down. --border-g and the glows derive from
-   --gold-rgb, so they follow automatically. Default (no data-brand attr)
-   is the original Prairie Gold look. Names are colors, not trademarks. */
-[data-brand="classic"]   { --gold:#ffd61f; --gold-rgb:255,214,31; }
-[data-brand="redpower"]  { --gold:#ff6a52; --gold-rgb:255,106,82; }
-[data-brand="bigblue"]   { --gold:#6fb3e8; --gold-rgb:111,179,232; }
-[data-brand="orange"]    { --gold:#ff9a3c; --gold-rgb:255,154,60; }
-/* Light-mode variants — darker accents for contrast on light surfaces.
-   Classic goes green in light mode: yellow text on white fails contrast. */
-[data-theme="light"][data-brand="classic"]  { --gold:#2d6a2e; --gold-rgb:45,106,46; }
-[data-theme="light"][data-brand="redpower"] { --gold:#b8240f; --gold-rgb:184,36,15; }
-[data-theme="light"][data-brand="bigblue"]  { --gold:#1b5e9e; --gold-rgb:27,94,158; }
-[data-theme="light"][data-brand="orange"]   { --gold:#b35a00; --gold-rgb:179,90,0; }
+/* ══ BRAND ACCENT — committed single identity (2026-06-14) ══════════
+   One gold accent. The 5-color brand picker is retired; --brand and --gold
+   are unified to a single gold. --green (up) / --red (down) stay semantic
+   and never theme. ══════════════════════════════ */
 
+/* ══ LUCIDE INLINE ICONS (.lic) — nav, drawer, footer link glyphs ══════
+   One outline library, currentColor so each icon inherits its link's color
+   and follows hover (gold). Sized a touch above cap height; sits as a flex
+   item so the existing link gap handles spacing. ════════════════════════ */
+.lic{width:17px;height:17px;flex:0 0 auto;opacity:.82;transition:opacity .12s}
+.nav-panel a:hover .lic,.draw-item:hover .lic,.footer-col a:hover .lic{opacity:1}
+.draw-item{gap:.65rem}
+.footer-col a{display:flex;align-items:center;gap:.5rem}
+.draw-close .lic{width:20px;height:20px;opacity:.9}
 
+/* Theme toggle icon — moon in dark, sun in light; pure CSS, no JS textContent. */
+.theme-ic{width:16px;height:16px;flex:0 0 auto}
+.theme-ic.moon{display:inline-block}
+.theme-ic.sun{display:none}
+[data-theme="light"] .theme-ic.moon{display:none}
+[data-theme="light"] .theme-ic.sun{display:inline-block}
 
-/* ══ BRAND ACCENT — structural recolor (2026-06-12) ════════════════════
-   --brand drives the page skeleton (nav, footer, drawer, eyebrows,
-   section labels, card hovers, buttons, breadcrumbs, signup borders).
-   --gold stays the secondary accent (headlines span, sponsor card).
-   Semantic colors (--green up / --red down / risk scale / The Read) NEVER
-   theme — they stay on --green/--red. Each theme sets --brand + the gold
-   pair so the two accents stay in the same family.
-   Colors are anchored to authentic equipment paint, lifted for legibility
-   on the near-black UI. Default (no data-brand) = AGSIST green+gold. */
-[data-brand="biggreen"] { --brand:#5cb83a; --brand-rgb:92,184,58;  --gold:#ffde00; --gold-rgb:255,222,0; }
-[data-brand="red"]      { --brand:#f5453f; --brand-rgb:245,69,63;   --gold:#ffd0cb; --gold-rgb:255,208,203; }
-[data-brand="blue"]     { --brand:#5a9fe0; --brand-rgb:90,159,224;  --gold:#ffd54a; --gold-rgb:255,213,74; }
-[data-brand="orange"]   { --brand:#ff9326; --brand-rgb:255,147,38;  --gold:#ffd54a; --gold-rgb:255,213,74; }
-[data-brand="prairie"]  { --brand:#daa520; --brand-rgb:218,165,32;  --gold:#daa520; --gold-rgb:218,165,32; }
+/* ══ MEGA-MENU GROUPING — sub-section labels inside dropdowns/drawer ══
+   The "a team organised this" cue: quiet mono eyebrows that cluster links
+   into named groups. Sized + contrasted for sunlight legibility. */
+.nav-grp-lbl{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.64rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);padding:.55rem 1.1rem .2rem}
+.nav-panel > .nav-grp-lbl:first-child{padding-top:.15rem}
+.draw-grp-lbl{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);padding:.5rem 1.1rem .1rem}
 
-/* Light-mode variants — darker anchors for contrast on white surfaces. */
-[data-theme="light"][data-brand="biggreen"] { --brand:#367C2B; --brand-rgb:54,124,43;  --gold:#9a7d00; --gold-rgb:154,125,0; }
-[data-theme="light"][data-brand="red"]      { --brand:#cb2c30; --brand-rgb:203,44,48;  --gold:#b5402f; --gold-rgb:181,64,47; }
-[data-theme="light"][data-brand="blue"]     { --brand:#2566af; --brand-rgb:37,102,175; --gold:#a06a00; --gold-rgb:160,106,0; }
-[data-theme="light"][data-brand="orange"]   { --brand:#b35a00; --brand-rgb:179,90,0;   --gold:#a06a00; --gold-rgb:160,106,0; }
-[data-theme="light"][data-brand="prairie"]  { --brand:#2d6a2e; --brand-rgb:45,106,46;  --gold:#b8860b; --gold-rgb:184,134,11; }
+/* Reserve nav height so injected chrome doesn't shift the page on load (CLS). */
+#site-header{min-height:74px}
 
-
-/* Brand swatch picker (replaces the dropdown) */
-.brand-pick{display:inline-flex;gap:7px;align-items:center}
-.brand-sw{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(255,255,255,.20);background:var(--sw);cursor:pointer;padding:0;transition:transform .12s,box-shadow .12s;flex-shrink:0}
-.brand-sw:hover{transform:scale(1.15)}
-.brand-sw[aria-checked="true"]{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--sw);transform:scale(1.1)}
-.brand-sw:focus-visible{outline:2px solid var(--sw);outline-offset:2px}
-[data-theme="light"] .brand-sw[aria-checked="true"]{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--sw)}
-.drawer .brand-pick{gap:9px}
-.drawer .brand-sw{width:26px;height:26px}
+/* Skip-link — keyboard users jump past the nav to main content. */
+.skip-link{position:absolute;left:-9999px;top:0;z-index:1000;background:var(--brand);color:var(--bg);font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.8rem;font-weight:700;padding:.6rem 1rem;border-radius:0 0 var(--r-sm) 0;text-decoration:none}
+.skip-link:focus{left:0}
+/* Lucide section markers on the dropdown buttons + drawer labels */
+.nav-ic{width:18px;height:18px;flex:0 0 auto;opacity:.78;transition:opacity .15s}
+.nav-btn:hover .nav-ic,.nav-dd.open > .nav-btn .nav-ic{opacity:1}
+.draw-lbl{display:flex;align-items:center}
+.draw-lbl-ic{width:15px;height:15px;flex:0 0 auto;margin-right:.4rem;opacity:.9}
+@media (max-width: 960px){ .nav-ic{display:none} }
