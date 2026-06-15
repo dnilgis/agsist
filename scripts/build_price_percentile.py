@@ -65,23 +65,54 @@ def compute(closes_dollars):
     }
 
 def fetch_closes(ticker, scale):
-    """Return chronological list of weekly closes in display units ($/bu or $/cwt)."""
+    """Return (closes, pairs): closes is a chronological list of weekly closes in
+    display units; pairs is a list of (calendar_month_0_11, close) for seasonality."""
     import yfinance as yf
     df = yf.Ticker(ticker).history(period=f"{YEARS}y", interval="1wk", auto_adjust=False)
     if df is None or df.empty:
-        return []
-    closes = [float(x) for x in df["Close"].tolist() if x == x and x > 0]
-    return [c * scale for c in closes]
+        return [], []
+    closes, pairs = [], []
+    for idx, x in zip(df.index, df["Close"].tolist()):
+        if x == x and x > 0:
+            v = float(x) * scale
+            closes.append(v)
+            try:
+                pairs.append((int(idx.month) - 1, v))
+            except Exception:
+                pass
+    return closes, pairs
+
+
+def compute_seasonality(pairs):
+    """0-100 seasonal-strength index by calendar month, from the same 5-yr weekly
+    closes. For each month, average its closes across the 5 years, then normalize the
+    twelve monthly means so the cheapest month maps to 0 and the dearest to 100.
+    Returns a 12-int list, or None if any month is missing data."""
+    if not pairs:
+        return None
+    buckets = {m: [] for m in range(12)}
+    for m, v in pairs:
+        buckets[m].append(v)
+    if any(len(buckets[m]) == 0 for m in range(12)):
+        return None
+    means = [sum(buckets[m]) / len(buckets[m]) for m in range(12)]
+    lo, hi = min(means), max(means)
+    if hi - lo < 1e-9:
+        return [50] * 12
+    return [int(round(100.0 * (mn - lo) / (hi - lo))) for mn in means]
 
 def main():
     out = {"updated": dt.datetime.utcnow().replace(microsecond=0).isoformat() + "Z"}
     ok = 0
     for key, (tk, scale) in TICKERS.items():
         try:
-            closes = fetch_closes(tk, scale)
+            closes, pairs = fetch_closes(tk, scale)
             stats = compute(closes)
             if stats:
                 stats["read"] = read_sentence(stats["pct"], key)
+                seas = compute_seasonality(pairs)
+                if seas:
+                    stats["seasonality"] = seas
                 out[key] = stats
                 ok += 1
                 print(f"{key}: {stats['pct']}{ordinal(stats['pct'])} pct  "
