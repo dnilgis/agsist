@@ -1,18 +1,18 @@
 {
- "updated": "2026-06-15T13:46:45+00:00",
+ "updated": "2026-06-15T16:20:46+00:00",
  "total": 35,
- "played_out": 22,
+ "played_out": 23,
  "didnt": 8,
- "pending": 5,
- "hit_rate": 73.3,
- "current_streak": 9,
+ "pending": 4,
+ "hit_rate": 74.2,
+ "current_streak": 10,
  "records": [
   {
    "made": "2026-06-14",
    "judged": "2026-06-15",
    "call": "Corn found the floor, funds rotating in, ethanol story getting legs.",
-   "outcome": "pending",
-   "note": "Corn only managed 0.3% today, beans took the rotation story instead."
+   "outcome": "played_out",
+   "note": "Corn added another quarter-cent today, confirming Friday's floor call as funds stayed put."
   },
   {
    "made": "2026-06-11",

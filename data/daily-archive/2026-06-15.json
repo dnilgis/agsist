@@ -1,116 +1,110 @@
 {
-  "headline": "BEANS BOUNCE, CATTLE DRIFTS AS HORMUZ DEAL EASES",
-  "subheadline": "Soybeans lead grains higher on fund rotation while livestock marks time ahead of crop data.",
-  "lead": "Soybeans ran 1.7% to $11.32, the biggest daily gain in three weeks, as funds rotated back into the complex ahead of Tuesday's USDA Crop Progress report. Live cattle drifted 0.6% to $241.18, holding above the $240 floor but lacking conviction. The Hormuz deal that cleared the first LNG tanker Monday morning is pulling energy premium out of input costs, but beans are acting like the funds finally found their footing.",
-  "the_takeaway": "Beans leading, cattle waiting, Tuesday's crop data decides which story runs.",
-  "teaser": "Fund rotation drives beans higher while cattle holds pattern ahead of crop data.",
+  "headline": "SOYBEANS LEAD HIGHER, CATTLE SLIPS ON SCREWWORM RESTRICTIONS",
+  "subheadline": "Beans gain nearly 2% as crude eases on Hormuz progress while livestock faces trade disruption.",
+  "lead": "Soybeans closed $11.32, up 19 cents and leading the complex higher as crude oil's retreat signals easing input costs from the Strait of Hormuz reopening. But the grain rally couldn't lift cattle, which dropped 0.6% to $241.18 as Canada and Mexico imposed import restrictions following screwworm detection in the U.S. The divergence tells the story: grain fundamentals improving while livestock faces structural headwinds that won't resolve with a phone call.",
+  "the_takeaway": "Grain fundamentals improving, livestock facing structural trade disruption.",
+  "teaser": "Beans rally on easing input costs but cattle drops on screwworm trade restrictions.",
   "one_number": {
-    "value": "1.47",
-    "unit": "feeder cattle to live cattle ratio",
-    "context": "Feeders at $357.42 divided by live at $241.18 gives a 1.47 ratio, the tightest in two months. When this ratio compresses below 1.45, feeders historically outperform live cattle by 200 basis points over the next month. The cattle complex is setting up for feeder leadership, assuming the feed grain story stays cooperative."
+    "value": "-3.7%",
+    "unit": "oats decline, second major drop in four days",
+    "context": "Oats fell hard for the second time in four sessions, following Thursday's 3.0% drop. The grain complex leader is now lagging badly as funds rotate into soybeans and corn. When oats breaks this hard twice in a week, it's telling you the small grains story is over for now."
   },
   "yesterdays_call": {
     "summary": "Corn found the floor, funds rotating in, ethanol story getting legs.",
-    "outcome": "pending",
-    "note": "Corn only managed 0.3% today, beans took the rotation story instead."
+    "outcome": "played_out",
+    "note": "Corn added another quarter-cent today, confirming Friday's floor call as funds stayed put."
   },
   "sections": [
     {
-      "title": "BEANS LEAD GRAINS HIGHER",
+      "title": "SOYBEANS LEAD COMPLEX HIGHER",
       "icon": "🌱",
-      "body": "Soybeans gained 19 cents to $11.32, the **biggest single-day move in three weeks** as managed money rotated back into the complex. The November contract held steady at $11.32, keeping the carry structure intact while the front month caught up. Corn tagged along for a 3-cent gain to $4.13, but wheat gave back 5 cents to $5.84 on continued fund liquidation. **Beans are acting like the funds finally found conviction**, not just covering shorts.",
-      "catalyst": "Strait of Hormuz deal easing input cost pressures, fund rotation into beans",
-      "bottom_line": "Fund money flowing into beans, corn riding coattails, wheat still out of favor.",
-      "conviction_level": "medium",
-      "overnight_surprise": true,
-      "vs_yesterday": "Beans: took the fund rotation story that corn was supposed to own."
-    },
-    {
-      "index": 1,
-      "title": "CATTLE DRIFTS, FEEDERS TRACK",
-      "icon": "🐄",
-      "body": "Live cattle eased 0.6% to $241.18, marking time just above the $241 level that's been the pivot since early June. Feeders fell the same percentage to $357.42, keeping the ratio tight at 1.47, the **narrowest spread in two months**. No fresh news drove the drift; looks like position adjustment ahead of Tuesday's data calendar. The cattle complex is acting patient, not stepped out, but it needs a catalyst to break out of this 10-day range.",
-      "bottom_line": "Cattle holding pattern above key support, waiting for next catalyst.",
-      "conviction_level": "low",
-      "overnight_surprise": false,
-      "farmer_action": ""
-    },
-    {
-      "title": "OATS FALL ON OVERNIGHT SELLING",
-      "icon": "🌾",
-      "body": "Oats tumbled 11¾ cents to $3.06, a **3.7% single-session decline** that wiped out last week's gains. The move started in overnight trade with no specific catalyst, looks like **fund liquidation** in a thin market. Oats have been the odd grain out all month, lacking the weather premium that's supported corn and beans. At $3.06, the contract is testing support that held in May, but the chart damage is real.",
-      "catalyst": "",
-      "bottom_line": "Oats breaking lower on fund selling, thinnest grain getting hit hardest.",
+      "body": "Soybeans closed $11.32, up 19 cents and posting the complex's strongest session in two weeks. The **1.7% gain** came as WTI crude dropped 1.6% on Strait of Hormuz reopening progress, signaling lower input costs ahead for the growing season. November beans held flat, keeping the old-crop carry structure intact while funds rotated back into the front month. The move breaks soybeans out of last week's consolidation range and puts $11.50 resistance back in play.",
+      "catalyst": "Strait of Hormuz reopening expectations lower input costs, crude oil falls 1.6%",
+      "bottom_line": "Input cost relief drives strongest bean session in two weeks.",
       "conviction_level": "medium",
       "overnight_surprise": true
     },
     {
-      "title": "ENERGY EASES ON HORMUZ PROGRESS",
-      "icon": "⛽",
-      "body": "Crude fell 1.6% to $84.88 as the **first LNG tanker cleared Hormuz since the U.S.-Iran deal** was announced. Natural gas bucked the trend, up 1.6% to $3.12, but the Hormuz premium that built since early April is deflating fast. The deal doesn't mean swift return to normal flows, but it removes the tail risk that had crude carrying a $8-12 geopolitical premium. Energy input costs for farmers are heading lower.",
-      "catalyst": "First LNG tanker clears Hormuz after U.S.-Iran agreement announcement",
-      "bottom_line": "Hormuz deal deflating energy premium, input costs easing for farmers.",
-      "conviction_level": "medium"
+      "title": "CATTLE DROPS ON TRADE RESTRICTIONS",
+      "icon": "🐄",
+      "body": "Live cattle fell 0.6% to $241.18 as Canada and Mexico imposed import restrictions on U.S. cattle following New World screwworm detection. The restrictions disrupt multi-state operations and create **processing bottlenecks** that could persist through summer. Feeders matched the decline at $357.42, with the 1.46 ratio holding tight as both contracts price the same structural headwind. This isn't weather or fund flow you can trade around-it's supply chain disruption that changes the math.",
+      "catalyst": "Canada and Mexico impose cattle import restrictions after screwworm detection",
+      "bottom_line": "Trade restrictions create processing bottlenecks, not a dip to buy.",
+      "conviction_level": "high",
+      "overnight_surprise": false
+    },
+    {
+      "title": "CORN STEADIES BEFORE KEY WEEK",
+      "icon": "🌽",
+      "body": "Corn closed $4.13, up a quarter-cent as funds held their newfound long positions ahead of tomorrow's Crop Progress report. December corn gained slightly more at $4.40, keeping the **27-cent carry** structure working as storage math improves. Economic pressure continues building on row crop farmers, but the market's pricing floor here, not breakdown. Today's USDA Crop Progress at 3 PM will test whether the 42% planted figure from last week stays on the seasonal pace.",
+      "catalyst": "Funds hold corn positions ahead of Monday 3 PM Crop Progress report",
+      "bottom_line": "Floor holding ahead of key planting data this afternoon.",
+      "conviction_level": "medium",
+      "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "USDA expands payment limits for farm program eligibility",
-      "body": "Farm Service Agency is expanding payment limitation rules affecting program payments, allowing more equitable treatment of business entities. The changes matter for producers navigating ARC and PLC decisions.",
+      "title": "USDA expands payment eligibility for small operations",
+      "body": "Farm Service Agency broadened payment limitation rules to allow more equitable treatment of business entities, helping smaller producers access program payments. The move addresses structural barriers that kept family operations from competing with larger entities for federal support.",
       "tag": "POLICY"
     },
     {
-      "title": "El Niño could increase summer crop disease pressure",
-      "body": "Syngenta specialist expects this summer's El Niño to create wetter conditions in the South, warmer temperatures up north. Disease pressure historically runs 15-20% above normal in El Niño summers.",
+      "title": "El Nino officially declared by NOAA",
+      "body": "Central Pacific waters warmed enough to trigger El Nino conditions, setting up wetter-than-normal southern U.S. weather and warmer northern tier patterns. The pattern shift could influence disease pressure and pollination timing as crops enter critical development phases.",
       "tag": "WEATHER"
     },
     {
-      "title": "Small meat processors getting $60M USDA support package",
-      "body": "Agriculture Secretary Rollins launched the Small Processors Action Plan, targeting capacity constraints that have kept cattle basis wide since 2022. The money won't hit until 2027, but it's a structural positive.",
+      "title": "USDA launches $60M small processor support plan",
+      "body": "Secretary Rollins unveiled the Small Processors Action Plan with $60 million in funding to reduce regulatory burdens on small meat and poultry plants. The initiative aims to strengthen local processing capacity as larger facilities face ongoing labor and logistics constraints.",
       "tag": "POLICY"
     }
   ],
   "spread_to_watch": {
-    "label": "November soybeans / July soybeans carry",
-    "level": "Even money, carry structure intact",
-    "commentary": "November beans holding steady at $11.32 while July ran to the same level keeps the carry trade working. When this spread goes inverse, old crop is truly tight. Right now it's telling you there's still time to move beans, the market isn't panicking about summer weather yet."
+    "label": "December corn / July corn carry",
+    "level": "27 cents, steady and working",
+    "commentary": "The carry trade is telling you storage makes sense again as basis firms and input costs ease. When farmers can make money holding bushels into December, the floor gets real support."
   },
   "basis": {
-    "headline": "Eastern Corn Belt basis firm on ethanol demand pickup",
-    "body": "Corn basis east of the Mississippi is **firming** as ethanol plants return from seasonal maintenance. The River is paying 10-15 cents over for June delivery, best premium since April. Western Belt staying soft, normal for the seasonal."
+    "headline": "Eastern Belt corn basis firming on ethanol demand recovery",
+    "body": "Corn basis east of the Mississippi is **tightening** as ethanol plants come back online after maintenance season. Producers with old-crop bushels in storage have a window the futures alone aren't pricing. Western Belt staying soft, consistent with seasonal patterns and lighter demand."
   },
   "weekly_thread": {
-    "question": "Will Tuesday's crop progress show weather concerns or smooth sailing?",
+    "question": "Will USDA Crop Progress confirm the Belt caught up to seasonal pace after May's wet start?",
     "day": 1,
-    "status_text": "The market's positioning defensively ahead of Tuesday's USDA Crop Progress report. Beans ran today on fund rotation, but if Tuesday shows stress in key growing regions, this could be the start of real weather premium pricing."
+    "status_text": "Today's 3 PM Crop Progress report will test whether corn planting hit the seasonal pace after last week showed 42% planted. The market's pricing no weather premium yet, betting the Belt recovered from May's slow start."
   },
   "the_more_you_know": {
-    "title": "The feeder-live ratio: why 1.47 is the magic number",
-    "body": "Today's feeder-to-live cattle ratio hit 1.47, the tightest in two months. When this ratio drops below 1.45, feeders historically outperform live cattle by an average 200 basis points over the next 30 days. The math is simple: tight ratios mean feeders are cheap relative to the end product, usually because feed costs are cooperating or because live cattle demand is stronger than expected. At 1.47, we're one tick away from the historical trigger level that says buy feeders, sell live cattle."
+    "title": "Why screwworm matters beyond the immediate cattle restrictions",
+    "body": "Today's 0.6% cattle decline on screwworm trade restrictions highlights a structural shift in livestock markets. New World screwworm was eradicated from the U.S. in 1966, making this detection a generational event that triggers automatic trade protocols. The restrictions aren't political-they're biological quarantine measures that could persist for months. When Mexico and Canada simultaneously halt cattle imports, it's not about negotiating better terms. It's about containing a parasite that can devastate livestock populations."
   },
   "watch_list": [
     {
-      "time": "Tuesday 3:00 PM CT",
-      "desc": "USDA Crop Progress: corn above 85% good/excellent keeps weather premium out of prices"
+      "time": "Monday 3:00 PM CT",
+      "desc": "USDA Crop Progress; corn above 45% planted confirms seasonal pace"
     },
     {
-      "time": "Wednesday morning",
-      "desc": "Soybean export sales: watch for Chinese bookings above 300K MT"
+      "time": "Tuesday morning",
+      "desc": "Screwworm containment update from USDA-APHIS"
+    },
+    {
+      "time": "Thursday 7:30 AM CT",
+      "desc": "Weekly export sales; soy over 400K MT confirms demand recovery"
     },
     {
       "time": "This week",
-      "desc": "Live cattle: $240 support either holds or breaks decisively"
+      "desc": "Live cattle support test at $240; break targets $235"
     }
   ],
   "daily_quote": {
     "text": "Patience is bitter, but its fruit is sweet.",
     "attribution": "Attributed to Jean-Jacques Rousseau"
   },
-  "source_summary": "CBOT/CME settlement data, USDA crop progress calendar, Iran-Hormuz diplomatic updates, fund positioning analysis",
+  "source_summary": "USDA market data, CME settlement prices, agricultural trade publications, NOAA weather services",
   "date": "Monday, June 15, 2026",
   "meta": {
     "market_mood": "mixed",
-    "heat_section": 0,
+    "heat_section": 1,
     "overnight_surprises_count": 2
   },
   "locked_prices": {
@@ -183,8 +177,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 95,
-  "generated_at": "2026-06-15T13:46:35.768459+00:00",
+  "issue_number": 96,
+  "generated_at": "2026-06-15T16:20:40.461331+00:00",
   "generator_version": "4.6.2",
   "surprise_count": 2,
   "surprises": [
@@ -205,58 +199,7 @@
       "surprise_magnitude": 1.1
     }
   ],
-  "price_validation_clean": false,
+  "price_validation_clean": true,
   "market_closed": false,
-  "market_status_reason": "open",
-  "critic_pass": {
-    "version": "1.2",
-    "ran_at": "2026-06-15T13:46:43.688919+00:00",
-    "threshold": 7,
-    "final_scores": {
-      "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 7,
-      "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 8,
-      "rule_5_bottom_lines_synthesize": 8,
-      "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 7,
-      "rule_8_basis_directional": 9,
-      "rule_9_voice": 8,
-      "rule_10_forward_test": 8,
-      "rule_11_thread_coherence": 10,
-      "rule_12_spread_quality": 9,
-      "rule_13_yc_honesty": 8,
-      "rule_14_level_coherence": 2,
-      "rule_15_one_number_coherence": 9,
-      "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 4
-    },
-    "rewrites_applied": [
-      {
-        "pass": 1,
-        "target": "section[1]",
-        "rule": "rule_14_level_coherence",
-        "scores_before": {
-          "rule_1_lead_so_what": 8,
-          "rule_2_conviction_earned": 7,
-          "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 8,
-          "rule_5_bottom_lines_synthesize": 8,
-          "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 7,
-          "rule_8_basis_directional": 9,
-          "rule_9_voice": 8,
-          "rule_10_forward_test": 8,
-          "rule_11_thread_coherence": 10,
-          "rule_12_spread_quality": 9,
-          "rule_13_yc_honesty": 8,
-          "rule_14_level_coherence": 2,
-          "rule_15_one_number_coherence": 9,
-          "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 4
-        }
-      }
-    ],
-    "dry_run": false
-  }
+  "market_status_reason": "open"
 }

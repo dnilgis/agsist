@@ -3,14 +3,14 @@
     {
       "date": "2026-06-15",
       "date_display": "Monday, June 15, 2026",
-      "headline": "BEANS BOUNCE, CATTLE DRIFTS AS HORMUZ DEAL EASES",
-      "teaser": "Fund rotation drives beans higher while cattle holds pattern ahead of crop data.",
+      "headline": "SOYBEANS LEAD HIGHER, CATTLE SLIPS ON SCREWWORM RESTRICTIONS",
+      "teaser": "Beans rally on easing input costs but cattle drops on screwworm trade restrictions.",
       "market_mood": "mixed",
       "surprise_count": 2,
-      "sections": 4,
+      "sections": 3,
       "url": "/daily/2026-06-15",
       "market_closed": false,
-      "yc_outcome": "pending"
+      "yc_outcome": "played_out"
     },
     {
       "date": "2026-06-14",
@@ -1058,6 +1058,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-15T13:46:43.740288+00:00",
+  "updated": "2026-06-15T16:20:40.471939+00:00",
   "count": 95
 }
