@@ -16,7 +16,7 @@
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 <title>Soybean Prices Today &mdash; Live CBOT Futures &amp; Cash Bids</title>
-<meta name="description" content="Live soybean futures from CBOT, local cash bids by ZIP, 52-week price range, and a daily market read. Front month + November new-crop. Updated every 30 minutes.">
+<meta name="description" content="Live CBOT soybean futures, updated every 30 min — front-month ZS, November new-crop, your RP revenue floor, basis-to-cash and the daily read.">
 <meta name="keywords" content="soybean prices today, soybean futures prices today, cbot soybeans, cbot soybean live price, soybean cash bids, soybean basis, soybean price by zip, ZS futures, November soybean futures, corn bean ratio, soybean market read, soybean price per bushel">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -39,7 +39,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 .bc{font-size:.75rem;color:var(--text-dim);margin:12px 0}.bc a{color:var(--gold);text-decoration:none}
 .ph{background:linear-gradient(135deg,var(--surface) 0%,rgba(230,176,66,.05) 100%);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:8px;display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
 .ph-icon{font-size:2.6rem;flex-shrink:0}.ph-info h1{font-size:1.05rem;color:var(--text);margin:0 0 2px 0}.ph-exch{font-size:.7rem;color:var(--text-dim)}
-.ph-price{margin-left:auto;text-align:right}.ph-val{font-family:'Oswald',sans-serif;font-size:2.2rem;font-weight:700;color:var(--text);line-height:1}.ph-unit{font-size:.72rem;color:var(--text-dim)}.ph-chg{font-size:.88rem;font-weight:700;margin-top:2px}
+.ph-price{margin-left:auto;text-align:right}.ph-val{font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:700;color:var(--text);line-height:1}.ph-unit{font-size:.72rem;color:var(--text-dim)}.ph-chg{font-size:.88rem;font-weight:700;margin-top:2px}
 .up{color:var(--green)}.dn{color:var(--red)}
 .ps{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--text-dim);margin-bottom:10px}
 .ps-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
@@ -58,7 +58,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .snap-link{font-size:.65rem;color:var(--green);text-decoration:none;white-space:nowrap}
 .cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-bottom:14px}
 .cc{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;transition:border-color .2s}.cc:hover{border-color:var(--border-g)}.cc.hi{border-color:var(--gold);background:rgba(230,176,66,.04)}
-.cc-lbl{font-size:.62rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}.cc-p{font-family:'Oswald',sans-serif;font-size:1.25rem;font-weight:700;color:var(--text)}.cc-u{font-size:.62rem;color:var(--text-dim)}.cc-c{font-size:.72rem;font-weight:600;margin-top:2px}
+.cc-lbl{font-size:.62rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}.cc-p{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;color:var(--text)}.cc-u{font-size:.62rem;color:var(--text-dim)}.cc-c{font-size:.72rem;font-weight:600;margin-top:2px}
 .rng{margin-bottom:14px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px}
 .rng-lbl{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
 .rng-bar{position:relative;height:6px;background:var(--surface2);border-radius:3px;margin-bottom:4px}
@@ -68,7 +68,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .rat-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:14px}
 .rat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 14px}
 .rat-lbl{font-size:.62rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:8px}
-.rat-val{font-family:'Oswald',sans-serif;font-size:1.9rem;font-weight:700;color:var(--text);line-height:1;margin-bottom:10px}
+.rat-val{font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:700;color:var(--text);line-height:1;margin-bottom:10px}
 .rat-gauge-bar{position:relative;height:8px;background:linear-gradient(to right,var(--green) 0%,var(--gold) 40%,var(--gold) 60%,#5a9b3c 100%);border-radius:4px;margin-bottom:5px}
 .rat-gauge-dot{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;background:var(--surface);border:3px solid #fff;transition:left .5s;box-shadow:0 0 0 2px var(--gold)}
 .rat-gauge-labels{display:flex;justify-content:space-between;font-size:.62rem;color:var(--text-dim);line-height:1.3;margin-bottom:8px}
@@ -153,7 +153,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 /* NEW v11: FFAI badge */
 .ffai-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.08) 100%);border:1px solid var(--border-g);border-radius:20px;padding:5px 10px;font-size:.62rem;color:var(--text-dim);text-decoration:none;font-weight:600}
 .ffai-badge:hover{border-color:var(--green)}
-.ffai-score{color:var(--green);font-family:'Oswald',sans-serif;font-size:.72rem}
+.ffai-score{color:var(--green);font-family:'JetBrains Mono',monospace;font-size:.72rem}
 .ffai-lbl{text-transform:uppercase;letter-spacing:.08em}
 /* NEW v11: signup card + big CTA */
 .signup-card{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.05) 100%);border:1px solid var(--border-g);border-radius:12px;padding:14px;margin-bottom:14px;text-align:center}
@@ -163,7 +163,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .signup-form input{flex:1;min-width:180px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:1rem;color:var(--text);min-height:40px}
 .signup-form input:focus{outline:1px solid var(--gold);border-color:var(--gold)}
 .signup-form button{background:var(--green);color:#fff;border:none;border-radius:6px;padding:10px 16px;font-size:.78rem;font-weight:700;cursor:pointer;min-height:40px}
-.signup-form button:hover{background:#4aab4c}
+.signup-form button:hover{background:var(--brand,#d4a23f)}
 .signup-ok{color:var(--green);font-size:.78rem;margin-top:8px;font-weight:600;display:none}
 .signup-sub{font-size:.62rem;color:var(--text-dim);margin-top:6px}
 .big-cta{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(58,139,60,.1) 0%,var(--surface) 100%);border:1px solid var(--border-g);border-left:3px solid var(--green);border-radius:12px;padding:14px;margin-bottom:14px;text-decoration:none;transition:transform .15s,border-color .2s;min-height:44px}
@@ -183,7 +183,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .crop-sec-lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);font-weight:700;margin-bottom:6px}
 .crop-bar-wrap{position:relative;height:20px;background:var(--surface2);border-radius:4px;overflow:hidden;margin-bottom:6px}
 .crop-bar-fill{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--green) 0%,#5dbf61 100%);border-radius:4px;transition:width .6s ease}
-.crop-bar-pct{position:absolute;top:50%;left:9px;transform:translateY(-50%);font-size:.72rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5);font-family:'Oswald',sans-serif;z-index:1;line-height:1}
+.crop-bar-pct{position:absolute;top:50%;left:9px;transform:translateY(-50%);font-size:.72rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5);font-family:'JetBrains Mono',monospace;z-index:1;line-height:1}
 .crop-row{display:flex;justify-content:space-between;font-size:.7rem;color:var(--text-dim);padding:1px 0;line-height:1.5}
 .crop-row .v{color:var(--text);font-weight:600;font-family:'JetBrains Mono',monospace}
 .crop-pace{font-size:.7rem;margin-top:6px;padding:6px 9px;border-radius:5px;font-weight:600;line-height:1.4}
@@ -198,7 +198,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .cot-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;flex-wrap:wrap;gap:6px}
 .cot-title{font-size:.78rem;font-weight:700;color:var(--gold)}
 .cot-asof{font-size:.62rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
-.cot-net{font-family:'Oswald',sans-serif;font-size:1.9rem;font-weight:700;line-height:1;margin-bottom:2px;color:var(--text)}
+.cot-net{font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:700;line-height:1;margin-bottom:2px;color:var(--text)}
 .cot-net.long{color:var(--green)}
 .cot-net.short{color:var(--red)}
 .cot-sub{font-size:.7rem;color:var(--text-dim);margin-bottom:12px}
@@ -244,7 +244,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 
 /* NEW v13: Sigurd trust block */
 .author-block{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.03) 100%);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:14px;display:flex;align-items:flex-start;gap:12px}
-.author-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green) 0%,#5dbf61 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;flex-shrink:0;border:2px solid rgba(255,255,255,.1)}
+.author-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green) 0%,#5dbf61 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;flex-shrink:0;border:2px solid rgba(255,255,255,.1)}
 .author-text{flex:1;min-width:0}
 .author-name{font-size:.78rem;font-weight:700;color:var(--text);margin:0 0 2px 0}
 .author-role{font-size:.66rem;color:var(--text-dim);margin:0 0 6px 0;line-height:1.5}
@@ -262,7 +262,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .basis-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:10px}
 .basis-cell{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 8px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:60px}
 .basis-cell-lbl{font-size:.56rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-bottom:4px;font-weight:700}
-.basis-cell-val{font-family:'Oswald',sans-serif;font-size:1.35rem;font-weight:700;color:var(--text);line-height:1}
+.basis-cell-val{font-family:'JetBrains Mono',monospace;font-size:1.35rem;font-weight:700;color:var(--text);line-height:1}
 .basis-cell-val.basis-pos{color:var(--green)}
 .basis-cell-val.basis-neg{color:var(--gold)}
 .basis-interp{font-size:.74rem;color:var(--text-dim);line-height:1.65;margin-top:4px;border-top:1px solid var(--border);padding-top:9px}
@@ -304,10 +304,68 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 <a href="#main" class="skip">Skip to content</a>
 <noscript><div style="text-align:center;padding:2rem;font-family:sans-serif;color:#ccc;background:#111;margin:1rem">JavaScript is required to view live grain prices. Please enable JavaScript in your browser.</div></noscript>
 <div id="site-header"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="i-banknote" viewBox="0 0 24 24"><rect width="20" height="12" x="2" y="6" rx="2" />
+  <circle cx="12" cy="12" r="2" />
+  <path d="M6 12h.01M18 12h.01" /></symbol><symbol id="i-bean" viewBox="0 0 24 24"><path d="M10.165 6.598C9.954 7.478 9.64 8.36 9 9c-.64.64-1.521.954-2.402 1.165A6 6 0 0 0 8 22c7.732 0 14-6.268 14-14a6 6 0 0 0-11.835-1.402Z" />
+  <path d="M5.341 10.62a4 4 0 1 0 5.279-5.28" /></symbol><symbol id="i-beef" viewBox="0 0 24 24"><path d="M16.4 13.7A6.5 6.5 0 1 0 6.28 6.6c-1.1 3.13-.78 3.9-3.18 6.08A3 3 0 0 0 5 18c4 0 8.4-1.8 11.4-4.3" />
+  <path d="m18.5 6 2.19 4.5a6.48 6.48 0 0 1-2.29 7.2C15.4 20.2 11 22 7 22a3 3 0 0 1-2.68-1.66L2.4 16.5" />
+  <circle cx="12.5" cy="8.5" r="2.5" /></symbol><symbol id="i-book-open" viewBox="0 0 24 24"><path d="M12 7v14" />
+  <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" /></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4" />
+  <path d="M16 2v4" />
+  <rect width="18" height="18" x="3" y="4" rx="2" />
+  <path d="M3 10h18" /></symbol><symbol id="i-chart-column" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16" />
+  <path d="M18 17V9" />
+  <path d="M13 17V5" />
+  <path d="M8 17v-3" /></symbol><symbol id="i-circle-question-mark" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" />
+  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+  <path d="M12 17h.01" /></symbol><symbol id="i-clipboard-list" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+  <path d="M12 11h4" />
+  <path d="M12 16h4" />
+  <path d="M8 11h.01" />
+  <path d="M8 16h.01" /></symbol><symbol id="i-coins" viewBox="0 0 24 24"><path d="M13.744 17.736a6 6 0 1 1-7.48-7.48" />
+  <path d="M15 6h1v4" />
+  <path d="m6.134 14.768.866-.5 2 3.464" />
+  <circle cx="16" cy="8" r="6" /></symbol><symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" />
+  <path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z" /></symbol><symbol id="i-factory" viewBox="0 0 24 24"><path d="M12 16h.01" />
+  <path d="M16 16h.01" />
+  <path d="M3 19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5a.5.5 0 0 0-.769-.422l-4.462 2.844A.5.5 0 0 1 15 10.5v-2a.5.5 0 0 0-.769-.422L9.77 10.922A.5.5 0 0 1 9 10.5V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z" />
+  <path d="M8 16h.01" /></symbol><symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" />
+  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+  <path d="M2 12h20" /></symbol><symbol id="i-lightbulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+  <path d="M9 18h6" />
+  <path d="M10 22h4" /></symbol><symbol id="i-mail" viewBox="0 0 24 24"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+  <rect x="2" y="4" width="20" height="16" rx="2" /></symbol><symbol id="i-map-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" /></symbol><symbol id="i-newspaper" viewBox="0 0 24 24"><path d="M15 18h-5" />
+  <path d="M18 14h-8" />
+  <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2" />
+  <rect width="8" height="4" x="10" y="6" rx="1" /></symbol><symbol id="i-ruler" viewBox="0 0 24 24"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z" />
+  <path d="m14.5 12.5 2-2" />
+  <path d="m11.5 9.5 2-2" />
+  <path d="m8.5 6.5 2-2" />
+  <path d="m17.5 15.5 2-2" /></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18" />
+  <path d="m19 8 3 8a5 5 0 0 1-6 0zV7" />
+  <path d="M3 7h1a17 17 0 0 0 8-2 17 17 0 0 0 8 2h1" />
+  <path d="m5 8 3 8a5 5 0 0 1-6 0zV7" />
+  <path d="M7 21h10" /></symbol><symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34" />
+  <circle cx="11" cy="11" r="8" /></symbol><symbol id="i-sprout" viewBox="0 0 24 24"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3" />
+  <path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4" />
+  <path d="M5 21h14" /></symbol><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" />
+  <circle cx="12" cy="12" r="6" />
+  <circle cx="12" cy="12" r="2" /></symbol><symbol id="i-trending-up" viewBox="0 0 24 24"><path d="M16 7h6v6" />
+  <path d="m22 7-8.5 8.5-5-5L2 17" /></symbol><symbol id="i-wheat" viewBox="0 0 24 24"><path d="M2 22 16 8" />
+  <path d="M3.47 12.53 5 11l1.53 1.53a3.5 3.5 0 0 1 0 4.94L5 19l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M7.47 8.53 9 7l1.53 1.53a3.5 3.5 0 0 1 0 4.94L9 15l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M11.47 4.53 13 3l1.53 1.53a3.5 3.5 0 0 1 0 4.94L13 11l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4Z" />
+  <path d="M11.47 17.47 13 19l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L5 19l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
+  <path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
+  <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol></defs></svg>
+<style>.ic{width:1em;height:1em;display:inline-block;vertical-align:-0.14em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}.sc-rp{margin-top:8px;padding:9px 11px;border:1px solid var(--border,#2a3324);border-left:3px solid var(--brand,#d4a23f);border-radius:8px;background:rgba(212,162,63,.06);font-size:.82rem;line-height:1.5;color:var(--text-dim,#9bb0a3)}.sc-rp b,.sc-rp strong{color:var(--text,#e7ece8)}.sc-rp .rp-gap{font-weight:700}</style>
 <main id="main" class="fut" tabindex="-1">
   <nav class="bc" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Soybean Prices</nav>
   <div class="brief-strip" id="brief-strip" style="display:none">
-    <div class="brief-icon">&#128240;</div>
+    <div class="brief-icon"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg></div>
     <div class="brief-text">
       <div class="brief-hd" id="brief-hd">&mdash;</div>
       <div class="brief-teaser" id="brief-teaser">&mdash;</div>
@@ -316,7 +374,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
   </div>
 
   <div class="ph">
-    <div class="ph-icon">&#129752;</div>
+    <div class="ph-icon"><svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg></div>
     <div class="ph-info">
       <h1>Soybean Prices Today</h1>
       <div class="ph-exch">CBOT &middot; CME Group &middot; ZS=F &middot; Live futures + local cash bids &middot; Updated every 30 min</div>
@@ -332,8 +390,8 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 
   <div class="qa">
     <style>
-    .qa{background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-left:3px solid var(--green,#4aab4c);border-radius:10px;padding:.85rem 1rem;margin:0 0 14px;font-size:.86rem;line-height:1.6;color:var(--text-dim,#9bb0a3)}
-    .qa b{color:var(--text,#e7ece8)} .qa a{color:var(--gold,#e6b042);text-decoration:none} .qa a:hover{text-decoration:underline}
+    .qa{background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-left:3px solid var(--green,#5fc28a);border-radius:10px;padding:.85rem 1rem;margin:0 0 14px;font-size:.86rem;line-height:1.6;color:var(--text-dim,#9bb0a3)}
+    .qa b{color:var(--text,#e7ece8)} .qa a{color:var(--gold,#d4a23f);text-decoration:none} .qa a:hover{text-decoration:underline}
     </style>
     <b>Soybean futures</b> are CBOT (Chicago Board of Trade) contracts that set the benchmark price per bushel of soybeans. The <b>front-month</b> contract tracks nearest delivery; <b>November soybeans (ZSX)</b> is the new-crop harvest benchmark producers use to forward-price. Your local <b>cash price</b> equals futures plus or minus <b>basis</b>. Soybean prices move mainly on the monthly <b>USDA WASDE</b> report, South American weather and harvest, the soybean crush (meal and oil), and Chinese export demand &mdash; see <a href="/whats-priced-in">what&rsquo;s priced in</a> ahead of each report. Live CBOT prices below update every 30 minutes. Compare with live <a href="/corn-futures-prices">corn</a> and <a href="/wheat-futures-prices">wheat</a> futures.
   </div>
@@ -347,37 +405,37 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 
   <div class="snap-card">
     <div class="snap-hd">
-      <h2 class="snap-lbl">&#129517; Today's Market Read</h2>
+      <h2 class="snap-lbl"><svg class="ic" aria-hidden="true"><use href="#i-compass"/></svg> Today's Market Read</h2>
       <span class="snap-age" id="snap-age"></span>
-      <a href="https://farmers1st.com/" target="_blank" rel="noopener" class="ffai-badge"><span class="ffai-lbl">FFAI Soybean:</span> <span class="ffai-score">&mdash;</span> <span style="opacity:.5">view &rarr;</span></a>
     </div>
 
     <div class="mr-section">
-      <div class="mr-sec-lbl"><span class="em">&#128205;</span> Where the market is</div>
+      <div class="mr-sec-lbl"><span class="em"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></span> Where the market is</div>
       <p class="mr-sec-body" id="mr-where">Analyzing current prices&hellip;</p>
     </div>
 
     <div class="mr-section">
-      <div class="mr-sec-lbl"><span class="em">&#128269;</span> What's moving it</div>
+      <div class="mr-sec-lbl"><span class="em"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span> What's moving it</div>
       <p class="mr-sec-body" id="mr-what"><em style="opacity:.6">Loading fundamentals&hellip;</em></p>
     </div>
 
     <div class="mr-section mr-do" id="mr-do-wrap" style="display:none">
-      <div class="mr-sec-lbl"><span class="em">&#127919;</span> What I'd do</div>
+      <div class="mr-sec-lbl"><span class="em"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg></span> What I'd do</div>
       <p class="mr-sec-body" id="mr-do"></p>
     </div>
 
     <div class="snap-ft">
-      <span class="snap-cat" id="snap-wasde-wrap">&#128197; Next WASDE: <strong id="snap-wasde">&mdash;</strong></span>
+      <span class="snap-cat" id="snap-wasde-wrap"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Next WASDE: <strong id="snap-wasde">&mdash;</strong></span>
       <a href="/whats-priced-in" class="snap-link">What&rsquo;s priced in &rarr;</a>
       <a href="/usda-calendar" class="snap-link">Full USDA Calendar &rarr;</a>
     </div>
   </div>
 
   <div class="scorecard" id="scorecard" style="display:none">
-    <div class="sc-hd"><span class="sc-lbl">🎯 Your Pricing Situation</span><span class="sc-sit" id="sc-situation"></span></div>
+    <div class="sc-hd"><span class="sc-lbl"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Your Pricing Situation</span><span class="sc-sit" id="sc-situation"></span></div>
     <div class="sc-factors" id="sc-factors"></div>
     <div class="sc-cash" id="sc-cash" style="display:none"></div>
+    <div class="sc-rp" id="sc-rp" style="display:none"></div>
     <div class="sc-priced">
       <label for="priced-input">% of new crop already priced:</label>
       <input type="number" id="priced-input" min="0" max="100" step="5" inputmode="numeric" placeholder="0–100" aria-label="Percent of new crop already priced">
@@ -415,7 +473,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 
   <div class="rat-row">
     <div class="rat-card">
-      <div class="rat-lbl">&#127805;/&#129752; Corn&middot;Bean Planting Ratio</div>
+      <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>/<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Corn&middot;Bean Planting Ratio</div>
       <div class="rat-val sk" id="cb-ratio">&mdash;</div>
       <div class="rat-gauge-bar"><div class="rat-gauge-dot" id="cb-dot"></div></div>
       <div class="rat-gauge-labels">
@@ -427,7 +485,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
       <div class="rat-note">Planting mix signal &middot; <a href="/breakeven">Build your full breakeven &rarr;</a></div>
     </div>
     <div class="rat-card">
-      <div class="rat-lbl">&#127981; Gross Board Crush Spread (est.)</div>
+      <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-factory"/></svg> Gross Board Crush Spread (est.)</div>
       <div class="rat-val sk" id="crush-val">&mdash;</div>
       <div class="crush-zones">
         <div class="crush-zone cz3" id="cz3">Above $2.50/bu &middot; Exceptional margins &middot; crush expanding</div>
@@ -442,7 +500,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 
   <div class="basis-card" id="basis-card">
     <div class="basis-head">
-      <h2 class="basis-title">&#128181; Local Cash Bid &middot; Soybean</h2>
+      <h2 class="basis-title"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg> Local Cash Bid &middot; Soybean</h2>
       <span class="basis-loc" id="basis-loc">&mdash;</span>
     </div>
     <div class="basis-grid" id="basis-grid">
@@ -469,7 +527,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
   </div>
   <div class="crop-card" id="crop-card">
     <div class="crop-head">
-      <h2 class="crop-title">&#127806; USDA Crop Progress &middot; Soybean</h2>
+      <h2 class="crop-title"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> USDA Crop Progress &middot; Soybean</h2>
       <span class="crop-asof" id="crop-asof"></span>
     </div>
     <div class="crop-section" id="crop-plant-sec">
@@ -489,7 +547,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
   </div>
   <div class="cot-card" id="cot-card">
     <div class="cot-head">
-      <span class="cot-title">&#128202; Managed Money Positioning &middot; Soybean</span>
+      <span class="cot-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Managed Money Positioning &middot; Soybean</span>
       <span class="cot-asof" id="cot-asof"></span>
     </div>
     <div class="cot-net" id="cot-net">&mdash;</div>
@@ -505,7 +563,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
   </div>
   <div class="fwd-card">
     <div class="fwd-head">
-      <span class="fwd-title">&#128202; Forward Curve &middot; All Soybean Contracts</span>
+      <span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Forward Curve &middot; All Soybean Contracts</span>
       <span class="fwd-shape" id="fwd-shape">&mdash;</span>
     </div>
     <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg"></svg>
@@ -514,12 +572,12 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
   </div>
   <div class="cp">
     <div class="cp-head">
-      <h2>&#128200; Soybean Front Month &mdash; Interactive Chart</h2>
+      <h2><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Soybean Front Month &mdash; Interactive Chart</h2>
       <span class="cp-src">Soybean CFD tracking CBOT &middot; <a href="https://www.tradingview.com/symbols/CBOT-ZS1!/" target="_blank" rel="noopener">View CBOT:ZS1! on TradingView &#8599;</a></span>
     </div>
     <div id="tv-chart" style="height:480px"></div>
     <div class="tv-fallback" id="tv-fallback">
-      <span style="font-size:1.5rem">&#128200;</span>
+      <span style="font-size:1.5rem"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg></span>
       <span>Interactive chart unavailable in this environment.</span>
       <a href="https://www.tradingview.com/symbols/CBOT-ZS1!/" target="_blank" rel="noopener">View Soybean Chart on TradingView &rarr;</a>
     </div>
@@ -527,7 +585,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 
   <div class="seas-wrap">
     <div class="seas-head">
-      <span class="seas-title">&#128197; Soybean Seasonal Price Tendency</span>
+      <span class="seas-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Soybean Seasonal Price Tendency</span>
       <span class="seas-note">Historical pattern &middot; current month highlighted &middot; hover for context</span>
     </div>
     <div id="seas-chart" class="seas-chart"></div>
@@ -536,7 +594,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 
   <div class="xg">
     <div class="xc">
-      <h4>&#128203; Contract Specs</h4>
+      <h4><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Contract Specs</h4>
       <div class="xr"><span class="xl">Exchange</span><span class="xv">CBOT / CME Group</span></div>
       <div class="xr"><span class="xl">Contract Size</span><span class="xv">5,000 bushels</span></div>
       <div class="xr"><span class="xl">Tick Size</span><span class="xv">&frac14;&cent;/bu ($12.50/contract)</span></div>
@@ -544,7 +602,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
       <div class="xr"><span class="xl">Active Months</span><span class="xv">Jan, Mar, May, Jul, Aug, Sep, Nov</span></div>
     </div>
     <div class="xc">
-      <h4>&#128197; Key Reports</h4>
+      <h4><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Key Reports</h4>
       <div class="xr"><span class="xl">WASDE</span><span class="xv">Monthly (~10th) &middot; highest impact</span></div>
       <div class="xr"><span class="xl">Crop Progress</span><span class="xv">Weekly Mon 4pm (Apr&ndash;Nov)</span></div>
       <div class="xr"><span class="xl">Acreage Report</span><span class="xv">Late June</span></div>
@@ -552,14 +610,14 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
       <div class="xr"><span class="xl">Export Sales</span><span class="xv">Thu 7:30am CT</span></div>
     </div>
     <div class="xc">
-      <h4>&#128161; Using These Prices</h4>
+      <h4><svg class="ic" aria-hidden="true"><use href="#i-lightbulb"/></svg> Using These Prices</h4>
       <div class="xr"><span class="xl">Corn/bean ratio</span><span class="xv">Nov beans &divide; Dec corn</span></div>
       <div class="xr"><span class="xl">Break-even</span><span class="xv">~$9.00&ndash;$11.00/bu avg</span></div>
       <div class="xr"><span class="xl">New crop</span><span class="xv">Nov = harvest benchmark</span></div>
       <div class="xr"><span class="xl">China windows</span><span class="xv">Watch Sep&ndash;Jan buying pace</span></div>
     </div>
     <div class="xc">
-      <h4>&#127757; US Soybean Use</h4>
+      <h4><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg> US Soybean Use</h4>
       <div class="xr"><span class="xl">Crush (domestic)</span><span class="xv">~60% of US crop</span></div>
       <div class="xr"><span class="xl">Exports</span><span class="xv">~40% of US crop</span></div>
       <div class="xr"><span class="xl">China demand</span><span class="xv">Largest soy importer</span></div>
@@ -568,7 +626,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
   </div>
 
   <div class="edu-wrap">
-    <h3>&#128218; Understanding Soybean Prices</h3>
+    <h3><svg class="ic" aria-hidden="true"><use href="#i-book-open"/></svg> Understanding Soybean Prices</h3>
     <div class="edu-grid">
       <div class="edu-block">
         <h4>Futures vs Cash &mdash; Two Different Numbers</h4>
@@ -590,7 +648,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
   </div>
 
   <div class="faq-wrap">
-    <div class="faq-head">&#10067; Soybean Prices &mdash; Common Questions</div>
+    <div class="faq-head"><svg class="ic" aria-hidden="true"><use href="#i-circle-question-mark"/></svg> Soybean Prices &mdash; Common Questions</div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">What's the difference between soybean futures and cash bids?</div>
       <div class="faq-a"><div class="faq-a-inner">Soybean futures are the CBOT exchange price (ZS contracts) for delivery at a future month &mdash; the global price benchmark used by elevators, processors, and traders worldwide. Cash bids are what your local elevator pays today, in cash, for soybeans delivered there. The difference between cash bid and futures is called the basis. AGSIST shows both on this page: front-month and November new-crop futures up top, plus local cash bids by ZIP code in the basis card so you can see what your nearest elevators are paying right now.</div></div>
@@ -630,7 +688,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
   </div>
 
   <div class="signup-card">
-    <h3>&#128236; Daily market briefing, direct from me</h3>
+    <h3><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Daily market briefing, direct from me</h3>
     <p>Weekday grain market read with the numbers, the USDA calendar, and the context &mdash; no fluff, no affiliate links. Written by a farmer, for farmers.</p>
     <form class="signup-form" id="signup-form" novalidate>
       <input type="email" name="email" placeholder="you@example.com" required autocomplete="email">
@@ -642,17 +700,17 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 
   <div class="rl">Related Tools</div>
   <div class="rg">
-    <a href="/corn-futures-prices" class="ra"><div class="ra-i">&#127805;</div><div class="ra-n">Corn Futures</div><div class="ra-d">Corn/bean ratio</div></a>
-    <a href="/wheat-futures-prices" class="ra"><div class="ra-i">&#127806;</div><div class="ra-n">Wheat Futures</div><div class="ra-d">Grain complex</div></a>
-    <a href="/cash-bids" class="ra"><div class="ra-i">&#128181;</div><div class="ra-n">Cash Bids Near Me</div><div class="ra-d">Local elevator prices</div></a>
-    <a href="/cattle-futures-prices" class="ra"><div class="ra-i">🐂</div><div class="ra-n">Cattle Futures</div><div class="ra-d">Live + feeder + cost of gain</div></a>
-    <a href="/breakeven" class="ra"><div class="ra-i">&#128208;</div><div class="ra-n">Break-Even Calc</div><div class="ra-d">Is this profitable?</div></a>
-    <a href="/whats-priced-in" class="ra"><div class="ra-i">&#127919;</div><div class="ra-n">What&rsquo;s Priced In</div><div class="ra-d">USDA report odds</div></a>
-    <a href="/usda-calendar" class="ra"><div class="ra-i">&#128197;</div><div class="ra-n">USDA Calendar</div><div class="ra-d">Next report date</div></a>
-    <a href="/fast-facts" class="ra"><div class="ra-i">&#9889;</div><div class="ra-n">Fast Facts</div><div class="ra-d">N rates, P&amp;K, GDU</div></a>
+    <a href="/corn-futures-prices" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></div><div class="ra-n">Corn Futures</div><div class="ra-d">Corn/bean ratio</div></a>
+    <a href="/wheat-futures-prices" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></div><div class="ra-n">Wheat Futures</div><div class="ra-d">Grain complex</div></a>
+    <a href="/cash-bids" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg></div><div class="ra-n">Cash Bids Near Me</div><div class="ra-d">Local elevator prices</div></a>
+    <a href="/cattle-futures-prices" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg></div><div class="ra-n">Cattle Futures</div><div class="ra-d">Live + feeder + cost of gain</div></a>
+    <a href="/breakeven" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg></div><div class="ra-n">Break-Even Calc</div><div class="ra-d">Is this profitable?</div></a>
+    <a href="/whats-priced-in" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg></div><div class="ra-n">What&rsquo;s Priced In</div><div class="ra-d">USDA report odds</div></a>
+    <a href="/usda-calendar" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg></div><div class="ra-n">USDA Calendar</div><div class="ra-d">Next report date</div></a>
+    <a href="/fast-facts" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg></div><div class="ra-n">Fast Facts</div><div class="ra-d">N rates, P&amp;K, GDU</div></a>
   </div>
   <a href="/cash-bids" class="big-cta">
-    <div class="big-cta-i">&#128181;</div>
+    <div class="big-cta-i"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg></div>
     <div>
       <div class="big-cta-hd">See what your local elevator is paying today</div>
       <div class="big-cta-sub">Futures are the benchmark. Cash bid minus futures is your basis &mdash; the number that actually puts money in your pocket. &rarr;</div>
@@ -670,8 +728,8 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 </main>
 
 <div id="site-footer"></div>
-<script src="/components/loader.js" defer></script>
-<script src="/components/geo.js" defer></script>
+<script src="/components/loader.js?v=14" defer></script>
+<script src="/components/geo.js?v=14" defer></script>
 <script>
 (function(){
 'use strict';
@@ -995,7 +1053,7 @@ var SC_SEAS_TIP=['carry market','pre-planting','planting window','weather premiu
 function scMeter(pct){pct=Math.max(0,Math.min(100,pct));return '<div class="sc-f-meter"><i style="width:'+pct+'%"></i></div>';}
 function computeScorecard(){
   var mr=window.__agsistMR; if(!mr)return null;
-  var p=mr.priceCtx, be=mr.breakeven, cot=mr.cotCtx, basis=mr.basisCtx;
+  var p=mr.priceCtx, be=mr.breakeven, cot=mr.cotCtx, basis=mr.basisCtx, rp=mr.rpCtx;
   if(!p)return null;
   var factors=[];
   var zone=p.pct<25?'lower quartile':p.pct<50?'lower half':p.pct<75?'upper half':'upper quartile';
@@ -1011,6 +1069,7 @@ function computeScorecard(){
   }
   var mo=new Date().getMonth();
   factors.push({lbl:'Seasonal Tendency',val:SC_SEAS[mo]+'/100',cls:'nu',meter:SC_SEAS[mo],det:SC_SEAS_TIP[mo]});
+  if(rp&&rp.floor!=null){var _bq=(window.__agsistLastQ&&window.__agsistLastQ[CROP_KEY]&&window.__agsistLastQ[CROP_KEY].close!=null)?window.__agsistLastQ[CROP_KEY].close/100:null;var _gap=(_bq!=null)?(rp.floor-_bq):null;factors.push({lbl:'RP Revenue Floor',val:'$'+rp.floor.toFixed(2),cls:(_gap!=null?(_gap>=0?'up':'dn'):'nu'),meter:(_gap!=null?Math.max(0,Math.min(100,50+_gap*40)):100),det:(_gap!=null?((_gap>=0?'+':'\u2212')+'$'+Math.abs(_gap).toFixed(2)+'/bu vs today\u2019s board'):('projected '+(rp.window||'')+' avg'))});}
   var sit='';
   if(be){
     if(be.diff>=0&&p.pct>=70)sit='Above breakeven \u00b7 upper range';
@@ -1021,7 +1080,7 @@ function computeScorecard(){
   }else{
     sit=p.pct>=75?'Upper range':p.pct<25?'Lower range':'Mid-range';
   }
-  return {factors:factors,situation:sit,priceCents:(window.__agsistLastQ&&window.__agsistLastQ[CROP_KEY]?window.__agsistLastQ[CROP_KEY].close:null),be:be,basis:basis};
+  return {factors:factors,situation:sit,rp:rp,priceCents:(window.__agsistLastQ&&window.__agsistLastQ[CROP_KEY]?window.__agsistLastQ[CROP_KEY].close:null),be:be,basis:basis};
 }
 function renderScorecard(){
   var sc=computeScorecard(); var card=document.getElementById('scorecard');
@@ -1043,6 +1102,8 @@ function renderScorecard(){
       cashEl.innerHTML=line; cashEl.style.display='block';
     }else{ cashEl.style.display='none'; }
   }
+  var rpEl=document.getElementById('sc-rp');
+  if(rpEl){if(sc.rp&&sc.rp.floor!=null){var bq=(sc.priceCents!=null)?sc.priceCents/100:null;var L='<strong>Your RP revenue floor:</strong> projected <strong>$'+sc.rp.floor.toFixed(2)+'</strong>'+(sc.rp.contract?' ('+sc.rp.contract+(sc.rp.window?', '+sc.rp.window+' avg':'')+')':'');if(bq!=null){var g=sc.rp.floor-bq;L+=' \u2014 today\u2019s board $'+bq.toFixed(2)+', so your floor sits <span class="rp-gap '+(g>=0?'sc-f-val up':'sc-f-val dn')+'">'+(g>=0?'+':'\u2212')+'$'+Math.abs(g).toFixed(2)+'/bu</span> '+(g>=0?'above':'below')+' the cash market.';}if(sc.rp.harvestPending){L+=' <span style="opacity:.7">Harvest price (Oct avg) still setting \u2014 your guarantee uses the higher of the two.</span>';}rpEl.innerHTML=L;rpEl.style.display='block';try{if(typeof gaEvent==='function')gaEvent('rp_floor_shown',{crop:CROP_KEY});else if(window.gtag)gtag('event','rp_floor_shown',{crop:CROP_KEY});}catch(e){}}else{rpEl.style.display='none';}}
   renderPricedResult(sc);
 }
 function getPriced(){try{var v=localStorage.getItem('agsist_priced_'+CROP_KEY);if(v!=null&&v!=='')return Math.max(0,Math.min(100,parseFloat(v)));}catch(e){}return null;}
@@ -1491,10 +1552,10 @@ function renderForwardCurve(cropKey,contractList,quotes,isGrain){
   s.push('<text x="4" y="'+(mT+ph)+'" fill="#9aa39c" font-size="13" font-family="JetBrains Mono,monospace">$'+minP.toFixed(2)+'</text>');
   var path='';
   pts.forEach(function(p,i){path+=(i===0?'M':'L')+x(i)+','+y(p.price);});
-  s.push('<path d="'+path+'" stroke="#daa520" stroke-width="2" fill="none"/>');
+  s.push('<path d="'+path+'" stroke="#d4a23f" stroke-width="2" fill="none"/>');
   pts.forEach(function(p,i){
-    s.push('<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="#daa520"/>');
-    s.push('<text x="'+x(i)+'" y="'+(y(p.price)-8)+'" fill="#e8ebe5" font-size="13" font-family="Oswald,sans-serif" text-anchor="middle" font-weight="700">$'+p.price.toFixed(2)+'</text>');
+    s.push('<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="#d4a23f"/>');
+    s.push('<text x="'+x(i)+'" y="'+(y(p.price)-8)+'" fill="#e8ebe5" font-size="13" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">$'+p.price.toFixed(2)+'</text>');
     s.push('<text x="'+x(i)+'" y="'+(H-8)+'" fill="#9aa39c" font-size="13" text-anchor="middle">'+p.label+'</text>');
   });
   s.push('</svg>');
@@ -1701,5 +1762,8 @@ document.addEventListener('DOMContentLoaded',function(){
 })();
 </script>
 <script async src="https://s3.tradingview.com/tv.js"></script>
+<script>
+(function(){var LMAP={corn:'Corn',soybean:'Soybeans',beans:'Soybeans'};var want=LMAP[(typeof CROP_KEY!=='undefined'?CROP_KEY:'')];if(!want)return;fetch('/data/harvest-prices.json',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){if(!d||!d.commodities)return;var row=d.commodities.filter(function(c){return c&&c.label===want;})[0];if(!row)return;var pj=(row.projected&&row.projected.price!=null)?Number(row.projected.price):null;var hv=(row.harvest&&row.harvest.price!=null)?Number(row.harvest.price):null;var floor=(pj!=null&&hv!=null)?Math.max(pj,hv):(pj!=null?pj:hv);if(floor==null)return;window.__agsistMR=window.__agsistMR||{};window.__agsistMR.rpCtx={floor:floor,projected:pj,harvest:hv,contract:row.contract||null,window:(row.projected&&row.projected.window)||null,harvestPending:(row.harvest&&row.harvest.status==='pending'&&hv==null),cropYear:d.crop_year||null};try{if(typeof renderScorecard==='function')renderScorecard();}catch(e){}try{if(typeof renderMarketRead==='function')renderMarketRead();}catch(e){}}).catch(function(){});})();
+</script>
 </body>
 </html>
