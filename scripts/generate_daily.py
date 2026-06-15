@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """
-AGSIST Daily Briefing Generator, v4.6.1
+AGSIST Daily Briefing Generator, v4.6.2
 ═══════════════════════════════════════════════════════════════════
 Generates the daily agricultural intelligence briefing via Claude API.
+
+v4.6.2 (streaming transport fix, 2026-06-15): call_claude now streams the API
+response so long briefings cannot trip the read-timeout (fixes the 2026-06-15 outage);
+dropped two dead 404 RSS feeds; per-feed timeout 8->12s.
 
 v4.6.1 (the deterministic-scrubber patch, 2026-05-30):
   - DRAMA-VERB SCRUBBER added as deterministic post-pass. The critic's
@@ -177,7 +181,6 @@ AG_RSS_FEEDS = [
     "https://www.nass.usda.gov/rss/reports.xml",         # NASS Today's Reports (WASDE, Crop Progress, Cattle on Feed)
     "https://www.nass.usda.gov/rss/news.xml",            # NASS News & Events
     "https://www.usda.gov/rss/latest-releases.xml",      # USDA top-line press releases
-    "https://www.ers.usda.gov/rss/charts.xml",           # USDA Economic Research Service
     "https://www.ams.usda.gov/rss/news.xml",             # USDA Agricultural Marketing Service
     "https://www.fas.usda.gov/rss/news.xml",             # USDA Foreign Agricultural Service (export sales)
     "https://www.eia.gov/rss/todayinenergy.xml",         # EIA Today in Energy (crude, ethanol)
@@ -201,7 +204,6 @@ AG_RSS_FEEDS = [
     # Tier 5: Policy / academic / DC insider
     "https://farmpolicynews.illinois.edu/feed/",         # U of Illinois farm policy
     "https://farmdocdaily.illinois.edu/feed",            # Farm Doc Daily
-    "https://www.hagstromreport.com/feed/",              # DC ag insider
 ]
 
 # v4.4: news clustering buckets, every story tags into one bucket so the
@@ -831,7 +833,7 @@ def fetch_ag_news():
         feed_pulled = 0
         host = feed_url.split("/")[2] if feed_url.count("/") >= 2 else feed_url
         try:
-            text = http_get(feed_url, timeout=8)
+            text = http_get(feed_url, timeout=12)
             if not text:
                 feed_results.append((host, 0, "no response"))
                 continue
@@ -1476,15 +1478,47 @@ Apply all 18 IMPACT RULES. Voice samples are NON-NEGOTIABLE, no wire-service neu
     for attempt in range(MAX_RETRIES):
         try:
             if requests:
-                resp = requests.post(ANTHROPIC_API, json=payload, headers=headers, timeout=60)
+                # v4.6.2: STREAM the response. A non-streaming POST puts the entire
+                # generation under a single read-timeout window; a long briefing blows
+                # past 60s and every retry hits the same wall (the 2026-06-15 outage).
+                # With stream=True the read-timeout measures the gap *between* SSE chunks
+                # (sub-second), so total generation time no longer trips it. Connect
+                # timeout 10s (fail fast on network), read timeout 600s as a backstop.
+                resp = requests.post(ANTHROPIC_API, json={**payload, "stream": True},
+                                     headers=headers, stream=True, timeout=(10, 600))
                 if resp.status_code == 429 or 500 <= resp.status_code < 600:
                     raise requests.exceptions.HTTPError(f"retryable HTTP {resp.status_code}")
                 resp.raise_for_status()
-                result = resp.json()
+                _parts = []
+                for _line in resp.iter_lines(decode_unicode=True):
+                    if not _line or not _line.startswith("data:"):
+                        continue
+                    _data = _line[5:].strip()
+                    if not _data or _data == "[DONE]":
+                        continue
+                    try:
+                        _evt = json.loads(_data)
+                    except Exception:
+                        continue
+                    _t = _evt.get("type")
+                    if _t == "content_block_delta":
+                        _d = _evt.get("delta", {})
+                        if _d.get("type") == "text_delta":
+                            _parts.append(_d.get("text", ""))
+                    elif _t == "error":
+                        raise requests.exceptions.HTTPError(
+                            f"stream error: {_evt.get('error')}")
+                    elif _t == "message_stop":
+                        break
+                result = {"content": [{"type": "text", "text": "".join(_parts)}]}
+                if not result["content"][0]["text"].strip():
+                    raise RuntimeError("empty stream (no text deltas received)")
             else:
+                # urllib fallback (requests absent): non-streaming with a generous read
+                # timeout so a long generation still completes.
                 data_bytes = json.dumps(payload).encode("utf-8")
                 req = urllib.request.Request(ANTHROPIC_API, data=data_bytes, headers=headers, method="POST")
-                with urllib.request.urlopen(req, timeout=60) as resp:
+                with urllib.request.urlopen(req, timeout=600) as resp:
                     result = json.loads(resp.read().decode("utf-8"))
             break
         except Exception as e:
@@ -3034,7 +3068,7 @@ def sanitize_weekend_blocks(briefing, market_status):
 
 
 def main():
-    print("=== AGSIST Daily Briefing Generator v4.6.1 ===")
+    print("=== AGSIST Daily Briefing Generator v4.6.2 ===")
     print(f"  Time: {datetime.now().isoformat()}")
     market_status = get_market_status()
     if market_status["is_closed"]:
@@ -3190,7 +3224,7 @@ def main():
         print(f"  Section catalysts: {cats_with}/{cats_total} sections name a driver")
 
     briefing["generated_at"] = datetime.now(timezone.utc).isoformat()
-    briefing["generator_version"] = "4.6.1"
+    briefing["generator_version"] = "4.6.2"
     briefing["surprise_count"] = len(surprises)
     briefing["surprises"] = surprises
     briefing["price_validation_clean"] = is_clean
