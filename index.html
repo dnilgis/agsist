@@ -154,6 +154,8 @@
   @media(max-width:480px){.ffai-health{flex-direction:column;gap:.5rem;}.ffai-score-big{font-size:2.4rem;}}
   .tool-list{display:flex;flex-direction:column;gap:.45rem;flex:1;}
   .card-body{display:flex;flex-direction:column;}
+/* cash-bids card: pin bids to top of stretched card (override dash-grid center) */
+#f1>.card>.card-body{justify-content:flex-start}
   .km-tier-tag{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .42rem;border-radius:3px;border:1px solid;}
   .ratio-cot-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.75rem;margin:.6rem 0 .4rem;}
   .ratio-cot-grid .ratio-widget{margin:0}
@@ -2183,7 +2185,7 @@ window.hydrateDaily = function(data) {
       var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
       var ds=dOk?days[d.getDay()]+', '+months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear():dateStr;
       setText('daily-date',ds);
-      setText('daily-teaser-date','<svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily \u2014 '+(dOk?months[d.getMonth()]+' '+d.getDate():dateStr));
+      setHTML('daily-teaser-date','<svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily \u2014 '+(dOk?months[d.getMonth()]+' '+d.getDate():dateStr));
     }catch(e){}
   }
   if(data.teaser)setText('daily-teaser-text',data.teaser);
