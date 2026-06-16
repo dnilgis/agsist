@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#111a0a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="/components/styles.css?v=12" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=12">
+<link rel="preload" href="/components/styles.css?v=14" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=14">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -64,7 +64,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 .ff-page{max-width:980px;margin:0 auto;padding:0 1rem 4rem;}
 .ff-hero{padding:1.2rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
 .ff-eyebrow{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
-.ff-hero h1{font-family:'Oswald',sans-serif;font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;}
+.ff-hero h1{font-family:'Archivo',sans-serif;font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;}
 .ff-hero p{font-size:.82rem;color:var(--text-dim);line-height:1.55;max-width:680px;margin:0;}
 .ff-tabs{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:1.5rem;}
 .ff-tab{padding:.4rem .8rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:background 0.15s,color 0.15s,border-color 0.15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
@@ -72,13 +72,13 @@ button,a,[role="button"]{touch-action:manipulation;}
 .ff-tab.active{background:var(--gold);color:#0a1a0a;border-color:var(--gold);}
 .ff-panel{display:none;}
 .ff-panel.active{display:block;}
-.ff-h2{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:1.5rem 0 .75rem;}
+.ff-h2{font-family:'Archivo',sans-serif;font-size:1.1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:1.5rem 0 .75rem;}
 .ff-h2:first-child{margin-top:0;}
-.ff-h3{font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;color:var(--gold);margin:1.2rem 0 .5rem;}
+.ff-h3{font-family:'Archivo',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;color:var(--gold);margin:1.2rem 0 .5rem;}
 .ff-sub{font-size:.78rem;color:var(--text-dim);margin-bottom:.9rem;line-height:1.55;}
-.ff-g2{display:grid;grid-template-columns:1fr;gap:1rem;}
-.ff-g3{display:grid;grid-template-columns:1fr;gap:1rem;}
-.ff-g4{display:grid;grid-template-columns:1fr;gap:1rem;}
+.ff-g2{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;}
+.ff-g3{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;}
+.ff-g4{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;}
 @media(min-width:580px){.ff-g2{grid-template-columns:repeat(2,minmax(0,1fr))}.ff-g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:800px){.ff-g3{grid-template-columns:repeat(3,minmax(0,1fr))}.ff-g4{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .ff-card{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1rem 1.1rem;}
@@ -137,10 +137,10 @@ button,a,[role="button"]{touch-action:manipulation;}
 .fert-pill-icon{font-size:.9rem;}
 .fert-pill-body{display:flex;flex-direction:column;}
 .fert-pill-name{font-size:.68rem;font-weight:600;color:var(--text);}
-.fert-pill-sym{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--text-muted);}
+.fert-pill-sym{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-muted);}
 .fert-pill-price{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:var(--gold);margin-left:auto;}
 .sv-wrap{position:relative;margin:1rem 0;}
-.sv-track{height:8px;border-radius:4px;background:linear-gradient(90deg,#1b3a10,#2d6e1f,#3a8b3c,#5aaa5c,#e6b042,#d4902a,#c07020,#a84030);margin-bottom:.5rem;}
+.sv-track{height:8px;border-radius:4px;background:linear-gradient(90deg,#1b3a10,#2d6e1f,#5fc28a,#5aaa5c,#d4a23f,#d4902a,#c07020,#a84030);margin-bottom:.5rem;}
 .sv-marks{display:flex;overflow-x:auto;padding-bottom:.3rem;}
 /* FIX: sv-mark min-height:44px — critical for gloved field use on a phone */
 .sv-mark{flex:1;min-width:36px;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;}
@@ -148,8 +148,8 @@ button,a,[role="button"]{touch-action:manipulation;}
 .sv-mark:hover .sv-dot,.sv-mark.active .sv-dot{background:var(--gold);border-color:var(--gold);transform:scale(1.2);}
 .sv-mark.key .sv-dot{background:var(--green);border-color:var(--green);}
 .sv-mark.key.active .sv-dot{background:var(--gold);border-color:var(--gold);}
-.sv-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;color:var(--text-dim);text-align:center;}
-.sv-gdu{font-size:.5rem;color:var(--text-muted);text-align:center;}
+.sv-lbl{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;color:var(--text-dim);text-align:center;}
+.sv-gdu{font-size:.62rem;color:var(--text-muted);text-align:center;}
 .sv-detail{background:rgba(230,176,66,.07);border:1px solid rgba(230,176,66,.2);border-radius:8px;padding:.75rem 1rem;margin-top:.6rem;min-height:60px;}
 .sv-detail-stage{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:900;color:var(--gold);margin-bottom:.25rem;}
 .sv-detail-gdu{font-size:.65rem;color:var(--text-muted);margin-bottom:.3rem;}
@@ -184,9 +184,9 @@ button,a,[role="button"]{touch-action:manipulation;}
 .spray-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin-bottom:.75rem;}
 @media(min-width:600px){.spray-grid{grid-template-columns:repeat(6,minmax(0,1fr));}}
 .spray-factor{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .5rem;text-align:center;}
-.spray-factor-label{font-size:.57rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.2rem;}
+.spray-factor-label{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.2rem;}
 .spray-factor-val{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;color:var(--text);}
-.spray-factor-chip{font-size:.55rem;font-weight:700;padding:.1rem .35rem;border-radius:3px;margin-top:.15rem;display:inline-block;}
+.spray-factor-chip{font-size:.62rem;font-weight:700;padding:.1rem .35rem;border-radius:3px;margin-top:.15rem;display:inline-block;}
 .spray-factor-chip.good{background:rgba(58,139,60,.15);color:var(--green);}
 .spray-factor-chip.marginal{background:rgba(230,176,66,.15);color:var(--gold);}
 .spray-factor-chip.poor{background:rgba(224,92,92,.15);color:#e05c5c;}
@@ -204,9 +204,9 @@ button,a,[role="button"]{touch-action:manipulation;}
 @media(min-width:500px){.eco-price-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
 @media(min-width:700px){.eco-price-grid{grid-template-columns:repeat(6,minmax(0,1fr));}}
 .eco-price-card{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:.7rem .75rem;text-align:center;}
-.eco-price-label{font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
+.eco-price-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
 .eco-price-val{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:900;color:var(--gold);}
-.eco-price-unit{font-size:.58rem;color:var(--text-muted);}
+.eco-price-unit{font-size:.62rem;color:var(--text-muted);}
 .eco-price-chg{font-family:'JetBrains Mono',monospace;font-size:.68rem;margin-top:.2rem;}
 .eco-price-chg.up{color:var(--green);}.eco-price-chg.dn{color:#e05c5c;}.eco-price-chg.flat{color:var(--text-muted);}
 .eco-section{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.2rem 1.3rem;margin-bottom:1rem;}
@@ -227,13 +227,13 @@ button,a,[role="button"]{touch-action:manipulation;}
 .mv-title{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:1rem;}
 .mv-price-strip{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;padding:.65rem .8rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;align-items:flex-end;}
 .mv-pi{display:flex;flex-direction:column;gap:.2rem;}
-.mv-pi-label{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);}
+.mv-pi-label{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);}
 .mv-pi-input{background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.3rem .5rem;width:80px;outline:none;text-align:right;box-sizing:border-box;}
 .mv-pi-input:focus{border-color:var(--gold);}
-.mv-pi-src{font-size:.57rem;color:var(--green);font-style:italic;}
+.mv-pi-src{font-size:.62rem;color:var(--green);font-style:italic;}
 .mv-nutrient-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin-bottom:.75rem;}
 .mv-nutrient{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:.6rem .7rem;text-align:center;}
-.mv-nut-label{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
+.mv-nut-label{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
 .mv-nut-lbs{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:900;color:var(--text);}
 .mv-nut-unit{font-size:.62rem;color:var(--text-muted);}
 .mv-nut-val{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--gold);margin-top:.2rem;}
@@ -250,7 +250,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 .mv-savings-sub{font-size:.7rem;color:var(--text-dim);margin-top:.2rem;}
 .pk-cost-bar{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.6rem;padding:.65rem .85rem;background:rgba(58,139,60,.06);border:1px solid rgba(58,139,60,.2);border-radius:8px;align-items:center;}
 .pk-cost-item{display:flex;flex-direction:column;gap:.1rem;}
-.pk-ci-label{font-size:.58rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);}
+.pk-ci-label{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);}
 .pk-ci-val{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:700;color:var(--gold);}
 .ff-state-picker{margin-bottom:1.25rem;}
 .ff-spl{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:.4rem;}
@@ -260,11 +260,11 @@ button,a,[role="button"]{touch-action:manipulation;}
 .ff-sbtn{padding:.3rem .7rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
 .ff-sbtn:hover{border-color:var(--gold);color:var(--text);}
 .ff-sbtn.active{background:var(--gold);color:#0a1a0a;border-color:var(--gold);}
-.ff-scontent{display:grid;grid-template-columns:1fr;gap:1rem;}
+.ff-scontent{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;}
 @media(min-width:700px){.ff-scontent{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:1000px){.ff-scontent{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .ff-shdr{grid-column:1/-1;background:linear-gradient(135deg,var(--surface),rgba(230,176,66,.04));border:2px solid var(--border);border-radius:10px;padding:1.1rem 1.3rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
-.ff-sname{font-family:'Oswald',sans-serif;font-size:1.6rem;font-weight:800;text-transform:uppercase;color:var(--text);}
+.ff-sname{font-family:'Archivo',sans-serif;font-size:1.6rem;font-weight:800;text-transform:uppercase;color:var(--text);}
 .ff-smeta{font-size:.8rem;color:var(--text-dim);line-height:1.6;}
 .rp{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;padding:.2rem .55rem;border-radius:20px;border:1px solid;margin-left:auto;}
 .rp.corn{color:var(--gold);background:rgba(230,176,66,.1);border-color:rgba(230,176,66,.3);}
@@ -300,17 +300,112 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
   .eco-price-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
   .eco-price-val{font-size:.95rem;}
   .ff-tabs{gap:.2rem;}
-  .ff-tab{font-size:.6rem;padding:.35rem .6rem;}
+  .ff-tab{font-size:.62rem;padding:.35rem .6rem;}
 }
 </style>
 </head>
 <body>
-<noscript><div style="padding:1rem;background:#1a2a1a;color:#e6b042;font-family:sans-serif;text-align:center;border-bottom:2px solid #3a8b3c;font-size:.9rem">AGSIST requires JavaScript. Please enable JavaScript to use this agricultural reference tool.</div></noscript>
+<noscript><div style="padding:1rem;background:#1a2a1a;color:#d4a23f;font-family:sans-serif;text-align:center;border-bottom:2px solid #5fc28a;font-size:.9rem">AGSIST requires JavaScript. Please enable JavaScript to use this agricultural reference tool.</div></noscript>
 <a href="#main" class="skip">Skip to content</a>
-<div id="site-header"></div>
+<div id="site-header">
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails. -->
+  <header style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:2;color:var(--text-muted)">
+        <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Quick Stats</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Numbers:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Conditions</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Fast Facts</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Call Scorecard</a> &middot; <a href="/grower-pulse" style="color:var(--text-muted);text-decoration:none">Grower Pulse</a>
+      </nav>
+    </div>
+  </header>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="i-axe" viewBox="0 0 24 24"><path d="m14 12-8.381 8.38a1 1 0 0 1-3.001-3L11 9" />
+  <path d="M15 15.5a.5.5 0 0 0 .5.5A6.5 6.5 0 0 0 22 9.5a.5.5 0 0 0-.5-.5h-1.672a2 2 0 0 1-1.414-.586l-5.062-5.062a1.205 1.205 0 0 0-1.704 0L9.352 5.648a1.205 1.205 0 0 0 0 1.704l5.062 5.062A2 2 0 0 1 15 13.828z" /></symbol><symbol id="i-banknote" viewBox="0 0 24 24"><rect width="20" height="12" x="2" y="6" rx="2" />
+  <circle cx="12" cy="12" r="2" />
+  <path d="M6 12h.01M18 12h.01" /></symbol><symbol id="i-beef" viewBox="0 0 24 24"><path d="M16.4 13.7A6.5 6.5 0 1 0 6.28 6.6c-1.1 3.13-.78 3.9-3.18 6.08A3 3 0 0 0 5 18c4 0 8.4-1.8 11.4-4.3" />
+  <path d="m18.5 6 2.19 4.5a6.48 6.48 0 0 1-2.29 7.2C15.4 20.2 11 22 7 22a3 3 0 0 1-2.68-1.66L2.4 16.5" />
+  <circle cx="12.5" cy="8.5" r="2.5" /></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" /></symbol><symbol id="i-bug" viewBox="0 0 24 24"><path d="M12 20v-9" />
+  <path d="M14 7a4 4 0 0 1 4 4v3a6 6 0 0 1-12 0v-3a4 4 0 0 1 4-4z" />
+  <path d="M14.12 3.88 16 2" />
+  <path d="M21 21a4 4 0 0 0-3.81-4" />
+  <path d="M21 5a4 4 0 0 1-3.55 3.97" />
+  <path d="M22 13h-4" />
+  <path d="M3 21a4 4 0 0 1 3.81-4" />
+  <path d="M3 5a4 4 0 0 0 3.55 3.97" />
+  <path d="M6 13H2" />
+  <path d="m8 2 1.88 1.88" />
+  <path d="M9 7.13V6a3 3 0 1 1 6 0v1.13" /></symbol><symbol id="i-calculator" viewBox="0 0 24 24"><rect width="16" height="20" x="4" y="2" rx="2" />
+  <line x1="8" x2="16" y1="6" y2="6" />
+  <line x1="16" x2="16" y1="14" y2="18" />
+  <path d="M16 10h.01" />
+  <path d="M12 10h.01" />
+  <path d="M8 10h.01" />
+  <path d="M12 14h.01" />
+  <path d="M8 14h.01" />
+  <path d="M12 18h.01" />
+  <path d="M8 18h.01" /></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4" />
+  <path d="M16 2v4" />
+  <rect width="18" height="18" x="3" y="4" rx="2" />
+  <path d="M3 10h18" /></symbol><symbol id="i-chart-column" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16" />
+  <path d="M18 17V9" />
+  <path d="M13 17V5" />
+  <path d="M8 17v-3" /></symbol><symbol id="i-clipboard-list" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+  <path d="M12 11h4" />
+  <path d="M12 16h4" />
+  <path d="M8 11h.01" />
+  <path d="M8 16h.01" /></symbol><symbol id="i-coins" viewBox="0 0 24 24"><path d="M13.744 17.736a6 6 0 1 1-7.48-7.48" />
+  <path d="M15 6h1v4" />
+  <path d="m6.134 14.768.866-.5 2 3.464" />
+  <circle cx="16" cy="8" r="6" /></symbol><symbol id="i-droplet" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" /></symbol><symbol id="i-flask-conical" viewBox="0 0 24 24"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2" />
+  <path d="M6.453 15h11.094" />
+  <path d="M8.5 2h7" /></symbol><symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+  <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" /></symbol><symbol id="i-map" viewBox="0 0 24 24"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" />
+  <path d="M15 5.764v15" />
+  <path d="M9 3.236v15" /></symbol><symbol id="i-printer" viewBox="0 0 24 24"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+  <path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6" />
+  <rect x="6" y="14" width="12" height="8" rx="1" /></symbol><symbol id="i-ruler" viewBox="0 0 24 24"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z" />
+  <path d="m14.5 12.5 2-2" />
+  <path d="m11.5 9.5 2-2" />
+  <path d="m8.5 6.5 2-2" />
+  <path d="m17.5 15.5 2-2" /></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18" />
+  <path d="m19 8 3 8a5 5 0 0 1-6 0zV7" />
+  <path d="M3 7h1a17 17 0 0 0 8-2 17 17 0 0 0 8 2h1" />
+  <path d="m5 8 3 8a5 5 0 0 1-6 0zV7" />
+  <path d="M7 21h10" /></symbol><symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34" />
+  <circle cx="11" cy="11" r="8" /></symbol><symbol id="i-share-2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3" />
+  <circle cx="6" cy="12" r="3" />
+  <circle cx="18" cy="19" r="3" />
+  <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
+  <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" /></symbol><symbol id="i-sprout" viewBox="0 0 24 24"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3" />
+  <path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4" />
+  <path d="M5 21h14" /></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" /></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" />
+  <path d="M12 2v2" />
+  <path d="M12 20v2" />
+  <path d="m4.93 4.93 1.41 1.41" />
+  <path d="m17.66 17.66 1.41 1.41" />
+  <path d="M2 12h2" />
+  <path d="M20 12h2" />
+  <path d="m6.34 17.66-1.41 1.41" />
+  <path d="m19.07 4.93-1.41 1.41" /></symbol><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" />
+  <circle cx="12" cy="12" r="6" />
+  <circle cx="12" cy="12" r="2" /></symbol><symbol id="i-trending-up" viewBox="0 0 24 24"><path d="M16 7h6v6" />
+  <path d="m22 7-8.5 8.5-5-5L2 17" /></symbol><symbol id="i-triangle-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+  <path d="M12 9v4" />
+  <path d="M12 17h.01" /></symbol><symbol id="i-wheat" viewBox="0 0 24 24"><path d="M2 22 16 8" />
+  <path d="M3.47 12.53 5 11l1.53 1.53a3.5 3.5 0 0 1 0 4.94L5 19l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M7.47 8.53 9 7l1.53 1.53a3.5 3.5 0 0 1 0 4.94L9 15l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M11.47 4.53 13 3l1.53 1.53a3.5 3.5 0 0 1 0 4.94L13 11l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4Z" />
+  <path d="M11.47 17.47 13 19l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L5 19l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
+  <path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
+  <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol></defs></svg><style>.ic{width:1em;height:1em;display:inline-block;vertical-align:-0.14em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}</style>
 <main id="main" tabindex="-1" class="ff-page">
 <div class="ff-hero">
-  <div class="ff-eyebrow">&#128203; Nutrient Management &middot; Economics &middot; Crop Staging &middot; Pest &amp; Weed &middot; Soil Health &middot; State Stats</div>
+  <div class="ff-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Nutrient Management &middot; Economics &middot; Crop Staging &middot; Pest &amp; Weed &middot; Soil Health &middot; State Stats</div>
   <h1>Agricultural Fast Facts</h1>
   <p>The complete on-farm reference &mdash; corn N rates, a manure nutrient value calculator, P&amp;K by soil test, crop staging, GDU, pest thresholds, herbicide MOA, a breakeven calculator, and state production data, integrated with live commodity and fertilizer prices. Free for every US farmer.</p>
   <p class="ff-scope">Agronomic recommendations are calibrated to Upper-Midwest guidelines (UW Extension <strong>A2809</strong>). Growers in other regions should confirm rates, lime, and calendar dates with their state land-grant extension &mdash; values shift by region.</p>
@@ -318,23 +413,23 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 </div>
 <div class="ff-related-strip" aria-label="Related AGSIST tools">Related tools: <a href="/fertilizer">Fertilizer Prices</a> &middot; <a href="/breakeven">Break-Even Calculator</a> &middot; <a href="/gdu-calculator">GDU &amp; Weather History</a></div>
 <nav class="ff-tabs" role="tablist" aria-label="Fast Facts sections">
-  <button id="tab-btn-nitrogen"   class="ff-tab active" role="tab" aria-selected="true"  aria-controls="tab-nitrogen"   data-tab="nitrogen">&#127805; Nitrogen</button>
-  <button id="tab-btn-economics"  class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-economics"  data-tab="economics">&#128181; Economics</button>
-  <button id="tab-btn-pk"         class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-pk"         data-tab="pk">&#128202; P &amp; K</button>
-  <button id="tab-btn-removal"    class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-removal"    data-tab="removal">&#127806; Crop Removal</button>
-  <button id="tab-btn-manure"     class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-manure"     data-tab="manure">&#128004; Manure</button>
-  <button id="tab-btn-soilhealth" class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-soilhealth" data-tab="soilhealth">&#129514; Soil Health</button>
-  <button id="tab-btn-stages"     class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-stages"     data-tab="stages">&#127807; Crop Stages</button>
-  <button id="tab-btn-pest"       class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-pest"       data-tab="pest">&#128027; Pest &amp; Weed</button>
-  <button id="tab-btn-reference"  class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-reference"  data-tab="reference">&#128208; Reference</button>
-  <button id="tab-btn-statestats" class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-statestats" data-tab="statestats">&#128506;&#65039; State Stats</button>
+  <button id="tab-btn-nitrogen"   class="ff-tab active" role="tab" aria-selected="true"  aria-controls="tab-nitrogen"   data-tab="nitrogen"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Nitrogen</button>
+  <button id="tab-btn-economics"  class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-economics"  data-tab="economics"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg> Economics</button>
+  <button id="tab-btn-pk"         class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-pk"         data-tab="pk"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> P &amp; K</button>
+  <button id="tab-btn-removal"    class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-removal"    data-tab="removal"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> Crop Removal</button>
+  <button id="tab-btn-manure"     class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-manure"     data-tab="manure"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg> Manure</button>
+  <button id="tab-btn-soilhealth" class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-soilhealth" data-tab="soilhealth"><svg class="ic" aria-hidden="true"><use href="#i-flask-conical"/></svg> Soil Health</button>
+  <button id="tab-btn-stages"     class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-stages"     data-tab="stages"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg> Crop Stages</button>
+  <button id="tab-btn-pest"       class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-pest"       data-tab="pest"><svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg> Pest &amp; Weed</button>
+  <button id="tab-btn-reference"  class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-reference"  data-tab="reference"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg> Reference</button>
+  <button id="tab-btn-statestats" class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-statestats" data-tab="statestats"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg> State Stats</button>
 </nav>
 
 <!-- NITROGEN TAB -->
 <div class="ff-panel active" id="tab-nitrogen" role="tabpanel" aria-labelledby="tab-btn-nitrogen" tabindex="0">
 <div class="fert-banner" id="fert-banner">
   <div class="fert-banner-head">
-    <span class="fert-banner-title">&#128176; Current Fertilizer Prices</span>
+    <span class="fert-banner-title"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg> Current Fertilizer Prices</span>
     <span class="fert-banner-date" id="fert-date">Loading&hellip;</span>
   </div>
   <div class="fert-pills" id="fert-pills"><span style="font-size:.72rem;color:var(--text-muted)">Loading prices&hellip;</span></div>
@@ -342,7 +437,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 <div class="ff-h2">N:Corn Price Ratio Calculator <span id="nc-live-badge" class="live-badge" style="display:none;margin-left:.5rem"><span class="b-dot"></span>Live corn price</span></div>
 <p class="ff-sub">Enter your corn price and N fertilizer cost. The ratio determines which MRTN table column to use. <strong id="nc-highlight-note" style="color:var(--gold)"></strong></p>
 <div class="ff-calc">
-  <div class="ff-calc-title">&#9889; N:Corn Price Ratio &mdash; Live Calculator</div>
+  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> N:Corn Price Ratio &mdash; Live Calculator</div>
   <div class="ff-cr">
     <div class="ff-cf"><label class="ff-cl" for="nc-corn">Corn Price ($/bu)</label><input class="ff-ci" id="nc-corn" type="number" value="4.25" step="0.05" min="1" max="12"></div>
     <div class="ff-cf"><label class="ff-cl" for="nc-fert">N Fertilizer</label>
@@ -370,15 +465,15 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 </thead>
 <tbody>
   <tr class="tg"><td class="tl" colspan="5">Loamy &mdash; High Yield Potential</td></tr>
-  <tr><td class="tl">Corn, forage legumes, legume veg, green manures</td><td><strong>190</strong><br><span style="font-size:.6rem;color:var(--text-muted)">170&ndash;210</span></td><td><strong>165</strong><br><span style="font-size:.6rem;color:var(--text-muted)">155&ndash;180</span></td><td><strong>150</strong><br><span style="font-size:.6rem;color:var(--text-muted)">140&ndash;160</span></td><td><strong>135</strong><br><span style="font-size:.6rem;color:var(--text-muted)">125&ndash;150</span></td></tr>
-  <tr><td class="tl">Soybean, small grains</td><td><strong>140</strong><br><span style="font-size:.6rem;color:var(--text-muted)">125&ndash;160</span></td><td><strong>120</strong><br><span style="font-size:.6rem;color:var(--text-muted)">105&ndash;130</span></td><td><strong>105</strong><br><span style="font-size:.6rem;color:var(--text-muted)">95&ndash;115</span></td><td><strong>90</strong><br><span style="font-size:.6rem;color:var(--text-muted)">80&ndash;105</span></td></tr>
+  <tr><td class="tl">Corn, forage legumes, legume veg, green manures</td><td><strong>190</strong><br><span style="font-size:.62rem;color:var(--text-muted)">170&ndash;210</span></td><td><strong>165</strong><br><span style="font-size:.62rem;color:var(--text-muted)">155&ndash;180</span></td><td><strong>150</strong><br><span style="font-size:.62rem;color:var(--text-muted)">140&ndash;160</span></td><td><strong>135</strong><br><span style="font-size:.62rem;color:var(--text-muted)">125&ndash;150</span></td></tr>
+  <tr><td class="tl">Soybean, small grains</td><td><strong>140</strong><br><span style="font-size:.62rem;color:var(--text-muted)">125&ndash;160</span></td><td><strong>120</strong><br><span style="font-size:.62rem;color:var(--text-muted)">105&ndash;130</span></td><td><strong>105</strong><br><span style="font-size:.62rem;color:var(--text-muted)">95&ndash;115</span></td><td><strong>90</strong><br><span style="font-size:.62rem;color:var(--text-muted)">80&ndash;105</span></td></tr>
   <tr class="tg"><td class="tl" colspan="5">Loamy &mdash; Medium Yield Potential</td></tr>
-  <tr><td class="tl">Corn, forage legumes, legume veg, green manures</td><td><strong>145</strong><br><span style="font-size:.6rem;color:var(--text-muted)">130&ndash;160</span></td><td><strong>125</strong><br><span style="font-size:.6rem;color:var(--text-muted)">115&ndash;140</span></td><td><strong>115</strong><br><span style="font-size:.6rem;color:var(--text-muted)">105&ndash;125</span></td><td><strong>105</strong><br><span style="font-size:.6rem;color:var(--text-muted)">95&ndash;110</span></td></tr>
-  <tr><td class="tl">Soybean, small grains</td><td><strong>130</strong><br><span style="font-size:.6rem;color:var(--text-muted)">110&ndash;150</span></td><td><strong>100</strong><br><span style="font-size:.6rem;color:var(--text-muted)">85&ndash;120</span></td><td><strong>85</strong><br><span style="font-size:.6rem;color:var(--text-muted)">70&ndash;95</span></td><td><strong>70</strong><br><span style="font-size:.6rem;color:var(--text-muted)">60&ndash;80</span></td></tr>
+  <tr><td class="tl">Corn, forage legumes, legume veg, green manures</td><td><strong>145</strong><br><span style="font-size:.62rem;color:var(--text-muted)">130&ndash;160</span></td><td><strong>125</strong><br><span style="font-size:.62rem;color:var(--text-muted)">115&ndash;140</span></td><td><strong>115</strong><br><span style="font-size:.62rem;color:var(--text-muted)">105&ndash;125</span></td><td><strong>105</strong><br><span style="font-size:.62rem;color:var(--text-muted)">95&ndash;110</span></td></tr>
+  <tr><td class="tl">Soybean, small grains</td><td><strong>130</strong><br><span style="font-size:.62rem;color:var(--text-muted)">110&ndash;150</span></td><td><strong>100</strong><br><span style="font-size:.62rem;color:var(--text-muted)">85&ndash;120</span></td><td><strong>85</strong><br><span style="font-size:.62rem;color:var(--text-muted)">70&ndash;95</span></td><td><strong>70</strong><br><span style="font-size:.62rem;color:var(--text-muted)">60&ndash;80</span></td></tr>
   <tr class="tg"><td class="tl" colspan="5">Sands / Loamy Sands &mdash; Irrigated</td></tr>
-  <tr><td class="tl">All crops</td><td><strong>215</strong><br><span style="font-size:.6rem;color:var(--text-muted)">200&ndash;230</span></td><td><strong>200</strong><br><span style="font-size:.6rem;color:var(--text-muted)">185&ndash;210</span></td><td><strong>185</strong><br><span style="font-size:.6rem;color:var(--text-muted)">175&ndash;195</span></td><td><strong>175</strong><br><span style="font-size:.6rem;color:var(--text-muted)">165&ndash;185</span></td></tr>
+  <tr><td class="tl">All crops</td><td><strong>215</strong><br><span style="font-size:.62rem;color:var(--text-muted)">200&ndash;230</span></td><td><strong>200</strong><br><span style="font-size:.62rem;color:var(--text-muted)">185&ndash;210</span></td><td><strong>185</strong><br><span style="font-size:.62rem;color:var(--text-muted)">175&ndash;195</span></td><td><strong>175</strong><br><span style="font-size:.62rem;color:var(--text-muted)">165&ndash;185</span></td></tr>
   <tr class="tg"><td class="tl" colspan="5">Sands / Loamy Sands &mdash; Non-Irrigated</td></tr>
-  <tr><td class="tl">All crops</td><td><strong>140</strong><br><span style="font-size:.6rem;color:var(--text-muted)">130&ndash;150</span></td><td><strong>130</strong><br><span style="font-size:.6rem;color:var(--text-muted)">120&ndash;140</span></td><td><strong>120</strong><br><span style="font-size:.6rem;color:var(--text-muted)">110&ndash;130</span></td><td><strong>110</strong><br><span style="font-size:.6rem;color:var(--text-muted)">100&ndash;120</span></td></tr>
+  <tr><td class="tl">All crops</td><td><strong>140</strong><br><span style="font-size:.62rem;color:var(--text-muted)">130&ndash;150</span></td><td><strong>130</strong><br><span style="font-size:.62rem;color:var(--text-muted)">120&ndash;140</span></td><td><strong>120</strong><br><span style="font-size:.62rem;color:var(--text-muted)">110&ndash;130</span></td><td><strong>110</strong><br><span style="font-size:.62rem;color:var(--text-muted)">100&ndash;120</span></td></tr>
 </tbody></table></div>
 <div class="ff-h2">Legume N Credits</div>
 <div class="ff-g2">
@@ -394,7 +489,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     <div class="ff-cn">2nd year after fair/good stand on fine/medium soil: 50 lb N/ac credit.</div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon">&#127807;</span><span class="ff-card-title">Other Legume Credits</span></div>
+    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></span><span class="ff-card-title">Other Legume Credits</span></div>
     <div class="ff-row"><span class="ff-rl">Soybean (field crop)</span><span class="ff-rv gold">20 lb N/ac</span></div>
     <div class="ff-row"><span class="ff-rl">Pea / Snap / Lima bean</span><span class="ff-rv gold">20 lb N/ac</span></div>
     <div class="ff-row"><span class="ff-rl">Sweet Clover (green manure)</span><span class="ff-rv">80&ndash;120 lb N/ac</span></div>
@@ -444,7 +539,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 <div class="ff-h2">Input Cost Builder</div>
 <p class="ff-sub">Build your projected cost per acre. N $/lb auto-fills from live fertilizer prices &mdash; edit to match your dealer.</p>
 <div class="eco-section">
-  <div class="eco-section-title">&#127805; Corn &mdash; Cost Per Acre</div>
+  <div class="eco-section-title"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn &mdash; Cost Per Acre</div>
   <div class="eco-cost-row"><span class="eco-cost-label">Nitrogen &mdash; <span id="eco-n-source-label" style="color:var(--gold)">Urea 46%</span></span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-n-rate" type="number" value="160" step="5" min="0" max="400" aria-label="N rate lb/ac"><span class="eco-cost-unit">lb N/ac &times;</span><input class="eco-cost-mini" id="eco-n-pplb" type="number" value="0.61" step="0.01" min="0.10" max="3.00" aria-label="$/lb N"><span class="eco-cost-unit">$/lb N =</span><span class="eco-cost-result em" id="eco-n-cost">&mdash;</span></div></div>
   <div class="eco-cost-row"><span class="eco-cost-label">Phosphate (P&#x2082;O&#x2085;) &mdash; DAP/MAP</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-p-rate" type="number" value="75" step="5" min="0" max="300" aria-label="P rate"><span class="eco-cost-unit">lb/ac &times;</span><input class="eco-cost-mini" id="eco-p-pplb" type="number" value="0.60" step="0.01" min="0.10" max="3.00" aria-label="$/lb P2O5"><span class="eco-cost-unit">$/lb =</span><span class="eco-cost-result em" id="eco-p-cost">&mdash;</span></div></div>
   <div class="eco-cost-row"><span class="eco-cost-label">Potash (K&#x2082;O) &mdash; MOP</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-k-rate" type="number" value="60" step="5" min="0" max="400" aria-label="K rate"><span class="eco-cost-unit">lb/ac &times;</span><input class="eco-cost-mini" id="eco-k-pplb" type="number" value="0.33" step="0.01" min="0.10" max="2.00" aria-label="$/lb K2O"><span class="eco-cost-unit">$/lb =</span><span class="eco-cost-result em" id="eco-k-cost">&mdash;</span></div></div>
@@ -465,7 +560,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 <div class="ff-h2">Soil Test Interpreter</div>
 <p class="ff-sub">Enter your soil test values &mdash; get your P&#x2082;O&#x2085; / K&#x2082;O recommendation. Uses the Bray P1 method (common across the Corn Belt). High-pH or Western soils tested by Olsen P: multiply &times; 1.6.</p>
 <div class="ff-calc">
-  <div class="ff-calc-title">&#129518; Soil Test &rarr; Recommendation Calculator</div>
+  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-calculator"/></svg> Soil Test &rarr; Recommendation Calculator</div>
   <div class="ff-cr">
     <div class="ff-cf"><label class="ff-cl" for="st-crop">Crop</label><select class="ff-cs" id="st-crop"><option value="corn">Corn Grain</option><option value="corn_silage">Corn Silage</option><option value="soybean">Soybean</option><option value="alfalfa">Alfalfa</option></select></div>
     <div class="ff-cf"><label class="ff-cl" for="st-yield">Yield Goal</label><input class="ff-ci" id="st-yield" type="number" value="200" step="5" min="50" max="400"></div>
@@ -482,7 +577,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     <div class="pk-cost-item"><div class="pk-ci-label">P&#x2082;O&#x2085; Cost</div><div class="pk-ci-val" id="pk-p-cost">&mdash;</div></div>
     <div class="pk-cost-item"><div class="pk-ci-label">K&#x2082;O Cost</div><div class="pk-ci-val" id="pk-k-cost">&mdash;</div></div>
     <div class="pk-cost-item"><div class="pk-ci-label">Total P+K $/ac</div><div class="pk-ci-val" id="pk-total-cost">&mdash;</div></div>
-    <div style="font-size:.6rem;color:var(--text-muted);align-self:flex-end">Based on live DAP/MOP prices</div>
+    <div style="font-size:.62rem;color:var(--text-muted);align-self:flex-end">Based on live DAP/MOP prices</div>
   </div>
   <div class="ff-cn" id="st-note"></div>
 </div>
@@ -567,7 +662,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 </tbody></table></div>
 <div class="ff-h2">Nutrient Removal Calculator</div>
 <div class="ff-calc">
-  <div class="ff-calc-title">&#128228; Field Nutrient Export Estimator</div>
+  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-share-2"/></svg> Field Nutrient Export Estimator</div>
   <div class="ff-cr">
     <div class="ff-cf" style="min-width:190px"><label class="ff-cl" for="rem-crop">Crop</label>
       <select class="ff-cs" id="rem-crop">
@@ -593,7 +688,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 <div class="ff-note"><strong>Formula:</strong> Count plants in that row length &times; 1,000 = plants/acre. Count at least 3 rows.</div>
 <div class="ff-h2">Bu/Acre Calculator &mdash; Shelled Corn</div>
 <div class="ff-calc">
-  <div class="ff-calc-title">&#127805; Corn Yield Calculator</div>
+  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn Yield Calculator</div>
   <div class="ff-cr">
     <div class="ff-cf"><label class="ff-cl" for="corn-lbs">lbs Harvested</label><input class="ff-ci" id="corn-lbs" type="number" value="12580" step="100"></div>
     <div class="ff-cf"><label class="ff-cl" for="corn-moist">Moisture %</label><input class="ff-ci" id="corn-moist" type="number" value="21.35" step="0.1" min="10" max="40"></div>
@@ -637,7 +732,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 </tbody></table></div>
 
 <div class="mv-box">
-  <div class="mv-title">&#128176; Manure Nutrient Value Calculator <span class="live-badge" id="mv-live-badge" style="display:none;margin-left:.5rem"><span class="b-dot"></span>Live prices</span></div>
+  <div class="mv-title"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg> Manure Nutrient Value Calculator <span class="live-badge" id="mv-live-badge" style="display:none;margin-left:.5rem"><span class="b-dot"></span>Live prices</span></div>
   <p class="ff-sub" style="margin-bottom:.75rem">What is your manure worth at today&#8217;s fertilizer prices? Enter type, incorporation timing, and application rate &mdash; get dollar value per acre and total field savings.</p>
   <div class="mv-price-strip">
     <div class="mv-pi"><label class="mv-pi-label" for="mv-n-price">$/lb N</label><input class="mv-pi-input" id="mv-n-price" type="number" value="0.61" step="0.01" min="0.10" max="3.00"><span class="mv-pi-src" id="mv-n-src">from fert.json</span></div>
@@ -696,7 +791,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 </tbody></table></div>
 <div class="ff-h2">Application Rate Calculator</div>
 <div class="ff-calc">
-  <div class="ff-calc-title">&#128004; Application Rate Calculator</div>
+  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg> Application Rate Calculator</div>
   <div class="ff-cr">
     <div class="ff-cf"><label class="ff-cl" for="man-loads"># Loads</label><input class="ff-ci" id="man-loads" type="number" value="20" step="1" min="1"></div>
     <div class="ff-cf"><label class="ff-cl" for="man-size">Load Size</label><input class="ff-ci" id="man-size" type="number" value="6" step="0.5" min="0.1"></div>
@@ -715,7 +810,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 <div class="ff-h2">Soil pH Targets</div>
 <div class="ff-g2">
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon">&#127919;</span><span class="ff-card-title">Target pH by Crop</span></div>
+    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg></span><span class="ff-card-title">Target pH by Crop</span></div>
     <div class="ff-row"><span class="ff-rl">Alfalfa</span><span class="ff-rv gold">6.8</span></div>
     <div class="ff-row"><span class="ff-rl">Red Clover</span><span class="ff-rv gold">6.3</span></div>
     <div class="ff-row"><span class="ff-rl">Soybean</span><span class="ff-rv gold">6.3</span></div>
@@ -725,7 +820,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     <div class="ff-row"><span class="ff-rl">Blueberries / Cranberries</span><span class="ff-rv">4.5&ndash;5.5</span></div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon">&#9878;&#65039;</span><span class="ff-card-title">Liming Rules (Upper Midwest)</span></div>
+    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg></span><span class="ff-card-title">Liming Rules (Upper Midwest)</span></div>
     <div class="ff-row"><span class="ff-rl">Max lime rate (all soils)</span><span class="ff-rv">12 ton/ac</span></div>
     <div class="ff-row"><span class="ff-rl">Max lime rate (potatoes)</span><span class="ff-rv">8 ton/ac</span></div>
     <div class="ff-row"><span class="ff-rl">Min rate &mdash; sandy &lt;1% OM</span><span class="ff-rv">1 ton/ac</span></div>
@@ -736,7 +831,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 </div>
 <div class="ff-h2">Lime Requirement Calculator</div>
 <div class="ff-calc">
-  <div class="ff-calc-title">&#129683; Lime Rate Estimator (SMP Buffer — Upper-Midwest Calibration)</div>
+  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-axe"/></svg> Lime Rate Estimator (SMP Buffer — Upper-Midwest Calibration)</div>
   <div class="ff-cr">
     <div class="ff-cf"><label class="ff-cl" for="lime-buf">SMP Buffer pH</label><input class="ff-ci" id="lime-buf" type="number" value="6.5" step="0.1" min="5.0" max="7.0"></div>
     <div class="ff-cf"><label class="ff-cl" for="lime-target">Target pH</label>
@@ -811,7 +906,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 </div>
 <div class="ff-h2">GDU Calculator</div>
 <div class="ff-calc">
-  <div class="ff-calc-title">&#9728;&#65039; Daily GDU (Base 50&deg;F)</div>
+  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg> Daily GDU (Base 50&deg;F)</div>
   <div class="ff-cr">
     <div class="ff-cf"><label class="ff-cl" for="gdu-max">Daily Max (&deg;F)</label><input class="ff-ci" id="gdu-max" type="number" value="82" step="1" min="50" max="120"></div>
     <div class="ff-cf"><label class="ff-cl" for="gdu-min">Daily Min (&deg;F)</label><input class="ff-ci" id="gdu-min" type="number" value="58" step="1" min="20" max="100"></div>
@@ -871,7 +966,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     </select>
   </div>
 </div>
-<div class="scout-box"><div class="scout-box-title">&#128270; Priority Scouting Items</div><div id="scout-list" class="scout-empty">Select growth stages above to see priority scouting items for this week.</div></div>
+<div class="scout-box"><div class="scout-box-title"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg> Priority Scouting Items</div><div id="scout-list" class="scout-empty">Select growth stages above to see priority scouting items for this week.</div></div>
 <div class="ff-h2">Economic Thresholds &mdash; Key Insects</div>
 <div class="ff-tw"><table class="ff-t">
 <thead><tr><th class="tl">Pest</th><th class="tl">Crop</th><th class="tl">Economic Threshold</th><th class="tl">Timing</th><th class="tl">Notes</th></tr></thead>
@@ -910,7 +1005,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 <div class="ff-h2">Quick Reference &mdash; Conversion Factors</div>
 <div class="ff-g3">
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon">&#9878;&#65039;</span><span class="ff-card-title">Volume / Weight</span></div>
+    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg></span><span class="ff-card-title">Volume / Weight</span></div>
     <div class="ff-row"><span class="ff-rl">1 bushel corn</span><span class="ff-rv">56 lb</span></div>
     <div class="ff-row"><span class="ff-rl">1 bushel soybeans</span><span class="ff-rv">60 lb</span></div>
     <div class="ff-row"><span class="ff-rl">1 bushel wheat</span><span class="ff-rv">60 lb</span></div>
@@ -921,7 +1016,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     <div class="ff-row"><span class="ff-rl">1 MT (metric ton)</span><span class="ff-rv">2,205 lb</span></div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon">&#128506;&#65039;</span><span class="ff-card-title">Land / Area</span></div>
+    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg></span><span class="ff-card-title">Land / Area</span></div>
     <div class="ff-row"><span class="ff-rl">1 acre</span><span class="ff-rv">43,560 ft&sup2;</span></div>
     <div class="ff-row"><span class="ff-rl">1 acre</span><span class="ff-rv">0.4047 ha</span></div>
     <div class="ff-row"><span class="ff-rl">1 section</span><span class="ff-rv">640 acres</span></div>
@@ -932,7 +1027,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     <div class="ff-row"><span class="ff-rl">1 rod</span><span class="ff-rv">16.5 ft</span></div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon">&#128197;</span><span class="ff-card-title">Grain Moisture Math</span></div>
+    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg></span><span class="ff-card-title">Grain Moisture Math</span></div>
     <div class="ff-row"><span class="ff-rl">Corn dry @ 15.5%</span><span class="ff-rv dim">harvest wt &times; (100-moist)/(100-15.5)</span></div>
     <div class="ff-row"><span class="ff-rl">Soybean dry @ 13.0%</span><span class="ff-rv dim">harvest wt &times; (100-moist)/87</span></div>
     <div class="ff-row"><span class="ff-rl">Shrink (corn 1% moisture)</span><span class="ff-rv">~1.2%</span></div>
@@ -943,7 +1038,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     <div class="ff-row"><span class="ff-rl">1 gal liquid propane</span><span class="ff-rv">4.24 lb / 91,500 BTU</span></div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon">&#128200;</span><span class="ff-card-title">Rate / Application</span></div>
+    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg></span><span class="ff-card-title">Rate / Application</span></div>
     <div class="ff-row"><span class="ff-rl">1 oz ai/ac = oz product/ac</span><span class="ff-rv dim">rate &divide; % ai &times; 100</span></div>
     <div class="ff-row"><span class="ff-rl">gal/ac &rarr; oz/1000 ft&sup2;</span><span class="ff-rv dim">gal/ac &divide; 43.56 &times; 128</span></div>
     <div class="ff-row"><span class="ff-rl">1 ppm in soil</span><span class="ff-rv">~2 lb/acre &times; soil wt</span></div>
@@ -953,7 +1048,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     <div class="ff-row"><span class="ff-rl">Seeds per pound &mdash; soybeans</span><span class="ff-rv">~2,400&ndash;3,000</span></div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon">&#127775;</span><span class="ff-card-title">Temperature</span></div>
+    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg></span><span class="ff-card-title">Temperature</span></div>
     <div class="ff-row"><span class="ff-rl">Soil temp ideal corn germination</span><span class="ff-rv gold">50&deg;F+</span></div>
     <div class="ff-row"><span class="ff-rl">Soil temp ideal soybean germ.</span><span class="ff-rv gold">50&deg;F+</span></div>
     <div class="ff-row"><span class="ff-rl">Frost kills corn (spring)</span><span class="ff-rv red">28&deg;F or below</span></div>
@@ -963,16 +1058,17 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     <div class="ff-row"><span class="ff-rl">&deg;F &rarr; &deg;C</span><span class="ff-rv dim">(&deg;F &minus; 32) &divide; 1.8</span></div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon">&#128217;</span><span class="ff-card-title">Extension Resources</span></div>
-    <div class="ff-row"><span class="ff-rl">UW-Extension Soil Fertility (A2809)</span><span class="ff-rv dim">uwex.edu</span></div>
-    <div class="ff-row"><span class="ff-rl">UMN Crop Nutrient Mgmt</span><span class="ff-rv dim">extension.umn.edu</span></div>
-    <div class="ff-row"><span class="ff-rl">Wisconsin Agronomy Handbook</span><span class="ff-rv dim">learningstore.uwex.edu</span></div>
-    <div class="ff-row"><span class="ff-rl">MN IPM Scout Guide</span><span class="ff-rv dim">extension.umn.edu</span></div>
-    <div class="ff-row"><span class="ff-rl">WCROC Crop Reports</span><span class="ff-rv dim">swroc.cfans.umn.edu</span></div>
-    <div class="ff-row"><span class="ff-rl">USDA NASS Crop Reports</span><span class="ff-rv dim">nass.usda.gov</span></div>
+    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg></span><span class="ff-card-title">Extension &amp; Reference</span></div>
+    <div class="ff-row"><span class="ff-rl">USDA NASS Quick Stats</span><span class="ff-rv dim">quickstats.nass.usda.gov</span></div>
+    <div class="ff-row"><span class="ff-rl">USDA Economic Research Service</span><span class="ff-rv dim">ers.usda.gov</span></div>
+    <div class="ff-row"><span class="ff-rl">Cooperative Extension (find your state)</span><span class="ff-rv dim">nifa.usda.gov/extension</span></div>
+    <div class="ff-row"><span class="ff-rl">USDA Plant Hardiness Zones</span><span class="ff-rv dim">planthardiness.ars.usda.gov</span></div>
+    <div class="ff-row"><span class="ff-rl">National Weather Service / Climate</span><span class="ff-rv dim">weather.gov</span></div>
+    <div class="ff-row"><span class="ff-rl">Land-grant Extension directory</span><span class="ff-rv dim">nifa.usda.gov</span></div>
   </div>
 </div>
-<div class="ff-h2">Seasonal Crop Calendar &mdash; Upper Midwest reference</div>
+<div class="ff-h2">Seasonal Crop Calendar &mdash; Corn Belt example</div>
+<p class="ff-sub" style="font-size:.72rem">A central Corn Belt timeline. Planting and maturity windows shift roughly one to two weeks per ~150 miles of latitude &mdash; check your state Extension or USDA NASS Crop Progress for local dates.</p>
 <div class="ff-tw"><table class="ff-t">
 <thead><tr><th class="tl">Date / Window</th><th class="tl">Corn</th><th class="tl">Soybean</th><th class="tl">Notes</th></tr></thead>
 <tbody>
@@ -983,23 +1079,23 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
   <tr><td class="tl">Late Aug &ndash; early Sep</td><td class="tl">Black layer / physiological maturity</td><td class="tl">R7 (begin maturity)</td><td class="tl" style="font-size:.7rem">Monitor for early frost risk &mdash; especially in northern areas</td></tr>
   <tr><td class="tl">Sep 15</td><td class="tl">Average first frost (northern areas)</td><td class="tl">Harvest window opens</td><td class="tl" style="font-size:.7rem">Frost before black layer can cause quality issues</td></tr>
 </tbody></table></div>
-<button onclick="window.print()" class="ff-print-btn">&#128424;&#65039; Print This Reference Page</button>
+<button onclick="window.print()" class="ff-print-btn"><svg class="ic" aria-hidden="true"><use href="#i-printer"/></svg> Print This Reference Page</button>
 </div><!-- /tab-reference -->
 
 <!-- STATE STATS TAB -->
 <div class="ff-panel" id="tab-statestats" role="tabpanel" aria-labelledby="tab-btn-statestats" tabindex="0" aria-hidden="true">
 <div class="ff-h2">State-Level Production Data</div>
-<p class="ff-sub">Explore USDA NASS production statistics for Wisconsin, Minnesota, Illinois, and Iowa &mdash; the key corn belt states. Data sourced from USDA NASS via AGSIST data pipeline. Updated after each WASDE cycle.</p>
+<p class="ff-sub">U.S. crop production at a glance, with per-state detail from USDA NASS &mdash; the national source for acreage, yield, and production across all 50 states.</p>
+<div class="ff-scontent" style="margin:.25rem 0 1rem">
+  <div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="ff-card-title rp corn">U.S. Corn &mdash; 2025</span></div><div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv gold">17.0 B bu</span></div><div class="ff-row"><span class="ff-rl">Avg yield</span><span class="ff-rv">186.5 bu/ac</span></div><div class="ff-row"><span class="ff-rl">Harvested</span><span class="ff-rv">91.3 M ac</span></div></div>
+  <div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></span><span class="ff-card-title rp beans">U.S. Soybeans &mdash; 2025</span></div><div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv gold">4.26 B bu</span></div><div class="ff-row"><span class="ff-rl">Avg yield</span><span class="ff-rv">53.0 bu/ac</span></div><div class="ff-row"><span class="ff-rl">Harvested</span><span class="ff-rv">80.4 M ac</span></div></div>
+</div>
+<p class="ff-sub" style="font-size:.7rem">National totals: USDA NASS Crop Production 2025 Summary (final). Select any state for its full USDA NASS profile.</p>
 <div class="ff-state-picker">
-  <span class="ff-spl">Select State</span>
-  <div class="ff-sbtns">
-    <button class="ff-sbtn active" data-state="WI">Wisconsin</button>
-    <button class="ff-sbtn" data-state="MN">Minnesota</button>
-    <button class="ff-sbtn" data-state="IL">Illinois</button>
-    <button class="ff-sbtn" data-state="IA">Iowa</button>
-    <button class="ff-sbtn" data-state="IN">Indiana</button>
-    <button class="ff-sbtn" data-state="OH">Ohio</button>
-  </div>
+  <label class="ff-spl" for="ff-state-select">Select state</label>
+  <select id="ff-state-select" style="font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.55rem .7rem;min-height:44px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:6px;min-width:200px">
+    <option value="AL">Alabama</option><option value="AK">Alaska</option><option value="AZ">Arizona</option><option value="AR">Arkansas</option><option value="CA">California</option><option value="CO">Colorado</option><option value="CT">Connecticut</option><option value="DE">Delaware</option><option value="FL">Florida</option><option value="GA">Georgia</option><option value="HI">Hawaii</option><option value="ID">Idaho</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="IA" selected>Iowa</option><option value="KS">Kansas</option><option value="KY">Kentucky</option><option value="LA">Louisiana</option><option value="ME">Maine</option><option value="MD">Maryland</option><option value="MA">Massachusetts</option><option value="MI">Michigan</option><option value="MN">Minnesota</option><option value="MS">Mississippi</option><option value="MO">Missouri</option><option value="MT">Montana</option><option value="NE">Nebraska</option><option value="NV">Nevada</option><option value="NH">New Hampshire</option><option value="NJ">New Jersey</option><option value="NM">New Mexico</option><option value="NY">New York</option><option value="NC">North Carolina</option><option value="ND">North Dakota</option><option value="OH">Ohio</option><option value="OK">Oklahoma</option><option value="OR">Oregon</option><option value="PA">Pennsylvania</option><option value="RI">Rhode Island</option><option value="SC">South Carolina</option><option value="SD">South Dakota</option><option value="TN">Tennessee</option><option value="TX">Texas</option><option value="UT">Utah</option><option value="VT">Vermont</option><option value="VA">Virginia</option><option value="WA">Washington</option><option value="WV">West Virginia</option><option value="WI">Wisconsin</option><option value="WY">Wyoming</option>
+  </select>
 </div>
 <div id="state-content" class="ff-scontent">
   <div style="grid-column:1/-1;color:var(--text-muted);font-size:.78rem;padding:1rem 0">Loading state data&hellip;</div>
@@ -1009,7 +1105,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 </main><!-- /ff-page -->
 <div id="site-footer"></div>
 <!-- FIX: loader.js defer — prevents render-blocking -->
-<script src="/components/loader.js" defer></script>
+<script src="/components/loader.js?v=14" defer></script>
 <script>
 (function(){
 'use strict';
@@ -1083,7 +1179,7 @@ function loadFertPrices(){
       btn.setAttribute('type','button');
       btn.setAttribute('aria-pressed','false');
       btn.setAttribute('aria-label',p.name+' $'+p.price+'/ton \u2014 $'+pplb+'/lb '+pd.nutrient);
-      btn.innerHTML='<span class="fert-pill-icon">'+(p.icon||'&#127806;')+'</span>'
+      btn.innerHTML='<span class="fert-pill-icon">'+(p.icon||'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>')+'</span>'
         +'<span class="fert-pill-body"><span class="fert-pill-name">'+p.name+'</span>'
         +'<span class="fert-pill-sym">'+(p.symbol||pd.label)+'</span></span>'
         +'<span class="fert-pill-price">$'+p.price+'</span>';
@@ -1517,28 +1613,28 @@ document.getElementById('spray-go')&&document.getElementById('spray-go').addEven
 
 /* ─── SCOUTING ADVISOR ──────────────────────────────────────────────── */
 var SCOUT_DB={
-  'VE_V3:VE_V2':[{icon:'\ud83d\udc1b',text:'Black Cutworm',thresh:'3+ cut plants per 100 (treat immediately)'},
-    {icon:'\ud83c\udf31',text:'Stand establishment — count plants per 1/1000 ac row length',thresh:'Replant threshold: <24,000 plants/ac'},
-    {icon:'\ud83e\udda0',text:'Wireworm / seedcorn maggot',thresh:'Any stand reduction in wet cold soils'}],
-  'V4_V6:V3_V5':[{icon:'\ud83d\udc1b',text:'Black Cutworm',thresh:'3+ cut plants per 100'},
-    {icon:'\ud83d\udc1e',text:'Soybean aphid (first arrival)',thresh:'Not threshold yet — monitor for early colonies'},
-    {icon:'\ud83c\udf3f',text:'Rootworm egg hatch (soil temp 50\u00b0F at 4")',thresh:'Flag continuous corn fields'},
-    {icon:'\ud83d\udc1c',text:'Bean leaf beetle',thresh:'20-30% defoliation threshold'}],
-  'V7_V9:R1_R2':[{icon:'\ud83d\udc1e',text:'Soybean aphid',thresh:'250 per plant on 80%+ of plants, increasing, before R5'},
-    {icon:'\ud83d\udc1b',text:'European Corn Borer',thresh:'1 egg mass or fresh feeding per 5 plants'},
-    {icon:'\ud83d\udc1c',text:'Japanese beetle (corn & soybean)',thresh:'Corn: 3/ear + silk <1/2" (during pollination only)'},
-    {icon:'\ud83c\udf3f',text:'Gray Leaf Spot — watch warm humid nights',thresh:'Treat if GLS on or above ear leaf before silking'}],
-  'VT_R1:R3_R4':[{icon:'\ud83e\udd9f',text:'Corn rootworm adult silk clipping',thresh:'0.75 beetles/plant + silk clipped to <1/2"'},
-    {icon:'\ud83d\udc1e',text:'Soybean aphid — critical window',thresh:'250/plant on 80%+ of plants; only treat before R5'},
-    {icon:'\ud83d\udc1b',text:'Corn earworm / Western Bean Cutworm',thresh:'8% egg mass infestation pre-tassel'},
-    {icon:'\ud83e\udd84',text:'Spider mite — check field edges in hot dry weather',thresh:'25-50% stippling with active mites'}],
-  'R2_R3:R5_R6':[{icon:'\ud83e\udd84',text:'Spider mite — high risk in hot dry conditions',thresh:'25-50% leaf stippling with active mites present'},
-    {icon:'\ud83d\udc1e',text:'Soybean aphid — final window (before R5)',thresh:'Do NOT treat after R5 even if threshold met'},
-    {icon:'\ud83c\udf3f',text:'Northern Corn Leaf Blight / NCLB',thresh:'Fungicide if NCLB on/below ear leaf by VT/R1'},
-    {icon:'\ud83d\udcca',text:'Yield estimate — ear length/girth method',thresh:'Count every 2 weeks from R3 forward'}],
-  'R4_R6:R7':[{icon:'\ud83c\udf3f',text:'Harvest timing — corn at black layer',thresh:'Corn at 30-35% moisture for ear snap/combine harvest'},
-    {icon:'\ud83e\udda0',text:'Soybean harvest timing',thresh:'Beans at R7 (1 mature pod) = safe to harvest when dry'},
-    {icon:'\ud83d\udca7',text:'Aflatoxin / Vomitoxin risk in stressed corn',thresh:'Test before delivery if drought or ear rot observed'}]
+  'VE_V3:VE_V2':[{icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Black Cutworm',thresh:'3+ cut plants per 100 (treat immediately)'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>',text:'Stand establishment — count plants per 1/1000 ac row length',thresh:'Replant threshold: <24,000 plants/ac'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Wireworm / seedcorn maggot',thresh:'Any stand reduction in wet cold soils'}],
+  'V4_V6:V3_V5':[{icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Black Cutworm',thresh:'3+ cut plants per 100'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Soybean aphid (first arrival)',thresh:'Not threshold yet — monitor for early colonies'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg>',text:'Rootworm egg hatch (soil temp 50\u00b0F at 4")',thresh:'Flag continuous corn fields'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Bean leaf beetle',thresh:'20-30% defoliation threshold'}],
+  'V7_V9:R1_R2':[{icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Soybean aphid',thresh:'250 per plant on 80%+ of plants, increasing, before R5'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'European Corn Borer',thresh:'1 egg mass or fresh feeding per 5 plants'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Japanese beetle (corn & soybean)',thresh:'Corn: 3/ear + silk <1/2" (during pollination only)'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg>',text:'Gray Leaf Spot — watch warm humid nights',thresh:'Treat if GLS on or above ear leaf before silking'}],
+  'VT_R1:R3_R4':[{icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Corn rootworm adult silk clipping',thresh:'0.75 beetles/plant + silk clipped to <1/2"'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Soybean aphid — critical window',thresh:'250/plant on 80%+ of plants; only treat before R5'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Corn earworm / Western Bean Cutworm',thresh:'8% egg mass infestation pre-tassel'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Spider mite — check field edges in hot dry weather',thresh:'25-50% stippling with active mites'}],
+  'R2_R3:R5_R6':[{icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Spider mite — high risk in hot dry conditions',thresh:'25-50% leaf stippling with active mites present'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Soybean aphid — final window (before R5)',thresh:'Do NOT treat after R5 even if threshold met'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg>',text:'Northern Corn Leaf Blight / NCLB',thresh:'Fungicide if NCLB on/below ear leaf by VT/R1'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg>',text:'Yield estimate — ear length/girth method',thresh:'Count every 2 weeks from R3 forward'}],
+  'R4_R6:R7':[{icon:'<svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg>',text:'Harvest timing — corn at black layer',thresh:'Corn at 30-35% moisture for ear snap/combine harvest'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Soybean harvest timing',thresh:'Beans at R7 (1 mature pod) = safe to harvest when dry'},
+    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-droplet"/></svg>',text:'Aflatoxin / Vomitoxin risk in stressed corn',thresh:'Test before delivery if drought or ear rot observed'}]
 };
 function updateScout(){
   var cs=document.getElementById('scout-corn-stage').value;
@@ -1607,7 +1703,7 @@ function initStages(){
         detail.innerHTML='<div class="sv-detail-stage">'+st.s+'</div>'
           +'<div class="sv-detail-gdu">~'+st.gdu+' GDUs from emergence (base 50\u00b0F)</div>'
           +'<div class="sv-detail-desc">'+st.desc+'</div>'
-          +'<div class="sv-detail-mgmt">&#9888;&#65039; '+st.mgmt+'</div>';
+          +'<div class="sv-detail-mgmt"><svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> '+st.mgmt+'</div>';
       });
       div.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();div.click();}});
       marks.appendChild(div);
@@ -1620,50 +1716,38 @@ function initStages(){
 
 /* ─── STATE STATS ─────────────────────────────────────────────────── */
 var stateInited=false;
-var stateData=null;
+var stateData={};
+var STATE_NAMES={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
 function initStateStats(){
-  if(stateInited&&stateData)return;
+  if(stateInited)return;
   stateInited=true;
-  var btns=document.querySelectorAll('.ff-sbtn');
-  var activeState='WI';
+  var sel=document.getElementById('ff-state-select');
+  var activeState=(sel&&sel.value)||'IA';
   function renderState(code){
     var content=document.getElementById('state-content');if(!content)return;
-    if(!stateData){content.innerHTML='<div style="grid-column:1/-1;color:var(--text-muted);font-size:.78rem;padding:1rem 0">State data not available — check data/prices.json feed.</div>';return;}
-    var s=stateData[code];if(!s){content.innerHTML='<div style="grid-column:1/-1;color:var(--text-muted)">No data for '+code+'.</div>';return;}
+    var s=stateData&&stateData[code];
+    if(!s){content.innerHTML='<div style="grid-column:1/-1;color:var(--text-muted);font-size:.84rem;line-height:1.7;padding:1rem 0">Per-state corn, soybean &amp; wheat detail for <strong style="color:var(--text)">'+(STATE_NAMES[code]||code)+'</strong> &mdash; acreage, yield, and production &mdash; is in the USDA NASS database, the authoritative national source. <a href="https://quickstats.nass.usda.gov/" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;white-space:nowrap">Open USDA NASS Quick Stats &rarr;</a></div>';return;}
     var safe=function(v,u){return v!=null?v+(u?u:''):'\u2014';};
     content.innerHTML='<div class="ff-shdr"><div><div class="ff-sname">'+s.name+'</div><div class="ff-smeta">'+s.meta+'</div></div></div>'
-      +'<div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon">\ud83c\udf3d</span><span class="ff-card-title rp corn">Corn</span></div>'
+      +'<div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="ff-card-title rp corn">Corn</span></div>'
       +'<div class="ff-row"><span class="ff-rl">Planted</span><span class="ff-rv">'+safe(s.corn_acres_planted,' M ac')+'</span></div>'
       +'<div class="ff-row"><span class="ff-rl">Harvested</span><span class="ff-rv">'+safe(s.corn_acres_harvested,' M ac')+'</span></div>'
       +'<div class="ff-row"><span class="ff-rl">Yield</span><span class="ff-rv gold">'+safe(s.corn_yield,' bu/ac')+'</span></div>'
       +'<div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv">'+safe(s.corn_prod,' M bu')+'</span></div></div>'
-      +'<div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon">\ud83c\udf3f</span><span class="ff-card-title rp beans">Soybeans</span></div>'
+      +'<div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></span><span class="ff-card-title rp beans">Soybeans</span></div>'
       +'<div class="ff-row"><span class="ff-rl">Planted</span><span class="ff-rv">'+safe(s.bean_acres_planted,' M ac')+'</span></div>'
       +'<div class="ff-row"><span class="ff-rl">Harvested</span><span class="ff-rv">'+safe(s.bean_acres_harvested,' M ac')+'</span></div>'
       +'<div class="ff-row"><span class="ff-rl">Yield</span><span class="ff-rv gold">'+safe(s.bean_yield,' bu/ac')+'</span></div>'
       +'<div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv">'+safe(s.bean_prod,' M bu')+'</span></div></div>'
-      +(s.wheat_yield?'<div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon">\ud83c\udf3e</span><span class="ff-card-title rp wheat">Winter Wheat</span></div>'
+      +(s.wheat_yield?'<div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></span><span class="ff-card-title rp wheat">Winter Wheat</span></div>'
       +'<div class="ff-row"><span class="ff-rl">Yield</span><span class="ff-rv gold">'+safe(s.wheat_yield,' bu/ac')+'</span></div>'
       +'<div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv">'+safe(s.wheat_prod,' M bu')+'</span></div></div>':'');
   }
-  fetch('/data/prices.json').then(function(r){return r.ok?r.json():null;}).then(function(data){
+  fetch('/data/state-stats.json').then(function(r){return r.ok?r.json():null;}).then(function(data){
     if(data&&data.stateStats)stateData=data.stateStats;
-    else stateData={
-      WI:{name:'Wisconsin',meta:'Primary grain crops: corn, soybeans, winter wheat',corn_acres_planted:'3.7',corn_acres_harvested:'3.5',corn_yield:178,corn_prod:'624',bean_acres_planted:'1.9',bean_acres_harvested:'1.9',bean_yield:48,bean_prod:'91',wheat_yield:75,wheat_prod:'5'},
-      MN:{name:'Minnesota',meta:'Leading state for soybean production',corn_acres_planted:'8.0',corn_acres_harvested:'7.7',corn_yield:191,corn_prod:'1470',bean_acres_planted:'7.8',bean_acres_harvested:'7.7',bean_yield:52,bean_prod:'400'},
-      IL:{name:'Illinois',meta:'Top corn & soybean producing state',corn_acres_planted:'10.9',corn_acres_harvested:'10.8',corn_yield:214,corn_prod:'2312',bean_acres_planted:'9.4',bean_acres_harvested:'9.3',bean_yield:62,bean_prod:'577'},
-      IA:{name:'Iowa',meta:'#1 corn producing state',corn_acres_planted:'12.9',corn_acres_harvested:'12.8',corn_yield:201,corn_prod:'2573',bean_acres_planted:'9.7',bean_acres_harvested:'9.6',bean_yield:56,bean_prod:'538'},
-      IN:{name:'Indiana',meta:'Strong corn & soybean state',corn_acres_planted:'5.5',corn_acres_harvested:'5.4',corn_yield:192,corn_prod:'1037',bean_acres_planted:'5.4',bean_acres_harvested:'5.3',bean_yield:57,bean_prod:'302'},
-      OH:{name:'Ohio',meta:'Eastern corn belt leader',corn_acres_planted:'3.4',corn_acres_harvested:'3.3',corn_yield:182,corn_prod:'601',bean_acres_planted:'4.7',bean_acres_harvested:'4.6',bean_yield:52,bean_prod:'239'}
-    };
     renderState(activeState);
   }).catch(function(){renderState(activeState);});
-  btns.forEach(function(btn){
-    btn.addEventListener('click',function(){
-      btns.forEach(function(b){b.classList.remove('active');});
-      btn.classList.add('active');activeState=btn.dataset.state;renderState(activeState);
-    });
-  });
+  if(sel){sel.addEventListener('change',function(){activeState=sel.value;renderState(activeState);});}
 }
 
 /* ─── SOURCE FOOTER ─────────────────────────────────────────────────── */
