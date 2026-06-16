@@ -156,6 +156,9 @@
   .card-body{display:flex;flex-direction:column;}
 /* cash-bids card: pin bids to top of stretched card (override dash-grid center) */
 #f1>.card>.card-body{justify-content:flex-start}
+/* quick-tools card: pin to top, don't let tool-list stretch (no big gap above Grower Pulse) */
+#f3>.card>.card-body{justify-content:flex-start}
+#f3 .tool-list{flex:0 0 auto}
   .km-tier-tag{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .42rem;border-radius:3px;border:1px solid;}
   .ratio-cot-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.75rem;margin:.6rem 0 .4rem;}
   .ratio-cot-grid .ratio-widget{margin:0}
@@ -984,7 +987,6 @@
               <div class="wx-loc" id="wx-loc"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Locating...</div>
             </div>
           </div>
-          <div class="wx-today" id="wx-today-summary"></div>
           <div class="wx-grid">
             <div class="wstat"><div class="wstat-lbl">Wind</div><div class="wstat-val" id="wx-wind">--</div></div>
             <div class="wstat"><div class="wstat-lbl">Humidity</div><div class="wstat-val" id="wx-humid">--</div></div>
@@ -993,10 +995,10 @@
           </div>
           <div id="wx-forecast" style="display:none"></div>
           <div class="wx-data-extra">
-            <div class="wx-extra-stat with-chart" id="gdu-stat" role="button" tabindex="0" aria-expanded="true" aria-controls="gdu-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Since Apr 1</div><div class="wx-extra-val" id="gdu-val">--</div><div class="wx-extra-ctx" id="gdu-ctx">Growing degree units</div><div class="wx-chart-toggle" id="gdu-chart-toggle">&#x25B2; Hide 5-yr history</div></div>
+            <div class="wx-extra-stat with-chart" id="gdu-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="gdu-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Since Apr 1</div><div class="wx-extra-val" id="gdu-val">--</div><div class="wx-extra-ctx" id="gdu-ctx">Growing degree units</div><div class="wx-chart-toggle" id="gdu-chart-toggle">&#x25BC; Show 5-yr history</div></div>
             <div class="wx-extra-stat with-chart" id="precip-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="precip-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg> 30-Day Precip</div><div class="wx-extra-val" id="precip-val">--</div><div class="wx-extra-ctx" id="precip-ctx">Trailing 30 days</div><div class="wx-chart-toggle" id="precip-chart-toggle">&#x25BC; Show monthly history</div></div>
           </div>
-          <div class="wx-chart-panel expanded" id="gdu-chart-panel" role="region" aria-label="5-year GDU monthly history">
+          <div class="wx-chart-panel" id="gdu-chart-panel" role="region" aria-label="5-year GDU monthly history">
             <div class="wx-chart-title" id="gdu-chart-title">GDU by month &middot; Apr&ndash;Oct &middot; 5-yr avg vs this year</div>
             <div id="gdu-chart-svg"></div>
             <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold)"></span>This year</span></div>
@@ -1023,10 +1025,6 @@
             </div>
             <div style="margin-top:.5rem;font-size:.72rem;color:var(--text-muted);text-align:center"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> <span id="wx-loc-label">Set location above</span></div>
           </div>
-          <div class="spray-windows" id="spray-windows">
-            <div class="spray-windows-lbl"><svg class="ic" aria-hidden="true"><use href="#i-wind"/></svg> 5-Day Spray Windows</div>
-            <div class="spray-days" id="spray-days-strip"></div>
-          </div>
           <button id="btn-change-loc" style="margin-top:.65rem;background:none;border:none;color:var(--text-muted);font-size:.72rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Change location</button>
         </div>
       </div></div>
@@ -1035,9 +1033,7 @@
       <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" /></svg>Quick Tools</h2></div>
       <div class="card"><div class="card-body">
         <div class="tool-list">
-          <a href="/breakeven" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg> Break-Even Calculator</span><span class="tool-arr">&rarr;</span></a>
-          <a href="/grain-bin-calculator" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-construction"/></svg> Grain Bin Calculator</span><span class="tool-arr">&rarr;</span></a>
-          <a href="/gdu-calculator" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Calculator</span><span class="tool-arr">&rarr;</span></a>
+          <div class="wx-today" id="wx-today-summary"></div>
           <a href="/spray" id="wsp-spray" class="tool-widget">
             <div class="tool-widget-inner">
               <div class="tool-widget-top">
@@ -1051,6 +1047,10 @@
               </div>
             </div>
           </a>
+          <div class="spray-windows" id="spray-windows">
+            <div class="spray-windows-lbl"><svg class="ic" aria-hidden="true"><use href="#i-wind"/></svg> 5-Day Spray Windows</div>
+            <div class="spray-days" id="spray-days-strip"></div>
+          </div>
           <a href="/urea" class="tool-widget tool-widget--urea">
             <div class="tool-widget-inner">
               <div class="tool-widget-top">
@@ -1065,6 +1065,9 @@
               </div>
             </div>
           </a>
+          <a href="/breakeven" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg> Break-Even Calculator</span><span class="tool-arr">&rarr;</span></a>
+          <a href="/grain-bin-calculator" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-construction"/></svg> Grain Bin Calculator</span><span class="tool-arr">&rarr;</span></a>
+          <a href="/gdu-calculator" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Calculator</span><span class="tool-arr">&rarr;</span></a>
           <a href="/ag-odds" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Ag Prediction Markets</span><span class="tool-arr">&rarr;</span></a>
           <a href="/fast-facts" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> Fast Facts</span><span class="tool-arr">&rarr;</span></a>
         </div>
