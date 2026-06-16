@@ -228,7 +228,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .one-num-unit { font-size: .88rem; color: var(--text-dim); margin-bottom: .5rem }
 .one-num-ctx { font-size: .88rem; line-height: 1.65; color: var(--text-dim) }
 .watch-list { display: flex; flex-direction: column; gap: .5rem }
-.watch-item { display: flex; gap: .7rem; align-items: flex-start; padding: .5rem 0; border-bottom: 1px solid var(--border) }
+.watch-item { display: flex; flex-direction: column; gap: .25rem; align-items: stretch; padding: .5rem 0; border-bottom: 1px solid var(--border) }
 .watch-item:last-child { border-bottom: none; padding-bottom: 0 }
 .watch-time { font-family: 'JetBrains Mono', monospace; color: var(--gold); font-weight: 600; font-size: .82rem; white-space: nowrap; flex-shrink: 0; min-width: 64px; }
 .watch-desc { color: var(--text-dim); font-size: .88rem; line-height: 1.5; min-width: 0 }
