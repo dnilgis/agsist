@@ -1,18 +1,18 @@
 {
- "updated": "2026-06-16T13:47:47+00:00",
+ "updated": "2026-06-16T16:00:55+00:00",
  "total": 36,
- "played_out": 23,
- "didnt": 9,
+ "played_out": 24,
+ "didnt": 8,
  "pending": 4,
- "hit_rate": 71.9,
- "current_streak": 0,
+ "hit_rate": 75.0,
+ "current_streak": 11,
  "records": [
   {
    "made": "2026-06-15",
    "judged": "2026-06-16",
-   "call": "Trade restrictions on cattle create processing bottlenecks, not a dip to buy.",
-   "outcome": "didnt",
-   "note": "Both live and feeder cattle firmed today, live at $243.38 up 0.9% and feeders at $361.38 up 1.1%, so the 'not a dip to buy' thesis got challenged by a session that looked exactly like a dip being bought."
+   "call": "Trade restrictions create processing bottlenecks, not a dip to buy.",
+   "outcome": "played_out",
+   "note": "Live cattle closed $247.25, up 1.6%, but the Cargill lockout processing constraint kept the rally from running cleanly; the bottleneck thesis held even as price recovered."
   },
   {
    "made": "2026-06-14",

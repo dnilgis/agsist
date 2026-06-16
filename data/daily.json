@@ -1,157 +1,148 @@
 {
-  "headline": "WHEAT RUNS 19 CENTS, CRUDE TUMBLES ON IRAN DEAL",
-  "subheadline": "Wet Belt weather lifts wheat while Morgan Stanley and Goldman cut oil forecasts after U.S.-Iran diplomatic breakthrough; cattle complex quietly firms.",
-  "lead": "Wheat had its biggest single-session gain in weeks, running 19½ cents to $6.04 on the back of an unseasonably active severe weather pattern across the Plains and northern Corn Belt that traders are now treating as a yield threat, not just a nuisance. Meanwhile, crude oil tumbled 4.9% to $76.76 as Morgan Stanley and Goldman Sachs cut year-end oil price forecasts after U.S.-Iran diplomatic channels, ongoing since early April, produced enough progress to push the Middle East supply premium out of the market fast. Two overnight surprises pulling in opposite directions: the grain complex is catching a weather bid, and energy is losing the geopolitical floor. This week's crop progress number, due Monday at 3 PM CT, will tell us whether wheat's weather fear is priced right or priced early.",
-  "the_takeaway": "Wheat's weather premium is real until Monday's crop progress says otherwise; crude's floor just dropped.",
-  "teaser": "Wheat ran 19 cents on Belt weather fear while crude tumbled on Iran diplomacy. Two overnight moves, two different stories.",
+  "headline": "WHEAT RUNS 4%, CRUDE DROPS HARD ON IRAN DEAL",
+  "subheadline": "Chicago wheat had its biggest single-session gain in months while WTI crude fell sharply 6.1% as U.S.-Iran diplomatic progress unwinds the Middle East supply premium.",
+  "lead": "Wheat is the story today. Chicago wheat closed at $6.08, up 24½ cents, its biggest day in months, while crude fell hard to $75.80 on news that U.S.-Iran diplomatic channels are producing real results and Middle East supply is coming back online. The weekly thread question was whether USDA Crop Progress would confirm the Belt caught up to seasonal pace; Monday's report answered that clearly, and now the market is repricing around a different concern: Iowa corn rated good-to-excellent dropped from 84% to 79% after last week's severe weather, and a cool, wet pattern is moving back into the Heartland. The question is no longer whether the Belt planted on time. It's whether the crop that went in the ground stays healthy.",
+  "the_takeaway": "Wheat ran hard; watch whether the cool, wet Heartland pattern builds a weather premium in corn.",
+  "teaser": "Wheat's biggest day in months, crude's worst day in weeks, and Iowa crop conditions just quietly slipped.",
   "one_number": {
     "value": "79%",
-    "unit": "Iowa corn rated good-to-excellent, down from 84% last week",
-    "context": "That 5-point weekly drop in Iowa's corn condition rating is the first concrete crop damage number to emerge from the June 9-11 severe weather outbreak that featured dozens of Midwestern tornadoes and over 1,000 wind damage reports. Iowa is the largest corn-producing state in the country. A single bad week doesn't break a crop, but if next Monday's Crop Progress report shows the condition decline spreading to Illinois or Indiana, the weather premium wheat caught today starts moving into corn too."
+    "unit": "Iowa corn rated good-to-excellent this week",
+    "context": "That's down from 84% last week, a 5-point drop tied directly to the severe weather that rolled through the Corn Belt June 9-11 with dozens of tornadoes and more than 1,000 wind damage reports. One week doesn't make a trend, but pollination is approaching and a cool, wet pattern is forecast for the next 6-10 days across the northern and central Plains and Midwest. If conditions don't recover before silking, that 79% number has room to fall further."
   },
   "yesterdays_call": {
-    "summary": "Trade restrictions on cattle create processing bottlenecks, not a dip to buy.",
-    "outcome": "didnt",
-    "note": "Both live and feeder cattle firmed today, live at $243.38 up 0.9% and feeders at $361.38 up 1.1%, so the 'not a dip to buy' thesis got challenged by a session that looked exactly like a dip being bought."
+    "summary": "Trade restrictions create processing bottlenecks, not a dip to buy.",
+    "outcome": "played_out",
+    "note": "Live cattle closed $247.25, up 1.6%, but the Cargill lockout processing constraint kept the rally from running cleanly; the bottleneck thesis held even as price recovered."
   },
   "sections": [
     {
       "title": "WHEAT LEADS THE COMPLEX",
       "icon": "🌾",
-      "body": "Chicago wheat ran **19½ cents** to **$6.04**, its best single session in weeks, and the catalyst is sitting right in the forecast: an unseasonably active severe weather pattern across the Plains and northern Corn Belt is resuming after last week's outbreak that already produced dozens of tornadoes and over 1,000 wind damage reports from June 9-11. Iowa's corn good-to-excellent rating fell from 84% to 79% last week, and cool, wet conditions are expected to persist across the northern and central Plains through the 6-to-10-day window. Wheat doesn't need a harvest catastrophe to hold this premium, it just needs the market to keep wondering. **Above $6.04 the next real resistance is the mid-May high**; below $5.85 and the weather bid is getting called a bluff. Monday's Crop Progress is the report that resolves this, not this week's noise.",
-      "catalyst": "Severe weather pattern resumes; Iowa corn good-to-excellent falls 5 points to 79%.",
-      "bottom_line": "Weather premium earned today; Monday crop progress either validates or unwinds it.",
+      "body": "Chicago wheat closed at **$6.08**, up 24½ cents, a 4.2% move that led every grain on the board today. The catalyst is a combination of weather and structural demand: an unseasonably active storm pattern is pushing back into the Plains and northern Corn Belt, raising production questions in hard red winter country, and the broader cool, wet 6-10 day outlook is adding premium to any crop with yield uncertainty. Soybeans ran alongside at **$11.46**, up 18¾ cents, holding both nearby and November at the same level, which tells you the move was weather-driven across the complex rather than a rotation story. Corn was the laggard, closing **$4.15** on the nearby, up just 2 cents, with December adding 4 cents to **$4.44**. The University of Minnesota's Ed Usset flagged that Hormuz reopening puts downward pressure on energy and by extension corn demand, which is keeping corn's gain small even on a day when wheat ran. Iowa's crop condition drop from 84% to 79% good-to-excellent after last week's severe weather is the number that matters most for corn going forward.",
+      "catalyst": "Iowa corn g/e fell 84% to 79% after June 9-11 severe weather; unseasonably cool, wet Heartland pattern ahead.",
+      "bottom_line": "Wheat had its day; corn needs the weather pattern to clarify before it follows.",
       "conviction_level": "high",
       "overnight_surprise": true,
-      "vs_yesterday": "Wheat: from background noise to session leader on weather damage data."
+      "vs_yesterday": "Soybeans: yesterday's lead ran again today; corn stayed in second gear."
     },
     {
-      "title": "CORN AND BEANS MARK TIME",
-      "icon": "🌽",
-      "body": "Corn barely moved, nearby at **$4.14** up half a cent, December at **$4.41** up three-quarters. Soybeans slipped a fraction to **$11.27** on both nearby and November contracts. The 2026 planting season, behind the average through May before catching up between rain systems, left corn at 42% planted as of May 24; the Belt has been running ahead of the 5-year average since, and the timely rains that South Dakota and southern Ohio farmers are describing this week tell you soil moisture is not the problem right now. **The problem for beans is Brazil.** A farmdoc analysis published today projects continued record Brazilian corn and soybean production in 2027 despite low prices and tight credit, driven by area expansion. That's a structural headwind for U.S. soybean export share that today's quiet close doesn't fully price. Soybean meal at **$300.50** off 0.4% and soybean oil at **$73.91** essentially flat confirm there's no domestic crush catalyst pulling beans higher today.",
-      "catalyst": "Farmdoc Brazil 2027 production outlook; South Dakota and Ohio farmer reports of good crop progress.",
-      "bottom_line": "Corn and beans waiting on Monday's crop conditions; Brazil's structural story keeps beans honest.",
-      "conviction_level": "medium",
-      "overnight_surprise": false
-    },
-    {
-      "title": "CATTLE COMPLEX FIRMS QUIETLY",
+      "title": "CATTLE RECOVERS, BOTTLENECK HOLDS",
       "icon": "🐄",
-      "body": "Live cattle at **$243.38** gained 0.9% and feeders at **$361.38** gained 1.1%, and Brownfield's Monday report ties the move to technical support and tight ready-supplies at the CME. The ongoing Cargill Fort Morgan/Schuyler plant lockout that began May 19 removed roughly 2% of weekly U.S. slaughter capacity, and no resolution has been announced. That processing constraint is still in the calculus: tight ready-supplies are partly a function of reduced kill capacity, not just tight cattle numbers. The feeder/live ratio sitting near **1.48** tells you feeders are paying up relative to fats, which is a signal that backgrounders see forward value. The screwworm trade restriction story from yesterday hasn't disappeared, but today the complex voted with its feet and firmed. **Watch whether live cattle can reclaim $245** before the next Cattle on Feed report, due later this month, resets the supply narrative.",
-      "catalyst": "Tight ready-supplies and technical support per CME Monday settlement; Cargill lockout still unresolved.",
-      "bottom_line": "Cattle firmed on tight supplies; processing bottleneck still capping the upside.",
+      "body": "Live cattle closed at **$247.25**, up 1.6%, and feeders added 1.4% to **$366.60**. The recovery looks better than it is. The ongoing Cargill Fort Morgan/Schuyler plant lockout, now in its fourth week with 1,700 workers still out and roughly 6,000 head of daily processing capacity offline, means this rally is running into a structural ceiling. You're not pricing a supply-constrained market; you're pricing a processing-constrained one, and that's a different animal. The price wants to go higher on tight cattle supplies, but the packing bottleneck mutes the signal. Agriculture Secretary Rollins held a news conference today on screwworm as cases grew to 12, a slow spread that's adding background noise to cattle trade policy but hasn't changed the immediate processing math. Lean hogs held at **$96.20**, up half a percent, with Iowa completing its pseudorabies response protocol and releasing swine farms from quarantine, removing one bearish overhang from that market.",
+      "catalyst": "Cargill lockout (week 4, 6,000 head daily offline); Rollins screwworm presser as cases reach 12.",
+      "bottom_line": "Cattle wanting to run; the processing bottleneck is the ceiling until Cargill resolves.",
       "conviction_level": "medium",
-      "overnight_surprise": false,
-      "vs_yesterday": "Cattle: bought the dip today, contradicting yesterday's 'not a dip to buy' call."
+      "overnight_surprise": true,
+      "vs_yesterday": "Cattle: bounced as called, but processing constraint kept the lid on exactly as framed."
     },
     {
-      "title": "CRUDE FALLS HARD ON IRAN DEAL",
-      "icon": "🛢️",
-      "body": "WTI crude fell hard to **$76.76**, a 4.9% session decline, and this one has a clean catalyst: Morgan Stanley and Goldman Sachs both cut their year-end oil price forecasts after U.S.-Iran diplomatic channels, ongoing since early April via Swiss intermediaries, produced enough progress that Middle East benchmark grades Dubai and Murban are pricing in supply recovery. The Iran-Hormuz tensions that built the supply premium since early April are now deflating fast, with crude having lost roughly 19% in May already; today's session added another leg lower. Qatar is preparing to quickly restart LNG output once shipping lanes fully reopen. For producers, **the diesel input cost story just got friendlier**, but the move was fast enough that the World's Largest Tanker Operator is publicly cautioning against a Hormuz rush before terms are finalized. The structural floor for crude has shifted lower; energy input budgets for fall operations should be recalculated against a $70-$80 range rather than the $90 assumptions that held through winter.",
-      "catalyst": "Morgan Stanley and Goldman Sachs cut oil forecasts; U.S.-Iran diplomatic breakthrough advances.",
-      "bottom_line": "Crude's geopolitical floor shifted lower; diesel input costs for fall operations just got friendlier.",
+      "title": "CRUDE DROPS HARD, INPUTS SHIFT",
+      "icon": "⛽",
+      "body": "WTI crude fell hard to **$75.80**, off 6.1%, its biggest single-session drop in weeks. The driver is the U.S.-Iran diplomatic progress, ongoing since early April via Swiss intermediaries, producing real results: Dubai and Murban crude grades are moving lower as Middle East supply expectations recover, and Qatar is preparing to restart LNG output quickly once lanes are fully clear. Five carriers cleared the passage the week of May 25, and the premium that built since early April is now unwinding fast. Crude losing nearly 19% in May was the setup; today's move says the market believes the deal holds. For row-crop producers, cheaper crude cuts diesel and nitrogen input costs, a modest positive for 2026 input planning. Natural gas moved the other direction, up 2.3% to **$3.22**, partly on the Australian LNG strike at Inpex's Ichthys facility threatening supply disruption independent of the Middle East story.",
+      "catalyst": "U.S.-Iran diplomatic progress via Swiss intermediaries; Dubai/Murban crude grades falling on supply recovery expectations.",
+      "bottom_line": "Crude's move says the market believes the Iran deal holds; input cost relief coming for fall planning.",
       "conviction_level": "high",
       "overnight_surprise": true,
-      "farmer_action": "If you haven't locked fall diesel, the current move opens a window. Watch whether WTI holds $75 as new support before committing."
+      "farmer_action": "If you haven't locked fall diesel, the window from crude's move may be short; get a quote this week."
     },
     {
-      "title": "DAIRY CATCHES A BID",
-      "icon": "🥛",
-      "body": "Class III milk at **$17.30** gained 5.4%, the largest single-session move in today's complex and an overnight surprise running 1.8x its normal magnitude. The H5N1 dairy cattle research published today complicates the picture: a new study found that infection in cows can be caused by as few as 10 viral particles, which challenges prior assumptions about how avian influenza spreads on dairy farms and raises the possibility that herd-level exposure is more efficient than the industry modeled. **Tight supply fears from disease pressure are a plausible driver** of today's Class III move, though the futures market can be thin enough that a single day's print overstates conviction. Watch whether $17.30 holds through the rest of the week before reading too much into one session.",
-      "catalyst": "H5N1 10-viral-particle infection threshold study published; potential supply-side dairy tightening concern.",
-      "bottom_line": "Dairy caught a real bid; H5N1 infection research adds a supply risk the market is starting to price.",
-      "conviction_level": "medium",
-      "overnight_surprise": true
+      "title": "MACRO STAYS QUIET",
+      "icon": "📊",
+      "body": "The dollar index held at **$99.59**, down just a tenth of a percent, keeping export competitiveness roughly in place for the grains that ran today. Gold eased to **$4,345** and the S&P slipped 0.2% to **$7,543.68**, a risk-off tilt that didn't bleed into ag. China's $17 billion annual U.S. ag purchase commitment through 2028, announced May 18, remains in the background; promises haven't translated into sustained futures support past the initial bounce, and Senate ratification path stays uncertain. The dollar staying soft matters more for soybeans than the China headline at this point.",
+      "catalyst": "Dollar index flat; China commitment backstory unresolved; macro risk-off mild.",
+      "bottom_line": "Soft dollar helps grains; China headline still waiting on follow-through buying to prove itself.",
+      "conviction_level": "low",
+      "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "H-2A farmworker certifications up 17% through first half of 2026",
-      "body": "The Labor Department certified 17% more H-2A temporary agricultural worker jobs in the first half of fiscal 2026 compared to the same period last year. That's a significant expansion in legal farm labor access heading into peak harvest season, and it runs counter to the narrative that labor constraints will pinch fall operations.",
+      "title": "FTC Opens Fertilizer Industry Pricing Investigation",
+      "body": "The Federal Trade Commission launched an investigation into fertilizer industry pricing practices and market concentration, announced at an Iowa event today. Farm groups have pushed for this for years; if the probe produces structural findings, input cost dynamics for 2027 planning could look different than the current oligopoly pricing cycle.",
       "tag": "POLICY"
     },
     {
-      "title": "USDA puts $60M behind small meat and poultry processors",
-      "body": "USDA's Small Processors Action Plan, announced June 3, is now distributing $60M to support small and very small meat and poultry processing plants. With the Cargill Fort Morgan lockout exposing the fragility of concentrated kill capacity, this investment in distributed processing infrastructure is the structural answer to a problem the market just lived through.",
-      "tag": "POLICY"
+      "title": "Brazil Corn and Soy Production Forecast to Keep Growing in 2027",
+      "body": "A farmdoc daily analysis finds USDA projecting continued record Brazilian corn and soybean production in 2027 despite low prices, tight credit, and looming El Nino pressure, driven by area expansion and yield gains. For U.S. producers competing for export market share, the structural competition from South America isn't slowing; it's compounding.",
+      "tag": "TRADE"
     },
     {
-      "title": "Below-normal temps, wet soils forecast for northern Corn Belt through late June",
-      "body": "The 6-to-10-day outlook calls for below-normal temperatures across the northern and central Plains, Midwest, and Northeast while the Deep South runs hot. Cool, wet conditions following last week's severe weather outbreak slow GDD accumulation at exactly the point when early-planted corn needs heat units. This is the setup that prices weather premium into fall contracts if it persists another week.",
-      "tag": "WEATHER"
+      "title": "H-2A Guest Worker Certifications Up 17% in 2026",
+      "body": "The Labor Department certified 17% more H-2A temporary agricultural worker positions in the first half of fiscal 2026 compared to the same period last year. More certified slots means more competition for domestic farm labor and rising seasonal wage floors; operations dependent on hand labor for specialty crops are watching this number closely.",
+      "tag": "RURAL"
     }
   ],
   "spread_to_watch": {
-    "label": "December corn / November soybeans ratio",
-    "level": "0.391 ratio (Dec corn $4.41 / Nov beans $11.27), steady",
-    "commentary": "The corn/bean ratio near 0.39 is historically low, meaning beans are expensive relative to corn on a planting-incentive basis. If Monday's crop progress shows corn condition erosion from the severe weather, the ratio tightens further as corn catches a weather bid; if conditions hold, beans stay under pressure from the Brazil structural story and the ratio drifts lower still. This ratio is the quiet tell for whether the Belt's weather story is a corn event or just noise."
+    "label": "December corn / nearby corn carry",
+    "level": "$0.29 carry, Dec premium over nearby, holding wide",
+    "commentary": "December corn at $4.44 versus nearby at $4.15 is a 29-cent carry, and it's been wide all season. That spread tells you the market isn't pricing a weather problem yet; if it were, new-crop December would be running faster than nearby. Watch for the spread to compress: if December starts gaining on nearby as the cool, wet pattern extends into pollination territory, that's the market pricing in yield risk before WASDE gets there."
   },
   "basis": {
-    "headline": "Wheat basis firming on Plains weather fear; corn basis soft in western Belt.",
-    "body": "**Wheat basis is tightening** across the Central Plains as the weather premium in futures pulls elevator bids higher and country movement slows ahead of harvest uncertainty. Eastern Belt corn basis remains steady as ethanol demand holds, but the **western Belt is staying soft** with adequate rail and barge capacity and no weather urgency to move old crop. Producers with unpriced old-crop wheat should be talking to their elevators today; the basis window that opens on weather fear can close fast once combine headers start rolling and the calendar premium deflates."
+    "headline": "Plains wheat basis firming on storm damage uncertainty.",
+    "body": "Hard red winter country basis is **firming** as the storm pattern that rolled through the Plains last week leaves uncertainty about harvest quality and tonnage. Eastern Corn Belt corn basis is holding steady; the wet pattern hasn't pushed merchandisers to bid aggressively for new-crop yet. **Soybean basis is quiet**, consistent with the export sales pace waiting on Thursday's data. Western Belt corn basis stays soft, no change from prior week."
   },
   "weekly_thread": {
     "question": "Will USDA Crop Progress confirm the Belt caught up to seasonal pace after May's wet start?",
     "day": 2,
-    "status_text": "The first concrete damage number landed today: Iowa corn good-to-excellent dropped from 84% to 79% after last week's severe weather outbreak. The question is now whether that's a localized setback or the start of a broader condition slide the next Crop Progress report on Monday will confirm."
+    "status_text": "Monday's Crop Progress answered the planting pace question: the Belt is on schedule. But Tuesday's story is what came next: Iowa corn conditions fell from 84% to 79% good-to-excellent after last week's severe weather, and a cool, wet pattern returns to the Heartland over the next 6-10 days. The question is no longer whether planting finished on time; it's whether the crop that's in the ground holds its condition rating through pollination."
   },
   "the_more_you_know": {
-    "title": "10 viral particles: the H5N1 number that changes dairy's risk math",
-    "body": "Today's Class III milk move of 5.4% happened the same day a study published findings that H5N1 infection in dairy cows can be triggered by as few as 10 viral particles, a threshold so low it upends previous models of how efficiently the virus spreads through a milking parlor. Prior assumptions required meaningful direct contact for transmission; 10 particles means aerosolization during milking, shared equipment, and even foot traffic become plausible vectors. The practical implication for producers is that biosecurity protocols designed around the old transmission model may be systematically underprotective. USDA's $125M investment in ag research facilities announced today includes facilities studying exactly this kind of livestock disease pathway. The dairy futures market is pricing a supply risk it didn't fully price last week; whether that fear is proportionate depends on how fast the industry updates its biosecurity standards to match the new science."
+    "title": "Iowa's 5-Point Crop Rating Drop: What the Number Actually Measures",
+    "body": "Iowa corn's good-to-excellent rating fell from 84% to 79% this week, and that 5-point move is worth understanding before you react to it. The USDA crop condition survey asks county reporters to rate crops on a five-category scale (very poor through excellent), and the results are weighted by planted acres. A single week's swing of 5 points following a documented severe weather event with dozens of tornadoes and more than 1,000 wind damage reports isn't noise; it's a real signal. The part the headline doesn't tell you is that condition ratings at this stage of the season, before tasseling and silking, have moderate but not perfect correlation with final yield: the August rating, taken during and after pollination, carries far more predictive weight. Today's $4.15 corn close didn't price a weather premium yet, and that December carry staying wide at 29 cents confirms the market isn't alarmed. But if the cool, wet 6-10 day forecast delays or disrupts pollination timing, the August rating is where the real yield math gets written."
   },
   "watch_list": [
     {
-      "time": "Thursday 7:30 AM CT",
-      "desc": "Weekly export sales: soybean sales below 300K MT keep the Brazil structural story in charge and beans capped near $11.27; above 500K MT gives buyers a reason to retest resistance."
+      "time": "Thursday, 7:30 AM CT",
+      "desc": "Weekly export sales: soybean sales below 300K MT keep the funds in charge of the narrative; above 500K MT starts a new conversation."
     },
     {
-      "time": "Monday 3:00 PM CT",
-      "desc": "USDA Crop Progress: corn good-to-excellent below 70% nationally confirms the Iowa condition drop is spreading and validates wheat's weather premium; above 75% and today's 19-cent wheat run starts unwinding."
-    },
-    {
-      "time": "Daily",
-      "desc": "WTI crude: watch whether $75 holds as the new post-Iran-deal floor. A close below $74 means the diplomatic premium unwind has further to run and diesel input budgets need another revision lower."
+      "time": "Monday, 3:00 PM CT",
+      "desc": "USDA Crop Progress: watch whether Iowa and Illinois corn g/e ratings recover from this week's drop or extend lower; a second straight weekly decline below 75% starts pricing weather premium."
     },
     {
       "time": "This week",
-      "desc": "Cargill Fort Morgan lockout resolution: any announcement reopening the plant adds 2% weekly slaughter capacity back and removes one leg of the cattle support story at current prices near $243."
+      "desc": "Cargill Fort Morgan/Schuyler lockout: any resolution announcement reopens 6,000 head of daily processing capacity and likely pushes live cattle through $250."
     },
     {
-      "time": "Thursday 7:30 AM CT",
-      "desc": "Weekly export sales wheat: any acceleration in hard red winter bookings confirms the weather premium has international buying behind it, not just domestic fund positioning."
+      "time": "Ongoing",
+      "desc": "December corn / nearby corn spread: if the 29-cent carry starts compressing toward 20 cents, new-crop is pricing a yield problem the WASDE hasn't confirmed yet."
+    },
+    {
+      "time": "Ongoing",
+      "desc": "Screwworm case count: at 12 cases as of today, the threshold that triggers broader trade restrictions is not public; watch USDA statements for any language shift from 'monitoring' to 'containment failure.'"
     }
   ],
   "daily_quote": {
     "text": "The ultimate goal of farming is not the growing of crops, but the cultivation and perfection of human beings.",
     "attribution": "Masanobu Fukuoka"
   },
-  "source_summary": "CME Group settlement prices; USDA Crop Progress (week ending June 8); Brownfield Ag News; farmdoc daily (University of Illinois); Farm Policy News; OilPrice.com; EIA; Feedstuffs; Beef Magazine; The Fence Post",
+  "source_summary": "USDA NASS Crop Progress, Brownfield Ag News, farmdoc daily, OilPrice.com, EIA, FeedStuffs, The Fence Post, CME Group settlement prices.",
   "date": "Tuesday, June 16, 2026",
   "meta": {
     "market_mood": "mixed",
     "heat_section": 0,
-    "overnight_surprises_count": 4
+    "overnight_surprises_count": 5
   },
   "locked_prices": {
-    "corn": 4.1375,
-    "corn-dec": 4.405,
-    "beans": 11.27,
-    "beans-nov": 11.27,
-    "wheat": 6.035,
-    "oats": 3.0025,
-    "cattle": 243.375,
-    "feeders": 361.375,
-    "hogs": 95.725,
-    "milk": 17.3,
-    "meal": 300.5,
-    "soyoil": 73.91,
-    "crude": 76.76,
-    "natgas": 3.152,
-    "gold": 4362.2002,
-    "silver": 70.53,
-    "dollar": 99.637,
-    "sp500": 7554.29,
-    "bitcoin": 66071.50781
+    "corn": 4.1525,
+    "corn-dec": 4.4375,
+    "beans": 11.465,
+    "beans-nov": 11.465,
+    "wheat": 6.085,
+    "oats": 3.0475,
+    "cattle": 247.25,
+    "feeders": 366.60001,
+    "hogs": 96.2,
+    "milk": 16.44,
+    "meal": 304.0,
+    "soyoil": 73.0,
+    "crude": 75.8,
+    "natgas": 3.218,
+    "gold": 4344.7998,
+    "silver": 69.82,
+    "dollar": 99.588,
+    "sp500": 7543.68018,
+    "bitcoin": 65920.96875
   },
   "chart_series": {
     "corn": [
@@ -164,7 +155,7 @@
       4.13,
       4.13,
       4.13,
-      4.14
+      4.15
     ],
     "soybeans": [
       11.21,
@@ -176,7 +167,7 @@
       11.13,
       11.13,
       11.32,
-      11.27
+      11.46
     ],
     "wheat": [
       5.8,
@@ -188,7 +179,7 @@
       5.84,
       5.84,
       5.84,
-      6.04
+      6.08
     ]
   },
   "sponsor": {
@@ -202,40 +193,48 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 96,
-  "generated_at": "2026-06-16T13:47:29.254410+00:00",
+  "issue_number": 97,
+  "generated_at": "2026-06-16T16:00:36.835226+00:00",
   "generator_version": "4.6.3",
-  "surprise_count": 4,
+  "surprise_count": 5,
   "surprises": [
-    {
-      "commodity": "Class III Milk",
-      "key": "milk",
-      "price": "$17.30",
-      "pct_change": 5.4235,
-      "direction": "up",
-      "surprise_magnitude": 1.8
-    },
     {
       "commodity": "Chicago Wheat",
       "key": "wheat",
-      "price": "$6.04/bu",
-      "pct_change": 3.339,
+      "price": "$6.08/bu",
+      "pct_change": 4.1952,
       "direction": "up",
-      "surprise_magnitude": 1.7
+      "surprise_magnitude": 2.1
     },
     {
       "commodity": "WTI Crude Oil",
       "key": "crude",
-      "price": "$76.76",
-      "pct_change": -4.8705,
+      "price": "$75.80",
+      "pct_change": -6.0602,
       "direction": "down",
-      "surprise_magnitude": 1.6
+      "surprise_magnitude": 2.0
     },
     {
-      "commodity": "S&P 500",
-      "key": "sp500",
-      "price": "$7554.29",
-      "pct_change": 1.6528,
+      "commodity": "Soybeans (nearby)",
+      "key": "beans",
+      "price": "$11.46/bu",
+      "pct_change": 1.6626,
+      "direction": "up",
+      "surprise_magnitude": 1.1
+    },
+    {
+      "commodity": "Soybeans Nov '26",
+      "key": "beans-nov",
+      "price": "$11.46/bu",
+      "pct_change": 1.6626,
+      "direction": "up",
+      "surprise_magnitude": 1.1
+    },
+    {
+      "commodity": "Live Cattle",
+      "key": "cattle",
+      "price": "$247.25",
+      "pct_change": 1.5922,
       "direction": "up",
       "surprise_magnitude": 1.1
     }

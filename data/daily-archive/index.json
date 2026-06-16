@@ -3,14 +3,14 @@
     {
       "date": "2026-06-16",
       "date_display": "Tuesday, June 16, 2026",
-      "headline": "WHEAT RUNS 19 CENTS, CRUDE TUMBLES ON IRAN DEAL",
-      "teaser": "Wheat ran 19 cents on Belt weather fear while crude tumbled on Iran diplomacy. Two overnight moves, two different stories.",
+      "headline": "WHEAT RUNS 4%, CRUDE DROPS HARD ON IRAN DEAL",
+      "teaser": "Wheat's biggest day in months, crude's worst day in weeks, and Iowa crop conditions just quietly slipped.",
       "market_mood": "mixed",
-      "surprise_count": 4,
-      "sections": 5,
+      "surprise_count": 5,
+      "sections": 4,
       "url": "/daily/2026-06-16",
       "market_closed": false,
-      "yc_outcome": "didnt"
+      "yc_outcome": "played_out"
     },
     {
       "date": "2026-06-15",
@@ -1070,6 +1070,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-16T13:47:29.280734+00:00",
+  "updated": "2026-06-16T16:00:36.845933+00:00",
   "count": 96
 }
