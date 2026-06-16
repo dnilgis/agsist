@@ -156,6 +156,7 @@
   .card-body{display:flex;flex-direction:column;}
 /* cash-bids card: pin bids to top of stretched card (override dash-grid center) */
 #f1>.card>.card-body{justify-content:flex-start}
+#f2>.card>.card-body{justify-content:flex-start}
 /* quick-tools card: pin to top, don't let tool-list stretch (no big gap above Grower Pulse) */
 #f3>.card>.card-body{justify-content:flex-start}
 #f3 .tool-list{flex:0 0 auto}
@@ -993,6 +994,7 @@
             <div class="wstat"><div class="wstat-lbl">Precip Chance</div><div class="wstat-val" id="wx-precip">--</div></div>
             <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div>
           </div>
+          <div class="wx-today" id="wx-today-summary"></div>
           <div id="wx-forecast" style="display:none"></div>
           <div class="wx-data-extra">
             <div class="wx-extra-stat with-chart" id="gdu-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="gdu-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Since Apr 1</div><div class="wx-extra-val" id="gdu-val">--</div><div class="wx-extra-ctx" id="gdu-ctx">Growing degree units</div><div class="wx-chart-toggle" id="gdu-chart-toggle">&#x25BC; Show 5-yr history</div></div>
@@ -1033,7 +1035,6 @@
       <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" /></svg>Quick Tools</h2></div>
       <div class="card"><div class="card-body">
         <div class="tool-list">
-          <div class="wx-today" id="wx-today-summary"></div>
           <a href="/spray" id="wsp-spray" class="tool-widget">
             <div class="tool-widget-inner">
               <div class="tool-widget-top">
