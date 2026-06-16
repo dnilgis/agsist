@@ -1,0 +1,50 @@
+name: Build NASS Series
+
+on:
+  push:
+    paths:
+      - "scripts/build_nass_series.py"
+  schedule:
+    - cron: "45 12 16 * *"   # monthly, 16th 12:45 UTC — annual yields/acres + monthly price-received revisions
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nass-series
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build data/nass/*.json
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/build_nass_series.py
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          DIR="data/nass"
+          [ -d "$DIR" ] || { echo "No output dir; nothing to commit."; exit 0; }
+          rm -rf /tmp/nass && cp -r "$DIR" /tmp/nass
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p "$DIR" && cp -r /tmp/nass/. "$DIR"/
+            git add "$DIR"
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Update NASS series $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
