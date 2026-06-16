@@ -1,20 +1,18 @@
-name: Build What's Priced In
+name: Build State Stats (USDA NASS)
 
 on:
   push:
     paths:
-      - "data/wpi-estimates.json"
-      - "data/wpi-history.json"
-      - "scripts/build_whats_priced_in.py"
+      - "scripts/build_state_stats.py"
   schedule:
-    - cron: "20 11 * * *"   # 11:20 UTC daily — rolls the "next report" card over as dates pass
+    - cron: "30 12 15 * *"   # monthly, 15th 12:30 UTC — picks up the Jan annual summary + NASS revisions
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: whats-priced-in
+  group: state-stats
   cancel-in-progress: false
 
 jobs:
@@ -25,24 +23,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Build whats-priced-in.json
-        run: python scripts/build_whats_priced_in.py
+      - name: Build data/state-stats.json
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/build_state_stats.py
       - name: Commit if changed (race-tolerant)
         run: |
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILE="data/whats-priced-in.json"
+          FILE="data/state-stats.json"
           [ -f "$FILE" ] || { echo "No output file; nothing to commit."; exit 0; }
-          cp "$FILE" /tmp/wpi.json
+          cp "$FILE" /tmp/state-stats.json
           BR="${GITHUB_REF_NAME:-main}"
           for i in 1 2 3 4 5; do
             git fetch origin "$BR"
             git reset --hard "origin/$BR"
-            cp /tmp/wpi.json "$FILE"
+            cp /tmp/state-stats.json "$FILE"
             git add "$FILE"
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
-            git commit -m "Update what's priced in $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git commit -m "Update state stats $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
             echo "Push race on attempt $i; re-syncing to origin/$BR..."
             sleep $((RANDOM % 4 + 2))
