@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 15 Jun 2026 16:20:46 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 16 Jun 2026 13:47:47 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WHEAT RUNS 19 CENTS, CRUDE TUMBLES ON IRAN DEAL</title>
+      <link>https://agsist.com/daily/2026-06-16</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-16</guid>
+      <pubDate>Tue, 16 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Wheat had its biggest single-session gain in weeks, running 19½ cents to $6.04 on the back of an unseasonably active severe weather pattern across the Plains and northern Corn Belt that traders are now treating as a yield threat, not just a nuisance. Meanwhile, crude oil tumbled 4.9% to $76.76 as Morgan Stanley and Goldman Sachs cut year-end oil price forecasts after U.S.-Iran diplomatic channels, ongoing since early April, produced enough progress to push the Middle East supply premium out of the market fast. Two overnight surprises pulling in opposite directions: the grain complex is catching a weather bid, and energy is losing the geopolitical floor. This week's crop progress number, due Monday at 3 PM CT, will tell us whether wheat's weather fear is priced right or priced early.
+Wet Belt weather lifts wheat while Morgan Stanley and Goldman cut oil forecasts after U.S.-Iran diplomatic breakthrough; cattle complex quietly firms.
+• WHEAT LEADS THE COMPLEX
+• CORN AND BEANS MARK TIME
+• CATTLE COMPLEX FIRMS QUIETLY
+Read more: https://agsist.com/daily/2026-06-16</description>
+    </item>
     <item>
       <title>SOYBEANS LEAD HIGHER, CATTLE SLIPS ON SCREWWORM RESTRICTIONS</title>
       <link>https://agsist.com/daily/2026-06-15</link>
@@ -358,18 +370,6 @@ Grains rally on Beijing trade deal while crude crashes on Russian sanction waive
 • Energy Crashes on Russia Reset
 • Livestock Steady Amid Grain Rally
 Read more: https://agsist.com/daily/2026-05-18</description>
-    </item>
-    <item>
-      <title>CORN SITS AT $4.56 AFTER FRIDAY'S FUND EXODUS</title>
-      <link>https://agsist.com/daily/2026-05-17</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-17</guid>
-      <pubDate>Sun, 17 May 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed Friday at $4.56 after a 3.3% crater that cleared out the last fund length. The December contract at $4.81 is telling the story: 25 cents of carry disappeared as commercials stepped away from new-crop buying. This week decides whether the planting calendar adds weather premium or the funds find another leg lower.
-Week ahead brings USDA crop progress as planting window tightens across the Midwest.
-• Grains Set for Weather Test
-• Cattle Defy the Grain Crash
-• Energy Holds Geopolitical Floor
-Read more: https://agsist.com/daily/2026-05-17</description>
     </item>
   </channel>
 </rss>

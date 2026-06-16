@@ -1,12 +1,19 @@
 {
- "updated": "2026-06-15T16:20:46+00:00",
- "total": 35,
+ "updated": "2026-06-16T13:47:47+00:00",
+ "total": 36,
  "played_out": 23,
- "didnt": 8,
+ "didnt": 9,
  "pending": 4,
- "hit_rate": 74.2,
- "current_streak": 10,
+ "hit_rate": 71.9,
+ "current_streak": 0,
  "records": [
+  {
+   "made": "2026-06-15",
+   "judged": "2026-06-16",
+   "call": "Trade restrictions on cattle create processing bottlenecks, not a dip to buy.",
+   "outcome": "didnt",
+   "note": "Both live and feeder cattle firmed today, live at $243.38 up 0.9% and feeders at $361.38 up 1.1%, so the 'not a dip to buy' thesis got challenged by a session that looked exactly like a dip being bought."
+  },
   {
    "made": "2026-06-14",
    "judged": "2026-06-15",
