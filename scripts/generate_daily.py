@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """
-AGSIST Daily Briefing Generator, v4.6.2
+AGSIST Daily Briefing Generator, v4.6.3
 ═══════════════════════════════════════════════════════════════════
 Generates the daily agricultural intelligence briefing via Claude API.
+
+v4.6.3 (model migration, 2026-06-16): MODEL -> claude-sonnet-4-6 (the old
+claude-sonnet-4-20250514 was retired from the Claude API on 2026-06-15, causing 404s);
+retry loop now fails fast on non-429 4xx instead of retrying a permanent error.
 
 v4.6.2 (streaming transport fix, 2026-06-15): call_claude now streams the API
 response so long briefings cannot trip the read-timeout (fixes the 2026-06-15 outage);
@@ -150,7 +154,7 @@ PRICES_PATH = REPO_ROOT / "data" / "prices.json"
 OUTPUT_PATH = REPO_ROOT / "data" / "daily.json"
 QUOTE_POOL_PATH = REPO_ROOT / "data" / "quote-pool.json"
 ANTHROPIC_API = "https://api.anthropic.com/v1/messages"
-MODEL = "claude-sonnet-4-20250514"
+MODEL = "claude-sonnet-4-6"
 OG_IMAGE_BASE = None
 
 SURPRISE_THRESHOLDS = {
@@ -1523,6 +1527,13 @@ Apply all 18 IMPACT RULES. Voice samples are NON-NEGOTIABLE, no wire-service neu
             break
         except Exception as e:
             last_err = e
+            _sc = getattr(getattr(e, "response", None), "status_code", None)
+            if _sc is not None and 400 <= _sc < 500 and _sc != 429:
+                # Permanent client error (e.g. 404 model-not-found, 401 bad key) -
+                # retrying cannot help, so fail fast with a pointed hint.
+                print(f"  [error] non-retryable HTTP {_sc} from Anthropic API; not retrying. "
+                      f"Verify MODEL is current (currently '{MODEL}').", file=sys.stderr)
+                break
             if attempt < MAX_RETRIES - 1:
                 wait = BACKOFF_SECONDS[attempt]
                 print(f"  [warn] API call failed ({e}); retrying in {wait}s "
@@ -3068,7 +3079,7 @@ def sanitize_weekend_blocks(briefing, market_status):
 
 
 def main():
-    print("=== AGSIST Daily Briefing Generator v4.6.2 ===")
+    print("=== AGSIST Daily Briefing Generator v4.6.3 ===")
     print(f"  Time: {datetime.now().isoformat()}")
     market_status = get_market_status()
     if market_status["is_closed"]:
@@ -3224,7 +3235,7 @@ def main():
         print(f"  Section catalysts: {cats_with}/{cats_total} sections name a driver")
 
     briefing["generated_at"] = datetime.now(timezone.utc).isoformat()
-    briefing["generator_version"] = "4.6.2"
+    briefing["generator_version"] = "4.6.3"
     briefing["surprise_count"] = len(surprises)
     briefing["surprises"] = surprises
     briefing["price_validation_clean"] = is_clean
