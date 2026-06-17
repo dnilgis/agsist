@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 16 Jun 2026 16:00:55 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 17 Jun 2026 13:42:58 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE RUNS HARD, WHEAT HOLDS GAINS INTO WEDNESDAY</title>
+      <link>https://agsist.com/daily/2026-06-17</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-17</guid>
+      <pubDate>Wed, 17 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Live cattle at $249.12 is the story this morning, a 2.4% overnight run that puts the contract within range of last week's highs one day after the Cargill Fort Morgan lockout, ongoing since May 19, had the complex looking like it was starting to crack. Screwworm cases climbing to 12 is the catalyst the market needed to separate supply anxiety from processing disruption anxiety. Wheat at $6.14 is holding most of Tuesday's 4% run; the question this week was whether USDA Crop Progress would confirm the Belt caught up to seasonal pace, and Monday's 3 PM report gave you the answer. Now the market is repricing what that planting pace means for the rest of the summer.
+Live cattle's 2.4% overnight move leads the complex as screwworm cases climb and the wheat rally from Tuesday consolidates.
+• CATTLE RUNS ON SCREWWORM
+• WHEAT HOLDS, CORN WAITS
+• SOYBEANS STEADY, INPUTS EASE
+  → If pre-pay nitrogen is available at your co-op, get a quote this week. Urea is moving lower on the Iran deal and the window may not stay open past month-end.
+Read more: https://agsist.com/daily/2026-06-17</description>
+    </item>
     <item>
       <title>WHEAT RUNS 4%, CRUDE DROPS HARD ON IRAN DEAL</title>
       <link>https://agsist.com/daily/2026-06-16</link>
@@ -359,18 +372,6 @@ Corn holds $4.79 while funds wait for follow-through on Beijing's $17 billion co
 • Grains Mark Time
 • Livestock Drifts Lower
 Read more: https://agsist.com/daily/2026-05-19</description>
-    </item>
-    <item>
-      <title>CORN JUMPS TO $4.72 AS CHINA COMMITS $17 BILLION</title>
-      <link>https://agsist.com/daily/2026-05-18</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-18</guid>
-      <pubDate>Mon, 18 May 2026 05:00:00 -0600</pubDate>
-      <description>Corn jumped 4¼ cents to $4.72, the highest close in six sessions, after China committed to $17 billion in annual US agricultural purchases through 2028. The funds that fled grains last week are suddenly looking at a structural demand shift that changes the math on carry and storage. December corn gained 1¾ cents to $4.94, the calendar spread narrowing as old-crop finally found a floor worth defending.
-Grains rally on Beijing trade deal while crude crashes on Russian sanction waiver expiry.
-• Grains Find Chinese Floor
-• Energy Crashes on Russia Reset
-• Livestock Steady Amid Grain Rally
-Read more: https://agsist.com/daily/2026-05-18</description>
     </item>
   </channel>
 </rss>
