@@ -53,7 +53,14 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 OUT_FILE  = REPO_ROOT / 'data' / 'export-sales.json'
 
 API_KEY  = os.environ.get('FAS_API_KEY', '').strip()
-API_BASE = 'https://apps.fas.usda.gov/OpenData/api/esr'
+# The legacy apps.fas.usda.gov/OpenData host began returning 500s after USDA's
+# June 12-14, 2026 server upgrade; the OpenData V2 portal documents the API base
+# as api.fas.usda.gov. Try the current host first, fall back to the legacy one.
+API_BASES = [
+    'https://api.fas.usda.gov/api/esr',
+    'https://apps.fas.usda.gov/OpenData/api/esr',
+]
+_working_base = None
 
 logging.basicConfig(
     level=logging.INFO,
@@ -90,20 +97,31 @@ def match_commodity(name: str):
 
 
 def api_get(path: str):
-    """GET the FAS Open Data ESR API. The key goes in the header (FAS convention)
-    and as a query param (api.data.gov convention) — belt and suspenders."""
-    url = API_BASE + path
-    sep = '&' if '?' in url else '?'
-    full = url + (sep + 'api_key=' + API_KEY) if API_KEY else url
+    """GET the FAS ESR API. The api.data.gov key goes in the API_KEY header
+    (confirmed FAS convention) — no ?api_key= query param, since an unexpected
+    query param can itself trigger a 500 on the FAS gateway. The live base host
+    is discovered once, then reused for the rest of the run."""
+    global _working_base
     headers = {
         'API_KEY': API_KEY,
         'X-Api-Key': API_KEY,
         'Accept': 'application/json',
         'User-Agent': 'AGSIST/1.0 (+https://agsist.com)',
     }
-    r = requests.get(full, headers=headers, timeout=REQUEST_TIMEOUT)
-    r.raise_for_status()
-    return r.json()
+    bases = [_working_base] if _working_base else API_BASES
+    last_err = None
+    for base in bases:
+        try:
+            r = requests.get(base + path, headers=headers, timeout=REQUEST_TIMEOUT)
+            r.raise_for_status()
+            if _working_base != base:
+                _working_base = base
+                log.info(f'ESR API base: {base}')
+            return r.json()
+        except Exception as e:
+            last_err = e
+            log.warning(f'  {base + path} -> {e}')
+    raise last_err if last_err else RuntimeError('no ESR base reachable')
 
 
 def resolve_codes() -> dict:
