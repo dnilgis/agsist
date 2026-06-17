@@ -1,121 +1,126 @@
 {
-  "headline": "CATTLE RUNS HARD, WHEAT HOLDS GAINS INTO WEDNESDAY",
-  "subheadline": "Live cattle's 2.4% overnight move leads the complex as screwworm cases climb and the wheat rally from Tuesday consolidates.",
-  "lead": "Live cattle at $249.12 is the story this morning, a 2.4% overnight run that puts the contract within range of last week's highs one day after the Cargill Fort Morgan lockout, ongoing since May 19, had the complex looking like it was starting to crack. Screwworm cases climbing to 12 is the catalyst the market needed to separate supply anxiety from processing disruption anxiety. Wheat at $6.14 is holding most of Tuesday's 4% run; the question this week was whether USDA Crop Progress would confirm the Belt caught up to seasonal pace, and Monday's 3 PM report gave you the answer. Now the market is repricing what that planting pace means for the rest of the summer.",
-  "the_takeaway": "Cattle found its bid; screwworm supply pressure is doing what lockout processing pressure couldn't.",
-  "teaser": "Cattle runs 2.4% on screwworm pressure, wheat holds big gains, corn quietly adds a cent.",
+  "headline": "CATTLE RUNS HARD, WHEAT HOLDS, CORN FIRMS",
+  "subheadline": "Live cattle's biggest single-session gain in weeks leads a broadly green close, while another ECB severe weather threat keeps grain bulls interested.",
+  "lead": "Live cattle at $249.12 is up 2.4% on the session, the biggest move in the complex in weeks, and it happened the day after the Cargill Fort Morgan lockout looked like it had broken the chart. That is the market telling you something: the buyer is not gone, the processing constraint is not the whole story, and screwworm case counts climbing to 12 are starting to price supply tightness the lockout alone couldn't explain. Meanwhile, wheat at $6.14 is holding most of Monday's 4% run, and a climatologist at the Midwestern Regional Climate Center is flagging another severe weather round bearing down on the Eastern Corn Belt. The weekly thread question is still live: did the Belt catch up to seasonal pace, and now the follow-on question is whether it matters if a tornado outbreak erases the progress.",
+  "the_takeaway": "Cattle is back above $249; the lockout narrative just got complicated by screwworm supply tightness.",
+  "teaser": "Cattle runs 2.4%, wheat holds its gains, and the ECB is staring down another severe weather round.",
   "one_number": {
     "value": "12",
-    "unit": "confirmed U.S. screwworm cases, rising",
-    "context": "The screwworm case count climbing to 12 is not just a biosecurity headline. Each confirmed case tightens the cattle supply side independently of the Cargill Fort Morgan lockout, which constrains processing capacity. Two separate pressures on the same complex at the same time explains why live cattle ran 2.4% overnight rather than drifting. Watch whether the case count crosses 20 before month-end; that is the threshold where USDA typically escalates movement restrictions."
+    "unit": "confirmed New World screwworm cases in US livestock",
+    "context": "The case count hitting 12, reported this morning, is the number the cattle complex is now pricing alongside the Cargill lockout. Twelve cases sounds small, but each confirmed case triggers movement restrictions that pull animals off the board. The market is beginning to treat screwworm as a supply story layered on top of a processing-capacity story, and that combination is what pushed live cattle up 2.4% today."
   },
   "yesterdays_call": {
-    "summary": "Yesterday's high-conviction call: wheat had its day; corn needs the weather pattern to clarify before it follows.",
+    "summary": "Yesterday's high-conviction call: wheat had its day, corn needs the weather pattern to clarify before it follows.",
     "outcome": "played_out",
-    "note": "Wheat is holding $6.14 and corn added a modest cent at $4.17, exactly the split the call described."
+    "note": "Corn firmed 1.0% today exactly as the weather pattern started to clarify, with a new ECB severe threat on the models. The call held."
   },
   "sections": [
     {
-      "title": "CATTLE RUNS ON SCREWWORM",
+      "title": "CATTLE RUNS BACK",
       "icon": "🐄",
-      "body": "Live cattle at **$249.12**, up 2.4% overnight, is the sharpest single-session move in the complex in weeks, and the driver is not the Cargill Fort Morgan lockout but the screwworm case count climbing to 12. That matters because the lockout constrains processing throughput; screwworm constrains the supply pipeline itself. Two different pressure points, same direction. Feeder cattle at **$367.62** added 1.7%, which tells you the market is reading the screwworm risk as a broader cattle supply problem, not just a border-state nuisance. The Cargill situation, with roughly 2% of weekly U.S. slaughter capacity still offline, remains unresolved and adds a processing floor to a supply story that is now running on its own legs. May retail fresh meat inflation data published this morning shows prolonged price pressure testing consumer resilience, which caps the upside but does not remove it.",
-      "catalyst": "Screwworm cases climb to 12; Cargill Fort Morgan lockout unresolved at 6,000 head/day offline.",
-      "bottom_line": "Supply pressure and processing disruption are pulling the same direction; the bid is real.",
+      "body": "Live cattle at **$249.12** is up 2.4% on the session and feeders at **$367.62** added 1.7%. Two days ago the complex was pricing a processing-constrained breakdown; today it is pricing something else. Screwworm cases have climbed to 12 confirmed US animals, per reporting this morning, and producers are starting to model what movement restrictions do to available slaughter supply when you already have the Cargill Fort Morgan lockout removing roughly 6,000 head daily. The lockout, ongoing since May 19, creates a processing bottleneck; screwworm creates a supply bottleneck on top of it. Those two forces pulling in opposite directions for price just flipped: supply tightness is winning today. Box-beef cutout reaction to this move will tell you whether the packer is passing the premium forward or absorbing it.",
+      "catalyst": "Screwworm case count climbs to 12, triggering movement restriction pressure on top of existing Cargill lockout capacity loss.",
+      "bottom_line": "Cattle didn't bounce on hope; it bounced on two simultaneous supply constraints finally pricing together.",
       "conviction_level": "high",
       "overnight_surprise": true,
-      "vs_yesterday": "Cattle: Monday's recovery call confirmed; screwworm drove the acceleration."
+      "vs_yesterday": "Cattle: yesterday's recovery read thin; today's 2.4% run adds real weight."
     },
     {
-      "title": "WHEAT HOLDS, CORN WAITS",
+      "title": "WHEAT HOLDS, CORN FIRMS",
       "icon": "🌾",
-      "body": "Wheat at **$6.14** is up another 9.5 cents today after Tuesday's 4% run, holding the bulk of that move without giving it back. That is the market telling you Tuesday's rally had real buying behind it, not just short covering. Corn at **$4.17** added 4.25 cents, a quiet 1% that follows along without leading. The 2026 planting season, behind the average through May before catching up between rain systems, is now well-documented in the Crop Progress data, and atmospheric scientist Eric Snodgrass is flagging an El Nino transition and elevated soil moisture as the top weather concerns for the rest of June. Elevated soil moisture in key Belt districts is not a yield drag today, but it sets up a late-June story if El Nino dries the pattern faster than the models are projecting. December corn at **$4.46** added the same 4.25 cents as nearby, meaning no change in the carry structure. The market is not pricing weather premium yet, but it has the calendar circled.",
-      "catalyst": "Snodgrass flags El Nino transition and 150%-of-normal soil moisture as June weather risks.",
-      "bottom_line": "Wheat held its run; corn is tagging along, waiting for a weather catalyst that is not here yet.",
+      "body": "Wheat at **$6.14** is up 9.5 cents after Monday's big run, meaning the bulls absorbed a session and held most of the move. Kansas harvest reports coming in this morning are doing the work: yields are described as highly variable, with drought and freeze damage visible across the state, and harvest running slightly ahead of schedule. That variability is exactly the kind of news that keeps a weather premium from fully deflating after a big rally. Corn at **$4.17** nearby and **$4.46** December firmed 4.25 cents each, and the catalyst is sitting on the weather models: a climatologist at the Midwestern Regional Climate Center flagged multiple severe weather threats aimed at the Eastern Corn Belt. With pollination approaching and soil moisture already running 150% of normal in key districts, another tornado or hail outbreak is not a benign event. The Belt caught up to seasonal pace; the question now is whether another severe round undoes that progress.",
+      "catalyst": "Kansas harvest reporting significant yield variability from drought and freeze damage; ECB severe weather threat flagged by Midwestern Regional Climate Center.",
+      "bottom_line": "Wheat held the rally and corn found a weather bid; both have real catalysts behind them today.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Wheat: held gains after the big session, no significant reversion."
+      "vs_yesterday": "Wheat: held $6.14 after Monday's 4% run, exactly the behavior a real rally produces."
     },
     {
-      "title": "SOYBEANS STEADY, INPUTS EASE",
+      "title": "SOYBEANS STEADY",
       "icon": "🫘",
-      "body": "Soybeans at **$11.57** added a half-cent, continuing the quiet consolidation after Tuesday's follow-through. China's $17 billion annual U.S. ag purchase commitment through 2028, announced May 18, has not translated into fresh sustained futures support beyond the initial bounce, and there is no new export catalyst in today's news bucket. Soybean oil at **$73.20** added 1.0% and soybean meal at **$308.40** added 0.4%, so the crush complex is holding but not expanding its margin. The more interesting input story today is on the nitrogen side: urea prices at New Orleans tumbled Monday on U.S.-Iran preliminary peace deal news. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, are working their way through the fertilizer complex as Iranian crude exports reportedly resumed past the U.S. blockade this morning. Producers watching fall fertilizer costs have a real window here. Lock pre-pay nitrogen now if your cash flow allows; the peace-deal premium is exiting the market faster than the geopolitical risk is being repriced.",
-      "catalyst": "Iran crude exports resuming; urea prices at New Orleans tumbled Monday on peace deal progress.",
-      "bottom_line": "Beans are quiet; the fertilizer input story is louder than the futures board today.",
-      "conviction_level": "medium",
-      "overnight_surprise": false,
-      "farmer_action": "If pre-pay nitrogen is available at your co-op, get a quote this week. Urea is moving lower on the Iran deal and the window may not stay open past month-end."
+      "body": "Soybeans at **$11.57** nearby and **$11.57** November added half a cent on the day, essentially flat after Monday's weather-and-Iran-deal session. Soybean meal at **$308.40** and soybean oil at **$73.20** were both modestly firmer. China's $17 billion annual US ag purchase commitment, announced May 18, has not been producing sustained futures support past the initial bounce, and today is another example of that pattern. The Indiana checkoff news this morning about high-oleic soybean premiums is the kind of structural demand story that matters at the farm level but does not move the nearby contract. No clean catalyst today for beans; this is a hold.",
+      "catalyst": "",
+      "bottom_line": "Beans are consolidating; no new demand signal today, carry the position and watch Thursday exports.",
+      "conviction_level": "low",
+      "overnight_surprise": false
     },
     {
-      "title": "CRUDE STEADIES AFTER TUESDAY BREAK",
+      "title": "CRUDE STEADIES, INPUTS SHIFT",
       "icon": "⛽",
-      "body": "WTI crude at **$75.85** added 1.4% on the day, a partial recovery after Tuesday's hard drop on Iran deal news. The first Iranian crude oil exports in two months moved past the U.S. blockade outside the Strait this morning, which tells you the market is reading the diplomatic channel as real, not just rumor. Natural gas at **$3.29** added 1.4% as well, partly on the Australian Ichthys LNG strike resolution and Qatar preparing to return LNG tankers ahead of the Hormuz reopening. For U.S. grain producers, the diesel input story is more relevant than crude itself: the biofuels sector is flagging confidence in meeting higher EPA blending requirements finalized in March, which supports domestic crush demand for soybean oil and gives the renewable diesel complex a structural floor.",
-      "catalyst": "First Iranian crude exports resume post-blockade; EPA higher blending volumes supporting biofuels demand.",
-      "bottom_line": "Crude stabilizing, not recovering; fertilizer and diesel costs are the ag-relevant story here.",
+      "body": "WTI crude at **$75.85** added 1.4% after Monday's hard drop on the Iran-Hormuz tensions, ongoing since early April, now deflating as diplomatic progress accelerates. Iran's first observed crude exports in two months moved past the US blockade this morning, and Middle East benchmark prices are falling fast enough that traders are flagging arbitrage opportunities for shipping Persian Gulf crude to the US and Europe. That is not bullish for diesel, which matters to the producer. Natural gas at **$3.29** also added 1.4%, helped by the resolution of the Australian Ichthys LNG strike. Fertilizer prices dropped Monday on the Iran deal news per Farm Policy News, and that is the input story producers should be tracking: urea at New Orleans is moving, and the window to lock fall inputs at post-deal prices may be short.",
+      "catalyst": "First Iranian crude exports in two months clear US blockade; Middle East benchmark prices falling, opening arbitrage to US and Europe; Australian LNG strike ends.",
+      "bottom_line": "Crude bounced one session after a hard drop; the structural direction is still lower on Iran supply returning.",
       "conviction_level": "medium",
-      "overnight_surprise": false
+      "overnight_surprise": false,
+      "farmer_action": "Fertilizer prices dropped on the Iran deal; get a fall nitrogen quote this week before the market reprices the new supply curve.",
+      "vs_yesterday": "Energy: crude partially retraced Monday's drop; Iran supply flow is now confirmed, not just promised."
     }
   ],
   "outside_the_pit": [
     {
-      "title": "El Nino Transition Flagged as June's Top Weather Risk",
-      "body": "Atmospheric scientist Eric Snodgrass says the switch toward El Nino and soil moisture running 150% of normal in key Belt districts are his top concerns for the rest of June. Neither is in the futures price today, but pollination timing in corn is approaching, and El Nino's pattern shift could flip the soil-moisture story from drag to drought risk faster than models currently suggest.",
-      "tag": "WEATHER"
-    },
-    {
-      "title": "Brazil's 2027 Corn and Soy Expansion Still USDA's Base Case",
-      "body": "Despite low prices, tight credit, and rising fertilizer costs, USDA's published forecast calls for continued record Brazilian corn and soybean production in 2027 driven by area expansion and yield gains. U.S. producers competing for the same export market share should treat Brazil's supply trajectory as a structural headwind that no single China deal fully offsets.",
-      "tag": "TRADE"
-    },
-    {
-      "title": "Denmark Scraps Agriculture Minister Role",
-      "body": "Denmark's new government eliminated the agriculture minister position, splitting traditional ag responsibilities into a nature and animal welfare ministry. Denmark is a top EU pork and dairy exporter, and the institutional shift signals a regulatory reorientation that could reshape European supply-side policy over the next few years, with downstream implications for U.S. protein exports competing in EU markets.",
+      "title": "USDA Pilots Acreage Reporting Tech in 11 States Before June 30",
+      "body": "USDA is rolling out a modernized acreage reporting pilot ahead of the June 30 Acreage report, covering counties in 11 states. If this system accelerates data collection, the June 30 number could be sharper and faster than prior years. Producers in pilot counties should confirm their FSA office is using the new system and that their filed acreage matches.",
       "tag": "POLICY"
+    },
+    {
+      "title": "RMA Releases 2025 County Yields; ECO/SCO Payments Triggered in Multiple Areas",
+      "body": "The Risk Management Agency has published final 2025 county yield estimates, and yield losses were large enough in several areas to trigger Enhanced Coverage Option and Supplemental Coverage Option payments. If you had ECO or SCO coverage in 2025 and haven't seen a settlement statement, contact your agent now.",
+      "tag": "POLICY"
+    },
+    {
+      "title": "ECB Severe Weather Round Two Is on the Models for This Week",
+      "body": "A climatologist at the Midwestern Regional Climate Center told Brownfield this morning that multiple threats including tornadoes are possible across parts of the Eastern Corn Belt in the coming days. With corn approaching pollination and fields already saturated at 150% of normal soil moisture, hail or wind damage at this stage is not recoverable within the season.",
+      "tag": "WEATHER"
     }
   ],
   "spread_to_watch": {
     "label": "Live cattle / feeder cattle ratio",
-    "level": "0.678 ratio, narrowing slightly",
-    "commentary": "Live cattle at $249.12 and feeders at $367.62 put the ratio at roughly 0.678, and both contracts are running higher together, which is the market pricing supply pressure on both ends of the chain simultaneously. When screwworm cases and the lockout are both active, the ratio normally widens as feeders get hit harder than fats; the fact that it is holding narrow tells you the live side is catching up, not that feeders are losing their bid."
+    "level": "0.678 ratio, narrowing off the recent low",
+    "commentary": "Feeders at $367.62 against live cattle at $249.12 puts the ratio near 0.678, and it has been grinding narrower since the Cargill lockout split the complex in May. When feeders run harder than live cattle, the market is saying the pipeline is getting thin and placement costs are rising; when live cattle runs harder, as today, the packer is paying up for ready supply. Today live cattle led feeders by 70 basis points, which says the immediate supply squeeze from screwworm and the lockout is hitting the cash market now, not just the deferred contracts."
   },
   "basis": {
-    "headline": "Corn basis firming in the eastern Belt; wheat basis mixed post-rally.",
-    "body": "**Eastern Belt corn basis is tightening** as ethanol grind continues at pace and old-crop storage positions start to thin ahead of harvest. Producers east of the Mississippi with old-crop bushels in the bin have a basis window the futures board at $4.17 alone is not fully reflecting. Western Belt corn basis is staying soft, no change from the seasonal pattern. **Wheat basis is mixed** in the wake of Tuesday's big session, with elevators resetting bids cautiously while they watch whether $6.14 holds or pulls back."
+    "headline": "ECB corn basis firming as weather threat builds.",
+    "body": "Eastern Corn Belt corn basis is **firming** as another severe weather round approaches and elevators begin pricing in potential production disruption ahead of pollination. Western Belt basis remains softer, consistent with adequate nearby supply. Wheat basis in Kansas is mixed this week, reflecting the highly variable harvest results coming in from the field: strong yields are pressuring local bids, while drought-damaged areas are seeing tighter basis as elevators manage quality segregation."
   },
   "weekly_thread": {
     "question": "Will USDA Crop Progress confirm the Belt caught up to seasonal pace after May's wet start?",
     "day": 3,
-    "status_text": "Monday's Crop Progress confirmed the Belt is on pace, and the market has moved on to the next question: what does an El Nino transition mean for a crop planted into 150%-of-normal soil moisture. The planting question is answered; the growing-season weather question is now opening."
+    "status_text": "Monday's Crop Progress confirmed the Belt is on schedule, with corn planting at 42% as of the May 24 reading and soil conditions stabilizing. But the thread has evolved: the question now is whether a second ECB severe weather event, flagged by the Midwestern Regional Climate Center this morning, will reset the field conditions that took three weeks of dry windows to build."
   },
   "the_more_you_know": {
-    "title": "The Fertilizer Price Window That Opens When Crude Falls",
-    "body": "Urea at New Orleans dropped sharply Monday on U.S.-Iran peace deal news, and this morning Iranian crude exports reportedly resumed for the first time in two months. That connection is not coincidental: roughly 30% of global nitrogen fertilizer production is natural-gas-intensive, and when Middle East supply risk premiums exit the energy complex, they exit the nitrogen complex within days, not weeks. The $75.85 WTI print today is already $9 below last month's peak, and urea typically follows crude's direction with a 1-to-3 week lag. Producers who pre-pay fall nitrogen in this window are effectively locking in a peace-deal discount that may not survive if diplomatic progress stalls or Iranian export volumes disappoint. The window is real, it is probably 2 to 4 weeks wide, and it is already open."
+    "title": "Yield variability: the number the average hides.",
+    "body": "Kansas wheat harvest is running slightly ahead of schedule today, but the Kansas Wheat CEO's comment about 'highly variable' yields is the more important data point. When a crop comes in variable, the state average yield hides the distribution: a field yielding 60 bushels per acre and a field yielding 15 pull together toward a 37-bushel state average that describes neither of them. This is why Chicago Wheat at $6.14, still holding most of Monday's 4% run, does not fully deflate even when harvest is progressing on schedule. The funds are not pricing the average; they are pricing the uncertainty around the average. Drought and freeze damage create tail risk on the low end of that distribution, and tail risk is exactly what a weather premium is paid to hold."
   },
   "watch_list": [
     {
       "time": "Thursday 7:30 AM CT",
-      "desc": "USDA Weekly Export Sales: soybean sales below 300,000 MT keeps the chart range-bound; above 450,000 MT gives the bulls a fresh catalyst heading into weekend weather coverage."
+      "desc": "USDA Weekly Export Sales: soybeans under 300K MT keeps the chart in charge of the story; above 500K MT and China's May 18 purchase commitment starts looking real."
     },
     {
-      "time": "Ongoing this week",
-      "desc": "Screwworm case count: if confirmed U.S. cases cross 20, watch for USDA to escalate movement restrictions, which would tighten the feeder supply side independently of the Cargill lockout."
+      "time": "This week, ongoing",
+      "desc": "Eastern Corn Belt weather: if the severe weather system produces confirmed hail or tornado damage in Indiana, Ohio, or Illinois corn ground, a weather premium returns to corn above $4.17."
     },
     {
       "time": "Daily",
-      "desc": "Iranian crude export volumes: if daily flows through the Strait of Hormuz reach pre-blockade pace, the fertilizer input window narrows. Get nitrogen quotes before that repricing happens."
+      "desc": "Cargill Fort Morgan lockout resolution: no deal announced as of this morning; every day without resolution is another day the market prices two simultaneous supply constraints in cattle."
     },
     {
-      "time": "Friday close",
-      "desc": "Cattle: if live cattle holds above $248 into Friday's close with the lockout still unresolved, the market is telling you screwworm supply pressure is carrying more weight than processing capacity."
+      "time": "Monday June 23 3:00 PM CT",
+      "desc": "USDA Crop Progress: corn condition ratings after the second ECB weather round; a drop below 65% good-to-excellent nationally adds weather premium that the current price is not holding."
+    },
+    {
+      "time": "This week",
+      "desc": "Fall nitrogen input quotes: urea at New Orleans dropped on Iran deal news Monday; the window to lock at post-deal prices may close as supply adjustments get priced in over the next two to three weeks."
     }
   ],
   "daily_quote": {
-    "text": "He who knows when he can fight and when he cannot, will be victorious.",
-    "attribution": "Sun Tzu"
+    "text": "A good beginning is half the work.",
+    "attribution": "Irish Proverb"
   },
-  "source_summary": "USDA NASS Crop Progress, CME Group settlement prices, NYMEX WTI, Brownfield Ag News, Beef Magazine, Farm Doc Daily, OilPrice.com, EIA, Farm Policy News",
+  "source_summary": "CME Group settlement prices; USDA Crop Progress; Brownfield Ag News; Beef Magazine; Farm Policy News; OilPrice.com; farmdoc daily; EIA; Feedstuffs; MRCC climatologist report.",
   "date": "Wednesday, June 17, 2026",
   "meta": {
-    "market_mood": "mixed",
+    "market_mood": "bullish",
     "heat_section": 0,
     "overnight_surprises_count": 2
   },
@@ -189,8 +194,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 97,
-  "generated_at": "2026-06-17T13:42:40.706526+00:00",
+  "issue_number": 98,
+  "generated_at": "2026-06-17T14:29:01.233478+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 2,
   "surprises": [
@@ -211,7 +216,7 @@
       "surprise_magnitude": 1.2
     }
   ],
-  "price_validation_clean": false,
+  "price_validation_clean": true,
   "market_closed": false,
   "market_status_reason": "open"
 }
