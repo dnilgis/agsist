@@ -77,9 +77,16 @@ USDA_TARGETS = {
     'wheat':    21_800_000,   #   825 Mbu — April 2026 WASDE
 }
 MARKETING_YEAR = '2025/26'
-# ESR marketYear = the calendar year the marketing year BEGINS.
-# Bump this when the new MY opens (corn/beans early September; wheat June).
+# ESR marketYear convention is being confirmed from live diagnostics (the
+# parameter may key off the year the MY begins OR ends). Until confirmed, query
+# both candidate years, log the structure, and publish only the one whose
+# cumulative lands in a plausible range vs. the USDA target.
 MKT_YEAR_INT = 2025
+CANDIDATE_YEARS = [2025, 2026]
+# A commodity's commitments can run a little over the export forecast late in
+# the MY, but a figure far above it means the wrong marketYear or a
+# double-counted rollup row — never publish those.
+PLAUSIBLE_MAX = 130.0
 
 REQUEST_TIMEOUT = 30
 
@@ -138,41 +145,43 @@ def resolve_codes() -> dict:
     return codes
 
 
-def latest_week_totals(records):
-    """Sum currentMYTotalCommitment (cumulative) and currentMYNetSales (weekly
-    net) across all destination countries for the most recent weekEndingDate."""
-    if not records:
+def _commit(r):
+    return float(r.get('currentMYTotalCommitment') or 0)
+
+
+def _net(r):
+    return float(r.get('currentMYNetSales') or 0)
+
+
+def fetch_year(code, year):
+    """Query one (commodityCode, marketYear) and summarize the most recent week.
+
+    Returns a dict with the record count, the latest weekEndingDate, the number
+    of records in that week, the summed cumulative commitment and weekly net,
+    and the raw latest-week records (kept so the caller can log the top
+    destinations and spot any rollup/total rows). Returns None on failure."""
+    path = f'/exports/commodityCode/{code}/allCountries/marketYear/{year}'
+    try:
+        recs = api_get(path)
+    except Exception as e:
+        log.warning(f'  marketYear {year}: {e}')
         return None
-    weeks = [r.get('weekEndingDate') for r in records if r.get('weekEndingDate')]
+    if not recs:
+        return None
+    weeks = sorted({r.get('weekEndingDate') for r in recs if r.get('weekEndingDate')})
     if not weeks:
         return None
-    latest = max(weeks)
-    cumul = 0.0
-    weekly = 0.0
-    for r in records:
-        if r.get('weekEndingDate') != latest:
-            continue
-        cumul  += float(r.get('currentMYTotalCommitment') or 0)
-        weekly += float(r.get('currentMYNetSales') or 0)
-    return {'week_ending': latest, 'cumulative': cumul, 'weekly': weekly}
-
-
-def fetch_commodity(code):
-    """Query the ESR API for a commodity, trying both marketYear conventions
-    (start-year and end-year) and keeping whichever has the most recent week."""
-    best = None
-    for yr in (MKT_YEAR_INT, MKT_YEAR_INT + 1):
-        path = f'/exports/commodityCode/{code}/allCountries/marketYear/{yr}'
-        try:
-            recs = api_get(path)
-        except Exception as e:
-            log.warning(f'  marketYear {yr}: {e}')
-            continue
-        tot = latest_week_totals(recs)
-        if tot and (best is None or tot['week_ending'] > best['week_ending']):
-            tot['market_year'] = yr
-            best = tot
-    return best
+    latest = weeks[-1]
+    lw = [r for r in recs if r.get('weekEndingDate') == latest]
+    return {
+        'year': year,
+        'records': len(recs),
+        'latest': latest,
+        'latest_n': len(lw),
+        'cumulative': sum(_commit(r) for r in lw),
+        'weekly': sum(_net(r) for r in lw),
+        'lw': lw,
+    }
 
 
 def load_existing() -> dict:
@@ -221,44 +230,67 @@ def main():
     out = {
         'updated':        today.isoformat(),
         'marketing_year': MARKETING_YEAR,
-        'note':           'USDA FAS Open Data ESR API — apps.fas.usda.gov/OpenData/api/esr',
+        'note':           'USDA FAS ESR API — api.fas.usda.gov/api/esr',
     }
     report_dates = []
     any_live = False
 
     for comm in ('corn', 'soybeans', 'wheat'):
-        tot = fetch_commodity(codes[comm])
-        if not tot or not tot['cumulative']:
+        target = USDA_TARGETS[comm]
+        candidates = []
+        for yr in CANDIDATE_YEARS:
+            info = fetch_year(codes[comm], yr)
+            if not info:
+                continue
+            # ESR API may report in 1,000 MT; scale up if ~1000x too small.
+            scale = 1000 if (info['cumulative'] and info['cumulative'] < target / 10) else 1
+            info['cumul']  = round(info['cumulative'] * scale)
+            info['weekly_mt'] = round(info['weekly'] * scale)
+            info['scale']  = scale
+            info['pct']    = round(info['cumul'] / target * 100, 1) if info['cumul'] else None
+            # DIAGNOSTIC: dump structure so the marketYear convention can be
+            # confirmed and any rollup/total row (e.g. "TOTAL KNOWN"/"UNKNOWN")
+            # inflating the sum can be spotted from the top destinations.
+            top = sorted(info['lw'], key=_commit, reverse=True)[:4]
+            topstr = ' | '.join(
+                f"{(r.get('countryName') or r.get('country') or r.get('countryDescription') or '?').strip()}"
+                f"={_commit(r):,.0f}" for r in top
+            )
+            log.info(
+                f'  [{comm} MY{yr}] recs={info["records"]} latestWk={str(info["latest"])[:10]} '
+                f'latestRecs={info["latest_n"]} cumul={info["cumul"]:,} pct={info["pct"]}% '
+                f'scale={scale}x  top: {topstr}'
+            )
+            candidates.append(info)
+
+        # Publish the plausible candidate (1%..PLAUSIBLE_MAX of target) with the
+        # most recent week. If none is plausible, keep the last good numbers
+        # rather than push an impossible figure to the public dashboard.
+        plausible = [c for c in candidates
+                     if c['pct'] is not None and 1.0 <= c['pct'] <= PLAUSIBLE_MAX]
+        pick = max(plausible, key=lambda c: c['latest']) if plausible else None
+
+        if not pick:
+            saw = [(c['year'], c['pct']) for c in candidates]
+            log.warning(f'{comm}: no plausible marketYear (saw {saw}) — preserving existing')
             if comm in existing:
-                log.warning(f'{comm}: no live data — preserving existing values')
                 out[comm] = existing[comm]
                 out[comm]['updated'] = today.isoformat()
-            else:
-                log.warning(f'{comm}: no live data and no existing fallback')
             continue
 
-        target = USDA_TARGETS[comm]
-        # ESR API may return values in 1,000 MT. Cumulative commitments should be
-        # a large fraction of the full-year target; if it's ~1000x too small,
-        # the API is reporting thousand-MT and we scale up.
-        scale = 1000 if (tot['cumulative'] and tot['cumulative'] < target / 10) else 1
-        cumul  = round(tot['cumulative'] * scale)
-        weekly = round(tot['weekly'] * scale)
-        rd = str(tot['week_ending'])[:10]
+        rd = str(pick['latest'])[:10]
         report_dates.append(rd)
-        pct = round(cumul / target * 100, 1) if cumul else None
-
         out[comm] = {
-            'weekly_net_mt':  weekly,
-            'cumulative_mt':  cumul,
+            'weekly_net_mt':  pick['weekly_mt'],
+            'cumulative_mt':  pick['cumul'],
             'usda_target_mt': target,
-            'pct_of_target':  pct,
+            'pct_of_target':  pick['pct'],
             'report_date':    rd,
         }
         any_live = True
         log.info(
-            f'{comm:9s} wk={weekly:>12,} MT  cumul={cumul:>12,} MT  '
-            f'pct={pct}%  week_ending={rd}  MY={tot.get("market_year")}  scale={scale}x'
+            f'{comm:9s} -> MY{pick["year"]}  wk={pick["weekly_mt"]:>12,} MT  '
+            f'cumul={pick["cumul"]:>12,} MT  pct={pick["pct"]}%  week={rd}'
         )
 
     if not any_live:
