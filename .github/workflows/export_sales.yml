@@ -21,12 +21,16 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        # FIX: was only 'pip install requests' — fetch_export_sales.py imports
-        # beautifulsoup4 (from bs4 import BeautifulSoup) for HTML parsing in
-        # Strategy 2 (ESR HTML report). Without it, workflow crashed every Thursday.
-        run: pip install requests beautifulsoup4
+        # fetch_export_sales.py now uses the FAS Open Data ESR API (JSON) and
+        # only needs requests. beautifulsoup4 was for the old HTML-scraping
+        # strategies, which USDA decommissioned on June 2, 2026.
+        run: pip install requests
 
       - name: Fetch USDA FAS Export Sales
+        # FAS_API_KEY is a free api.data.gov key (https://api.data.gov/signup),
+        # stored as a repo secret. Without it the script preserves existing data.
+        env:
+          FAS_API_KEY: ${{ secrets.FAS_API_KEY }}
         run: python scripts/fetch_export_sales.py
 
       - name: Commit data/export-sales.json
@@ -34,6 +38,22 @@ jobs:
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           git add data/export-sales.json
-          git diff --staged --quiet || git commit -m "chore: update export sales $(date +%F)"
-          git pull --rebase origin main
-          git push
+          if git diff --staged --quiet; then
+            echo "No change."
+          else
+            git commit -m "chore: update export sales $(date -u +%F)"
+            for i in 1 2 3 4 5; do
+              if git push; then echo "pushed on attempt $i"; exit 0; fi
+              echo "push rejected (attempt $i) — resyncing onto latest main"
+              cp data/export-sales.json "$RUNNER_TEMP/export-sales.json"
+              git fetch origin main
+              git reset --hard origin/main
+              cp "$RUNNER_TEMP/export-sales.json" data/export-sales.json
+              git add data/export-sales.json
+              if git diff --staged --quiet; then echo "remote already current"; exit 0; fi
+              git commit -m "chore: update export sales $(date -u +%F)"
+              sleep $(( (RANDOM % 4) + 1 ))
+            done
+            echo "::error::could not push export sales after 5 attempts"
+            exit 1
+          fi
