@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AGSIST fetch_markets.py  v10
+AGSIST fetch_markets.py  v11
 ════════════════════════════
 v10 changes (2026-04-23):
 
@@ -86,7 +86,7 @@ TIER1_KEYWORDS = [
 TIER2_KEYWORDS = [
     "tariff", "tariffs", "trade war", "trade deal", "trade agreement",
     "china trade", "china import", "china export",
-    "brazil", "argentina", "ukraine", "black sea grain",
+    "black sea grain", "black sea",
     "usmca", "nafta", "wto", "trade dispute",
     "export ban", "import quota", "sanction",
     "trade policy", "trade escalation", "retaliatory tariff",
@@ -109,9 +109,10 @@ TIER3_KEYWORDS = [
     "climate policy", "weather forecast", "farm subsidy",
     # Macro the page explicitly tracks (see on-page reference cards):
     # Fed rates -> land values / carry cost; inflation -> food demand.
-    "interest rate", "federal reserve", "fed funds",
-    "rate cut", "rate hike", "cut rate", "fed cut", "fomc", "powell",
-    "rate decision", "inflation", "cpi", "ppi", "food inflation",
+    "interest rate", "interest rates", "federal reserve", "fed funds",
+    "rate cut", "rate cuts", "rate hike", "rate hikes", "cut rate",
+    "fed cut", "fed cuts", "fomc", "powell", "rate decision",
+    "inflation", "cpi", "ppi", "food inflation",
     # v11 removed (pulled in unrelated markets on an ag page):
     # recession, gdp growth, unemployment, dollar index, usd, currency,
     # government shutdown, debt ceiling, federal budget, deficit, treasury,
@@ -201,6 +202,8 @@ SPORTS_BLACKLIST = [
     "win total", "over/under", "point spread",
     "lakers", "celtics", "warriors", "chiefs", "eagles",
     "yankees", "dodgers", "golden state",
+    "o/u", "1st half", "2nd half", "first half", "second half",
+    "moneyline", "puck line", "run line",
 ]
 
 SPORTS_PLAYER_RE = [
@@ -272,7 +275,7 @@ def score_relevance(text, ticker=""):
     # TIER 2 — substring match (phrases OK)
     if score < 100:
         for kw in TIER2_KEYWORDS:
-            if kw in t:
+            if _has_word(t, kw):
                 if tier == 0:
                     score, tier = 70, 2
                 matched_kws.append(kw)
@@ -281,7 +284,7 @@ def score_relevance(text, ticker=""):
     # TIER 3 — substring match
     if score < 70:
         for kw in TIER3_KEYWORDS:
-            if kw in t:
+            if _has_word(t, kw):
                 score, tier = 40, 3
                 matched_kws.append(kw)
                 break
@@ -295,7 +298,7 @@ def score_relevance(text, ticker=""):
                 break
         else:
             for kw in TIER2_KEYWORDS:
-                if kw in t:
+                if _has_word(t, kw):
                     score = min(100, score + 15)
                     matched_kws.append(kw)
                     break
@@ -310,7 +313,7 @@ def score_relevance(text, ticker=""):
                 if extra_hits >= 3:
                     break
         for kw in TIER2_KEYWORDS:
-            if kw not in matched_kws and kw in t:
+            if kw not in matched_kws and _has_word(t, kw):
                 extra_hits += 1
                 if extra_hits >= 3:
                     break
@@ -1076,7 +1079,7 @@ def apply_quotas(markets):
 
 def main():
     now = datetime.now(timezone.utc)
-    print(f"\nAGSIST fetch_markets.py v10 -- {now.strftime('%Y-%m-%d %H:%M UTC')}")
+    print(f"\nAGSIST fetch_markets.py v11 -- {now.strftime('%Y-%m-%d %H:%M UTC')}")
     print("=" * 60)
 
     kalshi = fetch_kalshi()
@@ -1133,7 +1136,7 @@ def main():
         json.dump(output, f, indent=2)
 
     print(f"\n{'=' * 60}")
-    print(f"OK data/markets.json written -- v10")
+    print(f"OK data/markets.json written -- v11")
     print(f"  Kalshi:      {len(kalshi)}")
     print(f"  Polymarket:  {len(poly)}")
     print(f"  After ladders: {len(collapsed)}")
