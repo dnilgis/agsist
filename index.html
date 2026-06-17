@@ -343,6 +343,8 @@
   .export-pace-fill{height:100%;border-radius:3px;transition:width .5s;}
   .export-pace-fill.on-track{background:var(--green);} .export-pace-fill.lagging{background:var(--gold);} .export-pace-fill.behind{background:#ef4444;}
   .export-pace-pct{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;flex-shrink:0;}
+.export-wk-lbl{font-size:.62rem;font-weight:600;color:var(--text-muted);}
+.export-cumul{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-muted);margin-top:.2rem;}
   .export-pace-pct.on-track{color:var(--green);} .export-pace-pct.lagging{color:var(--gold);} .export-pace-pct.behind{color:#ef4444;}
   .export-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem;padding-top:.55rem;border-top:1px solid var(--border);}
   .export-footer-date{font-size:.65rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
@@ -354,7 +356,7 @@
   .fert-widget-title{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
   .fert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.4rem;flex:1;}
   .fert-card{background:var(--surface2);border-radius:8px;padding:.5rem .65rem;}
-  .fert-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.2rem;}
+  .fert-card-head{display:flex;flex-direction:column;align-items:flex-start;gap:.05rem;margin-bottom:.25rem;}
   .fert-name{font-size:.68rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:.25rem;}
   .fert-sym{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-muted);}
   .fert-price{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:700;color:var(--text);line-height:1;}
@@ -1181,11 +1183,11 @@
       <div class="export-widget" id="export-widget">
         <div class="export-widget-head"><span class="export-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Export Sales &mdash; Cumulative Pace</span><span class="export-mkt-yr" id="export-mkt-yr">USDA FAS &middot; Thu 8:30am</span></div>
         <div class="export-rows" id="export-rows">
-          <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="export-comm-name">Corn</span></div><span class="export-weekly" id="exp-corn-wk">--</span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-corn-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-corn-pct">--%</span></div></div>
-          <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg></span><span class="export-comm-name">Soybeans</span></div><span class="export-weekly" id="exp-bean-wk">--</span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-bean-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-bean-pct">--%</span></div></div>
-          <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></span><span class="export-comm-name">Wheat</span></div><span class="export-weekly" id="exp-wheat-wk">--</span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-wheat-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-wheat-pct">--%</span></div></div>
+          <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="export-comm-name">Corn</span></div><span class="export-weekly"><span id="exp-corn-wk">--</span> <span class="export-wk-lbl">this wk</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-corn-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-corn-pct">--%</span></div><div class="export-cumul" id="exp-corn-cumul"></div></div>
+          <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg></span><span class="export-comm-name">Soybeans</span></div><span class="export-weekly"><span id="exp-bean-wk">--</span> <span class="export-wk-lbl">this wk</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-bean-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-bean-pct">--%</span></div><div class="export-cumul" id="exp-bean-cumul"></div></div>
+          <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></span><span class="export-comm-name">Wheat</span></div><span class="export-weekly"><span id="exp-wheat-wk">--</span> <span class="export-wk-lbl">this wk</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-wheat-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-wheat-pct">--%</span></div><div class="export-cumul" id="exp-wheat-cumul"></div></div>
         </div>
-        <div class="export-footer"><span class="export-footer-date" id="exp-date">USDA FAS &middot; Weekly</span><a href="https://apps.fas.usda.gov/export-sales/" target="_blank" rel="noopener" class="export-full-link">FAS Data &rarr;</a></div>
+        <div class="export-footer"><span class="export-footer-date" id="exp-date">USDA FAS &middot; Weekly</span><a href="https://www.fas.usda.gov/programs/export-sales-reporting-program" target="_blank" rel="noopener" class="export-full-link">FAS Data &rarr;</a></div>
       </div>
     </div>
     <div class="tariff-fert-grid fade-up">
@@ -1928,6 +1930,8 @@ fetch('/data/export-sales.json')
       var barEl=document.getElementById('exp-'+key+'-bar'),pctEl=document.getElementById('exp-'+key+'-pct');
       if(barEl){barEl.style.width=Math.min(pct||0,100)+'%';barEl.className='export-pace-fill '+cls;}
       if(pctEl){pctEl.textContent=pct!=null?pct+'%':'--';pctEl.className='export-pace-pct '+cls;}
+      var cumEl=document.getElementById('exp-'+key+'-cumul');
+      if(cumEl)cumEl.textContent=(d.cumulative_mt!=null&&d.usda_target_mt!=null)?((d.cumulative_mt/1e6).toFixed(1)+'M / '+(d.usda_target_mt/1e6).toFixed(1)+'M MT \u00b7 of USDA target'):'';
     });
   })
   .catch(function(){var w=document.getElementById('export-widget');if(w)w.style.display='none';var grid=document.getElementById('crop-export-grid-inner');if(grid)grid.style.gridTemplateColumns='1fr';var cw=document.getElementById('crop-widget');if(cw)cw.style.maxWidth='520px';});
