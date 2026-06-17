@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');window.gaEvent=function(n,p){try{gtag('event',n,p||{});}catch(e){}};</script>
-<link rel="preload" href="/components/styles.css?v=10" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=10">
+<link rel="preload" href="/components/styles.css?v=14" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=14">
 <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32"  href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16"  href="/img/favicon-16.png">
@@ -46,11 +46,16 @@
   "@graph": [
     {
       "@type": "WebPage",
+      "@id": "https://agsist.com/tariffs#webpage",
       "url": "https://agsist.com/tariffs",
       "name": "Ag Tariff Tracker — US Trade Policy Impact on Grain & Livestock",
       "description": "Current tariff rates on US corn, soybean, wheat, and pork exports to China, Canada, Mexico, and the EU. Updated as trade policy changes.",
-      "dateModified": "2026-05-02",
-      "isPartOf": { "@type": "WebSite", "url": "https://agsist.com/" },
+      "inLanguage": "en-US",
+      "datePublished": "2025-03-01",
+      "dateModified": "2026-06-16",
+      "author": { "@type": "Person", "name": "Sigurd Lindquist", "email": "sig@farmers1st.com" },
+      "publisher": { "@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/" },
+      "isPartOf": { "@type": "WebSite", "@id": "https://agsist.com/#website", "url": "https://agsist.com/", "name": "AGSIST" },
       "breadcrumb": {
         "@type": "BreadcrumbList",
         "itemListElement": [
@@ -58,6 +63,18 @@
           { "@type": "ListItem", "position": 2, "name": "Tariff Tracker", "item": "https://agsist.com/tariffs" }
         ]
       }
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://agsist.com/tariffs#dataset",
+      "name": "US Agricultural Export Tariff Rates by Commodity & Destination",
+      "description": "Current and baseline tariff rates on US corn, soybean, wheat, and pork exports to China, Canada, Mexico, and the EU, with a policy-event timeline. Updated as trade policy changes.",
+      "url": "https://agsist.com/tariffs",
+      "creator": { "@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/" },
+      "isAccessibleForFree": true,
+      "creditText": "Sources: USTR, USDA Foreign Agricultural Service, Federal Register",
+      "keywords": ["agricultural tariffs", "corn export tariffs", "soybean tariffs", "trade policy", "grain export demand", "basis"],
+      "distribution": [ { "@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/tariffs.json" } ]
     },
     {
       "@type": "FAQPage",
@@ -97,6 +114,13 @@
 html { overflow-x: hidden; overflow-x: clip; width: 100%; }
 body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 button,a,[role="button"] { touch-action: manipulation; }
+.ic{width:1em;height:1em;display:inline-block;vertical-align:-0.14em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+.tariff-status-banner.elevated .tsb-icon{color:#ef4444}
+.tariff-status-banner.normal .tsb-icon{color:var(--green)}
+.tariff-status-banner.mixed .tsb-icon{color:var(--gold)}
+.tariff-section-title{margin:0;font-size:inherit;font-weight:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit}
+.tariff-block-title{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:0 0 .6rem}
 
 .tariff-page { max-width: 900px; margin: 0 auto; padding: 0 1rem 3rem; }
 
@@ -108,7 +132,7 @@ button,a,[role="button"] { touch-action: manipulation; }
 /* Hero */
 .tariff-hero { padding: 1.4rem 0 .9rem; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
 .tariff-eyebrow { font-size: .65rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: .4rem; margin-bottom: .3rem; }
-.tariff-page-title { font-family: 'Oswald', sans-serif; font-size: 1.75rem; font-weight: 800; color: var(--text); line-height: 1.1; margin: 0 0 .35rem; text-transform: uppercase; letter-spacing: -.01em; }
+.tariff-page-title { font-family: 'Archivo', sans-serif; font-size: 1.75rem; font-weight: 800; color: var(--text); line-height: 1.1; margin: 0 0 .35rem; text-transform: uppercase; letter-spacing: -.01em; }
 .tariff-page-sub { font-size: .84rem; color: var(--text-muted); line-height: 1.55; max-width: 640px; }
 
 /* Status banner */
@@ -118,10 +142,10 @@ button,a,[role="button"] { touch-action: manipulation; }
 }
 .tariff-status-banner.elevated { background: rgba(239,68,68,.06);  border-color: rgba(239,68,68,.22); }
 .tariff-status-banner.normal   { background: rgba(34,197,94,.06);  border-color: rgba(34,197,94,.20); }
-.tariff-status-banner.mixed    { background: rgba(230,176,66,.06); border-color: rgba(230,176,66,.20); }
+.tariff-status-banner.mixed    { background: rgba(212,162,63,.06); border-color: rgba(212,162,63,.20); }
 .tsb-icon { font-size: 1.5rem; flex-shrink: 0; line-height: 1; margin-top: .05rem; }
 .tsb-body { flex: 1; }
-.tsb-label { font-family: 'Oswald', sans-serif; font-size: 1.1rem; font-weight: 700; line-height: 1; margin-bottom: .2rem; }
+.tsb-label { font-family: 'Archivo', sans-serif; font-size: 1.1rem; font-weight: 700; line-height: 1; margin-bottom: .2rem; }
 .tsb-label.elevated { color: #ef4444; }
 .tsb-label.normal   { color: var(--green); }
 .tsb-label.mixed    { color: var(--gold); }
@@ -157,7 +181,7 @@ button,a,[role="button"] { touch-action: manipulation; }
 }
 .tt-badge.elevated { color: #ef4444; background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.22); }
 .tt-badge.normal   { color: var(--green); background: rgba(34,197,94,.07); border-color: rgba(34,197,94,.2); }
-.tt-badge.mixed    { color: var(--gold); background: rgba(230,176,66,.08); border-color: rgba(230,176,66,.22); }
+.tt-badge.mixed    { color: var(--gold); background: rgba(212,162,63,.08); border-color: rgba(212,162,63,.22); }
 .tt-note { font-size: .72rem; color: var(--text-muted); }
 @media (max-width: 600px) {
   .tt-note, .tt-note-col { display: none; }
@@ -171,14 +195,14 @@ button,a,[role="button"] { touch-action: manipulation; }
 .tl-date { font-family: 'JetBrains Mono', monospace; font-size: .65rem; color: var(--text-muted); white-space: nowrap; padding-top: .1rem; min-width: 72px; }
 .tl-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: .32rem; }
 .tl-dot.high   { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
-.tl-dot.medium { background: var(--gold); box-shadow: 0 0 0 3px rgba(230,176,66,.15); }
+.tl-dot.medium { background: var(--gold); box-shadow: 0 0 0 3px rgba(212,162,63,.15); }
 .tl-dot.low    { background: var(--green); box-shadow: 0 0 0 3px rgba(34,197,94,.15); }
 .tl-event { font-size: .78rem; color: var(--text); line-height: 1.5; flex: 1; }
 
 /* Explainer cards — fixed: minmax grid, no bare 1fr 1fr */
 .tariff-explainer { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .75rem; margin-bottom: 1.25rem; }
 .te-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: .9rem 1rem; }
-.te-card h4 { font-size: .8rem; font-weight: 700; color: var(--text); margin: 0 0 .3rem; }
+.te-card h3 { font-size: .8rem; font-weight: 700; color: var(--text); margin: 0 0 .3rem; }
 .te-card p  { font-size: .76rem; color: var(--text-muted); line-height: 1.62; margin: 0; }
 
 /* Basis-channel callout */
@@ -208,7 +232,66 @@ button,a,[role="button"] { touch-action: manipulation; }
 <body>
 <noscript><div style="max-width:640px;margin:1rem auto;padding:1rem;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-size:.85rem">This tariff tracker loads current rates with JavaScript. For official rates see <a href="https://ustr.gov" style="color:var(--gold)">ustr.gov</a> and <a href="https://apps.fas.usda.gov/gats/default.aspx" style="color:var(--gold)">USDA GATS</a>.</div></noscript>
 <a href="#main" class="skip">Skip to content</a>
-<div id="site-header"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="i-landmark" viewBox="0 0 24 24"><path d="M10 18v-7" />
+  <path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z" />
+  <path d="M14 18v-7" />
+  <path d="M18 18v-7" />
+  <path d="M3 22h18" />
+  <path d="M6 18v-7" /></symbol><symbol id="i-siren" viewBox="0 0 24 24"><path d="M7 18v-6a5 5 0 1 1 10 0v6" />
+  <path d="M5 21a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2z" />
+  <path d="M21 12h1" />
+  <path d="M18.5 4.5 18 5" />
+  <path d="M2 12h1" />
+  <path d="M12 2v1" />
+  <path d="m4.929 4.929.707.707" />
+  <path d="M12 12v6" /></symbol><symbol id="i-triangle-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+  <path d="M12 9v4" />
+  <path d="M12 17h.01" /></symbol><symbol id="i-circle-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" />
+  <path d="m9 12 2 2 4-4" /></symbol><symbol id="i-sprout" viewBox="0 0 24 24"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3" />
+  <path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4" />
+  <path d="M5 21h14" /></symbol><symbol id="i-chart-column" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16" />
+  <path d="M18 17V9" />
+  <path d="M13 17V5" />
+  <path d="M8 17v-3" /></symbol><symbol id="i-trending-up" viewBox="0 0 24 24"><path d="M16 7h6v6" />
+  <path d="m22 7-8.5 8.5-5-5L2 17" /></symbol><symbol id="i-banknote" viewBox="0 0 24 24"><rect width="20" height="12" x="2" y="6" rx="2" />
+  <circle cx="12" cy="12" r="2" />
+  <path d="M6 12h.01M18 12h.01" /></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4" />
+  <path d="M16 2v4" />
+  <rect width="18" height="18" x="3" y="4" rx="2" />
+  <path d="M3 10h18" /></symbol><symbol id="i-mail" viewBox="0 0 24 24"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+  <rect x="2" y="4" width="20" height="16" rx="2" /></symbol><symbol id="i-bean" viewBox="0 0 24 24"><path d="M10.165 6.598C9.954 7.478 9.64 8.36 9 9c-.64.64-1.521.954-2.402 1.165A6 6 0 0 0 8 22c7.732 0 14-6.268 14-14a6 6 0 0 0-11.835-1.402Z" />
+  <path d="M5.341 10.62a4 4 0 1 0 5.279-5.28" /></symbol><symbol id="i-wheat" viewBox="0 0 24 24"><path d="M2 22 16 8" />
+  <path d="M3.47 12.53 5 11l1.53 1.53a3.5 3.5 0 0 1 0 4.94L5 19l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M7.47 8.53 9 7l1.53 1.53a3.5 3.5 0 0 1 0 4.94L9 15l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M11.47 4.53 13 3l1.53 1.53a3.5 3.5 0 0 1 0 4.94L13 11l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4Z" />
+  <path d="M11.47 17.47 13 19l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L5 19l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
+  <path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
+  <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="i-ham" viewBox="0 0 24 24"><path d="M13.144 21.144A7.274 10.445 45 1 0 2.856 10.856" />
+  <path d="M13.144 21.144A7.274 4.365 45 0 0 2.856 10.856a7.274 4.365 45 0 0 10.288 10.288" />
+  <path d="M16.565 10.435 18.6 8.4a2.501 2.501 0 1 0 1.65-4.65 2.5 2.5 0 1 0-4.66 1.66l-2.024 2.025" />
+  <path d="m8.5 16.5-1-1" /></symbol><symbol id="i-beef" viewBox="0 0 24 24"><path d="M16.4 13.7A6.5 6.5 0 1 0 6.28 6.6c-1.1 3.13-.78 3.9-3.18 6.08A3 3 0 0 0 5 18c4 0 8.4-1.8 11.4-4.3" />
+  <path d="m18.5 6 2.19 4.5a6.48 6.48 0 0 1-2.29 7.2C15.4 20.2 11 22 7 22a3 3 0 0 1-2.68-1.66L2.4 16.5" />
+  <circle cx="12.5" cy="8.5" r="2.5" /></symbol><symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+  <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" /></symbol><symbol id="i-fuel" viewBox="0 0 24 24"><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0v-6.998a2 2 0 0 0-.59-1.42L18 5" />
+  <path d="M14 21V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v16" />
+  <path d="M2 21h13" />
+  <path d="M3 9h11" /></symbol></defs></svg>
+<div id="site-header">
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails. -->
+  <header style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:2;color:var(--text-muted)">
+        <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Quick Stats</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Numbers:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Conditions</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Fast Facts</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Call Scorecard</a> &middot; <a href="/grower-pulse" style="color:var(--text-muted);text-decoration:none">Grower Pulse</a>
+      </nav>
+    </div>
+  </header>
+</div>
 
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <a href="/">Home</a><span aria-hidden="true"> › </span><span>Tariff Tracker</span>
@@ -217,13 +300,13 @@ button,a,[role="button"] { touch-action: manipulation; }
 <main id="main" tabindex="-1" class="tariff-page">
 
   <div class="tariff-hero">
-    <div class="tariff-eyebrow">🏛️ Trade Policy · Updated as Policy Changes</div>
+    <div class="tariff-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-landmark"/></svg> Trade Policy · Updated as Policy Changes</div>
     <h1 class="tariff-page-title">Ag Tariff Tracker</h1>
     <p class="tariff-page-sub">Current tariff rates on US corn, soybean, wheat, and pork exports to key markets. Updated when policy changes. These rates directly affect grain basis, export demand, and cash prices at your elevator.</p>
   </div>
 
   <div class="tariff-status-banner elevated" id="tariff-status-banner">
-    <div class="tsb-icon">🚨</div>
+    <div class="tsb-icon" id="tsb-icon"><svg class="ic" aria-hidden="true"><use href="#i-siren"/></svg></div>
     <div class="tsb-body">
       <div class="tsb-label elevated" id="tsb-label">Trade War Active</div>
       <div class="tsb-note" id="tsb-note">Loading current status…</div>
@@ -235,7 +318,7 @@ button,a,[role="button"] { touch-action: manipulation; }
 
   <div class="tariff-section">
     <div class="tariff-section-head">
-      <span>Current Export Tariff Rates by Commodity &amp; Destination</span>
+      <h2 class="tariff-section-title">Current Export Tariff Rates by Commodity &amp; Destination</h2>
       <span id="tariff-updated" style="font-size:.65rem;color:var(--text-muted);letter-spacing:0;text-transform:none">—</span>
     </div>
     <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
@@ -258,7 +341,7 @@ button,a,[role="button"] { touch-action: manipulation; }
   </div>
 
   <div class="tariff-section">
-    <div class="tariff-section-head">Policy Timeline</div>
+    <div class="tariff-section-head"><h2 class="tariff-section-title">Policy Timeline</h2></div>
     <div class="timeline" id="tariff-timeline">
       <div class="tl-item" style="color:var(--text-muted);font-size:.78rem;justify-content:center;padding:1.2rem">Loading…</div>
     </div>
@@ -266,7 +349,7 @@ button,a,[role="button"] { touch-action: manipulation; }
 
   <!-- Basis channel callout (national scope) -->
   <div class="tariff-wi-mn">
-    <span style="font-size:1.3rem;flex-shrink:0">🌱</span>
+    <span style="font-size:1.3rem;flex-shrink:0;color:var(--green)" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span>
     <div>
       <strong>Where tariffs hit hardest — your local basis.</strong> Tariff stress flows through to producers via the basis channel, not CBOT futures.
       When a major buyer like China imposes retaliatory tariffs, basis at interior elevators tied to Gulf export rails can widen 15–40¢
@@ -276,31 +359,32 @@ button,a,[role="button"] { touch-action: manipulation; }
     </div>
   </div>
 
+  <h2 class="tariff-block-title">How Tariffs Affect Grain Prices</h2>
   <div class="tariff-explainer">
     <div class="te-card">
-      <h4>Why Tariffs Move Grain Prices</h4>
+      <h3>Why Tariffs Move Grain Prices</h3>
       <p>When a major buyer like China imposes retaliatory tariffs, US grain becomes more expensive in that market. Buyers shift to Brazil, Argentina, or Ukraine instead. This reduces US export demand, puts pressure on basis, and ultimately flows through to lower cash prices at your elevator — even for grain that was never destined for export.</p>
     </div>
     <div class="te-card">
-      <h4>How to Read This Table</h4>
+      <h3>How to Read This Table</h3>
       <p><strong style="color:#ef4444">Elevated</strong> means tariffs are significantly above baseline — export demand is impaired. <strong style="color:var(--gold)">Mixed</strong> means partial exemptions or uncertainty. <strong style="color:var(--green)">Normal</strong> means trade is flowing at standard rates. The baseline column shows what the rate was before the current dispute.</p>
     </div>
     <div class="te-card">
-      <h4>Soybeans Are Most Exposed</h4>
+      <h3>Soybeans Are Most Exposed</h3>
       <p>China buys roughly 60% of globally traded soybeans. When US–China tariffs are elevated, Brazil and Argentina pick up US market share. This is not temporary — buyers build new supply chains. Even a "deal" may not restore prior purchase levels quickly, which keeps pressure on soybean basis longer than the tariff itself.</p>
     </div>
     <div class="te-card">
-      <h4>What Farmers Can Do</h4>
+      <h3>What Farmers Can Do</h3>
       <p>Monitor export sales reports every Thursday (USDA 8:30am ET) to watch whether weekly net sales are holding up. Watch Brazil's harvest pace and currency — a cheap Brazilian real with high tariffs on US beans is a double-headwind. Consider selling into any tariff-relief rally rather than waiting for a full resolution.</p>
     </div>
   </div>
 
   <div class="tariff-links">
-    <a href="https://apps.fas.usda.gov/gats/default.aspx" target="_blank" rel="noopener">📊 USDA Export Sales</a>
-    <a href="https://ustr.gov" target="_blank" rel="noopener">🏛 USTR Trade Policy</a>
-    <a href="/markets">📈 Grain Markets</a>
-    <a href="/cash-bids">💵 Cash Bids</a>
-    <a href="/usda-calendar">📅 USDA Calendar</a>
+    <a href="https://apps.fas.usda.gov/gats/default.aspx" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> USDA Export Sales</a>
+    <a href="https://ustr.gov" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-landmark"/></svg> USTR Trade Policy</a>
+    <a href="/markets"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Grain Markets</a>
+    <a href="/cash-bids"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg> Cash Bids</a>
+    <a href="/usda-calendar"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> USDA Calendar</a>
   </div>
 
   <div class="tariff-source">
@@ -310,18 +394,18 @@ button,a,[role="button"] { touch-action: manipulation; }
     <a href="/">← AGSIST Dashboard</a>
   </div>
 
-<div id="signup-card" style="max-width:640px;margin:1.5rem auto;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem"><div style="font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:.5rem">📧 Get trade-policy alerts in the daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:.8rem;color:var(--text-dim);line-height:1.6;margin:0">When tariffs or trade policy shift, you’ll see it in the morning briefing with what it means for grain basis and demand. Available at no charge.</p><div style="display:flex;gap:.5rem;flex-wrap:wrap"><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="flex:1;min-width:180px;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,rgba(255,255,255,.03));border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" type="button" style="padding:.6rem 1.1rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free →</button></div><div style="font-size:.66rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
+<div id="signup-card" style="max-width:640px;margin:1.5rem auto;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem"><div style="font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:.5rem"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Get trade-policy alerts in the daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:.8rem;color:var(--text-dim);line-height:1.6;margin:0">When tariffs or trade policy shift, you’ll see it in the morning briefing with what it means for grain basis and demand. Available at no charge.</p><div style="display:flex;gap:.5rem;flex-wrap:wrap"><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="flex:1;min-width:180px;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,rgba(255,255,255,.03));border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" type="button" style="padding:.6rem 1.1rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free →</button></div><div style="font-size:.66rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
 </main>
-<script>(function(){function _su(){try{return document.cookie.indexOf('agsist_subscribed=')>-1||localStorage.getItem('agsist_subscribed')==='1';}catch(e){return false;}}function _ss(){try{var x=new Date();x.setFullYear(x.getFullYear()+2);document.cookie='agsist_subscribed=1;expires='+x.toUTCString()+';path=/;SameSite=Lax';localStorage.setItem('agsist_subscribed','1');}catch(e){}}var card=document.getElementById('signup-card');if(!card)return;if(_su()){card.style.display='none';return;}var btn=document.getElementById('signup-btn'),inp=document.getElementById('signup-email'),form=document.getElementById('signup-form');function submit(){var email=(inp&&inp.value||'').trim();if(email.indexOf('@')<1)return;_ss();try{if(typeof gaEvent==='function')gaEvent('email_signup',{source:'tariffs'});}catch(e){}if(form){form.innerHTML='<div style=\"text-align:center;padding:.4rem 0\"><div style=\"font-size:1.6rem\">\u2705</div><div style=\"font-size:.85rem;font-weight:700;color:var(--text);margin-top:.2rem\">You\u2019re subscribed!</div><div style=\"font-size:.74rem;color:var(--text-muted);line-height:1.5;margin-top:.2rem\">The AGSIST Daily arrives by 6am CT on weekdays.</div></div>';}fetch('https://formspree.io/f/xnjbwepn',{method:'POST',body:JSON.stringify({email:email,source:'tariffs'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});}if(btn)btn.addEventListener('click',function(e){e.preventDefault();submit();});if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submit();}});})();</script>
+<script>(function(){function _su(){try{return document.cookie.indexOf('agsist_subscribed=')>-1||localStorage.getItem('agsist_subscribed')==='1';}catch(e){return false;}}function _ss(){try{var x=new Date();x.setFullYear(x.getFullYear()+2);document.cookie='agsist_subscribed=1;expires='+x.toUTCString()+';path=/;SameSite=Lax';localStorage.setItem('agsist_subscribed','1');}catch(e){}}var card=document.getElementById('signup-card');if(!card)return;if(_su()){card.style.display='none';return;}var btn=document.getElementById('signup-btn'),inp=document.getElementById('signup-email'),form=document.getElementById('signup-form');function submit(){var email=(inp&&inp.value||'').trim();if(email.indexOf('@')<1)return;_ss();try{if(typeof gaEvent==='function')gaEvent('email_signup',{source:'tariffs'});}catch(e){}if(form){form.innerHTML='<div style=\"text-align:center;padding:.4rem 0\"><div style=\"font-size:1.6rem;color:var(--green)\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-circle-check\"/></svg></div><div style=\"font-size:.85rem;font-weight:700;color:var(--text);margin-top:.2rem\">You\u2019re subscribed!</div><div style=\"font-size:.74rem;color:var(--text-muted);line-height:1.5;margin-top:.2rem\">The AGSIST Daily arrives by 6am CT on weekdays.</div></div>';}fetch('https://formspree.io/f/xnjbwepn',{method:'POST',body:JSON.stringify({email:email,source:'tariffs'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});}if(btn)btn.addEventListener('click',function(e){e.preventDefault();submit();});if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submit();}});})();</script>
 
 <div id="site-footer"></div>
-<script src="/components/loader.js" defer></script>
+<script src="/components/loader.js?v=14" defer></script>
 
 <script>
 (function(){
 'use strict';
 
-function statusIcon(s){ return s==='elevated'?'🚨':s==='normal'?'✅':'⚠️'; }
+function statusIconName(s){ return s==='elevated'?'siren':s==='normal'?'circle-check':'triangle-alert'; }
 function statusCls(s){ return s==='elevated'?'elevated':s==='normal'?'normal':'mixed'; }
 function statusBadgeTxt(s){ return s==='elevated'?'Elevated':s==='normal'?'Normal':'Mixed'; }
 
@@ -334,6 +418,16 @@ function fmtDate(iso){
 }
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function commodityIcon(name){
+  var n=(name||'').toLowerCase(), ic='leaf';
+  if(n.indexOf('soy')>-1||n.indexOf('bean')>-1) ic='bean';
+  else if(n.indexOf('corn')>-1) ic='sprout';
+  else if(n.indexOf('wheat')>-1||n.indexOf('sorghum')>-1||n.indexOf('milo')>-1) ic='wheat';
+  else if(n.indexOf('pork')>-1||n.indexOf('hog')>-1) ic='ham';
+  else if(n.indexOf('beef')>-1||n.indexOf('cattle')>-1) ic='beef';
+  else if(n.indexOf('ethanol')>-1) ic='fuel';
+  return '<svg class="ic" aria-hidden="true"><use href="#i-'+ic+'"/></svg>';
+}
 function watchLinks(commodity){
   var c=(commodity||'').toLowerCase();
   var map={'soybeans':{f:'/soybean-futures-prices',w:'Soybeans are the most China-exposed US grain export \u2014 watch demand and harvest basis.'},'corn':{f:'/corn-futures-prices',w:'Corn export exposure to China is smaller, but policy still moves futures and basis.'},'wheat':{f:'/wheat-futures-prices',w:'Wheat has modest direct China exposure; global trade flows matter more.'}};
@@ -351,13 +445,14 @@ fetch('/data/tariffs.json')
     var date   = document.getElementById('tsb-date');
     var cls    = statusCls(data.status);
     if(banner){ banner.className='tariff-status-banner '+cls; }
-    if(label){ label.textContent=statusIcon(data.status)+' '+data.status_label; label.className='tsb-label '+cls; }
+    if(label){ label.textContent=data.status_label; label.className='tsb-label '+cls; }
+    var tsbIcon=document.getElementById('tsb-icon'); if(tsbIcon){ tsbIcon.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-'+statusIconName(data.status)+'"/></svg>'; }
     if(note)  note.textContent = data.headline || data.status_note;
     if(date)  date.textContent = 'Updated '+fmtDate(data.updated);
 
     var upd = document.getElementById('tariff-updated');
     if(upd) upd.textContent = 'As of '+fmtDate(data.updated);
-    try{var ageDays=Math.floor((Date.now()-new Date(data.updated+'T12:00:00').getTime())/86400000);var sb=document.getElementById('tariff-stale');if(sb){if(ageDays>45){sb.className='tariff-stale alert';sb.style.display='block';sb.innerHTML='\u26A0\uFE0F <strong>This tariff data is '+ageDays+' days old.</strong> Trade policy can shift in days \u2014 these rates may no longer be current. Confirm against <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> and the <a href=\"https://www.federalregister.gov\" target=\"_blank\" rel=\"noopener\">Federal Register</a> before any trading decision.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'alert'});}else if(ageDays>14){sb.className='tariff-stale warn';sb.style.display='block';sb.innerHTML='\u26A0\uFE0F This data is '+ageDays+' days old. Trade policy changes quickly \u2014 verify current rates at <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> or <a href=\"https://apps.fas.usda.gov/gats/default.aspx\" target=\"_blank\" rel=\"noopener\">USDA GATS</a> before acting.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'warn'});}}}catch(e){}
+    try{var ageDays=Math.floor((Date.now()-new Date(data.updated+'T12:00:00').getTime())/86400000);var sb=document.getElementById('tariff-stale');if(sb){if(ageDays>45){sb.className='tariff-stale alert';sb.style.display='block';sb.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> <strong>This tariff data is '+ageDays+' days old.</strong> Trade policy can shift in days \u2014 these rates may no longer be current. Confirm against <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> and the <a href=\"https://www.federalregister.gov\" target=\"_blank\" rel=\"noopener\">Federal Register</a> before any trading decision.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'alert'});}else if(ageDays>14){sb.className='tariff-stale warn';sb.style.display='block';sb.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> This data is '+ageDays+' days old. Trade policy changes quickly \u2014 verify current rates at <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> or <a href=\"https://apps.fas.usda.gov/gats/default.aspx\" target=\"_blank\" rel=\"noopener\">USDA GATS</a> before acting.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'warn'});}}}catch(e){}
 
     var tbody = document.getElementById('tariff-tbody');
     if(tbody && data.rows && data.rows.length){
@@ -369,7 +464,7 @@ fetch('/data/tariffs.json')
         var watch=watchLinks(row.commodity);
         var noteCell='<td class="tt-note">'+esc(row.note)+(meta?'<span class="tt-meta">'+meta+'</span>':'')+(watch?'<span class="tt-watch">'+watch+'</span>':'')+'</td>';
         return '<tr>'
-          +'<td><div class="tt-comm"><span class="tt-icon">'+esc(row.icon)+'</span>'+esc(row.commodity)+'</div></td>'
+          +'<td><div class="tt-comm"><span class="tt-icon">'+commodityIcon(row.commodity)+'</span>'+esc(row.commodity)+'</div></td>'
           +'<td style="color:var(--text-muted)">'+esc(row.destination)+'</td>'
           +'<td class="tt-baseline">'+esc(row.baseline)+'</td>'
           +'<td class="tt-rate '+sc+'">'+esc(row.rate)+'</td>'
