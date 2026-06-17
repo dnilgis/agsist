@@ -101,17 +101,21 @@ TIER2_KEYWORDS = [
 ]
 
 TIER3_KEYWORDS = [
+    # Weather & climate — direct yield / production drivers
+    "drought", "flood", "hurricane", "el nino", "la nina",
+    "heat wave", "heatwave", "frost", "freeze", "wildfire",
+    "cold snap", "polar vortex", "monsoon",
+    "growing degree", "soil moisture",
+    "climate policy", "weather forecast", "farm subsidy",
+    # Macro the page explicitly tracks (see on-page reference cards):
+    # Fed rates -> land values / carry cost; inflation -> food demand.
     "interest rate", "federal reserve", "fed funds",
     "rate cut", "rate hike", "cut rate", "fed cut", "fomc", "powell",
-    "inflation", "cpi", "ppi", "core inflation",
-    "recession", "gdp growth", "unemployment",
-    "dollar index", "usd", "currency",
-    "government shutdown", "debt ceiling", "farm subsidy",
-    "el nino", "la nina", "hurricane", "flood",
-    "drought", "heat wave", "frost", "freeze", "wildfire",
-    "climate policy", "weather forecast",
-    "federal budget", "deficit", "treasury",
-    "china economy", "global trade",
+    "rate decision", "inflation", "cpi", "ppi", "food inflation",
+    # v11 removed (pulled in unrelated markets on an ag page):
+    # recession, gdp growth, unemployment, dollar index, usd, currency,
+    # government shutdown, debt ceiling, federal budget, deficit, treasury,
+    # china economy, global trade.
 ]
 
 # v10: ticker-prefix → implicit tier-1 keyword for Kalshi markets where
@@ -141,8 +145,6 @@ KALSHI_TICKER_HINTS = {
     "KXFED":      "federal reserve",
     "KXCPI":      "cpi",
     "KXPPI":      "ppi",
-    "KXRECESSION":"recession",
-    "KXGDP":      "gdp growth",
     "KXTARIFF":   "tariff",
     "KXTRADE":    "trade deal",
     "KXCHINA":    "china trade",
@@ -167,6 +169,9 @@ MEME_BLACKLIST = [
     "viral", "follower count",
     "spacex", "moon landing", "alien", "ufo",
     "dogecoin", "shiba", "pepe coin", "meme coin", "nft",
+    "bitcoin", "ethereum", "crypto", "cryptocurrency", "stablecoin",
+    "usdc", "usdt", "solana", "litecoin", "xrp",
+    "nasdaq", "s&p 500", "dow jones",
     "dating", "divorce", "wedding",
     "tweet", "twitter feud",
     "movie", "marvel", "dc comics",
@@ -214,8 +219,10 @@ def is_junk(title, ticker=""):
         for p in KALSHI_JUNK_RE:
             if re.search(p, ticker.upper()):
                 return True
+    # v11: whole-word match so short tokens (nfl, nba, mls, ipo) do not
+    # match inside real words ("nfl" was junking every "inflation" market).
     for p in MEME_BLACKLIST + SPORTS_BLACKLIST:
-        if p in t:
+        if _has_word(t, p):
             return True
     for p in SPORTS_PLAYER_RE:
         if re.search(p, t):
@@ -550,13 +557,13 @@ def time_remaining(close_str):
 # 7. KALSHI FETCHER  (v10: expanded coverage + ticker fallback)
 # ================================================================
 
-KALSHI_BASE = "https://trading-api.kalshi.com/trade-api/v2"
+KALSHI_BASE = "https://api.elections.kalshi.com/trade-api/v2"  # public no-auth market data host (v11; trading-api.* was stale)
 
 # v10: Expanded series list (added newer/common ag + weather tickers)
 KALSHI_SERIES = [
-    # Macro
-    "KXFED", "KXCPI", "KXPPI", "KXRECESSION", "KXGDP", "KXUNEMP",
-    # Energy
+    # Macro the page explicitly tracks (Fed rates, inflation prints)
+    "KXFED", "KXCPI", "KXPPI",
+    # Energy (ag input costs: diesel / biofuel)
     "KXOIL", "KXGAS", "KXDIESEL",
     # Direct ag
     "KXCORN", "KXSOY", "KXWHEAT", "KXGRAIN",
@@ -694,7 +701,7 @@ def _process_kalshi_items(items, markets, seen):
             "volume_24h": vol,
             "close_time": close_time,
             "time_left": tl,
-            "url": f"https://kalshi.com/markets/{ep}",
+            "url": f"https://kalshi.com/markets/{ep.lower()}",
             "relevance": score,
             "tier": tier,
             "category": get_category(search_text),
@@ -712,11 +719,13 @@ POLY_BASE = "https://gamma-api.polymarket.com"
 
 # v10: expanded tag list
 POLY_TAGS = [
-    "politics", "economics", "trade", "energy", "environment",
+    # v11: ag / ag-adjacent + page-tracked macro only.
+    # Dropped: politics, economics, recession, geopolitics.
+    "trade", "energy", "environment",
     "food", "climate", "commodities", "inflation",
-    "federal-reserve", "interest-rates", "recession",
+    "federal-reserve", "interest-rates",
     "china", "tariffs",
-    "agriculture", "ukraine", "geopolitics",
+    "agriculture", "ukraine",
 ]
 
 
@@ -788,7 +797,7 @@ def _parse_poly_prob(m):
     return prob if prob and 0 < prob < 100 else None
 
 
-def _make_poly_record(m, question, seen):
+def _make_poly_record(m, question, seen, event_slug=""):
     mid = str(m.get("id") or m.get("condition_id") or m.get("conditionId") or "").strip()
     if not mid or mid in seen:
         return None
@@ -808,8 +817,21 @@ def _make_poly_record(m, question, seen):
                 break
             except Exception:
                 pass
-    slug = m.get("slug", "")
-    url = f"https://polymarket.com/event/{slug}" if slug else m.get("url", f"https://polymarket.com/event/{mid}")
+    # Outbound URL must use the EVENT slug. A market's own slug 404s on
+    # polymarket.com/event/{slug} for any multi-market event. Prefer the
+    # passed event slug, then the market's parent-event slug, then (for
+    # single-market events) the market slug, else the browse page.
+    ev_slug = (event_slug or "").strip()
+    if not ev_slug:
+        evs = m.get("events")
+        if isinstance(evs, list) and evs and isinstance(evs[0], dict):
+            ev_slug = (evs[0].get("slug") or "").strip()
+    if not ev_slug and m.get("markets") is not None:
+        ev_slug = (m.get("slug") or "").strip()
+    if not ev_slug:
+        ev_slug = (m.get("slug") or "").strip()
+    slug = ev_slug
+    url = f"https://polymarket.com/event/{ev_slug}" if ev_slug else "https://polymarket.com/markets"
     ed = m.get("endDate") or m.get("end_date_iso") or m.get("endDateIso") or ""
     tl = time_remaining(ed)
     if tl == "Closed":
@@ -845,12 +867,12 @@ def _process_poly_events(events, markets, seen):
                 q = (m.get("question") or m.get("title") or ev_title).strip()
                 if not q:
                     continue
-                rec = _make_poly_record(m, q, seen)
+                rec = _make_poly_record(m, q, seen, ev.get("slug", ""))
                 if rec:
                     markets.append(rec)
                     added += 1
         elif ev_title:
-            rec = _make_poly_record(ev, ev_title, seen)
+            rec = _make_poly_record(ev, ev_title, seen, ev.get("slug", ""))
             if rec:
                 markets.append(rec)
                 added += 1
