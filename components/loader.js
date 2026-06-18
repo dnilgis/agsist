@@ -218,62 +218,61 @@
     if (typeof window.onNavReady === 'function') window.onNavReady();
   }
 
-  // Footer "Supporters" strip ($50/wk Supporter tier). Reads /data/supporters.json,
-  // renders active logos/names site-wide; shows a single house prompt when none are active.
+  // Footer Ad Space showcase. Live lifetime view counter (Cloudflare Worker + KV)
+  // plus sponsor slot-fill from /data/supporters.json.
+  var COUNTER_URL = 'https://agsist-counter.dnilgis.workers.dev/'; // <-- set to your deployed worker URL ('' disables)
   function renderSupporters() {
-    var mount = document.getElementById('footer-supporters');
-    if (!mount) return;
     function esc(s) {
       return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
         return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
       });
     }
+    // 1) live lifetime footer-view counter (Worker increments + returns total)
+    if (COUNTER_URL) {
+      fetch(COUNTER_URL, { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (d) {
+          var n = Number(d && d.views);
+          var el = document.querySelector('[data-adviews]');
+          if (el && isFinite(n) && n > 0) el.textContent = n.toLocaleString('en-US');
+        })
+        .catch(function () { /* keep the static fallback shown in the footer */ });
+    }
+    // 2) fill open ad slots with active sponsors (mockups stay where none)
+    var row = document.getElementById('adspace-row');
+    if (!row) return;
     fetch(BASE + '/data/supporters.json', { cache: 'no-cache' })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (d) {
-        var cap = (d && d.cap) || 6;
         var ctaUrl = (d && d.cta_url) || '/sponsor#supporter';
-        var houseLabel = (d && d.house_label) || 'Support AGSIST \u2192';
-        var list = (((d && d.supporters) || []).filter(function (s) {
-          return s && s.active === true;
-        })).slice(0, cap);
-
-        if (list.length) {
-          var items = list.map(function (s) {
+        var list = ((d && d.supporters) || []).filter(function (s) { return s && s.active === true; });
+        if (!list.length) return;
+        var open = row.querySelectorAll('.ad-slot--open');
+        var fill = Math.min(list.length, open.length);
+        for (var i = 0; i < fill; i++) {
+          (function (s, slot) {
+            var url = s.url || ctaUrl;
+            if (!/^(https?:\/\/|\/)/.test(url)) url = ctaUrl;
+            var ext = url.indexOf('http') === 0;
             var inner = s.logo
-              ? '<img src="' + esc(s.logo) + '" alt="' + esc(s.name) + '">'
-              : esc(s.name);
-            var href = esc(s.url || ctaUrl);
-            var ext = String(s.url || '').indexOf('http') === 0;
-            return '<a class="footer-supporter" href="' + href + '"'
-              + (ext ? ' target="_blank" rel="sponsored noopener"' : ' rel="sponsored"')
-              + '>' + inner + '</a>';
-          }).join('');
-          mount.className = 'footer-supporters';
-          mount.innerHTML =
-            '<span class="footer-supporters-lbl">Supported by</span>'
-            + '<span class="footer-supporters-list">' + items + '</span>'
-            + '<a class="footer-supporters-cta" href="' + esc(ctaUrl) + '"'
-            + ' onclick="if(typeof gtag===&quot;function&quot;)gtag(&quot;event&quot;,&quot;sponsor_cta_click&quot;,{cta_source:&quot;footer_supporters&quot;})">Back AGSIST \u2192</a>';
-          // GA per-supporter click (bound, not inlined, since names are data-driven)
-          var links = mount.querySelectorAll('.footer-supporter');
-          Array.prototype.forEach.call(links, function (a, i) {
+              ? '<img class="ad-filled-logo" src="' + esc(s.logo) + '" alt="' + esc(s.name) + '">'
+              : '<span class="ad-filled-name">' + esc(s.name) + '</span>';
+            var a = document.createElement('a');
+            a.className = 'ad-slot ad-slot--filled';
+            a.href = url;
+            if (ext) { a.target = '_blank'; a.rel = 'sponsored noopener'; }
+            else { a.rel = 'sponsored'; }
+            a.innerHTML = '<span class="ad-slot-tag ad-slot-tag--live">Sponsor</span>'
+              + inner
+              + (s.blurb ? '<span class="ad-filled-blurb">' + esc(s.blurb) + '</span>' : '');
             a.addEventListener('click', function () {
-              if (typeof gtag === 'function') {
-                gtag('event', 'supporter_click', { supporter: (list[i] && list[i].name) || '' });
-              }
+              if (typeof gtag === 'function') gtag('event', 'supporter_click', { supporter: s.name || '' });
             });
-          });
-        } else {
-          mount.className = 'footer-supporters footer-supporters--house';
-          mount.innerHTML =
-            '<a class="footer-supporters-cta" href="' + esc(ctaUrl) + '"'
-            + ' onclick="if(typeof gtag===&quot;function&quot;)gtag(&quot;event&quot;,&quot;sponsor_cta_click&quot;,{cta_source:&quot;footer_supporters_house&quot;})">'
-            + esc(houseLabel) + '</a>';
+            slot.parentNode.replaceChild(a, slot);
+          })(list[i], open[i]);
         }
-        mount.removeAttribute('hidden');
       })
-      .catch(function () { /* leave the strip hidden on any failure */ });
+      .catch(function () { /* leave mockups on any failure */ });
   }
 
   document.addEventListener('DOMContentLoaded', function () {
