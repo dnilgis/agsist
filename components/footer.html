@@ -1,31 +1,31 @@
 <!-- AGSIST Footer — injected by loader.js into #site-footer -->
 <style>
   /* ── Ad Space showcase (Supporter tier) — replaces Farmers First Network ── */
-  .footer-adspace{border-top:1px solid var(--border);margin-top:1.25rem;padding-top:1.25rem;}
+  .footer-adspace{--ad:#e8743a;--ad-rgb:232,116,58;border-top:1px solid var(--border);margin-top:1.25rem;padding-top:1.25rem;}
   .adspace-head{display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap;margin-bottom:.85rem;}
-  .adspace-lbl{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);}
+  .adspace-lbl{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ad);}
   .adspace-sub{font-size:.78rem;color:var(--text-dim);}
   .adspace-sub strong{color:var(--text);font-weight:600;}
   .adspace-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(168px,100%),1fr));gap:.6rem;}
   .ad-slot{display:flex;flex-direction:column;justify-content:space-between;gap:.5rem;min-height:96px;padding:.8rem .85rem;border-radius:8px;text-decoration:none;}
-  .ad-slot--open{border:1px dashed rgba(var(--brand-rgb),.45);background:rgba(var(--brand-rgb),.025);transition:border-color .15s,background .15s,transform .15s;}
-  .ad-slot--open:hover{border-color:var(--brand);background:rgba(var(--brand-rgb),.07);transform:translateY(-2px);}
-  .ad-slot-tag{align-self:flex-start;font-family:'JetBrains Mono',monospace;font-size:.54rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);border:1px solid rgba(var(--brand-rgb),.4);border-radius:3px;padding:.1rem .4rem;}
+  .ad-slot--open{border:1px dashed rgba(var(--ad-rgb),.5);background:rgba(var(--ad-rgb),.03);transition:border-color .15s,background .15s,transform .15s;}
+  .ad-slot--open:hover{border-color:var(--ad);background:rgba(var(--ad-rgb),.09);transform:translateY(-2px);}
+  .ad-slot-tag{align-self:flex-start;font-family:'JetBrains Mono',monospace;font-size:.54rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ad);border:1px solid rgba(var(--ad-rgb),.45);border-radius:3px;padding:.1rem .4rem;}
   .ad-slot-pitch{font-size:.92rem;font-weight:700;color:var(--text);line-height:1.25;}
-  .ad-slot-cta{font-family:'JetBrains Mono',monospace;font-size:.67rem;font-weight:700;letter-spacing:.03em;color:var(--brand);}
+  .ad-slot-cta{font-family:'JetBrains Mono',monospace;font-size:.67rem;font-weight:700;letter-spacing:.03em;color:var(--ad);}
   .ad-slot--stat{border:1px solid var(--border);background:var(--surface,rgba(255,255,255,.02));}
   .ad-stat-top{display:flex;align-items:center;gap:.4rem;color:var(--text-muted);}
   .ad-stat-top svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
   .ad-stat-top span{font-family:'JetBrains Mono',monospace;font-size:.54rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
   .ad-stat-num{font-family:'JetBrains Mono',monospace;font-size:1.65rem;font-weight:700;color:var(--text);line-height:1;}
-  .ad-stat-num span{font-size:.95rem;color:var(--brand);}
+  .ad-stat-num span{font-size:.95rem;color:var(--ad);}
   .ad-stat-lbl{font-size:.7rem;color:var(--text-dim);line-height:1.3;}
-  .ad-slot--cta{background:var(--brand);justify-content:center;gap:.35rem;transition:opacity .15s,transform .15s;}
+  .ad-slot--cta{background:var(--ad);justify-content:center;gap:.35rem;transition:opacity .15s,transform .15s;}
   .ad-slot--cta:hover{opacity:.9;transform:translateY(-2px);}
   .ad-cta-big{font-size:.98rem;font-weight:800;color:var(--bg);line-height:1.2;}
   .ad-cta-sub{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:600;letter-spacing:.02em;color:var(--bg);opacity:.82;}
   .ad-slot--filled{border:1px solid var(--border);background:var(--surface,rgba(255,255,255,.02));align-items:flex-start;gap:.45rem;transition:border-color .15s,transform .15s;}
-  .ad-slot--filled:hover{border-color:var(--brand);transform:translateY(-2px);}
+  .ad-slot--filled:hover{border-color:var(--ad);transform:translateY(-2px);}
   .ad-slot-tag--live{color:var(--text-muted);border-color:var(--border);}
   .ad-filled-logo{height:26px;width:auto;max-width:120px;object-fit:contain;display:block;}
   .ad-filled-name{font-size:.95rem;font-weight:700;color:var(--text);line-height:1.2;}
@@ -100,7 +100,7 @@
     <div class="footer-adspace">
       <div class="adspace-head">
         <span class="adspace-lbl">&#9656; Ad Space &middot; Supporter Tier</span>
-        <span class="adspace-sub"><strong>$50/week.</strong> Your logo on every page. Up to 5 spots a month.</span>
+        <span class="adspace-sub"><strong>$50/week.</strong> Your logo on every page, in front of working US farmers.</span>
       </div>
       <!-- loader.js can swap any .ad-slot--open for a filled advertiser card -->
       <div class="adspace-row" id="adspace-row">
@@ -110,16 +110,9 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/></svg>
             <span>Footer views</span>
           </div>
-          <!-- static figure; update on refresh or wire to GA4 -->
-          <div class="ad-stat-num" data-adviews>6,400</div>
-          <div class="ad-stat-lbl">and counting &mdash; every one could&rsquo;ve shown your logo.</div>
+          <div class="ad-stat-num" data-adviews>&mdash;</div>
+          <div class="ad-stat-lbl">Every one could&rsquo;ve shown your logo.</div>
         </div>
-
-        <a href="/sponsor#supporter" class="ad-slot ad-slot--open" onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'footer_adspace_slot1'})">
-          <span class="ad-slot-tag">Open</span>
-          <span class="ad-slot-pitch">Your logo, every page.</span>
-          <span class="ad-slot-cta">$50 / week &rarr;</span>
-        </a>
 
         <a href="/sponsor#supporter" class="ad-slot ad-slot--open" onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'footer_adspace_slot2'})">
           <span class="ad-slot-tag">Open</span>
@@ -135,7 +128,7 @@
 
         <a href="/sponsor#supporter" class="ad-slot ad-slot--cta" onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'footer_adspace_cta'})">
           <span class="ad-cta-big">Put your brand here &rarr;</span>
-          <span class="ad-cta-sub">month-to-month &middot; no minimum &middot; 1 of 5</span>
+          <span class="ad-cta-sub">month-to-month &middot; no minimum &middot; limited spots</span>
         </a>
 
       </div>
