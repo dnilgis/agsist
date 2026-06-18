@@ -1,12 +1,19 @@
 {
- "updated": "2026-06-17T14:29:19+00:00",
- "total": 37,
+ "updated": "2026-06-18T13:50:00+00:00",
+ "total": 38,
  "played_out": 25,
  "didnt": 8,
- "pending": 4,
+ "pending": 5,
  "hit_rate": 75.8,
  "current_streak": 12,
  "records": [
+  {
+   "made": "2026-06-17",
+   "judged": "2026-06-18",
+   "call": "Yesterday's high-conviction call: cattle bounced on two simultaneous supply constraints finally pricing together, not on hope.",
+   "outcome": "pending",
+   "note": "Live cattle flat at $249.05 today, no follow-through either way; the supply-constraint thesis hasn't broken down but hasn't extended either."
+  },
   {
    "made": "2026-06-16",
    "judged": "2026-06-17",

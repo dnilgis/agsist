@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-06-18",
+      "date_display": "Thursday, June 18, 2026",
+      "headline": "SOYBEAN OIL BREAKS HARD, EXPORTS ON DECK",
+      "teaser": "Soy oil breaks 6.7%, exports print at 7:30 AM. Positioning now.",
+      "market_mood": "cautious",
+      "surprise_count": 4,
+      "sections": 4,
+      "url": "/daily/2026-06-18",
+      "market_closed": false,
+      "yc_outcome": "pending"
+    },
+    {
       "date": "2026-06-17",
       "date_display": "Wednesday, June 17, 2026",
       "headline": "CATTLE RUNS HARD, WHEAT HOLDS, CORN FIRMS",
@@ -1082,6 +1094,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-17T14:29:01.249260+00:00",
-  "count": 97
+  "updated": "2026-06-18T13:49:42.815681+00:00",
+  "count": 98
 }
