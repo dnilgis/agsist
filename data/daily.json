@@ -1,122 +1,117 @@
 {
-  "headline": "SOYBEAN OIL BREAKS HARD, EXPORTS ON DECK",
-  "subheadline": "A 6.7% drop in soybean oil reshapes the oilseed complex ahead of Thursday's 7:30 AM export sales print.",
-  "lead": "Soybean oil fell hard Thursday, dropping 6.7% to $66.08, the biggest single-session move in the complex in weeks, and it dragged the whole oilseed story with it. Soybeans eased to $11.41 on both nearby and November, meal gave back half a percent to $303.10, and the setup now sits squarely on this morning's USDA Weekly Export Sales at 7:30 AM CT. Wednesday's announced sale of 13.7 million bushels to unknown destinations gave beans a reason to run yesterday; today's export sales number either validates that buyer or leaves the chart holding the bag. The thread this week has been about whether the Belt caught up to seasonal pace: crop condition reports from the field say yes, but export demand is the other half of the price equation, and that answer comes in hours.",
-  "the_takeaway": "Soybean oil's 6.7% drop is the session story; exports at 7:30 decide if beans follow.",
-  "teaser": "Soy oil breaks 6.7%, exports print at 7:30 AM. Positioning now.",
+  "headline": "SOYBEAN OIL BREAKS HARD, EXPORT SALES DUE 7:30",
+  "subheadline": "A 6.7% drop in soybean oil splits the oilseed complex ahead of Thursday's weekly export sales report, with cattle flat and the grain board drifting.",
+  "lead": "Soybean oil fell hard Thursday, losing 6.7% to close at $66.08, its biggest single-session drop in months, splitting the oilseed complex right before the USDA weekly export sales hit at 7:30 AM CT. Soybeans nearby followed only modestly lower at $11.41, off 6½ cents, because Wednesday's USDA flash sale of 13.7 million bushels to unknown destinations is still sitting in the market's memory. The export number this morning decides whether that flash sale was a one-off or the front edge of something bigger. Watch the 7:30 print.",
+  "the_takeaway": "Soybean oil broke; meal held. Export sales at 7:30 CT tell you which side wins.",
+  "teaser": "Soy oil had its biggest drop in months. Export sales hit at 7:30. Position accordingly.",
   "one_number": {
-    "value": "13.7 million",
-    "unit": "bushels of soybeans sold Wednesday to unknown destinations",
-    "context": "USDA announced the sale Wednesday afternoon, the bulk earmarked for 2026-27 delivery. That sale pushed beans higher into yesterday's close, but it also raises the question: is this one buyer building a position quietly, or the start of a sustained demand wave tied to China's $17 billion annual purchase commitment announced May 18? Today's export sales report at 7:30 AM CT will either add a chapter to that story or leave the mystery exactly where it is."
+    "value": "6.7%",
+    "unit": "soybean oil single-session decline",
+    "context": "That move, from $70.83 implied yesterday to $66.08 today, is the biggest one-day drop in soybean oil in recent memory and it happened without a matching breakdown in soybeans or meal. The oilseed complex is fracturing along the oil-vs-meal fault line, with meal off only half a percent at $303.10. The divergence tells you this is a soybean oil story, not a soybean story. Biofuel demand, renewable diesel margins, and competing feedstock pricing are doing the work here."
   },
   "yesterdays_call": {
-    "summary": "Yesterday's high-conviction call: cattle bounced on two simultaneous supply constraints finally pricing together, not on hope.",
+    "summary": "Cattle didn't bounce on hope; it bounced on two simultaneous supply constraints finally pricing together.",
     "outcome": "pending",
-    "note": "Live cattle flat at $249.05 today, no follow-through either way; the supply-constraint thesis hasn't broken down but hasn't extended either."
+    "note": "Live cattle at $249.05 is essentially flat today; the thesis needs another session to resolve directionally."
   },
   "sections": [
     {
       "title": "SOYBEAN OIL BREAKS",
       "icon": "🫘",
-      "body": "Soybean oil fell 6.7% to **$66.08**, the day's dominant story and the kind of single-session move that reorganizes the entire oilseed complex. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, matter here: more than 60 million barrels of crude sitting in the Persian Gulf are preparing to move to Asian markets as the chokepoint reopens, and that crude flow feeds directly into the vegetable oil price competition. When crude stays bid and palm and other competing oils ease, soybean oil loses its energy-linkage premium fast. Soybeans dropped to **$11.41** on both nearby and November, a 6.5-cent drag. Meal at **$303.10** held better, only a half-percent softer, which tells you the sell pressure was concentrated in the oil share of the crush, not in demand for protein. The 13.7-million-bushel sale to unknown destinations announced Wednesday is the counterweight: whoever bought that beans is not selling the story short. Export sales at 7:30 AM this morning are the next chapter.",
-      "catalyst": "60 million barrels of Hormuz crude heading to Asia pressures soybean oil's energy-linkage premium.",
-      "bottom_line": "Oil share of the crush just repriced lower; meal held. Export sales resolve the bean direction.",
+      "body": "Soybean oil at $66.08 had its biggest single-session drop in months, off 6.7%, and it did it quietly while the rest of the board drifted. Nearby soybeans lost only 6½ cents to $11.41 and meal gave back half a percent to $303.10, which tells you this is **a soybean oil problem, not a soybean problem**. The divergence points straight at renewable diesel margins and competing feedstock pressure. Canola and palm oil have been undercutting US soybean oil on price for blenders, and when crude holds flat at $74.57 while Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, keep energy soft, the renewable diesel margin story loses its floor. Wednesday's USDA flash sale of 13.7 million bushels of soybeans to unknown destinations gave nearby beans a reason to hold, but that cushion only goes so far if today's 7:30 CT export sales print comes in soft.",
+      "catalyst": "USDA flash sale of 13.7 million bushels Wednesday; soybean oil/renewable diesel margin compression.",
+      "bottom_line": "Oil broke, meal held; today's export print settles whether beans follow oil lower.",
       "conviction_level": "high",
       "overnight_surprise": true,
-      "farmer_action": "Old-crop beans in storage: watch the 7:30 print before making any cash sales. Under 300K MT in today's export sales and the nearby stays under pressure.",
-      "vs_yesterday": "Beans: yesterday's 13.7M-bushel sale tailwind gave way to soy oil breakdown."
+      "farmer_action": "Old-crop soybean sellers: the flash sale gave nearby beans a cushion this week. If today's export total tops 400K MT, that cushion firms. Under 300K MT, the oil break starts pulling beans with it."
     },
     {
-      "title": "CORN DRIFTS, WAITS",
+      "title": "GRAINS DRIFT, EXPORTS LOOM",
       "icon": "🌽",
-      "body": "Corn eased less than 2 cents to **$4.18** nearby, **$4.46** December, and both contracts are doing exactly what the field reports suggest they should: not much. A north-central Iowa farmer interviewed Wednesday described planting as done by early May, herbicide applications wrapping up, and crops looking healthy. That is not the description of a market that needs a weather premium. The 2026 planting season, behind average through May before catching up between rain systems, has now largely normalized, and with pollination still weeks away, there is no urgency on the upside. The export sales print this morning covers corn too; the Belt-on-pace story keeps a lid on any weather bid, but a strong export number would remind the market that demand is still the other variable in the equation.",
-      "catalyst": "Field reports confirm healthy crop development; no weather threat to price a premium against.",
-      "bottom_line": "Corn is coiled inside a narrow range; export demand is the only near-term catalyst.",
+      "body": "Corn eased 1¾ cents to $4.18 nearby, December settled at $4.46, and Chicago wheat added a quarter-cent to $6.20, which rounds to unchanged. **No move worth narrating on the grains board today.** The story on grains this week has been favorable crop development weather in the Belt, with a north-central Iowa farmer reporting rapid fieldwork progress and planting wrapping up in early May. Corn at 52% of its 52-week range is not a market under stress, and the crop is developing cleanly. The 2026 planting season, behind the average through May before catching up between rain systems, is now producing healthy crops by field-level accounts, and that background is keeping any weather premium from gaining traction. The USDA weekly export sales at 7:30 CT is the only scheduled catalyst capable of moving the corn board today. Corn above 200K MT in today's report keeps the soft floor intact. Below that, the drift continues.",
+      "catalyst": "Favorable crop development weather; weekly export sales at 7:30 AM CT today.",
+      "bottom_line": "Quiet board; the 7:30 export print is the only data that changes the story today.",
       "conviction_level": "low",
       "overnight_surprise": false
     },
     {
-      "title": "CATTLE HOLDS, HOGS RUN",
+      "title": "CATTLE MARKS TIME",
       "icon": "🐄",
-      "body": "Live cattle barely moved at **$249.05**, feeders drifted a tenth of a percent to **$367.43**, and after two days of sharp moves the complex is catching its breath. The ongoing Cargill Fort Morgan/Schuyler plant lockout that began May 19 is still in the background, the 1,700 locked-out workers still processing roughly 6,000 fewer head per day, and USDA's announcement Wednesday of a new APHIS administrator comes as the New World screwworm situation in Texas continues without a comprehensive response plan. Beef Magazine noted this week that political responses alone won't solve screwworm, and leadership gaps at APHIS have left the cattle industry without a clear path. Neither of those issues pushed the needle today. Hogs were the livestock story Thursday, rising 1.6% to **$96.55** on no single clean catalyst: looks like fund rotation into a contract that had been lagging the broader livestock recovery.",
-      "catalyst": "APHIS administrator named amid screwworm scrutiny; Cargill lockout continues with no resolution announced.",
-      "bottom_line": "Cattle taking a breath; screwworm and lockout both still in the price structure.",
-      "conviction_level": "medium",
+      "body": "Live cattle at $249.05 and feeders at $367.43 are essentially unchanged, both inside their recent ranges. **The Cargill Fort Morgan processing disruption is still in the market**, with roughly 6,000 head daily of processing capacity offline and no resolution announced, but the complex isn't adding premium from it today either. Lean hogs are the session's livestock mover, up 1.6% to $96.55, which is the one animal protein with positive momentum. The USDA AMS reorganization and FAS relocation announcements this week are administrative noise for the cattle market, but the new APHIS administrator appointment in the middle of the New World screwworm scrutiny is worth watching. A screwworm situation still without a comprehensive containment plan, per industry reporting, keeps a low-level southern cattle supply uncertainty alive even when the price chart says flat.",
+      "catalyst": "Cargill processing disruption ongoing; new APHIS administrator named; screwworm leadership vacuum flagged.",
+      "bottom_line": "Cattle patient, not moving. Hogs the only livestock story today.",
+      "conviction_level": "low",
       "overnight_surprise": false,
-      "vs_yesterday": "Cattle: yesterday's bounce held but didn't extend; thesis intact, momentum flat."
+      "vs_yesterday": "Cattle: yesterday's bounce held but momentum has stalled at $249."
     },
     {
-      "title": "MACRO TURNS DEFENSIVE",
-      "icon": "📉",
-      "body": "Gold dropped 1.8% to **$4,263**, silver fell 2.9% to **$67.28**, and the S&P gave back 1.2% to **$7,420.10**, all on the same day the US Dollar Index firmed 0.6% to **$100.80**. That combination, metals and equities lower, dollar higher, is a classic risk-off rotation, and it is not friendly to grain exports priced in dollars. A stronger dollar makes US bushels more expensive for foreign buyers, which is exactly the wrong backdrop for a Thursday export sales report the market is counting on. India's energy import bill reportedly gained sharply year-over-year in May, and that kind of demand pressure for energy in Asia is one reason the macro picture is getting complicated. Watch the dollar: if it holds above **$100.50** through next week, the export window the China deal opened gets narrower without a corresponding price concession.",
-      "catalyst": "Dollar firmed 0.6% as metals and equities pulled back; risk-off ahead of export sales report.",
-      "bottom_line": "Dollar strength is the quiet headwind behind this morning's export sales number.",
+      "title": "ENERGY HOLDS, METALS SLIP",
+      "icon": "⚡",
+      "body": "WTI crude held at $74.57, essentially flat, as the Iran-Hormuz tensions that dominated the energy complex through early April continue unwinding. More than 60 million barrels of Middle Eastern crude are reportedly staged to move toward Asian markets as the Strait clears, which keeps the overhead supply pressure intact and limits any crude upside. Natural gas added half a percent to $3.17, with EIA data showing Permian gas production grew 60% between 2021 and 2025, from 17.2 Bcf/d to 27.6 Bcf/d, which is **a structural supply story that keeps natural gas prices from getting comfortable above $3.50**. Gold fell 1.8% to $4,263 and silver dropped 2.9% to $67.28, with the US Dollar Index firming 0.6% to $100.80 doing the mechanical work there. For farm input costs, flat crude plus a firmer dollar is a neutral-to-slightly-positive setup heading into fall fuel planning.",
+      "catalyst": "60M+ barrels staged to exit Hormuz; Permian gas production 60% growth 2021-2025; dollar firming.",
+      "bottom_line": "Crude flat, metals off, dollar firming. Input cost window from last week's drop is still open.",
       "conviction_level": "medium",
       "overnight_surprise": true
     }
   ],
   "outside_the_pit": [
     {
-      "title": "USDA Moving FAS Workforce Out of DC to Kansas City",
-      "body": "USDA announced Wednesday it will relocate much of the Foreign Agricultural Service's DC-based staff to Kansas City and Beltsville as part of a broader reorganization. The FAS is the agency that negotiates trade access and tracks export commitments including the China $17 billion deal; disrupting institutional memory and relationships mid-cycle is a real operational risk that won't show up in Friday's futures close.",
+      "title": "USDA Moves FAS to Kansas City, AMS Gets Restructured",
+      "body": "USDA announced Wednesday it will relocate much of the Foreign Agricultural Service's DC workforce to Kansas City and Beltsville, and restructure the Agricultural Marketing Service to reduce siloing in fair trade practices. For producers who rely on FAS export promotion data and AMS price reporting, the transition period carries real disruption risk even if the end state is functionally equivalent.",
       "tag": "POLICY"
     },
     {
-      "title": "Dairies Get H-2A Clarity, But the Seasonal Catch Stays",
-      "body": "DHS and DOL confirmed Wednesday that dairy operations can use the H-2A temporary worker program, but positions must still qualify as temporary or seasonal, a constraint that covers little of the year-round labor dairy actually needs. Dairies across the Upper Midwest and West that were hoping for a broader labor fix are still looking for one.",
-      "tag": "POLICY"
+      "title": "APHIS Gets a Permanent Administrator Under Screwworm Pressure",
+      "body": "The Trump administration named Kelly Moore as APHIS administrator Wednesday, ending an acting-leadership period that coincided with the New World screwworm outbreak in Texas. Industry reporting describes the current USDA response as lacking a comprehensive plan; whether a permanent administrator accelerates or just reorganizes that response is the question for southern cattle producers.",
+      "tag": "DISEASE"
     },
     {
-      "title": "60 Million Barrels Leaving the Gulf as Hormuz Reopens",
-      "body": "More than 60 million barrels of crude oil backed up in the Persian Gulf are preparing to move to Asian markets as Strait of Hormuz traffic resumes. That flow will reprice energy in Asia and take more pressure off the crude-linked vegetable oil complex, reinforcing the soybean oil move today and keeping fertilizer input costs lower than they were six weeks ago.",
-      "tag": "TRADE"
+      "title": "Dairies Get H-2A Clarification, With a Catch",
+      "body": "DHS and the Labor Department clarified Wednesday that dairy operations can use the H-2A temporary ag worker program, but only for positions that qualify as genuinely temporary or seasonal. Year-round milking operations, which describes most commercial dairies, may find the practical window narrower than the headline suggests.",
+      "tag": "POLICY"
     }
   ],
   "spread_to_watch": {
     "label": "Soybean oil / soybean meal share of crush value",
-    "level": "Oil share compressed sharply Thursday on the 6.7% drop; meal held relative value.",
-    "commentary": "When oil and meal diverge this sharply in a single session, the crush margin math changes and processors re-evaluate run rates. If oil doesn't recover toward $70 in the next few sessions, crushers have less incentive to run hard, which eventually tightens meal supply and could support meal prices even as bean futures stay soft. Watch whether the oil/meal ratio normalizes or holds the gap."
+    "level": "Oil share compressed sharply; meal carrying more of crush margin today.",
+    "commentary": "When soybean oil falls 6.7% and meal holds, the ratio of oil-to-meal in total crush value shifts fast. Crushers who hedged expecting a balanced oil-meal split are watching their margin structure reprice in real time. If oil doesn't recover and export sales today confirm strong soybean demand, the beans-crush-oil triangle gets stretched in a way that either pulls beans lower to match the oil weakness or pressures crushers to throttle run rates."
   },
   "basis": {
-    "headline": "Corn basis softening in Western Belt; Eastern bid firmer on ethanol.",
-    "body": "**Eastern Belt corn basis is firming** modestly as ethanol plants maintain steady grind after earlier maintenance windows. Western Belt basis is staying soft, consistent with the seasonal pattern and healthy crop development in the Northern Plains. Soybean basis is quiet ahead of the export sales print; the 13.7-million-bushel Wednesday sale hasn't moved the physical market yet, but a strong export number at 7:30 could tighten interior bids by midday."
+    "headline": "Corn basis mixed; soybean basis holding on flash sale memory.",
+    "body": "Eastern Belt corn basis is steady to slightly firm as summer ethanol grind stays active. Western Belt corn basis remains soft, consistent with the seasonal and ample nearby supply. **Soybean basis is holding better than the futures board alone would suggest**, with Wednesday's flash sale to unknown destinations keeping interior elevators from widening the spread. Watch basis behavior after today's 7:30 export print; a weak number could crack the interior bean basis fast."
   },
   "weekly_thread": {
     "question": "Will USDA Crop Progress confirm the Belt caught up to seasonal pace after May's wet start?",
     "day": 4,
-    "status_text": "Field reports this week, including a north-central Iowa grower describing planting done by early May and healthy crop development, confirm the Belt caught up and then some. The question now shifts: pace is confirmed, but export demand has to validate the price. Today's 7:30 AM export sales print is the next real data point."
+    "status_text": "Field-level reports from north-central Iowa this week describe planting wrapping up in early May and healthy crop development, reinforcing what Monday's Crop Progress data showed. The question has largely answered itself: the Belt caught up, no weather premium is pricing, and the market has moved on to the next question, which is whether export demand can build under a clean-crop baseline."
   },
   "the_more_you_know": {
-    "title": "The oil share of the crush: what $66 soybean oil actually means for the farmer.",
-    "body": "Today's 6.7% drop in soybean oil to $66.08 matters beyond the futures board because the value of a bushel of soybeans is split at crush between meal and oil, and the ratio between them shifts constantly. When oil's share of crush value compresses, processors earn less per bushel processed, and over time that pressure works backward into the cash bid for beans at the elevator. The current move was driven by the unwinding of the energy linkage premium, competing vegetable oils getting cheaper as Hormuz crude flows resume, rather than a demand breakdown. That distinction matters: a structural demand drop is bearish for months; a premium unwind can stabilize once the new crude price is fully priced in. Producers sitting on old-crop beans should watch whether oil stabilizes above $65 or keeps sliding; the floor for that stabilization is the non-energy equilibrium for global vegetable oil, and nobody has a clean number for that right now."
+    "title": "The oil-meal split: what crush margins say before the beans move.",
+    "body": "Today's 6.7% drop in soybean oil with meal off only half a percent is a real-time example of how crush economics send a signal before the underlying commodity reacts. The soybean crush produces two products: oil and meal. When oil's share of crush value drops fast, processors face a margin squeeze unless meal prices rise to compensate or crush pace slows. That's the pressure valve: if soybean oil weakness persists, crushers eventually pull back run rates, which reduces soybean demand, which pulls beans lower. The lag between oil weakness and bean weakness runs days to weeks, not hours. Today's export sales print at 7:30 CT matters because strong soybean demand can override that math by keeping the pipeline full regardless of crush margins."
   },
   "watch_list": [
     {
-      "time": "7:30 AM CT Thursday",
-      "desc": "USDA Weekly Export Sales: soybeans above 400K MT validates Wednesday's 13.7M-bushel sale and keeps November beans near $11.41; under 300K MT and the soy oil break becomes the dominant narrative for the week."
-    },
-    {
-      "time": "7:30 AM CT Thursday",
-      "desc": "USDA Weekly Export Sales: corn above 800K MT adds a demand-side bid that the Belt-on-pace crop story alone isn't providing; under 500K MT and corn stays range-bound through the weekend."
+      "time": "7:30 AM CT today",
+      "desc": "USDA Weekly Export Sales: soybeans above 400K MT confirms flash sale demand is sustained; below 300K MT and the oil break starts pulling beans with it. Corn above 200K MT keeps the soft floor intact."
     },
     {
       "time": "Ongoing",
-      "desc": "Soybean oil: watch whether $65 holds as support after today's break. Below $65 and crush margins tighten further, pressuring the bean board."
+      "desc": "Soybean oil: watch $64 as the next support level. A close below $64 signals the renewable diesel margin story has broken down structurally, not just for a session."
     },
     {
       "time": "Ongoing",
-      "desc": "Dollar Index: holding above $100.50 through next week narrows the export window for all row crops regardless of what today's sales print shows."
+      "desc": "Cargill Fort Morgan lockout: no resolution announced. Every additional week without a settlement tightens the processing math heading into the summer fed cattle run."
     },
     {
-      "time": "Monday 3:00 PM CT",
-      "desc": "USDA Crop Progress: corn rated below 70% good-to-excellent would reintroduce a weather premium as pollination windows approach; above 75% and the demand side stays the only price driver."
+      "time": "Monday, June 22, 3:00 PM CT",
+      "desc": "USDA Crop Progress: crop condition ratings under 65% good-to-excellent on corn would be the first real weather-premium catalyst the market hasn't priced yet. Above 68% and the clean-crop narrative stays in charge."
     }
   ],
   "daily_quote": {
     "text": "To change and to change for the better are two different things.",
     "attribution": "German Proverb"
   },
-  "source_summary": "CME Group settlement prices, USDA NASS Crop Progress, USDA Export Sales announcements, Brownfield Ag News, OilPrice.com, EIA Short Term Energy Outlook, The Fence Post, Farm Policy News, Feedstuffs, Beef Magazine.",
+  "source_summary": "CME Group settlement prices; USDA NASS Crop Progress; USDA flash export sales; Brownfield Ag News; The Fence Post; Beef Magazine; Farm Policy News; EIA Short-Term Energy Outlook; OilPrice.com; Feedstuffs.",
   "date": "Thursday, June 18, 2026",
   "meta": {
     "market_mood": "cautious",
@@ -193,8 +188,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 98,
-  "generated_at": "2026-06-18T13:49:42.793344+00:00",
+  "issue_number": 99,
+  "generated_at": "2026-06-18T14:14:10.741742+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 4,
   "surprises": [

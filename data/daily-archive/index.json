@@ -3,8 +3,8 @@
     {
       "date": "2026-06-18",
       "date_display": "Thursday, June 18, 2026",
-      "headline": "SOYBEAN OIL BREAKS HARD, EXPORTS ON DECK",
-      "teaser": "Soy oil breaks 6.7%, exports print at 7:30 AM. Positioning now.",
+      "headline": "SOYBEAN OIL BREAKS HARD, EXPORT SALES DUE 7:30",
+      "teaser": "Soy oil had its biggest drop in months. Export sales hit at 7:30. Position accordingly.",
       "market_mood": "cautious",
       "surprise_count": 4,
       "sections": 4,
@@ -1094,6 +1094,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-18T13:49:42.815681+00:00",
+  "updated": "2026-06-18T14:14:10.762143+00:00",
   "count": 98
 }
