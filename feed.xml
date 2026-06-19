@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 18 Jun 2026 14:14:28 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 19 Jun 2026 13:19:57 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE ON FEED HITS; BEANS AND WHEAT BREAK LOWER</title>
+      <link>https://agsist.com/daily/2026-06-19</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-19</guid>
+      <pubDate>Fri, 19 Jun 2026 05:00:00 -0600</pubDate>
+      <description>The week that started with a wheat run and an Iran deal ends with a split book: live cattle at $254.80 ran 2.3% on USDA's Cattle on Feed report showing placements down 10% from last year, while soybeans fell to $11.23 and wheat broke to $6.06 as grains sold off into the Juneteenth long weekend with no fund willing to carry risk through three days of silence. That's the story heading into next week. Cattle found a catalyst. Grains found the exit.
+Juneteenth closes the week with grains selling off into a 3-day weekend, live cattle running hard on a bullish Cattle on Feed print, and gold dropping hard on dollar strength.
+• CATTLE ON FEED DELIVERS
+• BEANS AND WHEAT SELL OFF
+• CRUDE STEADIES, METALS BREAK
+Read more: https://agsist.com/daily/2026-06-19</description>
+    </item>
     <item>
       <title>SOYBEAN OIL BREAKS HARD, EXPORT SALES DUE 7:30</title>
       <link>https://agsist.com/daily/2026-06-18</link>
@@ -361,18 +373,6 @@ Grain rally meets livestock headwinds as labor dispute hits major beef plant.
 • Feeders Drop on Processing Squeeze
 • Energy Holds Iran Premium
 Read more: https://agsist.com/daily/2026-05-21</description>
-    </item>
-    <item>
-      <title>WHEAT RALLIES 87 CENTS, FEEDERS SPIKE 1.4%</title>
-      <link>https://agsist.com/daily/2026-05-20</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-20</guid>
-      <pubDate>Wed, 20 May 2026 05:00:00 -0600</pubDate>
-      <description>Chicago wheat jumped 87 cents to $6.70, the biggest single-session gain in three weeks, as funds rotated back into grains after Monday's China commitment finally found follow-through. Feeder cattle spiked 1.4% to $363.85 on tight supplies ahead of Friday's On Feed report, while corn held $4.72 despite giving back a penny. The question isn't whether China's $17 billion shifted positioning anymore, it's which commodities get the spillover.
-Silver explodes 3% overnight as metals catch grain momentum.
-• Grains Find Second Wind
-• Feeders Lead Livestock Higher
-• Energy Breaks on Hormuz Relief
-Read more: https://agsist.com/daily/2026-05-20</description>
     </item>
   </channel>
 </rss>

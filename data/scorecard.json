@@ -1,12 +1,19 @@
 {
- "updated": "2026-06-18T14:14:28+00:00",
- "total": 38,
- "played_out": 25,
+ "updated": "2026-06-19T13:19:57+00:00",
+ "total": 39,
+ "played_out": 26,
  "didnt": 8,
  "pending": 5,
- "hit_rate": 75.8,
- "current_streak": 12,
+ "hit_rate": 76.5,
+ "current_streak": 13,
  "records": [
+  {
+   "made": "2026-06-18",
+   "judged": "2026-06-19",
+   "call": "Old-crop soybean sellers were told the export sales number was the deciding vote: above 400K MT the oil-break cushion firms, under 300K MT the oil break starts pulling beans with it.",
+   "outcome": "played_out",
+   "note": "Nearby beans fell to $11.23, down 2.2%, as the oil break carried through exactly as the downside scenario described; the cushion didn't hold."
+  },
   {
    "made": "2026-06-17",
    "judged": "2026-06-18",

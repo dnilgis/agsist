@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-06-19",
+      "date_display": "Friday, June 19, 2026",
+      "headline": "CATTLE ON FEED HITS; BEANS AND WHEAT BREAK LOWER",
+      "teaser": "Cattle runs on a bullish COF print; beans and wheat sell off into the long weekend.",
+      "market_mood": "mixed",
+      "surprise_count": 6,
+      "sections": 4,
+      "url": "/daily/2026-06-19",
+      "market_closed": false,
+      "yc_outcome": "played_out"
+    },
+    {
       "date": "2026-06-18",
       "date_display": "Thursday, June 18, 2026",
       "headline": "SOYBEAN OIL BREAKS HARD, EXPORT SALES DUE 7:30",
@@ -1094,6 +1106,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-18T14:14:10.762143+00:00",
-  "count": 98
+  "updated": "2026-06-19T13:19:39.421389+00:00",
+  "count": 99
 }
