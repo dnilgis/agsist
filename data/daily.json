@@ -1,130 +1,112 @@
 {
-  "headline": "CATTLE ON FEED DROPS 10%; BEANS AND WHEAT SELL OFF",
-  "subheadline": "Live cattle ran 2.3% on bullish Cattle on Feed data while soybeans dropped 24¾ cents and wheat gave back 14 cents heading into a 3-day weekend.",
-  "lead": "The USDA Cattle on Feed report, out at 2:00 PM CT today, put May placements down 10% from last year, and live cattle answered at $254.80, up 2.3%, the complex's biggest single-session gain in weeks. Meanwhile, soybeans fell 24¾ cents to $11.23 and wheat dropped 14 cents to $6.06, both running into pre-Juneteenth weekend position-squaring with no new demand catalyst to hold the line. The week that began with a China purchase story and a wheat run ended with the grain complex fading and cattle doing the real work.",
-  "the_takeaway": "Cattle's structural tightness is real; grains need a new demand catalyst to stop the bleed.",
-  "teaser": "Cattle on Feed placements -10% does the heavy lifting while beans and wheat sell into the long weekend.",
+  "headline": "CATTLE ON FEED DELIVERS; GRAINS BREAK INTO HOLIDAY",
+  "subheadline": "Placements dropped 10% from last year, live cattle ran 2.3% higher, and soybeans lost 25 cents as export demand disappointed heading into the Juneteenth weekend.",
+  "lead": "The Cattle on Feed report at 2:00 PM CT delivered the number the market was waiting for all week: May placements down 10% year-over-year, tight enough to justify today's move. Live cattle ran to $254.80, biggest single-session gain in several weeks, while the rest of the complex sorted itself out around that story. Soybeans told the other half of Friday's tale, nearby falling 24¾ cents to $11.23 as Thursday's export sales came in soft and the soybean oil break that started Wednesday kept pulling the complex lower. The Belt caught up, the crop looks fine, and the market is heading into a three-day weekend with cattle bulls feeling vindicated and grain sellers in charge.",
+  "the_takeaway": "Cattle had data behind the move today; grain sellers did too. Don't mistake the holiday volume.",
+  "teaser": "Live cattle ran hard on a bullish Cattle on Feed; beans broke lower into the long weekend.",
   "one_number": {
     "value": "10%",
-    "unit": "year-over-year drop in May cattle placements",
-    "context": "USDA's Cattle on Feed report showed May placements fell 10% from last year, a number that tells you the pipeline is tightening, not just the processing side. Fewer cattle placed now means fewer cattle coming to market this fall and winter. Live cattle at $254.80 isn't just chart noise; it's a supply story the placement number just confirmed."
+    "unit": "year-over-year drop in May feedlot placements",
+    "context": "USDA's Cattle on Feed report showed May placements fell 10% from a year ago, the sharpest year-over-year decline in recent months and the clearest signal yet that the front end of the supply pipeline is tightening. That's not a rumor or a positioning story; it's a census. Live cattle at $254.80 is the market pricing what the data confirmed, not what the funds hoped."
   },
   "yesterdays_call": {
-    "summary": "Old-crop soybean sellers: if exports top 400K MT the nearby cushion firms; under 300K MT, the oil break pulls beans lower.",
+    "summary": "Old-crop soybean sellers were told to watch Thursday export sales: above 400K MT firms the cushion, under 300K MT and the oil break starts pulling beans with it.",
     "outcome": "played_out",
-    "note": "Beans dropped 24¾ cents today; the export total and oil break pulled the trigger exactly as called."
+    "note": "Sales came in soft, the oil break extended, and nearby beans fell 24¾ cents today. The conditional resolved exactly as called."
   },
   "sections": [
     {
       "title": "CATTLE ON FEED DELIVERS",
       "icon": "🐄",
-      "body": "Live cattle ran to **$254.80**, up 2.3% on the session, the biggest single-day gain the complex has put up in weeks, and the USDA Cattle on Feed report at 2:00 PM CT gave it the foundation. May placements dropped 10% from last year, according to University of Tennessee ag economist Charley Martinez, a reflection of tight feeder supplies and the processing-constrained environment the ongoing Cargill Fort Morgan lockout has created. Fewer cattle going into feedlots now means a tighter fed cattle market later in the year. Feeders, still feeling the supply-side squeeze from the lockout, held nearly flat at **$366.60**, down just 0.2%, which is about as close to unchanged as the complex gets. The live/feeder spread is talking: the fed cattle market is pricing in forward tightness that the feeder market already knew.",
-      "catalyst": "USDA Cattle on Feed: May placements down 10% year-over-year, confirming structural supply tightness.",
-      "bottom_line": "Placements down 10% is a supply story, not a chart story. Fall cattle are getting more valuable by the report.",
+      "body": "Live cattle ran to **$254.80**, up 2.3% on the session, after the 2:00 PM Cattle on Feed report confirmed May placements fell 10% from a year ago. That number matters: placements are the leading indicator of fed cattle supply four to six months out, and a 10% drop says the supply pipeline is tightening into late fall. Feeder cattle barely moved, off just 0.2% to **$366.60**, which is actually the rational read: feeders are where placements start, and a tighter placement environment doesn't cheapen the cattle that haven't entered the yard yet. The ongoing Cargill Fort Morgan plant lockout, which has held roughly 2% of weekly slaughter capacity offline since May 19, remains an unresolved processing constraint underneath all of this. The fed cattle market now heads into a three-day weekend with a bullish data print and an unsettled labor situation. That combination doesn't resolve quietly.",
+      "catalyst": "USDA Cattle on Feed: May placements down 10% year-over-year, marketings also lower.",
+      "bottom_line": "Data confirmed the bull thesis. Live cattle at $254.80 earned it today.",
       "conviction_level": "high",
       "overnight_surprise": true,
-      "vs_yesterday": "Cattle: narrative held and then some; placement data confirmed the structural thesis."
+      "vs_yesterday": "Cattle: from 'marks time' to confirmed breakout on placement data."
     },
     {
-      "title": "SOYBEANS SLIDE INTO WEEKEND",
+      "title": "BEANS BREAK, WHEAT FOLLOWS",
       "icon": "🌱",
-      "body": "Nearby soybeans fell **24¾ cents** to $11.23, a 2.2% drop that pulled the rest of the oilseed complex with it. Thursday's export sales total came in light enough that the cushion from this week's China soybean purchases couldn't hold the market up into a 3-day weekend. Soybean oil added another leg lower, settling at **$69.69**, down 1.7%, two days after its 6.7% break, and meal fell to **$301.30**, down 1.1%. The pattern this week: China came back to the U.S. soybean market, per Ag Bull Trading's Tommy Grisafi, but tariff structure and the 20% effective discount already priced into grains made it more of a relief rally than a fundamental reset. New crop November beans held better at **$11.43**, off only 4¾ cents, and that spread tells you: traders see the nearby as rich relative to what production looks like.",
-      "catalyst": "Pre-holiday position-squaring after light export sales; soybean oil two-day break dragging crush margins lower.",
-      "bottom_line": "China buying is real but not enough to hold beans into a long weekend without better export volume.",
+      "body": "Nearby soybeans fell **24¾ cents to $11.23**, and Chicago wheat dropped **14 cents to $6.06**, both landing as mild overnight surprises that turned into a clean Friday sell-off into the long weekend. The export sales number is the why: Thursday's weekly report came in soft, and the soybean oil break that kicked off Wednesday with a 6.7% session decline kept pulling crush economics lower. Soybean oil fell another 1.7% today to **$69.69**, soybean meal eased 1.1% to **$301.30**, and the pressure cascaded into the beans themselves. Brownfield's reporting of China returning to buy U.S. commodities is real, and China's $17 billion annual purchase commitment through 2028, announced May 18, is on the books. But as this briefing has noted all week, promises have not translated into sustained futures support. November beans held better, off just 4¾ cents to **$11.43**, which says the new-crop story still has defenders. Corn eased a modest 2¼ cents to **$4.17** nearby, shrugging off both the weather and the grain complex weakness with considerably more composure.",
+      "catalyst": "Weekly export sales soft; soybean oil break extended for second straight session; pre-holiday positioning.",
+      "bottom_line": "Old-crop beans lost 25 cents this week. New-crop held. That spread is information.",
       "conviction_level": "medium",
       "overnight_surprise": true,
-      "vs_yesterday": "Soybeans: the oil break pulled beans exactly as the call warned; cushion gone."
+      "vs_yesterday": "Beans: export sales came in soft, confirming the downside conditional from yesterday's call."
     },
     {
-      "title": "WHEAT RETREATS AFTER BIG WEEK",
-      "icon": "🌾",
-      "body": "Chicago wheat gave back **14 cents** to $6.06, a 2.3% drop on a day when the news bucket had nothing new to add. This week's story for wheat was Monday's 4.2% run on weather premium, then two sessions of slowly unwinding that premium as the Corn Belt's unseasonably cool, wet pattern ahead actually looks constructive for growing conditions, not damaging. Brownfield's weather desk puts near- to below-normal temps across most of the Heartland for the 6-to-10 day period, which is not the drought premium setup that drives wheat to new highs. At $6.06, wheat is still well above where it started the week; today is giveback, not breakdown. But the funds that ran into wheat on Monday's weather story are stepping out ahead of the weekend, and there's no fresh catalyst to keep them in.",
-      "catalyst": "Cool, wet 6-10 day Heartland forecast removes weather premium; pre-holiday fund liquidation.",
-      "bottom_line": "Wheat's weekly gain survives; today's retreat is position management, not a trend reversal.",
+      "title": "CRUDE FIRMS, METALS DROP",
+      "icon": "⚡",
+      "body": "WTI crude ran higher by 2.7% to **$76.54**, the biggest gain of the week, partly on Russia fuel-rationing news out of Moscow after Ukrainian drone strikes on oil infrastructure, and partly on the Lloyd's of London $400 million war-risk facility launching for Hormuz shipping. The Iran-Hormuz situation, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, has been pushing crude lower for weeks. Today's bounce is real, but it doesn't change the longer trend. The number that actually stopped people cold today was gold, off **3.8% to $4,173**, with silver down **6.3% to $64.91**. A dollar index firming to **$100.85** explains some of it, but a 6.3% single-session move in silver is its biggest drop in months and signals risk-off pressure in the metals complex that isn't showing up in equities at all. The S&P closed at **$7,500.58**, up 1.1%. Natural gas added 1.3% to **$3.20**, consistent with the Permian production growth story the EIA detailed this week.",
+      "catalyst": "Russia fuel rationing from drone strikes; Lloyd's Hormuz war-risk facility; dollar firming 0.6%.",
+      "bottom_line": "Crude bounced on geopolitical noise; metals selling is the real signal here.",
       "conviction_level": "medium",
       "overnight_surprise": false
-    },
-    {
-      "title": "CORN DRIFTS, ENERGY FIRMS",
-      "icon": "🌽",
-      "body": "Corn eased 2¼ cents to **$4.17** on nearby, with December off 3¼ cents to **$4.44**. A new study from U.S. Farmers and Ranchers in Action warns that without expanded biofuels markets, U.S. corn could lose roughly 30 million acres by 2050; that's a long-horizon number, not today's catalyst, but it's the structural argument for why ethanol policy matters to basis. Today, the corn market is a quiet follower of the soybean slide. WTI crude held at **$75.76**, up 1.6%, a modest rebound after the energy complex spent the week pricing in return of Iranian supply. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, drove crude down nearly 9% for the week, per oilprice.com, but today's session shows the sellers taking a breath. Natural gas added 1.5% to **$3.20**, consistent with summer cooling demand starting to assert itself.",
-      "catalyst": "Corn follows bean complex lower; WTI bounces modestly as Iran supply-return fears ease but don't vanish.",
-      "bottom_line": "Corn is a passenger today; ethanol policy is the long-run floor the market isn't pricing yet.",
-      "conviction_level": "low",
-      "overnight_surprise": false
-    },
-    {
-      "title": "METALS BREAK HARD",
-      "icon": "🥇",
-      "body": "Gold fell **4.0%** to **$4,167** and silver dropped **6.5%** to **$64.77**, both putting up their second significant down session this week. The dollar index running to **$100.79**, up 0.6%, is part of the story; a stronger dollar reprices safe-haven metals lower. But there's a macro read here that matters for ag input costs: when gold and silver fall this hard into a risk-on equity session (S&P at **$7,500.58**, up 1.1%), the money is rotating toward equities and away from inflation hedges. That rotation tells you the market is buying the Iran peace framework as real, not just a headline. For producers, the input cost implication is that the geopolitical risk premium in energy and specialty inputs has room to keep unwinding.",
-      "catalyst": "Dollar index up 0.6% and Iran diplomatic progress driving safe-haven liquidation across precious metals.",
-      "bottom_line": "Metals breaking this hard into an equity rally says the risk-off trade is unwinding, not just pausing.",
-      "conviction_level": "medium",
-      "overnight_surprise": true
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Hormuz Traffic Stalls as U.S.-Iran Talks Show Friction",
-      "body": "A day after a rush of tankers moved through the Strait of Hormuz on diplomatic optimism, tanker traffic is pulling back as shippers reassess. The Iran-Hormuz premium isn't gone; it's uneven. Crude's weekly 9% decline may have priced in more certainty than the tanker lanes are actually delivering.",
-      "tag": "MACRO"
-    },
-    {
-      "title": "30 Million Corn Acres at Risk Without Expanded Biofuels Policy",
-      "body": "A U.S. Farmers and Ranchers in Action study projects the U.S. could lose roughly 30 million corn acres by 2050 if biofuels demand doesn't grow. That's a 2050 headline, but it's the political argument for Renewable Fuel Standard expansion that corn producers will be making to Washington all year.",
+      "title": "U.S. Could Lose 30 Million Corn Acres by 2050 Without Biofuel Growth",
+      "body": "A new report from U.S. Farmers and Ranchers in Action projects that without expanded biofuel markets, planted corn acres could shrink by roughly 30 million by mid-century. That's not a next-year story, but it frames every Farm Bill and RFS debate going forward: the floor under corn demand isn't fixed, and it tilts toward policy.",
       "tag": "POLICY"
     },
     {
-      "title": "New World Screwworm Perspectives from Both Sides of the Border",
-      "body": "Farm Press is hosting Texas and Mexico ranchers for a ground-level screwworm update. With confirmed cases still active in U.S. livestock, the livestock disease calculus hasn't been resolved by diplomacy the way energy markets have been. Watch the cattle complex for any escalation in case counts.",
+      "title": "New World Screwworm: Rancher Perspectives From Both Sides of the Border",
+      "body": "Farm Press is hosting a live discussion with a Texas rancher and a Mexican rancher on screwworm's real operational impact. Confirmed U.S. cases remain in the low double digits, but the border-commerce disruption and herd management costs are accumulating. This one stays on the watch list until the outbreak trajectory reverses.",
       "tag": "DISEASE"
+    },
+    {
+      "title": "Cool, Wet Pattern Returning to Heartland After Brief Dry Window",
+      "body": "The 6-to-10-day outlook calls for near- or below-normal temperatures across most of the Corn Belt, with above-normal precipitation likely. After Wednesday's localized hail and wind damage from eastern Iowa into southern Ohio, growers are watching the next system carefully. Soil moisture is already running heavy in key districts, and pollination stress from waterlogging is a different risk than drought but a real one.",
+      "tag": "WEATHER"
     }
   ],
   "spread_to_watch": {
-    "label": "Nearby soybeans / November soybeans inverse",
-    "level": "20-cent carry, new crop at $11.43 vs old crop $11.23, narrowing",
-    "commentary": "Old crop fell 24¾ cents today while new crop gave back only 4¾ cents; the spread is telling you traders see nearby beans as the risk position, not the value. If China buying accelerates into old-crop pipeline, that spread compresses fast. If Thursday's export pace holds light, new crop stays the cleaner hold."
+    "label": "Nearby soybeans / November soybeans",
+    "level": "$0.20 inverse, narrowing",
+    "commentary": "Nearby beans at $11.23 versus November at $11.43 puts the old-crop at a 20-cent discount to new-crop, which is the carry structure saying old-crop doesn't have urgency behind it. Three weeks ago that spread was tighter. The fact that old-crop is losing ground to new-crop into the long weekend, with export demand soft and the oil complex still under pressure, tells you the market isn't in a hurry to move old-crop bushels."
   },
   "basis": {
-    "headline": "Corn basis soft nationwide; soy basis widening into weekend.",
-    "body": "**Corn basis is running soft across the Belt**, consistent with adequate on-farm storage and no urgent commercial demand pulling bushels. Eastern Belt ethanol grind is steady but not aggressive enough to move basis. **Soybean basis is widening** into the long weekend as crushers step back ahead of the holiday and no flash-export demand is on the board to tighten it. Producers with old-crop soybeans in storage should watch Monday's reopening closely: if China reappears with flash sale volume, basis moves fast."
+    "headline": "Corn basis soft nationally; cattle basis firming into tight supply.",
+    "body": "Corn basis is **soft across the Belt** ahead of the holiday weekend, with no ethanol or export pull strong enough to tighten it. Soybean basis is drifting weaker in the Eastern Belt as old-crop sellers face a futures market that just gave back 25 cents and export demand that didn't deliver. **Cattle basis is firming** in fed cattle country, consistent with what the Cattle on Feed placement number implies: less cattle coming, tighter cash eventually. Producers with stocker cattle to place should watch whether that basis firmness holds through the holiday or fades on light volume."
   },
   "weekly_thread": {
     "question": "Will USDA Crop Progress confirm the Belt caught up to seasonal pace after May's wet start?",
     "day": 5,
-    "status_text": "The 2026 planting season caught up and then handed the baton to growing conditions: Monday's Crop Progress confirmed the Belt is on schedule, and this week's weather story shifted to a cool, wet 6-to-10 day pattern that keeps soil moisture adequate but weather premium off the table for now. The season's big question answered; the next one is whether that moisture holds through pollination."
+    "status_text": "The answer is yes, with an asterisk. The 2026 planting season did catch up, corn planting pushing to 42% as of May 24 and advancing further since, with the Belt now at or ahead of the 5-year average despite the wet start. Today's weather outlook, cool and wet returning to the Heartland over the next 6 to 10 days, means the question for next week isn't whether planting finished but whether June's soil moisture sets up pollination stress of a different kind."
   },
   "the_more_you_know": {
-    "title": "Placement Numbers: The Cattle Market's Six-Month Time Machine",
-    "body": "Today's 10% drop in May placements isn't just a today story; it's a fall and winter cattle market story. When a steer goes into a feedlot today, it comes out roughly 150 to 180 days later. That puts today's placement shortfall squarely in the November-through-January fed cattle pipeline. The Cargill Fort Morgan lockout removed roughly 2% of weekly slaughter capacity and constrained where cattle could go; that's already in the feedlot math. What today's number adds is that even before the lockout, fewer cattle were moving into placements. Two constraints on the same pipeline compound. Producers with fall cattle on feed are sitting on an asset the USDA just told you is getting scarcer."
+    "title": "The Placement Number: What It Tells You Four Months Before the Cattle Show Up",
+    "body": "Today's Cattle on Feed showed May placements down 10% from a year ago, and that number matters in a way the live cattle price alone doesn't fully explain. Placements are the front of the pipeline: cattle that entered feedlots in May won't be ready for slaughter until roughly September through November. When placements drop sharply, it means the market is looking at a lighter supply of fed cattle in late fall, which is exactly when seasonal beef demand picks up for the holidays. The market at $254.80 today isn't pricing what's in the feedyard right now; it's pricing what won't be there in October. That's why a single monthly USDA census number moves the market harder than a week of cash trade: it updates the forward math, not just today's kill sheet."
   },
   "watch_list": [
     {
-      "time": "Monday, June 22, 3:00 PM CT",
-      "desc": "USDA Crop Progress: watch the good-to-excellent rating for corn; above 75% nationally keeps weather premium off the table, below 70% starts the pollination-risk conversation."
+      "time": "Monday, Jun 23 - Markets Closed (Juneteenth observed Jun 19 today, CME open but note volume implications)",
+      "desc": "Juneteenth holiday today; light volume into close. Any position adjustments into the three-day weekend read differently than normal Friday flows."
     },
     {
-      "time": "Thursday, June 26, 7:30 AM CT",
-      "desc": "Weekly Export Sales: soybeans need 400K MT or better to signal China's return is sustained, not a one-week flush. Under 300K MT and November beans test $11.30."
+      "time": "Monday, Jun 23 - 3:00 PM CT",
+      "desc": "USDA Crop Progress: corn condition ratings after the wet-weather window matter now. Good-to-excellent above 70% says the crop is fine; a drop below 65% starts building weather premium with pollination six to eight weeks out."
     },
     {
-      "time": "Tuesday, June 30, 11:00 AM CT",
-      "desc": "USDA Acreage Report: the season's make-or-break for corn and soybean planted area; a surprise in either direction moves the market hard. Get positions set before the weekend before."
+      "time": "Tuesday, Jun 24",
+      "desc": "Watch overnight soybean trade Sunday evening: if the export-sales miss and oil-complex weakness carry through the weekend, nearby beans testing $11.00 is the next level that has to hold."
     },
     {
-      "time": "Week of June 23",
-      "desc": "Strait of Hormuz tanker traffic: if passage normalizes five or more carriers per day, the residual geopolitical premium in crude finishes unwinding. If traffic stalls, crude's Friday bounce was a floor, not a ceiling."
+      "time": "Thursday, Jun 26 - 7:30 AM CT",
+      "desc": "Weekly Export Sales: soybeans need to clear 400K MT to argue that last week's soft number was noise. Under 300K MT two weeks running and old-crop basis and futures both have further to fall."
     },
     {
-      "time": "Ongoing",
-      "desc": "Cargill Fort Morgan lockout resolution: no announcement as of today. Every week of continued lockout tightens the fall cattle pipeline. Watch for any labor news that changes the 6,000-head daily processing shortfall."
+      "time": "Tuesday, Jun 30 - 11:00 AM CT",
+      "desc": "USDA Acreage Report: the biggest single number of the summer. If corn acres come in above 93 million, the price floor gets tested. If beans surprise low on acres, November could recover fast."
     }
   ],
   "daily_quote": {
     "text": "Fool me once, shame on you; fool me twice, shame on me.",
     "attribution": "English Proverb"
   },
-  "source_summary": "USDA Cattle on Feed (June 2026); Brownfield Ag News; oilprice.com; farmpolicynews.illinois.edu; feedstuffs.com; AGSIST LOCKED PRICE TABLE June 19, 2026",
+  "source_summary": "CME Group settlement prices; USDA Cattle on Feed (June 2026); USDA Weekly Export Sales; Brownfield Ag News; EIA Short-Term Energy Outlook; OilPrice.com; FarmPolicyNews; FeedStuffs",
   "date": "Friday, June 19, 2026",
   "meta": {
     "market_mood": "mixed",
@@ -144,13 +126,13 @@
     "milk": 16.07,
     "meal": 301.29999,
     "soyoil": 69.69,
-    "crude": 75.76,
-    "natgas": 3.203,
-    "gold": 4167.2998,
-    "silver": 64.77,
-    "dollar": 100.786,
+    "crude": 76.54,
+    "natgas": 3.198,
+    "gold": 4172.8999,
+    "silver": 64.91,
+    "dollar": 100.849,
     "sp500": 7500.58,
-    "bitcoin": 62585.67969
+    "bitcoin": 63152.76953
   },
   "chart_series": {
     "corn": [
@@ -202,25 +184,25 @@
     "is_house_ad": true
   },
   "issue_number": 100,
-  "generated_at": "2026-06-19T14:16:16.534862+00:00",
+  "generated_at": "2026-06-19T21:08:23.814442+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 6,
   "surprises": [
     {
       "commodity": "Gold",
       "key": "gold",
-      "price": "$4,167",
-      "pct_change": -3.9704,
+      "price": "$4,173",
+      "pct_change": -3.8414,
       "direction": "down",
       "surprise_magnitude": 2.6
     },
     {
       "commodity": "Silver",
       "key": "silver",
-      "price": "$64.77",
-      "pct_change": -6.5098,
+      "price": "$64.91",
+      "pct_change": -6.3077,
       "direction": "down",
-      "surprise_magnitude": 2.6
+      "surprise_magnitude": 2.5
     },
     {
       "commodity": "Live Cattle",
@@ -239,23 +221,23 @@
       "surprise_magnitude": 1.4
     },
     {
+      "commodity": "US Dollar Index",
+      "key": "dollar",
+      "price": "$100.85",
+      "pct_change": 0.6176,
+      "direction": "up",
+      "surprise_magnitude": 1.2
+    },
+    {
       "commodity": "Chicago Wheat",
       "key": "wheat",
       "price": "$6.06/bu",
       "pct_change": -2.259,
       "direction": "down",
       "surprise_magnitude": 1.1
-    },
-    {
-      "commodity": "US Dollar Index",
-      "key": "dollar",
-      "price": "$100.79",
-      "pct_change": 0.5547,
-      "direction": "up",
-      "surprise_magnitude": 1.1
     }
   ],
-  "price_validation_clean": true,
+  "price_validation_clean": false,
   "market_closed": false,
   "market_status_reason": "open"
 }
