@@ -263,7 +263,7 @@
   #kalshi-grid{min-height:160px;}
   @media(prefers-reduced-motion:reduce){
     .ticker-track{animation:none!important}
-    .live-dot,.status-dot,.daily-eyebrow-dot{animation:none!important}
+    .live-dot,.status-dot,.daily-eyebrow-dot,.teaser-sponsor-dot{animation:none!important}
     .fade-up{opacity:1!important;transform:none!important;transition:none!important}
     .pc-spark{transition:none!important}
   }
@@ -437,34 +437,35 @@
   .daily-byline strong{color:var(--text);font-weight:700}
   .daily-byline a{color:var(--gold);text-decoration:none}
   .daily-byline a:hover{text-decoration:underline}
+  :root{--ad-orange:#e8743a;--ad-orange-rgb:232,116,58;--ad-orange-hi:#f2935f}
   /* v4.1 sponsor block — billboard for empty state, restrained for paid sponsor */
-  .daily-sponsor{position:relative;margin:1.25rem 0 1.5rem;padding:1.5rem 1.75rem;background:linear-gradient(135deg,rgba(var(--gold-rgb),.10) 0%,rgba(var(--gold-rgb),.02) 50%,var(--surface) 100%);border:2px solid var(--gold);border-radius:12px;box-shadow:0 0 0 1px rgba(var(--gold-rgb),.15),0 8px 24px rgba(0,0,0,.25)}
+  .daily-sponsor{position:relative;margin:1.25rem 0 1.5rem;padding:1.5rem 1.75rem;background:linear-gradient(135deg,rgba(var(--ad-orange-rgb),.10) 0%,rgba(var(--ad-orange-rgb),.02) 50%,var(--surface) 100%);border:2px solid var(--ad-orange);border-radius:12px;box-shadow:0 0 0 1px rgba(var(--ad-orange-rgb),.15),0 8px 24px rgba(0,0,0,.25)}
   .daily-hero.dismissed .daily-sponsor{display:none}
   .dsp-empty,.dsp-filled{display:block}
   /* Empty state — billboard treatment */
   .dsp-tags{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
   .dsp-tag{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.4rem .75rem;border-radius:4px;display:inline-flex;align-items:center;gap:.35rem;line-height:1}
-  .dsp-tag-available{background:var(--gold);color:#0d1117;position:relative;z-index:1}
-  .dsp-tag-available::before{content:'';position:absolute;inset:-4px;border:2px solid var(--gold);border-radius:7px;opacity:0;animation:dsp-pulse 2.6s ease-in-out infinite;z-index:-1;pointer-events:none}
+  .dsp-tag-available{background:var(--ad-orange);color:#0d1117;position:relative;z-index:1}
+  .dsp-tag-available::before{content:'';position:absolute;inset:-4px;border:2px solid var(--ad-orange);border-radius:7px;opacity:0;animation:dsp-pulse 2.6s ease-in-out infinite;z-index:-1;pointer-events:none}
   @keyframes dsp-pulse{0%,100%{opacity:0;transform:scale(1)}50%{opacity:.45;transform:scale(1.06)}}
-  .dsp-tag-founding{background:rgba(var(--gold-rgb),.10);color:var(--gold);border:1px solid rgba(var(--gold-rgb),.4)}
+  .dsp-tag-founding{background:rgba(var(--ad-orange-rgb),.10);color:var(--ad-orange);border:1px solid rgba(var(--ad-orange-rgb),.4)}
   .dsp-headline{font-family:'Archivo',sans-serif;font-size:1.95rem;font-weight:600;letter-spacing:.005em;color:var(--text);margin-bottom:.7rem;line-height:1.1}
   .dsp-pitch{font-size:.95rem;line-height:1.65;color:var(--text-dim);margin-bottom:1.25rem;max-width:58rem}
   .dsp-pitch strong{color:var(--text);font-weight:700}
   .dsp-actions{margin-bottom:.85rem}
-  .dsp-cta-primary{display:inline-flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--gold);color:#0d1117;text-decoration:none;padding:.85rem 1.5rem;border:2px solid var(--gold);border-radius:6px;transition:background .15s,transform .1s,box-shadow .15s,border-color .15s;min-height:44px;box-shadow:0 4px 12px rgba(var(--gold-rgb),.22)}
-  .dsp-cta-primary:hover{background:#f0c84a;border-color:#f0c84a;transform:translateY(-1px);box-shadow:0 6px 18px rgba(var(--gold-rgb),.38)}
+  .dsp-cta-primary{display:inline-flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--ad-orange);color:#0d1117;text-decoration:none;padding:.85rem 1.5rem;border:2px solid var(--ad-orange);border-radius:6px;transition:background .15s,transform .1s,box-shadow .15s,border-color .15s;min-height:44px;box-shadow:0 4px 12px rgba(var(--ad-orange-rgb),.22)}
+  .dsp-cta-primary:hover{background:var(--ad-orange-hi);border-color:var(--ad-orange-hi);transform:translateY(-1px);box-shadow:0 6px 18px rgba(var(--ad-orange-rgb),.38)}
   .dsp-contact{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);letter-spacing:.03em}
-  .dsp-contact a{color:var(--gold);text-decoration:none}
+  .dsp-contact a{color:var(--ad-orange);text-decoration:none}
   .dsp-contact a:hover{text-decoration:underline}
   .dsp-contact-sep{margin:0 .55rem;opacity:.5}
   /* Filled state — subdued so sponsor brand can breathe */
-  .daily-sponsor.filled{border-width:1px;border-color:rgba(var(--gold-rgb),.3);border-left:3px solid var(--gold);background:linear-gradient(135deg,var(--surface) 0%,rgba(var(--gold-rgb),.04) 100%);box-shadow:none;padding:1.1rem 1.4rem}
-  .dsp-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;display:flex;align-items:center;gap:.35rem}
+  .daily-sponsor.filled{border-width:1px;border-color:rgba(var(--ad-orange-rgb),.3);border-left:3px solid var(--ad-orange);background:linear-gradient(135deg,var(--surface) 0%,rgba(var(--ad-orange-rgb),.04) 100%);box-shadow:none;padding:1.1rem 1.4rem}
+  .dsp-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ad-orange);margin-bottom:.5rem;display:flex;align-items:center;gap:.35rem}
   .dsp-sponsor-name{font-family:'Archivo',sans-serif;font-size:1.5rem;font-weight:600;color:var(--text);margin-bottom:.3rem;line-height:1.15}
   .dsp-sponsor-tag{font-size:.92rem;line-height:1.55;color:var(--text-dim);margin-bottom:.9rem;max-width:54rem}
-  .dsp-sponsor-cta{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:.55rem 1rem;border:1px solid var(--gold);border-radius:6px;transition:background .15s,color .15s;min-height:36px}
-  .dsp-sponsor-cta:hover{background:var(--gold);color:#0d1117}
+  .dsp-sponsor-cta{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ad-orange);text-decoration:none;padding:.55rem 1rem;border:1px solid var(--ad-orange);border-radius:6px;transition:background .15s,color .15s;min-height:36px}
+  .dsp-sponsor-cta:hover{background:var(--ad-orange);color:#0d1117}
   /* Mobile */
   @media(max-width:520px){
     .daily-sponsor{margin:1rem 0 1.25rem;padding:1.15rem 1rem;border-radius:8px;border-width:2px}
@@ -481,11 +482,16 @@
     .dsp-sponsor-cta{font-size:.66rem;padding:.45rem .8rem}
   }
   /* v4.1 collapsed-state teaser sponsor — tiny inline element on the collapsed bar */
-  .teaser-sponsor{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:.22rem .55rem;border:1px solid rgba(var(--gold-rgb),.25);border-radius:4px;white-space:nowrap;transition:border-color .15s,background .15s,color .15s,opacity .15s;margin:0 .55rem 0 auto;flex-shrink:0;line-height:1.2}
-  .teaser-sponsor:hover{border-color:var(--gold);background:rgba(var(--gold-rgb),.08)}
-  .teaser-sponsor.empty-state{opacity:.7;color:var(--text-muted);border-color:var(--border)}
-  .teaser-sponsor.empty-state:hover{opacity:1;color:var(--gold);border-color:rgba(var(--gold-rgb),.45);background:rgba(var(--gold-rgb),.06)}
+  .teaser-sponsor{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ad-orange);text-decoration:none;padding:.22rem .55rem;border:1px solid rgba(var(--ad-orange-rgb),.25);border-radius:4px;white-space:nowrap;transition:border-color .15s,background .15s,color .15s,opacity .15s;margin:0 .55rem 0 auto;flex-shrink:0;line-height:1.2}
+  .teaser-sponsor:hover{border-color:var(--ad-orange);background:rgba(var(--ad-orange-rgb),.08)}
+  .teaser-sponsor.empty-state{opacity:1;color:var(--ad-orange);border-color:rgba(var(--ad-orange-rgb),.5);background:rgba(var(--ad-orange-rgb),.07)}
+  .teaser-sponsor.empty-state:hover{opacity:1;color:#0d1117;background:var(--ad-orange);border-color:var(--ad-orange)}
   .teaser-sponsor.has-sponsor{opacity:.9}
+  .teaser-sponsor-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ad-orange);box-shadow:0 0 0 3px rgba(var(--ad-orange-rgb),.18);animation:tsp-pulse 2s ease-in-out infinite;margin-right:.35rem;vertical-align:middle;flex-shrink:0}
+  .teaser-sponsor:hover .teaser-sponsor-dot,.teaser-sponsor.empty-state:hover .teaser-sponsor-dot{background:#0d1117;box-shadow:none}
+  .teaser-sponsor-tag{font-size:.54rem;opacity:.85;padding-left:.4rem;margin-left:.35rem;border-left:1px solid rgba(var(--ad-orange-rgb),.4)}
+  @keyframes tsp-pulse{0%,100%{box-shadow:0 0 0 3px rgba(var(--ad-orange-rgb),.18)}50%{box-shadow:0 0 0 5px rgba(var(--ad-orange-rgb),.04)}}
+  @media(max-width:600px){.teaser-sponsor-tag{display:none}}
   @media(max-width:520px){.teaser-sponsor{font-size:.62rem;padding:.18rem .45rem;letter-spacing:.03em;margin:0 .4rem 0 auto}}
   @media(max-width:380px){.teaser-sponsor{display:none}}
   .daily-share{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.85rem var(--sp-lg,1.5rem);border-top:1px solid var(--border);max-width:1400px;margin:0 auto}
@@ -692,7 +698,7 @@
 </style>
 <section class="daily-hero" id="daily-hero" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full">
-    <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><a class="teaser-sponsor empty-state" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()">Sponsor this &rarr;</a><span class="teaser-action">Read Today's Briefing &#x2193;</span></div>
+    <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><a class="teaser-sponsor empty-state" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"><span class="teaser-sponsor-dot"></span>Sponsor this &rarr;<span class="teaser-sponsor-tag">$150/wk</span></a><span class="teaser-action">Read Today's Briefing &#x2193;</span></div>
     <span class="teaser-preview" id="daily-teaser-text">Today's ag market briefing &mdash; click to read</span>
   </div>
   <div class="daily-full" id="daily-full">
