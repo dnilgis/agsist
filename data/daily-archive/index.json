@@ -3,11 +3,11 @@
     {
       "date": "2026-06-19",
       "date_display": "Friday, June 19, 2026",
-      "headline": "CATTLE ON FEED HITS; BEANS AND WHEAT BREAK LOWER",
-      "teaser": "Cattle runs on a bullish COF print; beans and wheat sell off into the long weekend.",
+      "headline": "CATTLE ON FEED DROPS 10%; BEANS AND WHEAT SELL OFF",
+      "teaser": "Cattle on Feed placements -10% does the heavy lifting while beans and wheat sell into the long weekend.",
       "market_mood": "mixed",
       "surprise_count": 6,
-      "sections": 4,
+      "sections": 5,
       "url": "/daily/2026-06-19",
       "market_closed": false,
       "yc_outcome": "played_out"
@@ -1106,6 +1106,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-19T13:19:39.421389+00:00",
+  "updated": "2026-06-19T14:16:16.557193+00:00",
   "count": 99
 }
