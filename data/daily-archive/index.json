@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-06-20",
+      "date_display": "Saturday, June 20, 2026",
+      "headline": "GRAINS BREAK, CATTLE HOLDS, WEEK RESET AHEAD",
+      "teaser": "Beans broke $0.24 Friday, cattle ran 2.3%, and crude firmed heading into a three-day weekend.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-06-20",
+      "market_closed": true
+    },
+    {
       "date": "2026-06-19",
       "date_display": "Friday, June 19, 2026",
       "headline": "CATTLE ON FEED DELIVERS; GRAINS BREAK INTO HOLIDAY",
@@ -1106,6 +1117,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-19T21:08:23.848327+00:00",
-  "count": 99
+  "updated": "2026-06-20T12:29:31.015709+00:00",
+  "count": 100
 }

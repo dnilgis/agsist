@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 19 Jun 2026 21:08:44 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 20 Jun 2026 12:29:49 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS BREAK, CATTLE HOLDS, WEEK RESET AHEAD</title>
+      <link>https://agsist.com/daily/2026-06-20</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-20</guid>
+      <pubDate>Sat, 20 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Soybeans gave back $0.24¾ Friday to close at $11.23, wheat dropped 14 cents to $6.06, and corn slipped to $4.17 into a three-day Juneteenth weekend with nobody left to defend them. The grains went out soft not because a fresh bear catalyst showed up, but because the calendar did: traders don't want to carry risk over a long weekend with corn pollination approaching and the weather pattern turning cooler and wetter across the Belt. Cattle told a different story. Live cattle ran to $254.80, up 2.3% on Friday, off the Cattle on Feed data delivered Thursday, while feeders barely moved at $366.60. Two markets, two entirely different reads on the same week.
+Friday's close handed grains their worst day of the week; cattle split the difference into the three-day weekend.
+• GRAINS BREAK INTO THE WEEKEND
+• CATTLE SPLITS THE DIFFERENCE
+• CRUDE FIRMS, METALS FALL HARD
+Read more: https://agsist.com/daily/2026-06-20</description>
+    </item>
     <item>
       <title>CATTLE ON FEED DELIVERS; GRAINS BREAK INTO HOLIDAY</title>
       <link>https://agsist.com/daily/2026-06-19</link>
@@ -361,18 +373,6 @@ Processing lockout hits livestock while grain funds rotate back after China rese
 • Livestock Crashes on Processing Jam
 • Energy Holds Iran Premium
 Read more: https://agsist.com/daily/2026-05-22</description>
-    </item>
-    <item>
-      <title>CORN GAINS, FEEDERS DROP ON CARGILL LOCKOUT</title>
-      <link>https://agsist.com/daily/2026-05-21</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-21</guid>
-      <pubDate>Thu, 21 May 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed $4.65, up 2 cents on short covering after Missouri Bootheel replanting reports added modest weather premium. But feeders crashed 1.2% to $361.60 as Cargill's Fort Morgan lockout of 1,700 workers signals tighter cattle movement ahead. The disconnect is telling: grains pricing weather risk while livestock prices supply chain disruption.
-Grain rally meets livestock headwinds as labor dispute hits major beef plant.
-• Grains Find Weather Floor
-• Feeders Drop on Processing Squeeze
-• Energy Holds Iran Premium
-Read more: https://agsist.com/daily/2026-05-21</description>
     </item>
   </channel>
 </rss>
