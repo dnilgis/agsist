@@ -1,106 +1,107 @@
 {
-  "headline": "CATTLE HOLDS $254, GRAINS FACE POLLINATION WEEK",
-  "subheadline": "Live cattle closed at a 52-week high Friday while beans and wheat broke hard into the holiday; this week's crop conditions and weather pattern decide whether grains find a floor.",
-  "lead": "Friday's close told two different stories from the same market. Live cattle finished at $254.80, up 2.3% on the session and sitting at 93% of its 52-week range, the Cargill Fort Morgan lockout (ongoing since May 19) removing roughly 2% of weekly slaughter capacity and tightening the supply picture enough to lift the front month hard. Meanwhile, beans dropped 24¾ cents to $11.23 nearby, wheat gave back 14 cents to $6.06, and the Corn Belt is heading into pollination week with a cool, wet pattern forecast across most of the Heartland. Those two things are not in conflict: tight packing capacity props cattle while ample soil moisture keeps weather premium out of corn and beans. The question this week is whether the crop-condition numbers Monday afternoon confirm what the forecast is implying, or deliver a surprise.",
-  "the_takeaway": "Cattle supply is packing-constrained, not production-constrained. That difference matters all week.",
-  "teaser": "Cattle at a 52-week high, grains breaking into pollination week. Here is what the calendar means.",
+  "headline": "BEANS AND WHEAT BROKE FRIDAY; CATTLE HELD",
+  "subheadline": "Soybeans lost 24 cents and wheat gave back 14 cents to close the week; live cattle ran to $254.80 while the complex digests the Cargill lockout and a cool, wet forecast sets up the week.",
+  "lead": "Friday's close told two different stories. Beans at $11.23 nearby and wheat at $6.06 both gave back real ground heading into the weekend, the kind of selling that happens when producers and funds don't want to carry risk through a three-day stretch. Live cattle at $254.80 held and then some, up 2.3% on the session, the Cargill Fort Morgan lockout still tightening the available processing chain enough to support fed cattle values even as feeder cattle at $366.60 barely moved. The week ahead has a specific make-or-break: Monday's Crop Progress at 3 PM CT will tell you whether the cool, wet pattern rolling back into the Heartland is helping crops or starting to crowd the pollination window. That number will move the grain markets more than anything else on the calendar.",
+  "the_takeaway": "Beans and wheat broke; cattle held. Monday's Crop Progress decides whether the grain break deepens.",
+  "teaser": "Grains sold off into the weekend while cattle defied the lockout. Monday resets everything.",
   "one_number": {
     "value": "60%",
-    "unit": "Corn Belt precip probability, next 6-10 days",
-    "context": "The 6-to-10-day outlook calls for near- or below-normal temperatures east of the Rockies with above-normal precipitation across most of the Heartland. That pattern, heading directly into pollination, is the reason no weather premium is being priced into corn at $4.17 or beans at $11.23. Cool and wet during pollination is not a threat; it is yield insurance. If the pattern flips toward hot and dry in the 11-to-15-day window, that calculus changes fast."
+    "unit": "Soybeans Nov '26 position in 52-week range",
+    "context": "November beans at $11.43 sit at the 60th percentile of their 52-week range, but nearby beans just closed at $11.23 after a 24-cent Friday drop. That gap between old-crop and new-crop behavior tells you the market is not yet pricing a production problem into next harvest. If Monday's Crop Progress shows condition scores rolling over as the cool-wet pattern returns, that gap is the first place the price response shows up."
   },
   "yesterdays_call": {},
   "sections": [
     {
-      "title": "GRAINS INTO POLLINATION",
+      "title": "GRAINS BREAK INTO THE WEEKEND",
       "icon": "🌽",
-      "body": "Corn closed at **$4.17 nearby** and **$4.44 December**, off half a cent and nearly a third of a cent respectively on Friday. Beans nearby dropped **24¾ cents to $11.23**, though November held better at **$11.43**, off less than 5 cents. Wheat gave back **14 cents to $6.06**, its second sharp session in a row. The soybean oil break that started Wednesday, with oil closing Friday at **$69.69** down 1.7%, has been pulling crush complex products lower across the board since mid-week. What matters now is the weather pattern walking directly into pollination: Brownfield's forecast shows cool temperatures and above-normal precipitation likely across most of the Heartland through the 6-to-10-day window. That is not a weather market in the making; that is a yield-support pattern. **Monday's Crop Progress at 3 PM CT is the first real data point of the week.** Corn was at 42% planted as of late May; by now the crop is well established and condition ratings are the number to watch. Below 65% good-to-excellent on corn would be the first signal the cool, wet start left quality issues. Above 70% and the weather premium stays exactly where it is: zero.",
-      "catalyst": "Cool, wet 6-10 day forecast for Heartland ahead of pollination; soybean oil break dragging crush complex.",
-      "bottom_line": "No weather premium until the forecast turns. Monday's condition ratings set the tone.",
+      "body": "Corn at $4.17 nearby and $4.44 December gave back a half to three-quarters of a cent Friday, small in isolation but consistent with a week that saw grain risk get dumped rather than held. **Soybeans took the harder hit**: nearby fell 24¾ cents to $11.23, November beans slipped less than 5 cents to $11.43, and the spread between those two tells you the selling was mostly old-crop, not a full-blown new-crop concern. Wheat at $6.06 dropped 14 cents, the worst of the complex on a percentage basis at 2.3%, tracking the pre-holiday risk-off selling that Feedstuffs flagged Thursday. The weather setup coming into the week is the key variable: Brownfield's forecast calls for a cool, wet pattern returning to most of the Heartland through the 6-to-10 day window, and **with pollination approaching, any temperature stress layered on top of the wet pattern is where a weather premium starts**. No premium is being priced yet. Monday's Crop Progress at 3 PM CT is the first read on whether Friday's selling was right to be casual.",
+      "catalyst": "Pre-holiday risk-off selling Thursday; cool, wet Heartland forecast returning through 6-10 day window.",
+      "bottom_line": "Old-crop beans broke; new-crop held. Weather decides if that gap closes this week.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Grains: oil-break gravity held through Friday close, exactly as the week's pattern suggested."
+      "vs_yesterday": "Grains: Friday confirmed the break; beans bore the worst of it."
     },
     {
-      "title": "CATTLE AT THE HIGH, CONTEXT REQUIRED",
+      "title": "CATTLE HOLDS THE LINE",
       "icon": "🐄",
-      "body": "Live cattle finished Friday at **$254.80**, up 2.3% on the session and at 93% of its 52-week range. That is a strong number. But context is doing a lot of work here. The ongoing Cargill Fort Morgan lockout, with 1,700 workers off the floor since May 19 and roughly 6,000 head daily of processing capacity removed, is creating a packing-constrained supply picture rather than a production-constrained one. That distinction matters this week: when packing capacity comes back online, the relief valve opens fast. Feeder cattle, meanwhile, closed **Friday at $366.60**, barely changed, off just 0.2%. The feeder/live spread is still telling you feedlots have pricing power on the sell side but are cautious on the buy side. The U.S.-Iran MOU (Memorandum of Understanding pausing the conflict, announced late last week per Frayne Olson of NDSU Extension) is starting to ease input cost pressures in the broader economy, which is constructive for feed margins over time. **Watch for any resolution signal at the Fort Morgan plant; that is the event that resets the live cattle chart faster than any USDA report this week.**",
-      "catalyst": "Cargill Fort Morgan lockout removing 2% of weekly slaughter; U.S.-Iran MOU easing input cost backdrop.",
-      "bottom_line": "Packing constraint, not herd shortage, is driving the high. Resolution ends it.",
-      "conviction_level": "medium",
-      "overnight_surprise": false
-    },
-    {
-      "title": "ENERGY FIRMS, METALS FALL",
-      "icon": "⛽",
-      "body": "WTI crude closed Friday at **$76.54**, up 2.7% on the session. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, produced a counterintuitive day: crude firmed as the MOU news crystallized and Iraq's announcement that it will maintain its Syria-Baniyas export route regardless of Hormuz status added a structural supply story to the mix. Diesel and input costs for the 2026 crop are more tied to what crude does over the next 60 days than to any single session. Natural gas added 1.3% to **$3.20**, modest, with Permian gas production running well above prior-year pace. Gold fell hard at **$4,173**, down 3.8%, and silver dropped 6.3% to **$64.91**. Both metals have been breaking since mid-week; when the dollar firms and diplomatic progress reduces the safe-haven bid, precious metals give back fast. The Dollar Index closed at **$100.85**, up 0.6%.",
-      "catalyst": "Iraq-Syria crude route announcement; Iran MOU reducing Hormuz risk premium; dollar firming on diplomacy.",
-      "bottom_line": "Crude up on supply route news, not demand; metals falling with safe-haven unwind.",
+      "body": "Live cattle at $254.80 finished Friday up 2.3%, the best single-session performance in the complex in weeks, driven by the ongoing Cargill Fort Morgan/Schuyler lockout that began May 19 and has pulled roughly 2% of weekly US slaughter capacity off the board. **Processing-constrained markets behave differently than supply-constrained markets**: the problem isn't too many cattle, it's not enough plant throughput, and that keeps fed cattle bids firm even as the calendar says placements will catch up. Feeder cattle at $366.60 barely moved, off 0.2%, which is a signal the market isn't yet crowding the back end with next year's placements. The Cargill situation has no announced resolution as of Friday. **Until that changes, live cattle have a structural floor that the futures are respecting.** The week ahead has no fresh cattle-specific USDA data until Thursday's export sales at 7:30 AM CT. Watch whether Friday's strength carries into Monday's reopening or fades as the box-beef cutout resets.",
+      "catalyst": "Cargill Fort Morgan lockout ongoing since May 19; ~2% weekly slaughter capacity removed.",
+      "bottom_line": "Lockout-driven floor under live cattle is real; watch box-beef cutout for confirmation.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Metals: three-day slide continues; safe-haven unwind deepened Friday."
+      "vs_yesterday": "Cattle: live confirmed the split call; feeders held exactly as flagged."
     },
     {
-      "title": "WEEK AHEAD: THE DATA CALENDAR",
-      "icon": "📅",
-      "body": "This is a forecast-dominant week. Monday at 3 PM CT, USDA releases Crop Progress; corn condition ratings are the number, and the cool wet pattern means good ratings are the base case. **If corn good-to-excellent comes in below 65%, that is the first genuine weather-premium trigger of the season.** Thursday at 7:30 AM CT, weekly export sales will tell you whether China's $17 billion annual US ag purchase commitment (announced May 18, spanning beans, beef, and poultry) is translating into actual buy orders or staying on paper. Soybeans under 300K MT on Thursday keeps the chart in charge. Lean hogs at **$95.03** and Class III Milk at **$16.07** are drifting without a fresh catalyst; neither is likely to move this week without a processing or demand shock. The S&P closed at **$7,500.58**, up 1.1%, which keeps the macro backdrop constructive for risk assets including ag commodities. No clean macro headwinds to start the week.",
-      "catalyst": "Monday Crop Progress, Thursday export sales, ongoing China purchase commitment tracking.",
-      "bottom_line": "Crop Progress Monday and exports Thursday are the two events that can move the week.",
+      "title": "CRUDE FIRMS, METALS FALL HARD",
+      "icon": "⚡",
+      "body": "WTI crude at $76.54 ran higher 2.7% Friday, the best session in a while for energy, and the catalyst is the Hormuz situation turning a corner. Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, got a structural kicker this week: an Iraq-Syria pipeline route through Baniyas is being formalized as a permanent export workaround, meaning even if Hormuz fully reopens, crude routing is diversifying in ways that reduce future disruption risk. Natural gas at $3.20 added 1.3%, consistent with the Permian gas story where production grew 60% from 2021 to 2025 and is now finding better pricing. **Gold at $4,173 fell 3.8% and silver at $64.91 dropped 6.3%**, the second hard metals session in a row following Thursday's break. The G7 strategic alliance on critical minerals announced this weekend adds medium-term policy complexity for silver's industrial demand profile, but Friday's selling was about the dollar firming to $100.85 and risk appetite rotating toward equities, not metals.",
+      "catalyst": "Iraq formalizing Syria/Baniyas crude export route; US Dollar Index firmed to $100.85; G7 critical minerals alliance.",
+      "bottom_line": "Crude firms on Hormuz diversification; metals paid the dollar tax a second straight session.",
+      "conviction_level": "medium",
+      "overnight_surprise": false,
+      "vs_yesterday": "Metals: second hard session confirmed the break; crude added to Thursday's gains."
+    },
+    {
+      "title": "MACRO AND DOLLAR WATCH",
+      "icon": "📊",
+      "body": "The S&P 500 at $7,500.58 added 1.1% Friday, which explains a lot about where risk appetite went: out of gold and silver, into equities. **The dollar at $100.85 up 0.6% is the grain market's quiet enemy this week**: a firmer dollar makes US exports more expensive, and with China's $17 billion annual ag purchase commitment through 2028, announced May 18, still not translating into sustained futures support, the dollar's direction is one of the cleaner tells for whether the export channel stays competitive. The U.S.-Iran MOU pausing the conflict, flagged by North Dakota State's Frayne Olson as creating input cost volatility for ag producers, is the policy thread that connects energy to fertilizer to cash costs for the 2026 crop. The week ahead has no Fed speakers scheduled that would move the dollar dramatically, but Thursday's export sales print will test whether Chinese and other buyers are showing up at current price levels.",
+      "catalyst": "S&P +1.1%; Dollar +0.6%; US-Iran MOU impact on ag input costs per NDSU Extension.",
+      "bottom_line": "Dollar at $100.85 is the grain export story; Thursday's sales number will answer the demand question.",
       "conviction_level": "medium",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Oregon Considers Ballot Measure Criminalizing Ranching and Hunting",
-      "body": "Oregon voters may weigh in on a measure that would criminalize raising livestock for food, hunting, and basic animal husbandry. The Oregon Cattlemen's Association is pushing back hard. This is a state-level story today, but measures like this have a way of migrating; producers nationally should be watching the signature-gathering timeline.",
+      "title": "Oregon Ballot Measure Would Criminalize Ranching and Hunting",
+      "body": "Oregon voters may decide on a measure that would make raising livestock for food, hunting, and basic animal husbandry practices criminal offenses. This is a live political threat to ranching operations in the Pacific Northwest and a test case for whether urban ballot demographics can override rural production economics.",
       "tag": "POLICY"
     },
     {
-      "title": "U.S.-Iran MOU Pauses Conflict, Ag Input Costs Starting to Shift",
-      "body": "NDSU's Frayne Olson flagged this week that the MOU between the U.S. and Iran is beginning to ripple through ag input costs, with energy and fertilizer pricing moving off their Hormuz-premium highs. Frustration remains among producers who locked in high input costs before the diplomatic break; the benefit flows to 2027 budgets more than 2026.",
-      "tag": "MACRO"
+      "title": "New World Screwworm Pressure Continues on Both Sides of the Border",
+      "body": "Ranchers from Texas and Mexico are comparing notes on how New World screwworm is affecting operations, with the outbreak still active enough to warrant producer-level attention this summer. Any northward spread into US cow-calf country would hit feedlot placement numbers in a market already thin on processing capacity.",
+      "tag": "DISEASE"
     },
     {
-      "title": "New World Screwworm Still Active on Both Sides of the Border",
-      "body": "Texas and Mexican ranchers are both reporting active New World screwworm pressure, with the situation unresolved at the border despite USDA's ongoing response. Any northward spread into US feeder operations this summer would be a livestock health event with real slaughter-weight and timing implications. Watch the USDA APHIS update cadence this week.",
-      "tag": "DISEASE"
+      "title": "El Nino Forecast Offers Intermountain West Some Summer Relief",
+      "body": "Agriculture meteorologists are watching a developing El Nino pattern that could deliver monsoon moisture to the drought-stressed Intermountain West through late summer and fall. Ranchers in that region have been running on record snowpack drought; any soil moisture recharge matters for fall grazing and winter feed costs.",
+      "tag": "WEATHER"
     }
   ],
   "spread_to_watch": {},
   "basis": {},
   "weekly_thread": {},
   "the_more_you_know": {
-    "title": "Pollination week and corn: why the next 10 days matter more than any WASDE",
-    "body": "Corn at $4.17 is sitting 43% off its 52-week low with no weather premium priced in. That reflects a specific bet: that the cool, wet pattern forecast for the Heartland carries through the pollination window, roughly the last week of June into the first week of July for the core Belt. Corn pollination is the one irreversible event in the crop calendar. A plant that runs out of pollen receptivity during a heat or drought stress cannot recover yield the way it can recover from early-season flooding. A single week of 95-degree temperatures with no rainfall during silk emergence can take 20 to 30 bushels per acre off a field that looked fine in June. The reason no weather premium exists today is that the current forecast does not show that scenario. But the 11-to-15-day models are where that can change. Watch the extended forecasts starting Wednesday. If the pattern flips to hot and dry in the July 1 to 5 window, corn at $4.17 will not stay there."
+    "title": "Pollination Risk: The Weather Window That Prices Corn Before the Combines Roll",
+    "body": "Corn at $4.17 and December at $4.44 look calm on a Friday close, but the next four weeks are the most weather-sensitive of the entire production year. Corn pollination runs roughly 8 to 12 days per field, and heat stress above 95 degrees or moisture stress during that window can cut yield by 3 to 7 bushels per acre per day of stress. Brownfield's forecast shows a cool, wet pattern returning to most of the Heartland through the 6-to-10 day window, which protects early pollination but doesn't eliminate the risk: the period after that weather pattern breaks is when heat can arrive fast and crop ratings can drop in a single Monday Crop Progress release. The practical rule: if the July Crop Progress starts showing Good/Excellent ratings slipping from wherever they open this week, corn's 52-week range position at just 43% from the low means there's room to run higher on a real weather story. Monday's number is the week's most important data point."
   },
   "watch_list": [
     {
-      "time": "Monday, June 22, 3:00 PM CT",
-      "desc": "USDA Crop Progress: corn good-to-excellent below 65% is the first weather-premium trigger of the season; above 70% confirms no-premium thesis holds."
+      "time": "Monday, 3:00 PM CT",
+      "desc": "USDA Crop Progress: Good/Excellent ratings above last week's reading confirm the crop is handling the cool-wet pattern; any week-over-week decline in G/E scores with pollination approaching starts building weather premium into corn and beans."
     },
     {
-      "time": "Thursday, June 25, 7:30 AM CT",
-      "desc": "USDA Weekly Export Sales: soybeans under 300K MT means the chart controls the bean story for another week; above 500K MT would be the first real demand signal since the China commitment announcement."
-    },
-    {
-      "time": "All week",
-      "desc": "Extended forecast models (11-to-15-day): a pattern flip to hot and dry in the July 1-5 window during pollination is the single highest-impact weather risk. Watch Wednesday's model updates."
+      "time": "Thursday, 7:30 AM CT",
+      "desc": "Weekly Export Sales: soybean sales above 400K MT validate that the $11.23 nearby close found buyers; under 250K MT with the dollar at $100.85 and the break still fresh, the selling isn't done."
     },
     {
       "time": "All week",
-      "desc": "Cargill Fort Morgan lockout status: any resolution announcement removes the packing-constraint premium from live cattle faster than any USDA report. No resolution announced as of Friday's close."
+      "desc": "Cargill Fort Morgan lockout resolution watch: any announcement of a return-to-work deal removes the processing-constraint floor under live cattle at $254.80 and likely reprices the complex lower in the session it is announced."
     },
     {
-      "time": "Wednesday, June 24, 1:00 PM CT",
-      "desc": "Beef Magazine live stream: agriculture meteorologist on El Nino and summer-into-fall outlook. The Intermountain West drought plus El Nino monsoon forecast has direct implications for hay and range conditions."
+      "time": "All week",
+      "desc": "Dollar Index: $100.85 is already pressuring grain export competitiveness. A break above $101.50 would add another layer of headwind to any bean or corn export recovery story."
+    },
+    {
+      "time": "Monday-Tuesday",
+      "desc": "Weather model updates: the 6-to-10 day cool-wet forecast is the primary grain driver. Any shift warmer and drier in model runs ahead of pollination changes the premium calculus immediately."
     }
   ],
   "daily_quote": {
     "text": "After the rain comes the sun.",
     "attribution": "English Proverb"
   },
-  "source_summary": "USDA NASS Crop Progress, CME Group settlement prices, Brownfield Ag News weather outlook, NDSU Extension (Frayne Olson), EIA Short Term Energy Outlook, OilPrice.com, The Fence Post, Beef Magazine, Farm Policy News Illinois.",
+  "source_summary": "USDA Crop Progress, CME Group, NYMEX, Brownfield Ag News, Feedstuffs, EIA, OilPrice.com, Farm Policy News, The Fence Post, NDSU Extension",
   "date": "Sunday, June 21, 2026",
   "meta": {
     "market_mood": "mixed",
@@ -177,8 +178,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 101,
-  "generated_at": "2026-06-21T13:01:05.889194+00:00",
+  "issue_number": 102,
+  "generated_at": "2026-06-21T13:11:47.866083+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 0,
   "surprises": [],
