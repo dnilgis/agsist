@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-06-21",
+      "date_display": "Sunday, June 21, 2026",
+      "headline": "CATTLE HOLDS $254, GRAINS FACE POLLINATION WEEK",
+      "teaser": "Cattle at a 52-week high, grains breaking into pollination week. Here is what the calendar means.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-06-21",
+      "market_closed": true
+    },
+    {
       "date": "2026-06-20",
       "date_display": "Saturday, June 20, 2026",
       "headline": "GRAINS BREAK, CATTLE HOLDS, WEEK RESET AHEAD",
@@ -1117,6 +1128,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-20T12:29:31.015709+00:00",
-  "count": 100
+  "updated": "2026-06-21T13:01:05.900082+00:00",
+  "count": 101
 }

@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 20 Jun 2026 12:29:49 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 21 Jun 2026 13:01:24 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE HOLDS $254, GRAINS FACE POLLINATION WEEK</title>
+      <link>https://agsist.com/daily/2026-06-21</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-21</guid>
+      <pubDate>Sun, 21 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Friday's close told two different stories from the same market. Live cattle finished at $254.80, up 2.3% on the session and sitting at 93% of its 52-week range, the Cargill Fort Morgan lockout (ongoing since May 19) removing roughly 2% of weekly slaughter capacity and tightening the supply picture enough to lift the front month hard. Meanwhile, beans dropped 24¾ cents to $11.23 nearby, wheat gave back 14 cents to $6.06, and the Corn Belt is heading into pollination week with a cool, wet pattern forecast across most of the Heartland. Those two things are not in conflict: tight packing capacity props cattle while ample soil moisture keeps weather premium out of corn and beans. The question this week is whether the crop-condition numbers Monday afternoon confirm what the forecast is implying, or deliver a surprise.
+Live cattle closed at a 52-week high Friday while beans and wheat broke hard into the holiday; this week's crop conditions and weather pattern decide whether grains find a floor.
+• GRAINS INTO POLLINATION
+• CATTLE AT THE HIGH, CONTEXT REQUIRED
+• ENERGY FIRMS, METALS FALL
+Read more: https://agsist.com/daily/2026-06-21</description>
+    </item>
     <item>
       <title>GRAINS BREAK, CATTLE HOLDS, WEEK RESET AHEAD</title>
       <link>https://agsist.com/daily/2026-06-20</link>
@@ -361,18 +373,6 @@ Live cattle posted biggest weekly gain in two months while grains consolidated a
 • Cattle Split Widens
 • Energy Holds Iran Premium
 Read more: https://agsist.com/daily/2026-05-23</description>
-    </item>
-    <item>
-      <title>CATTLE CRASH 2%, GRAINS INCH HIGHER</title>
-      <link>https://agsist.com/daily/2026-05-22</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-22</guid>
-      <pubDate>Fri, 22 May 2026 05:00:00 -0600</pubDate>
-      <description>Live cattle dropped $4.85 to $240.15 and feeders fell $9.15 to $356.52 as the Cargill Fort Morgan lockout entered day two. The 1,700-worker shutdown is forcing cattle into a bottleneck exactly when fed supplies were already tight. Meanwhile, corn gained 1¾ cents to $4.63 and beans added 4 cents to $11.98 as funds rotated back into grains after this week's China commitment reset. The divergence tells you everything: livestock is fighting logistics, grains are pricing the next leg.
-Processing lockout hits livestock while grain funds rotate back after China reset.
-• Grains Find Quiet Buying
-• Livestock Crashes on Processing Jam
-• Energy Holds Iran Premium
-Read more: https://agsist.com/daily/2026-05-22</description>
     </item>
   </channel>
 </rss>
