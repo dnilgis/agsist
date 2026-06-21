@@ -15,7 +15,7 @@
 <link rel="manifest"                            href="/manifest.json">
 
 <title>Daily Ag Briefing &#8212; Market Morning Report | AGSIST</title>
-<meta name="description" content="Free morning agricultural market briefing for US ag producers across grain, livestock, dairy, and specialty operations. Published every weekday by 6 AM CT. Market drivers, weather, and what to watch.">
+<meta name="description" content="Free morning agricultural market briefing for US ag producers across grain, livestock, dairy, and specialty operations. Published every weekday before the market open. Market drivers, weather, and what to watch.">
 <meta name="keywords"    content="daily ag briefing, farm morning market report, corn price today, soybean market morning, grain market briefing, agricultural market summary, free farm briefing">
 <meta name="author"      content="Sigurd Lindquist">
 <meta name="robots"      content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -35,7 +35,7 @@
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
 <meta name="twitter:title"       content="Daily Ag Briefing | AGSIST">
-<meta name="twitter:description" content="Morning market briefing for working US ag producers. Published every weekday by 6 AM CT.">
+<meta name="twitter:description" content="Morning market briefing for working US ag producers. Published every weekday before the market open.">
 <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
@@ -50,7 +50,7 @@
       "@id": "https://agsist.com/daily#webpage",
       "url": "https://agsist.com/daily",
       "name": "Daily Ag Briefing \u2014 Market Morning Report | AGSIST",
-      "description": "Free morning agricultural market briefing for US ag producers across grain, livestock, dairy, and specialty operations. Published every weekday by 6 AM CT.",
+      "description": "Free morning agricultural market briefing for US ag producers across grain, livestock, dairy, and specialty operations. Published every weekday before the market open.",
       "isPartOf": { "@id": "https://agsist.com/#website" }
     },
     {
@@ -66,12 +66,12 @@
         {
           "@type": "Question",
           "name": "What is the AGSIST Daily Ag Briefing?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The AGSIST Daily Ag Briefing is a free morning market report for US ag producers across grain, livestock, dairy, and specialty operations. It covers overnight commodity price movements, weather outlook, and key events to watch, published every weekday by 6 AM CT. No account required. Available at no charge." }
+          "acceptedAnswer": { "@type": "Answer", "text": "The AGSIST Daily Ag Briefing is a free morning market report for US ag producers across grain, livestock, dairy, and specialty operations. It covers overnight commodity price movements, weather outlook, and key events to watch, published every weekday before the market open. No account required. Available at no charge." }
         },
         {
           "@type": "Question",
           "name": "How do I subscribe to the daily farm market briefing?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Click the 'Get It in Your Inbox' button on this page. Enter your email and the AGSIST Daily will be delivered every weekday morning before 6 AM CT. Free, no account required. Unsubscribe any time." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Click the 'Get It in Your Inbox' button on this page. Enter your email and the AGSIST Daily will be delivered every weekday morning before the market open. Free, no account required. Unsubscribe any time." }
         }
       ]
     }
@@ -359,7 +359,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 
   <div class="dv3-hero">
     <div class="dv3-hero-left">
-      <div class="dv3-eyebrow"><span class="dv3-eyebrow-dot"></span> AGSIST Daily &middot; Published Mon–Fri by 6 AM CT, with weekend recaps</div>
+      <div class="dv3-eyebrow"><span class="dv3-eyebrow-dot"></span> AGSIST Daily &middot; Published Mon–Fri before the market open, with weekend recaps</div>
       <h1>Daily Ag Briefing</h1>
       <p class="dv3-sub">Morning market intelligence for working US ag producers &mdash; grain, livestock, dairy, and specialty operations. Available at no charge, no account required.</p>
       <div class="dv3-hero-meta" id="dv3-hero-meta" aria-live="polite"></div>
@@ -385,7 +385,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
   <div class="dv3-modal">
     <button class="dv3-modal-close" id="dv3-modal-close" aria-label="Close subscribe dialog">&#x2715;</button>
     <h2 id="dv3-modal-title">&#x2709; Get the Daily Briefing</h2>
-    <p>Morning market brief delivered to your inbox before 6 AM CT &#8212; covering grain, livestock, dairy, weather, and what to watch. Available at no charge.</p>
+    <p>Morning market brief delivered to your inbox before the market open &#8212; covering grain, livestock, dairy, weather, and what to watch. Available at no charge.</p>
     <form id="dv3-sub-form" action="https://formspree.io/f/xnjbwepn" method="POST">
       <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
       <input type="hidden" name="source" value="daily-briefing-subscribe">
@@ -457,7 +457,7 @@ function renderToday(data){
   var el=document.getElementById('dv3-today');
   if(!el)return;
   if(!data||!data.headline){
-    el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">Today\'s briefing is not yet available. Published by 6 AM CT on weekday mornings.<br><br><a href="/" style="color:var(--gold)">\u2190 Return to dashboard</a></p></div>';
+    el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">Today\'s briefing is not yet available. Published before the market open on weekday mornings.<br><br><a href="/" style="color:var(--gold)">\u2190 Return to dashboard</a></p></div>';
     return;
   }
 
@@ -775,8 +775,8 @@ function renderToday(data){
     sp={
       label:'FOUNDING SPONSOR \u00B7 1 SLOT',
       advertiser:'AGSIST',
-      headline:'Sponsor the AGSIST Daily Briefing \u2014 $150/week.',
-      body:'One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations \u2014 read every morning before the open. Founding rate locked in for 12 months. Six-week minimum ($900). After that, week-to-week.',
+      headline:'Sponsor the AGSIST Daily Briefing.',
+      body:'One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations \u2014 read before the market open. First 2 weeks free, then $150/week. No minimum, cancel anytime.',
       cta_text:'See the founding sponsor pitch',
       cta_url:'/sponsor',
       disclosure:'One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.',
