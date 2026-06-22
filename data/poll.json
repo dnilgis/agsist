@@ -1,16 +1,32 @@
 {
   "_comment": "AGSIST Grower Pulse — single source of truth for the homepage poll. To run a new week: move the current block into archive (with its final results+total pulled from the Worker), then write the new question into current with a new id. Stage 2 automation will do this on a schedule.",
   "current": {
-    "id": "2026-w25-replant-spring",
-    "week": "2026-06-15",
-    "question": "Did you have to replant any acres this spring?",
+    "id": "2026-w26-crop-pace-jun",
+    "week": "2026-06-22",
+    "question": "Where are your crops vs. the calendar right now?",
     "options": [
-      "None",
-      "A few",
-      "A lot"
+      "Behind",
+      "On schedule",
+      "Ahead"
     ]
   },
   "archive": [
+    {
+      "id": "2026-w25-replant-spring",
+      "week": "2026-06-15",
+      "question": "Did you have to replant any acres this spring?",
+      "options": [
+        "None",
+        "A few",
+        "A lot"
+      ],
+      "results": [
+        4,
+        0,
+        0
+      ],
+      "total": 4
+    },
     {
       "id": "2026-w24-soil-moisture-jun",
       "week": "2026-06-08",
