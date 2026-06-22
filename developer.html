@@ -12,18 +12,18 @@
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
 <link rel="manifest"                            href="/manifest.json">
 
-<title>Developer Docs — AGSIST Widget Embeds &amp; Data API</title>
-<meta name="description" content="Embed AGSIST widgets &mdash; price tickers, spray advisory, urea risk, break-even tools &mdash; on any site. Live data feed specs and JSON endpoint docs.">
-<meta name="keywords"    content="AGSIST developer docs, agricultural widget embed, grain price widget, farm market data API, spray advisory widget, urea risk widget, break-even calculator embed">
-<meta name="author"      content="Sigurd Lindquist — Farmers First Agri Service">
+<title>Developer Docs — AGSIST Widget Embeds &amp; Data Feeds</title>
+<meta name="description" content="Embed the AGSIST GDU calculator, crop calendar, and daily briefing with one script, or pull live JSON market-data feeds. No account needed.">
+<meta name="keywords"    content="AGSIST developer docs, agricultural widget embed, GDU calculator widget, crop calendar embed, daily briefing widget, farm market data JSON feed">
+<meta name="author"      content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <link rel="canonical"    href="https://agsist.com/developer">
 
 <meta property="og:type"         content="website">
 <meta property="og:site_name"    content="AGSIST">
 <meta property="og:locale"       content="en_US">
-<meta property="og:title"        content="Developer Docs — AGSIST Widget Embeds &amp; Data API">
-<meta property="og:description"  content="Embed agricultural market intelligence widgets on any site — price tickers, spray advisory, urea risk, break-even calculators, and daily briefings.">
+<meta property="og:title"        content="Developer Docs — AGSIST Widget Embeds &amp; Data Feeds">
+<meta property="og:description"  content="Embed agricultural tools — GDU calculator, crop calendar, daily briefing — with one script, or pull live JSON market-data feeds.">
 <meta property="og:url"          content="https://agsist.com/developer">
 <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
 <meta property="og:image:width"  content="1200">
@@ -32,15 +32,15 @@
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
-<meta name="twitter:title"       content="Developer Docs — AGSIST Widget Embeds &amp; Data API">
-<meta name="twitter:description" content="Embed agricultural market intelligence widgets — price tickers, spray advisory, urea risk, break-even calculators — on any website.">
+<meta name="twitter:title"       content="Developer Docs — AGSIST Widget Embeds &amp; Data Feeds">
+<meta name="twitter:description" content="Embed the GDU calculator, crop calendar, and daily briefing with one script — or pull live JSON market-data feeds.">
 <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
 <style>
-/* v4: full per-widget showcase cards, JSON data shapes, embed code previews */
+/* v5: reconciled to the live embed.js mechanism — real widgets + open JSON feeds */
 button,a,[role="button"]{touch-action:manipulation;}
 
 .dev-page{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
@@ -53,16 +53,14 @@ button,a,[role="button"]{touch-action:manipulation;}
 .dev-page code{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:.1rem .35rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--text)}
 .dev-page pre{background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;overflow-x:auto;margin:.75rem 0 0;font-family:'JetBrains Mono',monospace;font-size:.77rem;color:var(--text);line-height:1.75;-webkit-overflow-scrolling:touch;tab-size:2}
 
-.dev-notice{background:rgba(58,139,60,.08);border:2px solid rgba(58,139,60,.25);border-radius:8px;padding:.85rem 1.1rem;margin:1.5rem 0;font-size:.88rem;color:var(--text-dim)}
-.dev-notice strong{color:#3a8b3c}
-.dev-soon-bar{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:.85rem 1.1rem;margin:1.5rem 0;font-size:.88rem;color:var(--text-muted)}
-.dev-soon-bar strong{color:var(--text-dim)}
+.dev-lead{background:rgba(58,139,60,.08);border:2px solid rgba(58,139,60,.25);border-radius:8px;padding:.95rem 1.1rem;margin:1.4rem 0 .4rem;font-size:.9rem;color:var(--text-dim)}
+.dev-lead strong{color:#3a8b3c}
 
-/* widget showcase */
+/* widget cards */
 .widget-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin:1.25rem 0;overflow:hidden}
-.widget-card--soon{border-style:dashed;opacity:.78}
+.widget-card--soon{border-style:dashed;opacity:.82}
 .wc-head{display:flex;align-items:flex-start;gap:1rem;padding:1.3rem 1.4rem 0}
-.wc-icon{font-size:2rem;flex-shrink:0;line-height:1;margin-top:.1rem}
+.wc-icon{flex-shrink:0;line-height:0;margin-top:.15rem;color:var(--gold)}
 .wc-meta{flex:1;min-width:0}
 .wc-title-row{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.3rem}
 .wc-name{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);letter-spacing:.02em}
@@ -71,10 +69,8 @@ button,a,[role="button"]{touch-action:manipulation;}
 .wc-tag--soon{color:var(--text-muted);background:var(--surface2);border-color:var(--border)}
 .wc-desc{font-size:.88rem;color:var(--text-dim);line-height:1.68}
 .wc-body{padding:.9rem 1.4rem}
-.wc-attrs{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0 .85rem}
-.wc-attr{font-family:'JetBrains Mono',monospace;font-size:.71rem;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:.15rem .5rem;color:var(--text-muted)}
-.wc-attr-key{color:var(--gold)}
-.wc-attr-cm{color:var(--text-muted);font-style:normal}
+.wc-key{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);margin:0 0 .2rem}
+.wc-key b{color:var(--gold);font-weight:400}
 .wc-footer{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.4rem;border-top:1px solid var(--border);background:rgba(0,0,0,.18);flex-wrap:wrap;gap:.6rem}
 .wc-footer a{font-size:.83rem;color:var(--gold);text-decoration:none;font-weight:600}
 .wc-footer a:hover{opacity:.8}
@@ -87,21 +83,15 @@ button,a,[role="button"]{touch-action:manipulation;}
 .ep-method{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.06em;padding:.18rem .5rem;border-radius:4px;background:rgba(58,139,60,.15);color:#3a8b3c;border:1px solid rgba(58,139,60,.3);white-space:nowrap;flex-shrink:0}
 .ep-path{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--text);flex:1;min-width:0;word-break:break-all}
 .ep-desc{font-size:.85rem;color:var(--text-dim);margin:0 0 .5rem;line-height:1.7}
-.ep-badge-dev{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;background:rgba(230,176,66,.1);color:var(--gold);border:1px solid rgba(230,176,66,.3);white-space:nowrap;flex-shrink:0}
-
-/* syntax highlight helpers */
-.c-cm{color:#555} /* comment */
-.c-st{color:#8fbf8f} /* string */
-.c-kw{color:#6baed6} /* keyword/key */
-.c-nu{color:#e6b042} /* number */
 
 /* contact card */
 .contact-card{background:var(--surface);border:1px solid var(--border-g);border-radius:8px;padding:1.25rem 1.4rem;margin-top:.75rem;display:flex;flex-direction:column;gap:.35rem}
 .cc-name{font-family:'Oswald',sans-serif;font-size:1.05rem;font-weight:700;color:var(--text);letter-spacing:.02em}
 .cc-title{font-size:.82rem;color:var(--gold);font-weight:600}
-.cc-links{display:flex;flex-direction:column;gap:.3rem;margin-top:.3rem}
-.cc-links a{font-size:.88rem;color:var(--text-dim)}
+.cc-links{display:flex;flex-direction:column;gap:.45rem;margin-top:.5rem}
+.cc-links a{font-size:.88rem;color:var(--text-dim);display:flex;align-items:center;gap:.55rem;text-decoration:none}
 .cc-links a span{color:var(--gold)}
+.cc-links svg{color:var(--gold);flex-shrink:0}
 
 @media(max-width:640px){
   .wc-head{flex-direction:column;gap:.5rem}
@@ -120,206 +110,86 @@ button,a,[role="button"]{touch-action:manipulation;}
 <div class="dev-page">
 
 <h1>Developer Docs</h1>
-<p class="sub">AGSIST publishes live agricultural market data and embeddable widgets for ag media, extension services, co-ops, and farm websites. Five widgets are live. Three JSON data feeds are open today. Embed scripts are in development — contact me if you want to integrate early or discuss a custom build.</p>
+<p class="sub">AGSIST publishes embeddable agricultural tools and open JSON market-data feeds for ag media, extension services, co-ops, and farm websites. Add a widget with one script, or consume the data feeds directly to build your own UI. Want a custom build or early access to a rolling-out widget? Reach out.</p>
 
-<div class="dev-notice"><strong>👷 Widget scripts in development</strong> — The <code>/api/v1/*.js</code> embed scripts shown below are not yet publicly deployed. The JSON data feeds are live and available now. <a href="mailto:sig@farmers1st.com">Email me</a> or call <a href="tel:+17157972428">715-797-2428</a> for early access or to discuss custom integrations.</div>
+<div class="dev-lead"><strong>One script, one div.</strong> Every widget loads from a single file — <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want a tool. The script injects the live tool in an iframe, adds a crawlable &ldquo;Powered by AGSIST&rdquo; backlink in your page, and auto-resizes the frame. Prefer copy-paste? The <a href="/embed">embed gallery</a> has ready snippets and live previews.</div>
+
+<pre>&lt;div data-agsist-widget="gdu"&gt;&lt;/div&gt;
+&lt;script async src="https://agsist.com/embed.js"&gt;&lt;/script&gt;</pre>
 
 
-<!-- ═══ WIDGET SHOWCASE ══════════════════════════════════════════════ -->
-<h2>Widget Showcase — 5 Live, 1 Coming Soon</h2>
+<!-- ═══ WIDGETS ══════════════════════════════════════════════════════ -->
+<h2>Embeddable Widgets</h2>
 
-<!-- ── Price Ticker ──────────────────────────────────────────────── -->
+<!-- ── GDU Calculator ────────────────────────────────────────────── -->
 <div class="widget-card">
   <div class="wc-head">
-    <div class="wc-icon">📊</div>
+    <div class="wc-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></div>
     <div class="wc-meta">
       <div class="wc-title-row">
-        <span class="wc-name">Price Ticker</span>
+        <span class="wc-name">GDU Calculator</span>
         <span class="wc-tag wc-tag--live">Live</span>
       </div>
-      <p class="wc-desc">Horizontally scrolling ticker showing delayed futures prices for corn, soybeans, wheat, energy, metals, and crypto. Pulls from <code>/data/prices.json</code>, updated every 30 minutes on weekdays. Configurable commodity list, scroll speed, and theme. Suitable for header bars, sidebars, and full-width page banners.</p>
+      <p class="wc-desc">Auto-fetches growing degree units from a planting date and location, tracks corn &amp; soybean stage, projects black layer, and flags first-frost risk. The most-used tool on AGSIST. The iframe gives your visitors the full live calculator; the injected anchor is the real backlink.</p>
     </div>
   </div>
   <div class="wc-body">
-    <p style="font-size:.82rem;color:var(--text-muted);margin:0 0 .5rem">Attributes</p>
-    <div class="wc-attrs">
-      <div class="wc-attr"><span class="wc-attr-key">data-commodities</span>="corn,beans,wheat,crude,gold,natgas"</div>
-      <div class="wc-attr"><span class="wc-attr-key">data-theme</span>="dark|light"</div>
-      <div class="wc-attr"><span class="wc-attr-key">data-speed</span>="slow|normal|fast"</div>
-    </div>
-<pre>&lt;div data-agsist-widget="price-ticker"
-     data-commodities="corn,beans,wheat,crude,gold"
-     data-theme="dark"
-     data-speed="normal"&gt;&lt;/div&gt;
-&lt;script src="https://agsist.com/api/v1/price-ticker.js" async&gt;&lt;/script&gt;</pre>
+    <p class="wc-key">widget key&nbsp; <b>data-agsist-widget="gdu"</b></p>
+<pre>&lt;div data-agsist-widget="gdu"&gt;&lt;/div&gt;
+&lt;script async src="https://agsist.com/embed.js"&gt;&lt;/script&gt;</pre>
   </div>
   <div class="wc-footer">
-    <span class="wc-endpoint">https://agsist.com/api/v1/price-ticker.js</span>
-    <a href="/markets">View live prices →</a>
+    <span class="wc-endpoint">iframe: /embed/gdu</span>
+    <a href="/gdu-calculator">View live GDU Calculator →</a>
   </div>
 </div>
 
-<!-- ── Spray Advisory ────────────────────────────────────────────── -->
-<div class="widget-card">
-  <div class="wc-head">
-    <div class="wc-icon">🌤</div>
-    <div class="wc-meta">
-      <div class="wc-title-row">
-        <span class="wc-name">Spray Advisory</span>
-        <span class="wc-tag wc-tag--live">Live</span>
-      </div>
-      <p class="wc-desc">Field-level spray application advisory. Reads hourly weather from Open-Meteo and scores current conditions across five parameters: wind speed, air temperature, relative humidity, thermal inversion risk, and precipitation probability. Returns a color-coded <strong>Go / Caution / Stop</strong> status with a primary reason code and a 12-hour hour-by-hour forecast table. Auto-detects browser location or accepts a static ZIP code.</p>
-    </div>
-  </div>
-  <div class="wc-body">
-    <p style="font-size:.82rem;color:var(--text-muted);margin:0 0 .5rem">Attributes</p>
-    <div class="wc-attrs">
-      <div class="wc-attr"><span class="wc-attr-key">data-zip</span>="54001" <span class="wc-attr-cm">— omit to auto-detect</span></div>
-      <div class="wc-attr"><span class="wc-attr-key">data-hours</span>="6|12|24"</div>
-      <div class="wc-attr"><span class="wc-attr-key">data-theme</span>="dark|light"</div>
-    </div>
-<pre>&lt;div data-agsist-widget="spray-advisory"
-     data-zip="54001"
-     data-hours="12"
-     data-theme="dark"&gt;&lt;/div&gt;
-&lt;script src="https://agsist.com/api/v1/spray-advisory.js" async&gt;&lt;/script&gt;</pre>
-  </div>
-  <div class="wc-footer">
-    <span class="wc-endpoint">https://agsist.com/api/v1/spray-advisory.js</span>
-    <a href="/spray">View live Spray Advisory →</a>
-  </div>
-</div>
-
-<!-- ── Urea Volatilization Risk ──────────────────────────────────── -->
-<div class="widget-card">
-  <div class="wc-head">
-    <div class="wc-icon">🧪</div>
-    <div class="wc-meta">
-      <div class="wc-title-row">
-        <span class="wc-name">Urea Volatilization Risk</span>
-        <span class="wc-tag wc-tag--live">Live</span>
-      </div>
-      <p class="wc-desc">Location-aware urea volatilization risk indicator built for topdress application decisions. Scores current and forecast conditions on a four-tier scale — <strong>Low / Moderate / High / Very High</strong> — based on temperature, humidity, wind, and precipitation outlook. Shows the primary driving risk factor and includes a 5-day risk timeline. Especially useful during spring and fall nitrogen application windows.</p>
-    </div>
-  </div>
-  <div class="wc-body">
-    <p style="font-size:.82rem;color:var(--text-muted);margin:0 0 .5rem">Attributes</p>
-    <div class="wc-attrs">
-      <div class="wc-attr"><span class="wc-attr-key">data-zip</span>="54001" <span class="wc-attr-cm">— omit to auto-detect</span></div>
-      <div class="wc-attr"><span class="wc-attr-key">data-days</span>="1|3|5"</div>
-      <div class="wc-attr"><span class="wc-attr-key">data-theme</span>="dark|light"</div>
-    </div>
-<pre>&lt;div data-agsist-widget="urea-risk"
-     data-zip="54001"
-     data-days="5"
-     data-theme="dark"&gt;&lt;/div&gt;
-&lt;script src="https://agsist.com/api/v1/urea-risk.js" async&gt;&lt;/script&gt;</pre>
-  </div>
-  <div class="wc-footer">
-    <span class="wc-endpoint">https://agsist.com/api/v1/urea-risk.js</span>
-    <a href="/urea">View live Urea Risk →</a>
-  </div>
-</div>
-
-<!-- ── Break-Even Calculator ─────────────────────────────────────── -->
-<div class="widget-card">
-  <div class="wc-head">
-    <div class="wc-icon">📐</div>
-    <div class="wc-meta">
-      <div class="wc-title-row">
-        <span class="wc-name">Break-Even Calculator</span>
-        <span class="wc-tag wc-tag--live">Live</span>
-      </div>
-      <p class="wc-desc">Interactive crop break-even price calculator with live market integration. User inputs expected yield (bu/ac) and total cost per acre; the widget calculates break-even price and shows profit or loss per acre and per bushel at the current delayed futures price from <code>/data/prices.json</code>. Supports corn, soybeans, and wheat. Default values can be set via attributes. Well-suited for co-op sites, lender portals, extension newsletters, and ag media.</p>
-    </div>
-  </div>
-  <div class="wc-body">
-    <p style="font-size:.82rem;color:var(--text-muted);margin:0 0 .5rem">Attributes</p>
-    <div class="wc-attrs">
-      <div class="wc-attr"><span class="wc-attr-key">data-crop</span>="corn|beans|wheat"</div>
-      <div class="wc-attr"><span class="wc-attr-key">data-yield</span>="200" <span class="wc-attr-cm">bu/ac default</span></div>
-      <div class="wc-attr"><span class="wc-attr-key">data-cost</span>="650" <span class="wc-attr-cm">$/ac default</span></div>
-      <div class="wc-attr"><span class="wc-attr-key">data-theme</span>="dark|light"</div>
-    </div>
-<pre>&lt;div data-agsist-widget="breakeven"
-     data-crop="corn"
-     data-yield="200"
-     data-cost="650"
-     data-theme="dark"&gt;&lt;/div&gt;
-&lt;script src="https://agsist.com/api/v1/breakeven.js" async&gt;&lt;/script&gt;</pre>
-  </div>
-  <div class="wc-footer">
-    <span class="wc-endpoint">https://agsist.com/api/v1/breakeven.js</span>
-    <a href="/breakeven">View live Calculator →</a>
-  </div>
-</div>
-
-<!-- ── Daily Briefing Card ───────────────────────────────────────── -->
-<div class="widget-card">
-  <div class="wc-head">
-    <div class="wc-icon">📰</div>
-    <div class="wc-meta">
-      <div class="wc-title-row">
-        <span class="wc-name">Daily Briefing Card</span>
-        <span class="wc-tag wc-tag--live">Live</span>
-      </div>
-      <p class="wc-desc">Embeds today's AGSIST Daily briefing as a compact card — headline, date, one-paragraph market summary, and a link to the full briefing. The briefing is AI-generated from live market data and agricultural news feeds, published by 6 AM CT on weekday mornings. Raw data also available at <code>/data/daily.json</code> for custom rendering. A useful daily content block for any farm-facing site that wants fresh market context without writing it themselves.</p>
-    </div>
-  </div>
-  <div class="wc-body">
-    <p style="font-size:.82rem;color:var(--text-muted);margin:0 0 .5rem">Attributes</p>
-    <div class="wc-attrs">
-      <div class="wc-attr"><span class="wc-attr-key">data-theme</span>="dark|light"</div>
-      <div class="wc-attr"><span class="wc-attr-key">data-compact</span>="true|false"</div>
-    </div>
-<pre>&lt;div data-agsist-widget="daily-briefing"
-     data-theme="dark"
-     data-compact="false"&gt;&lt;/div&gt;
-&lt;script src="https://agsist.com/api/v1/daily-briefing.js" async&gt;&lt;/script&gt;</pre>
-  </div>
-  <div class="wc-footer">
-    <span class="wc-endpoint">https://agsist.com/api/v1/daily-briefing.js &nbsp;·&nbsp; /data/daily.json</span>
-    <a href="/daily">View AGSIST Daily →</a>
-  </div>
-</div>
-
-<!-- ── Cash Bids — Coming Soon ───────────────────────────────────── -->
+<!-- ── Crop Calendar ─────────────────────────────────────────────── -->
 <div class="widget-card widget-card--soon">
   <div class="wc-head">
-    <div class="wc-icon">🌾</div>
+    <div class="wc-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg></div>
     <div class="wc-meta">
       <div class="wc-title-row">
-        <span class="wc-name">Cash Bids Finder</span>
-        <span class="wc-tag wc-tag--soon">Coming Soon</span>
+        <span class="wc-name">Crop Calendar</span>
+        <span class="wc-tag wc-tag--soon">Rolling out</span>
       </div>
-      <p class="wc-desc">Local elevator cash bid lookup by ZIP code. Displays cash price, basis vs. nearby futures, and elevator name for the closest active bids. Configurable crop and search radius. Designed for co-op websites, extension pages, and lender portals serving producer clients who need to see local basis quickly. Contact me to discuss early access or custom elevator coverage for your area.</p>
+      <p class="wc-desc">Corn &amp; soybean growth-stage reference with GDU thresholds and management notes. Wiring is in <code>embed.js</code> now; the embeddable view is rolling out. Email me if you want it on your site early.</p>
     </div>
   </div>
   <div class="wc-body">
-    <p style="font-size:.82rem;color:var(--text-muted);margin:0 0 .5rem">Planned attributes</p>
-    <div class="wc-attrs">
-      <div class="wc-attr"><span class="wc-attr-key">data-zip</span>="54001"</div>
-      <div class="wc-attr"><span class="wc-attr-key">data-crop</span>="corn|beans|wheat"</div>
-      <div class="wc-attr"><span class="wc-attr-key">data-radius</span>="25" <span class="wc-attr-cm">miles</span></div>
-      <div class="wc-attr"><span class="wc-attr-key">data-theme</span>="dark|light"</div>
-    </div>
-<pre>&lt;!-- Coming soon --&gt;
-&lt;div data-agsist-widget="cash-bids"
-     data-zip="54001"
-     data-crop="corn"
-     data-radius="25"&gt;&lt;/div&gt;
-&lt;script src="https://agsist.com/api/v1/cash-bids.js" async&gt;&lt;/script&gt;</pre>
+    <p class="wc-key">widget key&nbsp; <b>data-agsist-widget="calendar"</b></p>
   </div>
   <div class="wc-footer">
-    <span class="wc-endpoint">https://agsist.com/api/v1/cash-bids.js</span>
-    <a href="mailto:sig@farmers1st.com">Contact me about early access →</a>
+    <span class="wc-endpoint">iframe: /embed/calendar</span>
+    <a href="/fast-facts">View Crop Calendar →</a>
+  </div>
+</div>
+
+<!-- ── Daily Briefing ────────────────────────────────────────────── -->
+<div class="widget-card widget-card--soon">
+  <div class="wc-head">
+    <div class="wc-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg></div>
+    <div class="wc-meta">
+      <div class="wc-title-row">
+        <span class="wc-name">Daily Briefing</span>
+        <span class="wc-tag wc-tag--soon">Rolling out</span>
+      </div>
+      <p class="wc-desc">A compact card from the AGSIST Daily morning briefing — headline, date, and the day&rsquo;s takeaway, with a link to the full read. Published before the market open on weekday mornings. The raw briefing is also available as a JSON feed below for custom rendering.</p>
+    </div>
+  </div>
+  <div class="wc-body">
+    <p class="wc-key">widget key&nbsp; <b>data-agsist-widget="briefing"</b></p>
+  </div>
+  <div class="wc-footer">
+    <span class="wc-endpoint">iframe: /embed/briefing &nbsp;·&nbsp; /data/daily.json</span>
+    <a href="/daily">View AGSIST Daily →</a>
   </div>
 </div>
 
 
 <!-- ═══ LIVE DATA FEEDS ══════════════════════════════════════════════ -->
 <h2>Live Data Feeds</h2>
-<p>These JSON endpoints update automatically. Consume them directly to build your own UI without waiting for embed scripts.</p>
+<p>These JSON endpoints update automatically. Consume them directly to build your own UI without using the widget script at all.</p>
 
 <div class="ep-list">
 
@@ -348,7 +218,7 @@ button,a,[role="button"]{touch-action:manipulation;}
       <span class="ep-method">GET</span>
       <span class="ep-path">https://agsist.com/data/daily.json</span>
     </div>
-    <p class="ep-desc">Today's AGSIST Daily briefing in JSON. AI-generated from live market data and agricultural RSS feeds. Published by 6 AM CT on weekday mornings. Use this to build a daily market headline block for any ag-facing page.</p>
+    <p class="ep-desc">Today's AGSIST Daily briefing in JSON. Generated from live market data and agricultural news feeds. Published before the market open on weekday mornings. Use this to build a daily market headline block for any ag-facing page.</p>
 <pre>{
   "date":      "2026-04-09",
   "headline":  "Corn holds overnight losses heading into WASDE week",
@@ -367,7 +237,7 @@ button,a,[role="button"]{touch-action:manipulation;}
       <span class="ep-method">GET</span>
       <span class="ep-path">https://agsist.com/data/markets.json</span>
     </div>
-    <p class="ep-desc">Active prediction market contracts from Kalshi and Polymarket covering agricultural and economic events — WASDE report outcomes, crop production estimates, weather events. Updated daily. Only active contracts with meaningful volume are included.</p>
+    <p class="ep-desc">Active prediction-market contracts from Kalshi and Polymarket covering agricultural and economic events — WASDE outcomes, crop production estimates, weather events. Updated daily. Only active contracts with meaningful volume are included.</p>
 <pre>{
   "updated": "2026-04-09T06:00:00Z",
   "markets": [
@@ -392,24 +262,24 @@ button,a,[role="button"]{touch-action:manipulation;}
   <li>Non-commercial use by farms, extension offices, and co-ops is welcome at no charge.</li>
   <li>Commercial licensing and white-labeling require a written agreement — <a href="mailto:sig@farmers1st.com">contact me</a>.</li>
   <li>Cache data on your end. Please limit requests to one fetch per 15 minutes or longer — don't hammer the endpoints.</li>
-  <li>Attribution appreciated: link back to agsist.com where reasonable.</li>
+  <li>If you use the widget script, please keep the &ldquo;Powered by AGSIST&rdquo; link — it's how a free tool stays free.</li>
   <li>All price data is delayed a minimum of 15 minutes during market hours. Do not use for live trading decisions.</li>
 </ul>
 
 <!-- ═══ DATA SOURCES ══════════════════════════════════════════════════ -->
 <h2>Data Sources</h2>
-<p>Prices via Yahoo Finance / yfinance. Weather via Open-Meteo. Cash bids via Barchart OnDemand. Prediction markets via Kalshi and Polymarket APIs. See the <a href="/data-sources">full data sources page</a> for complete attribution details.</p>
+<p>Prices via Yahoo Finance / yfinance. Weather via Open-Meteo. Prediction markets via Kalshi and Polymarket APIs. See the <a href="/data-sources">full data sources page</a> for complete attribution details.</p>
 
 <!-- ═══ CONTACT ═══════════════════════════════════════════════════════ -->
 <h2>Questions &amp; Licensing</h2>
 <p>I'm a solo developer. I respond to real integration questions quickly. If you want to talk early access, custom builds, or commercial licensing — reach out directly.</p>
 <div class="contact-card">
   <div class="cc-name">Sigurd Lindquist</div>
-  <div class="cc-title">AGSIST Creator &amp; Farmers First Agri Service</div>
+  <div class="cc-title">Founder, AGSIST</div>
   <div class="cc-links">
-    <a href="tel:+17157972428">📞 <span>715-797-2428</span></a>
-    <a href="mailto:sig@farmers1st.com">✉ <span>sig@farmers1st.com</span></a>
-    <a href="/contact">💬 <span>Contact page</span></a>
+    <a href="tel:+17157972428"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"/></svg><span>715-797-2428</span></a>
+    <a href="mailto:sig@farmers1st.com"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span>sig@farmers1st.com</span></a>
+    <a href="/contact"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Contact page</span></a>
   </div>
 </div>
 
