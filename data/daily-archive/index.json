@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-06-22",
+      "date_display": "Monday, June 22, 2026",
+      "headline": "CRUDE RUNS 3%; BEANS AND WHEAT FIRM BACK",
+      "teaser": "Crude ran hard on Hormuz normalization. Beans and wheat caught a small bounce. Cattle slipped. Crop Progress at 3 PM tells the grain story.",
+      "market_mood": "mixed",
+      "surprise_count": 1,
+      "sections": 4,
+      "url": "/daily/2026-06-22",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-06-21",
       "date_display": "Sunday, June 21, 2026",
       "headline": "BEANS AND WHEAT BROKE FRIDAY; CATTLE HELD",
@@ -1128,6 +1140,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-21T13:11:47.904104+00:00",
-  "count": 101
+  "updated": "2026-06-22T13:10:52.382893+00:00",
+  "count": 102
 }

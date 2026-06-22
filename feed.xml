@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 21 Jun 2026 13:12:06 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 22 Jun 2026 13:11:10 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CRUDE RUNS 3%; BEANS AND WHEAT FIRM BACK</title>
+      <link>https://agsist.com/daily/2026-06-22</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-22</guid>
+      <pubDate>Mon, 22 Jun 2026 05:00:00 -0600</pubDate>
+      <description>WTI crude ran $2.40 to $77.67 Monday, the biggest one-session gain in several weeks, as Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, flipped into a different kind of story: Iran's oil exports through Hormuz hit a wartime high after the U.S. lifted the naval blockade, and Kuwait is tendering Gulf loadings for the first time in months. That's not a fear bid in crude. That's a supply-flow normalization bid, and it has different legs. Soybeans firmed 6 cents to $11.48 and wheat added 2 cents to $6.16, both catching modest reflex bids after last week's break, but with USDA Crop Progress dropping at 3 PM CT today, neither move carries conviction yet.
+WTI posts its biggest single-session gain in weeks as Hormuz diplomacy reshapes the energy story; grains catch a modest bid; cattle slip.
+• CRUDE LEADS THE COMPLEX
+• GRAINS CATCH A BREATH
+  → Hold old-crop sales until after the 3 PM Crop Progress print; a weak condition rating adds premium the morning session hasn't priced.
+• CATTLE SLIP, PROCESSING MATH UNCHANGED
+Read more: https://agsist.com/daily/2026-06-22</description>
+    </item>
     <item>
       <title>BEANS AND WHEAT BROKE FRIDAY; CATTLE HELD</title>
       <link>https://agsist.com/daily/2026-06-21</link>
@@ -361,18 +374,6 @@ Feeders drop 1.9% Friday while live cattle barely move, setting up Memorial Day 
 • Cattle Split Widens
 • Energy Holds Iran Premium
 Read more: https://agsist.com/daily/2026-05-24</description>
-    </item>
-    <item>
-      <title>CATTLE SURGE 3.8%, GRAINS STEADY INTO HOLIDAY</title>
-      <link>https://agsist.com/daily/2026-05-23</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-23</guid>
-      <pubDate>Sat, 23 May 2026 05:00:00 -0600</pubDate>
-      <description>Live cattle closed Friday at $249.30, up 3.8% in their strongest weekly showing since March as the Cargill plant lockout that hammered feeders all week finally drove funds into live contracts. Grains stayed range-bound with corn at $4.63 and soybeans at $11.96, both inching higher on technical buying but still waiting for China demand signals. The week's story was livestock divergence: live cattle found their floor while feeders crashed 1.9% Friday as processing bottlenecks squeezed the entire complex.
-Live cattle posted biggest weekly gain in two months while grains consolidated ahead of Memorial Day.
-• Grains Mark Time
-• Cattle Split Widens
-• Energy Holds Iran Premium
-Read more: https://agsist.com/daily/2026-05-23</description>
     </item>
   </channel>
 </rss>
