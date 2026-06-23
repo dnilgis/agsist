@@ -169,8 +169,12 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
                         if v>0.05 and abs(v-real)>0.2:
                             W('pct','%s: %s%% near "%s" vs feed %.2f%%'%(loc,m.group(1),kw,float(q['pctChange'])))
 
-    # 6) calendar weekday vs date
+    # 6) calendar weekday vs date — watch_list only. Prose/section bodies may cite
+    # historical dates whose weekday is correct for a prior year; assuming today's
+    # year there causes false positives. The forward report calendar is what matters.
     for loc,text in fields:
+        if not loc.startswith('watch_list'):
+            continue
         for m in WEEKDATE.finditer(text):
             wd,mon,day=m.group(1),m.group(2),int(m.group(3))
             try:

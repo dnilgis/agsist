@@ -1667,6 +1667,12 @@ def validate_briefing(briefing, locked_prices):
             tail = full_text[fpos+len(fs): fpos+len(fs)+12].lower().lstrip()
             if tail[:7] in ("billion", "million") or tail[:8] == "trillion" or tail[:3] in ("bn ", "mn ", "tn ") or tail[:2] in ("b ", "m "):
                 continue  # aggregate value (e.g. "$17 billion"), not a per-unit commodity price
+            lead = full_text[max(0, fpos-12):fpos].lower()
+            if re.search(r'\b(down|up|off|gained|lost|added|shed|plus|minus|rose|fell|gaining|losing)\s*$', lead):
+                continue  # a change amount ("down $1.35"), not a price level
+            ctx = full_text[max(0, fpos-75):fpos+30].lower()
+            if re.search(r'(spread|carry|new-crop|old-crop|december|november|deferred|back month|next month)', ctx):
+                continue  # forward-contract / spread price, not the nearby quote in prices.json
             for key, (lo, hi) in COMMODITY_RANGES.items():
                 if lo <= fv <= hi:
                     _ctx = full_text[max(0, fpos-55):fpos+25].replace("\n", " ").strip()
@@ -1718,10 +1724,6 @@ def fix_weekday_labels(briefing, today=None):
         for k in ("time", "desc"):
             if isinstance(item.get(k), str):
                 item[k] = pat.sub(_repl, item[k])
-    for sec in briefing.get("sections", []) or []:
-        for k in ("body", "bottom_line"):
-            if isinstance(sec.get(k), str):
-                sec[k] = pat.sub(_repl, sec[k])
     return briefing, fixes
 
 
