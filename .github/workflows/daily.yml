@@ -45,10 +45,19 @@ jobs:
       - name: Install dependencies
         run: pip install feedparser requests
 
+      - name: GATE 1 — feed pre-flight (repair ZC=F roll contamination; block on unrepairable feed)
+        run: python scripts/preflight_prices.py data/prices.json --repair
+
       - name: Generate daily briefing
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/generate_daily.py
+
+      # Grade yesterday's call deterministically (direction AND level) from the
+      # actual closes, overriding any LLM-assigned outcome — so the public scorecard
+      # can never show a miss as a win. Before the critic + GATE 2 so they see truth.
+      - name: Grade yesterday's call
+        run: python scripts/grade_calls.py data/daily.json
 
       # v4.0: Critic pass — runs after generate, before schema validation.
       # Sends the briefing back to Claude as the editor, scores 1-10 on each
@@ -90,6 +99,13 @@ jobs:
       #
       # always() runs this even if previous steps failed — that's the point.
       # if: always() so the alert reports generator failures too.
+      # ── GATE 2 ── deterministic pre-publish gate. Prose vs locked_prices vs the
+      # clean feed: blocks locked-price drift, level contradictions, drama without a
+      # real move, calendar errors, fabricated sections. HARD block (no continue-on-error)
+      # so a failure stops the job before commit — nothing stale or wrong gets published.
+      - name: GATE 2 — pre-publish briefing gate
+        run: python scripts/briefing_gate.py data/daily.json --prices data/prices.json
+
       - name: Notify critic status
         if: always()
         env:
@@ -112,6 +128,7 @@ jobs:
         run: python scripts/daily_schema.py data/daily.json
 
       - name: Generate RSS feed
+        continue-on-error: true        # RSS is an enhancement; a feed error must never block the publish
         run: python scripts/generate_rss.py
 
       # Strategic ladder (2026-06-12): public call scorecard, rebuilt from the
@@ -139,6 +156,7 @@ jobs:
       # archive HTML page add nothing. Idempotent: the Friday post-close
       # regeneration re-run is a no-op for an already-listed URL.
       - name: Add today's archive page to sitemap
+        continue-on-error: true        # sitemap update must never block the briefing publish
         run: |
           d=$(date -u +%Y-%m-%d)
           if [ -f "daily/${d}.html" ]; then
@@ -152,6 +170,6 @@ jobs:
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           git add data/daily.json data/daily-archive/ daily/ feed.xml sitemap.xml data/scorecard.json index.html
-          git diff --staged --quiet || git commit -m "📰 AGSIST Daily — $(date -u +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "AGSIST Daily — $(date -u +%Y-%m-%d)"
           git pull --rebase origin main
           git push
