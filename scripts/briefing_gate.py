@@ -124,19 +124,27 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
             continue
         for sent in re.split(r'(?<=[.!?])\s+', text):
             sl=sent.lower()
+            kw_pos=[]
             for kw,(lpk,pk,grain) in COMM.items():
-                if kw in sl and lpk in lp and lpk in LEVEL_BAND:
-                    lv=float(lp[lpk])
-                    blo,bhi=LEVEL_BAND[lpk]
-                    for m in DOLLAR.finditer(sent):
-                        level=float(m.group(1))
-                        if not (blo <= level <= bhi):
-                            continue  # this $ is not THIS commodity's price line
-                        _snip=(sent[:140]+'…') if len(sent)>140 else sent
-                        if DROP_VERB.search(sl) and lv> level*(1+LEVEL_TOL):
-                            F('level','%s: %s close $%.4f did not break below $%s | "%s"'%(loc,lpk,lv,level,_snip))
-                        if HOLD_VERB.search(sl) and lv< level*(1-LEVEL_TOL):
-                            F('level','%s: %s close $%.4f did not hold above $%s | "%s"'%(loc,lpk,lv,level,_snip))
+                i=sl.find(kw)
+                if i>=0 and lpk in lp and lpk in LEVEL_BAND:
+                    kw_pos.append((i,kw,lpk))
+            if not kw_pos:
+                continue
+            for m in DOLLAR.finditer(sent):
+                level=float(m.group(1))
+                # tie this $ to the NEAREST commodity word, not every one in the sentence
+                # (so "wheat settled at $5.88" is never checked against corn)
+                kpos,kw,lpk=min(kw_pos, key=lambda t: abs(t[0]-m.start()))
+                blo,bhi=LEVEL_BAND[lpk]
+                if not (blo <= level <= bhi):
+                    continue  # this $ is not THIS commodity's price line
+                lv=float(lp[lpk])
+                _snip=(sent[:140]+'…') if len(sent)>140 else sent
+                if DROP_VERB.search(sl) and lv> level*(1+LEVEL_TOL):
+                    F('level','%s: %s close $%.4f did not break below $%s | "%s"'%(loc,lpk,lv,level,_snip))
+                if HOLD_VERB.search(sl) and lv< level*(1-LEVEL_TOL):
+                    F('level','%s: %s close $%.4f did not hold above $%s | "%s"'%(loc,lpk,lv,level,_snip))
 
     # 5) %-move claims near a commodity reconcile to feed pct
     for loc,text in fields:

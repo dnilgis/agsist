@@ -1655,18 +1655,19 @@ def validate_briefing(briefing, locked_prices):
     dollar_pattern = re.compile(r'\$([0-9,]+(?:\.[0-9]+)?)')
     found_values = []
     for m in dollar_pattern.finditer(full_text):
-        try: found_values.append((float(m.group(1).replace(",", "")), m.group(0)))
+        try: found_values.append((float(m.group(1).replace(",", "")), m.group(0), m.start()))
         except ValueError: pass
     COMMODITY_RANGES = {"corn": (2.0, 9.0), "beans": (7.0, 20.0), "wheat": (3.0, 12.0),
                         "crude": (30.0, 200.0), "natgas": (1.0, 15.0), "gold": (500.0, 10000.0),
                         "silver": (5.0, 200.0), "cattle": (100.0, 350.0), "hogs": (40.0, 150.0),
                         "milk": (10.0, 35.0)}
-    for fv, fs in found_values:
+    for fv, fs, fpos in found_values:
         matched = any(kv > 0 and abs(fv - kv) / kv <= 0.05 for kv in known_values.values())
         if not matched:
             for key, (lo, hi) in COMMODITY_RANGES.items():
                 if lo <= fv <= hi:
-                    warnings.append(f"Price {fs} not in prices.json (possible {key})")
+                    _ctx = full_text[max(0, fpos-55):fpos+25].replace("\n", " ").strip()
+                    warnings.append(f"Price {fs} not in prices.json (possible {key}) | \"...{_ctx}...\"")
                     break
     return len(warnings) == 0, warnings
 
