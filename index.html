@@ -1775,8 +1775,8 @@
     var netLong=keys.filter(function(k){return data[k]&&data[k].net>0;}).length;
     var verdict=document.getElementById('cot-verdict');
     if(verdict){
-      if(avg>0.62&&netLong>=2){verdict.className='cot-verdict long';verdict.textContent='<svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Funds Long';}
-      else if(avg<0.38||netLong===0){verdict.className='cot-verdict short';verdict.textContent='<svg class="ic" aria-hidden="true"><use href="#i-trending-down"/></svg> Funds Short';}
+      if(avg>0.62&&netLong>=2){verdict.className='cot-verdict long';verdict.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Funds Long';}
+      else if(avg<0.38||netLong===0){verdict.className='cot-verdict short';verdict.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trending-down"/></svg> Funds Short';}
       else{verdict.className='cot-verdict mixed';verdict.textContent='\u2194 Mixed';}
     }
     var dateEl=document.getElementById('cot-date');
@@ -2455,7 +2455,7 @@ window.hydrateDaily = function(data) {
         spAttr.style.display='inline-flex';
         spAttr.classList.remove('daily-spattr--house');
         spAttr.classList.add('daily-spattr--paid');
-        spAttr.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-circle"/></svg> Today\u2019s sponsor: <strong>'+(sp.name||'')+'</strong> \u2192';
+        spAttr.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-circle"/></svg> Today\u2019s sponsor: <strong>'+escHtml(sp.name||'')+'</strong> \u2192';
         if(sp.url){spAttr.href=sp.url;spAttr.target='_blank';spAttr.rel='sponsored noopener';}
         else{spAttr.removeAttribute('target');spAttr.rel='sponsored';spAttr.href='mailto:sig@farmers1st.com';}
       }
@@ -2607,7 +2607,7 @@ function renderPlantingDates(dates,countyName,state){
     if(locLabel){
       var _st=window.AGSIST_STATE,_city=_st&&_st.weather&&_st.weather.city;
       // Show city (if available) + County, ST — eg "Chetek · Barron County, WI"
-      locLabel.textContent='<svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> '+(_city?_city+' \u00B7 ':'')+countyName+' County, '+state;
+      locLabel.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> ';locLabel.appendChild(document.createTextNode((_city?_city+' \u00B7 ':'')+countyName+' County, '+state));
     }
   }
 }
