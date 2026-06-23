@@ -1,18 +1,18 @@
 {
- "updated": "2026-06-23T13:36:11+00:00",
+ "updated": "2026-06-23T13:46:37+00:00",
  "total": 41,
  "played_out": 26,
- "didnt": 10,
- "pending": 5,
- "hit_rate": 72.2,
+ "didnt": 9,
+ "pending": 6,
+ "hit_rate": 74.3,
  "current_streak": 0,
  "records": [
   {
    "made": "2026-06-22",
    "judged": "2026-06-23",
-   "call": "Producers with old-crop bushels in storage were told Monday's break was a window-closing move and to evaluate if basis was still firm.",
-   "outcome": "didnt",
-   "note": "Corn reversed 6.8% overnight. The window didn't close. It reopened. Reassess with fresh eyes Thursday after export sales."
+   "call": "Monday's call: producers with old-crop bushels in storage should evaluate before the 3 PM crop progress report reset the narrative.",
+   "outcome": "pending",
+   "note": "The window didn't close; it snapped back open. Producers who held through Monday's drop are back near unchanged, but that's two days of volatility for zero net movement."
   },
   {
    "made": "2026-06-21",
