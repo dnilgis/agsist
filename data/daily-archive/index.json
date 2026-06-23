@@ -3,14 +3,14 @@
     {
       "date": "2026-06-23",
       "date_display": "Tuesday, June 23, 2026",
-      "headline": "CORN REVERSES 7% DROP WITH 6.8% GAIN",
-      "teaser": "Corn erased all of Monday's 7% drop in a single session. The crop condition data gave it the excuse.",
-      "market_mood": "volatile",
+      "headline": "CORN REVERSES 7% DROP WITH 6.8% OVERNIGHT RUN",
+      "teaser": "Corn erases Monday's 7% drop overnight. Minnesota conditions slipping. Farm bill draft drops today.",
+      "market_mood": "mixed",
       "surprise_count": 1,
       "sections": 4,
       "url": "/daily/2026-06-23",
       "market_closed": false,
-      "yc_outcome": "played_out"
+      "yc_outcome": "didnt"
     },
     {
       "date": "2026-06-22",
@@ -1152,6 +1152,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-23T13:23:55.617901+00:00",
+  "updated": "2026-06-23T13:35:52.242958+00:00",
   "count": 103
 }

@@ -1,121 +1,124 @@
 {
-  "headline": "CORN REVERSES 7% DROP WITH 6.8% GAIN",
-  "subheadline": "Old-crop corn posted its biggest single-session recovery in months after Monday's 7% breakdown; the Belt rally, crop condition data, and a developing Iran trade angle are all in play at once.",
-  "lead": "Corn went from its worst day in months to its best in one session. Nearby corn closed at $4.41, up 28 cents, fully erasing Monday's 7% drop with a 6.8% rally that the overnight market turned into the story before most farmers finished morning chores. Monday's USDA Crop Progress at 3 PM CT showed Minnesota corn conditions slipping a point to 79% good-to-excellent, soybeans down four points to 76%, and Illinois reporting early-season moisture relief in the north while the southeast stays dry. That uneven rainfall picture is exactly the kind of contradictory crop condition read that takes a market already oversold and hands it a reason to reverse hard. The weekly thread question from Monday now has a sharper edge: if the Belt is ahead of pace but conditions are already softening in Minnesota, the weather premium the market sold off Monday may have come back Tuesday and then some.",
-  "the_takeaway": "Corn just told you Monday's sell-off was overdone; the condition picture isn't clean.",
-  "teaser": "Corn erased all of Monday's 7% drop in a single session. The crop condition data gave it the excuse.",
+  "headline": "CORN REVERSES 7% DROP WITH 6.8% OVERNIGHT RUN",
+  "subheadline": "Yesterday's hard break fully reversed before the open; the Belt's weather picture splits north from south.",
+  "lead": "Corn ran $0.28 overnight to close at $4.41, erasing almost the entire 7% drop from Monday in a single session. That's not a bounce. That's a market telling you Monday's break was fund liquidation looking for a floor, not a fundamental shift. The 2026 planting season, behind the average through May before catching up between rain systems, is now showing cracks: Minnesota corn conditions slipped a point to 79% good-to-excellent this week while northern Illinois farmers are calling their stands excellent. Two different Belts, one price. Thursday's export sales will tell you which one the market is actually pricing.",
+  "the_takeaway": "Corn's full reversal says Monday was fund liquidation, not a structural break. Thursday decides.",
+  "teaser": "Corn erases Monday's 7% drop overnight. Minnesota conditions slipping. Farm bill draft drops today.",
   "one_number": {
-    "value": "4",
-    "unit": "points soybean condition decline in Minnesota, one week",
-    "context": "Minnesota soybeans dropped from 80% to 76% good-to-excellent in a single weekly Crop Progress reading, and corn slipped a point to 79%. That's not a catastrophic number, but it's the first notable deterioration of the season and it arrived the morning after corn had its worst day in months. Markets don't need perfect bad news, they need directional bad news at the right moment. This was it."
+    "value": "53%",
+    "unit": "U.S. cattle inventory impacted by drought",
+    "context": "Beef Magazine's cattle market update puts 53% of the U.S. cattle inventory in drought-affected areas. That's not a footnote, that's the structural floor under live cattle prices. When the herd is already tight and drought is shrinking grazing resources across more than half the country's inventory, the processing constraints from the Cargill Fort Morgan lockout compound on top of a supply problem that started before any labor dispute."
   },
   "yesterdays_call": {
-    "summary": "Producers with old-crop bushels in storage were told the window was closing and to evaluate basis before the 3 PM Crop Progress reset the narrative.",
-    "outcome": "played_out",
-    "note": "The narrative absolutely reset: corn reversed 6.8% and any seller who waited past yesterday's close lost the chance to exit the bottom of the range."
+    "summary": "Producers with old-crop bushels in storage were told Monday's break was a window-closing move and to evaluate if basis was still firm.",
+    "outcome": "didnt",
+    "note": "Corn reversed 6.8% overnight. The window didn't close. It reopened. Reassess with fresh eyes Thursday after export sales."
   },
   "sections": [
     {
-      "title": "CORN SNAPS BACK HARD",
+      "title": "CORN'S FULL REVERSAL",
       "icon": "🌽",
-      "body": "Nearby corn at **$4.41** recovered the entire 7% slide from Monday in a single session, up **28 cents**, the biggest single-day reversal of the summer. The catalyst is straightforward: Monday's Crop Progress showed Minnesota corn conditions at 79% good-to-excellent, down a point, and soybeans at 76%, down four points on uneven rainfall. That's not a drought signal, but it's the first deterioration of the season arriving into an oversold market where fund longs had already liquidated hard. The funds that sold Monday had no new crop-condition cover to justify staying short, so they came back. December corn at $4.41 tells you something important: the new-crop contract barely moved, up just a quarter cent, meaning this rally is entirely an old-crop short-covering event, not a fundamental re-rating of the 2026 harvest. Old-crop bushels still in storage that weren't moved yesterday: the window cracked back open, but it won't stay open if next Monday's Crop Progress shows stabilizing conditions.",
-      "catalyst": "USDA Crop Progress: Minnesota corn 79% G/E (down 1pt), soybeans 76% G/E (down 4pts); uneven Belt rainfall.",
-      "bottom_line": "Old-crop short-covering, not new-crop re-rating. Dec '26 barely moved.",
-      "conviction_level": "high",
+      "body": "Corn closed $4.41, up $0.28¼ on the session. That is a 6.8% move in a single overnight run, the biggest single-day advance in months, and it came with no USDA report, no weather emergency, no crop tour. What it came with was a split crop condition picture: Minnesota corn slipped to 79% good-to-excellent this week while northern Illinois farmers are reporting stands as strong as they've seen. The funds who liquidated Monday found the floor they were looking for and stepped back in. **$4.41 is now the question**, not the answer. If the Belt's condition divergence widens and Thursday export sales come in above 400K MT, the overnight run has legs. If Minnesota's numbers keep sliding and the export desk is quiet, this is a dead-cat bounce that traps the buyers who just chased it.",
+      "catalyst": "Minnesota corn conditions slipped to 79% good-to-excellent; northern Illinois farmers reporting excellent stands.",
+      "bottom_line": "Full reversal of Monday's break. Fund liquidation found the floor. Thursday exports resolve which bounce this is.",
+      "conviction_level": "medium",
       "overnight_surprise": true,
-      "farmer_action": "Old-crop bushels still in storage: this is the window that closed Monday reopening. Evaluate basis now before next Monday's Crop Progress stabilizes the condition reads and removes the short-covering fuel.",
-      "vs_yesterday": "Corn: yesterday's window-closing call paid out exactly as framed."
+      "vs_yesterday": "Corn: Monday's window-closing call inverted; full reversal overnight."
     },
     {
-      "title": "BEANS FIRM, MEAL LEADS",
+      "title": "SOYBEANS AND MEAL FIRM",
       "icon": "🫘",
-      "body": "Soybeans at **$11.46** moved up less than 2 cents, essentially flat, which is notable context next to corn's 28-cent reversal. When corn posts a 6.8% session and beans barely respond, the market is telling you the bean story has a different driver than short-covering. **Soybean meal at $305.40** ran 1.4%, and that's the real move in the complex today. Minnesota soybean conditions dropping four points in a week puts early-season stress on the protein side of the equation, and meal is the market that prices that kind of concern first. Soybean oil at $66.52 eased 0.6%, so the crush margin picture is rotating: meal gaining, oil slipping, crush margins shifting back toward the protein side. The China purchase commitment, the $17 billion annual US ag purchase commitment through 2028 announced May 18, hasn't yet translated into a sustained futures move, but the Iran angle adds a wrinkle today: reports out of Switzerland suggest Iran could buy US agricultural products with the $12 billion in frozen funds being released under the US-Iran negotiations. That's a new and unpriced demand thread worth watching.",
-      "catalyst": "Soybean conditions -4pts in Minnesota to 76% G/E; Iran frozen funds release opens potential ag purchase channel.",
-      "bottom_line": "Meal leading beans is a protein-stress signal. Iran ag demand is new and unpriced.",
+      "body": "Soybeans added less than 2 cents to $11.46, and soybean meal did the heavier lifting at $305.40, up 1.4%. Soybean oil gave back six-tenths of a percent to $66.52. Minnesota soybean conditions dropped from 80 to 76% good-to-excellent this week, a four-point slide that is sharper than the corn decline and not yet fully priced into the board. **Meal outperforming oil is a tell**: crush margins are being defended through feed demand, not through biofuel. With pollination windows approaching and soil moisture still running high in key districts, the weather story in beans is unresolved. The China $17 billion annual U.S. ag purchase commitment through 2028 remains the structural backdrop, but four-point weekly condition drops in Minnesota are the kind of news that puts a bid under meal faster than any diplomatic cable.",
+      "catalyst": "Minnesota soybean conditions dropped four points to 76% good-to-excellent in the latest USDA update.",
+      "bottom_line": "Meal leading soybeans higher says feed demand is the engine. Minnesota conditions are the watch.",
       "conviction_level": "medium",
       "overnight_surprise": false
     },
     {
-      "title": "CATTLE FIRMS, SCREWWORM STAYS LOUD",
+      "title": "CATTLE FIRMS, DROUGHT CONTEXT MATTERS",
       "icon": "🐄",
-      "body": "Live cattle at **$247.68** added 0.4% and feeders at **$371.07** ran 1.1%, both benefiting from the same corn reversal that pressured feeder cost-of-gain math Monday in the opposite direction. When corn falls, feeder cattle get hurt because the placement math looks worse; when corn rebounds, feeders recover. That's the mechanical story today. The structural story is noisier. New World screwworm now stands at 15 confirmed US cases with three added this week, 53% of US cattle inventory is in drought-affected areas per the latest Beef Magazine update, and May retail beef prices ran 13% above a year ago. The ongoing Cargill Fort Morgan/Schuyler plant lockout that began Tuesday May 19 continues to create processing-constrained dynamics: 1,700 workers still out, roughly 6,000 head per day of capacity still offline. USDA's announcement of **$60 million in new funding** for small meat and poultry processors under its Small Processors Action Plan adds a medium-term deconcentration thread, but that money doesn't move a single head this week. The screwworm transparency debate is getting louder: a southern Missouri cattleman and former Missouri Cattlemen's Association president says USDA needs to show its work on containment strategy before producers can make informed herd decisions.",
-      "catalyst": "NWS reaches 15 cases; USDA Small Processors Action Plan commits $60M; corn reversal supports feeder math.",
-      "bottom_line": "Cattle firm on corn reversal, but screwworm and drought overhead haven't cleared.",
+      "body": "Live cattle closed $247.68, up four-tenths. Feeders ran to $371.07, up 1.1%, getting a lift directly from corn's overnight losses in Monday's session that carried into Tuesday's feeder pricing. The ongoing Cargill Fort Morgan and Schuyler plant lockout, now in its fifth week with 1,700 workers still out, continues to create processing-constrained dynamics rather than supply-constrained ones. But the number that reframes the whole cattle complex today is 53%: more than half of U.S. cattle inventory is sitting in drought-affected territory. **Drought plus lockout plus a herd that was already historically tight is a three-layer floor** under live prices. USDA's newly announced $60 million Small Processors Action Plan drew a welcome from the U.S. Cattlemen's Association, but $60 million spread across small processors does not replace 6,000 head-per-day of lost capacity at a single plant. Watch the cash market Thursday.",
+      "catalyst": "53% of U.S. cattle inventory in drought-affected areas; USDA announces $60M Small Processors Action Plan.",
+      "bottom_line": "Drought covering 53% of inventory is the structural floor. Processing constraints are the ceiling problem.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Cattle: feeder recovery tracks corn bounce, exactly the mechanical relationship."
+      "vs_yesterday": "Cattle: firmed modestly; drought scope adds structural support beyond the lockout story."
     },
     {
-      "title": "ENERGY FLAT, IRAN DEAL ADVANCES",
+      "title": "ENERGY HOLDS, HORMUZ PREMIUM SHRINKS",
       "icon": "⛽",
-      "body": "WTI crude at **$73.65** barely moved, flat on the session, but the news around it is anything but quiet. Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, accelerated today: Iran and the US reached an agreement to release $12 billion in frozen Iranian funds, the US issued a temporary two-month waiver allowing Iranian oil sales until August 21, and Iranian officials said Tehran is actively pitching oil to India, South Korea, and Japan. That's a lot of supply-side development landing on a crude market already down roughly 19% in May. The price doesn't show the news today because the market already priced most of it. But Indian Oil Corporation's tanker tender coming up empty, with no bids received to pick up Persian Gulf crude through Hormuz, is a reminder the Strait remains a working risk even as the diplomatic premium shrinks. Natural gas at **$3.23** eased 1.1%, consistent with the near- and below-normal temperature outlook for the northern Plains in the 6-10 day window.",
-      "catalyst": "US-Iran frozen funds release agreement; US two-month Iranian oil sanctions waiver; IOC tanker tender receives zero bids.",
-      "bottom_line": "Crude priced the Iran deal already. The Strait isn't clean yet.",
-      "conviction_level": "medium",
+      "body": "WTI crude held at $73.65, flat on the session. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, got a new chapter today: the U.S. issued a temporary two-month waiver allowing Iranian oil sales including in U.S. dollars until August 21, and Iran confirmed the U.S. agreed to unblock $12 billion in frozen Iranian funds. Indian Oil Corporation's tanker tender came up empty as Hormuz risk still keeps some commercial operators cautious, so the premium is shrinking but not gone. **Natural gas gave back 1.1% to $3.23**, sitting at just 14% of its 52-week range, a level that tells you the market sees no near-term demand catalyst from summer heat or industrial load. The Trump administration's note that Iran could buy U.S. ag products with unfrozen funds is the most interesting ag angle in the energy bucket today.",
+      "catalyst": "U.S. issues two-month Iranian oil sanctions waiver; $12 billion in frozen Iranian funds agreed to be unblocked.",
+      "bottom_line": "Hormuz premium deflating on real diplomatic movement. Iranian ag purchases a developing story worth tracking.",
+      "conviction_level": "low",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Senate Farm Bill Draft Drops Tuesday, Watch the Commodity Title",
-      "body": "Senate Agriculture Committee Chairman John Boozman confirmed his office will release the remaining sections of the 2026 farm bill today. With the One Big Beautiful Bill still moving through Congress, the commodity title reference prices and ARC/PLC structure in this draft will set the floor for what producers can pencil into their operation plans for the next five years. Read the commodity title first.",
+      "title": "Senate Farm Bill Draft Drops Today from Boozman",
+      "body": "Senate Agriculture Committee Chairman John Boozman releases the remaining farm bill sections Tuesday. With the One Big Beautiful Bill in the political background and nutrition program restructuring already announced by the Trump administration, this draft will show whether commodity title funding survived the budget pressure. Read the commodity title first.",
       "tag": "POLICY"
     },
     {
-      "title": "Iran Could Buy US Ag Products Under Frozen Funds Agreement",
-      "body": "The Trump administration confirmed that Iran could direct a portion of the $12 billion in released frozen funds toward US agricultural commodity purchases, opening a new demand channel that isn't priced into any contract yet. This is early-stage and unverified in terms of volume, but beans, wheat, and feed grains are all on the table in principle.",
-      "tag": "TRADE"
+      "title": "New World Screwworm at 15 Cases, Criticism of USDA Response Builds",
+      "body": "Three new screwworm cases were confirmed, bringing the total to 15, with 3 of those now inactive. Cattle producers in southern states are asking Agriculture Secretary Rollins for more transparency on the response timeline. With 53% of cattle inventory already in drought-affected areas, a screwworm spread northward would compound an already stressed supply picture.",
+      "tag": "DISEASE"
     },
     {
-      "title": "Dairy Heifer Inventory Tightening Before a 2027 Rebound",
-      "body": "Financial incentives are steering more dairy calves toward the beef supply rather than replacement heifer pools, tightening the dairy heifer inventory through 2026 before a projected rebound in 2027. Producers planning herd expansion into next year need to be aware this supply constraint is structural, not seasonal, and will show up in heifer prices before it shows up in milk futures.",
-      "tag": "DAIRY"
+      "title": "Dairy Heifer Inventory Set to Shrink Before a 2027 Rebound",
+      "body": "Financial incentives are steering more dairy calves into the beef supply rather than replacement heifer pools, according to Feedstuffs. A smaller heifer inventory means tighter dairy cow numbers heading into 2027, which puts a structural floor under Class III milk prices at a time when heat stress is already shaving yield and component quality. Dairy producers planning 2027 expansion should note the squeeze coming from both ends.",
+      "tag": "RURAL"
     }
   ],
   "spread_to_watch": {
-    "label": "Corn nearby / Corn Dec '26 old-crop/new-crop spread",
-    "level": "Flat, $0.00 differential, converged after today's session",
-    "commentary": "Nearby corn and December corn both closed $4.41 today, an exact convergence that happens when a short-covering rally in old-crop is so strong it catches up to new-crop without any fundamental demand pull from the new-crop side. When old-crop and new-crop trade flat, the market isn't pricing carry or inverse, it's pricing confusion. That spread needs to separate again, and which direction it goes when it does will tell you whether today's rally was a correction or a reset."
+    "label": "Corn nearby / Dec '26 spread",
+    "level": "Flat at $0.00, no carry, no inverse",
+    "commentary": "Nearby corn and Dec '26 both closed $4.41. A perfectly flat spread after a 6.8% overnight run in the nearby says the market is not yet pricing a sustained weather premium into new crop, it is pricing the same uncertainty across the board. If Minnesota conditions keep sliding and the spread flips to an inverse, that is the first sign new-crop supply risk is being taken seriously."
   },
   "basis": {
-    "headline": "Eastern Belt corn basis firming on short-covering; western Belt mixed.",
-    "body": "Eastern Belt corn basis tightened alongside the nearby futures reversal as elevator bids chased the short-covering rally. **Producers with remaining old-crop storage positions in the eastern Belt have a firmer basis window today than they did at Monday's close.** Western Belt basis remains mixed, consistent with adequate local supply and no regional demand pull beyond the futures move. Soybean basis is quiet, in line with the near-flat futures session in beans."
+    "headline": "Corn basis mixed; northern Belt softening as conditions slip.",
+    "body": "Eastern Belt corn basis is holding after Monday's sharp break, with elevator bids reflecting the overnight recovery in futures. **Northern Belt basis is the watch**: as Minnesota and upper Midwest conditions show early weakness, merchandisers will start sorting between the strong-stand areas and the spotty ones. Western Belt basis remains soft, consistent with adequate nearby supply. Soybean basis is quiet, meal basis is firming on the back of today's meal strength."
   },
   "weekly_thread": {
     "question": "Does USDA Crop Progress confirm the Belt is ahead of pace, removing the last weather premium from corn?",
     "day": 2,
-    "status_text": "Monday's Crop Progress gave the question a sharper answer than expected: Minnesota corn conditions slipped a point to 79% good-to-excellent and soybeans dropped four points to 76%, with uneven rainfall the culprit. The Belt isn't removing weather premium, it's adding a small one back, and the overnight corn rally confirmed the market heard it."
+    "status_text": "Monday's Crop Progress gave a split answer: northern Illinois looks excellent, but Minnesota corn and soybeans both dropped on the week. The weather premium wasn't removed. It relocated north. Corn's 6.8% overnight reversal says the market agrees."
   },
   "the_more_you_know": {
-    "title": "Short-Covering Is Not a Rally: What Today's Dec Corn Close Proves",
-    "body": "Nearby corn ran 28 cents today. December corn ran a quarter cent. That gap is the entire argument. When old-crop and new-crop futures diverge sharply on a big session, it tells you funds are covering short positions in the nearby contract, not building new long positions based on a changed fundamental view of the harvest. Short-covering rallies are velocity without conviction: they move fast, they feel like a breakout, and they fade as soon as the short inventory is exhausted. The tell is always the new-crop contract. December at $4.41, up barely a tick on a 6.8% nearby session, is the market saying plainly that the 2026 crop estimate hasn't changed, only the pain tolerance of whoever was short the July contract overnight. Watch what nearby corn does when it has to roll into December. If it rolls at a discount, the rally was fully borrowed from the future."
+    "title": "When conditions slip 4 points in one week, what history says happens next.",
+    "body": "Minnesota soybeans fell from 80 to 76% good-to-excellent in a single weekly report, a four-point slide. That pace matters because USDA research on final-yield relationships shows that sustained condition declines starting before pollination carry more weight than equivalent declines after silking. A four-point drop in late June is not a crisis, but it is the kind of early signal that, if it continues for two or three more weeks, will show up in August yield estimates. The market typically does not price this possibility until the second or third consecutive weekly decline. If next Monday's Crop Progress shows Minnesota soybeans at 72 or below, that is the number that forces a real conversation about new-crop supply. Today at 76%, you are watching the first data point on a potential trend, not reacting to a confirmed one."
   },
   "watch_list": [
     {
-      "time": "Tuesday, today",
-      "desc": "Senate Agriculture Committee farm bill draft release: check commodity title reference prices against current ARC/PLC levels. Any upward adjustment in corn or soybean reference prices is a direct planting and marketing plan input."
+      "time": "Thursday, 7:30 AM CT",
+      "desc": "Weekly export sales: corn above 400K MT confirms the overnight bounce has fundamental support. Below 300K MT, the run is fund positioning, not real demand."
     },
     {
-      "time": "Monday, June 29, 3:00 PM CT",
-      "desc": "USDA Crop Progress: if Minnesota soybeans hold below 77% good-to-excellent or drop further, the weather premium that came back Tuesday has a second leg. Above 79% and flat, today's rally was all short-covering with no follow-through fuel."
+      "time": "Monday, 3:00 PM CT",
+      "desc": "USDA Crop Progress: Minnesota soybeans at 72% or below good-to-excellent is the trigger for a new-crop weather premium conversation."
     },
     {
-      "time": "Thursday, June 26, 7:30 AM CT",
-      "desc": "Weekly Export Sales: soybean sales below 300,000 MT confirm demand hasn't caught up to the Iran/China story. Above 400,000 MT with any Iran attribution and the unpriced demand angle starts becoming priced."
+      "time": "Tuesday ongoing",
+      "desc": "Senate farm bill commodity title draft: watch commodity reference prices and ARC/PLC funding levels. Changes there move producer planting math for 2027."
     },
     {
-      "time": "Tuesday, June 30, 11:00 AM CT",
-      "desc": "USDA Acreage Report: this is the make-or-break data point for whether corn's 52-week position at 64% from its low holds or breaks higher. If planted acres come in below March Prospective Plantings estimates, the weather premium and the acreage premium arrive at the same time."
+      "time": "Week of June 23",
+      "desc": "Cash cattle trade: no clean price reset since the lockout started. The first negotiated cash trade above or below $248 sets the next leg."
+    },
+    {
+      "time": "August 21 deadline",
+      "desc": "U.S.-Iran sanctions waiver expires. If Iranian ag purchases begin before then, watch soybean export sales for unexpected demand. If talks stall, Hormuz risk premium rebuilds."
     }
   ],
   "daily_quote": {
-    "text": "Far more money has been lost by investors preparing for corrections than has been lost in corrections themselves.",
-    "attribution": "Peter Lynch"
+    "text": "Rain does not fall on one roof alone.",
+    "attribution": "African Proverb"
   },
-  "source_summary": "CME Group settlement prices; USDA Crop Progress (June 23, 2026); Brownfield Ag News; Beef Magazine; The Fence Post; OilPrice.com; U.S. Energy Information Administration; Feedstuffs",
+  "source_summary": "USDA Crop Progress (weekly), Brownfield Ag News, Beef Magazine, Feedstuffs, OilPrice.com, EIA, The Fence Post, CME Group settlement prices.",
   "date": "Tuesday, June 23, 2026",
   "meta": {
-    "market_mood": "volatile",
+    "market_mood": "mixed",
     "heat_section": 0,
     "overnight_surprises_count": 1
   },
@@ -189,8 +192,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 103,
-  "generated_at": "2026-06-23T13:23:55.566283+00:00",
+  "issue_number": 104,
+  "generated_at": "2026-06-23T13:35:52.225433+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 1,
   "surprises": [
