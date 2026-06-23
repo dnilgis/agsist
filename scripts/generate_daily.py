@@ -1664,6 +1664,9 @@ def validate_briefing(briefing, locked_prices):
     for fv, fs, fpos in found_values:
         matched = any(kv > 0 and abs(fv - kv) / kv <= 0.05 for kv in known_values.values())
         if not matched:
+            tail = full_text[fpos+len(fs): fpos+len(fs)+12].lower().lstrip()
+            if tail[:7] in ("billion", "million") or tail[:8] == "trillion" or tail[:3] in ("bn ", "mn ", "tn ") or tail[:2] in ("b ", "m "):
+                continue  # aggregate value (e.g. "$17 billion"), not a per-unit commodity price
             for key, (lo, hi) in COMMODITY_RANGES.items():
                 if lo <= fv <= hi:
                     _ctx = full_text[max(0, fpos-55):fpos+25].replace("\n", " ").strip()
