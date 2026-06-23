@@ -89,25 +89,49 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
         q=quotes.get(pk)
         if q and q.get('pctChange') is not None: max_pct=max(max_pct,abs(float(q['pctChange'])))
 
-    # 3) banned verbs + drama-without-evidence + unbacked superlative
+    # 3) banned verbs (always block) + drama/superlative ONLY when dramatizing a
+    # small PRICE move. A drama word in a news/weather sentence ("worst drought")
+    # is legitimate; the gate only fires when the sentence is about a commodity's
+    # price AND the actual move is small. Prevents false blocks on ag-news prose.
     for w in BANNED:
         if w in blob: F('banned-verb','banned drama verb/phrase: "%s"'%w)
-    dh=[w for w in DRAMA if w in blob]
-    if dh and max_pct<3.0: F('drama-evidence','drama language %s but largest real move is %.2f%%'%(dh,max_pct))
-    sh=[w for w in SUPER if w in blob]
-    if sh and not daily.get('superlative_evidence'): F('superlative','unbacked superlative %s'%sh)
+    _PRICECTX = re.compile(r'\$\d|\d+(?:\.\d+)?\s?%|\bclos|\bsettl|\blevel\b|\bcontract\b|\bfutures\b')
+    for loc, text in fields:
+        if loc.startswith('outside_the_pit') or loc.startswith('the_more_you_know'):
+            continue  # news + educational blocks legitimately use strong adjectives
+        for sent in re.split(r'(?<=[.!?])\s+', text):
+            sl = sent.lower()
+            price_ctx = any(k in sl for k in COMM) and bool(_PRICECTX.search(sl))
+            if not price_ctx:
+                continue
+            dh = [w for w in DRAMA if w in sl]
+            if dh and max_pct < 3.0:
+                F('drama-evidence', '%s: drama %s on a price sentence but largest real move is %.2f%%'
+                  % (loc, dh, max_pct))
+            sh = [w for w in SUPER if w in sl]
+            if sh and not daily.get('superlative_evidence'):
+                W('superlative', '%s: superlative %s on a price claim (verify it is backed)' % (loc, sh))
 
-    # 4) level coherence (deterministic Rule 14) — per sentence, per commodity
+    # 4) level coherence (deterministic Rule 14) — per sentence, per commodity.
+    # Band-guard: only compare a $level to a commodity if the level is plausibly
+    # THAT commodity's own price (so a $73 crude level is never matched to $3 natgas).
+    # Skip forward-looking watch_list / spread_to_watch (those are predictions,
+    # not assertions about today's close).
+    LEVEL_BAND = {'corn':(2,9),'beans':(7,20),'wheat':(3,15),'cattle':(90,360),
+                  'feeders':(180,460),'hogs':(40,160),'crude':(20,160),'natgas':(1,30)}
     for loc,text in fields:
+        if loc.startswith('watch_list') or loc.startswith('spread_to_watch'):
+            continue
         for sent in re.split(r'(?<=[.!?])\s+', text):
             sl=sent.lower()
             for kw,(lpk,pk,grain) in COMM.items():
-                if kw in sl and lpk in lp:
+                if kw in sl and lpk in lp and lpk in LEVEL_BAND:
                     lv=float(lp[lpk])
+                    blo,bhi=LEVEL_BAND[lpk]
                     for m in DOLLAR.finditer(sent):
                         level=float(m.group(1))
-                        # ignore obvious non-level $ (billions/millions handled by magnitude)
-                        if level>10000: continue
+                        if not (blo <= level <= bhi):
+                            continue  # this $ is not THIS commodity's price line
                         if DROP_VERB.search(sl) and lv> level*(1+LEVEL_TOL):
                             F('level','%s: "%s..." claims broke below $%s but %s close is $%.4f'%(loc,kw,level,lpk,lv))
                         if HOLD_VERB.search(sl) and lv< level*(1-LEVEL_TOL):
