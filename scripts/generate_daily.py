@@ -416,11 +416,82 @@ def http_get(url, timeout=10):
         return None
 
 
+# ── Front-month resolver (added 2026-06-23) ──────────────────────────────────
+# yfinance continuous tickers (ZC=F/ZS=F/ZW=F) splice across the contract roll,
+# so "corn"/"beans"/"wheat" can return a price stitched from two different
+# contracts. Real example 2026-06-23: corn came back close=437.0 (December's value)
+# on prev=412.5 (July's) => a fake +5.94% that got locked and shipped. We resolve
+# each continuous nearby alias to the real DATED front-month contract present in
+# the same feed, overriding ONLY when they disagree beyond tolerance (a clean
+# continuous quote is left untouched). Self-defends the generator even if the
+# upstream preflight_prices.py gate is skipped.
+_FRONT_MONTH_CANDIDATES = {
+    "corn":  ["corn-jul26", "corn-sep26", "corn-dec", "corn-mar27",
+              "corn-may27", "corn-jul27", "corn-dec27"],
+    "beans": ["beans-jul26", "beans-aug26", "beans-sep26", "beans-nov",
+              "beans-jan27", "beans-mar27", "beans-jul27", "beans-nov27"],
+    "wheat": ["wheat-jul26", "wheat-sep26", "wheat-dec26",
+              "wheat-mar27", "wheat-jul27", "wheat-dec27"],
+}
+_FRONT_MONTH_NUM = {"jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6,
+                    "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12}
+_FRONT_REL_TOL = 0.004  # 0.4%: continuous must agree with dated front this tightly
+
+
+def _front_expired(key, now):
+    """A dated grain contract is treated as rolled/expired after ~mid-month."""
+    suffix = key.split("-")[-1]            # e.g. 'jul26'
+    mon = _FRONT_MONTH_NUM.get(suffix[:3])
+    if mon is None:
+        return False
+    try:
+        yr = 2000 + int(suffix[3:])
+    except ValueError:
+        return False
+    return (yr, mon, 16) <= (now.year, now.month, now.day)
+
+
+def _resolve_front_month(quotes):
+    """Override each continuous grain alias (corn/beans/wheat) with the real
+    dated front-month contract when they disagree (roll-splice contamination).
+    Leaves a clean continuous quote untouched. Logs every override to stderr."""
+    now = datetime.now(timezone.utc)
+    for cont, cands in _FRONT_MONTH_CANDIDATES.items():
+        c = quotes.get(cont)
+        if not c or c.get("close") is None:
+            continue
+        front_key = None
+        for k in cands:
+            q = quotes.get(k)
+            if (q and q.get("close") is not None and not q.get("stale")
+                    and not _front_expired(k, now)):
+                front_key = k
+                break
+        if not front_key:
+            continue
+        f = quotes[front_key]
+        try:
+            fclose = float(f["close"])
+            rel = abs(float(c["close"]) - fclose) / fclose if fclose else 1.0
+        except (TypeError, ValueError, ZeroDivisionError):
+            continue
+        if rel > _FRONT_REL_TOL:
+            print(f"[front-month] {cont} continuous ({c.get('ticker')}) "
+                  f"close={c['close']} disagrees with dated front {front_key} "
+                  f"({f.get('ticker')}) close={f['close']} by {rel * 100:.1f}% "
+                  f"-- using {front_key}", file=sys.stderr)
+            for fld in ("close", "open", "netChange", "pctChange"):
+                c[fld] = f.get(fld)
+            c["resolved_from"] = front_key
+    return quotes
+
+
 def load_prices():
     if not PRICES_PATH.exists():
         print("[error] prices.json not found", file=sys.stderr); return {}, []
     with open(PRICES_PATH) as f: data = json.load(f)
     quotes = data.get("quotes", {}); fetched = data.get("fetched", "")
+    quotes = _resolve_front_month(quotes)  # repair roll-splice contamination before locking prices
     price_lines = []; locked_prices = {}; surprises = []
     for key, label in COMMODITY_LABELS.items():
         q = quotes.get(key)
@@ -1107,7 +1178,7 @@ OUTCOME RUBRIC: be honest, but be accurate. Most calls are PARTIAL. Choose the c
 DO NOT default to "didnt" because "the bounce was thin" or "the move was small."
 A directional call that resolved in the called direction is PLAYED OUT, even if the magnitude was modest. Readers respect accountability, both for being right AND for being wrong. Mislabeling a win as a loss undermines trust as much as the reverse.
 
-Output as the yesterdays_call object in the JSON. Use outcome value 'played_out', 'didnt', or 'pending'.
+Output as the yesterdays_call object in the JSON. Give your best read for outcome ('played_out', 'didnt', or 'pending'), but know it is RE-COMPUTED deterministically from the actual close after you finish (direction AND level both must resolve in the call's favor). Do not strain to justify a verdict — in the summary, describe the call and what the market actually did, factually.\n\n══ TODAY'S CALL (the todays_call object) ══\nMake ONE concrete, falsifiable directional call: {instrument, direction (up/down), level}. It is graded automatically tomorrow against the actual close — BOTH the direction (did it move your way vs today's close) AND the level (did it reach/hold your line) must hold to count as played_out. Take the instrument and level from your highest-conviction section; state a real number in LOCKED TABLE units. A vague call that can't be graded is worse than a wrong one — commit. Omit todays_call only when the market is closed.
 """
 
     thread_block = ""
@@ -1369,6 +1440,11 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
     "outcome": "played_out | didnt | pending",
     "note": "1 sentence on what it means for today. OMIT field entirely on Mondays after long weekends or when no prior call was provided."
   }},
+  "todays_call": {{
+    "instrument": "The ONE instrument this briefing makes its sharpest directional bet on: corn, beans, wheat, cattle, feeders, hogs, crude, or natgas. Match your highest-conviction section.",
+    "direction": "up | down",
+    "level": "Number only, in the SAME units as the LOCKED PRICE TABLE ($/bu grains, $/cwt livestock, $/bbl crude). The price line your call hinges on."
+  }},
   "sections": [
     {{"title": "3-5 words", "icon": "Single emoji", "body": "3-5 sentences with **bold** markdown for emphasis (NEVER <strong> HTML tags). All prices from LOCKED TABLE. VOICE. MUST thread the catalyst (RULE 14) into the body prose, do not just append it.",
       "catalyst": "OPTIONAL but recommended. 8-15 words naming the specific news/data/event that drove or contextualizes this section's price action. Example: 'USDA crop progress shows corn at 42%, ahead of 5-year avg.' Empty string allowed only when no relevant news in bucket.",
@@ -1414,7 +1490,7 @@ SECTIONS:
 
 OMISSIONS, set fields to null or empty objects when not applicable:
 - yesterdays_call: omit on Mondays after long weekends if no recent call provided. Otherwise required Tue-Fri.
-- spread_to_watch: required every weekday. Pick something meaningful, not filler.
+- spread_to_watch: required every weekday. Pick something meaningful, not filler.\n- todays_call: required every weekday (a real direction+level call). Omit only when the market is closed.
 - weekly_thread: required every weekday. Monday sets, Tue-Thu advance, Fri resolves.
 - basis: required every weekday. Empty strings on weekends/holidays.
 - outside_the_pit: REQUIRED every day, weekday and weekend. 3 items. Pull from news block. (Per RULE 16.)

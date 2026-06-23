@@ -199,7 +199,7 @@ def section_one_number(daily):
     ctx = strip_html(one.get("context", ""))
     if not val:
         return None
-    line1 = f"📊 THE NUMBER: {val}" + (f"  ({unit})" if unit else "")
+    line1 = f"THE NUMBER: {val}" + (f"  ({unit})" if unit else "")
     return f"{line1}\n{ctx}" if ctx else line1
 
 
@@ -267,7 +267,7 @@ def section_briefing_blocks(daily):
         # Header line
         badges = []
         if is_heat:
-            badges.append("🔥 TOP STORY")
+            badges.append("TOP STORY")
         if is_surprise:
             badges.append("⚡ OVERNIGHT")
         conv_badge = CONVICTION_BADGE.get(conviction)
@@ -282,7 +282,7 @@ def section_briefing_blocks(daily):
         if bottom:
             block.append(f"> {bottom}")
         if action:
-            block.append(f"🎯 ACTION: {action}")
+            block.append(f"ACTION: {action}")
         rendered.append("\n".join(block))
 
     return "\n\n".join(rendered) if rendered else None
@@ -315,7 +315,7 @@ def section_basis(daily):
     body = strip_html(b.get("body", ""))
     if not headline and not body:
         return None
-    parts = ["📍 BASIS PULSE"]
+    parts = ["BASIS PULSE"]
     if headline:
         parts.append(headline)
     if body:
@@ -331,7 +331,7 @@ def section_tmyk(daily):
     body = strip_html(t.get("body", ""))
     if not body:
         return None
-    parts = ["🧠 THE MORE YOU KNOW"]
+    parts = ["THE MORE YOU KNOW"]
     if title:
         parts.append(title)
     parts.append(body)
@@ -342,7 +342,7 @@ def section_watch_list(daily):
     wl = daily.get("watch_list", [])
     if not isinstance(wl, list) or not wl:
         return None
-    parts = ["📅 THIS WEEK'S WATCH LIST"]
+    parts = ["THIS WEEK'S WATCH LIST"]
     for item in wl:
         if not isinstance(item, dict):
             continue
@@ -367,7 +367,7 @@ def section_weekly_thread(daily):
     if not q:
         return None
     day_str = f"  (Day {day})" if day else ""
-    parts = [f"🧵 THIS WEEK'S THREAD{day_str}", q]
+    parts = [f"THIS WEEK'S THREAD{day_str}", q]
     if status:
         parts.append(status)
     return "\n".join(parts)
@@ -381,7 +381,7 @@ def section_quote(daily):
     attr = (q.get("attribution") or "").strip()
     if not text:
         return None
-    parts = [f'💬 "{text}"']
+    parts = [f'"{text}"']
     if attr:
         parts.append(f"   — {attr}")
     return "\n".join(parts)
@@ -536,6 +536,40 @@ def main():
     if not daily:
         print("data/daily.json missing — cannot generate brief", file=sys.stderr)
         return 1
+
+    # ── SEND GUARD (added 2026-06-23) ────────────────────────────────────────
+    # Last line of defense before subscribers. Refuse to send a briefing that
+    # didn't pass validation. Runs the deterministic briefing_gate if available
+    # (prose vs locked prices vs clean feed); falls back to the generator's own
+    # price_validation_clean flag. Set FORCE_SEND=1 to override for a known-good
+    # manual run.
+    if not os.environ.get("FORCE_SEND"):
+        gate_ok, gate_reason = True, ""
+        # staleness: never send a briefing that is not for today (a blocked
+        # generation leaves yesterday's daily.json committed; without this the
+        # separate send workflow would mail stale content under today's subject).
+        _stamp = str(daily.get("generated_at") or daily.get("date") or "")
+        if today.isoformat() not in _stamp and today.strftime("%Y-%m-%d") not in _stamp:
+            print(f"BLOCKED — daily.json is not dated today ({_stamp!r} vs {today}); not sending stale brief.",
+                  file=sys.stderr)
+            return 1
+        try:
+            import briefing_gate
+            gate_ok, issues = briefing_gate.run(daily, prices, today)
+            if not gate_ok:
+                gate_reason = "; ".join(f"{c}: {m}" for s, c, m in issues if s == "FAIL")
+        except ImportError:
+            # briefing_gate not importable — fall back to the generator's flag
+            if daily.get("price_validation_clean") is False:
+                gate_ok, gate_reason = False, "price_validation_clean is False"
+        except Exception as e:
+            gate_ok, gate_reason = False, f"briefing_gate raised: {e}"
+        if not gate_ok:
+            print(f"BLOCKED — briefing failed validation, not sending:\n  {gate_reason}",
+                  file=sys.stderr)
+            print("  (set FORCE_SEND=1 only if you have manually verified the briefing)",
+                  file=sys.stderr)
+            return 1
 
     email_body = build_email_body(daily, prices, today)
     sms_body = build_sms(daily, today)

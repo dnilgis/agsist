@@ -101,12 +101,57 @@ def compute_seasonality(pairs):
         return [50] * 12
     return [int(round(100.0 * (mn - lo) / (hi - lo))) for mn in means]
 
+def load_clean_cur():
+    """Current front-month price per page-key, in display units, taken from the
+    GATE-1-cleaned data/prices.json. build_price_percentile fetches its own 5-yr
+    history from the CONTINUOUS tickers (ZC=F/ZS=F/ZW=F) — which splice across the
+    contract roll — so the latest bar can be a fabricated value (the June-23 corn
+    437 vs the real 409). We rank against the continuous history for context, but the
+    CURRENT value that gets ranked + displayed must be the real front-month. Repairs
+    in memory so this is correct even if the upstream prices.yml gate hasn't run.
+    Returns {} if prices.json is unavailable."""
+    try:
+        with open("data/prices.json") as f:
+            pdata = json.load(f)
+    except Exception:
+        return {}
+    try:
+        import preflight_prices
+        preflight_prices.run(pdata, repair=True)   # defense-in-depth: resolve contamination in memory
+    except Exception as e:
+        print(f"[price-stats] preflight unavailable ({e}); using prices.json as-is", file=sys.stderr)
+    quotes = pdata.get("quotes", {})
+    keymap = {"corn": "corn", "soybean": "beans", "wheat": "wheat",
+              "cattle": "cattle", "feeders": "feeders"}
+    out = {}
+    for page_key, jk in keymap.items():
+        q = quotes.get(jk)
+        if q and q.get("close") is not None:
+            scale = TICKERS[page_key][1]
+            out[page_key] = round(float(q["close"]) * scale, 4)
+    return out
+
+
 def main():
     out = {"updated": dt.datetime.utcnow().replace(microsecond=0).isoformat() + "Z"}
+    clean_cur = load_clean_cur()
+    if clean_cur:
+        print(f"[price-stats] clean front-month current values: "
+              + ", ".join(f"{k}=${v:.2f}" for k, v in clean_cur.items()))
     ok = 0
     for key, (tk, scale) in TICKERS.items():
         try:
             closes, pairs = fetch_closes(tk, scale)
+            if key in clean_cur:
+                # use the GATE-1-clean front-month as the current observation, so a
+                # roll-splice in the continuous series can't poison cur/hi/percentile.
+                if closes:
+                    if abs(closes[-1] - clean_cur[key]) > 0.01 * max(clean_cur[key], 1):
+                        print(f"[price-stats] {key}: continuous last {closes[-1]:.4f} "
+                              f"replaced with clean front-month {clean_cur[key]:.4f}", file=sys.stderr)
+                    closes[-1] = clean_cur[key]
+                else:
+                    closes = [clean_cur[key]]
             stats = compute(closes)
             if stats:
                 stats["read"] = read_sentence(stats["pct"], key)

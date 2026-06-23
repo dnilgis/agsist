@@ -58,6 +58,7 @@ OPTIONAL_TOP_LEVEL = [
     # v4.0 (the unmissable upgrade)
     "yesterdays_call",     # {summary, outcome: played_out|didnt|pending, note}
     "spread_to_watch",     # {label, level, commentary}
+    "todays_call",         # {instrument, direction: up|down, level} — graded deterministically
     "weekly_thread",       # {question, day: 1-5, status_text}
     "critic_pass",         # {version, ran_at, threshold, final_scores, rewrites_applied, dry_run}
     # v4.2 (Phase 2)
@@ -264,6 +265,24 @@ def validate(data: dict) -> tuple[bool, list[str], list[str]]:
                         f"{sorted(YC_OUTCOMES)} when summary is set "
                         f"(got {yc.get('outcome')!r})"
                     )
+
+    # todays_call (v4.7) — the falsifiable forward call, graded deterministically
+    # (direction AND level) by grade_calls.py. Shape-checked here.
+    tc = data.get("todays_call")
+    if tc is not None:
+        if not isinstance(tc, dict):
+            errors.append("'todays_call' must be an object")
+        elif tc:
+            direction = (tc.get("direction") or "").strip().lower()
+            if direction not in ("up", "down"):
+                errors.append("todays_call.direction must be 'up' or 'down' "
+                              f"(got {tc.get('direction')!r})")
+            try:
+                float(tc.get("level"))
+            except (TypeError, ValueError):
+                errors.append(f"todays_call.level must be a number (got {tc.get('level')!r})")
+            if not (tc.get("instrument") or "").strip():
+                errors.append("todays_call.instrument is required when block present")
 
     # spread_to_watch (v4.0) — coherent shape
     sp = data.get("spread_to_watch")

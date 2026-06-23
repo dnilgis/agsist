@@ -24,6 +24,10 @@ Runs in daily.yml after the briefing publishes. Exit 0 ok, 2 nothing to build.
 
 import json
 import sys
+try:
+    import grade_calls
+except Exception:
+    grade_calls = None
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -43,15 +47,36 @@ def main():
         print("[scorecard] no archive briefings"); sys.exit(2)
 
     records = []
+    loaded = {}
+    def load(dt):
+        if dt not in loaded:
+            try:
+                loaded[dt] = json.loads((ARCHIVE / f"{dt}.json").read_text())
+            except Exception as e:
+                print(f"[scorecard] skip {dt}: {e}"); loaded[dt] = None
+        return loaded[dt]
+
     for i, d in enumerate(dates):
-        try:
-            briefing = json.loads((ARCHIVE / f"{d}.json").read_text())
-        except Exception as e:
-            print(f"[scorecard] skip {d}: {e}")
+        briefing = load(d)
+        if briefing is None:
             continue
         yc = briefing.get("yesterdays_call") or {}
         summary = (yc.get("summary") or "").strip()
-        outcome = (yc.get("outcome") or "").strip()
+        stored = (yc.get("outcome") or "").strip()
+
+        # Bulletproof: recompute the outcome from the structured call + actual
+        # closes (direction AND level). The public record cannot show a miss as a
+        # win even if a bad outcome reached the archive. Falls back to the stored
+        # value only when no structured call exists (legacy entries).
+        outcome = stored
+        prior = load(dates[i - 1]) if i > 0 else None
+        if grade_calls is not None and prior is not None:
+            computed, _c, _p0, _p1, _n = grade_calls.grade_from_archives(briefing, prior)
+            if computed in VALID:
+                if stored and stored != computed:
+                    print(f"[scorecard] {d}: stored outcome '{stored}' -> recomputed '{computed}'")
+                outcome = computed
+
         if not summary or outcome not in VALID:
             continue
         records.append({
