@@ -55,7 +55,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DAILY_PATH = REPO_ROOT / "data" / "daily.json"
 ARCHIVE_DIR = REPO_ROOT / "data" / "daily-archive"
 ANTHROPIC_API = "https://api.anthropic.com/v1/messages"
-MODEL = "claude-sonnet-4-20250514"
+MODEL = "claude-sonnet-4-6"  # match generator; -20250514 now 404s
 
 # Make the generator importable so we can re-archive after rewrite
 sys.path.insert(0, str(REPO_ROOT / "scripts"))

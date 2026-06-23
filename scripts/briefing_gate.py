@@ -132,10 +132,11 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
                         level=float(m.group(1))
                         if not (blo <= level <= bhi):
                             continue  # this $ is not THIS commodity's price line
+                        _snip=(sent[:140]+'…') if len(sent)>140 else sent
                         if DROP_VERB.search(sl) and lv> level*(1+LEVEL_TOL):
-                            F('level','%s: "%s..." claims broke below $%s but %s close is $%.4f'%(loc,kw,level,lpk,lv))
+                            F('level','%s: %s close $%.4f did not break below $%s | "%s"'%(loc,lpk,lv,level,_snip))
                         if HOLD_VERB.search(sl) and lv< level*(1-LEVEL_TOL):
-                            F('level','%s: "%s..." claims held above $%s but %s close is $%.4f'%(loc,kw,level,lpk,lv))
+                            F('level','%s: %s close $%.4f did not hold above $%s | "%s"'%(loc,lpk,lv,level,_snip))
 
     # 5) %-move claims near a commodity reconcile to feed pct
     for loc,text in fields:
