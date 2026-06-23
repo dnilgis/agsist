@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 22 Jun 2026 15:57:49 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 23 Jun 2026 13:24:14 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN REVERSES 7% DROP WITH 6.8% GAIN</title>
+      <link>https://agsist.com/daily/2026-06-23</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-23</guid>
+      <pubDate>Tue, 23 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Corn went from its worst day in months to its best in one session. Nearby corn closed at $4.41, up 28 cents, fully erasing Monday's 7% drop with a 6.8% rally that the overnight market turned into the story before most farmers finished morning chores. Monday's USDA Crop Progress at 3 PM CT showed Minnesota corn conditions slipping a point to 79% good-to-excellent, soybeans down four points to 76%, and Illinois reporting early-season moisture relief in the north while the southeast stays dry. That uneven rainfall picture is exactly the kind of contradictory crop condition read that takes a market already oversold and hands it a reason to reverse hard. The weekly thread question from Monday now has a sharper edge: if the Belt is ahead of pace but conditions are already softening in Minnesota, the weather premium the market sold off Monday may have come back Tuesday and then some.
+Old-crop corn posted its biggest single-session recovery in months after Monday's 7% breakdown; the Belt rally, crop condition data, and a developing Iran trade angle are all in play at once.
+• CORN SNAPS BACK HARD
+  → Old-crop bushels still in storage: this is the window that closed Monday reopening. Evaluate basis now before next Monday's Crop Progress stabilizes the condition reads and removes the short-covering fuel.
+• BEANS FIRM, MEAL LEADS
+• CATTLE FIRMS, SCREWWORM STAYS LOUD
+Read more: https://agsist.com/daily/2026-06-23</description>
+    </item>
     <item>
       <title>CORN FALLS 7%; CROP PROGRESS DUE AT 3 PM</title>
       <link>https://agsist.com/daily/2026-06-22</link>
@@ -362,18 +375,6 @@ Live cattle surge 3.8% while feeders fall 1.9%, splitting the complex wider than
 • Grains Mark Holiday Time
 • Energy Eases Iran Premium
 Read more: https://agsist.com/daily/2026-05-25</description>
-    </item>
-    <item>
-      <title>CATTLE SPLIT WIDENS, GRAINS HOLD GAINS INTO HOLIDAY</title>
-      <link>https://agsist.com/daily/2026-05-24</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-24</guid>
-      <pubDate>Sun, 24 May 2026 05:00:00 -0600</pubDate>
-      <description>The cattle market can't decide if it's broken or just bent. Live cattle closed Friday at $239.60, down a nickel, while feeders crashed 1.9% to $349.85. That 34-point spread between the two contracts is the widest since March and it's telling a story about processing capacity that next week's Cattle on Feed report will either confirm or contradict. The funds liquidated 8,000 feeder contracts Friday with no news driving it.
-Feeders drop 1.9% Friday while live cattle barely move, setting up Memorial Day week binary test.
-• Grains Mark Holiday Time
-• Cattle Split Widens
-• Energy Holds Iran Premium
-Read more: https://agsist.com/daily/2026-05-24</description>
     </item>
   </channel>
 </rss>
