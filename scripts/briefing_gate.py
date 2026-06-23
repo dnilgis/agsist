@@ -111,7 +111,7 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
             _dsnip=(sent[:130]+'…') if len(sent)>130 else sent
             dh = [w for w in DRAMA if w in sl]
             if dh and max_pct < 3.0:
-                F('drama-evidence', '%s: drama %s but largest real move is %.2f%% | "%s"'
+                W('drama-evidence', '%s: drama %s but largest real move is %.2f%% | "%s"'
                   % (loc, dh, max_pct, _dsnip))
             sh = [w for w in SUPER if w in sl]
             if sh and not daily.get('superlative_evidence'):
@@ -149,9 +149,9 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
                 lv=float(lp[lpk])
                 _snip=(sent[:140]+'…') if len(sent)>140 else sent
                 if DROP_VERB.search(sl) and lv> level*(1+LEVEL_TOL):
-                    F('level','%s: %s close $%.4f did not break below $%s | "%s"'%(loc,lpk,lv,level,_snip))
+                    W('level','%s: %s close $%.4f did not break below $%s | "%s"'%(loc,lpk,lv,level,_snip))
                 if HOLD_VERB.search(sl) and lv< level*(1-LEVEL_TOL):
-                    F('level','%s: %s close $%.4f did not hold above $%s | "%s"'%(loc,lpk,lv,level,_snip))
+                    W('level','%s: %s close $%.4f did not hold above $%s | "%s"'%(loc,lpk,lv,level,_snip))
 
     # 5) %-move claims near a commodity reconcile to feed pct
     for loc,text in fields:
