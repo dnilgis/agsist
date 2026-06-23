@@ -171,5 +171,5 @@ jobs:
           git config user.email "bot@agsist.com"
           git add data/daily.json data/daily-archive/ daily/ feed.xml sitemap.xml data/scorecard.json index.html
           git diff --staged --quiet || git commit -m "AGSIST Daily — $(date -u +%Y-%m-%d)"
-          git pull --rebase origin main
+          git pull --rebase --autostash origin main
           git push
