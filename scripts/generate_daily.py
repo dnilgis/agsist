@@ -1675,6 +1675,56 @@ def validate_briefing(briefing, locked_prices):
     return len(warnings) == 0, warnings
 
 
+def fix_weekday_labels(briefing, today=None):
+    """Deterministically correct 'Weekday Month Day' strings whose weekday does not
+    match the actual date (e.g. 'Monday June 30' when June 30 is a Tuesday). USDA
+    report references in watch_list routinely get the day-of-week wrong; this fixes
+    them so the briefing is factually correct and the gate's calendar check passes."""
+    import calendar as _cal
+    if today is None:
+        today = datetime.now().date()
+    months = {m.lower(): i for i, m in enumerate(_cal.month_name) if m}
+    pat = re.compile(
+        r'\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s+'
+        r'(January|February|March|April|May|June|July|August|September|'
+        r'October|November|December)\s+(\d{1,2})\b')
+    fixes = []
+
+    def _resolve(mon_idx, day):
+        for y in (today.year, today.year + 1):
+            try:
+                d = datetime(y, mon_idx, day).date()
+            except ValueError:
+                continue
+            if d >= today - timedelta(days=2):
+                return d
+        try:
+            return datetime(today.year, mon_idx, day).date()
+        except ValueError:
+            return None
+
+    def _repl(m):
+        wd, mon, day = m.group(1), m.group(2), int(m.group(3))
+        d = _resolve(months[mon.lower()], day)
+        if d is None:
+            return m.group(0)
+        correct = d.strftime('%A')
+        if correct.lower() != wd.lower():
+            fixes.append(f"{wd} {mon} {day} -> {correct}")
+            return f"{correct} {mon} {day}"
+        return m.group(0)
+
+    for item in briefing.get("watch_list", []) or []:
+        for k in ("time", "desc"):
+            if isinstance(item.get(k), str):
+                item[k] = pat.sub(_repl, item[k])
+    for sec in briefing.get("sections", []) or []:
+        for k in ("body", "bottom_line"):
+            if isinstance(sec.get(k), str):
+                sec[k] = pat.sub(_repl, sec[k])
+    return briefing, fixes
+
+
 SPONSOR_OVERRIDE = None
 
 SPONSOR_HOUSE_AD = {
@@ -3258,6 +3308,10 @@ def main():
     # Catches drama verbs in headlines/section titles/takeaways/TMYK titles that
     # the critic cannot rewrite (not in weakest_target enum) or chose not to.
     briefing, _scrub_log = scrub_drama_verbs(briefing)
+
+    briefing, _wd_fixes = fix_weekday_labels(briefing)
+    if _wd_fixes:
+        print(f"  Weekday corrections: {_wd_fixes}")
 
     locked_prices = price_data.get("locked_prices", {})
     is_clean, val_warnings = validate_briefing(briefing, locked_prices)

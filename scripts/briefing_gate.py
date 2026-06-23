@@ -35,7 +35,9 @@ DRAMA=['reversal','snap back','snapped back','snaps back','biggest','worst','bes
        'record','historic','massive','dramatic','meltdown']
 SUPER=['of the summer','of the year','of the month','in months','in years','in weeks','all-time']
 DROP_VERB=re.compile(r'\b(broke|below|under|fell through|lost|breaking)\b')
-HOLD_VERB=re.compile(r'\b(above|over|held|reclaim\w*|broke above|back above|cleared)\b')
+HOLD_VERB=re.compile(r'\b(above|held|reclaim\w*|broke above|back above|cleared)\b')
+# spread/carry/structural sentences cite multiple contract prices; never level-check them
+STRUCT_CTX=re.compile(r'\b(spread|carry|basis|curve|ratio|new-crop|old-crop|cents over|over nearby|invers\w+)\b')
 DOLLAR=re.compile(r'\$\s?(\d{1,4}(?:\.\d{1,2})?)')
 PCT=re.compile(r'([+\-]?\d+(?:\.\d+)?)\s?%')
 WEEKDATE=re.compile(r'\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s+'
@@ -104,10 +106,13 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
             price_ctx = any(k in sl for k in COMM) and bool(_PRICECTX.search(sl))
             if not price_ctx:
                 continue
+            if STRUCT_CTX.search(sl):
+                continue  # "biggest carry" / "dramatic curve" describe structure, not a move
+            _dsnip=(sent[:130]+'…') if len(sent)>130 else sent
             dh = [w for w in DRAMA if w in sl]
             if dh and max_pct < 3.0:
-                F('drama-evidence', '%s: drama %s on a price sentence but largest real move is %.2f%%'
-                  % (loc, dh, max_pct))
+                F('drama-evidence', '%s: drama %s but largest real move is %.2f%% | "%s"'
+                  % (loc, dh, max_pct, _dsnip))
             sh = [w for w in SUPER if w in sl]
             if sh and not daily.get('superlative_evidence'):
                 W('superlative', '%s: superlative %s on a price claim (verify it is backed)' % (loc, sh))
@@ -124,6 +129,8 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
             continue
         for sent in re.split(r'(?<=[.!?])\s+', text):
             sl=sent.lower()
+            if STRUCT_CTX.search(sl):
+                continue  # spread/carry sentence cites multiple contracts; nearby-price check is invalid
             kw_pos=[]
             for kw,(lpk,pk,grain) in COMM.items():
                 i=sl.find(kw)
