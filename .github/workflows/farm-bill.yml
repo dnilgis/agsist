@@ -1,0 +1,47 @@
+name: Bake farm-bill page
+
+# Edit farm-bill.json in the GitHub browser editor and commit.
+# This Action re-bakes the static farm-bill.html and commits it back,
+# so the values that AI crawlers read are always current — no local tooling.
+
+on:
+  push:
+    paths:
+      - "farm-bill.json"
+      - "build_farmbill.py"
+      - ".github/workflows/farm-bill.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bake-farm-bill
+  cancel-in-progress: false
+
+jobs:
+  bake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      # If you keep the data file in /data/, change --json below to data/farm-bill.json
+      # (and likewise move farm-bill.json there). Paths are relative to repo root.
+      - name: Bake static HTML from JSON
+        run: python3 build_farmbill.py --html farm-bill.html --json farm-bill.json
+
+      - name: Commit if changed
+        run: |
+          if [ -n "$(git status --porcelain farm-bill.html)" ]; then
+            git config user.name  "agsist-bot"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add farm-bill.html
+            git commit -m "chore: bake farm-bill.html from farm-bill.json [skip ci]"
+            git push
+          else
+            echo "farm-bill.html already in sync — nothing to commit."
+          fi
