@@ -1,0 +1,38 @@
+{
+  "_comment": "AGSIST farm-bill page data. Edit this, then run build_farmbill.py (or push — the GitHub Action bakes it). Values are baked into static HTML so AI crawlers see them. HTML entities allowed in text fields. Keep <b> for emphasis.",
+  "updated": "2026-06-23",
+  "updated_display": "Jun 23, 2026",
+  "pills": [
+    { "cls": "live", "html": "House passed <b>224&ndash;200</b> &middot; Apr 30, 2026" },
+    { "cls": "warn", "html": "Senate draft released <b>Jun 23, 2026</b>" },
+    { "cls": "warn", "html": "Extension expires <b>Sep 30, 2026</b>" }
+  ],
+  "tldr": [
+    { "k": "Status", "v": "The House passed <b>H.R. 7567</b> (224&ndash;200). The Senate released its draft, the <b>Agricultural Act of 2026</b>, on Jun 23. <b>Neither is law.</b>" },
+    { "k": "The money", "v": "Programs carry a <span class=\"num\">$1.374T</span> ten-year baseline. Each bill's own change scores about <b>budget-neutral</b>." },
+    { "k": "Biggest line", "v": "Nutrition (SNAP) is <span class=\"num\">71.7%</span> of the baseline. Four titles are <span class=\"num\">~99%</span> of it." },
+    { "k": "Deadline", "v": "The current extension expires <span class=\"num\">Sep 30, 2026</span> &mdash; the practical cutoff to finish or extend again." },
+    { "k": "Next step", "v": "Senate committee markup is expected in <b>July</b>, then a conference to reconcile the two bills." },
+    { "k": "Not in either bill", "v": "The <span class=\"num\">$15&ndash;17B</span> in near-term economic aid producers are pushing for sits outside both farm bills." }
+  ],
+  "compare": [
+    { "k": "Status &amp; length", "h": "Passed the House 224&ndash;200 on Apr 30; ~800 pages; CBO-scored.", "s": "Discussion draft released Jun 23; 902 pages; markup expected July; not yet scored." },
+    { "k": "Overall cost", "h": "<b>Budget-neutral</b> by CBO (+$162M over 6 yr, $0 over 11 yr).", "s": "Described as <b>budget-neutral</b>; awaiting a detailed CBO score." },
+    { "k": "Conservation", "h": "Cuts <b>EQIP &minus;$786M</b> and redistributes to other conservation programs.", "s": "Raises easement cost-share (50&rarr;60%); new Forest Conservation Easement and State Conservation Assistance programs." },
+    { "k": "Farm loan limits", "h": "Raises maximum direct and guaranteed loan amounts.", "s": "<b>Marquee item:</b> guaranteed operating to $3M, ownership to $3.5M, indexed to inflation." },
+    { "k": "Trade", "h": "Moves Food for Peace administration toward USDA; extends Bill Emerson Trust.", "s": "<b>More than doubles</b> MAP and FMD funding; defends common food names abroad." },
+    { "k": "Nutrition (SNAP)", "h": "Extends SNAP through 2031; states may outsource certification.", "s": "Extends SNAP; staffing flexibility, permanent online purchasing, Buy American school meals." },
+    { "k": "Contentious riders", "h": "Pesticide-labeling and E15 fights nearly derailed floor passage.", "s": "<b>Deliberately sidesteps</b> hemp, year-round E15, and animal-confinement laws." },
+    { "k": "Economic aid", "h": "Not included.", "s": "Not included &mdash; a separate $15&ndash;17B aid push is moving outside the bill." }
+  ],
+  "tracker": [
+    { "stage": "House committee", "desc": "House Ag reported it favorably, 34&ndash;17 &middot; Mar 5, 2026", "mk": "done", "label": "passed" },
+    { "stage": "CBO score", "desc": "House bill scored budget-neutral over 11 years &middot; Apr 24, 2026", "mk": "done", "label": "done" },
+    { "stage": "House floor", "desc": "Passed 224&ndash;200, bipartisan &middot; Apr 30, 2026", "mk": "done", "label": "passed" },
+    { "stage": "Senate draft", "desc": "Boozman released the Agricultural Act of 2026 discussion draft &middot; Jun 23, 2026", "mk": "done", "label": "released" },
+    { "stage": "Senate markup", "desc": "Committee markup expected in July; floor passage needs 60 votes", "mk": "now", "label": "next up" },
+    { "stage": "Conference", "desc": "Reconcile the House and Senate versions into one bill", "mk": "next", "label": "ahead" },
+    { "stage": "Enactment", "desc": "CBO assumes a signing around the start of August 2026", "mk": "next", "label": "ahead" },
+    { "stage": "Deadline", "desc": "Current extension lapses without action &middot; Sep 30, 2026", "mk": "now", "label": "hard date" }
+  ]
+}
