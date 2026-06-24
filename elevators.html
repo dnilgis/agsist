@@ -24,7 +24,7 @@
 <meta property="og:site_name"   content="AGSIST">
 <meta property="og:locale"      content="en_US">
 <meta property="og:title"       content="Grain Elevator Cash Bids by State &#8212; Corn Belt Coverage | AGSIST">
-<meta property="og:description" content="Live cash grain bids from 1,000+ elevators and grain facilities across the Corn Belt, Great Plains, and Gulf Coast. Free, mobile-first, no subscription.">
+<meta property="og:description" content="Live cash grain bids from 1,000+ elevators and grain facilities across the Corn Belt, Great Plains, and Gulf Coast. Mobile-first, no account or subscription required.">
 <meta property="og:url"         content="https://agsist.com/elevators">
 <meta property="og:image"       content="https://agsist.com/img/og/agsist.jpg">
 <meta property="og:image:width" content="1200">
@@ -33,7 +33,7 @@
 <meta name="twitter:site"       content="@agsist">
 <meta name="twitter:creator"    content="@agsist">
 <meta name="twitter:title"      content="Grain Elevator Cash Bids &#8212; Corn Belt Coverage | AGSIST">
-<meta name="twitter:description" content="Live cash grain bids from elevators across the Corn Belt and Great Plains. Enter ZIP. Free.">
+<meta name="twitter:description" content="Live cash grain bids from elevators across the Corn Belt and Great Plains. Enter your ZIP — no account needed.">
 <meta name="twitter:image"      content="https://agsist.com/img/og/agsist.jpg">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
@@ -48,59 +48,94 @@
    ]}},
   {"@type":"FAQPage","mainEntity":[
     {"@type":"Question","name":"Which grain elevators does AGSIST cover?",
-     "acceptedAnswer":{"@type":"Answer","text":"AGSIST displays cash bids from grain elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, and Gulf Coast sourced from the Barchart OnDemand API. Coverage includes independent elevators, co-operative grain facilities, and major grain company locations. Enter your ZIP code on the cash bids page to see available bids near you."}},
-    {"@type":"Question","name":"How do I find my local elevator's grain price?",
-     "acceptedAnswer":{"@type":"Answer","text":"Go to agsist.com/cash-bids and enter your ZIP code. AGSIST will show available corn, soybean, and wheat bids from elevators within your area, sorted by distance. Bids are sourced from Barchart OnDemand and updated throughout the trading day."}},
-    {"@type":"Question","name":"Does AGSIST cover co-op grain facilities?",
-     "acceptedAnswer":{"@type":"Answer","text":"Yes. AGSIST includes co-operative grain facilities alongside independent elevators in its cash bids coverage. Major co-ops including Alcivia, CGB Enterprises, and others across the Corn Belt are represented where their bids are available through the Barchart data feed."}},
+     "acceptedAnswer":{"@type":"Answer","text":"AGSIST displays cash bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, and Gulf Coast sourced from the Barchart OnDemand API. Coverage includes independent elevators, co-operative grain facilities, and major grain company locations. Enter your ZIP code on the cash bids page to see available bids near you."}},
+    {"@type":"Question","name":"How do I find my local elevator's grain price on AGSIST?",
+     "acceptedAnswer":{"@type":"Answer","text":"Go to agsist.com/cash-bids and enter your 5-digit ZIP code. AGSIST will show available corn, soybean, and wheat bids from grain facilities within your area, sorted by distance. Bids are sourced from Barchart OnDemand and updated throughout the trading day."}},
     {"@type":"Question","name":"How current are the cash bid prices?",
-     "acceptedAnswer":{"@type":"Answer","text":"Cash bids on AGSIST are sourced from the Barchart OnDemand API and reflect elevator-posted bids updated during market hours. Bids are the elevator's posted price and may lag real-time futures by minutes. Always confirm final bids directly with the elevator before delivery."}},
-    {"@type":"Question","name":"Which states does AGSIST cover for grain elevator bids?",
-     "acceptedAnswer":{"@type":"Answer","text":"AGSIST covers grain producers across the Corn Belt, Great Plains, and major grain-producing states. Coverage depends on Barchart data availability for each elevator. Enter your ZIP to see what's available in your area."}}
+     "acceptedAnswer":{"@type":"Answer","text":"Cash bids are sourced from the Barchart OnDemand API and reflect elevator-posted prices updated during trading hours. Prices may lag real-time futures by minutes depending on when the elevator last posted. Always confirm the current bid directly with the elevator before loading or hauling grain."}},
+    {"@type":"Question","name":"My elevator isn't showing up. What can I do?",
+     "acceptedAnswer":{"@type":"Answer","text":"Coverage depends on whether your elevator posts bids through the Barchart data network. Some smaller independent elevators may not participate. If your elevator isn't listed, email sig@farmers1st.com and I'll investigate whether it's available and can be added. I'm actively working to expand coverage across the Corn Belt."}},
+    {"@type":"Question","name":"Is AGSIST affiliated with any elevator or grain company?",
+     "acceptedAnswer":{"@type":"Answer","text":"No. AGSIST is an independent agricultural intelligence dashboard built and operated by Sigurd Lindquist, a crop insurance agent and grain farmer. It has no ownership, financial, or commercial relationship with any elevator, co-op, or grain company. Cash bid data is sourced neutrally from the Barchart OnDemand API."}}
   ]}
 ]}
 </script>
 <style>
-html { overflow-x: hidden; overflow-x: clip; width: 100%; }
-body { overflow-x: hidden; overflow-x: clip; width: 100%; }
+html{overflow-x:hidden;overflow-x:clip;width:100%}
+body{overflow-x:hidden;overflow-x:clip;width:100%}
 button,a,[role="button"]{touch-action:manipulation}
 .el-page{max-width:980px;margin:0 auto;padding:0 1rem 4rem}
-.el-hero{padding:1.4rem 0 1.1rem;border-bottom:1px solid var(--border);margin-bottom:1.35rem}
-.el-eyebrow{font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.32rem}
-.el-hero h1{font-family:'Oswald',sans-serif;font-size:1.9rem;font-weight:800;line-height:1.1;color:var(--text);text-transform:uppercase;margin:0 0 .4rem}
-@media(min-width:640px){.el-hero h1{font-size:2.4rem}}
-.el-hero p{font-size:.85rem;color:var(--text-dim);line-height:1.6;max-width:56rem;margin:.3rem 0 0}
-.el-cta{display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem;padding:.65rem 1.4rem;border-radius:8px;background:var(--green);color:#fff;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;text-decoration:none;letter-spacing:.04em;touch-action:manipulation;min-height:44px}
-.el-cta:hover{background:#2d7a2f}
-.el-h2{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:2rem 0 1rem}
-.el-h2:first-child{margin-top:0}
-.el-state-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:1.5rem}
-.el-state-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem}
-.el-state-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.65rem}
-.el-state-icon{font-size:1.2rem}
-.el-state-name{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;text-transform:uppercase;color:var(--text)}
-.el-state-sub{font-size:.68rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-left:auto}
-.el-elevator-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.28rem}
-.el-elevator-list li{font-size:.76rem;color:var(--text-dim);padding:.22rem 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:.4rem}
-.el-elevator-list li:last-child{border-bottom:none}
-.el-elevator-list li::before{content:'\2713';color:var(--green);font-size:.65rem;flex-shrink:0}
-.el-note{background:rgba(230,176,66,.06);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:.7rem 1rem;font-size:.76rem;color:var(--text-dim);line-height:1.6;margin-bottom:1.2rem}
-.el-note strong{color:var(--gold)}
-.el-how{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem;margin-bottom:1.5rem}
-.el-how-step{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem}
-.el-how-num{font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:.3rem}
-.el-how-title{font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
-.el-how-body{font-size:.71rem;color:var(--text-muted);line-height:1.55}
-.el-faq{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:1.4rem}
-.el-faq-hd{padding:10px 16px;border-bottom:1px solid var(--border);font-size:.78rem;font-weight:700;color:var(--gold)}
-.el-faq-item{border-bottom:1px solid var(--border)}.el-faq-item:last-child{border-bottom:none}
-.el-faq-q{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--text);gap:8px;user-select:none;line-height:1.4;min-height:44px;touch-action:manipulation}
-.el-faq-q::after{content:'+';color:var(--gold);font-size:1.1rem;flex-shrink:0;width:16px;text-align:center}
+
+/* hero */
+.el-hero{padding:1.5rem 0 1.2rem;border-bottom:1px solid var(--border);margin-bottom:1.4rem}
+.el-eyebrow{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--font-mono);font-size:.64rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+.el-eyebrow-ic{width:14px;height:14px;color:var(--gold);opacity:1}
+.el-hero h1{font-family:var(--font-display);font-size:2rem;font-weight:800;line-height:1.06;letter-spacing:-.01em;color:var(--text);margin:0 0 .5rem}
+@media(min-width:640px){.el-hero h1{font-size:2.5rem}}
+.el-hero p{font-size:.9rem;color:var(--text-dim);line-height:1.62;max-width:60rem;margin:.3rem 0 0}
+.el-zip{display:flex;gap:.6rem;margin-top:1.15rem;flex-wrap:wrap;align-items:flex-end}
+.el-zip-field{display:flex;flex-direction:column;gap:.32rem}
+.el-zip-lbl{font-family:var(--font-mono);font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.el-zip input{background:var(--bg);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:.6rem .7rem;font-family:var(--font-mono);font-size:1rem;letter-spacing:.14em;color:var(--text);width:7.5rem;min-height:46px}
+.el-zip input:focus{outline:none;border-color:var(--gold)}
+.el-cta{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold);color:#0a0c0d;font-family:var(--font-mono);font-size:.78rem;font-weight:700;text-decoration:none;letter-spacing:.03em;min-height:46px;cursor:pointer;transition:filter .15s,transform .15s}
+.el-cta:hover{filter:brightness(1.07);transform:translateY(-1px)}
+
+/* section heads */
+.el-h2{font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--text);border-bottom:1px solid var(--border-2);padding-bottom:.5rem;margin:2.2rem 0 1.1rem}
+
+/* how-to steps */
+.el-how{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.8rem;margin-bottom:1.5rem}
+.el-how-step{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:1rem}
+.el-how-num{font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--gold);line-height:1;margin-bottom:.4rem}
+.el-how-title{font-family:var(--font-display);font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:.25rem}
+.el-how-body{font-size:.78rem;color:var(--text-muted);line-height:1.55}
+
+/* what AGSIST covers */
+.el-cov{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem;margin-bottom:1.1rem}
+.el-cov-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.9rem 1rem}
+.el-cov-k{font-family:var(--font-mono);font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
+.el-cov-v{font-size:.84rem;color:var(--text-dim);line-height:1.5}
+.el-cov-v strong{color:var(--text);font-weight:600}
+.el-thin{background:rgba(212,162,63,.05);border:1px solid var(--border-2);border-left:2px solid var(--gold);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:.85rem 1.1rem;font-size:.84rem;color:var(--text-dim);line-height:1.6;margin:0 0 .4rem}
+.el-thin strong{color:var(--text)} .el-thin a{color:var(--gold)}
+
+/* lead funnel — list your bids */
+.el-list{position:relative;background:linear-gradient(180deg,rgba(212,162,63,.05),transparent 60%),var(--surface);border:1px solid var(--border-2);border-radius:var(--r-lg);padding:1.5rem 1.4rem;margin:1.8rem 0}
+.el-list-eyebrow{font-family:var(--font-mono);font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
+.el-list h3{font-family:var(--font-display);font-size:1.35rem;font-weight:800;color:var(--text);margin:0 0 .45rem;line-height:1.1}
+.el-list-lede{font-size:.86rem;color:var(--text-dim);line-height:1.6;margin:0 0 1.2rem;max-width:64ch}
+.el-form{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.el-field{display:flex;flex-direction:column;gap:.32rem;min-width:0}
+.el-field.full{grid-column:1/-1}
+.el-field label{font-family:var(--font-mono);font-size:.6rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+.el-field input,.el-field textarea{background:var(--bg);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:.6rem .7rem;font-family:var(--font-body);font-size:.86rem;color:var(--text);min-height:42px;width:100%}
+.el-field input:focus,.el-field textarea:focus{outline:none;border-color:var(--gold)}
+.el-field textarea{min-height:78px;resize:vertical}
+.el-check{grid-column:1/-1;display:flex;gap:.6rem;align-items:flex-start;font-size:.78rem;color:var(--text-dim);line-height:1.5;cursor:pointer}
+.el-check input{margin-top:.15rem;width:16px;height:16px;flex:none;accent-color:var(--gold)}
+.el-submit{grid-column:1/-1;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.78rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold);color:#0a0c0d;font-family:var(--font-mono);font-size:.8rem;font-weight:700;letter-spacing:.03em;cursor:pointer;min-height:46px;transition:filter .15s}
+.el-submit:hover{filter:brightness(1.07)} .el-submit:disabled{opacity:.6;cursor:default}
+.el-form-note{grid-column:1/-1;font-family:var(--font-mono);font-size:.62rem;color:var(--text-muted);line-height:1.6;margin:.1rem 0 0}
+.el-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.el-ok{display:none;padding:1rem 1.1rem;border:1px solid var(--green);border-radius:var(--r-sm);background:rgba(95,194,138,.08);color:var(--text);font-size:.88rem;line-height:1.55}
+.el-list.sent .el-form{display:none} .el-list.sent .el-ok{display:block}
+@media(max-width:560px){.el-form{grid-template-columns:1fr}}
+
+/* faq */
+.el-faq{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin-top:1.4rem}
+.el-faq-hd{padding:11px 16px;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.el-faq-item{border-bottom:1px solid var(--border)} .el-faq-item:last-child{border-bottom:none}
+.el-faq-q{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--text);gap:8px;user-select:none;line-height:1.4;min-height:44px}
+.el-faq-q::after{content:'+';color:var(--gold);font-size:1.1rem;flex:none;width:16px;text-align:center}
 .el-faq-item.open .el-faq-q::after{content:'\2212'}
 .el-faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
-.el-faq-item.open .el-faq-a{max-height:400px}
-.el-faq-ai{padding:0 16px 13px;font-size:.78rem;color:var(--text-dim);line-height:1.68}
-.el-disc{margin-top:1.4rem;font-size:.65rem;color:var(--text-muted);line-height:1.7;padding:.75rem 1rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px}
+.el-faq-item.open .el-faq-a{max-height:520px}
+.el-faq-ai{padding:0 16px 13px;font-size:.8rem;color:var(--text-dim);line-height:1.68}
+
+/* disclaimer */
+.el-disc{margin-top:1.4rem;font-size:.66rem;color:var(--text-muted);line-height:1.7;padding:.8rem 1rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r-sm)}
+.el-disc a{color:var(--gold)}
 </style>
 </head>
 <body>
@@ -111,102 +146,65 @@ button,a,[role="button"]{touch-action:manipulation}
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/cash-bids">Cash Bids</a> &rarr; Elevator Coverage</nav>
 
   <div class="el-hero">
-    <div class="el-eyebrow">&#127805; Corn Belt Grain Elevator Cash Bids</div>
+    <div class="el-eyebrow"><svg class="lic el-eyebrow-ic" aria-hidden="true"><use href="#i-warehouse"></use></svg>Live Grain Elevator Cash Bids</div>
     <h1>Elevator Coverage</h1>
-    <p>Live cash grain bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, and Gulf Coast &mdash; sourced from the Barchart OnDemand API. Enter your ZIP code to see bids near you. Free, mobile-first, no subscription required.</p>
-    <a href="/cash-bids" class="el-cta">&#128205; Find My Nearest Elevator Bids &rarr;</a>
-  </div>
-
-  <div class="el-note">
-    <strong>How coverage works:</strong> Cash bids are sourced from the Barchart OnDemand API, which aggregates elevator-posted bids across the Corn Belt and major grain-producing states. Coverage varies by region and elevator participation. Enter your ZIP code on the cash bids page to see what&rsquo;s available near you. If your elevator isn&rsquo;t listed, <a href="mailto:sig@farmers1st.com" style="color:var(--gold)">let me know</a> &mdash; I&rsquo;m actively expanding coverage.
+    <p>Live cash grain bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, and Gulf Coast &mdash; sourced from the Barchart OnDemand API. Enter your ZIP code to see bids near you. Mobile-first, no account or subscription required.</p>
+    <form class="el-zip" action="/cash-bids" method="get" id="el-zip-form">
+      <div class="el-zip-field">
+        <label class="el-zip-lbl" for="el-zip-in">Your ZIP code</label>
+        <input id="el-zip-in" name="zip" type="text" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="54728" autocomplete="postal-code" required>
+      </div>
+      <button type="submit" class="el-cta">See bids near me &rarr;</button>
+    </form>
   </div>
 
   <h2 class="el-h2">How to Find Your Elevator&rsquo;s Bids</h2>
   <div class="el-how">
-    <div class="el-how-step"><div class="el-how-num">1</div><div class="el-how-title">Enter your ZIP code</div><div class="el-how-body">Go to the cash bids page and type your 5-digit ZIP. AGSIST finds grain facilities within your area automatically.</div></div>
+    <div class="el-how-step"><div class="el-how-num">1</div><div class="el-how-title">Enter your ZIP code</div><div class="el-how-body">Type your 5-digit ZIP above (or on the cash bids page). AGSIST finds grain facilities in your area automatically.</div></div>
     <div class="el-how-step"><div class="el-how-num">2</div><div class="el-how-title">See nearby bids</div><div class="el-how-body">Corn, soybean, and wheat bids appear sorted by distance from your ZIP. Basis and futures components shown separately.</div></div>
     <div class="el-how-step"><div class="el-how-num">3</div><div class="el-how-title">Compare elevators</div><div class="el-how-body">Multiple facilities show up within your radius. Compare bids side-by-side before deciding where to haul.</div></div>
     <div class="el-how-step"><div class="el-how-num">4</div><div class="el-how-title">Confirm before hauling</div><div class="el-how-body">Always call ahead to confirm the posted bid. Prices update throughout the day and can change before you arrive.</div></div>
   </div>
 
-  <h2 class="el-h2">Coverage by State</h2>
-  <div class="el-state-grid">
-
-    <div class="el-state-card">
-      <div class="el-state-head"><span class="el-state-icon">&#127974;</span><span class="el-state-name">Wisconsin</span><span class="el-state-sub">Representative facilities</span></div>
-      <ul class="el-elevator-list">
-        <li>Alcivia co-op system (statewide)</li>
-        <li>Landmark Services Co-op</li>
-        <li>Northside Elevator</li>
-        <li>Kasbeer Farmers Elevator region</li>
-        <li>Skyland Grain facilities</li>
-        <li>Independent elevators throughout Corn Belt WI</li>
-      </ul>
-    </div>
-
-    <div class="el-state-card">
-      <div class="el-state-head"><span class="el-state-icon">&#127807;</span><span class="el-state-name">Minnesota</span><span class="el-state-sub">Representative facilities</span></div>
-      <ul class="el-elevator-list">
-        <li>CHS / Cenex Harvest States facilities</li>
-        <li>Heartland Corn Products</li>
-        <li>River country co-ops</li>
-        <li>Pipestone-area elevators</li>
-        <li>Southern MN grain facilities</li>
-        <li>Jennie-O / Hormel feed grain buyers</li>
-      </ul>
-    </div>
-
-    <div class="el-state-card">
-      <div class="el-state-head"><span class="el-state-icon">&#127805;</span><span class="el-state-name">Illinois</span><span class="el-state-sub">Representative facilities</span></div>
-      <ul class="el-elevator-list">
-        <li>Primient (formerly Tate &amp; Lyle) Corn Processing</li>
-        <li>Big Gain / Gold Standard Nutrition</li>
-        <li>LaHarpe Elevator</li>
-        <li>Meyer Brothers</li>
-        <li>CGB Enterprises locations</li>
-        <li>Heartland Co-op and affiliates</li>
-      </ul>
-    </div>
-
-    <div class="el-state-card">
-      <div class="el-state-head"><span class="el-state-icon">&#127806;</span><span class="el-state-name">Iowa</span><span class="el-state-sub">Representative facilities</span></div>
-      <ul class="el-elevator-list">
-        <li>Heartland Co-op</li>
-        <li>West Central Co-op</li>
-        <li>Keystone Grain facilities</li>
-        <li>HighLand Grain Growers</li>
-        <li>Iowa River Co-op locations</li>
-        <li>Southwest Iowa co-op system</li>
-      </ul>
-    </div>
-
-    <div class="el-state-card">
-      <div class="el-state-head"><span class="el-state-icon">&#127968;</span><span class="el-state-name">Indiana</span><span class="el-state-sub">Representative facilities</span></div>
-      <ul class="el-elevator-list">
-        <li>South Indiana grain facilities</li>
-        <li>Hopkinsville-area elevators</li>
-        <li>Southeast Indiana co-ops</li>
-        <li>CGB and Bunge Indiana locations</li>
-      </ul>
-    </div>
-
-    <div class="el-state-card">
-      <div class="el-state-head"><span class="el-state-icon">&#9881;&#65039;</span><span class="el-state-name">Ohio</span><span class="el-state-sub">Representative facilities</span></div>
-      <ul class="el-elevator-list">
-        <li>Northwest Ohio grain corridors</li>
-        <li>Nexus Cash Bids locations</li>
-        <li>CPI Grain facilities</li>
-        <li>Erskine and regional independents</li>
-      </ul>
-    </div>
-
+  <h2 class="el-h2">What AGSIST covers</h2>
+  <div class="el-cov">
+    <div class="el-cov-item"><div class="el-cov-k">Commodities</div><div class="el-cov-v"><strong>Corn, soybeans, wheat</strong> &mdash; plus specialty grades (white &amp; food-grade corn, food-grade soybeans, milo) where elevators post them.</div></div>
+    <div class="el-cov-item"><div class="el-cov-k">Geography</div><div class="el-cov-v"><strong>Nationwide.</strong> Bids appear wherever elevators post them &mdash; Corn Belt, Northern &amp; Southern Plains, Delta, Southeast, and Pacific Northwest.</div></div>
+    <div class="el-cov-item"><div class="el-cov-k">Source</div><div class="el-cov-v">Sourced from the <strong>Barchart OnDemand API</strong> &mdash; the same elevator-posted feed merchandisers use.</div></div>
+    <div class="el-cov-item"><div class="el-cov-k">Freshness</div><div class="el-cov-v">Updated <strong>through the trading day</strong>, during market hours.</div></div>
+    <div class="el-cov-item"><div class="el-cov-k">Each bid shows</div><div class="el-cov-v"><strong>Cash price</strong> (futures + basis), contract month, delivery window, and distance from your ZIP.</div></div>
   </div>
+  <div class="el-thin"><strong>Where it&rsquo;s thin:</strong> some smaller independent elevators don&rsquo;t post bids electronically, so they won&rsquo;t show up. If your local elevator is missing, that&rsquo;s usually why &mdash; and it&rsquo;s exactly what the form below is for.</div>
 
-  <h2 class="el-h2">What Cash Bids Include</h2>
-  <p style="font-size:.82rem;color:var(--text-dim);line-height:1.65;margin-bottom:1.2rem">Each elevator bid on AGSIST shows the <strong style="color:var(--text)">cash price</strong> (futures + basis), the <strong style="color:var(--text)">contract month</strong>, available <strong style="color:var(--text)">delivery windows</strong>, and distance from your ZIP. Corn, soybeans, and wheat are the primary commodities covered. Specialty crops (popcorn, white corn, food-grade soybeans) are shown where available in the Barchart feed.</p>
+  <section class="el-list" id="list-bids">
+    <div class="el-list-eyebrow">For elevators &amp; co-ops</div>
+    <h3>Run an elevator? Get your bids listed.</h3>
+    <p class="el-list-lede">If you post cash bids and want them in front of producers searching your area, send the details below. There&rsquo;s no charge to be listed &mdash; I verify every request before anything goes live, and listed bid data stays separate from any paid placement.</p>
+    <form class="el-form" id="el-list-form" action="https://formspree.io/f/xnjbwepn" method="POST">
+      <input type="hidden" name="_subject" value="Elevator listing request">
+      <input type="hidden" name="form_type" value="elevator-listing-request">
+      <input type="text" name="_gotcha" class="el-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="el-field"><label for="el-facility">Facility / company</label><input id="el-facility" name="facility" type="text" required></div>
+      <div class="el-field"><label for="el-city">City</label><input id="el-city" name="city" type="text" required></div>
+      <div class="el-field"><label for="el-state-in">State</label><input id="el-state-in" name="state" type="text" required></div>
+      <div class="el-field"><label for="el-zip">ZIP</label><input id="el-zip" name="zip" type="text" inputmode="numeric" required></div>
+      <div class="el-field full"><label for="el-source">Where are your bids posted today? (DTN, Barchart, your website&hellip;)</label><input id="el-source" name="bid_source" type="text"></div>
+      <div class="el-field"><label for="el-name">Your name</label><input id="el-name" name="contact_name" type="text" required></div>
+      <div class="el-field"><label for="el-role">Your role</label><input id="el-role" name="role" type="text" placeholder="Manager, merchandiser&hellip;"></div>
+      <div class="el-field"><label for="el-email">Email</label><input id="el-email" name="email" type="email" required></div>
+      <div class="el-field"><label for="el-phone">Phone</label><input id="el-phone" name="phone" type="tel"></div>
+      <div class="el-field full"><label for="el-notes">Anything else I should know</label><textarea id="el-notes" name="notes"></textarea></div>
+      <label class="el-check"><input type="checkbox" name="authorized" value="yes" required> I&rsquo;m authorized to share this facility&rsquo;s bid information.</label>
+      <label class="el-check"><input type="checkbox" name="wants_feature" value="yes"> I&rsquo;d also like to hear about sponsored placement options.</label>
+      <button type="submit" class="el-submit">Send listing request</button>
+      <p class="el-form-note">Goes straight to sig@farmers1st.com &middot; I read every one.</p>
+    </form>
+    <div class="el-ok" role="status">Got it &mdash; your request is in. I&rsquo;ll review the details and follow up at the email you gave. Thanks for helping producers find your bids.</div>
+  </section>
+
 
   <div class="el-faq">
-    <div class="el-faq-hd">&#10067; Frequently Asked Questions</div>
+    <div class="el-faq-hd">Frequently Asked Questions</div>
     <div class="el-faq-item">
       <div class="el-faq-q" role="button" tabindex="0" aria-expanded="false">Which grain elevators does AGSIST cover?</div>
       <div class="el-faq-a"><div class="el-faq-ai">AGSIST displays cash bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, and Gulf Coast sourced from the Barchart OnDemand API. Coverage includes independent elevators, co-operative grain facilities, and major grain company locations. Enter your ZIP code on the cash bids page to see available bids near you.</div></div>
@@ -246,6 +244,23 @@ document.querySelectorAll('.el-faq-q').forEach(function(q){
   q.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();q.click();}});
 });
 document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/cash-bids"]');if(a&&window.gaEvent)gaEvent('elevators_cta',{label:(a.textContent||'').trim().slice(0,40)});},true);
+(function(){
+  var f=document.getElementById('el-list-form'); if(!f)return;
+  var box=document.getElementById('list-bids'),started=false;
+  f.addEventListener('input',function(){if(!started){started=true;if(window.gaEvent)gaEvent('elevator_request_start',{});}});
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(f._gotcha&&f._gotcha.value)return;
+    var btn=f.querySelector('.el-submit');if(btn){btn.disabled=true;btn.textContent='Sending\u2026';}
+    fetch(f.action,{method:'POST',body:new FormData(f),headers:{'Accept':'application/json'}})
+      .then(function(r){
+        if(r.ok){box.classList.add('sent');if(window.gaEvent)gaEvent('elevator_request_submit',{});}
+        else{if(btn){btn.disabled=false;btn.textContent='Send listing request';}alert('Something went wrong \u2014 please email sig@farmers1st.com directly.');}
+      })
+      .catch(function(){if(btn){btn.disabled=false;btn.textContent='Send listing request';}alert('Something went wrong \u2014 please email sig@farmers1st.com directly.');});
+  });
+})();
+(function(){var zf=document.getElementById('el-zip-form');if(zf)zf.addEventListener('submit',function(){if(window.gaEvent)gaEvent('elevators_zip_search',{});});})();
 </script>
 </body>
 </html>
