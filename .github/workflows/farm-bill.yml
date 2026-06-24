@@ -2,13 +2,17 @@ name: Bake farm-bill page
 
 # Edit farm-bill.json in the GitHub browser editor and commit.
 # This Action re-bakes the static farm-bill.html and commits it back,
-# so the values that AI crawlers read are always current — no local tooling.
+# so the values AI crawlers read are always current — no local tooling.
+#
+# Robust to file location: it finds build_farmbill.py, farm-bill.json, and
+# farm-bill.html wherever they live in the repo (root or a subfolder), so it
+# won't fail just because the script isn't at the repository root.
 
 on:
   push:
     paths:
-      - "farm-bill.json"
-      - "build_farmbill.py"
+      - "**/farm-bill.json"
+      - "**/build_farmbill.py"
       - ".github/workflows/farm-bill.yml"
   workflow_dispatch: {}
 
@@ -29,17 +33,39 @@ jobs:
         with:
           python-version: "3.x"
 
-      # If you keep the data file in /data/, change --json below to data/farm-bill.json
-      # (and likewise move farm-bill.json there). Paths are relative to repo root.
+      - name: Locate files
+        id: find
+        run: |
+          set -e
+          SCRIPT=$(find . -name build_farmbill.py -not -path './.git/*' -not -path '*/node_modules/*' | head -1)
+          JSON=$(find .   -name farm-bill.json   -not -path './.git/*' -not -path '*/node_modules/*' | head -1)
+          HTML=$(find .   -name farm-bill.html   -not -path './.git/*' -not -path '*/node_modules/*' | head -1)
+          if [ -z "$SCRIPT" ] || [ -z "$JSON" ] || [ -z "$HTML" ]; then
+            echo "::error::Could not find all required files."
+            echo "  build_farmbill.py = '$SCRIPT'"
+            echo "  farm-bill.json    = '$JSON'"
+            echo "  farm-bill.html    = '$HTML'"
+            echo "Commit build_farmbill.py and farm-bill.json into the repo (any folder is fine)."
+            exit 1
+          fi
+          echo "script=$SCRIPT" >> "$GITHUB_OUTPUT"
+          echo "json=$JSON"     >> "$GITHUB_OUTPUT"
+          echo "html=$HTML"     >> "$GITHUB_OUTPUT"
+          echo "Found: script=$SCRIPT  json=$JSON  html=$HTML"
+
       - name: Bake static HTML from JSON
-        run: python3 build_farmbill.py --html farm-bill.html --json farm-bill.json
+        run: |
+          python3 "${{ steps.find.outputs.script }}" \
+            --html "${{ steps.find.outputs.html }}" \
+            --json "${{ steps.find.outputs.json }}"
 
       - name: Commit if changed
         run: |
-          if [ -n "$(git status --porcelain farm-bill.html)" ]; then
+          HTML="${{ steps.find.outputs.html }}"
+          if [ -n "$(git status --porcelain "$HTML")" ]; then
             git config user.name  "agsist-bot"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add farm-bill.html
+            git add "$HTML"
             git commit -m "chore: bake farm-bill.html from farm-bill.json [skip ci]"
             git push
           else
