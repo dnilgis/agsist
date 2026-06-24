@@ -1,12 +1,19 @@
 {
- "updated": "2026-06-23T21:49:06+00:00",
- "total": 41,
+ "updated": "2026-06-24T13:26:31+00:00",
+ "total": 42,
  "played_out": 26,
- "didnt": 10,
+ "didnt": 11,
  "pending": 5,
- "hit_rate": 72.2,
+ "hit_rate": 70.3,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-06-23",
+   "judged": "2026-06-24",
+   "call": "Wheat broke cleanest; corn and beans followed on low conviction. Next leg requires a weather event or export surprise.",
+   "outcome": "didnt",
+   "note": "Miss. The call was looking for corn to follow wheat higher and needed a weather event or export catalyst to provide the next leg up. Instead corn provided the catalyst in the opposite direction, breaking 27 cents on old-crop supply weight. The setup read the weather premium as still present in corn; the market had already priced it out. Weather is now back on the table for new crop, but that does not rescue the prior call."
+  },
   {
    "made": "2026-06-22",
    "judged": "2026-06-23",

@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-06-24",
+      "date_display": "Wednesday, June 24, 2026",
+      "headline": "CORN NEARBY BREAKS 6%; OLD-CROP CARRY INVERTS",
+      "teaser": "Nearby corn fell 27 cents while Dec barely moved. The carry structure just told you something important about storage.",
+      "market_mood": "bearish",
+      "surprise_count": 1,
+      "sections": 4,
+      "url": "/daily/2026-06-24",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-06-23",
       "date_display": "Tuesday, June 23, 2026",
       "headline": "WHEAT LEADS LOWER; FARM BILL DRAFT DROPS",
@@ -1152,6 +1164,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-23T21:49:03.625786+00:00",
-  "count": 103
+  "updated": "2026-06-24T13:26:27.645753+00:00",
+  "count": 104
 }

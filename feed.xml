@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 23 Jun 2026 21:49:06 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 24 Jun 2026 13:26:31 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN NEARBY BREAKS 6%; OLD-CROP CARRY INVERTS</title>
+      <link>https://agsist.com/daily/2026-06-24</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-24</guid>
+      <pubDate>Wed, 24 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Nearby corn dropped 27 cents to $4.11 while Dec '26 barely twitched, closing at $4.38. That 27-cent spread between the nearby and new crop is the market telling you storage is not being rewarded right now; it is being penalized. Heat and humidity are moving into the Heartland over the next 6-to-10 days per this morning's weather outlook, and pollination is approaching. The question this week was whether Crop Progress data removed the last weather premium from corn. Today's break in the nearby says the premium was already gone, but the calendar is about to test that assumption.
+Nearby corn fell hard while Dec '26 barely moved, blowing the carry structure wide open and leaving producers with a storage decision to make before pollination weather takes over the narrative.
+• NEARBY CORN BREAKS HARD
+  → Producers with on-farm grain: check local basis today. If basis is firm, the futures break has narrowed your window. Evaluate before the heat forecast gets priced further into the new-crop contract.
+• BEANS AND WHEAT HOLD STEADY
+• CATTLE WAIT ON DIRECT TRADE
+Read more: https://agsist.com/daily/2026-06-24</description>
+    </item>
     <item>
       <title>WHEAT LEADS LOWER; FARM BILL DRAFT DROPS</title>
       <link>https://agsist.com/daily/2026-06-23</link>
@@ -362,18 +375,6 @@ Live and feeder cattle both gain 0.6% as complex narrows, crude craters on Iran 
 • Grains Drift Lower
 • Oil Craters On Iran Strikes
 Read more: https://agsist.com/daily/2026-05-26</description>
-    </item>
-    <item>
-      <title>CATTLE REVERSE FRIDAY'S CRASH, HOGS DIVE 4%</title>
-      <link>https://agsist.com/daily/2026-05-25</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-25</guid>
-      <pubDate>Mon, 25 May 2026 05:00:00 -0600</pubDate>
-      <description>Live cattle exploded 3.8% to $249.30, erasing Friday's processing crash and then some. But feeders dropped 1.9% to $349.85, opening the spread to 34 points and counting. The reversal happened on no new catalyst, which means Friday's sellers got stopped out or the funds rotated hard into live cattle futures. Either way, the complex is acting like two different markets now.
-Live cattle surge 3.8% while feeders fall 1.9%, splitting the complex wider than Friday's jam.
-• Cattle Complex Splits Wide
-• Grains Mark Holiday Time
-• Energy Eases Iran Premium
-Read more: https://agsist.com/daily/2026-05-25</description>
     </item>
   </channel>
 </rss>
