@@ -15,7 +15,7 @@
 <link rel="manifest"                            href="/manifest.json">
 
 <title>Daily Ag Briefing &#8212; Market Morning Report | AGSIST</title>
-<meta name="description" content="Free morning agricultural market briefing for US ag producers across grain, livestock, dairy, and specialty operations. Published every weekday before the market open. Market drivers, weather, and what to watch.">
+<meta name="description" content="The AGSIST Daily Briefing: corn, soybeans, wheat, cattle &amp; energy, read before the open &mdash; graded calls, watch list, and the number that matters.">
 <meta name="keywords"    content="daily ag briefing, farm morning market report, corn price today, soybean market morning, grain market briefing, agricultural market summary, free farm briefing">
 <meta name="author"      content="Sigurd Lindquist">
 <meta name="robots"      content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -87,7 +87,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-page{max-width:860px;margin:0 auto;padding:0 1rem 4rem;}
 
 .dv3-hero{padding:1.2rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.4rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
-.dv3-hero-left h1{font-family:'Oswald',sans-serif;font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .2rem;}
+.dv3-hero-left h1{font-family:var(--font-display);font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .2rem;}
 .dv3-hero-left .dv3-eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
 .dv3-hero-left .dv3-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);}
 .dv3-hero-left .dv3-sub{font-size:.82rem;color:var(--text-dim);line-height:1.55;margin:0;}
@@ -102,7 +102,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-today-label{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
 .dv3-mood-pill{display:inline-flex;align-items:center;gap:.25rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.12rem .5rem;border-radius:3px;background:rgba(var(--gold-rgb),.08);color:var(--gold);border:1px solid rgba(var(--gold-rgb),.25);}
 .dv3-today-date{font-size:.82rem;color:var(--text-dim);margin-bottom:.75rem;}
-.dv3-today-headline{font-family:'Oswald',sans-serif;font-size:1.55rem;font-weight:700;color:var(--text);line-height:1.2;margin:0 0 .5rem;text-transform:uppercase;letter-spacing:-.005em;}
+.dv3-today-headline{font-family:var(--font-display);font-size:1.55rem;font-weight:700;color:var(--text);line-height:1.2;margin:0 0 .5rem;text-transform:uppercase;letter-spacing:-.005em;}
 .dv3-today-sub{font-size:.9rem;font-weight:600;color:var(--gold);margin:0 0 .65rem;letter-spacing:.01em;}
 
 /* Ticker */
@@ -130,7 +130,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-topbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.9rem;margin:1rem 0 1.25rem;}
 .dv3-one-number{background:var(--surface2);border:2px solid rgba(58,139,60,.22);border-radius:8px;padding:1rem 1.15rem;}
 .dv3-one-number-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem;}
-.dv3-one-number-val{font-family:'Oswald',sans-serif;font-size:2.6rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:.15rem;}
+.dv3-one-number-val{font-family:var(--font-mono);font-size:2.6rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:.15rem;}
 .dv3-one-number-unit{font-size:.8rem;color:var(--text-dim);margin-bottom:.4rem;}
 .dv3-one-number-ctx{font-size:.82rem;line-height:1.6;color:var(--text-dim);}
 .dv3-quote-card{background:var(--surface2);border:2px solid rgba(var(--gold-rgb),.18);border-radius:8px;padding:1rem 1.15rem;display:flex;flex-direction:column;justify-content:center;}
@@ -190,7 +190,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 /* v4.3: takeaway card */
 .dv3-takeaway{margin:1rem 0 .25rem;padding:.95rem 1.1rem;background:linear-gradient(135deg,rgba(var(--gold-rgb),.08) 0%,rgba(var(--gold-rgb),.02) 60%,var(--surface2) 100%);border:1px solid rgba(var(--gold-rgb),.3);border-left:4px solid var(--gold);border-radius:8px;}
 .dv3-takeaway-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;}
-.dv3-takeaway-text{font-family:'Oswald',sans-serif;font-size:1.05rem;line-height:1.45;color:var(--text);margin:0;font-weight:600;letter-spacing:-.005em;}
+.dv3-takeaway-text{font-family:var(--font-display);font-size:1.05rem;line-height:1.45;color:var(--text);margin:0;font-weight:600;letter-spacing:-.005em;}
 @media(max-width:640px){.dv3-takeaway-text{font-size:.95rem;}}
 /* v4.3: per-section vs_yesterday continuity chip */
 .dv3-sec-vs{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);margin:.4rem 0 .55rem;padding:.3rem .55rem;background:rgba(74,143,186,.04);border-left:2px solid rgba(74,143,186,.32);border-radius:0 4px 4px 0;}
@@ -251,7 +251,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 /* SPREAD TO WATCH — sits between sections and basis */
 .dv3-spread{background:linear-gradient(135deg,var(--surface2) 0%,rgba(132,89,176,.04) 100%);border:1px solid rgba(132,89,176,.28);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0 1.25rem;}
 .dv3-spread-label{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9b7fc4;margin-bottom:.45rem;}
-.dv3-spread-label-text{font-family:'Oswald',sans-serif;font-size:1.05rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.25rem;letter-spacing:-.005em;}
+.dv3-spread-label-text{font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.25rem;letter-spacing:-.005em;}
 .dv3-spread-level{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;color:var(--gold);margin-bottom:.45rem;letter-spacing:.02em;}
 .dv3-spread-body{font-size:.86rem;line-height:1.7;color:var(--text-dim);}
 .dv3-spread-body strong{color:var(--text);}
@@ -263,7 +263,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-sponsor-label-row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.55rem;flex-wrap:wrap;}
 .dv3-sponsor-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ad-orange);padding:.18rem .55rem;border:1px solid rgba(var(--ad-orange-rgb),.42);border-radius:3px;background:rgba(var(--ad-orange-rgb),.06);}
 .dv3-sponsor-by{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;color:var(--text-muted);letter-spacing:.04em;}
-.dv3-sponsor-headline{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.5rem;letter-spacing:-.005em;}
+.dv3-sponsor-headline{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.5rem;letter-spacing:-.005em;}
 .dv3-sponsor-body{font-size:.88rem;line-height:1.7;color:var(--text-dim);margin-bottom:.85rem;}
 .dv3-sponsor-cta{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;color:#0a1a0a;background:var(--ad-orange);padding:.6rem 1rem;border-radius:6px;transition:background .15s,transform .1s;min-height:42px;}
 .dv3-sponsor-cta:hover{background:var(--ad-orange-hi);transform:translateY(-1px);}

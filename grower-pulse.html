@@ -12,7 +12,7 @@
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="manifest" href="/manifest.json">
 <title>Grower Pulse - Weekly U.S. Farmer Sentiment Poll | AGSIST</title>
-<meta name="description" content="Weekly one-question sentiment poll of U.S. farmers - crop conditions, marketing, input costs, and more. See current and past results from working producers nationwide. Free from AGSIST.">
+<meta name="description" content="Weekly one-question sentiment poll of US farmers on crop conditions, marketing, and input costs. Results from producers nationwide.">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <link rel="canonical" href="https://agsist.com/grower-pulse">
@@ -25,18 +25,18 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "AGSIST Grower Pulse - Weekly U.S. Farmer Sentiment", "description": "A weekly one-question sentiment poll of U.S. crop, livestock, and dairy producers run by AGSIST. Each week growers report their read on current conditions; aggregate results are published as first-party agricultural sentiment data.", "url": "https://agsist.com/grower-pulse", "creator": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"}, "isAccessibleForFree": true, "measurementTechnique": "Self-reported single-question web poll; one response per device per week", "variableMeasured": "U.S. grower sentiment", "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/poll.json"}}</script>
 <style>
   .gp-wrap{max-width:760px;margin:0 auto;padding:1.5rem 1rem 3rem}
-  .gp-h1{font-family:'Oswald',sans-serif;font-weight:700;font-size:1.7rem;line-height:1.15;color:var(--text);margin:.2rem 0 .5rem;text-wrap:balance}
+  .gp-h1{font-family:var(--font-display);font-weight:700;font-size:1.7rem;line-height:1.15;color:var(--text);margin:.2rem 0 .5rem;text-wrap:balance}
   .gp-intro{font-size:.95rem;color:var(--text-dim);line-height:1.6;margin:0 0 1.4rem}
   .gp-current{background:var(--surface);border:1px solid var(--border-g);border-radius:10px;padding:1.1rem 1.15rem;margin-bottom:1.6rem}
-  .gp-kicker{font-family:'Oswald',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+  .gp-kicker{font-family:var(--font-display);font-weight:700;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
   .gp-week{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-muted);margin-left:.5rem}
-  .gp-q{font-family:'Oswald',sans-serif;font-weight:600;font-size:1.18rem;color:var(--text);margin:.4rem 0 .8rem;text-wrap:balance}
-  .gp-vote-cta{display:inline-block;background:var(--green);color:#0a1a0a;font-family:'Oswald',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:.03em;text-transform:uppercase;padding:.6rem 1rem;border-radius:6px;text-decoration:none}
+  .gp-q{font-family:var(--font-display);font-weight:600;font-size:1.18rem;color:var(--text);margin:.4rem 0 .8rem;text-wrap:balance}
+  .gp-vote-cta{display:inline-block;background:var(--green);color:#0a1a0a;font-family:var(--font-display);font-weight:700;font-size:.82rem;letter-spacing:.03em;text-transform:uppercase;padding:.6rem 1rem;border-radius:6px;text-decoration:none}
   .gp-vote-cta:hover{filter:brightness(1.08)}
-  .gp-sec-h{font-family:'Oswald',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:.4rem;margin:1.8rem 0 1rem}
+  .gp-sec-h{font-family:var(--font-display);font-weight:700;font-size:1.05rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:.4rem;margin:1.8rem 0 1rem}
   .gp-item{padding:1rem 0;border-top:1px solid var(--border)}
   .gp-item:first-child{border-top:none}
-  .gp-item-q{font-family:'Oswald',sans-serif;font-weight:600;font-size:1.02rem;color:var(--text);margin-bottom:.1rem;text-wrap:balance}
+  .gp-item-q{font-family:var(--font-display);font-weight:600;font-size:1.02rem;color:var(--text);margin-bottom:.1rem;text-wrap:balance}
   .gp-item-week{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-muted);margin-bottom:.55rem}
   .gp-bars{display:flex;flex-direction:column;gap:.35rem}
   .gp-row{position:relative;display:flex;align-items:center;justify-content:space-between;padding:.4rem .7rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;overflow:hidden;min-height:34px}

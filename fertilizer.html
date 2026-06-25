@@ -107,7 +107,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 
 .fert-hero{padding:1.4rem 0 .9rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem}
 .fert-eyebrow{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem}
-.fert-page-title{font-family:'Oswald',sans-serif;font-size:1.75rem;font-weight:800;color:var(--text);line-height:1.1;margin:0 0 .35rem;text-transform:uppercase;letter-spacing:-.01em}
+.fert-page-title{font-family:var(--font-display);font-size:1.75rem;font-weight:800;color:var(--text);line-height:1.1;margin:0 0 .35rem;text-transform:uppercase;letter-spacing:-.01em}
 .fert-page-sub{font-size:.84rem;color:var(--text-dim);line-height:1.55;max-width:640px}
 
 .fert-updated-bar{
@@ -132,7 +132,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 .fpc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.25rem}
 .fpc-name{font-size:.74rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:.3rem}
 .fpc-sym{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-muted);padding:.12rem .35rem;border:1px solid var(--border);border-radius:3px}
-.fpc-price{font-family:'Oswald',sans-serif;font-size:2rem;font-weight:800;color:var(--text);line-height:1}
+.fpc-price{font-family:var(--font-mono);font-size:2rem;font-weight:800;color:var(--text);line-height:1}
 .fpc-unit{font-size:.65rem;color:var(--text-muted)}
 .fpc-chg{display:flex;align-items:center;gap:.28rem;margin-top:.2rem}
 .fpc-chg-val{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700}
@@ -157,11 +157,11 @@ button,a,[role="button"]{touch-action:manipulation;}
 
 /* Explainer grid */
 .fert-explainer{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.75rem;margin-bottom:1.25rem}
-.fert-explainer-title{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:0 0 .75rem;grid-column:1/-1}
+.fert-explainer-title{font-family:var(--font-display);font-size:1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:0 0 .75rem;grid-column:1/-1}
 
 /* FIX: fert-related uses minmax(0,1fr) to prevent iOS Safari overflow */
 .fert-related{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin-bottom:1.25rem}
-.fert-related-title{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:0 0 .75rem}
+.fert-related-title{font-family:var(--font-display);font-size:1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:0 0 .75rem}
 
 @media(max-width:560px){
   .fert-explainer{grid-template-columns:1fr}
@@ -188,7 +188,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 
 /* === Decision layer: verdict + nutrient table + calculator === */
 .fert-verdict{background:linear-gradient(180deg,rgba(74,171,76,.07),rgba(0,0,0,0));border:1px solid var(--border);border-left:3px solid var(--green);border-radius:12px;padding:.9rem 1rem;margin-bottom:1.25rem}
-.fv-title{font-family:'Oswald',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
+.fv-title{font-family:var(--font-display);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
 .fv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem;margin-bottom:.55rem}
 .fv-chip{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem .6rem}
 .fv-chip-lab{font-size:.58rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
@@ -211,7 +211,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 #fert-nutrient-note{font-size:.66rem;color:var(--text-muted);line-height:1.55;margin-top:.5rem}
 
 .fert-calc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.15rem;margin-bottom:1.25rem}
-.fert-calc-h{font-family:'Oswald',sans-serif;font-size:1.05rem;font-weight:700;text-transform:uppercase;color:var(--text);margin:0 0 .25rem}
+.fert-calc-h{font-family:var(--font-display);font-size:1.05rem;font-weight:700;text-transform:uppercase;color:var(--text);margin:0 0 .25rem}
 .fert-calc-sub{font-size:.74rem;color:var(--text-muted);margin:0 0 .9rem;line-height:1.5}
 .calc-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;margin-bottom:1rem}
 .calc-field{display:flex;flex-direction:column;gap:.25rem}
@@ -228,7 +228,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 .calc-headline{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
 .calc-headline>div{background:rgba(74,171,76,.08);border:1px solid var(--border);border-radius:9px;padding:.6rem .75rem}
 .calc-headline span{display:block;font-size:.58rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);font-weight:700}
-.calc-headline strong{font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:800;color:var(--text);display:block;line-height:1.1}
+.calc-headline strong{font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--text);display:block;line-height:1.1}
 .calc-headline small{font-size:.6rem;color:var(--text-muted);font-weight:400}
 .calc-total-acres{font-size:.82rem;color:var(--text);background:rgba(var(--gold-rgb),.1);border:1px solid var(--border);border-radius:8px;padding:.55rem .7rem;margin-bottom:.6rem}
 .calc-note{font-size:.68rem;color:var(--text-dim);line-height:1.55;margin-bottom:.4rem}
@@ -316,7 +316,7 @@ button,a,[role="button"]{touch-action:manipulation;}
     </div>
   </div>
 
-  <h2 class="fert-explainer-title" style="font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:0 0 .75rem">Why Prices Move</h2>
+  <h2 class="fert-explainer-title" style="font-family:var(--font-display);font-size:1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:0 0 .75rem">Why Prices Move</h2>
   <!-- FIX: explainer cards now use h3 (correct hierarchy under page h1 + section h2) -->
   <div class="fert-explainer">
     <div class="fe-card">
