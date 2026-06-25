@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-06-25T22:43:05Z",
+  "fetched": "2026-06-25T23:13:15Z",
   "ok": 47,
   "failed": 0,
   "stale_keys": [],
@@ -339,10 +339,10 @@
     },
     "crude": {
       "ticker": "CL=F",
-      "close": 71.44,
+      "close": 71.47,
       "open": 69.33,
-      "netChange": 2.11,
-      "pctChange": 3.0434,
+      "netChange": 2.14,
+      "pctChange": 3.0867,
       "wk52_hi": 119.48,
       "wk52_lo": 54.98
     },
@@ -357,28 +357,28 @@
     },
     "gold": {
       "ticker": "GC=F",
-      "close": 4043.1001,
+      "close": 4039.69995,
       "open": 4012.3999,
-      "netChange": 30.7002,
-      "pctChange": 0.7651,
+      "netChange": 27.30005,
+      "pctChange": 0.6804,
       "wk52_hi": 5586.2002,
       "wk52_lo": 3253.8
     },
     "silver": {
       "ticker": "SI=F",
-      "close": 57.765,
+      "close": 57.815,
       "open": 57.52,
-      "netChange": 0.245,
-      "pctChange": 0.4259,
+      "netChange": 0.295,
+      "pctChange": 0.5129,
       "wk52_hi": 121.3,
       "wk52_lo": 35.27
     },
     "dollar": {
       "ticker": "DX-Y.NYB",
-      "close": 101.441,
-      "open": 101.492,
-      "netChange": -0.051,
-      "pctChange": -0.0503,
+      "close": 101.61,
+      "open": 101.002,
+      "netChange": 0.608,
+      "pctChange": 0.602,
       "wk52_hi": 101.8,
       "wk52_lo": 95.55
     },
@@ -402,28 +402,28 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 59689.98828,
+      "close": 59796.28125,
       "open": 60983.14062,
-      "netChange": -1293.15234,
-      "pctChange": -2.1205,
+      "netChange": -1186.85937,
+      "pctChange": -1.9462,
       "wk52_hi": 126198.0703,
       "wk52_lo": 59029.8555
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.0393,
+      "close": 1.0372,
       "open": 1.072,
-      "netChange": -0.0327,
-      "pctChange": -3.0504,
+      "netChange": -0.0348,
+      "pctChange": -3.2463,
       "wk52_hi": 3.6502,
       "wk52_lo": 1.0473
     },
     "kaspa": {
       "ticker": "KAS-USD",
-      "close": 0.02753,
+      "close": 0.02758,
       "open": 0.02793,
-      "netChange": -0.0004,
-      "pctChange": -1.4322,
+      "netChange": -0.00035,
+      "pctChange": -1.2531,
       "wk52_hi": 0.1185,
       "wk52_lo": 0.0139
     }
