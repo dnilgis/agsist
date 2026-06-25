@@ -209,6 +209,7 @@
     var pinBtn=document.getElementById('fs-pin'); if(pinBtn) pinBtn.addEventListener('click', armPinDrop);
     document.getElementById('fs-draw').addEventListener('click', function(){ drawControl.enable(); flashHint(); });
     document.getElementById('fs-clear').addEventListener('click', clearField);
+    var so=document.getElementById('fs-startover'); if(so) so.addEventListener('click', function(){ clearField(); armPinDrop(); flashHint('Tap the map to drop a fresh field'); });
     document.getElementById('fs-gps').addEventListener('click', locateMe);
     document.getElementById('fs-addr-go').addEventListener('click', searchAddr);
     var demoBtn=document.getElementById('fs-demo'); if(demoBtn) demoBtn.addEventListener('click', loadDemoField);
@@ -233,6 +234,7 @@
     clearHandles(); disarmPin(); setMapHeadline(null);
     _activeFieldId=null; _priorSnap=null; removeChangeBanner();
     document.getElementById('fs-clear').disabled=true;
+    var dk=document.querySelector('.fs-dock'); if(dk) dk.classList.remove('has-field');
     document.getElementById('fs-results').hidden=true;
     document.getElementById('fs-empty').hidden=false;
     setFieldChrome(false);
@@ -550,6 +552,7 @@
     drawnLayer.addLayer(poly);
     try { map.fitBounds(poly.getBounds(), { padding:[40,40], maxZoom:16 }); } catch(e){}
     var cb=document.getElementById('fs-clear'); if(cb) cb.disabled=false;
+    var dk=document.querySelector('.fs-dock'); if(dk) dk.classList.add('has-field');
     runAll(poly);
     if(src==='draw') ga('field_drawn', { acres: Math.round(polyAcres(poly)) });
   }
@@ -599,6 +602,7 @@
     R.hidden=false;
     R.innerHTML =
       fieldHead(acres, c) +
+      '<div class="fs-vitals" id="fs-vitals"></div>' +
       '<div class="fs-section fs-insight-section" id="fs-insight-wrap" hidden>'+
         '<div class="fs-section-h"><span class="ico">'+ICONS.read+'</span>The Read on This Field</div>'+
         '<div class="fs-section-body" id="fs-insight"></div>'+
@@ -1182,7 +1186,90 @@
   }
   function vigorColor(v){ return v==null?'var(--dim)':(v>=0.6?'var(--green)':(v>=0.3?'var(--gold)':'var(--red)')); }
   function idxChip(label,val,what){
-    return '<div class="fs-idx"><span class="fs-idx-l">'+label+'</span><span class="fs-idx-v">'+(val==null?'\u2014':(+val).toFixed(2))+'</span><span class="fs-idx-w">'+what+'</span></div>';
+    return '<div class="fs-idx"><span class="fs-idx-l">'+label+tipQ(label.toLowerCase())+'</span><span class="fs-idx-v">'+(val==null?'\u2014':(+val).toFixed(2))+'</span><span class="fs-idx-w">'+what+'</span></div>';
+  }
+
+  // ── On-demand explainers: a (?) on any cryptic label opens a plain-language
+  // popover. Clean until tapped — the page stays an instrument, not a textbook. ──
+  var FS_TIPS = {
+    acres:{t:'Acres',b:'Total area inside the boundary you drew.'},
+    soil:{t:'Soil & productivity',b:'The dominant USDA soil map units under your field, ranked by share of acreage. Soil sets what the ground can yield and how it drains.'},
+    nccpi:{t:'NCCPI',b:'USDA\u2019s National Commodity Crop Productivity Index \u2014 a national 0\u2013100 score for row-crop ground. Higher is more productive soil. It\u2019s weighted toward Corn Belt soils, so strong regional ground can still score mid-scale.'},
+    ndvi:{t:'NDVI \u00b7 crop vigor',b:'How much living, green canopy the satellite sees. Runs about 0 (bare or dead) to 0.9 (dense, healthy crop). The best single at-a-glance crop-health number.'},
+    ndre:{t:'NDRE \u00b7 nitrogen',b:'A red-edge index tied to chlorophyll and nitrogen status. Most useful after canopy close, when NDVI flattens out.'},
+    ndmi:{t:'NDMI \u00b7 canopy moisture',b:'Water held in the crop canopy. Higher means more moisture in the leaves; a drop can flag stress before you can see it.'},
+    nmdi:{t:'NMDI \u00b7 moisture',b:'A drought index combining canopy and soil-water signals.'},
+    msi:{t:'MSI \u00b7 moisture stress',b:'Moisture Stress Index. Higher means more water stress \u2014 it runs opposite to NDMI.'},
+    ndwi:{t:'NDWI \u00b7 water',b:'Surface and canopy water content. Mildly negative over dry crop ground is normal.'},
+    bsi:{t:'BSI \u00b7 bare soil',b:'Bare Soil Index. Higher means more exposed soil \u2014 early season, after harvest, or a thin stand.'},
+    rotation:{t:'Crop rotation',b:'What grew each of the last five years, from USDA\u2019s satellite-classified Cropland Data Layer. Continuous corn raises rootworm and disease pressure.'},
+    drought:{t:'Drought',b:'US Drought Monitor category for this field, None through D4 (exceptional). D2 and worse means real moisture stress.'},
+    slope:{t:'Slope',b:'Average ground slope across the field. Steeper ground carries more water-erosion exposure.'},
+    basis:{t:'Cash bid',b:'What a nearby elevator would pay for grain today \u2014 futures plus or minus local basis. The number you\u2019d actually get, not the board price.'},
+    patchy:{t:'Field uniformity',b:'How evenly vigor is spread across the field. A wide spread means part of the field is lagging \u2014 a zone worth walking.'},
+    normal:{t:'Field normal',b:'This field\u2019s own NDVI averaged over the same window in prior years \u2014 the baseline that says whether this season is ahead or behind.'}
+  };
+  var _tipFor=null;
+  function tipQ(key){ return FS_TIPS[key] ? '<button class="fs-q" type="button" data-tip="'+key+'" aria-label="What is this?">?</button>' : ''; }
+  function closeTip(){ var p=document.getElementById('fs-tip-pop'); if(p&&p.parentNode) p.parentNode.removeChild(p); _tipFor=null; }
+  function showTip(btn){
+    closeTip();
+    var t=FS_TIPS[btn.getAttribute('data-tip')]; if(!t) return;
+    var pop=document.createElement('div'); pop.id='fs-tip-pop'; pop.className='fs-tip-pop';
+    pop.innerHTML='<div class="fs-tip-ttl">'+t.t+'</div><div class="fs-tip-body">'+t.b+'</div>';
+    document.body.appendChild(pop);
+    var r=btn.getBoundingClientRect(), pw=Math.min(290, window.innerWidth-20);
+    pop.style.width=pw+'px';
+    var left=Math.min(Math.max(10, r.left+r.width/2-pw/2), window.innerWidth-pw-10);
+    pop.style.left=left+'px';
+    pop.style.top=(r.bottom+8+window.scrollY)+'px';
+    if(r.bottom+pop.offsetHeight+16>window.innerHeight && r.top-pop.offsetHeight-8>0){ pop.style.top=(r.top+window.scrollY-pop.offsetHeight-8)+'px'; }
+    _tipFor=btn;
+  }
+  document.addEventListener('click', function(e){
+    var q=e.target.closest ? e.target.closest('.fs-q') : null;
+    if(q){ e.preventDefault(); e.stopPropagation(); if(_tipFor===q){ closeTip(); } else { showTip(q); } return; }
+    if(!(e.target.closest && e.target.closest('#fs-tip-pop'))) closeTip();
+  });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeTip(); });
+
+  // ── Vitals console: the at-a-glance ops strip. A dense mono grid of the field's
+  // key numbers, each with a tap-to-explain (?). Fills in as the loaders land. ──
+  function vCell(label, value, sub, tip, cls){
+    return '<div class="fs-vital'+(cls?' '+cls:'')+'">'+
+      '<div class="fs-vital-l">'+label+(tip?tipQ(tip):'')+'</div>'+
+      '<div class="fs-vital-v">'+(value==null||value===''?'<span class="fs-vital-wait">\u00b7\u00b7\u00b7</span>':value)+'</div>'+
+      (sub?'<div class="fs-vital-s">'+sub+'</div>':'')+
+    '</div>';
+  }
+  function renderVitals(){
+    var el=document.getElementById('fs-vitals'); if(!el||!FIELD) return;
+    var s=FIELD.soil, r=FIELD.rotation, d=FIELD.drought, ix=FIELD.indices, b=FIELD.bids;
+    var acres = FIELD.acres!=null ? (+FIELD.acres).toFixed(1) : null;
+    var soilV = (s&&s.top&&s.top.name) ? esc(String(s.top.name).split(',')[0]) : null;
+    var soilSub = (s&&s.primePct!=null) ? s.primePct+'% prime' : null;
+    var nccpiV = (s&&s.nccpi!=null) ? Math.round(s.nccpi*100) : null;
+    var v = ix ? ((ix.latest&&ix.latest.ndvi!=null)?ix.latest.ndvi:(ix.series&&ix.series.length?ix.series[ix.series.length-1].ndvi:null)) : null;
+    var vigV = (v!=null) ? (+v).toFixed(2) : null;
+    var vigSub = (v!=null) ? vigorWord(v) : null;
+    var vigCls = (v!=null) ? (v>=0.6?'good':(v>=0.3?'mid':'low')) : '';
+    var rotV=null;
+    if(r){ rotV = r.cornOnCorn ? ('Corn &times;'+r.maxCornStreak) : ((r.lastCrop!=null && typeof CDL_CROPS!=='undefined' && CDL_CROPS[r.lastCrop]) ? esc(CDL_CROPS[r.lastCrop]) : 'Mixed'); }
+    var drV = d ? ((d.cat && d.cat!=='None') ? esc(d.cat) : 'None') : null;
+    var drCls = (d && d.cat && /D[234]/.test(d.cat)) ? 'low' : '';
+    var slV = (s&&s.slope!=null) ? s.slope+'%' : null;
+    var bid = b ? (b.corn||b.bean) : null;
+    var bidV = (bid&&bid.cash!=null) ? '$'+(+bid.cash).toFixed(2) : null;
+    var bidSub = b ? (b.corn?'cash corn':(b.bean?'cash beans':null)) : null;
+    el.innerHTML =
+      vCell('ACRES', acres, null, 'acres') +
+      vCell('SOIL', soilV, soilSub, 'soil') +
+      vCell('NCCPI', nccpiV, (nccpiV!=null?'/100':null), 'nccpi') +
+      vCell('VIGOR', vigV, vigSub, 'ndvi', vigCls) +
+      vCell('ROTATION', rotV, '5-yr', 'rotation') +
+      vCell('DROUGHT', drV, null, 'drought', drCls) +
+      vCell('SLOPE', slV, null, 'slope') +
+      vCell('CASH', bidV, bidSub, 'basis');
   }
   function ixDate(s){ try{ return new Date(s+'T12:00:00Z').toLocaleDateString(undefined,{month:'short',day:'numeric'}); }catch(e){ return s; } }
   function ixDaysAgo(s){ var n=Math.round((Date.now()-new Date(s+'T12:00:00Z').getTime())/864e5); return n<=0?'today':(n===1?'yesterday':n+' days ago'); }
@@ -1218,7 +1305,7 @@
     var html=
       '<div class="fs-vigor-head">'+
         '<span class="fs-vigor-dot" style="background:'+vCol+'"></span>'+
-        '<span class="fs-vigor-word">Crop vigor: '+vigorWord(v)+'</span>'+
+        '<span class="fs-vigor-word">Crop vigor: '+vigorWord(v)+'</span>'+tipQ('ndvi')+
         (v!=null?'<span class="fs-vigor-num">NDVI '+v.toFixed(2)+'</span>':'')+
       '</div>'+
       (nd?'<div class="fs-vigor-spark">'+sparkline(series,'ndvi',vCol,baseV)+'<span class="fs-spark-cap">vigor over the season'+(baseV!=null?' &middot; dashed = normal':'')+'</span></div>':'')+
@@ -1239,6 +1326,7 @@
 
   function recomputeInsight(){
     if(!FIELD) return;
+    renderVitals();
     var s=FIELD.soil, r=FIELD.rotation, w=FIELD.weather, d=FIELD.drought, b=FIELD.bids, h=FIELD.hail, se=FIELD.season;
     var lines=[], stress=[];
 

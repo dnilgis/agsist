@@ -367,6 +367,27 @@
 .fs-leg-bar{height:12px;border-radius:6px;border:1px solid var(--border)}
 .fs-leg-ends{display:flex;justify-content:space-between;margin-top:.32rem;font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--text-dim)}
 .fs-leg-say{margin-top:.5rem;font-size:.82rem;line-height:1.5;color:var(--text);max-width:46ch}
+/* vitals console — the dense ops strip */
+.fs-vitals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:0 0 .9rem}
+.fs-vital{background:var(--surface);padding:.58rem .65rem;min-width:0}
+.fs-vital-l{display:flex;align-items:center;gap:.28rem;font-family:'JetBrains Mono',monospace;font-size:.57rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim)}
+.fs-vital-v{font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--text);line-height:1.15;margin-top:.16rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fs-vital-s{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text-dim);margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fs-vital-wait{color:var(--text-dim);opacity:.45;letter-spacing:.14em}
+.fs-vital.good .fs-vital-v{color:var(--green,#5fc28a)}
+.fs-vital.mid .fs-vital-v{color:var(--gold,#d4a23f)}
+.fs-vital.low .fs-vital-v{color:var(--red,#e0685f)}
+@media(max-width:600px){.fs-vitals{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* on-demand (?) explainer + popover */
+.fs-q{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.6rem;line-height:1;cursor:pointer;padding:0;flex:0 0 auto;transition:border-color .15s,color .15s}
+.fs-q:hover,.fs-q:focus-visible{border-color:var(--gold,#d4a23f);color:var(--gold,#d4a23f);outline:none}
+.fs-idx-l .fs-q,.fs-vigor-word + .fs-q{margin-left:.3rem}
+.fs-tip-pop{position:absolute;z-index:3000;background:var(--surface2,#161b1c);border:1px solid var(--gold,#d4a23f);border-radius:10px;padding:.7rem .8rem;box-shadow:0 10px 30px rgba(0,0,0,.55)}
+.fs-tip-ttl{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold,#d4a23f);margin-bottom:.3rem}
+.fs-tip-body{font-size:.82rem;line-height:1.5;color:var(--text)}
+/* contextual draw dock */
+.fs-dock.has-field .fs-pre{display:none}
+.fs-dock:not(.has-field) .fs-post{display:none}
     .fs-god-slider span{display:block;margin-bottom:.3rem}
     .fs-god-slider b{color:var(--brand,var(--gold))}
     .fs-god-slider input[type=range]{width:100%;accent-color:var(--brand,var(--gold))}
@@ -496,10 +517,11 @@
 
             <!-- action dock -->
             <div class="fs-dock">
-              <button class="fs-btn fs-btn--primary" id="fs-pin" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg>Drop a pin</button>
-              <button class="fs-btn" id="fs-draw" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7l7-3 7 4-2 9-9-1z"/><circle cx="5" cy="7" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="4" r="1.3" fill="currentColor" stroke="none"/><circle cx="19" cy="8" r="1.3" fill="currentColor" stroke="none"/></svg>Trace exact</button>
-              <button class="fs-btn" id="fs-gps" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="6"/><path d="M12 2v3.5M12 18.5V22M2 12h3.5M18.5 12H22"/></svg>My location</button>
-              <button class="fs-btn" id="fs-clear" type="button" disabled><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Clear</button>
+              <button class="fs-btn fs-btn--primary fs-pre" id="fs-pin" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg>Drop a pin</button>
+              <button class="fs-btn fs-pre" id="fs-draw" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7l7-3 7 4-2 9-9-1z"/><circle cx="5" cy="7" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="4" r="1.3" fill="currentColor" stroke="none"/><circle cx="19" cy="8" r="1.3" fill="currentColor" stroke="none"/></svg>Trace exact</button>
+              <button class="fs-btn fs-pre" id="fs-gps" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="6"/><path d="M12 2v3.5M12 18.5V22M2 12h3.5M18.5 12H22"/></svg>My location</button>
+              <button class="fs-btn fs-btn--primary fs-post" id="fs-startover" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/></svg>Start over</button>
+              <button class="fs-btn fs-post" id="fs-clear" type="button" disabled><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Clear</button>
             </div>
             <span class="fs-draw-hint" id="fs-hint" hidden><b>&#9998; Draw</b>&nbsp;your field&rarr;</span>
           </div>
