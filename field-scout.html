@@ -386,6 +386,37 @@
     .fs-sources-note{margin:1rem 0 0;font-size:.82rem;color:var(--text-dim);opacity:.8;font-style:italic;line-height:1.55}
   
 .fs-sr-h1{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.fs-vigor-head{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin-bottom:.45rem}
+.fs-vigor-dot{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:0 0 0 3px rgba(255,255,255,.04)}
+.fs-vigor-word{font-family:var(--font-display,'Archivo'),sans-serif;font-weight:700;font-size:1.2rem;color:var(--text);line-height:1.1}
+.fs-vigor-num{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-dim);background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.22rem .5rem}
+.fs-vigor-spark{display:flex;flex-direction:column;gap:.25rem;margin:.5rem 0 .6rem}
+.fs-spark{width:100%;height:48px;display:block}
+.fs-spark-axis{position:relative;height:14px;margin-top:1px}
+.fs-spark-ax{position:absolute;top:0;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text-dim);white-space:nowrap}
+.fs-spark-cap{font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--text-muted,var(--text-dim));letter-spacing:.02em}
+.fs-vigor-say{margin:.4rem 0;font-size:.95rem;line-height:1.55;color:var(--text)}
+.fs-vigor-fresh{display:flex;align-items:center;gap:.42rem;margin:.65rem 0 .2rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-dim)}
+.fs-vigor-fresh .fs-ico{width:15px;height:15px;flex:none}
+.fs-vigor-more{margin-top:.5rem}
+.fs-vigor-more summary{cursor:pointer;font-size:.82rem;color:var(--gold);font-weight:600;padding:.5rem 0;min-height:40px;display:flex;align-items:center;list-style:none}
+.fs-vigor-more summary::-webkit-details-marker{display:none}
+.fs-vigor-more summary::before{content:'\25B8';margin-right:.4rem;color:var(--gold)}
+.fs-vigor-more[open] summary::before{content:'\25BE'}
+.fs-vigor-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin-top:.45rem}
+.fs-idx{display:flex;flex-direction:column;gap:.12rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.5rem .6rem}
+.fs-idx-l{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-dim);letter-spacing:.04em}
+.fs-idx-v{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--text)}
+.fs-idx-w{font-size:.64rem;color:var(--text-muted,var(--text-dim))}
+@media(max-width:420px){.fs-vigor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.fs-god-slider input[type=range]{-webkit-appearance:none;appearance:none;height:8px;border-radius:6px;background:var(--surface3,#1d2324);outline:none;margin:.55rem 0;padding:0}
+.fs-god-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:30px;height:30px;border-radius:50%;background:var(--gold);border:3px solid var(--bg,#0a0c0d);box-shadow:0 1px 5px rgba(0,0,0,.55);cursor:pointer}
+.fs-god-slider input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:var(--gold);border:3px solid var(--bg,#0a0c0d);box-shadow:0 1px 5px rgba(0,0,0,.55);cursor:pointer}
+.fs-god-slider input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(212,162,63,.35)}
+.fs-god-slider span{font-size:.82rem;margin-bottom:.4rem}
+.fs-god-slider b{font-size:.9rem}
+.fs-god-chip{min-height:44px}
+@media(max-width:560px){.fs-vigor-word{font-size:1.1rem}.fs-god-slider{min-width:100%}}
 </style>
 
   <script type="application/ld+json">
@@ -573,8 +604,8 @@
 
   <div id="site-footer"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-  <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script defer src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
   <script src="/components/loader.js" defer></script>
   <script src="/field-scout.js" defer></script>
 </body>
