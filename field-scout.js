@@ -236,6 +236,7 @@
     document.getElementById('fs-clear').disabled=true;
     var dk=document.querySelector('.fs-dock'); if(dk) dk.classList.remove('has-field');
     document.getElementById('fs-results').hidden=true;
+    var _dk=document.getElementById('fs-deck'); if(_dk){ _dk.hidden=true; _dk.innerHTML=''; }
     document.getElementById('fs-empty').hidden=false;
     setFieldChrome(false);
     var h=document.getElementById('fs-hint'); if(h) h.innerHTML='<b>&#9998; Draw</b>&nbsp;your field&rarr;';
@@ -602,18 +603,26 @@
     R.hidden=false;
     R.innerHTML =
       fieldHead(acres, c) +
-      '<div class="fs-vitals" id="fs-vitals"></div>' +
       '<div class="fs-section fs-insight-section" id="fs-insight-wrap" hidden>'+
         '<div class="fs-section-h"><span class="ico">'+ICONS.read+'</span>The Read on This Field</div>'+
         '<div class="fs-section-body" id="fs-insight"></div>'+
-      '</div>' +
-      section('soil',ICONS.soil,'Soil & Productivity','fs-soil') +
-      section('rot',ICONS.rot,'5-Year Crop Rotation','fs-rot') +
-      section('wx',ICONS.wx,'Weather & Drought','fs-wx') +
-      section('season',ICONS.season,'Season vs Normal','fs-season') +
-      section('vigor',ICONS.vigor,'Crop Vigor &amp; Moisture','fs-vigor') +
-      section('risk',ICONS.risk,'Risk Profile','fs-risk') +
-      section('bids',ICONS.bids,'Nearby Cash Bids','fs-bids');
+      '</div>';
+    var D=document.getElementById('fs-deck');
+    if(D){
+      D.hidden=false;
+      D.innerHTML =
+        '<div class="fs-deck-label">Field readout</div>'+
+        '<div class="fs-vitals" id="fs-vitals"></div>' +
+        '<div class="fs-deck-grid">' +
+          section('soil',ICONS.soil,'Soil & Productivity','fs-soil') +
+          section('rot',ICONS.rot,'5-Year Crop Rotation','fs-rot') +
+          section('wx',ICONS.wx,'Weather & Drought','fs-wx') +
+          section('season',ICONS.season,'Season vs Normal','fs-season') +
+          section('vigor',ICONS.vigor,'Crop Vigor &amp; Moisture','fs-vigor') +
+          section('risk',ICONS.risk,'Risk Profile','fs-risk') +
+          section('bids',ICONS.bids,'Nearby Cash Bids','fs-bids') +
+        '</div>';
+    }
 
     var _an=R.querySelector('.acres-n'); if(_an){ _an.textContent='0.0'; setTimeout(function(){ countUp(_an, acres, 1); }, 320); }
     // fire all sources independently — fail soft; each calls recomputeInsight()
@@ -1254,7 +1263,12 @@
     var vigSub = (v!=null) ? vigorWord(v) : null;
     var vigCls = (v!=null) ? (v>=0.6?'good':(v>=0.3?'mid':'low')) : '';
     var rotV=null;
-    if(r){ rotV = r.cornOnCorn ? ('Corn &times;'+r.maxCornStreak) : ((r.lastCrop!=null && typeof CDL_CROPS!=='undefined' && CDL_CROPS[r.lastCrop]) ? esc(CDL_CROPS[r.lastCrop]) : 'Mixed'); }
+    var rotV=null;
+    if(r){
+      if(r.codes && r.codes.length){
+        rotV = r.codes.map(function(cd){ var m=(typeof CDL_CROPS!=='undefined')&&CDL_CROPS[cd]; return m?m.l.charAt(0):'\u00b7'; }).join('\u2009\u00b7\u2009');
+      } else { rotV = r.cornOnCorn ? 'Corn' : 'Mixed'; }
+    }
     var drV = d ? ((d.cat && d.cat!=='None') ? esc(d.cat) : 'None') : null;
     var drCls = (d && d.cat && /D[234]/.test(d.cat)) ? 'low' : '';
     var slV = (s&&s.slope!=null) ? s.slope+'%' : null;
