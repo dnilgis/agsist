@@ -139,6 +139,7 @@
     var panel=document.getElementById('fs-god-controls');
     if(!which){ if(panel) panel.hidden=true; return; }
     if(panel) panel.hidden=false;
+    setLegend(which);
 
     var url = FS_WORKER + '/' + which + '/{z}/{x}/{y}' + (godDate?('?date='+godDate):'');
     godLayer = L.tileLayer(url, { opacity:godOpacity, maxZoom:18, minZoom:9, tileSize:256, crossOrigin:true,
@@ -149,6 +150,24 @@
     // scrub label visibility: NDVI/moisture both time-aware
     var scrubWrap=document.getElementById('fs-scrub-wrap'); if(scrubWrap) scrubWrap.hidden=false;
     ga('god_layer', { layer: which });
+  }
+
+  // Plain-language key for the color overlays — answers "what am I looking at?"
+  function setLegend(which){
+    var el=document.getElementById('fs-legend'); if(!el) return;
+    if(which==='ndvi'){
+      el.hidden=false;
+      el.innerHTML='<div class="fs-leg-top"><span class="fs-leg-ttl">Crop vigor</span><span class="fs-leg-tag">how much living canopy</span></div>'+
+        '<div class="fs-leg-bar" style="background:linear-gradient(90deg,#8c6638,#b79a3c,#6aa83a,#1f7a2e)"></div>'+
+        '<div class="fs-leg-ends"><span>Bare / stressed</span><span>Healthy / lush</span></div>'+
+        '<div class="fs-leg-say">Greener means more living crop. Brown and tan are bare soil, residue, or a struggling stand &mdash; those are the spots worth walking.</div>';
+    } else if(which==='moisture'){
+      el.hidden=false;
+      el.innerHTML='<div class="fs-leg-top"><span class="fs-leg-ttl">Soil moisture</span><span class="fs-leg-tag">radar surface wetness</span></div>'+
+        '<div class="fs-leg-bar" style="background:linear-gradient(90deg,#c7ae73,#8fb59a,#2a7fd6)"></div>'+
+        '<div class="fs-leg-ends"><span>Drier</span><span>Wetter</span></div>'+
+        '<div class="fs-leg-say">Bluer is a wetter surface, tan is drier. It\u2019s a relative read from radar &mdash; good for finding wet holes and dry knobs, not an exact percent.</div>';
+    } else { el.hidden=true; el.innerHTML=''; }
   }
 
   function scrubTo(weeksAgo){

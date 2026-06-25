@@ -191,10 +191,13 @@
     .fs-draw-hint b{color:var(--brand,var(--gold))}
     .fs-corner-handle{background:var(--brand,#daa520);border:2px solid #0a1206;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.5);cursor:grab}
     .fs-corner-handle:active{cursor:grabbing}
-    .fs-map-headline{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:1000;max-width:90%;background:rgba(10,18,6,.93);border:1px solid var(--brand,var(--gold));border-radius:10px;padding:.5rem .9rem;color:#fff;font-size:.92rem;font-weight:600;line-height:1.35;box-shadow:0 4px 18px rgba(0,0,0,.55);pointer-events:none;animation:fsMapHead .45s cubic-bezier(.2,.7,.2,1);text-align:center}
+    .fs-map-headline{position:absolute;top:64px;left:50%;transform:translateX(-50%);z-index:1000;max-width:90%;background:rgba(10,18,6,.93);border:1px solid var(--brand,var(--gold));border-radius:10px;padding:.5rem .9rem;color:#fff;font-size:.92rem;font-weight:600;line-height:1.35;box-shadow:0 4px 18px rgba(0,0,0,.55);pointer-events:none;animation:fsMapHead .45s cubic-bezier(.2,.7,.2,1);text-align:center}
     .fs-mh-tag{display:block;font-family:var(--font-display);text-transform:uppercase;font-size:.62rem;letter-spacing:.09em;color:var(--brand,var(--gold));margin-bottom:.12rem;font-weight:600}
     @keyframes fsMapHead{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translateX(-50%)}}
-    @media(max-width:600px){.fs-map-headline{font-size:.82rem;top:8px;padding:.42rem .7rem}}
+    @media(max-width:600px){.fs-map-headline{display:none}
+    .fs-dock{gap:5px;bottom:10px;max-width:97%}
+    .fs-dock .fs-btn{padding:.5rem .6rem;font-size:.78rem}
+    .fs-dock .fs-ico{width:13px;height:13px}}
 
     .fs-actionbar{position:absolute;bottom:12px;left:12px;right:12px;z-index:600;display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;pointer-events:none}
     .fs-actionbar > *{pointer-events:auto}
@@ -357,6 +360,13 @@
     .fs-god-chip .dot{width:14px;height:14px;border-radius:4px;flex-shrink:0}
     .fs-god-controls{margin-top:.8rem;display:flex;gap:1.2rem;flex-wrap:wrap}
     .fs-god-slider{flex:1;min-width:180px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-dim)}
+.fs-legend{flex:1 1 100%;order:-1}
+.fs-leg-top{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.45rem}
+.fs-leg-ttl{font-family:var(--font-display),'Archivo',sans-serif;font-weight:700;font-size:.92rem;color:var(--text)}
+.fs-leg-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-dim)}
+.fs-leg-bar{height:12px;border-radius:6px;border:1px solid var(--border)}
+.fs-leg-ends{display:flex;justify-content:space-between;margin-top:.32rem;font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--text-dim)}
+.fs-leg-say{margin-top:.5rem;font-size:.82rem;line-height:1.5;color:var(--text);max-width:46ch}
     .fs-god-slider span{display:block;margin-bottom:.3rem}
     .fs-god-slider b{color:var(--brand,var(--gold))}
     .fs-god-slider input[type=range]{width:100%;accent-color:var(--brand,var(--gold))}
@@ -521,6 +531,7 @@
               <button class="fs-god-chip" id="fs-hail-toggle" type="button" aria-pressed="false"><span class="dot" aria-hidden="true" style="background:#7cd2ff"></span>Hail history</button>
             </div>
             <div class="fs-god-controls" id="fs-god-controls" hidden>
+              <div class="fs-legend" id="fs-legend" hidden></div>
               <label class="fs-god-slider">
                 <span>Opacity <b id="fs-opacity-val">75%</b></span>
                 <input id="fs-opacity" type="range" min="20" max="100" value="75" aria-label="Layer opacity">
