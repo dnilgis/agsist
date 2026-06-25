@@ -784,7 +784,7 @@
         var html='<div class="fs-rotation">'+ codes.map(function(code,i){
           var info = code ? crop(code) : {l:'—',e:'·',c:'#333'};
           return '<div class="fs-rot-year">'+
-            '<div class="fs-rot-chip" aria-hidden="true" style="background:'+hexA(info.c,.18)+';border-color:'+hexA(info.c,.5)+'">'+info.e+'</div>'+
+            '<div class="fs-rot-chip" aria-hidden="true" style="background:'+hexA(info.c,.18)+';border-color:'+hexA(info.c,.5)+'">'+esc(info.l.charAt(0))+'</div>'+
             '<div class="fs-rot-crop">'+esc(info.l)+'</div>'+
             '<div class="fs-rot-yr">\''+String(years[i]).slice(2)+'</div></div>';
         }).join('') + '</div>'+
@@ -1071,12 +1071,12 @@
       .then(function(g){
         if(gen !== fieldGen) return;
         var zip = g && g.address ? (g.address.postcode||'').slice(0,5) : '';
-        if(!zip){ setBody('fs-bids','<div class="fs-src">This field sits far enough from a mapped ZIP that we can\u2019t pull nearby bids for it &mdash; common for remote parcels. Try the cash-bids page directly for your area.</div>'); return; }
+        if(!zip){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">This field sits far enough from a mapped ZIP that we can\u2019t pull nearby bids for it &mdash; common for remote parcels. Try the cash-bids page directly for your area.</div>'); return; }
         return fetch(BIDS_PROXY+'?zip='+zip+'&radius=75&getAllBids=1')
           .then(function(r){return r.json();})
           .then(function(d){ if(gen!==fieldGen) return; renderBids(d, zip, gen); });
       })
-      .catch(function(){ if(gen!==fieldGen) return; setErr('fs-bids','Couldn\u2019t reach the cash-bid feed just now.'); });
+      .catch(function(){ if(gen!==fieldGen) return; if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0}; recomputeInsight(); } setErr('fs-bids','Couldn\u2019t reach the cash-bid feed just now.'); });
   }
   function renderBids(d, zip, gen){
     if(gen!==fieldGen) return;
@@ -1098,7 +1098,7 @@
       });
     });
     flat = flat.filter(function(x){ return !isNaN(x.cash); }).sort(function(a,b){ return (a.dist||999)-(b.dist||999); });
-    if(!flat.length){ setBody('fs-bids','<div class="fs-src">No elevators are reporting cash bids near ZIP '+esc(zip)+' right now. Bid coverage is densest across the Corn Belt and thins out elsewhere &mdash; this isn\u2019t an error.</div>'); return; }
+    if(!flat.length){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:zip,count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">No elevators are reporting cash bids near ZIP '+esc(zip)+' right now. Bid coverage is densest across the Corn Belt and thins out elsewhere &mdash; this isn\u2019t an error.</div>'); return; }
     // record best corn & bean bid for the insight engine
     var corn=flat.filter(function(x){return /corn/i.test(x.commodity);}).sort(function(a,b){return b.cash-a.cash;})[0];
     var bean=flat.filter(function(x){return /bean|soy/i.test(x.commodity);}).sort(function(a,b){return b.cash-a.cash;})[0];
