@@ -189,7 +189,9 @@
     @media (max-width: 380px) {
       .tools-grid { grid-template-columns: 1fr; }
     }
-  </style>
+  .ticon{width:28px;height:28px;color:var(--gold);display:inline-block;vertical-align:middle}
+h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
+</style>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -201,7 +203,7 @@
     </nav>
 
     <div class="page-header">
-      <h1>🛠️ Farm Tools &amp; Calculators</h1>
+      <h1><svg class="ticon" aria-hidden="true"><use href="#i-tractor"></use></svg> Farm Tools &amp; Calculators</h1>
       <p>Free tools built for corn, soybean, and grain farmers. No login. No ads.</p>
     </div>
 
@@ -209,19 +211,19 @@
     <div class="cat-label">Advisory Tools</div>
     <div class="tools-grid">
       <a href="/spray" class="tool-card">
-        <div class="icon">🌬️</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-spray-can"></use></svg></div>
         <div class="name">Spray Timing Advisor</div>
         <div class="desc">Real-time wind speed, temperature, humidity, and inversion risk for your location. Know before you spray.</div>
         <span class="tag">Weather + Conditions</span>
       </a>
       <a href="/urea" class="tool-card">
-        <div class="icon">🧪</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-flask-conical"></use></svg></div>
         <div class="name">Urea Volatilization Risk</div>
         <div class="desc">Daily risk index for nitrogen loss from surface-applied urea. Based on temp, moisture, and soil conditions.</div>
         <span class="tag">Nitrogen Management</span>
       </a>
       <a href="/fertilizer" class="tool-card">
-        <div class="icon">🌱</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-sprout"></use></svg></div>
         <div class="name">Fertilizer Prices &amp; Fertility Bill</div>
         <div class="desc">This week's N-P-K-S prices with $/lb-nutrient comparison, plus a calculator that builds the cheapest fertility program for your crop and yield goal.</div>
         <span class="tag">Inputs · Per-Acre Cost</span>
@@ -233,13 +235,13 @@
     <div class="tools-grid">
       <a href="/breakeven" class="tool-card">
         <span class="badge-new">New</span>
-        <div class="icon">💰</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-calculator"></use></svg></div>
         <div class="name">Break-Even Calculator</div>
         <div class="desc">Full cost-per-acre analysis. Enter seed, fertilizer, chemicals, land, and machinery costs. Get break-even price, profit/loss, and sensitivity table.</div>
         <span class="tag">Corn · Soybeans · Wheat</span>
       </a>
       <a href="/cash-bids" class="tool-card">
-        <div class="icon">💵</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-banknote"></use></svg></div>
         <div class="name">Cash Bids</div>
         <div class="desc">Live local cash bid prices from elevators near you. Compare basis across locations.</div>
         <span class="tag">Live Prices</span>
@@ -251,7 +253,7 @@
     <div class="tools-grid">
       <a href="/grain-bin-calculator" class="tool-card">
         <span class="badge-new">New</span>
-        <div class="icon">🏗️</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-warehouse"></use></svg></div>
         <div class="name">Grain Bin Calculator</div>
         <div class="desc">Calculate bushel capacity, moisture shrink, and dollar value of your grain inventory. Round, hopper, and flat-floor bins.</div>
         <span class="tag">Capacity + Shrink + Value</span>
@@ -263,27 +265,27 @@
     <div class="tools-grid">
       <a href="/fast-facts" class="tool-card">
         <span class="badge-new">New</span>
-        <div class="icon">📚</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-book-open"></use></svg></div>
         <div class="name">Agricultural Fast Facts</div>
         <div class="desc">Bushel weights, nutrient removal, nitrogen guidelines, unit conversions, seeding rates, fertilizer analysis, and 6 quick calculators. State-specific USDA Census data.</div>
         <span class="tag">16 States · USDA 2022</span>
       </a>
       <a href="/yield-estimator" class="tool-card">
         <span class="badge-new">New</span>
-        <div class="icon">🌽</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-wheat"></use></svg></div>
         <div class="name">Crop Yield Estimator</div>
         <div class="desc">Count ears and kernels, enter 3 numbers, get estimated bu/acre. The yield component method built for your phone.</div>
         <span class="tag">Corn · Soybeans</span>
       </a>
       <a href="/data-sources" class="tool-card">
-        <div class="icon">📡</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-database"></use></svg></div>
         <div class="name">Data Sources</div>
         <div class="desc">Where AGSIST gets its data. Yahoo Finance, Open-Meteo, NOAA, USDA, and more — all explained.</div>
         <span class="tag">Transparency</span>
       </a>
       <a href="/usda-quick-stats" class="tool-card">
         <span class="badge-new">New</span>
-        <div class="icon">📊</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-chart-column"></use></svg></div>
         <div class="name">USDA Data Explorer</div>
         <div class="desc">Pull NASS crop yields, planted acres, and prices received by state. Pre-loaded tables plus a query builder that opens custom pulls on USDA Quick Stats.</div>
         <span class="tag">NASS · By State</span>
@@ -294,13 +296,13 @@
     <div class="cat-label">Crop Tracking</div>
     <div class="tools-grid">
       <a href="/gdu-calculator" class="tool-card">
-        <div class="icon">🌡️</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-thermometer"></use></svg></div>
         <div class="name">GDU Tracker</div>
         <div class="desc">Track growing degree units for corn and soybeans. Compare current season to 30-year average by location.</div>
         <span class="tag">Growing Degrees</span>
       </a>
       <a href="/planting-date" class="tool-card coming-soon">
-        <div class="icon">📅</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-calendar"></use></svg></div>
         <div class="name">Planting Date Optimizer</div>
         <div class="desc">Optimal corn and soybean planting windows by county, with yield drag estimates for late planting.</div>
         <span class="tag">Decision Support</span>
@@ -311,19 +313,19 @@
     <div class="cat-label">Market Data</div>
     <div class="tools-grid">
       <a href="/" class="tool-card">
-        <div class="icon">📈</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-trending-up"></use></svg></div>
         <div class="name">Dashboard</div>
         <div class="desc">Live corn, soybean, and wheat futures. FFAI composite index. Local weather. All in one place.</div>
         <span class="tag">Live Prices + Weather</span>
       </a>
       <a href="/usda-calendar" class="tool-card">
-        <div class="icon">🗓️</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-calendar-days"></use></svg></div>
         <div class="name">USDA Report Calendar</div>
         <div class="desc">Upcoming WASDE, Crop Progress, and Prospective Plantings report dates with market impact notes.</div>
         <span class="tag">Reports + Dates</span>
       </a>
       <a href="/tariffs" class="tool-card">
-        <div class="icon">🏛️</div>
+        <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-landmark"></use></svg></div>
         <div class="name">Ag Tariff Tracker</div>
         <div class="desc">Current tariff rates on US corn, soybean, wheat, and pork exports. Updated as trade policy changes.</div>
         <span class="tag">Trade Policy</span>
