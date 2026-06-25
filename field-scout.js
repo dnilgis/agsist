@@ -796,13 +796,22 @@
   }
 
   // ── 3. WEATHER (Open-Meteo) ─────────────────────────────────────────
+  // fetch with a hard timeout — a stalled (never-responding) connection otherwise
+  // leaves a panel spinning forever, since fetch() has no built-in timeout and
+  // .catch only fires on rejection, not on a hang.
+  function fetchT(url, ms){
+    if(typeof AbortController==='undefined') return fetch(url);
+    var ctrl=new AbortController(), id=setTimeout(function(){ try{ctrl.abort();}catch(e){} }, ms||12000);
+    return fetch(url,{signal:ctrl.signal}).then(function(r){ clearTimeout(id); return r; }, function(e){ clearTimeout(id); throw e; });
+  }
+
   function loadWeather(c){
     var gen = fieldGen;
     var url=METEO_URL+'?latitude='+c.lat.toFixed(4)+'&longitude='+c.lng.toFixed(4)+
       '&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m'+
       '&daily=precipitation_sum,temperature_2m_max,temperature_2m_min'+
       '&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&past_days=7&forecast_days=1';
-    fetch(url).then(function(r){return r.json();}).then(function(d){
+    fetchT(url).then(function(r){return r.json();}).then(function(d){
       if(gen !== fieldGen) return;
       if(!d || !d.current){ setErr('fs-wx-weather','Weather unavailable.'); return; }
       var cur=d.current;
@@ -821,7 +830,7 @@
     // endpoint sends no CORS headers, so a direct browser call is blocked).
     // If unreachable, the panel omits the drought chip rather than blocking weather.
     var url=FS_WORKER+'/drought?lat='+c.lat.toFixed(4)+'&lon='+c.lng.toFixed(4);
-    fetch(url).then(function(r){return r.ok?r.json():null;}).then(function(d){
+    fetchT(url, 12000).then(function(r){return r.ok?r.json():null;}).then(function(d){
       if(gen !== fieldGen) return;
       var cat='None';
       if(d){
@@ -851,7 +860,7 @@
       '&start_date='+start+'&end_date='+end+
       '&daily=precipitation_sum,temperature_2m_max,temperature_2m_min'+
       '&temperature_unit=fahrenheit&precipitation_unit=inch&timezone=auto';
-    fetch(url).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+    fetchT(url, 15000).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
       if(gen !== fieldGen) return;
       if(!d || !d.daily || !d.daily.time || !d.daily.time.length){
         setBody('fs-season','<div class="fs-src">Season-to-date history isn\u2019t available for this spot.</div>'); return;
@@ -1273,8 +1282,10 @@
     var drCls = (d && d.cat && /D[234]/.test(d.cat)) ? 'low' : '';
     var slV = (s&&s.slope!=null) ? s.slope+'%' : null;
     var bid = b ? (b.corn||b.bean) : null;
-    var bidV = (bid&&bid.cash!=null) ? '$'+(+bid.cash).toFixed(2) : null;
-    var bidSub = b ? (b.corn?'cash corn':(b.bean?'cash beans':null)) : null;
+    var bidV, bidSub;
+    if(!b){ bidV=null; bidSub=null; }                                    // still loading -> ...
+    else if(bid && bid.cash!=null){ bidV='$'+(+bid.cash).toFixed(2); bidSub = b.corn?'cash corn':'cash beans'; }
+    else { bidV='&mdash;'; bidSub='none nearby'; }                       // loaded, no elevator
     el.innerHTML =
       vCell('ACRES', acres, null, 'acres') +
       vCell('SOIL', soilV, soilSub, 'soil') +

@@ -381,8 +381,8 @@
 .fs-deck{margin:1.1rem 0 0}
 .fs-deck-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brand,var(--gold));margin:0 0 .55rem}
 .fs-deck .fs-vitals{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:1rem}
-.fs-deck-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:1rem;align-items:start}
-.fs-deck-grid .fs-section{border:1px solid var(--border);border-radius:12px;background:var(--surface);overflow:hidden;margin:0}
+.fs-deck-grid{column-width:420px;column-gap:1rem}
+.fs-deck-grid .fs-section{border:1px solid var(--border);border-radius:12px;background:var(--surface);overflow:hidden;margin:0 0 1rem;break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;display:inline-block;width:100%}
 @media(max-width:820px){.fs-deck .fs-vitals{grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* on-demand (?) explainer + popover */
 .fs-q{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.6rem;line-height:1;cursor:pointer;padding:0;flex:0 0 auto;transition:border-color .15s,color .15s}
