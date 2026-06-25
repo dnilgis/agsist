@@ -18,9 +18,9 @@
   <url><loc>https://agsist.com/breakeven</loc><lastmod>2026-06-12</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
   <!-- Prices & Markets -->
-  <url><loc>https://agsist.com/corn-futures-prices</loc><lastmod>2026-06-24</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://agsist.com/soybean-futures-prices</loc><lastmod>2026-06-24</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://agsist.com/wheat-futures-prices</loc><lastmod>2026-06-24</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/corn-futures-prices</loc><lastmod>2026-06-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/soybean-futures-prices</loc><lastmod>2026-06-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/wheat-futures-prices</loc><lastmod>2026-06-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/urea</loc><lastmod>2026-06-12</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/tariffs</loc><lastmod>2026-06-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/farm-bill</loc><lastmod>2026-06-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
@@ -30,7 +30,7 @@
   <url><loc>https://agsist.com/elevators</loc><lastmod>2026-06-24</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
 
   <!-- Data & Predictions -->
-  <url><loc>https://agsist.com/ag-odds</loc><lastmod>2026-06-24</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/ag-odds</loc><lastmod>2026-06-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/usda-calendar</loc><lastmod>2026-06-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/usda-quick-stats</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cot</loc><lastmod>2026-06-24</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
@@ -38,7 +38,7 @@
   <url><loc>https://agsist.com/hail-map</loc><lastmod>2026-06-13</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/harvest-price-tracker</loc><lastmod>2026-06-25</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/presell-calculator</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/whats-priced-in</loc><lastmod>2026-06-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/whats-priced-in</loc><lastmod>2026-06-25</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
 
   <!-- Daily Briefing -->
   <url><loc>https://agsist.com/daily</loc><lastmod>2026-06-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
@@ -53,7 +53,7 @@
 
 
   <!-- Added 2026-06-12: audit fixes -->
-  <url><loc>https://agsist.com/cattle-futures-prices</loc><lastmod>2026-06-24</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/cattle-futures-prices</loc><lastmod>2026-06-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/scorecard</loc><lastmod>2026-06-25</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/sponsor</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/developer</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
