@@ -94,7 +94,7 @@
     .fs-bc a:hover{color:var(--brand,var(--gold))}
 
     .fs-head{margin-bottom:1.1rem}
-    .fs-title{font-family:'Oswald',sans-serif;font-size:clamp(1.7rem,4.5vw,2.5rem);font-weight:700;letter-spacing:.01em;line-height:1.05;margin:0 0 .35rem;text-transform:uppercase;background:none!important;color:var(--text)!important;-webkit-text-fill-color:var(--text)!important}
+    .fs-title{font-family:var(--font-display);font-size:clamp(1.7rem,4.5vw,2.5rem);font-weight:700;letter-spacing:.01em;line-height:1.05;margin:0 0 .35rem;text-transform:uppercase;background:none!important;color:var(--text)!important;-webkit-text-fill-color:var(--text)!important}
     .fs-title em{font-style:normal;color:var(--brand,var(--gold))!important;-webkit-text-fill-color:var(--brand,var(--gold))!important}
     .fs-sub{color:var(--text-dim);font-size:.96rem;line-height:1.6;max-width:680px;margin:0}
     .fs-note{color:var(--text-muted);font-size:.82rem;line-height:1.55;max-width:680px;margin:.7rem 0 0}
@@ -192,7 +192,7 @@
     .fs-corner-handle{background:var(--brand,#daa520);border:2px solid #0a1206;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.5);cursor:grab}
     .fs-corner-handle:active{cursor:grabbing}
     .fs-map-headline{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:1000;max-width:90%;background:rgba(10,18,6,.93);border:1px solid var(--brand,var(--gold));border-radius:10px;padding:.5rem .9rem;color:#fff;font-size:.92rem;font-weight:600;line-height:1.35;box-shadow:0 4px 18px rgba(0,0,0,.55);pointer-events:none;animation:fsMapHead .45s cubic-bezier(.2,.7,.2,1);text-align:center}
-    .fs-mh-tag{display:block;font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.62rem;letter-spacing:.09em;color:var(--brand,var(--gold));margin-bottom:.12rem;font-weight:600}
+    .fs-mh-tag{display:block;font-family:var(--font-display);text-transform:uppercase;font-size:.62rem;letter-spacing:.09em;color:var(--brand,var(--gold));margin-bottom:.12rem;font-weight:600}
     @keyframes fsMapHead{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translateX(-50%)}}
     @media(max-width:600px){.fs-map-headline{font-size:.82rem;top:8px;padding:.42rem .7rem}}
 
@@ -214,7 +214,7 @@
     @media(max-width:900px){.fs-panel{position:static}}
     .fs-panel-empty{padding:2.2rem 1.4rem;text-align:center;color:var(--text-muted)}
     .fs-panel-empty svg{width:46px;height:46px;opacity:.5;margin-bottom:.8rem}
-    .fs-panel-empty h3{font-family:'Oswald',sans-serif;font-size:1.15rem;color:var(--text-dim);margin:0 0 .4rem;text-transform:uppercase;letter-spacing:.03em}
+    .fs-panel-empty h3{font-family:var(--font-display);font-size:1.15rem;color:var(--text-dim);margin:0 0 .4rem;text-transform:uppercase;letter-spacing:.03em}
     .fs-panel-empty p{font-size:.86rem;line-height:1.6;margin:0}
 
     .fs-fieldhead{padding:1rem 1.2rem;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(var(--brand-rgb,218,165,32),.08),transparent)}
@@ -223,7 +223,7 @@
     .fs-fh-main{min-width:140px;flex:1 1 auto}
     .fs-fh-btns{display:flex;gap:.4rem;flex-wrap:wrap;flex-shrink:0}
     .acres{white-space:nowrap}
-    .fs-fieldhead .acres{font-family:'Oswald',sans-serif;font-size:2.1rem;font-weight:700;color:var(--brand,var(--gold));line-height:1}
+    .fs-fieldhead .acres{font-family:var(--font-mono);font-size:2.1rem;font-weight:700;color:var(--brand,var(--gold));line-height:1}
     .fs-fieldhead .acres small{font-size:.9rem;color:var(--text-dim);font-weight:400;font-family:'JetBrains Mono',monospace}
     .fs-fieldhead .coords{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);margin-top:.35rem}
 
@@ -246,7 +246,7 @@
     .fs-soil-info{flex:1;min-width:0}
     .fs-soil-name{font-size:.85rem;color:var(--text);font-weight:600;line-height:1.25}
     .fs-soil-meta{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted);margin-top:.15rem}
-    .fs-soil-pct{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text-dim);flex-shrink:0}
+    .fs-soil-pct{font-family:var(--font-mono);font-size:1.1rem;font-weight:700;color:var(--text-dim);flex-shrink:0}
 
     /* Crop rotation timeline */
     .fs-rotation{display:flex;gap:.4rem}
@@ -258,7 +258,7 @@
     /* Stat grid (weather/drought) */
     .fs-stats{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
     .fs-stat{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .7rem}
-    .fs-stat-v{font-family:'Oswald',sans-serif;font-size:1.35rem;font-weight:700;color:var(--text);line-height:1}
+    .fs-stat-v{font-family:var(--font-mono);font-size:1.35rem;font-weight:700;color:var(--text);line-height:1}
     .fs-stat-l{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-top:.25rem}
     .fs-drought{display:inline-flex;align-items:center;gap:.45rem;padding:.3rem .6rem;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700}
 
@@ -303,14 +303,14 @@
     .fs-insight-p strong{color:var(--brand,var(--gold))}
     /* Changed-since-last-visit banner */
     .fs-change-banner{background:rgba(var(--brand-rgb,218,165,32),.12);border:1px solid rgba(var(--brand-rgb,218,165,32),.4);border-radius:8px;padding:.6rem .8rem;margin:0 0 .8rem;animation:fsMapHead .4s ease}
-    .fs-cb-tag{display:block;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.07em;font-size:.66rem;color:var(--brand,var(--gold));margin-bottom:.35rem;font-weight:600}
+    .fs-cb-tag{display:block;font-family:var(--font-display);text-transform:uppercase;letter-spacing:.07em;font-size:.66rem;color:var(--brand,var(--gold));margin-bottom:.35rem;font-weight:600}
     .fs-cb-line{font-size:.86rem;color:var(--text);line-height:1.5;margin-top:.2rem}
     .fs-cb-line strong{color:var(--brand,var(--gold))}
     .fs-verdict{margin:0 0 .9rem;padding:.85rem 1rem;background:var(--surface2);border:1px solid rgba(var(--brand-rgb,218,165,32),.4);border-left:4px solid var(--brand,var(--gold));border-radius:0 10px 10px 0;color:var(--text)}
-    .fs-verdict span{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:.72rem;color:var(--brand,var(--gold));display:block;margin-bottom:.25rem}
+    .fs-verdict span{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.06em;font-size:.72rem;color:var(--brand,var(--gold));display:block;margin-bottom:.25rem}
     .fs-verdict b{font-weight:600;font-size:1.12rem;line-height:1.4;display:block}
     .fs-soil-slope{margin-top:.6rem;font-size:.85rem;color:var(--text-dim);line-height:1.5}
-    .fs-demo-btn{margin-top:1rem;background:var(--brand,var(--gold));color:#0a1206;border:none;border-radius:8px;font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:.02em;font-size:.92rem;padding:.6rem 1.1rem;cursor:pointer}
+    .fs-demo-btn{margin-top:1rem;background:var(--brand,var(--gold));color:#0a1206;border:none;border-radius:8px;font-family:var(--font-display);font-weight:600;letter-spacing:.02em;font-size:.92rem;padding:.6rem 1.1rem;cursor:pointer}
     .fs-demo-btn:hover{filter:brightness(1.08)}
     .fs-demo-hint{font-size:.78rem;color:var(--text-muted);margin:.55rem 0 0;line-height:1.4}
     .fs-boxbtn{margin-left:.6rem;background:transparent;border:1px solid var(--brand,var(--gold));color:var(--brand,var(--gold));border-radius:6px;font-size:.78rem;font-weight:600;padding:.25rem .6rem;cursor:pointer;vertical-align:middle}
@@ -326,12 +326,12 @@
     .fs-compound{background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--brand,var(--gold));border-radius:0 8px 8px 0;padding:.6rem .8rem;font-size:.9rem;color:var(--text)}
     .fs-flag-group{display:flex;flex-direction:column;gap:.5rem}
     .fs-flag-group + .fs-flag-group{margin-top:.7rem}
-    .fs-flag-label{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.07em;font-size:.7rem;color:var(--text-dim)}
+    .fs-flag-label{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.07em;font-size:.7rem;color:var(--text-dim)}
     .fs-insight-flag.fs-act{border-left-color:var(--brand,var(--gold))}
     .fs-insight-flag.fs-mon{border-left-color:var(--border)}
     .fs-insight-flag.fs-mon .fs-flag-mark{background:var(--text-dim);color:var(--surface2)}
     .fs-watch{margin-top:.5rem;padding-top:.45rem;border-top:1px dashed var(--border);font-size:.8rem;color:var(--text-dim);line-height:1.5}
-    .fs-watch span{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:.66rem;color:var(--brand,var(--gold));display:block;margin-bottom:.15rem}
+    .fs-watch span{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.06em;font-size:.66rem;color:var(--brand,var(--gold));display:block;margin-bottom:.15rem}
     .fs-act-dollar{margin-top:.5rem;padding:.5rem .65rem;background:rgba(var(--brand-rgb,218,165,32),.1);border-radius:6px;font-size:.84rem;color:var(--text);line-height:1.5}
     .fs-act-link{display:inline-block;margin-top:.15rem;color:var(--brand,var(--gold));font-weight:600;text-decoration:none;white-space:nowrap}
     .fs-act-link:hover{text-decoration:underline}
@@ -367,7 +367,7 @@
     .fs-how-card p{font-size:.78rem;color:var(--text-dim);line-height:1.55;margin:0}
     /* FAQ */
     .fs-faq{margin-top:2.5rem;max-width:860px}
-    .fs-faq-title{font-family:'Oswald',sans-serif;font-size:1.4rem;color:var(--text);margin:0 0 1rem;letter-spacing:.01em}
+    .fs-faq-title{font-family:var(--font-display);font-size:1.4rem;color:var(--text);margin:0 0 1rem;letter-spacing:.01em}
     .fs-faq-item{border:1px solid var(--border);border-radius:10px;margin-bottom:.6rem;background:var(--surface);overflow:hidden}
     .fs-faq-item summary{cursor:pointer;padding:.85rem 1rem;font-weight:600;font-size:.95rem;color:var(--text);list-style:none;position:relative;padding-right:2.2rem}
     .fs-faq-item summary::-webkit-details-marker{display:none}
@@ -384,7 +384,9 @@
     .fs-sources-list a{color:var(--brand,var(--gold));text-decoration:none}
     .fs-sources-list a:hover{text-decoration:underline}
     .fs-sources-note{margin:1rem 0 0;font-size:.82rem;color:var(--text-dim);opacity:.8;font-style:italic;line-height:1.55}
-  </style>
+  
+.fs-sr-h1{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
 
   <script type="application/ld+json">
   {"@context":"https://schema.org","@graph":[
@@ -413,6 +415,7 @@
   <div id="site-header"></div>
 
   <main id="main" tabindex="-1">
+    <h1 class="fs-sr-h1">Field Scout &mdash; draw a field and get its soil, crop rotation, weather, drought history, and local cash bids.</h1>
     <div class="fs-wrap">
       <nav class="fs-bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> &rsaquo; <a href="/tools">Tools</a> &rsaquo; Field Scout</nav>
 
@@ -464,10 +467,10 @@
           <aside class="fs-rail" id="fs-panel" aria-live="polite">
             <div class="fs-panel-empty" id="fs-empty">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 20l-5.5 2.5v-15L9 5m0 15l6-2.5m-6 2.5v-15m6 12.5l5.5 2.5v-15L15 5m0 12.5v-15m0 0L9 5"/></svg>
-              <h3>No field yet</h3>
-              <p>Search your ground, then <b>drop a pin</b> or <b>trace</b> a boundary on the map. The read &mdash; soil, crop history, weather, drought, and nearby cash bids &mdash; appears here.</p>
+              <h3>Get the whole story on any field</h3>
+              <p>Search your ground, then <b>drop a pin</b> or <b>trace</b> the boundary. In seconds you get its soil, 5-year crop history, weather, drought, satellite crop-vigor and nearby cash bids &mdash; no account, no charge.</p>
               <button type="button" id="fs-demo" class="fs-demo-btn"><svg class="fs-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>See an example field</button>
-              <p class="fs-demo-hint">New here? Load a real Iowa field to see the full read &mdash; no drawing needed.</p>
+              <p class="fs-demo-hint">New here? Load a real Iowa field and see the full read &mdash; no drawing needed.</p>
             </div>
             <div id="fs-results" hidden></div>
             <div class="fs-disc">

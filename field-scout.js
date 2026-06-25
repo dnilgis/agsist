@@ -669,15 +669,19 @@
         recomputeInsight(); renderRisk();
         var palette=['#7c5a2e','#9c7339','#b58d4f','#c9a878','#8a6a3b','#a37d45'];
         var html = rows.slice(0,6).map(function(r,i){
-          var ac=parseFloat(r[3])||0, pct= total? Math.round(ac/total*100):0;
+          var ac=parseFloat(r[3])||0;
+          var hasArea = total>0 && ac>0;                 // only show area/% when SSURGO returned per-mapunit acreage
+          var pct = hasArea ? Math.round(ac/total*100) : null;
           var nicc = r[4]; // non-irrigated capability class (1 best … 8 worst)
           var cls = nicc ? classText(nicc) : '';
+          var meta = cls + (cls&&hasArea?' · ':'') + (hasArea?ac.toFixed(1)+' ac':'');
           return '<div class="fs-soil-row">'+
             '<div class="fs-soil-bar" style="background:'+palette[i%palette.length]+'">'+(nicc||'?')+'</div>'+
             '<div class="fs-soil-info"><div class="fs-soil-name">'+esc(r[2]||r[1])+'</div>'+
-            '<div class="fs-soil-meta">'+(cls?cls+' · ':'')+ac.toFixed(1)+' ac</div></div>'+
-            '<div class="fs-soil-pct">'+pct+'%</div></div>';
+            (meta?'<div class="fs-soil-meta">'+meta+'</div>':'')+'</div>'+
+            (pct!=null?'<div class="fs-soil-pct">'+pct+'%</div>':'')+'</div>';
         }).join('');
+        if(!hasAc){ html += '<div class="fs-caveat">SSURGO returned the soil map units for this field but not per-unit acreage, so area shares aren\u2019t shown. Soils are listed by map unit.</div>'; }
         var slopeNote = '';
         if(FIELD.soil.nccpi!=null){
           var nc=FIELD.soil.nccpi, tier = nc>=0.65?'upper tier':nc>=0.5?'above the national midpoint':nc>=0.35?'mid-range':nc>=0.2?'lower-middle':'lower end';
@@ -1304,9 +1308,11 @@
 
     var soilHtml='';
     if(s&&s.classes&&s.classes.length){
+      var hasAc=s.total>0;
       soilHtml='<table class="r-tbl">'+s.classes.slice(0,6).map(function(c){
-        var pct=s.total?Math.round(c.ac/s.total*100):0;
-        return '<tr><td>'+esc(c.name)+'</td><td>class '+(c.nicc||'?')+'</td><td class="r-num">'+c.ac.toFixed(1)+' ac</td><td class="r-num">'+pct+'%</td></tr>';
+        var hasArea=hasAc&&c.ac>0;
+        var pct=hasArea?Math.round(c.ac/s.total*100):null;
+        return '<tr><td>'+esc(c.name)+'</td><td>class '+(c.nicc||'?')+'</td><td class="r-num">'+(hasArea?c.ac.toFixed(1)+' ac':'\u2014')+'</td><td class="r-num">'+(pct!=null?pct+'%':'\u2014')+'</td></tr>';
       }).join('')+'</table>';
       var bits=[];
       if(s.primePct!=null) bits.push(s.primePct+'% prime cropland');

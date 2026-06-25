@@ -1005,6 +1005,21 @@
             <div class="wstat"><div class="wstat-lbl">Precip Chance</div><div class="wstat-val" id="wx-precip">--</div></div>
             <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div>
           </div>
+          <style>
+          .wx-fs-bridge{display:flex;align-items:center;gap:.7rem;margin:.9rem 0 .15rem;padding:.8rem .9rem;background:linear-gradient(90deg,rgba(212,162,63,.10),rgba(212,162,63,.03));border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;text-decoration:none;transition:border-color .15s,transform .15s}
+          .wx-fs-bridge:hover{border-color:var(--gold);transform:translateY(-1px)}
+          .wx-fs-bridge .wfb-ic{flex:none;color:var(--gold);display:flex}
+          .wx-fs-bridge .wfb-ic .ic{width:1.55rem;height:1.55rem}
+          .wx-fs-bridge .wfb-t{display:block;font-family:'Archivo',var(--font-display),sans-serif;font-weight:700;font-size:.93rem;color:var(--text);line-height:1.2}
+          .wx-fs-bridge .wfb-s{display:block;font-size:.74rem;color:var(--text-dim);margin-top:.16rem;line-height:1.3}
+          </style>
+          <a href="/field-scout" class="wx-fs-bridge" aria-label="Open Field Scout — soil, crop history, crop vigor and cash bids for your exact field">
+            <span class="wfb-ic"><svg class="ic" aria-hidden="true"><use href="#i-satellite"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="wfb-t">Now see your exact field &rarr;</span>
+              <span class="wfb-s">Soil, 5-yr crop history, satellite crop-vigor &amp; nearby cash bids &mdash; free, no login</span>
+            </span>
+          </a>
           <div class="wx-today" id="wx-today-summary"></div>
           <div id="wx-forecast" style="display:none"></div>
           <div class="wx-data-extra">
@@ -1046,6 +1061,20 @@
       <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" /></svg>Quick Tools</h2></div>
       <div class="card"><div class="card-body">
         <div class="tool-list">
+          <style>.tool-widget--scout{border-left:3px solid var(--gold)!important}.tool-widget--scout .tool-widget-badge{background:rgba(212,162,63,.14);color:var(--gold)}</style>
+          <a href="/field-scout" class="tool-widget tool-widget--scout">
+            <div class="tool-widget-inner">
+              <div class="tool-widget-top">
+                <span class="tool-widget-icon"><svg class="ic" aria-hidden="true"><use href="#i-satellite"/></svg></span>
+                <div class="tool-widget-body"><span class="tool-widget-status">Field Scout</span></div>
+                <span class="tool-widget-badge">Draw your field</span>
+                <span class="tool-widget-arr">&rarr;</span>
+              </div>
+              <div class="tool-widget-bottom">
+                <span class="tool-widget-rec">Soil, 5-yr crop history, satellite crop-vigor &amp; local cash bids for any field you draw</span>
+              </div>
+            </div>
+          </a>
           <a href="/spray" id="wsp-spray" class="tool-widget">
             <div class="tool-widget-inner">
               <div class="tool-widget-top">
