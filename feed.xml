@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2026 13:26:31 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 25 Jun 2026 12:33:49 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>EXPORT SALES REPORT DUE; OATS BREAKDOWN OVERNIGHT</title>
+      <link>https://agsist.com/daily/2026-06-25</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-25</guid>
+      <pubDate>Thu, 25 Jun 2026 05:00:00 -0600</pubDate>
+      <description>The week's most consequential number drops at 7:30 AM CT: USDA weekly export sales, with the trade watching soybean figures especially closely after traders flagged optimism about China demand ahead of the print. Corn is up 2 cents to $4.07 and beans are up 4.5 cents to $11.11, both modest and cautious, the kind of positioning you see when the market doesn't want to be caught leaning the wrong way. The oats board is a different story, down 10.3% overnight with no news driving it, that kind of magnitude without a headline reads like forced liquidation.
+Corn and beans hold modest gains ahead of Thursday's 7:30 AM export number, while oats take a 10% hit overnight with no clean catalyst.
+• GRAINS HOLD, EXPORT SALES LOOM
+  → Old-crop soybean holders: if export sales come in above 400K MT, basis is likely to firm. Evaluate sales before the number resets the story.
+• OATS DROP HARD OVERNIGHT
+• CATTLE FIRM; FEEDER STRENGTH HOLDS
+Read more: https://agsist.com/daily/2026-06-25</description>
+    </item>
     <item>
       <title>CORN NEARBY BREAKS 6%; OLD-CROP CARRY INVERTS</title>
       <link>https://agsist.com/daily/2026-06-24</link>
@@ -363,18 +376,6 @@ Feeder strength confirms the complex is converging upward while metals crack on 
 • Grains Mark Time in Range
 • Silver Slides as Dollar Holds Century Mark
 Read more: https://agsist.com/daily/2026-05-27</description>
-    </item>
-    <item>
-      <title>CATTLE CLIMB TOGETHER, OIL CRASHES 3.6%</title>
-      <link>https://agsist.com/daily/2026-05-26</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-26</guid>
-      <pubDate>Tue, 26 May 2026 05:00:00 -0600</pubDate>
-      <description>Live cattle closed $240.98, feeders $352.00, both up 0.6% and tracking together for the first time in six sessions. The 34-point spread that split the complex wide is finally compressing as May Cattle on Feed showed 180-day cattle at series highs, confirming the placement math that's been driving the divergence. Oil crashed 3.6% to $93.08 as fresh U.S. strikes on Iranian missile sites complicated the Hormuz deal, sending energy money flooding back into renewables and hitting input costs across the Belt.
-Live and feeder cattle both gain 0.6% as complex narrows, crude craters on Iran strike response.
-• Cattle Complex Converges
-• Grains Drift Lower
-• Oil Craters On Iran Strikes
-Read more: https://agsist.com/daily/2026-05-26</description>
     </item>
   </channel>
 </rss>

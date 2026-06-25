@@ -1,12 +1,19 @@
 {
- "updated": "2026-06-24T13:26:31+00:00",
- "total": 42,
+ "updated": "2026-06-25T12:33:49+00:00",
+ "total": 43,
  "played_out": 26,
- "didnt": 11,
+ "didnt": 12,
  "pending": 5,
- "hit_rate": 70.3,
+ "hit_rate": 68.4,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-06-24",
+   "judged": "2026-06-25",
+   "call": "Producers with on-farm grain were told to check local basis; if basis was firm, the futures break had narrowed the window, and to evaluate before the heat forecast got priced into new-crop.",
+   "outcome": "didnt",
+   "note": "Corn recovered 2 cents today but is still sitting at $4.07 after yesterday's break; basis resolution depends on local conditions the futures board alone can't confirm, and the export number this morning will be the real test."
+  },
   {
    "made": "2026-06-23",
    "judged": "2026-06-24",

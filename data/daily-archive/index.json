@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-06-25",
+      "date_display": "Thursday, June 25, 2026",
+      "headline": "EXPORT SALES REPORT DUE; OATS BREAKDOWN OVERNIGHT",
+      "teaser": "Export sales at 7:30 AM will either put a floor under the grain complex or remove the last bullish argument.",
+      "market_mood": "cautious",
+      "surprise_count": 1,
+      "sections": 4,
+      "url": "/daily/2026-06-25",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-06-24",
       "date_display": "Wednesday, June 24, 2026",
       "headline": "CORN NEARBY BREAKS 6%; OLD-CROP CARRY INVERTS",
@@ -1164,6 +1176,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-24T13:26:27.645753+00:00",
-  "count": 104
+  "updated": "2026-06-25T12:33:47.594724+00:00",
+  "count": 105
 }
