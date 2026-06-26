@@ -653,13 +653,26 @@ def load_yesterdays_call_context():
         if not call: call = (top.get("bottom_line") or "").strip()
         if not call: call = (top.get("title") or "").strip()
         if not call: continue
-        return {
+        ctx = {
             "prior_date": date_iso,
             "section_title": top.get("title", ""),
             "conviction": top.get("conviction_level", ""),
             "call": call,
             "headline": b.get("headline", ""),
         }
+        # Anchor on the STRUCTURED call (todays_call) that grade_calls.py actually
+        # scores tomorrow — not whichever section ranks highest by conviction. When
+        # the loud section and the graded instrument differ (corn call / bean prose),
+        # the note must follow the graded instrument, or the gate blocks the send.
+        tc = b.get("todays_call")
+        if (isinstance(tc, dict) and tc.get("instrument")
+                and tc.get("direction") and tc.get("level") is not None):
+            ctx["structured_call"] = {
+                "instrument": tc.get("instrument"),
+                "direction": tc.get("direction"),
+                "level": tc.get("level"),
+            }
+        return ctx
     return None
 
 
@@ -1144,12 +1157,31 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
 
     yesterdays_block = ""
     if yesterdays_call and not market_status["is_closed"]:
+        _sc = yesterdays_call.get("structured_call")
+        if _sc:
+            _scdir = (_sc.get("direction") or "").lower()
+            _scarrow = "above" if _scdir == "up" else "below"
+            call_identity = (
+                f"On {yesterdays_call['prior_date']}, your graded call was: "
+                f"{_sc.get('instrument')} {_scdir}, toward {_scarrow} ${_sc.get('level')}.\n"
+                f"This is the EXACT call scored automatically from today's close. Your summary and "
+                f"note MUST be about {_sc.get('instrument')} and this line — describe what "
+                f"{_sc.get('instrument')} actually did versus that call. Do NOT write the note about a "
+                f"different market, even if another section was louder yesterday."
+                f"\n(Context only — that day's highest-conviction section was "
+                f"{yesterdays_call['section_title']!r} ({yesterdays_call['conviction']}): "
+                f"\"{yesterdays_call['call']}\")"
+            )
+        else:
+            call_identity = (
+                f"On {yesterdays_call['prior_date']}, the highest-conviction section was "
+                f"{yesterdays_call['section_title']!r} ({yesterdays_call['conviction']} conviction). "
+                f"The call was:\n\n  \"{yesterdays_call['call']}\""
+            )
         yesterdays_block = f"""
 
 ══ YESTERDAY'S CALL (for the yesterdays_call block) ══
-On {yesterdays_call['prior_date']}, the highest-conviction section was {yesterdays_call['section_title']!r} ({yesterdays_call['conviction']} conviction). The call was:
-
-  "{yesterdays_call['call']}"
+{call_identity}
 
 Today's job: assess whether that call PLAYED OUT, DIDN'T, or is STILL PENDING based on today's price action and data.
 
@@ -1178,7 +1210,7 @@ OUTCOME RUBRIC: be honest, but be accurate. Most calls are PARTIAL. Choose the c
 DO NOT default to "didnt" because "the bounce was thin" or "the move was small."
 A directional call that resolved in the called direction is PLAYED OUT, even if the magnitude was modest. Readers respect accountability, both for being right AND for being wrong. Mislabeling a win as a loss undermines trust as much as the reverse.
 
-Output as the yesterdays_call object in the JSON. Give your best read for outcome ('played_out', 'didnt', or 'pending'), but know it is RE-COMPUTED deterministically from the actual close after you finish (direction AND level both must resolve in the call's favor). Do not strain to justify a verdict — in the summary, describe the call and what the market actually did, factually.\n\n══ TODAY'S CALL (the todays_call object) ══\nMake ONE concrete, falsifiable directional call: {{instrument, direction (up/down), level}}. It is graded automatically tomorrow against the actual close — BOTH the direction (did it move your way vs today's close) AND the level (did it reach/hold your line) must hold to count as played_out. Take the instrument and level from your highest-conviction section; state a real number in LOCKED TABLE units. A vague call that can't be graded is worse than a wrong one — commit. Omit todays_call only when the market is closed.
+Output as the yesterdays_call object in the JSON. Give your best read for outcome ('played_out', 'didnt', or 'pending'), but know it is RE-COMPUTED deterministically from the actual close after you finish (direction AND level both must resolve in the call's favor). Do not strain to justify a verdict — in the summary, describe the call and what the market actually did, factually.\n\n══ TODAY'S CALL (the todays_call object) ══\nMake ONE concrete, falsifiable directional call: {{instrument, direction (up/down), level}}. It is graded automatically tomorrow against the actual close — BOTH the direction (did it move your way vs today's close) AND the level (did it reach/hold your line) must hold to count as played_out. The instrument MUST be the market your highest-conviction section is actually about — if that section is a soybean story, your call is on soybeans, not corn. Take the level from that same section and state a real number in LOCKED TABLE units. A vague call that can't be graded is worse than a wrong one — commit. Omit todays_call only when the market is closed.
 """
 
     thread_block = ""
