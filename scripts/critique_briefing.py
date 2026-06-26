@@ -141,7 +141,7 @@ CNBC DRAMA VERB PRINCIPLE: AGSIST is a Wisconsin crop insurance guy talking to w
 
 12. SPREAD QUALITY. Is the spread_to_watch genuinely meaningful — capturing tension the headline price doesn't show — or filler? On weekends/holidays, score N/A as 10.
 
-13. YESTERDAY'S CALL HONESTY. If outcome is "played_out", is the assessment actually accurate or self-serving? If outcome is "didnt", is the briefing honest about the miss? Score "played_out" calls that didn't actually play out as 1-3.
+13. YESTERDAY'S CALL HONESTY. `outcome` is computed deterministically from the closing prices by the grader (grade_calls.py) and is GROUND TRUTH — you may NOT change it, and you must never propose relabeling it. Your job is to judge the PROSE (summary, note). Two things must hold: (a) the note must describe the SAME instrument shown in `computed.instrument` — if `computed` says corn but the note tells a soybean story, that is the failure, score 1-3; (b) the note must be honest about `computed.outcome` — if outcome is "didnt" the note must own the miss; if "played_out" the assessment must be accurate, not self-serving. When prose and outcome appear to disagree, the fix is ALWAYS to rewrite the note to match the computed call — never to flip the outcome. A note that contradicts `computed` (wrong instrument, or a miss written as a win) scores 1-3.
 
 14. MATH/LEVEL COHERENCE — INDIVIDUALLY DISQUALIFYING. Cross-check every "broke $X" / "below $X" / "under $X" / "above $X" / "held $X" claim against the locked_prices dict. The locked close MUST be on the breaking side of the level cited.
   Example failure: lead says "Cattle decisively below the $252 floor" but locked_prices.live_cattle = 253.00. That is a contradiction. Score 1.
@@ -198,7 +198,7 @@ REWRITE FORMAT — only include when rewrite_needed is true:
 If weakest_target is "lead": rewritten_content = {"lead": "new lead text"}
 If weakest_target is "section_index_N": rewritten_content = {"section_index": N, "section": {...full section object with title/icon/body/bottom_line/conviction_level/etc...}}
 If weakest_target is "basis": rewritten_content = {"basis": {"headline": "...", "body": "..."}}
-If weakest_target is "yesterdays_call": rewritten_content = {"yesterdays_call": {"summary": "...", "outcome": "played_out|didnt|pending", "note": "..."}}
+If weakest_target is "yesterdays_call": rewritten_content = {"yesterdays_call": {"summary": "...", "note": "..."}}  — do NOT include "outcome"; it is computed from prices and is read-only. Rewrite ONLY the prose so it honestly matches the existing computed call (same instrument as computed.instrument, honest about computed.outcome).
 If weakest_target is "spread_to_watch": rewritten_content = {"spread_to_watch": {"label": "...", "level": "...", "commentary": "..."}}
 If weakest_target is "weekly_thread": rewritten_content = {"weekly_thread": {"question": "...", "day": N, "status_text": "..."}}
 If weakest_target is "tmyk": rewritten_content = {"the_more_you_know": {"title": "...", "body": "..."}}
@@ -210,6 +210,7 @@ REWRITE STANDARD — when you rewrite, the new content must:
 - Cite only prices, levels, and conditions present in the original briefing's data — do NOT invent new prices.
 - For Rule 14 rewrites: use locked_prices values directly. If close > level being claimed broken, soften "broke" to "tested" or "right back to". If close < level being claimed held, soften "held above" to "tested" or "fell through".
 - For Rule 16 rewrites: replace any literal <strong>...</strong> with **...** and any <em>...</em> with *...*.
+- For yesterdays_call rewrites: do NOT output "outcome" (read-only, owned by the price grader). The note must describe `computed.instrument` called `computed.direction` toward `computed.level`, and must be honest about `computed.outcome` ("didnt" = own the miss plainly). Never tell a story about a different market than `computed.instrument`.
 - Keep length comparable to the original.
 - Pass the Forward Test if the rewrite is the lead.
 - Use **markdown** for emphasis, NEVER <strong> HTML tags.
@@ -323,10 +324,26 @@ def apply_rewrite(briefing, critique):
             briefing["sections"][idx] = rewritten["section"]
             return briefing, f"section[{idx}]"
 
-    for key in ("basis", "yesterdays_call", "spread_to_watch", "weekly_thread"):
+    for key in ("basis", "spread_to_watch", "weekly_thread"):
         if target == key and rewritten.get(key):
             briefing[key] = rewritten[key]
             return briefing, key
+
+    # yesterdays_call: the critic may rewrite the PROSE (summary, note) but never
+    # the verdict. outcome + computed are owned by grade_calls.py — a price function,
+    # not the model. Carry them through untouched so a prose rewrite can't flip a
+    # graded miss into a win (the exact contradiction that blocked the 2026-06-26
+    # send: critic relabeled 'didnt' -> 'played_out', gate re-graded and BLOCKED).
+    if target == "yesterdays_call" and rewritten.get("yesterdays_call"):
+        existing = briefing.get("yesterdays_call") or {}
+        merged = dict(existing)                       # start from the graded object
+        for k in ("summary", "note"):                 # only prose may change
+            v = rewritten["yesterdays_call"].get(k)
+            if v is not None:
+                merged[k] = v
+        # outcome + computed stay exactly as grade_calls.py left them
+        briefing["yesterdays_call"] = merged
+        return briefing, "yesterdays_call"
 
     if target == "tmyk" and rewritten.get("the_more_you_know"):
         briefing["the_more_you_know"] = rewritten["the_more_you_know"]
