@@ -3174,12 +3174,13 @@ def validate_level_coherence(briefing, locked_prices):
                 # it often names the commodity even when the body is
                 # mid-sentence.
                 parts.append((f"{title}. {v}", f"section[{i}].{fname}"))
-    yc = briefing.get("yesterdays_call") or {}
-    if isinstance(yc, dict):
-        for fname in ("summary", "note"):
-            v = yc.get(fname, "")
-            if isinstance(v, str) and v:
-                parts.append((v, f"yesterdays_call.{fname}"))
+    # yesterdays_call.{summary,note} are deliberately NOT scanned here. That block is
+    # RETROSPECTIVE about a forward call's target level: on a miss it must honestly cite
+    # a level price never reached ("called beans above $11.38; they closed $11.21"), which
+    # this 'above $X vs close' heuristic misreads as a contradiction — and since any level
+    # warning forces price_validation_clean=false, it would BLOCK THE SEND on every losing
+    # call (~half of all days). yesterdays_call correctness is owned deterministically by
+    # grade_calls.py and the gate's call-outcome check, not by this prose scanner.
     tmyk = briefing.get("the_more_you_know") or briefing.get("tmyk") or {}
     if isinstance(tmyk, dict):
         v = tmyk.get("body", "")
