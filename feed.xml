@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 25 Jun 2026 13:24:42 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 26 Jun 2026 15:02:43 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>ACREAGE REPORT TUESDAY; OATS HIT HARD AGAIN</title>
+      <link>https://agsist.com/daily/2026-06-26</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-26</guid>
+      <pubDate>Fri, 26 Jun 2026 05:00:00 -0600</pubDate>
+      <description>The 2026 planting season, behind the average through May before catching up between rain systems, is about to face its next test: a heat dome building from the Plains to the Atlantic Coast by Sunday, and a USDA Acreage report dropping Tuesday at 11 AM CT that could reprice every contract in the complex. Corn closed $4.14, up a fraction, and November beans held $11.50, up less than a dime. Neither number is the story today. The story is that the market spent Friday coiling ahead of data that actually matters, and the heat forecast is the first weather catalyst in weeks that has a real claim on new-crop bushels.
+Corn and beans barely moved Friday, but a 13% oats drop and incoming Heartland heat reset the story heading into a data-heavy week.
+• GRAINS MARK TIME BEFORE DATA
+• OATS FALL HARD AGAIN
+  → If you have unpriced oats in storage, evaluate today's basis against your cost of carry. The fund exit may not be finished.
+• CATTLE HOLD; MILK FALLS HARD
+Read more: https://agsist.com/daily/2026-06-26</description>
+    </item>
     <item>
       <title>EXPORT SALES REPORT DUE; CORN STABILIZES AFTER 6% BREAK</title>
       <link>https://agsist.com/daily/2026-06-25</link>
@@ -364,18 +377,6 @@ Class III jumps most in weeks as energy complex unwinds Iran premium.
 • Crude Craters on Iran Ease
 • Grains Hold Range Despite Energy Drag
 Read more: https://agsist.com/daily/2026-05-28</description>
-    </item>
-    <item>
-      <title>CATTLE RALLY TOGETHER, SILVER SLIDES 2.6%</title>
-      <link>https://agsist.com/daily/2026-05-27</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-27</guid>
-      <pubDate>Wed, 27 May 2026 05:00:00 -0600</pubDate>
-      <description>Live cattle closed $242.12, up 1.2%, and feeders led higher at $354.27, up 1.4%. The cattle complex is answering Monday's question with feeder strength, not live weakness. Silver crashed 2.6% overnight as the dollar held $100.00, confirming the metals trade is running out of momentum while livestock finds its footing.
-Feeder strength confirms the complex is converging upward while metals crack on dollar strength.
-• Cattle Complex Converges Higher
-• Grains Mark Time in Range
-• Silver Slides as Dollar Holds Century Mark
-Read more: https://agsist.com/daily/2026-05-27</description>
     </item>
   </channel>
 </rss>

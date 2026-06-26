@@ -1,12 +1,19 @@
 {
- "updated": "2026-06-25T13:24:43+00:00",
- "total": 43,
+ "updated": "2026-06-26T15:02:43+00:00",
+ "total": 44,
  "played_out": 26,
- "didnt": 12,
+ "didnt": 13,
  "pending": 5,
- "hit_rate": 68.4,
+ "hit_rate": 66.7,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-06-25",
+   "judged": "2026-06-26",
+   "call": "Yesterday's call was corn up, toward the $4.43 December level, leaning on the Belt's ahead-of-pace crop progress removing the last bearish overhang and leaving room for a pre-Acreage bid.",
+   "outcome": "didnt",
+   "note": "Corn closed $4.14 today, flat on the day and well below $4.43. The call did not play out. The market never found a reason to bid December toward that level on a quiet pre-holiday Friday -- the pre-Acreage coil kept both corn contracts pinned. Own the miss: the directional thesis needed a catalyst that did not arrive."
+  },
   {
    "made": "2026-06-24",
    "judged": "2026-06-25",

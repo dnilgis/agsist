@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-06-26",
+      "date_display": "Friday, June 26, 2026",
+      "headline": "ACREAGE REPORT TUESDAY; OATS HIT HARD AGAIN",
+      "teaser": "Oats down 13%, heat incoming, Acreage report Tuesday: the quiet Friday hides a loud week ahead.",
+      "market_mood": "cautious",
+      "surprise_count": 3,
+      "sections": 4,
+      "url": "/daily/2026-06-26",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-06-25",
       "date_display": "Thursday, June 25, 2026",
       "headline": "EXPORT SALES REPORT DUE; CORN STABILIZES AFTER 6% BREAK",
@@ -1176,6 +1188,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-25T13:24:40.264043+00:00",
-  "count": 105
+  "updated": "2026-06-26T15:02:41.163765+00:00",
+  "count": 106
 }
