@@ -1533,7 +1533,23 @@ OMISSIONS, set fields to null or empty objects when not applicable:
 RESPOND WITH ONLY THE JSON OBJECT. No markdown. No preamble. No em dashes. VOICE OR DEATH."""
 
 
-def call_claude(price_data, surprises, news_block, seasonal_ctx, todays_quote, past_dailies_block, past_tmyk_topics, market_status, yesterdays_call=None, weekly_thread=None, ongoing_situations="", editorial_notes="", past_one_number_topics=None, past_phrases=None, usda_release=""):
+def _loads_lenient(text):
+    """Parse model JSON, tolerating the two defects LLMs actually emit: prose or code
+    fences wrapping the object, and trailing commas before } or ]. Tries STRICT first
+    so clean output is byte-identical to before; repairs run only after a parse error."""
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+    s = text.strip()
+    i = s.find("{"); j = s.rfind("}")          # drop any leading/trailing prose
+    if i != -1 and j != -1 and j > i:
+        s = s[i:j + 1]
+    s = re.sub(r',(\s*[}\]])', r'\1', s)        # strip trailing commas — the #1 LLM JSON error
+    return json.loads(s)
+
+
+def call_claude(price_data, surprises, news_block, seasonal_ctx, todays_quote, past_dailies_block, past_tmyk_topics, market_status, yesterdays_call=None, weekly_thread=None, ongoing_situations="", editorial_notes="", past_one_number_topics=None, past_phrases=None, usda_release="", _parse_retry=True):
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
         print("[error] ANTHROPIC_API_KEY not set", file=sys.stderr); sys.exit(1)
@@ -1657,7 +1673,24 @@ Apply all 18 IMPACT RULES. Voice samples are NON-NEGOTIABLE, no wire-service neu
     if text.endswith("```"): text = text[:-3]
     text = text.strip()
     if text.startswith("json"): text = text[4:].strip()
-    return json.loads(text)
+    try:
+        return _loads_lenient(text)
+    except json.JSONDecodeError as e:
+        # The model emitted unparseable JSON even after repair. Regenerate ONCE
+        # (a fresh sample is almost always clean); if it fails again, surface a
+        # precise, debuggable error instead of a bare stack trace.
+        if _parse_retry:
+            print(f"  [warn] model returned malformed JSON ({e}); regenerating once...",
+                  file=sys.stderr)
+            return call_claude(price_data, surprises, news_block, seasonal_ctx, todays_quote,
+                               past_dailies_block, past_tmyk_topics, market_status, yesterdays_call,
+                               weekly_thread, ongoing_situations, editorial_notes,
+                               past_one_number_topics, past_phrases, usda_release,
+                               _parse_retry=False)
+        _ctx = text[max(0, e.pos - 140): e.pos + 140].replace("\n", "\\n")
+        print(f"  [error] model JSON unparseable after repair + one regeneration "
+              f"(line {e.lineno} col {e.colno}). Near:\n    ...{_ctx}...", file=sys.stderr)
+        raise
 
 
 def validate_briefing(briefing, locked_prices):
