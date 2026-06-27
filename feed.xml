@@ -5,13 +5,27 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 26 Jun 2026 15:02:43 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 27 Jun 2026 14:52:17 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN AND WHEAT CLOSE WEAK; SOYOIL RUNS HARD</title>
+      <link>https://agsist.com/daily/2026-06-27</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-27</guid>
+      <pubDate>Sat, 27 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Corn finished Friday at $4.13, down two and a half percent on the session, and the week ends with old-crop corn sitting at its lowest 52-week percentile since late winter. Wheat gave back nearly three percent to close at $5.78. The story that cuts against the grain selloff: soybean oil ran almost seven percent higher to $71.30, the strongest close in the soy complex all week, and meal held. That split tells you the market is repricing biofuel demand, not abandoning oilseeds. Tuesday's USDA crop reports land into a crop that is days away from the corn pollination window, and the heat dome already building across the central Belt means nobody gets to be patient much longer.
+A rough Friday for grains sets up a make-or-break week: Tuesday's USDA planting and acreage data lands while a heat dome builds over the Belt.
+• GRAINS CLOSE WEEK UNDER PRESSURE
+  → Producers with unpriced old-crop corn: if local basis is firm, this is not the week to wait. The nearby contract is at $4.13 and the heat premium for new crop has not yet shown up in the December contract at $4.42. Price old-crop on firm basis days before Tuesday lands.
+• SOYOIL RUNS; COMPLEX SPLITS
+• OATS BREAKDOWN CONTINUES
+  → If you have unpriced oats in storage, check basis today. The futures contract is near 52-week lows and there is no visible floor in the price action.
+Read more: https://agsist.com/daily/2026-06-27</description>
+    </item>
     <item>
       <title>ACREAGE REPORT TUESDAY; OATS HIT HARD AGAIN</title>
       <link>https://agsist.com/daily/2026-06-26</link>
@@ -365,18 +379,6 @@ Technical selling overwhelms corn and beans as dairy futures post their worst se
 • Dairy Falls Into Heat Season
 • Crude Extends Iran Ease
 Read more: https://agsist.com/daily/2026-05-29</description>
-    </item>
-    <item>
-      <title>MILK SPIKES 2.2%, CRUDE CRASHES OVERNIGHT</title>
-      <link>https://agsist.com/daily/2026-05-28</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-28</guid>
-      <pubDate>Thu, 28 May 2026 05:00:00 -0600</pubDate>
-      <description>Class III milk exploded 2.2% to $16.77, the biggest single-session gain since early April, while crude oil crashed 3.2% overnight to $89.12 as Iran tensions eased. The dairy rally came on no specific catalyst but coincided with gold and silver both spiking over 2%, suggesting broader dollar weakness despite the DXY holding flat at century mark. Grains stayed range-bound with corn gaining a quarter-penny to $4.54¼ and beans flat at $11.89. The milk move is real money, not noise.
-Class III jumps most in weeks as energy complex unwinds Iran premium.
-• Milk Explodes on Dollar Weakness
-• Crude Craters on Iran Ease
-• Grains Hold Range Despite Energy Drag
-Read more: https://agsist.com/daily/2026-05-28</description>
     </item>
   </channel>
 </rss>

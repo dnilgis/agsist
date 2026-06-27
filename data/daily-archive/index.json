@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-06-27",
+      "date_display": "Saturday, June 27, 2026",
+      "headline": "CORN AND WHEAT CLOSE WEAK; SOYOIL RUNS HARD",
+      "teaser": "Grains sold off hard Friday but soyoil told a different story. Here is what the split means heading into the most data-heavy week of summer.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 5,
+      "url": "/daily/2026-06-27",
+      "market_closed": true,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-06-26",
       "date_display": "Friday, June 26, 2026",
       "headline": "ACREAGE REPORT TUESDAY; OATS HIT HARD AGAIN",
@@ -1188,6 +1200,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-26T15:02:41.163765+00:00",
-  "count": 106
+  "updated": "2026-06-27T14:52:14.685605+00:00",
+  "count": 107
 }
