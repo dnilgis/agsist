@@ -1761,11 +1761,17 @@ def fix_weekday_labels(briefing, today=None):
     import calendar as _cal
     if today is None:
         today = datetime.now().date()
-    months = {m.lower(): i for i, m in enumerate(_cal.month_name) if m}
-    pat = re.compile(
-        r'\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s+'
-        r'(January|February|March|April|May|June|July|August|September|'
-        r'October|November|December)\s+(\d{1,2})\b')
+    MONTHS3 = {m[:3].lower(): i for i, m in enumerate(_cal.month_name) if m}
+    WD3 = {"mon": "Monday", "tue": "Tuesday", "wed": "Wednesday", "thu": "Thursday",
+           "fri": "Friday", "sat": "Saturday", "sun": "Sunday"}
+    # Mirror the gate's calendar check: optional comma after the weekday. Also accept
+    # abbreviated months/weekdays, so 'Thursday, July 3' and 'Thurs. Jul 3' are both
+    # caught here BEFORE the gate hard-blocks the send on the mismatch.
+    WD = (r'(Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday)?|'
+          r'Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)')
+    MO = (r'(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|'
+          r'Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)')
+    pat = re.compile(rf'\b{WD}\.?,?\s+{MO}\.?\s+(\d{{1,2}})\b', re.IGNORECASE)
     fixes = []
 
     def _resolve(mon_idx, day):
@@ -1782,14 +1788,18 @@ def fix_weekday_labels(briefing, today=None):
             return None
 
     def _repl(m):
-        wd, mon, day = m.group(1), m.group(2), int(m.group(3))
-        d = _resolve(months[mon.lower()], day)
+        wd_tok, mon_tok, day = m.group(1), m.group(2), int(m.group(3))
+        mi = MONTHS3.get(mon_tok[:3].lower())
+        if mi is None:
+            return m.group(0)
+        d = _resolve(mi, day)
         if d is None:
             return m.group(0)
         correct = d.strftime('%A')
-        if correct.lower() != wd.lower():
-            fixes.append(f"{wd} {mon} {day} -> {correct}")
-            return f"{correct} {mon} {day}"
+        given_full = WD3.get(wd_tok[:3].lower(), wd_tok)
+        if correct.lower() != given_full.lower():
+            fixes.append(f"{wd_tok} {mon_tok} {day} -> {correct}")
+            return m.group(0).replace(wd_tok, correct, 1)  # preserve comma + month style
         return m.group(0)
 
     for item in briefing.get("watch_list", []) or []:
