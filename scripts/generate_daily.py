@@ -1743,13 +1743,19 @@ def validate_briefing(briefing, locked_prices):
                     _ctx = full_text[max(0, fpos-55):fpos+25].replace("\n", " ").strip()
                     warnings.append(f"Price {fs} not in prices.json (possible {key}) | \"...{_ctx}...\"")
                     break
-    # The "$X not in prices.json" check is a noisy prose heuristic: it fires on
-    # aggregates ($17B), changes (down $1.35), spreads/forward contracts (Dec $4.38),
-    # and hypotheticals ("$4.10 becomes $3.60 by harvest"). Keep it logged for
-    # awareness, but do NOT let it set price_validation_clean=false — the gate's
-    # locked-drift check (locked table vs the real feed) is the robust data-integrity
-    # guard, and the locked price table is what the briefing's numbers come from.
-    fatal = [w for w in warnings if "not in prices.json" not in w]
+    # Hard blocks are reserved for genuine DATA-INTEGRITY problems, which the gate
+    # (briefing_gate.py) already enforces deterministically: locked-price drift, call-
+    # outcome mismatch, calendar errors, contaminated feed, regional scope. Everything
+    # validate_briefing finds is EDITORIAL/voice — em/en dashes, geo phrasing, quote-
+    # attribution filler, an unrecognized $ figure. Those are real signals worth logging,
+    # but none should silently kill the morning send: a stray em-dash is a voice nit, not
+    # a reason to publish nothing. So they are returned as warnings and never flip
+    # price_validation_clean. Voice is still policed by the critic; scope is still hard-
+    # blocked by the gate. (Add a token here only for a future genuine data-integrity
+    # check that truly must stop the send.)
+    NON_BLOCKING = ("not in prices.json", "Em dash", "En dash",
+                    "Geo scope", "Quote attribution filler")
+    fatal = [w for w in warnings if not any(tok in w for tok in NON_BLOCKING)]
     return len(fatal) == 0, warnings
 
 
@@ -3407,7 +3413,14 @@ def main():
     level_warnings = validate_level_coherence(briefing, locked_prices)
     if level_warnings:
         val_warnings.extend(level_warnings)
-        is_clean = False
+        # Level coherence is a PROSE heuristic: it can't tell "crude broke below $68
+        # today" (a checkable claim) from "crude could fall below $68" / "support at
+        # $68" (forward-looking). It false-blocked on yesterdays_call and again on a
+        # crude support level. Per the design rule — prose heuristics WARN, only
+        # deterministic data-integrity hard-blocks — these are logged for visibility
+        # but do NOT flip price_validation_clean or block the send. The gate runs its
+        # own guarded level check as a WARN, so a genuine "broke below $X when it
+        # closed above" contradiction still surfaces there without halting the publish.
     if val_warnings:
         print(f"  Validation warnings ({len(val_warnings)}):")
         for w in val_warnings: print(f"    - {w}")
