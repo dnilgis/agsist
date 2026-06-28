@@ -1,13 +1,13 @@
 {
-  "headline": "ACREAGE REPORT TUESDAY; HEAT DOME BUILDS ALL WEEK",
-  "subheadline": "Friday's closes leave corn at $4.13 and beans at $11.26 heading into the most data-dense week of the summer.",
-  "lead": "The week ahead has two things that can reprice every contract on the board. Tuesday's USDA Acreage Report lands at 11 AM CT and tells the market exactly how many acres of corn, beans, and wheat got planted when the calendar said plant. Then a heat dome builds across the Corn Belt through the back half of the week, arriving right as corn is entering or approaching pollination. Friday's close had corn at $4.13, down 2.5% on the session, and December at $4.42, nearly 30 cents of carry still sitting there with no heat premium priced in. That gap is the week's story: does Tuesday's acreage number flip the narrative before the heat has a chance to?",
-  "the_takeaway": "Acreage Tuesday, heat dome by Thursday: one of these weeks prices the next 60 days.",
-  "teaser": "Two market-moving events in five days: get your numbers straight before Tuesday morning.",
+  "headline": "ACREAGE REPORT TUESDAY; CORN BREAKS HARD INTO IT",
+  "subheadline": "Friday's close puts corn at $4.13 with a heat dome building and the season's most important USDA print two days out.",
+  "lead": "Corn dropped 2.5% on Friday to $4.13, and December new crop barely budged at $4.42, a spread that tells you the market is pricing weather risk selectively and not yet believing the heat dome translates into a yield problem. Tuesday's USDA Acreage Report at 11 AM CT lands before that argument gets settled. The number that comes back on corn acres will either confirm the tight supply picture that should be holding this market above $4 or hand the funds a reason to sell harder into an already-weakened chart.",
+  "the_takeaway": "Tuesday's Acreage Report reprices the whole board; hold decisions until 11 AM CT.",
+  "teaser": "Corn broke 2.5% into Friday's close. Tuesday's Acreage print decides if $4.13 is a floor or a ceiling.",
   "one_number": {
-    "value": "29 cents",
-    "unit": "nearby-to-December corn carry, unpriced heat premium",
-    "context": "Corn nearby closed Friday at $4.13 while December sits at $4.42, a 29-cent carry still wide open with no weather premium built into new crop. A heat dome is forecast to settle across the Corn Belt during pollination week. If the crop is big on Tuesday's acreage number AND the heat dome holds into early July, that 29-cent carry is the market's bet that none of this matters. That is a bet worth watching closely, not a bet worth making against."
+    "value": "29¢",
+    "unit": "July-to-December corn carry, Friday's close",
+    "context": "July corn closed at $4.13, December at $4.42. That 29-cent carry means the market is paying you to store corn into new crop rather than sell it now. In a year where the nearby contract is sitting 39% off its 52-week low and a heat dome is building, a carry this wide is the market saying: we are not worried about old-crop supply yet, but we are not convinced new crop is fine either. Tuesday's acreage number will either tighten that carry or widen it further."
   },
   "yesterdays_call": {
     "outcome": "didnt",
@@ -20,8 +20,8 @@
       "direction": "up",
       "level": 4.42
     },
-    "summary": "Called corn up through $4.42 -- closed at $4.13, nowhere close.",
-    "note": "Friday's corn close at $4.13 was a 2.5% loss on the session, not a rally. The call for corn to push up through December's $4.42 level did not play out. Pre-report pressure and broad grain selling were in charge Friday, not a recovery bid. Own the miss; the acreage report Tuesday is the next honest look at whether that December level ever comes into play."
+    "summary": "Called corn higher toward $4.42 December. It did not happen.",
+    "note": "The call was for corn to move up toward the $4.42 December level. Friday's close left the nearby at $4.1275 and December at $4.415, with no progress toward the upside target. The fund selling that accelerated into the weekend did the opposite. Own the miss. The thesis on weather optionality in new crop is still alive going into Tuesday's acreage print, but Friday's tape was not cooperating."
   },
   "todays_call": {
     "instrument": "corn",
@@ -30,99 +30,101 @@
   },
   "sections": [
     {
-      "title": "GRAINS: TWO EVENTS, ONE WEEK",
+      "title": "CORN: $4.13 AND A TUESDAY GUN",
       "icon": "🌽",
-      "body": "Corn took its biggest one-day hit in weeks on Friday, off 2.5% to $4.13, and wheat fell 2.9% to $5.78 while November beans actually gained to close at $11.56. That split tells you something: the market is not uniformly bearish, it is repricing corn and wheat lower ahead of Tuesday's Acreage Report while leaving new-crop bean carry intact. The USDA Acreage Report, due Tuesday at 11 AM CT, is the most important single data release of the summer. If planted corn acres come in above the March Prospective Plantings estimate of roughly 94 million, December corn at $4.42 has to give back some of that carry. If acres disappoint, the 29-cent nearby-to-December spread compresses fast. Then the heat dome enters the equation: forecasts show elevated temperatures across the central Belt from Wednesday through the weekend, arriving exactly when early-planted corn fields are silking. **The Acreage Report prices the supply side. The heat dome prices the yield side. Both happen this week.**",
-      "catalyst": "USDA Acreage Report due Tuesday 11 AM CT; heat dome forecast builds mid-week through pollination.",
-      "bottom_line": "Acreage sets the supply number Tuesday; heat either confirms or punishes it by Friday.",
+      "body": "Corn dropped 2.5% on Friday to $4.13, and that is the number the whole complex walks into Tuesday's Acreage Report carrying. The funds have been reducing long exposure all week, and Friday's close is the lowest nearby print in the recent stretch. What has NOT moved is December at $4.42, which held despite the nearby breakdown. That 29-cent carry is the market's honest assessment: old-crop is pressured, new crop has optionality on weather. The heat dome building across the central Belt is the wildcard. Brownfield reported Friday that near-term weather features a heat dome that is expected to be more of an issue for corn than soybeans given relative growth stages. If corn is approaching or entering pollination in the hottest districts when this heat dome peaks, the new-crop carry will compress fast. **Tuesday at 11 AM CT is the line in the sand.** If USDA prints corn acres above last year's number, the fund selling that started Friday continues. If acreage comes in tight, $4.42 December gets retested in the same session.",
+      "catalyst": "Heat dome building; USDA Acreage Report Tuesday 11 AM CT; Friday's 2.5% nearby decline.",
+      "bottom_line": "Hold new-crop pricing decisions until Tuesday 11 AM; the acreage print reprices the carry.",
       "conviction_level": "high",
       "overnight_surprise": false,
-      "farmer_action": "Producers with unpriced old-crop corn at $4.13 nearby: if local basis is firm Monday morning, move bushels before 11 AM Tuesday. If the acreage number is bearish, there is no recovery catalyst until the heat premium builds, and that takes days, not hours."
+      "farmer_action": "If you have unpriced old-crop corn in storage and local basis is firm, price before Tuesday open. If you are holding new-crop, wait for the acreage number before making a decision.",
+      "vs_yesterday": "Corn: nearby held $4.13 exactly; the call is live."
     },
     {
-      "title": "SOYOIL RUNS; MEAL HOLDS; COMPLEX SPLITS",
-      "icon": "🫘",
-      "body": "Friday's soy complex was the clearest divergence of the week. Soybean oil ran 6.9% to $71.30 while meal added 1.3% to $307.00 and nearby beans fell 2.0% to $11.26. The NOPA crush data and the ongoing RFS 'Set 2' rule, which established unprecedented Renewable Volume Obligations for 2026 and 2027, are keeping a floor under soyoil demand even as the meal side stays measured. The National Oilseed Processors Association noted this week that domestic biofuels production has shifted the final destination of most U.S. soybeans: three or four years ago over 60% were exported, and that share has flipped hard toward domestic crush. **That structural shift is what soyoil at $71.30 is pricing, not a one-day fund move.** November beans at $11.56 closed the week with a 30-cent premium over nearby, a carry structure that says the market expects the new crop to arrive without a weather disaster. The heat dome this week will test that assumption directly.",
-      "catalyst": "EPA RFS Set 2 final rule establishing record RVOs for 2026-2027; NOPA domestic biofuels shift narrative confirmed by industry CEO comments.",
-      "bottom_line": "Soyoil's structural bid is real; the heat dome will decide if November beans keep their 30-cent carry.",
-      "conviction_level": "medium",
-      "overnight_surprise": false
-    },
-    {
-      "title": "CATTLE HOLD; HOGS SLIP; SCREWWORM COUNT RISES",
-      "icon": "🐄",
-      "body": "Live cattle slipped 0.6% to $245.82 and feeders gave back 0.9% to $369.85 on Friday. The session's livestock note from Brownfield tied the cattle weakness to a midday drop in boxed beef with traders waiting on widespread direct business. That is a processing-constrained market still feeling the effects of the Cargill Fort Morgan/Schuyler plant lockout that began May 19, with roughly 2% of weekly slaughter capacity still offline and no resolution announced. Hogs fell 3.9% to $92.92, the sharpest livestock move of the day. Away from the price action, the New World screwworm case count in the United States reached 25 confirmed cases as of Friday, with the latest in sheep across Crockett, Edwards, and surrounding Texas counties. Congressional Democrats sent a letter to USDA Secretary Rollins demanding transparency and science-driven results. **The screwworm situation is not yet a futures story, but 25 cases and climbing in sheep country is the kind of count that becomes a cattle story fast if it moves north.** Watch the APHIS dashboard weekly.",
-      "catalyst": "Box beef cutout dropped mid-session Friday; New World screwworm U.S. case count reached 25, letter from New Dems to USDA demanding action.",
-      "bottom_line": "Cattle holding, but screwworm at 25 cases is the slow-burn risk nobody is pricing yet.",
+      "title": "BEANS AND WHEAT: SPLIT STORY INTO ACREAGE",
+      "icon": "🌿",
+      "body": "Soybeans closed the week with a notable split: nearby July fell 2% to $11.26 while November new crop added 0.6% to $11.56. That inverse, old crop weaker and new crop firmer, is the market's direct response to the soyoil story. Soybean oil ran 6.9% on Friday, and NOPA president Devin Mogler told Brownfield this week that the final destination for U.S. soybeans has fundamentally shifted: three or four years ago, over 60% was exported; now domestic crush for biofuels is the primary driver. When oil runs and meal holds at $307, the crush margin works, and crushers bid new-crop beans. **The November contract at $11.56 is where the biofuel trade lives right now.** Wheat had a rough Friday, dropping 2.9% to $5.78. No clean catalyst on the wheat side beyond the grain complex selling into a risk-off close. Watch whether the Acreage Report Tuesday confirms the wheat acreage that is already expected to be historically low. If it does, $5.78 is not the bottom.",
+      "catalyst": "Soybean oil ran 6.9% Friday; NOPA confirms domestic crush now primary soybean destination; Acreage Report Tuesday.",
+      "bottom_line": "New-crop beans firming on biofuel demand; wheat needs the acreage print to find a floor.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Cattle: box beef weakness confirmed Friday; hogs fell harder than the drift called."
+      "vs_yesterday": "Beans: old/new-crop split widened exactly as the soyoil story deepened."
     },
     {
-      "title": "ENERGY SOFTENS; HORMUZ PREMIUM KEEPS DEFLATING",
-      "icon": "⛽",
-      "body": "WTI crude fell 1.9% to $69.23 on Friday, extending a May-June slide that has taken roughly 19% off the contract as the Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, continues to unwind. U.S. refineries processed 17.1 million barrels per day for the week ending June 19, operating at 96.1% capacity, per EIA data, meaning demand destruction is not the story. The story is supply premium evaporating as diplomatic channels via Swiss intermediaries keep the Strait open. The UAE's formal exit from OPEC, effective May 1, added another layer of bearishness to the complex by shrinking the cartel's coordinated production share. Natural gas fell 1.6% to $3.23. **The heat dome building over the Corn Belt this week adds a natural gas demand angle that the $3.23 close has not priced: cooling load gains are the one catalyst that could interrupt the energy sector's quiet slide.**",
-      "catalyst": "Iran-Hormuz diplomatic progress continues unwinding the crude risk premium; UAE OPEC exit effective May 1 reducing cartel coordination; EIA weekly refinery utilization at 96.1%.",
-      "bottom_line": "Hormuz premium still deflating; heat dome cooling load is the only near-term natural gas catalyst.",
+      "title": "CATTLE: BOXED BEEF BROKE THE WEEK",
+      "icon": "🐄",
+      "body": "Live cattle eased 0.6% on Friday to $245.82 and feeders dropped 0.9% to $369.85. The CME reported that the midday boxed beef cutout dropped sharply Friday, which drove cattle futures lower with traders still waiting for widespread direct business. The Cargill Fort Morgan/Schuyler plant lockout, ongoing since May 19, removed roughly 2% of weekly U.S. slaughter capacity at 6,000 head daily, and that processing constraint is still in the market's math. The political calendar added noise this week: the Colorado Cattlemen's Association hosted gubernatorial candidates at their annual meeting, a reminder that cattle policy is a statehouse conversation in election years. More pressing is the New World screwworm situation: case count now stands at 25, with new cases in sheep in Crockett, Edwards and surrounding counties. New Dem lawmakers sent a letter to USDA Secretary Rollins demanding transparency and science-driven response. **If screwworm expands into cattle populations at scale, this is a supply story, not just an inspection story.** Watch that case count weekly.",
+      "catalyst": "Midday boxed beef cutout drop Friday; Cargill lockout ongoing; New World screwworm at 25 cases.",
+      "bottom_line": "Boxed beef weakness plus screwworm risk keeps cattle capped; $245 is the line holding.",
       "conviction_level": "medium",
+      "overnight_surprise": false,
+      "vs_yesterday": "Cattle: live held; feeder slippage was modest, not the 2.5% break from May."
+    },
+    {
+      "title": "HOGS AND ENERGY: BOTH SOFTEN",
+      "icon": "🐖",
+      "body": "Lean hogs tumbled 3.9% on Friday to $92.92, the week's sharpest livestock move. No clean catalyst in the hog-specific bucket; this looks like fund liquidation into the Friday close ahead of a data-heavy week. Class III milk dropped 2.5% to $16.01, consistent with the mid-summer softness that follows spring flush. WTI crude eased 1.9% to $69.23. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, have unwound roughly 19% of crude's value in May and June combined. Five oil and gas carriers cleared the Strait the week of May 25, and U.S.-Iran diplomatic channels remain open via Swiss intermediaries. Natural gas slipped 1.6% to $3.23. **With crude holding above $69 and the geopolitical premium still partially in the price, diesel input costs for producers are elevated but not at the peaks.** Watch whether summer heat demand for natural gas power generation gives nat gas a floor next week.",
+      "catalyst": "Hogs: fund liquidation into Friday close; crude: Hormuz premium deflation ongoing, EIA showed refineries running at 96.1% capacity week of June 19.",
+      "bottom_line": "Hogs need a demand catalyst to find a bottom; crude finds support near $69 as Hormuz risk partially remains.",
+      "conviction_level": "low",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
       "title": "Trump Signs Regenerative Agriculture Executive Order",
-      "body": "President Trump signed an executive order prioritizing regenerative agriculture, with a joint HHS and USDA announcement tied to the Make America Healthy Again initiative. The practical impact on commodity markets is unclear, but producers who have been on the fence about cover crops and rotational grazing programs should watch for USDA implementation guidance, which could come with new cost-share mechanisms.",
+      "body": "President Trump signed an executive order Thursday prioritizing regenerative agriculture, co-announced by HHS and USDA under the Make America Healthy Again initiative. The policy direction is still light on specifics, but it positions federal resources toward soil health, cover crops, and reduced synthetic inputs. Producers who are already in USDA conservation programs should watch for how this EO translates into funding shifts in the next Farm Bill cycle.",
       "tag": "POLICY"
     },
     {
-      "title": "Cassidy Bill Targets Import-Sensitive Ag Products With TRQs",
-      "body": "New Senate legislation would establish tariff-rate quotas on live cattle, beef, shrimp, crawfish, catfish, rice, honey, lamb, and goat meat to protect domestic producers from unfair import competition. The bill is early-stage, but it signals that beef import pressure, especially from countries with lower production costs, is drawing enough political attention to move through committee. Watch for hearings in July.",
-      "tag": "POLICY"
+      "title": "New World Screwworm Cases Reach 25, Lawmakers Demand Action",
+      "body": "The USDA APHIS dashboard confirmed 25 New World screwworm cases in the U.S. as of late this week, with new sheep cases in Crockett and Edwards counties in Texas. New Dem legislators sent a formal letter to Secretary Rollins demanding science-driven response and better coordination. This is not yet a cattle market mover, but if cases jump into commercial beef herds, it becomes one fast.",
+      "tag": "DISEASE"
     },
     {
-      "title": "North Iowa Grain Farmer: No Clear Path to Profitability in 2026",
-      "body": "A corn and soybean producer near Klemme, Iowa told Brownfield this week there are few if any levers left to pull to improve margins this year. At $4.13 nearby corn and $11.26 nearby beans, that is not a dramatic statement, it is an accounting statement. Cost of production in the northern Corn Belt for corn is running near or above current futures for many operations. The Acreage Report and the heat dome this week are the last near-term macro chances to move the board in the farmer's direction.",
-      "tag": "RURAL"
+      "title": "EPA's Set 2 RFS Rule Sets Record Biomass Diesel Volumes for 2026-2027",
+      "body": "A farmdoc daily analysis published Thursday examined EPA's finalized Set 2 Renewable Volume Obligations, calling the biomass-based diesel targets for 2026 and 2027 unprecedented in the history of the RFS program. This is the regulatory backbone behind the soybean oil demand story that ran 6.9% on Friday. Crushers and biofuel producers are building capacity against these targets, which is why domestic crush is now absorbing more beans than export channels.",
+      "tag": "POLICY"
     }
   ],
   "spread_to_watch": {},
   "basis": {},
   "weekly_thread": {},
   "the_more_you_know": {
-    "title": "29 Cents of Carry: What the Spread Is Betting On",
-    "body": "The 29-cent carry between corn nearby at $4.13 and December at $4.42 sounds like a technical footnote, but it is the market's clearest statement about what it believes will happen between now and harvest. A wide carry says storage is worth paying for, supply is comfortable, and no yield disaster is expected. A heat dome arriving during pollination, the six-week window when kernel count is set, is exactly the kind of event that breaks down carry fast. If heat stress reduces yield estimates by even 2 bushels per acre nationally, the USDA's balance sheet tightens, and December has to lead nearby higher to attract new-crop sales. The carry does not have to disappear for this to matter: even a compression from 29 cents to 15 cents represents a meaningful price discovery event for anyone holding new-crop sales decisions. Watch the December contract specifically this week, not just nearby corn, because that is where the heat premium will show up first if it shows up at all."
+    "title": "29 cents: what the corn carry is actually pricing right now",
+    "body": "Friday's close put July corn at $4.13 and December at $4.42, a 29-cent carry that looks like a simple storage incentive but is actually a weather forecast in disguise. When old-crop and new-crop trade that far apart in late June, the market is saying: we see something in new crop that old crop does not have, usually weather optionality. With a heat dome building and pollination timing approaching in the southern Belt, that 29-cent gap could compress quickly if heat stress materializes in the right counties at the right time. Alternatively, if Tuesday's Acreage Report shows more corn acres than expected, the new-crop premium deflates and the carry widens further, which is the bearish scenario. The carry spread is not just a storage trade right now. It is the market's real-time vote on whether this heat event becomes a yield event. Watch December relative to July on Tuesday afternoon, not just the outright price."
   },
   "watch_list": [
     {
-      "time": "Tuesday, 11:00 AM CT",
-      "desc": "USDA Acreage Report: corn acres above 95 million is bearish for December and compresses the carry; below 93 million adds a supply premium that the heat dome amplifies."
+      "time": "Tuesday, June 30, 11:00 AM CT",
+      "desc": "USDA Acreage Report: corn acres above last year's print pressures December below $4.42; acres below last year tightens the carry and gives December room to run toward $4.55."
     },
     {
-      "time": "Tuesday through Friday",
-      "desc": "Heat dome track and intensity: if forecast maximum temperatures hold above 95 degrees across Iowa, Illinois, and Indiana through July 4 weekend, pollination-stress premium starts building in December corn."
+      "time": "Tuesday, June 30, 11:00 AM CT",
+      "desc": "USDA Acreage Report: soybean acres above 88 million cap the November contract near $11.56; below 86 million and the biofuel demand story gets a supply kicker."
     },
     {
-      "time": "Thursday, 7:30 AM CT",
-      "desc": "USDA Weekly Export Sales: soybeans above 400K MT confirms China's $17 billion annual purchase commitment through 2028, announced May 18, is translating into actual bookings; below 250K MT and November beans at $11.56 loses its carry argument."
+      "time": "Monday, June 29, 3:00 PM CT",
+      "desc": "USDA Crop Progress: corn condition rated good-to-excellent; any deterioration below last week's rating adds heat premium to December before the acreage print lands Tuesday."
     },
     {
-      "time": "Monday, 3:00 PM CT",
-      "desc": "USDA Crop Progress: corn condition rated good-to-excellent above 68% entering the heat dome week reduces the weather premium story; below 62% and the heat forecast becomes a futures event."
+      "time": "Thursday, July 2, 7:30 AM CT",
+      "desc": "Weekly Export Sales: soybean sales above 400K MT confirms China buying is holding; below 250K MT and the November contract at $11.56 loses its fundamental support."
     },
     {
       "time": "All week",
-      "desc": "APHIS New World Screwworm dashboard: 25 confirmed U.S. cases as of Friday; any jump above 40 cases or first confirmed cattle cases in Texas or Oklahoma brings this into the live cattle futures conversation."
+      "desc": "New World screwworm case count: if APHIS dashboard adds cattle cases to the current 25 total, the livestock complex reprices supply risk. Watch the dashboard daily."
     }
   ],
   "daily_quote": {
     "text": "Between saying and doing, many a pair of shoes is worn out.",
     "attribution": "Italian Proverb"
   },
-  "source_summary": "CME Group Friday closes; USDA NASS Crop Progress; USDA Acreage Report calendar; EIA Weekly Petroleum Status Report week ending June 19; APHIS New World Screwworm dashboard; Brownfield Ag News; Feedstuffs; The Fence Post; Beef Magazine; farmdoc daily; OilPrice.com; EPA RFS Set 2 final rule.",
+  "source_summary": "CME Group Friday closes; USDA APHIS screwworm dashboard; Brownfield Ag News; farmdoc daily; EIA weekly petroleum report; NOPA via Brownfield; The Fence Post; Beef Magazine",
   "date": "Sunday, June 28, 2026",
   "meta": {
     "market_mood": "cautious",
-    "heat_section": 1,
+    "heat_section": 0,
     "overnight_surprises_count": 0
   },
   "locked_prices": {
@@ -195,8 +197,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 108,
-  "generated_at": "2026-06-28T12:20:18.762116+00:00",
+  "issue_number": 109,
+  "generated_at": "2026-06-28T16:56:23.383691+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 0,
   "surprises": [],
@@ -205,26 +207,26 @@
   "market_status_reason": "weekend",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-06-28T12:20:34.318086+00:00",
+    "ran_at": "2026-06-28T16:56:39.661214+00:00",
     "threshold": 7,
     "final_scores": {
-      "rule_1_lead_so_what": 9,
+      "rule_1_lead_so_what": 8,
       "rule_2_conviction_earned": 7,
       "rule_3_tmyk_today": 9,
       "rule_4_watch_conditional": 9,
-      "rule_5_bottom_lines_synthesize": 8,
+      "rule_5_bottom_lines_synthesize": 7,
       "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 5,
+      "rule_7_continuity": 3,
       "rule_8_basis_directional": 10,
-      "rule_9_voice": 8,
-      "rule_10_forward_test": 8,
+      "rule_9_voice": 7,
+      "rule_10_forward_test": 7,
       "rule_11_thread_coherence": 10,
       "rule_12_spread_quality": 10,
-      "rule_13_yc_honesty": 3,
+      "rule_13_yc_honesty": 2,
       "rule_14_level_coherence": 5,
       "rule_15_one_number_coherence": 8,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 8
+      "rule_17_macro_anchoring": 9
     },
     "rewrites_applied": [
       {
@@ -232,23 +234,23 @@
         "target": "yesterdays_call",
         "rule": "rule_13_yc_honesty",
         "scores_before": {
-          "rule_1_lead_so_what": 9,
+          "rule_1_lead_so_what": 8,
           "rule_2_conviction_earned": 7,
           "rule_3_tmyk_today": 9,
           "rule_4_watch_conditional": 9,
-          "rule_5_bottom_lines_synthesize": 8,
+          "rule_5_bottom_lines_synthesize": 7,
           "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 5,
+          "rule_7_continuity": 3,
           "rule_8_basis_directional": 10,
-          "rule_9_voice": 8,
-          "rule_10_forward_test": 8,
+          "rule_9_voice": 7,
+          "rule_10_forward_test": 7,
           "rule_11_thread_coherence": 10,
           "rule_12_spread_quality": 10,
-          "rule_13_yc_honesty": 3,
+          "rule_13_yc_honesty": 2,
           "rule_14_level_coherence": 5,
           "rule_15_one_number_coherence": 8,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 8
+          "rule_17_macro_anchoring": 9
         }
       }
     ],
