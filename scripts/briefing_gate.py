@@ -95,8 +95,12 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
     # small PRICE move. A drama word in a news/weather sentence ("worst drought")
     # is legitimate; the gate only fires when the sentence is about a commodity's
     # price AND the actual move is small. Prevents false blocks on ag-news prose.
-    for w in BANNED:
-        if w in blob: F('banned-verb','banned drama verb/phrase: "%s"'%w)
+    # Banned drama verbs are handled inside the context-aware loop below, with the
+    # SAME guards as the drama-evidence check: only flagged in a real price sentence,
+    # skipped in news/educational blocks and structural (carry/spread) sentences, and
+    # logged as a WARN — not a hard FAIL. So "the carry could collapse", "demand
+    # collapse", or a news headline never blocks the send. The critic's voice pass
+    # (Rule 9) is the primary editor for drama verbs; the gate is a visibility backstop.
     _PRICECTX = re.compile(r'\$\d|\d+(?:\.\d+)?\s?%|\bclos|\bsettl|\blevel\b|\bcontract\b|\bfutures\b')
     for loc, text in fields:
         if loc.startswith('outside_the_pit') or loc.startswith('the_more_you_know'):
@@ -109,6 +113,9 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
             if STRUCT_CTX.search(sl):
                 continue  # "biggest carry" / "dramatic curve" describe structure, not a move
             _dsnip=(sent[:130]+'…') if len(sent)>130 else sent
+            bh = [w for w in BANNED if w in sl]
+            if bh:
+                W('banned-verb', '%s: drama verb %s in a price sentence | "%s"' % (loc, bh, _dsnip))
             dh = [w for w in DRAMA if w in sl]
             if dh and max_pct < 3.0:
                 W('drama-evidence', '%s: drama %s but largest real move is %.2f%% | "%s"'
