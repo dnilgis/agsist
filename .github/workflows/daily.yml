@@ -173,3 +173,15 @@ jobs:
           git diff --staged --quiet || git commit -m "AGSIST Daily — $(date -u +%Y-%m-%d)"
           git pull --rebase --autostash origin main
           git push
+
+      # Email the finished briefing as a clean, reforwardable copy. Runs only after
+      # GATE 2 passed (hard block above stops the job on failure) and the commit
+      # succeeded — so a blocked or stale briefing is never emailed. send_daily.py
+      # re-checks generated_at==today and price_validation_clean as belt-and-suspenders.
+      # Default recipient is EMAIL_TO (set it to your inbox); falls back to GMAIL_USER.
+      - name: Send daily email (clean reforwardable copy)
+        env:
+          GMAIL_USER:     ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
+          EMAIL_TO:       ${{ secrets.EMAIL_TO }}
+        run: python scripts/send_daily.py
