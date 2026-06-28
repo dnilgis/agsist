@@ -1,12 +1,19 @@
 {
- "updated": "2026-06-27T14:52:18+00:00",
- "total": 45,
+ "updated": "2026-06-28T12:20:37+00:00",
+ "total": 46,
  "played_out": 26,
- "didnt": 14,
+ "didnt": 15,
  "pending": 5,
- "hit_rate": 65.0,
+ "hit_rate": 63.4,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-06-27",
+   "judged": "2026-06-28",
+   "call": "Called corn up through $4.42 -- closed at $4.13, nowhere close.",
+   "outcome": "didnt",
+   "note": "Friday's corn close at $4.13 was a 2.5% loss on the session, not a rally. The call for corn to push up through December's $4.42 level did not play out. Pre-report pressure and broad grain selling were in charge Friday, not a recovery bid. Own the miss; the acreage report Tuesday is the next honest look at whether that December level ever comes into play."
+  },
   {
    "made": "2026-06-26",
    "judged": "2026-06-27",

@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 27 Jun 2026 14:52:17 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 28 Jun 2026 12:20:37 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>ACREAGE REPORT TUESDAY; HEAT DOME BUILDS ALL WEEK</title>
+      <link>https://agsist.com/daily/2026-06-28</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-28</guid>
+      <pubDate>Sun, 28 Jun 2026 05:00:00 -0600</pubDate>
+      <description>The week ahead has two things that can reprice every contract on the board. Tuesday's USDA Acreage Report lands at 11 AM CT and tells the market exactly how many acres of corn, beans, and wheat got planted when the calendar said plant. Then a heat dome builds across the Corn Belt through the back half of the week, arriving right as corn is entering or approaching pollination. Friday's close had corn at $4.13, down 2.5% on the session, and December at $4.42, nearly 30 cents of carry still sitting there with no heat premium priced in. That gap is the week's story: does Tuesday's acreage number flip the narrative before the heat has a chance to?
+Friday's closes leave corn at $4.13 and beans at $11.26 heading into the most data-dense week of the summer.
+• GRAINS: TWO EVENTS, ONE WEEK
+  → Producers with unpriced old-crop corn at $4.13 nearby: if local basis is firm Monday morning, move bushels before 11 AM Tuesday. If the acreage number is bearish, there is no recovery catalyst until the heat premium builds, and that takes days, not hours.
+• SOYOIL RUNS; MEAL HOLDS; COMPLEX SPLITS
+• CATTLE HOLD; HOGS SLIP; SCREWWORM COUNT RISES
+Read more: https://agsist.com/daily/2026-06-28</description>
+    </item>
     <item>
       <title>CORN AND WHEAT CLOSE WEAK; SOYOIL RUNS HARD</title>
       <link>https://agsist.com/daily/2026-06-27</link>
@@ -367,18 +380,6 @@ Corn down 9 cents Friday capped five-session selloff as funds took Memorial Day 
 • Cattle Diverge on Cash
 • Energy Extends Iran Ease
 Read more: https://agsist.com/daily/2026-05-30</description>
-    </item>
-    <item>
-      <title>GRAINS SHED WEEK'S GAINS, MILK CRASHES 3%</title>
-      <link>https://agsist.com/daily/2026-05-29</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-29</guid>
-      <pubDate>Fri, 29 May 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed $4.47, down 9 cents and surrendering most of the week's gains as profit-taking turned into technical selling. The July contract broke through $4.50 support and managed money liquidated into the long weekend. Dairy crashed harder-Class III milk fell 3% to $16.24, its biggest drop since March as volatility frustrates the entire livestock complex heading into summer heat stress season.
-Technical selling overwhelms corn and beans as dairy futures post their worst session in two months.
-• Grains Shed Week's Gains
-• Dairy Falls Into Heat Season
-• Crude Extends Iran Ease
-Read more: https://agsist.com/daily/2026-05-29</description>
     </item>
   </channel>
 </rss>
