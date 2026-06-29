@@ -3,11 +3,11 @@
     {
       "date": "2026-06-29",
       "date_display": "Monday, June 29, 2026",
-      "headline": "ACREAGE DAY, HORMUZ FLARES, SOYOIL RUNS 6.9%",
-      "teaser": "Acreage Tuesday, Hormuz flares again, soyoil runs hard. Here's what it means before the bell.",
+      "headline": "ACREAGE REPORT DAY: GRAINS BREAK, SOYOIL RUNS",
+      "teaser": "Corn breaks hard into the Acreage report, soyoil runs 7%, and the Hormuz premium is back.",
       "market_mood": "cautious",
       "surprise_count": 7,
-      "sections": 5,
+      "sections": 6,
       "url": "/daily/2026-06-29",
       "market_closed": false,
       "yc_outcome": "didnt"
@@ -1224,6 +1224,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-29T13:57:31.012709+00:00",
+  "updated": "2026-06-29T14:51:11.853124+00:00",
   "count": 109
 }

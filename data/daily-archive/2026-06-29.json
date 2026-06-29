@@ -1,149 +1,158 @@
 {
-  "headline": "ACREAGE DAY, HORMUZ FLARES, SOYOIL RUNS 6.9%",
-  "subheadline": "The USDA Acreage report lands at 11 AM CT Tuesday; overnight, fresh U.S.-Iran strikes rattled Hormuz tanker traffic and soybean oil had its biggest session in weeks.",
-  "lead": "Tuesday's Acreage report is the only thing that matters this week, and the market spent Monday telling you exactly how nervous it is. Corn nearby dropped 10.5 cents to $4.13 while December barely budged at $4.42, a split that says old-crop fear is running hot but the new-crop trade is waiting for data before it commits. Meanwhile, soybean oil ran 6.9% to $71.30 on fresh U.S.-Iran strikes this weekend that slowed tanker traffic through the Strait of Hormuz again, and the board opens Tuesday carrying two live grenades: one from the policy side, one from the weather map with a heat dome building over the Belt.",
-  "the_takeaway": "Get to Tuesday's 11 AM Acreage number before you price anything new-crop.",
-  "teaser": "Acreage Tuesday, Hormuz flares again, soyoil runs hard. Here's what it means before the bell.",
+  "headline": "ACREAGE REPORT DAY: GRAINS BREAK, SOYOIL RUNS",
+  "subheadline": "Corn falls 2.5% and wheat drops 2.9% heading into Tuesday's USDA Acreage report, while soybean oil runs nearly 7% on biofuel demand and the Hormuz premium reignites.",
+  "lead": "Corn hit $4.13 this morning and the funds aren't waiting for Tuesday's Acreage report to find out if it gets worse. The nearby gave back 10½ cents while December held at $4.42, which tells you exactly where the real fear lives: old-crop is being sold, new-crop is being held. Wheat fell 2.9% to $5.78 with no weather premium to defend it, and oats had another session that defies easy explanation, down 15% for the second time in a week. The Acreage report at 11 AM CT tomorrow will either validate every one of these moves or reverse them. Until then, the market has already voted.",
+  "the_takeaway": "Price old-crop corn on today's firm basis windows; Tuesday's Acreage number resets everything.",
+  "teaser": "Corn breaks hard into the Acreage report, soyoil runs 7%, and the Hormuz premium is back.",
   "one_number": {
     "value": "60%",
-    "unit": "share of U.S. soybeans now crushed domestically",
-    "context": "Three or four years ago, over 60% of U.S. soybeans were exported. The National Oilseed Processors Association says that ratio has now flipped, with domestic crush absorbing the majority. That structural shift is exactly why a Hormuz-driven soyoil rally hits the board this hard: the domestic biofuel demand chain is now the primary customer, not a Chinese cargo ship. When Hormuz rattles palm oil supplies, domestic soyoil fills the gap and the futures board reprices it immediately."
+    "unit": "share of US soybeans now crushed domestically",
+    "context": "Three or four years ago, more than 60% of US soybeans were exported. That share has now flipped, with domestic crush, driven by biofuel demand under the EPA's finalized RFS Set 2 rule, absorbing the majority. That structural shift is what is behind soybean oil's 6.9% run today: the RVO volumes locked in for 2026-2027 are unprecedented, and the market is pricing the feedstock demand accordingly. Meal and oil splitting apart is not noise, it is the biofuel trade repricing in real time."
   },
   "yesterdays_call": {
-    "summary": "Sunday's call: beans up, toward $11.56.",
+    "summary": "Yesterday's call: corn up, toward above $4.43.",
     "outcome": "didnt",
-    "note": "November beans closed at $11.56, right at the called level, but the direction was up from $11.26 nearby -- and the computed outcome is 'didnt', meaning the specific threshold was not cleared with enough margin to score as played out. The Hormuz soyoil rally added 6.9% to soyoil and firmed November beans 6.75 cents on the session, so the directional read was right but the beans call did not fully deliver at the level. Own the miss and move on -- the new-crop bean trade is still the one to watch into Tuesday's Acreage print.",
+    "note": "Corn opened and closed at $4.13 on the nearby, nowhere near $4.43, and December slipped a penny to $4.42; the directional thesis did not play.",
     "computed": {
       "outcome": "didnt",
       "made": "2026-06-29",
-      "p0": 11.2625,
-      "p1": 11.2625,
-      "instrument": "beans",
+      "p0": 4.1275,
+      "p1": 4.1275,
+      "instrument": "corn",
       "direction": "up",
-      "level": "11.56"
+      "level": "4.42"
     }
   },
   "todays_call": {
-    "instrument": "beans",
+    "instrument": "corn",
     "direction": "up",
-    "level": "11.56"
+    "level": "4.42"
   },
   "sections": [
     {
-      "title": "CORN BREAKS HARD BEFORE ACREAGE",
+      "index": 0,
+      "title": "Corn Breaks Into the Report",
       "icon": "🌽",
-      "body": "Corn nearby dropped 10.5 cents to **$4.13** and that move is almost entirely pre-Acreage positioning. December held at $4.42, off just a penny, and that split is the tell: the funds are lightening old-crop exposure ahead of Tuesday's 11 AM print, not making a directional call on the new crop. The Acreage report could show fewer planted acres than the March estimate, which would add premium to December, or it could confirm the big number that the wet-May planting pace suggested. Iowa and Missouri farmers caught dry windows between rain systems and pushed corn planting hard through late May, so a number above 94 million acres is very much in play. If Tuesday comes in above 94 million, the December contract at $4.42 is the first line the market tests lower. If it comes in below 93 million, watch for the new-crop to run back toward $4.55 in a hurry. A North Iowa grain farmer told Brownfield last week there are 'few if any pathways to profitability this year.' At $4.13 nearby, he is not wrong.",
-      "catalyst": "Pre-Acreage fund liquidation in old-crop; USDA Acreage report due 11 AM CT Tuesday.",
-      "bottom_line": "Old-crop fear is priced; new-crop waits on Tuesday's acre count.",
+      "body": "Corn's nearby contract fell 10.5 cents to **$4.13**, a 2.5% drop that looks like pre-report positioning more than a news-driven move. The December contract closed at **$4.41**, giving back roughly a penny and a half, and that spread between the two is the story: old-crop is being sold hard, new-crop is being held. That is not a weather trade, that is a fund rotating out of nearby exposure before Tuesday's Acreage number reprices the board. A north Iowa grower interviewed by Brownfield this week said there are 'not a lot of pathways to profitability this year,' and nearby corn at $4.13 is not helping that math. Heat dome forecasts approaching pollination are the one thing that could add a weather premium to December, but the market is not pricing that yet. Tuesday's Acreage report at 11 AM CT is the line in the sand: if planted corn acres come in above 95 million, the nearby has further to fall; below 93 million and the December contract gets a bid.",
+      "bottom_line": "Old-crop sold, new-crop held; Tuesday's Acreage number decides whether December at $4.41 is cheap or still too expensive.",
       "conviction_level": "high",
       "overnight_surprise": true,
-      "farmer_action": "If you have unpriced old-crop corn in storage and local basis is firm, price today. Do not wait through the Acreage print with unhedged bushels."
+      "farmer_action": "If you have unpriced old-crop corn in storage and local basis is firm today, move bushels before Tuesday's open. The Acreage report removes the uncertainty in one direction or the other."
     },
     {
-      "title": "SOYOIL RUNS; HORMUZ FLARES AGAIN",
-      "icon": "🫘",
-      "body": "Soybean oil had its biggest single session in weeks, running 6.9% to **$71.30** after fresh U.S.-Iran strikes this weekend slowed tanker traffic through the Strait of Hormuz, the Iran-Hormuz tensions that built since early April and briefly appeared to be deflating on diplomatic progress have reignited sharply. Pakistan's state LNG importer was out seeking emergency cargo as of Monday morning and vessel owners are pulling back from Hormuz transits. That tightens global vegetable oil flows and domestic soyoil fills the gap fast. Soybean meal also firmed, up 1.3% to **$307.00**, so the crush is running both sides of the board higher. Soybeans nearby gave back 23 cents to $11.26 on old-crop selling, but November beans actually added 6.75 cents to **$11.56**: the market is telling you the new-crop demand picture looks better than the old-crop carry. The domestic biofuel shift matters here. With roughly 60% of U.S. soybeans now going to domestic crush rather than export, a Hormuz disruption that tightens palm oil supply hits the soyoil board directly and the RFS demand base amplifies it.",
-      "catalyst": "Weekend U.S.-Iran strikes; Strait of Hormuz tanker traffic slowing per oilprice.com; domestic soyoil demand base from RFS finalized RVOs.",
-      "bottom_line": "Soyoil is the Hormuz trade right now; November beans are acting better than nearby.",
-      "conviction_level": "high",
-      "overnight_surprise": true,
-      "farmer_action": "Producers holding unpriced new-crop beans: the November contract at $11.56 is the cleanest level of the week. Consider layering in sales on any Tuesday pop from a friendly Acreage number before the heat dome story fully prices."
-    },
-    {
-      "title": "WHEAT FALLS; OATS HIT AGAIN",
+      "title": "Wheat Falls Hard, No Floor Visible",
       "icon": "🌾",
-      "body": "Chicago wheat dropped 17.5 cents to **$5.78**, its third week of pressure, and there is no clean catalyst beyond the broader grain complex selling ahead of Tuesday. The Middle East production rebound to between 14.6 and 15 million barrels per day of oil, combined with the Hormuz flare, has investors weighing energy over wheat fundamentals today. The real story in this bucket is oats, which had a 15.1% single-session drop to **$2.77**, now sitting at just 8% above its 52-week low. Oats have now posted double-digit percentage losses on multiple sessions in the past week. The fund exit in oats looks nearly complete on a positioning basis, but 'nearly complete' does not mean the floor is in. If you have oats in storage, the futures price alone is not giving you a reason to hold.",
-      "catalyst": "Broad pre-Acreage grain selling; oats fund liquidation ongoing per multi-session pattern.",
-      "bottom_line": "Wheat lacks a fresh catalyst; oats are near 52-week lows with no visible floor.",
-      "conviction_level": "medium",
-      "overnight_surprise": true,
-      "farmer_action": "If you have unpriced oats in storage, compare today's local basis against cost of carry. The futures contract at $2.77 is not building a case for patience."
-    },
-    {
-      "title": "CATTLE STEADY; HOGS FALL HARD",
-      "icon": "🐄",
-      "body": "Live cattle eased to **$245.82**, off 0.6%, and feeders gave back 0.9% to **$369.85**. The ongoing Cargill Fort Morgan/Schuyler plant lockout that began May 19 has kept the fed cattle trade in a processing-constrained posture for six weeks now, and the market is not finding new sellers at these levels even with box beef softer. The cattle complex is not acting healthy, but it is not breaking either. Hogs are a different story. Lean hogs dropped 3.9% to **$92.92**, their sharpest single-session move in recent weeks. Hog markets have been drifting and today's break is the kind of move that happens when the funds run out of reasons to stay long in a seasonally weak period without a fresh demand catalyst. Class III Milk also fell 2.5% to **$16.01**, consistent with its multi-week drift lower. No single news item drove hogs today; this looks like fund liquidation in a market that has been losing conviction for two weeks.",
-      "catalyst": "Cargill Fort Morgan lockout ongoing, processing-constrained cattle dynamics; hog fund liquidation with no fresh demand catalyst.",
-      "bottom_line": "Cattle holding but not healthy; hogs broke hard on fund exit, not a news event.",
+      "body": "Chicago wheat dropped 17½ cents to **$5.78**, a 2.9% session loss that is the biggest single-day move in the complex this week. There is no weather premium holding wheat up: the heat dome generating headlines for corn is not a wheat story at this stage of the crop calendar, and the funds are not adding conviction on the long side. The Middle East production rebound to roughly 15 million barrels per day, reported this morning as the Iran-Hormuz ceasefire holds, removed the export-disruption fear that briefly supported international wheat prices. Without a fresh catalyst, wheat at $5.78 is testing the lower end of the recent range and has no obvious support between here and $5.65.",
+      "catalyst": "Middle East oil production rebound signals Hormuz ceasefire holding, removing export-disruption premium from international grain markets.",
+      "bottom_line": "Wheat at $5.78 with no weather story and no export catalyst; $5.65 is the next real support.",
       "conviction_level": "medium",
       "overnight_surprise": true
     },
     {
-      "title": "ENERGY PULLS BACK; HORMUZ PREMIUM RETURNS",
+      "title": "Soyoil Runs; Complex Splits Wide Open",
+      "icon": "🫘",
+      "body": "Soybean oil ran 6.9% to **$71.30** and soybean meal added 1.3% to **$307.00**, while the nearby bean contract fell 2% to **$11.26** and November beans moved up slightly to **$11.56**. That four-way split is not random: the National Oilseed Processors Association noted this week that domestic biofuel crush has overtaken exports as the primary destination for US soybeans, and the EPA's finalized RFS Set 2 RVO targets for 2026 and 2027 are setting records. The oil fraction is being bid for biomass-based diesel feedstock; the meal fraction is along for the ride. The old-crop to new-crop inversion in beans, nearby at $11.26 against November at $11.56, is a **30-cent carry** that tells you the market sees more supply coming after harvest than it does right now. Watch Thursday's export sales for confirmation: if soybean oil export demand is picking up alongside domestic crush, the 6.9% move today has legs.",
+      "catalyst": "EPA finalized RFS Set 2 RVOs at record levels for 2026-2027; NOPA CEO confirms domestic crush now exceeds exports as primary soybean demand driver.",
+      "bottom_line": "Soyoil's biofuel bid is structural, not a one-day move; the oil/meal split is the trade to watch.",
+      "conviction_level": "high",
+      "overnight_surprise": true,
+      "farmer_action": "Producers with unpriced soybeans: the November contract at $11.56 is 30 cents over nearby, which is carry, not a signal to sell new-crop early. Wait for Tuesday's Acreage number before making a new-crop decision."
+    },
+    {
+      "title": "Oats in Freefall Again",
+      "icon": "🌾",
+      "body": "Oats fell 49¼ cents to **$2.77**, a 15.1% single-session loss and the second double-digit drop in a week. The 52-week low proximity, sitting at just 8% from the bottom, says the fund exit that started last week is not finished. There is no weather story, no export story, and no policy catalyst in the oats bucket. This is a market where the sellers are in control and the buyers have stepped aside entirely. If you have unpriced oats in storage, today's basis check is not optional.",
+      "catalyst": "No clean catalyst; looks like continued fund liquidation following last week's breakdown.",
+      "bottom_line": "Oats have no visible floor; the fund exit appears ongoing.",
+      "conviction_level": "medium",
+      "overnight_surprise": true,
+      "farmer_action": "Check local basis on unpriced oats today. Two consecutive 13-15% drops with no recovery signal says the fund exit is not done."
+    },
+    {
+      "title": "Livestock and Hogs Soften",
+      "icon": "🐄",
+      "body": "Live cattle eased to **$245.82**, down 0.6%, while feeders slipped to **$369.85**, off 0.9%. The boxed beef cutout weakness that drove last week's live cattle break is not yet resolved, and the ongoing Cargill Fort Morgan and Schuyler plant lockout, which began May 19 and has removed roughly 2% of weekly US slaughter capacity, continues to create a processing-constrained market rather than a supply-constrained one. No resolution has been announced. Lean hogs fell 3.9% to **$92.92**, the biggest single-session drop in the complex today and a move that had no clean news catalyst behind it. Watch boxed beef cutout values this week: a recovery above last week's close gives live cattle a reason to stabilize; another leg down puts $242 back in play.",
+      "catalyst": "Ongoing Cargill Fort Morgan/Schuyler lockout (1,700 workers, began May 19) maintaining processing-constrained dynamics; boxed beef weakness unresolved.",
+      "bottom_line": "Cattle processing constraint, not supply, is still running this market; $242 is the line if beef doesn't recover.",
+      "conviction_level": "medium",
+      "overnight_surprise": true
+    },
+    {
+      "title": "Energy: Hormuz Flares Back Up",
       "icon": "⛽",
-      "body": "WTI crude fell 1.9% to **$69.23** even as the Strait of Hormuz situation re-escalated this weekend. That divergence is worth reading carefully: crude lost roughly 19% during May as the Hormuz premium unwound on diplomatic progress, and Monday's fresh U.S.-Iran strikes brought the premium back, but the crude market's reaction was muted while soyoil ran hard. Middle East oil production rebounding to between 14.6 and 15 million barrels per day is the offset: more supply is coming to market even as the transit risk returns. Natural gas eased 1.6% to **$3.23**. The LNG side of the story is louder: Pakistan sought emergency cargo Monday morning, and China's June LNG imports are running above May levels on summer power demand. The $5.5 billion Williams/Momentum Midstream deal in late-stage talks signals the midstream sector still sees long-term domestic gas infrastructure as a growth trade regardless of near-term price softness.",
-      "catalyst": "Weekend U.S.-Iran strikes; Middle East production rebound to 14.6-15 million bpd per Financial Express; Pakistan emergency LNG procurement.",
-      "bottom_line": "Crude muted despite Hormuz flare; the soyoil market read the geopolitics faster than crude did.",
+      "body": "WTI crude fell 1.9% to **$69.23** even as new Hormuz disruption headlines crossed the wire, which is the tell: the market already priced the fear premium coming off over the past several weeks, and a weekend flare-up is not enough to reprice it back in. Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, took a step backward this weekend as US Central Command conducted fresh strikes on military targets Friday and Saturday. Tanker traffic through the Strait has slowed as vessel operators are cautious, and Pakistan's state LNG importer is seeking emergency cargo after the weekend events. Natural gas eased 1.6% to **$3.23**. Gulf producers, including Saudi Arabia, the UAE, and Qatar, are racing to load cargoes while the Strait remains passable. For ag producers, diesel input costs are not gaining on today's news, but the risk that the Hormuz premium rebuilds is back on the table.",
+      "catalyst": "Fresh US-Iran strikes Friday and Saturday; tanker traffic through Hormuz slowing; Pakistan LNG seeking emergency cargo.",
+      "bottom_line": "Crude fell despite Hormuz flare-up; the premium that was priced out may start rebuilding if strikes continue.",
       "conviction_level": "medium",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "New Screwworm Cases Threatening Beef Production, Pricing",
-      "body": "Congressional Democrats sent a letter to USDA Secretary Rollins demanding transparency and science-driven action on the New World Screwworm as cases push closer to U.S. cattle territory. The livestock disease is a long-tail supply risk that the cattle complex has not begun to price, and the processing-constrained dynamics from the Cargill lockout mean the industry has little buffer if screwworm containment fails.",
+      "title": "New World Screwworm Threat Escalates; USDA Under Pressure",
+      "body": "New Democrat members of Congress sent a letter to USDA Secretary Rollins demanding answers on the screwworm situation, citing lack of transparency and coordination as cases threaten beef production and prices. A new joint US-Mexico sterile fly facility in Chiapas is now operational, producing 28 million flies per week with a target of 100 million by year-end. This is a slow-burn threat to the cattle complex that the futures market has not priced.",
       "tag": "DISEASE"
     },
     {
-      "title": "New York and Connecticut Launch State-Level Tariff Relief for Farmers",
-      "body": "New York and Connecticut became the first states to open applications for direct tariff relief to farmers, with New York offering up to $25,000 per producer from a $30 million state fund. This is a state-level patch on a federal problem: the North Dakota State study estimated active China tariffs cost U.S. ag $15 billion annually, and no state fund closes that gap, but it is the first visible political response below the federal level.",
+      "title": "EPA's Record RFS Volumes Lock In Biofuel Crush Demand Through 2027",
+      "body": "The EPA finalized its Set 2 RVO rule in late March, setting renewable volume obligations for 2026 and 2027 at levels described as unprecedented in the program's history. The farmdoc daily analysis published last week details the feedstock implications: biomass-based diesel demand will require sustained soybean oil and corn oil supply at volumes that the current crush infrastructure may struggle to meet at scale. This is the structural story under today's soyoil move.",
       "tag": "POLICY"
     },
     {
-      "title": "K-State Expands Corn Leafhopper Monitoring After Oklahoma Detections",
-      "body": "Kansas Corn and Kansas State University are deploying expanded monitoring and free diagnostic testing statewide after corn leafhopper detections in Oklahoma this season. Leafhopper pressure during late vegetative and early reproductive stages can accelerate corn streak mosaic virus spread. With pollination approaching across the Belt, this is worth watching if the pressure moves north.",
+      "title": "K-State Launches Free Leafhopper Testing as Pest Spreads North",
+      "body": "Kansas State University and Kansas Corn are partnering to expand corn leafhopper monitoring after detections in Oklahoma, offering free diagnostic testing to producers this growing season. Leafhopper-transmitted corn stunt disease can cause significant yield loss, and the northward spread of detections is a flag for Belt producers heading into pollination. This is not in today's prices.",
       "tag": "WEATHER"
     }
   ],
   "spread_to_watch": {
-    "label": "Soybeans nearby / November beans inverse",
-    "level": "$0.30 inverse, widening",
-    "commentary": "July beans at $11.26 and November at $11.56 means new crop is trading $0.30 above old crop, and that inverse widened today as old-crop sold off while November added. That is the market pricing better new-crop demand, driven by the domestic crush shift and the Hormuz soyoil story, while old-crop carry is being discarded ahead of the Acreage print. Watch whether Tuesday's Acreage number narrows or widens this spread: a bullish (low-acre) number closes the gap; a bearish (high-acre) number blows it wider."
+    "label": "Soybean Oil / Soybean Meal ratio",
+    "level": "Oil at $71.30, meal at $307.00; oil running hard while meal holds steady",
+    "commentary": "The oil-to-meal ratio is blowing out in oil's favor as the biofuel crush demand story takes over from the protein export story. When oil is the bid and meal is secondary, the market is telling you that domestic RFS demand is driving soy processing decisions more than global protein demand. Watch whether this ratio holds through Thursday's export sales; if meal demand disappoints on exports, oil's lead gets wider."
   },
   "basis": {
-    "headline": "Old-crop corn basis firming; soybean basis mixed ahead of Acreage.",
-    "body": "Eastern Belt corn basis is **firming** as pre-Acreage selling hits the futures board harder than cash markets, creating a window for producers with old-crop in storage who have firm local bids. Western Belt basis remains soft, no change from last week's pattern. Soybean basis is mixed: the soyoil-driven strength in new-crop futures is not fully translating to old-crop cash bids, and merchandisers are sitting on their hands waiting for Tuesday's acre count before they move basis aggressively either direction."
+    "headline": "Old-crop corn basis firm in Eastern Belt ahead of Acreage report.",
+    "body": "**Eastern Belt corn basis is firm** as end-users hold coverage short ahead of Tuesday's Acreage number, creating a window for producers with old-crop in storage. Western Belt basis remains soft, consistent with adequate nearby supplies and no transportation premium. Soybean basis is quiet ahead of the report; any significant Acreage surprise Tuesday will reset basis across the board within 24 hours. Oat basis, where it exists, is effectively untradeable given the futures freefall."
   },
   "weekly_thread": {
-    "question": "Does Tuesday's Acreage report reset the corn price floor above $4.25, or does the acre count confirm the bear case and break new-crop lower?",
+    "question": "Does Tuesday's USDA Acreage report confirm planted corn and soybean acres at levels that hold current futures prices, or does a surprise reprice the board?",
     "day": 1,
-    "status_text": "The entire grain complex is coiled around the 11 AM CT Tuesday Acreage print. Corn nearby is already at $4.13 with old-crop selling into the report. The question for the week is whether the planted-acre number gives new-crop corn a reason to recover toward $4.55 or confirms the supply is big enough to keep the bear in charge."
+    "status_text": "The entire grain complex is positioned around one number arriving at 11 AM CT Tuesday. Corn at $4.13 and wheat at $5.78 are pricing in the fear of a bearish surprise; soybean oil's 6.9% run is pricing a structural demand story that exists regardless of acres. Tuesday either validates or reverses every one of these moves."
   },
   "the_more_you_know": {
-    "title": "The heat dome arriving this week is a pollination clock, not just a weather headline.",
-    "body": "With corn nearby at $4.13 and no weather premium in the December contract at $4.42, the market is not yet pricing the heat dome building over the Belt. Here is why that could change fast: corn is a narrow-window crop at pollination. A sustained stretch above 95 degrees Fahrenheit during silking, roughly a 10-to-14-day window that varies by planting date and geography, can cut yield by 3% to 8% per day of heat stress. The 2026 planting season ran behind the average through May before catching up between rain systems, which means the Belt's pollination window is slightly later than average this year. That delay puts peak pollination exposure squarely in early-to-mid July, right when this heat dome is forecast to arrive. If the heat dome stalls rather than moves through, the December contract at $4.42 will not stay quiet for long. Scouts and agronomists should be checking silk emergence dates this week. The Acreage number may reprice supply; the weather map may reprice yield. Both could move the board in the same week."
+    "title": "The old-crop/new-crop inversion in corn is a two-contract story.",
+    "body": "Today's 10½-cent drop in nearby corn to $4.13 against December holding at $4.42 produces a **29-cent spread** between the two contracts, and that gap is not random. Old-crop nearby corn reflects the physical reality of corn in the ground right now: adequate supply, no export urgency, funds reducing exposure before a make-or-break Acreage number. New-crop December at $4.42 reflects something different: the possibility that a heat dome arriving near pollination, combined with whatever the Acreage report says about planted acres, could tighten next year's balance sheet. When the spread between nearby and new-crop widens like this, the market is essentially saying 'today's supply is fine, but we are not sure about August.' Producers storing old-crop corn should read this spread as a clock, not a comfort: every day the nearby bleeds lower while December holds, the case for pricing old-crop on firm basis days gets stronger."
   },
   "watch_list": [
     {
-      "time": "Tue, Jun 30 - 11:00 AM CT",
-      "desc": "USDA Acreage Report: corn acres above 94 million pushes December toward $4.30; below 93 million adds weather premium and targets $4.55."
+      "time": "Tue Jun 30, 11:00 AM CT",
+      "desc": "USDA Acreage Report: corn acres above 95M is bearish for nearby; below 93M adds a weather-risk premium to December. Soybean acres below 86M could push November beans through $11.75."
     },
     {
-      "time": "Mon, Jun 29 - 3:00 PM CT",
-      "desc": "USDA Crop Progress: corn condition rated good-to-excellent above 65% keeps the heat premium in check; below 60% starts the weather conversation early."
+      "time": "Mon Jun 29, 3:00 PM CT",
+      "desc": "USDA Crop Progress: corn condition rated Good/Excellent above 65% confirms no heat stress yet; below 60% starts building the pollination weather premium into December."
     },
     {
-      "time": "Friday, Jul 3 - 7:30 AM CT",
-      "desc": "Weekly Export Sales: soybean sales above 400K MT confirm the new-crop demand story; below 250K MT and November beans at $11.56 are running on Hormuz momentum alone."
+      "time": "Friday Jul 3, 7:30 AM CT",
+      "desc": "Weekly Export Sales: soybean oil export demand above 40K MT confirms the biofuel story has an international bid; under 20K MT and today's 6.9% move looks like a domestic-only trade."
     },
     {
-      "time": "All week",
-      "desc": "Strait of Hormuz: any fresh escalation beyond weekend's U.S.-Iran strikes keeps soyoil bid; a return to Swiss-channel diplomacy deflates the premium that ran 6.9% today."
+      "time": "Daily",
+      "desc": "Strait of Hormuz tanker traffic: if vessel slowdowns persist past 48 hours, the crude premium that deflated through May starts rebuilding, and diesel input costs follow."
     },
     {
-      "time": "All week",
-      "desc": "Heat dome track: if the dome stalls over the Corn Belt with pollination approaching, watch December corn at $4.42 for the first sign of weather premium."
+      "time": "Daily",
+      "desc": "Cargill Fort Morgan/Schuyler lockout resolution: any announcement of a settlement puts 6,000 head per day of processing capacity back online and removes the lid on live cattle."
     }
   ],
   "daily_quote": {
     "text": "Great oaks from little acorns grow.",
     "attribution": "English Proverb"
   },
-  "source_summary": "USDA NASS, CME Group, Brownfield Ag News, oilprice.com, farmpolicynews.illinois.edu, feedstuffs.com, farmdocdaily.illinois.edu, beefmagazine.com, thefencepost.com",
+  "source_summary": "CME Group settlement prices; USDA Crop Progress (Monday 3 PM CT, upcoming); NOPA via Brownfield Ag News; EPA RFS Set 2 RVO final rule via farmdoc daily; oilprice.com Hormuz tanker traffic reports; Brownfield Ag News Iowa farmer margins; K-State/Kansas Corn leafhopper monitoring announcement; EIA crude inventory data.",
   "date": "Monday, June 29, 2026",
   "meta": {
     "market_mood": "cautious",
-    "heat_section": 1,
+    "heat_section": 2,
     "overnight_surprises_count": 7
   },
   "locked_prices": {
@@ -216,8 +225,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 109,
-  "generated_at": "2026-06-29T13:57:13.726975+00:00",
+  "issue_number": 110,
+  "generated_at": "2026-06-29T14:50:49.881406+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 7,
   "surprises": [
@@ -283,50 +292,50 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-06-29T13:57:30.962818+00:00",
+    "ran_at": "2026-06-29T14:51:11.798670+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 9,
       "rule_2_conviction_earned": 7,
-      "rule_3_tmyk_today": 9,
+      "rule_3_tmyk_today": 8,
       "rule_4_watch_conditional": 9,
       "rule_5_bottom_lines_synthesize": 8,
       "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 2,
-      "rule_8_basis_directional": 9,
-      "rule_9_voice": 8,
+      "rule_7_continuity": 7,
+      "rule_8_basis_directional": 8,
+      "rule_9_voice": 7,
       "rule_10_forward_test": 8,
       "rule_11_thread_coherence": 10,
-      "rule_12_spread_quality": 9,
-      "rule_13_yc_honesty": 2,
-      "rule_14_level_coherence": 6,
-      "rule_15_one_number_coherence": 7,
+      "rule_12_spread_quality": 8,
+      "rule_13_yc_honesty": 5,
+      "rule_14_level_coherence": 4,
+      "rule_15_one_number_coherence": 8,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 8
+      "rule_17_macro_anchoring": 6
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "yesterdays_call",
-        "rule": "rule_13_yc_honesty",
+        "target": "section[0]",
+        "rule": "rule_14_level_coherence",
         "scores_before": {
           "rule_1_lead_so_what": 9,
           "rule_2_conviction_earned": 7,
-          "rule_3_tmyk_today": 9,
+          "rule_3_tmyk_today": 8,
           "rule_4_watch_conditional": 9,
           "rule_5_bottom_lines_synthesize": 8,
           "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 2,
-          "rule_8_basis_directional": 9,
-          "rule_9_voice": 8,
+          "rule_7_continuity": 7,
+          "rule_8_basis_directional": 8,
+          "rule_9_voice": 7,
           "rule_10_forward_test": 8,
           "rule_11_thread_coherence": 10,
-          "rule_12_spread_quality": 9,
-          "rule_13_yc_honesty": 2,
-          "rule_14_level_coherence": 6,
-          "rule_15_one_number_coherence": 7,
+          "rule_12_spread_quality": 8,
+          "rule_13_yc_honesty": 5,
+          "rule_14_level_coherence": 4,
+          "rule_15_one_number_coherence": 8,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 8
+          "rule_17_macro_anchoring": 6
         }
       }
     ],
