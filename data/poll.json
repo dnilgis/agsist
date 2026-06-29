@@ -1,16 +1,32 @@
 {
   "_comment": "AGSIST Grower Pulse — single source of truth for the homepage poll. To run a new week: move the current block into archive (with its final results+total pulled from the Worker), then write the new question into current with a new id. Stage 2 automation will do this on a schedule.",
   "current": {
-    "id": "2026-w26-crop-pace-jun",
-    "week": "2026-06-22",
-    "question": "Where are your crops vs. the calendar right now?",
+    "id": "2026-w27-pollination-worry",
+    "week": "2026-06-29",
+    "question": "How worried are you about heat stress at pollination?",
     "options": [
-      "Behind",
-      "On schedule",
-      "Ahead"
+      "Not worried",
+      "Somewhat",
+      "Very worried"
     ]
   },
   "archive": [
+    {
+      "id": "2026-w26-crop-pace-jun",
+      "week": "2026-06-22",
+      "question": "Where are your crops vs. the calendar right now?",
+      "options": [
+        "Behind",
+        "On schedule",
+        "Ahead"
+      ],
+      "results": [
+        0,
+        2,
+        0
+      ],
+      "total": 2
+    },
     {
       "id": "2026-w25-replant-spring",
       "week": "2026-06-15",
