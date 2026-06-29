@@ -5,13 +5,28 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 28 Jun 2026 16:56:42 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 29 Jun 2026 13:57:32 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>ACREAGE DAY, HORMUZ FLARES, SOYOIL RUNS 6.9%</title>
+      <link>https://agsist.com/daily/2026-06-29</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-29</guid>
+      <pubDate>Mon, 29 Jun 2026 05:00:00 -0600</pubDate>
+      <description>Tuesday's Acreage report is the only thing that matters this week, and the market spent Monday telling you exactly how nervous it is. Corn nearby dropped 10.5 cents to $4.13 while December barely budged at $4.42, a split that says old-crop fear is running hot but the new-crop trade is waiting for data before it commits. Meanwhile, soybean oil ran 6.9% to $71.30 on fresh U.S.-Iran strikes this weekend that slowed tanker traffic through the Strait of Hormuz again, and the board opens Tuesday carrying two live grenades: one from the policy side, one from the weather map with a heat dome building over the Belt.
+The USDA Acreage report lands at 11 AM CT Tuesday; overnight, fresh U.S.-Iran strikes rattled Hormuz tanker traffic and soybean oil had its biggest session in weeks.
+• CORN BREAKS HARD BEFORE ACREAGE
+  → If you have unpriced old-crop corn in storage and local basis is firm, price today. Do not wait through the Acreage print with unhedged bushels.
+• SOYOIL RUNS; HORMUZ FLARES AGAIN
+  → Producers holding unpriced new-crop beans: the November contract at $11.56 is the cleanest level of the week. Consider layering in sales on any Tuesday pop from a friendly Acreage number before the heat dome story fully prices.
+• WHEAT FALLS; OATS HIT AGAIN
+  → If you have unpriced oats in storage, compare today's local basis against cost of carry. The futures contract at $2.77 is not building a case for patience.
+Read more: https://agsist.com/daily/2026-06-29</description>
+    </item>
     <item>
       <title>ACREAGE REPORT TUESDAY; CORN BREAKS HARD INTO IT</title>
       <link>https://agsist.com/daily/2026-06-28</link>
@@ -368,18 +383,6 @@ Grains shed 2% Friday as memorial money exits markets before summer doldrums.
 • Cattle Firm Into Grilling
 • Energy Extends Iran Ease
 Read more: https://agsist.com/daily/2026-05-31</description>
-    </item>
-    <item>
-      <title>GRAINS CLOSE WORST WEEK IN MONTH</title>
-      <link>https://agsist.com/daily/2026-05-30</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-30</guid>
-      <pubDate>Sat, 30 May 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed Friday at $4.47, down 9 cents for its biggest single-day drop in three weeks and worst weekly finish since early May. The funds booked profits ahead of the long weekend exactly like they're supposed to, with managed money liquidating 18,000 contracts across the grain complex. What looked like technical selling was actually calendar discipline: when you're sitting on 40% gains since March, you don't hold risk through a three-day weekend.
-Corn down 9 cents Friday capped five-session selloff as funds took Memorial Day profits.
-• Grains End May Flat
-• Cattle Diverge on Cash
-• Energy Extends Iran Ease
-Read more: https://agsist.com/daily/2026-05-30</description>
     </item>
   </channel>
 </rss>
