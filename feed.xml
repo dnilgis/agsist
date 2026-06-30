@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 29 Jun 2026 14:51:13 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 30 Jun 2026 13:12:09 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>ACREAGE DATA LANDS; CORN HOLDS $4.04</title>
+      <link>https://agsist.com/daily/2026-06-30</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-06-30</guid>
+      <pubDate>Tue, 30 Jun 2026 05:00:00 -0600</pubDate>
+      <description>The numbers that have been hanging over this market all week printed at 11 AM CT, and now corn sits at $4.04 with the answer in hand. The setup coming in: analysts expected USDA to confirm north of 95 million corn acres, a figure that, if matched or beaten, removes the last bull argument propping up old-crop nearby. The heat wave gripping the Heartland through the end of the week adds a new variable at the worst possible time. Pollination is approaching across the Belt, and triple-digit temperatures from the southern High Plains northward do not sit well with silking corn. The acreage data tells you how many acres are at risk. The weather tells you what happens to them.
+USDA's dual 11 AM release answers the acre question; heat wave arrives just as pollination approaches.
+• Corn: Report Day Verdict
+• Oats Recover; Soyoil Pulls Back
+• Cattle Fall; Processing Drag Continues
+Read more: https://agsist.com/daily/2026-06-30</description>
+    </item>
     <item>
       <title>ACREAGE REPORT DAY: GRAINS BREAK, SOYOIL RUNS</title>
       <link>https://agsist.com/daily/2026-06-29</link>
@@ -370,18 +382,6 @@ Energy leads commodities higher as Tehran cuts diplomatic ties, threatens Hormuz
 • Grains Extend Memorial Liquidation
 • Livestock Diverges Higher
 Read more: https://agsist.com/daily/2026-06-01</description>
-    </item>
-    <item>
-      <title>FUNDS LIQUIDATE INTO JUNE, CATTLE DIVERGE</title>
-      <link>https://agsist.com/daily/2026-05-31</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-05-31</guid>
-      <pubDate>Sun, 31 May 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed $4.47, down 9 cents Friday and 2% for the week, as managed money booked profits ahead of the long weekend. The funds liquidated 18,000 contracts net across grain complexes Friday, classic memorial rotation out of summer-slow positions. Next week's planting data will decide if this is profit-taking or something deeper.
-Grains shed 2% Friday as memorial money exits markets before summer doldrums.
-• Grains Close Worst May
-• Cattle Firm Into Grilling
-• Energy Extends Iran Ease
-Read more: https://agsist.com/daily/2026-05-31</description>
     </item>
   </channel>
 </rss>

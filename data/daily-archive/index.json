@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-06-30",
+      "date_display": "Tuesday, June 30, 2026",
+      "headline": "ACREAGE DATA LANDS; CORN HOLDS $4.04",
+      "teaser": "USDA answered the acre question at 11 AM; now the heat wave sets the next one.",
+      "market_mood": "cautious",
+      "surprise_count": 3,
+      "sections": 4,
+      "url": "/daily/2026-06-30",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-06-29",
       "date_display": "Monday, June 29, 2026",
       "headline": "ACREAGE REPORT DAY: GRAINS BREAK, SOYOIL RUNS",
@@ -1224,6 +1236,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-06-29T14:51:11.853124+00:00",
-  "count": 109
+  "updated": "2026-06-30T13:12:08.058306+00:00",
+  "count": 110
 }
