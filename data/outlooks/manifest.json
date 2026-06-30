@@ -1,9 +1,9 @@
 {
-  "fetched_at": "2026-06-30T20:20:39+00:00",
+  "fetched_at": "2026-06-30T22:39:11+00:00",
   "files": {
     "noaa_prcp_30day.gif": {
       "bytes": 231933,
-      "changed": true,
+      "changed": false,
       "last_modified": "2026-06-30T19:40:21+00:00",
       "sha256": "f3d5417ac28c2268c18053bea866bd781b4c2ecab3ecb42d92f687841b040faa",
       "source": "https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_prcp.gif",
@@ -20,7 +20,7 @@
     },
     "noaa_temp_30day.gif": {
       "bytes": 239304,
-      "changed": true,
+      "changed": false,
       "last_modified": "2026-06-30T19:40:21+00:00",
       "sha256": "57613f97681424ade0359eb15a2220d9847b31f6cef7278bc269c0ed2755d1b1",
       "source": "https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_temp.gif",
