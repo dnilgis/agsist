@@ -121,7 +121,7 @@
     .fs-stage{ position:relative; height:560px; background:#0a0e0d; overflow:hidden; }
     .fs-stage #fs-map{ position:absolute!important; inset:0; height:100%!important; width:100%!important; border:none!important; border-radius:0!important; z-index:1; }
     /* floating command bar */
-    .fs-cmd{ position:absolute; top:14px; left:14px; right:14px; z-index:600; display:flex; gap:8px; pointer-events:none; }
+    .fs-cmd{ position:absolute; top:14px; left:14px; right:14px; z-index:600; display:flex; align-items:flex-start; gap:8px; pointer-events:none; }
     .fs-cmd>*{ pointer-events:auto; }
     .fs-cmd .fs-search{ flex:1; max-width:430px; background:rgba(13,18,17,.88); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border:1px solid var(--line-2); border-radius:11px; min-width:0; }
     .fs-cmd .fs-basemap{ margin-left:auto; }
@@ -245,9 +245,10 @@
     .fs-draw-hint b{color:var(--brand,var(--gold))}
     .fs-corner-handle{background:var(--brand,#daa520);border:2px solid #0a1206;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.5);cursor:grab}
     .fs-corner-handle:active{cursor:grabbing}
-    .fs-map-headline{position:absolute;top:64px;left:50%;transform:translateX(-50%);z-index:1000;max-width:90%;background:rgba(10,18,6,.93);border:1px solid var(--brand,var(--gold));border-radius:10px;padding:.5rem .9rem;color:#fff;font-size:.92rem;font-weight:600;line-height:1.35;box-shadow:0 4px 18px rgba(0,0,0,.55);pointer-events:none;animation:fsMapHead .45s cubic-bezier(.2,.7,.2,1);text-align:center}
+    .fs-map-headline{position:absolute;top:68px;left:14px;z-index:1000;max-width:min(560px,calc(100% - 150px));background:rgba(10,18,6,.93);border:1px solid var(--brand,var(--gold));border-radius:10px;padding:.5rem .9rem;color:#fff;font-size:.92rem;font-weight:600;line-height:1.35;box-shadow:0 4px 18px rgba(0,0,0,.55);pointer-events:none;animation:fsHeadIn .45s cubic-bezier(.2,.7,.2,1);text-align:left}
     .fs-mh-tag{display:block;font-family:var(--font-display);text-transform:uppercase;font-size:.62rem;letter-spacing:.09em;color:var(--brand,var(--gold));margin-bottom:.12rem;font-weight:600}
     @keyframes fsMapHead{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translateX(-50%)}}
+    @keyframes fsHeadIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
     @media(max-width:600px){.fs-map-headline{display:none}
     .fs-dock{gap:5px;bottom:10px;max-width:97%}
     .fs-dock .fs-btn{padding:.5rem .6rem;font-size:.78rem}
