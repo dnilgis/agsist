@@ -1,14 +1,14 @@
 {
-  "updated": "2026-06-30T22:53:18Z",
+  "updated": "2026-07-01T22:50:09Z",
   "corn": {
-    "pct": 10,
-    "cur": 4.125,
+    "pct": 15,
+    "cur": 4.2225,
     "lo": 3.6775,
     "hi": 8.1825,
     "median": 4.7213,
     "n": 262,
     "years": 5,
-    "read": "At the 10th percentile of the last 5 years \u2014 historically low \u2014 below most of the last 5 years.",
+    "read": "At the 15th percentile of the last 5 years \u2014 historically low \u2014 below most of the last 5 years.",
     "seasonality": [
       64,
       61,
@@ -25,14 +25,14 @@
     ]
   },
   "soybean": {
-    "pct": 31,
-    "cur": 11.175,
+    "pct": 33,
+    "cur": 11.265,
     "lo": 9.3875,
     "hi": 17.455,
     "median": 12.2425,
     "n": 262,
     "years": 5,
-    "read": "At the 31st percentile of the last 5 years \u2014 below the 5-year midpoint.",
+    "read": "At the 33rd percentile of the last 5 years \u2014 below the 5-year midpoint.",
     "seasonality": [
       57,
       74,
@@ -49,14 +49,14 @@
     ]
   },
   "wheat": {
-    "pct": 40,
-    "cur": 5.775,
+    "pct": 44,
+    "cur": 5.9275,
     "lo": 4.985,
     "hi": 13.48,
     "median": 6.0587,
     "n": 262,
     "years": 5,
-    "read": "At the 40th percentile of the last 5 years \u2014 below the 5-year midpoint.",
+    "read": "At the 44th percentile of the last 5 years \u2014 below the 5-year midpoint.",
     "seasonality": [
       12,
       48,
@@ -74,7 +74,7 @@
   },
   "cattle": {
     "pct": 94,
-    "cur": 242.25,
+    "cur": 241.875,
     "lo": 119.225,
     "hi": 257.45,
     "median": 180.7875,
@@ -82,9 +82,9 @@
     "years": 5,
     "read": "At the 94th percentile of the last 5 years \u2014 historically very high \u2014 near a 5-year peak.",
     "seasonality": [
-      33,
+      34,
       64,
-      76,
+      77,
       80,
       61,
       100,
@@ -98,7 +98,7 @@
   },
   "feeders": {
     "pct": 94,
-    "cur": 364.35,
+    "cur": 364.2,
     "lo": 152.75,
     "hi": 375.5,
     "median": 245.125,
