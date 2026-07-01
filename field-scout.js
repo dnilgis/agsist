@@ -291,7 +291,7 @@
 
   function wireControls() {
     var pinBtn=document.getElementById('fs-pin'); if(pinBtn) pinBtn.addEventListener('click', armPinDrop);
-    document.getElementById('fs-draw').addEventListener('click', function(){ drawControl.enable(); flashHint('Tap corners around your field &mdash; <b>Finish</b> when done'); });
+    document.getElementById('fs-draw').addEventListener('click', function(){ drawControl.enable(); });
     document.getElementById('fs-clear').addEventListener('click', clearField);
     var so=document.getElementById('fs-startover'); if(so) so.addEventListener('click', function(){ clearField(); flashHint('Tap the map to drop a fresh field'); });
     document.getElementById('fs-gps').addEventListener('click', locateMe);
@@ -1004,12 +1004,14 @@
     // endpoint sends no CORS headers, so a direct browser call is blocked).
     // If unreachable, the panel omits the drought chip rather than blocking weather.
     var url=FS_WORKER+'/drought?lat='+c.lat.toFixed(4)+'&lon='+c.lng.toFixed(4);
-    fetchT(url, 12000).then(function(r){return r.ok?r.json():null;}).then(function(d){
+    fetchT(url, 15000).then(function(r){return r.ok?r.json():null;}).then(function(d){
       if(gen !== fieldGen) return;
-      var cat='None';
-      if(d){
-        var lvl = d.DroughtClass!=null ? d.DroughtClass : (d.dm!=null?d.dm:(Array.isArray(d)&&d[0]?d[0].DroughtClass:null));
-        cat = droughtLabel(lvl);
+      // Honesty rule: 'None' is a real answer from the service; a failed or
+      // unrecognized response is UNKNOWN (null) — never assert no-drought on error.
+      var cat=null;
+      if(d && !d.error){
+        var lvl = d.DroughtClass!=null ? d.DroughtClass : (d.dm!=null?d.dm:(Array.isArray(d)&&d[0]&&d[0].DroughtClass!=null?d[0].DroughtClass:null));
+        if(lvl!=null) cat = droughtLabel(lvl);
       }
       window.__fsDr={cat:cat}; FIELD.drought={cat:cat}; recomputeInsight(); renderWx();
     }).catch(function(){ if(gen!==fieldGen) return; window.__fsDr={cat:null}; if(FIELD)FIELD.drought={cat:null}; recomputeInsight(); renderWx(); });
@@ -1246,7 +1248,7 @@
         if(gen !== fieldGen) return;
         var zip = g && g.address ? (g.address.postcode||'').slice(0,5) : '';
         if(!zip){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">This field sits far enough from a mapped ZIP that we can\u2019t pull nearby bids for it &mdash; common for remote parcels. Try the cash-bids page directly for your area.</div>'); return; }
-        return fetch(BIDS_PROXY+'?zip='+zip+'&radius=75&getAllBids=1')
+        return fetch(BIDS_PROXY+'/barchart/getGrainBids?zipCode='+encodeURIComponent(zip)+'&maxDistance=75&getAllBids=1')
           .then(function(r){return r.json();})
           .then(function(d){ if(gen!==fieldGen) return; renderBids(d, zip, gen); });
       })
@@ -1254,22 +1256,25 @@
   }
   function renderBids(d, zip, gen){
     if(gen!==fieldGen) return;
-    // Mirror cash-bids.html flatten(): bids nested under item.bids[],
-    // fields cashprice & commodity_display_name.
-    var items = (d && (d.results||d.data||d.bids)) || [];
+    // Mirrors cash-bids.html flatten() exactly: handles both the nested shape
+    // (item.bids[]) and the flat shape (bid fields on the item itself).
+    var raw = (d && (d.results||d.bids||d.data)) || [];
+    if(!Array.isArray(raw)) raw=[];
     var flat=[];
-    items.forEach(function(item){
-      var elev = item.location||item.elevatorName||item.name||'Elevator';
-      var city = item.city||''; var dist=item.distance;
-      var bids = item.bids||[];
-      bids.forEach(function(b){
-        flat.push({
-          elev:elev, city:city, dist:dist,
-          commodity:b.commodity_display_name||b.commodity||'',
-          cash:parseFloat(b.cashprice||b.cashPrice),
-          basis:b.basis!=null?parseFloat(b.basis):null
+    raw.forEach(function(item){
+      if(item.bids && Array.isArray(item.bids)){
+        var fac = item.company||item.name||item.locationName||'Elevator';
+        item.bids.forEach(function(b){
+          flat.push({ elev:fac, city:item.city||b.city||'', dist:parseFloat(item.distance||b.distance)||null,
+            commodity:b.commodity||b.commodity_display_name||b.commodityName||'',
+            cash:parseFloat(b.cashprice||b.cashPrice), basis:(b.basis!=null&&b.basis!=='')?parseFloat(b.basis):null });
         });
-      });
+      } else if(item.commodity||item.commodityName||item.cashprice!==undefined||item.cashPrice!==undefined){
+        flat.push({ elev:item.company||item.name||item.facility||item.locationName||'Elevator',
+          city:item.city||'', dist:parseFloat(item.distance)||null,
+          commodity:item.commodity||item.commodity_display_name||item.commodityName||'',
+          cash:parseFloat(item.cashprice||item.cashPrice), basis:(item.basis!=null&&item.basis!=='')?parseFloat(item.basis):null });
+      }
     });
     flat = flat.filter(function(x){ return !isNaN(x.cash); }).sort(function(a,b){ return (a.dist||999)-(b.dist||999); });
     if(!flat.length){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:zip,count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">No elevators are reporting cash bids near ZIP '+esc(zip)+' right now. Bid coverage is densest across the Corn Belt and thins out elsewhere &mdash; this isn\u2019t an error.</div>'); return; }
