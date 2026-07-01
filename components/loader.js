@@ -220,7 +220,7 @@
 
   // Footer Ad Space showcase. Live lifetime view counter (Cloudflare Worker + KV)
   // plus sponsor slot-fill from /data/supporters.json.
-  var COUNTER_URL = 'https://agsist-counter.dnilgis.workers.dev/'; // <-- set to your deployed worker URL ('' disables)
+  var COUNTER_URL = ''; // <-- set to your deployed worker URL ('' disables; the old agsist-counter worker is gone, so this stops a failed request + console error on every page)
   function renderSupporters() {
     function esc(s) {
       return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
