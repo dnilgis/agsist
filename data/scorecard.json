@@ -1,12 +1,19 @@
 {
- "updated": "2026-06-30T13:12:09+00:00",
- "total": 48,
+ "updated": "2026-07-01T13:32:20+00:00",
+ "total": 49,
  "played_out": 26,
- "didnt": 17,
+ "didnt": 18,
  "pending": 5,
- "hit_rate": 60.5,
+ "hit_rate": 59.1,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-06-30",
+   "judged": "2026-07-01",
+   "call": "The call was corn higher, targeting a move toward $4.25 on December as the Acreage report absorbed and heat premium began building into the front end.",
+   "outcome": "didnt",
+   "note": "Corn did not get there. Nearby settled at $4.14 and December at $4.38, both short of the $4.25 nearby target. The stocks surprise kept corn from breaking lower, but it did not deliver the upside push the call needed. Miss. The heat premium has not been added yet, and $4.25 remains unfinished business if Monday's Crop Progress shows condition deterioration."
+  },
   {
    "made": "2026-06-29",
    "judged": "2026-06-30",

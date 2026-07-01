@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 30 Jun 2026 13:12:09 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 01 Jul 2026 13:32:20 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>ACREAGE LANDED; CORN FINDS $4.14 AND WAITS</title>
+      <link>https://agsist.com/daily/2026-07-01</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-01</guid>
+      <pubDate>Wed, 01 Jul 2026 05:00:00 -0600</pubDate>
+      <description>The USDA Acreage report landed yesterday, and today corn is telling you exactly what it thinks: $4.14 nearby, $4.38 December, and almost no movement in either direction. The quarterly stocks number came in 14% above last year, which should have been bearish on its own, but Compeer Financial's Megan Roberts flagged what actually happened: stocks came in below trade expectations, and the below-expectations read flipped the sentiment on its head. So corn is not in freefall. It is also not rallying. It is sitting on a data verdict while 90-to-95 degree heat blankets the Corn Belt during the most critical week of pollination, and the December contract is not pricing any of that yet.
+Stocks surprise beat softened the acreage blow, but December corn at $4.38 is still pricing acres, not heat.
+• Corn: Heat Meets the Data Verdict
+• Soybeans: November Slips, Nearby Holds
+  → Producers with unpriced November beans: $11.44 is carry, not a signal. Hold and watch Thursday's export number before deciding.
+• Cattle: Lockout Clock Keeps Ticking
+Read more: https://agsist.com/daily/2026-07-01</description>
+    </item>
     <item>
       <title>ACREAGE DATA LANDS; CORN HOLDS $4.04</title>
       <link>https://agsist.com/daily/2026-06-30</link>
@@ -370,18 +383,6 @@ Corn and beans extend Memorial week liquidation as energy complex consolidates y
 • CRUDE CONSOLIDATES IRAN MOVE HIGHER
 • LIVESTOCK MARKS TIME
 Read more: https://agsist.com/daily/2026-06-02</description>
-    </item>
-    <item>
-      <title>CRUDE EXPLODES 5% ON IRAN CLOSURE THREAT</title>
-      <link>https://agsist.com/daily/2026-06-01</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-01</guid>
-      <pubDate>Mon, 01 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Crude hit $94.30, up 5.1% and the biggest single-day move since March, after Iran cut diplomatic channels with Washington and threatened full Strait of Hormuz closure. The geopolitical premium that unwound through Memorial Day is back with interest, energy dragging the entire commodity complex higher except grains, which shed another 1% as the funds liquidate into June. The question this week: does the Iran flare sustain or fade like the last three iterations since 2024.
-Energy leads commodities higher as Tehran cuts diplomatic ties, threatens Hormuz blockade.
-• Energy Explodes on Iran Escalation
-• Grains Extend Memorial Liquidation
-• Livestock Diverges Higher
-Read more: https://agsist.com/daily/2026-06-01</description>
     </item>
   </channel>
 </rss>
