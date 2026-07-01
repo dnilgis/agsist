@@ -126,9 +126,9 @@
     if(!restoreFromLink()) tryAutoLocate();
   }
 
-  // ── GOD LAYERS: NDVI / moisture tile overlays + opacity + time scrub ──
+  // ── GOD LAYERS: NDVI / moisture tile overlays, on-map chips + bottom layer sheet ──
   function wireGodLayers(){
-    // layer selector chips
+    // layer selector chips (on the map, under the basemap toggle)
     document.querySelectorAll('[data-god]').forEach(function(btn){
       btn.addEventListener('click', function(){ setGodLayer(btn.getAttribute('data-god')); });
     });
@@ -142,6 +142,17 @@
     if(sc) sc.addEventListener('input', function(){ scrubTo(+sc.value); });
     var hail = document.getElementById('fs-hail-toggle');
     if(hail) hail.addEventListener('click', function(){ toggleHail(hail); });
+    var lsc = document.getElementById('fs-ls-close');
+    if(lsc) lsc.addEventListener('click', function(){ var sh=document.getElementById('fs-layersheet'); if(sh) sh.hidden=true; });
+    // "flip on Crop vigor" links inside The Read → jump to the map and light the layer
+    document.addEventListener('click', function(e){
+      var a = e.target && e.target.closest && e.target.closest('.fs-god-link');
+      if(!a) return;
+      e.preventDefault();
+      var stage=document.querySelector('.fs-stage'); if(stage) stage.scrollIntoView({behavior:'smooth', block:'center'});
+      var g=a.getAttribute('data-god');
+      if(g && godActive!==g) setGodLayer(g);
+    });
   }
 
   function setGodLayer(which){
@@ -154,20 +165,70 @@
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
     if(godLayer){ map.removeLayer(godLayer); godLayer=null; }
-    var panel=document.getElementById('fs-god-controls');
-    if(!which){ if(panel) panel.hidden=true; return; }
-    if(panel) panel.hidden=false;
-    setLegend(which);
-
-    var url = FS_WORKER + '/' + which + '/{z}/{x}/{y}' + (godDate?('?date='+godDate):'');
+    if(!which){ godDate=null; syncSheet(); return; }
+    godDate=null;                         // a fresh layer always starts at the latest pass
+    openSheetFor(which);
+    var url = FS_WORKER + '/' + which + '/{z}/{x}/{y}';
     godLayer = L.tileLayer(url, { opacity:godOpacity, maxZoom:18, minZoom:9, tileSize:256, crossOrigin:true,
       attribution: which==='ndvi' ? 'NDVI: Sentinel-2 / Copernicus' : 'Moisture: Sentinel-1 / Copernicus' }).addTo(map);
     // These layers only render at field scale (zoom 9+): a national-view request
     // would fire dozens of Sentinel tiles at once and hit the processing rate limit.
     if(map.getZoom() < 9){ flashHint('Zoom in to your field to see '+(which==='ndvi'?'crop vigor':'soil moisture')); }
-    // scrub label visibility: NDVI/moisture both time-aware
-    var scrubWrap=document.getElementById('fs-scrub-wrap'); if(scrubWrap) scrubWrap.hidden=false;
+    renderPassTimeline();
     ga('god_layer', { layer: which });
+  }
+
+  // The bottom layer sheet: legend + season replay + opacity, right on the map.
+  function openSheetFor(which){
+    var sheet=document.getElementById('fs-layersheet'); if(!sheet) return;
+    sheet.hidden=false;
+    setLegend(which);
+    var sw=document.getElementById('fs-scrub-wrap'); if(sw) sw.hidden = which!=='moisture';
+    var ow=document.getElementById('fs-opac-wrap'); if(ow) ow.hidden = which==='hail';
+    if(which==='moisture'){
+      var sc=document.getElementById('fs-scrub'); if(sc) sc.value=0;
+      var sv=document.getElementById('fs-scrub-val'); if(sv) sv.textContent='Latest';
+    }
+    if(which!=='ndvi'){ var pw=document.getElementById('fs-passes'); if(pw){ pw.hidden=true; pw.innerHTML=''; } }
+  }
+  function syncSheet(){
+    if(godActive){ openSheetFor(godActive); return; }
+    if(hailLayer){ openSheetFor('hail'); return; }
+    var sheet=document.getElementById('fs-layersheet'); if(sheet) sheet.hidden=true;
+  }
+
+  // ── Season replay: one tappable chip per real clear satellite pass ──
+  // The /indices series carries the actual pass dates; tapping a date reloads the
+  // vigor tiles for that pass, so the season plays back like a flipbook.
+  function renderPassTimeline(){
+    var wrap=document.getElementById('fs-passes'); if(!wrap) return;
+    var s = FIELD && FIELD.indices && FIELD.indices.series;
+    if(godActive!=='ndvi' || !s || !s.length){ wrap.hidden=true; wrap.innerHTML=''; return; }
+    var sel = godDate || s[s.length-1].date;
+    var cur=null; for(var i=0;i<s.length;i++){ if(s[i].date===sel){ cur=s[i]; break; } }
+    wrap.hidden=false;
+    wrap.innerHTML =
+      '<div class="fs-passes-l">Season replay &middot; '+s.length+' clear pass'+(s.length===1?'':'es')+
+        (cur && cur.ndvi!=null ? ' &middot; <b>NDVI '+(+cur.ndvi).toFixed(2)+'</b> ('+vigorWord(+cur.ndvi)+') on '+passLbl(sel) : '')+'</div>'+
+      '<div class="fs-passes-row">'+ s.map(function(p){
+        var on = p.date===sel;
+        var v = p.ndvi!=null ? '<span class="fs-pass-v" style="color:'+(on?'#0a1206':vigorColor(+p.ndvi))+'">'+(+p.ndvi).toFixed(2)+'</span>' : '';
+        return '<button type="button" class="fs-pass'+(on?' on':'')+'" data-date="'+esc(p.date)+'"><span class="fs-pass-d">'+passLbl(p.date)+'</span>'+v+'</button>';
+      }).join('') + '</div>';
+    wrap.querySelectorAll('.fs-pass').forEach(function(b){
+      b.addEventListener('click', function(){ selectPass(b.getAttribute('data-date')); });
+    });
+    var row=wrap.querySelector('.fs-passes-row'); if(row) row.scrollLeft=row.scrollWidth;  // newest in view
+  }
+  function passLbl(d){ try{ return new Date(d+'T12:00:00Z').toLocaleDateString(undefined,{month:'short',day:'numeric'}); }catch(e){ return d; } }
+  function selectPass(date){
+    godDate = date;
+    if(godActive && godLayer){
+      map.removeLayer(godLayer);
+      godLayer = L.tileLayer(FS_WORKER+'/'+godActive+'/{z}/{x}/{y}?date='+godDate, { opacity:godOpacity, maxZoom:18, minZoom:9, tileSize:256, crossOrigin:true }).addTo(map);
+    }
+    renderPassTimeline();
+    ga('pass_scrub', { date: date });
   }
 
   // Plain-language key for the color overlays — answers "what am I looking at?"
@@ -185,6 +246,10 @@
         '<div class="fs-leg-bar" style="background:linear-gradient(90deg,#c7ae73,#8fb59a,#2a7fd6)"></div>'+
         '<div class="fs-leg-ends"><span>Drier</span><span>Wetter</span></div>'+
         '<div class="fs-leg-say">Bluer is a wetter surface, tan is drier. It\u2019s a relative read from radar &mdash; good for finding wet holes and dry knobs, not an exact percent.</div>';
+    } else if(which==='hail'){
+      el.hidden=false;
+      el.innerHTML='<div class="fs-leg-top"><span class="fs-leg-ttl">Hail history</span><span class="fs-leg-tag">reported storms, last 5 years</span></div>'+
+        '<div class="fs-leg-say">Each blue dot is a severe-hail storm report near this field over the last five years &mdash; tap a dot for the reported stone size and date. No dots is good news.</div>';
     } else { el.hidden=true; el.innerHTML=''; }
   }
 
@@ -202,10 +267,11 @@
   }
 
   function toggleHail(btn){
-    if(hailLayer){ map.removeLayer(hailLayer); hailLayer=null; btn.classList.remove('on'); btn.setAttribute('aria-pressed','false'); return; }
+    if(hailLayer){ map.removeLayer(hailLayer); hailLayer=null; btn.classList.remove('on'); btn.setAttribute('aria-pressed','false'); syncSheet(); return; }
     if(!activePoly && !map.getCenter()){ return; }
     var c = activePoly ? polyCentroid(activePoly) : map.getCenter();
     btn.classList.add('on'); btn.setAttribute('aria-pressed','true');
+    openSheetFor('hail');
     fetch(FS_WORKER + '/hail?lat='+(c.lat).toFixed(4)+'&lon='+(c.lng).toFixed(4)+'&years=5')
       .then(function(r){ return r.json(); })
       .then(function(gj){
@@ -220,7 +286,7 @@
         });
         hailLayer.addTo(map);
         ga('hail_layer', { reports: feats.length });
-      }).catch(function(){ btn.classList.remove('on'); });
+      }).catch(function(){ btn.classList.remove('on'); btn.setAttribute('aria-pressed','false'); syncSheet(); });
   }
 
   function wireControls() {
@@ -1246,6 +1312,7 @@
         FIELD.indices = d;
         renderIndices(d);
         recomputeInsight();
+        renderPassTimeline();   // if the vigor layer is already on, the replay fills in
       })
       .catch(function(){
         if(gen!==fieldGen) return;
@@ -1311,8 +1378,23 @@
     return 'Low cover &mdash; bare ground, residue, or a very early stand';
   }
   function vigorColor(v){ return v==null?'var(--dim)':(v>=0.6?'var(--green)':(v>=0.3?'var(--gold)':'var(--red)')); }
+  // Plain-language verdict for each index value — so a farmer never meets a naked
+  // number. Thresholds are rough season-stage guides (the ? tips carry the nuance).
+  function idxRead(k, v){
+    if(v==null) return null;
+    v=+v;
+    if(k==='ndvi') return { w:vigorWord(v), c:vigorColor(v) };
+    if(k==='ndre') return v>=0.30?{w:'Strong',c:'var(--green,#5fc28a)'}:(v>=0.15?{w:'Moderate',c:'var(--gold,#d4a23f)'}:{w:'Low',c:'var(--red,#e0685f)'});
+    if(k==='ndmi') return v>=0.20?{w:'Well-watered',c:'var(--green,#5fc28a)'}:(v>=0?{w:'Adequate',c:'var(--gold,#d4a23f)'}:{w:'Dry / stressed',c:'var(--red,#e0685f)'});
+    if(k==='msi')  return v>=1.4?{w:'High stress',c:'var(--red,#e0685f)'}:(v>=0.8?{w:'Moderate',c:'var(--gold,#d4a23f)'}:{w:'Low stress',c:'var(--green,#5fc28a)'});
+    if(k==='ndwi') return v>=0.2?{w:'Very wet',c:'var(--green,#5fc28a)'}:(v>=0?{w:'Moist',c:'var(--green,#5fc28a)'}:(v>=-0.15?{w:'Typical',c:'var(--gold,#d4a23f)'}:{w:'Dry',c:'var(--red,#e0685f)'}));
+    if(k==='bsi')  return v>=0.1?{w:'Mostly bare',c:'var(--red,#e0685f)'}:(v>=0?{w:'Thin cover',c:'var(--gold,#d4a23f)'}:{w:'Vegetated',c:'var(--green,#5fc28a)'});
+    return null;
+  }
   function idxChip(label,val,what){
-    return '<div class="fs-idx"><span class="fs-idx-l">'+label+tipQ(label.toLowerCase())+'</span><span class="fs-idx-v">'+(val==null?'\u2014':(+val).toFixed(2))+'</span><span class="fs-idx-w">'+what+'</span></div>';
+    var r=idxRead(label.toLowerCase(), val);
+    var w = r ? '<span style="color:'+r.c+';font-weight:600">'+r.w+'</span> &middot; '+what : what;
+    return '<div class="fs-idx"><span class="fs-idx-l">'+label+tipQ(label.toLowerCase())+'</span><span class="fs-idx-v">'+(val==null?'\u2014':(+val).toFixed(2))+'</span><span class="fs-idx-w">'+w+'</span></div>';
   }
 
   // ── On-demand explainers: a (?) on any cryptic label opens a plain-language
@@ -1446,12 +1528,13 @@
       (normLine?'<p class="fs-vigor-say">'+normLine+'</p>':'')+
       (varLine?'<p class="fs-vigor-say">'+varLine+'</p>':'')+
       (mLine?'<p class="fs-vigor-say">'+mLine+'</p>':'')+
-      '<div class="fs-vigor-fresh"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Last clear pass <b>'+ixDate(last.date)+'</b> ('+ixDaysAgo(last.date)+') &middot; '+series.length+' clear pass'+(series.length===1?'':'es')+' this season</div>'+
+      '<div class="fs-vigor-fresh"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Last clear pass <b>'+ixDate(last.date)+'</b> ('+ixDaysAgo(last.date)+') &middot; <a href="#" class="fs-god-link" data-god="ndvi">'+series.length+' clear pass'+(series.length===1?'':'es')+' this season &mdash; replay them on the map</a></div>'+
       '<details class="fs-vigor-more"><summary>Show all indices for the latest pass</summary>'+
         '<div class="fs-vigor-grid">'+
           idxChip('NDVI',last.ndvi,'vigor')+idxChip('NDRE',last.ndre,'nitrogen')+idxChip('NDMI',last.ndmi,'moisture')+
           idxChip('MSI',last.msi,'stress')+idxChip('NDWI',last.ndwi,'water')+idxChip('BSI',last.bsi,'bare soil')+
         '</div>'+
+        '<div class="fs-src">Verdict words are rough guides &mdash; the right value shifts with crop and growth stage. Tap ? on any index for what it measures.</div>'+
       '</details>'+
       '<div class="fs-src">Sentinel-2 / Copernicus &middot; cloud-masked &middot; averaged over your field</div>';
     setBody('fs-vigor', html);
@@ -1608,13 +1691,13 @@
           title: ixPrime ? 'the satellite says this capable ground is underperforming its own history \u2014 go look'
                           : 'crop vigor is running below this field\u2019s normal \u2014 worth a scout',
           detail:(ixPrime?'This is capable ground, yet ':'')+'the latest cloud-free pass reads NDVI <strong>'+ixV.toFixed(2)+'</strong>, about <strong>'+Math.abs(belowNorm).toFixed(2)+' below</strong> this field\u2019s '+nrmYrs+'normal for this point in the season. Something on the ground is holding the canopy back.'+' <span class="fs-src">source: Sentinel-2 / Copernicus, cloud-masked</span>',
-          watch: ixPatchy ? 'It\u2019s also uneven across the field \u2014 start with the weakest zone (the Crop-vigor map layer shows where).'
+          watch: ixPatchy ? 'It\u2019s also uneven across the field \u2014 start with the weakest zone (<a href="#" class="fs-god-link" data-god="ndvi">the Crop-vigor map layer shows where</a>).'
                           : 'Scout for stand, nutrient, or moisture problems while there\u2019s still time to react.' });
       } else if(ixPatchy && ixV!=null){
         push({ sev:2, act:true, topic:'vigor', tag:'an uneven canopy',
           title:'the canopy is uneven across the field \u2014 scout the weak zone',
           detail:'Satellite vigor varies noticeably across this field (averaging NDVI '+ixV.toFixed(2)+', but spread out around it) \u2014 usually a drainage, compaction, or stand issue in one area.'+' <span class="fs-src">source: Sentinel-2 / Copernicus</span>',
-          watch:'Walk the lowest-vigor corner; the map\u2019s Crop-vigor layer points to it.' });
+          watch:'Walk the lowest-vigor corner; <a href="#" class="fs-god-link" data-god="ndvi">the map\u2019s Crop-vigor layer</a> points to it.' });
       } else if(ixV!=null && ixV>=0.6 && (belowNorm==null || belowNorm>=-0.03)){
         lines.push('The satellite backs this up: canopy vigor is <strong>strong</strong> (NDVI '+ixV.toFixed(2)+')'+(belowNorm!=null?', tracking '+(belowNorm>0.03?'above':'right at')+' its own normal for the date':'')+(ixTr&&ixTr.dir==='easing'?', easing back from its peak as you\u2019d expect for the stage':'')+'.');
       }
@@ -1649,7 +1732,7 @@
 
     // No concerns at all → nudge toward the visual NDVI layer.
     if(!stress.length && s && r){
-      lines.push('No red flags in the soil and rotation here — flip on <strong>Crop vigor</strong> to see how the stand is actually doing this season.');
+      lines.push('No red flags in the soil and rotation here — flip on <a href="#" class="fs-god-link" data-god="ndvi"><strong>Crop vigor</strong></a> to see how the stand is actually doing this season.');
     }
 
     stress.sort(function(a,b){ return b.sev-a.sev; });
