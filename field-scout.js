@@ -38,6 +38,10 @@
   // ── State ───────────────────────────────────────────────────────────
   var map, drawnLayer, drawControl, satLayer, mapLayer, gpsMarker;
   var pinArmed=false, cornerHandles=[];
+  var tracing=false;        // true while Leaflet.draw polygon mode is live
+  var boxMode=false;        // true when the active field is a resizable preset box
+  var _zoomHintAt=0, _hintTimer=null;
+  var TAP_MIN_ZOOM=13;      // below this a tap is navigation, not a field
   var activePoly = null;
   // God-layer overlays
   var godLayer = null;          // current Leaflet tileLayer overlay
@@ -90,10 +94,24 @@
     map.on(L.Draw.Event.CREATED, function (e) {
       commitField(e.layer, 'draw');
     });
+    // Floating trace toolbar (Undo point / Finish) rides along while drawing —
+    // Leaflet.draw's double-click-to-finish is near impossible on a phone.
+    map.on('draw:drawstart', function(){ tracing=true; showTracebar(true); dismissInvite(); });
+    map.on('draw:drawstop',  function(){ tracing=false; showTracebar(false); });
 
-    // Graceful pin-drop: when armed, the next map tap drops an editable field box.
+    // THE zero-friction path: with no field active, a single tap on the map IS the
+    // field — an editable preset box drops right there. No arming, no button hunt.
+    // (Leaflet suppresses click after a pan, so map dragging never triggers this.)
     map.on('click', function(e){
-      if(pinArmed){ disarmPin(); dropFieldBox(e.latlng.lat, e.latlng.lng); }
+      if(pinArmed){ disarmPin(); dropFieldBox(e.latlng.lat, e.latlng.lng); return; }
+      if(tracing || activePoly) return;
+      // a tap on a hail marker (or any interactive vector) is that, not a field
+      try{ if(e.originalEvent && e.originalEvent.target && e.originalEvent.target.closest && e.originalEvent.target.closest('.leaflet-interactive')) return; }catch(err){}
+      if(map.getZoom() < TAP_MIN_ZOOM){
+        if(Date.now()-_zoomHintAt > 4000){ _zoomHintAt=Date.now(); flashHint('Zoom in to your field, then tap it'); }
+        return;
+      }
+      dropFieldBox(e.latlng.lat, e.latlng.lng);
     });
 
     wireControls();
@@ -105,7 +123,7 @@
       if(a) ga('presell_click', {});
     });
     renderSavedFields();
-    tryAutoLocate();
+    if(!restoreFromLink()) tryAutoLocate();
   }
 
   // ── GOD LAYERS: NDVI / moisture tile overlays + opacity + time scrub ──
@@ -146,7 +164,7 @@
       attribution: which==='ndvi' ? 'NDVI: Sentinel-2 / Copernicus' : 'Moisture: Sentinel-1 / Copernicus' }).addTo(map);
     // These layers only render at field scale (zoom 9+): a national-view request
     // would fire dozens of Sentinel tiles at once and hit the processing rate limit.
-    if(map.getZoom() < 9){ var hh=document.getElementById('fs-hint'); if(hh) hh.innerHTML='<b>&#128269;</b>&nbsp;Zoom in to your field to see '+(which==='ndvi'?'crop vigor':'soil moisture'); }
+    if(map.getZoom() < 9){ flashHint('Zoom in to your field to see '+(which==='ndvi'?'crop vigor':'soil moisture')); }
     // scrub label visibility: NDVI/moisture both time-aware
     var scrubWrap=document.getElementById('fs-scrub-wrap'); if(scrubWrap) scrubWrap.hidden=false;
     ga('god_layer', { layer: which });
@@ -207,15 +225,25 @@
 
   function wireControls() {
     var pinBtn=document.getElementById('fs-pin'); if(pinBtn) pinBtn.addEventListener('click', armPinDrop);
-    document.getElementById('fs-draw').addEventListener('click', function(){ drawControl.enable(); flashHint(); });
+    document.getElementById('fs-draw').addEventListener('click', function(){ drawControl.enable(); flashHint('Tap corners around your field &mdash; <b>Finish</b> when done'); });
     document.getElementById('fs-clear').addEventListener('click', clearField);
-    var so=document.getElementById('fs-startover'); if(so) so.addEventListener('click', function(){ clearField(); armPinDrop(); flashHint('Tap the map to drop a fresh field'); });
+    var so=document.getElementById('fs-startover'); if(so) so.addEventListener('click', function(){ clearField(); flashHint('Tap the map to drop a fresh field'); });
     document.getElementById('fs-gps').addEventListener('click', locateMe);
     document.getElementById('fs-addr-go').addEventListener('click', searchAddr);
     var demoBtn=document.getElementById('fs-demo'); if(demoBtn) demoBtn.addEventListener('click', loadDemoField);
     document.getElementById('fs-addr').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); searchAddr(); }});
     document.getElementById('fs-bm-sat').addEventListener('click', function(){ setBasemap('sat'); });
     document.getElementById('fs-bm-map').addEventListener('click', function(){ setBasemap('map'); });
+    // trace toolbar (visible only while drawing)
+    var tu=document.getElementById('fs-tr-undo');   if(tu) tu.addEventListener('click', function(){ try{ drawControl.deleteLastVertex(); }catch(e){} });
+    var tf=document.getElementById('fs-tr-finish'); if(tf) tf.addEventListener('click', function(){ try{ drawControl.completeShape(); }catch(e){} });
+    var tc=document.getElementById('fs-tr-cancel'); if(tc) tc.addEventListener('click', function(){ try{ drawControl.disable(); }catch(e){} });
+    // acre presets for the dropped box (20/40/80/160 — real PLSS shapes)
+    document.querySelectorAll('#fs-sizer [data-ac]').forEach(function(b){
+      b.addEventListener('click', function(){ resizeBoxTo(+b.getAttribute('data-ac')); });
+    });
+    // mobile: jump from the map down to the read
+    var jr=document.getElementById('fs-jumpread'); if(jr) jr.addEventListener('click', jumpToRead);
   }
 
   function setBasemap(which){
@@ -224,14 +252,21 @@
     else { map.removeLayer(satLayer); mapLayer.addTo(map); mp.classList.add('on'); sat.classList.remove('on'); }
   }
 
-  function flashHint(msg){
+  function flashHint(msg, ms){
     var h=document.getElementById('fs-hint');
-    if(h){ h.innerHTML='<b>&#9998;</b>&nbsp;'+(msg||'Click corners, double-click to finish'); }
+    if(!h) return;
+    h.innerHTML=msg||'<b>&#9998;</b>&nbsp;Click corners, double-click to finish';
+    h.hidden=false;
+    clearTimeout(_hintTimer);
+    _hintTimer=setTimeout(function(){ h.hidden=true; }, ms||4500);
   }
+  function hideHint(){ var h=document.getElementById('fs-hint'); if(h) h.hidden=true; clearTimeout(_hintTimer); }
 
   function clearField(){
     drawnLayer.clearLayers(); activePoly=null;
     clearHandles(); disarmPin(); setMapHeadline(null);
+    boxMode=false; setSizer(false); showTracebar(false); hideHint();
+    try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){}
     _activeFieldId=null; _priorSnap=null; removeChangeBanner();
     document.getElementById('fs-clear').disabled=true;
     var dk=document.querySelector('.fs-dock'); if(dk) dk.classList.remove('has-field');
@@ -311,6 +346,7 @@
       if(gpsMarker) map.removeLayer(gpsMarker);
       gpsMarker=L.circleMarker([p.coords.latitude,p.coords.longitude],{radius:7,color:'#daa520',fillColor:'#daa520',fillOpacity:.9}).addTo(map);
       btn.innerHTML='&#9678; My location';
+      flashHint('Tap your field on the map');
     }, function(){ btn.innerHTML='&#9678; My location'; }, {enableHighAccuracy:true,timeout:8000});
   }
   function searchAddr(){
@@ -332,12 +368,11 @@
       }).catch(function(){ btn.textContent='Go'; flashHint('Address lookup is busy — pan the map and trace your field.'); });
   }
 
-  // After we land on a spot (search or GPS), prompt the draw and surface a keyboard-
-  // accessible "analyze a default field box here" affordance so drawing isn't the
-  // only way in.
+  // After we land on a spot (search or GPS), the tap-to-field path is live — just
+  // say so. Keep a keyboard-accessible "analyze a field box here" affordance so a
+  // pointing device is never required.
   function afterLocate(lat, lng){
-    try { drawControl.enable(); } catch(e){}
-    flashHint('Trace your field on the map &mdash; or use “Analyze a field box here.”');
+    flashHint('Tap your field on the map &mdash; or', 15000);
     var host=document.getElementById('fs-hint'); if(!host) return;
     if(document.getElementById('fs-boxbtn')) return;
     var b=document.createElement('button');
@@ -380,10 +415,14 @@
         var pts = poly.getLatLngs()[0];
         pts[i] = ev.target.getLatLng();
         poly.setLatLngs(pts);
-        var hd=document.getElementById('fs-hint'); if(hd) hd.innerHTML='<b>&#9998;</b>&nbsp;'+Math.round(polyAcres(poly))+' ac &middot; drag corners to fit';
+        var hd=document.getElementById('fs-hint');
+        if(hd){ hd.innerHTML='<b>&#9998;</b>&nbsp;'+Math.round(polyAcres(poly))+' ac &middot; drag corners to fit'; hd.hidden=false; clearTimeout(_hintTimer); }
       });
       h.on('dragend', function(){
         activePoly = poly;
+        // hand-fit shape → no preset is "the" size anymore
+        if(boxMode){ var sz=document.getElementById('fs-sizer'); if(sz) sz.querySelectorAll('button[data-ac]').forEach(function(b){ b.classList.remove('on'); }); }
+        flashHint(Math.round(polyAcres(poly))+' ac');
         runAll(poly);
         ga('field_edit', {});
       });
@@ -521,15 +560,79 @@
     saveSnap(_activeFieldId, cur);
   }
 
-  function dropFieldBox(lat, lng){
-    var dLat=0.00255, dLng=0.00255/Math.max(0.2,Math.cos(lat*Math.PI/180)); // ~40ac
-    var ring=[[lat+dLat,lng-dLng],[lat+dLat,lng+dLng],[lat-dLat,lng+dLng],[lat-dLat,lng-dLng]];
-    var poly=L.polygon(ring, { color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:0.15 });
+  // ── The field box: real PLSS shapes farmers think in ────────────────
+  // 40 = quarter-quarter (¼ mi square) · 80 = the long eighty (¼ × ½ mi)
+  // 160 = quarter section (½ mi square) · 20 = ¼ × ⅛ mi.
+  // [E-W meters, N-S meters]; 1/4 mile = 402.336 m. (The previous single box
+  // spanned ~568 m square ≈ 80 ac while labeled ~40 — these are exact.)
+  var BOX_DIMS = { 20:[402.336,201.168], 40:[402.336,402.336], 80:[402.336,804.672], 160:[804.672,804.672] };
+  function boxRing(lat, lng, ac){
+    var d=BOX_DIMS[ac]||BOX_DIMS[40];
+    var dLat=(d[1]/2)/111320;
+    var dLng=(d[0]/2)/(111320*Math.max(0.2,Math.cos(lat*Math.PI/180)));
+    return [[lat+dLat,lng-dLng],[lat+dLat,lng+dLng],[lat-dLat,lng+dLng],[lat-dLat,lng-dLng]];
+  }
+  function dropFieldBox(lat, lng, ac){
+    ac = BOX_DIMS[ac] ? ac : 40;
+    var poly=L.polygon(boxRing(lat,lng,ac), { color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:0.15 });
     try { drawControl.disable(); } catch(e){}
+    boxMode=true;
     commitField(poly, 'box');
     makeEditable(poly);
-    flashHint(Math.round(polyAcres(poly))+' ac &middot; drag corners to fit');
+    setSizer(true, ac);
+    flashHint(Math.round(polyAcres(poly))+' ac &middot; drag corners to fit, or pick a size below');
     ga('field_box', { acres: Math.round(polyAcres(poly)) });
+  }
+  // Resize the active box around its own center to a standard parcel size.
+  function resizeBoxTo(ac){
+    if(!activePoly || !boxMode || !BOX_DIMS[ac]) return;
+    var c=polyCentroid(activePoly);
+    activePoly.setLatLngs(boxRing(c.lat, c.lng, ac));
+    makeEditable(activePoly);
+    try { map.fitBounds(activePoly.getBounds(), { padding:[40,40], maxZoom:16 }); } catch(e){}
+    setSizer(true, ac);
+    runAll(activePoly);
+    ga('field_resize', { acres: ac });
+  }
+  function setSizer(show, ac){
+    var s=document.getElementById('fs-sizer'); if(!s) return;
+    s.hidden=!show;
+    if(show) s.querySelectorAll('button[data-ac]').forEach(function(b){
+      b.classList.toggle('on', +b.getAttribute('data-ac')===ac);
+    });
+  }
+  function showTracebar(on){ var t=document.getElementById('fs-tracebar'); if(t) t.hidden=!on; }
+  function jumpToRead(){ var el=document.getElementById('fs-panel'); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }
+
+  // ── Shareable field links: the polygon lives in the URL hash, nowhere else ──
+  function encodePoly(poly){
+    return latlngs(poly).map(function(p){ return p.lat.toFixed(5)+','+p.lng.toFixed(5); }).join('~');
+  }
+  function writeHash(poly){
+    try { history.replaceState(null,'',location.pathname+location.search+'#f='+encodePoly(poly)); } catch(e){}
+  }
+  function shareField(){
+    if(!activePoly) return;
+    writeHash(activePoly);
+    var url=location.href;
+    function done(){ flashHint('Field link copied &mdash; anyone who opens it sees this exact field', 6000); ga('field_share', {}); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(done, function(){ window.prompt('Copy this field link:', url); });
+    } else { window.prompt('Copy this field link:', url); }
+  }
+  function restoreFromLink(){
+    var m=/^#f=(.+)$/.exec(location.hash||''); if(!m) return false;
+    try {
+      var pts=decodeURIComponent(m[1]).split('~').map(function(s){
+        var a=s.split(','); return L.latLng(+a[0], +a[1]);
+      }).filter(function(p){ return isFinite(p.lat)&&isFinite(p.lng)&&Math.abs(p.lat)<=90&&Math.abs(p.lng)<=180; });
+      if(pts.length<3 || pts.length>80) return false;
+      var poly=L.polygon(pts, { color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:.15 });
+      dismissInvite();
+      commitField(poly, 'link');
+      ga('field_link_open', {});
+      return true;
+    } catch(e){ return false; }
   }
 
   // The demo field — a real central-Iowa field so first-time visitors see the whole
@@ -541,13 +644,15 @@
     var poly=L.polygon(ring, { color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:0.15 });
     map.setView([42.3450,-93.3900], 15);
     commitField(poly, 'demo');
+    if(window.innerWidth<=820) setTimeout(jumpToRead, 1400);  // let the scan land first
     ga('field_demo', {});
   }
 
-  // Shared commit path for every way a field enters: draw, demo, box.
+  // Shared commit path for every way a field enters: draw, demo, box, link.
   function commitField(poly, src){
     drawnLayer.clearLayers();
     if(src!=='box') clearHandles();
+    if(src!=='box'){ boxMode=false; setSizer(false); }
     _activeFieldId=null; _priorSnap=null; removeChangeBanner();  // fresh unsaved field
     activePoly = poly;
     drawnLayer.addLayer(poly);
@@ -597,6 +702,7 @@
     var c=polyCentroid(poly), acres=polyAcres(poly);
     runFieldScan(poly);
     resetField(acres, c);
+    writeHash(poly);   // the URL is always a share link for the field on screen
     document.getElementById('fs-empty').hidden=true;
     setFieldChrome(true, acres);
     var R=document.getElementById('fs-results');
@@ -627,6 +733,7 @@
     var _an=R.querySelector('.acres-n'); if(_an){ _an.textContent='0.0'; setTimeout(function(){ countUp(_an, acres, 1); }, 320); }
     // fire all sources independently — fail soft; each calls recomputeInsight()
     var sb=document.getElementById('fs-save'); if(sb) sb.addEventListener('click', saveCurrentField);
+    var shb=document.getElementById('fs-share'); if(shb) shb.addEventListener('click', shareField);
     var rb=document.getElementById('fs-report'); if(rb) rb.addEventListener('click', generateReport);
     loadSoil(poly);
     loadRotation(poly);
@@ -645,6 +752,7 @@
         '<div class="coords">center '+c.lat.toFixed(4)+', '+c.lng.toFixed(4)+'</div></div>'+
         '<div class="fs-fh-btns">'+
         '<button class="fs-save-btn" id="fs-save" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 17l-5.3 2.8 1-5.8L3.5 9.7l5.9-.9z"/></svg>Save field</button>'+
+        '<button class="fs-save-btn" id="fs-share" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Share</button>'+
         '<button class="fs-save-btn" id="fs-report" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"/></svg>Field report</button>'+
         '</div>'+
       '</div>'+
