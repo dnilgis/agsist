@@ -1278,9 +1278,17 @@
     });
     flat = flat.filter(function(x){ return !isNaN(x.cash); }).sort(function(a,b){ return (a.dist||999)-(b.dist||999); });
     if(!flat.length){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:zip,count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">No elevators are reporting cash bids near ZIP '+esc(zip)+' right now. Bid coverage is densest across the Corn Belt and thins out elsewhere &mdash; this isn\u2019t an error.</div>'); return; }
-    // record best corn & bean bid for the insight engine
-    var corn=flat.filter(function(x){return /corn/i.test(x.commodity);}).sort(function(a,b){return b.cash-a.cash;})[0];
-    var bean=flat.filter(function(x){return /bean|soy/i.test(x.commodity);}).sort(function(a,b){return b.cash-a.cash;})[0];
+    // record best CONVENTIONAL corn & bean bid for the insight engine — specialty
+    // bids (organic, food-grade, white, popcorn, seed, non-GMO) trade $2–8/bu over
+    // conventional and must never headline as "cash corn". The full list below
+    // still shows them; they just can't drive the metrics.
+    var SPECIALTY=/organic|food|white|pop\b|popcorn|sweet|seed|screen|waxy|non.?gmo|specialty|premium|hi.?oil|high.?oil|nu.?gen|identity/i;
+    function bestConv(re){
+      return flat.filter(function(x){ return re.test(x.commodity) && !SPECIALTY.test(x.commodity); })
+                 .sort(function(a,b){ return b.cash-a.cash; })[0] || null;
+    }
+    var corn=bestConv(/corn/i);
+    var bean=bestConv(/bean|soy/i);
     if(FIELD) { FIELD.bids = { corn:corn, bean:bean, zip:zip, count:flat.length }; recomputeInsight(); }
     var html = flat.slice(0,6).map(function(x){
       var basis = x.basis!=null ? '<span class="fs-bid-basis" style="color:'+(x.basis>=0?'#4aab4c':'#d9534f')+'">'+(x.basis>=0?'+':'')+x.basis.toFixed(2)+'</span>' : '';
@@ -1728,9 +1736,9 @@
     // ── Marketing context line ──
     if(b && (b.corn||b.bean)){
       var mk=[];
-      if(b.corn) mk.push('corn near $'+b.corn.cash.toFixed(2));
-      if(b.bean) mk.push('beans near $'+b.bean.cash.toFixed(2));
-      if(mk.length) lines.push('Closest cash market: '+mk.join(', ')+' ('+esc((b.corn||b.bean).elev)+').');
+      if(b.corn) mk.push('corn near $'+b.corn.cash.toFixed(2)+' ('+esc(b.corn.elev)+')');
+      if(b.bean) mk.push('beans near $'+b.bean.cash.toFixed(2)+' ('+esc(b.bean.elev)+')');
+      if(mk.length) lines.push('Best nearby cash bids: '+mk.join(', ')+'.');
     }
 
     if(!lines.length && !stress.length) return;
