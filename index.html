@@ -69,18 +69,19 @@
   .spray-windows{margin-top:.6rem;display:none;}
   .spray-windows.loaded{display:block;}
   .spray-windows-lbl{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.35rem;}
-  .spray-days{display:flex;gap:.3rem;}
-  .spray-day{flex:1;display:flex;flex-direction:column;align-items:center;gap:.18rem;padding:.38rem .2rem;border-radius:6px;border:1px solid;}
+  .spray-days{display:flex;gap:.35rem;align-items:stretch;}
+  .spray-day{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:.2rem;padding:.45rem .25rem;border-radius:6px;border:1px solid;text-align:center;}
   .spray-day.go{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);}
   .spray-day.caution{background:rgba(var(--gold-rgb),.08);border-color:rgba(var(--gold-rgb),.25);}
   .spray-day.stop{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.20);}
-  .spray-day-name{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);}
-  .spray-day-icon{font-size:.85rem;line-height:1;}
-  .spray-day-status{font-size:.62rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;}
+  .spray-day-name{max-width:100%;font-family:'JetBrains Mono',monospace;font-size:clamp(.54rem,2.4vw,.62rem);font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .spray-day-icon{font-size:.85rem;line-height:1;display:flex;align-items:center;justify-content:center;}
+  .spray-day-icon .ic{width:1em;height:1em;}
+  .spray-day-status{font-size:clamp(.56rem,2.4vw,.62rem);font-weight:700;letter-spacing:.03em;text-transform:uppercase;}
   .spray-day.go .spray-day-status{color:var(--green);}
   .spray-day.caution .spray-day-status{color:var(--gold);}
   .spray-day.stop .spray-day-status{color:#ef4444;}
-  .spray-day-reason{font-size:.62rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-top:.1rem;}
+  .spray-day-reason{max-width:100%;font-size:clamp(.54rem,2.3vw,.62rem);color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-top:.05rem;line-height:1.25;overflow-wrap:anywhere;}
   .wx-data-extra{display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;}
   #wx-today-summary{margin-top:1rem;}
   /* Watch list: stack description directly under the date/time, full width */
@@ -826,7 +827,7 @@
   <path d="M18 17V9" />
   <path d="M13 17V5" />
   <path d="M8 17v-3" /></symbol><symbol id="i-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></symbol><symbol id="i-circle-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" />
-  <path d="m9 12 2 2 4-4" /></symbol><symbol id="i-clipboard-list" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+  <path d="m9 12 2 2 4-4" /></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol><symbol id="i-clipboard-list" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
   <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
   <path d="M12 11h4" />
   <path d="M12 16h4" />
@@ -903,7 +904,7 @@
   <path d="m17.5 15.5 2-2" /></symbol><symbol id="i-satellite-dish" viewBox="0 0 24 24"><path d="M4 10a7.31 7.31 0 0 0 10 10Z" />
   <path d="m9 15 3-3" />
   <path d="M17 13a6 6 0 0 0-6-6" />
-  <path d="M21 13A10 10 0 0 0 11 3" /></symbol><symbol id="i-share-2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3" />
+  <path d="M21 13A10 10 0 0 0 11 3" /></symbol><symbol id="i-satellite" viewBox="0 0 24 24"><path d="M13 7 9 3 5 7l4 4"/><path d="m17 11 4 4-4 4-4-4"/><path d="m8 12 4 4 6-6-4-4Z"/><path d="m16 8 3-3"/><path d="M9 21a6 6 0 0 0-6-6"/></symbol><symbol id="i-share-2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3" />
   <circle cx="6" cy="12" r="3" />
   <circle cx="18" cy="19" r="3" />
   <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
@@ -2212,7 +2213,7 @@ window.hydrateDaily = function(data) {
       var u=(el('daily-number-unit')||{}).textContent||'';
       var txt=(v+(u?' '+u:'')).trim();
       if(!txt||txt==='—')return;
-      var done=function(){var orig=dnCopyBtn.innerHTML;dnCopyBtn.innerHTML='✓';setTimeout(function(){dnCopyBtn.innerHTML=orig;},1500);};
+      var done=function(){var orig=dnCopyBtn.innerHTML;dnCopyBtn.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>';setTimeout(function(){dnCopyBtn.innerHTML=orig;},1500);};
       if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(function(){prompt('Copy:',txt);});}
       else{var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){prompt('Copy:',txt);}document.body.removeChild(ta);}
     });
@@ -2414,7 +2415,7 @@ window.hydrateDaily = function(data) {
     if(yc&&yc.summary){
       var pill=el('daily-yc-pill'),sumEl=el('daily-yc-summary'),noteEl=el('daily-yc-note');
       var oc=String(yc.outcome||'pending').toLowerCase();
-      var ocLbl=oc==='played_out'?'\u2713 Played out':oc==='didnt'?'\u2717 Didn\u2019t':'<svg class="ic" aria-hidden="true"><use href="#i-hourglass"/></svg> Pending';
+      var ocLbl=oc==='played_out'?'<svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Played out':oc==='didnt'?'<svg class="ic" aria-hidden="true"><use href="#i-x"/></svg> Didn\u2019t':'<svg class="ic" aria-hidden="true"><use href="#i-hourglass"/></svg> Pending';
       var ocCls=oc==='played_out'?'yc-pill--good':oc==='didnt'?'yc-pill--bad':'yc-pill--pending';
       if(pill){pill.innerHTML=ocLbl;pill.className='daily-yc-pill '+ocCls;}
       if(sumEl)sumEl.textContent=yc.summary;
@@ -2557,10 +2558,10 @@ window.hydrateDaily = function(data) {
           setTimeout(function(){toast.classList.remove('show');setTimeout(function(){if(toast.parentNode)toast.parentNode.removeChild(toast);},300);},2200);
         }
         if(navigator.clipboard&&navigator.clipboard.writeText){
-          navigator.clipboard.writeText(t).then(function(){showToast('\u2713 Link copied',true);},function(){showToast('Copy failed',false);});
+          navigator.clipboard.writeText(t).then(function(){showToast('<svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Link copied',true);},function(){showToast('Copy failed',false);});
         } else {
           // Fallback for older browsers
-          try{var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.top='-9999px';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showToast('\u2713 Link copied',true);}
+          try{var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.top='-9999px';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showToast('<svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Link copied',true);}
           catch(e){showToast('Copy failed',false);}
         }
       });
@@ -3026,7 +3027,7 @@ function loadWeatherEnhancements(state){
         var mx=forecastMaxArr[k],mn=forecastMinArr[k];
         var pr=forecastPrecipArr[k]||0,wd=forecastWindArr[k]||0,hm=forecastHumidArr[k]||0;
         var dayN=(todayDay+k)%7;
-        var dayLabel=k===0?'Today':k===1?'Tomorrow':SPRAY_ICONS[dayN];
+        var dayLabel=k===0?'Today':k===1?'Tmrw':SPRAY_ICONS[dayN];
         var status='go',icon='<svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg>',statusTxt='OK';
         if(pr>0.25){status='stop';icon='<svg class="ic" aria-hidden="true"><use href="#i-ban"/></svg>';statusTxt='Rain';}
         else if(wd>15){status='stop';icon='<svg class="ic" aria-hidden="true"><use href="#i-wind"/></svg>';statusTxt='Wind';}
@@ -3363,7 +3364,7 @@ setTimeout(function(){
       var p=pct(counts[i],total);
       var row=document.createElement('div');
       row.className='daily-poll-result'+(String(i)===String(my)?' mine':'');
-      row.innerHTML='<div class="dp-fill"></div><span class="dp-lbl">'+esc(opt)+(String(i)===String(my)?' <span class="dp-check">\u2713</span>':'')+'</span><span class="dp-pct">'+p+'%</span>';
+      row.innerHTML='<div class="dp-fill"></div><span class="dp-lbl">'+esc(opt)+(String(i)===String(my)?' <span class="dp-check"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span>':'')+'</span><span class="dp-pct">'+p+'%</span>';
       bodyEl.appendChild(row);
       requestAnimationFrame(function(){requestAnimationFrame(function(){var f=row.querySelector('.dp-fill'); if(f) f.style.width=p+'%';});});
     });
