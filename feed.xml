@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 01 Jul 2026 13:37:20 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 02 Jul 2026 13:02:12 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>HEAT OWNS THE BELT; EXPORT SALES ARRIVE AT 7:30</title>
+      <link>https://agsist.com/daily/2026-07-02</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-02</guid>
+      <pubDate>Thu, 02 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed $4.24 and beans held $11.33, both up on the session, as a heat dome parked over the Heartland kept weather premium alive through the holiday week. Brownfield's midweek weather outlook puts anomalous heat running from the central Belt into early next week, right through the window when corn pollination is most vulnerable. The question that decides the next 20 cents in December corn lands at 7:30 CT this morning: export sales. Renewed talk of China buying U.S. beans circulated Wednesday, but no new sales were announced. Today's print either validates that talk or files it under rumors.
+Corn and beans stayed green Wednesday on pollination heat, but Thursday morning's export sales print will tell you whether China talk is real or noise.
+• Grains: Heat Holds the Premium
+• Beans: China Talk Meets Export Day
+  → If you held unpriced new-crop beans per yesterday's guidance, wait for the 7:30 export sales. Under 300,000 MT and November $11.54 is under pressure. Above 500,000 MT, hold.
+• Livestock: Hogs Slip, Cattle Marks Time
+Read more: https://agsist.com/daily/2026-07-02</description>
+    </item>
     <item>
       <title>ACREAGE VERDICT: CORN HOLDS, BEANS SLIP</title>
       <link>https://agsist.com/daily/2026-07-01</link>
@@ -371,18 +384,6 @@ Corn and beans extend Memorial week liquidation while dairy complex catches bid 
 • MILK GAINS ON PROCESSING STRENGTH
 • CRUDE HOLDS IRAN GAINS
 Read more: https://agsist.com/daily/2026-06-03</description>
-    </item>
-    <item>
-      <title>GRAINS GRIND LOWER, CRUDE HOLDS IRAN GAINS</title>
-      <link>https://agsist.com/daily/2026-06-02</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-02</guid>
-      <pubDate>Tue, 02 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed $4.41, testing the $4.40 floor as funds liquidated another 8,000 contracts Monday. The fifth straight session below $4.45 isn't finished-this is methodical selling, not stepped out. Beans at $11.66 gave back 13 cents, testing the 200-day moving average that's been support since April. The Memorial liquidation isn't pressure selling, it's systematic fund exodus.
-Corn and beans extend Memorial week liquidation as energy complex consolidates yesterday's geopolitical move higher.
-• GRAINS EXTEND LIQUIDATION
-• CRUDE CONSOLIDATES IRAN MOVE HIGHER
-• LIVESTOCK MARKS TIME
-Read more: https://agsist.com/daily/2026-06-02</description>
     </item>
   </channel>
 </rss>

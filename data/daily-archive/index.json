@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-07-02",
+      "date_display": "Thursday, July 2, 2026",
+      "headline": "HEAT OWNS THE BELT; EXPORT SALES ARRIVE AT 7:30",
+      "teaser": "Heat premium held Wednesday; export sales at 7:30 either confirm the China story or kill it.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-07-02",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-01",
       "date_display": "Wednesday, July 1, 2026",
       "headline": "ACREAGE VERDICT: CORN HOLDS, BEANS SLIP",
@@ -1248,6 +1260,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-01T13:37:18.978603+00:00",
-  "count": 111
+  "updated": "2026-07-02T13:02:08.861339+00:00",
+  "count": 112
 }
