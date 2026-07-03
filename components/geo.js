@@ -611,13 +611,19 @@ function updateWidgetPreviews(tempF, humid, wind, pop) {
   var sprayDisplay = sprayRating === 'caution' ? 'marginal' : sprayRating;
   var sprayColors  = {good:'rgba(62,207,110,.08)',marginal:'rgba(230,176,66,.08)',poor:'rgba(240,96,96,.08)'};
   var sprayBorders = {good:'rgba(62,207,110,.2)',marginal:'rgba(230,176,66,.2)',poor:'rgba(240,96,96,.2)'};
-  var sprayIcons   = {good:'\u2705',marginal:'\u26A0\uFE0F',poor:'\u{1F6AB}'};
+  // Lucide sprite refs (symbols defined on the homepage, the only page with this widget)
+  var sprayIcons   = {good:'<svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg>',
+                      marginal:'<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg>',
+                      poor:'<svg class="ic" aria-hidden="true"><use href="#i-ban"/></svg>'};
   var sprayLabels  = {good:'Good \u2014 Apply Now',marginal:'Use Caution',poor:'Do Not Spray'};
   var sprayEl  = document.getElementById('wsp-spray-icon');
   var statusEl = document.getElementById('wsp-spray-status');
   var detailEl = document.getElementById('wsp-spray-detail');
   var wrapEl   = document.getElementById('wsp-spray');
-  if (sprayEl)  sprayEl.textContent = sprayIcons[sprayDisplay];
+  if (sprayEl) {
+    sprayEl.innerHTML = sprayIcons[sprayDisplay];
+    sprayEl.style.color = {good:'var(--green)',marginal:'var(--gold)',poor:'var(--red)'}[sprayDisplay];
+  }
   if (statusEl) {
     statusEl.textContent = sprayLabels[sprayDisplay];
     statusEl.style.color = {good:'var(--green)',marginal:'var(--gold)',poor:'var(--red)'}[sprayDisplay];
