@@ -14,6 +14,9 @@ Idempotent: rewrites only between <!--SEED:*--> markers and inside existing
 "dateModified" fields; a run with unchanged prices produces byte-identical
 files, so the workflow's diff-gate makes no empty commits.
 
+v1.3 — 2026-07-03 (seeds hail report totals into hail-map from the manifest)
+v1.3 — 2026-07-03 (seeds live report counts into hail-map stats line)
+v1.2 — 2026-07-03 (hail-map added to both lists)
 v1.1 — 2026-07-03 (added the weekly-changing pages to DATEMOD_ONLY: urea,
          ag-odds, cot, whats-priced-in, drought-monitor)
 """
@@ -37,7 +40,8 @@ PAGES = {
 # pages whose schema dateModified is stamped with today (price pages get it in
 # the loop above; these get it too because their content changes daily)
 DATEMOD_ONLY = ["cash-bids.html", "spray.html", "urea.html", "ag-odds.html",
-                "cot.html", "whats-priced-in.html", "drought-monitor.html"]
+                "cot.html", "whats-priced-in.html", "drought-monitor.html",
+                "hail-map.html"]
 
 # sitemap <lastmod> bump list — the daily-changing URLs Google should recrawl
 SITEMAP_URLS = [
@@ -50,6 +54,7 @@ SITEMAP_URLS = [
     "https://agsist.com/wheat-futures-prices",
     "https://agsist.com/ag-odds",
     "https://agsist.com/spray",
+    "https://agsist.com/hail-map",
 ]
 
 
@@ -84,6 +89,31 @@ def stamp_datemodified(text, today):
         return text, False
     new = pat.sub(lambda m: m.group(1) + today + m.group(3), text)
     return new, new != text
+
+
+def seed_hail(today):
+    """Inject live report counts into hail-map.html's SEED:hailstats marker
+    from data/hail/manifest.json — crawler-visible freshness on the page
+    that competes for "recent hail" queries."""
+    try:
+        m = json.load(open("data/hail/manifest.json"))
+        t = open("hail-map.html", encoding="utf-8").read()
+    except Exception:
+        return False
+    years = m.get("years") or []
+    counts = m.get("counts") or {}
+    total = sum(int(v) for v in counts.values()) if counts else None
+    recent = m.get("recent_count")
+    gen = m.get("generated", "")
+    if not total:
+        return False
+    line = (f"{total:,} NWS hail reports on the map ({years[0]}\u2013{years[-1]})"
+            + (f" \u00b7 {int(recent):,} in the last {m.get('recent_days',30)} days" if recent else "")
+            + (f" \u00b7 data through {gen}" if gen else ""))
+    t2, ch = seed_between(t, "hailstats", line)
+    if ch:
+        open("hail-map.html", "w", encoding="utf-8").write(t2)
+    return ch
 
 
 def bump_sitemap(today):
@@ -171,6 +201,32 @@ def main():
             print(f"  {page}: dateModified {today}")
         else:
             print(f"  {page}: no change")
+
+    # hail-map: seed crawler-visible stats from the manifest the hail Action maintains
+    try:
+        hm = json.load(open("data/hail/manifest.json"))
+        yrs = hm.get("years", [])
+        tot = sum(hm.get("counts", {}).values())
+        rc = hm.get("recent_count")
+        line = (f"{tot:,} National Weather Service hail reports, {yrs[0]}\u2013{yrs[-1]}"
+                + (f" \u2014 {rc:,} in the last 30 days" if rc else "")
+                + ", updated monthly.") if yrs else None
+        if line:
+            t = open("hail-map.html", encoding="utf-8").read()
+            t, ch = seed_between(t, "hailstats", line)
+            t, cd = stamp_datemodified(t, today)
+            if ch or cd:
+                open("hail-map.html", "w", encoding="utf-8").write(t)
+                any_change = True
+                print("  hail-map.html: stats seeded ·", line[:60])
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print("  hail-map stats seed skipped:", e)
+
+    if seed_hail(today):
+        any_change = True
+        print("  hail-map.html: stats line seeded")
 
     if bump_sitemap(today):
         any_change = True
