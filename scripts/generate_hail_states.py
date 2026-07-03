@@ -47,8 +47,36 @@ def all_state_links(current):
                     for n in sorted(STATE_NAME.values()) if n != current)
 
 
+def merge_counties(rows, n_yrs):
+    """Upstream names arrive with mixed casing ("Dane"/"DANE") splitting one
+    county into two rows — merge case-insensitively, totals summed, damaging
+    share re-weighted, then re-rank."""
+    seen = {}
+    out = []
+    for r in rows:
+        k = str(r.get("county", "")).lower().strip()
+        if k in seen:
+            m = seen[k]
+            t1, t2 = m.get("total", 0), r.get("total", 0)
+            T = t1 + t2
+            if T:
+                m["dmg_pct"] = round(((m.get("dmg_pct", 0) or 0) * t1 +
+                                      (r.get("dmg_pct", 0) or 0) * t2) / T)
+            if t2 > t1:
+                m["county"] = r.get("county", m["county"])
+                m["peak"] = r.get("peak") or m.get("peak")
+            m["total"] = T
+            m["avg"] = round(T / max(1, n_yrs), 1)
+        else:
+            seen[k] = dict(r)
+            out.append(seen[k])
+    out.sort(key=lambda x: -(x.get("total", 0)))
+    return out
+
+
 def page_html(abbr, name, rows, years, dmg_in, today):
     n_yrs = len(years)
+    rows = merge_counties(rows, n_yrs)
     total = sum(r.get("total", 0) for r in rows)
     top = rows[0] if rows else None
     # dominant peak month across the top counties, weighted by report count
@@ -113,6 +141,9 @@ def page_html(abbr, name, rows, years, dmg_in, today):
         "<meta property=\"og:url\" content=\"" + canonical + "\">\n"
         "<meta property=\"og:type\" content=\"website\">\n"
         "<meta property=\"og:image\" content=\"https://agsist.com/img/og/hail-map.jpg\">\n"
+        "<link rel=\"icon\" type=\"image/x-icon\" href=\"/img/favicon.ico\">\n"
+        "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/img/favicon-32.png\">\n"
+        "<link rel=\"apple-touch-icon\" href=\"/img/apple-touch-icon.png\">\n"
         "<link rel=\"stylesheet\" href=\"/components/styles.css\">\n"
         "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@graph\":["
         "{\"@type\":\"WebPage\",\"@id\":\"" + canonical + "#webpage\",\"url\":\"" + canonical + "\","
