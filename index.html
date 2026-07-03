@@ -68,22 +68,22 @@
   #daily-quote-text, #daily-quote-attr { display: block !important; }
   #daily-tmyk-wrap { display: flex !important; }
   .main{overflow-x:clip;padding-left:max(0px,env(safe-area-inset-left));padding-right:max(0px,env(safe-area-inset-right));}
-  .spray-windows{margin-top:.6rem;display:none;}
+  .spray-windows{margin-top:.4rem;margin-bottom:.15rem;display:none;}
   .spray-windows.loaded{display:block;}
-  .spray-windows-lbl{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.35rem;}
+  .spray-windows-lbl{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem;}
   .spray-days{display:flex;gap:.35rem;align-items:stretch;}
-  .spray-day{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:.2rem;padding:.45rem .25rem;border-radius:6px;border:1px solid;text-align:center;}
+  .spray-day{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:.22rem;padding:.55rem .25rem;border-radius:6px;border:1px solid;text-align:center;}
   .spray-day.go{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);}
   .spray-day.caution{background:rgba(var(--gold-rgb),.08);border-color:rgba(var(--gold-rgb),.25);}
   .spray-day.stop{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.20);}
-  .spray-day-name{max-width:100%;font-family:'JetBrains Mono',monospace;font-size:clamp(.54rem,2.4vw,.62rem);font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .spray-day-name{max-width:100%;font-family:'JetBrains Mono',monospace;font-size:clamp(.6rem,2.7vw,.68rem);font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .spray-day-icon{font-size:.85rem;line-height:1;display:flex;align-items:center;justify-content:center;}
   .spray-day-icon .ic{width:1em;height:1em;}
-  .spray-day-status{font-size:clamp(.56rem,2.4vw,.62rem);font-weight:700;letter-spacing:.03em;text-transform:uppercase;}
+  .spray-day-status{font-family:'JetBrains Mono',monospace;font-size:clamp(.62rem,2.7vw,.7rem);font-weight:700;letter-spacing:.03em;text-transform:uppercase;}
   .spray-day.go .spray-day-status{color:var(--green);}
   .spray-day.caution .spray-day-status{color:var(--gold);}
   .spray-day.stop .spray-day-status{color:#ef4444;}
-  .spray-day-reason{max-width:100%;font-size:clamp(.54rem,2.3vw,.62rem);color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-top:.05rem;line-height:1.25;overflow-wrap:anywhere;}
+  .spray-day-reason{max-width:100%;font-size:clamp(.6rem,2.6vw,.68rem);color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-top:.05rem;line-height:1.35;overflow-wrap:anywhere;}
   .wx-data-extra{display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;}
   #wx-today-summary{margin-top:1rem;}
   /* Watch list: stack description directly under the date/time, full width */
@@ -1703,7 +1703,7 @@
   })();
   </script>
 <script src="/components/loader.js?v=14" defer></script>
-<script src="/components/geo.js?v=14" defer></script>
+<script src="/components/geo.js?v=15" defer></script>
 <script src="/components/bids-homepage.js?v=14" defer></script>
 <script>
 (function() {

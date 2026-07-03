@@ -1090,7 +1090,8 @@
   function precipSparkline(cumMap, cur, prior){
     var mds=Object.keys(cumMap[cur]).sort();           // Jan 1 → cutoff, this year
     if(mds.length<8) return '';
-    var W=520, H=92, padL=4, padR=4, padT=8, padB=4;
+    // v: uniform-scale chart with axes — inch gridlines, month ticks, endpoint value.
+    var W=360, H=126, padL=32, padR=40, padT=10, padB=18;
     var iw=W-padL-padR, ih=H-padT-padB;
     var lo=[], hi=[], now=[], maxV=0;
     mds.forEach(function(md){
@@ -1104,20 +1105,44 @@
     var X=function(i){ return padL + iw*(i/(mds.length-1)); };
     var Y=function(v){ return padT + ih*(1 - v/maxV); };
     var lineOf=function(arr){ return arr.map(function(v,i){ return (i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1); }).join(' '); };
+    // y-axis: hairlines + inch labels at 0 / half / max
+    var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var grid='';
+    [0,0.5,1].forEach(function(f){
+      var v=maxV*f, gy=Y(v);
+      grid+='<line x1="'+padL+'" y1="'+gy.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+gy.toFixed(1)+'" stroke="rgba(132,160,168,'+(f===0?'.28':'.12')+'" stroke-width="1"/>'+
+        '<text x="'+(padL-5)+'" y="'+(gy+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="#8a948f" font-family="JetBrains Mono,monospace">'+(f===0?'0':v.toFixed(1)+'\u2033')+'</text>';
+    });
+    // x-axis: first-of-month ticks; label alternate months when crowded
+    var ticks=[];
+    mds.forEach(function(md,i){ if(i>0 && md.slice(3)==='01') ticks.push({i:i,m:+md.slice(0,2)-1}); });
+    var every=ticks.length>8?2:1;
+    ticks.forEach(function(t,k){
+      var tx=X(t.i);
+      grid+='<line x1="'+tx.toFixed(1)+'" y1="'+padT+'" x2="'+tx.toFixed(1)+'" y2="'+(H-padB).toFixed(1)+'" stroke="rgba(132,160,168,.1)" stroke-width="1"/>';
+      if(k%every===0) grid+='<text x="'+tx.toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle" font-size="9" fill="#8a948f" font-family="JetBrains Mono,monospace">'+MONTHS[t.m]+'</text>';
+    });
     // band polygon: hi forward, lo backward
     var band='M'+X(0).toFixed(1)+' '+Y(hi[0]).toFixed(1)+' '+
       hi.map(function(v,i){ return 'L'+X(i).toFixed(1)+' '+Y(v).toFixed(1); }).join(' ')+' '+
       lo.slice().reverse().map(function(v,i){ var idx=lo.length-1-i; return 'L'+X(idx).toFixed(1)+' '+Y(v).toFixed(1); }).join(' ')+' Z';
-    var ahead = now[now.length-1] >= hi[hi.length-1];
-    var behind = now[now.length-1] <= lo[lo.length-1];
+    var endV=now[now.length-1];
+    var ahead = endV >= hi[hi.length-1];
+    var behind = endV <= lo[lo.length-1];
     var lineCol = behind ? '#e0a32e' : (ahead ? '#4aab4c' : '#9fd2ff');
+    // endpoint dot + value, clamped inside the frame
+    var ex=X(now.length-1), ey=Math.max(padT+7, Math.min(H-padB-3, Y(endV)));
+    var endLbl='<circle cx="'+ex.toFixed(1)+'" cy="'+Y(endV).toFixed(1)+'" r="3.2" fill="'+lineCol+'"/>'+
+      '<text x="'+(ex+6).toFixed(1)+'" y="'+(ey+3).toFixed(1)+'" font-size="10" font-weight="700" fill="'+lineCol+'" font-family="JetBrains Mono,monospace">'+endV.toFixed(1)+'\u2033</text>';
     return '<div class="fs-chart-title">Cumulative rainfall &mdash; Jan 1 to date</div>'+
-      '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="none" '+
-      'role="img" aria-label="Cumulative rainfall this season versus the prior-years range" style="display:block;margin-top:.35rem">'+
+      '<svg viewBox="0 0 '+W+' '+H+'" '+
+      'role="img" aria-label="Cumulative rainfall this season versus the prior-years range" style="display:block;width:100%;height:auto;margin-top:.35rem">'+
+      grid+
       '<path d="'+band+'" fill="rgba(159,210,255,.14)" stroke="none"></path>'+
       '<path d="'+lineOf(hi)+'" fill="none" stroke="rgba(159,210,255,.35)" stroke-width="1"></path>'+
       '<path d="'+lineOf(lo)+'" fill="none" stroke="rgba(159,210,255,.35)" stroke-width="1"></path>'+
       '<path d="'+lineOf(now)+'" fill="none" stroke="'+lineCol+'" stroke-width="2.4" stroke-linejoin="round"></path>'+
+      endLbl+
       '</svg>'+
       '<div class="fs-src" style="margin-top:.15rem;display:flex;gap:1rem;flex-wrap:wrap">'+
         '<span style="color:'+lineCol+'">&#9644; This season&rsquo;s rain</span>'+

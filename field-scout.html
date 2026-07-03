@@ -169,7 +169,12 @@
     .fs-lyr .dot{ width:10px; height:10px; border-radius:3px; flex:0 0 auto; }
     .fs-lyr:hover{ color:var(--brand); border-color:var(--brand); }
     .fs-lyr.on{ background:var(--brand); color:#0a1206; border-color:transparent; }
-    @media(max-width:820px){ .fs-cmd .fs-search{ flex:1 1 100%; max-width:none; } }
+    @media(max-width:820px){
+      .fs-cmd{ flex-direction:column; align-items:stretch; }
+      .fs-cmd .fs-search{ flex:1 1 auto; max-width:none; position:relative; z-index:2; }
+      .fs-cmd-right{ margin-left:0; flex-direction:row; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:4px; }
+      .fs-layers{ flex-direction:row; flex-wrap:wrap; justify-content:flex-end; }
+    }
     /* ── layer sheet: legend + season replay + opacity, pinned to the map bottom ── */
     .fs-layersheet{ position:absolute; left:0; right:0; bottom:0; z-index:700; background:rgba(11,15,14,.94); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-top:1px solid var(--line-2); padding:10px 14px 12px; }
     .fs-layersheet[hidden]{ display:none; }
@@ -282,7 +287,7 @@
     .fs-chart-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-dim);margin-top:.6rem}
     .fs-fh-row{display:flex;align-items:flex-start;justify-content:space-between;gap:.6rem;flex-wrap:wrap}
     .fs-fh-main{min-width:140px;flex:1 1 auto}
-    .fs-fh-btns{display:flex;gap:.4rem;flex-wrap:wrap;flex-shrink:0}
+    .fs-fh-btns{display:flex;gap:.4rem;flex-wrap:wrap;min-width:0;flex:1 1 auto;justify-content:flex-end}
     .acres{white-space:nowrap}
     .fs-fieldhead .acres{font-family:var(--font-mono);font-size:2.1rem;font-weight:700;color:var(--brand,var(--gold));line-height:1}
     .fs-fieldhead .acres small{font-size:.9rem;color:var(--text-dim);font-weight:400;font-family:'JetBrains Mono',monospace}
