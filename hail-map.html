@@ -811,6 +811,22 @@
         .then(function(r){ return r.ok ? r.json() : null; })
         .then(function(d){
           if(!d || !d.states){ countyEmpty('County rankings are being prepared.'); return; }
+          // Upstream county names arrive with mixed casing ("Dane" vs "DANE"),
+          // which splits one county into two rows — merge case-insensitively.
+          for(var st2 in d.states){
+            var seen={}, merged=[];
+            d.states[st2].forEach(function(r){
+              var k=String(r.county||'').toLowerCase().trim();
+              if(seen[k]){
+                var m=seen[k], t1=m.total||0, t2=r.total||0, T=t1+t2;
+                m.dmg_pct = T? Math.round(((m.dmg_pct||0)*t1+(r.dmg_pct||0)*t2)/T) : m.dmg_pct;
+                if(t2>t1){ m.county=r.county; m.peak=r.peak||m.peak; }
+                m.total=T; m.avg=Math.round(T/5*10)/10;
+              } else { seen[k]=r; merged.push(r); }
+            });
+            merged.sort(function(a,b){ return (b.total||0)-(a.total||0); });
+            d.states[st2]=merged;
+          }
           countyData=d;
           buildStateSelect();
           var c=map.getCenter();

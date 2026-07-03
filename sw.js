@@ -76,8 +76,12 @@ self.addEventListener('fetch', function(e) {
 
   e.respondWith(
     handleFetch(e.request).catch(function() {
-      // Last resort: bypass SW entirely
-      return fetch(e.request);
+      // Last resort: bypass SW entirely; if THAT fetch also fails (offline,
+      // blocked tracker, flaky API) return a quiet 504 instead of rejecting —
+      // an unhandled rejection here logs a console error on every failure.
+      return fetch(e.request).catch(function(){
+        return new Response('', { status: 504, statusText: 'network unavailable' });
+      });
     })
   );
 });
