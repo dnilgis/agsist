@@ -316,7 +316,9 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .tool-btn:hover .tool-arr { transform: translateX(3px); color: var(--brand) }
 .tool-widget { display: block; text-decoration: none; color: inherit; transition: border-color .2s; max-width: 100%; overflow: hidden; }
 .tool-widget:hover { border-color: var(--border-g) }
-.tool-widget-inner { display: flex; align-items: center; gap: .75rem; padding: .75rem .9rem; background: var(--surface2); border: 2px solid var(--border); border-radius: var(--r-md); transition: border-color .2s, background .15s; min-width: 0; max-width: 100%; overflow: hidden; }
+.tool-widget-inner { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .75rem; padding: .75rem .9rem; background: var(--surface2); border: 2px solid var(--border); border-radius: var(--r-md); transition: border-color .2s, background .15s; min-width: 0; max-width: 100%; overflow: hidden; }
+.tool-widget-top { display: flex; align-items: center; gap: .55rem; width: 100%; min-width: 0; }
+.tool-widget-bottom { width: 100%; min-width: 0; padding-top: .3rem; margin-top: .1rem; border-top: 1px solid var(--border); }
 .tool-widget:hover .tool-widget-inner { border-color: var(--brand); background: var(--surface3); }
 .tool-widget-icon { font-size: 1.5rem; line-height: 1; flex-shrink: 0; }
 .tool-widget-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .15rem; }
@@ -327,11 +329,9 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .tool-widget-rec { font-size: .68rem; color: var(--text-dim); line-height: 1.4; margin-top: .1rem; }
 .tool-widget-arr { color: var(--text-muted); font-size: .82rem; flex-shrink: 0; margin-left: auto; transition: transform .2s, color .15s; }
 .tool-widget:hover .tool-widget-arr { transform: translateX(3px); color: var(--brand); }
-.tool-widget--urea .tool-widget-inner { flex-wrap: wrap; }
-.tool-widget--urea .tool-widget-top { display: flex; align-items: center; gap: .55rem; width: 100%; }
-.tool-widget--urea .tool-widget-bottom { width: 100%; padding-top: .25rem; margin-top: .15rem; border-top: 1px solid var(--border); }
-@media (max-width: 520px) { .tool-widget-inner { padding: .55rem .7rem; gap: .5rem } .tool-widget-icon { font-size: 1.2rem } .tool-widget-status { font-size: .78rem } .tool-widget-detail { font-size: .65rem } .tool-widget-score { font-size: 1.3rem } .tool-widget-badge { font-size: .58rem } .tool-widget-rec { font-size: .62rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap } .tool-widget--urea .tool-widget-top { gap: .4rem } }
-@media (max-width: 380px) { .tool-widget-inner { padding: .45rem .55rem; gap: .4rem } .tool-widget-icon { font-size: 1rem } .tool-widget-status { font-size: .7rem } .tool-widget-detail { font-size: .6rem } .tool-widget-score { font-size: 1.1rem } .tool-widget-badge { font-size: .55rem; padding: .1rem .3rem } .tool-widget-rec { font-size: .58rem } .tool-widget-arr { font-size: .72rem } .tool-widget--urea .tool-widget-top { gap: .3rem } }
+.tool-widget--urea .tool-widget-bottom { display: flex; align-items: baseline; gap: .55rem; flex-wrap: wrap; }
+@media (max-width: 520px) { .tool-widget-inner { padding: .6rem .75rem; gap: .25rem .5rem } .tool-widget-icon { font-size: 1.2rem } .tool-widget-status { font-size: .8rem } .tool-widget-detail { font-size: .65rem } .tool-widget-score { font-size: 1.3rem } .tool-widget-badge { font-size: .6rem } .tool-widget-rec { font-size: .68rem; line-height: 1.45 } .tool-widget-top { gap: .45rem } }
+@media (max-width: 380px) { .tool-widget-inner { padding: .5rem .6rem } .tool-widget-icon { font-size: 1.05rem } .tool-widget-status { font-size: .74rem } .tool-widget-detail { font-size: .6rem } .tool-widget-score { font-size: 1.15rem } .tool-widget-badge { font-size: .56rem; padding: .12rem .32rem } .tool-widget-rec { font-size: .64rem } .tool-widget-arr { font-size: .72rem } .tool-widget-top { gap: .35rem } }
 
 /* ── RADAR, DROUGHT, CALENDAR, FFAI, MARKETS ─────────────────────── */
 .radar-section { margin-bottom: var(--sp-xl) }
