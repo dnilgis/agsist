@@ -244,6 +244,28 @@ button,a,[role="button"]{touch-action:manipulation;}
 </head>
 
 <body>
+<style>.ic-sp{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;display:inline-block}</style><svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-chart-column" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16" />
+  <path d="M18 17V9" />
+  <path d="M13 17V5" />
+  <path d="M8 17v-3" /></symbol><symbol id="sp-clipboard-copy" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+  <path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+  <path d="M16 4h2a2 2 0 0 1 2 2v4" />
+  <path d="M21 14H11" />
+  <path d="m15 10-4 4 4 4" /></symbol><symbol id="sp-flame" viewBox="0 0 24 24"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" /></symbol><symbol id="sp-flask-conical" viewBox="0 0 24 24"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2" />
+  <path d="M6.453 15h11.094" />
+  <path d="M8.5 2h7" /></symbol><symbol id="sp-landmark" viewBox="0 0 24 24"><path d="M10 18v-7" />
+  <path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z" />
+  <path d="M14 18v-7" />
+  <path d="M18 18v-7" />
+  <path d="M3 22h18" />
+  <path d="M6 18v-7" /></symbol><symbol id="sp-pin" viewBox="0 0 24 24"><path d="M12 17v5" />
+  <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" /></symbol><symbol id="sp-ruler" viewBox="0 0 24 24"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z" />
+  <path d="m14.5 12.5 2-2" />
+  <path d="m11.5 9.5 2-2" />
+  <path d="m8.5 6.5 2-2" />
+  <path d="m17.5 15.5 2-2" /></symbol><symbol id="sp-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" />
+  <circle cx="12" cy="12" r="6" />
+  <circle cx="12" cy="12" r="2" /></symbol></svg>
 <a href="#main" class="skip">Skip to content</a>
 <div id="site-header"></div>
 
@@ -253,7 +275,7 @@ button,a,[role="button"]{touch-action:manipulation;}
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Fertilizer Prices</nav>
 
   <div class="fert-hero">
-    <div class="fert-eyebrow">&#x1F9EA; Input Costs &middot; Updated Weekly</div>
+    <div class="fert-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> Input Costs &middot; Updated Weekly</div>
     <h1 class="fert-page-title">Fertilizer Prices</h1>
     <p class="fert-page-sub">Current US benchmark prices for urea, MAP, potash, ammonium sulfate (AMS), K-Mag, and pelletized lime &#8212; the inputs that drive corn and soybean fertility costs for farmers nationwide. Updated from Midwest dealer and NOLA barge benchmarks.</p>
   </div>
@@ -263,11 +285,11 @@ button,a,[role="button"]{touch-action:manipulation;}
   </div>
 
   <div class="fert-disclaimer">
-    &#x1F4CB; Benchmark reference prices &#8212; not quotes. Verify current prices with your local dealer or co-op before purchasing.
+    <svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Benchmark reference prices &#8212; not quotes. Verify current prices with your local dealer or co-op before purchasing.
   </div>
 
   <div class="fert-verdict" id="fert-verdict" hidden>
-    <div class="fv-title">&#x1F4CC; This Week&#x2019;s Read &mdash; Cheapest Way to Buy Each Nutrient</div>
+    <div class="fv-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> This Week&#x2019;s Read &mdash; Cheapest Way to Buy Each Nutrient</div>
     <div class="fv-grid" id="fv-cheapest"></div>
     <div class="fv-afford" id="fv-afford" hidden></div>
   </div>
@@ -305,7 +327,7 @@ button,a,[role="button"]{touch-action:manipulation;}
   </section>
 
   <div class="natgas-card">
-    <div class="ngc-icon">&#x1F525;</div>
+    <div class="ngc-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flame"/></svg></div>
     <div class="ngc-body">
       <div class="ngc-label">Watch: Natural Gas &rarr; Nitrogen Cost Signal</div>
       <div class="ngc-val">
@@ -340,10 +362,10 @@ button,a,[role="button"]{touch-action:manipulation;}
   <h2 class="fert-related-title">Related Tools</h2>
   <!-- FIX: minmax(0,1fr) applied via .fert-related class; min-height:44px on links -->
   <div class="fert-related">
-    <a href="/breakeven" class="fr-link"><span class="fr-link-icon">&#x1F4D0;</span>Break-Even Calc</a>
-    <a href="/tariffs" class="fr-link"><span class="fr-link-icon">&#x1F3DB;&#xFE0F;</span>Tariff Tracker</a>
-    <a href="/cot"     class="fr-link"><span class="fr-link-icon">&#x1F4CA;</span>Fund Positioning</a>
-    <a href="/ag-odds" class="fr-link"><span class="fr-link-icon">&#x1F3AF;</span>Market Odds</a>
+    <a href="/breakeven" class="fr-link"><span class="fr-link-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-ruler"/></svg></span>Break-Even Calc</a>
+    <a href="/tariffs" class="fr-link"><span class="fr-link-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-landmark"/></svg></span>Tariff Tracker</a>
+    <a href="/cot"     class="fr-link"><span class="fr-link-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg></span>Fund Positioning</a>
+    <a href="/ag-odds" class="fr-link"><span class="fr-link-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-target"/></svg></span>Market Odds</a>
   </div>
 
   <div class="fert-source">

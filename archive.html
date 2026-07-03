@@ -105,13 +105,18 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 </style>
 </head>
 <body>
+<style>.ic-sp{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;display:inline-block}</style><svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-newspaper" viewBox="0 0 24 24"><path d="M15 18h-5" />
+  <path d="M18 14h-8" />
+  <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2" />
+  <rect width="8" height="4" x="10" y="6" rx="1" /></symbol><symbol id="sp-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34" />
+  <circle cx="11" cy="11" r="8" /></symbol></svg>
 <a href="#main" class="skip">Skip to content</a>
 <div id="site-header"></div>
 <main id="main" tabindex="-1" class="arc-page">
 
   <div class="arc-hero">
     <div class="arc-hero-left">
-      <div class="arc-eyebrow">&#x1F4F0; AGSIST Daily</div>
+      <div class="arc-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-newspaper"/></svg> AGSIST Daily</div>
       <h1>Briefing Archive</h1>
       <p class="arc-sub">Past market morning reports. Search by keyword or browse by month.</p>
     </div>
@@ -126,7 +131,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
   <div id="arc-content" class="arc-content">
     <div class="arc-search-bar">
       <div class="arc-search-wrap">
-        <span class="arc-search-icon">&#x1F50D;</span>
+        <span class="arc-search-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-search"/></svg></span>
         <input type="search" id="arc-search" placeholder="Search headlines&hellip;" autocomplete="off" aria-label="Search briefings">
         <button class="arc-search-clear" id="arc-search-clear" aria-label="Clear search">&#x2715;</button>
       </div>

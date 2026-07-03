@@ -137,6 +137,22 @@ button,a,[role="button"]{touch-action:manipulation;}
 </head>
 
 <body>
+<style>.ic-sp{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;display:inline-block}</style><svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-banknote" viewBox="0 0 24 24"><rect width="20" height="12" x="2" y="6" rx="2" />
+  <circle cx="12" cy="12" r="2" />
+  <path d="M6 12h.01M18 12h.01" /></symbol><symbol id="sp-chart-column" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16" />
+  <path d="M18 17V9" />
+  <path d="M13 17V5" />
+  <path d="M8 17v-3" /></symbol><symbol id="sp-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+  <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" /></symbol><symbol id="sp-pin" viewBox="0 0 24 24"><path d="M12 17v5" />
+  <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" /></symbol><symbol id="sp-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34" />
+  <circle cx="11" cy="11" r="8" /></symbol><symbol id="sp-wheat" viewBox="0 0 24 24"><path d="M2 22 16 8" />
+  <path d="M3.47 12.53 5 11l1.53 1.53a3.5 3.5 0 0 1 0 4.94L5 19l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M7.47 8.53 9 7l1.53 1.53a3.5 3.5 0 0 1 0 4.94L9 15l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M11.47 4.53 13 3l1.53 1.53a3.5 3.5 0 0 1 0 4.94L13 11l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4Z" />
+  <path d="M11.47 17.47 13 19l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L5 19l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
+  <path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
+  <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="sp-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol></svg>
 <a href="#main" class="skip">Skip to content</a>
 <div id="site-header"></div>
 
@@ -145,7 +161,7 @@ button,a,[role="button"]{touch-action:manipulation;}
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Yield Estimator</nav>
 
   <div class="ye-hero">
-    <div class="ye-eyebrow">&#127806; Pre-Harvest Field Estimation</div>
+    <div class="ye-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Pre-Harvest Field Estimation</div>
     <h1>Corn &amp; Soybean<br>Yield Estimator</h1>
     <p>Estimate yield from field counts at R5&ndash;R6 (corn) or R6&ndash;R7 (soybeans). Uses the ear-count / kernel-count method for corn and the pod-count method for soybeans. Sample at least 3 locations per field for reliable estimates.</p>
     <div class="ye-calibration">
@@ -156,10 +172,10 @@ button,a,[role="button"]{touch-action:manipulation;}
   </div>
 
   <nav class="ye-tabs" role="tablist" aria-label="Crop estimator tabs">
-    <button class="ye-tab active" id="ye-tab-corn"      data-tab="corn"      role="tab" aria-selected="true"  aria-controls="ye-corn">&#127805; Corn Yield Estimator</button>
-    <button class="ye-tab"        id="ye-tab-bean"      data-tab="bean"      role="tab" aria-selected="false" aria-controls="ye-bean">&#127807; Soybean Yield Estimator</button>
-    <button class="ye-tab"        id="ye-tab-breakeven" data-tab="breakeven" role="tab" aria-selected="false" aria-controls="ye-breakeven">&#128181; Break-Even vs. Yield</button>
-    <button class="ye-tab"        id="ye-tab-manure"    data-tab="manure"    role="tab" aria-selected="false" aria-controls="ye-manure">&#128004; Manure Value</button>
+    <button class="ye-tab active" id="ye-tab-corn"      data-tab="corn"      role="tab" aria-selected="true"  aria-controls="ye-corn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn Yield Estimator</button>
+    <button class="ye-tab"        id="ye-tab-bean"      data-tab="bean"      role="tab" aria-selected="false" aria-controls="ye-bean"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybean Yield Estimator</button>
+    <button class="ye-tab"        id="ye-tab-breakeven" data-tab="breakeven" role="tab" aria-selected="false" aria-controls="ye-breakeven"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Break-Even vs. Yield</button>
+    <button class="ye-tab"        id="ye-tab-manure"    data-tab="manure"    role="tab" aria-selected="false" aria-controls="ye-manure"> Manure Value</button>
   </nav>
 
   <!-- CORN TAB -->
@@ -171,15 +187,15 @@ button,a,[role="button"]{touch-action:manipulation;}
     <div class="ye-panel-body">
 
       <div class="ye-method">
-        <div class="ye-method-title">&#9889; Quick Fill &mdash; Start from a Typical Scenario</div>
+        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Quick Fill &mdash; Start from a Typical Scenario</div>
         <div class="qf-label">Select a scenario to auto-fill inputs:</div>
         <div class="quickfill-row">
-          <button class="qf-btn" id="qf-corn-high" title="~220 bu/ac">&#127805; High Yield ~220 bu</button>
-          <button class="qf-btn" id="qf-corn-avg"  title="~180 bu/ac">&#127805; Average ~180 bu</button>
-          <button class="qf-btn" id="qf-corn-low"  title="~130 bu/ac">&#127805; Low ~130 bu</button>
+          <button class="qf-btn" id="qf-corn-high" title="~220 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> High Yield ~220 bu</button>
+          <button class="qf-btn" id="qf-corn-avg"  title="~180 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Average ~180 bu</button>
+          <button class="qf-btn" id="qf-corn-low"  title="~130 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Low ~130 bu</button>
         </div>
 
-        <div class="ye-method-title" style="margin-top:.6rem">&#128204; Step 1 &mdash; Count Ears</div>
+        <div class="ye-method-title" style="margin-top:.6rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1 &mdash; Count Ears</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="c-row-width">Row Width (inches)</label>
@@ -199,7 +215,7 @@ button,a,[role="button"]{touch-action:manipulation;}
           </div>
         </div>
 
-        <div class="ye-method-title">&#128204; Step 2 &mdash; Count Kernels (5 Representative Ears)</div>
+        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 2 &mdash; Count Kernels (5 Representative Ears)</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="c-kernel-rows">Kernel Rows</label>
@@ -251,7 +267,7 @@ button,a,[role="button"]{touch-action:manipulation;}
       </div>
 
       <div class="ye-method">
-        <div class="ye-method-title">&#128270; Field Sampling Best Practices</div>
+        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-search"/></svg> Field Sampling Best Practices</div>
         <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:.5rem;">
           <div style="font-size:.78rem;color:var(--text-dim);line-height:1.6">
             &#8226; Sample at least <strong>3 locations</strong> per field, at least 200 feet apart and away from field edges.<br>
@@ -275,15 +291,15 @@ button,a,[role="button"]{touch-action:manipulation;}
     </div>
     <div class="ye-panel-body">
       <div class="ye-method">
-        <div class="ye-method-title">&#9889; Quick Fill &mdash; Typical Soybean Scenarios</div>
+        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Quick Fill &mdash; Typical Soybean Scenarios</div>
         <div class="qf-label">Select a scenario:</div>
         <div class="quickfill-row">
-          <button class="qf-btn" id="qf-bean-high" title="~60 bu/ac">&#127807; High Yield ~60 bu</button>
-          <button class="qf-btn" id="qf-bean-avg"  title="~48 bu/ac">&#127807; Average ~48 bu</button>
-          <button class="qf-btn" id="qf-bean-low"  title="~36 bu/ac">&#127807; Low ~36 bu</button>
+          <button class="qf-btn" id="qf-bean-high" title="~60 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> High Yield ~60 bu</button>
+          <button class="qf-btn" id="qf-bean-avg"  title="~48 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Average ~48 bu</button>
+          <button class="qf-btn" id="qf-bean-low"  title="~36 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Low ~36 bu</button>
         </div>
 
-        <div class="ye-method-title" style="margin-top:.6rem">&#128204; Step 1 &mdash; Count Plants</div>
+        <div class="ye-method-title" style="margin-top:.6rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1 &mdash; Count Plants</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="b-row-width">Row Width (inches)</label>
@@ -301,7 +317,7 @@ button,a,[role="button"]{touch-action:manipulation;}
           </div>
         </div>
 
-        <div class="ye-method-title">&#128204; Step 2 &mdash; Count Pods &amp; Seeds (10 Plants)</div>
+        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 2 &mdash; Count Pods &amp; Seeds (10 Plants)</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="b-pods-plant">Pods per Plant</label>
@@ -362,7 +378,7 @@ button,a,[role="button"]{touch-action:manipulation;}
     </div>
     <div class="ye-panel-body">
       <div class="ye-method">
-        <div class="ye-method-title">&#128181; Estimated P&amp;L at Estimated Yield</div>
+        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Estimated P&amp;L at Estimated Yield</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="bm-yield">Est. Yield (bu/ac)</label>
@@ -392,7 +408,7 @@ button,a,[role="button"]{touch-action:manipulation;}
           <div class="bm-card"><div class="bm-card-label">$/bu Cost</div><div class="bm-card-val" id="bm-cost-bu">&mdash;</div></div>
         </div>
         <div style="margin-top:.75rem;font-size:.72rem;color:var(--text-muted);line-height:1.55">
-          &#128204; For the full sensitivity table, what-if scenarios, and printable report &rarr; <a href="/breakeven" style="color:var(--gold);font-weight:700">Open Break-Even Calculator</a>
+          <svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> For the full sensitivity table, what-if scenarios, and printable report &rarr; <a href="/breakeven" style="color:var(--gold);font-weight:700">Open Break-Even Calculator</a>
         </div>
       </div>
     </div>
@@ -406,14 +422,14 @@ button,a,[role="button"]{touch-action:manipulation;}
     </div>
     <div class="ye-panel-body">
       <div class="manure-link-card">
-        <div class="manure-link-eyebrow">&#128176; Full Manure Nutrient Value Calculator</div>
+        <div class="manure-link-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Full Manure Nutrient Value Calculator</div>
         <p>The complete manure calculator lives in <strong>Fast Facts &rarr; Manure tab</strong>. It supports all 12 manure types (dairy, beef, swine, poultry, horse), live fertilizer prices pulled automatically from the data feed, incorporation timing selection, application cost subtraction, and both per-acre and total field savings.</p>
-        <a href="/fast-facts#manure" class="go-btn">&#128004; Open Manure Value Calculator &rarr;</a>
+        <a href="/fast-facts#manure" class="go-btn"> Open Manure Value Calculator &rarr;</a>
         <div class="manure-link-sub">Supports dairy solid/liquid, beef solid/liquid, swine solid/liquid finish indoor &amp; outdoor, chicken solid, turkey solid, horse solid &middot; Live fertilizer prices auto-filled &middot; Incorporation timing &middot; Net value per acre after application cost</div>
       </div>
 
       <div class="ye-method">
-        <div class="ye-method-title">&#128202; Why Manure Value Matters to Your Yield Estimate</div>
+        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> Why Manure Value Matters to Your Yield Estimate</div>
         <div style="font-size:.8rem;color:var(--text-dim);line-height:1.65">
           <p style="margin:0 0 .75rem">When you apply manure, your N, P, and K inputs are partially or fully covered. That changes your break-even calculation significantly &mdash; cost per acre goes down, and profit per acre goes up at any given yield.</p>
           <p style="margin:0 0 .75rem">&#9654; Use the <strong>Manure Calculator</strong> to get your $/acre fertilizer credit.<br>

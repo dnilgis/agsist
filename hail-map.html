@@ -142,6 +142,9 @@
   </script>
 </head>
 <body>
+<style>.ic-sp{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;display:inline-block}</style><svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-triangle-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+  <path d="M12 9v4" />
+  <path d="M12 17h.01" /></symbol></svg>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header"></div>
 
@@ -291,7 +294,7 @@
         html += '<button class="hm-chip" type="button" data-key="'+y+'">'+y+'</button>';
       });
       html += '<button class="hm-chip" type="button" data-key="all">All '+manifest.years.length+' years</button>';
-      html += '<button class="hm-chip" type="button" data-key="recent">&#9888; Recent (30 days)</button>';
+      html += '<button class="hm-chip" type="button" data-key="recent"><svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> Recent (30 days)</button>';
       html += '<button class="hm-play" id="hm-play" type="button" aria-pressed="false">&#9654; Play</button>';
       wrap.innerHTML = html;
       wrap.querySelectorAll('[data-key]').forEach(function(b){
@@ -416,7 +419,7 @@
     function toggleAnim(){ anim ? stopAnim() : startAnim(); }
     function startAnim(){
       var btn=document.getElementById('hm-play'); btn.classList.add('on'); btn.setAttribute('aria-pressed','true');
-      btn.innerHTML='&#10073;&#10073; Pause';
+      btn.innerHTML='▮▮ Pause';
       var i = manifest.years.indexOf(Number(current));
       if(i<0) i=0;
       var step=function(){ setView(manifest.years[i % manifest.years.length]); i++; };

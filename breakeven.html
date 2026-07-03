@@ -53,7 +53,7 @@
     .hint-popup.hint-open{display:block;}
     @keyframes hintIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
     .hint-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
-    .hint-list{list-style:none;padding:0;margin:0;}.hint-list li{font-size:0.75rem;color:var(--text);padding:2px 0;line-height:1.5;}.hint-list li::before{content:'☐ ';color:var(--text-dim);}
+    .hint-list{list-style:none;padding:0;margin:0;}.hint-list li{font-size:0.75rem;color:var(--text);padding:2px 0;line-height:1.5;}.hint-list li::before{content:'\25A1 ';color:var(--text-dim);}
     .hint-note{font-size:0.7rem;color:var(--text-dim);margin-top:6px;font-style:italic;border-top:1px solid var(--border);padding-top:6px;}
     .live-price-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;margin-bottom:16px;background:rgba(58,139,60,0.05);border:2px solid rgba(58,139,60,0.20);border-radius:6px;font-size:0.8rem;}
     .live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0;}
@@ -154,6 +154,13 @@
   </style>
 </head>
 <body>
+<style>.ic-sp{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;display:inline-block}</style><svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-banknote" viewBox="0 0 24 24"><rect width="20" height="12" x="2" y="6" rx="2" />
+  <circle cx="12" cy="12" r="2" />
+  <path d="M6 12h.01M18 12h.01" /></symbol><symbol id="sp-circle-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" />
+  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+  <path d="M12 17h.01" /></symbol><symbol id="sp-printer" viewBox="0 0 24 24"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+  <path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6" />
+  <rect x="6" y="14" width="12" height="8" rx="1" /></symbol></svg>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header"></div>
   <div class="print-header">
@@ -170,7 +177,7 @@
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Break-Even Calculator</nav>
     <div class="grid-2">
       <div class="panel">
-        <div class="panel-head"><h1>&#128176; BREAK-EVEN CALCULATOR</h1></div>
+        <div class="panel-head"><h1><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> BREAK-EVEN CALCULATOR</h1></div>
         <div class="panel-body">
           <div class="live-price-bar" id="live-bar" style="display:none">
             <span class="live-dot"></span>
@@ -234,7 +241,7 @@
             <div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table class="sens-table" id="sens-table" aria-label="Sensitivity table showing profit or loss across yield and price scenarios"></table></div>
           </div>
           <div class="action-bar">
-            <button class="btn btn-primary" onclick="printReport()">&#128424;&#65039; Print Report</button>
+            <button class="btn btn-primary" onclick="printReport()"><svg class="ic-sp" aria-hidden="true"><use href="#sp-printer"/></svg> Print Report</button>
             <button class="btn btn-secondary" onclick="resetDefaults()">&#8634; Reset</button>
           </div>
         </div>
@@ -243,7 +250,7 @@
   </main>
 
   <div class="be-faq">
-    <div class="be-faq-hd">&#10067; Break-Even Calculator — Common Questions</div>
+    <div class="be-faq-hd"><svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-help"/></svg> Break-Even Calculator — Common Questions</div>
     <div class="be-faq-item">
       <div class="be-faq-q" role="button" tabindex="0" aria-expanded="false">How do I calculate break-even price per bushel?</div>
       <div class="be-faq-a"><div class="be-faq-ai">Divide your total cost per acre by your expected yield in bushels. For example: $850 per acre total cost &divide; 200 bu/ac expected yield = $4.25/bu break-even price for corn. This is the minimum futures price (before basis) at which you cover all expenses. The calculator above does this automatically as you enter your costs &mdash; the Break-Even Price result updates instantly. To stay profitable, your market price (futures + basis) needs to exceed this number.</div></div>
