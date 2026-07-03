@@ -3,14 +3,13 @@
     {
       "date": "2026-07-03",
       "date_display": "Friday, July 3, 2026",
-      "headline": "CORN DROPS 4%; MARKETS CLOSED FOR THE 4TH",
-      "teaser": "Corn had its worst pre-holiday session in months. Markets closed today. Here is what you are sitting on.",
+      "headline": "CORN BREAKS 4% ON HOLIDAY EVE; OATS HIT -15%",
+      "teaser": "Corn's biggest drop in months landed the day before July 4th and right on top of pollination. Monday answers whether that made sense.",
       "market_mood": "cautious",
       "surprise_count": 0,
       "sections": 4,
       "url": "/daily/2026-07-03",
-      "market_closed": true,
-      "yc_outcome": "didnt"
+      "market_closed": true
     },
     {
       "date": "2026-07-02",
@@ -1272,6 +1271,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-03T12:59:52.607157+00:00",
+  "updated": "2026-07-03T21:02:09.543724+00:00",
   "count": 113
 }

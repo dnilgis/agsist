@@ -1,19 +1,12 @@
 {
- "updated": "2026-07-03T12:59:54+00:00",
- "total": 51,
+ "updated": "2026-07-03T21:02:30+00:00",
+ "total": 50,
  "played_out": 26,
- "didnt": 20,
+ "didnt": 19,
  "pending": 5,
- "hit_rate": 56.5,
+ "hit_rate": 57.8,
  "current_streak": 0,
  "records": [
-  {
-   "made": "2026-07-02",
-   "judged": "2026-07-03",
-   "call": "Called corn nearby higher toward $4.42. Corn closed at $4.25, down 4.0%.",
-   "outcome": "didnt",
-   "note": "Clean miss. The call was corn up toward $4.42 and it went the other way hard, dropping 4.0% to $4.25 on pre-holiday old-crop liquidation. Dec held at $4.415, which tells you the new-crop thesis was not wrong, but nearby got run over. Own it and watch Tuesday's conditions report before re-engaging the upside."
-  },
   {
    "made": "2026-07-01",
    "judged": "2026-07-02",

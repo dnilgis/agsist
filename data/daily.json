@@ -1,13 +1,13 @@
 {
-  "headline": "CORN DROPS 4%; MARKETS CLOSED FOR THE 4TH",
-  "subheadline": "Thursday's session handed grain producers a rough pre-holiday close; corn nearby fell hard while soybean oil and precious metals ran higher.",
-  "lead": "Thursday handed the grain complex its worst single-session print in weeks heading into the long weekend. Corn nearby dropped 4.0% to $4.25, the biggest single-day loss since late spring, while the Dec '26 contract barely flinched at $4.42, down just 3 cents, a spread that tells you this move was old-crop liquidation, not a new-crop conviction call. Markets are dark Friday. The story sits in the bin until Tuesday morning, and by then the heat forecast, the acreage report math, and whatever tar spot does to Indiana corn conditions will all have another 72 hours to work.",
-  "the_takeaway": "Old-crop corn broke hard; new-crop held. Tuesday's crop conditions report is the next verdict.",
-  "teaser": "Corn had its worst pre-holiday session in months. Markets closed today. Here is what you are sitting on.",
+  "headline": "CORN BREAKS 4% ON HOLIDAY EVE; OATS HIT -15%",
+  "subheadline": "Markets closed Friday for Independence Day; Thursday's close left corn at $4.25, oats in freefall, and the July 4th weekend sitting on top of peak pollination.",
+  "lead": "Corn closed Thursday at $4.25, down 4.0% in a single session, the biggest one-day drop in months for a crop that is right now, this weekend, pollinating across the Belt. Oats fell 15.5% to $2.86, a move that has no clean catalyst in Thursday's news and looks like fund liquidation in a thin pre-holiday session. Markets are closed today. The question that reopens Monday is whether the heat premium that built all week survived the selloff, or whether someone decided to cash it in before the long weekend.",
+  "the_takeaway": "Corn sold off hard into peak pollination week. Monday's Crop Progress is the first chance to know why.",
+  "teaser": "Corn's biggest drop in months landed the day before July 4th and right on top of pollination. Monday answers whether that made sense.",
   "one_number": {
     "value": "15.5%",
-    "unit": "single-session oats decline Thursday",
-    "context": "Oats fell 15.5% in Thursday's session to $2.86, sitting at just 20% of its 52-week range from the low. That is not noise; that is a market with no buyer willing to step in front of the holiday weekend. Oats has now posted back-to-back violent sessions and has not found a floor. When a thin-volume contract moves this hard, it often tells you something the bigger contracts are not saying yet about speculative positioning across the feed grain complex."
+    "unit": "oats single-session decline, Thursday close",
+    "context": "Oats fell $0.525 to $2.86 on Thursday, sitting at the 20th percentile of its 52-week range. There was no oats-specific news in Thursday's bucket. That kind of move with no catalyst is either a deeply illiquid pre-holiday market doing what thin markets do, or a structural signal about feed demand softening. At the 20% 52-week level, oats has now given back nearly everything it built since winter."
   },
   "yesterdays_call": {
     "outcome": "didnt",
@@ -19,9 +19,7 @@
       "instrument": "corn",
       "direction": "up",
       "level": 4.42
-    },
-    "summary": "Called corn nearby higher toward $4.42. Corn closed at $4.25, down 4.0%.",
-    "note": "Clean miss. The call was corn up toward $4.42 and it went the other way hard, dropping 4.0% to $4.25 on pre-holiday old-crop liquidation. Dec held at $4.415, which tells you the new-crop thesis was not wrong, but nearby got run over. Own it and watch Tuesday's conditions report before re-engaging the upside."
+    }
   },
   "todays_call": {
     "instrument": "corn",
@@ -30,96 +28,92 @@
   },
   "sections": [
     {
-      "title": "Corn Breaks Hard Pre-Holiday",
+      "title": "Corn Sells Into Pollination",
       "icon": "🌽",
-      "body": "Corn nearby fell 4.0% to $4.25 Thursday, the kind of move that gets your attention even on a half-day session. The Dec '26 contract closed at $4.42, down just 3 cents. That 17-cent gap between nearby and new-crop is the real story: **old-crop holders liquidated heading into the long weekend, but new-crop didn't follow them out the door.** The USDA acreage report released earlier this week came in largely as expected, corn and soybean acres up versus March Prospective Plantings, which removed the bullish surprise premium that had been embedded since late June. Tar spot detections now confirmed in Indiana, with Purdue Extension warning that humid, saturated soils have set up near-ideal disease conditions, but that is a new-crop story and the Dec contract is not pricing it yet. Tuesday's USDA Crop Progress at 3:00 PM CT will be the first read on whether the heat wave that has driven weather premium all week actually showed up in condition ratings.",
-      "catalyst": "USDA acreage report came in near estimates; tar spot confirmed in Indiana corn.",
-      "bottom_line": "Old-crop liquidated. New-crop held. Tuesday conditions report is the make-or-break.",
+      "body": "Corn closed Thursday at **$4.25**, down 4.0%, the sharpest single-session drop of the summer so far, and it happened the day before a long weekend with the crop in tassel. December corn held far better, settling at **$4.42**, down only 0.3%, which tells you something: whoever sold nearby corn on Thursday was not making a new-crop call, they were getting out of a position. The NCGA dropped its 250-year corn demand roadmap Thursday, which is the kind of structural bullish story that does not move a July futures contract. What moves a July contract is heat, and the Belt has had plenty of it. USDA's acreage report, released Monday, confirmed more corn acres than March estimates, which added supply to the balance sheet right as the heat premium was building. That combination, more acres plus funds stepping out before a holiday, is the cleanest explanation for Thursday's break. December corn at $4.42 held, which means the new-crop market is not panicking. The new-crop market is waiting for Monday's Crop Progress to find out what three days of peak-pollination heat actually did.",
+      "catalyst": "USDA acreage confirmed above-estimate corn acres; pre-holiday fund liquidation in a quiet session.",
+      "bottom_line": "Nearby sold off hard; new-crop held. Separation says the market isn't calling a yield disaster yet.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Corn: premium evaporated; acreage math resolved, disease risk not yet priced."
+      "vs_yesterday": "Corn: heat premium gave way to pre-holiday liquidation, exactly the risk flagged."
     },
     {
-      "title": "Beans and Meal Split Ways",
+      "title": "Beans Hold Better Than Corn",
       "icon": "🫘",
-      "body": "Soybeans nearby fell 2.0% to $11.32, and the November contract eased 7 cents to $11.48. If you held unpriced new-crop beans per the guidance from Tuesday and Wednesday, that Thursday close is your answer: export demand was not strong enough to hold the board. **Soybean oil ran higher, up 2.2% to $66.95, while meal added 0.7% to $307.70.** That divergence inside the crush is telling you biofuel demand is pulling soyoil, while meal is grinding along on adequate but not strong feed usage. The China $17 billion annual US ag purchase commitment announced May 18 has not translated into sustained futures support past the initial bounce, and Thursday's mixed close is consistent with that picture. Heavy rains in parts of the Northern Plains add crop stress uncertainty, but not the kind that moves November beans on a pre-holiday half-day.",
-      "catalyst": "Pre-holiday liquidation; China commitment not yet showing in sustained export demand.",
-      "bottom_line": "Soyoil running higher on biofuel pull; beans themselves waiting for a real export catalyst.",
+      "body": "Soybeans nearby closed at **$11.32**, down 2.0%, and November beans held at **$11.48**, down only 0.6%. That spread matters. Nearby beans took a hit alongside corn in what was broadly a pre-holiday selloff, but new-crop beans are holding well above the levels that would signal a real demand problem. Soybean meal closed **up 0.7%** at $307.70 and soybean oil gained 2.2% to $66.95, so the crush complex is not telling the same story as the bean itself. China's $17 billion annual U.S. ag purchase commitment through 2028, announced May 18, has not produced sustained futures support, and Thursday's session was no exception. The beans story this weekend is the same as corn: peak July heat plus the acreage overhang from Monday's USDA report. The soyoil gain tells you renewable diesel demand is still present. The meal gain tells you crush is running. The bean price tells you the funds went home early.",
+      "catalyst": "Pre-holiday liquidation against Monday's above-estimate acreage numbers; crush complex diverged higher.",
+      "bottom_line": "Crush margins running fine; the bean selloff was funds, not fundamentals.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Beans: soft close confirms export sales did not deliver the upside catalyst needed."
+      "vs_yesterday": "Beans: export sales tone supported the hold call; November held above pressure zone."
     },
     {
-      "title": "Cattle and Hogs Finish Lower",
+      "title": "Livestock Fades Into Weekend",
       "icon": "🐄",
-      "body": "Live cattle closed at $239.23, down 1.1%, and feeders held relatively close at $360.62, down 1.0%. Hogs had the harder session, dropping 3.2% to $93.85. Cash and wholesale pressure drove the cattle move according to Thursday's close data, with August live cattle finishing at $239.22, essentially unchanged from the nearby settlement. **The ongoing Cargill Fort Morgan and Schuyler plant lockout, which has removed roughly 2% of weekly US slaughter capacity since May 19, continues to constrain processing and pressure the cash market without providing the supply-side relief feedlot operators need.** USDA Secretary Rollins announced the SPUR program on June 30 to support small and mid-size beef processors, a direct acknowledgment that processing concentration is the structural problem. A Korea market opportunity is quietly opening: Australian beef imports have now exceeded 90% of Korea's safeguard trigger level, which should open the door for US chilled beef in a market that wants volume. That is a 2026 back-half story, not a July 3 story.",
-      "catalyst": "Cash and wholesale pressure; Cargill lockout processing constraint ongoing; SPUR program announced.",
-      "bottom_line": "Cattle lower on processing constraint, not supply. Korea opportunity building in the background.",
+      "body": "Live cattle closed at **$239.23**, down 1.1%, and feeders settled at **$360.62**, down 1.0%. Hogs fell 3.2% to **$93.85**, the sharpest move in the livestock complex Thursday. The cattle close is consistent with what Brownfield reported: cash and wholesale pressure drove the week's fade, with August live cattle closing near $239.22 on Wednesday. The Cargill Fort Morgan and Schuyler plant lockout, ongoing since May 19, is still removing roughly 2% of weekly U.S. slaughter capacity, and that processing-constrained dynamic is keeping live cattle from finding a clean bid. Midyear auction data showed steer sales rising but heifer share dropping to 39%, and retention levels still fall short of signaling any herd expansion. The Korean beef market is opening a window for U.S. chilled beef as Australian imports push near safeguard limits, which is a real demand development, just not one that moves a Friday July contract. Hogs at $93.85 are sitting at the 50th percentile of their 52-week range with no fresh news behind Thursday's 3.2% drop. Watch that one Monday.",
+      "catalyst": "Cargill lockout processing constraint continues; cash and box-beef wholesale pressure; hogs fell without a clean catalyst.",
+      "bottom_line": "Cattle still locked in processing-constrained drift; hog drop needs a Monday explanation.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Cattle: processing drag held exactly as called; no resolution before the holiday."
+      "vs_yesterday": "Cattle: narrative held exactly. Hogs broke harder than the drift pattern implied."
     },
     {
-      "title": "Crude Firms; Citi Sees $60 by Year End",
-      "icon": "🛢️",
-      "body": "WTI crude firmed 1.3% to $68.60, a modest bounce on what has been a rough four-week stretch. Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, have taken roughly 19% off crude since early May. **Citigroup published a call Thursday that Brent could fall to $60 per barrel by year end as Hormuz flows normalize and a US-Iran deal comes into view.** Oil was on track for its fourth straight weekly loss as of Thursday. For producers, the input math is working in your favor on the fall side: diesel and fertilizer costs that were elevated by the Hormuz premium are unwinding. Natural gas added 1.5% to $3.24, still sitting at just 14% of its 52-week range from the low, meaning the power grid stress from this week's extreme heat event is not yet showing up as a sustained price signal.",
-      "catalyst": "Iran-Hormuz tensions easing on diplomatic progress; Citi $60 Brent price target published.",
-      "bottom_line": "Lower crude into fall means input cost relief; $60 Brent is now the institutional base case.",
-      "conviction_level": "medium",
+      "title": "Crude Firms; Geopolitics Goes Quiet",
+      "icon": "⛽",
+      "body": "WTI crude closed at **$68.78**, up 1.6%, and natural gas added 1.6% to **$3.25**. The energy complex moving opposite to grains on Thursday is worth clocking. Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, are producing exactly what an oil-price.com headline called Friday: markets growing numb to ceasefire drama. Crude is range-bound, the ceasefire is fragile and the shipping lanes are navigable, but TotalEnergies offering Iraqi barrels to Asian buyers at prompt delivery tells you supply is moving. OPEC production rebounded in June as Gulf producers brought shut-in barrels back online. The net result for U.S. farmers is that diesel input costs are not rising into harvest, which is the most useful thing crude can do right now. Gold at $4,187 and silver up 3.4% are telling a different story: the macro is not relaxed, the dollar slipped 0.5% to 100.83, and somebody is buying metal.",
+      "catalyst": "Iran-Hormuz ceasefire diplomacy advancing; OPEC June production rebound; TotalEnergies Iraqi crude flows to Asia.",
+      "bottom_line": "Diesel costs stable into harvest. Gold and silver say macro stress hasn't gone away.",
+      "conviction_level": "low",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "USMCA Non-Renewal Draws Bipartisan Ag Concern",
-      "body": "President Trump's decision not to renew USMCA and instead open renegotiation talks drew pushback Thursday from House Agriculture Committee Democrats and several ag groups. Canada and Mexico are the top two US agricultural export markets; any extended negotiating window introduces real tariff and quota uncertainty for grain, livestock, and dairy shippers who depend on those lanes.",
+      "title": "USDA Secretary Rollins Opposes Farmland Solar Conversion",
+      "body": "Agriculture Secretary Brooke Rollins spoke against converting farmland to solar installations Thursday, a signal that the administration will not facilitate utility-scale solar buildout on productive ground. For producers fielding lease offers, this is the clearest policy read yet on where the department stands.",
       "tag": "POLICY"
     },
     {
-      "title": "USDA SPUR Program Targets Small Beef Processor Support",
-      "body": "Agriculture Secretary Rollins announced the Strengthening Processing for US Ranchers program on June 30, providing temporary financial support for smaller beef processing establishments. The move is a direct response to the processing concentration problem that the Cargill Fort Morgan lockout made visible; whether SPUR money actually moves capacity fast enough to matter for the 2026 fed cattle market is the question.",
-      "tag": "POLICY"
+      "title": "Korea Beef Safeguard Opens Door for U.S. Chilled Product",
+      "body": "Australian beef imports hit over 90% of Korea's annual safeguard threshold, which triggers price premiums on additional imports and makes U.S. chilled beef more competitive at retail and in restaurants. It is a real demand window that doesn't show up in today's futures close but will show up in export sales data over the next few weeks.",
+      "tag": "TRADE"
     },
     {
-      "title": "Tar Spot Confirmed in Indiana; Humid Conditions Expanding Risk",
-      "body": "Purdue University Extension confirmed tar spot in Indiana corn fields this week, with agronomist Dan Quinn warning that saturated soils and persistent humidity have created near-ideal disease conditions for further spread. This is not in the December contract yet, but it does not need to be on July 3; it needs to be on your radar for the August crop tour season when field assessments will either confirm or dismiss the threat.",
-      "tag": "WEATHER"
+      "title": "USMCA Renegotiation Draws Bipartisan Ag Concern",
+      "body": "House Agriculture Committee Democrats and agriculture groups formally expressed concern Thursday over President Trump's decision not to renew USMCA, opting instead for fresh bilateral negotiations. For livestock and specialty crop producers, Canada and Mexico are the two largest export markets, and any negotiating gap creates real uncertainty on market access.",
+      "tag": "POLICY"
     }
   ],
   "spread_to_watch": {},
   "basis": {},
   "weekly_thread": {},
   "the_more_you_know": {
-    "title": "15.5% in One Session. What Oats Is Actually Telling You.",
-    "body": "Oats fell 15.5% Thursday to $2.86, sitting at just 20% of its 52-week range from the low. A move that size in a single session is not about oats specifically; it is about what happens when a thin-volume contract runs out of speculative support heading into a three-day weekend with no obvious buyer. Oats trades a fraction of the open interest of corn or beans, which means when the funds step out, there is no commercial bid underneath to cushion the fall. The useful read-across: corn nearby also fell 4.0% Thursday, which is a large pre-holiday move in a much more liquid contract. Both moves share a common thread, liquidation ahead of weather uncertainty and a long weekend, not a fundamental change in supply or demand. The Dec '26 corn contract barely moved, which is the correct price signal to watch. Old-crop clearing out is noise. New-crop holding is the signal."
+    "title": "39%: The Heifer Number That Says Herd Rebuilding Isn't Here Yet",
+    "body": "Midyear 2026 auction data released Thursday showed heifer share of steer sales at 39%, a number worth understanding. When heifer retention rises, producers are keeping females back to rebuild cow herds, which pulls supply from the market and eventually tightens the cattle cycle. At 39%, heifer share is not sending that signal. Retention levels are still below the threshold historically associated with expansion cycles, meaning the U.S. cow herd is not growing yet. For live cattle at $239.23, sitting at the 64th percentile of its 52-week range, that structural tightness is the ceiling argument. The processing constraint from the Cargill Fort Morgan lockout, removing roughly 2% of weekly slaughter capacity since May 19, is the floor argument. The market is caught between both."
   },
   "watch_list": [
     {
-      "time": "Monday, Jul 6: Markets reopen",
-      "desc": "First chance for the complex to reprice three days of weather forecasts and any weekend headlines on USMCA renegotiation talks."
+      "time": "Monday, July 6, 3:00 PM CT",
+      "desc": "USDA Crop Progress: corn pollination rating is the number. Any deterioration in good/excellent from last week's reading is the first hard evidence of whether the July 4th weekend heat did damage. Good/excellent below 65% adds weather premium back into December corn at $4.42."
     },
     {
-      "time": "Monday, Jul 6, 3:00 PM CT",
-      "desc": "USDA Crop Progress: corn condition ratings above 65% good/excellent removes heat premium; below 58% adds it back. Watch Indiana specifically for early tar spot impact."
+      "time": "Monday, July 6, market open",
+      "desc": "Watch December corn open: if it gaps toward $4.50 or higher on Crop Progress leak or weather model changes over the weekend, the Thursday selloff was a buying opportunity. If it opens flat or lower, the fund liquidation story has more room to run."
     },
     {
-      "time": "Thursday, Jul 9, 7:30 AM CT",
-      "desc": "Weekly Export Sales: soybean sales under 300,000 MT keeps November beans at $11.48 or lower under pressure; above 500,000 MT gives the board a reason to test resistance."
+      "time": "Friday, July 10, 7:30 AM CT",
+      "desc": "Weekly Export Sales: soybeans below 300,000 MT keeps November beans at $11.48 under pressure. Above 500,000 MT and the China commitment starts showing up as sustained flow, not just a headline."
     },
     {
-      "time": "Thursday, Jul 9, 11:00 AM CT",
-      "desc": "WASDE monthly report: July WASDE is the first with updated acreage from the June 30 report folded into supply/demand. Corn yield estimate above 181 bu/acre is bearish for the Dec contract at $4.42."
-    },
-    {
-      "time": "Ongoing",
-      "desc": "Cargill Fort Morgan lockout: no resolution announced. Each additional week removes roughly 2% of weekly US slaughter capacity. Watch for any labor negotiation news over the holiday weekend."
+      "time": "Saturday, July 11, 11:00 AM CT",
+      "desc": "WASDE monthly report: July WASDE will carry USDA's first look at 2026 crop yield estimates incorporating early-season heat. Any yield cut from the 181 bu/acre trendline in corn is the number that resets the whole supply story."
     }
   ],
   "daily_quote": {
     "text": "He who knows when he can fight and when he cannot, will be victorious.",
     "attribution": "Sun Tzu"
   },
-  "source_summary": "USDA NASS, CME Group, Brownfield Ag News, Feedstuffs, OilPrice.com, The Fence Post, Beef Magazine, farmdoc daily, Purdue Extension",
+  "source_summary": "CME Group settlement prices; USDA Crop Progress; USDA Acreage Report June 30, 2026; Brownfield Ag News; Feedstuffs; Beef Magazine; OilPrice.com; The Fence Post",
   "date": "Friday, July 3, 2026",
   "meta": {
     "market_mood": "cautious",
@@ -139,13 +133,13 @@
     "milk": 15.54,
     "meal": 307.70001,
     "soyoil": 66.95,
-    "crude": 68.6,
-    "natgas": 3.243,
-    "gold": 4190.2998,
-    "silver": 63.08,
-    "dollar": 100.779,
+    "crude": 68.78,
+    "natgas": 3.245,
+    "gold": 4187.2998,
+    "silver": 62.815,
+    "dollar": 100.835,
     "sp500": 7483.24023,
-    "bitcoin": 61601.98828
+    "bitcoin": 62083.53906
   },
   "chart_series": {
     "corn": [
@@ -196,8 +190,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 113,
-  "generated_at": "2026-07-03T12:59:38.014593+00:00",
+  "issue_number": 114,
+  "generated_at": "2026-07-03T21:02:09.524037+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 0,
   "surprises": [],
@@ -206,14 +200,14 @@
   "market_status_reason": "holiday",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-07-03T12:59:52.552706+00:00",
+    "ran_at": "2026-07-03T21:02:29.613725+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 9,
-      "rule_2_conviction_earned": 6,
-      "rule_3_tmyk_today": 9,
+      "rule_2_conviction_earned": 7,
+      "rule_3_tmyk_today": 8,
       "rule_4_watch_conditional": 8,
-      "rule_5_bottom_lines_synthesize": 8,
+      "rule_5_bottom_lines_synthesize": 9,
       "rule_6_quiet_days_quiet": 8,
       "rule_7_continuity": 5,
       "rule_8_basis_directional": 10,
@@ -222,37 +216,12 @@
       "rule_11_thread_coherence": 10,
       "rule_12_spread_quality": 10,
       "rule_13_yc_honesty": 4,
-      "rule_14_level_coherence": 6,
+      "rule_14_level_coherence": 4,
       "rule_15_one_number_coherence": 9,
       "rule_16_markdown_not_html": 10,
       "rule_17_macro_anchoring": 8
     },
-    "rewrites_applied": [
-      {
-        "pass": 1,
-        "target": "yesterdays_call",
-        "rule": "rule_13_yc_honesty",
-        "scores_before": {
-          "rule_1_lead_so_what": 9,
-          "rule_2_conviction_earned": 6,
-          "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 8,
-          "rule_5_bottom_lines_synthesize": 8,
-          "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 5,
-          "rule_8_basis_directional": 10,
-          "rule_9_voice": 8,
-          "rule_10_forward_test": 8,
-          "rule_11_thread_coherence": 10,
-          "rule_12_spread_quality": 10,
-          "rule_13_yc_honesty": 4,
-          "rule_14_level_coherence": 6,
-          "rule_15_one_number_coherence": 9,
-          "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 8
-        }
-      }
-    ],
+    "rewrites_applied": [],
     "dry_run": false
   }
 }
