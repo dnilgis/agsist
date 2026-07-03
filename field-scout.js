@@ -869,7 +869,7 @@
         if(!rows || !rows.length){ setBody('fs-soil','<div class="fs-err">No SSURGO soil survey published for this spot. Coverage gaps exist in parts of the West and Alaska.</div>'); return; }
         var total=0; rows.forEach(function(r){ total += parseFloat(r[3])||0; });
         // record for the insight engine: dominant class, worst class, prime share
-        var classes = rows.map(function(r){ return { name:r[2]||r[1], ac:parseFloat(r[3])||0, nicc:parseInt(r[4],10)||null, slope:(r[5]==null||r[5]==='')?null:parseFloat(r[5]), nccpi:(r[6]==null||r[6]==='')?null:parseFloat(r[6]), nccpiCorn:(r[7]==null||r[7]==='')?null:parseFloat(r[7]), nccpiSoy:(r[8]==null||r[8]==='')?null:parseFloat(r[8]) }; });
+        var classes = rows.map(function(r){ return { name:r[2]||r[1], ac:parseFloat(r[3])||0, nicc:parseInt(r[4],10)||null, slope:(r[5]==null||r[5]==='')?null:parseFloat(r[5]), nccpi:(r[6]==null||r[6]==='')?null:parseFloat(r[6]), nccpiCorn:(r[7]==null||r[7]==='')?null:parseFloat(r[7]), nccpiSoy:(r[8]==null||r[8]==='')?null:parseFloat(r[8]), drainage:(r[9]==null||r[9]==='')?null:String(r[9]) }; });
         var worst = classes.reduce(function(m,x){ return (x.nicc&&(!m||x.nicc>m.nicc))?x:m; }, null);
         var primeAc = classes.filter(function(x){ return x.nicc&&x.nicc<=2; }).reduce(function(s,x){return s+x.ac;},0);
         // Field slope + steepest mapunit (erosion is largely slope-driven). Prefer
@@ -884,8 +884,13 @@
         var primePct = hasAc ? Math.round(primeAc/total*100) : (classes.length ? Math.round(primeClassN/classes.length*100) : null);
         // NCCPI (productivity index, 0-1): area-weighted when known, else equal-weight.
         function wNccpi(key){ var a=0,s=0,p=0,n=0; classes.forEach(function(x){ if(x[key]!=null){ s+=x[key]*x.ac; a+=x.ac; p+=x[key]; n++; } }); return a>0?Math.round(s/a*1000)/1000:(n>0?Math.round(p/n*1000)/1000:null); }
+        // Drainage: share of acreage mapped as poorly / very poorly drained (old
+        // workers return no drainage column — everything stays null, nothing breaks)
+        var drAc=0, drTot=0, drTop=null, drTopAc=-1;
+        classes.forEach(function(x){ if(x.drainage){ drTot+=x.ac; if(/poorly/i.test(x.drainage)&&!/somewhat/i.test(x.drainage)) drAc+=x.ac; if(x.ac>drTopAc){ drTopAc=x.ac; drTop=x.drainage; } } });
+        var poorPct = drTot>0 ? Math.round(drAc/drTot*100) : null;
         FIELD.soil = { classes:classes, total:total, hasAc:hasAc, worst:worst, primePct:primePct,
-                       top:classes[0]||null, slope:avgSlope, maxSlope:maxSlope,
+                       top:classes[0]||null, slope:avgSlope, maxSlope:maxSlope, drainageTop:drTop, poorDrainPct:poorPct,
                        nccpi:wNccpi('nccpi'), nccpiCorn:wNccpi('nccpiCorn'), nccpiSoy:wNccpi('nccpiSoy') };
         recomputeInsight(); renderRisk();
         var palette=['#7c5a2e','#9c7339','#b58d4f','#c9a878','#8a6a3b','#a37d45'];
@@ -909,6 +914,11 @@
           var pct=Math.round(nc*100);
           slopeNote += '<div class="fs-soil-slope"><strong>NCCPI '+nc.toFixed(2)+'</strong> &mdash; '+tier+' of USDA\u2019s national row-crop productivity index ('+pct+'/100). The index is weighted toward Corn Belt soils, so strong regional ground can still sit mid-scale here'+
             (FIELD.soil.nccpiCorn!=null?'. Corn '+FIELD.soil.nccpiCorn.toFixed(2)+(FIELD.soil.nccpiSoy!=null?' · soy '+FIELD.soil.nccpiSoy.toFixed(2):''):'')+'.</div>';
+        }
+        if(FIELD.soil.poorDrainPct!=null && FIELD.soil.poorDrainPct>=25){
+          slopeNote += '<div class="fs-soil-slope"><strong>'+FIELD.soil.poorDrainPct+'% of the acreage maps as poorly drained</strong> &mdash; the survey\u2019s way of saying the low ground holds water. Late planting and drown-out corners here are the soil, not the operator; tile is the structural fix conversation.</div>';
+        } else if(FIELD.soil.drainageTop){
+          slopeNote += '<div class="fs-soil-slope">Dominant drainage: <strong>'+esc(FIELD.soil.drainageTop)+'</strong></div>';
         }
         if(FIELD.soil.slope!=null){
           var sl=FIELD.soil.slope, er = sl<2?'minimal erosion risk':sl<6?'moderate erosion risk':sl<12?'high erosion risk':'severe erosion risk';
@@ -947,8 +957,11 @@
         if(!d || d.error || !d.rotation || !d.rotation.length){
           setBody('fs-rot','<div class="fs-err">USDA crop history isn\u2019t resolving for this spot. CDL covers the Lower 48; coverage thins at field edges and outside CONUS.</div>'); return;
         }
-        // worker returns most-recent-first; flip to oldest→newest for the timeline + streak math
-        var recent = d.rotation.slice().reverse();
+        // worker returns most-recent-first; history carries EVERY published year —
+        // take up to a decade of it (falls back to the 5-yr rotation on old workers),
+        // flip to oldest→newest for the timeline + streak math
+        var full = (d.history && d.history.length ? d.history : d.rotation);
+        var recent = full.slice(0, 10).reverse();
         var years = recent.map(function(x){ return x.year; });
         // only recognized row/forage crops count toward the headline & streak;
         // CDL noise (developed/water/forest) shows as a gap and breaks any streak
@@ -1233,7 +1246,7 @@
           var day=(p.valid||'').slice(0,10); if(day) days[day]=1;
           var mag=parseFloat(p.magnitude||p.magf||0); if(mag>maxStone)maxStone=mag;
         });
-        FIELD.hail = { events:feats.length, days:Object.keys(days).length, maxStone:maxStone, years:5 };
+        FIELD.hail = { events:feats.length, days:Object.keys(days).length, dates:Object.keys(days).sort(), maxStone:maxStone, years:5 };
         recomputeInsight(); renderRisk();
       })
       .catch(function(){ if(gen!==fieldGen) return; if(FIELD)FIELD.hail={err:1}; renderRisk(); });
@@ -1284,7 +1297,7 @@
       return;
     }
     setBody('fs-risk', rows.join('') +
-      '<div class="fs-src" style="margin-top:.5rem">A starting risk read from public data &mdash; not an underwriting decision. Questions? <a href="https://farmers1st.com/" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">Farmers First &rarr;</a></div>');
+      '<div class="fs-src" style="margin-top:.5rem">A starting risk read from public data &mdash; not an underwriting decision. Questions? <a href="mailto:sig@farmers1st.com" style="color:var(--brand,var(--gold))">Sigurd Lindquist &rarr;</a></div>');
   }
   function riskRow(label, level, color, detail, link){
     // Colorblind-safe: a symbol carries severity independent of color.
@@ -1881,11 +1894,32 @@
         }
       }
 
+      // (c′) Pass-drop × hail correlation — a sharp vigor drop between passes that
+      // brackets a reported hail day is the "how did it know that" read. Factual
+      // only: the dates line up; walking it and documenting is the action.
+      var hl=FIELD.hail;
+      if(hl && !hl.err && hl.dates && hl.dates.length && ix.series.length>=2){
+        var sArr=ix.series.filter(function(r){ return r.ndvi!=null; });
+        for(var hp=sArr.length-1; hp>=1; hp--){
+          var drop=sArr[hp-1].ndvi - sArr[hp].ndvi;
+          if(drop<0.06) continue;
+          var d0=sArr[hp-1].date, d1=sArr[hp].date;
+          var hits=hl.dates.filter(function(hd){ return hd>d0 && hd<=d1; });
+          if(hits.length){
+            push({ sev:3, act:true, topic:'hail', tag:'a vigor drop that lines up with reported hail',
+              title:'the '+ixDate(d1)+' vigor drop lines up with a reported hail day \u2014 walk it and document',
+              detail:'Vigor fell <strong>'+drop.toFixed(2)+'</strong> between the '+ixDate(d0)+' and '+ixDate(d1)+' passes, and a severe-hail report near this field is dated <strong>'+ixDate(hits[0])+'</strong> \u2014 inside that window'+(hl.maxStone?' (stones up to '+hl.maxStone+'\u2033 reported in the area over 5 yrs)':'')+'. The timing lines up; only boots in the field confirm it.'+' <span class="fs-src">source: Sentinel-2 pass-to-pass + NOAA/IEM storm reports</span>',
+              watch:'Walk it soon and photograph what you find \u2014 dated satellite passes plus dated photos make a clean record for any claim conversation with your own agent or adjuster.' });
+            break; // one correlation is the story; don't stack duplicates
+          }
+        }
+      }
+
       // (c) Drown-out read — very wet surface + uneven canopy in a wet season.
       if(ixLast.ndwi!=null && ixLast.ndwi>=0.2 && ixPatchy && se && se.pDep!=null && se.pDep>=2){
         push({ sev:2, act:true, topic:'wet', tag:'saturated ground in the weak zones',
           title:'the wet spots are likely drowning the weak zones \u2014 walk the low ground',
-          detail:'The surface-water read (NDWI '+(+ixLast.ndwi).toFixed(2)+') is running <strong>very wet</strong>, the season is '+se.pDep.toFixed(1)+'\u2033 above normal on rain, and vigor is uneven across the field \u2014 the classic drowned-low-spot signature.'+' <span class="fs-src">source: Sentinel-2 NDWI + Open-Meteo season rainfall</span>',
+          detail:'The surface-water read (NDWI '+(+ixLast.ndwi).toFixed(2)+') is running <strong>very wet</strong>, the season is '+se.pDep.toFixed(1)+'\u2033 above normal on rain, and vigor is uneven across the field \u2014 the classic drowned-low-spot signature.'+(s&&s.poorDrainPct!=null&&s.poorDrainPct>=25?' The soil survey agrees: <strong>'+s.poorDrainPct+'%</strong> of this ground maps as poorly drained.':'')+' <span class="fs-src">source: Sentinel-2 NDWI + Open-Meteo season rainfall</span>',
           watch:'Check the low corners; <a href="#" class="fs-god-link" data-god="ndvi">the Crop-vigor layer</a> shows which zones are lagging.' });
       }
     }
