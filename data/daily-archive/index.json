@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-07-03",
+      "date_display": "Friday, July 3, 2026",
+      "headline": "CORN DROPS 4%; MARKETS CLOSED FOR THE 4TH",
+      "teaser": "Corn had its worst pre-holiday session in months. Markets closed today. Here is what you are sitting on.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-07-03",
+      "market_closed": true,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-02",
       "date_display": "Thursday, July 2, 2026",
       "headline": "HEAT OWNS THE BELT; EXPORT SALES ARRIVE AT 7:30",
@@ -1260,6 +1272,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-02T13:02:08.861339+00:00",
-  "count": 112
+  "updated": "2026-07-03T12:59:52.607157+00:00",
+  "count": 113
 }

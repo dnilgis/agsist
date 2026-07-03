@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 02 Jul 2026 13:02:12 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 03 Jul 2026 12:59:54 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN DROPS 4%; MARKETS CLOSED FOR THE 4TH</title>
+      <link>https://agsist.com/daily/2026-07-03</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-03</guid>
+      <pubDate>Fri, 03 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Thursday handed the grain complex its worst single-session print in weeks heading into the long weekend. Corn nearby dropped 4.0% to $4.25, the biggest single-day loss since late spring, while the Dec '26 contract barely flinched at $4.42, down just 3 cents, a spread that tells you this move was old-crop liquidation, not a new-crop conviction call. Markets are dark Friday. The story sits in the bin until Tuesday morning, and by then the heat forecast, the acreage report math, and whatever tar spot does to Indiana corn conditions will all have another 72 hours to work.
+Thursday's session handed grain producers a rough pre-holiday close; corn nearby fell hard while soybean oil and precious metals ran higher.
+• Corn Breaks Hard Pre-Holiday
+• Beans and Meal Split Ways
+• Cattle and Hogs Finish Lower
+Read more: https://agsist.com/daily/2026-07-03</description>
+    </item>
     <item>
       <title>HEAT OWNS THE BELT; EXPORT SALES ARRIVE AT 7:30</title>
       <link>https://agsist.com/daily/2026-07-02</link>
@@ -372,18 +384,6 @@ Feeders lead livestock move higher as grain liquidation deepens into fourth sess
 • GRAINS EXTEND FOUR-DAY SLIDE
 • ENERGY GIVES BACK IRAN GAINS
 Read more: https://agsist.com/daily/2026-06-04</description>
-    </item>
-    <item>
-      <title>GRAINS DRIFT LOWER, MILK GAINS OVERNIGHT</title>
-      <link>https://agsist.com/daily/2026-06-03</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-03</guid>
-      <pubDate>Wed, 03 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed $4.37, down 3 cents for the third straight session of quiet selling that's starting to look methodical. Soybeans held $11.66, off 2 cents, while nearby milk ran to $17.25 on a 3% overnight move higher that caught the complex off guard. The grain liquidation that started Memorial Day is grinding through old-crop positioning without weather premium to stop it.
-Corn and beans extend Memorial week liquidation while dairy complex catches bid on processing margins.
-• GRAINS GRIND THROUGH SUPPORT
-• MILK GAINS ON PROCESSING STRENGTH
-• CRUDE HOLDS IRAN GAINS
-Read more: https://agsist.com/daily/2026-06-03</description>
     </item>
   </channel>
 </rss>
