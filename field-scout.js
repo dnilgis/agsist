@@ -940,7 +940,7 @@
   function loadRotation(poly){
     var gen = fieldGen;
     var c = polyCentroid(poly);
-    var url = FS_WORKER + '/cdl?lat='+c.lat.toFixed(5)+'&lon='+c.lng.toFixed(5);
+    var url = FS_WORKER + '/cdl?lat='+c.lat.toFixed(5)+'&lon='+c.lng.toFixed(5)+'&years=10';
     fetch(url).then(function(r){ return r.ok ? r.json() : null; })
       .then(function(d){
         if(gen !== fieldGen) return;
@@ -964,7 +964,7 @@
         // cropland in CDL (pasture, forest, developed, water). Say so plainly rather
         // than render five empty placeholder tiles that look broken.
         if(codes.every(function(c){ return c===null; })){
-          setBody('fs-rot','<div class="fs-src">USDA\u2019s Cropland Data Layer doesn\u2019t classify this spot as row-crop or forage ground over the last five years &mdash; it reads as pasture, forest, developed, or water at the field center. Draw over active cropland to see a rotation.</div>');
+          setBody('fs-rot','<div class="fs-src">USDA\u2019s Cropland Data Layer doesn\u2019t classify this spot as row-crop or forage ground over the years on record &mdash; it reads as pasture, forest, developed, or water at the field center. Draw over active cropland to see a rotation.</div>');
           return;
         }
         var html='<div class="fs-rotation">'+ codes.map(function(code,i){
@@ -974,6 +974,7 @@
             '<div class="fs-rot-crop">'+esc(info.l)+'</div>'+
             '<div class="fs-rot-yr">\''+String(years[i]).slice(2)+'</div></div>';
         }).join('') + '</div>'+
+        (codes.length>5?'<div class="fs-src" style="margin-top:.5rem"><strong style="color:var(--text-dim)">'+codes.length+' years on record:</strong> '+cornCount+'\u00d7 corn, '+beanCount+'\u00d7 beans'+(maxCornStreak>=2?', longest corn streak '+maxCornStreak+' yrs':'')+'</div>':'')+
         '<div class="fs-src" style="margin-top:.6rem">USDA Cropland Data Layer · dominant cover at field center</div>'+
         '<div class="fs-caveat">CDL is satellite-classified (~85&ndash;90% accurate per pixel) and sampled at the field\u2019s center point, so a single odd year may be a classification miss rather than a real planting.</div>';
         setBody('fs-rot', html);
@@ -1092,7 +1093,19 @@
     var gduBlock='<div class="fs-stat"><div class="fs-stat-v">'+Math.round(s.gNow)+'</div>'+
       '<div class="fs-stat-l">GDUs YTD &nbsp;·&nbsp; '+depTxt(s.gDep,'gdu')+'</div></div>';
     var spark = precipSparkline(cumMap, cur, prior);
+    // one-sentence synthesis of the two numbers above — the "so what"
+    var wet=s.pDep>=1, dry=s.pDep<=-1, hot=s.gDep>=75, cool=s.gDep<=-75, seasonSay;
+    if(hot&&dry) seasonSay='A hot, dry season so far \u2014 the crop is developing fast into a moisture deficit, the combination to watch closest.';
+    else if(hot&&wet) seasonSay='Warm and well-watered \u2014 fast development with moisture to back it. About the best combination there is.';
+    else if(cool&&wet) seasonSay='A cool, wet season \u2014 development is running behind, and low ground may be struggling with the surplus.';
+    else if(cool&&dry) seasonSay='Cool and dry \u2014 slow development, but the moisture deficit bites less at this pace.';
+    else if(hot) seasonSay='Heat is running ahead of normal on near-normal rain \u2014 development is ahead of the calendar.';
+    else if(cool) seasonSay='Heat units are lagging on near-normal rain \u2014 expect development a few days behind a typical year.';
+    else if(wet) seasonSay='Rain is running ahead of normal at a normal heat pace \u2014 moisture is banked, not a limiting factor so far.';
+    else if(dry) seasonSay='Rain is running behind normal at a normal heat pace \u2014 not acute yet, but the deficit is the number to watch.';
+    else seasonSay='Both rain and heat are tracking close to this spot\u2019s normal \u2014 an unremarkable season in the best sense.';
     return '<div class="fs-stats" style="grid-template-columns:1fr 1fr">'+rainBlock+gduBlock+'</div>'+
+      '<div class="fs-vigor-say" style="margin:.55rem 0 .2rem">'+seasonSay+'</div>'+
       spark +
       '<div class="fs-src" style="margin-top:.55rem">Open-Meteo ERA5 · this season vs '+s.n+'-yr average, Jan 1 through '+fmtDate(s.thru)+' · GDU base 50°F</div>';
   }
@@ -1179,6 +1192,15 @@
       html += '<div class="fs-stats">'+
         stat(wx.temp+'°','Air temp')+ stat(wx.hum+'%','Humidity')+
         stat(wx.wind+' mph','Wind')+ stat(wx.wk+'"','Rain, 7 days')+'</div>';
+      // one plain-language read of the numbers above — what they mean for work today
+      var wkN=parseFloat(wx.wk)||0, wxSay;
+      if(wx.wind>15) wxSay='Too windy to spray right now \u2014 drift risk at '+wx.wind+' mph.';
+      else if(wkN>=1.5) wxSay='A wet week ('+wx.wk+'\u2033 in 7 days) \u2014 low ground is likely soft underfoot.';
+      else if(wx.hum>85 && wx.temp>=70) wxSay='Warm and humid \u2014 prime conditions for foliar disease; slow herbicide drydown too.';
+      else if(wx.temp>90) wxSay='Hot \u2014 crop water demand is peaking; spray early if you spray.';
+      else if(wx.wind<=10 && wx.hum<=85) wxSay='A decent working window \u2014 light wind, workable humidity.';
+      else wxSay='Middling conditions \u2014 nothing blocking field work, nothing ideal.';
+      html += '<div class="fs-vigor-say" style="margin-top:.55rem">'+wxSay+'</div>';
     } else if(wx && wx.err){
       html += '<div class="fs-err" style="margin-bottom:.6rem">Weather unavailable right now.</div>';
     } else {
@@ -1304,12 +1326,14 @@
         item.bids.forEach(function(b){
           flat.push({ elev:fac, city:item.city||b.city||'', dist:parseFloat(item.distance||b.distance)||null,
             commodity:b.commodity||b.commodity_display_name||b.commodityName||'',
+            delivery:b.delivery||b.deliveryStart||b.delivery_start||b.deliveryPeriod||b.delivery_end_formatted||'',
             cash:parseFloat(b.cashprice||b.cashPrice), basis:(b.basis!=null&&b.basis!=='')?parseFloat(b.basis):null });
         });
       } else if(item.commodity||item.commodityName||item.cashprice!==undefined||item.cashPrice!==undefined){
         flat.push({ elev:item.company||item.name||item.facility||item.locationName||'Elevator',
           city:item.city||'', dist:parseFloat(item.distance)||null,
           commodity:item.commodity||item.commodity_display_name||item.commodityName||'',
+          delivery:item.delivery||item.deliveryStart||item.delivery_start||item.deliveryPeriod||'',
           cash:parseFloat(item.cashprice||item.cashPrice), basis:(item.basis!=null&&item.basis!=='')?parseFloat(item.basis):null });
       }
     });
@@ -1328,11 +1352,16 @@
     var bean=bestConv(/bean|soy/i);
     if(FIELD) { FIELD.bids = { corn:corn, bean:bean, zip:zip, count:flat.length }; recomputeInsight(); }
     var html = flat.slice(0,6).map(function(x){
-      var basis = x.basis!=null ? '<span class="fs-bid-basis" style="color:'+(x.basis>=0?'#4aab4c':'#d9534f')+'">'+(x.basis>=0?'+':'')+x.basis.toFixed(2)+'</span>' : '';
-      return '<div class="fs-bid-row"><div class="fs-bid-el">'+esc(x.commodity)+' <small>'+esc(x.elev)+(x.dist?' · '+Math.round(x.dist)+' mi':'')+'</small></div>'+
+      // Feeds report basis in cents or dollars inconsistently — normalize to cents.
+      var bC = x.basis!=null ? (Math.abs(x.basis)<5 ? Math.round(x.basis*100) : Math.round(x.basis)) : null;
+      var basis = bC!=null ? '<span class="fs-bid-basis" style="color:'+(bC>=0?'#4aab4c':'#d9534f')+'">'+(bC>=0?'+':'\u2212')+Math.abs(bC)+'\u00a2</span>' : '';
+      var dlv = x.delivery ? ' · '+esc(String(x.delivery).slice(0,18)) : '';
+      return '<div class="fs-bid-row"><div class="fs-bid-el">'+esc(x.commodity)+' <small>'+esc(x.elev)+(x.dist?' · '+Math.round(x.dist)+' mi':'')+dlv+'</small></div>'+
         '<div style="text-align:right"><div class="fs-bid-px">$'+x.cash.toFixed(2)+'</div>'+basis+'</div></div>';
     }).join('');
-    setBody('fs-bids', html + '<div class="fs-src" style="margin-top:.5rem"><a href="/cash-bids" style="color:var(--brand,var(--gold))">All bids near ZIP '+esc(zip)+' →</a></div>');
+    setBody('fs-bids', html +
+      '<div class="fs-src" style="margin-top:.45rem">Basis = cents vs the futures board. A less-negative basis than your area\u2019s usual means local demand is paying up \u2014 the strongest bid isn\u2019t always the highest cash number if hauling eats the spread.</div>'+
+      '<div class="fs-src" style="margin-top:.4rem"><a href="/cash-bids" style="color:var(--brand,var(--gold))">All bids near ZIP '+esc(zip)+' →</a></div>');
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -1506,7 +1535,7 @@
     msi:{t:'MSI \u00b7 moisture stress',b:'Moisture Stress Index. Higher means more water stress \u2014 it runs opposite to NDMI.'},
     ndwi:{t:'NDWI \u00b7 water',b:'Surface and canopy water content. Mildly negative over dry crop ground is normal.'},
     bsi:{t:'BSI \u00b7 bare soil',b:'Bare Soil Index. Higher means more exposed soil \u2014 early season, after harvest, or a thin stand.'},
-    rotation:{t:'Crop rotation',b:'What grew each of the last five years, from USDA\u2019s satellite-classified Cropland Data Layer. Continuous corn raises rootworm and disease pressure.'},
+    rotation:{t:'Crop rotation',b:'What grew here each year on record (up to a decade), from USDA\u2019s satellite-classified Cropland Data Layer. Continuous corn raises rootworm and disease pressure.'},
     drought:{t:'Drought',b:'US Drought Monitor category for this field, None through D4 (exceptional). D2 and worse means real moisture stress.'},
     slope:{t:'Slope',b:'Average ground slope across the field. Steeper ground carries more water-erosion exposure.'},
     basis:{t:'Cash bid',b:'What a nearby elevator would pay for grain today \u2014 futures plus or minus local basis. The number you\u2019d actually get, not the board price.'},
@@ -1577,7 +1606,7 @@
       vCell('SOIL', soilV, soilSub, 'soil') +
       vCell('NCCPI', nccpiV, (nccpiV!=null?'/100':null), 'nccpi') +
       vCell('VIGOR', vigV, vigSub, 'ndvi', vigCls) +
-      vCell('ROTATION', rotV, '5-yr', 'rotation') +
+      vCell('ROTATION', rotV, (r&&r.codes?r.codes.length+'-yr':'5-yr'), 'rotation') +
       vCell('DROUGHT', drV, null, 'drought', drCls) +
       vCell('SLOPE', slV, null, 'slope') +
       vCell('CASH', bidV, bidSub, 'basis');
@@ -2053,7 +2082,7 @@
       +sect('5-year crop rotation', rotHtml)
       +sect('Conditions', condRows?'<table class="r-kv">'+condRows+'</table>':'')
       +sect('Nearby cash bids', bidRows?'<table class="r-kv">'+bidRows+'</table>':'')
-      +'<div class="r-foot">Compiled by AGSIST Field Scout from public data &mdash; USDA SSURGO soil survey, USDA Cropland Data Layer, Open-Meteo, US Drought Monitor &mdash; plus the AGSIST cash-bid feed. Soil and crop layers are survey estimates, not a substitute for sampling your own ground. This is a starting read, not an underwriting decision or financial advice. Questions about coverage? Farmers First Agri Service \u00b7 farmers1st.com</div>'
+      +'<div class="r-foot">Prepared by <strong>Sigurd Lindquist</strong> \u00b7 AGSIST Field Scout \u00b7 sig@farmers1st.com \u00b7 agsist.com/field-scout<br>Compiled from public data &mdash; USDA SSURGO soil survey, USDA Cropland Data Layer, Open-Meteo, US Drought Monitor &mdash; plus the AGSIST cash-bid feed. Soil and crop layers are survey estimates, not a substitute for sampling your own ground. This is a starting read, not an underwriting decision or financial advice.</div>'
       +'</body></html>';
 
     var w=window.open('','_blank');

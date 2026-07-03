@@ -201,7 +201,11 @@
     .fs-god-link strong{ color:inherit; }
     @media(max-width:600px){ .fs-layersheet .fs-leg-say{ display:none; } }
     /* rail */
-    .fs-rail{ border-left:1px solid var(--line); background:var(--surface); max-height:560px; overflow-y:auto; display:flex; flex-direction:column; }
+    .fs-rail{ border-left:1px solid var(--line); background:var(--surface); display:flex; flex-direction:column; min-width:0; overflow-x:clip; }
+    .fs-rail > *{ min-width:0; }
+    .fs-stage-wrap{ align-items:start; }
+    /* the map rides along while you read — one page scroll, no nested scrollbars */
+    @media(min-width:821px){ .fs-stage{ position:sticky; top:82px; } }
     /* undertray (see-the-invisible + saved) */
     .fs-undertray{ display:flex; flex-wrap:wrap; gap:14px; align-items:flex-start; padding:14px 18px; border-top:1px solid var(--line); background:var(--surface); }
     .fs-undertray .fs-god{ margin:0; flex:1 1 260px; }
