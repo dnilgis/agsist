@@ -91,9 +91,6 @@
     .hm-sponsor-p{margin:0;font-size:.88rem;line-height:1.6;color:var(--text,#e6ebe9)}
     .hm-sponsor-p a{color:var(--brand,#d4a23f);font-weight:700}
     .hm-controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.9rem 0 .4rem}
-    .hm-mesh-ctl{display:inline-flex;align-items:center;gap:.45rem;margin-left:.4rem;padding-left:.7rem;border-left:1px solid var(--border,rgba(132,160,168,.2))}
-    .hm-mesh-ctl label{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim,#8a948f)}
-    .hm-mesh-ctl input[type=date]{background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.25));border-radius:8px;color:var(--text,#e6ebe9);font-family:'JetBrains Mono',monospace;font-size:.78rem;padding:.4rem .5rem;min-height:40px}
     .hm-chip{font-family:inherit;font-size:.86rem;background:var(--surface);color:var(--text-dim);border:1px solid var(--border);border-radius:999px;padding:.42rem .8rem;cursor:pointer;transition:.12s;white-space:nowrap}
     .hm-chip:hover{color:var(--text)}
     .hm-chip.on{background:var(--brand,var(--gold));color:#1a1206;border-color:var(--brand,var(--gold));font-weight:600}
@@ -413,7 +410,7 @@
           manifest = m;
           buildControls();
           var gen=document.getElementById('hm-gen'); if(gen && m.generated) gen.textContent='Data through '+m.generated+'.';
-          var wantSwath=new URLSearchParams(location.search).get('swath');
+          var qpw=new URLSearchParams(location.search); var wantSwath=qpw.get('swath')||qpw.get('swaths');
           if(wantSwath && meshIdx && meshIdx.dates.indexOf(wantSwath)>=0){ setView('mesh'); }
           else setView('all'); // open on the full 5-year picture — the strongest view
         })
@@ -462,10 +459,18 @@
       var st=document.getElementById('hm-point-stats');
       if(st) st.innerHTML='<div class="hm-point-stat"><div class="v">\u2026</div><div class="l">checking 5 yrs of reports</div></div>';
       var tb=document.getElementById('hm-point-table'); if(tb) tb.innerHTML='';
-      fetch(FS_WORKER+'/hail?lat='+lat.toFixed(4)+'&lon='+lon.toFixed(4)+'&years=5')
-        .then(function(r){ return r.ok? r.json():null; })
-        .then(function(d){ renderLookup(d,lat,lon,label); })
-        .catch(function(){ if(st) st.innerHTML='<div class="hm-point-stat"><div class="v">&mdash;</div><div class="l">report service unavailable \u2014 try again shortly</div></div>'; });
+      function pull(){ return fetch(FS_WORKER+'/hail?lat='+lat.toFixed(4)+'&lon='+lon.toFixed(4)+'&years=5')
+        .then(function(r){ if(!r.ok) throw new Error('hail '+r.status); return r.json(); }); }
+      pull()
+        .catch(function(){ return new Promise(function(res){ setTimeout(res,900); }).then(pull); })
+        .then(function(d){
+          if(!d || !d.features){ throw new Error('empty'); }
+          renderLookup(d,lat,lon,label);
+        })
+        .catch(function(){
+          if(st) st.innerHTML='<div class="hm-point-stat" style="grid-column:1/-1"><div class="v">&mdash;</div><div class="l">the report service didn\u2019t answer \u2014 that\u2019s a hiccup on our end, not a quiet record. Tap the map again in a moment.</div></div>';
+          var tb=document.getElementById('hm-point-table'); if(tb) tb.innerHTML='';
+        });
       if(panel) panel.scrollIntoView({behavior:'smooth',block:'nearest'});
     }
     function renderLookup(d,lat,lon,label){
@@ -536,46 +541,6 @@
       });
     }
 
-    // ── MESH radar swaths (data/hail/mesh/YYYY-MM-DD.json, built daily) ──
-    var meshLayer=null, MESH_COLORS={0.75:'#7cd2ff',1:'#fed976',1.5:'#fd8d3c',2:'#e31a1c'};
-    function wireMesh(){
-      var inp=document.getElementById('hm-mesh-date'), clr=document.getElementById('hm-mesh-clear');
-      if(!inp||inp.dataset.wired) return; inp.dataset.wired='1';
-      fetch(DATA+'mesh/index.json',{cache:'no-cache'})
-        .then(function(r){ return r.ok? r.json():null; })
-        .then(function(ix){
-          if(!ix||!ix.dates||!ix.dates.length){
-            var ctl=inp.closest('.hm-mesh-ctl'); if(ctl) ctl.style.display='none'; return;
-          }
-          inp.min=ix.dates[0]; inp.max=ix.dates[ix.dates.length-1];
-          inp.addEventListener('change', function(){ if(inp.value) loadMesh(inp.value); });
-          if(clr) clr.addEventListener('click', function(){ clearMesh(); inp.value=''; clr.hidden=true; clearBanner(); });
-          var qp=new URLSearchParams(location.search);
-          if(qp.get('swaths') && /^\d{4}-\d{2}-\d{2}$/.test(qp.get('swaths'))){ inp.value=qp.get('swaths'); loadMesh(inp.value); }
-        }).catch(function(){});
-    }
-    function clearMesh(){ if(meshLayer){ map.removeLayer(meshLayer); meshLayer=null; } }
-    function loadMesh(date){
-      ga('hm_mesh_view',{date:date});
-      fetch(DATA+'mesh/'+date+'.json')
-        .then(function(r){ return r.ok? r.json():null; })
-        .then(function(fc){
-          clearMesh();
-          var clr=document.getElementById('hm-mesh-clear'); if(clr) clr.hidden=false;
-          if(!fc||!fc.features||!fc.features.length){
-            banner('No radar-estimated hail of damaging size on '+date+' &mdash; or the swath build for that date hasn\u2019t run yet. The report lookup above still covers every date.');
-            return;
-          }
-          clearBanner();
-          meshLayer=L.geoJSON(fc,{style:function(f){
-            var th=f.properties.thresh_in;
-            return {color:MESH_COLORS[th]||'#fff',weight:1,fillColor:MESH_COLORS[th]||'#fff',fillOpacity:0.28,opacity:0.8};
-          }}).addTo(map);
-          banner('<strong>Radar-estimated swaths for '+date+'.</strong> Colors mark where radar estimated hail of \u22650.75\u2033 / 1\u2033 / 1.5\u2033 / 2\u2033. MESH is an <em>estimate</em> (~1 km radar product) &mdash; the point reports and your own photos are the ground truth. <span style="opacity:.8">NOAA MRMS via Iowa State.</span>');
-        })
-        .catch(function(){ banner('Couldn\u2019t load swaths for '+date+' &mdash; try another date.'); });
-    }
-
     function banner(html){ var b=document.getElementById('hm-banner'); if(b){ b.innerHTML=html; b.hidden=false; } }
     function clearBanner(){ var b=document.getElementById('hm-banner'); if(b){ b.hidden=true; } }
 
@@ -591,13 +556,11 @@
         html += '<button class="hm-chip" type="button" data-key="mesh">Storm swaths</button>';
       }
       html += '<button class="hm-play" id="hm-play" type="button" aria-pressed="false">&#9654; Play</button>';
-      html += '<span class="hm-mesh-ctl"><label for="hm-mesh-date">Radar swaths</label><input type="date" id="hm-mesh-date" aria-label="Show radar-estimated hail swaths for a date"><button class="hm-chip" type="button" id="hm-mesh-clear" hidden>Clear swaths</button></span>';
       wrap.innerHTML = html;
       wrap.querySelectorAll('[data-key]').forEach(function(b){
         b.addEventListener('click', function(){ stopAnim(); setView(b.getAttribute('data-key')); });
       });
       document.getElementById('hm-play').addEventListener('click', toggleAnim);
-      wireMesh();
     }
 
     function markActive(key){
@@ -611,6 +574,7 @@
       var el=document.getElementById('hm-yearbadge'); if(!el) return;
       if(key==='all'){ el.innerHTML='5-Year<small>hail frequency</small>'; }
       else if(key==='recent'){ el.innerHTML='Recent<small>last 30 days</small>'; }
+      else if(key==='mesh'){ el.innerHTML='Swaths<small>radar-estimated</small>'; }
       else { el.innerHTML=esc(key)+'<small>hail reports</small>'; }
       el.classList.toggle('playing', !!anim);
     }
@@ -647,7 +611,7 @@
         showLegend('mesh');
         if(nav) nav.hidden=false;
         scope.textContent='radar-estimated swaths';
-        var qd=new URLSearchParams(location.search).get('swath');
+        var qp2=new URLSearchParams(location.search); var qd=qp2.get('swath')||qp2.get('swaths');
         var start=(qd && meshIdx.dates.indexOf(qd)>=0)? meshIdx.dates.indexOf(qd) : meshIdx.dates.length-1;
         showMeshDay(start);
         wireMeshNav();
@@ -704,6 +668,8 @@
       meshPos=Math.max(0, Math.min(meshIdx.dates.length-1, i));
       var d=meshIdx.dates[meshPos];
       var lbl=document.getElementById('hm-mesh-date'); if(lbl) lbl.textContent=d;
+      var bd=document.getElementById('hm-yearbadge');
+      if(bd){ try{ var dd=new Date(d+'T12:00:00Z'); bd.innerHTML=esc(dd.toLocaleDateString(undefined,{month:'short',day:'numeric'}))+'<small>radar swaths</small>'; }catch(e){} }
       var pv=document.getElementById('hm-mesh-prev'), nx=document.getElementById('hm-mesh-next');
       if(pv) pv.disabled = meshPos<=0;
       if(nx) nx.disabled = meshPos>=meshIdx.dates.length-1;
@@ -724,8 +690,8 @@
           var c=MESH_COLORS[f.properties.thresh_in]||'#fed976';
           return { color:c, weight:1, opacity:.9, fillColor:c, fillOpacity:.32 };
         }}).addTo(map);
-        if(cnt) cnt.textContent=fc.features.length.toLocaleString()+' band';
-        var sc=document.getElementById('hm-scope'); if(sc) sc.textContent='layer'+(fc.features.length===1?'':'s')+' \u00b7 '+d;
+        if(cnt) cnt.textContent=fc.features.length.toLocaleString();
+        var sc=document.getElementById('hm-scope'); if(sc) sc.textContent='size band'+(fc.features.length===1?'':'s')+' of radar-estimated hail \u00b7 '+d;
         try{ history.replaceState(null,'', '/hail-map?swath='+d); }catch(e){}
       }).catch(function(){ banner('That storm day didn\u2019t load \u2014 try another date.'); });
     }
