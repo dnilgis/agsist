@@ -14,7 +14,8 @@ Idempotent: rewrites only between <!--SEED:*--> markers and inside existing
 "dateModified" fields; a run with unchanged prices produces byte-identical
 files, so the workflow's diff-gate makes no empty commits.
 
-v1 — 2026-07-03
+v1.1 — 2026-07-03 (added the weekly-changing pages to DATEMOD_ONLY: urea,
+         ag-odds, cot, whats-priced-in, drought-monitor)
 """
 
 import json
@@ -35,7 +36,8 @@ PAGES = {
 
 # pages whose schema dateModified is stamped with today (price pages get it in
 # the loop above; these get it too because their content changes daily)
-DATEMOD_ONLY = ["cash-bids.html", "spray.html"]
+DATEMOD_ONLY = ["cash-bids.html", "spray.html", "urea.html", "ag-odds.html",
+                "cot.html", "whats-priced-in.html", "drought-monitor.html"]
 
 # sitemap <lastmod> bump list — the daily-changing URLs Google should recrawl
 SITEMAP_URLS = [
