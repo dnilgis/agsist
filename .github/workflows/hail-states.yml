@@ -1,0 +1,43 @@
+name: Hail state pages — generate from monthly data
+
+# Regenerates /hail-map/{state} static pages + their sitemap block from
+# data/hail/state-counties.json. Run it once by hand after deploying the
+# generator (it will create and commit all 51 pages), then it maintains
+# them monthly after the hail-data refresh.
+
+on:
+  schedule:
+    - cron: '20 6 2 * *'   # 06:20 UTC on the 2nd — after the monthly hail data lands on the 1st
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hail-states
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate state pages
+        run: python scripts/generate_hail_states.py
+      - name: Commit if changed
+        run: |
+          git config user.name  "agsist-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if git diff --quiet && [ -z "$(git status --porcelain)" ]; then
+            echo "No changes."
+          else
+            git add -A
+            git commit -m "hail: regenerate state pages + sitemap block"
+            git pull --rebase origin main
+            git push
+          fi

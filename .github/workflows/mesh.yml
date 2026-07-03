@@ -1,0 +1,72 @@
+name: MESH radar hail swaths — daily
+
+# Pulls NOAA MRMS daily-max MESH from the Iowa State archive, vectorizes the
+# >=0.75/1/1.5/2 inch bands to GeoJSON, and publishes to data/hail/mesh/.
+# Run it by hand first with days=30 to backfill the season, then the daily
+# cron keeps it current. The map's Storm Swaths control appears automatically
+# once index.json has dates — nothing to flip on.
+
+on:
+  schedule:
+    - cron: '25 8 * * *'   # 08:25 UTC — previous UTC day complete and archived
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'UTC day YYYY-MM-DD (default: yesterday)'
+        required: false
+      days:
+        description: 'Backfill this many days counting back from date'
+        required: false
+        default: '1'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mesh
+  cancel-in-progress: false
+
+jobs:
+  mesh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: System eccodes (GRIB2 decoder)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libeccodes0 libeccodes-data
+
+      - name: Python deps
+        run: pip install --quiet numpy matplotlib requests xarray cfgrib
+
+      - name: Offline selftest (contour engine)
+        run: python scripts/fetch_mesh.py --selftest
+
+      - name: Process day(s)
+        run: |
+          END="${{ github.event.inputs.date }}"
+          N="${{ github.event.inputs.days }}"
+          [ -z "$N" ] && N=1
+          [ -z "$END" ] && END=$(date -u -d 'yesterday' +%F)
+          for i in $(seq 0 $((N-1))); do
+            D=$(date -u -d "$END - $i day" +%F)
+            python scripts/fetch_mesh.py "$D" || echo "day $D failed — continuing"
+          done
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "agsist-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if git diff --quiet && [ -z "$(git status --porcelain)" ]; then
+            echo "No changes."
+          else
+            git add -A
+            git commit -m "mesh: radar hail swaths update"
+            git pull --rebase origin main
+            git push
+          fi
