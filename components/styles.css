@@ -218,7 +218,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .daily-sec-text { font-size: .92rem; line-height: 1.7; color: var(--text-dim) }
 .daily-sec-text strong { color: var(--text) }
 .daily-ctas { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap }
-.daily-dismiss-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; padding: .9rem var(--sp-lg) 1.25rem; border-top: 1px solid var(--border); max-width: 1400px; margin: 0 auto; }
+.daily-dismiss-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; padding: .9rem 0 1.25rem; border-top: 1px solid var(--border); }
 .daily-hero.dismissed .daily-dismiss-row { display: none }
 .hero-sidebar { display: flex; flex-direction: column; gap: 1rem; min-width: 0 }
 .s-card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--r-md); padding: 1.2rem; position: relative; overflow: hidden; transition: border-color .2s; min-width: 0; }
@@ -503,7 +503,7 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
   .signup--compact .scu-form { width: 100% }
   .signup--compact .scu-input { width: 100%; min-width: 0 }
   .signup--compact .scu-dismiss { margin-left: 0 }
-  .daily-dismiss-row { padding: .9rem 1rem 1.25rem }
+  .daily-dismiss-row { padding: .9rem 0 1.25rem }
 }
 @media (max-width: 520px) {
   .nav-inner { height: 60px; padding: 0 .9rem }
