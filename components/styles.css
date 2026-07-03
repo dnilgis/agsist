@@ -208,9 +208,11 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .daily-headline span { color: var(--gold) }
 .daily-lead { font-size: 1.02rem; line-height: 1.75; color: var(--text-dim); max-width: 580px; margin-bottom: 1.5rem }
 .daily-sections { display: flex; flex-direction: column; gap: .85rem; margin-bottom: 1.75rem }
-.daily-sec { display: flex; gap: .8rem; align-items: flex-start; padding: .9rem 1rem; background: var(--surface); border: 2px solid var(--border); border-radius: var(--r-md); transition: border-color .2s; min-width: 0; }
+.daily-sec { display: block; padding: .9rem 1rem; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--gold); border-radius: var(--r-md); transition: border-color .2s; min-width: 0; }
 .daily-sec:hover { border-color: var(--border-g) }
-.daily-sec-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: .1rem }
+.daily-sec-icon { display: none }
+#daily-tmyk-wrap { border-left-color: var(--blue) !important }
+#daily-tmyk-wrap .daily-sec-icon { display: block; font-size: 1.25rem; flex-shrink: 0; margin-top: .1rem; color: var(--blue) }
 .daily-sec > div { min-width: 0; overflow: hidden }
 .daily-sec-label { font-family: 'JetBrains Mono', monospace; font-size: .64rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--brand); margin-bottom: .3rem; opacity: .9; }
 .daily-sec-text { font-size: .92rem; line-height: 1.7; color: var(--text-dim) }
@@ -521,6 +523,7 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
   .prices-strip { top: 60px }
   .ticker-outer { height: 38px }
   .t-price { font-size: .8rem } .t-label { font-size: .64rem }
+  .daily-hero { width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw) }
   .daily-hero-inner { padding: 1.25rem .9rem }
   .daily-greeting { font-size: 1rem; margin-bottom: .35rem }
   .daily-eyebrow { font-size: .6rem; padding: .18rem .5rem; margin-bottom: .5rem }
