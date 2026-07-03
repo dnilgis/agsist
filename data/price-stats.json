@@ -1,14 +1,14 @@
 {
-  "updated": "2026-07-02T22:41:51Z",
+  "updated": "2026-07-03T22:37:38Z",
   "corn": {
-    "pct": 17,
-    "cur": 4.245,
+    "pct": 18,
+    "cur": 4.25,
     "lo": 3.6775,
     "hi": 8.1825,
     "median": 4.7213,
     "n": 262,
     "years": 5,
-    "read": "At the 17th percentile of the last 5 years \u2014 historically low \u2014 below most of the last 5 years.",
+    "read": "At the 18th percentile of the last 5 years \u2014 historically low \u2014 below most of the last 5 years.",
     "seasonality": [
       64,
       61,
@@ -50,7 +50,7 @@
   },
   "wheat": {
     "pct": 44,
-    "cur": 5.915,
+    "cur": 5.905,
     "lo": 4.985,
     "hi": 13.48,
     "median": 6.0587,
@@ -74,7 +74,7 @@
   },
   "cattle": {
     "pct": 93,
-    "cur": 239.025,
+    "cur": 239.225,
     "lo": 119.225,
     "hi": 257.45,
     "median": 180.7875,
@@ -98,7 +98,7 @@
   },
   "feeders": {
     "pct": 93,
-    "cur": 360.8,
+    "cur": 360.625,
     "lo": 152.75,
     "hi": 375.5,
     "median": 245.125,
