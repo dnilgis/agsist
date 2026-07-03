@@ -1,0 +1,53 @@
+name: Freshness — seed static prices, dateModified, sitemap lastmod
+
+# Bakes the latest closes into the static HTML of the futures pages (so
+# JS-blind AI crawlers see real numbers), stamps dateModified on the daily
+# pages, and bumps sitemap <lastmod> — Google's recrawl signal.
+#
+# Runs after the market close and once pre-open on weekdays (fetch_prices.py
+# has already written data/prices.json by then), plus on demand. Commits only
+# when file contents actually changed.
+
+on:
+  schedule:
+    - cron: '35 13 * * 1-5'   # 13:35 UTC — pre-open refresh (overnight session closes)
+    - cron: '35 20 * * 1-5'   # 20:35 UTC — post-close (CBOT day session ends 19:20 UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: freshness
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # pull whatever the 30-min prices workflow committed most recently
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Seed static content
+        run: python scripts/seed_static.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "agsist-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "No changes — nothing to commit."
+          else
+            git add -A
+            git commit -m "freshness: seed static prices + dateModified + sitemap lastmod"
+            git pull --rebase origin main
+            git push
+          fi
