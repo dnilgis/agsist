@@ -8,8 +8,8 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
-  <title>National Hail Map &mdash; 5 Years of US Hail History | AGSIST</title>
-  <meta name="description" content="See where hail hits across the US. An interactive heatmap of five years of NWS hail reports — watch the hail alleys light up in the same places year after year. Free, no login.">
+  <title>Hail Map &mdash; Did It Hail at Your Address? US Hail Reports by Location, State &amp; Date | AGSIST</title>
+  <meta name="description" content="Did it hail at your address? Search any US location for 5 years of dated NWS hail reports with stone sizes, print a sourced hail-history report, and browse hail-alley history by state and county. No charge, no login, printable reports.">
   <meta name="author" content="Sigurd Lindquist &mdash; Farmers First Agri Service">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://agsist.com/hail-map">
@@ -53,7 +53,47 @@
     .hm-title em{color:var(--brand,var(--gold));font-style:normal}
     .hm-sub{color:var(--text-dim);max-width:62ch;line-height:1.5;margin:0}
     #hm-map{height:60vh;min-height:420px;border-radius:12px;border:1px solid var(--border);background:#e9e9e3;z-index:1}
+    .hm-states{margin:1.6rem 0 0}
+    .hm-states h2{font-size:1rem;margin:0 0 .4rem}
+    .hm-states-links{line-height:2;font-size:.82rem}
+    .hm-states-links a{color:var(--text-dim,#9aa39e);text-decoration:none;margin-right:.7rem;white-space:nowrap}
+    .hm-states-links a:hover{color:var(--brand,#d4a23f)}
+    .hm-meshnav{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:.7rem 0 .2rem;padding:.5rem .7rem;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.12));border-radius:8px}
+    .hm-meshnav button{min-height:40px;min-width:40px;background:none;border:1px solid var(--border,rgba(132,160,168,.25));border-radius:6px;color:var(--text,#e6ebe9);font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;cursor:pointer;padding:.35rem .6rem}
+    .hm-meshnav button:disabled{opacity:.35;cursor:default}
+    .hm-mesh-date{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.86rem;min-width:9ch;text-align:center}
+    .hm-mesh-note{flex:1 1 100%;font-size:.72rem;color:var(--text-dim,#8a948f);font-family:'JetBrains Mono',monospace;line-height:1.5}
+    .hm-stats-line{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--text-dim,#8a948f);margin:.2rem 0 .9rem}
+    .hm-search{display:flex;align-items:center;gap:.5rem;margin:0 0 .7rem;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.12));border-radius:10px;padding:.35rem .35rem .35rem .7rem}
+    .hm-search .ic-sp{color:var(--text-dim,#8a948f);flex-shrink:0}
+    .hm-search input{flex:1;min-width:0;background:none;border:0;color:var(--text,#e6ebe9);font-size:16px;padding:.5rem .2rem;outline:none;font-family:Inter,system-ui,sans-serif}
+    .hm-search button{min-height:44px;border-radius:8px;border:1px solid var(--border,rgba(132,160,168,.2));background:var(--brand,#d4a23f);color:#141410;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.78rem;padding:.5rem .9rem;cursor:pointer}
+    .hm-search #hm-gps{background:none;color:var(--text-dim,#8a948f);padding:.5rem .6rem}
+    .hm-point{margin:1rem 0 0;padding:1rem;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.12));border-left:3px solid var(--brand,#d4a23f);border-radius:10px}
+    .hm-point-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin-bottom:.6rem}
+    .hm-point-head h2{margin:0;font-size:1.05rem}
+    .hm-point-acts{display:flex;gap:.4rem;flex-wrap:wrap}
+    .hm-point-acts button{display:inline-flex;align-items:center;gap:.35rem;min-height:40px;background:none;border:1px solid var(--border,rgba(132,160,168,.25));border-radius:8px;color:var(--text,#e6ebe9);font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;padding:.45rem .7rem;cursor:pointer}
+    .hm-point-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.5rem;margin-bottom:.7rem}
+    .hm-point-stat{background:rgba(255,255,255,.02);border:1px solid var(--border,rgba(132,160,168,.12));border-radius:8px;padding:.6rem .7rem}
+    .hm-point-stat .v{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;color:var(--text,#e6ebe9)}
+    .hm-point-stat .l{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim,#8a948f);margin-top:.15rem}
+    .hm-point-tablewrap{overflow-x:auto}
+    .hm-point-note{font-size:.82rem;color:var(--text-dim,#8a948f);line-height:1.6;margin:.7rem 0 0}
+    .hm-zoomnote{position:absolute;bottom:26px;left:8px;z-index:500;background:rgba(10,12,13,.85);border:1px solid rgba(132,160,168,.25);border-radius:6px;color:#c8d0cc;font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.3rem .55rem;pointer-events:none;display:none}
+    .hm-states{margin:1.6rem 0 0}
+    .hm-states-p{color:var(--text-dim,#8a948f);font-size:.86rem;margin:.3rem 0 .7rem}
+    .hm-states-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.3rem .8rem}
+    .hm-states-grid a{font-size:.84rem;color:var(--text,#e6ebe9);text-decoration:none;padding:.28rem 0}
+    .hm-states-grid a:hover{color:var(--brand,#d4a23f)}
+    .hm-sponsor{margin:1rem 0 0;padding:.85rem 1rem;background:rgba(212,162,63,.05);border:1px solid rgba(212,162,63,.25);border-radius:10px}
+    .hm-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand,#d4a23f);margin-bottom:.3rem}
+    .hm-sponsor-p{margin:0;font-size:.88rem;line-height:1.6;color:var(--text,#e6ebe9)}
+    .hm-sponsor-p a{color:var(--brand,#d4a23f);font-weight:700}
     .hm-controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.9rem 0 .4rem}
+    .hm-mesh-ctl{display:inline-flex;align-items:center;gap:.45rem;margin-left:.4rem;padding-left:.7rem;border-left:1px solid var(--border,rgba(132,160,168,.2))}
+    .hm-mesh-ctl label{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim,#8a948f)}
+    .hm-mesh-ctl input[type=date]{background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.25));border-radius:8px;color:var(--text,#e6ebe9);font-family:'JetBrains Mono',monospace;font-size:.78rem;padding:.4rem .5rem;min-height:40px}
     .hm-chip{font-family:inherit;font-size:.86rem;background:var(--surface);color:var(--text-dim);border:1px solid var(--border);border-radius:999px;padding:.42rem .8rem;cursor:pointer;transition:.12s;white-space:nowrap}
     .hm-chip:hover{color:var(--text)}
     .hm-chip.on{background:var(--brand,var(--gold));color:#1a1206;border-color:var(--brand,var(--gold));font-weight:600}
@@ -107,10 +147,7 @@
     .hm-cty-empty{color:var(--text-muted);text-align:center;padding:1.1rem!important}
   </style>
 
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"Dataset",
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"How to check if it hailed at your address","step":[{"@type":"HowToStep","name":"Search your location","text":"Enter your address, town, or ZIP in the search box above the AGSIST hail map, or tap the pin button to use your current location."},{"@type":"HowToStep","name":"Read the report list","text":"The page lists every National Weather Service hail report within 25 miles over the last five years, with dates, reported stone sizes, and distances."},{"@type":"HowToStep","name":"Share or save the record","text":"Copy link produces a shareable URL that reopens the exact same lookup for anyone you send it to."},{"@type":"HowToStep","name":"Print the report","text":"Use Print report for a dated, sourced document to pair with your own photos for any claim conversation."}]},{"@type":"Dataset","dateModified":"2026-07-03",
     "name":"AGSIST National Hail Map",
     "description":"Interactive heatmap of five years of US National Weather Service hail Local Storm Reports, showing the geographic frequency of hail across the country.",
     "url":"https://agsist.com/hail-map",
@@ -119,8 +156,7 @@
     "license":"https://creativecommons.org/licenses/by/4.0/",
     "spatialCoverage":{"@type":"Place","name":"Contiguous United States"},
     "includedInDataCatalog":{"@type":"DataCatalog","name":"NWS Local Storm Reports via Iowa Environmental Mesonet"}
-  }
-  </script>
+  }]}</script>
 
   <script type="application/ld+json">
   {
@@ -133,7 +169,7 @@
        "acceptedAnswer":{"@type":"Answer","text":"Hail alley is the high-frequency hail region centered on northeastern Colorado, southeastern Wyoming, and western Nebraska, where some areas average seven to nine or more hail days a year, driven by altitude, strong updrafts, and a low freezing level."}},
       {"@type":"Question","name":"When is hail season in the United States?",
        "acceptedAnswer":{"@type":"Answer","text":"Hail tracks the severe-thunderstorm season. Across most of the country the peak runs spring through mid-summer, generally April through July, with May and June busiest in the central Plains; the southern Plains and Southeast can begin earlier."}},
-      {"@type":"Question","name":"Does this map show every hailstorm?",
+      {"@type":"Question","name":"Is there a hail forecast on this page?","acceptedAnswer":{"@type":"Answer","text":"No. The AGSIST hail map is the record, not the forecast: it shows where hail was actually reported, which is what claims and history checks need. For severe-weather outlooks use the NWS Storm Prediction Center; for local field-work conditions AGSIST's spray advisory reads the forecast."}},{"@type":"Question","name":"What is the largest hail ever recorded in the US?","acceptedAnswer":{"@type":"Answer","text":"The US record hailstone fell at Vivian, South Dakota on July 23, 2010: 8.0 inches in diameter, 18.62 inches in circumference, weighing just under 2 pounds."}},{"@type":"Question","name":"What time of day does hail usually fall?","acceptedAnswer":{"@type":"Answer","text":"Mostly mid-afternoon through evening, roughly 3 to 9 PM local time, when daytime heating makes thunderstorm updrafts strongest. Overnight hail occurs with organized storm complexes, especially on the Plains."}},{"@type":"Question","name":"Does hail damage metal roofs?","acceptedAnswer":{"@type":"Answer","text":"Metal resists puncture better than asphalt shingle but it dents: 1-inch stones can cosmetically dent softer panels and 2-inch-plus hail can dent nearly any residential metal roof. Policies often distinguish cosmetic from functional metal-roof damage, so dated reports plus photos matter."}},{"@type":"Question","name":"What is the difference between hail, sleet, and graupel?","acceptedAnswer":{"@type":"Answer","text":"Hail is layered ice built by thunderstorm updrafts in the warm season and can be large. Sleet is small frozen raindrops from winter storms. Graupel is rime-coated snow pellets, soft and harmless."}},{"@type":"Question","name":"How fast does hail fall?","acceptedAnswer":{"@type":"Answer","text":"Terminal velocity scales with size: penny hail falls around 20 to 25 mph, golf-ball hail around 50 mph, baseball hail near 75 mph, and softball-class stones can exceed 100 mph."}},{"@type":"Question","name":"Did it hail at my address? How do I check?","acceptedAnswer":{"@type":"Answer","text":"Use the search box above the AGSIST hail map: enter an address, town, or ZIP and the page shows every National Weather Service hail report within 25 miles over the last five years, with dates, reported stone sizes, distances, and a printable report. Reports are town-level precision, so they confirm the day and neighborhood; on-site photos confirm the property."}},{"@type":"Question","name":"How big does hail have to be to cause damage?","acceptedAnswer":{"@type":"Answer","text":"Roughly: 1 inch (quarter size) can damage asphalt shingles, siding, and tender crops; 1.5 inch is the common damaging threshold and reliably dents vehicles and roofs; 2 inches and larger breaks windows and can strip crops to stalks. Wind, stone density, and storm duration change outcomes at every size."}},{"@type":"Question","name":"Does this map show every hailstorm?",
        "acceptedAnswer":{"@type":"Answer","text":"No. It shows reported hail — NWS Local Storm Reports from spotters, law enforcement, and the public — so it carries a population and spotter bias. The persistent geographic corridors are physically real and align with radar-based hail climatologies such as NSSL MESH analyses."}},
       {"@type":"Question","name":"How is hail damage to crops insured?",
        "acceptedAnswer":{"@type":"Answer","text":"Hail is covered by crop-hail insurance, a named-peril product separate from federal Multi-Peril Crop Insurance (MPCI). Because hail risk is geographically concentrated, growers on high-frequency corridors often carry crop-hail to cover the gap."}}
@@ -142,7 +178,12 @@
   </script>
 </head>
 <body>
-<style>.ic-sp{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;display:inline-block}</style><svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-triangle-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+<style>.ic-sp{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;display:inline-block}</style><svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34" />
+  <circle cx="11" cy="11" r="8" /></symbol><symbol id="sp-map-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" /></symbol><symbol id="sp-printer" viewBox="0 0 24 24"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+  <path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6" />
+  <rect x="6" y="14" width="12" height="8" rx="1" /></symbol><symbol id="sp-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></symbol><symbol id="sp-triangle-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
   <path d="M12 9v4" />
   <path d="M12 17h.01" /></symbol></svg>
   <a href="#main" class="skip">Skip to content</a>
@@ -154,7 +195,15 @@
 
       <div class="hm-head">
         <h1 class="hm-title">National Hail Map &mdash; <em>where it hits, year after year</em></h1>
-        <p class="hm-sub">Five years of National Weather Service hail reports on one map. Step through the years or hit play, and watch the same hail corridors light up season after season &mdash; the High Plains, the Front Range, the southern Plains. Risk has a geography. This is it.</p>
+        <p class="hm-sub"><span id="hm-seed-stats"><!--SEED:hailstats-->61,912 NWS hail reports on the map (2022–2026) · 2,052 in the last 30 days · data through 2026-07-01<!--/SEED--></span> Five years of National Weather Service hail reports on one map. Step through the years or hit play, and watch the same hail corridors light up season after season &mdash; the High Plains, the Front Range, the southern Plains. Risk has a geography. This is it. Crops, roofs, equipment, whole towns &mdash; if you’re checking hail, the record is here, at no charge, no login.</p>
+        <p class="hm-stats-line"><!--SEED:hailstats-->Tens of thousands of NWS hail reports on the map, updated monthly.<!--/SEED--></p>
+      </div>
+
+      <div class="hm-search" role="search">
+        <svg class="ic-sp" aria-hidden="true"><use href="#sp-search"/></svg>
+        <input type="text" id="hm-q" placeholder="Address, town, or ZIP &mdash; did it hail here?" aria-label="Search a location" autocomplete="off">
+        <button type="button" id="hm-go">Check</button>
+        <button type="button" id="hm-gps" title="Use my location" aria-label="Use my location"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg></button>
       </div>
 
       <div class="hm-mapwrap">
@@ -164,9 +213,23 @@
 
       <div class="hm-controls" id="hm-controls" role="group" aria-label="Select view"></div>
 
+      <div class="hm-meshnav" id="hm-meshnav" hidden role="group" aria-label="Storm swath date">
+        <button type="button" id="hm-mesh-prev" aria-label="Previous storm day">&#9664;</button>
+        <span class="hm-mesh-date" id="hm-mesh-date">&hellip;</span>
+        <button type="button" id="hm-mesh-next" aria-label="Next storm day">&#9654;</button>
+        <button type="button" id="hm-mesh-latest">Latest</button>
+        <span class="hm-mesh-note">Radar-<em>estimated</em> size (NOAA MRMS MESH) &middot; not a ground measurement &middot; tap the map to pull the human reports for any spot</span>
+      </div>
+
       <div class="hm-meta">
         <span><span class="hm-count" id="hm-count">&hellip;</span> hail reports <span id="hm-scope"></span></span>
         <span class="hm-legend" id="hm-legend-freq"><span>Less</span><span class="hm-legend-bar" aria-hidden="true"></span><span>More frequent</span></span>
+        <span class="hm-legend hm-legend-mesh" id="hm-legend-mesh" hidden>
+          <span class="hm-dot" style="background:#7cd2ff"></span>&ge;0.75&Prime; est.
+          <span class="hm-dot" style="background:#fed976"></span>&ge;1&Prime;
+          <span class="hm-dot" style="background:#fd8d3c"></span>&ge;1.5&Prime;
+          <span class="hm-dot" style="background:#e31a1c"></span>&ge;2&Prime;
+        </span>
         <span class="hm-legend hm-legend-size" id="hm-legend-size" hidden>
           <span class="hm-dot" style="background:#7cd2ff"></span>pea&ndash;penny
           <span class="hm-dot" style="background:#fed976"></span>quarter+
@@ -176,6 +239,24 @@
       </div>
 
       <div id="hm-banner" class="hm-banner" hidden></div>
+
+      <section class="hm-point" id="hm-point" hidden aria-live="polite">
+        <div class="hm-point-head">
+          <h2 id="hm-point-title">Hail history at this spot</h2>
+          <div class="hm-point-acts">
+            <button type="button" id="hm-point-print"><svg class="ic-sp" aria-hidden="true"><use href="#sp-printer"/></svg> Print report</button>
+            <button type="button" id="hm-point-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Copy link</button>
+          </div>
+        </div>
+        <div class="hm-point-stats" id="hm-point-stats"></div>
+        <div class="hm-point-tablewrap"><table class="hm-cty-table" id="hm-point-table"></table></div>
+        <p class="hm-point-note">Reports are National Weather Service Local Storm Reports within <strong>25 miles</strong> of the pin &mdash; called in by spotters, law enforcement, and the public, so location is town-level precision (roughly 1&ndash;5 miles), not parcel-exact, and quiet years can mean nobody reported, not that nothing fell. Farming this ground? <a href="/field-scout">Draw the field in Field Scout</a> for the per-field read with satellite vigor.</p>
+      </section>
+
+      <aside class="hm-sponsor" id="hm-sponsor">
+        <div class="hm-sponsor-tag">Sponsor this map</div>
+        <p class="hm-sponsor-p">Every visitor on this page is checking hail damage right now &mdash; farms, homes, roofs, dealerships. One sponsor, category-exclusive, in this exact spot. <a href="/sponsor?slot=hail-map&amp;utm_source=hail-map&amp;utm_medium=slot" id="hm-sponsor-cta">Put your name here &rarr;</a></p>
+      </aside>
 
       <div class="hm-note">
         <strong>What you're looking at.</strong> Each point is a hail report logged by a National Weather Service office &mdash; a trained spotter, law enforcement, or the public called it in. Brighter areas got more reports. Because reporting tracks population and storm spotters too, this is a map of <em>reported</em> hail, not a perfect physical record &mdash; but the persistent corridors are real, and they're exactly the ground where hail coverage earns its keep.
@@ -204,6 +285,12 @@
         </div>
       </section>
 
+      <section class="hm-states" aria-labelledby="hm-states-h">
+        <h2 id="hm-states-h">Hail history by state</h2>
+        <p class="hm-states-p">County rankings, peak months, and damaging-hail share — same data, one page per state.</p>
+        <div class="hm-states-grid"><a href="/hail-map/alabama">Alabama</a><a href="/hail-map/alaska">Alaska</a><a href="/hail-map/arizona">Arizona</a><a href="/hail-map/arkansas">Arkansas</a><a href="/hail-map/california">California</a><a href="/hail-map/colorado">Colorado</a><a href="/hail-map/connecticut">Connecticut</a><a href="/hail-map/delaware">Delaware</a><a href="/hail-map/district-of-columbia">District of Columbia</a><a href="/hail-map/florida">Florida</a><a href="/hail-map/georgia">Georgia</a><a href="/hail-map/hawaii">Hawaii</a><a href="/hail-map/idaho">Idaho</a><a href="/hail-map/illinois">Illinois</a><a href="/hail-map/indiana">Indiana</a><a href="/hail-map/iowa">Iowa</a><a href="/hail-map/kansas">Kansas</a><a href="/hail-map/kentucky">Kentucky</a><a href="/hail-map/louisiana">Louisiana</a><a href="/hail-map/maine">Maine</a><a href="/hail-map/maryland">Maryland</a><a href="/hail-map/massachusetts">Massachusetts</a><a href="/hail-map/michigan">Michigan</a><a href="/hail-map/minnesota">Minnesota</a><a href="/hail-map/mississippi">Mississippi</a><a href="/hail-map/missouri">Missouri</a><a href="/hail-map/montana">Montana</a><a href="/hail-map/nebraska">Nebraska</a><a href="/hail-map/nevada">Nevada</a><a href="/hail-map/new-hampshire">New Hampshire</a><a href="/hail-map/new-jersey">New Jersey</a><a href="/hail-map/new-mexico">New Mexico</a><a href="/hail-map/new-york">New York</a><a href="/hail-map/north-carolina">North Carolina</a><a href="/hail-map/north-dakota">North Dakota</a><a href="/hail-map/ohio">Ohio</a><a href="/hail-map/oklahoma">Oklahoma</a><a href="/hail-map/oregon">Oregon</a><a href="/hail-map/pennsylvania">Pennsylvania</a><a href="/hail-map/rhode-island">Rhode Island</a><a href="/hail-map/south-carolina">South Carolina</a><a href="/hail-map/south-dakota">South Dakota</a><a href="/hail-map/tennessee">Tennessee</a><a href="/hail-map/texas">Texas</a><a href="/hail-map/utah">Utah</a><a href="/hail-map/vermont">Vermont</a><a href="/hail-map/virginia">Virginia</a><a href="/hail-map/washington">Washington</a><a href="/hail-map/west-virginia">West Virginia</a><a href="/hail-map/wisconsin">Wisconsin</a><a href="/hail-map/wyoming">Wyoming</a></div>
+      </section>
+
       <section class="hm-faq" aria-labelledby="hm-faq-h">
         <h2 id="hm-faq-h">Hail in the United States &mdash; the questions people ask</h2>
         <details open><summary>Where does hail happen most in the US?</summary>
@@ -214,6 +301,22 @@
           <p>Hail tracks the severe-thunderstorm season. Across most of the country the peak runs <strong>spring through mid-summer</strong>, generally April&ndash;July, with May and June the busiest in the central Plains. The southern Plains and Southeast can begin earlier in spring.</p></details>
         <details><summary>Is this map every hailstorm that happened?</summary>
           <p>No. It shows <em>reported</em> hail &mdash; National Weather Service Local Storm Reports called in by spotters, law enforcement, and the public. Reporting is denser where more people and trained spotters are, so the map carries a population bias. The persistent geographic corridors, though, are physically real and line up with radar-based hail climatologies such as NSSL's MESH analyses.</p></details>
+        <details><summary>Did it hail at my address? How do I check?</summary>
+          <p>Use the search box above the map: type your address, town, or ZIP (or tap the pin button to use your location) and the page pulls every National Weather Service hail report within 25 miles over the last five years &mdash; dates, reported stone sizes, and distances &mdash; with a printable report. Reports are town-level precision, so use them to confirm the day and the neighborhood; your own photos confirm the property.</p></details>
+        <details><summary>How big does hail have to be to cause damage?</summary>
+          <p>Rules of thumb from insurance and agronomy experience: <strong>1&Prime; (quarter size)</strong> can damage asphalt shingles, siding, and tender crops; <strong>1.5&Prime; (ping-pong)</strong> is the common &ldquo;damaging&rdquo; threshold used on this page and dents vehicles and roofs reliably; <strong>2&Prime;+ (hen egg and up)</strong> breaks windows, strips crops to stalks, and totals roofs. Damage also depends on wind, stone density, and duration &mdash; a long soft-hail event can shred a bean field that a brief hard-hail event leaves alone.</p></details>
+        <details><summary>Is there a hail forecast on this page?</summary>
+          <p>No &mdash; this page is the <em>record</em>, not the forecast. It shows where hail was actually reported, which is what claims, history checks, and risk decisions need. For whether conditions favor severe weather in the next few days, use the NWS Storm Prediction Center outlooks; for whether the next few days are workable on your ground, the <a href="/spray">AGSIST spray advisory</a> reads the local forecast for you.</p></details>
+        <details><summary>What's the largest hail ever recorded in the US?</summary>
+          <p>The US record stone fell at <strong>Vivian, South Dakota on July 23, 2010</strong> &mdash; 8.0&Prime; in diameter, 18.62&Prime; in circumference, just under 2 pounds. Grapefruit-class stones (4&Prime;+) show up somewhere on the Plains most years; this map's size legend tops out at baseball+ because that's already roof-totaling, crop-stripping hail.</p></details>
+        <details><summary>What time of day does hail usually fall?</summary>
+          <p>Mostly <strong>mid-afternoon through evening</strong> &mdash; roughly 3&ndash;9 PM local &mdash; when daytime heating peaks and thunderstorm updrafts are strongest. Overnight hail happens, especially with organized storm complexes on the Plains, but if you're planning around exposure (equipment out, cattle moves, a roofing job), the afternoon is the window that matters.</p></details>
+        <details><summary>Does hail damage metal roofs?</summary>
+          <p>Metal resists <em>puncture</em> far better than asphalt shingle, but it <strong>dents</strong> &mdash; 1&Prime; stones can cosmetically dent softer metal panels, and 2&Prime;+ can dent nearly any residential metal roof. Many policies distinguish cosmetic from functional metal-roof damage, which is exactly why a dated report from this page plus your own photos beats memory in a claim conversation.</p></details>
+        <details><summary>What's the difference between hail, sleet, and graupel?</summary>
+          <p><strong>Hail</strong> is layered ice built by thunderstorm updrafts &mdash; warm-season, can be huge. <strong>Sleet</strong> is small frozen raindrops from winter storms &mdash; never large, never from thunderstorms. <strong>Graupel</strong> ("soft hail") is snow pellets coated in rime &mdash; soft, crushable, harmless. If it's summer, it's a thunderstorm, and it bounces hard off the driveway &mdash; it's hail, and it belongs on this map.</p></details>
+        <details><summary>How fast does hail fall?</summary>
+          <p>Terminal velocity scales with size: penny hail falls around <strong>20&ndash;25 mph</strong>, golf balls around <strong>50 mph</strong>, baseballs near <strong>75 mph</strong>, and softball-class stones can exceed <strong>100 mph</strong>. That speed, more than the weight alone, is why 2&Prime; hail breaks what 1&Prime; hail only dents.</p></details>
         <details><summary>How is hail damage to crops insured?</summary>
           <p>Hail is covered by <strong>crop-hail insurance</strong>, a named-peril product that's separate from federal Multi-Peril Crop Insurance (MPCI). Because hail risk is so geographically concentrated, growers on the high-frequency corridors often carry crop-hail to cover the gap. If your ground sits in a bright zone here, that's a conversation worth having &mdash; <a href="https://farmers1st.com/" target="_blank" rel="noopener">Farmers First Agri Service</a> writes crop-hail in WI and MN.</p></details>
       </section>
@@ -234,7 +337,9 @@
 
     var map, heat=null, markers=null, cache={}, recentCache=null,
         manifest=null, current=null, anim=null,
-        countyData=null, countyState=null;
+        countyData=null, countyState=null,
+        meshIdx=null, meshLayer=null, meshCache={}, meshPos=-1;
+    var MESH_COLORS={0.75:'#7cd2ff',1:'#fed976',1.5:'#fd8d3c',2:'#e31a1c'};
 
     // Approximate state bounding boxes [minLng,minLat,maxLng,maxLat] for a
     // dependency-free "which state is the map centered on" lookup. Imperfect near
@@ -265,12 +370,41 @@
 
     function init(){
       if(typeof L==='undefined' || typeof L.heatLayer==='undefined'){ banner('The map library failed to load &mdash; refresh the page.'); return; }
-      map = L.map('hm-map', { zoomControl:true, minZoom:3, maxZoom:9, worldCopyJump:false, preferCanvas:true })
+      map = L.map('hm-map', { zoomControl:true, minZoom:3, maxZoom:12, worldCopyJump:false, preferCanvas:true })
         .setView([39.5, -98.35], 4); // CONUS
       L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-        { maxZoom:9, attribution:'&copy; OpenStreetMap, &copy; CARTO' }).addTo(map);
+        { maxZoom:12, attribution:'&copy; OpenStreetMap, &copy; CARTO' }).addTo(map);
+
+      // Honesty at street zoom: LSR points are town-precision, not parcel-exact.
+      var zn=document.createElement('div'); zn.className='hm-zoomnote';
+      zn.textContent='Reports are town-level precision (~1\u20135 mi), not parcel-exact';
+      document.getElementById('hm-map').appendChild(zn);
+      map.on('zoomend', function(){ zn.style.display = map.getZoom()>=10 ? 'block' : 'none'; });
+
+      map.on('click', function(e){ runLookup(e.latlng.lat, e.latlng.lng, null); });
+      wireSearch();
+      var qp=new URLSearchParams(location.search);
+      var qs=(qp.get('state')||'').toUpperCase();
+      if(qs && STATE_BBOX[qs]){ var bb=STATE_BBOX[qs]; map.fitBounds([[bb[1],bb[0]],[bb[3],bb[2]]]); }
+      if(qp.get('lat')&&qp.get('lon')){ var la=+qp.get('lat'), lo=+qp.get('lon');
+        if(isFinite(la)&&isFinite(lo)){ map.setView([la,lo],9); setTimeout(function(){ runLookup(la,lo,null); },400); } }
+      // sponsor-slot intent metrics: one view event when seen, click event on the CTA
+      try{
+        var sp=document.getElementById('hm-sponsor');
+        if(sp && 'IntersectionObserver' in window){
+          var io=new IntersectionObserver(function(en){ if(en[0].isIntersecting){ ga('hm_sponsor_view',{slot:'hail-map'}); io.disconnect(); } },{threshold:.6});
+          io.observe(sp);
+        }
+        var cta=document.getElementById('hm-sponsor-cta');
+        if(cta) cta.addEventListener('click', function(){ ga('hm_sponsor_click',{slot:'hail-map'}); });
+      }catch(e){}
 
       loadCounties();
+
+      fetch(DATA+'mesh/index.json', {cache:'no-cache'})
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(ix){ if(ix && ix.dates && ix.dates.length){ meshIdx=ix; if(manifest) buildControls(); } })
+        .catch(function(){});
 
       fetch(DATA+'manifest.json', {cache:'no-cache'})
         .then(function(r){ return r.ok ? r.json() : null; })
@@ -279,9 +413,167 @@
           manifest = m;
           buildControls();
           var gen=document.getElementById('hm-gen'); if(gen && m.generated) gen.textContent='Data through '+m.generated+'.';
-          setView('all'); // open on the full 5-year picture — the strongest view
+          var wantSwath=new URLSearchParams(location.search).get('swath');
+          if(wantSwath && meshIdx && meshIdx.dates.indexOf(wantSwath)>=0){ setView('mesh'); }
+          else setView('all'); // open on the full 5-year picture — the strongest view
         })
         .catch(function(){ banner('Couldn\u2019t load the hail data just now &mdash; refresh to try again.'); });
+    }
+
+    // ── Location lookup: did it hail HERE? ─────────────────────────────
+    var FS_WORKER='https://agsist-fieldscout.dnilgis.workers.dev';
+    var pin=null, lastLookup=null;
+    function haversineMi(a,b,c,d){ var R=3958.8,p=Math.PI/180,x=(c-a)*p,y=(d-b)*p,
+      s=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*p)*Math.cos(c*p)*Math.sin(y/2)*Math.sin(y/2);
+      return R*2*Math.atan2(Math.sqrt(s),Math.sqrt(1-s)); }
+    function wireSearch(){
+      var q=document.getElementById('hm-q'), go=document.getElementById('hm-go'), gps=document.getElementById('hm-gps');
+      if(!q||!go) return;
+      function search(){
+        var v=q.value.trim(); if(!v) return;
+        go.disabled=true; go.textContent='\u2026';
+        fetch('https://nominatim.openstreetmap.org/search?format=json&countrycodes=us&limit=1&q='+encodeURIComponent(v))
+          .then(function(r){return r.json();})
+          .then(function(res){
+            go.disabled=false; go.textContent='Check';
+            if(!res||!res.length){ banner('Couldn\u2019t find that spot &mdash; try a town and state, or a ZIP.'); return; }
+            clearBanner();
+            var la=+res[0].lat, lo=+res[0].lon;
+            map.setView([la,lo],9);
+            runLookup(la,lo,res[0].display_name?String(res[0].display_name).split(',').slice(0,2).join(','):null);
+          })
+          .catch(function(){ go.disabled=false; go.textContent='Check'; banner('Search isn\u2019t responding &mdash; try again in a moment.'); });
+      }
+      go.addEventListener('click', search);
+      q.addEventListener('keydown', function(e){ if(e.key==='Enter') search(); });
+      if(gps) gps.addEventListener('click', function(){
+        if(!navigator.geolocation){ banner('Location isn\u2019t available in this browser.'); return; }
+        navigator.geolocation.getCurrentPosition(function(pos){
+          var la=pos.coords.latitude, lo=pos.coords.longitude;
+          map.setView([la,lo],9); runLookup(la,lo,'Your location');
+        }, function(){ banner('Couldn\u2019t get your location &mdash; search by town or ZIP instead.'); });
+      });
+    }
+    function runLookup(lat,lon,label){
+      ga('hm_lookup',{});
+      if(pin) map.removeLayer(pin);
+      pin=L.marker([lat,lon]).addTo(map);
+      var panel=document.getElementById('hm-point'); if(panel){ panel.hidden=false; }
+      var st=document.getElementById('hm-point-stats');
+      if(st) st.innerHTML='<div class="hm-point-stat"><div class="v">\u2026</div><div class="l">checking 5 yrs of reports</div></div>';
+      var tb=document.getElementById('hm-point-table'); if(tb) tb.innerHTML='';
+      fetch(FS_WORKER+'/hail?lat='+lat.toFixed(4)+'&lon='+lon.toFixed(4)+'&years=5')
+        .then(function(r){ return r.ok? r.json():null; })
+        .then(function(d){ renderLookup(d,lat,lon,label); })
+        .catch(function(){ if(st) st.innerHTML='<div class="hm-point-stat"><div class="v">&mdash;</div><div class="l">report service unavailable \u2014 try again shortly</div></div>'; });
+      if(panel) panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+    function renderLookup(d,lat,lon,label){
+      var st=document.getElementById('hm-point-stats'), tb=document.getElementById('hm-point-table'),
+          ttl=document.getElementById('hm-point-title');
+      var feats=(d&&d.features)||[];
+      var ev=[];
+      feats.forEach(function(f){
+        try{
+          var c=f.geometry.coordinates, p=f.properties||{};
+          var mi=haversineMi(lat,lon,c[1],c[0]);
+          if(mi>25) return;
+          var dt=(p.valid||'').slice(0,10);
+          var mag=parseFloat(p.magnitude);
+          ev.push({date:dt, mi:mi, mag:isFinite(mag)?mag:null, place:(p.city||p.county||'')+(p.st?', '+p.st:'')});
+        }catch(e){}
+      });
+      ev.sort(function(a,b){ return a.date<b.date?1:-1; });
+      var days={}; ev.forEach(function(e){ if(e.date) days[e.date]=1; });
+      var nDays=Object.keys(days).length;
+      var maxMag=ev.reduce(function(m,e){ return e.mag!=null&&e.mag>m?e.mag:m; },0);
+      var newest=ev.length?ev[0].date:null;
+      if(ttl) ttl.textContent='Hail history \u2014 '+(label||lat.toFixed(3)+', '+lon.toFixed(3));
+      if(st) st.innerHTML=
+        '<div class="hm-point-stat"><div class="v">'+ev.length+'</div><div class="l">reports \u00b7 25 mi \u00b7 5 yrs</div></div>'+
+        '<div class="hm-point-stat"><div class="v">'+nDays+'</div><div class="l">hail days ('+(nDays/5).toFixed(1)+'/yr)</div></div>'+
+        '<div class="hm-point-stat"><div class="v">'+(maxMag?maxMag.toFixed(2)+'\u2033':'\u2014')+'</div><div class="l">largest reported</div></div>'+
+        '<div class="hm-point-stat"><div class="v">'+(newest?esc(fmtDate(newest)):'\u2014')+'</div><div class="l">most recent</div></div>';
+      if(tb){
+        if(!ev.length){ tb.innerHTML='<tbody><tr><td class="hm-cty-empty">No NWS hail reports within 25 miles in the last 5 years \u2014 which means none were <em>reported</em>, a genuinely quiet stretch by the record.</td></tr></tbody>'; }
+        else{
+          var rows=ev.slice(0,40).map(function(e){
+            return '<tr><td>'+esc(fmtDate(e.date))+'</td><td class="num">'+(e.mag!=null?e.mag.toFixed(2)+'\u2033':'\u2014')+'</td><td class="num">'+e.mi.toFixed(1)+' mi</td><td>'+esc(e.place)+'</td></tr>';
+          }).join('');
+          tb.innerHTML='<thead><tr><th scope="col">Date</th><th scope="col" class="num">Size</th><th scope="col" class="num">Distance</th><th scope="col">Near</th></tr></thead><tbody>'+rows+'</tbody>'+
+            (ev.length>40?'<tbody><tr><td colspan="4" class="hm-cty-empty">'+(ev.length-40)+' older reports not shown \u2014 print the report for the full record.</td></tr></tbody>':'');
+        }
+      }
+      lastLookup={lat:lat,lon:lon,label:label,ev:ev,nDays:nDays,maxMag:maxMag};
+      wirePointActs();
+    }
+    function fmtDate(iso){ try{ return new Date(iso+'T12:00:00Z').toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}); }catch(e){ return iso; } }
+    var actsWired=false;
+    function wirePointActs(){
+      if(actsWired) return; actsWired=true;
+      var pl=document.getElementById('hm-point-link');
+      if(pl) pl.addEventListener('click', function(){
+        if(!lastLookup) return;
+        var u=location.origin+'/hail-map?lat='+lastLookup.lat.toFixed(4)+'&lon='+lastLookup.lon.toFixed(4);
+        (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(function(){ pl.textContent='Copied'; setTimeout(function(){ pl.innerHTML='<svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Copy link'; },1600); }).catch(function(){ prompt('Link:',u); });
+      });
+      var pr=document.getElementById('hm-point-print');
+      if(pr) pr.addEventListener('click', function(){
+        if(!lastLookup) return;
+        ga('hm_report_print',{});
+        var L=lastLookup;
+        var rows=L.ev.map(function(e){ return '<tr><td>'+esc(e.date)+'</td><td>'+(e.mag!=null?e.mag.toFixed(2)+'&Prime;':'&mdash;')+'</td><td>'+e.mi.toFixed(1)+' mi</td><td>'+esc(e.place)+'</td></tr>'; }).join('');
+        var w=window.open('','_blank');
+        if(!w){ banner('Allow pop-ups to print the report.'); return; }
+        w.document.write('<!DOCTYPE html><html><head><title>Hail History Report</title><style>body{font-family:Georgia,serif;color:#1a1a1a;max-width:720px;margin:2rem auto;padding:0 1rem}h1{font-size:1.4rem;border-bottom:2px solid #6b5a13;padding-bottom:.4rem}table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:1rem}th,td{border-bottom:1px solid #ccc;text-align:left;padding:.35rem .5rem}th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}.meta{color:#555;font-size:.85rem}.foot{margin-top:1.5rem;font-size:.75rem;color:#666;border-top:1px solid #ccc;padding-top:.6rem;line-height:1.5}</style></head><body>'+
+          '<h1>Hail History Report</h1>'+
+          '<p class="meta">Location: '+esc(L.label||L.lat.toFixed(4)+', '+L.lon.toFixed(4))+' &middot; Radius: 25 miles &middot; Window: last 5 years &middot; Generated '+new Date().toLocaleDateString()+'</p>'+
+          '<p><strong>'+L.ev.length+'</strong> NWS hail reports on <strong>'+L.nDays+'</strong> distinct days ('+(L.nDays/5).toFixed(1)+'/yr average). Largest reported stone: <strong>'+(L.maxMag?L.maxMag.toFixed(2)+'&Prime;':'none recorded')+'</strong>.</p>'+
+          '<table><thead><tr><th>Date</th><th>Size</th><th>Distance</th><th>Near</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+          '<p class="foot">Prepared by <strong>Sigurd Lindquist</strong> &middot; AGSIST &middot; sig@farmers1st.com &middot; agsist.com/hail-map<br>Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet. Reports are town-level precision and depend on someone reporting; absence of reports is not proof of absence of hail. This is a public-data record, not an engineering or insurance determination.</p>'+
+          '</body></html>');
+        w.document.close(); setTimeout(function(){ w.print(); },300);
+      });
+    }
+
+    // ── MESH radar swaths (data/hail/mesh/YYYY-MM-DD.json, built daily) ──
+    var meshLayer=null, MESH_COLORS={0.75:'#7cd2ff',1:'#fed976',1.5:'#fd8d3c',2:'#e31a1c'};
+    function wireMesh(){
+      var inp=document.getElementById('hm-mesh-date'), clr=document.getElementById('hm-mesh-clear');
+      if(!inp||inp.dataset.wired) return; inp.dataset.wired='1';
+      fetch(DATA+'mesh/index.json',{cache:'no-cache'})
+        .then(function(r){ return r.ok? r.json():null; })
+        .then(function(ix){
+          if(!ix||!ix.dates||!ix.dates.length){
+            var ctl=inp.closest('.hm-mesh-ctl'); if(ctl) ctl.style.display='none'; return;
+          }
+          inp.min=ix.dates[0]; inp.max=ix.dates[ix.dates.length-1];
+          inp.addEventListener('change', function(){ if(inp.value) loadMesh(inp.value); });
+          if(clr) clr.addEventListener('click', function(){ clearMesh(); inp.value=''; clr.hidden=true; clearBanner(); });
+          var qp=new URLSearchParams(location.search);
+          if(qp.get('swaths') && /^\d{4}-\d{2}-\d{2}$/.test(qp.get('swaths'))){ inp.value=qp.get('swaths'); loadMesh(inp.value); }
+        }).catch(function(){});
+    }
+    function clearMesh(){ if(meshLayer){ map.removeLayer(meshLayer); meshLayer=null; } }
+    function loadMesh(date){
+      ga('hm_mesh_view',{date:date});
+      fetch(DATA+'mesh/'+date+'.json')
+        .then(function(r){ return r.ok? r.json():null; })
+        .then(function(fc){
+          clearMesh();
+          var clr=document.getElementById('hm-mesh-clear'); if(clr) clr.hidden=false;
+          if(!fc||!fc.features||!fc.features.length){
+            banner('No radar-estimated hail of damaging size on '+date+' &mdash; or the swath build for that date hasn\u2019t run yet. The report lookup above still covers every date.');
+            return;
+          }
+          clearBanner();
+          meshLayer=L.geoJSON(fc,{style:function(f){
+            var th=f.properties.thresh_in;
+            return {color:MESH_COLORS[th]||'#fff',weight:1,fillColor:MESH_COLORS[th]||'#fff',fillOpacity:0.28,opacity:0.8};
+          }}).addTo(map);
+          banner('<strong>Radar-estimated swaths for '+date+'.</strong> Colors mark where radar estimated hail of \u22650.75\u2033 / 1\u2033 / 1.5\u2033 / 2\u2033. MESH is an <em>estimate</em> (~1 km radar product) &mdash; the point reports and your own photos are the ground truth. <span style="opacity:.8">NOAA MRMS via Iowa State.</span>');
+        })
+        .catch(function(){ banner('Couldn\u2019t load swaths for '+date+' &mdash; try another date.'); });
     }
 
     function banner(html){ var b=document.getElementById('hm-banner'); if(b){ b.innerHTML=html; b.hidden=false; } }
@@ -295,12 +587,17 @@
       });
       html += '<button class="hm-chip" type="button" data-key="all">All '+manifest.years.length+' years</button>';
       html += '<button class="hm-chip" type="button" data-key="recent"><svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> Recent (30 days)</button>';
+      if(meshIdx && meshIdx.dates && meshIdx.dates.length){
+        html += '<button class="hm-chip" type="button" data-key="mesh">Storm swaths</button>';
+      }
       html += '<button class="hm-play" id="hm-play" type="button" aria-pressed="false">&#9654; Play</button>';
+      html += '<span class="hm-mesh-ctl"><label for="hm-mesh-date">Radar swaths</label><input type="date" id="hm-mesh-date" aria-label="Show radar-estimated hail swaths for a date"><button class="hm-chip" type="button" id="hm-mesh-clear" hidden>Clear swaths</button></span>';
       wrap.innerHTML = html;
       wrap.querySelectorAll('[data-key]').forEach(function(b){
         b.addEventListener('click', function(){ stopAnim(); setView(b.getAttribute('data-key')); });
       });
       document.getElementById('hm-play').addEventListener('click', toggleAnim);
+      wireMesh();
     }
 
     function markActive(key){
@@ -320,9 +617,10 @@
 
     // Frequency legend for heat views; size legend for the recent-events view.
     function showLegend(which){
-      var f=document.getElementById('hm-legend-freq'), s=document.getElementById('hm-legend-size');
+      var f=document.getElementById('hm-legend-freq'), s=document.getElementById('hm-legend-size'), m=document.getElementById('hm-legend-mesh');
       if(f) f.hidden = (which!=='freq');
       if(s) s.hidden = (which!=='size');
+      if(m) m.hidden = (which!=='mesh');
     }
 
     function loadYear(y){
@@ -344,6 +642,20 @@
       current=key;
       markActive(key); badge(key);
       var scope=document.getElementById('hm-scope'), cnt=document.getElementById('hm-count');
+      var nav=document.getElementById('hm-meshnav');
+      if(key==='mesh'){
+        showLegend('mesh');
+        if(nav) nav.hidden=false;
+        scope.textContent='radar-estimated swaths';
+        var qd=new URLSearchParams(location.search).get('swath');
+        var start=(qd && meshIdx.dates.indexOf(qd)>=0)? meshIdx.dates.indexOf(qd) : meshIdx.dates.length-1;
+        showMeshDay(start);
+        wireMeshNav();
+        ga('hm_mesh_view',{});
+        return;
+      }
+      if(nav) nav.hidden=true;
+      if(meshLayer){ map.removeLayer(meshLayer); meshLayer=null; }
       if(key==='recent'){
         showLegend('size');
         scope.textContent='in the last 30 days';
@@ -383,6 +695,47 @@
     function clearOverlays(){
       if(heat){ map.removeLayer(heat); heat=null; }
       if(markers){ map.removeLayer(markers); markers=null; }
+      if(meshLayer){ map.removeLayer(meshLayer); meshLayer=null; }
+    }
+
+    // ── Storm swaths: radar-estimated MESH bands by day ──
+    function showMeshDay(i){
+      if(!meshIdx) return;
+      meshPos=Math.max(0, Math.min(meshIdx.dates.length-1, i));
+      var d=meshIdx.dates[meshPos];
+      var lbl=document.getElementById('hm-mesh-date'); if(lbl) lbl.textContent=d;
+      var pv=document.getElementById('hm-mesh-prev'), nx=document.getElementById('hm-mesh-next');
+      if(pv) pv.disabled = meshPos<=0;
+      if(nx) nx.disabled = meshPos>=meshIdx.dates.length-1;
+      var cnt=document.getElementById('hm-count'); if(cnt) cnt.textContent='\u2026';
+      var load = meshCache[d] ? Promise.resolve(meshCache[d]) :
+        fetch(DATA+'mesh/'+d+'.json').then(function(r){ return r.ok? r.json():null; })
+          .then(function(fc){ if(fc) meshCache[d]=fc; return fc; });
+      load.then(function(fc){
+        if(current!=='mesh' || meshIdx.dates[meshPos]!==d) return;
+        clearOverlays();
+        if(!fc || !fc.features || !fc.features.length){
+          if(cnt) cnt.textContent='0';
+          banner('No radar-estimated hail \u22650.75\u2033 anywhere on '+d+' \u2014 a genuinely quiet day.');
+          return;
+        }
+        clearBanner();
+        meshLayer=L.geoJSON(fc,{ style:function(f){
+          var c=MESH_COLORS[f.properties.thresh_in]||'#fed976';
+          return { color:c, weight:1, opacity:.9, fillColor:c, fillOpacity:.32 };
+        }}).addTo(map);
+        if(cnt) cnt.textContent=fc.features.length.toLocaleString()+' band';
+        var sc=document.getElementById('hm-scope'); if(sc) sc.textContent='layer'+(fc.features.length===1?'':'s')+' \u00b7 '+d;
+        try{ history.replaceState(null,'', '/hail-map?swath='+d); }catch(e){}
+      }).catch(function(){ banner('That storm day didn\u2019t load \u2014 try another date.'); });
+    }
+    var meshNavWired=false;
+    function wireMeshNav(){
+      if(meshNavWired) return; meshNavWired=true;
+      var pv=document.getElementById('hm-mesh-prev'), nx=document.getElementById('hm-mesh-next'), lt=document.getElementById('hm-mesh-latest');
+      if(pv) pv.addEventListener('click', function(){ showMeshDay(meshPos-1); });
+      if(nx) nx.addEventListener('click', function(){ showMeshDay(meshPos+1); });
+      if(lt) lt.addEventListener('click', function(){ showMeshDay(meshIdx.dates.length-1); });
     }
 
     function renderHeat(points){
