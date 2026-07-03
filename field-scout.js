@@ -579,9 +579,12 @@
   function fieldSnapshot(){
     if(!FIELD) return null;
     var se=FIELD.season||{}, d=FIELD.drought||{}, rd=FIELD.read||{};
+    var ix=FIELD.indices, ixL=ix&&(ix.latest||(ix.series&&ix.series.length?ix.series[ix.series.length-1]:null));
     return { drought: d.cat||null,
              pDep: (se.pDep!=null? +(+se.pDep).toFixed(1):null),
              gDep: (se.gDep!=null? Math.round(se.gDep):null),
+             ndvi: (ixL&&ixL.ndvi!=null? +(+ixL.ndvi).toFixed(2):null),
+             passDate: (ixL&&ixL.date)||null,
              verdict: rd.verdict||null, ts: Date.now() };
   }
   function snapKey(id){ return 'agsist-fs-snap-'+id; }
@@ -602,6 +605,15 @@
         else out.push('&#9660; The field caught rain &mdash; running <strong>'+dd+'&Prime; wetter</strong> than at your last look.');
       }
     }
+    if(prev.ndvi!=null && cur.ndvi!=null){
+      var dv=+(cur.ndvi-prev.ndvi).toFixed(2);
+      var newPass = cur.passDate && prev.passDate && cur.passDate!==prev.passDate;
+      if(Math.abs(dv)>=0.04){
+        out.push((dv>0?'&#9650; Vigor is <strong>up '+dv.toFixed(2):'&#9660; Vigor is <strong>down '+Math.abs(dv).toFixed(2))+'</strong> since your last look (NDVI '+prev.ndvi.toFixed(2)+' &rarr; '+cur.ndvi.toFixed(2)+')'+(newPass?' on a new clear pass':'')+'.');
+      } else if(newPass){
+        out.push('&bull; A new clear satellite pass came in ('+esc(cur.passDate)+') &mdash; vigor is holding right where you left it (NDVI '+cur.ndvi.toFixed(2)+').');
+      }
+    }
     if(prev.verdict && cur.verdict && prev.verdict!==cur.verdict){
       out.push('&bull; The bottom line changed: <strong>'+esc(cur.verdict)+'</strong>.');
     }
@@ -614,7 +626,7 @@
     var body=document.getElementById('fs-insight'); if(!body||!body.parentNode) return;
     var div=document.createElement('div');
     div.id='fs-change-banner'; div.className='fs-change-banner';
-    div.innerHTML='<span class="fs-cb-tag">&#128338; Since you last looked</span>'+
+    div.innerHTML='<span class="fs-cb-tag"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:.9em;height:.9em;vertical-align:-.1em"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Since you last looked</span>'+
       changes.map(function(c){ return '<div class="fs-cb-line">'+c+'</div>'; }).join('');
     body.parentNode.insertBefore(div, body);
   }
@@ -1398,24 +1410,70 @@
     var grid=ticks.map(function(tk){ var x=(pad+(w-2*pad)*tk.frac).toFixed(1); return '<line x1="'+x+'" y1="2" x2="'+x+'" y2="'+(h-2)+'" stroke="rgba(132,160,168,.16)" stroke-width="1"/>'; }).join('');
     var base = (baseline!=null) ? '<line x1="'+pad+'" y1="'+Y(baseline).toFixed(1)+'" x2="'+(w-pad)+'" y2="'+Y(baseline).toFixed(1)+'" stroke="rgba(132,160,168,.6)" stroke-width="1" stroke-dasharray="4 3"/>' : '';
     var last=pts[pts.length-1].split(',');
-    var svg='<svg class="fs-spark" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" aria-hidden="true">'+grid+base+
-      '<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'+
-      '<circle cx="'+last[0]+'" cy="'+last[1]+'" r="4" fill="'+color+'"/></svg>';
+    // endpoint value label — clamped inside the frame, anchored away from the right edge
+    var endVal=ys[ys.length-1];
+    var lx=Math.min(+last[0], w-30), ly=Math.max(10, Math.min(h-4, +last[1]-6));
+    var endTxt='<text x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'" text-anchor="end" font-size="9" font-weight="700" fill="'+color+'" font-family="JetBrains Mono,monospace">'+endVal.toFixed(2)+'</text>';
+    var svg='<svg class="fs-spark" viewBox="0 0 '+w+' '+h+'" aria-hidden="true" style="width:100%;height:auto;display:block">'+grid+base+
+      '<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+color+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'+
+      '<circle cx="'+last[0]+'" cy="'+last[1]+'" r="3" fill="'+color+'"/>'+endTxt+'</svg>';
     var ax='<span class="fs-spark-ax" style="left:0;transform:none">'+ixDate(vals[0].date)+'</span>';
     ticks.forEach(function(tk){ if(tk.frac>0.1 && tk.frac<0.9) ax+='<span class="fs-spark-ax" style="left:'+(tk.frac*100).toFixed(1)+'%">'+tk.label+'</span>'; });
     ax+='<span class="fs-spark-ax" style="left:auto;right:0;transform:none">'+ixDate(vals[vals.length-1].date)+'</span>';
     return svg+'<div class="fs-spark-axis">'+ax+'</div>';
   }
 
-  function vigorWord(v){ return v==null?'No clear read':(v>=0.6?'Strong':(v>=0.45?'Healthy':(v>=0.3?'Developing':'Low / bare'))); }
+  // ── Crop-aware vigor language (v: fixes the "alfalfa after cutting reads as
+  // failure" problem). Same thresholds don't mean the same thing on hay ground
+  // that just got cut, wheat that's supposed to ripen brown, or grazed pasture. ──
+  function fieldCropClass(){
+    var r=FIELD&&FIELD.rotation, c=r&&r.lastCrop;
+    if(c===36||c===37) return 'hay';                       // alfalfa, other hay
+    if(c===23||c===24||c===21||c===28) return 'smallgrain'; // wheats, barley, oats
+    if(c===176) return 'pasture';
+    return 'row';
+  }
+  function grainRipening(){ var m=new Date().getMonth()+1; return m>=7&&m<=9; }  // Jul–Sep senescence window
+  function offSeason(){ var m=new Date().getMonth()+1; return m>=11||m<=3; }      // Nov–Mar
+  function vigorWord(v){
+    if(v==null) return 'No clear read';
+    var cls=fieldCropClass();
+    if(cls==='hay') return v>=0.6?'Strong':(v>=0.45?'Healthy':(v>=0.3?'Regrowing':'Just cut / dormant'));
+    if(cls==='pasture') return v>=0.6?'Lush':(v>=0.45?'Good cover':(v>=0.3?'Grazed / recovering':'Short / dormant'));
+    if(cls==='smallgrain'&&grainRipening()&&v<0.45) return v>=0.3?'Ripening':'Mature / harvested';
+    return v>=0.6?'Strong':(v>=0.45?'Healthy':(v>=0.3?'Developing':'Low / bare'));
+  }
   function vigorSentence(v){
     if(v==null) return 'No clear vigor read yet';
+    var cls=fieldCropClass();
+    if(cls==='hay'){
+      if(v>=0.6) return 'Dense, healthy stand';
+      if(v>=0.45) return 'Solid growing canopy';
+      if(v>=0.3) return 'Regrowth building &mdash; normal after a cutting';
+      return 'Low canopy &mdash; typical right after a cutting; the regrowth slope over the next passes is the health read';
+    }
+    if(cls==='pasture'){
+      if(v>=0.6) return 'Lush, well-recovered sward';
+      if(v>=0.45) return 'Good cover, actively growing';
+      if(v>=0.3) return 'Recovering from grazing &mdash; watch the rebound';
+      return 'Short cover &mdash; recently grazed or dormant';
+    }
+    if(cls==='smallgrain'&&grainRipening()&&v<0.45){
+      return v>=0.3 ? 'Ripening down &mdash; a falling read is normal as the grain matures'
+                    : 'Mature or harvested &mdash; brown is the goal at this stage, not a problem';
+    }
     if(v>=0.6) return 'Healthy, closed canopy';
     if(v>=0.45) return 'Solid, actively growing canopy';
     if(v>=0.3) return 'Developing canopy &mdash; partial ground cover';
     return 'Low cover &mdash; bare ground, residue, or a very early stand';
   }
-  function vigorColor(v){ return v==null?'var(--dim)':(v>=0.6?'var(--green)':(v>=0.3?'var(--gold)':'var(--red)')); }
+  function vigorColor(v){
+    if(v==null) return 'var(--dim)';
+    var cls=fieldCropClass();
+    // Contextually-normal low reads should never scream red
+    if(v<0.3 && (cls==='hay'||cls==='pasture'||(cls==='smallgrain'&&grainRipening()))) return 'var(--gold)';
+    return v>=0.6?'var(--green)':(v>=0.3?'var(--gold)':'var(--red)');
+  }
   // Plain-language verdict for each index value — so a farmer never meets a naked
   // number. Thresholds are rough season-stage guides (the ? tips carry the nuance).
   function idxRead(k, v){
@@ -1555,18 +1613,37 @@
       var md=moist.dir==='rising'?'rising':(moist.dir==='easing'?'falling':'steady');
       mLine='Canopy moisture is <b>'+md+'</b>'+(moist.dir==='easing'?' &mdash; the stand is drying down compared with earlier in the season.':(moist.dir==='rising'?' &mdash; the canopy is holding more water than before.':'.'));
     }
+    // NDRE line — only meaningful once the canopy is dense enough that NDVI saturates
+    var nLine='';
+    var ndreT=idxTrend(series,'ndre');
+    if(ndreT && v!=null && v>=0.55 && last.ndre!=null){
+      var nWord=ndreT.dir==='easing'?'easing':(ndreT.dir==='rising'?'building':'steady');
+      nLine='Nitrogen signal (NDRE '+(+last.ndre).toFixed(2)+') is <b>'+nWord+'</b>'+(ndreT.dir==='easing'?' while the canopy holds &mdash; the classic pattern worth a nitrogen check.':' &mdash; chlorophyll is tracking with the canopy.');
+    }
+    // Off-season (Nov–Mar) with a low canopy: the story is winter cover, not vigor.
+    var winterHead=null;
+    if(offSeason() && v!=null && v<0.3 && last.bsi!=null){
+      var b2=+last.bsi;
+      winterHead = b2>=0.1 ? {w:'Mostly bare ground', c:'var(--gold)', s:'Bare or tilled through winter &mdash; vigor picks back up with the next crop.'}
+        : (b2>=0 ? {w:'Thin winter cover', c:'var(--gold)', s:'Some residue or thin cover holding through winter.'}
+                 : {w:'Living winter cover', c:'var(--green)', s:'The satellite sees living cover through the off-season &mdash; a cover crop or perennial holding the ground.'});
+    }
+    var headWord = winterHead ? winterHead.w : ('Crop vigor: '+vigorWord(v));
+    var headCol  = winterHead ? winterHead.c : vCol;
     var html=
       '<div class="fs-vigor-head">'+
-        '<span class="fs-vigor-dot" style="background:'+vCol+'"></span>'+
-        '<span class="fs-vigor-word">Crop vigor: '+vigorWord(v)+'</span>'+tipQ('ndvi')+
+        '<span class="fs-vigor-dot" style="background:'+headCol+'"></span>'+
+        '<span class="fs-vigor-word">'+headWord+'</span>'+tipQ(winterHead?'bsi':'ndvi')+
         (v!=null?'<span class="fs-vigor-num">NDVI '+v.toFixed(2)+'</span>':'')+
       '</div>'+
       (nd?'<div class="fs-vigor-spark">'+sparkline(series,'ndvi',vCol,baseV)+'<span class="fs-spark-cap">vigor over the season'+(baseV!=null?' &middot; dashed = normal':'')+'</span></div>':'')+
-      '<p class="fs-vigor-say">'+vigorSentence(v)+vTrend+'.</p>'+
+      '<p class="fs-vigor-say">'+(winterHead?winterHead.s:vigorSentence(v)+vTrend+'.')+'</p>'+
       (normLine?'<p class="fs-vigor-say">'+normLine+'</p>':'')+
       (varLine?'<p class="fs-vigor-say">'+varLine+'</p>':'')+
       (mLine?'<p class="fs-vigor-say">'+mLine+'</p>':'')+
-      '<div class="fs-vigor-fresh"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Last clear pass <b>'+ixDate(last.date)+'</b> ('+ixDaysAgo(last.date)+') &middot; <a href="#" class="fs-god-link" data-god="ndvi">'+series.length+' clear pass'+(series.length===1?'':'es')+' this season &mdash; replay them on the map</a></div>'+
+      (nLine?'<p class="fs-vigor-say">'+nLine+'</p>':'')+
+      '<div class="fs-vigor-fresh"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Last clear pass <b>'+ixDate(last.date)+'</b> ('+ixDaysAgo(last.date)+') </div>'+
+      (series.length>=2?'<a href="#" class="fs-god-link fs-replay-btn" data-god="ndvi"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg> Replay '+series.length+' passes on the map &mdash; watch the season</a>':'')+
       '<details class="fs-vigor-more"><summary>Show all indices for the latest pass</summary>'+
         '<div class="fs-vigor-grid">'+
           idxChip('NDVI',last.ndvi,'vigor')+idxChip('NDRE',last.ndre,'nitrogen')+idxChip('NDMI',last.ndmi,'moisture')+
@@ -1724,11 +1801,13 @@
       var ixPatchy=(ixLast.ndvi_sd!=null && ixLast.ndvi_sd>=0.12);
       var ixPrime=s && ((s.primePct!=null && s.primePct>=70) || (s.nccpi!=null && s.nccpi>=0.55));
       var nrmYrs=(ixNrm && ixNrm.years && ixNrm.years.length)?ixNrm.years.length+'-year ':'';
-      if(belowNorm!=null && belowNorm<=-0.06){
+      var cropCls=fieldCropClass();
+      var normTrig = (cropCls==='hay') ? -0.12 : -0.06;   // hay sawtooths against its own normal
+      if(belowNorm!=null && belowNorm<=normTrig && !(cropCls==='smallgrain'&&grainRipening())){
         push({ sev: ixPrime?4:3, act:true, topic:'vigor', tag:'a canopy running below its own normal',
           title: ixPrime ? 'the satellite says this capable ground is underperforming its own history \u2014 go look'
                           : 'crop vigor is running below this field\u2019s normal \u2014 worth a scout',
-          detail:(ixPrime?'This is capable ground, yet ':'')+'the latest cloud-free pass reads NDVI <strong>'+ixV.toFixed(2)+'</strong>, about <strong>'+Math.abs(belowNorm).toFixed(2)+' below</strong> this field\u2019s '+nrmYrs+'normal for this point in the season. Something on the ground is holding the canopy back.'+' <span class="fs-src">source: Sentinel-2 / Copernicus, cloud-masked</span>',
+          detail:(ixPrime?'This is capable ground, yet ':'')+'the latest cloud-free pass reads NDVI <strong>'+ixV.toFixed(2)+'</strong>, about <strong>'+Math.abs(belowNorm).toFixed(2)+' below</strong> this field\u2019s '+nrmYrs+'normal for this point in the season. '+(cropCls==='hay'?'On hay ground a fresh cutting explains this &mdash; if you haven\u2019t cut recently, something is holding the stand back.':'Something on the ground is holding the canopy back.')+' <span class="fs-src">source: Sentinel-2 / Copernicus, cloud-masked</span>',
           watch: ixPatchy ? 'It\u2019s also uneven across the field \u2014 start with the weakest zone (<a href="#" class="fs-god-link" data-god="ndvi">the Crop-vigor map layer shows where</a>).'
                           : 'Scout for stand, nutrient, or moisture problems while there\u2019s still time to react.' });
       } else if(ixPatchy && ixV!=null){
@@ -1741,6 +1820,44 @@
       }
       if(inDrought && ixTr && ixTr.dir==='easing' && ixV!=null){
         lines.push('The drought is already showing in the canopy \u2014 vigor has been easing on recent passes.');
+      }
+
+      // ── Cross-index reads (v: the satellite finally reasons in pairs) ──
+      // Trends need at least 3 usable passes before we hang a claim on them.
+      var enoughPasses = ix.series.filter(function(r){ return r.ndvi!=null; }).length >= 3;
+
+      // (a) Nitrogen divergence — corn only, canopy closed, before/near silking.
+      //     NDVI holds (saturated) while NDRE eases = chlorophyll thinning under a
+      //     full canopy. Correlational, so the verb is "check", never "deficient".
+      if(enoughPasses && isCorn && cropStage && !cropStage.pastPollen && ixV!=null && ixV>=0.55){
+        var nT=idxTrend(ix.series,'ndre');
+        if(nT && nT.dir==='easing' && ixTr && ixTr.dir!=='easing'){
+          push({ sev:3, act:true, topic:'nitrogen', tag:'a fading nitrogen signal under a full canopy',
+            title:'the nitrogen signal is fading while the canopy holds \u2014 check N before the window closes',
+            detail:'The canopy itself is holding (NDVI '+ixV.toFixed(2)+'), but the red-edge nitrogen signal (NDRE) has been <strong>easing on recent passes</strong> \u2014 the pattern that shows up when chlorophyll thins under a closed canopy. It is a satellite pattern, not a tissue test, but it is exactly what a nitrogen shortfall looks like from above.'+' <span class="fs-src">source: Sentinel-2 red-edge (NDRE), cloud-masked</span>',
+            watch: pollenWindow()!=null ? 'Pollination (~'+pollenWindow()+' days out) sets kernel count \u2014 a tissue or soil nitrate check before then still leaves time to sidedress or Y-drop.' : 'A tissue or soil nitrate check confirms it either way \u2014 the satellite can only point.' });
+        }
+      }
+
+      // (b) Moisture convergence — two independent calculations agreeing beats either alone.
+      if(enoughPasses){
+        var mT=idxTrend(ix.series,'ndmi'), sT=idxTrend(ix.series,'msi');
+        if(mT && sT && mT.dir==='easing' && sT.dir==='rising'){
+          var mSev = inDrought ? 4 : ((se && se.pDep!=null && se.pDep<=-2) ? 3 : 2);
+          push({ sev:mSev, act:mSev>=3, topic:'moisture', tag:'a canopy drying on two independent reads',
+            title: mSev>=4 ? 'the canopy is drying on every read \u2014 moisture is the story on this field'
+                           : 'two independent satellite reads agree the canopy is drying',
+            detail:'Canopy moisture (NDMI) is <strong>falling</strong> and the moisture-stress index (MSI) is <strong>rising</strong> across recent passes \u2014 two separate calculations from different light bands telling the same story. When they agree like this, the drying is real, not noise.'+(inDrought?' It lines up with the '+esc(d.cat)+' drought status.':'')+' <span class="fs-src">source: Sentinel-2 NDMI + MSI, cloud-masked</span>',
+            watch: pollenWindow()!=null && pollenWindow()<=21 ? 'Moisture stress through pollination (~'+pollenWindow()+' days out) is the worst-timed stress there is.' : 'Watch the rain forecast \u2014 a timely inch changes this read fast.' });
+        }
+      }
+
+      // (c) Drown-out read — very wet surface + uneven canopy in a wet season.
+      if(ixLast.ndwi!=null && ixLast.ndwi>=0.2 && ixPatchy && se && se.pDep!=null && se.pDep>=2){
+        push({ sev:2, act:true, topic:'wet', tag:'saturated ground in the weak zones',
+          title:'the wet spots are likely drowning the weak zones \u2014 walk the low ground',
+          detail:'The surface-water read (NDWI '+(+ixLast.ndwi).toFixed(2)+') is running <strong>very wet</strong>, the season is '+se.pDep.toFixed(1)+'\u2033 above normal on rain, and vigor is uneven across the field \u2014 the classic drowned-low-spot signature.'+' <span class="fs-src">source: Sentinel-2 NDWI + Open-Meteo season rainfall</span>',
+          watch:'Check the low corners; <a href="#" class="fs-god-link" data-god="ndvi">the Crop-vigor layer</a> shows which zones are lagging.' });
       }
     }
 
@@ -1822,6 +1939,29 @@
     scheduleSettle();
   }
 
+  // Print-friendly NDVI season sparkline for the field report (dark line on white).
+  function reportSpark(series){
+    var vals=(series||[]).filter(function(r){ return r.ndvi!=null; });
+    if(vals.length<3) return '';
+    var w=520,h=64,pad=6,padR=44;
+    var t=vals.map(function(r){ return new Date(r.date+'T12:00:00Z').getTime(); });
+    var t0=t[0],t1=t[t.length-1],span=(t1-t0)||1;
+    var ys=vals.map(function(r){ return r.ndvi; });
+    var mn=Math.min.apply(null,ys), mx=Math.max.apply(null,ys); if(mx-mn<0.05){ mx=mn+0.05; }
+    var X=function(i){ return pad+(w-pad-padR)*(t[i]-t0)/span; };
+    var Y=function(v){ return h-pad-(h-2*pad)*(v-mn)/(mx-mn); };
+    var pts=vals.map(function(r,i){ return X(i).toFixed(1)+','+Y(r.ndvi).toFixed(1); }).join(' ');
+    var lx=X(vals.length-1), lv=ys[ys.length-1];
+    function lbl(iso){ try{ return new Date(iso+'T12:00:00Z').toLocaleDateString(undefined,{month:'short',day:'numeric'}); }catch(e){ return iso; } }
+    return '<svg viewBox="0 0 '+w+' '+(h+16)+'" style="width:100%;height:auto;display:block;margin:8px 0 2px" role="img" aria-label="Crop vigor over the season">'+
+      '<polyline points="'+pts+'" fill="none" stroke="#6b5a13" stroke-width="2" stroke-linejoin="round"/>'+
+      '<circle cx="'+lx.toFixed(1)+'" cy="'+Y(lv).toFixed(1)+'" r="3" fill="#6b5a13"/>'+
+      '<text x="'+(lx+6).toFixed(1)+'" y="'+(Y(lv)+4).toFixed(1)+'" font-size="11" font-weight="700" fill="#6b5a13" font-family="ui-monospace,monospace">'+lv.toFixed(2)+'</text>'+
+      '<text x="'+pad+'" y="'+(h+12)+'" font-size="10" fill="#888" font-family="ui-monospace,monospace">'+lbl(vals[0].date)+'</text>'+
+      '<text x="'+(w-padR)+'" y="'+(h+12)+'" text-anchor="end" font-size="10" fill="#888" font-family="ui-monospace,monospace">'+lbl(vals[vals.length-1].date)+'</text>'+
+      '</svg>';
+  }
+
   // ── Shareable one-page field report (print / save-as-PDF) ───────────
   function generateReport(){
     if(!FIELD){ return; }
@@ -1854,7 +1994,7 @@
     if(d.indices && d.indices.series && d.indices.series.length){
       var vx=d.indices.latest || d.indices.series[d.indices.series.length-1];
       var vv=vx.ndvi;
-      var vWord = vv==null?'no clear read':(vv>=0.6?'strong':(vv>=0.45?'healthy':(vv>=0.3?'developing':'low / bare')));
+      var vWord = vigorWord(vv).toLowerCase();
       var nrm=d.indices.normal;
       var nrmCell='';
       if(nrm && nrm.ndvi!=null && vv!=null){ var df=vv-nrm.ndvi; nrmCell='<tr><th>Normal for this point in season</th><td>NDVI '+nrm.ndvi.toFixed(2)+' &mdash; '+(Math.abs(df)<0.04?'in line':(df>0?'ahead':'behind'))+(nrm.years&&nrm.years.length?' ('+nrm.years.length+'-yr)':'')+'</td></tr>'; }
@@ -1864,7 +2004,7 @@
         (vx.ndmi!=null?'<tr><th>Canopy moisture (NDMI)</th><td>'+vx.ndmi.toFixed(2)+'</td></tr>':'')+
         (vx.ndre!=null?'<tr><th>Nitrogen / chlorophyll (NDRE)</th><td>'+vx.ndre.toFixed(2)+'</td></tr>':'')+
         '<tr><th>Latest clear pass</th><td>'+esc(vx.date)+' &middot; '+d.indices.series.length+' this season</td></tr>'+
-        '</table><p class="r-note">Sentinel-2 / Copernicus, cloud-masked, averaged over the field.</p>';
+        '</table>'+reportSpark(d.indices.series)+'<p class="r-note">Sentinel-2 / Copernicus, cloud-masked, averaged over the field.</p>';
     }
 
     var rotHtml='';
