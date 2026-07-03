@@ -988,7 +988,7 @@
     </div>
     <div class="fade-up" id="f2" style="transition-delay:.08s">
       <div class="sec-head"><h2 class="sec-title">Local Conditions</h2></div>
-      <div class="card"><div class="card-body">
+      <div class="card wx-card"><div class="card-body">
         <div id="wx-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 0;gap:.65rem">
           <div style="font-size:1.8rem" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></div>
           <div style="font-size:.9rem;color:var(--text-dim);text-align:center">Getting your local weather&hellip;</div>
@@ -1023,6 +1023,27 @@
           .wx-fs-bridge .wfb-ic .ic{width:1.55rem;height:1.55rem}
           .wx-fs-bridge .wfb-t{display:block;font-family:'Archivo',var(--font-display),sans-serif;font-weight:700;font-size:.93rem;color:var(--text);line-height:1.2}
           .wx-fs-bridge .wfb-s{display:block;font-size:.74rem;color:var(--text-dim);margin-top:.16rem;line-height:1.3}
+          /* v4.5 weather legibility pass — dissolve box-in-box, full-bleed on phones, bigger type */
+          .wx-card #wx-data .wx-summary-card{background:none;border:0;border-radius:0;padding:1rem 0 0;border-top:1px solid var(--border)}
+          .wx-card .wx-7day-strip{gap:.45rem}
+          .wx-card .wx-7day-cell{padding:.75rem .3rem;gap:.32rem}
+          .wx-card .wx-7day-name{font-size:clamp(.7rem,3vw,.8rem)}
+          .wx-card .wx-7day-temps{font-size:clamp(.95rem,4.6vw,1.2rem)}
+          .wx-card .wx-7day-meta{font-size:clamp(.68rem,3vw,.78rem);line-height:1.55}
+          .wx-card .wx-hourly-toggle{font-size:.78rem}
+          .wx-card .wx-hourly-cell{min-width:52px;padding:.42rem .3rem;gap:.16rem}
+          .wx-card .wx-hourly-hr{font-size:.7rem}
+          .wx-card .wx-hourly-temp{font-size:.9rem}
+          .wx-card .wx-hourly-precip,.wx-card .wx-hourly-wind{font-size:.68rem}
+          .wx-card .wx-chart-toggle{font-size:.7rem}
+          .wx-card .wx-chart-title{font-size:.74rem}
+          .wx-card .wx-chart-legend{font-size:.78rem}
+          .wx-card .wx-chart-takeaway{font-size:.84rem;line-height:1.6}
+          @media(max-width:520px){
+            .wx-card{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);border-left:0;border-right:0;border-radius:0}
+            .wx-card .card-body{padding:1rem .9rem}
+            .wx-card .wx-chart-panel{padding:.8rem .55rem .65rem}
+          }
           </style>
           <a href="/field-scout" class="wx-fs-bridge" aria-label="Open Field Scout — soil, crop history, crop vigor and cash bids for your exact field">
             <span class="wfb-ic"><svg class="ic" aria-hidden="true"><use href="#i-satellite"/></svg></span>
@@ -2760,28 +2781,39 @@ function ytdPrecip(dailyMap,fromIso,toIso){
 function padIso(y,m,d){
   return y+'-'+(m<10?'0':'')+m+'-'+(d<10?'0':'')+d;
 }
+// v4.5: measure available chart width from the panel's visible parent (panel itself may be display:none)
+function wxChartWidth(panelId){
+  try{
+    var p=document.getElementById(panelId);
+    var host=p&&p.parentElement?p.parentElement:null;
+    var w=host?host.clientWidth:0;
+    if(!w||w<100)return 360;
+    return w-22; // panel horizontal padding
+  }catch(e){return 360;}
+}
 // ---------- SVG monthly bar chart (paired bars: avg + current) ----------
-function monthlyChartSvg(current,avg,monthLabels,fmtFn){
+function monthlyChartSvg(current,avg,monthLabels,fmtFn,pxWidth){
   var mx=0;
   for(var i=0;i<monthLabels.length;i++){
     if(current[i]>mx)mx=current[i];
     if(avg[i]>mx)mx=avg[i];
   }
   if(mx<0.01)mx=1; // avoid divide-by-zero
-  var W=360,H=150,PL=30,PR=8,PT=18,PB=24;
+  // v4.5: viewBox width tracks the rendered px width so font units ~= real px (legible on phones)
+  var W=Math.max(300,Math.min(760,Math.round(pxWidth||360))),H=180,PL=38,PR=8,PT=22,PB=28;
   var cw=W-PL-PR,ch=H-PT-PB;
   var n=monthLabels.length;
   var gw=cw/n;
-  var bw=Math.max(4,Math.min(14,gw*0.36));
-  var gap=1.6;
-  var vf=(n<=8)?7:6; // value-label font; smaller when 12 months so they don't crowd
+  var bw=Math.max(5,Math.min(18,gw*0.36));
+  var gap=2;
+  var vf=(n<=8)?10:9; // value-label font; slightly smaller when 12 months so they don't crowd
   var out='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block" role="img" aria-label="Monthly comparison: this year vs 5-year average">';
   // horizontal gridlines + y-axis value labels at 0/25/50/75/100% of max
   var fracs=[0,0.25,0.5,0.75,1];
   for(var g=0;g<fracs.length;g++){
     var gy=PT+ch-(fracs[g]*ch);
     out+='<line x1="'+PL+'" y1="'+gy.toFixed(1)+'" x2="'+(W-PR)+'" y2="'+gy.toFixed(1)+'" stroke="#ffffff" stroke-opacity="'+(g===0?'0.20':'0.06')+'" stroke-width="0.5"/>';
-    out+='<text x="'+(PL-4)+'" y="'+(gy+2.6).toFixed(1)+'" font-size="8" fill="#8f8f8f" text-anchor="end" font-family="JetBrains Mono,monospace">'+fmtFn(mx*fracs[g])+'</text>';
+    out+='<text x="'+(PL-5)+'" y="'+(gy+3.2).toFixed(1)+'" font-size="10" fill="#9aa39e" text-anchor="end" font-family="JetBrains Mono,monospace">'+fmtFn(mx*fracs[g])+'</text>';
   }
   for(var j=0;j<n;j++){
     var gx=PL+gw*j+gw/2;
@@ -2792,10 +2824,10 @@ function monthlyChartSvg(current,avg,monthLabels,fmtFn){
       var cH=(current[j]/mx)*ch,cY=PT+ch-cH;
       var cX=gx+gap/2;
       out+='<rect x="'+cX.toFixed(1)+'" y="'+cY.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(0.5,cH).toFixed(1)+'" fill="#d4a23f" rx="1.2"/>';
-      var vY=Math.max(PT+7,cY-3);
+      var vY=Math.max(PT+9,cY-4);
       out+='<text x="'+(cX+bw/2).toFixed(1)+'" y="'+vY.toFixed(1)+'" font-size="'+vf+'" fill="#f3cf72" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700">'+fmtFn(current[j])+'</text>';
     }
-    out+='<text x="'+gx.toFixed(1)+'" y="'+(H-7)+'" font-size="9" fill="#9a9a9a" text-anchor="middle" font-family="JetBrains Mono,monospace">'+monthLabels[j]+'</text>';
+    out+='<text x="'+gx.toFixed(1)+'" y="'+(H-8)+'" font-size="11" fill="#a3aca7" text-anchor="middle" font-family="JetBrains Mono,monospace">'+monthLabels[j]+'</text>';
   }
   out+='</svg>';
   return out;
@@ -2941,7 +2973,7 @@ function loadWeatherEnhancements(state){
       gduAvg.push(cnt>0?Math.round(sum/cnt):0);
     }
     var gduSvgEl=document.getElementById('gdu-chart-svg');
-    if(gduSvgEl)gduSvgEl.innerHTML=monthlyChartSvg(gduCurrent,gduAvg,gduLabels,function(v){return Math.round(v);});
+    if(gduSvgEl)gduSvgEl.innerHTML=monthlyChartSvg(gduCurrent,gduAvg,gduLabels,function(v){return Math.round(v);},wxChartWidth('gdu-chart-panel'));
     // Precip: full 12-month
     var prCurrent=[],prAvg=[];
     var moLabels=['J','F','M','A','M','J','J','A','S','O','N','D'];
@@ -2956,7 +2988,7 @@ function loadWeatherEnhancements(state){
       prAvg.push(cP>0?Math.round((sP/cP)*10)/10:0);
     }
     var prSvgEl=document.getElementById('precip-chart-svg');
-    if(prSvgEl)prSvgEl.innerHTML=monthlyChartSvg(prCurrent,prAvg,moLabels,function(v){return (Math.round(v*10)/10)+'"';});
+    if(prSvgEl)prSvgEl.innerHTML=monthlyChartSvg(prCurrent,prAvg,moLabels,function(v){return (Math.round(v*10)/10)+'"';},wxChartWidth('precip-chart-panel'));
     // ========== YTD STATS — % vs 5-yr same-period avg ==========
     // GDU YTD: Apr 1 current year → yesterday. Compare to same (Apr 1 → same month/day) for past 5 years.
     var todayIso=d_yest; // same window end as archive
