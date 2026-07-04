@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 03 Jul 2026 21:02:30 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 04 Jul 2026 12:11:52 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN BREAKS 4%; WEEK ENDS ON DEFENSIVE NOTE</title>
+      <link>https://agsist.com/daily/2026-07-04</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-04</guid>
+      <pubDate>Sat, 04 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed Friday at $4.25, down 17¾ cents on the session, the biggest single-day drop in recent memory for a market already carrying pollination anxiety and post-acreage repositioning. The funds spent the holiday-eve session unwinding exposure they no longer wanted to hold over a long weekend. What made Friday different from prior soft days: December corn barely moved, closing $4.42 down just 1¼ cents, which tells you this was nearby-contract liquidation, not a new-crop conviction call. The spread between old crop and new crop is now talking. Coming into next week, the corn market faces a make-or-break stretch: pollination stress either shows up in next Monday's Crop Progress or the weather premium that built this month starts leaking out for good.
+Nearby corn lost 17¾ cents Friday as the July 4 week closes with grains, livestock, hogs, and dairy all under pressure while energy and metals finish higher.
+• Corn: Liquidation Into the Long Weekend
+  → If you have unpriced old-crop corn in storage, the nearby-to-December spread is now worth checking against your basis offer. Old-crop basis firmness east of the Mississippi may partially offset the futures drop.
+• Beans and Wheat: Weaker, Not Broken
+• Livestock and Dairy: Pressure Holds
+Read more: https://agsist.com/daily/2026-07-04</description>
+    </item>
     <item>
       <title>CORN BREAKS 4% ON HOLIDAY EVE; OATS HIT -15%</title>
       <link>https://agsist.com/daily/2026-07-03</link>
@@ -372,18 +385,6 @@ Silver leads commodity selling as dollar strength and fund liquidation converge.
 • METALS FALL SHARPLY ON DOLLAR STRENGTH
 • CATTLE HOLDS YESTERDAY'S BOUNCE
 Read more: https://agsist.com/daily/2026-06-05</description>
-    </item>
-    <item>
-      <title>CATTLE COMPLEX FLIPS HIGHER, GRAINS EXTEND SLIDE</title>
-      <link>https://agsist.com/daily/2026-06-04</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-04</guid>
-      <pubDate>Thu, 04 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Feeder cattle ran to $349.95, up 2.2%, breaking four sessions of drift and flipping the livestock narrative overnight. Live cattle followed to $241.57, both contracts reversing the breakdown thesis that dominated the week. Corn held $4.25 but soybeans lost another 9 cents to $11.40, extending the fund liquidation that's now stripped 47 cents since Friday's close.
-Feeders lead livestock move higher as grain liquidation deepens into fourth session.
-• CATTLE COMPLEX GAINS HIGHER
-• GRAINS EXTEND FOUR-DAY SLIDE
-• ENERGY GIVES BACK IRAN GAINS
-Read more: https://agsist.com/daily/2026-06-04</description>
     </item>
   </channel>
 </rss>

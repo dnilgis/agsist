@@ -380,4 +380,5 @@
   <url><loc>https://agsist.com/hail/2022-04-13</loc><lastmod>2022-04-13</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/hail/2022-04-12</loc><lastmod>2022-04-12</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <!-- /HAIL-EVENT-PAGES -->
+  <url><loc>https://agsist.com/daily/2026-07-04</loc><lastmod>2026-07-04</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
 </urlset>
