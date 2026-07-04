@@ -58,6 +58,12 @@ jobs:
             python scripts/fetch_mesh.py "$D" || echo "day $D failed — continuing"
           done
 
+      - name: Refresh recent-reports layer (last 30 days)
+        run: python scripts/fetch_hail.py --recent || echo "recent refresh failed — yearly data unaffected"
+
+      - name: Generate storm-day pages
+        run: python scripts/generate_hail_events.py || echo "storm pages failed - data unaffected"
+
       - name: Commit if changed
         run: |
           git config user.name  "agsist-bot"
@@ -70,3 +76,12 @@ jobs:
             git pull --rebase origin main
             git push
           fi
+
+      - name: IndexNow ping (Bing learns about new pages in seconds)
+        run: |
+          Y=$(date -u -d 'yesterday' +%F)
+          curl -s -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d '{"host":"agsist.com","key":"f4a81c26db974e0f92c35b7a6e10d8c4","keyLocation":"https://agsist.com/f4a81c26db974e0f92c35b7a6e10d8c4.txt","urlList":["https://agsist.com/hail-map","https://agsist.com/hail/","https://agsist.com/hail/'"$Y"'","https://agsist.com/sitemap.xml"]}' \
+            || echo "IndexNow ping failed - harmless"
+
