@@ -110,6 +110,33 @@ def reduce_year(rows):
     return pts
 
 
+def events_year(rows, year):
+    """Compact dated/sized events for the point-lookup: [[lat,lon,mag,"MM-DD"],...].
+    mag is inches or null (unmeasured). Year lives in the filename, month-day in
+    the row — keeps a 15k-report year around ~400 KB raw (~90 KB over the wire).
+    This is what makes the map's address lookup and Field Scout's hail history
+    fully static — no live upstream query, no worker, no way to silently 404."""
+    ev = []
+    for row in rows or []:
+        if not is_hail(row):
+            continue
+        latv = _get(row, "lat", "latitude")
+        lonv = _get(row, "lon", "long", "longitude")
+        d = _date_of(row)
+        if latv is None or lonv is None or not d or not d.startswith(str(year)):
+            continue
+        try:
+            lat = round(float(latv), COORD_DP)
+            lon = round(float(lonv), COORD_DP)
+        except (TypeError, ValueError):
+            continue
+        if not (-180 <= lon <= 180 and -90 <= lat <= 90):
+            continue
+        m = mag_of(row)
+        ev.append([lat, lon, (round(m, 2) if m is not None else None), d[5:]])
+    return ev
+
+
 def _date_of(row):
     # Prefer the human-formatted valid2 (YYYY-MM-DD HH:MM); fall back to valid.
     v2 = _get(row, "valid2", "valid_2")
@@ -284,7 +311,10 @@ def main():
         counts[str(y)] = len(pts)
         with open("%s/%d.json" % (OUT_DIR, y), "w") as fh:
             json.dump({"year": y, "count": len(pts), "points": pts}, fh, separators=(",", ":"))
-        print("[%d] %d hail reports" % (y, len(pts)))
+        ev = events_year(rows, y)
+        with open("%s/events-%d.json" % (OUT_DIR, y), "w") as fh:
+            json.dump({"year": y, "n": len(ev), "ev": ev}, fh, separators=(",", ":"))
+        print("[%d] %d hail reports (%d dated events)" % (y, len(pts), len(ev)))
         time.sleep(2)  # be polite to IEM between large requests
 
     # ── County rankings per state (only rewrite if we got fresh rows) ──
