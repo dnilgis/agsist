@@ -64,18 +64,34 @@ jobs:
       - name: Generate storm-day pages
         run: python scripts/generate_hail_events.py || echo "storm pages failed - data unaffected"
 
-      - name: Commit if changed
+      - name: Commit if changed (conflict-armored)
         run: |
           git config user.name  "agsist-bot"
           git config user.email "actions@users.noreply.github.com"
           if git diff --quiet && [ -z "$(git status --porcelain)" ]; then
             echo "No changes."
-          else
-            git add -A
-            git commit -m "mesh: radar hail swaths update"
-            git pull --rebase origin main
-            git push
+            exit 0
           fi
+          git add -A
+          git commit -m "mesh: radar hail swaths update"
+          # manifest.json is the one file several bots write; if another workflow
+          # pushed while we ran, rebase conflicts there. Recovery: take main's
+          # manifest, re-apply our recent/storm layers on top, retry. Three tries.
+          for i in 1 2 3; do
+            if git pull --rebase origin main; then
+              git push && exit 0
+            fi
+            echo "rebase conflict (attempt $i) — taking main's manifest and regenerating"
+            git rebase --abort || true
+            git fetch origin main
+            git checkout origin/main -- data/hail/manifest.json || true
+            python scripts/fetch_hail.py --recent || true
+            python scripts/generate_hail_events.py || true
+            git add -A
+            git commit --amend --no-edit
+          done
+          echo "push failed after 3 attempts — re-run this workflow"
+          exit 1
 
       - name: IndexNow ping (Bing learns about new pages in seconds)
         run: |
@@ -84,4 +100,3 @@ jobs:
             -H "Content-Type: application/json; charset=utf-8" \
             -d '{"host":"agsist.com","key":"f4a81c26db974e0f92c35b7a6e10d8c4","keyLocation":"https://agsist.com/f4a81c26db974e0f92c35b7a6e10d8c4.txt","urlList":["https://agsist.com/hail-map","https://agsist.com/hail/","https://agsist.com/hail/'"$Y"'","https://agsist.com/sitemap.xml"]}' \
             || echo "IndexNow ping failed - harmless"
-
