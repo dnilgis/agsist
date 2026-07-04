@@ -79,6 +79,25 @@
     .hm-point-stat .v{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;color:var(--text,#e6ebe9)}
     .hm-point-stat .l{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim,#8a948f);margin-top:.15rem}
     .hm-point-tablewrap{overflow-x:auto}
+    .hm-alerts{margin:.8rem 0 0;padding:.8rem .9rem;background:rgba(212,162,63,.05);border:1px solid rgba(212,162,63,.25);border-radius:10px}
+    .hm-alerts-h{font-weight:700;font-size:.95rem}
+    .hm-alerts-soon{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand,#d4a23f);border:1px solid rgba(212,162,63,.5);border-radius:10px;padding:.15rem .5rem;margin-left:.4rem;vertical-align:middle}
+    .hm-alerts-p{font-size:.82rem;color:var(--text-dim,#8a948f);line-height:1.6;margin:.35rem 0 .55rem}
+    .hm-alerts-row{display:flex;gap:.5rem;flex-wrap:wrap}
+    .hm-alerts-row input{flex:1;min-width:200px;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.25));border-radius:8px;color:var(--text,#e6ebe9);font-size:16px;padding:.55rem .7rem;min-height:44px}
+    .hm-alerts-row button{min-height:44px;background:var(--brand,#d4a23f);border:0;border-radius:8px;color:#141410;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.78rem;padding:.55rem 1rem;cursor:pointer}
+    .hm-alerts-row button:disabled{opacity:.5;cursor:default}
+    .hm-alerts-status{font-family:'JetBrains Mono',monospace;font-size:.74rem;margin-top:.45rem;color:var(--text-dim,#8a948f)}
+    .hm-swathcheck{margin:.8rem 0 0;padding-top:.7rem;border-top:1px solid var(--border,rgba(132,160,168,.12))}
+    .hm-swathcheck button{display:inline-flex;align-items:center;gap:.4rem;min-height:42px;background:rgba(212,162,63,.08);border:1px solid rgba(212,162,63,.4);border-radius:8px;color:var(--brand,#d4a23f);font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;padding:.5rem .8rem;cursor:pointer}
+    .hm-swathcheck button:disabled{opacity:.5;cursor:default}
+    #hm-swath-out{margin-top:.55rem;font-size:.86rem;line-height:1.65}
+    #hm-swath-out .sv-day{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;border-bottom:1px solid var(--border,rgba(132,160,168,.08));font-family:'JetBrains Mono',monospace;font-size:.78rem}
+    #hm-swath-out .sv-day a{color:var(--brand,#d4a23f);margin-left:auto;text-decoration:none;font-size:.7rem}
+    .hm-ditto{color:var(--text-dim,#8a948f);opacity:.6}
+    .hm-row-dmg td{font-weight:700}
+    .hm-point-stats .hm-point-stat .l{overflow-wrap:anywhere}
+    .hm-point-table .hm-dot{width:9px;height:9px;margin-right:.4rem;display:inline-block;border-radius:50%;vertical-align:baseline}
     .hm-point-note{font-size:.82rem;color:var(--text-dim,#8a948f);line-height:1.6;margin:.7rem 0 0}
     .hm-zoomnote{position:absolute;bottom:26px;left:8px;z-index:500;background:rgba(10,12,13,.85);border:1px solid rgba(132,160,168,.25);border-radius:6px;color:#c8d0cc;font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.3rem .55rem;pointer-events:none;display:none}
     .hm-states{margin:1.6rem 0 0}
@@ -248,6 +267,19 @@
         </div>
         <div class="hm-point-stats" id="hm-point-stats"></div>
         <div class="hm-point-tablewrap"><table class="hm-cty-table" id="hm-point-table"></table></div>
+        <div class="hm-swathcheck" id="hm-swathcheck" hidden>
+          <button type="button" id="hm-swath-btn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-search"/></svg> <span id="hm-swath-btn-t">Check radar swaths at this pin</span></button>
+          <div id="hm-swath-out"></div>
+        </div>
+        <div class="hm-alerts" id="hm-alerts" hidden>
+          <div class="hm-alerts-h">Hail alerts for this spot <span class="hm-alerts-soon">launching soon</span></div>
+          <p class="hm-alerts-p">Be first in line: when alerts go live, you\u2019ll get an email any day hail is reported near this pin \u2014 and one email telling you it\u2019s on. Your email and this pin, nothing else, never sold.</p>
+          <div class="hm-alerts-row">
+            <input type="email" id="hm-alert-email" placeholder="you@example.com" autocomplete="email" aria-label="Email for hail alerts">
+            <button type="button" id="hm-alert-btn">Save my spot</button>
+          </div>
+          <div class="hm-alerts-status" id="hm-alert-status" aria-live="polite"></div>
+        </div>
         <p class="hm-point-note">Reports are National Weather Service Local Storm Reports within <strong>25 miles</strong> of the pin &mdash; called in by spotters, law enforcement, and the public, so location is town-level precision (roughly 1&ndash;5 miles), not parcel-exact, and quiet years can mean nobody reported, not that nothing fell. Farming this ground? <a href="/field-scout">Draw the field in Field Scout</a> for the per-field read with satellite vigor.</p>
       </section>
 
@@ -285,7 +317,7 @@
 
       <section class="hm-states" aria-labelledby="hm-states-h">
         <h2 id="hm-states-h">Hail history by state</h2>
-        <p class="hm-states-p">County rankings, peak months, and damaging-hail share — same data, one page per state.</p>
+        <p class="hm-states-p">County rankings, peak months, and damaging-hail share — same data, one page per state. Looking for a specific storm? <a href="/hail/" style="color:var(--brand,#d4a23f)">The storm log</a> has one page per significant hail day.</p>
         <div class="hm-states-grid"><a href="/hail-map/alabama">Alabama</a><a href="/hail-map/alaska">Alaska</a><a href="/hail-map/arizona">Arizona</a><a href="/hail-map/arkansas">Arkansas</a><a href="/hail-map/california">California</a><a href="/hail-map/colorado">Colorado</a><a href="/hail-map/connecticut">Connecticut</a><a href="/hail-map/delaware">Delaware</a><a href="/hail-map/district-of-columbia">District of Columbia</a><a href="/hail-map/florida">Florida</a><a href="/hail-map/georgia">Georgia</a><a href="/hail-map/hawaii">Hawaii</a><a href="/hail-map/idaho">Idaho</a><a href="/hail-map/illinois">Illinois</a><a href="/hail-map/indiana">Indiana</a><a href="/hail-map/iowa">Iowa</a><a href="/hail-map/kansas">Kansas</a><a href="/hail-map/kentucky">Kentucky</a><a href="/hail-map/louisiana">Louisiana</a><a href="/hail-map/maine">Maine</a><a href="/hail-map/maryland">Maryland</a><a href="/hail-map/massachusetts">Massachusetts</a><a href="/hail-map/michigan">Michigan</a><a href="/hail-map/minnesota">Minnesota</a><a href="/hail-map/mississippi">Mississippi</a><a href="/hail-map/missouri">Missouri</a><a href="/hail-map/montana">Montana</a><a href="/hail-map/nebraska">Nebraska</a><a href="/hail-map/nevada">Nevada</a><a href="/hail-map/new-hampshire">New Hampshire</a><a href="/hail-map/new-jersey">New Jersey</a><a href="/hail-map/new-mexico">New Mexico</a><a href="/hail-map/new-york">New York</a><a href="/hail-map/north-carolina">North Carolina</a><a href="/hail-map/north-dakota">North Dakota</a><a href="/hail-map/ohio">Ohio</a><a href="/hail-map/oklahoma">Oklahoma</a><a href="/hail-map/oregon">Oregon</a><a href="/hail-map/pennsylvania">Pennsylvania</a><a href="/hail-map/rhode-island">Rhode Island</a><a href="/hail-map/south-carolina">South Carolina</a><a href="/hail-map/south-dakota">South Dakota</a><a href="/hail-map/tennessee">Tennessee</a><a href="/hail-map/texas">Texas</a><a href="/hail-map/utah">Utah</a><a href="/hail-map/vermont">Vermont</a><a href="/hail-map/virginia">Virginia</a><a href="/hail-map/washington">Washington</a><a href="/hail-map/west-virginia">West Virginia</a><a href="/hail-map/wisconsin">Wisconsin</a><a href="/hail-map/wyoming">Wyoming</a></div>
       </section>
 
@@ -502,7 +534,7 @@
         (f.ev||[]).forEach(function(e){
           var mi=haversineMi(lat,lon,e[0],e[1]);
           if(mi>25) return;
-          ev.push({date:f.year+'-'+e[3], mi:mi, mag:(e[2]!=null?+e[2]:null), place:''});
+          ev.push({date:f.year+'-'+String(e[3]).replace(/\//g,'-'), mi:mi, mag:(e[2]!=null?+e[2]:null), place:''});
         });
       });
       ev.sort(function(a,b){ return a.date<b.date?1:-1; });
@@ -531,20 +563,35 @@
           ttl=document.getElementById('hm-point-title');
       var days={}; ev.forEach(function(e){ if(e.date) days[e.date]=1; });
       var nDays=Object.keys(days).length;
-      var maxMag=ev.reduce(function(m,e){ return e.mag!=null&&e.mag>m?e.mag:m; },0);
-      var newest=ev.length?ev[0].date:null;
+      var maxEv=null, nearEv=null;
+      ev.forEach(function(e){
+        if(e.mag!=null && (!maxEv || e.mag>maxEv.mag)) maxEv=e;
+        if(!nearEv || e.mi<nearEv.mi) nearEv=e;
+      });
+      var maxMag=maxEv?maxEv.mag:0;
+      var newest=ev.length?ev[0]:null;
       if(ttl) ttl.textContent='Hail history \u2014 '+(label||lat.toFixed(3)+', '+lon.toFixed(3));
       if(st) st.innerHTML=
         '<div class="hm-point-stat"><div class="v">'+ev.length+'</div><div class="l">reports \u00b7 25 mi \u00b7 5 yrs</div></div>'+
         '<div class="hm-point-stat"><div class="v">'+nDays+'</div><div class="l">hail days ('+(nDays/5).toFixed(1)+'/yr)</div></div>'+
-        '<div class="hm-point-stat"><div class="v">'+(maxMag?maxMag.toFixed(2)+'\u2033':'\u2014')+'</div><div class="l">largest reported</div></div>'+
-        '<div class="hm-point-stat"><div class="v">'+(newest?esc(fmtDate(newest)):'\u2014')+'</div><div class="l">most recent</div></div>';
+        '<div class="hm-point-stat"><div class="v">'+(maxMag?maxMag.toFixed(2)+'\u2033':'\u2014')+'</div><div class="l">largest'+(maxEv?' \u00b7 '+esc(fmtDate(maxEv.date)):' reported')+'</div></div>'+
+        '<div class="hm-point-stat"><div class="v">'+(newest?esc(fmtDate(newest.date)):'\u2014')+'</div><div class="l">most recent'+(newest&&newest.mag!=null?' \u00b7 '+newest.mag.toFixed(2)+'\u2033':'')+'</div></div>'+
+        '<div class="hm-point-stat"><div class="v">'+(nearEv?nearEv.mi.toFixed(1)+' mi':'\u2014')+'</div><div class="l">nearest report'+(nearEv?' \u00b7 '+esc(fmtDate(nearEv.date)):'')+'</div></div>';
       if(tb){
         if(!ev.length){ tb.innerHTML='<tbody><tr><td class="hm-cty-empty">No NWS hail reports within 25 miles in the last 5 years \u2014 which means none were <em>reported</em>, a genuinely quiet stretch by the record.</td></tr></tbody>'; }
         else{
           var hasPlace=ev.some(function(e){ return e.place; });
+          ev.sort(function(a,b){ return a.date<b.date?1:(a.date>b.date?-1:(a.mi-b.mi)); });
+          function szDot(m){
+            var c = m==null?'#8a948f' : m>=2?'#e31a1c' : m>=1.5?'#fd8d3c' : m>=1?'#fed976' : '#7cd2ff';
+            return '<span class="hm-dot" style="background:'+c+'"></span>';
+          }
+          var prevDate=null;
           var rows=ev.slice(0,40).map(function(e){
-            return '<tr><td>'+esc(fmtDate(e.date))+'</td><td class="num">'+(e.mag!=null?e.mag.toFixed(2)+'\u2033':'\u2014')+'</td><td class="num">'+e.mi.toFixed(1)+' mi</td>'+(hasPlace?'<td>'+esc(e.place)+'</td>':'')+'</tr>';
+            var dcell = (e.date===prevDate) ? '<span class="hm-ditto">\u2033</span>' : esc(fmtDate(e.date));
+            prevDate=e.date;
+            var dmg = e.mag!=null && e.mag>=1.5;
+            return '<tr'+(dmg?' class="hm-row-dmg"':'')+'><td>'+dcell+'</td><td class="num">'+szDot(e.mag)+(e.mag!=null?e.mag.toFixed(2)+'\u2033':'\u2014')+'</td><td class="num">'+e.mi.toFixed(1)+' mi</td>'+(hasPlace?'<td>'+esc(e.place)+'</td>':'')+'</tr>';
           }).join('');
           tb.innerHTML='<thead><tr><th scope="col">Date</th><th scope="col" class="num">Size</th><th scope="col" class="num">Distance</th>'+(hasPlace?'<th scope="col">Near</th>':'')+'</tr></thead><tbody>'+rows+'</tbody>'+
             (ev.length>40?'<tbody><tr><td colspan="4" class="hm-cty-empty">'+(ev.length-40)+' older reports not shown \u2014 print the report for the full record.</td></tr></tbody>':'');
@@ -552,8 +599,119 @@
       }
       lastLookup={lat:lat,lon:lon,label:label,ev:ev,nDays:nDays,maxMag:maxMag};
       wirePointActs();
+      wireSwathCheck();
+      wireAlerts();
     }
-    function fmtDate(iso){ try{ return new Date(iso+'T12:00:00Z').toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}); }catch(e){ return iso; } }
+    function fmtDate(iso){
+      var s=String(iso||'').replace(/\//g,'-');
+      var d=new Date(s+'T12:00:00Z');
+      if(isNaN(d.getTime())) return s;   // never print "Invalid Date" — the raw string beats a lie
+      return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
+    }
+    // ── Swath verdict: was THIS pin inside a radar-estimated band, and when? ──
+    // Ray-cast against each band's MultiPolygon outer rings. The pipeline emits
+    // no holes, so outer-ring tests are exact for our data.
+    function pointInRing(lat,lon,ring){
+      var inside=false;
+      for(var i=0,j=ring.length-1;i<ring.length;j=i++){
+        var xi=ring[i][0],yi=ring[i][1],xj=ring[j][0],yj=ring[j][1];
+        if(((yi>lat)!==(yj>lat)) && (lon < (xj-xi)*(lat-yi)/(yj-yi)+xi)) inside=!inside;
+      }
+      return inside;
+    }
+    function maxBandAt(lat,lon,fc){
+      var best=null;
+      (fc.features||[]).forEach(function(f){
+        var th=f.properties&&f.properties.thresh_in;
+        if(th==null || (best!=null && th<=best)) return;
+        var mp=f.geometry&&f.geometry.type==='MultiPolygon'?f.geometry.coordinates:
+               (f.geometry&&f.geometry.type==='Polygon'?[f.geometry.coordinates]:[]);
+        for(var p=0;p<mp.length;p++){
+          if(mp[p][0] && pointInRing(lat,lon,mp[p][0])){ best=th; break; }
+        }
+      });
+      return best;
+    }
+    var swathWired=false;
+    function wireSwathCheck(){
+      var box=document.getElementById('hm-swathcheck');
+      if(!box) return;
+      box.hidden = !(meshIdx && meshIdx.dates && meshIdx.dates.length && lastLookup);
+      if(box.hidden) return;
+      var bt=document.getElementById('hm-swath-btn-t');
+      if(bt) bt.textContent='Check radar swaths at this pin ('+meshIdx.dates.length+' storm days on file)';
+      var out=document.getElementById('hm-swath-out'); if(out) out.innerHTML='';
+      if(swathWired) return; swathWired=true;
+      document.getElementById('hm-swath-btn').addEventListener('click', runSwathCheck);
+    }
+    function runSwathCheck(){
+      if(!lastLookup || !meshIdx) return;
+      ga('hm_swath_check',{});
+      var btn=document.getElementById('hm-swath-btn'), out=document.getElementById('hm-swath-out');
+      var la=lastLookup.lat, lo=lastLookup.lon;
+      btn.disabled=true;
+      out.innerHTML='<span style="color:var(--text-dim)">Testing '+meshIdx.dates.length+' storm days\u2026</span>';
+      Promise.all(meshIdx.dates.map(function(d){
+        if(meshCache[d]) return Promise.resolve({d:d,fc:meshCache[d]});
+        return fetch(DATA+'mesh/'+d+'.json').then(function(r){ return r.ok?r.json():null; })
+          .then(function(fc){ if(fc) meshCache[d]=fc; return {d:d,fc:fc}; })
+          .catch(function(){ return {d:d,fc:null}; });
+      })).then(function(daysArr){
+        btn.disabled=false;
+        var hits=[], failed=0;
+        daysArr.forEach(function(x){
+          if(!x.fc){ failed++; return; }
+          var b=maxBandAt(la,lo,x.fc);
+          if(b!=null) hits.push({d:x.d, band:b});
+        });
+        hits.sort(function(a,b){ return a.d<b.d?1:-1; });
+        lastLookup.swaths={ checked:meshIdx.dates.length-failed, hits:hits };
+        if(!hits.length){
+          out.innerHTML='<strong>No radar-estimated hail \u22650.75\u2033 at this exact point</strong> on any of the '+(meshIdx.dates.length-failed)+' storm days in the archive'+(failed?' ('+failed+' days couldn\u2019t load)':'')+'. Nearby reports above may still be real \u2014 swaths are ~1 km estimates, and the archive starts '+esc(meshIdx.dates[0])+'.';
+          return;
+        }
+        out.innerHTML='<strong>'+hits.length+' storm day'+(hits.length===1?'':'s')+' put radar-estimated hail on this exact point:</strong>'+
+          hits.map(function(h){
+            var c=MESH_COLORS[h.band]||'#fed976';
+            return '<div class="sv-day"><span class="hm-dot" style="background:'+c+'"></span>'+esc(fmtDate(h.d))+' \u2014 inside the \u2265'+h.band+'\u2033 estimated band'+
+              '<a href="/hail-map?swath='+h.d+'&lat='+la.toFixed(4)+'&lon='+lo.toFixed(4)+'">view that day \u2192</a></div>';
+          }).join('')+
+          '<div style="font-family:\'JetBrains Mono\',monospace;font-size:.68rem;color:var(--text-dim);margin-top:.4rem">Radar estimate (NOAA MRMS MESH), not a measurement \u00b7 archive since '+esc(meshIdx.dates[0])+' \u00b7 pairs with the dated reports above for a date-of-loss record</div>';
+      });
+    }
+    // ── Alert waitlist: email + the exact pin, via Formspree. Honest framing:
+    // alerts aren't sending yet — this saves the spot and the intent. ──
+    var alertsWired=false;
+    function wireAlerts(){
+      var box=document.getElementById('hm-alerts');
+      if(!box) return;
+      box.hidden = !lastLookup;
+      if(box.hidden || alertsWired) return;
+      alertsWired=true;
+      var btn=document.getElementById('hm-alert-btn'), em=document.getElementById('hm-alert-email'),
+          stx=document.getElementById('hm-alert-status');
+      function submit(){
+        var v=(em.value||'').trim();
+        if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){ stx.textContent='That email doesn\u2019t look right \u2014 check it and try again.'; return; }
+        if(!lastLookup){ stx.textContent='Search or tap a spot on the map first.'; return; }
+        btn.disabled=true; stx.textContent='Saving\u2026';
+        ga('hm_alert_signup',{});
+        fetch('https://formspree.io/f/xnjbwepn',{
+          method:'POST',
+          headers:{ 'Content-Type':'application/json', 'Accept':'application/json' },
+          body: JSON.stringify({ email:v, list:'hail-alerts',
+            lat:lastLookup.lat.toFixed(4), lon:lastLookup.lon.toFixed(4),
+            place:lastLookup.label||'', page:'/hail-map' })
+        }).then(function(r){
+          btn.disabled=false;
+          if(r.ok){ stx.textContent='Saved \u2014 this spot is on the list. One email when alerts go live.'; em.value=''; }
+          else{ stx.textContent='Couldn\u2019t save just now \u2014 try again in a minute.'; }
+        }).catch(function(){ btn.disabled=false; stx.textContent='Couldn\u2019t save just now \u2014 try again in a minute.'; });
+      }
+      btn.addEventListener('click', submit);
+      em.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); });
+    }
+
     var actsWired=false;
     function wirePointActs(){
       if(actsWired) return; actsWired=true;
@@ -575,6 +733,7 @@
           '<h1>Hail History Report</h1>'+
           '<p class="meta">Location: '+esc(L.label||L.lat.toFixed(4)+', '+L.lon.toFixed(4))+' &middot; Radius: 25 miles &middot; Window: last 5 years &middot; Generated '+new Date().toLocaleDateString()+'</p>'+
           '<p><strong>'+L.ev.length+'</strong> NWS hail reports on <strong>'+L.nDays+'</strong> distinct days ('+(L.nDays/5).toFixed(1)+'/yr average). Largest reported stone: <strong>'+(L.maxMag?L.maxMag.toFixed(2)+'&Prime;':'none recorded')+'</strong>.</p>'+
+          ((L.swaths&&L.swaths.hits&&L.swaths.hits.length)?('<h2 style="font-size:1.05rem;margin-top:1.2rem">Radar-estimated swaths at this point (NOAA MRMS MESH)</h2><ul>'+L.swaths.hits.map(function(h){ return '<li>'+esc(h.d)+' &mdash; inside the &ge;'+h.band+'&Prime; estimated band</li>'; }).join('')+'</ul><p style="font-size:.85rem;color:#555">Radar estimates, not measurements; checked against '+L.swaths.checked+' archived storm days.</p>'):'')+
           '<table><thead><tr><th>Date</th><th>Size</th><th>Distance</th><th>Near</th></tr></thead><tbody>'+rows+'</tbody></table>'+
           '<p class="foot">Prepared by <strong>Sigurd Lindquist</strong> &middot; AGSIST &middot; sig@farmers1st.com &middot; agsist.com/hail-map<br>Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet. Reports are town-level precision and depend on someone reporting; absence of reports is not proof of absence of hail. This is a public-data record, not an engineering or insurance determination.</p>'+
           '</body></html>');

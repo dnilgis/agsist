@@ -36,7 +36,7 @@
   <url><loc>https://agsist.com/usda-quick-stats</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cot</loc><lastmod>2026-07-01</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/drought-monitor</loc><lastmod>2026-07-01</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/hail-map</loc><lastmod>2026-07-04</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/hail-map</loc><lastmod>2026-07-03</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/harvest-price-tracker</loc><lastmod>2026-06-25</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/presell-calculator</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/whats-priced-in</loc><lastmod>2026-07-03</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
@@ -229,4 +229,96 @@
   <url><loc>https://agsist.com/hail-map/wisconsin</loc><lastmod>2026-07-03</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/hail-map/wyoming</loc><lastmod>2026-07-03</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <!-- /HAIL-STATE-PAGES -->
+  <!-- HAIL-EVENT-PAGES -->
+  <url><loc>https://agsist.com/hail/</loc><lastmod>2026-07-04</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://agsist.com/hail/2026-07-03</loc><lastmod>2026-07-04</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-07-02</loc><lastmod>2026-07-02</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-07-01</loc><lastmod>2026-07-01</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-30</loc><lastmod>2026-06-30</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-29</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-28</loc><lastmod>2026-06-28</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-27</loc><lastmod>2026-06-27</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-26</loc><lastmod>2026-06-26</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-25</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-24</loc><lastmod>2026-06-24</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-23</loc><lastmod>2026-06-23</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-22</loc><lastmod>2026-06-22</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-21</loc><lastmod>2026-06-21</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-20</loc><lastmod>2026-06-20</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-19</loc><lastmod>2026-06-19</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-18</loc><lastmod>2026-06-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-17</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-16</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-15</loc><lastmod>2026-06-15</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-14</loc><lastmod>2026-06-14</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-13</loc><lastmod>2026-06-13</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-12</loc><lastmod>2026-06-12</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-11</loc><lastmod>2026-06-11</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-10</loc><lastmod>2026-06-10</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-09</loc><lastmod>2026-06-09</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-08</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-07</loc><lastmod>2026-06-07</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-06</loc><lastmod>2026-06-06</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-05</loc><lastmod>2026-06-05</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-04</loc><lastmod>2026-06-04</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-03</loc><lastmod>2026-06-03</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-02</loc><lastmod>2026-06-02</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-06-01</loc><lastmod>2026-06-01</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-31</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-30</loc><lastmod>2026-05-30</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-29</loc><lastmod>2026-05-29</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-28</loc><lastmod>2026-05-28</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-27</loc><lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-26</loc><lastmod>2026-05-26</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-25</loc><lastmod>2026-05-25</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-24</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-23</loc><lastmod>2026-05-23</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-22</loc><lastmod>2026-05-22</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-21</loc><lastmod>2026-05-21</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-20</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-19</loc><lastmod>2026-05-19</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-18</loc><lastmod>2026-05-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-17</loc><lastmod>2026-05-17</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-16</loc><lastmod>2026-05-16</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-15</loc><lastmod>2026-05-15</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-14</loc><lastmod>2026-05-14</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-13</loc><lastmod>2026-05-13</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-12</loc><lastmod>2026-05-12</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-11</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-10</loc><lastmod>2026-05-10</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-09</loc><lastmod>2026-05-09</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-08</loc><lastmod>2026-05-08</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-07</loc><lastmod>2026-05-07</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-06</loc><lastmod>2026-05-06</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-05-05</loc><lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-04-28</loc><lastmod>2026-04-28</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-04-27</loc><lastmod>2026-04-27</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-04-26</loc><lastmod>2026-04-26</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-04-17</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-04-15</loc><lastmod>2026-04-15</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-04-14</loc><lastmod>2026-04-14</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-04-13</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-03-31</loc><lastmod>2026-03-31</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-03-11</loc><lastmod>2026-03-11</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-03-10</loc><lastmod>2026-03-10</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-06-17</loc><lastmod>2025-06-17</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-06-16</loc><lastmod>2025-06-16</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-06-08</loc><lastmod>2025-06-08</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-05-20</loc><lastmod>2025-05-20</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-05-19</loc><lastmod>2025-05-19</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-05-18</loc><lastmod>2025-05-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-05-17</loc><lastmod>2025-05-17</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-05-16</loc><lastmod>2025-05-16</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-05-15</loc><lastmod>2025-05-15</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-05-08</loc><lastmod>2025-05-08</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-05-05</loc><lastmod>2025-05-05</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-05-02</loc><lastmod>2025-05-02</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-04-29</loc><lastmod>2025-04-29</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-04-23</loc><lastmod>2025-04-23</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-04-18</loc><lastmod>2025-04-18</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-04-02</loc><lastmod>2025-04-02</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-03-31</loc><lastmod>2025-03-31</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-03-30</loc><lastmod>2025-03-30</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2025-03-15</loc><lastmod>2025-03-15</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <!-- /HAIL-EVENT-PAGES -->
 </urlset>
