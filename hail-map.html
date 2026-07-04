@@ -100,6 +100,7 @@
     .hm-meta{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;align-items:center;color:var(--text-muted);font-size:.82rem;margin-top:.4rem}
     .hm-count{color:var(--text);font-weight:600}
     .hm-legend{display:inline-flex;align-items:center;gap:.5rem}
+    .hm-legend[hidden]{display:none}
     .hm-legend-bar{width:140px;height:9px;border-radius:5px;background:linear-gradient(90deg,#2c7fb8,#41b6c4,#7fcdbb,#fed976,#fd8d3c,#e31a1c)}
     .hm-note{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;margin-top:1.1rem;color:var(--text-dim);line-height:1.55;font-size:.92rem}
     .hm-note strong{color:var(--text)}
@@ -459,19 +460,53 @@
       var st=document.getElementById('hm-point-stats');
       if(st) st.innerHTML='<div class="hm-point-stat"><div class="v">\u2026</div><div class="l">checking 5 yrs of reports</div></div>';
       var tb=document.getElementById('hm-point-table'); if(tb) tb.innerHTML='';
-      function pull(){ return fetch(FS_WORKER+'/hail?lat='+lat.toFixed(4)+'&lon='+lon.toFixed(4)+'&years=5')
-        .then(function(r){ if(!r.ok) throw new Error('hail '+r.status); return r.json(); }); }
-      pull()
-        .catch(function(){ return new Promise(function(res){ setTimeout(res,900); }).then(pull); })
-        .then(function(d){
-          if(!d || !d.features){ throw new Error('empty'); }
-          renderLookup(d,lat,lon,label);
+      // Primary source: the same static per-year event files the monthly data
+      // run builds (dates + sizes, no live upstream in the request path).
+      loadAllEvents()
+        .then(function(evs){ renderLookupStatic(evs,lat,lon,label); })
+        .catch(function(){
+          // Events not published yet → old worker path, then honest failure.
+          function pull(){ return fetch(FS_WORKER+'/hail?lat='+lat.toFixed(4)+'&lon='+lon.toFixed(4)+'&years=5')
+            .then(function(r){ if(!r.ok) throw new Error('hail '+r.status); return r.json(); }); }
+          return pull()
+            .catch(function(){ return new Promise(function(res){ setTimeout(res,900); }).then(pull); })
+            .then(function(d){ if(!d || !d.features){ throw new Error('empty'); } renderLookup(d,lat,lon,label); });
         })
         .catch(function(){
           if(st) st.innerHTML='<div class="hm-point-stat" style="grid-column:1/-1"><div class="v">&mdash;</div><div class="l">the report service didn\u2019t answer \u2014 that\u2019s a hiccup on our end, not a quiet record. Tap the map again in a moment.</div></div>';
           var tb=document.getElementById('hm-point-table'); if(tb) tb.innerHTML='';
         });
       if(panel) panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+    var evCache={};
+    function loadEvents(y){
+      if(evCache[y]) return Promise.resolve(evCache[y]);
+      return fetch(DATA+'events-'+y+'.json').then(function(r){
+        if(!r.ok) throw new Error('ev '+y);
+        return r.json();
+      }).then(function(d){ evCache[y]=d; return d; });
+    }
+    function loadAllEvents(){
+      var yrs=(manifest&&manifest.years)||[];
+      if(!yrs.length) return Promise.reject(new Error('no manifest'));
+      return Promise.all(yrs.map(function(y){ return loadEvents(y).catch(function(){ return null; }); }))
+        .then(function(arr){
+          var got=arr.filter(Boolean);
+          if(!got.length) throw new Error('no event files yet');
+          return got;
+        });
+    }
+    function renderLookupStatic(evFiles,lat,lon,label){
+      var ev=[];
+      evFiles.forEach(function(f){
+        (f.ev||[]).forEach(function(e){
+          var mi=haversineMi(lat,lon,e[0],e[1]);
+          if(mi>25) return;
+          ev.push({date:f.year+'-'+e[3], mi:mi, mag:(e[2]!=null?+e[2]:null), place:''});
+        });
+      });
+      ev.sort(function(a,b){ return a.date<b.date?1:-1; });
+      paintLookup(ev,lat,lon,label);
     }
     function renderLookup(d,lat,lon,label){
       var st=document.getElementById('hm-point-stats'), tb=document.getElementById('hm-point-table'),
@@ -489,6 +524,11 @@
         }catch(e){}
       });
       ev.sort(function(a,b){ return a.date<b.date?1:-1; });
+      paintLookup(ev,lat,lon,label);
+    }
+    function paintLookup(ev,lat,lon,label){
+      var st=document.getElementById('hm-point-stats'), tb=document.getElementById('hm-point-table'),
+          ttl=document.getElementById('hm-point-title');
       var days={}; ev.forEach(function(e){ if(e.date) days[e.date]=1; });
       var nDays=Object.keys(days).length;
       var maxMag=ev.reduce(function(m,e){ return e.mag!=null&&e.mag>m?e.mag:m; },0);
@@ -502,10 +542,11 @@
       if(tb){
         if(!ev.length){ tb.innerHTML='<tbody><tr><td class="hm-cty-empty">No NWS hail reports within 25 miles in the last 5 years \u2014 which means none were <em>reported</em>, a genuinely quiet stretch by the record.</td></tr></tbody>'; }
         else{
+          var hasPlace=ev.some(function(e){ return e.place; });
           var rows=ev.slice(0,40).map(function(e){
-            return '<tr><td>'+esc(fmtDate(e.date))+'</td><td class="num">'+(e.mag!=null?e.mag.toFixed(2)+'\u2033':'\u2014')+'</td><td class="num">'+e.mi.toFixed(1)+' mi</td><td>'+esc(e.place)+'</td></tr>';
+            return '<tr><td>'+esc(fmtDate(e.date))+'</td><td class="num">'+(e.mag!=null?e.mag.toFixed(2)+'\u2033':'\u2014')+'</td><td class="num">'+e.mi.toFixed(1)+' mi</td>'+(hasPlace?'<td>'+esc(e.place)+'</td>':'')+'</tr>';
           }).join('');
-          tb.innerHTML='<thead><tr><th scope="col">Date</th><th scope="col" class="num">Size</th><th scope="col" class="num">Distance</th><th scope="col">Near</th></tr></thead><tbody>'+rows+'</tbody>'+
+          tb.innerHTML='<thead><tr><th scope="col">Date</th><th scope="col" class="num">Size</th><th scope="col" class="num">Distance</th>'+(hasPlace?'<th scope="col">Near</th>':'')+'</tr></thead><tbody>'+rows+'</tbody>'+
             (ev.length>40?'<tbody><tr><td colspan="4" class="hm-cty-empty">'+(ev.length-40)+' older reports not shown \u2014 print the report for the full record.</td></tr></tbody>':'');
         }
       }

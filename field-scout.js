@@ -1233,23 +1233,63 @@
   function stat(v,l){ return '<div class="fs-stat"><div class="fs-stat-v">'+v+'</div><div class="fs-stat-l">'+l+'</div></div>'; }
 
   // ── Hail history → FIELD + Risk Profile section ─────────────────────
+  // Hail history now reads the site's own static per-year event files
+  // (/data/hail/events-YYYY.json, built by the monthly hail data run) —
+  // dated + sized, no live upstream in the request path. The old worker
+  // route queried an IEM endpoint whose parameters that service ignores,
+  // so it silently returned empty for every field. Never again: the data
+  // the map draws and the data the brain reasons on are the same files.
+  var _hailEvCache={};
+  function _hailYearFile(y){
+    if(_hailEvCache[y]) return Promise.resolve(_hailEvCache[y]);
+    return fetch('/data/hail/events-'+y+'.json')
+      .then(function(r){ if(!r.ok) throw new Error('ev '+y); return r.json(); })
+      .then(function(d){ _hailEvCache[y]=d; return d; });
+  }
+  function _hvsMi(a,b,c,d){ var R=3958.8,p=Math.PI/180,x=(c-a)*p,y=(d-b)*p,
+    s=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*p)*Math.cos(c*p)*Math.sin(y/2)*Math.sin(y/2);
+    return R*2*Math.atan2(Math.sqrt(s),Math.sqrt(1-s)); }
   function loadHailData(c){
     var gen = fieldGen;
-    fetch(FS_WORKER + '/hail?lat='+c.lat.toFixed(4)+'&lon='+c.lng.toFixed(4)+'&years=5')
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(gj){
+    var yNow = new Date().getFullYear();
+    var yrs = [yNow-4, yNow-3, yNow-2, yNow-1, yNow];
+    Promise.all(yrs.map(function(y){ return _hailYearFile(y).catch(function(){ return null; }); }))
+      .then(function(files){
         if(gen !== fieldGen) return;
-        var feats = (gj && gj.features) || [];
-        var days={}, maxStone=0;
-        feats.forEach(function(f){
-          var p=f.properties||{};
-          var day=(p.valid||'').slice(0,10); if(day) days[day]=1;
-          var mag=parseFloat(p.magnitude||p.magf||0); if(mag>maxStone)maxStone=mag;
+        var got = files.filter(Boolean);
+        if(!got.length) throw new Error('no event files');
+        var days={}, maxStone=0, events=0;
+        got.forEach(function(f){
+          (f.ev||[]).forEach(function(e){
+            if(_hvsMi(c.lat, c.lng, e[0], e[1]) > 40) return;
+            events++;
+            var day = f.year + '-' + e[3];
+            days[day]=1;
+            if(e[2]!=null && +e[2] > maxStone) maxStone = +e[2];
+          });
         });
-        FIELD.hail = { events:feats.length, days:Object.keys(days).length, dates:Object.keys(days).sort(), maxStone:maxStone, years:5 };
+        FIELD.hail = { events:events, days:Object.keys(days).length, dates:Object.keys(days).sort(), maxStone:maxStone, years:got.length };
         recomputeInsight(); renderRisk();
       })
-      .catch(function(){ if(gen!==fieldGen) return; if(FIELD)FIELD.hail={err:1}; renderRisk(); });
+      .catch(function(){
+        if(gen!==fieldGen) return;
+        // Event files not published yet — fall back to the worker route once.
+        fetch(FS_WORKER + '/hail?lat='+c.lat.toFixed(4)+'&lon='+c.lng.toFixed(4)+'&years=5')
+          .then(function(r){ return r.ok ? r.json() : null; })
+          .then(function(gj){
+            if(gen !== fieldGen) return;
+            var feats = (gj && gj.features) || [];
+            var days={}, maxStone=0;
+            feats.forEach(function(f){
+              var p=f.properties||{};
+              var day=(p.valid||'').slice(0,10); if(day) days[day]=1;
+              var mag=parseFloat(p.magnitude||p.magf||0); if(mag>maxStone)maxStone=mag;
+            });
+            FIELD.hail = { events:feats.length, days:Object.keys(days).length, dates:Object.keys(days).sort(), maxStone:maxStone, years:5 };
+            recomputeInsight(); renderRisk();
+          })
+          .catch(function(){ if(gen!==fieldGen) return; if(FIELD)FIELD.hail={err:1}; renderRisk(); });
+      });
   }
 
   function renderRisk(){
