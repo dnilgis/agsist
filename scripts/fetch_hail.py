@@ -133,15 +133,21 @@ def events_year(rows, year):
         if not (-180 <= lon <= 180 and -90 <= lat <= 90):
             continue
         m = mag_of(row)
-        ev.append([lat, lon, (round(m, 2) if m is not None else None), d[5:]])
+        st = (_get(row, "st", "state") or "").strip().upper()[:2]
+        ev.append([lat, lon, (round(m, 2) if m is not None else None), d[5:], st])
     return ev
 
 
 def _date_of(row):
-    # Prefer the human-formatted valid2 (YYYY-MM-DD HH:MM); fall back to valid.
+    # Prefer the human-formatted valid2; IEM serves it year-first but with
+    # SLASHES ("2026/01/03 18:22") — normalize to dashes so every consumer
+    # (lookup, Field Scout, hail-vigor correlation) compares dates safely.
     v2 = _get(row, "valid2", "valid_2")
     if v2 and len(v2) >= 10:
-        return v2[:10]
+        d = v2[:10].replace("/", "-")
+        if len(d) == 10 and d[4] == "-" and d[7] == "-":
+            return d
+        return None
     v = _get(row, "valid")
     if v and len(v) >= 8 and v[:8].isdigit():
         return "%s-%s-%s" % (v[:4], v[4:6], v[6:8])
@@ -272,7 +278,39 @@ def existing_count(year):
         return None
 
 
+def refresh_recent_only():
+    """Daily mode (--recent): refresh ONLY recent.json and the manifest's
+    recent_* fields. The yearly files, counties, and events are monthly work;
+    the last-30-days layer is what roofers, adjusters, and farmers check the
+    morning after a storm — it must not sit up to a month stale. The
+    manifest's top-level 'generated' (the yearly-data vintage the site quotes
+    as "data through") is deliberately NOT touched here: a fresh recent
+    layer must not make the 5-year archive claim a freshness it lacks."""
+    os.makedirs(OUT_DIR, exist_ok=True)
+    recent = reduce_recent(fetch_recent())   # let failures raise → nonzero exit, no commit
+    with open("%s/recent.json" % OUT_DIR, "w") as fh:
+        json.dump({
+            "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+            "days": RECENT_DAYS, "count": len(recent), "reports": recent,
+        }, fh, separators=(",", ":"))
+    mpath = "%s/manifest.json" % OUT_DIR
+    try:
+        with open(mpath) as fh:
+            manifest = json.load(fh)
+    except (OSError, ValueError):
+        manifest = {}
+    manifest["recent_days"] = RECENT_DAYS
+    manifest["recent_count"] = len(recent)
+    manifest["recent_generated"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    with open(mpath, "w") as fh:
+        json.dump(manifest, fh, separators=(",", ":"))
+    print("[recent-only] %d hail reports in the last %d days" % (len(recent), RECENT_DAYS))
+
+
 def main():
+    if "--recent" in sys.argv:
+        refresh_recent_only()
+        return
     os.makedirs(OUT_DIR, exist_ok=True)
     this_year = datetime.now(timezone.utc).year
     years = list(range(this_year - YEARS_BACK + 1, this_year + 1))
