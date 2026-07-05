@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-07-05",
+      "date_display": "Sunday, July 5, 2026",
+      "headline": "CORN POLLS INTO JULY 4 WEEKEND AT $4.25",
+      "teaser": "Corn broke 4% into the holiday. Now pollination decides whether that was right.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-07-05",
+      "market_closed": true,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-04",
       "date_display": "Saturday, July 4, 2026",
       "headline": "CORN BREAKS 4%; WEEK ENDS ON DEFENSIVE NOTE",
@@ -1283,6 +1295,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-04T12:11:50.921736+00:00",
-  "count": 114
+  "updated": "2026-07-05T12:20:59.399941+00:00",
+  "count": 115
 }

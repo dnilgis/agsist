@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-04T12:11:52+00:00",
- "total": 51,
+ "updated": "2026-07-05T12:21:01+00:00",
+ "total": 52,
  "played_out": 26,
- "didnt": 20,
+ "didnt": 21,
  "pending": 5,
- "hit_rate": 56.5,
+ "hit_rate": 55.3,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-04",
+   "judged": "2026-07-05",
+   "call": "Called corn up toward $4.42 December going into the July 4 weekend. Corn went the other way hard.",
+   "outcome": "didnt",
+   "note": "The call was for December corn to work toward $4.42. Instead, nearby corn shed 17 and three-quarter cents on Friday and December settled at $4.415 -- essentially flat, not a rally. The miss is clean: funds liquidated into the holiday close rather than buying the pollination weather premium the call anticipated. Own it and watch whether Tuesday's forecast run changes the calculus."
+  },
   {
    "made": "2026-07-03",
    "judged": "2026-07-04",
