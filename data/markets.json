@@ -1,11 +1,11 @@
 {
-  "fetched": "2026-07-05T11:26:51Z",
+  "fetched": "2026-07-06T13:40:17Z",
   "version": 5,
-  "count": 7,
-  "total_found": 12,
+  "count": 6,
+  "total_found": 11,
   "tier_breakdown": {
     "direct_ag": 2,
-    "trade_energy": 1,
+    "trade_energy": 0,
     "macro_weather": 9
   },
   "categories": {
@@ -14,9 +14,9 @@
         "platform": "Polymarket",
         "ticker": "608552",
         "title": "Will Declan Rice win the 2026 Ballon d'Or?",
-        "yes": 2,
-        "no": 98,
-        "volume_24h": 89206.322691,
+        "yes": 1,
+        "no": 99,
+        "volume_24h": 90846.90269100004,
         "close_time": "2026-10-31T00:00:00Z",
         "time_left": "Closes in ~3mo",
         "url": "https://polymarket.com/event/ballon-dor-winner-2026",
@@ -45,56 +45,38 @@
         "why_it_matters": "Reflects conditions that can affect agricultural commodity prices, input costs, or farm policy."
       }
     ],
-    "Energy & Inputs": [
-      {
-        "platform": "Polymarket",
-        "ticker": "1126852",
-        "title": "Will Venezuelan crude oil production reach 1.2m barrels per day in 2026?",
-        "yes": 79,
-        "no": 21,
-        "volume_24h": 9997.834273000002,
-        "close_time": "2027-02-28T00:00:00Z",
-        "time_left": "Closes in ~7mo",
-        "url": "https://polymarket.com/event/will-venezuelan-crude-oil-production-reach-barrels-per-day-in-2026",
-        "slug": "will-venezuelan-crude-oil-production-reach-barrels-per-day-in-2026",
-        "relevance": 70,
-        "tier": 2,
-        "category": "Energy & Inputs",
-        "why_it_matters": "Market pricing 79% odds crude will reach the strike. Closes in ~7mo. Would lift farm diesel and pass through to nitrogen fertilizer cost within a few months."
-      }
-    ],
     "Economy & Markets": [
       {
         "platform": "Polymarket",
         "ticker": "1654959",
         "title": "Will the Fed increase interest rates by 25 bps after the July 2026 meeting?",
-        "yes": 10,
-        "no": 90,
-        "volume_24h": 10147779.2652841,
+        "yes": 11,
+        "no": 89,
+        "volume_24h": 10327202.3460881,
         "close_time": "2026-07-29T00:00:00Z",
-        "time_left": "Closes in 23d",
+        "time_left": "Closes in 22d",
         "url": "https://polymarket.com/event/fed-decision-in-july-181",
         "slug": "fed-decision-in-july-181",
         "relevance": 40,
         "tier": 3,
         "category": "Economy & Markets",
-        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 10% YES on this outcome."
+        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 11% YES on this outcome."
       },
       {
         "platform": "Polymarket",
         "ticker": "1654958",
         "title": "Will there be no change in Fed interest rates after the July 2026 meeting?",
-        "yes": 90,
-        "no": 10,
-        "volume_24h": 8948932.987063034,
+        "yes": 88,
+        "no": 12,
+        "volume_24h": 9456579.799389021,
         "close_time": "2026-07-29T00:00:00Z",
-        "time_left": "Closes in 23d",
+        "time_left": "Closes in 22d",
         "url": "https://polymarket.com/event/fed-decision-in-july-181",
         "slug": "fed-decision-in-july-181",
         "relevance": 40,
         "tier": 3,
         "category": "Economy & Markets",
-        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 90% YES on this outcome."
+        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 88% YES on this outcome."
       },
       {
         "platform": "Polymarket",
@@ -102,9 +84,9 @@
         "title": "Will the Fed decrease interest rates by 25 bps after the July 2026 meeting?",
         "yes": 1,
         "no": 99,
-        "volume_24h": 6274327.330679108,
+        "volume_24h": 6749301.1761441,
         "close_time": "2026-07-29T00:00:00Z",
-        "time_left": "Closes in 23d",
+        "time_left": "Closes in 22d",
         "url": "https://polymarket.com/event/fed-decision-in-july-181",
         "slug": "fed-decision-in-july-181",
         "relevance": 40,
@@ -116,9 +98,9 @@
         "platform": "Polymarket",
         "ticker": "616902",
         "title": "Will no Fed rate cuts happen in 2026?",
-        "yes": 77,
-        "no": 23,
-        "volume_24h": 5746530.648681002,
+        "yes": 78,
+        "no": 22,
+        "volume_24h": 5757299.888131,
         "close_time": "2026-12-31T00:00:00Z",
         "time_left": "Closes in ~5mo",
         "url": "https://polymarket.com/event/how-many-fed-rate-cuts-in-2026",
@@ -126,7 +108,7 @@
         "relevance": 40,
         "tier": 3,
         "category": "Economy & Markets",
-        "why_it_matters": "77% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
+        "why_it_matters": "78% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
       }
     ]
   },
@@ -135,9 +117,9 @@
       "platform": "Polymarket",
       "ticker": "608552",
       "title": "Will Declan Rice win the 2026 Ballon d'Or?",
-      "yes": 2,
-      "no": 98,
-      "volume_24h": 89206.322691,
+      "yes": 1,
+      "no": 99,
+      "volume_24h": 90846.90269100004,
       "close_time": "2026-10-31T00:00:00Z",
       "time_left": "Closes in ~3mo",
       "url": "https://polymarket.com/event/ballon-dor-winner-2026",
@@ -165,51 +147,35 @@
     },
     {
       "platform": "Polymarket",
-      "ticker": "1126852",
-      "title": "Will Venezuelan crude oil production reach 1.2m barrels per day in 2026?",
-      "yes": 79,
-      "no": 21,
-      "volume_24h": 9997.834273000002,
-      "close_time": "2027-02-28T00:00:00Z",
-      "time_left": "Closes in ~7mo",
-      "url": "https://polymarket.com/event/will-venezuelan-crude-oil-production-reach-barrels-per-day-in-2026",
-      "slug": "will-venezuelan-crude-oil-production-reach-barrels-per-day-in-2026",
-      "relevance": 70,
-      "tier": 2,
-      "category": "Energy & Inputs",
-      "why_it_matters": "Market pricing 79% odds crude will reach the strike. Closes in ~7mo. Would lift farm diesel and pass through to nitrogen fertilizer cost within a few months."
-    },
-    {
-      "platform": "Polymarket",
       "ticker": "1654959",
       "title": "Will the Fed increase interest rates by 25 bps after the July 2026 meeting?",
-      "yes": 10,
-      "no": 90,
-      "volume_24h": 10147779.2652841,
+      "yes": 11,
+      "no": 89,
+      "volume_24h": 10327202.3460881,
       "close_time": "2026-07-29T00:00:00Z",
-      "time_left": "Closes in 23d",
+      "time_left": "Closes in 22d",
       "url": "https://polymarket.com/event/fed-decision-in-july-181",
       "slug": "fed-decision-in-july-181",
       "relevance": 40,
       "tier": 3,
       "category": "Economy & Markets",
-      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 10% YES on this outcome."
+      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 11% YES on this outcome."
     },
     {
       "platform": "Polymarket",
       "ticker": "1654958",
       "title": "Will there be no change in Fed interest rates after the July 2026 meeting?",
-      "yes": 90,
-      "no": 10,
-      "volume_24h": 8948932.987063034,
+      "yes": 88,
+      "no": 12,
+      "volume_24h": 9456579.799389021,
       "close_time": "2026-07-29T00:00:00Z",
-      "time_left": "Closes in 23d",
+      "time_left": "Closes in 22d",
       "url": "https://polymarket.com/event/fed-decision-in-july-181",
       "slug": "fed-decision-in-july-181",
       "relevance": 40,
       "tier": 3,
       "category": "Economy & Markets",
-      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 90% YES on this outcome."
+      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 88% YES on this outcome."
     },
     {
       "platform": "Polymarket",
@@ -217,9 +183,9 @@
       "title": "Will the Fed decrease interest rates by 25 bps after the July 2026 meeting?",
       "yes": 1,
       "no": 99,
-      "volume_24h": 6274327.330679108,
+      "volume_24h": 6749301.1761441,
       "close_time": "2026-07-29T00:00:00Z",
-      "time_left": "Closes in 23d",
+      "time_left": "Closes in 22d",
       "url": "https://polymarket.com/event/fed-decision-in-july-181",
       "slug": "fed-decision-in-july-181",
       "relevance": 40,
@@ -231,9 +197,9 @@
       "platform": "Polymarket",
       "ticker": "616902",
       "title": "Will no Fed rate cuts happen in 2026?",
-      "yes": 77,
-      "no": 23,
-      "volume_24h": 5746530.648681002,
+      "yes": 78,
+      "no": 22,
+      "volume_24h": 5757299.888131,
       "close_time": "2026-12-31T00:00:00Z",
       "time_left": "Closes in ~5mo",
       "url": "https://polymarket.com/event/how-many-fed-rate-cuts-in-2026",
@@ -241,7 +207,7 @@
       "relevance": 40,
       "tier": 3,
       "category": "Economy & Markets",
-      "why_it_matters": "77% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
+      "why_it_matters": "78% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
     }
   ]
 }
