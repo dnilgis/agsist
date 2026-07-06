@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-05T12:21:01+00:00",
- "total": 52,
+ "updated": "2026-07-06T14:30:01+00:00",
+ "total": 53,
  "played_out": 26,
- "didnt": 21,
+ "didnt": 22,
  "pending": 5,
- "hit_rate": 55.3,
+ "hit_rate": 54.2,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-05",
+   "judged": "2026-07-06",
+   "call": "The call was corn up, toward above $4.42.",
+   "outcome": "didnt",
+   "note": "Corn closed at $4.25 today, the same level it started the session -- the move went the wrong direction entirely, with old-crop shedding 17 and three-quarter cents rather than pushing toward $4.42. Fund liquidation into the holiday reopen overwhelmed any weather premium. Own the miss: $4.42 was not in play today."
+  },
   {
    "made": "2026-07-04",
    "judged": "2026-07-05",

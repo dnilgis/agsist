@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 05 Jul 2026 12:21:01 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 06 Jul 2026 14:30:01 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN BREAKS 4% AGAIN; OATS BREAKDOWN 15%</title>
+      <link>https://agsist.com/daily/2026-07-06</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-06</guid>
+      <pubDate>Mon, 06 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Corn is back to $4.25 and the question is no longer whether pollination week carries a weather premium. It carries one, it just isn't being priced. Old-crop nearby fell 17¾ cents to $4.25 today, the same level it closed before the holiday weekend, and December slipped only a quarter to $4.42, which tells you the nearby contract is doing the liquidating while new-crop holds its ground. Today's USDA Crop Progress drops at 3 PM CT, and the market is sitting on its hands waiting for it.
+Old-crop corn drops 17¾ cents on the first full session back from the holiday weekend, while oats post one of their biggest single-session moves in years, and today's Crop Progress at 3 PM CT resets the story.
+• Corn: Funds Step Out
+  → If you have unpriced new-crop corn, hold through today's 3 PM Crop Progress. If December breaks below $4.35 on a good-conditions print, reassess storage economics.
+• Oats: Off the Map
+• Beans and Wheat: Softer, Not Breaking
+Read more: https://agsist.com/daily/2026-07-06</description>
+    </item>
     <item>
       <title>CORN POLLS INTO JULY 4 WEEKEND AT $4.25</title>
       <link>https://agsist.com/daily/2026-07-05</link>
@@ -374,18 +387,6 @@ Friday's selloff leaves soybeans at three-week lows heading into critical pollin
 • HOGS FALL SHARPLY ON CARGILL DRAG
 • ENERGY LEADS COMPLEX LOWER
 Read more: https://agsist.com/daily/2026-06-07</description>
-    </item>
-    <item>
-      <title>HOGS FALL 7.2%, CATTLE HOLDS GAINS</title>
-      <link>https://agsist.com/daily/2026-06-06</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-06</guid>
-      <pubDate>Sat, 06 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Lean hogs fell sharply 7.2% to $94.30 Friday, the biggest single-session drop in three weeks, as processing constraints rippled through protein markets. Live cattle held $250.07, up 3.5% for the session, creating the widest cattle-hog spread since March. The split tells you everything: cattle's got the buyer, hogs are fighting the calendar.
-Livestock complex splits as processing disruption spreads through protein markets.
-• LIVESTOCK SPLITS ON PROCESSING WOES
-• GRAINS FINISH FOUR-DAY SLIDE
-• METALS FALL ON DOLLAR STRENGTH
-Read more: https://agsist.com/daily/2026-06-06</description>
     </item>
   </channel>
 </rss>
