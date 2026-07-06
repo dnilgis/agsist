@@ -1,16 +1,32 @@
 {
   "_comment": "AGSIST Grower Pulse — single source of truth for the homepage poll. To run a new week: move the current block into archive (with its final results+total pulled from the Worker), then write the new question into current with a new id. Stage 2 automation will do this on a schedule.",
   "current": {
-    "id": "2026-w27-pollination-worry",
-    "week": "2026-06-29",
-    "question": "How worried are you about heat stress at pollination?",
+    "id": "2026-w28-pollination-weather",
+    "week": "2026-07-06",
+    "question": "How has pollination weather been on your farm?",
     "options": [
-      "Not worried",
-      "Somewhat",
-      "Very worried"
+      "Stressful",
+      "Mixed",
+      "Favorable"
     ]
   },
   "archive": [
+    {
+      "id": "2026-w27-pollination-worry",
+      "week": "2026-06-29",
+      "question": "How worried are you about heat stress at pollination?",
+      "options": [
+        "Not worried",
+        "Somewhat",
+        "Very worried"
+      ],
+      "results": [
+        0,
+        2,
+        0
+      ],
+      "total": 2
+    },
     {
       "id": "2026-w26-crop-pace-jun",
       "week": "2026-06-22",
