@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-06T14:30:01+00:00",
- "total": 53,
+ "updated": "2026-07-07T13:24:50+00:00",
+ "total": 54,
  "played_out": 26,
- "didnt": 22,
+ "didnt": 23,
  "pending": 5,
- "hit_rate": 54.2,
+ "hit_rate": 53.1,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-06",
+   "judged": "2026-07-07",
+   "call": "Called beans up, toward $12.10, after Monday's Crop Progress print.",
+   "outcome": "didnt",
+   "note": "Nearby beans closed at $11.815 today, which means the $12.10 target did not play out -- the market moved in the right direction on the 30-cent rally but stopped well short of the level. Own the miss on the level; the directional read was correct, the target was ambitious. Thursday export sales above 400K MT is the next real look at whether the funds are still pointing that direction."
+  },
   {
    "made": "2026-07-05",
    "judged": "2026-07-06",

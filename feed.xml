@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 06 Jul 2026 14:30:01 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 07 Jul 2026 13:24:50 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>BEANS LEAD THE COMPLEX BACK NORTH</title>
+      <link>https://agsist.com/daily/2026-07-07</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-07</guid>
+      <pubDate>Tue, 07 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Soybeans had their biggest single-session gain in weeks, nearby up 30¾ cents to $11.81, after USDA confirmed 85.4 million soybean acres Tuesday morning, matching March's estimate and removing the fear of a surprise acreage add. That matters for the weekly thread: Monday's question was whether Crop Progress would confirm pollination-week crop health or add a weather premium, and today's answer is both, corn conditions look solid per field reports out of Michigan and Minnesota, but an approaching Plains heat dome just enough uncertainty to keep a modest weather premium alive in December corn at $4.59. The complex is no longer in Monday's defensive crouch. The question now is whether the funds follow soybeans higher or treat today's move as a one-day cover.
+Soybeans ran 30 cents on USDA acreage confirmation and heat-dome weather talk; corn and wheat followed, cattle barely moved.
+• Soybeans: Acreage Clears the Deck
+  → If you have unpriced new-crop soybeans, watch Thursday's export sales. Above 400K MT keeps the move alive toward $12.10; below 300K MT and today's run fades.
+• Corn: Heat Dome Adds a Little Back
+• Wheat Follows, Does Not Lead
+Read more: https://agsist.com/daily/2026-07-07</description>
+    </item>
     <item>
       <title>CORN BREAKS 4% AGAIN; OATS BREAKDOWN 15%</title>
       <link>https://agsist.com/daily/2026-07-06</link>
@@ -375,18 +388,6 @@ Wheat adds 8 cents while Class III milk loses 3.7% on processing concerns.
 • MILK FALLS SHARPLY ON PROCESSING FEARS
 • ENERGY HOLDS DESPITE HORMUZ NEWS
 Read more: https://agsist.com/daily/2026-06-08</description>
-    </item>
-    <item>
-      <title>BEANS BREAK $11 SUPPORT, HOGS FALL SHARPLY</title>
-      <link>https://agsist.com/daily/2026-06-07</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-07</guid>
-      <pubDate>Sun, 07 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Soybeans closed Friday at $11.21, falling through $11.30 support that held for three weeks and now testing $11 psychological support early this week. The break came on no fresh bearish news, just fund liquidation that started in crude oil and spread across the commodity complex. Hogs led the damage with a 2.8% drop to $98.80, the biggest single-session decline since May 12.
-Friday's selloff leaves soybeans at three-week lows heading into critical pollination window.
-• SOYBEANS TEST $11 LINE
-• HOGS FALL SHARPLY ON CARGILL DRAG
-• ENERGY LEADS COMPLEX LOWER
-Read more: https://agsist.com/daily/2026-06-07</description>
     </item>
   </channel>
 </rss>
