@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 08 Jul 2026 12:24:35 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 09 Jul 2026 13:53:20 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>HOGS FALL HARD; EXPORT SALES DECIDE BEANS</title>
+      <link>https://agsist.com/daily/2026-07-09</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-09</guid>
+      <pubDate>Thu, 09 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Lean hogs had their biggest single-session drop in months, closing at $85.53, off nearly 12%, and that number is loud enough to drown out everything else this morning. Corn at $4.33 gave back 7¾ cents as profit-taking in beans and a 'buy the rumor, sell the fact' reaction to Wednesday's confirmed China soybean sale dragged the whole complex. The weekly thread's question, does the crop health picture add a weather premium to corn, sits right next to the morning's real make-or-break: USDA export sales hit at 7:30 AM CT, and after three sessions of positioning, the bean market is about to get an answer.
+Lean hogs dropped nearly 12% in their biggest single-session move in months, while soybeans drift into Thursday's 7:30 AM export sales number as the week's make-or-break moment.
+• Hogs Break Hard
+• Beans Hold; Export Sales Decide
+  → Unpriced new-crop soybeans: wait for the 7:30 AM export sales print. Above 400K MT, scale sales toward $12.10. Below 300K MT, reassess storage economics before adding.
+• Corn Gives Back, Watches Pollination
+Read more: https://agsist.com/daily/2026-07-09</description>
+    </item>
     <item>
       <title>CRUDE RUNS 3% AS HORMUZ REIGNITES</title>
       <link>https://agsist.com/daily/2026-07-08</link>
@@ -377,18 +390,6 @@ Live cattle up 1.3% as processing fears ease, while hogs fall 2.9% on different 
 • MILK LEADS HIGHER, HOGS DIVERGE
 • GRAINS TICK HIGHER ON FUND ROTATION
 Read more: https://agsist.com/daily/2026-06-10</description>
-    </item>
-    <item>
-      <title>GRAINS TICK HIGHER, LIVESTOCK FALLS ON SCREWWORM FEARS</title>
-      <link>https://agsist.com/daily/2026-06-09</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-09</guid>
-      <pubDate>Tue, 09 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Wheat closed $5.90, up 6¾ cents and leading the grain complex higher for the second straight session, while the livestock complex tumbled on spreading screwworm fears. Live cattle fell 2% to $236.72 after USDA confirmed three more cases including the first in New Mexico, and lean hogs dropped 2.7% to $96.15. The grain rally looks more like short covering than conviction buying-corn barely managed a half-cent gain to $4.21-but it's breaking the five-day slide that defined last week.
-Wheat leads grain complex modestly higher while cattle and hogs drop on Texas disease outbreak.
-• WHEAT LEADS GRAINS HIGHER
-• LIVESTOCK FALLS ON SCREWWORM SPREAD
-• CRUDE SLIPS ON CHINA DEMAND
-Read more: https://agsist.com/daily/2026-06-09</description>
     </item>
   </channel>
 </rss>
