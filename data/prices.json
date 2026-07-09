@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-07-09T21:58:59Z",
+  "fetched": "2026-07-09T22:29:13Z",
   "ok": 47,
   "failed": 0,
   "stale_keys": [],
@@ -258,10 +258,10 @@
     },
     "milk": {
       "ticker": "DC=F",
-      "close": 16.9,
+      "close": 16.94,
       "open": 16.26,
-      "netChange": 0.64,
-      "pctChange": 3.936,
+      "netChange": 0.68,
+      "pctChange": 4.182,
       "wk52_hi": 17.92,
       "wk52_lo": 14.53
     },
@@ -339,46 +339,46 @@
     },
     "crude": {
       "ticker": "CL=F",
-      "close": 71.81,
+      "close": 71.79,
       "open": 74.28,
-      "netChange": -2.47,
-      "pctChange": -3.3253,
+      "netChange": -2.49,
+      "pctChange": -3.3522,
       "wk52_hi": 119.48,
       "wk52_lo": 54.98
     },
     "natgas": {
       "ticker": "NG=F",
-      "close": 3.012,
+      "close": 3.009,
       "open": 3.213,
-      "netChange": -0.201,
-      "pctChange": -6.2558,
+      "netChange": -0.204,
+      "pctChange": -6.3492,
       "wk52_hi": 7.827,
       "wk52_lo": 2.483
     },
     "gold": {
       "ticker": "GC=F",
-      "close": 4132.6001,
+      "close": 4132.3999,
       "open": 4072.1001,
-      "netChange": 60.5,
-      "pctChange": 1.4857,
+      "netChange": 60.2998,
+      "pctChange": 1.4808,
       "wk52_hi": 5586.2002,
       "wk52_lo": 3263.8999
     },
     "silver": {
       "ticker": "SI=F",
-      "close": 60.355,
+      "close": 60.34,
       "open": 58.24,
-      "netChange": 2.115,
-      "pctChange": 3.6315,
+      "netChange": 2.1,
+      "pctChange": 3.6058,
       "wk52_hi": 121.3,
       "wk52_lo": 36.345
     },
     "dollar": {
       "ticker": "DX-Y.NYB",
-      "close": 100.939,
+      "close": 100.937,
       "open": 100.975,
-      "netChange": -0.036,
-      "pctChange": -0.0357,
+      "netChange": -0.038,
+      "pctChange": -0.0376,
       "wk52_hi": 101.8,
       "wk52_lo": 95.55
     },
@@ -402,19 +402,19 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 63227.58984,
+      "close": 63294.62109,
       "open": 62237.69922,
-      "netChange": 989.89062,
-      "pctChange": 1.5905,
+      "netChange": 1056.92187,
+      "pctChange": 1.6982,
       "wk52_hi": 126198.0703,
       "wk52_lo": 57747.7656
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.0969,
+      "close": 1.0966,
       "open": 1.0901,
-      "netChange": 0.0068,
-      "pctChange": 0.6238,
+      "netChange": 0.0065,
+      "pctChange": 0.5963,
       "wk52_hi": 3.6502,
       "wk52_lo": 1.0098
     },
