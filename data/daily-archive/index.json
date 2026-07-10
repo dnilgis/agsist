@@ -3,10 +3,10 @@
     {
       "date": "2026-07-10",
       "date_display": "Friday, July 10, 2026",
-      "headline": "WASDE DAY: BEANS SLIDE, WHEAT LEADS HIGHER",
-      "teaser": "WASDE day: beans slide into the number, wheat bucks the complex, cattle funds keep walking.",
-      "market_mood": "cautious",
-      "surprise_count": 1,
+      "headline": "WASDE DAY: WHEAT RUNS 3%, HOGS REVERSE HARD",
+      "teaser": "WASDE lit the complex; wheat ran 3%, hogs reversed 15%, and corn finally got off the mat.",
+      "market_mood": "bullish",
+      "surprise_count": 4,
       "sections": 4,
       "url": "/daily/2026-07-10",
       "market_closed": false,
@@ -1355,6 +1355,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-10T13:16:14.636554+00:00",
+  "updated": "2026-07-10T21:05:21.815972+00:00",
   "count": 120
 }

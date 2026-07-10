@@ -1,158 +1,162 @@
 {
-  "headline": "WASDE DAY: BEANS SLIDE, WHEAT LEADS HIGHER",
-  "subheadline": "Soybeans gave back 16 cents ahead of the 11 AM WASDE print; wheat bucked the complex with a 9.5-cent gain as the market repositions.",
-  "lead": "The WASDE drops at 11 AM CT and the market already voted with its feet: soybeans off 16 cents to $11.81, corn down 3 cents to $4.29, and wheat the lone winner at $6.12, up 9.5 cents. That split tells you something. Wheat's been the laggard all season, and its move today looks like funds rotating into the most beaten-down contract before a supply report that could tighten the global balance sheet. Beans took the opposite treatment, unwinding the China-trade-deal bounce that has been fading since it arrived. The story this week started with acreage clearing the deck Monday, ran through export sales Thursday, and lands here: a WASDE print that either hands the bulls a fresh catalyst or confirms the grains complex has already priced the good news.",
-  "the_takeaway": "WASDE at 11 AM decides whether beans find a floor or keep sliding toward $11.50.",
-  "teaser": "WASDE day: beans slide into the number, wheat bucks the complex, cattle funds keep walking.",
+  "headline": "WASDE DAY: WHEAT RUNS 3%, HOGS REVERSE HARD",
+  "subheadline": "USDA's July WASDE at 11 AM CT resets the supply picture as wheat posts its biggest session since spring and hogs erase yesterday's 11.8% drop in a single day.",
+  "lead": "The WASDE dropped at 11 AM and the market answered fast. Wheat ran 18.5 cents to $6.30, corn added 8.5 cents to $4.38, and hogs posted a 15.7% session that erased yesterday's 11.8% break almost to the penny. That is not a coincidence: the USDA cut red meat production estimates and trimmed global wheat supply, and the funds that liquidated livestock yesterday came right back in this morning. The weekly thread question from Monday asked whether Crop Progress would confirm pollination-week crop health or build a weather premium into corn. Today the answer is partial: corn is firming on WASDE-driven supply tightening and heat dome positioning, but $4.38 is not yet a weather-premium price. The next leg needs the heat to verify in August crop condition data.",
+  "the_takeaway": "WASDE cut supply on wheat and beef; the market priced it. Hold unpriced wheat if you can.",
+  "teaser": "WASDE lit the complex; wheat ran 3%, hogs reversed 15%, and corn finally got off the mat.",
   "one_number": {
-    "value": "42%",
-    "unit": "corn planted as of May 24, vs. 5-year avg",
-    "context": "The 2026 crop entered pollination week with planting having caught up to the 5-year average after a wet May start. With the 6-to-10-day outlook now calling for hotter-than-normal conditions across the Heartland, the crop that got in on time is about to face its biggest stress test of the season. How corn handles this heat window is what the next two WASDE revisions will price."
+    "value": "25.288 billion pounds",
+    "unit": "USDA 2026 projected US beef output, cut 150M lbs from June",
+    "context": "USDA pulled 150 million pounds of beef production out of its 2026 estimate in today's WASDE, citing tight ready-to-market numbers driven partly by the ongoing Cargill Fort Morgan and Schuyler plant lockout that began May 19. That cut is the structural reason live cattle held $235.00 while feeders dipped today: the packer math is tightening, not loosening. Producers holding cattle into late summer have a USDA number now working in their favor."
   },
   "yesterdays_call": {
-    "summary": "Called beans up toward $11.95 on the thesis that export sales above 400K MT would keep the move alive.",
+    "summary": "Yesterday's call: wheat up, toward $6.45, on the thesis that WASDE supply tightening would extend the move.",
     "outcome": "didnt",
-    "note": "Beans closed at $11.81, exactly where the call started -- the $11.95 target was never reached. The export-sales catalyst did not deliver the incremental buying needed, and the China-deal bounce kept fading into the WASDE. Miss, plain and simple: beans gave back ground instead of gaining it, and the call did not play out.",
+    "note": "Wheat closed $6.30 today, up 18.5 cents and the biggest grain session since spring, but the $6.45 target was not reached. The call had the right direction and the right catalyst -- WASDE did tighten global wheat supply -- but the level was a step too far in a single session. Call did not play out; direction was right, target was not.",
     "computed": {
       "outcome": "didnt",
       "made": "2026-07-10",
-      "p0": 11.81,
-      "p1": 11.81,
-      "instrument": "beans",
+      "p0": 6.3,
+      "p1": 6.3,
+      "instrument": "wheat",
       "direction": "up",
-      "level": "11.95"
+      "level": "6.45"
     }
   },
   "todays_call": {
-    "instrument": "beans",
+    "instrument": "wheat",
     "direction": "up",
-    "level": "11.95"
+    "level": "6.45"
   },
   "sections": [
     {
-      "title": "Beans Slide Into WASDE",
-      "icon": "🌱",
-      "body": "Soybeans closed at **$11.81**, down 16 cents, and the nearby contract has now given back most of the China-trade-deal bounce that arrived May 18. The catalog of good news, the $17 billion annual US ag purchase commitment through 2028, the 85.4 million planted acres confirmed by the June 30 acreage report, the export sales from Thursday, has been absorbed and the market found no new buyers above $12.10. What's driving the slide is straightforward: China resumed purchases as the trade thaw continued, per reporting from Farm Policy News, but resumed buying at existing commitment levels is not incremental demand. The WASDE at 11 AM CT is the only thing that changes this calculus today. A cut to ending stocks below 380 million bushels gives the bulls a real number to trade. A hold or build and the next conversation is whether $11.50 is where the November contract finds support.",
-      "catalyst": "China soybean purchases resuming at existing levels, no incremental demand above the May 18 commitment.",
-      "bottom_line": "Export news already absorbed; the WASDE ending-stocks line decides whether $11.74 November holds.",
+      "title": "WASDE Lights the Grain Complex",
+      "icon": "📊",
+      "body": "Wheat led the session, gaining 18.5 cents to close at **$6.30**, the biggest move in the complex and the clearest WASDE print. The USDA tightened global wheat supply in the July report, and Feedstuffs flagged low production data as the headline driver. Corn added 8.5 cents to **$4.38** on nearby and 7.75 cents to **$4.60** on December, lifted by the same report and by heat dome positioning ahead of pollination. Beans came along but lagged: nearby closed **$11.97**, up 16.5 cents, while November only added 7 cents to **$11.89**. The old-crop/new-crop bean spread is telling you the market still has questions about August demand pace, even with the China $17 billion annual US ag purchase commitment through 2028 announced May 18 sitting on the board. Wheat is the section winner today, funds rotated in and the WASDE gave them a number to hang it on.",
+      "catalyst": "USDA July WASDE tightened global wheat supply; low production data flagged by Feedstuffs as primary driver.",
+      "bottom_line": "Wheat earned its 3% day. Corn along for the ride. Beans lagging new-crop tells you demand conviction is still partial.",
       "conviction_level": "high",
-      "overnight_surprise": false,
-      "farmer_action": "Unpriced new-crop soybeans: hold through the 11 AM WASDE. A stocks cut below 380M bushels justifies scaling sales toward $11.95. A hold or build, reassess storage economics before harvest.",
-      "vs_yesterday": "Beans: export-sales catalyst didn't materialize; slide accelerated into WASDE."
+      "overnight_surprise": true,
+      "farmer_action": "Unpriced wheat: $6.30 is the highest close since spring. If you have old-crop in storage with carry costs running, the WASDE just gave you a window. Scale sales above $6.30; next resistance is $6.45.",
+      "vs_yesterday": "Corn: reversed Thursday's 1.8% loss, WASDE provided the catalyst corn lacked all week."
     },
     {
-      "title": "Wheat Bucks the Complex",
-      "icon": "🌾",
-      "body": "Chicago wheat at **$6.12**, up 9.5 cents, was the only contract in the grains complex that went the right direction today, and the move has a plausible thesis behind it. The 6-to-10-day forecast from Brownfield's weather desk calls for hotter-than-normal conditions across most of the Heartland with below-normal precipitation in the western Belt, conditions that tighten the soft red winter wheat outlook right when the WASDE is positioned to revise global balance sheets. Wheat has been the complex's laggard all season, sitting in the bottom half of its 52-week range while corn and beans ran. Funds rotating into the cheapest contract on the board ahead of a supply report is not a novel playbook. Whether this is a one-day reposition or the start of something is a question the WASDE will start to answer by noon.",
-      "catalyst": "6-to-10-day forecast calling for hotter, drier conditions across the Heartland; wheat cheapest contract in the complex.",
-      "bottom_line": "Wheat's 9.5-cent gain is real rotation, not noise; $6.20 is the line that extends the move.",
+      "title": "Hogs Reverse Hard, Cattle Split",
+      "icon": "🐖",
+      "body": "Lean hogs had their biggest single-day advance in recent memory, rising 15.7% to **$98.90**, almost perfectly erasing yesterday's 11.8% break. The catalyst is the USDA WASDE: red meat production estimates were cut, beef projected at 25.288 billion pounds (down 150 million from June) and pork directionally lower as well, and the funds that stepped out of hogs Thursday came right back in. This is not a new demand story; it is a supply-cut story, and that distinction matters for how long the bounce holds. Live cattle firmed 1.5% to **$235.00** while feeders dipped 0.5% to **$354.38**, a split that is consistent with processing-constrained dynamics from the ongoing Cargill Fort Morgan and Schuyler plant lockout, now in its eighth week with no resolution announced. The feeder softness into a live cattle rally is the lockout's fingerprint: feedlot demand is cautious when packing capacity is constrained.",
+      "catalyst": "USDA WASDE cut 2026 beef production estimate 150M lbs from June; Cargill lockout processing constraint persists.",
+      "bottom_line": "Hog reversal is supply math, not demand news. Cattle split remains the lockout's signature.",
+      "conviction_level": "medium",
+      "overnight_surprise": true,
+      "vs_yesterday": "Hogs: yesterday's 11.8% break fully reversed on WASDE supply cut; same funds, opposite direction."
+    },
+    {
+      "title": "Hormuz Back on the Tape",
+      "icon": "🛢️",
+      "body": "WTI crude settled at **$71.52**, off 1.2% on the session despite a headline from oilprice.com this morning that renewed US-Iran strikes have revived the Middle Eastern risk premium and lifted Brent above $76. The spread between Brent and WTI is doing the work here: US domestic supply, which the EIA confirmed is the world's largest for 2025, is creating a price ceiling on the domestic contract even as the Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, show signs of reigniting. Kazakhstan extending its petroleum export ban six months as Hormuz tensions flare adds another supply-chain wrinkle. The practical input-cost read for US producers: diesel prices are not gaining with crude today because the domestic supply buffer is large, but the Hormuz story is not over and the USDA's own $500 million domestic fertilizer funding announcement signals the agency sees input-cost pressure as durable.",
+      "catalyst": "Renewed US-Iran strikes lift Brent above $76; Kazakhstan extends petroleum export ban six months; EIA confirms US as world's largest crude producer.",
+      "bottom_line": "Hormuz risk is back but domestic supply is cushioning the WTI price. Watch Brent/WTI spread for the real signal.",
       "conviction_level": "medium",
       "overnight_surprise": false
     },
     {
-      "title": "Cattle Funds Keep Walking",
+      "title": "Cattle Finishing Math Gets Harder",
       "icon": "🐄",
-      "body": "Live cattle settled at **$235.30**, down 1.0%, and feeders closed at **$356.27**, down 1.7%, flagging the overnight surprise threshold. Yesterday's Brownfield recap confirmed what the chart has been saying: August live cattle closed $2.37 lower the previous session on fund liquidation, no box beef cutout news, no packer spread development, just funds getting out. The ongoing Cargill Fort Morgan and Schuyler plant lockout that began May 19 removed roughly 2% of weekly US slaughter capacity, and that processing constraint is now working against the feedlot side. Cattle backed up in pens means feeders stay under pressure, and at $356.27 the feeder contract is feeling it. Missouri extension's warning today that lower-quality hay from excessive rains adds another cost layer for cow-calf operators who were already watching compressed margins. Until the lockout resolves or a new packer bid emerges, live cattle has no clean upside catalyst.",
-      "catalyst": "Fund liquidation in cattle complex; Cargill Fort Morgan lockout (ongoing since May 19) keeping processing capacity constrained.",
-      "bottom_line": "Processing constraint plus fund exit: cattle needs a packer bid or lockout resolution to find a floor.",
-      "conviction_level": "medium",
-      "overnight_surprise": true,
-      "vs_yesterday": "Cattle: fund liquidation thesis held; feeders breaking lower as called."
-    },
-    {
-      "title": "Energy: Hormuz Premium Rebuilding",
-      "icon": "⛽",
-      "body": "WTI crude held at **$71.99**, down just 0.6% on the session, but the weekly story is a 4.94% gain as Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now partially rebuilt after this week's re-escalation, reasserted themselves. The other shoe dropped in the news bucket: US strikes this week targeted roughly 90 Iranian military sites including coastal radar and anti-ship missile batteries, and the IEA warned the renewed conflict could upend its oil surplus forecast. Refining margins hit new record highs as diesel inventories tightened. For producers, diesel at elevated refining margins is the direct transmission mechanism from geopolitics to input costs. Natural gas at **$2.99** is still sitting near the bottom of its 52-week range and is not pricing the Hormuz story the same way crude is. That divergence is worth watching: if LNG carriers keep navigating the Strait successfully, natgas catches up; if the Strait tightens further, crude leads.",
-      "catalyst": "US strikes on 90 Iranian military sites this week; IEA warning on oil surplus forecast; refining margins at record highs.",
-      "bottom_line": "Diesel margins at records mean input costs stay elevated; watch whether the Strait tightens further.",
+      "body": "The farmdoc daily analysis published this morning on cattle finishing breakeven prices is worth two minutes of your Friday. With live cattle at **$235.00** and feeders at **$354.38**, the feeder-to-live ratio sits at roughly 1.51, historically tight territory. USDA's average steer price projection of $251.10 built into today's WASDE implies the board is pricing a recovery from the current $235 level, but the Cargill lockout is removing roughly 2% of weekly US slaughter capacity, which means fed cattle are not clearing the system at the pace the price would imply. The benchmark milk drop of 94 cents noted in The Fence Post, with Class III at **$16.64** today, adds a second input-cost headwind for mixed operations: dairy and beef are both telling a supply-compression story, not a demand story.",
+      "catalyst": "USDA WASDE projects average steer price $251.10; farmdoc daily analysis on tight finishing margins; Class III milk at 52-week low proximity.",
+      "bottom_line": "Feeder/live ratio at 1.51 with packing capacity constrained is a margin squeeze, not a rally setup.",
       "conviction_level": "medium",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Hotter, Drier 6-to-10 Day Forecast Arrives at Pollination Week",
-      "body": "The 6-to-10-day outlook calls for hotter-than-normal conditions across most of the Heartland with below-normal precipitation in key western Belt districts. Corn entered pollination this week with soil moisture at 150% of normal in several districts, so the crop has a buffer, but heat stress during pollination is irreversible yield drag. This forecast is the one the next two WASDE reports will be adjusting around.",
+      "title": "John Deere Right-to-Repair Settlement Draws Praise from Farm Groups",
+      "body": "NFU and AFPI both applauded the Deere settlement today, with NFU President Rob Larew noting past promises from Deere have gone unfulfilled. If this settlement holds teeth, it is a structural input-cost story for the next decade: producers who can diagnose and repair their own equipment during planting and harvest windows without waiting for a dealer will see a real cost reduction that no futures price captures.",
+      "tag": "POLICY"
+    },
+    {
+      "title": "Drought Covers 75% of US Cowherd's Home Territory",
+      "body": "A Fence Post report today puts 75% of the national cowherd in drought-affected areas, a number that complicates any herd-rebuild story. With the WASDE already cutting beef production on tight ready numbers, drought stress on cow-calf pairs means the 2027 supply picture could tighten further before it loosens. Producers in drought zones with bred heifers are carrying more risk than the current $235 live cattle price is pricing.",
       "tag": "WEATHER"
     },
     {
-      "title": "Land O'Lakes Expands High-Value Dairy Protein Plant in Tulare",
-      "body": "Land O'Lakes is expanding production of high-value dairy proteins in Tulare, California, targeting global demand growth. For dairy farmers in cooperative, this is the kind of value-added investment that can support Class III milk prices over the medium term even as the $17.05 nearby contract sits in quiet range today.",
-      "tag": "TRADE"
-    },
-    {
-      "title": "Kansas Farm Management: Cost Control Separates Profitable Cow-Calf Operations",
-      "body": "Kansas Farm Management data published this week shows high-profit cow-calf operations outperform struggling ones by $344 per head, and the gap comes from cost control, not market prices received. With live cattle under pressure from the Cargill lockout and fund liquidation, this is the operational reminder that matters more than the futures board right now.",
-      "tag": "RURAL"
+      "title": "Pasture Mealybug Alert Issued Across Southeast US",
+      "body": "Beef Magazine published an alert today on the pasture mealybug, an insect pest threatening pastures and hayfields across a wide swath of the Southeast. Coming on a day when Missouri is reporting strong hay yields after a delayed season, the contrast is sharp: the mid-South is building hay inventory while the Southeast faces a new pest pressure. Producers in affected states should consult extension services before the pest spreads into cool-season grass stands.",
+      "tag": "DISEASE"
     }
   ],
   "spread_to_watch": {
-    "label": "November beans / nearby beans carry",
-    "level": "$0.07 inverse (nearby at $11.81, November at $11.74), narrowing",
-    "commentary": "The nearby contract still carries a 7-cent premium over November, which is unusual this far from harvest and says the market is pricing a near-term demand pop that hasn't shown up yet. If the WASDE cuts ending stocks and export demand firms, this inverse widens and old-crop holders get paid to store. If the WASDE disappoints, the inverse breaks down and new-crop November becomes the price anchor."
+    "label": "Nearby soybeans / November soybeans old-crop/new-crop",
+    "level": "$0.08 carry, narrowing",
+    "commentary": "Nearby beans closed $11.97 against November at $11.89, an 8-cent old-crop premium that has been tightening all week. When old-crop commands a premium over new-crop, the market is saying current demand is tighter than fall supply expectations, which is the right read given China's purchase commitment and tight processing margins. If this spread flips to an inverse above 10 cents, that is the signal that old-crop demand is running ahead of the board's current pricing."
   },
   "basis": {
-    "headline": "Corn basis firming east; soy basis softening ahead of WASDE.",
-    "body": "Eastern Belt corn **basis is firming** as ethanol plants come back from summer maintenance and spot demand picks up. Producers east of the Mississippi with old-crop corn in the bin have a window the December futures board alone is not pricing. Western Belt corn basis stays soft, consistent with the seasonal and ample supply sitting on farm. Soybean basis is **softening heading into the WASDE**, with commercial buyers unwilling to bid aggressively until they see where USDA sets ending stocks at 11 AM. Basis will likely reset sharply in either direction by early afternoon."
+    "headline": "Wheat basis firming on WASDE; corn basis mixed east to west.",
+    "body": "**Wheat basis is tightening** at interior elevators following the WASDE supply cut, with merchandisers in the Central Plains reporting better-than-usual elevator interest on the close. Corn basis in the Eastern Belt is holding firm as ethanol grind continues to absorb old-crop supplies; the western Belt remains soft, consistent with the seasonal pattern and adequate pipeline stocks. Soybean basis is quietly firm at processors, though the old-crop/new-crop spread narrowing argues for producers to watch rather than chase the basis move aggressively into the weekend."
   },
   "weekly_thread": {
     "question": "Does today's Crop Progress print confirm pollination-week crop health, or add a weather premium that pulls corn back above $4.35?",
     "day": 5,
-    "status_text": "The week resolved with mixed signals: corn entered pollination with soil moisture buffers intact and the Belt on schedule, so no weather premium materialized, corn settled at $4.29, well below $4.35. But the 6-to-10-day forecast arriving Friday with hotter and drier conditions is exactly the setup that prices weather premium next week, not this one. The Crop Progress data confirmed health through the first half of the week; the second half is now the question."
+    "status_text": "The week resolved on a WASDE catalyst rather than a Crop Progress catalyst: corn crossed back above $4.35 on supply tightening and heat dome positioning, not a crop condition break. Pollination-week risk is still live, but today's $4.38 close is a WASDE price, not a weather-premium price; those are two different stories and only one of them has legs into August."
   },
   "the_more_you_know": {
-    "title": "The WASDE carry trade: why funds position before the number, not after.",
-    "body": "Wheat ran 9.5 cents today while beans fell 16 cents, and both moves happened before the WASDE printed. That is not random. Funds that trade grain for a living run a carry-trade playbook into major USDA reports: rotate out of the contract with the most priced-in good news and into the contract with the most room to surprise to the upside. Today that meant selling November beans at $11.74, which have already absorbed the China commitment and the acreage report, and buying Chicago wheat at $6.12, which sits near the cheapest point in the complex's 52-week range. The WASDE either validates the rotation, if it tightens wheat ending stocks, or the fund flow reverses fast. By 11:30 AM CT today, you will know which way the carry trade worked."
+    "title": "The Old-Crop/New-Crop Spread Is the Market's Honest Opinion About Fall",
+    "body": "Today's 8-cent premium of nearby soybeans over November tells you something the closing price alone doesn't: the market trusts current demand more than it trusts fall supply. When old-crop trades above new-crop, commercials and end-users are paying up for beans they need now rather than locking in fall bushels at a discount. That spread widened this week even as the China $17 billion annual US ag purchase commitment sits on the board and November beans only gained 7 cents today versus 16.5 for nearby. The practical read for producers: if you have old-crop beans in the bin, the market is currently paying you a carry premium to deliver them now. If the spread flips to an inverse wider than 10 cents, old-crop demand is running hot enough that you should be selling bushels, not storing them. Watch it weekly, not daily."
   },
   "watch_list": [
     {
-      "time": "11:00 AM CT",
-      "desc": "USDA WASDE release. Soybeans: ending stocks below 380M bushels is the line for a bounce back toward $11.95. Above 400M bushels and November beans test $11.50. Corn: any yield revision above 181 bu/acre adds pressure to December at $4.48."
+      "time": "Monday, 3:00 PM CT",
+      "desc": "USDA Crop Progress: corn condition rating above 65% good/excellent holds the weather-premium lid; below 60% and the pollination story adds real cents to December corn above $4.60."
     },
     {
-      "time": "11:30 AM CT",
-      "desc": "Watch basis reset in soy after WASDE. If eastern bids firm 5+ cents within the hour, the number was bullish enough for commercial buyers to step in."
+      "time": "Next Thursday, 7:30 AM CT",
+      "desc": "Weekly export sales: beans above 400K MT keeps the old-crop/new-crop spread from inverting; below 300K MT and the nearby premium fades fast."
     },
     {
-      "time": "This weekend",
-      "desc": "Monitor 6-to-10-day temperature and precipitation forecasts for the Corn Belt. Corn in active pollination with sustained heat above 95 degrees adds yield-drag risk that the current $4.29 nearby is not pricing."
+      "time": "Ongoing",
+      "desc": "Cargill Fort Morgan and Schuyler lockout: any resolution announcement closes the feeder/live cattle spread; no resolution keeps the 1.51 ratio under pressure into August."
     },
     {
-      "time": "Monday 3:00 PM CT",
-      "desc": "USDA Crop Progress. Watch corn condition ratings: good-to-excellent below 60% adds weather premium. Current pace had the Belt on schedule; the heat dome forecast is the first real test of that rating."
+      "time": "Ongoing",
+      "desc": "Brent/WTI spread: Brent above $76 with WTI at $71.52 is a $4.48 gap. If that widens past $6, US diesel prices start following Brent higher regardless of domestic supply. Watch it before your next fuel contract renewal."
+    },
+    {
+      "time": "Mid-July",
+      "desc": "Hormuz shipping lane traffic: five tankers cleared the week of May 25 on diplomatic progress; any confirmed slowdown in transit numbers is the leading indicator for crude above $75 WTI."
     }
   ],
   "daily_quote": {
-    "text": "Bull markets are born on pessimism, grow on skepticism, mature on optimism, and die on euphoria.",
-    "attribution": "John Templeton"
+    "text": "No winter lasts forever; no spring skips its turn.",
+    "attribution": "Hal Borland"
   },
-  "source_summary": "CBOT/CME settlement prices; USDA Crop Progress (week ending May 24); USDA Acreage Report (June 30, 2026); Brownfield Ag News; Farm Policy News; farmdoc daily (University of Illinois); OilPrice.com; EIA International Energy Statistics; IEA weekly update; Kpler shipping data.",
+  "source_summary": "USDA July 2026 WASDE (11:00 AM CT release); Brownfield Ag News closing futures; Feedstuffs afternoon recap; oilprice.com Hormuz/Kazakhstan reports; farmdoc daily cattle finishing analysis; The Fence Post drought and milk benchmark reports; Beef Magazine pasture mealybug alert; EIA crude production data; farmpolicynews.illinois.edu USDA fertilizer funding.",
   "date": "Friday, July 10, 2026",
   "meta": {
-    "market_mood": "cautious",
+    "market_mood": "bullish",
     "heat_section": 0,
-    "overnight_surprises_count": 1
+    "overnight_surprises_count": 4
   },
   "locked_prices": {
-    "corn": 4.295,
-    "corn-dec": 4.48,
-    "beans": 11.81,
-    "beans-nov": 11.7375,
-    "wheat": 6.115,
-    "oats": 3.575,
-    "cattle": 235.3,
-    "feeders": 356.275,
-    "hogs": 85.5,
-    "milk": 17.05,
-    "meal": 313.20001,
-    "soyoil": 68.52,
-    "crude": 71.99,
-    "natgas": 2.99,
-    "gold": 4116.2998,
-    "silver": 59.895,
-    "dollar": 100.848,
-    "sp500": 7543.64014,
-    "bitcoin": 64391.26953
+    "corn": 4.38,
+    "corn-dec": 4.6025,
+    "beans": 11.975,
+    "beans-nov": 11.895,
+    "wheat": 6.3,
+    "oats": 3.645,
+    "cattle": 235.0,
+    "feeders": 354.375,
+    "hogs": 98.9,
+    "milk": 16.64,
+    "meal": 317.89999,
+    "soyoil": 68.95,
+    "crude": 71.52,
+    "natgas": 2.938,
+    "gold": 4119.2998,
+    "silver": 60.175,
+    "dollar": 100.992,
+    "sp500": 7575.39014,
+    "bitcoin": 63809.94922
   },
   "chart_series": {
     "corn": [
@@ -165,7 +169,7 @@
       4.39,
       4.4,
       4.33,
-      4.29
+      4.38
     ],
     "soybeans": [
       11.14,
@@ -177,7 +181,7 @@
       11.81,
       12.08,
       11.97,
-      11.81
+      11.97
     ],
     "wheat": [
       5.83,
@@ -189,7 +193,7 @@
       6.06,
       6.12,
       6.02,
-      6.12
+      6.3
     ]
   },
   "sponsor": {
@@ -203,17 +207,41 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 120,
-  "generated_at": "2026-07-10T13:15:56.345789+00:00",
+  "issue_number": 121,
+  "generated_at": "2026-07-10T21:05:07.887449+00:00",
   "generator_version": "4.6.3",
-  "surprise_count": 1,
+  "surprise_count": 4,
   "surprises": [
     {
-      "commodity": "Feeder Cattle",
-      "key": "feeders",
-      "price": "$356.27",
-      "pct_change": -1.663,
-      "direction": "down",
+      "commodity": "Lean Hogs",
+      "key": "hogs",
+      "price": "$98.90",
+      "pct_change": 15.6725,
+      "direction": "up",
+      "surprise_magnitude": 7.8
+    },
+    {
+      "commodity": "Chicago Wheat",
+      "key": "wheat",
+      "price": "$6.30/bu",
+      "pct_change": 3.0253,
+      "direction": "up",
+      "surprise_magnitude": 1.5
+    },
+    {
+      "commodity": "Corn (nearby)",
+      "key": "corn",
+      "price": "$4.38/bu",
+      "pct_change": 1.979,
+      "direction": "up",
+      "surprise_magnitude": 1.3
+    },
+    {
+      "commodity": "Corn Dec '26",
+      "key": "corn-dec",
+      "price": "$4.60/bu",
+      "pct_change": 1.7127,
+      "direction": "up",
       "surprise_magnitude": 1.1
     }
   ],
@@ -222,24 +250,24 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-07-10T13:16:14.581924+00:00",
+    "ran_at": "2026-07-10T21:05:21.759498+00:00",
     "threshold": 7,
     "final_scores": {
-      "rule_1_lead_so_what": 9,
+      "rule_1_lead_so_what": 8,
       "rule_2_conviction_earned": 7,
       "rule_3_tmyk_today": 8,
-      "rule_4_watch_conditional": 9,
+      "rule_4_watch_conditional": 8,
       "rule_5_bottom_lines_synthesize": 8,
-      "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 6,
+      "rule_6_quiet_days_quiet": 9,
+      "rule_7_continuity": 2,
       "rule_8_basis_directional": 9,
-      "rule_9_voice": 8,
-      "rule_10_forward_test": 8,
+      "rule_9_voice": 7,
+      "rule_10_forward_test": 7,
       "rule_11_thread_coherence": 8,
       "rule_12_spread_quality": 8,
-      "rule_13_yc_honesty": 3,
-      "rule_14_level_coherence": 4,
-      "rule_15_one_number_coherence": 5,
+      "rule_13_yc_honesty": 2,
+      "rule_14_level_coherence": 9,
+      "rule_15_one_number_coherence": 9,
       "rule_16_markdown_not_html": 10,
       "rule_17_macro_anchoring": 7
     },
@@ -247,23 +275,23 @@
       {
         "pass": 1,
         "target": "yesterdays_call",
-        "rule": "rule_14_level_coherence",
+        "rule": "rule_13_yc_honesty",
         "scores_before": {
-          "rule_1_lead_so_what": 9,
+          "rule_1_lead_so_what": 8,
           "rule_2_conviction_earned": 7,
           "rule_3_tmyk_today": 8,
-          "rule_4_watch_conditional": 9,
+          "rule_4_watch_conditional": 8,
           "rule_5_bottom_lines_synthesize": 8,
-          "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 6,
+          "rule_6_quiet_days_quiet": 9,
+          "rule_7_continuity": 2,
           "rule_8_basis_directional": 9,
-          "rule_9_voice": 8,
-          "rule_10_forward_test": 8,
+          "rule_9_voice": 7,
+          "rule_10_forward_test": 7,
           "rule_11_thread_coherence": 8,
           "rule_12_spread_quality": 8,
-          "rule_13_yc_honesty": 3,
-          "rule_14_level_coherence": 4,
-          "rule_15_one_number_coherence": 5,
+          "rule_13_yc_honesty": 2,
+          "rule_14_level_coherence": 9,
+          "rule_15_one_number_coherence": 9,
           "rule_16_markdown_not_html": 10,
           "rule_17_macro_anchoring": 7
         }
