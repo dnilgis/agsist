@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-09T13:53:20+00:00",
- "total": 56,
+ "updated": "2026-07-10T13:16:16+00:00",
+ "total": 57,
  "played_out": 26,
- "didnt": 25,
+ "didnt": 26,
  "pending": 5,
- "hit_rate": 51.0,
+ "hit_rate": 50.0,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-09",
+   "judged": "2026-07-10",
+   "call": "Called beans up toward $11.95 on the thesis that export sales above 400K MT would keep the move alive.",
+   "outcome": "didnt",
+   "note": "Beans closed at $11.81, exactly where the call started -- the $11.95 target was never reached. The export-sales catalyst did not deliver the incremental buying needed, and the China-deal bounce kept fading into the WASDE. Miss, plain and simple: beans gave back ground instead of gaining it, and the call did not play out."
+  },
   {
    "made": "2026-07-08",
    "judged": "2026-07-09",
