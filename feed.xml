@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 10 Jul 2026 21:05:23 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 11 Jul 2026 11:57:53 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WHEAT RUNS, HOGS REVERSE: WEEK ENDS HOT</title>
+      <link>https://agsist.com/daily/2026-07-11</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-11</guid>
+      <pubDate>Sat, 11 Jul 2026 05:00:00 -0600</pubDate>
+      <description>The week that started with a hog breakdown ended with hog fireworks. Lean hogs closed Friday at $94.78, up 10.8% on the session, almost exactly reversing Thursday's WASDE-day breakdown and leaving traders with whiplash and no clean read on where that market settles next week. Wheat finished at $6.32, holding most of the WASDE gains after USDA trimmed the U.S. crop estimate and old-crop stocks came in tighter than the trade expected. Corn nearby closed at $4.38, down 3.2% on the day, a split that tells you the grain complex is not moving as one unit right now.
+WASDE-driven wheat gains held into Friday's close, lean hogs posted a 10.8% session to cap a wild two-day reversal, and Hormuz risks returned to the energy tape.
+• Grain Complex Splits
+  → Old-crop wheat in storage: $6.32 is real. If you missed the $6.30 window Thursday, Friday gave you another shot. Next resistance is $6.45. Scale additional sales on a close above $6.40.
+• Oats: Something Broke
+• Hogs: Two-Day Whiplash
+Read more: https://agsist.com/daily/2026-07-11</description>
+    </item>
     <item>
       <title>WASDE DAY: WHEAT RUNS 3%, HOGS REVERSE HARD</title>
       <link>https://agsist.com/daily/2026-07-10</link>
@@ -379,18 +392,6 @@ Corn leads grain bounce while cattle complex falls on milk production outlook.
 • CATTLE COMPLEX FALLS ON USDA OUTLOOK
 • OATS FALL ON OVERNIGHT SELLING
 Read more: https://agsist.com/daily/2026-06-12</description>
-    </item>
-    <item>
-      <title>GRAINS SLIP AHEAD OF WASDE, CATTLE HOLD GAINS</title>
-      <link>https://agsist.com/daily/2026-06-11</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-11</guid>
-      <pubDate>Thu, 11 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed $4.15, down 4 cents and leading the grain complex lower ahead of this morning's WASDE report at 11:00 AM CT. The funds are positioning defensive with managed money net long still above 100,000 contracts, but yesterday's Brazil CONAB estimate adding 0.2% to their corn outlook removes any supply tightness narrative. Cattle held $242.07, up a dime, as screwworm confirmation paradoxically steadied the complex by removing uncertainty even as local management costs rise.
-Corn leads complex lower while livestock splits on screwworm clarity.
-• CORN LEADS GRAINS LOWER
-• CATTLE STEADY ON SCREWWORM CLARITY
-• MILK FALLS SHARPLY ON OVERNIGHT SURPRISE
-Read more: https://agsist.com/daily/2026-06-11</description>
     </item>
   </channel>
 </rss>

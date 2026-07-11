@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-10T21:05:23+00:00",
- "total": 57,
+ "updated": "2026-07-11T11:57:53+00:00",
+ "total": 58,
  "played_out": 26,
- "didnt": 26,
+ "didnt": 27,
  "pending": 5,
- "hit_rate": 50.0,
+ "hit_rate": 49.1,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-10",
+   "judged": "2026-07-11",
+   "call": "Called wheat higher through $6.45 off the WASDE tighter-stocks read.",
+   "outcome": "didnt",
+   "note": "Didn't get there. Wheat closed at $6.32, held the WASDE gains fine, but $6.45 was one resistance step too far for a Friday tape that had already done its work Thursday. The bulls had the story right -- USDA cut old-crop stocks and trimmed the crop estimate -- but Friday's session had no fresh catalyst to push through the next level. Own the miss: the direction was right, the target was not. Scale that resistance down to $6.40 on next week's call."
+  },
   {
    "made": "2026-07-09",
    "judged": "2026-07-10",
