@@ -5,13 +5,27 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 11 Jul 2026 11:57:53 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 12 Jul 2026 12:04:38 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WEEK AHEAD: POLLINATION WEATHER, WASDE AFTERMATH SET STAGE</title>
+      <link>https://agsist.com/daily/2026-07-12</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-12</guid>
+      <pubDate>Sun, 12 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Friday closed a week of sharp moves: lean hogs ran 10.8% on the session, oats fell hard at 16.1%, wheat held its WASDE-driven gains at $6.32, and corn split violently between old crop at $4.38 and December at $4.61. That 23-cent gap between nearby and December corn is the market's current weather premium invoice. Corn is in peak pollination right now, and every forecast map that runs hotter or drier from here is a direct bid to December. This week, Monday's crop progress at 3 PM CT and the daily weather models are the only inputs that matter. Everything else is noise until the pollination window closes.
+Corn closed Friday at $4.38 nearby with a 23-cent split to December; this week's weather maps and Monday crop progress decide whether that gap widens or closes.
+• Corn: The Pollination Premium
+  → Unpriced new-crop corn: hold through Monday crop progress. A condition rating decline below 60% good/excellent opens the door toward $4.75 December. Above $4.70, begin scaling sales on 10-15% increments.
+• Wheat: WASDE Gains Hold, Range Sets Up
+• Soybeans: Funds Still Buying, Crush Margins Leading
+  → Unpriced new-crop soybeans: hold ahead of Thursday export sales. Below 300K MT, reassess storage economics. Above 400K MT, scale toward $12.10 November.
+Read more: https://agsist.com/daily/2026-07-12</description>
+    </item>
     <item>
       <title>WHEAT RUNS, HOGS REVERSE: WEEK ENDS HOT</title>
       <link>https://agsist.com/daily/2026-07-11</link>
@@ -380,18 +394,6 @@ Live cattle rallied 3% Friday as processing concerns ease, corn steadied despite
 • CORN STEADIES DESPITE DISEASE PRESSURE
 • SOYBEANS SOFTEN ON FUND SELLING
 Read more: https://agsist.com/daily/2026-06-13</description>
-    </item>
-    <item>
-      <title>GRAINS FIND BOTTOM, LIVESTOCK SLIPS ON USDA SUPPLY VIEW</title>
-      <link>https://agsist.com/daily/2026-06-12</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-12</guid>
-      <pubDate>Fri, 12 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed $4.13, up half a cent and looking like it finally found the floor the funds have been hunting for three weeks. December corn at $4.41 tells the story better: new-crop's firming while old-crop stays defensive, the calendar spread working exactly like it should when planting's done and the weather hasn't turned. The grain complex answered this week's question with a definitive yes, breaking the five-day slide on fund rotation and fresh energy in the ethanol story.
-Corn leads grain bounce while cattle complex falls on milk production outlook.
-• CORN LEADS GRAINS HIGHER
-• CATTLE COMPLEX FALLS ON USDA OUTLOOK
-• OATS FALL ON OVERNIGHT SELLING
-Read more: https://agsist.com/daily/2026-06-12</description>
     </item>
   </channel>
 </rss>

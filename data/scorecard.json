@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-11T11:57:53+00:00",
- "total": 58,
+ "updated": "2026-07-12T12:04:38+00:00",
+ "total": 59,
  "played_out": 26,
- "didnt": 27,
+ "didnt": 28,
  "pending": 5,
- "hit_rate": 49.1,
+ "hit_rate": 48.1,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-11",
+   "judged": "2026-07-12",
+   "call": "Called corn higher toward $4.70 on Friday; nearby settled at $4.38, miss.",
+   "outcome": "didnt",
+   "note": "The corn-up call toward $4.70 did not play out. Nearby corn closed at $4.38, old-crop liquidation ran the other direction, and the level was never tested. The December contract did move to $4.61 on new-crop weather positioning, but that is a different contract and a different story than the nearby call made. Own the miss: the nearby market was already priced for liquidation pressure and the WASDE data did not provide the catalyst. The weather-premium story now lives entirely in December, and that is where this week's calls belong."
+  },
   {
    "made": "2026-07-10",
    "judged": "2026-07-11",
