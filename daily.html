@@ -49,6 +49,7 @@
       "@type": "WebPage",
       "@id": "https://agsist.com/daily#webpage",
       "url": "https://agsist.com/daily",
+      "dateModified": "2026-07-11",
       "name": "Daily Ag Briefing \u2014 Market Morning Report | AGSIST",
       "description": "Free morning agricultural market briefing for US ag producers across grain, livestock, dairy, and specialty operations. Published every weekday before the market open.",
       "isPartOf": { "@id": "https://agsist.com/#website" }
@@ -70,8 +71,8 @@
         },
         {
           "@type": "Question",
-          "name": "How do I subscribe to the daily farm market briefing?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Click the 'Get It in Your Inbox' button on this page. Enter your email and the AGSIST Daily will be delivered every weekday morning before the market open. Free, no account required. Unsubscribe any time." }
+          "name": "How do I get the daily briefing by email?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Tap 'Get it in your inbox' on this page and join the email list at no charge. The AGSIST Daily arrives in your inbox each weekday morning before the market open, and the latest briefing is always published right here as well. Unsubscribe anytime." }
         }
       ]
     }
@@ -354,6 +355,15 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-modal-submit:hover{background:#1b4d1c;}
 .dv3-modal-fine{font-size:.7rem;color:var(--text-muted);text-align:center;margin-top:.5rem;}
 
+/* FAQ */
+.dv3-faq{border-top:1px solid var(--border);}
+.dv3-faq-item{border-bottom:1px solid var(--border);}
+.dv3-faq-item summary{cursor:pointer;padding:.75rem .1rem;font-size:.88rem;font-weight:600;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between;}
+.dv3-faq-item summary::-webkit-details-marker{display:none;}
+.dv3-faq-item summary::after{content:"+";color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.9rem;margin-left:1rem;}
+.dv3-faq-item[open] summary::after{content:"\2212";}
+.dv3-faq-item p{font-size:.82rem;color:var(--text-dim);line-height:1.65;margin:0 0 .9rem;padding:0 .1rem;}
+
 @media(max-width:640px){
   .dv3-today-headline{font-size:1.3rem;}
   .dv3-topbar{grid-template-columns:minmax(0,1fr);}
@@ -442,17 +452,29 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
     <div style="grid-column:1/-1;color:var(--text-muted);font-size:.82rem;padding:.5rem 0">Loading archive&hellip;</div>
   </div>
 
+  <div class="dv3-arc-label" style="margin-top:2rem"><span>FAQ</span></div>
+  <div class="dv3-faq">
+    <details class="dv3-faq-item">
+      <summary>What is the AGSIST Daily Ag Briefing?</summary>
+      <p>The AGSIST Daily Ag Briefing is a free morning market report for US ag producers across grain, livestock, dairy, and specialty operations. It covers overnight commodity price movements, weather outlook, and key events to watch, published every weekday before the market open. No account required. Available at no charge.</p>
+    </details>
+    <details class="dv3-faq-item">
+      <summary>How do I get the daily briefing by email?</summary>
+      <p>Tap &#8216;Get it in your inbox&#8217; on this page and join the email list at no charge. The AGSIST Daily arrives in your inbox each weekday morning before the market open, and the latest briefing is always published right here as well. Unsubscribe anytime.</p>
+    </details>
+  </div>
+
 </main>
 
 <div class="dv3-modal-overlay" id="dv3-modal" role="dialog" aria-modal="true" aria-labelledby="dv3-modal-title">
   <div class="dv3-modal">
     <button class="dv3-modal-close" id="dv3-modal-close" aria-label="Close subscribe dialog"><svg class="dv3-ic" aria-hidden="true"><use href="#i-x"/></svg></button>
     <h2 id="dv3-modal-title"><svg class="dv3-ic" aria-hidden="true"><use href="#i-mail"/></svg> Get the Daily Briefing</h2>
-    <p>Morning market brief delivered to your inbox before the market open &#8212; covering grain, livestock, dairy, weather, and what to watch. Available at no charge.</p>
+    <p>Join the email list at no charge and the AGSIST Daily lands in your inbox every weekday morning before the market open &#8212; grain, livestock, dairy, weather, and what to watch. Unsubscribe anytime.</p>
     <form id="dv3-sub-form" action="https://formspree.io/f/xnjbwepn" method="POST">
       <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
       <input type="hidden" name="source" value="daily-briefing-subscribe">
-      <button type="submit" class="dv3-modal-submit">Subscribe at no charge</button>
+      <button type="submit" class="dv3-modal-submit">Join the list at no charge</button>
     </form>
     <p class="dv3-modal-fine">Unsubscribe anytime. Your data is never sold. <a href="/privacy" style="color:var(--gold)">Privacy policy</a>.</p>
   </div>
@@ -995,7 +1017,7 @@ if(form){
     fetch(form.action,{method:'POST',body:formData,headers:{'Accept':'application/json'}})
       .then(function(r){
         if(r.ok){
-          form.innerHTML='<p style="color:var(--green);text-align:center;padding:.5rem 0"><svg class="dv3-ic" aria-hidden="true" style="color:var(--green)"><use href="#i-check"/></svg> Subscribed. Watch for your first briefing.</p>';
+          form.innerHTML='<p style="color:var(--green);text-align:center;padding:.5rem 0"><svg class="dv3-ic" aria-hidden="true" style="color:var(--green)"><use href="#i-check"/></svg> On the list. Your first briefing arrives the next weekday morning.</p>';
         } else {
           alert('Something went wrong \u2014 try again or email sig@farmers1st.com');
         }
