@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-12T12:04:38+00:00",
- "total": 59,
+ "updated": "2026-07-13T13:29:05+00:00",
+ "total": 60,
  "played_out": 26,
- "didnt": 28,
+ "didnt": 29,
  "pending": 5,
- "hit_rate": 48.1,
+ "hit_rate": 47.3,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-12",
+   "judged": "2026-07-13",
+   "call": "Called corn up toward $4.61 December, with nearby holding above $4.38 as the pollination-weather premium built into new crop.",
+   "outcome": "didnt",
+   "note": "Corn closed at $4.38 nearby and $4.61 December -- the level was reached on the December contract but the nearby fell hard to $4.38, not up. Direction on December was right, but the call as written implied both contracts firming; nearby went the wrong way. Missed. Own it."
+  },
   {
    "made": "2026-07-11",
    "judged": "2026-07-12",
