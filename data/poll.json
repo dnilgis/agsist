@@ -1,16 +1,32 @@
 {
   "_comment": "AGSIST Grower Pulse — single source of truth for the homepage poll. To run a new week: move the current block into archive (with its final results+total pulled from the Worker), then write the new question into current with a new id. Stage 2 automation will do this on a schedule.",
   "current": {
-    "id": "2026-w28-pollination-weather",
-    "week": "2026-07-06",
-    "question": "How has pollination weather been on your farm?",
+    "id": "2026-w29-corn-outlook-jul",
+    "week": "2026-07-13",
+    "question": "Your early corn yield outlook vs. a normal year?",
     "options": [
-      "Stressful",
-      "Mixed",
-      "Favorable"
+      "Below normal",
+      "About normal",
+      "Above normal"
     ]
   },
   "archive": [
+    {
+      "id": "2026-w28-pollination-weather",
+      "week": "2026-07-06",
+      "question": "How has pollination weather been on your farm?",
+      "options": [
+        "Stressful",
+        "Mixed",
+        "Favorable"
+      ],
+      "results": [
+        2,
+        1,
+        0
+      ],
+      "total": 3
+    },
     {
       "id": "2026-w27-pollination-worry",
       "week": "2026-06-29",

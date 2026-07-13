@@ -2,16 +2,6 @@
   "_comment": "Season-aware Grower Pulse queue. The rotation pops item [0] each Monday, so ORDER = calendar. Questions are timed to what's top-of-mind that week (field stage, weather, USDA reports, marketing season). 'window' is a human note only (the script ignores it). Reorder freely if weather/news makes a different question urgent (e.g., jump the moisture question up in a drought). Keep at least ~10 in the runway. See grower-pulse-question-audit.md for the reasoning.",
   "upcoming": [
     {
-      "window": "mid-Jul - early corn outlook",
-      "key": "corn-outlook-jul",
-      "question": "Your early corn yield outlook vs. a normal year?",
-      "options": [
-        "Below normal",
-        "About normal",
-        "Above normal"
-      ]
-    },
-    {
       "window": "late-Jul - bean outlook",
       "key": "bean-outlook-jul",
       "question": "Your soybean outlook vs. a normal year?",
