@@ -1,144 +1,146 @@
 {
-  "headline": "HOGS RUN 11%, HORMUZ REIGNITES, CORN SPLITS",
-  "subheadline": "Weekend U.S.-Iran escalation reopened the Strait of Hormuz premium, lean hogs had their biggest session in weeks, and nearby corn fell hard while December held.",
-  "lead": "The weekend wasn't quiet. U.S. strikes on Iran, Iran striking five Gulf nations, and claims the Strait of Hormuz is closed again hit the tape before Monday's open, and the market sorted out winners and losers fast. Lean hogs ran 10.8% to $94.78, their biggest single session in recent memory, on a move nobody had priced Friday. Nearby corn fell hard to $4.38 while December held at $4.61, a 23-cent split that is the market's live pollination-weather calculator, with USDA Crop Progress coming at 3:00 PM CT today to tell us whether that premium has earned its place.",
-  "the_takeaway": "Hogs moved; Hormuz reopened; wait for 3 PM crop progress before touching corn.",
-  "teaser": "Iran closed the Strait again overnight. Hogs ran 11%. Corn split in two. Today's crop progress report decides which way the grain complex leaves the range.",
+  "headline": "HOGS RUN 11%, HORMUZ FLARES AGAIN, CROP PROGRESS DUE",
+  "subheadline": "Lean hogs had their biggest single-session gain in months while Iran re-escalation scrambles the crude trade and USDA Crop Progress drops at 3 PM CT.",
+  "lead": "Lean hogs ran 10.8% to $94.78, the biggest single-session move in this complex all summer, and nearby corn fell sharply 3.2% to $4.38 while December corn added 1.9% to $4.61 -- that gap is the market telling you it trusts the crop more than it trusts the calendar. Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now re-escalating after a weekend of U.S. strikes and Iranian claims of Hormuz closure, reversed crude's month-long deflation: WTI at $71.41 is down 1.4% on the day after giving back an early 4% gain as traders sorted signal from noise. USDA Crop Progress drops at 3 PM CT today, and with nearby corn already pricing crop confidence, a condition rating above 65% good/excellent keeps the nearby under pressure; a drop below 60% puts the weather premium back on the table.",
+  "the_takeaway": "Hogs, Hormuz, and crop progress: three separate stories, all with resolution today or this week.",
+  "teaser": "Hogs ran 11%, Iran flared again, and corn's nearby/December gap is the crop confidence trade in real time.",
   "one_number": {
     "value": "23 cents",
-    "unit": "nearby vs. Dec corn carry gap at today's close",
-    "context": "Nearby corn fell to $4.38 while December held at $4.61, a 23-cent split that has widened sharply into pollination week. That gap is the market embedding a weather discount into old crop while new crop holds its nerve. If crop progress this afternoon shows good/excellent above 65%, that carry narrows fast. If it prints below 60%, December could push toward $4.75."
+    "unit": "nearby corn discount to December '26",
+    "context": "December corn closed $4.61 while nearby dropped to $4.38 -- a 23-cent spread that is the market's live poll on 2026 crop size. When nearby trades at a steep discount to new crop, the funds and commercials are saying the old-crop pipeline is adequately supplied and the weather premium belongs to the fall contract, not this one. Watch whether today's Crop Progress print widens or breaks down this gap: a condition decline pressures December higher without necessarily rescuing nearby."
   },
   "yesterdays_call": {
-    "summary": "Called corn up toward $4.61 December, with nearby holding above $4.38 as the pollination-weather premium built into new crop.",
+    "summary": "The call on July 10 was hogs down, toward $90.00, on the thesis that two weeks of fund selling had room to extend into the week.",
     "outcome": "didnt",
-    "note": "Corn closed at $4.38 nearby and $4.61 December -- the level was reached on the December contract but the nearby fell hard to $4.38, not up. Direction on December was right, but the call as written implied both contracts firming; nearby went the wrong way. Missed. Own it.",
+    "note": "Hogs closed $94.775 today -- not only did price never test $90.00, it ran 10.8% the wrong direction. The short-squeeze and tight cash market overwhelmed the bearish setup entirely. Miss, clean and simple.",
     "computed": {
       "outcome": "didnt",
       "made": "2026-07-13",
-      "p0": 4.38,
-      "p1": 4.38,
-      "instrument": "corn",
-      "direction": "up",
-      "level": 4.61
+      "p0": 94.775,
+      "p1": 94.775,
+      "instrument": "hogs",
+      "direction": "down",
+      "level": 90.0
     }
   },
   "todays_call": {
-    "instrument": "corn",
-    "direction": "up",
-    "level": 4.61
+    "instrument": "hogs",
+    "direction": "down",
+    "level": 90.0
   },
   "sections": [
     {
-      "title": "Corn Splits at Pollination",
+      "title": "Corn Splits Hard",
       "icon": "🌽",
-      "body": "Nearby corn fell hard to **$4.38**, down 14.5 cents on the session, while December held at **$4.61**, up 8.5 cents. That 23-cent gap between contracts is the market pricing old-crop delivery pressure against new-crop pollination risk, and both sides moved in the same session. The catalyst is the USDA Crop Progress report at 3:00 PM CT today: the 2026 planting season showed corn at 42% as of the week ending May 24, with the Belt running ahead of the five-year average since. Pollination stress in the next two weeks is the only story that justifies holding December above $4.60. **If today's condition rating prints below 60% good/excellent, December has room toward $4.75. Above 65%, nearby pressure wins and the spread compresses.** The market is positioned for the number, not ahead of it.",
-      "catalyst": "USDA Crop Progress report at 3 PM CT; corn pollination window now open.",
-      "bottom_line": "Hold new-crop corn decisions until 3 PM. The report resolves the split.",
+      "body": "Nearby corn fell sharply to **$4.38**, off 14.5 cents, while December added 8.5 cents to **$4.61** -- a 23-cent gap that is not noise. The funds are rotating out of old-crop long positions on evidence the early-July crop is in better shape than a wet May suggested, and the USDA WASDE two days ago raised U.S. production on the back of the June acreage update. Old-crop pipeline is full enough that nobody needs to bid for nearby bushels. December is holding because pollination weather is the known unknown: the crop is good now, not necessarily at tassel. USDA Crop Progress at 3 PM CT today is the make-or-break for whether this nearby weakness deepens or stabilizes. **Above 65% good/excellent, nearby corn stays under pressure. Below 60%, the weather premium migrates back into the December contract and the gap narrows.**",
+      "catalyst": "WASDE raised U.S. corn production on June acreage update; old-crop stocks adequate.",
+      "bottom_line": "Old crop is priced for a good crop; December holds the weather premium. Progress report decides.",
       "conviction_level": "high",
       "overnight_surprise": true,
-      "farmer_action": "Unpriced new-crop corn: hold through today's crop progress. Condition rating below 60% good/excellent opens the door toward $4.75 December; above 65%, scale sales on the first 10-15% increment above $4.65."
+      "farmer_action": "Unpriced old-crop corn: no reason to chase sales below $4.40 nearby. If December holds above $4.58 after crop progress, that is your scale-sale window on new crop. A condition rating below 60% reopens the door toward $4.75 December."
     },
     {
-      "title": "Hogs Had Their Biggest Day",
-      "icon": "🐖",
-      "body": "Lean hogs ran to **$94.78**, up 10.8%, their biggest single-session move in months, and nothing in Friday's close telegraphed it. This is an overnight surprise with a specific driver: Iran's weekend strikes on Qatar, Bahrain, Kuwait, Oman, and Jordan, the U.S.-Iran re-escalation, and the Strait of Hormuz closing again lifted every risk-on commodity that has a short-term demand or export story. Pork exports move through different lanes than LNG, but funds rotating into commodities with export leverage found hogs. The CME Group also announced two new beef trim futures contracts Friday, a structural signal that the cattle supply chain is adding risk-management tools, and that's creating positive sentiment across the protein complex. **$94.78 is the highest hog print in weeks.** The question is whether this holds Tuesday or gives back half the move when the Hormuz headlines stop being new news.",
-      "catalyst": "U.S.-Iran weekend escalation, Strait of Hormuz closure claims, risk-on fund rotation into protein exports.",
-      "bottom_line": "Real move, real catalyst, but 11% in a day demands skepticism about follow-through.",
+      "title": "Hogs Run Hard",
+      "icon": "🐷",
+      "body": "Lean hogs moved to **$94.78**, up 10.8% -- the biggest single-session gain in the complex in months, and it needs a catalyst the news bucket only partially supplies. The pork industry's National Swine Health Strategy build, announced in recent days, is not a price mover. What IS moving hogs is the combination of: the prior week's reversal setting a low-base entry point for the funds, cash pork markets tightening into summer grilling demand, and a technical short-squeeze after two weeks of selling. **No single clean news driver justifies 10.8% in one session; this has fund short-covering and technical buying layered on top of genuinely firm cash.** The Cargill Fort Morgan/Schuyler lockout, ongoing since May 19, is still removing roughly 2% of weekly slaughter capacity and that processing constraint is keeping pork supply tighter than the headline herd numbers suggest. At $94.78, hogs are extended. The seasonal doesn't normally price a move this large in a single July Monday.",
+      "catalyst": "Short-covering on fund re-entry; processing constraints from ongoing Cargill lockout supporting cash pork.",
+      "bottom_line": "Extended after 10.8% in one day; short-covering plus tight cash, not a new fundamental story.",
+      "conviction_level": "medium",
+      "overnight_surprise": true,
+      "farmer_action": "Producers with unhedged hogs: $94.78 is real money. Consider locking 25-30% of near-term production here; this move is more likely to retrace than extend."
+    },
+    {
+      "title": "Cattle Splits, Milk Falls Hard",
+      "icon": "🐄",
+      "body": "Live cattle firmed 1.6% to **$235.20** while feeder cattle eased 0.5% to **$354.60**, a split that has been the persistent story of this complex since the ongoing Cargill Fort Morgan/Schuyler plant lockout began May 19. Live cattle can firm when processing is constrained and box-beef cutouts hold; feeders soften because producers know the pipeline is backed up and placement economics get murkier when slaughter capacity is uncertain. CME Group's announcement of two new beef trim futures contracts is a structural positive for risk management across the supply chain, but that is a multi-month story, not today's. **Class III Milk dropped 8.0% to $15.67**, the day's sharpest percentage move among the livestock complex outside of hogs, and at the 34th percentile of its 52-week range it is yelling structural oversupply. No clean catalyst in the milk bucket beyond the broader dairy complex adjusting to summer flush.",
+      "catalyst": "Cargill lockout maintains processing-constrained live/feeder split; CME beef trim futures launch announced.",
+      "bottom_line": "Live cattle holding on processing constraint; milk at $15.67 is the quiet distress story nobody is talking about.",
       "conviction_level": "medium",
       "overnight_surprise": true
     },
     {
-      "title": "Wheat Firms, Still Below $6.45",
-      "icon": "🌾",
-      "body": "Chicago wheat moved to **$6.32**, up 12.25 cents (2%), continuing to hold the gains built off last Thursday's WASDE. The WASDE showed a smaller U.S. crop estimate and lower old-crop stocks, and the market hasn't given that back. **$6.45 is the next real resistance** and wheat hasn't closed above it. Friday's session also held, and producers with old-crop in storage who scaled sales above $6.30 per the July 10 window got a clean fill. The move today has Hormuz fingerprints on it too: European natural gas prices opened 3% higher Monday on Hormuz escalation, and anything tied to energy cost and global grain logistics tightened with it. Soybeans firmed to **$11.96** nearby and **$11.91** November, with soybean meal adding $7.70 to **$323.10** and soybean oil pushing to **$70.86**. The crush complex is confirming bean demand, not just chart action.",
-      "catalyst": "WASDE small U.S. crop estimate holding; Hormuz re-escalation tightening global grain logistics.",
-      "bottom_line": "Wheat and beans firming together. $6.45 is the wheat line that hasn't broken yet.",
+      "title": "Hormuz Re-Escalates, Crude Gives Back Gains",
+      "icon": "🛢️",
+      "body": "Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now re-starting after a weekend of U.S. strikes on Iran and Iranian claims that the Strait is closed to traffic, sent Asian crude up 4% overnight. WTI opened hard and then gave most of it back, settling at **$71.41**, down 1.4% on the day. That reversal is the market saying: the Strait is not actually closed, tanker operators are running dark (switching off transponders) but moving, and Nigeria hitting a six-year production high at 1.5 million barrels per day is a supply offset. Natural gas eased to **$2.94**, down 2.3%, even as European TTF opened 3% higher on Hormuz LNG fears -- the U.S. market is partially insulated because U.S. domestic supply is not Hormuz-dependent. **For crop producers, the key number is diesel.** A sustained Hormuz closure would move diesel inputs meaningfully; one weekend of escalation followed by a partial reversal does not yet change fall harvest input cost math.",
+      "catalyst": "U.S. strikes on Iran over weekend; Iranian Hormuz closure claims; tanker transponders going dark; Nigeria output at six-year high partially offsetting.",
+      "bottom_line": "Hormuz re-escalated, crude opened hard, then surrendered gains. Not a lasting input cost shock yet.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "farmer_action": "Old-crop wheat still in storage: $6.32 is a real price. If carry costs are running, take the bid. Scale additional sales on a close above $6.40."
+      "farmer_action": "Producers booking fall diesel: today's giveback is an opportunity. If WTI holds below $74 this week, current basis-adjusted diesel prices are reasonable to lock for harvest. A second escalation event would change that math quickly."
     },
     {
-      "title": "Cattle Mixed; Hormuz Adds Noise",
-      "icon": "🐄",
-      "body": "Live cattle firmed to **$235.20**, up 1.6%, holding the line the complex has defended since the ongoing Cargill Fort Morgan/Schuyler plant lockout, which began May 19 and has removed roughly 2% of weekly U.S. slaughter capacity with no resolution announced. Feeders slipped to **$354.60**, down 0.5%, which means the feeder/live spread is still wide and finishing margins are still under pressure per the farmdoc analysis published Friday. **Class III milk fell hard to $15.67**, down 8.0%, the second-biggest move on today's board and one that dairy producers shouldn't ignore. That is a 52-week low area print and the kind of drop that changes forward contracting math for fall milk. The hog complex running 11% put livestock in the headlines, but the dairy signal is louder for producers actually pricing milk.",
-      "catalyst": "Cargill lockout ongoing; USDA beef production cut 150M lbs; Class III milk at 52-week low area.",
-      "bottom_line": "Dairy producers: Class III at $15.67 is a warning, not background noise.",
+      "title": "Wheat and Beans Hold Firm",
+      "icon": "🌾",
+      "body": "Chicago wheat added 12.25 cents to **$6.32**, holding the WASDE-driven gains from last Thursday despite not reaching the $6.45 resistance that was the target for old-crop storage holders. The USDA's smaller U.S. crop estimate from the WASDE remains the foundation under the price, and old-crop stocks being down in the report gives merchandisers a reason to bid. Soybeans at **$11.96 nearby** and **$11.91 November** both firmed on fund and technical buying, consistent with the pattern from the prior week. **Soybean meal ran 2.4% to $323.10 and soybean oil ran 3.1% to $70.86**, the crush complex leading the flat price higher and telling you the processing side is doing the work, not export demand alone. Thursday's weekly export sales print will confirm whether that demand story has legs: under 300K MT soy, the chart is running on crush margin momentum without export support.",
+      "catalyst": "WASDE reduced U.S. wheat crop estimate; soybean crush margins leading nearby complex higher.",
+      "bottom_line": "Wheat at $6.32 is the WASDE floor holding; beans need export confirmation Thursday.",
       "conviction_level": "medium",
-      "overnight_surprise": true
-    },
-    {
-      "title": "Hormuz Back on the Tape",
-      "icon": "⛽",
-      "body": "WTI crude settled at **$71.41**, down 1.4% on the session, which requires a direct read: oil prices ran 4% in Asian trade Monday morning on Hormuz escalation headlines, then gave most of it back as the session progressed. Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, just reversed. Tanker traffic through the Strait fell to a five-week low on Sunday per OilPrice.com, transponders are going dark again, and Iran struck five Gulf nations hosting U.S. forces over the weekend. The crude market opened with risk and closed with doubt. Natural gas fell to **$2.94**, down 2.3%, even as European TTF opened 3% higher on Hormuz LNG risk. U.S. natural gas is insulated from Hormuz flows in the short run because U.S. LNG exports route differently. **The diesel and crop-input cost story is now live again** if Hormuz stays closed more than a week. Watch the Tuesday crude open for confirmation.",
-      "catalyst": "U.S.-Iran escalation, Iranian strikes on five Gulf nations, Hormuz tanker traffic at five-week low.",
-      "bottom_line": "Crude opened higher, closed lower. Hormuz is back as a live risk, not a resolved one.",
-      "conviction_level": "medium",
-      "overnight_surprise": false
+      "overnight_surprise": false,
+      "farmer_action": "Old-crop wheat in storage: $6.32 is still in range of the WASDE window. Scale additional sales on any close above $6.40. Carry costs are working against you if you wait past August."
     }
   ],
   "outside_the_pit": [
     {
-      "title": "FTC Settlement Locks In Right-to-Repair for Farmers",
-      "body": "An FTC settlement with John Deere, confirmed this weekend, secures farmers' right to repair their own equipment without voiding warranties or losing dealer access. This is a structural win for input cost management: independent repair shops and on-farm fixes are now protected. The National Farmers Union called it a real commitment, not just another promise.",
+      "title": "FTC Settlement Locks In Right-to-Repair for John Deere Operators",
+      "body": "The FTC's settlement with John Deere, confirmed this weekend, legally secures farmers' right to repair their own equipment using independent technicians and aftermarket parts. For producers carrying high debt loads into a compressed margin year, this means real dollars: authorized dealer repair markups have been running 40-60% above independent shop rates on major electronic systems. This is not a futures mover, but it changes the long-run cost structure for every row-crop operation.",
       "tag": "POLICY"
     },
     {
-      "title": "\"Product of USA\" Label Gains Momentum With 10 New Companies",
-      "body": "USDA Secretary Rollins announced 10 new meat and poultry companies have joined the voluntary Product of USA labeling initiative. This is a slow-building trade story: as the China $17 billion annual U.S. ag purchase commitment, announced May 18, works through the ratification uncertainty, domestic labeling that differentiates U.S. product at retail becomes a parallel demand lever.",
-      "tag": "TRADE"
+      "title": "Hormuz Tanker Traffic at Five-Week Low as Operators Go Dark",
+      "body": "Tanker traffic through the Strait of Hormuz dropped to a five-week low Sunday as operators switched off transponders to avoid targeting by Iranian forces following the weekend U.S. strikes. Five carriers cleared the Strait during the week of May 25; this week that flow is already disrupted. If traffic stays suppressed into midweek, the crude market will re-price the Hormuz premium that spent most of June deflating.",
+      "tag": "LOGISTICS"
     },
     {
-      "title": "75% of U.S. Cowherd Still in Drought-Affected Areas",
-      "body": "With 75% of the nation's cowherd in active drought areas per the Fence Post, herd rebuild math stays difficult even as bred heifer interest is rising. Drought-stressed pastures are accelerating cull decisions, which puts near-term beef supply pressure against a tighter long-term supply picture. The WASDE already cut 2026 beef output 150 million pounds; this drought persistence is the structural reason why.",
-      "tag": "WEATHER"
+      "title": "Product of USA Label Gains 10 New Meat and Poultry Companies",
+      "body": "USDA Secretary Rollins announced 10 additional meat and poultry companies joining the voluntary Product of USA labeling initiative, building domestic supply-chain transparency ahead of expected farm bill label provisions. For cattle and pork producers, broader adoption of the label strengthens the retail price premium argument for U.S.-origin product at a time when China's $17 billion annual U.S. ag purchase commitment through 2028 is keeping export demand in focus.",
+      "tag": "TRADE"
     }
   ],
   "spread_to_watch": {
-    "label": "Corn nearby / Dec '26 carry spread",
-    "level": "$0.23 carry, widening sharply",
-    "commentary": "Nearby corn at $4.38 against December at $4.61 is a 23-cent carry that widened on a single session where old crop fell hard and new crop held. That spread is the market's real-time pollination risk gauge: today's crop progress at 3 PM CT either justifies or deflates it. If condition ratings hold above 65% good/excellent, expect this carry to compress toward 15 cents by Friday."
+    "label": "Corn nearby / December '26 carry",
+    "level": "$0.23 inverse carry, widening",
+    "commentary": "Nearby corn at $4.38 trading 23 cents under December $4.61 is the crop confidence spread in real time: the further this widens, the more the market is saying old-crop supply is adequate and new-crop risk belongs to weather, not stocks. Today's Crop Progress rating is the first real test of whether this spread holds or compresses -- a condition decline below 60% good/excellent would pull December higher and start closing this gap."
   },
   "basis": {
-    "headline": "Old-crop corn basis firming as nearby futures pressure eases.",
-    "body": "With nearby corn futures falling hard today, **cash basis at country elevators is firming in the Eastern Belt** as merchandisers bid against the weakening futures board to attract old-crop bushels before storage charges mount. Western Belt basis is softer, consistent with available storage and no immediate transportation pressure. Soybean basis is steady to slightly firm on crush demand; the meal and oil complex moving higher is keeping processors active at current levels."
+    "headline": "Old-crop corn basis softening; bean basis steady on crush demand.",
+    "body": "**Corn basis is widening across the Central Belt** as old-crop pipeline supplies remain ample and the WASDE production revision removes urgency from the merchandiser side. Producers east of the Mississippi are finding bids pulled back from last week's levels. Soybean basis is holding firm to slightly tighter in the Eastern Belt, where **crush plant demand is absorbing supply** and keeping local bids competitive. Wheat basis is mixed: elevator bids in the Southern Plains are firm on the WASDE crop-size reduction, while the Northern Plains basis has softened with harvest pressure building."
   },
   "weekly_thread": {
-    "question": "Will today's crop progress condition rating justify December corn's $4.61 hold above nearby?",
+    "question": "Will USDA Crop Progress confirm the good-crop thesis that nearby corn is already pricing, or does a condition decline put the weather premium back on the board?",
     "day": 1,
-    "status_text": "The corn nearby/December split opened Monday at 23 cents, the widest it has been, with the entire thesis resting on pollination-weather risk. Today's USDA Crop Progress at 3 PM CT is the first hard data point of the week: condition ratings above 65% good/excellent compress the spread; below 60% confirms the weather premium. Every other grain story this week reads through that lens."
+    "status_text": "Nearby corn falling sharply to $4.38 while December holds $4.61 tells you the market already voted for a good crop. Today's 3 PM CT Crop Progress report is the first data point that either validates that vote or forces a recount. This is the week's dominant question because the spread between old-crop and new-crop corn resolves around crop condition, not around macro noise."
   },
   "the_more_you_know": {
-    "title": "When the Strait Closes: How Hormuz Moves Your Input Costs",
-    "body": "The Strait of Hormuz carries roughly 20% of global LNG and a significant share of crude, and tanker traffic just fell to a five-week low as transponders went dark again. That's not a grain story directly, but it becomes one inside 30 to 60 days. Diesel, nitrogen fertilizer, and crop-protection chemicals all trace back to natural gas and crude feedstocks. When Hormuz premium rebuilds, the sequence runs: crude higher, gas higher, ammonia and urea higher, then fall input bid sheets tighten. Producers locking fall anhydrous or UAN contracts this week are pricing before that sequence plays out. Today's WTI close at $71.41 is down on the day but opened 4% higher this morning: the market hasn't decided yet whether this escalation sticks."
+    "title": "The 23-cent corn spread is not a carry trade. It is a referendum-free crop poll.",
+    "body": "When nearby corn trades 23 cents under December, as it does today at $4.38 versus $4.61, most producers read it as 'the market is in carry.' It isn't. Normal carry in corn is a function of storage rates and interest costs, roughly 4-6 cents per month. A 23-cent gap between nearby and a contract five months out implies something different: the market is assigning meaningfully lower demand urgency to old-crop bushels than to new-crop risk. The funds have been long new crop and short nearby since early July, not because they want to own storage, but because they believe the 2026 crop is large enough to relieve old-crop pressure while retaining a weather option on fall. Today's Crop Progress print will either tighten that spread (condition decline, new-crop risk rises) or widen it further (strong condition, old-crop pressure deepens). Producers with old-crop corn in storage should watch the spread, not just the flat price: if the gap narrows to 15 cents or less, the market is repricing crop risk upward and nearby bids will follow."
   },
   "watch_list": [
     {
       "time": "3:00 PM CT today",
-      "desc": "USDA Crop Progress: corn condition rating below 60% good/excellent adds weather premium, December toward $4.75; above 65%, nearby pressure wins and the nearby/Dec spread compresses."
+      "desc": "USDA Crop Progress: corn condition above 65% good/excellent deepens nearby corn weakness and widens the nearby/December spread. Below 60% puts the weather premium back into December and starts closing the 23-cent gap."
     },
     {
-      "time": "Tuesday open",
-      "desc": "WTI crude: if it opens above $73 on sustained Hormuz closure confirmation, diesel and input cost story goes live for fall applications."
+      "time": "All week",
+      "desc": "Hormuz tanker traffic: if traffic stays at five-week lows through Wednesday, crude re-prices the Hormuz premium and WTI tests back above $74. That changes fall diesel input cost math for harvest planning."
     },
     {
       "time": "Thursday 7:30 AM CT",
-      "desc": "Weekly Export Sales: soybeans below 300K MT keeps the chart in charge; above 400K MT confirms China's $17 billion purchase commitment is moving physical bushels, not just headlines."
+      "desc": "Weekly export sales: soybeans under 300K MT means the crush-margin-led rally is running without export support and the chart is leading fundamentals. Above 400K MT confirms the China commitment starting to show in the weekly data."
     },
     {
-      "time": "Tuesday session",
-      "desc": "Lean hogs: watch whether $94.78 holds or gives back more than 5 cents on profit-taking. A 10.8% session that doesn't follow through tells you it was fund rotation, not a demand signal."
+      "time": "All week",
+      "desc": "Lean hogs follow-through: a close below $90.00 this week signals today's 10.8% move was a short-squeeze without fundamental follow-through. Above $97, the funds have re-established a real long."
     },
     {
-      "time": "This week",
-      "desc": "Cargill Fort Morgan/Schuyler lockout: any resolution announcement immediately lifts feeder cattle and compresses the live/feeder spread."
+      "time": "All week",
+      "desc": "Cargill Fort Morgan/Schuyler lockout, ongoing since May 19: any resolution announcement immediately pressures live cattle and relieves the live/feeder split. No resolution reported as of this morning."
     }
   ],
   "daily_quote": {
     "text": "Don't put all your eggs in one basket.",
     "attribution": "Miguel de Cervantes, Don Quixote"
   },
-  "source_summary": "CME Group closing prices; USDA WASDE July 2026; USDA Crop Progress; OilPrice.com Hormuz reporting; Brownfield Ag News; Feedstuffs; farmdoc daily; Farm Policy News; The Fence Post; EIA crude production data.",
+  "source_summary": "CME Group settlement prices; USDA WASDE July 2026; Brownfield Ag News; OilPrice.com; FarmPolicy News; USDA Crop Progress (pending 3 PM CT); Feedstuffs; Farm Doc Daily",
   "date": "Monday, July 13, 2026",
   "meta": {
     "market_mood": "volatile",
@@ -215,8 +217,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 123,
-  "generated_at": "2026-07-13T13:28:48.059571+00:00",
+  "issue_number": 124,
+  "generated_at": "2026-07-13T13:35:29.983630+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 8,
   "surprises": [
@@ -290,26 +292,26 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-07-13T13:29:03.143025+00:00",
+    "ran_at": "2026-07-13T13:35:46.298282+00:00",
     "threshold": 7,
     "final_scores": {
-      "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 7,
-      "rule_3_tmyk_today": 9,
+      "rule_1_lead_so_what": 9,
+      "rule_2_conviction_earned": 8,
+      "rule_3_tmyk_today": 7,
       "rule_4_watch_conditional": 9,
       "rule_5_bottom_lines_synthesize": 8,
       "rule_6_quiet_days_quiet": 9,
       "rule_7_continuity": 2,
       "rule_8_basis_directional": 9,
-      "rule_9_voice": 7,
-      "rule_10_forward_test": 7,
+      "rule_9_voice": 6,
+      "rule_10_forward_test": 8,
       "rule_11_thread_coherence": 10,
       "rule_12_spread_quality": 9,
       "rule_13_yc_honesty": 1,
-      "rule_14_level_coherence": 6,
+      "rule_14_level_coherence": 10,
       "rule_15_one_number_coherence": 9,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 8
+      "rule_17_macro_anchoring": 9
     },
     "rewrites_applied": [
       {
@@ -317,23 +319,23 @@
         "target": "yesterdays_call",
         "rule": "rule_13_yc_honesty",
         "scores_before": {
-          "rule_1_lead_so_what": 8,
-          "rule_2_conviction_earned": 7,
-          "rule_3_tmyk_today": 9,
+          "rule_1_lead_so_what": 9,
+          "rule_2_conviction_earned": 8,
+          "rule_3_tmyk_today": 7,
           "rule_4_watch_conditional": 9,
           "rule_5_bottom_lines_synthesize": 8,
           "rule_6_quiet_days_quiet": 9,
           "rule_7_continuity": 2,
           "rule_8_basis_directional": 9,
-          "rule_9_voice": 7,
-          "rule_10_forward_test": 7,
+          "rule_9_voice": 6,
+          "rule_10_forward_test": 8,
           "rule_11_thread_coherence": 10,
           "rule_12_spread_quality": 9,
           "rule_13_yc_honesty": 1,
-          "rule_14_level_coherence": 6,
+          "rule_14_level_coherence": 10,
           "rule_15_one_number_coherence": 9,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 8
+          "rule_17_macro_anchoring": 9
         }
       }
     ],
