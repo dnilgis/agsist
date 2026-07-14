@@ -1,0 +1,50 @@
+name: Harvest price tracker
+# Maintains RMA projected/harvest discovery prices. Weekday evenings after
+# CBOT settlement: during February (projected) and October (harvest) it
+# rebuilds the month's settlement series, updates running averages, and
+# seeds the static hero numbers into harvest-price-tracker.html. Finalizes
+# each window when its month closes; rolls the crop year each January.
+# Off-window runs exit in seconds with no commit.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '45 21 * * 1-5'   # 21:45 UTC weekdays — after CBOT settles
+
+concurrency:
+  group: harvest-prices
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install yfinance
+        run: pip install yfinance --quiet
+
+      - name: Update discovery prices
+        run: python3 scripts/fetch_harvest_prices.py
+
+      - name: Commit and push (rebase armor, 3 tries)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/harvest-prices.json harvest-price-tracker.html
+          if git diff --cached --quiet; then
+            echo "no discovery activity — nothing to commit"
+            exit 0
+          fi
+          git commit -m "data: harvest/projected price update [skip ci]"
+          for i in 1 2 3; do
+            if git push origin main; then exit 0; fi
+            echo "push rejected (attempt $i) — rebasing"
+            git pull --rebase origin main || { git rebase --abort; git reset --hard origin/main; git add data/harvest-prices.json harvest-price-tracker.html; git commit -m "data: harvest/projected price update [skip ci]" || true; }
+          done
+          exit 1
