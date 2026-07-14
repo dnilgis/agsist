@@ -33,7 +33,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/hail/mesh/today-partial.json
+          # On a quiet day run_partial() intentionally writes no file. Bare
+          # `git add <path>` on a never-created path exits 128 under bash -e
+          # and fails the job. Stage the directory instead: picks up writes
+          # AND deletions, and is a clean no-op when nothing is there.
+          git add -A data/hail/mesh/today-partial.json 2>/dev/null || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "data: MESH last-24h partial [skip ci]"
           for i in 1 2 3; do
