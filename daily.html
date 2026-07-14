@@ -49,7 +49,7 @@
       "@type": "WebPage",
       "@id": "https://agsist.com/daily#webpage",
       "url": "https://agsist.com/daily",
-      "dateModified": "2026-07-13",
+      "dateModified": "2026-07-11",
       "name": "Daily Ag Briefing \u2014 Market Morning Report | AGSIST",
       "description": "Free morning agricultural market briefing for US ag producers across grain, livestock, dairy, and specialty operations. Published every weekday before the market open.",
       "isPartOf": { "@id": "https://agsist.com/#website" }
@@ -471,8 +471,9 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
     <button class="dv3-modal-close" id="dv3-modal-close" aria-label="Close subscribe dialog"><svg class="dv3-ic" aria-hidden="true"><use href="#i-x"/></svg></button>
     <h2 id="dv3-modal-title"><svg class="dv3-ic" aria-hidden="true"><use href="#i-mail"/></svg> Get the Daily Briefing</h2>
     <p>Join the email list at no charge and the AGSIST Daily lands in your inbox every weekday morning before the market open &#8212; grain, livestock, dairy, weather, and what to watch. Unsubscribe anytime.</p>
-    <form id="dv3-sub-form" action="https://formspree.io/f/xnjbwepn" method="POST">
+    <form id="dv3-sub-form" action="https://agsist-subs.dnilgis.workers.dev/subscribe" method="POST">
       <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
       <input type="hidden" name="source" value="daily-briefing-subscribe">
       <button type="submit" class="dv3-modal-submit">Join the list at no charge</button>
     </form>

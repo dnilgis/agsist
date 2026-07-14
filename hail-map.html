@@ -9,7 +9,7 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
   <title>Hail Map &mdash; Did It Hail at Your Address? Radar Hail Swaths &amp; US Hail Reports by Location, State &amp; Date | AGSIST</title>
-  <meta name="description" content="Did it hail at your address? Search any US location for 5 years of dated NWS hail reports with stone sizes, check radar-estimated hail swaths (MESH) at your exact pin, print a sourced hail-history report, and browse hail-alley history by state and county. No charge, no login, printable reports.">
+  <meta name="description" content="Did it hail at your address? Search any US location for 5 years of dated NWS hail reports with stone sizes, check radar-estimated hail swaths (MESH) at your exact pin, set free hail alerts for any spot, print a sourced hail-history report, and browse hail-alley history by state and county. No charge, no login, printable reports.">
   <meta name="author" content="Sigurd Lindquist &mdash; Farmers First Agri Service">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://agsist.com/hail-map">
@@ -18,7 +18,7 @@
   <meta property="og:site_name" content="AGSIST">
   <meta property="og:locale" content="en_US">
   <meta property="og:title" content="National Hail Map &mdash; Radar Hail Swaths + 5 Years of US Hail History">
-  <meta property="og:description" content="Five years of US hail reports plus daily radar-estimated hail swaths you can check against any address. Watch the hail alleys light up in the same places year after year.">
+  <meta property="og:description" content="Five years of US hail reports, daily radar-estimated hail swaths, and free hail alerts for any pin. Watch the hail alleys light up in the same places year after year.">
   <meta property="og:url" content="https://agsist.com/hail-map">
   <meta property="og:image" content="https://agsist.com/img/og/hail-map.jpg">
   <meta property="og:image:width" content="1200">
@@ -27,7 +27,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@agsist">
   <meta name="twitter:title" content="National Hail Map &mdash; Radar Hail Swaths + 5 Years of US Hail History">
-  <meta name="twitter:description" content="Where hail hits, year after year &mdash; plus daily radar-estimated swaths you can check at your own address.">
+  <meta name="twitter:description" content="Where hail hits, year after year &mdash; radar-estimated swaths and free hail alerts for your own address.">
   <meta name="twitter:image" content="https://agsist.com/img/og/hail-map.jpg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,10 +79,22 @@
     .hm-point-stat .v{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;color:var(--text,#e6ebe9)}
     .hm-point-stat .l{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim,#8a948f);margin-top:.15rem}
     .hm-point-tablewrap{overflow-x:auto}
+    .hm-longterm{margin:.7rem 0 .9rem;padding:.7rem .85rem;border:1px solid var(--border,rgba(132,160,168,.25));border-radius:10px}
+    .hm-longterm-h{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim,#8a948f);margin-bottom:.3rem}
+    .hm-longterm-big{font-size:.95rem;line-height:1.55}
+    .hm-longterm-big strong{font-family:'JetBrains Mono',monospace}
+    .hm-longterm-dec{display:flex;gap:2px;align-items:flex-end;height:34px;margin:.55rem 0 .15rem}
+    .hm-longterm-dec span{flex:1;background:var(--brand,#d4a23f);opacity:.65;min-height:2px}
+    .hm-longterm-dl{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text-dim,#8a948f)}
+    .hm-longterm-src{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-dim,#8a948f);margin-top:.45rem;line-height:1.5}
     .hm-alerts{margin:.8rem 0 0;padding:.8rem .9rem;background:rgba(212,162,63,.05);border:1px solid rgba(212,162,63,.25);border-radius:10px}
     .hm-alerts-h{font-weight:700;font-size:.95rem}
     .hm-alerts-soon{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand,#d4a23f);border:1px solid rgba(212,162,63,.5);border-radius:10px;padding:.15rem .5rem;margin-left:.4rem;vertical-align:middle}
     .hm-alerts-p{font-size:.82rem;color:var(--text-dim,#8a948f);line-height:1.6;margin:.35rem 0 .55rem}
+    .hm-alerts-radius{display:flex;gap:.45rem;align-items:center;margin:.1rem 0 .55rem;flex-wrap:wrap}
+    .hm-alerts-radius-l{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim,#8a948f)}
+    .hm-rchip{min-height:44px;min-width:56px;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.25));border-radius:8px;color:var(--text-dim,#8a948f);font-family:'JetBrains Mono',monospace;font-size:.74rem;cursor:pointer}
+    .hm-rchip[aria-pressed="true"]{border-color:var(--brand,#d4a23f);color:var(--brand,#d4a23f)}
     .hm-alerts-row{display:flex;gap:.5rem;flex-wrap:wrap}
     .hm-alerts-row input{flex:1;min-width:200px;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.25));border-radius:8px;color:var(--text,#e6ebe9);font-size:16px;padding:.55rem .7rem;min-height:44px}
     .hm-alerts-row button{min-height:44px;background:var(--brand,#d4a23f);border:0;border-radius:8px;color:#141410;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.78rem;padding:.55rem 1rem;cursor:pointer}
@@ -164,7 +176,7 @@
     .hm-cty-empty{color:var(--text-muted);text-align:center;padding:1.1rem!important}
   </style>
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"How to check if it hailed at your address","step":[{"@type":"HowToStep","name":"Search your location","text":"Enter your address, town, or ZIP in the search box above the AGSIST hail map, or tap the pin button to use your current location."},{"@type":"HowToStep","name":"Read the report list","text":"The page lists every National Weather Service hail report within 25 miles over the last five years, with dates, reported stone sizes, and distances."},{"@type":"HowToStep","name":"Check the radar swaths","text":"Tap Check radar swaths at this pin to test your exact point against every archived radar-estimated (MESH) hail swath — an estimate, not a ground measurement — with a dated map link for every day that touched your location."},{"@type":"HowToStep","name":"Share or save the record","text":"Copy link produces a shareable URL that reopens the exact same lookup for anyone you send it to."},{"@type":"HowToStep","name":"Print the report","text":"Use Print report for a dated, sourced document to pair with your own photos for any claim conversation."}]},{"@type":"Dataset","dateModified":"2026-07-13",
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"How to check if it hailed at your address","step":[{"@type":"HowToStep","name":"Search your location","text":"Enter your address, town, or ZIP in the search box above the AGSIST hail map, or tap the pin button to use your current location."},{"@type":"HowToStep","name":"Read the report list","text":"The page lists every National Weather Service hail report within 25 miles over the last five years, with dates, reported stone sizes, and distances."},{"@type":"HowToStep","name":"Check the radar swaths","text":"Tap Check radar swaths at this pin to test your exact point against every archived radar-estimated (MESH) hail swath — an estimate, not a ground measurement — with a dated map link for every day that touched your location."},{"@type":"HowToStep","name":"Share or save the record","text":"Copy link produces a shareable URL that reopens the exact same lookup for anyone you send it to."},{"@type":"HowToStep","name":"Print the report","text":"Use Print report for a dated, sourced document to pair with your own photos for any claim conversation."}]},{"@type":"Dataset","dateModified":"2026-07-10",
     "name":"AGSIST National Hail Map",
     "description":"Interactive heatmap of five years of US National Weather Service hail Local Storm Reports, showing the geographic frequency of hail across the country.",
     "url":"https://agsist.com/hail-map",
@@ -189,7 +201,9 @@
       {"@type":"Question","name":"Is there a hail forecast on this page?","acceptedAnswer":{"@type":"Answer","text":"No. The AGSIST hail map is the record, not the forecast: it shows where hail was actually reported, which is what claims and history checks need. For severe-weather outlooks use the NWS Storm Prediction Center; for local field-work conditions AGSIST's spray advisory reads the forecast."}},{"@type":"Question","name":"What is the largest hail ever recorded in the US?","acceptedAnswer":{"@type":"Answer","text":"The US record hailstone fell at Vivian, South Dakota on July 23, 2010: 8.0 inches in diameter, 18.62 inches in circumference, weighing just under 2 pounds."}},{"@type":"Question","name":"What time of day does hail usually fall?","acceptedAnswer":{"@type":"Answer","text":"Mostly mid-afternoon through evening, roughly 3 to 9 PM local time, when daytime heating makes thunderstorm updrafts strongest. Overnight hail occurs with organized storm complexes, especially on the Plains."}},{"@type":"Question","name":"Does hail damage metal roofs?","acceptedAnswer":{"@type":"Answer","text":"Metal resists puncture better than asphalt shingle but it dents: 1-inch stones can cosmetically dent softer panels and 2-inch-plus hail can dent nearly any residential metal roof. Policies often distinguish cosmetic from functional metal-roof damage, so dated reports plus photos matter."}},{"@type":"Question","name":"What is the difference between hail, sleet, and graupel?","acceptedAnswer":{"@type":"Answer","text":"Hail is layered ice built by thunderstorm updrafts in the warm season and can be large. Sleet is small frozen raindrops from winter storms. Graupel is rime-coated snow pellets, soft and harmless."}},{"@type":"Question","name":"How fast does hail fall?","acceptedAnswer":{"@type":"Answer","text":"Terminal velocity scales with size: penny hail falls around 20 to 25 mph, golf-ball hail around 50 mph, baseball hail near 75 mph, and softball-class stones can exceed 100 mph."}},{"@type":"Question","name":"Did it hail at my address? How do I check?","acceptedAnswer":{"@type":"Answer","text":"Use the search box above the AGSIST hail map: enter an address, town, or ZIP and the page shows every National Weather Service hail report within 25 miles over the last five years, with dates, reported stone sizes, distances, and a printable report. Reports are town-level precision, so they confirm the day and neighborhood; on-site photos confirm the property."}},{"@type":"Question","name":"How big does hail have to be to cause damage?","acceptedAnswer":{"@type":"Answer","text":"Roughly: 1 inch (quarter size) can damage asphalt shingles, siding, and tender crops; 1.5 inch is the common damaging threshold and reliably dents vehicles and roofs; 2 inches and larger breaks windows and can strip crops to stalks. Wind, stone density, and storm duration change outcomes at every size."}},{"@type":"Question","name":"Does this map show every hailstorm?",
        "acceptedAnswer":{"@type":"Answer","text":"No. It shows reported hail — NWS Local Storm Reports from spotters, law enforcement, and the public — so it carries a population and spotter bias. The persistent geographic corridors are physically real and align with radar-based hail climatologies such as NSSL MESH analyses."}},
       {"@type":"Question","name":"How is hail damage to crops insured?",
-       "acceptedAnswer":{"@type":"Answer","text":"Hail is covered by crop-hail insurance, a named-peril product separate from federal Multi-Peril Crop Insurance (MPCI). Because hail risk is geographically concentrated, growers on high-frequency corridors often carry crop-hail to cover the gap."}}
+       "acceptedAnswer":{"@type":"Answer","text":"Hail is covered by crop-hail insurance, a named-peril product separate from federal Multi-Peril Crop Insurance (MPCI). Because hail risk is geographically concentrated, growers on high-frequency corridors often carry crop-hail to cover the gap."}},
+      {"@type":"Question","name":"Can I get free hail alerts for my address?",
+       "acceptedAnswer":{"@type":"Answer","text":"Yes \u2014 free, no account. Search or tap your spot on the map above, pick a 1-, 5-, or 10-mile radius, and save your email. Any morning radar-estimated hail (MESH) touched that radius the day before, you get one plain email with the band size and a link to the dated swath map. It's an estimate, flagged as an estimate. Unsubscribe with one click."}}
     ]
   }
   </script>
@@ -213,7 +227,7 @@
 
       <div class="hm-head">
         <h1 class="hm-title">National Hail Map &mdash; <em>where it hits, year after year</em></h1>
-        <p class="hm-sub"><span id="hm-seed-stats"><!--SEED:hailstats-->62,157 NWS hail reports on the map (2022–2026) · 1,818 in the last 30 days · data through 2026-07-04<!--/SEED--></span> Five years of National Weather Service hail reports on one map. Step through the years or hit play, and watch the same hail corridors light up season after season &mdash; the High Plains, the Front Range, the southern Plains. Risk has a geography. This is it. Crops, roofs, equipment, whole towns &mdash; if you’re checking hail, the record is here, at no charge, no login.</p>
+        <p class="hm-sub"><span id="hm-seed-stats"><!--SEED:hailstats-->62,157 NWS hail reports on the map (2022–2026) · 2,034 in the last 30 days · data through 2026-07-04<!--/SEED--></span> Five years of National Weather Service hail reports on one map. Step through the years or hit play, and watch the same hail corridors light up season after season &mdash; the High Plains, the Front Range, the southern Plains. Risk has a geography. This is it. Crops, roofs, equipment, whole towns &mdash; if you’re checking hail, the record is here, at no charge, no login.</p>
         <p class="hm-stats-line"><!--SEED:hailstats-->Tens of thousands of NWS hail reports on the map, updated monthly.<!--/SEED--></p>
       </div>
 
@@ -267,14 +281,21 @@
           </div>
         </div>
         <div class="hm-point-stats" id="hm-point-stats"></div>
+        <div class="hm-longterm" id="hm-longterm" hidden></div>
         <div class="hm-point-tablewrap"><table class="hm-cty-table" id="hm-point-table"></table></div>
         <div class="hm-swathcheck" id="hm-swathcheck" hidden>
           <button type="button" id="hm-swath-btn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-search"/></svg> <span id="hm-swath-btn-t">Check radar swaths at this pin</span></button>
           <div id="hm-swath-out"></div>
         </div>
         <div class="hm-alerts" id="hm-alerts" hidden>
-          <div class="hm-alerts-h">Hail alerts for this spot <span class="hm-alerts-soon">launching soon</span></div>
-          <p class="hm-alerts-p">Be first in line: when alerts go live, you’ll get an email any day hail is reported near this pin — and one email telling you it’s on. Your email and this pin, nothing else, never sold.</p>
+          <div class="hm-alerts-h">Hail alerts for this spot <span class="hm-alerts-soon">live</span></div>
+          <p class="hm-alerts-p">Pick a radius and save your spot: any day radar-estimated hail touches it, you get one plain email with the band size and the dated swath map — an estimate, flagged as an estimate, checked every morning. Your email and this pin, nothing else, never sold. Free.</p>
+          <div class="hm-alerts-radius" role="radiogroup" aria-label="Alert radius">
+            <span class="hm-alerts-radius-l">Radius</span>
+            <button type="button" class="hm-rchip" data-r="1" aria-pressed="false">1 mi</button>
+            <button type="button" class="hm-rchip" data-r="5" aria-pressed="true">5 mi</button>
+            <button type="button" class="hm-rchip" data-r="10" aria-pressed="false">10 mi</button>
+          </div>
           <div class="hm-alerts-row">
             <input type="email" id="hm-alert-email" placeholder="you@example.com" autocomplete="email" aria-label="Email for hail alerts">
             <button type="button" id="hm-alert-btn">Save my spot</button>
@@ -361,6 +382,7 @@
           <p>Terminal velocity scales with size: penny hail falls around <strong>20&ndash;25 mph</strong>, golf balls around <strong>50 mph</strong>, baseballs near <strong>75 mph</strong>, and softball-class stones can exceed <strong>100 mph</strong>. That speed, more than the weight alone, is why 2&Prime; hail breaks what 1&Prime; hail only dents.</p></details>
         <details><summary>How is hail damage to crops insured?</summary>
           <p>Hail is covered by <strong>crop-hail insurance</strong>, a named-peril product that's separate from federal Multi-Peril Crop Insurance (MPCI). Because hail risk is so geographically concentrated, growers on the high-frequency corridors often carry crop-hail to cover the gap. If your ground sits in a bright zone here, that's a conversation worth having &mdash; <a href="https://farmers1st.com/" target="_blank" rel="noopener">Farmers First Agri Service</a> writes crop-hail in WI and MN.</p></details>
+      <details><summary>Can I get free hail alerts for my address?</summary><p>Yes &mdash; free, no account. Search or tap your spot on the map above, pick a 1-, 5-, or 10-mile radius, and save your email. Any morning radar-estimated hail (MESH) touched that radius the day before, you get one plain email with the band size and a link to the dated swath map. It&rsquo;s an estimate, flagged as an estimate. Unsubscribe with one click.</p></details>
       </section>
     </div>
   </main>
@@ -465,6 +487,60 @@
     // ── Location lookup: did it hail HERE? ─────────────────────────────
     var FS_WORKER='https://agsist-fieldscout.dnilgis.workers.dev';
     var pin=null, lastLookup=null;
+    // ── 70-year record (NCEI Storm Events backfill). Feature-detects its own
+    // data: until data/hail/ncei/ exists in the repo, this block stays hidden. ──
+    var nceiIdx=null, nceiTried=false, nceiTiles={};
+    var NC_MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function nceiTileKeys(lat,lon){
+      var r=10/69, keys={}, cl=Math.cos(lat*Math.PI/180)||1e-6;
+      [[0,0],[r,0],[-r,0],[0,r/cl],[0,-r/cl],[r,r/cl],[r,-r/cl],[-r,r/cl],[-r,-r/cl]].forEach(function(d){
+        keys[Math.floor(lat+d[0])+'_'+Math.floor(lon+d[1])]=1; });
+      return Object.keys(keys);
+    }
+    function renderLongTerm(lat,lon){
+      var box=document.getElementById('hm-longterm'); if(!box) return;
+      box.hidden=true;
+      function go(){
+        var keys=nceiTileKeys(lat,lon);
+        Promise.all(keys.map(function(k){
+          if(nceiTiles[k]!==undefined) return Promise.resolve(nceiTiles[k]);
+          return fetch('/data/hail/ncei/tiles/'+k+'.json').then(function(r){ return r.ok?r.json():null; })
+            .catch(function(){ return null; }).then(function(j){ nceiTiles[k]=j; return j; });
+        })).then(function(tiles){
+          var evs=[];
+          tiles.forEach(function(t){ if(!t||!t.e) return;
+            t.e.forEach(function(e){
+              if(haversineMi(lat,lon,e[2]/10000,e[3]/10000)<=10) evs.push(e);
+            });
+          });
+          var y0=nceiIdx.years[0], y1=nceiIdx.cutoff, span=(y1-y0+1);
+          var head='<div class="hm-longterm-h">Long-term record \u00b7 '+y0+'\u2013'+y1+' \u00b7 within 10 mi</div>';
+          var srcline='<div class="hm-longterm-src">'+nceiIdx.source+'. Ends '+y1+' where the live 5-year record above begins \u2014 the two are never mixed. Older events can carry town-level location precision.</div>';
+          if(!evs.length){
+            box.innerHTML=head+'<div class="hm-longterm-big">No archived hail events within 10 miles of this point \u2014 genuinely quiet ground, as far as '+span+' years of records can say.</div>'+srcline;
+            box.hidden=false; return;
+          }
+          var maxE=evs[0]; evs.forEach(function(e){ if(e[1]>maxE[1]) maxE=e; });
+          var my=Math.floor(maxE[0]/10000), mm=Math.floor(maxE[0]/100)%100;
+          var nDec=Math.floor(y1/10)-Math.floor(y0/10)+1;
+          var dc=new Array(nDec).fill(0), peak=1;
+          evs.forEach(function(e){ var d=Math.floor(Math.floor(e[0]/10000)/10)-Math.floor(y0/10); if(d>=0&&d<nDec){ dc[d]++; if(dc[d]>peak)peak=dc[d]; } });
+          var bars=dc.map(function(n){ return '<span style="height:'+Math.max(6,Math.round(n/peak*100))+'%" title="'+n+' events"></span>'; }).join('');
+          box.innerHTML=head
+            +'<div class="hm-longterm-big"><strong>'+evs.length+'</strong> hail event'+(evs.length===1?'':'s')+' on record \u00b7 largest <strong>'+(maxE[1]/100).toFixed(2)+'\u2033</strong> ('+NC_MON[mm-1]+' '+my+')'+(maxE[4]==='c'?' \u00b7 location approximate':'')+'</div>'
+            +'<div class="hm-longterm-dec">'+bars+'</div>'
+            +'<div class="hm-longterm-dl"><span>'+(Math.floor(y0/10)*10)+'s</span><span>'+(Math.floor(y1/10)*10)+'s</span></div>'
+            +srcline;
+          box.hidden=false;
+        });
+      }
+      if(nceiIdx){ go(); return; }
+      if(nceiTried) return;
+      nceiTried=true;
+      fetch('/data/hail/ncei/index.json').then(function(r){ return r.ok?r.json():null; })
+        .catch(function(){ return null; })
+        .then(function(j){ nceiIdx=j; if(j) go(); });
+    }
     function haversineMi(a,b,c,d){ var R=3958.8,p=Math.PI/180,x=(c-a)*p,y=(d-b)*p,
       s=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*p)*Math.cos(c*p)*Math.sin(y/2)*Math.sin(y/2);
       return R*2*Math.atan2(Math.sqrt(s),Math.sqrt(1-s)); }
@@ -609,7 +685,7 @@
             (ev.length>40?'<tbody><tr><td colspan="4" class="hm-cty-empty">'+(ev.length-40)+' older reports not shown \u2014 print the report for the full record.</td></tr></tbody>':'');
         }
       }
-      lastLookup={lat:lat,lon:lon,label:label,ev:ev,nDays:nDays,maxMag:maxMag};
+      lastLookup={lat:lat,lon:lon,label:label,ev:ev,nDays:nDays,maxMag:maxMag}; renderLongTerm(lat,lon);
       wirePointActs();
       wireSwathCheck();
       wireAlerts();
@@ -691,8 +767,9 @@
           '<div style="font-family:\'JetBrains Mono\',monospace;font-size:.68rem;color:var(--text-dim);margin-top:.4rem">Radar estimate (NOAA MRMS MESH), not a measurement \u00b7 archive since '+esc(meshIdx.dates[0])+' \u00b7 pairs with the dated reports above for a date-of-loss record</div>';
       });
     }
-    // ── Alert waitlist: email + the exact pin, via Formspree. Honest framing:
-    // alerts aren't sending yet — this saves the spot and the intent. ──
+    // ── Hail alerts (LIVE): email + pin + radius → subs worker KV. The nightly
+    // checker (alert-check.yml, after mesh.yml) tests every watch area against
+    // the new swath day and emails hits — estimates flagged as estimates. ──
     var alertsWired=false;
     function wireAlerts(){
       var box=document.getElementById('hm-alerts');
@@ -707,21 +784,29 @@
         if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){ stx.textContent='That email doesn\u2019t look right \u2014 check it and try again.'; return; }
         if(!lastLookup){ stx.textContent='Search or tap a spot on the map first.'; return; }
         btn.disabled=true; stx.textContent='Saving\u2026';
-        ga('hm_alert_signup',{});
-        fetch('https://formspree.io/f/xnjbwepn',{
+        var rc=document.querySelector('.hm-rchip[aria-pressed="true"]');
+        var radius=rc?parseInt(rc.getAttribute('data-r'),10):5;
+        ga('hm_alert_signup',{radius_mi:radius});
+        fetch('https://agsist-subs.dnilgis.workers.dev/alert-subscribe',{
           method:'POST',
           headers:{ 'Content-Type':'application/json', 'Accept':'application/json' },
-          body: JSON.stringify({ email:v, list:'hail-alerts',
+          body: JSON.stringify({ email:v,
             lat:lastLookup.lat.toFixed(4), lon:lastLookup.lon.toFixed(4),
-            place:lastLookup.label||'', page:'/hail-map' })
+            place:lastLookup.label||'', radius_mi:radius })
         }).then(function(r){
           btn.disabled=false;
-          if(r.ok){ stx.textContent='Saved \u2014 this spot is on the list. One email when alerts go live.'; em.value=''; }
+          if(r.ok){ stx.textContent='Watching this spot \u2014 '+radius+' mi radius. Alerts arrive the morning after radar-estimated hail touches it.'; em.value=''; }
           else{ stx.textContent='Couldn\u2019t save just now \u2014 try again in a minute.'; }
         }).catch(function(){ btn.disabled=false; stx.textContent='Couldn\u2019t save just now \u2014 try again in a minute.'; });
       }
       btn.addEventListener('click', submit);
       em.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); });
+      document.querySelectorAll('.hm-rchip').forEach(function(c){
+        c.addEventListener('click', function(){
+          document.querySelectorAll('.hm-rchip').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+          c.setAttribute('aria-pressed','true');
+        });
+      });
     }
 
     var actsWired=false;
