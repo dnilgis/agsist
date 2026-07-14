@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-13T13:35:48+00:00",
- "total": 60,
+ "updated": "2026-07-14T00:18:10+00:00",
+ "total": 61,
  "played_out": 26,
- "didnt": 29,
+ "didnt": 30,
  "pending": 5,
- "hit_rate": 47.3,
+ "hit_rate": 46.4,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-13",
+   "judged": "2026-07-14",
+   "call": "Yesterday's call was beans up, targeting a close above $12.10 November.",
+   "outcome": "didnt",
+   "note": "November beans closed at $11.935, short of the $12.10 target. The biofuel-driven bid was real -- nearby ran to $12.07 -- but new-crop never got there. Miss. The $12.10 level is still the line; Thursday export sales are the next shot at it."
+  },
   {
    "made": "2026-07-12",
    "judged": "2026-07-13",

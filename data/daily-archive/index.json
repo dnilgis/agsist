@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-07-14",
+      "date_display": "Tuesday, July 14, 2026",
+      "headline": "CRUDE RUNS 6%, CORN SPLIT WIDENS, BEANS HOLD",
+      "teaser": "Oil runs 6% on Iran blockade; corn split hits 22 cents; beans push toward resistance.",
+      "market_mood": "volatile",
+      "surprise_count": 1,
+      "sections": 4,
+      "url": "/daily/2026-07-14",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-13",
       "date_display": "Monday, July 13, 2026",
       "headline": "HOGS RUN 11%, HORMUZ FLARES AGAIN, CROP PROGRESS DUE",
@@ -1391,6 +1403,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-13T13:35:46.334198+00:00",
-  "count": 123
+  "updated": "2026-07-14T00:18:09.625719+00:00",
+  "count": 124
 }
