@@ -90,6 +90,12 @@
     .hm-longterm-dec span{flex:1;background:var(--brand,#d4a23f);opacity:.65;min-height:2px}
     .hm-longterm-dl{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text-dim,#8a948f)}
     .hm-longterm-src{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-dim,#8a948f);margin-top:.45rem;line-height:1.5}
+    .hm-alerts--bar{margin:.7rem 0 .35rem;padding:.7rem .85rem}
+    .hm-alerts--bar .hm-alerts-h{font-size:.8rem;margin-bottom:.25rem}
+    .hm-alerts--bar .hm-alerts-p{font-size:.78rem;margin:.2rem 0 .5rem;line-height:1.55}
+    .hm-sponsor--ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:0 0 1rem;border:1px solid var(--border,rgba(132,160,168,.18));border-radius:8px;color:var(--text-dim,#8a948f);line-height:1.6}
+    .hm-sponsor--ribbon .hm-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--brand,#d4a23f);margin-right:.5rem}
+    .hm-sponsor--ribbon p{display:inline;margin:0}
     .hm-alerts{margin:.8rem 0 0;padding:.8rem .9rem;background:rgba(212,162,63,.05);border:1px solid rgba(212,162,63,.25);border-radius:10px}
     .hm-alerts-h{font-weight:700;font-size:.95rem}
     .hm-alerts-soon{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand,#d4a23f);border:1px solid rgba(212,162,63,.5);border-radius:10px;padding:.15rem .5rem;margin-left:.4rem;vertical-align:middle}
@@ -285,6 +291,24 @@
 
       <div id="hm-banner" class="hm-banner" hidden></div>
 
+      <div class="hm-alerts hm-alerts--bar" id="hm-alerts">
+          <div class="hm-alerts-h">Hail alerts for this spot <span class="hm-alerts-soon">live</span></div>
+          <p class="hm-alerts-p">Search or tap your spot, pick a radius, drop your email — any morning radar-estimated hail touches it, one plain email with the dated map. An estimate, flagged as an estimate. Your email and pin, never sold. Free.</p>
+          <div class="hm-alerts-radius" role="radiogroup" aria-label="Alert radius">
+            <span class="hm-alerts-radius-l">Radius</span>
+            <button type="button" class="hm-rchip" data-r="1" aria-pressed="false">1 mi</button>
+            <button type="button" class="hm-rchip" data-r="5" aria-pressed="true">5 mi</button>
+            <button type="button" class="hm-rchip" data-r="10" aria-pressed="false">10 mi</button>
+          </div>
+          <div class="hm-alerts-row">
+            <input type="email" id="hm-alert-email" placeholder="you@example.com" autocomplete="email" aria-label="Email for hail alerts">
+            <button type="button" id="hm-alert-btn">Save my spot</button>
+          </div>
+          <div class="hm-alerts-status" id="hm-alert-status" aria-live="polite"></div>
+        </div>
+      <aside class="hm-sponsor hm-sponsor--ribbon" id="hm-sponsor"><span class="hm-sponsor-tag">Sponsor this map</span> Every visitor here is checking hail damage right now — one category-exclusive slot. <a href="/sponsor?slot=hail-map&amp;utm_source=hail-map&amp;utm_medium=slot" id="hm-sponsor-cta">Put your name here &rarr;</a></aside>
+
+
       <section class="hm-point" id="hm-point" hidden aria-live="polite">
         <div class="hm-point-head">
           <h2 id="hm-point-title">Hail history at this spot</h2>
@@ -300,28 +324,11 @@
           <button type="button" id="hm-swath-btn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-search"/></svg> <span id="hm-swath-btn-t">Check radar swaths at this pin</span></button>
           <div id="hm-swath-out"></div>
         </div>
-        <div class="hm-alerts" id="hm-alerts" hidden>
-          <div class="hm-alerts-h">Hail alerts for this spot <span class="hm-alerts-soon">live</span></div>
-          <p class="hm-alerts-p">Pick a radius and save your spot: any day radar-estimated hail touches it, you get one plain email with the band size and the dated swath map — an estimate, flagged as an estimate, checked every morning. Your email and this pin, nothing else, never sold. Free.</p>
-          <div class="hm-alerts-radius" role="radiogroup" aria-label="Alert radius">
-            <span class="hm-alerts-radius-l">Radius</span>
-            <button type="button" class="hm-rchip" data-r="1" aria-pressed="false">1 mi</button>
-            <button type="button" class="hm-rchip" data-r="5" aria-pressed="true">5 mi</button>
-            <button type="button" class="hm-rchip" data-r="10" aria-pressed="false">10 mi</button>
-          </div>
-          <div class="hm-alerts-row">
-            <input type="email" id="hm-alert-email" placeholder="you@example.com" autocomplete="email" aria-label="Email for hail alerts">
-            <button type="button" id="hm-alert-btn">Save my spot</button>
-          </div>
-          <div class="hm-alerts-status" id="hm-alert-status" aria-live="polite"></div>
-        </div>
+        
         <p class="hm-point-note">Reports are National Weather Service Local Storm Reports within <strong>25 miles</strong> of the pin &mdash; called in by spotters, law enforcement, and the public, so location is town-level precision (roughly 1&ndash;5 miles), not parcel-exact, and quiet years can mean nobody reported, not that nothing fell. Farming this ground? <a href="/field-scout">Draw the field in Field Scout</a> for the per-field read with satellite vigor.</p>
       </section>
 
-      <aside class="hm-sponsor" id="hm-sponsor">
-        <div class="hm-sponsor-tag">Sponsor this map</div>
-        <p class="hm-sponsor-p">Every visitor on this page is checking hail damage right now &mdash; farms, homes, roofs, dealerships. One sponsor, category-exclusive, in this exact spot. <a href="/sponsor?slot=hail-map&amp;utm_source=hail-map&amp;utm_medium=slot" id="hm-sponsor-cta">Put your name here &rarr;</a></p>
-      </aside>
+      
 
       <div class="hm-note">
         <strong>What you're looking at.</strong> Each point is a hail report logged by a National Weather Service office &mdash; a trained spotter, law enforcement, or the public called it in. Brighter areas got more reports. Because reporting tracks population and storm spotters too, this is a map of <em>reported</em> hail, not a perfect physical record &mdash; but the persistent corridors are real, and they're exactly the ground where hail coverage earns its keep.
