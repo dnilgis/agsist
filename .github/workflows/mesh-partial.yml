@@ -26,7 +26,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install deps
-        run: pip install requests numpy xarray cfgrib --quiet
+        run: pip install requests numpy xarray cfgrib matplotlib --quiet
       - name: Fetch rolling 24h MESH
         run: python3 scripts/fetch_mesh.py --partial
       - name: Commit and push (rebase armor)
