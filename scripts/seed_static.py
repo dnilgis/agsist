@@ -211,7 +211,7 @@ def main():
         rc = hm.get("recent_count")
         line = (f"{tot:,} National Weather Service hail reports, {yrs[0]}\u2013{yrs[-1]}"
                 + (f" \u2014 {rc:,} in the last 30 days" if rc else "")
-                + ", updated monthly.") if yrs else None
+                + " \u2014 recent reports refresh daily; the full archive rebuilds monthly.") if yrs else None
         if line:
             t = open("hail-map.html", encoding="utf-8").read()
             t, ch = seed_between(t, "hailstats", line)

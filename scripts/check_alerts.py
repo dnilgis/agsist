@@ -72,7 +72,7 @@ def load_bands(day):
     """{thresh_in: shapely geometry} — bands are stacked (each threshold's
     polygon covers everything >= it), so a point's band = max thresh whose
     geometry contains it."""
-    p = MESH_DIR / (day + ".geojson")
+    p = MESH_DIR / (day + ".json")   # NB: the mesh pipeline writes .json, not .geojson
     if not p.exists():
         print("no swath file for " + day + " — quiet day or not yet fetched. exit 0")
         sys.exit(0)

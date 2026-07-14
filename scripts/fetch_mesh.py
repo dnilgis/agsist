@@ -134,6 +134,9 @@ def fetch_day_grib(dt):
         log("  no MESH files listed for this date")
         return None
     fname = sorted(names)[-1]  # last file of the day = full-day maximum
+    # expose the observation time for partial-day runs
+    m_ts = re.search(r"(\d{8})-(\d{6})", fname)
+    fetch_day_grib.as_of = (m_ts.group(1) + "T" + m_ts.group(2) + "Z") if m_ts else None
     log("  fetching", fname)
     g = requests.get(url + fname, timeout=120)
     if g.status_code != 200:
@@ -226,14 +229,50 @@ def selftest():
     log("SELFTEST OK —", sum(len(f['geometry']['coordinates']) for f in feats), "polygons across", len(feats), "bands")
 
 
+def run_partial():
+    """Rolling 24-hour MESH as of right now: today's UTC directory fills all
+    day, so its newest file IS the last-24h maximum at fetch time. Writes a
+    single overwriting file, never touches the dated archive or its index —
+    the finished day still posts via the normal morning run."""
+    dt = datetime.now(timezone.utc)
+    os.makedirs(OUTDIR, exist_ok=True)
+    out = os.path.join(OUTDIR, "today-partial.json")
+    log("MESH partial (last 24h) as of", dt.strftime("%Y-%m-%d %H:%MZ"))
+    fc = process_day(dt)
+    if fc is None:
+        log("no partial data yet today — removing any stale partial")
+        if os.path.exists(out):
+            os.remove(out)
+        return
+    fc["meta"]["partial"] = True
+    fc["meta"]["as_of"] = getattr(fetch_day_grib, "as_of", None) or dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+    fc["meta"]["units_note"] = ("ROLLING 24-HOUR radar ESTIMATE of maximum hail size, still in progress. "
+                                "Not a ground measurement; the finished day posts the next morning.")
+    json.dump(fc, open(out, "w"), separators=(",", ":"))
+    log("wrote", out, f"({os.path.getsize(out)//1024} KB, {len(fc['features'])} bands)")
+
+
 def main():
     if "--selftest" in sys.argv:
         selftest()
+        return
+    if "--partial" in sys.argv:
+        run_partial()
         return
     arg = next((a for a in sys.argv[1:] if re.match(r"^\d{4}-\d{2}-\d{2}$", a)), None)
     dt = (datetime.strptime(arg, "%Y-%m-%d") if arg
           else datetime.now(timezone.utc) - timedelta(days=1))
     os.makedirs(OUTDIR, exist_ok=True)
+    # the finished day supersedes any partial from yesterday
+    stale = os.path.join(OUTDIR, "today-partial.json")
+    if os.path.exists(stale):
+        try:
+            pd = json.load(open(stale)).get("meta", {}).get("date")
+            if pd and pd <= dt.strftime("%Y-%m-%d"):
+                os.remove(stale)
+                log("removed superseded partial for", pd)
+        except (ValueError, KeyError):
+            os.remove(stale)
     out = os.path.join(OUTDIR, dt.strftime("%Y-%m-%d") + ".json")
     log("MESH", dt.strftime("%Y-%m-%d"))
     fc = process_day(dt)
