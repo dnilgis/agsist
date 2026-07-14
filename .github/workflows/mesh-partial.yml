@@ -1,0 +1,43 @@
+name: MESH partial — last 24h live layer
+# Refreshes the rolling 24-hour radar-estimated hail layer several times a
+# day during hail season. Writes ONLY data/hail/mesh/today-partial.json —
+# never the dated archive or its index — so the nightly alert checker and
+# the finished-day pipeline are completely untouched (this workflow's name
+# is deliberately different from the daily MESH workflow the alert check
+# chains to).
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '5 15,18,21,0 * * *'   # ~10a, 1p, 4p, 7p Central (summer)
+
+concurrency:
+  group: mesh-partial
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  partial:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install deps
+        run: pip install requests numpy xarray cfgrib --quiet
+      - name: Fetch rolling 24h MESH
+        run: python3 scripts/fetch_mesh.py --partial
+      - name: Commit and push (rebase armor)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/hail/mesh/today-partial.json
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: MESH last-24h partial [skip ci]"
+          for i in 1 2 3; do
+            git push origin main && exit 0
+            git pull --rebase origin main || { git rebase --abort; git reset --hard origin/main; git add data/hail/mesh/today-partial.json; git commit -m "data: MESH last-24h partial [skip ci]" || true; }
+          done
+          exit 1
