@@ -134,9 +134,16 @@ def fetch_day_grib(dt):
         log("  no MESH files listed for this date")
         return None
     fname = sorted(names)[-1]  # last file of the day = full-day maximum
-    # expose the observation time for partial-day runs
+    # Expose the observation time for partial-day runs. MUST be ISO 8601
+    # EXTENDED (2026-07-14T17:00:00Z): the page does Date.parse(meta.as_of),
+    # and basic format (20260714T170000Z) yields Invalid Date -> NaN age ->
+    # the ">5h stale" guard silently fails open and labels old radar LIVE.
+    fetch_day_grib.as_of = None
     m_ts = re.search(r"(\d{8})-(\d{6})", fname)
-    fetch_day_grib.as_of = (m_ts.group(1) + "T" + m_ts.group(2) + "Z") if m_ts else None
+    if m_ts:
+        d8, t6 = m_ts.group(1), m_ts.group(2)
+        fetch_day_grib.as_of = "%s-%s-%sT%s:%s:%sZ" % (
+            d8[:4], d8[4:6], d8[6:8], t6[:2], t6[2:4], t6[4:6])
     log("  fetching", fname)
     g = requests.get(url + fname, timeout=120)
     if g.status_code != 200:
@@ -244,6 +251,11 @@ def run_partial():
         if os.path.exists(out):
             os.remove(out)
         return
+    # process_day() returns its header under "properties" (the dated-archive
+    # contract). The page reads the PARTIAL's header as fc.meta.as_of, so the
+    # partial file renames it. Writing fc["meta"][...] directly was a KeyError
+    # on every run that found data — which is why no partial ever committed.
+    fc["meta"] = fc.pop("properties")
     fc["meta"]["partial"] = True
     fc["meta"]["as_of"] = getattr(fetch_day_grib, "as_of", None) or dt.strftime("%Y-%m-%dT%H:%M:%SZ")
     fc["meta"]["units_note"] = ("ROLLING 24-HOUR radar ESTIMATE of maximum hail size, still in progress. "
