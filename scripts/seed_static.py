@@ -53,6 +53,7 @@ SITEMAP_URLS = [
     "https://agsist.com/corn-futures-prices",
     "https://agsist.com/soybean-futures-prices",
     "https://agsist.com/wheat-futures-prices",
+    "https://agsist.com/cattle-futures-prices",
     "https://agsist.com/ag-odds",
     "https://agsist.com/spray",
     "https://agsist.com/hail-map",
@@ -73,6 +74,16 @@ def grain_dollars(q):
     if c is None:
         return None
     return "%.2f" % (float(c) / 100.0)
+
+
+def cwt_dollars(q):
+    """Cattle/feeder quote (already $/cwt) -> display string, or None."""
+    if not q:
+        return None
+    c = q.get("close")
+    if c is None:
+        return None
+    return "%.2f" % float(c)
 
 
 def seed_between(text, tag, replacement):
@@ -188,6 +199,34 @@ def main():
                   f"{(' / $' + b_usd) if b_usd else ''} · dateModified {today}")
         else:
             print(f"  {page}: no change")
+
+    # cattle page: quotes are already $/cwt — no /100
+    page = "cattle-futures-prices.html"
+    try:
+        t = open(page, "r", encoding="utf-8").read()
+        lc = cwt_dollars(quotes.get("cattle"))
+        gf = cwt_dollars(quotes.get("feeders"))
+        changed = False
+        if lc:
+            stale = " (last good quote)" if quotes.get("cattle", {}).get("stale") else ""
+            t, c1 = seed_between(t, "px", "$" + lc)
+            note = ("Live cattle last closed near <strong>$" + lc + "</strong>" + stale
+                    + ((" &middot; feeders near $" + gf) if gf else "")
+                    + " &middot; $/cwt &middot; as of " + flabel
+                    + " &middot; live quotes update every 30 minutes through the session.")
+            t, c2 = seed_between(t, "note", note)
+            changed = c1 or c2
+        else:
+            print(f"  {page}: no usable cattle quote — seeds left as-is")
+        t, c3 = stamp_datemodified(t, today)
+        if changed or c3:
+            open(page, "w", encoding="utf-8").write(t)
+            any_change = True
+            print(f"  {page}: seeded ${lc or '—'}{(' / $' + gf) if gf else ''} · dateModified {today}")
+        else:
+            print(f"  {page}: no change")
+    except FileNotFoundError:
+        print(f"  {page}: missing — skipped")
 
     for page in DATEMOD_ONLY:
         try:
