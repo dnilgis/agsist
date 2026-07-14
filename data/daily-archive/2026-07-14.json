@@ -1,18 +1,18 @@
 {
-  "headline": "CRUDE RUNS 5.9%; BEANS SPLIT FROM CORN",
-  "subheadline": "Trump's Iran blockade reinstatement drives WTI's biggest single-session gain in weeks, while the soybean/corn split sharpens on pollination stress reports.",
-  "lead": "Crude oil moved hard Tuesday, up 5.9% to $78.66, after President Trump announced the U.S. would reinstate its blockade on Iran, forcing traders to reprice Hormuz risk that had been steadily deflating since early April. That is the overnight surprise of the week. While crude ran, the grain complex split in a way that matters for 2026 planning: nearby corn ticked up a quarter-cent to $4.41, but December corn fell a cent on the session to $4.63, and field reports out of northeast Missouri and eastern Iowa are flagging dry conditions exactly when corn needs moisture most. Meanwhile, nearby soybeans rose 10.5 cents to $12.07 while November beans eased modestly. The weekly thread question, whether Crop Progress would confirm the good-crop thesis, got complicated today: producers are reporting the extremes firsthand, and Thursday's export sales number will tell you whether the soybean bid has legs.",
-  "the_takeaway": "Lock harvest diesel now; crude just reset the floor on energy inputs.",
-  "teaser": "Trump's Iran blockade is back. Crude ran 5.9%. Lock your harvest diesel before the spread widens further.",
+  "headline": "CRUDE RUNS 6%, BEANS FIRM, CORN SPLITS AGAIN",
+  "subheadline": "Trump's Iran blockade reinstatement drove WTI's biggest single-session gain in months, while the corn nearby/December gap quietly tells the real crop story.",
+  "lead": "Crude ran 5.9% overnight to $78.66 after President Trump reinstated the Iran blockade, the biggest energy move in months and one that wasn't on any farmer's radar at yesterday's close. But the grain complex didn't follow energy's lead: soybeans firmed to $12.07 nearby while December corn slipped to $4.63, widening the nearby/December inversion to 22 cents. That split is the market asking whether the pollination stress Northeast Missouri farmers are crossing their fingers over is priced in yet or still coming.",
+  "the_takeaway": "Crude's blockade move changes your diesel math; lock fall fuel before the next escalation leg.",
+  "teaser": "Trump's Iran blockade reinstatement lit up crude; the corn market is still arguing about pollination.",
   "one_number": {
     "value": "90%",
-    "unit": "USDA beef export data revision, sales lowered",
-    "context": "USDA dramatically revised its reported beef export sales data downward on Thursday, lowering figures by roughly 90%, a revision that raises serious questions about data quality at the agency. That kind of error in the baseline changes how you read every cattle market signal going forward. If the export number was wrong, the supply/demand balance you thought you understood in fed cattle may need to be rebuilt from scratch."
+    "unit": "USDA beef export data revision, sales cut",
+    "context": "USDA dramatically lowered its reported beef export sales figures, cutting reported volumes by roughly 90%, according to Reuters. That is not a rounding error; it is a data integrity problem that directly undercuts any bullish export thesis for the cattle complex. When the government's own numbers can't be trusted at that magnitude, producers relying on USDA export data to make marketing decisions are flying partly blind."
   },
   "yesterdays_call": {
-    "summary": "Yesterday's call was crude up, targeting a close above $80.00.",
+    "summary": "Yesterday's call: crude up, toward $80.00.",
     "outcome": "didnt",
-    "note": "Crude closed at $78.66 Tuesday, short of the $80.00 target. The directional read was right -- WTI gained 5.9% on the Iran blockade reinstatement -- but the session ran out of gas before tagging $80. A miss on the level; the thesis earned, the target did not.",
+    "note": "WTI closed at $78.66 today -- the Iran blockade reinstatement delivered the directional move, but crude stopped $1.34 short of the $80.00 target. The thesis was right; the level did not play out. With WTI now sitting just below $80 and the blockade still in force, the call is still live heading into Wednesday.",
     "computed": {
       "outcome": "didnt",
       "made": "2026-07-14",
@@ -30,116 +30,119 @@
   },
   "sections": [
     {
-      "title": "Crude Runs on Blockade",
+      "title": "Crude Blockade Move",
       "icon": "🛢️",
-      "body": "Crude oil had its biggest single-session gain in weeks Tuesday, running to **$78.66**, up 5.9%, after Trump announced the U.S. would reinstate its blockade on Iran. This is a clean catalyst. The Iran-Hormuz tensions, with the Strait of Hormuz premium that had been deflating on diplomatic progress since early April, are back on the board. OPEC also trimmed its 2026 demand growth forecast for the third straight month in its monthly oil market report, but that was overshadowed completely by the policy move. Refiners are sitting in a particularly sharp spot right now: crude just repriced upward while diesel and gasoline were already holding firm, which means crack spreads are widening fast. Producers who have not locked harvest diesel are now pricing this against a higher crude floor than yesterday morning.",
-      "catalyst": "Trump reinstates Iran blockade; WTI reprices Hormuz disruption risk.",
-      "bottom_line": "Harvest diesel window just got more expensive; act before crack spreads widen further.",
+      "body": "WTI crude ran 5.9% to **$78.66**, the overnight session's loudest move after President Trump reinstated the Iran blockade, forcing traders to reprice supply disruption risk they had spent the last several weeks unwinding. The Iran-Hormuz situation, which had been deflating on diplomatic progress through Swiss intermediaries since early April, just reset. Tanker traffic through the Strait remained navigable as recently as last week, but that discount is gone now. **Refiners are actually in a sweet spot**: crude is back up but diesel and gasoline never fully came off their highs, meaning crack spreads widened further today. For producers booking fall harvest diesel, this is the worst possible timing; the window from last week, when WTI was still soft, is closed.",
+      "catalyst": "Trump reinstates Iran blockade; oil prices ran more than 8% Monday per OilPrice.com.",
+      "bottom_line": "Lock fall diesel now. The next escalation leg has no ceiling yet.",
       "conviction_level": "high",
       "overnight_surprise": true,
-      "farmer_action": "Producers booking fall diesel: crude just reset the input cost floor. If WTI holds above $78 through Thursday, current basis-adjusted diesel prices are the floor, not the ceiling. Lock what you can this week.",
-      "vs_yesterday": "Crude: yesterday's giveback fully reversed; blockade reinstatement changed the math."
+      "farmer_action": "Producers without fall diesel hedged: today's $78.66 WTI is already above last week's scale-in window. Lock at least 50% of harvest-season diesel needs at current basis-adjusted prices. A second blockade development would move this market another 5-8% before the commercials blink.",
+      "vs_yesterday": "Crude: yesterday's giveback opportunity is gone; blockade reinstatement reset the premium."
     },
     {
-      "title": "Corn Pollination Stress Real",
+      "title": "Beans Firm, Meal Slips",
+      "icon": "🌱",
+      "body": "Soybeans nearby firmed to **$12.07**, up nearly a dollar a bushel since last week, while November held at $11.94. The old-crop/new-crop carry is slight at 13 cents and that structure is not screaming urgency either direction. The real tension is inside the complex: **soybean oil ran 2.1% to $71.09** while meal fell 1.2% to $315.60, telling you the biofuel bid is driving this rally more than protein demand. Missouri farmers note soybeans look excellent heading into August, which is the real yield-setting window, and that good-crop setup is probably keeping November from matching nearby's enthusiasm. The China $17 billion annual purchase commitment, announced May 18, has not translated into a fresh sustained futures leg; Thursday's export sales will tell you whether that commitment is booking or sitting.",
+      "catalyst": "Soybean oil biofuel bid running; Missouri field reports show strong soybean condition heading into August.",
+      "bottom_line": "Old-crop beans are real money; new-crop needs Thursday's export sales to confirm the thesis.",
+      "conviction_level": "medium",
+      "overnight_surprise": false,
+      "farmer_action": "Producers with unpriced old-crop beans: $12.07 is at the top of the 52-week range at 94% from the low. Scale sales on 20-25% increments here. New crop November at $11.94: hold through Thursday's export sales. Above 400K MT confirms the bid; below 300K MT, the biofuel rally is carrying more weight than demand.",
+      "vs_yesterday": "Beans: old-crop/new-crop split held; oil/meal divergence widened further today."
+    },
+    {
+      "title": "Corn: Pollination Pressure Builds",
       "icon": "🌽",
-      "body": "Nearby corn settled at **$4.41**, up less than a cent, while **December corn fell to $4.63**, dropping a full 4.5 cents on the session. The spread between old-crop and new-crop is narrowing from the other direction, new-crop is coming in. Field reports out of northeast Missouri have farmers saying corn needs rain right now, during pollination, and an eastern Iowa grower described conditions this season as the most extreme she has seen in her career, swinging from drought to flood and back. That ground-level stress is not yet showing up in the futures board with conviction, but it is the kind of data point that gets priced fast when Monday's Crop Progress report arrives at 3 PM CT. December at $4.63 is the line: a condition rating that slips below 60% good/excellent reopens the door toward $4.75.",
-      "catalyst": "Missouri and Iowa field reports flag dry conditions during corn pollination.",
-      "bottom_line": "New-crop corn sold off; pollination stress is real but not yet priced at full weather premium.",
+      "body": "Nearby corn eased to $4.41 while December slipped to **$4.63**, keeping the inversion at 22 cents. Yesterday's crop progress report is the thread this week runs on, and the question is whether Monday's condition data showed stress showing up in the ratings after dry pollination weather across parts of northeast Missouri and eastern Iowa. A farmer near West Liberty, Iowa says she has never experienced growing-season extremes like this year: really dry, really wet, really cold, really hot. **December needs to hold above $4.58** to maintain the weather premium thesis; today's close at $4.63 is still above that line, but the 1.0% decline tells you the funds are not adding conviction at these levels. The 2026 planting season, behind average through May before catching up between rain systems, gave the Belt a strong start, but pollination stress is the one thing the early-season calendar didn't price.",
+      "catalyst": "Missouri and Iowa producer reports of dry conditions during corn pollination; ongoing extreme weather variability across the Belt.",
+      "bottom_line": "December corn at $4.63 is still above the weather-premium line; Monday's crop progress is the week's scorecard.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "farmer_action": "Unpriced new-crop corn: hold ahead of Monday Crop Progress. A condition rating decline below 60% good/excellent is your trigger to begin scale sales above $4.70 December.",
-      "vs_yesterday": "Corn: December fell 4.5 cents; field stress reports add texture the futures board hasn't fully priced."
+      "vs_yesterday": "Corn: December held above $4.58 called level; split structure persists."
     },
     {
-      "title": "Soybeans Split From Corn",
-      "icon": "🫘",
-      "body": "Nearby soybeans ran to **$12.07**, up 10.5 cents, while **November beans eased to $11.94**, down 3 cents. The old-crop/new-crop inverse is real and widening. The nearby bid is coming partly from soybean oil, which moved up 2.1% to **$71.09**, a meaningful session gain that lifted crush economics. Soybean meal gave back 1.2% to **$315.60**, so the crush margin shift is rotating within the complex toward oil over meal. Missouri field reports say soybeans look as good as ever, set up for strong yields, and that fundamental underpinning keeps new-crop from running with the nearby. The question this week is Thursday's export sales number: above 400K MT confirms the nearby bid has real demand behind it. Below 300K MT, you are looking at a technical bounce that fades.",
-      "catalyst": "Soybean oil up 2.1% lifts crush; Missouri field reports support strong new-crop soybean outlook.",
-      "bottom_line": "Old-crop beans bid on oil strength; new-crop flat on good field reports. Thursday exports decide.",
-      "conviction_level": "medium",
-      "overnight_surprise": false,
-      "farmer_action": "Unpriced new-crop soybeans: hold through Thursday export sales. Above 400K MT, scale toward $12.10 November. Below 300K MT, reassess storage economics.",
-      "vs_yesterday": "Beans: nearby/new-crop split sharpened; oil strength doing the work meal is not."
-    },
-    {
-      "title": "Cattle Quiet, Data Problem Loud",
+      "title": "Cattle Quiet, Data Problem",
       "icon": "🐄",
-      "body": "Live cattle settled at **$234.95**, off a fraction, and feeders at **$354.20**, also barely changed. The session was quiet on the surface. What was not quiet: USDA revised its reported beef export sales data downward by roughly 90%, a number that should reset how every participant in this market reads the demand signal. If the baseline export figure was that far off, the supply/demand balance the market has been trading against is suspect. The ongoing Cargill Fort Morgan/Schuyler plant lockout, now into its eighth week with 1,700 workers still out, continues to constrain processing. Add a USDA data revision of this magnitude and the cattle market's footing is shakier than $234.95 lets on.",
-      "catalyst": "USDA revises beef export data downward by roughly 90%, calling data quality into question.",
-      "bottom_line": "Cattle held flat but USDA data revision means the demand baseline needs to be rebuilt.",
+      "body": "Live cattle eased just two cents to **$234.95** and feeders gave back a dime to $354.20. The complex is effectively marking time, which would read as patience except for the 90% USDA beef export data revision that Reuters reported today. That is not a statistical footnote: USDA dramatically lowered its reported beef export sales, removing a key prop from any bullish export narrative. The ongoing Cargill Fort Morgan/Schuyler plant lockout, with 1,700 workers still out and roughly 6,000 head of daily processing capacity offline, continues to constrain the market from the supply side rather than the demand side. **The data revision plus the lockout equals a complex where the buy-side thesis just got murkier.** Mexican cattle producers are also pressing hard to reopen the U.S. border to live cattle trade, which would add supply-side weight if it gains traction.",
+      "catalyst": "USDA revised beef export sales down 90% per Reuters report; Cargill lockout ongoing with no resolution.",
+      "bottom_line": "Cattle patience looks thinner now that the export data prop just got pulled.",
       "conviction_level": "medium",
-      "overnight_surprise": false
+      "overnight_surprise": false,
+      "vs_yesterday": "Cattle: live held, but USDA data revision undercuts the export bullish case."
     },
     {
-      "title": "Class III Milk Runs; Hogs Drift",
+      "title": "Milk Firms, Hogs Hold",
       "icon": "🥛",
-      "body": "Class III Milk had its strongest session of the week, up 2.8% to **$17.11**. No single news item drove it, but milk at the 76th percentile of its 52-week range on a session like this points to tightening summer supply dynamics that the dairy complex has been building toward. Lean hogs settled at **$98.15**, down 0.9%, giving back a fraction of last session's outsized move. Yesterday's call was hogs lower toward $90, and the market did not cooperate, closing nearly $8 above that line. Hogs above $98 after a 10%-plus move in the prior session is a resilient close. Watch whether the funds keep adding length here or start rotating toward the exit.",
-      "catalyst": "Class III Milk tightening summer supply dynamics; hogs consolidate after prior session's large move.",
-      "bottom_line": "Milk is building something; hogs held ground but the prior session's move still needs to digest.",
+      "body": "Class III milk firmed 2.8% to **$17.11**, recovering a portion of Monday's sharp drop. Yesterday's hog close at $98.15 held the $90 level comfortably, and today's 0.9% slip is a normal pullback after last week's 10.8% run. **Hogs at $98.15 are still historically elevated** and the funds that pushed that move are sitting on open profits; a further drift toward $94-95 would be the healthy consolidation pattern before any next leg. Milk's bounce is more interesting: Class III is at 76% of its 52-week range after the prior session's hard drop, and the cheese market will tell you whether this is a one-day correction or something with legs.",
+      "catalyst": "Class III partial recovery after Monday's sharp drop; hog pullback after prior session's outsized gain.",
+      "bottom_line": "Hogs consolidating near $98; milk bounce needs cheese market confirmation.",
       "conviction_level": "low",
-      "overnight_surprise": false,
-      "vs_yesterday": "Hogs: held $98 rather than retreating; yesterday's call for sub-$90 did not resolve."
+      "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "FTC Settlement Gives Farmers Right to Repair",
-      "body": "A settlement with John Deere now requires the company to give farmers and independent repair shops access to tools and software needed to fix equipment, ending decades of repair lock-in. For producers who have been paying dealer-only rates at the worst possible moment during planting or harvest, this is a structural cost shift that compounds over time.",
+      "title": "USDA Plans to Rescind Three Packers and Stockyards Rules",
+      "body": "The USDA Unified Agenda lists rescission of three Packers and Stockyards Act proposed rules as a regulatory goal. For cattle producers already watching packer concentration through the Cargill lockout lens, fewer Packers and Stockyards guardrails means the structural leverage question does not get easier.",
       "tag": "POLICY"
     },
     {
-      "title": "USDA Plan to Aid Small Beef Processors Draws Union Fire",
-      "body": "Agriculture Secretary Brooke Rollins announced up to $500 million in aid for small beef processors, drawing criticism from the UFCW over concerns the money will flow to nonunionized plants. The broader issue is packer concentration, and any meaningful shift in processing capacity away from the four major packers changes the slaughter calendar and cash cattle dynamics for every cow-calf and feedlot operator.",
+      "title": "FTC Settlement Gives Farmers Right to Repair John Deere Equipment",
+      "body": "A federal FTC settlement now requires John Deere to allow farmers and independent mechanics to access repair tools and software, ending decades of authorized-dealer-only restrictions. For producers facing harvest-season breakdowns, this is a real operational change, not just a policy win.",
       "tag": "POLICY"
     },
     {
       "title": "Oklahoma Poultry Pollution Suit Reaches $41.7M Settlement",
-      "body": "Integrators must pay $41.7 million into Oklahoma's state environmental fund and help contract growers install riparian buffers under a new settlement in the state's long-running poultry runoff suit. Contract growers caught in the middle of this one face real capital expenditure requirements on top of already tight margins.",
+      "body": "Integrators must pay $41.7 million into Oklahoma's state environmental fund and help contract growers install riparian buffers following the long-running poultry litter pollution lawsuit. Contract growers in the watershed watch carefully: buffer installation requirements carry real land and compliance costs.",
       "tag": "RURAL"
     }
   ],
   "spread_to_watch": {
-    "label": "Soybean oil / soybean meal ratio",
-    "level": "Oil up 2.1% to $71.09, meal down 1.2% to $315.60; oil's share of crush value rising.",
-    "commentary": "When soybean oil takes this much of the crush margin away from meal in a single session, it tells you the demand driver in the complex has rotated. Biofuel and renewable diesel feedstock demand is doing the work that export-driven meal demand was doing earlier in the season. Crush capacity that was optimized for meal economics is running into a different set of incentives now."
+    "label": "Soybeans nearby / November new-crop",
+    "level": "$0.13 carry, narrowing",
+    "commentary": "Old-crop nearby soybeans at $12.07 versus November at $11.94 puts the carry at just 13 cents with harvest still three months out. That narrow carry is telling you the market is not worried about storage economics or old-crop tightness; it is telling you the biofuel and export bid is lifting nearby without conviction on whether new-crop demand justifies following. If Thursday's export sales come in above 400K MT, that 13-cent gap closes and November starts playing catch-up."
   },
   "basis": {
-    "headline": "Corn basis softening in West; wheat harvest tightening elevator bids East.",
-    "body": "**Eastern Belt corn basis is holding relatively firm** as ethanol grind continues and summer demand keeps merchandisers active. Western Belt basis is easing, consistent with the seasonal pattern as harvest approaches. Wheat basis is the story with more texture: Michigan and South Dakota are reporting strong early harvest quality, which is pulling elevator bids tighter as they fill contracted positions. Producers with old-crop corn in eastern storage still have a basis advantage the futures board alone does not show."
+    "headline": "Corn basis softening; soybean basis firm in eastern Belt.",
+    "body": "Eastern Belt corn basis is softening as harvest-pressure expectations build ahead of the July pollination read. **Soybean basis in the eastern Belt is firm**, consistent with strong old-crop demand and tight nearby carry. Western Belt corn and bean basis both running seasonally soft. Wheat basis is tightening in the northern Plains as South Dakota harvest comes in better than expected with strong grain quality, which should push more volume through country elevators in the next 2-3 weeks."
   },
   "weekly_thread": {
     "question": "Will USDA Crop Progress confirm the good-crop thesis that nearby corn is already pricing, or does a condition decline put the weather premium back on the board?",
     "day": 2,
-    "status_text": "The question got sharper today: Missouri and Iowa producers are reporting pollination stress firsthand, dry conditions at exactly the wrong time. Monday's Crop Progress at 3 PM CT becomes the first hard data check on whether those field reports are local or systemic."
+    "status_text": "Monday's crop progress landed while field reports from northeast Missouri and eastern Iowa are flagging dry stress during pollination, exactly the conditions that would put the weather premium back in play. December corn closed $4.63 today, still above the $4.58 line, but the funds are not buying this level with conviction."
   },
   "the_more_you_know": {
-    "title": "The Refiner's Windfall: Why Crude Running and Diesel Holding Creates a Dangerous Input Gap",
-    "body": "Crude just ran to $78.66 in a single session, but diesel at the pump and futures rack prices were already holding firm before today's move. That combination, rising crude plus sticky product prices, is what oil refiners describe as a widening crack spread, and it means refiners are profiting while ag input costs are compounding. For farmers locking harvest diesel, the relevant math is not just where WTI is today but how fast the crack spread passes through to rack prices. Historically, diesel rack prices respond to crude rallies within one to two weeks, sometimes faster when the move is driven by a supply-disruption story like Hormuz rather than a demand increase. Today's 5.9% crude move on the Iran blockade reinstatement is exactly the kind of catalyst that accelerates that pass-through. The window to lock ahead of the spread widening is measured in days, not weeks."
+    "title": "What Refiner Crack Spreads Say That Crude Prices Don't",
+    "body": "Crude ran to $78.66 today on the Iran blockade reinstatement, but the energy story your input costs care about is the crack spread: the gap between what refiners pay for crude and what they charge for diesel and gasoline. Today's OilPrice.com reporting confirms refiners are in one of the best profit environments in years, because crude came off its highs over the past several weeks while diesel and gasoline stayed stubbornly expensive. That means when crude rips back up 6% in a session, you pay for both the higher crude and the unchanged refiner margin on top. The practical read: the last time WTI was at $78 before the Hormuz premium built, diesel was cheaper at the rack. Today it is not. If you are booking fall harvest fuel, the price you see is not a crude-equivalent price; it is a crude-plus-intact-margin price, and that margin does not compress until refinery capacity comes back online or demand softens."
   },
   "watch_list": [
     {
-      "time": "Thursday, 7:30 AM CT",
-      "desc": "USDA Weekly Export Sales: soybeans above 400K MT confirms the nearby bid has demand behind it; below 300K MT and the nearby/new-crop inverse is running on technical momentum alone."
-    },
-    {
-      "time": "Monday, 3:00 PM CT",
-      "desc": "USDA Crop Progress: corn condition below 60% good/excellent adds weather premium and reopens the door toward $4.75 December; above 65% and December corn at $4.63 stays under pressure."
-    },
-    {
-      "time": "This week",
-      "desc": "WTI crude holding above $78 through Thursday is the signal that the Iran blockade reinstatement is pricing a sustained disruption, not a one-day reaction; watch for OPEC production response language."
+      "time": "Thursday 7:30 AM CT",
+      "desc": "USDA Weekly Export Sales: soybeans above 400K MT confirms the biofuel-plus-demand bid and opens November toward $12.10; below 300K MT, the old-crop rally is running on oil alone."
     },
     {
       "time": "Ongoing",
-      "desc": "Cargill Fort Morgan/Schuyler lockout, now eight weeks in, with no resolution announced; any settlement announcement moves live cattle bid immediately."
+      "desc": "Iran blockade: if Trump's reinstatement holds without diplomatic response, WTI above $80 becomes the next test and diesel basis adjusts upward within 48-72 hours."
+    },
+    {
+      "time": "Monday 3:00 PM CT",
+      "desc": "USDA Crop Progress: corn condition below 60% good/excellent reopens December toward $4.75; above 65% removes the pollination premium and December tests $4.55 support."
+    },
+    {
+      "time": "Ongoing",
+      "desc": "Cargill Fort Morgan/Schuyler lockout resolution: any settlement removes the 2% weekly slaughter constraint and live cattle face fresh selling pressure below $235."
+    },
+    {
+      "time": "Ongoing",
+      "desc": "USDA beef export data revision follow-through: a 90% downward revision raises the question of whether prior weekly export sales reports were overstated; watch for USDA clarification or methodology statement."
     }
   ],
   "daily_quote": {
     "text": "A bad penny always turns up.",
     "attribution": "English Proverb"
   },
-  "source_summary": "CME Group settlement prices; USDA WASDE; Brownfield Ag News; OilPrice.com; Farm Policy News; Farm Doc Daily; Feedstuffs; Beef Magazine; EIA International Energy Statistics",
+  "source_summary": "LOCKED PRICE TABLE (CME settlements July 14, 2026); Brownfield Ag News; OilPrice.com; Farm Policy News (Illinois); Reuters via Farm Policy News; The Fence Post; Feedstuffs; Beef Magazine; farmdoc daily; EIA.",
   "date": "Tuesday, July 14, 2026",
   "meta": {
     "market_mood": "volatile",
@@ -217,7 +220,7 @@
     "is_house_ad": true
   },
   "issue_number": 125,
-  "generated_at": "2026-07-14T00:36:51.633281+00:00",
+  "generated_at": "2026-07-14T00:46:43.844580+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 1,
   "surprises": [
@@ -235,7 +238,7 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-07-14T00:37:06.315561+00:00",
+    "ran_at": "2026-07-14T00:47:02.394179+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
@@ -243,16 +246,16 @@
       "rule_3_tmyk_today": 9,
       "rule_4_watch_conditional": 9,
       "rule_5_bottom_lines_synthesize": 8,
-      "rule_6_quiet_days_quiet": 9,
+      "rule_6_quiet_days_quiet": 8,
       "rule_7_continuity": 2,
-      "rule_8_basis_directional": 8,
+      "rule_8_basis_directional": 9,
       "rule_9_voice": 7,
       "rule_10_forward_test": 7,
       "rule_11_thread_coherence": 8,
       "rule_12_spread_quality": 8,
-      "rule_13_yc_honesty": 2,
-      "rule_14_level_coherence": 7,
-      "rule_15_one_number_coherence": 2,
+      "rule_13_yc_honesty": 1,
+      "rule_14_level_coherence": 6,
+      "rule_15_one_number_coherence": 3,
       "rule_16_markdown_not_html": 10,
       "rule_17_macro_anchoring": 8
     },
@@ -267,16 +270,16 @@
           "rule_3_tmyk_today": 9,
           "rule_4_watch_conditional": 9,
           "rule_5_bottom_lines_synthesize": 8,
-          "rule_6_quiet_days_quiet": 9,
+          "rule_6_quiet_days_quiet": 8,
           "rule_7_continuity": 2,
-          "rule_8_basis_directional": 8,
+          "rule_8_basis_directional": 9,
           "rule_9_voice": 7,
           "rule_10_forward_test": 7,
           "rule_11_thread_coherence": 8,
           "rule_12_spread_quality": 8,
-          "rule_13_yc_honesty": 2,
-          "rule_14_level_coherence": 7,
-          "rule_15_one_number_coherence": 2,
+          "rule_13_yc_honesty": 1,
+          "rule_14_level_coherence": 6,
+          "rule_15_one_number_coherence": 3,
           "rule_16_markdown_not_html": 10,
           "rule_17_macro_anchoring": 8
         }
