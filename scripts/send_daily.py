@@ -98,7 +98,7 @@ def flag(day, set_it=False):
         return False
     u = (base.rstrip("/") + "/flag?k=briefed:" + day + "&token=" + urllib.parse.quote(token))
     try:
-        req = urllib.request.Request(u, method="POST" if set_it else "GET")
+        req = urllib.request.Request(u, method="POST" if set_it else "GET", headers={"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"})
         with urllib.request.urlopen(req, timeout=20) as r:
             return json.loads(r.read().decode()).get("set", False)
     except Exception as ex:
@@ -110,7 +110,8 @@ def fetch_recipients():
     base, token = (os.environ.get("LIST_URL") or "").strip() or None, (os.environ.get("LIST_TOKEN") or "").strip() or None
     if base and token:
         u = base.rstrip("/") + "/list?token=" + urllib.parse.quote(token)
-        with urllib.request.urlopen(u, timeout=30) as r:
+        req_ = urllib.request.Request(u, headers={"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"})
+        with urllib.request.urlopen(req_, timeout=30) as r:
             body = r.read().decode()
         print("recipient list fetched live from worker")
         return body
