@@ -8,8 +8,8 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
-  <title>Hail Map &mdash; Did It Hail at Your Address? Radar Hail Swaths &amp; US Hail Reports by Location, State &amp; Date | AGSIST</title>
-  <meta name="description" content="Did it hail at your address? Search any US location for 5 years of dated NWS hail reports with stone sizes, check radar-estimated hail swaths (MESH) at your exact pin, set free hail alerts for any spot, print a sourced hail-history report, and browse hail-alley history by state and county. No charge, no login, printable reports.">
+  <title>Hail Map &mdash; Did It Hail at Your Address? Radar Hail Swaths &amp; 70 Years of US Hail History | AGSIST</title>
+  <meta name="description" content="Did it hail at your address? Search any US location for 5 years of dated NWS hail reports with stone sizes, check radar-estimated hail swaths (MESH) at your exact pin, set free hail alerts for any spot, print a sourced hail-history report, and browse 70 years of hail-alley history (NCEI archive to 1955) by state and county. No charge, no login, printable reports.">
   <meta name="author" content="Sigurd Lindquist &mdash; Farmers First Agri Service">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://agsist.com/hail-map">
@@ -17,7 +17,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AGSIST">
   <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="National Hail Map &mdash; Radar Hail Swaths + 5 Years of US Hail History">
+  <meta property="og:title" content="National Hail Map &mdash; Radar Hail Swaths + 70 Years of US Hail History">
   <meta property="og:description" content="Five years of US hail reports, daily radar-estimated hail swaths, and free hail alerts for any pin. Watch the hail alleys light up in the same places year after year.">
   <meta property="og:url" content="https://agsist.com/hail-map">
   <meta property="og:image" content="https://agsist.com/img/og/hail-map.jpg">
@@ -26,7 +26,7 @@
   <meta property="og:image:alt" content="AGSIST National Hail Map">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="National Hail Map &mdash; Radar Hail Swaths + 5 Years of US Hail History">
+  <meta name="twitter:title" content="National Hail Map &mdash; Radar Hail Swaths + 70 Years of US Hail History">
   <meta name="twitter:description" content="Where hail hits, year after year &mdash; radar-estimated swaths and free hail alerts for your own address.">
   <meta name="twitter:image" content="https://agsist.com/img/og/hail-map.jpg">
 
@@ -59,6 +59,9 @@
     .hm-states-links a{color:var(--text-dim,#9aa39e);text-decoration:none;margin-right:.7rem;white-space:nowrap}
     .hm-states-links a:hover{color:var(--brand,#d4a23f)}
     .hm-meshnav{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:.7rem 0 .2rem;padding:.5rem .7rem;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.12));border-radius:8px}
+    .hm-live24{border-color:var(--brand,#d4a23f)!important;color:var(--brand,#d4a23f)!important;position:relative}
+    .hm-live24::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--brand,#d4a23f);margin-right:.45rem;animation:hmpulse 1.6s ease-in-out infinite}
+    @keyframes hmpulse{0%,100%{opacity:.35}50%{opacity:1}}
     .hm-meshnav button{min-height:40px;min-width:40px;background:none;border:1px solid var(--border,rgba(132,160,168,.25));border-radius:6px;color:var(--text,#e6ebe9);font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;cursor:pointer;padding:.35rem .6rem}
     .hm-meshnav button:disabled{opacity:.35;cursor:default}
     .hm-mesh-date{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.86rem;min-width:9ch;text-align:center}
@@ -148,6 +151,15 @@
     .hm-yearbadge.playing{color:var(--brand,var(--gold))}
     .hm-dot{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:-1px;margin:0 .25rem 0 .6rem}
     .hm-legend-size{gap:.15rem}
+    .hm-compare{margin-top:2rem;border-top:1px solid var(--border);padding-top:1.4rem}
+    .hm-compare h2{font-family:'Oswald',sans-serif;font-size:1.3rem;text-transform:uppercase;letter-spacing:.02em;margin:0 0 .6rem}
+    .hm-cmp-p{font-size:.92rem;line-height:1.7;color:var(--text-dim,#8a948f);max-width:70ch}
+    .hm-cmp-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .hm-cmp{width:100%;border-collapse:collapse;font-size:.85rem;margin:.7rem 0 .3rem}
+    .hm-cmp th,.hm-cmp td{padding:.45rem .55rem;border-bottom:1px solid var(--border,rgba(132,160,168,.15));text-align:left;vertical-align:top}
+    .hm-cmp th{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim,#8a948f)}
+    .hm-cmp td:first-child{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-dim,#8a948f);white-space:nowrap}
+    .hm-cmp-src{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-dim,#8a948f);line-height:1.7}
     .hm-faq{margin-top:2rem;border-top:1px solid var(--border);padding-top:1.4rem}
     .hm-faq h2{font-family:'Oswald',sans-serif;font-size:1.3rem;text-transform:uppercase;letter-spacing:.02em;margin:0 0 .9rem}
     .hm-faq details{border:1px solid var(--border);border-radius:9px;padding:.2rem .9rem;margin-bottom:.55rem;background:var(--surface)}
@@ -202,6 +214,7 @@
        "acceptedAnswer":{"@type":"Answer","text":"No. It shows reported hail — NWS Local Storm Reports from spotters, law enforcement, and the public — so it carries a population and spotter bias. The persistent geographic corridors are physically real and align with radar-based hail climatologies such as NSSL MESH analyses."}},
       {"@type":"Question","name":"How is hail damage to crops insured?",
        "acceptedAnswer":{"@type":"Answer","text":"Hail is covered by crop-hail insurance, a named-peril product separate from federal Multi-Peril Crop Insurance (MPCI). Because hail risk is geographically concentrated, growers on high-frequency corridors often carry crop-hail to cover the gap."}},
+      {"@type":"Question","name":"How is this different from paid hail map subscriptions?","acceptedAnswer":{"@type":"Answer","text":"The paid services (roughly $999\u2013$1,999 a year) bundle the same public NOAA radar data with sales tools for contractors: canvassing apps, purchased homeowner contact lists, territory management. If that's your business, they may earn their price. If you need the hail record itself \u2014 swaths, 70 years of history, dated reports, alerts, a printable address report \u2014 all of that is free on this page, with every estimate labeled as an estimate. A full comparison table is above."}},
       {"@type":"Question","name":"Can I get free hail alerts for my address?",
        "acceptedAnswer":{"@type":"Answer","text":"Yes \u2014 free, no account. Search or tap your spot on the map above, pick a 1-, 5-, or 10-mile radius, and save your email. Any morning radar-estimated hail (MESH) touched that radius the day before, you get one plain email with the band size and a link to the dated swath map. It's an estimate, flagged as an estimate. Unsubscribe with one click."}}
     ]
@@ -226,10 +239,9 @@
       <nav class="hm-bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> &rsaquo; <a href="/tools">Tools</a> &rsaquo; Hail Map</nav>
 
       <div class="hm-head">
-        <h1 class="hm-title">National Hail Map &mdash; <em>where it hits, year after year</em></h1>
+        <h1 class="hm-title">National Hail Map &mdash; <em>70 years of where it hits</em></h1>
         <p class="hm-sub"><span id="hm-seed-stats"><!--SEED:hailstats-->62,157 NWS hail reports on the map (2022–2026) · 2,034 in the last 30 days · data through 2026-07-04<!--/SEED--></span> Five years of National Weather Service hail reports on one map. Step through the years or hit play, and watch the same hail corridors light up season after season &mdash; the High Plains, the Front Range, the southern Plains. Risk has a geography. This is it. Crops, roofs, equipment, whole towns &mdash; if you’re checking hail, the record is here, at no charge, no login.</p>
-        <p class="hm-stats-line"><!--SEED:hailstats-->Tens of thousands of NWS hail reports on the map, updated monthly.<!--/SEED--></p>
-      </div>
+              </div>
 
       <div class="hm-search" role="search">
         <svg class="ic-sp" aria-hidden="true"><use href="#sp-search"/></svg>
@@ -250,6 +262,7 @@
         <span class="hm-mesh-date" id="hm-mesh-date">&hellip;</span>
         <button type="button" id="hm-mesh-next" aria-label="Next storm day">&#9654;</button>
         <button type="button" id="hm-mesh-latest">Latest</button>
+        <button type="button" id="hm-live24" class="hm-live24" hidden>LIVE · last 24 hrs</button>
         <span class="hm-mesh-note">Radar-<em>estimated</em> size (NOAA MRMS MESH) &middot; not a ground measurement &middot; tap the map to pull the human reports for any spot</span>
       </div>
 
@@ -312,7 +325,7 @@
 
       <div class="hm-note">
         <strong>What you're looking at.</strong> Each point is a hail report logged by a National Weather Service office &mdash; a trained spotter, law enforcement, or the public called it in. Brighter areas got more reports. Because reporting tracks population and storm spotters too, this is a map of <em>reported</em> hail, not a perfect physical record &mdash; but the persistent corridors are real, and they're exactly the ground where hail coverage earns its keep.
-        <div class="hm-src">Source: NWS Local Storm Reports via the <a href="https://mesonet.agron.iastate.edu/lsr/" target="_blank" rel="noopener">Iowa Environmental Mesonet</a>. Updated monthly. <span id="hm-gen"></span> &nbsp;&middot;&nbsp; Want a per-field read? <a href="/field-scout">Draw your field in Field Scout &rarr;</a></div>
+        <div class="hm-src">Source: NWS Local Storm Reports via the <a href="https://mesonet.agron.iastate.edu/lsr/" target="_blank" rel="noopener">Iowa Environmental Mesonet</a>. Recent reports refresh daily; the full multi-year archive rebuilds monthly. <span id="hm-gen"></span> &nbsp;&middot;&nbsp; Want a per-field read? <a href="/field-scout">Draw your field in Field Scout &rarr;</a></div>
       </div>
 
       <section class="hm-cty" aria-labelledby="hm-cty-h">
@@ -355,7 +368,25 @@
       </div>
 
       <section class="hm-faq" aria-labelledby="hm-faq-h">
-        <h2 id="hm-faq-h">Hail in the United States &mdash; the questions people ask</h2>
+        <section class="hm-compare" id="compare" aria-labelledby="hm-cmp-h">
+    <h2 id="hm-cmp-h">How this compares to the paid hail maps</h2>
+    <p class="hm-cmp-p">Subscription hail-map services run $999–$1,999 a year and are built for contractor sales teams — canvassing tools, purchased homeowner contact lists, territory management. Good products for that job. This page does a different job: it is the <em>record</em>, free, for the person whose roof or field is under the hail. The honest comparison:</p>
+    <div class="hm-cmp-wrap"><table class="hm-cmp">
+      <thead><tr><th></th><th>Paid services</th><th>AGSIST (this page)</th></tr></thead>
+      <tbody>
+        <tr><td>Radar hail swaths</td><td>Yes</td><td>Yes — same public NOAA MRMS data, estimates labeled as estimates</td></tr>
+        <tr><td>Historical depth</td><td>Typically since 2011</td><td>Since 1955 (NCEI archive) + 5-yr dated report record</td></tr>
+        <tr><td>Same-day awareness</td><td>Live updates</td><td>Rolling last-24h layer, refreshed through the day, marked in progress</td></tr>
+        <tr><td>Hail alerts</td><td>Subscription</td><td>Free — pin + radius, one honest email per storm day</td></tr>
+        <tr><td>Address hail report</td><td>Branded PDF</td><td>Printable, sourced, free</td></tr>
+        <tr><td>Canvassing / contact data</td><td>Yes — their core business</td><td>No, and never — not our job</td></tr>
+        <tr><td>Price</td><td>$999–$1,999 / yr</td><td>No charge, no login</td></tr>
+      </tbody>
+    </table></div>
+    <p class="hm-cmp-src">Competitor details from their public pricing and feature pages, July 2026 — verify current offerings with them directly. If you run a contractor sales team, those tools may earn their price; if you need the hail record itself, it’s free here.</p>
+  </section>
+
+  <h2 id="hm-faq-h">Hail in the United States &mdash; the questions people ask</h2>
         <details open><summary>Where does hail happen most in the US?</summary>
           <p>Hail is most frequent across the Great Plains. The corridor running from west Texas and the Oklahoma/Kansas panhandles north through Nebraska, eastern Colorado, and into Wyoming &mdash; often called <strong>"hail alley"</strong> &mdash; sees the most large-hail days in the country. The Front Range of Colorado and the southern Plains light up year after year on this map.</p></details>
         <details><summary>What is "hail alley"?</summary>
@@ -382,7 +413,8 @@
           <p>Terminal velocity scales with size: penny hail falls around <strong>20&ndash;25 mph</strong>, golf balls around <strong>50 mph</strong>, baseballs near <strong>75 mph</strong>, and softball-class stones can exceed <strong>100 mph</strong>. That speed, more than the weight alone, is why 2&Prime; hail breaks what 1&Prime; hail only dents.</p></details>
         <details><summary>How is hail damage to crops insured?</summary>
           <p>Hail is covered by <strong>crop-hail insurance</strong>, a named-peril product that's separate from federal Multi-Peril Crop Insurance (MPCI). Because hail risk is so geographically concentrated, growers on the high-frequency corridors often carry crop-hail to cover the gap. If your ground sits in a bright zone here, that's a conversation worth having &mdash; <a href="https://farmers1st.com/" target="_blank" rel="noopener">Farmers First Agri Service</a> writes crop-hail in WI and MN.</p></details>
-      <details><summary>Can I get free hail alerts for my address?</summary><p>Yes &mdash; free, no account. Search or tap your spot on the map above, pick a 1-, 5-, or 10-mile radius, and save your email. Any morning radar-estimated hail (MESH) touched that radius the day before, you get one plain email with the band size and a link to the dated swath map. It&rsquo;s an estimate, flagged as an estimate. Unsubscribe with one click.</p></details>
+      <details><summary>How is this different from paid hail map subscriptions?</summary><p>The paid services (roughly $999&ndash;$1,999 a year) bundle the same public NOAA radar data with sales tools for contractors: canvassing apps, purchased homeowner contact lists, territory management. If that&rsquo;s your business, they may earn their price. If you need the hail record itself &mdash; swaths, 70 years of history, dated reports, alerts, a printable address report &mdash; all of that is free on this page, with every estimate labeled as an estimate. A full comparison table is above.</p></details>
+    <details><summary>Can I get free hail alerts for my address?</summary><p>Yes &mdash; free, no account. Search or tap your spot on the map above, pick a 1-, 5-, or 10-mile radius, and save your email. Any morning radar-estimated hail (MESH) touched that radius the day before, you get one plain email with the band size and a link to the dated swath map. It&rsquo;s an estimate, flagged as an estimate. Unsubscribe with one click.</p></details>
       </section>
     </div>
   </main>
@@ -467,7 +499,7 @@
 
       fetch(DATA+'mesh/index.json', {cache:'no-cache'})
         .then(function(r){ return r.ok ? r.json() : null; })
-        .then(function(ix){ if(ix && ix.dates && ix.dates.length){ meshIdx=ix; if(manifest) buildControls(); } })
+        .then(function(ix){ if(ix && ix.dates && ix.dates.length){ meshIdx=ix; if(manifest) buildControls(); } wireLive24(); })
         .catch(function(){});
 
       fetch(DATA+'manifest.json', {cache:'no-cache'})
@@ -930,7 +962,7 @@
           if(current!=='recent') return;
           clearOverlays();
           cnt.textContent='0';
-          banner('Recent hail is refreshing &mdash; the last-30-days layer updates with the monthly data run. Check back shortly.');
+          banner('Recent hail is refreshing &mdash; the last-30-days layer updates with the morning data run. Check back shortly.');
         });
         ga('hail_view', { view:'recent' });
         return;
@@ -960,6 +992,38 @@
     }
 
     // ── Storm swaths: radar-estimated MESH bands by day ──
+    var live24=null;
+    function wireLive24(){
+      fetch(DATA+'mesh/today-partial.json?t='+Date.now()).then(function(r){ return r.ok? r.json():null; })
+        .catch(function(){ return null; })
+        .then(function(fc){
+          if(!fc || !fc.meta || !fc.meta.as_of) return;
+          var age=(Date.now()-Date.parse(fc.meta.as_of))/36e5;
+          if(age>5) return;                        // stale partial: stay hidden
+          live24=fc;
+          var b=document.getElementById('hm-live24');
+          if(b){ b.hidden=false; b.addEventListener('click', showLive24); }
+        });
+    }
+    function showLive24(){
+      if(!live24) return;
+      current='live24'; if(typeof markActive==='function') markActive(null);
+      clearOverlays();
+      var t; try{ t=new Date(Date.parse(live24.meta.as_of)).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}); }catch(e){ t=''; }
+      var bd=document.getElementById('hm-yearbadge');
+      if(bd) bd.innerHTML='LIVE<small>last 24 hrs</small>';
+      if(!live24.features || !live24.features.length){
+        banner('No radar-estimated hail \u22650.75\u2033 anywhere in the last 24 hours'+(t?' (as of '+esc(t)+')':'')+'.');
+        return;
+      }
+      clearBanner();
+      meshLayer=L.geoJSON(live24,{ style:function(f){
+        var c=MESH_COLORS[f.properties.thresh_in]||'#fed976';
+        return { color:c, weight:1, opacity:.9, fillColor:c, fillOpacity:.32 };
+      }}).addTo(map);
+      var cnt=document.getElementById('hm-count'); if(cnt) cnt.textContent=String(live24.features.length);
+      banner('Rolling 24-hour radar-estimated hail'+(t?' \u00b7 as of '+esc(t):'')+' \u00b7 IN PROGRESS \u2014 bands can still grow; the finished day posts tomorrow morning. An estimate, not a measurement.');
+    }
     function showMeshDay(i){
       if(!meshIdx) return;
       meshPos=Math.max(0, Math.min(meshIdx.dates.length-1, i));
