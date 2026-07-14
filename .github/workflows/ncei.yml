@@ -1,0 +1,58 @@
+name: NCEI hail backfill
+# Builds the long-term hail record (1955 -> cutoff) from NOAA NCEI Storm
+# Events yearly CSVs into 1-degree spatial tiles the map fetches per lookup,
+# plus national per-year counts. The map's "Long-term record" block
+# feature-detects data/hail/ncei/index.json — it appears on the site the
+# moment this workflow's first run commits.
+#
+# FIRST RUN: Actions -> this workflow -> Run workflow (leave inputs empty).
+# Downloads ~66 year files; takes several minutes; commits ~10-20MB of
+# static tiles once. Use limit_years: "2" first if you want a smoke test.
+# After that: refreshes every January 15 (NCEI finalizes trailing data).
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit_years:
+        description: "Smoke test: only process the first N years"
+        required: false
+  schedule:
+    - cron: '0 9 15 1 *'   # yearly, Jan 15 09:00 UTC
+
+concurrency:
+  group: ncei-backfill
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build tiles from NCEI Storm Events
+        env:
+          NCEI_LIMIT: ${{ inputs.limit_years }}
+        run: python3 scripts/fetch_ncei_hail.py
+
+      - name: Commit and push (rebase armor, 3 tries)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/hail/ncei
+          if git diff --cached --quiet; then
+            echo "NCEI data unchanged — nothing to commit"
+            exit 0
+          fi
+          git commit -m "data: NCEI hail backfill tiles [skip ci]"
+          for i in 1 2 3; do
+            if git push origin main; then exit 0; fi
+            echo "push rejected (attempt $i) — rebasing"
+            git pull --rebase origin main || { git rebase --abort; git reset --hard origin/main; git add data/hail/ncei; git commit -m "data: NCEI hail backfill tiles [skip ci]" || true; }
+          done
+          echo "push failed after 3 attempts — re-run this workflow"
+          exit 1

@@ -26,7 +26,27 @@ on:
   workflow_dispatch:
 
 jobs:
+  # If a manual run already generated today's briefing, the scheduled morning
+  # run skips regeneration entirely. The Friday 20:00 UTC post-close regen is
+  # exempt (hour >= 14) — it exists to overwrite the morning file on purpose.
+  # Manual dispatches always run.
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.g.outputs.skip }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: g
+        run: |
+          H=$(date -u +%H)
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$H" -lt 14 ] && [ -f "data/daily-archive/$(date -u +%F).json" ]; then
+            echo "skip=1" >> "$GITHUB_OUTPUT"
+            echo "today's briefing already exists (a manual run beat the schedule) — skipping regeneration"
+          fi
+
   generate:
+    needs: gate
+    if: needs.gate.outputs.skip != '1'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -178,10 +198,18 @@ jobs:
       # GATE 2 passed (hard block above stops the job on failure) and the commit
       # succeeded — so a blocked or stale briefing is never emailed. send_daily.py
       # re-checks generated_at==today and price_validation_clean as belt-and-suspenders.
-      # Default recipient is EMAIL_TO (set it to your inbox); falls back to GMAIL_USER.
-      - name: Send daily email (clean reforwardable copy)
+      # Default recipient is the subscriber list (RECIPIENTS secret, or live from the subs worker via LIST_URL).
+      - name: Send daily email
         env:
-          GMAIL_USER:     ${{ secrets.GMAIL_USER }}
-          GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
-          EMAIL_TO:       ${{ secrets.EMAIL_TO }}
+          # new sender env names; falls back to the legacy GMAIL_* secrets so
+          # either set works. RECIPIENTS is ignored when LIST_URL is set
+          # (list pulled live from the subs worker).
+          SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          RECIPIENTS:   ${{ secrets.RECIPIENTS }}
+          LIST_URL:     ${{ secrets.LIST_URL }}
+          LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          FROM_NAME:    ${{ secrets.FROM_NAME }}
+          REPLY_TO:     ${{ secrets.REPLY_TO }}
         run: python scripts/send_daily.py

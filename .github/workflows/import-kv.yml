@@ -1,0 +1,30 @@
+name: Import subscribers to KV (one-time)
+# Pushes the RECIPIENTS secret into the subs worker's KV. Run once by hand
+# after the worker + secrets exist; safe to run again anytime (re-imports
+# overwrite, never duplicate). No addresses ever touch the repo.
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Import
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          RECIPIENTS: ${{ secrets.RECIPIENTS }}
+        run: |
+          if [ -z "$LIST_URL" ] || [ -z "$LIST_TOKEN" ] || [ -z "$RECIPIENTS" ]; then
+            echo "FATAL: need LIST_URL, LIST_TOKEN, RECIPIENTS secrets set first"; exit 1
+          fi
+          # curl handles the token's special characters via --data-urlencode on the query
+          ENC=$(python3 -c "import urllib.parse,os;print(urllib.parse.quote(os.environ['LIST_TOKEN']))")
+          RESP=$(printf '%s' "$RECIPIENTS" | curl -sS -X POST --data-binary @- "$LIST_URL/import?token=$ENC")
+          echo "worker replied: $RESP"
+          echo "$RESP" | grep -q '"ok":true' || { echo "import FAILED"; exit 1; }
+          COUNT=$(curl -sS "$LIST_URL/list?token=$ENC" | grep -c "@")
+          echo "list now holds $COUNT addresses"

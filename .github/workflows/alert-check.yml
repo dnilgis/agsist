@@ -1,0 +1,61 @@
+name: Hail alert check
+# Runs the moment "MESH radar hail swaths — daily" finishes: tests every
+# registered watch area (pin + radius, stored in the subs worker) against the
+# newly archived swath day and emails honest hit notices. One run per swath
+# day = at most one alert per subscriber per day. Manual dispatch supports
+# dry_run and a date override for testing.
+#
+# Secrets required (shared with the briefing sender): SMTP_USER, SMTP_PASS,
+# LIST_URL, LIST_TOKEN, UNSUB_SECRET. Optional: SMTP_HOST/PORT, FROM_ADDR,
+# FROM_NAME, REPLY_TO.
+# NOTE: if mesh.yml's `name:` ever changes, update the workflows: list below.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Evaluate and report without sending"
+        type: boolean
+        default: false
+      date:
+        description: "Override swath date (YYYY-MM-DD)"
+        required: false
+  workflow_run:
+    workflows: ["MESH radar hail swaths — daily"]
+    types: [completed]
+
+concurrency:
+  group: alert-check
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main   # workflow_run defaults to the pre-mesh commit — must
+                      # checkout main to see the swath day mesh.yml just pushed
+
+      - name: Install geometry lib
+        run: pip install shapely --quiet
+
+      - name: Check watch areas and send alerts
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          FROM_NAME: ${{ secrets.FROM_NAME }}
+          REPLY_TO: ${{ secrets.REPLY_TO }}
+          DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+          ALERT_DATE: ${{ inputs.date }}
+        run: python3 scripts/check_alerts.py
