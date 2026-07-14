@@ -6,6 +6,9 @@
 <title>Crop Insurance Harvest &amp; Projected Price Tracker | AGSIST</title>
 <meta name="description" content="Live tracker of RMA projected and harvest prices for corn and soybeans &mdash; the numbers behind every revenue policy's guarantee. National.">
 <link rel="canonical" href="https://agsist.com/harvest-price-tracker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Crop Insurance Harvest &amp; Projected Price Tracker">
+<meta name="twitter:description" content="RMA projected and harvest prices for corn and soybeans, tracked daily through each discovery window &mdash; plus 15 years of history.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Crop Insurance Harvest & Projected Price Tracker | AGSIST">
 <meta property="og:description" content="The projected and harvest prices that set your revenue guarantee, tracked live during each discovery window.">
@@ -59,6 +62,23 @@
 .hp-err{color:var(--hp-mut);background:var(--hp-panel);border:1px solid var(--hp-line);border-radius:10px;padding:1rem;}
 .hp-cta{margin-top:1rem;font-size:.95rem;}
 .hp-cta a{color:var(--hp-gold2);font-weight:600;}
+.hp-card-s{border:1px solid var(--border,rgba(132,160,168,.25));border-radius:10px;padding:.8rem .95rem;margin:.5rem 0}
+.hpc-t{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim,#8a948f);margin-bottom:.45rem}
+.hpc-leg{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:.22rem 0}
+.hpc-l{font-size:.85rem;color:var(--text-dim,#8a948f)}
+.hpc-v{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700}
+.hpc-pend{font-size:.8rem;font-weight:400;color:var(--text-dim,#8a948f)}
+.hp-seed-note{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-dim,#8a948f);margin:.35rem .1rem .1rem;line-height:1.6}
+.hp-hist{width:100%;border-collapse:collapse;font-size:.85rem;margin:.6rem 0 .3rem}
+.hp-hist th,.hp-hist td{padding:.4rem .5rem;border-bottom:1px solid var(--border,rgba(132,160,168,.15));text-align:right;font-family:'JetBrains Mono',monospace}
+.hp-hist th:first-child,.hp-hist td:first-child{text-align:left}
+.hp-hist .dn{color:var(--hp-red,#e0685f)}.hp-hist .up{color:var(--hp-green,#5fc28a)}
+.hp-figs{border:1px solid var(--border,rgba(132,160,168,.25));border-radius:10px;padding:.85rem 1rem;margin:1rem 0}
+.hp-figs ul{margin:.3rem 0 .6rem;padding-left:1.15rem}
+.hp-figs li{line-height:1.75;margin:.3rem 0;font-size:.92rem}
+.hp-cite{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-dim,#8a948f);line-height:1.7;margin:0}
+.hp-tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.hp-hist-src{font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--text-dim,#8a948f);line-height:1.7;margin:.2rem 0 0}
 </style>
 </head>
 <body>
@@ -71,12 +91,28 @@
   <div class="hp-banner" id="hp-banner" hidden></div>
 
   <div class="hp-cards" id="hp-cards">
-    <div class="hp-err" id="hp-loading">Loading current discovery prices&hellip;</div>
+    <!--SEED:hpcards-->
+      <div class="hp-card-s"><div class="hpc-t">Corn · Dec '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$4.62</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price (October)</span><span class="hpc-v hpc-pend">pending — discovery opens October 1</span></div></div>
+      <div class="hp-card-s"><div class="hpc-t">Soybeans · Nov '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$11.09</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price (October)</span><span class="hpc-v hpc-pend">pending — discovery opens October 1</span></div></div>
+      <div class="hp-seed-note">Figures above are baked in daily on trading days; in-window numbers are running estimates until the month closes. Official prices: USDA RMA.</div>
+      <!--/SEED:hpcards-->
   </div>
+
+  <section class="hp-figs" id="key-figures">
+    <h2 style="margin-top:0">Key figures at a glance</h2>
+    <ul>
+      <li>The 2026 projected price is <b>$4.62</b> for corn and <b>$11.09</b> for soybeans (February average of December corn / November soybean CBOT settlements).</li>
+      <li>Corn’s harvest price has finished below its projected price in <b>10 of the last 15 crop years</b> (2011–2025); soybeans’ in <b>10 of 15</b>.</li>
+      <li>The biggest single-year harvest rally was 2012 corn: <b>$5.68 projected → $7.50 harvest</b>, lifting every Revenue Protection guarantee by 32% in one October.</li>
+      <li>The steepest fall was 2014 corn: <b>$4.62 → $3.49</b>, the kind of year the price side of RP is bought for.</li>
+    </ul>
+    <p class="hp-cite">Citing these figures? Attribution: <em>AGSIST Harvest Price Tracker, https://agsist.com/harvest-price-tracker (RMA price discovery records, CBOT)</em>. Available at no charge; a link back keeps it that way.</p>
+  </section>
 
   <h2>The discovery calendar</h2>
   <div class="hp-cal">
     <p class="hp-lede" style="margin:0 .2rem .2rem;font-size:.95rem">Corn &amp; soybeans: projected price set in February, harvest price set in October (December corn / November soybean contracts). Other crops and regions discover in different windows &mdash; added as they're configured.</p>
+    <p class="hp-lede" style="margin:0 .2rem .2rem;font-size:.85rem;color:var(--text-dim,#8a948f)">Wheat, cotton, and rice discover in crop- and state-specific windows under the same provisions — each gets added here once its exact contract and window are wired and verified, never before.</p>
     <div class="yr">
       <div class="mo">Jan</div>
       <div class="mo proj">Feb<b>PROJECTED</b></div>
@@ -87,6 +123,17 @@
     </div>
   </div>
 
+  <h2 id="history">Fifteen years of projected vs. harvest</h2>
+  <p class="hp-lede" style="margin-bottom:.3rem">The question every Revenue Protection decision quietly asks: how often does October finish below February? Corn’s harvest price has finished <b>below</b> its projected price in <b>10 of the last 15 crop years</b> (2011–2025); soybeans, <b>10 of 15</b>. That history is why the price side of RP exists.</p>
+  <div class="hp-tablewrap"><table class="hp-hist"><thead><tr><th>Crop year</th><th>Corn proj.</th><th>Corn harvest</th><th>Beans proj.</th><th>Beans harvest</th></tr></thead><tbody><tr><td>2011</td><td>$6.01</td><td class="up">$6.32</td><td>$13.49</td><td class="dn">$12.14</td></tr><tr><td>2012</td><td>$5.68</td><td class="up">$7.50</td><td>$12.55</td><td class="up">$15.39</td></tr><tr><td>2013</td><td>$5.65</td><td class="dn">$4.39</td><td>$12.87</td><td>$12.87</td></tr><tr><td>2014</td><td>$4.62</td><td class="dn">$3.49</td><td>$11.36</td><td class="dn">$9.65</td></tr><tr><td>2015</td><td>$4.15</td><td class="dn">$3.83</td><td>$9.73</td><td class="dn">$8.91</td></tr><tr><td>2016</td><td>$3.86</td><td class="dn">$3.49</td><td>$8.85</td><td class="up">$9.75</td></tr><tr><td>2017</td><td>$3.96</td><td class="dn">$3.49</td><td>$10.19</td><td class="dn">$9.75</td></tr><tr><td>2018</td><td>$3.96</td><td class="dn">$3.68</td><td>$10.16</td><td class="dn">$8.60</td></tr><tr><td>2019</td><td>$4.00</td><td class="dn">$3.90</td><td>$9.54</td><td class="dn">$9.25</td></tr><tr><td>2020</td><td>$3.88</td><td class="up">$3.99</td><td>$9.17</td><td class="up">$10.55</td></tr><tr><td>2021</td><td>$4.58</td><td class="up">$5.37</td><td>$11.87</td><td class="up">$12.30</td></tr><tr><td>2022</td><td>$5.90</td><td class="up">$6.86</td><td>$14.33</td><td class="dn">$13.81</td></tr><tr><td>2023</td><td>$5.91</td><td class="dn">$4.88</td><td>$13.76</td><td class="dn">$12.84</td></tr><tr><td>2024</td><td>$4.66</td><td class="dn">$4.16</td><td>$11.55</td><td class="dn">$10.03</td></tr><tr><td>2025</td><td>$4.70</td><td class="dn">$4.16</td><td>$10.54</td><td class="dn">$10.21</td></tr><tr><td>2026</td><td>$4.62</td><td>—</td><td>$11.09</td><td>—</td></tr></tbody></table></div>
+  <p class="hp-hist-src">Source: USDA RMA price discovery records (December corn / November soybean contracts, CBOT). Red = harvest below projected; green = above. Verify any figure at prices.rma.usda.gov. Citing this table? Attribution: <em>AGSIST Harvest Price Tracker, https://agsist.com/harvest-price-tracker</em>.</p>
+
+  <h2 id="guarantee-math">The guarantee math, worked out</h2>
+  <p class="hp-lede" style="margin-bottom:.35rem">Revenue Protection’s per-acre guarantee is <b>APH yield × coverage level × projected price</b>. With the 2026 projected prices locked, a 180-bushel corn APH at 85% coverage guarantees <b>180 × 0.85 × $4.62 = $706.86 per acre</b>; a 55-bushel soybean APH at 80% guarantees <b>55 × 0.80 × $11.09 = $487.96</b>. If October’s harvest price finishes <em>above</em> the projected price, the guarantee recalculates upward at the harvest price — it never recalculates down. Run your own numbers with your agent; every unit, practice, and county differs.</p>
+
+  <h2 id="how-averaging-works">Why the running average calms down as October fills</h2>
+  <p class="hp-lede" style="margin-bottom:.35rem">Each discovery price is a plain average of daily settlements — roughly 19 trading days in February, 23 in October. Early in the month, one limit move can swing the running average hard; by day 15, that same move barely nudges it, because it’s one voice among fifteen. That’s why this page labels every in-window figure a running estimate and shows the day count beside it: the number’s reliability is the day count.</p>
+
   <h2>What this means for you</h2>
   <p class="hp-lede" style="margin-bottom:.4rem">If you carry Revenue Protection, watch the October harvest price against your February projected price. Above it, your guarantee escalates &mdash; good news whether you're selling or holding. Below it, the price side of your policy is doing its job. Want to see how many bushels your guarantee lets you forward-price?</p>
   <p class="hp-cta"><a href="/presell-calculator">&rarr; Run the insurance-backed pre-sell calculator</a></p>
@@ -95,6 +142,7 @@
   <div class="hp-faq" id="hp-faq">
     <details><summary>How is the projected price set?</summary><p>It's the average daily settlement of the December corn (or November soybean) futures contract across every trading day in February, rounded to the nearest cent. That number, times your coverage level, times your APH yield, is your per-acre revenue guarantee for the year.</p></details>
     <details><summary>How is the harvest price set?</summary><p>The same contract, averaged across every trading day in October. Revenue Protection uses the higher of the projected or harvest price, so an October rally raises your guarantee; a decline does not lower it.</p></details>
+    <details><summary>How often does the harvest price come in below the projected price?</summary><p>Across 2011&ndash;2025, corn&rsquo;s harvest price finished below its projected price in 10 of 15 crop years, and soybeans&rsquo; in 10 of 15. A lower harvest price never lowers a Revenue Protection guarantee &mdash; the policy uses the higher of the two &mdash; but it is central to how price-loss indemnities are figured. The full year-by-year table is on this page; verify official figures at prices.rma.usda.gov and talk to your own agent about what it means for your policy.</p></details>
     <details><summary>Why do other crops show different months?</summary><p>Each crop &mdash; and sometimes each region within a crop &mdash; has its own contract and discovery window under RMA's Commodity Exchange Price Provisions. Winter wheat keys off September Chicago futures; spring wheat off Minneapolis. Those windows are added here as they're configured.</p></details>
     <details><summary>Are these the official RMA prices?</summary><p>This tracks the same publicly traded futures RMA uses and applies the same averaging. Treat in-window figures as running estimates until the window closes; the USDA Risk Management Agency publishes the official prices. Always verify with your agent and policy documents.</p></details>
   </div>
@@ -107,6 +155,11 @@
 <div id="site-footer"></div>
 
 <script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+ {"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},
+ {"@type":"ListItem","position":2,"name":"Harvest &amp; Projected Price Tracker","item":"https://agsist.com/harvest-price-tracker"}]}
+</script>
+<script type="application/ld+json">
 {
   "@context":"https://schema.org",
   "@type":"Dataset",
@@ -115,6 +168,7 @@
   "url":"https://agsist.com/harvest-price-tracker",
   "creator":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Licensed Crop Insurance Agent"},
   "isAccessibleForFree":true,
+  "dateModified":"2026-07-13",
   "keywords":["crop insurance","projected price","harvest price","Revenue Protection","corn","soybeans","RMA"]
 }
 </script>
@@ -125,7 +179,9 @@
   "mainEntity":[
     {"@type":"Question","name":"How is the projected price set?","acceptedAnswer":{"@type":"Answer","text":"The average daily settlement of the December corn or November soybean futures contract across every trading day in February, rounded to the nearest cent. Times coverage level times APH equals the per-acre revenue guarantee."}},
     {"@type":"Question","name":"How is the harvest price set?","acceptedAnswer":{"@type":"Answer","text":"The same contract averaged across every trading day in October. Revenue Protection uses the higher of projected or harvest price."}},
-    {"@type":"Question","name":"Why do other crops show different months?","acceptedAnswer":{"@type":"Answer","text":"Each crop and region has its own contract and discovery window under RMA's Commodity Exchange Price Provisions. Winter wheat uses September Chicago futures; spring wheat uses Minneapolis."}}
+    {"@type":"Question","name":"How often does the harvest price come in below the projected price?","acceptedAnswer":{"@type":"Answer","text":"Across 2011\u20132025, corn's harvest price finished below its projected price in 10 of 15 crop years, and soybeans' in 10 of 15. A lower harvest price never lowers a Revenue Protection guarantee \u2014 the policy uses the higher of the two \u2014 but it is central to how price-loss indemnities are figured. The full year-by-year table is on this page; verify official figures at prices.rma.usda.gov and talk to your own agent about what it means for your policy."}},
+    {"@type":"Question","name":"Why do other crops show different months?","acceptedAnswer":{"@type":"Answer","text":"Each crop and region has its own contract and discovery window under RMA's Commodity Exchange Price Provisions. Winter wheat uses September Chicago futures; spring wheat uses Minneapolis."}},
+    {"@type":"Question","name":"Are these the official RMA prices?","acceptedAnswer":{"@type":"Answer","text":"This tracks the same publicly traded futures RMA uses and applies the same averaging. Treat in-window figures as running estimates until the window closes; the USDA Risk Management Agency publishes the official prices. Always verify with your agent and policy documents."}}
   ]
 }
 </script>
