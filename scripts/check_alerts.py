@@ -45,6 +45,8 @@ MAP = "https://agsist.com/hail-map"
 
 def env(name, default=None, required=False):
     v = os.environ.get(name, default)
+    if isinstance(v, str):
+        v = v.strip()          # secrets pasted with trailing newlines must never break auth
     if required and not v:
         print("FATAL: missing env " + name)
         sys.exit(1)
@@ -96,7 +98,7 @@ def watch_circle(lat, lon, radius_mi):
 
 
 def day_flag(day, set_it=False):
-    base, token = os.environ.get("LIST_URL"), os.environ.get("LIST_TOKEN")
+    base, token = (os.environ.get("LIST_URL") or "").strip() or None, (os.environ.get("LIST_TOKEN") or "").strip() or None
     if not (base and token):
         return False
     u = (base.rstrip("/") + "/flag?k=alerted:" + day + "&token=" + urllib.parse.quote(token))

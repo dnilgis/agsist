@@ -58,6 +58,8 @@ SITE = "https://agsist.com/daily"
 
 def env(name, default=None, required=False):
     v = os.environ.get(name, default)
+    if isinstance(v, str):
+        v = v.strip()          # secrets pasted with trailing newlines must never break auth
     if required and not v:
         print("FATAL: missing env " + name)
         sys.exit(1)
@@ -80,7 +82,7 @@ def load_today():
 
 
 def unsub_url(email):
-    base, secret = os.environ.get("LIST_URL"), os.environ.get("UNSUB_SECRET")
+    base, secret = (os.environ.get("LIST_URL") or "").strip() or None, (os.environ.get("UNSUB_SECRET") or "").strip() or None
     if not (base and secret):
         return None
     t = hmac.new(secret.encode(), email.lower().encode(), hashlib.sha256).hexdigest()[:16]
@@ -91,7 +93,7 @@ def flag(day, set_it=False):
     """Day-marker via the worker; makes sending idempotent no matter how many
     times generation completes (manual + scheduled runs, re-runs). Returns
     True if already sent. No worker configured -> no dedup (old behavior)."""
-    base, token = os.environ.get("LIST_URL"), os.environ.get("LIST_TOKEN")
+    base, token = (os.environ.get("LIST_URL") or "").strip() or None, (os.environ.get("LIST_TOKEN") or "").strip() or None
     if not (base and token):
         return False
     u = (base.rstrip("/") + "/flag?k=briefed:" + day + "&token=" + urllib.parse.quote(token))
@@ -105,7 +107,7 @@ def flag(day, set_it=False):
 
 
 def fetch_recipients():
-    base, token = os.environ.get("LIST_URL"), os.environ.get("LIST_TOKEN")
+    base, token = (os.environ.get("LIST_URL") or "").strip() or None, (os.environ.get("LIST_TOKEN") or "").strip() or None
     if base and token:
         u = base.rstrip("/") + "/list?token=" + urllib.parse.quote(token)
         with urllib.request.urlopen(u, timeout=30) as r:
