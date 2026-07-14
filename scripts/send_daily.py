@@ -18,7 +18,14 @@ tomorrow by changing three repo secrets — the script never changes:
     FROM_ADDR   defaults to SMTP_USER
     FROM_NAME   default "AGSIST Daily"
     REPLY_TO    optional
-    RECIPIENTS  the list — comma or newline separated
+    RECIPIENTS  the list — comma or newline separated (fallback)
+    LIST_URL    subscriptions worker base URL (e.g.
+                https://agsist-subs.dnilgis.workers.dev) — when set with
+                LIST_TOKEN, the list is fetched live from KV and
+                RECIPIENTS is ignored
+    LIST_TOKEN  auth token for the worker's /list endpoint
+    UNSUB_SECRET when set with LIST_URL, every email gets a signed
+                one-click unsubscribe link
     DRY_RUN     "1" = render and report, send nothing
 
 Safety rails: refuses to send if the newest archived briefing is not dated
@@ -31,8 +38,12 @@ import html
 import json
 import os
 import re
+import hmac
+import hashlib
 import smtplib
 import ssl
+import urllib.request
+import urllib.parse
 import sys
 import time
 from datetime import date
@@ -68,6 +79,42 @@ def load_today():
         return today, json.load(f)
 
 
+def unsub_url(email):
+    base, secret = os.environ.get("LIST_URL"), os.environ.get("UNSUB_SECRET")
+    if not (base and secret):
+        return None
+    t = hmac.new(secret.encode(), email.lower().encode(), hashlib.sha256).hexdigest()[:16]
+    return (base.rstrip("/") + "/unsubscribe?e=" + urllib.parse.quote(email.lower()) + "&t=" + t)
+
+
+def flag(day, set_it=False):
+    """Day-marker via the worker; makes sending idempotent no matter how many
+    times generation completes (manual + scheduled runs, re-runs). Returns
+    True if already sent. No worker configured -> no dedup (old behavior)."""
+    base, token = os.environ.get("LIST_URL"), os.environ.get("LIST_TOKEN")
+    if not (base and token):
+        return False
+    u = (base.rstrip("/") + "/flag?k=briefed:" + day + "&token=" + urllib.parse.quote(token))
+    try:
+        req = urllib.request.Request(u, method="POST" if set_it else "GET")
+        with urllib.request.urlopen(req, timeout=20) as r:
+            return json.loads(r.read().decode()).get("set", False)
+    except Exception as ex:
+        print("flag check unavailable (" + type(ex).__name__ + ") — proceeding")
+        return False
+
+
+def fetch_recipients():
+    base, token = os.environ.get("LIST_URL"), os.environ.get("LIST_TOKEN")
+    if base and token:
+        u = base.rstrip("/") + "/list?token=" + urllib.parse.quote(token)
+        with urllib.request.urlopen(u, timeout=30) as r:
+            body = r.read().decode()
+        print("recipient list fetched live from worker")
+        return body
+    return env("RECIPIENTS", required=True)
+
+
 def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     headline = strip_md(b.get("headline", "AGSIST Daily Briefing"))
     lead = strip_md(b.get("lead", ""))
@@ -80,18 +127,24 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     msg["From"] = formataddr((from_name, from_addr))
     msg["To"] = to_addr
     msg["Message-ID"] = make_msgid(domain=from_addr.split("@", 1)[1])
+    uurl = unsub_url(to_addr)
     if reply_to:
         msg["Reply-To"] = reply_to
     unsub = reply_to or from_addr
-    msg["List-Unsubscribe"] = "<mailto:" + unsub + "?subject=unsubscribe>"
+    if uurl:
+        msg["List-Unsubscribe"] = "<" + uurl + ">, <mailto:" + unsub + "?subject=unsubscribe>"
+        msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
+    else:
+        msg["List-Unsubscribe"] = "<mailto:" + unsub + "?subject=unsubscribe>"
 
     text = (date_display + "\n\n" + headline + "\n\n" + lead + "\n\n"
             + ("THE TAKEAWAY: " + takeaway + "\n\n" if takeaway else "")
             + (("ONE NUMBER: " + str(onum.get("value", "")) + " — "
                 + strip_md(onum.get("unit", "")) + "\n\n") if onum.get("value") else "")
             + "Full briefing (charts, calls, basis, and what to watch):\n" + SITE
-            + "\n\n—\nAGSIST — free US ag market intelligence · agsist.com"
-            + "\nTo unsubscribe, reply with subject line: unsubscribe\n")
+            + "\n\n—\nAGSIST — free US ag market intelligence · agsist.com\n"
+            + (("Unsubscribe: " + uurl + "\n") if uurl else
+               "To unsubscribe, reply with subject line: unsubscribe\n"))
     msg.set_content(text)
 
     e = html.escape
@@ -115,7 +168,9 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
         "READ THE FULL BRIEFING &#8594;</a></p>"
         '<p style="font-size:12px;color:#6b6b6b;line-height:1.5">AGSIST &mdash; free US ag '
         'market intelligence &middot; <a href="https://agsist.com" style="color:#6b6b6b">agsist.com</a>'
-        "<br>To unsubscribe, reply with subject line: unsubscribe</p></div>")
+        + (('<br><a href="' + uurl + '" style="color:#6b6b6b">Unsubscribe</a>') if uurl else
+           "<br>To unsubscribe, reply with subject line: unsubscribe")
+        + "</p></div>")
     msg.add_alternative(hbody, subtype="html")
     return msg
 
@@ -127,7 +182,10 @@ def main():
     reply_to = env("REPLY_TO")
     dry = env("DRY_RUN", "") == "1"
 
-    raw = env("RECIPIENTS", required=True)
+    if not dry and flag(day):
+        print("already sent for " + day + " (day-flag set) — skipping. exit 0")
+        return 0
+    raw = fetch_recipients()
     recipients = [r.strip() for r in re.split(r"[,\n]", raw) if r.strip() and "@" in r]
     if not recipients:
         print("FATAL: RECIPIENTS parsed to zero addresses")
@@ -160,6 +218,8 @@ def main():
             if i < len(recipients) - 1:
                 time.sleep(1.2)  # gentle throttle keeps Gmail happy
     print("sent " + str(sent) + "/" + str(len(recipients)))
+    if sent > 0:
+        flag(day, set_it=True)
     if failed:
         print("failed: " + ", ".join(failed))
     return 0 if sent > 0 else 1

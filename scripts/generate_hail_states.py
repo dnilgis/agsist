@@ -131,6 +131,36 @@ def page_html(abbr, name, rows, years, dmg_in, today):
           "a comparatively quiet record by national standards."))) +
         " The table below ranks the counties; the interactive national map shows exactly where, year by year. Checking a specific address? The map\u2019s search box pulls every dated report within 25 miles.</p>")
 
+    # Key Figures — complete standalone sentences, because that is what
+    # writers and AI engines lift verbatim (see: insurance lead-gen pages
+    # already quoting this site). Each fact is quotable without editing.
+    dmg_reports = sum(round(r.get("total", 0) * r.get("dmg_pct", 0) / 100) for r in rows)
+    figs = [name + " logged " + f"{total:,}" + " National Weather Service hail reports statewide over the last " + str(n_yrs) + " years (" + str(years[0]) + "\u2013" + str(years[-1]) + ")."]
+    if top:
+        figs.append(esc(top["county"]) + " County leads " + name + " with " + f"{top.get('total',0):,}" + " hail reports over that span \u2014 about " + str(top.get("avg", "")) + " per year.")
+    if peak_full:
+        figs.append("Reported hail in " + name + " peaks in " + peak_full + ".")
+    if total:
+        figs.append("Roughly " + f"{dmg_reports:,}" + " of " + name + "'s reports involved stones " + str(dmg_in) + "\u2033 or larger \u2014 the size that damages roofs, vehicles, and crops.")
+    key_figs = ("<section class=\"hs-figs\" id=\"key-figures\"><h2>Key figures \u2014 " + esc(name) + " hail at a glance</h2><ul>"
+        + "".join("<li>" + f + "</li>" for f in figs) + "</ul>"
+        "<p class=\"hs-cite\">Citing these figures? Attribution: <em>AGSIST National Hail Map, "
+        + canonical + " (NWS Local Storm Reports, " + str(years[0]) + "\u2013" + str(years[-1]) + ")</em>. "
+        "Data is available at no charge; a link back keeps it that way.</p></section>\n")
+
+    b2b = ("<p class=\"hs-pro\">Insurance, roofing, or ag professional using this data in client-facing work? "
+        "The same dataset is available as a licensable embeddable widget \u2014 "
+        "<a href=\"/sponsor\">details on the sponsor page</a> or email "
+        "<a href=\"mailto:sig@farmers1st.com\">sig@farmers1st.com</a>.</p>\n")
+
+    dataset_ld = ("{\"@type\":\"Dataset\",\"name\":\"" + esc(name) + " hail reports by county\","
+        "\"description\":\"" + str(n_yrs) + " years of National Weather Service hail Local Storm Reports for " + esc(name) + ", aggregated by county with peak months and damaging-hail share.\","
+        "\"url\":\"" + canonical + "\",\"temporalCoverage\":\"" + str(years[0]) + "/" + str(years[-1]) + "\","
+        "\"spatialCoverage\":\"" + esc(name) + ", United States\","
+        "\"isBasedOn\":\"NWS Local Storm Reports via Iowa Environmental Mesonet\","
+        "\"creator\":{\"@type\":\"Person\",\"name\":\"Sigurd Lindquist\"},"
+        "\"isAccessibleForFree\":true},")
+
     return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n"
         "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
         "<title>Hail Map " + esc(name) + " \u2014 Worst Hail Counties &amp; Hail Season | AGSIST</title>\n"
@@ -153,6 +183,8 @@ def page_html(abbr, name, rows, years, dmg_in, today):
         "{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://agsist.com/\"},"
         "{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Hail Map\",\"item\":\"https://agsist.com/hail-map\"},"
         "{\"@type\":\"ListItem\",\"position\":3,\"name\":" + json.dumps(name) + ",\"item\":\"" + canonical + "\"}]}},"
+        
+        + dataset_ld +
         "{\"@type\":\"FAQPage\",\"mainEntity\":[" + faq_ld + "]}]}"
         "</script>\n<style>\n"
         ".hs-wrap{max-width:900px;margin:0 auto;padding:1.2rem .9rem 3rem}\n"
@@ -170,6 +202,9 @@ def page_html(abbr, name, rows, years, dmg_in, today):
         "details p{color:var(--text,#e6ebe9);line-height:1.7;font-size:.92rem}\n"
         ".hs-states{margin:1.6rem 0 0}.hs-states h2{font-size:1rem}.hs-states p{line-height:2;font-size:.8rem}.hs-states a{color:var(--text-dim,#9aa39e);text-decoration:none;margin-right:.65rem;white-space:nowrap}.hs-states a:hover{color:var(--brand,#d4a23f)}\n"
         ".hs-src{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-dim,#8a948f);margin-top:1.2rem;line-height:1.7}\n"
+        ".hs-figs{border:1px solid var(--border,rgba(132,160,168,.12));padding:1rem 1.1rem;margin:1.4rem 0}.hs-figs h2{margin:0 0 .5rem;font-size:1rem}.hs-figs ul{margin:.3rem 0 .7rem;padding-left:1.1rem}.hs-figs li{line-height:1.75;margin:.25rem 0}\n"
+        ".hs-cite{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-dim,#8a948f);line-height:1.7;margin:0}\n"
+        ".hs-pro{font-size:.85rem;color:var(--text-dim,#8a948f);line-height:1.7;margin-top:1.2rem}.hs-pro a{color:var(--brand,#d4a23f)}\n"
         "</style>\n</head>\n<body>\n<div id=\"site-header\"></div>\n<main id=\"main\">\n<div class=\"hs-wrap\">\n"
         "<nav class=\"hs-bc\" aria-label=\"Breadcrumb\"><a href=\"/\">AGSIST</a> \u203a <a href=\"/hail-map\">Hail Map</a> \u203a " + esc(name) + "</nav>\n"
         "<h1>Hail in " + esc(name) + " \u2014 where it hits, county by county</h1>\n"
@@ -178,9 +213,11 @@ def page_html(abbr, name, rows, years, dmg_in, today):
         "<h2>Top hail counties in " + esc(name) + " (" + str(years[0]) + "\u2013" + str(years[-1]) + ")</h2>\n"
         "<table><thead><tr><th>County</th><th class=\"num\">Reports</th><th class=\"num\">Avg/yr</th><th>Peak month</th><th class=\"num\">% damaging (\u2265" + str(dmg_in) + "\u2033)</th></tr></thead>"
         "<tbody>" + (trs or '<tr><td colspan="5">Too few reports to rank counties.</td></tr>') + "</tbody></table>\n"
+        + key_figs +
         "<h2>" + esc(name) + " hail \u2014 the questions people ask</h2>\n"
         + faq_vis +
         "\n<nav class=\"hs-states\" aria-label=\"Hail by state\"><h2>Hail in other states</h2><p>" + all_state_links(name) + "</p></nav>\n"
+        + b2b +
         "\n<div class=\"hs-src\">Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet, " + str(years[0]) + "\u2013" + str(years[-1]) + ". Reports depend on someone reporting \u2014 population and spotter density bias the counts; the persistent leaders are real hail geography. Compiled by Sigurd Lindquist \u00b7 AGSIST \u00b7 available at no charge.</div>\n"
         "</div>\n</main>\n<div id=\"site-footer\"></div>\n"
         "<script src=\"/components/loader.js\" defer></script>\n</body>\n</html>\n")
