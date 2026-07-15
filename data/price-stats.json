@@ -1,14 +1,14 @@
 {
-  "updated": "2026-07-14T22:34:21Z",
+  "updated": "2026-07-15T22:33:52Z",
   "corn": {
-    "pct": 26,
-    "cur": 4.3375,
+    "pct": 37,
+    "cur": 4.4725,
     "lo": 3.6775,
     "hi": 8.1825,
     "median": 4.7063,
     "n": 262,
     "years": 5,
-    "read": "At the 26th percentile of the last 5 years \u2014 below the 5-year midpoint.",
+    "read": "At the 37th percentile of the last 5 years \u2014 below the 5-year midpoint.",
     "seasonality": [
       64,
       61,
@@ -16,7 +16,7 @@
       93,
       100,
       43,
-      5,
+      6,
       4,
       0,
       36,
@@ -25,14 +25,14 @@
     ]
   },
   "soybean": {
-    "pct": 49,
-    "cur": 12.0725,
+    "pct": 48,
+    "cur": 12.0175,
     "lo": 9.3875,
     "hi": 17.455,
     "median": 12.155,
     "n": 262,
     "years": 5,
-    "read": "At the 49th percentile of the last 5 years \u2014 right around the 5-year midpoint.",
+    "read": "At the 48th percentile of the last 5 years \u2014 right around the 5-year midpoint.",
     "seasonality": [
       57,
       74,
@@ -49,14 +49,14 @@
     ]
   },
   "wheat": {
-    "pct": 53,
-    "cur": 6.15,
+    "pct": 64,
+    "cur": 6.7775,
     "lo": 4.985,
     "hi": 13.48,
     "median": 6.0587,
     "n": 262,
     "years": 5,
-    "read": "At the 53rd percentile of the last 5 years \u2014 right around the 5-year midpoint.",
+    "read": "At the 64th percentile of the last 5 years \u2014 above the 5-year midpoint.",
     "seasonality": [
       12,
       48,
@@ -64,7 +64,7 @@
       52,
       100,
       30,
-      8,
+      9,
       7,
       7,
       27,
@@ -73,14 +73,14 @@
     ]
   },
   "cattle": {
-    "pct": 85,
-    "cur": 231.575,
+    "pct": 84,
+    "cur": 230.325,
     "lo": 120.175,
     "hi": 257.45,
     "median": 181.2625,
     "n": 262,
     "years": 5,
-    "read": "At the 85th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years.",
+    "read": "At the 84th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years.",
     "seasonality": [
       30,
       57,
@@ -97,14 +97,14 @@
     ]
   },
   "feeders": {
-    "pct": 86,
-    "cur": 349.625,
+    "pct": 84,
+    "cur": 344.95,
     "lo": 152.75,
     "hi": 375.5,
     "median": 245.5,
     "n": 262,
     "years": 5,
-    "read": "At the 86th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years.",
+    "read": "At the 84th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years.",
     "seasonality": [
       23,
       44,
