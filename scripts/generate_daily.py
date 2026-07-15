@@ -439,7 +439,23 @@ _FRONT_REL_TOL = 0.004  # 0.4%: continuous must agree with dated front this tigh
 
 
 def _front_expired(key, now):
-    """A dated grain contract is treated as rolled/expired after ~mid-month."""
+    """A dated grain contract is treated as rolled/expired from the 15th of its
+    contract month.
+
+    THIS RULE MUST MATCH preflight_prices._expired() EXACTLY. preflight is the
+    authority: it runs first (GATE 1) and rewrites prices.json, so if this
+    function disagrees by even one day, generate locks a different contract than
+    the feed holds and briefing_gate's locked-drift check hard-blocks the send.
+
+    That is not hypothetical. This function previously returned
+    `(yr, mon, 16) <= (now.year, now.month, now.day)` -- expiring a day LATE --
+    while preflight used `now > (yr, mon, 15)`. The two agreed on every day of
+    the year except the 15th of a contract month, where generate would lock an
+    already-dead contract. On 2026-07-15 that locked July corn at 4.3375 against
+    a September feed of 4.4350, July wheat at 6.15 against 6.6275, and blocked
+    the send. CBOT grain last trading day is the business day BEFORE the 15th,
+    so by the 15th the contract is done and preflight was right.
+    """
     suffix = key.split("-")[-1]            # e.g. 'jul26'
     mon = _FRONT_MONTH_NUM.get(suffix[:3])
     if mon is None:
@@ -448,7 +464,7 @@ def _front_expired(key, now):
         yr = 2000 + int(suffix[3:])
     except ValueError:
         return False
-    return (yr, mon, 16) <= (now.year, now.month, now.day)
+    return (now.year, now.month, now.day) >= (yr, mon, 15)
 
 
 def _resolve_front_month(quotes):
