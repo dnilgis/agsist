@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-14T00:56:18+00:00",
- "total": 61,
+ "updated": "2026-07-15T14:15:45+00:00",
+ "total": 62,
  "played_out": 26,
- "didnt": 30,
+ "didnt": 31,
  "pending": 5,
- "hit_rate": 46.4,
+ "hit_rate": 45.6,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-14",
+   "judged": "2026-07-15",
+   "call": "The call was hogs lower, targeting a move through $82.00, after Monday's $94.78 close looked extended on a 10.8% two-session run.",
+   "outcome": "didnt",
+   "note": "Hogs closed $84.33 today, down hard at 14.1%, but the $82.00 target level was not reached. Direction was right -- the reversal arrived exactly as flagged -- but the close held above $82, so the level call does not score. Miss on the level, correct on the thesis."
+  },
   {
    "made": "2026-07-13",
    "judged": "2026-07-14",

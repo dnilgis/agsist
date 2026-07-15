@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 14 Jul 2026 00:56:18 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 15 Jul 2026 14:15:45 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>HOGS FALL HARD, WHEAT RUNS, CRUDE HOLDS $80</title>
+      <link>https://agsist.com/daily/2026-07-15</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-15</guid>
+      <pubDate>Wed, 15 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Lean hogs closed $84.33, down 14.1% in a single session. That is not a typo and it is not a normal day in the pits. Meanwhile, Chicago wheat ran to $6.63, up 18 cents, as Hormuz risk rebuilt overnight and crude held $79.94 for a fourth straight session above $78. The weekly thread question about whether crop progress would confirm the good-crop thesis got its answer Monday: USDA improved national corn ratings and put development ahead of average, which is why corn is up only a penny at $4.43 today instead of pushing toward a weather premium. The crop is fine. The hog market, for reasons explained below, is not.
+Lean hogs had their biggest single-session drop in years while Chicago wheat pushed 2.8% higher and WTI crude held just under $80 as the U.S.-Iran ceasefire broke down.
+• Hogs Fall Hard
+  → Producers with unhedged near-term hog production: $84.33 may not be the floor. Consider locking 30-40% of the next 60 days of production here. If the move was fund-driven without a disease or trade catalyst, there is a partial bounce possible, but the risk of waiting for confirmation is asymmetric.
+• Wheat Runs on Hormuz Rebuild
+• Corn Stays Calm, Crop Is Fine
+Read more: https://agsist.com/daily/2026-07-15</description>
+    </item>
     <item>
       <title>CRUDE RUNS 6%, CORN SPLITS WIDEN, BEANS FIRM</title>
       <link>https://agsist.com/daily/2026-07-14</link>
@@ -385,18 +398,6 @@ Chicago wheat had its biggest single-session gain in months while WTI crude fell
 • CRUDE DROPS HARD, INPUTS SHIFT
   → If you haven't locked fall diesel, the window from crude's move may be short; get a quote this week.
 Read more: https://agsist.com/daily/2026-06-16</description>
-    </item>
-    <item>
-      <title>SOYBEANS LEAD HIGHER, CATTLE SLIPS ON SCREWWORM RESTRICTIONS</title>
-      <link>https://agsist.com/daily/2026-06-15</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-15</guid>
-      <pubDate>Mon, 15 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Soybeans closed $11.32, up 19 cents and leading the complex higher as crude oil's retreat signals easing input costs from the Strait of Hormuz reopening. But the grain rally couldn't lift cattle, which dropped 0.6% to $241.18 as Canada and Mexico imposed import restrictions following screwworm detection in the U.S. The divergence tells the story: grain fundamentals improving while livestock faces structural headwinds that won't resolve with a phone call.
-Beans gain nearly 2% as crude eases on Hormuz progress while livestock faces trade disruption.
-• SOYBEANS LEAD COMPLEX HIGHER
-• CATTLE DROPS ON TRADE RESTRICTIONS
-• CORN STEADIES BEFORE KEY WEEK
-Read more: https://agsist.com/daily/2026-06-15</description>
     </item>
   </channel>
 </rss>
