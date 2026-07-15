@@ -4,7 +4,7 @@ AGSIST daily briefing sender — no paid ESP required.
 
 Reads today's briefing from data/daily-archive/YYYY-MM-DD.json (already in
 the checkout when this runs in Actions) and emails a teaser to every address
-on the list, linking to https://agsist.com/daily for the full read. Keeping
+on the list, linking to the homepage briefing for the full read. Keeping
 the email short and the site the destination is deliberate: sponsors buy
 pageviews on the site, not opens in an inbox.
 
@@ -53,7 +53,16 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 ARCHIVE = REPO / "data" / "daily-archive"
-SITE = "https://agsist.com/daily"
+# The teaser lands on the HOMEPAGE briefing, not /daily. ?d=1 tells the page the
+# reader came from the email and explicitly asked for the briefing, so a "hide
+# until tomorrow" dismissal from earlier today must not collapse it on arrival.
+# utm_* is plain GA4 attribution: email->site clicks is the one number a sponsor
+# actually asks for, and it costs nothing to measure.
+SITE = "https://agsist.com/?d=1&utm_source=daily_email&utm_medium=email"
+# Same URL, ampersands escaped, for use inside an href="" attribute. A bare "&"
+# in an href is tolerated by most clients but is not valid HTML, and email
+# sanitisers are not something to gamble a send on.
+SITE_HREF = SITE.replace("&", "&amp;")
 
 
 def env(name, default=None, required=False):
@@ -165,7 +174,7 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
              'border-left:3px solid #b58a2e;padding-left:10px;margin:0 0 18px">'
              "<strong>" + e(str(onum.get("value", ""))) + "</strong> &mdash; "
              + e(strip_md(onum.get("unit", ""))) + "</p>")) if onum.get("value") else "")
-        + '<p style="margin:20px 0"><a href="' + SITE + '" '
+        + '<p style="margin:20px 0"><a href="' + SITE_HREF + '" '
         'style="background:#14100a;color:#e9dfc9;text-decoration:none;'
         'padding:10px 18px;font-family:Courier,monospace;font-size:13px">'
         "READ THE FULL BRIEFING &#8594;</a></p>"
