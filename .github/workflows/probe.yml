@@ -1,0 +1,29 @@
+name: probe-sources
+
+# Diagnostic only. Reads USDA sources and prints their schemas to the log.
+# Writes nothing, commits nothing, sends nothing. Manual dispatch only.
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Limit to one source group (blank = all)"
+        required: false
+        default: ""
+        type: choice
+        options: ["", "nass", "agtransport"]
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Probe
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/probe_sources.py --only "${{ github.event.inputs.only }}"
