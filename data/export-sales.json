@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-09",
+  "updated": "2026-07-16",
   "marketing_year": "2025/26",
   "note": "USDA FAS ESR API \u2014 api.fas.usda.gov/api/esr",
   "corn": {
@@ -10,11 +10,11 @@
     "report_date": "2025-09-04"
   },
   "soybeans": {
-    "weekly_net_mt": 54349,
-    "cumulative_mt": 41135588,
+    "weekly_net_mt": 188274,
+    "cumulative_mt": 41323862,
     "usda_target_mt": 52200000,
-    "pct_of_target": 78.8,
-    "report_date": "2026-07-02"
+    "pct_of_target": 79.2,
+    "report_date": "2026-07-09"
   },
   "wheat": {
     "weekly_net_mt": 95094,
@@ -23,5 +23,5 @@
     "pct_of_target": 108.7,
     "report_date": "2026-06-04"
   },
-  "report_date": "2026-07-02"
+  "report_date": "2026-07-09"
 }
