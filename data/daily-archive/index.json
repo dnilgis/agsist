@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-07-16",
+      "date_display": "Thursday, July 16, 2026",
+      "headline": "HORMUZ RE-ESCALATES; WHEAT LEADS, HOGS BOUNCE",
+      "teaser": "Wheat at a 52-week high, hogs bounce hard, and the Hormuz story just got worse. Export sales at 7:30 decide what happens next.",
+      "market_mood": "volatile",
+      "surprise_count": 1,
+      "sections": 5,
+      "url": "/daily/2026-07-16",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-15",
       "date_display": "Wednesday, July 15, 2026",
       "headline": "HOGS FALL HARD, WHEAT RUNS, CRUDE HOLDS $80",
@@ -1415,6 +1427,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-15T14:15:44.174270+00:00",
-  "count": 125
+  "updated": "2026-07-16T12:24:18.915528+00:00",
+  "count": 126
 }

@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 15 Jul 2026 14:15:45 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 16 Jul 2026 12:24:20 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>HORMUZ RE-ESCALATES; WHEAT LEADS, HOGS BOUNCE</title>
+      <link>https://agsist.com/daily/2026-07-16</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-16</guid>
+      <pubDate>Thu, 16 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Wheat closed $6.86, up a dime, and it wasn't done moving before the day ended. The Hormuz premium that traders briefly wrote off is rebuilding in real time: U.S. forces struck and disabled an Iran-linked tanker near Kharg Island overnight, India told shipowners to pull their nationals off Hormuz-bound vessels, and Pakistan just paid the highest spot LNG price in four years. The IEA says the world has weeks, not months, before the economic toll registers. Thursday's export sales at 7:30 AM CT will tell you whether that urgency is pricing into U.S. grain demand or whether the funds are still waiting for the next headline.
+A U.S. strike on an Iran-linked tanker near Kharg Island rewrites the energy and grain calculus heading into Thursday's export sales at 7:30 AM CT.
+• Hormuz Tightens Again
+  → Any remaining unhedged harvest-season diesel: the $79.42 window closes with each new Hormuz headline. Lock what you have left now. Waiting for a pullback requires a diplomatic development that is not on today's calendar.
+• Wheat Leads the Complex
+• Corn and Beans Hold Steady
+Read more: https://agsist.com/daily/2026-07-16</description>
+    </item>
     <item>
       <title>HOGS FALL HARD, WHEAT RUNS, CRUDE HOLDS $80</title>
       <link>https://agsist.com/daily/2026-07-15</link>
@@ -385,19 +398,6 @@ Live cattle's biggest single-session gain in weeks leads a broadly green close, 
 • WHEAT HOLDS, CORN FIRMS
 • SOYBEANS STEADY
 Read more: https://agsist.com/daily/2026-06-17</description>
-    </item>
-    <item>
-      <title>WHEAT RUNS 4%, CRUDE DROPS HARD ON IRAN DEAL</title>
-      <link>https://agsist.com/daily/2026-06-16</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-16</guid>
-      <pubDate>Tue, 16 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Wheat is the story today. Chicago wheat closed at $6.08, up 24½ cents, its biggest day in months, while crude fell hard to $75.80 on news that U.S.-Iran diplomatic channels are producing real results and Middle East supply is coming back online. The weekly thread question was whether USDA Crop Progress would confirm the Belt caught up to seasonal pace; Monday's report answered that clearly, and now the market is repricing around a different concern: Iowa corn rated good-to-excellent dropped from 84% to 79% after last week's severe weather, and a cool, wet pattern is moving back into the Heartland. The question is no longer whether the Belt planted on time. It's whether the crop that went in the ground stays healthy.
-Chicago wheat had its biggest single-session gain in months while WTI crude fell sharply 6.1% as U.S.-Iran diplomatic progress unwinds the Middle East supply premium.
-• WHEAT LEADS THE COMPLEX
-• CATTLE RECOVERS, BOTTLENECK HOLDS
-• CRUDE DROPS HARD, INPUTS SHIFT
-  → If you haven't locked fall diesel, the window from crude's move may be short; get a quote this week.
-Read more: https://agsist.com/daily/2026-06-16</description>
     </item>
   </channel>
 </rss>

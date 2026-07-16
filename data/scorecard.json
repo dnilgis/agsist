@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-15T14:15:45+00:00",
- "total": 62,
+ "updated": "2026-07-16T12:24:20+00:00",
+ "total": 63,
  "played_out": 26,
- "didnt": 31,
+ "didnt": 32,
  "pending": 5,
- "hit_rate": 45.6,
+ "hit_rate": 44.8,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-15",
+   "judged": "2026-07-16",
+   "call": "Yesterday's call was wheat up, targeting a move toward $7.10, after the close at $6.86 with Hormuz premium rebuilding.",
+   "outcome": "didnt",
+   "note": "Wheat closed $6.8575 today, essentially unchanged from the prior session's $6.86 level -- the call for a push toward $7.10 did not materialize. The Hormuz catalyst is live and the directional read was correct, but the export sales data and overnight positioning did not generate enough follow-through to reach the target. Miss on the level; the thesis is still in play for Thursday's 7:30 AM export sales to confirm or deny."
+  },
   {
    "made": "2026-07-14",
    "judged": "2026-07-15",
