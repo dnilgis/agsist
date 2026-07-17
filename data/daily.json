@@ -1,163 +1,162 @@
 {
-  "headline": "CATTLE BREAK, CRUDE HOLDS $79.90 FOR THE WEEK",
-  "subheadline": "Live cattle dropped 1.4% on weak cash and boxed beef pressure; crude posted a 12% weekly gain as Hormuz re-escalation held.",
-  "lead": "The weekly thread resolves today with a split answer: the good-crop thesis in corn survived the week intact, but cattle couldn't hold the line, with live settling at $226.85, down 1.4%, on weak cash and boxed beef pressure that overwhelmed tight ready-supply math. Crude finished at $79.90, up 0.9% on the session and up roughly 12% on the week, the biggest weekly run since April, as the Strait of Hormuz re-escalation that built through Thursday kept the energy premium from deflating. Grains were range-bound noise: corn off a penny, beans off 2 cents, wheat up a cent and a quarter. The loudest story today isn't what grains did; it's what cattle couldn't do even with supply tightness on their side.",
-  "the_takeaway": "Cattle broke even with tight supply; the cash market is doing the damage, not fundamentals.",
-  "teaser": "Cattle drop 1.4% despite tight supplies; crude logs a 12% weekly run on Hormuz.",
+  "headline": "GRAINS WIN THE WEEK; CATTLE TAKE A HIT",
+  "subheadline": "Corn, wheat, and beans all close higher Friday as weather and fresh China sales push grains to weekly gains, while a sharp cash-market decline drags cattle to session lows.",
+  "lead": "The weekly thread resolves cleanly: the good-crop thesis corn was pricing got tested by weather and answered by the export board, not undermined. Friday's corn close at $4.46 and wheat at $6.85 both built on Thursday's momentum, with USDA announcing 340,000 MT of U.S. beans sold to China ahead of the open. The grain complex won the week. Cattle didn't. A steep drop in direct cash prices sent live cattle to $224.35 and feeders to $339.08, and the processing math from the ongoing Cargill Fort Morgan/Schuyler plant lockout that began May 19 is still in that number.",
+  "the_takeaway": "Grains won the week on export demand; cash cattle broke on processing constraints. Those are two different stories.",
+  "teaser": "Beans to China, wheat leading, and cattle taking the week's hardest hit. AGSIST has the read.",
   "one_number": {
-    "value": "12%",
-    "unit": "WTI crude oil weekly gain, biggest since April",
-    "context": "Crude oil ran roughly 12% this week as the Strait of Hormuz re-escalation, ongoing since early March, halted the brief recovery in shipping flows and pushed the risk premium back in. The EIA flagged Cushing storage dipping below 20 million barrels during the week ending July 10, meaning the cushion that has kept crude from running harder is thinning. Producers who locked harvest diesel earlier this week at the $79.42 level called in Thursday's briefing are sitting well; anyone still waiting is watching a 12-cent-wide weekly candle and hoping for a diplomatic development that isn't on the calendar."
+    "value": "716,634",
+    "unit": "MT of U.S. soybeans sold in a single day's flash sales",
+    "context": "USDA announced 340,000 MT to China, 256,634 MT to Mexico, and 120,000 MT to unknown destinations all before Friday's open. That's the kind of export demand the futures market notices. Beans at $12.03 didn't move as hard as the sales warranted, which tells you the market was already sniffing this out earlier in the week."
   },
   "yesterdays_call": {
-    "summary": "Yesterday's call: cattle down, toward $224.50.",
+    "summary": "The call was feeders down, targeting a break below $335.",
     "outcome": "didnt",
-    "note": "Cattle did close lower, settling at $226.85 on real cash and boxed beef pressure -- but $224.50 never came into view. The directional read was right; the level was a miss. Cash and wholesale pressure drove the break exactly as flagged, but the move stopped well short of the trigger. Own the incomplete.",
+    "note": "Feeders closed at $339.08, never testing $335. The cattle section was directionally right that cash pressure was building, but the level didn't resolve -- feeders held above the target all session. Miss on the level. The $335 watch carries into Monday.",
     "computed": {
       "outcome": "didnt",
       "made": "2026-07-17",
-      "p0": 226.85,
-      "p1": 226.85,
-      "instrument": "cattle",
+      "p0": 339.07501,
+      "p1": 339.07501,
+      "instrument": "feeders",
       "direction": "down",
-      "level": 224.5
+      "level": 335.0
     }
   },
   "todays_call": {
-    "instrument": "cattle",
+    "instrument": "feeders",
     "direction": "down",
-    "level": 224.5
+    "level": 335.0
   },
   "sections": [
     {
-      "title": "Cattle Break on Cash Pressure",
-      "icon": "🐄",
-      "body": "Live cattle settled at **$226.85**, down 1.4%, and the driver isn't a mystery: weak cash trade and boxed beef cutout pressure overwhelmed the tight-ready-supply story that bulls have been leaning on all month. Feeder cattle fell 0.9% to **$346.88**, a softer drop than live, which tells you the pressure is coming from the packer/wholesale side, not from the feeder supply chain. The Brownfield recap said contracts look oversold and ready supplies remain tight, but that wasn't enough to hold the floor today, and that sentence should worry cattle longs: when the fundamental tailwind can't hold price, the cash market is in charge. The ongoing Cargill Fort Morgan/Schuyler plant lockout that began May 19 has been bending processing-side dynamics for weeks, and the processing constraint is now reading as a wholesale price ceiling rather than a supply-side floor. Next real support is $224 on the nearby; losing that opens $220.",
-      "catalyst": "Weak cash and wholesale boxed beef pressure despite tight market-ready cattle supplies.",
-      "bottom_line": "Cash market overran the tight-supply thesis; $224 is the line that has to hold.",
-      "conviction_level": "high",
-      "overnight_surprise": false,
-      "vs_yesterday": "Cattle: drift became a break; cash confirmed the bear case."
-    },
-    {
-      "title": "Crude Locks In a 12% Week",
-      "icon": "🛢️",
-      "body": "WTI finished at **$79.90**, up 0.9% on the session, but the session number undersells the story: crude posted roughly a 12% weekly gain, the biggest in one week since April, as Iran-Hormuz tensions, re-escalating sharply from the brief diplomatic window that had begun deflating the premium in late June, pushed flows back toward zero through the Strait. Pakistan is already shopping for replacement spot LNG cargoes for July-August delivery, a sign that the disruption is real and logistics-level, not just headline noise. The EIA flagged Cushing storage below 20 million barrels for much of late June into early July; that's a thin buffer if flows stay constrained. Libya declared the Essar discovery commercial this week, which is a medium-term offset, but it does nothing for harvest-season diesel prices. **Producers who haven't locked harvest fuel are now staring at a 12% weekly move with no diplomatic catalyst on the calendar.** The farmer action given Thursday still stands: lock what's left.",
-      "catalyst": "Hormuz re-escalation halted Strait flow recovery; oilprice.com confirmed 12% weekly gain, biggest since April.",
-      "bottom_line": "Crude premium rebuilt on Hormuz; harvest diesel window is closing, not opening.",
-      "conviction_level": "high",
-      "overnight_surprise": false,
-      "farmer_action": "Any remaining unhedged harvest-season diesel: $79.90 is not a ceiling if Hormuz flows stay constrained. Lock remaining needs now. The 12% weekly move happened without a diplomatic resolution; waiting for one is a bet on news that isn't on the calendar.",
-      "vs_yesterday": "Crude: yesterday's $79.42 diesel call aged well; the weekly close confirmed the premium."
-    },
-    {
-      "title": "Grains Drift Into the Weekend",
+      "title": "Grains Win the Week",
       "icon": "🌽",
-      "body": "Corn nearby settled at **$4.38**, off half a cent, with December at **$4.61**, also off half a cent. Beans at **$11.89** both nearby and November, off 2.25 cents, on what Brownfield described as profit taking and technical selling after a week that included solid China new-crop export sales, the largest in months at 65 million bushels. Wheat at **$6.72** added 1.25 cents, consolidating in a tight range rather than extending Thursday's move. The demand-driven rally story that StoneX chief economist Arlan Suderman flagged today is real: China's $17 billion annual US ag purchase commitment through 2028, announced May 18, is generating actual new-crop soy sales, and that's the floor under beans right now. But with corn in active pollination and no weather surprise in the overnight, there's no new weather premium being added today. The good-crop thesis held all week, and the market is headed into the weekend not having paid a premium it doesn't yet need to pay.",
-      "catalyst": "Profit taking after strong China new-crop soy export sales; no weather disruption during pollination week.",
-      "bottom_line": "Grains drift on profit taking; demand floor held but no new premium added.",
-      "conviction_level": "low",
-      "overnight_surprise": false,
-      "vs_yesterday": "Corn/beans: held steady as called; no weather catalyst materialized."
+      "body": "Corn settled at **$4.46** Friday, up 6.75 cents, with December at **$4.68**. Wheat added 14 cents to close at **$6.85**. Soybeans firmed 11 cents to **$12.03**. The catalyst was a combination of weather-driven fund and technical buying plus USDA flash sales of 716,634 MT of U.S. beans announced ahead of the open, with 340,000 MT going to China, 256,634 MT to Mexico, and 120,000 MT to unknown destinations. This is the export demand the corn and bean markets have been waiting to see confirmed all week. Soybean oil added 1.7% to **$72.44**, outpacing meal, which slipped fractionally to **$319.20**. The soyoil bid says the meal-heavy positioning from last month is slowly unwinding. December corn at $4.68 is 22 cents over nearby, carry is working, and producers with dry storage still have time to let that clock run.",
+      "catalyst": "USDA flash sales: 716,634 MT of U.S. soybeans to China, Mexico, and unknown destinations announced pre-open.",
+      "bottom_line": "Export demand confirmed the good-crop thesis isn't a ceiling; it's the floor.",
+      "conviction_level": "high",
+      "overnight_surprise": true,
+      "vs_yesterday": "Corn: follow-through on yesterday's hold; beans added export fuel."
     },
     {
-      "title": "Hogs and Dairy Hold Ground",
-      "icon": "🐖",
-      "body": "Lean hogs added 0.3% to settle at **$86.97**, continuing the partial bounce off the massive July 15 drop. Nothing in today's news or fund flows suggested a new directional catalyst for hogs; the bounce is thin and the funds that liquidated hard two sessions ago haven't re-entered with conviction. Class III milk at **$17.77** added 0.3%, sitting at 96% of its 52-week range, which is the strongest relative position of any commodity in today's table. The dairy number isn't loud, but it's consistent: milk has been grinding higher all month on tight component supplies, and the ADAI promotion push into summer retail is a small tailwind. Neither market is making news today, but both are holding rather than breaking, which after this week's volatility is worth noting.",
-      "catalyst": "No fresh catalyst for hogs; partial bounce continues after the July 15 fund liquidation event.",
-      "bottom_line": "Hogs bouncing without conviction; dairy quietly strong at 96% of 52-week range.",
-      "conviction_level": "low",
-      "overnight_surprise": false
+      "title": "Cattle Break on Cash",
+      "icon": "🐄",
+      "body": "Live cattle closed at **$224.35**, down 1.1% on the session, with feeders falling 2.2% to **$339.08**. The Brownfield recap says August live cattle were down $2.65 and October dropped $2.57, both pressured by a sharp decline in direct cash prices on the week. The ongoing Cargill Fort Morgan/Schuyler plant lockout, now eight weeks in, continues to create processing-constrained price dynamics rather than supply-constrained ones. Cash weakens when boxes can't move, and that's exactly what's happening. Purdue economist Michael Langemeier flagged this week that feeder margins are expected to tighten heading into 2027 as input costs rise, and if fed cattle prices don't match the higher cost of gain, feedlot math goes negative before the next Cattle on Feed. Feeders at $339.08 are already pricing some of that pain. **$335 is the next real support level.** A break below there opens a run back toward the May lows.",
+      "catalyst": "Sharp weekly cash cattle decline drove futures lower; Cargill lockout processing constraint still weighing.",
+      "bottom_line": "Cash broke first; futures followed. The lockout math hasn't changed, just gotten louder.",
+      "conviction_level": "high",
+      "overnight_surprise": true,
+      "farmer_action": "Feeders testing the low end of the summer range. Producers carrying unhedged feeder inventory should look at September options if $335 breaks on Monday.",
+      "vs_yesterday": "Cattle: drift became a drop; cash market finally repriced what the lockout implied."
+    },
+    {
+      "title": "Crude Runs Again",
+      "icon": "⛽",
+      "body": "WTI crude settled at **$81.62**, up 3.1% Friday. The EIA noted this week that Cushing inventories fell below 20 million barrels through early July, the kind of storage drawdown that removes a cushion from the market. Friday's Oil Price report flagged that near-halted Hormuz tanker traffic and escalating U.S.-Iran hostilities are fueling expectations of higher prices, with Iran-Hormuz tensions ongoing since early April now showing fresh signs of tightening after last week's brief diplomatic pause. Baker Hughes reported the U.S. rig count at 588, up 44 year-over-year, which in a normal market would be a bearish supply signal. This isn't a normal market. Hormuz risk plus Cushing drawdown plus a softer dollar is a three-input setup that pointed crude higher. Diesel and propane basis implications for fall harvest are real: anyone who acted on this week's farmer action call when WTI was under $80 is already ahead. Producers who didn't are now looking at an $81.62 entry with more upside risk than down.",
+      "catalyst": "Cushing inventories below 20 million barrels (week ending July 10); renewed Hormuz escalation headlines per Oil Price.",
+      "bottom_line": "Crude at $81.62 with tight storage and Hormuz risk still building is not a sell.",
+      "conviction_level": "medium",
+      "overnight_surprise": true,
+      "vs_yesterday": "Crude: Hormuz premium rebuilt; the diplomatic pause that deflated it last week is gone."
+    },
+    {
+      "title": "Hogs Hold, Dairy Firms",
+      "icon": "🐷",
+      "body": "Lean hogs added 1.0% to close at **$87.85**, a quiet follow-through after Wednesday's bounce and Thursday's consolidation. No new disease catalyst, no fresh trade catalyst: this is hogs finding a range after the 14% one-session drop on July 15. Class III milk held constructively at **$17.80**, up 0.5% on the session. Cash dairy prices were mostly higher Friday with cheese blocks up $0.0275 to $1.6275. The Terrain senior dairy analyst noted this week that protein demand is expected to support dairy markets in the second half of 2026, and with Class III at 96% of its 52-week range, the structural case for dairy is intact. Hogs bouncing and dairy firming on the same day means the livestock complex isn't uniformly broken. Cattle are the specific problem, not the category.",
+      "catalyst": "Hogs: technical recovery, no fresh catalyst. Dairy: cash cheese blocks firmed; protein demand narrative from Terrain analyst.",
+      "bottom_line": "Hogs stabilizing, dairy near 52-week highs. Cattle is a processing problem, not a livestock sector problem.",
+      "conviction_level": "low"
     }
   ],
   "outside_the_pit": [
     {
-      "title": "House Budget Committee passes $12 billion farm aid resolution",
-      "body": "The House Budget Committee approved a reconciliation resolution Thursday on a 20-14 party-line vote that includes $12 billion in direct farm aid. California Democrats are pushing an amendment for an additional $15 billion for specialty crop growers, a fight that will play out on the full House floor and shapes the near-term farm bill math.",
-      "tag": "POLICY"
+      "title": "Beef Cow Culling at Record Lows Through June",
+      "body": "USDA mid-year data shows beef cow culling at record lows while dairy cow harvest rises, and steer and heifer numbers are down significantly year-to-date through June. This is the supply math behind the cattle complex's longer arc: the herd isn't rebuilding fast enough to add pressure, which means the current cash weakness is a processing story, not a supply story. Producers rebuilding herds have the structural tailwind.",
+      "tag": "TRADE"
     },
     {
-      "title": "CDC links Taylor Farms lettuce to Taco Bell cyclosporiasis outbreak",
-      "body": "The CDC identified shredded iceberg lettuce from Taylor Farms supplied to Taco Bell restaurants as a contamination source in a cyclosporiasis outbreak. Food safety events in foodservice supply chains historically pressure fresh produce basis and can redirect institutional buying toward commodity substitutes.",
-      "tag": "POLICY"
+      "title": "Feeder Margin Risk Flagged for 2027 by Purdue Economist",
+      "body": "Michael Langemeier at Purdue says rising input costs will tighten feeder cattle margins heading into 2027, and profitability hinges on whether fed cattle prices rise enough to cover cost of gain. With feeders at $339.08 and live cattle at $224.35, the ratio is already under pressure. Feedlot operators penciling 2027 placements into spreadsheets need a higher fed cattle assumption or a lower placement cost, and neither is guaranteed right now.",
+      "tag": "RURAL"
     },
     {
-      "title": "South Korea reroutes oil via Red Sea as Hormuz stays constrained",
-      "body": "South Korea has been loading crude at the Saudi Yanbu terminal and routing through the Red Sea since the Hormuz disruption intensified in early March, a logistics shift that adds freight cost and transit time for Asian refiners and supports the global crude price floor. If this rerouting becomes structural, U.S. Gulf Coast crude exports get a longer-term demand tailwind.",
-      "tag": "LOGISTICS"
+      "title": "Canada Proposes Aligning Feed Ban Rules With U.S. Standards",
+      "body": "Canada is proposing to align its cattle feed ban with U.S. requirements, keeping SRMs prohibited for ruminant feed but potentially allowing lower-risk materials in non-ruminant feed and pet food. If adopted, this reduces a technical trade barrier between U.S. and Canadian cattle operations and could ease cross-border feeder flows over time. Watch for USDA and CFIA joint language as the proposal moves through comment.",
+      "tag": "POLICY"
     }
   ],
   "spread_to_watch": {
-    "label": "November beans / nearby beans carry",
-    "level": "Flat at $11.89 both contracts, zero carry",
-    "commentary": "When nearby and new-crop beans settle at exactly the same price, the market is saying it sees no storage incentive and no supply risk differential between now and fall harvest. The China new-crop sales at 65 million bushels, the largest in months, are pulling November toward nearby rather than letting new-crop discount; watch whether that demand floor holds or November starts to discount as harvest approaches and the good-crop thesis gets priced in more fully."
+    "label": "Live cattle / feeder cattle ratio",
+    "level": "Live at $224.35, feeders at $339.08. Feeder running $114.73 over live.",
+    "commentary": "That spread is wide by historical norms and it's widening on the wrong side: feeders are dropping faster than live, which says the market is pricing cost-of-gain risk into placements before it's pricing a cattle supply shortage. When feeders fall faster than live, the feedlot math is getting marked down in real time."
   },
   "basis": {
-    "headline": "Corn basis firming east; bean basis steady ahead of harvest.",
-    "body": "Eastern Belt corn basis is holding firm as ethanol margins support local grind demand and end-users keep bids competitive into the pollination period. **Western Belt corn basis stays soft**, consistent with the seasonal pattern and ample local supply. Soybean basis is quiet ahead of new-crop harvest, with the flat nearby/November spread giving merchandisers little incentive to push cash bids in either direction. Watch basis movement next week as harvest pressure math gets priced more explicitly."
+    "headline": "Corn basis firm east; cattle basis weak on cash breakdown.",
+    "body": "**Eastern Belt corn basis is firming** as ethanol plants push demand and export logistics tighten ahead of the harvest transition. Western Belt basis stays softer, in line with the seasonal, no reason to chase it. Cattle basis is the story today: the drop in direct cash prices this week has the cash-to-futures spread moving against the producer. **Sellers who let cattle ride this week paid for it in basis.** Watch for whether cash steadies next week or this week's break is the start of a new range."
   },
   "weekly_thread": {
     "question": "Will USDA Crop Progress confirm the good-crop thesis that nearby corn is already pricing, or does a condition decline put the weather premium back on the board?",
     "day": 5,
-    "status_text": "The good-crop thesis held all week. Crop Progress on Monday showed the Belt on schedule, pollination week passed without a weather surprise, and corn spent the week off a penny with no premium added. The market went looking for a reason to price weather risk and didn't find one; the thesis that drove nearby corn's 52-week positioning stayed intact through Friday's close."
+    "status_text": "The week resolved in favor of the good-crop thesis. Monday's Crop Progress held condition, and Friday's USDA flash bean sales to China confirmed export demand is supporting prices rather than fighting them. Corn and beans both closed the week higher; no weather premium needed, demand did the work."
   },
   "the_more_you_know": {
-    "title": "Zero carry: what a flat soybean curve is actually telling you",
-    "body": "Nearby soybeans and November beans both closed at **$11.89** today, a zero-carry spread that sounds like a non-event but is actually the market communicating something specific. In a normal marketing year, new-crop futures trade at a discount to reflect storage costs, interest, and the supply coming at harvest; when that discount disappears, it means demand is pulling new-crop toward old-crop prices rather than letting harvest supply weigh on forward months. The 65 million bushels in China new-crop export sales reported this week, the largest in months, is the mechanism: buyers are locking new-crop at current levels because they believe prices are fair or rising, not that supply will cheapen at harvest. The practical implication for a producer holding old-crop beans in storage: the carry you'd normally expect to earn by waiting for new-crop basis to widen isn't there right now, and the China demand floor is the reason why."
+    "title": "What 716,634 MT of Flash Sales Actually Tells You About Price",
+    "body": "Today's USDA flash announcements totaled 716,634 MT of soybean sales before Friday's open, yet beans only gained 11 cents to $12.03. That gap between headline demand and price response is the market's way of telling you the sales were already partially priced in. Flash sale announcements are public knowledge within hours of the transaction, but the futures market often starts moving on broker chatter and basis signals before the USDA confirms the number. When a big flash sale shows up and price grinds rather than runs, it means the information wasn't a surprise. When the same size sale drops into a flat market and beans move 20+ cents, that's the market genuinely learning something new. Today was the former: the export demand was real, the futures reaction was proportional, and the market moved on, which is actually the healthiest possible confirmation of a trend."
   },
   "watch_list": [
     {
-      "time": "Monday 3:00 PM CT",
-      "desc": "USDA Crop Progress: corn condition rating above 70% good/excellent holds the no-premium thesis; below 65% puts weather risk back on the board for the week."
+      "time": "Monday, July 20, 3:00 PM CT",
+      "desc": "USDA Crop Progress: corn condition above 70% good/excellent confirms the good-crop floor; a drop below 65% starts rebuilding the weather premium corn has refused to price all week."
     },
     {
-      "time": "Thursday 7:30 AM CT",
-      "desc": "Weekly Export Sales: soy new-crop follow-through above 50K MT confirms China is genuinely buying into the $11.89 level, not just front-running a tariff window; below 30K MT and the flat curve story gets tested."
+      "time": "Friday, July 24, 7:30 AM CT",
+      "desc": "Weekly Export Sales: soybeans above 400K MT keeps the China demand narrative intact; below 200K MT says this week's flash sales pulled forward demand and the board has to carry itself on technicals."
     },
     {
-      "time": "Next week",
-      "desc": "Hormuz diplomatic calendar: any confirmed U.S.-Iran contact through Swiss intermediaries would deflate the crude premium faster than supply logistics can; no meeting scheduled as of Friday's close."
+      "time": "Monday open",
+      "desc": "Feeder cattle: $335 is the next real support. If feeders open below that level, the path back to May lows is open and producers with unhedged inventory need to act."
     },
     {
-      "time": "Daily",
-      "desc": "Live cattle cash trade: if negotiated cash falls below $224 next week, futures at $226.85 have more downside to price in; a cash stabilization at current levels would be the first signal the break is overdone."
+      "time": "This week",
+      "desc": "Cargill Fort Morgan/Schuyler lockout: any resolution announcement immediately relieves processing-constrained cattle prices; absence of news is itself a data point that cash pressure continues."
     },
     {
-      "time": "Next week",
-      "desc": "Cargill Fort Morgan/Schuyler lockout resolution: 1,700 workers, 6,000 head daily, no announced end date. Any settlement news would be an immediate bullish catalyst for live cattle."
+      "time": "Tuesday, July 21, 1:00 PM CT",
+      "desc": "Beef Magazine live stream on fall weather outlook and harvest implications. If a cooler-than-normal fall is confirmed, harvest timing risk for corn pollination period eases and the weather premium discussion shifts to a different calendar."
     }
   ],
   "daily_quote": {
     "text": "It's not the will to win that matters — everyone has that. It's the will to prepare to win that matters.",
     "attribution": "Paul \"Bear\" Bryant"
   },
-  "source_summary": "CME Group settlement prices; USDA Crop Progress; Brownfield Ag News; oilprice.com; EIA Weekly Petroleum Status Report; The Fence Post; Feedstuffs; Beef Magazine; StoneX Group.",
+  "source_summary": "USDA NASS, CME Group, Brownfield Ag News, Feedstuffs, OilPrice.com, EIA Weekly Petroleum Status Report, Baker Hughes Rig Count, Beef Magazine, The Fence Post",
   "date": "Friday, July 17, 2026",
   "meta": {
     "market_mood": "mixed",
-    "heat_section": 0,
-    "overnight_surprises_count": 0
+    "heat_section": 1,
+    "overnight_surprises_count": 5
   },
   "locked_prices": {
-    "corn": 4.3825,
-    "corn-dec": 4.6075,
-    "beans": 11.8925,
-    "beans-nov": 11.8925,
-    "wheat": 6.72,
-    "oats": 3.3975,
-    "cattle": 226.85,
-    "feeders": 346.875,
-    "hogs": 86.975,
-    "milk": 17.77,
-    "meal": 319.0,
-    "soyoil": 71.35,
-    "crude": 79.9,
-    "natgas": 2.867,
-    "gold": 3999.80005,
-    "silver": 55.715,
-    "dollar": 100.793,
-    "sp500": 7533.77002,
-    "bitcoin": 62968.48828
+    "corn": 4.455,
+    "corn-dec": 4.6825,
+    "beans": 12.025,
+    "beans-nov": 12.025,
+    "wheat": 6.8475,
+    "oats": 3.495,
+    "cattle": 224.35001,
+    "feeders": 339.07501,
+    "hogs": 87.85,
+    "milk": 17.8,
+    "meal": 319.20001,
+    "soyoil": 72.44,
+    "crude": 81.62,
+    "natgas": 2.923,
+    "gold": 4014.69995,
+    "silver": 56.18,
+    "dollar": 100.761,
+    "sp500": 7457.68994,
+    "bitcoin": 63989.96875
   },
   "chart_series": {
     "corn": [
@@ -170,7 +169,7 @@
       4.41,
       4.43,
       4.5,
-      4.38
+      4.46
     ],
     "soybeans": [
       12.08,
@@ -182,7 +181,7 @@
       12.07,
       11.96,
       12.06,
-      11.89
+      12.03
     ],
     "wheat": [
       6.12,
@@ -194,7 +193,7 @@
       6.31,
       6.63,
       6.86,
-      6.72
+      6.85
     ]
   },
   "sponsor": {
@@ -208,34 +207,75 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 127,
-  "generated_at": "2026-07-17T12:14:01.979601+00:00",
+  "issue_number": 128,
+  "generated_at": "2026-07-17T20:52:11.380877+00:00",
   "generator_version": "4.6.3",
-  "surprise_count": 0,
-  "surprises": [],
+  "surprise_count": 5,
+  "surprises": [
+    {
+      "commodity": "Feeder Cattle",
+      "key": "feeders",
+      "price": "$339.08",
+      "pct_change": -2.2486,
+      "direction": "down",
+      "surprise_magnitude": 1.5
+    },
+    {
+      "commodity": "Corn (nearby)",
+      "key": "corn",
+      "price": "$4.46/bu",
+      "pct_change": 1.5385,
+      "direction": "up",
+      "surprise_magnitude": 1.0
+    },
+    {
+      "commodity": "Corn Dec '26",
+      "key": "corn-dec",
+      "price": "$4.68/bu",
+      "pct_change": 1.5176,
+      "direction": "up",
+      "surprise_magnitude": 1.0
+    },
+    {
+      "commodity": "Chicago Wheat",
+      "key": "wheat",
+      "price": "$6.85/bu",
+      "pct_change": 2.0872,
+      "direction": "up",
+      "surprise_magnitude": 1.0
+    },
+    {
+      "commodity": "WTI Crude Oil",
+      "key": "crude",
+      "price": "$81.62",
+      "pct_change": 3.1076,
+      "direction": "up",
+      "surprise_magnitude": 1.0
+    }
+  ],
   "price_validation_clean": true,
   "market_closed": false,
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-07-17T12:14:15.473521+00:00",
+    "ran_at": "2026-07-17T20:52:25.795263+00:00",
     "threshold": 7,
     "final_scores": {
-      "rule_1_lead_so_what": 9,
-      "rule_2_conviction_earned": 8,
+      "rule_1_lead_so_what": 8,
+      "rule_2_conviction_earned": 7,
       "rule_3_tmyk_today": 9,
       "rule_4_watch_conditional": 8,
       "rule_5_bottom_lines_synthesize": 8,
-      "rule_6_quiet_days_quiet": 9,
-      "rule_7_continuity": 2,
+      "rule_6_quiet_days_quiet": 8,
+      "rule_7_continuity": 3,
       "rule_8_basis_directional": 9,
       "rule_9_voice": 8,
-      "rule_10_forward_test": 8,
+      "rule_10_forward_test": 7,
       "rule_11_thread_coherence": 9,
-      "rule_12_spread_quality": 9,
-      "rule_13_yc_honesty": 1,
-      "rule_14_level_coherence": 9,
-      "rule_15_one_number_coherence": 9,
+      "rule_12_spread_quality": 8,
+      "rule_13_yc_honesty": 2,
+      "rule_14_level_coherence": 7,
+      "rule_15_one_number_coherence": 8,
       "rule_16_markdown_not_html": 10,
       "rule_17_macro_anchoring": 9
     },
@@ -245,21 +285,21 @@
         "target": "yesterdays_call",
         "rule": "rule_13_yc_honesty",
         "scores_before": {
-          "rule_1_lead_so_what": 9,
-          "rule_2_conviction_earned": 8,
+          "rule_1_lead_so_what": 8,
+          "rule_2_conviction_earned": 7,
           "rule_3_tmyk_today": 9,
           "rule_4_watch_conditional": 8,
           "rule_5_bottom_lines_synthesize": 8,
-          "rule_6_quiet_days_quiet": 9,
-          "rule_7_continuity": 2,
+          "rule_6_quiet_days_quiet": 8,
+          "rule_7_continuity": 3,
           "rule_8_basis_directional": 9,
           "rule_9_voice": 8,
-          "rule_10_forward_test": 8,
+          "rule_10_forward_test": 7,
           "rule_11_thread_coherence": 9,
-          "rule_12_spread_quality": 9,
-          "rule_13_yc_honesty": 1,
-          "rule_14_level_coherence": 9,
-          "rule_15_one_number_coherence": 9,
+          "rule_12_spread_quality": 8,
+          "rule_13_yc_honesty": 2,
+          "rule_14_level_coherence": 7,
+          "rule_15_one_number_coherence": 8,
           "rule_16_markdown_not_html": 10,
           "rule_17_macro_anchoring": 9
         }
