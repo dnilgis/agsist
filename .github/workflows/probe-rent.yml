@@ -1,0 +1,24 @@
+name: probe-rent
+
+# Standalone so it appears BY NAME in the Actions sidebar. Settles three
+# questions with data: the pasture short_desc, whether 2015 county cash rent
+# exists, and whether the forecast filter is required.
+# Reads only. Writes nothing, commits nothing.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Probe rent
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/probe_rent.py
