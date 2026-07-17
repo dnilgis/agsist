@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-16T12:24:20+00:00",
- "total": 63,
+ "updated": "2026-07-17T12:14:17+00:00",
+ "total": 64,
  "played_out": 26,
- "didnt": 32,
+ "didnt": 33,
  "pending": 5,
- "hit_rate": 44.8,
+ "hit_rate": 44.1,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-16",
+   "judged": "2026-07-17",
+   "call": "Yesterday's call: cattle down, toward $224.50.",
+   "outcome": "didnt",
+   "note": "Cattle did close lower, settling at $226.85 on real cash and boxed beef pressure -- but $224.50 never came into view. The directional read was right; the level was a miss. Cash and wholesale pressure drove the break exactly as flagged, but the move stopped well short of the trigger. Own the incomplete."
+  },
   {
    "made": "2026-07-15",
    "judged": "2026-07-16",

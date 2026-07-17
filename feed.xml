@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 16 Jul 2026 12:24:20 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 17 Jul 2026 12:14:17 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE BREAK, CRUDE HOLDS $79.90 FOR THE WEEK</title>
+      <link>https://agsist.com/daily/2026-07-17</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-17</guid>
+      <pubDate>Fri, 17 Jul 2026 05:00:00 -0600</pubDate>
+      <description>The weekly thread resolves today with a split answer: the good-crop thesis in corn survived the week intact, but cattle couldn't hold the line, with live settling at $226.85, down 1.4%, on weak cash and boxed beef pressure that overwhelmed tight ready-supply math. Crude finished at $79.90, up 0.9% on the session and up roughly 12% on the week, the biggest weekly run since April, as the Strait of Hormuz re-escalation that built through Thursday kept the energy premium from deflating. Grains were range-bound noise: corn off a penny, beans off 2 cents, wheat up a cent and a quarter. The loudest story today isn't what grains did; it's what cattle couldn't do even with supply tightness on their side.
+Live cattle dropped 1.4% on weak cash and boxed beef pressure; crude posted a 12% weekly gain as Hormuz re-escalation held.
+• Cattle Break on Cash Pressure
+• Crude Locks In a 12% Week
+  → Any remaining unhedged harvest-season diesel: $79.90 is not a ceiling if Hormuz flows stay constrained. Lock remaining needs now. The 12% weekly move happened without a diplomatic resolution; waiting for one is a bet on news that isn't on the calendar.
+• Grains Drift Into the Weekend
+Read more: https://agsist.com/daily/2026-07-17</description>
+    </item>
     <item>
       <title>HORMUZ RE-ESCALATES; WHEAT LEADS, HOGS BOUNCE</title>
       <link>https://agsist.com/daily/2026-07-16</link>
@@ -386,18 +399,6 @@ A 6.7% drop in soybean oil splits the oilseed complex ahead of Thursday's weekly
 • GRAINS DRIFT, EXPORTS LOOM
 • CATTLE MARKS TIME
 Read more: https://agsist.com/daily/2026-06-18</description>
-    </item>
-    <item>
-      <title>CATTLE RUNS HARD, WHEAT HOLDS, CORN FIRMS</title>
-      <link>https://agsist.com/daily/2026-06-17</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-17</guid>
-      <pubDate>Wed, 17 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Live cattle at $249.12 is up 2.4% on the session, the biggest move in the complex in weeks, and it happened the day after the Cargill Fort Morgan lockout looked like it had broken the chart. That is the market telling you something: the buyer is not gone, the processing constraint is not the whole story, and screwworm case counts climbing to 12 are starting to price supply tightness the lockout alone couldn't explain. Meanwhile, wheat at $6.14 is holding most of Monday's 4% run, and a climatologist at the Midwestern Regional Climate Center is flagging another severe weather round bearing down on the Eastern Corn Belt. The weekly thread question is still live: did the Belt catch up to seasonal pace, and now the follow-on question is whether it matters if a tornado outbreak erases the progress.
-Live cattle's biggest single-session gain in weeks leads a broadly green close, while another ECB severe weather threat keeps grain bulls interested.
-• CATTLE RUNS BACK
-• WHEAT HOLDS, CORN FIRMS
-• SOYBEANS STEADY
-Read more: https://agsist.com/daily/2026-06-17</description>
     </item>
   </channel>
 </rss>
