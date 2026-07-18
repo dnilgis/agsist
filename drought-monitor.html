@@ -218,7 +218,7 @@ button,a,[role="button"] { touch-action: manipulation; }
     <h1>US Drought Monitor</h1>
     <p>Weekly drought conditions for US crop regions. Select national, state, or regional views. Published every Thursday by the National Drought Mitigation Center, USDA, and NOAA.</p>
     <div class="dm-hero-meta">
-      <div class="dm-updated">Source: droughtmonitor.unl.edu · Updated Thursdays by 8:30 AM ET</div>
+      <div class="dm-updated">Source: droughtmonitor.unl.edu · Updated Thursdays by 8:30 AM ET<span id="dm-valid"></span></div><script>fetch("/data/outlooks/manifest.json").then(function(r){return r.json()}).then(function(m){var d=m&&m.usdm_latest&&m.usdm_latest.data_valid||m&&m.data_valid;if(d)document.getElementById("dm-valid").textContent=" · map valid "+d;}).catch(function(){});</script>
       <div class="dm-next-update" id="dm-next-update">Next update: —</div>
     </div>
   </div>
