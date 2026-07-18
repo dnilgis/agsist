@@ -1,0 +1,50 @@
+name: cond-yield
+
+# Conditions-vs-final-yield honesty fits (/conditions-yield page). Weekly
+# Tuesdays in season, after Monday's Crop Progress lands (conditions.yml
+# runs 01:12 Tue; this at 03:18 so both see the same fresh week).
+on:
+  schedule:
+    - cron: "18 3 * * 2"       # Tuesdays 03:18 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cond-yield
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest (gate)
+        run: python scripts/fetch_cond_yield.py --selftest
+      - name: Skip off-season
+        id: window
+        run: |
+          M=$(date -u +%m)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "go=1" >> $GITHUB_OUTPUT; exit 0; fi
+          if [ "$M" -ge 4 ] && [ "$M" -le 11 ]; then echo "go=1" >> $GITHUB_OUTPUT; else
+            echo "go=0" >> $GITHUB_OUTPUT; echo "month $M off-season — skipping"; fi
+      - name: Fetch
+        if: steps.window.outputs.go == '1'
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/fetch_cond_yield.py
+      - name: Commit
+        if: steps.window.outputs.go == '1'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A data/cond-yield 2>/dev/null || true
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: conditions-vs-yield honesty fits"
+          git pull --rebase --autostash origin main || true
+          git push

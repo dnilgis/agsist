@@ -1,0 +1,41 @@
+name: tenure
+
+# Census of Agriculture land-ownership data (/land-tenure page). The census
+# is 5-yearly (last 2022); this exists to seed the data and re-run when a
+# new census drops. Annual cron is just a cheap safety net.
+on:
+  schedule:
+    - cron: "25 6 15 2 *"      # Feb 15 yearly
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tenure
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest (gate)
+        run: python scripts/fetch_tenure.py --selftest
+      - name: Fetch
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/fetch_tenure.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A data/tenure 2>/dev/null || true
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: census land tenure (owned vs rented acres)"
+          git pull --rebase --autostash origin main || true
+          git push

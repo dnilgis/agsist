@@ -1,0 +1,40 @@
+name: storage
+
+# Grain storage capacity vs production (/storage-crunch page). Capacity and
+# final production land each January; yearly cron + dispatch for rebuilds.
+on:
+  schedule:
+    - cron: "35 7 20 1 *"      # Jan 20 yearly, after Grain Stocks + Annual Production
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: storage
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest (gate)
+        run: python scripts/fetch_storage.py --selftest
+      - name: Fetch
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/fetch_storage.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A data/storage 2>/dev/null || true
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: grain storage capacity vs production"
+          git pull --rebase --autostash origin main || true
+          git push
