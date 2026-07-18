@@ -1,0 +1,30 @@
+FSA PAYMENT FILES — BROWSER DOWNLOAD LIST (for the farmer-first payments page)
+==============================================================================
+
+WHY YOU: fsa.usda.gov tarpits datacenter IPs (verified — GitHub Actions
+AND my sandbox both hang). Your home browser sails right through, same
+as the AFIDA files. This is our annual pipeline and it works.
+
+WHERE
+  https://www.fsa.usda.gov/tools/informational/freedom-information-act-foia/electronic-reading-room/frequently-requested/payment-files
+
+WHAT'S THERE
+  Yearly payment files, split into several downloads by state ranges
+  (each covers a chunk of states, e.g. roughly AL-through-KY in one
+  file). Exact names/splits vary by year - grab whatever the newest
+  fiscal year offers.
+
+DO THIS - IN TWO STEPS, NOT ONE
+  STEP 1 (today, 1 file): download ONE file from the NEWEST year -
+    pick the smallest/last state-range file. Upload just that one to me.
+    I validate the real schema (headers, program codes, payee format)
+    before you burn time on the rest. Probes before pipelines.
+  STEP 2 (after I confirm): download the REST of that year's files
+    and upload them all. If the site offers prior years and the
+    downloads are painless, the newest year alone is enough to launch -
+    history can come later.
+
+DON'T
+  - Don't unzip/re-save/open-and-save in Excel first - upload exactly
+    what the site gives you (re-saving can mangle encodings).
+  - Don't rename the files - the names carry the state-range info.
