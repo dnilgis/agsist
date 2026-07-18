@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c0d">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <link rel="preload" href="/components/styles.css?v=12" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=12">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <title>Foreign-Owned Farmland by County: Who Holds 47 Million American Acres | AGSIST</title>
+  <meta name="description" content="47.2 million acres of U.S. agricultural land are in foreign hands — mapped county by county from USDA's own AFIDA disclosures, 2010 to 2024. Who holds it (Canada is #1, not China), what kind of land it is (nearly half is forest), and how fast it's growing. Free, sourced, honest about what the data is.">
+  <link rel="canonical" href="https://agsist.com/foreign-land">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AGSIST">
+  <meta property="og:title" content="Foreign-Owned Farmland, County by County — 47.2 Million Acres Mapped">
+  <meta property="og:description" content="USDA's AFIDA disclosures, 2010–2024, on one fast map. The honest version: Canada leads, nearly half is timberland, and it has nearly doubled since 2010.">
+  <meta property="og:url" content="https://agsist.com/foreign-land">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@agsist">
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+   {"@type":"Question","name":"How much U.S. farmland is foreign-owned?",
+    "acceptedAnswer":{"@type":"Answer","text":"As of December 31, 2024, foreign investors reported holdings of about 47.2 million acres of U.S. agricultural land under AFIDA — up from about 24.8 million acres in 2010, a near-doubling in 14 years. That is a few percent of all U.S. agricultural land."}},
+   {"@type":"Question","name":"Which country owns the most U.S. farmland?",
+    "acceptedAnswer":{"@type":"Answer","text":"Canada, by a wide margin — followed by European investors (Netherlands, Germany, Italy, United Kingdom, Denmark). Despite the headlines, China is not among the largest holders in the AFIDA data."}},
+   {"@type":"Question","name":"Is foreign-owned agricultural land mostly cropland?",
+    "acceptedAnswer":{"@type":"Answer","text":"No — nearly half of all foreign-held agricultural acreage (about 22.2 of 47.2 million acres in 2024) is forest land, much of it corporate timberland. Cropland is about 13.7 million acres and pasture about 8.3 million."}},
+   {"@type":"Question","name":"Where does this data come from and how reliable is it?",
+    "acceptedAnswer":{"@type":"Answer","text":"USDA's Agricultural Foreign Investment Disclosure Act (AFIDA) filings — foreign persons and entities are required by law to disclose U.S. agricultural land holdings, including leases of 10 years or longer. It is self-reported disclosure data: real filings, but only as complete as compliance. USDA publishes the raw files annually; this page aggregates them without editing them."}}
+  ]}
+  </script>
+
+  <style>
+    .fl-wrap{max-width:1140px;margin:0 auto;padding:24px 16px 60px}
+    .fl-hero{padding:26px 0 2px}
+    .fl-kicker{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#d4a23f;margin:0 0 10px}
+    .fl-hero h1{font-family:Archivo,system-ui,sans-serif;font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.12;margin:0 0 12px;color:#e6ebe9}
+    .fl-sub{font-size:1.02rem;line-height:1.7;color:#8a948f;max-width:820px;margin:0}
+    .fl-sub strong{color:#e6ebe9}
+    .ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
+    .ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
+    .ag-sponsor-ribbon a{color:#d4a23f}
+    .fl-panel{background:#101415;border:1px solid #1a1f20;border-radius:12px;margin-top:26px;overflow:hidden}
+    .fl-panel-hd{padding:14px 18px;border-bottom:1px solid #1a1f20}
+    .fl-panel-t{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#d4a23f}
+    .fl-panel-b{padding:18px}
+    .fl-seed{font-size:13px;line-height:1.7;color:#8a948f;margin:6px 18px 0;padding-bottom:12px}
+    #fl-map{height:520px;background:#0a0c0d}
+    .fl-leg{display:flex;align-items:center;gap:2px;padding:10px 18px;border-bottom:1px solid #1a1f20;flex-wrap:wrap}
+    .fl-leg-cell{width:52px}
+    .fl-leg-bar{height:10px;border-radius:2px}
+    .fl-leg-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;color:#8a948f;text-align:center;margin-top:3px}
+    .fl-leg-l{font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a948f;margin-left:14px}
+    .fl-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+    .fl-stat{background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:14px 16px}
+    .fl-stat-l{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:#d4a23f}
+    .fl-stat-v{font-family:'JetBrains Mono',monospace;font-size:1.5rem;color:#e6ebe9;margin:6px 0 2px}
+    .fl-stat-m{font-size:.8rem;color:#8a948f;line-height:1.5}
+    .fl-chart{width:100%;height:auto;display:block}
+    table.fl-tbl{width:100%;border-collapse:collapse;font-size:.88rem}
+    .fl-tbl th{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;text-align:left;padding:8px 10px;border-bottom:1px solid #1a1f20}
+    .fl-tbl td{padding:7px 10px;border-bottom:1px solid rgba(132,160,168,.08);color:#c9d1cd}
+    .fl-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;color:#e6ebe9;white-space:nowrap}
+    .fl-note{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:.9rem;line-height:1.7;color:#8a948f;margin:16px 0}
+    .fl-note strong{color:#d4a23f}
+    .fl-detail{display:none}
+    .fl-detail.on{display:block}
+    .fl-dt-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+    .fl-dt-name{font-family:Archivo,system-ui,sans-serif;font-size:1.25rem;color:#e6ebe9}
+    .fl-dt-ac{font-family:'JetBrains Mono',monospace;font-size:1.15rem;color:#d4a23f}
+    .fl-bars{display:flex;align-items:flex-end;gap:3px;height:90px;margin:14px 0 4px}
+    .fl-bar{flex:1;background:#d4a23f;border-radius:2px 2px 0 0;min-height:2px;position:relative}
+    .fl-bar.gap{background:transparent;border-bottom:2px dotted #3a4345}
+    .fl-bar-y{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:9px;color:#8a948f}
+    .fl-split{display:flex;height:14px;border-radius:4px;overflow:hidden;margin:10px 0 4px}
+    .fl-split div{height:100%}
+    .fl-faq details{border-bottom:1px solid #1a1f20;padding:10px 0}
+    .fl-faq summary{cursor:pointer;color:#e6ebe9;font-size:.95rem}
+    .fl-faq p{color:#8a948f;font-size:.9rem;line-height:1.7;margin:8px 0 2px}
+    .fl-src{font-size:.8rem;color:#8a948f;line-height:1.7}
+    .fl-src a{color:#d4a23f}
+    .fl-2col{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+    @media (max-width:820px){.fl-2col{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<main class="fl-wrap">
+  <header class="fl-hero">
+    <p class="fl-kicker">USDA AFIDA disclosures &middot; 2010&ndash;2024 &middot; county by county</p>
+    <h1>Who owns American farmland &mdash; from somewhere else</h1>
+    <p class="fl-sub">Foreign investors report holding <strong>47.2 million acres</strong> of U.S. agricultural land &mdash; nearly double 2010, spread across <strong>2,559 counties</strong>. Before you repeat a headline: the biggest holder is <strong>Canada</strong>, not China, and <strong>nearly half of it is forest</strong>, not corn ground. Every number below comes from USDA&rsquo;s own disclosure files, unedited.</p>
+  </header>
+
+  <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here cares who owns the ground &mdash; one category-exclusive slot. <a href="/sponsor?slot=foreign-land&amp;utm_source=foreign-land&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+
+  <section class="fl-panel" aria-labelledby="fl-map-t">
+    <div class="fl-panel-hd"><span class="fl-panel-t" id="fl-map-t">Foreign-held agricultural acres, by county</span></div>
+    <p class="fl-seed"><!--SEED:aflstats-->47,241,820 acres of U.S. agricultural land held by foreign investors as of Dec 31, 2024 &middot; 2,559 counties &middot; up from 24,841,588 acres in 2010 &middot; largest holder country: Canada &middot; 47% of the acreage is forest land &middot; source: USDA FSA AFIDA disclosure filings &middot; page data refreshed 2026-07-18<!--/SEED--></p>
+    <div class="fl-leg" id="fl-leg"></div>
+    <div id="fl-map"></div>
+    <div class="fl-panel-b" style="padding-top:10px">
+      <p style="font-size:14px;line-height:1.7;color:#8a948f;margin:0">Tap any county. Dark counties report little or no foreign-held land; that can mean none exists <em>or</em> none was disclosed &mdash; AFIDA is a self-reporting law, and this page will not pretend otherwise.</p>
+    </div>
+  </section>
+
+  <section class="fl-panel fl-detail" id="fl-detail" aria-live="polite">
+    <div class="fl-panel-hd"><span class="fl-panel-t">This county</span></div>
+    <div class="fl-panel-b">
+      <div class="fl-dt-head"><span class="fl-dt-name" id="fl-dt-name">&mdash;</span><span class="fl-dt-ac" id="fl-dt-ac"></span></div>
+      <div class="fl-bars" id="fl-dt-bars"></div>
+      <div style="height:16px"></div>
+      <div class="fl-2col">
+        <div>
+          <div class="fl-stat-l" style="margin-bottom:6px">Holder countries (latest year)</div>
+          <table class="fl-tbl" id="fl-dt-countries"></table>
+        </div>
+        <div>
+          <div class="fl-stat-l" style="margin-bottom:6px">What kind of land</div>
+          <div class="fl-split" id="fl-dt-split"></div>
+          <div id="fl-dt-splitleg" style="font-size:.8rem;color:#8a948f;line-height:1.7"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="fl-panel" aria-labelledby="fl-nat-t">
+    <div class="fl-panel-hd"><span class="fl-panel-t" id="fl-nat-t">The national trend &mdash; 2010 to 2024</span></div>
+    <div class="fl-panel-b">
+      <div class="fl-stats" style="margin-bottom:16px">
+        <div class="fl-stat"><div class="fl-stat-l">Foreign-held, 2024</div><div class="fl-stat-v" id="fl-s-total">&mdash;</div><div class="fl-stat-m">acres reported under AFIDA</div></div>
+        <div class="fl-stat"><div class="fl-stat-l">Since 2010</div><div class="fl-stat-v" id="fl-s-growth">&mdash;</div><div class="fl-stat-m">from 24.8M acres &mdash; a near-doubling</div></div>
+        <div class="fl-stat"><div class="fl-stat-l">#1 holder country</div><div class="fl-stat-v" id="fl-s-top">&mdash;</div><div class="fl-stat-m">not the one the headlines lead with</div></div>
+        <div class="fl-stat"><div class="fl-stat-l">Share that is forest</div><div class="fl-stat-v" id="fl-s-forest">&mdash;</div><div class="fl-stat-m">much of it corporate timberland</div></div>
+      </div>
+      <svg class="fl-chart" id="fl-nat-chart" viewBox="0 0 900 300" role="img" aria-label="Foreign-held U.S. agricultural acres by year, 2010 to 2024"></svg>
+      <p style="font-size:13px;color:#8a948f;margin:8px 0 0">Gaps at 2015 and 2021: USDA&rsquo;s downloadable detail files skip those years. The line breaks rather than pretends.</p>
+    </div>
+  </section>
+
+  <section class="fl-panel">
+    <div class="fl-panel-hd"><span class="fl-panel-t">Two tables worth arguing about</span></div>
+    <div class="fl-panel-b fl-2col">
+      <div>
+        <div class="fl-stat-l" style="margin-bottom:6px">Top counties by foreign-held acres (2024)</div>
+        <table class="fl-tbl" id="fl-top-counties"></table>
+      </div>
+      <div>
+        <div class="fl-stat-l" style="margin-bottom:6px">Holder countries, national (2024)</div>
+        <table class="fl-tbl" id="fl-top-countries"></table>
+      </div>
+    </div>
+  </section>
+
+  <div class="fl-note"><strong>What this data is &mdash; and is not.</strong> AFIDA is a federal disclosure law: foreign persons and entities must report U.S. agricultural land holdings, including leases of 10+ years. It is <strong>self-reported</strong> &mdash; real filings, but only as complete as compliance, and USDA&rsquo;s GAO auditors have flagged gaps. Acreage here is summed exactly the way USDA&rsquo;s own annual report sums it. County percentages of total farmland are deliberately not shown yet &mdash; they need a matching county denominator done carefully, and a wrong percentage is worse than none. This page shows disclosed holdings, says so, and links the raw source below.</div>
+
+  <section class="fl-panel fl-faq-panel" aria-labelledby="fl-faq-t">
+    <div class="fl-panel-hd"><span class="fl-panel-t" id="fl-faq-t">Questions people actually ask</span></div>
+    <div class="fl-panel-b fl-faq">
+      <details><summary>How much American farmland does China own?</summary><p>Far less than the discourse suggests: China is not among the top holders in the AFIDA files &mdash; Canada and European countries dominate. Chinese-connected holdings exist and are politically sensitive (several states have restricted them), but by acreage they are a small slice. Since 2023 the filings even carry specific flags for secondary interests from China, Iran, Russia, and North Korea.</p></details>
+      <details><summary>Is 47 million acres a lot?</summary><p>It is about 3&ndash;4% of U.S. agricultural land &mdash; and it has nearly doubled since 2010, which is the more important number. A share that small still makes it among the fastest-growing categories of farmland ownership.</p></details>
+      <details><summary>Why is so much of it forest?</summary><p>Because global timber companies and investment funds own large tracts of U.S. timberland, and forest counts as agricultural land under AFIDA. Roughly 22 of the 47 million acres are forest &mdash; the single biggest reason raw AFIDA totals get misread as "foreign corn ground."</p></details>
+      <details><summary>My county shows nothing — does that mean no foreign ownership?</summary><p>It means no <em>disclosed</em> holdings. AFIDA relies on self-reporting with civil penalties for failure to file; federal auditors have found compliance gaps. Absence of a filing is evidence, not proof.</p></details>
+      <details><summary>Where can I get the raw data?</summary><p>USDA FSA publishes the detailed holdings files annually &mdash; linked below. This page aggregates them with an open-source script and changes nothing.</p></details>
+    </div>
+  </section>
+
+  <section class="fl-panel">
+    <div class="fl-panel-hd"><span class="fl-panel-t">Source</span></div>
+    <div class="fl-panel-b fl-src">
+      <p>USDA Farm Service Agency, Agricultural Foreign Investment Disclosure Act (AFIDA) detailed holdings files, 2010&ndash;2024, via <a href="https://www.fsa.usda.gov/resources/economic-policy-analysis/afida/annual-reports-underlying-data" rel="noopener">fsa.usda.gov</a>. Aggregation script: <code>scripts/process_afida.py</code> in the AGSIST repository &mdash; row-sums match USDA&rsquo;s published annual totals. USDA also hosts its own <a href="https://www.usda.gov/us-foreign-owned-ag-lands" rel="noopener">ArcGIS dashboard</a>. Data years 2015 and 2021 are not in USDA&rsquo;s downloadable file set. Page data refreshed 2026-07-18; AFIDA updates annually.</p>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+<script src="/components/loader.js?v=14"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  var DATA='/data/afida/';
+  var GEO='https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json';
+  var $=function(id){return document.getElementById(id);};
+  var fmt=function(n){return Math.round(n).toLocaleString();};
+  var county=null, nat=null, map=null, layer=null, breaks=null;
+  function prettyCountry(k){
+    if(/999|NO PREDOMINANT/i.test(k)) return 'No predominant country (mixed ownership)';
+    return String(k).toLowerCase().replace(/\b\w/g,function(c){return c.toUpperCase();})
+      .replace(/\bOf\b/g,'of').replace(/\bAnd\b/g,'and').replace(/\bThe\b/g,'the')
+      .replace(/^United Kingdom$/,'United Kingdom').replace(/\bUs\b/g,'US');
+  }
+  var YEARS=[2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024];
+  var COLORS=['#26290f','#4a4416','#6e5d1d','#957a24','#bd982e','#d4a23f'];
+
+  function quantiles(vals,n){
+    var s=vals.slice().sort(function(a,b){return a-b;}), out=[];
+    for(var i=1;i<n;i++) out.push(s[Math.floor(s.length*i/n)]);
+    return out;
+  }
+  function shade(v){
+    if(v==null||v<=0) return '#12161a';
+    for(var i=0;i<breaks.length;i++) if(v<=breaks[i]) return COLORS[i];
+    return COLORS[COLORS.length-1];
+  }
+  function legend(){
+    var lab=function(x){return x>=1e6?(x/1e6).toFixed(1)+'M':x>=1e3?Math.round(x/1e3)+'k':Math.round(x);};
+    var h='';
+    for(var i=0;i<COLORS.length;i++){
+      h+='<div class="fl-leg-cell"><div class="fl-leg-bar" style="background:'+COLORS[i]+'"></div>'
+        +'<div class="fl-leg-lbl">'+(i<breaks.length?'≤'+lab(breaks[i]):'≥'+lab(breaks[breaks.length-1]))+'</div></div>';
+    }
+    h+='<div class="fl-leg-cell"><div class="fl-leg-bar" style="background:#12161a;border:1px solid #1a1f20"></div><div class="fl-leg-lbl">none rep.</div></div>';
+    h+='<span class="fl-leg-l">acres · '+nat.latest_year+' · '+fmt(nat.counties_with_holdings)+' counties report holdings</span>';
+    $('fl-leg').innerHTML=h;
+  }
+
+  function showCounty(fips){
+    var c=county[fips];
+    if(!c) return;
+    var latest=nat.latest_year, ac=c.y[latest]||c.y[String(latest)]||0;
+    $('fl-dt-name').textContent=c.n+' County, '+c.st;
+    $('fl-dt-ac').textContent=ac?fmt(ac)+' ac foreign-held ('+latest+')':'no disclosed holdings in '+latest;
+    // trend bars with honest gaps
+    var maxv=0; YEARS.forEach(function(y){var v=c.y[y]||c.y[String(y)];if(v&&v>maxv)maxv=v;});
+    var bars='';
+    YEARS.forEach(function(y){
+      var v=c.y[y]||c.y[String(y)];
+      var isGap=(nat.missing_years||[]).indexOf(y)>=0;
+      if(isGap){ bars+='<div class="fl-bar gap" title="'+y+': no USDA file"><span class="fl-bar-y">'+String(y).slice(2)+'</span></div>'; }
+      else{
+        var h=v&&maxv?Math.max(3,Math.round(v/maxv*86)):2;
+        bars+='<div class="fl-bar" style="height:'+h+'px'+(v?'':';background:#2a2f31')+'" title="'+y+': '+(v?fmt(v)+' ac':'none reported')+'"><span class="fl-bar-y">'+String(y).slice(2)+'</span></div>';
+      }
+    });
+    $('fl-dt-bars').innerHTML=bars;
+    var rows='';
+    (c.top||[]).forEach(function(t){ rows+='<tr><td>'+prettyCountry(t[0])+'</td><td class="num">'+fmt(t[1])+'</td></tr>'; });
+    $('fl-dt-countries').innerHTML=rows||'<tr><td style="color:#8a948f">No disclosed holdings</td></tr>';
+    var land=c.land||{}, tot=0, k;
+    for(k in land) tot+=land[k];
+    var lc={'Forest':'#5fc28a','Crop':'#d4a23f','Pasture':'#c4922f','Other Non-Ag':'#8a948f','Other Agriculture':'#6e6329'};
+    var seg='', leg='';
+    for(k in land){
+      var pct=tot?land[k]/tot*100:0;
+      if(pct<0.5) continue;
+      seg+='<div style="width:'+pct+'%;background:'+(lc[k]||'#8a948f')+'" title="'+k+' '+Math.round(pct)+'%"></div>';
+      leg+='<span style="color:'+(lc[k]||'#8a948f')+'">&#9632;</span> '+k+' '+Math.round(pct)+'% &nbsp; ';
+    }
+    $('fl-dt-split').innerHTML=seg||'';
+    $('fl-dt-splitleg').innerHTML=leg||'<span style="color:#8a948f">No land-type detail</span>';
+    $('fl-detail').classList.add('on');
+    $('fl-detail').scrollIntoView({behavior:'smooth',block:'nearest'});
+    gaEvent('foreign_land_county',{fips:fips});
+  }
+
+  function natChart(){
+    var svg=$('fl-nat-chart'), W=900, H=300, P={l:70,r:16,t:16,b:34};
+    var ys=nat.years.map(Number), tv=nat.total_by_year;
+    var maxv=0; ys.forEach(function(y){var v=tv[y]||tv[String(y)];if(v>maxv)maxv=v;});
+    var x=function(y){return P.l+(y-2010)/(2024-2010)*(W-P.l-P.r);};
+    var yy=function(v){return H-P.b-(v/maxv)*(H-P.t-P.b);};
+    var h='';
+    // gridlines
+    [10e6,20e6,30e6,40e6].forEach(function(g){
+      h+='<line x1="'+P.l+'" y1="'+yy(g)+'" x2="'+(W-P.r)+'" y2="'+yy(g)+'" stroke="#1a1f20"/>'
+        +'<text x="'+(P.l-8)+'" y="'+(yy(g)+4)+'" text-anchor="end" fill="#8a948f" font-family="JetBrains Mono,monospace" font-size="11">'+(g/1e6)+'M</text>';
+    });
+    // segments broken at missing years
+    var segs=[], curr=[];
+    for(var y=2010;y<=2024;y++){
+      var v=tv[y]||tv[String(y)];
+      if(v){ curr.push([y,v]); }
+      else { if(curr.length) segs.push(curr); curr=[]; }
+    }
+    if(curr.length) segs.push(curr);
+    segs.forEach(function(seg){
+      var d='';
+      seg.forEach(function(p,i){ d+=(i?'L':'M')+x(p[0]).toFixed(1)+' '+yy(p[1]).toFixed(1)+' '; });
+      h+='<path d="'+d+'" fill="none" stroke="#d4a23f" stroke-width="2.5"/>';
+      seg.forEach(function(p){
+        h+='<circle cx="'+x(p[0]).toFixed(1)+'" cy="'+yy(p[1]).toFixed(1)+'" r="3.5" fill="#0a0c0d" stroke="#d4a23f" stroke-width="2"><title>'+p[0]+': '+fmt(p[1])+' acres</title></circle>';
+      });
+    });
+    (nat.missing_years||[]).forEach(function(y){
+      h+='<text x="'+x(y)+'" y="'+(H-P.b+2)+'" text-anchor="middle" fill="#3a4345" font-family="JetBrains Mono,monospace" font-size="10">✕</text>';
+    });
+    for(var yr=2010;yr<=2024;yr+=2){
+      h+='<text x="'+x(yr)+'" y="'+(H-8)+'" text-anchor="middle" fill="#8a948f" font-family="JetBrains Mono,monospace" font-size="11">'+yr+'</text>';
+    }
+    svg.innerHTML=h;
+  }
+
+  function tables(){
+    var rows='';
+    (nat.top_counties||[]).forEach(function(t,i){
+      rows+='<tr><td style="color:#8a948f">'+(i+1)+'</td><td>'+t.n+', '+t.st+'</td><td class="num">'+fmt(t.ac)+'</td></tr>';
+    });
+    $('fl-top-counties').innerHTML='<tr><th>#</th><th>County</th><th style="text-align:right">Acres</th></tr>'+rows;
+    var cr='', bc=nat.by_country, total=nat.total_by_year[nat.latest_year]||nat.total_by_year[String(nat.latest_year)];
+    Object.keys(bc).slice(0,15).forEach(function(k,i){
+      cr+='<tr><td style="color:#8a948f">'+(i+1)+'</td><td>'+prettyCountry(k)+'</td><td class="num">'+fmt(bc[k])+'</td><td class="num" style="color:#8a948f">'+(bc[k]/total*100).toFixed(1)+'%</td></tr>';
+    });
+    $('fl-top-countries').innerHTML='<tr><th>#</th><th>Country</th><th style="text-align:right">Acres</th><th style="text-align:right">Share</th></tr>'+cr;
+  }
+
+  function stats(){
+    var latest=nat.latest_year, tot=nat.total_by_year[latest]||nat.total_by_year[String(latest)];
+    var t2010=nat.total_by_year[2010]||nat.total_by_year['2010'];
+    $('fl-s-total').textContent=(tot/1e6).toFixed(1)+'M';
+    $('fl-s-growth').textContent='+'+Math.round((tot/t2010-1)*100)+'%';
+    $('fl-s-top').textContent=Object.keys(nat.by_country)[0]
+      .toLowerCase().replace(/\b\w/g,function(c){return c.toUpperCase();});
+    var forest=nat.by_land_type&&nat.by_land_type.Forest;
+    $('fl-s-forest').textContent=forest?Math.round(forest/tot*100)+'%':'—';
+  }
+
+  function boot(){
+    Promise.all([
+      fetch(DATA+'county.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
+      fetch(DATA+'national.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
+      fetch(GEO).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
+    ]).then(function(res){
+      county=res[0]; nat=res[1]; var topo=res[2];
+      if(!county||!nat){ $('fl-map').innerHTML='<div style="padding:40px;text-align:center;color:#8a948f;font-family:\'JetBrains Mono\',monospace;font-size:12px">Data unavailable</div>'; return; }
+      stats(); natChart(); tables();
+      if(!topo||typeof L==='undefined'||typeof topojson==='undefined'){
+        $('fl-map').innerHTML='<div style="padding:40px;text-align:center;color:#8a948f;font-family:\'JetBrains Mono\',monospace;font-size:12px">Map unavailable — the tables and chart above carry the story</div>'; return;
+      }
+      var latest=nat.latest_year;
+      var vals=[]; Object.keys(county).forEach(function(f){var v=county[f].y[latest]||county[f].y[String(latest)];if(v)vals.push(v);});
+      breaks=quantiles(vals,COLORS.length);
+      legend();
+      var gj=topojson.feature(topo,topo.objects.counties);
+      map=L.map('fl-map',{zoomControl:true,scrollWheelZoom:false,attributionControl:false}).setView([39.5,-98.35],4);
+      layer=L.geoJSON(gj,{
+        style:function(f){
+          var c=county[f.id], v=c?(c.y[latest]||c.y[String(latest)]):null;
+          return {fillColor:shade(v),weight:.4,color:'#0a0c0d',fillOpacity:.92};
+        },
+        onEachFeature:function(f,l){
+          l.on('click',function(){ showCounty(f.id); });
+          var c=county[f.id], v=c?(c.y[latest]||c.y[String(latest)]):null;
+          l.bindTooltip((c?c.n+' Co., '+c.st:'')+(v?' · '+fmt(v)+' ac':' · none reported'),{sticky:true});
+        }
+      }).addTo(map);
+    });
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+})();
+</script>
+</body>
+</html>
