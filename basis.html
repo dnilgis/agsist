@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c0d">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <link rel="preload" href="/components/styles.css?v=12" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=12">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <title>Grain Basis vs Normal: Your Elevator Didn't Cut Your Basis — The River Did | AGSIST</title>
+  <meta name="description" content="Regional corn, soybean, and wheat basis against its own 5-year normal, beside the barge rates and shipping spreads that actually move it. USDA data, updated weekly. Free.">
+  <link rel="canonical" href="https://agsist.com/basis">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AGSIST">
+  <meta property="og:title" content="Your Elevator Didn't Cut Your Basis. The River Did.">
+  <meta property="og:description" content="Regional basis vs its own 5-year normal, next to the barge rates that move it. USDA data, weekly, free.">
+  <meta property="og:url" content="https://agsist.com/basis">
+  <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@agsist">
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+   {"@type":"Question","name":"Why is my grain basis so wide right now?",
+    "acceptedAnswer":{"@type":"Answer","text":"Basis widens when it costs more to move grain from your region to the buyer — and the biggest mover is transportation. When barge rates spike (low river, high demand), interior elevators must bid less against the futures to cover the trip to the Gulf. This page shows your region's basis against its own 5-year normal, right beside the barge rates and origin-to-destination spreads that explain it."}},
+   {"@type":"Question","name":"Is basis set by my local elevator?",
+    "acceptedAnswer":{"@type":"Answer","text":"Your elevator posts the number, but the number mostly reflects regional transportation and demand economics: barge and rail rates, export bids at the Gulf and PNW, local processor demand, and storage space. This page shows REGIONAL basis (USDA-tracked markets), not any specific elevator — local spreads on top of the regional level are real but usually smaller than the regional move."}},
+   {"@type":"Question","name":"What is a normal basis level?",
+    "acceptedAnswer":{"@type":"Answer","text":"Normal is local and seasonal — which is why this page compares each region to its OWN average for this same week over the past five years, rather than to a national rule of thumb. The delta against that same-week normal is the number that means something."}},
+   {"@type":"Question","name":"What do barge rates have to do with my grain price?",
+    "acceptedAnswer":{"@type":"Answer","text":"A large share of U.S. export grain moves down the Mississippi river system by barge. Barge freight is quoted as a percent of a 1976 benchmark tariff; when it runs far above its seasonal normal — low water, lock delays, harvest demand — exporters pay more to get grain to the Gulf and pass it back as weaker interior basis. The pattern shows up in this page's data almost every time basis moves hard."}}
+  ]}
+  </script>
+
+  <style>
+    .bs-wrap{max-width:1140px;margin:0 auto;padding:24px 16px 60px}
+    .bs-hero{padding:26px 0 2px}
+    .bs-kicker{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#d4a23f;margin:0 0 10px}
+    .bs-hero h1{font-family:Archivo,system-ui,sans-serif;font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.12;margin:0 0 12px;color:#e6ebe9}
+    .bs-sub{font-size:1.02rem;line-height:1.7;color:#8a948f;max-width:820px;margin:0}
+    .bs-sub strong{color:#e6ebe9}
+    .ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
+    .ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
+    .ag-sponsor-ribbon a{color:#d4a23f}
+    .bs-panel{background:#101415;border:1px solid #1a1f20;border-radius:12px;margin-top:26px;overflow:hidden}
+    .bs-panel-hd{padding:14px 18px;border-bottom:1px solid #1a1f20;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:baseline}
+    .bs-panel-t{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#d4a23f}
+    .bs-fresh{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:#8a948f}
+    .bs-panel-b{padding:18px}
+    .bs-seed{font-size:13px;line-height:1.7;color:#8a948f;margin:0 0 6px}
+    .bs-tabs{display:flex;gap:8px;margin:0 0 14px}
+    .bs-tab{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid #3a4345;background:transparent;color:#8a948f;cursor:pointer}
+    .bs-tab.on{border-color:#d4a23f;color:#d4a23f;background:rgba(212,162,63,.08)}
+    table.bs-tbl{width:100%;border-collapse:collapse;font-size:.9rem}
+    .bs-tbl th{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;text-align:left;padding:8px 10px;border-bottom:1px solid #1a1f20}
+    .bs-tbl td{padding:8px 10px;border-bottom:1px solid rgba(132,160,168,.08);color:#c9d1cd}
+    .bs-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;white-space:nowrap;color:#e6ebe9}
+    .neg{color:#e0685f !important}.pos{color:#5fc28a !important}
+    .bs-spark{height:26px;width:130px}
+    .bs-bars{display:grid;gap:10px}
+    .bs-barrow{display:grid;grid-template-columns:130px 1fr 130px;gap:10px;align-items:center}
+    .bs-barlbl{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:#c9d1cd}
+    .bs-bartrack{position:relative;height:16px;background:#0d1112;border-radius:4px;overflow:hidden}
+    .bs-barnorm{position:absolute;top:0;bottom:0;width:2px;background:#8a948f}
+    .bs-barfill{position:absolute;top:2px;bottom:2px;left:0;background:#d4a23f;border-radius:3px;opacity:.85}
+    .bs-barval{font-family:'JetBrains Mono',monospace;font-size:.74rem;text-align:right;color:#e6ebe9}
+    .bs-note{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:.9rem;line-height:1.7;color:#8a948f;margin:16px 0}
+    .bs-note strong{color:#d4a23f}
+    .bs-walk{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+    .bs-walkstep{flex:1;min-width:150px;background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px}
+    .bs-walk-l{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f}
+    .bs-walk-v{font-family:'JetBrains Mono',monospace;font-size:1.3rem;color:#e6ebe9;margin:4px 0 2px}
+    .bs-walk-m{font-size:.76rem;color:#8a948f;line-height:1.5}
+    .bs-faq details{border-bottom:1px solid #1a1f20;padding:10px 0}
+    .bs-faq summary{cursor:pointer;color:#e6ebe9;font-size:.95rem}
+    .bs-faq p{color:#8a948f;font-size:.9rem;line-height:1.7;margin:8px 0 2px}
+    .bs-src{font-size:.8rem;color:#8a948f;line-height:1.7}
+    .bs-src a{color:#d4a23f}
+    @media (max-width:640px){.bs-barrow{grid-template-columns:96px 1fr 96px}.bs-spark{width:90px}}
+  </style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<main class="bs-wrap">
+  <header class="bs-hero">
+    <p class="bs-kicker">USDA AgTransport &middot; weekly &middot; regional basis vs its own normal</p>
+    <h1>Your elevator didn&rsquo;t cut your basis. The river did.</h1>
+    <p class="bs-sub">Everyone stares at the futures board; the check you actually cash is <strong>futures plus basis</strong> &mdash; and basis is mostly a freight story. Below: every USDA-tracked region&rsquo;s basis against <strong>its own 5-year average for this same week</strong>, next to the barge rates and origin-to-Gulf spreads that move it. When the number under your region turns red, this page shows you why &mdash; and it usually isn&rsquo;t your elevator.</p>
+  </header>
+
+  <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here just got a bid they didn&rsquo;t like &mdash; one category-exclusive slot. <a href="/sponsor?slot=basis&amp;utm_source=basis&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+
+  <section class="bs-panel" aria-labelledby="bs-reg-t">
+    <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-reg-t">Regional basis vs 5-year same-week normal</span><span class="bs-fresh" id="bs-fresh">loading&hellip;</span></div>
+    <div class="bs-panel-b">
+      <p class="bs-seed"><!--SEED:basisstats-->Weekly regional elevator-bid basis for corn, soybeans, and wheat vs each region&rsquo;s own 5-year same-week average, from USDA AgTransport (weekly since 2007), beside Mississippi-system barge rates and origin-to-Gulf shipping spreads. Data updates every Friday.<!--/SEED--></p>
+      <div class="bs-tabs" role="tablist" id="bs-tabs"></div>
+      <table class="bs-tbl" id="bs-table"><tr><td style="color:#8a948f">Loading USDA data&hellip;</td></tr></table>
+      <p style="font-size:13px;color:#8a948f;margin:10px 0 0">Negative delta = weaker than this region&rsquo;s normal for this week. These are USDA-tracked <em>regional</em> markets &mdash; your specific elevator sits some local spread away from its region, but it moves with it.</p>
+    </div>
+  </section>
+
+  <section class="bs-panel" aria-labelledby="bs-river-t">
+    <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-river-t">The river, right now &mdash; barge rates vs normal</span><span class="bs-fresh" id="bs-fresh2"></span></div>
+    <div class="bs-panel-b">
+      <div class="bs-bars" id="bs-barge"></div>
+      <p style="font-size:13px;color:#8a948f;margin:12px 0 0">Rates are percent of the 1976 benchmark tariff &mdash; the industry&rsquo;s odd but standard yardstick. The grey tick is each location&rsquo;s 5-year same-week average; the gold bar is now. Bars far past their ticks are freight eating your basis.</p>
+    </div>
+  </section>
+
+  <section class="bs-panel" aria-labelledby="bs-walk-t">
+    <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-walk-t">A bushel&rsquo;s journey &mdash; where the money goes</span></div>
+    <div class="bs-panel-b">
+      <div class="bs-walk" id="bs-walk"></div>
+      <p style="font-size:13px;color:#8a948f;margin:12px 0 0" id="bs-walk-note"></p>
+    </div>
+  </section>
+
+  <div class="bs-note"><strong>What this is &mdash; and is not.</strong> Regional attribution only: USDA tracks named markets and origins, not individual elevators, so this page explains the <em>regional</em> move your bid rides on. It will never claim to know your specific elevator&rsquo;s spread. Basis in $/bu against futures; a negative number is normal in most regions most of the time &mdash; the delta against normal is the story.</div>
+
+  <section class="bs-panel bs-faq-panel" aria-labelledby="bs-faq-t">
+    <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-faq-t">Questions people actually ask</span></div>
+    <div class="bs-panel-b bs-faq">
+      <details><summary>Why is my basis so wide right now?</summary><p>Check two rows on this page: your region&rsquo;s delta, and the barge bars. When freight runs above normal, interior bids must fall against the futures to pay the trip to the export market. Local demand (a plant nearby, a shuttle loader bidding) moves the rest.</p></details>
+      <details><summary>Is my elevator ripping me off?</summary><p>Compare your bid&rsquo;s basis to your region&rsquo;s number above. If your elevator is a nickel behind the region, that&rsquo;s a local conversation. If the whole region is a dollar under its normal &mdash; as happens in high-freight years &mdash; no elevator in the county could bid it away.</p></details>
+      <details><summary>When does basis usually strengthen?</summary><p>Each region has its own seasonal shape &mdash; which is exactly why this page compares each region to its own same-week history instead of quoting a national rule. Post-harvest logistics unclogging and processor demand windows are common strengtheners, but check your region&rsquo;s own pattern.</p></details>
+      <details><summary>Where do these numbers come from?</summary><p>USDA AgTransport open datasets: weekly regional grain basis (since 2007), barge freight rates, and origin-to-destination bid spreads. Updated here every Friday; sources linked below.</p></details>
+    </div>
+  </section>
+
+  <section class="bs-panel">
+    <div class="bs-panel-hd"><span class="bs-panel-t">Source</span></div>
+    <div class="bs-panel-b bs-src">
+      <p>USDA Agricultural Transportation Open Data (agtransport.usda.gov): grain basis (v85y-3hep, weekly since 2007), barge rates (deqi-uken), grain price spreads (an4w-mnp7), transport cost indicators (8uye-ieij). Refreshed on AGSIST every Friday; series and 5-year same-week averages computed by <code>scripts/fetch_transport.py</code> in the AGSIST repository. Related: <a href="/cash-bids">local cash bids</a> &middot; <a href="/cash-rent">county cash rent</a>.</p>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+<script src="/components/loader.js?v=14"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var basis=null, journey=null, crop='Corn';
+  var CROPS=['Corn','Soybeans','Hard Red Winter Wheat','Soft Red Winter Wheat','Hard Red Spring Wheat'];
+  var SHORT={'Hard Red Winter Wheat':'HRW Wheat','Soft Red Winter Wheat':'SRW Wheat','Hard Red Spring Wheat':'HRS Wheat'};
+
+  function fmt$(v){ return (v<0?'-':'+')+'$'+Math.abs(v).toFixed(2); }
+  function spark(hist, avg5){
+    // Full-context sparkline: domain always includes $0 and the 5-yr normal,
+    // so the line's position MEANS something — dashed grey = zero, dotted =
+    // this region's own normal, dot = now. Never a naked squiggle.
+    if(!hist||hist.length<2) return '';
+    var vs=hist.map(function(p){return p[1];});
+    var mn=Math.min.apply(null,vs), mx=Math.max.apply(null,vs);
+    mn=Math.min(mn,0,avg5==null?mn:avg5); mx=Math.max(mx,0,avg5==null?mx:avg5);
+    var rg=(mx-mn)||1;
+    var Y=function(v){return (24-((v-mn)/rg*20)-2).toFixed(1);};
+    var pts=vs.map(function(v,i){ return (i/(vs.length-1)*128+1).toFixed(1)+','+Y(v); }).join(' ');
+    var end=pts.split(' ').pop().split(',');
+    var tip=hist[0][0]+' → '+hist[hist.length-1][0]+': '+vs[vs.length-1].toFixed(2)
+      +' now · range '+mn.toFixed(2)+' to '+mx.toFixed(2)
+      +(avg5==null?'':' · 5-yr normal '+avg5.toFixed(2));
+    return '<svg class="bs-spark" viewBox="0 0 130 26" preserveAspectRatio="none" role="img">'
+      +'<title>'+tip+'</title>'
+      +'<line x1="1" y1="'+Y(0)+'" x2="129" y2="'+Y(0)+'" stroke="#5a6467" stroke-width="1" stroke-dasharray="3,2"/>'
+      +(avg5==null?'':'<line x1="1" y1="'+Y(avg5)+'" x2="129" y2="'+Y(avg5)+'" stroke="#8a948f" stroke-width="1" stroke-dasharray="1,3"/>')
+      +'<polyline points="'+pts+'" fill="none" stroke="#d4a23f" stroke-width="1.5"/>'
+      +'<circle cx="'+end[0]+'" cy="'+end[1]+'" r="2.4" fill="#d4a23f"/></svg>';
+  }
+
+  function renderTable(){
+    var rows=[];
+    Object.keys(basis.series).forEach(function(k){
+      var p=k.split('|');
+      if(p[0]!==crop||p[2]!=='Elevator Bid') return;
+      rows.push({mkt:p[1], s:basis.series[k]});
+    });
+    rows.sort(function(a,b){ return (a.s.delta==null?9:a.s.delta)-(b.s.delta==null?9:b.s.delta); });
+    var h='<tr><th>Region</th><th style="text-align:right">Basis now</th><th style="text-align:right">5-yr normal</th><th style="text-align:right">vs normal</th><th>26 weeks &nbsp;<span style="text-transform:none;letter-spacing:0;color:#5a6467">┄ $0</span> <span style="text-transform:none;letter-spacing:0;color:#8a948f">┈ normal</span></th></tr>';
+    rows.forEach(function(r){
+      var d=r.s.delta;
+      h+='<tr><td>'+r.mkt+'</td><td class="num">'+fmt$(r.s.latest)+'</td>'
+        +'<td class="num" style="color:#8a948f">'+(r.s.avg5==null?'—':fmt$(r.s.avg5))+'</td>'
+        +'<td class="num '+(d==null?'':(d<-0.02?'neg':(d>0.02?'pos':'')))+'">'+(d==null?'—':fmt$(d))+'</td>'
+        +'<td>'+spark(r.s.hist, r.s.avg5)+'</td></tr>';
+    });
+    $('bs-table').innerHTML = rows.length?h:'<tr><td style="color:#8a948f">No USDA series for this commodity</td></tr>';
+  }
+
+  function renderTabs(){
+    var have=CROPS.filter(function(c){ return Object.keys(basis.series).some(function(k){return k.indexOf(c+'|')===0&&k.indexOf('Elevator Bid')>0;}); });
+    $('bs-tabs').innerHTML=have.map(function(c){
+      return '<button class="bs-tab'+(c===crop?' on':'')+'" role="tab" data-c="'+c+'">'+(SHORT[c]||c)+'</button>';
+    }).join('');
+    Array.prototype.forEach.call($('bs-tabs').children,function(b){
+      b.addEventListener('click',function(){ crop=this.dataset.c; renderTabs(); renderTable(); gaEvent('basis_crop',{crop:crop}); });
+    });
+  }
+
+  function renderBarge(){
+    var keys=Object.keys(journey.barge);
+    var mx=0; keys.forEach(function(k){ var v=journey.barge[k]; mx=Math.max(mx,v.latest,v.avg5||0); });
+    mx*=1.08;
+    $('bs-barge').innerHTML=keys.map(function(k){
+      var v=journey.barge[k], w=(v.latest/mx*100).toFixed(1), n=v.avg5?(v.avg5/mx*100).toFixed(1):null;
+      var d=v.delta==null?'':(' ('+(v.delta>0?'+':'')+Math.round(v.delta)+' vs normal)');
+      return '<div class="bs-barrow"><div class="bs-barlbl">'+k+'</div>'
+        +'<div class="bs-bartrack"><div class="bs-barfill" style="width:'+w+'%"></div>'
+        +(n?'<div class="bs-barnorm" style="left:'+n+'%"></div>':'')+'</div>'
+        +'<div class="bs-barval'+(v.delta>25?' neg':'')+'">'+Math.round(v.latest)+'%'+d+'</div></div>';
+    }).join('');
+    $('bs-fresh2').textContent='week of '+(journey.barge[keys[0]]?journey.barge[keys[0]].date:'');
+  }
+
+  function renderWalk(){
+    // pick the Illinois -> Gulf corn spread as the canonical worked example
+    var key=Object.keys(journey.spreads).find(function(k){return k.indexOf('Corn|Illinois|Gulf')===0;})
+         ||Object.keys(journey.spreads)[0];
+    if(!key) return;
+    var s=journey.spreads[key], p=key.split('|');
+    $('bs-walk').innerHTML=
+      '<div class="bs-walkstep"><div class="bs-walk-l">'+p[1]+' bid</div><div class="bs-walk-v">$'+s.origin_bid.toFixed(2)+'</div><div class="bs-walk-m">what the interior market pays per bushel of '+p[0].toLowerCase()+'</div></div>'
+      +'<div class="bs-walkstep"><div class="bs-walk-l">'+p[2]+' bid</div><div class="bs-walk-v">$'+s.destination_bid.toFixed(2)+'</div><div class="bs-walk-m">what the export market pays for the same bushel</div></div>'
+      +'<div class="bs-walkstep"><div class="bs-walk-l">The journey&rsquo;s cut</div><div class="bs-walk-v">$'+s.spread.toFixed(2)+'</div><div class="bs-walk-m">freight + handling + margin between the two &mdash; the wedge your basis lives inside</div></div>';
+    var ci=journey.cost_index||{};
+    $('bs-walk-note').textContent='Transport cost indicators (2000=100), week of '+String(ci.date||'').slice(0,10)+': truck '+(ci.truck||'—')+' · shuttle train '+(ci.shuttle_train||'—')+' · barge '+(ci.barge||'—')+' · Gulf vessel '+(ci.gulf_vessel||'—')+'. Spread data: '+s.date+'.';
+  }
+
+  Promise.all([
+    fetch('/data/transport/basis.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
+    fetch('/data/transport/journey.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
+  ]).then(function(res){
+    basis=res[0]; journey=res[1];
+    if(!basis||!journey){ $('bs-table').innerHTML='<tr><td style="color:#8a948f">Data unavailable — try a refresh</td></tr>'; return; }
+    var anyKey=Object.keys(basis.series)[0];
+    $('bs-fresh').textContent='week of '+(basis.series[anyKey]?basis.series[anyKey].date:'');
+    renderTabs(); renderTable(); renderBarge(); renderWalk();
+  });
+})();
+</script>
+</body>
+</html>

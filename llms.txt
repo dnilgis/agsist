@@ -49,8 +49,11 @@ specific page. Each daily briefing has a permanent dated URL.
 - [Harvest Price Tracker](https://agsist.com/harvest-price-tracker)
 - [Pre-Sell Calculator](https://agsist.com/presell-calculator)
 - [Cash Rent by County](https://agsist.com/cash-rent): USDA county cash rent, history, and rent as a share of realistic gross revenue
+- [Cash Rent by State](https://agsist.com/rent/): every state's county cash rent rates on one page each — median, YoY, history to 2008, lease-notice deadlines
 - [Cash Farm Lease](https://agsist.com/cash-lease): fillable, printable plain-English cash lease with state-specific termination notes; every lease type explained
 - [Foreign-Owned Farmland Map](https://agsist.com/foreign-land): USDA AFIDA disclosures 2010-2024 mapped by county — 47.2M acres, top holder countries, land types
+- [Basis vs Normal](https://agsist.com/basis): regional grain basis against its own 5-year same-week average, with the barge rates and shipping spreads that move it
+- [Crop Conditions Ranked](https://agsist.com/conditions): each state's Good+Excellent share ranked against the same week of every year since 2000
 - [Hail Map](https://agsist.com/hail-map): radar-estimated hail swaths, 70 years of history, free alerts
 
 ## Reference
