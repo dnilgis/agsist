@@ -1,0 +1,25 @@
+name: probe-viral
+
+# Diagnostic for the five viral pages (AFIDA map, FSA payments, basis,
+# conditions percentile, bushel's journey). Reads only. Writes nothing,
+# commits nothing. Run it, open the probe step's log, paste it back.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install openpyxl (xlsx schema survey)
+        run: pip install openpyxl
+      - name: Probe viral-page data sources
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/probe_viral.py
