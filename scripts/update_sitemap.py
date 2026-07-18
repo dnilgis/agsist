@@ -71,6 +71,10 @@ def main():
     ap.add_argument("--daily", action="store_true")
     ap.add_argument("--changed", nargs="*", default=[])
     ap.add_argument("--out", default=None, help="write bumped URLs here (for IndexNow)")
+    ap.add_argument("--priority", default=None,
+                    help="priority for URLs inserted by --add (default 0.4, tuned for archive pages)")
+    ap.add_argument("--changefreq", default=None,
+                    help="changefreq for URLs inserted by --add (default 'never', tuned for archive pages)")
     ap.add_argument("--add", nargs="*", default=[],
                     help="ensure these full URLs exist in the sitemap; insert (lastmod=today) "
                          "if missing, bump lastmod if already present. Used by daily.yml to "
@@ -139,8 +143,13 @@ def main():
                               f"<lastmod>{today}</lastmod>", block, count=1, flags=re.S)
             new = re.sub(r"<url>.*?</url>", bump_existing, new, flags=re.S)
         else:
+            # Defaults are tuned for daily ARCHIVE pages: published once, never
+            # revised, low priority. A tool page is neither, so allow an override
+            # rather than silently filing /cash-rent as "never changes, 0.4".
+            _freq = args.changefreq or "never"
+            _pri = args.priority or "0.4"
             entry = (f"  <url><loc>{url}</loc><lastmod>{today}</lastmod>"
-                     f"<changefreq>never</changefreq><priority>0.4</priority></url>\n")
+                     f"<changefreq>{_freq}</changefreq><priority>{_pri}</priority></url>\n")
             new = new.replace("</urlset>", entry + "</urlset>", 1)
             bumped.append(url)
             print(f"[sitemap] added {url}")

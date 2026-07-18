@@ -103,6 +103,8 @@ def _num(v):
     return f
 
 
+from contract_calendar import is_expired   # ONE definition of contract expiry
+
 # A transient yfinance hiccup clears within hours; a quote that cannot be
 # fetched for this many days is almost certainly an expired/rolled contract
 # whose ticker needs advancing (see ANNUAL CONTRACT MAINTENANCE above).
@@ -274,7 +276,16 @@ def main():
     stale_keys = []
     expired_suspects = []
 
+    retired = []
     for key, spec in SYMBOLS.items():
+        # A dated contract past its last trading day is not "failing to fetch",
+        # it is DEAD. Preserving its final settle is how wheat-jul26 sat in the
+        # feed at 631.25 while live Sep wheat was 669.00 -- a 37c ghost that any
+        # consumer reading the key would have swallowed as current. Drop it.
+        if is_expired(key):
+            retired.append(key)
+            continue
+
         cands = candidates(spec)
         result = None
         for ticker in cands:
@@ -309,11 +320,20 @@ def main():
             else:
                 print(f"  LOST {key} ({ticker}) — failed and no prior value to keep")
 
+    if retired:
+        print(f"\n  RETIRED {len(retired)} expired contract(s), not fetched, not written:")
+        for k in retired:
+            print(f"    - {k}  (past last trading day; advance the ticker in SYMBOLS when you roll it)")
+
     output = {
         "fetched":    datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "ok":         ok,
         "failed":     fail,
         "stale_keys": stale_keys,
+        # Dated contracts dropped because they are past their last trading day.
+        # Named, not hidden: a consumer that wants corn-jul26 should be able to
+        # see it was retired on purpose rather than wonder why the key vanished.
+        "retired_keys": retired,
         "quotes":     quotes
     }
 

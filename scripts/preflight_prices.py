@@ -20,6 +20,8 @@ Schema note: in prices.json the field "open" actually holds PREVIOUS CLOSE.
 import json, sys, argparse, math
 from datetime import datetime, timezone
 
+from contract_calendar import is_expired   # ONE definition of contract expiry
+
 # continuous alias -> ordered dated front-month candidates (calendar order)
 FRONT = {
  "corn":  ["corn-jul26","corn-sep26","corn-dec","corn-mar27","corn-may27","corn-jul27","corn-dec27"],
@@ -51,13 +53,14 @@ REL_TOL = 0.004        # 0.4% — continuous vs dated must agree this tightly
 PCT_TOL = 0.06         # stored pctChange vs recomputed (pct points)
 
 def _expired(key, today):
-    """crude grain/livestock contract expiry: mid-month of the contract month."""
-    suf=key.split('-')[-1]                     # 'jul26'
-    mon=_MON.get(suf[:3]); 
-    if mon is None: return False
-    yr=2000+int(suf[3:])
-    exp=datetime(yr,mon,15,tzinfo=timezone.utc) # ~mid-month expiry
-    return today>exp
+    """Delegates to contract_calendar — the single definition of this rule.
+
+    Kept as a thin wrapper so existing call sites are untouched. Previously this
+    held its own copy of the rule, and generate_daily.py held a DIFFERENT copy.
+    They disagreed on the 15th of every contract month and blocked the send.
+    """
+    return is_expired(key, today)
+
 
 def front_key(commodity, quotes, today):
     for k in FRONT.get(commodity,[]):

@@ -189,6 +189,33 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
                 if d.strftime('%A')!=wd: F('calendar','%s: "%s %s %d" is a %s'%(loc,wd,mon,day,d.strftime('%A')))
             except ValueError: F('calendar','%s: invalid date %s %d'%(loc,mon,day))
 
+    # 6b) News-base coverage floor.
+    #
+    # The briefing LEADS on news. Until now the only record of how much news it
+    # actually had was a stderr line: the 2026-07-15 run pulled 9 of 22 feeds and
+    # shipped anyway, because nothing checked. That is a silent quality collapse
+    # -- no error, just thinner prose leaning on whichever feeds still answer,
+    # under a source_summary the model wrote itself.
+    #
+    # Deliberately a WARNING, not a hard block, at the soft floor: feeds break for
+    # reasons outside our control (WAFs, datacenter-IP blocks, holidays), and per
+    # doctrine only deterministic data-integrity checks earn a hard block. But at
+    # the hard floor the briefing has essentially no news base, and a news-led
+    # product with no news should not go out under a confident source list.
+    NEWS_WARN_AT = 12      # of 22 — below this, coverage is degraded
+    NEWS_BLOCK_AT = 4      # at or below this, there is no news base at all
+    cov = (daily.get('meta') or {}).get('news_coverage') or {}
+    if not cov or not cov.get('total'):
+        W('news-coverage', 'no meta.news_coverage recorded — generator too old to measure it')
+    else:
+        ok, tot, items = cov.get('ok', 0), cov.get('total', 0), cov.get('items', 0)
+        if ok <= NEWS_BLOCK_AT:
+            F('news-coverage', 'only %d/%d feeds returned content (%d items) — no news base'
+              % (ok, tot, items))
+        elif ok < NEWS_WARN_AT:
+            W('news-coverage', '%d/%d feeds returned content (%d items); dark: %s'
+              % (ok, tot, items, ', '.join(cov.get('dark', [])[:6])))
+
     # 7) HTML in body (Rule 16) + emoji + email + scope + honest-copy
     for loc,text in fields:
         if re.search(r'</?(strong|em|b|i)>', text): F('html','%s contains raw HTML tag (use markdown)'%loc)

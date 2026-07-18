@@ -135,6 +135,8 @@ import sys
 import random
 import re
 from datetime import datetime, timezone, timedelta
+
+from contract_calendar import is_expired   # ONE definition of contract expiry
 from pathlib import Path
 
 try:
@@ -439,32 +441,17 @@ _FRONT_REL_TOL = 0.004  # 0.4%: continuous must agree with dated front this tigh
 
 
 def _front_expired(key, now):
-    """A dated grain contract is treated as rolled/expired from the 15th of its
-    contract month.
+    """Delegates to contract_calendar — the single definition of this rule.
 
-    THIS RULE MUST MATCH preflight_prices._expired() EXACTLY. preflight is the
-    authority: it runs first (GATE 1) and rewrites prices.json, so if this
-    function disagrees by even one day, generate locks a different contract than
-    the feed holds and briefing_gate's locked-drift check hard-blocks the send.
-
-    That is not hypothetical. This function previously returned
-    `(yr, mon, 16) <= (now.year, now.month, now.day)` -- expiring a day LATE --
-    while preflight used `now > (yr, mon, 15)`. The two agreed on every day of
-    the year except the 15th of a contract month, where generate would lock an
-    already-dead contract. On 2026-07-15 that locked July corn at 4.3375 against
-    a September feed of 4.4350, July wheat at 6.15 against 6.6275, and blocked
-    the send. CBOT grain last trading day is the business day BEFORE the 15th,
-    so by the 15th the contract is done and preflight was right.
+    This function used to carry its own copy, expiring a day LATE
+    (`(yr,mon,16) <= today`) while preflight_prices used `today > (yr,mon,15)`.
+    They agreed 364 days a year. On 2026-07-15 they disagreed: preflight
+    repaired the feed to September while this locked July -- dead since the
+    previous session -- and the briefing reported wheat "breaking" at a phantom
+    $6.15 while live September wheat was $6.63 and UP. The locked-drift gate
+    caught it; nothing else would have. One rule now, in one file.
     """
-    suffix = key.split("-")[-1]            # e.g. 'jul26'
-    mon = _FRONT_MONTH_NUM.get(suffix[:3])
-    if mon is None:
-        return False
-    try:
-        yr = 2000 + int(suffix[3:])
-    except ValueError:
-        return False
-    return (now.year, now.month, now.day) >= (yr, mon, 15)
+    return is_expired(key, now)
 
 
 def _resolve_front_month(quotes):
@@ -920,6 +907,9 @@ def _bucket_for(text_lower):
 
 
 def fetch_ag_news():
+    # Reset first: a stale coverage figure from an earlier call would be worse
+    # than none, because the gate would trust it.
+    fetch_ag_news.coverage = {"ok": 0, "total": 0, "items": 0, "dark": []}
     """v4.4: pull RSS entries, extract summaries, score by recency,
     cluster into buckets. Returns a structured prompt string the model
     is instructed to USE (not just consider as context).
@@ -974,6 +964,18 @@ def fetch_ag_news():
     # v4.4.1: per-feed diagnostic log (visible in CI/cron)
     working = sum(1 for _, n, _ in feed_results if n > 0)
     total = len(feed_results)
+    # Persist the REAL tally. Until now this number only ever existed in stderr:
+    # the 2026-07-15 run read 9/22 and nobody knew, because the briefing still
+    # generated and still printed a confident source_summary. A news-led briefing
+    # running on 41% of its news base degrades silently -- no error, just thinner
+    # prose leaning on whichever four feeds still answer. Ground truth now travels
+    # with the briefing so briefing_gate can hold it to a floor.
+    fetch_ag_news.coverage = {
+        "ok": working,
+        "total": total,
+        "items": len(raw_items),
+        "dark": [host for host, n, _ in feed_results if n == 0],
+    }
     print(f"  RSS feeds: {working}/{total} returned recent content", file=sys.stderr)
     for host, n, status in feed_results:
         marker = "+" if n > 0 else "-"
@@ -3491,6 +3493,12 @@ def main():
     briefing["market_status_reason"] = market_status["reason"]
     if "meta" not in briefing: briefing["meta"] = {}
     briefing["meta"]["overnight_surprises_count"] = len(surprises)
+    # Measured news coverage, not the model's claim about it. source_summary is
+    # written BY the LLM and is a narrative; this is the tally. briefing_gate
+    # holds it to a floor so a collapsing news base fails loudly instead of
+    # quietly producing thinner prose over a confident-sounding source list.
+    briefing["meta"]["news_coverage"] = getattr(
+        fetch_ag_news, "coverage", {"ok": 0, "total": 0, "items": 0, "dark": []})
 
     # v4.2 (Phase 2 C2): two-pass quote re-selection. Now that we know the
     # market_mood the model assigned, re-pick from a mood-affinity bucket.
