@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c0d">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <link rel="preload" href="/components/styles.css?v=12" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=12">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <title>Cash Rent by County: What the Ground Can Actually Pay | AGSIST</title>
+  <meta name="description" content="USDA county cash rent for every published county, plus the number nobody shows you: rent as a share of what the acre can realistically gross at your trend yield and today's board. Free, no login, sources shown.">
+  <link rel="canonical" href="https://agsist.com/cash-rent">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AGSIST">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="Cash Rent by County: What the Ground Can Actually Pay">
+  <meta property="og:description" content="Everybody knows their rent. Almost nobody knows their rent as a share of gross revenue. County cash rent against county trend yield and the board.">
+  <meta property="og:url" content="https://agsist.com/cash-rent">
+  <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Cash Rent by County — AGSIST">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@agsist">
+  <meta name="twitter:creator" content="@agsist">
+  <meta name="twitter:title" content="Cash Rent by County: What the Ground Can Actually Pay">
+  <meta name="twitter:description" content="County cash rent against county trend yield and the board — the ratio that actually decides a lease.">
+  <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Dataset",
+        "@id": "https://agsist.com/cash-rent#dataset",
+        "name": "US County Cash Rent and Trend Yield",
+        "description": "County-level cash rental rates for non-irrigated cropland, irrigated cropland, and permanent pasture, as published annually by USDA NASS under the 2008 Farm Bill mandate, paired with county trend yields for corn and soybeans fitted from NASS county yield estimates.",
+        "url": "https://agsist.com/cash-rent",
+        "license": "https://www.usa.gov/government-works",
+        "isAccessibleForFree": true,
+        "creator": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"},
+        "temporalCoverage": "2008/..",
+        "spatialCoverage": {"@type": "Place", "name": "United States"},
+        "measurementTechnique": "USDA NASS Cash Rents Survey county estimates; ordinary least squares trend fit on NASS county yield estimates",
+        "variableMeasured": [
+          {"@type": "PropertyValue", "name": "Cash rent, non-irrigated cropland", "unitText": "USD per acre per year"},
+          {"@type": "PropertyValue", "name": "Cash rent, irrigated cropland", "unitText": "USD per acre per year"},
+          {"@type": "PropertyValue", "name": "Cash rent, permanent pasture", "unitText": "USD per acre per year"},
+          {"@type": "PropertyValue", "name": "Trend yield", "unitText": "bushels per acre"}
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": "https://agsist.com/"},
+          {"@type": "ListItem", "position": 2, "name": "Cash Rent by County", "item": "https://agsist.com/cash-rent"}
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is the average cash rent per acre in my county?",
+            "acceptedAnswer": {"@type": "Answer", "text": "USDA NASS publishes a mean cash rental rate for every county with at least 20,000 acres of cropland plus pasture, separately for non-irrigated cropland, irrigated cropland, and permanent pasture. Pick your state and county above to see the published rate and its full history. If your county is not listed, NASS did not get enough survey responses to publish a rate for it."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "When is county cash rent data released?",
+            "acceptedAnswer": {"@type": "Answer", "text": "USDA NASS releases county cash rent estimates each August, from a survey of roughly 280,000 farms and ranches conducted earlier the same year. The rate published in August 2025 describes the 2025 crop year. Rates are not revised after publication."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why is there no 2015 cash rent data?",
+            "acceptedAnswer": {"@type": "Answer", "text": "NASS did not conduct the county Cash Rents Survey in 2015, so no county estimates exist for that year. County data runs 2008 to 2014 and 2016 forward. This page shows that year as a gap rather than drawing a line across it, because a line across it would be an invention."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What percent of gross revenue should cash rent be?",
+            "acceptedAnswer": {"@type": "Answer", "text": "There is no single correct figure, and anyone who gives you one is selling something. Rent as a share of gross revenue is useful because it moves when yields and prices move, while the rent itself is fixed for the season. Comparing the ratio to your own county's history is more informative than comparing it to a national rule of thumb. What the remaining share has to cover — seed, fertilizer, chemical, machinery, labor, interest — varies enormously between operations."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How has cash rent changed as a share of revenue over time?",
+            "acceptedAnswer": {"@type": "Answer", "text": "This page charts it directly for every county with the data. For each year it divides that year's published county rent by that year's actual county yield times that year's state average price received. Every term is a USDA figure published after the fact, so the line shows what really happened rather than a projection. The pattern in most Corn Belt counties is that rent takes a far larger share of the gross in low-price years than in high-price years, even when the rent itself barely moves."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does this use futures prices or what farmers actually got?",
+            "acceptedAnswer": {"@type": "Answer", "text": "The historical chart uses the USDA NASS marketing-year average price received by farmers in your state, which reflects actual sales and therefore already includes local basis. The calculator at the top uses a board price plus a basis you enter yourself, because it is looking forward at a crop you have not sold. The two answer different questions: what happened, and what might."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is NASS cash rent the same as what I should pay?",
+            "acceptedAnswer": {"@type": "Answer", "text": "No. It is a county mean from a voluntary survey. Rents vary widely within a county and even between farms on the same road, driven by soil type, drainage, field size, yield history, and how badly a neighbor wants the ground. Treat the county mean as a reference point for a conversation, not as a rate card."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <style>
+  .cr-wrap{max-width:980px;margin:0 auto;padding:0 20px 72px}
+  #cr-map{height:520px;border-radius:0 0 6px 6px;background:#0a0c0d}
+  @media(max-width:640px){#cr-map{height:420px}}
+  .leaflet-container{background:#0a0c0d;font-family:Inter,system-ui,sans-serif}
+  .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#161b1c;color:#e6ebe9;border:1px solid rgba(132,160,168,.12);box-shadow:0 8px 28px rgba(0,0,0,.5)}
+  .leaflet-popup-content{margin:11px 13px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:1.75}
+  .leaflet-popup-content b{color:#e6ebe9;font-family:Archivo,system-ui,sans-serif;font-size:13px}
+  .leaflet-bar a{background:#161b1c;color:#e6ebe9;border-color:rgba(132,160,168,.12)}
+  .leaflet-bar a:hover{background:#1d2425}
+  .cr-mtabs{display:flex;gap:0;border:1px solid rgba(132,160,168,.12);border-radius:4px;overflow:hidden}
+  .cr-mtab{background:#101415;border:0;color:#8a948f;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:7px 12px;cursor:pointer}
+  .cr-mtab.on{background:#d4a23f;color:#0a0c0d;font-weight:600}
+  .cr-mleg{display:flex;align-items:center;gap:2px;padding:12px 18px;flex-wrap:wrap}
+  .cr-mleg-i{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .cr-mleg-s{width:42px;height:9px}
+  .cr-mleg-t{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;color:#8a948f}
+  .cr-mleg-l{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:#8a948f;margin-left:12px}
+  .cr-hero{padding:56px 0 28px;border-bottom:1px solid rgba(132,160,168,.12)}
+  .cr-kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#d4a23f;margin:0 0 14px}
+  .cr-hero h1{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-size:clamp(30px,4.6vw,50px);line-height:1.06;letter-spacing:-.02em;color:#e6ebe9;margin:0 0 16px}
+  .cr-sub{font-size:17px;line-height:1.6;color:#8a948f;margin:0;max-width:66ch}
+  .cr-sub strong{color:#e6ebe9;font-weight:600}
+
+  .cr-panel{background:#101415;border:1px solid rgba(132,160,168,.12);border-radius:6px;margin:28px 0}
+  .cr-panel-hd{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:14px 18px;border-bottom:1px solid rgba(132,160,168,.12);flex-wrap:wrap}
+  .cr-panel-t{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8a948f}
+  .cr-panel-b{padding:18px}
+
+  .cr-pick{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:560px){.cr-pick{grid-template-columns:1fr}}
+  .cr-pick label{display:block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8a948f;margin:0 0 6px}
+  .cr-pick select{width:100%;background:#161b1c;border:1px solid rgba(132,160,168,.12);border-radius:4px;color:#e6ebe9;font-family:Inter,system-ui,sans-serif;font-size:16px;padding:11px 12px;-webkit-appearance:none;appearance:none}
+  .cr-pick select:focus{outline:2px solid #d4a23f;outline-offset:1px}
+
+  .cr-cells{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(132,160,168,.12);border:1px solid rgba(132,160,168,.12);border-radius:6px;overflow:hidden}
+  @media(max-width:640px){.cr-cells{grid-template-columns:1fr}}
+  .cr-cell{background:#101415;padding:16px 18px}
+  .cr-cell-l{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:#8a948f;margin:0 0 8px}
+  .cr-cell-v{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:27px;font-weight:600;color:#e6ebe9;line-height:1;letter-spacing:-.02em}
+  .cr-cell-u{font-size:13px;color:#8a948f;font-weight:400;margin-left:3px}
+  .cr-cell-m{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:#8a948f;margin-top:8px}
+  .cr-na{color:#8a948f;font-size:17px;font-weight:400}
+
+  .cr-ratio{text-align:center;padding:30px 18px}
+  .cr-ratio-v{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:clamp(48px,10vw,76px);font-weight:700;line-height:1;letter-spacing:-.03em;color:#e6ebe9}
+  .cr-ratio-l{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8a948f;margin-top:12px}
+  .cr-ratio-x{font-size:15px;line-height:1.6;color:#8a948f;max-width:60ch;margin:16px auto 0}
+  .cr-ratio-x strong{color:#e6ebe9;font-weight:600}
+  .pos{color:#5fc28a!important}.neg{color:#e0685f!important}.warn{color:#d4a23f!important}
+
+  .cr-math{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#8a948f;background:#0a0c0d;border:1px solid rgba(132,160,168,.12);border-radius:4px;padding:12px 14px;margin-top:18px;line-height:1.9;overflow-x:auto;white-space:nowrap}
+  .cr-math b{color:#e6ebe9;font-weight:600}
+
+  .cr-inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+  @media(max-width:640px){.cr-inputs{grid-template-columns:1fr}}
+  .cr-in label{display:block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:#8a948f;margin:0 0 6px}
+  .cr-in input{width:100%;background:#161b1c;border:1px solid rgba(132,160,168,.12);border-radius:4px;color:#e6ebe9;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:16px;padding:10px 12px}
+  .cr-in input:focus{outline:2px solid #d4a23f;outline-offset:1px}
+  .cr-in-h{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:#8a948f;margin-top:5px}
+
+  .cr-chart{width:100%;height:auto;display:block}
+  .cr-legend{display:flex;gap:18px;flex-wrap:wrap;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:#8a948f;padding:0 18px 16px}
+  .cr-swatch{display:inline-block;width:10px;height:2px;vertical-align:middle;margin-right:6px}
+
+  .cr-body{max-width:68ch}
+  .cr-body h2{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-size:25px;letter-spacing:-.01em;color:#e6ebe9;margin:44px 0 14px}
+  .cr-body h3{font-family:Archivo,system-ui,sans-serif;font-weight:600;font-size:18px;color:#e6ebe9;margin:28px 0 10px}
+  .cr-body p{font-size:16px;line-height:1.72;color:#8a948f;margin:0 0 15px}
+  .cr-body strong{color:#e6ebe9;font-weight:600}
+  .cr-body ul{margin:0 0 15px;padding-left:20px}
+  .cr-body li{font-size:16px;line-height:1.72;color:#8a948f;margin-bottom:8px}
+  .cr-body a{color:#d4a23f;text-decoration:none;border-bottom:1px solid rgba(212,162,63,.3)}
+  .cr-body a:hover{border-bottom-color:#d4a23f}
+
+  .cr-callout{border-left:2px solid #d4a23f;background:#101415;padding:15px 18px;margin:22px 0;border-radius:0 4px 4px 0}
+  .cr-callout p{margin:0;font-size:15px;line-height:1.66;color:#8a948f}
+  .cr-callout strong{color:#e6ebe9}
+
+  .cr-faq{border-top:1px solid rgba(132,160,168,.12);margin-top:12px}
+  .cr-faq details{border-bottom:1px solid rgba(132,160,168,.12)}
+  .cr-faq summary{cursor:pointer;padding:16px 0;font-family:Archivo,system-ui,sans-serif;font-weight:600;font-size:16px;color:#e6ebe9;list-style:none;display:flex;justify-content:space-between;gap:14px;align-items:center}
+  .cr-faq summary::-webkit-details-marker{display:none}
+  .cr-faq summary::after{content:"+";font-family:'JetBrains Mono',ui-monospace,monospace;color:#d4a23f;font-size:17px;flex-shrink:0}
+  .cr-faq details[open] summary::after{content:"\2212"}
+  .cr-faq-a{padding:0 0 16px;font-size:15px;line-height:1.7;color:#8a948f;max-width:66ch}
+
+  .cr-src{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;line-height:1.9;color:#8a948f;border-top:1px solid rgba(132,160,168,.12);margin-top:44px;padding-top:18px}
+  .cr-src a{color:#8a948f;text-decoration:underline;text-underline-offset:2px}
+  .cr-src a:hover{color:#d4a23f}
+  </style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<main class="cr-wrap">
+
+  <header class="cr-hero">
+    <p class="cr-kicker">USDA NASS &middot; County Cash Rents Survey</p>
+    <h1>Cash rent, against what the ground can actually pay</h1>
+    <p class="cr-sub">You know your rent. The number that decides the lease is <strong>rent as a share of what the acre can realistically gross</strong> &mdash; and almost nobody puts those two numbers side by side. This does, for every county USDA publishes.</p>
+  </header>
+
+  <section class="cr-panel" aria-labelledby="cr-map-t" style="margin-top:28px">
+    <div class="cr-panel-hd">
+      <span class="cr-panel-t" id="cr-map-t">Every county USDA publishes</span>
+      <div class="cr-mtabs" role="tablist">
+        <button class="cr-mtab on" id="cr-mt-pct" role="tab" aria-selected="true">Share of gross</button>
+        <button class="cr-mtab" id="cr-mt-rent" role="tab" aria-selected="false">Rent $/ac</button>
+      </div>
+    </div>
+    <div class="cr-mleg" id="cr-mleg"></div>
+    <div id="cr-map"></div>
+    <div class="cr-panel-b" style="border-top:1px solid rgba(132,160,168,.12)">
+      <p style="font-size:14px;line-height:1.7;color:#8a948f;margin:0" id="cr-map-note">Tap any county. Grey means USDA did not publish a rate there &mdash; too few survey responses &mdash; and I would rather show you a hole than a neighbour&rsquo;s number.</p>
+    </div>
+  </section>
+
+  <section class="cr-panel" aria-labelledby="cr-pick-t">
+    <div class="cr-panel-hd"><span class="cr-panel-t" id="cr-pick-t">Pick your ground</span><span class="cr-panel-t" id="cr-status">Loading&hellip;</span></div>
+    <div class="cr-panel-b">
+      <div class="cr-pick">
+        <div><label for="cr-state">State</label><select id="cr-state" disabled><option>Loading&hellip;</option></select></div>
+        <div><label for="cr-county">County</label><select id="cr-county" disabled><option>&mdash;</option></select></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="cr-rates-t">
+    <h2 class="cr-panel-t" id="cr-rates-t" style="margin:0 0 12px">Published rent &middot; <span id="cr-rates-yr">latest</span></h2>
+    <div class="cr-cells">
+      <div class="cr-cell"><p class="cr-cell-l">Non-irrigated cropland</p><div class="cr-cell-v" id="cr-ni">&mdash;</div><div class="cr-cell-m" id="cr-ni-m">&nbsp;</div></div>
+      <div class="cr-cell"><p class="cr-cell-l">Irrigated cropland</p><div class="cr-cell-v" id="cr-ir">&mdash;</div><div class="cr-cell-m" id="cr-ir-m">&nbsp;</div></div>
+      <div class="cr-cell"><p class="cr-cell-l">Permanent pasture</p><div class="cr-cell-v" id="cr-pa">&mdash;</div><div class="cr-cell-m" id="cr-pa-m">&nbsp;</div></div>
+    </div>
+  </section>
+
+  <section class="cr-panel" aria-labelledby="cr-ratio-t">
+    <div class="cr-panel-hd"><span class="cr-panel-t" id="cr-ratio-t">Rent as a share of gross revenue</span><span class="cr-panel-t" id="cr-ratio-crop">Corn</span></div>
+    <div class="cr-ratio">
+      <div class="cr-ratio-v" id="cr-ratio">&mdash;</div>
+      <div class="cr-ratio-l">of gross revenue goes to rent</div>
+      <p class="cr-ratio-x" id="cr-ratio-x">Pick a county to run the math.</p>
+    </div>
+    <div class="cr-panel-b" style="border-top:1px solid rgba(132,160,168,.12)">
+      <div class="cr-math" id="cr-math">&mdash;</div>
+      <div class="cr-inputs">
+        <div class="cr-in"><label for="cr-yield">Trend yield (bu/ac)</label><input type="number" id="cr-yield" inputmode="decimal" step="0.1"><div class="cr-in-h" id="cr-yield-h">&nbsp;</div></div>
+        <div class="cr-in"><label for="cr-price">Board price ($/bu)</label><input type="number" id="cr-price" inputmode="decimal" step="0.01"><div class="cr-in-h" id="cr-price-h">&nbsp;</div></div>
+        <div class="cr-in"><label for="cr-basis">Your basis ($/bu)</label><input type="number" id="cr-basis" inputmode="decimal" step="0.01" value="0"><div class="cr-in-h">Under the board = negative</div></div>
+      </div>
+      <p style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:#8a948f;margin:14px 0 0;line-height:1.7">Every field is editable. These are starting points, not your farm &mdash; change them to your own numbers and the math follows.</p>
+    </div>
+  </section>
+
+  <section class="cr-panel" aria-labelledby="cr-rh-t">
+    <div class="cr-panel-hd"><span class="cr-panel-t" id="cr-rh-t">The squeeze &middot; rent as a share of gross, every year</span><span class="cr-panel-t" id="cr-rh-r">&mdash;</span></div>
+    <div class="cr-panel-b" style="padding-bottom:8px"><svg class="cr-chart" id="cr-rh-chart" viewBox="0 0 900 360" role="img" aria-label="Rent as a share of gross revenue, by year"><text x="450" y="180" text-anchor="middle" fill="#8a948f" font-family="'JetBrains Mono',monospace" font-size="13">Pick a county</text></svg></div>
+    <div class="cr-legend">
+      <span><span class="cr-swatch" style="background:#d4a23f"></span>Corn</span>
+      <span><span class="cr-swatch" style="background:#5fc28a"></span>Soybeans</span>
+      <span id="cr-rh-note"></span>
+    </div>
+    <div class="cr-panel-b" style="border-top:1px solid rgba(132,160,168,.12)">
+      <p style="font-size:14px;line-height:1.7;color:#8a948f;margin:0" id="cr-rh-x">Each point is <strong style="color:#e6ebe9">that year&rsquo;s published rent</strong> divided by <strong style="color:#e6ebe9">that year&rsquo;s actual county yield</strong> times <strong style="color:#e6ebe9">that year&rsquo;s state average price received</strong>. Nothing here is a forecast or a trend line &mdash; every term is a number USDA published after the fact. Because price received is what farmers actually got, your basis is already inside it.</p>
+    </div>
+  </section>
+
+  <section class="cr-panel" aria-labelledby="cr-hist-t">
+    <div class="cr-panel-hd"><span class="cr-panel-t" id="cr-hist-t">Rent history</span><span class="cr-panel-t" id="cr-hist-r">&mdash;</span></div>
+    <div class="cr-panel-b" style="padding-bottom:8px"><svg class="cr-chart" id="cr-chart" viewBox="0 0 900 340" role="img" aria-label="County cash rent history"><text x="450" y="170" text-anchor="middle" fill="#8a948f" font-family="'JetBrains Mono',monospace" font-size="13">Pick a county</text></svg></div>
+    <div class="cr-legend">
+      <span><span class="cr-swatch" style="background:#d4a23f"></span>Non-irrigated</span>
+      <span><span class="cr-swatch" style="background:#5fc28a"></span>Irrigated</span>
+      <span><span class="cr-swatch" style="background:#8a948f"></span>Pasture</span>
+      <span id="cr-gapnote"></span>
+    </div>
+  </section>
+
+  <div class="cr-body">
+    <h2>Why this ratio and not the rent</h2>
+    <p>Rent is fixed in the spring. Yield and price are not. That is the whole problem with judging a lease by the rent alone: the rent stops moving the day you sign, and everything that pays for it keeps moving for another nine months.</p>
+    <p>Expressing rent as a share of gross revenue puts the fixed number on top of the moving one. When corn is $6.00 and the county trends 200 bushels, $250 rent is about 21% of the gross. When corn is $4.00, the same $250 on the same ground is over 31%. Nothing about the lease changed. The arithmetic underneath it did.</p>
+    <div class="cr-callout">
+      <p><strong>There is no magic percentage.</strong> Anyone quoting you one number for the whole country is guessing, or selling. What the rest of the gross has to cover &mdash; seed, fertilizer, chemical, iron, labor, interest, living &mdash; is wildly different between two operations on the same road. The useful comparison is your county against <em>its own history</em>, which is why the chart goes back to 2008.</p>
+    </div>
+
+    <h2>Where these numbers come from</h2>
+    <p>The rent is USDA NASS's county estimate from the <strong>Cash Rents Survey</strong>, a survey of roughly 280,000 farms and ranches run every year in every state but Alaska. The 2008 Farm Bill requires NASS to publish a mean rate for every county with at least 20,000 acres of cropland plus pasture. Results land each <strong>August</strong> and are not revised afterward. The Farm Service Agency uses these same county estimates to set market-based rates for programs like CRP.</p>
+    <p>The trend yield is mine, not USDA's: an ordinary least-squares fit through your county's NASS yield estimates over the last fifteen years, projected to the current year. It ships with its fit quality attached, and where a county has fewer than six real years of yield on record, <strong>no trend is shown at all</strong> rather than a number pulled through too few points.</p>
+
+    <h3>Three things this data will not do</h3>
+    <ul>
+      <li><strong>It will not fill in your county if NASS didn't.</strong> Counties with too few survey responses are withheld. Where that happens you get a blank and a plain statement that NASS did not publish, never a neighbor's number wearing your county's name.</li>
+      <li><strong>It has no 2015.</strong> NASS ran no county Cash Rents Survey that year, so the series runs 2008&ndash;2014 and 2016 forward. The chart shows a hole. Drawing a line across it would be inventing a year.</li>
+      <li><strong>It is a county mean, not a rate card.</strong> Rents differ between farms on the same road &mdash; soil, drainage, field size, yield history, and how badly the neighbor wants it. Bring the mean to the conversation as a reference point, not a verdict.</li>
+    </ul>
+
+    <h2>Using it in an actual rent conversation</h2>
+    <p>The common landlord conversation is a number against a feeling. This gives both sides the same arithmetic to argue about, which is usually a shorter argument. A few honest ways to run it:</p>
+    <ul>
+      <li><strong>Put your real yield in.</strong> The county trend is a starting point. If your ground beats the county by fifteen bushels, type that in &mdash; a share of gross computed on somebody else's yield is not your ratio.</li>
+      <li><strong>Put your real basis in.</strong> The board is not what you get paid. Basis is the difference between the two, and over a 200-bushel acre, thirty cents is sixty dollars.</li>
+      <li><strong>Look at the history, not the level.</strong> A ratio means little in isolation and a lot next to the same county's last fifteen years.</li>
+    </ul>
+    <p>What it deliberately will not do is tell you what to sign. That is between you, your landlord, and your own numbers.</p>
+
+    <h2>Questions</h2>
+    <div class="cr-faq">
+      <details><summary>What is the average cash rent per acre in my county?</summary><div class="cr-faq-a">USDA NASS publishes a mean cash rental rate for every county with at least 20,000 acres of cropland plus pasture, separately for non-irrigated cropland, irrigated cropland, and permanent pasture. Pick your state and county above to see the published rate and its full history. If your county is not listed, NASS did not get enough survey responses to publish a rate for it.</div></details>
+      <details><summary>When is county cash rent data released?</summary><div class="cr-faq-a">USDA NASS releases county cash rent estimates each August, from a survey of roughly 280,000 farms and ranches conducted earlier the same year. The rate published in August 2025 describes the 2025 crop year. Rates are not revised after publication.</div></details>
+      <details><summary>Why is there no 2015 cash rent data?</summary><div class="cr-faq-a">NASS did not conduct the county Cash Rents Survey in 2015, so no county estimates exist for that year. County data runs 2008 to 2014 and 2016 forward. This page shows that year as a gap rather than drawing a line across it, because a line across it would be an invention.</div></details>
+      <details><summary>What percent of gross revenue should cash rent be?</summary><div class="cr-faq-a">There is no single correct figure, and anyone who gives you one is selling something. Rent as a share of gross revenue is useful because it moves when yields and prices move, while the rent itself is fixed for the season. Comparing the ratio to your own county's history is more informative than comparing it to a national rule of thumb. What the remaining share has to cover &mdash; seed, fertilizer, chemical, machinery, labor, interest &mdash; varies enormously between operations.</div></details>
+      <details><summary>How has cash rent changed as a share of revenue over time?</summary><div class="cr-faq-a">This page charts it directly for every county with the data. For each year it divides that year's published county rent by that year's actual county yield times that year's state average price received. Every term is a USDA figure published after the fact, so the line shows what really happened rather than a projection. The pattern in most Corn Belt counties is that rent takes a far larger share of the gross in low-price years than in high-price years, even when the rent itself barely moves.</div></details>
+      <details><summary>Does this use futures prices or what farmers actually got?</summary><div class="cr-faq-a">The historical chart uses the USDA NASS marketing-year average price received by farmers in your state, which reflects actual sales and therefore already includes local basis. The calculator at the top uses a board price plus a basis you enter yourself, because it is looking forward at a crop you have not sold. The two answer different questions: what happened, and what might.</div></details>
+      <details><summary>Is NASS cash rent the same as what I should pay?</summary><div class="cr-faq-a">No. It is a county mean from a voluntary survey. Rents vary widely within a county and even between farms on the same road, driven by soil type, drainage, field size, yield history, and how badly a neighbor wants the ground. Treat the county mean as a reference point for a conversation, not as a rate card.</div></details>
+    </div>
+
+    <div class="cr-src">
+      SOURCES<br>
+      Cash rent &middot; <a href="https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/" rel="noopener">USDA NASS Cash Rents Survey, county estimates</a><br>
+      Yield &middot; <a href="https://quickstats.nass.usda.gov/" rel="noopener">USDA NASS Quick Stats, county yield estimates</a><br>
+      Trend yield &middot; AGSIST ordinary least-squares fit, <span id="cr-src-window">15</span>-year window &middot; fit quality shown per county<br>
+      Historical prices &middot; <a href="https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Prices_Received_and_Prices_Received_Indexes/" rel="noopener">USDA NASS marketing-year average price received</a>, by state &middot; basis already embedded<br>
+      Board prices &middot; CME via AGSIST daily close &middot; editable above<br>
+      <span id="cr-src-gen">Data as published by USDA NASS.</span>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+<script src="/components/loader.js?v=14"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+
+<script>
+(function(){
+  'use strict';
+  var DATA='/data/cash-rent/';
+  var idx=null, cur=null, curCounty=null, prices=null;
+  var $=function(id){return document.getElementById(id);};
+
+  var NAMES={AL:'Alabama',AR:'Arkansas',AZ:'Arizona',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',IA:'Iowa',ID:'Idaho',IL:'Illinois',IN:'Indiana',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',MA:'Massachusetts',MD:'Maryland',ME:'Maine',MI:'Michigan',MN:'Minnesota',MO:'Missouri',MS:'Mississippi',MT:'Montana',NC:'North Carolina',ND:'North Dakota',NE:'Nebraska',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NV:'Nevada',NY:'New York',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VA:'Virginia',VT:'Vermont',WA:'Washington',WI:'Wisconsin',WV:'West Virginia',WY:'Wyoming'};
+
+  function money(v){ return '$'+v.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0}); }
+  function latestYear(series){ var ys=Object.keys(series||{}).map(Number); return ys.length?Math.max.apply(null,ys):null; }
+
+  // ---- prices (optional; every field stays editable if this never lands) ----
+  function loadPrices(){
+    return fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});
+  }
+  function boardPrice(){
+    // prices.json carries grain in CENTS; soybean key is `beans`.
+    try{ var c=prices&&prices.corn; if(c&&c.last!=null) return c.last/100; }catch(e){}
+    return null;
+  }
+
+  // ---- boot ----
+  function boot(){
+    Promise.all([
+      fetch(DATA+'index.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
+      loadPrices()
+    ]).then(function(res){
+      idx=res[0]; prices=res[1];
+      if(!idx||!idx.states||!idx.states.length){
+        $('cr-status').textContent='Data unavailable';
+        $('cr-status').className='cr-panel-t neg';
+        return;
+      }
+      $('cr-src-gen').textContent='County estimates as published by USDA NASS; last pulled '+idx.generated+'.';
+      var sel=$('cr-state');
+      sel.innerHTML='<option value="">Select a state\u2026</option>'+idx.states.map(function(s){
+        return '<option value="'+s.state+'">'+(NAMES[s.state]||s.state)+' ('+s.counties+')</option>';
+      }).join('');
+      sel.disabled=false;
+      $('cr-status').textContent=idx.totals.counties.toLocaleString()+' counties \u00b7 '+idx.years[0]+'\u2013'+idx.years[idx.years.length-1];
+      sel.addEventListener('change',onState);
+      $('cr-county').addEventListener('change',onCounty);
+      ['cr-yield','cr-price','cr-basis'].forEach(function(id){ $(id).addEventListener('input',calc); });
+    });
+  }
+
+  function onState(){
+    var st=$('cr-state').value, cs=$('cr-county');
+    if(!st){ cs.disabled=true; cs.innerHTML='<option>\u2014</option>'; return; }
+    cs.disabled=true; cs.innerHTML='<option>Loading\u2026</option>';
+    fetch(DATA+st+'.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+      if(!d){ cs.innerHTML='<option>Unavailable</option>'; return; }
+      cur=d;
+      cs.innerHTML='<option value="">Select a county\u2026</option>'+d.counties.map(function(c,i){
+        return '<option value="'+i+'">'+c.name+'</option>';
+      }).join('');
+      cs.disabled=false;
+      gaEvent('cash_rent_state',{state:st});
+    });
+  }
+
+  function onCounty(){
+    var i=$('cr-county').value;
+    if(i===''||!cur){ return; }
+    curCounty=cur.counties[+i];
+    render();
+    gaEvent('cash_rent_county',{state:cur.state,county:curCounty.name});
+  }
+
+  function setCell(vid,mid,series){
+    var v=$(vid), m=$(mid);
+    var y=latestYear(series);
+    if(y===null){
+      v.innerHTML='<span class="cr-na">Not published</span>';
+      m.textContent='NASS withheld \u2014 too few responses';
+      return null;
+    }
+    v.innerHTML=money(series[y])+'<span class="cr-cell-u">/ac</span>';
+    m.textContent=y+' survey';
+    return series[y];
+  }
+
+  // ---- THE CENTREPIECE ----------------------------------------------------
+  // rent(county,year) / ( yield(county,year) x price_received(state,year) )
+  // Every term is an observation USDA published for that year. A year missing
+  // ANY term produces NO point -- plot only the years that can be proven, and
+  // skip the rest, rather than carrying a value forward to keep a line unbroken.
+  function ratioSeries(crop){
+    var c=curCounty;
+    var rent=(c.rent&&(c.rent.nonirr||c.rent.irr))||null;
+    var yh=(c.yield&&c.yield[crop]&&c.yield[crop].hist)||null;
+    var ph=(cur.prices&&cur.prices[crop])||null;
+    if(!rent||!yh||!ph) return {};
+    var out={};
+    Object.keys(rent).forEach(function(y){
+      var Y=yh[y], P=ph[y], R=rent[y];
+      if(Y==null||P==null||R==null) return;   // no invention
+      if(!(Y>0)||!(P>0)) return;
+      out[y]=(R/(Y*P))*100;
+    });
+    return out;
+  }
+
+  function ratioChart(){
+    var svg=$('cr-rh-chart'), W=900,H=360,P={t:20,r:16,b:34,l:52};
+    var crops=[['corn','#d4a23f'],['beans','#5fc28a']];
+    var S={}, all=[], years=[];
+    crops.forEach(function(k){
+      var s=ratioSeries(k[0]);
+      if(Object.keys(s).length>1){ S[k[0]]=s;
+        Object.keys(s).forEach(function(y){ years.push(+y); all.push(s[y]); }); }
+    });
+    if(!all.length){
+      svg.innerHTML='<text x="450" y="172" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="13">Not enough published history for this county</text>'+
+        '<text x="450" y="194" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="11">needs rent, county yield and state price in the same year</text>';
+      $('cr-rh-r').textContent='\u2014'; $('cr-rh-note').textContent=''; return;
+    }
+    var y0=Math.min.apply(null,years), y1=Math.max.apply(null,years);
+    var v1=Math.min(100,Math.max.apply(null,all)*1.18), v0=0;
+    var X=function(y){ return P.l+(y-y0)/Math.max(1,(y1-y0))*(W-P.l-P.r); };
+    var Y=function(v){ return H-P.b-(v-v0)/(v1-v0)*(H-P.t-P.b); };
+    var o=[];
+    for(var g=0;g<=4;g++){ var gv=v0+(v1-v0)*g/4, gy=Y(gv);
+      o.push('<line x1="'+P.l+'" y1="'+gy.toFixed(1)+'" x2="'+(W-P.r)+'" y2="'+gy.toFixed(1)+'" stroke="rgba(132,160,168,.12)"/>');
+      o.push('<text x="'+(P.l-8)+'" y="'+(gy+4).toFixed(1)+'" text-anchor="end" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="10">'+Math.round(gv)+'%</text>');
+    }
+    for(var yy=y0;yy<=y1;yy++){ if((yy-y0)%3!==0&&yy!==y1) continue;
+      o.push('<text x="'+X(yy).toFixed(1)+'" y="'+(H-12)+'" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="10">'+("'"+String(yy).slice(2))+'</text>');
+    }
+    // 30% / 35% reference bands — visual context, explicitly not verdicts
+    [[30,'#d4a23f'],[35,'#e0685f']].forEach(function(b){
+      if(b[0]>=v1) return;
+      o.push('<line x1="'+P.l+'" y1="'+Y(b[0]).toFixed(1)+'" x2="'+(W-P.r)+'" y2="'+Y(b[0]).toFixed(1)+'" stroke="'+b[1]+'" stroke-width="1" stroke-dasharray="3 5" opacity=".45"/>');
+      o.push('<text x="'+(W-P.r-2)+'" y="'+(Y(b[0])-5).toFixed(1)+'" text-anchor="end" fill="'+b[1]+'" font-family="\'JetBrains Mono\',monospace" font-size="9" opacity=".8">'+b[0]+'%</text>');
+    });
+    var gaps=(cur.no_survey_years||[]).filter(function(g){ return g>y0&&g<y1; });
+    gaps.forEach(function(g){
+      o.push('<line x1="'+X(g).toFixed(1)+'" y1="'+P.t+'" x2="'+X(g).toFixed(1)+'" y2="'+(H-P.b)+'" stroke="#8a948f" stroke-width="1" stroke-dasharray="2 4" opacity=".5"/>');
+    });
+    var prelim=(cur.price_prelim||[]).map(Number);
+    Object.keys(S).forEach(function(k){
+      var col=(k==='corn')?'#d4a23f':'#5fc28a', s=S[k];
+      var ys=Object.keys(s).map(Number).sort(function(a,b){return a-b;});
+      var seg=[],segs=[];
+      for(var i=0;i<ys.length;i++){ if(i>0&&ys[i]-ys[i-1]>1){segs.push(seg);seg=[];} seg.push(ys[i]); }
+      if(seg.length) segs.push(seg);
+      segs.forEach(function(sg){
+        if(sg.length<2) return;
+        var d=sg.map(function(y,i){ return (i?'L':'M')+X(y).toFixed(1)+' '+Y(s[y]).toFixed(1); }).join(' ');
+        o.push('<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="2.5" stroke-linejoin="round"/>');
+      });
+      ys.forEach(function(y){
+        var isP=prelim.indexOf(y)>=0;
+        o.push('<circle cx="'+X(y).toFixed(1)+'" cy="'+Y(s[y]).toFixed(1)+'" r="'+(isP?3:2.5)+'" fill="'+(isP?'#0a0c0d':col)+'" stroke="'+col+'" stroke-width="'+(isP?2:0)+'"><title>'+y+': '+s[y].toFixed(1)+'%'+(isP?' (preliminary)':'')+'</title></circle>');
+      });
+    });
+    svg.innerHTML=o.join('');
+    var cs=S.corn||S.beans, key=S.corn?'corn':'beans';
+    var ys=Object.keys(cs).map(Number).sort(function(a,b){return a-b;});
+    var lo=ys[0], hi=ys[ys.length-1], d=cs[hi]-cs[lo];
+    $('cr-rh-r').innerHTML=(key==='corn'?'Corn':'Beans')+' '+lo+'\u2013'+hi+' <span class="'+(d>0?'neg':'pos')+'">'+(d>0?'+':'')+d.toFixed(1)+' pts</span>';
+    var pshown=ys.filter(function(y){ return prelim.indexOf(y)>=0; });
+    $('cr-rh-note').textContent=(gaps.length?'\u00b7 dashed vertical = no NASS rent survey ':'')+(pshown.length?'\u00b7 hollow point = preliminary marketing year':'');
+  }
+
+  function render(){
+    var c=curCounty, r=c.rent||{};
+    var ni=setCell('cr-ni','cr-ni-m',r.nonirr);
+    setCell('cr-ir','cr-ir-m',r.irr);
+    setCell('cr-pa','cr-pa-m',r.pasture);
+    var y=latestYear(r.nonirr)||latestYear(r.irr)||latestYear(r.pasture);
+    $('cr-rates-yr').textContent=y?y:'latest';
+
+    // seed the calculator
+    var cy=(c.yield&&c.yield.corn)||null;
+    if(cy){
+      $('cr-yield').value=cy.trend;
+      $('cr-yield-h').textContent='County trend \u00b7 R\u00b2 '+cy.r2.toFixed(2)+' \u00b7 '+cy.n+' yrs';
+      $('cr-yield-h').className='cr-in-h'+(cy.r2<0.3?' warn':'');
+    }else{
+      $('cr-yield').value='';
+      $('cr-yield-h').textContent='No county trend \u2014 enter your own';
+      $('cr-yield-h').className='cr-in-h warn';
+    }
+    var bp=boardPrice();
+    if(bp&&!$('cr-price').value){ $('cr-price').value=bp.toFixed(2); $('cr-price-h').textContent='Corn, latest close'; }
+    else if(!$('cr-price').value){ $('cr-price').value=''; $('cr-price-h').textContent='Enter your new-crop bid'; }
+    calc();
+    chart();
+    ratioChart();
+  }
+
+  function calc(){
+    var c=curCounty; if(!c) return;
+    var rent=latestYear(c.rent.nonirr)?c.rent.nonirr[latestYear(c.rent.nonirr)]:null;
+    if(rent==null) rent=latestYear(c.rent.irr)?c.rent.irr[latestYear(c.rent.irr)]:null;
+    var y=parseFloat($('cr-yield').value), p=parseFloat($('cr-price').value), b=parseFloat($('cr-basis').value)||0;
+    var el=$('cr-ratio'), x=$('cr-ratio-x'), m=$('cr-math');
+    if(rent==null||!(y>0)||!(p>0)){
+      el.textContent='\u2014'; el.className='cr-ratio-v';
+      x.textContent=rent==null?'NASS did not publish a cropland rent for this county, so there is no rent to divide.':'Enter a yield and a price to run the math.';
+      m.textContent='\u2014';
+      return;
+    }
+    var net=p+b, gross=y*net, pct=(rent/gross)*100;
+    el.textContent=pct.toFixed(1)+'%';
+    el.className='cr-ratio-v '+(pct>=35?'neg':pct>=30?'warn':'pos');
+    m.innerHTML='rent <b>'+money(rent)+'</b> &divide; ( <b>'+y.toFixed(1)+'</b> bu &times; <b>$'+net.toFixed(2)+'</b> ) = <b>'+money(Math.round(gross))+'</b> gross/ac &rarr; <b>'+pct.toFixed(1)+'%</b>';
+    var left=gross-rent;
+    x.innerHTML='At <strong>'+y.toFixed(0)+' bu</strong> and <strong>$'+net.toFixed(2)+'</strong> cash, this acre grosses <strong>'+money(Math.round(gross))+'</strong>. Rent takes <strong>'+money(rent)+'</strong>, leaving <strong>'+money(Math.round(left))+'</strong> to cover everything else and pay you. Compare that share to your own county\u2019s history below \u2014 not to a rule of thumb.';
+  }
+
+  // ---- history chart: honest gaps, no interpolation across missing years ----
+  function chart(){
+    var c=curCounty, svg=$('cr-chart');
+    var W=900,H=340,P={t:18,r:16,b:34,l:52};
+    var kinds=[['nonirr','#d4a23f'],['irr','#5fc28a'],['pasture','#8a948f']];
+    var years=[], vals=[];
+    kinds.forEach(function(k){ var s=c.rent[k[0]]; if(!s) return;
+      Object.keys(s).forEach(function(y){ years.push(+y); vals.push(s[y]); }); });
+    if(!years.length){ svg.innerHTML='<text x="450" y="170" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="13">No published rent for this county</text>'; $('cr-hist-r').textContent='\u2014'; return; }
+    var y0=Math.min.apply(null,years), y1=Math.max.apply(null,years);
+    var v1=Math.max.apply(null,vals)*1.12, v0=0;
+    var X=function(y){ return P.l+(y-y0)/Math.max(1,(y1-y0))*(W-P.l-P.r); };
+    var Y=function(v){ return H-P.b-(v-v0)/(v1-v0)*(H-P.t-P.b); };
+    var o=[];
+    // grid
+    for(var g=0;g<=4;g++){ var gv=v0+(v1-v0)*g/4, gy=Y(gv);
+      o.push('<line x1="'+P.l+'" y1="'+gy.toFixed(1)+'" x2="'+(W-P.r)+'" y2="'+gy.toFixed(1)+'" stroke="rgba(132,160,168,.12)"/>');
+      o.push('<text x="'+(P.l-8)+'" y="'+(gy+4).toFixed(1)+'" text-anchor="end" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="10">$'+Math.round(gv)+'</text>');
+    }
+    // x labels
+    for(var yy=y0;yy<=y1;yy++){ if((yy-y0)%3!==0&&yy!==y1) continue;
+      o.push('<text x="'+X(yy).toFixed(1)+'" y="'+(H-12)+'" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="10">'+("'"+String(yy).slice(2))+'</text>');
+    }
+    // the 2015 hole, drawn as a hole
+    var gaps=(cur.no_survey_years||[]).filter(function(g){ return g>y0&&g<y1; });
+    gaps.forEach(function(g){
+      o.push('<line x1="'+X(g).toFixed(1)+'" y1="'+P.t+'" x2="'+X(g).toFixed(1)+'" y2="'+(H-P.b)+'" stroke="#8a948f" stroke-width="1" stroke-dasharray="2 4" opacity=".5"/>');
+      o.push('<text x="'+X(g).toFixed(1)+'" y="'+(P.t+11)+'" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="9">no survey</text>');
+    });
+    // series: break the path at any missing year rather than bridging it
+    kinds.forEach(function(k){
+      var s=c.rent[k[0]]; if(!s) return;
+      var ys=Object.keys(s).map(Number).sort(function(a,b){return a-b;});
+      var seg=[], segs=[];
+      for(var i=0;i<ys.length;i++){
+        if(i>0&&ys[i]-ys[i-1]>1){ segs.push(seg); seg=[]; }
+        seg.push(ys[i]);
+      }
+      if(seg.length) segs.push(seg);
+      segs.forEach(function(sg){
+        if(sg.length===1){ o.push('<circle cx="'+X(sg[0]).toFixed(1)+'" cy="'+Y(s[sg[0]]).toFixed(1)+'" r="2.5" fill="'+k[1]+'"/>'); return; }
+        var d=sg.map(function(y,i){ return (i?'L':'M')+X(y).toFixed(1)+' '+Y(s[y]).toFixed(1); }).join(' ');
+        o.push('<path d="'+d+'" fill="none" stroke="'+k[1]+'" stroke-width="2" stroke-linejoin="round"/>');
+      });
+      ys.forEach(function(y){ o.push('<circle cx="'+X(y).toFixed(1)+'" cy="'+Y(s[y]).toFixed(1)+'" r="2" fill="'+k[1]+'"/>'); });
+    });
+    svg.innerHTML=o.join('');
+    var ni=c.rent.nonirr;
+    if(ni){ var a=Math.min.apply(null,Object.keys(ni).map(Number)), b=Math.max.apply(null,Object.keys(ni).map(Number));
+      var chg=((ni[b]-ni[a])/ni[a]*100);
+      $('cr-hist-r').innerHTML='Non-irrigated '+a+'\u2013'+b+' <span class="'+(chg>=0?'pos':'neg')+'">'+(chg>=0?'+':'')+chg.toFixed(0)+'%</span>';
+    } else { $('cr-hist-r').textContent='\u2014'; }
+    $('cr-gapnote').textContent=gaps.length?'\u00b7 dashed = no NASS survey that year':'';
+  }
+
+  // ---- NATIONAL MAP ------------------------------------------------------
+  // Joined on 5-digit FIPS: an exact key, never a name match. Counties with no
+  // published value stay grey and stay grey deliberately.
+  var GEO='https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json';
+  var RAMP=['#2b2f21','#4a4a24','#6e6329','#9a7c2c','#c4922f','#e0685f'];
+  var nat=null, mode='pct', layer=null, map=null;
+
+  function shade(v,breaks){
+    if(v==null) return '#1a1f20';
+    for(var i=0;i<breaks.length;i++){ if(v<breaks[i]) return RAMP[i]; }
+    return RAMP[RAMP.length-1];
+  }
+  function legend(){
+    if(!nat) return;
+    var b=(mode==='pct')?nat.pct_breaks:nat.rent_breaks;
+    var fmt=(mode==='pct')?function(x){return x.toFixed(0)+'%';}:function(x){return '$'+Math.round(x);};
+    var h='';
+    for(var i=0;i<RAMP.length;i++){
+      var lab=(i===0)?('<'+fmt(b[0])):(i===RAMP.length-1?('\u2265'+fmt(b[b.length-1])):fmt(b[i-1]));
+      h+='<div class="cr-mleg-i"><div class="cr-mleg-s" style="background:'+RAMP[i]+'"></div><div class="cr-mleg-t">'+lab+'</div></div>';
+    }
+    h+='<div class="cr-mleg-i"><div class="cr-mleg-s" style="background:#1a1f20"></div><div class="cr-mleg-t">n/a</div></div>';
+    var n=(mode==='pct')?nat.n_pct:nat.n_rent;
+    h+='<span class="cr-mleg-l">'+n.toLocaleString()+' counties'+(mode==='pct'&&nat.pct_years?' \u00b7 '+(nat.pct_years[0]===nat.pct_years[1]?nat.pct_years[0]:nat.pct_years[0]+'\u2013'+nat.pct_years[1])+' \u00b7 corn':'')+'</span>';
+    $('cr-mleg').innerHTML=h;
+  }
+  function style(f){
+    var r=nat.counties[f.id];
+    var v=r?(mode==='pct'?(r.p==null?null:r.p):r.r):null;
+    return {fillColor:shade(v,mode==='pct'?nat.pct_breaks:nat.rent_breaks),
+            fillOpacity:v==null?.35:.85,weight:.3,color:'#0a0c0d',opacity:.6};
+  }
+  function popup(f,l){
+    var r=nat.counties[f.id];
+    var nm=(f.properties&&f.properties.name)||'County';
+    if(!r){ l.bindPopup('<b>'+nm+'</b><br>USDA did not publish a rate here<br><span style="color:#8a948f">too few survey responses</span>'); return; }
+    var h='<b>'+nm+' County, '+r.s+'</b><br>Rent $'+Math.round(r.r)+'/ac <span style="color:#8a948f">('+r.ry+')</span>';
+    if(r.p!=null) h+='<br>Share of gross <span style="color:'+(r.p>=35?'#e0685f':r.p>=30?'#d4a23f':'#5fc28a')+'">'+r.p.toFixed(1)+'%</span> <span style="color:#8a948f">('+r.py+' corn'+(r.pp?', prelim':'')+')</span>';
+    else h+='<br><span style="color:#8a948f">no corn yield published \u2014 no ratio</span>';
+    l.bindPopup(h);
+  }
+  function paint(){ if(layer) layer.setStyle(style); legend(); }
+
+  function initMap(){
+    Promise.all([
+      fetch(DATA+'national.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
+      fetch(GEO).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
+    ]).then(function(res){
+      nat=res[0]; var topo=res[1];
+      if(!nat||!topo||typeof L==='undefined'||typeof topojson==='undefined'){
+        $('cr-map').innerHTML='<div style="padding:40px;text-align:center;color:#8a948f;font-family:\'JetBrains Mono\',monospace;font-size:12px">Map unavailable</div>';
+        return;
+      }
+      var gj=topojson.feature(topo,topo.objects.counties);
+      map=L.map('cr-map',{zoomControl:true,scrollWheelZoom:false,attributionControl:false}).setView([39.5,-98.35],4);
+      layer=L.geoJSON(gj,{style:style,onEachFeature:popup}).addTo(map);
+      legend();
+      $('cr-mt-pct').addEventListener('click',function(){ mode='pct'; this.classList.add('on'); this.setAttribute('aria-selected','true');
+        $('cr-mt-rent').classList.remove('on'); $('cr-mt-rent').setAttribute('aria-selected','false'); paint(); gaEvent('cash_rent_map',{mode:'pct'}); });
+      $('cr-mt-rent').addEventListener('click',function(){ mode='rent'; this.classList.add('on'); this.setAttribute('aria-selected','true');
+        $('cr-mt-pct').classList.remove('on'); $('cr-mt-pct').setAttribute('aria-selected','false'); paint(); gaEvent('cash_rent_map',{mode:'rent'}); });
+    });
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){boot();initMap();}); else { boot(); initMap(); }
+})();
+</script>
+</body>
+</html>
