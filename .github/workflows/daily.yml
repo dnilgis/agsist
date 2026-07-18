@@ -63,7 +63,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install feedparser requests
+        run: pip install feedparser requests pillow
 
       - name: GATE 1 — feed pre-flight (repair ZC=F roll contamination; block on unrepairable feed)
         run: python scripts/preflight_prices.py data/prices.json --repair
@@ -175,6 +175,14 @@ jobs:
       # briefing archive). Guarded: weekend/holiday runs that don't write an
       # archive HTML page add nothing. Idempotent: the Friday post-close
       # regeneration re-run is a no-op for an already-listed URL.
+      # Shareable daily card (data/social/card-<date>.png + card-latest.png).
+      # Runs only after GATE 2 passed, so a card is never rendered from a blocked
+      # briefing. Best-effort by design: a promo image must never be the reason
+      # the briefing fails to publish (the script also self-traps to exit 0).
+      - name: Build social card
+        continue-on-error: true
+        run: python scripts/build_social_card.py
+
       - name: Add today's archive page to sitemap
         continue-on-error: true        # sitemap update must never block the briefing publish
         run: |
@@ -189,7 +197,7 @@ jobs:
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add data/daily.json data/daily-archive/ daily/ feed.xml sitemap.xml data/scorecard.json index.html
+          git add data/daily.json data/daily-archive/ daily/ feed.xml sitemap.xml data/scorecard.json index.html data/social/
           git diff --staged --quiet || git commit -m "AGSIST Daily — $(date -u +%Y-%m-%d)"
           git pull --rebase --autostash origin main
           git push
