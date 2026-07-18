@@ -1,0 +1,21 @@
+name: probe-feeds
+
+# Diagnostic. Finds out why 13 of 22 news feeds are dark and which fix works
+# for each: modern UA, longer timeout, or routing via Google News.
+# Reads only. Writes nothing, commits nothing.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Probe feeds
+        run: python scripts/probe_feeds.py

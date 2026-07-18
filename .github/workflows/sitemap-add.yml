@@ -1,0 +1,92 @@
+name: sitemap-add
+
+# Add a page to sitemap.xml from the browser. Sig deploys via the GitHub UI and
+# cannot run scripts locally, so this wraps scripts/update_sitemap.py --add.
+#
+# Use this INSTEAD of hand-editing sitemap.xml. The file is rewritten daily by
+# the freshness/daily automation, so any hand-edited copy goes stale within
+# hours and re-uploading it silently DELETES whatever the automation added since
+# — which is exactly what nearly happened with /daily/2026-07-16.
+#
+# Idempotent: re-running for an existing URL just bumps lastmod.
+on:
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: "Full URLs, space-separated (e.g. https://agsist.com/cash-rent)"
+        required: true
+      priority:
+        description: "Sitemap priority for NEW entries"
+        required: false
+        default: "0.8"
+      changefreq:
+        description: "Sitemap changefreq for NEW entries"
+        required: false
+        default: "monthly"
+        type: choice
+        options: ["monthly", "weekly", "daily", "yearly", "never"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sitemap-write        # never race the daily/freshness sitemap writers
+  cancel-in-progress: false
+
+jobs:
+  add:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Add to sitemap
+        run: |
+          python scripts/update_sitemap.py \
+            --add ${{ github.event.inputs.urls }} \
+            --priority "${{ github.event.inputs.priority }}" \
+            --changefreq "${{ github.event.inputs.changefreq }}" \
+            --out /tmp/bumped.txt
+
+      - name: Verify XML still parses
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET, re, sys
+          from collections import Counter
+          ET.parse("sitemap.xml")
+          t = open("sitemap.xml", encoding="utf-8").read()
+          u = re.findall(r"<loc>(.*?)</loc>", t)
+          dupes = [x for x, n in Counter(u).items() if n > 1]
+          print(f"urls={len(u)} duplicates={len(dupes)}")
+          if dupes:
+              sys.exit("duplicate <loc> entries: %s" % dupes[:5])
+          PY
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "sitemap: add ${{ github.event.inputs.urls }}"
+          git pull --rebase --autostash origin main || true
+          git push
+
+      - name: IndexNow ping
+        run: |
+          URLS=$(python - <<'PY'
+          import json
+          try:
+              lines = [l.strip() for l in open("/tmp/bumped.txt") if l.strip()]
+          except Exception:
+              lines = []
+          print(json.dumps(lines))
+          PY
+          )
+          if [ "$URLS" = "[]" ]; then echo "nothing bumped — no ping"; exit 0; fi
+          curl -s -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d "{\"host\":\"agsist.com\",\"key\":\"f4a81c26db974e0f92c35b7a6e10d8c4\",\"keyLocation\":\"https://agsist.com/f4a81c26db974e0f92c35b7a6e10d8c4.txt\",\"urlList\":$URLS}" \
+            || echo "IndexNow ping failed - harmless"

@@ -1,0 +1,70 @@
+name: cash-rent
+
+# NASS releases county cash rent estimates each August. Nothing changes the
+# rest of the year, so this runs weekly through Aug/Sep to catch the drop
+# whenever it lands, then sits idle. Manual dispatch for a forced rebuild.
+on:
+  schedule:
+    - cron: "20 14 * * 3"     # Wednesdays 14:20 UTC
+  workflow_dispatch:
+    inputs:
+      states:
+        description: "Comma-separated states (blank = all)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cash-rent
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Runs offline, needs no key. If the parsing rules are broken there is no
+      # point spending an hour hammering a public API to find out.
+      - name: Selftest (gate)
+        run: python scripts/fetch_cash_rent.py --selftest
+
+      - name: Skip outside the release window
+        id: window
+        run: |
+          M=$(date -u +%m); D="${{ github.event_name }}"
+          if [ "$D" = "workflow_dispatch" ]; then echo "go=1" >> $GITHUB_OUTPUT; exit 0; fi
+          # August + September only; the survey publishes in August.
+          if [ "$M" = "08" ] || [ "$M" = "09" ]; then echo "go=1" >> $GITHUB_OUTPUT; else
+            echo "go=0" >> $GITHUB_OUTPUT; echo "month $M is outside the Aug/Sep release window — skipping"; fi
+
+      - name: Fetch
+        if: steps.window.outputs.go == '1'
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/fetch_cash_rent.py --states "${{ github.event.inputs.states }}"
+
+      - name: Commit
+        if: steps.window.outputs.go == '1'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A data/cash-rent 2>/dev/null || true
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: NASS county cash rent + trend yield"
+          git pull --rebase --autostash origin main || true
+          git push
+
+      - name: IndexNow ping (Bing learns about new pages in seconds)
+        if: steps.window.outputs.go == '1'
+        run: |
+          curl -s -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d '{"host":"agsist.com","key":"f4a81c26db974e0f92c35b7a6e10d8c4","keyLocation":"https://agsist.com/f4a81c26db974e0f92c35b7a6e10d8c4.txt","urlList":["https://agsist.com/cash-rent","https://agsist.com/sitemap.xml"]}' \
+            || echo "IndexNow ping failed - harmless"
