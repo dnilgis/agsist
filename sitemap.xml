@@ -3,7 +3,7 @@
 
   <!-- Core / High Priority -->
   <url><loc>https://agsist.com/</loc><lastmod>2026-07-18</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
-  <url><loc>https://agsist.com/markets</loc><lastmod>2026-07-17</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://agsist.com/markets</loc><lastmod>2026-07-18</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
   <url><loc>https://agsist.com/spray</loc><lastmod>2026-07-18</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
   <url><loc>https://agsist.com/fast-facts</loc><lastmod>2026-07-18</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://agsist.com/cash-bids</loc><lastmod>2026-07-18</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
@@ -55,7 +55,7 @@
 
   <!-- Added 2026-06-12: audit fixes -->
   <url><loc>https://agsist.com/cattle-futures-prices</loc><lastmod>2026-07-18</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://agsist.com/scorecard</loc><lastmod>2026-07-17</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://agsist.com/scorecard</loc><lastmod>2026-07-18</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/sponsor</loc><lastmod>2026-07-02</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/developer</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/contact</loc><lastmod>2026-06-25</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
