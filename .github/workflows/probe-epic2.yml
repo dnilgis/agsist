@@ -1,0 +1,25 @@
+name: probe-epic2
+
+# Diagnostic for the next five epic pages (land tenure, storage crunch,
+# conditions→yield, per-state rent, farmer-first payments). Reads only.
+# Writes nothing, commits nothing. Run it, open the probe step's log,
+# paste it back.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Probe epic-2 data sources
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/probe_epic2.py
