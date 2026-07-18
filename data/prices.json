@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-07-18T06:17:50Z",
+  "fetched": "2026-07-18T06:48:05Z",
   "ok": 44,
   "failed": 0,
   "stale_keys": [],
@@ -380,19 +380,19 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 63919.92969,
+      "close": 63933.83984,
       "open": 63889.66016,
-      "netChange": 30.26953,
-      "pctChange": 0.0474,
+      "netChange": 44.17968,
+      "pctChange": 0.0691,
       "wk52_hi": 126198.0703,
       "wk52_lo": 57747.7656
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.0867,
+      "close": 1.0885,
       "open": 1.0884,
-      "netChange": -0.0017,
-      "pctChange": -0.1562,
+      "netChange": 0.0001,
+      "pctChange": 0.0092,
       "wk52_hi": 3.6424,
       "wk52_lo": 1.0098
     },
