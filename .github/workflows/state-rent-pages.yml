@@ -1,0 +1,62 @@
+name: state-rent-pages
+
+# Rebuilds the 47 /rent/<state> pages + /rent/ hub from data/cash-rent/*.json.
+# OFFLINE — no API, no key. The pages are MACHINE-OWNED like sitemap.xml:
+# never hand-edit rent/*.html, edit scripts/build_state_rent_pages.py.
+#
+# Weekly cron (offset from cash-rent's Wed 14:20 fetch) because bot pushes
+# from cash-rent.yml can't trigger other workflows — this catches new August
+# data within the hour. Commits only when output actually changes, so the
+# other ~51 weeks it's a no-op. Also adds/bumps all /rent URLs in the
+# sitemap via update_sitemap.py --add (idempotent).
+on:
+  schedule:
+    - cron: "55 15 * * 3"     # Wednesdays 15:55 UTC, after cash-rent's fetch
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sitemap-write        # writes sitemap.xml — never race the other writers
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Selftest (gate)
+        run: python scripts/build_state_rent_pages.py --selftest
+
+      - name: Build pages
+        run: python scripts/build_state_rent_pages.py --print-urls > /tmp/rent-urls.txt
+
+      - name: Sitemap add/bump (idempotent)
+        run: |
+          urls=$(tr '\n' ' ' < /tmp/rent-urls.txt)
+          python scripts/update_sitemap.py --add $urls --priority 0.7 --changefreq yearly
+
+      - name: Commit if changed
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add rent sitemap.xml
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "pages: rebuild /rent state cash-rent pages"
+          git pull --rebase --autostash origin main || true
+          git push
+
+      - name: IndexNow ping (best-effort)
+        continue-on-error: true
+        run: |
+          curl -s -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d '{"host":"agsist.com","key":"f4a81c26db974e0f92c35b7a6e10d8c4","keyLocation":"https://agsist.com/f4a81c26db974e0f92c35b7a6e10d8c4.txt","urlList":["https://agsist.com/rent/","https://agsist.com/sitemap.xml"]}' \
+            || echo "IndexNow ping failed - harmless"
