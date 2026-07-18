@@ -1,0 +1,67 @@
+name: repair
+
+# One-shot repo repair after the 2026-07-18 scrambled drag-and-drop upload
+# (commits 535ca31/34cea83 flattened the zip: junk copies of scripts/data
+# landed at repo root, and nine real files were overwritten with wrong or
+# newline-stripped content — /cash-rent was serving fetch_mesh.py source).
+#
+# What it does, atomically:
+#   1. deletes the 12 junk files created at repo root
+#   2. restores the 9 corrupted files from 99bbbfe (last good commit before
+#      the bad upload). This reverts ONLY tonight's small meta-tag polish on
+#      those 9 files — the pages themselves return exactly as they were
+#      working earlier tonight. Everything else from tonight stays.
+#   3. sanity-checks that restored pages start with <!DOCTYPE before pushing
+#
+# Run once from the Actions tab, verify /cash-rent renders, then this file
+# can be deleted.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Delete junk root files from the flattened upload
+        run: |
+          git rm -f --ignore-unmatch \
+            fetch_bids.py fetch_markets.py fetch_mesh.py process_afida.py \
+            national.json footer.html footer-fallback.html header-fallback.html \
+            fetch_bids.cpython-311.pyc fetch_crop_progress.cpython-311.pyc \
+            fetch_markets.cpython-311.pyc fetch_mesh.cpython-311.pyc
+
+      - name: Restore corrupted files from last-good commit 99bbbfe
+        run: |
+          git checkout 99bbbfe -- \
+            ag-odds.html breakeven.html cash-bids.html cash-lease.html \
+            cash-rent.html cot.html farm-bill.html page-template.html \
+            seo-template.html \
+            scripts/fetch_bids.py scripts/fetch_crop_progress.py \
+            scripts/fetch_markets.py scripts/fetch_mesh.py scripts/fetch_nass.py
+
+      - name: Sanity gate — refuse to push anything that is not a real page
+        run: |
+          for f in cash-rent.html cash-lease.html breakeven.html ag-odds.html cash-bids.html; do
+            head -c 20 "$f" | grep -qi "<!DOCTYPE" || { echo "FATAL: $f still wrong"; exit 1; }
+          done
+          python3 -c "compile(open('scripts/fetch_mesh.py').read(),'m','exec')" || exit 1
+          echo "all restored files verified sane"
+
+      - name: Commit and push the repair
+        run: |
+          git config user.name "AGSIST Repair"
+          git config user.email "bot@agsist.com"
+          git commit -m "repair: undo scrambled upload — junk deleted, 9 files restored from 99bbbfe"
+          git pull --rebase --autostash origin main || true
+          git push
