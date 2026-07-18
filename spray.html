@@ -879,6 +879,10 @@ body {
 
 /* WCAG AA: brighten danger red for chip/label text contrast on dark (was #c8562e 3.7:1 -> #e06b42 ~4.9:1). Scoped to this page. */
 [data-theme="dark"]{--red:#e06b42;--risk-extreme:#e06b42;}
+
+.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
+.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
+.ag-sponsor-ribbon a{color:#d4a23f}
 </style>
 <style>button,a,[role="button"]{touch-action:manipulation;}
 h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head,h3.s-card-title,h3.sc-title{margin:0;font-size:inherit;font-weight:inherit;line-height:inherit;}
@@ -1071,6 +1075,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
       <div class="hero-eyebrow"><span class="live-dot" aria-hidden="true"></span>Real-Time Spray Advisory</div>
       <h1 class="hero-title">Is It <span>Safe to Spray</span><br>Right Now?</h1>
       <p class="hero-sub">Wind speed, temperature, humidity, thermal inversion risk, 24-hour window forecast, tank mix order, and pro tips &mdash; everything a sprayer needs. Free. No account. No app.</p>
+      <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here is deciding whether to spray today &mdash; one category-exclusive slot. <a href="/sponsor?slot=spray&amp;utm_source=spray&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
     </div>
     <div class="status-panel" id="status-panel" aria-live="polite" role="status">
       <div class="status-lbl"><span class="live-dot" aria-hidden="true"></span>Current Spray Status</div>
@@ -1824,7 +1829,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   var card=document.getElementById('signup-card');if(!card)return;
   if(_su()){card.style.display='none';return;}
   var btn=document.getElementById('signup-btn'),inp=document.getElementById('signup-email'),form=document.getElementById('signup-form');
-  function submit(){var email=(inp&&inp.value||'').trim();if(email.indexOf('@')<1)return;_ss();if(form){form.innerHTML='<div style="text-align:center;padding:.4rem 0"><div style="font-size:1.6rem">\u2705</div><div style="font-size:.85rem;font-weight:700;color:var(--text);margin-top:.2rem">You\u2019re subscribed!</div><div style="font-size:.74rem;color:var(--text-muted);line-height:1.5;margin-top:.2rem">AGSIST Daily arrives by 6am CT on weekdays. Check your spam folder once.</div></div>';}if(window.gaEvent)gaEvent('email_signup',{page:'spray',source:'spray-tool'});fetch('https://formspree.io/f/xnjbwepn',{method:'POST',body:JSON.stringify({email:email,source:'spray-tool'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});}
+  function submit(){var email=(inp&&inp.value||'').trim();if(email.indexOf('@')<1)return;_ss();if(form){form.innerHTML='<div style="text-align:center;padding:.4rem 0"><div style="font-size:1.6rem">\u2705</div><div style="font-size:.85rem;font-weight:700;color:var(--text);margin-top:.2rem">You\u2019re subscribed!</div><div style="font-size:.74rem;color:var(--text-muted);line-height:1.5;margin-top:.2rem">AGSIST Daily arrives by 6am CT on weekdays. Check your spam folder once.</div></div>';}if(window.gaEvent)gaEvent('email_signup',{page:'spray',source:'spray-tool'});fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify({email:email,source:'spray-tool'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});}
   if(btn)btn.addEventListener('click',function(e){e.preventDefault();submit();});
   if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submit();}});
 })();

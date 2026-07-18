@@ -96,7 +96,7 @@
       if (!email) return;
       var btn = emailForm.querySelector('.signup-submit');
       if (btn) btn.textContent = 'Subscribing…';
-      fetch('https://formspree.io/f/xnjbwepn', {
+      fetch('https://agsist-subs.dnilgis.workers.dev/subscribe', {
         method: 'POST',
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email, _subject: 'AGSIST Daily Email Signup' })

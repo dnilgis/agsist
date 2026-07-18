@@ -128,6 +128,35 @@ def seed_hail(today):
     return ch
 
 
+def seed_cashrent(today):
+    """Inject national coverage stats into cash-rent.html's SEED:crstats marker
+    from data/cash-rent/national.json — a data page where JS-blind crawlers
+    previously saw zero numbers (directly against the citation strategy).
+    Numbers change once a year (NASS August release) + whenever the cash-rent
+    workflow re-runs; idempotent otherwise."""
+    try:
+        d = json.load(open("data/cash-rent/national.json"))
+        t = open("cash-rent.html", encoding="utf-8").read()
+    except Exception:
+        return False
+    counties = d.get("counties") or {}
+    vals = sorted(v["r"] for v in counties.values() if isinstance(v.get("r"), (int, float)))
+    if not vals:
+        return False
+    med = vals[len(vals) // 2] if len(vals) % 2 else (vals[len(vals)//2 - 1] + vals[len(vals)//2]) / 2
+    states = len({v.get("s") for v in counties.values()})
+    latest_ry = max(v.get("ry", 0) for v in counties.values())
+    years = d.get("pct_years") or [None, None]
+    line = (f"{d.get('n_rent', len(counties)):,} counties in {states} states with a published "
+            f"{latest_ry} rent &middot; median county rate ${med:.2f}/acre (non-irrigated where "
+            f"available) &middot; rent-to-revenue ratio computed for {d.get('n_pct', 0):,} counties "
+            f"({years[0]}&ndash;{years[-1]}) &middot; data refreshed {d.get('generated', today)}")
+    t2, ch = seed_between(t, "crstats", line)
+    if ch:
+        open("cash-rent.html", "w", encoding="utf-8").write(t2)
+    return ch
+
+
 def bump_sitemap(today):
     try:
         t = open(SITEMAP, "r", encoding="utf-8").read()
@@ -267,6 +296,9 @@ def main():
     if seed_hail(today):
         any_change = True
         print("  hail-map.html: stats line seeded")
+    if seed_cashrent(today):
+        any_change = True
+        print("  cash-rent.html: SEED:crstats seeded")
 
     if bump_sitemap(today):
         any_change = True

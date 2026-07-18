@@ -209,7 +209,11 @@
   .cr-src{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;line-height:1.9;color:#8a948f;border-top:1px solid rgba(132,160,168,.12);margin-top:44px;padding-top:18px}
   .cr-src a{color:#8a948f;text-decoration:underline;text-underline-offset:2px}
   .cr-src a:hover{color:#d4a23f}
-  </style>
+  
+.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
+.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
+.ag-sponsor-ribbon a{color:#d4a23f}
+</style>
 </head>
 <body>
 <div id="site-header"></div>
@@ -221,10 +225,12 @@
     <h1>Cash rent, against what the ground can actually pay</h1>
     <p class="cr-sub">You know your rent. The number that decides the lease is <strong>rent as a share of what the acre can realistically gross</strong> &mdash; and almost nobody puts those two numbers side by side. This does, for every county USDA publishes.</p>
   </header>
+      <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here is weighing a land rent number &mdash; one category-exclusive slot. <a href="/sponsor?slot=cash-rent&amp;utm_source=cash-rent&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
   <section class="cr-panel" aria-labelledby="cr-map-t" style="margin-top:28px">
     <div class="cr-panel-hd">
       <span class="cr-panel-t" id="cr-map-t">Every county USDA publishes</span>
+      <p style="font-size:13px;line-height:1.7;color:#8a948f;margin:6px 0 0" id="cr-stats"><!--SEED:crstats-->2,869 counties in 47 states with a published 2025 rent &middot; median county rate $61.50/acre (non-irrigated where available) &middot; rent-to-revenue ratio computed for 2,041 counties (2008&ndash;2025) &middot; data refreshed 2026-07-18<!--/SEED--></p>
       <div class="cr-mtabs" role="tablist">
         <button class="cr-mtab on" id="cr-mt-pct" role="tab" aria-selected="true">Share of gross</button>
         <button class="cr-mtab" id="cr-mt-rent" role="tab" aria-selected="false">Rent $/ac</button>

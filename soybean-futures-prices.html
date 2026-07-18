@@ -1638,7 +1638,7 @@ function initSignup(){
   form.addEventListener('submit',function(e){
     e.preventDefault();
     var data=new FormData(form);
-    fetch('https://formspree.io/f/xnjbwepn',{method:'POST',body:data,headers:{'Accept':'application/json'}})
+    fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:data,headers:{'Accept':'application/json'}})
       .then(function(r){
         if(r.ok){form.style.display='none';if(ok)ok.style.display='block';if(typeof gaEvent==='function')gaEvent('briefing_signup',{page:location.pathname});}
         else{alert('Something went wrong. Email sig@farmers1st.com and I will add you manually.');}
