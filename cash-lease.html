@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c0d">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <link rel="preload" href="/components/styles.css?v=12" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=12">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <title>Farm Cash Lease: Free Fillable, Printable Agreement + Every Lease Type Explained | AGSIST</title>
+  <meta name="description" content="A plain-English farm cash lease you can fill in and print in five minutes, plus what every lease type actually means — straight cash, flex on price, flex on price and yield, crop share, custom farming — and who carries the risk in each. Free. Not legal advice.">
+  <link rel="canonical" href="https://agsist.com/cash-lease">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AGSIST">
+  <meta property="og:title" content="A Farm Lease You Can Actually Read — Fillable, Printable, Free">
+  <meta property="og:description" content="Fill it in, print it, sign it. Plus every lease type explained: straight cash, flex, crop share, custom — and who carries the risk in each.">
+  <meta property="og:url" content="https://agsist.com/cash-lease">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@agsist">
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"Is a handshake farm lease legally binding?",
+     "acceptedAnswer":{"@type":"Answer","text":"Oral farm leases are recognized in many states, but enforceability varies and multi-year oral leases can run into each state's statute of frauds. More importantly, a handshake protects nobody's memory. A one-page written lease costs five minutes and protects both sides. This is general information, not legal advice — lease law is state law."}},
+    {"@type":"Question","name":"When do I have to give notice to end a farm lease?",
+     "acceptedAnswer":{"@type":"Answer","text":"It depends entirely on your state. Several Midwestern states set statutory deadlines by which written termination notice must be delivered or the lease automatically continues for another year — Iowa's is famously September 1. Check your state's statute or ask your extension office or an attorney; the date is a hard cliff in states that have one."}},
+    {"@type":"Question","name":"What is the difference between a cash lease, a flex lease, and a crop share?",
+     "acceptedAnswer":{"@type":"Answer","text":"A straight cash lease is a fixed dollar amount per acre no matter what the crop does — the tenant carries the price and yield risk. A flexible (flex) lease sets a base rent plus a bonus formula tied to price, yield, or both — the risk is shared by formula. In a crop share, the landowner takes a share of the crop (and often pays a share of certain inputs) instead of cash — the risk is shared in kind. Custom farming is the other extreme: the landowner pays a fixed fee for fieldwork and keeps the whole crop and the whole risk."}},
+    {"@type":"Question","name":"What is a fair cash rent for my county?",
+     "acceptedAnswer":{"@type":"Answer","text":"USDA NASS publishes county-level cash rent every year. AGSIST maps every published county, the rent history, and the number that actually decides the lease — rent as a share of what the acre can realistically gross — free at agsist.com/cash-rent."}},
+    {"@type":"Question","name":"Is this lease form legal advice?",
+     "acceptedAnswer":{"@type":"Answer","text":"No. It is an educational sample of a simple cash lease, based on the plain terms most farm leases share. Farm lease law is state law and details matter — termination notice deadlines, oral lease rules, lien rights. Have your own attorney review anything before you sign it."}}
+  ]}
+  </script>
+
+  <style>
+    .cl-wrap{max-width:940px;margin:0 auto;padding:24px 16px 60px}
+    .cl-hero{padding:26px 0 2px}
+    .cl-kicker{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#d4a23f;margin:0 0 10px}
+    .cl-hero h1{font-family:Archivo,system-ui,sans-serif;font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.12;margin:0 0 12px;color:#e6ebe9}
+    .cl-sub{font-size:1.02rem;line-height:1.7;color:#8a948f;max-width:760px;margin:0}
+    .cl-sub strong{color:#e6ebe9}
+    .ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
+    .ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
+    .ag-sponsor-ribbon a{color:#d4a23f}
+    .cl-panel{background:#101415;border:1px solid #1a1f20;border-radius:12px;margin-top:26px;overflow:hidden}
+    .cl-panel-hd{padding:14px 18px;border-bottom:1px solid #1a1f20}
+    .cl-panel-t{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#d4a23f}
+    .cl-panel-b{padding:18px}
+    .cl-types{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+    .cl-type{background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:14px 16px}
+    .cl-type h3{margin:0 0 8px;font-size:1rem;color:#e6ebe9;font-family:Archivo,system-ui,sans-serif}
+    .cl-type p{margin:0 0 8px;font-size:.88rem;line-height:1.65;color:#8a948f}
+    .cl-risk{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:9px}
+    .cl-risk--tenant{color:#e0685f;border:1px solid rgba(224,104,95,.4)}
+    .cl-risk--shared{color:#d4a23f;border:1px solid rgba(212,162,63,.4)}
+    .cl-risk--owner{color:#5fc28a;border:1px solid rgba(95,194,138,.4)}
+    .cl-note{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:.88rem;line-height:1.65;color:#8a948f;margin:16px 0}
+    .cl-note strong{color:#d4a23f}
+    .cl-warn{background:rgba(224,104,95,.06);border:1px solid rgba(224,104,95,.35);border-radius:10px;padding:12px 16px;font-size:.88rem;line-height:1.65;color:#8a948f;margin:16px 0}
+    .cl-warn strong{color:#e0685f}
+    /* ---- the lease itself ---- */
+    .lease{background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:26px 26px 30px;line-height:1.75;color:#c9d1cd;font-size:.94rem}
+    .lease h2{font-family:Archivo,system-ui,sans-serif;text-align:center;font-size:1.25rem;letter-spacing:.06em;color:#e6ebe9;margin:0 0 4px}
+    .lease .lease-sub{text-align:center;font-size:.78rem;color:#8a948f;margin:0 0 22px}
+    .lease h3{font-size:.82rem;font-family:'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin:22px 0 8px}
+    .lease ol{padding-left:20px;margin:6px 0}
+    .lease li{margin:5px 0}
+    .lf{display:inline-block;background:transparent;border:none;border-bottom:1px solid #3a4345;color:#e6ebe9;font:inherit;padding:1px 6px;min-width:60px}
+    .lf:focus{outline:none;border-bottom-color:#d4a23f}
+    .lf-wide{width:min(420px,90%)}
+    .lf-med{width:200px}
+    .lf-sm{width:110px}
+    .lf-xs{width:72px}
+    .lf-area{display:block;width:100%;background:transparent;border:1px solid #3a4345;border-radius:6px;color:#e6ebe9;font:inherit;padding:8px 10px;min-height:74px;margin-top:6px}
+    .lf-area:focus{outline:none;border-color:#d4a23f}
+    .lease .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:26px}
+    .lease .sig td{padding-top:34px}
+    .sigline{border-bottom:1px solid #3a4345;height:34px}
+    .siglbl{font-size:.72rem;color:#8a948f;margin-top:4px;font-family:'JetBrains Mono',monospace;letter-spacing:.08em}
+    .cl-actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+    .cl-btn{font:inherit;font-size:.85rem;padding:9px 18px;border-radius:8px;border:1px solid #d4a23f;background:rgba(212,162,63,.1);color:#d4a23f;cursor:pointer}
+    .cl-btn:hover{background:rgba(212,162,63,.2)}
+    .cl-btn--ghost{border-color:#3a4345;background:transparent;color:#8a948f}
+    .cl-faq details{border-bottom:1px solid #1a1f20;padding:10px 0}
+    .cl-faq summary{cursor:pointer;color:#e6ebe9;font-size:.95rem}
+    .cl-faq p{color:#8a948f;font-size:.9rem;line-height:1.7;margin:8px 0 2px}
+    .cl-src{font-size:.8rem;color:#8a948f;line-height:1.7}
+    .cl-src a{color:#d4a23f}
+    @media (max-width:640px){.lease{padding:18px 14px}.lease .sig-grid{grid-template-columns:1fr}}
+    /* ---- print: the lease becomes clean paper; everything else disappears ---- */
+    @media print{
+      html,body{background:#fff !important;color:#000 !important;border:none !important;
+        box-shadow:none !important;overflow:visible !important}
+      /* loader.js REPLACES the #site-header/#site-footer divs with their contents,
+         so hide the injected elements themselves, plus every non-lease section */
+      nav,header,footer,.drawer,.draw-ov,.footer,.ticker,.ticker-wrap,
+      #site-header,#site-footer,.cl-hero,.ag-sponsor-ribbon,.cl-types-panel,.cl-note,
+      .cl-warn,.cl-actions,.cl-faq-panel,.cl-src-panel,.cl-crosslink,.no-print{display:none !important}
+      .cl-wrap{max-width:100%;padding:0}
+      .cl-panel{border:none;background:#fff;margin:0}
+      .cl-panel-hd{display:none}
+      .cl-panel-b{padding:0}
+      .lease{background:#fff;border:none;color:#000;padding:0;font-size:11pt;line-height:1.55}
+      .lease h2{color:#000}
+      .lease .lease-sub{color:#333}
+      .lease h3{color:#000;border-bottom:1px solid #000;padding-bottom:2px}
+      .lf,.lf-area{color:#000;border-color:#000 !important}
+      .sigline{border-bottom-color:#000}
+      .siglbl{color:#333}
+      .lease-print-foot{display:block !important;margin-top:20px;font-size:7.5pt;color:#666;
+        letter-spacing:.08em;text-align:center;border-top:1px solid #bbb;padding-top:7px;
+        font-family:'JetBrains Mono',ui-monospace,monospace}
+      #cl-state-rule{display:block !important}
+    }
+    .lease-print-foot{display:none}
+  </style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<main class="cl-wrap">
+  <header class="cl-hero">
+    <p class="cl-kicker">Lease paperwork &middot; Keep it simple</p>
+    <h1>A farm lease you can actually read</h1>
+    <p class="cl-sub">Most ground in this country changes hands on a handshake and a memory. A handshake is a fine way to agree &mdash; and a terrible way to remember. Below: <strong>every lease type explained in plain English</strong>, and a <strong>fillable, printable one-page cash lease</strong> that says what it means. Five minutes, two signatures, both sides protected.</p>
+  </header>
+
+  <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here is putting a lease on paper &mdash; one category-exclusive slot. <a href="/sponsor?slot=cash-lease&amp;utm_source=cash-lease&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+
+  <section class="cl-panel cl-types-panel" aria-labelledby="cl-types-t">
+    <div class="cl-panel-hd"><span class="cl-panel-t" id="cl-types-t">Which lease fits &mdash; and who carries the risk</span></div>
+    <div class="cl-panel-b">
+      <div class="cl-types">
+        <div class="cl-type">
+          <span class="cl-risk cl-risk--tenant">Tenant carries the risk</span>
+          <h3>Straight cash</h3>
+          <p>A fixed dollar amount per acre, period. Corn makes 240 or hails out at 60 &mdash; the rent doesn&rsquo;t move.</p>
+          <p><strong style="color:#e6ebe9">Fits when:</strong> the tenant wants full upside and can stomach full downside; the owner wants a check they can plan on. The simplest lease there is &mdash; it&rsquo;s the one below.</p>
+        </div>
+        <div class="cl-type">
+          <span class="cl-risk cl-risk--shared">Risk shared by formula</span>
+          <h3>Flex on price</h3>
+          <p>A base rent plus a bonus if price beats a trigger &mdash; e.g. base $250/ac, plus a share of the value above a set fall price. Yield risk stays with the tenant; price upside is shared.</p>
+          <p><strong style="color:#e6ebe9">Fits when:</strong> the owner wants a piece of a rally without farming; the tenant wants a lower guaranteed base in rough years.</p>
+        </div>
+        <div class="cl-type">
+          <span class="cl-risk cl-risk--shared">Risk shared by formula</span>
+          <h3>Flex on price &times; yield</h3>
+          <p>Rent is a set percentage of actual gross revenue (actual yield &times; actual price), often with a floor and a cap. The truest &ldquo;share the year you actually had&rdquo; cash lease.</p>
+          <p><strong style="color:#e6ebe9">Fits when:</strong> both sides trust the yield number &mdash; put the yield-proof method (monitor, scale tickets, APH) in writing.</p>
+        </div>
+        <div class="cl-type">
+          <span class="cl-risk cl-risk--shared">Risk shared in kind</span>
+          <h3>Crop share</h3>
+          <p>The owner takes a share of the crop itself (commonly around a third to a half, varying by region and by who pays which inputs) instead of cash. Both sides ride price and yield together.</p>
+          <p><strong style="color:#e6ebe9">Fits when:</strong> the owner is still a farmer at heart, wants skin in the game, and can market grain. More bookkeeping, more fairness, more conversations.</p>
+        </div>
+        <div class="cl-type">
+          <span class="cl-risk cl-risk--owner">Owner carries the risk</span>
+          <h3>Custom farming</h3>
+          <p>Not a lease at all: the owner pays a fixed fee for the fieldwork and keeps the entire crop &mdash; and the entire risk. The mirror image of straight cash.</p>
+          <p><strong style="color:#e6ebe9">Fits when:</strong> the owner wants to stay &ldquo;actively engaged&rdquo; (which can matter for taxes and programs &mdash; ask your accountant) without owning iron.</p>
+        </div>
+      </div>
+      <div class="cl-note" style="margin-bottom:0"><strong>The one-sentence version:</strong> straight cash puts the year&rsquo;s risk on the tenant, custom farming puts it on the owner, and everything in between &mdash; flex and share &mdash; is a formula for splitting it. Pick the split both sides can sleep on, then write it down.</div>
+    </div>
+  </section>
+
+  <div class="cl-note cl-crosslink"><strong>What&rsquo;s a fair number?</strong> Don&rsquo;t guess. USDA publishes county cash rent every year &mdash; see your county&rsquo;s rate, its history, and rent as a share of what the acre can actually gross on the <a href="/cash-rent" style="color:#d4a23f">AGSIST cash rent map</a>.</div>
+
+  <section class="cl-panel" aria-labelledby="cl-lease-t">
+    <div class="cl-panel-hd"><span class="cl-panel-t" id="cl-lease-t">The lease &mdash; fill it in, print it, sign it</span></div>
+    <div class="cl-panel-b">
+      <div class="cl-actions no-print" style="align-items:center">
+        <label for="cl-state-sel" style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f">Your state</label>
+        <select id="cl-state-sel" class="cl-btn cl-btn--ghost" style="cursor:pointer" aria-label="Select your state to adapt the termination section"></select>
+        <button class="cl-btn" id="cl-print" type="button">Print / save as PDF</button>
+        <button class="cl-btn cl-btn--ghost" id="cl-clear" type="button">Clear form</button>
+        <span style="font-size:.78rem;color:#8a948f;align-self:center">Your entries save in this browser only &mdash; nothing is sent anywhere.</span>
+      </div>
+      <div class="cl-warn no-print" id="cl-state-card" hidden></div>
+
+      <div class="lease" id="lease-form">
+        <h2>CASH FARM LEASE</h2>
+        <p class="lease-sub">A simple fixed-cash lease &middot; one crop term &middot; plain terms both sides can read</p>
+
+        <h3>1 &middot; Parties</h3>
+        <p>This lease is between
+          <input class="lf lf-med" data-k="owner" placeholder="landowner name" aria-label="Landowner name"> (&ldquo;Owner&rdquo;), of
+          <input class="lf lf-wide" data-k="owner_addr" placeholder="address" aria-label="Landowner address">, and
+          <input class="lf lf-med" data-k="tenant" placeholder="tenant name" aria-label="Tenant name"> (&ldquo;Tenant&rdquo;), of
+          <input class="lf lf-wide" data-k="tenant_addr" placeholder="address" aria-label="Tenant address">.</p>
+
+        <h3>2 &middot; The land</h3>
+        <p>Owner leases to Tenant approximately
+          <input class="lf lf-xs" data-k="acres" inputmode="decimal" placeholder="acres" aria-label="Tillable acres"> tillable acres in
+          <input class="lf lf-med" data-k="county" placeholder="county" aria-label="County"> County,
+          <input class="lf lf-xs" data-k="state" placeholder="state" aria-label="State">, commonly known as
+          <input class="lf lf-wide" data-k="farm_name" placeholder="farm name / legal or common description" aria-label="Farm description">
+          (FSA farm no. <input class="lf lf-sm" data-k="fsa_no" placeholder="optional" aria-label="FSA farm number">), for agricultural use.</p>
+
+        <h3>3 &middot; Term</h3>
+        <p>The term begins <input class="lf lf-sm" data-k="start" placeholder="Mar 1, 20__" aria-label="Start date"> and ends
+          <input class="lf lf-sm" data-k="end" placeholder="Feb 28/29, 20__" aria-label="End date">. This lease does not automatically renew except as state law provides (see &sect;11).</p>
+
+        <h3>4 &middot; Rent</h3>
+        <p>Tenant will pay cash rent of $<input class="lf lf-xs" data-k="rate" inputmode="decimal" placeholder="rate" aria-label="Rent per acre"> per tillable acre
+          (&times; <span id="cl-acres-echo">____</span> acres = <strong>$<span id="cl-total">______</span> total</strong>), payable:</p>
+        <ol>
+          <li>$<input class="lf lf-sm" data-k="pay1" inputmode="decimal" placeholder="amount" aria-label="First payment amount"> on or before <input class="lf lf-sm" data-k="pay1_date" placeholder="date" aria-label="First payment date">, and</li>
+          <li>$<input class="lf lf-sm" data-k="pay2" inputmode="decimal" placeholder="amount" aria-label="Second payment amount"> on or before <input class="lf lf-sm" data-k="pay2_date" placeholder="date" aria-label="Second payment date">,</li>
+        </ol>
+        <p>by <input class="lf lf-med" data-k="pay_method" placeholder="check / ACH / other" aria-label="Payment method">. Rent unpaid ten (10) days after it is due bears interest at the lesser of <input class="lf lf-xs" data-k="late_pct" inputmode="decimal" placeholder="__"> % per year or the maximum rate state law allows.</p>
+
+        <h3>5 &middot; Tenant agrees to</h3>
+        <ol>
+          <li>farm the land in a good and workmanlike manner, following any applicable conservation plan;</li>
+          <li>control weeds and prevent waste; leave crop residue consistent with good practice;</li>
+          <li>apply no long-term-damaging practice and haul no outside waste onto the land;</li>
+          <li>not assign this lease or sublet any part of the land without Owner&rsquo;s written consent;</li>
+          <li>surrender the land at the end of the term in as good condition as reasonable use allows.</li>
+        </ol>
+
+        <h3>6 &middot; Owner agrees to</h3>
+        <ol>
+          <li>pay the real-estate taxes and any assessments on the land;</li>
+          <li>warrant quiet possession &mdash; Tenant holds the land for the term against anyone claiming through Owner.</li>
+        </ol>
+
+        <h3>7 &middot; Improvements &amp; repairs</h3>
+        <p>No permanent improvement, removal, or alteration (buildings, fence, tile, trees) by either party without the other&rsquo;s written consent, which also states who pays and who owns it afterward.</p>
+
+        <h3>8 &middot; Insurance &amp; liability</h3>
+        <p>Each party carries their own liability insurance and insures their own property; neither is responsible for loss or injury caused by the other&rsquo;s negligence. Tenant&rsquo;s crops and inputs are Tenant&rsquo;s to insure.</p>
+
+        <h3>9 &middot; Entry</h3>
+        <p>Owner (or Owner&rsquo;s agent) may enter at reasonable times to inspect the land, without interfering with field operations.</p>
+
+        <h3>10 &middot; Hunting &amp; recreation</h3>
+        <p>Hunting and recreational rights stay with Owner unless initialed here to grant them to Tenant:
+          Owner <span class="lf lf-xs" style="display:inline-block;border-bottom:1px solid #3a4345">&nbsp;&nbsp;&nbsp;&nbsp;</span> /
+          Tenant <span class="lf lf-xs" style="display:inline-block;border-bottom:1px solid #3a4345">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+
+        <h3>11 &middot; Termination &amp; holdover</h3>
+        <p>Either party may end this lease at the end of the term by written notice delivered by the deadline <strong>state law requires</strong>. Where no statute sets a deadline, notice is due at least <input class="lf lf-xs" data-k="notice_days" inputmode="numeric" placeholder="90"> days before the term ends. If Tenant holds over with Owner&rsquo;s consent, the holdover continues on these same terms as state law provides.</p>
+        <p id="cl-state-rule" style="display:none"><em id="cl-state-rule-text"></em></p>
+
+        <h3>12 &middot; Default</h3>
+        <p>If either party materially breaks this lease and does not cure within thirty (30) days of written notice, the other party may pursue any remedy state law allows, including termination.</p>
+
+        <h3>13 &middot; Additional terms</h3>
+        <textarea class="lf-area" data-k="additional" placeholder="Fall tillage, fertility maintenance, manure, cover crops, grain storage use, anything else both sides want in writing&hellip;" aria-label="Additional terms"></textarea>
+
+        <h3>14 &middot; Signatures</h3>
+        <p>This is the entire agreement; changes must be in writing and signed by both parties.</p>
+        <div class="sig-grid">
+          <div>
+            <div class="sigline"></div>
+            <div class="siglbl">OWNER &middot; SIGNATURE / DATE</div>
+          </div>
+          <div>
+            <div class="sigline"></div>
+            <div class="siglbl">TENANT &middot; SIGNATURE / DATE</div>
+          </div>
+        </div>
+
+        <p class="lease-print-foot">A G S I S T &nbsp;&middot;&nbsp; agsist.com/cash-lease &nbsp;&middot;&nbsp; free tools for working farmers &nbsp;&middot;&nbsp; educational sample, not legal advice &mdash; attorney review advised</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="cl-warn"><strong>Check your state&rsquo;s termination deadline.</strong> Several states set a hard statutory date by which written notice must be delivered or a farm lease automatically continues another year &mdash; Iowa&rsquo;s September&nbsp;1 deadline is the famous one, and it forgives nobody. Your extension office or attorney can tell you your state&rsquo;s rule in one phone call. Make the call before you need it.</div>
+
+  <div class="cl-warn"><strong>This is an educational sample, not legal advice.</strong> It covers the plain terms most simple cash leases share, and deliberately nothing exotic. Farm lease law is state law: notice deadlines, oral-lease rules, landlord lien rights, and crop-share specifics all vary. Have your own attorney read anything before you sign it. That single hour of review is the cheapest insurance in farming.</div>
+
+  <section class="cl-panel cl-faq-panel" aria-labelledby="cl-faq-t">
+    <div class="cl-panel-hd"><span class="cl-panel-t" id="cl-faq-t">Questions people actually ask</span></div>
+    <div class="cl-panel-b cl-faq">
+      <details><summary>Is a handshake lease legally binding?</summary><p>Oral farm leases are recognized in many states, but enforceability varies and multi-year oral deals can run into the statute of frauds. The better question: when memories differ in three years, what does the handshake say? A one-page written lease protects both sides &mdash; especially the friendship.</p></details>
+      <details><summary>When do I have to give notice to end a lease?</summary><p>Entirely state-dependent. In states with a statutory deadline, written notice delivered late means the lease runs another full year whether anyone wanted it to or not. Iowa&rsquo;s September&nbsp;1 rule is the best known. Verify your state&rsquo;s rule with extension or an attorney &mdash; it is a cliff, not a guideline.</p></details>
+      <details><summary>Cash, flex, or share &mdash; which pays the owner more?</summary><p>Over a long run they tend to converge; in any single year they differ exactly by who carried the risk. Straight cash pays the owner the same in a drought and a bumper year; flex and share pay more in the good years because the owner shared the bad ones. Pick by risk appetite, not by last year&rsquo;s outcome.</p></details>
+      <details><summary>What&rsquo;s a fair rate for my county?</summary><p>USDA NASS publishes county cash rent annually. The <a href="/cash-rent" style="color:#d4a23f">AGSIST cash rent map</a> shows every published county, its history, and rent as a share of realistic gross &mdash; the number that decides whether a lease actually cash-flows.</p></details>
+      <details><summary>Why is this lease so short?</summary><p>Because leases fail at the coffee shop, not in court. A lease both parties have actually read beats a 20-page one neither has. The additional-terms box is there for what your situation genuinely needs; your attorney can tell you what your state requires beyond it.</p></details>
+    </div>
+  </section>
+
+  <section class="cl-panel cl-src-panel" aria-labelledby="cl-src-t">
+    <div class="cl-panel-hd"><span class="cl-panel-t" id="cl-src-t">Go deeper</span></div>
+    <div class="cl-panel-b cl-src">
+      <p>The standard educational references on farm leases are the North Central Farm Management Extension Committee&rsquo;s lease guides and forms at <a href="https://aglease101.org" rel="noopener">aglease101.org</a>, and your state extension service&rsquo;s farm-management office. USDA county cash rent data: <a href="/cash-rent">agsist.com/cash-rent</a>. This page&rsquo;s sample lease is original AGSIST text written for readability; it is not reviewed by an attorney and is not legal advice.</p>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+<script src="/components/loader.js?v=14"></script>
+<script>
+(function(){
+  'use strict';
+  var KEY='agsist-lease-draft';
+
+  /* State termination-notice rules. Compiled 2026-07-18 from industry and
+     extension summaries (Tillable's state guide; National Ag Law Center
+     framework). Tiers are the honesty system:
+       firm  = widely documented statutory deadline
+       cited = industry-cited; verify the current statute before relying
+       (absent = no farm-specific deadline widely cited)
+     Statutes change. This is information, not legal advice. */
+  var RULES={
+    IA:{n:'Iowa',t:'firm',d:'Written termination notice by SEPTEMBER 1 or the lease automatically continues another crop year — even if the lease has its own end date.'},
+    IL:{n:'Illinois',t:'firm',d:'Year-to-year tenancy: written notice at least 4 MONTHS before the end of the lease year (for a Feb-end lease year, late October).'},
+    KS:{n:'Kansas',t:'firm',d:'Written notice at least 30 DAYS BEFORE MARCH 1 for farm tenancies (roughly end of January).'},
+    NE:{n:'Nebraska',t:'firm',d:'Verbal/year-to-year leases: notice 6 months before the end of the lease year — in practice by SEPTEMBER 1. Written leases: the lease controls.'},
+    SD:{n:'South Dakota',t:'firm',d:'Written termination notice by SEPTEMBER 1, signed and delivered (certified mail or in hand).'},
+    IN:{n:'Indiana',t:'firm',d:'Written notice at least 3 MONTHS before the end of the lease (roughly end of November for a Feb-end term).'},
+    MN:{n:'Minnesota',t:'cited',d:'Commonly cited: written notice about 3 MONTHS before the lease ends (industry guides reference ~September 30).'},
+    MO:{n:'Missouri',t:'cited',d:'Commonly cited: written notice at least 60 DAYS before the end of the lease year, unless the lease sets its own terms.'},
+    WI:{n:'Wisconsin',t:'cited',d:'Commonly cited: written notice about 90 DAYS before the lease ends (~September 30 for a year-end term).'},
+    AR:{n:'Arkansas',t:'cited',d:'Commonly cited: written notice by JUNE 30, sent certified mail — one of the earliest deadlines anywhere.'},
+    KY:{n:'Kentucky',t:'cited',d:'Commonly cited: written notice about 6 MONTHS before expiration (~late August), certified mail.'},
+    MS:{n:'Mississippi',t:'cited',d:'Commonly cited: written notice about 2 MONTHS before the end of the lease year.'},
+    LA:{n:'Louisiana',t:'cited',d:'Commonly cited: written notice at least 30 DAYS before the lease ends.'},
+    NC:{n:'North Carolina',t:'cited',d:'Commonly cited: written, signed notice at least 30 DAYS before the end of tenancy.'},
+    ND:{n:'North Dakota',t:'cited',d:'Commonly cited: written notice at least 30 DAYS before the lease ends.'},
+    PA:{n:'Pennsylvania',t:'cited',d:'Commonly cited: written notice at least 15 DAYS before the end date — short, but do not cut it close.'},
+    NY:{n:'New York',t:'cited',d:'Commonly cited: written notice about 90 DAYS before expiration, certified mail.'},
+    TN:{n:'Tennessee',t:'cited',d:'Commonly cited: written notice by around JULY 1 — one of the earliest deadlines cited anywhere.'},
+    MI:{n:'Michigan',t:'cited',d:'No single farm deadline widely cited — the lease’s own terms control; industry guides suggest written notice by ~September 30.'},
+    OH:{n:'Ohio',t:'cited',d:'Written leases: the lease controls. VERBAL leases: Ohio enacted specific statutory termination rules in 2022 — verify the current rule before relying on it.'},
+    CA:{n:'California',t:'cited',d:'Leases over one year must be WRITTEN to be enforceable; put the termination deadline in the lease itself (industry guides suggest ~July 1).'},
+    TX:{n:'Texas',t:'cited',d:'Practices vary too much to summarize honestly — put the deadline in the lease and confirm with a local attorney.'}
+  };
+  var STATES='AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY'.split(' ');
+  var TIER_LBL={firm:'Statutory deadline (widely documented)',cited:'Commonly cited — verify the current statute'};
+
+  function stateRuleText(ab){
+    var r=RULES[ab];
+    if(r) return 'For '+r.n+': '+r.d+' ('+(r.t==='firm'?'widely documented':'as commonly summarized')+' — verify before relying; statutes change.)';
+    return 'No farm-specific statutory deadline is widely cited for this state — this lease’s own notice terms (§11) and general landlord–tenant law control. Confirm with your extension office or attorney.';
+  }
+  function applyState(ab, alsoField){
+    var card=document.getElementById('cl-state-card');
+    var rp=document.getElementById('cl-state-rule');
+    var rt=document.getElementById('cl-state-rule-text');
+    if(!ab){ if(card) card.hidden=true; if(rp) rp.style.display='none'; return; }
+    var r=RULES[ab];
+    if(card){
+      card.hidden=false;
+      card.innerHTML='<strong>'+(r?(r.n+' — '+TIER_LBL[r.t]):(ab+' — no widely-cited farm deadline'))+':</strong> '
+        + (r?r.d:'The lease’s own notice terms and general landlord–tenant law control. Confirm locally.')
+        + ' <span style="font-size:.78em;opacity:.8">Compiled from industry &amp; extension summaries, reviewed 2026-07-18. Statutes change — not legal advice.</span>';
+    }
+    if(rp&&rt){ rp.style.display='block'; rt.textContent=stateRuleText(ab); }
+    var sf=document.querySelector('[data-k="state"]');
+    if(alsoField&&sf&&!sf.value) sf.value=ab;
+    try{ gaEvent('lease_state',{state:ab}); }catch(e){}
+  }
+  var $=function(s){return document.querySelector(s);};
+  var fields=document.querySelectorAll('#lease-form [data-k]');
+
+  function save(){
+    var d={};
+    fields.forEach(function(f){ if(f.value) d[f.dataset.k]=f.value; });
+    try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){}
+  }
+  function restore(){
+    var d;
+    try{ d=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ d={}; }
+    fields.forEach(function(f){ if(d[f.dataset.k]!=null) f.value=d[f.dataset.k]; });
+  }
+  function totals(){
+    var acres=parseFloat(($('[data-k="acres"]')||{}).value)||0;
+    var rate=parseFloat(($('[data-k="rate"]')||{}).value)||0;
+    $('#cl-acres-echo').textContent = acres ? acres.toLocaleString() : '____';
+    $('#cl-total').textContent = (acres&&rate)
+      ? (acres*rate).toLocaleString(undefined,{maximumFractionDigits:0}) : '______';
+    // convenience: suggest the classic half-and-half split if untouched
+    var p1=$('[data-k="pay1"]'), p2=$('[data-k="pay2"]');
+    if(acres&&rate&&p1&&p2&&!p1.value&&!p2.value&&document.activeElement!==p1&&document.activeElement!==p2){
+      var half=Math.round(acres*rate/2);
+      p1.placeholder=half.toLocaleString(); p2.placeholder=(Math.round(acres*rate)-half).toLocaleString();
+    }
+  }
+  fields.forEach(function(f){ f.addEventListener('input', function(){ save(); totals(); }); });
+  restore(); totals();
+
+  // ---- state dropdown: populate, restore, wire ----
+  var sel=document.getElementById('cl-state-sel');
+  if(sel){
+    sel.innerHTML='<option value="">Pick your state…</option>'+STATES.map(function(ab){
+      return '<option value="'+ab+'">'+(RULES[ab]?RULES[ab].n:ab)+'</option>';}).join('');
+    sel.addEventListener('change', function(){
+      applyState(this.value, true);
+      try{ localStorage.setItem(KEY+'-st', this.value); }catch(e){}
+    });
+  }
+
+  // ---- prefill from the cash-rent map: /cash-lease?st=IA&county=Story&rate=278 ----
+  var q=new URLSearchParams(location.search);
+  var pf={st:(q.get('st')||'').toUpperCase().slice(0,2), county:q.get('county')||'',
+          rate:q.get('rate')||'', acres:q.get('acres')||''};
+  function setIfEmpty(k,v){ var f=document.querySelector('[data-k="'+k+'"]'); if(f&&v&&!f.value){ f.value=v; } }
+  if(pf.st&&STATES.indexOf(pf.st)>=0){ if(sel) sel.value=pf.st; applyState(pf.st,true); }
+  else { var savedSt=''; try{ savedSt=localStorage.getItem(KEY+'-st')||''; }catch(e){}
+         if(savedSt&&sel){ sel.value=savedSt; applyState(savedSt,false); } }
+  setIfEmpty('county', pf.county);
+  setIfEmpty('rate', pf.rate);
+  setIfEmpty('acres', pf.acres);
+  if(pf.county||pf.rate) { save(); totals(); }
+
+  var pb=$('#cl-print'); if(pb) pb.addEventListener('click', function(){ gaEvent('lease_print'); window.print(); });
+  var cb=$('#cl-clear'); if(cb) cb.addEventListener('click', function(){
+    if(!confirm('Clear everything you’ve typed into the lease?')) return;
+    fields.forEach(function(f){ f.value=''; });
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    totals();
+  });
+})();
+</script>
+</body>
+</html>

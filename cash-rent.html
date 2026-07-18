@@ -232,8 +232,8 @@
       <span class="cr-panel-t" id="cr-map-t">Every county USDA publishes</span>
       <p style="font-size:13px;line-height:1.7;color:#8a948f;margin:6px 0 0" id="cr-stats"><!--SEED:crstats-->2,869 counties in 47 states with a published 2025 rent &middot; median county rate $61.50/acre (non-irrigated where available) &middot; rent-to-revenue ratio computed for 2,041 counties (2008&ndash;2025) &middot; data refreshed 2026-07-18<!--/SEED--></p>
       <div class="cr-mtabs" role="tablist">
-        <button class="cr-mtab on" id="cr-mt-pct" role="tab" aria-selected="true">Share of gross</button>
-        <button class="cr-mtab" id="cr-mt-rent" role="tab" aria-selected="false">Rent $/ac</button>
+        <button class="cr-mtab on" id="cr-mt-rent" role="tab" aria-selected="true">Rent $/ac</button>
+        <button class="cr-mtab" id="cr-mt-pct" role="tab" aria-selected="false">Share of gross</button>
       </div>
     </div>
     <div class="cr-mleg" id="cr-mleg"></div>
@@ -332,6 +332,7 @@
     </ul>
     <p>What it deliberately will not do is tell you what to sign. That is between you, your landlord, and your own numbers.</p>
 
+    <div style="background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:.9rem;line-height:1.65;color:#8a948f;margin:20px 0"><strong style="color:#d4a23f">Settled on a number?</strong> Put it on paper &mdash; the free fillable, printable <a href="/cash-lease" id="cr-lease-link" style="color:#d4a23f">AGSIST cash farm lease</a><span id="cr-lease-ctx"></span>, plus every lease type (straight cash, flex, share) explained in plain English.</div>
     <h2>Questions</h2>
     <div class="cr-faq">
       <details><summary>What is the average cash rent per acre in my county?</summary><div class="cr-faq-a">USDA NASS publishes a mean cash rental rate for every county with at least 20,000 acres of cropland plus pasture, separately for non-irrigated cropland, irrigated cropland, and permanent pasture. Pick your state and county above to see the published rate and its full history. If your county is not listed, NASS did not get enough survey responses to publish a rate for it.</div></details>
@@ -427,6 +428,17 @@
     if(i===''||!cur){ return; }
     curCounty=cur.counties[+i];
     render();
+    // hand the picked county + its latest rent straight into the lease form
+    try{
+      var c=curCounty, ry=latestYear(c.rent&&c.rent.nonirr), rate=ry?c.rent.nonirr[ry]:null;
+      var link=$('cr-lease-link'), ctx=$('cr-lease-ctx');
+      if(link){
+        var p='?st='+encodeURIComponent(cur.state)+'&county='+encodeURIComponent(c.name)
+             +(rate?('&rate='+encodeURIComponent(Math.round(rate))):'');
+        link.href='/cash-lease'+p;
+        if(ctx) ctx.innerHTML=rate?(' (pre-filled: '+c.name+' Co. at $'+Math.round(rate)+'/ac)'):'';
+      }
+    }catch(e){}
     gaEvent('cash_rent_county',{state:cur.state,county:curCounty.name});
   }
 
@@ -633,7 +645,7 @@
   // published value stay grey and stay grey deliberately.
   var GEO='https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json';
   var RAMP=['#2b2f21','#4a4a24','#6e6329','#9a7c2c','#c4922f','#e0685f'];
-  var nat=null, mode='pct', layer=null, map=null;
+  var nat=null, mode='rent', layer=null, map=null;
 
   function shade(v,breaks){
     if(v==null) return '#1a1f20';
