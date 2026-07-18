@@ -154,8 +154,27 @@ def api_get(key, short_desc, state, extra=None):
     q.update(extra or {})   # callers override agg_level_desc / reference_period_desc
     url = API + "?" + urllib.parse.urlencode(q)
     req = urllib.request.Request(url, headers={"User-Agent": "AGSIST/1.0 (+https://agsist.com)"})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        body = r.read().decode("utf-8", "replace")
+    # NASS throttles sustained multi-state pulls with HTTP 403 (observed live
+    # 2026-07-18: 19 states fetched clean, then 403 on the 20th — same key that
+    # had just worked 19 times, so it's rate limiting, not auth). 403/429/5xx
+    # get patient exponential backoff; a hard 400 still propagates immediately
+    # (that's the documented "no rows" answer, handled by api_get_safe).
+    body = None
+    for attempt, pause in enumerate((0, 45, 120, 300)):
+        if pause:
+            print(f"      NASS throttled ({state}/{short_desc[:30]}…) — "
+                  f"backing off {pause}s, retry {attempt}/3", file=sys.stderr)
+            time.sleep(pause)
+        try:
+            with urllib.request.urlopen(req, timeout=120) as r:
+                body = r.read().decode("utf-8", "replace")
+            break
+        except urllib.error.HTTPError as e:
+            if e.code in (403, 429) or e.code >= 500:
+                if attempt == 3:
+                    raise
+                continue
+            raise
     # NASS answers "no rows" with HTTP 400 + this text. That is a legitimate
     # empty result (e.g. no irrigated cropland in Rhode Island), not a failure.
     if "exceeds the limit" in body:
@@ -489,7 +508,8 @@ def main():
         py = len(prices.get("corn", {}))
         log(f"[{i}/{len(states)}] {st}: {n} counties, {stats['with_corn_trend']} with corn trend, "
             f"{py} yrs corn price received")
-        time.sleep(1)   # be a good citizen on a free public API
+        time.sleep(3)   # be a good citizen on a free public API (1s tripped
+                        # NASS's throttle ~19 states into an all-states pull)
 
     years = sorted({y for st in index
                     for y in json.load(open(os.path.join(OUTDIR, f"{st['state']}.json")))["years"]})

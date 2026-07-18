@@ -229,9 +229,40 @@ def build(daily_path="data/daily.json", scorecard_path="data/scorecard.json",
     return dated
 
 
+def update_homepage_og(index_path="index.html", dated_url=None):
+    """Point the homepage's share-preview image at today's dated card.
+
+    Dated URL on purpose: FB/X scrapers cache og images BY URL, so a stable
+    card-latest.png would show yesterday's card for days. A new URL every day
+    forces a fresh scrape. Every substitution is scope-proofed (count must be
+    exactly 1) — if the homepage's head ever changes shape, we leave the file
+    untouched and say so, rather than splice blind.
+    """
+    import re
+    src = open(index_path, encoding="utf-8").read()
+    subs = [
+        (r'(<meta property="og:image"\s+content=")[^"]+(">)', dated_url),
+        (r'(<meta property="og:image:width"\s+content=")[^"]+(">)', "2400"),
+        (r'(<meta property="og:image:height"\s+content=")[^"]+(">)', "1350"),
+        (r'(<meta name="twitter:image"\s+content=")[^"]+(">)', dated_url),
+    ]
+    out = src
+    for pat, val in subs:
+        out, n = re.subn(pat, lambda m, v=val: m.group(1) + v + m.group(2), out)
+        if n != 1:
+            print("[social-card] homepage og splice ABORTED — pattern %r matched %d times, "
+                  "expected exactly 1; index.html left untouched" % (pat, n), file=sys.stderr)
+            return False
+    open(index_path, "w", encoding="utf-8").write(out)
+    print("[social-card] homepage og:image -> %s" % dated_url)
+    return True
+
+
 def main():
     try:
-        build()
+        dated = build()
+        url = "https://agsist.com/" + dated.replace(os.sep, "/")
+        update_homepage_og(dated_url=url)
         return 0
     except Exception as e:  # never block the briefing over a promo image
         print("[social-card] SKIPPED — %s: %s" % (type(e).__name__, e), file=sys.stderr)

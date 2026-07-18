@@ -157,7 +157,11 @@ OUTPUT_PATH = REPO_ROOT / "data" / "daily.json"
 QUOTE_POOL_PATH = REPO_ROOT / "data" / "quote-pool.json"
 ANTHROPIC_API = "https://api.anthropic.com/v1/messages"
 MODEL = "claude-sonnet-4-6"
-OG_IMAGE_BASE = None
+# Dated social card rendered by build_social_card.py in the same daily.yml run
+# (card step runs after generate, both commit together — so the published page
+# and its image land at the same moment). If a card ever fails to render, the
+# og:image 404s for that day and scrapers fall back to text — degrade, not break.
+OG_IMAGE_BASE = "https://agsist.com/data/social/card-"
 
 SURPRISE_THRESHOLDS = {
     "corn": 1.5, "corn-dec": 1.5, "beans": 1.5, "beans-nov": 1.5,
@@ -2367,8 +2371,8 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
 <meta property="og:description" content="{og_description}">
 <meta property="og:url" content="https://agsist.com/daily/{date_iso}">
 <meta property="og:image" content="{og_image_url}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1350">
 <meta property="og:image:alt" content="AGSIST Daily &mdash; {headline}">
 <meta property="article:published_time" content="{date_iso}">
 <meta property="article:modified_time" content="{gen_at}">
