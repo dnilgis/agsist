@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-07-18",
+      "date_display": "Saturday, July 18, 2026",
+      "headline": "GRAINS AND HOGS END THE WEEK LOUD",
+      "teaser": "Hogs ran 17%, corn split old from new, beans got China buying. Weekend read before Monday opens.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 5,
+      "url": "/daily/2026-07-18",
+      "market_closed": true
+    },
+    {
       "date": "2026-07-17",
       "date_display": "Friday, July 17, 2026",
       "headline": "GRAINS WIN THE WEEK; CATTLE TAKE A HIT",
@@ -1439,6 +1450,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-17T20:52:25.851530+00:00",
-  "count": 127
+  "updated": "2026-07-18T11:56:55.724556+00:00",
+  "count": 128
 }
