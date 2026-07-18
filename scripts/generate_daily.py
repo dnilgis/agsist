@@ -182,34 +182,44 @@ COMMODITY_LABELS = {
 
 GRAIN_KEYS = {"corn", "corn-dec", "beans", "beans-nov", "wheat", "oats"}
 
+# v4.5: rebuilt against the 2026-07-18 probe-feeds run (probe_feeds.py, from the
+# real Actions runner IP — the only vantage point that matters). Findings:
+#   - modern UA fixed nothing (0 feeds); 30s timeout fixed nothing (0 feeds)
+#   - 5 feeds are genuinely dead from Azure: nass/news (newest item 296d old),
+#     usda.gov + ams + fas (403 datacenter-IP block), feednavigator (empty even
+#     via Google News). DROPPED — a permanently dark feed is noise in the
+#     coverage tally and makes real degradation harder to see.
+#   - 7 publishers block direct fetch but are fully recoverable via Google News
+#     RSS (site: query, headlines+links — which is all the briefing uses).
+#     Probe measured 100 items each, newest 0.2–3.1d.
+# Entries are (label, url): label is the PUBLISHER domain, kept stable so
+# `source` chips and the dark-feed diagnostics name the publication, not
+# news.google.com seven times.
+_GN = "https://news.google.com/rss/search?q=site%3A{}&hl=en-US&gl=US&ceid=US%3Aen"
+
 AG_RSS_FEEDS = [
-    # Tier 1: USDA federal sources (canonical, slow-changing URLs)
-    "https://www.nass.usda.gov/rss/reports.xml",         # NASS Today's Reports (WASDE, Crop Progress, Cattle on Feed)
-    "https://www.nass.usda.gov/rss/news.xml",            # NASS News & Events
-    "https://www.usda.gov/rss/latest-releases.xml",      # USDA top-line press releases
-    "https://www.ams.usda.gov/rss/news.xml",             # USDA Agricultural Marketing Service
-    "https://www.fas.usda.gov/rss/news.xml",             # USDA Foreign Agricultural Service (export sales)
-    "https://www.eia.gov/rss/todayinenergy.xml",         # EIA Today in Energy (crude, ethanol)
-    # Tier 2: Trade publications (UA fix in http_get rescues 403s)
-    "https://www.agri-pulse.com/articles.rss",           # DC ag policy
-    "https://www.world-grain.com/rss",                   # Grain industry
-    "https://www.agweb.com/rss",                         # General ag (broad)
-    "https://www.agproud.com/rss",                       # Dairy/cattle/forage
-    "https://brownfieldagnews.com/feed/",                # Ag radio, livestock-strong
-    "https://www.thefencepost.com/feed/",                # Western ag (worked v4.4)
-    # Tier 3: Livestock-specific
-    "https://www.drovers.com/rss",                       # Cattle
-    "https://www.beefmagazine.com/rss.xml",              # Beef (worked v4.4)
-    "https://www.dairyherd.com/rss",                     # Dairy
-    "https://www.porkbusiness.com/rss",                  # Pork
-    "https://www.feedstuffs.com/rss.xml",                # Feed industry (worked v4.4)
-    "https://www.feednavigator.com/Info/Feed-Navigator-RSS",  # Feed (worked v4.4)
-    "https://www.no-tillfarmer.com/rss/articles",        # No-till
-    # Tier 4: Energy / inputs
-    "https://oilprice.com/rss/main",                     # Crude/energy
-    # Tier 5: Policy / academic / DC insider
-    "https://farmpolicynews.illinois.edu/feed/",         # U of Illinois farm policy
-    "https://farmdocdaily.illinois.edu/feed",            # Farm Doc Daily
+    # Tier 1: federal sources that answer from datacenter IPs (probe: OK)
+    ("nass.usda.gov",    "https://www.nass.usda.gov/rss/reports.xml"),   # WASDE, Crop Progress, Cattle on Feed
+    ("eia.gov",          "https://www.eia.gov/rss/todayinenergy.xml"),   # crude, ethanol
+    # Tier 2: trade publications — direct where the probe says direct works
+    ("agri-pulse.com",   _GN.format("agri-pulse.com")),                  # DC ag policy (direct = 404)
+    ("world-grain.com",  _GN.format("world-grain.com")),                 # grain industry (direct = empty feed)
+    ("agweb.com",        _GN.format("agweb.com")),                       # general ag (direct = 403 WAF)
+    ("agproud.com",      _GN.format("agproud.com")),                     # dairy/cattle/forage (direct = empty feed)
+    ("brownfieldagnews.com", "https://brownfieldagnews.com/feed/"),      # ag radio, livestock-strong
+    ("thefencepost.com", "https://www.thefencepost.com/feed/"),          # western ag
+    # Tier 3: livestock-specific
+    ("drovers.com",      _GN.format("drovers.com")),                     # cattle (direct = 403 WAF)
+    ("beefmagazine.com", "https://www.beefmagazine.com/rss.xml"),        # beef
+    ("dairyherd.com",    _GN.format("dairyherd.com")),                   # dairy (direct = 403 WAF)
+    ("porkbusiness.com", _GN.format("porkbusiness.com")),                # pork (direct = 403 WAF)
+    ("feedstuffs.com",   "https://www.feedstuffs.com/rss.xml"),          # feed industry
+    ("no-tillfarmer.com", "https://www.no-tillfarmer.com/rss/articles"), # no-till
+    # Tier 4: energy / inputs
+    ("oilprice.com",     "https://oilprice.com/rss/main"),               # crude/energy
+    # Tier 5: policy / academic / DC insider
+    ("farmpolicynews.illinois.edu", "https://farmpolicynews.illinois.edu/feed/"),
+    ("farmdocdaily.illinois.edu",   "https://farmdocdaily.illinois.edu/feed"),
 ]
 
 # v4.4: news clustering buckets, every story tags into one bucket so the
@@ -923,9 +933,8 @@ def fetch_ag_news():
     raw_items = []
     now_ts = datetime.now().timestamp()
     feed_results = []  # v4.4.1: per-feed diagnostics for cron visibility
-    for feed_url in AG_RSS_FEEDS:
+    for host, feed_url in AG_RSS_FEEDS:
         feed_pulled = 0
-        host = feed_url.split("/")[2] if feed_url.count("/") >= 2 else feed_url
         try:
             text = http_get(feed_url, timeout=12)
             if not text:

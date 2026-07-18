@@ -202,8 +202,12 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
     # doctrine only deterministic data-integrity checks earn a hard block. But at
     # the hard floor the briefing has essentially no news base, and a news-led
     # product with no news should not go out under a confident source list.
-    NEWS_WARN_AT = 12      # of 22 — below this, coverage is degraded
-    NEWS_BLOCK_AT = 4      # at or below this, there is no news base at all
+    # Floors retuned 2026-07-18 for the post-probe 17-feed list (was 12/4 of 22:
+    # the probe found 5 feeds permanently dead from Azure and they were dropped,
+    # so 22-era floors would be measuring against feeds that no longer exist).
+    # Same proportions: warn below ~54% of the base, block at/below ~18%.
+    NEWS_WARN_AT = 9       # of 17 — below this, coverage is degraded
+    NEWS_BLOCK_AT = 3      # at or below this, there is no news base at all
     cov = (daily.get('meta') or {}).get('news_coverage') or {}
     if not cov or not cov.get('total'):
         W('news-coverage', 'no meta.news_coverage recorded — generator too old to measure it')
