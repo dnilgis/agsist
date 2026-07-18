@@ -1,0 +1,41 @@
+name: conditions
+
+# Weekly NASS crop-condition percentile build for /conditions. NASS publishes
+# Crop Progress Mondays 4 PM ET; Tuesday 01:12 UTC (~8 PM ET Monday) catches it.
+# Selftest gates; in-season zero-data fails loud; NASS throttle gets backoff.
+on:
+  schedule:
+    - cron: '12 1 * * 2'    # Tuesdays 01:12 UTC = Monday evening CT
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: conditions
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest (gate)
+        run: python scripts/fetch_conditions.py --selftest
+      - name: Fetch
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/fetch_conditions.py
+      - name: Commit
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add data/conditions/
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: crop condition percentiles $(date -u +%F)"
+          git pull --rebase --autostash origin main || true
+          git push
