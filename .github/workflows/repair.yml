@@ -41,27 +41,25 @@ jobs:
             fetch_bids.cpython-311.pyc fetch_crop_progress.cpython-311.pyc \
             fetch_markets.cpython-311.pyc fetch_mesh.cpython-311.pyc
 
-      - name: Restore corrupted files from last-good commit 99bbbfe
+      # v2: the scramble predated the first pin (the sanity gate caught it —
+      # working as designed). Per-file last-good commits, verified by walking
+      # each file's history for real <!DOCTYPE content:
+      - name: Restore the 3 still-broken files from their last-good commits
         run: |
-          git checkout 99bbbfe -- \
-            ag-odds.html breakeven.html cash-bids.html cash-lease.html \
-            cash-rent.html cot.html farm-bill.html page-template.html \
-            seo-template.html \
-            scripts/fetch_bids.py scripts/fetch_crop_progress.py \
-            scripts/fetch_markets.py scripts/fetch_mesh.py scripts/fetch_nass.py
+          git checkout 55ea729 -- breakeven.html
+          git checkout c15b8e7 -- cash-bids.html page-template.html
 
       - name: Sanity gate — refuse to push anything that is not a real page
         run: |
-          for f in cash-rent.html cash-lease.html breakeven.html ag-odds.html cash-bids.html; do
+          for f in breakeven.html cash-bids.html page-template.html cash-rent.html cash-lease.html; do
             head -c 20 "$f" | grep -qi "<!DOCTYPE" || { echo "FATAL: $f still wrong"; exit 1; }
           done
-          python3 -c "compile(open('scripts/fetch_mesh.py').read(),'m','exec')" || exit 1
           echo "all restored files verified sane"
 
       - name: Commit and push the repair
         run: |
           git config user.name "AGSIST Repair"
           git config user.email "bot@agsist.com"
-          git commit -m "repair: undo scrambled upload — junk deleted, 9 files restored from 99bbbfe"
+          git commit -m "repair v2: junk deleted; breakeven/cash-bids/page-template restored from per-file last-good commits"
           git pull --rebase --autostash origin main || true
           git push
