@@ -39,6 +39,7 @@ import json
 import re
 import os
 import math
+import sys
 import time
 from datetime import datetime, timezone
 
@@ -1150,7 +1151,11 @@ def main():
             cat = m["category"][:14]
             print(f"  {i:2d}. [{m['platform']:10s}] {m['yes']:3d}%  [{cat:14s}]  {m['title'][:55]}")
     else:
-        print("\n  WARNING: 0 markets found -- check API connectivity in Actions logs")
+        # Fail LOUD: a zero-market run means every platform fetch failed
+        # (dead key, schema drift, outage). Exiting 0 here once let a dead
+        # source rot invisibly -- red workflow beats silently empty panel.
+        print("\n  FATAL: 0 markets found -- failing the run so it shows red", file=sys.stderr)
+        sys.exit(1)
     print(f"{'=' * 60}\nDone.\n")
 
 

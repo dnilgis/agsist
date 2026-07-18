@@ -207,6 +207,13 @@ def main():
         print(f"  Planting: {result[key]['planting_pct']}% | prev yr: {result[key]['planting_prev_year']}%", flush=True)
 
     if not result["corn"] and not result["soybeans"]:
+        # Off-season (Nov–Mar): a placeholder is honest. In-season (Apr–Oct):
+        # zero data means a dead key/outage — fail LOUD instead of silently
+        # freezing the page on last week's numbers.
+        from datetime import date
+        if 4 <= date.today().month <= 10:
+            print("\nFATAL: zero condition data in-season — failing the run so it shows red")
+            raise SystemExit(1)
         print("\nNo data returned — writing off-season placeholder.")
         result["in_season"] = False
 

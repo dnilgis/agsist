@@ -294,6 +294,12 @@ def main():
         print(f"{len(kept)} bids")
         time.sleep(0.3)
 
+    if not all_bids:
+        # Fail LOUD: zero bids across every ZIP = dead/expired BARCHART_API_KEY
+        # or total outage. Writing an empty bids.json at exit 0 once meant the
+        # cash-bids page could go blank silently. Red workflow instead.
+        print("[fetch_bids] FATAL: 0 bids collected across all ZIPs — failing loud", flush=True)
+        raise SystemExit(1)
     before = len(all_bids)
     all_bids = deduplicate(all_bids)
     print(f"\n[fetch_bids] {before} kept → {len(all_bids)} after dedup")

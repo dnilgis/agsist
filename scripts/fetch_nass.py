@@ -171,6 +171,7 @@ def main():
 
     os.makedirs(OUT_DIR, exist_ok=True)
 
+    ok_count = 0
     for ds in DATASETS:
         print(f"Fetching {ds['label']}…")
         try:
@@ -190,13 +191,19 @@ def main():
                 json.dump(output, f, separators=(',', ':'))
             n = len(output.get('rows', output.get('values', [])))
             print(f"  → Written to {out_path} ({n} state/year entries)")
+            ok_count += 1
             time.sleep(1.5)   # rate-limit courtesy
 
         except Exception as exc:
             print(f"  ERROR: {exc}")
             continue
 
-    print('Done.')
+    # Fail LOUD if nothing at all succeeded (revoked key / NASS outage):
+    # exit 0 here once meant a dead source could rot invisibly for months.
+    if ok_count == 0:
+        print('FATAL: every NASS dataset fetch failed — failing the run so it shows red')
+        raise SystemExit(1)
+    print(f'Done. {ok_count}/{len(DATASETS)} datasets refreshed.')
 
 
 if __name__ == '__main__':

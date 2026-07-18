@@ -36,6 +36,7 @@ import json
 import os
 import re
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 
 import numpy as np
@@ -123,9 +124,24 @@ def contour_features(grid_mm, lons, lats):
 def fetch_day_grib(dt):
     """Return (values_mm ndarray, lons 1d, lats 1d) for the day's max, or None."""
     import requests
+
+    def _get(u, timeout):
+        """One transient blip must not crash the whole mesh run: retry once,
+        then return None (caller already treats None/!=200 as a soft miss)."""
+        for attempt in (1, 2):
+            try:
+                return requests.get(u, timeout=timeout)
+            except requests.RequestException as e:
+                log("  GET failed (attempt %d): %s" % (attempt, e))
+                if attempt == 1:
+                    time.sleep(5)
+        return None
+
     url = ARCHIVE.format(y=dt.year, m=dt.month, d=dt.day)
     log("  listing", url)
-    r = requests.get(url, timeout=30)
+    r = _get(url, timeout=30)
+    if r is None:
+        return None
     if r.status_code != 200:
         log("  archive listing HTTP", r.status_code)
         return None
@@ -145,7 +161,9 @@ def fetch_day_grib(dt):
         fetch_day_grib.as_of = "%s-%s-%sT%s:%s:%sZ" % (
             d8[:4], d8[4:6], d8[6:8], t6[:2], t6[2:4], t6[4:6])
     log("  fetching", fname)
-    g = requests.get(url + fname, timeout=120)
+    g = _get(url + fname, timeout=120)
+    if g is None:
+        return None
     if g.status_code != 200:
         log("  grib HTTP", g.status_code)
         return None
