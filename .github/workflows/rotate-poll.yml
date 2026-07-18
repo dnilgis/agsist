@@ -3,7 +3,7 @@ name: Rotate Grower Pulse poll
 on:
   schedule:
     # 12:00 UTC every Monday (~6-7am Central). GitHub cron can run a bit late; that's fine.
-    - cron: "0 12 * * 1"
+    - cron: "11 12 * * 1"
   workflow_dispatch: {}   # lets you run it by hand from the Actions tab
 
 permissions:
@@ -37,5 +37,6 @@ jobs:
             echo "No changes to commit."
           else
             git commit -m "Rotate Grower Pulse poll [skip ci]"
+            git pull --rebase --autostash origin main || true
             git push
           fi

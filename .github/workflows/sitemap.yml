@@ -52,6 +52,7 @@ jobs:
             echo "no sitemap change"
           else
             git commit -m "Bump sitemap lastmod $(date -u +%F)"
+            git pull --rebase --autostash origin main || true
             git push
           fi
 

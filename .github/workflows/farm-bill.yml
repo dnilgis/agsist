@@ -31,7 +31,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.12"
 
       - name: Locate files
         id: find
@@ -67,6 +67,7 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add "$HTML"
             git commit -m "chore: bake farm-bill.html from farm-bill.json [skip ci]"
+            git pull --rebase --autostash origin main || true
             git push
           else
             echo "farm-bill.html already in sync — nothing to commit."

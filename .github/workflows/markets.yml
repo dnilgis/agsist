@@ -2,7 +2,7 @@ name: Fetch Markets
 
 on:
   schedule:
-    - cron: '0 10 * * *'
+    - cron: '23 9 * * *'
   workflow_dispatch:
 
 jobs:

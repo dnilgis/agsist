@@ -40,4 +40,5 @@ jobs:
             exit 0
           fi
           git commit -m "outlooks: refresh NOAA + USDM ($(date -u +%FT%TZ))"
+          git pull --rebase --autostash origin main || true
           git push

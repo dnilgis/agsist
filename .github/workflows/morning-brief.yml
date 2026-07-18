@@ -13,7 +13,7 @@ name: Morning brief — email Sigurd
 
 on:
   schedule:
-    - cron: '0 12 * * 1-5'   # 12:00 UTC, weekdays only
+    - cron: '6 12 * * 1-5'   # 12:00 UTC, weekdays only
   workflow_dispatch:           # manual trigger button in Actions UI
 
 jobs:

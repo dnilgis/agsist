@@ -35,5 +35,6 @@ jobs:
             echo "No change."
           else
             git commit -m "Update analyst scorecard $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git pull --rebase --autostash origin main || true
             git push
           fi

@@ -38,5 +38,6 @@ jobs:
             echo "No basis change — nothing to commit."
           else
             git commit -m "Update national basis map [skip ci]"
+            git pull --rebase --autostash origin main || true
             git push
           fi

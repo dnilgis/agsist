@@ -6,7 +6,7 @@ name: Hail data refresh
 
 on:
   schedule:
-    - cron: '0 7 1 * *'      # 1st of each month, 07:00 UTC
+    - cron: '41 6 1 * *'      # 1st of each month, 07:00 UTC
   workflow_dispatch: {}
 
 permissions:
@@ -40,5 +40,6 @@ jobs:
             echo "No changes to commit."
           else
             git commit -m "data: refresh national hail LSRs [skip ci]"
+            git pull --rebase --autostash origin main || true
             git push
           fi

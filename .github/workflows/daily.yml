@@ -1,5 +1,12 @@
 name: Generate Daily Briefing
 
+# One briefing at a time, ever: a scheduled run overlapping a manual dispatch
+# could double-generate and DOUBLE-EMAIL the list. Queue, never cancel — a
+# canceled half-published run is worse than a late one.
+concurrency:
+  group: daily-briefing
+  cancel-in-progress: false
+
 on:
   schedule:
     # 11:02 UTC every day.

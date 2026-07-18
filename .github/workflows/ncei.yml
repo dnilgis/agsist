@@ -17,7 +17,7 @@ on:
         description: "Smoke test: only process the first N years"
         required: false
   schedule:
-    - cron: '0 9 15 1 *'   # yearly, Jan 15 09:00 UTC
+    - cron: '47 8 15 1 *'   # yearly, Jan 15 09:00 UTC
 
 concurrency:
   group: ncei-backfill
