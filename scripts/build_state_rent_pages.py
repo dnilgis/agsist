@@ -493,7 +493,9 @@ def build_all(out_dir=OUT_DIR):
         p = build_state_page(st, d, stats[st], list(data))
         open(os.path.join(out_dir, f"{slug(STATE_NAMES[st])}.html"), "w").write(p)
         urls.append(f"{SITE}/rent/{slug(STATE_NAMES[st])}")
-    print(f"built {len(data)} state pages + hub -> {out_dir}/")
+    # stderr, NOT stdout: --print-urls pipes stdout into the sitemap step,
+    # and this line as line 1 of that file broke the first live run (exit 2).
+    print(f"built {len(data)} state pages + hub -> {out_dir}/", file=sys.stderr)
     return urls, stats
 
 
@@ -524,9 +526,16 @@ def selftest():
 def main():
     if "--selftest" in sys.argv:
         return selftest()
-    urls, _ = build_all()
     if "--print-urls" in sys.argv:
+        # stdout is the URL list and NOTHING else — the workflow pipes it
+        # straight into update_sitemap.py --add. Any stray print anywhere in
+        # build_all is forced to stderr so this can never break again.
+        import contextlib
+        with contextlib.redirect_stdout(sys.stderr):
+            urls, _ = build_all()
         print("\n".join(urls))
+    else:
+        build_all()
 
 
 if __name__ == "__main__":
