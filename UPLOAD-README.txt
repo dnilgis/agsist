@@ -1,51 +1,35 @@
-AGSIST MEGA KIT — supersedes agsist-nav-complete.zip (throw that one away)
-==========================================================================
-Everything pending, rebuilt against tonight's live repo. Two important
-things inside:
+EPIC-2 PAGES KIT v2 — REPLACES agsist-epic2-pages.zip (delete that one)
+========================================================================
+Same three pages + data fixes, with your nav call applied: "Cash Rent
+by State" is OUT of every menu. The /rent pages stay (search doorway,
+linked from the cash-rent page's browse-by-state section) — they just
+don't burn a menu slot next to Cash Rent by County.
 
-  ★ cot.html FIXES A LIVE BUG — /cot is currently serving the
-    AG-ODDS page (a missed scramble victim). This restores the real
-    COT page. Upload it first if you do nothing else.
-  ★ index.html was rebuilt from the LIVE homepage (today's briefing +
-    social card) + only the new nav links — safe to upload, but do it
-    TODAY/TONIGHT. If you wait past tomorrow's ~11:00 UTC daily run,
-    ask me for a fresh copy instead of uploading this one.
+ABOUT THE LOGS YOU SENT: both storage runs (01:47 & 01:49) used the
+OLD fetcher — 13,771 corn rows is the census-duplication signature.
+The fix below pulls ~1,300. Upload scripts/ first, then re-run.
 
-WHAT'S IN HERE
-  Root (17): basis + conditions (NEW pages), cot (bug fix), index,
-    cash-rent (browse-by-state cloud), cash-lease, breakeven, farm-bill,
-    ag-odds, cash-bids, tariffs, usda-quick-stats, usda-calendar,
-    fast-facts, seo-template, llms.txt, .gitignore
-  components/ (4): header, footer + both fallbacks — "Cash Rent by
-    State" everywhere, new map icon
-  scripts/ (6): build_state_rent_pages.py (generates 47 state rent
-    pages + /rent hub) and the five fail-loud polish scripts the repair
-    reverted (bids, crop_progress, markets, nass, mesh)
-  .github/workflows/ (1): state-rent-pages.yml
-  docs/ (1): NEW-PAGE-CHECKLIST.md
+UPLOAD (folder by folder)
+  1. Repo root -> the 12 root files -> commit
+     (three NEW pages: land-tenure, storage-crunch, conditions-yield;
+      index/cot/etc are nav-line updates)
+  2. components/ -> the 4 files -> commit
+  3. scripts/ -> the 3 files -> commit
+     (fetch_tenure + fetch_storage = DATA FIXES;
+      build_state_rent_pages = nav fix for the generated /rent pages)
 
-UPLOAD ORDER (folder by folder — never drag the whole zip tree to root)
-  1. Repo root -> "Add file > Upload files" -> drag the 17 ROOT FILES
-     only (the loose files, not the folders) -> commit.
-  2. Open components/ -> upload the 4 component files -> commit.
-  3. Open scripts/ -> upload the 6 scripts -> commit.
-  4. Open .github/workflows/ -> upload state-rent-pages.yml -> commit.
-  5. Open docs/ -> upload NEW-PAGE-CHECKLIST.md -> commit.
+RUN (Actions)
+  4. "tenure"  -> Run workflow    (county history 1997-2022 restored)
+  5. "storage" -> Run workflow    (census-year ratios cleaned)
+  6. "state-rent-pages" -> Run workflow  (if you already ran it, run
+     again — regenerates /rent pages without the menu entry;
+     if you never ran it, this is what creates agsist.com/rent/iowa)
+  7. "sitemap-add" -> Run workflow with:
+     https://agsist.com/land-tenure https://agsist.com/storage-crunch https://agsist.com/conditions-yield
 
-THEN — TWO WORKFLOW RUNS (Actions tab)
-  6. "state-rent-pages" -> Run workflow. It generates all 47
-     /rent/<state> pages + the /rent hub AND adds them to the sitemap
-     by itself. ~2 min. After it's green, spot-check
-     agsist.com/rent/iowa and agsist.com/rent/
-  7. "sitemap-add" -> Run workflow with this exact string in the urls
-     box (adds the pages that aren't machine-added):
-     https://agsist.com/basis https://agsist.com/conditions https://agsist.com/cash-lease https://agsist.com/foreign-land
-
-VERIFY (60 seconds)
-  - agsist.com/cot shows "CFTC COT Report" (not prediction markets)
-  - agsist.com/rent/iowa loads with the county table
-  - homepage still shows today's briefing
-  - any page's Numbers menu shows "Cash Rent by State"
-
-Separately: the probe-epic2 kit you already have -> upload its 2 files,
-run "probe-epic2", paste me the log. That unlocks the next 3 pages.
+VERIFY
+  - menus show Cash Rent by County only (no "by State" anywhere)
+  - /land-tenure, /storage-crunch, /conditions-yield all render
+  - /rent/iowa exists and its county table sorts
+  - after the storage re-run: /storage-crunch -> click Iowa -> the
+    2002/2007/2012/2017/2022 bars appear instead of "excluded"

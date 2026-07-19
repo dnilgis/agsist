@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c0d">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <link rel="preload" href="/components/styles.css?v=12" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=12">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <title>Who Owns the Ground? Rented vs Owner-Farmed Land by County | AGSIST</title>
+  <meta name="description" content="39% of U.S. farmland is rented from someone else. County-by-county map of owned vs rented ground, 1997-2022 census history. Free, sources shown.">
+  <link rel="canonical" href="https://agsist.com/land-tenure">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AGSIST">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="Who Owns the Ground? Rented vs Owner-Farmed Land by County">
+  <meta property="og:description" content="346 million acres of American farmland are worked by someone who doesn't own them. See your county — 25 years of census history, free.">
+  <meta property="og:url" content="https://agsist.com/land-tenure">
+  <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@agsist">
+  <meta name="twitter:title" content="Who Owns the Ground? Rented vs Owner-Farmed Land by County">
+  <meta name="twitter:description" content="346M acres of U.S. farmland are rented. County map, 1997-2022.">
+  <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
+  <script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Dataset",
+   "@id": "https://agsist.com/land-tenure#dataset",
+   "name": "US Farmland Tenure: Owned vs Rented Acres by County",
+   "description": "County, state and national acres of farmland owned vs rented from others, USDA Census of Agriculture 1997-2022.",
+   "url": "https://agsist.com/land-tenure",
+   "license": "https://www.usa.gov/government-works",
+   "isAccessibleForFree": true,
+   "creator": {
+    "@type": "Organization",
+    "name": "AGSIST",
+    "url": "https://agsist.com"
+   },
+   "temporalCoverage": "1997/2022",
+   "spatialCoverage": {
+    "@type": "Place",
+    "name": "United States"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "AGSIST",
+     "item": "https://agsist.com/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Who Owns the Ground",
+     "item": "https://agsist.com/land-tenure"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "What share of U.S. farmland is rented?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "In the 2022 Census of Agriculture, farms reported renting 346 million of the 880 million acres they operate \u2014 39.3%. In 1997 it was 40.3%. The share is remarkably stable nationally, but it varies enormously by county: 691 counties are majority-rented."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Which states have the most rented farmland?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Illinois (55.8%), Louisiana (55.3%), Kansas (54.3%), North Dakota (53.9%) and Indiana (52.2%) lead among major farm states \u2014 in each, most of the farmland is worked by someone who doesn't own it. Iowa sits at 49.8%. New England and Arizona are the opposite extreme, under 16%."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Where does this data come from?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "The USDA Census of Agriculture, taken every five years (1997, 2002, 2007, 2012, 2017, 2022). Farms report acres owned and acres rented from others. This page divides rented-from-others by total land in farms. No survey sampling, no modeling \u2014 it's the census."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does rented farmland mean absentee landlords?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Not necessarily. Rented ground includes land owned by retired farmers, widows and heirs still in the county, family members, and local investors \u2014 as well as out-of-area owners. The census counts the tenure arrangement, not where the landlord sleeps. What it does tell you: who carries the operating risk (the renter) and who collects a fixed rent (the owner)."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Why does the rented share matter for cash rent?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "The bigger the rented share, the more of a county's economics run through the rental market \u2014 and the more the county cash rent number is the number. That's why this page links straight to the county rent map and the printable lease."
+     }
+    }
+   ]
+  }
+ ]
+}
+  </script>
+  <style>
+    .lt-wrap{max-width:1060px;margin:0 auto;padding:0 16px}
+    h1{font-size:1.55rem;margin:14px 0 4px} h2{font-size:1.12rem;margin:26px 0 6px}
+    .sub{color:#8a948f;font-size:.9rem;line-height:1.65}
+    .lt-hero{display:flex;flex-wrap:wrap;gap:14px;margin:14px 0}
+    .lt-stat{background:#101415;border:1px solid #1a1f20;border-radius:10px;padding:12px 16px;min-width:150px;flex:1}
+    .lt-stat .v{font-family:'JetBrains Mono',monospace;font-size:1.45rem;color:#e6ebe9}
+    .lt-stat .l{font-size:.72rem;color:#8a948f;letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
+    .lt-stat .s{font-size:.72rem;color:#8a948f;margin-top:2px}
+    .up{color:#e0685f}.dn{color:#5fc28a}
+    #lt-map{height:520px;border:1px solid #1a1f20;border-radius:10px;background:#101415;margin:10px 0}
+    .lt-mleg{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:.72rem;color:#8a948f;margin:6px 0}
+    .lt-mleg-s{width:26px;height:11px;border-radius:2px;display:inline-block;vertical-align:middle}
+    .lt-panel{background:#101415;border:1px solid #1a1f20;border-radius:10px;padding:14px 16px;margin:10px 0;display:none}
+    .lt-panel h3{margin:0 0 6px;font-size:1rem}
+    table.rs-t{width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0}
+    .rs-t th{text-align:right;color:#8a948f;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;padding:7px 9px;border-bottom:1px solid #1a1f20;cursor:pointer;white-space:nowrap;user-select:none}
+    .rs-t th:first-child,.rs-t td:first-child{text-align:left}
+    .rs-t td{padding:6px 9px;border-bottom:1px solid #14181a;text-align:right;font-family:'JetBrains Mono',monospace;white-space:nowrap;color:#e6ebe9}
+    .rs-t td:first-child{font-family:Archivo,Inter,sans-serif}
+    .rs-t tr:hover td{background:#101415}
+    .rs-t .mut{color:#5a6467}
+    .lt-bar{display:flex;align-items:center;gap:10px;margin:3px 0;font-family:'JetBrains Mono',monospace;font-size:.78rem}
+    .lt-bar .y{width:42px;color:#8a948f}
+    .lt-bar .b{height:13px;background:linear-gradient(90deg,#5a3a2c,#d4a23f);border-radius:3px;min-width:2px}
+    .lt-bar .v{color:#e6ebe9}
+    .lt-bar .mut2{color:#5a6467;font-size:.7rem}
+    .lt-note{background:#101415;border:1px solid #1a1f20;border-left:3px solid #d4a23f;border-radius:8px;padding:12px 15px;font-size:.85rem;line-height:1.65;color:#8a948f;margin:14px 0}
+    .lt-note b{color:#e6ebe9}
+    .lt-note a{color:#d4a23f}
+    details{background:#101415;border:1px solid #1a1f20;border-radius:8px;margin:6px 0;padding:10px 14px}
+    summary{cursor:pointer;color:#e6ebe9;font-size:.9rem}
+    .lt-faq-a{color:#8a948f;font-size:.85rem;line-height:1.65;padding-top:8px}
+    .ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
+    .ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
+    .ag-sponsor-ribbon a{color:#d4a23f}
+  </style>
+</head>
+<body>
+<div id="site-header"></div>
+<main class="lt-wrap">
+  <h1>Who owns the ground?</h1>
+  <p class="sub">Everybody argues about who's <i>buying</i> farmland. The census answers a quieter question first:
+  how much of it is farmed by someone who doesn't own it at all. <span id="lt-seed"><!--SEED:ltstats-->39.3% of U.S. farmland &mdash; 346 million of 880 million acres &mdash; is rented from someone else (2022 census) &middot; 691 of 3,020 counties are majority-rented &middot; Illinois leads the Corn Belt at 55.8% &middot; data refreshed 2026-07-18<!--/SEED--></span></p>
+  <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Landlords, tenants, and everyone deciding which to be &mdash; one category-exclusive slot. <a href="/sponsor?slot=land-tenure&amp;utm_source=land-tenure&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <div class="lt-hero">
+    <div class="lt-stat"><div class="v">39.3%</div><div class="l">of U.S. farmland is rented</div><div class="s">346M of 880M acres &middot; 2022 census</div></div>
+    <div class="lt-stat"><div class="v">691</div><div class="l">majority-rented counties</div><div class="s">of 3,020 with 2022 data</div></div>
+    <div class="lt-stat"><div class="v">55.8%</div><div class="l">Illinois</div><div class="s">most-rented major farm state</div></div>
+    <div class="lt-stat"><div class="v">49.8%</div><div class="l">Iowa</div><div class="s">was 53.9% in 1997</div></div>
+  </div>
+
+  <h2>Your county, 2022</h2>
+  <p class="sub">Share of land in farms rented from others. Click a county for its 25-year history.</p>
+  <div class="lt-mleg" id="lt-mleg"></div>
+  <div id="lt-map"></div>
+  <div class="lt-panel" id="lt-panel"></div>
+
+  <h2>The national picture, 1997 &rarr; 2022</h2>
+  <p class="sub">Share of land in farms rented from others, every census. The national share barely moves &mdash;
+  the county map above is where the story lives.</p>
+  <div><div class="lt-bar"><span class="y">1997</span><div class="b" style="width:73.3%"></div><span class="v">40.3%</span><span class="mut2">385M of 955M ac</span></div><div class="lt-bar"><span class="y">2002</span><div class="b" style="width:68.5%"></div><span class="v">37.7%</span><span class="mut2">353M of 938M ac</span></div><div class="lt-bar"><span class="y">2007</span><div class="b" style="width:69.2%"></div><span class="v">38.0%</span><span class="mut2">351M of 922M ac</span></div><div class="lt-bar"><span class="y">2012</span><div class="b" style="width:69.8%"></div><span class="v">38.4%</span><span class="mut2">351M of 915M ac</span></div><div class="lt-bar"><span class="y">2017</span><div class="b" style="width:71.2%"></div><span class="v">39.2%</span><span class="mut2">352M of 900M ac</span></div><div class="lt-bar"><span class="y">2022</span><div class="b" style="width:71.5%"></div><span class="v">39.3%</span><span class="mut2">346M of 880M ac</span></div></div>
+
+  <h2>Every state, ranked</h2>
+  <p class="sub">Click a column to sort. State names link to that state&rsquo;s county cash-rent page.</p>
+  <table class="rs-t" id="rs-table"><thead><tr><th>State</th><th>% rented 2022</th><th>vs 1997</th><th>Rented acres</th><th>Owned acres</th></tr></thead>
+  <tbody><tr><td>Alaska</td><td data-v="69.9" style="color:#e0685f">69.9%</td><td data-v="-7.6" class="dn">-7.6 pp</td><td data-v="608173.0">0.6M</td><td data-v="261679.0">0.3M</td></tr><tr><td><a href="/rent/illinois" style="color:#e6ebe9">Illinois</a></td><td data-v="55.8" style="color:#e0685f">55.8%</td><td data-v="-4.1" class="dn">-4.1 pp</td><td data-v="14684070.0">14.7M</td><td data-v="11607971.0">11.6M</td></tr><tr><td><a href="/rent/louisiana" style="color:#e6ebe9">Louisiana</a></td><td data-v="55.3" style="color:#e0685f">55.3%</td><td data-v="2.8" class="up">+2.8 pp</td><td data-v="4418744.0">4.4M</td><td data-v="3567637.0">3.6M</td></tr><tr><td><a href="/rent/kansas" style="color:#e6ebe9">Kansas</a></td><td data-v="54.3" style="color:#e0685f">54.3%</td><td data-v="-1.0" class="dn">-1.0 pp</td><td data-v="24329968.0">24.3M</td><td data-v="20464734.0">20.5M</td></tr><tr><td><a href="/rent/north-dakota" style="color:#e6ebe9">North Dakota</a></td><td data-v="53.9" style="color:#e0685f">53.9%</td><td data-v="3.0" class="up">+3.0 pp</td><td data-v="20776754.0">20.8M</td><td data-v="17760268.0">17.8M</td></tr><tr><td><a href="/rent/indiana" style="color:#e6ebe9">Indiana</a></td><td data-v="52.2" style="color:#e0685f">52.2%</td><td data-v="0.9" class="up">+0.9 pp</td><td data-v="7628004.0">7.6M</td><td data-v="6974236.0">7.0M</td></tr><tr><td><a href="/rent/delaware" style="color:#e6ebe9">Delaware</a></td><td data-v="51.8" style="color:#e0685f">51.8%</td><td data-v="1.4" class="up">+1.4 pp</td><td data-v="270667.0">0.3M</td><td data-v="252167.0">0.3M</td></tr><tr><td><a href="/rent/iowa" style="color:#e6ebe9">Iowa</a></td><td data-v="49.8" style="color:#d4a23f">49.8%</td><td data-v="-4.1" class="dn">-4.1 pp</td><td data-v="14935133.0">14.9M</td><td data-v="15043032.0">15.0M</td></tr><tr><td><a href="/rent/arkansas" style="color:#e6ebe9">Arkansas</a></td><td data-v="49.2" style="color:#d4a23f">49.2%</td><td data-v="1.7" class="up">+1.7 pp</td><td data-v="6755495.0">6.8M</td><td data-v="6967030.0">7.0M</td></tr><tr><td><a href="/rent/minnesota" style="color:#e6ebe9">Minnesota</a></td><td data-v="48.9" style="color:#d4a23f">48.9%</td><td data-v="8.7" class="up">+8.7 pp</td><td data-v="12436488.0">12.4M</td><td data-v="13006137.0">13.0M</td></tr><tr><td><a href="/rent/nebraska" style="color:#e6ebe9">Nebraska</a></td><td data-v="44.6" style="color:#d4a23f">44.6%</td><td data-v="1.5" class="up">+1.5 pp</td><td data-v="19613483.0">19.6M</td><td data-v="24362210.0">24.4M</td></tr><tr><td>Hawaii</td><td data-v="43.7" style="color:#d4a23f">43.7%</td><td data-v="-5.7" class="dn">-5.7 pp</td><td data-v="460144.0">0.5M</td><td data-v="593158.0">0.6M</td></tr><tr><td><a href="/rent/texas" style="color:#e6ebe9">Texas</a></td><td data-v="42.6" style="color:#d4a23f">42.6%</td><td data-v="-2.9" class="dn">-2.9 pp</td><td data-v="53439854.0">53.4M</td><td data-v="72031471.0">72.0M</td></tr><tr><td><a href="/rent/south-dakota" style="color:#e6ebe9">South Dakota</a></td><td data-v="41.7" style="color:#d4a23f">41.7%</td><td data-v="3.2" class="up">+3.2 pp</td><td data-v="17655443.0">17.7M</td><td data-v="24649158.0">24.6M</td></tr><tr><td><a href="/rent/ohio" style="color:#e6ebe9">Ohio</a></td><td data-v="41.7" style="color:#d4a23f">41.7%</td><td data-v="-4.1" class="dn">-4.1 pp</td><td data-v="5697042.0">5.7M</td><td data-v="7955304.0">8.0M</td></tr><tr><td><a href="/rent/michigan" style="color:#e6ebe9">Michigan</a></td><td data-v="41.4" style="color:#d4a23f">41.4%</td><td data-v="3.3" class="up">+3.3 pp</td><td data-v="3921559.0">3.9M</td><td data-v="5550510.0">5.6M</td></tr><tr><td><a href="/rent/washington" style="color:#e6ebe9">Washington</a></td><td data-v="41.2" style="color:#d4a23f">41.2%</td><td data-v="-2.7" class="dn">-2.7 pp</td><td data-v="5714482.0">5.7M</td><td data-v="8140932.0">8.1M</td></tr><tr><td><a href="/rent/california" style="color:#e6ebe9">California</a></td><td data-v="41.1" style="color:#d4a23f">41.1%</td><td data-v="-6.1" class="dn">-6.1 pp</td><td data-v="9951105.0">10.0M</td><td data-v="14239499.0">14.2M</td></tr><tr><td><a href="/rent/maryland" style="color:#e6ebe9">Maryland</a></td><td data-v="41.0" style="color:#d4a23f">41.0%</td><td data-v="-2.9" class="dn">-2.9 pp</td><td data-v="810907.0">0.8M</td><td data-v="1167129.0">1.2M</td></tr><tr><td><a href="/rent/north-carolina" style="color:#e6ebe9">North Carolina</a></td><td data-v="40.6" style="color:#d4a23f">40.6%</td><td data-v="-0.7" class="dn">-0.7 pp</td><td data-v="3303542.0">3.3M</td><td data-v="4824594.0">4.8M</td></tr><tr><td><a href="/rent/oklahoma" style="color:#e6ebe9">Oklahoma</a></td><td data-v="39.1" style="color:#5fc28a">39.1%</td><td data-v="-5.2" class="dn">-5.2 pp</td><td data-v="12851509.0">12.9M</td><td data-v="20046054.0">20.0M</td></tr><tr><td><a href="/rent/mississippi" style="color:#e6ebe9">Mississippi</a></td><td data-v="38.3" style="color:#5fc28a">38.3%</td><td data-v="0.7" class="up">+0.7 pp</td><td data-v="3925750.0">3.9M</td><td data-v="6325747.0">6.3M</td></tr><tr><td><a href="/rent/missouri" style="color:#e6ebe9">Missouri</a></td><td data-v="35.6" style="color:#5fc28a">35.6%</td><td data-v="1.5" class="up">+1.5 pp</td><td data-v="9613884.0">9.6M</td><td data-v="17412359.0">17.4M</td></tr><tr><td><a href="/rent/florida" style="color:#e6ebe9">Florida</a></td><td data-v="34.6" style="color:#5fc28a">34.6%</td><td data-v="8.4" class="up">+8.4 pp</td><td data-v="3360200.0">3.4M</td><td data-v="6341200.0">6.3M</td></tr><tr><td><a href="/rent/tennessee" style="color:#e6ebe9">Tennessee</a></td><td data-v="34.5" style="color:#5fc28a">34.5%</td><td data-v="4.3" class="up">+4.3 pp</td><td data-v="3699815.0">3.7M</td><td data-v="7033136.0">7.0M</td></tr><tr><td><a href="/rent/wisconsin" style="color:#e6ebe9">Wisconsin</a></td><td data-v="34.3" style="color:#5fc28a">34.3%</td><td data-v="8.4" class="up">+8.4 pp</td><td data-v="4728283.0">4.7M</td><td data-v="9056395.0">9.1M</td></tr><tr><td><a href="/rent/virginia" style="color:#e6ebe9">Virginia</a></td><td data-v="33.9" style="color:#5fc28a">33.9%</td><td data-v="-0.2" class="dn">-0.2 pp</td><td data-v="2476064.0">2.5M</td><td data-v="4833623.0">4.8M</td></tr><tr><td><a href="/rent/wyoming" style="color:#e6ebe9">Wyoming</a></td><td data-v="33.8" style="color:#5fc28a">33.8%</td><td data-v="-5.1" class="dn">-5.1 pp</td><td data-v="9719781.0">9.7M</td><td data-v="19056540.0">19.1M</td></tr><tr><td><a href="/rent/idaho" style="color:#e6ebe9">Idaho</a></td><td data-v="33.0" style="color:#5fc28a">33.0%</td><td data-v="-0.3" class="dn">-0.3 pp</td><td data-v="3810055.0">3.8M</td><td data-v="7737908.0">7.7M</td></tr><tr><td><a href="/rent/colorado" style="color:#e6ebe9">Colorado</a></td><td data-v="32.7" style="color:#5fc28a">32.7%</td><td data-v="-4.7" class="dn">-4.7 pp</td><td data-v="9868373.0">9.9M</td><td data-v="20345526.0">20.3M</td></tr><tr><td><a href="/rent/montana" style="color:#e6ebe9">Montana</a></td><td data-v="32.2" style="color:#5fc28a">32.2%</td><td data-v="-2.4" class="dn">-2.4 pp</td><td data-v="18560688.0">18.6M</td><td data-v="39040632.0">39.0M</td></tr><tr><td><a href="/rent/new-jersey" style="color:#e6ebe9">New Jersey</a></td><td data-v="31.7" style="color:#5fc28a">31.7%</td><td data-v="-9.4" class="dn">-9.4 pp</td><td data-v="225201.0">0.2M</td><td data-v="486301.0">0.5M</td></tr><tr><td><a href="/rent/kentucky" style="color:#e6ebe9">Kentucky</a></td><td data-v="31.4" style="color:#5fc28a">31.4%</td><td data-v="4.6" class="up">+4.6 pp</td><td data-v="3907143.0">3.9M</td><td data-v="8524047.0">8.5M</td></tr><tr><td><a href="/rent/pennsylvania" style="color:#e6ebe9">Pennsylvania</a></td><td data-v="31.3" style="color:#5fc28a">31.3%</td><td data-v="-0.7" class="dn">-0.7 pp</td><td data-v="2209295.0">2.2M</td><td data-v="4849030.0">4.8M</td></tr><tr><td><a href="/rent/oregon" style="color:#e6ebe9">Oregon</a></td><td data-v="29.4" style="color:#5fc28a">29.4%</td><td data-v="-5.4" class="dn">-5.4 pp</td><td data-v="4503095.0">4.5M</td><td data-v="10792684.0">10.8M</td></tr><tr><td><a href="/rent/south-carolina" style="color:#e6ebe9">South Carolina</a></td><td data-v="28.3" style="color:#5fc28a">28.3%</td><td data-v="-2.9" class="dn">-2.9 pp</td><td data-v="1288863.0">1.3M</td><td data-v="3265059.0">3.3M</td></tr><tr><td><a href="/rent/connecticut" style="color:#e6ebe9">Connecticut</a></td><td data-v="28.1" style="color:#5fc28a">28.1%</td><td data-v="-0.7" class="dn">-0.7 pp</td><td data-v="104389.0">0.1M</td><td data-v="267625.0">0.3M</td></tr><tr><td><a href="/rent/alabama" style="color:#e6ebe9">Alabama</a></td><td data-v="28.1" style="color:#5fc28a">28.1%</td><td data-v="0.4" class="up">+0.4 pp</td><td data-v="2420659.0">2.4M</td><td data-v="6208442.0">6.2M</td></tr><tr><td><a href="/rent/new-mexico" style="color:#e6ebe9">New Mexico</a></td><td data-v="27.9" style="color:#5fc28a">27.9%</td><td data-v="-7.0" class="dn">-7.0 pp</td><td data-v="10909561.0">10.9M</td><td data-v="28219002.0">28.2M</td></tr><tr><td><a href="/rent/new-york" style="color:#e6ebe9">New York</a></td><td data-v="27.2" style="color:#5fc28a">27.2%</td><td data-v="1.6" class="up">+1.6 pp</td><td data-v="1768959.0">1.8M</td><td data-v="4733327.0">4.7M</td></tr><tr><td><a href="/rent/georgia" style="color:#e6ebe9">Georgia</a></td><td data-v="26.6" style="color:#5fc28a">26.6%</td><td data-v="1.2" class="up">+1.2 pp</td><td data-v="2642742.0">2.6M</td><td data-v="7296571.0">7.3M</td></tr><tr><td><a href="/rent/west-virginia" style="color:#e6ebe9">West Virginia</a></td><td data-v="22.0" style="color:#5fc28a">22.0%</td><td data-v="-1.5" class="dn">-1.5 pp</td><td data-v="780580.0">0.8M</td><td data-v="2768524.0">2.8M</td></tr><tr><td><a href="/rent/vermont" style="color:#e6ebe9">Vermont</a></td><td data-v="18.7" style="color:#5fc28a">18.7%</td><td data-v="-6.2" class="dn">-6.2 pp</td><td data-v="219835.0">0.2M</td><td data-v="954055.0">1.0M</td></tr><tr><td>Rhode Island</td><td data-v="18.4" style="color:#5fc28a">18.4%</td><td data-v="-5.6" class="dn">-5.6 pp</td><td data-v="10879.0">0.0M</td><td data-v="48197.0">0.0M</td></tr><tr><td><a href="/rent/nevada" style="color:#e6ebe9">Nevada</a></td><td data-v="16.6" style="color:#5fc28a">16.6%</td><td data-v="-9.9" class="dn">-9.9 pp</td><td data-v="977335.0">1.0M</td><td data-v="4919319.0">4.9M</td></tr><tr><td><a href="/rent/utah" style="color:#e6ebe9">Utah</a></td><td data-v="15.6" style="color:#5fc28a">15.6%</td><td data-v="-3.0" class="dn">-3.0 pp</td><td data-v="1637115.0">1.6M</td><td data-v="8857808.0">8.9M</td></tr><tr><td><a href="/rent/maine" style="color:#e6ebe9">Maine</a></td><td data-v="15.6" style="color:#5fc28a">15.6%</td><td data-v="-2.7" class="dn">-2.7 pp</td><td data-v="191003.0">0.2M</td><td data-v="1034043.0">1.0M</td></tr><tr><td><a href="/rent/massachusetts" style="color:#e6ebe9">Massachusetts</a></td><td data-v="14.7" style="color:#5fc28a">14.7%</td><td data-v="-5.9" class="dn">-5.9 pp</td><td data-v="68431.0">0.1M</td><td data-v="396020.0">0.4M</td></tr><tr><td><a href="/rent/new-hampshire" style="color:#e6ebe9">New Hampshire</a></td><td data-v="11.4" style="color:#5fc28a">11.4%</td><td data-v="-6.0" class="dn">-6.0 pp</td><td data-v="47405.0">0.0M</td><td data-v="369782.0">0.4M</td></tr><tr><td><a href="/rent/arizona" style="color:#e6ebe9">Arizona</a></td><td data-v="7.6" style="color:#5fc28a">7.6%</td><td data-v="-0.3" class="dn">-0.3 pp</td><td data-v="1951070.0">2.0M</td><td data-v="23574017.0">23.6M</td></tr></tbody></table>
+
+  <div class="lt-note"><b>Honest limits.</b> "Rented from others" is what farms themselves reported to the
+  Census of Agriculture &mdash; it includes ground rented from retired neighbors, family, heirs, and investors alike.
+  The census can't tell you where the landlord lives, and neither can this page. Counties USDA suppressed for
+  privacy simply lack that year. Alaska's 69.9% is real but tiny in acres; grain-state percentages carry the weight.</div>
+  <div class="lt-note" style="border-left-color:#5fc28a"><b>Do something with it:</b> if your county is majority-rented,
+  the rent number IS the market &mdash; see it on the <a href="/cash-rent">county cash-rent map</a> or your
+  <a href="/rent/">state&rsquo;s rent page</a> &middot; put the number on paper with the
+  <a href="/cash-lease">printable cash lease</a> &middot; wondering about foreign owners specifically? That&rsquo;s a
+  different (and much smaller) dataset: the <a href="/foreign-land">AFIDA foreign-owned land map</a>.</div>
+
+  <h2>Questions people actually ask</h2>
+  <details><summary>What share of U.S. farmland is rented?</summary><div class="lt-faq-a">In the 2022 Census of Agriculture, farms reported renting 346 million of the 880 million acres they operate — 39.3%. In 1997 it was 40.3%. The share is remarkably stable nationally, but it varies enormously by county: 691 counties are majority-rented.</div></details><details><summary>Which states have the most rented farmland?</summary><div class="lt-faq-a">Illinois (55.8%), Louisiana (55.3%), Kansas (54.3%), North Dakota (53.9%) and Indiana (52.2%) lead among major farm states — in each, most of the farmland is worked by someone who doesn't own it. Iowa sits at 49.8%. New England and Arizona are the opposite extreme, under 16%.</div></details><details><summary>Where does this data come from?</summary><div class="lt-faq-a">The USDA Census of Agriculture, taken every five years (1997, 2002, 2007, 2012, 2017, 2022). Farms report acres owned and acres rented from others. This page divides rented-from-others by total land in farms. No survey sampling, no modeling — it's the census.</div></details><details><summary>Does rented farmland mean absentee landlords?</summary><div class="lt-faq-a">Not necessarily. Rented ground includes land owned by retired farmers, widows and heirs still in the county, family members, and local investors — as well as out-of-area owners. The census counts the tenure arrangement, not where the landlord sleeps. What it does tell you: who carries the operating risk (the renter) and who collects a fixed rent (the owner).</div></details><details><summary>Why does the rented share matter for cash rent?</summary><div class="lt-faq-a">The bigger the rented share, the more of a county's economics run through the rental market — and the more the county cash rent number is the number. That's why this page links straight to the county rent map and the printable lease.</div></details>
+
+  <p class="sub" style="font-size:.75rem;margin:18px 0">Source: USDA Census of Agriculture (1997&ndash;2022), land in farms
+  by ownership, county/state/national, domain totals only. Rebuilt automatically when a new census publishes.
+  Data refreshed 2026-07-18. AGSIST is free and sells nothing on this page.</p>
+</main>
+<nav aria-label="Explore AGSIST" style="max-width:1060px;margin:26px auto 8px;padding:0 16px;font-size:12.5px;line-height:2.1">
+  <span style="color:var(--text-dim);font-weight:700">Land:</span> <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a><br>
+  <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/markets" style="color:var(--text-muted);text-decoration:none">Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What&rsquo;s Priced In</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT</a><br>
+  <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">Daily Briefing</a>
+</nav>
+<div id="site-footer"></div>
+<script src="/components/loader.js?v=14"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var GEO='https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json';
+  var RAMP=['#5fc28a','#9fbf74','#d4a23f','#d97f45','#e0685f'];
+  var data=null, breaks=[], map=null, layer=null;
+  function pct(pair){ return (pair&&pair[0]!=null&&pair[1]!=null)?100*pair[1]/(pair[0]+pair[1]):null; }
+  function latestPair(c){ var yrs=Object.keys(c.y).sort(); for(var i=yrs.length-1;i>=0;i--){var p=c.y[yrs[i]];if(p[0]!=null&&p[1]!=null)return {yr:yrs[i],p:p};} return null; }
+  function quantiles(vals,n){ vals=vals.slice().sort(function(a,b){return a-b;}); var out=[]; for(var i=1;i<n;i++)out.push(vals[Math.floor(vals.length*i/n)]); return out; }
+  function shade(v){ if(v==null)return '#1a1f20'; for(var i=0;i<breaks.length;i++)if(v<breaks[i])return RAMP[i]; return RAMP[RAMP.length-1]; }
+  function legend(){ var h=''; for(var i=0;i<RAMP.length;i++){ var lab=(i===0)?('<'+breaks[0].toFixed(0)+'%'):(i===RAMP.length-1?('\u2265'+breaks[breaks.length-1].toFixed(0)+'%'):breaks[i-1].toFixed(0)+'%'); h+='<span><span class="lt-mleg-s" style="background:'+RAMP[i]+'"></span> '+lab+'</span>'; } h+='<span><span class="lt-mleg-s" style="background:#1a1f20"></span> no data</span><span style="color:#5a6467">share of farmland rented, 2022</span>'; $('lt-mleg').innerHTML=h; }
+  function showCounty(fips){
+    var c=data.counties[fips]; if(!c)return;
+    var lp=latestPair(c); if(!lp)return;
+    var h='<h3>'+c.n+' County, '+c.st+'</h3>';
+    h+='<div style="font-family:\'JetBrains Mono\',monospace;font-size:.85rem;color:#e6ebe9">'+pct(lp.p).toFixed(1)+'% rented ('+lp.yr+') &middot; '+(lp.p[1]/1000).toFixed(0)+'k ac rented &middot; '+(lp.p[0]/1000).toFixed(0)+'k ac owned</div>';
+    var yrs=(data.years||[]).map(String);
+    h+='<div style="margin-top:8px">';
+    for(var i=0;i<yrs.length;i++){
+      var p=c.y[yrs[i]]; var v=pct(p);
+      if(v==null){ h+='<div class="lt-bar"><span class="y">'+yrs[i]+'</span><span class="mut2" style="font-style:italic">not published for this county</span></div>'; }
+      else { h+='<div class="lt-bar"><span class="y">'+yrs[i]+'</span><div class="b" style="width:'+Math.min(96,v*1.2).toFixed(1)+'%"></div><span class="v">'+v.toFixed(1)+'%</span></div>'; }
+    }
+    h+='</div><div style="font-size:.72rem;color:#5a6467;margin-top:6px">Share of land in farms rented from others, each census. <a href="/cash-rent" style="color:#d4a23f">See this county\'s cash rent &rarr;</a></div>';
+    var el=$('lt-panel'); el.innerHTML=h; el.style.display='block';
+    gaEvent('tenure_county',{fips:fips});
+  }
+  function initMap(){
+    Promise.all([
+      fetch('/data/tenure/tenure.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
+      fetch(GEO).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
+    ]).then(function(res){
+      data=res[0]; var topo=res[1];
+      if(!data||!topo||typeof L==='undefined'||typeof topojson==='undefined'){
+        $('lt-map').innerHTML='<div style="padding:40px;text-align:center;color:#8a948f;font-family:\'JetBrains Mono\',monospace;font-size:12px">Map unavailable &mdash; the tables above carry the story</div>';
+        return;
+      }
+      var vals=[]; Object.keys(data.counties).forEach(function(f){ var v=pct(data.counties[f].y['2022']); if(v!=null)vals.push(v); });
+      breaks=quantiles(vals,RAMP.length); legend();
+      var gj=topojson.feature(topo,topo.objects.counties);
+      map=L.map('lt-map',{zoomControl:true,scrollWheelZoom:false,attributionControl:false}).setView([39.5,-98.35],4);
+      layer=L.geoJSON(gj,{
+        style:function(f){ var c=data.counties[f.id]; var v=c?pct(c.y['2022']):null;
+          return {fillColor:shade(v),weight:.4,color:'#0a0c0d',fillOpacity:.92}; },
+        onEachFeature:function(f,l){
+          var c=data.counties[f.id];
+          var nm=(f.properties&&f.properties.name)||'County';
+          if(c){ var v=pct(c.y['2022']); l.bindTooltip(nm+', '+c.st+(v!=null?': '+v.toFixed(1)+'% rented':''),{sticky:true}); }
+          l.on('click',function(){ showCounty(f.id); });
+        }
+      }).addTo(map);
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMap); else initMap();
+  // table sort
+  var t=document.getElementById('rs-table');
+  if(t){ var ths=t.tHead.rows[0].cells,dir=1,last=-1;
+    for(let i=0;i<ths.length;i++)ths[i].addEventListener('click',function(){
+      dir=(last===i)?-dir:(i===0?1:-1);last=i;
+      var rows=[].slice.call(t.tBodies[0].rows);
+      rows.sort(function(a,b){ if(i===0)return dir*a.cells[0].textContent.localeCompare(b.cells[0].textContent);
+        return dir*((+a.cells[i].getAttribute('data-v')||0)-(+b.cells[i].getAttribute('data-v')||0)); });
+      rows.forEach(function(r){t.tBodies[0].appendChild(r);});
+    });
+  }
+})();
+</script>
+</body>
+</html>
