@@ -67,7 +67,7 @@
     .bs-tbl td{padding:8px 10px;border-bottom:1px solid rgba(132,160,168,.08);color:#c9d1cd}
     .bs-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;white-space:nowrap;color:#e6ebe9}
     .neg{color:#e0685f !important}.pos{color:#5fc28a !important}
-    .bs-spark{height:26px;width:130px}
+    .bs-spark{height:30px;width:100%;max-width:280px;min-width:170px;display:block}
     .bs-bars{display:grid;gap:10px}
     .bs-barrow{display:grid;grid-template-columns:130px 1fr 130px;gap:10px;align-items:center}
     .bs-barlbl{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:#c9d1cd}
@@ -87,7 +87,8 @@
     .bs-faq p{color:#8a948f;font-size:.9rem;line-height:1.7;margin:8px 0 2px}
     .bs-src{font-size:.8rem;color:#8a948f;line-height:1.7}
     .bs-src a{color:#d4a23f}
-    @media (max-width:640px){.bs-barrow{grid-template-columns:96px 1fr 96px}.bs-spark{width:90px}}
+    @media (max-width:640px){.bs-barrow{grid-template-columns:96px 1fr 96px}.bs-spark{min-width:120px}}
+    #bs-table th{white-space:nowrap} #bs-table th:last-child{white-space:normal;min-width:200px}
   </style>
 </head>
 <body>
@@ -159,27 +160,25 @@
   var SHORT={'Hard Red Winter Wheat':'HRW Wheat','Soft Red Winter Wheat':'SRW Wheat','Hard Red Spring Wheat':'HRS Wheat'};
 
   function fmt$(v){ return (v<0?'-':'+')+'$'+Math.abs(v).toFixed(2); }
-  function spark(hist, avg5){
-    // Full-context sparkline: domain always includes $0 and the 5-yr normal,
-    // so the line's position MEANS something — dashed grey = zero, dotted =
-    // this region's own normal, dot = now. Never a naked squiggle.
-    if(!hist||hist.length<2) return '';
-    var vs=hist.map(function(p){return p[1];});
-    var mn=Math.min.apply(null,vs), mx=Math.max.apply(null,vs);
-    mn=Math.min(mn,0,avg5==null?mn:avg5); mx=Math.max(mx,0,avg5==null?mx:avg5);
-    var rg=(mx-mn)||1;
-    var Y=function(v){return (24-((v-mn)/rg*20)-2).toFixed(1);};
-    var pts=vs.map(function(v,i){ return (i/(vs.length-1)*128+1).toFixed(1)+','+Y(v); }).join(' ');
-    var end=pts.split(' ').pop().split(',');
-    var tip=hist[0][0]+' → '+hist[hist.length-1][0]+': '+vs[vs.length-1].toFixed(2)
-      +' now · range '+mn.toFixed(2)+' to '+mx.toFixed(2)
-      +(avg5==null?'':' · 5-yr normal '+avg5.toFixed(2));
-    return '<svg class="bs-spark" viewBox="0 0 130 26" preserveAspectRatio="none" role="img">'
-      +'<title>'+tip+'</title>'
-      +'<line x1="1" y1="'+Y(0)+'" x2="129" y2="'+Y(0)+'" stroke="#5a6467" stroke-width="1" stroke-dasharray="3,2"/>'
-      +(avg5==null?'':'<line x1="1" y1="'+Y(avg5)+'" x2="129" y2="'+Y(avg5)+'" stroke="#8a948f" stroke-width="1" stroke-dasharray="1,3"/>')
-      +'<polyline points="'+pts+'" fill="none" stroke="#d4a23f" stroke-width="1.5"/>'
-      +'<circle cx="'+end[0]+'" cy="'+end[1]+'" r="2.4" fill="#d4a23f"/></svg>';
+  function spark(hist, avg5, dom){
+    // v4: the bar IS the "vs normal" column — thick diverging bar with its
+    // own value printed at the tip. Center tick = this region's 5-yr
+    // same-week normal. Shared $/bu scale across rows.
+    if(!hist||!hist.length) return '';
+    var cur=hist[hist.length-1][1];
+    if(avg5==null) return '<span style="color:#5a6467;font-size:.72rem">no normal published</span>';
+    var d=cur-avg5, W=250, C=125, HALF=78;
+    var len=Math.min(HALF, Math.abs(d)/dom*HALF);
+    var x0=d<0?C-len:C, col=d<-0.02?'#e0685f':(d>0.02?'#5fc28a':'#8a948f');
+    var lab=(d>0?'+':'-')+'$'+Math.abs(d).toFixed(2);
+    var lx=d<0?(C-len-6):(C+len+6), anchor=d<0?'end':'start';
+    return '<svg class="bs-spark" viewBox="0 0 '+W+' 30" role="img" preserveAspectRatio="xMinYMid meet">'
+      +'<title>now '+cur.toFixed(2)+' minus 5-yr normal '+avg5.toFixed(2)+' = '+lab+'/bu vs normal</title>'
+      +'<line x1="'+(C-HALF)+'" y1="15" x2="'+(C+HALF)+'" y2="15" stroke="#1a1f20" stroke-width="1"/>'
+      +'<rect x="'+x0.toFixed(1)+'" y="7" width="'+Math.max(len,1.5).toFixed(1)+'" height="16" rx="3" fill="'+col+'"/>'
+      +'<line x1="'+C+'" y1="3" x2="'+C+'" y2="27" stroke="#8a948f" stroke-width="1.4"/>'
+      +'<text x="'+lx.toFixed(1)+'" y="19.5" text-anchor="'+anchor+'" font-size="11" font-weight="700" fill="'+col+'" font-family="JetBrains Mono,monospace">'+lab+'</text>'
+      +'</svg>';
   }
 
   function renderTable(){
@@ -190,13 +189,15 @@
       rows.push({mkt:p[1], s:basis.series[k]});
     });
     rows.sort(function(a,b){ return (a.s.delta==null?9:a.s.delta)-(b.s.delta==null?9:b.s.delta); });
-    var h='<tr><th>Region</th><th style="text-align:right">Basis now</th><th style="text-align:right">5-yr normal</th><th style="text-align:right">vs normal</th><th>26 weeks &nbsp;<span style="text-transform:none;letter-spacing:0;color:#5a6467">┄ $0</span> <span style="text-transform:none;letter-spacing:0;color:#8a948f">┈ normal</span></th></tr>';
+    var dmax=0.1;
+    rows.forEach(function(r){ if(r.s.delta!=null) dmax=Math.max(dmax, Math.abs(r.s.delta)); });
+    var dom=dmax*1.05;
+    var h='<tr><th>Region</th><th style="text-align:right">Basis now</th><th style="text-align:right">5-yr normal</th><th>Vs its own 5-yr normal, $/bu &nbsp;<span style="text-transform:none;letter-spacing:0;color:#8a948f">| = normal for this week &middot; <span style="color:#e0685f">\u25a0</span> weaker &middot; <span style="color:#5fc28a">\u25a0</span> stronger &middot; all rows same scale</span></th></tr>';
     rows.forEach(function(r){
       var d=r.s.delta;
       h+='<tr><td>'+r.mkt+'</td><td class="num">'+fmt$(r.s.latest)+'</td>'
         +'<td class="num" style="color:#8a948f">'+(r.s.avg5==null?'—':fmt$(r.s.avg5))+'</td>'
-        +'<td class="num '+(d==null?'':(d<-0.02?'neg':(d>0.02?'pos':'')))+'">'+(d==null?'—':fmt$(d))+'</td>'
-        +'<td>'+spark(r.s.hist, r.s.avg5)+'</td></tr>';
+        +'<td>'+spark(r.s.hist, r.s.avg5, dom)+'</td></tr>';
     });
     $('bs-table').innerHTML = rows.length?h:'<tr><td style="color:#8a948f">No USDA series for this commodity</td></tr>';
   }
