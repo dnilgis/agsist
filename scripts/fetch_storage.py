@@ -86,6 +86,7 @@ def collect(fetch):
     for which, sd in CAP.items():
         idx = 0 if which == "on" else 1
         rows = fetch({"short_desc": sd, "agg_level_desc": "STATE",
+                      "source_desc": "SURVEY",
                       "year__GE": str(FIRST_YEAR),
                       "reference_period_desc": CAP_REF})
         print(f"  capacity {which}-farm: {len(rows)} rows")
@@ -95,10 +96,16 @@ def collect(fetch):
             if v is not None and st and yr:
                 cap[st][yr][idx] = v
         time.sleep(2)
-    prod = defaultdict(lambda: defaultdict(float))                 # st -> yr -> bu
+    # LEARNED LIVE (first run): census years (2002..2022) carry CENSUS rows and
+    # census DOMAIN breakdowns beside the survey total — summing rows blindly
+    # made IA 2022 "grow" 36B bu (11x). Pin source SURVEY and ASSIGN one value
+    # per (state, year, crop); a duplicate row is a loud warning, never a +=.
+    per_crop = defaultdict(dict)                                   # (st,yr) -> {sd: bu}
     prod_n = 0
+    dupes = 0
     for sd in PROD:
         rows = fetch({"short_desc": sd, "agg_level_desc": "STATE",
+                      "source_desc": "SURVEY",
                       "year__GE": str(FIRST_YEAR),
                       "reference_period_desc": "YEAR"})
         print(f"  production {sd.split(' -')[0]}: {len(rows)} rows")
@@ -106,9 +113,19 @@ def collect(fetch):
         for r in rows:
             v = val(r)
             st, yr = r.get("state_alpha"), str(r.get("year"))
-            if v is not None and st and yr:
-                prod[st][yr] += v
+            if v is None or not st or not yr:
+                continue
+            if sd in per_crop[(st, yr)]:
+                dupes += 1
+                continue
+            per_crop[(st, yr)][sd] = v
         time.sleep(2)
+    if dupes:
+        print(f"  !! {dupes} duplicate production rows ignored (kept first) — "
+              f"if this is large, the source pin regressed")
+    prod = defaultdict(lambda: defaultdict(float))                 # st -> yr -> bu
+    for (st, yr), crops in per_crop.items():
+        prod[st][yr] = sum(crops.values())
     return cap, prod, prod_n
 
 
@@ -175,6 +192,7 @@ def selftest():
         sd = params["short_desc"]
         if "CAPACITY" in sd:
             assert params["reference_period_desc"] == "FIRST OF DEC", "ref pin missing"
+            assert params["source_desc"] == "SURVEY", "capacity source pin missing"
             base = 1000 if "ON FARM" in sd else 800
             rows = []
             for yr in (2023, 2024):
@@ -184,10 +202,14 @@ def selftest():
                          {"state_alpha": "MN", "year": yr, "Value": "(D)"}]
             return rows
         assert params["reference_period_desc"] == "YEAR", "forecast filter missing"
+        assert params["source_desc"] == "SURVEY", "census contamination pin missing"
         per = {"CORN": 2000, "SOYBEANS": 600}.get(sd.split(",")[0].split(" -")[0], 100)
-        return [{"state_alpha": "IA", "year": yr, "Value": f"{per * 2:,}"}
+        rows = [{"state_alpha": "IA", "year": yr, "Value": f"{per * 2:,}"}
                 for yr in (2023, 2024)] + \
                [{"state_alpha": "KS", "year": yr, "Value": f"{per:,}"} for yr in (2023, 2024)]
+        # duplicate row (as census-year noise would be) — must be IGNORED not summed
+        rows.append({"state_alpha": "IA", "year": 2024, "Value": f"{per * 20:,}"})
+        return rows
     import time as _t
     real_sleep = _t.sleep
     _t.sleep = lambda s: None

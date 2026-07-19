@@ -297,7 +297,7 @@ def explore_nav():
     L = lambda h, t: f'<a href="{h}" style="color:var(--text-muted);text-decoration:none">{t}</a>'
     return ('<nav aria-label="Explore AGSIST" style="max-width:1060px;margin:26px auto 8px;padding:0 16px;font-size:12.5px;line-height:2.1">'
             '<span style="color:var(--text-dim);font-weight:700">Land:</span> '
-            + " &middot; ".join([L("/cash-rent", "Cash Rent by County"), L("/rent/", "Cash Rent by State"),
+            + " &middot; ".join([L("/cash-rent", "Cash Rent by County"),
                                  L("/cash-lease", "Cash Farm Lease"), L("/foreign-land", "Foreign-Owned Land")])
             + '<br><span style="color:var(--text-dim);font-weight:700">Markets:</span> '
             + " &middot; ".join([L("/markets", "Futures"), L("/cash-bids", "Cash Bids"), L("/basis", "Basis vs Normal"),
