@@ -9,18 +9,7 @@
     "unit": "reciprocal tariff on Brazilian ethanol imports",
     "context": "The U.S. Trade Representative formalized 25% retaliatory tariffs on Brazilian goods, including ethanol, following a Section 301 investigation. That is structurally bullish for U.S. corn ethanol demand: Brazilian product gets priced out of the U.S. market at the margin. Watch how the corn crush spread responds early in the week, because this tariff did not get priced into Friday's close in any obvious way."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-07-19",
-      "p0": 12.045,
-      "p1": 12.045,
-      "instrument": "beans",
-      "direction": "up",
-      "level": 12.2
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "beans",
     "direction": "up",
@@ -220,31 +209,5 @@
   "surprises": [],
   "price_validation_clean": true,
   "market_closed": true,
-  "market_status_reason": "weekend",
-  "critic_pass": {
-    "version": "1.2",
-    "ran_at": "2026-07-19T12:03:55.095353+00:00",
-    "threshold": 7,
-    "final_scores": {
-      "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 6,
-      "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 7,
-      "rule_5_bottom_lines_synthesize": 8,
-      "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 5,
-      "rule_8_basis_directional": 10,
-      "rule_9_voice": 6,
-      "rule_10_forward_test": 7,
-      "rule_11_thread_coherence": 10,
-      "rule_12_spread_quality": 10,
-      "rule_13_yc_honesty": 4,
-      "rule_14_level_coherence": 4,
-      "rule_15_one_number_coherence": 9,
-      "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 7
-    },
-    "rewrites_applied": [],
-    "dry_run": false
-  }
+  "market_status_reason": "weekend"
 }

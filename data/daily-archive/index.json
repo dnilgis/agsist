@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-07-19",
+      "date_display": "Sunday, July 19, 2026",
+      "headline": "BEANS AND WHEAT CLOSE LOUD; CORN SPLITS IN TWO",
+      "teaser": "Old-crop corn split from new-crop, beans got Chinese money, and hogs had their best week in months. Here is what it all means heading into a critical pollination week.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 5,
+      "url": "/daily/2026-07-19",
+      "market_closed": true
+    },
+    {
       "date": "2026-07-18",
       "date_display": "Saturday, July 18, 2026",
       "headline": "GRAINS AND HOGS END THE WEEK LOUD",
@@ -1450,6 +1461,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-18T11:56:55.724556+00:00",
-  "count": 128
+  "updated": "2026-07-19T12:03:34.498207+00:00",
+  "count": 129
 }

@@ -5,13 +5,27 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 18 Jul 2026 11:56:57 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 19 Jul 2026 12:03:56 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>BEANS AND WHEAT CLOSE LOUD; CORN SPLITS IN TWO</title>
+      <link>https://agsist.com/daily/2026-07-19</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-19</guid>
+      <pubDate>Sun, 19 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Friday's close handed you a market that can't agree with itself. Old-crop corn fell 16½ cents while December added 6¼ cents, soybeans closed at $12.04 on 340,000 MT of fresh Chinese sales confirmed that morning, and wheat pushed to $6.83. Meanwhile, hogs ran 16.9% on the week, crude pushed past $82 again, and Class III milk dropped 11.1%. A StoneX economist said it plainly this week: demand and geopolitics are running these markets, not the heat dome. The Corn Belt's weather has been manageable through pollination so far, but the calendar and the crop condition reports next week will tell you whether that premium stays dormant or finally wakes up.
+Old-crop corn fell hard Friday while new-crop held. Beans, wheat, hogs, and crude all finished higher. The week ahead brings pollination weather and a complex that is anything but quiet.
+• Corn Splits at the Seam
+  → Old-crop corn still unpriced in the bin: basis improvement is your only remaining upside in the front month. If local basis is not firming this week, move it.
+• Beans Get the Chinese Bid
+  → New-crop beans at $12.03: if you have less than 50% of expected production priced, this is a window worth using on 10-15% more before pollination weather enters the story.
+• Wheat Closes at a 52-Week High Neighborhood
+Read more: https://agsist.com/daily/2026-07-19</description>
+    </item>
     <item>
       <title>GRAINS AND HOGS END THE WEEK LOUD</title>
       <link>https://agsist.com/daily/2026-07-18</link>
@@ -387,18 +401,6 @@ Friday's close handed grains their worst day of the week; cattle split the diffe
 • CATTLE SPLITS THE DIFFERENCE
 • CRUDE FIRMS, METALS FALL HARD
 Read more: https://agsist.com/daily/2026-06-20</description>
-    </item>
-    <item>
-      <title>CATTLE ON FEED DELIVERS; GRAINS BREAK INTO HOLIDAY</title>
-      <link>https://agsist.com/daily/2026-06-19</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-19</guid>
-      <pubDate>Fri, 19 Jun 2026 05:00:00 -0600</pubDate>
-      <description>The Cattle on Feed report at 2:00 PM CT delivered the number the market was waiting for all week: May placements down 10% year-over-year, tight enough to justify today's move. Live cattle ran to $254.80, biggest single-session gain in several weeks, while the rest of the complex sorted itself out around that story. Soybeans told the other half of Friday's tale, nearby falling 24¾ cents to $11.23 as Thursday's export sales came in soft and the soybean oil break that started Wednesday kept pulling the complex lower. The Belt caught up, the crop looks fine, and the market is heading into a three-day weekend with cattle bulls feeling vindicated and grain sellers in charge.
-Placements dropped 10% from last year, live cattle ran 2.3% higher, and soybeans lost 25 cents as export demand disappointed heading into the Juneteenth weekend.
-• CATTLE ON FEED DELIVERS
-• BEANS BREAK, WHEAT FOLLOWS
-• CRUDE FIRMS, METALS DROP
-Read more: https://agsist.com/daily/2026-06-19</description>
     </item>
   </channel>
 </rss>
