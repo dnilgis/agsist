@@ -67,7 +67,7 @@
     .cd-tbl td{padding:8px 10px;border-bottom:1px solid rgba(132,160,168,.08);color:#c9d1cd}
     .cd-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;white-space:nowrap;color:#e6ebe9}
     .lo{color:#e0685f !important}.hi{color:#5fc28a !important}.md{color:#d4a23f !important}
-    .cd-strip{height:30px;width:170px}
+    .cd-strip{height:34px;width:100%;max-width:260px;min-width:150px;display:block}
     .cd-note{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:.9rem;line-height:1.7;color:#8a948f;margin:16px 0}
     .cd-note strong{color:#d4a23f}
     .cd-faq details{border-bottom:1px solid #1a1f20;padding:10px 0}
@@ -75,7 +75,7 @@
     .cd-faq p{color:#8a948f;font-size:.9rem;line-height:1.7;margin:8px 0 2px}
     .cd-src{font-size:.8rem;color:#8a948f;line-height:1.7}
     .cd-src a{color:#d4a23f}
-    @media (max-width:700px){.cd-strip{width:110px}}
+    @media (max-width:700px){.cd-strip{min-width:120px}}
   </style>
 </head>
 <body>
@@ -129,22 +129,33 @@
   var data=null, crop='corn';
 
   function strip(st){
-    // Full-context strip (site rule: no naked squiggles): grey dots = each
-    // year's G+E for this same week, dotted line = 26-yr average, gold dot =
-    // now. Domain = actual min..max of history ∪ current.
-    var hist=st.hist, cur=st.ge;
-    var vals=hist.map(function(p){return p[1];}).concat([cur]);
-    var mn=Math.min.apply(null,vals), mx=Math.max.apply(null,vals), rg=(mx-mn)||1;
-    var X=function(yr){return (2+(yr-2000)/(2026-2000)*140).toFixed(1);};
-    var Y=function(v){return (26-((v-mn)/rg*20)).toFixed(1);};
-    var h='<svg class="cd-strip" viewBox="0 0 170 30" role="img">'
-      +'<title>'+hist[0][0]+'–now, this week each year: avg '+st.avg+'%, best '+st.best+'%, worst '+st.worst+'%, now '+cur+'%</title>'
-      +'<line x1="2" y1="'+Y(st.avg)+'" x2="144" y2="'+Y(st.avg)+'" stroke="#8a948f" stroke-width="1" stroke-dasharray="2,3"/>'
-      // visible scale: best at top, worst at bottom — the strip reads without hovering
-      +'<text x="147" y="'+(parseFloat(Y(mx))+3)+'" font-size="7.5" fill="#8a948f" font-family="JetBrains Mono,monospace">'+Math.round(mx)+'</text>'
-      +'<text x="147" y="'+(parseFloat(Y(mn))+3)+'" font-size="7.5" fill="#5a6467" font-family="JetBrains Mono,monospace">'+Math.round(mn)+'</text>';
-    hist.forEach(function(p){ h+='<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="1.6" fill="#5a6467"/>'; });
-    h+='<circle cx="'+X(2026)+'" cy="'+Y(cur)+'" r="3" fill="#d4a23f"/></svg>';
+    // Value-axis distribution strip v2. Fixed 0-100 G+E axis, full cell width.
+    // Grey dots = this same week every year since 2000, stacked into clouds
+    // where years repeat. Dotted tick = 26-yr avg. Gold dot = now, value
+    // labeled BELOW the axis so it never collides with the history.
+    var cur=st.ge, W=240, L=8, R=228, TRACK=(R-L);
+    var X=function(v){return (L+v/100*TRACK).toFixed(1);};
+    var bins={};
+    var pts=st.hist.map(function(p){
+      var b=Math.round(p[1]); bins[b]=(bins[b]||0)+1;
+      return {v:p[1], row:bins[b]-1};
+    });
+    var h='<svg class="cd-strip" viewBox="0 0 '+W+' 40" role="img" preserveAspectRatio="xMinYMid meet">'
+      +'<title>This same week, every year since '+st.hist[0][0]+': worst '+st.worst+'%, avg '+st.avg+'%, best '+st.best+'%. Now: '+cur+'% (rank '+st.rank_from_worst+' of '+st.of+').</title>'
+      +'<line x1="'+L+'" y1="23" x2="'+R+'" y2="23" stroke="#232a2c" stroke-width="1"/>'
+      +'<line x1="'+L+'" y1="19" x2="'+L+'" y2="27" stroke="#2a3133" stroke-width="1"/>'
+      +'<line x1="'+R+'" y1="19" x2="'+R+'" y2="27" stroke="#2a3133" stroke-width="1"/>'
+      +'<text x="'+L+'" y="38" font-size="7" fill="#3a4144" font-family="JetBrains Mono,monospace">0</text>'
+      +'<text x="'+(R-9)+'" y="38" font-size="7" fill="#3a4144" font-family="JetBrains Mono,monospace">100</text>'
+      +'<line x1="'+X(st.avg)+'" y1="9" x2="'+X(st.avg)+'" y2="29" stroke="#8a948f" stroke-width="1" stroke-dasharray="2,2"/>';
+    pts.forEach(function(p){
+      h+='<circle cx="'+X(p.v)+'" cy="'+(20-Math.min(p.row,4)*4.2)+'" r="1.9" fill="#5a6467"/>';
+    });
+    var nx=parseFloat(X(cur)), lab=Math.round(cur)+'%';
+    var lw=lab.length*5.6, labx=Math.max(L, Math.min(R-lw, nx-lw/2));
+    h+='<circle cx="'+nx+'" cy="23" r="3.8" fill="#d4a23f"/>'
+      +'<text x="'+labx.toFixed(1)+'" y="38" font-size="9.5" font-weight="700" fill="#d4a23f" font-family="JetBrains Mono,monospace">'+lab+'</text>'
+      +'</svg>';
     return h;
   }
 
@@ -154,7 +165,7 @@
     $('cd-fresh').textContent='week ending '+pkg.week_ending;
     var rows=Object.keys(pkg.states).map(function(ab){ var s=pkg.states[ab]; s.ab=ab; return s; });
     rows.sort(function(a,b){ return a.pctile-b.pctile; });
-    var h='<tr><th>State</th><th style="text-align:right">G+E now</th><th style="text-align:right">26-yr avg</th><th style="text-align:right">Rank (1 = worst)</th><th>This week, every year since 2000 &nbsp;<span style="text-transform:none;letter-spacing:0;color:#8a948f">┈ avg &middot; <span style="color:#d4a23f">●</span> now</span></th></tr>';
+    var h='<tr><th>State</th><th style="text-align:right">G+E now</th><th style="text-align:right">26-yr avg</th><th style="text-align:right">Rank (1 = worst)</th><th>Where this year sits, 0&ndash;100 &nbsp;<span style="text-transform:none;letter-spacing:0;color:#8a948f">dots = every year since 2000 &middot; ┊ avg &middot; <span style="color:#d4a23f">●</span> now</span></th></tr>';
     rows.forEach(function(s){
       var cls=s.pctile<=20?'lo':(s.pctile>=80?'hi':'md');
       h+='<tr><td>'+s.ab+'</td><td class="num '+cls+'">'+s.ge.toFixed(0)+'%</td>'
