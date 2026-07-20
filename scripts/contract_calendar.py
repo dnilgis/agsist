@@ -43,7 +43,17 @@ USAGE
 
 from datetime import datetime, timezone
 
-__all__ = ["is_expired", "front_key", "month_num", "EXPIRY_DAY"]
+__all__ = ["is_expired", "front_key", "month_num", "EXPIRY_DAY",
+           "expiry_date", "recent_expiry", "ROLL_WINDOW_DAYS"]
+
+# How long after a dated contract dies we consider the continuous front-month
+# to be "in the roll window". Yahoo's continuous series (ZC=F etc.) switches
+# to the next contract at expiry, and its previous_close still belongs to the
+# OLD contract — so the first post-roll session prints a phantom day-change
+# (2026-07-17: corn "-3.58%" that was the July→September switch, not a
+# selloff). 5 calendar days covers expiry mid-week plus a weekend before the
+# first clean close of the new front month.
+ROLL_WINDOW_DAYS = 5
 
 EXPIRY_DAY = 15   # dead from the 15th of the contract month, inclusive
 
@@ -85,6 +95,31 @@ def is_expired(key, now=None):
     return (now.year, now.month, now.day) >= (yr, mon, EXPIRY_DAY)
 
 
+def expiry_date(key):
+    """The UTC datetime this dated key dies (the 15th of its contract month).
+    None for undated keys."""
+    p = _parse(key)
+    if p is None:
+        return None
+    return datetime(p[0], p[1], EXPIRY_DAY, tzinfo=timezone.utc)
+
+
+def recent_expiry(key, now=None, window_days=ROLL_WINDOW_DAYS):
+    """True if this DATED key expired within the last `window_days` days —
+    i.e. the continuous front-month for its crop is inside the roll window and
+    its day-change may span two contracts. Undated keys: always False.
+
+    Boundaries: True from the expiry day itself (the 15th) through
+    expiry+window_days-1; False before expiry and from expiry+window_days on.
+    """
+    exp = expiry_date(key)
+    if exp is None:
+        return False
+    now = now or datetime.now(timezone.utc)
+    days = (now.date() - exp.date()).days
+    return 0 <= days < window_days
+
+
 def front_key(keys, now=None):
     """First non-expired key, in the order given. None if all are expired.
 
@@ -114,6 +149,17 @@ def _selftest():
     chk(is_expired("corn-jul26", T(2026, 7, 14)) is False, "corn-jul26 live on Jul 14 (last trading day)")
     chk(is_expired("corn-jul26", T(2026, 7, 16)) is True, "corn-jul26 dead on Jul 16")
     chk(is_expired("corn-sep26", T(2026, 7, 15)) is False, "corn-sep26 live on Jul 15")
+
+    # --- roll window (the 2026-07-17 phantom -3.58% corn "crash") -----------
+    chk(recent_expiry("corn-jul26", T(2026, 7, 15)) is True,  "roll window opens on expiry day (Jul 15)")
+    chk(recent_expiry("corn-jul26", T(2026, 7, 17)) is True,  "Jul 17 in roll window (the phantom-move day)")
+    chk(recent_expiry("corn-jul26", T(2026, 7, 19)) is True,  "Jul 19 last day inside 5-day window")
+    chk(recent_expiry("corn-jul26", T(2026, 7, 20)) is False, "Jul 20 outside window")
+    chk(recent_expiry("corn-jul26", T(2026, 7, 14)) is False, "not in window before expiry")
+    chk(recent_expiry("corn", T(2026, 7, 17)) is False,       "undated key never in roll window")
+    chk(recent_expiry("corn-dec", T(2026, 7, 17)) is False,   "benchmark alias never in roll window")
+    chk(expiry_date("corn-jul26").strftime("%Y-%m-%d") == "2026-07-15", "expiry_date corn-jul26 = 2026-07-15")
+    chk(expiry_date("corn") is None, "expiry_date undated = None")
 
     # --- undated keys are never expired -------------------------------------
     for k in ("corn", "beans", "wheat", "cattle", "bitcoin", "corn-dec", "beans-nov"):

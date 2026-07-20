@@ -103,12 +103,45 @@ def _num(v):
     return f
 
 
-from contract_calendar import is_expired   # ONE definition of contract expiry
+from contract_calendar import is_expired, recent_expiry, expiry_date  # ONE definition of contract expiry
 
 # A transient yfinance hiccup clears within hours; a quote that cannot be
 # fetched for this many days is almost certainly an expired/rolled contract
 # whose ticker needs advancing (see ANNUAL CONTRACT MAINTENANCE above).
 STALE_ALERT_DAYS = 3
+
+
+def mark_rolls(quotes, symbols, now=None):
+    """Contract-roll marking (2026-07-20).
+
+    Yahoo's continuous grain series (ZC=F / ZS=F / ZW=F) switch to the next
+    contract when the front month dies, but previous_close still belongs to
+    the OLD contract — so the first post-roll session prints a phantom
+    day-change (2026-07-17: corn showed -3.58% that was the July→September
+    switch, not a selloff). Detection needs NO extra API call: a dated key of
+    that crop expiring inside ROLL_WINDOW_DAYS *is* the front-month rolling.
+
+    Tags quotes[<crop>]["roll"] = True in place and returns
+    {crop: {"rolled_off": "jul26", "expired": "2026-07-15"}} for the feed.
+    Pure function of its inputs — selftested offline in
+    scripts/test_mark_rolls.py with synthetic data.
+    """
+    continuous = {"corn": "corn-", "beans": "beans-", "wheat": "wheat-"}
+    rolls = {}
+    for cont, prefix in continuous.items():
+        for key in symbols:
+            if not key.startswith(prefix):
+                continue
+            if recent_expiry(key, now):
+                exp = expiry_date(key)
+                rolls[cont] = {
+                    "rolled_off": key.split("-")[-1],
+                    "expired": exp.strftime("%Y-%m-%d") if exp else None,
+                }
+                if cont in quotes and isinstance(quotes[cont], dict):
+                    quotes[cont]["roll"] = True
+                break
+    return rolls
 
 
 def candidates(spec):
@@ -325,11 +358,20 @@ def main():
         for k in retired:
             print(f"    - {k}  (past last trading day; advance the ticker in SYMBOLS when you roll it)")
 
+    rolls = mark_rolls(quotes, SYMBOLS)
+    if rolls:
+        print("\n  ROLL WINDOW: " + ", ".join(
+            f"{c} (front rolled off {v['rolled_off']}, expired {v['expired']})"
+            for c, v in rolls.items()))
+
     output = {
         "fetched":    datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "ok":         ok,
         "failed":     fail,
         "stale_keys": stale_keys,
+        # Continuous front-months currently inside a contract-roll window.
+        # Pages use quotes[<crop>].roll to suppress the phantom day-change.
+        "rolls":      rolls,
         # Dated contracts dropped because they are past their last trading day.
         # Named, not hidden: a consumer that wants corn-jul26 should be able to
         # see it was retired on purpose rather than wonder why the key vanished.
