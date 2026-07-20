@@ -45,6 +45,13 @@ jobs:
       - name: Install dependencies
         run: pip install yfinance
 
+      # Selftests gate the loop: if the ONE expiry/roll rule or the roll marker
+      # is broken, fail RED here — before a bad feed gets committed 10x/session.
+      - name: Selftest — contract calendar + roll marking
+        run: |
+          python scripts/contract_calendar.py
+          python scripts/test_mark_rolls.py
+
       - name: Fetch loop (every 30 min for the session)
         run: |
           set -uo pipefail
