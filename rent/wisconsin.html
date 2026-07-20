@@ -149,6 +149,19 @@
     .ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
     .ag-sponsor-ribbon a{color:#d4a23f}
     h1{font-size:1.55rem;margin:14px 0 4px} h2{font-size:1.12rem;margin:26px 0 6px}
+    .rh-grid{position:relative;width:840px;height:560px;margin:0 auto;max-width:100%}
+    .rh-tile{position:absolute;width:64px;height:64px;border-radius:9px;padding:9px;box-sizing:border-box;text-decoration:none;display:block;left:calc(var(--gc)*70px - 70px);top:calc(var(--gr)*70px - 70px)}
+    .rh-tile:hover{outline:2px solid #d4a23f;transform:scale(1.1);z-index:2}
+    .rh-tile.dim{background:#101415;border:1px dashed #1a1f20;opacity:.45}
+    .rh-tst{display:block;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:.92rem;color:#e6ebe9}
+    .rh-tge{display:block;font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;margin-top:3px;color:#e6ebe9}
+    @media (max-width:900px){
+      .rh-grid{width:100%;height:auto;display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+      .rh-tile{position:static;width:auto;height:auto;aspect-ratio:1;padding:0;border-radius:5px;display:flex;align-items:center;justify-content:center}
+      .rh-tile{grid-column:var(--gc);grid-row:var(--gr)}
+      .rh-tge{display:none}
+      .rh-tst{font-size:.56rem}
+    }
     .sub{color:#8a948f;font-size:.9rem;line-height:1.6}
   </style>
 </head>
@@ -161,6 +174,13 @@
   Survey &mdash; no estimates, no modeling, no login. <span id="rs-seed"><!--SEED:rentstate-->67 Wisconsin counties with a published 2025 non-irrigated cropland rent &middot; median $137/acre &middot; +1.1% vs 2024 (matched counties) &middot; data refreshed 2026-07-18<!--/SEED--></span></p>
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone on this page is pricing Wisconsin ground &mdash; one category-exclusive slot. <a href="/sponsor?slot=rent-wi&amp;utm_source=rent-wisconsin&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   
+  <div style="background:#101415;border:1px solid #1a1f20;border-radius:14px;padding:20px 24px;margin:14px 0;display:flex;gap:22px;flex-wrap:wrap;align-items:center">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:3.6rem;font-weight:800;line-height:1;color:#d4a23f">$137</div>
+    <div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:800;letter-spacing:.05em;color:#d4a23f">RENT EDGED UP</div>
+      <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median Wisconsin county paid <b style="color:#d4a23f">$137 an acre</b> for non-irrigated cropland in 2025, <b style='color:#d4a23f'>+1.1&#37; vs 2024</b> across the same 64 counties. Highest county: Lafayette at $260. Every county is in the table below.</div>
+    </div>
+  </div>
   <div class="rs-hero">
     <div class="rs-stat"><div class="v">$137</div><div class="l">median rent /ac &middot; 2025</div><div class="s">non-irrigated cropland, 67 counties</div></div>
     <div class="rs-stat"><div class="v up">+1.1%</div><div class="l">vs 2024</div><div class="s">median of 64 matched counties</div></div>
