@@ -17,6 +17,9 @@
   var METEO_URL = 'https://api.open-meteo.com/v1/forecast';
   var BIDS_PROXY= 'https://agsist-barchart.dnilgis.workers.dev';                    // AGSIST cash-bid proxy
   var NOMINATIM = 'https://nominatim.openstreetmap.org/search';
+  var NOMINATIM_REV = 'https://nominatim.openstreetmap.org/reverse';
+  // full state name ↔ postal abbr (nominatim returns full names; data files key by abbr or FIPS)
+  var N2A = {'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA','Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA','Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS','Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA','Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT','Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK','Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT','Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY'};
 
   // CDL crop code → {label, emoji, color}
   var CDL_CROPS = {
@@ -60,7 +63,7 @@
   function resetField(acres, c){
     fieldGen++;
     FIELD = { acres:acres, lat:c.lat, lng:c.lng,
-      soil:null, rotation:null, weather:null, drought:null, bids:null, hail:null };
+      soil:null, rotation:null, weather:null, drought:null, bids:null, hail:null, county:null };
   }
 
   // ── Boot ────────────────────────────────────────────────────────────
@@ -299,7 +302,11 @@
 
   function wireControls() {
     var pinBtn=document.getElementById('fs-pin'); if(pinBtn) pinBtn.addEventListener('click', armPinDrop);
-    document.getElementById('fs-draw').addEventListener('click', function(){ drawControl.enable(); });
+    document.getElementById('fs-draw').addEventListener('click', function(){
+      // Tracing at county scale draws a "field" the size of a county — make them zoom first.
+      if(map && map.getZoom() < 11){ flashHint('Zoom in to your field first, then trace it'); return; }
+      drawControl.enable();
+    });
     document.getElementById('fs-clear').addEventListener('click', clearField);
     var so=document.getElementById('fs-startover'); if(so) so.addEventListener('click', function(){ clearField(); flashHint('Tap the map to drop a fresh field'); });
     document.getElementById('fs-gps').addEventListener('click', locateMe);
@@ -674,7 +681,9 @@
     ghostBar.innerHTML='<span>Field here?</span>'
       +'<button type="button" class="fs-ghost-yes">\u2713 Use this field</button>'
       +'<button type="button" class="fs-ghost-no" aria-label="Cancel">\u2715</button>';
-    map.getContainer().appendChild(ghostBar);
+    // Pinned to the VIEWPORT, not the map: the phone map runs taller than the screen,
+    // so a map-bottom bar rendered below the fold \u2014 tap a field, see nothing. (Fixed 2026-07-20.)
+    document.body.appendChild(ghostBar);
     ghostBar.querySelector('.fs-ghost-yes').addEventListener('click', function(){
       var c=ghostPoly.getBounds().getCenter();
       clearGhost();
@@ -762,6 +771,16 @@
 
   // Shared commit path for every way a field enters: draw, demo, box, link.
   function commitField(poly, src){
+    // Sanity cap: a "field" bigger than ~4 sections isn't a field, it's a map mistake
+    // (a trace at low zoom once committed 28 million acres). Refuse loudly, keep honest.
+    var _capAc = polyAcres(poly);
+    if(_capAc > 2500){
+      try{ map.removeLayer(poly); }catch(e){}
+      drawnLayer.clearLayers();
+      flashHint('That traced out to '+Math.round(_capAc).toLocaleString('en-US')+' acres — Field Scout reads one field at a time (under 2,500 ac). Zoom in and try again.');
+      ga('field_too_big', { acres: Math.round(_capAc) });
+      return;
+    }
     drawnLayer.clearLayers();
     if(src!=='box') clearHandles();
     if(src!=='box'){ boxMode=false; setSizer(false); }
@@ -833,12 +852,16 @@
         '<div class="fs-vitals" id="fs-vitals"></div>' +
         '<div class="fs-deck-grid">' +
           section('soil',ICONS.soil,'Soil & Productivity','fs-soil') +
-          section('rot',ICONS.rot,'5-Year Crop Rotation','fs-rot') +
+          section('rot',ICONS.rot,'10-Year Crop Rotation','fs-rot') +
           section('wx',ICONS.wx,'Weather & Drought','fs-wx') +
           section('season',ICONS.season,'Season vs Normal','fs-season') +
           section('vigor',ICONS.vigor,'Crop Vigor &amp; Moisture','fs-vigor') +
           section('risk',ICONS.risk,'Risk Profile','fs-risk') +
           section('bids',ICONS.bids,'Nearby Cash Bids','fs-bids') +
+          section('rent',ICONS.rent,'What This Ground Rents For','fs-rent') +
+          section('market',ICONS.market,'Selling It From Here','fs-market') +
+          section('hood',ICONS.hood,'Who Farms Around Here','fs-hood') +
+          section('cond',ICONS.cond,'How the Crop Looks Statewide','fs-cond') +
         '</div>';
     }
 
@@ -855,6 +878,7 @@
     loadIndices(poly);
     loadBids(c);
     loadHailData(c);
+    loadCounty(c);
   }
 
   function fieldHead(acres, c){
@@ -885,7 +909,11 @@
     season:SVG+'<path d="M3 17l6-6 4 4 7-7"/><path d="M17 8h4v4"/></svg>',
     risk:  SVG+'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>',
     bids:  SVG+'<circle cx="12" cy="12" r="9"/><path d="M12 6v12"/><path d="M14.6 9c0-1.3-1.1-1.9-2.6-1.9s-2.6.6-2.6 1.9 1.1 1.7 2.6 1.9 2.6.6 2.6 1.9-1.1 1.9-2.6 1.9-2.6-.6-2.6-1.9"/></svg>',
-    vigor: SVG+'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>'
+    vigor: SVG+'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+    rent:  SVG+'<path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>',
+    market:SVG+'<path d="M5 21V9"/><path d="M19 21V9"/><path d="M2 9l10-6 10 6"/><path d="M9 21v-8h6v8"/><path d="M2 21h20"/></svg>',
+    hood:  SVG+'<circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2"/><circle cx="17.5" cy="9.5" r="2.5"/><path d="M16 21v-1.5a4.5 4.5 0 0 1 6 0V21"/></svg>',
+    cond:  SVG+'<path d="M12 22V8"/><path d="M12 8C12 5 10 3 6 3c0 3 2 5 6 5Z"/><path d="M12 13c0-3 2-5 6-5 0 3-2 5-6 5Z"/></svg>'
   };
   function setBody(id, html){ var el=document.getElementById(id); if(el) el.innerHTML=html; }
   function setErr(id, msg){ var el=document.getElementById(id); if(el) el.innerHTML='<div class="fs-err">'+msg+'</div>'; }
@@ -1693,7 +1721,7 @@
       vCell('SOIL', soilV, soilSub, 'soil') +
       vCell('NCCPI', nccpiV, (nccpiV!=null?'/100':null), 'nccpi') +
       vCell('VIGOR', vigV, vigSub, 'ndvi', vigCls) +
-      vCell('ROTATION', rotV, (r&&r.codes?r.codes.length+'-yr':'5-yr'), 'rotation') +
+      vCell('ROTATION', rotV, (r&&r.codes?r.codes.length+'-yr':'10-yr'), 'rotation') +
       vCell('DROUGHT', drV, null, 'drought', drCls) +
       vCell('SLOPE', slV, null, 'slope') +
       vCell('CASH', bidV, bidSub, 'basis');
@@ -1769,6 +1797,197 @@
       '</details>'+
       '<div class="fs-src">Sentinel-2 / Copernicus &middot; cloud-masked &middot; averaged over your field</div>';
     setBody('fs-vigor', html);
+  }
+
+  // ── COUNTY & STATE LAYERS (2026-07-20) — join every AGSIST data layer to the field ──
+  // One reverse-geocode pins the county; then each layer fetches its own static JSON
+  // and renders its own card. A dead source kills its card with a plain-talk error —
+  // never the whole read, never a silent blank. All figures stored on FIELD.county
+  // so the insight engine and the printable Field Report can use them.
+  function cbar(label, val, center, unit, worseIsHigh){
+    // ONE self-labeled diverging bar (site RULE 1): value at tip, center tick = own normal.
+    var delta = val - center;
+    var span = Math.max(Math.abs(delta)*1.4, Math.abs(center)*0.15, 0.01);
+    var pct = Math.max(-1, Math.min(1, delta/span));                    // -1..1
+    var w = Math.abs(pct)*42;                                           // % of track width
+    var left = pct<0 ? (50-w) : 50;
+    var bad = worseIsHigh ? delta>0 : delta<0;
+    var col = bad ? '#e0685f' : '#5fc28a';
+    var sign = delta>0?'+':'−';
+    var vtxt = sign + (unit==='$'? '$'+Math.abs(delta).toFixed(Math.abs(delta)<10?2:0) : Math.abs(delta).toFixed(0)+unit);
+    var vleft = pct<0 ? 'left:'+left+'%;transform:translateX(calc(-100% - 5px))' : 'left:'+(left+w)+'%;transform:translateX(5px)';
+    return '<div class="fs-cbar"><div class="fs-cbar-l">'+label+'</div>'+
+      '<div class="fs-cbar-t"><span class="fs-cbar-tick"></span>'+
+      '<span class="fs-cbar-f" style="left:'+left+'%;width:'+w+'%;background:'+col+'"></span>'+
+      '<span class="fs-cbar-v" style="'+vleft+';color:'+col+'">'+vtxt+'</span></div></div>';
+  }
+  function bigline(num, numCls, word, wordCls){
+    return '<div class="fs-cbig"><span class="fs-cnum '+(numCls||'')+'">'+num+'</span><span class="fs-cword '+(wordCls||'')+'">'+word+'</span></div>';
+  }
+  function csrc(t){ return '<div class="fs-src" style="margin-top:.45rem">'+t+'</div>'; }
+  function isoWeek(dstr){
+    var d=new Date(dstr+'T12:00:00Z');
+    var t=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()));
+    t.setUTCDate(t.getUTCDate()+4-(t.getUTCDay()||7));
+    var y0=new Date(Date.UTC(t.getUTCFullYear(),0,1));
+    return Math.ceil(((t-y0)/864e5+1)/7);
+  }
+  function getJSON(url){ return fetch(url).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); }); }
+  function loadCounty(c){
+    var gen = fieldGen;
+    var ERR_ALL = 'Couldn’t pin down the county for this spot right now (reverse-geocode didn’t answer). The county numbers need it — redraw in a minute and they usually load.';
+    fetch(NOMINATIM_REV+'?format=jsonv2&zoom=8&lat='+c.lat+'&lon='+c.lng)
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(d){
+        if(gen!==fieldGen) return;
+        var ad=(d&&d.address)||{};
+        var stFull=ad.state, cty=(ad.county||'').replace(/\s+County$/i,'');
+        var abbr=N2A[stFull];
+        if(!abbr||!cty){ ['fs-rent','fs-market','fs-hood','fs-cond'].forEach(function(id){ setErr(id, 'This spot didn’t resolve to a US county — the county and state layers only cover the fifty states.'); }); return; }
+        FIELD.county = { name:cty, st:stFull, abbr:abbr, fips:null };
+        var co=document.querySelector('#fs-results .coords');
+        if(co) co.textContent='center '+c.lat.toFixed(4)+', '+c.lng.toFixed(4)+' · '+cty+' County, '+stFull;
+        loadRentCard(gen, abbr, cty, stFull);
+        loadMarketCard(gen, abbr, stFull);
+        loadHoodCard(gen, abbr, cty, stFull);
+        loadCondCard(gen, abbr, stFull);
+      })
+      .catch(function(){ if(gen!==fieldGen) return; ['fs-rent','fs-market','fs-hood','fs-cond'].forEach(function(id){ setErr(id, ERR_ALL); }); });
+  }
+  function loadRentCard(gen, abbr, cty, stFull){
+    getJSON('/data/cash-rent/'+abbr+'.json').then(function(d){
+      if(gen!==fieldGen) return;
+      var rec=(d.counties||[]).find(function(x){ return String(x.name).toLowerCase()===cty.toLowerCase(); });
+      if(!rec){ setErr('fs-rent','NASS publishes no county rent survey for '+esc(cty)+' County — small samples get suppressed rather than guessed.'); return; }
+      if(FIELD.county) FIELD.county.fips = rec.fips;
+      var ni=rec.rent&&rec.rent.nonirr||{};
+      var yrs=Object.keys(ni).map(Number).sort(function(a,b){return a-b;});
+      if(!yrs.length){ setErr('fs-rent','No non-irrigated rent series for '+esc(cty)+' County in the NASS survey.'); return; }
+      var last=yrs[yrs.length-1], val=ni[last];
+      var last10=yrs.slice(-10), avg=last10.reduce(function(s,y){return s+ni[y];},0)/last10.length;
+      var cornY=rec.yield&&rec.yield.corn;
+      var html=bigline('$'+Math.round(val), 'gold', '/ac non-irrigated · '+last, '');
+      html+=cbar('county rent vs its own '+last10.length+'-yr average, $/ac', val, avg, '$', true);
+      html+='<div class="fs-cbar-cap">center tick = '+esc(cty)+' Co’s own average ($'+Math.round(avg)+') · red = pricier than usual</div>';
+      if(cornY&&cornY.trend){
+        var trend=Math.round(cornY.trend);
+        var lastY=cornY.last!=null?cornY.last:null;
+        var bid=FIELD.bids&&FIELD.bids.corn?FIELD.bids.corn.cash:null;
+        var money = bid ? ' At $'+bid.toFixed(2)+' nearby corn that’s $'+Math.round(trend*bid).toLocaleString('en-US')+' gross — rent takes '+Math.round(val/(trend*bid)*100)+'%.' : '';
+        html+='<p class="fs-cline">County corn trend: <strong>'+trend+' bu/ac</strong>'+(lastY?' (made '+lastY+' last year)':'')+'.'+money+' <a class="fs-act-link" href="/cash-lease?st='+abbr+'" target="_blank" rel="noopener">Run this lease in Cash Lease &rarr;</a></p>';
+      }
+      html+=csrc('USDA NASS county cash-rent survey · '+esc(cty)+' County, '+esc(stFull)+' · missing years = never surveyed, not zero');
+      FIELD.county.rent={ val:val, year:last, avg:Math.round(avg), trend:cornY&&cornY.trend?Math.round(cornY.trend):null, lastYield:cornY?cornY.last:null };
+      setBody('fs-rent', html); recomputeInsight();
+    }).catch(function(){ if(gen===fieldGen) setErr('fs-rent','County rent data didn’t load — refresh in a minute.'); });
+  }
+  function loadMarketCard(gen, abbr, stFull){
+    Promise.all([
+      getJSON('/data/transport/basis.json').catch(function(){ return null; }),
+      getJSON('/data/storage/storage.json').catch(function(){ return null; })
+    ]).then(function(res){
+      if(gen!==fieldGen) return;
+      var b=res[0], st=res[1], html='', got=false;
+      var isBeans = FIELD.rotation && FIELD.rotation.lastCrop===5;
+      if(b&&b.series){
+        var key=(isBeans?'Soybeans':'Corn')+'|'+stFull+'|Elevator Bid';
+        var s=b.series[key] || b.series['Corn|'+stFull+'|Elevator Bid'];
+        var crop = b.series[key] ? (isBeans?'soybean':'corn') : 'corn';
+        if(s&&s.latest!=null&&s.avg5!=null){
+          got=true;
+          var dev=s.latest-s.avg5;
+          var word = dev<=-0.4?'Basis is ugly':dev<=-0.15?'Basis is soft':dev>=0.15?'Basis is strong':'Basis is normal';
+          var wcls = dev<=-0.15?'red':dev>=0.15?'green':'';
+          html+=bigline((s.latest<0?'−$':'$')+Math.abs(s.latest).toFixed(2), wcls||'gold', word, wcls);
+          html+=cbar(esc(stFull)+' '+crop+' basis vs its own 5-yr normal, $/bu', s.latest, s.avg5, '$', false);
+          html+='<div class="fs-cbar-cap">center tick = normal for this week ('+(s.avg5>=0?'+$':'−$')+Math.abs(s.avg5).toFixed(2)+') · as of '+esc(s.date||'')+'</div>';
+          FIELD.county.basis={ latest:s.latest, avg5:s.avg5, dev:dev, crop:crop, date:s.date };
+        }
+      }
+      if(st&&st.states&&st.states[abbr]&&st.states[abbr].ratio){
+        var ra=st.states[abbr].ratio, ys=Object.keys(ra).map(Number).sort(function(a,c){return a-c;});
+        var ly=ys[ys.length-1], r=ra[ly];
+        var since=null; for(var i=ys.length-2;i>=0;i--){ if(ra[ys[i]]>=r){ since=ys[i]; break; } }
+        got=true;
+        var pct=Math.round(r*100);
+        html+='<p class="fs-cline">'+(pct>=90?'Storage pressure is part of the picture: ':'')+esc(stFull)+'’s '+ly+' crop filled <strong>'+pct+'% of every bin in the state</strong>'+(since&&pct>=85?' — tightest since '+since:'')+'.'+(pct>=90?' Weak basis pays you to have your own steel.':'')+' <a class="fs-act-link" href="/grain-bin-calculator" target="_blank" rel="noopener">Bin math &rarr;</a></p>';
+        FIELD.county.storage={ ratio:r, year:ly, since:since };
+      }
+      if(!got){ setErr('fs-market','No AgTransport basis series or storage figures published for '+esc(stFull)+' — USDA tracks a limited set of states.'); return; }
+      html+=csrc('USDA AgTransport weekly basis · NASS grain stocks &amp; production · state-level, not your elevator');
+      setBody('fs-market', html); recomputeInsight();
+    });
+  }
+  function loadHoodCard(gen, abbr, cty, stFull){
+    Promise.all([
+      getJSON('/data/tenure/tenure.json').catch(function(){ return null; }),
+      getJSON('/data/afida/county.json').catch(function(){ return null; })
+    ]).then(function(res){
+      if(gen!==fieldGen) return;
+      var t=res[0], a=res[1], html='', got=false;
+      var fips=FIELD.county&&FIELD.county.fips;
+      function findByName(obj){ var hit=null; if(!obj) return null;
+        Object.keys(obj).some(function(k){ var v=obj[k]; if(v&&String(v.n).toLowerCase()===cty.toLowerCase()&&(v.st===abbr||v.st===stFull)){ hit={k:k,v:v}; return true; } return false; });
+        return hit; }
+      var trec = t&&t.counties ? (fips&&t.counties[fips]?{k:fips,v:t.counties[fips]}:findByName(t.counties)) : null;
+      var denom=null;
+      if(trec){
+        var ys=Object.keys(trec.v.y).map(Number).sort(function(x,y){return x-y;});
+        var ly=ys[ys.length-1], pair=trec.v.y[ly];   // [owned, rented]
+        if(pair&&pair.length===2){
+          got=true;
+          var owned=pair[0], rented=pair[1]; denom=owned+rented;
+          var pct=Math.round(rented/denom*100);
+          if(!fips){ fips=trec.k; if(FIELD.county) FIELD.county.fips=fips; }
+          html+=bigline(pct+'%','blue','rented ground','');
+          html+='<p class="fs-cline">'+esc(cty)+' Co farms rent <strong>'+Math.round(rented).toLocaleString('en-US')+' of '+Math.round(denom).toLocaleString('en-US')+' acres</strong> ('+ly+' census)'+(pct>=60?' — landlord country, and rents show it.':'.')+'</p>';
+          FIELD.county.tenure={ pct:pct, rented:rented, total:denom, year:ly };
+        }
+      }
+      var arec = a ? (fips&&a[fips]?a[fips]:(findByName(a)||{}).v) : null;
+      if(arec&&arec.y){
+        var ays=Object.keys(arec.y).map(Number).sort(function(x,y){return x-y;});
+        var aly=ays[ays.length-1], ac=arec.y[aly];
+        if(ac!=null){
+          got=true;
+          var share = denom ? Math.round(ac/denom*100) : null;
+          var tops=(arec.top||[]).slice(0,2).filter(function(x){ return !/NO PREDOMINANT/i.test(x[0]); });
+          var chips=tops.map(function(x){ return '<span class="fs-cchip">'+esc(String(x[0]).replace(/\b\w+/g,function(w){return w.charAt(0)+w.slice(1).toLowerCase();}))+' '+Math.round(x[1]).toLocaleString('en-US')+'</span>'; }).join('');
+          html+='<p class="fs-cline">Foreign owners hold <strong>'+Math.round(ac).toLocaleString('en-US')+' ac</strong> in this county'+(share!=null?' ('+share+'% of farmland)':'')+' as of '+aly+'. '+chips+' <a class="fs-act-link" href="/foreign-land" target="_blank" rel="noopener">Who owns the ground &rarr;</a></p>';
+          FIELD.county.afida={ acres:ac, year:aly, share:share };
+        }
+      }
+      if(!got){ setErr('fs-hood','No census tenure or AFIDA rows published for '+esc(cty)+' County — suppressed small-sample counties stay blank rather than estimated.'); return; }
+      html+=csrc('USDA Census of Agriculture (owned vs rented-from-others) · USDA AFIDA foreign-holdings filings');
+      setBody('fs-hood', html); recomputeInsight();
+    });
+  }
+  function loadCondCard(gen, abbr, stFull){
+    Promise.all([
+      getJSON('/data/conditions/conditions.json').catch(function(){ return null; }),
+      getJSON('/data/cond-yield/fit.json').catch(function(){ return null; })
+    ]).then(function(res){
+      if(gen!==fieldGen) return;
+      var c=res[0], f=res[1];
+      var isBeans = FIELD.rotation && FIELD.rotation.lastCrop===5;
+      var haveSoy = c&&c.crops&&c.crops.soybeans;
+      var cropKey = (isBeans&&haveSoy)?'soybeans':'corn', cropWord = cropKey;
+      var cc=c&&c.crops&&c.crops[cropKey];
+      var srow=cc&&cc.states&&cc.states[abbr];
+      if(!srow){ setErr('fs-cond','NASS doesn’t rate '+esc(cropWord)+' weekly in '+esc(stFull)+' (or under 10 comparable years) — thin samples aren’t ranked.'); return; }
+      var wcls = srow.pctile>=60?'green':srow.pctile<=30?'red':'gold';
+      var html=bigline(Math.round(srow.ge)+'%', wcls, 'Good–Excellent', wcls);
+      html+='<p class="fs-cline">'+esc(stFull)+' '+cropWord+' sits in the <strong>'+srow.pctile+'th percentile</strong> for this week since 2000 (best '+Math.round(srow.best)+', worst '+Math.round(srow.worst)+').</p>';
+      var wk=cc.week_ending?isoWeek(cc.week_ending):null;
+      var fr=f&&f.crops&&f.crops[cropKey]&&f.crops[cropKey].states&&f.crops[cropKey].states[abbr];
+      var r2 = fr&&wk!=null&&fr.weeks&&fr.weeks[wk] ? fr.weeks[wk].r2 : null;
+      if(r2!=null){
+        html+='<p class="fs-cline">Fair warning from the record: this week’s ratings historically explain <strong>~'+Math.round(r2*100)+'% of final yield</strong> — '+(r2<0.35?'the crop is still being made':'ratings are starting to mean something')+'. <a class="fs-act-link" href="/conditions-yield" target="_blank" rel="noopener">What ratings are worth &rarr;</a></p>';
+      }
+      html+=csrc('USDA NASS weekly crop condition · week of '+esc(cc.week_ending||'')+' · state-level, ranked against the same week 2000–present');
+      FIELD.county.cond={ ge:srow.ge, pctile:srow.pctile, week:cc.week_ending, r2:r2, crop:cropWord };
+      setBody('fs-cond', html); recomputeInsight();
+    });
   }
 
   function recomputeInsight(){
@@ -2028,6 +2247,20 @@
     }
 
     stress.sort(function(a,b){ return b.sev-a.sev; });
+    // ── County & state economics (2026-07-20): woven in only when the joins landed. ──
+    var cy=FIELD.county;
+    if(cy && (cy.rent || cy.tenure)){
+      var bits=[];
+      if(cy.tenure) bits.push('<strong>'+cy.tenure.pct+'% of '+esc(cy.name)+' County is rented ground</strong> ('+cy.tenure.year+' census)');
+      if(cy.rent) bits.push('county cash rent ran <strong>$'+Math.round(cy.rent.val)+'/ac</strong> in '+cy.rent.year+(cy.rent.trend?' against a '+cy.rent.trend+'-bu corn trend':''));
+      lines.push('Around here: '+bits.join('; ')+'.');
+    }
+    if(cy && cy.basis && cy.basis.dev<=-0.25){
+      push({ sev:2, act:false, topic:'basis', tag:'weak basis',
+        title:'basis here is running '+Math.round(Math.abs(cy.basis.dev)*100)+'¢ under normal',
+        detail:esc(cy.basis.crop.charAt(0).toUpperCase()+cy.basis.crop.slice(1))+' basis in '+esc(cy.st)+' is <strong>'+(cy.basis.latest<0?'−$':'$')+Math.abs(cy.basis.latest).toFixed(2)+'</strong> vs a '+(cy.basis.avg5>=0?'+$':'−$')+Math.abs(cy.basis.avg5).toFixed(2)+' 5-yr normal — '+Math.round(Math.abs(cy.basis.dev)*100)+'¢ of freight and storage pressure coming straight off your price.'+(cy.storage&&cy.storage.ratio>=0.9?' The state’s bins are '+Math.round(cy.storage.ratio*100)+'% committed'+(cy.storage.since?' — tightest since '+cy.storage.since:'')+', which is a lot of the story.':''),
+        watch:'If you have on-farm storage, weak basis is paying you to use it — and to shop bids beyond the closest elevator.' });
+    }
     var acts = stress.filter(function(x){ return x.act; });
     var mons = stress.filter(function(x){ return !x.act; });
 
@@ -2102,7 +2335,7 @@
   // ── Shareable one-page field report (print / save-as-PDF) ───────────
   function generateReport(){
     if(!FIELD){ return; }
-    var d=FIELD, s=d.soil, r=d.rotation, dr=d.drought, se=d.season, h=d.hail, b=d.bids, rd=d.read;
+    var d=FIELD, s=d.soil, r=d.rotation, dr=d.drought, se=d.season, h=d.hail, b=d.bids, rd=d.read, cy=d.county;
     var dateStr=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
     function strip(html){ return String(html||'').replace(/<a\b[^>]*>(.*?)<\/a>/gi,'$1'); }
     function kv(label,val){ return val?('<tr><th>'+esc(label)+'</th><td>'+val+'</td></tr>'):''; }
@@ -2165,6 +2398,37 @@
     if(b&&b.corn) bidRows+=kv('Corn cash bid', '$'+b.corn.cash.toFixed(2)+' \u00b7 '+esc(b.corn.elev));
     if(b&&b.bean) bidRows+=kv('Soybean cash bid', '$'+b.bean.cash.toFixed(2)+' \u00b7 '+esc(b.bean.elev));
 
+    // \u2500\u2500 county & state economics (renders only what actually loaded) \u2500\u2500
+    var bandCells='';
+    function cell(k,v,n){ bandCells+='<div class="r-st"><div class="r-stk">'+esc(k)+'</div><div class="r-stv">'+v+'</div>'+(n?'<div class="r-stn">'+esc(n)+'</div>':'')+'</div>'; }
+    if(cy&&cy.rent) cell('County rent \u2019'+String(cy.rent.year).slice(2), '$'+Math.round(cy.rent.val)+'<span class="r-stu">/ac</span>', cy.rent.avg?('10-yr avg $'+cy.rent.avg):null);
+    if(cy&&cy.rent&&cy.rent.trend) cell('Corn trend yield', cy.rent.trend+'<span class="r-stu"> bu</span>', cy.rent.lastYield?('made '+cy.rent.lastYield+' last year'):null);
+    if(cy&&cy.basis) cell(esc(cy.basis.crop)+' basis vs normal', '<span class="'+(cy.basis.dev<0?'r-red':'r-green')+'">'+(cy.basis.dev<0?'\u2212$':'+$')+Math.abs(cy.basis.dev).toFixed(2)+'</span>', (cy.basis.latest<0?'\u2212$':'$')+Math.abs(cy.basis.latest).toFixed(2)+' vs '+(cy.basis.avg5>=0?'+$':'\u2212$')+Math.abs(cy.basis.avg5).toFixed(2)+' avg');
+    if(cy&&cy.tenure) cell('Rented ground here', cy.tenure.pct+'%', 'of county farmland');
+    var bandHtml = bandCells ? '<div class="r-band">'+bandCells+'</div>' : '';
+
+    var moneyRows='';
+    if(cy&&cy.rent){
+      moneyRows+=kv('County rent, non-irr \u2019'+String(cy.rent.year).slice(2), '$'+Math.round(cy.rent.val)+'/ac');
+      if(cy.rent.trend&&b&&b.corn){
+        var gross=Math.round(cy.rent.trend*b.corn.cash);
+        moneyRows+=kv('Gross @ trend \u00d7 $'+b.corn.cash.toFixed(2), '$'+gross.toLocaleString('en-US')+'/ac');
+        moneyRows+=kv('Rent share of gross', Math.round(cy.rent.val/gross*100)+'%');
+      }
+    }
+    if(cy&&cy.basis) moneyRows+=kv('State '+esc(cy.basis.crop)+' basis', (cy.basis.latest<0?'\u2212$':'$')+Math.abs(cy.basis.latest).toFixed(2)+' ('+(cy.basis.dev<0?Math.round(Math.abs(cy.basis.dev)*100)+'\u00a2 under':'\u00b1 on')+' its 5-yr normal)');
+    if(cy&&cy.storage) moneyRows+=kv('State bins', Math.round(cy.storage.ratio*100)+'% of capacity filled by the \u2019'+String(cy.storage.year).slice(2)+' crop'+(cy.storage.since&&cy.storage.ratio>=0.85?' \u2014 tightest since '+cy.storage.since:''));
+
+    var ownRows='';
+    if(cy&&cy.tenure) ownRows+=kv('County ground rented', cy.tenure.pct+'% \u2014 '+Math.round(cy.tenure.rented).toLocaleString('en-US')+' of '+Math.round(cy.tenure.total).toLocaleString('en-US')+' ac ('+cy.tenure.year+' census)');
+    if(cy&&cy.afida) ownRows+=kv('Foreign-held in county', Math.round(cy.afida.acres).toLocaleString('en-US')+' ac'+(cy.afida.share!=null?' ('+cy.afida.share+'% of farmland)':'')+' \u00b7 '+cy.afida.year);
+
+    var stateRows='';
+    if(cy&&cy.cond){
+      stateRows+=kv('Crop condition ('+esc(cy.st||'state')+' '+esc(cy.cond.crop)+')', Math.round(cy.cond.ge)+'% G+E \u2014 '+cy.cond.pctile+'th pctile since 2000');
+      if(cy.cond.r2!=null) stateRows+=kv('What this week\u2019s ratings are worth', '~'+Math.round(cy.cond.r2*100)+'% of final yield, historically');
+    }
+
     var css='*{box-sizing:border-box}body{font:14px/1.5 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;max-width:760px;margin:0 auto;padding:28px 32px}'
       +'h1{font-size:24px;margin:.1em 0 .1em}h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#7a6a2e;border-bottom:1px solid #e3ddc7;padding-bottom:4px;margin:22px 0 10px}'
       +'.r-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #c9a227;padding-bottom:8px;margin-bottom:16px}'
@@ -2175,7 +2439,15 @@
       +'.r-tbl,.r-kv{width:100%;border-collapse:collapse;font-size:13px}.r-tbl td{padding:4px 6px;border-bottom:1px solid #eee}.r-num{text-align:right;white-space:nowrap}'
       +'.r-kv th{text-align:left;font-weight:600;color:#555;padding:4px 10px 4px 0;width:40%;vertical-align:top}.r-kv td{padding:4px 0}'
       +'.r-rot{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}.r-rot b{color:#6b5a13}.r-note{font-size:12px;color:#777;margin:6px 0 0}'
-      +'.r-foot{margin-top:24px;border-top:1px solid #e3ddc7;padding-top:10px;font-size:11px;color:#888;line-height:1.5}'
+      +'.r-band{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 6px}'
+      +'@media(max-width:640px){.r-band{grid-template-columns:repeat(2,1fr)}}'
+      +'.r-st{border:1px solid #e5e0cf;border-radius:8px;padding:8px 10px}'
+      +'.r-stk{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#9a8a4a;font-weight:800}'
+      +'.r-stv{font-family:ui-monospace,Menlo,monospace;font-size:19px;font-weight:800;margin-top:2px}'
+      +'.r-stu{font-size:11px;font-weight:600;color:#777}'
+      +'.r-stn{font-size:10px;color:#888}'
+      +'.r-red{color:#b3402f}.r-green{color:#2e7d4f}'
+      +'.r-foot{margin-top:24px;border-top:2px solid #c9a227;padding-top:10px;font-size:11px;color:#888;line-height:1.5;font-family:ui-monospace,Menlo,monospace}'
       +'.r-actions{margin-bottom:16px}.r-actions button{background:#c9a227;color:#1a1206;border:none;border-radius:7px;font-weight:700;padding:9px 16px;font-size:14px;cursor:pointer}'
       +'@media print{.no-print{display:none}body{padding:0}}';
 
@@ -2183,14 +2455,17 @@
       +'<title>Field Report \u2014 '+d.acres.toFixed(0)+' acres \u2014 AGSIST</title><style>'+css+'</style></head><body>'
       +'<div class="r-actions no-print"><button type="button" onclick="window.print()">\u2399 Print / Save as PDF</button></div>'
       +'<div class="r-head"><div class="r-brand">AGSIST \u00b7 Field Scout</div><div class="r-date">'+esc(dateStr)+'</div></div>'
-      +'<h1>'+d.acres.toFixed(1)+'-acre field</h1><div class="r-loc">Center '+d.lat.toFixed(4)+', '+d.lng.toFixed(4)+'</div>'
-      +verdictHtml+lead+flagsHtml
+      +'<h1>'+d.acres.toFixed(1)+'-acre field'+(cy&&cy.name?' — '+esc(cy.name)+' County, '+esc(cy.st):'')+'</h1><div class="r-loc">Center '+d.lat.toFixed(4)+', '+d.lng.toFixed(4)+'</div>'
+      +verdictHtml+bandHtml+lead+flagsHtml
       +sect('Soil & productivity', soilHtml)
       +sect('Crop vigor & moisture (satellite)', vigorHtml)
-      +sect('5-year crop rotation', rotHtml)
+      +sect(((r&&r.codes)?r.codes.length:10)+'-year crop rotation', rotHtml)
+      +sect('The money', moneyRows?'<table class="r-kv">'+moneyRows+'</table>':'')
+      +sect('Ownership picture', ownRows?'<table class="r-kv">'+ownRows+'</table>':'')
+      +sect('Statewide crop & bins', stateRows?'<table class="r-kv">'+stateRows+'</table>':'')
       +sect('Conditions', condRows?'<table class="r-kv">'+condRows+'</table>':'')
       +sect('Nearby cash bids', bidRows?'<table class="r-kv">'+bidRows+'</table>':'')
-      +'<div class="r-foot">Prepared by <strong>Sigurd Lindquist</strong> \u00b7 AGSIST Field Scout \u00b7 sig@farmers1st.com \u00b7 agsist.com/field-scout<br>Compiled from public data &mdash; USDA SSURGO soil survey, USDA Cropland Data Layer, Open-Meteo, US Drought Monitor &mdash; plus the AGSIST cash-bid feed. Soil and crop layers are survey estimates, not a substitute for sampling your own ground. This is a starting read, not an underwriting decision or financial advice.</div>'
+      +'<div class="r-foot"><strong>Prepared by Sigurd Lindquist \u00b7 AGSIST Field Scout \u00b7 agsist.com/field-scout \u00b7 sig@farmers1st.com</strong><br>Compiled from public data: USDA SSURGO soil survey, Cropland Data Layer, NASS county cash-rent survey &amp; weekly crop conditions, Census of Agriculture, AFIDA foreign-holdings filings, AgTransport basis, Open-Meteo, US Drought Monitor, Iowa Environmental Mesonet hail reports, and the AGSIST cash-bid feed. Survey estimates &mdash; not a substitute for sampling your own ground. A starting read, not an underwriting decision or financial advice. Missing data prints as missing; nothing here is interpolated.</div>'
       +'</body></html>';
 
     var w=window.open('','_blank');
