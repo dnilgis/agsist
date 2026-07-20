@@ -1,0 +1,27 @@
+{
+ "note": "one row per published dealer sheet — appended by update_fertilizer.py, never edited by hand",
+ "sheets": [
+  {
+   "date": "2026-06-08",
+   "prices": {
+    "Urea": 760,
+    "Potash": 450,
+    "MAP + Sulfur": 930,
+    "Amm. Sulfate": 580,
+    "K-Mag Premium": 650,
+    "Pell Lime": 285
+   }
+  },
+  {
+   "date": "2026-07-20",
+   "prices": {
+    "Urea": 695,
+    "Potash": 460,
+    "MAP + Sulfur": 930,
+    "Amm. Sulfate": 580,
+    "K-Mag Premium": 650,
+    "Pell Lime": 285
+   }
+  }
+ ]
+}
