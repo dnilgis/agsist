@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-19T12:03:56+00:00",
- "total": 64,
+ "updated": "2026-07-20T13:11:09+00:00",
+ "total": 65,
  "played_out": 26,
- "didnt": 33,
+ "didnt": 34,
  "pending": 5,
- "hit_rate": 44.1,
+ "hit_rate": 43.3,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-19",
+   "judged": "2026-07-20",
+   "call": "Call was corn up, toward $4.55.",
+   "outcome": "didnt",
+   "note": "Corn closed $4.4475 Monday, never reaching the $4.55 target. The 3.6% break went the other direction entirely: old-crop supply pressure and the front-month/new-crop inversion took over the narrative. The upside thesis did not resolve."
+  },
   {
    "made": "2026-07-16",
    "judged": "2026-07-17",

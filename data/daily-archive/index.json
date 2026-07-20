@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-07-20",
+      "date_display": "Monday, July 20, 2026",
+      "headline": "HOGS RUN 16.9%; CORN BREAKS HARD; HORMUZ ESCALATES",
+      "teaser": "Hogs up 17%, corn splits in two, and a tanker just stopped at Hormuz. Read before the 3 PM USDA print.",
+      "market_mood": "volatile",
+      "surprise_count": 5,
+      "sections": 5,
+      "url": "/daily/2026-07-20",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-19",
       "date_display": "Sunday, July 19, 2026",
       "headline": "BEANS AND WHEAT CLOSE LOUD; CORN SPLITS IN TWO",
@@ -1461,6 +1473,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-19T12:03:34.498207+00:00",
-  "count": 129
+  "updated": "2026-07-20T13:11:08.404173+00:00",
+  "count": 130
 }

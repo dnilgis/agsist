@@ -5,13 +5,27 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 19 Jul 2026 12:03:56 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 20 Jul 2026 13:11:09 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>HOGS RUN 16.9%; CORN BREAKS HARD; HORMUZ ESCALATES</title>
+      <link>https://agsist.com/daily/2026-07-20</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-20</guid>
+      <pubDate>Mon, 20 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Three markets moved hard enough this morning to demand separate explanations, and only one of them has a clean story. Lean hogs are up 16.9% to $101.65, the biggest single-session move in this contract in recent memory, with no obvious headline catalyst in the livestock bucket. Nearby corn fell 3.6% to $4.45 while December corn added 1.4% to $4.67, a 22-cent inversion that tells you the crop-condition story has taken a turn. And crude oil ran 4.2% to $82.49 as Iran-Hormuz tensions, ongoing since early April, escalated sharply overnight: LNG shipments through the Strait appear to have halted for three straight days, and a Malta-flagged tanker anchored at the Hormuz mouth Monday rather than attempt transit. Today's USDA Crop Progress report at 3:00 PM CT will tell you whether the corn market's split is justified or overdone.
+Lean hogs post their biggest single-session gain in years while nearby corn drops 3.6% and LNG shipments through the Strait of Hormuz halt entirely.
+• Corn Breaks; December Holds
+  → Old-crop corn still in the bin: basis is your only remaining lever on the front month. If local basis is not firming this week, move it before the Crop Progress print resets expectations.
+• Beans and Wheat Stay Firm
+  → New-crop beans at $12.03: if you are below 60% priced on expected production, add 10-15% before pollination weather enters the soybean story in earnest.
+• Hogs Move Hard; Cattle Hold
+Read more: https://agsist.com/daily/2026-07-20</description>
+    </item>
     <item>
       <title>BEANS AND WHEAT CLOSE LOUD; CORN SPLITS IN TWO</title>
       <link>https://agsist.com/daily/2026-07-19</link>
@@ -389,18 +403,6 @@ Soybeans lost 24 cents and wheat gave back 14 cents to close the week; live catt
 • CATTLE HOLDS THE LINE
 • CRUDE FIRMS, METALS FALL HARD
 Read more: https://agsist.com/daily/2026-06-21</description>
-    </item>
-    <item>
-      <title>GRAINS BREAK, CATTLE HOLDS, WEEK RESET AHEAD</title>
-      <link>https://agsist.com/daily/2026-06-20</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-20</guid>
-      <pubDate>Sat, 20 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Soybeans gave back $0.24¾ Friday to close at $11.23, wheat dropped 14 cents to $6.06, and corn slipped to $4.17 into a three-day Juneteenth weekend with nobody left to defend them. The grains went out soft not because a fresh bear catalyst showed up, but because the calendar did: traders don't want to carry risk over a long weekend with corn pollination approaching and the weather pattern turning cooler and wetter across the Belt. Cattle told a different story. Live cattle ran to $254.80, up 2.3% on Friday, off the Cattle on Feed data delivered Thursday, while feeders barely moved at $366.60. Two markets, two entirely different reads on the same week.
-Friday's close handed grains their worst day of the week; cattle split the difference into the three-day weekend.
-• GRAINS BREAK INTO THE WEEKEND
-• CATTLE SPLITS THE DIFFERENCE
-• CRUDE FIRMS, METALS FALL HARD
-Read more: https://agsist.com/daily/2026-06-20</description>
     </item>
   </channel>
 </rss>
