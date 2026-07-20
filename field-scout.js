@@ -111,6 +111,14 @@
         if(Date.now()-_zoomHintAt > 4000){ _zoomHintAt=Date.now(); flashHint('Zoom in to your field, then tap it'); }
         return;
       }
+      // TOUCH SAFETY (learned in the field, literally): on coarse pointers a bare
+      // tap shows a GHOST boundary + confirm chip instead of committing — stray
+      // thumbs and pinch-ends were dropping fields mid-conversation with a farmer.
+      // Tapping elsewhere just moves the ghost. Desktop keeps the instant drop.
+      if(window.matchMedia && matchMedia('(pointer: coarse)').matches){
+        showGhost(e.latlng.lat, e.latlng.lng);
+        return;
+      }
       dropFieldBox(e.latlng.lat, e.latlng.lng);
     });
 
@@ -329,6 +337,7 @@
   function hideHint(){ var h=document.getElementById('fs-hint'); if(h) h.hidden=true; clearTimeout(_hintTimer); }
 
   function clearField(){
+    clearGhost();
     drawnLayer.clearLayers(); activePoly=null;
     clearHandles(); disarmPin(); setMapHeadline(null);
     boxMode=false; setSizer(false); showTracebar(false); hideHint();
@@ -650,7 +659,32 @@
     var dLng=(d[0]/2)/(111320*Math.max(0.2,Math.cos(lat*Math.PI/180)));
     return [[lat+dLat,lng-dLng],[lat+dLat,lng+dLng],[lat-dLat,lng+dLng],[lat-dLat,lng-dLng]];
   }
+  var ghostPoly=null, ghostBar=null;
+  function clearGhost(){
+    if(ghostPoly){ try{ map.removeLayer(ghostPoly); }catch(e){} ghostPoly=null; }
+    if(ghostBar){ try{ ghostBar.remove(); }catch(e){} ghostBar=null; }
+  }
+  function showGhost(lat, lng){
+    clearGhost();
+    dismissInvite();
+    ghostPoly=L.polygon(boxRing(lat,lng,40), { color:'#daa520', weight:2, dashArray:'6,6', fillColor:'#daa520', fillOpacity:0.07, interactive:false });
+    ghostPoly.addTo(map);
+    ghostBar=document.createElement('div');
+    ghostBar.className='fs-ghostbar';
+    ghostBar.innerHTML='<span>Field here?</span>'
+      +'<button type="button" class="fs-ghost-yes">\u2713 Use this field</button>'
+      +'<button type="button" class="fs-ghost-no" aria-label="Cancel">\u2715</button>';
+    map.getContainer().appendChild(ghostBar);
+    ghostBar.querySelector('.fs-ghost-yes').addEventListener('click', function(){
+      var c=ghostPoly.getBounds().getCenter();
+      clearGhost();
+      dropFieldBox(c.lat, c.lng);
+      ga('field_ghost_confirm', {});
+    });
+    ghostBar.querySelector('.fs-ghost-no').addEventListener('click', function(){ clearGhost(); });
+  }
   function dropFieldBox(lat, lng, ac){
+    clearGhost();
     ac = BOX_DIMS[ac] ? ac : 40;
     var poly=L.polygon(boxRing(lat,lng,ac), { color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:0.15 });
     try { drawControl.disable(); } catch(e){}
@@ -2180,4 +2214,18 @@
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
   else init();
+})();
+
+// Mobile Layers toggle — deliberately OUTSIDE map init so the control panel
+// still opens even if the map library fails to load on a weak connection.
+(function(){
+  function wire(){
+    var ml=document.getElementById('fs-mob-layers');
+    if(!ml) return;
+    ml.addEventListener('click', function(){
+      var r=document.getElementById('fs-cmd-right');
+      if(r){ var open=r.classList.toggle('open'); ml.setAttribute('aria-expanded', open?'true':'false'); }
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', wire); else wire();
 })();

@@ -17,7 +17,7 @@
   <link rel="manifest" href="/manifest.json">
 
   <title>Crop Conditions in Context: How Bad Is It, Really? Ranked Since 2000 | AGSIST</title>
-  <meta name="description" content="This week's corn and soybean condition for every state, ranked against the same week of every year since 2000. Not vibes — arithmetic on USDA's own numbers. Updated every Monday night.">
+  <meta name="description" content="How bad is the crop really? Each state's rating ranked against the same week of every year since 2000 — a rank, not a feeling. Free.">
   <link rel="canonical" href="https://agsist.com/conditions">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AGSIST">
@@ -76,6 +76,37 @@
     .cd-src{font-size:.8rem;color:#8a948f;line-height:1.7}
     .cd-src a{color:#d4a23f}
     @media (max-width:700px){.cd-strip{min-width:120px}}
+
+    /* v5 verdict + tile map */
+    .cd-ver{background:#101415;border:1px solid #1a1f20;border-radius:14px;padding:20px 24px;margin:0 0 18px;display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+    .cd-ver select{background:#0a0c0d;border:1px solid #2a3133;color:#e6ebe9;border-radius:8px;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:.95rem}
+    .cd-vbig{font-family:'JetBrains Mono',monospace;font-size:4.2rem;font-weight:800;line-height:1}
+    .cd-vword{font-family:'JetBrains Mono',monospace;font-size:1.35rem;font-weight:800;letter-spacing:.05em}
+    .cd-vsent{font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:520px}
+    .cd-vgeo{font-size:.68rem;color:#5a6467;font-family:'JetBrains Mono',monospace;margin-top:6px}
+    .cd-maplab{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.1em;color:#8a948f;text-transform:uppercase;margin:16px 0 10px}
+    .cd-grid{position:relative;width:840px;height:560px;margin:0 auto;max-width:100%}
+    .cd-tile{position:absolute;width:64px;height:64px;border-radius:9px;padding:10px 9px;box-sizing:border-box;cursor:pointer;transition:transform .08s;left:calc(var(--gc)*70px - 70px);top:calc(var(--gr)*70px - 70px)}
+    .cd-tile:hover{transform:scale(1.12);z-index:2;outline:2px solid #d4a23f}
+    .cd-tile.sel{outline:2px solid #d4a23f}
+    .cd-tile.dim{background:#101415;border:1px dashed #1a1f20;opacity:.45;cursor:default}
+    .cd-tst{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:.92rem;color:#e6ebe9}
+    .cd-tge{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;margin-top:2px;color:#e6ebe9}
+    .cd-trk{font-size:.58rem;color:rgba(230,235,233,.72);font-family:'JetBrains Mono',monospace;margin-top:1px;white-space:nowrap;overflow:hidden}
+    .cd-leg{display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:#8a948f;flex-wrap:wrap}
+    .cd-leg span b{display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+    @media (max-width:900px){
+      .cd-grid{width:100%;height:auto;display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+      .cd-tile{position:static;width:auto;height:auto;aspect-ratio:1;padding:0;border-radius:5px;display:flex;align-items:center;justify-content:center;grid-column:var(--gc);grid-row:var(--gr)}
+      .cd-tile .cd-tge,.cd-tile .cd-trk{display:none}
+      .cd-tile .cd-tst{font-size:.56rem}
+      .cd-tile:hover{transform:none}
+      .cd-ver{display:block;padding:16px 18px}
+      .cd-vbig{font-size:3.2rem;display:inline-block;vertical-align:middle;margin-right:12px}
+      .cd-vword{font-size:1.05rem;display:inline-block;vertical-align:middle}
+      .cd-vsent{font-size:.9rem;margin-top:10px}
+      .cd-ver select{margin-bottom:10px}
+    }
     #cd-table th{white-space:nowrap} #cd-table th:last-child{white-space:normal;min-width:200px}
   </style>
 </head>
@@ -89,15 +120,38 @@
     <p class="cd-sub">Every drought summer the coffee shop decides the crop is &ldquo;the worst ever.&rdquo; Sometimes it is. Usually it isn&rsquo;t. Below: each state&rsquo;s <strong>Good+Excellent share this week</strong>, ranked against <strong>the same week of every year since 2000</strong> &mdash; so &ldquo;how bad&rdquo; stops being a feeling and becomes a rank. Not vibes. Arithmetic.</p>
   </header>
 
+  <section class="cd-ver" aria-live="polite">
+    <div>
+      <select id="cd-stsel" aria-label="Pick a state"></select>
+      <div class="cd-vgeo" id="cd-geo"></div>
+    </div>
+    <div class="cd-vbig" id="cd-vbig">&hellip;</div>
+    <div>
+      <div class="cd-vword" id="cd-vword"></div>
+      <div class="cd-vsent" id="cd-vsent">Loading this week&rsquo;s USDA ratings&hellip;</div>
+    </div>
+  </section>
+
+  <div class="cd-maplab">Every state&rsquo;s crop, judged against its own history &mdash; tap a state</div>
+  <div class="cd-grid" id="cd-grid"></div>
+  <div class="cd-leg">
+    <span><b style="background:#c94b42"></b>worst on record</span>
+    <span><b style="background:#a8823c"></b>below normal</span>
+    <span><b style="background:#3a4144"></b>normal</span>
+    <span><b style="background:#2f9963"></b>among the best</span>
+    <span><b style="background:#14181a;border:1px dashed #2a3133"></b>not surveyed</span>
+  </div>
+
+
   <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here is judging a crop year &mdash; one category-exclusive slot. <a href="/sponsor?slot=conditions&amp;utm_source=conditions&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
   <section class="cd-panel" aria-labelledby="cd-t">
-    <div class="cd-panel-hd"><span class="cd-panel-t" id="cd-t">This week, ranked against 26 years</span><span class="cd-fresh" id="cd-fresh">loading&hellip;</span></div>
+    <div class="cd-panel-hd"><span class="cd-panel-t" id="cd-t">The full table &mdash; every state, worst first</span><span class="cd-fresh" id="cd-fresh">loading&hellip;</span></div>
     <div class="cd-panel-b">
       <p class="cd-seed"><!--SEED:condstats-->Weekly state crop-condition Good+Excellent shares for corn and soybeans, ranked against the same week of every year 2000&ndash;present, from USDA NASS Crop Progress. Rank 1 = worst on record for this week. Refreshed every Monday night in season.<!--/SEED--></p>
       <div class="cd-tabs" role="tablist" id="cd-tabs"></div>
       <table class="cd-tbl" id="cd-table"><tr><td style="color:#8a948f">Loading USDA data&hellip;</td></tr></table>
-      <p style="font-size:13px;color:#8a948f;margin:10px 0 0">Rank counts up from the worst: rank 1 of 27 = the lowest G+E this week has ever seen since 2000. In the strip, each dot is one year&rsquo;s G+E for this same week, 2000 at the left through this year&rsquo;s gold dot &mdash; dotted line is the average, and the small numbers at right are that state&rsquo;s best and worst for this week, so the strip reads without hovering. States with under 10 comparable years are left out rather than thinly ranked.</p>
+      <p style="font-size:13px;color:#8a948f;margin:10px 0 0">Rank counts up from the worst: rank 1 of 27 = the lowest G+E this week has ever seen since 2000. The bar shows how far this week sits from that state&rsquo;s own 26-year average for the same week, in G+E percentage points &mdash; red below, green above, every row on the same scale. States with under 10 comparable years are left out rather than thinly ranked.</p>
     </div>
   </section>
 
@@ -146,6 +200,66 @@
       +'</svg>';
   }
 
+
+  var TILE={"AK":[1,1],"ME":[12,1],"VT":[11,2],"NH":[12,2],"WA":[2,3],"MT":[3,3],"ND":[4,3],"SD":[5,3],"MN":[6,3],"WI":[7,3],"MI":[8,3],"NY":[10,3],"MA":[11,3],"RI":[12,3],"OR":[2,4],"ID":[3,4],"WY":[4,4],"NE":[5,4],"IA":[6,4],"IL":[7,4],"IN":[8,4],"OH":[9,4],"PA":[10,4],"NJ":[11,4],"CT":[12,4],"CA":[2,5],"NV":[3,5],"UT":[4,5],"CO":[5,5],"KS":[6,5],"MO":[7,5],"KY":[8,5],"WV":[9,5],"VA":[10,5],"MD":[11,5],"DE":[12,5],"AZ":[3,6],"NM":[4,6],"OK":[5,6],"AR":[6,6],"TN":[7,6],"NC":[8,6],"SC":[9,6],"TX":[5,7],"LA":[6,7],"MS":[7,7],"AL":[8,7],"GA":[9,7],"HI":[1,8],"FL":[10,8]};
+  var FULL2AB={"alaska":"AK","alabama":"AL","arkansas":"AR","arizona":"AZ","california":"CA","colorado":"CO","connecticut":"CT","delaware":"DE","florida":"FL","georgia":"GA","hawaii":"HI","iowa":"IA","idaho":"ID","illinois":"IL","indiana":"IN","kansas":"KS","kentucky":"KY","louisiana":"LA","massachusetts":"MA","maryland":"MD","maine":"ME","michigan":"MI","minnesota":"MN","missouri":"MO","mississippi":"MS","montana":"MT","north carolina":"NC","north dakota":"ND","nebraska":"NE","new hampshire":"NH","new jersey":"NJ","new mexico":"NM","nevada":"NV","new york":"NY","ohio":"OH","oklahoma":"OK","oregon":"OR","pennsylvania":"PA","rhode island":"RI","south carolina":"SC","south dakota":"SD","tennessee":"TN","texas":"TX","utah":"UT","virginia":"VA","vermont":"VT","washington":"WA","wisconsin":"WI","west virginia":"WV","wyoming":"WY"};
+  var pickedState=null, geoNote='';
+  function verdictOf(p){
+    if(p<=4)return["WORST ON RECORD","#e0685f"];
+    if(p<=15)return["AMONG THE WORST","#e0685f"];
+    if(p<=35)return["BELOW NORMAL","#d4a23f"];
+    if(p<65)return["PRETTY NORMAL","#8a948f"];
+    if(p<85)return["ABOVE NORMAL","#5fc28a"];
+    if(p<100)return["AMONG THE BEST","#5fc28a"];
+    return["BEST ON RECORD","#5fc28a"];
+  }
+  function tileColor(p){
+    if(p==null)return"#14181a";
+    if(p<=4)return"#c94b42"; if(p<=15)return"#b85a4a"; if(p<=35)return"#a8823c";
+    if(p<65)return"#3a4144"; if(p<85)return"#3f7a58"; return"#2f9963";
+  }
+  function geoState(states){
+    try{
+      var loc=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}');
+      var ab=FULL2AB[String(loc.state||'').toLowerCase()]||(String(loc.state||'').length===2?String(loc.state).toUpperCase():null);
+      if(ab&&states[ab]){ geoNote='auto-set from your location'; return ab; }
+    }catch(e){}
+    return states.IA?'IA':Object.keys(states)[0];
+  }
+  function renderVerdict(){
+    var pkg=data.crops[crop]; if(!pkg)return;
+    var states=pkg.states;
+    if(!pickedState||!states[pickedState]) pickedState=geoState(states);
+    var sl=$('cd-stsel');
+    sl.innerHTML=Object.keys(states).sort().map(function(a){return '<option value="'+a+'"'+(a===pickedState?' selected':'')+'>'+a+'</option>';}).join('');
+    $('cd-geo').textContent=geoNote;
+    var st=states[pickedState], vv=verdictOf(st.pctile), cname=crop==='corn'?'corn':'soybeans';
+    $('cd-vbig').textContent=Math.round(st.ge)+'%';
+    $('cd-vbig').style.color=vv[1];
+    $('cd-vword').textContent=vv[0];
+    $('cd-vword').style.color=vv[1];
+    var beats=st.rank_from_worst-1, yrs=st.of-1;
+    $('cd-vsent').innerHTML=pickedState+' '+cname+' is rated <b style="color:'+vv[1]+'">'+Math.round(st.ge)+'% good or better</b> this week &mdash; a better mid-season rating than <b style="color:'+vv[1]+'">'+beats+' of the last '+yrs+' years</b> at this same week. Average for this week: '+Math.round(st.avg)+'%. Worst ever: '+Math.round(st.worst)+'%. Best: '+Math.round(st.best)+'%.';
+    var g=$('cd-grid'), h='';
+    Object.keys(TILE).forEach(function(ab){
+      var t=TILE[ab], st2=states[ab];
+      if(st2){
+        h+='<div class="cd-tile'+(ab===pickedState?' sel':'')+'" data-st="'+ab+'" style="--gc:'+t[0]+';--gr:'+t[1]+';background:'+tileColor(st2.pctile)+'">'
+          +'<div class="cd-tst">'+ab+'</div><div class="cd-tge">'+Math.round(st2.ge)+'%</div></div>';
+      } else {
+        h+='<div class="cd-tile dim" style="--gc:'+t[0]+';--gr:'+t[1]+'"><div class="cd-tst">'+ab+'</div></div>';
+      }
+    });
+    g.innerHTML=h;
+  }
+  document.addEventListener('click',function(e){
+    var t=e.target.closest('.cd-tile[data-st]');
+    if(t){ pickedState=t.dataset.st; geoNote=''; renderVerdict(); gaEvent('cond_verdict',{st:pickedState,crop:crop}); }
+  });
+  document.addEventListener('change',function(e){
+    if(e.target&&e.target.id==='cd-stsel'){ pickedState=e.target.value; geoNote=''; renderVerdict(); }
+  });
+
   function render(){
     var pkg=data.crops[crop];
     if(!pkg){ $('cd-table').innerHTML='<tr><td style="color:#8a948f">Off-season — no current ratings</td></tr>'; return; }
@@ -164,6 +278,7 @@
         +'<td>'+strip(s, dmax)+'</td></tr>';
     });
     $('cd-table').innerHTML=h;
+    renderVerdict();
   }
 
   function tabs(){

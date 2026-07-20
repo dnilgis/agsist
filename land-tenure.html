@@ -157,7 +157,37 @@
     .ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
     .ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
     .ag-sponsor-ribbon a{color:#d4a23f}
-  </style>
+  
+    /* verdict module (shared pattern with /conditions) */
+    .vp-ver{background:#101415;border:1px solid #1a1f20;border-radius:14px;padding:20px 24px;margin:14px 0;display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+    .vp-ver select{background:#0a0c0d;border:1px solid #2a3133;color:#e6ebe9;border-radius:8px;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:.95rem}
+    .vp-big{font-family:'JetBrains Mono',monospace;font-size:4rem;font-weight:800;line-height:1}
+    .vp-word{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;letter-spacing:.05em}
+    .vp-sent{font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px}
+    .vp-geo{font-size:.66rem;color:#5a6467;font-family:'JetBrains Mono',monospace;margin-top:6px}
+    .vp-maplab{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.1em;color:#8a948f;text-transform:uppercase;margin:16px 0 10px}
+    .vp-grid{position:relative;width:840px;height:560px;margin:0 auto;max-width:100%}
+    .vp-tile{position:absolute;width:64px;height:64px;border-radius:9px;padding:10px 9px;box-sizing:border-box;cursor:pointer;transition:transform .08s;left:calc(var(--gc)*70px - 70px);top:calc(var(--gr)*70px - 70px)}
+    .vp-tile:hover{transform:scale(1.12);z-index:2;outline:2px solid #d4a23f}
+    .vp-tile.sel{outline:2px solid #d4a23f}
+    .vp-tile.dim{background:#101415;border:1px dashed #1a1f20;opacity:.45;cursor:default}
+    .vp-tst{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:.92rem;color:#e6ebe9}
+    .vp-tge{font-family:'JetBrains Mono',monospace;font-size:.98rem;font-weight:700;margin-top:2px;color:#e6ebe9}
+    .vp-leg{display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:#8a948f;flex-wrap:wrap}
+    .vp-leg span b{display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+    @media (max-width:900px){
+      .vp-grid{width:100%;height:auto;display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+      .vp-tile{position:static;width:auto;height:auto;aspect-ratio:1;padding:0;border-radius:5px;display:flex;align-items:center;justify-content:center;grid-column:var(--gc);grid-row:var(--gr)}
+      .vp-tile .vp-tge{display:none}
+      .vp-tile .vp-tst{font-size:.56rem}
+      .vp-tile:hover{transform:none}
+      .vp-ver{display:block;padding:16px 18px}
+      .vp-big{font-size:3.1rem;display:inline-block;vertical-align:middle;margin-right:12px}
+      .vp-word{font-size:1.02rem;display:inline-block;vertical-align:middle}
+      .vp-sent{font-size:.9rem;margin-top:10px}
+      .vp-ver select{margin-bottom:10px}
+    }
+</style>
 </head>
 <body>
 <div id="site-header"></div>
@@ -166,6 +196,15 @@
   <p class="sub">Everybody argues about who's <i>buying</i> farmland. The census answers a quieter question first:
   how much of it is farmed by someone who doesn't own it at all. <span id="lt-seed"><!--SEED:ltstats-->39.3% of U.S. farmland &mdash; 346 million of 880 million acres &mdash; is rented from someone else (2022 census) &middot; 691 of 3,020 counties are majority-rented &middot; Illinois leads the Corn Belt at 55.8% &middot; data refreshed 2026-07-18<!--/SEED--></span></p>
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Landlords, tenants, and everyone deciding which to be &mdash; one category-exclusive slot. <a href="/sponsor?slot=land-tenure&amp;utm_source=land-tenure&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <section class="vp-ver" aria-live="polite">
+    <div><select id="vp-sel" aria-label="Pick a state"></select><div class="vp-geo" id="vp-geo"></div></div>
+    <div class="vp-big" id="vp-big">&hellip;</div>
+    <div><div class="vp-word" id="vp-word"></div><div class="vp-sent" id="vp-sent">Loading&hellip;</div></div>
+  </section>
+  <div class="vp-maplab">Every state: share of farmland rented &mdash; tap a state</div>
+  <div class="vp-grid" id="vp-grid"></div>
+  <div class="vp-leg"><span><b style="background:#b85a4a"></b>mostly rented</span><span><b style="background:#a8823c"></b>about half</span><span><b style="background:#3a4144"></b>a third</span><span><b style="background:#3f7a58"></b>mostly owner-farmed</span><span><b style="background:#14181a;border:1px dashed #2a3133"></b>no data</span></div>
+
   <div class="lt-hero">
     <div class="lt-stat"><div class="v">39.3%</div><div class="l">of U.S. farmland is rented</div><div class="s">346M of 880M acres &middot; 2022 census</div></div>
     <div class="lt-stat"><div class="v">691</div><div class="l">majority-rented counties</div><div class="s">of 3,020 with 2022 data</div></div>
@@ -281,6 +320,60 @@
     });
   }
 })();
+</script>
+<script>
+
+(function(){
+  var TILE={"AK":[1,1],"ME":[12,1],"VT":[11,2],"NH":[12,2],"WA":[2,3],"MT":[3,3],"ND":[4,3],"SD":[5,3],"MN":[6,3],"WI":[7,3],"MI":[8,3],"NY":[10,3],"MA":[11,3],"RI":[12,3],"OR":[2,4],"ID":[3,4],"WY":[4,4],"NE":[5,4],"IA":[6,4],"IL":[7,4],"IN":[8,4],"OH":[9,4],"PA":[10,4],"NJ":[11,4],"CT":[12,4],"CA":[2,5],"NV":[3,5],"UT":[4,5],"CO":[5,5],"KS":[6,5],"MO":[7,5],"KY":[8,5],"WV":[9,5],"VA":[10,5],"MD":[11,5],"DE":[12,5],"AZ":[3,6],"NM":[4,6],"OK":[5,6],"AR":[6,6],"TN":[7,6],"NC":[8,6],"SC":[9,6],"TX":[5,7],"LA":[6,7],"MS":[7,7],"AL":[8,7],"GA":[9,7],"HI":[1,8],"FL":[10,8]}, F2A={"alaska":"AK","alabama":"AL","arkansas":"AR","arizona":"AZ","california":"CA","colorado":"CO","connecticut":"CT","delaware":"DE","florida":"FL","georgia":"GA","hawaii":"HI","iowa":"IA","idaho":"ID","illinois":"IL","indiana":"IN","kansas":"KS","kentucky":"KY","louisiana":"LA","massachusetts":"MA","maryland":"MD","maine":"ME","michigan":"MI","minnesota":"MN","missouri":"MO","mississippi":"MS","montana":"MT","north carolina":"NC","north dakota":"ND","nebraska":"NE","new hampshire":"NH","new jersey":"NJ","new mexico":"NM","nevada":"NV","new york":"NY","ohio":"OH","oklahoma":"OK","oregon":"OR","pennsylvania":"PA","rhode island":"RI","south carolina":"SC","south dakota":"SD","tennessee":"TN","texas":"TX","utah":"UT","virginia":"VA","vermont":"VT","washington":"WA","wisconsin":"WI","west virginia":"WV","wyoming":"WY"};
+  window.__A2F={"AL":"Alabama","AR":"Arkansas","AZ":"Arizona","CA":"California","CO":"Colorado","CT":"Connecticut","DE":"Delaware","FL":"Florida","GA":"Georgia","IA":"Iowa","ID":"Idaho","IL":"Illinois","IN":"Indiana","KS":"Kansas","KY":"Kentucky","LA":"Louisiana","MA":"Massachusetts","MD":"Maryland","ME":"Maine","MI":"Michigan","MN":"Minnesota","MO":"Missouri","MS":"Mississippi","MT":"Montana","NC":"North Carolina","ND":"North Dakota","NE":"Nebraska","NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico","NV":"Nevada","NY":"New York","OH":"Ohio","OK":"Oklahoma","OR":"Oregon","PA":"Pennsylvania","SC":"South Carolina","SD":"South Dakota","TN":"Tennessee","TX":"Texas","UT":"Utah","VA":"Virginia","VT":"Vermont","WA":"Washington","WI":"Wisconsin","WV":"West Virginia","WY":"Wyoming"};
+  var picked=null, geoNote='', VD=null;
+  function geoPick(av){ try{ var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}');
+    var ab=F2A[String(l.state||'').toLowerCase()]||(String(l.state||'').length===2?String(l.state).toUpperCase():null);
+    if(ab&&av[ab]){ geoNote='auto-set from your location'; return ab; } }catch(e){}
+    return av.IA?'IA':Object.keys(av)[0]; }
+  function el(id){return document.getElementById(id);}
+  function render(){
+    if(!VD)return;
+    if(!picked||!VD[picked]) picked=geoPick(VD);
+    var sl=el('vp-sel');
+    sl.innerHTML=Object.keys(VD).sort().map(function(a){return '<option value="'+a+'"'+(a===picked?' selected':'')+'>'+(__A2F[a]||a)+'</option>';}).join('');
+    el('vp-geo').textContent=geoNote;
+    var d=VD[picked];
+    el('vp-big').textContent=d.big; el('vp-big').style.color=d.col;
+    el('vp-word').textContent=d.word; el('vp-word').style.color=d.col;
+    el('vp-sent').innerHTML=d.sent;
+    var g=el('vp-grid');
+    if(g){ var h='';
+      Object.keys(TILE).forEach(function(ab){ var t=TILE[ab], s=VD[ab];
+        if(s){ h+='<div class="vp-tile'+(ab===picked?' sel':'')+'" data-st="'+ab+'" style="--gc:'+t[0]+';--gr:'+t[1]+';background:'+s.tile+'"><div class="vp-tst">'+ab+'</div><div class="vp-tge">'+s.tval+'</div></div>'; }
+        else { h+='<div class="vp-tile dim" style="--gc:'+t[0]+';--gr:'+t[1]+'"><div class="vp-tst">'+ab+'</div></div>'; } });
+      g.innerHTML=h; }
+  }
+  document.addEventListener('click',function(e){ var t=e.target.closest('.vp-tile[data-st]');
+    if(t){ picked=t.dataset.st; geoNote=''; render(); try{gaEvent('verdict_tap',{st:picked,page:location.pathname});}catch(x){} } });
+  document.addEventListener('change',function(e){ if(e.target&&e.target.id==='vp-sel'){ picked=e.target.value; geoNote=''; render(); } });
+  function buildVerdicts(j){
+    var out={};
+    Object.keys(j.states).forEach(function(st){
+      var y=j.states[st].y['2022'], y97=j.states[st].y['1997'];
+      if(!y||y[0]==null||y[1]==null)return;
+      var p=100*y[1]/(y[0]+y[1]);
+      var d97=(y97&&y97[0]!=null&&y97[1]!=null)?(p-100*y97[1]/(y97[0]+y97[1])):null;
+      var w,c,t;
+      if(p>=55){w='MOSTLY RENTED GROUND';c='#e0685f';t='#b85a4a';}
+      else if(p>=45){w='ABOUT HALF RENTED';c='#d4a23f';t='#a8823c';}
+      else if(p>=30){w='A THIRD RENTED';c='#8a948f';t='#3a4144';}
+      else {w='MOSTLY OWNER-FARMED';c='#5fc28a';t='#3f7a58';}
+      out[st]={big:Math.round(p)+'\u0025',word:w,col:c,tile:t,tval:Math.round(p)+'\u0025',
+        sent:'<b style="color:'+c+'">'+Math.round(p)+'\u0025 of '+(__A2F[st]||st)+'\u2019s farmland</b> \u2014 '+(y[1]/1e6).toFixed(1)+' million of '+((y[0]+y[1])/1e6).toFixed(1)+' million acres \u2014 is farmed by someone who doesn\u2019t own it (2022 census)'+(d97!=null?(', '+(d97>=0?'up ':'down ')+Math.abs(d97).toFixed(1)+' points since 1997'):'')+'. Tap the county map below for your county\u2019s 25-year history.'};
+    });
+    return out;
+  }
+  fetch('/data/tenure/tenure.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
+    if(!j)return; VD=buildVerdicts(j); render();
+  }).catch(function(){});
+})();
+
 </script>
 </body>
 </html>

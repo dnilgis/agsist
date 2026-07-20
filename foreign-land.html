@@ -95,7 +95,37 @@
     .fl-src a{color:#d4a23f}
     .fl-2col{display:grid;grid-template-columns:1fr 1fr;gap:26px}
     @media (max-width:820px){.fl-2col{grid-template-columns:1fr}}
-  </style>
+  
+    /* verdict module (shared pattern with /conditions) */
+    .vp-ver{background:#101415;border:1px solid #1a1f20;border-radius:14px;padding:20px 24px;margin:14px 0;display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+    .vp-ver select{background:#0a0c0d;border:1px solid #2a3133;color:#e6ebe9;border-radius:8px;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:.95rem}
+    .vp-big{font-family:'JetBrains Mono',monospace;font-size:4rem;font-weight:800;line-height:1}
+    .vp-word{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;letter-spacing:.05em}
+    .vp-sent{font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px}
+    .vp-geo{font-size:.66rem;color:#5a6467;font-family:'JetBrains Mono',monospace;margin-top:6px}
+    .vp-maplab{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.1em;color:#8a948f;text-transform:uppercase;margin:16px 0 10px}
+    .vp-grid{position:relative;width:840px;height:560px;margin:0 auto;max-width:100%}
+    .vp-tile{position:absolute;width:64px;height:64px;border-radius:9px;padding:10px 9px;box-sizing:border-box;cursor:pointer;transition:transform .08s;left:calc(var(--gc)*70px - 70px);top:calc(var(--gr)*70px - 70px)}
+    .vp-tile:hover{transform:scale(1.12);z-index:2;outline:2px solid #d4a23f}
+    .vp-tile.sel{outline:2px solid #d4a23f}
+    .vp-tile.dim{background:#101415;border:1px dashed #1a1f20;opacity:.45;cursor:default}
+    .vp-tst{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:.92rem;color:#e6ebe9}
+    .vp-tge{font-family:'JetBrains Mono',monospace;font-size:.98rem;font-weight:700;margin-top:2px;color:#e6ebe9}
+    .vp-leg{display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:#8a948f;flex-wrap:wrap}
+    .vp-leg span b{display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+    @media (max-width:900px){
+      .vp-grid{width:100%;height:auto;display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+      .vp-tile{position:static;width:auto;height:auto;aspect-ratio:1;padding:0;border-radius:5px;display:flex;align-items:center;justify-content:center;grid-column:var(--gc);grid-row:var(--gr)}
+      .vp-tile .vp-tge{display:none}
+      .vp-tile .vp-tst{font-size:.56rem}
+      .vp-tile:hover{transform:none}
+      .vp-ver{display:block;padding:16px 18px}
+      .vp-big{font-size:3.1rem;display:inline-block;vertical-align:middle;margin-right:12px}
+      .vp-word{font-size:1.02rem;display:inline-block;vertical-align:middle}
+      .vp-sent{font-size:.9rem;margin-top:10px}
+      .vp-ver select{margin-bottom:10px}
+    }
+</style>
 </head>
 <body>
 <div id="site-header"></div>
@@ -108,6 +138,15 @@
   </header>
 
   <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here cares who owns the ground &mdash; one category-exclusive slot. <a href="/sponsor?slot=foreign-land&amp;utm_source=foreign-land&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <section class="vp-ver" aria-live="polite">
+    <div><select id="vp-sel" aria-label="Pick a state"></select><div class="vp-geo" id="vp-geo"></div></div>
+    <div class="vp-big" id="vp-big">&hellip;</div>
+    <div><div class="vp-word" id="vp-word"></div><div class="vp-sent" id="vp-sent">Loading&hellip;</div></div>
+  </section>
+  <div class="vp-maplab">Foreign-held agricultural acres by state &mdash; tap a state</div>
+  <div class="vp-grid" id="vp-grid"></div>
+  <div class="vp-leg"><span><b style="background:#c94b42"></b>most acres</span><span><b style="background:#a8823c"></b>middle</span><span><b style="background:#3f7a58"></b>least</span><span><b style="background:#14181a;border:1px dashed #2a3133"></b>no data</span></div>
+
 
   <section class="fl-panel" aria-labelledby="fl-map-t">
     <div class="fl-panel-hd"><span class="fl-panel-t" id="fl-map-t">Foreign-held agricultural acres, by county</span></div>
@@ -365,6 +404,75 @@
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
+</script>
+<script>
+
+(function(){
+  var TILE={"AK":[1,1],"ME":[12,1],"VT":[11,2],"NH":[12,2],"WA":[2,3],"MT":[3,3],"ND":[4,3],"SD":[5,3],"MN":[6,3],"WI":[7,3],"MI":[8,3],"NY":[10,3],"MA":[11,3],"RI":[12,3],"OR":[2,4],"ID":[3,4],"WY":[4,4],"NE":[5,4],"IA":[6,4],"IL":[7,4],"IN":[8,4],"OH":[9,4],"PA":[10,4],"NJ":[11,4],"CT":[12,4],"CA":[2,5],"NV":[3,5],"UT":[4,5],"CO":[5,5],"KS":[6,5],"MO":[7,5],"KY":[8,5],"WV":[9,5],"VA":[10,5],"MD":[11,5],"DE":[12,5],"AZ":[3,6],"NM":[4,6],"OK":[5,6],"AR":[6,6],"TN":[7,6],"NC":[8,6],"SC":[9,6],"TX":[5,7],"LA":[6,7],"MS":[7,7],"AL":[8,7],"GA":[9,7],"HI":[1,8],"FL":[10,8]}, F2A={"alaska":"AK","alabama":"AL","arkansas":"AR","arizona":"AZ","california":"CA","colorado":"CO","connecticut":"CT","delaware":"DE","florida":"FL","georgia":"GA","hawaii":"HI","iowa":"IA","idaho":"ID","illinois":"IL","indiana":"IN","kansas":"KS","kentucky":"KY","louisiana":"LA","massachusetts":"MA","maryland":"MD","maine":"ME","michigan":"MI","minnesota":"MN","missouri":"MO","mississippi":"MS","montana":"MT","north carolina":"NC","north dakota":"ND","nebraska":"NE","new hampshire":"NH","new jersey":"NJ","new mexico":"NM","nevada":"NV","new york":"NY","ohio":"OH","oklahoma":"OK","oregon":"OR","pennsylvania":"PA","rhode island":"RI","south carolina":"SC","south dakota":"SD","tennessee":"TN","texas":"TX","utah":"UT","virginia":"VA","vermont":"VT","washington":"WA","wisconsin":"WI","west virginia":"WV","wyoming":"WY"};
+  window.__A2F={"AL":"Alabama","AR":"Arkansas","AZ":"Arizona","CA":"California","CO":"Colorado","CT":"Connecticut","DE":"Delaware","FL":"Florida","GA":"Georgia","IA":"Iowa","ID":"Idaho","IL":"Illinois","IN":"Indiana","KS":"Kansas","KY":"Kentucky","LA":"Louisiana","MA":"Massachusetts","MD":"Maryland","ME":"Maine","MI":"Michigan","MN":"Minnesota","MO":"Missouri","MS":"Mississippi","MT":"Montana","NC":"North Carolina","ND":"North Dakota","NE":"Nebraska","NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico","NV":"Nevada","NY":"New York","OH":"Ohio","OK":"Oklahoma","OR":"Oregon","PA":"Pennsylvania","SC":"South Carolina","SD":"South Dakota","TN":"Tennessee","TX":"Texas","UT":"Utah","VA":"Virginia","VT":"Vermont","WA":"Washington","WI":"Wisconsin","WV":"West Virginia","WY":"Wyoming"};
+  var picked=null, geoNote='', VD=null;
+  function geoPick(av){ try{ var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}');
+    var ab=F2A[String(l.state||'').toLowerCase()]||(String(l.state||'').length===2?String(l.state).toUpperCase():null);
+    if(ab&&av[ab]){ geoNote='auto-set from your location'; return ab; } }catch(e){}
+    return av.IA?'IA':Object.keys(av)[0]; }
+  function el(id){return document.getElementById(id);}
+  function render(){
+    if(!VD)return;
+    if(!picked||!VD[picked]) picked=geoPick(VD);
+    var sl=el('vp-sel');
+    sl.innerHTML=Object.keys(VD).sort().map(function(a){return '<option value="'+a+'"'+(a===picked?' selected':'')+'>'+(__A2F[a]||a)+'</option>';}).join('');
+    el('vp-geo').textContent=geoNote;
+    var d=VD[picked];
+    el('vp-big').textContent=d.big; el('vp-big').style.color=d.col;
+    el('vp-word').textContent=d.word; el('vp-word').style.color=d.col;
+    el('vp-sent').innerHTML=d.sent;
+    var g=el('vp-grid');
+    if(g){ var h='';
+      Object.keys(TILE).forEach(function(ab){ var t=TILE[ab], s=VD[ab];
+        if(s){ h+='<div class="vp-tile'+(ab===picked?' sel':'')+'" data-st="'+ab+'" style="--gc:'+t[0]+';--gr:'+t[1]+';background:'+s.tile+'"><div class="vp-tst">'+ab+'</div><div class="vp-tge">'+s.tval+'</div></div>'; }
+        else { h+='<div class="vp-tile dim" style="--gc:'+t[0]+';--gr:'+t[1]+'"><div class="vp-tst">'+ab+'</div></div>'; } });
+      g.innerHTML=h; }
+  }
+  document.addEventListener('click',function(e){ var t=e.target.closest('.vp-tile[data-st]');
+    if(t){ picked=t.dataset.st; geoNote=''; render(); try{gaEvent('verdict_tap',{st:picked,page:location.pathname});}catch(x){} } });
+  document.addEventListener('change',function(e){ if(e.target&&e.target.id==='vp-sel'){ picked=e.target.value; geoNote=''; render(); } });
+  function buildVerdicts(j){
+    var by={}, out={};
+    var N2A={}; Object.keys(__A2F).forEach(function(a){ N2A[__A2F[a].toLowerCase()]=a; });
+    var cs=j.counties||j;
+    Object.keys(cs).forEach(function(f){
+      var c=cs[f]; if(!c||!c.st||!c.y)return;
+      var ab=N2A[String(c.st).toLowerCase()]||c.st;
+      var b=by[ab]=by[ab]||{};
+      Object.keys(c.y).forEach(function(y){ b[y]=(b[y]||0)+(+c.y[y]||0); });
+    });
+    var latestYr=0;
+    Object.keys(by).forEach(function(st){ Object.keys(by[st]).forEach(function(y){ if(+y>latestYr)latestYr=+y; }); });
+    var vals=[];
+    Object.keys(by).forEach(function(st){ var v=by[st][latestYr]; if(v)vals.push(v); });
+    vals.sort(function(a,b){return a-b;});
+    function q(v){ var i=0; while(i<vals.length&&vals[i]<v)i++; return i/vals.length; }
+    Object.keys(by).forEach(function(st){
+      if(!__A2F[st])return;
+      var cur=by[st][latestYr]||0, base=by[st]['2015']||by[st][Object.keys(by[st]).sort()[0]]||0;
+      var ch=base?100*(cur-base)/base:null;
+      var word,c;
+      if(ch!=null&&ch>=50){word='GROWING FAST';c='#e0685f';}
+      else if(ch!=null&&ch>=10){word='GROWING';c='#d4a23f';}
+      else if(ch!=null&&ch>-10){word='HOLDING STEADY';c='#8a948f';}
+      else {word='SHRINKING';c='#5fc28a';}
+      var qq=q(cur), t=qq>=0.8?'#c94b42':(qq>=0.6?'#b85a4a':(qq>=0.4?'#a8823c':(qq>=0.2?'#3a4144':'#3f7a58')));
+      var lab=cur>=1e6?(cur/1e6).toFixed(1)+'M':Math.round(cur/1e3)+'k';
+      out[st]={big:lab,word:word,col:c,tile:t,tval:lab,
+        sent:'Foreign entities report holding <b style="color:'+c+'">'+lab+' acres</b> of '+(__A2F[st]||st)+' agricultural land ('+latestYr+' AFIDA filings)'+(ch!=null?(' \u2014 '+(ch>=0?'up ':'down ')+Math.abs(ch).toFixed(0)+'\u0025 since '+(by[st]['2015']?'2015':'the earliest filing')):'')+'. Tap the county map below to see exactly where, and whose.'};
+    });
+    return out;
+  }
+  fetch('/data/afida/county.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
+    if(!j)return; VD=buildVerdicts(j); render();
+  }).catch(function(){});
+})();
+
 </script>
 </body>
 </html>

@@ -17,7 +17,7 @@
 <link rel="manifest"                            href="/manifest.json">
 
 <title>US Drought Monitor — Weekly Map &amp; Ag Impact | AGSIST</title>
-<meta name="description" content="Live US Drought Monitor map updated weekly. See drought conditions affecting corn, soybean, and wheat production regions. National, regional, and state views with agriculture impact assessment.">
+<meta name="description" content="This week's US Drought Monitor mapped with county detail and week-over-week change — is your area getting better or worse. Free.">
 <meta name="keywords"    content="US drought monitor, drought map, corn drought conditions, soybean drought, wheat drought, agricultural drought, drought monitor USDA, drought impact on crops, farm drought conditions">
 <meta name="author"      content="Sigurd Lindquist">
 <meta name="robots"      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -216,6 +216,7 @@ button,a,[role="button"] { touch-action: manipulation; }
   <div class="dm-hero">
     <div class="dm-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map"/></svg> Drought Intelligence · Updated Weekly</div>
     <h1>US Drought Monitor</h1>
+<style>.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone here is watching moisture &mdash; one category-exclusive slot. <a href="/sponsor?slot=drought&amp;utm_source=drought&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
     <p>Weekly drought conditions for US crop regions. Select national, state, or regional views. Published every Thursday by the National Drought Mitigation Center, USDA, and NOAA.</p>
     <div class="dm-hero-meta">
       <div class="dm-updated">Source: droughtmonitor.unl.edu · Updated Thursdays by 8:30 AM ET<span id="dm-valid"></span></div><script>fetch("/data/outlooks/manifest.json").then(function(r){return r.json()}).then(function(m){var d=m&&m.usdm_latest&&m.usdm_latest.data_valid||m&&m.data_valid;if(d)document.getElementById("dm-valid").textContent=" · map valid "+d;}).catch(function(){});</script>

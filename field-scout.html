@@ -138,7 +138,7 @@
     .fs-invite-off .fs-invite{ display:none!important; }
     @keyframes fsRise{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
     /* action dock */
-    .fs-dock{ position:absolute; left:50%; bottom:14px; transform:translateX(-50%); z-index:600; display:flex; gap:7px; flex-wrap:wrap; justify-content:center; max-width:94%; }
+    .fs-dock{ position:absolute; left:50%; bottom:14px; transform:translateX(-50%); z-index:600; display:flex; gap:7px; flex-wrap:wrap; justify-content:center; width:max-content; max-width:94%; }
     .fs-dock .fs-btn:not(.fs-btn--primary){ background:rgba(13,18,17,.88); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:0 2px 12px rgba(0,0,0,.45); }
     .fs-dock .fs-btn--primary{ background:var(--brand); box-shadow:0 2px 14px rgba(0,0,0,.45); }
     /* acre-preset sizer for the dropped field box — 20/40/80/160, real parcel shapes */
@@ -526,6 +526,31 @@
 .fs-god-slider b{font-size:.9rem}
 .fs-god-chip{min-height:44px}
 @media(max-width:560px){.fs-vigor-word{font-size:1.1rem}.fs-god-slider{min-width:100%}}
+
+    /* ── mobile overhaul (Sig, 2026-07-19): bigger map, fewer buttons, safe taps ── */
+    .fs-ghostbar{position:absolute;left:50%;bottom:74px;transform:translateX(-50%);z-index:650;display:flex;gap:8px;align-items:center;background:rgba(11,15,14,.95);border:1px solid var(--brand,#daa520);border-radius:12px;padding:9px 12px;box-shadow:0 4px 18px rgba(0,0,0,.55);font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text)}
+    .fs-ghostbar .fs-ghost-yes{background:var(--brand,#daa520);color:#0a1206;border:none;border-radius:8px;font-family:inherit;font-weight:800;font-size:.82rem;padding:.6rem .9rem;cursor:pointer;min-height:44px}
+    .fs-ghostbar .fs-ghost-no{background:transparent;color:var(--text-dim);border:1px solid var(--line-2,#2a3133);border-radius:8px;font-size:1rem;padding:.5rem .7rem;cursor:pointer;min-height:44px}
+    .leaflet-touch .leaflet-div-icon.leaflet-editing-icon{width:24px!important;height:24px!important;margin-left:-12px!important;margin-top:-12px!important;border-radius:50%;border:2px solid #daa520}
+    .fs-mob-layers{display:none}
+    @media(max-width:900px){
+      .fs-stage{height:calc(100dvh - 112px);min-height:480px}
+      #fs-map{height:100%}
+      /* one Layers button instead of basemap+chips riding the map */
+      .fs-mob-layers{display:inline-flex;align-items:center;gap:.4rem;background:rgba(13,18,17,.9);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;padding:.55rem .8rem;min-height:42px;cursor:pointer}
+      .fs-cmd-right{display:none;position:absolute;top:104px;right:12px;z-index:640;flex-direction:column;gap:6px;background:rgba(11,15,14,.95);border:1px solid var(--line-2,#2a3133);border-radius:12px;padding:10px;box-shadow:0 6px 22px rgba(0,0,0,.5)}
+      .fs-cmd-right.open{display:flex}
+      .fs-cmd-right .fs-basemap{position:static;flex-direction:row}
+      /* the safe tap replaces the pin button on touch — one less thing on screen */
+      #fs-pin{display:none}
+      .fs-dock{bottom:12px;gap:6px}
+      .fs-dock .fs-btn{padding:.55rem .7rem;font-size:.76rem;min-height:44px}
+      .fs-invite-h{font-size:1.15rem}
+      .fs-invite-p{font-size:12.5px;max-width:300px}
+      .fs-invite-p+.fs-invite-p{display:none}
+      .fs-invite-glyph{width:36px;height:36px;margin-bottom:10px}
+      .fs-tracebar button{min-height:46px;font-size:.85rem;padding:.6rem 1rem}
+    }
 </style>
 
   <script type="application/ld+json">
@@ -559,6 +584,7 @@
 
   <main id="main" tabindex="-1">
     <h1 class="fs-sr-h1">Field Scout &mdash; draw a field and get its soil, crop rotation, weather, drought history, and local cash bids.</h1>
+<style>.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here is standing on ground they care about &mdash; one category-exclusive slot. <a href="/sponsor?slot=field-scout&amp;utm_source=field-scout&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
     <div class="fs-wrap">
       <nav class="fs-bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> &rsaquo; <a href="/tools">Tools</a> &rsaquo; Field Scout</nav>
 
@@ -582,7 +608,8 @@
                 <input id="fs-addr" type="text" placeholder="Search address, town, or ZIP&hellip;" aria-label="Search location" autocomplete="off">
                 <button id="fs-addr-go" type="button">Go</button>
               </div>
-              <div class="fs-cmd-right">
+              <button class="fs-mob-layers" id="fs-mob-layers" type="button" aria-expanded="false"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 2 7l10 5 10-5-10-5zM2 12l10 5 10-5M2 17l10 5 10-5"/></svg>Layers</button>
+              <div class="fs-cmd-right" id="fs-cmd-right">
                 <div class="fs-basemap" role="group" aria-label="Basemap">
                   <button id="fs-bm-sat" class="on" type="button">Satellite</button>
                   <button id="fs-bm-map" type="button">Map</button>
