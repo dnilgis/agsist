@@ -1,0 +1,53 @@
+# Fertilizer price refresh — Sig's self-serve form.
+# Actions tab > "Fertilizer — update dealer prices" > Run workflow > type the
+# new $/ton numbers (leave a box BLANK for "no change") > Run.
+# The script shifts every product's `prev` to the last sheet, stamps the date,
+# and refuses probable typos (>60% moves) unless force=yes.
+name: "Fertilizer — update dealer prices"
+
+on:
+  workflow_dispatch:
+    inputs:
+      urea:   { description: "Urea 46-0-0 $/ton (blank = no change)",        required: false }
+      potash: { description: "Potash 0-0-60 $/ton",                          required: false }
+      map_s:  { description: "MAP + Sulfur 12-40-0-10S $/ton",               required: false }
+      ams:    { description: "Amm. Sulfate 21-0-0-24S $/ton",                required: false }
+      kmag:   { description: "K-Mag Premium $/ton",                          required: false }
+      lime:   { description: "Pell Lime $/ton",                              required: false }
+      force:  { description: "Type yes ONLY to override the typo guard",     required: false, default: "" }
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Selftest gate
+        run: python3 scripts/update_fertilizer.py --selftest
+
+      - name: Apply prices
+        run: |
+          set -euo pipefail
+          ARGS=""
+          [ -n "${{ inputs.urea }}"   ] && ARGS="$ARGS --urea ${{ inputs.urea }}"
+          [ -n "${{ inputs.potash }}" ] && ARGS="$ARGS --potash ${{ inputs.potash }}"
+          [ -n "${{ inputs.map_s }}"  ] && ARGS="$ARGS --map-s ${{ inputs.map_s }}"
+          [ -n "${{ inputs.ams }}"    ] && ARGS="$ARGS --ams ${{ inputs.ams }}"
+          [ -n "${{ inputs.kmag }}"   ] && ARGS="$ARGS --kmag ${{ inputs.kmag }}"
+          [ -n "${{ inputs.lime }}"   ] && ARGS="$ARGS --lime ${{ inputs.lime }}"
+          [ "${{ inputs.force }}" = "yes" ] && ARGS="$ARGS --force"
+          if [ -z "$ARGS" ]; then echo "No prices entered — nothing to do."; exit 1; fi
+          python3 scripts/update_fertilizer.py $ARGS
+
+      - name: Commit
+        run: |
+          git config user.name  "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add data/fertilizer.json
+          git diff --cached --quiet && { echo "no change"; exit 0; }
+          git commit -m "🧪 Fertilizer prices — $(date -u +'%Y-%m-%d')"
+          git pull --rebase --autostash origin main || true
+          git push origin main
