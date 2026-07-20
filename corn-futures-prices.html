@@ -41,7 +41,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 .ph-icon{font-size:2.6rem;flex-shrink:0}.ph-info h1{font-size:1.05rem;color:var(--text);margin:0 0 2px 0}.ph-exch{font-size:.7rem;color:var(--text-dim)}
 .ph-price{margin-left:auto;text-align:right}.ph-val{font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:700;color:var(--text);line-height:1}.ph-unit{font-size:.72rem;color:var(--text-dim)}.ph-chg{font-size:.88rem;font-weight:700;margin-top:2px}
 .up{color:var(--green)}.dn{color:var(--red)}
-.ps{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--text-dim);margin-bottom:10px}
+.ps{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.7rem;color:var(--text-dim);margin-bottom:10px}
 .ps-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
@@ -216,7 +216,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 
 
 /* NEW v13: Market session status badge */
-.session-badge{display:inline-flex;align-items:center;gap:6px;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:4px 9px;border-radius:12px;margin-left:auto;font-family:'JetBrains Mono',monospace}
+.session-badge{display:inline-flex;align-items:center;gap:6px;overflow-wrap:normal;word-break:keep-all;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:4px 9px;border-radius:12px;margin-left:auto;font-family:'JetBrains Mono',monospace}
 .session-badge .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .session-badge.open{background:rgba(58,139,60,.15);color:var(--green);border:1px solid rgba(58,139,60,.4)}
 .session-badge.open .dot{background:var(--green);animation:pulse 2s infinite}
@@ -359,6 +359,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
   <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol></defs></svg>
 <style>.ic{width:1em;height:1em;display:inline-block;vertical-align:-0.14em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}.sc-rp{margin-top:8px;padding:9px 11px;border:1px solid var(--border,#2a3324);border-left:3px solid var(--brand,#d4a23f);border-radius:8px;background:rgba(212,162,63,.06);font-size:.82rem;line-height:1.5;color:var(--text-dim,#9bb0a3)}.sc-rp b,.sc-rp strong{color:var(--text,#e7ece8)}.sc-rp .rp-gap{font-weight:700}</style>
 <main id="main" class="fut" tabindex="-1">
+<style>.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Corn growers check this price all session long — one category-exclusive slot. <a href="/sponsor?slot=corn-futures-prices&amp;utm_source=corn-futures-prices&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   <nav class="bc" aria-label="Breadcrumb"><a href="/">Home</a> → Corn Futures Prices</nav>
   <div class="brief-strip" id="brief-strip" style="display:none">
     <div class="brief-icon"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg></div>
@@ -1796,7 +1797,14 @@ fetch('/data/prices.json',{cache:'no-store'})
       var statusTmr=document.getElementById('status-timer');
       var statusOld=document.getElementById('status');
       if(statusTmr&&statusOld){
-        window.agsistTimer.set(statusTmr,{mode:'live',fetched:data.fetched,interval:30,label:'Markets'});
+        /* Weekend/evening honesty: a closed market isn't "DELAYED" — quotes from
+           Friday's close are exactly what they should be. (fixed 2026-07-20) */
+        var __sess=(typeof computeMarketSession==='function')?computeMarketSession():null;
+        if(__sess&&__sess.state==='closed'){
+          window.agsistTimer.set(statusTmr,{mode:'since',target:data.fetched,label:'Market closed \u00b7 quotes from',showNext:false});
+        }else{
+          window.agsistTimer.set(statusTmr,{mode:'live',fetched:data.fetched,interval:30,label:'Markets'});
+        }
         statusTmr.style.display='inline-flex';
         statusOld.style.display='none';
       }

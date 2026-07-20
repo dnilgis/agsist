@@ -59,7 +59,7 @@
 
     .sc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;margin:0 0 1.8rem}
     .sc-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;text-align:center}
-    .sc-stat-num{font-family:var(--font-mono);font-size:2rem;font-weight:700;color:var(--gold);line-height:1.1}
+    .sc-stat-num{white-space:nowrap;font-family:var(--font-mono);font-size:clamp(1.35rem,5.2vw,2rem);font-weight:700;color:var(--gold);line-height:1.1}
     .sc-stat-num.good{color:var(--green)}
     .sc-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-top:.35rem}
 
@@ -95,6 +95,7 @@
   <div id="site-header"></div>
 
   <main id="main" tabindex="-1">
+<style>.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every call graded in public, wins and misses alike — one category-exclusive slot next to the record. <a href="/sponsor?slot=scorecard&amp;utm_source=scorecard&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
     <div class="info-page">
 
       <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> &rsaquo; Call Scorecard</nav>
@@ -105,7 +106,7 @@
       <div class="sc-stats" id="sc-stats" aria-live="polite">
         <div class="sc-stat"><div class="sc-stat-num good" id="sc-hit">&mdash;</div><div class="sc-stat-lbl">Hit rate</div></div>
         <div class="sc-stat"><div class="sc-stat-num" id="sc-record">&mdash;</div><div class="sc-stat-lbl">W &ndash; L &ndash; pending</div></div>
-        <div class="sc-stat"><div class="sc-stat-num" id="sc-streak">&mdash;</div><div class="sc-stat-lbl">Current streak</div></div>
+        <div class="sc-stat"><div class="sc-stat-num" id="sc-streak">&mdash;</div><div class="sc-stat-lbl">Current win streak</div></div>
         <div class="sc-stat"><div class="sc-stat-num" id="sc-total">&mdash;</div><div class="sc-stat-lbl">Calls graded</div></div>
       </div>
 
@@ -151,7 +152,7 @@
         var rec=document.getElementById('sc-record');
         if(rec)rec.textContent=(d.played_out||0)+'\u2013'+(d.didnt||0)+'\u2013'+(d.pending||0);
         var st=document.getElementById('sc-streak');
-        if(st)st.textContent=(d.current_streak||0)+(d.current_streak===1?' call':' calls');
+        if(st){var _cs=d.current_streak||0;st.textContent=_cs>0?(_cs+(_cs===1?' win':' wins')):'none';if(_cs===0)st.style.fontSize='1.6rem';} /* '0 calls' read like a bug; a cold streak is 'none' (2026-07-20) */
         var tot=document.getElementById('sc-total');
         if(tot)tot.textContent=(d.played_out||0)+(d.didnt||0);
 
