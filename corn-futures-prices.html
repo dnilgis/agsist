@@ -40,6 +40,8 @@ button,a,[role="button"]{touch-action:manipulation;}
 .ph{background:linear-gradient(135deg,var(--surface) 0%,rgba(230,176,66,.05) 100%);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:8px;display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
 .ph-icon{font-size:2.6rem;flex-shrink:0}.ph-info h1{font-size:1.05rem;color:var(--text);margin:0 0 2px 0}.ph-exch{font-size:.7rem;color:var(--text-dim)}
 .ph-price{margin-left:auto;text-align:right}.ph-val{font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:700;color:var(--text);line-height:1}.ph-unit{font-size:.72rem;color:var(--text-dim)}.ph-chg{font-size:.88rem;font-weight:700;margin-top:2px}
+.ph-chg.roll,.roll{color:var(--gold,#d4a23f)}
+.roll-note{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--gold,#d4a23f);border:1px solid rgba(212,162,63,.35);border-radius:8px;padding:.4rem .6rem;margin:.4rem 0 0;line-height:1.5}
 .up{color:var(--green)}.dn{color:var(--red)}
 .ps{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.7rem;color:var(--text-dim);margin-bottom:10px}
 .ps-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
@@ -1737,20 +1739,20 @@ document.addEventListener('DOMContentLoaded',function(){renderMarketSession();se
 function grain$(v){return '$'+(v/100).toFixed(2);}
 function raw$(v,d){return v.toFixed(d||2);}
 function ord(n){var s=['th','st','nd','rd'],v=n%100;return s[(v-20)%10]||s[v]||s[0];}
-function chgTxt(net,pct){if(net==null)return{t:'',c:''};var a=net>=0?'▲':'▼';var s=net>=0?'+':'';return{t:a+' '+s+pct.toFixed(2)+'%',c:net>=0?'up':'dn'};}
-function setEl(id,txt,cls){var el=document.getElementById(id);if(!el)return;el.textContent=txt;el.classList.remove('sk');if(cls){el.classList.remove('up','dn');el.classList.add(cls);}}
+function chgTxt(net,pct,roll){if(roll)return{t:'contract roll',c:'roll'};if(net==null)return{t:'',c:''};var a=net>=0?'▲':'▼';var s=net>=0?'+':'';return{t:a+' '+s+pct.toFixed(2)+'%',c:net>=0?'up':'dn'};}/* roll: the front month just switched contracts — the day-change would compare two different months, so it's labeled, not shown (2026-07-20) */
+function setEl(id,txt,cls){var el=document.getElementById(id);if(!el)return;el.textContent=txt;el.classList.remove('sk');if(cls){el.classList.remove('up','dn','roll');el.classList.add(cls);}}
 
 // PRICES: fetched immediately, unconditional, independent of TradingView
 fetch('/data/prices.json',{cache:'no-store'})
   .then(function(r){return r.json();})
   .then(function(data){
     var q=data.quotes||{};
-    [{key:'corn',p:'p-corn',c:'c-corn',g:true},{key:'corn-dec',p:'p-corndec',c:'c-corndec',g:true},{key:'beans',p:'p-beans',c:'c-beans',g:true},{key:'wheat',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false}].forEach(function(m){var d=q[m.key];if(!d||d.close==null)return;setEl(m.p,m.g?grain$(d.close):raw$(d.close));var ch=chgTxt(d.netChange,d.pctChange);setEl(m.c,ch.t,ch.c);});
+    [{key:'corn',p:'p-corn',c:'c-corn',g:true},{key:'corn-dec',p:'p-corndec',c:'c-corndec',g:true},{key:'beans',p:'p-beans',c:'c-beans',g:true},{key:'wheat',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false}].forEach(function(m){var d=q[m.key];if(!d||d.close==null)return;setEl(m.p,m.g?grain$(d.close):raw$(d.close));var ch=chgTxt(d.netChange,d.pctChange,d.roll);setEl(m.c,ch.t,ch.c);});
 
     var corn=q.corn;
     if(corn&&corn.close!=null){
       setEl('hero-price',grain$(corn.close));
-      var hc=chgTxt(corn.netChange,corn.pctChange);setEl('hero-chg',hc.t,hc.c);
+      var hc=chgTxt(corn.netChange,corn.pctChange,corn.roll);setEl('hero-chg',hc.t,hc.c);if(corn.roll){var __rn=document.querySelector('.px-seed-note');if(__rn){var __d=document.createElement('div');__d.className='roll-note';__d.innerHTML='Front-month contract just rolled to the next month — day-change comparisons span two contracts until the new month has a clean close.';__rn.parentNode.insertBefore(__d,__rn);}}
       if(corn.wk52_lo!=null&&corn.wk52_hi!=null){
         var lo=corn.wk52_lo,hi=corn.wk52_hi,cu=corn.close,rp=Math.min(100,Math.max(0,(cu-lo)/(hi-lo)*100));
         document.getElementById('rng-lo').textContent=grain$(lo);

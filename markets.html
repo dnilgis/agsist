@@ -152,10 +152,13 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
   function dollar$(v,d){return v!=null?'$'+(+v).toFixed(d||2):'—';}
   function chgStr(net,pct){if(net==null)return'—';var a=net>0?'▲':net<0?'▼':'—';var s=net>=0?'+':'';return a+' '+s+(+pct).toFixed(2)+'%';}
   function chgCls(net){return net>0?'up':net<0?'dn':'nc';}
-  function setEl(pEl,cEl,val,isGrain,net,pct){
+  function setEl(pEl,cEl,val,isGrain,net,pct,roll){
     var pe=document.getElementById(pEl),ce=document.getElementById(cEl);
     if(pe&&val!=null)pe.textContent=isGrain?grain$(val):dollar$(val);
-    if(ce&&net!=null){ce.textContent=chgStr(net,pct);ce.className='pc-chg-val '+chgCls(net);}
+    /* roll: front month just switched contracts — day-change would span two
+       different months, so label it instead of printing a phantom move */
+    if(ce&&roll){ce.textContent='contract roll';ce.className='pc-chg-val roll';ce.style.color='var(--gold,#d4a23f)';return;}
+    if(ce&&net!=null){ce.textContent=chgStr(net,pct);ce.className='pc-chg-val '+chgCls(net);ce.style.color='';}
   }
   function setRange(sym,key,q){
     var d=q[sym];if(!d||d.close==null||d.wk52_lo==null)return;
@@ -191,7 +194,7 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
     ];
     map.forEach(function(m){
       var d=q[m.key];if(!d||d.close==null)return;
-      setEl(m.p,m.c,d.close,m.grain,d.netChange,d.pctChange);
+      setEl(m.p,m.c,d.close,m.grain,d.netChange,d.pctChange,d.roll);
     });
     setRange('corn','corn-near',q);
     setRange('beans','bean-near',q);
