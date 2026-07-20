@@ -64,6 +64,17 @@ NOTICE = {
 }
 
 
+
+TILE = {"AK":(1,1),"ME":(12,1),"VT":(11,2),"NH":(12,2),"WA":(2,3),"MT":(3,3),"ND":(4,3),"SD":(5,3),"MN":(6,3),"WI":(7,3),"MI":(8,3),"NY":(10,3),"MA":(11,3),"RI":(12,3),"OR":(2,4),"ID":(3,4),"WY":(4,4),"NE":(5,4),"IA":(6,4),"IL":(7,4),"IN":(8,4),"OH":(9,4),"PA":(10,4),"NJ":(11,4),"CT":(12,4),"CA":(2,5),"NV":(3,5),"UT":(4,5),"CO":(5,5),"KS":(6,5),"MO":(7,5),"KY":(8,5),"WV":(9,5),"VA":(10,5),"MD":(11,5),"DE":(12,5),"AZ":(3,6),"NM":(4,6),"OK":(5,6),"AR":(6,6),"TN":(7,6),"NC":(8,6),"SC":(9,6),"TX":(5,7),"LA":(6,7),"MS":(7,7),"AL":(8,7),"GA":(9,7),"HI":(1,8),"FL":(10,8)}
+
+def rent_verdict(yoy):
+    if yoy is None:  return ("NOT ENOUGH MATCHED COUNTIES", "#8a948f")
+    if yoy >= 3:     return ("RENT ROSE", "#e0685f")
+    if yoy >= 0.5:   return ("RENT EDGED UP", "#d4a23f")
+    if yoy > -0.5:   return ("RENT HELD FLAT", "#8a948f")
+    if yoy > -3:     return ("RENT EASED", "#5fc28a")
+    return ("RENT FELL", "#5fc28a")
+
 def slug(name):
     return name.lower().replace(" ", "-")
 
@@ -214,6 +225,19 @@ def head(title, desc, path, jsonld):
     .ag-sponsor-ribbon .ag-sponsor-tag{{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}}
     .ag-sponsor-ribbon a{{color:#d4a23f}}
     h1{{font-size:1.55rem;margin:14px 0 4px}} h2{{font-size:1.12rem;margin:26px 0 6px}}
+    .rh-grid{{position:relative;width:840px;height:560px;margin:0 auto;max-width:100%}}
+    .rh-tile{{position:absolute;width:64px;height:64px;border-radius:9px;padding:9px;box-sizing:border-box;text-decoration:none;display:block;left:calc(var(--gc)*70px - 70px);top:calc(var(--gr)*70px - 70px)}}
+    .rh-tile:hover{{outline:2px solid #d4a23f;transform:scale(1.1);z-index:2}}
+    .rh-tile.dim{{background:#101415;border:1px dashed #1a1f20;opacity:.45}}
+    .rh-tst{{display:block;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:.92rem;color:#e6ebe9}}
+    .rh-tge{{display:block;font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;margin-top:3px;color:#e6ebe9}}
+    @media (max-width:900px){{
+      .rh-grid{{width:100%;height:auto;display:grid;grid-template-columns:repeat(12,1fr);gap:3px}}
+      .rh-tile{{position:static;width:auto;height:auto;aspect-ratio:1;padding:0;border-radius:5px;display:flex;align-items:center;justify-content:center}}
+      .rh-tile{{grid-column:var(--gc);grid-row:var(--gr)}}
+      .rh-tge{{display:none}}
+      .rh-tst{{font-size:.56rem}}
+    }}
     .sub{{color:#8a948f;font-size:.9rem;line-height:1.6}}
   </style>
 </head>"""
@@ -376,7 +400,15 @@ def build_state_page(st, d, s, all_states):
     if len(s["have_types"]) > 1:
         other_types = (" Columns cover " + ", ".join(TYPE_LABEL[t] for t in s["have_types"])
                        + f"; state stats above use {plabel} (the most-published type here).")
+    vw, vc = rent_verdict(s["yoy"])
     hero = f"""
+  <div style="background:#101415;border:1px solid #1a1f20;border-radius:14px;padding:20px 24px;margin:14px 0;display:flex;gap:22px;flex-wrap:wrap;align-items:center">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:3.6rem;font-weight:800;line-height:1;color:{vc}">{money(s['median'])}</div>
+    <div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:800;letter-spacing:.05em;color:{vc}">{vw}</div>
+      <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median {name} county paid <b style="color:{vc}">{money(s['median'])} an acre</b> for {plabel} in {yr}{f", <b style='color:{vc}'>{'+' if s['yoy']>=0 else ''}{s['yoy']}&#37; vs {yr-1}</b> across the same {s['yoy_n']} counties" if s['yoy'] is not None else ""}. Highest county: {esc(s['hi'][0][0])} at {money(s['hi'][0][1])}. Every county is in the table below.</div>
+    </div>
+  </div>
   <div class="rs-hero">
     <div class="rs-stat"><div class="v">{money(s['median'])}</div><div class="l">median rent /ac &middot; {yr}</div><div class="s">{plabel}, {s['n']} counties</div></div>
     <div class="rs-stat">{delta_html(s['yoy'], s['yoy_n'], f'vs {yr-1}')}</div>
@@ -428,6 +460,25 @@ def build_state_page(st, d, s, all_states):
 
 def build_hub(states, stats, generated):
     yr = max(s["yr"] for s in stats.values())
+    meds = sorted(s2["median"] for s2 in stats.values())
+    def quint_color(v):
+        i = sum(1 for m in meds if m < v) / max(1, len(meds))
+        return "#c94b42" if i >= .8 else ("#b85a4a" if i >= .6 else ("#a8823c" if i >= .4 else ("#3a4144" if i >= .2 else "#3f7a58")))
+    tiles = []
+    for ab, (c, r) in TILE.items():
+        if ab in stats:
+            st2 = stats[ab]
+            tiles.append(f'<a class="rh-tile" href="/rent/{slug(STATE_NAMES[ab])}" style="--gc:{c};--gr:{r};background:{quint_color(st2["median"])}"><span class="rh-tst">{ab}</span><span class="rh-tge">${round(st2["median"]):,}</span></a>')
+        else:
+            tiles.append(f'<div class="rh-tile dim" style="--gc:{c};--gr:{r}"><span class="rh-tst">{ab}</span></div>')
+    tile_html = ('<div style="font-family:\'JetBrains Mono\',monospace;font-size:.66rem;letter-spacing:.1em;color:#8a948f;text-transform:uppercase;margin:16px 0 10px">'
+        f'Median county rent per acre, {yr} &mdash; tap a state for every county</div>'
+        '<div class="rh-grid">' + "".join(tiles) + '</div>'
+        '<div style="display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:#8a948f;flex-wrap:wrap">'
+        '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#c94b42"></b>priciest fifth</span>'
+        '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#a8823c"></b>middle</span>'
+        '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#3f7a58"></b>cheapest fifth</span>'
+        '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#14181a;border:1px dashed #2a3133"></b>no data</span></div>')
     rows = []
     for st in sorted(states, key=lambda s: STATE_NAMES[s]):
         s = stats[st]
@@ -462,6 +513,7 @@ def build_hub(states, stats, generated):
   statutory lease-termination deadline where the state has one.
   <span id="rs-seed"><!--SEED:renthub-->{seed}<!--/SEED--></span></p>
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> The doorway to every county rent rate in America &mdash; one category-exclusive slot. <a href="/sponsor?slot=rent-hub&amp;utm_source=rent-hub&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  {tile_html}
   <table class="rs-t" id="rs-table"><thead><tr><th>State</th><th>Median rent /ac</th><th>YoY</th><th>Counties</th><th>Type</th></tr></thead>
   <tbody>{"".join(rows)}</tbody></table>
   <p class="sub">Medians are of published counties, most-published land type per state (marked). Matched-county
