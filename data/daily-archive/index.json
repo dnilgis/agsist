@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-07-21",
+      "date_display": "Tuesday, July 21, 2026",
+      "headline": "HORMUZ ESCALATES AGAIN; FEEDERS RUN HARD",
+      "teaser": "Hormuz re-escalates, crop conditions improve, and feeders run hard on oversold signals.",
+      "market_mood": "mixed",
+      "surprise_count": 1,
+      "sections": 4,
+      "url": "/daily/2026-07-21",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-20",
       "date_display": "Monday, July 20, 2026",
       "headline": "HOGS RUN 16.9%; CORN BREAKS HARD; HORMUZ ESCALATES",
@@ -1473,6 +1485,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-20T13:11:08.404173+00:00",
-  "count": 130
+  "updated": "2026-07-21T12:26:47.536730+00:00",
+  "count": 131
 }

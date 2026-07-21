@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 20 Jul 2026 13:11:09 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 21 Jul 2026 12:26:48 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>HORMUZ ESCALATES AGAIN; FEEDERS RUN HARD</title>
+      <link>https://agsist.com/daily/2026-07-21</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-21</guid>
+      <pubDate>Tue, 21 Jul 2026 05:00:00 -0600</pubDate>
+      <description>The Strait of Hormuz just got louder. A projectile hit the Kuwaiti tanker Kaifan near Oman this morning, pushing Brent back above $90 and pulling WTI to $82.90, up nearly a dollar from yesterday's close. That's the headline risk, and it's real. Meanwhile, Monday's USDA Crop Progress report told a cleaner crop story than the weather-premium crowd wanted to hear: Iowa corn at 80% good-to-excellent, Nebraska climbing to 65%, soybeans improving across Kansas and Missouri. The weekly thread's core question, whether crop condition data would confirm or undercut the pollination stress premium, got its first answer today. The crops look better than feared.
+A Kuwaiti tanker struck in the Strait this morning sent crude back toward $90 while crop condition upgrades across the Belt quietly undercut the corn weather premium.
+• Feeders Run on Oversold Signals
+• Crude Climbs; Hormuz Re-Escalates
+  → Harvest-season diesel still unhedged: $82.90 is not the ceiling with a fresh tanker strike and U.S.-Iran strikes on nuclear infrastructure overnight. Lock remaining needs today.
+• Crop Conditions Undercut Corn Premium
+Read more: https://agsist.com/daily/2026-07-21</description>
+    </item>
     <item>
       <title>HOGS RUN 16.9%; CORN BREAKS HARD; HORMUZ ESCALATES</title>
       <link>https://agsist.com/daily/2026-07-20</link>
@@ -391,18 +404,6 @@ Nearby corn posted its biggest single-session drop in months; USDA Crop Progress
 • CATTLE FIRMS, PROCESSING STILL CONSTRAINED
 • CRUDE EASES, HORMUZ PREMIUM CONTINUES TO DEFLATE
 Read more: https://agsist.com/daily/2026-06-22</description>
-    </item>
-    <item>
-      <title>BEANS AND WHEAT BROKE FRIDAY; CATTLE HELD</title>
-      <link>https://agsist.com/daily/2026-06-21</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-21</guid>
-      <pubDate>Sun, 21 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Friday's close told two different stories. Beans at $11.23 nearby and wheat at $6.06 both gave back real ground heading into the weekend, the kind of selling that happens when producers and funds don't want to carry risk through a three-day stretch. Live cattle at $254.80 held and then some, up 2.3% on the session, the Cargill Fort Morgan lockout still tightening the available processing chain enough to support fed cattle values even as feeder cattle at $366.60 barely moved. The week ahead has a specific make-or-break: Monday's Crop Progress at 3 PM CT will tell you whether the cool, wet pattern rolling back into the Heartland is helping crops or starting to crowd the pollination window. That number will move the grain markets more than anything else on the calendar.
-Soybeans lost 24 cents and wheat gave back 14 cents to close the week; live cattle ran to $254.80 while the complex digests the Cargill lockout and a cool, wet forecast sets up the week.
-• GRAINS BREAK INTO THE WEEKEND
-• CATTLE HOLDS THE LINE
-• CRUDE FIRMS, METALS FALL HARD
-Read more: https://agsist.com/daily/2026-06-21</description>
     </item>
   </channel>
 </rss>

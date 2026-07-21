@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-20T13:11:09+00:00",
- "total": 65,
+ "updated": "2026-07-21T12:26:48+00:00",
+ "total": 66,
  "played_out": 26,
- "didnt": 34,
+ "didnt": 35,
  "pending": 5,
- "hit_rate": 43.3,
+ "hit_rate": 42.6,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-20",
+   "judged": "2026-07-21",
+   "call": "The call was feeders up, toward $350.00, on oversold technicals after the Cargill-driven selldown.",
+   "outcome": "didnt",
+   "note": "Feeders closed at $346.77, up 2.2% on the session and the biggest cattle-complex move in weeks. The direction was right. The level wasn't: $350 stayed out of reach, and the call doesn't get credit when the target holds. Still, the oversold read was earned -- watch whether cash trade confirms or fades this move before adding conviction."
+  },
   {
    "made": "2026-07-19",
    "judged": "2026-07-20",
