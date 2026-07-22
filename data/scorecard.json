@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-21T12:26:48+00:00",
- "total": 66,
+ "updated": "2026-07-22T12:29:04+00:00",
+ "total": 67,
  "played_out": 26,
- "didnt": 35,
+ "didnt": 36,
  "pending": 5,
- "hit_rate": 42.6,
+ "hit_rate": 41.9,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-21",
+   "judged": "2026-07-22",
+   "call": "Called crude up, toward $90.00.",
+   "outcome": "didnt",
+   "note": "WTI closed at $88.15, up 3.3% on the session -- the direction was right but $90 never traded. Two chokepoints active and crude still couldn't clear the target. Own the miss on the level; the thesis has more fuel in it tomorrow than it did at yesterday's open."
+  },
   {
    "made": "2026-07-20",
    "judged": "2026-07-21",

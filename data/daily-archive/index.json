@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-07-22",
+      "date_display": "Wednesday, July 22, 2026",
+      "headline": "CRUDE RUNS 3.3%; GRAINS MARK TIME",
+      "teaser": "Crude gains 3.3% as Houthis add Bab el-Mandeb to the Hormuz threat. Grains wait on pollination weather.",
+      "market_mood": "mixed",
+      "surprise_count": 1,
+      "sections": 3,
+      "url": "/daily/2026-07-22",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-21",
       "date_display": "Tuesday, July 21, 2026",
       "headline": "HORMUZ ESCALATES AGAIN; FEEDERS RUN HARD",
@@ -1485,6 +1497,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-21T12:26:47.536730+00:00",
-  "count": 131
+  "updated": "2026-07-22T12:29:02.008835+00:00",
+  "count": 132
 }

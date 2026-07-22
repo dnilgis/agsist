@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 21 Jul 2026 12:26:48 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 22 Jul 2026 12:29:04 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CRUDE RUNS 3.3%; GRAINS MARK TIME</title>
+      <link>https://agsist.com/daily/2026-07-22</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-22</guid>
+      <pubDate>Wed, 22 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Crude oil ran hard to $88.15, up 3.3% on the session, after Houthis threatened to blockade the Bab el-Mandeb Strait alongside ongoing Iran-Hormuz tensions, ongoing since early April, now with a second chokepoint in play. That's the story today. Corn ticked up a quarter cent to $4.55, beans lost half a cent to $12.24, and wheat gave back three-quarters of a cent to $6.83. The grains are in their own world right now, watching pollination weather with one eye and waiting for Thursday's export sales with the other. The 6-to-10-day outlook just turned hotter and drier across the Heartland. That's the thread this week: whether a clean crop condition reading holds or the heat building on the calendar starts repricing the front month.
+Houthi threats to Bab el-Mandeb add a second chokepoint to the Hormuz story, pushing WTI to $88.15 while corn and beans barely moved.
+• Crude Runs on Two Chokepoints
+  → Any harvest-season diesel still unhedged after yesterday's lock recommendation: $88.15 WTI with two active chokepoints is not the moment to wait. Cover what remains.
+• Grains Hold, Heat Builds
+• Cattle Mixed; Feeders Slip
+Read more: https://agsist.com/daily/2026-07-22</description>
+    </item>
     <item>
       <title>HORMUZ ESCALATES AGAIN; FEEDERS RUN HARD</title>
       <link>https://agsist.com/daily/2026-07-21</link>
@@ -391,19 +404,6 @@ Chicago wheat gave back nearly 10 cents Tuesday as Senate Ag released the Agricu
 • CATTLE WAIT; DIRECT TRADE SETS THE PRICE
 • FARM BILL DRAFT HITS THE WIRE
 Read more: https://agsist.com/daily/2026-06-23</description>
-    </item>
-    <item>
-      <title>CORN FALLS 7%; CROP PROGRESS DUE AT 3 PM</title>
-      <link>https://agsist.com/daily/2026-06-22</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-22</guid>
-      <pubDate>Mon, 22 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Corn fell hard Monday, nearby settling at $4.12, a 7% drop that puts it at the worst close of its recent range and demands an explanation before you do anything else. The December contract only eased 3 cents to $4.40, which tells you this is old-crop liquidation, not a new-crop conviction call. USDA Crop Progress drops at 3 PM CT; if the Belt is running ahead of pace and soil moisture stays at 150% of normal, today's move will look like a setup, not a bottom.
-Nearby corn posted its biggest single-session drop in months; USDA Crop Progress at 3 PM CT will either explain it or deepen the question.
-• OLD-CROP CORN BREAKS HARD
-  → Producers with old-crop bushels in storage: this is a window-closing move. If basis is still firm in your area, evaluate before the 3 PM report resets the narrative.
-• CATTLE FIRMS, PROCESSING STILL CONSTRAINED
-• CRUDE EASES, HORMUZ PREMIUM CONTINUES TO DEFLATE
-Read more: https://agsist.com/daily/2026-06-22</description>
     </item>
   </channel>
 </rss>
