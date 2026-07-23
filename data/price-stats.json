@@ -1,14 +1,14 @@
 {
-  "updated": "2026-07-22T22:37:15Z",
+  "updated": "2026-07-23T22:33:24Z",
   "corn": {
-    "pct": 45,
-    "cur": 4.6175,
+    "pct": 46,
+    "cur": 4.6325,
     "lo": 3.6775,
     "hi": 8.1825,
     "median": 4.695,
     "n": 262,
     "years": 5,
-    "read": "At the 45th percentile of the last 5 years \u2014 right around the 5-year midpoint.",
+    "read": "At the 46th percentile of the last 5 years \u2014 right around the 5-year midpoint.",
     "seasonality": [
       64,
       61,
@@ -26,7 +26,7 @@
   },
   "soybean": {
     "pct": 52,
-    "cur": 12.3275,
+    "cur": 12.35,
     "lo": 9.3875,
     "hi": 17.455,
     "median": 12.155,
@@ -49,14 +49,14 @@
     ]
   },
   "wheat": {
-    "pct": 68,
-    "cur": 7.0625,
+    "pct": 66,
+    "cur": 6.945,
     "lo": 4.985,
     "hi": 13.48,
     "median": 6.0587,
     "n": 262,
     "years": 5,
-    "read": "At the 68th percentile of the last 5 years \u2014 above the 5-year midpoint.",
+    "read": "At the 66th percentile of the last 5 years \u2014 above the 5-year midpoint.",
     "seasonality": [
       12,
       48,
@@ -73,14 +73,14 @@
     ]
   },
   "cattle": {
-    "pct": 80,
-    "cur": 223.35,
+    "pct": 82,
+    "cur": 225.425,
     "lo": 120.4,
     "hi": 257.45,
     "median": 181.4875,
     "n": 262,
     "years": 5,
-    "read": "At the 80th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years.",
+    "read": "At the 82nd percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years.",
     "seasonality": [
       30,
       57,
@@ -97,14 +97,14 @@
     ]
   },
   "feeders": {
-    "pct": 82,
-    "cur": 336.15,
+    "pct": 84,
+    "cur": 340.125,
     "lo": 152.75,
     "hi": 375.5,
     "median": 245.5875,
     "n": 262,
     "years": 5,
-    "read": "At the 82nd percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years.",
+    "read": "At the 84th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years.",
     "seasonality": [
       23,
       44,
