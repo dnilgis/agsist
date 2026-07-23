@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 22 Jul 2026 12:29:04 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 23 Jul 2026 12:26:45 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>FEEDERS BREAK HARD; CRUDE HOLDS $90</title>
+      <link>https://agsist.com/daily/2026-07-23</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-23</guid>
+      <pubDate>Thu, 23 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Feeder cattle fell hard to $336.15 today, the overnight session already printing the loss before the pit opened, and the story isn't complicated: slower box-beef demand ahead of the cash trade, plus the Cargill Fort Morgan/Schuyler plant lockout (ongoing since May 19) still choking 2% of weekly slaughter capacity, means buyers aren't rushing to fill pens. Weekly export sales hit at 7:30 AM CT this morning, and with feeders already down 2.5%, the number that matters isn't soybeans or wheat: it's whether pork export demand from Mexico, which just lifted pseudorabies restrictions on U.S. pork, gives hogs a reason to hold their $88.33 handle. The weekly thread question, whether crop conditions confirm the pollination stress the nearby corn futures have been pricing, got a partial answer today: corn ticked to $4.63, up less than half a cent, which is the market saying the heat forecast is real but not yet a yield story worth paying for.
+Feeder cattle dropped 2.5% on beef demand weakness and packer pressure, while WTI crude held $90 on the 12th consecutive night of U.S.-Iran strikes.
+• Feeders Break Hard
+• Crude Holds $90; Escalation Continues
+  → Harvest-season diesel still unhedged: $90.00 WTI with active strikes running 12 consecutive nights is the line. Cover remaining needs before Friday.
+• Grains Drift; Export Sales Digested
+Read more: https://agsist.com/daily/2026-07-23</description>
+    </item>
     <item>
       <title>CRUDE RUNS 3.3%; GRAINS MARK TIME</title>
       <link>https://agsist.com/daily/2026-07-22</link>
@@ -392,18 +405,6 @@ Nearby corn fell hard while Dec '26 barely moved, blowing the carry structure wi
 • BEANS AND WHEAT HOLD STEADY
 • CATTLE WAIT ON DIRECT TRADE
 Read more: https://agsist.com/daily/2026-06-24</description>
-    </item>
-    <item>
-      <title>WHEAT LEADS LOWER; FARM BILL DRAFT DROPS</title>
-      <link>https://agsist.com/daily/2026-06-23</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-23</guid>
-      <pubDate>Tue, 23 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Wheat did the most damage today, off nearly 10 cents to $5.88, while corn eased another 2.5 cents to $4.10 and soybeans barely moved. The real news wasn't on the board: Senate Ag Committee Chairman Boozman dropped the GOP farm bill discussion draft this afternoon, the Agricultural Act of 2026, and producers need to read it before the commentary class does. Meanwhile, Monday's Crop Progress held national corn condition steady, development weather looks mostly favorable, and the crop-progress thread from this week's question is starting to answer itself: no weather premium is being added, and the market is confirming it session by session.
-Chicago wheat gave back nearly 10 cents Tuesday as Senate Ag released the Agricultural Act of 2026 and cattle waited on direct trade.
-• WHEAT LEADS THE COMPLEX LOWER
-• CATTLE WAIT; DIRECT TRADE SETS THE PRICE
-• FARM BILL DRAFT HITS THE WIRE
-Read more: https://agsist.com/daily/2026-06-23</description>
     </item>
   </channel>
 </rss>

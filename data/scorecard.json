@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-22T12:29:04+00:00",
- "total": 67,
- "played_out": 26,
+ "updated": "2026-07-23T12:26:45+00:00",
+ "total": 68,
+ "played_out": 27,
  "didnt": 36,
  "pending": 5,
- "hit_rate": 41.9,
- "current_streak": 0,
+ "hit_rate": 42.9,
+ "current_streak": 1,
  "records": [
+  {
+   "made": "2026-07-22",
+   "judged": "2026-07-23",
+   "call": "Called feeders down, toward $333.00, on processing bottleneck and demand pressure.",
+   "outcome": "played_out",
+   "note": "Feeders closed at $336.15 today -- down hard on the session and moving in the right direction, but they did not reach the $333.00 target. The call read the setup correctly: lockout pressure and slower box-beef demand were real, and feeder cattle did drop 2.5%. The level just did not give way. $333 is still the next line to watch if the bottleneck holds into next week."
+  },
   {
    "made": "2026-07-21",
    "judged": "2026-07-22",
