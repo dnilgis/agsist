@@ -1,146 +1,146 @@
 {
-  "headline": "CATTLE BOUNCE, CRUDE BREAKS; SOYBEANS AT 52-WEEK HIGH",
-  "subheadline": "Feeders recover $340 as USDA Cattle on Feed lands at 2 PM; crude tumbles on inventory build and tanker routes reroute dark.",
-  "lead": "The weekly thread resolves here: crop conditions held, August weather uncertainty kept the market honest, and soybeans closed at a 52-week high of $12.41 while corn sat at $4.65 without a weather premium anyone can prove. The corn pollination story the market spent all week pricing turned into a soybean story by Friday, China demand plus heat risk doing what crop condition ratings alone could not. Meanwhile, feeders staged a 1.2% recovery to $340.12, one day after breaking hard below $336, and the cattle trade is now staring down the Cattle on Feed report at 2 PM CT. Position into data, not through it.",
-  "the_takeaway": "Soybeans are at a 52-week high; cattle are waiting on Cattle on Feed at 2 PM.",
-  "teaser": "Beans hit a 52-week high, feeders bounce back, and crude breaks hard. One report changes the livestock story at 2 PM.",
+  "headline": "WHEAT DROPS 3%; CATTLE BOUNCE INTO COF",
+  "subheadline": "Wheat gave back its July gains in a single session while cattle firmed ahead of this afternoon's Cattle on Feed report, and soybeans added to the week's gains on hot-and-dry forecasts into early August.",
+  "lead": "Wheat fell 21 cents to $6.79, dropping sharply in what the Feedstuffs recap called straight profit-taking after a strong bull run, and that's exactly what it looks like: no new bearish headline, just a market that ran too far too fast and finally gave some back. Soybeans told the opposite story, tacking on nearly 5 cents to $12.47 on fund and technical buying with hot-and-dry forecasts threatening fill through early August, the critical window the 2026 planting season has been building toward since the wet May start. Meanwhile, cattle bounced to $227.07 ahead of this afternoon's 2:00 PM CT Cattle on Feed report, the monthly number that has the whole complex holding its breath; the market is positioning, not committing, and the report decides which direction that commitment runs.",
+  "the_takeaway": "Wheat's profit-taking clears the decks; soybeans own the weather story now.",
+  "teaser": "Wheat gave back 21 cents, beans added on heat forecasts, and cattle are waiting on the 2 PM report.",
   "one_number": {
-    "value": "100%",
-    "unit": "of 52-week range: soybeans at the top",
-    "context": "Nearby soybeans closed at $12.41, which is the full 52-week high. That is not a technical resistance test, that is the ceiling of the entire past year getting taken out. China leading both old-crop and new-crop purchases the week ending July 16 plus August weather uncertainty gave the funds a reason to push. When a contract closes at 100% of its 52-week range on a Friday, the next move is either a breakout into new territory or a hard rejection. Watch Monday's open."
+    "value": "41%",
+    "unit": "Saudi Yanbu crude export decline since March peak",
+    "context": "Saudi Arabia's East-West pipeline redirect to the Red Sea, its backup route around the Strait of Hormuz, has now lost 41% of its throughput as drone threats pressure Yanbu exports. That brings Saudi Red Sea volumes down to roughly 2.39 million barrels per day from their March peak. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, created this redirect in the first place; the fact that the backup route is now under pressure too is the structural crude story the $90.37 WTI close is still absorbing."
   },
   "yesterdays_call": {
-    "summary": "Yesterday's call: soybeans up, targeting above $12.50, on China demand and August weather risk building into the weekly close.",
+    "summary": "Yesterday's call: wheat up, toward $6.91, on Black Sea supply concerns and fund momentum.",
     "outcome": "didnt",
-    "note": "Beans closed at $12.415 Friday, confirming the direction but stopping short of the $12.50 target. The thesis was right -- China buying confirmed, August uncertainty intact -- but the contract ran out of session to take out that level. Call did not play out on the number; the setup going into Monday is still live.",
+    "note": "Wheat closed $6.79 today -- exactly where it opened the session and well short of the $6.91 target. The profit-taking session that defines today's tape is the opposite of what the call needed; the funds got lighter, not heavier, and the $6.91 level never came into play. Miss, plain and simple. The bull thesis on Black Sea supply is not broken, but the call did not play out today.",
     "computed": {
       "outcome": "didnt",
       "made": "2026-07-24",
-      "p0": 12.415,
-      "p1": 12.415,
-      "instrument": "beans",
+      "p0": 6.79,
+      "p1": 6.79,
+      "instrument": "wheat",
       "direction": "up",
-      "level": 12.5
+      "level": 6.91
     }
   },
   "todays_call": {
-    "instrument": "beans",
+    "instrument": "wheat",
     "direction": "up",
-    "level": 12.5
+    "level": 6.91
   },
   "sections": [
     {
-      "title": "Soybeans Hit 52-Week High",
-      "icon": "🌱",
-      "body": "Nearby soybeans closed at **$12.41**, the top of the 52-week range, and November beans settled at **$12.46**, off only a fraction from that same ceiling. The driver is a double catalyst: USDA weekly export sales showed China as the leading buyer of both old-crop and new-crop U.S. beans for the week ending July 16, and an atmospheric scientist flagged Friday morning that August weather still carries enough uncertainty to move yields and markets materially. That combination, confirmed demand plus uncertain supply, is the setup funds need to push a contract to new highs. The old-crop into new-crop spread is sitting at a $0.05 inverse, not wide enough to signal selling pressure, but the direction is telling you the market is not willing to discount new-crop beans at this moment.",
-      "catalyst": "China led old-crop and new-crop U.S. soybean purchases week ending July 16; August weather uncertainty flagged by Nutrien atmospheric scientist.",
-      "bottom_line": "52-week high on confirmed China demand plus August yield uncertainty; next stop is uncharted territory or a hard rejection.",
-      "conviction_level": "high",
-      "overnight_surprise": false,
-      "vs_yesterday": "Beans: yesterday's grain drift flipped to complex leader today."
-    },
-    {
-      "title": "Cattle Bounce Into Report Day",
-      "icon": "🐄",
-      "body": "Live cattle added **$2.03** to close at **$225.43** and feeders recovered **$4.04** to **$340.12**, one session after feeders had their worst day of the month. The processing-constrained dynamic from the ongoing Cargill worker lockout, with roughly 2% of weekly U.S. slaughter capacity still offline, did not stop today's bounce, but it does limit the ceiling. The cattle industry is watching today's Cattle on Feed report at 2 PM CT specifically for the percentage of heifers on feed, a stat that only surfaces in quarterly data and is the earliest signal of whether herd rebuilding has begun. University of Kentucky economist Kenny Burdine made that case Friday morning. **Position into the report, not through it**: if today's Cattle on Feed shows heifer retention accelerating, that is a structural tightening story that the current live cattle price at $225.43 is not fully pricing.",
-      "catalyst": "Cattle on Feed report at 2 PM CT; industry watching heifer-on-feed percentage for herd rebuilding signals.",
-      "bottom_line": "Bounce is real but the report decides whether it has legs; heifer data is the number that matters.",
-      "conviction_level": "medium",
-      "overnight_surprise": false,
-      "farmer_action": "Hold cattle hedges through the 2 PM Cattle on Feed report. Do not lift coverage before the data.",
-      "vs_yesterday": "Feeders: hard breakdown yesterday did not follow through; recovered fully to $340."
-    },
-    {
-      "title": "Crude Breaks on Inventory, Routes Go Dark",
-      "icon": "🛢️",
-      "body": "WTI crude fell **$2.95** to **$89.04**, a 3.2% drop that qualifies as the session's sharpest move across the complex. The EIA reported commercial crude inventories rose 2.0 million barrels for the week ending July 17, to 411.7 million barrels, running 6% below the five-year average but building when the market expected draws. Simultaneously, at least one Saudi crude tanker transited Bab el-Mandeb with its transponder switched off, a sign that shippers are routing around the Houthi blockade on Saudi shipments rather than halting flow entirely. Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, left the crude market repricing the actual supply risk versus last week's fear. **The weekly gain for WTI was still substantial**: the contract posted a low near $79.58 before climbing to $92.31 Thursday before this Friday pullback. For producers with diesel exposure, Thursday's recommendation to cover harvest-season needs at $90 was the right call; today's close at $89.04 confirms the ceiling held.",
-      "catalyst": "EIA commercial crude inventory build of 2.0 million barrels; Saudi tanker transiting dark through Bab el-Mandeb; Hormuz diplomatic progress deflating risk premium.",
-      "bottom_line": "Inventory build plus dark-running tankers say the risk premium is repricing, not disappearing.",
+      "title": "Wheat Profit-Taking Hits Hard",
+      "icon": "🌾",
+      "body": "Chicago wheat fell **21 cents to $6.79**, a 3% drop that qualifies as the session's loudest move and the overnight surprise the algorithms flagged at 1.5x normal magnitude. The Feedstuffs recap framed it plainly: profit-taking after a solid bull run, not a new bearish catalyst. That framing holds. Wheat has been working higher on Black Sea supply concerns, and a session like this is the market trimming positions into the weekend rather than reversing the thesis. The key level to watch now is whether $6.79 holds as a floor or becomes the ceiling of a failed rally. Nothing in today's news bucket says the bull story is broken; the funds just got lighter before the weekend.",
+      "catalyst": "Feedstuffs afternoon recap: wheat profit-taking, no new bearish fundamental driver.",
+      "bottom_line": "Profit-taking, not a reversal. $6.79 is the floor to hold next week.",
       "conviction_level": "medium",
       "overnight_surprise": true,
-      "vs_yesterday": "Crude: held $90 Thursday; broke below today on inventory data."
+      "todays_call_note": "If wheat opens Monday above $6.91, the profit-taking was a flush, not a turn."
     },
     {
-      "title": "Corn Flat, Wheat Firms, Oats Tick",
-      "icon": "🌽",
-      "body": "Corn nearby closed at **$4.65**, off half a penny, with December at **$4.89** unchanged. The weekly thread question was whether crop conditions would confirm the pollination stress the front month was pricing or reverse the break. The answer is: neither cleanly. The market did not build a weather premium into corn, but it did not capitulate either. August weather uncertainty, flagged explicitly Friday morning by Nutrien's atmospheric scientist Eric Snodgrass, is the reason corn did not give back more ground. **The corn carry is intact**: December at $4.89 versus nearby at $4.65 is a 24-cent carry that has not narrowed, and that tells you the funds are not in a hurry to add new long exposure in the front month. Chicago wheat firmed **1.5 cents** to **$7.02** on profit-taking reversals after recent weakness; oats added **$0.02** to **$3.46**. Neither move changes anything.",
-      "catalyst": "August weather forecast uncertainty keeps weather premium alive; 2026 planting season corn behind average then catching up limits additional upside.",
-      "bottom_line": "Corn is not pricing new stress, but it is not releasing the August weather option either.",
-      "conviction_level": "low",
-      "overnight_surprise": false
+      "title": "Soybeans Own the Heat Story",
+      "icon": "🫘",
+      "body": "Soybeans added nearly 5 cents to **$12.47 nearby**, closing at 102% of the 52-week range, which means this market is running at fresh highs. The catalyst is specific: Brownfield's morning report cited fund and technical buying driven by hot-and-dry forecasts for large parts of the Corn Belt into early August, a window that overlaps with soybean pod fill and late reproductive stages. The 2026 planting season started wet and behind, which means the crop entered the critical heat window with variable establishment across the Belt. November beans at **$12.53** tell the same story; new crop is pricing weather risk, not yet pricing supply certainty. Meal at **$335.30** ran with beans; oil at **$71.87** slipped 1.2%, the meal/oil split saying crush margins are leaning toward protein demand, not biofuel.",
+      "catalyst": "Brownfield: hot-and-dry forecasts into early August stressing soybeans during pod fill; fund and technical buying.",
+      "bottom_line": "New crop beans at 52-week highs say the market is pricing a heat premium that hasn't fully cleared yet.",
+      "conviction_level": "high",
+      "overnight_surprise": false,
+      "farmer_action": "Old-crop beans still in storage with basis firming: $12.47 nearby at a 52-week high is a pricing window. Price it or have a reason not to."
+    },
+    {
+      "title": "Cattle Bounce Into the Report",
+      "icon": "🐄",
+      "body": "Live cattle closed **$227.07**, up 0.7%, and feeders finished at **$342.05**, up 0.6%, both bouncing off support with the Cattle on Feed report arriving at 2:00 PM CT today. The Brownfield livestock recap was direct: cattle bounced ahead of the USDA reports, and the question now is whether this is a genuine bottom or pre-report positioning that unwinds once the data hits. The ongoing Cargill processing disruption, which has removed roughly 2% of weekly US slaughter capacity since mid-May, remains the structural drag that has kept the processing-constrained price dynamics alive; today's bounce does not erase that. Cold storage data out this week showed red meat supplies 3% larger year-over-year at 865 million pounds, with pork up 9%, which adds pressure on the packer side. Cattle on Feed is the number that resets this whole narrative one way or the other.",
+      "catalyst": "USDA Cattle on Feed report at 2:00 PM CT; cattle bounced off support in pre-report positioning per Brownfield livestock recap.",
+      "bottom_line": "Cattle bounced, but the report at 2 PM is the only thing that matters today. Position accordingly.",
+      "conviction_level": "medium",
+      "overnight_surprise": false,
+      "vs_yesterday": "Cattle: yesterday's break reversed; complex bounced ahead of Cattle on Feed."
+    },
+    {
+      "title": "Crude Holds $90, Red Sea Tightens",
+      "icon": "⛽",
+      "body": "WTI crude fell 1.7% to **$90.37**, giving back a piece of the week's gains but staying above $90, the line the last three briefings have flagged. The story underneath the price is getting more complex: Russia's largest Black Sea oil export terminal went offline as drone threats followed the Caspian Pipeline Consortium attack days earlier, per OilPrice, pulling another artery out of global supply. Saudi Yanbu Red Sea exports have fallen 41% from their March peak, the one_number today that puts the structural tightness in context. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, created the Saudi Red Sea redirect in the first place; now that backup route is under pressure too. Diesel prices follow crude with a lag; harvest-season exposure is not a small consideration with these supply routes in play.",
+      "catalyst": "OilPrice: Russia's Black Sea terminal offline on drone threats; Saudi Yanbu exports down 41% from March peak.",
+      "bottom_line": "Crude holds $90 while two more oil arteries tighten; harvest diesel math stays uncomfortable.",
+      "conviction_level": "medium",
+      "overnight_surprise": false,
+      "vs_yesterday": "Crude: eased from $90 floor but held above it; Russian terminal news adds fresh supply pressure."
     }
   ],
   "outside_the_pit": [
     {
-      "title": "American Farm Income Projected to Fall Further in 2027",
-      "body": "Farm policy analysts at Illinois project that high inflation, low commodity prices, and volatile input costs are setting up another year of income compression in 2027. Producers who are still carrying variable-rate operating debt need to be stress-testing cash flows against $4.65 corn now, not at harvest.",
-      "tag": "MACRO"
+      "title": "Midwest Poultry Services Recalls 1.5 Million Dozen Eggs",
+      "body": "A voluntary recall over possible salmonella contamination covers both brown and white shell eggs from Midwest Poultry Services. Recalls at this scale move through distribution channels for weeks and tend to show up in cold storage and production numbers before they show up in prices; watch the poultry category in the next Cold Storage report.",
+      "tag": "DISEASE"
     },
     {
-      "title": "USDA Puts $35 Million Into Feral Hog Control Across 14 States",
-      "body": "The USDA's Feral Swine Eradication and Control Pilot Program is expanding with new funding across 14 states including Missouri. Feral hog damage runs over $1.5 billion annually in crop and pasture loss, and producers in the Southern and Central Plains should watch for partnership opportunities in their state.",
+      "title": "NRCS Staff Cuts Slowing Farmer Access to Conservation Programs",
+      "body": "The Michael Fields Agricultural Institute reports that USDA NRCS staff reductions have stalled conservation technical assistance to the point where volunteer groups are filling the gap. With soil moisture running 150% of normal in key districts and the 2026 planting season's wet start still fresh, the timing of reduced technical capacity during a high-stress crop year is a structural concern that won't show up in today's futures board.",
       "tag": "POLICY"
     },
     {
-      "title": "New Compound Shows Promise for Cattle Methane Reduction",
-      "body": "Rumin8 is testing a novel prodrug that converts to bromoform inside the rumen, targeting methane emissions from beef cattle. Early trial results are generating attention ahead of what could be tightening federal and export-market methane standards for U.S. beef production.",
-      "tag": "INPUTS"
+      "title": "ADM Invests in Oklahoma Elevator to Move Grain to Livestock Markets",
+      "body": "ADM announced a multimillion-dollar investment to significantly increase throughput at its Optima, Oklahoma grain elevator facility, specifically targeting more efficient movement of grain and feed products to livestock markets. Infrastructure investments like this shift basis relationships regionally over the next one to two years; Southern Plains producers should track what this does to local basis as the facility comes online.",
+      "tag": "LOGISTICS"
     }
   ],
   "spread_to_watch": {
-    "label": "Soybeans nearby / November beans inverse",
-    "level": "$0.05 inverse, narrowing",
-    "commentary": "Old-crop beans at $12.41 are running above November at $12.46 by only a nickel, a narrow inverse that tells you the market is not screaming urgency about immediate supply but is not discounting new crop either. If China demand continues to print strong weekly sales and August weather deteriorates, this inverse widens and that is your signal that the old-crop squeeze is getting priced seriously."
+    "label": "November soybeans / December corn ratio",
+    "level": "2.57 ratio, widening on the week",
+    "commentary": "November beans at $12.53 against December corn at $4.87 puts the ratio at 2.57, well above the 2.3-to-2.4 range that tends to shift new-crop planting intentions toward corn. The weather premium in beans is doing this: hot-and-dry forecasts into early August are pricing bean risk faster than corn risk. If that premium holds through August, next spring's planting intentions conversation starts earlier than most producers expect."
   },
   "basis": {
-    "headline": "Soybean basis firming; corn basis soft heading into weekend.",
-    "body": "**Soybean basis is tightening** at interior elevators as export demand from China accelerates and elevators compete for old-crop bushels against a backdrop of a 52-week high futures close. Corn basis remains soft across the Belt, consistent with the seasonal pressure of a crop approaching late-pollination with conditions holding and no new weather premium being added to the board. Eastern Belt corn basis is slightly firmer than Western Belt on ethanol grind demand, but neither side is sending a buy signal."
+    "headline": "Bean basis firming in eastern origination; corn basis soft across the Belt.",
+    "body": "Soybean basis is **firming at eastern origination points** as crush plants run hard into the heat forecast and merchandisers move to cover nearby needs. Corn basis is running soft across the Belt, consistent with the seasonal; no ethanol or export catalyst has shown up to tighten it. Wheat basis is choppy after today's sharp price drop; elevators are sorting out where the new floor is before they adjust bids. Watch bean basis next week: if hot-and-dry forecasts verify, the firming accelerates."
   },
   "weekly_thread": {
     "question": "Does the USDA Crop Progress report confirm the corn pollination stress the nearby futures are pricing, or does a clean crop condition reading reverse the front-month break?",
     "day": 5,
-    "status_text": "The week resolved as a draw for corn but a win for soybeans: conditions held well enough to prevent a weather-premium build in corn, but August uncertainty kept the break from deepening, while beans used the same weather story plus China demand to close at a 52-week high. The corn pollination premium never fully priced; the soybean story stole the week."
+    "status_text": "The week resolved in favor of the bean weather story, not the corn stress thesis. Monday's crop condition question got its answer mid-week as hot-and-dry forecasts into early August shifted the market's attention from corn pollination already in progress to soybean pod fill just beginning; beans closed at 52-week highs Friday while corn sat flat, and the weather premium the week was asking about landed in the wrong crop."
   },
   "the_more_you_know": {
-    "title": "Soybeans at the Top of the Range: What Happens Next Is Usually Not Subtle",
-    "body": "Nearby soybeans closed at $12.41, the exact top of the 52-week range, a 100% reading. When a contract closes at the absolute ceiling of its annual range on a Friday with China buying confirmed and August weather unresolved, the market is essentially calling a vote. Either new buyers step in Monday and take the contract to ground it has not seen in over a year, or profit-taking from funds already sitting net long comes in hard and the rejection prints fast. Historically, 52-week-high Friday closes in soybeans resolve within two to three sessions. The setup that got beans here, confirmed export demand and yield uncertainty, is still intact heading into next week. The risk is that the catalyst has already been priced and the news has to get materially better to justify new highs. Watch Monday's open: a gap higher holds the thesis, a gap lower says the range was the ceiling."
+    "title": "The meal/oil split is pricing something the headline crush margin isn't.",
+    "body": "Today's bean complex closed with meal up 0.7% to $335.30 and oil down 1.2% to $71.87, a divergence inside a market that moved in the same direction on the headline. When meal leads and oil lags, the crush is being driven by protein demand, not biofuel demand; that matters because the two demand streams have completely different price ceilings and seasonality. Soybean oil at $71.87 is still at 76% of its 52-week range, historically well-supported, but the meal share of crush value is running above its seasonal average as livestock feed demand stays strong. The China purchase commitment, the $17 billion annual US ag purchase commitment through 2028 announced May 18, skews toward bean and meal exports specifically; if that flow is building as promised, the meal/oil split is the first place it shows up in price structure before it appears in export sales data."
   },
   "watch_list": [
     {
       "time": "2:00 PM CT today",
-      "desc": "USDA Cattle on Feed: heifer-on-feed percentage is the number to watch; above 50% of placements signals herd rebuilding has not started, below 48% says expansion is beginning and live cattle $225.43 is underpriced."
+      "desc": "USDA Cattle on Feed report: on-feed above last year confirms supply pressure; placements above 100% of year-ago adds bearish weight to next month's marketings math."
     },
     {
-      "time": "Monday, 3:00 PM CT",
-      "desc": "USDA Crop Progress: corn condition ratings at or above 70% good-to-excellent removes the August weather premium and puts $4.65 at risk; below 65% and the corn market reprices fast."
+      "time": "Monday 3:00 PM CT",
+      "desc": "USDA Crop Progress: soybean good-to-excellent above 65% takes weather premium out of November beans above $12.53; below 60% adds to it."
     },
     {
-      "time": "Monday open",
-      "desc": "Soybeans gap direction: a higher open above $12.45 November confirms the 52-week breakout is real; a lower open back below $12.35 says Friday was the top and profit-taking is in charge."
+      "time": "Thursday 7:30 AM CT",
+      "desc": "Weekly export sales: soybean sales above 400K MT confirm the heat-premium buying is more than just funds; corn sales below 300K MT keeps basis soft through August."
     },
     {
-      "time": "Thursday, 7:30 AM CT",
-      "desc": "Weekly Export Sales: soybean sales above 400K MT confirms China demand is sustaining the 52-week high thesis; below 300K MT and the chart is on its own without a fundamental floor."
+      "time": "Next week, ongoing",
+      "desc": "Watch whether $6.79 Chicago wheat holds as a floor after today's profit-taking; a second close below $6.75 opens the door to the next support band and changes the bull narrative."
     },
     {
-      "time": "Ongoing",
-      "desc": "Bab el-Mandeb tanker routing: if additional Saudi tankers go dark or Houthi blockade claims expand to non-Saudi vessels, crude reverses Friday's decline and diesel exposure re-opens."
+      "time": "Next week, ongoing",
+      "desc": "Saudi Yanbu crude export data and Russian Black Sea terminal status: if both remain offline or reduced, WTI $90 becomes a floor, not a ceiling, regardless of Hormuz diplomatic progress."
     }
   ],
   "daily_quote": {
     "text": "It's tough to make predictions, especially about the future.",
     "attribution": "Yogi Berra"
   },
-  "source_summary": "CME Group settlement prices; USDA Weekly Export Sales (week ending July 16); EIA Weekly Petroleum Status Report (week ending July 17); Brownfield Ag News; AgWeb; OilPrice.com; FeedStuffs; Beef Magazine; farmdocdaily.illinois.edu; farmpolicynews.illinois.edu",
+  "source_summary": "CME Group settlement prices; USDA Cattle on Feed (2:00 PM CT, post-close); Brownfield Ag News; Feedstuffs; AgWeb; OilPrice.com; The Fence Post; USDA Cold Storage report; USDA NRCS reporting via Michael Fields Agricultural Institute.",
   "date": "Friday, July 25, 2026",
   "meta": {
     "market_mood": "mixed",
-    "heat_section": 0,
+    "heat_section": 1,
     "overnight_surprises_count": 1,
     "news_coverage": {
       "ok": 15,
       "total": 17,
-      "items": 77,
+      "items": 85,
       "dark": [
         "porkbusiness.com",
         "no-tillfarmer.com"
@@ -148,25 +148,25 @@
     }
   },
   "locked_prices": {
-    "corn": 4.6475,
-    "corn-dec": 4.8875,
-    "beans": 12.415,
-    "beans-nov": 12.465,
-    "wheat": 7.0175,
-    "oats": 3.4575,
-    "cattle": 225.425,
-    "feeders": 340.125,
-    "hogs": 88.925,
-    "milk": 17.45,
-    "meal": 333.70001,
-    "soyoil": 72.13,
-    "crude": 89.04,
-    "natgas": 2.898,
-    "gold": 4058.69995,
-    "silver": 58.665,
-    "dollar": 101.371,
-    "sp500": 7408.2998,
-    "bitcoin": 65071.75
+    "corn": 4.64,
+    "corn-dec": 4.8725,
+    "beans": 12.4675,
+    "beans-nov": 12.525,
+    "wheat": 6.79,
+    "oats": 3.4075,
+    "cattle": 227.075,
+    "feeders": 342.04999,
+    "hogs": 88.95,
+    "milk": 17.2,
+    "meal": 335.29999,
+    "soyoil": 71.87,
+    "crude": 90.37,
+    "natgas": 2.903,
+    "gold": 4056.80005,
+    "silver": 58.5,
+    "dollar": 101.487,
+    "sp500": 7411.97998,
+    "bitcoin": 63925.96875
   },
   "chart_series": {
     "corn": [
@@ -179,7 +179,7 @@
       4.49,
       4.55,
       4.63,
-      4.65
+      4.64
     ],
     "soybeans": [
       11.96,
@@ -191,7 +191,7 @@
       12.29,
       12.24,
       12.34,
-      12.41
+      12.47
     ],
     "wheat": [
       6.63,
@@ -203,7 +203,7 @@
       6.75,
       6.83,
       7.03,
-      7.02
+      6.79
     ]
   },
   "sponsor": {
@@ -217,18 +217,18 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 134,
-  "generated_at": "2026-07-24T12:23:51.316503+00:00",
+  "issue_number": 135,
+  "generated_at": "2026-07-24T20:59:26.169036+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 1,
   "surprises": [
     {
-      "commodity": "WTI Crude Oil",
-      "key": "crude",
-      "price": "$89.04",
-      "pct_change": -3.1648,
+      "commodity": "Chicago Wheat",
+      "key": "wheat",
+      "price": "$6.79/bu",
+      "pct_change": -3.0346,
       "direction": "down",
-      "surprise_magnitude": 1.1
+      "surprise_magnitude": 1.5
     }
   ],
   "price_validation_clean": true,
@@ -236,26 +236,26 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-07-24T12:24:06.610652+00:00",
+    "ran_at": "2026-07-24T20:59:41.919225+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
       "rule_2_conviction_earned": 7,
-      "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 9,
+      "rule_3_tmyk_today": 8,
+      "rule_4_watch_conditional": 8,
       "rule_5_bottom_lines_synthesize": 8,
       "rule_6_quiet_days_quiet": 8,
       "rule_7_continuity": 2,
       "rule_8_basis_directional": 9,
-      "rule_9_voice": 7,
+      "rule_9_voice": 8,
       "rule_10_forward_test": 7,
       "rule_11_thread_coherence": 8,
       "rule_12_spread_quality": 8,
       "rule_13_yc_honesty": 2,
-      "rule_14_level_coherence": 4,
+      "rule_14_level_coherence": 6,
       "rule_15_one_number_coherence": 9,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 7
+      "rule_17_macro_anchoring": 9
     },
     "rewrites_applied": [
       {
@@ -265,21 +265,21 @@
         "scores_before": {
           "rule_1_lead_so_what": 8,
           "rule_2_conviction_earned": 7,
-          "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 9,
+          "rule_3_tmyk_today": 8,
+          "rule_4_watch_conditional": 8,
           "rule_5_bottom_lines_synthesize": 8,
           "rule_6_quiet_days_quiet": 8,
           "rule_7_continuity": 2,
           "rule_8_basis_directional": 9,
-          "rule_9_voice": 7,
+          "rule_9_voice": 8,
           "rule_10_forward_test": 7,
           "rule_11_thread_coherence": 8,
           "rule_12_spread_quality": 8,
           "rule_13_yc_honesty": 2,
-          "rule_14_level_coherence": 4,
+          "rule_14_level_coherence": 6,
           "rule_15_one_number_coherence": 9,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 7
+          "rule_17_macro_anchoring": 9
         }
       }
     ],
