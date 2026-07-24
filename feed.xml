@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 23 Jul 2026 12:26:45 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 24 Jul 2026 12:24:08 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE BOUNCE, CRUDE BREAKS; SOYBEANS AT 52-WEEK HIGH</title>
+      <link>https://agsist.com/daily/2026-07-24</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-24</guid>
+      <pubDate>Fri, 24 Jul 2026 05:00:00 -0600</pubDate>
+      <description>The weekly thread resolves here: crop conditions held, August weather uncertainty kept the market honest, and soybeans closed at a 52-week high of $12.41 while corn sat at $4.65 without a weather premium anyone can prove. The corn pollination story the market spent all week pricing turned into a soybean story by Friday, China demand plus heat risk doing what crop condition ratings alone could not. Meanwhile, feeders staged a 1.2% recovery to $340.12, one day after breaking hard below $336, and the cattle trade is now staring down the Cattle on Feed report at 2 PM CT. Position into data, not through it.
+Feeders recover $340 as USDA Cattle on Feed lands at 2 PM; crude tumbles on inventory build and tanker routes reroute dark.
+• Soybeans Hit 52-Week High
+• Cattle Bounce Into Report Day
+  → Hold cattle hedges through the 2 PM Cattle on Feed report. Do not lift coverage before the data.
+• Crude Breaks on Inventory, Routes Go Dark
+Read more: https://agsist.com/daily/2026-07-24</description>
+    </item>
     <item>
       <title>FEEDERS BREAK HARD; CRUDE HOLDS $90</title>
       <link>https://agsist.com/daily/2026-07-23</link>
@@ -392,19 +405,6 @@ Nearby corn adds 2 cents as USDA weekly export sales hit the wire at 7:30 AM CT,
   → If you have unpriced new-crop beans, hold through 7:30 AM CT. If the export number confirms China buying above 500K MT, November at $11.38 has room to run. If it misses, price into any rally.
 • OATS BREAK HARD OVERNIGHT
 Read more: https://agsist.com/daily/2026-06-25</description>
-    </item>
-    <item>
-      <title>CORN NEARBY BREAKS 6%; OLD-CROP CARRY INVERTS</title>
-      <link>https://agsist.com/daily/2026-06-24</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-24</guid>
-      <pubDate>Wed, 24 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Nearby corn dropped 27 cents to $4.11 while Dec '26 barely twitched, closing at $4.38. That 27-cent spread between the nearby and new crop is the market telling you storage is not being rewarded right now; it is being penalized. Heat and humidity are moving into the Heartland over the next 6-to-10 days per this morning's weather outlook, and pollination is approaching. The question this week was whether Crop Progress data removed the last weather premium from corn. Today's break in the nearby says the premium was already gone, but the calendar is about to test that assumption.
-Nearby corn fell hard while Dec '26 barely moved, blowing the carry structure wide open and leaving producers with a storage decision to make before pollination weather takes over the narrative.
-• NEARBY CORN BREAKS HARD
-  → Producers with on-farm grain: check local basis today. If basis is firm, the futures break has narrowed your window. Evaluate before the heat forecast gets priced further into the new-crop contract.
-• BEANS AND WHEAT HOLD STEADY
-• CATTLE WAIT ON DIRECT TRADE
-Read more: https://agsist.com/daily/2026-06-24</description>
     </item>
   </channel>
 </rss>

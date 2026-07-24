@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-23T12:26:45+00:00",
- "total": 68,
+ "updated": "2026-07-24T12:24:08+00:00",
+ "total": 69,
  "played_out": 27,
- "didnt": 36,
+ "didnt": 37,
  "pending": 5,
- "hit_rate": 42.9,
- "current_streak": 1,
+ "hit_rate": 42.2,
+ "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-23",
+   "judged": "2026-07-24",
+   "call": "Yesterday's call: soybeans up, targeting above $12.50, on China demand and August weather risk building into the weekly close.",
+   "outcome": "didnt",
+   "note": "Beans closed at $12.415 Friday, confirming the direction but stopping short of the $12.50 target. The thesis was right -- China buying confirmed, August uncertainty intact -- but the contract ran out of session to take out that level. Call did not play out on the number; the setup going into Monday is still live."
+  },
   {
    "made": "2026-07-22",
    "judged": "2026-07-23",

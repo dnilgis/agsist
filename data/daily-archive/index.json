@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-07-24",
+      "date_display": "Friday, July 25, 2026",
+      "headline": "CATTLE BOUNCE, CRUDE BREAKS; SOYBEANS AT 52-WEEK HIGH",
+      "teaser": "Beans hit a 52-week high, feeders bounce back, and crude breaks hard. One report changes the livestock story at 2 PM.",
+      "market_mood": "mixed",
+      "surprise_count": 1,
+      "sections": 4,
+      "url": "/daily/2026-07-24",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-23",
       "date_display": "Thursday, July 23, 2026",
       "headline": "FEEDERS BREAK HARD; CRUDE HOLDS $90",
@@ -1509,6 +1521,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-23T12:26:43.038783+00:00",
-  "count": 133
+  "updated": "2026-07-24T12:24:06.647110+00:00",
+  "count": 134
 }
