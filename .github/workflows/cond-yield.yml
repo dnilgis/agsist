@@ -25,7 +25,9 @@ jobs:
         with:
           python-version: "3.12"
       - name: Selftest (gate)
-        run: python scripts/fetch_cond_yield.py --selftest
+        run: |
+          python scripts/fetch_cond_yield.py --selftest
+          python scripts/build_yield_nowcast.py --selftest
       - name: Skip off-season
         id: window
         run: |
@@ -38,13 +40,16 @@ jobs:
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_cond_yield.py
+      - name: Yield Nowcast
+        if: steps.window.outputs.go == '1'
+        run: python scripts/build_yield_nowcast.py
       - name: Commit
         if: steps.window.outputs.go == '1'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A data/cond-yield 2>/dev/null || true
+          git add -A data/cond-yield data/yield-nowcast.json 2>/dev/null || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -m "data: conditions-vs-yield honesty fits"
+          git commit -m "data: conditions-vs-yield fits + yield nowcast"
           git pull --rebase --autostash origin main || true
           git push
