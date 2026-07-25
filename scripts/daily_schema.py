@@ -7,7 +7,7 @@ Single source of truth for daily.json field names. Both the generator
 Run directly to validate: python scripts/daily_schema.py data/daily.json
 Exit code 0 = valid, 1 = invalid (causes workflow to fail).
 
-v4.0 update: knows about yesterdays_call, spread_to_watch, weekly_thread,
+v4.0 update: knows about yesterdays_call, weekly_thread,
 critic_pass. Validates outcome enum (played_out/didnt/pending) and weekly
 thread day enum (1-5). All v3.x checks preserved unchanged.
 
@@ -52,12 +52,10 @@ OPTIONAL_TOP_LEVEL = [
     "chart_series",        # v3.6: {corn, soybeans, wheat} rolling arrays
     "locked_prices",       # v3.6: {corn, beans, wheat, ...} today's closes
     # v3.9
-    "basis",               # {headline, body} — directional only, weekday-required
     "sponsor",             # {advertiser, headline, body, cta_text, cta_url, is_house_ad}
     "issue_number",        # int, archive count + 1
     # v4.0 (the unmissable upgrade)
     "yesterdays_call",     # {summary, outcome: played_out|didnt|pending, note}
-    "spread_to_watch",     # {label, level, commentary}
     "todays_call",         # {instrument, direction: up|down, level} — graded deterministically
     "weekly_thread",       # {question, day: 1-5, status_text}
     "critic_pass",         # {version, ran_at, threshold, final_scores, rewrites_applied, dry_run}
@@ -161,7 +159,10 @@ def validate(data: dict) -> tuple[bool, list[str], list[str]]:
     if tmyk is not None:
         if not isinstance(tmyk, dict):
             errors.append("'the_more_you_know' must be an object")
-        else:
+        elif tmyk:
+            # v5.0 briefing diet: an EMPTY tmyk object is the correct output most
+            # days (Rule 3: only include when it teaches something no section
+            # covered). Only a half-filled block is a generator bug.
             for f in TMYK_REQUIRED:
                 if f not in tmyk or not tmyk[f]:
                     errors.append(f"the_more_you_know.{f} is required when block present")
@@ -234,22 +235,6 @@ def validate(data: dict) -> tuple[bool, list[str], list[str]]:
     # v3.9 + v4.0 BLOCKS — shape and enum validation
     # ─────────────────────────────────────────────────────────────────────
 
-    # basis (v3.9) — directional language only, weekday-required, weekend-empty
-    bs = data.get("basis")
-    if bs is not None:
-        if not isinstance(bs, dict):
-            errors.append("'basis' must be an object")
-        elif bs:
-            h = (bs.get("headline") or "").strip()
-            b = (bs.get("body") or "").strip()
-            # Either both populated (weekday) or both empty (weekend/holiday).
-            # One-of asymmetry is a generator bug.
-            if (h and not b) or (b and not h):
-                warnings.append(
-                    f"basis has only one of headline/body set — "
-                    f"both should be populated (weekday) or both empty (weekend)"
-                )
-
     # yesterdays_call (v4.0) — outcome must be valid enum when summary is set
     yc = data.get("yesterdays_call")
     if yc is not None:
@@ -283,25 +268,6 @@ def validate(data: dict) -> tuple[bool, list[str], list[str]]:
                 errors.append(f"todays_call.level must be a number (got {tc.get('level')!r})")
             if not (tc.get("instrument") or "").strip():
                 errors.append("todays_call.instrument is required when block present")
-
-    # spread_to_watch (v4.0) — coherent shape
-    sp = data.get("spread_to_watch")
-    if sp is not None:
-        if not isinstance(sp, dict):
-            errors.append("'spread_to_watch' must be an object")
-        elif sp:
-            label = (sp.get("label") or "").strip()
-            commentary = (sp.get("commentary") or "").strip()
-            # Both should be present together, or both omitted (weekend/holiday).
-            # One without the other suggests the model only half-filled the block.
-            if label and not commentary:
-                warnings.append(
-                    "spread_to_watch.label set but commentary is empty"
-                )
-            if commentary and not label:
-                warnings.append(
-                    "spread_to_watch.commentary set but label is empty"
-                )
 
     # weekly_thread (v4.0) — day must be int 1-5 when question is set
     wt = data.get("weekly_thread")
@@ -358,8 +324,6 @@ def validate(data: dict) -> tuple[bool, list[str], list[str]]:
     # v4.0: also scan the new prose fields for em-dashes
     for blk_key, blk_fields in [
         ("yesterdays_call", ("summary", "note")),
-        ("spread_to_watch", ("commentary",)),
-        ("basis", ("body",)),
         ("weekly_thread", ("status_text",)),
     ]:
         blk = data.get(blk_key)

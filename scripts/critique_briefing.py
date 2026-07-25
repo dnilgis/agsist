@@ -10,7 +10,7 @@ RULES plus the Forward Test and the Voice Test. v1.3 (2026-05-18)
 extends Rule 9 voice-failure auto-fail list with CNBC drama vocabulary
 (explode, crater, surge, soar, plunge, slash, exodus, ignite, etc.)
 to match generator v4.6.0's editorial-hardening upgrade. If 2+ rules score
-below 7, the editor rewrites the weakest section (or lead, or basis,
+below 7, the editor rewrites the weakest section (or lead,
 or yesterdays_call, or weekly_thread.status_text) and the result is
 re-saved + re-archived.
 
@@ -112,7 +112,7 @@ Your job is honest, calibrated scoring against the AGSIST editorial standard. Yo
 
 7. CONTINUITY. When prior briefings exist, did this one surface anything that confirmed/invalidated a prior call? (yesterdays_call covers this most directly — score that block's quality here.)
 
-8. BASIS PULSE DIRECTIONAL. Does basis use directional language ("tightening", "firming", "widening") rather than fabricated cents-over/under levels? On weekends/holidays, basis can be empty — score N/A as 10.
+8. WORD BUDGETS — THE DIET. Total prose target is 750-900 words; the caps are lead 65, each section body 80, one_number.context 45, yesterdays_call summary+note 45 combined, weekly_thread.status_text 35, each outside_the_pit item 45, TMYK body 60. Score 10 when everything is inside budget. A field more than ~15% over its cap scores below 7 and names THAT field as the rewrite target; total over 1,000 words scores below 5. The rewrite CUTS the weakest material — it never compresses good sentences into mush.
 
 9. VOICE — THE BIGGEST ONE. Does it sound like a working ag operator (imperative, embedded thesis, vocabulary like "the funds got lost", "basis is talking", "the chart's bluffing") or does it read like a Bloomberg/Reuters wire summary? Wire-neutral prose scores BELOW 5 here. This rule has the lowest tolerance for drift.
 
@@ -133,13 +133,13 @@ ADDITIONAL VOICE FAILURES (auto score below 5 if any present):
   - "bloodbath" / "carnage" / "meltdown" / "rout" — never appropriate
   - "vaulted" / "leaped" (in price context) — drama
 
-CNBC DRAMA VERB PRINCIPLE: AGSIST is a Wisconsin crop insurance guy talking to working farmers. Big moves get described by size and rarity ("biggest day in three weeks"), not by drama verbs. Any drama verb found in lead, sections, basis, takeaway, TMYK, or one_number context = auto Rule 9 below 5 = forced rewrite.
+CNBC DRAMA VERB PRINCIPLE: AGSIST is a Wisconsin crop insurance guy talking to working farmers. Big moves get described by size and rarity ("biggest day in three weeks"), not by drama verbs. Any drama verb found in lead, sections, takeaway, TMYK, or one_number context = auto Rule 9 below 5 = forced rewrite.
 
 10. THE FORWARD TEST. Would a working farmer forward this LEAD with one line of context to another farmer? If the lead is forgettable, score below 6. If it's the kind of line a producer would screenshot and text to a buddy, score 9-10.
 
 11. THREAD COHERENCE (Tue-Fri only, score N/A=10 on Mon and weekends). Did today's lead materially advance Monday's weekly_thread.question? Mere rehash without new evidence scores below 5. Friday must resolve, not summarize.
 
-12. SPREAD QUALITY. Is the spread_to_watch genuinely meaningful — capturing tension the headline price doesn't show — or filler? On weekends/holidays, score N/A as 10.
+12. ONE FACT, ONE HOME. Scan the whole briefing for the same stat, story, or forecast told more than once (the Jul 24 failure: one Saudi pipeline story near-verbatim in two blocks, one heat forecast mentioned six times). A pointer of six words or fewer is fine; a re-explanation is not. Any fact substantively explained twice scores below 5 and the rewrite deletes the weaker telling. Also disqualifying under this rule: internal field names in reader prose ("the one_number today") and impossible stats ("102% of the 52-week range").
 
 13. YESTERDAY'S CALL HONESTY. `outcome` is computed deterministically from the closing prices by the grader (grade_calls.py) and is GROUND TRUTH — you may NOT change it, and you must never propose relabeling it. Your job is to judge the PROSE (summary, note). Two things must hold: (a) the note must describe the SAME instrument shown in `computed.instrument` — if `computed` says corn but the note tells a soybean story, that is the failure, score 1-3; (b) the note must be honest about `computed.outcome` — if outcome is "didnt" the note must own the miss; if "played_out" the assessment must be accurate, not self-serving. When prose and outcome appear to disagree, the fix is ALWAYS to rewrite the note to match the computed call — never to flip the outcome. A note that contradicts `computed` (wrong instrument, or a miss written as a win) scores 1-3.
 
@@ -154,7 +154,7 @@ CNBC DRAMA VERB PRINCIPLE: AGSIST is a Wisconsin crop insurance guy talking to w
   Example pass: value="$795 million", unit="Brazilian beef exports to US in Q1". Score 9.
   Read value + unit aloud. Does it parse as a single coherent fact?
 
-16. MARKDOWN NOT HTML — INDIVIDUALLY DISQUALIFYING. Body fields (lead, section.body, basis.body, takeaway, etc.) must use **markdown** for emphasis, NEVER literal <strong>...</strong> or <em>...</em> HTML tags. The frontend has defensive markdown-aware rendering, but storing HTML in JSON dirties the source of truth and breaks downstream consumers (email pipeline, RSS, AI crawlers).
+16. MARKDOWN NOT HTML — INDIVIDUALLY DISQUALIFYING. Body fields (lead, section.body, takeaway, etc.) must use **markdown** for emphasis, NEVER literal <strong>...</strong> or <em>...</em> HTML tags. The frontend has defensive markdown-aware rendering, but storing HTML in JSON dirties the source of truth and breaks downstream consumers (email pipeline, RSS, AI crawlers).
   If you find <strong> or <em> anywhere in body fields, score 1. The generator's sanitize_html_tags pass should have caught these; if any survived, the rewrite must use **markdown**.
 
 17. MACRO EVENT ANCHORING. The first time a briefing in a week references an ongoing geopolitical or macro event (Iran tensions, Hormuz disruption, election cycle, Fed pivot, trade war, etc.), it must include a one-clause anchor that establishes what the event is and roughly when it began. Subsequent references in the same week can use shorthand.
@@ -175,11 +175,11 @@ Return ONLY valid JSON in this exact shape, no markdown:
     "rule_5_bottom_lines_synthesize": 0,
     "rule_6_quiet_days_quiet": 0,
     "rule_7_continuity": 0,
-    "rule_8_basis_directional": 0,
+    "rule_8_word_budgets": 0,
     "rule_9_voice": 0,
     "rule_10_forward_test": 0,
     "rule_11_thread_coherence": 0,
-    "rule_12_spread_quality": 0,
+    "rule_12_one_fact_one_home": 0,
     "rule_13_yc_honesty": 0,
     "rule_14_level_coherence": 0,
     "rule_15_one_number_coherence": 0,
@@ -187,7 +187,7 @@ Return ONLY valid JSON in this exact shape, no markdown:
     "rule_17_macro_anchoring": 0
   },
   "weakest_rule": "rule_X_xxx",
-  "weakest_target": "lead | section_index_N | basis | yesterdays_call | spread_to_watch | weekly_thread | tmyk | one_number",
+  "weakest_target": "lead | section_index_N | yesterdays_call | weekly_thread | tmyk | one_number",
   "rewrite_needed": true | false,
   "reasoning": "1-3 sentences explaining which rules failed and why.",
   "rewritten_content": null | { ... see below ... }
@@ -197,9 +197,7 @@ REWRITE FORMAT — only include when rewrite_needed is true:
 
 If weakest_target is "lead": rewritten_content = {"lead": "new lead text"}
 If weakest_target is "section_index_N": rewritten_content = {"section_index": N, "section": {...full section object with title/icon/body/bottom_line/conviction_level/etc...}}
-If weakest_target is "basis": rewritten_content = {"basis": {"headline": "...", "body": "..."}}
 If weakest_target is "yesterdays_call": rewritten_content = {"yesterdays_call": {"summary": "...", "note": "..."}}  — do NOT include "outcome"; it is computed from prices and is read-only. Rewrite ONLY the prose so it honestly matches the existing computed call (same instrument as computed.instrument, honest about computed.outcome).
-If weakest_target is "spread_to_watch": rewritten_content = {"spread_to_watch": {"label": "...", "level": "...", "commentary": "..."}}
 If weakest_target is "weekly_thread": rewritten_content = {"weekly_thread": {"question": "...", "day": N, "status_text": "..."}}
 If weakest_target is "tmyk": rewritten_content = {"the_more_you_know": {"title": "...", "body": "..."}}
 If weakest_target is "one_number": rewritten_content = {"one_number": {"value": "...", "unit": "...", "context": "..."}}
@@ -211,7 +209,7 @@ REWRITE STANDARD — when you rewrite, the new content must:
 - For Rule 14 rewrites: use locked_prices values directly. If close > level being claimed broken, soften "broke" to "tested" or "right back to". If close < level being claimed held, soften "held above" to "tested" or "fell through".
 - For Rule 16 rewrites: replace any literal <strong>...</strong> with **...** and any <em>...</em> with *...*.
 - For yesterdays_call rewrites: do NOT output "outcome" (read-only, owned by the price grader). The note must describe `computed.instrument` called `computed.direction` toward `computed.level`, and must be honest about `computed.outcome` ("didnt" = own the miss plainly). Never tell a story about a different market than `computed.instrument`.
-- Keep length comparable to the original.
+- Respect the word caps in Rule 8: a rewrite that fixes voice but blows the budget is still a failure. When Rule 8 or 12 triggered the rewrite, the new content must be SHORTER than the original.
 - Pass the Forward Test if the rewrite is the lead.
 - Use **markdown** for emphasis, NEVER <strong> HTML tags.
 
@@ -258,8 +256,6 @@ def critique_briefing(briefing, threshold=7):
         "one_number": briefing.get("one_number", {}),
         "yesterdays_call": briefing.get("yesterdays_call", {}),
         "sections": sections_compact,
-        "spread_to_watch": briefing.get("spread_to_watch", {}),
-        "basis": briefing.get("basis", {}),
         "weekly_thread": briefing.get("weekly_thread", {}),
         "the_more_you_know": briefing.get("the_more_you_know", {}),
         "watch_list": briefing.get("watch_list", []),
@@ -324,7 +320,7 @@ def apply_rewrite(briefing, critique):
             briefing["sections"][idx] = rewritten["section"]
             return briefing, f"section[{idx}]"
 
-    for key in ("basis", "spread_to_watch", "weekly_thread"):
+    for key in ("weekly_thread",):
         if target == key and rewritten.get(key):
             briefing[key] = rewritten[key]
             return briefing, key

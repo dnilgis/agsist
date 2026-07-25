@@ -153,7 +153,7 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
             + ("THE TAKEAWAY: " + takeaway + "\n\n" if takeaway else "")
             + (("ONE NUMBER: " + str(onum.get("value", "")) + " — "
                 + strip_md(onum.get("unit", "")) + "\n\n") if onum.get("value") else "")
-            + "Full briefing (charts, calls, basis, and what to watch):\n" + SITE
+            + "Full briefing (charts, calls, and what to watch):\n" + SITE
             + "\n\n—\nAGSIST — free US ag market intelligence · agsist.com\n"
             + (("Unsubscribe: " + uurl + "\n") if uurl else
                "To unsubscribe, reply with subject line: unsubscribe\n"))

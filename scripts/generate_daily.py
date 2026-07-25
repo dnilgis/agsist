@@ -117,7 +117,6 @@ v4.2 carried over:
 v4.0 carried over:
   - voice transplant in system prompt
   - yesterdays_call block + render
-  - spread_to_watch
   - weekly thread (Mon sets, Tue-Fri advance, Fri resolves)
 
 v4.5.0 pairs with critique_briefing.py v1.2 which adds matching critic
@@ -1137,8 +1136,8 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
         if reason == "weekend" and "Saturday" in day:
             weekend_instructions = (
                 "\nWEEKEND MODE SATURDAY: Markets CLOSED. Write WEEK IN REVIEW + WEEKEND OUTLOOK. "
-                "Reference 'Friday's close'. No overnight language. Skip basis, yesterdays_call, "
-                "spread_to_watch, weekly_thread (set to empty objects).\n"
+                "Reference 'Friday's close'. No overnight language. Skip yesterdays_call and "
+                "weekly_thread (set to empty objects).\n"
                 "RULE 17 ON WEEKENDS: the post-gen level-coherence validator checks every "
                 "'broke $X'/'below $X'/'above $X' claim against FRIDAY'S CLOSE (the only close "
                 "in locked_prices on weekends). Retrospective prose with explicit day-of-week "
@@ -1154,8 +1153,8 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
         elif reason == "weekend" and "Sunday" in day:
             weekend_instructions = (
                 "\nWEEKEND MODE SUNDAY: Markets CLOSED. Write SUNDAY PREVIEW + WEEK AHEAD. "
-                "Reference 'Friday's close'. No overnight language. Skip basis, yesterdays_call, "
-                "spread_to_watch, weekly_thread (set to empty objects).\n"
+                "Reference 'Friday's close'. No overnight language. Skip yesterdays_call and "
+                "weekly_thread (set to empty objects).\n"
                 "RULE 17 ON SUNDAYS: forecast and conditional prose is the dominant mode "
                 "('if cattle break $X next week', 'a move below $Y would target $Z'). The "
                 "validator auto-skips claims wrapped in 'if/would/should/could/next week/might/may' "
@@ -1169,7 +1168,7 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
         else:
             weekend_instructions = (
                 f"\nHOLIDAY MODE {day.upper()}: Markets CLOSED. Holiday outlook framing. "
-                f"Skip basis, yesterdays_call, spread_to_watch, weekly_thread (set to empty objects). "
+                f"Skip yesterdays_call and weekly_thread (set to empty objects). "
                 f"Rule 17 (level coherence) references the most recent close in locked_prices. "
                 f"Rule 18 (macro anchoring) applies normally.\n"
             )
@@ -1324,20 +1323,20 @@ LEAD example (quiet day, equally valid AGSIST voice):
 LEAD example (range-bound consolidation):
 "Wheat closed $5.91, the fifth straight session inside a 12-cent band. Range-bound isn't drama, but it's information: the funds aren't selling, the commercials aren't buying, and nobody has new news. When wheat decides which way it's leaving the range, it'll be on data the calendar already shows."
 
-SECTION BODY example (medium conviction):
-"Soybeans ran into the 200-day at $10.42 and bounced like they were supposed to. But the bounce is thin, managed money (hedge funds) is still net long 64,000 contracts and crush margins eased a nickel from last week's high. The chart wants to retest $10.50 resistance. The fundamentals don't have a new catalyst. Watch the export sales Thursday: under 300K MT, the chart's bluffing."
+SECTION BODY example (medium conviction) — 2-3 bullet lines, each ONE sentence, "- " prefix; the so-what goes in bottom_line, not in a trailing bullet:
+"- Soybeans ran into the 200-day at **$10.42** and bounced like they were supposed to, but the bounce is thin: funds still net long 64,000 contracts, crush margins eased a nickel.
+- No new catalyst in the fundamentals; the chart is doing the work alone.
+- Thursday export sales under 300K MT says the bounce was position-squaring, not demand."
 
-SECTION BODY example (low conviction, quiet day):
-"Cattle marked time at $248.50, give or take a quarter. Nothing in the box-beef cutout said anything new. Feeders held within a 50-cent range. The fed cattle trade hasn't reset since the last Cattle on Feed and there's no reason to push the contract until it does. Watch is the right verb here."
+SECTION BODY example (low conviction, quiet day) — 2 bullets is plenty:
+"- Cattle marked time at **$248.50**, give or take a quarter; nothing in the box-beef cutout said anything new.
+- The fed trade hasn't reset since the last Cattle on Feed; no reason to push the contract until it does."
 
 BOTTOM LINE examples (synthesis, not restatement):
 - "Coiled range plus Tuesday catalyst equals directional resolution this week."
 - "Cattle still acting like the buyer is patient, not gone."
 - "Carry's working in soybeans, old crop into new crop just rolled wider for a third week."
 - "No move worth narrating; the data calendar will reset the story."
-
-BASIS example (directional only):
-"Eastern Belt corn basis is firming as ethanol grind comes back online after maintenance. Producers east of the Mississippi with old-crop bushels in storage have a window the futures board alone isn't pricing. Western Belt staying soft, consistent with the seasonal."
 
 WATCH LIST example (conditional, not calendar):
 - "Tuesday: USDA Crop Progress; corn above 40% planted confirms the Belt is on pace, below 30% adds weather premium."
@@ -1427,13 +1426,13 @@ The vocabulary stays in the working-ag register at EVERY magnitude. Big moves ge
 
 For genuinely once-a-decade events, you may use "historic" once. Otherwise describe the move by the size of the move ("9% in a single session, the biggest since [date]") and let the reader feel the weight. NEVER use drama verbs at any magnitude.
 
-══ THE 18 IMPACT RULES ══
+══ THE 20 IMPACT RULES ══
 
 1. THE LEAD MUST DELIVER A "SO WHAT". Not a price recap. Specific price + synthesizing observation that interprets, contextualizes, or connects.
 
 2. CONVICTION MUST BE EARNED. "Medium" is the cop-out. Default to "low" on quiet days. Reserve "high" for genuine directional thesis with data behind it.
 
-3. THE MORE YOU KNOW MUST TIE TO TODAY'S DATA. TMYK opens with a hook tied to a number from today's briefing. Title and body reference at least one number/level/percentage/condition from today.
+3. THE MORE YOU KNOW IS OPTIONAL AND MUST BE NEW. Include it ONLY when it teaches something no section already explained; if the insight already lives in a section body, set the_more_you_know to an empty object. When included: opens with a hook tied to a number from today's briefing, 2-3 sentences, max 60 words. Most days it should be EMPTY. An empty TMYK is a feature, not a failure.
 
 3a. TMYK RHETORICAL SHAPE. Vary the title shape across briefings. Do NOT default to "Why X Y" titles more than once per five briefings. Acceptable shapes:
   - Thesis statement: "The carry trade is the planting calendar's tell."
@@ -1452,7 +1451,7 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
 
 7. CONTINUITY: REWARD THE REGULAR READER. When past briefings are provided, surface prior calls that today's data confirmed or invalidated.
 
-8. BASIS PULSE, INCLUDE EVERY WEEKDAY. Local basis is the moat. Directional language only ("tightening", "widening", "firm", "weak"). Do NOT invent specific cents-over/under numbers. On weekends/holidays, set both fields to empty strings.
+8. WORD BUDGETS, HARD. The whole briefing is 750-900 words of prose, total. It used to run 1,600; the diet is deliberate (reader-panel finding: completion died at the halfway mark). Per-field caps: lead 65 words; each section body 80 words; one_number.context 45; yesterdays_call summary+note 45 combined; weekly_thread.status_text 35; each outside_the_pit item 45; the_more_you_know.body 60. The way to hit budget is to CUT the weakest material, not to compress everything equally. A 2-section briefing under budget beats a 4-section briefing over it.
 
 9. VOICE, ABSOLUTELY NON-NEGOTIABLE. The briefing must sound like the VOICE SAMPLES above. If a paragraph could appear unchanged in a Reuters or Bloomberg wire summary, REWRITE it with the operator vocabulary, embedded thesis, and imperative tone shown in the samples. The single most common failure mode is regression to wire-service neutral. Reject your own first draft if it reads neutral.
 
@@ -1479,7 +1478,7 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
     - A vague "$X billion" without specific context
   COHERENCE CHECK: value and unit must describe the SAME thing. If value=1.4%, unit must describe what 1.4% IS, not a different commodity, not a different metric. Self-test before finalizing: read value + unit aloud. Does it parse as a single fact?
 
-16. OUTSIDE THE PIT: ALWAYS POPULATE WEEKDAYS. The outside_the_pit array is the briefing's "what else mattered today in ag" block. 3 items, each one a piece of ag news that is NOT directly moving today's prices but IS in the calculus for what's coming. Examples of strong items: a structural China/Brazil shipment shift, a USDA staffing or methodology change, an EPA/RFS rule update, a packer concentration story, a drought monitor expansion, a freight or logistics development, a farm bill provision, an animal disease outbreak. Each item is 1-2 sentences. Pull from the news block, especially the POLICY & TRADE, WEATHER & CLIMATE, and OTHER buckets. Source attribution optional but encouraged. On weekends, populate with week-ahead context items instead of empty.
+16. OUTSIDE THE PIT: ALWAYS POPULATE WEEKDAYS. The outside_the_pit array is the briefing's "what else mattered today in ag" block. EXACTLY 2 items, each max 45 words (one sentence of what happened + one of why a producer cares), each a piece of ag news that is NOT directly moving today's prices but IS in the calculus for what's coming. Pick the 2 that touch a farm decision; skip consumer-recall noise. Examples of strong items: a structural China/Brazil shipment shift, a USDA staffing or methodology change, an EPA/RFS rule update, a packer concentration story, a drought monitor expansion, a freight or logistics development, a farm bill provision, an animal disease outbreak. Pull from the news block, especially the POLICY & TRADE, WEATHER & CLIMATE, and OTHER buckets. Source attribution optional but encouraged. On weekends, populate with week-ahead context items instead of empty.
 
 17. LEVEL COHERENCE — MATH SANITY ON SUPPORT/RESISTANCE CLAIMS. If the briefing claims a price level was BROKEN, BREACHED, BELOW, UNDER, ABOVE, or THROUGH a support/resistance level, the LOCKED CLOSE PRICE for that contract MUST be on the breaking side of that level. Self-check before finalizing every section, lead, and TMYK:
   - If the close is HIGHER than the level cited, you may NOT write "broke $X", "below $X", "under $X", "decisively through $X", or "crashed through $X". Use instead: "tested $X", "pulled back to $X", "right back to $X", "held above $X by a hair".
@@ -1489,17 +1488,21 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
 
 18. MACRO EVENT ANCHORING. The first time any briefing in a given week references an ongoing geopolitical or macro event (Iran tensions, Hormuz disruption, election cycle, Fed pivot, trade war, etc.), include a single anchoring clause that establishes what the event is and roughly when it began. Example: "...as Iran-Iraq tensions over the Strait of Hormuz, ongoing since March, eased on diplomatic progress." Subsequent briefings in the same week can reference shorthand. The reader who lands on this briefing for the first time should be able to follow the macro thread. This also helps AI search engines and LLM crawlers cite AGSIST as a primary source rather than getting stuck on uncited shorthand.
 
+19. ONE FACT, ONE HOME. Every stat, story, and price move is told ONCE, in the one block where it does the most work. The one_number is NEVER re-explained in a section (a six-word pointer like "the Yanbu decline covered above" is the maximum). A cross-commodity insight (meal/oil split, feeder/live ratio) lives in its section OR the_more_you_know, never both. Weather forecasts get one full telling; every later mention is four words or fewer. Before finalizing, scan your own draft: any sentence that restates an earlier sentence gets deleted, not reworded. The Jul 24 issue told the same Saudi pipeline story twice word-for-word and mentioned the same heat forecast six times; that is the failure mode this rule exists to kill.
+
+20. CLEAN OUTPUT MECHANICS. (a) NEVER write internal field names (one_number, weekly_thread, the_more_you_know, watch_list, outside_the_pit, tmyk) in reader-facing prose; say "today's number" or restructure the sentence. A published issue once printed "the one_number today". (b) Percent-of-range figures are 0-100 by definition; if a close sits at or beyond the top of its 52-week range, write "at the top of its 52-week range" or "a fresh 52-week high", never "102% of the range". (c) If the current spread/ratio setup (bean/corn ratio, carry structure) is genuinely at a decision threshold, it earns ONE bolded sentence inside the relevant section, with the acreage/storage logic stated CORRECTLY (a high bean/corn ratio pulls acres toward beans); there is no standalone spread block anymore.
+
 ══ OUTPUT, return valid JSON with EXACTLY these fields ══
 
 {{
   "headline": "ALL CAPS, 6-10 words.",
   "subheadline": "One sentence adding context.",
-  "lead": "2-3 sentences. Specific price from table + synthesizing observation (RULE 1). Voice samples (RULE 9). Forward test (RULE 10). On Tue-Fri, advances the thread (RULE 11).",
+  "lead": "2-3 sentences, MAX 65 WORDS (RULE 8). Specific price from table + synthesizing observation (RULE 1). Voice samples (RULE 9). Forward test (RULE 10). On Tue-Fri, advances the thread (RULE 11).",
   "the_takeaway": "Single sentence, max 18 words. The if-you-remember-one-thing (RULE 12). Empty string if you cannot write one sharper than the headline.",
   "teaser": "One punchy sentence for the collapsed hero bar.",
-  "one_number": {{"value": "The day's most interesting number, see ONE NUMBER RUBRIC below.", "unit": "3-6 words DESCRIBING WHAT THE VALUE IS. Must be coherent with value. Wrong: value=1.4%, unit='live cattle decline' when the actual mover was feeders. Right: value=1.4%, unit='feeder cattle decline'.", "context": "2-3 sentences. Why this number matters today and what it tells you that prices alone don't."}},
+  "one_number": {{"value": "The day's most interesting number, see ONE NUMBER RUBRIC below.", "unit": "3-6 words DESCRIBING WHAT THE VALUE IS. Must be coherent with value. Wrong: value=1.4%, unit='live cattle decline' when the actual mover was feeders. Right: value=1.4%, unit='feeder cattle decline'.", "context": "1-2 sentences, MAX 45 WORDS. Why this number matters today and what it tells you that prices alone don't. This is the ONLY place this stat gets explained (RULE 19)."}},
   "yesterdays_call": {{
-    "summary": "1 sentence describing the prior call (use the call text I gave you above as starting material; can be paraphrased for fit).",
+    "summary": "1 short sentence describing the prior call (summary + note combined MAX 45 WORDS; 'Miss, plain and simple' beats a paragraph of replay).",
     "outcome": "played_out | didnt | pending",
     "note": "1 sentence on what it means for today. OMIT field entirely on Mondays after long weekends or when no prior call was provided."
   }},
@@ -1509,7 +1512,7 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
     "level": "Number only, in the SAME units as the LOCKED PRICE TABLE ($/bu grains, $/cwt livestock, $/bbl crude). The price line your call hinges on."
   }},
   "sections": [
-    {{"title": "3-5 words", "icon": "Single emoji", "body": "3-5 sentences with **bold** markdown for emphasis (NEVER <strong> HTML tags). All prices from LOCKED TABLE. VOICE. MUST thread the catalyst (RULE 14) into the body prose, do not just append it.",
+    {{"title": "3-5 words", "icon": "Single emoji", "body": "2-3 BULLET LINES, MAX 80 WORDS TOTAL. Each line starts with '- ' and is ONE sentence, separated by newline (\\n). Exactly ONE **bold** number per section, the price or the threshold that matters (markdown bold, NEVER <strong>). All prices from LOCKED TABLE. VOICE. Thread the catalyst (RULE 14) into a bullet, do not just append it. The so-what belongs in bottom_line, not a trailing bullet.",
       "catalyst": "OPTIONAL but recommended. 8-15 words naming the specific news/data/event that drove or contextualizes this section's price action. Example: 'USDA crop progress shows corn at 42%, ahead of 5-year avg.' Empty string allowed only when no relevant news in bucket.",
       "bottom_line": "TL;DR adding info beyond title (RULE 5). Max 20 words.",
       "conviction_level": "low | medium | high (earned per RULE 2)",
@@ -1522,21 +1525,14 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
       "body": "1-2 sentences in AGSIST voice. Why this matters even though it's not in today's prices.",
       "tag": "OPTIONAL. One-word category: POLICY, TRADE, WEATHER, DISEASE, LOGISTICS, INPUTS, MACRO, RURAL."}}
   ],
-  "spread_to_watch": {{
-    "label": "Specific spread name. Examples: 'November beans / July beans inverse', 'Dec corn / Jul wheat ratio', 'Cheese block / barrel', 'Live cattle / feeder ratio', 'Front-month crude / Brent'.",
-    "level": "Where it is now plus direction. Examples: '$0.34 inverse, widening', '1.02 ratio, tight', '8 cents wide and rolling out'.",
-    "commentary": "2 sentences. What is this spread saying that the headline price isn't? Embedded thesis. VOICE."
-  }},
-  "basis": {{"headline": "Short line capturing basis story (max 12 words).",
-             "body": "2-4 sentences. Directional only (RULE 8). Bold key phrase with **markdown** (NEVER <strong> HTML tags)."}},
   "weekly_thread": {{
     "question": "Monday's question (copy forward Tue-Fri verbatim, set fresh on Mondays).",
     "day": "1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri",
-    "status_text": "Today's contribution to the arc. 1-2 sentences. Setup on Mon, progress Tue-Thu, resolution on Fri (RULE 11)."
+    "status_text": "Today's contribution to the arc. 1 sentence, MAX 35 WORDS. Setup on Mon, progress Tue-Thu, resolution on Fri (RULE 11). Do not re-ask the question; the question field already shows it."
   }},
-  "the_more_you_know": {{"title": "Differs from past TMYK topics. Tied to today's data (RULE 3).",
-                          "body": "3-4 sentences. Open with reference to today's number/level/condition."}},
-  "watch_list": [{{"time": "Time", "desc": "What. Half must include level/threshold (RULE 4)."}}],
+  "the_more_you_know": {{"title": "OPTIONAL, empty object {{}} most days (RULE 3). Differs from past TMYK topics.",
+                          "body": "2-3 sentences, MAX 60 WORDS. Only when it teaches something NO section already covered."}},
+  "watch_list": [{{"time": "Time", "desc": "What. 3-4 items max, each under 30 words. Half must include level/threshold (RULE 4)."}}],
   "daily_quote": {{"text": "EXACT quote.", "attribution": "EXACT attribution."}},
   "source_summary": "Data sources",
   "date": "Like 'Monday, April 27, 2026'",
@@ -1553,10 +1549,10 @@ SECTIONS:
 
 OMISSIONS, set fields to null or empty objects when not applicable:
 - yesterdays_call: omit on Mondays after long weekends if no recent call provided. Otherwise required Tue-Fri.
-- spread_to_watch: required every weekday. Pick something meaningful, not filler.\n- todays_call: required every weekday (a real direction+level call). Omit only when the market is closed.
+- todays_call: required every weekday (a real direction+level call). Omit only when the market is closed.
 - weekly_thread: required every weekday. Monday sets, Tue-Thu advance, Fri resolves.
-- basis: required every weekday. Empty strings on weekends/holidays.
-- outside_the_pit: REQUIRED every day, weekday and weekend. 3 items. Pull from news block. (Per RULE 16.)
+- the_more_you_know: OPTIONAL. Empty object {{}} unless it teaches something no section covered (RULE 3).
+- outside_the_pit: REQUIRED every day, weekday and weekend. Exactly 2 items. Pull from news block. (Per RULE 16.)
 - catalyst (per section): OPTIONAL field. Empty string allowed only when relevant news bucket is empty (per RULE 14).
 - the_takeaway: STRING field. If you cannot write something committable per RULE 12, set to empty string "". Better empty than weak.
 - vs_yesterday (per section): OMIT the field entirely when no continuity to mark (per RULE 13). Do not emit empty strings.
@@ -1735,9 +1731,20 @@ def validate_briefing(briefing, locked_prices):
         parts.append(sec.get("vs_yesterday", ""))  # v4.3
     tmyk = briefing.get("the_more_you_know") or briefing.get("tmyk") or {}
     parts.append(tmyk.get("body", ""))
-    basis = briefing.get("basis") or {}
-    parts.append(basis.get("body", ""))
     full_text = " ".join(parts)
+    # v5.0 briefing diet: word budgets. Warnings only (editorial, never blocks a
+    # send); the critic enforces the rewrite. Total counts every prose field.
+    _wc = lambda s: len((s or "").split())
+    _total = sum(_wc(p) for p in parts)
+    for it in (briefing.get("outside_the_pit") or []): _total += _wc(it.get("body", "")) + _wc(it.get("title", ""))
+    for w in (briefing.get("watch_list") or []): _total += _wc(w.get("desc", ""))
+    _total += _wc((briefing.get("weekly_thread") or {}).get("status_text", ""))
+    yc = briefing.get("yesterdays_call") or {}
+    _total += _wc(yc.get("summary", "")) + _wc(yc.get("note", ""))
+    if _total > 1000: warnings.append(f"Word budget: {_total} words total (target 750-900)")
+    if _wc(briefing.get("lead", "")) > 75: warnings.append(f"Word budget: lead {_wc(briefing.get('lead',''))}w (cap 65)")
+    for i, sec in enumerate(briefing.get("sections", [])):
+        if _wc(sec.get("body", "")) > 92: warnings.append(f"Word budget: section {i} body {_wc(sec.get('body',''))}w (cap 80)")
     em = full_text.count("\u2014"); en = full_text.count("\u2013")
     if em: warnings.append(f"Em dash {em}x")
     if en: warnings.append(f"En dash {en}x")
@@ -1785,7 +1792,7 @@ def validate_briefing(briefing, locked_prices):
     # blocked by the gate. (Add a token here only for a future genuine data-integrity
     # check that truly must stop the send.)
     NON_BLOCKING = ("not in prices.json", "Em dash", "En dash",
-                    "Geo scope", "Quote attribution filler")
+                    "Geo scope", "Quote attribution filler", "Word budget")
     fatal = [w for w in warnings if not any(tok in w for tok in NON_BLOCKING)]
     return len(fatal) == 0, warnings
 
@@ -1918,6 +1925,20 @@ def html_esc_preserve_strong(s):
     return joined
 
 
+def render_section_body_html(body):
+    """v5.0 briefing diet: section bodies are 2-3 '- ' bullet lines. Render
+    them as a real <ul>; any non-bullet line renders as a closing sentence.
+    Old archive JSONs with paragraph bodies fall through unchanged."""
+    lines = [ln.strip() for ln in (body or "").split("\n") if ln.strip()]
+    bullets = [ln[2:].strip() for ln in lines if ln.startswith("- ")]
+    rest = [ln for ln in lines if not ln.startswith("- ")]
+    if not bullets:
+        return html_esc_preserve_strong(body or "")
+    lis = "".join(f"<li>{html_esc_preserve_strong(b)}</li>" for b in bullets)
+    tail = "".join(f'<div class="dv3-sec-sowhat">{html_esc_preserve_strong(r)}</div>' for r in rest)
+    return f'<ul class="dv3-sec-bullets">{lis}</ul>{tail}'
+
+
 def js_esc(s):
     if s is None: return ""
     return (str(s).replace("\\", "\\\\").replace("'", "\\'").replace("\n", " ")
@@ -1949,17 +1970,6 @@ def render_sponsor_block_html(sponsor):
             f'<div class="dv3-sponsor-body">{body}</div>'
             f'<a class="dv3-sponsor-cta" href="{cta_url}" rel="sponsored noopener"{target}>{cta_text} &rarr;</a>'
             f'{disclosure_html}</aside>')
-
-
-def render_basis_block_html(basis, market_closed=False):
-    if not basis or market_closed: return ""
-    headline = html_esc(basis.get("headline", "")).strip()
-    body = html_esc_preserve_strong(basis.get("body", "")).strip()
-    if not headline and not body: return ""
-    headline_html = f'<div class="dv3-basis-headline">{headline}</div>' if headline else ""
-    body_html = f'<div class="dv3-basis-body">{body}</div>' if body else ""
-    return (f'<div class="dv3-basis"><div class="dv3-basis-label">&#x1F4CD; BASIS PULSE</div>'
-            f'{headline_html}{body_html}</div>')
 
 
 def render_forward_block_html(date_iso):
@@ -2023,22 +2033,6 @@ def render_yesterdays_call_block_html(yc, market_closed=False):
             f'</div>'
             f'<div class="dv3-yc-summary">{summary}</div>'
             f'{note_html}'
-            f'</div>')
-
-
-def render_spread_block_html(spread, market_closed=False):
-    """spread is briefing.get('spread_to_watch') dict."""
-    if not spread or market_closed: return ""
-    label = html_esc((spread.get("label") or "").strip())
-    level = html_esc((spread.get("level") or "").strip())
-    commentary = html_esc_preserve_strong((spread.get("commentary") or "").strip())
-    if not label and not commentary: return ""
-    label_html = f'<div class="dv3-spread-label-text">{label}</div>' if label else ""
-    level_html = f'<div class="dv3-spread-level">{level}</div>' if level else ""
-    body_html = f'<div class="dv3-spread-body">{commentary}</div>' if commentary else ""
-    return (f'<div class="dv3-spread">'
-            f'<div class="dv3-spread-label">&#x21C4; THE SPREAD TO WATCH</div>'
-            f'{label_html}{level_html}{body_html}'
             f'</div>')
 
 
@@ -2219,7 +2213,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
         if i == heat_idx: cls += " dv3-sec--heat"
         icon = html_esc(sec.get("icon", "\U0001F4CA"))
         title = html_esc(sec.get("title", ""))
-        body = html_esc_preserve_strong(sec.get("body", ""))
+        body = render_section_body_html(sec.get("body", ""))
         bottom_line = html_esc(sec.get("bottom_line", ""))
         farmer_action = html_esc(sec.get("farmer_action", ""))
         conviction = sec.get("conviction_level", "")
@@ -2312,14 +2306,12 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
 
     sponsor = briefing.get("sponsor") or build_sponsor_block()
     sponsor_html = render_sponsor_block_html(sponsor)
-    basis_html = render_basis_block_html(briefing.get("basis"), is_weekend_brief)
     forward_html = render_forward_block_html(date_iso)
     byline_html = render_byline_block_html()
     # v4.3: new render helpers
     takeaway_html = render_takeaway_block_html(briefing.get("the_takeaway", ""))
     cashbids_html = render_cashbids_footer_html(is_weekend_brief)
     yc_html = render_yesterdays_call_block_html(briefing.get("yesterdays_call"), is_weekend_brief)
-    spread_html = render_spread_block_html(briefing.get("spread_to_watch"), is_weekend_brief)
     thread_html = render_thread_marker_html(briefing.get("weekly_thread"), is_weekend_brief)
     sponsor_attr_html = render_sponsor_attribution_html(sponsor)
     # v4.4: outside_the_pit (news in the calculus, not in today's prices)
@@ -2456,6 +2448,11 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-sec-icon{{font-size:1.3rem;flex-shrink:0}}
 .dv3-sec-title{{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);flex:1}}
 .dv3-sec-conviction{{font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .45rem;border-radius:3px;white-space:nowrap}}
+.dv3-sec-bullets{{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.45rem}}
+.dv3-sec-bullets li{{position:relative;padding-left:1.05rem;font-size:.92rem;line-height:1.65;color:var(--text-dim)}}
+.dv3-sec-bullets li::before{{content:"";position:absolute;left:0;top:.62em;width:.42rem;height:.42rem;border-radius:2px;background:rgba(218,165,32,.55)}}
+.dv3-sec-bullets li strong{{color:var(--text)}}
+.dv3-sec-sowhat{{margin-top:.55rem;font-size:.88rem;line-height:1.6;color:var(--text-dim);font-style:italic}}
 .dv3-sec-body{{font-size:.95rem;line-height:1.75;color:var(--text-dim);margin-bottom:.65rem}}
 .dv3-sec-body strong{{color:var(--text)}}
 .dv3-sec-bottomline{{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;color:var(--text);padding:.5rem .75rem;background:var(--surface2);border-radius:6px;border-left:3px solid var(--gold);margin-bottom:.5rem;line-height:1.45}}
@@ -2534,14 +2531,6 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-yc-summary{{font-size:.92rem;color:var(--text);line-height:1.65;font-weight:600;margin-bottom:.35rem}}
 .dv3-yc-note{{font-size:.85rem;color:var(--text-dim);line-height:1.65}}
 
-/* SPREAD TO WATCH, sits between sections and basis */
-.dv3-spread{{background:linear-gradient(135deg,var(--surface) 0%,rgba(132,89,176,.04) 100%);border:2px solid rgba(132,89,176,.28);border-radius:8px;padding:1.1rem 1.3rem;margin:1.5rem 0 1.5rem}}
-.dv3-spread-label{{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9b7fc4;margin-bottom:.5rem}}
-.dv3-spread-label-text{{font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.3rem;letter-spacing:-.005em}}
-.dv3-spread-level{{font-family:'JetBrains Mono',monospace;font-size:.86rem;font-weight:700;color:var(--gold);margin-bottom:.5rem;letter-spacing:.02em}}
-.dv3-spread-body{{font-size:.9rem;line-height:1.7;color:var(--text-dim)}}
-.dv3-spread-body strong{{color:var(--text)}}
-
 .dv3-sponsor--house{{border-style:dashed;border-color:rgba(218,165,32,.34)}}
 .dv3-sponsor-label-row{{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.65rem;flex-wrap:wrap}}
 .dv3-sponsor-label{{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);padding:.2rem .6rem;border:1px solid rgba(218,165,32,.42);border-radius:3px;background:rgba(218,165,32,.06)}}
@@ -2551,11 +2540,6 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-sponsor-cta{{display:inline-flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;color:#0a1a0a;background:var(--gold);padding:.65rem 1.05rem;border-radius:6px;transition:background .15s,transform .1s;min-height:44px}}
 .dv3-sponsor-cta:hover{{background:#c9941d;transform:translateY(-1px)}}
 .dv3-sponsor-disclosure{{font-size:.66rem;color:var(--text-muted);margin-top:.7rem;letter-spacing:.02em;line-height:1.5}}
-.dv3-basis{{background:linear-gradient(135deg,var(--surface) 0%,rgba(185,122,58,.04) 100%);border:2px solid rgba(185,122,58,.28);border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:2rem}}
-.dv3-basis-label{{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#c98a4a;margin-bottom:.55rem}}
-.dv3-basis-headline{{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.4rem;line-height:1.4}}
-.dv3-basis-body{{font-size:.92rem;line-height:1.75;color:var(--text-dim)}}
-.dv3-basis-body strong{{color:var(--text)}}
 .dv3-forward{{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;background:rgba(58,139,60,.05);border:1px solid rgba(58,139,60,.22);border-radius:8px;margin:1.25rem 0 .75rem;flex-wrap:wrap}}
 .dv3-forward-icon{{font-size:1.5rem;flex-shrink:0;line-height:1}}
 .dv3-forward-content{{flex:1;min-width:200px}}
@@ -2590,16 +2574,14 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
       {"<p class='dv3-subheadline'>" + subheadline + "</p>" if subheadline else ""}
       {thread_html}
       {surprise_html}
-      <p class="dv3-lead">{lead}</p>
       {takeaway_html}
+      <p class="dv3-lead">{lead}</p>
     </header>
     {sparks_html}
     {topbar_html}
     {sponsor_html}
     {yc_html}
     <div class="dv3-sections">{sections_html}</div>
-    {spread_html}
-    {basis_html}
     {tmyk_html}
     {watch_html}
     {outside_pit_html}
@@ -3322,8 +3304,7 @@ def sanitize_weekend_blocks(briefing, market_status):
     weekday data is untouched."""
     if not market_status.get("is_closed"):
         return briefing
-    weekend_disallowed = ["yesterdays_call", "spread_to_watch",
-                          "weekly_thread", "basis"]
+    weekend_disallowed = ["yesterdays_call", "weekly_thread"]
     for key in weekend_disallowed:
         if key in briefing:
             briefing[key] = {}
@@ -3331,7 +3312,7 @@ def sanitize_weekend_blocks(briefing, market_status):
 
 
 def main():
-    print("=== AGSIST Daily Briefing Generator v4.6.3 ===")
+    print("=== AGSIST Daily Briefing Generator v5.0 (the diet) ===")
     print(f"  Time: {datetime.now().isoformat()}")
     market_status = get_market_status()
     if market_status["is_closed"]:
@@ -3476,8 +3457,6 @@ def main():
     if briefing.get("yesterdays_call", {}).get("summary"):
         outcome = briefing["yesterdays_call"].get("outcome", "?")
         print(f"  Yesterday's call assessed: {outcome.upper()}")
-    if briefing.get("spread_to_watch", {}).get("label"):
-        print(f"  Spread to watch: {briefing['spread_to_watch']['label']}")
     wt = briefing.get("weekly_thread") or {}
     if wt.get("question"):
         print(f"  Weekly thread day {wt.get('day','?')}: {wt['question'][:60]}...")

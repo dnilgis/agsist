@@ -51,6 +51,24 @@ def md(s):
     return out
 
 
+def md_body(s):
+    """v5.0 briefing diet: section bodies arrive as '- ' bullet lines.
+    Render as a tight inline-styled <ul> (index.html carries no bullet CSS);
+    old paragraph bodies fall through to plain md()."""
+    lines = [ln.strip() for ln in (s or "").split("\n") if ln.strip()]
+    bullets = [ln[2:].strip() for ln in lines if ln.startswith("- ")]
+    if not bullets:
+        return md(s)
+    rest = [ln for ln in lines if not ln.startswith("- ")]
+    lis = "".join(
+        '<li style="position:relative;padding-left:1rem;margin:0 0 .35rem">'
+        '<span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;'
+        'border-radius:2px;background:rgba(218,165,32,.55)"></span>'
+        + md(b) + "</li>" for b in bullets)
+    tail = "".join('<div style="margin-top:.4rem;font-style:italic">' + md(r) + "</div>" for r in rest)
+    return '<ul style="list-style:none;margin:0;padding:0">' + lis + "</ul>" + tail
+
+
 def ordinal(n):
     n = int(n)
     if 10 <= n % 100 <= 20:
@@ -129,7 +147,7 @@ def main():
             "</div>", esc(sec.get("title", "")), f"sec{i}-title")
         html, _ = replace_inner(
             html, rf'<div id="daily-section-{i}-body" class="daily-sec-text">',
-            "</div>", md(sec.get("body", "")), f"sec{i}-body")
+            "</div>", md_body(sec.get("body", "")), f"sec{i}-body")
     baked.append(f"{min(len(sections), MAX_SECTIONS)} sections")
 
     # ── The Read (price-stats) ───────────────────────────────────────
