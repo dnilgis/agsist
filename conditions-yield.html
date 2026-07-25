@@ -196,6 +196,42 @@
   Good+Excellent rating has explained, for every state, at every week of the season, since 2000.
   <span id="cy-seed"><!--SEED:cystats-->week 28 of 2026: corn ratings currently explain 23% of Iowa&rsquo;s final yield, 64% of Illinois&rsquo;s, 79% of North Carolina&rsquo;s &middot; by week 39 Illinois peaks at 76% &middot; fits vs detrended yield, 2000&ndash;2025, n&ge;15 &middot; data refreshed 2026-07-18<!--/SEED--></span></p>
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone here second-guesses Monday&rsquo;s number &mdash; one category-exclusive slot. <a href="/sponsor?slot=conditions-yield&amp;utm_source=conditions-yield&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <section id="cy-nowcast" style="display:none;background:linear-gradient(135deg,#101415 0%,rgba(212,162,63,.05) 100%);border:2px solid rgba(212,162,63,.35);border-radius:12px;padding:18px 20px;margin:18px 0">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#d4a23f">AGSIST Yield Nowcast &mdash; where these fits point right now</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:#8a948f" id="cyn-week"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px">
+      <div style="background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px" id="cyn-corn"></div>
+      <div style="background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px" id="cyn-beans"></div>
+    </div>
+    <div style="font-size:.78rem;color:#8a948f;line-height:1.65;margin-top:10px">Every state&rsquo;s fit on this page, pointed at this week&rsquo;s ratings and weighted by planted acres. The band is the 80th percentile of the model&rsquo;s own misses at this week, leave-one-year-out &mdash; it earns its width from the backtest below it, and it tightens as the season ages. Each weekly number is kept and graded against USDA&rsquo;s final yield in January, misses included.</div>
+  </section>
+  <script>
+  (function(){
+    fetch('/data/yield-nowcast.json').then(function(r){return r.ok?r.json():null;}).then(function(d){
+      if(!d||!d.crops)return;
+      var box=document.getElementById('cy-nowcast'); if(!box)return;
+      function cell(id,label,c){
+        var el=document.getElementById(id); if(!el||!c)return;
+        var diff=c.nowcast-c.trend;
+        var vs=diff>0.4?'<span style="color:#5fc28a;font-weight:700">\u25B2 '+Math.abs(diff).toFixed(1)+' above trend</span>'
+              :diff<-0.4?'<span style="color:#e0685f;font-weight:700">\u25BC '+Math.abs(diff).toFixed(1)+' below trend</span>'
+              :'<span style="color:#b9c2bd;font-weight:700">\u2248 on trend</span>';
+        el.innerHTML='<div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a948f;margin-bottom:4px">'+label+'</div>'
+          +'<div style="font-family:\'JetBrains Mono\',monospace;font-size:1.9rem;font-weight:800;color:#e6ebe9;line-height:1">'+c.nowcast.toFixed(1)+' <span style="font-size:.8rem;font-weight:400;color:#8a948f">bu/ac</span></div>'
+          +'<div style="font-family:\'JetBrains Mono\',monospace;font-size:.72rem;color:#8a948f;margin-top:5px">80% band \u00b1'+c.band80.toFixed(1)+' \u00b7 trend '+c.trend.toFixed(1)+'</div>'
+          +'<div style="font-size:.75rem;margin-top:5px">'+vs+'</div>'
+          +'<div style="font-size:.66rem;color:#8a948f;margin-top:5px">backtest at this week: MAE '+c.mae.toFixed(1)+' vs '+c.trend_mae.toFixed(1)+' trend-only ('+c.skill_pct+'% better), '+c.backtest_years+' yrs, '+c.states+' states</div>';
+      }
+      cell('cyn-corn','Corn \u2014 2026 national yield',d.crops.corn);
+      cell('cyn-beans','Soybeans \u2014 2026 national yield',d.crops.soybeans);
+      var wk=document.getElementById('cyn-week');
+      if(wk&&d.crops.corn)wk.textContent='ratings week ending '+d.crops.corn.week_ending+' \u00b7 updates Tuesdays';
+      box.style.display='block';
+    }).catch(function(){});
+  })();
+  </script>
   <section class="vp-ver" aria-live="polite">
     <div><select id="vp-sel" aria-label="Pick a state"></select><div class="vp-geo" id="vp-geo"></div></div>
     <div class="vp-big" id="vp-big">&hellip;</div>
