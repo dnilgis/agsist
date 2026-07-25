@@ -756,6 +756,10 @@ function fmtPrice(val, dec, grain, suffix, prefix, comma) {
   return str;
 }
 
+// Farmers read the move in cents first, percent second ("corn's down 16 and a
+// quarter") — a reader called this out on 2026-07-20. Grains print quarter-cent
+// fractions like the pit did; everything else prints the plain point move.
+function fmtCentsDiff(d){var a=Math.abs(d),w=Math.floor(a),f=Math.round((a-w)*4);if(f===4){w++;f=0;}var fr=f===1?'\u00bc':f===2?'\u00bd':f===3?'\u00be':'';return (w||!fr?w:'')+fr+'\u00a2';}
 function fmtChange(close, open, grain, netChg, pctChg) {
   var c = parseFloat(close), o = parseFloat(open);
   if (isNaN(c) || isNaN(o)) return {text:'--', cls:'nc'};
@@ -763,8 +767,9 @@ function fmtChange(close, open, grain, netChg, pctChg) {
   var pct   = pctChg !== undefined && pctChg !== null ? parseFloat(pctChg) : (o !== 0 ? (diff/o)*100 : 0);
   var dir   = diff > 0 ? 'up' : diff < 0 ? 'dn' : 'nc';
   var arrow = diff > 0 ? '\u25B2' : diff < 0 ? '\u25BC' : '\u2014';
-  var sign  = diff > 0 ? '+' : '';
-  return {text: arrow + ' ' + sign + pct.toFixed(1) + '%', cls: dir};
+  var sign  = diff > 0 ? '+' : diff < 0 ? '\u2212' : '';
+  var mv    = grain ? fmtCentsDiff(diff) : Math.abs(diff).toFixed(2);
+  return {text: arrow + ' ' + sign + mv + ' (' + sign + Math.abs(pct).toFixed(1) + '%)', cls: dir};
 }
 
 function fmtTickerChange(close, open, grain, netChg, pctChg) {
@@ -774,7 +779,8 @@ function fmtTickerChange(close, open, grain, netChg, pctChg) {
   var pct   = pctChg !== undefined && pctChg !== null ? parseFloat(pctChg) : (o !== 0 ? (diff/o)*100 : 0);
   var dir   = diff > 0 ? 'up' : diff < 0 ? 'dn' : 'nc';
   var arrow = diff > 0 ? '\u25B2' : diff < 0 ? '\u25BC' : '';
-  return {text: arrow + ' ' + Math.abs(pct).toFixed(2) + '%', cls: dir};
+  var mv    = grain ? fmtCentsDiff(diff) : Math.abs(diff).toFixed(2);
+  return {text: arrow + ' ' + mv + ' \u00b7 ' + Math.abs(pct).toFixed(1) + '%', cls: dir};
 }
 
 function fmtTickerPrice(val, grain, dec, prefix, comma) {
