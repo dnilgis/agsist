@@ -1,5 +1,7 @@
 /**
- * AGSIST subscriptions worker v4.0 — daily-briefing list + HAIL ALERT watch areas.
+ * AGSIST subscriptions worker v4.1 — daily-briefing list + HAIL ALERT watch areas.
+ * v4.1 (2026-07-20): /alert-list now sends Access-Control-Allow-Origin:* (token-gated
+ *   already) so the private subscriber dashboard can read it in-browser.
  * Supersedes v3.2 entirely (all routes intact); paste over the deployed worker.
  *
  * v4.0 (2026-07-18): RFC 8058 unsubscribe split — THE scanner fix.
@@ -207,7 +209,9 @@ export default {
           out.push(rec);
         }
       }
-      return json(out);
+      // v4.1 (2026-07-20): open CORS like /list — the endpoint is already
+      // token-gated, and Sig's local subscriber dashboard reads it in-browser.
+      return json(out, 200, { "Access-Control-Allow-Origin": "*" });
     }
 
     if (path === "/flag") {
