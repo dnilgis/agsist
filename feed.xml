@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 24 Jul 2026 20:59:42 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 25 Jul 2026 12:05:52 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN DROPS 5%; BEANS HIT 52-WEEK HIGH</title>
+      <link>https://agsist.com/daily/2026-07-25</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-25</guid>
+      <pubDate>Sat, 25 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Friday handed producers two markets moving hard in opposite directions. Corn fell 24½ cents to $4.64, its biggest single-session drop in months, while soybeans closed at $12.48, at the top of their 52-week range on China buying and pollination heat. The week ends with the belt split wide open: beans are the crop the market is paying for right now.
+A brutal Friday for corn and wheat, a triumphant one for soybeans, and hogs had their biggest single-session move of the year.
+• Corn Takes a Hard Friday
+• Beans Own the Heat Story
+  → Old-crop beans still in storage: $12.48 nearby at the 52-week high is the pricing window this week called. Price it before Monday's crop progress report adds uncertainty.
+• Cattle and Hogs Diverge
+Read more: https://agsist.com/daily/2026-07-25</description>
+    </item>
     <item>
       <title>WHEAT DROPS 3%; CATTLE BOUNCE INTO COF</title>
       <link>https://agsist.com/daily/2026-07-24</link>
@@ -392,19 +405,6 @@ Corn and beans barely moved Friday, but a 13% oats drop and incoming Heartland h
   → If you have unpriced oats in storage, evaluate today's basis against your cost of carry. The fund exit may not be finished.
 • CATTLE HOLD; MILK FALLS HARD
 Read more: https://agsist.com/daily/2026-06-26</description>
-    </item>
-    <item>
-      <title>EXPORT SALES REPORT DUE; CORN STABILIZES AFTER 6% BREAK</title>
-      <link>https://agsist.com/daily/2026-06-25</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-25</guid>
-      <pubDate>Thu, 25 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Corn climbed back 2 cents to $4.07 Thursday morning, a modest recovery after Wednesday's continuation of the prior session's hard break, and the market is essentially holding its breath until USDA's weekly export sales land at 7:30 AM CT. Traders have been optimistic about Chinese soybean demand all week without a single announced sale to back it up, so today's report is either confirmation or a cold shower. The 2026 planting season, behind the average through May before catching up between rain systems, put pollination-window weather front and center now, and one number in the export report will reset the whole narrative.
-Nearby corn adds 2 cents as USDA weekly export sales hit the wire at 7:30 AM CT, with China soybean demand the number traders are watching.
-• CORN STEADIES, EXPORT SALES DECIDE
-• BEANS POSITION AHEAD OF REPORT
-  → If you have unpriced new-crop beans, hold through 7:30 AM CT. If the export number confirms China buying above 500K MT, November at $11.38 has room to run. If it misses, price into any rally.
-• OATS BREAK HARD OVERNIGHT
-Read more: https://agsist.com/daily/2026-06-25</description>
     </item>
   </channel>
 </rss>

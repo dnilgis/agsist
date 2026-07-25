@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-07-25",
+      "date_display": "Saturday, July 25, 2026",
+      "headline": "CORN DROPS 5%; BEANS HIT 52-WEEK HIGH",
+      "teaser": "Corn lost 5% Friday. Beans hit a 52-week high. The split tells you everything.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-07-25",
+      "market_closed": true
+    },
+    {
       "date": "2026-07-24",
       "date_display": "Friday, July 25, 2026",
       "headline": "WHEAT DROPS 3%; CATTLE BOUNCE INTO COF",
@@ -1521,6 +1532,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-24T20:59:41.975381+00:00",
-  "count": 134
+  "updated": "2026-07-25T12:05:50.710807+00:00",
+  "count": 135
 }
