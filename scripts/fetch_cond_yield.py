@@ -43,6 +43,7 @@ from datetime import datetime, timezone
 API = "https://quickstats.nass.usda.gov/api/api_GET/"
 KEY = os.environ.get("NASS_API_KEY", "").strip()
 OUT = "data/cond-yield/fit.json"
+PAIRS_OUT = "data/cond-yield/pairs.json"   # full-history (2000+) pairs at the current week, feeds the Yield Nowcast
 FIRST_YEAR = 2000
 WEEKS = range(22, 41)          # ISO weeks late-May .. early-Oct
 MIN_N = 15
@@ -159,6 +160,26 @@ def shape(ge, yields):
     return out
 
 
+def emit_pairs(ge, yields):
+    """Full-history (year, ge, final_yield) pairs at the CURRENT ISO week —
+    the Yield Nowcast's food. 26 paired years beat the 16 available from the
+    repo-local NASS mirrors, which is the whole point of emitting this here."""
+    newest = max(k for st in ge for k in ge[st])          # (yr, wk) globally
+    cur_yr, cur_wk = newest
+    states = {}
+    latest_ge = {}
+    for st in sorted(ge):
+        yy = yields.get(st, {})
+        rows = [[int(y), ge[st][(int(y), cur_wk)], yy[y]] for y in yy
+                if (int(y), cur_wk) in ge[st] and int(y) < cur_yr]
+        rows.sort()
+        if len(rows) >= 12:
+            states[st] = rows
+        if (cur_yr, cur_wk) in ge[st]:
+            latest_ge[st] = round(ge[st][(cur_yr, cur_wk)], 1)
+    return {"year": cur_yr, "week": cur_wk, "states": states, "latest_ge": latest_ge}
+
+
 def main():
     if "--selftest" in sys.argv:
         return selftest()
@@ -172,9 +193,11 @@ def main():
                     "G+E point."),
            "min_n": MIN_N, "crops": {}}
     total = 0
+    cached = {}
     for slug, (desc, ysd) in CROPS.items():
         print(f"{slug}:")
         ge, yields = collect(desc, ysd, api_get)
+        cached[slug] = (ge, yields)
         pkg = shape(ge, yields)
         if pkg:
             out["crops"][slug] = {"states": pkg}
@@ -185,6 +208,11 @@ def main():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     json.dump(out, open(OUT, "w"), separators=(",", ":"))
     print(f"wrote {OUT} ({total} state-crop fits)")
+    pairs_out = {"generated": out["generated"],
+                 "note": "Full-history (2000+) same-week G+E vs final-yield pairs for the Yield Nowcast. Rebuilt weekly; current year excluded from pairs (it has no final yield yet).",
+                 "crops": {slug: emit_pairs(*cached[slug]) for slug in cached}}
+    json.dump(pairs_out, open(PAIRS_OUT, "w"), separators=(",", ":"))
+    print(f"wrote {PAIRS_OUT} ({sum(len(c['states']) for c in pairs_out['crops'].values())} state panels)")
 
 
 def selftest():
