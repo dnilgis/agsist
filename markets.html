@@ -202,7 +202,7 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
     var status=document.getElementById('price-data-status');
     if(status&&data.fetched){
       var mins=Math.round((Date.now()-new Date(data.fetched).getTime())/60000);
-      status.textContent=mins<2?'Just updated':mins<60?mins+' min ago':Math.round(mins/60)+'h ago';
+      status.textContent=mins<2?'Just updated':mins<60?mins+' min ago':mins<2880?Math.round(mins/60)+'h ago':Math.round(mins/1440)+'d ago';
     }
   }).catch(function(){
     var s=document.getElementById('price-data-status');
