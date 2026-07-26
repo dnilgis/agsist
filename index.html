@@ -712,7 +712,7 @@
 </style>
 <section class="daily-hero" id="daily-hero" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full">
-    <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><a class="teaser-sponsor empty-state" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"><span class="teaser-sponsor-dot"></span>Sponsor this &rarr;<span class="teaser-sponsor-tag">$150/wk</span></a><span class="teaser-action">Read Today's Briefing &#x2193;</span></div>
+    <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><a class="teaser-sponsor empty-state" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"><span class="teaser-sponsor-dot"></span>Sponsor this &rarr;<span class="teaser-sponsor-tag">$100/wk</span></a><span class="teaser-action">Read Today's Briefing &#x2193;</span></div>
     <span class="teaser-preview" id="daily-teaser-text">Today's ag market briefing &mdash; click to read</span>
   </div>
   <div class="daily-full" id="daily-full">
@@ -740,7 +740,7 @@
                 <span class="dsp-tag dsp-tag-founding">Founding Sponsor &middot; 1 Slot &middot; First 2 Weeks Free</span>
               </div>
               <h2 class="dsp-headline">Sponsor the AGSIST Daily Briefing.</h2>
-              <p class="dsp-pitch">One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations &mdash; read before the market open. <strong>First 2 weeks free, then $150/week &mdash; no minimum, cancel anytime.</strong></p>
+              <p class="dsp-pitch">One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations &mdash; read before the market open. <strong>First 2 weeks free, then $100/week &mdash; founding rate locked 12 months. No minimum, cancel anytime.</strong></p>
               <div class="dsp-actions">
                 <a class="dsp-cta-primary" href="/sponsor"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> See the founding sponsor pitch &rarr;</a>
               </div>
@@ -976,6 +976,11 @@
   <h1 class="home-h1">Corn, Soybean &amp; Wheat Prices, Farm Weather &amp; Cash Bids</h1>
   <div class="dash-grid">
     <div class="fade-up" id="f1">
+      <div class="signup--compact fade-up" id="signup-compact" style="display:none">
+    <span class="scu-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span>
+    <span class="scu-text"><strong>Free weekday briefing</strong> &mdash; markets, weather, one number to know before the market open &mdash; for farmers across the US.</span>
+    <div class="scu-form"><input type="email" class="scu-input" id="compact-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for daily briefing"><button class="scu-btn" id="btn-compact-signup">Subscribe Free &rarr;</button></div>
+
       <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><rect width="20" height="12" x="2" y="6" rx="2" /> <circle cx="12" cy="12" r="2" /> <path d="M6 12h.01M18 12h.01" /></svg>Cash Bids &amp; Basis <span style="font-size:.62rem;font-weight:600;color:var(--gold);letter-spacing:.04em">+ Worth the Drive&trade;</span></h2><a href="/cash-bids" class="sec-all">Find Elevators &rarr;</a></div>
       <div class="card"><div class="card-body">
         <div id="bids-geo-bar" style="display:flex;align-items:center;gap:.55rem;margin-bottom:.6rem;font-size:.75rem;color:var(--text-dim)">
@@ -1203,6 +1208,9 @@
     </div>
   </div>
   <div class="price-cards-section fade-up" id="f-prices">
+    <button class="scu-dismiss" id="btn-compact-dismiss" aria-label="Dismiss signup"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg> No thanks</button>
+  </div>
+
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M9 5v4" /> <rect width="4" height="6" x="7" y="9" rx="1" /> <path d="M9 15v2" /> <path d="M17 3v2" /> <rect width="4" height="8" x="15" y="5" rx="1" /> <path d="M17 13v3" /> <path d="M3 3v16a2 2 0 0 0 2 2h16" /></svg>Market Prices</h2><div style="display:flex;align-items:center;gap:.75rem"><span id="prices-age" style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text-muted)">Updated every 30 min</span><a href="/corn-futures-prices" class="sec-all">All Charts &rarr;</a></div></div>
     <div class="pc-section-lbl"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Grains &mdash; Key Contracts</div>
     <div class="price-cards-grid">
@@ -1450,12 +1458,6 @@
       <div class="signup-form" id="form-email" role="tabpanel"><div class="signup-row"><input type="text" class="signup-input" placeholder="First name" autocomplete="given-name" aria-label="First name"><input type="email" class="signup-input" placeholder="your@email.com" autocomplete="email" aria-label="Email address" required><button class="signup-submit" id="btn-email-signup">Subscribe &rarr;</button></div><div class="signup-disc">Available at no charge. Unsubscribe any time. We never sell your data. <a href="/privacy">Privacy Policy</a>.</div></div>
       <div class="signup-form" id="form-sms" style="display:none" role="tabpanel"><div class="signup-row"><input type="tel" class="signup-input" placeholder="(555) 555-5555" autocomplete="tel" aria-label="Phone number" required><button class="signup-submit" id="btn-sms-signup">Text Me Daily &rarr;</button></div><div class="sms-note"><span style="font-size:1.1rem;flex-shrink:0" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-file-text"/></svg></span><span>Each morning you'll receive a text with a link to today's PDF briefing. Standard messaging rates apply. Text STOP anytime.</span></div><div class="signup-disc" style="margin-top:.4rem"><a href="/privacy">Privacy Policy</a> &middot; <a href="/legal/terms">Terms</a></div></div>
     </div>
-  </div>
-  <div class="signup--compact fade-up" id="signup-compact" style="display:none">
-    <span class="scu-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span>
-    <span class="scu-text"><strong>Free weekday briefing</strong> &mdash; markets, weather, one number to know before the market open &mdash; for farmers across the US.</span>
-    <div class="scu-form"><input type="email" class="scu-input" id="compact-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for daily briefing"><button class="scu-btn" id="btn-compact-signup">Subscribe Free &rarr;</button></div>
-    <button class="scu-dismiss" id="btn-compact-dismiss" aria-label="Dismiss signup"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg> No thanks</button>
   </div>
   <div class="signup--slim fade-up" id="signup-slim" style="display:none;padding-bottom:max(.5rem,env(safe-area-inset-bottom))">
     <span class="scs-text">Get the AGSIST Daily briefing every weekday before the market open &mdash; markets, weather, one number to know. Free for farmers everywhere.</span>
@@ -2204,9 +2206,12 @@ gj('/data/markets.json').then(function(cached){
     try{var n=parseInt(localStorage.getItem('agsist_visits')||'0',10)+1;localStorage.setItem('agsist_visits',String(n));}catch(e){}
     if(isSignedUp())return;
     var visits=(function(){try{return parseInt(localStorage.getItem('agsist_visits')||'0',10);}catch(e){return 0;}})();
+    // Jul 2026: email_signup fired once in 28 days — the compact one-field
+    // signup now shows to EVERY non-subscriber, high on the page under the
+    // briefing (it used to hide until visit #25, buried at the bottom).
+    if(!isDismissed('agsist_signup_compact_dismissed')){var el2=document.getElementById('signup-compact');if(el2)el2.style.display='flex';}
     if(visits<=24){var el=document.getElementById('signup-full');if(el)el.style.display='block';}
-    else if(visits<=49){if(!isDismissed('agsist_signup_compact_dismissed')){var el2=document.getElementById('signup-compact');if(el2)el2.style.display='flex';}}
-    else{if(!isDismissed('agsist_signup_slim_dismissed')){var el3=document.getElementById('signup-slim');if(el3)el3.style.display='flex';}}
+    else if(visits>=50&&!isDismissed('agsist_signup_slim_dismissed')){var el3=document.getElementById('signup-slim');if(el3)el3.style.display='flex';}
   })();
   var btnCompactDismiss=document.getElementById('btn-compact-dismiss');if(btnCompactDismiss)btnCompactDismiss.addEventListener('click',function(){setDismissed('agsist_signup_compact_dismissed');var el=document.getElementById('signup-compact');if(el)el.style.display='none';});
   var btnSlimDismiss=document.getElementById('btn-slim-dismiss');if(btnSlimDismiss)btnSlimDismiss.addEventListener('click',function(){setDismissed('agsist_signup_slim_dismissed');var el=document.getElementById('signup-slim');if(el)el.style.display='none';});
