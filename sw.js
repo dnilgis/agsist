@@ -23,7 +23,10 @@
 // so bare JS/HTML deploys (field-scout.js etc.) show up immediately instead of
 // staying stale for up to 10 min behind the browser HTTP cache. Version bump also
 // clears any stale entries cached during today's rapid deploys.
-var CACHE_VERSION = 7;
+// v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
+// nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
+// pinned to old ?v= assets by cacheFirst; this clears every device's cache.
+var CACHE_VERSION = 8;
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;
