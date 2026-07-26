@@ -1,12 +1,19 @@
 {
- "updated": "2026-07-25T12:05:52+00:00",
- "total": 69,
+ "updated": "2026-07-26T12:06:52+00:00",
+ "total": 70,
  "played_out": 27,
- "didnt": 37,
+ "didnt": 38,
  "pending": 5,
- "hit_rate": 42.2,
+ "hit_rate": 41.5,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-07-25",
+   "judged": "2026-07-26",
+   "call": "Called beans up through $12.54 nearby. Beans closed flat at $12.48 -- the level was not touched.",
+   "outcome": "didnt",
+   "note": "Miss. Beans held the 52-week high but did not extend. The heat-weather bid is real; the timing was one session early."
+  },
   {
    "made": "2026-07-23",
    "judged": "2026-07-24",

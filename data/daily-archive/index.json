@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-07-26",
+      "date_display": "Sunday, July 26, 2026",
+      "headline": "CORN DROPS 5%, BEANS AT 52-WEEK HIGH: WEEK AHEAD",
+      "teaser": "Corn's worst day in months meets beans' best level in a year. Something has to give.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-07-26",
+      "market_closed": true,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-25",
       "date_display": "Saturday, July 25, 2026",
       "headline": "CORN DROPS 5%; BEANS HIT 52-WEEK HIGH",
@@ -1532,6 +1544,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-25T12:05:50.710807+00:00",
-  "count": 135
+  "updated": "2026-07-26T12:06:49.533147+00:00",
+  "count": 136
 }
