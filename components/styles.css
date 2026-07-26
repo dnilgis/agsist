@@ -276,8 +276,10 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .pc-contract { font-family: 'JetBrains Mono', monospace; font-size: .62rem; color: var(--text-muted); background: var(--surface2); padding: .15rem .45rem; border-radius: 3px; white-space: nowrap; flex-shrink: 0; }
 .pc-price { font-family: 'JetBrains Mono', monospace; font-size: 2.4rem; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: .35rem; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pc-change { display: flex; align-items: center; gap: .5rem; margin-bottom: .1rem; flex-wrap: nowrap; overflow: hidden; min-height: 1.3em; }
-.pc-chg-val { font-family: 'JetBrains Mono', monospace; font-size: .85rem; font-weight: 700; white-space: nowrap; }
-.pc-chg-val.up { color: var(--green) } .pc-chg-val.dn { color: var(--red) } .pc-chg-val.nc { color: var(--text-muted) }
+.pc-chg-val { font-family: 'JetBrains Mono', monospace; font-size: .98rem; font-weight: 800; letter-spacing: .01em; white-space: nowrap; padding: .08rem .45rem; border-radius: 6px; }
+.pc-chg-val.up { color: #8ceeb2; background: rgba(var(--green-rgb),.14); border: 1px solid rgba(var(--green-rgb),.3); }
+.pc-chg-val.dn { color: #ffa198; background: rgba(224,104,95,.14); border: 1px solid rgba(224,104,95,.32); }
+.pc-chg-val.nc { color: var(--text-muted); padding: .08rem 0; }
 .pc-prev { font-family: 'JetBrains Mono', monospace; font-size: .66rem; color: var(--text-muted); margin-top: .15rem; letter-spacing: .01em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-height: 1.1em; line-height: 1.1; }
 .pc-range { margin-top: auto; padding-top: .45rem; border-top: 1px solid var(--border) }
 .pc-range-labels { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: .62rem; color: var(--text-muted); margin-bottom: .3rem; }
@@ -552,12 +554,12 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
   .price-cards-grid-2 { grid-template-columns: repeat(2, 1fr); gap: .6rem }
   .pc { padding: .6rem .65rem } .pc-head { margin-bottom: .4rem } .pc-name { font-size: .72rem }
   .pc-contract { font-size: .58rem; padding: .1rem .3rem } .pc-price { font-size: 1.5rem }
-  .pc-sm .pc-price { font-size: 1.25rem } .pc-chg-val { font-size: .72rem } .pc-prev { font-size: .6rem }
+  .pc-sm .pc-price { font-size: 1.25rem } .pc-chg-val { font-size: .85rem } .pc-prev { font-size: .6rem }
   .pc-range-labels { font-size: .55rem } .pc-range-dot { width: 9px; height: 9px } .pc-section-lbl { font-size: .6rem }
   .footer-bottom { flex-direction: column; align-items: center; gap: .3rem }
   .pc-name { font-size: .68rem; gap: .3rem; } .pc-name-icon { font-size: .85rem; }
   .pc-contract { font-size: .52rem; padding: .08rem .25rem; }
-  .pc-sm .pc-price { font-size: 1.15rem; } .pc-prev { font-size: .55rem; } .pc-chg-val { font-size: .68rem; white-space: nowrap; }
+  .pc-sm .pc-price { font-size: 1.15rem; } .pc-prev { font-size: .55rem; } .pc-chg-val { font-size: .8rem; white-space: nowrap; }
 }
 @media (max-width: 380px) {
   .price-cards-grid { grid-template-columns: repeat(2, 1fr); gap: .5rem }
@@ -569,7 +571,7 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
   .daily-lead { display: none }
   .daily-sections > .daily-sec:nth-child(n+3) { display: none }
   .teaser-preview { font-size: .6rem } .daily-teaser { padding: .4rem .75rem }
-  .pc-sm .pc-price { font-size: 1.05rem; } .pc-chg-val { font-size: .62rem; } .pc-prev { font-size: .5rem; min-height: .8em; }
+  .pc-sm .pc-price { font-size: 1.05rem; } .pc-chg-val { font-size: .74rem; } .pc-prev { font-size: .5rem; min-height: .8em; }
 }
 
 /* ── DAILY BRIEFING v3 — Overnight Surprises, Conviction, Actions ── */

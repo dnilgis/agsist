@@ -1057,7 +1057,7 @@ function fetchKalshiMarkets() {
       }
       if (data.fetched) {
         var mins = Math.round((Date.now() - new Date(data.fetched).getTime()) / 60000);
-        var ageStr = mins < 2 ? 'Just updated' : mins < 60 ? mins + 'min ago' : Math.round(mins / 60) + 'h ago';
+        var ageStr = mins < 2 ? 'Just updated' : mins < 60 ? mins + 'min ago' : mins < 2880 ? Math.round(mins / 60) + 'h ago' : Math.round(mins / 1440) + 'd ago';
         footerParts.push(ageStr);
       }
 
