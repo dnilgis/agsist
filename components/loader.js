@@ -524,3 +524,76 @@
   // Catch late-injected timer spans (e.g. from briefing strip fetches)
   setTimeout(scanAttrs, RESCAN_DELAY_MS);
 })();
+
+// ── AGSIST Daily signup bar, sitewide ─────────────────────────────────
+// July 2026 GA4: email_signup fired ONCE in 28 days while tool pages took
+// thousands of engaged sessions — because only the homepage carried a
+// signup. This bar rides the loader onto every page. House rules: never
+// for subscribers, never after a dismissal (90 days), never on the
+// homepage (it has its own tiers), /daily (its own pitch), or
+// /field-scout (bottom-of-screen map controls). Shows only after real
+// engagement: 25s on page or 45% scrolled, whichever comes first.
+(function () {
+  var p = location.pathname.replace(/\/+$/, '') || '/';
+  if (p === '/' || p === '/index.html' || p === '/daily' || p === '/field-scout') return;
+  function subscribed() {
+    try {
+      return document.cookie.split(';').some(function (c) { return c.trim().indexOf('agsist_subscribed=') === 0; })
+        || localStorage.getItem('agsist_subscribed') === '1';
+    } catch (e) { return false; }
+  }
+  function dismissed() {
+    try { return Date.now() < +(localStorage.getItem('agsist_bar_snooze') || 0); } catch (e) { return false; }
+  }
+  if (subscribed() || dismissed()) return;
+
+  var shown = false, timer = null;
+  function build() {
+    if (shown) return; shown = true;
+    var bar = document.createElement('div');
+    bar.className = 'agsb';
+    bar.setAttribute('role', 'complementary');
+    bar.setAttribute('aria-label', 'Free daily briefing signup');
+    bar.innerHTML = '<span class="agsb-txt"><strong>AGSIST Daily</strong> — the 3-minute farm market briefing, free every weekday before the open.</span>' +
+      '<form class="agsb-form"><input type="email" class="agsb-input" placeholder="your@email.com" autocomplete="email" aria-label="Email for the free daily briefing" required>' +
+      '<button type="submit" class="agsb-btn">Get it free</button></form>' +
+      '<button type="button" class="agsb-x" aria-label="No thanks">&#10005;</button>';
+    document.body.appendChild(bar);
+    requestAnimationFrame(function () { requestAnimationFrame(function () { bar.classList.add('agsb--in'); }); });
+    try { if (typeof gtag === 'function') gtag('event', 'signup_bar_shown', { page: p }); } catch (e) {}
+
+    bar.querySelector('.agsb-x').addEventListener('click', function () {
+      try { localStorage.setItem('agsist_bar_snooze', String(Date.now() + 90 * 864e5)); } catch (e) {}
+      bar.classList.remove('agsb--in');
+      setTimeout(function () { bar.remove(); }, 400);
+    });
+    bar.querySelector('.agsb-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = bar.querySelector('.agsb-input').value.trim();
+      if (email.indexOf('@') < 1) return;
+      try {
+        var exp = new Date(); exp.setFullYear(exp.getFullYear() + 2);
+        document.cookie = 'agsist_subscribed=1;expires=' + exp.toUTCString() + ';path=/;SameSite=Lax';
+        localStorage.setItem('agsist_subscribed', '1');
+      } catch (e2) {}
+      fetch('https://agsist-subs.dnilgis.workers.dev/subscribe', {
+        method: 'POST',
+        body: JSON.stringify({ email: email, source: 'bar-' + p.slice(1, 40) })
+      }).catch(function () {});
+      try { if (typeof gtag === 'function') gtag('event', 'email_signup', { source: 'bar-' + p.slice(1, 40) }); } catch (e3) {}
+      bar.innerHTML = '<span class="agsb-ok">&#10003; You\'re in — the briefing lands before the market open, weekdays. Check spam once.</span>';
+      setTimeout(function () { bar.classList.remove('agsb--in'); setTimeout(function () { bar.remove(); }, 400); }, 4500);
+    });
+  }
+  timer = setTimeout(build, 25000);
+  function onScroll() {
+    var d = document.documentElement;
+    var max = d.scrollHeight - d.clientHeight;
+    if (max > 400 && d.scrollTop / max > 0.45) {
+      window.removeEventListener('scroll', onScroll);
+      clearTimeout(timer);
+      build();
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();

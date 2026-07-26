@@ -103,6 +103,19 @@ input, select, textarea { border-color: var(--border-2); }
 ::-webkit-scrollbar-track { background: var(--bg) }
 ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px }
 ::-webkit-scrollbar-thumb:hover { background: rgba(var(--gold-rgb),.3) }
+/* sitewide briefing-signup bar (injected by loader.js on tool pages) */
+.agsb { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9990; display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; padding: .6rem .9rem; padding-bottom: max(.6rem, env(safe-area-inset-bottom)); background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(8px); border-top: 2px solid var(--brand); transform: translateY(110%); transition: transform .35s ease; }
+.agsb.agsb--in { transform: translateY(0); }
+.agsb-txt { font-size: .82rem; color: var(--text-dim); flex: 1 1 240px; min-width: 200px; line-height: 1.45; }
+.agsb-txt strong { color: var(--text); }
+.agsb-form { display: flex; gap: .5rem; flex: 1 1 300px; }
+.agsb-input { flex: 1; min-width: 0; padding: .6rem .8rem; min-height: 44px; background: var(--surface2); border: 2px solid var(--border); border-radius: 8px; color: var(--text); font-size: 16px; }
+.agsb-input:focus { border-color: var(--brand); outline: none; }
+.agsb-btn { padding: .6rem 1rem; min-height: 44px; background: var(--brand); color: #0a1206; border: none; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; cursor: pointer; }
+.agsb-btn:hover { filter: brightness(.9); }
+.agsb-x { min-height: 44px; min-width: 44px; background: none; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer; }
+.agsb-x:hover { color: var(--text); }
+.agsb-ok { font-size: .88rem; color: var(--green); font-weight: 700; flex: 1; }
 .ag-sponsor-ribbon a[href] { display: inline-block; padding: .5rem .3rem; margin: -.4rem -.1rem; }
 .skip { position: absolute; top: -100%; left: 1rem; z-index: 9999; padding: .5rem 1rem; background: var(--brand); color: #0a1206; font-size: .875rem; font-weight: 700; border-radius: 0 0 4px 4px }
 .skip:focus { top: 0 }
