@@ -358,7 +358,7 @@ def build_state_page(st, d, s, all_states):
          "a": (f"Comparing the same {s['yoy_n']} counties published in both years, the median {plabel} rent moved "
                f"{'+' if s['yoy'] and s['yoy'] >= 0 else ''}{s['yoy']}% year over year."
                if s["yoy"] is not None else
-               "Too few counties were published in both years for an honest year-over-year figure.")},
+               "Too few counties were published in both years for a clean year-over-year figure.")},
         {"q": f"Why is my {name} county not listed?",
          "a": "USDA NASS publishes a county rate only where enough Cash Rents Survey responses came back "
               "(and the county has at least 20,000 acres of cropland plus pasture). If your county is missing, "
@@ -433,7 +433,7 @@ def build_state_page(st, d, s, all_states):
   <p class="sub">Median of counties published each year ({plabel}). Gap years are shown as gaps &mdash;
   drawing a line across them would be an invention.</p>
   {bars_html(s['hist'])}
-  <div class="rs-note"><b>Honest limits.</b> These are county <b>means from a voluntary USDA survey</b> &mdash;
+  <div class="rs-note"><b>What this can&rsquo;t tell you.</b> These are county <b>means from a voluntary USDA survey</b> &mdash;
   rents vary widely inside a county, driven by soil, drainage, field size and how badly a neighbor wants the
   ground. Year-over-year stats above compare only counties published in both years, so a county dropping out
   of the survey can&rsquo;t fake a trend. Treat any county number as the start of a conversation, not a rate card.</div>
