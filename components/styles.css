@@ -103,6 +103,7 @@ input, select, textarea { border-color: var(--border-2); }
 ::-webkit-scrollbar-track { background: var(--bg) }
 ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px }
 ::-webkit-scrollbar-thumb:hover { background: rgba(var(--gold-rgb),.3) }
+.ag-sponsor-ribbon a[href] { display: inline-block; padding: .5rem .3rem; margin: -.4rem -.1rem; }
 .skip { position: absolute; top: -100%; left: 1rem; z-index: 9999; padding: .5rem 1rem; background: var(--brand); color: #0a1206; font-size: .875rem; font-weight: 700; border-radius: 0 0 4px 4px }
 .skip:focus { top: 0 }
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px }
