@@ -1,3 +1,0 @@
-# AdSense authorization. Replace pub-2906493623732277 with your publisher ID
-# (AdSense console -> Account -> Account information -> Publisher ID)
-google.com, pub-2906493623732277, DIRECT, f08c47fec0942fa0
