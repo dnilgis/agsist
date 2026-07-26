@@ -18,7 +18,8 @@ on:
     # Each launch covers ~5.25h of 30-min fetches, so 1 successful fire = a full session.
     - cron: '17 13 * * 1-5'   # ~08:17 CT — start before the 08:30 day-session open
     - cron: '3 16 * * 1-5'    # midday recovery launch (in case the morning one was dropped)
-    - cron: '17 1 * * 2-6'    # overnight session (best-effort)
+    - cron: '2 0 * * 1-6'     # evening: 7:02 PM CT Sun-Fri — catches the Globex reopen at 7:00, runs to ~12:50 AM
+    - cron: '17 10 * * 1-5'   # pre-dawn: 5:17 AM CT Mon-Fri — overnight session trades til 7:45 AM; this hands the 6 AM briefing and early readers CURRENT prices, then the day launch takes over
 
 # Newest launch wins — a restart takes over cleanly instead of queueing a 5h job.
 concurrency:
