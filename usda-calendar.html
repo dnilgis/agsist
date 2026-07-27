@@ -67,6 +67,9 @@
     .cal-h1 span{color:var(--gold);}
     .cal-sub{font-size:.95rem;line-height:1.75;color:var(--text-dim);max-width:500px;}
     .cal-countdown{background:var(--surface);border:2px solid rgba(var(--gold-rgb),.3);border-radius:var(--r8);padding:1.4rem;text-align:center;}
+    .cal-cd-more{margin-top:.5rem;font-size:.72rem;color:var(--text-muted);}
+    .cal-cd-more a{color:var(--text-dim);text-decoration:underline;min-height:44px;display:inline-flex;align-items:center;padding:0 .2rem;}
+    .cal-cd-wpi{display:block;margin-top:.55rem;font-size:.78rem;font-weight:700;color:var(--gold);text-decoration:none;border-top:1px solid rgba(var(--gold-rgb),.18);padding-top:.55rem;}
     .cal-cd-label{display:flex;align-items:center;justify-content:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.65rem;}
     .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);animation:ldp 1.8s infinite;}
     @keyframes ldp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
@@ -228,6 +231,12 @@
         <div class="cal-cd-num" id="next-num">&mdash;</div>
         <div class="cal-cd-unit" id="next-unit"></div>
         <a class="cal-cd-cal" id="next-cal" href="#" target="_blank" rel="noopener" hidden><svg class="ic" aria-hidden="true"><use href="#i-calendar-plus"/></svg> Add to Google Calendar</a>
+        <div class="cal-cd-more">
+          <a href="/usda-calendar.ics" download="usda-reports-agsist.ics" onclick="try{gtag('event','ics_download')}catch(e){}">Apple&nbsp;/&nbsp;Outlook (.ics)</a>
+          <span aria-hidden="true">&middot;</span>
+          <a href="webcal://agsist.com/usda-calendar.ics" onclick="try{gtag('event','ics_subscribe')}catch(e){}">Subscribe &mdash; auto-updates</a>
+        </div>
+        <a class="cal-cd-wpi" id="next-wpi" href="/whats-priced-in" hidden>What are analysts expecting? &rarr;</a>
       </div>
     </div>
   </section>
@@ -469,6 +478,7 @@
       var _cd=fmtCountdown(nextTarget);
       document.getElementById('next-num').textContent=_cd.num;
       document.getElementById('next-unit').textContent=_cd.unit;
+      var wpi=document.getElementById('next-wpi');if(wpi)wpi.hidden=!(next.type==='wasde'||next.type==='supply'||next.type==='stocks'||next.type==='plantings');
       var cal=document.getElementById('next-cal');if(cal){cal.href='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('USDA: '+next.name)+'&dates='+gcalDates(next)+'&details='+encodeURIComponent((next.desc||'')+' \u2014 via AGSIST')+'&location=USDA';cal.hidden=false;cal.onclick=function(){calEvent('add_to_calendar',{report:next.name});};}
     }
 

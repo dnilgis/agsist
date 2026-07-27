@@ -1,0 +1,125 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//AGSIST//USDA Report Calendar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:USDA Reports - AGSIST
+X-WR-CALDESC:Every major USDA report date with what it moves. agsist.com/usda-calendar
+X-PUBLISHED-TTL:PT48H
+REFRESH-INTERVAL;VALUE=DURATION:PT48H
+BEGIN:VEVENT
+UID:2026-08-12-wasde-report@agsist.com
+DTSTAMP:20260727T120000Z
+DTSTART:20260812T160000Z
+DTEND:20260812T170000Z
+SUMMARY:WASDE Report
+DESCRIPTION:Monthly world supply/demand estimates - first 2026 corn/soy yield survey\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-12-crop-production@agsist.com
+DTSTAMP:20260727T120000Z
+DTSTART:20260812T160000Z
+DTEND:20260812T170000Z
+SUMMARY:Crop Production
+DESCRIPTION:First objective yield estimates for 2026 corn and soybeans\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-11-wasde-report@agsist.com
+DTSTAMP:20260727T120000Z
+DTSTART:20260911T160000Z
+DTEND:20260911T170000Z
+SUMMARY:WASDE Report
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-30-grain-stocks-sep-1@agsist.com
+DTSTAMP:20260727T120000Z
+DTSTART:20260930T160000Z
+DTEND:20260930T170000Z
+SUMMARY:Grain Stocks (Sep 1)
+DESCRIPTION:Quarterly grain stocks - critical for 2026 carry-out\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-30-small-grains-summary@agsist.com
+DTSTAMP:20260727T120000Z
+DTSTART:20260930T160000Z
+DTEND:20260930T170000Z
+SUMMARY:Small Grains Summary
+DESCRIPTION:Final 2026 winter wheat and oat production\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-09-wasde-report@agsist.com
+DTSTAMP:20260727T120000Z
+DTSTART:20261009T160000Z
+DTEND:20261009T170000Z
+SUMMARY:WASDE Report
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-09-crop-production@agsist.com
+DTSTAMP:20260727T120000Z
+DTSTART:20261009T160000Z
+DTEND:20261009T170000Z
+SUMMARY:Crop Production
+DESCRIPTION:October 2026 corn and soybean production estimates\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-10-wasde-report@agsist.com
+DTSTAMP:20260727T120000Z
+DTSTART:20261110T170000Z
+DTEND:20261110T180000Z
+SUMMARY:WASDE Report
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-10-crop-production@agsist.com
+DTSTAMP:20260727T120000Z
+DTSTART:20261110T170000Z
+DTEND:20261110T180000Z
+SUMMARY:Crop Production
+DESCRIPTION:November 2026 crop production estimates\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-10-wasde-report@agsist.com
+DTSTAMP:20260727T120000Z
+DTSTART:20261210T170000Z
+DTEND:20261210T180000Z
+SUMMARY:WASDE Report
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-15-conab-grain-survey-brazil@agsist.com
+DTSTAMP:20260727T120000Z
+DTSTART;VALUE=DATE:20260915
+SUMMARY:CONAB Grain Survey (Brazil)
+DESCRIPTION:Final 2025/26 Brazilian grain estimate - corn & soybeans - CONAB\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-15-conab-grain-survey-brazil@agsist.com
+DTSTAMP:20260727T120000Z
+DTSTART;VALUE=DATE:20261015
+SUMMARY:CONAB Grain Survey (Brazil)
+DESCRIPTION:First 2026/27 Brazilian crop estimate - new-crop soybeans & corn - CONAB\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-04-statcan-crop-production-canada@agsist.com
+DTSTAMP:20260727T120000Z
+DTSTART:20261204T133000Z
+DTEND:20261204T143000Z
+SUMMARY:StatCan Crop Production (Canada)
+DESCRIPTION:Final 2026 Canadian production - wheat\, canola\, barley - Statistics Canada\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+END:VCALENDAR
