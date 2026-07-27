@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 26 Jul 2026 21:32:43 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 27 Jul 2026 13:41:42 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>BEANS FALL $12.20 AS CROP PROGRESS LOOMS</title>
+      <link>https://agsist.com/daily/2026-07-27</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-27</guid>
+      <pubDate>Mon, 27 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Soybeans fell to $12.20 and corn slipped to $4.51 on Monday, both giving back ground they fought hard for last week. Today's crop progress report at 3 PM CT is the decider: if corn pollination ratings come in stressed, the heat premium that drove beans to 52-week highs last week reloads. If the crop looks fine, this morning's selling was the right call. Wait for 3 PM.
+Corn drops nearly 2%, soybeans give back last week's highs, and the 3 PM crop progress report decides whether the heat story still has legs.
+• Beans Give Back, Watching 3 PM
+  → Old-crop beans still unpriced: $12.20 is 90% of the 52-week range. Price before 3 PM CT if you haven't yet.
+• Corn Drops, Pollination Is Everything
+• Cattle Firm, Mexico Deal Holds
+Read more: https://agsist.com/daily/2026-07-27</description>
+    </item>
     <item>
       <title>CORN DROPS 5%, BEANS AT 52-WEEK HIGH: WEEK AHEAD</title>
       <link>https://agsist.com/daily/2026-07-26</link>
@@ -391,20 +404,6 @@ Friday's close puts corn at $4.13 with a heat dome building and the season's mos
 • BEANS AND WHEAT: SPLIT STORY INTO ACREAGE
 • CATTLE: BOXED BEEF BROKE THE WEEK
 Read more: https://agsist.com/daily/2026-06-28</description>
-    </item>
-    <item>
-      <title>CORN AND WHEAT CLOSE WEAK; SOYOIL RUNS HARD</title>
-      <link>https://agsist.com/daily/2026-06-27</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-27</guid>
-      <pubDate>Sat, 27 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Corn finished Friday at $4.13, down two and a half percent on the session, and the week ends with old-crop corn sitting at its lowest 52-week percentile since late winter. Wheat gave back nearly three percent to close at $5.78. The story that cuts against the grain selloff: soybean oil ran almost seven percent higher to $71.30, the strongest close in the soy complex all week, and meal held. That split tells you the market is repricing biofuel demand, not abandoning oilseeds. Tuesday's USDA crop reports land into a crop that is days away from the corn pollination window, and the heat dome already building across the central Belt means nobody gets to be patient much longer.
-A rough Friday for grains sets up a make-or-break week: Tuesday's USDA planting and acreage data lands while a heat dome builds over the Belt.
-• GRAINS CLOSE WEEK UNDER PRESSURE
-  → Producers with unpriced old-crop corn: if local basis is firm, this is not the week to wait. The nearby contract is at $4.13 and the heat premium for new crop has not yet shown up in the December contract at $4.42. Price old-crop on firm basis days before Tuesday lands.
-• SOYOIL RUNS; COMPLEX SPLITS
-• OATS BREAKDOWN CONTINUES
-  → If you have unpriced oats in storage, check basis today. The futures contract is near 52-week lows and there is no visible floor in the price action.
-Read more: https://agsist.com/daily/2026-06-27</description>
     </item>
   </channel>
 </rss>

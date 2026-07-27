@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-07-27",
+      "date_display": "Monday, July 27, 2026",
+      "headline": "BEANS FALL $12.20 AS CROP PROGRESS LOOMS",
+      "teaser": "Beans and corn both sold off Monday morning. The 3 PM crop progress report will say who was right.",
+      "market_mood": "cautious",
+      "surprise_count": 5,
+      "sections": 4,
+      "url": "/daily/2026-07-27",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-26",
       "date_display": "Sunday, July 26, 2026",
       "headline": "CORN DROPS 5%, BEANS AT 52-WEEK HIGH: WEEK AHEAD",
@@ -1544,6 +1556,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-26T12:06:49.533147+00:00",
-  "count": 136
+  "updated": "2026-07-27T13:41:39.157905+00:00",
+  "count": 137
 }
