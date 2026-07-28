@@ -53,7 +53,7 @@
       "inLanguage": "en-US",
       "isPartOf": { "@type": "WebSite", "@id": "https://agsist.com/#website", "url": "https://agsist.com/", "name": "AGSIST" },
       "datePublished": "2025-09-01",
-      "dateModified": "2026-07-27",
+      "dateModified": "2026-07-17",
       "author": { "@type": "Person", "name": "Sigurd Lindquist", "email": "sig@farmers1st.com" },
       "publisher": { "@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/" },
       "breadcrumb": {
@@ -75,7 +75,7 @@
       "creditText": "Source: CFTC Commitments of Traders — Disaggregated Futures-Only",
       "isBasedOn": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
       "keywords": ["CFTC", "Commitment of Traders", "managed money", "corn", "soybeans", "wheat", "cattle", "fund positioning"],
-      "dateModified": "2026-07-27",
+      "dateModified": "2026-07-17",
       "distribution": [ { "@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/cot.json" } ]
     }
   ]
@@ -86,7 +86,7 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "What is the COT Report?", "acceptedAnswer": { "@type": "Answer", "text": "The CFTC releases Commitments of Traders data every Friday afternoon. It shows the net position of managed money \u2014 hedge funds and large speculators \u2014 in each commodity futures market. When funds are heavily long, prices are often stretched and vulnerable to selling. When they are heavily short, there is potential for a short-covering rally." } },
+    { "@type": "Question", "name": "What is the COT Report?", "acceptedAnswer": { "@type": "Answer", "text": "The CFTC releases Commitments of Traders data every Friday afternoon. It shows the net position of managed money \u2014 hedge funds, CTAs, and other money managers \u2014 one of four categories in the CFTC Disaggregated report (alongside producers/merchants, swap dealers, and other reportables). This page charts the managed-money category \u2014 in each commodity futures market. When funds are heavily long, prices are often stretched and vulnerable to selling. When they are heavily short, there is potential for a short-covering rally." } },
     { "@type": "Question", "name": "How to Use It", "acceptedAnswer": { "@type": "Answer", "text": "COT data is a sentiment indicator, not a timing tool. Extreme long positioning (near the 52-week high) can signal crowded trades that may unwind. Extreme short positioning can indicate pessimism that may reverse. Use it alongside fundamentals \u2014 a fund-short market with bullish supply news can move fast." } },
     { "@type": "Question", "name": "What \"Managed Money\" Means", "acceptedAnswer": { "@type": "Answer", "text": "This is the speculative money: CTAs, commodity pools, and hedge funds. They do not own grain \u2014 they trade paper. Their positions move prices in the short term, which affects basis and cash prices at your elevator. Large fund selling often corresponds to basis weakness at harvest." } },
     { "@type": "Question", "name": "52-Week Range Context", "acceptedAnswer": { "@type": "Answer", "text": "The bar gauge shows where current positioning sits within the last year\u2019s range. A dot near the top means funds are historically long \u2014 grain is more priced for good news. A dot near the bottom means funds are historically short \u2014 there is room for price improvement if fundamentals support it." } }
@@ -352,7 +352,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
     <div class="cvb-text" id="cvb-text">Loading fund positioning data…</div>
     <div class="cvb-meta">
       <div class="cvb-date" id="cvb-date">CFTC · Updated weekly</div>
-      <span class="cvb-countdown" id="cot-countdown" aria-live="polite"></span>
+      <span class="cvb-countdown" id="cot-countdown"></span>
     </div>
   </div>
 
@@ -375,7 +375,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
     <div class="cot-canvas-wrap" style="position:relative">
       <canvas id="cot-chart" role="img" aria-label="52-week chart of managed money net futures positioning across tracked commodities"></canvas>
       <div id="cot-xhair" style="position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,.35);pointer-events:none;display:none"></div>
-      <div id="cot-tip" role="status" aria-live="polite" style="position:absolute;pointer-events:none;display:none;background:var(--surface3,#26261f);border:1px solid var(--border);border-radius:6px;padding:.45rem .6rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;line-height:1.5;color:var(--text);white-space:nowrap;z-index:5;box-shadow:0 4px 14px rgba(0,0,0,.4)"></div>
+      <div id="cot-tip" style="position:absolute;pointer-events:none;display:none;background:var(--surface3,#26261f);border:1px solid var(--border);border-radius:6px;padding:.45rem .6rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;line-height:1.5;color:var(--text);white-space:nowrap;z-index:5;box-shadow:0 4px 14px rgba(0,0,0,.4)"></div>
       <div id="cot-chart-a11y" class="sr-only" aria-live="polite"></div>
     </div>
     <div id="cot-chart-msg" style="text-align:center;padding:2rem 0;font-size:.8rem;color:var(--text-muted)">Loading chart data…</div>
@@ -387,7 +387,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
     <div class="cot-explainer-grid">
       <div class="cot-explainer-item">
         <h3>What is the COT Report?</h3>
-        <p>The CFTC releases Commitments of Traders data every Friday afternoon. It shows the net position of managed money — hedge funds and large speculators — in each commodity futures market. When funds are heavily long, prices are often stretched and vulnerable to selling. When they're heavily short, there's potential for a short-covering rally.</p>
+        <p>The CFTC releases Commitments of Traders data every Friday afternoon. It shows the net position of managed money — hedge funds, CTAs, and other money managers \u2014 one of four categories in the CFTC Disaggregated report (alongside producers/merchants, swap dealers, and other reportables). This page charts the managed-money category — in each commodity futures market. When funds are heavily long, prices are often stretched and vulnerable to selling. When they're heavily short, there's potential for a short-covering rally.</p>
       </div>
       <div class="cot-explainer-item">
         <h3>How to Use It</h3>
@@ -452,7 +452,7 @@ CFG.forEach(function(c){ COLORS[c.key]=c.color; LABELS[c.key]=c.label; SHORT[c.k
 var ALL_KEYS = CFG.map(function(c){ return c.key; });
 
 function cotCardHTML(c){
-  return '<div class="cot-card" id="card-'+c.key+'" data-key="'+c.key+'" role="button" tabindex="0" aria-label="Focus '+c.label+' in chart">'
+  return '<div class="cot-card" id="card-'+c.key+'" data-key="'+c.key+'" role="button" tabindex="0" aria-label="'+c.label+' summary card. Activate to focus in chart.">'
     +'<div class="cot-card-head"><span class="cot-card-name">'+c.emoji+' '+c.label+'</span><span class="cot-card-verdict flat" id="verdict-'+c.key+'">\u2014</span></div>'
     +'<div class="cot-pctl" id="pctl-'+c.key+'"></div>'
     +'<div class="cot-card-net flat" id="net-'+c.key+'">--</div>'
@@ -619,12 +619,25 @@ function renderTheRead(){
   var x=all[0]; if(score(x)<2){document.getElementById('cot-read').style.display='none';return;}
   // price divergence can override when present and meaningful
   var LBL2=LABELS;
+  // v2 (panel): a fresh flip in a GRAIN market is the read of the week —
+  // it must not be buried under a milk divergence.
+  var gFlip=null;for(var gi=0;gi<all.length;gi++){var gx=all[gi];if(gx.flip&&gx.flip.weeksAgo<=1&&['corn','soybeans','wheat','kc_wheat'].indexOf(gx.key)>=0){gFlip=gx;break;}}
+  if(gFlip){
+    var x2=gFlip, flG=gFlip.flip;
+    document.getElementById('cot-read-body').innerHTML='<b>'+LABELS[x2.key]+'</b> funds just flipped <b>net '+(flG.dir==='bullish'?'long':'short')+'</b> '+(flG.weeksAgo===0?'this week':'last week')+' \u2014 a structural shift after '+(flG.dir==='bullish'?'an extended bearish stance':'an extended bullish stance')+'. Positioning sits at the '+ordinal(x2.pct)+' percentile of the last year.';
+    document.getElementById('cot-read').style.display='block';
+    return;
+  }
   var divCand=ALL_KEYS.map(computePriceRead).filter(function(p){return p&&(p.divergence==='bearish'||p.divergence==='bullish');});
   if(divCand.length){
     var dc=divCand.sort(function(a,b){return Math.abs(b.pPct)-Math.abs(a.pPct);})[0];
     var ci=computeInsight(dc.key);
     if(ci&&(ci.crowded||Math.abs(ci.z)>=1)){
-      var msg2='<b>'+LBL2[dc.key]+'</b> is flashing a <b>'+divLabel(dc.divergence)+'</b>: funds are '+(dc.netDir>0?'still adding to a '+ordinal(ci.pct)+'-percentile long':'cutting their position')+' while price is '+(dc.priceDir>0?'rising':'falling')+' ('+(dc.pPct>=0?'+':'')+dc.pPct+'% over 4 weeks). '+(dc.divergence==='bearish'?'A long position that price is no longer confirming is vulnerable to liquidation.':'Funds bailing into rising price often signals short-covering strength rather than fresh conviction.');
+      // v2 (panel): wording was sign-blind — a net-SHORT position with rising
+      // net was called 'adding to a long'. Use the actual net sign.
+      var _net=(ci&&typeof ci.net==='number')?ci.net:((ci&&ci.z>=0)?1:-1);
+      var _posWord=_net>=0?'net-long':'net-short';
+      var msg2='<b>'+LBL2[dc.key]+'</b> is flashing a <b>'+divLabel(dc.divergence)+'</b>: funds are '+(dc.netDir>0?(_net>=0?'still adding to a '+ordinal(ci.pct)+'-percentile long':'covering shorts (still '+_posWord+', '+ordinal(ci.pct)+' percentile)'):'cutting their '+_posWord+' position')+' while price is '+(dc.priceDir>0?'rising':'falling')+' ('+(dc.pPct>=0?'+':'')+dc.pPct+'% over 4 weeks). '+(dc.divergence==='bearish'?'A long position that price is no longer confirming is vulnerable to liquidation.':'Funds bailing into rising price often signals short-covering strength rather than fresh conviction.');
       document.getElementById('cot-read-body').innerHTML=msg2;
       document.getElementById('cot-read').style.display='block';
       return;
@@ -666,6 +679,9 @@ function renderCard(key, d) {
 
   var netEl = document.getElementById('net-' + key);
   if (netEl) { netEl.textContent = fmtK(net); netEl.className = 'cot-card-net ' + cls; }
+  // v2: accessible name carries the data once it exists (was action-only)
+  var cardEl = document.getElementById('card-' + key);
+  if (cardEl) cardEl.setAttribute('aria-label', (LABELS[key]||key)+': net '+(net>=0?'long ':'short ')+fmtK(Math.abs(net))+(isFinite(chg)?', '+(chg>=0?'up ':'down ')+fmtK(Math.abs(chg))+' this week':'')+'. Activate to focus in chart.');
 
   var vEl = document.getElementById('verdict-' + key);
   if (vEl) {
@@ -1015,7 +1031,7 @@ function cotFmtLeft(ms){
 function cotTick(){
   var el=document.getElementById('cot-countdown'); if(!el) return;
   var now=Date.now(), f=cotFmtLeft(cotNextTarget(now)-now);
-  el.textContent = f ? ('\u00b7 next update in '+f) : '\u00b7 new report expected shortly';
+  el.textContent = f ? ('next update in '+f) : 'new report expected shortly';
 }
 cotTick(); setInterval(cotTick, 60000);
 
