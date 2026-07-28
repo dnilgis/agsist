@@ -16,7 +16,7 @@
   // Component cache version. Bump on every chrome deploy so browsers fetch the
   // new header/footer; between deploys the files cache normally (no refetch /
   // no nav-flash on each page navigation).
-  var CV = '14';
+  var CV = '15';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
 
   function loadComponent(id, path, onDone) {
@@ -248,8 +248,10 @@
         var list = ((d && d.supporters) || []).filter(function (s) { return s && s.active === true; });
         if (!list.length) return;
         var open = row.querySelectorAll('.ad-slot--open');
-        var fill = Math.min(list.length, open.length);
-        for (var i = 0; i < fill; i++) {
+        // Fill the open slot(s) first; if there are more paying supporters
+        // than open slots (footer now carries a single teaser slot), append
+        // extra filled cards so no paying sponsor is ever dropped.
+        for (var i = 0; i < list.length; i++) {
           (function (s, slot) {
             var url = s.url || ctaUrl;
             if (!/^(https?:\/\/|\/)/.test(url)) url = ctaUrl;
@@ -268,7 +270,8 @@
             a.addEventListener('click', function () {
               if (typeof gtag === 'function') gtag('event', 'supporter_click', { supporter: s.name || '' });
             });
-            slot.parentNode.replaceChild(a, slot);
+            if (slot) slot.parentNode.replaceChild(a, slot);
+            else row.appendChild(a);
           })(list[i], open[i]);
         }
       })
