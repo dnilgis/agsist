@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-07-28",
+      "date_display": "Tuesday, July 28, 2026",
+      "headline": "FEEDERS FALL 3%; WHEAT LEADS GRAINS LOWER",
+      "teaser": "Feeders took the hardest hit in the complex; here is what the Mexico border news actually means for cattle prices.",
+      "market_mood": "bearish",
+      "surprise_count": 1,
+      "sections": 3,
+      "url": "/daily/2026-07-28",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-27",
       "date_display": "Monday, July 27, 2026",
       "headline": "BEANS FALL $12.20 AS CROP PROGRESS LOOMS",
@@ -1556,6 +1568,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-27T13:41:39.157905+00:00",
-  "count": 137
+  "updated": "2026-07-28T12:57:49.990363+00:00",
+  "count": 138
 }

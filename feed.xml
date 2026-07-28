@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 27 Jul 2026 13:41:42 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 28 Jul 2026 12:57:52 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>FEEDERS FALL 3%; WHEAT LEADS GRAINS LOWER</title>
+      <link>https://agsist.com/daily/2026-07-28</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-28</guid>
+      <pubDate>Tue, 28 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Feeders dropped hard to $331.27, down 3% on the overnight, and that is the story today. The US reopening Arizona and New Mexico ports to Mexican cattle, announced Friday, just repriced the feeder supply curve in one session. Meanwhile, cooler August forecasts and profit-taking knocked beans to $12.08 and wheat gave back 8 cents. Monday's crop progress gave the bulls nothing new to work with.
+Cooler August forecasts hit beans and corn; Mexico cattle import news drives the feeder breakdown.
+• Feeders Break Hard
+• Grains Give Back
+• Energy Drifts Lower
+Read more: https://agsist.com/daily/2026-07-28</description>
+    </item>
     <item>
       <title>BEANS FALL $12.20 AS CROP PROGRESS LOOMS</title>
       <link>https://agsist.com/daily/2026-07-27</link>
@@ -391,19 +403,6 @@ Corn falls 2.5% and wheat drops 2.9% heading into Tuesday's USDA Acreage report,
 • Soyoil Runs; Complex Splits Wide Open
   → Producers with unpriced soybeans: the November contract at $11.56 is 30 cents over nearby, which is carry, not a signal to sell new-crop early. Wait for Tuesday's Acreage number before making a new-crop decision.
 Read more: https://agsist.com/daily/2026-06-29</description>
-    </item>
-    <item>
-      <title>ACREAGE REPORT TUESDAY; CORN BREAKS HARD INTO IT</title>
-      <link>https://agsist.com/daily/2026-06-28</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-28</guid>
-      <pubDate>Sun, 28 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Corn dropped 2.5% on Friday to $4.13, and December new crop barely budged at $4.42, a spread that tells you the market is pricing weather risk selectively and not yet believing the heat dome translates into a yield problem. Tuesday's USDA Acreage Report at 11 AM CT lands before that argument gets settled. The number that comes back on corn acres will either confirm the tight supply picture that should be holding this market above $4 or hand the funds a reason to sell harder into an already-weakened chart.
-Friday's close puts corn at $4.13 with a heat dome building and the season's most important USDA print two days out.
-• CORN: $4.13 AND A TUESDAY GUN
-  → If you have unpriced old-crop corn in storage and local basis is firm, price before Tuesday open. If you are holding new-crop, wait for the acreage number before making a decision.
-• BEANS AND WHEAT: SPLIT STORY INTO ACREAGE
-• CATTLE: BOXED BEEF BROKE THE WEEK
-Read more: https://agsist.com/daily/2026-06-28</description>
     </item>
   </channel>
 </rss>
