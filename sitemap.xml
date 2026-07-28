@@ -36,7 +36,7 @@
   <url><loc>https://agsist.com/usda-quick-stats</loc><lastmod>2026-07-20</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cot</loc><lastmod>2026-07-26</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/drought-monitor</loc><lastmod>2026-07-27</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/hail-map</loc><lastmod>2026-07-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/hail-map</loc><lastmod>2026-07-28</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/harvest-price-tracker</loc><lastmod>2026-07-18</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/presell-calculator</loc><lastmod>2026-07-18</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/whats-priced-in</loc><lastmod>2026-07-27</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
@@ -56,7 +56,7 @@
   <!-- Added 2026-06-12: audit fixes -->
   <url><loc>https://agsist.com/cattle-futures-prices</loc><lastmod>2026-07-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/scorecard</loc><lastmod>2026-07-27</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/sponsor</loc><lastmod>2026-07-26</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/sponsor</loc><lastmod>2026-07-28</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/developer</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/contact</loc><lastmod>2026-06-25</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
   <url><loc>https://agsist.com/accessibility</loc><lastmod>2026-07-27</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
