@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 28 Jul 2026 12:57:52 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 29 Jul 2026 13:03:22 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE FLIP; GRAINS EASE AS HEAT EXITS BELT</title>
+      <link>https://agsist.com/daily/2026-07-29</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-29</guid>
+      <pubDate>Wed, 29 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Feeders at $337.23, up 1.8% after getting worked over yesterday. The reversal is real but read it carefully: feedlot margins just turned negative per today's Drovers tracker, and the Cargill Fort Morgan lockout is still running. Yesterday's break may have been oversold. Today's bounce doesn't erase the structural problem.
+Feeders run 1.8% higher one session after their worst day in months, while corn and beans drift lower on favorable forecast.
+• Cattle Flip Overnight
+• Grains Ease on Cooling Forecast
+• Crude Firms on Middle East
+Read more: https://agsist.com/daily/2026-07-29</description>
+    </item>
     <item>
       <title>FEEDERS FALL 3%; WHEAT LEADS GRAINS LOWER</title>
       <link>https://agsist.com/daily/2026-07-28</link>
@@ -389,20 +401,6 @@ USDA's dual 11 AM release answers the acre question; heat wave arrives just as p
 • Oats Recover; Soyoil Pulls Back
 • Cattle Fall; Processing Drag Continues
 Read more: https://agsist.com/daily/2026-06-30</description>
-    </item>
-    <item>
-      <title>ACREAGE REPORT DAY: GRAINS BREAK, SOYOIL RUNS</title>
-      <link>https://agsist.com/daily/2026-06-29</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-06-29</guid>
-      <pubDate>Mon, 29 Jun 2026 05:00:00 -0600</pubDate>
-      <description>Corn hit $4.13 this morning and the funds aren't waiting for Tuesday's Acreage report to find out if it gets worse. The nearby gave back 10½ cents while December held at $4.42, which tells you exactly where the real fear lives: old-crop is being sold, new-crop is being held. Wheat fell 2.9% to $5.78 with no weather premium to defend it, and oats had another session that defies easy explanation, down 15% for the second time in a week. The Acreage report at 11 AM CT tomorrow will either validate every one of these moves or reverse them. Until then, the market has already voted.
-Corn falls 2.5% and wheat drops 2.9% heading into Tuesday's USDA Acreage report, while soybean oil runs nearly 7% on biofuel demand and the Hormuz premium reignites.
-• Corn Breaks Into the Report
-  → If you have unpriced old-crop corn in storage and local basis is firm today, move bushels before Tuesday's open. The Acreage report removes the uncertainty in one direction or the other.
-• Wheat Falls Hard, No Floor Visible
-• Soyoil Runs; Complex Splits Wide Open
-  → Producers with unpriced soybeans: the November contract at $11.56 is 30 cents over nearby, which is carry, not a signal to sell new-crop early. Wait for Tuesday's Acreage number before making a new-crop decision.
-Read more: https://agsist.com/daily/2026-06-29</description>
     </item>
   </channel>
 </rss>
