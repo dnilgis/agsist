@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+<script>document.documentElement.classList.add('js')</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#111a0a">
@@ -16,7 +17,7 @@
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 <title>Corn Futures Prices Today — Live CBOT Chart | AGSIST</title>
-<meta name="description" content="Live CBOT corn futures, updated every 30 min — front-month ZC, December new-crop, your RP revenue floor, basis-to-cash and the daily read.">
+<meta name="description" content="Corn Sep '26 closed $4.53 (-0.2%) on Jul 28 — live CBOT corn futures refreshed every 30 min in session. December new-crop, RP revenue floor, basis-to-cash, daily read.">
 <meta name="keywords" content="corn futures prices today, corn futures price, CBOT corn futures, ZC futures, corn futures chart, corn price today, corn harvest price, December corn futures, corn bean ratio, corn market data, corn price per bushel, grain futures today">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -44,10 +45,15 @@ button,a,[role="button"]{touch-action:manipulation;}
 .roll-note{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--gold,#d4a23f);border:1px solid rgba(212,162,63,.35);border-radius:8px;padding:.4rem .6rem;margin:.4rem 0 0;line-height:1.5}
 .up{color:var(--green)}.dn{color:var(--red)}
 .ps{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.7rem;color:var(--text-dim);margin-bottom:10px}
-.ps-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.ps-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.js .ps-dot{animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
-.sk{color:var(--text-dim);animation:blink 1.4s ease-in-out infinite}
+.sk{color:var(--text-dim)}
+.js .sk{animation:blink 1.4s ease-in-out infinite}
+.seed-tbl-wrap table{width:100%;border-collapse:collapse;font-size:.85rem;margin:.4rem 0}.seed-tbl-wrap caption{font-size:.75rem;color:var(--text-dim);text-align:left;padding:.2rem 0}.seed-tbl-wrap td,.seed-tbl-wrap th{padding:.25rem .5rem;border-bottom:1px solid var(--border,rgba(128,128,128,.25));text-align:left}
+.nc-glance{font-size:.74rem;color:var(--text-dim);margin:.35rem 0 0;font-family:'JetBrains Mono',monospace}
+.nc-glance strong{color:var(--text)}
 .snap-card{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.03) 100%);border:1px solid var(--border-g);border-left:3px solid var(--green);border-radius:12px;padding:13px 16px;margin-bottom:14px}
 .snap-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:4px}
 .snap-lbl{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green)}
@@ -303,7 +309,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 </head>
 <body>
 <a href="#main" class="skip">Skip to content</a>
-<noscript><div style="text-align:center;padding:2rem;font-family:sans-serif;color:#ccc;background:#111;margin:1rem">JavaScript is required to view live grain prices. Please enable JavaScript in your browser.</div></noscript>
+<noscript><div style="text-align:center;padding:2rem;font-family:sans-serif;color:#ccc;background:#111;margin:1rem">JavaScript is off &mdash; the prices shown are the last close from the note below, not live quotes.</div></noscript>
 <div id="site-header"></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="i-banknote" viewBox="0 0 24 24"><rect width="20" height="12" x="2" y="6" rx="2" />
   <circle cx="12" cy="12" r="2" />
@@ -361,7 +367,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
   <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol></defs></svg>
 <style>.ic{width:1em;height:1em;display:inline-block;vertical-align:-0.14em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}.sc-rp{margin-top:8px;padding:9px 11px;border:1px solid var(--border,#2a3324);border-left:3px solid var(--brand,#d4a23f);border-radius:8px;background:rgba(212,162,63,.06);font-size:.82rem;line-height:1.5;color:var(--text-dim,#9bb0a3)}.sc-rp b,.sc-rp strong{color:var(--text,#e7ece8)}.sc-rp .rp-gap{font-weight:700}</style>
 <main id="main" class="fut" tabindex="-1">
-<style>.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Corn growers check this price all session long — one category-exclusive slot. <a href="/sponsor?slot=corn-futures-prices&amp;utm_source=corn-futures-prices&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+<style>.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style>
   <nav class="bc" aria-label="Breadcrumb"><a href="/">Home</a> → Corn Futures Prices</nav>
   <div class="brief-strip" id="brief-strip" style="display:none">
     <div class="brief-icon"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg></div>
@@ -376,29 +382,31 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
     <div class="ph-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></div>
     <div class="ph-info">
       <h1>Corn Futures Prices Today</h1>
-      <div class="ph-exch">CBOT · CME Group · ZC=F · Updated every 30 min</div>
+      <div class="ph-exch" id="ph-exch">CBOT · CME Group · Refreshed in session</div>
     </div>
     <div class="ph-price">
-      <div class="ph-val sk" id="hero-price"><!--SEED:px-->$4.81<!--/SEED--></div>
+      <div class="ph-val sk" id="hero-price"><!--SEED:px-->$4.53<!--/SEED--></div>
       <div class="ph-unit">$ / bushel</div>
       <div class="ph-chg" id="hero-chg"></div>
     </div>
   </div>
 
   <div class="ps"><span id="status-timer" data-agsist-timer data-mode="live" data-interval="30" data-label="Markets" style="display:none"></span><span id="status"><span class="ps-dot" aria-hidden="true"></span>Loading prices…</span><span class="session-badge closed" id="session-badge"><span class="dot" aria-hidden="true"></span>Loading…</span></div>
-  <p class="px-seed-note" style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-dim);margin:.35rem 0 0"><!--SEED:note-->Front-month corn last closed near <strong>$4.81</strong> &middot; December new-crop near $4.81 &middot; as of Jul 28 &middot; live quotes update every 30 minutes through the session.<!--/SEED--></p>
+  <div class="nc-glance" id="nc-glance" style="display:none">Dec '26 new crop: <strong id="nc-price">—</strong> <span id="nc-chg"></span></div>
+  <p class="px-seed-note" style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-dim);margin:.35rem 0 0"><!--SEED:note-->Nearby Sep '26 corn last closed near <strong>$4.53</strong> &middot; December new-crop near $4.75 &middot; as of Jul 28 &middot; refreshed every 30 minutes during trading hours &mdash; reload for the latest.<!--/SEED--></p>
+  <div class="seed-tbl-wrap"><!--SEED:pxtable--><table class="seed-tbl"><caption>Last close &middot; as of Jul 28 &middot; live quotes above update in session</caption><thead><tr><th scope="col">Contract</th><th scope="col">Close</th><th scope="col">Change</th><th scope="col">52-wk range</th></tr></thead><tbody><tr><td>Nearby Sep '26</td><td>$4.53</td><td>-0.2%</td><td>$4.06&ndash;$4.92</td></tr><tr><td>December new-crop</td><td>$4.75</td><td>-0.3%</td><td>$4.26&ndash;$5.07</td></tr></tbody></table><!--/SEED--></div>
 
   <div class="qa">
     <style>
     .qa{background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-left:3px solid var(--green,#5fc28a);border-radius:10px;padding:.85rem 1rem;margin:0 0 14px;font-size:.86rem;line-height:1.6;color:var(--text-dim,#9bb0a3)}
     .qa b{color:var(--text,#e7ece8)} .qa a{color:var(--gold,#d4a23f);text-decoration:none} .qa a:hover{text-decoration:underline}
     </style>
-    <b>Corn futures</b> are CBOT (Chicago Board of Trade) contracts that set the benchmark price per bushel of corn. The <b>front-month</b> contract tracks nearest delivery; <b>December corn (ZCZ)</b> is the new-crop harvest benchmark producers use to forward-price grain. Your local <b>cash price</b> equals futures plus or minus <b>basis</b>. Corn prices move mainly on the monthly <b>USDA WASDE</b> report, growing-season weather, ethanol demand, and exports &mdash; see <a href="/whats-priced-in">what&rsquo;s priced in</a> ahead of each report. Live CBOT prices below update every 30 minutes. Compare with live <a href="/soybean-futures-prices">soybean</a> and <a href="/wheat-futures-prices">wheat</a> futures.
+    <b>Corn futures</b> are CBOT (Chicago Board of Trade) contracts that set the benchmark price per bushel of corn. The <b>front-month</b> contract tracks nearest delivery; <b>December corn (ZCZ)</b> is the new-crop harvest benchmark producers use to forward-price grain. Your local <b>cash price</b> equals futures plus or minus <b>basis</b>. Corn prices move mainly on the monthly <b>USDA WASDE</b> report, growing-season weather, ethanol demand, and exports &mdash; see <a href="/whats-priced-in">what&rsquo;s priced in</a> ahead of each report. Live CBOT prices below are refreshed every 30 minutes during trading hours &mdash; reload for the latest. Compare with live <a href="/soybean-futures-prices">soybean</a> and <a href="/wheat-futures-prices">wheat</a> futures.
   </div>
 
   <div class="be-strip">
     <label for="be-input">My cost of production:</label>
-    <input type="number" id="be-input" placeholder="$/bu (typical $3.50-4.50)" step="0.01" inputmode="decimal" aria-label="Your cost of production in dollars per bushel">
+    <input type="number" id="be-input" placeholder="$4.00–$5.50/bu — varies widely by farm (university crop budgets)" step="0.01" inputmode="decimal" aria-label="Your cost of production in dollars per bushel">
     <span class="be-result" id="be-result"></span>
     <button type="button" class="be-clear" id="be-clear">clear</button>
   </div>
@@ -425,7 +433,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
     </div>
 
     <div class="snap-ft">
-      <span class="snap-cat" id="snap-wasde-wrap"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Next WASDE: <strong id="snap-wasde">—</strong></span>
+      <span class="snap-cat" id="snap-wasde-wrap"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Next report: <strong id="snap-wasde">—</strong></span>
       <a href="/whats-priced-in" class="snap-link">What's priced in →</a>
       <a href="/usda-calendar" class="snap-link">Full USDA Calendar →</a>
     </div>
@@ -447,7 +455,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
   </div>
 
   <div class="cg">
-    <div class="cc hi"><div class="cc-lbl">Front Month (ZC)</div><div class="cc-p sk" id="p-corn">—</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-corn"></div></div>
+    <div class="cc hi"><div class="cc-lbl" id="lbl-corn">Nearby Corn</div><div class="cc-p sk" id="p-corn">—</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-corn"></div></div>
     <div class="cc"><div class="cc-lbl">Dec New Crop (ZCZ)</div><div class="cc-p sk" id="p-corndec">—</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-corndec"></div></div>
     <div class="cc"><div class="cc-lbl">Soybeans (ZS)</div><div class="cc-p sk" id="p-beans">—</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-beans"></div></div>
     <div class="cc"><div class="cc-lbl">Wheat (ZW)</div><div class="cc-p sk" id="p-wheat">—</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-wheat"></div></div>
@@ -456,7 +464,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
   </div>
 
   <div class="rng">
-    <div class="rng-lbl">52-Week Range — Corn Front Month</div>
+    <div class="rng-lbl" id="rng-lbl">52-Week Range — Corn (nearby contract)</div>
     <div class="rng-bar"><div class="rng-fill" id="rng-fill"></div><div class="rng-dot" id="rng-dot"></div></div>
     <div class="rng-labels"><span class="rng-lo" id="rng-lo">—</span><span class="rng-cur" id="rng-cur">—</span><span class="rng-hi" id="rng-hi">—</span></div>
   </div>
@@ -467,7 +475,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
     <div id="rng5-read" style="font-size:.78rem;color:var(--text-dim,#9bb0a3);margin-top:7px;line-height:1.5"></div>
   </div>
   <script>
-  (function(){var KEY="corn";function $(i){return document.getElementById(i);}function m(v){return "$"+(Math.round(v*100)/100).toFixed(2);}fetch("/data/price-stats.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){var s=d&&d[KEY];if(!s||s.pct==null)return;var w=$("rng5-wrap");if(!w)return;var rp=Math.min(100,Math.max(0,(s.cur-s.lo)/(s.hi-s.lo)*100));$("rng5-lo").textContent=m(s.lo);$("rng5-hi").textContent=m(s.hi);$("rng5-cur").textContent=m(s.cur);$("rng5-fill").style.width=rp+"%";$("rng5-dot").style.left="calc("+rp+"% - 6px)";$("rng5-read").textContent=s.read||"";w.style.display="";}).catch(function(){});})();
+  (function(){var KEY="corn";function $(i){return document.getElementById(i);}function m(v){return "$"+(Math.round(v*100)/100).toFixed(2);}fetch("/data/price-stats.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){var s=d&&d[KEY];if(s&&s.seasonality&&s.seasonality.length===12){window.__agsistSeas=s.seasonality;window.__agsistSeasN=s.n||null;try{window.dispatchEvent(new Event("agsist-seas"));}catch(e){}}if(!s||s.pct==null)return;var w=$("rng5-wrap");if(!w)return;var rp=Math.min(100,Math.max(0,(s.cur-s.lo)/(s.hi-s.lo)*100));$("rng5-lo").textContent=m(s.lo);$("rng5-hi").textContent=m(s.hi);$("rng5-cur").textContent=m(s.cur);$("rng5-fill").style.width=rp+"%";$("rng5-dot").style.left="calc("+rp+"% - 6px)";$("rng5-read").textContent=s.read||"";w.style.display="";}).catch(function(){});})();
   </script>
 
 
@@ -558,7 +566,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
     </div>
     <div class="cot-chg" id="cot-chg">—</div>
     <div class="cot-interp" id="cot-interp">Loading positioning data…</div>
-    <div class="cot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET · <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC ↗</a></div>
+    <div class="cot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET · <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC ↗</a> · <a href="/cot">Full positioning history →</a></div>
   </div>
   <div class="fwd-card">
     <div class="fwd-head">
@@ -582,13 +590,13 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
     </div>
   </div>
 
-  <div class="seas-wrap">
+  <div class="seas-wrap" id="seas-wrap" style="display:none">
     <div class="seas-head">
       <span class="seas-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Corn Seasonal Price Tendency</span>
-      <span class="seas-note">Historical pattern · current month highlighted · hover for context</span>
+      <span class="seas-note">Current month highlighted · hover for value</span>
     </div>
     <div id="seas-chart" class="seas-chart"></div>
-    <div class="seas-caption">Corn prices typically peak May–Jun (weather &amp; pollination risk premium) and bottom in Oct (harvest pressure). Seasonal tendencies are guides — major USDA reports and weather events override them in any given year.</div>
+    <div class="seas-caption" id="seas-caption">5-yr weekly closes, indexed 0–100 (n=262). Seasonal tendencies are guides — major USDA reports and weather events override them in any given year.</div>
   </div>
 
   <div class="xg">
@@ -612,7 +620,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
       <div class="xr"><span class="xl">Cash price</span><span class="xv">Futures + local basis</span></div>
       <div class="xr"><span class="xl">Corn/bean ratio</span><span class="xv">Nov beans ÷ Dec corn</span></div>
       <div class="xr"><span class="xl">New crop</span><span class="xv">Dec = harvest benchmark</span></div>
-      <div class="xr"><span class="xl">Typical breakeven</span><span class="xv">$4.00–$5.50/bu avg</span></div>
+      <div class="xr"><span class="xl">Typical breakeven</span><span class="xv">$4.00–$5.50/bu — varies widely by farm (university crop budgets)</span></div>
     </div>
     <div class="xc">
       <h4><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg> US Corn Use</h4>
@@ -645,7 +653,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
     <div class="faq-head"><svg class="ic" aria-hidden="true"><use href="#i-circle-question-mark"/></svg> Corn Futures — Common Questions</div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">What is the corn futures price today?</div>
-      <div class="faq-a"><div class="faq-a-inner">The live price above shows the CBOT front-month corn futures contract (ZC), refreshed every 30 minutes. The "Today's Market Read" block synthesizes price position, the corn/bean ratio signal, seasonal context, and dollar impact into a single oriented paragraph — updated with every price refresh. No other free page does this.</div></div>
+      <div class="faq-a"><div class="faq-a-inner">The live price above shows the nearest CBOT corn futures contract, refreshed every 30 minutes during trading hours — reload for the latest. The "Today's Market Read" block synthesizes price position, the corn/bean ratio signal, seasonal context, and dollar impact into a single oriented paragraph — updated with every price refresh.</div></div>
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">What does December corn futures mean and why does it matter?</div>
@@ -673,24 +681,8 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">When is CBOT corn open for trading?</div>
-      <div class="faq-a"><div class="faq-a-inner">CBOT corn trades electronically Sunday through Friday — overnight session 7:00 PM to 7:45 AM CT, day session 8:30 AM to 1:20 PM CT. AGSIST refreshes prices every 30 minutes on weekdays. Weekend prices reflect the last published Friday settlement until Monday trading resumes.</div></div>
+      <div class="faq-a"><div class="faq-a-inner">CBOT corn trades electronically Sunday through Friday — overnight session 7:00 PM to 7:45 AM CT, day session 8:30 AM to 1:20 PM CT. AGSIST prices are refreshed every 30 minutes during trading hours — reload for the latest. Weekend prices reflect the last published Friday settlement until Monday trading resumes.</div></div>
     </div>
-      <div class="faq-item">
-        <div class="faq-q" role="button" tabindex="0" aria-expanded="false">What does December corn futures mean for farmers?</div>
-        <div class="faq-a"><div class="faq-a-inner">December corn (ZCZ) is the new-crop harvest benchmark — the market&#x27;s estimate of fall delivery value. Producers use December corn to forward price new-crop grain before planting and throughout the growing season.</div></div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" role="button" tabindex="0" aria-expanded="false">How is corn cash price different from futures?</div>
-        <div class="faq-a"><div class="faq-a-inner">Cash corn equals CBOT futures plus or minus local basis. Basis reflects transportation costs, local supply/demand, and elevator margins. Use AGSIST Cash Bids to see your elevator&#x27;s posted price including local basis.</div></div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" role="button" tabindex="0" aria-expanded="false">What moves corn futures prices?</div>
-        <div class="faq-a"><div class="faq-a-inner">Primary drivers: USDA WASDE monthly supply/demand reports, weather during planting and pollination, ethanol demand and RFS policy, export sales and inspections, and the US Dollar Index. South American crop estimates also affect global corn flows.</div></div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" role="button" tabindex="0" aria-expanded="false">When is corn typically cheapest and most expensive?</div>
-        <div class="faq-a"><div class="faq-a-inner">Corn historically bottoms in October-November at peak harvest supply. Prices tend to rally late winter through June as old-crop stocks tighten and weather uncertainty builds new-crop premium. Major events override seasonal tendencies in any given year.</div></div>
-      </div>
   </div>
 
   <div class="signup-card">
@@ -714,7 +706,10 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
     <a href="/whats-priced-in" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg></div><div class="ra-n">What's Priced In</div><div class="ra-d">USDA report odds</div></a>
     <a href="/usda-calendar" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg></div><div class="ra-n">USDA Calendar</div><div class="ra-d">Next report date</div></a>
     <a href="/fast-facts" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg></div><div class="ra-n">Fast Facts</div><div class="ra-d">N rates, P&amp;K, GDU</div></a>
+    <a href="/cot" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg></div><div class="ra-n">COT Positioning</div><div class="ra-d">Who's long, who's short</div></a>
   </div>
+  <p style="font-size:.74rem;color:var(--text-dim);margin:10px 0 0;line-height:1.6">More markets: live <a href="/soybean-futures-prices" style="color:var(--gold)">soybean futures prices</a> and <a href="/wheat-futures-prices" style="color:var(--gold)">wheat futures prices</a>, refreshed on the same schedule.</p>
+  <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Corn growers check this price all session long — one category-exclusive slot. <a href="/sponsor?slot=corn-futures-prices&amp;utm_source=corn-futures-prices&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   <a href="/cash-bids" class="big-cta">
     <div class="big-cta-i"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg></div>
     <div>
@@ -744,7 +739,8 @@ var CROP_KEY='corn';
 var CROP_LABEL='Corn';
 var CROP_EMOJI='<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>';
 var CROP_PROGRESS_KEY='corn';
-var FWD_CONTRACTS=[{key:"corn-jul26",month:"Jul 26",idx:319},{key:"corn-sep26",month:"Sep 26",idx:321},{key:"corn-dec",month:"Dec 26",idx:324},{key:"corn-mar27",month:"Mar 27",idx:327},{key:"corn-may27",month:"May 27",idx:329},{key:"corn-jul27",month:"Jul 27",idx:331},{key:"corn-dec27",month:"Dec 27",idx:336}];
+var FWD_CONTRACTS=[{key:"corn-sep26",month:"Sep '26",idx:321,tag:"old crop"},{key:"corn-dec",month:"Dec '26",idx:324,carryStart:true},{key:"corn-mar27",month:"Mar '27",idx:327},{key:"corn-may27",month:"May '27",idx:329},{key:"corn-jul27",month:"Jul '27",idx:331,carryEnd:true},{key:"corn-dec27",month:"Dec '27",idx:336,tag:"new crop 2027"}];
+var CARRY_WINDOW_LABEL="Dec '26 → Jul '27 (2026-crop storage window)";
 
 
 // ============ MARKET READ ASSEMBLY (v12 refactor) ============
@@ -811,9 +807,9 @@ function renderCropProgress(data){
     var pace=document.getElementById('crop-plant-pace');
     if(pace&&d.planting_prev_year!=null){
       var diff=d.planting_pct-d.planting_prev_year;
-      if(Math.abs(diff)<=3){pace.textContent='\u2696\ufe0f On pace with prior year';pace.className='crop-pace onpace';}
-      else if(diff<0){pace.textContent='\u23f3 '+Math.abs(diff)+' points behind prior year';pace.className='crop-pace behind';}
-      else{pace.textContent='\u26a1 '+diff+' points ahead of prior year';pace.className='crop-pace ahead';}
+      if(Math.abs(diff)<=3){pace.textContent='On pace \u2014 even with prior year';pace.className='crop-pace onpace';}
+      else if(diff<0){pace.textContent='Behind pace \u2014 '+Math.abs(diff)+' points vs prior year';pace.className='crop-pace behind';}
+      else{pace.textContent='Ahead of pace \u2014 '+diff+' points vs prior year';pace.className='crop-pace ahead';}
       pace.style.display='block';
     }else if(pace){pace.style.display='none';}
   }else if(plantSec){plantSec.style.display='none';}
@@ -959,6 +955,30 @@ function loadCOT(){
     .catch(function(){var c=document.getElementById('cot-card');if(c)c.style.display='none';});
 }
 
+// ============ NEXT USDA REPORT (S3) ============
+// Uses the pipeline-published upcoming report from /data/whats-priced-in.json.
+// Never computes a guessed date; hides the line entirely on failure.
+function loadWasde(){
+  function hide(){var w=document.getElementById('snap-wasde-wrap');if(w)w.style.display='none';}
+  fetch('/data/whats-priced-in.json',{cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(d){
+      var up=d&&d.upcoming;
+      var wEl=document.getElementById('snap-wasde');
+      if(!up||!up.report||!up.date||!wEl){hide();return;}
+      var p=String(up.date).split('-');
+      if(p.length!==3){hide();return;}
+      var dt=new Date(parseInt(p[0],10),parseInt(p[1],10)-1,parseInt(p[2],10));
+      if(isNaN(dt.getTime())){hide();return;}
+      var today=new Date();today.setHours(0,0,0,0);
+      var dd=Math.round((dt-today)/86400000);
+      var MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      wEl.textContent=up.report+' · '+MN[dt.getMonth()]+' '+dt.getDate()+' · '+(dd<0?'released':dd===0?'today':dd===1?'tomorrow':'in '+dd+' days');
+      maybeFlagWasdeImminence(dd);
+    })
+    .catch(hide);
+}
+
 
 // ============ MARKET SESSION (v13) ============
 // CME grain futures: Sun-Fri overnight 7:00 PM CT - 7:45 AM CT (next day),
@@ -1087,9 +1107,25 @@ function renderMarketRead(){
 function cap(s){if(!s)return s;return s.charAt(0).toUpperCase()+s.slice(1);}
 
 // ============ PRICING SITUATION SCORECARD (visualizes existing __agsistMR factors) ============
-var SC_SEAS=[55,62,72,82,100,95,70,45,22,10,35,52]; // historical seasonal strength index by month
-var SC_SEAS_TIP=['carry market','pre-planting','planting rally window','weather premium building','peak weather market','pollination risk','condition-driven','early harvest pressure','harvest pressure','seasonal low (weakest)','post-harvest recovery','year-end positioning'];
 function scMeter(pct){pct=Math.max(0,Math.min(100,pct));return '<div class="sc-f-meter"><i style="width:'+pct+'%"></i></div>';}
+// S9: map a bid's board symbol (e.g. ZCU26) to the matching dated contract in prices.json.
+// Returns {key,label,close} or null when no dated quote matches — callers must then
+// print basis vs the raw symbol WITHOUT an arithmetic equation.
+function boardContractFromSymbol(sym){
+  if(!sym||!window.__agsistLastQ)return null;
+  var m=String(sym).toUpperCase().match(/^ZC([FGHJKMNQUVXZ])(\d{2})$/);
+  if(!m)return null;
+  var MC={F:'jan',G:'feb',H:'mar',J:'apr',K:'may',M:'jun',N:'jul',Q:'aug',U:'sep',V:'oct',X:'nov',Z:'dec'};
+  var ML={F:'Jan',G:'Feb',H:'Mar',J:'Apr',K:'May',M:'Jun',N:'Jul',Q:'Aug',U:'Sep',V:'Oct',X:'Nov',Z:'Dec'};
+  var mon=MC[m[1]],yy=m[2];
+  var candidates=['corn-'+mon+yy];
+  if(mon==='dec'&&yy==='26')candidates.unshift('corn-dec'); // Dec '26 lives under the legacy key
+  for(var i=0;i<candidates.length;i++){
+    var d=window.__agsistLastQ[candidates[i]];
+    if(d&&d.close!=null)return {key:candidates[i],label:ML[m[1]]+" '"+yy,close:d.close};
+  }
+  return null;
+}
 function computeScorecard(){
   var mr=window.__agsistMR; if(!mr)return null;
   var p=mr.priceCtx, be=mr.breakeven, cot=mr.cotCtx, basis=mr.basisCtx, rp=mr.rpCtx;
@@ -1109,9 +1145,12 @@ function computeScorecard(){
   if(cot&&cot.pct!=null){
     factors.push({lbl:'Fund Positioning',val:cot.pct+ord(cot.pct)+' pct',cls:'nu',meter:cot.pct,det:cot.pct>=85?'crowded long \u2014 unwind risk':cot.pct<=15?'crowded short \u2014 squeeze risk':'mid-range'});
   }
-  // 4. Seasonal
-  var mo=new Date().getMonth();
-  factors.push({lbl:'Seasonal Tendency',val:SC_SEAS[mo]+'/100',cls:'nu',meter:SC_SEAS[mo],det:SC_SEAS_TIP[mo]});
+  // 4. Seasonal — from /data/price-stats.json seasonality; row omitted entirely when data is unavailable
+  if(window.__agsistSeas&&window.__agsistSeas.length===12){
+    var mo=new Date().getMonth();
+    var sv=window.__agsistSeas[mo];
+    factors.push({lbl:'Seasonal Tendency',val:sv+'/100',cls:'nu',meter:sv,det:'5-yr weekly closes, indexed 0–100'});
+  }
   // 5. RP revenue floor (crop-insurance moat) — only when harvest-prices has this crop
   if(rp&&rp.floor!=null){
     var _bq=(window.__agsistLastQ&&window.__agsistLastQ[CROP_KEY]&&window.__agsistLastQ[CROP_KEY].close!=null)?window.__agsistLastQ[CROP_KEY].close/100:null;
@@ -1142,14 +1181,26 @@ function renderScorecard(){
       return '<div class="sc-f"><div class="sc-f-lbl">'+f.lbl+'</div><div class="sc-f-val '+f.cls+'">'+f.val+'</div>'+scMeter(f.meter)+'<div class="sc-f-det">'+f.det+'</div></div>';
     }).join('');
   }
-  // basis-to-cash bridge
+  // basis-to-cash bridge \u2014 the futures leg of the equation must be the SAME contract
+  // the bid's basis is quoted against (S9). No matching dated quote = no equation.
   var cashEl=document.getElementById('sc-cash');
   if(cashEl){
-    if(sc.basis&&sc.priceCents!=null&&sc.basis.basis!=null){
-      var futures=sc.priceCents/100, bv=Number(sc.basis.basis), cash=(sc.basis.bidPrice!=null?Number(sc.basis.bidPrice):futures+bv);
-      var line='<strong>Your local cash:</strong> futures $'+futures.toFixed(2)+' '+(bv>=0?'+':'\u2212')+' $'+Math.abs(bv).toFixed(2)+' basis = <strong>$'+cash.toFixed(2)+'/bu</strong>';
-      if(sc.be){var cd=cash-sc.be.be;line+=' \u2014 <strong class="'+(cd>=0?'sc-f-val up':'sc-f-val dn')+'" style="font-weight:700">'+(cd>=0?'+':'\u2212')+'$'+Math.abs(cd).toFixed(2)+'/bu vs your breakeven</strong>';}
-      cashEl.innerHTML=line; cashEl.style.display='block';
+    if(sc.basis&&sc.basis.basis!=null){
+      var bv=Number(sc.basis.basis);
+      var board=boardContractFromSymbol(sc.basis.symbol);
+      var line=null,cash=null;
+      if(board){
+        var futures=board.close/100;
+        cash=(sc.basis.bidPrice!=null?Number(sc.basis.bidPrice):futures+bv);
+        line='<strong>Your local cash:</strong> futures $'+futures.toFixed(2)+' (vs '+board.label+' board) '+(bv>=0?'+':'\u2212')+' $'+Math.abs(bv).toFixed(2)+' basis = <strong>$'+cash.toFixed(2)+'/bu</strong>';
+      }else if(sc.basis.bidPrice!=null){
+        cash=Number(sc.basis.bidPrice);
+        line='<strong>Your local cash:</strong> <strong>$'+cash.toFixed(2)+'/bu</strong> \u00b7 basis '+(bv>=0?'+':'\u2212')+'$'+Math.abs(bv).toFixed(2)+(sc.basis.symbol?' vs '+sc.basis.symbol:' vs its board contract');
+      }
+      if(line!=null){
+        if(sc.be&&cash!=null){var cd=cash-sc.be.be;line+=' \u2014 <strong class="'+(cd>=0?'sc-f-val up':'sc-f-val dn')+'" style="font-weight:700">'+(cd>=0?'+':'\u2212')+'$'+Math.abs(cd).toFixed(2)+'/bu vs your breakeven</strong>';}
+        cashEl.innerHTML=line; cashEl.style.display='block';
+      }else{ cashEl.style.display='none'; }
     }else{ cashEl.style.display='none'; }
   }
   // RP revenue-floor bridge — the line no other futures page can show
@@ -1251,7 +1302,7 @@ function buildActionLine(mr){
     }else if(pct<25){
       lines.push('Price is in the <strong>lower quartile</strong> of its 52-week range. Historically a weak pricing window \u2014 selling here locks in losses for most operations. Enter your cost of production above to see how far below your breakeven you are.');
     }else{
-      lines.push('Price is mid-range. Add your cost of production above to get personalized take.');
+      lines.push('Price is mid-range. Add your cost of production above to get a personalized take.');
     }
   }
 
@@ -1478,7 +1529,7 @@ function renderBasisCard(data){
     // Header label: show BID\'s location + distance from user
     if(locEl){
       var label=bidGrid?bidGrid.label:(b.city||b.facility||'\u2014');
-      var locStr='\u{1F4CD} '+label;
+      var locStr=label;
       if(bidGrid&&userLoc.lat!=null&&userLoc.lng!=null&&bidGrid.lat!=null){
         var dMi=haversineMi(userLoc.lat,userLoc.lng,bidGrid.lat,bidGrid.lng);
         if(dMi<2)locStr+=' \u00b7 your area';
@@ -1490,7 +1541,7 @@ function renderBasisCard(data){
     }
 
     if(bidEl)bidEl.textContent=bidPrice!=null?'$'+Number(bidPrice).toFixed(2):'\u2014';
-    try{window.__agsistMR.basisCtx={basis:(basis!=null?Number(basis):null),bidPrice:(bidPrice!=null?Number(bidPrice):null),loc:(document.getElementById('basis-loc')?document.getElementById('basis-loc').textContent:null)};renderScorecard();}catch(e){}
+    try{window.__agsistMR.basisCtx={basis:(basis!=null?Number(basis):null),bidPrice:(bidPrice!=null?Number(bidPrice):null),symbol:(b.symbol||b.futures_symbol||b.futuresSymbol||null),loc:(document.getElementById('basis-loc')?document.getElementById('basis-loc').textContent:null)};renderScorecard();}catch(e){}
     if(spreadEl){
       if(basis!=null){
         var bv=Number(basis);
@@ -1504,7 +1555,7 @@ function renderBasisCard(data){
       var interp;
       if(basis!=null){
         var bvi=Number(basis),absV=Math.abs(bvi).toFixed(2);
-        if(bvi>=0)interp='Cash is <strong>$'+absV+' above front-month futures</strong>. Positive basis signals firm local demand \u2014 buyers are willing to pay above the exchange to attract bushels.';
+        if(bvi>=0)interp='Cash is <strong>$'+absV+' above its board futures contract</strong>. Positive basis signals firm local demand \u2014 buyers are willing to pay above the exchange to attract bushels.';
         else if(bvi>=-0.20)interp='Cash is <strong>$'+absV+' below futures</strong>. A tight basis like this is firm \u2014 typical of strong local demand or proximity to a processor.';
         else if(bvi>=-0.40)interp='Cash is <strong>$'+absV+' below futures</strong>. Roughly typical interior-state basis. Compare against your usual local levels to gauge whether the elevator is bidding up.';
         else interp='Cash is <strong>$'+absV+' below futures</strong>. A wide negative basis suggests heavy local supply or soft buyer demand. Storing through to a basis improvement may pay if you have bin space.';
@@ -1541,7 +1592,7 @@ function renderBasisCard(data){
     // Header label: show nearest grid point so user knows where we looked
     if(locEl){
       if(nearest&&nearest.grid){
-        var ls='\u{1F4CD} '+nearest.grid.label;
+        var ls=nearest.grid.label;
         if(nearest.exact)ls+=' \u00b7 your ZIP';
         else if(nearest.distance>2)ls+=' \u00b7 '+Math.round(nearest.distance)+' mi from you';
         locEl.textContent=ls;
@@ -1606,8 +1657,13 @@ function loadBriefingStrip(){
       var hd=document.getElementById('brief-hd');
       var teaser=document.getElementById('brief-teaser');
       if(strip&&hd&&teaser){
-        hd.textContent=d.headline;
-        teaser.textContent=d.teaser||d.subheadline||d.lead||'';
+        /* Audit 2026-07-29 (Sig): NO emoji in reader copy — the briefing pipeline
+           still emits them (daily.json), so scrub anything it feeds this strip.
+           Surrogate-pair class = all astral emoji; BMP ranges = misc symbols/dingbats.
+           Plain arrows are outside these ranges and survive. */
+        var deEmoji=function(s){return String(s||'').replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]|[\u2600-\u27BF\u2B00-\u2BFF\uFE0F\u200D]/g,'').replace(/  +/g,' ').trim();};
+        hd.textContent=deEmoji(d.headline);
+        teaser.textContent=deEmoji(d.teaser||d.subheadline||d.lead||'');
         strip.style.display='flex';
       }
     })
@@ -1624,12 +1680,12 @@ function renderForwardCurve(cropKey,contractList,quotes,isGrain){
   var shape=document.getElementById('fwd-shape');
   var interp=document.getElementById('fwd-interp');
   if(!svg)return;
-  // Gather available points
+  // Gather available points (carry flags + crop-year tags travel with each point)
   var pts=[];
   contractList.forEach(function(c){
     var d=quotes[c.key];
     if(d&&d.close!=null){
-      pts.push({label:c.month,idx:c.idx,price:isGrain?d.close/100:d.close});
+      pts.push({label:c.month,idx:c.idx,price:isGrain?d.close/100:d.close,tag:c.tag||null,carryStart:!!c.carryStart,carryEnd:!!c.carryEnd});
     }
   });
   if(pts.length<2){
@@ -1643,7 +1699,7 @@ function renderForwardCurve(cropKey,contractList,quotes,isGrain){
   var maxP=Math.max.apply(null,pts.map(function(p){return p.price;}));
   var pad=(maxP-minP)*0.15||0.05;
   minP-=pad;maxP+=pad;
-  var W=700,H=140,mL=40,mR=16,mT=10,mB=28;
+  var W=700,H=152,mL=40,mR=16,mT=10,mB=40;
   var pw=W-mL-mR,ph=H-mT-mB;
   function x(i){return mL+(pts.length===1?pw/2:(i/(pts.length-1))*pw);}
   function y(p){return mT+ph-((p-minP)/(maxP-minP))*ph;}
@@ -1656,34 +1712,44 @@ function renderForwardCurve(cropKey,contractList,quotes,isGrain){
   var path='';
   pts.forEach(function(p,i){path+=(i===0?'M':'L')+x(i)+','+y(p.price);});
   s.push('<path d="'+path+'" stroke="#d4a23f" stroke-width="2" fill="none"/>');
-  // Dots + price labels + month labels
+  // Dots + price labels + month labels (+ crop-year tag under the month where set)
   pts.forEach(function(p,i){
-    s.push('<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="#d4a23f"/>');
+    s.push('<circle cx="'+x(i)+'" cy="'+y(p.price)+'" r="4" fill="'+(p.tag&&p.tag.indexOf('new crop')===0?'#5a9b3c':'#d4a23f')+'"/>');
     s.push('<text x="'+x(i)+'" y="'+(y(p.price)-8)+'" fill="#e8ebe5" font-size="13" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">$'+p.price.toFixed(2)+'</text>');
-    s.push('<text x="'+x(i)+'" y="'+(H-8)+'" fill="#9aa39c" font-size="13" text-anchor="middle">'+p.label+'</text>');
+    s.push('<text x="'+x(i)+'" y="'+(H-20)+'" fill="#9aa39c" font-size="13" text-anchor="middle">'+p.label+'</text>');
+    if(p.tag)s.push('<text x="'+x(i)+'" y="'+(H-6)+'" fill="#7f8a82" font-size="10" text-anchor="middle">'+p.tag+'</text>');
   });
   s.push('</svg>');
   svg.outerHTML=s.join('');
-  // Interpretation: contango/backwardation + carry
-  var first=pts[0],last=pts[pts.length-1];
-  var totalDiff=last.price-first.price;
-  var monthsSpan=last.idx-first.idx;if(monthsSpan<=0)monthsSpan=1;
-  var monthlyCarry=totalDiff/monthsSpan;
-  var STORAGE=0.035;
+  // Interpretation: contango/backwardation + carry over the SAME-crop storage window only.
+  // Old-crop nearby (Sep '26) and next-crop-year (Dec '27) points are plotted but excluded \u2014
+  // carry math across crop years is meaningless for a storage decision.
+  var cs=null,ce=null;
+  pts.forEach(function(p){if(p.carryStart)cs=p;if(p.carryEnd)ce=p;});
   var shapeTxt,interpTxt;
-  if(totalDiff>0.05){
-    shapeTxt='contango';
-    if(monthlyCarry>STORAGE*1.1){
-      interpTxt='<strong>Market is paying '+(monthlyCarry*100).toFixed(1)+'\u00a2/bu per month</strong> to store '+first.label+' through '+last.label+' \u2014 above typical storage cost of ~3.5\u00a2/mo. Storing makes sense if you have bin space.';
-    }else if(monthlyCarry>0){
-      interpTxt='<strong>Modest carry of '+(monthlyCarry*100).toFixed(1)+'\u00a2/bu per month</strong> \u2014 near typical storage cost. Storage decision is roughly breakeven on carry alone.';
+  if(cs&&ce&&ce.idx>cs.idx){
+    var totalDiff=ce.price-cs.price;
+    var monthsSpan=ce.idx-cs.idx;
+    var monthlyCarry=totalDiff/monthsSpan;
+    var STORAGE=0.035;
+    var windowLbl=(typeof CARRY_WINDOW_LABEL!=='undefined')?CARRY_WINDOW_LABEL:(cs.label+' \u2192 '+ce.label);
+    if(totalDiff>0.05){
+      shapeTxt='contango';
+      if(monthlyCarry>STORAGE*1.1){
+        interpTxt='<strong>'+windowLbl+': market is paying '+(monthlyCarry*100).toFixed(1)+'\u00a2/bu per month</strong> to store \u2014 above typical storage cost of ~3.5\u00a2/mo. Storing makes sense if you have bin space. Dec \u201927 is new-crop 2027 and is excluded from this carry math.';
+      }else{
+        interpTxt='<strong>'+windowLbl+': modest carry of '+(monthlyCarry*100).toFixed(1)+'\u00a2/bu per month</strong> \u2014 near typical storage cost of ~3.5\u00a2/mo. Storage decision is roughly breakeven on carry alone. Dec \u201927 is new-crop 2027 and is excluded from this carry math.';
+      }
+    }else if(totalDiff<-0.05){
+      shapeTxt='backwardation';
+      interpTxt='<strong>'+windowLbl+': market is inverted</strong> \u2014 '+cs.label+' is $'+Math.abs(totalDiff).toFixed(2)+' above '+ce.label+'. Front-end demand is strong; storage penalty if you hold. Consider selling sooner. Dec \u201927 is new-crop 2027 and is excluded from this carry math.';
+    }else{
+      shapeTxt='flat';
+      interpTxt='<strong>'+windowLbl+': flat curve</strong> \u2014 deferred same-crop contracts are priced near Dec. Market is neutral on storage economics. Dec \u201927 is new-crop 2027 and is excluded from this carry math.';
     }
-  }else if(totalDiff<-0.05){
-    shapeTxt='backwardation';
-    interpTxt='<strong>Market is inverted</strong> \u2014 '+first.label+' is '+'$'+Math.abs(totalDiff).toFixed(2)+' above '+last.label+'. Front-end demand is strong; storage penalty if you hold. Consider selling sooner.';
   }else{
-    shapeTxt='flat';
-    interpTxt='<strong>Flat curve</strong> \u2014 deferred contracts are priced near the front month. Market is neutral on storage economics.';
+    shapeTxt='\u2014';
+    interpTxt='Storage-carry contracts (Dec \u201926 and Jul \u201927) are not both available in the current data, so no carry figure is shown.';
   }
   if(shape)shape.textContent=shapeTxt;
   if(interp)interp.innerHTML=interpTxt;
@@ -1734,7 +1800,7 @@ function initSignup(){
 }
 
 // Boot widget subsystems on DOMContentLoaded
-document.addEventListener('DOMContentLoaded',function(){renderMarketSession();setInterval(renderMarketSession,60000);loadBriefingStrip();loadCropProgress();loadCOT();fetchAndRenderBasis();initZipPrompt();initBreakeven(CROP_KEY,CROP_LABEL);initSignup();initPriced();});
+document.addEventListener('DOMContentLoaded',function(){renderMarketSession();setInterval(renderMarketSession,60000);loadBriefingStrip();loadCropProgress();loadCOT();loadWasde();fetchAndRenderBasis();initZipPrompt();initBreakeven(CROP_KEY,CROP_LABEL);initSignup();initPriced();});
 
 function grain$(v){return '$'+(v/100).toFixed(2);}
 function raw$(v,d){return v.toFixed(d||2);}
@@ -1747,12 +1813,25 @@ fetch('/data/prices.json',{cache:'no-store'})
   .then(function(r){return r.json();})
   .then(function(data){
     var q=data.quotes||{};
-    [{key:'corn',p:'p-corn',c:'c-corn',g:true},{key:'corn-dec',p:'p-corndec',c:'c-corndec',g:true},{key:'beans',p:'p-beans',c:'c-beans',g:true},{key:'wheat',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false}].forEach(function(m){var d=q[m.key];if(!d||d.close==null)return;setEl(m.p,m.g?grain$(d.close):raw$(d.close));var ch=chgTxt(d.netChange,d.pctChange,d.roll);setEl(m.c,ch.t,ch.c);});
+    // S1: hero + corn tile prefer the nearest unexpired DATED contract (corn-nearby alias)
+    // when the pipeline publishes it; otherwise fall back to the continuous most-active
+    // series — labeled "Most-active (ZC)", never "Front Month" (the continuous series
+    // is Yahoo most-active, currently the Dec contract, not true front month).
+    var nearbyQ=q[CROP_KEY+'-nearby']||null;
+    var heroQ=nearbyQ||q[CROP_KEY]||null;
+    var heroContract=nearbyQ?(nearbyQ.contract||(data.nearby&&data.nearby[CROP_KEY]&&data.nearby[CROP_KEY].label)||null):null;
+    var heroLabel=heroContract?('Nearby '+heroContract):'Most-active (ZC)';
+    window.__agsistHeroQ=heroQ;
+    var lblC=document.getElementById('lbl-corn');if(lblC)lblC.textContent=heroLabel;
+    var phEx=document.getElementById('ph-exch');if(phEx)phEx.textContent='CBOT · CME Group · '+heroLabel+' · Refreshed in session';
+    var rngLbl=document.getElementById('rng-lbl');if(rngLbl)rngLbl.textContent='52-Week Range — Corn '+heroLabel;
+    if(heroQ&&heroQ.close!=null){setEl('p-corn',grain$(heroQ.close));var hcT=chgTxt(heroQ.netChange,heroQ.pctChange,heroQ.roll);setEl('c-corn',hcT.t,hcT.c);}
+    [{key:'corn-dec',p:'p-corndec',c:'c-corndec',g:true},{key:'beans',p:'p-beans',c:'c-beans',g:true},{key:'wheat',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false}].forEach(function(m){var d=q[m.key];if(!d||d.close==null)return;setEl(m.p,m.g?grain$(d.close):raw$(d.close));var ch=chgTxt(d.netChange,d.pctChange,d.roll);setEl(m.c,ch.t,ch.c);});
 
-    var corn=q.corn;
+    var corn=heroQ;
     if(corn&&corn.close!=null){
       setEl('hero-price',grain$(corn.close));
-      var hc=chgTxt(corn.netChange,corn.pctChange,corn.roll);setEl('hero-chg',hc.t,hc.c);if(corn.roll){var __rn=document.querySelector('.px-seed-note');if(__rn){var __d=document.createElement('div');__d.className='roll-note';__d.innerHTML='Front-month contract just rolled to the next month — day-change comparisons span two contracts until the new month has a clean close.';__rn.parentNode.insertBefore(__d,__rn);}}
+      var hc=chgTxt(corn.netChange,corn.pctChange,corn.roll);setEl('hero-chg',hc.t,hc.c);if(corn.roll){var __rn=document.querySelector('.px-seed-note');if(__rn){var __d=document.createElement('div');__d.className='roll-note';__d.innerHTML='The nearby contract just rolled to the next month — day-change comparisons span two contracts until the new month has a clean close.';__rn.parentNode.insertBefore(__d,__rn);}}
       if(corn.wk52_lo!=null&&corn.wk52_hi!=null){
         var lo=corn.wk52_lo,hi=corn.wk52_hi,cu=corn.close,rp=Math.min(100,Math.max(0,(cu-lo)/(hi-lo)*100));
         document.getElementById('rng-lo').textContent=grain$(lo);
@@ -1773,14 +1852,29 @@ fetch('/data/prices.json',{cache:'no-store'})
       setEl('cb-ratio',ratio.toFixed(2)+':1');
       var gp=Math.min(100,Math.max(0,(ratio-2)/1*100));
       document.getElementById('cb-dot').style.left='calc('+gp+'% - 8px)';
-      setEl('cb-interp',ratio<2.4?'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn favored — historically the stronger per-acre plant':ratio<2.6?'<svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg>️ Neutral zone — local costs and rotation should decide':'<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Beans favored — soybeans historically pay more per acre');
+      setEl('cb-interp',ratio<2.4?'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn favored — historically the stronger per-acre plant':ratio<2.6?'<svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> Neutral zone — local costs and rotation should decide':'<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Beans favored — soybeans historically pay more per acre');
+    }
+
+    // S2: new-crop at a glance — Dec '26 benchmark, one line under the status area. Hidden when the key is missing.
+    if(cornDec&&cornDec.close!=null){
+      var ncEl=document.getElementById('nc-glance');
+      if(ncEl){
+        var ncp=document.getElementById('nc-price');if(ncp)ncp.textContent=grain$(cornDec.close);
+        var ncc=document.getElementById('nc-chg');
+        if(ncc){
+          if(cornDec.roll){ncc.textContent='(contract roll)';ncc.className='roll';}
+          else if(cornDec.pctChange!=null){var ncs=cornDec.netChange>0?'+':cornDec.netChange<0?'−':'';ncc.textContent='('+ncs+Math.abs(cornDec.pctChange).toFixed(2)+'%)';ncc.className=(cornDec.netChange||0)>=0?'up':'dn';}
+          else{ncc.textContent='';}
+        }
+        ncEl.style.display='block';
+      }
     }
 
     var sp=[];
     if(corn&&corn.wk52_lo!=null&&corn.wk52_hi!=null){
       var pct=Math.round(Math.min(100,Math.max(0,(corn.close-corn.wk52_lo)/(corn.wk52_hi-corn.wk52_lo)*100))); window.__agsistMR.priceCtx={pct:pct,cropKey:CROP_KEY};
       var zone=pct<25?'lower quartile — historically a weak pricing window':pct<50?'lower half of its 52-week range':pct<75?'upper half of its range':'upper quartile — near recent highs';
-      sp.push('<strong>Front-month corn at '+grain$(corn.close)+'</strong> is in the <strong>'+pct+ord(pct)+' percentile</strong> of its 52-week range ('+zone+')');
+      sp.push('<strong>'+heroLabel+' corn at '+grain$(corn.close)+'</strong> is in the <strong>'+pct+ord(pct)+' percentile</strong> of its 52-week range ('+zone+')');
     }
     if(cornDec&&beansNov&&cornDec.close&&beansNov.close){
       var r2=beansNov.close/cornDec.close;
@@ -1792,7 +1886,7 @@ fetch('/data/prices.json',{cache:'no-store'})
     var dol=q.dollar;
     if(dol&&dol.close){if(dol.close>104)sp.push('the <strong>dollar at '+dol.close.toFixed(1)+'</strong> is a headwind for US corn export competitiveness');else if(dol.close<100)sp.push('the <strong>dollar at '+dol.close.toFixed(1)+'</strong> is providing a tailwind for US corn export demand');}
     var snapEl=document.getElementById('snap-body');
-    if(sp.length){window.__agsistMR.base=sp;var __feFront=q[CROP_KEY];if(__feFront&&__feFront.close!=null){window.__agsistMR.breakeven=getBreakevenPhrase(__feFront.close/100);}renderMarketRead();}
+    if(sp.length){window.__agsistMR.base=sp;var __feFront=heroQ;if(__feFront&&__feFront.close!=null){window.__agsistMR.breakeven=getBreakevenPhrase(__feFront.close/100);}renderMarketRead();}
     /* v15: Wire freshness timers — both tick every 30s automatically.
        Falls back gracefully if loader.js timer module didn't load. */
     if(window.agsistTimer&&data.fetched){
@@ -1821,9 +1915,8 @@ fetch('/data/prices.json',{cache:'no-store'})
       var minsFB=Math.round((Date.now()-new Date(data.fetched).getTime())/60000);
       document.getElementById('status').textContent='Prices updated · '+(minsFB<2?'Just updated':minsFB<60?minsFB+' min ago':Math.round(minsFB/60)+'h ago');
     }
-    /* WASDE imminence still computes from data.fetched — preserved verbatim */
-    var wEl=document.getElementById('snap-wasde');
-    if(wEl){var sn=new Date(),sw=new Date(sn.getFullYear(),sn.getMonth(),10,11,0,0);if(sn>=sw)sw=new Date(sn.getFullYear(),sn.getMonth()+1,10,11,0,0);var MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],dd=Math.ceil((sw-sn)/86400000);wEl.textContent=MN[sw.getMonth()]+' '+sw.getDate()+' · '+(dd<=0?'today':dd===1?'tomorrow':'in '+dd+' days');maybeFlagWasdeImminence(dd);}
+    /* Next-report line is populated by loadWasde() from /data/whats-priced-in.json (S3) —
+       the old new Date(y,m,10) guess was an invented date and is gone. */
     var minsForGA=data.fetched?Math.round((Date.now()-new Date(data.fetched).getTime())/60000):null;
     if(typeof gaEvent==='function')gaEvent('price_loaded',{page:'corn',mins_old:minsForGA});
 
@@ -1833,21 +1926,40 @@ fetch('/data/prices.json',{cache:'no-store'})
     window.__agsistLastQ=q;
     window.addEventListener('be-updated',function(){
       var qq=window.__agsistLastQ; if(!qq)return;
-      var front=qq[CROP_KEY]; if(!front||front.close==null)return;
+      var front=window.__agsistHeroQ||qq[CROP_KEY]; if(!front||front.close==null)return;
       window.__agsistMR.breakeven=getBreakevenPhrase(front.close/100);
       renderMarketRead();
     });
   })
-  .catch(function(){document.getElementById('status').textContent='Price data unavailable — market may be closed';});
+  .catch(function(){
+    /* S4: honest failure — a static-file fetch failure says nothing about market hours.
+       Stop the loading animations, say exactly what happened, keep the seeded last close visible. */
+    document.querySelectorAll('.sk').forEach(function(el){el.classList.remove('sk');});
+    var st=document.getElementById('status');
+    if(st)st.textContent='Live update failed — showing last close (see note below).';
+  });
 
 // TRADINGVIEW: fully decoupled from prices, loads independently, degrades gracefully
 document.addEventListener('DOMContentLoaded',function(){
-  var SEAS=[55,62,72,82,100,95,70,45,22,10,35,52];
-  var TIPS=['Carry market — commercials control basis','Pre-planting talk — ratio is the compass','Planting intentions rally often materializes','Weather uncertainty premium builds','Peak weather market — expect volatility','Pollination risk — markets reactive','Crop condition certainty increasing','Early harvest pressure begins','Harvest pressure toward seasonal low','Peak harvest pressure — historically weakest','Post-harvest recovery begins','Year-end positioning — quieter market'];
-  var MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var cm=new Date().getMonth();
-  var ch=document.getElementById('seas-chart');
-  if(ch){SEAS.forEach(function(v,i){var c=document.createElement('div');c.className='seas-col'+(i===cm?' cur':'');c.title=MOS[i]+': '+TIPS[i];c.innerHTML='<div style="flex:1"></div><div class="seas-bar" style="height:'+Math.max(4,v*.5)+'px"></div><div class="seas-mo">'+MOS[i]+'</div>';ch.appendChild(c);});}
+  // S7: seasonal chart driven by /data/price-stats.json seasonality (stashed by the
+  // 5-yr range script as window.__agsistSeas). No data — the card stays hidden;
+  // nothing invented.
+  function renderSeasonal(){
+    var seas=window.__agsistSeas;
+    var wrap=document.getElementById('seas-wrap');
+    var ch=document.getElementById('seas-chart');
+    if(!wrap||!ch||!seas||seas.length!==12)return;
+    var MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var cm=new Date().getMonth();
+    ch.innerHTML='';
+    seas.forEach(function(v,i){var c=document.createElement('div');c.className='seas-col'+(i===cm?' cur':'');c.title=MOS[i]+': '+v+'/100';c.innerHTML='<div style="flex:1"></div><div class="seas-bar" style="height:'+Math.max(4,v*.5)+'px"></div><div class="seas-mo">'+MOS[i]+'</div>';ch.appendChild(c);});
+    var capEl=document.getElementById('seas-caption');
+    if(capEl&&window.__agsistSeasN)capEl.textContent='5-yr weekly closes, indexed 0–100 (n='+window.__agsistSeasN+'). Seasonal tendencies are guides — major USDA reports and weather events override them in any given year.';
+    wrap.style.display='block';
+    try{renderScorecard();}catch(e){}
+  }
+  window.addEventListener('agsist-seas',renderSeasonal);
+  renderSeasonal();
 
   // TradingView widget — CAPITALCOM:CORN is a corn CFD that tracks CBOT ZC
   // and renders on the free tier without a TradingView account (unlike CBOT:ZC1!)

@@ -4,6 +4,15 @@ fetch_prices.py — fetches commodity/futures/index/crypto prices via yfinance
 Writes to data/prices.json. Run by GitHub Actions every 30min on weekdays.
 All free, no API key needed.
 
+v3.5 — 2026-07-28
+  True-front-month aliases + wheat classes. Yahoo's continuous ZC=F/ZS=F
+  track the most-active contract (Dec/Nov new-crop in summer), so "front
+  month" on the pages was quoting the wrong contract by ~22c. add_nearby()
+  now publishes <crop>-nearby copied from the nearest unexpired dated
+  contract, labeled with its month; a top-level "nearby" map names it.
+  Also added KC HRW (KE=F) and MGEX HRS (MWE=F) so the wheat page can show
+  all three classes, plus the missing wheat-may27 curve point.
+
 v3.4 — 2026-06-02 (evening)
   Ticker fallback chains. A SYMBOLS value may now be a LIST of candidate tickers;
   fetch tries each in order and uses the first that returns data. Used for the
@@ -103,7 +112,7 @@ def _num(v):
     return f
 
 
-from contract_calendar import is_expired, recent_expiry, expiry_date  # ONE definition of contract expiry
+from contract_calendar import is_expired, recent_expiry, expiry_date, month_num  # ONE definition of contract expiry
 
 # A transient yfinance hiccup clears within hours; a quote that cannot be
 # fetched for this many days is almost certainly an expired/rolled contract
@@ -144,6 +153,65 @@ def mark_rolls(quotes, symbols, now=None):
     return rolls
 
 
+def _month_label(key):
+    """'corn-sep26' -> \"Sep '26\". None if the suffix isn't a dated month."""
+    suffix = str(key).split("-")[-1]
+    mon = suffix[:3].capitalize()
+    yr = suffix[3:]
+    if month_num(suffix[:3]) is None or not yr.isdigit() or len(yr) != 2:
+        return None
+    return f"{mon} '{yr}"
+
+
+def add_nearby(quotes, symbols, now=None):
+    """True-front-month aliases (2026-07-28).
+
+    Yahoo's continuous grain series (ZC=F / ZS=F) track the MOST-ACTIVE
+    contract, not the nearest. In late July 2026 that meant quotes["corn"]
+    was byte-identical to quotes["corn-dec"] (474.75) while the actual
+    nearby Sep contract sat 22c lower at 452.50 — so every page hero
+    labeled "Front Month" was quoting December and the seed note read
+    "front-month $4.73 · December new-crop $4.73", degenerate on its face.
+
+    Fix: for each crop, copy the nearest unexpired DATED contract's quote
+    to <crop>-nearby, stamped with its contract label. A top-level
+    "nearby" map names which contract won. Pages that mean "front month"
+    read <crop>-nearby and show the label; the continuous key stays for
+    tickers/ratios and should be labeled "most-active" wherever shown.
+    Pure function of its inputs — selftested in scripts/test_nearby.py.
+    """
+    nearby = {}
+    for crop in ("corn", "beans", "wheat"):
+        dated = []
+        for k in symbols:
+            if not k.startswith(crop + "-"):
+                continue
+            exp = expiry_date(k)
+            if exp is None:
+                continue          # undated benchmark alias like corn-dec
+            dated.append((exp, k))
+        dated.sort()
+        for exp, k in dated:
+            q = quotes.get(k)
+            if is_expired(k, now) or not q or q.get("close") is None:
+                continue
+            alias = dict(q)
+            alias["alias_of"] = k
+            alias["contract"] = _month_label(k)
+            quotes[crop + "-nearby"] = alias
+            nearby[crop] = {"key": k, "label": _month_label(k)}
+            # Log when the continuous series has drifted to a different
+            # contract than the true nearby — the exact condition that
+            # produced the front==new-crop duplicate.
+            cq = quotes.get(crop)
+            if cq and cq.get("close") is not None and cq["close"] != q["close"]:
+                print(f"  NOTE {crop}: continuous {cq['close']} != nearby "
+                      f"{k} {q['close']} — continuous is tracking a deferred "
+                      f"(most-active) contract; pages should use {crop}-nearby")
+            break
+    return nearby
+
+
 def candidates(spec):
     """A SYMBOLS value may be a single ticker string or a list of fallback
     tickers to try in order (first that returns data wins). Lets a delisted
@@ -158,12 +226,21 @@ SYMBOLS = {
     "beans":      "ZS=F",
     "beans-nov":  "ZSX26.CBT",     # Nov 2026 — current new-crop benchmark; used by corn-bean ratio
     "wheat":      "ZW=F",
+    # Wheat classes (2026-07-28): the wheat page was Chicago-only while two
+    # thirds of the site's own wheat bids quote against KC or Minneapolis.
+    # Continuous most-active series, same as ZW=F. Tickers match the ones
+    # enrich_cot_prices.py already resolves via yfinance.
+    "kcwheat":    "KE=F",     # KC HRW (hard red winter)
+    "mplswheat":  "MWE=F",    # MGEX HRS (hard red spring)
     "oats":       "ZO=F",
 
     # ── Grain forward curve (year-explicit; UPDATE ANNUALLY) ──
     # Corn active months: Mar (H), May (K), Jul (N), Sep (U), Dec (Z)
     "corn-jul26": "ZCN26.CBT",
     "corn-sep26": "ZCU26.CBT",
+    "corn-dec26": "ZCZ26.CBT",   # dated Dec (same ticker as corn-dec alias) — REQUIRED so
+                                 # add_nearby can roll Sep->Dec on Sep 15; without it the
+                                 # nearby ladder would skip to Mar '27 (audit 2026-07-29)
     "corn-mar27": "ZCH27.CBT",
     "corn-may27": "ZCK27.CBT",
     "corn-jul27": "ZCN27.CBT",
@@ -173,6 +250,9 @@ SYMBOLS = {
     "beans-jul26":"ZSN26.CBT",
     "beans-aug26":"ZSQ26.CBT",
     "beans-sep26":"ZSU26.CBT",
+    "beans-nov26":"ZSX26.CBT",   # dated Nov (same ticker as beans-nov alias) — REQUIRED so
+                                 # add_nearby can roll Sep->Nov on Sep 15; without it the
+                                 # nearby ladder would skip to Jan '27 (audit 2026-07-29)
     "beans-jan27":"ZSF27.CBT",
     "beans-mar27":"ZSH27.CBT",
     "beans-jul27":"ZSN27.CBT",
@@ -183,6 +263,7 @@ SYMBOLS = {
     "wheat-sep26":"ZWU26.CBT",
     "wheat-dec26":"ZWZ26.CBT",
     "wheat-mar27":"ZWH27.CBT",
+    "wheat-may27":"ZWK27.CBT",
     "wheat-jul27":"ZWN27.CBT",
     "wheat-dec27":"ZWZ27.CBT",
 
@@ -364,6 +445,8 @@ def main():
             f"{c} (front rolled off {v['rolled_off']}, expired {v['expired']})"
             for c, v in rolls.items()))
 
+    nearby = add_nearby(quotes, SYMBOLS)
+
     output = {
         "fetched":    datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "ok":         ok,
@@ -372,6 +455,10 @@ def main():
         # Continuous front-months currently inside a contract-roll window.
         # Pages use quotes[<crop>].roll to suppress the phantom day-change.
         "rolls":      rolls,
+        # Which dated contract each <crop>-nearby alias points at, e.g.
+        # {"corn": {"key": "corn-sep26", "label": "Sep '26"}}. Pages use the
+        # label so "front month" always names its contract.
+        "nearby":     nearby,
         # Dated contracts dropped because they are past their last trading day.
         # Named, not hidden: a consumer that wants corn-jul26 should be able to
         # see it was retired on purpose rather than wonder why the key vanished.

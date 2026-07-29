@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
 fetch_crop_progress.py — USDA NASS Crop Progress weekly fetcher
-Writes data/crop-progress.json with G/E ratings and planting pace for corn and soybeans.
+Writes data/crop-progress.json with G/E ratings and planting pace for corn and
+soybeans, plus winter/spring wheat condition and harvest pace (added 2026-07-28
+for the wheat futures page; fail-soft — wheat outages never block the corn write).
 
 Data source: USDA NASS QuickStats API (free key — see README)
 Get your free key at: https://quickstats.nass.usda.gov/api/
@@ -40,8 +42,8 @@ def nass_get(params: dict) -> list[dict]:
         return []
 
 
-def fetch_condition(commodity: str, year: int) -> list[dict]:
-    return nass_get({
+def fetch_condition(commodity: str, year: int, class_desc: str | None = None) -> list[dict]:
+    p = {
         "source_desc": "SURVEY",
         "sector_desc": "CROPS",
         "commodity_desc": commodity,
@@ -49,11 +51,15 @@ def fetch_condition(commodity: str, year: int) -> list[dict]:
         "agg_level_desc": "NATIONAL",
         "freq_desc": "WEEKLY",
         "year": str(year),
-    })
+    }
+    if class_desc:
+        p["class_desc"] = class_desc
+    return nass_get(p)
 
 
-def fetch_progress(commodity: str, year: int, unit: str = "PCT PLANTED") -> list[dict]:
-    return nass_get({
+def fetch_progress(commodity: str, year: int, unit: str = "PCT PLANTED",
+                   class_desc: str | None = None) -> list[dict]:
+    p = {
         "source_desc": "SURVEY",
         "sector_desc": "CROPS",
         "commodity_desc": commodity,
@@ -62,7 +68,10 @@ def fetch_progress(commodity: str, year: int, unit: str = "PCT PLANTED") -> list
         "agg_level_desc": "NATIONAL",
         "freq_desc": "WEEKLY",
         "year": str(year),
-    })
+    }
+    if class_desc:
+        p["class_desc"] = class_desc
+    return nass_get(p)
 
 
 def latest_ge(rows: list[dict]) -> dict | None:
@@ -148,8 +157,10 @@ def main():
         "updated":     datetime.now().strftime("%Y-%m-%d"),
         "report_date": None,
         "in_season":   in_season,
-        "corn":        None,
-        "soybeans":    None,
+        "corn":         None,
+        "soybeans":     None,
+        "winter_wheat": None,
+        "spring_wheat": None,
     }
 
     for commodity, key in [("CORN", "corn"), ("SOYBEANS", "soybeans")]:
@@ -205,6 +216,37 @@ def main():
 
         print(f"  G/E: {result[key]['good_excellent']}% | prev wk: {result[key]['good_excellent_prev_week']}% | prev yr: {result[key]['good_excellent_prev_year']}%", flush=True)
         print(f"  Planting: {result[key]['planting_pct']}% | prev yr: {result[key]['planting_prev_year']}%", flush=True)
+
+    # ── Wheat classes (2026-07-28) ──────────────────────────────────────────
+    # The wheat futures page had a dead-wired crop-progress card while NASS
+    # publishes exactly what moves KE and MWE: winter wheat harvest % and
+    # spring wheat condition. Fetched separately by class_desc so winter and
+    # spring rows never mix. Fail-soft: a wheat outage leaves the keys null
+    # (the page hides the card); it never blocks the corn/soybean write.
+    for cls, key, prog_unit in [("WINTER", "winter_wheat", "PCT HARVESTED"),
+                                ("SPRING, (EXCL DURUM)", "spring_wheat", "PCT HARVESTED")]:
+        print(f"\n── WHEAT, {cls} ──", flush=True)
+        try:
+            cond_cur  = fetch_condition("WHEAT", year, class_desc=cls)
+            cond_prev = fetch_condition("WHEAT", year1, class_desc=cls)
+            cur  = latest_ge(cond_cur)
+            prev = latest_ge(cond_prev)
+
+            h_cur  = latest_planting(fetch_progress("WHEAT", year, prog_unit, class_desc=cls))
+            h_prev = latest_planting(fetch_progress("WHEAT", year1, prog_unit, class_desc=cls))
+
+            result[key] = {
+                "good_excellent":           cur["good_excellent"] if cur else None,
+                "report_date":              cur["date"] if cur else (h_cur["date"] if h_cur else None),
+                "good_excellent_prev_year": prev["good_excellent"] if prev else None,
+                "harvest_pct":              h_cur["pct"] if h_cur else None,
+                "harvest_prev_year":        h_prev["pct"] if h_prev else None,
+            }
+            print(f"  G/E: {result[key]['good_excellent']}% (prev yr {result[key]['good_excellent_prev_year']}%) | "
+                  f"harvested: {result[key]['harvest_pct']}% (prev yr {result[key]['harvest_prev_year']}%)", flush=True)
+        except Exception as e:
+            print(f"  wheat {cls} fetch failed (non-fatal): {e}", flush=True)
+            result[key] = None
 
     if not result["corn"] and not result["soybeans"]:
         # Off-season (Nov–Mar): a placeholder is honest. In-season (Apr–Oct):

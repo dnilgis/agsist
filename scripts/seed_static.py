@@ -14,6 +14,10 @@ Idempotent: rewrites only between <!--SEED:*--> markers and inside existing
 "dateModified" fields; a run with unchanged prices produces byte-identical
 files, so the workflow's diff-gate makes no empty commits.
 
+v1.4 — 2026-07-28 (front seeds prefer <crop>-nearby so "front month" is the
+         true nearest contract, named; wheat Dec relabeled "deferred";
+         freshly-priced meta descriptions; crawler-visible SEED:pxtable
+         last-close table incl. KC/Mpls wheat; honest refresh wording)
 v1.3 — 2026-07-03 (seeds hail report totals into hail-map from the manifest)
 v1.3 — 2026-07-03 (seeds live report counts into hail-map stats line)
 v1.2 — 2026-07-03 (hail-map added to both lists)
@@ -29,12 +33,34 @@ from datetime import datetime, timezone
 PRICES = "data/prices.json"
 SITEMAP = "sitemap.xml"
 
-# page → (front-month key, benchmark key, benchmark label, crop word)
+# page → (crop key, benchmark key, benchmark label, crop word)
 # Grain prices in prices.json are in CENTS — divide by 100 (soybean key is "beans").
+# v1.4: the front price now prefers <crop>-nearby (true nearest dated contract,
+# labeled with its month) over the continuous key, which Yahoo pins to the
+# MOST-ACTIVE contract — in summer that's new-crop, which is how the seed note
+# once read "front-month $4.73 · December new-crop $4.73". Wheat's December is
+# labeled "deferred", not "new-crop": winter wheat new-crop is July, and by
+# late July the crop is harvested — Dec is a storage month of the same crop year.
 PAGES = {
     "corn-futures-prices.html":    ("corn",  "corn-dec",   "December new-crop", "corn"),
     "soybean-futures-prices.html": ("beans", "beans-nov",  "November new-crop", "soybeans"),
-    "wheat-futures-prices.html":   ("wheat", "wheat-dec26","December new-crop", "wheat"),
+    "wheat-futures-prices.html":   ("wheat", "wheat-dec26","December (deferred)", "wheat"),
+}
+
+# Meta-description templates. A numeric, dated description is the main
+# crawler-visible CTR lever these pages have (Google may rewrite, but a fresh
+# number raises the odds it keeps ours). Placeholders: {px} nearby close,
+# {chg} signed pct, {mon} contract label, {date} price date.
+DESC = {
+    "corn-futures-prices.html":
+        "Corn {mon} closed ${px} ({chg}) on {date} — live CBOT corn futures refreshed every "
+        "30 min in session. December new-crop, RP revenue floor, basis-to-cash, daily read.",
+    "soybean-futures-prices.html":
+        "Soybeans {mon} closed ${px} ({chg}) on {date} — live CBOT soybean futures refreshed "
+        "every 30 min in session. November new-crop, crush spread, cash bids by ZIP, daily read.",
+    "wheat-futures-prices.html":
+        "Wheat {mon} closed ${px} ({chg}) on {date} — live Chicago SRW futures refreshed every "
+        "30 min in session{kc}. Class spreads, cash bids by ZIP, fund positioning, daily read.",
 }
 
 # pages whose schema dateModified is stamped with today (price pages get it in
@@ -93,6 +119,49 @@ def seed_between(text, tag, replacement):
         return text, False
     new = pat.sub(lambda m: m.group(1) + replacement + m.group(3), text, count=1)
     return new, new != text
+
+
+def stamp_meta_description(text, desc):
+    """Replace the <meta name="description"> content with a freshly-priced one.
+    The description must contain no double quotes."""
+    if '"' in desc:
+        return text, False
+    pat = re.compile(r'(<meta name="description" content=")([^"]*)(")')
+    if not pat.search(text):
+        return text, False
+    new = pat.sub(lambda m: m.group(1) + desc + m.group(3), text, count=1)
+    return new, new != text
+
+
+def _chg(q):
+    """Signed pct-change string for a quote, e.g. '-0.3%'. '' if missing."""
+    p = q.get("pctChange")
+    if p is None:
+        return ""
+    return ("%+.1f%%" % float(p)).replace("+0.0%", "0.0%").replace("-0.0%", "0.0%")
+
+
+def px_table(rows, flabel):
+    """Small crawler-visible last-close table. rows: [(label, quote)] with
+    grain quotes in cents; quotes may be None (row skipped)."""
+    out = ['<table class="seed-tbl"><caption>Last close &middot; as of ' + flabel +
+           ' &middot; live quotes above update in session</caption>',
+           '<thead><tr><th scope="col">Contract</th><th scope="col">Close</th>'
+           '<th scope="col">Change</th><th scope="col">52-wk range</th></tr></thead><tbody>']
+    n = 0
+    for label, q in rows:
+        usd = grain_dollars(q)
+        if not usd:
+            continue
+        n += 1
+        rng = "&mdash;"
+        if q.get("wk52_lo") and q.get("wk52_hi"):
+            rng = "$%.2f&ndash;$%.2f" % (q["wk52_lo"] / 100.0, q["wk52_hi"] / 100.0)
+        stale = " (last good quote)" if q.get("stale") else ""
+        out.append("<tr><td>" + label + stale + "</td><td>$" + usd + "</td><td>" +
+                   (_chg(q) or "&mdash;") + "</td><td>" + rng + "</td></tr>")
+    out.append("</tbody></table>")
+    return "".join(out) if n else None
 
 
 def stamp_datemodified(text, today):
@@ -197,35 +266,62 @@ def main():
 
     any_change = False
 
-    for page, (front_key, bench_key, bench_label, crop) in PAGES.items():
+    for page, (crop_key, bench_key, bench_label, crop) in PAGES.items():
         try:
             t = open(page, "r", encoding="utf-8").read()
         except FileNotFoundError:
             print(f"  {page}: missing — skipped")
             continue
-        fq = quotes.get(front_key)
+        # True nearest dated contract when the fetcher publishes it; the
+        # continuous key is the fallback (it may be pinned to most-active).
+        fq = quotes.get(crop_key + "-nearby") or quotes.get(crop_key)
+        mon = (fq or {}).get("contract")   # e.g. "Sep '26"; None on fallback
         bq = quotes.get(bench_key)
         f_usd = grain_dollars(fq)
         b_usd = grain_dollars(bq)
         changed = False
         if f_usd:
             stale = " (last good quote)" if fq.get("stale") else ""
+            front_label = ("Nearby " + mon + " " + crop) if mon else ("Front-month " + crop)
             t, c1 = seed_between(t, "px", "$" + f_usd)
-            note = ("Front-month " + crop + " last closed near <strong>$" + f_usd +
+            note = (front_label + " last closed near <strong>$" + f_usd +
                     "</strong>" + stale +
                     ((" &middot; " + bench_label + " near $" + b_usd) if b_usd else "") +
                     " &middot; as of " + flabel +
-                    " &middot; live quotes update every 30 minutes through the session.")
+                    " &middot; refreshed every 30 minutes during trading hours &mdash; reload for the latest.")
             t, c2 = seed_between(t, "note", note)
             changed = c1 or c2
+
+            # crawler-visible last-close table (marker optional per page)
+            rows = [((("Nearby " + mon) if mon else "Front month"), fq),
+                    (bench_label, bq)]
+            if page.startswith("wheat"):
+                rows += [("KC HRW (KE, most-active)", quotes.get("kcwheat")),
+                         ("Minneapolis HRS (MWE, most-active)", quotes.get("mplswheat"))]
+            tbl = px_table(rows, flabel)
+            if tbl:
+                t, c4 = seed_between(t, "pxtable", tbl)
+                changed = changed or c4
+
+            # freshly-priced meta description
+            tmpl = DESC.get(page)
+            if tmpl:
+                kc_usd = grain_dollars(quotes.get("kcwheat"))
+                desc = tmpl.format(px=f_usd, chg=_chg(fq) or "flat", mon=mon or "front month",
+                                   date=flabel,
+                                   kc=(" &middot; KC HRW $" + kc_usd) if kc_usd else "")
+                # entity-decode for attribute text: &middot; is fine in content=""
+                t, c5 = stamp_meta_description(t, desc)
+                changed = changed or c5
         else:
-            print(f"  {page}: no usable {front_key} quote — seeds left as-is")
+            print(f"  {page}: no usable {crop_key} quote — seeds left as-is")
         t, c3 = stamp_datemodified(t, today)
         if changed or c3:
             open(page, "w", encoding="utf-8").write(t)
             any_change = True
             print(f"  {page}: seeded ${f_usd or '—'}"
-                  f"{(' / $' + b_usd) if b_usd else ''} · dateModified {today}")
+                  f"{(' / $' + b_usd) if b_usd else ''}"
+                  f"{(' · ' + mon) if mon else ''} · dateModified {today}")
         else:
             print(f"  {page}: no change")
 
@@ -242,7 +338,7 @@ def main():
             note = ("Live cattle last closed near <strong>$" + lc + "</strong>" + stale
                     + ((" &middot; feeders near $" + gf) if gf else "")
                     + " &middot; $/cwt &middot; as of " + flabel
-                    + " &middot; live quotes update every 30 minutes through the session.")
+                    + " &middot; refreshed every 30 minutes during trading hours &mdash; reload for the latest.")
             t, c2 = seed_between(t, "note", note)
             changed = c1 or c2
         else:
