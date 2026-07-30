@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-07-30",
+      "date_display": "Thursday, July 30, 2026",
+      "headline": "WHEAT LEADS GRAINS; HOGS FALL HARD ON EXPORT DAY",
+      "teaser": "Wheat's best day in weeks, hogs' worst. Export data is in. Here's what it means.",
+      "market_mood": "mixed",
+      "surprise_count": 3,
+      "sections": 4,
+      "url": "/daily/2026-07-30",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-29",
       "date_display": "Wednesday, July 29, 2026",
       "headline": "CATTLE FLIP; GRAINS EASE AS HEAT EXITS BELT",
@@ -1580,6 +1592,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-29T13:03:21.447595+00:00",
-  "count": 139
+  "updated": "2026-07-30T12:48:26.328918+00:00",
+  "count": 140
 }
