@@ -93,11 +93,7 @@ var WX_CODES = {
   75:'Heavy Snow',80:'Rain Showers',81:'Showers',82:'Heavy Showers',
   95:'Thunderstorm',96:'T-Storm w/Hail',99:'Severe T-Storm'
 };
-var WX_ICONS = {
-  0:'\u2600\uFE0F',1:'\u{1F324}\uFE0F',2:'\u26C5',3:'\u2601\uFE0F',45:'\u{1F32B}\uFE0F',48:'\u{1F32B}\uFE0F',51:'\u{1F326}\uFE0F',53:'\u{1F327}\uFE0F',55:'\u{1F327}\uFE0F',
-  61:'\u{1F326}\uFE0F',63:'\u{1F327}\uFE0F',65:'\u26C8\uFE0F',71:'\u{1F328}\uFE0F',73:'\u2744\uFE0F',75:'\u2744\uFE0F',80:'\u{1F326}\uFE0F',81:'\u{1F327}\uFE0F',
-  82:'\u26C8\uFE0F',95:'\u26C8\uFE0F',96:'\u26C8\uFE0F',99:'\u26C8\uFE0F'
-};
+var WX_ICONS = {}; // TYPE REWORK 2026-07-30: emoji weather icons retired — condition labels carry the meaning
 
 // v16: Cache TTL & distance threshold for stale-cache detection.
 // If a cached coord is older than WX_CACHE_TTL_MS, force fresh geolocation.
@@ -223,7 +219,7 @@ function requestGeo() {
     return;
   }
   var wl = document.getElementById('wx-loading');
-  if (wl) wl.innerHTML = '<div style="font-size:1.5rem;margin-bottom:.5rem">\u{1F4CD}</div>'
+  if (wl) wl.innerHTML = '<div style="font-size:1.5rem;margin-bottom:.5rem"></div>'
     + '<div style="font-size:.88rem;color:var(--text-dim)">Detecting location\u2026</div>';
   navigator.geolocation.getCurrentPosition(
     function(pos) { fetchWeather(pos.coords.latitude, pos.coords.longitude, null); },
@@ -375,7 +371,7 @@ function fetchWeather(lat, lon, label) {
 
   var wxLoc = document.getElementById('wx-loc');
   if (wxLoc) {
-    wxLoc.textContent = '\u{1F4CD} ' + (label || 'Your Location');
+    wxLoc.textContent = '' + (label || 'Your Location');
     // v16: Make location label clickable as a manual "update my location" trigger.
     // Useful when the user has moved less than the 3-mile threshold but still
     // wants a forced refresh, or if they suspect the cache is wrong.
@@ -428,7 +424,7 @@ function fetchWeather(lat, lon, label) {
 
       var el;
       el = document.getElementById('wx-temp');  if(el) el.textContent = tempF + '\u00B0F';
-      el = document.getElementById('wx-icon');  if(el) el.textContent = WX_ICONS[code] || '\u{1F321}\uFE0F';
+      el = document.getElementById('wx-icon');  if(el) el.textContent = WX_ICONS[code] || '';
       el = document.getElementById('wx-desc');  if(el) el.textContent = (WX_CODES[code]||'Current Conditions') + ' \u00B7 Feels ' + feelsF + '\u00B0';
       el = document.getElementById('wx-wind');  if(el) el.textContent = degToCompass(c.wind_direction_10m) + ' ' + wind + ' mph';
       el = document.getElementById('wx-humid'); if(el) el.textContent = humid + '%';
@@ -440,15 +436,15 @@ function fetchWeather(lat, lon, label) {
         var sprayR = calcSprayRating(tempF, humid, wind);
         var sprayMsg;
         if (sprayR === 'poor') {
-          if (tempF < 32)       sprayMsg = '\u{1F6AB} Do Not Spray \u2014 Frozen (' + tempF + '\u00B0F) \u2192';
-          else if (tempF < 40)  sprayMsg = '\u{1F6AB} Do Not Spray \u2014 Too cold (' + tempF + '\u00B0F) \u2192';
-          else if (wind > 15)   sprayMsg = '\u{1F6AB} Poor Spray Conditions \u2014 Wind too high (' + wind + ' mph) \u2192';
-          else if (tempF > 90)  sprayMsg = '\u{1F6AB} Poor Spray Conditions \u2014 Too hot (' + tempF + '\u00B0F) \u2192';
-          else                  sprayMsg = '\u{1F6AB} Poor Spray Conditions \u2014 Humidity too low (' + humid + '%) \u2192';
+          if (tempF < 32)       sprayMsg = 'Do Not Spray \u2014 Frozen (' + tempF + '\u00B0F) \u2192';
+          else if (tempF < 40)  sprayMsg = 'Do Not Spray \u2014 Too cold (' + tempF + '\u00B0F) \u2192';
+          else if (wind > 15)   sprayMsg = 'Poor Spray Conditions \u2014 Wind too high (' + wind + ' mph) \u2192';
+          else if (tempF > 90)  sprayMsg = 'Poor Spray Conditions \u2014 Too hot (' + tempF + '\u00B0F) \u2192';
+          else                  sprayMsg = 'Poor Spray Conditions \u2014 Humidity too low (' + humid + '%) \u2192';
         } else if (sprayR === 'caution') {
-          sprayMsg = '\u26A0\uFE0F Marginal Spray Conditions \u2014 Review before applying \u2192';
+          sprayMsg = 'Marginal Spray Conditions \u2014 Review before applying \u2192';
         } else {
-          sprayMsg = '\u2705 Good Spray Conditions \u2192';
+          sprayMsg = '\u2713 Good Spray Conditions \u2192';
         }
         spray.className = 'spray-badge ' + sprayR;
         spray.textContent = sprayMsg;
@@ -545,7 +541,7 @@ function propagateLocation(lat, lon, label) {
       _loadBidsOnce(lat, lon, name, zip);
 
       var wxLoc = document.getElementById('wx-loc');
-      if (wxLoc && name) wxLoc.textContent = '\u{1F4CD} ' + name;
+      if (wxLoc && name) wxLoc.textContent = '' + name;
 
       var radarLbl = document.getElementById('wx-loc-label');
       if (radarLbl && name) radarLbl.textContent = name;
@@ -554,7 +550,7 @@ function propagateLocation(lat, lon, label) {
       if (bidsGeoTxt && name) {
         var cur = bidsGeoTxt.textContent || '';
         if (cur.indexOf('Location found') !== -1 || cur.indexOf('Detecting') !== -1) {
-          bidsGeoTxt.textContent = '\u{1F4CD} ' + name;
+          bidsGeoTxt.textContent = '' + name;
         }
       }
 
@@ -668,7 +664,7 @@ function renderForecast(lat, lon) {
       var fcFull = document.getElementById('wx-forecast-full');
       var locLabel = document.getElementById('wx-loc-label');
       var wxLocEl  = document.getElementById('wx-loc');
-      if (locLabel && wxLocEl) locLabel.textContent = wxLocEl.textContent.replace('\u{1F4CD} ','');
+      if (locLabel && wxLocEl) locLabel.textContent = wxLocEl.textContent.replace('','');
 
       if (fc) {
         fc.innerHTML = '';
@@ -679,10 +675,10 @@ function renderForecast(lat, lon) {
           el.style.cssText = 'flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.5rem .4rem;text-align:center';
           var pop = days.precipitation_probability_max[i];
           el.innerHTML = '<div style="font-size:.64rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.2rem">'+dname+'</div>'
-            + '<div style="font-size:1.3rem;line-height:1;margin-bottom:.2rem">'+(WX_ICONS[days.weather_code[i]]||'\u{1F321}\uFE0F')+'</div>'
+            + '<div style="font-size:1.3rem;line-height:1;margin-bottom:.2rem">'+(WX_ICONS[days.weather_code[i]]||'')+'</div>'
             + '<div style="font-size:.82rem;font-weight:700;color:var(--text)">'+Math.round(days.temperature_2m_max[i])+'\u00B0</div>'
             + '<div style="font-size:.74rem;color:var(--text-muted)">'+Math.round(days.temperature_2m_min[i])+'\u00B0</div>'
-            + (pop>20?'<div style="font-size:.68rem;color:var(--blue);margin-top:.15rem">\u{1F4A7}'+pop+'%</div>':'');
+            + (pop>20?'<div style="font-size:.68rem;color:var(--blue);margin-top:.15rem">'+pop+'%</div>':'');
           fc.appendChild(el);
         }
       }
@@ -696,10 +692,10 @@ function renderForecast(lat, lon) {
           elj.className = 'wx-day';
           var popj = days.precipitation_probability_max[j];
           elj.innerHTML = '<div class="wx-day-name">'+dnj+'</div>'
-            + '<div class="wx-day-icon">'+(WX_ICONS[days.weather_code[j]]||'\u{1F321}\uFE0F')+'</div>'
+            + '<div class="wx-day-icon">'+(WX_ICONS[days.weather_code[j]]||'')+'</div>'
             + '<div class="wx-day-hi">'+Math.round(days.temperature_2m_max[j])+'\u00B0</div>'
             + '<div class="wx-day-lo">'+Math.round(days.temperature_2m_min[j])+'\u00B0</div>'
-            + (popj>15?'<div class="wx-day-pop">\u{1F4A7}'+popj+'%</div>':'');
+            + (popj>15?'<div class="wx-day-pop">'+popj+'%</div>':'');
           fcFull.appendChild(elj);
         }
       }
@@ -964,13 +960,13 @@ function rebuildTickerLoop() {
 // ─────────────────────────────────────────────────────────────────
 
 var MARKET_CATEGORIES = {
-  'Commodities':       { icon: '\u{1F33D}', order: 1 },
-  'Trade & Policy':    { icon: '\u{1F3DB}\uFE0F', order: 2 },
+  'Commodities':       { icon: '', order: 1 },
+  'Trade & Policy':    { icon: '', order: 2 },
   'Energy & Inputs':   { icon: '\u26FD', order: 3 },
-  'Weather & Climate': { icon: '\u{1F326}\uFE0F', order: 4 },
-  'Economy & Markets': { icon: '\u{1F4CA}', order: 5 },
-  'Infrastructure':    { icon: '\u{1F682}', order: 6 },
-  'Other':             { icon: '\u{1F3AF}', order: 7 }
+  'Weather & Climate': { icon: '\uFE0F', order: 4 },
+  'Economy & Markets': { icon: '\u2194', order: 5 },
+  'Infrastructure':    { icon: '', order: 6 },
+  'Other':             { icon: '', order: 7 }
 };
 
 var RELEVANCE_TIERS = {
@@ -1004,7 +1000,7 @@ function fetchKalshiMarkets() {
 
       if (!markets.length) {
         container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem 1rem">'
-          + '<div style="font-size:2rem;margin-bottom:.5rem;opacity:.6">\u{1F3AF}</div>'
+          + ''
           + '<div style="font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:.35rem">No active prediction markets right now</div>'
           + '<div style="font-size:.78rem;color:var(--text-muted);line-height:1.5;max-width:32rem;margin:0 auto">'
           + 'We scan Kalshi and Polymarket every 2 hours for events that affect agriculture \u2014 tariffs, weather, trade, energy, USDA reports, and more.</div>'
@@ -1023,7 +1019,7 @@ function fetchKalshiMarkets() {
         catKeys.forEach(function(catName) {
           var catMarkets = data.categories[catName];
           if (!catMarkets || !catMarkets.length) return;
-          var catMeta = MARKET_CATEGORIES[catName] || { icon: '\u{1F3AF}', order: 99 };
+          var catMeta = MARKET_CATEGORIES[catName] || { icon: '', order: 99 };
 
           var header = document.createElement('div');
           header.style.cssText = 'grid-column:1/-1;display:flex;align-items:center;gap:.45rem;'
@@ -1070,7 +1066,7 @@ function fetchKalshiMarkets() {
     })
     .catch(function() {
       if (loading) {
-        loading.innerHTML = '<div style="font-size:1.3rem;margin-bottom:.4rem;opacity:.6">\u{1F3AF}</div>'
+        loading.innerHTML = ''
           + 'Market data updating shortly. '
           + '<a href="https://kalshi.com/markets" target="_blank" rel="noopener" style="color:var(--gold)">Kalshi \u2192</a> \u00B7 '
           + '<a href="https://polymarket.com" target="_blank" rel="noopener" style="color:var(--gold)">Polymarket \u2192</a>';
@@ -1183,7 +1179,7 @@ function loadDailyBriefing() {
       el = document.getElementById('daily-lead');        if (el && d.lead)        el.textContent = d.lead;
       el = document.getElementById('daily-date');        if (el && d.date)        el.textContent = d.date;
       el = document.getElementById('daily-teaser-text'); if (el && d.teaser)      el.textContent = d.teaser;
-      el = document.getElementById('daily-teaser-date'); if (el && d.date)        el.textContent = '\u{1F4F0} AGSIST Daily \u00b7 ' + d.date;
+      el = document.getElementById('daily-teaser-date'); if (el && d.date)        el.textContent = 'AGSIST Daily \u00b7 ' + d.date;
 
       if (d.one_number) {
         el = document.getElementById('daily-number-value');   if (el) el.textContent = d.one_number.value;
@@ -1202,8 +1198,8 @@ function loadDailyBriefing() {
           volatile: { color: 'var(--orange)',bg: 'rgba(200,122,40,.08)',border: 'rgba(200,122,40,.22)' }
         };
         var mc = moodColors[mood] || moodColors.mixed;
-        var moodIcons = { bullish:'\u{1F4C8}', bearish:'\u{1F4C9}', mixed:'\u2194\uFE0F', cautious:'\u26A0\uFE0F', volatile:'\u{1F525}' };
-        moodEl.textContent = (moodIcons[mood] || '\u{1F4CA}') + ' ' + mood.charAt(0).toUpperCase() + mood.slice(1);
+        var moodIcons = { bullish:'\u25B2', bearish:'\u25BC', mixed:'\u2194', cautious:'', volatile:'~' };
+        moodEl.textContent = (moodIcons[mood] || '\u2194') + ' ' + mood.charAt(0).toUpperCase() + mood.slice(1);
         moodEl.style.color = mc.color;
         moodEl.style.background = mc.bg;
         moodEl.style.border = '1px solid ' + mc.border;
@@ -1263,7 +1259,7 @@ function loadDailyBriefing() {
           }
 
           el = document.getElementById('daily-section-' + n + '-action');
-          if (el && sec.farmer_action) { el.textContent = '\u{1F3AF} ' + sec.farmer_action; el.style.display = 'block'; }
+          if (el && sec.farmer_action) { el.textContent = sec.farmer_action; el.style.display = 'block'; }
 
           var secEl = document.getElementById('daily-sec-' + n);
           if (secEl) {
@@ -1367,7 +1363,7 @@ function loadDailyBriefing() {
               // will refine it once Nominatim responds.
               var bidsGeoTxt = document.getElementById('bids-geo-txt');
               if (bidsGeoTxt && p.label) {
-                bidsGeoTxt.textContent = '\u{1F4CD} ' + p.label;
+                bidsGeoTxt.textContent = '' + p.label;
               }
             }
 
