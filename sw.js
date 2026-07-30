@@ -26,7 +26,7 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 12;  // v12 2026-07-30: clunk pass — hero rebuild, session-banner wrap, kicker
+var CACHE_VERSION = 13;  // v13 2026-07-30: audit wave 2 — emoji purge, markets nearby fix; was: clunk pass — hero rebuild, session-banner wrap, kicker
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;

@@ -1725,7 +1725,7 @@
   })();
   </script>
 <script src="/components/loader.js?v=14" defer></script>
-<script src="/components/geo.js?v=15" defer></script>
+<script src="/components/geo.js?v=16" defer></script>
 <script src="/components/bids-homepage.js?v=14" defer></script>
 <script>
 (function() {
@@ -2831,6 +2831,7 @@ function monthlyChartSvg(current,avg,monthLabels,fmtFn,pxWidth){
     if(avg[i]>mx)mx=avg[i];
   }
   if(mx<0.01)mx=1; // avoid divide-by-zero
+  var scaleMax=mx*1.16; // v4.6: 16% headroom — tallest bar's value label sits in clear space, never on the bar (was yellow-on-yellow)
   // v4.5: viewBox width tracks the rendered px width so font units ~= real px (legible on phones)
   var W=Math.max(300,Math.min(760,Math.round(pxWidth||360))),H=180,PL=38,PR=8,PT=22,PB=28;
   var cw=W-PL-PR,ch=H-PT-PB;
@@ -2843,23 +2844,23 @@ function monthlyChartSvg(current,avg,monthLabels,fmtFn,pxWidth){
   // horizontal gridlines + y-axis value labels at 0/25/50/75/100% of max
   var fracs=[0,0.25,0.5,0.75,1];
   for(var g=0;g<fracs.length;g++){
-    var gy=PT+ch-(fracs[g]*ch);
+    var gy=PT+ch-(fracs[g]*(mx/scaleMax)*ch);
     out+='<line x1="'+PL+'" y1="'+gy.toFixed(1)+'" x2="'+(W-PR)+'" y2="'+gy.toFixed(1)+'" stroke="#ffffff" stroke-opacity="'+(g===0?'0.20':'0.06')+'" stroke-width="0.5"/>';
-    out+='<text x="'+(PL-5)+'" y="'+(gy+3.2).toFixed(1)+'" font-size="10" fill="#9aa39e" text-anchor="end" font-family="JetBrains Mono,monospace">'+fmtFn(mx*fracs[g])+'</text>';
+    out+='<text x="'+(PL-5)+'" y="'+(gy+3.2).toFixed(1)+'" font-size="10" fill="#aab4ae" text-anchor="end" font-family="JetBrains Mono,monospace">'+fmtFn(mx*fracs[g])+'</text>';
   }
   for(var j=0;j<n;j++){
     var gx=PL+gw*j+gw/2;
-    var aH=(avg[j]/mx)*ch,aY=PT+ch-aH;
+    var aH=(avg[j]/scaleMax)*ch,aY=PT+ch-aH;
     var aX=gx-bw-gap/2;
     out+='<rect x="'+aX.toFixed(1)+'" y="'+aY.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(0.5,aH).toFixed(1)+'" fill="#5fc28a" fill-opacity="0.5" rx="1.2"/>';
     if(current[j]>0){
-      var cH=(current[j]/mx)*ch,cY=PT+ch-cH;
+      var cH=(current[j]/scaleMax)*ch,cY=PT+ch-cH;
       var cX=gx+gap/2;
       out+='<rect x="'+cX.toFixed(1)+'" y="'+cY.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(0.5,cH).toFixed(1)+'" fill="#d4a23f" rx="1.2"/>';
-      var vY=Math.max(PT+9,cY-4);
-      out+='<text x="'+(cX+bw/2).toFixed(1)+'" y="'+vY.toFixed(1)+'" font-size="'+vf+'" fill="#f3cf72" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700">'+fmtFn(current[j])+'</text>';
+      var vY=Math.max(PT+9,cY-5);
+      out+='<text x="'+(cX+bw/2).toFixed(1)+'" y="'+vY.toFixed(1)+'" font-size="'+vf+'" fill="#e9edeb" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700" stroke="#0a0c0d" stroke-width="2.5" paint-order="stroke">'+fmtFn(current[j])+'</text>';
     }
-    out+='<text x="'+gx.toFixed(1)+'" y="'+(H-8)+'" font-size="11" fill="#a3aca7" text-anchor="middle" font-family="JetBrains Mono,monospace">'+monthLabels[j]+'</text>';
+    out+='<text x="'+gx.toFixed(1)+'" y="'+(H-8)+'" font-size="11" fill="#b2bbb5" text-anchor="middle" font-family="JetBrains Mono,monospace">'+monthLabels[j]+'</text>';
   }
   out+='</svg>';
   return out;

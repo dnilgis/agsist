@@ -247,8 +247,8 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
     var b=document.getElementById('hp-banner');
     var anyActive=data.commodities.some(function(c){return c.harvest.status==='active';});
     var anyPending=data.commodities.some(function(c){return c.harvest.status==='pending';});
-    if(anyActive){b.innerHTML='<span>\uD83D\uDFE2</span><div><b>Harvest discovery is open.</b> The harvest-price averages below are building day by day this month.</div>';b.hidden=false;}
-    else if(anyPending){b.innerHTML='<span>\uD83D\uDD12</span><div><b>Projected prices are locked.</b> Harvest discovery for corn &amp; soybeans opens in October &mdash; that\u2019s when the harvest-price averages start building.</div>';b.hidden=false;}
+    if(anyActive){b.innerHTML='<span>\u25CF</span><div><b>Harvest discovery is open.</b> The harvest-price averages below are building day by day this month.</div>';b.hidden=false;}
+    else if(anyPending){b.innerHTML='<span>\u25CF</span><div><b>Projected prices are locked.</b> Harvest discovery for corn &amp; soybeans opens in October &mdash; that\u2019s when the harvest-price averages start building.</div>';b.hidden=false;}
   }
   fetch('/data/harvest-prices.json',{cache:'no-store'}).then(function(r){
     if(!r.ok)throw new Error('status '+r.status);return r.json();

@@ -71,7 +71,7 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
       <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;margin-top:.25rem">Grain Futures</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:1.5rem">
         <div class="pc">
-          <div class="pc-head"><div class="pc-name">Corn</div><span class="pc-contract">front</span></div>
+          <div class="pc-head"><div class="pc-name">Corn</div><span class="pc-contract" id="pct-corn">front</span></div>
           <div id="pcp-corn-near" class="pc-price">&mdash;</div><div id="pcc-corn-near" class="pc-chg-val nc">&mdash;</div>
           <div class="pc-range"><div class="pc-range-labels"><span id="rlo-corn">&mdash;</span><span>52-wk</span><span id="rhi-corn">&mdash;</span></div>
           <div class="pc-range-track"><div class="pc-range-fill" id="pcf-corn-near" style="width:0%"></div><div class="pc-range-dot" id="pcd-corn-near" style="left:0%"></div></div></div>
@@ -79,14 +79,14 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
         </div>
         <div class="pc"><div class="pc-head"><div class="pc-name">Corn</div><span class="pc-contract">Dec '26</span></div><div id="pcp-corn-dec" class="pc-price">&mdash;</div><div id="pcc-corn-dec" class="pc-chg-val nc">&mdash;</div></div>
         <div class="pc">
-          <div class="pc-head"><div class="pc-name">Soybeans</div><span class="pc-contract">front</span></div>
+          <div class="pc-head"><div class="pc-name">Soybeans</div><span class="pc-contract" id="pct-beans">front</span></div>
           <div id="pcp-bean-near" class="pc-price">&mdash;</div><div id="pcc-bean-near" class="pc-chg-val nc">&mdash;</div>
           <div class="pc-range"><div class="pc-range-labels"><span id="rlo-beans">&mdash;</span><span>52-wk</span><span id="rhi-beans">&mdash;</span></div>
           <div class="pc-range-track"><div class="pc-range-fill" id="pcf-bean-near" style="width:0%"></div><div class="pc-range-dot" id="pcd-bean-near" style="left:0%"></div></div></div>
           <div><a href="/soybean-futures-prices" style="font-size:0.77rem;color:var(--gold);text-decoration:none">Full chart &rarr;</a></div>
         </div>
         <div class="pc"><div class="pc-head"><div class="pc-name">Beans</div><span class="pc-contract">Nov '26</span></div><div id="pcp-bean-nov" class="pc-price">&mdash;</div><div id="pcc-bean-nov" class="pc-chg-val nc">&mdash;</div></div>
-        <div class="pc"><div class="pc-head"><div class="pc-name">Wheat</div><span class="pc-contract">front</span></div><div id="pcp-wheat" class="pc-price">&mdash;</div><div id="pcc-wheat" class="pc-chg-val nc">&mdash;</div><div><a href="/wheat-futures-prices" style="font-size:0.77rem;color:var(--gold);text-decoration:none">Full chart &rarr;</a></div></div>
+        <div class="pc"><div class="pc-head"><div class="pc-name">Wheat</div><span class="pc-contract" id="pct-wheat">front</span></div><div id="pcp-wheat" class="pc-price">&mdash;</div><div id="pcc-wheat" class="pc-chg-val nc">&mdash;</div><div><a href="/wheat-futures-prices" style="font-size:0.77rem;color:var(--gold);text-decoration:none">Full chart &rarr;</a></div></div>
         <div class="pc"><div class="pc-head"><div class="pc-name">Oats</div><span class="pc-contract">ZO</span></div><div id="pcp-oats" class="pc-price">&mdash;</div><div id="pcc-oats" class="pc-chg-val nc">&mdash;</div></div>
         <div class="pc" style="border:1px dashed var(--border-g)"><div class="pc-head"><div class="pc-name">Cash Bids</div></div><div style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem;line-height:1.5">Local elevator prices near you</div><a href="/cash-bids" style="font-size:0.795rem;color:var(--gold);font-weight:700;text-decoration:none">Check bids near me &rarr;</a></div>
       </div>
@@ -173,6 +173,20 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
   }
   fetch('/data/prices.json').then(function(r){return r.json();}).then(function(data){
     var q=data.quotes||{};
+    /* True front month (2026-07-30): continuous corn/beans/wheat track the
+       MOST-ACTIVE contract (was printing front == Dec '26, byte-identical).
+       Prefer the <crop>-nearby alias published by fetch_prices v3.5 and name
+       the contract on the chip; fall back to continuous, labeled honestly. */
+    [['corn','pct-corn'],['beans','pct-beans'],['wheat','pct-wheat']].forEach(function(pair){
+      var nb=q[pair[0]+'-nearby'];
+      var chip=document.getElementById(pair[1]);
+      if(nb&&nb.close!=null){
+        q[pair[0]]=nb;
+        if(chip)chip.textContent=(nb.contract||(data.nearby&&data.nearby[pair[0]]&&data.nearby[pair[0]].label)||'nearby')+' \u00b7 nearby';
+      }else if(chip){
+        chip.textContent='most-active';
+      }
+    });
     var map=[
       {key:'corn',      p:'pcp-corn-near',c:'pcc-corn-near',grain:true},
       {key:'corn-dec',  p:'pcp-corn-dec', c:'pcc-corn-dec', grain:true},
@@ -206,7 +220,7 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
     }
   }).catch(function(){
     var s=document.getElementById('price-data-status');
-    if(s)s.textContent='Prices unavailable — market may be closed';
+    if(s)s.textContent='Live update failed \u2014 quotes not current.';
   });
 })();
 

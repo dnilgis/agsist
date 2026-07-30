@@ -432,7 +432,7 @@ function renderVerdict(products){
 function renderAfford(){
   var el=document.getElementById('fv-afford');if(!el)return;
   if(STATE.nPrice!=null&&STATE.cornPx){var bu=Math.round(STATE.nPrice/STATE.cornPx);
-    el.innerHTML='\uD83C\uDF3D A ton of '+esc(STATE.nName)+' ('+money(STATE.nPrice)+') = <strong>'+bu+' bushels of corn</strong> at '+money2(STATE.cornPx)+'/bu \u2014 when this ratio runs high, fertilizer is dear relative to what it grows.';
+    el.innerHTML='A ton of '+esc(STATE.nName)+' ('+money(STATE.nPrice)+') = <strong>'+bu+' bushels of corn</strong> at '+money2(STATE.cornPx)+'/bu \u2014 when this ratio runs high, fertilizer is dear relative to what it grows.';
     el.hidden=false;}
 }
 function renderTable(products){

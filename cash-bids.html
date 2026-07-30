@@ -603,7 +603,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 </div>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=14" defer></script>
-<script src="/components/geo.js?v=15" defer></script>
+<script src="/components/geo.js?v=16" defer></script>
 <script>
 (function(){
 'use strict';
@@ -640,7 +640,7 @@ function updateMarketBadge(){
   if(!marketBadge)return;
   var open=isMarketOpen();
   marketBadge.className='market-badge '+(open?'open':'closed');
-  marketBadge.textContent=open?'\uD83D\uDFE2 LIVE':'\uD83D\uDD34 Market closed';
+  marketBadge.textContent=open?'\u25CF LIVE':'\u25CF Market closed';
 }
 
 if(wtdToggleBtn&&wtdBodyEl){
@@ -1024,14 +1024,14 @@ function doSearch(zip){
   fetchBids(zip,radius,function(err,bids){
     goBtn.disabled=false;
     if(err&&!bids.length){
-      goBtn.textContent=hasSearched?'\uD83D\uDD04 Refresh':'Search';
+      goBtn.textContent=hasSearched?'\u21BB Refresh':'Search';
       results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg></div><h2>Unable to Load Bids</h2><p>'+escH(err.message)+'</p><p><button type="button" class="cb-go" style="min-height:44px;padding:.5rem 1.4rem" onclick="doSearch()">Retry</button></p></div>';announce('Error: unable to load bids. '+err.message);return;
     }
     hasSearched=true;
     lastFetchTime=new Date();
     setTimeout(function(){ announce((bids.length||0)+' elevator listings loaded. Results below.'); }, 400);
     try{localStorage.setItem('agsist_zip',zip);}catch(e){}
-    goBtn.textContent='\uD83D\uDD04 Refresh';
+    goBtn.textContent='\u21BB Refresh';
     currentBids=bids;pinnedKeys=[];
     statusBar.style.display='flex';var _cn=document.getElementById('cb-confirm-note');if(_cn)_cn.style.display='block';toolbar.style.display='flex';internalLinks.style.display='block';
     statusLbl.textContent='Live bids within '+radius+' mi of ZIP '+zip;
@@ -1104,7 +1104,7 @@ function doGeo(){
       if(zip){
         detectedLabel=label||('ZIP '+zip);
         showGeoDot();
-        geoTxt.innerHTML='\uD83D\uDCCD '+(label||'ZIP '+zip);
+        geoTxt.innerHTML=(label||'ZIP '+zip);
         geoUseBtn.style.display='inline';
         geoUseBtn.textContent='Use '+zip;
         geoUseBtn.onclick=function(){zipInput.value=zip;gaEvent('geo_used');doSearch(zip);};
@@ -1126,7 +1126,7 @@ if(window.AGSIST_STATE&&window.AGSIST_STATE.lat&&window.AGSIST_STATE.zip){
   var gl=(window.AGSIST_STATE.city||'')+', '+(window.AGSIST_STATE.state||'');
   detectedLabel=gl;
   showGeoDot();
-  geoTxt.textContent='\uD83D\uDCCD '+gl;
+  geoTxt.textContent=gl;
   geoUseBtn.style.display='inline';
   geoUseBtn.textContent='Use '+gz;
   geoUseBtn.onclick=function(){zipInput.value=gz;gaEvent('geo_used');doSearch(gz);};

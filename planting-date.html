@@ -487,7 +487,7 @@ function renderFrostTable(zone){
 function renderWindowBars(){
   var isCorn = crop==='corn';
   var titleEl = document.getElementById('win-title');
-  if(titleEl)titleEl.textContent=(isCorn?'\uD83C\uDF3D Corn':'\uD83C\uDF3F Soybean')+' Planting Window \u2014 Wisconsin';
+  if(titleEl)titleEl.textContent=(isCorn?'Corn':'Soybean')+' Planting Window \u2014 Wisconsin';
 
   var windows = isCorn ? [
     {label:'Optimal',     dates:'Apr 25 \u2013 May 15', pct:100, cls:'green', tip:'Peak yield potential. Plant when soil \u226550\u00b0F.'},
@@ -584,7 +584,7 @@ function renderGDUCompare(){
   if(noteEl)noteEl.textContent='GDU target for '+rm+(crop==='corn'?'-day RM corn':'MG soybean')+': '+gduTarget.toLocaleString()+' GDUs. Central WI 30-year average accumulation through Sep 30.';
 
   var titleEl = document.getElementById('cmp-title');
-  if(titleEl)titleEl.textContent='\uD83D\uDCC8 GDU Accumulation by Planting Date \u2014 Central WI Average';
+  if(titleEl)titleEl.textContent='\u25B2 GDU Accumulation by Planting Date \u2014 Central WI Average';
 
   var el = document.getElementById('cmp-grid');
   if(el)el.innerHTML=html;
@@ -631,7 +631,7 @@ document.getElementById('pd-fetch-btn').addEventListener('click',function(){
   var btn=this;btn.disabled=true;btn.textContent='Loading\u2026';
   setStatus('Fetching data\u2026','');
   var p = (userLat&&userLon) ? Promise.resolve() : (zipVal ? geocodeZip(zipVal) : Promise.reject(new Error('Enter location or use Auto')));
-  p.then(fetchSoilTemp).catch(function(e){setStatus('\u274C '+e.message,'err');}).finally(function(){btn.disabled=false;btn.innerHTML='\uD83C\uDF06 Load Soil Temp &amp; Conditions';});
+  p.then(fetchSoilTemp).catch(function(e){setStatus('\u2717 '+e.message,'err');}).finally(function(){btn.disabled=false;btn.innerHTML='\uD83C\uDF06 Load Soil Temp &amp; Conditions';});
 });
 
 function setStatus(msg,cls){
@@ -665,14 +665,14 @@ function fetchSoilTemp(){
     var verdict,cls,noteText;
     if(soilNum>=55){verdict='\u2713 Plant Now \u2014 Soil temp ideal (\u226555\u00b0F)';cls='go';noteText='Excellent planting conditions. Proceed when field is fit.';}
     else if(soilNum>=50){verdict='\u2713 Acceptable \u2014 Soil temp at threshold (50\u201354\u00b0F)';cls='go';noteText='Plant if forecast shows warming trend. Monitor for cold rain within 24 hrs.';}
-    else if(soilNum>=46){verdict='\u26A0 Wait \u2014 Soil temp marginal (46\u201349\u00b0F)';cls='wait';noteText='Wait 2\u20133 days. Cold soil risk of imbibitional chilling and Pythium.';}
+    else if(soilNum>=46){verdict='Wait \u2014 Soil temp marginal (46\u201349\u00b0F)';cls='wait';noteText='Wait 2\u20133 days. Cold soil risk of imbibitional chilling and Pythium.';}
     else{verdict='\u2717 Do Not Plant \u2014 Soil too cold (<46\u00b0F)';cls='no';noteText='Significant stand and disease risk. Wait for sustained warming.';}
     var vw=document.getElementById('st-verdict-wrap');
     if(vw)vw.innerHTML='<div class="st-verdict '+cls+'">'+verdict+'</div>';
     var nEl=document.getElementById('st-note');
     if(nEl)nEl.textContent=noteText;
-    setStatus('\u2705 Soil temperature loaded','ok');
-  }).catch(function(e){setStatus('\u274C '+e.message,'err');});
+    setStatus('\u2713 Soil temperature loaded','ok');
+  }).catch(function(e){setStatus('\u2717 '+e.message,'err');});
 }
 
 })();

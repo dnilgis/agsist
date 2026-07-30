@@ -612,7 +612,7 @@ document.getElementById('pill-corn').addEventListener('click',function(){
   document.getElementById('rm-lbl').textContent='Relative Maturity (RM days)';
   document.getElementById('rm-hint').textContent='Corn 80\u2013130 RM \u00b7 GDU to black layer \u2248 RM \u00d7 22 + 250';
   document.getElementById('g-rm').value=108;
-  document.getElementById('ms-title').textContent='\uD83C\uDF3D Key Growth Stage Milestones';
+  document.getElementById('ms-title').textContent='Key Growth Stage Milestones';
   calcGDU();
 });
 document.getElementById('pill-bean').addEventListener('click',function(){
@@ -625,7 +625,7 @@ document.getElementById('pill-bean').addEventListener('click',function(){
   document.getElementById('rm-lbl').textContent='Maturity Group (e.g. 3.0)';
   document.getElementById('rm-hint').textContent='MG 0.5\u20135.5 range \u00b7 GDU to maturity \u2248 MG \u00d7 500 + 800';
   document.getElementById('g-rm').value=3;
-  document.getElementById('ms-title').textContent='\uD83C\uDF3F Key Growth Stage Milestones';
+  document.getElementById('ms-title').textContent='Key Growth Stage Milestones';
   calcGDU();
 });
 
@@ -647,9 +647,9 @@ document.getElementById('g-locate-btn').addEventListener('click',function(){
     userLon=pos.coords.longitude;
     document.getElementById('g-loc-display').textContent='Location: '+userLat.toFixed(3)+'\u00b0N, '+Math.abs(userLon).toFixed(3)+'\u00b0W';
     document.getElementById('g-zip').value='';
-    btn.textContent='\uD83D\uDDF7\uFE0F Auto';
+    btn.textContent='Auto';
     setStatus('Location found \u2014 click Fetch to load weather data','ok');
-  },function(){btn.textContent='\uD83D\uDDF7\uFE0F Auto';setStatus('Location access denied \u2014 enter ZIP code','err');});
+  },function(){btn.textContent='Auto';setStatus('Location access denied \u2014 enter ZIP code','err');});
 });
 
 /* ─── ZIP GEOCODE ───────────────────────────────────────────────────── */
@@ -721,13 +721,13 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
     var pending=0;
     if(lastValid){ pending=Math.round((new Date(todayStr+'T00:00:00')-new Date(lastValid+'T00:00:00'))/86400000); }
     var thru=lastValid?new Date(lastValid+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
-    var msg='\u2705 Real data through '+thru+' \u2014 '+days+' days, '+accum.toFixed(0)+' GDUs';
+    var msg='\u2713 Real data through '+thru+' \u2014 '+days+' days, '+accum.toFixed(0)+' GDUs';
     if(pending>0){ msg+=' \u00b7 last '+pending+' day'+(pending>1?'s':'')+' not yet in the archive'; }
     setStatus(msg,'ok');
     document.getElementById('r-source').textContent='Open-Meteo ERA5 \u2014 through '+(thru||'n/a');
     calcGDU();
   }).catch(function(err){
-    setStatus('\u274C '+err.message,'err');
+    setStatus('\u2717 '+err.message,'err');
   }).finally(function(){
     btn.disabled=false;
     btn.innerHTML='<span>\u26A1</span> Fetch Real GDUs from Weather Data';
@@ -833,8 +833,8 @@ function calcGDU(){
     else if(!matDate){ fv.textContent='\u2014'; fv.style.color='var(--text-muted)'; }
     else { var frostD=new Date(frostStr+'T00:00:00'); var margin=Math.round((frostD-matDate)/86400000);
       if(margin>=7){ fv.textContent='\u2713 '+margin+' days to spare'; fv.style.color='var(--green)'; }
-      else if(margin>=0){ fv.textContent='\u26A0 '+margin+'-day margin'; fv.style.color='var(--gold)'; }
-      else { fv.textContent='\u26A0 '+Math.abs(margin)+' days short'; fv.style.color='#e05c5c'; } }
+      else if(margin>=0){ fv.textContent=''+margin+'-day margin'; fv.style.color='var(--gold)'; }
+      else { fv.textContent=''+Math.abs(margin)+' days short'; fv.style.color='#e05c5c'; } }
   }
 
   var note='';

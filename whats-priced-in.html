@@ -355,7 +355,7 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
   function nextCard(n){
     if(!n)return '<div class="wp-err">No upcoming report is scheduled right now. Check the <a href="/usda-calendar" style="color:var(--wp-gold2)">USDA calendar</a>.</div>';
     var d=daysUntil(n.date);
-    var cd=(d>1)?(d+' days out'):(d===1?'tomorrow':(d===0?'today':'released'));
+    var cd=(d>1)?(d+' days\u00a0out'):(d===1?'tomorrow':(d===0?'today':'released'));
     var lo=n.estimate_low,hi=n.estimate_high,av=n.estimate_avg,u=n.unit||'';
     var rangeHtml='';
     if(lo!=null&&hi!=null&&hi>lo){
@@ -399,7 +399,7 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
         +'<div class="wp-res-nums"><b>'+num(b.actual,b.unit)+'</b> actual &middot; '+num(b.expected,b.unit)+' expected'+(gp?(' &middot; '+gp):'')+'</div>'
         +(b.reaction?'<div class="wp-res-reaction">'+b.reaction+'</div>':'')+'</div>';
     }
-    return '<div class="wp-result '+sc+'"><div class="wp-res-hd"><span class="wp-res-k">\uD83D\uDCCB How the '+lr.report+' landed</span><span class="wp-res-d">'+lr.date+'</span></div>'
+    return '<div class="wp-result '+sc+'"><div class="wp-res-hd"><span class="wp-res-k">How the '+lr.report+' landed</span><span class="wp-res-d">'+lr.date+'</span></div>'
       +'<div class="wp-res-sum">'+sum+'</div>'+big
       +'<div class="wp-res-foot">Every figure, scored, in the <a href="#track-record">track record</a> below.</div></div>';
   }
