@@ -38,8 +38,8 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 button,a,[role="button"]{touch-action:manipulation;}
 .fut{max-width:1100px;margin:0 auto;padding:0 16px 2.5rem}
 .bc{font-size:0.787rem;color:var(--text-dim);margin:12px 0}.bc a{color:var(--gold);text-decoration:none}
-.ph{background:linear-gradient(135deg,var(--surface) 0%,rgba(230,176,66,.05) 100%);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:8px;display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
-.ph-icon{font-size:2.6rem;flex-shrink:0}.ph-info h1{font-size:1.05rem;color:var(--text);margin:0 0 2px 0}.ph-exch{font-size:0.775rem;color:var(--text-dim)}
+.ph{background:linear-gradient(135deg,var(--surface) 0%,rgba(230,176,66,.05) 100%);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin-bottom:8px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.ph-info h1{font-size:1.3rem;font-weight:800;letter-spacing:-.01em;color:var(--text);margin:0 0 3px 0}.ph-exch{font-size:0.775rem;color:var(--text-dim)}
 .ph-price{margin-left:auto;text-align:right}.ph-val{font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:700;color:var(--text);line-height:1}.ph-unit{font-size:0.78rem;color:var(--text-dim)}.ph-chg{font-size:.88rem;font-weight:700;margin-top:2px}
 .ph-chg.roll,.roll{color:var(--gold,#d4a23f)}
 .roll-note{font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:1rem;color:var(--gold,#d4a23f);border:1px solid rgba(212,162,63,.35);border-radius:8px;padding:.4rem .6rem;margin:.4rem 0 0;line-height:1.5}
@@ -145,7 +145,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .ra{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;text-decoration:none;transition:border-color .2s;min-height:44px;justify-content:center}
 .ra:hover{border-color:var(--border-g)}.ra-i{font-size:1.2rem;margin-bottom:3px}.ra-n{font-size:.8rem;font-weight:600;color:var(--text)}.ra-d{font-size:0.763rem;color:var(--text-dim);margin-top:1px}
 .disc{font-size:0.77rem;color:var(--text-dim);text-align:center;padding:8px;border-top:1px solid var(--border);margin-top:14px}
-@media(max-width:520px){.ph{padding:.9rem}.ph-icon{font-size:2rem}.ph-val{font-size:1.7rem}.cg{grid-template-columns:repeat(2,minmax(0,1fr))}.rat-row{grid-template-columns:1fr}}
+@media(max-width:520px){.ph{padding:.9rem 1rem;display:block}.ph-price{margin:.65rem 0 0;text-align:left;display:flex;align-items:baseline;flex-wrap:wrap;column-gap:.55rem}.ph-val{font-size:1.9rem}.ph-unit{order:2}.ph-chg{order:3;flex-basis:100%;margin-top:4px}.cg{grid-template-columns:repeat(2,minmax(0,1fr))}.rat-row{grid-template-columns:1fr}}
 
 /* NEW v11: daily briefing strip */
 .brief-strip{display:flex;gap:10px;align-items:center;background:linear-gradient(135deg,rgba(230,176,66,.08) 0%,var(--surface) 100%);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;padding:10px 12px;margin:0 0 10px}
@@ -242,7 +242,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .session-badge.overnight .dot{background:var(--gold)}
 .session-badge.closed{background:var(--surface2);color:var(--text-muted);border:1px solid var(--border)}
 .session-badge.closed .dot{background:var(--text-muted)}
-.session-sub{font-size:0.77rem;color:var(--text-dim);font-weight:500;text-transform:none;letter-spacing:0;margin-left:4px}
+.session-sub{font-size:0.77rem;color:var(--text-dim);font-weight:500;text-transform:none;letter-spacing:0;margin-left:4px}@media(max-width:560px){.session-badge{flex-wrap:wrap;row-gap:2px;white-space:normal}.session-badge>.session-sub{flex-basis:100%;margin-left:0}}
 
 /* NEW v13: Sectioned Market Read */
 .mr-section{margin-bottom:11px}
@@ -392,7 +392,6 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
   </div>
 
   <div class="ph">
-    <div class="ph-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></div>
     <div class="ph-info">
       <h1>Wheat Futures Prices Today</h1>
       <div class="ph-exch">CBOT SRW · CME Group · ZW=F · Live futures + local cash bids · Refreshed in session</div>
@@ -629,7 +628,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
       <div class="xr"><span class="xl">WASDE</span><span class="xv">Monthly (~10th) · highest impact</span></div>
       <div class="xr"><span class="xl">Crop Progress</span><span class="xv">Weekly Mon 4pm (Apr–Nov)</span></div>
       <div class="xr"><span class="xl">Winter Wheat Seedings</span><span class="xv">January</span></div>
-      <div class="xr"><span class="xl">Export Sales</span><span class="xv">Thu 7:30am CT</span></div>
+      <div class="xr"><span class="xl">Export Sales</span><span class="xv">Thu 7:30am CT</span></div>
       <div class="xr"><span class="xl">Black Sea updates</span><span class="xv">Watch daily</span></div>
     </div>
     <div class="xc">
@@ -706,7 +705,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">What USDA reports move wheat prices the most?</div>
-      <div class="faq-a"><div class="faq-a-inner">The USDA WASDE (World Agricultural Supply and Demand Estimates), released monthly around the 10th, is the primary report for wheat — particularly global ending stocks and the US export pace. Weekly Export Sales and Inspections (Thursday 7:30am CT) track US competitiveness against Black Sea origins. The January Winter Wheat Seedings report establishes the new crop area estimate. Weekly Crop Progress (Monday 4pm CT, April–November) tracks winter wheat dormancy, green-up, and harvest progress. See AGSIST's USDA Calendar for all upcoming dates.</div></div>
+      <div class="faq-a"><div class="faq-a-inner">The USDA WASDE (World Agricultural Supply and Demand Estimates), released monthly around the 10th, is the primary report for wheat — particularly global ending stocks and the US export pace. Weekly Export Sales and Inspections (Thursday 7:30am CT) track US competitiveness against Black Sea origins. The January Winter Wheat Seedings report establishes the new crop area estimate. Weekly Crop Progress (Monday 4pm CT, April–November) tracks winter wheat dormancy, green-up, and harvest progress. See AGSIST's USDA Calendar for all upcoming dates.</div></div>
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">When is CBOT wheat open for trading?</div>
@@ -733,7 +732,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
       <input type="email" name="email" placeholder="you@example.com" required autocomplete="email">
       <button type="submit">Subscribe</button>
     </form>
-    <div class="signup-ok" id="signup-ok">✓ Subscribed. Next briefing arrives weekday 6am CT.</div>
+    <div class="signup-ok" id="signup-ok">✓ Subscribed. Next briefing arrives weekday 6am CT.</div>
     <div class="signup-sub">Free · unsubscribe anytime · I read every reply</div>
   </div>
 
@@ -1014,14 +1013,14 @@ function computeMarketSession(){
     var minsToSunOpen=(24-hr)*60-mn+24*60+OVN_OPEN; // rest of Sat + Sun until 7pm
     return {state:'closed',label:'Weekend',sub:'reopens Sun '+fmtUntil(minsToSunOpen)};
   }
-  // Sunday: closed until 7pm CT
+  // Sunday: closed until 7pm CT
   if(dow===0){
     if(tod<OVN_OPEN){
       return {state:'closed',label:'Weekend',sub:'reopens '+untilToday(OVN_OPEN)};
     }
     // Sunday >= 7pm: overnight session running into Monday 7:45am
     var minsToMonOvnEnd=(24-hr)*60-mn+OVN_CLOSE;
-    return {state:'overnight',label:'Overnight Session',sub:'day session opens 8:30am CT'};
+    return {state:'overnight',label:'Overnight Session',sub:'day session opens 8:30am CT'};
   }
   // Mon-Fri logic
   // Pre-7:45 AM: still in overnight from last session
@@ -1049,7 +1048,7 @@ function computeMarketSession(){
     var minsToSun=2*24*60-tod+OVN_OPEN;
     return {state:'closed',label:'Weekend',sub:'reopens Sun '+fmtUntil(minsToSun)};
   }
-  return {state:'overnight',label:'Overnight Session',sub:'day session opens 8:30am CT'};
+  return {state:'overnight',label:'Overnight Session',sub:'day session opens 8:30am CT'};
 }
 
 function renderMarketSession(){

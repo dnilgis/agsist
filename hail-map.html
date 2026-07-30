@@ -1193,7 +1193,7 @@
           if(bar) bar.hidden=false;
           if(btn){
             btn.classList.toggle('hot', warnCount>0);
-            btn.textContent = warnCount>0 ? ('⚠ '+warnCount+' HAIL WARNING'+(warnCount===1?'':'S')+' NOW') : 'No hail warnings right now';
+            btn.textContent = warnCount>0 ? (warnCount+' HAIL WARNING'+(warnCount===1?'':'S')+' NOW') : 'No hail warnings right now';
           }
           if(warnFirstPoll){ warnFirstPoll=false; if(warnCount>0) ga('hm_live_warn_seen',{n:warnCount}); }
           if(warnOn) drawWarnings(feats);

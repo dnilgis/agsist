@@ -54,12 +54,12 @@
 </head>
 <body>
 <style id="ct-base">
-@media(max-width:520px){.ph{padding:.9rem}.ph-icon{font-size:2rem}.ph-val{font-size:1.7rem}}
+@media(max-width:520px){.ph{padding:.9rem 1rem;display:block}.ph-price{margin:.65rem 0 0;text-align:left;display:flex;align-items:baseline;flex-wrap:wrap;column-gap:.55rem}.ph-val{font-size:1.9rem}.ph-unit{order:2}.ph-chg{order:3;flex-basis:100%;margin-top:4px}}
 .fut{max-width:1100px;margin:0 auto;padding:0 16px 2.5rem}
 .bc{font-size:0.787rem;color:var(--text-dim);margin:12px 0}
 .bc a{color:var(--gold);text-decoration:none}
-.ph{background:linear-gradient(135deg,var(--surface) 0%,rgba(230,176,66,.05) 100%);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:8px;display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
-.ph-icon{font-size:2.6rem;flex-shrink:0}
+.ph{background:linear-gradient(135deg,var(--surface) 0%,rgba(230,176,66,.05) 100%);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin-bottom:8px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.ph-info h1{font-size:1.3rem;font-weight:800;letter-spacing:-.01em;color:var(--text);margin:0 0 3px 0}
 .ph-exch{font-size:0.775rem;color:var(--text-dim)}
 .ph-price{margin-left:auto;text-align:right}
 .ph-val{font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:700;color:var(--text);line-height:1}
@@ -178,7 +178,6 @@
   </div>
 
   <div class="ph">
-    <div class="ph-icon"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg></div>
     <div class="ph-info">
       <h1>Live &amp; Feeder Cattle Futures Prices Today</h1>
       <div class="ph-exch">CME Group · LE=F &amp; GF=F · Updated every 30 min</div>
@@ -447,7 +446,7 @@
       <input type="email" name="email" placeholder="you@example.com" required autocomplete="email">
       <button type="submit">Subscribe</button>
     </form>
-    <div class="signup-ok" id="signup-ok">✓ Subscribed. Next briefing arrives weekday 6am CT.</div>
+    <div class="signup-ok" id="signup-ok">✓ Subscribed. Next briefing arrives weekday 6am CT.</div>
     <div class="signup-sub">Free · unsubscribe anytime · I read every reply</div>
   </div>
 
@@ -456,7 +455,7 @@
     <a href="/corn-futures-prices" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></div><div class="ra-n">Corn Futures</div><div class="ra-d">Your feed cost</div></a>
     <a href="/cash-bids" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg></div><div class="ra-n">Cash Bids Near Me</div><div class="ra-d">Local elevator prices</div></a>
     <a href="/breakeven" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg></div><div class="ra-n">Break-Even Calc</div><div class="ra-d">Is this profitable?</div></a>
-    <a href="/daily" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg></div><div class="ra-n">Daily Briefing</div><div class="ra-d">Cattle read by 6am CT</div></a>
+    <a href="/daily" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg></div><div class="ra-n">Daily Briefing</div><div class="ra-d">Cattle read by 6am CT</div></a>
     <a href="/whats-priced-in" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg></div><div class="ra-n">What's Priced In</div><div class="ra-d">USDA report odds</div></a>
     <a href="/usda-calendar" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg></div><div class="ra-n">USDA Calendar</div><div class="ra-d">Next report date</div></a>
   </div>
