@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=12" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=12">
+  <link rel="preload" href="/components/styles.css?v=15" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=15">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -46,44 +46,44 @@
   <style>
     .bs-wrap{max-width:1140px;margin:0 auto;padding:24px 16px 60px}
     .bs-hero{padding:26px 0 2px}
-    .bs-kicker{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#d4a23f;margin:0 0 10px}
-    .bs-hero h1{font-family:Archivo,system-ui,sans-serif;font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.12;margin:0 0 12px;color:#e6ebe9}
+    .bs-kicker{font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.16em;text-transform:uppercase;color:#d4a23f;margin:0 0 10px}
+    .bs-hero h1{font-family:var(--font-display);font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.12;margin:0 0 12px;color:#e6ebe9}
     .bs-sub{font-size:1.02rem;line-height:1.7;color:#8a948f;max-width:820px;margin:0}
     .bs-sub strong{color:#e6ebe9}
-    .ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
-    .ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
+    .ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
+    .ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
     .ag-sponsor-ribbon a{color:#d4a23f}
     .bs-panel{background:#101415;border:1px solid #1a1f20;border-radius:12px;margin-top:26px;overflow:hidden}
     .bs-panel-hd{padding:14px 18px;border-bottom:1px solid #1a1f20;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:baseline}
-    .bs-panel-t{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#d4a23f}
-    .bs-fresh{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:#8a948f}
+    .bs-panel-t{font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.14em;text-transform:uppercase;color:#d4a23f}
+    .bs-fresh{font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:#8a948f}
     .bs-panel-b{padding:18px}
-    .bs-seed{font-size:13px;line-height:1.7;color:#8a948f;margin:0 0 6px}
+    .bs-seed{font-size:13.4px;line-height:1.7;color:#8a948f;margin:0 0 6px}
     .bs-tabs{display:flex;gap:8px;margin:0 0 14px}
-    .bs-tab{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid #3a4345;background:transparent;color:#8a948f;cursor:pointer}
+    .bs-tab{font-family:'JetBrains Mono',monospace;font-size:0.775rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid #3a4345;background:transparent;color:#8a948f;cursor:pointer}
     .bs-tab.on{border-color:#d4a23f;color:#d4a23f;background:rgba(212,162,63,.08)}
     table.bs-tbl{width:100%;border-collapse:collapse;font-size:.9rem}
-    .bs-tbl th{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;text-align:left;padding:8px 10px;border-bottom:1px solid #1a1f20}
+    .bs-tbl th{font-family:'JetBrains Mono',monospace;font-size:0.755rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;text-align:left;padding:8px 10px;border-bottom:1px solid #1a1f20}
     .bs-tbl td{padding:8px 10px;border-bottom:1px solid rgba(132,160,168,.08);color:#c9d1cd}
     .bs-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;white-space:nowrap;color:#e6ebe9}
     .neg{color:#e0685f !important}.pos{color:#5fc28a !important}
     .bs-spark{height:30px;width:100%;max-width:280px;min-width:170px;display:block}
     .bs-bars{display:grid;gap:10px}
     .bs-barrow{display:grid;grid-template-columns:130px 1fr 130px;gap:10px;align-items:center}
-    .bs-barlbl{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:#c9d1cd}
+    .bs-barlbl{font-family:'JetBrains Mono',monospace;font-size:0.785rem;color:#c9d1cd}
     .bs-bartrack{position:relative;height:16px;background:#0d1112;border-radius:4px;overflow:hidden}
     .bs-barnorm{position:absolute;top:0;bottom:0;width:2px;background:#8a948f}
     .bs-barfill{position:absolute;top:2px;bottom:2px;left:0;background:#d4a23f;border-radius:3px;opacity:.85}
-    .bs-barval{font-family:'JetBrains Mono',monospace;font-size:.74rem;text-align:right;color:#e6ebe9}
-    .bs-note{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:.9rem;line-height:1.7;color:#8a948f;margin:16px 0}
+    .bs-barval{font-family:'JetBrains Mono',monospace;font-size:0.785rem;text-align:right;color:#e6ebe9}
+    .bs-note{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:1rem;line-height:1.7;color:#8a948f;margin:16px 0}
     .bs-note strong{color:#d4a23f}
     .bs-walk{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
     .bs-walkstep{flex:1;min-width:150px;background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px}
-    .bs-walk-l{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f}
+    .bs-walk-l{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f}
     .bs-walk-v{font-family:'JetBrains Mono',monospace;font-size:1.3rem;color:#e6ebe9;margin:4px 0 2px}
-    .bs-walk-m{font-size:.76rem;color:#8a948f;line-height:1.5}
+    .bs-walk-m{font-size:0.79rem;color:#8a948f;line-height:1.5}
     .bs-faq details{border-bottom:1px solid #1a1f20;padding:10px 0}
-    .bs-faq summary{cursor:pointer;color:#e6ebe9;font-size:.95rem}
+    .bs-faq summary{cursor:pointer;color:#e6ebe9;font-size:1rem}
     .bs-faq p{color:#8a948f;font-size:.9rem;line-height:1.7;margin:8px 0 2px}
     .bs-src{font-size:.8rem;color:#8a948f;line-height:1.7}
     .bs-src a{color:#d4a23f}
@@ -96,8 +96,8 @@
     .vp-big{font-family:'JetBrains Mono',monospace;font-size:4rem;font-weight:800;line-height:1}
     .vp-word{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;letter-spacing:.05em}
     .vp-sent{font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px}
-    .vp-geo{font-size:.66rem;color:#5a6467;font-family:'JetBrains Mono',monospace;margin-top:6px}
-    .vp-maplab{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.1em;color:#8a948f;text-transform:uppercase;margin:16px 0 10px}
+    .vp-geo{font-size:0.765rem;color:#5a6467;font-family:'JetBrains Mono',monospace;margin-top:6px}
+    .vp-maplab{font-family:'JetBrains Mono',monospace;font-size:0.765rem;letter-spacing:.1em;color:#8a948f;text-transform:uppercase;margin:16px 0 10px}
     .vp-grid{position:relative;width:840px;height:560px;margin:0 auto;max-width:100%}
     .vp-tile{position:absolute;width:64px;height:64px;border-radius:9px;padding:10px 9px;box-sizing:border-box;cursor:pointer;transition:transform .08s;left:calc(var(--gc)*70px - 70px);top:calc(var(--gr)*70px - 70px)}
     .vp-tile:hover{transform:scale(1.12);z-index:2;outline:2px solid #d4a23f}
@@ -105,13 +105,13 @@
     .vp-tile.dim{background:#101415;border:1px dashed #1a1f20;opacity:.45;cursor:default}
     .vp-tst{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:.92rem;color:#e6ebe9}
     .vp-tge{font-family:'JetBrains Mono',monospace;font-size:.98rem;font-weight:700;margin-top:2px;color:#e6ebe9}
-    .vp-leg{display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:#8a948f;flex-wrap:wrap}
+    .vp-leg{display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:0.785rem;color:#8a948f;flex-wrap:wrap}
     .vp-leg span b{display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px}
     @media (max-width:900px){
       .vp-grid{width:100%;height:auto;display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
       .vp-tile{position:static;width:auto;height:auto;aspect-ratio:1;padding:0;border-radius:5px;display:flex;align-items:center;justify-content:center;grid-column:var(--gc);grid-row:var(--gr)}
       .vp-tile .vp-tge{display:none}
-      .vp-tile .vp-tst{font-size:.56rem}
+      .vp-tile .vp-tst{font-size:0.74rem}
       .vp-tile:hover{transform:none}
       .vp-ver{display:block;padding:16px 18px}
       .vp-big{font-size:3.1rem;display:inline-block;vertical-align:middle;margin-right:12px}
@@ -119,6 +119,7 @@
       .vp-sent{font-size:.9rem;margin-top:10px}
       .vp-ver select{margin-bottom:10px}
     }
+.tblscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}.tblscroll table{margin:0;min-width:520px}
 </style>
 </head>
 <body>
@@ -145,8 +146,8 @@
     <div class="bs-panel-b">
       <p class="bs-seed"><!--SEED:basisstats-->Weekly regional elevator-bid basis for corn, soybeans, and wheat vs each region&rsquo;s own 5-year same-week average, from USDA AgTransport (weekly since 2007), beside Mississippi-system barge rates and origin-to-Gulf shipping spreads. Data updates every Friday.<!--/SEED--></p>
       <div class="bs-tabs" role="tablist" id="bs-tabs"></div>
-      <table class="bs-tbl" id="bs-table"><tr><td style="color:#8a948f">Loading USDA data&hellip;</td></tr></table>
-      <p style="font-size:13px;color:#8a948f;margin:10px 0 0">Negative delta = weaker than this region&rsquo;s normal for this week. These are USDA-tracked <em>regional</em> markets &mdash; your specific elevator sits some local spread away from its region, but it moves with it.</p>
+      <div class="tblscroll"><table class="bs-tbl" id="bs-table"><tr><td style="color:#8a948f">Loading USDA data&hellip;</td></tr></table></div>
+      <p style="font-size:13.4px;color:#8a948f;margin:10px 0 0">Negative delta = weaker than this region&rsquo;s normal for this week. These are USDA-tracked <em>regional</em> markets &mdash; your specific elevator sits some local spread away from its region, but it moves with it.</p>
     </div>
   </section>
 
@@ -154,7 +155,7 @@
     <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-river-t">The river, right now &mdash; barge rates vs normal</span><span class="bs-fresh" id="bs-fresh2"></span></div>
     <div class="bs-panel-b">
       <div class="bs-bars" id="bs-barge"></div>
-      <p style="font-size:13px;color:#8a948f;margin:12px 0 0">Rates are percent of the 1976 benchmark tariff &mdash; the industry&rsquo;s odd but standard yardstick. The grey tick is each location&rsquo;s 5-year same-week average; the gold bar is now. Bars far past their ticks are freight eating your basis.</p>
+      <p style="font-size:13.4px;color:#8a948f;margin:12px 0 0">Rates are percent of the 1976 benchmark tariff &mdash; the industry&rsquo;s odd but standard yardstick. The grey tick is each location&rsquo;s 5-year same-week average; the gold bar is now. Bars far past their ticks are freight eating your basis.</p>
     </div>
   </section>
 
@@ -162,7 +163,7 @@
     <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-walk-t">A bushel&rsquo;s journey &mdash; where the money goes</span></div>
     <div class="bs-panel-b">
       <div class="bs-walk" id="bs-walk"></div>
-      <p style="font-size:13px;color:#8a948f;margin:12px 0 0" id="bs-walk-note"></p>
+      <p style="font-size:13.4px;color:#8a948f;margin:12px 0 0" id="bs-walk-note"></p>
     </div>
   </section>
 
@@ -203,7 +204,7 @@
     // same-week normal. Shared $/bu scale across rows.
     if(!hist||!hist.length) return '';
     var cur=hist[hist.length-1][1];
-    if(avg5==null) return '<span style="color:#5a6467;font-size:.72rem">no normal published</span>';
+    if(avg5==null) return '<span style="color:#5a6467;font-size:0.78rem">no normal published</span>';
     var d=cur-avg5, W=250, C=125, HALF=78;
     var len=Math.min(HALF, Math.abs(d)/dom*HALF);
     var x0=d<0?C-len:C, col=d<-0.02?'#e0685f':(d>0.02?'#5fc28a':'#8a948f');

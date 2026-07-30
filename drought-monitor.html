@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-<link rel="preload" href="/components/styles.css?v=10" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=10">
+<link rel="preload" href="/components/styles.css?v=15" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=15">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -101,48 +101,48 @@ button,a,[role="button"] { touch-action: manipulation; }
 .dm-page { max-width: 1040px; margin: 0 auto; padding: 0 1rem 3rem; }
 
 /* Breadcrumb */
-.breadcrumb { max-width: 1040px; margin: 0 auto; padding: .65rem 1rem 0; font-size: .78rem; color: var(--text-dim); }
+.breadcrumb { max-width: 1040px; margin: 0 auto; padding: .65rem 1rem 0; font-size:0.795rem; color: var(--text-dim); }
 .breadcrumb a { color: var(--text-dim); text-decoration: none; }
 .breadcrumb a:hover { color: var(--gold); }
 .breadcrumb span { margin: 0 .35rem; opacity: .45; }
 
 /* Hero */
 .dm-hero { padding: 1.2rem 0 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
-.dm-hero h1 { font-family: 'Oswald', sans-serif; font-size: 1.7rem; font-weight: 800; text-transform: uppercase; color: var(--text); margin: 0 0 .3rem; }
+.dm-hero h1 { font-family:var(--font-display); font-size: 1.7rem; font-weight: 800; text-transform: uppercase; color: var(--text); margin: 0 0 .3rem; }
 .dm-hero p { color: var(--text-dim); font-size: .85rem; line-height: 1.6; max-width: 600px; margin: 0; }
-.dm-eyebrow { font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: .3rem; }
+.dm-eyebrow { font-size:0.755rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: .3rem; }
 .dm-hero-meta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: .6rem; }
-.dm-updated { font-family: 'JetBrains Mono', monospace; font-size: .65rem; color: var(--text-muted); }
-.dm-next-update { font-family: 'JetBrains Mono', monospace; font-size: .65rem; color: var(--green); background: rgba(58,139,60,.08); border: 1px solid rgba(58,139,60,.2); padding: .15rem .5rem; border-radius: 4px; }
+.dm-updated { font-family: 'JetBrains Mono', monospace; font-size:0.763rem; color: var(--text-muted); }
+.dm-next-update { font-family: 'JetBrains Mono', monospace; font-size:0.763rem; color: var(--green); background: rgba(58,139,60,.08); border: 1px solid rgba(58,139,60,.2); padding: .15rem .5rem; border-radius: 4px; }
 
 /* Auto-detect banner */
-.dm-state-banner { display: flex; align-items: center; gap: .6rem; padding: .55rem .85rem; background: rgba(230,176,66,.06); border: 1px solid rgba(230,176,66,.18); border-radius: 8px; margin-bottom: 1rem; font-size: .78rem; color: var(--text-dim); }
+.dm-state-banner { display: flex; align-items: center; gap: .6rem; padding: .55rem .85rem; background: rgba(230,176,66,.06); border: 1px solid rgba(230,176,66,.18); border-radius: 8px; margin-bottom: 1rem; font-size:0.795rem; color: var(--text-dim); }
 .dm-state-banner strong { color: var(--gold); }
-.dm-state-banner button { margin-left: auto; padding: .25rem .7rem; background: var(--gold); color: #0a1a0a; border: none; border-radius: 20px; font-size: .68rem; font-weight: 700; cursor: pointer; min-height: 28px; white-space: nowrap; }
+.dm-state-banner button { margin-left: auto; padding: .25rem .7rem; background: var(--gold); color: #0a1a0a; border: none; border-radius: 20px; font-size:0.77rem; font-weight: 700; cursor: pointer; min-height: 28px; white-space: nowrap; }
 
 /* Tabs */
 .dm-tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
-.dm-tab { padding: .5rem 1rem; border-radius: 20px; border: 2px solid var(--border); background: var(--surface); color: var(--text-dim); font-size: .78rem; font-weight: 600; cursor: pointer; transition: all .15s; white-space: nowrap; min-height: 44px; display: inline-flex; align-items: center; }
+.dm-tab { padding: .5rem 1rem; border-radius: 20px; border: 2px solid var(--border); background: var(--surface); color: var(--text-dim); font-size:0.795rem; font-weight: 600; cursor: pointer; transition: all .15s; white-space: nowrap; min-height: 44px; display: inline-flex; align-items: center; }
 .dm-tab:hover { border-color: var(--gold); color: var(--text); }
 .dm-tab.active { background: var(--gold); color: #0a1a0a; border-color: var(--gold); font-weight: 700; }
 
 /* Map */
 .dm-map-wrap { position: relative; width: 100%; background: var(--surface); border: 2px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.25rem; }
 .dm-map-img { width: 100%; height: auto; display: block; }
-.dm-map-label { position: absolute; top: 10px; left: 12px; font-family: 'JetBrains Mono', monospace; font-size: .62rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; background: rgba(0,0,0,.6); color: #fff; padding: .2rem .5rem; border-radius: 4px; }
-.dm-map-src { text-align: center; padding: .6rem; font-size: .65rem; color: var(--text-muted); border-top: 1px solid var(--border); }
+.dm-map-label { position: absolute; top: 10px; left: 12px; font-family: 'JetBrains Mono', monospace; font-size:0.755rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; background: rgba(0,0,0,.6); color: #fff; padding: .2rem .5rem; border-radius: 4px; }
+.dm-map-src { text-align: center; padding: .6rem; font-size:0.763rem; color: var(--text-muted); border-top: 1px solid var(--border); }
 .dm-map-src a { color: var(--gold); text-decoration: none; }
 
 /* Legend */
 .dm-legend { display: flex; flex-wrap: wrap; gap: .6rem .9rem; margin-bottom: 1.25rem; padding: .9rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
-.dm-legend-title { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim); width: 100%; margin-bottom: .1rem; }
-.dm-legend-item { display: flex; align-items: center; gap: .4rem; font-size: .76rem; color: var(--text-dim); }
+.dm-legend-title { font-size:0.763rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim); width: 100%; margin-bottom: .1rem; }
+.dm-legend-item { display: flex; align-items: center; gap: .4rem; font-size:0.79rem; color: var(--text-dim); }
 .dm-legend-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
 
 /* State grid */
 .dm-state-prompt { font-size: .8rem; color: var(--text-dim); margin-bottom: .7rem; }
 .dm-state-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: .4rem; margin-bottom: 1.25rem; }
-.dm-state-btn { padding: .4rem .5rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text-dim); font-size: .72rem; font-weight: 600; cursor: pointer; text-align: center; transition: all .15s; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+.dm-state-btn { padding: .4rem .5rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text-dim); font-size:0.78rem; font-weight: 600; cursor: pointer; text-align: center; transition: all .15s; min-height: 44px; display: flex; align-items: center; justify-content: center; }
 .dm-state-btn:hover { border-color: var(--gold); color: var(--text); }
 .dm-state-btn.active { background: rgba(230,176,66,.1); border-color: var(--gold); color: var(--gold); }
 
@@ -150,22 +150,23 @@ button,a,[role="button"] { touch-action: manipulation; }
 .dm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .8rem; margin-bottom: 1.25rem; }
 .dm-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: .9rem 1rem; }
 .dm-card h3 { font-size: .82rem; color: var(--gold); margin: 0 0 .45rem; }
-.dm-card p { font-size: .78rem; color: var(--text-dim); line-height: 1.65; margin: 0; }
+.dm-card p { font-size:0.795rem; color: var(--text-dim); line-height: 1.65; margin: 0; }
 
 /* Stress calendar */
-.dm-stress-table { width: 100%; border-collapse: collapse; font-size: .75rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 1.25rem; }
-.dm-stress-table th { text-align: left; padding: .5rem .8rem; font-size: .62rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); background: var(--bg); }
+.dm-stress-table { width: 100%; border-collapse: collapse; font-size:0.787rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 1.25rem; }
+.dm-stress-table th { text-align: left; padding: .5rem .8rem; font-size:0.755rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); background: var(--bg); }
 .dm-stress-table td { padding: .5rem .8rem; border-bottom: 1px solid rgba(255,255,255,.04); color: var(--text-dim); vertical-align: middle; }
 .dm-stress-table tr:last-child td { border-bottom: none; }
 .dm-stress-high   { color: #ef4444; font-weight: 700; }
 .dm-stress-med    { color: var(--gold); }
 .dm-stress-low    { color: var(--text-muted); }
-.dm-section-label { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 .55rem; }
+.dm-section-label { font-size:0.763rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 .55rem; }
 
 /* Outlook links */
 .dm-outlook { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
-.dm-outlook a { display: inline-flex; align-items: center; gap: .35rem; padding: .45rem .9rem; border: 1px solid var(--border); border-radius: 8px; font-size: .75rem; color: var(--text-dim); text-decoration: none; background: var(--surface); transition: all .15s; min-height: 44px; }
+.dm-outlook a { display: inline-flex; align-items: center; gap: .35rem; padding: .45rem .9rem; border: 1px solid var(--border); border-radius: 8px; font-size:0.787rem; color: var(--text-dim); text-decoration: none; background: var(--surface); transition: all .15s; min-height: 44px; }
 .dm-outlook a:hover { border-color: var(--gold); color: var(--gold); }
+.tblscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}.tblscroll table{margin:0;min-width:480px}
 </style>
 </head>
 <body>
@@ -216,7 +217,7 @@ button,a,[role="button"] { touch-action: manipulation; }
   <div class="dm-hero">
     <div class="dm-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map"/></svg> Drought Intelligence · Updated Weekly</div>
     <h1>US Drought Monitor</h1>
-<style>.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone here is watching moisture &mdash; one category-exclusive slot. <a href="/sponsor?slot=drought&amp;utm_source=drought&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone here is watching moisture &mdash; one category-exclusive slot. <a href="/sponsor?slot=drought&amp;utm_source=drought&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
     <p>Weekly drought conditions for US crop regions. Select national, state, or regional views. Published every Thursday by the National Drought Mitigation Center, USDA, and NOAA.</p>
     <div class="dm-hero-meta">
       <div class="dm-updated">Source: droughtmonitor.unl.edu · Updated Thursdays by 8:30 AM ET<span id="dm-valid"></span></div><script>fetch("/data/outlooks/manifest.json").then(function(r){return r.json()}).then(function(m){var d=m&&m.usdm_latest&&m.usdm_latest.data_valid||m&&m.data_valid;if(d)document.getElementById("dm-valid").textContent=" · map valid "+d;}).catch(function(){});</script>
@@ -260,7 +261,7 @@ button,a,[role="button"] { touch-action: manipulation; }
   </div>
 
   <div class="dm-section-label">Crop Stress Windows — When Drought Hurts Most</div>
-  <table class="dm-stress-table" aria-label="Crop drought stress calendar">
+  <div class="tblscroll"><table class="dm-stress-table" aria-label="Crop drought stress calendar">
     <thead>
       <tr><th>Crop</th><th>Critical Period</th><th>Drought Risk</th><th>What's at Stake</th></tr>
     </thead>
@@ -296,7 +297,7 @@ button,a,[role="button"] { touch-action: manipulation; }
         <td>First cutting reduced; recovery slows. Supplemental feed costs escalate at D2.</td>
       </tr>
     </tbody>
-  </table>
+  </table></div>
 
   <div class="dm-grid">
     <div class="dm-card">

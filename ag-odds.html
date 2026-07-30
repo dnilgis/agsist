@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-<link rel="preload" href="/components/styles.css?v=14" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=14">
+<link rel="preload" href="/components/styles.css?v=15" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=15">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -48,21 +48,21 @@
 html { overflow-x: hidden; overflow-x: clip; width: 100%; }
 body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 .ao-hero{padding:1.4rem 0 1.1rem;border-bottom:1px solid var(--border);margin-bottom:1.35rem}
-.ao-eyebrow{display:flex;align-items:center;gap:.45rem;font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.32rem}
+.ao-eyebrow{display:flex;align-items:center;gap:.45rem;font-size:0.757rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.32rem}
 .ao-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite}
-.ao-hero h1{font-family:'Oswald',sans-serif;font-size:1.9rem;font-weight:800;line-height:1.1;color:var(--text);letter-spacing:-.01em;text-transform:uppercase;margin:0 0 .4rem}
+.ao-hero h1{font-family:var(--font-display);font-size:1.9rem;font-weight:800;line-height:1.1;color:var(--text);letter-spacing:-.01em;text-transform:uppercase;margin:0 0 .4rem}
 @media(min-width:640px){.ao-hero h1{font-size:2.5rem}}
 .ao-hero-sub{font-size:.85rem;color:var(--text-dim);line-height:1.6;max-width:56rem}
-.ao-hero-meta{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem 1rem;margin-top:.8rem;font-size:.66rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
+.ao-hero-meta{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem 1rem;margin-top:.8rem;font-size:0.765rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
 .ao-dot{display:inline-block;width:6px;height:6px;border-radius:50%;vertical-align:middle;margin-right:3px;flex-shrink:0}
 .ao-dot.g{background:var(--green);animation:blink 1.5s infinite}
 .ao-dot.k{background:#00c7a8}.ao-dot.p{background:#5ba3e0}.ao-dot.u{background:var(--gold)}
-.ao-source-bar{display:flex;align-items:center;flex-wrap:wrap;gap:.35rem;margin-bottom:1rem;font-size:.65rem;font-family:'JetBrains Mono',monospace;color:var(--text-muted)}
-.ao-spill{display:inline-flex;align-items:center;gap:.28rem;padding:.18rem .55rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-size:.61rem;font-weight:700}
+.ao-source-bar{display:flex;align-items:center;flex-wrap:wrap;gap:.35rem;margin-bottom:1rem;font-size:0.763rem;font-family:'JetBrains Mono',monospace;color:var(--text-muted)}
+.ao-spill{display:inline-flex;align-items:center;gap:.28rem;padding:.18rem .55rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-size:0.752rem;font-weight:700}
 .ao-spill.k{color:#00c7a8;border-color:rgba(0,199,168,.22);background:rgba(0,199,168,.04)}
 .ao-spill.p{color:#5ba3e0;border-color:rgba(91,163,224,.22);background:rgba(91,163,224,.04)}
 .ao-tier-row{display:flex;flex-wrap:wrap;gap:.38rem;margin-bottom:.95rem}
-.ao-tier-pill{display:inline-flex;align-items:center;gap:.3rem;padding:.18rem .55rem;border-radius:20px;font-size:.61rem;font-weight:700;border:1px solid}
+.ao-tier-pill{display:inline-flex;align-items:center;gap:.3rem;padding:.18rem .55rem;border-radius:20px;font-size:0.752rem;font-weight:700;border:1px solid}
 .ao-tp-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .ao-tier-pill.t1{color:var(--green);border-color:rgba(34,197,94,.22);background:rgba(34,197,94,.05)}
 .ao-tier-pill.t1 .ao-tp-dot{background:var(--green)}
@@ -72,15 +72,15 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 .ao-tier-pill.t3 .ao-tp-dot{background:var(--blue)}
 /* PATCH: touch-action on filter buttons */
 .ao-filter-bar{display:flex;flex-wrap:wrap;gap:.32rem;margin-bottom:1rem;align-items:center}
-.ao-filter-label{font-size:.59rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-right:.2rem;flex-shrink:0}
-.ao-fbtn{padding:.26rem .68rem;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.04em;transition:all .15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;touch-action:manipulation}
+.ao-filter-label{font-size:0.747rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-right:.2rem;flex-shrink:0}
+.ao-fbtn{padding:.26rem .68rem;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.04em;transition:all .15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;touch-action:manipulation}
 .ao-fbtn:hover{border-color:var(--gold);color:var(--text)}
 .ao-fbtn.active{background:var(--gold);color:#0a1a0a;border-color:var(--gold)}
-.ao-status-bar{display:none;align-items:center;flex-wrap:wrap;gap:.32rem;margin-bottom:.9rem;font-size:.63rem;font-family:'JetBrains Mono',monospace;color:var(--text-muted)}
+.ao-status-bar{display:none;align-items:center;flex-wrap:wrap;gap:.32rem;margin-bottom:.9rem;font-size:0.757rem;font-family:'JetBrains Mono',monospace;color:var(--text-muted)}
 .ao-cat-section{margin-bottom:1.5rem}
 .ao-cat-head{display:flex;align-items:center;gap:.48rem;margin-bottom:.65rem}
-.ao-cat-title{font-size:.59rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
-.ao-cat-count{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--text-muted);background:var(--surface2);border:1px solid var(--border);padding:.07rem .36rem;border-radius:10px}
+.ao-cat-title{font-size:0.747rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.ao-cat-count{font-family:'JetBrains Mono',monospace;font-size:0.745rem;color:var(--text-muted);background:var(--surface2);border:1px solid var(--border);padding:.07rem .36rem;border-radius:10px}
 .ao-cat-line{flex:1;height:1px;background:var(--border)}
 /* PATCH: minmax(0,1fr) prevents mobile grid blowout */
 .ao-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(282px,1fr));gap:.65rem}
@@ -98,76 +98,76 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 .ao-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.48rem}
 .ao-card-title{font-size:.81rem;font-weight:700;color:var(--text);line-height:1.4;flex:1}
 .ao-prob-block{flex-shrink:0;text-align:center;min-width:50px}
-.ao-prob{font-family:'Oswald',sans-serif;font-size:1.6rem;font-weight:800;line-height:1}
-.ao-prob-lbl{font-size:.53rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-top:1px}
+.ao-prob{font-family:var(--font-display);font-size:1.6rem;font-weight:800;line-height:1}
+.ao-prob-lbl{font-size:0.732rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-top:1px}
 .ao-bar-track{height:6px;border-radius:3px;background:var(--surface2);border:1px solid rgba(255,255,255,.04);overflow:hidden;margin-bottom:.16rem}
 .ao-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
-.ao-bar-labels{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--text-muted);font-weight:700}
-.ao-why{font-size:.7rem;color:var(--text-muted);line-height:1.52;padding:.42rem .58rem;background:rgba(255,255,255,.02);border-radius:5px;border-left:2px solid rgba(255,255,255,.07)}
+.ao-bar-labels{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:0.745rem;color:var(--text-muted);font-weight:700}
+.ao-why{font-size:0.775rem;color:var(--text-muted);line-height:1.52;padding:.42rem .58rem;background:rgba(255,255,255,.02);border-radius:5px;border-left:2px solid rgba(255,255,255,.07)}
 .ao-card-footer{display:flex;align-items:center;flex-wrap:wrap;gap:.26rem .6rem;margin-top:auto;padding-top:.22rem}
-.ao-plat{display:inline-flex;align-items:center;gap:.24rem;font-family:'JetBrains Mono',monospace;font-size:.57rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:.12rem .42rem;border-radius:3px;border:1px solid}
+.ao-plat{display:inline-flex;align-items:center;gap:.24rem;font-family:'JetBrains Mono',monospace;font-size:0.742rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:.12rem .42rem;border-radius:3px;border:1px solid}
 .ao-plat.k{color:#00c7a8;border-color:rgba(0,199,168,.22);background:rgba(0,199,168,.05)}
 .ao-plat.p{color:#5ba3e0;border-color:rgba(91,163,224,.22);background:rgba(91,163,224,.05)}
-.ao-tl{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:var(--text-muted)}
-.ao-vol{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:var(--text-muted);margin-left:auto}
+.ao-tl{font-family:'JetBrains Mono',monospace;font-size:0.757rem;color:var(--text-muted)}
+.ao-vol{font-family:'JetBrains Mono',monospace;font-size:0.757rem;color:var(--text-muted);margin-left:auto}
 .ao-loading-state,.ao-empty-state{grid-column:1/-1;text-align:center;padding:2.5rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:.65rem}
 .ao-spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--gold);animation:spin .75s linear infinite}
 .ao-load-lbl{font-size:.8rem;color:var(--text-muted)}
 .ao-empty-icon{font-size:2rem}.ao-empty-ttl{font-size:.92rem;font-weight:700;color:var(--text-dim)}
-.ao-empty-sub{font-size:.76rem;color:var(--text-muted);line-height:1.6;max-width:30rem}
+.ao-empty-sub{font-size:0.79rem;color:var(--text-muted);line-height:1.6;max-width:30rem}
 /* PATCH: static cats for Googlebot */
 .ao-static-cats{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.15rem;margin-bottom:1.1rem;display:none}
 .ao-static-cats.visible{display:block}
 .ao-static-cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.5rem .9rem;margin-top:.5rem}
-.ao-static-cat-item{font-size:.75rem;color:var(--text-dim);line-height:1.5}
-.ao-static-cat-item strong{color:var(--text);display:block;font-size:.72rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.1rem}
+.ao-static-cat-item{font-size:0.787rem;color:var(--text-dim);line-height:1.5}
+.ao-static-cat-item strong{color:var(--text);display:block;font-size:0.78rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.1rem}
 .ao-ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:.6rem;margin-top:.7rem}
 .ao-ref-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.82rem .95rem}
 .ao-ref-icon{font-size:1.25rem;margin-bottom:.3rem;display:block}
-.ao-ref-title{font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:.28rem}
-.ao-ref-body{font-size:.7rem;color:var(--text-muted);line-height:1.55}
-.ao-ref-link{display:inline-block;margin-top:.45rem;font-size:.66rem;color:var(--gold);text-decoration:none;font-weight:600}
+.ao-ref-title{font-size:0.795rem;font-weight:700;color:var(--text);margin-bottom:.28rem}
+.ao-ref-body{font-size:0.775rem;color:var(--text-muted);line-height:1.55}
+.ao-ref-link{display:inline-block;margin-top:.45rem;font-size:0.765rem;color:var(--gold);text-decoration:none;font-weight:600}
 .ao-ref-link:hover{text-decoration:underline}
 .ao-explainer{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.05rem 1.2rem;margin-top:1.4rem}
-.ao-expl-head{font-size:.59rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.75rem}
+.ao-expl-head{font-size:1rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.75rem}
 .ao-expl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(226px,1fr));gap:.8rem}
-.ao-expl-title{font-size:.77rem;font-weight:700;color:var(--text);margin-bottom:.22rem}
-.ao-expl-body{font-size:.71rem;color:var(--text-muted);line-height:1.58}
+.ao-expl-title{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.22rem}
+.ao-expl-body{font-size:1rem;color:var(--text-muted);line-height:1.58}
 .ao-faq{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:1.4rem}
-.ao-faq-hd{padding:10px 16px;border-bottom:1px solid var(--border);font-size:.78rem;font-weight:700;color:var(--gold)}
+.ao-faq-hd{padding:10px 16px;border-bottom:1px solid var(--border);font-size:0.795rem;font-weight:700;color:var(--gold)}
 .ao-faq-item{border-bottom:1px solid var(--border)}.ao-faq-item:last-child{border-bottom:none}
 /* PATCH: touch-action on FAQ buttons */
-.ao-faq-q{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--text);gap:8px;user-select:none;line-height:1.4;min-height:44px;touch-action:manipulation}
+.ao-faq-q{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;cursor:pointer;font-size:1rem;font-weight:600;color:var(--text);gap:8px;user-select:none;line-height:1.4;min-height:44px;touch-action:manipulation}
 /* PATCH: Unicode minus not the word "minus" */
 .ao-faq-q::after{content:'+';color:var(--gold);font-size:1.1rem;flex-shrink:0;width:16px;text-align:center}
 .ao-faq-item.open .ao-faq-q::after{content:'\2212'}
 .ao-faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
 .ao-faq-item.open .ao-faq-a{max-height:500px}
-.ao-faq-ai{padding:0 16px 13px;font-size:.78rem;color:var(--text-dim);line-height:1.68}
-.ao-disc{margin-top:1.6rem;padding:.88rem 1.15rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;font-size:.65rem;color:var(--text-muted);line-height:1.7}
+.ao-faq-ai{padding:0 16px 13px;font-size:1rem;color:var(--text-dim);line-height:1.68}
+.ao-disc{margin-top:1.6rem;padding:.88rem 1.15rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;font-size:0.763rem;color:var(--text-muted);line-height:1.7}
 .ao-disc strong{color:var(--text-dim)}.ao-disc a{color:var(--gold);text-decoration:none}.ao-disc a:hover{text-decoration:underline}
 
 /* ===== SEO sections + heading resets (v11) ===== */
-.ao-intro{font-size:.85rem;color:var(--text-dim);line-height:1.7;max-width:58rem;margin:0 0 1.35rem}
+.ao-intro{font-size:1rem;color:var(--text-dim);line-height:1.7;max-width:58rem;margin:0 0 1.35rem}
 .ao-intro p{margin:0 0 .65rem}.ao-intro p:last-child{margin:0}
 .ao-intro strong{color:var(--text)}
 .ao-seo-sec{margin:1.6rem 0}
 .ao-seo-h2{font-size:.8rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin:0 0 .35rem}
-.ao-seo-lede{font-size:.74rem;color:var(--text-muted);margin:0 0 .8rem;line-height:1.5}
-.ao-seo-note{font-size:.7rem;color:var(--text-muted);margin:.6rem 0 0;line-height:1.5}
+.ao-seo-lede{font-size:0.785rem;color:var(--text-muted);margin:0 0 .8rem;line-height:1.5}
+.ao-seo-note{font-size:1rem;color:var(--text-muted);margin:.6rem 0 0;line-height:1.5}
 .ao-cmdty-grid{display:grid;gap:.7rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
 .ao-cmdty{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.7rem .8rem}
-.ao-cmdty h3{font-size:.77rem;font-weight:700;color:var(--text);margin:0 0 .25rem}
-.ao-cmdty p{font-size:.74rem;color:var(--text-dim);line-height:1.55;margin:0}
+.ao-cmdty h3{font-size:0.792rem;font-weight:700;color:var(--text);margin:0 0 .25rem}
+.ao-cmdty p{font-size:0.785rem;color:var(--text-dim);line-height:1.55;margin:0}
 .ao-cmp-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.ao-cmp{width:100%;border-collapse:collapse;font-size:.74rem;min-width:28rem}
+.ao-cmp{width:100%;border-collapse:collapse;font-size:0.785rem;min-width:28rem}
 .ao-cmp th,.ao-cmp td{padding:.5rem .6rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
-.ao-cmp thead th{color:var(--text-muted);font-weight:700;text-transform:uppercase;font-size:.62rem;letter-spacing:.04em}
+.ao-cmp thead th{color:var(--text-muted);font-weight:700;text-transform:uppercase;font-size:0.755rem;letter-spacing:.04em}
 .ao-cmp tbody td:first-child{color:var(--text);font-weight:600;white-space:nowrap}
 .ao-cmp tbody td{color:var(--text-dim);line-height:1.45}
 .ao-related{margin:1.6rem 0}
 .ao-related-links{display:flex;flex-wrap:wrap;gap:.5rem}
-.ao-related-links a{font-size:.74rem;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.4rem .7rem;text-decoration:none}
+.ao-related-links a{font-size:0.785rem;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.4rem .7rem;text-decoration:none}
 .ao-related-links a:hover{border-color:var(--gold);color:var(--gold)}
 .ao-expl-head,.ao-ref-title,.ao-expl-title{margin-top:0}
 .ao-faq-hd,.ao-faq-q,.sec-title{margin:0}
@@ -213,8 +213,8 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
        non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails. -->
   <header style="border-bottom:1px solid var(--border);background:var(--surface)">
     <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
-      <a href="/" aria-label="AGSIST Home" style="font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
-      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:2;color:var(--text-muted)">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
         <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevators</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/storage-crunch" style="color:var(--text-muted);text-decoration:none">Storage Crunch</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Quick Stats</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
         <span style="color:var(--text-dim);font-weight:700">Numbers:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Who Owns the Ground</a><br>
         <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Conditions</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Fast Facts</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
@@ -245,7 +245,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 
   <!-- PATCH: static market categories — always visible to Googlebot -->
   <div class="ao-static-cats" id="ao-static-cats">
-    <h2 class="ao-h2reset" style="font-size:.59rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:0 0 .4rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> Market Categories Tracked Daily</h2>
+    <h2 class="ao-h2reset" style="font-size:0.747rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:0 0 .4rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> Market Categories Tracked Daily</h2>
     <div class="ao-static-cat-grid">
       <div class="ao-static-cat-item"><strong>Commodities</strong>Corn, soybean, wheat, cattle, hog, egg, and food price markets that directly affect farm revenue and input demand.</div>
       <div class="ao-static-cat-item"><strong>Trade &amp; Policy</strong>Tariff probability on US grain exports to China, USMCA trade disputes, and retaliatory trade measures that move basis.</div>
@@ -397,7 +397,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 </main>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=14" defer></script>
-<script src="/components/geo.js?v=14" defer></script>
+<script src="/components/geo.js?v=15" defer></script>
 <script>
 (function(){
 'use strict';

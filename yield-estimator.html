@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#111a0a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="/components/styles.css?v=10" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=10">
+<link rel="preload" href="/components/styles.css?v=15" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=15">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -57,24 +57,24 @@ button,a,[role="button"]{touch-action:manipulation;}
 .ye-page{max-width:860px;margin:0 auto;padding:0 1rem 3.5rem;}
 
 .ye-hero{padding:1.3rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
-.ye-eyebrow{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.25rem;}
-.ye-hero h1{font-family:'Oswald',sans-serif;font-size:1.65rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;line-height:1.1;}
+.ye-eyebrow{font-size:0.763rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.25rem;}
+.ye-hero h1{font-family:var(--font-display);font-size:1.65rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;line-height:1.1;}
 .ye-hero p{font-size:.82rem;color:var(--text-dim);line-height:1.55;max-width:640px;margin:0;}
-.ye-calibration{font-size:.7rem;color:var(--text-muted);margin-top:.6rem;padding-top:.55rem;border-top:1px dashed var(--border);line-height:1.55;}
+.ye-calibration{font-size:0.775rem;color:var(--text-muted);margin-top:.6rem;padding-top:.55rem;border-top:1px dashed var(--border);line-height:1.55;}
 
 .ye-tabs{display:flex;gap:.4rem;margin-bottom:1.4rem;flex-wrap:wrap;}
-.ye-tab{padding:.45rem .9rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
+.ye-tab{padding:.45rem .9rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
 .ye-tab:hover{border-color:var(--gold);color:var(--text);}
 .ye-tab.active{background:var(--gold);color:#0a1a0a;border-color:var(--gold);}
 .ye-panel{display:none;}
 .ye-panel.active{display:block;}
 .ye-panel-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:1.1rem;}
-.ye-panel-head h2{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;text-transform:uppercase;color:var(--text);margin:0;}
-.badge{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .6rem;border-radius:20px;background:rgba(230,176,66,.12);color:var(--gold);border:1px solid rgba(230,176,66,.3);}
+.ye-panel-head h2{font-family:var(--font-display);font-size:1.1rem;font-weight:700;text-transform:uppercase;color:var(--text);margin:0;}
+.badge{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .6rem;border-radius:20px;background:rgba(230,176,66,.12);color:var(--gold);border:1px solid rgba(230,176,66,.3);}
 .ye-panel-body{display:flex;flex-direction:column;gap:1rem;}
 
 .ye-method{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;}
-.ye-method-title{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.85rem;}
+.ye-method-title{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.85rem;}
 
 .mn-type-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem;margin-bottom:.75rem;}
 @media(min-width:480px){.mn-type-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
@@ -85,53 +85,53 @@ button,a,[role="button"]{touch-action:manipulation;}
 .bm-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;}
 @media(min-width:520px){.bm-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
 
-.mn-type-btn{padding:.45rem .6rem;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text-dim);font-size:.7rem;font-weight:600;cursor:pointer;transition:all .15s;text-align:left;min-height:44px;}
+.mn-type-btn{padding:.45rem .6rem;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text-dim);font-size:0.775rem;font-weight:600;cursor:pointer;transition:all .15s;text-align:left;min-height:44px;}
 .mn-type-btn:hover{border-color:var(--gold);color:var(--text);}
 .mn-type-btn.active{border-color:var(--gold);background:rgba(230,176,66,.1);color:var(--text);}
 
 .field-row{display:flex;flex-wrap:wrap;gap:.65rem;align-items:flex-end;margin-bottom:.65rem;}
 .field-group{display:flex;flex-direction:column;gap:.28rem;}
-.field-label{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
+.field-label{font-size:0.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
 .field-input{background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.4rem .6rem;width:90px;outline:none;box-sizing:border-box;}
 .field-input:focus{border-color:var(--gold);}
 .field-input.wide{width:120px;}
-.field-note{font-size:.62rem;color:var(--text-muted);margin-top:.1rem;}
+.field-note{font-size:1rem;color:var(--text-muted);margin-top:.1rem;}
 
 .result-bar{background:linear-gradient(135deg,rgba(58,139,60,.08),rgba(230,176,66,.04));border:2px solid rgba(58,139,60,.3);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-wrap:wrap;gap:1.2rem;align-items:center;margin-top:.65rem;}
 .result-item{display:flex;flex-direction:column;gap:.15rem;}
-.result-label{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
+.result-label{font-size:0.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
 .result-value{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:var(--gold);}
 .result-value.green{color:var(--green);}
 .result-value.dim{color:var(--text-muted);font-size:1rem;}
-.result-sub{font-size:.62rem;color:var(--text-dim);}
+.result-sub{font-size:0.755rem;color:var(--text-dim);}
 
 .mn-result-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.65rem .75rem;text-align:center;}
-.mn-result-label{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
+.mn-result-label{font-size:0.745rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
 .mn-result-val{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:900;color:var(--gold);}
-.mn-result-unit{font-size:.6rem;color:var(--text-muted);}
+.mn-result-unit{font-size:0.75rem;color:var(--text-muted);}
 
 .quickfill-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.85rem;}
-.qf-btn{padding:.35rem .75rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:44px;display:inline-flex;align-items:center;}
+.qf-btn{padding:.35rem .75rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:44px;display:inline-flex;align-items:center;}
 .qf-btn:hover{border-color:var(--gold);color:var(--gold);}
-.qf-label{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem;}
+.qf-label{font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem;}
 
 .bm-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.75rem .85rem;}
-.bm-card-label{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
+.bm-card-label{font-size:0.745rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
 .bm-card-val{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:700;color:var(--text);}
 .bm-card-val.em{color:var(--gold);}
 
 .manure-link-card{background:linear-gradient(135deg,rgba(58,139,60,.07),rgba(230,176,66,.04));border:2px solid rgba(58,139,60,.25);border-radius:8px;padding:1.2rem 1.3rem;}
-.manure-link-eyebrow{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:.55rem;}
+.manure-link-eyebrow{font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:.55rem;}
 .manure-link-card p{font-size:.82rem;color:var(--text-dim);line-height:1.6;margin:0 0 1rem;}
-.manure-link-card a.go-btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--gold);color:#0a1a0a;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;text-decoration:none;padding:.65rem 1.1rem;border-radius:6px;min-height:44px;transition:opacity .15s;}
+.manure-link-card a.go-btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--gold);color:#0a1a0a;font-family:'JetBrains Mono',monospace;font-size:0.787rem;font-weight:700;text-decoration:none;padding:.65rem 1.1rem;border-radius:6px;min-height:44px;transition:opacity .15s;}
 .manure-link-card a.go-btn:hover{opacity:.85;}
-.manure-link-sub{font-size:.7rem;color:var(--text-muted);margin-top:.75rem;line-height:1.55;}
+.manure-link-sub{font-size:0.775rem;color:var(--text-muted);margin-top:.75rem;line-height:1.55;}
 
-.ye-source{font-size:.65rem;color:var(--text-muted);text-align:center;margin-top:1.5rem;padding-top:.75rem;border-top:1px solid var(--border);}
+.ye-source{font-size:0.763rem;color:var(--text-muted);text-align:center;margin-top:1.5rem;padding-top:.75rem;border-top:1px solid var(--border);}
 .ye-source a{color:var(--gold);text-decoration:none;}
 .ye-source a:hover{text-decoration:underline;}
 
-.ye-disclaimer{font-size:.65rem;color:var(--text-muted);line-height:1.55;margin-top:1rem;padding:.7rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;}
+.ye-disclaimer{font-size:0.763rem;color:var(--text-muted);line-height:1.55;margin-top:1rem;padding:.7rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important;} }
 </style>
 </head>
@@ -157,7 +157,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 <div id="site-header"></div>
 
 <main id="main" tabindex="-1" class="ye-page">
-<style>.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Farmers counting kernels in August check their math here — one category-exclusive slot. <a href="/sponsor?slot=yield-estimator&amp;utm_source=yield-estimator&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Farmers counting kernels in August check their math here — one category-exclusive slot. <a href="/sponsor?slot=yield-estimator&amp;utm_source=yield-estimator&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Yield Estimator</nav>
 
@@ -259,10 +259,10 @@ button,a,[role="button"]{touch-action:manipulation;}
         </div>
 
         <div style="margin-top:.85rem;padding:.75rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;">
-          <div style="font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem">Formula Used</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-dim);line-height:1.7">
+          <div style="font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem">Formula Used</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-dim);line-height:1.7">
             Yield (bu/ac) = (ears/1000ac &times; kernel rows &times; kernels/row &times; TW/56) &divide; 90,000<br>
-            <span style="color:var(--text-muted);font-size:.65rem">Ear count &times; 1000 = plants/acre (1/1000 acre row method) &middot; 90,000 constant assumes 56 lb/bu and standard kernel weight</span>
+            <span style="color:var(--text-muted);font-size:0.763rem">Ear count &times; 1000 = plants/acre (1/1000 acre row method) &middot; 90,000 constant assumes 56 lb/bu and standard kernel weight</span>
           </div>
         </div>
       </div>
@@ -270,7 +270,7 @@ button,a,[role="button"]{touch-action:manipulation;}
       <div class="ye-method">
         <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-search"/></svg> Field Sampling Best Practices</div>
         <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:.5rem;">
-          <div style="font-size:.78rem;color:var(--text-dim);line-height:1.6">
+          <div style="font-size:0.795rem;color:var(--text-dim);line-height:1.6">
             &#8226; Sample at least <strong>3 locations</strong> per field, at least 200 feet apart and away from field edges.<br>
             &#8226; <strong>Avoid sampling spots</strong> you noticed from the road &mdash; select locations before walking the field.<br>
             &#8226; Count ear length in the <strong>designated 1/1000-acre row length</strong> for your row width (see table in Fast Facts &rarr; Crop Removal tab).<br>
@@ -361,10 +361,10 @@ button,a,[role="button"]{touch-action:manipulation;}
         </div>
 
         <div style="margin-top:.85rem;padding:.75rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;">
-          <div style="font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem">Formula Used</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-dim);line-height:1.7">
+          <div style="font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem">Formula Used</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-dim);line-height:1.7">
             Yield (bu/ac) = (plants/ac &times; pods/plant &times; seeds/pod) &divide; (seeds/lb &times; 60)<br>
-            <span style="color:var(--text-muted);font-size:.65rem">1 bu soybeans = 60 lb &nbsp; &middot; &nbsp; Typical seeds/lb range: 2,400&ndash;3,000 &middot; Plant count &times; 1000 = plants/acre</span>
+            <span style="color:var(--text-muted);font-size:0.763rem">1 bu soybeans = 60 lb &nbsp; &middot; &nbsp; Typical seeds/lb range: 2,400&ndash;3,000 &middot; Plant count &times; 1000 = plants/acre</span>
           </div>
         </div>
       </div>
@@ -408,7 +408,7 @@ button,a,[role="button"]{touch-action:manipulation;}
           <div class="bm-card"><div class="bm-card-label">Total Farm P/L</div><div class="bm-card-val em" id="bm-total">&mdash;</div></div>
           <div class="bm-card"><div class="bm-card-label">$/bu Cost</div><div class="bm-card-val" id="bm-cost-bu">&mdash;</div></div>
         </div>
-        <div style="margin-top:.75rem;font-size:.72rem;color:var(--text-muted);line-height:1.55">
+        <div style="margin-top:.75rem;font-size:0.78rem;color:var(--text-muted);line-height:1.55">
           <svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> For the full sensitivity table, what-if scenarios, and printable report &rarr; <a href="/breakeven" style="color:var(--gold);font-weight:700">Open Break-Even Calculator</a>
         </div>
       </div>

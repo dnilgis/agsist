@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#0e0e0c">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" href="/components/styles.css?v=10" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=10">
+  <link rel="preload" href="/components/styles.css?v=15" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=15">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -47,74 +47,74 @@
     input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
     input[type="number"]{-moz-appearance:textfield;}
     .input-wrap{position:relative;}.input-wrap label{display:flex;align-items:center;gap:6px;}
-    .hint-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--border);color:var(--text-dim);font-size:0.65rem;font-weight:700;cursor:pointer;transition:all 0.2s;flex-shrink:0;user-select:none;-webkit-tap-highlight-color:transparent;}
+    .hint-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--border);color:var(--text-dim);font-size:0.763rem;font-weight:700;cursor:pointer;transition:all 0.2s;flex-shrink:0;user-select:none;-webkit-tap-highlight-color:transparent;}
     .hint-icon:hover,.hint-icon.active{background:var(--green);color:#fff;}
     .hint-popup{display:none;margin-top:8px;background:var(--surface);border:2px solid var(--green);border-radius:6px;padding:12px 14px;box-shadow:0 4px 12px rgba(0,0,0,0.3);animation:hintIn 0.15s ease-out;}
     .hint-popup.hint-open{display:block;}
     @keyframes hintIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
-    .hint-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
-    .hint-list{list-style:none;padding:0;margin:0;}.hint-list li{font-size:0.75rem;color:var(--text);padding:2px 0;line-height:1.5;}.hint-list li::before{content:'\25A1 ';color:var(--text-dim);}
-    .hint-note{font-size:0.7rem;color:var(--text-dim);margin-top:6px;font-style:italic;border-top:1px solid var(--border);padding-top:6px;}
+    .hint-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+    .hint-list{list-style:none;padding:0;margin:0;}.hint-list li{font-size:0.787rem;color:var(--text);padding:2px 0;line-height:1.5;}.hint-list li::before{content:'\25A1 ';color:var(--text-dim);}
+    .hint-note{font-size:1rem;color:var(--text-dim);margin-top:6px;border-top:1px solid var(--border);padding-top:6px;}
     .live-price-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;margin-bottom:16px;background:rgba(58,139,60,0.05);border:2px solid rgba(58,139,60,0.20);border-radius:6px;font-size:0.8rem;}
     .live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0;}
     @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
     .live-price-bar .price-tag{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--gold);}
-    .live-price-bar .chg-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:600;}
+    .live-price-bar .chg-tag{font-family:'JetBrains Mono',monospace;font-size:0.787rem;font-weight:600;}
     .live-price-bar .chg-tag.up{color:var(--green);}.live-price-bar .chg-tag.dn{color:var(--red);}
-    .live-price-bar button{background:var(--green);color:#fff;border:none;padding:4px 12px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:700;text-transform:uppercase;cursor:pointer;transition:background 0.15s;margin-left:auto;min-height:44px;}
+    .live-price-bar button{background:var(--green);color:#fff;border:none;padding:4px 12px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;text-transform:uppercase;cursor:pointer;transition:background 0.15s;margin-left:auto;min-height:44px;}
     .live-price-bar button:hover{background:#1b4d1c;}
     .cost-breakdown{margin-top:16px;}
-    .cost-breakdown-title{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-weight:700;}
+    .cost-breakdown-title{font-family:'JetBrains Mono',monospace;font-size:0.77rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-weight:700;}
     .cost-bar{display:flex;height:28px;border-radius:6px;overflow:hidden;margin-bottom:8px;}
     .cost-bar-seg{transition:width 0.4s ease;min-width:2px;position:relative;cursor:pointer;}
     .cost-bar-seg:hover{filter:brightness(1.2);}
-    .cost-bar-seg .seg-tip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface);border:2px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.7rem;white-space:nowrap;z-index:500;pointer-events:none;}
+    .cost-bar-seg .seg-tip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface);border:2px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.775rem;white-space:nowrap;z-index:500;pointer-events:none;}
     @media(hover:hover){.cost-bar-seg:hover .seg-tip{display:block;}}
     .seg-tip.seg-open{display:block!important;}
     .cost-legend{display:flex;flex-wrap:wrap;gap:6px 14px;}
-    .cost-legend-item{display:flex;align-items:center;gap:5px;font-size:0.7rem;color:var(--text-dim);}
+    .cost-legend-item{display:flex;align-items:center;gap:5px;font-size:0.775rem;color:var(--text-dim);}
     .cost-legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
     .sensitivity{margin-top:20px;}
-    .sensitivity-title{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;font-weight:700;}
-    .sens-table{width:100%;border-collapse:collapse;font-size:0.75rem;}
-    .sens-table th{background:var(--surface);color:var(--text-dim);padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;text-align:center;border:1px solid var(--border);}
+    .sensitivity-title{font-family:'JetBrains Mono',monospace;font-size:0.77rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;font-weight:700;}
+    .sens-table{width:100%;border-collapse:collapse;font-size:0.787rem;}
+    .sens-table th{background:var(--surface);color:var(--text-dim);padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;text-align:center;border:1px solid var(--border);}
     .sens-table td{font-family:'JetBrains Mono',monospace;padding:6px 8px;text-align:center;border:1px solid var(--border);font-weight:600;}
-    .sens-table .corner{background:var(--bg);color:var(--text-dim);font-size:0.62rem;}
+    .sens-table .corner{background:var(--bg);color:var(--text-dim);font-size:0.755rem;}
     .sens-table .row-head{background:var(--surface);color:var(--text-dim);font-weight:600;text-align:right;padding-right:10px;}
     .sens-positive{color:var(--green);}.sens-negative{color:var(--red);}.sens-zero{color:var(--text-dim);}
     .sens-current{background:rgba(58,139,60,0.10)!important;outline:2px solid var(--green);}
     .profit-gauge{margin-top:16px;padding:14px;background:var(--bg);border-radius:8px;border:2px solid var(--border);}
-    .profit-gauge-label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-weight:700;}
+    .profit-gauge-label{font-family:'JetBrains Mono',monospace;font-size:0.763rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-weight:700;}
     .profit-gauge-bar{height:8px;background:var(--border);border-radius:4px;position:relative;}
     .profit-gauge-fill{height:100%;border-radius:4px;transition:width 0.4s,background 0.4s;}
     .profit-gauge-marker{position:absolute;top:-4px;width:3px;height:16px;background:var(--text);border-radius:2px;transition:left 0.4s;}
-    .profit-gauge-labels{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--text-dim);margin-top:4px;}
+    .profit-gauge-labels{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-dim);margin-top:4px;}
     .be-highlight{font-size:1.3rem;}
     .acres-row{margin-top:14px;padding:12px;border-radius:6px;background:var(--bg);border:2px solid var(--border);}
     .acres-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
     .acres-input-group{display:flex;align-items:center;gap:8px;}
-    .acres-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin:0;white-space:nowrap;font-weight:700;}
+    .acres-label{font-family:'JetBrains Mono',monospace;font-size:0.763rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin:0;white-space:nowrap;font-weight:700;}
     .acres-field{width:80px;padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:.85rem;background:var(--surface);border:2px solid var(--border);border-radius:6px;color:var(--text);min-height:44px;}
     .acres-field:focus{outline:none;border-color:var(--green);}
-    .farm-total-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;font-weight:700;}
+    .farm-total-label{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;font-weight:700;}
     .farm-total-value{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700;}
     .action-bar{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
-    .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.3px;transition:all 0.15s;border:2px solid var(--border);min-height:44px;}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.795rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.3px;transition:all 0.15s;border:2px solid var(--border);min-height:44px;}
     .btn-primary{background:var(--green);color:#fff;border-color:var(--green);}
     .btn-primary:hover{background:#1b4d1c;border-color:#1b4d1c;}
     .btn-secondary{background:var(--surface);color:var(--text-dim);}
     .btn-secondary:hover{color:var(--text);border-color:var(--green);}
     .be-faq{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:1.5rem auto;max-width:1100px;}
-    .be-faq-hd{padding:10px 16px;border-bottom:1px solid var(--border);font-size:.78rem;font-weight:700;color:var(--gold);}
+    .be-faq-hd{padding:10px 16px;border-bottom:1px solid var(--border);font-size:0.795rem;font-weight:700;color:var(--gold);}
     .be-faq-item{border-bottom:1px solid var(--border);}.be-faq-item:last-child{border-bottom:none;}
-    .be-faq-q{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--text);gap:8px;user-select:none;line-height:1.4;min-height:44px;}
+    .be-faq-q{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;cursor:pointer;font-size:1rem;font-weight:600;color:var(--text);gap:8px;user-select:none;line-height:1.4;min-height:44px;}
     .be-faq-q::after{content:'+';color:var(--gold);font-size:1.1rem;flex-shrink:0;width:16px;text-align:center;}
     .be-faq-item.open .be-faq-q::after{content:'−';}
     .be-faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;}
     .be-faq-item.open .be-faq-a{max-height:500px;}
-    .be-faq-ai{padding:0 16px 13px;font-size:.78rem;color:var(--text-dim);line-height:1.68;}
+    .be-faq-ai{padding:0 16px 13px;font-size:1rem;color:var(--text-dim);line-height:1.68;}
     @media(max-width:768px){.grid-2{display:block!important;}.grid-2>.panel{margin-bottom:12px;}}
-    @media(max-width:500px){.input-grid-2{grid-template-columns:1fr!important;}.sens-table{font-size:0.63rem;}.sens-table th,.sens-table td{padding:3px 4px;}.live-price-bar{gap:6px;font-size:0.75rem;padding:8px 10px;}.live-price-bar button{margin-left:0;width:100%;text-align:center;}.acres-inner{flex-direction:column;align-items:stretch;text-align:center;}.acres-input-group{justify-content:center;}}
+    @media(max-width:500px){.input-grid-2{grid-template-columns:1fr!important;}.sens-table{font-size:0.757rem;}.sens-table th,.sens-table td{padding:3px 4px;}.live-price-bar{gap:6px;font-size:0.787rem;padding:8px 10px;}.live-price-bar button{margin-left:0;width:100%;text-align:center;}.acres-inner{flex-direction:column;align-items:stretch;text-align:center;}.acres-input-group{justify-content:center;}}
     @media not print{.print-header,.print-footer,.print-summary{display:none;}}
     @media print{
       @page{size:letter landscape;margin:0.4in 0.5in;}
@@ -152,8 +152,8 @@
       .sens-current{background:#eef6ee!important;outline:1.5pt solid #2d6a2e!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
     }
   
-.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
-.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
+.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
+.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
 .ag-sponsor-ribbon a{color:#d4a23f}
 </style>
 </head>
@@ -194,27 +194,27 @@
           <div style="margin-bottom:20px">
             <label>CROP &amp; YIELD</label>
             <div class="input-grid-2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px">
-              <div class="input-wrap"><label style="font-size:.75rem">Crop</label><select id="crop" onchange="onCropChange()"><option value="corn">Corn</option><option value="soybeans">Soybeans</option><option value="wheat">Wheat</option></select></div>
-              <div class="input-wrap"><label style="font-size:.75rem">Expected Yield (bu/ac) <span class="hint-icon">?</span></label><input type="number" id="yield" value="180" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Yield Checklist</div><ul class="hint-list"><li>Your APH (Actual Production History)</li><li>County average vs. your field history</li><li>Trend-adjusted yield for this year</li><li>Soil type &amp; drainage quality</li><li>Planting date impact on potential</li></ul><div class="hint-note">Conservative estimates protect your plan.</div></div></div>
+              <div class="input-wrap"><label style="font-size:0.787rem">Crop</label><select id="crop" onchange="onCropChange()"><option value="corn">Corn</option><option value="soybeans">Soybeans</option><option value="wheat">Wheat</option></select></div>
+              <div class="input-wrap"><label style="font-size:0.787rem">Expected Yield (bu/ac) <span class="hint-icon">?</span></label><input type="number" id="yield" value="180" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Yield Checklist</div><ul class="hint-list"><li>Your APH (Actual Production History)</li><li>County average vs. your field history</li><li>Trend-adjusted yield for this year</li><li>Soil type &amp; drainage quality</li><li>Planting date impact on potential</li></ul><div class="hint-note">Conservative estimates protect your plan.</div></div></div>
             </div>
-            <div class="input-wrap"><label style="font-size:.75rem">Market Price ($/bu) <span class="hint-icon">?</span></label><input type="number" id="price" value="4.50" step="0.01" inputmode="decimal" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Price Considerations</div><ul class="hint-list"><li>Current futures contract price</li><li>Local basis adjustment (+/- from futures)</li><li>Forward contract commitments</li><li>Harvest vs. spring delivery basis</li><li>On-farm storage premium potential</li></ul><div class="hint-note">Use the live price above if available.</div></div></div>
+            <div class="input-wrap"><label style="font-size:0.787rem">Market Price ($/bu) <span class="hint-icon">?</span></label><input type="number" id="price" value="4.50" step="0.01" inputmode="decimal" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Price Considerations</div><ul class="hint-list"><li>Current futures contract price</li><li>Local basis adjustment (+/- from futures)</li><li>Forward contract commitments</li><li>Harvest vs. spring delivery basis</li><li>On-farm storage premium potential</li></ul><div class="hint-note">Use the live price above if available.</div></div></div>
           </div>
           <div style="margin-bottom:20px">
             <label>INPUT COSTS ($/ac)</label>
             <div class="input-grid-2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
-              <div class="input-wrap"><label style="font-size:.75rem">Seed <span class="hint-icon">?</span></label><input type="number" id="seed" value="125" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Base seed cost per bag</li><li>Seed treatment</li><li>Technology / trait fees</li><li>Replant seed reserve</li><li>Inoculant (soybeans)</li></ul></div></div>
-              <div class="input-wrap"><label style="font-size:.75rem">Fertilizer <span class="hint-icon">?</span></label><input type="number" id="fertilizer" value="175" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Nitrogen (anhydrous, urea, UAN)</li><li>Phosphorus (MAP/DAP)</li><li>Potash (K2O)</li><li>Lime (amortized)</li><li>Sulfur &amp; micros</li><li>Application fees</li></ul><div class="hint-note">Soil test recommendations should drive rates.</div></div></div>
-              <div class="input-wrap"><label style="font-size:.75rem">Chemicals <span class="hint-icon">?</span></label><input type="number" id="chemicals" value="65" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Pre-emerge herbicides</li><li>Post-emerge herbicides</li><li>Fungicide</li><li>Insecticide</li><li>Adjuvants &amp; surfactants</li><li>Custom application fees</li></ul></div></div>
-              <div class="input-wrap"><label style="font-size:.75rem">Crop Insurance <span class="hint-icon">?</span></label><input type="number" id="insurance" value="35" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Net premium (after subsidy)</li><li>Hail / wind endorsement</li><li>Replant provision</li><li>SCO or ECO add-on</li><li>Private hail policy</li></ul><div class="hint-note">Ask your agent about ECO &mdash; heavily subsidized.</div></div></div>
+              <div class="input-wrap"><label style="font-size:0.787rem">Seed <span class="hint-icon">?</span></label><input type="number" id="seed" value="125" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Base seed cost per bag</li><li>Seed treatment</li><li>Technology / trait fees</li><li>Replant seed reserve</li><li>Inoculant (soybeans)</li></ul></div></div>
+              <div class="input-wrap"><label style="font-size:0.787rem">Fertilizer <span class="hint-icon">?</span></label><input type="number" id="fertilizer" value="175" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Nitrogen (anhydrous, urea, UAN)</li><li>Phosphorus (MAP/DAP)</li><li>Potash (K2O)</li><li>Lime (amortized)</li><li>Sulfur &amp; micros</li><li>Application fees</li></ul><div class="hint-note">Soil test recommendations should drive rates.</div></div></div>
+              <div class="input-wrap"><label style="font-size:0.787rem">Chemicals <span class="hint-icon">?</span></label><input type="number" id="chemicals" value="65" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Pre-emerge herbicides</li><li>Post-emerge herbicides</li><li>Fungicide</li><li>Insecticide</li><li>Adjuvants &amp; surfactants</li><li>Custom application fees</li></ul></div></div>
+              <div class="input-wrap"><label style="font-size:0.787rem">Crop Insurance <span class="hint-icon">?</span></label><input type="number" id="insurance" value="35" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Net premium (after subsidy)</li><li>Hail / wind endorsement</li><li>Replant provision</li><li>SCO or ECO add-on</li><li>Private hail policy</li></ul><div class="hint-note">Ask your agent about ECO &mdash; heavily subsidized.</div></div></div>
             </div>
           </div>
           <div style="margin-bottom:20px">
             <label>OPERATING COSTS ($/ac)</label>
             <div class="input-grid-2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
-              <div class="input-wrap"><label style="font-size:.75rem">Machinery <span class="hint-icon">?</span></label><input type="number" id="machinery" value="85" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Fuel &amp; lube</li><li>Repairs &amp; maintenance</li><li>Depreciation</li><li>Custom hire</li><li>Hauling / trucking</li></ul></div></div>
-              <div class="input-wrap"><label style="font-size:.75rem">Labor <span class="hint-icon">?</span></label><input type="number" id="labor" value="35" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Hired labor</li><li>Owner/operator time value</li><li>Seasonal help</li><li>Benefits &amp; payroll taxes</li></ul></div></div>
-              <div class="input-wrap"><label style="font-size:.75rem">Land Rent/Cost <span class="hint-icon">?</span></label><input type="number" id="land" value="250" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Cash rent (or flex rent)</li><li>Property tax (if owned)</li><li>Drainage tile payments</li><li>Opportunity cost of owned land</li></ul><div class="hint-note">See your county&rsquo;s published rate on the <a href="/cash-rent" style="color:var(--gold,#d4a23f)">AGSIST cash rent map</a>.</div></div></div>
-              <div class="input-wrap"><label style="font-size:.75rem">Overhead <span class="hint-icon">?</span></label><input type="number" id="overhead" value="38" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Interest on operating loan</li><li>Crop drying</li><li>Storage / bin costs</li><li>Marketing &amp; basis fees</li><li>Farm liability insurance</li><li>Accounting &amp; legal</li></ul></div></div>
+              <div class="input-wrap"><label style="font-size:0.787rem">Machinery <span class="hint-icon">?</span></label><input type="number" id="machinery" value="85" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Fuel &amp; lube</li><li>Repairs &amp; maintenance</li><li>Depreciation</li><li>Custom hire</li><li>Hauling / trucking</li></ul></div></div>
+              <div class="input-wrap"><label style="font-size:0.787rem">Labor <span class="hint-icon">?</span></label><input type="number" id="labor" value="35" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Hired labor</li><li>Owner/operator time value</li><li>Seasonal help</li><li>Benefits &amp; payroll taxes</li></ul></div></div>
+              <div class="input-wrap"><label style="font-size:0.787rem">Land Rent/Cost <span class="hint-icon">?</span></label><input type="number" id="land" value="250" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Cash rent (or flex rent)</li><li>Property tax (if owned)</li><li>Drainage tile payments</li><li>Opportunity cost of owned land</li></ul><div class="hint-note">See your county&rsquo;s published rate on the <a href="/cash-rent" style="color:var(--gold,#d4a23f)">AGSIST cash rent map</a>.</div></div></div>
+              <div class="input-wrap"><label style="font-size:0.787rem">Overhead <span class="hint-icon">?</span></label><input type="number" id="overhead" value="38" inputmode="numeric" oninput="calcBreakeven()"><div class="hint-popup" inert><div class="hint-title">Don't Forget</div><ul class="hint-list"><li>Interest on operating loan</li><li>Crop drying</li><li>Storage / bin costs</li><li>Marketing &amp; basis fees</li><li>Farm liability insurance</li><li>Accounting &amp; legal</li></ul></div></div>
             </div>
           </div>
           <div class="cost-breakdown"><div class="cost-breakdown-title">Cost Breakdown</div><div class="cost-bar" id="cost-bar"></div><div class="cost-legend" id="cost-legend"></div></div>

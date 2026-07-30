@@ -11,8 +11,8 @@
 <link rel="preconnect" href="https://api.open-meteo.com">
 <link rel="preconnect" href="https://nominatim.openstreetmap.org">
 <link rel="preconnect" href="https://geocoding-api.open-meteo.com">
-<link rel="preload" href="/components/styles.css?v=10" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=10">
+<link rel="preload" href="/components/styles.css?v=15" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=15">
 <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32"  href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16"  href="/img/favicon-16.png">
@@ -199,13 +199,13 @@ body {
 .hero-eyebrow {
   display: inline-flex; align-items: center; gap: .45rem;
   font-family: 'JetBrains Mono', monospace;
-  font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  font-size:0.77rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
   color: var(--gold); background: rgba(var(--gold-rgb),.06);
   border: 1px solid rgba(var(--gold-rgb),.18); border-radius: 3px;
   padding: .3rem .75rem; margin-bottom: .85rem;
 }
 .hero-title {
-  font-family: 'Oswald', sans-serif; font-size: clamp(2.2rem,4.2vw,3.2rem);
+  font-family:var(--font-display); font-size: clamp(2.2rem,4.2vw,3.2rem);
   font-weight: 700; line-height: 1.15; color: var(--text); margin-bottom: .85rem;
   text-transform: uppercase; letter-spacing: .01em;
 }
@@ -236,7 +236,7 @@ body {
 .risk-panel-lbl {
   display: flex; align-items: center; justify-content: center; gap: .4rem;
   font-family: 'JetBrains Mono', monospace;
-  font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  font-size:0.77rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
   color: var(--text-muted); margin-bottom: .75rem;
 }
 .gauge-wrap {
@@ -257,10 +257,10 @@ body {
   text-align: center;
 }
 .gauge-num {
-  font-family: 'Oswald', sans-serif; font-size: 2.4rem; font-weight: 700; line-height: 1;
+  font-family:var(--font-display); font-size: 2.4rem; font-weight: 700; line-height: 1;
   transition: color .3s;
 }
-.gauge-unit { font-size: .62rem; color: var(--text-muted); margin-top: -.1rem; }
+.gauge-unit { font-size:0.755rem; color: var(--text-muted); margin-top: -.1rem; }
 
 .risk-badge {
   display: inline-flex; align-items: center; gap: .35rem;
@@ -278,7 +278,7 @@ body {
   font-size: .88rem; color: var(--text-dim); line-height: 1.55;
   margin-bottom: .5rem; max-width: 300px; margin-left: auto; margin-right: auto;
 }
-.risk-location { font-size: .75rem; color: var(--text-muted); }
+.risk-location { font-size:0.787rem; color: var(--text-muted); }
 
 /* ── Temp gate banner ────────────────────────────────────────────── */
 .tg-banner {
@@ -375,7 +375,7 @@ body {
 .factor-icon { font-size: 1rem; flex-shrink: 0; }
 .factor-score {
   font-family: 'JetBrains Mono', monospace;
-  font-size: .62rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  font-size:0.755rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
   padding: .17rem .48rem; border-radius: 3px; white-space: nowrap; flex-shrink: 0;
 }
 .factor-score.low  { background: rgba(58,139,60,.10);  color: var(--risk-low); }
@@ -389,7 +389,7 @@ body {
   overflow-wrap: break-word;
 }
 .factor-desc {
-  font-size: .77rem; color: var(--text-dim); line-height: 1.6; margin-bottom: .65rem;
+  font-size:1rem; color: var(--text-dim); line-height: 1.6; margin-bottom: .65rem;
   overflow-wrap: break-word;
 }
 .factor-bar {
@@ -403,8 +403,8 @@ body {
 /* ── Education Section ───────────────────────────────────────────── */
 .edu-section { margin-top: 2rem; }
 .edu-head {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  font-family:var(--font-body,'Inter',system-ui,sans-serif);
+  font-size:1rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
   color: var(--text-muted); margin-bottom: 1.1rem;
 }
 /* FIX v9-9: minmax(0,1fr) */
@@ -421,11 +421,11 @@ body {
 }
 .edu-card:hover { border-color: var(--border-g); }
 .edu-card-icon  { font-size: 1.4rem; margin-bottom: .5rem; }
-.edu-card-title { font-size: .85rem; font-weight: 700; color: var(--text); margin-bottom: .4rem; }
-.edu-card-text  { font-size: .8rem; color: var(--text-dim); line-height: 1.7; margin-bottom: .65rem; overflow-wrap: break-word; }
+.edu-card-title { font-size:1rem; font-weight: 700; color: var(--text); margin-bottom: .4rem; }
+.edu-card-text  { font-size:1rem; color: var(--text-dim); line-height: 1.7; margin-bottom: .65rem; overflow-wrap: break-word; }
 .edu-card-risk  {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: .68rem; font-weight: 700; padding: .3rem .7rem;
+  font-family:var(--font-body,'Inter',system-ui,sans-serif);
+  font-size:1rem; font-weight: 700; padding: .3rem .7rem;
   border-radius: 3px; display: inline-block;
 }
 
@@ -453,7 +453,7 @@ body {
   border: 1px solid rgba(184,76,42,.2);
 }
 .chem-note {
-  font-size: .8rem; color: var(--text-dim); line-height: 1.7;
+  font-size:1rem; color: var(--text-dim); line-height: 1.7;
   margin-top: .85rem; padding-top: .75rem; border-top: 1px solid var(--border);
   overflow-wrap: break-word;
 }
@@ -482,7 +482,7 @@ body {
 .s-card:hover { border-color: var(--border-g); }
 .s-card-title {
   font-family: 'JetBrains Mono', monospace;
-  font-size: .64rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  font-size:0.76rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
   color: var(--green); margin-bottom: .85rem; opacity: .9;
 }
 
@@ -513,18 +513,18 @@ body {
   background: var(--surface2); border: 2px solid var(--border);
   border-radius: var(--r-sm, 4px); padding: .5rem .2rem;
 }
-.fc-day-name { font-family: 'JetBrains Mono', monospace; font-size: .62rem; color: var(--text-muted); margin-bottom: .2rem; font-weight: 700; }
+.fc-day-name { font-family: 'JetBrains Mono', monospace; font-size:0.755rem; color: var(--text-muted); margin-bottom: .2rem; font-weight: 700; }
 .fc-day-icon { font-size: 1rem; margin-bottom: .2rem; }
 .fc-day-risk {
   font-family: 'JetBrains Mono', monospace;
-  font-size: .62rem; font-weight: 700; padding: .15rem .3rem;
+  font-size:0.755rem; font-weight: 700; padding: .15rem .3rem;
   border-radius: 3px; margin-bottom: .2rem;
 }
 .fc-day-risk.low      { background: rgba(58,139,60,.12); color: var(--risk-low); }
 .fc-day-risk.moderate { background: rgba(var(--gold-rgb),.12); color: var(--risk-mod); }
 .fc-day-risk.high     { background: rgba(200,122,40,.12); color: var(--risk-high); }
 .fc-day-risk.extreme  { background: rgba(184,76,42,.12); color: var(--risk-extreme); }
-.fc-day-temp { font-size: .62rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+.fc-day-temp { font-size:0.755rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
 
 /* ── Stabilizer CTA ──────────────────────────────────────────────── */
 .stabilizer-cta {
@@ -535,12 +535,12 @@ body {
 .stab-badge {
   display: inline-block;
   font-family: 'JetBrains Mono', monospace;
-  font-size: .62rem; font-weight: 700; letter-spacing: .12em;
+  font-size:0.755rem; font-weight: 700; letter-spacing: .12em;
   text-transform: uppercase; color: var(--orange); background: rgba(200,122,40,.08);
   padding: .2rem .6rem; border-radius: 3px; margin-bottom: .6rem;
 }
 .stab-title { font-size: .88rem; font-weight: 700; color: var(--text); margin-bottom: .4rem; }
-.stab-text  { font-size: .78rem; color: var(--text-dim); line-height: 1.65; margin-bottom: .85rem; overflow-wrap: break-word; }
+.stab-text  { font-size:0.795rem; color: var(--text-dim); line-height: 1.65; margin-bottom: .85rem; overflow-wrap: break-word; }
 
 /* ── Cross-link ──────────────────────────────────────────────────── */
 .cross-link {
@@ -553,7 +553,7 @@ body {
 .cross-link:hover { border-color: var(--green); background: var(--surface2); }
 .cross-link-icon  { font-size: 1.5rem; flex-shrink: 0; }
 .cross-link-title { font-size: .82rem; font-weight: 700; color: var(--green); margin-bottom: .2rem; }
-.cross-link-text  { font-size: .75rem; color: var(--text-dim); line-height: 1.5; overflow-wrap: break-word; }
+.cross-link-text  { font-size:0.787rem; color: var(--text-dim); line-height: 1.5; overflow-wrap: break-word; }
 .cross-link-arrow { font-size: 1rem; color: var(--text-muted); margin-left: auto; flex-shrink: 0; transition: transform .15s, color .15s; }
 .cross-link:hover .cross-link-arrow { transform: translateX(3px); color: var(--green); }
 
@@ -607,23 +607,23 @@ body {
   .hero-sub { font-size: .88rem; }
   .hero-title { margin-bottom: .6rem; }
   .risk-panel { padding: 1.1rem .85rem; }
-  .risk-badge { font-size: .78rem; padding: .3rem .7rem; }
+  .risk-badge { font-size:0.795rem; padding: .3rem .7rem; }
   .risk-verdict { font-size: .8rem; }
   .gauge-svg { width: 160px; height: 90px; }
   .gauge-num { font-size: 2rem; }
   .factor { padding: .85rem; }
   .factor-val { font-size: 1.2rem; }
-  .factor-desc { font-size: .72rem; }
+  .factor-desc { font-size:1rem; }
   .loc-setup { padding: 1.25rem 1rem; }
   .loc-setup h3 { font-size: .95rem; }
   .s-card { padding: .85rem .95rem; }
   .edu-card { padding: .85rem; }
-  .edu-card-text { font-size: .74rem; }
+  .edu-card-text { font-size:1rem; }
   .chem-eq { gap: .35rem; }
   .molecule { font-size: .82rem; padding: .15rem .4rem; }
   .fc-day { padding: .45rem .15rem; }
-  .fc-day-name { font-size: .62rem; }
-  .fc-day-risk { font-size: .62rem; padding: .08rem .22rem; }
+  .fc-day-name { font-size:0.755rem; }
+  .fc-day-risk { font-size:0.755rem; padding: .08rem .22rem; }
 }
 @media (max-width: 380px) {
   .hero {
@@ -635,23 +635,23 @@ body {
   .risk-panel { padding: .85rem .65rem; }
   .gauge-svg { width: 140px; height: 80px; }
   .gauge-num { font-size: 1.7rem; }
-  .gauge-unit { font-size: .62rem; }
-  .risk-badge { font-size: .7rem; }
-  .risk-verdict { font-size: .75rem; }
+  .gauge-unit { font-size:0.755rem; }
+  .risk-badge { font-size:0.775rem; }
+  .risk-verdict { font-size:0.787rem; }
   .factor { padding: .7rem; }
   .factor-val { font-size: 1.1rem; }
-  .factor-desc { font-size: .68rem; }
-  .factor-title { font-size: .75rem; }
+  .factor-desc { font-size:1rem; }
+  .factor-title { font-size:0.787rem; }
   .main { padding: 1rem .65rem 2.5rem; }
   .s-card { padding: .7rem .8rem; }
   .rec-head { font-size: .82rem; }
-  .rec-text { font-size: .75rem; }
-  .edu-card-title { font-size: .78rem; }
+  .rec-text { font-size:0.787rem; }
+  .edu-card-title { font-size:1rem; }
   .chem-eq { gap: .25rem; }
-  .molecule { font-size: .75rem; }
+  .molecule { font-size:0.787rem; }
   .stab-title { font-size: .85rem; }
-  .stab-text { font-size: .75rem; }
-  .tg-banner { font-size: .75rem; padding: .7rem .8rem; }
+  .stab-text { font-size:0.787rem; }
+  .tg-banner { font-size:0.787rem; padding: .7rem .8rem; }
 }
 
 /* ── Jump nav (ported from /spray for parity) ───────────────────── */
@@ -677,7 +677,7 @@ body {
 }
 .jump-link {
   font-family: 'JetBrains Mono', monospace;
-  font-size: .68rem; font-weight: 700; color: var(--text-muted);
+  font-size:0.77rem; font-weight: 700; color: var(--text-muted);
   text-decoration: none; padding: .35rem .75rem;
   border: 2px solid var(--border); border-radius: var(--r-sm, 4px);
   transition: border-color .15s, color .15s;
@@ -686,7 +686,7 @@ body {
   min-height: 36px; display: inline-flex; align-items: center;
 }
 .jump-link:hover { border-color: var(--green); color: var(--green); }
-@media (max-width: 640px) { .jump-link { font-size: .65rem; padding: .3rem .55rem; } }
+@media (max-width: 640px) { .jump-link { font-size:0.763rem; padding: .3rem .55rem; } }
 
 /* ROI button hover (replaces former inline onmouseover handlers) */
 .stab-roi-btn:hover { opacity: .85; }
@@ -698,8 +698,8 @@ body {
 /* WCAG AA: brighten danger red for chip/label text contrast on dark (was #c8562e 3.7:1 -> #e06b42 ~4.9:1). Scoped to this page. */
 [data-theme="dark"]{--red:#e06b42;--risk-extreme:#e06b42;}
 
-.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
-.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
+.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
+.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
 .ag-sponsor-ribbon a{color:#d4a23f}
 </style>
 <style>
@@ -713,13 +713,13 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
 @media(max-width:640px){
   .n-compare-table th:nth-child(4),.n-compare-table td:nth-child(4),
   .n-compare-table th:nth-child(5),.n-compare-table td:nth-child(5){display:none}
-  .n-compare-table td:first-child,.n-compare-table th:first-child{font-size:.72rem}
-  .n-compare-table td{padding:.5rem .6rem;font-size:.72rem}
-  .n-compare-table th{padding:.5rem .6rem;font-size:.62rem}
+  .n-compare-table td:first-child,.n-compare-table th:first-child{font-size:0.78rem}
+  .n-compare-table td{padding:.5rem .6rem;font-size:0.78rem}
+  .n-compare-table th{padding:.5rem .6rem;font-size:0.755rem}
 }
-.n-compare-table{width:100%;border-collapse:collapse;font-size:.79rem;min-width:540px}
+.n-compare-table{width:100%;border-collapse:collapse;font-size:0.797rem;min-width:540px}
 .n-compare-table thead tr{background:rgba(58,139,60,.12)}
-.n-compare-table th{padding:.65rem .85rem;text-align:left;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
+.n-compare-table th{padding:.65rem .85rem;text-align:left;font-size:0.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
 .n-compare-table td{padding:.6rem .85rem;border-top:1px solid var(--border);color:var(--text-dim);vertical-align:top}
 .n-compare-table td:first-child{color:var(--text);font-weight:700}
 .n-compare-table tr:hover td{background:rgba(255,255,255,.025)}
@@ -727,20 +727,20 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
 .risk-mod-tag{color:var(--gold);font-weight:700}
 .risk-high-tag{color:var(--red);font-weight:700}
 .soil-air-box{background:rgba(91,163,224,.06);border:1.5px solid rgba(91,163,224,.2);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:1.5rem}
-.soil-air-head{font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:.7rem}
+.soil-air-head{font-size:0.775rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:.7rem}
 /* FIX: minmax(0,1fr) prevents blowout on narrow viewports */
 .soil-air-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.9rem}
 @media(max-width:600px){.soil-air-grid{grid-template-columns:minmax(0,1fr)}}
 .soil-air-card{background:rgba(91,163,224,.05);border:1px solid rgba(91,163,224,.12);border-radius:8px;padding:.75rem .9rem}
 .soil-air-card-title{font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:.35rem}
-.soil-air-card-body{font-size:.78rem;color:var(--text-dim);line-height:1.65}
+.soil-air-card-body{font-size:0.795rem;color:var(--text-dim);line-height:1.65}
 .faq-section{margin-bottom:2rem}
 .faq-list{display:flex;flex-direction:column;gap:.6rem}
 .faq-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.9rem 1.1rem;background:none;border:none;color:var(--text);font-size:.86rem;font-weight:700;text-align:left;cursor:pointer;touch-action:manipulation;min-height:44px}
+.faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.9rem 1.1rem;background:none;border:none;color:var(--text);font-size:1rem;font-weight:700;text-align:left;cursor:pointer;touch-action:manipulation;min-height:44px}
 .faq-q:hover{background:rgba(255,255,255,.035)}
-.faq-chevron{color:var(--text-muted);font-size:.75rem;transition:transform .2s;flex-shrink:0}
-.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .2s ease;font-size:.82rem;color:var(--text-dim);line-height:1.75;padding:0 1.1rem}
+.faq-chevron{color:var(--text-muted);font-size:0.787rem;transition:transform .2s;flex-shrink:0}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .2s ease;font-size:1rem;color:var(--text-dim);line-height:1.75;padding:0 1.1rem}
 .faq-item.open .faq-a{max-height:1200px;padding:.1rem 1.1rem .9rem}
 .faq-item.open .faq-chevron{transform:rotate(90deg)}
 </style>
@@ -883,10 +883,10 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
         <div id="tg-text">Ground is frozen — urease enzyme is completely inactive. Risk score is capped at 8 regardless of other conditions. Volatilization is not your concern; runoff loss is.</div>
       </div>
       <div id="factor-section" style="display:none">
-        <div class="s-card" id="field-tune" style="margin-bottom:1rem"><div class="s-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-target"/></svg> Tune to Your Field (optional)</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem"><label style="display:flex;flex-direction:column;gap:.25rem;font-size:.66rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil pH<select id="in-ph" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / 6.5–7.0</option><option value="0.7">Acidic (under 6.0)</option><option value="0.85">Slightly acidic (6.0–6.5)</option><option value="1.25">Neutral–alkaline (7.0–7.5)</option><option value="1.55">Alkaline (over 7.5)</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:.66rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Tillage / residue<select id="in-till" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / reduced-till</option><option value="0.7">Conventional (bare, tilled)</option><option value="1.5">No-till / heavy residue</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:.66rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil temp °F (optional)<input type="number" id="in-soil" inputmode="numeric" placeholder="uses air temp" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"></label></div><div style="font-size:.66rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem">These refine the score for your field. Soil pH and residue are the two biggest levers in the volatilization science. A soil-surface probe reading, if you have one, overrides the air-temperature estimate.</div></div>
+        <div class="s-card" id="field-tune" style="margin-bottom:1rem"><div class="s-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-target"/></svg> Tune to Your Field (optional)</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem"><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil pH<select id="in-ph" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / 6.5–7.0</option><option value="0.7">Acidic (under 6.0)</option><option value="0.85">Slightly acidic (6.0–6.5)</option><option value="1.25">Neutral–alkaline (7.0–7.5)</option><option value="1.55">Alkaline (over 7.5)</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Tillage / residue<select id="in-till" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / reduced-till</option><option value="0.7">Conventional (bare, tilled)</option><option value="1.5">No-till / heavy residue</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil temp °F (optional)<input type="number" id="in-soil" inputmode="numeric" placeholder="uses air temp" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"></label></div><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem">These refine the score for your field. Soil pH and residue are the two biggest levers in the volatilization science. A soil-surface probe reading, if you have one, overrides the air-temperature estimate.</div></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem">
-          <div style="font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)">Risk Factor Breakdown</div>
-          <button id="btn-change-loc" style="font-size:.72rem;color:var(--text-muted);background:none;border:none;text-decoration:underline;cursor:pointer;min-height:44px">Change location</button>
+          <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)">Risk Factor Breakdown</div>
+          <button id="btn-change-loc" style="font-size:0.78rem;color:var(--text-muted);background:none;border:none;text-decoration:underline;cursor:pointer;min-height:44px">Change location</button>
         </div>
         <div class="factors-grid">
           <div class="factor" id="f-temp">
@@ -939,7 +939,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
             <div class="soil-air-card-body">Determines whether <strong>enzyme is active at all</strong>. In early spring, air may be 58°F but soil surface is still 38–42°F — risk is genuinely lower than this tool shows. Conversely, a black soil surface in full sun can be 15–20°F warmer than air temperature, making risk higher. Use air temp as a starting point, but know your soils.</div>
           </div>
         </div>
-        <div style="margin-top:.85rem;font-size:.79rem;color:var(--text-dim);line-height:1.65"><strong style="color:var(--text)">Spring application note:</strong> When daytime air hits 50–55°F but soils are still cold from winter (under 40°F), risk is lower than the score suggests. Once soils warm above 50°F — earlier in the southern US, late spring further north — risk rises quickly and the score becomes your most reliable guide.</div>
+        <div style="margin-top:.85rem;font-size:0.797rem;color:var(--text-dim);line-height:1.65"><strong style="color:var(--text)">Spring application note:</strong> When daytime air hits 50–55°F but soils are still cold from winter (under 40°F), risk is lower than the score suggests. Once soils warm above 50°F — earlier in the southern US, late spring further north — risk rises quickly and the score becomes your most reliable guide.</div>
       </div>
       <div class="fade-up" id="section-nsources" style="margin-bottom:2rem">
         <h2 class="edu-head" style="margin-bottom:.9rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> Urea vs. UAN vs. ESN — Choosing the Right N Source</h2>
@@ -959,7 +959,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
       <div class="edu-section fade-up" id="edu1">
         <h2 class="edu-head"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> Why Urea Volatilizes — The Science Explained</h2>
         <div class="chem-box">
-          <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.85rem">The Volatilization Reaction</div>
+          <div style="font-size:0.775rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.85rem">The Volatilization Reaction</div>
           <div class="chem-eq">
             <span class="molecule">CO(NH₂)₂</span>
             <span class="arrow">+ H₂O</span>
@@ -986,7 +986,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
           <div class="edu-card"><div class="edu-card-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg></div><div class="edu-card-title">The 72-Hour Decision Window</div><div class="edu-card-text">Roughly 80% of volatilization loss happens in the first 72 hours after application. The decision you make at application time — conditions, product choice, timing — is the one that matters most.</div><div class="edu-card-risk" style="background:rgba(230,176,66,.12);color:var(--risk-mod)">80% of loss in first 72 hours</div></div>
         </div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem">
-          <h3 style="font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:.85rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-shield"/></svg> NBPT Stabilizer — How It Works and When It’s Worth It</h3>
+          <h3 style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:.85rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-shield"/></svg> NBPT Stabilizer — How It Works and When It’s Worth It</h3>
           <div class="stab-grid">
             <div>
               <div style="font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.5rem">What NBPT Does</div>
@@ -1022,7 +1022,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
           <div class="rec-text" id="rec-text">Set your location above to get a real-time application recommendation based on local conditions.</div>
         </div>
       </div>
-      <div class="s-card" id="signup-card"><div class="s-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-mail"/></svg> Get the AGSIST Daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:.78rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, what to watch, and farm weather — by 6am CT on weekdays. Available at no charge.</p><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="width:100%;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,#1a1a14);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" style="width:100%;padding:.6rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free →</button><div style="font-size:.66rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
+      <div class="s-card" id="signup-card"><div class="s-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-mail"/></svg> Get the AGSIST Daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:0.795rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, what to watch, and farm weather — by 6am CT on weekdays. Available at no charge.</p><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="width:100%;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,#1a1a14);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" style="width:100%;padding:.6rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free →</button><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
       <div class="s-card">
         <div class="s-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> 5-Day Volatilization Forecast</div>
         <div class="forecast-strip" id="fc-strip">
@@ -1032,7 +1032,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
           <div class="fc-day"><div class="fc-day-name">Day 4</div><div class="fc-day-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
           <div class="fc-day"><div class="fc-day-name">Day 5</div><div class="fc-day-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
         </div>
-        <div style="font-size:.68rem;color:var(--text-muted);margin-top:.65rem;line-height:1.6">Based on forecast temperature and rain. Scores are temperature-gated. Daily strip uses actual forecast precipitation totals when available.</div>
+        <div style="font-size:0.77rem;color:var(--text-muted);margin-top:.65rem;line-height:1.6">Based on forecast temperature and rain. Scores are temperature-gated. Daily strip uses actual forecast precipitation totals when available.</div>
       </div>
       <div class="s-card">
         <div class="s-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Rules of Thumb</div>
@@ -1330,7 +1330,7 @@ setTimeout(function(){
   var card=document.getElementById('signup-card');if(!card)return;
   if(_su()){card.style.display='none';return;}
   var btn=document.getElementById('signup-btn'),inp=document.getElementById('signup-email'),form=document.getElementById('signup-form');
-  function submit(){var email=(inp&&inp.value||'').trim();if(email.indexOf('@')<1)return;_ss();if(form){form.innerHTML='<div style="text-align:center;padding:.4rem 0"><div style="font-size:1.6rem">\u2705</div><div style="font-size:.85rem;font-weight:700;color:var(--text);margin-top:.2rem">You\u2019re subscribed!</div><div style="font-size:.74rem;color:var(--text-muted);line-height:1.5;margin-top:.2rem">AGSIST Daily arrives by 6am CT on weekdays. Check your spam folder once.</div></div>';}fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify({email:email,source:'urea-tool'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});}
+  function submit(){var email=(inp&&inp.value||'').trim();if(email.indexOf('@')<1)return;_ss();if(form){form.innerHTML='<div style="text-align:center;padding:.4rem 0"><div style="font-size:1.6rem">\u2705</div><div style="font-size:.85rem;font-weight:700;color:var(--text);margin-top:.2rem">You\u2019re subscribed!</div><div style="font-size:0.785rem;color:var(--text-muted);line-height:1.5;margin-top:.2rem">AGSIST Daily arrives by 6am CT on weekdays. Check your spam folder once.</div></div>';}fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify({email:email,source:'urea-tool'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});}
   if(btn)btn.addEventListener('click',function(e){e.preventDefault();submit();});
   if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submit();}});
 })();

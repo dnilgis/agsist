@@ -23,18 +23,18 @@
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/components/styles.css?v=12">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/components/styles.css?v=15">
 <style>
 :root{--wp-green:#4aab4c;--wp-gold:var(--gold);--wp-gold2:#e6b042;--wp-bg:#0f1311;--wp-panel:#161b18;--wp-panel2:#1d2420;--wp-line:#2a332d;--wp-txt:#e7ece8;--wp-mut:#9bb0a3;--wp-up:#4aab4c;--wp-dn:#d9534f;}
 .wp-wrap{max-width:900px;margin:0 auto;padding:1.25rem 1rem 3rem;color:var(--wp-txt);font-family:Inter,system-ui,sans-serif;}
-.wp-wrap h1{font-family:Oswald,sans-serif;font-weight:700;font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.08;margin:.2rem 0 .4rem;text-wrap:balance;}
-.wp-wrap h2{font-family:Oswald,sans-serif;font-weight:600;font-size:1.25rem;margin:2rem 0 .6rem;color:var(--wp-gold2);}
+.wp-wrap h1{font-family:var(--font-display);font-weight:700;font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.08;margin:.2rem 0 .4rem;text-wrap:balance;}
+.wp-wrap h2{font-family:var(--font-display);font-weight:600;font-size:1.25rem;margin:2rem 0 .6rem;color:var(--wp-gold2);}
 .wp-lede{color:var(--wp-mut);font-size:1.05rem;line-height:1.5;max-width:64ch;margin:.2rem 0 1.2rem;}
 .wp-sample{display:none;font-size:.82rem;color:var(--wp-gold2);background:rgba(var(--gold-rgb),.08);border:1px solid var(--wp-gold);border-radius:8px;padding:.5rem .75rem;margin:0 0 1rem;}
 .wp-card{background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:14px;padding:1.1rem 1.15rem 1.2rem;}
 .wp-card .hd{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;flex-wrap:wrap;}
-.wp-card .rpt{font-family:Oswald,sans-serif;font-weight:700;font-size:1.4rem;color:#fff;}
+.wp-card .rpt{font-family:var(--font-display);font-weight:700;font-size:1.4rem;color:#fff;}
 .wp-card .cd{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--wp-gold2);}
 .wp-metric{font-size:.95rem;color:var(--wp-mut);margin:.3rem 0 0;}
 .wp-exp{margin:1rem 0 0;font-size:1.05rem;line-height:1.5;}
@@ -53,27 +53,27 @@
 .wp-thr .t{background:var(--wp-panel2);border:1px solid var(--wp-line);border-radius:10px;padding:.7rem .8rem;border-top:3px solid var(--wp-line);}
 .wp-thr .t.bull{border-top-color:var(--wp-up);}
 .wp-thr .t.bear{border-top-color:var(--wp-dn);}
-.wp-thr .k{font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;color:var(--wp-mut);}
+.wp-thr .k{font-size:0.78rem;text-transform:uppercase;letter-spacing:.03em;color:var(--wp-mut);}
 .wp-thr .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.05rem;color:#fff;margin:.2rem 0 0;}
 .wp-pos{font-size:.9rem;color:var(--wp-mut);margin:1rem 0 0;border-top:1px solid var(--wp-line);padding-top:.8rem;}
 #wp-history{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .wp-tbl{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:.4rem;min-width:560px;}
 .wp-tbl th,.wp-tbl td{text-align:left;padding:.55rem .5rem;border-bottom:1px solid var(--wp-line);vertical-align:top;}
-.wp-tbl th{font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;color:var(--wp-mut);font-weight:600;white-space:nowrap;}
+.wp-tbl th{font-size:0.785rem;text-transform:uppercase;letter-spacing:.03em;color:var(--wp-mut);font-weight:600;white-space:nowrap;}
 .wp-tbl td:first-child,.wp-tbl td.num{white-space:nowrap;}
 .wp-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;}
-.wp-tag{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.7rem;white-space:nowrap;text-transform:uppercase;letter-spacing:.02em;padding:.13rem .5rem;border-radius:5px;}
+.wp-tag{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.775rem;white-space:nowrap;text-transform:uppercase;letter-spacing:.02em;padding:.13rem .5rem;border-radius:5px;}
 .wp-tag.bull{color:var(--wp-up);background:rgba(74,171,76,.13);}
 .wp-tag.bear{color:var(--wp-dn);background:rgba(217,83,79,.13);}
 .wp-tag.flat{color:var(--wp-mut);background:rgba(155,176,163,.1);}
 .wp-hg{background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:14px;padding:.65rem .95rem .35rem;margin:0 0 .9rem;}
 .wp-hg-hd{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;padding-bottom:.5rem;border-bottom:1px solid var(--wp-line);}
-.wp-hg-rpt{font-family:Oswald,sans-serif;font-weight:700;font-size:1.1rem;color:#fff;}
+.wp-hg-rpt{font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:#fff;}
 .wp-hg-meta{display:flex;align-items:center;gap:.5rem;flex-shrink:0;}
-.wp-hg-pill{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:.13rem .5rem;border-radius:999px;white-space:nowrap;}
+.wp-hg-pill{font-size:0.77rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:.13rem .5rem;border-radius:999px;white-space:nowrap;}
 .wp-hg-pill.surp{color:var(--wp-gold2);background:rgba(230,176,66,.13);}
 .wp-hg-pill.line{color:var(--wp-mut);background:rgba(155,176,163,.1);}
-.wp-hg-date{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--wp-gold2);white-space:nowrap;}
+.wp-hg-date{font-family:'JetBrains Mono',monospace;font-size:0.785rem;color:var(--wp-gold2);white-space:nowrap;}
 .wp-hr{padding:.6rem 0;border-top:1px solid var(--wp-line);}
 .wp-hr:first-of-type{border-top:none;}
 .wp-hr-top{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;}
@@ -85,13 +85,13 @@
 .wp-result{background:var(--wp-panel);border:1px solid var(--wp-line);border-left-width:4px;border-radius:12px;padding:.9rem 1.05rem;margin:.2rem 0 1.4rem;}
 .wp-result.bull{border-left-color:var(--wp-up);} .wp-result.bear{border-left-color:var(--wp-dn);} .wp-result.flat{border-left-color:var(--wp-mut);}
 .wp-res-hd{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;margin-bottom:.4rem;}
-.wp-res-k{font-family:Oswald,sans-serif;font-weight:700;font-size:1.08rem;color:#fff;}
-.wp-res-d{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--wp-gold2);white-space:nowrap;}
+.wp-res-k{font-family:var(--font-display);font-weight:700;font-size:1.08rem;color:#fff;}
+.wp-res-d{font-family:'JetBrains Mono',monospace;font-size:0.795rem;color:var(--wp-gold2);white-space:nowrap;}
 .wp-res-sum{font-size:.96rem;color:var(--wp-txt);margin-bottom:.55rem;line-height:1.45;}
 .wp-res-big{border-top:1px solid var(--wp-line);padding-top:.55rem;}
 .wp-res-row{display:flex;align-items:center;gap:.5rem;justify-content:space-between;flex-wrap:wrap;}
 .wp-res-metric{font-weight:600;color:#fff;}
-.wp-res-tag{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;padding:.12rem .5rem;border-radius:5px;text-transform:uppercase;white-space:nowrap;}
+.wp-res-tag{font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;padding:.12rem .5rem;border-radius:5px;text-transform:uppercase;white-space:nowrap;}
 .wp-res-tag.bull{color:var(--wp-up);background:rgba(74,171,76,.13);}
 .wp-res-tag.bear{color:var(--wp-dn);background:rgba(217,83,79,.13);}
 .wp-res-tag.flat{color:var(--wp-mut);background:rgba(155,176,163,.1);}
@@ -107,7 +107,7 @@
   .wp-tbl tbody{display:block;}
   .wp-tbl tr{display:block;background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:10px;padding:.7rem .85rem;margin:0 0 .7rem;}
   .wp-tbl td{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;border:none;padding:.25rem 0;white-space:normal;text-align:right;}
-  .wp-tbl td::before{content:attr(data-label);color:var(--wp-mut);font-size:.7rem;text-transform:uppercase;letter-spacing:.03em;font-weight:600;text-align:left;flex:0 0 auto;}
+  .wp-tbl td::before{content:attr(data-label);color:var(--wp-mut);font-size:0.775rem;text-transform:uppercase;letter-spacing:.03em;font-weight:600;text-align:left;flex:0 0 auto;}
   .wp-tbl td.num{font-family:'JetBrains Mono',monospace;}
   .wp-tbl td[data-label="Metric"],.wp-tbl td[data-label="Reaction"]{display:block;text-align:left;}
   .wp-tbl td[data-label="Metric"]::before,.wp-tbl td[data-label="Reaction"]::before{display:block;margin-bottom:.15rem;}
@@ -138,7 +138,7 @@
 .as-err{color:var(--as-mut);background:var(--as-panel);border:1px solid var(--as-line);border-radius:10px;padding:1rem;}
 .as-tbl{width:100%;border-collapse:collapse;font-size:.92rem;margin-top:.4rem;}
 .as-tbl th,.as-tbl td{text-align:left;padding:.6rem .55rem;border-bottom:1px solid var(--as-line);vertical-align:top;}
-.as-tbl th{font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;color:var(--as-mut);font-weight:600;white-space:nowrap;}
+.as-tbl th{font-size:0.78rem;text-transform:uppercase;letter-spacing:.03em;color:var(--as-mut);font-weight:600;white-space:nowrap;}
 .as-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;white-space:nowrap;}
 .as-tbl .rk{font-family:'JetBrains Mono',monospace;color:var(--as-mut);width:1.6rem;}
 .as-tbl .who{font-weight:600;color:#fff;}
@@ -158,12 +158,12 @@
 .as-pa .vals span{color:var(--as-mut);}
 .as-rep{background:var(--as-panel);border:1px solid var(--as-line);border-radius:12px;padding:1rem 1.1rem;margin-bottom:.8rem;}
 .as-rep .hd{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;flex-wrap:wrap;}
-.as-rep .rpt{font-family:Oswald,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;}
+.as-rep .rpt{font-family:var(--font-display);font-weight:700;font-size:1.2rem;color:#fff;}
 .as-rep .cd{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--as-gold2);}
 .as-met{margin-top:.9rem;border-top:1px solid var(--as-line);padding-top:.7rem;}
 .as-met .ml{font-weight:600;color:var(--as-txt);}
 .as-met .mc{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--as-mut);}
-.as-tag{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.68rem;white-space:nowrap;text-transform:uppercase;letter-spacing:.02em;padding:.13rem .5rem;border-radius:5px;}
+.as-tag{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.77rem;white-space:nowrap;text-transform:uppercase;letter-spacing:.02em;padding:.13rem .5rem;border-radius:5px;}
 .as-tag.bull{color:var(--as-up);background:rgba(74,171,76,.13);} .as-tag.bear{color:var(--as-dn);background:rgba(217,83,79,.13);} .as-tag.flat{color:var(--as-mut);background:rgba(155,176,163,.1);}
 .as-met-hd{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap;align-items:baseline;}
 .as-arrow{color:var(--as-mut);padding:0 .1rem;}
@@ -173,7 +173,7 @@
 .as-res-beat{color:var(--as-up);}
 .as-roster{display:flex;flex-wrap:wrap;gap:.5rem;}
 .as-chip{display:inline-flex;flex-direction:column;background:var(--as-panel2);border:1px solid var(--as-line);border-radius:8px;padding:.45rem .7rem;}
-.as-chip b{font-size:.88rem;color:#fff;} .as-chip span{font-size:.75rem;color:var(--as-mut);}
+.as-chip b{font-size:.88rem;color:#fff;} .as-chip span{font-size:0.787rem;color:var(--as-mut);}
 .as-method{background:var(--as-panel);border:1px solid var(--as-line);border-radius:14px;padding:1.1rem 1.15rem;}
 .as-method p{color:var(--as-mut);line-height:1.55;font-size:.95rem;margin:0 0 .8rem;}
 .as-method p:last-child{margin-bottom:0;}
@@ -194,17 +194,17 @@
   .as-tbl tbody{display:block;}
   .as-tbl tr{display:block;background:var(--as-panel);border:1px solid var(--as-line);border-radius:10px;padding:.7rem .85rem;margin:0 0 .7rem;}
   .as-tbl td{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;border:none;padding:.25rem 0;white-space:normal;text-align:right;}
-  .as-tbl td::before{content:attr(data-label);color:var(--as-mut);font-size:.7rem;text-transform:uppercase;letter-spacing:.03em;font-weight:600;text-align:left;flex:0 0 auto;}
+  .as-tbl td::before{content:attr(data-label);color:var(--as-mut);font-size:0.775rem;text-transform:uppercase;letter-spacing:.03em;font-weight:600;text-align:left;flex:0 0 auto;}
   .as-tbl td.num{font-family:'JetBrains Mono',monospace;}
   .as-tbl td[data-label="Analyst"]{display:block;text-align:left;border-bottom:1px solid var(--as-line);margin-bottom:.35rem;padding-bottom:.4rem;}
   .as-tbl td[data-label="Analyst"]::before{display:none;}
   .as-tbl td[data-label="Analyst"] .who{font-size:1.05rem;}
 }
-.as-sub{font-family:Oswald,sans-serif;font-weight:600;font-size:1.05rem;margin:1.5rem 0 .5rem;color:var(--wp-txt);}
+.as-sub{font-family:var(--font-display);font-weight:600;font-size:1.05rem;margin:1.5rem 0 .5rem;color:var(--wp-txt);}
 .as-pl-rep{background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:12px;padding:.9rem 1rem;margin-bottom:.7rem;}
 .as-pl-hd{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;margin-bottom:.55rem;padding-bottom:.5rem;border-bottom:1px solid var(--wp-line);}
-.as-pl-rep-name{font-family:Oswald,sans-serif;font-weight:700;font-size:1.08rem;color:#fff;}
-.as-pl-date{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--wp-gold2);}
+.as-pl-rep-name{font-family:var(--font-display);font-weight:700;font-size:1.08rem;color:#fff;}
+.as-pl-date{font-family:'JetBrains Mono',monospace;font-size:0.795rem;color:var(--wp-gold2);}
 .as-pl-met{padding-top:.6rem;}
 .as-pl-met+.as-pl-met{border-top:1px solid var(--wp-line);margin-top:.55rem;}
 .as-pl-met-lbl{font-size:.82rem;color:var(--wp-mut);margin-bottom:.35rem;}
@@ -213,9 +213,9 @@
 .as-pl-who{font-weight:600;color:#fff;font-size:.92rem;}
 .as-pl-link{color:#fff;text-decoration:none;border-bottom:1px dotted var(--wp-mut);}
 .as-pl-link:hover{border-bottom-color:var(--wp-gold2);}
-.as-pl-firm{color:var(--wp-mut);font-size:.78rem;}
+.as-pl-firm{color:var(--wp-mut);font-size:0.795rem;}
 .as-pl-val{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--wp-txt);margin-left:auto;}
-.as-pl-badge{font-family:'JetBrains Mono',monospace;font-size:.73rem;font-weight:700;padding:.12rem .5rem;border-radius:5px;white-space:nowrap;}
+.as-pl-badge{font-family:'JetBrains Mono',monospace;font-size:0.782rem;font-weight:700;padding:.12rem .5rem;border-radius:5px;white-space:nowrap;}
 .as-pl-badge.bull{color:var(--wp-up);background:rgba(74,171,76,.13);}
 .as-pl-badge.bear{color:var(--wp-dn);background:rgba(217,83,79,.13);}
 .as-pl-badge.neut{color:var(--wp-mut);background:rgba(155,176,163,.1);}
@@ -235,7 +235,7 @@
 <div id="site-header"></div>
 
 <main class="wp-wrap">
-<style>.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Read before every USDA report by people about to make marketing decisions — one category-exclusive slot. <a href="/sponsor?slot=whats-priced-in&amp;utm_source=whats-priced-in&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Read before every USDA report by people about to make marketing decisions — one category-exclusive slot. <a href="/sponsor?slot=whats-priced-in&amp;utm_source=whats-priced-in&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   <h1>What's priced in?</h1>
   <p class="wp-lede">Before every major USDA report, the market has already placed its bet. This is what the trade expects &mdash; the estimate range, the implied odds, and how the funds are positioned &mdash; and the number that would actually surprise it. After each release, it gets scored.</p>
 

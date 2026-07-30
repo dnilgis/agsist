@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#111a0a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="/components/styles.css?v=14" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=14">
+<link rel="preload" href="/components/styles.css?v=15" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=15">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -52,53 +52,53 @@
 </script>
 <style>
 button,a,[role="button"]{touch-action:manipulation;}
-.ff-scope{font-size:.72rem;color:var(--text-muted);line-height:1.5;max-width:680px;margin:.6rem 0 0;border-left:2px solid var(--gold);padding-left:.6rem;}
+.ff-scope{font-size:0.78rem;color:var(--text-muted);line-height:1.5;max-width:680px;margin:.6rem 0 0;border-left:2px solid var(--gold);padding-left:.6rem;}
 .ff-scope strong{color:var(--text-dim);}
-.ff-meta{font-size:.66rem;color:var(--text-muted);margin-top:.55rem;}
+.ff-meta{font-size:0.765rem;color:var(--text-muted);margin-top:.55rem;}
 .ff-meta strong{color:var(--text-dim);}
 .ff-meta a{color:var(--gold);text-decoration:none;}
-.ff-related-strip{font-size:.72rem;color:var(--text-muted);margin:-.4rem 0 1.4rem;}
+.ff-related-strip{font-size:0.78rem;color:var(--text-muted);margin:-.4rem 0 1.4rem;}
 .ff-related-strip a{color:var(--gold);font-weight:700;text-decoration:none;}
 .ff-related-strip a:hover{text-decoration:underline;}
 @media print{.ff-tabs,.ff-hero p,.skip,#site-header,#site-footer{display:none!important;}.ff-panel{display:block!important;page-break-inside:avoid;}.ff-page{padding:0;max-width:100%;}}
 .ff-page{max-width:980px;margin:0 auto;padding:0 1rem 4rem;}
 .ff-hero{padding:1.2rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
-.ff-eyebrow{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
-.ff-hero h1{font-family:'Archivo',sans-serif;font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;}
+.ff-eyebrow{font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
+.ff-hero h1{font-family:var(--font-display);font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;}
 .ff-hero p{font-size:.82rem;color:var(--text-dim);line-height:1.55;max-width:680px;margin:0;}
 .ff-tabs{display:flex;flex-wrap:nowrap;gap:.3rem;margin-bottom:1.5rem;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;position:sticky;top:0;z-index:60;background:linear-gradient(var(--bg,#0a0c0d) 82%,transparent);padding:.5rem 0 .7rem;}
 .ff-tabs::-webkit-scrollbar{display:none}
 /* ── Today's call opener (2026-07-20) ── */
 .ff-today{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;background:var(--surface);padding:1rem 1.1rem 1.1rem;margin:1rem 0 .8rem;}
-.ff-today-tag{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);}
+.ff-today-tag{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);}
 .ff-today-verdict{display:flex;align-items:baseline;gap:.8rem;flex-wrap:wrap;margin:.4rem 0 .25rem;}
 .ff-today-num{font-family:'JetBrains Mono',monospace;font-size:3rem;font-weight:800;line-height:1;}
-.ff-today-word{font-family:'Archivo',sans-serif;font-size:1.35rem;font-weight:800;text-transform:uppercase;}
+.ff-today-word{font-family:var(--font-display);font-size:1.35rem;font-weight:800;text-transform:uppercase;}
 .ff-tv-red{color:#e0685f}.ff-tv-gold{color:var(--gold)}.ff-tv-green{color:var(--green,#5fc28a)}
 .ff-today-line{font-size:.88rem;color:var(--text);line-height:1.55;margin:0;max-width:660px;}
 .ff-today-line a{color:var(--gold);text-decoration:none;font-weight:700}
-.ff-today-src{font-size:.62rem;color:var(--text-muted);margin-top:.45rem;}
+.ff-today-src{font-size:0.755rem;color:var(--text-muted);margin-top:.45rem;}
 .ff-strip{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin:0 0 .8rem;}
 @media(min-width:640px){.ff-strip{grid-template-columns:repeat(4,1fr)}}
 .ff-tile{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.6rem .75rem;}
-.ff-tile .k{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
+.ff-tile .k{font-family:'JetBrains Mono',monospace;font-size:0.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
 .ff-tile .v{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:800;margin-top:.12rem;color:var(--text);}
 .ff-tile .v.gold{color:var(--gold)}
-.ff-tile .n{font-size:.6rem;color:var(--text-muted);margin-top:.08rem}
+.ff-tile .n{font-size:0.75rem;color:var(--text-muted);margin-top:.08rem}
 .ff-tile .n.warn{color:var(--gold)}
 .ff-week{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem .9rem;margin-bottom:1rem;display:flex;gap:.85rem;align-items:baseline;flex-wrap:wrap}
 .ff-week .wk{font-family:'JetBrains Mono',monospace;font-weight:800;color:var(--gold);font-size:1rem;white-space:nowrap}
 .ff-week p{margin:0;font-size:.8rem;color:var(--text-dim);line-height:1.5}
 .ff-week a{color:var(--gold);text-decoration:none;font-weight:700}
-.ff-tab{padding:.4rem .8rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:background 0.15s,color 0.15s,border-color 0.15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
+.ff-tab{padding:.4rem .8rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:background 0.15s,color 0.15s,border-color 0.15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
 .ff-tab:hover{border-color:var(--gold);color:var(--text);}
 .ff-tab.active{background:var(--gold);color:#0a1a0a;border-color:var(--gold);}
 .ff-panel{display:none;}
 .ff-panel.active{display:block;}
-.ff-h2{font-family:'Archivo',sans-serif;font-size:1.1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:1.5rem 0 .75rem;}
+.ff-h2{font-family:var(--font-display);font-size:1.1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:1.5rem 0 .75rem;}
 .ff-h2:first-child{margin-top:0;}
-.ff-h3{font-family:'Archivo',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;color:var(--gold);margin:1.2rem 0 .5rem;}
-.ff-sub{font-size:.78rem;color:var(--text-dim);margin-bottom:.9rem;line-height:1.55;}
+.ff-h3{font-family:var(--font-display);font-size:.9rem;font-weight:700;text-transform:uppercase;color:var(--gold);margin:1.2rem 0 .5rem;}
+.ff-sub{font-size:0.795rem;color:var(--text-dim);margin-bottom:.9rem;line-height:1.55;}
 .ff-g2{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;}
 .ff-g3{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;}
 .ff-g4{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;}
@@ -107,51 +107,51 @@ button,a,[role="button"]{touch-action:manipulation;}
 .ff-card{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1rem 1.1rem;}
 .ff-card-head{display:flex;align-items:center;gap:.4rem;margin-bottom:.75rem;}
 .ff-card-icon{font-size:1.1rem;}
-.ff-card-title{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
+.ff-card-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
 .ff-row{display:flex;justify-content:space-between;align-items:baseline;padding:.28rem 0;border-bottom:1px solid rgba(255,255,255,.04);gap:.5rem;}
 .ff-row:last-child{border-bottom:none;}
-.ff-rl{font-size:.77rem;color:var(--text-dim);flex:1;}
+.ff-rl{font-size:0.792rem;color:var(--text-dim);flex:1;}
 .ff-rv{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;color:var(--text);text-align:right;}
 .ff-rv.gold{color:var(--gold);}.ff-rv.green{color:var(--green);}.ff-rv.dim{color:var(--text-muted);}.ff-rv.red{color:#e05c5c;}
 .ff-tw{overflow-x:auto;border-radius:8px;border:2px solid var(--border);margin-bottom:1rem;}
-.ff-t{width:100%;border-collapse:collapse;font-size:.75rem;}
-.ff-t th{background:rgba(230,176,66,.1);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.5rem .6rem;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap;}
+.ff-t{width:100%;border-collapse:collapse;font-size:0.787rem;}
+.ff-t th{background:rgba(230,176,66,.1);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.5rem .6rem;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap;}
 .ff-t th.tl{text-align:left;}
-.ff-t td{padding:.36rem .6rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text);text-align:center;font-family:'JetBrains Mono',monospace;font-size:.74rem;}
-.ff-t td.tl{text-align:left;color:var(--text-dim);font-family:inherit;font-size:.75rem;}
+.ff-t td{padding:.36rem .6rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text);text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.785rem;}
+.ff-t td.tl{text-align:left;color:var(--text-dim);font-family:inherit;font-size:0.787rem;}
 .ff-t tr:last-child td{border-bottom:none;}
 .ff-t tr:hover td{background:rgba(255,255,255,.03);}
-.ff-t .tg td{color:var(--green);font-weight:700;font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.05em;background:rgba(58,139,60,.08);}
+.ff-t .tg td{color:var(--green);font-weight:700;font-family:'JetBrains Mono',monospace;font-size:0.757rem;letter-spacing:.05em;background:rgba(58,139,60,.08);}
 .ff-t .tg td.tl{color:var(--green);font-family:'JetBrains Mono',monospace;}
 .ff-t .hi{color:var(--gold);font-weight:700;}.ff-t .ze{color:var(--text-muted);}.ff-t .re{color:#e05c5c;}.ff-t .gr{color:var(--green);}.ff-t .act{background:rgba(230,176,66,.12)!important;}
 .ff-calc{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.2rem 1.3rem;margin-bottom:1rem;}
-.ff-calc-title{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem;}
+.ff-calc-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem;}
 .ff-cr{display:flex;flex-wrap:wrap;gap:.75rem;align-items:flex-end;margin-bottom:.75rem;}
 .ff-cf{display:flex;flex-direction:column;gap:.3rem;min-width:120px;}
-.ff-cl{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);}
+.ff-cl{font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);}
 .ff-ci{background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.42rem .6rem;width:100%;outline:none;box-sizing:border-box;}
 .ff-ci:focus{border-color:var(--gold);}
 .ff-cs{background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;padding:.42rem .6rem;width:100%;outline:none;cursor:pointer;box-sizing:border-box;}
 .ff-cs:focus{border-color:var(--gold);}
 .ff-res{background:rgba(230,176,66,.08);border:1px solid rgba(230,176,66,.25);border-radius:8px;padding:.9rem 1.1rem;margin-top:.5rem;display:flex;flex-wrap:wrap;gap:1.2rem;}
 .ff-ri{display:flex;flex-direction:column;gap:.2rem;}
-.ff-ril{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);}
+.ff-ril{font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);}
 .ff-riv{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:900;color:var(--gold);}
 .ff-riv.green{color:var(--green);}.ff-riv.red{color:#e05c5c;}.ff-riv.dim{color:var(--text-muted);}
-.ff-cn{font-size:.72rem;color:var(--text-dim);margin-top:.5rem;line-height:1.5;}
-.ff-note{background:rgba(58,139,60,.08);border-left:3px solid var(--green);border-radius:0 6px 6px 0;padding:.6rem .9rem;font-size:.76rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
+.ff-cn{font-size:0.78rem;color:var(--text-dim);margin-top:.5rem;line-height:1.5;}
+.ff-note{background:rgba(58,139,60,.08);border-left:3px solid var(--green);border-radius:0 6px 6px 0;padding:.6rem .9rem;font-size:1rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
 .ff-note strong{color:var(--text);}
-.ff-warn{background:rgba(230,176,66,.08);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:.6rem .9rem;font-size:.76rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
+.ff-warn{background:rgba(230,176,66,.08);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:.6rem .9rem;font-size:0.79rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
 .ff-warn strong{color:var(--gold);}
-.ff-alert{background:rgba(224,92,92,.08);border-left:3px solid #e05c5c;border-radius:0 6px 6px 0;padding:.6rem .9rem;font-size:.76rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
+.ff-alert{background:rgba(224,92,92,.08);border-left:3px solid #e05c5c;border-radius:0 6px 6px 0;padding:.6rem .9rem;font-size:0.79rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
 .ff-alert strong{color:#e05c5c;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-.live-badge{display:inline-flex;align-items:center;gap:.35rem;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:rgba(58,139,60,.1);border:1px solid rgba(58,139,60,.3);border-radius:20px;padding:.18rem .6rem;vertical-align:middle;}
+.live-badge{display:inline-flex;align-items:center;gap:.35rem;font-size:0.755rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:rgba(58,139,60,.1);border:1px solid rgba(58,139,60,.3);border-radius:20px;padding:.18rem .6rem;vertical-align:middle;}
 .live-badge .b-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block;flex-shrink:0;}
 .fert-banner{background:var(--surface);border:2px solid var(--border);border-radius:10px;padding:.85rem 1.1rem;margin-bottom:1.1rem;}
 .fert-banner-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.65rem;}
-.fert-banner-title{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
-.fert-banner-date{font-size:.62rem;color:var(--text-muted);}
+.fert-banner-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
+.fert-banner-date{font-size:0.755rem;color:var(--text-muted);}
 .fert-pills{display:flex;flex-wrap:wrap;gap:.4rem;}
 /* FIX: fert-pill min-height:44px — reliable touch target in the field */
 .fert-pill{display:flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.3rem .6rem;cursor:pointer;transition:all .15s;min-height:44px;}
@@ -159,8 +159,8 @@ button,a,[role="button"]{touch-action:manipulation;}
 .fert-pill.active{border-color:var(--gold);background:rgba(230,176,66,.08);}
 .fert-pill-icon{font-size:.9rem;}
 .fert-pill-body{display:flex;flex-direction:column;}
-.fert-pill-name{font-size:.68rem;font-weight:600;color:var(--text);}
-.fert-pill-sym{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-muted);}
+.fert-pill-name{font-size:0.77rem;font-weight:600;color:var(--text);}
+.fert-pill-sym{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-muted);}
 .fert-pill-price{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:var(--gold);margin-left:auto;}
 .sv-wrap{position:relative;margin:1rem 0;}
 .sv-track{height:8px;border-radius:4px;background:linear-gradient(90deg,#1b3a10,#2d6e1f,#5fc28a,#5aaa5c,#d4a23f,#d4902a,#c07020,#a84030);margin-bottom:.5rem;}
@@ -171,14 +171,14 @@ button,a,[role="button"]{touch-action:manipulation;}
 .sv-mark:hover .sv-dot,.sv-mark.active .sv-dot{background:var(--gold);border-color:var(--gold);transform:scale(1.2);}
 .sv-mark.key .sv-dot{background:var(--green);border-color:var(--green);}
 .sv-mark.key.active .sv-dot{background:var(--gold);border-color:var(--gold);}
-.sv-lbl{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;color:var(--text-dim);text-align:center;}
-.sv-gdu{font-size:.62rem;color:var(--text-muted);text-align:center;}
+.sv-lbl{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;color:var(--text-dim);text-align:center;}
+.sv-gdu{font-size:0.755rem;color:var(--text-muted);text-align:center;}
 .sv-detail{background:rgba(230,176,66,.07);border:1px solid rgba(230,176,66,.2);border-radius:8px;padding:.75rem 1rem;margin-top:.6rem;min-height:60px;}
-.sv-detail-stage{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:900;color:var(--gold);margin-bottom:.25rem;}
-.sv-detail-gdu{font-size:.65rem;color:var(--text-muted);margin-bottom:.3rem;}
-.sv-detail-desc{font-size:.78rem;color:var(--text);line-height:1.55;}
-.sv-detail-mgmt{font-size:.72rem;color:var(--green);margin-top:.3rem;font-weight:600;}
-.moa-badge{display:inline-block;padding:.15rem .45rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;}
+.sv-detail-stage{font-family:'JetBrains Mono',monospace;font-size:0.787rem;font-weight:900;color:var(--gold);margin-bottom:.25rem;}
+.sv-detail-gdu{font-size:0.763rem;color:var(--text-muted);margin-bottom:.3rem;}
+.sv-detail-desc{font-size:1rem;color:var(--text);line-height:1.55;}
+.sv-detail-mgmt{font-size:0.78rem;color:var(--green);margin-top:.3rem;font-weight:600;}
+.moa-badge{display:inline-block;padding:.15rem .45rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;}
 .moa-1{background:rgba(58,139,60,.2);color:var(--green);}
 .moa-2{background:rgba(230,176,66,.2);color:var(--gold);}
 .moa-3{background:rgba(100,160,230,.2);color:#80b4e8;}
@@ -189,17 +189,17 @@ button,a,[role="button"]{touch-action:manipulation;}
 .moa-other{background:rgba(150,150,150,.15);color:var(--text-muted);}
 .sev-low{color:var(--green);}.sev-med{color:var(--gold);}.sev-high{color:#e05c5c;}
 .scout-box{background:rgba(58,139,60,.07);border:1px solid rgba(58,139,60,.25);border-radius:8px;padding:.85rem 1rem;margin-top:.75rem;}
-.scout-box-title{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem;}
-.scout-item{display:flex;gap:.5rem;padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.76rem;align-items:flex-start;}
+.scout-box-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem;}
+.scout-item{display:flex;gap:.5rem;padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:0.79rem;align-items:flex-start;}
 .scout-item:last-child{border-bottom:none;}
 .scout-item-icon{font-size:.9rem;flex-shrink:0;}
 .scout-item-text{color:var(--text);line-height:1.45;}
-.scout-item-thresh{font-family:'JetBrains Mono',monospace;color:var(--gold);font-size:.7rem;display:block;margin-top:.1rem;}
-.scout-empty{color:var(--text-muted);font-size:.76rem;font-style:italic;}
+.scout-item-thresh{font-family:'JetBrains Mono',monospace;color:var(--gold);font-size:0.775rem;display:block;margin-top:.1rem;}
+.scout-empty{color:var(--text-muted);font-size:0.79rem;}
 .spray-widget{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin-bottom:1rem;}
 .spray-widget-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;flex-wrap:wrap;gap:.4rem;}
-.spray-widget-title{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:.4rem;}
-.spray-widget-status{font-size:.72rem;font-weight:700;padding:.22rem .7rem;border-radius:20px;border:1px solid;}
+.spray-widget-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:.4rem;}
+.spray-widget-status{font-size:0.78rem;font-weight:700;padding:.22rem .7rem;border-radius:20px;border:1px solid;}
 .spray-widget-status.good{color:var(--green);border-color:rgba(58,139,60,.4);background:rgba(58,139,60,.1);}
 .spray-widget-status.marginal{color:var(--gold);border-color:rgba(230,176,66,.4);background:rgba(230,176,66,.1);}
 .spray-widget-status.poor{color:#e05c5c;border-color:rgba(224,92,92,.4);background:rgba(224,92,92,.1);}
@@ -207,95 +207,95 @@ button,a,[role="button"]{touch-action:manipulation;}
 .spray-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin-bottom:.75rem;}
 @media(min-width:600px){.spray-grid{grid-template-columns:repeat(6,minmax(0,1fr));}}
 .spray-factor{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .5rem;text-align:center;}
-.spray-factor-label{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.2rem;}
+.spray-factor-label{font-size:0.755rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.2rem;}
 .spray-factor-val{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;color:var(--text);}
-.spray-factor-chip{font-size:.62rem;font-weight:700;padding:.1rem .35rem;border-radius:3px;margin-top:.15rem;display:inline-block;}
+.spray-factor-chip{font-size:0.755rem;font-weight:700;padding:.1rem .35rem;border-radius:3px;margin-top:.15rem;display:inline-block;}
 .spray-factor-chip.good{background:rgba(58,139,60,.15);color:var(--green);}
 .spray-factor-chip.marginal{background:rgba(230,176,66,.15);color:var(--gold);}
 .spray-factor-chip.poor{background:rgba(224,92,92,.15);color:#e05c5c;}
-.spray-rec{font-size:.76rem;color:var(--text-dim);line-height:1.5;border-top:1px solid var(--border);padding-top:.65rem;}
+.spray-rec{font-size:0.79rem;color:var(--text-dim);line-height:1.5;border-top:1px solid var(--border);padding-top:.65rem;}
 .spray-rec strong{color:var(--text);}
 .spray-loc-row{display:flex;gap:.4rem;margin-bottom:.75rem;flex-wrap:wrap;}
 .spray-loc-in{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.32rem .55rem;width:100px;outline:none;}
 .spray-loc-in:focus{border-color:var(--gold);}
-.spray-loc-btn{padding:.32rem .7rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--gold);font-size:.72rem;font-weight:700;cursor:pointer;white-space:nowrap;min-height:44px;}
+.spray-loc-btn{padding:.32rem .7rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--gold);font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;min-height:44px;}
 .spray-loc-btn:hover{border-color:var(--gold);}
-.spray-link{font-size:.68rem;color:var(--gold);text-decoration:none;margin-top:.4rem;display:inline-block;}
+.spray-link{font-size:0.77rem;color:var(--gold);text-decoration:none;margin-top:.4rem;display:inline-block;}
 .spray-link:hover{text-decoration:underline;}
 .live-dot-sm{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
 .eco-price-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-bottom:1.2rem;}
 @media(min-width:500px){.eco-price-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
 @media(min-width:700px){.eco-price-grid{grid-template-columns:repeat(6,minmax(0,1fr));}}
 .eco-price-card{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:.7rem .75rem;text-align:center;}
-.eco-price-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
+.eco-price-label{font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
 .eco-price-val{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:900;color:var(--gold);}
-.eco-price-unit{font-size:.62rem;color:var(--text-muted);}
-.eco-price-chg{font-family:'JetBrains Mono',monospace;font-size:.68rem;margin-top:.2rem;}
+.eco-price-unit{font-size:0.755rem;color:var(--text-muted);}
+.eco-price-chg{font-family:'JetBrains Mono',monospace;font-size:0.77rem;margin-top:.2rem;}
 .eco-price-chg.up{color:var(--green);}.eco-price-chg.dn{color:#e05c5c;}.eco-price-chg.flat{color:var(--text-muted);}
 .eco-section{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.2rem 1.3rem;margin-bottom:1rem;}
-.eco-section-title{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+.eco-section-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
 .eco-cost-row{display:flex;align-items:center;gap:.5rem;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.04);flex-wrap:wrap;}
 .eco-cost-row:last-child{border-bottom:none;}
-.eco-cost-label{font-size:.78rem;color:var(--text-dim);flex:1;min-width:100px;}
+.eco-cost-label{font-size:0.795rem;color:var(--text-dim);flex:1;min-width:100px;}
 .eco-cost-inputs{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;}
 .eco-cost-mini{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.3rem .5rem;width:80px;outline:none;text-align:right;box-sizing:border-box;}
 .eco-cost-mini:focus{border-color:var(--gold);}
-.eco-cost-unit{font-size:.68rem;color:var(--text-muted);white-space:nowrap;}
+.eco-cost-unit{font-size:0.77rem;color:var(--text-muted);white-space:nowrap;}
 .eco-cost-result{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:700;color:var(--text);min-width:70px;text-align:right;}
 .eco-cost-result.em{color:var(--gold);}
 .eco-total-bar{background:rgba(230,176,66,.1);border:1px solid rgba(230,176,66,.3);border-radius:8px;padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-top:.6rem;flex-wrap:wrap;gap:.4rem;}
 .eco-total-label{font-size:.8rem;font-weight:600;color:var(--text-dim);}
 .eco-total-val{font-family:'JetBrains Mono',monospace;font-size:1.35rem;font-weight:900;color:var(--gold);}
 .mv-box{background:linear-gradient(135deg,rgba(58,139,60,.07),rgba(230,176,66,.04));border:2px solid rgba(58,139,60,.25);border-radius:12px;padding:1.2rem 1.3rem;margin-top:1rem;}
-.mv-title{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:1rem;}
+.mv-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:1rem;}
 .mv-price-strip{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;padding:.65rem .8rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;align-items:flex-end;}
 .mv-pi{display:flex;flex-direction:column;gap:.2rem;}
-.mv-pi-label{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);}
+.mv-pi-label{font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);}
 .mv-pi-input{background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.3rem .5rem;width:80px;outline:none;text-align:right;box-sizing:border-box;}
 .mv-pi-input:focus{border-color:var(--gold);}
-.mv-pi-src{font-size:.62rem;color:var(--green);font-style:italic;}
+.mv-pi-src{font-size:0.755rem;color:var(--green);}
 .mv-nutrient-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin-bottom:.75rem;}
 .mv-nutrient{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:.6rem .7rem;text-align:center;}
-.mv-nut-label{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
+.mv-nut-label{font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
 .mv-nut-lbs{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:900;color:var(--text);}
-.mv-nut-unit{font-size:.62rem;color:var(--text-muted);}
-.mv-nut-val{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--gold);margin-top:.2rem;}
+.mv-nut-unit{font-size:0.755rem;color:var(--text-muted);}
+.mv-nut-val{font-family:'JetBrains Mono',monospace;font-size:0.787rem;color:var(--gold);margin-top:.2rem;}
 .mv-total-section{background:rgba(230,176,66,.08);border:1px solid rgba(230,176,66,.25);border-radius:8px;padding:.85rem 1rem;margin-bottom:.5rem;}
 .mv-total-row{display:flex;justify-content:space-between;align-items:baseline;padding:.25rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
 .mv-total-row:last-child{border-bottom:none;}
-.mv-tl{font-size:.76rem;color:var(--text-dim);}
+.mv-tl{font-size:0.79rem;color:var(--text-dim);}
 .mv-tv{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:700;color:var(--text);}
 .mv-tv.big{font-size:1.4rem;font-weight:900;color:var(--gold);}
 .mv-tv.green{color:var(--green);}.mv-tv.red{color:#e05c5c;}
 .mv-savings-bar{margin-top:.6rem;padding:.75rem 1rem;background:rgba(58,139,60,.1);border:1px solid rgba(58,139,60,.3);border-radius:8px;text-align:center;}
-.mv-savings-label{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:.2rem;}
+.mv-savings-label{font-size:0.775rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:.2rem;}
 .mv-savings-val{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:var(--green);}
-.mv-savings-sub{font-size:.7rem;color:var(--text-dim);margin-top:.2rem;}
+.mv-savings-sub{font-size:0.775rem;color:var(--text-dim);margin-top:.2rem;}
 .pk-cost-bar{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.6rem;padding:.65rem .85rem;background:rgba(58,139,60,.06);border:1px solid rgba(58,139,60,.2);border-radius:8px;align-items:center;}
 .pk-cost-item{display:flex;flex-direction:column;gap:.1rem;}
-.pk-ci-label{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);}
+.pk-ci-label{font-size:0.755rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);}
 .pk-ci-val{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:700;color:var(--gold);}
 .ff-state-picker{margin-bottom:1.25rem;}
-.ff-spl{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:.4rem;}
+.ff-spl{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:.4rem;}
 .ff-ssel{background:var(--surface);border:2px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;padding:.6rem .9rem;min-width:220px;cursor:pointer;outline:none;}
 .ff-ssel:focus{border-color:var(--gold);}
 .ff-sbtns{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.6rem;}
-.ff-sbtn{padding:.3rem .7rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
+.ff-sbtn{padding:.3rem .7rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:0.78rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
 .ff-sbtn:hover{border-color:var(--gold);color:var(--text);}
 .ff-sbtn.active{background:var(--gold);color:#0a1a0a;border-color:var(--gold);}
 .ff-scontent{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;}
 @media(min-width:700px){.ff-scontent{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:1000px){.ff-scontent{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .ff-shdr{grid-column:1/-1;background:linear-gradient(135deg,var(--surface),rgba(230,176,66,.04));border:2px solid var(--border);border-radius:10px;padding:1.1rem 1.3rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
-.ff-sname{font-family:'Archivo',sans-serif;font-size:1.6rem;font-weight:800;text-transform:uppercase;color:var(--text);}
+.ff-sname{font-family:var(--font-display);font-size:1.6rem;font-weight:800;text-transform:uppercase;color:var(--text);}
 .ff-smeta{font-size:.8rem;color:var(--text-dim);line-height:1.6;}
-.rp{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;padding:.2rem .55rem;border-radius:20px;border:1px solid;margin-left:auto;}
+.rp{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;padding:.2rem .55rem;border-radius:20px;border:1px solid;margin-left:auto;}
 .rp.corn{color:var(--gold);background:rgba(230,176,66,.1);border-color:rgba(230,176,66,.3);}
 .rp.beans{color:var(--green);background:rgba(58,139,60,.1);border-color:rgba(58,139,60,.3);}
 .rp.wheat{color:#ca8a3c;background:rgba(202,138,60,.1);border-color:rgba(202,138,60,.3);}
-.ff-print-btn{padding:.55rem 1.2rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:44px;}
+.ff-print-btn{padding:.55rem 1.2rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.775rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:44px;}
 .ff-print-btn:hover{border-color:var(--gold);color:var(--gold);}
-.ff-source{font-size:.65rem;color:var(--text-muted);text-align:center;margin-top:1.5rem;}
+.ff-source{font-size:0.763rem;color:var(--text-muted);text-align:center;margin-top:1.5rem;}
 .ff-source a{color:var(--gold);text-decoration:none;}
 /* FIX: two-line overflow-x pattern */
 html { overflow-x: hidden; overflow-x: clip; width: 100%; }
@@ -306,14 +306,14 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
   .eco-cost-label{min-width:0;width:100%;}
   .eco-cost-inputs{width:100%;gap:.3rem;}
   .eco-cost-mini{width:62px;padding:.28rem .4rem;}
-  .eco-cost-unit{font-size:.62rem;}
+  .eco-cost-unit{font-size:0.755rem;}
   .eco-cost-result{margin-left:auto;min-width:56px;}
   .eco-total-bar{flex-direction:column;gap:.2rem;text-align:center;}
   .eco-price-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
   .eco-price-val{font-size:1.05rem;}
   .ff-hero h1{font-size:1.4rem;}
   .ff-h2{font-size:.95rem;}
-  .fert-pill-price{font-size:.75rem;}
+  .fert-pill-price{font-size:0.787rem;}
   .mv-price-strip{gap:.35rem;}
   .mv-pi-input{width:68px;}
   .eco-section{padding:.9rem 1rem;}
@@ -323,7 +323,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
   .eco-price-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
   .eco-price-val{font-size:.95rem;}
   .ff-tabs{gap:.2rem;}
-  .ff-tab{font-size:.62rem;padding:.35rem .6rem;}
+  .ff-tab{font-size:0.755rem;padding:.35rem .6rem;}
 }
 </style>
 </head>
@@ -335,8 +335,8 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
        non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails. -->
   <header style="border-bottom:1px solid var(--border);background:var(--surface)">
     <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
-      <a href="/" aria-label="AGSIST Home" style="font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
-      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:2;color:var(--text-muted)">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
         <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevators</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/storage-crunch" style="color:var(--text-muted);text-decoration:none">Storage Crunch</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Quick Stats</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
         <span style="color:var(--text-dim);font-weight:700">Numbers:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Who Owns the Ground</a><br>
         <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Conditions</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Fast Facts</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
@@ -427,7 +427,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
   <path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
   <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol></defs></svg><style>.ic{width:1em;height:1em;display:inline-block;vertical-align:-0.14em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}</style>
 <main id="main" tabindex="-1" class="ff-page">
-<style>.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> The reference farmers pull up in the shop, the cab, and the co-op line &mdash; one category-exclusive slot. <a href="/sponsor?slot=fast-facts&amp;utm_source=fast-facts&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> The reference farmers pull up in the shop, the cab, and the co-op line &mdash; one category-exclusive slot. <a href="/sponsor?slot=fast-facts&amp;utm_source=fast-facts&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 <div class="ff-hero">
   <div class="ff-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Free &middot; no login &middot; updated with live prices</div>
   <h1>Agricultural Fast Facts</h1>
@@ -469,7 +469,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     <span class="fert-banner-title"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg> Current Fertilizer Prices</span>
     <span class="fert-banner-date" id="fert-date">Loading&hellip;</span>
   </div>
-  <div class="fert-pills" id="fert-pills"><span style="font-size:.72rem;color:var(--text-muted)">Loading prices&hellip;</span></div>
+  <div class="fert-pills" id="fert-pills"><span style="font-size:0.78rem;color:var(--text-muted)">Loading prices&hellip;</span></div>
 </div>
 <div class="ff-h2">N:Corn Price Ratio Calculator <span id="nc-live-badge" class="live-badge" style="display:none;margin-left:.5rem"><span class="b-dot"></span>Live corn price</span></div>
 <p class="ff-sub">Enter your corn price and N fertilizer cost. The ratio determines which MRTN table column to use. <strong id="nc-highlight-note" style="color:var(--gold)"></strong></p>
@@ -502,15 +502,15 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 </thead>
 <tbody>
   <tr class="tg"><td class="tl" colspan="5">Loamy &mdash; High Yield Potential</td></tr>
-  <tr><td class="tl">Corn, forage legumes, legume veg, green manures</td><td><strong>190</strong><br><span style="font-size:.62rem;color:var(--text-muted)">170&ndash;210</span></td><td><strong>165</strong><br><span style="font-size:.62rem;color:var(--text-muted)">155&ndash;180</span></td><td><strong>150</strong><br><span style="font-size:.62rem;color:var(--text-muted)">140&ndash;160</span></td><td><strong>135</strong><br><span style="font-size:.62rem;color:var(--text-muted)">125&ndash;150</span></td></tr>
-  <tr><td class="tl">Soybean, small grains</td><td><strong>140</strong><br><span style="font-size:.62rem;color:var(--text-muted)">125&ndash;160</span></td><td><strong>120</strong><br><span style="font-size:.62rem;color:var(--text-muted)">105&ndash;130</span></td><td><strong>105</strong><br><span style="font-size:.62rem;color:var(--text-muted)">95&ndash;115</span></td><td><strong>90</strong><br><span style="font-size:.62rem;color:var(--text-muted)">80&ndash;105</span></td></tr>
+  <tr><td class="tl">Corn, forage legumes, legume veg, green manures</td><td><strong>190</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">170&ndash;210</span></td><td><strong>165</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">155&ndash;180</span></td><td><strong>150</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">140&ndash;160</span></td><td><strong>135</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">125&ndash;150</span></td></tr>
+  <tr><td class="tl">Soybean, small grains</td><td><strong>140</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">125&ndash;160</span></td><td><strong>120</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">105&ndash;130</span></td><td><strong>105</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">95&ndash;115</span></td><td><strong>90</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">80&ndash;105</span></td></tr>
   <tr class="tg"><td class="tl" colspan="5">Loamy &mdash; Medium Yield Potential</td></tr>
-  <tr><td class="tl">Corn, forage legumes, legume veg, green manures</td><td><strong>145</strong><br><span style="font-size:.62rem;color:var(--text-muted)">130&ndash;160</span></td><td><strong>125</strong><br><span style="font-size:.62rem;color:var(--text-muted)">115&ndash;140</span></td><td><strong>115</strong><br><span style="font-size:.62rem;color:var(--text-muted)">105&ndash;125</span></td><td><strong>105</strong><br><span style="font-size:.62rem;color:var(--text-muted)">95&ndash;110</span></td></tr>
-  <tr><td class="tl">Soybean, small grains</td><td><strong>130</strong><br><span style="font-size:.62rem;color:var(--text-muted)">110&ndash;150</span></td><td><strong>100</strong><br><span style="font-size:.62rem;color:var(--text-muted)">85&ndash;120</span></td><td><strong>85</strong><br><span style="font-size:.62rem;color:var(--text-muted)">70&ndash;95</span></td><td><strong>70</strong><br><span style="font-size:.62rem;color:var(--text-muted)">60&ndash;80</span></td></tr>
+  <tr><td class="tl">Corn, forage legumes, legume veg, green manures</td><td><strong>145</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">130&ndash;160</span></td><td><strong>125</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">115&ndash;140</span></td><td><strong>115</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">105&ndash;125</span></td><td><strong>105</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">95&ndash;110</span></td></tr>
+  <tr><td class="tl">Soybean, small grains</td><td><strong>130</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">110&ndash;150</span></td><td><strong>100</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">85&ndash;120</span></td><td><strong>85</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">70&ndash;95</span></td><td><strong>70</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">60&ndash;80</span></td></tr>
   <tr class="tg"><td class="tl" colspan="5">Sands / Loamy Sands &mdash; Irrigated</td></tr>
-  <tr><td class="tl">All crops</td><td><strong>215</strong><br><span style="font-size:.62rem;color:var(--text-muted)">200&ndash;230</span></td><td><strong>200</strong><br><span style="font-size:.62rem;color:var(--text-muted)">185&ndash;210</span></td><td><strong>185</strong><br><span style="font-size:.62rem;color:var(--text-muted)">175&ndash;195</span></td><td><strong>175</strong><br><span style="font-size:.62rem;color:var(--text-muted)">165&ndash;185</span></td></tr>
+  <tr><td class="tl">All crops</td><td><strong>215</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">200&ndash;230</span></td><td><strong>200</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">185&ndash;210</span></td><td><strong>185</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">175&ndash;195</span></td><td><strong>175</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">165&ndash;185</span></td></tr>
   <tr class="tg"><td class="tl" colspan="5">Sands / Loamy Sands &mdash; Non-Irrigated</td></tr>
-  <tr><td class="tl">All crops</td><td><strong>140</strong><br><span style="font-size:.62rem;color:var(--text-muted)">130&ndash;150</span></td><td><strong>130</strong><br><span style="font-size:.62rem;color:var(--text-muted)">120&ndash;140</span></td><td><strong>120</strong><br><span style="font-size:.62rem;color:var(--text-muted)">110&ndash;130</span></td><td><strong>110</strong><br><span style="font-size:.62rem;color:var(--text-muted)">100&ndash;120</span></td></tr>
+  <tr><td class="tl">All crops</td><td><strong>140</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">130&ndash;150</span></td><td><strong>130</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">120&ndash;140</span></td><td><strong>120</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">110&ndash;130</span></td><td><strong>110</strong><br><span style="font-size:0.755rem;color:var(--text-muted)">100&ndash;120</span></td></tr>
 </tbody></table></div>
 <div class="ff-h2">Legume N Credits</div>
 <div class="ff-g2">
@@ -588,7 +588,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 </div>
 <div class="ff-note" style="margin-top:1rem"><strong>Take your cost total to the full break-even tool &rarr;</strong><br>
   The Break-Even Calculator adds a what-if sensitivity table, profit gauge, and printable report.<br><br>
-  <a href="/breakeven" style="color:var(--gold);font-weight:700;font-family:'JetBrains Mono',monospace;font-size:.78rem;text-decoration:none">&rarr; Open Break-Even Calculator</a>
+  <a href="/breakeven" style="color:var(--gold);font-weight:700;font-family:'JetBrains Mono',monospace;font-size:0.795rem;text-decoration:none">&rarr; Open Break-Even Calculator</a>
 </div>
 </div><!-- /tab-economics -->
 
@@ -614,7 +614,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     <div class="pk-cost-item"><div class="pk-ci-label">P&#x2082;O&#x2085; Cost</div><div class="pk-ci-val" id="pk-p-cost">&mdash;</div></div>
     <div class="pk-cost-item"><div class="pk-ci-label">K&#x2082;O Cost</div><div class="pk-ci-val" id="pk-k-cost">&mdash;</div></div>
     <div class="pk-cost-item"><div class="pk-ci-label">Total P+K $/ac</div><div class="pk-ci-val" id="pk-total-cost">&mdash;</div></div>
-    <div style="font-size:.62rem;color:var(--text-muted);align-self:flex-end">Based on live DAP/MOP prices</div>
+    <div style="font-size:0.755rem;color:var(--text-muted);align-self:flex-end">Based on live DAP/MOP prices</div>
   </div>
   <div class="ff-cn" id="st-note"></div>
 </div>
@@ -622,12 +622,12 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 <div class="ff-tw"><table class="ff-t">
 <thead><tr><th class="tl">Category</th><th>Bray P1 (ppm)</th><th>K (ppm)</th><th class="tl">Interpretation</th></tr></thead>
 <tbody>
-  <tr><td class="tl re">Very Low</td><td class="re">&lt;11</td><td class="re">&lt;61</td><td class="tl" style="font-size:.72rem;color:var(--text-dim)">Deficient &mdash; yield loss likely</td></tr>
-  <tr><td class="tl" style="color:var(--gold)">Low</td><td style="color:var(--gold)">11&ndash;15</td><td style="color:var(--gold)">61&ndash;90</td><td class="tl" style="font-size:.72rem;color:var(--text-dim)">Below optimum &mdash; good response likely</td></tr>
-  <tr><td class="tl gr">Optimum</td><td class="gr">16&ndash;25</td><td class="gr">91&ndash;130</td><td class="tl" style="font-size:.72rem;color:var(--text-dim)">Sufficient &mdash; maintenance rate</td></tr>
-  <tr><td class="tl">High</td><td>26&ndash;50</td><td>131&ndash;200</td><td class="tl" style="font-size:.72rem;color:var(--text-dim)">No response expected &mdash; reduce or eliminate</td></tr>
-  <tr><td class="tl dim">Very High</td><td class="dim">51&ndash;75</td><td class="dim">201&ndash;300</td><td class="tl" style="font-size:.72rem;color:var(--text-dim)">No response &mdash; draw down levels</td></tr>
-  <tr><td class="tl dim">Extremely High</td><td class="dim">&gt;75</td><td class="dim">&gt;300</td><td class="tl" style="font-size:.72rem;color:var(--text-dim)">Do not apply</td></tr>
+  <tr><td class="tl re">Very Low</td><td class="re">&lt;11</td><td class="re">&lt;61</td><td class="tl" style="font-size:0.78rem;color:var(--text-dim)">Deficient &mdash; yield loss likely</td></tr>
+  <tr><td class="tl" style="color:var(--gold)">Low</td><td style="color:var(--gold)">11&ndash;15</td><td style="color:var(--gold)">61&ndash;90</td><td class="tl" style="font-size:0.78rem;color:var(--text-dim)">Below optimum &mdash; good response likely</td></tr>
+  <tr><td class="tl gr">Optimum</td><td class="gr">16&ndash;25</td><td class="gr">91&ndash;130</td><td class="tl" style="font-size:0.78rem;color:var(--text-dim)">Sufficient &mdash; maintenance rate</td></tr>
+  <tr><td class="tl">High</td><td>26&ndash;50</td><td>131&ndash;200</td><td class="tl" style="font-size:0.78rem;color:var(--text-dim)">No response expected &mdash; reduce or eliminate</td></tr>
+  <tr><td class="tl dim">Very High</td><td class="dim">51&ndash;75</td><td class="dim">201&ndash;300</td><td class="tl" style="font-size:0.78rem;color:var(--text-dim)">No response &mdash; draw down levels</td></tr>
+  <tr><td class="tl dim">Extremely High</td><td class="dim">&gt;75</td><td class="dim">&gt;300</td><td class="tl" style="font-size:0.78rem;color:var(--text-dim)">Do not apply</td></tr>
 </tbody></table></div>
 <div class="ff-h2">Corn P&#x2082;O&#x2085; &amp; K&#x2082;O Recommendation Tables</div>
 <div class="ff-tw"><table class="ff-t">
@@ -775,7 +775,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
     <div class="mv-pi"><label class="mv-pi-label" for="mv-n-price">$/lb N</label><input class="mv-pi-input" id="mv-n-price" type="number" value="0.61" step="0.01" min="0.10" max="3.00"><span class="mv-pi-src" id="mv-n-src">from fert.json</span></div>
     <div class="mv-pi"><label class="mv-pi-label" for="mv-p-price">$/lb P&#x2082;O&#x2085;</label><input class="mv-pi-input" id="mv-p-price" type="number" value="0.60" step="0.01" min="0.10" max="3.00"><span class="mv-pi-src">~DAP market</span></div>
     <div class="mv-pi"><label class="mv-pi-label" for="mv-k-price">$/lb K&#x2082;O</label><input class="mv-pi-input" id="mv-k-price" type="number" value="0.33" step="0.01" min="0.05" max="2.00"><span class="mv-pi-src">~MOP market</span></div>
-    <div style="font-size:.62rem;color:var(--text-muted);align-self:flex-end;padding-bottom:.3rem">Edit any price to match your dealer</div>
+    <div style="font-size:0.755rem;color:var(--text-muted);align-self:flex-end;padding-bottom:.3rem">Edit any price to match your dealer</div>
   </div>
   <div class="ff-cr">
     <div class="ff-cf" style="min-width:200px"><label class="ff-cl" for="mv-type">Manure Type</label>
@@ -895,11 +895,11 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 <div class="ff-tw"><table class="ff-t">
 <thead><tr><th>Nutrient</th><th class="tl">Responsive Crops</th><th>Deficient</th><th>Method</th><th>Typical Rate</th><th class="tl">Key Notes</th></tr></thead>
 <tbody>
-  <tr><td><strong>S</strong></td><td class="tl">Soybeans, alfalfa, small grains</td><td>&lt;10 ppm</td><td>KCl</td><td>10&ndash;20 lb S/ac</td><td class="tl" style="font-size:.7rem">Sandy soils, low OM, high rainfall. AMS (24% S) common source. Note: soil S tests have poor predictive reliability — apply S on sandy/low-OM soils as insurance regardless of test result.</td></tr>
-  <tr><td><strong>Zn</strong></td><td class="tl">Corn, beans, soybeans</td><td>&lt;0.5 ppm DTPA</td><td>DTPA</td><td>1&ndash;2 lb Zn/ac</td><td class="tl" style="font-size:.7rem">High pH (&gt;7.0), high P, cold wet spring. Corn &#8220;white bud.&#8221;</td></tr>
-  <tr><td><strong>B</strong></td><td class="tl">Alfalfa, clover, sunflower</td><td>&lt;0.5 ppm</td><td>Hot water</td><td>0.5&ndash;1 lb B/ac</td><td class="tl" style="font-size:.7rem">Sandy soils, low OM. Toxic range narrow &mdash; do not over-apply.</td></tr>
-  <tr><td><strong>Mn</strong></td><td class="tl">Soybeans, oats, wheat</td><td>&lt;5 ppm DTPA</td><td>DTPA</td><td>0.5&ndash;1 lb Mn foliar</td><td class="tl" style="font-size:.7rem">High pH (&gt;6.5), organic soils. Foliar preferred.</td></tr>
-  <tr><td><strong>Fe (IDC)</strong></td><td class="tl">Soybeans</td><td>pH &gt;7.3 + CaCO&#x2083;</td><td>SPAD</td><td>IDC-tolerant varieties</td><td class="tl" style="font-size:.7rem">Most common on calcareous (high-pH) soils.</td></tr>
+  <tr><td><strong>S</strong></td><td class="tl">Soybeans, alfalfa, small grains</td><td>&lt;10 ppm</td><td>KCl</td><td>10&ndash;20 lb S/ac</td><td class="tl" style="font-size:0.775rem">Sandy soils, low OM, high rainfall. AMS (24% S) common source. Note: soil S tests have poor predictive reliability — apply S on sandy/low-OM soils as insurance regardless of test result.</td></tr>
+  <tr><td><strong>Zn</strong></td><td class="tl">Corn, beans, soybeans</td><td>&lt;0.5 ppm DTPA</td><td>DTPA</td><td>1&ndash;2 lb Zn/ac</td><td class="tl" style="font-size:0.775rem">High pH (&gt;7.0), high P, cold wet spring. Corn &#8220;white bud.&#8221;</td></tr>
+  <tr><td><strong>B</strong></td><td class="tl">Alfalfa, clover, sunflower</td><td>&lt;0.5 ppm</td><td>Hot water</td><td>0.5&ndash;1 lb B/ac</td><td class="tl" style="font-size:0.775rem">Sandy soils, low OM. Toxic range narrow &mdash; do not over-apply.</td></tr>
+  <tr><td><strong>Mn</strong></td><td class="tl">Soybeans, oats, wheat</td><td>&lt;5 ppm DTPA</td><td>DTPA</td><td>0.5&ndash;1 lb Mn foliar</td><td class="tl" style="font-size:0.775rem">High pH (&gt;6.5), organic soils. Foliar preferred.</td></tr>
+  <tr><td><strong>Fe (IDC)</strong></td><td class="tl">Soybeans</td><td>pH &gt;7.3 + CaCO&#x2083;</td><td>SPAD</td><td>IDC-tolerant varieties</td><td class="tl" style="font-size:0.775rem">Most common on calcareous (high-pH) soils.</td></tr>
 </tbody></table></div>
 <div class="ff-h2">Tissue Test Critical Levels</div>
 <div class="ff-g2">
@@ -932,14 +932,14 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 <div class="sv-wrap" id="corn-sv-wrap">
   <div class="sv-track"></div>
   <div class="sv-marks" id="corn-sv-marks"></div>
-  <div class="sv-detail" id="corn-sv-detail"><span style="color:var(--text-muted);font-size:.78rem">Select a stage above to view details</span></div>
+  <div class="sv-detail" id="corn-sv-detail"><span style="color:var(--text-muted);font-size:0.795rem">Select a stage above to view details</span></div>
 </div>
 <div class="ff-h2">Soybean Growth Stages &mdash; Interactive Timeline</div>
 <p class="ff-sub">Vegetative (V) and reproductive (R) stages with GDU accumulation from emergence. Click any stage.</p>
 <div class="sv-wrap" id="bean-sv-wrap">
   <div class="sv-track"></div>
   <div class="sv-marks" id="bean-sv-marks"></div>
-  <div class="sv-detail" id="bean-sv-detail"><span style="color:var(--text-muted);font-size:.78rem">Select a stage above to view details</span></div>
+  <div class="sv-detail" id="bean-sv-detail"><span style="color:var(--text-muted);font-size:0.795rem">Select a stage above to view details</span></div>
 </div>
 <div class="ff-h2">GDU Calculator</div>
 <div class="ff-calc">
@@ -965,7 +965,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
   <div class="spray-loc-row">
     <input class="spray-loc-in" id="spray-zip" type="text" placeholder="ZIP code" maxlength="5" aria-label="ZIP code for weather">
     <button class="spray-loc-btn" id="spray-go">Update</button>
-    <span id="spray-loc-label" style="font-size:.7rem;color:var(--text-muted);align-self:center"></span>
+    <span id="spray-loc-label" style="font-size:0.775rem;color:var(--text-muted);align-self:center"></span>
   </div>
   <div class="spray-grid" id="spray-grid">
     <div class="spray-factor"><div class="spray-factor-label">Temp</div><div class="spray-factor-val" id="spr-temp">&mdash;</div><div class="spray-factor-chip" id="spr-temp-chip">&mdash;</div></div>
@@ -1009,30 +1009,30 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 <thead><tr><th class="tl">Pest</th><th class="tl">Crop</th><th class="tl">Economic Threshold</th><th class="tl">Timing</th><th class="tl">Notes</th></tr></thead>
 <tbody>
   <tr class="tg"><td class="tl" colspan="5">Corn Pests</td></tr>
-  <tr><td class="tl">Black Cutworm</td><td class="tl">Corn</td><td class="tl"><span class="sev-high">3 or more cut plants per 100</span></td><td class="tl">V1&ndash;V5</td><td class="tl" style="font-size:.7rem">Monitor after adult flights. Cut plants at/below growing point = dead plant.</td></tr>
-  <tr><td class="tl">Corn Rootworm (adult)</td><td class="tl">Corn</td><td class="tl"><span class="sev-med">0.75 beetles per plant + silk clipping &lt;1/2"</span></td><td class="tl">VT&ndash;R1</td><td class="tl" style="font-size:.7rem">Silk clipping at pollination is the critical damage window.</td></tr>
-  <tr><td class="tl">European Corn Borer</td><td class="tl">Corn</td><td class="tl"><span class="sev-med">~20% whorl infestation with live borers &mdash; non-Bt only</span></td><td class="tl">V8&ndash;VT</td><td class="tl" style="font-size:.7rem">Non-Bt hybrids: treat at ~20% infested plants with live borers (UW A3646). Bt hybrids provide good control &mdash; scout refuge strips only.</td></tr>
-  <tr><td class="tl">Western Bean Cutworm</td><td class="tl">Corn</td><td class="tl"><span class="sev-med">8% egg mass infestation</span></td><td class="tl">Pre-tassel</td><td class="tl" style="font-size:.7rem">Targets ear tip and kernels. WBC maps at extension sites.</td></tr>
-  <tr><td class="tl">Japanese Beetle</td><td class="tl">Corn</td><td class="tl"><span class="sev-med">3+ beetles/ear, silk &lt;1/2" with poor pollination</span></td><td class="tl">VT&ndash;R1</td><td class="tl" style="font-size:.7rem">Treat only during active pollination (4&ndash;5 days).</td></tr>
+  <tr><td class="tl">Black Cutworm</td><td class="tl">Corn</td><td class="tl"><span class="sev-high">3 or more cut plants per 100</span></td><td class="tl">V1&ndash;V5</td><td class="tl" style="font-size:0.775rem">Monitor after adult flights. Cut plants at/below growing point = dead plant.</td></tr>
+  <tr><td class="tl">Corn Rootworm (adult)</td><td class="tl">Corn</td><td class="tl"><span class="sev-med">0.75 beetles per plant + silk clipping &lt;1/2"</span></td><td class="tl">VT&ndash;R1</td><td class="tl" style="font-size:0.775rem">Silk clipping at pollination is the critical damage window.</td></tr>
+  <tr><td class="tl">European Corn Borer</td><td class="tl">Corn</td><td class="tl"><span class="sev-med">~20% whorl infestation with live borers &mdash; non-Bt only</span></td><td class="tl">V8&ndash;VT</td><td class="tl" style="font-size:0.775rem">Non-Bt hybrids: treat at ~20% infested plants with live borers (UW A3646). Bt hybrids provide good control &mdash; scout refuge strips only.</td></tr>
+  <tr><td class="tl">Western Bean Cutworm</td><td class="tl">Corn</td><td class="tl"><span class="sev-med">8% egg mass infestation</span></td><td class="tl">Pre-tassel</td><td class="tl" style="font-size:0.775rem">Targets ear tip and kernels. WBC maps at extension sites.</td></tr>
+  <tr><td class="tl">Japanese Beetle</td><td class="tl">Corn</td><td class="tl"><span class="sev-med">3+ beetles/ear, silk &lt;1/2" with poor pollination</span></td><td class="tl">VT&ndash;R1</td><td class="tl" style="font-size:0.775rem">Treat only during active pollination (4&ndash;5 days).</td></tr>
   <tr class="tg"><td class="tl" colspan="5">Soybean Pests</td></tr>
-  <tr><td class="tl">Soybean Aphid</td><td class="tl">Soybean</td><td class="tl"><span class="sev-high">250 aphids/plant on &ge;80% of plants, increasing</span></td><td class="tl">V4&ndash;R5</td><td class="tl" style="font-size:.7rem">Count 20 plants per field. Only treat if population increasing &amp; before R5.</td></tr>
-  <tr><td class="tl">Bean Leaf Beetle</td><td class="tl">Soybean</td><td class="tl"><span class="sev-low">20&ndash;30% defoliation</span></td><td class="tl">V stages</td><td class="tl" style="font-size:.7rem">Pod feeding at R3&ndash;R5 can warrant action at lower thresholds.</td></tr>
-  <tr><td class="tl">Japanese Beetle (soybean)</td><td class="tl">Soybean</td><td class="tl"><span class="sev-med">20% defoliation before bloom; 15% during/after</span></td><td class="tl">V&ndash;R6</td><td class="tl" style="font-size:.7rem">Canopy closure reduces access &mdash; focus on field edges.</td></tr>
-  <tr><td class="tl">Soybean Gall Midge</td><td class="tl">Soybean</td><td class="tl"><span class="sev-high">Any presence &mdash; no established ET</span></td><td class="tl">V1&ndash;R2</td><td class="tl" style="font-size:.7rem">Emerging pest in the upper Corn Belt. Orange larvae at stem base. Scout field edges.</td></tr>
-  <tr><td class="tl">Two-Spotted Spider Mite</td><td class="tl">Both</td><td class="tl"><span class="sev-med">25&ndash;50% leaf stippling, mites present, hot &amp; dry</span></td><td class="tl">R1&ndash;R5</td><td class="tl" style="font-size:.7rem">Hot dry conditions favor rapid buildup. Check field edges first.</td></tr>
+  <tr><td class="tl">Soybean Aphid</td><td class="tl">Soybean</td><td class="tl"><span class="sev-high">250 aphids/plant on &ge;80% of plants, increasing</span></td><td class="tl">V4&ndash;R5</td><td class="tl" style="font-size:0.775rem">Count 20 plants per field. Only treat if population increasing &amp; before R5.</td></tr>
+  <tr><td class="tl">Bean Leaf Beetle</td><td class="tl">Soybean</td><td class="tl"><span class="sev-low">20&ndash;30% defoliation</span></td><td class="tl">V stages</td><td class="tl" style="font-size:0.775rem">Pod feeding at R3&ndash;R5 can warrant action at lower thresholds.</td></tr>
+  <tr><td class="tl">Japanese Beetle (soybean)</td><td class="tl">Soybean</td><td class="tl"><span class="sev-med">20% defoliation before bloom; 15% during/after</span></td><td class="tl">V&ndash;R6</td><td class="tl" style="font-size:0.775rem">Canopy closure reduces access &mdash; focus on field edges.</td></tr>
+  <tr><td class="tl">Soybean Gall Midge</td><td class="tl">Soybean</td><td class="tl"><span class="sev-high">Any presence &mdash; no established ET</span></td><td class="tl">V1&ndash;R2</td><td class="tl" style="font-size:0.775rem">Emerging pest in the upper Corn Belt. Orange larvae at stem base. Scout field edges.</td></tr>
+  <tr><td class="tl">Two-Spotted Spider Mite</td><td class="tl">Both</td><td class="tl"><span class="sev-med">25&ndash;50% leaf stippling, mites present, hot &amp; dry</span></td><td class="tl">R1&ndash;R5</td><td class="tl" style="font-size:0.775rem">Hot dry conditions favor rapid buildup. Check field edges first.</td></tr>
 </tbody></table></div>
 <div class="ff-h2">Herbicide MOA Reference &mdash; Common Classes</div>
 <div class="ff-tw"><table class="ff-t">
 <thead><tr><th class="tl">MOA Group</th><th class="tl">Site of Action</th><th class="tl">Common AI / Products</th><th class="tl">Crops</th><th class="tl">Resistance Notes</th></tr></thead>
 <tbody>
-  <tr><td class="tl"><span class="moa-badge moa-9">Group 9</span></td><td class="tl">EPSPS inhibitor</td><td class="tl">Glyphosate (Roundup)</td><td class="tl">RR corn &amp; soybean</td><td class="tl" style="font-size:.7rem;color:#e05c5c">Widespread resistance across the Corn Belt &mdash; confirm weed ID before relying on glyphosate alone</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-2">Group 2</span></td><td class="tl">ALS inhibitor</td><td class="tl">Classic (chlorimuron), FirstRate (cloransulam), Pursuit (imazethapyr), Harmony GT (thifensulfuron)</td><td class="tl">Corn, soybean, others</td><td class="tl" style="font-size:.7rem;color:#e05c5c">Widespread resistance in waterhemp, horseweed, giant ragweed</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-14">Group 14</span></td><td class="tl">PPO inhibitor</td><td class="tl">Flexstar, Ultra Blazer, Cobra, Authority</td><td class="tl">Soybean, corn (Authority)</td><td class="tl" style="font-size:.7rem;color:var(--gold)">Increasing waterhemp resistance &mdash; rotate with other MOAs</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-5">Group 5</span></td><td class="tl">PSII inhibitor</td><td class="tl">Atrazine, Aatrex, metribuzin</td><td class="tl">Corn primarily; metribuzin on soybeans</td><td class="tl" style="font-size:.7rem;color:var(--gold)">Some resistance; atrazine rate and use limits vary by state &mdash; check your label and state rules</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-1">Group 1</span></td><td class="tl">ACCase inhibitor</td><td class="tl">Select Max, Poast, Assure II</td><td class="tl">Broadleaf crops</td><td class="tl" style="font-size:.7rem">Controls grasses. Little resistance currently in the Corn Belt</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-3">Group 3</span></td><td class="tl">Microtubule inhibitor</td><td class="tl">Treflan, Sonalan (trifluralin)</td><td class="tl">Soybean, corn</td><td class="tl" style="font-size:.7rem">Pre-emergent only. Incorporate into soil.</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-4">Group 4</span></td><td class="tl">Synthetic auxin</td><td class="tl">2,4-D, dicamba, MCPA</td><td class="tl">Corn, small grains; Xtend soybeans</td><td class="tl" style="font-size:.7rem">Drift risk high. Strict label requirements. Watch vapor temp.</td></tr>
-  <tr><td class="tl"><span class="moa-badge moa-other">Group 27</span></td><td class="tl">HPPD inhibitor</td><td class="tl">Callisto, Laudis, Impact, Balance</td><td class="tl">Corn</td><td class="tl" style="font-size:.7rem">Excellent waterhemp activity. Rotate with Group 2 avoided fields.</td></tr>
+  <tr><td class="tl"><span class="moa-badge moa-9">Group 9</span></td><td class="tl">EPSPS inhibitor</td><td class="tl">Glyphosate (Roundup)</td><td class="tl">RR corn &amp; soybean</td><td class="tl" style="font-size:0.775rem;color:#e05c5c">Widespread resistance across the Corn Belt &mdash; confirm weed ID before relying on glyphosate alone</td></tr>
+  <tr><td class="tl"><span class="moa-badge moa-2">Group 2</span></td><td class="tl">ALS inhibitor</td><td class="tl">Classic (chlorimuron), FirstRate (cloransulam), Pursuit (imazethapyr), Harmony GT (thifensulfuron)</td><td class="tl">Corn, soybean, others</td><td class="tl" style="font-size:0.775rem;color:#e05c5c">Widespread resistance in waterhemp, horseweed, giant ragweed</td></tr>
+  <tr><td class="tl"><span class="moa-badge moa-14">Group 14</span></td><td class="tl">PPO inhibitor</td><td class="tl">Flexstar, Ultra Blazer, Cobra, Authority</td><td class="tl">Soybean, corn (Authority)</td><td class="tl" style="font-size:0.775rem;color:var(--gold)">Increasing waterhemp resistance &mdash; rotate with other MOAs</td></tr>
+  <tr><td class="tl"><span class="moa-badge moa-5">Group 5</span></td><td class="tl">PSII inhibitor</td><td class="tl">Atrazine, Aatrex, metribuzin</td><td class="tl">Corn primarily; metribuzin on soybeans</td><td class="tl" style="font-size:0.775rem;color:var(--gold)">Some resistance; atrazine rate and use limits vary by state &mdash; check your label and state rules</td></tr>
+  <tr><td class="tl"><span class="moa-badge moa-1">Group 1</span></td><td class="tl">ACCase inhibitor</td><td class="tl">Select Max, Poast, Assure II</td><td class="tl">Broadleaf crops</td><td class="tl" style="font-size:0.775rem">Controls grasses. Little resistance currently in the Corn Belt</td></tr>
+  <tr><td class="tl"><span class="moa-badge moa-3">Group 3</span></td><td class="tl">Microtubule inhibitor</td><td class="tl">Treflan, Sonalan (trifluralin)</td><td class="tl">Soybean, corn</td><td class="tl" style="font-size:0.775rem">Pre-emergent only. Incorporate into soil.</td></tr>
+  <tr><td class="tl"><span class="moa-badge moa-4">Group 4</span></td><td class="tl">Synthetic auxin</td><td class="tl">2,4-D, dicamba, MCPA</td><td class="tl">Corn, small grains; Xtend soybeans</td><td class="tl" style="font-size:0.775rem">Drift risk high. Strict label requirements. Watch vapor temp.</td></tr>
+  <tr><td class="tl"><span class="moa-badge moa-other">Group 27</span></td><td class="tl">HPPD inhibitor</td><td class="tl">Callisto, Laudis, Impact, Balance</td><td class="tl">Corn</td><td class="tl" style="font-size:0.775rem">Excellent waterhemp activity. Rotate with Group 2 avoided fields.</td></tr>
 </tbody></table></div>
 <div class="ff-alert"><strong>Waterhemp management priority across the Corn Belt:</strong> Confirmed resistance to Groups 2, 5, 9, 14 (and in some populations, 27) makes waterhemp the highest resistance-management priority in most corn and soybean regions. Use 3+ MOA programs with effective soil residual, and do not rely on post-only programs.</div>
 </div><!-- /tab-pest -->
@@ -1105,16 +1105,16 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
   </div>
 </div>
 <div class="ff-h2">Seasonal Crop Calendar &mdash; Corn Belt example</div>
-<p class="ff-sub" style="font-size:.72rem">A central Corn Belt timeline. Planting and maturity windows shift roughly one to two weeks per ~150 miles of latitude &mdash; check your state Extension or USDA NASS Crop Progress for local dates.</p>
+<p class="ff-sub" style="font-size:0.78rem">A central Corn Belt timeline. Planting and maturity windows shift roughly one to two weeks per ~150 miles of latitude &mdash; check your state Extension or USDA NASS Crop Progress for local dates.</p>
 <div class="ff-tw"><table class="ff-t">
 <thead><tr><th class="tl">Date / Window</th><th class="tl">Corn</th><th class="tl">Soybean</th><th class="tl">Notes</th></tr></thead>
 <tbody>
-  <tr><td class="tl">Apr 20 &ndash; May 15</td><td class="tl">Optimal planting window</td><td class="tl">&mdash;</td><td class="tl" style="font-size:.7rem">Soil temp &ge;50&deg;F at 2" depth for 3 consecutive days</td></tr>
-  <tr><td class="tl">May 1 &ndash; May 20</td><td class="tl">&mdash;</td><td class="tl">Optimal planting window</td><td class="tl" style="font-size:.7rem">Soil temp &ge;50&deg;F; avoid Sudden Death Syndrome risk from cold early planting</td></tr>
-  <tr><td class="tl">June 1</td><td class="tl">Significant yield drag begins</td><td class="tl">Moderate yield drag</td><td class="tl" style="font-size:.7rem">~1% yield loss per day after June 1 for corn; beans more flexible to June 10</td></tr>
-  <tr><td class="tl">Late June &ndash; July</td><td class="tl">Critical pollination window</td><td class="tl">Bloom &amp; pod set</td><td class="tl" style="font-size:.7rem">Drought or heat stress during this window has largest yield impact</td></tr>
-  <tr><td class="tl">Late Aug &ndash; early Sep</td><td class="tl">Black layer / physiological maturity</td><td class="tl">R7 (begin maturity)</td><td class="tl" style="font-size:.7rem">Monitor for early frost risk &mdash; especially in northern areas</td></tr>
-  <tr><td class="tl">Sep 15</td><td class="tl">Average first frost (northern areas)</td><td class="tl">Harvest window opens</td><td class="tl" style="font-size:.7rem">Frost before black layer can cause quality issues</td></tr>
+  <tr><td class="tl">Apr 20 &ndash; May 15</td><td class="tl">Optimal planting window</td><td class="tl">&mdash;</td><td class="tl" style="font-size:0.775rem">Soil temp &ge;50&deg;F at 2" depth for 3 consecutive days</td></tr>
+  <tr><td class="tl">May 1 &ndash; May 20</td><td class="tl">&mdash;</td><td class="tl">Optimal planting window</td><td class="tl" style="font-size:0.775rem">Soil temp &ge;50&deg;F; avoid Sudden Death Syndrome risk from cold early planting</td></tr>
+  <tr><td class="tl">June 1</td><td class="tl">Significant yield drag begins</td><td class="tl">Moderate yield drag</td><td class="tl" style="font-size:0.775rem">~1% yield loss per day after June 1 for corn; beans more flexible to June 10</td></tr>
+  <tr><td class="tl">Late June &ndash; July</td><td class="tl">Critical pollination window</td><td class="tl">Bloom &amp; pod set</td><td class="tl" style="font-size:0.775rem">Drought or heat stress during this window has largest yield impact</td></tr>
+  <tr><td class="tl">Late Aug &ndash; early Sep</td><td class="tl">Black layer / physiological maturity</td><td class="tl">R7 (begin maturity)</td><td class="tl" style="font-size:0.775rem">Monitor for early frost risk &mdash; especially in northern areas</td></tr>
+  <tr><td class="tl">Sep 15</td><td class="tl">Average first frost (northern areas)</td><td class="tl">Harvest window opens</td><td class="tl" style="font-size:0.775rem">Frost before black layer can cause quality issues</td></tr>
 </tbody></table></div>
 <button onclick="window.print()" class="ff-print-btn"><svg class="ic" aria-hidden="true"><use href="#i-printer"/></svg> Print This Reference Page</button>
 </div><!-- /tab-reference -->
@@ -1127,7 +1127,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
   <div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="ff-card-title rp corn">U.S. Corn &mdash; 2025</span></div><div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv gold">17.0 B bu</span></div><div class="ff-row"><span class="ff-rl">Avg yield</span><span class="ff-rv">186.5 bu/ac</span></div><div class="ff-row"><span class="ff-rl">Harvested</span><span class="ff-rv">91.3 M ac</span></div></div>
   <div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></span><span class="ff-card-title rp beans">U.S. Soybeans &mdash; 2025</span></div><div class="ff-row"><span class="ff-rl">Production</span><span class="ff-rv gold">4.26 B bu</span></div><div class="ff-row"><span class="ff-rl">Avg yield</span><span class="ff-rv">53.0 bu/ac</span></div><div class="ff-row"><span class="ff-rl">Harvested</span><span class="ff-rv">80.4 M ac</span></div></div>
 </div>
-<p class="ff-sub" style="font-size:.7rem">National totals: USDA NASS Crop Production 2025 Summary (final). Select any state for its full USDA NASS profile.</p>
+<p class="ff-sub" style="font-size:0.775rem">National totals: USDA NASS Crop Production 2025 Summary (final). Select any state for its full USDA NASS profile.</p>
 <div class="ff-state-picker">
   <label class="ff-spl" for="ff-state-select">Select state</label>
   <select id="ff-state-select" style="font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.55rem .7rem;min-height:44px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:6px;min-width:200px">
@@ -1135,7 +1135,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
   </select>
 </div>
 <div id="state-content" class="ff-scontent">
-  <div style="grid-column:1/-1;color:var(--text-muted);font-size:.78rem;padding:1rem 0">Loading state data&hellip;</div>
+  <div style="grid-column:1/-1;color:var(--text-muted);font-size:0.795rem;padding:1rem 0">Loading state data&hellip;</div>
 </div>
 </div><!-- /tab-statestats -->
 

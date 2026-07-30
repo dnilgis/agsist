@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#111a0a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="/components/styles.css?v=10" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=10">
+<link rel="preload" href="/components/styles.css?v=15" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=15">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -55,32 +55,32 @@ button,a,[role="button"]{touch-action:manipulation;}
 .pd-page { max-width: 1000px; margin: 0 auto; padding: 0 1rem 3rem; }
 
 .pd-hero { padding: 1.3rem 0 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
-.pd-eyebrow { font-size:.62rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:.25rem; }
-.pd-hero h1 { font-family:'Oswald',sans-serif; font-size:1.65rem; font-weight:800; text-transform:uppercase; color:var(--text); margin:0 0 .3rem; line-height:1.1; }
+.pd-eyebrow { font-size:0.755rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:.25rem; }
+.pd-hero h1 { font-family:var(--font-display); font-size:1.65rem; font-weight:800; text-transform:uppercase; color:var(--text); margin:0 0 .3rem; line-height:1.1; }
 .pd-hero p { font-size:.82rem; color:var(--text-dim); line-height:1.6; max-width:680px; margin:0; }
 
 .pd-card { background:var(--surface); border:2px solid var(--border); border-radius:12px; padding:1.1rem 1.2rem; margin-bottom:1.1rem; }
-.pd-card-title { font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:.9rem; display:flex; align-items:center; gap:.4rem; }
+.pd-card-title { font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:.9rem; display:flex; align-items:center; gap:.4rem; }
 
 .pd-layout { display:grid; grid-template-columns:minmax(0,1fr); gap:1.1rem; }
 @media(min-width:680px){ .pd-layout { grid-template-columns:minmax(0,320px) minmax(0,1fr); align-items:start; } }
 
 /* inputs */
-.f-label { font-size:.62rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-dim); display:block; margin-bottom:.3rem; }
+.f-label { font-size:0.755rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-dim); display:block; margin-bottom:.3rem; }
 .f-input { background:var(--bg); border:2px solid var(--border); border-radius:6px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:1rem; padding:.42rem .6rem; width:100%; outline:none; box-sizing:border-box; }
 .f-input:focus { border-color:var(--gold); }
 .f-group { margin-bottom:.85rem; }
-.f-hint { font-size:.62rem; color:var(--text-muted); margin-top:.25rem; line-height:1.5; }
-.f-btn { width:100%; padding:.7rem 1rem; border-radius:8px; border:none; background:var(--gold); color:#0a1a0a; font-family:'JetBrains Mono',monospace; font-size:.78rem; font-weight:900; cursor:pointer; transition:opacity .15s; min-height:48px; margin-bottom:.6rem; }
+.f-hint { font-size:0.755rem; color:var(--text-muted); margin-top:.25rem; line-height:1.5; }
+.f-btn { width:100%; padding:.7rem 1rem; border-radius:8px; border:none; background:var(--gold); color:#0a1a0a; font-family:'JetBrains Mono',monospace; font-size:0.795rem; font-weight:900; cursor:pointer; transition:opacity .15s; min-height:48px; margin-bottom:.6rem; }
 .f-btn:hover { opacity:.88; }
 .f-btn:disabled { opacity:.4; cursor:not-allowed; }
-.f-status { font-size:.68rem; color:var(--text-muted); text-align:center; min-height:1.1rem; }
+.f-status { font-size:0.77rem; color:var(--text-muted); text-align:center; min-height:1.1rem; }
 .f-status.ok { color:var(--green); }
 .f-status.err { color:#e05c5c; }
 
 /* crop pills */
 .crop-pills { display:flex; gap:.4rem; margin-bottom:.85rem; }
-.crop-pill { flex:1; padding:.45rem .5rem; border-radius:8px; border:2px solid var(--border); background:var(--bg); color:var(--text-dim); font-family:'JetBrains Mono',monospace; font-size:.68rem; font-weight:700; cursor:pointer; transition:all .15s; text-align:center; min-height:44px; display:flex; align-items:center; justify-content:center; gap:.25rem; }
+.crop-pill { flex:1; padding:.45rem .5rem; border-radius:8px; border:2px solid var(--border); background:var(--bg); color:var(--text-dim); font-family:'JetBrains Mono',monospace; font-size:0.77rem; font-weight:700; cursor:pointer; transition:all .15s; text-align:center; min-height:44px; display:flex; align-items:center; justify-content:center; gap:.25rem; }
 .crop-pill:hover { border-color:var(--gold); }
 .crop-pill.active { border-color:var(--gold); background:rgba(230,176,66,.12); color:var(--text); }
 
@@ -88,19 +88,19 @@ button,a,[role="button"]{touch-action:manipulation;}
 .st-display { background:linear-gradient(135deg,rgba(58,139,60,.07),rgba(230,176,66,.04)); border:2px solid rgba(58,139,60,.25); border-radius:10px; padding:.9rem 1rem; margin-bottom:.85rem; }
 .st-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem; margin-top:.5rem; }
 .st-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:.6rem .7rem; text-align:center; }
-.st-card-lbl { font-size:.58rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:.2rem; }
+.st-card-lbl { font-size:0.745rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:.2rem; }
 .st-card-val { font-family:'JetBrains Mono',monospace; font-size:1.3rem; font-weight:900; color:var(--gold); }
-.st-card-sub { font-size:.58rem; color:var(--text-muted); margin-top:.1rem; }
-.st-verdict { font-size:.75rem; font-weight:700; padding:.35rem .75rem; border-radius:6px; display:inline-block; margin-top:.55rem; }
+.st-card-sub { font-size:0.745rem; color:var(--text-muted); margin-top:.1rem; }
+.st-verdict { font-size:0.787rem; font-weight:700; padding:.35rem .75rem; border-radius:6px; display:inline-block; margin-top:.55rem; }
 .st-verdict.go { background:rgba(58,139,60,.15); color:var(--green); border:1px solid rgba(58,139,60,.35); }
 .st-verdict.wait { background:rgba(230,176,66,.15); color:var(--gold); border:1px solid rgba(230,176,66,.35); }
 .st-verdict.no { background:rgba(224,92,92,.15); color:#e05c5c; border:1px solid rgba(224,92,92,.35); }
 
 /* window card */
 .window-card { background:var(--surface); border:2px solid var(--border); border-radius:10px; padding:.9rem 1rem; }
-.window-title { font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:.75rem; }
+.window-title { font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:.75rem; }
 .window-bar-wrap { margin-bottom:.4rem; }
-.window-bar-label { font-size:.62rem; font-weight:700; color:var(--text-dim); margin-bottom:.2rem; display:flex; justify-content:space-between; }
+.window-bar-label { font-size:0.755rem; font-weight:700; color:var(--text-dim); margin-bottom:.2rem; display:flex; justify-content:space-between; }
 .window-bar { height:12px; background:var(--border); border-radius:6px; overflow:hidden; margin-bottom:.5rem; position:relative; }
 .window-bar-fill { height:100%; border-radius:6px; transition:width .5s ease; }
 .window-bar-fill.green { background:var(--green); }
@@ -111,15 +111,15 @@ button,a,[role="button"]{touch-action:manipulation;}
 /* result rows */
 .r-row { display:flex; justify-content:space-between; align-items:baseline; padding:.28rem 0; border-bottom:1px solid rgba(255,255,255,.04); }
 .r-row:last-child { border-bottom:none; }
-.r-lbl { font-size:.76rem; color:var(--text-dim); }
+.r-lbl { font-size:0.79rem; color:var(--text-dim); }
 .r-val { font-family:'JetBrains Mono',monospace; font-size:.84rem; font-weight:700; color:var(--text); }
 .r-val.gold { color:var(--gold); }
 .r-val.green { color:var(--green); }
 .r-val.red { color:#e05c5c; }
 
 /* yield penalty table */
-.pen-table { width:100%; border-collapse:collapse; font-size:.74rem; }
-.pen-table th { background:rgba(230,176,66,.1); color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:.6rem; padding:.4rem .5rem; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
+.pen-table { width:100%; border-collapse:collapse; font-size:0.785rem; }
+.pen-table th { background:rgba(230,176,66,.1); color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:0.75rem; padding:.4rem .5rem; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
 .pen-table td { padding:.35rem .5rem; border-bottom:1px solid rgba(255,255,255,.04); }
 .pen-table td:first-child { color:var(--text); font-weight:600; }
 .pen-table tr:last-child td { border-bottom:none; }
@@ -136,16 +136,16 @@ button,a,[role="button"]{touch-action:manipulation;}
 .cmp-card.good { border-color:rgba(58,139,60,.4); }
 .cmp-card.warn { border-color:rgba(230,176,66,.4); }
 .cmp-card.late { border-color:rgba(224,92,92,.4); }
-.cmp-date { font-size:.62rem; font-weight:700; color:var(--text-dim); margin-bottom:.3rem; }
+.cmp-date { font-size:0.755rem; font-weight:700; color:var(--text-dim); margin-bottom:.3rem; }
 .cmp-gdu { font-family:'JetBrains Mono',monospace; font-size:1.1rem; font-weight:900; color:var(--gold); }
-.cmp-delta { font-size:.65rem; margin-top:.2rem; }
+.cmp-delta { font-size:0.763rem; margin-top:.2rem; }
 .cmp-delta.pos { color:var(--green); }
 .cmp-delta.neg { color:#e05c5c; }
-.cmp-label { font-size:.58rem; color:var(--text-muted); margin-top:.2rem; }
+.cmp-label { font-size:0.745rem; color:var(--text-muted); margin-top:.2rem; }
 
 /* frost table */
-.frost-table { width:100%; border-collapse:collapse; font-size:.74rem; }
-.frost-table th { background:rgba(230,176,66,.1); color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:.6rem; padding:.42rem .55rem; text-align:left; border-bottom:1px solid var(--border); }
+.frost-table { width:100%; border-collapse:collapse; font-size:0.785rem; }
+.frost-table th { background:rgba(230,176,66,.1); color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:0.75rem; padding:.42rem .55rem; text-align:left; border-bottom:1px solid var(--border); }
 .frost-table td { padding:.38rem .55rem; border-bottom:1px solid rgba(255,255,255,.04); }
 .frost-table td:first-child { color:var(--text); font-weight:600; }
 .frost-table tr:last-child td { border-bottom:none; }
@@ -154,13 +154,13 @@ button,a,[role="button"]{touch-action:manipulation;}
 .frost-table .p90 { color:#e05c5c; font-family:'JetBrains Mono',monospace; }
 
 /* info boxes */
-.info-box { background:var(--bg); border-left:3px solid var(--gold); border-radius:0 6px 6px 0; padding:.65rem .9rem; font-size:.76rem; color:var(--text-dim); line-height:1.6; margin:.5rem 0; }
+.info-box { background:var(--bg); border-left:3px solid var(--gold); border-radius:0 6px 6px 0; padding:.65rem .9rem; font-size:0.79rem; color:var(--text-dim); line-height:1.6; margin:.5rem 0; }
 .info-box.green { border-color:var(--green); }
 .info-box.red   { border-color:#e05c5c; }
 .info-box strong { color:var(--text); }
 
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-.live-badge { display:inline-flex; align-items:center; gap:.3rem; font-size:.6rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--green); background:rgba(58,139,60,.1); border:1px solid rgba(58,139,60,.3); border-radius:20px; padding:.15rem .5rem; }
+.live-badge { display:inline-flex; align-items:center; gap:.3rem; font-size:0.75rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--green); background:rgba(58,139,60,.1); border:1px solid rgba(58,139,60,.3); border-radius:20px; padding:.15rem .5rem; }
 .live-dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; display:inline-block; }
 
 @media(max-width:480px){
@@ -168,7 +168,7 @@ button,a,[role="button"]{touch-action:manipulation;}
   .cmp-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .st-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
-.pd-source { font-size:.65rem; color:var(--text-muted); text-align:center; margin-top:1.5rem; padding-top:.75rem; border-top:1px solid var(--border); }
+.pd-source { font-size:0.763rem; color:var(--text-muted); text-align:center; margin-top:1.5rem; padding-top:.75rem; border-top:1px solid var(--border); }
 .pd-source a { color:var(--gold); text-decoration:none; }
 </style>
 </head>
@@ -210,7 +210,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 <div id="site-header"></div>
 
 <main id="main" tabindex="-1" class="pd-page">
-<style>.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> The first planting decision of the year gets made on this page — one category-exclusive slot. <a href="/sponsor?slot=planting-date&amp;utm_source=planting-date&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> The first planting decision of the year gets made on this page — one category-exclusive slot. <a href="/sponsor?slot=planting-date&amp;utm_source=planting-date&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Planting Date Calculator</nav>
 
 <div class="pd-hero">
@@ -239,7 +239,7 @@ button,a,[role="button"]{touch-action:manipulation;}
         <label class="f-label">Your Location</label>
         <div style="display:flex;gap:.4rem">
           <input class="f-input" id="pd-zip" type="text" placeholder="ZIP code or city" maxlength="40" style="flex:1">
-          <button id="pd-auto-btn" style="padding:.42rem .7rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--gold);font-size:.7rem;font-weight:700;cursor:pointer;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-globe"/></svg></button>
+          <button id="pd-auto-btn" style="padding:.42rem .7rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--gold);font-size:0.775rem;font-weight:700;cursor:pointer;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-globe"/></svg></button>
         </div>
         <div class="f-hint" id="pd-loc-display">Enter location for live soil temperature</div>
       </div>
@@ -271,7 +271,7 @@ button,a,[role="button"]{touch-action:manipulation;}
     <!-- Live Soil Temp -->
     <div class="st-display">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.3rem">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Current Soil Temperature</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Current Soil Temperature</span>
         <span class="live-badge" id="st-badge" style="display:none"><span class="live-dot"></span>Live</span>
       </div>
       <div class="st-grid">
@@ -292,7 +292,7 @@ button,a,[role="button"]{touch-action:manipulation;}
     <!-- GDU Projection Compare -->
     <div class="pd-card">
       <div class="pd-card-title" id="cmp-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> GDU Accumulation by Planting Date &mdash; Central WI Average</div>
-      <p style="font-size:.75rem;color:var(--text-dim);line-height:1.55;margin:0 0 .75rem">Estimated total GDU accumulation by September 30 from four different planting dates. Earlier planting = more heat units captured before frost. Uses WI 30-year normal GDU accumulation rates.</p>
+      <p style="font-size:0.787rem;color:var(--text-dim);line-height:1.55;margin:0 0 .75rem">Estimated total GDU accumulation by September 30 from four different planting dates. Earlier planting = more heat units captured before frost. Uses WI 30-year normal GDU accumulation rates.</p>
       <div class="cmp-grid" id="cmp-grid"></div>
       <div class="f-hint" style="margin-top:.65rem" id="cmp-note"></div>
     </div>
@@ -336,10 +336,10 @@ button,a,[role="button"]{touch-action:manipulation;}
 <div class="pd-card" style="margin-top:1.1rem">
   <div class="pd-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Related Tools</div>
   <div style="display:flex;flex-wrap:wrap;gap:.5rem">
-    <a href="/gdu-calculator" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:.74rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"> GDU Calculator</a>
-    <a href="/yield-estimator" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:.74rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Yield Estimator</a>
-    <a href="/fast-facts" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:.74rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Fast Facts</a>
-    <a href="/breakeven" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:.74rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Break-Even</a>
+    <a href="/gdu-calculator" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"> GDU Calculator</a>
+    <a href="/yield-estimator" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Yield Estimator</a>
+    <a href="/fast-facts" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Fast Facts</a>
+    <a href="/breakeven" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Break-Even</a>
   </div>
 </div>
 
@@ -472,7 +472,7 @@ document.getElementById('pd-zone').addEventListener('change',function(){
 function renderFrostTable(zone){
   var d = FROST_DATA[zone];
   if(!d)return;
-  var html = '<table class="frost-table" style="margin-top:.5rem;width:100%;font-size:.74rem">'
+  var html = '<table class="frost-table" style="margin-top:.5rem;width:100%;font-size:0.785rem">'
     +'<thead><tr><th>Event</th><th class="p10">10% Prob</th><th class="p50">50% Prob</th><th class="p90">90% Prob</th></tr></thead>'
     +'<tbody>'
     +'<tr><td>Last spring frost</td><td class="p10">'+d.spring10+'</td><td class="p50">'+d.spring50+'</td><td class="p90">'+d.spring90+'</td></tr>'
@@ -503,9 +503,9 @@ function renderWindowBars(){
 
   var barsHtml = windows.map(function(w){
     return '<div class="window-bar-wrap">'
-      +'<div class="window-bar-label"><span>'+w.label+'</span><span style="font-size:.6rem;color:var(--text-muted)">'+w.dates+'</span></div>'
+      +'<div class="window-bar-label"><span>'+w.label+'</span><span style="font-size:0.75rem;color:var(--text-muted)">'+w.dates+'</span></div>'
       +'<div class="window-bar"><div class="window-bar-fill '+w.cls+'" style="width:'+w.pct+'%"></div></div>'
-      +'<div style="font-size:.65rem;color:var(--text-dim);margin-bottom:.3rem">'+w.tip+'</div>'
+      +'<div style="font-size:0.763rem;color:var(--text-dim);margin-bottom:.3rem">'+w.tip+'</div>'
       +'</div>';
   }).join('');
 
@@ -542,7 +542,7 @@ function renderPenaltyTable(){
       +'<td style="color:'+(d.pct===100?'var(--green)':d.pct>=95?'var(--gold)':'#e05c5c')+'">'+d.pct+'%</td>'
       +'<td>'+lossStr+'</td>'
       +'<td style="font-family:\'JetBrains Mono\',monospace">~'+estYield+' bu/ac</td>'
-      +'<td style="font-size:.68rem;color:var(--text-dim)">'+d.note+'</td>'
+      +'<td style="font-size:0.77rem;color:var(--text-dim)">'+d.note+'</td>'
       +'</tr>';
   }).join('');
 
@@ -576,7 +576,7 @@ function renderGDUCompare(){
       +'<div class="cmp-gdu">'+d.gdu.toLocaleString()+'</div>'
       +'<div class="cmp-label">GDUs by Sep 30</div>'
       +(i>0?'<div class="cmp-delta neg">'+delta+' vs earliest</div>':'<div class="cmp-delta pos">Baseline</div>')
-      +'<div style="font-size:.6rem;margin-top:.3rem;color:'+(covered?'var(--green)':'#e05c5c')+'">'+(covered?'✓ Reaches maturity':'<svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> '+pct+'% of target')+'</div>'
+      +'<div style="font-size:0.75rem;margin-top:.3rem;color:'+(covered?'var(--green)':'#e05c5c')+'">'+(covered?'✓ Reaches maturity':'<svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> '+pct+'% of target')+'</div>'
       +'</div>';
   }).join('');
 

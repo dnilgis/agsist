@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-<link rel="preload" href="/components/styles.css?v=14" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=14">
+<link rel="preload" href="/components/styles.css?v=15" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=15">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -103,14 +103,14 @@ button,a,[role="button"]{touch-action:manipulation;}
 .cot-chart-tab { min-height:44px; }
 .cot-chart-tab:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
 
-.cot-pctl { font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; letter-spacing:.02em; color:var(--text-muted); margin:-.15rem 0 .35rem; }
+.cot-pctl { font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:700; letter-spacing:.02em; color:var(--text-muted); margin:-.15rem 0 .35rem; }
 .cot-pctl.hot  { color:var(--gold); }
 .cot-pctl.cold { color:#5ba3e0; }
-.cot-insight { font-size:.66rem; line-height:1.5; color:var(--text-dim); margin-top:.5rem; padding-top:.5rem; border-top:1px solid var(--border); }
+.cot-insight { font-size:0.765rem; line-height:1.5; color:var(--text-dim); margin-top:.5rem; padding-top:.5rem; border-top:1px solid var(--border); }
 .cot-insight b { color:var(--text); font-weight:700; }
 .cot-insight .up { color:var(--green); } .cot-insight .dn { color:#ef4444; }
 .cot-read { border:1px solid rgba(var(--gold-rgb),.3); background:rgba(var(--gold-rgb),.05); border-radius:10px; padding:.9rem 1.1rem; margin-bottom:1.25rem; }
-.cot-read-tag { font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:.35rem; }
+.cot-read-tag { font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:.35rem; }
 .cot-read-body { font-size:.86rem; line-height:1.6; color:var(--text); }
 .cot-read-body b { color:var(--gold); }
 @media (max-width:560px){ .cot-read-body{ font-size:.82rem; } }
@@ -123,12 +123,12 @@ button,a,[role="button"]{touch-action:manipulation;}
   margin-bottom: 1.4rem;
 }
 .cot-eyebrow {
-  font-size: .62rem; font-weight: 700; letter-spacing: .12em;
+  font-size:0.755rem; font-weight: 700; letter-spacing: .12em;
   text-transform: uppercase; color: var(--gold);
   display: flex; align-items: center; gap: .4rem; margin-bottom: .3rem;
 }
 .cot-page-title {
-  font-family: 'Archivo', sans-serif; font-size: 1.75rem; font-weight: 800;
+  font-family:var(--font-display); font-size: 1.75rem; font-weight: 800;
   color: var(--text); line-height: 1.1; margin: 0 0 .35rem;
   text-transform: uppercase; letter-spacing: -.01em;
 }
@@ -146,7 +146,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 .cot-verdict-banner.short { background: rgba(239,68,68,.06);  border-color: rgba(239,68,68,.2);  }
 .cot-verdict-banner.mixed { background: var(--surface);       border-color: var(--border);       }
 .cvb-badge {
-  font-family: 'Archivo', sans-serif; font-size: 1.2rem; font-weight: 800;
+  font-family:var(--font-display); font-size: 1.2rem; font-weight: 800;
   line-height: 1.15; letter-spacing: -.01em;
 }
 .cvb-badge.long  { color: var(--green); }
@@ -157,19 +157,19 @@ button,a,[role="button"]{touch-action:manipulation;}
   display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
   border-top: 1px solid var(--border); padding-top: .6rem; margin-top: .1rem;
 }
-.cvb-date { font-family: 'JetBrains Mono', monospace; font-size: .64rem; color: var(--text-muted); letter-spacing: .02em; }
+.cvb-date { font-family: 'JetBrains Mono', monospace; font-size:0.76rem; color: var(--text-muted); letter-spacing: .02em; }
 
 /* ── Summary cards ── */
 .cot-summary-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: .65rem; margin-bottom: 1.4rem;
 }
 @media (max-width: 540px) { .cot-summary-grid { grid-template-columns: 1fr; } }
-.cot-group-head { grid-column: 1/-1; font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); margin:.55rem 0 -.15rem; }
+.cot-group-head { grid-column: 1/-1; font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); margin:.55rem 0 -.15rem; }
 .cot-group-head:first-child { margin-top:0; }
 .cot-card[role="button"] { cursor:pointer; transition:border-color .15s; }
 .cot-card[role="button"]:hover { border-color:var(--gold); }
 .cot-card[role="button"]:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
-.cvb-countdown { font-family:'JetBrains Mono',monospace; font-size:.64rem; font-weight:700; color:var(--gold); }
+.cvb-countdown { font-family:'JetBrains Mono',monospace; font-size:0.76rem; font-weight:700; color:var(--gold); }
 .cvb-countdown:not(:empty)::before { content:'·'; margin-right:.5rem; color:var(--text-muted); font-weight:400; }
 
 .cot-card {
@@ -180,9 +180,9 @@ button,a,[role="button"]{touch-action:manipulation;}
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: .55rem;
 }
-.cot-card-name { font-size: .72rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: .3rem; }
+.cot-card-name { font-size:0.78rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: .3rem; }
 .cot-card-verdict {
-  font-size: .62rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  font-size:0.755rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
   padding: .12rem .45rem; border-radius: 12px; border: 1px solid;
 }
 .cot-card-verdict.long  { color: var(--green); background: rgba(74,171,76,.08);  border-color: rgba(74,171,76,.25); }
@@ -190,14 +190,14 @@ button,a,[role="button"]{touch-action:manipulation;}
 .cot-card-verdict.flat  { color: var(--text-muted); background: var(--surface2); border-color: var(--border); }
 
 .cot-card-net {
-  font-family: 'Archivo', sans-serif; font-size: 2rem; font-weight: 800;
+  font-family:var(--font-display); font-size: 2rem; font-weight: 800;
   line-height: 1; margin-bottom: .1rem;
 }
 .cot-card-net.long  { color: var(--green); }
 .cot-card-net.short { color: #ef4444; }
 .cot-card-net.flat  { color: var(--text-dim); }
 
-.cot-card-chg { font-family: 'JetBrains Mono', monospace; font-size: .72rem; font-weight: 700; margin-bottom: .5rem; }
+.cot-card-chg { font-family: 'JetBrains Mono', monospace; font-size:0.78rem; font-weight: 700; margin-bottom: .5rem; }
 .cot-card-chg.up { color: var(--green); }
 .cot-card-chg.dn { color: #ef4444; }
 .cot-card-chg.nc { color: var(--text-muted); }
@@ -215,7 +215,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 }
 .cot-card-range-labels {
   display: flex; justify-content: space-between;
-  font-size: .62rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;
+  font-size:0.755rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;
 }
 
 /* ── Chart section ── */
@@ -228,25 +228,25 @@ button,a,[role="button"]{touch-action:manipulation;}
   flex-wrap: wrap; gap: .5rem; margin-bottom: .9rem;
 }
 .cot-chart-title {
-  font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+  font-size:0.78rem; font-weight: 700; letter-spacing: .08em;
   text-transform: uppercase; color: var(--text-muted); margin: 0;
 }
 .cot-section-title {
-  font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+  font-size:0.78rem; font-weight: 700; letter-spacing: .08em;
   text-transform: uppercase; color: var(--text-muted); margin: 0 0 .7rem;
 }
 .cot-chart-tabs { display: flex; gap: .3rem; }
 .cot-chart-tab {
   padding: .2rem .6rem; border-radius: 4px; border: 1px solid var(--border);
   background: var(--surface2); color: var(--text-dim);
-  font-family: 'JetBrains Mono', monospace; font-size: .65rem; font-weight: 700;
+  font-family: 'JetBrains Mono', monospace; font-size:0.763rem; font-weight: 700;
   cursor: pointer; text-transform: uppercase; letter-spacing: .04em; transition: all .15s;
 }
 .cot-chart-tab:hover { border-color: var(--gold); color: var(--text); }
 .cot-chart-tab.active { background: var(--gold); color: #0a1a0a; border-color: var(--gold); }
 
 .cot-legend { display: flex; gap: .9rem; flex-wrap: wrap; margin-bottom: .65rem; }
-.cot-legend-item { display: flex; align-items: center; gap: .3rem; font-size: .68rem; color: var(--text-muted); }
+.cot-legend-item { display: flex; align-items: center; gap: .3rem; font-size:0.77rem; color: var(--text-muted); }
 .cot-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
 .cot-canvas-wrap { position: relative; width: 100%; }
@@ -258,21 +258,21 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
   padding: 1rem 1.1rem; margin-bottom: 1.25rem;
 }
 .cot-explainer-title {
-  font-size: .68rem; font-weight: 700; letter-spacing: .1em;
+  font-size:1rem; font-weight: 700; letter-spacing: .1em;
   text-transform: uppercase; color: var(--blue); margin-bottom: .65rem;
 }
 .cot-explainer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
 @media (max-width: 520px) { .cot-explainer-grid { grid-template-columns: 1fr; } }
 .cot-explainer-item h4 {
-  font-size: .78rem; font-weight: 700; color: var(--text); margin: 0 0 .2rem;
+  font-size:1rem; font-weight: 700; color: var(--text); margin: 0 0 .2rem;
 }
 .cot-explainer-item p {
-  font-size: .76rem; color: var(--text-muted); line-height: 1.6; margin: 0;
+  font-size:1rem; color: var(--text-muted); line-height: 1.6; margin: 0;
 }
 
 /* ── Source footer ── */
 .cot-source {
-  font-size: .64rem; color: var(--text-muted); text-align: center;
+  font-size:0.76rem; color: var(--text-muted); text-align: center;
   padding-top: .6rem; border-top: 1px solid var(--border);
 }
 .cot-source a { color: var(--gold); text-decoration: none; }
@@ -320,8 +320,8 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
        non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails. -->
   <header style="border-bottom:1px solid var(--border);background:var(--surface)">
     <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
-      <a href="/" aria-label="AGSIST Home" style="font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
-      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:2;color:var(--text-muted)">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
         <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevators</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/storage-crunch" style="color:var(--text-muted);text-decoration:none">Storage Crunch</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Quick Stats</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
         <span style="color:var(--text-dim);font-weight:700">Numbers:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Who Owns the Ground</a><br>
         <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Conditions</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Fast Facts</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
@@ -375,7 +375,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
     <div class="cot-canvas-wrap" style="position:relative">
       <canvas id="cot-chart" role="img" aria-label="52-week chart of managed money net futures positioning across tracked commodities"></canvas>
       <div id="cot-xhair" style="position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,.35);pointer-events:none;display:none"></div>
-      <div id="cot-tip" style="position:absolute;pointer-events:none;display:none;background:var(--surface3,#26261f);border:1px solid var(--border);border-radius:6px;padding:.45rem .6rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;line-height:1.5;color:var(--text);white-space:nowrap;z-index:5;box-shadow:0 4px 14px rgba(0,0,0,.4)"></div>
+      <div id="cot-tip" style="position:absolute;pointer-events:none;display:none;background:var(--surface3,#26261f);border:1px solid var(--border);border-radius:6px;padding:.45rem .6rem;font-family:'JetBrains Mono',monospace;font-size:0.755rem;line-height:1.5;color:var(--text);white-space:nowrap;z-index:5;box-shadow:0 4px 14px rgba(0,0,0,.4)"></div>
       <div id="cot-chart-a11y" class="sr-only" aria-live="polite"></div>
     </div>
     <div id="cot-chart-msg" style="text-align:center;padding:2rem 0;font-size:.8rem;color:var(--text-muted)">Loading chart data…</div>
@@ -413,7 +413,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
         <input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="flex:1;min-width:180px;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px">
         <button type="button" id="signup-btn" style="padding:.6rem 1.1rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free →</button>
       </div>
-      <div style="font-size:.66rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div>
+      <div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div>
     </div>
   </div>
 
@@ -483,7 +483,7 @@ function buildLegend(keys,hasPrice){
   var h='';
   keys.forEach(function(k){ h+='<span class="cot-legend-item"><span class="cot-legend-dot" style="background:'+COLORS[k]+'"></span>'+LABELS[k]+'</span>'; });
   if(hasPrice){ h+='<span class="cot-legend-item" id="legend-price"><span class="cot-legend-dot" style="background:rgba(240,240,235,.9)"></span>Price (right axis)</span>'; }
-  h+='<span class="cot-legend-item" style="margin-left:auto;font-size:.62rem">Contracts (thousands) \u00b7 Source: CFTC</span>';
+  h+='<span class="cot-legend-item" style="margin-left:auto;font-size:0.755rem">Contracts (thousands) \u00b7 Source: CFTC</span>';
   el.innerHTML=h;
 }
 buildCards();

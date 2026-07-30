@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-<link rel="preload" href="/components/styles.css?v=10" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=10">
+<link rel="preload" href="/components/styles.css?v=15" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=15">
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -42,14 +42,14 @@ html { overflow-x: hidden; overflow-x: clip; width: 100%; }
 body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 button,a,[role="button"]{touch-action:manipulation;}
 .mkt-faq{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:1.2rem}
-.mkt-faq-hd{padding:10px 16px;border-bottom:1px solid var(--border);font-size:.78rem;font-weight:700;color:var(--gold)}
+.mkt-faq-hd{padding:10px 16px;border-bottom:1px solid var(--border);font-size:0.795rem;font-weight:700;color:var(--gold)}
 .mkt-faq-item{border-bottom:1px solid var(--border)}.mkt-faq-item:last-child{border-bottom:none}
-.mkt-faq-q{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--text);gap:8px;user-select:none;line-height:1.4;min-height:44px}
+.mkt-faq-q{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;cursor:pointer;font-size:1rem;font-weight:600;color:var(--text);gap:8px;user-select:none;line-height:1.4;min-height:44px}
 .mkt-faq-q::after{content:'+';color:var(--gold);font-size:1.1rem;flex-shrink:0;width:16px;text-align:center}
 .mkt-faq-item.open .mkt-faq-q::after{content:'−'}
 .mkt-faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
 .mkt-faq-item.open .mkt-faq-a{max-height:500px}
-.mkt-faq-ai{padding:0 16px 13px;font-size:.78rem;color:var(--text-dim);line-height:1.68}
+.mkt-faq-ai{padding:0 16px 13px;font-size:1rem;color:var(--text-dim);line-height:1.68}
 /* H1 styled to match existing .sec-title — same visual, semantic upgrade */
 h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-height:inherit;margin:0;letter-spacing:inherit;text-transform:inherit;color:inherit;}
 </style>
@@ -64,18 +64,18 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
       <div class="sec-head">
         <h1 class="sec-title">Commodity Prices Today</h1>
 
-        <span id="price-data-status" style="font-size:.72rem;color:var(--text-muted)"></span>
+        <span id="price-data-status" style="font-size:0.78rem;color:var(--text-muted)"></span>
       </div>
-<style>.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> The whole grain complex checks prices here &mdash; one category-exclusive slot. <a href="/sponsor?slot=markets&amp;utm_source=markets&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> The whole grain complex checks prices here &mdash; one category-exclusive slot. <a href="/sponsor?slot=markets&amp;utm_source=markets&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
-      <div style="font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;margin-top:.25rem">Grain Futures</div>
+      <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;margin-top:.25rem">Grain Futures</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:1.5rem">
         <div class="pc">
           <div class="pc-head"><div class="pc-name">Corn</div><span class="pc-contract">front</span></div>
           <div id="pcp-corn-near" class="pc-price">&mdash;</div><div id="pcc-corn-near" class="pc-chg-val nc">&mdash;</div>
           <div class="pc-range"><div class="pc-range-labels"><span id="rlo-corn">&mdash;</span><span>52-wk</span><span id="rhi-corn">&mdash;</span></div>
           <div class="pc-range-track"><div class="pc-range-fill" id="pcf-corn-near" style="width:0%"></div><div class="pc-range-dot" id="pcd-corn-near" style="left:0%"></div></div></div>
-          <div><a href="/corn-futures-prices" style="font-size:.68rem;color:var(--gold);text-decoration:none">Full chart &rarr;</a></div>
+          <div><a href="/corn-futures-prices" style="font-size:0.77rem;color:var(--gold);text-decoration:none">Full chart &rarr;</a></div>
         </div>
         <div class="pc"><div class="pc-head"><div class="pc-name">Corn</div><span class="pc-contract">Dec '26</span></div><div id="pcp-corn-dec" class="pc-price">&mdash;</div><div id="pcc-corn-dec" class="pc-chg-val nc">&mdash;</div></div>
         <div class="pc">
@@ -83,15 +83,15 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
           <div id="pcp-bean-near" class="pc-price">&mdash;</div><div id="pcc-bean-near" class="pc-chg-val nc">&mdash;</div>
           <div class="pc-range"><div class="pc-range-labels"><span id="rlo-beans">&mdash;</span><span>52-wk</span><span id="rhi-beans">&mdash;</span></div>
           <div class="pc-range-track"><div class="pc-range-fill" id="pcf-bean-near" style="width:0%"></div><div class="pc-range-dot" id="pcd-bean-near" style="left:0%"></div></div></div>
-          <div><a href="/soybean-futures-prices" style="font-size:.68rem;color:var(--gold);text-decoration:none">Full chart &rarr;</a></div>
+          <div><a href="/soybean-futures-prices" style="font-size:0.77rem;color:var(--gold);text-decoration:none">Full chart &rarr;</a></div>
         </div>
         <div class="pc"><div class="pc-head"><div class="pc-name">Beans</div><span class="pc-contract">Nov '26</span></div><div id="pcp-bean-nov" class="pc-price">&mdash;</div><div id="pcc-bean-nov" class="pc-chg-val nc">&mdash;</div></div>
-        <div class="pc"><div class="pc-head"><div class="pc-name">Wheat</div><span class="pc-contract">front</span></div><div id="pcp-wheat" class="pc-price">&mdash;</div><div id="pcc-wheat" class="pc-chg-val nc">&mdash;</div><div><a href="/wheat-futures-prices" style="font-size:.68rem;color:var(--gold);text-decoration:none">Full chart &rarr;</a></div></div>
+        <div class="pc"><div class="pc-head"><div class="pc-name">Wheat</div><span class="pc-contract">front</span></div><div id="pcp-wheat" class="pc-price">&mdash;</div><div id="pcc-wheat" class="pc-chg-val nc">&mdash;</div><div><a href="/wheat-futures-prices" style="font-size:0.77rem;color:var(--gold);text-decoration:none">Full chart &rarr;</a></div></div>
         <div class="pc"><div class="pc-head"><div class="pc-name">Oats</div><span class="pc-contract">ZO</span></div><div id="pcp-oats" class="pc-price">&mdash;</div><div id="pcc-oats" class="pc-chg-val nc">&mdash;</div></div>
-        <div class="pc" style="border:1px dashed var(--border-g)"><div class="pc-head"><div class="pc-name">Cash Bids</div></div><div style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem;line-height:1.5">Local elevator prices near you</div><a href="/cash-bids" style="font-size:.78rem;color:var(--gold);font-weight:700;text-decoration:none">Check bids near me &rarr;</a></div>
+        <div class="pc" style="border:1px dashed var(--border-g)"><div class="pc-head"><div class="pc-name">Cash Bids</div></div><div style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem;line-height:1.5">Local elevator prices near you</div><a href="/cash-bids" style="font-size:0.795rem;color:var(--gold);font-weight:700;text-decoration:none">Check bids near me &rarr;</a></div>
       </div>
 
-      <div style="font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem">Livestock</div>
+      <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem">Livestock</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:1.5rem">
         <div class="pc"><div class="pc-head"><div class="pc-name">Live Cattle</div></div><div id="pcp-cattle" class="pc-price">&mdash;</div><div id="pcc-cattle" class="pc-chg-val nc">&mdash;</div></div>
         <div class="pc"><div class="pc-head"><div class="pc-name">Feeder Cattle</div></div><div id="pcp-feeder" class="pc-price">&mdash;</div><div id="pcc-feeder" class="pc-chg-val nc">&mdash;</div></div>
@@ -99,7 +99,7 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
         <div class="pc"><div class="pc-head"><div class="pc-name">Class III Milk</div></div><div id="pcp-milk" class="pc-price">&mdash;</div><div id="pcc-milk" class="pc-chg-val nc">&mdash;</div></div>
       </div>
 
-      <div style="font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem">Energy &amp; Inputs</div>
+      <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem">Energy &amp; Inputs</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:1.5rem">
         <div class="pc"><div class="pc-head"><div class="pc-name">Crude WTI</div></div><div id="pcp-crude" class="pc-price">&mdash;</div><div id="pcc-crude" class="pc-chg-val nc">&mdash;</div></div>
         <div class="pc"><div class="pc-head"><div class="pc-name">Natural Gas</div></div><div id="pcp-natgas" class="pc-price">&mdash;</div><div id="pcc-natgas" class="pc-chg-val nc">&mdash;</div></div>
@@ -107,7 +107,7 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
         <div class="pc"><div class="pc-head"><div class="pc-name">Soybean Oil</div></div><div id="pcp-oil" class="pc-price">&mdash;</div><div id="pcc-oil" class="pc-chg-val nc">&mdash;</div></div>
       </div>
 
-      <div style="font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem">Metals &amp; Macro</div>
+      <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem">Metals &amp; Macro</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:.5rem">
         <div class="pc"><div class="pc-head"><div class="pc-name">Gold</div></div><div id="pc-gold" class="pc-price">&mdash;</div><div id="pcc-gold" class="pc-chg-val nc">&mdash;</div></div>
         <div class="pc"><div class="pc-head"><div class="pc-name">Silver</div></div><div id="pc-silver" class="pc-price">&mdash;</div><div id="pcc-silver" class="pc-chg-val nc">&mdash;</div></div>
@@ -115,7 +115,7 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
         <div class="pc"><div class="pc-head"><div class="pc-name">S&amp;P 500</div></div><div id="pcp-sp500" class="pc-price">&mdash;</div><div id="pcc-sp500" class="pc-chg-val nc">&mdash;</div></div>
       </div>
 
-      <div style="margin-top:.75rem;font-size:.72rem;color:var(--text-muted)">Updated every 30 min &middot; Source: Yahoo Finance (yfinance) &middot; <a href="/data-sources" style="color:var(--gold)">Data sources &rarr;</a></div>
+      <div style="margin-top:.75rem;font-size:0.78rem;color:var(--text-muted)">Updated every 30 min &middot; Source: Yahoo Finance (yfinance) &middot; <a href="/data-sources" style="color:var(--gold)">Data sources &rarr;</a></div>
 
       <div class="mkt-faq">
         <div class="mkt-faq-hd">Common Questions About Grain &amp; Commodity Prices</div>

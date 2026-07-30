@@ -1138,7 +1138,7 @@ function buildMarketCard(m, showExtras) {
     + '<div>'
       + '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.25rem">'
         + '<span style="font-size:1.5rem;font-weight:700;color:' + color
-          + ';font-family:\'Oswald\',sans-serif;line-height:1">' + yes + '%</span>'
+          + ';font-family:Inter,system-ui,sans-serif;line-height:1">' + yes + '%</span>'
         + '<span style="font-size:.68rem;color:var(--text-muted)">YES probability</span>'
       + '</div>'
       + '<div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden">'

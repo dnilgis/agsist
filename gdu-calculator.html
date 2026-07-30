@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#111a0a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="/components/styles.css?v=10" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=10">
+<link rel="preload" href="/components/styles.css?v=15" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=15">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -62,8 +62,8 @@ button,a,[role="button"]{touch-action:manipulation;}
 .gdu-page { max-width: 1060px; margin: 0 auto; padding: 0 1rem 3rem; }
 
 .gdu-hero { padding: 1.3rem 0 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
-.gdu-eyebrow { font-size:.62rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:.25rem; }
-.gdu-hero h1 { font-family:'Oswald',sans-serif; font-size:1.65rem; font-weight:800; text-transform:uppercase; color:var(--text); margin:0 0 .3rem; line-height:1.1; }
+.gdu-eyebrow { font-size:0.755rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:.25rem; }
+.gdu-hero h1 { font-family:var(--font-display); font-size:1.65rem; font-weight:800; text-transform:uppercase; color:var(--text); margin:0 0 .3rem; line-height:1.1; }
 .gdu-hero p { font-size:.82rem; color:var(--text-dim); line-height:1.6; max-width:660px; margin:0; }
 
 .gdu-layout { display:grid; grid-template-columns:minmax(0,1fr); gap:1.25rem; }
@@ -71,20 +71,20 @@ button,a,[role="button"]{touch-action:manipulation;}
 
 /* ── INPUTS ──────────────────────────────────────────────────────────── */
 .gdu-card { background:var(--surface); border:2px solid var(--border); border-radius:12px; padding:1.1rem 1.2rem; }
-.gdu-card-title { font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:.9rem; display:flex; align-items:center; gap:.4rem; }
+.gdu-card-title { font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:.9rem; display:flex; align-items:center; gap:.4rem; }
 
 .f-group { margin-bottom:.85rem; }
-.f-label { font-size:.62rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-dim); display:block; margin-bottom:.3rem; }
+.f-label { font-size:0.755rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-dim); display:block; margin-bottom:.3rem; }
 .f-input { background:var(--bg); border:2px solid var(--border); border-radius:6px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:1rem; padding:.42rem .6rem; width:100%; outline:none; box-sizing:border-box; }
 .f-input:focus { border-color:var(--gold); }
 .f-select { background:var(--bg); border:2px solid var(--border); border-radius:6px; color:var(--text); font-size:1rem; padding:.42rem .6rem; width:100%; outline:none; cursor:pointer; box-sizing:border-box; }
 .f-select:focus { border-color:var(--gold); }
-.f-hint { font-size:.62rem; color:var(--text-muted); margin-top:.25rem; line-height:1.5; }
+.f-hint { font-size:0.755rem; color:var(--text-muted); margin-top:.25rem; line-height:1.5; }
 .f-2col { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.65rem; }
 
 /* Crop switcher pills */
 .crop-pills { display:flex; gap:.4rem; margin-bottom:1rem; }
-.crop-pill { flex:1; padding:.5rem .6rem; border-radius:8px; border:2px solid var(--border); background:var(--bg); color:var(--text-dim); font-family:'JetBrains Mono',monospace; font-size:.7rem; font-weight:700; letter-spacing:.04em; cursor:pointer; transition:all .15s; text-align:center; min-height:44px; display:flex; align-items:center; justify-content:center; gap:.3rem; }
+.crop-pill { flex:1; padding:.5rem .6rem; border-radius:8px; border:2px solid var(--border); background:var(--bg); color:var(--text-dim); font-family:'JetBrains Mono',monospace; font-size:0.775rem; font-weight:700; letter-spacing:.04em; cursor:pointer; transition:all .15s; text-align:center; min-height:44px; display:flex; align-items:center; justify-content:center; gap:.3rem; }
 .crop-pill:hover { border-color:var(--gold); }
 .crop-pill.active { border-color:var(--gold); background:rgba(230,176,66,.12); color:var(--text); }
 
@@ -92,18 +92,18 @@ button,a,[role="button"]{touch-action:manipulation;}
 .fetch-btn { width:100%; padding:.75rem 1rem; border-radius:8px; border:none; background:var(--gold); color:#0a1a0a; font-family:'JetBrains Mono',monospace; font-size:.8rem; font-weight:900; letter-spacing:.06em; cursor:pointer; transition:opacity .15s; min-height:48px; display:flex; align-items:center; justify-content:center; gap:.5rem; margin-bottom:.75rem; }
 .fetch-btn:hover { opacity:.88; }
 .fetch-btn:disabled { opacity:.45; cursor:not-allowed; }
-.fetch-status { font-size:.7rem; color:var(--text-muted); text-align:center; min-height:1.2rem; margin-bottom:.5rem; }
+.fetch-status { font-size:0.775rem; color:var(--text-muted); text-align:center; min-height:1.2rem; margin-bottom:.5rem; }
 .fetch-status.ok { color:var(--green); }
 .fetch-status.err { color:#e05c5c; }
 
 .method-divider { display:flex; align-items:center; gap:.5rem; margin:.75rem 0; }
 .method-divider::before,.method-divider::after { content:''; flex:1; height:1px; background:var(--border); }
-.method-divider span { font-size:.62rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); white-space:nowrap; }
+.method-divider span { font-size:0.755rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); white-space:nowrap; }
 
 /* Result rows */
 .r-row { display:flex; justify-content:space-between; align-items:baseline; padding:.3rem 0; border-bottom:1px solid rgba(255,255,255,.04); }
 .r-row:last-child { border-bottom:none; }
-.r-lbl { font-size:.75rem; color:var(--text-dim); }
+.r-lbl { font-size:0.787rem; color:var(--text-dim); }
 .r-val { font-family:'JetBrains Mono',monospace; font-size:.85rem; font-weight:700; color:var(--text); }
 .r-val.gold { color:var(--gold); }
 .r-val.green { color:var(--green); }
@@ -115,23 +115,23 @@ button,a,[role="button"]{touch-action:manipulation;}
 .gauge-arc { position:relative; width:200px; height:108px; overflow:hidden; }
 .gauge-arc svg { width:100%; height:100%; }
 .gauge-center-val { position:absolute; bottom:0; left:50%; transform:translateX(-50%); text-align:center; width:160px; }
-.gauge-num { font-family:'Oswald',sans-serif; font-size:2.4rem; font-weight:800; color:var(--text); line-height:1; }
-.gauge-unit { font-size:.62rem; color:var(--text-dim); }
-.gauge-stage { display:inline-flex; align-items:center; gap:.4rem; margin-top:.65rem; padding:.3rem .9rem; background:rgba(230,176,66,.12); border:1px solid rgba(230,176,66,.35); border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:.72rem; font-weight:700; color:var(--gold); }
+.gauge-num { font-family:var(--font-display); font-size:2.4rem; font-weight:800; color:var(--text); line-height:1; }
+.gauge-unit { font-size:0.755rem; color:var(--text-dim); }
+.gauge-stage { display:inline-flex; align-items:center; gap:.4rem; margin-top:.65rem; padding:.3rem .9rem; background:rgba(230,176,66,.12); border:1px solid rgba(230,176,66,.35); border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:0.78rem; font-weight:700; color:var(--gold); }
 
 /* Progress bar */
 .prog-wrap { margin:1rem 0 .4rem; }
 .prog-track { height:10px; background:var(--border); border-radius:5px; position:relative; overflow:visible; }
 .prog-fill { height:100%; border-radius:5px; background:linear-gradient(90deg,var(--green) 0%,var(--gold) 65%,#e05c5c 100%); transition:width .6s ease; }
 .prog-marker { position:absolute; top:-5px; width:4px; height:20px; background:#fff; border-radius:2px; transition:left .6s ease; box-shadow:0 0 4px rgba(0,0,0,.4); }
-.prog-labels { display:flex; justify-content:space-between; font-size:.62rem; color:var(--text-muted); margin-top:.4rem; }
+.prog-labels { display:flex; justify-content:space-between; font-size:0.755rem; color:var(--text-muted); margin-top:.4rem; }
 
 /* Maturity dates */
 .mat-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.5rem; margin:.75rem 0; }
 .mat-card { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:.65rem .6rem; text-align:center; }
-.mat-card-lbl { font-size:.62rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:.25rem; }
+.mat-card-lbl { font-size:0.755rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:.25rem; }
 .mat-card-val { font-family:'JetBrains Mono',monospace; font-size:.95rem; font-weight:800; color:var(--gold); line-height:1.2; }
-.mat-card-sub { font-size:.62rem; color:var(--text-muted); margin-top:.15rem; }
+.mat-card-sub { font-size:0.755rem; color:var(--text-muted); margin-top:.15rem; }
 
 /* ── MILESTONES ───────────────────────────────────────────────────────── */
 .milestones-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:.5rem; margin-top:.75rem; }
@@ -139,18 +139,18 @@ button,a,[role="button"]{touch-action:manipulation;}
 .ms.reached { border-color:var(--green); background:rgba(58,139,60,.07); }
 .ms.current { border-color:var(--gold); background:rgba(230,176,66,.1); }
 .ms-icon { font-size:.9rem; margin-bottom:.15rem; }
-.ms-stage { font-family:'JetBrains Mono',monospace; font-size:.72rem; font-weight:900; color:var(--text); }
-.ms-gdu { font-size:.62rem; color:var(--text-muted); margin:.1rem 0; }
-.ms-desc { font-size:.62rem; color:var(--text-dim); line-height:1.3; }
+.ms-stage { font-family:'JetBrains Mono',monospace; font-size:0.78rem; font-weight:900; color:var(--text); }
+.ms-gdu { font-size:0.755rem; color:var(--text-muted); margin:.1rem 0; }
+.ms-desc { font-size:1rem; color:var(--text-dim); line-height:1.3; }
 
 /* ── REFERENCE TABLES ─────────────────────────────────────────────────── */
 .ref-layout { display:grid; grid-template-columns:minmax(0,1fr); gap:1.25rem; margin-top:1.25rem; }
 @media(min-width:720px){ .ref-layout { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 
 .ref-table-wrap { overflow-x:auto; }
-.ref-table { width:100%; border-collapse:collapse; font-size:.74rem; }
-.ref-table th { background:rgba(230,176,66,.1); color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:.45rem .55rem; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
-.ref-table td { padding:.38rem .55rem; border-bottom:1px solid rgba(255,255,255,.04); color:var(--text-dim); font-size:.74rem; }
+.ref-table { width:100%; border-collapse:collapse; font-size:0.785rem; }
+.ref-table th { background:rgba(230,176,66,.1); color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:.45rem .55rem; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
+.ref-table td { padding:.38rem .55rem; border-bottom:1px solid rgba(255,255,255,.04); color:var(--text-dim); font-size:0.785rem; }
 .ref-table td:first-child { font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--gold); }
 .ref-table td:nth-child(2) { font-family:'JetBrains Mono',monospace; color:var(--text); }
 .ref-table tr:last-child td { border-bottom:none; }
@@ -158,14 +158,14 @@ button,a,[role="button"]{touch-action:manipulation;}
 .ref-table tr:hover td { background:rgba(255,255,255,.03); }
 
 /* ── INFO BOXES ───────────────────────────────────────────────────────── */
-.info-box { background:var(--bg); border-left:3px solid var(--gold); border-radius:0 6px 6px 0; padding:.65rem .9rem; font-size:.76rem; color:var(--text-dim); line-height:1.6; margin:.5rem 0; }
+.info-box { background:var(--bg); border-left:3px solid var(--gold); border-radius:0 6px 6px 0; padding:.65rem .9rem; font-size:0.79rem; color:var(--text-dim); line-height:1.6; margin:.5rem 0; }
 .info-box.green { border-color:var(--green); }
 .info-box.red   { border-color:#e05c5c; }
 .info-box strong { color:var(--text); }
 
 /* WI avg table */
-.wi-avg-table { width:100%; border-collapse:collapse; font-size:.74rem; }
-.wi-avg-table th { background:rgba(230,176,66,.1); color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:.62rem; padding:.4rem .5rem; text-align:left; border-bottom:1px solid var(--border); }
+.wi-avg-table { width:100%; border-collapse:collapse; font-size:0.785rem; }
+.wi-avg-table th { background:rgba(230,176,66,.1); color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:0.755rem; padding:.4rem .5rem; text-align:left; border-bottom:1px solid var(--border); }
 .wi-avg-table td { padding:.35rem .5rem; border-bottom:1px solid rgba(255,255,255,.04); }
 .wi-avg-table td:first-child { color:var(--text); font-weight:600; }
 .wi-avg-table td:nth-child(4) { font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--gold); }
@@ -176,13 +176,13 @@ button,a,[role="button"]{touch-action:manipulation;}
 @media(min-width:580px){ .formula-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(min-width:900px){ .formula-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } }
 .formula-card { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:.85rem .9rem; }
-.formula-card-title { font-size:.62rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:.5rem; }
-.formula-card p { font-size:.75rem; color:var(--text-dim); line-height:1.6; margin:0; }
-.formula-card code { font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--green); background:rgba(58,139,60,.1); padding:.1rem .3rem; border-radius:3px; }
+.formula-card-title { font-size:0.755rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:.5rem; }
+.formula-card p { font-size:0.787rem; color:var(--text-dim); line-height:1.6; margin:0; }
+.formula-card code { font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--green); background:rgba(58,139,60,.1); padding:.1rem .3rem; border-radius:3px; }
 
 /* ── LIVE BADGE ───────────────────────────────────────────────────────── */
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-.live-badge { display:inline-flex; align-items:center; gap:.3rem; font-size:.62rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--green); background:rgba(58,139,60,.1); border:1px solid rgba(58,139,60,.3); border-radius:20px; padding:.15rem .5rem; }
+.live-badge { display:inline-flex; align-items:center; gap:.3rem; font-size:0.755rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--green); background:rgba(58,139,60,.1); border:1px solid rgba(58,139,60,.3); border-radius:20px; padding:.15rem .5rem; }
 .live-dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; display:inline-block; }
 
 /* ── RESPONSIVE ───────────────────────────────────────────────────────── */
@@ -193,13 +193,14 @@ button,a,[role="button"]{touch-action:manipulation;}
   .milestones-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .formula-grid { grid-template-columns:1fr; }
 }
-.gdu-source { font-size:.65rem; color:var(--text-muted); text-align:center; margin-top:1.5rem; padding-top:.75rem; border-top:1px solid var(--border); }
+.gdu-source { font-size:0.763rem; color:var(--text-muted); text-align:center; margin-top:1.5rem; padding-top:.75rem; border-top:1px solid var(--border); }
 .gdu-source a { color:var(--gold); text-decoration:none; }
 @media (prefers-reduced-motion: reduce){ .live-dot{animation:none;} #arc-fill,.prog-fill,.prog-marker,.ms{transition:none !important;} }
 
-.ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
-.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
+.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
+.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
 .ag-sponsor-ribbon a{color:#d4a23f}
+.tblscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}.tblscroll table{margin:0;min-width:480px}
 </style>
 </head>
 <body>
@@ -303,13 +304,13 @@ button,a,[role="button"]{touch-action:manipulation;}
     <!-- ── THE HERO FEATURE ──────────────────────────────────────── -->
     <div class="gdu-card" style="margin-bottom:1.1rem">
       <div class="gdu-card-title"> Real Accumulated GDUs &mdash; Auto-Fetched</div>
-      <p style="font-size:.76rem;color:var(--text-dim);line-height:1.6;margin:0 0 .85rem">Enter your planting date and location, then click fetch. This calculator pulls <strong style="color:var(--text)">actual daily high &amp; low temperatures</strong> for every day since planting from the Open-Meteo weather archive and computes your exact accumulated GDUs &mdash; no manual entry, no guessing.</p>
+      <p style="font-size:0.79rem;color:var(--text-dim);line-height:1.6;margin:0 0 .85rem">Enter your planting date and location, then click fetch. This calculator pulls <strong style="color:var(--text)">actual daily high &amp; low temperatures</strong> for every day since planting from the Open-Meteo weather archive and computes your exact accumulated GDUs &mdash; no manual entry, no guessing.</p>
 
       <div class="f-group">
         <label class="f-label" for="g-zip">Your Location (ZIP or City)</label>
         <div style="display:flex;gap:.4rem">
           <input class="f-input" id="g-zip" type="text" placeholder="ZIP code or city name" maxlength="40" style="flex:1">
-          <button id="g-locate-btn" style="padding:.42rem .75rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--gold);font-size:.7rem;font-weight:700;cursor:pointer;white-space:nowrap;min-height:44px" aria-label="Use my current location" title="Use my location"><svg class="ic-sp" aria-hidden="true"><use href="#sp-globe"/></svg> Auto</button>
+          <button id="g-locate-btn" style="padding:.42rem .75rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--gold);font-size:0.775rem;font-weight:700;cursor:pointer;white-space:nowrap;min-height:44px" aria-label="Use my current location" title="Use my location"><svg class="ic-sp" aria-hidden="true"><use href="#sp-globe"/></svg> Auto</button>
         </div>
         <div class="f-hint" id="g-loc-display">Your location appears here after fetching</div>
       </div>
@@ -359,7 +360,7 @@ button,a,[role="button"]{touch-action:manipulation;}
     <!-- WI Monthly Averages -->
     <div class="gdu-card">
       <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Upper Midwest GDU Reference (WI example)</div>
-      <table class="wi-avg-table">
+      <div class="tblscroll"><table class="wi-avg-table">
         <thead><tr><th>Month</th><th>Avg Hi</th><th>Avg Lo</th><th>GDU/Day</th><th>Monthly</th></tr></thead>
         <tbody>
           <tr><td>May</td>     <td>65&deg;F</td><td>44&deg;F</td><td>7.5</td> <td>232</td></tr>
@@ -368,7 +369,7 @@ button,a,[role="button"]{touch-action:manipulation;}
           <tr><td>August</td>  <td>80&deg;F</td><td>59&deg;F</td><td>19.5</td><td>605</td></tr>
           <tr><td>September</td><td>70&deg;F</td><td>50&deg;F</td><td>10.0</td><td>300</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="f-hint" style="margin-top:.4rem">WI 30-year NOAA normals shown as one reference. Southern WI runs ~5&ndash;8% higher; central Corn Belt (IA/IL/IN) runs ~15&ndash;20% higher; Northern Plains similar to WI. For your exact location, use the Fetch Real GDUs button above.</div>
     </div>
   </div>
@@ -379,7 +380,7 @@ button,a,[role="button"]{touch-action:manipulation;}
     <div class="gauge-wrap">
       <div class="gauge-center">
         <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Season Progress</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Season Progress</span>
           <span class="live-badge" id="live-badge" style="display:none"><span class="live-dot"></span>Live data</span>
         </div>
         <div class="gauge-arc">
@@ -408,7 +409,7 @@ button,a,[role="button"]{touch-action:manipulation;}
       <div style="margin-top:.85rem">
         <div class="r-row"><span class="r-lbl">Days since planting</span><span class="r-val" id="r-days">&mdash;</span></div>
         <div class="r-row"><span class="r-lbl">Average GDU/day</span><span class="r-val gold" id="r-gdu-day">&mdash;</span></div>
-        <div class="r-row"><span class="r-lbl">Data source</span><span class="r-val" id="r-source" style="font-size:.72rem;color:var(--text-muted)">&mdash;</span></div>
+        <div class="r-row"><span class="r-lbl">Data source</span><span class="r-val" id="r-source" style="font-size:0.78rem;color:var(--text-muted)">&mdash;</span></div>
       </div>
     </div>
 
@@ -424,7 +425,7 @@ button,a,[role="button"]{touch-action:manipulation;}
       <div class="r-row"><span class="r-lbl" id="r-mat-lbl">Est. maturity (black layer)</span><span class="r-val green" id="r-mat-date">&mdash;</span></div>
       <div class="r-row"><span class="r-lbl">Frost risk</span><span class="r-val" id="r-frost-verdict">&mdash;</span></div>
       <div class="f-hint" id="r-mat-note" style="margin-top:.5rem"></div>
-      <button id="g-share-btn" type="button" style="margin-top:.7rem;width:100%;padding:.55rem;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;letter-spacing:.04em;cursor:pointer;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Copy shareable link to this field</button>
+      <button id="g-share-btn" type="button" style="margin-top:.7rem;width:100%;padding:.55rem;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:0.775rem;font-weight:700;letter-spacing:.04em;cursor:pointer;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Copy shareable link to this field</button>
       <div class="f-hint" id="g-share-status" style="text-align:center;margin-top:.3rem" role="status" aria-live="polite"></div>
     </div>
 
@@ -516,11 +517,11 @@ button,a,[role="button"]{touch-action:manipulation;}
 <div class="gdu-card" style="margin-top:1.25rem">
   <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Related Tools</div>
   <div style="display:flex;flex-wrap:wrap;gap:.5rem">
-    <a href="/fast-facts#stages" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:.74rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Crop Stage Explorer</a>
-    <a href="/yield-estimator" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:.74rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Yield Estimator</a>
-    <a href="/breakeven" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:.74rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Break-Even Calculator</a>
-    <a href="/fast-facts" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:.74rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Agricultural Fast Facts</a>
-    <a href="/planting-date" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:.74rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Planting Date Tool</a>
+    <a href="/fast-facts#stages" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Crop Stage Explorer</a>
+    <a href="/yield-estimator" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Yield Estimator</a>
+    <a href="/breakeven" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Break-Even Calculator</a>
+    <a href="/fast-facts" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Agricultural Fast Facts</a>
+    <a href="/planting-date" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Planting Date Tool</a>
   </div>
 </div>
 
