@@ -1,152 +1,151 @@
 {
-  "headline": "CRUDE RUNS 3%; MILK DROPS HARD ON MONTH-END",
-  "subheadline": "Iran re-escalates in Kuwait and Bahrain, WTI posts its biggest single-session gain in weeks while grains drift and Class III milk has its worst day of the year.",
-  "lead": "Iran's strikes on U.S. bases in Bahrain and Kuwait, announced Friday, ended whatever diplomatic optimism built early this week and sent WTI crude to $85.09, up 3.3%. Grains barely flinched: corn eased 2.5 cents, beans gave back 3 cents, wheat slipped 3.75 cents. The week's real story resolved today: the heat premium that drove wheat Thursday is already leaking out, and crude just told you the geopolitical floor is still live.",
-  "the_takeaway": "Crude has a floor; grains do not have a catalyst. Wait on both.",
-  "teaser": "Iran re-escalates, crude runs. Grains drift into the weekend. Class III milk has its worst day of the year.",
+  "headline": "WHEAT BREAKS 3%; MILK RUNS HARD TO CLOSE WEEK",
+  "subheadline": "Grains close July in the red as corn pollination wraps in decent shape; Class III milk tops the board on its biggest session gain in months.",
+  "lead": "Wheat dropped 18¾ cents Friday, closing a brutal week by falling through $6.38 on fund and technical selling after yesterday's short-covering rally ran out of room. Corn pollination coming through in decent shape killed the weather premium that had been propping the complex. Class III milk at $17.58 was the day's one clean winner, up 3.3%. July ends with grains lower and cattle holding.",
+  "the_takeaway": "Corn pollination cleared decent; the weather premium is gone, and grains will need a new story.",
+  "teaser": "Wheat's worst week in months, milk's best session. July closes with grains giving back the heat premium.",
   "one_number": {
-    "value": "7.9%",
-    "unit": "Class III Milk single-session decline",
-    "context": "Class III milk settled $15.67, its worst day of the year by magnitude. That kind of move on a month-end Friday says the dairy complex re-priced something structural, not a blip. Dairy producers carrying unhedged Q3 production should be asking hard questions Monday."
+    "value": "90%",
+    "unit": "Class III Milk's 52-week range percentile",
+    "context": "Milk at $17.58 sits at 90% of its 52-week range after today's 3.3% gain, the highest positioning in the complex. Strengthening U.S.-Mexico dairy partnership and ongoing USMCA talks are building a floor under Class III that the grains don't have right now."
   },
   "yesterdays_call": {
-    "summary": "Called crude up, toward $86.50; crude settled today at $85.09, short of the target.",
+    "summary": "Called wheat up, toward above $6.90. Wheat closed today at $6.38, dropping 18¾ cents.",
     "outcome": "didnt",
-    "note": "Iran's strikes delivered the catalyst, but the move stalled at $85.09. The level never touched $86.50, so the call did not play out even though the directional read was right.",
+    "note": "Yesterday's export-driven conviction ran straight into today's weather-premium breakdown and fund selling. Miss, plain and simple.",
     "computed": {
       "outcome": "didnt",
       "made": "2026-07-31",
-      "p0": 85.09,
-      "p1": 85.09,
-      "instrument": "crude",
+      "p0": 6.38,
+      "p1": 6.38,
+      "instrument": "wheat",
       "direction": "up",
-      "level": 86.5
+      "level": 6.55
     }
   },
   "todays_call": {
-    "instrument": "crude",
+    "instrument": "wheat",
     "direction": "up",
-    "level": 86.5
+    "level": 6.55
   },
   "sections": [
     {
-      "title": "Crude Gets Its Floor Back",
-      "icon": "🛢️",
-      "body": "- WTI settled $85.09, up 3.3%, after Iran claimed strikes on U.S. military assets in Bahrain and Kuwait Friday, snapping the diplomatic optimism that deflated crude most of this week.\n- Six Saudi tankers rerouting around Africa and ADNOC buying five supertankers for $590 million tell you the shipping math is getting repriced, not just the spot barrel.\n- The Iran-Hormuz premium that built since early April and was deflating on diplomatic progress just got a reason to rebuild; **$85.09** is not the ceiling if the weekend brings more escalation.",
-      "catalyst": "Iran strikes U.S. bases in Bahrain and Kuwait Friday; Saudi tankers reroute around Africa.",
-      "bottom_line": "The geopolitical floor is live again. Do not treat this week's crude slide as a trend.",
-      "conviction_level": "high",
+      "title": "Wheat Breaks to Close July",
+      "icon": "🌾",
+      "body": "- Chicago wheat dropped 18¾ cents to **$6.38**, reversing Thursday's entire rally in one session on fund and technical selling with no fresh bullish catalyst to lean on.\n- Corn pollination wrapping in decent shape, per market commentary from Moving Parts LLC, pulled the weather premium out of the whole grain complex heading into August.\n- The weekly loss is the story: wheat gave back most of what it built in the prior session, and the funds are not adding conviction on the long side here.",
+      "catalyst": "Fund and technical selling; corn pollination through in decent shape removes weather premium.",
+      "bottom_line": "The bounce was borrowed; wheat needs a new catalyst above $6.55 to build anything real.",
+      "conviction_level": "medium",
       "overnight_surprise": true,
-      "vs_yesterday": "Crude: reversed the week's slide in one session on fresh Iran escalation."
+      "vs_yesterday": "Wheat: yesterday's export rally fully erased in a single session."
     },
     {
-      "title": "Grains Drift to Close the Week",
+      "title": "Corn and Beans Close July Soft",
       "icon": "🌽",
-      "body": "- Corn eased to **$4.43**, off 2.5 cents; December held $4.66, down 3 cents. No new catalyst, looks like fund liquidation to end the month.\n- Wheat gave back 3.75 cents to $6.53, handing back a slice of Thursday's move; the weekly rains that Missouri Extension says the soybean crop needs in August are the next real event.\n- Beans slipped 3 cents to $11.76; pollination stress risk is the only card left on the table heading into August, and the forecast for the Belt opening the month cool and wet removes that card for now.",
-      "catalyst": "University of Missouri Extension flags August weekly rains as make-or-break for soybean yield; no new USDA data.",
-      "bottom_line": "Grains have no driver this weekend. The August weather calendar is the next reset.",
-      "conviction_level": "low",
-      "overnight_surprise": false,
-      "vs_yesterday": "Wheat: Thursday's conviction did not hold; gave back most of the session's gain."
-    },
-    {
-      "title": "Cattle End Two-Week Slide",
-      "icon": "🐄",
-      "body": "- Live cattle added 1.3% to **$231.28**, feeders gained 1.0% to $342.60, ending two weeks of consecutive losses on technical buying ahead of direct business.\n- Cash trade reported at $230-$231 per hundredweight, down $7-$8 from the prior week, which tells you the futures bounce is position-squaring, not a demand signal.\n- The processing-constrained environment from the Cargill plant lockout, ongoing since May 19 with no resolution, is still in the background; the box-beef cutout has to firm before this bounce means anything.",
-      "catalyst": "Cash trade $230-$231/cwt, futures end two-week losing streak on technical buying; Cargill lockout unresolved.",
-      "bottom_line": "Cattle bounced. It is not a bottom until cash confirms it.",
+      "body": "- Corn settled at **$4.41**, off 5¼ cents, as pollination progress in decent shape removed the last justification for a weather premium the market had been quietly carrying.\n- Soybeans gave back 8¼ cents to close at $11.71, with fund and technical selling adding to what was already a steep weekly decline; favorable development weather across most of the Belt gave the bears the cover they needed.\n- Ethanol demand remains solid per the Renewable Fuels Association, which puts a modest floor under corn use, but it is not enough to fight fund exits on a weather-clearing day.",
+      "catalyst": "Favorable corn pollination weather; Moving Parts LLC confirms average crop expectations; fund and technical selling.",
+      "bottom_line": "Weather premium priced out; ethanol is the only demand story holding the corn floor right now.",
       "conviction_level": "medium",
       "overnight_surprise": false
     },
     {
-      "title": "Milk Hits the Floor Hard",
-      "icon": "🥛",
-      "body": "- Class III milk dropped 7.9% to **$15.67**, its worst single-session decline of the year; the U.S.-Mexico dairy summit renewing USMCA trade commitments was not enough to offset whatever repricing hit the spot market.\n- Hogs fell 2.7% to $83.25, extending the bleed that started Thursday; two consecutive sessions down more than 2.5% in lean hogs says the market is working through supply overhang, not a one-day event.\n- Dairy producers unhedged into Q3 have a real problem; hog producers need export sales next Thursday to confirm whether the pork demand story is intact.",
-      "catalyst": "Class III milk month-end repricing; lean hogs extend Thursday's drop; U.S.-Mexico dairy summit announced.",
-      "bottom_line": "Two hard sessions in hogs and a historic milk drop say protein complex is under real pressure.",
+      "title": "Cattle Hold; Milk Runs Hard",
+      "icon": "🐄",
+      "body": "- Live cattle added a dime to **$231.57** and feeders firmed to $343.27, both holding as the cash trade stays elusive into the weekend; feeders benefiting from corn's weakness, which eases placement cost math.\n- Class III milk at $17.58 posted the day's sharpest gain in the complex, up 3.3%, now sitting at 90% of its 52-week range; U.S.-Mexico dairy summit renewing USMCA commitments is building structural support under milk prices.\n- The ongoing Cargill multi-plant lockout, with 1,700 workers still out, continues to constrain processing capacity and keeps the fed cattle trade from finding a clean price discovery moment.",
+      "catalyst": "U.S.-Mexico dairy summit deepens USMCA partnership; cattle cash trade elusive; Cargill plant lockout constrains weekly slaughter capacity.",
+      "bottom_line": "Cattle holding, not pushing; milk is the livestock complex's real story to close July.",
       "conviction_level": "medium",
       "overnight_surprise": true,
-      "farmer_action": "Dairy: if you have unhedged Q3 Class III milk, price is below the 35th percentile of the 52-week range. Review hedge coverage before next week opens."
+      "vs_yesterday": "Cattle: narrative held flat; milk broke out where cattle could not."
+    },
+    {
+      "title": "Crude Firms; Hormuz Still in Play",
+      "icon": "⛽",
+      "body": "- WTI crude rose 2.9% to **$84.73**, recovering off the week's lows as Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, still leave enough uncertainty to put a floor under oil.\n- Saudi Arabia's Abqaiq processing complex took another drone strike, a facility that handles a significant share of global crude output; markets absorbed the news without running hard, but the risk premium did not disappear.\n- The weekly picture is an 8% loss for Brent even as Friday firmed; China's Q2 crude imports fell on higher prices from the Hormuz disruption, which is the demand side of why the weekly decline was so large.",
+      "catalyst": "Abqaiq drone strike; Saudi maritime coalition push; China Q2 import decline reported by EIA; Hormuz premium partially unwinding.",
+      "bottom_line": "Crude found a floor on geopolitical noise, but the weekly loss says the demand math is catching up.",
+      "conviction_level": "medium",
+      "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "FTC Settles With John Deere on Right-to-Repair Access",
-      "body": "Farmers and independent technicians gain enforceable rights to repair John Deere equipment under a new FTC settlement. For operations running green iron, this directly affects parts sourcing, repair timelines, and the leverage you have at the dealership.",
-      "tag": "POLICY"
+      "title": "High Plains Drought Forcing Producers to Shop for Feed",
+      "body": "Drought across the High Plains is pushing livestock producers to source feed outside their normal supply chains, raising input costs heading into fall. Producers in the region should be pricing alternatives now before competition tightens the spot market further.",
+      "tag": "WEATHER"
     },
     {
-      "title": "CCC Faces Looming Liquidity Crunch Under New Farm Bill Spending",
-      "body": "The Congressional Budget Office projects the Commodity Credit Corporation, USDA's primary lending arm for farm programs, faces a liquidity crisis driven by One Big Beautiful Bill outlays. If CCC taps its borrowing limit, farm program payment timing gets uncertain fast.",
+      "title": "Farm Bill Confirms E15, No Markup Date Set",
+      "body": "Senate Ag Committee Chairman Boozman confirmed E15 year-round availability will be in the farm bill, which adds a structural demand floor for corn if it passes; no markup date was announced, so do not price it in yet.",
       "tag": "POLICY"
     }
   ],
   "weekly_thread": {
     "question": "Will today's USDA crop progress ratings confirm the heat premium in beans, or reset grains lower?",
     "day": 5,
-    "status_text": "The heat premium leaked out: beans close the week flat, the August weather window opened cool and wet, and grains reset lower with no new data to replace the fear."
+    "status_text": "The week resolved bearish for grains: pollination came through in decent shape, the heat premium evaporated, and grains closed July in the red. No premium needed, no premium priced."
   },
   "the_more_you_know": {
-    "title": "Tanker Math: What Rerouting Around Africa Costs Per Barrel",
-    "body": "Six Saudi tankers rounding Africa instead of transiting Bab el-Mandeb add roughly 10-14 days of sailing time and $1.50-$2.50 per barrel in freight costs per voyage. That is not crude price, that is structural shipping cost that eventually prices into diesel at the terminal. Producers planning fall harvest fuel budgets should note the route, not just the WTI close."
+    "title": "July's Grain Losses Hit the Worst Since 2023",
+    "body": "Chicago wheat's 18-3/4-cent drop Friday capped a July that ranks among the grain complex's worst monthly finishes since fall 2023. When pollination clears cleanly and the funds are already long, there is no one left to buy the dip -- that is exactly the setup that played out this week."
   },
   "watch_list": [
     {
-      "time": "Weekend: ongoing",
-      "desc": "Iran-Kuwait/Bahrain escalation. If strikes expand to naval assets or Strait of Hormuz transit is disrupted, crude gaps above $87 on Monday open."
+      "time": "Monday, Aug 3, 3:00 PM CT",
+      "desc": "USDA Crop Progress: corn condition ratings above 65% good-to-excellent confirms no August weather story; below 58% reopens the premium discussion."
     },
     {
-      "time": "Thursday 7:30 AM CT",
-      "desc": "Weekly export sales. Hogs under 40,000 MT says domestic supply is running the price, not foreign demand. Beans under 500K MT keeps the August weather calendar in charge of the story."
+      "time": "Friday, Aug 7, 7:30 AM CT",
+      "desc": "Weekly export sales: wheat above 400K MT says the price break found buyers; below 250K MT keeps funds in control of the chart."
     },
     {
-      "time": "Monday 3:00 PM CT",
-      "desc": "USDA Crop Progress. Soybean condition rated good-to-excellent above 62% removes the last weather premium; below 58% puts August rain discussion back on the table."
+      "time": "Week of Aug 11",
+      "desc": "August WASDE, 11:00 AM CT; first production estimate with August survey data. This is the one that resets the crop year narrative."
     },
     {
-      "time": "Next week: dairy",
-      "desc": "Class III milk follow-through after today's 7.9% drop. A second session below $15.50 confirms a structural break, not a month-end print artifact."
+      "time": "Ongoing",
+      "desc": "Cargill multi-plant lockout resolution: any return-to-work agreement reopens fed cattle price discovery and relieves the processing bottleneck capping the live cattle bid."
     }
   ],
   "daily_quote": {
-    "text": "Trees often transplanted seldom prosper.",
-    "attribution": "Dutch Proverb"
+    "text": "I would feel more optimistic about a bright future for man if he spent less time proving that he can outwit Nature and more time tasting her sweetness and respecting her seniority.",
+    "attribution": "E.B. White"
   },
-  "source_summary": "CME Group settlement prices; USDA NASS Crop Progress; Brownfield Ag News; OilPrice.com; Beef Magazine; Feedstuffs; The Fence Post; Farm Policy News; farmdoc daily",
+  "source_summary": "CME Group settlement prices; USDA Crop Progress; Brownfield Ag News; OilPrice.com; EIA; Feedstuffs; Agri-Pulse; The Fence Post; Beef Magazine",
   "date": "Friday, July 31, 2026",
   "meta": {
-    "market_mood": "mixed",
+    "market_mood": "bearish",
     "heat_section": 0,
-    "overnight_surprises_count": 4,
+    "overnight_surprises_count": 2,
     "news_coverage": {
       "ok": 16,
       "total": 17,
-      "items": 84,
+      "items": 89,
       "dark": [
         "porkbusiness.com"
       ]
     }
   },
   "locked_prices": {
-    "corn": 4.4325,
-    "corn-dec": 4.6575,
-    "beans": 11.76,
-    "beans-nov": 11.88,
-    "wheat": 6.53,
-    "oats": 3.35,
-    "cattle": 231.275,
-    "feeders": 342.6,
-    "hogs": 83.25,
-    "milk": 15.67,
-    "meal": 321.79999,
-    "soyoil": 66.94,
-    "crude": 85.09,
-    "natgas": 2.761,
-    "gold": 4101.3999,
-    "silver": 57.905,
-    "dollar": 100.368,
-    "sp500": 7437.62988,
-    "bitcoin": 63636.30859
+    "corn": 4.405,
+    "corn-dec": 4.6375,
+    "beans": 11.7075,
+    "beans-nov": 11.8825,
+    "wheat": 6.38,
+    "oats": 3.3125,
+    "cattle": 231.575,
+    "feeders": 343.27499,
+    "hogs": 84.7,
+    "milk": 17.58,
+    "meal": 320.89999,
+    "soyoil": 67.05,
+    "crude": 84.73,
+    "natgas": 2.768,
+    "gold": 4104.8999,
+    "silver": 58.01,
+    "dollar": 99.793,
+    "sp500": 7489.72021,
+    "bitcoin": 62941.67969
   },
   "chart_series": {
     "corn": [
@@ -159,7 +158,7 @@
       4.53,
       4.55,
       4.5,
-      4.43
+      4.41
     ],
     "soybeans": [
       12.24,
@@ -171,7 +170,7 @@
       12.08,
       11.98,
       11.78,
-      11.76
+      11.71
     ],
     "wheat": [
       6.83,
@@ -183,7 +182,7 @@
       6.53,
       6.65,
       6.79,
-      6.53
+      6.38
     ]
   },
   "sponsor": {
@@ -197,40 +196,24 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 141,
-  "generated_at": "2026-07-31T12:59:37.757529+00:00",
+  "issue_number": 142,
+  "generated_at": "2026-07-31T21:01:11.074013+00:00",
   "generator_version": "4.6.3",
-  "surprise_count": 4,
+  "surprise_count": 2,
   "surprises": [
     {
-      "commodity": "Class III Milk",
-      "key": "milk",
-      "price": "$15.67",
-      "pct_change": -7.9318,
-      "direction": "down",
-      "surprise_magnitude": 2.6
-    },
-    {
-      "commodity": "Lean Hogs",
-      "key": "hogs",
-      "price": "$83.25",
-      "pct_change": -2.7169,
+      "commodity": "Chicago Wheat",
+      "key": "wheat",
+      "price": "$6.38/bu",
+      "pct_change": -2.855,
       "direction": "down",
       "surprise_magnitude": 1.4
     },
     {
-      "commodity": "WTI Crude Oil",
-      "key": "crude",
-      "price": "$85.09",
-      "pct_change": 3.3147,
-      "direction": "up",
-      "surprise_magnitude": 1.1
-    },
-    {
-      "commodity": "S&P 500",
-      "key": "sp500",
-      "price": "$7437.63",
-      "pct_change": 1.6604,
+      "commodity": "Class III Milk",
+      "key": "milk",
+      "price": "$17.58",
+      "pct_change": 3.2902,
       "direction": "up",
       "surprise_magnitude": 1.1
     }
@@ -240,50 +223,50 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-07-31T12:59:49.399100+00:00",
+    "ran_at": "2026-07-31T21:01:28.045242+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 7,
-      "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 9,
-      "rule_5_bottom_lines_synthesize": 8,
-      "rule_6_quiet_days_quiet": 9,
-      "rule_7_continuity": 2,
-      "rule_8_word_budgets": 7,
-      "rule_9_voice": 8,
+      "rule_2_conviction_earned": 6,
+      "rule_3_tmyk_today": 1,
+      "rule_4_watch_conditional": 8,
+      "rule_5_bottom_lines_synthesize": 7,
+      "rule_6_quiet_days_quiet": 7,
+      "rule_7_continuity": 6,
+      "rule_8_word_budgets": 5,
+      "rule_9_voice": 6,
       "rule_10_forward_test": 7,
       "rule_11_thread_coherence": 8,
-      "rule_12_one_fact_one_home": 6,
-      "rule_13_yc_honesty": 2,
-      "rule_14_level_coherence": 8,
-      "rule_15_one_number_coherence": 9,
+      "rule_12_one_fact_one_home": 4,
+      "rule_13_yc_honesty": 5,
+      "rule_14_level_coherence": 7,
+      "rule_15_one_number_coherence": 6,
       "rule_16_markdown_not_html": 9,
-      "rule_17_macro_anchoring": 8
+      "rule_17_macro_anchoring": 6
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "yesterdays_call",
-        "rule": "rule_13_yc_honesty",
+        "target": "the_more_you_know",
+        "rule": "rule_3_tmyk_today",
         "scores_before": {
           "rule_1_lead_so_what": 8,
-          "rule_2_conviction_earned": 7,
-          "rule_3_tmyk_today": 9,
-          "rule_4_watch_conditional": 9,
-          "rule_5_bottom_lines_synthesize": 8,
-          "rule_6_quiet_days_quiet": 9,
-          "rule_7_continuity": 2,
-          "rule_8_word_budgets": 7,
-          "rule_9_voice": 8,
+          "rule_2_conviction_earned": 6,
+          "rule_3_tmyk_today": 1,
+          "rule_4_watch_conditional": 8,
+          "rule_5_bottom_lines_synthesize": 7,
+          "rule_6_quiet_days_quiet": 7,
+          "rule_7_continuity": 6,
+          "rule_8_word_budgets": 5,
+          "rule_9_voice": 6,
           "rule_10_forward_test": 7,
           "rule_11_thread_coherence": 8,
-          "rule_12_one_fact_one_home": 6,
-          "rule_13_yc_honesty": 2,
-          "rule_14_level_coherence": 8,
-          "rule_15_one_number_coherence": 9,
+          "rule_12_one_fact_one_home": 4,
+          "rule_13_yc_honesty": 5,
+          "rule_14_level_coherence": 7,
+          "rule_15_one_number_coherence": 6,
           "rule_16_markdown_not_html": 9,
-          "rule_17_macro_anchoring": 8
+          "rule_17_macro_anchoring": 6
         }
       }
     ],
