@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 30 Jul 2026 12:48:27 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 31 Jul 2026 12:59:52 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CRUDE RUNS 3%; MILK DROPS HARD ON MONTH-END</title>
+      <link>https://agsist.com/daily/2026-07-31</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-07-31</guid>
+      <pubDate>Fri, 31 Jul 2026 05:00:00 -0600</pubDate>
+      <description>Iran's strikes on U.S. bases in Bahrain and Kuwait, announced Friday, ended whatever diplomatic optimism built early this week and sent WTI crude to $85.09, up 3.3%. Grains barely flinched: corn eased 2.5 cents, beans gave back 3 cents, wheat slipped 3.75 cents. The week's real story resolved today: the heat premium that drove wheat Thursday is already leaking out, and crude just told you the geopolitical floor is still live.
+Iran re-escalates in Kuwait and Bahrain, WTI posts its biggest single-session gain in weeks while grains drift and Class III milk has its worst day of the year.
+• Crude Gets Its Floor Back
+• Grains Drift to Close the Week
+• Cattle End Two-Week Slide
+Read more: https://agsist.com/daily/2026-07-31</description>
+    </item>
     <item>
       <title>WHEAT LEADS GRAINS; HOGS FALL HARD ON EXPORT DAY</title>
       <link>https://agsist.com/daily/2026-07-30</link>
@@ -388,19 +400,6 @@ Corn and beans stayed green Wednesday on pollination heat, but Thursday morning'
   → If you held unpriced new-crop beans per yesterday's guidance, wait for the 7:30 export sales. Under 300,000 MT and November $11.54 is under pressure. Above 500,000 MT, hold.
 • Livestock: Hogs Slip, Cattle Marks Time
 Read more: https://agsist.com/daily/2026-07-02</description>
-    </item>
-    <item>
-      <title>ACREAGE VERDICT: CORN HOLDS, BEANS SLIP</title>
-      <link>https://agsist.com/daily/2026-07-01</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-01</guid>
-      <pubDate>Wed, 01 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Tuesday's USDA Acreage and Quarterly Stocks reports are in the books, and the market's verdict is measured, not decisive. Corn nearby sits at $4.14, essentially unchanged, while December corn eased to $4.38. The stocks figure came in below what most economists expected to be bearish, and that nuance is the story: the market was braced for a gut-punch on corn acres, didn't get one, and now the next move belongs to the weather. Highs of 90 to 95 degrees across the Corn Belt with high humidity are pushing the 2026 crop through pollination at speed, and whether that heat shows up as yield drag or accelerated development is the question that reprices December corn next.
-Lower-than-expected corn stocks from Tuesday's USDA data gave bulls a brief read, but November beans gave back 5.5 cents and the heat wave building across the Belt is doing the real work now.
-• Corn: Heat Takes the Wheel
-• Beans: November Slips on Acreage Math
-  → Hold unpriced new-crop beans until Thursday export sales. Under 300,000 MT puts November under pressure.
-• Oats Overnight: Still Searching for a Floor
-Read more: https://agsist.com/daily/2026-07-01</description>
     </item>
   </channel>
 </rss>

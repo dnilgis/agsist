@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-07-31",
+      "date_display": "Friday, July 31, 2026",
+      "headline": "CRUDE RUNS 3%; MILK DROPS HARD ON MONTH-END",
+      "teaser": "Iran re-escalates, crude runs. Grains drift into the weekend. Class III milk has its worst day of the year.",
+      "market_mood": "mixed",
+      "surprise_count": 4,
+      "sections": 4,
+      "url": "/daily/2026-07-31",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-30",
       "date_display": "Thursday, July 30, 2026",
       "headline": "WHEAT LEADS GRAINS; HOGS FALL HARD ON EXPORT DAY",
@@ -1592,6 +1604,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-30T12:48:26.328918+00:00",
-  "count": 140
+  "updated": "2026-07-31T12:59:49.454528+00:00",
+  "count": 141
 }
