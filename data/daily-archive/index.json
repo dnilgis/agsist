@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-08-01",
+      "date_display": "Saturday, August 1, 2026",
+      "headline": "CORN DROPS 6%; HOGS RUN 18.7% TO CLOSE JULY",
+      "teaser": "Corn's worst day in months. Hogs' biggest day in years. July did not go quietly.",
+      "market_mood": "bearish",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-08-01",
+      "market_closed": true,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-07-31",
       "date_display": "Friday, July 31, 2026",
       "headline": "WHEAT BREAKS 3%; MILK RUNS HARD TO CLOSE WEEK",
@@ -1604,6 +1616,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-07-31T21:01:28.088054+00:00",
-  "count": 141
+  "updated": "2026-08-01T12:05:17.118487+00:00",
+  "count": 142
 }

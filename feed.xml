@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 31 Jul 2026 21:01:29 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 01 Aug 2026 12:05:19 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN DROPS 6%; HOGS RUN 18.7% TO CLOSE JULY</title>
+      <link>https://agsist.com/daily/2026-08-01</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-01</guid>
+      <pubDate>Sat, 01 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed Friday at $4.41, down 6% on the session, its worst day in months, as Belt rainfall eased yield fears and funds rotated hard out of grains. Hogs closed at $98.85, up 18.7%, a move that size demands attention regardless of what drove it. July ends with grains broken and livestock split: cattle patient, hogs running, milk in freefall.
+Rain across the Belt knocked grains to multi-week lows Friday, while hogs had their biggest single-session gain in years and cattle quietly firmed.
+• Grains Break on Belt Rain
+• Hogs Run Hard; Cattle Firm
+• Crude Firms; Milk Breaks Hard
+Read more: https://agsist.com/daily/2026-08-01</description>
+    </item>
     <item>
       <title>WHEAT BREAKS 3%; MILK RUNS HARD TO CLOSE WEEK</title>
       <link>https://agsist.com/daily/2026-07-31</link>
@@ -387,19 +399,6 @@ Markets closed Friday for Independence Day; Thursday's close left corn at $4.25,
 • Beans Hold Better Than Corn
 • Livestock Fades Into Weekend
 Read more: https://agsist.com/daily/2026-07-03</description>
-    </item>
-    <item>
-      <title>HEAT OWNS THE BELT; EXPORT SALES ARRIVE AT 7:30</title>
-      <link>https://agsist.com/daily/2026-07-02</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-02</guid>
-      <pubDate>Thu, 02 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed $4.24 and beans held $11.33, both up on the session, as a heat dome parked over the Heartland kept weather premium alive through the holiday week. Brownfield's midweek weather outlook puts anomalous heat running from the central Belt into early next week, right through the window when corn pollination is most vulnerable. The question that decides the next 20 cents in December corn lands at 7:30 CT this morning: export sales. Renewed talk of China buying U.S. beans circulated Wednesday, but no new sales were announced. Today's print either validates that talk or files it under rumors.
-Corn and beans stayed green Wednesday on pollination heat, but Thursday morning's export sales print will tell you whether China talk is real or noise.
-• Grains: Heat Holds the Premium
-• Beans: China Talk Meets Export Day
-  → If you held unpriced new-crop beans per yesterday's guidance, wait for the 7:30 export sales. Under 300,000 MT and November $11.54 is under pressure. Above 500,000 MT, hold.
-• Livestock: Hogs Slip, Cattle Marks Time
-Read more: https://agsist.com/daily/2026-07-02</description>
     </item>
   </channel>
 </rss>
