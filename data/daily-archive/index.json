@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-08-02",
+      "date_display": "Sunday, August 2, 2026",
+      "headline": "CORN DOWN 6%; WEEK AHEAD RESETS THE STORY",
+      "teaser": "Belt rains ended July ugly for grains. This week's crop tour decides whether $4.41 holds.",
+      "market_mood": "bearish",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-08-02",
+      "market_closed": true
+    },
+    {
       "date": "2026-08-01",
       "date_display": "Saturday, August 1, 2026",
       "headline": "CORN DROPS 6%; HOGS RUN 18.7% TO CLOSE JULY",
@@ -1616,6 +1627,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-01T12:05:17.118487+00:00",
-  "count": 142
+  "updated": "2026-08-02T12:06:26.167630+00:00",
+  "count": 143
 }

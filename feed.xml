@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 01 Aug 2026 12:05:19 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 02 Aug 2026 12:06:27 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN DOWN 6%; WEEK AHEAD RESETS THE STORY</title>
+      <link>https://agsist.com/daily/2026-08-02</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-02</guid>
+      <pubDate>Sun, 02 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed Friday at $4.41, down 6% on the session as Belt rains knocked the last of the yield-concern premium out of the market. The funds have been selling weather, and Friday proved the weather is done cooperating with that trade. The week ahead gives producers the first hard look at 2026 yield potential: Pro Farmer hits the fields Monday, and the numbers either put the floor back or they don't.
+Belt rains removed the weather premium Friday; now the Pro Farmer crop tour and USDA Export Sales reset the price story for August.
+• Grains Reset Lower
+• Cattle Firm; Hogs Run
+• Crude Firms; Milk Breaks
+  → Dairy producers: if you are not hedged on August and September Class III, the 52-week range at 34% says the risk is skewed lower. Look at the floor now.
+Read more: https://agsist.com/daily/2026-08-02</description>
+    </item>
     <item>
       <title>CORN DROPS 6%; HOGS RUN 18.7% TO CLOSE JULY</title>
       <link>https://agsist.com/daily/2026-08-01</link>
@@ -387,18 +400,6 @@ Nearby corn lost 17¾ cents Friday as the July 4 week closes with grains, livest
 • Beans and Wheat: Weaker, Not Broken
 • Livestock and Dairy: Pressure Holds
 Read more: https://agsist.com/daily/2026-07-04</description>
-    </item>
-    <item>
-      <title>CORN BREAKS 4% ON HOLIDAY EVE; OATS HIT -15%</title>
-      <link>https://agsist.com/daily/2026-07-03</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-03</guid>
-      <pubDate>Fri, 03 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed Thursday at $4.25, down 4.0% in a single session, the biggest one-day drop in months for a crop that is right now, this weekend, pollinating across the Belt. Oats fell 15.5% to $2.86, a move that has no clean catalyst in Thursday's news and looks like fund liquidation in a thin pre-holiday session. Markets are closed today. The question that reopens Monday is whether the heat premium that built all week survived the selloff, or whether someone decided to cash it in before the long weekend.
-Markets closed Friday for Independence Day; Thursday's close left corn at $4.25, oats in freefall, and the July 4th weekend sitting on top of peak pollination.
-• Corn Sells Into Pollination
-• Beans Hold Better Than Corn
-• Livestock Fades Into Weekend
-Read more: https://agsist.com/daily/2026-07-03</description>
     </item>
   </channel>
 </rss>
