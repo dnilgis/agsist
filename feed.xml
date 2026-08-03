@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 02 Aug 2026 12:06:27 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 03 Aug 2026 13:45:03 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CROP TOUR WEEK OPENS QUIET; WHEAT FIRMS</title>
+      <link>https://agsist.com/daily/2026-08-03</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-03</guid>
+      <pubDate>Mon, 03 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Most markets barely moved today. Corn added a penny and a half to $4.38, beans gave back 3 cents to $11.69, and the whole complex is marking time ahead of Pro Farmer crop tour results later this week. Wheat at $6.40 is the one market with a pulse. Today is position-holding, not position-making. Wait.
+Corn and beans drift near unchanged as Pro Farmer crop tour gets underway; wheat adds 4 cents on its own momentum.
+• Grains Tread Water
+• Wheat Firms Quietly
+• Livestock Quiet; Milk Breaks
+  → Dairy: Class III at $17.16 with no hedge is exposed. Look at August and September floor options before Tuesday's open.
+Read more: https://agsist.com/daily/2026-08-03</description>
+    </item>
     <item>
       <title>CORN DOWN 6%; WEEK AHEAD RESETS THE STORY</title>
       <link>https://agsist.com/daily/2026-08-02</link>
@@ -387,19 +400,6 @@ Friday's 4% corn drop sets the table for a weather-driven week ahead with pollin
 • Beans and Wheat: Not Broken, But Soft
 • Livestock: Pressure Doesn't Quit
 Read more: https://agsist.com/daily/2026-07-05</description>
-    </item>
-    <item>
-      <title>CORN BREAKS 4%; WEEK ENDS ON DEFENSIVE NOTE</title>
-      <link>https://agsist.com/daily/2026-07-04</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-04</guid>
-      <pubDate>Sat, 04 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed Friday at $4.25, down 17¾ cents on the session, the biggest single-day drop in recent memory for a market already carrying pollination anxiety and post-acreage repositioning. The funds spent the holiday-eve session unwinding exposure they no longer wanted to hold over a long weekend. What made Friday different from prior soft days: December corn barely moved, closing $4.42 down just 1¼ cents, which tells you this was nearby-contract liquidation, not a new-crop conviction call. The spread between old crop and new crop is now talking. Coming into next week, the corn market faces a make-or-break stretch: pollination stress either shows up in next Monday's Crop Progress or the weather premium that built this month starts leaking out for good.
-Nearby corn lost 17¾ cents Friday as the July 4 week closes with grains, livestock, hogs, and dairy all under pressure while energy and metals finish higher.
-• Corn: Liquidation Into the Long Weekend
-  → If you have unpriced old-crop corn in storage, the nearby-to-December spread is now worth checking against your basis offer. Old-crop basis firmness east of the Mississippi may partially offset the futures drop.
-• Beans and Wheat: Weaker, Not Broken
-• Livestock and Dairy: Pressure Holds
-Read more: https://agsist.com/daily/2026-07-04</description>
     </item>
   </channel>
 </rss>

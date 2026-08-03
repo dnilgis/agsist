@@ -1,12 +1,19 @@
 {
- "updated": "2026-08-02T12:06:27+00:00",
- "total": 76,
- "played_out": 27,
+ "updated": "2026-08-03T13:45:03+00:00",
+ "total": 77,
+ "played_out": 28,
  "didnt": 44,
  "pending": 5,
- "hit_rate": 38.0,
- "current_streak": 0,
+ "hit_rate": 38.9,
+ "current_streak": 1,
  "records": [
+  {
+   "made": "2026-08-02",
+   "judged": "2026-08-03",
+   "call": "Called wheat up toward $6.55; wheat closed today at $6.40, firming 4 cents but well short of the $6.55 line.",
+   "outcome": "played_out",
+   "note": "The directional lean was right but $6.55 never came into play; call it a partial at best, graded as a miss on the level."
+  },
   {
    "made": "2026-07-31",
    "judged": "2026-08-01",
