@@ -1,16 +1,32 @@
 {
   "_comment": "AGSIST Grower Pulse — single source of truth for the homepage poll. To run a new week: move the current block into archive (with its final results+total pulled from the Worker), then write the new question into current with a new id. Stage 2 automation will do this on a schedule.",
   "current": {
-    "id": "2026-w31-yield-confidence-aug",
-    "week": "2026-07-27",
-    "question": "How confident are you in this year's yield right now?",
+    "id": "2026-w32-usda-vs-field-aug",
+    "week": "2026-08-03",
+    "question": "Does USDA's crop size match what you see in your fields?",
     "options": [
-      "Not confident",
-      "Somewhat",
-      "Very confident"
+      "USDA too high",
+      "About right",
+      "USDA too low"
     ]
   },
   "archive": [
+    {
+      "id": "2026-w31-yield-confidence-aug",
+      "week": "2026-07-27",
+      "question": "How confident are you in this year's yield right now?",
+      "options": [
+        "Not confident",
+        "Somewhat",
+        "Very confident"
+      ],
+      "results": [
+        1,
+        3,
+        0
+      ],
+      "total": 4
+    },
     {
       "id": "2026-w30-bean-outlook-jul",
       "week": "2026-07-20",
