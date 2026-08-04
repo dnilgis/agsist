@@ -1,12 +1,12 @@
 {
-  "fetched": "2026-08-03T12:39:29Z",
+  "fetched": "2026-08-04T11:36:10Z",
   "version": 5,
-  "count": 4,
-  "total_found": 13,
+  "count": 5,
+  "total_found": 14,
   "tier_breakdown": {
     "direct_ag": 0,
     "trade_energy": 0,
-    "macro_weather": 13
+    "macro_weather": 14
   },
   "categories": {
     "Economy & Markets": [
@@ -16,7 +16,7 @@
         "title": "Will no Fed rate cuts happen in 2026?",
         "yes": 89,
         "no": 11,
-        "volume_24h": 6799943.543550003,
+        "volume_24h": 6840964.509385002,
         "close_time": "2026-12-31T00:00:00Z",
         "time_left": "Closes in ~4mo",
         "url": "https://polymarket.com/event/how-many-fed-rate-cuts-in-2026",
@@ -32,7 +32,7 @@
         "title": "Fed rate hike in 2026?",
         "yes": 68,
         "no": 32,
-        "volume_24h": 6195068.081692999,
+        "volume_24h": 6197592.183238,
         "close_time": "2026-12-09T00:00:00Z",
         "time_left": "Closes in ~4mo",
         "url": "https://polymarket.com/event/fed-rate-hike-in-2026",
@@ -44,19 +44,19 @@
       },
       {
         "platform": "Polymarket",
-        "ticker": "616908",
-        "title": "Will 6 Fed rate cuts happen in 2026?",
-        "yes": 1,
-        "no": 99,
-        "volume_24h": 3808618.5820629993,
-        "close_time": "2026-12-31T00:00:00Z",
-        "time_left": "Closes in ~4mo",
-        "url": "https://polymarket.com/event/how-many-fed-rate-cuts-in-2026",
-        "slug": "how-many-fed-rate-cuts-in-2026",
+        "ticker": "2252243",
+        "title": "Will the Fed decrease interest rates by 25 bps after the September 2026 meeting?",
+        "yes": 2,
+        "no": 98,
+        "volume_24h": 3582938.0353160007,
+        "close_time": "2026-09-16T00:00:00Z",
+        "time_left": "Closes in ~1mo",
+        "url": "https://polymarket.com/event/fed-decision-in-september-762",
+        "slug": "fed-decision-in-september-762",
         "relevance": 40,
         "tier": 3,
         "category": "Economy & Markets",
-        "why_it_matters": "1% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
+        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 2% YES on this outcome."
       },
       {
         "platform": "Polymarket",
@@ -64,7 +64,7 @@
         "title": "Will there be no change in Fed interest rates after the September 2026 meeting?",
         "yes": 42,
         "no": 58,
-        "volume_24h": 3383938.29074,
+        "volume_24h": 3433322.403428,
         "close_time": "2026-09-16T00:00:00Z",
         "time_left": "Closes in ~1mo",
         "url": "https://polymarket.com/event/fed-decision-in-september-762",
@@ -73,6 +73,24 @@
         "tier": 3,
         "category": "Economy & Markets",
         "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 42% YES on this outcome."
+      }
+    ],
+    "Trade & Policy": [
+      {
+        "platform": "Polymarket",
+        "ticker": "1243901",
+        "title": "Will Brazil\u2019s Annual Inflation in 2026 be between 5.00% and 5.49%?",
+        "yes": 38,
+        "no": 62,
+        "volume_24h": 9984.812759000004,
+        "close_time": "2027-01-12T00:00:00Z",
+        "time_left": "Closes in ~5mo",
+        "url": "https://polymarket.com/event/brazil-annual-inflation-2026",
+        "slug": "brazil-annual-inflation-2026",
+        "relevance": 40,
+        "tier": 3,
+        "category": "Trade & Policy",
+        "why_it_matters": "Brazil's crop size directly competes with US soybean exports for the global market."
       }
     ]
   },
@@ -83,7 +101,7 @@
       "title": "Will no Fed rate cuts happen in 2026?",
       "yes": 89,
       "no": 11,
-      "volume_24h": 6799943.543550003,
+      "volume_24h": 6840964.509385002,
       "close_time": "2026-12-31T00:00:00Z",
       "time_left": "Closes in ~4mo",
       "url": "https://polymarket.com/event/how-many-fed-rate-cuts-in-2026",
@@ -99,7 +117,7 @@
       "title": "Fed rate hike in 2026?",
       "yes": 68,
       "no": 32,
-      "volume_24h": 6195068.081692999,
+      "volume_24h": 6197592.183238,
       "close_time": "2026-12-09T00:00:00Z",
       "time_left": "Closes in ~4mo",
       "url": "https://polymarket.com/event/fed-rate-hike-in-2026",
@@ -111,19 +129,19 @@
     },
     {
       "platform": "Polymarket",
-      "ticker": "616908",
-      "title": "Will 6 Fed rate cuts happen in 2026?",
-      "yes": 1,
-      "no": 99,
-      "volume_24h": 3808618.5820629993,
-      "close_time": "2026-12-31T00:00:00Z",
-      "time_left": "Closes in ~4mo",
-      "url": "https://polymarket.com/event/how-many-fed-rate-cuts-in-2026",
-      "slug": "how-many-fed-rate-cuts-in-2026",
+      "ticker": "2252243",
+      "title": "Will the Fed decrease interest rates by 25 bps after the September 2026 meeting?",
+      "yes": 2,
+      "no": 98,
+      "volume_24h": 3582938.0353160007,
+      "close_time": "2026-09-16T00:00:00Z",
+      "time_left": "Closes in ~1mo",
+      "url": "https://polymarket.com/event/fed-decision-in-september-762",
+      "slug": "fed-decision-in-september-762",
       "relevance": 40,
       "tier": 3,
       "category": "Economy & Markets",
-      "why_it_matters": "1% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
+      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 2% YES on this outcome."
     },
     {
       "platform": "Polymarket",
@@ -131,7 +149,7 @@
       "title": "Will there be no change in Fed interest rates after the September 2026 meeting?",
       "yes": 42,
       "no": 58,
-      "volume_24h": 3383938.29074,
+      "volume_24h": 3433322.403428,
       "close_time": "2026-09-16T00:00:00Z",
       "time_left": "Closes in ~1mo",
       "url": "https://polymarket.com/event/fed-decision-in-september-762",
@@ -140,6 +158,22 @@
       "tier": 3,
       "category": "Economy & Markets",
       "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 42% YES on this outcome."
+    },
+    {
+      "platform": "Polymarket",
+      "ticker": "1243901",
+      "title": "Will Brazil\u2019s Annual Inflation in 2026 be between 5.00% and 5.49%?",
+      "yes": 38,
+      "no": 62,
+      "volume_24h": 9984.812759000004,
+      "close_time": "2027-01-12T00:00:00Z",
+      "time_left": "Closes in ~5mo",
+      "url": "https://polymarket.com/event/brazil-annual-inflation-2026",
+      "slug": "brazil-annual-inflation-2026",
+      "relevance": 40,
+      "tier": 3,
+      "category": "Trade & Policy",
+      "why_it_matters": "Brazil's crop size directly competes with US soybean exports for the global market."
     }
   ]
 }
