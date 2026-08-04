@@ -1,12 +1,19 @@
 {
- "updated": "2026-08-03T13:45:03+00:00",
- "total": 77,
+ "updated": "2026-08-04T13:05:38+00:00",
+ "total": 78,
  "played_out": 28,
- "didnt": 44,
+ "didnt": 45,
  "pending": 5,
- "hit_rate": 38.9,
- "current_streak": 1,
+ "hit_rate": 38.4,
+ "current_streak": 0,
  "records": [
+  {
+   "made": "2026-08-03",
+   "judged": "2026-08-04",
+   "call": "Called soybeans down, toward $11.59. Beans closed today at $11.59, exactly at the target level.",
+   "outcome": "didnt",
+   "note": "The level printed but beans got there on crude's coattails and crop-report pressure, not a standalone bean story. Call it played out on the number; the driver was right even if the thesis was shared with the whole complex."
+  },
   {
    "made": "2026-08-02",
    "judged": "2026-08-03",
