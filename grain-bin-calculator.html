@@ -45,6 +45,7 @@
       {"@type":"Question","name":"How many bushels does a 30-foot grain bin hold?","acceptedAnswer":{"@type":"Answer","text":"A 30-foot diameter round bin with a 24-foot eave height holds approximately 13,600 bushels at level fill (one bushel = 1.244 cubic feet). Adding a peaked cone surface brings it to roughly 14,950 bushels."}},
       {"@type":"Question","name":"What is the grain shrink formula?","acceptedAnswer":{"@type":"Answer","text":"The standard formula is: Shrink % = (Moisture In minus Standard Moisture) times 1.3. For corn at 18% moisture, shrink = (18 - 15.5) x 1.3 = 3.25%. This accounts for both water removal and handling loss."}},
       {"@type":"Question","name":"What is pack factor in a grain bin?","acceptedAnswer":{"@type":"Answer","text":"Pack factor is the additional compaction of grain that occurs as the bin fills and grain settles over time. For corn, a typical pack factor is 0.5 to 1.5%. Leave it at 0 if you want a conservative baseline estimate."}},
+      {"@type":"Question","name":"What size grain bin do I need for 50,000 bushels?","acceptedAnswer":{"@type":"Answer","text":"About a 48-foot diameter bin with a 35-foot eave height, or two 36-foot bins at a 31-foot eave (level fill, 1 bushel = 1.244 cubic feet). The calculator's bin-sizing mode lists workable diameter and eave-height combinations for any target bushel amount."}},
       {"@type":"Question","name":"How do hopper-bottom bins differ from flat-floor bins?","acceptedAnswer":{"@type":"Answer","text":"Hopper-bottom bins have an inverted cone at the bottom that empties grain by gravity, so they need no sweep auger. That cone also stores grain, so for the same diameter and cylinder (wall) height a hopper-bottom bin actually holds somewhat more than a flat-floor bin — this calculator adds the hopper cone to the cylinder volume. Hopper bins are usually chosen for hands-off gravity unloading and are most common at smaller diameters, not for extra capacity."}},
       {"@type":"Question","name":"How is drying cost calculated for corn?","acceptedAnswer":{"@type":"Answer","text":"Drying cost is typically quoted in dollars per point (1 percentage point of moisture) per bushel. A common range is $0.03 to $0.05 per point per bushel. To dry corn from 18% to 15.5% costs 2.5 points, so roughly $0.09 per bushel at $0.035/point."}}
     ]}
@@ -274,11 +275,21 @@
             </div>
           </div>
           <div class="field-hint">Pack factor: industry norm 0.5&ndash;1.5% for corn after settling. Leave at 0 for conservative estimate.</div>
+          <!-- v3: editable shrink factor -->
+          <div class="input-grid cols-2">
+            <div>
+              <label for="shrinkFactor">Shrink Factor (&times; per pt)</label>
+              <input type="number" id="shrinkFactor" value="1.3" step="0.05" min="0" inputmode="decimal" oninput="calc()">
+            </div>
+            <div></div>
+          </div>
+          <div class="field-hint">1.3 is the industry standard: water removed plus invisible handling loss. Your elevator may settle at 1.2&ndash;1.4 &mdash; set what your scale ticket actually shows.</div>
 
           <!-- v2: reset + copy actions -->
           <div class="action-row">
             <button class="btn-reset" onclick="resetForm()">&#8635; Reset</button>
             <button class="btn-copy" onclick="copyResult()"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Copy Results</button>
+            <button class="btn-copy" onclick="printRecord()" aria-label="Print a dated record of this calculation">Print Record</button>
           </div>
 
           <!-- SVG bin visualization -->
@@ -346,6 +357,20 @@
               Bushels at standard moisture, no pack. Rows = diameter, cols = eave height.
             </div>
           </div>
+
+          <!-- v3: size-a-bin mode -->
+          <div style="margin-top:16px">
+            <div class="section-label">Sizing New Storage?</div>
+            <div class="input-grid cols-2">
+              <div>
+                <label for="sizeTarget">Bushels you need to store</label>
+                <input type="number" id="sizeTarget" value="" placeholder="e.g. 50000" min="0" inputmode="numeric" oninput="sizeBin()">
+              </div>
+              <div></div>
+            </div>
+            <div id="size-results" aria-live="polite"></div>
+            <div class="field-hint" id="size-hint" style="display:none">Level-fill combos at standard moisture, no pack. Eave heights rounded up to the next 44&#8243; ring. Confirm against the dealer's spec sheet before you pour concrete.</div>
+          </div>
         </div><!-- /panel-body -->
       </div><!-- /input panel -->
 
@@ -395,10 +420,10 @@
             <code>Cylinder = &pi; &times; r&sup2; &times; h</code><br>
             <code>Peaked cone = &frac13; &times; &pi; &times; r&sup2; &times; (r &times; tan 25&deg;)</code><br>
             <code>Hopper cone = &frac13; &times; &pi; &times; r&sup2; &times; (r &times; tan &theta;)</code><br>
-            <code>Shrink % = (Moist In &minus; Std) &times; 1.3</code><br>
+            <code>Shrink % = (Moist In &minus; Std) &times; Shrink Factor</code><br>
             <code>Dry Bu = Wet Bu &times; (1 &minus; Shrink%)</code><br>
             <code>Drying Cost = Pts to dry &times; $/pt &times; Dry Bu</code><br>
-            <span style="font-size:0.77rem;margin-top:4px;display:inline-block">Angle of repose &asymp; 25&deg; for peaked grain (tan 25&deg; &asymp; 0.466). Pack factor accounts for grain settling over time.</span>
+            <span style="font-size:0.77rem;margin-top:4px;display:inline-block">Angle of repose &asymp; 25&deg; for peaked grain (tan 25&deg; &asymp; 0.466). Pack factor accounts for grain settling over time. Shrink factor defaults to the industry-standard 1.3.</span>
           </div>
         </div>
       </div><!-- /results panel -->
@@ -427,6 +452,10 @@
           <dd>A hopper bin&rsquo;s cone stores grain below the cylinder, so for the same wall height it actually holds a bit more than a flat floor &mdash; the calculator adds that cone volume. Hoppers are chosen for gravity unloading (no sweep auger), usually at smaller diameters.</dd>
         </div>
         <div class="faq-item">
+          <dt>What size bin do I need for 50,000 bushels?</dt>
+          <dd>Roughly a 48-ft diameter bin with a 35-ft eave, or two 36-ft bins at a 31-ft eave. Use the &ldquo;Sizing New Storage?&rdquo; box above &mdash; enter your target bushels and it lists workable diameter-and-eave combos.</dd>
+        </div>
+        <div class="faq-item">
           <dt>How do I figure drying cost?</dt>
           <dd>Multiply points to dry &times; $/pt/bu. Drying from 18% to 15.5% = 2.5 pts. At $0.035/pt: 2.5 &times; $0.035 = $0.0875/bu.</dd>
         </div>
@@ -434,6 +463,22 @@
     </div>
 
   </main>
+
+  <!-- v3: printable record — populated by printRecord()/beforeprint, hidden on screen -->
+  <div id="print-record-wrap" style="display:none" aria-hidden="true"></div>
+  <style>
+  @media print{
+    body > *{display:none!important}
+    body > #print-record-wrap{display:block!important;color:#000;font-family:Georgia,'Times New Roman',serif;font-size:12pt;line-height:1.5}
+    #print-record-wrap h1{font-family:'Courier New',monospace;font-size:15pt;letter-spacing:.08em;margin:0 0 2pt}
+    #print-record-wrap .pr-sub{font-size:9pt;color:#444;margin:0 0 14pt}
+    #print-record-wrap table{width:100%;border-collapse:collapse;margin:0 0 12pt}
+    #print-record-wrap th,#print-record-wrap td{text-align:left;padding:4pt 6pt;border-bottom:1px solid #bbb;font-size:10.5pt}
+    #print-record-wrap th{font-family:'Courier New',monospace;font-size:8.5pt;letter-spacing:.1em;text-transform:uppercase;color:#555}
+    #print-record-wrap .pr-big{font-size:14pt;font-weight:700}
+    #print-record-wrap .pr-note{font-size:8.5pt;color:#555;margin-top:10pt;border-top:1px solid #bbb;padding-top:6pt}
+  }
+  </style>
   <div id="site-footer"></div>
   <script src="/components/loader.js"></script>
   <script>
@@ -544,10 +589,13 @@
       cylVol=l*w*gH; adjVol=0; adjLbl='Surface Adj.';
     }
 
+    // v3: empty bin is empty — no surface cone, no hopper cone at zero depth
+    if(gH<=0){cylVol=0; adjVol=0; hopperVol=0;}
     var totVol=Math.max(0, cylVol+adjVol+hopperVol);
     var rawBu=totVol*BU_PER_CUFT;
     var packedBu=rawBu*(1+pack/100);
-    var shrinkPct=Math.max(0,(moistIn-cr.std)*1.3);
+    var shrinkFac=parseFloat($('shrinkFactor').value); if(isNaN(shrinkFac)||shrinkFac<0) shrinkFac=1.3;
+    var shrinkPct=Math.max(0,(moistIn-cr.std)*shrinkFac);
     var dryBu=packedBu*(1-shrinkPct/100);
     var lostBu=packedBu-dryBu;
     var weightT=packedBu*cr.lb/2000;
@@ -702,7 +750,8 @@
         rlength:$('rlength').value, rwidth:$('rwidth').value, rheight:$('rheight').value,
         depth:$('grain-depth').value, moistIn:$('moistIn').value,
         moistTarget:$('moistTarget').value, dryingCost:$('dryingCost').value,
-        pack:$('pack').value, mktPrice:$('mktPrice').value
+        pack:$('pack').value, mktPrice:$('mktPrice').value,
+        shrinkFactor:$('shrinkFactor').value
       }));
     }catch(e){}
   }
@@ -727,6 +776,7 @@
       if(s.dryingCost)$('dryingCost').value=s.dryingCost;
       if(s.pack)      $('pack').value=s.pack;
       if(s.mktPrice)  $('mktPrice').value=s.mktPrice;
+      if(s.shrinkFactor)$('shrinkFactor').value=s.shrinkFactor;
       return true;
     }catch(e){return false;}
   }
@@ -743,8 +793,69 @@
     $('grain-depth').value=100;
     $('moistIn').value=15.5; $('moistTarget').value=15.5;
     $('dryingCost').value=0; $('pack').value=0; $('mktPrice').value='';
+    $('shrinkFactor').value=1.3; $('sizeTarget').value=''; sizeBin();
     toggleShape(); calc();
   }
+
+  // v3: size-a-bin — target bushels -> diameter/eave combos (level fill)
+  var RING_FT=44/12;
+  function sizeBin(){
+    var out=$('size-results'), hint=$('size-hint');
+    var tgt=parseFloat($('sizeTarget').value)||0;
+    if(tgt<=0){out.innerHTML=''; hint.style.display='none'; return;}
+    var rows='';
+    var diams=[18,21,24,27,30,33,36,42,48,54,60];
+    var shown=0;
+    for(var i=0;i<diams.length&&shown<6;i++){
+      var d=diams[i], r=d/2, area=Math.PI*r*r;
+      var needH=tgt/(BU_PER_CUFT*area);
+      var eave=Math.ceil(needH/RING_FT)*RING_FT;
+      if(eave<8) eave=Math.ceil(8/RING_FT)*RING_FT;
+      if(eave>48||eave>2.2*d) continue;               // implausible tall-skinny builds skipped
+      var cap=area*eave*BU_PER_CUFT;
+      rows+='<tr><td>'+d+' ft</td><td>'+fD(eave,1)+' ft</td><td class="hl">'+fN(cap)+'</td><td>'+fD(cap/tgt*100,0)+'%</td></tr>';
+      shown++;
+    }
+    if(!rows){
+      var dm=60, rm=30, am=Math.PI*rm*rm, capMax=am*48*BU_PER_CUFT;
+      var n=Math.ceil(tgt/capMax);
+      out.innerHTML='<div class="field-hint">That is more than one 60 ft &times; 48 ft bin holds ('+fN(capMax)+' bu level fill). Figure '+n+' bins of that size, or split the target and re-run.</div>';
+      hint.style.display='none'; return;
+    }
+    out.innerHTML='<div style="overflow-x:auto"><table class="ref-table"><thead><tr><th>&#8960;</th><th>Eave</th><th>Level-fill bu</th><th>Of target</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+    hint.style.display='';
+  }
+
+  // v3: printable record of the current calculation
+  function buildPrintRecord(){
+    var sh=shape(), crop=$('crop').options[$('crop').selectedIndex].text;
+    var dims='';
+    if(sh==='round') dims=($('diameter').value||0)+' ft &#8960; &times; '+($('height').value||0)+' ft eave, '+surface()+' surface';
+    else if(sh==='hopper') dims=($('hdiameter').value||0)+' ft &#8960; &times; '+($('hcylheight').value||0)+' ft cylinder, '+($('hopperangle').value||45)+'&deg; hopper, '+surface()+' surface';
+    else dims=($('rlength').value||0)+' &times; '+($('rwidth').value||0)+' ft, '+($('rheight').value||0)+' ft deep';
+    var pct=Math.round(parseFloat($('grain-depth').value)||0);
+    var now=new Date();
+    var rowsHtml=
+      '<tr><td>Crop</td><td>'+crop+'</td></tr>'+
+      '<tr><td>Bin</td><td>'+dims+'</td></tr>'+
+      '<tr><td>Fill</td><td>'+pct+'% ('+fD(grainFt(),1)+' ft of grain)</td></tr>'+
+      '<tr><td>Moisture in / target</td><td>'+($('moistIn').value||'--')+'% / '+($('moistTarget').value||'--')+'%</td></tr>'+
+      '<tr><td>Shrink factor / pack</td><td>'+($('shrinkFactor').value||'1.3')+' &times;/pt / '+($('pack').value||0)+'%</td></tr>'+
+      '<tr><td>Total bushels</td><td class="pr-big">'+$('rTotBu').textContent+'</td></tr>'+
+      '<tr><td>Weight</td><td>'+$('rWeight').textContent+'</td></tr>'+
+      '<tr><td>Shrink / dry bushels</td><td>'+$('rShrink').textContent+' &rarr; '+$('rDryBu').textContent+' ('+$('rLost').textContent+' lost)</td></tr>';
+    if($('rNetVal').textContent!=='--'){
+      rowsHtml+='<tr><td>Price used</td><td>$'+($('mktPrice').value||'--')+'/bu</td></tr>'+
+                '<tr><td>Net value after shrink'+($('drying-row').style.display!=='none'?' &amp; drying':'')+'</td><td class="pr-big">'+$('rNetVal').textContent+'</td></tr>';
+    }
+    $('print-record-wrap').innerHTML=
+      '<h1>AGSIST &mdash; GRAIN BIN RECORD</h1>'+
+      '<p class="pr-sub">Printed '+now.toLocaleDateString()+' &middot; agsist.com/grain-bin-calculator</p>'+
+      '<table><thead><tr><th>Item</th><th>Value</th></tr></thead><tbody>'+rowsHtml+'</tbody></table>'+
+      '<p class="pr-note">Estimates from stated dimensions at 1 bu = 1.244 ft&sup3;. Shrink = (moisture in &minus; standard) &times; shrink factor. Not a scale ticket &mdash; settle on delivered weight. Free calculator: agsist.com/grain-bin-calculator</p>';
+  }
+  function printRecord(){buildPrintRecord(); window.print();}
+  window.addEventListener('beforeprint', buildPrintRecord);
 
   // Init
   loadState();
