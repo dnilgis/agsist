@@ -1490,7 +1490,7 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
 
 19. ONE FACT, ONE HOME. Every stat, story, and price move is told ONCE, in the one block where it does the most work. The one_number is NEVER re-explained in a section (a six-word pointer like "the Yanbu decline covered above" is the maximum). A cross-commodity insight (meal/oil split, feeder/live ratio) lives in its section OR the_more_you_know, never both. Weather forecasts get one full telling; every later mention is four words or fewer. Before finalizing, scan your own draft: any sentence that restates an earlier sentence gets deleted, not reworded. The Jul 24 issue told the same Saudi pipeline story twice word-for-word and mentioned the same heat forecast six times; that is the failure mode this rule exists to kill.
 
-20. CLEAN OUTPUT MECHANICS. (a) NEVER write internal field names (one_number, weekly_thread, the_more_you_know, watch_list, outside_the_pit, tmyk) in reader-facing prose; say "today's number" or restructure the sentence. A published issue once printed "the one_number today". (b) Percent-of-range figures are 0-100 by definition; if a close sits at or beyond the top of its 52-week range, write "at the top of its 52-week range" or "a fresh 52-week high", never "102% of the range". (c) If the current spread/ratio setup (bean/corn ratio, carry structure) is genuinely at a decision threshold, it earns ONE bolded sentence inside the relevant section, with the acreage/storage logic stated CORRECTLY (a high bean/corn ratio pulls acres toward beans); there is no standalone spread block anymore.
+20. CLEAN OUTPUT MECHANICS. (a) NEVER write internal field names (one_number, weekly_thread, the_more_you_know, watch_list, outside_the_pit, tmyk) in reader-facing prose; say "today's number" or restructure the sentence. A published issue once printed "the one_number today". (b) Percent-of-range figures are 0-100 by definition; if a close sits at or beyond the top of its 52-week range, write "at the top of its 52-week range" or "a fresh 52-week high", never "102% of the range". (c) If the current spread/ratio setup (bean/corn ratio, carry structure) is genuinely at a decision threshold, it earns ONE bolded sentence inside the relevant section, with the acreage/storage logic stated CORRECTLY (a high bean/corn ratio pulls acres toward beans); there is no standalone spread block anymore. (d) NEVER use emoji or pictographic symbols in ANY field — headline, titles, bodies, everywhere. Plain text only; the page chrome supplies its own glyphs.
 
 ══ OUTPUT, return valid JSON with EXACTLY these fields ══
 
@@ -1512,7 +1512,7 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
     "level": "Number only, in the SAME units as the LOCKED PRICE TABLE ($/bu grains, $/cwt livestock, $/bbl crude). The price line your call hinges on."
   }},
   "sections": [
-    {{"title": "3-5 words", "icon": "Single emoji", "body": "2-3 BULLET LINES, MAX 80 WORDS TOTAL. Each line starts with '- ' and is ONE sentence, separated by newline (\\n). Exactly ONE **bold** number per section, the price or the threshold that matters (markdown bold, NEVER <strong>). All prices from LOCKED TABLE. VOICE. Thread the catalyst (RULE 14) into a bullet, do not just append it. The so-what belongs in bottom_line, not a trailing bullet.",
+    {{"title": "3-5 words", "body": "2-3 BULLET LINES, MAX 80 WORDS TOTAL. Each line starts with '- ' and is ONE sentence, separated by newline (\\n). Exactly ONE **bold** number per section, the price or the threshold that matters (markdown bold, NEVER <strong>). All prices from LOCKED TABLE. VOICE. Thread the catalyst (RULE 14) into a bullet, do not just append it. The so-what belongs in bottom_line, not a trailing bullet.",
       "catalyst": "OPTIONAL but recommended. 8-15 words naming the specific news/data/event that drove or contextualizes this section's price action. Example: 'USDA crop progress shows corn at 42%, ahead of 5-year avg.' Empty string allowed only when no relevant news in bucket.",
       "bottom_line": "TL;DR adding info beyond title (RULE 5). Max 20 words.",
       "conviction_level": "low | medium | high (earned per RULE 2)",
@@ -1974,7 +1974,6 @@ def render_sponsor_block_html(sponsor):
 
 def render_forward_block_html(date_iso):
     return ('<div class="dv3-forward">'
-            '<span class="dv3-forward-icon">&#x1F4E8;</span>'
             '<div class="dv3-forward-content">'
             '<div class="dv3-forward-headline">Know a farmer who&rsquo;d want this?</div>'
             '<div class="dv3-forward-sub">Forward this briefing. Or new here? Subscribe in one tap.</div>'
@@ -2001,12 +2000,12 @@ def render_sponsor_attribution_html(sponsor):
     target = ' target="_blank"' if cta_url.startswith('http') else ''
     rel_attr = ' rel="sponsored noopener"' if not is_house else ''
     if is_house:
-        text = "&#x1F7E1; Sponsor this slot &rarr;"
+        text = "&#x25CF; Sponsor this slot &rarr;"
         cls = "dv3-spattr dv3-spattr--house"
     else:
         advertiser = html_esc(sponsor.get("advertiser", "")).strip()
         if not advertiser: return ""
-        text = f"&#x1F7E1; Today's sponsor: <strong>{advertiser}</strong> &rarr;"
+        text = f"&#x25CF; Today's sponsor: <strong>{advertiser}</strong> &rarr;"
         cls = "dv3-spattr dv3-spattr--paid"
     return (f'<a class="{cls}" href="{cta_url}"{target}{rel_attr} aria-label="Sponsor information">'
             f'{text}</a>')
@@ -2049,7 +2048,7 @@ def render_thread_marker_html(thread, market_closed=False):
     is_anchor = day in (1, 5)  # Setup or resolution = stronger emphasis
     cls = "dv3-thread dv3-thread--anchor" if is_anchor else "dv3-thread"
     return (f'<div class="{cls}">'
-            f'<span class="dv3-thread-day">&#x1F9F5; {day_text}</span>'
+            f'<span class="dv3-thread-day">{day_text}</span>'
             f'<span class="dv3-thread-q">{question}</span>'
             f'</div>')
 
@@ -2085,7 +2084,7 @@ def render_outside_the_pit_html(items, market_closed=False):
                  "What's brewing for next week.")
     return (f'<div class="dv3-otp" aria-label="{label_text}">'
             f'<div class="dv3-otp-header">'
-            f'<span class="dv3-otp-label">&#x1F4F0; {label_text}</span>'
+            f'<span class="dv3-otp-label">{label_text}</span>'
             f'<span class="dv3-otp-sub">{label_sub}</span>'
             f'</div>'
             f'<div class="dv3-otp-grid">' + "".join(rendered_items) + '</div>'
@@ -2101,7 +2100,7 @@ def render_takeaway_block_html(takeaway):
     if not text:
         return ""
     return (f'<div class="dv3-takeaway" role="note" aria-label="Today\'s key takeaway">'
-            f'<span class="dv3-takeaway-label">&#x1F3AF; THE TAKEAWAY</span>'
+            f'<span class="dv3-takeaway-label">THE TAKEAWAY</span>'
             f'<p class="dv3-takeaway-text">{html_esc(text)}</p>'
             f'</div>')
 
@@ -2113,7 +2112,7 @@ def render_cashbids_footer_html(market_closed):
         return ""
     return ('<a class="dv3-cashbids-cta" href="/cash-bids" '
             'aria-label="View your local cash bids">'
-            '<span class="dv3-cashbids-icon">&#x1F4B5;</span>'
+            '<span class="dv3-cashbids-icon">$</span>'
             '<span class="dv3-cashbids-text"><strong>Your local elevator bids</strong> '
             '<span class="dv3-cashbids-arrow">&rarr;</span></span>'
             '</a>')
@@ -2169,7 +2168,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
             arrow = "UP" if s.get("direction") == "up" else "DN"
             names.append(f'{s.get("commodity","")} {arrow} {abs(s.get("pct_change",0)):.1f}%')
         surprise_html = (f'<div class="dv3-surprise-banner" style="display:flex">'
-                         f'<span class="surprise-icon">&#x26A1;</span>'
+                         f'<span class="surprise-icon">!</span>'
                          f'<span class="surprise-text"><strong>Overnight Surprise{"s" if surprise_count > 1 else ""}:</strong> '
                          f'{" / ".join(names) if names else str(surprise_count) + " unusual move"}'
                          f'</span></div>')
@@ -2183,9 +2182,9 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
             "cautious": ("var(--blue)", "rgba(74,143,186,.08)", "rgba(74,143,186,.22)"),
             "volatile": ("var(--orange)", "rgba(200,122,40,.08)", "rgba(200,122,40,.22)"),
         }
-        mood_icons = {"bullish": "\u2197", "bearish": "\u2198", "mixed": "\u2194", "cautious": "\u26A0\uFE0F", "volatile": "\U0001F525"}
+        mood_icons = {"bullish": "\u25B2", "bearish": "\u25BC", "mixed": "\u2194", "cautious": "!", "volatile": "~"}
         mc = mood_colors.get(mood, mood_colors["mixed"])
-        mi = mood_icons.get(mood, "\U0001F4CA")
+        mi = mood_icons.get(mood, "\u2194")
         mood_html = (f'<span class="dv3-mood" style="display:inline-flex;color:{mc[0]};background:{mc[1]};border:1px solid {mc[2]}">'
                      f'{mi} {mood.capitalize()}</span>')
 
@@ -2211,7 +2210,6 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
         cls = "dv3-sec"
         if sec.get("overnight_surprise") and not is_weekend_brief: cls += " dv3-sec--surprise"
         if i == heat_idx: cls += " dv3-sec--heat"
-        icon = html_esc(sec.get("icon", "\U0001F4CA"))
         title = html_esc(sec.get("title", ""))
         body = render_section_body_html(sec.get("body", ""))
         bottom_line = html_esc(sec.get("bottom_line", ""))
@@ -2227,13 +2225,13 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
             cv = cv_colors.get(conviction, cv_colors["medium"])
             conviction_html = f'<span class="dv3-sec-conviction" style="color:{cv[0]};background:{cv[1]};border:1px solid {cv[2]}">{conviction.upper()} CONVICTION</span>'
         bottom_html = f'<div class="dv3-sec-bottomline">{bottom_line}</div>' if bottom_line else ""
-        action_html = f'<div class="dv3-sec-action">&#x1F3AF; {farmer_action}</div>' if farmer_action else ""
+        action_html = f'<div class="dv3-sec-action">&rarr; {farmer_action}</div>' if farmer_action else ""
         # v4.4: per-section catalyst marker (RULE 14)
         catalyst = (sec.get("catalyst") or "").strip()
         catalyst_html = ""
         if catalyst and not is_weekend_brief:
             catalyst_html = (f'<div class="dv3-sec-catalyst" aria-label="catalyst">'
-                             f'<span class="dv3-sec-catalyst-icon">&#x1F4E1;</span>'
+                             f'<span class="dv3-sec-catalyst-icon">&#x25CF;</span>'
                              f'<span class="dv3-sec-catalyst-label">DRIVER</span>'
                              f'<span class="dv3-sec-catalyst-text">{html_esc(catalyst)}</span>'
                              f'</div>')
@@ -2246,7 +2244,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
                          f'<span class="dv3-sec-vs-text">{html_esc(vs_y)}</span>'
                          f'</div>')
         sections_html += (f'<div class="{cls}" style="position:relative">'
-                          f'<div class="dv3-sec-header"><span class="dv3-sec-icon">{icon}</span>'
+                          f'<div class="dv3-sec-header">'
                           f'<span class="dv3-sec-title">{title}</span>{conviction_html}</div>'
                           f'{catalyst_html}'
                           f'{vs_y_html}'
@@ -2256,7 +2254,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
     one_num_html = ""
     if one_num:
         one_num_html = (f'<div class="dv3-one-number">'
-                        f'<div class="dv3-one-number-label">&#x1F4CA; THE NUMBER</div>'
+                        f'<div class="dv3-one-number-label">THE NUMBER</div>'
                         f'<div class="dv3-one-number-val">{html_esc(one_num.get("value", "\u2014"))}</div>'
                         f'<div class="dv3-one-number-unit">{html_esc(one_num.get("unit", ""))}</div>'
                         f'<div class="dv3-one-number-ctx">{html_esc(one_num.get("context", ""))}</div>'
@@ -2268,7 +2266,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
         qt = quote.get("text", "").strip('"\u201c\u201d')
         qa = quote.get("attribution", "").lstrip("\u2014\u2013- ")
         quote_html = (f'<div class="dv3-quote-card">'
-                      f'<div class="dv3-quote-label">&#x1F4AC; DAILY QUOTE</div>'
+                      f'<div class="dv3-quote-label">DAILY QUOTE</div>'
                       f'<p class="dv3-quote-text">\u201c{html_esc(qt)}\u201d</p>'
                       f'<cite class="dv3-quote-attr">{html_esc(qa)}</cite></div>')
 
@@ -2276,7 +2274,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
     tmyk_html = ""
     if tmyk:
         tmyk_html = (f'<div class="dv3-tmyk">'
-                     f'<div class="dv3-tmyk-label">&#x1F9E0; THE MORE YOU KNOW</div>'
+                     f'<div class="dv3-tmyk-label">THE MORE YOU KNOW</div>'
                      f'<div class="dv3-tmyk-title">{html_esc(tmyk.get("title", ""))}</div>'
                      f'<div class="dv3-tmyk-body">{html_esc_preserve_strong(tmyk.get("body", ""))}</div></div>')
 
@@ -2288,7 +2286,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
                         f'<span class="dv3-watch-desc">{html_esc_preserve_strong(item.get("desc", ""))}</span></li>')
     # v4.3: weekend editions show forward-week list, weekday show today
     watch_label = "THIS WEEK\'S WATCH LIST" if is_weekend_brief else "TODAY\'S WATCH LIST"
-    watch_html = f'<div class="dv3-watch"><div class="dv3-watch-label">&#x1F4C5; {watch_label}</div><ul class="dv3-watch-list">{watch_items}</ul></div>' if watch else ""
+    watch_html = f'<div class="dv3-watch"><div class="dv3-watch-label">{watch_label}</div><ul class="dv3-watch-list">{watch_items}</ul></div>' if watch else ""
 
     source = html_esc(briefing.get("source_summary", "USDA / CME Group / Open-Meteo"))
 
@@ -2300,7 +2298,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
                          f'font-family:\'JetBrains Mono\',monospace;font-size:.58rem;font-weight:700;'
                          f'letter-spacing:.1em;text-transform:uppercase;color:var(--gold);'
                          f'background:rgba(218,165,32,.08);border:1px solid rgba(218,165,32,.22);'
-                         f'border-radius:3px;padding:.18rem .55rem;margin-left:.5rem">&#x1F4C5; {label}</span>')
+                         f'border-radius:3px;padding:.18rem .55rem;margin-left:.5rem">{label}</span>')
 
     topbar_html = f'<div class="dv3-topbar">{one_num_html}{quote_html}</div>' if (one_num_html or quote_html) else ""
 
@@ -2337,8 +2335,8 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
         '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">'
         '<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>'
         '</svg> Post</button>'
-        '<button class="dv3-share-btn" data-share="copy" type="button" aria-label="Copy link to this briefing">&#x1F517; Copy link</button>'
-        '<button class="dv3-share-btn" data-share="email" type="button" aria-label="Email this briefing">&#x2709; Email</button>'
+        '<button class="dv3-share-btn" data-share="copy" type="button" aria-label="Copy link to this briefing">Copy link</button>'
+        '<button class="dv3-share-btn" data-share="email" type="button" aria-label="Email this briefing">Email</button>'
         '</div>')
 
     js_permalink = f"https://agsist.com/daily/{date_iso}"
@@ -2441,9 +2439,9 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-sec{{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1.2rem 1.4rem;position:relative;transition:border-color .2s}}
 .dv3-sec:hover{{border-color:var(--border-g)}}
 .dv3-sec--surprise{{border-color:rgba(218,165,32,.30)!important;background:linear-gradient(135deg,var(--surface) 0%,rgba(218,165,32,.03) 100%)}}
-.dv3-sec--surprise::before{{content:'\u26A1 OVERNIGHT SURPRISE';position:absolute;top:-.55rem;right:.75rem;font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--gold);padding:.12rem .55rem;border-radius:2px}}
+.dv3-sec--surprise::before{{content:'! OVERNIGHT SURPRISE';position:absolute;top:-.55rem;right:.75rem;font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--gold);padding:.12rem .55rem;border-radius:2px}}
 .dv3-sec--heat{{border-color:rgba(74,171,76,.35)!important}}
-.dv3-sec--heat::after{{content:'\U0001F525 TOP STORY';position:absolute;top:-.55rem;left:.75rem;font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--green);padding:.12rem .55rem;border-radius:2px}}
+.dv3-sec--heat::after{{content:'TOP STORY';position:absolute;top:-.55rem;left:.75rem;font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--green);padding:.12rem .55rem;border-radius:2px}}
 .dv3-sec-header{{display:flex;align-items:center;gap:.55rem;margin-bottom:.65rem}}
 .dv3-sec-icon{{font-size:1.3rem;flex-shrink:0}}
 .dv3-sec-title{{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);flex:1}}
@@ -2996,6 +2994,37 @@ _SCRUBBED_FIELDS = {
 }
 
 
+_EMOJI_RE = re.compile(
+    "[\u2600-\u26FF\u2700-\u2712\u2714-\u2716\u2718-\u27BF"  # misc symbols + dingbats, sparing check/x
+    "\u2B00-\u2BFF\uFE0F\u200D"
+    "\U0001F000-\U0001FBFF]"
+)
+
+
+def scrub_emoji(briefing):
+    """v4.7: strip emoji/pictographs from every string in the briefing and
+    delete sections[].icon (the frontends render nothing when absent).
+    Keeps plain UI glyphs (checkmark U+2713, ballot X U+2717, arrows,
+    geometric shapes). Idempotent."""
+    def clean(s):
+        out = _EMOJI_RE.sub("", s)
+        if out != s:
+            out = re.sub(r"  +", " ", out).strip()
+        return out
+
+    def walk(obj):
+        if isinstance(obj, dict):
+            obj.pop("icon", None)
+            return {k: walk(v) for k, v in obj.items()}
+        if isinstance(obj, list):
+            return [walk(v) for v in obj]
+        if isinstance(obj, str):
+            return clean(obj)
+        return obj
+
+    return walk(briefing)
+
+
 def scrub_drama_verbs(briefing):
     """v4.6.1: deterministic post-pass to remove banned CNBC drama verbs from
     every text field in the briefing. Runs AFTER the critic rewrite, before
@@ -3411,6 +3440,12 @@ def main():
     # Catches drama verbs in headlines/section titles/takeaways/TMYK titles that
     # the critic cannot rewrite (not in weakest_target enum) or chose not to.
     briefing, _scrub_log = scrub_drama_verbs(briefing)
+
+    # v4.7: EMOJI SCRUBBER. The briefing is emoji-free by prompt rule 20(d),
+    # but the model occasionally decorates anyway. Deterministic strip of all
+    # pictographs from every string field (keeps plain UI glyphs like check
+    # marks and arrows), and drops the legacy per-section icon field entirely.
+    briefing = scrub_emoji(briefing)
 
     briefing, _wd_fixes = fix_weekday_labels(briefing)
     if _wd_fixes:

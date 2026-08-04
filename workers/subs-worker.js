@@ -1,5 +1,9 @@
 /**
- * AGSIST subscriptions worker v4.1 — daily-briefing list + HAIL ALERT watch areas.
+ * AGSIST subscriptions worker v4.2 — daily-briefing list + HAIL ALERT watch areas.
+ * v4.2 (2026-08-02): accept the 25-mile alert radius the hail-map UI offers.
+ *   v4.1 validated radius_mi against {1,5,10} — a farmer who picked 25 was
+ *   silently saved at 5 and under-alerted. Recut from v4.1 (the original
+ *   v4.2 file was lost with the July container; this is the same one-line fix).
  * v4.1 (2026-07-20): /alert-list now sends Access-Control-Allow-Origin:* (token-gated
  *   already) so the private subscriber dashboard can read it in-browser.
  * Supersedes v3.2 entirely (all routes intact); paste over the deployed worker.
@@ -27,7 +31,7 @@
  * Hail alerts:
  *   POST /alert-subscribe    JSON {email, lat, lon, place, radius_mi}
  *                            One watch area per email — re-subscribing
- *                            moves your pin. radius_mi ∈ {1,5,10}, default 5.
+ *                            moves your pin. radius_mi ∈ {1,5,10,25}, default 5.
  *   GET/POST /flag?k=&token=  day-markers for send dedup (14-day TTL)
  *   GET  /alert-list?token=  JSON array [{email,lat,lon,place,radius_mi},…]
  *                            for the nightly checker.
@@ -142,7 +146,7 @@ export default {
       const email = String(b.email || "").trim().toLowerCase();
       const lat = Number(b.lat), lon = Number(b.lon);
       let radius = Number(b.radius_mi) || 5;
-      if (![1, 5, 10].includes(radius)) radius = 5;
+      if (![1, 5, 10, 25].includes(radius)) radius = 5;
       const place = String(b.place || "").slice(0, 120);
       if (!EMAIL_RE.test(email) || email.length > 254)
         return json({ ok: false, error: "invalid email" }, 400, cors(req));

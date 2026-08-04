@@ -95,8 +95,8 @@
 }
 
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0 }
-html { scroll-behavior: smooth; font-size: var(--base); overflow-x: hidden; overflow-wrap: anywhere; word-break: break-word; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, -apple-system, sans-serif; overflow-x: hidden; transition: background .25s, color .25s; line-height: 1.65; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+html { scroll-behavior: smooth; font-size: var(--base); overflow-x: clip; overflow-wrap: anywhere; word-break: break-word; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, -apple-system, sans-serif; overflow-x: clip; transition: background .25s, color .25s; line-height: 1.65; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
 a { color: inherit; text-decoration: none }
 /* TYPE REWORK 2026-07-30: bold-only emphasis doctrine — italics are hard to read
    at small sizes on screens. Emphasis = weight, sitewide. */

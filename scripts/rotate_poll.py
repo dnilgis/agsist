@@ -164,7 +164,7 @@ def render_page(poll):
     )
     current_block = (
         '<div class="gp-current">'
-        '<div><span class="gp-kicker">&#x1F33E; This Week\'s Question</span>'
+        '<div><span class="gp-kicker">This Week\'s Question</span>'
         '<span class="gp-week">%s</span></div>'
         '<h2 class="gp-q">%s</h2>'
         '<ul style="margin:.2rem 0 1rem;padding-left:1.1rem;color:var(--text-dim);font-size:.92rem;line-height:1.7">%s</ul>'

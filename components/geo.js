@@ -962,9 +962,9 @@ function rebuildTickerLoop() {
 var MARKET_CATEGORIES = {
   'Commodities':       { icon: '', order: 1 },
   'Trade & Policy':    { icon: '', order: 2 },
-  'Energy & Inputs':   { icon: '\u26FD', order: 3 },
-  'Weather & Climate': { icon: '\uFE0F', order: 4 },
-  'Economy & Markets': { icon: '\u2194', order: 5 },
+  'Energy & Inputs':   { icon: '', order: 3 },
+  'Weather & Climate': { icon: '', order: 4 },
+  'Economy & Markets': { icon: '', order: 5 },
   'Infrastructure':    { icon: '', order: 6 },
   'Other':             { icon: '', order: 7 }
 };
