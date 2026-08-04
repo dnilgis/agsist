@@ -1,49 +1,71 @@
 {
   "_description": "Standing macro/geopolitical situations referenced across briefings. Loader: scripts/generate_daily.py:load_ongoing_situations(). Manually maintained. Set status to 'resolved' when a situation is no longer relevant; the loader will skip it. Add new situations when they enter the briefing rotation. Keep facts list under 6 items per situation (loader caps at 6). Anchor phrase is the one-clause framing used on FIRST reference each week per Rule 18.",
-  "_last_updated": "2026-05-29",
+  "_last_updated": "2026-08-03",
   "situations": {
     "iran_hormuz": {
       "status": "active",
-      "anchor": "Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress",
+      "anchor": "the Iran-Hormuz cycle — a July re-escalation (vessels hit, tankers reversing, crude running) that has since cooled, with the premium deflating again into August",
       "facts": [
-        "five oil and gas carriers cleared the Strait the week of May 25 (three oil tankers, two LNG)",
-        "U.S.-Iran diplomatic channels reportedly opened via Swiss intermediaries",
-        "crude lost roughly 19% in May as the premium unwinds",
-        "fresh U.S. strikes remained limited to military targets, did not escalate the broader conflict",
-        "shipping lanes remain navigable, premium is shrinking not gone"
+        "the situation re-escalated in early-to-mid July: commercial vessels hit, tanker traffic reversed course, and crude ran multi-percent sessions on Iran headlines",
+        "by late July the market's focus shifted from Hormuz risk to Red Sea/Houthi rerouting costs — two offsetting freight stories",
+        "as of Aug 3 the briefing's own read: crude supply building, Hormuz premium still deflating, no input-cost surprise",
+        "the premium has built and unwound twice since April — treat fresh escalation headlines as a known pattern, not a new regime",
+        "diesel tightness, not crude, has been the input-cost story for fall fieldwork"
       ]
     },
     "china_trade_deal": {
       "status": "active",
-      "anchor": "China's $17 billion annual US ag purchase commitment through 2028, announced May 18",
+      "anchor": "China's $17 billion annual US ag purchase commitment (May 18 deal, through 2028), now showing up as periodic confirmed soybean sales",
       "facts": [
-        "commitment spans beans, beef, and poultry beyond existing soybean commitments",
-        "North Dakota State study estimates active China tariffs cost US ag $15B annually, partially offsetting the commitment",
-        "promises have not yet translated into sustained futures support past the initial bounce",
-        "Senate ratification path uncertain"
+        "confirmed China soybean purchases have repeatedly lifted beans intraday in July, with a buy-the-rumor-sell-the-fact pattern capping follow-through",
+        "the commitment spans beans, beef, and poultry beyond prior soybean levels",
+        "beans set 52-week highs in late July with Chinese demand as one leg of the story (heat premium was the other)",
+        "US soybeans still face roughly 13% at the Chinese border (3% MFN + 10% retaliatory levy) — the truce holds through Nov 10, 2026",
+        "purchases have supported the board without producing a sustained trend on their own"
       ]
     },
     "cargill_fort_morgan_lockout": {
       "status": "active",
-      "anchor": "the ongoing Cargill Fort Morgan/Schuyler plant lockout that began Tuesday May 19",
+      "anchor": "the Cargill multi-plant lockout, ongoing since May 19, still removing roughly 6,000 head of daily processing capacity",
       "facts": [
-        "1,700 workers locked out, processing chain disrupted at multiple plants",
-        "plant processes roughly 6,000 head daily, removing ~2% of weekly US slaughter capacity",
-        "drove the cattle complex split: feeders dropped 2.5% on May 22, live cattle held; then live broke $242 on May 29",
-        "no resolution announced as of May 29; chart damage already in feeder and live cattle prices",
-        "creating processing-constrained price dynamics rather than supply-constrained"
+        "1,700 workers still locked out as of the end of July; no resolution announced",
+        "processing-constrained (not supply-constrained) price dynamics persist in fed cattle",
+        "any return-to-work agreement restores ~6,000 head daily and pressures feeders back toward $330",
+        "feedlot margins turned negative in late July, capping how far feeders can sustain above $340",
+        "watch item each week: lockout resolution reopens fed cattle price discovery"
       ]
     },
-    "planting_season_2026": {
+    "growing_season_2026": {
       "status": "active",
-      "anchor": "the 2026 planting season, behind the average through May before catching up between rain systems",
+      "anchor": "the 2026 growing season: a clean pollination window and rain-favored Belt that stripped the weather premium, with crop tour week (Aug 3+) now the arbiter",
       "facts": [
-        "corn planting reached 42% as of week ending May 24 per USDA Crop Progress",
-        "Missouri and Iowa farmers caught dry windows between rain systems to push progress",
-        "Belt running ahead of 5-year average despite wet May start",
-        "soil moisture levels running 150% of normal in key districts",
-        "prevent-plant deadlines cluster late May through mid-June by state",
-        "no weather premium being priced until prevent-plant deadlines approach"
+        "corn's pollination window closed clean in late July; the briefing's read was 'crops healthier than the calendar usually allows'",
+        "Belt rain in the last week of July handed bears a clean exit — no weather bid until tour or heat says otherwise",
+        "Pro Farmer crop tour scouts are in fields the week of Aug 3; their numbers are the next real catalyst before the Aug 12 WASDE",
+        "AGSIST's own nowcast (ratings-based): corn 184.1, beans 53.8 vs USDA trend 183.0/53.0 — above trend, wide early-August bands",
+        "December corn carries the story now; old-crop/new-crop corn carry was $0.23 into the roll"
+      ]
+    },
+    "cattle_mexico_screwworm": {
+      "status": "active",
+      "anchor": "the screwworm-driven closure of Mexican feeder cattle imports, with the first phased port reopening set for Aug 24 at Douglas, AZ",
+      "facts": [
+        "the border closure has quietly tightened feeder supply all summer and is one leg of the historic feeder rally",
+        "USDA confirmed a phased reopening starting Aug 24 at Douglas, AZ — the dated supply headwind feeders are now pricing",
+        "feeders broke ~3% in late July as the market began pricing returning supply rather than yesterday's scarcity",
+        "the feeder/live spread is the tell: watch it as the Aug 24 date approaches",
+        "screwworm spread beyond Texas earlier in the season; containment progress drives the reopening pace"
+      ]
+    },
+    "farm_bill_2026": {
+      "status": "active",
+      "anchor": "the 2026 Farm Bill endgame: revised Senate text (Aug 1) with year-round E15 now in the bill, committee markup Aug 6, against the Sep 30 extension deadline",
+      "facts": [
+        "the House passed H.R. 7567 in April; the Senate's Aug 1 revised text added year-round E15 sales — a real structural corn-demand tailwind once enacted",
+        "Senate Ag Committee markup is scheduled Thursday Aug 6, the day before the Senate recess; floor passage needs 60 votes",
+        "the Aug 1 text delays the SNAP state cost-share a year (FY2029; FY2031 for high-error states) — aimed at Democratic holdouts",
+        "a separate $15-17B economic-aid push (June White House request: $11B+) sits outside the bill; no program details exist yet",
+        "the current extension expires Sep 30, 2026 — the hard date for a bill or another extension"
       ]
     }
   }
