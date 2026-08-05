@@ -1,14 +1,14 @@
 {
-  "updated": "2026-08-04T22:39:17Z",
+  "updated": "2026-08-05T22:37:09Z",
   "corn": {
-    "pct": 31,
-    "cur": 4.42,
+    "pct": 28,
+    "cur": 4.375,
     "lo": 3.6775,
     "hi": 8.1825,
     "median": 4.6762,
     "n": 262,
     "years": 5,
-    "read": "At the 31st percentile of the last 5 years \u2014 below the 5-year midpoint.",
+    "read": "At the 28th percentile of the last 5 years \u2014 below the 5-year midpoint.",
     "seasonality": [
       68,
       66,
@@ -26,7 +26,7 @@
   },
   "soybean": {
     "pct": 36,
-    "cur": 11.55,
+    "cur": 11.52,
     "lo": 9.3875,
     "hi": 17.455,
     "median": 12.1013,
@@ -49,14 +49,14 @@
     ]
   },
   "wheat": {
-    "pct": 60,
-    "cur": 6.38,
+    "pct": 61,
+    "cur": 6.44,
     "lo": 4.985,
     "hi": 13.48,
     "median": 6.0587,
     "n": 262,
     "years": 5,
-    "read": "At the 60th percentile of the last 5 years \u2014 above the 5-year midpoint.",
+    "read": "At the 61st percentile of the last 5 years \u2014 above the 5-year midpoint.",
     "seasonality": [
       12,
       48,
@@ -73,14 +73,14 @@
     ]
   },
   "cattle": {
-    "pct": 86,
-    "cur": 231.85,
+    "pct": 88,
+    "cur": 234.1,
     "lo": 120.4,
     "hi": 257.45,
     "median": 181.8625,
     "n": 262,
     "years": 5,
-    "read": "At the 86th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years.",
+    "read": "At the 88th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years.",
     "seasonality": [
       27,
       55,
@@ -89,7 +89,7 @@
       52,
       100,
       69,
-      4,
+      5,
       20,
       18,
       0,
@@ -97,14 +97,14 @@
     ]
   },
   "feeders": {
-    "pct": 84,
-    "cur": 345.95,
+    "pct": 86,
+    "cur": 348.775,
     "lo": 152.75,
     "hi": 375.5,
     "median": 246.2125,
     "n": 262,
     "years": 5,
-    "read": "At the 84th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years.",
+    "read": "At the 86th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years.",
     "seasonality": [
       23,
       44,
