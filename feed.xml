@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 04 Aug 2026 13:05:38 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 05 Aug 2026 12:58:23 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CROP TOUR BEARS DOWN; WHEAT LEADS GRAINS HIGHER</title>
+      <link>https://agsist.com/daily/2026-08-05</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-05</guid>
+      <pubDate>Wed, 05 Aug 2026 05:00:00 -0600</pubDate>
+      <description>November soybeans drifted to $11.70, down 9 cents, as Pro Farmer tour scouts keep building a bearish field picture day two. Corn gave back another quarter cent to close Dec at $4.61. Wheat went the other direction, up 6 cents to $6.43, and crude recovered 2.4% to $76.39. The tour is doing exactly what it was supposed to do: it is replacing the weather premium with yield data.
+Pro Farmer scouts in the field kept corn and beans under pressure Wednesday, but wheat found 6 cents and crude recovered hard.
+• Tour Presses Beans Lower
+• Corn Drifts; Wheat Firms
+• Cattle Rebounds; Feeders Lead
+Read more: https://agsist.com/daily/2026-08-05</description>
+    </item>
     <item>
       <title>CRUDE DROPS 4%; GRAINS SOFTEN ON GOOD CROP NEWS</title>
       <link>https://agsist.com/daily/2026-08-04</link>
@@ -386,19 +398,6 @@ Soybeans ran 30 cents on USDA acreage confirmation and heat-dome weather talk; c
 • Corn: Heat Dome Adds a Little Back
 • Wheat Follows, Does Not Lead
 Read more: https://agsist.com/daily/2026-07-07</description>
-    </item>
-    <item>
-      <title>CORN BREAKS 4% AGAIN; OATS BREAKDOWN 15%</title>
-      <link>https://agsist.com/daily/2026-07-06</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-06</guid>
-      <pubDate>Mon, 06 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Corn is back to $4.25 and the question is no longer whether pollination week carries a weather premium. It carries one, it just isn't being priced. Old-crop nearby fell 17¾ cents to $4.25 today, the same level it closed before the holiday weekend, and December slipped only a quarter to $4.42, which tells you the nearby contract is doing the liquidating while new-crop holds its ground. Today's USDA Crop Progress drops at 3 PM CT, and the market is sitting on its hands waiting for it.
-Old-crop corn drops 17¾ cents on the first full session back from the holiday weekend, while oats post one of their biggest single-session moves in years, and today's Crop Progress at 3 PM CT resets the story.
-• Corn: Funds Step Out
-  → If you have unpriced new-crop corn, hold through today's 3 PM Crop Progress. If December breaks below $4.35 on a good-conditions print, reassess storage economics.
-• Oats: Off the Map
-• Beans and Wheat: Softer, Not Breaking
-Read more: https://agsist.com/daily/2026-07-06</description>
     </item>
   </channel>
 </rss>

@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-08-05",
+      "date_display": "Wednesday, August 5, 2026",
+      "headline": "CROP TOUR BEARS DOWN; WHEAT LEADS GRAINS HIGHER",
+      "teaser": "Crop tour scouts are bearish on beans. The market is listening.",
+      "market_mood": "bearish",
+      "surprise_count": 3,
+      "sections": 4,
+      "url": "/daily/2026-08-05",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-08-04",
       "date_display": "Tuesday, August 4, 2026",
       "headline": "CRUDE DROPS 4%; GRAINS SOFTEN ON GOOD CROP NEWS",
@@ -1651,6 +1663,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-04T13:05:36.169658+00:00",
-  "count": 145
+  "updated": "2026-08-05T12:58:22.626818+00:00",
+  "count": 146
 }
