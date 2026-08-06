@@ -26,7 +26,7 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 15;  // v15 2026-08-04: styles.css v16 — restore overflow-x:clip (position:sticky was dead site-wide); was: de-emoji round 3
+var CACHE_VERSION = 16;  // v16 2026-08-06: footer adds System Status link (/status); was: styles.css v16 overflow-x:clip fix
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <link rel="preload" href="/components/styles.css?v=15" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=15">
+  <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32"  href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16"  href="/img/favicon-16.png">
+  <link rel="apple-touch-icon"                     href="/img/apple-touch-icon.png">
+  <link rel="manifest"                             href="/manifest.json">
+
+  <title>AGSIST Status &mdash; Live Data &amp; Service Health | AGSIST</title>
+  <meta name="description" content="Live status of AGSIST's data feeds and tools — grain prices, cash bids, the daily briefing, weather, and hail. Checked in your browser, in real time.">
+  <link rel="canonical"    href="https://agsist.com/status">
+  <meta name="robots"      content="index, follow, max-image-preview:large">
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="AGSIST">
+  <meta property="og:locale"       content="en_US">
+  <meta property="og:title"        content="AGSIST Status — Live Data &amp; Service Health">
+  <meta property="og:description"  content="Real-time health of AGSIST's grain prices, cash bids, daily briefing, weather, and hail feeds — checked live in your browser.">
+  <meta property="og:url"          content="https://agsist.com/status">
+  <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agsist.com/status#webpage","url":"https://agsist.com/status","name":"AGSIST Status — Live Data & Service Health","description":"Live status of AGSIST's data feeds and tools, checked in the visitor's browser in real time.","isPartOf":{"@id":"https://agsist.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Status","item":"https://agsist.com/status"}]}]}</script>
+
+  <style>
+  .st-wrap{max-width:820px;margin:0 auto;padding:0 1rem 3rem;}
+  .st-banner{border-radius:14px;padding:1.1rem 1.25rem;margin:0 0 1.25rem;border:1px solid var(--border,#2a3324);background:var(--card,#161b14);display:flex;gap:.9rem;align-items:flex-start;}
+  .st-banner .bdot{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:.35rem;background:var(--text-muted,#9bb0a3);}
+  .st-banner .bmain{font-family:var(--font-display),'Inter',system-ui,sans-serif;font-weight:700;font-size:1.15rem;color:#fff;line-height:1.25;}
+  .st-banner .bsub{font-size:.9rem;color:var(--text-dim,#c3ccc4);line-height:1.55;margin-top:.25rem;}
+  .st-banner.ok{border-color:rgba(74,171,76,.35);} .st-banner.ok .bdot{background:var(--green,#4aab4c);}
+  .st-banner.warn{border-color:rgba(214,160,63,.4);} .st-banner.warn .bdot{background:var(--gold,#d4a23f);}
+  .st-banner.down{border-color:rgba(224,104,95,.45);} .st-banner.down .bdot{background:var(--red,#e0685f);}
+  .st-updated{font-size:.8rem;color:var(--text-muted,#9bb0a3);margin:.1rem 0 1.1rem;font-family:'JetBrains Mono',monospace;}
+  .st-updated button{background:none;border:1px solid var(--border,#2a3324);color:var(--text-muted,#9bb0a3);border-radius:6px;padding:.25rem .6rem;font:inherit;font-size:.78rem;cursor:pointer;margin-left:.5rem;min-height:32px;}
+  .st-updated button:hover{border-color:var(--green,#4aab4c);color:var(--green,#4aab4c);}
+  .st-grid{display:flex;flex-direction:column;gap:.55rem;}
+  .st-card{display:flex;align-items:center;gap:.85rem;background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:.9rem 1rem;}
+  .st-card .dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;background:var(--text-muted,#9bb0a3);}
+  .st-card .dot.ok{background:var(--green,#4aab4c);box-shadow:0 0 0 3px rgba(74,171,76,.15);}
+  .st-card .dot.warn{background:var(--gold,#d4a23f);box-shadow:0 0 0 3px rgba(214,160,63,.15);}
+  .st-card .dot.down{background:var(--red,#e0685f);box-shadow:0 0 0 3px rgba(224,104,95,.15);}
+  .st-card .dot.wait{background:var(--text-muted,#9bb0a3);animation:stpulse 1.1s ease-in-out infinite;}
+  @keyframes stpulse{0%,100%{opacity:.35;}50%{opacity:1;}}
+  .st-body{flex:1;min-width:0;}
+  .st-name{font-weight:700;font-size:.98rem;color:var(--text,#e7ece8);}
+  .st-desc{font-size:.82rem;color:var(--text-muted,#9bb0a3);line-height:1.45;margin-top:.1rem;}
+  .st-right{text-align:right;flex-shrink:0;}
+  .st-state{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;}
+  .st-state.ok{color:var(--green,#4aab4c);} .st-state.warn{color:var(--gold,#d4a23f);} .st-state.down{color:var(--red,#e0685f);} .st-state.wait{color:var(--text-muted,#9bb0a3);}
+  .st-age{font-size:.76rem;color:var(--text-muted,#9bb0a3);margin-top:.15rem;font-family:'JetBrains Mono',monospace;}
+  .st-note{background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:1rem 1.15rem;margin-top:1.4rem;font-size:.86rem;color:var(--text-dim,#c3ccc4);line-height:1.65;}
+  .st-note b{color:var(--text,#e7ece8);}
+  .st-note a{color:var(--gold,#d4a23f);}
+  .st-legend{display:flex;flex-wrap:wrap;gap:.9rem;font-size:.78rem;color:var(--text-muted,#9bb0a3);margin:.9rem 0 0;}
+  .st-legend span{display:inline-flex;align-items:center;gap:.35rem;}
+  .st-legend i{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  @media(prefers-reduced-motion:reduce){.st-card .dot.wait{animation:none;}}
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header"></div>
+
+  <main id="main">
+    <div class="st-wrap">
+      <nav class="breadcrumb" aria-label="Breadcrumb" style="margin:1rem 0 .4rem">
+        <a href="/">Home</a> &rarr; Status
+      </nav>
+      <div class="page-header" style="margin-bottom:1rem">
+        <h1 style="margin-bottom:.3rem">AGSIST Status</h1>
+        <p style="color:var(--text-muted,#9bb0a3);font-size:1rem;line-height:1.5;margin:0">Live health of every AGSIST data feed &mdash; checked from your browser, right now. No cached dashboard, no spin. If a number on the site looks old, this page tells you whether it really is.</p>
+      </div>
+
+      <div class="st-banner" id="st-banner" role="status" aria-live="polite">
+        <span class="bdot"></span>
+        <div>
+          <div class="bmain" id="st-banner-main">Checking live status&hellip;</div>
+          <div class="bsub" id="st-banner-sub">Pinging each feed from your device. This takes a second or two.</div>
+        </div>
+      </div>
+      <div class="st-updated" id="st-updated" aria-live="polite">&nbsp;</div>
+
+      <div class="st-grid" id="st-grid" aria-label="Service components"></div>
+
+      <div class="st-legend" aria-hidden="true">
+        <span><i style="background:var(--green,#4aab4c)"></i> Live</span>
+        <span><i style="background:var(--gold,#d4a23f)"></i> Delayed</span>
+        <span><i style="background:var(--red,#e0685f)"></i> Unreachable</span>
+        <span><i style="background:var(--text-muted,#9bb0a3)"></i> Idle / off-hours</span>
+      </div>
+
+      <div class="st-note">
+        <b>How this page works.</b> Everything above is checked live, in your browser, when the page loads &mdash; there is no stored status that could itself go stale. Each feed publishes a timestamp; this page reads it and compares it to how often that feed is supposed to update. &ldquo;Delayed&rdquo; and &ldquo;Idle&rdquo; account for normal rhythms &mdash; grain prices don&rsquo;t move when the board is closed, and there&rsquo;s no weekday briefing on a Sunday, so the page won&rsquo;t cry wolf about either.
+        <br><br>
+        <b>What it can and can&rsquo;t see.</b> If this page loaded at all, the AGSIST website is online. What it checks is whether the <em>data behind</em> each tool is current. It cannot see GitHub&rsquo;s build system directly &mdash; so when several feeds go &ldquo;Delayed&rdquo; together, it usually means an upstream provider (often GitHub, which builds and publishes the site) is catching up, not that anything is broken. For GitHub&rsquo;s own status, see <a href="https://www.githubstatus.com/" target="_blank" rel="noopener" id="st-ghlink">githubstatus.com</a>.
+        <br><br>
+        Something looks wrong that this page says is fine? Tell Sig: <a href="mailto:sig@farmers1st.com?subject=AGSIST%20status">sig@farmers1st.com</a>.
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="/components/loader.js?v=2"></script>
+  <script>
+  (function(){
+    'use strict';
+    // ── Central Time wall clock (works regardless of the visitor's own zone) ──
+    function ctNow(){
+      var f=new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false});
+      var p={}; f.formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});
+      var dows={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+      var h=parseInt(p.hour,10); if(h===24)h=0;
+      return {dow:dows[p.weekday], hour:h, min:parseInt(p.minute,10)};
+    }
+    function minsOfDay(c){return c.hour*60+c.min;}
+    // CBOT grains trade Sun 19:00 CT through Fri ~13:20 CT, with an overnight
+    // reopen at 19:00. Coarse "is the board likely live right now" test.
+    function grainsOpen(){
+      var c=ctNow(), m=minsOfDay(c);
+      if(c.dow===6) return false;                 // Saturday: closed
+      if(c.dow===0) return m>=19*60;              // Sunday: opens 19:00
+      if(c.dow===5) return m< 13*60+25;           // Friday: closes ~13:20
+      return (m< 13*60+25) || (m>=19*60);         // Mon–Thu: day + overnight
+    }
+    function bidsHours(){                          // elevators quote on weekday daytime
+      var c=ctNow(), m=minsOfDay(c);
+      if(c.dow===0||c.dow===6) return false;
+      return m>=7*60 && m<=18*60;
+    }
+    function briefingDue(){                        // weekday briefing lands ~7:00 CT
+      var c=ctNow();
+      if(c.dow===0||c.dow===6) return false;
+      return minsOfDay(c) >= 7*60+30;
+    }
+
+    function ago(ms){
+      if(ms<0) ms=0;
+      var s=Math.round(ms/1000);
+      if(s<90) return s+'s ago';
+      var m=Math.round(s/60);
+      if(m<90) return m+'m ago';
+      var h=Math.round(m/60);
+      if(h<36) return h+'h ago';
+      var d=Math.round(h/24);
+      return d+'d ago';
+    }
+    function parseTs(v){
+      if(v==null) return null;
+      if(/^\d{4}-\d{2}-\d{2}$/.test(v)) v=v+'T12:00:00Z'; // date-only → midday UTC
+      var t=Date.parse(v);
+      return isNaN(t)?null:t;
+    }
+
+    // rank for "worst" comparisons
+    var RANK={ok:0, idle:0, wait:1, warn:2, down:3};
+
+    // ── Component definitions ────────────────────────────────────────────
+    // check() returns {state, label, age} given (data, ageMs). state ∈ ok/warn/down/idle.
+    var COMPONENTS=[
+      {
+        name:'Grain Futures Prices', desc:'Corn, soybean & wheat boards — refreshed every 30 min while the market is open.',
+        url:'/data/prices.json', tsKey:'fetched',
+        check:function(d,age){
+          var open=grainsOpen();
+          if(!open) return {state:'idle', label:'Markets closed', age:'last update '+ago(age)};
+          if(age < 75*60000) return {state:'ok', label:'Live', age:ago(age)};
+          if(age < 4*3600000) return {state:'warn', label:'Delayed', age:ago(age)};
+          return {state:'down', label:'Stalled', age:ago(age)};
+        }
+      },
+      {
+        name:'Cash Grain Bids', desc:'Local elevator bids by ZIP, pulled from Barchart on weekday business hours.',
+        url:'/data/bids.json', tsKey:'fetched',
+        check:function(d,age){
+          if(!bidsHours()) return {state:'idle', label:'Off-hours', age:'last update '+ago(age)};
+          if(age < 3*3600000) return {state:'ok', label:'Live', age:ago(age)};
+          if(age < 8*3600000) return {state:'warn', label:'Delayed', age:ago(age)};
+          return {state:'down', label:'Stalled', age:ago(age)};
+        }
+      },
+      {
+        name:'AGSIST Daily Briefing', desc:'The pre-market note, published before the open every weekday.',
+        url:'/data/daily.json', tsKey:'generated_at',
+        check:function(d,age){
+          if(!briefingDue()) return {state:'idle', label:'No briefing due', age:'last one '+ago(age)};
+          if(age < 30*3600000) return {state:'ok', label:'Published', age:ago(age)};
+          if(age < 48*3600000) return {state:'warn', label:'Delayed', age:ago(age)};
+          return {state:'down', label:'Missing', age:ago(age)};
+        }
+      },
+      {
+        name:'Weather Outlooks', desc:'NOAA temperature & precip outlooks plus the Drought Monitor, refreshed through the day.',
+        url:'/data/outlooks/manifest.json', tsKey:'fetched_at',
+        check:function(d,age){
+          if(age < 18*3600000) return {state:'ok', label:'Current', age:ago(age)};
+          if(age < 36*3600000) return {state:'warn', label:'Delayed', age:ago(age)};
+          return {state:'down', label:'Stale', age:ago(age)};
+        }
+      },
+      {
+        name:'Hail Tracker', desc:'Last-30-days radar hail swaths and storm reports, rebuilt daily.',
+        url:'/data/hail/manifest.json', tsKey:'recent_generated',
+        check:function(d,age){
+          if(age < 40*3600000) return {state:'ok', label:'Current', age:ago(age)};
+          if(age < 3*86400000) return {state:'warn', label:'Delayed', age:ago(age)};
+          return {state:'down', label:'Stale', age:ago(age)};
+        }
+      },
+      {
+        name:'Yield Nowcast', desc:'Weekly corn & soybean yield estimate from USDA condition ratings — updates each Tuesday in season.',
+        url:'/data/yield-nowcast.json', tsKey:'generated',
+        check:function(d,age){
+          if(age < 8*86400000) return {state:'ok', label:'Current', age:ago(age)};
+          if(age < 12*86400000) return {state:'warn', label:'Delayed', age:ago(age)};
+          return {state:'down', label:'Stale', age:ago(age)};
+        }
+      },
+      {
+        name:'Alerts & Subscriptions', desc:'The email briefing and hail-alert service — runs on Cloudflare, independent of the rest.',
+        url:'https://agsist-subs.dnilgis.workers.dev/', ping:true,
+        check:function(reachable){
+          return reachable ? {state:'ok', label:'Online', age:'responding'} : {state:'down', label:'Unreachable', age:'no response'};
+        }
+      }
+    ];
+
+    var grid=document.getElementById('st-grid');
+    var rows=COMPONENTS.map(function(c){
+      var el=document.createElement('div'); el.className='st-card';
+      el.innerHTML='<span class="dot wait"></span><div class="st-body"><div class="st-name">'+c.name+'</div><div class="st-desc">'+c.desc+'</div></div><div class="st-right"><div class="st-state wait">Checking</div><div class="st-age">&nbsp;</div></div>';
+      grid.appendChild(el);
+      return {c:c, el:el, dot:el.querySelector('.dot'), state:el.querySelector('.st-state'), age:el.querySelector('.st-age')};
+    });
+
+    function paint(row, res){
+      row.dot.className='dot '+(res.state==='idle'?'ok':res.state);
+      row.state.className='st-state '+(res.state==='idle'?'ok':res.state);
+      row.state.textContent=res.label;
+      row.age.textContent=res.age||'';
+    }
+
+    function checkOne(row){
+      var c=row.c;
+      if(c.ping){
+        // Opaque reachability probe — resolves if the worker answers at all.
+        return fetch(c.url,{mode:'no-cors',cache:'no-store'}).then(function(){return c.check(true);}).catch(function(){return c.check(false);})
+          .then(function(res){res._same=false;return res;});
+      }
+      var bust=(c.url.indexOf('?')<0?'?':'&')+'_t='+Date.now();
+      return fetch(c.url+bust,{cache:'no-store'}).then(function(r){
+        if(!r.ok) throw new Error('http'); return r.json();
+      }).then(function(d){
+        var t=parseTs(d[c.tsKey]);
+        if(t==null){var res={state:'warn',label:'No timestamp',age:''};res._same=true;return res;}
+        var res=c.check(d, Date.now()-t); res._same=true; res._age=Date.now()-t; return res;
+      }).catch(function(){
+        var res={state:'down',label:'Unreachable',age:'no data'}; res._same=true; return res;
+      });
+    }
+
+    function overall(results){
+      var b=document.getElementById('st-banner'), bm=document.getElementById('st-banner-main'), bs=document.getElementById('st-banner-sub');
+      // Site-reachability: if EVERY same-origin feed failed to load, the site/CDN is the problem.
+      var same=results.filter(function(r){return r.res._same;});
+      var sameDown=same.filter(function(r){return r.res.state==='down' && r.res.age==='no data';});
+      if(same.length && sameDown.length===same.length){
+        b.className='st-banner down'; bm.textContent='Trouble reaching AGSIST data';
+        bs.textContent='Your browser can load this page but not the data behind it — likely a content-delivery or network hiccup between you and the site. Try a refresh in a minute.';
+        return;
+      }
+      var worst=results.reduce(function(a,r){return Math.max(a,RANK[r.res.state]);},0);
+      // Upstream-pause heuristic: 2+ same-origin feeds Delayed/Stalled at once,
+      // during hours they should be fresh → almost always an upstream (GitHub) pause.
+      var delayed=same.filter(function(r){return r.res.state==='warn'||r.res.state==='down';});
+      if(delayed.length>=2){
+        b.className='st-banner warn';
+        bm.textContent='Data updates are running behind';
+        bs.innerHTML='Several feeds haven&rsquo;t refreshed on their normal schedule. The site and your saved data are still here &mdash; the numbers are just a few hours behind. This usually means an upstream provider (often GitHub, which publishes the site) is catching up, not that anything is broken. <a href="https://www.githubstatus.com/" target="_blank" rel="noopener" style="color:var(--gold,#d4a23f)">Check githubstatus.com &rarr;</a>';
+        return;
+      }
+      if(worst>=3){
+        b.className='st-banner down'; bm.textContent='One feed is down';
+        bs.textContent='Most of AGSIST is working normally, but one feed isn’t responding. Details are marked in red below.';
+      } else if(worst>=2){
+        b.className='st-banner warn'; bm.textContent='One feed is running behind';
+        bs.textContent='Everything is online; a single feed is a little behind its usual refresh. It should catch up on its own.';
+      } else {
+        b.className='st-banner ok'; bm.textContent='All systems normal';
+        bs.textContent='Every AGSIST feed is current for this time of day. Idle items are simply off-hours — markets closed or no briefing due — not a problem.';
+      }
+    }
+
+    function run(){
+      document.getElementById('st-updated').innerHTML='&nbsp;';
+      rows.forEach(function(row){ row.dot.className='dot wait'; row.state.className='st-state wait'; row.state.textContent='Checking'; row.age.textContent=''; });
+      Promise.all(rows.map(function(row){
+        return checkOne(row).then(function(res){ paint(row,res); return {row:row,res:res}; });
+      })).then(function(results){
+        overall(results);
+        var t=new Date();
+        var hhmm=t.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+        var u=document.getElementById('st-updated');
+        u.innerHTML='Checked '+hhmm+' your time <button id="st-recheck" type="button">Re-check</button>';
+        document.getElementById('st-recheck').addEventListener('click',function(){ if(window.gaEvent)gaEvent('status_recheck'); run(); });
+      });
+    }
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run); else run();
+  })();
+  </script>
+</body>
+</html>

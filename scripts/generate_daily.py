@@ -1052,8 +1052,38 @@ def fetch_ag_news():
     return "\n".join(out)
 
 
+# Pro Farmer Crop Tour window — UPDATE EACH YEAR (tour is the 3rd/4th full week
+# of August). 2026: Aug 17-20. Used to keep the briefing from describing the tour
+# as underway before it actually starts.
+PRO_FARMER_TOUR = (8, 17, 20)  # (month, first_day, last_day)
+
+
+def _august_context():
+    """August seasonal context, day-aware around the Pro Farmer Crop Tour so the
+    generator never narrates tour scouts / pod counts before the tour begins."""
+    now = datetime.now()
+    _, t0, t1 = PRO_FARMER_TOUR
+    base = "Yield formation: corn in dough/dent, soybeans filling pods."
+    if now.day < t0:
+        days = (datetime(now.year, PRO_FARMER_TOUR[0], t0) - datetime(now.year, now.month, now.day)).days
+        return (f"{base} The Pro Farmer Crop Tour runs Aug {t0}-{t1} — it has NOT "
+                f"started yet ({days} days out). Do NOT describe tour scouts, pod "
+                f"counts, ear samples, or tour findings as if they exist; the tour "
+                f"is only upcoming. Weather and crop-condition ratings drive the crop story now.")
+    if now.day <= t1:
+        return (f"{base} The Pro Farmer Crop Tour is underway (Aug {t0}-{t1}) — "
+                f"scouts are sampling corn ears and soybean pods across the Belt "
+                f"this week. Only cite specific tour figures if they appear in the news block.")
+    if now.day <= t1 + 4:
+        return (f"{base} The Pro Farmer Crop Tour wrapped (Aug {t0}-{t1}); its yield "
+                f"estimates are the market's fresh read. Only cite figures present in the news block.")
+    return f"{base} Late-month yield outlook firming ahead of the September WASDE."
+
+
 def get_seasonal_context():
     month = datetime.now().month
+    if month == 8:
+        return _august_context()
     contexts = {
         1: "Mid-winter: South American crop development. Cattle markets seasonally strong.",
         2: "Late winter: USDA Ag Outlook Forum. South American harvest beginning.",
@@ -1062,7 +1092,6 @@ def get_seasonal_context():
         5: "Peak planting: Soybean planting (May 1 to June 5). Prevent plant deadline approaching.",
         6: "Growing season: Crop conditions drive markets. Pollination approaching.",
         7: "Critical: Corn pollination. USDA Acreage report (June 30). Weather premium at peak.",
-        8: "Yield formation: Corn in dough/dent. Pro Farmer crop tour.",
         9: "Early harvest: Corn harvest beginning. September WASDE.",
         10: "Harvest: Full corn/soybean harvest. Basis at seasonal lows. Wheat planting.",
         11: "Post-harvest: Final USDA yield estimates. South American planting.",
