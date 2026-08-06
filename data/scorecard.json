@@ -1,12 +1,19 @@
 {
- "updated": "2026-08-06T03:39:26+00:00",
- "total": 79,
+ "updated": "2026-08-06T12:59:44+00:00",
+ "total": 80,
  "played_out": 29,
- "didnt": 45,
+ "didnt": 46,
  "pending": 5,
- "hit_rate": 39.2,
- "current_streak": 1,
+ "hit_rate": 38.7,
+ "current_streak": 0,
  "records": [
+  {
+   "made": "2026-08-05",
+   "judged": "2026-08-06",
+   "call": "Called beans down toward below $11.59. Beans closed at $11.535, which is under that line, but the computed grader marked this call as not playing out.",
+   "outcome": "didnt",
+   "note": "The directional read was right -- beans did close under $11.59 -- but the call did not meet the grader's threshold. Own the miss on process; the tour bear case was the correct frame, just not enough to book the call."
+  },
   {
    "made": "2026-08-04",
    "judged": "2026-08-05",

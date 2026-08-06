@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-08-06",
+      "date_display": "Thursday, August 6, 2026",
+      "headline": "EXPORT SALES DAY; BEANS BOUNCE, CATTLE FIRM",
+      "teaser": "Tour week ends, export sales open. Beans bounced a nickel; now they have to prove it.",
+      "market_mood": "cautious",
+      "surprise_count": 1,
+      "sections": 4,
+      "url": "/daily/2026-08-06",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-08-05",
       "date_display": "Wednesday, August 5, 2026",
       "headline": "CROP TOUR BEARS DOWN; WHEAT LEADS GRAINS HIGHER",
@@ -1663,6 +1675,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-05T12:58:22.626818+00:00",
-  "count": 146
+  "updated": "2026-08-06T12:59:42.562858+00:00",
+  "count": 147
 }

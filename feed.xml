@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 05 Aug 2026 12:58:23 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 06 Aug 2026 12:59:44 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>EXPORT SALES DAY; BEANS BOUNCE, CATTLE FIRM</title>
+      <link>https://agsist.com/daily/2026-08-06</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-06</guid>
+      <pubDate>Thu, 06 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Soybeans closed at $11.54, up nearly a nickel from yesterday's lows, but the bounce is positioning ahead of today's 7:30 AM export sales print, not a verdict on what tour scouts found in the fields this week. The tour's pod counts are the reason beans can't sustain a rally without demand confirmation behind them. Today's export number either validates the bounce or kills it.
+Pro Farmer tour wraps its bean read; weekly export sales at 7:30 AM CT are the next number that matters.
+• Beans Bounce Before Export Sales
+• Corn Flat; Farm Bill Markup Today
+• Cattle Firm; Feeders Hold Above $348
+Read more: https://agsist.com/daily/2026-08-06</description>
+    </item>
     <item>
       <title>CROP TOUR BEARS DOWN; WHEAT LEADS GRAINS HIGHER</title>
       <link>https://agsist.com/daily/2026-08-05</link>
@@ -385,19 +397,6 @@ Iran attacks commercial vessels, tankers make U-turns, and the Strait of Hormuz 
   → Unpriced new-crop soybeans: hold through Thursday 7:30 AM export sales. Above 400K MT, add sales above $12.10. Below 300K MT, today's gain fades and that's your better entry into storage math.
 • Corn Grinds, Weather Watches
 Read more: https://agsist.com/daily/2026-07-08</description>
-    </item>
-    <item>
-      <title>BEANS LEAD THE COMPLEX BACK NORTH</title>
-      <link>https://agsist.com/daily/2026-07-07</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-07</guid>
-      <pubDate>Tue, 07 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Soybeans had their biggest single-session gain in weeks, nearby up 30¾ cents to $11.81, after USDA confirmed 85.4 million soybean acres Tuesday morning, matching March's estimate and removing the fear of a surprise acreage add. That matters for the weekly thread: Monday's question was whether Crop Progress would confirm pollination-week crop health or add a weather premium, and today's answer is both, corn conditions look solid per field reports out of Michigan and Minnesota, but an approaching Plains heat dome just enough uncertainty to keep a modest weather premium alive in December corn at $4.59. The complex is no longer in Monday's defensive crouch. The question now is whether the funds follow soybeans higher or treat today's move as a one-day cover.
-Soybeans ran 30 cents on USDA acreage confirmation and heat-dome weather talk; corn and wheat followed, cattle barely moved.
-• Soybeans: Acreage Clears the Deck
-  → If you have unpriced new-crop soybeans, watch Thursday's export sales. Above 400K MT keeps the move alive toward $12.10; below 300K MT and today's run fades.
-• Corn: Heat Dome Adds a Little Back
-• Wheat Follows, Does Not Lead
-Read more: https://agsist.com/daily/2026-07-07</description>
     </item>
   </channel>
 </rss>
