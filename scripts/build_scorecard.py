@@ -75,6 +75,11 @@ def main():
             if computed in VALID:
                 if stored and stored != computed:
                     print(f"[scorecard] {d}: stored outcome '{stored}' -> recomputed '{computed}'")
+                    # Show the correction on the record rather than silently
+                    # overriding — the published note may tell the old story.
+                    _lbl = "played out" if computed == "played_out" else "didn't"
+                    _regrade = f" [Regraded {_lbl} by the deterministic checker — direction and level scored against the actual closes; the note above is the text as originally published.]"
+                    yc["_regrade_note"] = _regrade
                 outcome = computed
 
         if not summary or outcome not in VALID:
@@ -84,7 +89,7 @@ def main():
             "judged": d,
             "call": summary,
             "outcome": outcome,
-            "note": (yc.get("note") or "").strip(),
+            "note": ((yc.get("note") or "").strip() + (yc.get("_regrade_note") or "")).strip(),
         })
 
     played = sum(1 for r in records if r["outcome"] == "played_out")

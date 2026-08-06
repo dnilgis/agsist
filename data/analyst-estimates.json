@@ -400,7 +400,14 @@
       {
        "id": "agsist",
        "value": 189.4,
-       "source": "https://agsist.com/conditions-yield — ge-linear-v1 nowcast, locked 2026-07-25, ratings week ending 2026-07-19"
+       "source": "https://agsist.com/conditions-yield",
+       "source_note": "ge-linear-v1 nowcast, locked 2026-07-25 (ratings week ending 2026-07-19). The live nowcast has since been model-upgraded and currently reads lower; locked calls stay on the record."
+      },
+      {
+       "id": "stonex",
+       "value": 184.8,
+       "source": "https://ukragroconsult.com/en/news/stonex-raises-us-corn-crop-forecast-above-usda-estimate/",
+       "source_note": "StoneX August estimate published Aug 5, 2026 (corroborated by TFM Morning Update same day)"
       }
      ]
     },
@@ -421,7 +428,14 @@
       {
        "id": "agsist",
        "value": 56.2,
-       "source": "https://agsist.com/conditions-yield — ge-linear-v1 nowcast, locked 2026-07-25, ratings week ending 2026-07-19"
+       "source": "https://agsist.com/conditions-yield",
+       "source_note": "ge-linear-v1 nowcast, locked 2026-07-25 (ratings week ending 2026-07-19). The live nowcast has since been model-upgraded and currently reads lower; locked calls stay on the record."
+      },
+      {
+       "id": "stonex",
+       "value": 53.0,
+       "source": "https://ukragroconsult.com/en/news/stonex-raises-us-corn-crop-forecast-above-usda-estimate/",
+       "source_note": "StoneX August estimate published Aug 5, 2026 (corroborated by TFM Morning Update same day)"
       }
      ]
     }

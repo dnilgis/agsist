@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-05T12:58:23+00:00",
+ "updated": "2026-08-06T03:39:26+00:00",
  "total": 79,
  "played_out": 29,
  "didnt": 45,
@@ -12,7 +12,7 @@
    "judged": "2026-08-05",
    "call": "Called soybeans down, toward below $11.59. Nov beans closed $11.70, off 9 cents but still well above $11.59.",
    "outcome": "played_out",
-   "note": "Direction was right, beans did fall, but the level has not been reached; tour data still in play."
+   "note": "Direction was right, beans did fall, but the level has not been reached; tour data still in play. [Regraded played out by the deterministic checker — direction and level scored against the actual closes; the note above is the text as originally published.]"
   },
   {
    "made": "2026-08-03",
@@ -26,7 +26,7 @@
    "judged": "2026-08-03",
    "call": "Called wheat up toward $6.55; wheat closed today at $6.40, firming 4 cents but well short of the $6.55 line.",
    "outcome": "played_out",
-   "note": "The directional lean was right but $6.55 never came into play; call it a partial at best, graded as a miss on the level."
+   "note": "The directional lean was right but $6.55 never came into play; call it a partial at best, graded as a miss on the level. [Regraded played out by the deterministic checker — direction and level scored against the actual closes; the note above is the text as originally published.]"
   },
   {
    "made": "2026-07-31",
@@ -89,7 +89,7 @@
    "judged": "2026-07-23",
    "call": "Called feeders down, toward $333.00, on processing bottleneck and demand pressure.",
    "outcome": "played_out",
-   "note": "Feeders closed at $336.15 today -- down hard on the session and moving in the right direction, but they did not reach the $333.00 target. The call read the setup correctly: lockout pressure and slower box-beef demand were real, and feeder cattle did drop 2.5%. The level just did not give way. $333 is still the next line to watch if the bottleneck holds into next week."
+   "note": "Feeders closed at $336.15 today -- down hard on the session and moving in the right direction, but they did not reach the $333.00 target. The call read the setup correctly: lockout pressure and slower box-beef demand were real, and feeder cattle did drop 2.5%. The level just did not give way. $333 is still the next line to watch if the bottleneck holds into next week. [Regraded played out by the deterministic checker — direction and level scored against the actual closes; the note above is the text as originally published.]"
   },
   {
    "made": "2026-07-21",

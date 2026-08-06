@@ -89,8 +89,25 @@ def grade_today(daily_path="data/daily.json", archive_dir="data/daily-archive", 
     daily = json.loads(Path(daily_path).read_text())
     arch = Path(archive_dir)
     dates = sorted(p.stem for p in arch.glob("*.json") if p.stem != "index") if arch.exists() else []
-    today = daily.get("date")
-    prior = [d for d in dates if d < (today or "9999")]
+    # daily.json carries a DISPLAY date ("Monday, August 3, 2026") while the
+    # archive filenames are ISO. The old lexical compare ("2026-08-03" < "Monday...")
+    # was always true, so "prior" included TODAY'S OWN archive and every call was
+    # graded against its own close (p0==p1 -> direction always false -> forced
+    # "didnt") from 2026-06-26 onward. Normalize to ISO; fail LOUD if we can't.
+    import datetime as _dt
+    raw = (daily.get("date") or "").strip()
+    today_iso = None
+    if len(raw) == 10 and raw[4] == "-" and raw[7] == "-":
+        today_iso = raw
+    else:
+        try:
+            today_iso = _dt.datetime.strptime(raw, "%A, %B %d, %Y").date().isoformat()
+        except ValueError:
+            pass
+    if today_iso is None:
+        print(f"[grade] FATAL: cannot parse briefing date {raw!r} to ISO — refusing to guess the prior archive")
+        return daily
+    prior = [d for d in dates if d < today_iso]
     if not prior:
         print("[grade] no prior archive to grade against"); return daily
     prior_daily = json.loads((arch / f"{prior[-1]}.json").read_text())
