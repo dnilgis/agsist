@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
-<title>What's Priced In &mdash; USDA Report Expectations | AGSIST</title>
+<title>What's Priced In &mdash; WASDE &amp; USDA Report Expectations | AGSIST</title>
 <meta name="description" content="What the market expects from the next USDA crop report — the trade estimate range and the surprise level that moves price, scored after each release.">
 <link rel="canonical" href="https://agsist.com/whats-priced-in">
 <meta property="og:type" content="website">
@@ -120,7 +120,10 @@
 .wp-faq details[open] summary::after{content:"\2212";}
 .wp-faq p{margin:0 0 .9rem;color:var(--wp-mut);line-height:1.55;font-size:.95rem;}
 .wp-xlink{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1.2rem;font-size:.85rem;}
-.wp-xlink a{display:inline-flex;align-items:center;gap:.3rem;background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:999px;padding:.35rem .8rem;color:var(--wp-gold2);text-decoration:none;min-height:32px;}
+.wp-xlink a{display:inline-flex;align-items:center;gap:.3rem;background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:999px;padding:.35rem .8rem;color:var(--wp-gold2);text-decoration:none;min-height:44px;}
+.wp-farmbox{border:1px solid var(--wp-line);border-left:2px solid var(--wp-gold);border-radius:8px;background:var(--wp-panel);padding:.8rem 1rem;margin:0 0 1.1rem;font-size:.92rem;line-height:1.55;color:var(--wp-mut);}
+.wp-farmbox b{color:#fff;}
+.wp-farmbox a{color:var(--wp-gold2);}
 .wp-xlink a:hover{border-color:var(--wp-gold);}
 .wp-method{background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:14px;padding:1.1rem 1.15rem;}
 .wp-method p{color:var(--wp-mut);line-height:1.55;font-size:.95rem;margin:0 0 .8rem;}
@@ -211,7 +214,7 @@
 .as-pl-met-lbl b{color:var(--wp-txt);font-size:.92rem;}
 .as-pl-call{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;padding:.28rem 0;}
 .as-pl-who{font-weight:600;color:#fff;font-size:.92rem;}
-.as-pl-link{color:#fff;text-decoration:none;border-bottom:1px dotted var(--wp-mut);}
+.as-pl-link{color:#fff;text-decoration:none;border-bottom:1px dotted var(--wp-mut);display:inline-flex;align-items:center;min-height:44px;}
 .as-pl-link:hover{border-bottom-color:var(--wp-gold2);}
 .as-pl-firm{color:var(--wp-mut);font-size:0.795rem;}
 .as-pl-val{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--wp-txt);margin-left:auto;}
@@ -237,25 +240,29 @@
 <main class="wp-wrap">
 <style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Read before every USDA report by people about to make marketing decisions — one category-exclusive slot. <a href="/sponsor?slot=whats-priced-in&amp;utm_source=whats-priced-in&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   <h1>What's priced in?</h1>
-  <p class="wp-lede">Before every major USDA report, the market has already placed its bet. This is what the trade expects &mdash; the estimate range, the implied odds, and how the funds are positioned &mdash; and the number that would actually surprise it. After each release, it gets scored.</p>
+  <p class="wp-lede">Before every major USDA report the market has already placed its bet. This is what the trade expects, and the number that would surprise it &mdash; scored after every release.</p>
+  <div class="wp-farmbox"><b>Aug 12, 11:00 a.m. Central.</b> First survey-based corn and soybean yields of the year &mdash; the season's biggest supply-surprise risk. If you're holding unpriced bushels, know the number to beat before that morning. Your own numbers: <a href="/breakeven">break-even</a> &middot; <a href="/presell-calculator">safe pre-sell</a>.</div>
 
   <nav class="wp-xlink" aria-label="Related pages">
     <a href="/usda-calendar"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Full USDA report calendar</a>
     <a href="/ag-odds"><svg class="ic-sp" aria-hidden="true"><use href="#sp-dices"/></svg> Market odds</a>
+    <a href="/scorecard">Daily call scorecard</a>
+    <a href="/corn-futures-prices">Corn futures</a>
+    <a href="/soybean-futures-prices">Soybean futures</a>
   </nav>
 
   <div class="wp-sample" id="wp-sample">Sample layout &mdash; live report data pending. Figures shown are illustrative.</div>
 
   <div id="wp-result"></div>
 
-  <h2>Next report</h2>
+  <h2>Next report: what the trade expects from the August WASDE</h2>
   <div id="wp-next"><div class="wp-err" id="wp-loading">Loading the next report&hellip;</div></div>
 
   <h2 id="track-record">Track record</h2>
-  <p class="wp-lede" style="margin-bottom:.4rem">How the expectation lined up against the actual print, and which way price moved.</p>
+  <p class="wp-lede" style="margin-bottom:.4rem">How the expectation lined up against the actual print, and which way price moved. <span style="color:var(--wp-mut)">The July WASDE went unscored &mdash; expectations were not filed that window; the gap stays on the record.</span></p>
   <div id="wp-history"></div>
 
-  <h2>Forecaster scorecard</h2>
+  <h2>Analyst scorecard &mdash; corn &amp; soybean yield estimates, graded</h2>
   <p class="wp-lede" style="margin-bottom:.6rem">Who calls these reports best &mdash; public forecasters scored against the actual print on accuracy, how often they beat the trade consensus, and which way they lean.</p>
   <div class="as-ribbon" id="as-ribbon" style="display:none">Scoring begins with the June 11 WASDE &mdash; the ranked board posts once the first report is scored against the actual print. Below is who's tracked and on record.</div>
 
@@ -454,8 +461,20 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
     if(Math.abs(b)<0.25)return '<span class="as-bias">&#8776; even</span>';
     var hi=b>0;return '<span class="as-bias"><span class="'+(hi?'hi':'lo')+'">'+(hi?'+':'')+b.toFixed(2)+'% '+(hi?'high':'low')+'</span></span>';
   }
-  function boardTbl(rows){
-    if(!rows||!rows.length)return '<div class="as-err">No ranked forecasters yet &mdash; the board posts after the first report is scored.</div>';
+  function boardTbl(rows,building){
+    if((!rows||!rows.length)&&(!building||!building.length))return '<div class="as-err">No forecasters scored yet.</div>';
+    if(!rows||!rows.length){
+      var brows=(building||[]).map(function(r){
+        return '<tr style="opacity:.55"><td class="rk" data-label="#">&mdash;</td>'
+          +'<td data-label="Analyst"><span class="who">'+esc(r.analyst)+'</span><span class="firm">'+esc(r.firm)+'</span></td>'
+          +'<td class="num" data-label="Calls">'+r.n+' of 3</td>'
+          +'<td class="num" data-label="Accuracy"><span class="as-acc">'+r.mape.toFixed(2)+'%</span></td>'
+          +'<td class="num" data-label="Beat trade">&mdash;</td>'
+          +'<td class="num" data-label="Bias">'+biasCell(r.bias)+'</td></tr>';
+      }).join('');
+      return '<div class="as-err" style="margin-bottom:.6rem">Rankings post once a forecaster has <b>3 scored calls</b> &mdash; building records below.</div>'
+        +'<table class="as-tbl"><thead><tr><th>#</th><th>Analyst</th><th class="num">Calls</th><th class="num">Accuracy</th><th class="num">Beat trade</th><th class="num">Bias</th></tr></thead><tbody>'+brows+'</tbody></table>';
+    }
     var body=rows.map(function(r,i){
       var beatCls=(r.beat_rate!=null&&r.beat_rate>=50)?'as-beat':'as-beat lo';
       return '<tr><td class="rk" data-label="#">'+(i+1)+'</td>'
@@ -519,7 +538,7 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
   }
   fetch('/data/analyst-scorecard.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
     if(d.sample){document.getElementById('as-ribbon').style.display='block';}
-    document.getElementById('as-board').innerHTML=boardTbl(d.leaderboard);
+    document.getElementById('as-board').innerHTML=boardTbl(d.leaderboard,d.building);
     if(d.leaderboard&&d.leaderboard.length){document.getElementById('as-legend').style.display='block';document.getElementById('as-minn').textContent=d.min_n||3;}
     document.getElementById('as-upcoming').innerHTML=pipelineEl(d.pipeline);
     document.getElementById('as-roster').innerHTML=rosterEl(d.roster)||'<div class="as-err">Roster loading&hellip;</div>';

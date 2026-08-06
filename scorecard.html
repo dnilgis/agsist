@@ -8,7 +8,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
-  <title>Call Scorecard &mdash; AGSIST Daily Track Record</title>
+  <title>Grain Market Call Scorecard &mdash; AGSIST Daily Track Record</title>
   <meta name="description" content="Every forward call the AGSIST Daily briefing has made — dated, graded the next morning, misses included. The full public track record.">
   <meta name="author" content="Sigurd Lindquist &mdash; Farmers First Agri Service">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -17,7 +17,7 @@
   <meta property="og:type"        content="website">
   <meta property="og:site_name"   content="AGSIST">
   <meta property="og:locale"      content="en_US">
-  <meta property="og:title"       content="Call Scorecard &mdash; AGSIST Daily Track Record">
+  <meta property="og:title"       content="Grain Market Call Scorecard &mdash; AGSIST Daily Track Record">
   <meta property="og:description" content="Every forward call the AGSIST Daily briefing has made — dated, graded the next morning, misses included.">
   <meta property="og:url"         content="https://agsist.com/scorecard">
   <meta property="og:image"       content="https://agsist.com/img/og/agsist.jpg">
@@ -27,7 +27,7 @@
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:creator"     content="@agsist">
-  <meta name="twitter:title"       content="Call Scorecard &mdash; AGSIST Daily Track Record">
+  <meta name="twitter:title"       content="Grain Market Call Scorecard &mdash; AGSIST Daily Track Record">
   <meta name="twitter:description" content="Every forward call, dated and graded the next morning — misses included.">
   <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
 
@@ -74,7 +74,7 @@
     .sc-pill--bad{background:rgba(200,86,46,.14);color:var(--red);border:1px solid rgba(200,86,46,.35)}
     .sc-pill--pending{background:var(--surface2);color:var(--text-muted);border:1px solid var(--border)}
     .sc-call{font-size:.9rem;color:var(--text);font-weight:600;line-height:1.55}
-    .sc-note{font-size:1rem;color:var(--text-dim);margin-top:.3rem;line-height:1.6}
+    .sc-note{font-size:.85rem;color:var(--text-dim);margin-top:.3rem;line-height:1.6}
     .sc-note a{font-style:normal}
     .sc-loading{color:var(--text-muted);font-size:.88rem;padding:1.2rem 0}
     .sc-more{margin-top:1rem;width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.785rem;font-weight:700;padding:.7rem;min-height:44px}
@@ -95,8 +95,9 @@
   <div id="site-header"></div>
 
   <main id="main" tabindex="-1">
-<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every call graded in public, wins and misses alike — one category-exclusive slot next to the record. <a href="/sponsor?slot=scorecard&amp;utm_source=scorecard&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style>
     <div class="info-page">
+      <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every call graded in public, wins and misses alike — one category-exclusive slot next to the record. <a href="/sponsor?slot=scorecard&amp;utm_source=scorecard&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
       <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> &rsaquo; Call Scorecard</nav>
 
@@ -104,12 +105,15 @@
       <p class="sub">Every weekday the <a href="/daily">AGSIST Daily</a> makes a forward call. The next morning's briefing grades it &mdash; in public, on the record. This is the complete list. Nothing edited, misses included.</p>
 
       <div class="sc-stats" id="sc-stats" aria-live="polite">
-        <div class="sc-stat"><div class="sc-stat-num good" id="sc-hit">&mdash;</div><div class="sc-stat-lbl">Hit rate</div></div>
+        <div class="sc-stat"><div class="sc-stat-num" id="sc-hit">&mdash;</div><div class="sc-stat-lbl">Hit rate</div></div>
         <div class="sc-stat"><div class="sc-stat-num" id="sc-record">&mdash;</div><div class="sc-stat-lbl">W &ndash; L &ndash; pending</div></div>
         <div class="sc-stat"><div class="sc-stat-num" id="sc-streak">&mdash;</div><div class="sc-stat-lbl">Current win streak</div></div>
         <div class="sc-stat"><div class="sc-stat-num" id="sc-total">&mdash;</div><div class="sc-stat-lbl">Calls graded</div></div>
       </div>
 
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-dim);margin:.2rem 0 1rem">Graded strict: right direction but level not hit still counts as a miss. A 38% hit rate on one-session level calls is the honest number, not the flattering one.</p>
+      <div style="border:1px solid var(--border);border-left:2px solid var(--gold);border-radius:8px;padding:.7rem .9rem;margin:0 0 1rem;font-size:.9rem;line-height:1.55;color:var(--text-dim)"><b style="color:var(--text)">Aug 12, 11:00 a.m. Central:</b> August WASDE &mdash; the year's first survey-based yields. See <a href="/whats-priced-in" style="color:var(--gold)">what the trade has priced in</a> before the number drops.</div>
+      <nav aria-label="Related pages" style="display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1.1rem;font-size:.85rem"><a href="/whats-priced-in" style="display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--border);border-radius:999px;padding:0 .8rem;color:var(--gold)">What's priced in</a><a href="/usda-calendar" style="display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--border);border-radius:999px;padding:0 .8rem;color:var(--gold)">USDA calendar</a><a href="/daily" style="display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--border);border-radius:999px;padding:0 .8rem;color:var(--gold)">Today's briefing</a></nav>
       <div class="sc-honest">
         <strong>How to read this:</strong> these are short directional reads from a free morning briefing, graded by the same briefing one session later. The misses are listed exactly like the hits &mdash; that's the point. Compiled automatically from the published <a href="/archive">briefing archive</a>; nothing here can be edited after the fact.
       </div>
@@ -119,9 +123,15 @@
         <div class="sc-loading">Loading the record&hellip; If this doesn't load, the full history is readable briefing-by-briefing in the <a href="/archive">archive</a>.</div>
       </div>
 
+      <h2>Common questions</h2>
+      <details open style="border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;padding:.6rem .9rem"><summary style="cursor:pointer;font-weight:700">What is the AGSIST Call Scorecard?</summary><p style="margin:.5rem 0 0;font-size:.92rem;color:var(--text-dim)">Every weekday the AGSIST Daily briefing makes a forward call about the next session. The following morning's briefing grades it &mdash; played out, didn't, or pending. The scorecard is the complete, dated record of those calls and outcomes, misses included.</p></details>
+      <details style="border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;padding:.6rem .9rem"><summary style="cursor:pointer;font-weight:700">Can past calls be edited?</summary><p style="margin:.5rem 0 0;font-size:.92rem;color:var(--text-dim)">No. The scorecard is compiled automatically from the same published archive JSON that renders each day's briefing page. The grading text readers saw on publish day is the grading text shown here.</p></details>
+      <details style="border:1px solid var(--border);border-radius:8px;margin-bottom:1rem;padding:.6rem .9rem"><summary style="cursor:pointer;font-weight:700">Is this trading advice?</summary><p style="margin:.5rem 0 0;font-size:.92rem;color:var(--text-dim)">No. The calls are short directional reads in a free morning briefing, published for context. They are not financial or trading advice &mdash; verify prices with your elevator or broker before making marketing decisions.</p></details>
+
       <h2>How It Works</h2>
       <p>Each morning's briefing ends with a forward look at the next session. The next published briefing opens by grading it: <strong>played out</strong>, <strong>didn't</strong>, or <strong>pending</strong> when the verdict isn't in yet. That grading block has shipped on every briefing since late April 2026, and this page is simply those blocks collected in one place &mdash; the call, the date it was made, the date it was judged, and the one-line reasoning readers saw that morning.</p>
       <p>Hit rate counts graded calls only (pending excluded). The streak is consecutive graded wins ending at the most recent graded call.</p>
+      <p><strong>Incident note (Aug 4, 2026):</strong> a date-handling bug from Jun 26 to Aug 4 caused the morning grading text to score the wrong session in some briefings. Outcomes on this page are re-scored deterministically against the actual prior-day call and closes, and any row where that re-score changed the published grade says so inline. The bug is fixed; the original morning text stays as published &mdash; that's the deal.</p>
 
       <h2>What This Is Not</h2>
       <p>Not a trading system, not a signal service, and not advice. A one-session directional read is the lowest-stakes call in markets &mdash; the value here isn't the percentage, it's that the record exists at all, in public, with the losses left in. Verify prices with your elevator or broker before making marketing decisions.</p>
