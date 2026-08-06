@@ -1,12 +1,12 @@
 {
-  "fetched": "2026-08-05T11:33:17Z",
+  "fetched": "2026-08-06T11:37:11Z",
   "version": 5,
   "count": 5,
-  "total_found": 12,
+  "total_found": 11,
   "tier_breakdown": {
     "direct_ag": 0,
     "trade_energy": 0,
-    "macro_weather": 12
+    "macro_weather": 11
   },
   "categories": {
     "Economy & Markets": [
@@ -14,9 +14,9 @@
         "platform": "Polymarket",
         "ticker": "616902",
         "title": "Will no Fed rate cuts happen in 2026?",
-        "yes": 89,
-        "no": 11,
-        "volume_24h": 6935189.1379860025,
+        "yes": 88,
+        "no": 12,
+        "volume_24h": 6954353.034027,
         "close_time": "2026-12-31T00:00:00Z",
         "time_left": "Closes in ~4mo",
         "url": "https://polymarket.com/event/how-many-fed-rate-cuts-in-2026",
@@ -24,7 +24,7 @@
         "relevance": 40,
         "tier": 3,
         "category": "Economy & Markets",
-        "why_it_matters": "89% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
+        "why_it_matters": "88% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
       },
       {
         "platform": "Polymarket",
@@ -32,7 +32,7 @@
         "title": "Fed rate hike in 2026?",
         "yes": 62,
         "no": 38,
-        "volume_24h": 6305130.353367001,
+        "volume_24h": 6322989.732609004,
         "close_time": "2026-12-09T00:00:00Z",
         "time_left": "Closes in ~4mo",
         "url": "https://polymarket.com/event/fed-rate-hike-in-2026",
@@ -44,11 +44,11 @@
       },
       {
         "platform": "Polymarket",
-        "ticker": "2252243",
-        "title": "Will the Fed decrease interest rates by 25 bps after the September 2026 meeting?",
-        "yes": 2,
-        "no": 98,
-        "volume_24h": 3894351.6581539987,
+        "ticker": "2252244",
+        "title": "Will there be no change in Fed interest rates after the September 2026 meeting?",
+        "yes": 50,
+        "no": 50,
+        "volume_24h": 4335944.75170701,
         "close_time": "2026-09-16T00:00:00Z",
         "time_left": "Closes in ~1mo",
         "url": "https://polymarket.com/event/fed-decision-in-september-762",
@@ -56,15 +56,15 @@
         "relevance": 40,
         "tier": 3,
         "category": "Economy & Markets",
-        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 2% YES on this outcome."
+        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 50% YES on this outcome."
       },
       {
         "platform": "Polymarket",
-        "ticker": "2252244",
-        "title": "Will there be no change in Fed interest rates after the September 2026 meeting?",
-        "yes": 52,
-        "no": 48,
-        "volume_24h": 3831651.9552830006,
+        "ticker": "2252243",
+        "title": "Will the Fed decrease interest rates by 25 bps after the September 2026 meeting?",
+        "yes": 1,
+        "no": 99,
+        "volume_24h": 4133990.9947660007,
         "close_time": "2026-09-16T00:00:00Z",
         "time_left": "Closes in ~1mo",
         "url": "https://polymarket.com/event/fed-decision-in-september-762",
@@ -72,7 +72,7 @@
         "relevance": 40,
         "tier": 3,
         "category": "Economy & Markets",
-        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 52% YES on this outcome."
+        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 1% YES on this outcome."
       }
     ],
     "Trade & Policy": [
@@ -82,7 +82,7 @@
         "title": "Will Brazil\u2019s Annual Inflation in 2026 be between 5.00% and 5.49%?",
         "yes": 39,
         "no": 61,
-        "volume_24h": 9995.092758999997,
+        "volume_24h": 9995.092759,
         "close_time": "2027-01-12T00:00:00Z",
         "time_left": "Closes in ~5mo",
         "url": "https://polymarket.com/event/brazil-annual-inflation-2026",
@@ -99,9 +99,9 @@
       "platform": "Polymarket",
       "ticker": "616902",
       "title": "Will no Fed rate cuts happen in 2026?",
-      "yes": 89,
-      "no": 11,
-      "volume_24h": 6935189.1379860025,
+      "yes": 88,
+      "no": 12,
+      "volume_24h": 6954353.034027,
       "close_time": "2026-12-31T00:00:00Z",
       "time_left": "Closes in ~4mo",
       "url": "https://polymarket.com/event/how-many-fed-rate-cuts-in-2026",
@@ -109,7 +109,7 @@
       "relevance": 40,
       "tier": 3,
       "category": "Economy & Markets",
-      "why_it_matters": "89% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
+      "why_it_matters": "88% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
     },
     {
       "platform": "Polymarket",
@@ -117,7 +117,7 @@
       "title": "Fed rate hike in 2026?",
       "yes": 62,
       "no": 38,
-      "volume_24h": 6305130.353367001,
+      "volume_24h": 6322989.732609004,
       "close_time": "2026-12-09T00:00:00Z",
       "time_left": "Closes in ~4mo",
       "url": "https://polymarket.com/event/fed-rate-hike-in-2026",
@@ -129,11 +129,11 @@
     },
     {
       "platform": "Polymarket",
-      "ticker": "2252243",
-      "title": "Will the Fed decrease interest rates by 25 bps after the September 2026 meeting?",
-      "yes": 2,
-      "no": 98,
-      "volume_24h": 3894351.6581539987,
+      "ticker": "2252244",
+      "title": "Will there be no change in Fed interest rates after the September 2026 meeting?",
+      "yes": 50,
+      "no": 50,
+      "volume_24h": 4335944.75170701,
       "close_time": "2026-09-16T00:00:00Z",
       "time_left": "Closes in ~1mo",
       "url": "https://polymarket.com/event/fed-decision-in-september-762",
@@ -141,15 +141,15 @@
       "relevance": 40,
       "tier": 3,
       "category": "Economy & Markets",
-      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 2% YES on this outcome."
+      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 50% YES on this outcome."
     },
     {
       "platform": "Polymarket",
-      "ticker": "2252244",
-      "title": "Will there be no change in Fed interest rates after the September 2026 meeting?",
-      "yes": 52,
-      "no": 48,
-      "volume_24h": 3831651.9552830006,
+      "ticker": "2252243",
+      "title": "Will the Fed decrease interest rates by 25 bps after the September 2026 meeting?",
+      "yes": 1,
+      "no": 99,
+      "volume_24h": 4133990.9947660007,
       "close_time": "2026-09-16T00:00:00Z",
       "time_left": "Closes in ~1mo",
       "url": "https://polymarket.com/event/fed-decision-in-september-762",
@@ -157,7 +157,7 @@
       "relevance": 40,
       "tier": 3,
       "category": "Economy & Markets",
-      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 52% YES on this outcome."
+      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 1% YES on this outcome."
     },
     {
       "platform": "Polymarket",
@@ -165,7 +165,7 @@
       "title": "Will Brazil\u2019s Annual Inflation in 2026 be between 5.00% and 5.49%?",
       "yes": 39,
       "no": 61,
-      "volume_24h": 9995.092758999997,
+      "volume_24h": 9995.092759,
       "close_time": "2027-01-12T00:00:00Z",
       "time_left": "Closes in ~5mo",
       "url": "https://polymarket.com/event/brazil-annual-inflation-2026",
