@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
 <link rel="manifest"                            href="/manifest.json">
 
-<title>Corn &amp; Soybean Yield Estimator | AGSIST</title>
-<meta name="description" content="Estimate corn and soybean yield from field checks &mdash; ear counts, kernel rows, pod counts. Free pre-harvest yield estimator for US producers.">
+<title>Corn Yield Estimator &mdash; Ear Count Method (Free) | AGSIST</title>
+<meta name="description" content="Estimate corn yield before harvest with the ear count method &mdash; kernel rows, ears per acre &mdash; plus a soybean pod-count estimator. Free, no login.">
 <meta name="keywords" content="corn yield estimator, soybean yield estimator, field yield estimate, ear count yield calculator, yield check corn, pre-harvest yield estimate, kernel row yield, pod count soybean yield">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -60,6 +60,8 @@ button,a,[role="button"]{touch-action:manipulation;}
 .ye-eyebrow{font-size:0.763rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.25rem;}
 .ye-hero h1{font-family:var(--font-display);font-size:1.65rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;line-height:1.1;}
 .ye-hero p{font-size:.82rem;color:var(--text-dim);line-height:1.55;max-width:640px;margin:0;}
+.inl-ye{color:var(--gold);border-bottom:1px solid rgba(212,162,63,.35)}
+.inl-ye:hover{border-bottom-color:var(--gold)}
 .ye-calibration{font-size:0.775rem;color:var(--text-muted);margin-top:.6rem;padding-top:.55rem;border-top:1px dashed var(--border);line-height:1.55;}
 
 .ye-tabs{display:flex;gap:.4rem;margin-bottom:1.4rem;flex-wrap:wrap;}
@@ -164,7 +166,7 @@ button,a,[role="button"]{touch-action:manipulation;}
   <div class="ye-hero">
     <div class="ye-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Pre-Harvest Field Estimation</div>
     <h1>Corn &amp; Soybean<br>Yield Estimator</h1>
-    <p>Estimate yield from field counts at R5&ndash;R6 (corn) or R6&ndash;R7 (soybeans). Uses the ear-count / kernel-count method for corn and the pod-count method for soybeans. Sample at least 3 locations per field for reliable estimates.</p>
+    <p>Estimate yield from field counts at R5&ndash;R6 (corn) or R6&ndash;R7 (soybeans) &mdash; the same ear-count and kernel-count math crop tour scouts run in August. Pod-count method for soybeans. Sample at least 3 locations per field for reliable estimates. Then see <a class="inl-ye" href="/whats-priced-in">what the trade expects the national number to be</a>.</p>
     <div class="ye-calibration">
       <strong>Method:</strong> Yield Component Method (Nafziger, University of Illinois; widely referenced across US Corn Belt extension services).
       <strong>Accuracy:</strong> typically &plusmn;15% when sampling 3+ locations with representative ears/plants.
