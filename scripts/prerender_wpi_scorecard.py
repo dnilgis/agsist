@@ -338,13 +338,82 @@ def bake_scorecard(check_only=False):
     return orig, src, SC_HTML
 
 
+# ── COT + ag-odds bakes (same pattern; JS hides the baked block on hydrate) ──
+
+COT_HTML = "cot.html"
+COT_JSON = "data/cot.json"
+AO_HTML = "ag-odds.html"
+MKT_JSON = "data/markets.json"
+
+COT_LABELS = {"corn": "Corn", "beans": "Soybeans", "wheat": "Chicago wheat",
+              "kcwheat": "KC wheat", "mplswheat": "Minneapolis wheat",
+              "soymeal": "Soymeal", "soyoil": "Soyoil", "livecattle": "Live cattle",
+              "feedercattle": "Feeder cattle", "leanhogs": "Lean hogs", "milk": "Milk"}
+
+
+def cot_summary(d):
+    rows = []
+    for key, lbl in COT_LABELS.items():
+        c = d.get(key)
+        if not isinstance(c, dict) or c.get("net") is None:
+            continue
+        net, prev = c["net"], c.get("prev")
+        side = "net long" if net >= 0 else "net short"
+        chg = ""
+        if prev is not None:
+            delta = net - prev
+            chg = f', {"+" if delta >= 0 else "−"}{abs(delta):,} on the week'
+        rows.append(f'<b>{lbl}</b> funds {side} {abs(net):,} contracts{chg}')
+    if not rows:
+        return ""
+    return (f'Managed-money positioning as of the <b>{esc(d.get("report_date", ""))}</b> CFTC report: '
+            + "; ".join(rows[:6]) + ". Full 52-week context, price overlay, and every market below.")
+
+
+def ao_summary(d):
+    mkts = d.get("markets") or []
+    if not mkts:
+        return ""
+    items = []
+    for m in mkts[:6]:
+        t, yes = m.get("title"), m.get("yes")
+        if not t or yes is None:
+            continue
+        items.append(f'{esc(t)} — <b>{yes}%</b> yes')
+    if not items:
+        return ""
+    fetched = (d.get("fetched") or "")[:10]
+    return (f'Prediction-market odds as of {esc(fetched)}: ' + "; ".join(items)
+            + ". Live odds refresh below; sources are real-money markets (Polymarket and similar).")
+
+
+def bake_cot():
+    with open(COT_JSON, encoding="utf-8") as f:
+        d = json.load(f)
+    with open(COT_HTML, encoding="utf-8") as f:
+        src = f.read()
+    orig = src
+    src = replace_region(src, "cot-summary", cot_summary(d), COT_HTML)
+    return orig, src, COT_HTML
+
+
+def bake_agodds():
+    with open(MKT_JSON, encoding="utf-8") as f:
+        d = json.load(f)
+    with open(AO_HTML, encoding="utf-8") as f:
+        src = f.read()
+    orig = src
+    src = replace_region(src, "ao-odds", ao_summary(d), AO_HTML)
+    return orig, src, AO_HTML
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true", help="verify only; exit 1 if stale")
     args = ap.parse_args()
 
     stale = []
-    for bake in (bake_wpi, bake_scorecard):
+    for bake in (bake_wpi, bake_scorecard, bake_cot, bake_agodds):
         orig, new, fname = bake()
         if new != orig:
             if args.check:

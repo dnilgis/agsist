@@ -553,14 +553,19 @@
   var shown = false, timer = null;
   function build() {
     if (shown) return; shown = true;
+    // Don't compete with a page's own capture: if this page already carries a
+    // signup or alert form (spray/urea/futures sidebars, hail #notify, etc.),
+    // its form wins and the bar stays away.
+    if (document.querySelector('#signup-form, #signup-card, #notify, .signup-form')) return;
     var bar = document.createElement('div');
     bar.className = 'agsb';
     bar.setAttribute('role', 'complementary');
     bar.setAttribute('aria-label', 'Free daily briefing signup');
-    bar.innerHTML = '<span class="agsb-txt"><strong>AGSIST Daily</strong> — the 3-minute farm market briefing, free every weekday before the open.</span>' +
+    bar.innerHTML = '<span class="agsb-txt"><span class="agsb-txt-full"><strong>AGSIST Daily</strong> — the 3-minute farm market briefing, free every weekday before the open.</span><span class="agsb-txt-short"><strong>AGSIST Daily</strong> — free weekday market briefing.</span></span>' +
       '<form class="agsb-form"><input type="email" class="agsb-input" placeholder="your@email.com" autocomplete="email" aria-label="Email for the free daily briefing" required>' +
       '<button type="submit" class="agsb-btn">Get it free</button></form>' +
       '<button type="button" class="agsb-x" aria-label="No thanks">&#10005;</button>';
+    document.body.classList.add('agsb-open'); // lets pages with their own bottom bars (e.g. /breakeven mini-bar) yield while the signup is up
     document.body.appendChild(bar);
     requestAnimationFrame(function () { requestAnimationFrame(function () { bar.classList.add('agsb--in'); }); });
     try { if (typeof gtag === 'function') gtag('event', 'signup_bar_shown', { page: p }); } catch (e) {}
@@ -568,6 +573,7 @@
     bar.querySelector('.agsb-x').addEventListener('click', function () {
       try { localStorage.setItem('agsist_bar_snooze', String(Date.now() + 90 * 864e5)); } catch (e) {}
       bar.classList.remove('agsb--in');
+      document.body.classList.remove('agsb-open');
       setTimeout(function () { bar.remove(); }, 400);
     });
     bar.querySelector('.agsb-form').addEventListener('submit', function (e) {
@@ -585,7 +591,7 @@
       }).catch(function () {});
       try { if (typeof gtag === 'function') gtag('event', 'email_signup', { source: 'bar-' + p.slice(1, 40) }); } catch (e3) {}
       bar.innerHTML = '<span class="agsb-ok">&#10003; You\'re in — the briefing lands before the market open, weekdays. Check spam once.</span>';
-      setTimeout(function () { bar.classList.remove('agsb--in'); setTimeout(function () { bar.remove(); }, 400); }, 4500);
+      setTimeout(function () { bar.classList.remove('agsb--in'); document.body.classList.remove('agsb-open'); setTimeout(function () { bar.remove(); }, 400); }, 4500);
     });
   }
   timer = setTimeout(build, 25000);

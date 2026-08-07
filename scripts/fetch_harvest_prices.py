@@ -114,9 +114,14 @@ def roll_crop_year(d, today):
         c["contract"] = mon + " '" + yy
         c["projected"] = {"status": "pending", "price": None, "window": "February",
                           "series": [], "days_total": 19}
+        # ~trading days in October of the new crop year: weekdays (no CME
+        # grain holidays fall in October). Computed, not hardcoded — Oct 2026
+        # has 22, other years 21-23.
+        oct_days = sum(1 for dd in range(1, 32)
+                       if date(today.year, 10, dd).weekday() < 5)
         c["harvest"] = {"status": "pending", "price": None, "running_avg": None,
                         "window": "October", "series": [], "days_counted": 0,
-                        "days_total": 23}
+                        "days_total": oct_days}
     return True
 
 

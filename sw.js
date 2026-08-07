@@ -26,7 +26,7 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 18;  // v18 2026-08-07: footer What's New link (/changelog); was: agsb bar + loader ?v=15 normalization
+var CACHE_VERSION = 19;  // v19 2026-08-07: loader.js + styles.css gap upload (agsb compact mobile, no-compete guard, agsb-open hook /breakeven needs); was: footer What's New link
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;
