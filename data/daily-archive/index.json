@@ -3,10 +3,10 @@
     {
       "date": "2026-08-07",
       "date_display": "Friday, August 7, 2026",
-      "headline": "FARM BILL DEAD; CATTLE BREAK; BEANS HOLD",
-      "teaser": "Farm bill failed, feeders fell, and the crop is still bigger than the market wants to admit.",
-      "market_mood": "bearish",
-      "surprise_count": 2,
+      "headline": "FARM BILL STALLS; GRAINS END WEEK SOFT",
+      "teaser": "Corn and beans end the week soft, wheat catches a bid, and the farm bill hits a wall.",
+      "market_mood": "cautious",
+      "surprise_count": 1,
       "sections": 4,
       "url": "/daily/2026-08-07",
       "market_closed": false,
@@ -1687,6 +1687,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-07T11:50:18.138813+00:00",
+  "updated": "2026-08-07T20:37:14.984327+00:00",
   "count": 148
 }
