@@ -260,7 +260,7 @@
     } else if(which==='hail'){
       el.hidden=false;
       el.innerHTML='<div class="fs-leg-top"><span class="fs-leg-ttl">Hail history</span><span class="fs-leg-tag">reported storms, last 5 years</span></div>'+
-        '<div class="fs-leg-say">Each blue dot is a severe-hail storm report near this field over the last five years &mdash; tap a dot for the reported stone size and date. No dots is good news.</div>';
+        '<div class="fs-leg-say">Each blue dot is a severe-hail storm report near this field over the last five years &mdash; tap a dot for the reported stone size and date. No dots means no reports in the archive for this spot.</div>';
     } else { el.hidden=true; el.innerHTML=''; }
   }
 
@@ -283,21 +283,27 @@
     var c = activePoly ? polyCentroid(activePoly) : map.getCenter();
     btn.classList.add('on'); btn.setAttribute('aria-pressed','true');
     openSheetFor('hail');
-    fetch(FS_WORKER + '/hail?lat='+(c.lat).toFixed(4)+'&lon='+(c.lng).toFixed(4)+'&years=5')
-      .then(function(r){ return r.json(); })
-      .then(function(gj){
-        var feats = (gj && gj.features) || [];
+    // Draw from the same static event files the field brain reasons on
+    // (data/hail/events-YYYY.json) — one source of truth, dates included.
+    var yNowH = new Date().getFullYear();
+    var yrsH = [yNowH-4, yNowH-3, yNowH-2, yNowH-1, yNowH];
+    Promise.all(yrsH.map(function(y){ return _hailYearFile(y).catch(function(){ return null; }); }))
+      .then(function(files){
+        var got = files.filter(Boolean);
+        if(!got.length) throw new Error('no event files');
         hailLayer = L.layerGroup();
-        feats.forEach(function(f){
-          if(!f.geometry || !f.geometry.coordinates) return;
-          var ll=[f.geometry.coordinates[1], f.geometry.coordinates[0]];
-          var mag = (f.properties && (f.properties.magnitude||f.properties.magf)) || '';
-          L.circleMarker(ll,{radius:5,color:'#7cd2ff',fillColor:'#7cd2ff',fillOpacity:.6,weight:1})
-            .bindPopup('Hail '+(mag?mag+'"':'')+'<br>'+((f.properties&&f.properties.valid)||'')).addTo(hailLayer);
+        var n=0;
+        got.forEach(function(f){
+          (f.ev||[]).forEach(function(e){
+            if(_hvsMi(c.lat, c.lng, e[0], e[1]) > 40) return;
+            n++;
+            L.circleMarker([e[0], e[1]],{radius:5,color:'#7cd2ff',fillColor:'#7cd2ff',fillOpacity:.6,weight:1})
+              .bindPopup('Hail '+(e[2]!=null?e[2]+'"':'')+'<br>'+f.year+'-'+e[3]).addTo(hailLayer);
+          });
         });
         hailLayer.addTo(map);
-        ga('hail_layer', { reports: feats.length });
-      }).catch(function(){ btn.classList.remove('on'); btn.setAttribute('aria-pressed','false'); syncSheet(); });
+        ga('hail_layer', { reports: n });
+      }).catch(function(){ btn.classList.remove('on'); btn.setAttribute('aria-pressed','false'); flashHint('Hail history unavailable right now'); syncSheet(); });
   }
 
   function wireControls() {
@@ -381,7 +387,10 @@
     ga('field_saved', {});
   }
   function deleteSavedField(id){
-    persistSavedFields(loadSavedFields().filter(function(f){ return f.id!==id; }));
+    var f=loadSavedFields().filter(function(x){ return x.id===id; })[0];
+    if(!window.confirm('Delete "'+((f&&f.name)||'this field')+'"? This can\u2019t be undone.')) return;
+    persistSavedFields(loadSavedFields().filter(function(x){ return x.id!==id; }));
+    try{ localStorage.removeItem('agsist-fs-snap-'+id); }catch(e){}
     renderSavedFields();
   }
   function openSavedField(id){
@@ -429,7 +438,7 @@
       gpsMarker=L.circleMarker([p.coords.latitude,p.coords.longitude],{radius:7,color:'#daa520',fillColor:'#daa520',fillOpacity:.9}).addTo(map);
       btn.innerHTML='&#9678; My location';
       flashHint('Tap your field on the map');
-    }, function(){ btn.innerHTML='&#9678; My location'; }, {enableHighAccuracy:true,timeout:8000});
+    }, function(err){ btn.innerHTML='&#9678; My location'; flashHint(err&&err.code===1?'Location is blocked for this site \u2014 allow it in browser settings, or search your address below':'Couldn\u2019t get a GPS fix \u2014 try again outside or search your address'); }, {enableHighAccuracy:true,timeout:8000});
   }
   function searchAddr(){
     var q=document.getElementById('fs-addr').value.trim();
@@ -611,7 +620,8 @@
     if(!prev||!cur) return out;
     var was=prev.drought||'None', now=cur.drought||'None';
     if(was!==now){
-      var worse = (now!=='None') && (was==='None' || now>was);
+      var dN=function(x){var m=/D(\d)/.exec(x||'');return m?+m[1]:(x&&x!=='None'?0:-1);};
+      var worse = dN(now)>dN(was);
       out.push((worse?'&#9650; ':'&#9660; ')+'Drought status moved from <strong>'+esc(was)+'</strong> to <strong>'+esc(now)+'</strong>.');
     }
     if(prev.pDep!=null && cur.pDep!=null){
@@ -1077,7 +1087,7 @@
       if(gen !== fieldGen) return;
       if(!d || !d.current){ setErr('fs-wx-weather','Weather unavailable.'); return; }
       var cur=d.current;
-      var wk=0; if(d.daily&&d.daily.precipitation_sum){ d.daily.precipitation_sum.forEach(function(v){ wk+=(v||0); }); }
+      var wk=0; if(d.daily&&d.daily.precipitation_sum){ var ps=d.daily.precipitation_sum; for(var pi=0;pi<ps.length-1;pi++){ wk+=(ps[pi]||0); } }  // last entry is today's FORECAST — not observed rain
       window.__fsWx = {
         temp:Math.round(cur.temperature_2m), hum:Math.round(cur.relative_humidity_2m),
         wind:Math.round(cur.wind_speed_10m), wk:wk.toFixed(2)
@@ -1131,7 +1141,11 @@
       }
       var t=d.daily.time, pr=d.daily.precipitation_sum||[], tx=d.daily.temperature_2m_max||[], tn=d.daily.temperature_2m_min||[];
       var cutoff = t[t.length-1].slice(5); // MM-DD: only count Jan 1 → this MM-DD each year
-      var acc={};        // year → {precip, gdu}
+      // Planting proxy for crop-stage math: published corn-stage GDU tables count
+      // from PLANTING, not Jan 1 (Jan-1 accumulation reads 1-3+ weeks ahead,
+      // worse going south). Latitude-banded typical planting date, stated in copy.
+      var plantMD = c.lat>=44 ? '05-05' : c.lat>=41 ? '04-28' : c.lat>=38 ? '04-18' : '04-08';
+      var acc={};        // year → {precip, gdu, gduP (from planting proxy)}
       var cumMap={};     // year → { 'MM-DD': cumulativePrecip }
       for(var i=0;i<t.length;i++){
         var md=t[i].slice(5); if(md>cutoff) continue;       // MM-DD sorts chronologically
@@ -1139,8 +1153,9 @@
         var p=(pr[i]==null?0:pr[i]);
         var g=0;
         if(tx[i]!=null && tn[i]!=null){ var hi=Math.min(tx[i],86), lo=Math.max(tn[i],50); g=Math.max(0,(hi+lo)/2-50); }
-        if(!acc[yr]){ acc[yr]={precip:0,gdu:0}; cumMap[yr]={}; }
+        if(!acc[yr]){ acc[yr]={precip:0,gdu:0,gduP:0}; cumMap[yr]={}; }
         acc[yr].precip+=p; acc[yr].gdu+=g;
+        if(md>=plantMD) acc[yr].gduP+=g;
         cumMap[yr][md]=acc[yr].precip;
       }
       var ys=Object.keys(acc).map(Number).sort(function(a,b){return a-b;});
@@ -1151,7 +1166,8 @@
       var gNorm=avg(prior.map(function(y){return acc[y].gdu;}));
       FIELD.season = { thru:t[t.length-1], year:cur, n:prior.length,
         pNow:acc[cur].precip, pNorm:pNorm, pDep:acc[cur].precip-pNorm,
-        gNow:acc[cur].gdu, gNorm:gNorm, gDep:acc[cur].gdu-gNorm };
+        gNow:acc[cur].gdu, gNorm:gNorm, gDep:acc[cur].gdu-gNorm,
+        gPlant:acc[cur].gduP, plantMD:plantMD };
       recomputeInsight(); renderRisk();
       setBody('fs-season', seasonHtml(FIELD.season, cumMap, cur, prior));
     }).catch(function(){ if(gen!==fieldGen) return; setErr('fs-season','Couldn\u2019t reach the weather archive just now.'); });
@@ -1274,6 +1290,8 @@
       else if(wx.hum>85 && wx.temp>=70) wxSay='Warm and humid \u2014 prime conditions for foliar disease; slow herbicide drydown too.';
       else if(wx.temp>90) wxSay='Hot \u2014 crop water demand is peaking; spray early if you spray.';
       else if(wx.wind<=10 && wx.hum<=85) wxSay='A decent working window \u2014 light wind, workable humidity.';
+      // hand off to the full spray tool for the forward window
+      if(wxSay) wxSay+=' <a href="/spray" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">Full spray forecast &rarr;</a>';
       else wxSay='Middling conditions \u2014 nothing blocking field work, nothing ideal.';
       html += '<div class="fs-vigor-say" style="margin-top:.55rem">'+wxSay+'</div>';
     } else if(wx && wx.err){
@@ -1335,22 +1353,11 @@
       })
       .catch(function(){
         if(gen!==fieldGen) return;
-        // Event files not published yet — fall back to the worker route once.
-        fetch(FS_WORKER + '/hail?lat='+c.lat.toFixed(4)+'&lon='+c.lng.toFixed(4)+'&years=5')
-          .then(function(r){ return r.ok ? r.json() : null; })
-          .then(function(gj){
-            if(gen !== fieldGen) return;
-            var feats = (gj && gj.features) || [];
-            var days={}, maxStone=0;
-            feats.forEach(function(f){
-              var p=f.properties||{};
-              var day=(p.valid||'').slice(0,10); if(day) days[day]=1;
-              var mag=parseFloat(p.magnitude||p.magf||0); if(mag>maxStone)maxStone=mag;
-            });
-            FIELD.hail = { events:feats.length, days:Object.keys(days).length, dates:Object.keys(days).sort(), maxStone:maxStone, years:5 };
-            recomputeInsight(); renderRisk();
-          })
-          .catch(function(){ if(gen!==fieldGen) return; if(FIELD)FIELD.hail={err:1}; renderRisk(); });
+        // Event files unavailable — say so honestly rather than risk a false
+        // "no hail nearby" from the worker route (which has silently returned
+        // empty before). Unavailable ≠ zero.
+        if(FIELD)FIELD.hail={err:1};
+        renderRisk();
       });
   }
 
@@ -1373,7 +1380,7 @@
       var hc = hail.days===0?'#4aab4c':hail.days<=1?'#ffd400':hail.days<=3?'#ff9326':'#d9534f';
       var hband = hail.days===0?'no reported hail nearby' : hail.days<=2?'below the active-hail range' : hail.days<=5?'an active hail area' : hail.days<=9?'hail-alley-level frequency' : 'extreme hail frequency';
       rows.push(riskRow('Hail exposure', hv, hc,
-        hail.days+' hail day'+(hail.days===1?'':'s')+' within ~40mi in 5 yrs'+(hail.maxStone?' · max '+hail.maxStone+'"':'')+' — '+hband,
+        hail.days+' hail day'+(hail.days===1?'':'s')+' within ~40mi in '+(hail.years||5)+' yrs'+(hail.maxStone?' · max '+hail.maxStone+'"':'')+' — '+hband,
         ' · <a href="/hail-map" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">see the national map &rarr;</a>'));
     }
     if(rot && rot.cornOnCorn){
@@ -1577,7 +1584,7 @@
     if(c===176) return 'pasture';
     return 'row';
   }
-  function grainRipening(){ var m=new Date().getMonth()+1; return m>=7&&m<=9; }  // Jul–Sep senescence window
+  function grainRipening(){ var m=new Date().getMonth()+1; return m>=5&&m<=9; }  // May–Sep: southern winter wheat browns in May–Jun, northern grain Jul–Sep
   function offSeason(){ var m=new Date().getMonth()+1; return m>=11||m<=3; }      // Nov–Mar
   function vigorWord(v){
     if(v==null) return 'No clear read';
@@ -1642,7 +1649,7 @@
   var FS_TIPS = {
     acres:{t:'Acres',b:'Total area inside the boundary you drew.'},
     soil:{t:'Soil & productivity',b:'The dominant USDA soil map units under your field, ranked by share of acreage. Soil sets what the ground can yield and how it drains.'},
-    nccpi:{t:'NCCPI',b:'USDA\u2019s National Commodity Crop Productivity Index \u2014 a national 0\u2013100 score for row-crop ground. Higher is more productive soil. It\u2019s weighted toward Corn Belt soils, so strong regional ground can still score mid-scale.'},
+    nccpi:{t:'NCCPI',b:'USDA\u2019s National Commodity Crop Productivity Index \u2014 a 0\u20131 index for row-crop ground (shown \u00d7100 in the vitals strip). Higher is more productive soil. It\u2019s weighted toward Corn Belt soils, so strong regional ground can still score mid-scale.'},
     ndvi:{t:'NDVI \u00b7 crop vigor',b:'How much living, green canopy the satellite sees. Runs about 0 (bare or dead) to 0.9 (dense, healthy crop). The best single at-a-glance crop-health number.'},
     ndre:{t:'NDRE \u00b7 nitrogen',b:'A red-edge index tied to chlorophyll and nitrogen status. Most useful after canopy close, when NDVI flattens out.'},
     ndmi:{t:'NDMI \u00b7 canopy moisture',b:'Water held in the crop canopy. Higher means more moisture in the leaves; a drop can flag stress before you can see it.'},
@@ -1874,7 +1881,7 @@
         var lastY=cornY.last!=null?cornY.last:null;
         var bid=FIELD.bids&&FIELD.bids.corn?FIELD.bids.corn.cash:null;
         var money = bid ? ' At $'+bid.toFixed(2)+' nearby corn that’s $'+Math.round(trend*bid).toLocaleString('en-US')+' gross — rent takes '+Math.round(val/(trend*bid)*100)+'%.' : '';
-        html+='<p class="fs-cline">County corn trend: <strong>'+trend+' bu/ac</strong>'+(lastY?' (made '+lastY+' last year)':'')+'.'+money+' <a class="fs-act-link" href="/cash-lease?st='+abbr+'" target="_blank" rel="noopener">Run this lease in Cash Lease &rarr;</a></p>';
+        html+='<p class="fs-cline">County corn trend: <strong>'+trend+' bu/ac</strong>'+(lastY?' (recent county average: '+lastY+' bu)':'')+'.'+money+' <a class="fs-act-link" href="/cash-lease?st='+abbr+'" target="_blank" rel="noopener">Run this lease in Cash Lease &rarr;</a></p>';
       }
       html+=csrc('USDA NASS county cash-rent survey · '+esc(cty)+' County, '+esc(stFull)+' · missing years = never surveyed, not zero');
       FIELD.county.rent={ val:val, year:last, avg:Math.round(avg), trend:cornY&&cornY.trend?Math.round(cornY.trend):null, lastYield:cornY?cornY.last:null };
@@ -2012,13 +2019,17 @@
       return { label:label, toPollen:toPollen, daysToPollen: toPollen>0?Math.round(toPollen/GDU_PER_DAY):0, pastPollen: g>=POLLEN_GDU };
     }
     var isCorn = r && (r.lastCrop===1 || r.cornOnCorn);
-    var cropStage = (se && se.gNow!=null && isCorn) ? estCornStage(se.gNow) : null;
+    // CDL is last season's map — a rotated field is likely in beans this year.
+    // Only multi-year corn-on-corn justifies asserting corn is standing now.
+    var cornSure = !!(r && r.cornOnCorn);
+    // Stage GDUs count from a latitude-banded planting proxy (se.gPlant), not Jan 1.
+    var cropStage = (se && se.gPlant!=null && isCorn) ? estCornStage(se.gPlant) : null;
     function pollenWindow(){ return cropStage && !cropStage.pastPollen ? cropStage.daysToPollen : null; }
     function pacePhrase(){
       if(!se||se.gDep==null) return null;
       var dd=Math.abs(Math.round(se.gDep/GDU_PER_DAY));
-      if(se.gDep>=100) return 'running about '+dd+' day'+(dd===1?'':'s')+' ahead of a normal year';
-      if(se.gDep<=-100) return 'running about '+dd+' day'+(dd===1?'':'s')+' behind a normal year';
+      if(se.gDep>=100) return 'running about '+dd+' day'+(dd===1?'':'s')+' ahead of a normal year (at a typical midsummer pace)';
+      if(se.gDep<=-100) return 'running about '+dd+' day'+(dd===1?'':'s')+' behind a normal year (at a typical midsummer pace)';
       return 'tracking close to the normal pace';
     }
 
@@ -2044,13 +2055,15 @@
 
     // ── Where the crop likely is right now (depth #3) ──
     if(cropStage){
+      var plantHedge = se && se.plantMD ? ' and a typical ~'+({'04-08':'Apr 8','04-18':'Apr 18','04-28':'Apr 28','05-05':'May 5'}[se.plantMD]||se.plantMD)+' planting' : '';
+      var cornIf = cornSure ? '' : 'If this field is in corn again this year: ';
       var stg = cropStage.pastPollen
-        ? 'Corn is likely past pollination and into grain fill — the weeks that set final yield.'
-        : (cropStage.toPollen<=0
-            ? 'Corn is at or entering pollination — the single most weather-sensitive window of the year.'
-            : 'For corn, that heat-unit pace puts development around <strong>'+cropStage.label+'</strong>, roughly '+cropStage.daysToPollen+' day'+(cropStage.daysToPollen===1?'':'s')+' from pollination at a typical midsummer pace.');
+        ? cornIf+'corn is likely past pollination and into grain fill — the weeks that set final yield.'
+        : (cropStage.toPollen<=50
+            ? cornIf+'corn is at or entering pollination — the single most weather-sensitive window of the year.'
+            : cornIf+'that heat-unit pace puts development around <strong>'+cropStage.label+'</strong>, roughly '+cropStage.daysToPollen+' day'+(cropStage.daysToPollen===1?'':'s')+' from pollination at a typical midsummer pace.');
       var pp=pacePhrase();
-      lines.push(stg+(pp?' The season is '+pp+'.':'')+' <span class="fs-approx">(approximate — modeled from temperature, not field scouting)</span>');
+      lines.push(stg+(pp?' The season is '+pp+'.':'')+' <span class="fs-approx">(approximate — modeled from temperature'+plantHedge+', not field scouting)</span>');
     } else if(se && se.gDep!=null && Math.abs(se.gDep)>=100){
       var pp2=pacePhrase(); if(pp2) lines.push('Heat-unit accumulation is '+pp2+' this season.');
     }
@@ -2228,7 +2241,7 @@
     if(h && !h.err && h.days>=2){
       push({ sev:2, act:false, topic:'hail', tag:null,
         title:'make sure your hail coverage matches this field\u2019s history',
-        detail:'This ground has taken <strong>'+h.days+' hail days in five years</strong>'+(h.maxStone?' (up to '+h.maxStone+'" stones)':'')+' — a real factor for your coverage decisions. <a href="/hail-map" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">See it on the national hail map &rarr;</a>', watch:null });
+        detail:'This ground has taken <strong>'+h.days+' hail days in '+(h.years||5)+' years</strong>'+(h.maxStone?' (up to '+h.maxStone+'" stones)':'')+' — a real factor for your coverage decisions. <a href="/hail-map" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">See it on the national hail map &rarr;</a>', watch:null });
     }
 
     // ── Marketing context line ──

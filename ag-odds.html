@@ -257,6 +257,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
   </div>
 
   <h2 class="ao-seo-h2" style="margin-bottom:.5rem">Live Ag Prediction Market Odds</h2>
+  <div id="ao-baked" style="border:1px solid var(--border);border-radius:8px;padding:.75rem .95rem;margin:0 0 .8rem;font-size:.9rem;line-height:1.7;color:var(--text-dim)"><!-- PRERENDER:ao-odds -->Prediction-market odds as of 2026-08-07: Will no Fed rate cuts happen in 2026? — <b>87%</b> yes; Fed rate hike in 2026? — <b>62%</b> yes; Will the Fed decrease interest rates by 25 bps after the September 2026 meeting? — <b>2%</b> yes; Will there be no change in Fed interest rates after the September 2026 meeting? — <b>48%</b> yes. Live odds refresh below; sources are real-money markets (Polymarket and similar).<!-- /PRERENDER:ao-odds --></div>
   <div class="ao-source-bar" id="ao-source-bar"></div>
   <div class="ao-tier-row">
     <div class="ao-tier-pill t1"><span class="ao-tp-dot"></span>Direct Ag (corn, grain, cattle, egg, food)</div>
@@ -396,7 +397,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
   </div>
 </main>
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=14" defer></script>
+<script src="/components/loader.js?v=15" defer></script>
 <script src="/components/geo.js?v=17" defer></script>
 <script>
 (function(){
@@ -537,6 +538,7 @@ function showNoData(){
   document.getElementById('ao-main-grid').innerHTML='<div class="ao-card-grid"><div class="ao-empty-state"><div class="ao-empty-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg></div><div class="ao-empty-ttl">No markets loaded yet</div><div class="ao-empty-sub">The pipeline runs daily at 6 AM CT. Check back after then, or see the reference guide below.</div></div></div>';
   var ref=document.getElementById('ao-ref-section');if(ref)ref.style.display='block';
   var sc=document.getElementById('ao-static-cats');if(sc)sc.classList.add('visible');
+  var _bk=document.getElementById('ao-baked');if(_bk)_bk.style.display='none'; // live render supersedes the crawler bake
   var lbl=document.getElementById('ao-live-lbl');if(lbl)lbl.textContent='Pipeline pending — see reference guide below';
 }
 
@@ -548,6 +550,7 @@ function loadMarkets(){
       var markets=d.markets||[];
       if(!markets.length)return null;
       addMarkets(markets,'pipeline');
+      var _bk=document.getElementById('ao-baked');if(_bk)_bk.style.display='none'; // live render supersedes the crawler bake
       /* Surface last-updated age in hero */
       var age=fmtAge(d.fetched);
       var lbl=document.getElementById('ao-live-lbl');

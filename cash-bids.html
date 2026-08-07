@@ -159,6 +159,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .elev-head{padding:.85rem 1rem .7rem;display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;border-bottom:1px solid var(--border)}
 .elev-info{flex:1;min-width:0}
 .elev-name{font-size:.92rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.elev-stale{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold);border:1px solid rgba(230,176,66,.4);border-radius:5px;padding:.08rem .4rem;margin-top:.2rem}
 .elev-branch{font-size:0.78rem;color:var(--text-dim);margin-bottom:.1rem}
 .elev-loc{font-size:0.775rem;color:var(--text-muted)}
 .elev-meta{display:flex;flex-direction:column;align-items:flex-end;gap:.3rem;flex-shrink:0}
@@ -602,7 +603,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
   </div>
 </div>
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=14" defer></script>
+<script src="/components/loader.js?v=15" defer></script>
 <script src="/components/geo.js?v=17" defer></script>
 <script>
 (function(){
@@ -733,9 +734,9 @@ function flatten(data){
     if(item.bids&&Array.isArray(item.bids)){
       var fac=item.company||item.name||item.locationName||'Unknown';
       var br=(typeof item.location==='string')?item.location:'';
-      item.bids.forEach(function(bid){flat.push({facility:fac,branch:br,city:item.city||bid.city||'',state:item.state||bid.state||'',distance:parseFloat(item.distance||bid.distance)||null,phone:item.phone||bid.phone||'',commodity:bid.commodity||bid.commodity_display_name||bid.commodityName||'',cashPrice:parseFloat(bid.cashprice||bid.cashPrice)||null,basis:parseFloat(bid.basis)||null,deliveryMonth:bid.deliveryMonth||bid.delivery_month||'',deliveryStart:bid.deliveryStart||bid.delivery_start||'',category:classify(bid.commodity||bid.commodity_display_name||bid.commodityName||'')});});
+      item.bids.forEach(function(bid){flat.push({facility:fac,branch:br,city:item.city||bid.city||'',state:item.state||bid.state||'',distance:parseFloat(item.distance||bid.distance)||null,phone:item.phone||bid.phone||'',commodity:bid.commodity||bid.commodity_display_name||bid.commodityName||'',cashPrice:parseFloat(bid.cashprice||bid.cashPrice)||null,basis:parseFloat(bid.basis)||null,deliveryMonth:bid.deliveryMonth||bid.delivery_month||'',deliveryStart:bid.deliveryStart||bid.delivery_start||'',asOf:bid.dataTimestamp||bid.timestamp||bid.updateTimestamp||bid.dataDate||item.dataTimestamp||item.timestamp||'',category:classify(bid.commodity||bid.commodity_display_name||bid.commodityName||'')});});
     }else if(item.commodity||item.commodityName||item.cashprice!==undefined||item.cashPrice!==undefined){
-      flat.push({facility:item.company||item.name||item.facility||item.locationName||'Unknown',branch:(typeof item.location==='string')?item.location:'',city:item.city||'',state:item.state||'',distance:parseFloat(item.distance)||null,phone:item.phone||'',commodity:item.commodity||item.commodity_display_name||item.commodityName||'',cashPrice:parseFloat(item.cashprice||item.cashPrice)||null,basis:parseFloat(item.basis)||null,deliveryMonth:item.deliveryMonth||item.delivery_month||'',deliveryStart:item.deliveryStart||item.delivery_start||'',category:classify(item.commodity||item.commodity_display_name||item.commodityName||'')});
+      flat.push({facility:item.company||item.name||item.facility||item.locationName||'Unknown',branch:(typeof item.location==='string')?item.location:'',city:item.city||'',state:item.state||'',distance:parseFloat(item.distance)||null,phone:item.phone||'',commodity:item.commodity||item.commodity_display_name||item.commodityName||'',cashPrice:parseFloat(item.cashprice||item.cashPrice)||null,basis:parseFloat(item.basis)||null,deliveryMonth:item.deliveryMonth||item.delivery_month||'',deliveryStart:item.deliveryStart||item.delivery_start||'',asOf:item.dataTimestamp||item.timestamp||item.updateTimestamp||item.dataDate||'',category:classify(item.commodity||item.commodity_display_name||item.commodityName||'')});
     }
   });
   return flat;
@@ -745,7 +746,8 @@ function groupElevators(bids){
   var map={};
   bids.forEach(function(b){
     var key=(b.facility||'')+'||'+(b.branch||'')+'||'+(b.city||'');
-    if(!map[key])map[key]={key:key,facility:b.facility,branch:b.branch,city:b.city,state:b.state,distance:b.distance,phone:b.phone,commodities:{},bestCash:null,bestBasis:null};
+    if(!map[key])map[key]={key:key,facility:b.facility,branch:b.branch,city:b.city,state:b.state,distance:b.distance,phone:b.phone,commodities:{},bestCash:null,bestBasis:null,asOfT:null};
+    if(b.asOf){var _t=Date.parse(b.asOf);if(!isNaN(_t)&&(map[key].asOfT==null||_t>map[key].asOfT))map[key].asOfT=_t;}
     var e=map[key],cat=b.category||'other';
     if(!e.commodities[cat])e.commodities[cat]=[];
     e.commodities[cat].push(b);
@@ -953,6 +955,10 @@ function renderBids(bids,keepLimit){
     html+='<div class="elev-head"><div class="elev-info"><div class="elev-name" title="'+escH(elev.facility)+'">'+escH(elev.facility)+'</div>';
     if(elev.branch&&elev.branch!==elev.facility)html+='<div class="elev-branch">'+escH(elev.branch)+'</div>';
     if(cs)html+='<div class="elev-loc">'+escH(cs)+'</div>';
+    /* Per-elevator stale flag: renders ONLY when the feed carries a real
+       timestamp for this elevator AND it's >18h old — fresh or timestamp-less
+       bids stay clean (the status-bar timer covers those). */
+    if(elev.asOfT!=null){var _age=Date.now()-elev.asOfT;if(_age>18*3600e3){var _d=new Date(elev.asOfT);html+='<div class="elev-stale" title="This elevator\u2019s bid feed hasn\u2019t updated recently — confirm before hauling">bids quoted '+_d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div>';}}
     html+='</div><div class="elev-meta">';
     if(elev.distance!=null)html+='<div class="elev-dist">'+elev.distance.toFixed(0)+' mi away</div>';
     html+='<button class="pin-btn'+(isPinned?' pinned':'')+'" data-key="'+escH(elev.key)+'" aria-pressed="'+(isPinned?'true':'false')+'" aria-label="'+(isPinned?'Remove':'Add')+' '+escH(elev.facility)+' from comparison">&#43; '+(isPinned?'&#10003; Added':'Compare')+'</button>';
