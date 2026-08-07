@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-08-07",
+      "date_display": "Friday, August 7, 2026",
+      "headline": "FARM BILL DEAD; CATTLE BREAK; BEANS HOLD",
+      "teaser": "Farm bill failed, feeders fell, and the crop is still bigger than the market wants to admit.",
+      "market_mood": "bearish",
+      "surprise_count": 2,
+      "sections": 4,
+      "url": "/daily/2026-08-07",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-08-06",
       "date_display": "Thursday, August 6, 2026",
       "headline": "EXPORT SALES DAY; BEANS BOUNCE, CATTLE FIRM",
@@ -1675,6 +1687,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-06T12:59:42.562858+00:00",
-  "count": 147
+  "updated": "2026-08-07T11:50:18.138813+00:00",
+  "count": 148
 }
