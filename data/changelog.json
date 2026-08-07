@@ -1,0 +1,206 @@
+{
+  "updated": "2026-08-07",
+  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here — that updates continuously.",
+  "entries": [
+    {
+      "date": "2026-08-07",
+      "items": [
+        {
+          "tag": "new",
+          "page": "/changelog",
+          "name": "This page",
+          "text": "A running log of what changed on AGSIST and when. Same rule as the scorecard: fixes and misses stay on the record."
+        },
+        {
+          "tag": "new",
+          "page": "/status",
+          "name": "System Status",
+          "text": "Live health check of every AGSIST data feed — grain prices, cash bids, the briefing, weather, hail — tested in your own browser when the page loads, so the status page itself can never go stale."
+        },
+        {
+          "tag": "improved",
+          "page": "/breakeven",
+          "name": "Break-Even Calculator",
+          "text": "Split owned vs rented ground: enter acres and cost for each, see a blended land cost plus separate break-evens — owned bushels clear first. Also added a basis input so your target shows in cash terms, and your numbers now save per crop on your device."
+        },
+        {
+          "tag": "fixed",
+          "page": "/field-scout",
+          "name": "Field Scout",
+          "text": "Corn growth stage was counting heat units from January 1 instead of from planting, which could read a field weeks ahead of reality. Stages are now anchored to typical planting dates for your latitude, and the estimate says so plainly."
+        },
+        {
+          "tag": "improved",
+          "page": "/cash-bids",
+          "name": "Cash Bids",
+          "text": "Elevators whose feed carries a quote timestamp older than 18 hours now show a \"bids quoted [date]\" flag, so a stale bid can't pass as fresh. No timestamp, no guess — the flag only renders when the feed proves it."
+        },
+        {
+          "tag": "improved",
+          "page": "/harvest-price-tracker",
+          "name": "Harvest Price Tracker",
+          "text": "Corrected the 2025 final prices ($4.22 corn / $10.35 beans), added a \"your guarantee\" mini-calculator using the 2026 projected prices, fixed the October day count (22 trading days this year), and the pre-discovery delta now reads from live futures."
+        },
+        {
+          "tag": "improved",
+          "page": "/cot",
+          "name": "COT and Ag Odds",
+          "text": "Both pages now open with a readable summary baked in daily — visible before the live data loads, and visible to search engines and AI assistants that don't run JavaScript."
+        },
+        {
+          "tag": "fixed",
+          "page": "/daily",
+          "name": "Daily Briefing",
+          "text": "The generator's calendar got a hard audit: the Pro Farmer crop tour is no longer mentioned as underway before it starts Aug 17, market holidays are recognized so a closed Monday can't be narrated as a trading session, and USDA report timing shifts around holidays correctly."
+        },
+        {
+          "tag": "improved",
+          "page": "/farm-bill",
+          "name": "Farm Bill Tracker",
+          "text": "Updated the day the Senate markup failed — the tracker now shows the miss and the expected September revote instead of pretending the vote hadn't happened."
+        }
+      ]
+    },
+    {
+      "date": "2026-08-06",
+      "items": [
+        {
+          "tag": "improved",
+          "page": "/spray",
+          "name": "Spray Conditions and Urea Risk",
+          "text": "Both pages rebuilt against the verified 2026 dicamba rules: current product names, the 240-ft downwind buffer, temperature cutoffs (reduced acres above 85°F, no application at 95°F), the AMS prohibition, and the R1 cutoff — checked against the labels, not memory."
+        },
+        {
+          "tag": "improved",
+          "page": "/yield-estimator",
+          "name": "Yield Estimator",
+          "text": "Now linked from the pages where you'd actually reach for it — conditions, ratings-vs-yield, and Field Scout — instead of hiding in the tools list."
+        }
+      ]
+    },
+    {
+      "date": "2026-08-04",
+      "items": [
+        {
+          "tag": "fixed",
+          "page": "/scorecard",
+          "name": "Call Scorecard",
+          "text": "Found and fixed a grading bug: since June 26, each morning's grade compared the call against the same day's close instead of the prior day's. Nightly re-scoring meant most published outcomes were still right, but two rows contradicted their own writeups — both now carry a regrade note, and the scorecard shows a plain incident note. The original text stays as published."
+        },
+        {
+          "tag": "improved",
+          "page": "/whats-priced-in",
+          "name": "What's Priced In",
+          "text": "August WASDE card shows USDA's current number as the one to beat rather than inventing survey ranges before they exist; analysts still building a track record now appear on the board instead of a false empty state."
+        }
+      ]
+    },
+    {
+      "date": "2026-08-02",
+      "items": [
+        {
+          "tag": "improved",
+          "page": "/grain-bin-calculator",
+          "name": "Grain Bin Calculator",
+          "text": "Zero-percent fill now correctly reads zero bushels, the shrink factor is editable, a size-a-bin mode works backward from target bushels to diameter and eave combinations, and there's a printable bin record."
+        },
+        {
+          "tag": "fixed",
+          "page": "/",
+          "name": "Sitewide",
+          "text": "Menu icons rendered as solid black blobs on eight pages (an SVG id collision) — fixed everywhere. Also finished stripping emoji from the briefing and site chrome; meaning now rides on words and plain glyphs."
+        }
+      ]
+    },
+    {
+      "date": "2026-07-30",
+      "items": [
+        {
+          "tag": "improved",
+          "page": "/",
+          "name": "Sitewide",
+          "text": "Type rework after a reader said the fonts were too small — he was right. Bigger, cleaner reading text on all 56 pages, numbers stay monospaced, italics retired, and every page re-tested at phone width for horizontal scroll and clipped text."
+        }
+      ]
+    },
+    {
+      "date": "2026-07-28",
+      "items": [
+        {
+          "tag": "fixed",
+          "page": "/corn-futures-prices",
+          "name": "Futures Pages",
+          "text": "The \"front month\" price was actually the most-active contract — corn showed December while true nearby September traded 22 cents lower. Heroes now quote the real nearby contract by name, and the next WASDE date comes from data instead of a hardcoded guess."
+        },
+        {
+          "tag": "improved",
+          "page": "/wheat-futures-prices",
+          "name": "Wheat Futures",
+          "text": "No longer Chicago-only: KC hard red winter and Minneapolis spring wheat boards, class spreads, all three classes in the fund-positioning card, and export pace — matching how most of the site's wheat bids actually price."
+        }
+      ]
+    },
+    {
+      "date": "2026-07-27",
+      "items": [
+        {
+          "tag": "new",
+          "page": "/hail-map",
+          "name": "Hail Map",
+          "text": "Live layer: current severe thunderstorm warnings with hail size, last-24-hour hail reports on the map, and a storm verdict for your pinned spot. Plus CSV export and a printable claim-guidance sheet for your adjuster call."
+        },
+        {
+          "tag": "new",
+          "page": "/usda-calendar",
+          "name": "USDA Calendar",
+          "text": "Subscribe from your phone's calendar app (webcal/.ics) — report days show up where you'll actually see them."
+        }
+      ]
+    },
+    {
+      "date": "2026-07-26",
+      "items": [
+        {
+          "tag": "new",
+          "page": "/scorecard",
+          "name": "Call Scorecard",
+          "text": "Every daily-briefing market call is now graded against the next session and published — hits, misses, and the running record. The yield nowcast joined an analyst board next to USDA's number."
+        },
+        {
+          "tag": "new",
+          "page": "/",
+          "name": "Email Signup",
+          "text": "The daily briefing by email, free — signup available across the site."
+        }
+      ]
+    },
+    {
+      "date": "2026-07-20",
+      "items": [
+        {
+          "tag": "improved",
+          "page": "/field-scout",
+          "name": "Field Scout",
+          "text": "The Read now pulls every county and state layer AGSIST has for your field's spot — cash rent, yield trend, basis, storage, land ownership, crop conditions — each card independent, each honest about missing data. Printable Field Report included."
+        },
+        {
+          "tag": "improved",
+          "page": "/fast-facts",
+          "name": "Fast Facts",
+          "text": "\"Today's Call\" verdict computes nitrogen-vs-corn economics live, with a live price strip and current-week staging."
+        }
+      ]
+    },
+    {
+      "date": "2026-07-18",
+      "items": [
+        {
+          "tag": "improved",
+          "page": "/",
+          "name": "Log opens here",
+          "text": "AGSIST was live well before this log. Already shipped by mid-July: the daily briefing and archive, verdict-first rebuilds of conditions, basis, storage, land tenure, foreign-owned land, and cash rent (with all state pages), plus the core calculators and Field Scout. Changes from here forward are dated above."
+        }
+      ]
+    }
+  ]
+}

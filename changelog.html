@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <link rel="preload" href="/components/styles.css?v=15" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=15">
+  <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32"  href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16"  href="/img/favicon-16.png">
+  <link rel="apple-touch-icon"                     href="/img/apple-touch-icon.png">
+  <link rel="manifest"                             href="/manifest.json">
+
+  <title>What&rsquo;s New on AGSIST &mdash; Site Updates &amp; Changelog | AGSIST</title>
+  <meta name="description" content="Every meaningful change to AGSIST's free farm tools and data, dated and in plain language — new pages, improvements, and the fixes, kept on the record.">
+  <link rel="canonical"    href="https://agsist.com/changelog">
+  <meta name="robots"      content="index, follow, max-image-preview:large">
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="AGSIST">
+  <meta property="og:locale"       content="en_US">
+  <meta property="og:title"        content="What&rsquo;s New on AGSIST — Site Updates &amp; Changelog">
+  <meta property="og:description"  content="Every meaningful change to AGSIST's free farm tools and data, dated and in plain language — including the fixes.">
+  <meta property="og:url"          content="https://agsist.com/changelog">
+  <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agsist.com/changelog#webpage","url":"https://agsist.com/changelog","name":"What's New on AGSIST — Site Updates & Changelog","description":"Dated log of every meaningful change to AGSIST's free farm tools and data — new pages, improvements, and fixes.","dateModified":"2026-08-07","isPartOf":{"@id":"https://agsist.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"What's New","item":"https://agsist.com/changelog"}]}]}</script>
+
+  <style>
+  .cl-wrap{max-width:820px;margin:0 auto;padding:0 1rem 3rem;}
+  .cl-stamp{font-size:.8rem;color:var(--text-muted,#9bb0a3);margin:.1rem 0 1.4rem;font-family:'JetBrains Mono',monospace;}
+  .cl-legend{display:flex;flex-wrap:wrap;gap:.55rem;margin:0 0 1.6rem;}
+  .cl-legend span{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:4px;padding:.14rem .5rem;border:1px solid var(--border,#2a3324);}
+  .cl-day{margin:0 0 1.9rem;}
+  .cl-date{font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:700;letter-spacing:.05em;color:var(--gold,#d4a23f);border-bottom:1px solid var(--border,#2a3324);padding-bottom:.45rem;margin:0 0 .8rem;}
+  .cl-items{display:flex;flex-direction:column;gap:.6rem;}
+  .cl-item{background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:10px;padding:.85rem 1rem;}
+  .cl-top{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.35rem;}
+  .cl-tag{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:4px;padding:.13rem .48rem;border:1px solid var(--border,#2a3324);flex-shrink:0;}
+  .cl-tag--new{color:var(--green,#4aab4c);border-color:rgba(74,171,76,.45);background:rgba(74,171,76,.07);}
+  .cl-tag--improved{color:var(--gold,#d4a23f);border-color:rgba(212,162,63,.45);background:rgba(212,162,63,.07);}
+  .cl-tag--fixed{color:var(--red,#e0685f);border-color:rgba(224,104,95,.45);background:rgba(224,104,95,.07);}
+  .cl-page{font-weight:700;font-size:.98rem;color:var(--text,#e7ece8);text-decoration:none;border-bottom:1px dotted var(--text-muted,#9bb0a3);}
+  .cl-page:hover{color:var(--gold,#d4a23f);border-bottom-color:var(--gold,#d4a23f);}
+  .cl-text{font-size:.9rem;color:var(--text-dim,#c3ccc4);line-height:1.65;margin:0;}
+  .cl-note{background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:1rem 1.15rem;margin-top:1.6rem;font-size:.86rem;color:var(--text-dim,#c3ccc4);line-height:1.65;}
+  .cl-note b{color:var(--text,#e7ece8);}
+  .cl-note a{color:var(--gold,#d4a23f);}
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header"></div>
+
+  <main id="main">
+    <div class="cl-wrap">
+      <nav class="breadcrumb" aria-label="Breadcrumb" style="margin:1rem 0 .4rem">
+        <a href="/">Home</a> &rarr; What&rsquo;s New
+      </nav>
+      <div class="page-header" style="margin-bottom:.9rem">
+        <h1 style="margin-bottom:.3rem">What&rsquo;s New on AGSIST</h1>
+        <p style="color:var(--text-muted,#9bb0a3);font-size:1rem;line-height:1.5;margin:0">Every meaningful change to the site, dated and in plain language &mdash; new pages, improvements, and the fixes. Same rule as the <a href="/scorecard" style="color:var(--gold,#d4a23f)">call scorecard</a>: when something was wrong, it says so here, on the record.</p>
+      </div>
+
+      <div class="cl-stamp"><!-- CHANGELOG:stamp -->Log updated August 7, 2026 &middot; 25 changes across 10 days<!-- /CHANGELOG:stamp --></div>
+
+      <div class="cl-legend" aria-hidden="true">
+        <span style="color:var(--green,#4aab4c);border-color:rgba(74,171,76,.45)">New</span>
+        <span style="color:var(--gold,#d4a23f);border-color:rgba(212,162,63,.45)">Improved</span>
+        <span style="color:var(--red,#e0685f);border-color:rgba(224,104,95,.45)">Fixed</span>
+      </div>
+
+      <div id="cl-list"><!-- CHANGELOG:entries --><section class="cl-day"><h2 class="cl-date">August 7, 2026</h2><div class="cl-items"><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--new">New</span><a class="cl-page" href="/changelog">This page</a></div><p class="cl-text">A running log of what changed on AGSIST and when. Same rule as the scorecard: fixes and misses stay on the record.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--new">New</span><a class="cl-page" href="/status">System Status</a></div><p class="cl-text">Live health check of every AGSIST data feed — grain prices, cash bids, the briefing, weather, hail — tested in your own browser when the page loads, so the status page itself can never go stale.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--improved">Improved</span><a class="cl-page" href="/breakeven">Break-Even Calculator</a></div><p class="cl-text">Split owned vs rented ground: enter acres and cost for each, see a blended land cost plus separate break-evens — owned bushels clear first. Also added a basis input so your target shows in cash terms, and your numbers now save per crop on your device.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--fixed">Fixed</span><a class="cl-page" href="/field-scout">Field Scout</a></div><p class="cl-text">Corn growth stage was counting heat units from January 1 instead of from planting, which could read a field weeks ahead of reality. Stages are now anchored to typical planting dates for your latitude, and the estimate says so plainly.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--improved">Improved</span><a class="cl-page" href="/cash-bids">Cash Bids</a></div><p class="cl-text">Elevators whose feed carries a quote timestamp older than 18 hours now show a &quot;bids quoted [date]&quot; flag, so a stale bid can't pass as fresh. No timestamp, no guess — the flag only renders when the feed proves it.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--improved">Improved</span><a class="cl-page" href="/harvest-price-tracker">Harvest Price Tracker</a></div><p class="cl-text">Corrected the 2025 final prices ($4.22 corn / $10.35 beans), added a &quot;your guarantee&quot; mini-calculator using the 2026 projected prices, fixed the October day count (22 trading days this year), and the pre-discovery delta now reads from live futures.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--improved">Improved</span><a class="cl-page" href="/cot">COT and Ag Odds</a></div><p class="cl-text">Both pages now open with a readable summary baked in daily — visible before the live data loads, and visible to search engines and AI assistants that don't run JavaScript.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--fixed">Fixed</span><a class="cl-page" href="/daily">Daily Briefing</a></div><p class="cl-text">The generator's calendar got a hard audit: the Pro Farmer crop tour is no longer mentioned as underway before it starts Aug 17, market holidays are recognized so a closed Monday can't be narrated as a trading session, and USDA report timing shifts around holidays correctly.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--improved">Improved</span><a class="cl-page" href="/farm-bill">Farm Bill Tracker</a></div><p class="cl-text">Updated the day the Senate markup failed — the tracker now shows the miss and the expected September revote instead of pretending the vote hadn't happened.</p></div></div></section><section class="cl-day"><h2 class="cl-date">August 6, 2026</h2><div class="cl-items"><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--improved">Improved</span><a class="cl-page" href="/spray">Spray Conditions and Urea Risk</a></div><p class="cl-text">Both pages rebuilt against the verified 2026 dicamba rules: current product names, the 240-ft downwind buffer, temperature cutoffs (reduced acres above 85°F, no application at 95°F), the AMS prohibition, and the R1 cutoff — checked against the labels, not memory.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--improved">Improved</span><a class="cl-page" href="/yield-estimator">Yield Estimator</a></div><p class="cl-text">Now linked from the pages where you'd actually reach for it — conditions, ratings-vs-yield, and Field Scout — instead of hiding in the tools list.</p></div></div></section><section class="cl-day"><h2 class="cl-date">August 4, 2026</h2><div class="cl-items"><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--fixed">Fixed</span><a class="cl-page" href="/scorecard">Call Scorecard</a></div><p class="cl-text">Found and fixed a grading bug: since June 26, each morning's grade compared the call against the same day's close instead of the prior day's. Nightly re-scoring meant most published outcomes were still right, but two rows contradicted their own writeups — both now carry a regrade note, and the scorecard shows a plain incident note. The original text stays as published.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--improved">Improved</span><a class="cl-page" href="/whats-priced-in">What's Priced In</a></div><p class="cl-text">August WASDE card shows USDA's current number as the one to beat rather than inventing survey ranges before they exist; analysts still building a track record now appear on the board instead of a false empty state.</p></div></div></section><section class="cl-day"><h2 class="cl-date">August 2, 2026</h2><div class="cl-items"><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--improved">Improved</span><a class="cl-page" href="/grain-bin-calculator">Grain Bin Calculator</a></div><p class="cl-text">Zero-percent fill now correctly reads zero bushels, the shrink factor is editable, a size-a-bin mode works backward from target bushels to diameter and eave combinations, and there's a printable bin record.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--fixed">Fixed</span><a class="cl-page" href="/">Sitewide</a></div><p class="cl-text">Menu icons rendered as solid black blobs on eight pages (an SVG id collision) — fixed everywhere. Also finished stripping emoji from the briefing and site chrome; meaning now rides on words and plain glyphs.</p></div></div></section><section class="cl-day"><h2 class="cl-date">July 30, 2026</h2><div class="cl-items"><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--improved">Improved</span><a class="cl-page" href="/">Sitewide</a></div><p class="cl-text">Type rework after a reader said the fonts were too small — he was right. Bigger, cleaner reading text on all 56 pages, numbers stay monospaced, italics retired, and every page re-tested at phone width for horizontal scroll and clipped text.</p></div></div></section><section class="cl-day"><h2 class="cl-date">July 28, 2026</h2><div class="cl-items"><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--fixed">Fixed</span><a class="cl-page" href="/corn-futures-prices">Futures Pages</a></div><p class="cl-text">The &quot;front month&quot; price was actually the most-active contract — corn showed December while true nearby September traded 22 cents lower. Heroes now quote the real nearby contract by name, and the next WASDE date comes from data instead of a hardcoded guess.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--improved">Improved</span><a class="cl-page" href="/wheat-futures-prices">Wheat Futures</a></div><p class="cl-text">No longer Chicago-only: KC hard red winter and Minneapolis spring wheat boards, class spreads, all three classes in the fund-positioning card, and export pace — matching how most of the site's wheat bids actually price.</p></div></div></section><section class="cl-day"><h2 class="cl-date">July 27, 2026</h2><div class="cl-items"><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--new">New</span><a class="cl-page" href="/hail-map">Hail Map</a></div><p class="cl-text">Live layer: current severe thunderstorm warnings with hail size, last-24-hour hail reports on the map, and a storm verdict for your pinned spot. Plus CSV export and a printable claim-guidance sheet for your adjuster call.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--new">New</span><a class="cl-page" href="/usda-calendar">USDA Calendar</a></div><p class="cl-text">Subscribe from your phone's calendar app (webcal/.ics) — report days show up where you'll actually see them.</p></div></div></section><section class="cl-day"><h2 class="cl-date">July 26, 2026</h2><div class="cl-items"><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--new">New</span><a class="cl-page" href="/scorecard">Call Scorecard</a></div><p class="cl-text">Every daily-briefing market call is now graded against the next session and published — hits, misses, and the running record. The yield nowcast joined an analyst board next to USDA's number.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--new">New</span><a class="cl-page" href="/">Email Signup</a></div><p class="cl-text">The daily briefing by email, free — signup available across the site.</p></div></div></section><section class="cl-day"><h2 class="cl-date">July 20, 2026</h2><div class="cl-items"><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--improved">Improved</span><a class="cl-page" href="/field-scout">Field Scout</a></div><p class="cl-text">The Read now pulls every county and state layer AGSIST has for your field's spot — cash rent, yield trend, basis, storage, land ownership, crop conditions — each card independent, each honest about missing data. Printable Field Report included.</p></div><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--improved">Improved</span><a class="cl-page" href="/fast-facts">Fast Facts</a></div><p class="cl-text">&quot;Today's Call&quot; verdict computes nitrogen-vs-corn economics live, with a live price strip and current-week staging.</p></div></div></section><section class="cl-day"><h2 class="cl-date">July 18, 2026</h2><div class="cl-items"><div class="cl-item"><div class="cl-top"><span class="cl-tag cl-tag--improved">Improved</span><a class="cl-page" href="/">Log opens here</a></div><p class="cl-text">AGSIST was live well before this log. Already shipped by mid-July: the daily briefing and archive, verdict-first rebuilds of conditions, basis, storage, land tenure, foreign-owned land, and cash rent (with all state pages), plus the core calculators and Field Scout. Changes from here forward are dated above.</p></div></div></section><!-- /CHANGELOG:entries --></div>
+
+      <div class="cl-note">
+        <b>What gets logged.</b> Changes a reader would notice: new pages and features, meaningful improvements, and fixes &mdash; including the embarrassing ones. What doesn&rsquo;t: the machine-refreshed data itself (prices, bids, weather, the daily briefing), which updates continuously; the <a href="/status">status page</a> covers whether those feeds are current. This log is written by hand, so entries land when the work ships, not on a schedule.
+        <br><br>
+        Spot something that changed and isn&rsquo;t here, or broke and isn&rsquo;t owned up to? Tell Sig: <a href="mailto:sig@farmers1st.com?subject=AGSIST%20changelog">sig@farmers1st.com</a>.
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="/components/loader.js?v=15"></script>
+</body>
+</html>
