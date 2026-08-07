@@ -316,6 +316,25 @@ def get_market_status():
     if weekday == 6:
         return {"is_closed": True, "reason": "weekend", "day_name": "Sunday",
             "note": "TODAY IS SUNDAY. Markets CLOSED. Write SUNDAY PREVIEW and WEEK AHEAD. Reference 'Friday's close'. No overnight language."}
+    # Full-closure US market holidays. Authoritative hardcoded 2026 map (matches
+    # CALENDAR_FACTS_2026) — REFRESH ANNUALLY. Covers ALL market holidays, not
+    # just the fixed three, so weekday holidays (MLK, Presidents, Memorial,
+    # Juneteenth, Labor Day, Thanksgiving) don't get written as normal sessions.
+    # (Nov 27 is an early close, not a full closure, so it stays a trading day.)
+    HOLIDAYS_2026 = {
+        (1, 1): "New Year's Day", (1, 19): "MLK Day", (2, 16): "Presidents Day",
+        (4, 3): "Good Friday", (5, 25): "Memorial Day", (6, 19): "Juneteenth",
+        (7, 3): "Independence Day (observed)", (9, 7): "Labor Day",
+        (11, 26): "Thanksgiving", (12, 25): "Christmas Day",
+    }
+    if now.year == 2026 and (month, day) in HOLIDAYS_2026:
+        hname = HOLIDAYS_2026[(month, day)]
+        return {"is_closed": True, "reason": "holiday", "day_name": hname,
+            "note": f"TODAY IS {hname.upper()}. Markets CLOSED (CBOT grain + equities). "
+                    f"Write a HOLIDAY OUTLOOK — do not describe an overnight session or "
+                    f"'today's trade'; reference the most recent actual close and what's ahead."}
+    # Degraded fallback for years other than 2026 (map above needs a yearly
+    # refresh): still catch the three fixed-date holidays + observed shifts.
     fixed_holidays = {(1, 1): "New Year's Day", (7, 4): "Independence Day", (12, 25): "Christmas Day"}
     for (hm, hd), hname in fixed_holidays.items():
         if month == hm and day == hd:
@@ -1111,14 +1130,27 @@ def get_usda_release_today():
     weekday = today.weekday()  # 0=Mon ... 6=Sun
     md = today.strftime("%m-%d")
 
-    # Weekly recurring
+    # Holiday awareness: USDA shifts the weekly reports around federal holidays.
+    # A Monday-holiday pushes Crop Progress to Tuesday; a Thursday-holiday
+    # (Thanksgiving) pushes Export Sales to Friday. Reuse the authoritative
+    # market-status check so we never assert a report on a closed day.
+    status = get_market_status()
+    is_holiday_today = status["is_closed"] and status["reason"] == "holiday"
+    yday = today - timedelta(days=1)
+
     releases = []
-    if weekday == 0:  # Monday: Crop Progress during planting/growing/harvest
-        # Crop Progress typically runs April through November
-        if 4 <= today.month <= 11:
+    if not is_holiday_today:
+        # Weekly recurring — normal schedule
+        if weekday == 0 and 4 <= today.month <= 11:   # Monday: Crop Progress
             releases.append("USDA Crop Progress, 3:00 PM CT")
-    if weekday == 3:  # Thursday: Weekly Export Sales
-        releases.append("USDA Weekly Export Sales, 7:30 AM CT")
+        if weekday == 3:                               # Thursday: Weekly Export Sales
+            releases.append("USDA Weekly Export Sales, 7:30 AM CT")
+        # Day-after-holiday shifts: Tue-after-Mon-holiday, Fri-after-Thu-holiday
+        if weekday == 1 and 4 <= today.month <= 11 and today.year == 2026 \
+                and (yday.month, yday.day) in {(1,19),(2,16),(5,25),(9,7)}:
+            releases.append("USDA Crop Progress, 3:00 PM CT (shifted from Monday holiday)")
+        if weekday == 4 and today.year == 2026 and (yday.month, yday.day) == (11, 26):
+            releases.append("USDA Weekly Export Sales, 7:30 AM CT (shifted from Thanksgiving)")
 
     # Monthly: Cattle on Feed (3rd or 4th Friday). Hardcoded 2026 dates:
     cof_2026 = {"01-23", "02-20", "03-20", "04-24", "05-22",
