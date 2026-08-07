@@ -30,7 +30,8 @@ jobs:
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add data/analyst-scorecard.json
+          python scripts/prerender_wpi_scorecard.py || true   # bake leaderboard into WPI page; never block
+          git add data/analyst-scorecard.json whats-priced-in.html scorecard.html
           if git diff --staged --quiet; then
             echo "No change."
           else

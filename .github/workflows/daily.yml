@@ -167,6 +167,13 @@ jobs:
         continue-on-error: true
         run: python scripts/build_scorecard.py
 
+      # Bake the fresh scorecard + WPI numbers into their pages' static HTML
+      # (same crawler rationale as bake_homepage). Marker-based, idempotent.
+      # continue-on-error: a bake failure must never block the briefing.
+      - name: Prerender WPI + scorecard pages
+        continue-on-error: true
+        run: python scripts/prerender_wpi_scorecard.py
+
       # Static-bake today's briefing + The Read into index.html so AI crawlers
       # (GPTBot, ClaudeBot, PerplexityBot — none execute JS) and Googlebot's
       # first pass see the actual content. Client JS hydrates live data on top.
@@ -204,7 +211,7 @@ jobs:
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add data/daily.json data/daily-archive/ daily/ feed.xml sitemap.xml data/scorecard.json index.html data/social/
+          git add data/daily.json data/daily-archive/ daily/ feed.xml sitemap.xml data/scorecard.json index.html data/social/ whats-priced-in.html scorecard.html
           git diff --staged --quiet || git commit -m "AGSIST Daily — $(date -u +%Y-%m-%d)"
           git pull --rebase --autostash origin main
           git push
