@@ -41,7 +41,7 @@ jobs:
             git reset --hard "origin/$BR"
             cp /tmp/wpi.json "$FILE"
             python scripts/prerender_wpi_scorecard.py || true   # bake pages; never block the data commit
-            git add "$FILE" whats-priced-in.html scorecard.html
+            git add "$FILE" whats-priced-in.html scorecard.html cot.html ag-odds.html
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Update what's priced in $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
