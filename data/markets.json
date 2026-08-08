@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-08-07T10:15:59Z",
+  "fetched": "2026-08-08T09:58:39Z",
   "version": 5,
   "count": 4,
   "total_found": 10,
@@ -14,9 +14,9 @@
         "platform": "Polymarket",
         "ticker": "616902",
         "title": "Will no Fed rate cuts happen in 2026?",
-        "yes": 87,
-        "no": 13,
-        "volume_24h": 7030693.082188,
+        "yes": 86,
+        "no": 14,
+        "volume_24h": 7088198.31173,
         "close_time": "2026-12-31T00:00:00Z",
         "time_left": "Closes in ~4mo",
         "url": "https://polymarket.com/event/how-many-fed-rate-cuts-in-2026",
@@ -24,15 +24,15 @@
         "relevance": 40,
         "tier": 3,
         "category": "Economy & Markets",
-        "why_it_matters": "87% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
+        "why_it_matters": "86% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
       },
       {
         "platform": "Polymarket",
         "ticker": "908713",
         "title": "Fed rate hike in 2026?",
-        "yes": 62,
-        "no": 38,
-        "volume_24h": 6368573.2948429985,
+        "yes": 55,
+        "no": 45,
+        "volume_24h": 6990418.746083998,
         "close_time": "2026-12-09T00:00:00Z",
         "time_left": "Closes in ~4mo",
         "url": "https://polymarket.com/event/fed-rate-hike-in-2026",
@@ -40,7 +40,7 @@
         "relevance": 40,
         "tier": 3,
         "category": "Economy & Markets",
-        "why_it_matters": "62% odds of a rate hike. Tighter policy strengthens the dollar and pressures grain export competitiveness."
+        "why_it_matters": "55% odds of a rate hike. Tighter policy strengthens the dollar and pressures grain export competitiveness."
       },
       {
         "platform": "Polymarket",
@@ -48,7 +48,7 @@
         "title": "Will the Fed decrease interest rates by 25 bps after the September 2026 meeting?",
         "yes": 2,
         "no": 98,
-        "volume_24h": 4567588.002427001,
+        "volume_24h": 5256752.233200001,
         "close_time": "2026-09-16T00:00:00Z",
         "time_left": "Closes in ~1mo",
         "url": "https://polymarket.com/event/fed-decision-in-september-762",
@@ -62,9 +62,9 @@
         "platform": "Polymarket",
         "ticker": "2252244",
         "title": "Will there be no change in Fed interest rates after the September 2026 meeting?",
-        "yes": 48,
-        "no": 52,
-        "volume_24h": 4460398.086543006,
+        "yes": 62,
+        "no": 38,
+        "volume_24h": 4923168.4028010005,
         "close_time": "2026-09-16T00:00:00Z",
         "time_left": "Closes in ~1mo",
         "url": "https://polymarket.com/event/fed-decision-in-september-762",
@@ -72,7 +72,7 @@
         "relevance": 40,
         "tier": 3,
         "category": "Economy & Markets",
-        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 48% YES on this outcome."
+        "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 62% YES on this outcome."
       }
     ]
   },
@@ -81,9 +81,9 @@
       "platform": "Polymarket",
       "ticker": "616902",
       "title": "Will no Fed rate cuts happen in 2026?",
-      "yes": 87,
-      "no": 13,
-      "volume_24h": 7030693.082188,
+      "yes": 86,
+      "no": 14,
+      "volume_24h": 7088198.31173,
       "close_time": "2026-12-31T00:00:00Z",
       "time_left": "Closes in ~4mo",
       "url": "https://polymarket.com/event/how-many-fed-rate-cuts-in-2026",
@@ -91,15 +91,15 @@
       "relevance": 40,
       "tier": 3,
       "category": "Economy & Markets",
-      "why_it_matters": "87% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
+      "why_it_matters": "86% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
     },
     {
       "platform": "Polymarket",
       "ticker": "908713",
       "title": "Fed rate hike in 2026?",
-      "yes": 62,
-      "no": 38,
-      "volume_24h": 6368573.2948429985,
+      "yes": 55,
+      "no": 45,
+      "volume_24h": 6990418.746083998,
       "close_time": "2026-12-09T00:00:00Z",
       "time_left": "Closes in ~4mo",
       "url": "https://polymarket.com/event/fed-rate-hike-in-2026",
@@ -107,7 +107,7 @@
       "relevance": 40,
       "tier": 3,
       "category": "Economy & Markets",
-      "why_it_matters": "62% odds of a rate hike. Tighter policy strengthens the dollar and pressures grain export competitiveness."
+      "why_it_matters": "55% odds of a rate hike. Tighter policy strengthens the dollar and pressures grain export competitiveness."
     },
     {
       "platform": "Polymarket",
@@ -115,7 +115,7 @@
       "title": "Will the Fed decrease interest rates by 25 bps after the September 2026 meeting?",
       "yes": 2,
       "no": 98,
-      "volume_24h": 4567588.002427001,
+      "volume_24h": 5256752.233200001,
       "close_time": "2026-09-16T00:00:00Z",
       "time_left": "Closes in ~1mo",
       "url": "https://polymarket.com/event/fed-decision-in-september-762",
@@ -129,9 +129,9 @@
       "platform": "Polymarket",
       "ticker": "2252244",
       "title": "Will there be no change in Fed interest rates after the September 2026 meeting?",
-      "yes": 48,
-      "no": 52,
-      "volume_24h": 4460398.086543006,
+      "yes": 62,
+      "no": 38,
+      "volume_24h": 4923168.4028010005,
       "close_time": "2026-09-16T00:00:00Z",
       "time_left": "Closes in ~1mo",
       "url": "https://polymarket.com/event/fed-decision-in-september-762",
@@ -139,7 +139,7 @@
       "relevance": 40,
       "tier": 3,
       "category": "Economy & Markets",
-      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 48% YES on this outcome."
+      "why_it_matters": "Fed policy moves ripple through the dollar and farm lending -- 62% YES on this outcome."
     }
   ]
 }
