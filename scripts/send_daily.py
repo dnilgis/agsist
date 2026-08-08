@@ -111,8 +111,15 @@ def flag(day, set_it=False):
         with urllib.request.urlopen(req, timeout=20) as r:
             return json.loads(r.read().decode()).get("set", False)
     except Exception as ex:
-        print("flag check unavailable (" + type(ex).__name__ + ") — proceeding")
-        return False
+        # FAIL CLOSED. This used to return False ("not sent yet") when the
+        # worker was unreachable, which meant a flaky network sent the entire
+        # list a SECOND copy of the briefing. A missed send is recoverable by
+        # rerunning; a duplicate blast to every subscriber is not. Report the
+        # day as already flagged so the run stops, and say so loudly.
+        print("FATAL: cannot reach the duplicate-send flag (" + type(ex).__name__
+              + ": " + str(ex)[:120] + ") — refusing to send rather than risk "
+              "emailing the list twice. Rerun once the worker is reachable.")
+        return True
 
 
 def fetch_recipients():
@@ -225,15 +232,25 @@ def main():
             try:
                 s.send_message(build_email(day, b, r, from_name, from_addr, reply_to))
                 sent += 1
-            except smtplib.SMTPException as ex:
+            except Exception as ex:
+                # Was smtplib.SMTPException only, so a socket timeout, an
+                # SSLError or a reset connection aborted the loop with the day
+                # flag never set — and the rerun then re-sent to everyone who
+                # had already received it. Catch everything per recipient and
+                # keep going; the flag below still gets set.
                 failed.append(r + " (" + type(ex).__name__ + ")")
             if i < len(recipients) - 1:
                 time.sleep(1.2)  # gentle throttle keeps Gmail happy
     print("sent " + str(sent) + "/" + str(len(recipients)))
+    # Set the day flag whenever ANY mail went out. Anyone who received a copy
+    # must never get a second one, so the flag is about the day, not about
+    # success. Failures are reported for a targeted resend, not a full rerun.
     if sent > 0:
         flag(day, set_it=True)
     if failed:
-        print("failed: " + ", ".join(failed))
+        print("failed (" + str(len(failed)) + " of " + str(len(recipients))
+              + ") — the day is flagged, so a plain rerun will NOT resend to "
+              "anyone. Resend to these addresses individually: " + ", ".join(failed))
     return 0 if sent > 0 else 1
 
 

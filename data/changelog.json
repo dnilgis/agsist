@@ -7,6 +7,24 @@
       "items": [
         {
           "tag": "fixed",
+          "page": "/conditions-yield",
+          "name": "Ratings vs Yield",
+          "text": "The ranked table on this page was hand-written and never regenerated, so it had drifted three weeks behind the live data and openly contradicted the verdict box directly above it — Pennsylvania read 25% in the table and 65% in the box. The state ranked first under the heading \"ranked by what this week's number is worth\" was not the top state any more either. The table, the four headline tiles, the summary line and the page description now all come from the same file the verdict reads, and rebuild themselves every time the weekly fit runs."
+        },
+        {
+          "tag": "fixed",
+          "page": "/scorecard",
+          "name": "Call Scorecard — two real problems",
+          "text": "Twenty-three graded rows showed the write-up for one call next to the grade for a different one, left over from the date bug fixed Aug 4. Those rows now show the call that was actually scored, rebuilt from the recorded market, direction and level, and say so underneath; the original wording stays in that day's briefing. Second, the headline hit rate was blending two different eras — calls before Jun 24 could only be graded by the briefing's own account of itself, while everything since is checked against the closes. Split out, that is 26 of 36 self-graded against 3 of 40 checked. Both numbers are now on the page. The checked one is the honest one and it is not flattering."
+        },
+        {
+          "tag": "fixed",
+          "page": "/daily",
+          "name": "Daily briefing email",
+          "text": "If the check that records \"today's briefing already went out\" could not be reached, the sender assumed it had not and would have emailed the entire list a second copy. It now refuses to send when it cannot confirm, and a failed delivery to one address no longer risks re-sending to everyone who already got it."
+        },
+        {
+          "tag": "fixed",
           "page": "/",
           "name": "Blank page on returning visits",
           "text": "The offline cache could hand back a broken copy of the page. Two ways: if the site was mid-deploy when your browser asked for a page, an error response replaced the good copy you already had; and a truncated stylesheet or menu file in the cache would strip the styling and navigation off every page, which reads as the site being blank. It now keeps the last good copy through a deploy hiccup and refuses to serve a cached stylesheet or menu that looks damaged."

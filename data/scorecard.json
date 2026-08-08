@@ -1,24 +1,47 @@
 {
- "updated": "2026-08-07T20:37:17+00:00",
+ "updated": "2026-08-08T03:20:56+00:00",
  "total": 81,
  "played_out": 29,
  "didnt": 47,
  "pending": 5,
  "hit_rate": 38.2,
+ "by_method": {
+  "deterministic": {
+   "played": 3,
+   "missed": 37,
+   "graded": 40,
+   "hit_rate": 7.5,
+   "first": "2026-06-24",
+   "last": "2026-08-07"
+  },
+  "self_reported": {
+   "played": 26,
+   "missed": 10,
+   "graded": 36,
+   "hit_rate": 72.2,
+   "first": "2026-04-28",
+   "last": "2026-06-23"
+  }
+ },
+ "mismatched": 23,
  "current_streak": 0,
  "records": [
   {
    "made": "2026-08-06",
    "judged": "2026-08-07",
-   "call": "Called Nov '26 beans up through $11.76; Nov beans closed today at $11.76, exactly the target, but came from $11.535 -- the move was there on paper and the level printed.",
+   "call": "Called beans up toward above $11.76; nearby beans finished at $11.65, short of the line, though the direction was right.",
    "outcome": "didnt",
-   "note": "Miss. computed.outcome is 'didnt' and that is the call. Nov beans hit $11.76 on the close but the upward follow-through never materialized intraday; favorable Belt weather and fund selling kept new crop under pressure all session. Own it and move on."
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Old-crop beans moved the right way but fell short of the level; November new crop actually closed lower, which tells you the bounce is still rented."
   },
   {
    "made": "2026-08-05",
    "judged": "2026-08-06",
    "call": "Called beans down toward below $11.59. Beans closed at $11.535, which is under that line, but the computed grader marked this call as not playing out.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "The directional read was right -- beans did close under $11.59 -- but the call did not meet the grader's threshold. Own the miss on process; the tour bear case was the correct frame, just not enough to book the call."
   },
   {
@@ -26,62 +49,80 @@
    "judged": "2026-08-05",
    "call": "Called soybeans down, toward below $11.59. Nov beans closed $11.70, off 9 cents but still well above $11.59.",
    "outcome": "played_out",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "Direction was right, beans did fall, but the level has not been reached; tour data still in play. [Regraded played out by the deterministic checker — direction and level scored against the actual closes; the note above is the text as originally published.]"
   },
   {
    "made": "2026-08-03",
    "judged": "2026-08-04",
-   "call": "Called soybeans down, toward $11.59. Beans closed today at $11.59, exactly at the target level.",
+   "call": "Called wheat up toward $6.55 ($6.4025 when the call was made). It closed at $6.4325.",
    "outcome": "didnt",
-   "note": "The level printed but beans got there on crude's coattails and crop-report pressure, not a standalone bean story. Call it played out on the number; the driver was right even if the thesis was shared with the whole complex."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-08-02",
    "judged": "2026-08-03",
-   "call": "Called wheat up toward $6.55; wheat closed today at $6.40, firming 4 cents but well short of the $6.55 line.",
+   "call": "Called corn down toward $4.41 ($4.4075 when the call was made). It closed at $4.385.",
    "outcome": "played_out",
-   "note": "The directional lean was right but $6.55 never came into play; call it a partial at best, graded as a miss on the level. [Regraded played out by the deterministic checker — direction and level scored against the actual closes; the note above is the text as originally published.]"
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-31",
    "judged": "2026-08-01",
-   "call": "Called corn lower through $4.41 Friday. Corn closed at $4.4075 -- right at the doorstep but did not print below the target level.",
+   "call": "Called wheat up toward $6.55 ($6.38 when the call was made). It closed at $6.3925.",
    "outcome": "didnt",
-   "note": "Miss by a tick. The directional read was correct -- corn broke hard on Belt rain, funds rotated out, and the session was the worst in months. But $4.4075 did not clear $4.41, so the level call did not play out. Own it and watch whether Monday continuation puts the market through that figure."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-30",
    "judged": "2026-07-31",
    "call": "Called wheat up, toward above $6.90. Wheat closed today at $6.38, dropping 18¾ cents.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "Yesterday's export-driven conviction ran straight into today's weather-premium breakdown and fund selling. Miss, plain and simple."
   },
   {
    "made": "2026-07-29",
    "judged": "2026-07-30",
-   "call": "Called wheat up, toward $6.90. Wheat closed today at $6.7875, up roughly 13 cents from yesterday's open but still 11 cents short of the $6.90 target.",
+   "call": "Called feeder cattle down toward $333.0 ($337.225 when the call was made). It closed at $339.05.",
    "outcome": "didnt",
-   "note": "Direction was right, wheat ran hard on heat and China demand noise, but the move ran out of steam before $6.90. A near-miss: the thesis held, the level did not."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-28",
    "judged": "2026-07-29",
    "call": "Called feeders down, below $328.00. Feeders closed today at $337.23, well above that line.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "The break didn't materialize; feeders flipped the other direction entirely."
   },
   {
    "made": "2026-07-27",
    "judged": "2026-07-28",
-   "call": "Called feeders down toward $328.00. Feeders closed at $331.27 -- moved the right direction, but never reached the level.",
+   "call": "Called soybeans up toward $12.47 ($12.2025 when the call was made). It closed at $12.0825.",
    "outcome": "didnt",
-   "note": "Mexico border news did the work; feeders dropped 3% and the direction was right. The $328 target stayed just out of reach. Call gets credit for the thesis, not the number."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-26",
    "judged": "2026-07-27",
    "call": "Called beans up, toward $12.47. Beans closed at $12.20 today, never threatening that target.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "The heat premium that drove last week's highs didn't carry through Monday; beans gave back ground and the $12.47 level was never in play. Miss."
   },
   {
@@ -89,125 +130,161 @@
    "judged": "2026-07-26",
    "call": "Called beans up through $12.54 nearby. Beans closed flat at $12.48 -- the level was not touched.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "Miss. Beans held the 52-week high but did not extend. The heat-weather bid is real; the timing was one session early."
   },
   {
    "made": "2026-07-23",
    "judged": "2026-07-24",
-   "call": "Yesterday's call: wheat up, toward $6.91, on Black Sea supply concerns and fund momentum.",
+   "call": "Called feeder cattle down toward $333.00 ($336.15 when the call was made). It closed at $342.04999.",
    "outcome": "didnt",
-   "note": "Wheat closed $6.79 today -- exactly where it opened the session and well short of the $6.91 target. The profit-taking session that defines today's tape is the opposite of what the call needed; the funds got lighter, not heavier, and the $6.91 level never came into play. Miss, plain and simple. The bull thesis on Black Sea supply is not broken, but the call did not play out today."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-22",
    "judged": "2026-07-23",
-   "call": "Called feeders down, toward $333.00, on processing bottleneck and demand pressure.",
+   "call": "Called crude up toward $90.0 ($88.15 when the call was made). It closed at $90.0.",
    "outcome": "played_out",
-   "note": "Feeders closed at $336.15 today -- down hard on the session and moving in the right direction, but they did not reach the $333.00 target. The call read the setup correctly: lockout pressure and slower box-beef demand were real, and feeder cattle did drop 2.5%. The level just did not give way. $333 is still the next line to watch if the bottleneck holds into next week. [Regraded played out by the deterministic checker — direction and level scored against the actual closes; the note above is the text as originally published.]"
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-21",
    "judged": "2026-07-22",
-   "call": "Called crude up, toward $90.00.",
+   "call": "Called feeder cattle up toward $350.0 ($346.775 when the call was made). It closed at $344.875.",
    "outcome": "didnt",
-   "note": "WTI closed at $88.15, up 3.3% on the session -- the direction was right but $90 never traded. Two chokepoints active and crude still couldn't clear the target. Own the miss on the level; the thesis has more fuel in it tomorrow than it did at yesterday's open."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-20",
    "judged": "2026-07-21",
-   "call": "The call was feeders up, toward $350.00, on oversold technicals after the Cargill-driven selldown.",
+   "call": "Called corn up toward $4.55 ($4.4475 when the call was made). It closed at $4.49.",
    "outcome": "didnt",
-   "note": "Feeders closed at $346.77, up 2.2% on the session and the biggest cattle-complex move in weeks. The direction was right. The level wasn't: $350 stayed out of reach, and the call doesn't get credit when the target holds. Still, the oversold read was earned -- watch whether cash trade confirms or fades this move before adding conviction."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-19",
    "judged": "2026-07-20",
-   "call": "Call was corn up, toward $4.55.",
+   "call": "Called soybeans up toward $12.2 ($12.045 when the call was made). It closed at $12.045.",
    "outcome": "didnt",
-   "note": "Corn closed $4.4475 Monday, never reaching the $4.55 target. The 3.6% break went the other direction entirely: old-crop supply pressure and the front-month/new-crop inversion took over the narrative. The upside thesis did not resolve."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-16",
    "judged": "2026-07-17",
-   "call": "The call was feeders down, targeting a break below $335.",
+   "call": "Called wheat up toward $7.10 ($6.8575 when the call was made). It closed at $6.8475.",
    "outcome": "didnt",
-   "note": "Feeders closed at $339.08, never testing $335. The cattle section was directionally right that cash pressure was building, but the level didn't resolve -- feeders held above the target all session. Miss on the level. The $335 watch carries into Monday."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-15",
    "judged": "2026-07-16",
-   "call": "Yesterday's call was wheat up, targeting a move toward $7.10, after the close at $6.86 with Hormuz premium rebuilding.",
+   "call": "Called hogs down toward $82.0 ($84.325 when the call was made). It closed at $86.725.",
    "outcome": "didnt",
-   "note": "Wheat closed $6.8575 today, essentially unchanged from the prior session's $6.86 level -- the call for a push toward $7.10 did not materialize. The Hormuz catalyst is live and the directional read was correct, but the export sales data and overnight positioning did not generate enough follow-through to reach the target. Miss on the level; the thesis is still in play for Thursday's 7:30 AM export sales to confirm or deny."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-14",
    "judged": "2026-07-15",
-   "call": "The call was hogs lower, targeting a move through $82.00, after Monday's $94.78 close looked extended on a 10.8% two-session run.",
+   "call": "Called crude up toward $80.0 ($78.66 when the call was made). It closed at $79.94.",
    "outcome": "didnt",
-   "note": "Hogs closed $84.33 today, down hard at 14.1%, but the $82.00 target level was not reached. Direction was right -- the reversal arrived exactly as flagged -- but the close held above $82, so the level call does not score. Miss on the level, correct on the thesis."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-13",
    "judged": "2026-07-14",
-   "call": "Yesterday's call was crude up, targeting a move through $80.00, after Trump's Iran blockade reinstatement lit the Hormuz risk premium.",
+   "call": "Called hogs down toward $90.0 ($94.775 when the call was made). It closed at $98.15.",
    "outcome": "didnt",
-   "note": "Crude closed today at $78.66, up 5.9% on the session. The move confirmed the directional thesis but stopped short of the $80.00 target level. The call didn't fully play out by the close, though the tape is still leaning the same direction heading into Wednesday."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-12",
    "judged": "2026-07-13",
-   "call": "The call on July 10 was hogs down, toward $90.00, on the thesis that two weeks of fund selling had room to extend into the week.",
+   "call": "Called corn up toward $4.7 ($4.38 when the call was made). It closed at $4.38.",
    "outcome": "didnt",
-   "note": "Hogs closed $94.775 today -- not only did price never test $90.00, it ran 10.8% the wrong direction. The short-squeeze and tight cash market overwhelmed the bearish setup entirely. Miss, clean and simple."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-11",
    "judged": "2026-07-12",
-   "call": "Called corn higher toward $4.70 on Friday; nearby settled at $4.38, miss.",
+   "call": "Called wheat up toward $6.45 ($6.32 when the call was made). It closed at $6.32.",
    "outcome": "didnt",
-   "note": "The corn-up call toward $4.70 did not play out. Nearby corn closed at $4.38, old-crop liquidation ran the other direction, and the level was never tested. The December contract did move to $4.61 on new-crop weather positioning, but that is a different contract and a different story than the nearby call made. Own the miss: the nearby market was already priced for liquidation pressure and the WASDE data did not provide the catalyst. The weather-premium story now lives entirely in December, and that is where this week's calls belong."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-10",
    "judged": "2026-07-11",
    "call": "Called wheat higher through $6.45 off the WASDE tighter-stocks read.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "Didn't get there. Wheat closed at $6.32, held the WASDE gains fine, but $6.45 was one resistance step too far for a Friday tape that had already done its work Thursday. The bulls had the story right -- USDA cut old-crop stocks and trimmed the crop estimate -- but Friday's session had no fresh catalyst to push through the next level. Own the miss: the direction was right, the target was not. Scale that resistance down to $6.40 on next week's call."
   },
   {
    "made": "2026-07-09",
    "judged": "2026-07-10",
-   "call": "Yesterday's call: wheat up, toward $6.45, on the thesis that WASDE supply tightening would extend the move.",
+   "call": "Called soybeans up toward $12.1 ($11.97 when the call was made). It closed at $11.975.",
    "outcome": "didnt",
-   "note": "Wheat closed $6.30 today, up 18.5 cents and the biggest grain session since spring, but the $6.45 target was not reached. The call had the right direction and the right catalyst -- WASDE did tighten global wheat supply -- but the level was a step too far in a single session. Call did not play out; direction was right, target was not."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-08",
    "judged": "2026-07-09",
-   "call": "Yesterday's call was beans up, toward above $12.10.",
+   "call": "Called crude up toward $76.50 ($74.58 when the call was made). It closed at $73.57.",
    "outcome": "didnt",
-   "note": "Beans closed at $11.97 today, 13 cents short of the $12.10 target. The China soybean sale confirmed Wednesday morning gave beans a lift intraday, but the 'buy the rumor, sell the fact' reaction capped the move and sellers tested $11.87 on November before recovering. The directional call did not play out; beans held ground but never made the run. Export sales at 7:30 AM CT are now the next opportunity to retest the thesis."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-07",
    "judged": "2026-07-08",
-   "call": "Yesterday's call: crude up, toward $76.50, contingent on Hormuz tanker diversion numbers growing and the Iran sanctions pressure holding.",
+   "call": "Called soybeans up toward $12.10 ($11.815 when the call was made). It closed at $12.0775.",
    "outcome": "didnt",
-   "note": "Crude ran to $74.58 today, up 3.2%, and the Hormuz situation absolutely reignited -- but $76.50 stayed untouched. The call got the direction and the catalyst right; the level was a step too far for one session. Thursday's tanker count is still the trigger that gets us there."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-06",
    "judged": "2026-07-07",
-   "call": "Called beans up, toward $12.10, after Monday's Crop Progress print.",
+   "call": "Called corn up toward $4.42 ($4.25 when the call was made). It closed at $4.395.",
    "outcome": "didnt",
-   "note": "Nearby beans closed at $11.815 today, which means the $12.10 target did not play out -- the market moved in the right direction on the 30-cent rally but stopped well short of the level. Own the miss on the level; the directional read was correct, the target was ambitious. Thursday export sales above 400K MT is the next real look at whether the funds are still pointing that direction."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-07-05",
    "judged": "2026-07-06",
    "call": "The call was corn up, toward above $4.42.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "Corn closed at $4.25 today, the same level it started the session -- the move went the wrong direction entirely, with old-crop shedding 17 and three-quarter cents rather than pushing toward $4.42. Fund liquidation into the holiday reopen overwhelmed any weather premium. Own the miss: $4.42 was not in play today."
   },
   {
@@ -215,6 +292,8 @@
    "judged": "2026-07-05",
    "call": "Called corn up toward $4.42 December going into the July 4 weekend. Corn went the other way hard.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "The call was for December corn to work toward $4.42. Instead, nearby corn shed 17 and three-quarter cents on Friday and December settled at $4.415 -- essentially flat, not a rally. The miss is clean: funds liquidated into the holiday close rather than buying the pollination weather premium the call anticipated. Own it and watch whether Tuesday's forecast run changes the calculus."
   },
   {
@@ -222,20 +301,26 @@
    "judged": "2026-07-04",
    "call": "Called corn to trade up toward $4.42 into Thursday's close. Corn finished at $4.25, down 17 3/4 cents. The call did not play out.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "Corn never sniffed $4.42. Fund liquidation ahead of the long weekend ran the other direction entirely, and the $4.25 close was the low end of the day's range. The pollination anxiety that should have supported nearby prices instead became the excuse to exit. Miss. The old-crop/new-crop spread widening to roughly 16 cents in a single session is the residue of that position flush -- watch whether new-crop holds $4.41 into next week's Crop Progress or follows nearby lower."
   },
   {
    "made": "2026-07-01",
    "judged": "2026-07-02",
-   "call": "Yesterday's call was beans up, toward $11.54 on China demand talk and heat-driven short covering.",
+   "call": "Called corn up toward $4.45 ($4.1375 when the call was made). It closed at $4.2425.",
    "outcome": "didnt",
-   "note": "Nearby beans closed at $11.3275, up 6.5 cents on the session -- right direction, but the level that would have confirmed the call is November at $11.54. November beans closed at $11.545, essentially sitting on that number without a clean break above. The demand catalyst -- China buying talk -- circulated but produced no announced sales. Call moved the right way; the confirming level is not yet through. Miss on the level, even if the directional read held."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-06-30",
    "judged": "2026-07-01",
    "call": "Yesterday's call was corn up, toward $4.45 on December.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "Didn't play out. December corn closed at $4.38, short of the $4.45 target. The stocks beat and steady acreage confirmation held corn from breaking lower, but the weather premium needed to push December through $4.45 hasn't materialized yet. The call had the right direction on support but overestimated the upside follow-through from the report. Weather owns the next attempt."
   },
   {
@@ -243,6 +328,8 @@
    "judged": "2026-06-30",
    "call": "Yesterday's call: corn down, toward $3.95, based on pre-report positioning ahead of the Acreage and Quarterly Stocks release.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "Corn closed at $4.035 today, holding well above $3.95. The downside move did not materialize; the report did not deliver enough bearish confirmation to push nearby through that level. Miss. The heat wave premium now entering the conversation is the reason $3.95 stays on the board as a potential target if the weather story fades, but today's close did not get there."
   },
   {
@@ -250,6 +337,8 @@
    "judged": "2026-06-29",
    "call": "Yesterday's call: corn up, toward above $4.43.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "Corn opened and closed at $4.13 on the nearby, nowhere near $4.43, and December slipped a penny to $4.42; the directional thesis did not play."
   },
   {
@@ -257,6 +346,8 @@
    "judged": "2026-06-28",
    "call": "Called corn higher toward $4.42 December. It did not happen.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "The call was for corn to move up toward the $4.42 December level. Friday's close left the nearby at $4.1275 and December at $4.415, with no progress toward the upside target. The fund selling that accelerated into the weekend did the opposite. Own the miss. The thesis on weather optionality in new crop is still alive going into Tuesday's acreage print, but Friday's tape was not cooperating."
   },
   {
@@ -264,27 +355,35 @@
    "judged": "2026-06-27",
    "call": "Called corn up through $4.42 going into Friday. It did not happen.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "December corn closed at $4.415, essentially unchanged, while nearby corn dropped two and a half percent to $4.13. The call was for a move up through $4.42 and the market went the other direction on the nearby and sat flat on December. Miss. The pressure stayed concentrated in old crop exactly as the structure suggested it would, but that did not translate into the December bid the call needed. Tuesday's acreage report is the next honest test of whether $4.42 has any defense left."
   },
   {
    "made": "2026-06-25",
    "judged": "2026-06-26",
-   "call": "Yesterday's call was corn up, toward the $4.43 December level, leaning on the Belt's ahead-of-pace crop progress removing the last bearish overhang and leaving room for a pre-Acreage bid.",
+   "call": "Called soybeans up toward $11.38 ($11.11 when the call was made). It closed at $11.21.",
    "outcome": "didnt",
-   "note": "Corn closed $4.14 today, flat on the day and well below $4.43. The call did not play out. The market never found a reason to bid December toward that level on a quiet pre-holiday Friday -- the pre-Acreage coil kept both corn contracts pinned. Own the miss: the directional thesis needed a catalyst that did not arrive."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-06-24",
    "judged": "2026-06-25",
-   "call": "Check local basis on on-farm grain; if basis is firm, the futures break has narrowed your window before heat forecast gets priced into new-crop.",
+   "call": "Called corn up toward $4.25 ($4.105 when the call was made). It closed at $4.065.",
    "outcome": "didnt",
-   "note": "Miss. The call keyed off beans making a run toward $11.38 November, which is exactly where November settled today -- at $11.11, not through the level. The basis-check framing for corn was directionally sound (corn did stabilize 2 cents), but the primary instrument and target did not play out. Producers who held unpriced new-crop beans through yesterday on that call are flat on the day."
+   "method": "deterministic",
+   "mismatch": true,
+   "note": "The write-up published with this grade described a different call, a known effect of the grading bug fixed on Aug 4. What is scored here is the call actually made in the previous briefing, checked against the closes. The original wording is still in that day's briefing."
   },
   {
    "made": "2026-06-23",
    "judged": "2026-06-24",
    "call": "Wheat broke cleanest; corn and beans followed on low conviction. Next leg requires a weather event or export surprise.",
    "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
    "note": "Miss. The call was looking for corn to follow wheat higher and needed a weather event or export catalyst to provide the next leg up. Instead corn provided the catalyst in the opposite direction, breaking 27 cents on old-crop supply weight. The setup read the weather premium as still present in corn; the market had already priced it out. Weather is now back on the table for new crop, but that does not rescue the prior call."
   },
   {
@@ -292,6 +391,8 @@
    "judged": "2026-06-23",
    "call": "Yesterday's call: watch old-crop corn storage decisions ahead of Monday's Crop Progress report, with the thesis that steady or improving condition ratings would remove any remaining weather premium and push corn lower.",
    "outcome": "didnt",
+   "method": "self",
+   "mismatch": false,
    "note": "Corn did slide another 2.5 cents to $4.10 and condition ratings held steady, so the directional read on corn was right. But the call framed it as a window for storage decisions before the Crop Progress reset, and that window didn't open the way the call implied. Corn kept drifting lower without a catalyst sharp enough to force a merchandising decision. The miss is in the timing frame, not the direction."
   },
   {
@@ -299,6 +400,8 @@
    "judged": "2026-06-22",
    "call": "The prior high-conviction call was that the Cattle on Feed data confirmed the bull thesis, with live cattle at $254.80 earning it.",
    "outcome": "didnt",
+   "method": "self",
+   "mismatch": false,
    "note": "Live cattle settled at $248.05 today, well off that peak; the bull thesis from the data has not held price."
   },
   {
@@ -306,6 +409,8 @@
    "judged": "2026-06-19",
    "call": "Old-crop soybean sellers were told to watch Thursday export sales: above 400K MT firms the cushion, under 300K MT and the oil break starts pulling beans with it.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Sales came in soft, the oil break extended, and nearby beans fell 24¾ cents today. The conditional resolved exactly as called."
   },
   {
@@ -313,6 +418,8 @@
    "judged": "2026-06-18",
    "call": "Cattle didn't bounce on hope; it bounced on two simultaneous supply constraints finally pricing together.",
    "outcome": "pending",
+   "method": "self",
+   "mismatch": false,
    "note": "Live cattle at $249.05 is essentially flat today; the thesis needs another session to resolve directionally."
   },
   {
@@ -320,6 +427,8 @@
    "judged": "2026-06-17",
    "call": "Yesterday's high-conviction call: wheat had its day, corn needs the weather pattern to clarify before it follows.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Corn firmed 1.0% today exactly as the weather pattern started to clarify, with a new ECB severe threat on the models. The call held."
   },
   {
@@ -327,6 +436,8 @@
    "judged": "2026-06-16",
    "call": "Trade restrictions create processing bottlenecks, not a dip to buy.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Live cattle closed $247.25, up 1.6%, but the Cargill lockout processing constraint kept the rally from running cleanly; the bottleneck thesis held even as price recovered."
   },
   {
@@ -334,6 +445,8 @@
    "judged": "2026-06-15",
    "call": "Corn found the floor, funds rotating in, ethanol story getting legs.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Corn added another quarter-cent today, confirming Friday's floor call as funds stayed put."
   },
   {
@@ -341,6 +454,8 @@
    "judged": "2026-06-12",
    "call": "Funds getting defensive ahead of WASDE, Brazil supply weighing on outlook.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "The defensive positioning paid off as grains found their floor right where fund liquidation suggested."
   },
   {
@@ -348,6 +463,8 @@
    "judged": "2026-06-11",
    "call": "Cattle bounce real but narrow, feeders lagging says recovery is selective.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Feeders flipped to leading higher at $356.30, confirming the recovery broadened past live cattle."
   },
   {
@@ -355,6 +472,8 @@
    "judged": "2026-06-10",
    "call": "Disease spread plus processing constraints creating supply bottleneck.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Today's cattle bounce doesn't invalidate the bottleneck thesis, just shows markets price fear faster than resolution."
   },
   {
@@ -362,6 +481,8 @@
    "judged": "2026-06-09",
    "call": "Processing problems hit milk first, cattle complex next if it spreads.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Cattle broke lower exactly as called when the processing fear spread beyond dairy."
   },
   {
@@ -369,6 +490,8 @@
    "judged": "2026-06-08",
    "call": "Dollar strength overwhelmed industrial silver demand fundamentals.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Silver held its ground today despite the dollar staying strong, confirming the thesis worked through."
   },
   {
@@ -376,6 +499,8 @@
    "judged": "2026-06-05",
    "call": "Cattle liquidation exhausted, both contracts bounced hard off Wednesday's lows.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Cattle held gains from yesterday's bounce while broader commodities fell apart."
   },
   {
@@ -383,6 +508,8 @@
    "judged": "2026-06-04",
    "call": "Fund liquidation deepening in grains, with China talk insufficient to reverse the slide.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Soybeans extended the decline exactly as called, losing another 10 cents today."
   },
   {
@@ -390,6 +517,8 @@
    "judged": "2026-06-03",
    "call": "The liquidation that started Memorial Day isn't selling pressure selling, it's methodical and ongoing.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Corn and beans both extended the slide exactly as called, no weather premium emerging to stop it."
   },
   {
@@ -397,6 +526,8 @@
    "judged": "2026-06-02",
    "call": "Geopolitical premium back after three weeks of unwinding.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Crude held most of yesterday's 5% Iran move higher, consolidating at $92.17 rather than giving it all back."
   },
   {
@@ -404,6 +535,8 @@
    "judged": "2026-06-01",
    "call": "Geopolitical premium unwinding faster than it built, energy complex in full retreat.",
    "outcome": "didnt",
+   "method": "self",
+   "mismatch": false,
    "note": "Iran flipped the script overnight with diplomatic cutoff and Hormuz threats."
   },
   {
@@ -411,6 +544,8 @@
    "judged": "2026-05-29",
    "call": "Called geopolitical premium unwinding faster than it built up as crude crashed.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Oil held the decline, gave back another half percent today as Iran tensions continue to ease."
   },
   {
@@ -418,6 +553,8 @@
    "judged": "2026-05-28",
    "call": "Feeders leading confirms convergence through strength, not weakness.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Both cattle contracts gained today with feeders up 0.2% outpacing live's 0.1%, maintaining the convergence pattern through coordinated strength."
   },
   {
@@ -425,6 +562,8 @@
    "judged": "2026-05-27",
    "call": "Iran premium deflating as market prices escalation fatigue over extension risk.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Oil fell another 2.4% today as geopolitical risk premium continues unwinding."
   },
   {
@@ -432,6 +571,8 @@
    "judged": "2026-05-26",
    "call": "Complex splitting wider suggests live cattle found real money, feeders still broken.",
    "outcome": "didnt",
+   "method": "self",
+   "mismatch": false,
    "note": "The complex actually narrowed today as both contracts gained equally, contradicting the widening thesis."
   },
   {
@@ -439,6 +580,8 @@
    "judged": "2026-05-25",
    "call": "Processing bottleneck reprices cattle faster than weather ever could.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "The bottleneck thesis held through the weekend and live cattle bounced exactly as processing constraints eased."
   },
   {
@@ -446,6 +589,8 @@
    "judged": "2026-05-22",
    "call": "Processing bottleneck hits feeders harder than live cattle on timing.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Feeders dropped 2.5% versus live cattle's 2.0%, exactly the differential the timing suggested."
   },
   {
@@ -453,6 +598,8 @@
    "judged": "2026-05-21",
    "call": "Hormuz breakthrough removes supply shock premium, corridor still fragile.",
    "outcome": "pending",
+   "method": "self",
+   "mismatch": false,
    "note": "Oil held gains above $100 but Iran tensions resurface with Trump's latest comments."
   },
   {
@@ -460,6 +607,8 @@
    "judged": "2026-05-20",
    "call": "Holding yesterday's China bounce but needs follow-through confirmation.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Wheat's 87-cent rally and feeder strength confirms the China spillover momentum."
   },
   {
@@ -467,6 +616,8 @@
    "judged": "2026-05-19",
    "call": "China deal gives grains structural support the carry trade wasn't pricing.",
    "outcome": "pending",
+   "method": "self",
+   "mismatch": false,
    "note": "The initial bounce held but funds are waiting for actual purchase confirmations before adding conviction."
   },
   {
@@ -474,6 +625,8 @@
    "judged": "2026-05-18",
    "call": "Weather premium gone, funds rotating out of grains into livestock.",
    "outcome": "didnt",
+   "method": "self",
+   "mismatch": false,
    "note": "China's trade commitment reversed the fund rotation narrative completely."
   },
   {
@@ -481,6 +634,8 @@
    "judged": "2026-05-15",
    "call": "Called seasonal demand premium building faster than supply could respond in hogs.",
    "outcome": "didnt",
+   "method": "self",
+   "mismatch": false,
    "note": "Hogs dropped 1.1% today, seasonal demand story didn't hold against fund rotation."
   },
   {
@@ -488,6 +643,8 @@
    "judged": "2026-05-14",
    "call": "Technical damage feeding on itself in cattle, no fundamental excuse needed anymore.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Cattle dropped another 50 cents to $246.25 while feeders reversed sharply higher, confirming the breakdown narrative."
   },
   {
@@ -495,6 +652,8 @@
    "judged": "2026-05-13",
    "call": "Called hogs' six percent explosion a classic short squeeze with fundamental support underneath.",
    "outcome": "didnt",
+   "method": "self",
+   "mismatch": false,
    "note": "Hogs gave it all back today, falling 1.5% as the squeeze reversed into technical selling."
   },
   {
@@ -502,6 +661,8 @@
    "judged": "2026-05-12",
    "call": "Geopolitical premium hitting metals hard while ag markets stay domestic-focused.",
    "outcome": "didnt",
+   "method": "self",
+   "mismatch": false,
    "note": "Silver crashed 2.8% today, unwinding yesterday's metals explosion as Iran peace talks stalled."
   },
   {
@@ -509,6 +670,8 @@
    "judged": "2026-05-11",
    "call": "Both cattle complexes broke key support, with feeders leading the breakdown confirming real weakness.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Cattle held the bounce today with live up 0.8% and feeders up 0.5%, confirming Friday's breakdown was overdone."
   },
   {
@@ -516,6 +679,8 @@
    "judged": "2026-05-08",
    "call": "Called that feeder strength confirmed the $252 floor with Brazilian import dynamics explaining the rally's momentum.",
    "outcome": "didnt",
+   "method": "self",
+   "mismatch": false,
    "note": "Today's feeder breakdown invalidated the thesis completely, confirming the complex couldn't hold technical support."
   },
   {
@@ -523,6 +688,8 @@
    "judged": "2026-05-07",
    "call": "Yesterday's high-conviction call was that feeder leadership changes everything, breakdown thesis officially dead.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Feeders held the gain and cattle stayed above $252, exactly the pattern that kills the breakdown narrative."
   },
   {
@@ -530,6 +697,8 @@
    "judged": "2026-05-06",
    "call": "Called cattle bounce real but thin, with feeder weakness keeping breakdown thesis alive.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Feeders flipped to leading higher, removing the breakdown thesis exactly as the conditional required."
   },
   {
@@ -537,6 +706,8 @@
    "judged": "2026-05-05",
    "call": "Lock remaining cattle above $250 as next support wasn't expected until $245.",
    "outcome": "pending",
+   "method": "self",
+   "mismatch": false,
    "note": "Today's $251.95 hold keeps the call live but feeder weakness suggests more downside ahead."
   },
   {
@@ -544,6 +715,8 @@
    "judged": "2026-05-04",
    "call": "Hold pricing discipline above $252 — below that level questions the breakout thesis.",
    "outcome": "didnt",
+   "method": "self",
+   "mismatch": false,
    "note": "The break was clean and decisive, not the slow drift we expected."
   },
   {
@@ -551,6 +724,8 @@
    "judged": "2026-05-01",
    "call": "Price remaining summer cattle inventory above $250 as the breakout had legs.",
    "outcome": "pending",
+   "method": "self",
+   "mismatch": false,
    "note": "Cattle closed at $254.03, holding the breakout level but showing first real weakness since the rally began."
   },
   {
@@ -558,6 +733,8 @@
    "judged": "2026-04-30",
    "call": "Hold remaining fed cattle inventory as momentum accelerates with fund support.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Cattle held the breakout even as crude crashed — exactly the kind of independent strength that confirms fund conviction."
   },
   {
@@ -565,6 +742,8 @@
    "judged": "2026-04-29",
    "call": "Called pricing remaining summer cattle on the breakout above $245 for three sessions.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Eight sessions above $245 and a 52-week high validates the directional call with room to run."
   },
   {
@@ -572,6 +751,8 @@
    "judged": "2026-04-28",
    "call": "Price summer cattle if live futures close above $245 for three consecutive sessions.",
    "outcome": "played_out",
+   "method": "self",
+   "mismatch": false,
    "note": "Third consecutive close above $245 at $248.97 confirms the breakout thesis — time to price summer cattle."
   }
  ]
