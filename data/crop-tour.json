@@ -1,0 +1,246 @@
+{
+  "updated": "2026-08-07",
+  "tour": {
+    "year": 2026,
+    "start": "2026-08-17",
+    "end": "2026-08-20",
+    "final_expected": "2026-08-21",
+    "final_expected_label": "Friday, Aug 21",
+    "operator": "Pro Farmer / Farm Journal",
+    "official_url": "https://www.profarmer.com/pro-farmer-crop-tour",
+    "routes_note": "Two legs run at once. The eastern leg overnights in Noblesville IN, Bloomington IL, Riverside IA, then Rochester MN. The western leg runs Grand Island NE, Nebraska City NE, Spencer IA, then Rochester MN. Scouts pull corn ear counts and measure soybean pods in a 3-foot-by-3-foot square, and the samples get averaged into state numbers announced at the nightly meetings.",
+    "measure_note": "Tour corn numbers are a scout-sampled yield estimate in bushels per acre. Tour soybean numbers are pod counts in a 3x3 foot square, not a yield — more pods generally means more beans, but pod counts do not convert cleanly to bushels, and the tour does not publish a state soybean yield. Pro Farmer publishes its national numbers as point estimates with a band around them — plus or minus 1 percent on corn, 2 percent on soybean production. The figures on this page are the point estimates, so a source quoting the band will show a range around the same number."
+  },
+  "nights": [
+    {
+      "date": "2026-08-17",
+      "label": "Monday night",
+      "posted": false,
+      "states": [
+        {
+          "code": "OH",
+          "name": "Ohio",
+          "leg": "eastern",
+          "corn": null,
+          "pods": null
+        },
+        {
+          "code": "SD",
+          "name": "South Dakota",
+          "leg": "western",
+          "corn": null,
+          "pods": null
+        }
+      ]
+    },
+    {
+      "date": "2026-08-18",
+      "label": "Tuesday night",
+      "posted": false,
+      "states": [
+        {
+          "code": "IN",
+          "name": "Indiana",
+          "leg": "eastern",
+          "corn": null,
+          "pods": null
+        },
+        {
+          "code": "NE",
+          "name": "Nebraska",
+          "leg": "western",
+          "corn": null,
+          "pods": null
+        }
+      ]
+    },
+    {
+      "date": "2026-08-19",
+      "label": "Wednesday night",
+      "posted": false,
+      "states": [
+        {
+          "code": "IL",
+          "name": "Illinois",
+          "leg": "eastern",
+          "corn": null,
+          "pods": null
+        },
+        {
+          "code": "IA-W",
+          "name": "Western Iowa",
+          "leg": "western",
+          "corn": null,
+          "pods": null
+        }
+      ]
+    },
+    {
+      "date": "2026-08-20",
+      "label": "Thursday night",
+      "posted": false,
+      "states": [
+        {
+          "code": "IA-E",
+          "name": "Eastern Iowa",
+          "leg": "eastern",
+          "corn": null,
+          "pods": null
+        },
+        {
+          "code": "MN",
+          "name": "Minnesota",
+          "leg": "both",
+          "corn": null,
+          "pods": null
+        }
+      ]
+    }
+  ],
+  "nights_note": "Which states report on which night follows the tour's usual route order. If the tour reorders a leg, this page follows what actually gets announced.",
+  "benchmarks": {
+    "usda": {
+      "corn": 183.0,
+      "soy_yield": 53.0,
+      "label": "USDA, July WASDE",
+      "as_of": "2026-07-10",
+      "note": "USDA's August survey number lands Wednesday, Aug 12 — before the tour rolls. This page updates to that figure once it prints."
+    },
+    "agsist": {
+      "corn": 189.4,
+      "soy_yield": 56.2,
+      "label": "AGSIST nowcast",
+      "as_of": "2026-07-25",
+      "note": "Our own model's number, locked in July and published on the analyst board before the tour. It stays locked whether it looks good or bad."
+    },
+    "tour": {
+      "corn": null,
+      "soy_prod": null,
+      "label": "Pro Farmer tour",
+      "note": "Posts Friday evening, Aug 21."
+    }
+  },
+  "history": [
+    {
+      "year": 2015,
+      "tour_corn": 164.3,
+      "usda_aug_corn": 168.8,
+      "usda_final_corn": 168.4,
+      "tour_soy_prod": 3.887,
+      "usda_aug_soy_prod": 3.92,
+      "usda_final_soy_prod": 3.93
+    },
+    {
+      "year": 2016,
+      "tour_corn": 170.2,
+      "usda_aug_corn": 175.1,
+      "usda_final_corn": 174.6,
+      "tour_soy_prod": 4.093,
+      "usda_aug_soy_prod": 4.06,
+      "usda_final_soy_prod": 4.31
+    },
+    {
+      "year": 2017,
+      "tour_corn": 167.1,
+      "usda_aug_corn": 169.5,
+      "usda_final_corn": 176.6,
+      "tour_soy_prod": 4.331,
+      "usda_aug_soy_prod": 4.38,
+      "usda_final_soy_prod": 4.39
+    },
+    {
+      "year": 2018,
+      "tour_corn": 177.3,
+      "usda_aug_corn": 178.4,
+      "usda_final_corn": 176.4,
+      "tour_soy_prod": 4.683,
+      "usda_aug_soy_prod": 4.59,
+      "usda_final_soy_prod": 4.54
+    },
+    {
+      "year": 2019,
+      "tour_corn": 163.3,
+      "usda_aug_corn": 169.5,
+      "usda_final_corn": 168.0,
+      "tour_soy_prod": 3.497,
+      "usda_aug_soy_prod": 3.68,
+      "usda_final_soy_prod": 3.56,
+      "note": "USDA changed how it builds the August corn and soybean forecast this year, dropping the August field-measurement survey. August numbers from 2019 on are not built the same way as the years before."
+    },
+    {
+      "year": 2020,
+      "tour_corn": 177.5,
+      "usda_aug_corn": 181.8,
+      "usda_final_corn": 172.0,
+      "tour_soy_prod": 4.362,
+      "usda_aug_soy_prod": 4.42,
+      "usda_final_soy_prod": 4.14,
+      "note": "The August 10 derecho flattened millions of Iowa acres the day before USDA's data cutoff. The tour ran but scouts reported from the road instead of meeting up at night. The tour ran in modified form that year, so 2020 is not measuring quite the same exercise as the others."
+    },
+    {
+      "year": 2021,
+      "tour_corn": 177.0,
+      "usda_aug_corn": 174.6,
+      "usda_final_corn": 177.0,
+      "tour_soy_prod": 4.436,
+      "usda_aug_soy_prod": 4.34,
+      "usda_final_soy_prod": 4.44
+    },
+    {
+      "year": 2022,
+      "tour_corn": 168.1,
+      "usda_aug_corn": 175.4,
+      "usda_final_corn": 173.3,
+      "tour_soy_prod": 4.535,
+      "usda_aug_soy_prod": 4.53,
+      "usda_final_soy_prod": 4.28
+    },
+    {
+      "year": 2023,
+      "tour_corn": 172.0,
+      "usda_aug_corn": 175.1,
+      "usda_final_corn": 177.3,
+      "tour_soy_prod": 4.11,
+      "usda_aug_soy_prod": 4.21,
+      "usda_final_soy_prod": 4.16
+    },
+    {
+      "year": 2024,
+      "tour_corn": 181.1,
+      "usda_aug_corn": 183.1,
+      "usda_final_corn": 179.3,
+      "tour_soy_prod": 4.74,
+      "usda_aug_soy_prod": 4.59,
+      "usda_final_soy_prod": 4.37
+    },
+    {
+      "year": 2025,
+      "tour_corn": 182.7,
+      "usda_aug_corn": 188.8,
+      "usda_final_corn": 186.5,
+      "tour_soy_prod": 4.246,
+      "usda_aug_soy_prod": 4.29,
+      "usda_final_soy_prod": 4.26,
+      "note": "A government shutdown killed the October reports, so this crop year rests on one fewer USDA forecast round than the others."
+    }
+  ],
+  "history_note": "Final yield means the number USDA published the following January in its annual summary. USDA quietly revises some of those later — 2019 through 2022 corn each moved by a tenth to half a bushel in later editions. This page uses the January figure for every year so the comparison stays consistent, and the revisions are too small to change the picture.",
+  "sources": [
+    {
+      "name": "Pro Farmer national estimates (2021-2025)",
+      "url": "https://www.profarmer.com/topics/pro-farmer-crop-tour"
+    },
+    {
+      "name": "USDA NASS August Crop Production reports",
+      "url": "https://www.nass.usda.gov/Publications/Todays_Reports/"
+    },
+    {
+      "name": "USDA NASS Crop Production Annual Summary (January finals)",
+      "url": "https://usda.library.cornell.edu/concern/publications/k3569432s"
+    },
+    {
+      "name": "USDA NASS Crop Production Historical Track Records",
+      "url": "https://www.nass.usda.gov/Publications/Todays_Reports/"
+    }
+  ]
+}

@@ -1,7 +1,60 @@
 {
-  "updated": "2026-08-07",
+  "updated": "2026-08-08",
   "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here — that updates continuously.",
   "entries": [
+    {
+      "date": "2026-08-08",
+      "items": [
+        {
+          "tag": "new",
+          "page": "/crop-tour",
+          "name": "Pro Farmer Crop Tour",
+          "text": "Nightly state results as the tour posts them Aug 17-20, next to USDA's number and our own — plus the record nobody publishes: over the last 11 tours the tour's final corn call missed the eventual crop by 4.1 bushels on average, against 3.1 for USDA's August forecast, and it has run under the final yield in 7 of those 11 years."
+        },
+        {
+          "tag": "fixed",
+          "page": "/elevators",
+          "name": "Elevator listing form",
+          "text": "The form elevators use to get their bids listed was collecting facility, contact and phone details and then discarding all of them — only the email reached anything, and that quietly went onto the briefing list. It now builds the full request in your own email app so you can see exactly what gets sent, and the page no longer claims a message arrived when it hadn't. If you sent one before today, it never reached us; please send it again."
+        },
+        {
+          "tag": "fixed",
+          "page": "/storage-crunch",
+          "name": "Storage Crunch",
+          "text": "USDA publishes no separate on-farm bin capacity for ten states, and this page was treating that blank as zero — which made those states look like they had almost no storage and put South Carolina at the top of the crunch list at 3.46 times. That was our arithmetic, not South Carolina's grain. Those states now show elevator capacity only and sit out of the ranking, and the count of states over 1.0 drops from 14 to 7."
+        },
+        {
+          "tag": "fixed",
+          "page": "/planting-date",
+          "name": "Planting Date",
+          "text": "Two real errors. The tool would tell you to plant corn in August, because the soil-temperature verdict never looked at the calendar; it now says you are outside the planting window. And the heat-unit target for reaching black layer was about half the right number, which meant the maturity check could never warn you a hybrid would not finish. Late-planting yield penalties were also too shallow against the university work and have been deepened."
+        },
+        {
+          "tag": "fixed",
+          "page": "/milk-prices",
+          "name": "Milk Prices",
+          "text": "The component formula was rebuilt against the current regulation and now reproduces USDA's announced July 2026 prices exactly — protein, other solids, skim and the Class III price, to the last published digit. Three things were wrong: the butterfat term in the protein price used 0.2 where the rule says 1.17, so protein value could never go negative when butterfat ran away from cheese; two constants were still at their pre-June-2025 values; and the Class III total skipped the 0.965 skim split. Make allowances and the December 2025 composition factors are current, and the cheese input is 40-lb blocks only now that barrels have left the survey."
+        },
+        {
+          "tag": "fixed",
+          "page": "/grower-pulse",
+          "name": "Grower Pulse",
+          "text": "The page said it held back results until enough growers had answered. It didn't — it published 100% off two responses. Weeks under ten responses now show raw counts and say so."
+        },
+        {
+          "tag": "improved",
+          "page": "/tools",
+          "name": "Tools Directory",
+          "text": "The directory listed 17 tools and quietly left out two dozen more. Everything on the site is now reachable from one page, and the Fast Facts card no longer claims 16 states of 2022 data when the file holds 41 states of 2025."
+        },
+        {
+          "tag": "improved",
+          "page": "/fertilizer",
+          "name": "Fertilizer",
+          "text": "The page advertised weekly updates from DTN and USDA AMS. The numbers are actually hand-collected Midwest dealer quotes gathered about monthly, and they now say so — with a banner that appears once the sheet passes 30 days old."
+        }
+      ]
+    },
     {
       "date": "2026-08-07",
       "items": [

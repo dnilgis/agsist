@@ -108,21 +108,43 @@ def rotate(poll, queue, monday_iso):
 
 # ---------- static page rendering ----------
 
+# Shared asset cache-busting version. This generator commits grower-pulse.html
+# every Monday, so a hardcoded version here silently reverts any site-wide bump.
+ASSET_V = "15"
+
+
 def esc(s):
     return html.escape("" if s is None else str(s))
 
 
+# Below this many responses the page shows raw counts instead of percentages.
+# The page copy has always promised this; until now it rendered "100%" off two
+# votes, which is exactly the kind of thin number the promise was meant to stop.
+BASELINE = 10
+
+
 def _bars(opts, results, total):
     maxv = max(results) if results else 0
+    thin = total < BASELINE
     rows = []
     for i, opt in enumerate(opts):
         v = results[i] if i < len(results) else 0
         p = round(v * 100 / total) if total else 0
-        win = " win" if (v == maxv and total > 0) else ""
+        win = " win" if (v == maxv and total > 0 and not thin) else ""
+        # Thin weeks: bar is scaled against the leading option so the shape is
+        # still readable, but the printed value is the count, not a percentage.
+        width = (round(v * 100 / maxv) if maxv else 0) if thin else p
+        val = ("%d" % v) if thin else ("%d%%" % p)
         rows.append(
             '<div class="gp-row%s"><div class="gp-fill" style="width:%d%%"></div>'
-            '<span class="gp-lbl">%s</span><span class="gp-pct">%d%%</span></div>'
-            % (win, p, esc(opt), p)
+            '<span class="gp-lbl">%s</span><span class="gp-pct">%s</span></div>'
+            % (win, width, esc(opt), val)
+        )
+    if thin:
+        rows.append(
+            '<div class="gp-thin">Fewer than %d responses this week &mdash; showing raw '
+            'counts, because a percentage off a handful of votes reads like a finding '
+            'and is not one.</div>' % BASELINE
         )
     return "\n".join(rows)
 
@@ -148,7 +170,8 @@ PAGE_CSS = """
   .gp-row.win .gp-fill{background:color-mix(in srgb,var(--gold) 18%,transparent)}
   .gp-row.win{border-color:var(--border-g)}
   .gp-lbl{position:relative;font-family:'Inter',sans-serif;font-size:.86rem;color:var(--text-dim)}
-  .gp-pct{position:relative;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.86rem;color:var(--text)}
+  .gp-thin{font-size:.83rem;color:var(--text-muted);line-height:1.55;margin:.5rem 0 0}
+.gp-pct{position:relative;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.86rem;color:var(--text)}
   .gp-empty{color:var(--text-muted);font-style:italic;padding:.5rem 0}
   .gp-method{margin-top:2rem;font-size:.8rem;color:var(--text-muted);line-height:1.6;border-top:1px solid var(--border);padding-top:1rem}
   .gp-method strong{color:var(--text-dim)}
@@ -215,7 +238,7 @@ def render_page(poll):
         '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag(\'js\',new Date());gtag(\'config\',\'G-6KXCTD5Z9H\');</script>\n'
         '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-        '<link rel="stylesheet" href="/components/styles.css?v=12">\n'
+        '<link rel="stylesheet" href="/components/styles.css?v=' + ASSET_V + '">\n'
         '<link rel="icon" type="image/x-icon" href="/img/favicon.ico">\n'
         '<link rel="manifest" href="/manifest.json">\n'
         '<title>Grower Pulse - Weekly U.S. Farmer Sentiment Poll | AGSIST</title>\n'
@@ -251,7 +274,7 @@ def render_page(poll):
         '</div>\n'
         '</div>\n</main>\n'
         '<div id="site-footer"></div>\n'
-        '<script src="/components/loader.js" defer></script>\n'
+        '<script src="/components/loader.js?v=' + ASSET_V + '" defer></script>\n'
         '</body>\n</html>\n'
     )
 

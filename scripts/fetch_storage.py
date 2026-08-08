@@ -140,10 +140,21 @@ def shape(cap, prod):
             if total <= 0:
                 continue
             entry["cap"][yr] = [on, off]
+            # National capacity comes from NASS's own US total downstream, but
+            # this running sum is still useful as a cross-check.
             nat_cap[yr] += total
             p = prod.get(st, {}).get(yr)
             if p:
                 entry["prod"][yr] = round(p)
+                # NASS publishes no separate on-farm capacity for about ten
+                # states (AZ CA DE FL LA MD NM SC UT WY) — those bins are
+                # reported only inside a combined national bucket. Coercing the
+                # blank to zero makes a state look like it has almost no
+                # storage: it once put South Carolina on the page at 3.46x,
+                # ranked first, purely because its farm bins were missing.
+                # No on-farm figure means no honest total, so no ratio.
+                if on is None:
+                    continue
                 entry["ratio"][yr] = round(p / total, 3)
         for yr, p in prod.get(st, {}).items():
             nat_prod[yr] += p
