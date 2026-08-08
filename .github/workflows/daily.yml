@@ -72,6 +72,14 @@ jobs:
       - name: Install dependencies
         run: pip install feedparser requests pillow
 
+      # The gate's own selftest runs first. It regression-locks the two holes that
+      # let the 2026-08-08 briefing publish a 16.9% lean hog rally (2.9x the
+      # exchange daily limit) and a 5.4% corn break that was September's close
+      # measured against December's: a gate that silently stops catching things
+      # is worse than no gate, because the RESULT line still says CLEAN.
+      - name: GATE 0 — feed gate selftest
+        run: python scripts/test_preflight_limits.py
+
       - name: GATE 1 — feed pre-flight (repair ZC=F roll contamination; block on unrepairable feed)
         run: python scripts/preflight_prices.py data/prices.json --repair
 

@@ -48,10 +48,11 @@ jobs:
 
       # Selftests gate the loop: if the ONE expiry/roll rule or the roll marker
       # is broken, fail RED here — before a bad feed gets committed 10x/session.
-      - name: Selftest — contract calendar + roll marking
+      - name: Selftest — contract calendar + roll marking + feed gate
         run: |
           python scripts/contract_calendar.py
           python scripts/test_mark_rolls.py
+          python scripts/test_preflight_limits.py
 
       - name: Fetch loop (every 30 min for the session)
         run: |
@@ -66,6 +67,18 @@ jobs:
             echo "::group::Cycle $CYCLE — $(date -u +'%H:%M:%SZ')"
 
             python scripts/fetch_prices.py || echo "fetch_prices.py exited non-zero (kept last values)"
+
+            # GATE — run the SAME feed gate daily.yml runs, on every cycle.
+            # Until 2026-08-08 preflight ran in daily.yml only: one of the four
+            # workflows that write this file. So the briefing got a repaired feed
+            # once a day and the homepage, markets.html and the futures pages read
+            # the raw one for the other 29 minutes of every half hour — and the
+            # daily repair was clobbered by the next fetch regardless. That is how
+            # "LEAN HOGS +13.82 (+16.9%)" — 2.9x the exchange daily limit — sat on
+            # the homepage. Repair mode: fix what a dated contract can verify,
+            # suppress what nothing can, never block the price loop.
+            python scripts/preflight_prices.py data/prices.json --repair \
+              || echo "::warning::preflight reported unrepairable quotes; they were suppressed, not published"
 
             if ! git diff --quiet -- data/prices.json; then
               git add data/prices.json
