@@ -893,6 +893,38 @@ function fetchAllPrices() {
     })
     .then(function(data) {
       var quotes = data.quotes || {};
+      /* True front month. The continuous Yahoo series (ZC=F, ZS=F, LE=F) tracks
+         the MOST-ACTIVE contract, not the nearby one — on the homepage that
+         printed Dec corn under a "Front Month" label (22.75c off September) and
+         October cattle under Live Cattle (~$6.35/cwt, about $89 a head).
+         markets.html and the three grain pages were migrated to the -nearby
+         alias on 2026-07-30; the homepage never was. Swap here so every
+         consumer of `quotes.<crop>` on this page gets the real front month,
+         and record the contract so labels can name it. */
+      window.AGSIST_NEARBY = window.AGSIST_NEARBY || {};
+      ['corn', 'beans', 'wheat', 'cattle'].forEach(function(c) {
+        var nb = quotes[c + '-nearby'];
+        if (nb && nb.close != null) {
+          quotes[c] = nb;
+          window.AGSIST_NEARBY[c] = nb.contract ||
+            (data.nearby && data.nearby[c] && data.nearby[c].label) || 'nearby';
+        } else if (data.nearby && data.nearby[c] && data.nearby[c].close != null) {
+          // fetch_prices only publishes a -nearby alias for the grains; cattle
+          // has to come out of the nearby block directly.
+          quotes[c] = data.nearby[c];
+          window.AGSIST_NEARBY[c] = data.nearby[c].label || 'nearby';
+        }
+      });
+      // Name the contract on the card instead of the generic "Front Month",
+      // so a reader can see WHICH month the number belongs to.
+      [['corn','pcp-corn-near'],['beans','pcp-bean-near'],
+       ['wheat','pcp-wheat'],['cattle','pcp-cattle']].forEach(function(pair) {
+        var lbl = window.AGSIST_NEARBY && window.AGSIST_NEARBY[pair[0]];
+        var el = document.getElementById(pair[1]);
+        var card = el && el.closest ? el.closest('.pc') : null;
+        var chip = card ? card.querySelector('.pc-contract') : null;
+        if (chip) chip.textContent = lbl ? (lbl + ' \u00b7 nearby') : 'most-active';
+      });
       Object.keys(quotes).forEach(function(key) {
         var q = quotes[key];
         if (!q || q.close === null || q.close === undefined) return;

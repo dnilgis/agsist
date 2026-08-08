@@ -26,7 +26,7 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 21;  // v21 2026-08-08: signup bar actually works (was silently dropping every address), SMS removed, nav panels scroll, cash-rent/lease/drought/privacy/sponsor fixes; was: crop-tour + audit round 1
+var CACHE_VERSION = 22;  // v22 2026-08-08: homepage front-month contract fix (geo.js) + signup bar + nav scroll + audit round 2; was: v21
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;
@@ -130,8 +130,15 @@ function networkFirst(request) {
       caches.open(CACHE_NAME).then(function(cache) {
         cache.put(request, copy).catch(function(){}); // swallow quota errors
       }).catch(function(){});
+      return response;
     }
-    return response;
+    // A 404/5xx used to be handed straight to the page. During a Pages deploy
+    // blip that replaced a perfectly good cached page with an error shell, and
+    // the reader saw a broken or near-empty page. Prefer the last good copy;
+    // only pass the error through if we have nothing better.
+    return caches.match(request).then(function(cached) {
+      return cached || response;
+    });
   }).catch(function() {
     return caches.match(request).then(function(cached) {
       return cached || Promise.reject('network-and-cache-both-failed');
@@ -140,8 +147,47 @@ function networkFirst(request) {
 }
 
 // ── Cache first: serve cache immediately, refresh in background ───
+var CRITICAL = ['/components/styles.css', '/components/loader.js', '/components/header.html', '/components/footer.html'];
+function isCritical(url) {
+  for (var i = 0; i < CRITICAL.length; i++) { if (url.indexOf(CRITICAL[i]) >= 0) return true; }
+  return false;
+}
+
+function serveCached(request, cached) {
+  // Background refresh — fire and forget, never affects the response.
+  fetch(request).then(function(response) {
+    if (response && response.ok) {
+      var copy = response.clone();
+      caches.open(CACHE_NAME).then(function(cache) {
+        cache.put(request, copy).catch(function(){});
+      }).catch(function(){});
+    }
+  }).catch(function(){});
+  return cached;
+}
+
 function cacheFirst(request) {
   return caches.match(request).then(function(cached) {
+    // A truncated or empty cached stylesheet/loader takes the entire page down
+    // — no styling, no nav, no footer, which reads as "the site is blank".
+    // Refuse to serve a critical asset from cache if it looks wrong; go to the
+    // network instead and let the fresh copy replace it.
+    if (cached && isCritical(request.url)) {
+      return cached.clone().text().then(function(body) {
+        if (!body || body.length < 500) {
+          return fetch(request).then(function(response) {
+            if (response && response.ok) {
+              var copy = response.clone();
+              caches.open(CACHE_NAME).then(function(cache) {
+                cache.put(request, copy).catch(function(){});
+              }).catch(function(){});
+            }
+            return response;
+          }).catch(function(){ return cached; });
+        }
+        return serveCached(request, cached);
+      }).catch(function(){ return serveCached(request, cached); });
+    }
     if (cached) {
       // Background refresh — fire and forget, never affects response
       fetch(request).then(function(response) {

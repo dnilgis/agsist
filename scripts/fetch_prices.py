@@ -181,7 +181,7 @@ def add_nearby(quotes, symbols, now=None):
     Pure function of its inputs — selftested in scripts/test_nearby.py.
     """
     nearby = {}
-    for crop in ("corn", "beans", "wheat"):
+    for crop in ("corn", "beans", "wheat", "cattle"):
         dated = []
         for k in symbols:
             if not k.startswith(crop + "-"):

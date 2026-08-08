@@ -8,6 +8,18 @@
         {
           "tag": "fixed",
           "page": "/",
+          "name": "Blank page on returning visits",
+          "text": "The offline cache could hand back a broken copy of the page. Two ways: if the site was mid-deploy when your browser asked for a page, an error response replaced the good copy you already had; and a truncated stylesheet or menu file in the cache would strip the styling and navigation off every page, which reads as the site being blank. It now keeps the last good copy through a deploy hiccup and refuses to serve a cached stylesheet or menu that looks damaged."
+        },
+        {
+          "tag": "fixed",
+          "page": "/",
+          "name": "Homepage prices — wrong contract",
+          "text": "The homepage \"Front Month\" cards were quoting the most-active contract, not the nearby one. Corn read $4.65 — that is December — while September, the contract you would price against today, was $4.42. Beans and cattle had the same problem; on cattle the gap was about $89 a head. The cards now quote the real nearby month and name it, and the 52-week range bar moves with it: corn was showing 85% of its yearly range and is actually at 42%. The price checker in the pipeline had been flagging this every run, but the corrected file was being thrown away before it shipped."
+        },
+        {
+          "tag": "fixed",
+          "page": "/",
           "name": "Email signup — every page",
           "text": "The signup bar that appears on every page has never worked. It sent the address in a format the server could not read, got rejected, and showed \"You're in\" anyway. Anyone who signed up through that bar was told they were subscribed and was not. It works now, and it will no longer claim success unless the server actually accepted the address. If you signed up and never got a briefing, that is why — please try again."
         },
@@ -164,7 +176,7 @@
           "tag": "improved",
           "page": "/cot",
           "name": "COT and Ag Odds",
-          "text": "Both pages now open with a readable summary baked in daily — visible before the live data loads, and visible to search engines and AI assistants that don't run JavaScript."
+          "text": "Both pages now open with a readable summary baked in daily — visible the moment the page opens, before the live data loads, and readable by search engines too."
         },
         {
           "tag": "fixed",
