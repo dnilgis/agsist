@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-08-08",
+      "date_display": "Saturday, August 8, 2026",
+      "headline": "LEAN HOGS RUN 17%; CORN, BEANS END WEEK SOFT",
+      "teaser": "Hogs had their week. Corn and beans didn't. Here's what the numbers say going into WASDE week.",
+      "market_mood": "bearish",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-08-08",
+      "market_closed": true,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-08-07",
       "date_display": "Friday, August 7, 2026",
       "headline": "FARM BILL STALLS; GRAINS END WEEK SOFT",
@@ -1687,6 +1699,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-07T20:37:14.984327+00:00",
-  "count": 148
+  "updated": "2026-08-08T11:33:48.237566+00:00",
+  "count": 149
 }

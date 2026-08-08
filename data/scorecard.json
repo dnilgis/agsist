@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-08T03:20:56+00:00",
- "total": 81,
+ "updated": "2026-08-08T11:33:49+00:00",
+ "total": 82,
  "played_out": 29,
- "didnt": 47,
+ "didnt": 48,
  "pending": 5,
- "hit_rate": 38.2,
+ "hit_rate": 37.7,
  "by_method": {
   "deterministic": {
    "played": 3,
-   "missed": 37,
-   "graded": 40,
-   "hit_rate": 7.5,
+   "missed": 38,
+   "graded": 41,
+   "hit_rate": 7.3,
    "first": "2026-06-24",
-   "last": "2026-08-07"
+   "last": "2026-08-08"
   },
   "self_reported": {
    "played": 26,
@@ -27,13 +27,22 @@
  "current_streak": 0,
  "records": [
   {
-   "made": "2026-08-06",
-   "judged": "2026-08-07",
-   "call": "Called beans up toward above $11.76; nearby beans finished at $11.65, short of the line, though the direction was right.",
+   "made": "2026-08-07",
+   "judged": "2026-08-08",
+   "call": "Called wheat higher to $6.50 off a $6.38 close. Wheat settled Friday at $6.40 -- barely moved, never sniffed $6.50. Miss.",
    "outcome": "didnt",
    "method": "deterministic",
    "mismatch": false,
-   "note": "Old-crop beans moved the right way but fell short of the level; November new crop actually closed lower, which tells you the bounce is still rented."
+   "note": "Wheat bucked the grain selloff Friday and gained a cent, but the $6.50 target was never in play. The bull case (international weather premium) is real; the timing was wrong. No credit."
+  },
+  {
+   "made": "2026-08-06",
+   "judged": "2026-08-07",
+   "call": "Called Nov '26 beans up through $11.76; Nov beans closed today at $11.76, exactly the target, but came from $11.535 -- the move was there on paper and the level printed.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Miss. computed.outcome is 'didnt' and that is the call. Nov beans hit $11.76 on the close but the upward follow-through never materialized intraday; favorable Belt weather and fund selling kept new crop under pressure all session. Own it and move on."
   },
   {
    "made": "2026-08-05",

@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 07 Aug 2026 20:37:17 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 08 Aug 2026 11:33:49 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>LEAN HOGS RUN 17%; CORN, BEANS END WEEK SOFT</title>
+      <link>https://agsist.com/daily/2026-08-08</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-08</guid>
+      <pubDate>Sat, 08 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Lean hogs had their biggest single-session gain in years, closing at $95.50, up 16.9%, while corn fell hard to $4.39 and beans gave back $0.28 to $11.56. The Pro Farmer Crop Tour is nine days out. Until those scouts are in fields, favorable August rains across Missouri and much of the Belt keep the burden of proof on the bulls.
+Friday closed a week of quiet grain pressure, a surprise hog move, and a Farm Bill that ran out of road before the Senate recess.
+• Grains End Week Soft
+• Hogs Move Hard; Cattle Firms
+• Farm Bill Hits a Wall
+Read more: https://agsist.com/daily/2026-08-08</description>
+    </item>
     <item>
       <title>FARM BILL STALLS; GRAINS END WEEK SOFT</title>
       <link>https://agsist.com/daily/2026-08-07</link>
@@ -383,19 +395,6 @@ USDA's July WASDE at 11 AM CT resets the supply picture as wheat posts its bigge
 • Hogs Reverse Hard, Cattle Split
 • Hormuz Back on the Tape
 Read more: https://agsist.com/daily/2026-07-10</description>
-    </item>
-    <item>
-      <title>HOGS FALL HARD; EXPORT SALES DECIDE BEANS</title>
-      <link>https://agsist.com/daily/2026-07-09</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-09</guid>
-      <pubDate>Thu, 09 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Lean hogs had their biggest single-session drop in months, closing at $85.53, off nearly 12%, and that number is loud enough to drown out everything else this morning. Corn at $4.33 gave back 7¾ cents as profit-taking in beans and a 'buy the rumor, sell the fact' reaction to Wednesday's confirmed China soybean sale dragged the whole complex. The weekly thread's question, does the crop health picture add a weather premium to corn, sits right next to the morning's real make-or-break: USDA export sales hit at 7:30 AM CT, and after three sessions of positioning, the bean market is about to get an answer.
-Lean hogs dropped nearly 12% in their biggest single-session move in months, while soybeans drift into Thursday's 7:30 AM export sales number as the week's make-or-break moment.
-• Hogs Break Hard
-• Beans Hold; Export Sales Decide
-  → Unpriced new-crop soybeans: wait for the 7:30 AM export sales print. Above 400K MT, scale sales toward $12.10. Below 300K MT, reassess storage economics before adding.
-• Corn Gives Back, Watches Pollination
-Read more: https://agsist.com/daily/2026-07-09</description>
     </item>
   </channel>
 </rss>
