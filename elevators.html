@@ -24,7 +24,7 @@
 <meta property="og:site_name"   content="AGSIST">
 <meta property="og:locale"      content="en_US">
 <meta property="og:title"       content="Grain Elevator Cash Bids by State &#8212; Corn Belt Coverage | AGSIST">
-<meta property="og:description" content="Live cash grain bids from 1,000+ elevators and grain facilities across the Corn Belt, Great Plains, and Gulf Coast. Mobile-first, no account or subscription required.">
+<meta property="og:description" content="Live cash grain bids from hundreds of elevators and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest. Mobile-first, no account or subscription required.">
 <meta property="og:url"         content="https://agsist.com/elevators">
 <meta property="og:image"       content="https://agsist.com/img/og/agsist.jpg">
 <meta property="og:image:width" content="1200">
@@ -39,7 +39,7 @@
 {"@context":"https://schema.org","@graph":[
   {"@type":"WebPage","@id":"https://agsist.com/elevators#webpage","url":"https://agsist.com/elevators",
    "name":"Grain Elevator Cash Bids by State \u2014 Corn Belt Coverage | AGSIST",
-   "description":"Live cash grain bids from elevators and grain facilities across the Corn Belt, Great Plains, and Gulf Coast. Enter your ZIP code to find nearby elevator prices for corn, soybeans, and wheat.",
+   "description":"Live cash grain bids from elevators and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest. Enter your ZIP code to find nearby elevator prices for corn, soybeans, and wheat.",
    "isPartOf":{"@id":"https://agsist.com/#website"},
    "breadcrumb":{"@type":"BreadcrumbList","itemListElement":[
      {"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},
@@ -48,7 +48,7 @@
    ]}},
   {"@type":"FAQPage","mainEntity":[
     {"@type":"Question","name":"Which grain elevators does AGSIST cover?",
-     "acceptedAnswer":{"@type":"Answer","text":"AGSIST displays cash bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, and Gulf Coast sourced from the Barchart OnDemand API. Coverage includes independent elevators, co-operative grain facilities, and major grain company locations. Enter your ZIP code on the cash bids page to see available bids near you."}},
+     "acceptedAnswer":{"@type":"Answer","text":"AGSIST displays cash bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest sourced from the Barchart OnDemand API. Coverage includes independent elevators, co-operative grain facilities, and major grain company locations. Enter your ZIP code on the cash bids page to see available bids near you."}},
     {"@type":"Question","name":"How do I find my local elevator's grain price on AGSIST?",
      "acceptedAnswer":{"@type":"Answer","text":"Go to agsist.com/cash-bids and enter your 5-digit ZIP code. AGSIST will show available corn, soybean, and wheat bids from grain facilities within your area, sorted by distance. Bids are sourced from Barchart OnDemand and updated throughout the trading day."}},
     {"@type":"Question","name":"How current are the cash bid prices?",
@@ -149,7 +149,7 @@ button,a,[role="button"]{touch-action:manipulation}
     <div class="el-eyebrow"><svg class="lic el-eyebrow-ic" aria-hidden="true"><use href="#i-warehouse"></use></svg>Live Grain Elevator Cash Bids</div>
     <h1>Elevator Coverage</h1>
 <style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor is deciding where to haul &mdash; one category-exclusive slot. <a href="/sponsor?slot=elevators&amp;utm_source=elevators&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
-    <p>Live cash grain bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, and Gulf Coast &mdash; sourced from the Barchart OnDemand API. Enter your ZIP code to see bids near you. Mobile-first, no account or subscription required.</p>
+    <p>Live cash grain bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest &mdash; sourced from the Barchart OnDemand API. Enter your ZIP code to see bids near you. Mobile-first, no account or subscription required.</p>
     <form class="el-zip" action="/cash-bids" method="get" id="el-zip-form">
       <div class="el-zip-field">
         <label class="el-zip-lbl" for="el-zip-in">Your ZIP code</label>
@@ -181,9 +181,7 @@ button,a,[role="button"]{touch-action:manipulation}
     <div class="el-list-eyebrow">For elevators &amp; co-ops</div>
     <h3>Run an elevator? Get your bids listed.</h3>
     <p class="el-list-lede">If you post cash bids and want them in front of producers searching your area, send the details below. There&rsquo;s no charge to be listed &mdash; I verify every request before anything goes live, and listed bid data stays separate from any paid placement.</p>
-    <form class="el-form" id="el-list-form" action="https://agsist-subs.dnilgis.workers.dev/subscribe" method="POST">
-      <input type="hidden" name="_subject" value="Elevator listing request">
-      <input type="hidden" name="form_type" value="elevator-listing-request">
+    <form class="el-form" id="el-list-form" novalidate>
       <input type="text" name="_gotcha" class="el-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="el-field"><label for="el-facility">Facility / company</label><input id="el-facility" name="facility" type="text" required></div>
       <div class="el-field"><label for="el-city">City</label><input id="el-city" name="city" type="text" required></div>
@@ -198,9 +196,13 @@ button,a,[role="button"]{touch-action:manipulation}
       <label class="el-check"><input type="checkbox" name="authorized" value="yes" required> I&rsquo;m authorized to share this facility&rsquo;s bid information.</label>
       <label class="el-check"><input type="checkbox" name="wants_feature" value="yes"> I&rsquo;d also like to hear about sponsored placement options.</label>
       <button type="submit" class="el-submit">Send listing request</button>
-      <p class="el-form-note">Goes straight to sig@farmers1st.com &middot; I read every one.</p>
+      <p class="el-form-note">This opens your email app with the details filled in, addressed to sig@farmers1st.com. Nothing is sent until you hit send there.</p>
     </form>
-    <div class="el-ok" role="status">Got it &mdash; your request is in. I&rsquo;ll review the details and follow up at the email you gave. Thanks for helping producers find your bids.</div>
+    <div class="el-ok" role="status">
+      <p style="margin:0 0 .6rem"><strong>Your email app should have opened</strong> with everything filled in &mdash; send that message and it reaches me directly. If nothing opened, copy the text below and email it to <a href="mailto:sig@farmers1st.com" style="color:var(--gold)">sig@farmers1st.com</a>.</p>
+      <textarea id="el-copy" readonly rows="10" style="width:100%;font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.5;background:var(--bg,#0a0c0d);color:var(--text-dim,#c3ccc4);border:1px solid var(--border);border-radius:8px;padding:.6rem"></textarea>
+      <button type="button" id="el-copy-btn" class="el-submit" style="margin-top:.5rem">Copy the message</button>
+    </div>
   </section>
 
 
@@ -208,7 +210,7 @@ button,a,[role="button"]{touch-action:manipulation}
     <div class="el-faq-hd">Frequently Asked Questions</div>
     <div class="el-faq-item">
       <div class="el-faq-q" role="button" tabindex="0" aria-expanded="false">Which grain elevators does AGSIST cover?</div>
-      <div class="el-faq-a"><div class="el-faq-ai">AGSIST displays cash bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, and Gulf Coast sourced from the Barchart OnDemand API. Coverage includes independent elevators, co-operative grain facilities, and major grain company locations. Enter your ZIP code on the cash bids page to see available bids near you.</div></div>
+      <div class="el-faq-a"><div class="el-faq-ai">AGSIST displays cash bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest sourced from the Barchart OnDemand API. Coverage includes independent elevators, co-operative grain facilities, and major grain company locations. Enter your ZIP code on the cash bids page to see available bids near you.</div></div>
     </div>
     <div class="el-faq-item">
       <div class="el-faq-q" role="button" tabindex="0" aria-expanded="false">How do I find my local elevator&rsquo;s grain price on AGSIST?</div>
@@ -234,7 +236,6 @@ button,a,[role="button"]{touch-action:manipulation}
 </main>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=15" defer></script>
-<script src="/components/geo.js" defer></script>
 <script>
 document.querySelectorAll('.el-faq-q').forEach(function(q){
   q.addEventListener('click',function(){
@@ -249,16 +250,54 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
   var f=document.getElementById('el-list-form'); if(!f)return;
   var box=document.getElementById('list-bids'),started=false;
   f.addEventListener('input',function(){if(!started){started=true;if(window.gaEvent)gaEvent('elevator_request_start',{});}});
+
+  // Build the message from the form. There is no server endpoint that stores
+  // these — the worker only ever read `email` — so the details go out through
+  // the sender's own mail client, where they can see exactly what was sent.
+  function compose(){
+    var g=function(n){var el=f.elements[n];return el?String(el.value||'').trim():'';};
+    var chk=function(n){var el=f.elements[n];return el&&el.checked;};
+    var L=[
+      'Facility / company: '+g('facility'),
+      'City: '+g('city'),
+      'State: '+g('state'),
+      'ZIP: '+g('zip'),
+      'Bids posted today via: '+(g('bid_source')||'(not given)'),
+      '',
+      'Contact: '+g('contact_name'),
+      'Role: '+(g('role')||'(not given)'),
+      'Email: '+g('email'),
+      'Phone: '+(g('phone')||'(not given)'),
+      '',
+      'Notes: '+(g('notes')||'(none)'),
+      '',
+      'Authorized to share this facility\u2019s bid information: '+(chk('authorized')?'yes':'NO'),
+      'Wants to hear about sponsored placement: '+(chk('wants_feature')?'yes':'no')
+    ];
+    return L.join('\n');
+  }
+
   f.addEventListener('submit',function(e){
     e.preventDefault();
     if(f._gotcha&&f._gotcha.value)return;
-    var btn=f.querySelector('.el-submit');if(btn){btn.disabled=true;btn.textContent='Sending\u2026';}
-    fetch(f.action,{method:'POST',body:new FormData(f),headers:{'Accept':'application/json'}})
-      .then(function(r){
-        if(r.ok){box.classList.add('sent');if(window.gaEvent)gaEvent('elevator_request_submit',{});}
-        else{if(btn){btn.disabled=false;btn.textContent='Send listing request';}alert('Something went wrong \u2014 please email sig@farmers1st.com directly.');}
-      })
-      .catch(function(){if(btn){btn.disabled=false;btn.textContent='Send listing request';}alert('Something went wrong \u2014 please email sig@farmers1st.com directly.');});
+    // novalidate is set so we can control the flow; run the browser's own
+    // check explicitly so required fields still behave.
+    if(f.checkValidity&&!f.checkValidity()){if(f.reportValidity)f.reportValidity();return;}
+    var body=compose();
+    var ta=document.getElementById('el-copy'); if(ta)ta.value=body;
+    var subject='Elevator listing request \u2014 '+(f.elements['facility']?f.elements['facility'].value:'');
+    box.classList.add('sent');
+    if(window.gaEvent)gaEvent('elevator_request_submit',{});
+    window.location.href='mailto:sig@farmers1st.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  });
+
+  var cb=document.getElementById('el-copy-btn');
+  if(cb)cb.addEventListener('click',function(){
+    var ta=document.getElementById('el-copy'); if(!ta)return;
+    ta.select(); ta.setSelectionRange(0,99999);
+    var done=function(){cb.textContent='Copied';setTimeout(function(){cb.textContent='Copy the message';},2000);};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ta.value).then(done,function(){try{document.execCommand('copy');done();}catch(e){}});}
+    else{try{document.execCommand('copy');done();}catch(e){}}
   });
 })();
 (function(){var zf=document.getElementById('el-zip-form');if(zf)zf.addEventListener('submit',function(){if(window.gaEvent)gaEvent('elevators_zip_search',{});});})();

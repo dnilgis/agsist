@@ -277,12 +277,15 @@ button,a,[role="button"]{touch-action:manipulation;}
   <div class="fert-hero">
     <div class="fert-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> Input Costs &middot; Dealer Benchmark, Updated As Quotes Move</div>
     <h1 class="fert-page-title">Fertilizer Prices</h1>
-<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Input buyers comparing prices before they commit &mdash; one category-exclusive slot. <a href="/sponsor?slot=fertilizer&amp;utm_source=fertilizer&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}.fert-stale{border:1px solid rgba(212,162,63,.45);background:rgba(212,162,63,.07);color:var(--text-dim);border-radius:9px;padding:.6rem .8rem;margin:0 0 .6rem;font-size:.87rem;line-height:1.6}
+.fert-stale b{color:var(--text)}
+</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Input buyers comparing prices before they commit &mdash; one category-exclusive slot. <a href="/sponsor?slot=fertilizer&amp;utm_source=fertilizer&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
     <p class="fert-page-sub">Current US benchmark prices for urea, MAP, potash, ammonium sulfate (AMS), K-Mag, and pelletized lime &#8212; the inputs that drive corn and soybean fertility costs for farmers nationwide. Updated from Midwest dealer and NOLA barge benchmarks.</p>
   </div>
 
   <div class="fert-updated-bar">
-    <div>As of <strong id="fert-updated-date">&#8212;</strong> &middot; <span id="fert-source-lbl">Green Markets / USDA AMS</span></div>
+    <div id="fert-stale" class="fert-stale" style="display:none"></div>
+    <div>As of <strong id="fert-updated-date">&#8212;</strong> &middot; <span id="fert-source-lbl">Midwest dealer benchmark</span></div>
   </div>
 
   <div class="fert-disclaimer">
@@ -370,8 +373,9 @@ button,a,[role="button"]{touch-action:manipulation;}
   </div>
 
   <div class="fert-source">
-    Prices sourced from <a href="https://dtn.com" target="_blank" rel="noopener">DTN</a> and
-    <a href="https://www.ams.usda.gov/market-news/fertilizers" target="_blank" rel="noopener">USDA AMS</a> weekly reports.
+    Prices are Midwest dealer quotes collected by hand, roughly monthly &mdash; a benchmark to argue from,
+    not a licensed feed and not your dealer&rsquo;s bid. For the published series see
+    <a href="https://www.ams.usda.gov/market-news/fertilizers" target="_blank" rel="noopener">USDA AMS</a>.
     Not a quote &#8212; verify with your dealer before purchasing. &middot;
     <a href="/">&#x2190; AGSIST Dashboard</a> &middot;
     Built by <a href="/about">Sigurd Lindquist</a> &middot; <a href="tel:+17157972428">715-797-2428</a>
@@ -409,6 +413,18 @@ var STATE={products:null,nPrice:null,nName:'urea',cornPx:null};
 
 function renderCards(data){
   var upd=document.getElementById('fert-updated-date');if(upd)upd.textContent=fmtDate(data.updated);
+  // This sheet is hand-collected roughly monthly, so it CAN go stale between
+  // runs. Say how old it is rather than letting an old number read as current.
+  (function(){
+    var d=Date.parse((data.updated||'')+'T12:00:00Z');
+    var host=document.getElementById('fert-stale'); if(!host||isNaN(d))return;
+    var days=Math.floor((Date.now()-d)/86400000);
+    if(days>=30){
+      host.innerHTML='<b>These quotes are '+days+' days old.</b> The sheet is collected by hand about once a month, '
+        +'so treat this as a benchmark to argue from, not today\u2019s price. Call your dealer for a live quote.';
+      host.style.display='block';
+    } else { host.style.display='none'; }
+  })();
   var src=document.getElementById('fert-source-lbl');if(src&&data.source)src.textContent=data.source.split('\u2014')[0].trim();
   var cards=document.getElementById('fert-price-cards');if(!cards||!data.prices||!data.prices.length)return;
   cards.innerHTML=data.prices.map(function(p){

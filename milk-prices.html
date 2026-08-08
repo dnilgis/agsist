@@ -17,7 +17,7 @@
   <link rel="manifest" href="/manifest.json">
 
   <title>How US Milk Is Priced: The Milk Check, Explained | AGSIST</title>
-  <meta name="description" content="Live Class III & IV milk futures, spot cheese, butter, and component prices with history and context for dairy producers. Free, no login, updated daily.">
+  <meta name="description" content="Class III and IV milk prices, spot cheese, butter, and the component formula that builds your milk check, explained for dairy producers. Free, no login.">
   <link rel="canonical" href="https://agsist.com/milk-prices">
 
   <meta property="og:type" content="article">
@@ -497,7 +497,7 @@
 
         <div class="dp-row"><div class="dp-row-main"><div class="dp-row-name"><svg class="ic" aria-hidden="true"><use href="#i-droplet"/></svg> Butterfat price</div><div class="dp-row-desc">Derived from the butter market (shared with Class IV). The fat in your milk.</div></div><div class="dp-row-val">$2.4610<span class="u">/lb</span></div></div>
 
-        <div class="dp-row dp-op credit"><div class="dp-row-main"><div class="dp-row-name">Component math &middot; per cwt at test</div><div class="dp-row-desc">Each price is multiplied by the pounds of that component in 100 lb of milk (protein ~3.0, fat ~3.7, other solids ~5.7), then summed. This is the Class III value before rounding.</div></div><div class="dp-row-val">+ sum</div></div>
+        <div class="dp-row dp-op credit"><div class="dp-row-main"><div class="dp-row-name">Component math &middot; per cwt at test</div><div class="dp-row-desc">Each price is multiplied by the pounds of that component in 100 lb of milk (protein ~3.3, fat ~3.5, other solids ~6.0), then summed. This is the Class III value before rounding.</div></div><div class="dp-row-val">+ sum</div></div>
 
         <div class="dp-row dp-final"><div class="dp-row-main"><div class="dp-row-name">Class III milk price</div><div class="dp-row-desc">The federal minimum a cheese plant must pay for 100 lb of milk this month. What actually lands in the mailbox is this, blended with the other classes and adjusted by the producer price differential and hauling.</div></div><div class="dp-row-val">$16.92<span class="u">/cwt</span></div></div>
       </div>
@@ -784,21 +784,35 @@
   // Protein  = (Cheese - MA_cheese) * 1.383 + ((Cheese - MA_cheese) * 1.572 - ButterfatPrice * 0.9) * 0.2
   //   NOTE: coefficients per 7 CFR 1000.50; used here as a transparent teaching model,
   //   not the settlement calc. USDA's announced monthly price is the authority.
-  var MA_CHEESE=0.2519, MA_WHEY=0.1991;
+  // Make allowances and factors as amended by the January 2025 FMMO final rule
+  // (90 FR 6600); the raised whey make allowance and the December 1, 2025
+  // composition factors are both in force.
+  var MA_CHEESE=0.2519, MA_WHEY=0.2668;
   // May 2026 actuals used as the seed / reset point
   var SEED={cheese:1.7600, whey:0.5350, fat:2.4610, classIII:16.92, month:'May 2026'};
-  // component pounds per cwt at standard test (teaching approximation)
-  var LB={protein:2.99, fat:3.50, os:5.69};
+  // Skim milk composition factors, 7 CFR 1000.50, effective 2025-12-01.
+  var LB={protein:3.30, fat:3.50, os:6.00};
 
+  // 7 CFR 1000.50(n), as amended effective 2025-06-01. Cheese is the 40-lb
+  // BLOCK survey price - 500-lb barrels left the survey on that date, so this
+  // is no longer a block/barrel weighted average. The 1.17 multiplier on the
+  // butterfat-recovery term is what lets protein value go NEGATIVE when
+  // butterfat runs away from cheese, the regime dairymen most need to see.
   function proteinPrice(cheese, fat){
     var c=cheese-MA_CHEESE;
-    return c*1.383 + (c*1.572 - fat*0.9)*0.2;
+    return c*1.383 + (c*1.589 - fat*0.91)*1.17;
   }
   function otherSolids(whey){ return (whey-MA_WHEY)*1.03; }
+  // Component prices round to the nearest hundredth cent; the skim price
+  // rounds to the cent BEFORE the 0.965 hundredweight split is applied.
+  // 7 CFR 1000.50(h) and (i).
+  function r4(x){ return Math.round(x*10000)/10000; }
+  function r2(x){ return Math.round(x*100)/100; }
   function classIII(cheese, whey, fat){
-    var pp=proteinPrice(cheese,fat), os=otherSolids(whey);
-    var val = pp*LB.protein + fat*LB.fat + os*LB.os;
-    return {pp:pp, os:os, val:val};
+    var pp=r4(proteinPrice(cheese,fat)), os=r4(otherSolids(whey));
+    var skim=r2(pp*LB.protein + os*LB.os);
+    var val=r2(0.965*skim + LB.fat*fat);
+    return {pp:pp, os:os, skim:skim, val:val};
   }
   function money(n,dp){ return '$'+Number(n).toFixed(dp==null?4:dp); }
   function cwt(n){ return '$'+Number(n).toFixed(2); }
@@ -816,9 +830,14 @@
   function render(cheese, whey, fat, monthLabel, isReal){
     var r=classIII(cheese,whey,fat);
     var priceOut = isReal ? SEED.classIII : r.val;
+    // The sandbox recomputes from whatever the sliders say. At the seed values
+    // it will not land exactly on USDA's announced price - survey inputs here
+    // are rounded, and the announced figure is the authority. Show the gap
+    // rather than letting a reader find two different numbers on one page.
+    var modelGap = (SEED.classIII!=null) ? (r.val - SEED.classIII) : null;
     monthEl.innerHTML='Class III &middot; <b>'+monthLabel+'</b> &middot; the cheese-milk formula';
     var h='';
-    h+=rowHTML('','i-package','Cheese price','Weighted-average 40-lb cheddar blocks from the USDA survey. Barrels were removed from this survey in June 2025.',money(cheese),'/lb');
+    h+=rowHTML('','i-package','Cheese price','The USDA survey price for 40-lb cheddar blocks. Barrels left this survey in June 2025, so it is no longer a block-and-barrel weighted average.',money(cheese),'/lb');
     h+=rowHTML('dp-op deduct','','&minus; Make allowance (cheese)','A fixed credit for turning milk into cheese, subtracted before the value reaches the farmer &mdash; a standard assumed cost across the order, not any one plant\u2019s actual cost. Raised in 2025.','&minus;'+money(MA_CHEESE),'/lb');
     h+=rowHTML('dp-result','','Protein price','What\u2019s left of the cheese value, converted to a per-pound milk-protein price by the federal yield formula.',money(r.pp),'/lb');
     h+=rowHTML('','i-package','Dry whey price','The other cheese-plant output; its value becomes "other solids" &mdash; the lactose and minerals in milk.',money(whey),'/lb');
@@ -826,11 +845,18 @@
     h+=rowHTML('dp-result','','Other solids price','',money(r.os),'/lb');
     h+=rowHTML('','i-droplet','Butterfat price','Derived from the butter market (shared with Class IV). The fat in your milk.',money(fat),'/lb');
     h+=rowHTML('dp-op credit','','Component math &middot; per cwt at test',
-      'Protein '+money(r.pp,4)+' \u00d7 '+LB.protein.toFixed(2)+' lb, fat '+money(fat,4)+' \u00d7 '+LB.fat.toFixed(2)+' lb, other solids '+money(r.os,4)+' \u00d7 '+LB.os.toFixed(2)+' lb, summed.',
+      'Skim milk price = protein '+money(r.pp,4)+' \u00d7 '+LB.protein.toFixed(2)+' lb + other solids '+money(r.os,4)+' \u00d7 '+LB.os.toFixed(2)+' lb = '+money(r.skim)+'. Class III = 0.965 \u00d7 that, plus butterfat '+money(fat,4)+' \u00d7 '+LB.fat.toFixed(2)+' lb.',
       '+ sum','');
+    var gapNote='';
+    if(!isReal && modelGap!=null && Math.abs(modelGap)>=0.01){
+      gapNote=' At the starting values this model lands '+Math.abs(modelGap).toFixed(2)+
+        ' '+(modelGap>0?'above':'below')+' USDA\u2019s announced '+SEED.month+
+        ' price of '+cwt(SEED.classIII)+', because the survey inputs shown here are rounded to the cent. '+
+        'Treat the shape as the lesson, not the last nickel.';
+    }
     var finalDesc = isReal
       ? 'The federal minimum a cheese plant must pay for 100 lb of milk this month, as announced by USDA. What lands in the mailbox is this, blended with the other classes and adjusted by the producer price differential and hauling.'
-      : 'The Class III value this teaching model computes from your commodity prices. USDA\u2019s announced monthly price is the official figure.';
+      : 'The Class III value this teaching model computes from your commodity prices, using the formulas in 7 CFR 1000.50. USDA\u2019s announced monthly price is the official figure.'+gapNote;
     h+=rowHTML('dp-final','','Class III milk price',finalDesc,(isReal?'':'\u2248 ')+cwt(priceOut),'/cwt');
     body.innerHTML=h;
   }
