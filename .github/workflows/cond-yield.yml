@@ -48,7 +48,14 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Rebuild the page from the fit it just wrote. Without this the
+          # ranked table, hero tiles, seed line, meta description and FAQ stay
+          # frozen at whatever week they were hand-written for, while the
+          # verdict module at the top reads the fresh JSON live — which is how
+          # the page ended up contradicting itself by three weeks.
+          python3 scripts/build_condyield.py || true
           git add -A data/cond-yield data/yield-nowcast.json 2>/dev/null || true
+          git add conditions-yield.html 2>/dev/null || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "data: conditions-vs-yield fits + yield nowcast"
           git pull --rebase --autostash origin main || true
