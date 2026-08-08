@@ -46,7 +46,7 @@ jobs:
         run: |
           git config user.name  "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add data/fertilizer.json
+          git add data/fertilizer.json data/fertilizer-history.json
           git diff --cached --quiet && { echo "no change"; exit 0; }
           git commit -m "🧪 Fertilizer prices — $(date -u +'%Y-%m-%d')"
           git pull --rebase --autostash origin main || true
