@@ -7,6 +7,18 @@
       "items": [
         {
           "tag": "fixed",
+          "page": "/daily",
+          "name": "Saturday briefing — two prices that were not real",
+          "text": "Saturday's briefing led with a 16.9% one-day jump in lean hogs and a 5.4% break in corn. Neither happened. Lean hogs cannot move 16.9% in a session -- that is nearly three times the exchange's own daily limit, which is the maximum a contract is allowed to trade in one day. The number came from the price feed quoting one delivery month's close against a different month's close from the day before, and subtracting them. Corn was the same error: the $4.39 was right, September corn, but it was measured against December's close from Thursday. September corn was down two and three-quarter cents, not twenty-five. Soybeans and live cattle carried the same mistake in smaller sizes. The check that is supposed to catch exactly this compared only the closing price, and the closing price was correct -- so it passed the feed as clean. It now checks the prior close as well, and refuses any move larger than the exchange allows for that contract. Where it cannot verify a price, the site now says nothing about it rather than printing a number."
+        },
+        {
+          "tag": "fixed",
+          "page": "/",
+          "name": "Price checks now run on every refresh",
+          "text": "The feed check ran once a day, just before the briefing. Prices refresh every thirty minutes. So the homepage, the markets page and the futures pages read an unchecked feed nearly all day, and the once-a-day repair was overwritten by the next refresh regardless. The check now runs on every refresh."
+        },
+        {
+          "tag": "fixed",
           "page": "/",
           "name": "Homepage",
           "text": "Several things at once. The \"Text Me Daily\" signup is gone — it threw the phone number away and there was no text service behind it. Both email signups now wait for the server to actually accept the address before saying you're subscribed. The weekly poll no longer falls back to a question from June whose results were already final, and a vote that fails to register no longer locks you out for the week. The price cards quote the real front-month contract and name it, so corn reads September at $4.42 rather than December at $4.65, and the 52-week range bar moves with it."

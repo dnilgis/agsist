@@ -283,6 +283,71 @@ SYMBOLS = {
     "cattle-feb27": "LEG27.CME",
     "cattle-apr27": "LEJ27.CME",
     "cattle-jun27": "LEM27.CME",
+
+    # ── Forward curves for the products that had NONE (added 2026-08-08) ──
+    # Why: on 2026-08-08 the briefing published "lean hogs had their biggest
+    # single-session gain in years... up 16.9%". Lean hogs cannot move 16.9% in
+    # a session -- that is 2.9x the CME expanded daily limit. HE=F had spliced
+    # August's close onto October's prior close. It went out because hogs, oats,
+    # feeders, meal, milk and soyoil had no dated contract anywhere in this feed,
+    # so preflight_prices.py had nothing to reconcile them against. Corn, beans,
+    # wheat and cattle were fine precisely because they DID have curves.
+    #
+    # VERIFY ON FIRST RUN. These symbols and contract-month sets have not been
+    # confirmed against a live Yahoo response or an authoritative CME listing --
+    # they are the widely published month cycles. A wrong symbol logs SKIP/LOST
+    # for that key and nothing else breaks: preflight treats a missing optional
+    # curve as a WARN, not a block (see FRONT_OPTIONAL in preflight_prices.py).
+    # Once a full session runs clean with no SKIPs, promote these out of
+    # FRONT_OPTIONAL into FRONT so a missing curve becomes a hard failure.
+    # UPDATE ANNUALLY, like the grain and cattle curves above.
+    #
+    # Lean hogs (CME) active months: Feb G, Apr J, May K, Jun M, Jul N, Aug Q, Oct V, Dec Z
+    "hogs-aug26": "HEQ26.CME",
+    "hogs-oct26": "HEV26.CME",
+    "hogs-dec26": "HEZ26.CME",
+    "hogs-feb27": "HEG27.CME",
+    "hogs-apr27": "HEJ27.CME",
+    "hogs-jun27": "HEM27.CME",
+
+    # Feeder cattle (CME) active months: Jan F, Mar H, Apr J, May K, Aug Q, Sep U, Oct V, Nov X
+    "feeders-aug26": "GFQ26.CME",
+    "feeders-sep26": "GFU26.CME",
+    "feeders-oct26": "GFV26.CME",
+    "feeders-nov26": "GFX26.CME",
+    "feeders-jan27": "GFF27.CME",
+    "feeders-mar27": "GFH27.CME",
+
+    # Oats (CBOT) active months: Mar H, May K, Jul N, Sep U, Dec Z
+    "oats-sep26": "ZOU26.CBT",
+    "oats-dec26": "ZOZ26.CBT",
+    "oats-mar27": "ZOH27.CBT",
+    "oats-may27": "ZOK27.CBT",
+
+    # Soybean meal (CBOT) active months: Jan F, Mar H, May K, Jul N, Aug Q, Sep U, Oct V, Dec Z
+    "meal-aug26": "ZMQ26.CBT",
+    "meal-sep26": "ZMU26.CBT",
+    "meal-oct26": "ZMV26.CBT",
+    "meal-dec26": "ZMZ26.CBT",
+    "meal-jan27": "ZMF27.CBT",
+    "meal-mar27": "ZMH27.CBT",
+
+    # Soybean oil (CBOT) active months: same cycle as meal
+    "soyoil-aug26": "ZLQ26.CBT",
+    "soyoil-sep26": "ZLU26.CBT",
+    "soyoil-oct26": "ZLV26.CBT",
+    "soyoil-dec26": "ZLZ26.CBT",
+    "soyoil-jan27": "ZLF27.CBT",
+    "soyoil-mar27": "ZLH27.CBT",
+
+    # Class III milk (CME) lists all twelve months
+    "milk-aug26": "DCQ26.CME",
+    "milk-sep26": "DCU26.CME",
+    "milk-oct26": "DCV26.CME",
+    "milk-nov26": "DCX26.CME",
+    "milk-dec26": "DCZ26.CME",
+    "milk-jan27": "DCF27.CME",
+
     # ── Oilseeds / Feed ──
     "meal":       "ZM=F",
     "soyoil":     "ZL=F",

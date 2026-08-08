@@ -486,47 +486,45 @@ def _front_expired(key, now):
     return is_expired(key, now)
 
 
-def _resolve_front_month(quotes):
-    """Override each continuous grain alias (corn/beans/wheat) with the real
-    dated front-month contract when they disagree (roll-splice contamination).
-    Leaves a clean continuous quote untouched. Logs every override to stderr."""
-    now = datetime.now(timezone.utc)
-    for cont, cands in _FRONT_MONTH_CANDIDATES.items():
-        c = quotes.get(cont)
-        if not c or c.get("close") is None:
-            continue
-        front_key = None
-        for k in cands:
-            q = quotes.get(k)
-            if (q and q.get("close") is not None and not q.get("stale")
-                    and not _front_expired(k, now)):
-                front_key = k
-                break
-        if not front_key:
-            continue
-        f = quotes[front_key]
-        try:
-            fclose = float(f["close"])
-            rel = abs(float(c["close"]) - fclose) / fclose if fclose else 1.0
-        except (TypeError, ValueError, ZeroDivisionError):
-            continue
-        if rel > _FRONT_REL_TOL:
-            print(f"[front-month] {cont} continuous ({c.get('ticker')}) "
-                  f"close={c['close']} disagrees with dated front {front_key} "
-                  f"({f.get('ticker')}) close={f['close']} by {rel * 100:.1f}% "
-                  f"-- using {front_key}", file=sys.stderr)
-            for fld in ("close", "open", "netChange", "pctChange"):
-                c[fld] = f.get(fld)
-            c["resolved_from"] = front_key
-    return quotes
+def _resolve_front_month(data):
+    """Self-defence copy of the feed gate, in case preflight_prices.py was skipped.
+
+    This used to be a SECOND, independently-maintained implementation of the
+    reconciliation in preflight_prices.py, and it drifted exactly the way the two
+    copies of the expiry rule drifted (see _front_expired above). On 2026-08-08
+    the drift cost us a published briefing: both copies compared only `close`,
+    neither looked at the prior close, and neither covered cattle/hogs/oats/milk
+    at all -- so "corn fell hard, down 5.4%" and a 16.9% lean hog rally that
+    exceeded the exchange daily limit by 2.9x both sailed through.
+
+    So this no longer holds its own copy of the rule. It calls the gate. One
+    definition, in one file, the same lesson as is_expired. Repair mode is used
+    because the generator's job is to publish something correct where it can, and
+    the gate suppresses (rather than invents) whatever it cannot verify.
+    """
+    try:
+        from preflight_prices import run as _preflight_run
+    except ImportError as e:                       # never block a send on this
+        print(f"[front-month] preflight_prices unavailable ({e}) -- "
+              f"feed passed through UNGATED", file=sys.stderr)
+        return data.get("quotes", {})
+    _passed, issues, data = _preflight_run(data, repair=True)
+    for sev, code, msg in issues:
+        if sev in ("FAIL", "REPAIR"):
+            print(f"[front-month] {sev} {code}: {msg}", file=sys.stderr)
+    if not _passed:
+        print("[front-month] feed still has unrepairable FAILs after repair -- "
+              "affected instruments were suppressed, not published",
+              file=sys.stderr)
+    return data.get("quotes", {})
 
 
 def load_prices():
     if not PRICES_PATH.exists():
         print("[error] prices.json not found", file=sys.stderr); return {}, []
     with open(PRICES_PATH) as f: data = json.load(f)
-    quotes = data.get("quotes", {}); fetched = data.get("fetched", "")
-    quotes = _resolve_front_month(quotes)  # repair roll-splice contamination before locking prices
+    fetched = data.get("fetched", "")
+    quotes = _resolve_front_month(data)  # repair roll-splice contamination before locking prices
     price_lines = []; locked_prices = {}; surprises = []
     for key, label in COMMODITY_LABELS.items():
         q = quotes.get(key)
