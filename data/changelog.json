@@ -7,6 +7,12 @@
       "items": [
         {
           "tag": "fixed",
+          "page": "/",
+          "name": "Homepage",
+          "text": "Several things at once. The \"Text Me Daily\" signup is gone — it threw the phone number away and there was no text service behind it. Both email signups now wait for the server to actually accept the address before saying you're subscribed. The weekly poll no longer falls back to a question from June whose results were already final, and a vote that fails to register no longer locks you out for the week. The price cards quote the real front-month contract and name it, so corn reads September at $4.42 rather than December at $4.65, and the 52-week range bar moves with it."
+        },
+        {
+          "tag": "fixed",
           "page": "/conditions-yield",
           "name": "Ratings vs Yield",
           "text": "The ranked table on this page was hand-written and never regenerated, so it had drifted three weeks behind the live data and openly contradicted the verdict box directly above it — Pennsylvania read 25% in the table and 65% in the box. The state ranked first under the heading \"ranked by what this week's number is worth\" was not the top state any more either. The table, the four headline tiles, the summary line and the page description now all come from the same file the verdict reads, and rebuild themselves every time the weekly fit runs."

@@ -1455,9 +1455,9 @@
       <span class="signup-eyebrow">AGSIST Daily &mdash; Free Delivery Every Weekday</span>
       <h2 class="signup-headline">Start every day knowing<br>what moves your markets.</h2>
       <p class="signup-sub">Get the AGSIST Daily briefing before the market open &mdash; overnight markets, what to watch, one number to know, and farm weather &mdash; for farmers across the US. <strong style="color:var(--text)">No ads. No fluff. Just the signal.</strong></p>
-      <div class="signup-tabs" role="tablist"><button class="signup-tab active" id="tab-email" role="tab" aria-selected="true" aria-controls="form-email"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Email</button><button class="signup-tab" id="tab-sms" role="tab" aria-selected="false" aria-controls="form-sms"><svg class="ic" aria-hidden="true"><use href="#i-smartphone"/></svg> Text / SMS</button></div>
+      <div class="signup-tabs"><button class="signup-tab active" id="tab-email" role="tab" aria-selected="true" aria-controls="form-email"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Email</button></div>
       <div class="signup-form" id="form-email" role="tabpanel"><div class="signup-row"><input type="text" class="signup-input" placeholder="First name" autocomplete="given-name" aria-label="First name"><input type="email" class="signup-input" placeholder="your@email.com" autocomplete="email" aria-label="Email address" required><button class="signup-submit" id="btn-email-signup">Subscribe &rarr;</button></div><div class="signup-disc">Available at no charge. Unsubscribe any time. We never sell your data. <a href="/privacy">Privacy Policy</a>.</div></div>
-      <div class="signup-form" id="form-sms" style="display:none" role="tabpanel"><div class="signup-row"><input type="tel" class="signup-input" placeholder="(555) 555-5555" autocomplete="tel" aria-label="Phone number" required><button class="signup-submit" id="btn-sms-signup">Text Me Daily &rarr;</button></div><div class="sms-note"><span style="font-size:1.1rem;flex-shrink:0" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-file-text"/></svg></span><span>Each morning you'll receive a text with a link to today's PDF briefing. Standard messaging rates apply. Text STOP anytime.</span></div><div class="signup-disc" style="margin-top:.4rem"><a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms</a></div></div>
+      
     </div>
   </div>
   <div class="signup--slim fade-up" id="signup-slim" style="display:none;padding-bottom:max(.5rem,env(safe-area-inset-bottom))">
@@ -1764,6 +1764,13 @@
     }).catch(function(){});
   }
   loadYieldNowcast();
+  function blankRanges(){
+    // The dollar figures baked into the markup are a year old and only rot.
+    // If the live file cannot be read, show nothing rather than a confident
+    // wrong bar.
+    var rs=document.querySelectorAll('.pc-range');
+    for(var i=0;i<rs.length;i++)rs[i].style.visibility='hidden';
+  }
   function renderRanges(q){
     var GR={'corn':1,'corn-dec':1,'beans':1,'beans-nov':1,'wheat':1,'oats':1};
     var SYMS=['corn','corn-dec','beans','beans-nov','wheat','oats','meal','cattle','feeders','hogs','milk','crude','natgas','dollar','sp500','treasury10','gold','silver','bitcoin','ripple','kaspa'];
@@ -1792,8 +1799,18 @@
       if(elD)elD.style.left=pct.toFixed(1)+'%';
     }
   }
-  fetch('/data/prices.json').then(function(r){return r.json();}).then(function(data){
+  fetch('/data/prices.json').then(function(r){
+    if(!r.ok)throw new Error('prices.json '+r.status);
+    return r.json();
+  }).then(function(data){
     var q=data.quotes||{};
+    /* The continuous series tracks the MOST-ACTIVE contract, so these bars
+       placed the December price inside the continuous 52-week band and read
+       85% of range when the contract a grower prices against sat at 42%. */
+    ['corn','beans','wheat','cattle'].forEach(function(c){
+      var nb=q[c+'-nearby'];
+      if(nb&&nb.close!=null)q[c]=nb;
+    });
     renderRanges(q);
     var ffai=q['ffai'];
     if(ffai&&ffai.close){
@@ -1831,7 +1848,7 @@
       if(__anyAg&&typeof gaEvent==='function'){gaEvent('quote_stale_shown',{page:'home'});}
     }catch(e){}
 
-  }).catch(function(){});
+  }).catch(function(){ blankRanges(); });
 })();
 </script>
 <script>
@@ -2171,11 +2188,29 @@ gj('/data/markets.json').then(function(cached){
   var btnWxGo=document.getElementById('btn-wx-go');if(btnWxGo)btnWxGo.addEventListener('click',function(){if(typeof loadWeatherZip==='function')loadWeatherZip();});
   var wxZip=document.getElementById('wx-zip');if(wxZip)wxZip.addEventListener('keydown',function(e){if(e.key==='Enter'&&typeof loadWeatherZip==='function')loadWeatherZip();});
   var btnChangeLoc=document.getElementById('btn-change-loc');if(btnChangeLoc)btnChangeLoc.addEventListener('click',function(){if(typeof showZipEntry==='function')showZipEntry();});
-  var tabEmail=document.getElementById('tab-email'),tabSms=document.getElementById('tab-sms');
-  var formEmail=document.getElementById('form-email'),formSms=document.getElementById('form-sms');
-  if(tabEmail){tabEmail.addEventListener('click',function(){tabEmail.classList.add('active');tabEmail.setAttribute('aria-selected','true');if(tabSms){tabSms.classList.remove('active');tabSms.setAttribute('aria-selected','false');}if(formEmail)formEmail.style.display='flex';if(formSms)formSms.style.display='none';});}
-  if(tabSms){tabSms.addEventListener('click',function(){tabSms.classList.add('active');tabSms.setAttribute('aria-selected','true');if(tabEmail){tabEmail.classList.remove('active');tabEmail.setAttribute('aria-selected','false');}if(formSms)formSms.style.display='flex';if(formEmail)formEmail.style.display='none';});}
-  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target);}});},{threshold:0.08});document.querySelectorAll('.fade-up').forEach(function(el){io.observe(el);});}else{document.querySelectorAll('.fade-up').forEach(function(el){el.classList.add('vis');});}
+  var tabEmail=document.getElementById('tab-email');
+  var formEmail=document.getElementById('form-email');
+  if(tabEmail){tabEmail.addEventListener('click',function(){tabEmail.classList.add('active');tabEmail.setAttribute('aria-selected','true');if(formEmail)formEmail.style.display='flex';});}
+  (function(){
+    /* Every .fade-up section is opacity:0 in the stylesheet, so if this does
+       not run the page is BLANK below the ticker with no console error. Belts:
+         - threshold 0 (0.08 is unreachable for a section taller than ~12
+           screens, since ratio = visible / total, and it gets worse the
+           shorter the window)
+         - reveal on load
+         - an unconditional timer, so a broken observer cannot hide the page */
+    var els = document.querySelectorAll('.fade-up');
+    function showAll(){ for (var i=0;i<els.length;i++) els[i].classList.add('vis'); }
+    if (!('IntersectionObserver' in window)) { showAll(); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0, rootMargin: '200px 0px' });
+    for (var i=0;i<els.length;i++) io.observe(els[i]);
+    setTimeout(showAll, 1200);
+    window.addEventListener('load', showAll);
+  })();
   function buildUSDACalendar(){
     var strip=document.getElementById('usda-cal-strip');if(!strip)return;var now=new Date(),events=[];
     var curYr=now.getFullYear();
@@ -2218,11 +2253,30 @@ gj('/data/markets.json').then(function(cached){
   var btnSlimDismiss=document.getElementById('btn-slim-dismiss');if(btnSlimDismiss)btnSlimDismiss.addEventListener('click',function(){setDismissed('agsist_signup_slim_dismissed');var el=document.getElementById('signup-slim');if(el)el.style.display='none';});
   function showSignupSuccess(formId,icon,headline,sub){var formEl=document.getElementById(formId);if(!formEl)return;formEl.innerHTML='<div style="text-align:center;padding:.9rem 0"><div style="font-size:2rem;margin-bottom:.4rem">'+icon+'</div><div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.25rem">'+headline+'</div><div style="font-size:.82rem;color:var(--text-muted);line-height:1.5">'+sub+'</div></div>';formEl.style.display='block';}
   var btnEmailSignup=document.getElementById('btn-email-signup');
-  if(btnEmailSignup){btnEmailSignup.addEventListener('click',function(e){e.preventDefault();var name=(document.querySelector('#form-email input[type="text"]')||{}).value||'';var email=(document.querySelector('#form-email input[type="email"]')||{}).value||'';if(!email.includes('@'))return;setSignedUp();showSignupSuccess('form-email','<svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg>',"You're subscribed!",'AGSIST Daily arrives before the market open on weekdays. Check your spam folder once.');var tabs=document.querySelector('#signup-full .signup-tabs');if(tabs)tabs.style.display='none';fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify({name:name,email:email,source:'homepage-email'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});});}
-  var btnSmsSignup=document.getElementById('btn-sms-signup');
-  if(btnSmsSignup){btnSmsSignup.addEventListener('click',function(e){e.preventDefault();var phone=(document.querySelector('#form-sms input[type="tel"]')||{}).value||'';if(phone.replace(/\D/g,'').length<10)return;setSignedUp();showSignupSuccess('form-sms','<svg class="ic" aria-hidden="true"><use href="#i-smartphone"/></svg>',"You're on the list!","Each morning you'll get a text link to the daily PDF briefing. Reply STOP anytime.");var tabs=document.querySelector('#signup-full .signup-tabs');if(tabs)tabs.style.display='none';fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify({phone:phone,source:'homepage-sms'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});});}
+  if(btnEmailSignup){btnEmailSignup.addEventListener('click',function(e){e.preventDefault();var name=(document.querySelector('#form-email input[type="text"]')||{}).value||'';var email=(document.querySelector('#form-email input[type="email"]')||{}).value||'';if(!email.includes('@'))return;
+    /* Only claim success once the server has accepted the address. This used to
+       print "You're subscribed!" before the request left, so a rejected signup
+       looked exactly like a good one. */
+    var _b=this,_t=_b.textContent;_b.disabled=true;_b.textContent='Sending\u2026';
+    fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify({name:name,email:email,source:'homepage-email'}),headers:{'Content-Type':'application/json','Accept':'application/json'}})
+      .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);
+        setSignedUp();
+        showSignupSuccess('form-email','<svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg>',"You're subscribed!",'AGSIST Daily arrives before the market open on weekdays. Check your spam folder once.');
+        var tabs=document.querySelector('#signup-full .signup-tabs');if(tabs)tabs.style.display='none';})
+      .catch(function(){_b.disabled=false;_b.textContent=_t;
+        var dsc=document.querySelector('#form-email .signup-disc');
+        if(dsc)dsc.innerHTML='<span style="color:var(--gold)">That did not go through. Try again, or email sig@farmers1st.com and I will add you by hand.</span>';});});}
   var btnCompactSignup=document.getElementById('btn-compact-signup'),compactEmail=document.getElementById('compact-email');
-  if(btnCompactSignup){btnCompactSignup.addEventListener('click',function(e){e.preventDefault();var email=compactEmail?compactEmail.value.trim():'';if(!email.includes('@'))return;setSignedUp();var bar=document.getElementById('signup-compact');if(bar)bar.innerHTML='<span style="font-size:.88rem;color:var(--green);padding:.1rem 0"><svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg> Subscribed! AGSIST Daily arrives before the market open on weekdays.</span>';fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify({email:email,source:'homepage-compact'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});});}
+  if(btnCompactSignup){btnCompactSignup.addEventListener('click',function(e){e.preventDefault();var email=compactEmail?compactEmail.value.trim():'';if(!email.includes('@'))return;
+    var _cb=this;_cb.disabled=true;
+    fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify({email:email,source:'homepage-compact'}),headers:{'Content-Type':'application/json','Accept':'application/json'}})
+      .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);
+        setSignedUp();
+        var bar=document.getElementById('signup-compact');
+        if(bar)bar.innerHTML='<span style="font-size:.88rem;color:var(--green);padding:.1rem 0"><svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg> Subscribed! AGSIST Daily arrives before the market open on weekdays.</span>';})
+      .catch(function(){_cb.disabled=false;
+        var bar=document.getElementById('signup-compact');
+        if(bar&&!bar.querySelector('.sc-warn')){var w=document.createElement('span');w.className='sc-warn';w.style.cssText='font-size:.82rem;color:var(--gold);display:block;margin-top:.3rem';w.textContent='That did not go through \u2014 try again, or email sig@farmers1st.com.';bar.appendChild(w);}});});}
   if(compactEmail)compactEmail.addEventListener('keydown',function(e){if(e.key==='Enter'&&btnCompactSignup)btnCompactSignup.click();});
 })();
 </script>
@@ -3418,13 +3472,12 @@ setTimeout(function(){
   var POLL_JSON = '/data/poll.json';                         // question + archive (single source of truth)
   var REVEAL_THRESHOLD = 25;                                 // below this, show "early results"
 
-  // Fallback only — used if poll.json is missing/unreadable.
-  var DEFAULT_POLL = {
-    id: '2026-w23-cropcondition',
-    week: '2026-06-01',
-    question: 'How do your crops look right now compared to a normal year?',
-    options: ['Behind normal', 'About normal', 'Ahead of normal']
-  };
+  // No fallback question. There was one hardcoded here, but its id was a
+  // CLOSED archive week whose tally is already published on /grower-pulse — so
+  // a vote cast against the fallback corrupted a final, published number, and
+  // the card showed a ten-week-old question under "New question every Monday".
+  // If poll.json cannot be read there is no honest question to ask: hide it.
+  var DEFAULT_POLL = null;
 
   var card = document.getElementById('daily-poll');
   if(!card) return;
@@ -3451,8 +3504,8 @@ setTimeout(function(){
   function votedKey(){ return 'agsist_poll_'+POLL.id; }
   function hasVoted(){ try{ return localStorage.getItem(votedKey()); }catch(e){ return null; } }
   function markVoted(c){ try{ localStorage.setItem(votedKey(), String(c)); }catch(e){} }
-  function pollGet(){ return fetch(POLL_API+'/?id='+encodeURIComponent(POLL.id)).then(function(r){return r.json();}); }
-  function pollVote(c){ return fetch(POLL_API+'/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:POLL.id,choice:String(c)})}).then(function(r){return r.json();}); }
+  function pollGet(){ return fetch(POLL_API+'/?id='+encodeURIComponent(POLL.id)).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}); }
+  function pollVote(c){ return fetch(POLL_API+'/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:POLL.id,choice:String(c)})}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}); }
 
   function renderResults(tally,my){
     var counts=POLL.options.map(function(_,i){return (tally&&tally[String(i)])||0;});
@@ -3519,12 +3572,13 @@ setTimeout(function(){
 
   function boot(config){
     if(config && config.current && config.current.id && config.current.options){ POLL=config.current; }
+    if(!POLL || !POLL.id || !POLL.options){ card.style.display='none'; return; }
     if(qEl) qEl.textContent=POLL.question||'';
     if(weekEl) weekEl.textContent=mondayLabel(POLL.week);
     card.style.display='';
     ga('poll_view',{poll:POLL.id});
     var v=hasVoted();
-    if(v!==null && v!==undefined){ pollGet().then(function(res){renderResults(res.tally,v);}).catch(renderOptions); }
+    if(v!==null && v!==undefined){ pollGet().then(function(res){ if(!res||!res.tally) throw new Error('no tally'); renderResults(res.tally,v); }).catch(renderOptions); }
     else { renderOptions(); }
     if(config && config.archive) renderArchive(config.archive);
   }
