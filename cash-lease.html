@@ -324,12 +324,12 @@
     IL:{n:'Illinois',t:'firm',d:'Year-to-year tenancy: written notice at least 4 MONTHS before the end of the lease year (for a Feb-end lease year, late October).'},
     KS:{n:'Kansas',t:'firm',d:'Written notice at least 30 DAYS BEFORE MARCH 1 for farm tenancies (roughly end of January).'},
     NE:{n:'Nebraska',t:'firm',d:'Verbal/year-to-year leases: notice 6 months before the end of the lease year — in practice by SEPTEMBER 1. Written leases: the lease controls.'},
-    SD:{n:'South Dakota',t:'firm',d:'Written termination notice by SEPTEMBER 1, signed and delivered (certified mail or in hand).'},
+    SD:{n:'South Dakota',t:'firm',d:'ORAL leases only (SDCL ch. 43-32): an oral farm lease renews automatically unless written termination notice is given by SEPTEMBER 1, signed and delivered (certified mail or in hand). A written lease runs on its own terms.'},
     IN:{n:'Indiana',t:'firm',d:'Written notice at least 3 MONTHS before the end of the lease (roughly end of November for a Feb-end term).'},
     MN:{n:'Minnesota',t:'cited',d:'Commonly cited: written notice about 3 MONTHS before the lease ends (industry guides reference ~September 30).'},
     MO:{n:'Missouri',t:'cited',d:'Commonly cited: written notice at least 60 DAYS before the end of the lease year, unless the lease sets its own terms.'},
     WI:{n:'Wisconsin',t:'cited',d:'Commonly cited: written notice about 90 DAYS before the lease ends (~September 30 for a year-end term).'},
-    AR:{n:'Arkansas',t:'cited',d:'Commonly cited: written notice by JUNE 30, sent certified mail — one of the earliest deadlines anywhere.'},
+    AR:{n:'Arkansas',t:'cited',d:'ORAL leases only (Ark. Code 18-16-105, \u201cTermination of oral lease of farmlands\u201d): written notice by JUNE 30, sent certified mail — one of the earliest deadlines anywhere. A written lease runs on its own terms.'},
     KY:{n:'Kentucky',t:'cited',d:'Commonly cited: written notice about 6 MONTHS before expiration (~late August), certified mail.'},
     MS:{n:'Mississippi',t:'cited',d:'Commonly cited: written notice about 2 MONTHS before the end of the lease year.'},
     LA:{n:'Louisiana',t:'cited',d:'Commonly cited: written notice at least 30 DAYS before the lease ends.'},
@@ -338,17 +338,17 @@
     PA:{n:'Pennsylvania',t:'cited',d:'Commonly cited: written notice at least 15 DAYS before the end date — short, but do not cut it close.'},
     NY:{n:'New York',t:'cited',d:'Commonly cited: written notice about 90 DAYS before expiration, certified mail.'},
     TN:{n:'Tennessee',t:'cited',d:'Commonly cited: written notice by around JULY 1 — one of the earliest deadlines cited anywhere.'},
-    MI:{n:'Michigan',t:'cited',d:'No single farm deadline widely cited — the lease’s own terms control; industry guides suggest written notice by ~September 30.'},
-    OH:{n:'Ohio',t:'cited',d:'Written leases: the lease controls. VERBAL leases: Ohio enacted specific statutory termination rules in 2022 — verify the current rule before relying on it.'},
+    MI:{n:'Michigan',t:'none',d:'No single farm deadline widely cited — the lease’s own terms control; industry guides suggest written notice by ~September 30.'},
+    OH:{n:'Ohio',t:'firm',d:'ORC 5301.71: for ANY farm lease — written OR oral — that carries no termination date and no notice deadline of its own, written notice is due ON OR BEFORE SEPTEMBER 1. A lease that spells out its own termination controls; one that does not falls under the statute.'},
     CA:{n:'California',t:'cited',d:'Leases over one year must be WRITTEN to be enforceable; put the termination deadline in the lease itself (industry guides suggest ~July 1).'},
-    TX:{n:'Texas',t:'cited',d:'Practices vary too much to summarize honestly — put the deadline in the lease and confirm with a local attorney.'}
+    TX:{n:'Texas',t:'none',d:'Practices vary too much to summarize honestly — put the deadline in the lease and confirm with a local attorney.'}
   };
   var STATES='AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY'.split(' ');
   var TIER_LBL={firm:'Statutory deadline (widely documented)',cited:'Commonly cited — verify the current statute'};
 
   function stateRuleText(ab){
     var r=RULES[ab];
-    if(r) return 'For '+r.n+': '+r.d+' ('+(r.t==='firm'?'widely documented':'as commonly summarized')+' — verify before relying; statutes change.)';
+    if(r){var q=r.t==='firm'?'widely documented':(r.t==='none'?'no statutory deadline we can point to':'as commonly summarized');return 'For '+r.n+': '+r.d+' ('+q+' — verify before relying; statutes change.)';}
     return 'No farm-specific statutory deadline is widely cited for this state — this lease’s own notice terms (§11) and general landlord–tenant law control. Confirm with your extension office or attorney.';
   }
   function applyState(ab, alsoField){

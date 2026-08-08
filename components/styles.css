@@ -138,6 +138,7 @@ input, select, textarea { border-color: var(--border-2); }
 .agsb-btn:hover { filter: brightness(.9); }
 .agsb-x { min-height: 44px; min-width: 44px; background: none; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer; }
 .agsb-x:hover { color: var(--text); }
+.agsb-warn { flex: 1 1 100%; font-size: .82rem; line-height: 1.45; color: var(--gold, #d4a23f); margin-top: .35rem; }
 .agsb-ok { font-size: .88rem; color: var(--green); font-weight: 700; flex: 1; }
 .ag-sponsor-ribbon a[href] { display: inline-block; padding: .5rem .3rem; margin: -.4rem -.1rem; }
 .skip { position: absolute; top: -100%; left: 1rem; z-index: 9999; padding: .5rem 1rem; background: var(--brand); color: #0a1206; font-size: .875rem; font-weight: 700; border-radius: 0 0 4px 4px }
@@ -161,6 +162,13 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .nav-dd { position: relative }
 .nav-panel { position: absolute; top: calc(100% + 8px); left: 0; min-width: 210px; background: var(--surface); border: 2px solid var(--border-g); border-radius: var(--r-md); padding: .5rem 0; box-shadow: 0 8px 32px rgba(0,0,0,.35); opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity .15s, transform .15s; z-index: 500; }
 .nav-dd.open .nav-panel { opacity: 1; pointer-events: all; transform: translateY(0) }
+/* The Markets panel is 17 links and ~912px tall — taller than most laptop
+   screens — and it used to run straight off the bottom with no way to reach
+   the rest. Cap it to what actually fits under the header and let it scroll. */
+.nav-panel { max-height: calc(100vh - 84px); overflow-y: auto; overscroll-behavior: contain }
+.nav-panel::-webkit-scrollbar { width: 8px }
+.nav-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px }
+.nav-panel::-webkit-scrollbar-track { background: transparent }
 .nav-panel a { display: flex; align-items: center; gap: .55rem; padding: .6rem 1.1rem; font-size: .85rem; font-weight: 500; color: var(--text-dim); transition: color .12s, background .12s; white-space: nowrap; text-decoration: none; }
 .nav-panel a:hover { color: var(--brand); background: rgba(var(--brand-rgb),.06) }
 .nav-panel-div { height: 1px; background: var(--border); margin: .3rem 0 }

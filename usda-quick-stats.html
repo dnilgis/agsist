@@ -322,8 +322,9 @@
         <div class="ts-toggle" role="group" aria-label="Select crop">
           <button class="ts-btn active" data-cmd="corn" onclick="rankStates('corn')"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn</button>
           <button class="ts-btn" data-cmd="bean" onclick="rankStates('bean')"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg> Soybeans</button>
-          <button class="ts-btn" data-cmd="wheat" onclick="rankStates('wheat')"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> Wheat</button>
+          <button class="ts-btn" data-cmd="wheat" onclick="rankStates('wheat')"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> Winter Wheat</button>
         </div>
+        <div id="ts-wheat-note" style="display:none;font-size:.84rem;color:var(--text-muted);line-height:1.55;margin:.5rem 0 0">Winter wheat only &mdash; USDA reports spring and durum wheat separately, so North Dakota (the second-largest wheat state), Minnesota and much of Montana&rsquo;s crop are not counted here.</div>
         <div class="ts-list" id="ts-list"></div>
         <p class="snap-src" id="ts-src" style="margin-top:.85rem"></p>
         <hr class="qs-hr">
@@ -732,6 +733,14 @@
 
   /* ---- top producing states (state-stats.json) ---- */
   function rankStates(cmd){
+    // The wheat series is WHEAT, WINTER only, so the spring and durum states
+    // are understated or missing entirely - North Dakota is the #2 wheat state
+    // in the country and does not appear. Say so rather than letting the
+    // heading "Top Producing States" imply all wheat.
+    (function(){
+      var note = document.getElementById('ts-wheat-note');
+      if (note) note.style.display = (cmd === 'wheat') ? 'block' : 'none';
+    })();
     if (!window.__ss) return;
     document.querySelectorAll('.ts-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.cmd === cmd); });
     var ss = window.__ss.stateStats || {};

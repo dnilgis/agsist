@@ -6,6 +6,72 @@
       "date": "2026-08-08",
       "items": [
         {
+          "tag": "fixed",
+          "page": "/",
+          "name": "Email signup — every page",
+          "text": "The signup bar that appears on every page has never worked. It sent the address in a format the server could not read, got rejected, and showed \"You're in\" anyway. Anyone who signed up through that bar was told they were subscribed and was not. It works now, and it will no longer claim success unless the server actually accepted the address. If you signed up and never got a briefing, that is why — please try again."
+        },
+        {
+          "tag": "fixed",
+          "page": "/",
+          "name": "Text message signup removed",
+          "text": "The homepage offered a \"Text Me Daily\" option. There is no text service — no sender, no number, nothing behind it — and the phone numbers entered were discarded. It has been removed rather than left up promising something that does not exist."
+        },
+        {
+          "tag": "fixed",
+          "page": "/cash-rent",
+          "name": "Cash Rent by County",
+          "text": "For 457 of 2,926 counties — those with too few yield years to fit a trend — the page crashed halfway through drawing and left the previous county's rent ratio, charts and lease link sitting under the new county's name. Pick an Iowa county then an Alabama one and you were reading Iowa's numbers under Alabama's heading. Also fixed the board price, which had never filled in, leaving the headline ratio blank on every visit."
+        },
+        {
+          "tag": "fixed",
+          "page": "/cash-lease",
+          "name": "Cash Farm Lease",
+          "text": "Ohio's rule was backwards. The page said a written lease governs itself; the statute covers any farm lease — written or oral — that has no termination clause, and requires written notice by September 1. A landowner following our page could have missed the deadline and renewed for another year. Arkansas and South Dakota now also state that those statutes apply to oral leases only."
+        },
+        {
+          "tag": "fixed",
+          "page": "/drought-monitor",
+          "name": "Drought Monitor",
+          "text": "The page said the Livestock Forage Program needs 8 consecutive weeks of D2 drought. USDA lowered that to 4 weeks in July, retroactive to January 1 — so producers who read this page were told they did not qualify when they may well have."
+        },
+        {
+          "tag": "fixed",
+          "page": "/farm-bill",
+          "name": "Farm Bill alerts",
+          "text": "The \"notify me\" form dumped readers onto a page of raw code and quietly signed them up for the general briefing instead of farm bill alerts. It now works in place and says plainly that farm bill news rides along in the daily briefing."
+        },
+        {
+          "tag": "fixed",
+          "page": "/usda-quick-stats",
+          "name": "Top Producing States",
+          "text": "The wheat ranking pulls winter wheat only, which left out North Dakota — the second-largest wheat state in the country — and Minnesota entirely. It now says winter wheat on the tab and explains what is missing."
+        },
+        {
+          "tag": "fixed",
+          "page": "/corn-futures-prices",
+          "name": "Weekend market clock",
+          "text": "On Saturdays the grain pages said the board reopens a full day later than it does. Wrong every Saturday of the year."
+        },
+        {
+          "tag": "fixed",
+          "page": "/privacy",
+          "name": "Privacy Policy",
+          "text": "The policy said your location never leaves your browser and is never stored. That was not true: weather, place names and cash bids all require sending coordinates out, and hail alerts store your chosen spot alongside your email so we can tell you it hailed there. It also named a company we do not use and left out the one that actually handles signups. All corrected, and the list of what the site keeps in your browser is now the real list."
+        },
+        {
+          "tag": "fixed",
+          "page": "/sponsor",
+          "name": "Sponsor pricing",
+          "text": "A year of the $100/week ribbon was quoted as $7,800; it is $5,200. The Supporter tier read $25 here and $35 in the footer strip it actually buys. Term length said month-to-month in one place and week-to-week in another. All reconciled."
+        },
+        {
+          "tag": "improved",
+          "page": "/",
+          "name": "Header menus",
+          "text": "On shorter laptop screens the Markets menu ran off the bottom of the page with no way to reach the rest of it. The menus now fit the screen and scroll."
+        },
+        {
           "tag": "new",
           "page": "/crop-tour",
           "name": "Pro Farmer Crop Tour",

@@ -70,7 +70,7 @@
         {
           "@type": "Question",
           "name": "What is D2 drought and what does it mean for farmers?",
-          "acceptedAnswer": { "@type": "Answer", "text": "D2 is Severe Drought on the US Drought Monitor scale. At D2 and above, crop and pasture losses become likely and water restrictions may begin. D2 for 8 consecutive weeks triggers the Livestock Forage Disaster Program (LFP). D3 (Extreme) and D4 (Exceptional) mean widespread losses and major economic impacts for agriculture. Revenue and rainfall-index insurance products use different mechanisms and are not triggered directly by USDM categories." }
+          "acceptedAnswer": { "@type": "Answer", "text": "D2 is Severe Drought on the US Drought Monitor scale. At D2 and above, crop and pasture losses become likely and water restrictions may begin. D2 for 4 consecutive weeks triggers the Livestock Forage Disaster Program (LFP) &mdash; USDA lowered that from 8 weeks in July 2026, retroactive to January 1, so a county that fell short under the old rule may qualify now. D3 (Extreme) and D4 (Exceptional) mean widespread losses and major economic impacts for agriculture. Revenue and rainfall-index insurance products use different mechanisms and are not triggered directly by USDM categories." }
         },
         {
           "@type": "Question",
@@ -80,7 +80,7 @@
         {
           "@type": "Question",
           "name": "Does drought monitor status affect crop insurance?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Different USDA programs work differently. The Livestock Forage Disaster Program (LFP) is triggered directly by USDM status: D2 for 8 consecutive weeks, any D3, or D4 for 4 weeks triggers payments. The Pasture, Rangeland, and Forage (PRF) rainfall-index program does NOT use USDM categories — it pays on grid precipitation deviation from the historical norm. Whole-Farm Revenue Protection (WFRP) pays on year-end revenue shortfall from any covered cause, not USDM status. Contact your crop insurance agent for program-specific details." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Different USDA programs work differently. The Livestock Forage Disaster Program (LFP) is triggered directly by USDM status: D2 for 4 consecutive weeks, any D3, or D4 for 4 weeks triggers payments. The Pasture, Rangeland, and Forage (PRF) rainfall-index program does NOT use USDM categories — it pays on grid precipitation deviation from the historical norm. Whole-Farm Revenue Protection (WFRP) pays on year-end revenue shortfall from any covered cause, not USDM status. Contact your crop insurance agent for program-specific details." }
         },
         {
           "@type": "Question",
@@ -306,7 +306,7 @@ button,a,[role="button"] { touch-action: manipulation; }
     </div>
     <div class="dm-card">
       <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-landmark"/></svg> Crop Insurance &amp; Drought</h3>
-      <p>Different USDA programs respond to drought in different ways. <strong style="color:var(--text)">LFP</strong> (Livestock Forage Disaster Program) is triggered directly by the USDM: D2 for 8 consecutive weeks, any D3, or D4 for 4 weeks (not necessarily consecutive) in your county. <strong style="color:var(--text)">PRF</strong> (Pasture/Rangeland/Forage) is a rainfall-index product and does not use USDM categories — it pays when grid precipitation falls below the historical norm. <strong style="color:var(--text)">WFRP</strong> (Whole-Farm Revenue Protection) pays when year-end revenue falls below your insured revenue from any covered cause, not on USDM status. Check the <a href="https://droughtmonitor.unl.edu/fsa/Home.aspx" target="_blank" rel="noopener" style="color:var(--gold)">FSA LFP eligibility tool</a> for your county, and ask your crop insurance agent for specifics on your coverage.</p>
+      <p>Different USDA programs respond to drought in different ways. <strong style="color:var(--text)">LFP</strong> (Livestock Forage Disaster Program) is triggered directly by the USDM: D2 for 4 consecutive weeks, any D3, or D4 for 4 weeks (not necessarily consecutive) in your county. <strong style="color:var(--text)">PRF</strong> (Pasture/Rangeland/Forage) is a rainfall-index product and does not use USDM categories — it pays when grid precipitation falls below the historical norm. <strong style="color:var(--text)">WFRP</strong> (Whole-Farm Revenue Protection) pays when year-end revenue falls below your insured revenue from any covered cause, not on USDM status. Check the <a href="https://droughtmonitor.unl.edu/fsa/Home.aspx" target="_blank" rel="noopener" style="color:var(--gold)">FSA LFP eligibility tool</a> for your county, and ask your crop insurance agent for specifics on your coverage.</p>
     </div>
     <div class="dm-card">
       <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-map"/></svg> Regional Drought Patterns</h3>
@@ -322,7 +322,7 @@ button,a,[role="button"] { touch-action: manipulation; }
   <div class="dm-outlook">
     <a href="https://www.cpc.ncep.noaa.gov/products/expert_assessment/sdo_summary.php" target="_blank" rel="noopener"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> CPC Drought Outlook</a>
     <a href="https://droughtmonitor.unl.edu/Maps/MapArchive.aspx" target="_blank" rel="noopener"><svg class="ic-sp" aria-hidden="true"><use href="#sp-folder"/></svg> USDM Map Archive</a>
-    <a href="https://www.nass.usda.gov/Publications/Todays_Reports/reports/prog0426.pdf" target="_blank" rel="noopener"><svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg> Crop Progress Report</a>
+    <a href="https://www.nass.usda.gov/Publications/National_Crop_Progress/" target="_blank" rel="noopener"><svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg> Crop Progress Report</a>
     <a href="/cash-bids"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Cash Bids</a>
     <a href="/markets"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> Grain Prices</a>
   </div>
@@ -350,7 +350,7 @@ button,a,[role="button"] { touch-action: manipulation; }
   function nextThursday() {
     var d = new Date();
     var day = d.getDay(); // 0=Sun,4=Thu
-    var diff = (4 - day + 7) % 7 || 7;
+    var diff = (4 - day + 7) % 7;  // 0 on a Thursday: today IS release day, do not skip a week
     d.setDate(d.getDate() + diff);
     return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
   }

@@ -1010,7 +1010,7 @@ function computeMarketSession(){
 
   // Saturday: closed all day until Sunday 7pm
   if(dow===6){
-    var minsToSunOpen=(24-hr)*60-mn+24*60+OVN_OPEN; // rest of Sat + Sun until 7pm
+    var minsToSunOpen=(24-hr)*60-mn+OVN_OPEN; // rest of Sat + Sun until 7pm
     return {state:'closed',label:'Weekend',sub:'reopens Sun '+fmtUntil(minsToSunOpen)};
   }
   // Sunday: closed until 7pm CT

@@ -383,8 +383,15 @@
     return fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});
   }
   function boardPrice(){
-    // prices.json carries grain in CENTS; soybean key is `beans`.
-    try{ var c=prices&&prices.corn; if(c&&c.last!=null) return c.last/100; }catch(e){}
+    // prices.json shape is {quotes:{<key>:{close: cents}}}. This used to read
+    // prices.corn.last - neither of which exists - so the price box never
+    // filled and the headline rent-to-revenue ratio was blank on every load.
+    // Prefer the real nearby contract, then new-crop December.
+    try{
+      var q=prices&&prices.quotes; if(!q) return null;
+      var c=q['corn-nearby']||q['corn-dec']||q.corn;
+      if(c&&c.close!=null) return c.close/100;
+    }catch(e){}
     return null;
   }
 
@@ -553,7 +560,7 @@
 
     // seed the calculator
     var cy=(c.yield&&c.yield.corn)||null;
-    if(cy){
+    if(cy&&cy.trend!=null&&cy.r2!=null){
       $('cr-yield').value=cy.trend;
       $('cr-yield-h').textContent='County trend \u00b7 R\u00b2 '+cy.r2.toFixed(2)+' \u00b7 '+cy.n+' yrs';
       $('cr-yield-h').className='cr-in-h'+(cy.r2<0.3?' warn':'');

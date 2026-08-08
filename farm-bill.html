@@ -494,11 +494,9 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
         </div>
       </div>
       <div>
-        <form class="nf" action="https://agsist-subs.dnilgis.workers.dev/subscribe" method="POST"
-              onsubmit="if(typeof gtag==='function')gtag('event','farm_bill_subscribe',{cta_source:'notify_block'})">
+        <form class="nf" id="fb-notify">
           <input type="email" name="email" required placeholder="you@farm.com" aria-label="Email address">
-          <input type="hidden" name="_subject" value="Farm Bill alert signup">
-          <input type="hidden" name="list" value="farm-bill-alerts">
+                    <input type="hidden" name="list" value="farm-bill-alerts">
           <button type="submit">Notify me</button>
         </form>
         <p class="nf-note">No charge. Unsubscribe any time. I never sell email addresses.</p>
@@ -564,5 +562,32 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
 })();
 </script>
 <script src="/components/loader.js?v=15" defer></script>
+<script>
+(function(){
+  var f=document.getElementById('fb-notify'); if(!f)return;
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var em=f.querySelector('input[type="email"]'); if(!em||em.value.indexOf('@')<1)return;
+    var btn=f.querySelector('button,[type="submit"]');
+    var lbl=btn?btn.textContent:''; if(btn){btn.disabled=true;btn.textContent='Sending\u2026';}
+    // This used to be a native POST, which navigated the reader to the worker's
+    // raw {"ok":true} body. The `list` field was a Formspree leftover the worker
+    // never read, so farm-bill signups silently joined the general briefing.
+    fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:em.value.trim(),source:'farm-bill'})
+    }).then(function(r){
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      f.innerHTML='<p style="margin:0;color:var(--green)">Subscribed. Farm Bill movement rides along in the daily briefing &mdash; there is no separate farm-bill-only list yet, so this signs you up for the briefing.</p>';
+      if(typeof gtag==='function')gtag('event','email_signup',{source:'farm-bill'});
+    }).catch(function(){
+      if(btn){btn.disabled=false;btn.textContent=lbl;}
+      var w=f.querySelector('.fb-warn');
+      if(!w){w=document.createElement('p');w.className='fb-warn';w.style.cssText='margin:.4rem 0 0;font-size:.85rem;color:var(--gold)';f.appendChild(w);}
+      w.textContent='That did not go through. Try again, or email sig@farmers1st.com.';
+    });
+  });
+})();
+</script>
 </body>
 </html>

@@ -133,7 +133,7 @@
 
       <h2>What Is Collected</h2>
       <ul>
-        <li><strong>Location</strong> — your browser's geolocation or a ZIP code you type in. Used to show local weather and cash bids. Never leaves your browser, never hits my servers.</li>
+        <li><strong>Location</strong> — your browser's geolocation or a ZIP code you type in. Used to show local weather and cash bids. For those features your coordinates are sent to the services that answer the question &mdash; Open-Meteo for weather, OpenStreetMap Nominatim to turn coordinates into a place name, and a Cloudflare Worker that fetches nearby cash bids &mdash; and your last location is kept in your browser&rsquo;s local storage so the site remembers it. Hail alerts are different: the coordinates you pick are stored on the server alongside your email address, because there is no other way to tell you it hailed there.</li>
         <li><strong>Email</strong> — only if you subscribe to the AGSIST Daily or FFAI newsletter. Used to send you exactly what you signed up for.</li>
         <li><strong>Analytics</strong> — anonymous page views via Google Analytics 4. No names, no personal info.</li>
       </ul>
@@ -147,12 +147,12 @@
       <ul>
         <li><strong>Google Analytics 4</strong> — anonymous usage stats</li>
         <li><strong>Open-Meteo</strong> — weather data</li>
-        <li><strong>Formspree</strong> — processes signup forms</li>
+        <li><strong>Cloudflare (Workers and KV &mdash; where email signups and hail-alert locations are stored)</strong> — processes signup forms</li>
         <li><strong>CoinGecko</strong> — cryptocurrency prices</li>
       </ul>
 
       <h2>Cookies &amp; Local Storage</h2>
-      <p>AGSIST uses minimal browser storage &mdash; no advertising cookies, no cross-site tracking, no retargeting pixels.</p>
+      <p>AGSIST uses no advertising cookies, no cross-site tracking and no retargeting pixels. It does keep a fair amount in your browser&rsquo;s own local storage so the tools remember your work: your last location and ZIP, your break-even and grain-bin inputs, saved Field Scout fields and snapshots, GDU and spray settings, your theme, and whether you have signed up or dismissed the signup bar. None of it is sent anywhere except where this page says so, and clearing your browser data removes all of it. One first-party cookie, agsist_subscribed, remembers for two years that you already signed up so the bar stops appearing.</p>
       <ul>
         <li><strong>Theme preference</strong> &mdash; <code>agsist-theme</code> in <code>localStorage</code> stores your dark/light choice. It never leaves your browser and holds no personal data.</li>
         <li><strong>Google Analytics</strong> &mdash; <code>_ga</code> (2-year expiry, distinguishes users) and <code>_ga_*</code> (session persistence). No personally identifiable information. Opt out with the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics Opt-out Add-on</a>.</li>
@@ -160,7 +160,7 @@
       <p>You can clear all cookies and localStorage anytime in your browser settings; clearing localStorage resets your theme to dark.</p>
 
       <h2>Data Retention</h2>
-      <p>Location data: never stored. Email: kept until you unsubscribe. Analytics: retained per Google's defaults (14 months).</p>
+      <p>Location data: your last location stays in your browser until you clear it. Hail-alert locations are stored on the server with your email until you unsubscribe, then deleted. Email: kept until you unsubscribe. Analytics: retained per Google's defaults (14 months).</p>
 
       <h2>Your Rights</h2>
       <p>Want off the email list? Reply "unsubscribe" to any AGSIST email, or contact me directly. Want anything else deleted? Same deal — just ask.</p>

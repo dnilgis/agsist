@@ -998,7 +998,7 @@ function computeMarketSession(){
   }
 
   if(dow===6){
-    var minsToSunOpen=(24-hr)*60-mn+24*60+OVN_OPEN;
+    var minsToSunOpen=(24-hr)*60-mn+OVN_OPEN;
     return {state:'closed',label:'Weekend',sub:'reopens Sun '+fmtUntil(minsToSunOpen)};
   }
   if(dow===0){

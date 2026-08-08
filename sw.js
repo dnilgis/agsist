@@ -26,7 +26,7 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 20;  // v20 2026-08-08: /crop-tour + audit fixes (elevators form, storage-crunch, planting-date, milk, tools, fertilizer) + header/footer nav; was: loader/styles gap upload
+var CACHE_VERSION = 21;  // v21 2026-08-08: signup bar actually works (was silently dropping every address), SMS removed, nav panels scroll, cash-rent/lease/drought/privacy/sponsor fixes; was: crop-tour + audit round 1
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;

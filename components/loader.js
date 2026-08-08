@@ -16,7 +16,7 @@
   // Component cache version. Bump on every chrome deploy so browsers fetch the
   // new header/footer; between deploys the files cache normally (no refetch /
   // no nav-flash on each page navigation).
-  var CV = '17';
+  var CV = '18';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
 
   function loadComponent(id, path, onDone) {
@@ -580,18 +580,39 @@
       e.preventDefault();
       var email = bar.querySelector('.agsb-input').value.trim();
       if (email.indexOf('@') < 1) return;
-      try {
-        var exp = new Date(); exp.setFullYear(exp.getFullYear() + 2);
-        document.cookie = 'agsist_subscribed=1;expires=' + exp.toUTCString() + ';path=/;SameSite=Lax';
-        localStorage.setItem('agsist_subscribed', '1');
-      } catch (e2) {}
+      var src = 'bar-' + p.slice(1, 40);
+      var btn = bar.querySelector('.agsb-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending\u2026'; }
+      // WITHOUT this Content-Type the body goes out as text/plain, the worker
+      // falls through to formData(), throws, and stores NOTHING while the page
+      // says "you're in". Every other signup on the site sets it; this one did
+      // not, so the sitewide bar silently dropped every address it collected.
       fetch('https://agsist-subs.dnilgis.workers.dev/subscribe', {
         method: 'POST',
-        body: JSON.stringify({ email: email, source: 'bar-' + p.slice(1, 40) })
-      }).catch(function () {});
-      try { if (typeof gtag === 'function') gtag('event', 'email_signup', { source: 'bar-' + p.slice(1, 40) }); } catch (e3) {}
-      bar.innerHTML = '<span class="agsb-ok">&#10003; You\'re in — the briefing lands before the market open, weekdays. Check spam once.</span>';
-      setTimeout(function () { bar.classList.remove('agsb--in'); document.body.classList.remove('agsb-open'); setTimeout(function () { bar.remove(); }, 400); }, 4500);
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, source: src })
+      }).then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        // Only claim success, mark the visitor subscribed, and stop showing the
+        // bar once the server has actually accepted the address.
+        try {
+          var exp = new Date(); exp.setFullYear(exp.getFullYear() + 2);
+          document.cookie = 'agsist_subscribed=1;expires=' + exp.toUTCString() + ';path=/;SameSite=Lax';
+          localStorage.setItem('agsist_subscribed', '1');
+        } catch (e2) {}
+        try { if (typeof gtag === 'function') gtag('event', 'email_signup', { source: src }); } catch (e3) {}
+        bar.innerHTML = '<span class="agsb-ok">&#10003; You\'re in — the briefing lands before the market open, weekdays. Check spam once.</span>';
+        setTimeout(function () { bar.classList.remove('agsb--in'); document.body.classList.remove('agsb-open'); setTimeout(function () { bar.remove(); }, 400); }, 4500);
+      }).catch(function () {
+        if (btn) { btn.disabled = false; btn.textContent = 'Get it free'; }
+        var warn = bar.querySelector('.agsb-warn');
+        if (!warn) {
+          warn = document.createElement('span');
+          warn.className = 'agsb-warn';
+          bar.appendChild(warn);
+        }
+        warn.textContent = 'That did not go through. Try again, or email sig@farmers1st.com and I will add you by hand.';
+      });
     });
   }
   timer = setTimeout(build, 25000);
