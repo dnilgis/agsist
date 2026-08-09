@@ -1404,12 +1404,16 @@ loadGrainPrices();
 function calcNC(){
   var corn=parseFloat(document.getElementById('nc-corn').value)||0;
   var fertSel=document.getElementById('nc-fert');
-  var pct=parseFloat(fertSel.value)||46;
-  if(pct===0){pct=parseFloat(document.getElementById('nc-custom-pct').value)||46;}
+  // The Custom option carries value="0", and 0 is falsy, so `||46` swallowed it and
+  // the next line could never fire. Every custom blend was priced as urea at 46% N.
+  var isCustom=fertSel.value==='0';
+  var pct=isCustom?parseFloat(document.getElementById('nc-custom-pct').value)
+                 :parseFloat(fertSel.value);
+  if(!isFinite(pct)||pct<=0)pct=isCustom?0:46;
   document.getElementById('nc-custom-wrap').style.display=(fertSel.value==='0')?'flex':'none';
   var ton=parseFloat(document.getElementById('nc-fertprice').value)||0;
-  var pplb=ton/(2000*pct/100);
-  var ratio=corn>0?pplb/corn:0;
+  var pplb=pct>0?ton/(2000*pct/100):0;
+  var ratio=(corn>0&&pct>0)?pplb/corn:0;
   var col,interp;
   if(ratio<0.075){col='0.05';interp='Low N:Corn ratio — use high-end MRTN rates';}
   else if(ratio<0.125){col='0.10';interp='Typical ratio — moderate MRTN rates';}
@@ -1603,9 +1607,11 @@ function updateMV(){
   s('mv-agro-ac','$'+r2(agroAc)+'/ac');
   s('mv-app-cost-row','-$'+r2(appCost)+'/ac');
   var netEl=document.getElementById('mv-net-ac');
-  if(netEl){netEl.textContent='$'+r2(netAc)+'/ac';netEl.style.color=netAc>=0?'var(--green)':'#e05c5c';}
-  s('mv-field-total','$'+Math.round(fieldTotal).toLocaleString());
-  s('mv-field-sub',acres+' acres × $'+r2(netAc)+'/ac net');
+  // Was emitting "$-10.66/ac" and "$-2,132" one row under a correctly-signed "-$20.00".
+  var fS=function(v,dec){var n=dec?r2(Math.abs(v)):Math.round(Math.abs(v)).toLocaleString();return (v<0?'-$':'$')+n;};
+  if(netEl){netEl.textContent=fS(netAc,1)+'/ac';netEl.style.color=netAc>=0?'var(--green)':'#e05c5c';}
+  s('mv-field-total',fS(fieldTotal,0));
+  s('mv-field-sub',acres+' acres × '+fS(netAc,1)+'/ac net');
   var res=document.getElementById('mv-results');if(res)res.style.display='block';
 }
 ['mv-type','mv-timing','mv-rate','mv-acres','mv-appcost','mv-n-price','mv-p-price','mv-k-price'].forEach(function(id){

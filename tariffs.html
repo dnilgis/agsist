@@ -52,7 +52,7 @@
       "description": "Current tariff rates on US corn, soybean, wheat, and pork exports to China, Canada, Mexico, and the EU. Updated as trade policy changes.",
       "inLanguage": "en-US",
       "datePublished": "2025-03-01",
-      "dateModified": "2026-06-16",
+      "dateModified": "2026-08-08",
       "author": { "@type": "Person", "name": "Sigurd Lindquist", "email": "sig@farmers1st.com" },
       "publisher": { "@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/" },
       "isPartOf": { "@type": "WebSite", "@id": "https://agsist.com/#website", "url": "https://agsist.com/", "name": "AGSIST" },
@@ -305,10 +305,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
     <p class="tariff-page-sub">Current tariff rates on US corn, soybean, wheat, and pork exports to key markets. Updated when policy changes. These rates directly affect grain basis, export demand, and cash prices at your elevator.</p>
   </div>
 
-  <div class="tariff-status-banner elevated" id="tariff-status-banner">
+  <!-- Neutral until the data says otherwise. This shipped hardcoded to "Trade War Active"
+       with a red siren while data/tariffs.json said "Truce Holding" — and that is what
+       crawlers, AI scrapers and social unfurls read, since they never run the fetch. -->
+  <div class="tariff-status-banner" id="tariff-status-banner">
     <div class="tsb-icon" id="tsb-icon"><svg class="ic" aria-hidden="true"><use href="#i-siren"/></svg></div>
     <div class="tsb-body">
-      <div class="tsb-label elevated" id="tsb-label">Trade War Active</div>
+      <div class="tsb-label" id="tsb-label">Checking current status</div>
       <div class="tsb-note" id="tsb-note">Loading current status…</div>
       <div class="tsb-date" id="tsb-date">Updated —</div>
     </div>
@@ -488,8 +491,17 @@ fetch('/data/tariffs.json')
 
   })
   .catch(function(){
+    // index.html's widget already resets its badge on failure; this page did not, so an
+    // outage left an unqualified claim about the state of the trade war on screen.
     var note = document.getElementById('tsb-note');
     if(note) note.textContent = 'Tariff data unavailable — check back shortly.';
+    var lab = document.getElementById('tsb-label');
+    if(lab){ lab.textContent = 'Status unavailable'; lab.classList.remove('elevated'); }
+    var ban = document.getElementById('tariff-status-banner');
+    if(ban) ban.classList.remove('elevated');
+    var dt = document.getElementById('tsb-date'); if(dt) dt.textContent = '';
+    var tl = document.getElementById('tariff-timeline');
+    if(tl) tl.innerHTML = '<li style="color:var(--text-muted)">Timeline unavailable — try again shortly.</li>';
     var tbody = document.getElementById('tariff-tbody');
     if(tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:0.795rem">Data unavailable — try refreshing.</td></tr>';
   });

@@ -94,7 +94,8 @@
       <div class="ib-field">
         <label for="ib-pp">Projected price ($/bu)</label>
         <input id="ib-pp" type="number" inputmode="decimal" min="0" step="0.01" value="4.62">
-        <p class="hint">From the February discovery period. <a href="/harvest-price-tracker" style="color:var(--ib-gold2)">See current</a>.</p>
+        <p class="hint"><span id="ib-pp-hint">From the February discovery period.</span><span id="ib-pp-link"> <a href="/harvest-price-tracker" style="color:var(--ib-gold2)">See current</a>.</span></p>
+        <p class="hint" id="ib-wheat-warn" hidden style="color:var(--ib-gold2);margin-top:.35rem">No verified wheat track on the tracker yet.</p>
       </div>
     </div>
     <button class="ib-btn" id="ib-calc" type="button">Calculate my floor</button>
@@ -125,13 +126,13 @@
   </div>
 
   <h2>Harvest-price upside</h2>
-  <p class="ib-lede" style="margin-bottom:.8rem">RP recalculates your guarantee on the <em>higher</em> of the projected or the October harvest price. Enter a harvest price to see whether your guarantee escalates.</p>
+  <p class="ib-lede" style="margin-bottom:.8rem">RP recalculates your guarantee on the <em>higher</em> of the projected or the harvest price (October for corn and soybeans). Enter a harvest price to see whether your guarantee escalates.</p>
   <div class="ib-card">
     <div class="ib-grid">
       <div class="ib-field">
         <label for="ib-hp">Harvest price ($/bu)</label>
         <input id="ib-hp" type="number" inputmode="decimal" min="0" step="0.01" placeholder="e.g. 4.85">
-        <p class="hint">October discovery average for the same contract.</p>
+        <p class="hint" id="ib-hp-hint">October discovery average for the same contract.</p>
       </div>
     </div>
     <div class="ib-readout" id="ib-hp-readout" hidden></div>
@@ -192,10 +193,48 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
   var fmtUSD=function(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});};
   var fmtBu=function(n){return n.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:1})+' bu';};
 
+  function staleOut(){
+    // Panel 1 belongs to the inputs it was calculated from. Once any of them move it is
+    // no longer an answer, so it goes away rather than sitting above a live panel 2
+    // computed from different numbers.
+    var o=$('ib-out'), r=$('ib-readout');
+    if(o&&!o.hidden){o.hidden=true;}
+    if(r&&!r.hidden){r.hidden=true;}
+  }
+  ['ib-aph','ib-cov','ib-pp','ib-crop'].forEach(function(id){
+    var el=$(id); if(!el)return;
+    el.addEventListener('input',staleOut);
+    el.addEventListener('change',staleOut);
+  });
+
   $('ib-crop').addEventListener('change',function(){
     var pp=this.options[this.selectedIndex].getAttribute('data-pp');
     if(pp)$('ib-pp').value=pp;
+    var hp=$('ib-hp'); if(hp){hp.value='';var hro=$('ib-hp-readout'); if(hro)hro.hidden=true;}
+    cropCopy();
   });
+
+  // Nothing in this file used to branch on crop except the price copy above, so a wheat
+  // grower was told to look up a February projected price and an October harvest price.
+  // Neither exists for wheat: it keys off the July contract, discovered in a late-summer
+  // window before planting, per harvest-price-tracker.html. We do not have those dates
+  // verified, so the page now says so instead of printing the corn ones.
+  function cropCopy(){
+    var c=$('ib-crop')?$('ib-crop').value:'corn';
+    var isW=(c==='wheat');
+    var t={
+      pphint: isW ? 'Wheat discovers off the July contract in a late-summer window, not February. The $6.00 shown is a placeholder — check your policy.'
+                  : 'From the February discovery period.',
+      hplede: isW ? 'the harvest price for your wheat contract'
+                  : 'the October harvest price'
+    };
+    var a=$('ib-pp-hint'); if(a)a.innerHTML=t.pphint;
+    var lk=$('ib-pp-link'); if(lk)lk.style.display=isW?'none':'';
+    var b=$('ib-hp-hint'); if(b)b.innerHTML=isW
+      ? 'Harvest-price discovery average for your wheat contract. Wheat does not use the October window.'
+      : 'October discovery average for the same contract.';
+    var w=$('ib-wheat-warn'); if(w)w.hidden=!isW;
+  }
 
   function compute(){
     var aph=parseFloat($('ib-aph').value);
@@ -236,6 +275,8 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
     }
     ro.hidden=false;
   });
+
+  cropCopy();
 
   document.querySelectorAll('#ib-faq details').forEach(function(d){
     d.addEventListener('toggle',function(){if(d.open)gaEvent('faq_open',{page:'presell'});});

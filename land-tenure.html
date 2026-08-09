@@ -274,9 +274,13 @@
     var yrs=(data.years||[]).map(String);
     h+='<div style="margin-top:8px">';
     for(var i=0;i<yrs.length;i++){
+      // Bar length is the percentage, full stop. It used to be Math.min(96, v*1.2), which
+      // meant every county at 80% rented or above drew an identical full-length bar - an
+      // 80% county and a 95% county were indistinguishable - and every bar below that was
+      // stretched 20% longer than the number printed beside it.
       var p=c.y[yrs[i]]; var v=pct(p);
       if(v==null){ h+='<div class="lt-bar"><span class="y">'+yrs[i]+'</span><span class="mut2" style="">not published for this county</span></div>'; }
-      else { h+='<div class="lt-bar"><span class="y">'+yrs[i]+'</span><div class="b" style="width:'+Math.min(96,v*1.2).toFixed(1)+'%"></div><span class="v">'+v.toFixed(1)+'%</span></div>'; }
+      else { h+='<div class="lt-bar"><span class="y">'+yrs[i]+'</span><div class="b" style="width:'+Math.max(0,Math.min(100,v)).toFixed(1)+'%"></div><span class="v">'+v.toFixed(1)+'%</span></div>'; }
     }
     h+='</div><div style="font-size:0.78rem;color:#5a6467;margin-top:6px">Share of land in farms rented from others, each census. <a href="/cash-rent" style="color:#d4a23f">See this county\'s cash rent &rarr;</a></div>';
     var el=$('lt-panel'); el.innerHTML=h; el.style.display='block';

@@ -521,9 +521,13 @@
   function syncDepth(){
     var maxH=0;
     var sh=shape();
-    if(sh==='round')   maxH=parseFloat($('height').value)||24;
-    else if(sh==='hopper') maxH=parseFloat($('hcylheight').value)||18;
-    else               maxH=parseFloat($('rheight').value)||10;
+    // A blank or zero height means the operator has not told us the bin size yet.
+    // It does NOT mean 24 ft. This used to report a FULL 24 ft bin of grain while
+    // the eave-height field on screen read 0 ft.
+    var hv=function(id){var v=parseFloat($(id).value); return (isFinite(v)&&v>0)?v:0;};
+    if(sh==='round')   maxH=hv('height');
+    else if(sh==='hopper') maxH=hv('hcylheight');
+    else               maxH=hv('rheight');
     $('grain-depth').dataset.maxH=maxH;
     showDepth();
   }
@@ -532,7 +536,7 @@
 
   function showDepth(){
     var pct=parseFloat($('grain-depth').value)||0;
-    var maxH=parseFloat($('grain-depth').dataset.maxH)||24;
+    var maxH=parseFloat($('grain-depth').dataset.maxH)||0;
     var ft=(pct/100*maxH).toFixed(1);
     var pctLabel=Math.round(pct)+'%';
     $('depth-val').textContent=ft+' ft \u2022 '+pctLabel;
@@ -544,7 +548,7 @@
 
   function grainFt(){
     var pct=parseFloat($('grain-depth').value)||0;
-    var maxH=parseFloat($('grain-depth').dataset.maxH)||24;
+    var maxH=parseFloat($('grain-depth').dataset.maxH)||0;
     return pct/100*maxH;
   }
 
@@ -595,7 +599,12 @@
     var rawBu=totVol*BU_PER_CUFT;
     var packedBu=rawBu*(1+pack/100);
     var shrinkFac=parseFloat($('shrinkFactor').value); if(isNaN(shrinkFac)||shrinkFac<0) shrinkFac=1.3;
-    var shrinkPct=Math.max(0,(moistIn-cr.std)*shrinkFac);
+    // Shrink follows the points you actually remove (in -> target), the same points
+    // the drying charge bills for. This read (moistIn - crop standard), so drying corn
+    // 20% -> 13% billed 7 points of drying but only shrank 5, leaving bushels on the
+    // report that no longer exist. moistTgt already falls back to cr.std when blank,
+    // so a user who never touches the target field sees the old behaviour.
+    var shrinkPct=Math.max(0,(moistIn-moistTgt)*shrinkFac);
     var dryBu=packedBu*(1-shrinkPct/100);
     var lostBu=packedBu-dryBu;
     var weightT=packedBu*cr.lb/2000;

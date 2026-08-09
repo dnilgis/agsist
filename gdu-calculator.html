@@ -447,17 +447,17 @@ button,a,[role="button"]{touch-action:manipulation;}
     <thead><tr><th>Stage</th><th>GDUs</th><th>Key Event</th><th>Management</th></tr></thead>
     <tbody>
       <tr><td>VE</td><td>~100</td><td>Emergence</td><td>Stand count; scout black cutworm V1&ndash;V3</td></tr>
-      <tr><td>V3</td><td>~200</td><td>Growing point below soil</td><td>Side-dress N window opens (V3&ndash;V6 optimal)</td></tr>
-      <tr><td>V5</td><td>~350</td><td>Ear shoots initiated</td><td>Row number per ear determined here</td></tr>
+      <tr><td>V2</td><td>~200</td><td>Growing point below soil</td><td>Side-dress N window opens (V3&ndash;V6 optimal)</td></tr>
+      <tr><td>V4</td><td>~345</td><td>Ear shoots initiated</td><td>Row number per ear determined here</td></tr>
       <tr><td>V6</td><td>~475</td><td>Growing point above soil</td><td>Last pre-emerge herbicide; rapid growth begins</td></tr>
-      <tr><td>V8</td><td>~700</td><td>Kernel rows determined</td><td>S and micronutrient uptake peaks; ECB scouting</td></tr>
-      <tr><td>V10</td><td>~900</td><td>Ear size potential being set</td><td>Tassel forming inside stalk</td></tr>
+      <tr><td>V8</td><td>~610</td><td>Kernel rows determined</td><td>S and micronutrient uptake peaks; ECB scouting</td></tr>
+      <tr><td>V10</td><td>~740</td><td>Ear size potential being set</td><td>Tassel forming inside stalk</td></tr>
       <tr class="hi"><td>VT</td><td>~1135</td><td>Tasseling &mdash; pollen shed</td><td>Critical drought window; fungicide timing</td></tr>
       <tr class="hi"><td>R1</td><td>~1400</td><td>Silking</td><td>Most drought-sensitive stage; rootworm silk threshold</td></tr>
-      <tr><td>R2</td><td>~1560</td><td>Blister</td><td>Kernel number locked; protect from disease</td></tr>
-      <tr class="hi"><td>R3</td><td>~1750</td><td>Milk</td><td>Grain fill accelerating; watch Gray Leaf Spot</td></tr>
-      <tr><td>R4</td><td>~1925</td><td>Dough</td><td>Silage harvest window opens</td></tr>
+      <tr><td>R2</td><td>~1660</td><td>Blister</td><td>Kernel number locked; protect from disease</td></tr>
+      <tr class="hi"><td>R4</td><td>~1925</td><td>Dough</td><td>Grain fill accelerating; watch Gray Leaf Spot</td></tr>
       <tr class="hi"><td>R5</td><td>~2190</td><td>Dent</td><td>Watch for stalk rot; plan harvest order</td></tr>
+      <tr><td>R5.5</td><td>~2450</td><td>Full dent</td><td>Silage harvest window opens</td></tr>
       <tr class="hi"><td>R6</td><td>~2700</td><td>Black layer / maturity</td><td>~30&ndash;35% moisture; harvest at &lt;25%</td></tr>
     </tbody>
     </table>
@@ -540,18 +540,35 @@ button,a,[role="button"]{touch-action:manipulation;}
 'use strict';
 
 /* ─── DATA ─────────────────────────────────────────────────────────── */
+// Purdue NCH-40 Table 3 (Neild & Newman), the source this table always came from,
+// reproduced in the Illinois Agronomy Handbook ch.2. Cumulative GDU FROM PLANTING,
+// 86/50 modified, for a 2700-GDU hybrid.
+//   https://www.extension.purdue.edu/extmedia/nch/nch-40.html
+//   https://dli.grainger.uiuc.edu/aces_dli/02AGRON.PDF
+// Previously this array mixed three incompatible systems and invented two values:
+//   V3 200  was NCH-40's V2        V5 350  was NCH-40's V4
+//   V8 700  was Bayer's number against NCH-40's 610
+//   V10 900 (prose row) was Bayer's V12; NCH-40's V10 is 740
+//   R2 1560 and R3 1750 appear in NO published source at all
+//   the 2450 late-dent row was missing entirely, leaving a 510-GDU hole to R6
+// R4 1925 and R5 2190 were NOT wrong: NCH-40 uses pre-Ritchie names and prints them as
+// "R3 Dough" and "R4 Denting". Mapped by stage name they are correct under modern
+// Abendroth naming, so the silage-window worry was a false alarm. Left as they were.
+// NCH-40 publishes no milk-stage value, so R3 is gone rather than guessed.
 var CORN_STAGES=[
-  {s:'VE', gdu:100,  key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg>', desc:'Emergence'},
-  {s:'V3', gdu:200,  key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'3rd leaf collar'},
-  {s:'V5', gdu:350,  key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'Ear shoots forming'},
+  {s:'VE', gdu:120,  key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg>', desc:'Emergence'},
+  {s:'V2', gdu:200,  key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'2nd leaf collar'},
+  {s:'V4', gdu:345,  key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'Ear shoots forming'},
   {s:'V6', gdu:475,  key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'Growing point above soil'},
-  {s:'V8', gdu:700,  key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Kernel rows set'},
+  {s:'V8', gdu:610,  key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Kernel rows set'},
+  {s:'V10',gdu:740,  key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'Rapid growth'},
+  {s:'V12',gdu:870,  key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'Ear size being set'},
   {s:'VT', gdu:1135, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Tasseling'},
   {s:'R1', gdu:1400, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-flower"/></svg>', desc:'Silking'},
-  {s:'R2', gdu:1560, key:false, icon:'', desc:'Blister'},
-  {s:'R3', gdu:1750, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-milk"/></svg>', desc:'Milk stage'},
+  {s:'R2', gdu:1660, key:false, icon:'', desc:'Blister'},
   {s:'R4', gdu:1925, key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Dough stage'},
   {s:'R5', gdu:2190, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Dent stage'},
+  {s:'R5.5',gdu:2450,key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Full dent, milk line moving'},
   {s:'R6', gdu:2700, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-check"/></svg>', desc:'Black layer'},
 ];
 var BEAN_STAGES=[
@@ -611,6 +628,7 @@ document.getElementById('pill-corn').addEventListener('click',function(){
   document.getElementById('pill-bean').setAttribute('aria-pressed','false');
   document.getElementById('rm-lbl').textContent='Relative Maturity (RM days)';
   document.getElementById('rm-hint').textContent='Corn 80\u2013130 RM \u00b7 GDU to black layer \u2248 RM \u00d7 22 + 250';
+  (function(e){if(e){e.min=70;e.max=135;e.step=1;}})(document.getElementById('g-rm'));
   document.getElementById('g-rm').value=108;
   document.getElementById('ms-title').textContent='Key Growth Stage Milestones';
   calcGDU();
@@ -624,6 +642,7 @@ document.getElementById('pill-bean').addEventListener('click',function(){
   document.getElementById('pill-corn').setAttribute('aria-pressed','false');
   document.getElementById('rm-lbl').textContent='Maturity Group (e.g. 3.0)';
   document.getElementById('rm-hint').textContent='MG 0.5\u20135.5 range \u00b7 GDU to maturity \u2248 MG \u00d7 500 + 800';
+  (function(e){if(e){e.min=0.5;e.max=5.5;e.step=0.1;}})(document.getElementById('g-rm'));
   document.getElementById('g-rm').value=3;
   document.getElementById('ms-title').textContent='Key Growth Stage Milestones';
   calcGDU();
@@ -786,14 +805,19 @@ function calcGDU(){
     }
   }
 
-  var rm=parseFloat(document.getElementById('g-rm').value)||108;
+  var _rmRaw=parseFloat(document.getElementById('g-rm').value);
+  var _rmOK=isFinite(_rmRaw)&&_rmRaw>0;
+  var rm=_rmOK?_rmRaw:(crop==='corn'?108:2.8);
   var stages=crop==='corn'?CORN_STAGES:BEAN_STAGES;
   var gduTarget;
   if(crop==='corn'){
     gduTarget=Math.round(rm*22+250);
   } else {
     gduTarget=Math.round(rm*500+800);
-    gduTarget=Math.min(Math.max(gduTarget,1600),2400);
+    // Was clamped to [1600,2400], i.e. MG 1.6-3.2, so an MG 5.5 rendered exactly like an
+    // MG 3.2 while the hint above advertised 0.5-5.5 and printed this very formula. The
+    // bound below only catches an out-of-range entry, it no longer collapses the range.
+    gduTarget=Math.min(Math.max(gduTarget,1050),3550);
   }
   // Reconcile the stage table to THIS hybrid: scale every threshold so the final
   // stage (black layer / R8) equals the hybrid's rated GDU target. Keeps the gauge %,

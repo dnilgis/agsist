@@ -757,8 +757,12 @@ function groupElevators(bids){
   return Object.keys(map).map(function(k){return map[k];});
 }
 
+// Blank falls back to the field's own default; a typed 0 (or any real number) is honoured.
+function _num(el,dflt){var v=parseFloat(el&&el.value);return isFinite(v)&&v>=0?v:dflt;}
 function renderEarnings(){
-  var bu=parseFloat(wtdBu.value)||1000,fpm=parseFloat(wtdFuel.value)||1.75;
+  // A farmer who owns his truck types 0 here on purpose. 0 is falsy, so this used to
+  // charge him $1.75/mi anyway and flip the haul recommendation, with 1.75 shown nowhere.
+  var bu=_num(wtdBu,1000),fpm=_num(wtdFuel,1.75);
   var best=null;
   ['corn','soybeans','wheat'].forEach(function(cat){
     var elevRows=currentElevators.map(function(elev){
@@ -828,7 +832,7 @@ function renderBestBids(elevators){
 }
 
 function renderWTD(){
-  var bu=parseFloat(wtdBu.value)||1000,fpm=parseFloat(wtdFuel.value)||1.75,comm=wtdComm;
+  var bu=_num(wtdBu,1000),fpm=_num(wtdFuel,1.75),comm=wtdComm;
   var rows=[];
   currentElevators.forEach(function(elev){
     var bid=getNearestBid(elev,comm);
@@ -853,7 +857,7 @@ function renderWTD(){
     var delta=r.net-refNet;
     var dcls=delta>5?'pos':delta<-5?'neg':'flat';
     var dstr=refRow.elev.key===r.elev.key?'<span style="font-size:0.763rem;color:var(--text-muted)">reference</span>':(delta>=0?'+':'')+fmtMoney(delta);
-    var cs=(r.elev.city||'')+(r.elev.city&&r.elev.state?', ':''+(r.elev.state||''));
+    var cs=(r.elev.city||'')+(r.elev.city&&r.elev.state?', ':'')+(r.elev.state||''); /* same precedence bug fixed at renderBestBids 2026-07-20; this copy was missed */
     var subTxt=cs+(r.delivery?(cs?' &middot; ':'')+escH(r.delivery):'');
     html+='<tr class="'+(i===0?'wtd-w':'')+'">';
     html+='<td class="wt-rank">'+(i<3?MEDALS[i]:(i+1)+'.')+'</td>';

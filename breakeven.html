@@ -341,29 +341,48 @@
     var rR=_splitOn?(parseFloat((document.getElementById('rentRate')||{}).value)||0):0;
     var oA=_splitOn?(parseFloat((document.getElementById('ownAcres')||{}).value)||0):0;
     var oR=_splitOn?(parseFloat((document.getElementById('ownRate')||{}).value)||0):0;
-    var _splitLive=_splitOn&&(rA+oA)>0;
+    // A side counts only once it has BOTH acres and a rate. Typing "500" into Rented
+    // Acres used to flip the split live with rR still 0, blend to $0.00/ac land, lock the
+    // field readonly and save that zero to localStorage - a six-figure swing in Farm Total
+    // from one unfinished keystroke.
+    var _rOK=rA>0&&rR>0, _oOK=oA>0&&oR>0;
+    var _splitLive=_splitOn&&(_rOK||_oOK)&&!(rA>0&&rR<=0)&&!(oA>0&&oR<=0);
     var landEl=document.getElementById('land');
+    if(landEl&&!landEl.hasAttribute('readonly')&&landEl.dataset.userVal!==landEl.value){
+      landEl.dataset.userVal=landEl.value;           // remember what the operator typed
+    }
     if(_splitLive){
-      var blended=(rA*rR+oA*oR)/(rA+oA);
+      var _acB=rA+oA, blended=_acB>0?(rA*rR+oA*oR)/_acB:0;
       landEl.value=blended.toFixed(2); landEl.setAttribute('readonly','');
-      var acEl=document.getElementById('acres'); if(acEl) acEl.value=Math.round(rA+oA);
-    } else if(landEl) landEl.removeAttribute('readonly');
+      var acEl=document.getElementById('acres'); if(acEl) acEl.value=Math.round(_acB);
+    } else if(landEl){
+      if(landEl.hasAttribute('readonly')){           // split just went inactive - give it back
+        landEl.removeAttribute('readonly');
+        if(landEl.dataset.userVal!=null&&landEl.dataset.userVal!=='')landEl.value=landEl.dataset.userVal;
+      }
+    }
     COST_KEYS.forEach(function(k){costs[k]=parseFloat(document.getElementById(k).value)||0;});
     var totalCost=0;Object.keys(costs).forEach(function(k){totalCost+=costs[k];});
     var costPerBu=yldVal>0?totalCost/yldVal:0,revenue=yldVal*cash,profit=revenue-totalCost,yldNeeded=cash>0?totalCost/cash:0,roiPct=totalCost>0?profit/totalCost*100:0,acres=parseFloat(document.getElementById('acres').value)||0,farmTotal=profit*acres;
     saveState();
-    document.getElementById('totalCost').textContent='$'+Math.round(totalCost).toLocaleString()+'/ac';
-    document.getElementById('costPerBu').textContent='$'+costPerBu.toFixed(2)+'/bu';
-    document.getElementById('yieldNeeded').textContent=Math.round(yldNeeded)+' bu/ac';
-    document.getElementById('revenue').textContent='$'+Math.round(revenue).toLocaleString()+'/ac';
-    var beEl=document.getElementById('breakeven');var beState=(cash>costPerBu&&costPerBu>0)?' · under market':(cash<costPerBu&&costPerBu>0)?' · over market':'';beEl.textContent='$'+costPerBu.toFixed(2)+'/bu'+beState;beEl.className='result-value be-highlight '+(cash>costPerBu&&costPerBu>0?'positive':cash<costPerBu&&costPerBu>0?'negative':'highlight');
-    var fnEl=document.getElementById('futNeeded');if(fnEl)fnEl.textContent='$'+(costPerBu-basis).toFixed(2)+'/bu';
+    // $0.00/bu reads as "every price is profitable". A missing input is not a break-even.
+    var _ok=yldVal>0, DASH='\u2014';
+    var fM=function(n){return (n<0?'-$':'$')+Math.abs(Math.round(n)).toLocaleString();};
+    document.getElementById('totalCost').textContent=fM(totalCost)+'/ac';
+    document.getElementById('costPerBu').textContent=_ok?'$'+costPerBu.toFixed(2)+'/bu':DASH;
+    document.getElementById('yieldNeeded').textContent=(cash>0)?Math.round(yldNeeded)+' bu/ac':DASH;
+    document.getElementById('revenue').textContent=_ok?fM(revenue)+'/ac':DASH;
+    var beEl=document.getElementById('breakeven');var beState=(cash>costPerBu&&costPerBu>0)?' · under market':(cash<costPerBu&&costPerBu>0)?' · over market':'';beEl.textContent=_ok?('$'+costPerBu.toFixed(2)+'/bu'+beState):(DASH+' · enter a yield');beEl.className='result-value be-highlight '+(!_ok?'highlight':cash>costPerBu&&costPerBu>0?'positive':cash<costPerBu&&costPerBu>0?'negative':'highlight');
+    var fnEl=document.getElementById('futNeeded');if(fnEl)fnEl.textContent=_ok?'$'+(costPerBu-basis).toFixed(2)+'/bu':DASH;
     var snEl=document.getElementById('split-note');
     if(snEl){
-      if(_splitLive&&yldVal>0){
-        var landNow=costs.land, beR=(totalCost-landNow+rR)/yldVal, beO=(totalCost-landNow+oR)/yldVal;
+      if(_splitLive&&yldVal>0&&(_rOK||_oOK)){
+        var landNow=costs.land, parts=[];
+        if(_rOK)parts.push('rented break-even <b>$'+((totalCost-landNow+rR)/yldVal).toFixed(2)+'/bu</b> ('+Math.round(rA)+' ac @ $'+(rR%1?rR.toFixed(2):Math.round(rR))+')');
+        if(_oOK)parts.push('owned <b>$'+((totalCost-landNow+oR)/yldVal).toFixed(2)+'/bu</b> ('+Math.round(oA)+' ac @ $'+(oR%1?oR.toFixed(2):Math.round(oR))+')');
         snEl.hidden=false;
-        snEl.innerHTML='By ground: rented break-even <b>$'+beR.toFixed(2)+'/bu</b> ('+Math.round(rA)+' ac @ $'+Math.round(rR)+') &middot; owned <b>$'+beO.toFixed(2)+'/bu</b> ('+Math.round(oA)+' ac @ $'+Math.round(oR)+'). Owned bushels clear the market first — many contract rented-ground bushels only above the rented number.';
+        // Only claim the owned-clears-first relationship when there IS owned ground.
+        snEl.innerHTML='By ground: '+parts.join(' &middot; ')+'.'+((_rOK&&_oOK)?' Owned bushels clear the market first — many contract rented-ground bushels only above the rented number.':'');
       } else snEl.hidden=true;
     }
     clearTimeout(_statusT);_statusT=setTimeout(function(){var st=document.getElementById('calc-status');if(st)st.textContent=(yldVal<=0)?'Enter a yield above zero to compute results.':('Break-even '+costPerBu.toFixed(2)+' dollars per bushel, profit '+(profit>=0?'plus ':'minus ')+Math.abs(Math.round(profit))+' dollars per acre.');},800);
@@ -372,19 +391,25 @@
     var farmEl=document.getElementById('farmTotal');farmEl.textContent=(farmTotal>=0?'+$':'-$')+Math.abs(Math.round(farmTotal)).toLocaleString();farmEl.style.color=farmTotal>=0?'var(--green)':'var(--red)';
     var cropName=CROP_NAMES[document.getElementById('crop').value]||'Corn';
     var psCrop=document.getElementById('print-crop');if(psCrop)psCrop.textContent=cropName+' — '+Math.round(yldVal)+' bu/ac × '+acres+' acres';
-    var psbe=document.getElementById('ps-breakeven');if(psbe)psbe.textContent='$'+costPerBu.toFixed(2)+'/bu';
+    var psbe=document.getElementById('ps-breakeven');if(psbe)psbe.textContent=_ok?'$'+costPerBu.toFixed(2)+'/bu':DASH;
     var psp=document.getElementById('ps-price');if(psp)psp.textContent='$'+cash.toFixed(2)+'/bu';
     var pspr=document.getElementById('ps-profit');if(pspr){pspr.textContent=(profit>=0?'+$':'-$')+Math.abs(Math.round(profit)).toLocaleString()+'/ac';pspr.className='print-stat-value '+(profit>=0?'pos':'neg');}
     var psal=document.getElementById('ps-acres-label');if(psal)psal.textContent=Math.round(acres).toLocaleString();
     var psf=document.getElementById('ps-farm');if(psf){psf.textContent=(farmTotal>=0?'+$':'-$')+Math.abs(Math.round(farmTotal)).toLocaleString();psf.className='print-stat-value '+(farmTotal>=0?'pos':'neg');}
     updateCostBar(costs,totalCost);updateGauge(profit);updateSensitivity(costs,yldVal,price,totalCost,basis);
-    var mb=document.getElementById('mini-bar');if(mb){mb.querySelector('#mb-be').textContent='$'+costPerBu.toFixed(2)+'/bu';var mbp=mb.querySelector('#mb-profit');mbp.textContent=(profit>=0?'+$':'-$')+Math.abs(Math.round(profit)).toLocaleString()+'/ac';mbp.style.color=profit>=0?'var(--green)':'var(--red)';}
+    var mb=document.getElementById('mini-bar');if(mb){mb.querySelector('#mb-be').textContent=_ok?'$'+costPerBu.toFixed(2)+'/bu':DASH;var mbp=mb.querySelector('#mb-profit');mbp.textContent=(profit>=0?'+$':'-$')+Math.abs(Math.round(profit)).toLocaleString()+'/ac';mbp.style.color=profit>=0?'var(--green)':'var(--red)';}
   }
-  function updateCostBar(costs,total){if(total<=0)return;var barHTML='',legendHTML='';COST_KEYS.forEach(function(k){var pct=costs[k]/total*100;if(pct<0.5)return;barHTML+='<div class="cost-bar-seg" style="width:'+pct.toFixed(1)+'%;background:'+COST_COLORS[k]+'"><span class="seg-tip">'+COST_LABELS[k]+': $'+Math.round(costs[k])+'/ac ('+pct.toFixed(0)+'%)</span></div>';legendHTML+='<span class="cost-legend-item"><span class="cost-legend-dot" style="background:'+COST_COLORS[k]+'"></span>'+COST_LABELS[k]+' $'+Math.round(costs[k])+' ('+pct.toFixed(0)+'%)</span>';});document.getElementById('cost-bar').innerHTML=barHTML;document.getElementById('cost-legend').innerHTML=legendHTML;}
+  function updateCostBar(costs,total){if(total<=0){document.getElementById('cost-bar').innerHTML='';document.getElementById('cost-legend').innerHTML='';return;}var barHTML='',legendHTML='';COST_KEYS.forEach(function(k){var pct=costs[k]/total*100;if(pct<0.5)return;barHTML+='<div class="cost-bar-seg" style="width:'+pct.toFixed(1)+'%;background:'+COST_COLORS[k]+'"><span class="seg-tip">'+COST_LABELS[k]+': $'+Math.round(costs[k])+'/ac ('+pct.toFixed(0)+'%)</span></div>';legendHTML+='<span class="cost-legend-item"><span class="cost-legend-dot" style="background:'+COST_COLORS[k]+'"></span>'+COST_LABELS[k]+' $'+Math.round(costs[k])+' ('+pct.toFixed(0)+'%)</span>';});document.getElementById('cost-bar').innerHTML=barHTML;document.getElementById('cost-legend').innerHTML=legendHTML;}
   function updateGauge(profit){var pct=((Math.max(-200,Math.min(200,profit))+200)/400*100);document.getElementById('gauge-marker').style.left=pct+'%';var fill=document.getElementById('gauge-fill');fill.style.width=pct+'%';fill.style.background=profit>=0?'linear-gradient(90deg,var(--border) 50%,var(--green) '+pct+'%)':'linear-gradient(90deg,var(--red) 0%,var(--border) '+pct+'%)';}
   function updateSensitivity(costs,baseYield,basePrice,totalCost,basis){
     basis=basis||0;
-    if(baseYield<=0||basePrice<=0)return;
+    if(baseYield<=0||basePrice<=0){
+      // Returning here used to leave the previous 36-cell grid on screen, green
+      // "you are here" box and all, for a scenario the operator just edited away.
+      document.getElementById('sens-table').innerHTML='<tr><td class="sens-zero" style="padding:1rem;text-align:center">Enter a yield and a futures price to see the what-if grid.</td></tr>';
+      var sn0=document.getElementById('sens-note');if(sn0)sn0.textContent='';
+      return;
+    }
     var crop=document.getElementById('crop').value;
     var yDeltas=crop==='corn'?[-30,-20,-10,0,10,20]:crop==='soybeans'?[-10,-7,-3,0,3,7]:[-15,-10,-5,0,5,10];
     var pDeltas=crop==='corn'?[-0.60,-0.40,-0.20,0,0.20,0.40]:crop==='soybeans'?[-1.50,-1.00,-0.50,0,0.50,1.00]:[-0.75,-0.50,-0.25,0,0.25,0.50];

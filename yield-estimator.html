@@ -38,11 +38,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-  {"@type":"Question","name":"How do I estimate corn yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"The ear count method: count ears in 1/1000 acre row length, then count kernel rows and kernels per row on 5 representative ears. Formula: (ears/1000 ac) \u00d7 (kernel rows \u00d7 kernels/row) / 90,000 \u00d7 test weight / 56. Enter these counts in the AGSIST Yield Estimator for an instant field estimate."}},
-  {"@type":"Question","name":"How accurate is the pre-harvest yield estimate?","acceptedAnswer":{"@type":"Answer","text":"Ear count yield estimates are typically accurate to within \u00b115% when done correctly with 3+ sample locations. Accuracy improves if you use actual test weight rather than the 56 lb default and sample at least 5 ears per location. Always sample multiple spots to account for field variability."}},
-  {"@type":"Question","name":"How do I estimate soybean yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"Count plants per acre, then count pods per plant and seeds per pod on 10 representative plants. Formula: plants/ac \u00d7 pods/plant \u00d7 seeds/pod / (seeds/lb \u00d7 60). The AGSIST estimator calculates this automatically."}}
-]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I estimate corn yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"The ear count method: count ears in 1/1000 acre row length, then count kernel rows and kernels per row on 5 representative ears. Formula: (ears/1000 ac) × (kernel rows × kernels/row) / 90,000 × test weight / 56. Kernel weight varies, so extension services recommend recomputing across 65,000–95,000 kernels per bushel to get a range. Enter these counts in the AGSIST Yield Estimator for an instant field estimate."}},{"@type":"Question","name":"How accurate is the pre-harvest yield estimate?","acceptedAnswer":{"@type":"Answer","text":"The yield component method is accurate to roughly plus or minus 20 bushels per acre — a figure stated by Purdue, Iowa State, Ohio State and Penn State Extension. Accuracy improves if you use actual test weight rather than the 56 lb default, sample at least 5 locations and 10 ears per location, and estimate at the milk (R3) stage or later. Because kernel weight varies, the estimator also shows a range built from 65,000 to 95,000 kernels per bushel."}},{"@type":"Question","name":"How do I estimate soybean yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"Count plants per acre, then count pods per plant and seeds per pod on 10 representative plants. Formula: plants/ac × pods/plant × seeds/pod / (seeds/lb × 60). The AGSIST estimator calculates this automatically."}}]}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"AGSIST Corn & Soybean Yield Estimator","url":"https://agsist.com/yield-estimator","applicationCategory":"Agricultural yield calculator","operatingSystem":"Web browser","description":"Free pre-harvest yield estimator for corn (ear-count / yield-component method) and soybeans (pod-count method), with a break-even profit-and-loss check that auto-fills price from live cash data.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"featureList":["Corn ear-count yield estimate with test-weight adjustment","Soybean pod-count yield estimate","Break-even / profit per acre at estimated yield","Auto-filled cash price by crop"]}
@@ -169,7 +165,7 @@ button,a,[role="button"]{touch-action:manipulation;}
     <p>Estimate yield from field counts at R5&ndash;R6 (corn) or R6&ndash;R7 (soybeans) &mdash; the same ear-count and kernel-count math crop tour scouts run in August. Pod-count method for soybeans. Sample at least 3 locations per field for reliable estimates. Then see <a class="inl-ye" href="/whats-priced-in">what the trade expects the national number to be</a>.</p>
     <div class="ye-calibration">
       <strong>Method:</strong> Yield Component Method (Nafziger, University of Illinois; widely referenced across US Corn Belt extension services).
-      <strong>Accuracy:</strong> typically &plusmn;15% when sampling 3+ locations with representative ears/plants.
+      <strong>Accuracy:</strong> corn estimates run about &plusmn;20 bu/ac &mdash; the figure Purdue, Iowa State, Ohio State and Penn State Extension all give for this method. Sample at least 5 locations, 10 ears each, and estimate at the milk (R3) stage or later. Soybean estimates are looser still; Michigan State puts them at &plusmn;25% or worse before R6.
       Not a substitute for certified yield monitoring or combine data.
     </div>
   </div>
@@ -256,7 +252,7 @@ button,a,[role="button"]{touch-action:manipulation;}
           <div class="result-item">
             <div class="result-label">Yield Range</div>
             <div class="result-value dim" id="c-range-val">&mdash;</div>
-            <div class="result-sub">&plusmn;15%</div>
+            <div class="result-sub">65k&ndash;95k kernels/bu</div>
           </div>
         </div>
 
@@ -264,7 +260,7 @@ button,a,[role="button"]{touch-action:manipulation;}
           <div style="font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem">Formula Used</div>
           <div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-dim);line-height:1.7">
             Yield (bu/ac) = (ears/1000ac &times; kernel rows &times; kernels/row &times; TW/56) &divide; 90,000<br>
-            <span style="color:var(--text-muted);font-size:0.763rem">Ear count &times; 1000 = plants/acre (1/1000 acre row method) &middot; 90,000 constant assumes 56 lb/bu and standard kernel weight</span>
+            <span style="color:var(--text-muted);font-size:0.763rem">Ear count &times; 1000 = plants/acre (1/1000 acre row method). The 90,000 kernels/bu constant is the long-standing default (Iowa State); Purdue and Ohio State suggest 80,000&ndash;85,000 for modern hybrids, so the range above sweeps 65,000&ndash;95,000. Valid from the milk (R3) stage on. Expect &plusmn;20 bu/ac.</span>
           </div>
         </div>
       </div>
@@ -297,9 +293,9 @@ button,a,[role="button"]{touch-action:manipulation;}
         <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Quick Fill &mdash; Typical Soybean Scenarios</div>
         <div class="qf-label">Select a scenario:</div>
         <div class="quickfill-row">
-          <button class="qf-btn" id="qf-bean-high" title="~60 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> High Yield ~60 bu</button>
-          <button class="qf-btn" id="qf-bean-avg"  title="~48 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Average ~48 bu</button>
-          <button class="qf-btn" id="qf-bean-low"  title="~36 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Low ~36 bu</button>
+          <button class="qf-btn" id="qf-bean-high" title="~54 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> High Yield ~54 bu</button>
+          <button class="qf-btn" id="qf-bean-avg"  title="~43 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Average ~43 bu</button>
+          <button class="qf-btn" id="qf-bean-low"  title="~32 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Low ~32 bu</button>
         </div>
 
         <div class="ye-method-title" style="margin-top:.6rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1 &mdash; Count Plants</div>
@@ -334,8 +330,8 @@ button,a,[role="button"]{touch-action:manipulation;}
           </div>
           <div class="field-group">
             <label class="field-label" for="b-seeds-lb">Seeds per Pound</label>
-            <input class="field-input" id="b-seeds-lb" type="number" value="2700" step="50" min="1500" max="4000">
-            <span class="field-note">Typical 2,400&ndash;3,000</span>
+            <input class="field-input" id="b-seeds-lb" type="number" value="3000" step="50" min="1500" max="4000">
+            <span class="field-note">3,000 average &middot; 3,500 stressed (small seed) &middot; 2,500 bumper (large seed)</span>
           </div>
         </div>
 
@@ -358,7 +354,7 @@ button,a,[role="button"]{touch-action:manipulation;}
           <div class="result-item">
             <div class="result-label">Yield Range</div>
             <div class="result-value dim" id="b-range-val">&mdash;</div>
-            <div class="result-sub">&plusmn;15%</div>
+            <div class="result-sub">2,500&ndash;3,500 seeds/lb</div>
           </div>
         </div>
 
@@ -445,7 +441,7 @@ button,a,[role="button"]{touch-action:manipulation;}
   </div>
 
   <div class="ye-disclaimer">
-    <strong>Disclaimer:</strong> Pre-harvest yield estimates are informational only and typically carry &plusmn;15% uncertainty even with good sampling. Not a substitute for certified yield monitoring, combine data, or professional agronomic advice. Verify marketing, insurance, and input decisions with your CCA, crop insurance agent, and grain merchandiser. Not financial, agronomic, or legal advice.
+    <strong>Disclaimer:</strong> Pre-harvest yield estimates are informational only. Corn carries roughly &plusmn;20 bu/ac of uncertainty and soybeans &plusmn;25% or more, even with good sampling. Not a substitute for certified yield monitoring, combine data, or professional agronomic advice. Verify marketing, insurance, and input decisions with your CCA, crop insurance agent, and grain merchandiser. Not financial, agronomic, or legal advice.
   </div>
 
   <div class="ye-source">
@@ -477,6 +473,10 @@ function switchTab(t){
     p.classList.toggle('active',a);
     if(a)p.removeAttribute('aria-hidden');else p.setAttribute('aria-hidden','true');
   });
+  // Re-sync the break-even prefill to whatever crop is now active. Without this,
+  // switching Soybean -> Corn left the break-even panel holding bean bushels
+  // under a corn heading until the user happened to touch a corn input.
+  if(typeof syncBreakeven==='function')syncBreakeven();
 }
 tabs.forEach(function(b){b.addEventListener('click',function(){switchTab(b.dataset.tab);});});
 // Keyboard arrow navigation across the tablist (WCAG tab pattern)
@@ -516,12 +516,20 @@ function calcCorn(){
   if(rl)rl.textContent='Row length: '+getRowLen(rowW)+' · typical 28–36 ears';
   var pop=ears*1000;
   var kpe=kr*kpr;
-  var yield_bu=pop*kpe*(tw/56)/90000;
+  var kernels=pop*kpe*(tw/56);
+  var yield_bu=kernels/90000;
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+  if(!(ears>0&&kr>0&&kpr>0&&tw>0)){
+    ['c-yield-val','c-pop-val','c-kpe-val','c-range-val'].forEach(function(id){s(id,'\u2014');});
+    BE.corn.yield=null; syncBreakeven(); return;
+  }
   s('c-yield-val',yield_bu.toFixed(0));
   s('c-pop-val',(pop/1000).toFixed(0)+'k');
   s('c-kpe-val',kpe.toFixed(0));
-  s('c-range-val',Math.round(yield_bu*0.85)+'–'+Math.round(yield_bu*1.15));
+  // Range is the kernel-weight sweep extension actually teaches (65k-95k kernels/bu),
+  // not a symmetric percentage. No source recommends a percent band; Purdue, Iowa
+  // State, Ohio State and Penn State all put this method at +/-20 bu/ac.
+  s('c-range-val',Math.round(kernels/95000)+'–'+Math.round(kernels/65000));
   activeCrop='corn'; BE.corn.yield=yield_bu;
   syncBreakeven();
 }
@@ -553,17 +561,23 @@ function calcBean(){
   var plants=parseFloat(document.getElementById('b-plant-count').value)||0;
   var ppp=parseFloat(document.getElementById('b-pods-plant').value)||0;
   var spod=parseFloat(document.getElementById('b-seeds-pod').value)||2.5;
-  var slb=parseFloat(document.getElementById('b-seeds-lb').value)||2700;
+  var slb=parseFloat(document.getElementById('b-seeds-lb').value)||3000;
   var rl=document.getElementById('b-row-length-note');
   if(rl)rl.textContent=getRowLen(rowW)+' row for '+rowW+'" · typical 110–150 plants';
   var pop=plants*1000;
   var spp=ppp*spod;
   var yield_bu=(pop*spp)/(slb*60);
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+  if(!(plants>0&&ppp>0&&spod>0&&slb>0)){
+    ['b-yield-val','b-pop-val','b-spp-val','b-range-val'].forEach(function(id){s(id,'\u2014');});
+    BE.bean.yield=null; syncBreakeven(); return;
+  }
   s('b-yield-val',yield_bu.toFixed(0));
   s('b-pop-val',(pop/1000).toFixed(0)+'k');
   s('b-spp-val',spp.toFixed(0));
-  s('b-range-val',Math.round(yield_bu*0.85)+'–'+Math.round(yield_bu*1.15));
+  // Sweep the seed-size range extension teaches (2,500 large seed - 3,500 stressed)
+  // rather than a symmetric percentage.
+  s('b-range-val',Math.round((pop*spp)/(3500*60))+'–'+Math.round((pop*spp)/(2500*60)));
   activeCrop='bean'; BE.bean.yield=yield_bu;
   syncBreakeven();
 }
@@ -576,17 +590,27 @@ function beanFill(plants,ppp,spod,slb){
   document.getElementById('b-plant-count').value=plants;
   document.getElementById('b-pods-plant').value=ppp;
   document.getElementById('b-seeds-pod').value=spod||2.5;
-  document.getElementById('b-seeds-lb').value=slb||2700;
+  document.getElementById('b-seeds-lb').value=slb||3000;
   calcBean();
 }
-/* High ~60 bu: 130k plants × 30 pods × 2.5 seeds / 162,000 = 60.2 bu */
-document.getElementById('qf-bean-high').addEventListener('click',function(){beanFill(130,30,2.5,2700);});
-/* Avg  ~48 bu: 125k plants × 25 pods × 2.5 seeds / 162,000 = 48.2 bu */
-document.getElementById('qf-bean-avg').addEventListener('click',function(){beanFill(125,25,2.5,2700);});
-/* Low  ~36 bu: 110k plants × 22 pods × 2.4 seeds / 162,000 = 35.9 bu */
-document.getElementById('qf-bean-low').addEventListener('click',function(){beanFill(110,22,2.4,2700);});
+/* High ~54 bu: 130k plants x 30 pods x 2.5 seeds / (3,000 x 60) = 54.2 bu */
+document.getElementById('qf-bean-high').addEventListener('click',function(){beanFill(130,30,2.5,3000);});
+/* Avg  ~43 bu: 125k plants x 25 pods x 2.5 seeds / (3,000 x 60) = 43.4 bu */
+document.getElementById('qf-bean-avg').addEventListener('click',function(){beanFill(125,25,2.5,3000);});
+/* Low  ~32 bu: 110k plants x 22 pods x 2.4 seeds / (3,000 x 60) = 32.3 bu */
+document.getElementById('qf-bean-low').addEventListener('click',function(){beanFill(110,22,2.4,3000);});
 
 calcBean();
+
+/* Both crop calculators run once at load to populate their panels, and each one
+   claims activeCrop as a side effect. calcBean() runs last, so without this the
+   page opened on the Corn tab with the break-even panel prefilled from SOYBEANS
+   (~48 bu under a ~193 bu corn heading). Hand activeCrop back to the tab that is
+   actually visible and re-sync. */
+activeCrop=(document.querySelector('.ye-tab.active')||{}).dataset
+  ? document.querySelector('.ye-tab.active').dataset.tab : 'corn';
+if(activeCrop!=='corn'&&activeCrop!=='bean')activeCrop='corn';
+syncBreakeven();
 
 /* BREAK-EVEN CALCULATOR */
 function calcBreakeven(){

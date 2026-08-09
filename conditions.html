@@ -152,7 +152,7 @@
       <p class="cd-seed"><!--SEED:condstats-->Weekly state crop-condition Good+Excellent shares for corn and soybeans, ranked against the same week of every year 2000&ndash;present, from USDA NASS Crop Progress. Rank 1 = worst on record for this week. Refreshed every Monday night in season.<!--/SEED--></p>
       <div class="cd-tabs" role="tablist" id="cd-tabs"></div>
       <div class="tblscroll"><table class="cd-tbl" id="cd-table"><tr><td style="color:#8a948f">Loading USDA data&hellip;</td></tr></table></div>
-      <p style="font-size:13.4px;color:#8a948f;margin:10px 0 0">Rank counts up from the worst: rank 1 of 27 = the lowest G+E this week has ever seen since 2000. The bar shows how far this week sits from that state&rsquo;s own 26-year average for the same week, in G+E percentage points &mdash; red below, green above, every row on the same scale. States with under 10 comparable years are left out rather than thinly ranked.</p>
+      <p style="font-size:13.4px;color:#8a948f;margin:10px 0 0">Rank counts up from the worst: rank 1 of N = the lowest G+E this week has ever seen in that state’s record. The denominator is per state — most go back to 2000, but USDA only began reporting some states in 2014, so their comparison starts there. The average column is each state’s own, over the years it actually has. The bar shows how far this week sits from that state&rsquo;s own average for the same week, in G+E percentage points &mdash; red below, green above, every row on the same scale. States with under 10 comparable years are left out rather than thinly ranked.</p>
     </div>
   </section>
 
@@ -193,7 +193,7 @@
     var lab=(d>0?'+':'\u2212')+Math.abs(d).toFixed(0)+' pts';
     var lx=d<0?(C-len-6):(C+len+6), anchor=d<0?'end':'start';
     return '<svg class="cd-strip" viewBox="0 0 '+W+' 30" role="img" preserveAspectRatio="xMinYMid meet">'
-      +'<title>now '+st.ge+'% G+E vs 26-yr avg '+st.avg+'% for this week = '+lab+' \u00b7 rank '+st.rank_from_worst+' of '+st.of+' \u00b7 range '+st.worst+'\u2013'+st.best+'%</title>'
+      +'<title>now '+st.ge+'% G+E vs its own '+(st.of-1)+'-year average '+st.avg+'% for this week = '+lab+' \u00b7 rank '+st.rank_from_worst+' of '+st.of+' \u00b7 range '+st.worst+'\u2013'+st.best+'%</title>'
       +'<line x1="'+(C-HALF)+'" y1="15" x2="'+(C+HALF)+'" y2="15" stroke="#1a1f20" stroke-width="1"/>'
       +'<rect x="'+x0.toFixed(1)+'" y="7" width="'+Math.max(len,1.5).toFixed(1)+'" height="16" rx="3" fill="'+col+'"/>'
       +'<line x1="'+C+'" y1="3" x2="'+C+'" y2="27" stroke="#8a948f" stroke-width="1.4"/>'
@@ -270,7 +270,7 @@
     var dmax=5;
     rows.forEach(function(s2){ dmax=Math.max(dmax, Math.abs(s2.ge-s2.avg)); });
     dmax*=1.05;
-    var h='<tr><th>State</th><th style="text-align:right">G+E now</th><th style="text-align:right">26-yr avg</th><th style="text-align:right">Rank (1 = worst)</th><th>Vs its own average, G+E points &nbsp;<span style="text-transform:none;letter-spacing:0;color:#8a948f">| = this state\u2019s avg for this week &middot; <span style="color:#e0685f">\u25a0</span> worse &middot; <span style="color:#5fc28a">\u25a0</span> better &middot; all rows same scale</span></th></tr>';
+    var h='<tr><th>State</th><th style="text-align:right">G+E now</th><th style="text-align:right">Own avg</th><th style="text-align:right">Rank (1 = worst)</th><th>Vs its own average, G+E points &nbsp;<span style="text-transform:none;letter-spacing:0;color:#8a948f">| = this state\u2019s avg for this week &middot; <span style="color:#e0685f">\u25a0</span> worse &middot; <span style="color:#5fc28a">\u25a0</span> better &middot; all rows same scale</span></th></tr>';
     rows.forEach(function(s){
       var cls=s.pctile<=20?'lo':(s.pctile>=80?'hi':'md');
       h+='<tr><td>'+s.ab+'</td><td class="num '+cls+'">'+s.ge.toFixed(0)+'%</td>'
