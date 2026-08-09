@@ -166,6 +166,48 @@
           "page": "/fertilizer",
           "name": "Fertilizer",
           "text": "The page advertised weekly updates from DTN and USDA AMS. The numbers are actually hand-collected Midwest dealer quotes gathered about monthly, and they now say so — with a banner that appears once the sheet passes 30 days old."
+        },
+        {
+          "tag": "fixed",
+          "page": "/yield-estimator",
+          "name": "Yield Estimator — soybean numbers were 11% too high",
+          "text": "The soybean estimator assumed 2,700 seeds per pound. Every land-grant extension service — Iowa State, Ohio State, Purdue, Michigan State, Virginia Tech — teaches 3,000 for an average year and 3,500 when late-season stress makes the seed small. Fewer seeds per pound means each seed weighs more, so 2,700 was crediting your pods with more bushels than they hold: about 11% too high against the standard, 30% too high against a stressed crop. It is now 3,000, and the quick-fill buttons have been relabelled to the yields their own pod counts actually produce. If you have used this page to size up a crop this season, the soybean figure it gave you was optimistic."
+        },
+        {
+          "tag": "fixed",
+          "page": "/yield-estimator",
+          "name": "Yield Estimator — the accuracy claim was made up",
+          "text": "The page said these estimates run within plus or minus 15%. No extension service says that, for either crop. Purdue, Iowa State, Ohio State and Penn State all put the corn ear-count method at plus or minus 20 bushels an acre, and Michigan State says soybean estimates vary by more than 25% before the crop reaches R6. The yield range shown beside each estimate now comes from sweeping the kernel and seed weights the uncertainty actually lives in — 65,000 to 95,000 kernels per bushel for corn, 2,500 to 3,500 seeds per pound for beans — which is what those same services teach. The corn range is lopsided rather than even, because honestly it is."
+        },
+        {
+          "tag": "fixed",
+          "page": "/yield-estimator",
+          "name": "Yield Estimator — break-even panel showed the wrong crop",
+          "text": "Opening the page put a soybean yield of about 48 bushels into the break-even panel while the corn tab above it showed 193. Both calculators run once when the page loads and each one claims the break-even panel as it goes, so soybeans — running second — always won. Clicking back to the corn tab did not fix it either. If you worked a corn break-even straight off the page without retyping the yield, it was built on roughly a quarter of your actual bushels. Negative or blank entries also used to print a yield; a minus ten ear count returned minus 57 bushels an acre. Those now show a dash."
+        },
+        {
+          "tag": "fixed",
+          "page": "/grain-bin-calculator",
+          "name": "Bin Calculator — an empty height reported a full bin",
+          "text": "Clear the eave height field and the calculator reported 14,957 bushels, a completely full 30 by 24 bin, while the height box on screen sat empty. The bin drawing showed an empty bin at the same time, so the picture and the number disagreed and only the picture was right. A blank, zero or negative dimension now returns zero bushels."
+        },
+        {
+          "tag": "fixed",
+          "page": "/grain-bin-calculator",
+          "name": "Bin Calculator — shrink ignored your target moisture",
+          "text": "The drying charge billed you for every point from your starting moisture down to your target, but the shrink was worked out only down to the crop's standard moisture. Drying corn from 20% to 13% charged for seven points and shrank five and a half, so the bushels left on the report included about 486 that do not survive the dryer — roughly $2,060 of corn that was never going to be there. Shrink now follows the same points the dryer bills for. If you left the target moisture box alone, nothing changes for you."
+        },
+        {
+          "tag": "fixed",
+          "page": "/breakeven",
+          "name": "Break-Even — a half-filled rented and owned split zeroed your land cost",
+          "text": "Opening the owned and rented split and typing your rented acres, before getting as far as the cash rent box, set the land cost to zero and locked the field. On the default corn figures the break-even fell from $5.03 to $3.64 a bushel and the whole-farm number went from a $47,500 loss to a $77,500 profit. The zero was then saved, so it was still there next visit and the land box looked like it could not be edited. A side of the split now counts only once it has both acres and a rate, and your own land figure is put back when the split is closed. The by-ground line also used to print an owned break-even of $3.64 with zero acres behind it to farmers who rent everything. It now shows only the ground you actually have."
+        },
+        {
+          "tag": "fixed",
+          "page": "/breakeven",
+          "name": "Break-Even — a blank yield printed a break-even of $0.00",
+          "text": "Delete the expected yield to retype it and the page printed a break-even of $0.00 a bushel, dropped the over-market warning, and carried the same $0.00 into the printed report you might hand a lender. A break-even of zero reads as though any price clears. It now shows a dash and asks for a yield. Clearing the futures price also used to leave the entire what-if profit grid on screen, green box and all, for the scenario you had just edited away. The grid now clears with everything else."
         }
       ]
     },

@@ -2,7 +2,7 @@
   "updated": "2026-08-03",
   "status": "mixed",
   "status_label": "Truce Holding — USMCA Renegotiation Opened, Brazil Ethanol Tariff In",
-  "status_note": "The US-China ag tariff truce from the Oct 30, 2025 Busan agreement is holding and was extended through Nov 10, 2026. China lifted its March 2025 retaliatory ag tariffs (up to 15%) on Nov 10, 2025 but kept its broad 10% 'Liberation Day' retaliatory levy, so US soybeans still face roughly 13% (3% MFN + 10%). SCOTUS struck down IEEPA tariffs Feb 20, 2026; the Section 122 global 10-15% surcharge that replaced them (effective Feb 24) was ruled invalid by the Court of International Trade on May 7, 2026 and is under appeal. A May 18, 2026 US-China deal added $17B/yr in US ag purchases through 2028 and resumed beef and poultry access. On June 2, 2026 USTR proposed Section 301 'forced labor' tariffs (10-12.5%, with some agricultural exemptions; hearing July 7) to maintain duties after Section 122 expires around July 24. Since then, three July developments: the Administration signaled in early July it will NOT renew USMCA and will negotiate a successor instead (Mexico and Canada are the #1 and #2 US ag export destinations; no rate changes announced, bilateral talks resumed in Mexico City the week of Jul 20). A 25% tariff on Brazilian goods including ethanol landed mid-July after a Section 301 investigation — an inbound tariff that structurally favors US corn ethanol at home. The status of the proposed Section 301 'forced labor' duties after Section 122's late-July expiry has not been confirmed in our sources — verify against USTR and the Federal Register before any trading decision.",
+  "status_note": "The US-China ag tariff truce from the Oct 30, 2025 Busan agreement is holding and was extended through Nov 10, 2026. China lifted its March 2025 retaliatory ag tariffs (up to 15%) on Nov 10, 2025 but kept its broad 10% 'Liberation Day' retaliatory levy, so US soybeans still face roughly 13% (3% MFN + 10%). SCOTUS struck down IEEPA tariffs Feb 20, 2026; the Section 122 global 10-15% surcharge that replaced them (effective Feb 24) was ruled invalid by the Court of International Trade on May 7, 2026 and is under appeal. A May 18, 2026 US-China deal added $17B/yr in US ag purchases through 2028 and resumed beef and poultry access. On June 2, 2026 USTR proposed Section 301 'forced labor' tariffs (10-12.5%, with some agricultural exemptions; hearing July 7) to maintain duties after Section 122 expires around July 24. Since then, three July developments: the Administration signaled in early July it will NOT renew USMCA and will negotiate a successor instead (Mexico and Canada are the #1 and #2 US ag export destinations; no rate changes announced, bilateral talks resumed in Mexico City the week of Jul 20). A 25% tariff on Brazilian goods including ethanol landed mid-July after a Section 301 investigation — an inbound tariff that structurally favors US corn ethanol at home. The Section 301 'forced labor' duties took effect 12:01 a.m. ET on July 24, 2026 at 10% or 12.5% across 60 economies, replacing the lapsed Section 122 surcharge. Verify against USTR and the Federal Register before any trading decision.",
   "headline": "US-China ag truce holding post-Busan, but China's retained 10% levy keeps soybeans near 13%; USMCA renegotiation opened in July with no rate changes yet, and a 25% Section 301 tariff on Brazilian goods (incl. ethanol) favors US corn ethanol at home.",
   "rows": [
     {
@@ -75,12 +75,12 @@
       "commodity": "Ethanol",
       "icon": "⛽",
       "destination": "EU",
-      "rate": "€83-192/m³",
-      "baseline": "€83/mt (2013)",
-      "status": "mixed",
-      "note": "EU anti-dumping duty on US undenatured ethanol in place since 2013 (€83.03/metric ton base); some member states (e.g., Netherlands under RED III) apply higher max rates up to €192/m³. The UK-US trade deal (May 2025) opened a 1.4B L/yr duty-free quota for the UK only. Verify member-state customs for specific shipments.",
-      "effective": "2013-02-01",
-      "source_url": "https://policy.trade.ec.europa.eu/enforcement-and-protection/trade-defence/actions-against-imports-into-eu_en"
+      "rate": "€102–192/m³ MFN",
+      "baseline": "no AD duty",
+      "status": "normal",
+      "note": "No EU anti-dumping duty on US ethanol. The 2013 duty was repealed by Commission Implementing Regulation (EU) 2019/765, in force 16 May 2019, and the proceeding was terminated. What remains is the ordinary Common Customs Tariff import duty — €192/m³ undenatured, €102/m³ denatured — which applies EU-wide, not by member state. The Dutch RED III vote of Oct 2025 bars imported denatured ethanol from counting toward renewable-fuel obligations from 2026; that is a compliance rule, not a duty. The UK-US deal (May 2025) opened a 1.4B L/yr duty-free quota for the UK only. Verify member-state customs for specific shipments.",
+      "effective": "2019-05-16",
+      "source_url": "https://eur-lex.europa.eu/eli/reg_impl/2019/765/oj/eng"
     }
   ],
   "timeline": [
