@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-08T11:33:49+00:00",
- "total": 82,
+ "updated": "2026-08-09T11:34:37+00:00",
+ "total": 83,
  "played_out": 29,
- "didnt": 48,
+ "didnt": 49,
  "pending": 5,
- "hit_rate": 37.7,
+ "hit_rate": 37.2,
  "by_method": {
   "deterministic": {
    "played": 3,
-   "missed": 38,
-   "graded": 41,
-   "hit_rate": 7.3,
+   "missed": 39,
+   "graded": 42,
+   "hit_rate": 7.1,
    "first": "2026-06-24",
-   "last": "2026-08-08"
+   "last": "2026-08-09"
   },
   "self_reported": {
    "played": 26,
@@ -26,6 +26,15 @@
  "mismatched": 23,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-08-08",
+   "judged": "2026-08-09",
+   "call": "Called corn lower from $4.39 toward the $4.62 December level on Friday Aug 8. Corn closed Friday at $4.39 -- no movement, no follow-through.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Didn't play out. Price sat flat; the market had no catalyst to push December corn in either direction heading into WASDE weekend. Fair miss -- quiet tape on a pre-report Friday."
+  },
   {
    "made": "2026-08-07",
    "judged": "2026-08-08",

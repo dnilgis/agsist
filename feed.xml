@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 08 Aug 2026 11:33:49 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 09 Aug 2026 11:34:37 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WASDE WEEK ARRIVES; WHEAT LEADS, CORN SOFT</title>
+      <link>https://agsist.com/daily/2026-08-09</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-09</guid>
+      <pubDate>Sun, 09 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Friday's close handed bears a clean exit: corn at $4.39, beans at $11.56, both soft on favorable weather and fund selling with no new demand story to fight back. Wheat bucked the complex at $6.40, up 8 cents, on export interest. This week the August 12 WASDE resets every number on the board. Come in ready.
+August 12 WASDE is the first real look at post-pollination yield estimates, and the Belt just got more rain.
+• Grains: WASDE in the Headlights
+• Livestock: Feeders Hold Historic Ground
+  → If you are carrying feeder inventory above $340, watch the Aug 24 border date. A return-to-work at Cargill before then compounds the downside.
+• Hormuz: Iran Raises the Stakes Again
+Read more: https://agsist.com/daily/2026-08-09</description>
+    </item>
     <item>
       <title>LEAN HOGS RUN 17%; CORN, BEANS END WEEK SOFT</title>
       <link>https://agsist.com/daily/2026-08-08</link>
@@ -382,19 +395,6 @@ WASDE-driven wheat gains held into Friday's close, lean hogs posted a 10.8% sess
 • Oats: Something Broke
 • Hogs: Two-Day Whiplash
 Read more: https://agsist.com/daily/2026-07-11</description>
-    </item>
-    <item>
-      <title>WASDE DAY: WHEAT RUNS 3%, HOGS REVERSE HARD</title>
-      <link>https://agsist.com/daily/2026-07-10</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-10</guid>
-      <pubDate>Fri, 10 Jul 2026 05:00:00 -0600</pubDate>
-      <description>The WASDE dropped at 11 AM and the market answered fast. Wheat ran 18.5 cents to $6.30, corn added 8.5 cents to $4.38, and hogs posted a 15.7% session that erased yesterday's 11.8% break almost to the penny. That is not a coincidence: the USDA cut red meat production estimates and trimmed global wheat supply, and the funds that liquidated livestock yesterday came right back in this morning. The weekly thread question from Monday asked whether Crop Progress would confirm pollination-week crop health or build a weather premium into corn. Today the answer is partial: corn is firming on WASDE-driven supply tightening and heat dome positioning, but $4.38 is not yet a weather-premium price. The next leg needs the heat to verify in August crop condition data.
-USDA's July WASDE at 11 AM CT resets the supply picture as wheat posts its biggest session since spring and hogs erase yesterday's 11.8% drop in a single day.
-• WASDE Lights the Grain Complex
-  → Unpriced wheat: $6.30 is the highest close since spring. If you have old-crop in storage with carry costs running, the WASDE just gave you a window. Scale sales above $6.30; next resistance is $6.45.
-• Hogs Reverse Hard, Cattle Split
-• Hormuz Back on the Tape
-Read more: https://agsist.com/daily/2026-07-10</description>
     </item>
   </channel>
 </rss>
