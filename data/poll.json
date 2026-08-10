@@ -1,16 +1,32 @@
 {
   "_comment": "AGSIST Grower Pulse — single source of truth for the homepage poll. To run a new week: move the current block into archive (with its final results+total pulled from the Worker), then write the new question into current with a new id. Stage 2 automation will do this on a schedule.",
   "current": {
-    "id": "2026-w32-usda-vs-field-aug",
-    "week": "2026-08-03",
-    "question": "Does USDA's crop size match what you see in your fields?",
+    "id": "2026-w33-oldcrop-left-aug",
+    "week": "2026-08-10",
+    "question": "How much old-crop grain do you still have to sell?",
     "options": [
-      "USDA too high",
-      "About right",
-      "USDA too low"
+      "None",
+      "Some",
+      "A lot"
     ]
   },
   "archive": [
+    {
+      "id": "2026-w32-usda-vs-field-aug",
+      "week": "2026-08-03",
+      "question": "Does USDA's crop size match what you see in your fields?",
+      "options": [
+        "USDA too high",
+        "About right",
+        "USDA too low"
+      ],
+      "results": [
+        0,
+        1,
+        0
+      ],
+      "total": 1
+    },
     {
       "id": "2026-w31-yield-confidence-aug",
       "week": "2026-07-27",
