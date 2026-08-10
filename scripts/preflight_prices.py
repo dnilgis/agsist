@@ -147,15 +147,37 @@ def run(data, today=None, repair=False):
         if not q or q.get("close") is None: continue
         close=float(q["close"]); prev=float(q.get("open", close))
         net=q.get("netChange"); pct=q.get("pctChange")
-        if prev:
-            cpct=round((close-prev)/prev*100,4)
-            if pct is not None and abs(float(pct)-cpct)>PCT_TOL:
-                FAIL("math","%s pctChange=%s but (close-open)/open=%.4f"%(key,pct,cpct))
-        if net is not None and abs(float(net)-(close-prev))>max(0.02,abs(close)*0.0005):
-            FAIL("math","%s netChange=%s but close-open=%.4f"%(key,net,close-prev))
+        # netChange/pctChange are DERIVED: fetch_prices stores "open" as the prior
+        # close and defines net = close - open, pct = net/open*100, so the identity
+        # must hold. On 2026-08-10 the feed returned a live, moving close for soyoil
+        # alongside net/open frozen at 0.78/67.46 all session — the identity broke on
+        # every refresh where close != 68.24, GATE 1 blocked 9 of 12 price commits, and
+        # Monday's briefing never generated. Blocking the presses over a field we can
+        # recompute exactly is the wrong trade; trusting the stale net would publish a
+        # WRONG day-change, which is worse. In --repair mode, re-derive from close and
+        # open (both real observed values, using the pipeline's own formula) and say so
+        # in the log. Bare check mode still FAILs, so CI and the selftests stay strict.
+        cnet=round(close-prev,5) if prev else None
+        cpct=round((close-prev)/prev*100,4) if prev else None
+        pct_bad = bool(prev) and pct is not None and abs(float(pct)-cpct)>PCT_TOL
+        net_bad = net is not None and cnet is not None and abs(float(net)-cnet)>max(0.02,abs(close)*0.0005)
+        if pct_bad or net_bad:
+            if repair:
+                q["netChange"]=cnet; q["pctChange"]=cpct
+                q["derived_recomputed"]=True
+                REPAIR("math","%s derived fields were stale (net=%s pct=%s) -> recomputed net=%.4f pct=%.4f from close=%.4f open=%.4f"
+                       %(key,net,pct,cnet,cpct,close,prev))
+            else:
+                if pct_bad:
+                    FAIL("math","%s pctChange=%s but (close-open)/open=%.4f"%(key,pct,cpct))
+                if net_bad:
+                    FAIL("math","%s netChange=%s but close-open=%.4f"%(key,net,close-prev))
         band=band_for(key)
         if band and not (band[0]<=close<=band[1]):
-            FAIL("band","%s close %s outside %s band %s (unit/decimal/contamination?)"%(key,close,band))
+            # 4 placeholders, 3 args before this fix: the one path that MUST report
+            # honestly (unit/decimal/contamination) raised TypeError instead, and in
+            # repair mode died before writing the repaired feed.
+            FAIL("band","%s close %s outside band %s (unit/decimal/contamination?)"%(key,close,band))
         if q.get("stale"):
             WARN("stale","%s is preserved-stale since %s"%(key,q.get("stale_since")))
 

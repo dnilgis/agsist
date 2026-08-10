@@ -512,6 +512,40 @@ def main():
 
     nearby = add_nearby(quotes, SYMBOLS)
 
+    # ── derived-field normalization (2026-08-10) ──────────────────────────
+    # net/pct are DERIVED here as close - open (open = the prior close), so the
+    # identity net == close - open must hold for everything we write. It stopped
+    # holding for soyoil on 2026-08-10: a live, moving close arrived alongside a
+    # frozen net/open, so the site displayed a stale day-change for most of the
+    # session and the briefing's feed gate blocked 9 of 12 refreshes — Monday's
+    # briefing never generated. Recompute from close/open (both real observed
+    # values) so a partially-updated upstream record can never publish a wrong
+    # change number. Corrections are NAMED in the log, never silent.
+    fixed_derived = []
+    for _k, _q in quotes.items():
+        if not isinstance(_q, dict):
+            continue
+        _close, _prev = _q.get("close"), _q.get("open")
+        if _close is None or _prev in (None, 0):
+            continue
+        try:
+            _close = float(_close); _prev = float(_prev)
+        except (TypeError, ValueError):
+            continue
+        _cnet = round(_close - _prev, 5)
+        _cpct = round(_cnet / _prev * 100, 4)
+        _onet, _opct = _q.get("netChange"), _q.get("pctChange")
+        if _onet is None or abs(float(_onet) - _cnet) > max(0.02, abs(_close) * 0.0005):
+            fixed_derived.append(f"{_k}: net {_onet} -> {_cnet}, pct {_opct} -> {_cpct}")
+            _q["netChange"] = _cnet
+            _q["pctChange"] = _cpct
+            _q["derived_recomputed"] = True
+    if fixed_derived:
+        print(f"\n  DERIVED-FIELD FIX ({len(fixed_derived)}): upstream close disagreed "
+              f"with its own net/pct; recomputed from close-open:")
+        for _line in fixed_derived:
+            print(f"    - {_line}")
+
     output = {
         "fetched":    datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "ok":         ok,

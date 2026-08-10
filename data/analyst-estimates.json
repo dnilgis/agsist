@@ -388,7 +388,7 @@
      "label": "2026/27 corn yield",
      "unit": "bu/acre",
      "direction": "supply",
-     "consensus": null,
+     "consensus": 182.0,
      "actual": null,
      "usda_current": 183.0,
      "estimates": [
@@ -406,17 +406,25 @@
       {
        "id": "stonex",
        "value": 184.8,
-       "source": "https://ukragroconsult.com/en/news/stonex-raises-us-corn-crop-forecast-above-usda-estimate/",
-       "source_note": "StoneX August estimate published Aug 5, 2026 (corroborated by TFM Morning Update same day)"
+       "source": "https://www.rfdtv.com/stonex-survey-points-to-trend-corn-yield-ahead-of-next-wasde-report",
+       "source_note": "StoneX customer survey, published Aug 5-6 2026; Arlan Suderman on the record calling it \"a trend yield corn crop.\" Same interview gave Iowa 218, Illinois 212."
+      },
+      {
+       "id": "gulke",
+       "value": 180.75,
+       "source": "https://www.agweb.com/markets/grain-markets-and-farmers-prepare-august-wasde",
+       "source_note": "Jerry Gulke, AgWeb Aug 7 2026: corn \"could be closer to 180.5 to 181 bu. per acre.\" He stated a RANGE, not a point — 180.75 is the midpoint, used only so the call can be scored. Set to null to drop it."
       }
-     ]
+     ],
+     "consensus_source": "https://www.agweb.com/markets/grain-markets-and-farmers-prepare-august-wasde",
+     "consensus_note": "Average of private pre-report estimates published ahead of the Aug 12 WASDE (AgWeb, Aug 7 2026). No low/high was published for the poll, so no range is claimed."
     },
     {
      "key": "soy_yield_2627",
      "label": "2026/27 soybean yield",
      "unit": "bu/acre",
      "direction": "supply",
-     "consensus": null,
+     "consensus": 52.9,
      "actual": null,
      "usda_current": 53.0,
      "estimates": [
@@ -434,10 +442,12 @@
       {
        "id": "stonex",
        "value": 53.0,
-       "source": "https://ukragroconsult.com/en/news/stonex-raises-us-corn-crop-forecast-above-usda-estimate/",
-       "source_note": "StoneX August estimate published Aug 5, 2026 (corroborated by TFM Morning Update same day)"
+       "source": "https://www.rfdtv.com/stonex-survey-points-to-trend-corn-yield-ahead-of-next-wasde-report",
+       "source_note": "StoneX customer survey, published Aug 5-6 2026; Arlan Suderman on the record calling it \"a trend yield corn crop.\" Same interview gave Iowa 218, Illinois 212."
       }
-     ]
+     ],
+     "consensus_source": "https://www.agweb.com/markets/grain-markets-and-farmers-prepare-august-wasde",
+     "consensus_note": "Average of private pre-report estimates published ahead of the Aug 12 WASDE (AgWeb, Aug 7 2026). No low/high was published for the poll, so no range is claimed."
     }
    ]
   }
