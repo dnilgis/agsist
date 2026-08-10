@@ -250,7 +250,18 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
         if yc.get("outcome") and archive_dir and os.path.isdir(archive_dir):
             dates = sorted(p[:-5] for p in os.listdir(archive_dir)
                            if p.endswith(".json") and p != "index.json")
-            prior = [d for d in dates if d < (daily.get("date") or "9999")]
+            # Was: d < daily["date"] — an ISO name compared against a DISPLAY date
+            # ("2026-08-10" < "Monday, August 10, 2026" is always true), so prior[-1]
+            # was TODAY'S OWN archive: this gate re-graded today's call against
+            # today's close and disagreed with the (correct) grader, blocking the
+            # 2026-08-10 send. Same definition as grade_calls now — one source.
+            today_iso = grade_calls.iso_date(daily)
+            if today_iso is None:
+                W("call-outcome", "cannot parse briefing date %r to ISO — outcome not verified"
+                  % (daily.get("date"),))
+                prior = []
+            else:
+                prior = [d for d in dates if d < today_iso]
             if prior:
                 with open(os.path.join(archive_dir, prior[-1] + ".json")) as _f:
                     prior_daily = json.load(_f)
@@ -258,8 +269,11 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
                 if computed and computed != "pending" and yc["outcome"] != computed:
                     F("call-outcome", "yesterdays_call.outcome=%r but prices compute %r (%s)"
                       % (yc["outcome"], computed, note))
-    except Exception:
-        pass
+    except Exception as _e:
+        # A silent pass here means the honesty check quietly did nothing and the
+        # log looks identical to a clean verify. Say so instead.
+        W("call-outcome", "outcome verification could not run (%s: %s)"
+          % (type(_e).__name__, _e))
 
     passed=not any(s=='FAIL' for s,_,_ in issues)
     return passed, issues

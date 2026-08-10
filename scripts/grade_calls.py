@@ -74,6 +74,25 @@ def _locked(daily, instrument):
     except (TypeError, ValueError):
         return None
 
+def iso_date(daily):
+    """THE definition of a briefing's date as ISO. daily.json carries a DISPLAY
+    date ("Monday, August 3, 2026") while archive filenames are ISO, so a lexical
+    compare ("2026-08-03" < "Monday...") is ALWAYS true — that made every "prior
+    archive" lookup return TODAY'S OWN file, grading each call against its own
+    close (p0==p1). It broke grading from 2026-06-26, and the same copy-pasted
+    compare in briefing_gate.py blocked the 2026-08-10 send once grading here was
+    fixed and the two graders disagreed. One definition, imported by both.
+    Returns None rather than guessing when the date can't be parsed."""
+    import datetime as _dt
+    raw = (daily.get("date") or "").strip()
+    if len(raw) == 10 and raw[4] == "-" and raw[7] == "-":
+        return raw
+    try:
+        return _dt.datetime.strptime(raw, "%A, %B %d, %Y").date().isoformat()
+    except ValueError:
+        return None
+
+
 def grade_from_archives(today_daily, prior_daily):
     """Given today's and the prior trading day's daily.json dicts, compute the
     outcome of the prior day's todays_call. Returns (outcome, call, p0, p1, note)."""
@@ -94,16 +113,7 @@ def grade_today(daily_path="data/daily.json", archive_dir="data/daily-archive", 
     # was always true, so "prior" included TODAY'S OWN archive and every call was
     # graded against its own close (p0==p1 -> direction always false -> forced
     # "didnt") from 2026-06-26 onward. Normalize to ISO; fail LOUD if we can't.
-    import datetime as _dt
-    raw = (daily.get("date") or "").strip()
-    today_iso = None
-    if len(raw) == 10 and raw[4] == "-" and raw[7] == "-":
-        today_iso = raw
-    else:
-        try:
-            today_iso = _dt.datetime.strptime(raw, "%A, %B %d, %Y").date().isoformat()
-        except ValueError:
-            pass
+    today_iso = iso_date(daily)
     if today_iso is None:
         print(f"[grade] FATAL: cannot parse briefing date {raw!r} to ISO — refusing to guess the prior archive")
         return daily
