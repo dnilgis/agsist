@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 09 Aug 2026 11:34:37 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 10 Aug 2026 15:10:30 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WASDE TOMORROW; GRAINS SOFT, CRUDE RUNS</title>
+      <link>https://agsist.com/daily/2026-08-10</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-10</guid>
+      <pubDate>Mon, 10 Aug 2026 05:00:00 -0600</pubDate>
+      <description>The market is doing what it does the day before a WASDE: not much. Corn settled at $4.38, off 3.75 cents. Wheat gave back 6.5 cents to $6.46. The funds aren't adding conviction either direction with tomorrow's numbers still in the envelope. Crude ran to $80.84 on Kazakhstan rerouting headlines and that's the loudest thing that happened today. Wait on grains.
+Corn and wheat give back ground ahead of Tuesday's report while WTI adds 2.6% on fresh geopolitical freight risk.
+• GRAINS SOFT AHEAD OF WASDE
+  → If you have old-crop corn to move, the WASDE is a defined risk event; price ahead of the print or set a target and let the market come to you.
+• CATTLE HOLDS; FEEDERS EASE
+• CRUDE RUNS ON FREIGHT RISK
+Read more: https://agsist.com/daily/2026-08-10</description>
+    </item>
     <item>
       <title>WASDE WEEK ARRIVES; WHEAT LEADS, CORN SOFT</title>
       <link>https://agsist.com/daily/2026-08-09</link>
@@ -382,19 +395,6 @@ Corn closed Friday at $4.38 nearby with a 23-cent split to December; this week's
 • Soybeans: Funds Still Buying, Crush Margins Leading
   → Unpriced new-crop soybeans: hold ahead of Thursday export sales. Below 300K MT, reassess storage economics. Above 400K MT, scale toward $12.10 November.
 Read more: https://agsist.com/daily/2026-07-12</description>
-    </item>
-    <item>
-      <title>WHEAT RUNS, HOGS REVERSE: WEEK ENDS HOT</title>
-      <link>https://agsist.com/daily/2026-07-11</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-11</guid>
-      <pubDate>Sat, 11 Jul 2026 05:00:00 -0600</pubDate>
-      <description>The week that started with a hog breakdown ended with hog fireworks. Lean hogs closed Friday at $94.78, up 10.8% on the session, almost exactly reversing Thursday's WASDE-day breakdown and leaving traders with whiplash and no clean read on where that market settles next week. Wheat finished at $6.32, holding most of the WASDE gains after USDA trimmed the U.S. crop estimate and old-crop stocks came in tighter than the trade expected. Corn nearby closed at $4.38, down 3.2% on the day, a split that tells you the grain complex is not moving as one unit right now.
-WASDE-driven wheat gains held into Friday's close, lean hogs posted a 10.8% session to cap a wild two-day reversal, and Hormuz risks returned to the energy tape.
-• Grain Complex Splits
-  → Old-crop wheat in storage: $6.32 is real. If you missed the $6.30 window Thursday, Friday gave you another shot. Next resistance is $6.45. Scale additional sales on a close above $6.40.
-• Oats: Something Broke
-• Hogs: Two-Day Whiplash
-Read more: https://agsist.com/daily/2026-07-11</description>
     </item>
   </channel>
 </rss>
