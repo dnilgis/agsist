@@ -119,6 +119,7 @@
       <div style="background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px" id="cyn-corn"></div>
       <div style="background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px" id="cyn-beans"></div>
     </div>
+    <div id="cyn-record" style="display:none;background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px;margin-top:12px"></div>
     <div style="font-size:0.795rem;color:#8a948f;line-height:1.65;margin-top:10px">Every state&rsquo;s fit on this page, pointed at this week&rsquo;s ratings and weighted by planted acres. The band is the 80th percentile of the model&rsquo;s own misses at this week, leave-one-year-out &mdash; it earns its width from the backtest below it, and it tightens as the season ages. Each weekly number is kept and graded against USDA&rsquo;s final yield in January, misses included.</div>
   </section>
   <script>
@@ -143,6 +144,34 @@
       var wk=document.getElementById('cyn-week');
       if(wk&&d.crops.corn)wk.textContent='ratings week ending '+d.crops.corn.week_ending+' \u00b7 updates Tuesdays';
       box.style.display='block';
+    }).catch(function(){});
+
+    // ON THE RECORD: the model's directional call against USDA's next print,
+    // locked before each WASDE and graded by arithmetic after it. The ledger
+    // is append-only and misses stay \u2014 that is the whole product.
+    fetch('/data/nowcast-direction.json').then(function(r){return r.ok?r.json():null;}).then(function(d){
+      if(!d||!d.calls||!d.calls.length)return;
+      var el=document.getElementById('cyn-record'); if(!el)return;
+      var rec=d.record||{graded:0,correct:0,pending:0};
+      var head='<div style="font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#d4a23f;margin-bottom:7px">On the record \u2014 direction vs USDA\u2019s next print</div>'
+        +'<div style="font-size:0.78rem;color:#8a948f;margin-bottom:8px">Locked from the live model before each WASDE, graded by subtraction after it. '
+        +(rec.graded?('Record so far: <b style="color:#e6ebe9">'+rec.correct+' of '+rec.graded+'</b> correct.'):'First graded call lands with the next report.')+'</div>';
+      var rows=d.calls.slice(-6).reverse().map(function(c){
+        var arrow=c.call==='up'?'\u25b2 UP':c.call==='down'?'\u25bc DOWN':'\u2248 NO REVISION';
+        var col=c.call==='up'?'#5fc28a':c.call==='down'?'#e0685f':'#b9c2bd';
+        var right;
+        if(c.outcome===null||c.outcome===undefined){right='<span style="color:#8a948f">prints '+c.wasde+'</span>';}
+        else{
+          var ocol=c.outcome==='correct'?'#5fc28a':'#e0685f';
+          right='<span style="color:#8a948f">USDA '+c.usda_before+' \u2192 '+c.usda_after+'</span> <b style="color:'+ocol+'">'+c.outcome.toUpperCase()+'</b>';
+        }
+        return '<div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:\'JetBrains Mono\',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d">'
+          +'<span style="color:#e6ebe9">'+c.wasde+' '+(c.crop==='soybeans'?'beans':c.crop)+' <b style="color:'+col+'">'+arrow+'</b>'
+          +' <span style="color:#8a948f">(model '+c.model+' vs '+c.usda_before+')</span></span>'
+          +'<span>'+right+'</span></div>';
+      }).join('');
+      el.innerHTML=head+rows;
+      el.style.display='block';
     }).catch(function(){});
   })();
   </script>
