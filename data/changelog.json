@@ -6,6 +6,12 @@
    "date": "2026-08-11",
    "items": [
     {
+     "tag": "fixed",
+     "page": "/daily",
+     "name": "Tuesday's briefing reported a WASDE that had not happened",
+     "text": "Tuesday morning's briefing led with \"WASDE DELIVERS\" and described the August report as printed and absorbed. It had not been released -- it prints Wednesday, August 12 at 11am CT. The chain: Monday's briefing set its weekly question with the wrong date (\"the WASDE on Tuesday\"), and Tuesday's writer resolved that question against a report that did not exist. Prices in the briefing were real; the event was not, and that is worse. Two things now prevent it: in the week before a WASDE the writer is told, in so many words, that the report has not happened and no number from it exists; and the pre-send gate now hard-blocks any briefing that describes an unreleased report's results -- tested against Tuesday's own text, which it catches six times. The emailed copy cannot be recalled; this note is the correction."
+    },
+    {
      "tag": "improved",
      "page": "/scorecard",
      "name": "Yesterday's Call, redesigned: one-day calls now sized to one-day moves",
