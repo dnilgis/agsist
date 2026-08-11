@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 10 Aug 2026 15:10:30 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 11 Aug 2026 11:47:49 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/daily.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WASDE DELIVERS; CORN FLAT, BEANS SPLIT</title>
+      <link>https://agsist.com/daily/2026-08-11</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-11</guid>
+      <pubDate>Tue, 11 Aug 2026 05:00:00 -0600</pubDate>
+      <description>The WASDE landed and December corn didn't flinch, flat at $4.62 for the second straight session. Nearby beans added nearly 5 cents on soyoil running up 2.1%, with 62% of the crop rated good-to-excellent holding the floor under new-crop. The weekly thread's question gets its answer today: the WASDE confirmed the crop, and the market said it already knew.
+The August WASDE printed Tuesday morning; December corn held $4.62 while nearby beans firmed on soyoil strength and field reports point to a better-than-expected crop.
+• WASDE PRINTS; GRAINS ABSORB IT
+• BEANS SPLIT: OLD CROP FIRMS, NEW CROP EASES
+  → If you are holding unpriced new-crop beans, $11.78 is a reasonable target ahead of the Pro Farmer tour Aug 17; a strong tour pulls the bid lower.
+• CATTLE FIRMS; FEEDERS EASE
+Read more: https://agsist.com/daily/2026-08-11</description>
+    </item>
     <item>
       <title>WASDE TOMORROW; GRAINS SOFT, CRUDE RUNS</title>
       <link>https://agsist.com/daily/2026-08-10</link>
@@ -381,20 +394,6 @@ Lean hogs had their biggest single-session gain in months while Iran re-escalati
   → Producers with unhedged hogs: $94.78 is real money. Consider locking 25-30% of near-term production here; this move is more likely to retrace than extend.
 • Cattle Splits, Milk Falls Hard
 Read more: https://agsist.com/daily/2026-07-13</description>
-    </item>
-    <item>
-      <title>WEEK AHEAD: POLLINATION WEATHER, WASDE AFTERMATH SET STAGE</title>
-      <link>https://agsist.com/daily/2026-07-12</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-12</guid>
-      <pubDate>Sun, 12 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Friday closed a week of sharp moves: lean hogs ran 10.8% on the session, oats fell hard at 16.1%, wheat held its WASDE-driven gains at $6.32, and corn split violently between old crop at $4.38 and December at $4.61. That 23-cent gap between nearby and December corn is the market's current weather premium invoice. Corn is in peak pollination right now, and every forecast map that runs hotter or drier from here is a direct bid to December. This week, Monday's crop progress at 3 PM CT and the daily weather models are the only inputs that matter. Everything else is noise until the pollination window closes.
-Corn closed Friday at $4.38 nearby with a 23-cent split to December; this week's weather maps and Monday crop progress decide whether that gap widens or closes.
-• Corn: The Pollination Premium
-  → Unpriced new-crop corn: hold through Monday crop progress. A condition rating decline below 60% good/excellent opens the door toward $4.75 December. Above $4.70, begin scaling sales on 10-15% increments.
-• Wheat: WASDE Gains Hold, Range Sets Up
-• Soybeans: Funds Still Buying, Crush Margins Leading
-  → Unpriced new-crop soybeans: hold ahead of Thursday export sales. Below 300K MT, reassess storage economics. Above 400K MT, scale toward $12.10 November.
-Read more: https://agsist.com/daily/2026-07-12</description>
     </item>
   </channel>
 </rss>
