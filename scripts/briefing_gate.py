@@ -275,6 +275,24 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
         W("call-outcome", "outcome verification could not run (%s: %s)"
           % (type(_e).__name__, _e))
 
+    # ── call-design v2: level-band advisory (2026-08-13) ──────────────────
+    # WARN, never FAIL: a level outside the one-session band is a design
+    # smell, not a falsehood — the gate blocks lies, not ambition. The band
+    # is the same computation the generator saw (call_calibration, single
+    # definition), so a WARN here means the model ignored its own brief.
+    try:
+        tc = daily.get("todays_call")
+        if isinstance(tc, dict) and tc.get("instrument") and tc.get("level") is not None:
+            import call_calibration
+            _key = grade_calls.locked_key(tc.get("instrument"))
+            _close = (daily.get("locked_prices") or {}).get(_key) if _key else None
+            if _close is not None:
+                status, detail = call_calibration.band_check(tc, _close, archive_dir)
+                if status in ("too_far", "too_near"):
+                    W("call-band", detail)
+    except Exception as _e:
+        W("call-band", "band check could not run (%s: %s)" % (type(_e).__name__, _e))
+
     passed=not any(s=='FAIL' for s,_,_ in issues)
     return passed, issues
 

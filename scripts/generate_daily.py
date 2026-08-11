@@ -1244,6 +1244,56 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
     if past_phrases:
         overused_phrases = "OVERUSED PHRASES (appeared 3+ times in the last 2 briefings):\n  - " + "\n  - ".join(past_phrases) + "\nAvoid these exact phrases today. Reach for different framing."
 
+    # ══ TODAY'S CALL, design v2 (2026-08-13) ═════════════════════════════
+    # The v1 claim shape (direction AND level by the NEXT close, level chosen
+    # from the narrative) graded 4/43 = 9.3% once grading went deterministic —
+    # not a market-reading failure, a claim-design failure: levels averaged
+    # well beyond one session's realized move. v2 keeps the grading byte-for-
+    # byte identical and fixes the CLAIM: the level must sit inside a
+    # vol-scaled band (call_calibration.py), and the model now sees its own
+    # graded record (feedback loop) instead of starting from zero every day.
+    # Fails OPEN: if calibration/scorecard are unavailable this degrades to
+    # the v1 instruction text — a briefing is never blocked by its coach.
+    # Note this block no longer lives inside yesterdays_block: v1 silently
+    # dropped the whole call instruction on fresh-archive days (the
+    # "required every weekday" rule at the bottom of the prompt disagreed).
+    _V1_CALL_TEXT = ("══ TODAY'S CALL (the todays_call object) ══\n"
+        "Make ONE concrete, falsifiable directional call: {instrument, direction (up/down), level}. "
+        "It is graded automatically tomorrow against the actual close — BOTH the direction (did it move "
+        "your way vs today's close) AND the level (did it reach/hold your line) must hold to count as "
+        "played_out. The instrument MUST be the market your highest-conviction section is actually about — "
+        "if that section is a soybean story, your call is on soybeans, not corn. Take the level from that "
+        "same section and state a real number in LOCKED TABLE units. A vague call that can't be graded is "
+        "worse than a wrong one — commit. Omit todays_call only when the market is closed.")
+    call_block = ""
+    if not market_status["is_closed"]:
+        call_block = _V1_CALL_TEXT
+        try:
+            import call_calibration as _cal
+            _arch = str(REPO_ROOT / "data" / "daily-archive")
+            _is_report_day = bool((usda_release or "").strip())
+            _bands = _cal.bands_text(_arch, report_day=_is_report_day)
+            if _bands:
+                _regime = ("TODAY IS A USDA REPORT DAY — the bands below are WIDENED "
+                           "(report sessions run 2-4x a normal day; a quiet-day-sized "
+                           "level would be cleared by lunch and read as a gamed hit).\n"
+                           if _is_report_day else "")
+                call_block = (_V1_CALL_TEXT
+                    + "\n\nCALL DESIGN v2 — THE LEVEL MUST BE REACHABLE IN ONE SESSION.\n"
+                    + _regime
+                    + "One-session level bands, computed from each market's own last-20-day "
+                    + "average move (min–max distance from today's close):\n  " + _bands + "\n"
+                    + "Pick your level INSIDE the band for your instrument: at least the minimum "
+                    + "(closer is ungradeable noise), no more than the maximum (farther is a "
+                    + "multi-day thesis wearing a one-day grade — it scores as a miss even when "
+                    + "the idea is right). If your conviction is genuinely multi-day, call the "
+                    + "one-day step toward it and let the thesis live in the section prose.")
+            _fb = _cal.feedback_block(str(REPO_ROOT / "data" / "scorecard.json"))
+            if _fb:
+                call_block += "\n\n" + _fb
+        except Exception as _e:
+            print(f"  [call-v2] calibration unavailable, using v1 call text: {_e}")
+
     yesterdays_block = ""
     if yesterdays_call and not market_status["is_closed"]:
         _sc = yesterdays_call.get("structured_call")
@@ -1299,7 +1349,7 @@ OUTCOME RUBRIC: be honest, but be accurate. Most calls are PARTIAL. Choose the c
 DO NOT default to "didnt" because "the bounce was thin" or "the move was small."
 A directional call that resolved in the called direction is PLAYED OUT, even if the magnitude was modest. Readers respect accountability, both for being right AND for being wrong. Mislabeling a win as a loss undermines trust as much as the reverse.
 
-Output as the yesterdays_call object in the JSON. Give your best read for outcome ('played_out', 'didnt', or 'pending'), but know it is RE-COMPUTED deterministically from the actual close after you finish (direction AND level both must resolve in the call's favor). Do not strain to justify a verdict — in the summary, describe the call and what the market actually did, factually.\n\n══ TODAY'S CALL (the todays_call object) ══\nMake ONE concrete, falsifiable directional call: {{instrument, direction (up/down), level}}. It is graded automatically tomorrow against the actual close — BOTH the direction (did it move your way vs today's close) AND the level (did it reach/hold your line) must hold to count as played_out. The instrument MUST be the market your highest-conviction section is actually about — if that section is a soybean story, your call is on soybeans, not corn. Take the level from that same section and state a real number in LOCKED TABLE units. A vague call that can't be graded is worse than a wrong one — commit. Omit todays_call only when the market is closed.
+Output as the yesterdays_call object in the JSON. Give your best read for outcome ('played_out', 'didnt', or 'pending'), but know it is RE-COMPUTED deterministically from the actual close after you finish (direction AND level both must resolve in the call's favor). Do not strain to justify a verdict — in the summary, describe the call and what the market actually did, factually.
 """
 
     thread_block = ""
@@ -1359,6 +1409,7 @@ Set weekly_thread.day = 1, weekly_thread.question = (your question), weekly_thre
         banned_one_number,
         overused_phrases,
         yesterdays_block.strip() if yesterdays_block else "",
+        call_block.strip() if call_block else "",
         thread_block.strip() if thread_block else "",
     ) if b]
     context_blocks = "\n\n".join(_optional_blocks) if _optional_blocks else ""
@@ -3482,6 +3533,21 @@ def main():
                            past_one_number_topics=past_one_number_topics,
                            past_phrases=past_phrases,
                            usda_release=usda_release)
+
+    # call-design v2 (2026-08-13): stamp which claim design produced this
+    # call, so build_scorecard can keep the v1 and v2 series separate (the
+    # by_method precedent — a methodology change never blends into the old
+    # record). Stamped by the generator, not the model: the model cannot be
+    # trusted to label its own methodology era.
+    _tc = briefing.get("todays_call")
+    if isinstance(_tc, dict) and _tc:
+        _tc["design"] = "v2"
+        if (usda_release or "").strip():
+            # Stamp report days so the gate's band check (and any later
+            # analysis) judges this call against the widened band it was
+            # actually briefed with — and so v2's record can be split by
+            # regime if report days turn out to grade differently.
+            _tc["report_day"] = True
 
     # v4.2 (Phase 2 C4): enforce weekend block contract regardless of
     # what the model returned. On weekdays this is a no-op.

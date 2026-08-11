@@ -137,7 +137,7 @@ def main():
                 "closes. The original wording is still in that day's briefing."
             )
 
-        records.append({
+        rec = {
             "made": dates[i - 1] if i > 0 else None,
             "judged": d,
             "call": call_text,
@@ -145,7 +145,28 @@ def main():
             "method": method,
             "mismatch": mismatch,
             "note": note_text,
-        })
+        }
+        # v2 (2026-08-10): carry the structured call on the record so the
+        # feedback loop (call_calibration.feedback_block) and the new splits
+        # below don't have to re-parse prose. Also mark which CALL DESIGN
+        # produced it — v1 = uncalibrated levels, v2 = vol-scaled bands —
+        # the same series-split precedent as by_method: never blend eras.
+        if _computed_call is not None:
+            _raw_inst = (_computed_call.get("instrument") or "").lower()
+            # normalize through the grader's own mapping so "soybeans" and
+            # "beans" are one instrument in every split, not two.
+            rec["instrument"] = (grade_calls.locked_key(_raw_inst) if grade_calls else None) or _raw_inst
+            rec["direction"] = (_computed_call.get("direction") or "").lower()
+            rec["level"] = _computed_call.get("level")
+            rec["p0"] = _p0v
+            rec["p1"] = _p1v
+            rec["design"] = (((prior or {}).get("todays_call")) or {}).get("design") or "v1"
+            # direction-only sub-grade: same closes, level ignored. Published
+            # so readers can see whether misses were wrong-way or just
+            # short-of-level — the two failure modes mean different things.
+            if _p0v is not None and _p1v is not None and rec["direction"] in ("up", "down"):
+                rec["direction_ok"] = (_p1v > _p0v) if rec["direction"] == "up" else (_p1v < _p0v)
+        records.append(rec)
 
     played = sum(1 for r in records if r["outcome"] == "played_out")
     missed = sum(1 for r in records if r["outcome"] == "didnt")
@@ -173,6 +194,41 @@ def main():
     by_method = {"deterministic": _rate(det), "self_reported": _rate(slf)}
     mismatched = sum(1 for r in records if r.get("mismatch"))
 
+    # v2 additions — every one computed from `records`, nothing hand-fed.
+    # by_design: v1 (uncalibrated levels) vs v2 (vol-scaled bands, from
+    # 2026-08-13). The v1 series is frozen history; v2 starts at zero in
+    # public, exactly as by_method did when deterministic grading began.
+    by_design = {
+        "v1": _rate([r for r in det if r.get("design", "v1") == "v1"]),
+        "v2": _rate([r for r in det if r.get("design") == "v2"]),
+    }
+    # direction-only: same closes, level ignored — separates "wrong way"
+    # from "right way, short of the line".
+    dgr = [r for r in det if "direction_ok" in r]
+    direction_only = {
+        "right_way": sum(1 for r in dgr if r["direction_ok"]),
+        "graded": len(dgr),
+        "rate": round(100.0 * sum(1 for r in dgr if r["direction_ok"]) / len(dgr), 1) if dgr else None,
+    }
+    by_instrument = {}
+    for r in det:
+        k = r.get("instrument")
+        if not k:
+            continue
+        g = by_instrument.setdefault(k, {"played": 0, "graded": 0})
+        if r["outcome"] in ("played_out", "didnt"):
+            g["graded"] += 1
+            g["played"] += 1 if r["outcome"] == "played_out" else 0
+    for g in by_instrument.values():
+        g["hit_rate"] = round(100.0 * g["played"] / g["graded"], 1) if g["graded"] else None
+    # trailing-20: the drift needle for "is the briefing getting better".
+    t20 = [r for r in det if r["outcome"] in ("played_out", "didnt")][-20:]
+    trailing20 = {
+        "played": sum(1 for r in t20 if r["outcome"] == "played_out"),
+        "graded": len(t20),
+        "hit_rate": round(100.0 * sum(1 for r in t20 if r["outcome"] == "played_out") / len(t20), 1) if t20 else None,
+    }
+
     streak = 0
     for r in reversed(records):          # newest graded first
         if r["outcome"] == "pending":
@@ -190,6 +246,10 @@ def main():
         "pending": pending,
         "hit_rate": hit_rate,
         "by_method": by_method,
+        "by_design": by_design,
+        "direction_only": direction_only,
+        "by_instrument": by_instrument,
+        "trailing20": trailing20,
         "mismatched": mismatched,
         "current_streak": streak,
         "records": list(reversed(records)),   # newest first for the page
