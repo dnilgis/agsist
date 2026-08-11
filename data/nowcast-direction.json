@@ -1,0 +1,46 @@
+{
+ "note": "Directional record of the AGSIST yield nowcast against USDA's next WASDE print. Locked from the live model before each report, graded by arithmetic after it, never edited. 'agree' means the model saw no revision coming (gap inside call_eps). Misses stay.",
+ "call_eps": {
+  "corn": 0.5,
+  "soybeans": 0.2
+ },
+ "rev_eps": 0.05,
+ "calls": [
+  {
+   "wasde": "2026-08-12",
+   "crop": "corn",
+   "model": 183.6,
+   "model_week_ending": "2026-08-09",
+   "band80": 4.8,
+   "usda_before": 183.0,
+   "usda_before_label": "USDA, July WASDE",
+   "call": "up",
+   "locked_on": "2026-08-11",
+   "usda_after": null,
+   "actual": null,
+   "outcome": null,
+   "graded_on": null
+  },
+  {
+   "wasde": "2026-08-12",
+   "crop": "soybeans",
+   "model": 53.8,
+   "model_week_ending": "2026-08-09",
+   "band80": 2.4,
+   "usda_before": 53.0,
+   "usda_before_label": "USDA, July WASDE",
+   "call": "up",
+   "locked_on": "2026-08-11",
+   "usda_after": null,
+   "actual": null,
+   "outcome": null,
+   "graded_on": null
+  }
+ ],
+ "updated": "2026-08-11T16:17:11+00:00",
+ "record": {
+  "graded": 0,
+  "correct": 0,
+  "pending": 2
+ }
+}

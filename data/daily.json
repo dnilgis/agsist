@@ -1,9 +1,9 @@
 {
-  "headline": "WASDE DELIVERS; CORN FLAT, BEANS SPLIT",
-  "subheadline": "The August WASDE printed Tuesday morning; December corn held $4.62 while nearby beans firmed on soyoil strength and field reports point to a better-than-expected crop.",
-  "lead": "The WASDE landed and December corn didn't flinch, flat at $4.62 for the second straight session. Nearby beans added nearly 5 cents on soyoil running up 2.1%, with 62% of the crop rated good-to-excellent holding the floor under new-crop. The weekly thread's question gets its answer today: the WASDE confirmed the crop, and the market said it already knew.",
-  "the_takeaway": "WASDE confirmed the crop; corn held $4.62, beans split old from new. Watch the crop tour.",
-  "teaser": "The WASDE confirmed a big crop and corn barely moved. That's the story.",
+  "headline": "WASDE EVE: CORN FLAT, BEANS SPLIT",
+  "subheadline": "The August WASDE prints Wednesday at 11 AM CT; December corn held $4.62 while nearby beans firmed on soyoil strength and field reports point to a better-than-expected crop.",
+  "lead": "[Correction, posted late morning Aug 11: the emailed edition of this briefing described the August WASDE as already released. It had not — it prints Wednesday, Aug 12 at 11:00 AM CT. Every price in this briefing was and is real; the framing below is corrected, and the changelog carries the full account.] December corn didn't flinch on WASDE eve, flat at $4.62 for the second straight session. Nearby beans added nearly 5 cents on soyoil running up 2.1%, with 62% of the crop rated good-to-excellent holding the floor under new-crop. The weekly thread's question doesn't get its answer today — the WASDE prints tomorrow at 11 AM CT, and the market is positioned like it already knows what USDA will say.",
+  "the_takeaway": "Corn held $4.62 into WASDE eve; beans split old crop from new. USDA prints tomorrow at 11 AM CT.",
+  "teaser": "Corn sat flat at $4.62 the day before the WASDE. Positioning, not conviction.",
   "one_number": {
     "value": "6",
     "unit": "vessels transiting Hormuz on Monday",
@@ -12,7 +12,7 @@
   "yesterdays_call": {
     "summary": "Called corn up, toward above $4.45 on Monday Aug 10. Dec corn closed flat at $4.62 today, nearby off a quarter-cent.",
     "outcome": "didnt",
-    "note": "Corn didn't move toward any new level either way; the WASDE neutralized the call.",
+    "note": "Corn didn't move toward any new level either way; pre-WASDE positioning neutralized the call.",
     "computed": {
       "outcome": "didnt",
       "made": "2026-08-10",
@@ -31,17 +31,17 @@
   },
   "sections": [
     {
-      "title": "WASDE PRINTS; GRAINS ABSORB IT",
-      "body": "- December corn sat flat at **$4.62** after the WASDE, which confirmed the crop story the market had been pricing all week: record or near-record yield, no surprise cut to demand.\n- Nearby corn eased a quarter-cent to $4.38; the old-crop/new-crop carry held at $0.24, telling you merchandisers still see supply as the story, not basis.\n- Field reports from Illinois and South Dakota added texture: dry-summer corn in SD performing better than expected, northwestern Illinois crops exceeding expectations, keeping any weather bid off the table.",
-      "catalyst": "August WASDE released 11 AM CT; field reports from SD, IL confirm crop resilience.",
-      "bottom_line": "Corn absorbed the WASDE without breaking either direction. $4.62 is the line; next move waits for the Pro Farmer tour Aug 17.",
+      "title": "WASDE EVE; GRAINS SIT STILL",
+      "body": "- December corn sat flat at **$4.62** into Wednesday's WASDE, the market having priced its crop story all week: record or near-record yield expected, no surprise cut to demand.\n- Nearby corn eased a quarter-cent to $4.38; the old-crop/new-crop carry held at $0.24, telling you merchandisers still see supply as the story, not basis.\n- Field reports from Illinois and South Dakota added texture: dry-summer corn in SD performing better than expected, northwestern Illinois crops exceeding expectations, keeping any weather bid off the table.",
+      "catalyst": "August WASDE prints Wednesday 11 AM CT; field reports from SD, IL show crop resilience.",
+      "bottom_line": "Corn sat still into the WASDE. $4.62 is the line; the print is Wednesday, the Pro Farmer tour Aug 17 after that.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Corn: WASDE resolved the defined risk event; flat is the verdict."
+      "vs_yesterday": "Corn: flat again — the defined risk event is Wednesday's print."
     },
     {
       "title": "BEANS SPLIT: OLD CROP FIRMS, NEW CROP EASES",
-      "body": "- Nearby beans added 4.75 cents to **$11.61**, pulled higher by soyoil running up 2.1% on the day as crude held and the oil share of crush value widened.\n- Nov beans eased 1.75 cents to $11.78 as the WASDE's crop confirmation put a ceiling on new-crop demand optimism; 62% of the US crop rated good-to-excellent, per USDA, is the number keeping fund buyers cautious on the forward contract.\n- China's $17 billion annual US ag purchase commitment (May 18 deal, through 2028) is visible in the board but not driving fresh buying today; the buy-the-rumor-sell-the-fact pattern has capped follow-through all summer.",
+      "body": "- Nearby beans added 4.75 cents to **$11.61**, pulled higher by soyoil running up 2.1% on the day as crude held and the oil share of crush value widened.\n- Nov beans eased 1.75 cents to $11.78 as crop-confirmation expectations ahead of Wednesday's WASDE capped new-crop demand optimism; 62% of the US crop rated good-to-excellent, per USDA, is the number keeping fund buyers cautious on the forward contract.\n- China's $17 billion annual US ag purchase commitment (May 18 deal, through 2028) is visible in the board but not driving fresh buying today; the buy-the-rumor-sell-the-fact pattern has capped follow-through all summer.",
       "catalyst": "USDA: 62% of US beans rated good-to-excellent; soyoil up 2.1% on crude/oil share widening.",
       "bottom_line": "Old crop gets a soyoil lift; new crop waits on tour numbers. The spread between them is the honest opinion on this crop.",
       "conviction_level": "medium",
@@ -81,11 +81,11 @@
   "weekly_thread": {
     "question": "Does the WASDE on Tuesday confirm a record or near-record corn yield, and does that break Dec corn below $4.50?",
     "day": 2,
-    "status_text": "WASDE confirmed the crop; December corn sat flat at $4.62, not below $4.50. The market had the number priced. Pro Farmer tour Aug 17 is the next arbiter."
+    "status_text": "Correction: the WASDE prints Wednesday, not Tuesday as Monday's question assumed. The question stands unanswered — Dec corn sits at $4.62, above the $4.50 line, with the print at 11 AM CT tomorrow."
   },
   "the_more_you_know": {
     "title": "The WASDE Yield Number That Actually Moves Markets",
-    "body": "USDA's August WASDE carries the first surveyed yield estimate of the season -- before August, numbers are modeled from planting data alone. Today's corn yield print of 181.0 bu/acre is the first number scouts in the field can actually argue with. That is why the Pro Farmer tour, starting Aug 17, matters: it is the only independent check on USDA before the September revision."
+    "body": "USDA's August WASDE carries the first surveyed yield estimate of the season -- before August, numbers are modeled from planting data alone. Wednesday's print is the first number scouts in the field can actually argue with. That is why the Pro Farmer tour, starting Aug 17, matters: it is the only independent check on USDA before the September revision."
   },
   "watch_list": [
     {
@@ -109,7 +109,7 @@
     "text": "You reap what you sow.",
     "attribution": "English Proverb"
   },
-  "source_summary": "CME Group settlement prices; USDA WASDE August 2026; USDA crop condition ratings; Brownfield Ag News field reports; OilPrice.com Hormuz vessel data; Beef Magazine; Farm Policy News.",
+  "source_summary": "CME Group settlement prices; USDA WASDE release calendar; USDA crop condition ratings; Brownfield Ag News field reports; OilPrice.com Hormuz vessel data; Beef Magazine; Farm Policy News.",
   "date": "Tuesday, August 11, 2026",
   "meta": {
     "market_mood": "mixed",
