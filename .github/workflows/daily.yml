@@ -31,6 +31,11 @@ on:
     # UTC run still happens normally on top of this.
     - cron: '0 20 * * 5'
   workflow_dispatch:
+    inputs:
+      send_email:
+        description: "Email the live subscriber list? Manual runs default to NO — a dry run that generates, gates, and publishes but sends nothing. Scheduled runs always send."
+        type: boolean
+        default: false
 
 jobs:
   # If a manual run already generated today's briefing, the scheduled morning
@@ -233,7 +238,14 @@ jobs:
       # succeeded — so a blocked or stale briefing is never emailed. send_daily.py
       # re-checks generated_at==today and price_validation_clean as belt-and-suspenders.
       # Default recipient is the subscriber list (RECIPIENTS secret, or live from the subs worker via LIST_URL).
+      #
+      # THE EMAIL TRAP, defused (2026-08-11): this step used to have no `if:`,
+      # so ANY successful run — including a manual workflow_dispatch fired to
+      # test something — emailed the real subscriber list. Now a manual run is
+      # a dry run unless the dispatcher explicitly ticks send_email. Scheduled
+      # runs are unaffected (event_name == 'schedule' short-circuits true).
       - name: Send daily email
+        if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
         env:
           # new sender env names; falls back to the legacy GMAIL_* secrets so
           # either set works. RECIPIENTS is ignored when LIST_URL is set
