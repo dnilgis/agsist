@@ -252,7 +252,14 @@
   var data=null;
   function median(a){ a=a.slice().sort(function(x,y){return x-y;}); var m=Math.floor(a.length/2); return a.length%2?a[m]:(a[m-1]+a[m])/2; }
   function showState(st){
-    if(!data)return;
+    if(!data){
+      // The data fetch failed (or hasn't landed): say so instead of making
+      // every state click a silent no-op — or worse, leaving the previous
+      // state's panel rendered under the newly selected chip.
+      var el0=$('sc-panel');
+      if(el0){ el0.innerHTML='<p style="margin:0;color:#8a948f">State detail is unavailable right now — the storage data file didn\'t load. Refresh to retry.</p>'; el0.style.display='block'; }
+      return;
+    }
     var d=data.states[st]; if(!d)return;
     var yrs=Object.keys(d.ratio).sort();
     var vals=yrs.map(function(y){return d.ratio[y];});

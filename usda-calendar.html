@@ -480,6 +480,14 @@
       document.getElementById('next-unit').textContent=_cd.unit;
       var wpi=document.getElementById('next-wpi');if(wpi)wpi.hidden=!(next.type==='wasde'||next.type==='supply'||next.type==='stocks'||next.type==='plantings');
       var cal=document.getElementById('next-cal');if(cal){cal.href='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('USDA: '+next.name)+'&dates='+gcalDates(next)+'&details='+encodeURIComponent((next.desc||'')+' \u2014 via AGSIST')+'&location=USDA';cal.hidden=false;cal.onclick=function(){calEvent('add_to_calendar',{report:next.name});};}
+    } else {
+      // The hardcoded REPORTS array has run out of future dates (it ends at
+      // the last entry above). Without this branch the hero countdown sat
+      // silently at dashes forever \u2014 say what actually happened instead.
+      var nn=document.getElementById('next-name'); if(nn)nn.textContent='Calendar needs next year\u2019s dates';
+      var nd=document.getElementById('next-date'); if(nd)nd.textContent='USDA publishes its report schedule each fall \u2014 this page\u2019s list ends at '+sorted[sorted.length-1].date+' and is awaiting the new dates.';
+      var nu=document.getElementById('next-unit'); if(nu)nu.textContent='';
+      var nm=document.getElementById('next-num'); if(nm)nm.textContent='\u2014';
     }
 
     const tagLabels={wasde:'WASDE',croprog:'Crop Progress',plantings:'Plantings',stocks:'Grain Stocks',census:'Census',supply:'Crop Production',outlook:'Outlook',export:'Export Sales',intl:'International'};

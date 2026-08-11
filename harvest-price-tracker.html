@@ -106,7 +106,7 @@
   <section class="hp-figs" id="key-figures">
     <h2 style="margin-top:0">Key figures at a glance</h2>
     <ul>
-      <li>The 2026 projected price is <b>$4.62</b> for corn and <b>$11.09</b> for soybeans (February average of December corn / November soybean CBOT settlements).</li>
+      <li>The 2026 projected price is <b id="hp-proj-corn">$4.62</b> for corn and <b id="hp-proj-beans">$11.09</b> for soybeans (February average of December corn / November soybean CBOT settlements).</li>
       <li>Corn’s harvest price has finished below its projected price in <b>10 of the last 15 crop years</b> (2011–2025); soybeans’ in <b>10 of 15</b>.</li>
       <li>The biggest single-year harvest rally was 2012 corn: <b>$5.68 projected → $7.50 harvest</b>, lifting standard Revenue Protection guarantees (policies without the harvest-price exclusion) by 32% in one October.</li>
       <li>The steepest percentage fall was 2014 corn: <b>$4.62 → $3.49</b> (−24%), the kind of year the price side of RP is bought for.</li>
@@ -286,7 +286,23 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
   });
   // "Your guarantee" mini-calc — projected prices from the same seeded values the cards use.
   (function(){
-    var PROJ={corn:4.62,beans:11.09}; // 2026 finals (RMA); refreshed each Feb with the seed cards
+    // Fallback constants only. The REAL numbers load from the same JSON the
+    // seed cards are baked from, so a February refresh updates the cards, this
+    // calculator and the key-figures bullet in one place instead of four.
+    var PROJ={corn:4.62,beans:11.09};
+    fetch('/data/harvest-prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+      if(!d||!d.commodities)return;
+      d.commodities.forEach(function(c){
+        var k=/corn/i.test(c.label)?'corn':(/soy/i.test(c.label)?'beans':null);
+        var p=c.projected&&c.projected.price;
+        if(k&&p!=null){
+          PROJ[k]=p;
+          var b=document.getElementById(k==='corn'?'hp-proj-corn':'hp-proj-beans');
+          if(b)b.textContent='$'+p.toFixed(2);
+        }
+      });
+      if(typeof upd==='function')upd(); // recompute the guarantee with live numbers
+    }).catch(function(){});
     var crop=document.getElementById('hpm-crop'),aph=document.getElementById('hpm-aph'),cov=document.getElementById('hpm-cov'),out=document.getElementById('hpm-out');
     if(!crop||!aph||!cov||!out)return;
     try{var sv=JSON.parse(localStorage.getItem('agsist-hp-mine')||'null');if(sv){if(sv.crop)crop.value=sv.crop;if(sv.aph)aph.value=sv.aph;if(sv.cov)cov.value=sv.cov;}}catch(e){}
