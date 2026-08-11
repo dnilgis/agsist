@@ -10,6 +10,12 @@
      "page": "/scorecard",
      "name": "Yesterday's Call, redesigned: one-day calls now sized to one-day moves",
      "text": "Since deterministic grading began in June, the daily call hit 4 of 43 -- a 9.3% record we publish rather than hide. The direction reads were not the problem: on those same 43 calls the direction alone was right 39.5% of the time. The problem was the claim itself, which demanded the price reach a specific level by the NEXT close, at distances that averaged more than a full typical trading day away. Corn's average session moves about 5 cents; the calls were asking for 7 or more, plus the right direction, in one day. Starting today the called level must sit inside a band computed from each market's own last-20-day average move (widened automatically on USDA report days, which trade a different regime), and the model sees its full graded record -- every hit and miss, by instrument -- before it makes today's call. The grading itself is unchanged, byte for byte. The old record stays on the scorecard, frozen and labeled, and the new series starts at zero in public, the same way we handled the switch to deterministic grading in June."
+    },
+    {
+     "tag": "improved",
+     "page": "/",
+     "name": "Grower Pulse retired",
+     "text": "The weekly poll is gone -- the homepage widget, the page, and the Monday rotation behind it. It never found an audience, and a sentiment poll with a handful of votes was worse than none: it dressed anecdote up as data on a site whose whole point is that the numbers are real. If enough of you ask for it back, it comes back with a proper sample behind it."
     }
    ]
   },
