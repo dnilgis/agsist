@@ -149,7 +149,11 @@ def render_hero(data, st, ph, today):
     bias = ("The tour has also leaned one way: it came in <b>under</b> the final yield in "
             f"{st['tour_low']} of {n} years, by an average of {abs(st['tour_bias']):.1f} bushels. "
             "That is a real tendency, not a rule &mdash; it ran high three times, once by 5.5 bushels.")
-    return (f'<div class="ct-hero"><div class="ct-kick">{kicker}</div>'
+    # data-start lets the page recompute "N days out" client-side each visit;
+    # the baked text is only correct on the day it was baked, and this page
+    # is rebaked manually outside tour week (it said "9 days out" for days).
+    _kick_attr = f' data-start="{esc(t["start"])}"' if ph == "before" else ""
+    return (f'<div class="ct-hero"><div class="ct-kick"{_kick_attr}>{kicker}</div>'
             f'<div class="ct-big">{big}<span class="ct-unit">bu</span></div>'
             f'<div class="ct-vd">Average tour miss vs the final crop &mdash; {esc(verdict)}</div>'
             f'<p class="ct-lead">{lead}</p><p class="ct-lead">{bias}</p></div>')

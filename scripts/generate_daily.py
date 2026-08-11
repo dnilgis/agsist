@@ -1157,11 +1157,10 @@ def get_usda_release_today():
     if md in cof_2026:
         releases.append("USDA Cattle on Feed, 2:00 PM CT")
 
-    # Monthly: WASDE (around 9th-12th). Hardcoded 2026 dates:
-    wasde_2026 = {"01-12", "02-10", "03-10", "04-09", "05-12",
-                  "06-11", "07-10", "08-12", "09-11", "10-09",
-                  "11-10", "12-10"}
-    if md in wasde_2026:
+    # Monthly: WASDE — single-definition table in usda_dates.py (shared with
+    # briefing_gate's fabricated-release check; see 2026-08-11 incident).
+    import usda_dates
+    if today.date() in usda_dates.WASDE_2026:
         releases.append("USDA WASDE (World Ag Supply/Demand Estimates), 11:00 AM CT")
 
     # Quarterly stocks (Jan/Mar/Jun/Sep around 30th-31st):
@@ -1178,12 +1177,30 @@ def get_usda_release_today():
         releases.append("USDA Acreage Report, 11:00 AM CT")
 
     if not releases:
+        # 2026-08-11 incident: with no block at all here, the model was free to
+        # believe the news cycle's WASDE anticipation meant the report had
+        # ALREADY printed — Monday's briefing called the WASDE "Tuesday",
+        # Tuesday's briefing inherited that via the weekly thread and published
+        # "WASDE DELIVERS" a full day before the release. When a major report
+        # is coming within the week, say so explicitly, in the negative.
+        nw = usda_dates.next_wasde(today.date())
+        if nw and (nw - today.date()).days <= 7:
+            days = (nw - today.date()).days
+            when = "TOMORROW" if days == 1 else nw.strftime("%A, %B %-d")
+            return ("UPCOMING RELEASE — GROUNDING, NOT NEWS:\n"
+                    f"  The next USDA WASDE is {when} at 11:00 AM CT. It has NOT been released. "
+                    "No number from it exists yet. Anything in today's news about it is preview, "
+                    "positioning, or analyst expectation — never its contents. Do not write that it "
+                    "printed, landed, or confirmed anything, and do not resolve the weekly thread "
+                    "with it. If a prior briefing misstated its date, this line is authoritative.")
         return ""
     header = "TODAY IS A USDA RELEASE DAY:\n  - " + "\n  - ".join(releases)
     header += (
         "\nLead with anticipation framing (\"...with [report] coming at [time], the market "
-        "is positioning for...\"). Don't pretend to know the result. Reserve interpretation "
-        "for tomorrow's briefing once the data is in."
+        "is positioning for...\"). Don't pretend to know the result. THE REPORT HAS NOT "
+        "PRINTED YET as you write — this briefing goes out hours before it. Never use past "
+        "tense about today's report. Reserve interpretation for tomorrow's briefing once "
+        "the data is in."
     )
     return header
 

@@ -293,6 +293,47 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
     except Exception as _e:
         W("call-band", "band check could not run (%s: %s)" % (type(_e).__name__, _e))
 
+    # ── fabricated-release check (2026-08-11 incident) ────────────────────
+    # Tuesday Aug 11's briefing shipped "WASDE DELIVERS" / "The WASDE landed"
+    # a full day before the report existed — Monday's weekly thread misdated
+    # the release and Tuesday's model resolved the thread against an event
+    # that had not happened. Prices were clean, so no gate fired. This one
+    # does: past-tense claims about WASDE results are a hard FAIL until the
+    # print is actually public (a prior day, or 16:00Z on release day —
+    # `weekly_thread.status_text` included). A month word other than the
+    # upcoming report's month exempts a match ("the July WASDE printed ..."
+    # is history, not fabrication).
+    try:
+        import usda_dates, datetime as _dtmod
+        _today = today or grade_calls.iso_date(daily)
+        _tdate = _dtmod.date.fromisoformat(_today) if isinstance(_today, str) else _today
+        _gen = None
+        try:
+            _gen = _dtmod.datetime.fromisoformat((daily.get("generated_at") or "").replace("Z", "+00:00"))
+        except ValueError:
+            pass
+        if _tdate and not usda_dates.wasde_results_are_public(_tdate, _gen):
+            _verbs = r"(?:landed|printed|delivered|dropped|confirmed|showed|came\s+in|is\s+in|absorbed?)"
+            _pat = re.compile(r"WASDE\b[^.!?\n]{0,60}?\b" + _verbs, re.I)
+            _months = ("january","february","march","april","may","june","july","august",
+                       "september","october","november","december")
+            _nw = usda_dates.next_wasde(_tdate)
+            _this_month = _months[_nw.month - 1] if _nw else None
+            _fields = prose_fields(daily)
+            _wt = (daily.get("weekly_thread") or {})
+            if _wt.get("status_text"): _fields.append(("weekly_thread.status_text", str(_wt["status_text"])))
+            for _loc, _txt in _fields:
+                for _m in _pat.finditer(_txt):
+                    _back = _txt[max(0, _m.start() - 30):_m.start()].lower()
+                    _named = [mo for mo in _months if mo in _back]
+                    if _named and _this_month not in _named:
+                        continue   # talking about a previous month's report — history
+                    F("wasde-fabricated",
+                      "%s describes WASDE results before the release exists (next WASDE %s): %r"
+                      % (_loc, _nw.isoformat() if _nw else "?", _m.group(0)[:80]))
+    except Exception as _e:
+        W("wasde-fabricated", "release check could not run (%s: %s)" % (type(_e).__name__, _e))
+
     passed=not any(s=='FAIL' for s,_,_ in issues)
     return passed, issues
 
