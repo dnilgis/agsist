@@ -28,6 +28,7 @@ jobs:
         run: |
           python scripts/fetch_cond_yield.py --selftest
           python scripts/build_yield_nowcast.py --selftest
+          python scripts/nowcast_direction.py --selftest
       - name: Skip off-season
         id: window
         run: |
@@ -43,6 +44,12 @@ jobs:
       - name: Yield Nowcast
         if: steps.window.outputs.go == '1'
         run: python scripts/build_yield_nowcast.py
+      - name: Directional record (grade past WASDE, lock next)
+        if: steps.window.outputs.go == '1'
+        # Grades any printed WASDE once benchmarks.usda carries the new number
+        # (entered on release day per the playbook), then locks the call for
+        # the next report from the nowcast it just built. Both idempotent.
+        run: python scripts/nowcast_direction.py --grade --lock
       - name: Commit
         if: steps.window.outputs.go == '1'
         run: |
@@ -54,7 +61,7 @@ jobs:
           # verdict module at the top reads the fresh JSON live — which is how
           # the page ended up contradicting itself by three weeks.
           python3 scripts/build_condyield.py || true
-          git add -A data/cond-yield data/yield-nowcast.json 2>/dev/null || true
+          git add -A data/cond-yield data/yield-nowcast.json data/nowcast-direction.json 2>/dev/null || true
           git add conditions-yield.html 2>/dev/null || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "data: conditions-vs-yield fits + yield nowcast"
