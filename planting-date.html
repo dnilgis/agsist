@@ -566,7 +566,11 @@ function renderGDUCompare(){
     ? [{d:'Apr 25',gdu:2720,cls:'best'},{d:'May 5',gdu:2650,cls:'good'},{d:'May 15',gdu:2510,cls:'warn'},{d:'Jun 1',gdu:2100,cls:'late'}]
     : [{d:'May 1',gdu:2700,cls:'best'},{d:'May 10',gdu:2590,cls:'good'},{d:'May 20',gdu:2410,cls:'warn'},{d:'Jun 1',gdu:2100,cls:'late'}];
 
-  var rm = parseFloat(document.getElementById('pd-rm').value)||108;
+  // isFinite, not ||: this input doubles as soybean Maturity Group, and
+  // MG 0 (the real northern groups 000/00/0) is falsy — `||108` turned a
+  // typed MG 0 into a 29,580-GDU target. Blank still gets the default.
+  var _rmv = parseFloat(document.getElementById('pd-rm').value);
+  var rm = isFinite(_rmv)&&_rmv>=0 ? _rmv : 108;
   // Purdue: ~22 GDD per point of relative maturity. The site's own
   // /gdu-calculator uses the same rm*22+250; an earlier rm*9+375 here returned
   // roughly half the real requirement - low enough that the "does it finish?"
@@ -667,8 +671,19 @@ function fetchSoilTemp(){
     document.getElementById('st-2in').textContent=soilDisplay;
     document.getElementById('st-air').textContent=airDisplay;
     var badge=document.getElementById('st-badge');if(badge)badge.style.display='inline-flex';
-    // Verdict
-    var soilNum=parseFloat(soil2in)||0;
+    // Verdict — but only if there is actually a soil reading. When Open-Meteo
+    // returns null for both depths, soil2in is null and `||0` used to turn
+    // that into 0°F, printing "✗ Do Not Plant — Soil too cold" directly under
+    // a soil-temp display honestly showing "--". No data, no verdict.
+    if(soil2in==null){
+      var vw0=document.getElementById('st-verdict-wrap');
+      if(vw0)vw0.innerHTML='<div class="st-verdict wait">Soil reading unavailable</div>';
+      var nEl0=document.getElementById('st-note');
+      if(nEl0)nEl0.textContent='The weather model returned no soil temperature for this spot right now. No reading, no verdict — try again in an hour or check a nearby ZIP.';
+      setStatus('✓ Loaded (no soil reading at this location)','ok');
+      return;
+    }
+    var soilNum=parseFloat(soil2in);
     var verdict,cls,noteText;
     // Soil temperature alone said "Plant Now" in August, because nothing here
     // looked at the calendar. Corn and beans have a planting window; outside

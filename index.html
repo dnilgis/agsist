@@ -169,7 +169,7 @@
 /* cash-bids card: pin bids to top of stretched card (override dash-grid center) */
 #f1>.card>.card-body{justify-content:flex-start}
 #f2>.card>.card-body{justify-content:flex-start}
-/* quick-tools card: pin to top, don't let tool-list stretch (no big gap above Grower Pulse) */
+/* quick-tools card: pin to top, don't let tool-list stretch (pin so the tool list doesn't stretch) */
 #f3>.card>.card-body{justify-content:flex-start}
 #f3 .tool-list{flex:0 0 auto}
   .km-tier-tag{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .42rem;border-radius:3px;border:1px solid;}
@@ -518,52 +518,6 @@
   .daily-share-btn svg.dsb-svg{width:14px;height:14px;display:block}
   .daily-share-btn .dsb-lbl{font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;line-height:1;white-space:nowrap}
   @media(max-width:520px){.daily-otp{padding:.55rem .65rem}.daily-otp-header{margin-bottom:.7rem;padding-bottom:.55rem}.daily-otp-item{padding:.6rem .7rem}.daily-share{padding:.8rem 0 .4rem}.daily-share-grid{grid-template-columns:repeat(3,1fr);gap:.45rem}.daily-share-btn{padding:.65rem .3rem;min-height:52px;gap:.3rem}.daily-share-btn .dsb-lbl{font-size:0.74rem}}
-  /* Grower Pulse weekly poll — lives inside the daily briefing, rides its collapse */
-  .daily-poll{margin:1rem auto 0;max-width:680px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg,10px);padding:1rem 1.1rem .9rem}
-  .daily-poll-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
-  .daily-poll-kicker{font-family:var(--font-display);font-weight:700;font-size:0.775rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
-  .daily-poll-week{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-muted)}
-  .daily-poll-q{font-family:var(--font-display);font-weight:600;font-size:1.1rem;line-height:1.25;color:var(--text);margin:.35rem 0 .8rem;text-wrap:balance}
-  .daily-poll-opts{display:flex;flex-direction:column;gap:.5rem}
-  .daily-poll-opt{width:100%;min-height:46px;display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md,6px);color:var(--text-dim);font-family:'Inter',sans-serif;font-size:.95rem;font-weight:600;padding:.6rem .85rem;cursor:pointer;text-align:left;transition:border-color .15s,background .15s,color .15s}
-  .daily-poll-opt:hover{border-color:var(--border-g);background:var(--surface3);color:var(--text)}
-  .daily-poll-opt:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-  .daily-poll-result{position:relative;width:100%;min-height:46px;display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md,6px);padding:.6rem .85rem;overflow:hidden;margin-bottom:.5rem}
-  .daily-poll-result:last-child{margin-bottom:0}
-  .daily-poll-result .dp-fill{position:absolute;inset:0 auto 0 0;width:0;background:rgba(255,255,255,.05);transition:width .65s cubic-bezier(.22,1,.36,1)}
-  .daily-poll-result.mine{border-color:var(--border-g)}
-  .daily-poll-result.mine .dp-fill{background:color-mix(in srgb,var(--green) 26%,transparent)}
-  .daily-poll-result .dp-lbl{position:relative;font-family:'Inter',sans-serif;font-weight:600;font-size:.92rem;color:var(--text-dim);display:flex;align-items:center;gap:.4rem}
-  .daily-poll-result.mine .dp-lbl{color:var(--text)}
-  .daily-poll-result .dp-check{color:var(--green);font-weight:700}
-  .daily-poll-result .dp-pct{position:relative;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.95rem;color:var(--text)}
-  .daily-poll-foot{margin-top:.8rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-muted);flex-wrap:wrap}
-  .daily-poll-total{color:var(--text-dim)}
-  @media (prefers-reduced-motion:reduce){.daily-poll-result .dp-fill{transition:none}}
-  /* Grower Pulse — past-weeks archive */
-  .daily-poll-archive{margin-top:.85rem;border-top:1px solid var(--border);padding-top:.7rem}
-  .daily-poll-archive[hidden]{display:none}
-  .daily-poll-archive-sum{cursor:pointer;font-family:var(--font-display);font-weight:700;font-size:0.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);list-style:none;display:flex;align-items:center;gap:.4rem;min-height:32px}
-  .daily-poll-archive-sum::-webkit-details-marker{display:none}
-  .daily-poll-archive-sum::before{content:'\25B8';display:inline-block;transition:transform .15s}
-  .daily-poll-archive[open] .daily-poll-archive-sum::before{transform:rotate(90deg)}
-  .daily-poll-archive-sum:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}
-  .dpa-count{color:var(--text-muted);font-weight:600}
-  .daily-poll-archive-list{margin-top:.5rem}
-  .dpa-item{padding:.7rem 0;border-top:1px solid var(--border)}
-  .dpa-item:first-child{border-top:none}
-  .dpa-q{font-family:var(--font-display);font-weight:600;font-size:.92rem;color:var(--text);margin-bottom:.1rem;text-wrap:balance}
-  .dpa-week{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-muted);margin-bottom:.45rem}
-  .dpa-bars{display:flex;flex-direction:column;gap:.3rem}
-  .dpa-row{position:relative;display:flex;align-items:center;justify-content:space-between;padding:.32rem .6rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm,4px);overflow:hidden;min-height:30px}
-  .dpa-row .dpa-fill{position:absolute;inset:0 auto 0 0;background:rgba(255,255,255,.05)}
-  .dpa-row.win .dpa-fill{background:color-mix(in srgb,var(--gold) 18%,transparent)}
-  .dpa-row.win{border-color:var(--border-g)}
-  .dpa-lbl{position:relative;font-family:'Inter',sans-serif;font-size:0.795rem;color:var(--text-dim)}
-  .dpa-pct{position:relative;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.795rem;color:var(--text)}
-  .daily-poll-fulllink{display:inline-block;margin-top:.7rem;font-family:'JetBrains Mono',monospace;font-size:0.765rem;font-weight:700;letter-spacing:.03em;color:var(--gold);text-decoration:none}
-  .daily-poll-fulllink:hover{text-decoration:underline}
-  .daily-poll-fulllink:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}
   /* PWA install hint — banner + visual modal (v2, May 4 2026) */
   .pwa-hint{position:fixed;bottom:0;left:0;right:0;z-index:1000;background:linear-gradient(180deg,rgba(58,139,60,.96) 0%,rgba(38,90,40,.98) 100%);border-top:2px solid var(--gold);padding:.85rem 1rem;padding-bottom:max(.85rem,env(safe-area-inset-bottom));display:none;align-items:center;gap:.75rem;flex-wrap:wrap;box-shadow:0 -6px 20px rgba(0,0,0,.4);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#fff}
   .pwa-hint.show{display:flex;animation:pwa-slide-up .35s ease-out}
@@ -640,7 +594,7 @@
         <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevators</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/storage-crunch" style="color:var(--text-muted);text-decoration:none">Storage Crunch</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Quick Stats</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
         <span style="color:var(--text-dim);font-weight:700">Numbers:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Who Owns the Ground</a><br>
         <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Conditions</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Fast Facts</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
-        <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Call Scorecard</a> &middot; <a href="/grower-pulse" style="color:var(--text-muted);text-decoration:none">Grower Pulse</a>
+        <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Call Scorecard</a>
       </nav>
     </div>
   </header>
@@ -1158,23 +1112,6 @@
           <a href="/ag-odds" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Ag Prediction Markets</span><span class="tool-arr">&rarr;</span></a>
           <a href="/fast-facts" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> Fast Facts</span><span class="tool-arr">&rarr;</span></a>
         </div>
-      <div class="daily-poll" id="daily-poll" aria-label="Grower Pulse weekly poll" style="display:none">
-        <div class="daily-poll-head">
-          <span class="daily-poll-kicker"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> Grower Pulse</span>
-          <span class="daily-poll-week" id="daily-poll-week"></span>
-        </div>
-        <h3 class="daily-poll-q" id="daily-poll-q"></h3>
-        <div id="daily-poll-body" aria-live="polite"></div>
-        <div class="daily-poll-foot">
-          <span class="daily-poll-total" id="daily-poll-total"></span>
-          <span class="daily-poll-reset">New question every Monday</span>
-        </div>
-        <details class="daily-poll-archive" id="daily-poll-archive" hidden>
-          <summary class="daily-poll-archive-sum">Past weeks <span id="daily-poll-archive-count" class="dpa-count"></span></summary>
-          <div id="daily-poll-archive-list" class="daily-poll-archive-list"></div>
-        </details>
-        <a class="daily-poll-fulllink" href="/grower-pulse"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Full results &amp; past weeks &rarr;</a>
-      </div>
       </div></div>
     </div>
   </div>
@@ -3454,138 +3391,6 @@ setTimeout(function(){
     dismissHint(false);
     if(window.gtag) try{ window.gtag('event','pwa_installed',{event_category:'engagement'}); }catch(e){}
   });
-})();
-</script>
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Dataset","name":"AGSIST Grower Pulse — Weekly U.S. Farmer Sentiment","description":"A weekly one-question sentiment poll of U.S. crop, livestock, and dairy producers run by AGSIST. Each week growers report their read on current conditions; aggregate results are published as first-party agricultural sentiment data.","url":"https://agsist.com/#grower-pulse","creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"isAccessibleForFree":true,"measurementTechnique":"Self-reported single-question web poll; one response per device per week","variableMeasured":"U.S. grower sentiment","distribution":{"@type":"DataDownload","encodingFormat":"application/json","contentUrl":"https://agsist.com/data/poll.json"}}
-</script>
-<script>
-/* ===== Grower Pulse weekly poll (inside daily briefing) =====
-   The question AND the past-week archive are loaded from /data/poll.json,
-   so a new week only requires editing that JSON file (not this page).
-   DEFAULT_POLL below is a fallback used only if poll.json can't be loaded,
-   which keeps the live poll working no matter what. */
-(function(){
-  'use strict';
-
-  var POLL_API = 'https://agsist-poll.dnilgis.workers.dev';  // live vote counter (Cloudflare Worker)
-  var POLL_JSON = '/data/poll.json';                         // question + archive (single source of truth)
-  var REVEAL_THRESHOLD = 25;                                 // below this, show "early results"
-
-  // No fallback question. There was one hardcoded here, but its id was a
-  // CLOSED archive week whose tally is already published on /grower-pulse — so
-  // a vote cast against the fallback corrupted a final, published number, and
-  // the card showed a ten-week-old question under "New question every Monday".
-  // If poll.json cannot be read there is no honest question to ask: hide it.
-  var DEFAULT_POLL = null;
-
-  var card = document.getElementById('daily-poll');
-  if(!card) return;
-  if(POLL_API.indexOf('REPLACE') > -1) return;
-
-  var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  function mondayLabel(iso){
-    var d = iso ? new Date(iso+'T12:00:00') : new Date();
-    if(isNaN(d.getTime())) d=new Date();
-    var off=(d.getDay()+6)%7; var mon=new Date(d); mon.setDate(d.getDate()-off);
-    return 'Week of '+MO[mon.getMonth()]+' '+mon.getDate();
-  }
-  function pct(n,t){ return t>0 ? Math.round((n/t)*100) : 0; }
-  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
-  function ga(ev,params){ if(typeof gaEvent==='function'){ try{ gaEvent(ev,params); }catch(e){} } }
-
-  var bodyEl=document.getElementById('daily-poll-body');
-  var totalEl=document.getElementById('daily-poll-total');
-  var qEl=document.getElementById('daily-poll-q');
-  var weekEl=document.getElementById('daily-poll-week');
-
-  var POLL = DEFAULT_POLL;
-
-  function votedKey(){ return 'agsist_poll_'+POLL.id; }
-  function hasVoted(){ try{ return localStorage.getItem(votedKey()); }catch(e){ return null; } }
-  function markVoted(c){ try{ localStorage.setItem(votedKey(), String(c)); }catch(e){} }
-  function pollGet(){ return fetch(POLL_API+'/?id='+encodeURIComponent(POLL.id)).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}); }
-  function pollVote(c){ return fetch(POLL_API+'/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:POLL.id,choice:String(c)})}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}); }
-
-  function renderResults(tally,my){
-    var counts=POLL.options.map(function(_,i){return (tally&&tally[String(i)])||0;});
-    var total=counts.reduce(function(a,b){return a+b;},0);
-    bodyEl.innerHTML='';
-    POLL.options.forEach(function(opt,i){
-      var p=pct(counts[i],total);
-      var row=document.createElement('div');
-      row.className='daily-poll-result'+(String(i)===String(my)?' mine':'');
-      row.innerHTML='<div class="dp-fill"></div><span class="dp-lbl">'+esc(opt)+(String(i)===String(my)?' <span class="dp-check"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span>':'')+'</span><span class="dp-pct">'+p+'%</span>';
-      bodyEl.appendChild(row);
-      requestAnimationFrame(function(){requestAnimationFrame(function(){var f=row.querySelector('.dp-fill'); if(f) f.style.width=p+'%';});});
-    });
-    totalEl.textContent = total>=REVEAL_THRESHOLD ? (total.toLocaleString()+' grower responses this week') : ('Early results \u2014 '+total+' so far');
-  }
-
-  function renderOptions(){
-    bodyEl.innerHTML='';
-    var wrap=document.createElement('div'); wrap.className='daily-poll-opts';
-    POLL.options.forEach(function(opt,i){
-      var b=document.createElement('button'); b.type='button'; b.className='daily-poll-opt'; b.textContent=opt;
-      b.addEventListener('click',function(){
-        b.disabled=true;
-        pollVote(i).then(function(res){
-          markVoted(i); ga('poll_vote',{poll:POLL.id,choice:i});
-          renderResults(res.tally,i);
-        }).catch(function(){
-          pollGet().then(function(res){renderResults(res.tally,i);}).catch(function(){
-            totalEl.textContent='Couldn\u2019t reach the poll \u2014 try again later'; b.disabled=false;
-          });
-        });
-      });
-      wrap.appendChild(b);
-    });
-    bodyEl.appendChild(wrap);
-    totalEl.textContent='Tap to vote and see how growers are leaning';
-  }
-
-  function renderArchive(archive){
-    if(!archive || !archive.length) return;
-    var det=document.getElementById('daily-poll-archive');
-    var list=document.getElementById('daily-poll-archive-list');
-    var cnt=document.getElementById('daily-poll-archive-count');
-    if(!det||!list) return;
-    list.innerHTML='';
-    archive.forEach(function(wk){
-      var opts=(wk&&wk.options)||[]; var res=(wk&&wk.results)||[];
-      var total=(wk&&typeof wk.total==='number')?wk.total:res.reduce(function(a,b){return a+(b||0);},0);
-      var maxIdx=-1,maxV=-1; res.forEach(function(v,i){ if((v||0)>maxV){maxV=v||0;maxIdx=i;} });
-      var bars=opts.map(function(opt,i){
-        var p=pct(res[i]||0,total);
-        return '<div class="dpa-row'+(i===maxIdx&&total>0?' win':'')+'"><div class="dpa-fill" style="width:'+p+'%"></div><span class="dpa-lbl">'+esc(opt)+'</span><span class="dpa-pct">'+p+'%</span></div>';
-      }).join('');
-      var item=document.createElement('div'); item.className='dpa-item';
-      item.innerHTML='<div class="dpa-q">'+esc(wk&&wk.question)+'</div>'+
-        '<div class="dpa-week">'+mondayLabel(wk&&wk.week)+' \u00b7 '+(total?total.toLocaleString()+' responses':'no responses')+'</div>'+
-        '<div class="dpa-bars">'+bars+'</div>';
-      list.appendChild(item);
-    });
-    if(cnt) cnt.textContent='('+archive.length+')';
-    det.hidden=false;
-    det.addEventListener('toggle',function(){ if(det.open) ga('poll_archive_view',{count:archive.length}); });
-  }
-
-  function boot(config){
-    if(config && config.current && config.current.id && config.current.options){ POLL=config.current; }
-    if(!POLL || !POLL.id || !POLL.options){ card.style.display='none'; return; }
-    if(qEl) qEl.textContent=POLL.question||'';
-    if(weekEl) weekEl.textContent=mondayLabel(POLL.week);
-    card.style.display='';
-    ga('poll_view',{poll:POLL.id});
-    var v=hasVoted();
-    if(v!==null && v!==undefined){ pollGet().then(function(res){ if(!res||!res.tally) throw new Error('no tally'); renderResults(res.tally,v); }).catch(renderOptions); }
-    else { renderOptions(); }
-    if(config && config.archive) renderArchive(config.archive);
-  }
-
-  fetch(POLL_JSON,{cache:'no-cache'}).then(function(r){ if(!r.ok) throw 0; return r.json(); })
-    .then(function(cfg){ boot(cfg); })
-    .catch(function(){ boot(null); });
 })();
 </script>
 </body>

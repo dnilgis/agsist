@@ -525,10 +525,20 @@
   }).catch(function(){});
 
   /* ===== cost-of-gain calculator ===== */
-  function n(id){var v=parseFloat($(id).value);return isFinite(v)?v:0;}
+  function n(id){var v=parseFloat($(id).value);return isFinite(v)?v:null;}
   function money(v){return '$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
   window.cog=function(){
     var wtin=n('cog-wtin'),pin=n('cog-pin'),wtfin=n('cog-wtfin'),cogv=n('cog-cog'),fed=n('cog-fed');
+    // A blanked field used to become 0 and keep computing: clearing "Cost of
+    // gain" to retype produced "+$1,419.46 / head projected profit" on $0.00
+    // feed. Any required field blank -> every output shows an em dash until
+    // the number is back. (n() returns null, not 0, for blanks now.)
+    if(wtin==null||pin==null||wtfin==null||cogv==null||fed==null){
+      ['cog-be','cog-pcost','cog-gain','cog-fcost','cog-total','cog-pl-big'].forEach(function(id){var e=$(id);if(e)e.textContent='—';});
+      var bx=$('cog-pl');if(bx)bx.className='cog-pl';
+      var nt=$('cog-pl-note');if(nt)nt.textContent='Fill every field — a blank is not a zero.';
+      return;
+    }
     var purchase=wtin*pin/100;
     var gain=Math.max(0,wtfin-wtin);
     var feed=gain*cogv;

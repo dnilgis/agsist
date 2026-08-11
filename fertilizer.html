@@ -469,7 +469,11 @@ function runCalc(){
   var c=CROPS[crop];var nrRow=document.getElementById('calc-nrate-row');
   if(nrRow)nrRow.style.display=c.fixesN?'none':'';
   var nrEl=document.getElementById('calc-nrate');
-  var nr=c.fixesN?0:(parseFloat(nrEl.value)||c.nRate);
+  // Honor a typed 0 lb-N/bu — a grower crediting all N from manure or a
+  // legume plow-down legitimately zeroes this. `||c.nRate` swallowed the 0
+  // and priced a full nitrogen program anyway. Blank still gets the default.
+  var _nrv=parseFloat(nrEl.value);
+  var nr=c.fixesN?0:(isFinite(_nrv)&&_nrv>=0?_nrv:c.nRate);
   var prog=buildProgram(STATE.products,crop,y,nr);
   var out=document.getElementById('calc-out');if(!out)return;
   if(y<=0){out.innerHTML='<p class="calc-hint">Enter a yield goal to see your per-acre fertility bill.</p>';return;}

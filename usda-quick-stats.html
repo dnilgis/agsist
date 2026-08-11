@@ -257,7 +257,7 @@
         <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevators</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/storage-crunch" style="color:var(--text-muted);text-decoration:none">Storage Crunch</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Quick Stats</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
         <span style="color:var(--text-dim);font-weight:700">Numbers:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Who Owns the Ground</a><br>
         <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Conditions</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Fast Facts</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
-        <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Call Scorecard</a> &middot; <a href="/grower-pulse" style="color:var(--text-muted);text-decoration:none">Grower Pulse</a>
+        <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Call Scorecard</a>
       </nav>
     </div>
   </header>
@@ -526,17 +526,25 @@
   'use strict';
   function el(id){return document.getElementById(id);}
 
+  // us: the REAL national series where USDA publishes one. The chart must
+  // never present a simple average of states as the US number — the 2025
+  // unweighted mean of 42 state corn yields is 173.6 bu while USDA's national
+  // figure is 186.7: Iowa counts the same as Alabama in a plain mean. Yields
+  // chart the national file; acres chart the SUM of reporting states (a sum
+  // is meaningful); prices have no national file here, so their average is
+  // labelled as exactly what it is.
   var DS = {
-    'corn-yield':  {file:'/data/nass/corn-yield.json',   label:'Corn Yield',            unit:'bu/acre'},
-    'soy-yield':   {file:'/data/nass/soy-yield.json',    label:'Soybean Yield',         unit:'bu/acre'},
-    'wheat-yield': {file:'/data/nass/wheat-yield.json',  label:'Winter Wheat Yield',    unit:'bu/acre'},
-    'corn-acres':  {file:'/data/nass/corn-acres.json',   label:'Corn Acres Planted',    unit:'M acres'},
-    'soy-acres':   {file:'/data/nass/soy-acres.json',    label:'Soybean Acres Planted', unit:'M acres'},
-    'corn-price':  {file:'/data/nass/corn-price.json',   label:'Corn Price Received',   unit:'$/bu'},
-    'soy-price':   {file:'/data/nass/soy-price.json',    label:'Soybean Price Received',unit:'$/bu'}
+    'corn-yield':  {file:'/data/nass/corn-yield.json',   us:'/data/nass/corn-yield-us.json',  label:'Corn Yield',            unit:'bu/acre'},
+    'soy-yield':   {file:'/data/nass/soy-yield.json',    us:'/data/nass/soy-yield-us.json',   label:'Soybean Yield',         unit:'bu/acre'},
+    'wheat-yield': {file:'/data/nass/wheat-yield.json',  us:'/data/nass/wheat-yield-us.json', label:'Winter Wheat Yield',    unit:'bu/acre'},
+    'corn-acres':  {file:'/data/nass/corn-acres.json',   agg:'sum',                           label:'Corn Acres Planted',    unit:'M acres'},
+    'soy-acres':   {file:'/data/nass/soy-acres.json',    agg:'sum',                           label:'Soybean Acres Planted', unit:'M acres'},
+    'corn-price':  {file:'/data/nass/corn-price.json',   agg:'avg',                           label:'Corn Price Received',   unit:'$/bu'},
+    'soy-price':   {file:'/data/nass/soy-price.json',    agg:'avg',                           label:'Soybean Price Received',unit:'$/bu'}
   };
   var currentKey = 'corn-yield';
   var currentData = null;
+  var currentUS = null;   // national series for the active dataset, when one exists
 
   /* ---- mini charts ---- */
   function sparkline(series, color){
@@ -560,15 +568,30 @@
     var wrap = el('nass-chart-wrap'); if (!wrap) return;
     if (!currentData){ wrap.innerHTML=''; return; }
     var years = (currentData.years||[]).slice();
-    var series = {};
+    var series = {}, cap = null;
     if (currentData.type === 'national'){
       series = currentData.values || {};
+      cap = 'United States';
+    } else if (currentUS && currentUS.values && Object.keys(currentUS.values).length > 1){
+      // USDA publishes a real national series for this dataset — chart THAT.
+      series = currentUS.values;
+      years = Object.keys(series).map(Number).sort(function(a,b){return a-b;});
+      cap = 'United States (USDA national series)';
     } else {
       var sums={}, cnts={};
       (currentData.rows||[]).forEach(function(r){
         years.forEach(function(y){ var v = r.values ? r.values[y] : null; if (v!=null){ sums[y]=(sums[y]||0)+(+v); cnts[y]=(cnts[y]||0)+1; } });
       });
-      years.forEach(function(y){ if (cnts[y]) series[y] = +(sums[y]/cnts[y]).toFixed(currentData.unit==='$/bu'?2:1); });
+      var mode = DS[currentKey].agg || 'avg';
+      years.forEach(function(y){
+        if (!cnts[y]) return;
+        series[y] = mode === 'sum'
+          ? +sums[y].toFixed(1)
+          : +(sums[y]/cnts[y]).toFixed(currentData.unit==='$/bu'?2:1);
+      });
+      cap = mode === 'sum'
+        ? 'Sum of reporting states'
+        : 'Simple average of reporting states — NOT the U.S. marketing-year figure';
     }
     var ys = Object.keys(series).map(Number).sort(function(a,b){return a-b;});
     if (ys.length < 2){ wrap.innerHTML=''; return; }
@@ -579,7 +602,6 @@
     function py(v){ return (padT + (1-(v-min)/rng)*(H-padT-padB)).toFixed(1); }
     var pts = ys.map(function(y,i){ return px(i)+','+py(series[y]); });
     var area = 'M'+px(0)+','+(H-padB)+' L'+pts.join(' L')+' L'+px(ys.length-1)+','+(H-padB)+' Z';
-    var cap = currentData.type === 'national' ? 'United States' : 'All-state average';
     var unit = currentData.unit || DS[currentKey].unit;
     var latest = series[ys[ys.length-1]];
     var svg = '<svg class="nass-chart" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-label="'+DS[currentKey].label+' trend, '+cap+'">'
@@ -602,8 +624,18 @@
     var chart = el('nass-chart-wrap'); if (chart) chart.innerHTML='';
     el('dl-btn').disabled = true;
     currentData = null;
-    fetch(DS[key].file).then(function(r){ if(!r.ok) throw new Error('404'); return r.json(); })
-      .then(function(data){
+    currentUS = null;
+    // national series (when USDA publishes one) loads alongside; the chart
+    // prefers it, and any failure just falls back to the labelled aggregate.
+    var usReq = DS[key].us
+      ? fetch(DS[key].us).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; })
+      : Promise.resolve(null);
+    Promise.all([
+      fetch(DS[key].file).then(function(r){ if(!r.ok) throw new Error('404'); return r.json(); }),
+      usReq
+    ]).then(function(res){
+        var data = res[0];
+        currentUS = res[1];
         currentData = data;
         if (data.updated){
           var d = new Date(data.updated);

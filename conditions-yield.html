@@ -207,7 +207,15 @@
   var ST_NAME={"CO": "Colorado", "IA": "Iowa", "IL": "Illinois", "IN": "Indiana", "KS": "Kansas", "KY": "Kentucky", "MI": "Michigan", "MN": "Minnesota", "MO": "Missouri", "MS": "Mississippi", "NC": "North Carolina", "ND": "North Dakota", "NE": "Nebraska", "OH": "Ohio", "PA": "Pennsylvania", "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "WI": "Wisconsin", "AR": "Arkansas", "LA": "Louisiana"};
   function render(){
     if(!data)return;
-    var c=data.crops[crop]; if(!c||!c.states[state]){ $('cy-bars').innerHTML='<p class="sub">No fit for this state/crop (under '+data.min_n+' paired years).</p>'; return; }
+    var c=data.crops[crop];
+    if(!c||!c.states[state]){
+      // Keep the heading in sync even on the empty branch — this used to
+      // return before the title write, leaving "— Iowa corn" (the prerendered
+      // default) captioning a "no fit" panel for whatever pair was picked.
+      $('cy-title').textContent='How the answer builds through the season — '+(ST_NAME[state]||state)+' '+crop;
+      $('cy-bars').innerHTML='<p class="sub">No fit for this state/crop (under '+data.min_n+' paired years).</p>';
+      return;
+    }
     var d=c.states[state], hl=d.latest.week, h='';
     for(var wk=22;wk<=40;wk++){
       var w=d.weeks[String(wk)]; if(!w)continue;

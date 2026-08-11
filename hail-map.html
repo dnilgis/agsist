@@ -1176,7 +1176,7 @@
       fetch('https://api.weather.gov/alerts/active?event='+encodeURIComponent('Severe Thunderstorm Warning'), {headers:{'Accept':'application/geo+json'}})
         .then(function(r){ return r.ok? r.json():null; })
         .then(function(d){
-          if(!d || !d.features) return;
+          if(!d || !d.features){ markWarnStale(); return; }
           var feats=[], states={}, minLa=90, maxLa=-90, minLo=180, maxLo=-180;
           d.features.forEach(function(f){
             var p=f.properties||{}, par=p.parameters||{};
@@ -1197,7 +1197,17 @@
           }
           if(warnFirstPoll){ warnFirstPoll=false; if(warnCount>0) ga('hm_live_warn_seen',{n:warnCount}); }
           if(warnOn) drawWarnings(feats);
-        }).catch(function(){});
+        }).catch(function(){ markWarnStale(); });
+    }
+    // A failed or malformed poll used to leave the last count on screen
+    // under the word "NOW", indefinitely — "3 HAIL WARNINGS NOW" from an API
+    // that had been down for an hour. Say stale instead of pretending live.
+    function markWarnStale(){
+      var btn=document.getElementById('hm-warnbtn');
+      if(btn && /NOW$/.test(btn.textContent||'')){
+        btn.classList.remove('hot');
+        btn.textContent='Warning feed unreachable — last count stale';
+      }
     }
     function drawWarnings(feats){
       if(warnLayer){ map.removeLayer(warnLayer); warnLayer=null; }
