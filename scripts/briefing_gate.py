@@ -61,6 +61,50 @@ def prose_fields(d):
         out.append((f'watch_list[{i}].time', w.get('time')))
     return [(loc,str(v)) for loc,v in out if v]
 
+def wasde_fabrication_hits(daily, today=None):
+    """THE fabricated-WASDE scan, single definition (the usda_dates/iso_date
+    pattern). Returns (hits, next_wasde_date) where hits is a list of
+    (field_path, matched_text) for past-tense WASDE-result claims made while
+    the next report's results are not yet public; ([], nw) means clean or the
+    window doesn't apply. Raises on internal error — the caller decides
+    whether that's a WARN (the gate) or a skip (the generator's self-heal).
+
+    Used by run() below AND by generate_daily's self-heal retry: on
+    2026-08-12 (WASDE morning) the model fabricated the report in two
+    independent generations; the gate blocked both sends, but a blocked
+    morning is still no briefing. The generator now runs THIS scan on its own
+    draft and regenerates once with the offending lines quoted back, so the
+    gate goes back to being the backstop instead of the only working layer."""
+    import usda_dates, grade_calls, datetime as _dtmod
+    _today = today or grade_calls.iso_date(daily)
+    _tdate = _dtmod.date.fromisoformat(_today) if isinstance(_today, str) else _today
+    _gen = None
+    try:
+        _gen = _dtmod.datetime.fromisoformat((daily.get("generated_at") or "").replace("Z", "+00:00"))
+    except ValueError:
+        pass
+    _nw = usda_dates.next_wasde(_tdate) if _tdate else None
+    if not _tdate or usda_dates.wasde_results_are_public(_tdate, _gen):
+        return [], _nw
+    _verbs = r"(?:landed|printed|delivered|dropped|confirmed|showed|came\s+in|is\s+in|absorbed?)"
+    _pat = re.compile(r"WASDE\b[^.!?\n]{0,60}?\b" + _verbs, re.I)
+    _months = ("january","february","march","april","may","june","july","august",
+               "september","october","november","december")
+    _this_month = _months[_nw.month - 1] if _nw else None
+    _fields = prose_fields(daily)
+    _wt = (daily.get("weekly_thread") or {})
+    if _wt.get("status_text"): _fields.append(("weekly_thread.status_text", str(_wt["status_text"])))
+    hits = []
+    for _loc, _txt in _fields:
+        for _m in _pat.finditer(_txt):
+            _back = _txt[max(0, _m.start() - 30):_m.start()].lower()
+            _named = [mo for mo in _months if mo in _back]
+            if _named and _this_month not in _named:
+                continue   # talking about a previous month's report — history
+            hits.append((_loc, _m.group(0)[:80]))
+    return hits, _nw
+
+
 def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
     today=today or dt.date.today()
     issues=[]; F=lambda c,m:issues.append(('FAIL',c,m)); W=lambda c,m:issues.append(('WARN',c,m))
@@ -304,33 +348,11 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
     # upcoming report's month exempts a match ("the July WASDE printed ..."
     # is history, not fabrication).
     try:
-        import usda_dates, datetime as _dtmod
-        _today = today or grade_calls.iso_date(daily)
-        _tdate = _dtmod.date.fromisoformat(_today) if isinstance(_today, str) else _today
-        _gen = None
-        try:
-            _gen = _dtmod.datetime.fromisoformat((daily.get("generated_at") or "").replace("Z", "+00:00"))
-        except ValueError:
-            pass
-        if _tdate and not usda_dates.wasde_results_are_public(_tdate, _gen):
-            _verbs = r"(?:landed|printed|delivered|dropped|confirmed|showed|came\s+in|is\s+in|absorbed?)"
-            _pat = re.compile(r"WASDE\b[^.!?\n]{0,60}?\b" + _verbs, re.I)
-            _months = ("january","february","march","april","may","june","july","august",
-                       "september","october","november","december")
-            _nw = usda_dates.next_wasde(_tdate)
-            _this_month = _months[_nw.month - 1] if _nw else None
-            _fields = prose_fields(daily)
-            _wt = (daily.get("weekly_thread") or {})
-            if _wt.get("status_text"): _fields.append(("weekly_thread.status_text", str(_wt["status_text"])))
-            for _loc, _txt in _fields:
-                for _m in _pat.finditer(_txt):
-                    _back = _txt[max(0, _m.start() - 30):_m.start()].lower()
-                    _named = [mo for mo in _months if mo in _back]
-                    if _named and _this_month not in _named:
-                        continue   # talking about a previous month's report — history
-                    F("wasde-fabricated",
-                      "%s describes WASDE results before the release exists (next WASDE %s): %r"
-                      % (_loc, _nw.isoformat() if _nw else "?", _m.group(0)[:80]))
+        _hits, _nw = wasde_fabrication_hits(daily, today)
+        for _loc, _snip in _hits:
+            F("wasde-fabricated",
+              "%s describes WASDE results before the release exists (next WASDE %s): %r"
+              % (_loc, _nw.isoformat() if _nw else "?", _snip))
     except Exception as _e:
         W("wasde-fabricated", "release check could not run (%s: %s)" % (type(_e).__name__, _e))
 

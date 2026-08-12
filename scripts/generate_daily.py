@@ -1201,6 +1201,22 @@ def get_usda_release_today():
         "PRINTED YET as you write — this briefing goes out hours before it. Never use past "
         "tense about today's report. Reserve interpretation for tomorrow's briefing once "
         "the data is in."
+        # 2026-08-12: the paragraph above was not enough — on WASDE morning the
+        # model fabricated the report in TWO independent generations (both
+        # blocked by the gate). The failure shape: a real overnight move plus a
+        # weekly thread that mentions the report reads, to the model, like a
+        # report reaction. Spell the rules out as hard constraints:
+        "\nHARD RULES — a deterministic gate blocks the send on violation:"
+        "\n  1. Today's report's numbers DO NOT EXIST yet. Any overnight or morning move"
+        "\n     happened BEFORE the report: it is positioning, never reaction. Do not"
+        "\n     attribute any price move to the report's contents."
+        "\n  2. Headline, subheadline and lead must frame the report as UPCOMING"
+        "\n     (\"WASDE prints at 11 CT\", \"ahead of the report\") — never as having"
+        "\n     printed, landed, delivered, dropped, confirmed, showed, or come in."
+        "\n  3. If the weekly thread's question involves today's report, the thread STAYS"
+        "\n     OPEN: status_text says the answer arrives at 11:00 AM CT today. Do NOT"
+        "\n     resolve it. If a prior briefing implied the report already came out, that"
+        "\n     was an error — THIS block is authoritative."
     )
     return header
 
@@ -1412,6 +1428,22 @@ Examples of strong weekly questions:
 
 Set weekly_thread.day = 1, weekly_thread.question = (your question), weekly_thread.status_text = (1-2 sentence setup explaining why this is the week's question).
 """
+
+    # 2026-08-12: when a USDA release block is active, the weekly thread is the
+    # poison path — Monday's question ("does the WASDE confirm...") reads like
+    # an invitation to resolve it with a report that hasn't printed. Both
+    # fabricated drafts on WASDE morning resolved the thread. Tie the thread
+    # instruction to the release grounding EXPLICITLY, right where the thread
+    # is briefed (this also covers the Sep 11 WASDE, which is a FRIDAY — the
+    # thread's own resolution day).
+    if thread_block and usda_release:
+        thread_block += (
+            "\nRELEASE-DAY THREAD RULE: a USDA release block is active today (see it above"
+            " — it is authoritative). If this week's question hinges on that report, today's"
+            " thread update covers the SETUP ONLY: the report has NOT printed as you write,"
+            " no matter what the question's wording or any prior status_text implies."
+            " status_text must say the answer arrives after 11:00 AM CT — never that it"
+            " already did.\n")
 
     # v4.6: collect ALL non-empty optional blocks and join with double-newline.
     # This avoids the wall-of-blanks problem when several blocks are empty
@@ -3550,6 +3582,56 @@ def main():
                            past_one_number_topics=past_one_number_topics,
                            past_phrases=past_phrases,
                            usda_release=usda_release)
+
+    # ── WASDE self-heal (2026-08-12) ─────────────────────────────────────
+    # On WASDE morning the model fabricated the report's results in two
+    # independent generations; briefing_gate blocked both sends. Correct
+    # behavior, but a blocked morning is still no briefing. So: run the
+    # gate's OWN fabrication scan (single definition, imported — never a
+    # copy) on the draft, and if it hits, regenerate ONCE with the offending
+    # lines quoted back as a correction. Fail-open on any error: the draft
+    # stands and the downstream gate remains the backstop.
+    try:
+        import briefing_gate as _bg
+        import usda_dates as _ud
+        from datetime import timezone as _tz
+        _today_d = datetime.now().date()
+        # Post-print regenerations (>=16:00Z on release day) legitimately
+        # describe the report — self-heal must not fire on those. Same
+        # public-clock rule the gate uses, evaluated on the real current time.
+        _fab_hits = []
+        if not _ud.wasde_results_are_public(_today_d, datetime.now(_tz.utc)):
+            _fab_hits, _ = _bg.wasde_fabrication_hits(briefing, today=_today_d)
+        if _fab_hits:
+            print(f"  [wasde-self-heal] draft fabricates the unreleased WASDE in "
+                  f"{len(_fab_hits)} place(s); regenerating once with correction...")
+            for _loc, _snip in _fab_hits:
+                print(f"    - {_loc}: {_snip!r}")
+            _corr = (
+                "\n\nCORRECTION — YOUR PREVIOUS DRAFT WAS REJECTED. It claimed the WASDE "
+                "already printed. IT HAS NOT. These exact phrases were the violations:\n"
+                + "\n".join(f"  - {_l}: \"{_s}\"" for _l, _s in _fab_hits)
+                + "\nRewrite treating the report as strictly UPCOMING (it prints at 11:00 "
+                "AM CT today, hours after this briefing goes out). Attribute every price "
+                "move to positioning ahead of it, never to its contents."
+            )
+            _brief2 = call_claude(price_data, surprises, news_block, seasonal_ctx,
+                                  todays_quote, past_dailies_block, past_tmyk_topics,
+                                  market_status, yesterdays_call_ctx, weekly_thread_ctx,
+                                  ongoing_situations=ongoing_situations,
+                                  editorial_notes=editorial_notes,
+                                  past_one_number_topics=past_one_number_topics,
+                                  past_phrases=past_phrases,
+                                  usda_release=usda_release + _corr)
+            _hits2, _ = _bg.wasde_fabrication_hits(_brief2, today=_today_d)
+            if _hits2:
+                print(f"  [wasde-self-heal] regenerated draft STILL dirty "
+                      f"({len(_hits2)} hit(s)); keeping it — the gate decides")
+            else:
+                print("  [wasde-self-heal] regenerated draft is clean; using it")
+            briefing = _brief2
+    except Exception as _e:
+        print(f"  [warn] wasde-self-heal skipped ({type(_e).__name__}: {_e})")
 
     # call-design v2 (2026-08-13): stamp which claim design produced this
     # call, so build_scorecard can keep the v1 and v2 series separate (the

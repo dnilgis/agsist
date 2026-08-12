@@ -91,6 +91,29 @@ def main():
     codes, _ = gate_codes(d, "2026-08-12")
     check("post-print regeneration allowed", "wasde-fabricated" not in codes)
 
+    # ── wasde_fabrication_hits() direct — the self-heal entry point ──────
+    # Fixture = the SECOND blocked draft from WASDE morning 2026-08-12 (run
+    # 85717195150): four distinct fields fabricated. The generator's
+    # self-heal imports this function; it must see everything the gate sees.
+    print("wasde_fabrication_hits — the 2026-08-12 morning drafts")
+    d = daily_with(date="2026-08-12", generated_at="2026-08-12T13:05:00+00:00",
+                   lead="The WASDE printed and wheat ran 14 cents.",
+                   weekly_thread={"question": "q", "day": 3,
+                                  "status_text": "WASDE landed; the yield question is answered."})
+    d["sections"] = [{"title": "Corn", "body": "WASDE's corn yield number landed above trade."}]
+    d["yesterdays_call"] = {"summary": "s", "note": "WASDE delivered the range we called."}
+    hits, nw = briefing_gate.wasde_fabrication_hits(d, "2026-08-12")
+    locs = {l for l, _ in hits}
+    check("morning draft: >=3 fields hit", len(hits) >= 3, f"{len(hits)}: {sorted(locs)}")
+    check("lead is among the hits", any("lead" in l for l in locs), str(sorted(locs)))
+    check("thread status_text is among the hits",
+          "weekly_thread.status_text" in locs, str(sorted(locs)))
+    check("next wasde identified", nw is not None and nw.isoformat() == "2026-08-12", str(nw))
+    d2 = daily_with(date="2026-08-12", generated_at="2026-08-12T20:30:00+00:00",
+                    lead="The WASDE landed at 11 and corn broke 15 cents.")
+    hits2, _ = briefing_gate.wasde_fabrication_hits(d2, "2026-08-12")
+    check("post-print: hits() returns empty", hits2 == [], str(hits2))
+
     print()
     print(f"wasde-claims selftest: {PASS} passed, {FAIL} failed")
     return 1 if FAIL else 0
