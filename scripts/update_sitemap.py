@@ -128,7 +128,10 @@ def main():
     # Missing URL -> insert a new single-line <url> block just before </urlset>,
     # matching the file's existing one-line entry style. Never duplicates.
     for url in args.add:
-        url = url.strip().rstrip("/") if url.strip() != HOST + "/" else url.strip()
+        # AUDIT 2026-08-11: preserve an intentional trailing slash — rstrip
+        # turned the /rent/ hub (whose page canonical IS /rent/) into /rent,
+        # a canonical mismatch on every state page's breadcrumb parent.
+        url = url.strip()
         if not url:
             continue
         if f"<loc>{url}</loc>" in new:

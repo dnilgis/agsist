@@ -52,6 +52,13 @@ def load_cash_bids(path=BIDS_PATH):
         if basis is None:               continue
         try:    basis = float(basis)
         except (TypeError, ValueError): continue
+        # AUDIT 2026-08-11: unit/class sanity gate. Upstream rows sometimes
+        # carry basis in cents (or belong to a different commodity class), and
+        # one contaminated row poisons its state average AND the 'Strongest
+        # basis' leaderboard. Grain basis in $/bu essentially never exceeds
+        # ±$3.00; anything outside is a unit error, not a market.
+        if abs(basis) > 3.0:
+            continue
         city = (b.get("city") or "").strip()
         name = f"{city}, {state}" if city else (b.get("facility") or state)
         out.append({"commodity": cat, "state": state, "city": city,
@@ -89,7 +96,16 @@ def main():
     records = load_cash_bids()
     commodities = build(records)
     has_data = any(commodities[c]["states"] for c in COMMODITIES)
-    out = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+    # AUDIT 2026-08-11: `updated` reflects the AGE OF THE BIDS, not the
+    # build clock — rebuilding stale bids every 30 min used to relabel old
+    # data as fresh. Falls back to build time only if bids carry no stamp.
+    _src_ts = None
+    try:
+        with open(BIDS_PATH) as _f:
+            _src_ts = (json.load(_f).get("fetched") or "")[:10] or None
+    except Exception:
+        pass
+    out = {"updated": _src_ts or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
            "sample": (not has_data),
            "commodities": commodities}
     os.makedirs(os.path.dirname(OUT_PATH) or ".", exist_ok=True)

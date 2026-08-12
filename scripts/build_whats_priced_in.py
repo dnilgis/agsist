@@ -34,6 +34,12 @@ EST_PATH  = "data/wpi-estimates.json"
 HIST_PATH = "data/wpi-history.json"
 OUT_PATH  = "data/whats-priced-in.json"
 IN_LINE_PCT = 0.02   # within 2% of the trade estimate counts as "in line"
+# AUDIT 2026-08-11: a flat 2% band is calibrated for ending stocks (2% of
+# 2.1B bu = ~42M, sane) but absurd for YIELD (2% of 183 bu = 3.7 bu — nearly
+# any August print would score "in line"). Yield metrics get a tighter band:
+# 0.5% of expected (~0.9 bu on corn, ~0.26 on beans) matches how the trade
+# actually reads a yield print.
+IN_LINE_PCT_YIELD = 0.005
 
 UPCOMING_FIELDS = ["report", "date", "time", "commodity", "metric", "expectation",
                    "estimate_low", "estimate_high", "estimate_avg", "unit",
@@ -79,11 +85,12 @@ def build_upcoming(reports, today):
     return out
 
 
-def score(expected, actual):
+def score(expected, actual, metric=""):
     if expected in (None, 0) or actual is None:
         return "in line"
     gap = (actual - expected) / abs(expected)
-    if abs(gap) <= IN_LINE_PCT:
+    band = IN_LINE_PCT_YIELD if "yield" in str(metric).lower() else IN_LINE_PCT
+    if abs(gap) <= band:
         return "in line"
     return "bullish" if actual < expected else "bearish"
 
@@ -93,7 +100,7 @@ def build_history(rows):
     for r in rows:
         row = {k: r.get(k) for k in HISTORY_FIELDS}
         if not row.get("surprise"):
-            row["surprise"] = score(r.get("expected"), r.get("actual"))
+            row["surprise"] = score(r.get("expected"), r.get("actual"), r.get("metric") or r.get("label") or "")
         out.append(row)
     # newest first
     out.sort(key=lambda x: x.get("date") or "", reverse=True)

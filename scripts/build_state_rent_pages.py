@@ -84,7 +84,9 @@ def esc(s):
 
 
 def money(v):
-    return f"${v:,.0f}" if v == int(v) else f"${v:,.2f}".rstrip("0").rstrip(".")
+    # AUDIT 2026-08-11: rstrip("0") turned $9.50 into "$9.5" (rendered live
+    # on the Texas hero). Whole dollars stay clean; anything else keeps two.
+    return f"${v:,.0f}" if v == int(v) else f"${v:,.2f}"
 
 
 def latest(d):
@@ -152,6 +154,7 @@ def state_stats(d):
         "yoy": yoy, "yoy_n": yoy_n, "dec": dec, "dec_n": dec_n,
         "hi": ranked[:5], "lo": ranked[-5:][::-1] if len(ranked) >= 5 else [],
         "hist": hist, "counties": counties,
+        "y0": min(all_years) if all_years else yr_latest,
     }
 
 
@@ -346,14 +349,16 @@ def build_state_page(st, d, s, all_states):
     title = f"{name} Cash Rent by County {yr} — ${{}}/acre Rates &amp; History".format("")
     title = f"{name} Cash Rent by County {yr}"
     desc = (f"{name} farmland cash rent {yr}: median {money(s['median'])}/acre ({plabel}) across "
-            f"{s['n']} published counties. Every county's USDA rate, history to 2008, free.")[:160]
+            f"{s['n']} published counties. Every county's USDA rate, history to {s['y0']}, free.")[:160]
     hi_s = ", ".join(f"{esc(n)} ({money(v)})" for n, v in s["hi"][:3])
     lo_s = ", ".join(f"{esc(n)} ({money(v)})" for n, v in s["lo"][:3])
     faq = [
         {"q": f"What is the average cash rent per acre in {name} for {yr}?",
-         "a": f"The median USDA NASS county cash rent for {plabel} in {name} is {money(s['median'])} per acre "
-              f"across the {s['n']} counties with a published {yr} rate. Rents vary widely by county: "
-              f"highest {hi_s}; lowest {lo_s}. The county mean is a survey reference point, not a rate card."},
+         "a": (f"The median USDA NASS county cash rent for {plabel} in {name} is {money(s['median'])} per acre "
+               f"across the {s['n']} counties with a published {yr} rate. Rents vary widely by county: "
+               + (f"highest {hi_s}; lowest {lo_s}." if lo_s
+                  else f"highest {hi_s} — with under five published counties, a highest/lowest split would overstate the sample.")
+               + " The county mean is a survey reference point, not a rate card.")},
         {"q": f"How much did {name} cash rent change from {yr-1} to {yr}?",
          "a": (f"Comparing the same {s['yoy_n']} counties published in both years, the median {plabel} rent moved "
                f"{'+' if s['yoy'] and s['yoy'] >= 0 else ''}{s['yoy']}% year over year."
@@ -377,12 +382,12 @@ def build_state_page(st, d, s, all_states):
          "@id": f"{SITE}/rent/{sl}#dataset",
          "name": f"{name} County Cash Rental Rates",
          "description": f"County-level cash rent for {', '.join(TYPE_LABEL[t] for t in s['have_types'])} in {name}, "
-                        f"as published annually by USDA NASS, 2008 to {yr}.",
+                        f"as published annually by USDA NASS, {s['y0']} to {yr}.",
          "url": f"{SITE}/rent/{sl}",
          "license": "https://www.usa.gov/government-works",
          "isAccessibleForFree": True,
          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
-         "temporalCoverage": f"2008/{yr}",
+         "temporalCoverage": f"{s['y0']}/{yr}",
          "spatialCoverage": {"@type": "Place", "name": f"{name}, United States"}},
         {"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": f"{SITE}/"},
@@ -461,18 +466,26 @@ def build_state_page(st, d, s, all_states):
 def build_hub(states, stats, generated):
     yr = max(s["yr"] for s in stats.values())
     meds = sorted(s2["median"] for s2 in stats.values())
-    def quint_color(v):
-        i = sum(1 for m in meds if m < v) / max(1, len(meds))
+    # AUDIT 2026-08-11: one quintile scale across mixed land types ranked
+    # TX $10 PASTURE against IA $270 CROPLAND as if comparable. Color each
+    # tile against ITS OWN land-type peer group.
+    meds_by_type = {}
+    for s2 in stats.values():
+        meds_by_type.setdefault(s2["primary"], []).append(s2["median"])
+    for t in meds_by_type: meds_by_type[t].sort()
+    def quint_color(v, ptype="nonirr"):
+        peers = meds_by_type.get(ptype, meds)
+        i = sum(1 for m in peers if m < v) / max(1, len(peers))
         return "#c94b42" if i >= .8 else ("#b85a4a" if i >= .6 else ("#a8823c" if i >= .4 else ("#3a4144" if i >= .2 else "#3f7a58")))
     tiles = []
     for ab, (c, r) in TILE.items():
         if ab in stats:
             st2 = stats[ab]
-            tiles.append(f'<a class="rh-tile" href="/rent/{slug(STATE_NAMES[ab])}" style="--gc:{c};--gr:{r};background:{quint_color(st2["median"])}"><span class="rh-tst">{ab}</span><span class="rh-tge">${round(st2["median"]):,}</span></a>')
+            tiles.append(f'<a class="rh-tile" href="/rent/{slug(STATE_NAMES[ab])}" style="--gc:{c};--gr:{r};background:{quint_color(st2["median"], st2["primary"])}"><span class="rh-tst">{ab}</span><span class="rh-tge">${round(st2["median"]):,}</span></a>')
         else:
             tiles.append(f'<div class="rh-tile dim" style="--gc:{c};--gr:{r}"><span class="rh-tst">{ab}</span></div>')
     tile_html = ('<div style="font-family:\'JetBrains Mono\',monospace;font-size:.66rem;letter-spacing:.1em;color:#8a948f;text-transform:uppercase;margin:16px 0 10px">'
-        f'Median county rent per acre, {yr} &mdash; tap a state for every county</div>'
+        f'Median county rent per acre, {yr} &mdash; tap a state for every county. Color ranks each state against states reporting the SAME land type (cropland vs pasture states are not comparable dollar-for-dollar)</div>'
         '<div class="rh-grid">' + "".join(tiles) + '</div>'
         '<div style="display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:#8a948f;flex-wrap:wrap">'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#c94b42"></b>priciest fifth</span>'

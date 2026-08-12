@@ -71,6 +71,10 @@ log = logging.getLogger(__name__)
 
 # ── USDA WASDE Targets (metric tons) — UPDATE AFTER EACH WASDE ──────────────
 # Last updated: April 2026 WASDE
+# AUDIT 2026-08-11: these went stale through the May/June/July WASDEs.
+# STALE TARGETS SKEW pct_of_target — update alongside the analyst-board
+# actuals on every WASDE day (same playbook step). Wheat's marketing year
+# rolled Jun 1 (now 2026/27); corn/soy roll Sep 1.
 USDA_TARGETS = {
     'corn':     57_900_000,   # 2,362 Mbu — April 2026 WASDE
     'soybeans': 52_200_000,   # 1,870 Mbu — April 2026 WASDE
@@ -199,10 +203,14 @@ def preserve(existing: dict, today: date):
     if not existing:
         log.error('No existing data and no live data — aborting to avoid empty JSON.')
         sys.exit(1)
-    existing['updated'] = today.isoformat()
+    # AUDIT 2026-08-11: do NOT bump `updated` here. Stamping failure paths
+    # fresh meant a dead FAS_API_KEY kept the homepage widget green forever.
+    # `updated` now moves only when live data actually lands; a separate
+    # `checked` records the attempt so staleness is measurable.
+    existing['checked'] = today.isoformat()
     OUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     OUT_FILE.write_text(json.dumps(existing, indent=2))
-    log.info('Preserved existing commodity data; updated timestamp only.')
+    log.info('Preserved existing commodity data (checked stamped; updated left honest).')
 
 
 def main():
@@ -268,7 +276,21 @@ def main():
         # rather than push an impossible figure to the public dashboard.
         plausible = [c for c in candidates
                      if c['pct'] is not None and 1.0 <= c['pct'] <= PLAUSIBLE_MAX]
-        pick = max(plausible, key=lambda c: c['latest']) if plausible else None
+        # AUDIT 2026-08-11: recency guard. A FINISHED prior marketing year has
+        # a perfectly plausible pct and a latest week that wins max() — which
+        # is how last year's corn pace shipped as current. A candidate whose
+        # latest reported week is more than 35 days old is history, not pace.
+        def _fresh(c):
+            try:
+                lw = c['latest'] if isinstance(c['latest'], date) else date.fromisoformat(str(c['latest'])[:10])
+                return (today - lw).days <= 35
+            except Exception:
+                return False
+        fresh = [c for c in plausible if _fresh(c)]
+        if plausible and not fresh:
+            log.warning(f'{comm}: plausible candidates exist but none reported within 35 days '
+                        f'({[(str(c["latest"])[:10]) for c in plausible]}) — stale season, preserving existing')
+        pick = max(fresh, key=lambda c: c['latest']) if fresh else None
 
         if not pick:
             saw = [(c['year'], c['pct']) for c in candidates]

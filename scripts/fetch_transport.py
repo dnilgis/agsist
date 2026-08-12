@@ -121,6 +121,26 @@ def build(fetch=get_json):
             raise SystemExit(f"FATAL: {name} returned zero rows — refusing to write stale data")
         print(f"  {name}: {len(rows)} rows")
 
+    # AUDIT 2026-08-11: USDA AgTransport currently publishes "Southeast" rows
+    # byte-identical to "North Dakota" (verified upstream on four consecutive
+    # weeks). Drop any region whose full series duplicates another region's —
+    # republishing the copy as regional data is worse than omitting it.
+    _sig = {}
+    for r in basis_rows:
+        k = (r.get("commodity"), r.get("market_name"))
+        _sig.setdefault(k, []).append((r.get("date"), r.get("basis")))
+    _dupes = set()
+    _seen = {}
+    for (comm, mkt), series in _sig.items():
+        key = (comm, tuple(sorted(series)))
+        if key in _seen and mkt != _seen[key]:
+            _dupes.add((comm, mkt))
+            print(f"  grain_basis: dropping {mkt!r} ({comm}) — series identical to {_seen[key]!r}")
+        else:
+            _seen.setdefault(key, mkt)
+    if _dupes:
+        basis_rows = [r for r in basis_rows
+                      if (r.get("commodity"), r.get("market_name")) not in _dupes]
     basis = series_stats(basis_rows, ["commodity", "market_name", "market_type"], "basis")
     barge = series_stats(barge_rows, ["location"], "rate")
 

@@ -16,7 +16,7 @@ DESC     = ("Free daily agricultural market briefing for corn, soybean, and grai
             "producers. Overnight surprises, farmer actions, market analysis — "
             "every morning at 5 AM CT.")
 LINK     = f"{SITE}/daily"
-IMG_URL  = f"{SITE}/img/og/daily.jpg"
+IMG_URL  = f"{SITE}/img/og/agsist.jpg"
 MAX_ITEMS = 30  # keep last 30 briefings in feed
 
 def load_archive():
