@@ -26,7 +26,7 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 24;  // v24 2026-08-12: new SVG wordmark in header/drawer/footer; was: v23
+var CACHE_VERSION = 25;  // v25 2026-08-12: sharpness pass — ghost-Archivo fix (big text now really Inter) + text contrast bump; was: v24
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;
