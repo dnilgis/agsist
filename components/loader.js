@@ -34,7 +34,16 @@
         el.replaceWith(frag);
         if (onDone) onDone();
       })
-      .catch(function () { if (onDone) onDone(); });
+      .catch(function () {
+        // AUDIT 2026-08-11: a failed header fetch used to leave an empty div
+        // — no nav at all. header-fallback.html exists for exactly this;
+        // one retry with it before giving up. (Footer has a static fallback.)
+        if (id === 'site-header' && path.indexOf('header-fallback') === -1) {
+          loadComponent(id, '/components/header-fallback.html', onDone);
+          return;
+        }
+        if (onDone) onDone();
+      });
   }
 
   // Inject GA4 analytics unless the page already has gtag loaded inline

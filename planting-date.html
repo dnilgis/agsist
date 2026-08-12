@@ -42,7 +42,7 @@
   {"@type":"Question","name":"When should I plant soybeans in Wisconsin?","acceptedAnswer":{"@type":"Answer","text":"The optimal soybean planting window in Wisconsin is May 1 \u2013 May 20. Soybean germination requires soil temps above 50\u00b0F. Planting before May 1 in cold, wet soils increases Sudden Death Syndrome (SDS) risk. Soybeans tolerate later planting better than corn \u2014 minimal yield penalty up to May 20, then roughly 0.5 bu/day after that."}},
   {"@type":"Question","name":"What soil temperature do I need to plant corn?","acceptedAnswer":{"@type":"Answer","text":"Corn should be planted when soil temperature at 2\" depth reaches a consistent 50\u00b0F or above for at least 3 consecutive days with a warming trend. Planting into cold (below 50\u00b0F) soils risks imbibitional chilling injury, uneven emergence, and increased seedling disease pressure."}},
   {"@type":"Question","name":"How much yield do I lose for late corn planting?","acceptedAnswer":{"@type":"Answer","text":"Corn yield loss for late planting in Wisconsin: roughly 1% per day after May 20, about 1.5% per day through late May, and steepening sharply in June \u2014 UW-Madison measures about 3% per day for early-June plantings. A delay from May 1 to June 1 costs on the order of 35 bu/acre in a 200 bu field, and June 10 is the last practical grain planting date for southern Wisconsin. Early planting (before May 1 in warm years) can boost yield 5\u201310 bu/acre versus May 10."}},
-  {"@type":"Question","name":"What is the last frost date in Wisconsin?","acceptedAnswer":{"@type":"Answer","text":"Last frost probability dates vary by Wisconsin zone: Southern WI (Madison area) \u2014 50% probability of last frost by April 22, 90% by May 5. Central WI \u2014 50% by May 2, 90% by May 15. Northern WI \u2014 50% by May 15, 90% by May 28. These are 30-year NOAA normals; actual dates vary year to year."}}
+  {"@type":"Question","name":"What is the last frost date in Wisconsin?","acceptedAnswer":{"@type":"Answer","text":"Last frost probability dates vary by Wisconsin zone: Southern WI (Madison area) \u2014 50% probability of last frost by April 22, 90% by May 5. Central WI \u2014 50% by May 2, 90% by May 15. Northern WI \u2014 50% by May 15, 90% by May 28. These dates are approximate freeze percentiles; an August 2026 audit found them running one to two weeks earlier than NOAA station normals, so verify against your nearest NOAA station — actual dates vary year to year."}}
 ]}
 </script>
 
@@ -344,7 +344,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 </div>
 
 <div class="pd-source">
-  Frost data: NOAA 30-year normals &middot; Soil temp: Open-Meteo (ERA5-Land) &middot; Yield penalty: UW-Extension &amp; UMN Extension &middot;
+  Frost data: approximate freeze-percentile dates (audit 2026-08-11: these run ~1&ndash;2 weeks EARLIER than NOAA station normals &mdash; treat the safe-side columns as optimistic and check your nearest station) &middot; Soil temp: Open-Meteo (ERA5-Land) &middot; Yield penalty: UW-Extension &amp; UMN Extension &middot;
   <a href="/">&#8592; AGSIST Dashboard</a> &middot; Built by <a href="/about">Sigurd Lindquist</a> &middot; <a href="tel:+17157972428">715-797-2428</a>
 </div>
 
@@ -480,7 +480,7 @@ function renderFrostTable(zone){
     +'<tr><td>Last spring frost</td><td class="p10">'+d.spring10+'</td><td class="p50">'+d.spring50+'</td><td class="p90">'+d.spring90+'</td></tr>'
     +'<tr><td>First fall frost</td><td class="p10">'+d.fall10+'</td><td class="p50">'+d.fall50+'</td><td class="p90">'+d.fall90+'</td></tr>'
     +'</tbody></table>'
-    +'<div class="f-hint" style="margin-top:.4rem">These are percentiles of the freeze date itself, not planting advice. In spring the last freeze has already happened by the 10% date in only 1 year of 10, by the 50% date in half of years, and by the 90% date in 9 of 10 &mdash; so the 90% column is the one to plant behind if you want to be safe. Read the fall row the same way, earliest date first. Source: NOAA 30-year normals.</div>';
+    +'<div class="f-hint" style="margin-top:.4rem">These are percentiles of the freeze date itself, not planting advice. In spring the last freeze has already happened by the 10% date in only 1 year of 10, by the 50% date in half of years, and by the 90% date in 9 of 10 &mdash; so the 90% column is the one to plant behind if you want to be safe. Read the fall row the same way, earliest date first. These dates are approximate and audit-checked to run one to two weeks earlier than NOAA station normals for several stations — verify against your nearest NOAA station before betting a stand on them.</div>';
   var el = document.getElementById('frost-table-wrap');
   if(el)el.innerHTML=html;
 }

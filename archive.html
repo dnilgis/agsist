@@ -186,6 +186,7 @@ function render(){
   var filtered = allEntries.filter(function(e){
     var monthMatch = !activeMonth || e.monthKey === activeMonth;
     var searchMatch = !searchTerm || (e.headline||'').toLowerCase().indexOf(searchTerm) !== -1
+                   || (e.lead||'').toLowerCase().indexOf(searchTerm) !== -1
                    || (e.date||'').indexOf(searchTerm) !== -1
                    || (e.shortLabel||'').toLowerCase().indexOf(searchTerm) !== -1;
     return monthMatch && searchMatch;
@@ -224,6 +225,8 @@ function render(){
           '<div class="arc-card-head">'+
             '<span class="arc-card-date">'+escHtml(e.shortLabel)+'</span>'+
             '<span class="arc-card-badge '+(e.isWkend?'wkend':'wkday')+'">'+(e.isWkend?'Weekend':'Market Day')+'</span>'+
+            (e.yc==='played_out'?'<span class="arc-yc" title="That day\'s call played out" style="width:8px;height:8px;border-radius:50%;background:#5fc28a;flex-shrink:0"></span>':
+             e.yc==='didnt'?'<span class="arc-yc" title="That day\'s call didn\'t play out" style="width:8px;height:8px;border-radius:50%;background:#e0685f;flex-shrink:0"></span>':'')+
           '</div>'+
           '<div class="arc-card-hl'+(hasHL?'':' placeholder')+'">'+escHtml(hasHL?e.headline:'No briefing this day')+'</div>'+
           (e.lead?'<div class="arc-card-lead">'+escHtml(e.lead.slice(0,120)+(e.lead.length>120?'…':''))+'</div>':'')+
@@ -296,6 +299,7 @@ fetch('/data/daily-archive/index.json', {cache:'no-store'})
         shortLabel: d ? shortLabel(d) : (item.date_display||item.label||item.date||''),
         monthKey:   d ? monthKey(d) : 'unknown',
         isWkend:    isWkend,
+        yc:         item.yc_outcome || '',
       };
     });
 

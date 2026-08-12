@@ -220,9 +220,32 @@
         name:'Yield Nowcast', desc:'Weekly corn & soybean yield estimate from USDA condition ratings — updates each Tuesday in season.',
         url:'/data/yield-nowcast.json', tsKey:'generated',
         check:function(d,age){
+          // Off-season (Dec-Mar): USDA ratings pause, the builder deliberately
+          // refuses to write, and a red "Stale" all winter would be crying
+          // wolf about a design decision.
+          var mo=new Date().getMonth()+1;
+          if(mo>=12||mo<=3) return {state:'ok', label:'Off-season', age:'resumes with spring ratings'};
           if(age < 8*86400000) return {state:'ok', label:'Current', age:ago(age)};
           if(age < 12*86400000) return {state:'warn', label:'Delayed', age:ago(age)};
           return {state:'down', label:'Stale', age:ago(age)};
+        }
+      },
+      {
+        name:'COT Positioning', desc:'CFTC managed-money and commercial positioning — publishes Fridays, fetched weekly.',
+        url:'/data/cot.json', tsKey:'fetched',
+        check:function(d,age){
+          if(age < 9*86400000) return {state:'ok', label:'Current', age:ago(age)};
+          if(age < 14*86400000) return {state:'warn', label:'Delayed', age:ago(age)};
+          return {state:'down', label:'Stale', age:ago(age)};
+        }
+      },
+      {
+        name:'Yield Direction Record', desc:'The nowcast\'s locked directional calls against each WASDE — the append-only public ledger.',
+        url:'/data/nowcast-direction.json', tsKey:'updated',
+        check:function(d,age){
+          var pend=(d&&d.record&&d.record.pending)||0, graded=(d&&d.record&&d.record.graded)||0;
+          if(pend||graded) return {state:'ok', label:(pend?pend+' pending':'')+(pend&&graded?' · ':'')+(graded?graded+' graded':''), age:ago(age)};
+          return {state:'warn', label:'No calls locked', age:ago(age)};
         }
       },
       {

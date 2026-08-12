@@ -49,7 +49,7 @@
       "@type": "WebPage",
       "@id": "https://agsist.com/daily#webpage",
       "url": "https://agsist.com/daily",
-      "dateModified": "2026-08-11",
+      "dateModified": "2026-08-10",
       "name": "Daily Ag Briefing \u2014 Market Morning Report | AGSIST",
       "description": "Free morning agricultural market briefing for US ag producers across grain, livestock, dairy, and specialty operations. Published every weekday before the market open.",
       "isPartOf": { "@id": "https://agsist.com/#website" }
@@ -525,6 +525,14 @@ function renderToday(data){
   if(!el)return;
   if(!data||!data.headline){
     el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">Today\'s briefing is not yet available. Published before the market open on weekday mornings.<br><br><a href="/" style="color:var(--gold)">\u2190 Return to dashboard</a></p></div>';
+    // AUDIT 2026-08-11: don't dead-end — offer the most recent archived
+    // briefing right here (the archive index is a cheap fetch).
+    fetch('/data/daily-archive/index.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).then(function(ix){
+      var b=(ix&&ix.briefings||[]).filter(function(x){return x.headline;}).sort(function(a,c){return (c.date||'').localeCompare(a.date||'');})[0];
+      if(!b)return;
+      var p=el.querySelector('p');
+      if(p)p.innerHTML+='<br><br>Most recent: <a href="'+b.url+'" style="color:var(--gold)">'+(b.date_display||b.date)+' \u2014 '+String(b.headline).replace(/</g,'&lt;')+'</a>';
+    }).catch(function(){});
     return;
   }
 

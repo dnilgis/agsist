@@ -487,19 +487,19 @@
 
         <div class="dp-row dp-op deduct"><div class="dp-row-main"><div class="dp-row-name">&minus; Make allowance (cheese)</div><div class="dp-row-desc">A fixed credit for the cost of turning milk into cheese, subtracted before the value reaches the farmer &mdash; a standard assumed cost across the order, not any one plant's actual cost. Raised in 2025.</div></div><div class="dp-row-val">&minus;$0.2519<span class="u">/lb</span></div></div>
 
-        <div class="dp-row dp-result"><div class="dp-row-main"><div class="dp-row-name">Protein price</div><div class="dp-row-desc">What's left of the cheese value, converted to a per-pound price for milk protein via the federal yield formula.</div></div><div class="dp-row-val">$2.1169<span class="u">/lb</span></div></div>
+        <div class="dp-row dp-result"><div class="dp-row-main"><div class="dp-row-name">Protein price</div><div class="dp-row-desc">What's left of the cheese value, converted to a per-pound price for milk protein via the federal yield formula.</div></div><div class="dp-row-val">$2.2692<span class="u">/lb</span></div></div>
 
         <div class="dp-row"><div class="dp-row-main"><div class="dp-row-name"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Dry whey price</div><div class="dp-row-desc">The other cheese-plant output. Its value flows to "other solids" &mdash; the lactose and minerals in milk.</div></div><div class="dp-row-val">$0.5350<span class="u">/lb</span></div></div>
 
         <div class="dp-row dp-op deduct"><div class="dp-row-main"><div class="dp-row-name">&minus; Make allowance (whey)</div><div class="dp-row-desc">The processing credit for drying whey, subtracted the same way.</div></div><div class="dp-row-val">&minus;$0.1991<span class="u">/lb</span></div></div>
 
-        <div class="dp-row dp-result"><div class="dp-row-main"><div class="dp-row-name">Other solids price</div></div><div class="dp-row-val">$0.3460<span class="u">/lb</span></div></div>
+        <div class="dp-row dp-result"><div class="dp-row-main"><div class="dp-row-name">Other solids price</div></div><div class="dp-row-val">$0.2762<span class="u">/lb</span></div></div>
 
         <div class="dp-row"><div class="dp-row-main"><div class="dp-row-name"><svg class="ic" aria-hidden="true"><use href="#i-droplet"/></svg> Butterfat price</div><div class="dp-row-desc">Derived from the butter market (shared with Class IV). The fat in your milk.</div></div><div class="dp-row-val">$2.4610<span class="u">/lb</span></div></div>
 
         <div class="dp-row dp-op credit"><div class="dp-row-main"><div class="dp-row-name">Component math &middot; per cwt at test</div><div class="dp-row-desc">Each price is multiplied by the pounds of that component in 100 lb of milk (protein ~3.3, fat ~3.5, other solids ~6.0), then summed. This is the Class III value before rounding.</div></div><div class="dp-row-val">+ sum</div></div>
 
-        <div class="dp-row dp-final"><div class="dp-row-main"><div class="dp-row-name">Class III milk price</div><div class="dp-row-desc">The federal minimum a cheese plant must pay for 100 lb of milk this month. What actually lands in the mailbox is this, blended with the other classes and adjusted by the producer price differential and hauling.</div></div><div class="dp-row-val">$16.92<span class="u">/cwt</span></div></div>
+        <div class="dp-row dp-final"><div class="dp-row-main"><div class="dp-row-name">Class III milk price</div><div class="dp-row-desc">USDA’s announced May 2026 Class III. The teaching model above, run on the survey prices shown, sums to about $17.76 — the gap is real (announced prices use exact NASS survey averages, advance/monthly timing and rounding this simplified walk-through does not carry). The shape is the lesson, not the last nickel. What actually lands in the mailbox is this, blended with the other classes and adjusted by the producer price differential and hauling.</div></div><div class="dp-row-val">$16.92<span class="u">/cwt</span></div></div>
       </div>
     </div>
   </section>
@@ -788,7 +788,11 @@
   // (90 FR 6600); the raised whey make allowance and the December 1, 2025
   // composition factors are both in force.
   var MA_CHEESE=0.2519, MA_WHEY=0.2668;
-  // May 2026 actuals used as the seed / reset point
+  // Seed/reset point: May 2026 SURVEY prices (cheese/whey/fat) with the
+  // ANNOUNCED May Class III ($16.92). AUDIT 2026-08-11: do not call the
+  // component inputs "actuals" — replace them from the USDA Announcement
+  // of Class and Component Prices (May 2026) when convenient; the model
+  // and announced values will then reconcile to within rounding.
   var SEED={cheese:1.7600, whey:0.5350, fat:2.4610, classIII:16.92, month:'May 2026'};
   // Skim milk composition factors, 7 CFR 1000.50, effective 2025-12-01.
   var LB={protein:3.30, fat:3.50, os:6.00};
@@ -851,7 +855,7 @@
     if(!isReal && modelGap!=null && Math.abs(modelGap)>=0.01){
       gapNote=' At the starting values this model lands '+Math.abs(modelGap).toFixed(2)+
         ' '+(modelGap>0?'above':'below')+' USDA\u2019s announced '+SEED.month+
-        ' price of '+cwt(SEED.classIII)+', because the survey inputs shown here are rounded to the cent. '+
+        ' price of '+cwt(SEED.classIII)+' — announced prices use exact NASS survey averages and timing this simplified model does not carry. '+
         'Treat the shape as the lesson, not the last nickel.';
     }
     var finalDesc = isReal
