@@ -31,7 +31,12 @@
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <img src="/img/logo-agsist.jpg" alt="AGSIST" style="height:36px;width:auto;object-fit:contain;max-width:210px">
+        <style>/* self-contained theme swap: footer can render without header.html (fallback path) */
+        .ftlg-l{display:none}
+        [data-theme="light"] .ftlg-l{display:inline-block}
+        [data-theme="light"] .ftlg-d{display:none}</style>
+        <img class="ftlg-d" src="/img/logo-agsist-ondark.svg" alt="AGSIST" width="317" height="148" style="height:36px;width:auto;object-fit:contain;max-width:210px">
+        <img class="ftlg-l" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="317" height="148" style="height:36px;width:auto;object-fit:contain;max-width:210px">
         <div class="footer-brand-text">
           <span class="footer-tagline">Free agricultural prices, tools &amp; news</span>
           <span class="footer-built">Built for farmers, everywhere</span>
