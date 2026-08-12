@@ -1,30 +1,25 @@
-name: Fetch NASS Data
+name: Fetch NASS (RETIRED)
+
+# RETIRED 2026-08-11 (audit panel): this workflow and nass-series.yml both
+# wrote data/nass/{corn,soy,wheat}-{yield,acres,price}.json with INCOMPATIBLE
+# shapes — this one raw comma-formatted strings ("410,000"), nass-series.yml
+# proper numbers with unit division. Whichever ran last won; when this one
+# won, the USDA Data Explorer's acres table rendered NaN in every cell.
+# nass-series.yml (16th monthly + dispatch) is the single writer now — it is
+# strictly better: numeric, selftested, and also builds the *-us national
+# series the charts prefer.
+#
+# This file is a tombstone so a stray manual dispatch cannot resurrect the
+# conflict. Delete it (and scripts/fetch_nass.py) via the web UI at leisure —
+# both are on the deletion list.
 
 on:
-  schedule:
-    - cron: '19 7 * * 0'   # Sundays 7 AM UTC (~2 AM CT) — NASS data rarely changes daily
-  workflow_dispatch:        # Manual run from GitHub Actions tab
+  workflow_dispatch:
 
 jobs:
-  fetch:
+  retired:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Fetch NASS datasets
-        run: python3 scripts/fetch_nass.py
-        env:
-          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
-
-      - name: Commit updated data
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add data/nass/
-          git diff --staged --quiet || git commit -m 'data: update NASS datasets'
-          git pull --rebase --autostash origin main || true
-          git push
+      - run: |
+          echo "fetch-nass is retired — data/nass/ is owned by nass-series.yml."
+          echo "Dispatch 'NASS long series' instead."
