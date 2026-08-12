@@ -389,7 +389,7 @@
      "unit": "bu/acre",
      "direction": "supply",
      "consensus": 182.0,
-     "actual": null,
+     "actual": 180.7,
      "usda_current": 183.0,
      "estimates": [
       {
@@ -425,7 +425,7 @@
      "unit": "bu/acre",
      "direction": "supply",
      "consensus": 52.9,
-     "actual": null,
+     "actual": 52.7,
      "usda_current": 53.0,
      "estimates": [
       {
@@ -448,6 +448,34 @@
      ],
      "consensus_source": "https://www.agweb.com/markets/grain-markets-and-farmers-prepare-august-wasde",
      "consensus_note": "Average of private pre-report estimates published ahead of the Aug 12 WASDE (AgWeb, Aug 7 2026). No low/high was published for the poll, so no range is claimed."
+    }
+   ]
+  },
+  {
+   "report": "September WASDE",
+   "date": "2026-09-11",
+   "metrics": [
+    {
+     "key": "corn_yield_2627",
+     "label": "2026/27 corn yield",
+     "unit": "bu/acre",
+     "direction": "supply",
+     "consensus": null,
+     "actual": null,
+     "usda_current": 180.7,
+     "consensus_source": null,
+     "consensus_note": "Fill from the pre-report trade survey when it publishes (~Sep 8-10). Never invent."
+    },
+    {
+     "key": "soy_yield_2627",
+     "label": "2026/27 soybean yield",
+     "unit": "bu/acre",
+     "direction": "supply",
+     "consensus": null,
+     "actual": null,
+     "usda_current": 52.7,
+     "consensus_source": null,
+     "consensus_note": "Fill from the pre-report trade survey when it publishes (~Sep 8-10). Never invent."
     }
    ]
   }

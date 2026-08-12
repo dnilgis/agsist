@@ -1,7 +1,30 @@
 {
- "updated": "2026-08-11",
+ "updated": "2026-08-12",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here — that updates continuously.",
  "entries": [
+  {
+   "date": "2026-08-12",
+   "items": [
+    {
+     "tag": "new",
+     "page": "/whats-priced-in",
+     "name": "August WASDE scored: USDA printed corn 180.7, soybeans 52.7",
+     "text": "USDA's first survey-based 2026 yields landed August 12: corn 180.7 bu/acre (down 2.3 from July, 1.3 under the trade's 182.0) and soybeans 52.7 (down 0.3, in line with the trade's 52.9). More acres kept both crops huge -- 16.013 billion bushels of corn and a record 4.519 billion of soybeans -- but the market traded the yield cut: December corn settled up 19 cents at $4.81. The analyst board is now scored, the report card is on the record, and the crop tour page carries the new USDA benchmark the scouts will test next week."
+    },
+    {
+     "tag": "new",
+     "page": "/conditions-yield",
+     "name": "Our first yield direction calls: both missed",
+     "text": "Before the report we locked two directional calls from our model: corn revises UP from 183.0, soybeans revise UP from 53.0. USDA revised both DOWN. Two calls, two misses, graded by arithmetic and kept on the record -- that is the whole point of the ledger. For what it is worth, our locked levels (183.6 and 53.8) were closer to the print than the model's July numbers would have been, and the trade consensus had the direction right. The record starts 0-for-2 and stays public either way."
+    },
+    {
+     "tag": "fixed",
+     "page": "/daily",
+     "name": "The gate blocked two more drafts that jumped the report",
+     "text": "On WASDE morning itself, two briefing drafts again described the report as already printed -- hours early. The pre-send gate built after Tuesday's incident blocked both; nothing false was published or emailed. The generator now also checks its own draft and rewrites once with the offending lines quoted back, which is how the briefing you actually received Wednesday came to lead with \"WASDE prints at 11 CT\" instead. Layers: the writer corrects itself, the gate still gets the veto."
+    }
+   ]
+  },
   {
    "date": "2026-08-11",
    "items": [
