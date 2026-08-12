@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 11 Aug 2026 18:03:17 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 12 Aug 2026 13:21:57 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
-      <url>https://agsist.com/img/og/daily.jpg</url>
+      <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WASDE PRINTS AT 11 CT: WHEAT LEADS, BEANS REACT</title>
+      <link>https://agsist.com/daily/2026-08-12</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-12</guid>
+      <pubDate>Wed, 12 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Chicago wheat pushed up 10 cents to $6.45 this morning, the loudest pre-WASDE move in the complex, and it's not an accident. A possible Black Sea deal is circulating in the overnight wires, which is exactly the kind of headline that gets fund desks repositioning before an 11 CT print that could reset global wheat supply. The WASDE lands in hours. Everything this morning is positioning.
+Wheat ran 10 cents into the report; soybean oil is the quiet mover nobody's talking about yet.
+• WHEAT LEADS INTO THE PRINT
+• BEANS SPLIT: OLD CROP FIRMS, NEW CROP FLAT
+• CORN TICKS; WASDE IS THE ONLY STORY
+Read more: https://agsist.com/daily/2026-08-12</description>
+    </item>
     <item>
       <title>WASDE EVE: CORN FLAT, BEANS SPLIT</title>
       <link>https://agsist.com/daily/2026-08-11</link>
@@ -380,20 +392,6 @@ Trump's Iran blockade reinstatement lit crude oil's biggest single-session gain 
 • Corn Split Keeps Growing
 • Beans and Soybean Oil Firm Up
 Read more: https://agsist.com/daily/2026-07-14</description>
-    </item>
-    <item>
-      <title>HOGS RUN 11%, HORMUZ FLARES AGAIN, CROP PROGRESS DUE</title>
-      <link>https://agsist.com/daily/2026-07-13</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-13</guid>
-      <pubDate>Mon, 13 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Lean hogs ran 10.8% to $94.78, the biggest single-session move in this complex all summer, and nearby corn fell sharply 3.2% to $4.38 while December corn added 1.9% to $4.61 -- that gap is the market telling you it trusts the crop more than it trusts the calendar. Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now re-escalating after a weekend of U.S. strikes and Iranian claims of Hormuz closure, reversed crude's month-long deflation: WTI at $71.41 is down 1.4% on the day after giving back an early 4% gain as traders sorted signal from noise. USDA Crop Progress drops at 3 PM CT today, and with nearby corn already pricing crop confidence, a condition rating above 65% good/excellent keeps the nearby under pressure; a drop below 60% puts the weather premium back on the table.
-Lean hogs had their biggest single-session gain in months while Iran re-escalation scrambles the crude trade and USDA Crop Progress drops at 3 PM CT.
-• Corn Splits Hard
-  → Unpriced old-crop corn: no reason to chase sales below $4.40 nearby. If December holds above $4.58 after crop progress, that is your scale-sale window on new crop. A condition rating below 60% reopens the door toward $4.75 December.
-• Hogs Run Hard
-  → Producers with unhedged hogs: $94.78 is real money. Consider locking 25-30% of near-term production here; this move is more likely to retrace than extend.
-• Cattle Splits, Milk Falls Hard
-Read more: https://agsist.com/daily/2026-07-13</description>
     </item>
   </channel>
 </rss>

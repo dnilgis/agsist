@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-08-12",
+      "date_display": "Wednesday, August 12, 2026",
+      "headline": "WASDE PRINTS AT 11 CT: WHEAT LEADS, BEANS REACT",
+      "teaser": "Wheat runs a dime into the WASDE. The report answers why at 11 CT.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-08-12",
+      "market_closed": false,
+      "yc_outcome": "played_out"
+    },
+    {
       "date": "2026-08-11",
       "date_display": "Tuesday, August 11, 2026",
       "headline": "WASDE EVE: CORN FLAT, BEANS SPLIT",
@@ -1735,6 +1747,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-11T11:47:47.944328+00:00",
-  "count": 152
+  "updated": "2026-08-12T13:21:55.144671+00:00",
+  "count": 153
 }
