@@ -26,7 +26,7 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 22;  // v22 2026-08-08: homepage front-month contract fix (geo.js) + signup bar + nav scroll + audit round 2; was: v21
+var CACHE_VERSION = 23;  // v23 2026-08-11: Grower Pulse removed from header/footer + audit round 1-2 pages; was: v22
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;

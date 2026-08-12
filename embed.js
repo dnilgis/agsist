@@ -1,6 +1,8 @@
 /*! AGSIST embed loader — agsist.com/embed.js
  * Usage: <div data-agsist-widget="gdu"></div><script async src="https://agsist.com/embed.js"></script>
- * Widgets: gdu (live), calendar / briefing (rolling out).
+ * Widgets: gdu (live). (calendar/briefing keys removed 2026-08-11 —
+ * they advertised embed pages that do not exist; a third-party mounting
+ * one got a broken iframe. They return when their pages ship.)
  * The iframe gives partners the live tool; the injected <a> is the real backlink
  * (iframe contents do not pass link equity to the host page — the anchor does).
  */
@@ -8,9 +10,8 @@
   'use strict';
   var ORIGIN = 'https://agsist.com';
   var WIDGETS = {
-    gdu:      { path:'/embed/gdu',      link:'/gdu-calculator', label:'GDU Calculator', minH:560 },
-    calendar: { path:'/embed/calendar', link:'/fast-facts',     label:'Crop Calendar',  minH:520 },
-    briefing: { path:'/embed/briefing', link:'/daily',          label:'Daily Briefing', minH:420 }
+    gdu:      { path:'/embed/gdu',      link:'/gdu-calculator', label:'GDU Calculator', minH:560 }
+
   };
   function each(list, fn){ Array.prototype.forEach.call(list, fn); }
 

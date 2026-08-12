@@ -256,7 +256,7 @@
   <div id="wp-result"><!-- PRERENDER:wp-result --><!-- /PRERENDER:wp-result --></div>
 
   <h2>Next report: what the trade expects from the August WASDE</h2>
-  <div id="wp-next"><!-- PRERENDER:wp-next --><div class="wp-card"><div class="hd"><span class="rpt">August WASDE</span><span class="cd">2026-08-12 · 12:00 PM ET · tomorrow</span></div><div class="wp-metric">Corn &amp; soybeans — 2026/27 yield &amp; production</div><div class="wp-exp">The August report carries the first field-survey-based corn and soybean yield estimates - one of the highest-impact supply reports of the year.</div></div><!-- /PRERENDER:wp-next --></div>
+  <div id="wp-next"><!-- PRERENDER:wp-next --><div class="wp-card"><div class="hd"><span class="rpt">August WASDE</span><span class="cd">2026-08-12 · 12:00 PM ET · 2 days out</span></div><div class="wp-metric">Corn &amp; soybeans — 2026/27 yield &amp; production</div><div class="wp-exp">The August report carries the first field-survey-based corn and soybean yield estimates - one of the highest-impact supply reports of the year.</div></div><!-- /PRERENDER:wp-next --></div>
 
   <h2 id="track-record">Track record</h2>
   <p class="wp-lede" style="margin-bottom:.4rem">How the expectation lined up against the actual print, and which way price moved. <span style="color:var(--wp-mut)">The July WASDE went unscored &mdash; expectations were not filed that window; the gap stays on the record.</span></p>
@@ -320,9 +320,9 @@
   "isAccessibleForFree":true,
   "license":"https://agsist.com/terms",
   "datePublished":"2026-06-09",
-  "dateModified":"2026-08-11",
+  "dateModified":"2026-08-10",
   "temporalCoverage":"2026/..",
-  "measurementTechnique":"Pre-report trade survey averages and ranges compared against the USDA released figure; a print within 2% of the trade average is scored in line, below the range bullish, and above the range bearish.",
+  "measurementTechnique":"Actual print graded against the average pre-report trade estimate: within the in-line band of the average (2% for stocks-type metrics, 0.5% for yields) counts as in line; a print below that band is bullish, above it bearish.",
   "variableMeasured":["Trade estimate range","Trade estimate average","USDA actual","Surprise direction"],
   "keywords":["WASDE","USDA report","priced in","trade estimate","market expectations","ending stocks","corn","soybeans","wheat"]
 }
@@ -357,7 +357,7 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
 
 <script>
 (function(){
-  function daysUntil(d){var t=new Date(d+'T12:00:00');var now=new Date();return Math.ceil((t-now)/86400000);}
+  function daysUntil(d){/* AUDIT 2026-08-11: compare calendar DATES, not noon-anchored ceil — the old version said 'tomorrow' all report-day morning */var t=new Date(d+'T00:00:00');var now=new Date();now.setHours(0,0,0,0);return Math.round((t-now)/86400000);}
   function num(n,u){return (n==null)?'\u2014':(n+(u?(' '+u):''));}
   function nextCard(n){
     if(!n)return '<div class="wp-err">No upcoming report is scheduled right now. Check the <a href="/usda-calendar" style="color:var(--wp-gold2)">USDA calendar</a>.</div>';

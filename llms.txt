@@ -8,7 +8,7 @@
 > Sigurd Lindquist, a licensed crop insurance agent at Farmers First Agri
 > Service in Wisconsin. National in scope, available at no charge.
 
-Prices come from CME Group settlements via the AGSIST pipeline; cash bids
+Prices are delayed exchange quotes (Yahoo Finance feed) fetched every 30 minutes by the AGSIST pipeline, with settlement-limit sanity gates; they are not a real-time or official CME feed; cash bids
 from Barchart OnDemand; weather from Open-Meteo; crop and production data
 from USDA NASS/FAS/RMA; drought from the US Drought Monitor. Dynamic pages
 update every 30 minutes during market hours; the daily briefing publishes
