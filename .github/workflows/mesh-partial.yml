@@ -42,6 +42,6 @@ jobs:
           git commit -m "data: MESH last-24h partial [skip ci]"
           for i in 1 2 3; do
             git push origin main && exit 0
-            git pull --rebase origin main || { git rebase --abort; git reset --hard origin/main; git add data/hail/mesh/today-partial.json; git commit -m "data: MESH last-24h partial [skip ci]" || true; }
+            git pull --rebase origin main || { git rebase --abort; cp data/hail/mesh/today-partial.json /tmp/mesh.json; git reset --hard origin/main; cp /tmp/mesh.json data/hail/mesh/today-partial.json; git add data/hail/mesh/today-partial.json; git commit -m "data: MESH last-24h partial [skip ci]" || true; }
           done
           exit 1

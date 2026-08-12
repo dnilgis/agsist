@@ -51,8 +51,8 @@ jobs:
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
           FROM_ADDR: ${{ secrets.FROM_ADDR }}
           FROM_NAME: ${{ secrets.FROM_NAME }}
           REPLY_TO: ${{ secrets.REPLY_TO }}

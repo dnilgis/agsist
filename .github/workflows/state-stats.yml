@@ -26,7 +26,9 @@ jobs:
       - name: Build data/state-stats.json
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
-        run: python scripts/build_state_stats.py
+        run: |
+          python scripts/build_state_stats.py --selftest
+          python scripts/build_state_stats.py
       - name: Commit if changed (race-tolerant)
         run: |
           set -e

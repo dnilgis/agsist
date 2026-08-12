@@ -230,8 +230,15 @@ jobs:
           # file kept shipping the contaminated continuous quotes.
           git add data/daily.json data/daily-archive/ daily/ feed.xml sitemap.xml data/scorecard.json index.html data/social/ whats-priced-in.html scorecard.html cot.html ag-odds.html data/prices.json
           git diff --staged --quiet || git commit -m "AGSIST Daily — $(date -u +%Y-%m-%d)"
-          git pull --rebase --autostash origin main
-          git push
+          # AUDIT 2026-08-11: three attempts — this is the repo's highest-
+          # stakes push (a rejection here silently skips the daily email for
+          # a fully generated, gated briefing while 11:20/11:25 workflows
+          # race the same files).
+          for i in 1 2 3; do
+            git pull --rebase --autostash origin main && git push && break
+            echo "push attempt $i failed; retrying in 20s"; sleep 20
+            [ "$i" = "3" ] && exit 1
+          done
 
       # Email the finished briefing as a clean, reforwardable copy. Runs only after
       # GATE 2 passed (hard block above stops the job on failure) and the commit

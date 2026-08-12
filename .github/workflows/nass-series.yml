@@ -26,7 +26,9 @@ jobs:
       - name: Build data/nass/*.json
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
-        run: python scripts/build_nass_series.py
+        run: |
+          python scripts/build_nass_series.py --selftest
+          python scripts/build_nass_series.py
       - name: Commit if changed (race-tolerant)
         run: |
           set -e

@@ -45,6 +45,6 @@ jobs:
           for i in 1 2 3; do
             if git push origin main; then exit 0; fi
             echo "push rejected (attempt $i) — rebasing"
-            git pull --rebase origin main || { git rebase --abort; git reset --hard origin/main; git add data/harvest-prices.json harvest-price-tracker.html; git commit -m "data: harvest/projected price update [skip ci]" || true; }
+            git pull --rebase origin main || { git rebase --abort; cp data/harvest-prices.json /tmp/hp.json; cp harvest-price-tracker.html /tmp/hp.html; git reset --hard origin/main; cp /tmp/hp.json data/harvest-prices.json; cp /tmp/hp.html harvest-price-tracker.html; git add data/harvest-prices.json harvest-price-tracker.html; git commit -m "data: harvest/projected price update [skip ci]" || true; }
           done
           exit 1
