@@ -399,9 +399,9 @@
       },
       {
        "id": "agsist",
-       "value": 189.4,
+       "value": 183.6,
        "source": "https://agsist.com/conditions-yield",
-       "source_note": "ge-linear-v1 nowcast, locked 2026-07-25 (ratings week ending 2026-07-19). The live nowcast has since been model-upgraded and currently reads lower; locked calls stay on the record."
+       "source_note": "Current conditions-yield model nowcast (ratings week ending 2026-08-09), locked 2026-08-11 pre-report in the direction ledger (data/nowcast-direction.json). Supersedes the retired ge-linear-v1 call (corn 189.4 / beans 56.2, locked 2026-07-25) — the supersession is on the record in git history."
       },
       {
        "id": "stonex",
@@ -435,9 +435,9 @@
       },
       {
        "id": "agsist",
-       "value": 56.2,
+       "value": 53.8,
        "source": "https://agsist.com/conditions-yield",
-       "source_note": "ge-linear-v1 nowcast, locked 2026-07-25 (ratings week ending 2026-07-19). The live nowcast has since been model-upgraded and currently reads lower; locked calls stay on the record."
+       "source_note": "Current conditions-yield model nowcast (ratings week ending 2026-08-09), locked 2026-08-11 pre-report in the direction ledger (data/nowcast-direction.json). Supersedes the retired ge-linear-v1 call (corn 189.4 / beans 56.2, locked 2026-07-25) — the supersession is on the record in git history."
       },
       {
        "id": "stonex",
