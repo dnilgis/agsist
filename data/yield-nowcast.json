@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-11T04:40:18Z",
+ "generated": "2026-08-12T21:41:50Z",
  "model": "ge-linear-v1",
  "note": "Ratings-only nowcast of US final yield. Band is the 80th percentile of absolute leave-one-year-out backtest errors AT THIS WEEK \u2014 recomputed every run, never assumed. trend_mae is the no-ratings baseline. History rows are append-only; final USDA yield is written beside them in January, misses included.",
  "crops": {
