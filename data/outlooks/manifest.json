@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-13T15:16:10+00:00",
+  "fetched_at": "2026-08-13T17:14:05+00:00",
   "files": {
     "noaa_prcp_30day.gif": {
       "bytes": 233097,
@@ -37,7 +37,7 @@
     },
     "usdm_latest.png": {
       "bytes": 397207,
-      "changed": true,
+      "changed": false,
       "data_valid": "2026-08-11",
       "sha256": "5eef656475af82773898377d5be603c47d8c4affc8422b8f75e5284b50b4fc81",
       "source": "https://droughtmonitor.unl.edu/data/png/20260811/20260811_usdm.png",
