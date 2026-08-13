@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-08-13",
+      "date_display": "Thursday, August 13, 2026",
+      "headline": "MEAL RUNS 6%; EXPORT SALES AT 7:30 CT",
+      "teaser": "Meal up 6% leads grains; cattle slip as export sales loom at 7:30 CT.",
+      "market_mood": "mixed",
+      "surprise_count": 2,
+      "sections": 4,
+      "url": "/daily/2026-08-13",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-08-12",
       "date_display": "Wednesday, August 12, 2026",
       "headline": "WASDE PRINTS AT 11 CT: WHEAT LEADS, BEANS REACT",
@@ -1747,6 +1759,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-12T13:21:55.144671+00:00",
-  "count": 153
+  "updated": "2026-08-13T11:53:02.776951+00:00",
+  "count": 154
 }

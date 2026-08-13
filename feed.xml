@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 12 Aug 2026 13:21:57 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 13 Aug 2026 11:53:04 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>MEAL RUNS 6%; EXPORT SALES AT 7:30 CT</title>
+      <link>https://agsist.com/daily/2026-08-13</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-13</guid>
+      <pubDate>Thu, 13 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Soybean meal moved hard, up 6% to $325.00, the biggest day in the complex by a wide margin, and nearby beans followed to $11.65. The weekly export sales report prints at 7:30 CT this morning. If beans show up strong in that number, the meal move gets a fundamental leg; if sales disappoint, this was positioning ahead of the print and the board gives some back.
+Soybean meal's biggest session in months leads the complex higher ahead of the weekly export print.
+• MEAL RUNS; BEANS FIRM
+  → If you hold unpriced old-crop beans, $11.65 is working right now. Set a target at $11.74 and let the export print decide; a disappointing sales number pulls the board back fast.
+• WHEAT HOLDS ABOVE $6.55
+• CATTLE SLIP ON CORN LIFT
+Read more: https://agsist.com/daily/2026-08-13</description>
+    </item>
     <item>
       <title>WASDE PRINTS AT 11 CT: WHEAT LEADS, BEANS REACT</title>
       <link>https://agsist.com/daily/2026-08-12</link>
@@ -379,19 +392,6 @@ Lean hogs had their biggest single-session drop in years while Chicago wheat pus
 • Wheat Runs on Hormuz Rebuild
 • Corn Stays Calm, Crop Is Fine
 Read more: https://agsist.com/daily/2026-07-15</description>
-    </item>
-    <item>
-      <title>CRUDE RUNS 6%, CORN SPLITS WIDEN, BEANS FIRM</title>
-      <link>https://agsist.com/daily/2026-07-14</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-14</guid>
-      <pubDate>Tue, 14 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Crude oil ran almost 6% overnight after President Trump reinstated the U.S. blockade on Iran, reopening the Hormuz risk premium that had spent weeks deflating on diplomatic progress. That move is the story this Tuesday: energy inputs just repriced for harvest season, and producers who locked diesel last week are sitting on a decision that looks better by the hour. Meanwhile, corn's old-crop/new-crop split kept widening, nearby corn barely moved at $4.41 while December gave back 4.5 cents to $4.63, and the weekly thread question is still live: Monday's crop progress will answer whether that December weakness is already pricing a good crop or just early-week positioning ahead of pollination reports from the field.
-Trump's Iran blockade reinstatement lit crude oil's biggest single-session gain in weeks, while the corn old-crop/new-crop gap kept growing and soybeans pushed higher on crush-driven soybean oil.
-• Crude Reprices Harvest Season
-  → Producers without harvest diesel locked: $78.66 WTI is not last week's market. Lock at least 50% of harvest-season fuel needs now at current basis-adjusted prices. If WTI pushes through $80 this week, the next resistance cluster is $83-$85 and the Iran premium has room to rebuild.
-• Corn Split Keeps Growing
-• Beans and Soybean Oil Firm Up
-Read more: https://agsist.com/daily/2026-07-14</description>
     </item>
   </channel>
 </rss>

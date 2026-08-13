@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-12T13:21:57+00:00",
- "total": 86,
+ "updated": "2026-08-13T11:53:04+00:00",
+ "total": 87,
  "played_out": 31,
- "didnt": 50,
+ "didnt": 51,
  "pending": 5,
- "hit_rate": 38.3,
+ "hit_rate": 37.8,
  "by_method": {
   "deterministic": {
    "played": 5,
-   "missed": 40,
-   "graded": 45,
-   "hit_rate": 11.1,
+   "missed": 41,
+   "graded": 46,
+   "hit_rate": 10.9,
    "first": "2026-06-24",
-   "last": "2026-08-12"
+   "last": "2026-08-13"
   },
   "self_reported": {
    "played": 26,
@@ -34,22 +34,22 @@
   },
   "v2": {
    "played": 1,
-   "missed": 0,
-   "graded": 1,
-   "hit_rate": 100.0,
+   "missed": 1,
+   "graded": 2,
+   "hit_rate": 50.0,
    "first": "2026-08-12",
-   "last": "2026-08-12"
+   "last": "2026-08-13"
   }
  },
  "direction_only": {
   "right_way": 18,
-  "graded": 45,
-  "rate": 40.0
+  "graded": 46,
+  "rate": 39.1
  },
  "by_instrument": {
   "wheat": {
    "played": 0,
-   "graded": 8,
+   "graded": 9,
    "hit_rate": 0.0
   },
   "corn": {
@@ -84,8 +84,24 @@
   "hit_rate": 25.0
  },
  "mismatched": 23,
- "current_streak": 1,
+ "current_streak": 0,
  "records": [
+  {
+   "made": "2026-08-12",
+   "judged": "2026-08-13",
+   "call": "Called wheat down toward below $6.33; wheat closed today at $6.55, well above the line.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Wheat went the wrong way and stayed there; WASDE didn't break the bull case.",
+   "instrument": "wheat",
+   "direction": "down",
+   "level": 6.33,
+   "p0": 6.4525,
+   "p1": 6.55,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-08-11",
    "judged": "2026-08-12",
