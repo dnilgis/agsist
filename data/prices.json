@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-08-13T21:29:11Z",
+  "fetched": "2026-08-13T21:59:29Z",
   "ok": 82,
   "failed": 1,
   "stale_keys": [],
@@ -804,10 +804,10 @@
     },
     "dollar": {
       "ticker": "DX-Y.NYB",
-      "close": 99.965,
+      "close": 99.962,
       "open": 100.004,
-      "netChange": -0.039,
-      "pctChange": -0.039,
+      "netChange": -0.042,
+      "pctChange": -0.042,
       "wk52_hi": 101.8,
       "wk52_lo": 95.55
     },
@@ -817,8 +817,8 @@
       "open": 4.682,
       "netChange": -0.041,
       "pctChange": -0.8757,
-      "wk52_hi": 4.714,
-      "wk52_lo": 4.588
+      "wk52_hi": 4.747,
+      "wk52_lo": 3.947
     },
     "sp500": {
       "ticker": "^GSPC",
@@ -831,19 +831,19 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 63366.37109,
+      "close": 63407.51172,
       "open": 63413.05859,
-      "netChange": -46.6875,
-      "pctChange": -0.0736,
+      "netChange": -5.54687,
+      "pctChange": -0.0087,
       "wk52_hi": 126198.0703,
       "wk52_lo": 57747.7656
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.0076,
+      "close": 1.0074,
       "open": 1.0046,
-      "netChange": 0.003,
-      "pctChange": 0.2986,
+      "netChange": 0.0028,
+      "pctChange": 0.2787,
       "wk52_hi": 3.346,
       "wk52_lo": 0.9937
     },
