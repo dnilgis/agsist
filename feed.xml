@@ -5,13 +5,27 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 13 Aug 2026 11:53:04 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 14 Aug 2026 11:48:07 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>MEAL HOLDS 6% GAIN; TYSON CUTS BEEF FOOTPRINT</title>
+      <link>https://agsist.com/daily/2026-08-14</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-14</guid>
+      <pubDate>Fri, 14 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Soybean meal closed at $325.00, holding every cent of its 6% overnight move, the biggest single-session print in months. Meanwhile Tyson Foods announced it will close or sell three beef plants, anchoring around Dakota City, Holcomb, and Amarillo. That's two structural shifts landing on the same Friday: one in the crush, one in the packing chain. Neither is a one-day story.
+Soybean meal's overnight move held all day; Tyson's three-plant exit reshapes the fed cattle market heading into fall.
+• MEAL HOLDS; BEANS FIRM
+  → If you priced old-crop beans near $11.74 yesterday, that worked. New-crop Nov at $11.88 is fair value; let the Pro Farmer tour Aug 17 reset the bid before adding sales.
+• WHEAT RUNS ON URT-LUGA FIRE
+• CATTLE SLIP; TYSON RESHAPES THE KILL
+  → If you have fall-delivery contracts on fed cattle, get clarity on which packer and which plant before harvest. Capacity is tighter than the calendar usually shows.
+Read more: https://agsist.com/daily/2026-08-14</description>
+    </item>
     <item>
       <title>MEAL RUNS 6%; EXPORT SALES AT 7:30 CT</title>
       <link>https://agsist.com/daily/2026-08-13</link>
@@ -379,19 +393,6 @@ A U.S. strike on an Iran-linked tanker near Kharg Island rewrites the energy and
 • Wheat Leads the Complex
 • Corn and Beans Hold Steady
 Read more: https://agsist.com/daily/2026-07-16</description>
-    </item>
-    <item>
-      <title>HOGS FALL HARD, WHEAT RUNS, CRUDE HOLDS $80</title>
-      <link>https://agsist.com/daily/2026-07-15</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-15</guid>
-      <pubDate>Wed, 15 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Lean hogs closed $84.33, down 14.1% in a single session. That is not a typo and it is not a normal day in the pits. Meanwhile, Chicago wheat ran to $6.63, up 18 cents, as Hormuz risk rebuilt overnight and crude held $79.94 for a fourth straight session above $78. The weekly thread question about whether crop progress would confirm the good-crop thesis got its answer Monday: USDA improved national corn ratings and put development ahead of average, which is why corn is up only a penny at $4.43 today instead of pushing toward a weather premium. The crop is fine. The hog market, for reasons explained below, is not.
-Lean hogs had their biggest single-session drop in years while Chicago wheat pushed 2.8% higher and WTI crude held just under $80 as the U.S.-Iran ceasefire broke down.
-• Hogs Fall Hard
-  → Producers with unhedged near-term hog production: $84.33 may not be the floor. Consider locking 30-40% of the next 60 days of production here. If the move was fund-driven without a disease or trade catalyst, there is a partial bounce possible, but the risk of waiting for confirmation is asymmetric.
-• Wheat Runs on Hormuz Rebuild
-• Corn Stays Calm, Crop Is Fine
-Read more: https://agsist.com/daily/2026-07-15</description>
     </item>
   </channel>
 </rss>

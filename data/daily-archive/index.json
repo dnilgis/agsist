@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-08-14",
+      "date_display": "Friday, August 14, 2026",
+      "headline": "MEAL HOLDS 6% GAIN; TYSON CUTS BEEF FOOTPRINT",
+      "teaser": "Meal locked in a 6% gain and Tyson just shrank its beef footprint. Two structural shifts on one Friday.",
+      "market_mood": "mixed",
+      "surprise_count": 2,
+      "sections": 4,
+      "url": "/daily/2026-08-14",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-08-13",
       "date_display": "Thursday, August 13, 2026",
       "headline": "MEAL RUNS 6%; EXPORT SALES AT 7:30 CT",
@@ -1759,6 +1771,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-13T11:53:02.776951+00:00",
-  "count": 154
+  "updated": "2026-08-14T11:48:06.286487+00:00",
+  "count": 155
 }

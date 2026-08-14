@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-13T11:53:04+00:00",
- "total": 87,
+ "updated": "2026-08-14T11:48:07+00:00",
+ "total": 88,
  "played_out": 31,
- "didnt": 51,
+ "didnt": 52,
  "pending": 5,
- "hit_rate": 37.8,
+ "hit_rate": 37.3,
  "by_method": {
   "deterministic": {
    "played": 5,
-   "missed": 41,
-   "graded": 46,
-   "hit_rate": 10.9,
+   "missed": 42,
+   "graded": 47,
+   "hit_rate": 10.6,
    "first": "2026-06-24",
-   "last": "2026-08-13"
+   "last": "2026-08-14"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 1,
-   "missed": 1,
-   "graded": 2,
-   "hit_rate": 50.0,
+   "missed": 2,
+   "graded": 3,
+   "hit_rate": 33.3,
    "first": "2026-08-12",
-   "last": "2026-08-13"
+   "last": "2026-08-14"
   }
  },
  "direction_only": {
   "right_way": 18,
-  "graded": 46,
-  "rate": 39.1
+  "graded": 47,
+  "rate": 38.3
  },
  "by_instrument": {
   "wheat": {
@@ -59,8 +59,8 @@
   },
   "beans": {
    "played": 2,
-   "graded": 11,
-   "hit_rate": 18.2
+   "graded": 12,
+   "hit_rate": 16.7
   },
   "crude": {
    "played": 1,
@@ -79,13 +79,29 @@
   }
  },
  "trailing20": {
-  "played": 5,
+  "played": 4,
   "graded": 20,
-  "hit_rate": 25.0
+  "hit_rate": 20.0
  },
  "mismatched": 23,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-08-13",
+   "judged": "2026-08-14",
+   "call": "Called beans down toward below $11.50; beans closed today at $11.67, up on the day.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Meal carried beans higher instead; the export catalyst flipped the direction.",
+   "instrument": "beans",
+   "direction": "down",
+   "level": 11.5,
+   "p0": 11.655,
+   "p1": 11.67,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-08-12",
    "judged": "2026-08-13",
