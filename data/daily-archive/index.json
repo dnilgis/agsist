@@ -3,10 +3,10 @@
     {
       "date": "2026-08-14",
       "date_display": "Friday, August 14, 2026",
-      "headline": "MEAL HOLDS 6% GAIN; TYSON CUTS BEEF FOOTPRINT",
-      "teaser": "Meal locked in a 6% gain and Tyson just shrank its beef footprint. Two structural shifts on one Friday.",
-      "market_mood": "mixed",
-      "surprise_count": 2,
+      "headline": "CORN AND WHEAT RUN; MEAL LEADS THE COMPLEX",
+      "teaser": "Corn, wheat, and meal all ran Friday. The week's big question answered: $4.50 never got tested.",
+      "market_mood": "bullish",
+      "surprise_count": 5,
       "sections": 4,
       "url": "/daily/2026-08-14",
       "market_closed": false,
@@ -1771,6 +1771,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-14T11:48:06.286487+00:00",
+  "updated": "2026-08-14T20:28:34.150819+00:00",
   "count": 155
 }

@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-14T11:48:07+00:00",
+ "updated": "2026-08-14T20:28:35+00:00",
  "total": 88,
  "played_out": 31,
  "didnt": 52,
@@ -89,11 +89,11 @@
   {
    "made": "2026-08-13",
    "judged": "2026-08-14",
-   "call": "Called beans down toward below $11.50; beans closed today at $11.67, up on the day.",
+   "call": "Called beans down toward $11.50; beans closed $11.67, up a dime, never sniffed the downside.",
    "outcome": "didnt",
    "method": "deterministic",
    "mismatch": false,
-   "note": "Meal carried beans higher instead; the export catalyst flipped the direction.",
+   "note": "Meal's second 6% run in two weeks killed any downside thesis beans had.",
    "instrument": "beans",
    "direction": "down",
    "level": 11.5,
