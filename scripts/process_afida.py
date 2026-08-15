@@ -32,7 +32,7 @@ import sys
 from collections import defaultdict
 from openpyxl import load_workbook
 
-RAW = sys.argv[1] if len(sys.argv) > 1 else "/home/claude/afida/raw"
+RAW = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("AFIDA_RAW", "data/afida/raw")
 OUT = sys.argv[2] if len(sys.argv) > 2 else "data/afida"
 
 LAND_COLS = ["Crop", "Pasture", "Forest", "Other Agriculture", "Other Non-Ag"]
