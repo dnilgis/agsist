@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 14 Aug 2026 20:28:35 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 15 Aug 2026 15:15:47 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>PRO FARMER TOUR STARTS MONDAY: GRAINS FINISH STRONG</title>
+      <link>https://agsist.com/daily/2026-08-15</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-15</guid>
+      <pubDate>Sat, 15 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed Friday at $4.59, up 9 cents on the session and up for the week, with December at $4.84 telling the new-crop story. Wheat ran harder, finishing at $6.74, up 17 cents. Both markets are pricing a question, not an answer: the Pro Farmer Crop Tour hits fields Monday, and whatever scouts find in dough-stage corn and pod-filling beans overrides every chart level currently on the board.
+Corn and wheat closed the week with real gains; the crop tour starting Aug 17 is the next number that matters.
+• GRAINS RUN INTO TOUR WEEK
+  → Old-crop corn sellers: $4.59 is above the 52-week midpoint. If you have unpriced bushels, the tour's Wednesday summary is your natural exit window before volatility settles.
+• BEANS LAG, CARRY TELLS THE STORY
+• CATTLE SLIP ON FUND EXIT
+Read more: https://agsist.com/daily/2026-08-15</description>
+    </item>
     <item>
       <title>CORN AND WHEAT RUN; MEAL LEADS THE COMPLEX</title>
       <link>https://agsist.com/daily/2026-08-14</link>
@@ -379,19 +392,6 @@ Corn, wheat, and beans all close higher Friday as weather and fresh China sales 
   → Feeders testing the low end of the summer range. Producers carrying unhedged feeder inventory should look at September options if $335 breaks on Monday.
 • Crude Runs Again
 Read more: https://agsist.com/daily/2026-07-17</description>
-    </item>
-    <item>
-      <title>HORMUZ RE-ESCALATES; WHEAT LEADS, HOGS BOUNCE</title>
-      <link>https://agsist.com/daily/2026-07-16</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-16</guid>
-      <pubDate>Thu, 16 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Wheat closed $6.86, up a dime, and it wasn't done moving before the day ended. The Hormuz premium that traders briefly wrote off is rebuilding in real time: U.S. forces struck and disabled an Iran-linked tanker near Kharg Island overnight, India told shipowners to pull their nationals off Hormuz-bound vessels, and Pakistan just paid the highest spot LNG price in four years. The IEA says the world has weeks, not months, before the economic toll registers. Thursday's export sales at 7:30 AM CT will tell you whether that urgency is pricing into U.S. grain demand or whether the funds are still waiting for the next headline.
-A U.S. strike on an Iran-linked tanker near Kharg Island rewrites the energy and grain calculus heading into Thursday's export sales at 7:30 AM CT.
-• Hormuz Tightens Again
-  → Any remaining unhedged harvest-season diesel: the $79.42 window closes with each new Hormuz headline. Lock what you have left now. Waiting for a pullback requires a diplomatic development that is not on today's calendar.
-• Wheat Leads the Complex
-• Corn and Beans Hold Steady
-Read more: https://agsist.com/daily/2026-07-16</description>
     </item>
   </channel>
 </rss>

@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-14T20:28:35+00:00",
- "total": 88,
- "played_out": 31,
+ "updated": "2026-08-15T15:15:47+00:00",
+ "total": 89,
+ "played_out": 32,
  "didnt": 52,
  "pending": 5,
- "hit_rate": 37.3,
+ "hit_rate": 38.1,
  "by_method": {
   "deterministic": {
-   "played": 5,
+   "played": 6,
    "missed": 42,
-   "graded": 47,
-   "hit_rate": 10.6,
+   "graded": 48,
+   "hit_rate": 12.5,
    "first": "2026-06-24",
-   "last": "2026-08-14"
+   "last": "2026-08-15"
   },
   "self_reported": {
    "played": 26,
@@ -33,18 +33,18 @@
    "last": "2026-08-11"
   },
   "v2": {
-   "played": 1,
+   "played": 2,
    "missed": 2,
-   "graded": 3,
-   "hit_rate": 33.3,
+   "graded": 4,
+   "hit_rate": 50.0,
    "first": "2026-08-12",
-   "last": "2026-08-14"
+   "last": "2026-08-15"
   }
  },
  "direction_only": {
-  "right_way": 18,
-  "graded": 47,
-  "rate": 38.3
+  "right_way": 19,
+  "graded": 48,
+  "rate": 39.6
  },
  "by_instrument": {
   "wheat": {
@@ -76,16 +76,37 @@
    "played": 0,
    "graded": 4,
    "hit_rate": 0.0
+  },
+  "meal": {
+   "played": 1,
+   "graded": 1,
+   "hit_rate": 100.0
   }
  },
  "trailing20": {
-  "played": 4,
+  "played": 5,
   "graded": 20,
-  "hit_rate": 20.0
+  "hit_rate": 25.0
  },
  "mismatched": 23,
- "current_streak": 0,
+ "current_streak": 1,
  "records": [
+  {
+   "made": "2026-08-14",
+   "judged": "2026-08-15",
+   "call": "Called meal lower through $322 on Aug 14; meal closed Friday at $309.60, down from $325 -- well through the trigger level.",
+   "outcome": "played_out",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "That one played out clean. Meal gave back $15+ on the session, validating the fund-exit read. With meal now at $309.60 and the Pro Farmer Tour starting Monday, watch whether a soft bean pod count gives meal a bid back toward $315 or whether the carry structure keeps the pressure on.",
+   "instrument": "meal",
+   "direction": "down",
+   "level": "322.00",
+   "p0": 325.0,
+   "p1": 309.60001,
+   "design": "v2",
+   "direction_ok": true
+  },
   {
    "made": "2026-08-13",
    "judged": "2026-08-14",

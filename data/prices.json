@@ -57,20 +57,20 @@
     },
     "beans": {
       "ticker": "ZS=F",
-      "close": 1167.0,
-      "open": 1165.5,
-      "netChange": 1.5,
-      "pctChange": 0.1287,
+      "close": 1176.25,
+      "open": 1172.0,
+      "netChange": 4.25,
+      "pctChange": 0.3626,
       "wk52_hi": 1250.5,
       "wk52_lo": 993.75,
-      "repaired_from": "beans-aug26",
+      "repaired_from": "beans-sep26",
       "repair_reason": "continuous-roll-contamination",
       "_orig": {
         "ticker": "ZS=F",
-        "close": 1191.25,
-        "open": 1187.25,
-        "netChange": 4.0,
-        "pctChange": 0.3369
+        "close": 1167.0,
+        "open": 1165.5,
+        "netChange": 1.5,
+        "pctChange": 0.1287
       }
     },
     "beans-nov": {
@@ -732,39 +732,40 @@
     },
     "meal": {
       "ticker": "ZM=F",
-      "close": 325.0,
-      "open": 306.70001,
-      "netChange": 18.29999,
-      "pctChange": 5.9667,
+      "close": 309.60001,
+      "open": 308.5,
+      "netChange": 1.10001,
+      "pctChange": 0.3566,
       "wk52_hi": 343.4,
       "wk52_lo": 262.0,
-      "repaired_from": "meal-aug26",
+      "repaired_from": "meal-sep26",
       "repair_reason": "continuous-roll-contamination",
       "_orig": {
         "ticker": "ZM=F",
-        "close": 315.79999,
-        "open": 315.10001,
-        "netChange": 0.69998,
-        "pctChange": 0.2221
+        "close": 325.0,
+        "open": 306.70001,
+        "netChange": 18.29999,
+        "pctChange": 5.9667
       }
     },
     "soyoil": {
       "ticker": "ZL=F",
-      "close": 68.83,
-      "open": 69.62,
-      "netChange": -0.74,
-      "pctChange": -1.0629,
+      "close": 69.3,
+      "open": 68.7,
+      "netChange": 0.6,
+      "pctChange": 0.8734,
       "wk52_hi": 79.69,
       "wk52_lo": 47.51,
-      "repaired_from": "soyoil-aug26",
-      "repair_reason": "prior-close-roll-contamination",
+      "repaired_from": "soyoil-sep26",
+      "repair_reason": "continuous-roll-contamination",
       "_orig": {
         "ticker": "ZL=F",
         "close": 68.83,
-        "open": 68.31,
-        "netChange": 0.52,
-        "pctChange": 0.7612
-      }
+        "open": 69.62,
+        "netChange": -0.79,
+        "pctChange": -1.1347
+      },
+      "derived_recomputed": true
     },
     "crude": {
       "ticker": "CL=F",
