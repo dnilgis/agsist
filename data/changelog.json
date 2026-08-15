@@ -7,6 +7,30 @@
    "items": [
     {
      "tag": "fixed",
+     "page": "/harvest-price-tracker",
+     "name": "The price discovery page was showing you other people's crops",
+     "text": "A Wisconsin reader who picked his state got a headline about October corn and then nine cards of barley, canola, popcorn and oats -- and the corn card listed Alabama, Florida, Georgia, Louisiana, South Carolina and Texas. The cause was in our feed, not the page. Our job asked USDA RMA for today's date and nothing else, and RMA answers that question literally: it returns only the crops whose discovery window happens to be open today. That is 228 rows across 9 crops, with no soybeans anywhere and corn in eight southern states. Wisconsin corn and beans were never in the file, so the page filled the space with whatever was. The feed now walks the whole crop year -- starting the prior August, because 2026 winter wheat was priced in September 2025 and Texas corn in December 2025 -- and refuses to publish at all if corn comes back in fewer than 30 states. That is the exact shape this failure had."
+    },
+    {
+     "tag": "improved",
+     "page": "/harvest-price-tracker",
+     "name": "Rebuilt around one question: when does YOUR price get set",
+     "text": "The page ran two of everything -- two state pickers that did not agree, two window datasets, two timestamps -- and picking your state made it longer instead of shorter. Now there is one picker directly under the headline, and everything below it belongs to the state you chose; the generic national block disappears the moment you pick. Corn and soybeans lead. Crops in discovery right now are ranked by percent change against your projected price, and the rest fold into a table. Every price carries its unit. Nothing prints $0.00 for a window RMA has not started. Where RMA keys a state to more than one sales closing date -- Texas corn has three -- each window gets its own card with its date named, instead of the page picking one and hoping it is yours."
+    },
+    {
+     "tag": "new",
+     "page": "/harvest-price-tracker",
+     "name": "Percent change against your projected price, and what it does to your guarantee",
+     "text": "An open window now shows the running average against your own guarantee on a dollar scale, with the percent as the headline number. Wisconsin winter wheat is running $6.45 against a $5.76 projected price -- up 12.0 percent -- and the guarantee calculator turns that into dollars an acre: $323 locked, $361 at today's average. The calculator covers every crop your state insures rather than corn alone, and follows the crop's own unit. When the running average is below the projected price it says so plainly and says what it does not do: a revenue guarantee revises up only, never down."
+    },
+    {
+     "tag": "fixed",
+     "page": "/harvest-price-tracker",
+     "name": "A state guessed from your weather location is no longer saved as your choice",
+     "text": "If you had set a location elsewhere on the site, the page used it to preselect your state -- and then wrote that guess back as though you had chosen it. A guess now selects the picker and stops there. Only a state you pick yourself is remembered."
+    },
+    {
+     "tag": "fixed",
      "page": "/usda-quick-stats",
      "name": "State crop numbers were calling a standing crop “final”",
      "text": "On Friday our monthly USDA pull picked up the August 12 Crop Production forecast and published it labeled \"2026 crop year -- USDA NASS final.\" Iowa corn read 216 bushels for a crop still standing in the field. Nine states -- Arizona, California, Florida, Montana, New Mexico, Oregon, Utah, West Virginia and Wyoming -- dropped off the page entirely, because USDA's August forecast only covers principal states. Every state now carries its own honest label: the forecast states say \"August forecast,\" and the states USDA does not forecast keep their real final with the year it belongs to. A survey estimate is a good number to have. Calling it final is a lie, and it was ours."
