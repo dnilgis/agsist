@@ -1,0 +1,79 @@
+name: RMA price discovery
+# Mirrors USDA RMA's own Price Discovery data service — the authoritative
+# record of projected and harvest price discovery for every insured crop,
+# type, practice and state, including the running average while a window is
+# open. Runs after the exchanges settle, seven days a week (RMA posts on the
+# business day, but a weekend run is cheap and self-corrects a missed day).
+#
+# The pull either succeeds with records or fails the run. It will not write a
+# partial file: if the service starts ignoring $skip, the script raises.
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: 'Probe only — report what RMA has and write nothing'
+        type: boolean
+        default: false
+      year:
+        description: 'Crop year (blank = current)'
+        required: false
+  schedule:
+    - cron: '10 22 * * *'   # 22:10 UTC — after CBOT settlement, before midnight CT
+
+concurrency:
+  group: rma-prices
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  pull:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Selftest
+        run: python3 scripts/test_rma_prices.py
+
+      - name: Pull RMA price discovery
+        run: |
+          ARGS=""
+          if [ "${{ inputs.probe }}" = "true" ]; then ARGS="$ARGS --probe"; fi
+          if [ -n "${{ inputs.year }}" ]; then ARGS="$ARGS --year ${{ inputs.year }}"; fi
+          python3 scripts/fetch_rma_prices.py $ARGS
+
+      - name: Commit and push (rebase armor, 3 tries)
+        if: ${{ inputs.probe != true }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/rma-prices.json data/rma-discovery-now.json
+          if git diff --cached --quiet; then
+            echo "RMA figures unchanged — nothing to commit"
+            exit 0
+          fi
+          git commit -m "data: RMA price discovery refresh [skip ci]"
+          for i in 1 2 3; do
+            if git push origin main; then exit 0; fi
+            echo "push rejected (attempt $i) — rebasing"
+            git rebase --abort 2>/dev/null || true
+            git pull --rebase origin main || {
+              git rebase --abort 2>/dev/null || true
+              cp data/rma-prices.json /tmp/rp.json
+              cp data/rma-discovery-now.json /tmp/rn.json
+              git reset --hard origin/main
+              cp /tmp/rp.json data/rma-prices.json
+              cp /tmp/rn.json data/rma-discovery-now.json
+              git add data/rma-prices.json data/rma-discovery-now.json
+              git commit -m "data: RMA price discovery refresh [skip ci]" || true
+            }
+          done
+          exit 1
