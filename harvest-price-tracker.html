@@ -115,6 +115,29 @@
 .pdt:focus-visible{outline:3px solid var(--text);outline-offset:2px}
 .pdleg{display:flex;gap:.85rem;flex-wrap:wrap;margin:.65rem 0 0;font-size:.82rem;color:var(--text-dim);align-items:center}
 .pdleg i{width:13px;height:13px;border-radius:3px;display:inline-block;margin-right:.3rem;vertical-align:-2px}
+/* In-discovery banner — data/rma-discovery-now.json */
+.dnow{margin:0 0 1.4rem}
+.dnow-h{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin:0 0 .6rem}
+.dnow-h h2{font-family:var(--font-display),Inter,sans-serif;font-size:1.05rem;font-weight:800;letter-spacing:-.01em;margin:0;color:var(--text)}
+.dnow-h .dot{width:8px;height:8px;border-radius:50%;background:#4aab4c;display:inline-block;flex:0 0 auto;align-self:center}
+.dnow-h .as-of{font-size:.78rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
+.dnow-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:.6rem}
+.dnow-c{background:var(--surface2);border:1px solid var(--border);border-left:3px solid #4aab4c;border-radius:10px;padding:.7rem .8rem}
+.dnow-c.soon{border-left-color:var(--border);opacity:.94}
+.dnow-c .crop{display:block;font-weight:700;font-size:1.02rem;color:var(--text);line-height:1.25}
+.dnow-c .leg{display:block;font-size:.66rem;text-transform:uppercase;letter-spacing:.07em;font-weight:700;color:var(--hp-gold2,#d4a23f);margin-bottom:.15rem}
+.dnow-c .leg.h{color:var(--hp-green,#4aab4c)}
+.dnow-c .px{font-family:'JetBrains Mono',monospace;font-size:1.45rem;font-weight:700;color:var(--text);line-height:1.2;margin:.3rem 0 .1rem}
+.dnow-c .px small{font-size:.75rem;font-weight:400;color:var(--text-muted);font-family:inherit}
+.dnow-c .meta{font-size:.8rem;color:var(--text-dim);line-height:1.5}
+.dnow-c .bar{height:4px;border-radius:2px;background:var(--surface3);margin:.5rem 0 .35rem;overflow:hidden}
+.dnow-c .bar i{display:block;height:100%;background:#4aab4c;border-radius:2px}
+.dnow-c .sts{font-size:.78rem;color:var(--text-muted);margin-top:.35rem;line-height:1.5;word-break:break-word}
+.dnow-c details summary{cursor:pointer;font-size:.78rem;color:var(--text-dim);margin-top:.35rem}
+.dnow-next{margin-top:.8rem;font-size:.83rem;color:var(--text-dim);line-height:1.75}
+.dnow-next b{color:var(--text);font-weight:700}
+.dnow-note{font-size:.76rem;color:var(--text-muted);margin:.6rem 0 0;line-height:1.6}
+@media(max-width:520px){.dnow-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -127,6 +150,8 @@
     <h1 class="pdv-h" id="pdv-h">When does your <em>price</em> get set?</h1>
     <p class="pdv-s" id="pdv-s">Your revenue guarantee is built from two averages: a <b style="color:var(--hp-gold2)">projected price</b> before you plant and a <b style="color:var(--hp-green)">harvest price</b> at the end. RMA decides <em>when</em> those averages are taken &mdash; and it is not the same month everywhere. Pick your state.</p>
   </div>
+
+  <section class="dnow" id="dnow" hidden aria-label="Price discovery windows open now"></section>
 
   <div id="pdlive-slot"></div>
 
@@ -485,6 +510,99 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
 })();
 </script>
 <script>
+/* "In discovery right now" banner.
+
+   Data: data/rma-discovery-now.json, written by scripts/fetch_rma_prices.py
+   straight from USDA RMA's own price discovery service. The price shown for an
+   open window is RMA's running average to date — their arithmetic, not ours.
+
+   Open/closed is recomputed here against the reader's own clock rather than
+   trusted from the file, so a run that missed a night cannot leave a finished
+   window sitting on the page marked open. Prices carry the date they were
+   pulled. No file, no banner. */
+(function(){
+  var host=document.getElementById('dnow'); if(!host) return;
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var ENT={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'};
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return ENT[c];});}
+  function ymd(s){var p=String(s||'').split('-');
+    return p.length===3?new Date(+p[0],+p[1]-1,+p[2]):null;}
+  function nice(s){var d=ymd(s);return d?MON[d.getMonth()]+' '+d.getDate():esc(s);}
+  function money(v){return '$'+Number(v).toFixed(2);}
+  function today(){var n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate());}
+  function days(a,b){return Math.round((b-a)/86400000);}
+  function title(g){
+    var t=esc(g.crop);
+    if(g.type&&!/^all\b/i.test(g.type)&&g.type.toLowerCase()!==g.crop.toLowerCase())
+      t+=' <span style="font-weight:400;color:var(--text-dim)">&middot; '+esc(g.type)+'</span>';
+    return t;
+  }
+  function priceLine(g,open){
+    if(g.lo==null) return '<div class="px"><small>'+
+      (open?'RMA has not posted a running average yet':'not yet in discovery')+'</small></div>';
+    var v=money(g.lo)+(g.hi!=null&&g.hi!==g.lo?' &ndash; '+money(g.hi):'');
+    return '<div class="px">'+v+' <small>'+(open?'running avg':'projected')+
+      (g.n_states>1&&g.hi!==g.lo?', by state':'')+'</small></div>';
+  }
+  function card(g,open){
+    var t=today(), st=ymd(g.start), en=ymd(g.end), h='';
+    h+='<div class="dnow-c'+(open?'':' soon')+'">';
+    h+='<span class="leg'+(g.leg==='harvest'?' h':'')+'">'+esc(g.leg)+' price</span>'+
+       '<span class="crop">'+title(g)+'</span>';
+    h+=priceLine(g,open);
+    if(open){
+      var span=days(st,en)+1, el=days(st,t)+1, left=days(t,en);
+      h+='<div class="bar"><i style="width:'+Math.max(4,Math.min(100,Math.round(el/span*100)))+'%"></i></div>';
+      h+='<div class="meta">'+nice(g.start)+' &ndash; '+nice(g.end)+' &middot; '+
+         (left===0?'last day':left===1?'1 day left':left+' days left')+'</div>';
+    }else{
+      h+='<div class="meta">opens '+nice(g.start)+' &middot; in '+days(t,st)+' days &middot; runs to '+nice(g.end)+'</div>';
+    }
+    if(g.exch&&g.exch.length)
+      h+='<div class="meta">'+esc(g.exch.join(' / '))+
+         (g.contract&&g.contract.length?' &middot; '+esc(g.contract.join(' / '))+' contract':'')+'</div>';
+    var s=g.states||[];
+    if(s.length<=6){ h+='<div class="sts">'+esc(s.join(', '))+'</div>'; }
+    else { h+='<details><summary>'+s.length+' states</summary><div class="sts">'+
+      esc(s.join(', '))+'</div></details>'; }
+    return h+'</div>';
+  }
+  fetch('/data/rma-discovery-now.json',{cache:'no-store'})
+  .then(function(r){if(!r.ok)throw 0;return r.json();})
+  .then(function(d){
+    var t=today();
+    function live(g){var s=ymd(g.start),e=ymd(g.end);return s&&e&&s<=t&&t<=e;}
+    function ahead(g){var s=ymd(g.start);return s&&s>t;}
+    // Re-sort by our own clock: anything the file called "next" that has since
+    // opened moves up, anything it called "open" that has closed drops out.
+    var all=(d.open||[]).concat(d.next||[]);
+    var open=all.filter(live), soon=all.filter(ahead)
+      .sort(function(a,b){return a.start<b.start?-1:a.start>b.start?1:0;});
+    if(!open.length&&!soon.length) return;
+    var pulled=ymd(d.as_of), age=pulled?days(pulled,t):null;
+    var h='<div class="dnow-h"><span class="dot"></span><h2>'+
+      (open.length?'In price discovery right now':'Nothing in discovery today')+
+      '</h2><span class="as-of">RMA figures '+
+      (age===0?'as of today':age===1?'as of yesterday':pulled?'as of '+nice(d.as_of):'')+
+      '</span></div>';
+    if(open.length) h+='<div class="dnow-grid">'+open.map(function(g){return card(g,true);}).join('')+'</div>';
+    if(soon.length){
+      h+='<div class="dnow-next"><b>Opens next.</b> '+soon.slice(0,6).map(function(g){
+        return esc(g.crop)+' '+g.leg+' '+nice(g.start)+' ('+g.n_states+
+          (g.n_states===1?' state':' states')+')';
+      }).join(' &middot; ')+'</div>';
+    }
+    h+='<p class="dnow-note">Mirrored from USDA RMA&rsquo;s price discovery service. RMA '+
+       'averages the daily settlements on trading days inside each window, so a running '+
+       'average is not a final price &mdash; the official figure posts after the window '+
+       'closes. Your county&rsquo;s sales closing date, not just your state, decides which '+
+       'window applies to you.'+
+       (age!=null&&age>3?' <b>These figures are '+age+' days old.</b>':'')+'</p>';
+    host.innerHTML=h;
+    host.hidden=false;
+  }).catch(function(){ /* no feed yet — the page stands on its own */ });
+})();
+
 /* Verdict + tile map. Data: data/rma-discovery.json (every row read off RMA's
    CEPP). Shares the 'agsist-rma-state' key with the homepage widget, so a
    state chosen in either place is remembered in the other.
