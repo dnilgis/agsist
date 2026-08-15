@@ -1,103 +1,1642 @@
 {
-  "_note": "RMA price discovery windows by crop and state, from the Commodity Exchange Price Provisions (CEPP) Section II. Added 2026-08-15 after a Georgia reader (a crop insurance agent) pointed out the page assumed Midwest windows. EVERY row here was read directly from the RMA PDF named in `source` — do not add a state you have not verified against that document. Windows are keyed to the county's SALES CLOSING DATE first and the state second, which is why one state can appear in more than one group (Texas appears in three corn groups). Where a grower's county is not covered by a group below, the page points them at the CEPP rather than guessing.",
-  "_verified": "2026-08-15, read from the CEPP PDFs listed per crop",
-  "updated": "2026-08-15",
-  "sources": {
-    "corn": "https://www.rma.usda.gov/sites/default/files/crop-policies/Commodity-Exchange-Price-Provisions---Corn-24-CEPP.pdf",
-    "soybeans": "https://www.rma.usda.gov/sites/default/files/crop-policies/Commodity-Exchange-Price-Provisions---Soybeans-24-CEPP.pdf",
-    "general": "https://www.rma.usda.gov/policy-procedure/general-policies/commodity-exchange-price-provisions",
-    "prices": "https://public-rma.fpac.usda.gov/apps/PriceDiscovery"
-  },
-  "groups": [
+ "_note": "RMA price discovery windows, transcribed row by row from the Commodity Exchange Price Provisions (CEPP) Section II PDFs named in `sources`. Added 2026-08-15 after a Georgia crop insurance agent reported the harvest price tracker assumed Corn Belt windows. A state can appear MORE THAN ONCE per crop because RMA keys these tables to the county's SALES CLOSING DATE first and the state second - Texas corn has three different sets. Never collapse those; show them all and let the grower match their county's sales closing date. Do not add a row you have not read in the source PDF.",
+ "_verified": "2026-08-15 against the 24-CEPP corn and soybean documents",
+ "updated": "2026-08-15",
+ "sources": {
+  "corn": "https://www.rma.usda.gov/sites/default/files/crop-policies/Commodity-Exchange-Price-Provisions---Corn-24-CEPP.pdf",
+  "soybeans": "https://www.rma.usda.gov/sites/default/files/crop-policies/Commodity-Exchange-Price-Provisions---Soybeans-24-CEPP.pdf",
+  "general": "https://www.rma.usda.gov/policy-procedure/general-policies/commodity-exchange-price-provisions",
+  "prices": "https://public-rma.fpac.usda.gov/apps/PriceDiscovery"
+ },
+ "default_state": "Iowa",
+ "states": {
+  "Alabama": {
+   "corn": [
     {
-      "id": "midwest",
-      "default": true,
-      "label": "Corn Belt and most states",
-      "sales_closing": "March 15",
-      "states": ["Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Michigan", "Minnesota", "Missouri", "Nebraska", "North Dakota", "Ohio", "South Dakota", "Wisconsin"],
-      "states_note": "The March 15 sales-closing group. Verified rows: Iowa (corn), and the Midwest standard soybean row.",
-      "corn": {
-        "contract": "December", "exchange": "CBOT",
-        "projected": {"start": "02-01", "end": "02-28", "label": "February 1 – 28"},
-        "harvest": {"start": "10-01", "end": "10-31", "label": "October 1 – 31"}
-      },
-      "soybeans": {
-        "contract": "November", "exchange": "CBOT",
-        "projected": {"start": "02-01", "end": "02-28", "label": "February 1 – 28"},
-        "harvest": {"start": "10-01", "end": "10-31", "label": "October 1 – 31"}
-      }
-    },
-    {
-      "id": "southeast",
-      "label": "Deep South (Feb 28 sales closing)",
-      "sales_closing": "February 28",
-      "states": ["Alabama", "Florida", "Georgia", "South Carolina"],
-      "states_note": "Corn: AL, FL, GA, LA, SC use the September contract with an Aug 1–31 harvest window. Soybeans: AL, FL, GA, NC, SC use the January contract with a Nov 1–30 harvest window. Louisiana and North Carolina differ between the two crops — see their own entries.",
-      "corn": {
-        "contract": "September", "exchange": "CBOT",
-        "projected": {"start": "01-15", "end": "02-14", "label": "January 15 – February 14"},
-        "harvest": {"start": "08-01", "end": "08-31", "label": "August 1 – 31"}
-      },
-      "soybeans": {
-        "contract": "January", "exchange": "CBOT",
-        "projected": {"start": "01-15", "end": "02-14", "label": "January 15 – February 14"},
-        "harvest": {"start": "11-01", "end": "11-30", "label": "November 1 – 30"}
-      }
-    },
-    {
-      "id": "louisiana",
-      "label": "Louisiana",
-      "sales_closing": "February 28",
-      "states": ["Louisiana"],
-      "corn": {
-        "contract": "September", "exchange": "CBOT",
-        "projected": {"start": "01-15", "end": "02-14", "label": "January 15 – February 14"},
-        "harvest": {"start": "08-01", "end": "08-31", "label": "August 1 – 31"}
-      },
-      "soybeans": null,
-      "soybeans_note": "Louisiana soybeans are not in the January-contract group; look up your county in the CEPP."
-    },
-    {
-      "id": "northcarolina",
-      "label": "North Carolina",
-      "sales_closing": "February 28",
-      "states": ["North Carolina"],
-      "corn": {
-        "contract": "December", "exchange": "CBOT",
-        "projected": {"start": "01-15", "end": "02-14", "label": "January 15 – February 14"},
-        "harvest": {"start": "09-01", "end": "09-30", "label": "September 1 – 30"}
-      },
-      "soybeans": {
-        "contract": "January", "exchange": "CBOT",
-        "projected": {"start": "01-15", "end": "02-14", "label": "January 15 – February 14"},
-        "harvest": {"start": "11-01", "end": "11-30", "label": "November 1 – 30"}
-      }
-    },
-    {
-      "id": "arkmiss",
-      "label": "Arkansas & Mississippi",
-      "sales_closing": "February 28",
-      "states": ["Arkansas", "Mississippi"],
-      "corn": {
-        "contract": "December", "exchange": "CBOT",
-        "projected": {"start": "01-15", "end": "02-14", "label": "January 15 – February 14"},
-        "harvest": {"start": "08-15", "end": "09-14", "label": "August 15 – September 14"}
-      },
-      "soybeans": null,
-      "soybeans_note": "Arkansas and Mississippi soybeans use the November contract with an Oct 1–31 harvest window on a Feb 28 sales closing — verify your county in the CEPP."
-    },
-    {
-      "id": "southwest",
-      "label": "Arizona, California & Nevada",
-      "sales_closing": "February 28",
-      "states": ["Arizona", "California", "Nevada"],
-      "corn": {
-        "contract": "December", "exchange": "CBOT",
-        "projected": {"start": "01-15", "end": "02-14", "label": "January 15 – February 14"},
-        "harvest": {"start": "10-01", "end": "10-31", "label": "October 1 – 31"}
-      },
-      "soybeans": null,
-      "soybeans_note": "Not verified for soybeans in these states — look up your county in the CEPP."
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "September",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "08-01",
+      "end": "08-31",
+      "label": "Aug 1 – 31"
+     }
     }
-  ]
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "January",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "11-01",
+      "end": "11-30",
+      "label": "Nov 1 – 30"
+     }
+    }
+   ]
+  },
+  "Arizona": {
+   "corn": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": []
+  },
+  "Arkansas": {
+   "corn": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "08-15",
+      "end": "09-14",
+      "label": "Aug 15 – Sep 14"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "California": {
+   "corn": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": []
+  },
+  "Colorado": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Connecticut": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": []
+  },
+  "Delaware": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "January",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "11-01",
+      "end": "11-30",
+      "label": "Nov 1 – 30"
+     }
+    }
+   ]
+  },
+  "Florida": {
+   "corn": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "September",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "08-01",
+      "end": "08-31",
+      "label": "Aug 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "January",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "11-01",
+      "end": "11-30",
+      "label": "Nov 1 – 30"
+     }
+    }
+   ]
+  },
+  "Georgia": {
+   "corn": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "September",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "08-01",
+      "end": "08-31",
+      "label": "Aug 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "January",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "11-01",
+      "end": "11-30",
+      "label": "Nov 1 – 30"
+     }
+    }
+   ]
+  },
+  "Idaho": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "11-01",
+      "end": "11-30",
+      "label": "Nov 1 – 30"
+     }
+    }
+   ],
+   "soybeans": []
+  },
+  "Illinois": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Indiana": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Iowa": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Kansas": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Kentucky": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Louisiana": {
+   "corn": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "September",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "08-01",
+      "end": "08-31",
+      "label": "Aug 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Maine": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Maryland": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "January",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "11-01",
+      "end": "11-30",
+      "label": "Nov 1 – 30"
+     }
+    }
+   ]
+  },
+  "Massachusetts": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Michigan": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "11-01",
+      "end": "11-30",
+      "label": "Nov 1 – 30"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Minnesota": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Mississippi": {
+   "corn": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "08-15",
+      "end": "09-14",
+      "label": "Aug 15 – Sep 14"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Missouri": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Montana": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Nebraska": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Nevada": {
+   "corn": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": []
+  },
+  "New Hampshire": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": []
+  },
+  "New Jersey": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "New Mexico": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": []
+  },
+  "New York": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "North Carolina": {
+   "corn": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "09-01",
+      "end": "09-30",
+      "label": "Sep 1 – 30"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "January",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "11-01",
+      "end": "11-30",
+      "label": "Nov 1 – 30"
+     }
+    }
+   ]
+  },
+  "North Dakota": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Ohio": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Oklahoma": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "09-01",
+      "end": "09-30",
+      "label": "Sep 1 – 30"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "January",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "11-01",
+      "end": "11-30",
+      "label": "Nov 1 – 30"
+     }
+    }
+   ]
+  },
+  "Oregon": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "11-01",
+      "end": "11-30",
+      "label": "Nov 1 – 30"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Pennsylvania": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Rhode Island": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": []
+  },
+  "South Carolina": {
+   "corn": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "September",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "08-01",
+      "end": "08-31",
+      "label": "Aug 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "January",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "11-01",
+      "end": "11-30",
+      "label": "Nov 1 – 30"
+     }
+    }
+   ]
+  },
+  "South Dakota": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Tennessee": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Texas": {
+   "corn": [
+    {
+     "sales_closing": "January 31",
+     "exchange": "CBOT",
+     "contract": "September",
+     "projected": {
+      "start": "12-15",
+      "end": "01-14",
+      "label": "Dec 15 – Jan 14"
+     },
+     "harvest": {
+      "start": "08-01",
+      "end": "08-31",
+      "label": "Aug 1 – 31"
+     }
+    },
+    {
+     "sales_closing": "February 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "01-01",
+      "end": "01-31",
+      "label": "Jan 1 – 31"
+     },
+     "harvest": {
+      "start": "09-01",
+      "end": "09-30",
+      "label": "Sep 1 – 30"
+     }
+    },
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "09-01",
+      "end": "09-30",
+      "label": "Sep 1 – 30"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "January 31",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "12-15",
+      "end": "01-14",
+      "label": "Dec 15 – Jan 14"
+     },
+     "harvest": {
+      "start": "09-01",
+      "end": "09-30",
+      "label": "Sep 1 – 30"
+     }
+    },
+    {
+     "sales_closing": "February 28",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "01-15",
+      "end": "02-14",
+      "label": "Jan 15 – Feb 14"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    },
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Utah": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": []
+  },
+  "Vermont": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Virginia": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "January",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "11-01",
+      "end": "11-30",
+      "label": "Nov 1 – 30"
+     }
+    }
+   ]
+  },
+  "Washington": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "11-01",
+      "end": "11-30",
+      "label": "Nov 1 – 30"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "West Virginia": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "January",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "11-01",
+      "end": "11-30",
+      "label": "Nov 1 – 30"
+     }
+    }
+   ]
+  },
+  "Wisconsin": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "November",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ]
+  },
+  "Wyoming": {
+   "corn": [
+    {
+     "sales_closing": "March 15",
+     "exchange": "CBOT",
+     "contract": "December",
+     "projected": {
+      "start": "02-01",
+      "end": "02-28",
+      "label": "Feb 1 – 28"
+     },
+     "harvest": {
+      "start": "10-01",
+      "end": "10-31",
+      "label": "Oct 1 – 31"
+     }
+    }
+   ],
+   "soybeans": []
+  }
+ }
 }

@@ -67,5 +67,5 @@
       ]
     }
   },
-  "_maintenance": "Refresh whenever a dated claim inside it passes. generate_daily.py stamps the age of this file into the prompt and warns past STALE_SITUATIONS_DAYS; a stale file is a fabrication vector (see claude/INCIDENT-2026-08-11-wasde-fabrication.md — a wrong date in standing context is what the model narrated as fact)."
+  "_maintenance": "Refresh whenever a dated claim inside it passes. The generator stamps this file's age into the prompt and warns past STALE_SITUATIONS_DAYS. A stale standing fact outranks current news in the writer's context, which is how a wrong date becomes a published claim."
 }

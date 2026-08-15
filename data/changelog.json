@@ -46,6 +46,30 @@
      "page": "/yield-estimator",
      "name": "Clearing a box left a confident yield on the screen",
      "text": "Empty the test weight field on the corn estimator and it kept printing 193 bushels -- calculated from an assumed 56 pounds you could not see. At 50 pound test weight the honest answer is 173, so the hidden assumption was worth 20 bushels an acre. The soybean side did the same thing with seeds per pound and seeds per pod. Blank now means blank: the estimate holds until you tell it what you actually measured. Typed values, including unusual ones, were always honored and still are."
+    },
+    {
+     "tag": "new",
+     "page": "/",
+     "name": "Harvest tools on the front page, and your discovery window with them",
+     "text": "Two additions to the homepage for the season. A harvest band puts the five tools that matter between now and the combine one tap from the front page -- yield estimate, harvest price, bin capacity, break-even, and whether to store it or move it -- with a running count to October price discovery. Under it, a price discovery panel: pick your state and see whether the window that sets your revenue guarantee is open, closed, or still ahead, with a bar showing how far into it we are. All 48 states are in there. Georgia growers will notice their corn window is open right now while Iowa's does not start until October."
+    },
+    {
+     "tag": "new",
+     "page": "/harvest-price-tracker",
+     "name": "The price discovery page, rebuilt around a map",
+     "text": "The old page opened with a paragraph and two cards and told you nothing about your own farm. It now opens with the answer: your corn price is set in October, or August, or whenever RMA says for your state. Under it, if your window is open, the number that matters -- day 15 of 31, with a bar. Then a map of the country coloured by the month each state's corn harvest price is discovered, with a white ring around every window open today. If the site already knows where you are, it picks your state for you and says so; tap any state to change it, and your choice sticks. The picture it makes is one nobody publishes: the country prices its corn in waves, south to north, eight states in August and thirty-four in October. All 48 states RMA publishes windows for are in there, corn and soybeans, each row transcribed from the Commodity Exchange Price Provisions. Texas keeps all three of its window sets, because RMA keys these to your county's sales closing date and Texas spans three -- we show every one rather than choosing for you."
+    },
+    {
+     "tag": "improved",
+     "page": "/",
+     "name": "The discovery panel knows where you are",
+     "text": "Both the homepage panel and the full tracker now start on your own state if the site already knows your location from the weather card, and say plainly that they did. Picking a state yourself always overrides the guess and is remembered. If we have no location, or it is somewhere we have no windows for, the page asks instead of guessing."
+    },
+    {
+     "tag": "improved",
+     "page": "/",
+     "name": "Housekeeping on what the site gives away",
+     "text": "A sweep of everything the site serves publicly, removing internal notes that had no business being visible: a working-directory path left in a data script, build comments that named people and internal documents, and a reference to an internal write-up inside a published data file. The reader-facing copy came back clean. Nothing about the site changed for a visitor; there is just less lying around behind it."
     }
    ]
   },
