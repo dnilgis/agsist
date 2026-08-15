@@ -1,6 +1,6 @@
 {
   "_description": "Standing macro/geopolitical situations referenced across briefings. Loader: scripts/generate_daily.py:load_ongoing_situations(). Manually maintained. Set status to 'resolved' when a situation is no longer relevant; the loader will skip it. Add new situations when they enter the briefing rotation. Keep facts list under 6 items per situation (loader caps at 6). Anchor phrase is the one-clause framing used on FIRST reference each week per Rule 18.",
-  "_last_updated": "2026-08-03",
+  "_last_updated": "2026-08-15",
   "situations": {
     "iran_hormuz": {
       "status": "active",
@@ -28,45 +28,44 @@
       "status": "active",
       "anchor": "the Cargill multi-plant lockout, ongoing since May 19, still removing roughly 6,000 head of daily processing capacity",
       "facts": [
-        "1,700 workers still locked out as of the end of July; no resolution announced",
-        "processing-constrained (not supply-constrained) price dynamics persist in fed cattle",
-        "any return-to-work agreement restores ~6,000 head daily and pressures feeders back toward $330",
-        "feedlot margins turned negative in late July, capping how far feeders can sustain above $340",
-        "watch item each week: lockout resolution reopens fed cattle price discovery"
+        "1,700 workers were still locked out as of the end of July, the last confirmation on file — if today's news has an update, prefer it and say so.",
+        "Roughly 6,000 head/day of processing capacity remains removed on that last confirmation.",
+        "The dynamic is processing-constrained, not supply-constrained: packer margins, not cattle numbers, are the binding constraint."
       ]
     },
     "growing_season_2026": {
       "status": "active",
-      "anchor": "the 2026 growing season: a clean pollination window and rain-favored Belt that stripped the weather premium, with crop tour week (Aug 3+) now the arbiter",
+      "anchor": "the 2026 growing season: USDA's first survey-based yields (Aug 12) came in BELOW trade expectations on both crops while acreage went up, with Pro Farmer's crop tour Aug 17-20 the next real test",
       "facts": [
-        "corn's pollination window closed clean in late July; the briefing's read was 'crops healthier than the calendar usually allows'",
-        "Belt rain in the last week of July handed bears a clean exit — no weather bid until tour or heat says otherwise",
-        "Pro Farmer crop tour scouts are in fields the week of Aug 3; their numbers are the next real catalyst before the Aug 12 WASDE",
-        "AGSIST's own nowcast (ratings-based): corn 184.1, beans 53.8 vs USDA trend 183.0/53.0 — above trend, wide early-August bands",
-        "December corn carries the story now; old-crop/new-crop corn carry was $0.23 into the roll"
+        "USDA's August WASDE printed Aug 12: corn yield 180.7 bu/acre (down 2.3 from July's 183.0) and soybeans 52.7 (down 0.3 from 53.0). These are USDA's CURRENT numbers — 183.0/53.0 are superseded and must never be quoted as current.",
+        "Acres offset the yield cut: corn planted up 1.4M to 96.7M and soybeans up 1.4M to 86.8M, so production is 16.013B bu of corn and a record 4.519B bu of soybeans. Corn 2026/27 carryout fell to 1.653B (from 1.79B); soybean carryout rose to 320M.",
+        "The market traded the yield cut, not the big crop: December corn settled up 15 cents at $4.78 on report day (Tuesday's close was $4.63).",
+        "Pro Farmer's crop tour runs Aug 17-20 with the national number Friday Aug 21. The scouts have NOT been in the field yet as of Aug 15 — do not narrate tour results before they exist.",
+        "AGSIST's own nowcast reads corn 183.6 / beans 53.8 (locked Aug 11, week ending Aug 9) — now ABOVE USDA on both. Our two locked directional calls (corn up, beans up) were graded WRONG on Aug 12; USDA revised down. The miss is on the record and should be owned, not hidden."
       ]
     },
     "cattle_mexico_screwworm": {
       "status": "active",
       "anchor": "the screwworm-driven closure of Mexican feeder cattle imports, with the first phased port reopening set for Aug 24 at Douglas, AZ",
       "facts": [
-        "the border closure has quietly tightened feeder supply all summer and is one leg of the historic feeder rally",
-        "USDA confirmed a phased reopening starting Aug 24 at Douglas, AZ — the dated supply headwind feeders are now pricing",
-        "feeders broke ~3% in late July as the market began pricing returning supply rather than yesterday's scarcity",
-        "the feeder/live spread is the tell: watch it as the Aug 24 date approaches",
-        "screwworm spread beyond Texas earlier in the season; containment progress drives the reopening pace"
+        "The border closure has tightened feeder supply all summer and is one leg of the historic feeder rally.",
+        "USDA confirmed a phased reopening starting Aug 24 at Douglas, AZ — still UPCOMING as of Aug 15; do not describe ports as reopened.",
+        "Feeders broke roughly 3% in late July as the market began pricing returning supply rather than scarcity.",
+        "The feeder/live spread is the tell as the Aug 24 date approaches.",
+        "Screwworm spread beyond Texas earlier in the season; containment progress drives the reopening pace."
       ]
     },
     "farm_bill_2026": {
       "status": "active",
-      "anchor": "the 2026 Farm Bill endgame: revised Senate text (Aug 1) with year-round E15 now in the bill, committee markup Aug 6, against the Sep 30 extension deadline",
+      "anchor": "the 2026 Farm Bill endgame: the Senate Ag markup FAILED on party lines Aug 6, pushing a revote to September against the Sep 30 extension deadline",
       "facts": [
-        "the House passed H.R. 7567 in April; the Senate's Aug 1 revised text added year-round E15 sales — a real structural corn-demand tailwind once enacted",
-        "Senate Ag Committee markup is scheduled Thursday Aug 6, the day before the Senate recess; floor passage needs 60 votes",
-        "the Aug 1 text delays the SNAP state cost-share a year (FY2029; FY2031 for high-error states) — aimed at Democratic holdouts",
-        "a separate $15-17B economic-aid push (June White House request: $11B+) sits outside the bill; no program details exist yet",
-        "the current extension expires Sep 30, 2026 — the hard date for a bill or another extension"
+        "Senate Ag Committee markup FAILED Aug 6 on a party-line vote over the SNAP state cost-share dispute. It did not pass — a revote is expected in September. Never describe the bill as having cleared committee.",
+        "The House passed H.R. 7567 in April; the Senate's Aug 1 revised text added year-round E15 sales, a structural corn-demand tailwind if it is ever enacted.",
+        "The Aug 1 text delays the SNAP state cost-share to FY2029 (FY2031 for high-error states), aimed at Democratic holdouts. It has not been CBO-scored.",
+        "A separate $15-17B economic-aid push sits outside the bill; no program details exist yet.",
+        "The current extension expires Sep 30, 2026 — the hard date for a bill or another extension."
       ]
     }
-  }
+  },
+  "_maintenance": "Refresh whenever a dated claim inside it passes. generate_daily.py stamps the age of this file into the prompt and warns past STALE_SITUATIONS_DAYS; a stale file is a fabrication vector (see claude/INCIDENT-2026-08-11-wasde-fabrication.md — a wrong date in standing context is what the model narrated as fact)."
 }

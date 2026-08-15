@@ -1,7 +1,54 @@
 {
- "updated": "2026-08-12",
+ "updated": "2026-08-15",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here — that updates continuously.",
  "entries": [
+  {
+   "date": "2026-08-15",
+   "items": [
+    {
+     "tag": "fixed",
+     "page": "/usda-quick-stats",
+     "name": "State crop numbers were calling a standing crop “final”",
+     "text": "On Friday our monthly USDA pull picked up the August 12 Crop Production forecast and published it labeled \"2026 crop year -- USDA NASS final.\" Iowa corn read 216 bushels for a crop still standing in the field. Nine states -- Arizona, California, Florida, Montana, New Mexico, Oregon, Utah, West Virginia and Wyoming -- dropped off the page entirely, because USDA's August forecast only covers principal states. Every state now carries its own honest label: the forecast states say \"August forecast,\" and the states USDA does not forecast keep their real final with the year it belongs to. A survey estimate is a good number to have. Calling it final is a lie, and it was ours."
+    },
+    {
+     "tag": "fixed",
+     "page": "/daily",
+     "name": "The briefing's standing facts had gone two weeks stale",
+     "text": "The file that carries running context into every briefing still said Pro Farmer's scouts were in fields the week of August 3 (the tour is August 17-20), called the August WASDE the next catalyst three days after it printed, and carried USDA's superseded 183.0 corn as current. That is exactly the shape of the mistake that produced a fabricated WASDE report on August 11 -- a wrong date in trusted context, repeated as fact. The file is rewritten current, and the generator now stamps its age and tells the writer to distrust its dates once it passes two weeks."
+    },
+    {
+     "tag": "fixed",
+     "page": "/whats-priced-in",
+     "name": "Report pages advertised a report that had already happened",
+     "text": "Three hand-written blocks named the August WASDE by name and went stale the moment it printed -- including a heading that said \"the August WASDE\" directly above a card showing September, and a box telling readers to prepare for a report that was three days past. They are built from the data now, so they roll to the next report on their own."
+    },
+    {
+     "tag": "fixed",
+     "page": "/hail-map",
+     "name": "A day of hail data went missing without a word",
+     "text": "August 11 is absent from the hail swath archive. The job that fetches each day logged the failure and carried on green, so nothing was ever retried and nobody knew. A missing day is not a quiet day -- we write a file even when no hail falls. The job now finishes every day it can and then fails loudly, naming the days it lost."
+    },
+    {
+     "tag": "fixed",
+     "page": "/whats-priced-in",
+     "name": "We printed the wrong closing price for WASDE day",
+     "text": "Wednesday's report-card entry said December corn settled up 19 cents at $4.81 and November beans up 10 cents at $11.83. Both were wrong: we read a quote taken while the board was still moving instead of the settlement our own archive recorded hours later. The real report-day closes were $4.78 on December corn, up 15 cents, and $11.84 on November beans, up 12 cents. The direction and the story were right; the numbers were not, and on a site that grades other people's numbers that is not a small thing. Corrected everywhere it appeared, including the note that carries market context into each morning's briefing."
+    },
+    {
+     "tag": "new",
+     "page": "/harvest-price-tracker",
+     "name": "Your state's price discovery windows, not the Corn Belt's",
+     "text": "A reader in Georgia -- a crop insurance agent -- wrote in to say his price discovery periods are not the Midwest's. He was right, and the page had been assuming otherwise. RMA sets discovery windows by crop and by your county's sales closing date. Georgia corn averages the SEPTEMBER contract over August 1-31, not December over October 1-31, and Georgia soybeans use the January contract over November 1-30. Pick your state on the page now and the windows, contracts and calendar all change to yours. Ten states are published, every one read line by line out of RMA's Commodity Exchange Price Provisions; if yours is not listed the page sends you to the source rather than guessing. Worth knowing today: the Georgia corn harvest discovery window is open right now."
+    },
+    {
+     "tag": "fixed",
+     "page": "/yield-estimator",
+     "name": "Clearing a box left a confident yield on the screen",
+     "text": "Empty the test weight field on the corn estimator and it kept printing 193 bushels -- calculated from an assumed 56 pounds you could not see. At 50 pound test weight the honest answer is 173, so the hidden assumption was worth 20 bushels an acre. The soybean side did the same thing with seeds per pound and seeds per pod. Blank now means blank: the estimate holds until you tell it what you actually measured. Typed values, including unusual ones, were always honored and still are."
+    }
+   ]
+  },
   {
    "date": "2026-08-12",
    "items": [
@@ -9,7 +56,7 @@
      "tag": "new",
      "page": "/whats-priced-in",
      "name": "August WASDE scored: USDA printed corn 180.7, soybeans 52.7",
-     "text": "USDA's first survey-based 2026 yields landed August 12: corn 180.7 bu/acre (down 2.3 from July, 1.3 under the trade's 182.0) and soybeans 52.7 (down 0.3, in line with the trade's 52.9). More acres kept both crops huge -- 16.013 billion bushels of corn and a record 4.519 billion of soybeans -- but the market traded the yield cut: December corn settled up 19 cents at $4.81. The analyst board is now scored, the report card is on the record, and the crop tour page carries the new USDA benchmark the scouts will test next week."
+     "text": "USDA's first survey-based 2026 yields landed August 12: corn 180.7 bu/acre (down 2.3 from July, 1.3 under the trade's 182.0) and soybeans 52.7 (down 0.3, in line with the trade's 52.9). More acres kept both crops huge -- 16.013 billion bushels of corn and a record 4.519 billion of soybeans -- but the market traded the yield cut: December corn settled up 15 cents at $4.78. The analyst board is now scored, the report card is on the record, and the crop tour page carries the new USDA benchmark the scouts will test next week."
     },
     {
      "tag": "new",

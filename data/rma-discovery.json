@@ -1,0 +1,103 @@
+{
+  "_note": "RMA price discovery windows by crop and state, from the Commodity Exchange Price Provisions (CEPP) Section II. Added 2026-08-15 after a Georgia reader (a crop insurance agent) pointed out the page assumed Midwest windows. EVERY row here was read directly from the RMA PDF named in `source` — do not add a state you have not verified against that document. Windows are keyed to the county's SALES CLOSING DATE first and the state second, which is why one state can appear in more than one group (Texas appears in three corn groups). Where a grower's county is not covered by a group below, the page points them at the CEPP rather than guessing.",
+  "_verified": "2026-08-15, read from the CEPP PDFs listed per crop",
+  "updated": "2026-08-15",
+  "sources": {
+    "corn": "https://www.rma.usda.gov/sites/default/files/crop-policies/Commodity-Exchange-Price-Provisions---Corn-24-CEPP.pdf",
+    "soybeans": "https://www.rma.usda.gov/sites/default/files/crop-policies/Commodity-Exchange-Price-Provisions---Soybeans-24-CEPP.pdf",
+    "general": "https://www.rma.usda.gov/policy-procedure/general-policies/commodity-exchange-price-provisions",
+    "prices": "https://public-rma.fpac.usda.gov/apps/PriceDiscovery"
+  },
+  "groups": [
+    {
+      "id": "midwest",
+      "default": true,
+      "label": "Corn Belt and most states",
+      "sales_closing": "March 15",
+      "states": ["Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Michigan", "Minnesota", "Missouri", "Nebraska", "North Dakota", "Ohio", "South Dakota", "Wisconsin"],
+      "states_note": "The March 15 sales-closing group. Verified rows: Iowa (corn), and the Midwest standard soybean row.",
+      "corn": {
+        "contract": "December", "exchange": "CBOT",
+        "projected": {"start": "02-01", "end": "02-28", "label": "February 1 – 28"},
+        "harvest": {"start": "10-01", "end": "10-31", "label": "October 1 – 31"}
+      },
+      "soybeans": {
+        "contract": "November", "exchange": "CBOT",
+        "projected": {"start": "02-01", "end": "02-28", "label": "February 1 – 28"},
+        "harvest": {"start": "10-01", "end": "10-31", "label": "October 1 – 31"}
+      }
+    },
+    {
+      "id": "southeast",
+      "label": "Deep South (Feb 28 sales closing)",
+      "sales_closing": "February 28",
+      "states": ["Alabama", "Florida", "Georgia", "South Carolina"],
+      "states_note": "Corn: AL, FL, GA, LA, SC use the September contract with an Aug 1–31 harvest window. Soybeans: AL, FL, GA, NC, SC use the January contract with a Nov 1–30 harvest window. Louisiana and North Carolina differ between the two crops — see their own entries.",
+      "corn": {
+        "contract": "September", "exchange": "CBOT",
+        "projected": {"start": "01-15", "end": "02-14", "label": "January 15 – February 14"},
+        "harvest": {"start": "08-01", "end": "08-31", "label": "August 1 – 31"}
+      },
+      "soybeans": {
+        "contract": "January", "exchange": "CBOT",
+        "projected": {"start": "01-15", "end": "02-14", "label": "January 15 – February 14"},
+        "harvest": {"start": "11-01", "end": "11-30", "label": "November 1 – 30"}
+      }
+    },
+    {
+      "id": "louisiana",
+      "label": "Louisiana",
+      "sales_closing": "February 28",
+      "states": ["Louisiana"],
+      "corn": {
+        "contract": "September", "exchange": "CBOT",
+        "projected": {"start": "01-15", "end": "02-14", "label": "January 15 – February 14"},
+        "harvest": {"start": "08-01", "end": "08-31", "label": "August 1 – 31"}
+      },
+      "soybeans": null,
+      "soybeans_note": "Louisiana soybeans are not in the January-contract group; look up your county in the CEPP."
+    },
+    {
+      "id": "northcarolina",
+      "label": "North Carolina",
+      "sales_closing": "February 28",
+      "states": ["North Carolina"],
+      "corn": {
+        "contract": "December", "exchange": "CBOT",
+        "projected": {"start": "01-15", "end": "02-14", "label": "January 15 – February 14"},
+        "harvest": {"start": "09-01", "end": "09-30", "label": "September 1 – 30"}
+      },
+      "soybeans": {
+        "contract": "January", "exchange": "CBOT",
+        "projected": {"start": "01-15", "end": "02-14", "label": "January 15 – February 14"},
+        "harvest": {"start": "11-01", "end": "11-30", "label": "November 1 – 30"}
+      }
+    },
+    {
+      "id": "arkmiss",
+      "label": "Arkansas & Mississippi",
+      "sales_closing": "February 28",
+      "states": ["Arkansas", "Mississippi"],
+      "corn": {
+        "contract": "December", "exchange": "CBOT",
+        "projected": {"start": "01-15", "end": "02-14", "label": "January 15 – February 14"},
+        "harvest": {"start": "08-15", "end": "09-14", "label": "August 15 – September 14"}
+      },
+      "soybeans": null,
+      "soybeans_note": "Arkansas and Mississippi soybeans use the November contract with an Oct 1–31 harvest window on a Feb 28 sales closing — verify your county in the CEPP."
+    },
+    {
+      "id": "southwest",
+      "label": "Arizona, California & Nevada",
+      "sales_closing": "February 28",
+      "states": ["Arizona", "California", "Nevada"],
+      "corn": {
+        "contract": "December", "exchange": "CBOT",
+        "projected": {"start": "01-15", "end": "02-14", "label": "January 15 – February 14"},
+        "harvest": {"start": "10-01", "end": "10-31", "label": "October 1 – 31"}
+      },
+      "soybeans": null,
+      "soybeans_note": "Not verified for soybeans in these states — look up your county in the CEPP."
+    }
+  ]
+}
