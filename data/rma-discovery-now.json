@@ -1,6 +1,6 @@
 {
  "_note": "Derived from data/rma-prices.json. 'open' = a discovery window containing today; 'next' = one opening within 75 days. Price range is Conventional practice.",
- "updated": "2026-08-15T22:04:02Z",
+ "updated": "2026-08-15T22:49:17Z",
  "as_of": "2026-08-15",
  "crop_year": 2026,
  "open": [
