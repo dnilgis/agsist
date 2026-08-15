@@ -503,26 +503,43 @@ function syncBreakeven(){
 var ROW_LENGTHS={20:'26\'1"',30:'17\'5"',36:'14\'6"',38:'13\'9"',40:'13\'1"',15:'34\'10"',7.5:'69\'8"'};
 function getRowLen(w){return ROW_LENGTHS[w]||'~17\'5"';}
 
+/* 2026-08-15 audit: every one of these read `parseFloat(x)||<default>`, so
+   CLEARING a box left a confident number on screen computed from a value the
+   farmer could not see. Blank test weight still printed 193 bu/ac off an
+   assumed 56 -- and 50 lb test weight is 173, a 20 bu/ac swing. Same for
+   seeds/lb (assumed 3,000) and seeds/pod (assumed 2.5). This is the
+   render-before-validate class: blank in, blank out.
+   `fld` returns null for an empty or non-numeric box; the guards below treat
+   null as missing rather than substituting. */
+function fld(id){
+  var el=document.getElementById(id);
+  if(!el) return null;
+  var raw=(el.value||'').trim();
+  if(raw==='') return null;
+  var v=parseFloat(raw);
+  return isFinite(v)? v : null;
+}
+
 /* CORN YIELD CALCULATOR
    Formula: (ears/1000ac × kr × kpr × tw/56) / 90,000
    Nafziger yield component method, standard across US Corn Belt extension */
 function calcCorn(){
   var rowW=parseFloat(document.getElementById('c-row-width').value)||30;
-  var ears=parseFloat(document.getElementById('c-ear-count').value)||0;
-  var kr=parseFloat(document.getElementById('c-kernel-rows').value)||0;
-  var kpr=parseFloat(document.getElementById('c-kernels-row').value)||0;
-  var tw=parseFloat(document.getElementById('c-test-weight').value)||56;
+  var ears=fld('c-ear-count');
+  var kr=fld('c-kernel-rows');
+  var kpr=fld('c-kernels-row');
+  var tw=fld('c-test-weight');
   var rl=document.getElementById('c-row-length-note');
   if(rl)rl.textContent='Row length: '+getRowLen(rowW)+' · typical 28–36 ears';
-  var pop=ears*1000;
-  var kpe=kr*kpr;
-  var kernels=pop*kpe*(tw/56);
-  var yield_bu=kernels/90000;
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
   if(!(ears>0&&kr>0&&kpr>0&&tw>0)){
     ['c-yield-val','c-pop-val','c-kpe-val','c-range-val'].forEach(function(id){s(id,'\u2014');});
     BE.corn.yield=null; syncBreakeven(); return;
   }
+  var pop=ears*1000;
+  var kpe=kr*kpr;
+  var kernels=pop*kpe*(tw/56);
+  var yield_bu=kernels/90000;
   s('c-yield-val',yield_bu.toFixed(0));
   s('c-pop-val',(pop/1000).toFixed(0)+'k');
   s('c-kpe-val',kpe.toFixed(0));
@@ -558,20 +575,20 @@ calcCorn();
    Formula: (plants/ac × pods/plant × seeds/pod) / (seeds/lb × 60) */
 function calcBean(){
   var rowW=parseFloat(document.getElementById('b-row-width').value)||30;
-  var plants=parseFloat(document.getElementById('b-plant-count').value)||0;
-  var ppp=parseFloat(document.getElementById('b-pods-plant').value)||0;
-  var spod=parseFloat(document.getElementById('b-seeds-pod').value)||2.5;
-  var slb=parseFloat(document.getElementById('b-seeds-lb').value)||3000;
+  var plants=fld('b-plant-count');
+  var ppp=fld('b-pods-plant');
+  var spod=fld('b-seeds-pod');
+  var slb=fld('b-seeds-lb');
   var rl=document.getElementById('b-row-length-note');
   if(rl)rl.textContent=getRowLen(rowW)+' row for '+rowW+'" · typical 110–150 plants';
-  var pop=plants*1000;
-  var spp=ppp*spod;
-  var yield_bu=(pop*spp)/(slb*60);
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
   if(!(plants>0&&ppp>0&&spod>0&&slb>0)){
     ['b-yield-val','b-pop-val','b-spp-val','b-range-val'].forEach(function(id){s(id,'\u2014');});
     BE.bean.yield=null; syncBreakeven(); return;
   }
+  var pop=plants*1000;
+  var spp=ppp*spod;
+  var yield_bu=(pop*spp)/(slb*60);
   s('b-yield-val',yield_bu.toFixed(0));
   s('b-pop-val',(pop/1000).toFixed(0)+'k');
   s('b-spp-val',spp.toFixed(0));

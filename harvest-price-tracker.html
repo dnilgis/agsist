@@ -115,11 +115,27 @@
   </section>
 
   <h2>The discovery calendar</h2>
+
+  <!-- 2026-08-15: added after a Georgia crop-insurance agent wrote in to say
+       "our price discoveries are different than the Midwest." He was right.
+       RMA sets discovery windows by CROP and by the county's SALES CLOSING
+       DATE, so Georgia corn averages the SEPTEMBER contract over Aug 1-31,
+       not December over Oct 1-31. Windows come from data/rma-discovery.json,
+       every row read off the CEPP PDF. Unverified states are sent to the CEPP
+       rather than guessed at. -->
+  <div class="hp-cal" id="hp-region" style="margin-bottom:.8rem">
+    <label for="hp-state" style="display:block;font-family:'JetBrains Mono',monospace;font-size:.76rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted,#8a948f);margin:0 .2rem .4rem">Your state &mdash; discovery windows differ</label>
+    <select id="hp-state" style="width:100%;max-width:420px;min-height:44px;padding:.5rem .7rem;margin:0 .2rem .6rem;background:var(--surface2,#161b1c);color:var(--text,#e9edeb);border:1px solid var(--border-2,#2a3324);border-radius:8px;font-size:1rem;font-family:inherit">
+      <option value="">Corn Belt and most states (default)</option>
+    </select>
+    <div id="hp-region-out" style="margin:0 .2rem"></div>
+  </div>
+
   <div class="hp-cal">
     <p class="hp-lede" style="margin:0 .2rem .2rem;font-size:.95rem">Corn &amp; soybeans: projected price set in February, harvest price set in October (December corn / November soybean contracts). Other crops and regions discover in different windows &mdash; added as they're configured.</p>
     <p class="hp-lede" style="margin:0 .2rem .4rem;font-size:.9rem">The 2026 harvest prices are averaged over October 1&ndash;31 and published by USDA RMA in early November. Until discovery opens, December corn and November soybean futures are the closest live proxy &mdash; <a href="/corn-futures-prices" style="color:var(--hp-gold2)">corn futures</a> &middot; <a href="/soybean-futures-prices" style="color:var(--hp-gold2)">soybean futures</a>.</p>
     <p class="hp-lede" style="margin:0 .2rem .2rem;font-size:.85rem;color:var(--text-dim,#8a948f)">Wheat, cotton, and rice discover in crop- and state-specific windows under the same provisions — each gets added here once its exact contract and window are wired and verified, never before.</p>
-    <div class="yr">
+    <div class="yr" id="hp-yr">
       <div class="mo">Jan</div>
       <div class="mo proj">Feb<b>PROJECTED</b></div>
       <div class="mo">Mar</div><div class="mo">Apr</div><div class="mo">May</div><div class="mo">Jun</div>
@@ -320,5 +336,90 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
 })();
 </script>
 <script src="/components/loader.js?v=15" defer></script>
+
+<script>
+/* RMA discovery windows by state (data/rma-discovery.json). Progressive
+   enhancement: with JS off or the fetch failed, the page keeps its baked
+   Midwest copy, which is correct for most of the audience. */
+(function(){
+  var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var sel=document.getElementById('hp-state'), out=document.getElementById('hp-region-out');
+  if(!sel||!out) return;
+  var KEY='agsist-rma-state';
+  fetch('/data/rma-discovery.json',{cache:'no-store'}).then(function(r){
+    if(!r.ok) throw 0; return r.json();
+  }).then(function(d){
+    var groups=d.groups||[], byState={};
+    groups.forEach(function(g){ (g.states||[]).forEach(function(st){ byState[st]=g; }); });
+    Object.keys(byState).sort().forEach(function(st){
+      if(byState[st].default) return;               // covered by the default option
+      var o=document.createElement('option'); o.value=st; o.textContent=st; sel.appendChild(o);
+    });
+    var o=document.createElement('option'); o.value='__other';
+    o.textContent='My state is not listed'; sel.appendChild(o);
+
+    function win(w){ return w? w.label : null; }
+    function render(st){
+      if(!st){ out.innerHTML=''; paint(null); return; }
+      if(st==='__other'){
+        out.innerHTML='<p class="hp-lede" style="margin:.2rem 0;font-size:.92rem">'+
+          'Only the states above are published here, because every one was read off RMA\u2019s own '+
+          'Commodity Exchange Price Provisions. Rather than guess at yours, look it up directly: find '+
+          'the table for your county\u2019s <b>sales closing date</b>, then your state\u2019s row. '+
+          '<a href="'+d.sources.corn+'" rel="nofollow">CEPP \u2014 corn</a> \u00b7 '+
+          '<a href="'+d.sources.soybeans+'" rel="nofollow">CEPP \u2014 soybeans</a> \u00b7 '+
+          '<a href="'+d.sources.prices+'" rel="nofollow">RMA price discovery</a>.</p>';
+        paint(null); return;
+      }
+      var g=byState[st]; if(!g){ out.innerHTML=''; paint(null); return; }
+      var rows='';
+      ['corn','soybeans'].forEach(function(c){
+        var w=g[c], name=c==='corn'?'Corn':'Soybeans';
+        if(!w){
+          rows+='<tr><td style="padding:.35rem .5rem 0 0"><b>'+name+'</b></td>'+
+                '<td colspan="3" style="padding:.35rem 0 0;color:var(--text-muted,#8a948f)">'+
+                (g[c+'_note']||'Not published here \u2014 look it up in the CEPP.')+'</td></tr>';
+          return;
+        }
+        rows+='<tr><td style="padding:.35rem .5rem 0 0"><b>'+name+'</b></td>'+
+              '<td style="padding:.35rem .5rem 0 0">'+w.exchange+' '+w.contract+'</td>'+
+              '<td style="padding:.35rem .5rem 0 0;color:var(--hp-gold2,#d4a23f)">'+win(w.projected)+'</td>'+
+              '<td style="padding:.35rem 0 0;color:var(--hp-green,#4aab4c)">'+win(w.harvest)+'</td></tr>';
+      });
+      out.innerHTML='<p class="hp-lede" style="margin:.1rem 0 .4rem;font-size:.93rem">'+
+        '<b>'+st+'</b> \u2014 '+g.label+', '+g.sales_closing+' sales closing date. '+
+        'These are your windows, not the Corn Belt\u2019s:</p>'+
+        '<div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:.9rem;min-width:340px">'+
+        '<tr style="color:var(--text-muted,#8a948f);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em">'+
+        '<td style="padding:0 .5rem 0 0">Crop</td><td style="padding:0 .5rem 0 0">Contract</td>'+
+        '<td style="padding:0 .5rem 0 0">Projected</td><td>Harvest</td></tr>'+rows+'</table></div>'+
+        '<p class="hp-lede" style="margin:.5rem 0 0;font-size:.85rem;color:var(--text-muted,#8a948f)">'+
+        'Read from RMA\u2019s Commodity Exchange Price Provisions. Windows are set by your county\u2019s '+
+        'sales closing date, so confirm yours with your agent or in the '+
+        '<a href="'+d.sources.corn+'" rel="nofollow">CEPP</a>. The figures in the cards above use the '+
+        'Corn Belt windows.</p>';
+      paint(g);
+    }
+    function paint(g){
+      var yr=document.getElementById('hp-yr'); if(!yr) return;
+      var cells=yr.querySelectorAll('.mo');
+      if(!g){ cells.forEach(function(c,i){ c.className='mo'+(i===1?' proj':i===9?' harv':'');
+              c.innerHTML=MO[i]+(i===1?'<b>PROJECTED</b>':i===9?'<b>HARVEST</b>':''); }); return; }
+      var w=g.corn; if(!w) return;
+      var pm=parseInt(w.projected.start.slice(0,2),10)-1, hm=parseInt(w.harvest.start.slice(0,2),10)-1;
+      cells.forEach(function(c,i){
+        c.className='mo'+(i===pm?' proj':i===hm?' harv':'');
+        c.innerHTML=MO[i]+(i===pm?'<b>PROJECTED</b>':i===hm?'<b>HARVEST</b>':'');
+      });
+    }
+    try{ var saved=localStorage.getItem(KEY); if(saved){ sel.value=saved; render(saved); } }catch(e){}
+    sel.addEventListener('change',function(){
+      render(sel.value);
+      try{ localStorage.setItem(KEY, sel.value); }catch(e){}
+      if(window.gaEvent) gaEvent('rma_state_pick',{state:sel.value||'default'});
+    });
+  }).catch(function(){ /* keep the baked Midwest copy */ });
+})();
+</script>
 </body>
 </html>
