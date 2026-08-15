@@ -1,6 +1,6 @@
 {
  "_note": "Derived from data/rma-prices.json. 'open' = a discovery window containing today; 'next' = one opening within 75 days. Price range is Conventional practice.",
- "updated": "2026-08-15T19:37:34Z",
+ "updated": "2026-08-15T22:04:02Z",
  "as_of": "2026-08-15",
  "crop_year": 2026,
  "open": [
@@ -451,5 +451,741 @@
    "in_days": null
   }
  ],
- "next": []
+ "next": [
+  {
+   "crop": "Barley",
+   "type": "Spring",
+   "leg": "harvest",
+   "start": "2026-09-01",
+   "end": "2026-09-30",
+   "states": [
+    "Alaska"
+   ],
+   "n_states": 1,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "December"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 17
+  },
+  {
+   "crop": "Canola",
+   "type": "Spring",
+   "leg": "harvest",
+   "start": "2026-09-01",
+   "end": "2026-09-30",
+   "states": [
+    "Idaho",
+    "Minnesota",
+    "Montana",
+    "North Dakota",
+    "Oregon",
+    "South Dakota",
+    "Washington"
+   ],
+   "n_states": 7,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "ICE"
+   ],
+   "contract": [
+    "November"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 17
+  },
+  {
+   "crop": "Canola",
+   "type": "Spring Rapeseed",
+   "leg": "harvest",
+   "start": "2026-09-01",
+   "end": "2026-09-30",
+   "states": [
+    "Idaho",
+    "Montana",
+    "North Dakota",
+    "Oregon",
+    "South Dakota",
+    "Washington"
+   ],
+   "n_states": 6,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "ICE"
+   ],
+   "contract": [
+    "November"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 17
+  },
+  {
+   "crop": "Corn",
+   "type": "All (Non-High Amylose)",
+   "leg": "harvest",
+   "start": "2026-09-01",
+   "end": "2026-09-30",
+   "states": [
+    "North Carolina",
+    "Oklahoma",
+    "Texas"
+   ],
+   "n_states": 3,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "December"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 17
+  },
+  {
+   "crop": "Cotton",
+   "type": "All",
+   "leg": "harvest",
+   "start": "2026-09-01",
+   "end": "2026-09-30",
+   "states": [
+    "Texas"
+   ],
+   "n_states": 1,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "ICE"
+   ],
+   "contract": [
+    "December"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 17
+  },
+  {
+   "crop": "Flax",
+   "type": "Spring",
+   "leg": "harvest",
+   "start": "2026-09-01",
+   "end": "2026-09-30",
+   "states": [
+    "Idaho",
+    "Minnesota",
+    "Montana",
+    "North Dakota",
+    "South Dakota"
+   ],
+   "n_states": 5,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "ICE"
+   ],
+   "contract": [
+    "November"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 17
+  },
+  {
+   "crop": "Grain Sorghum",
+   "type": "All",
+   "leg": "harvest",
+   "start": "2026-09-01",
+   "end": "2026-09-30",
+   "states": [
+    "Arkansas",
+    "Louisiana",
+    "Mississippi",
+    "Texas"
+   ],
+   "n_states": 4,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "December"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 17
+  },
+  {
+   "crop": "Oats",
+   "type": "Spring",
+   "leg": "harvest",
+   "start": "2026-09-01",
+   "end": "2026-09-30",
+   "states": [
+    "Alaska",
+    "California",
+    "Maine"
+   ],
+   "n_states": 3,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "December"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 17
+  },
+  {
+   "crop": "Rice",
+   "type": "Long Grain",
+   "leg": "harvest",
+   "start": "2026-09-01",
+   "end": "2026-09-30",
+   "states": [
+    "Arkansas",
+    "Florida",
+    "Mississippi",
+    "Texas"
+   ],
+   "n_states": 4,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "November"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 17
+  },
+  {
+   "crop": "Rice",
+   "type": "Short/Medium Grain",
+   "leg": "harvest",
+   "start": "2026-09-01",
+   "end": "2026-09-30",
+   "states": [
+    "Arkansas",
+    "Florida",
+    "Mississippi",
+    "Texas"
+   ],
+   "n_states": 4,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "November"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 17
+  },
+  {
+   "crop": "Soybeans",
+   "type": "All",
+   "leg": "harvest",
+   "start": "2026-09-01",
+   "end": "2026-09-30",
+   "states": [
+    "Texas"
+   ],
+   "n_states": 1,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "November"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 17
+  },
+  {
+   "crop": "Corn",
+   "type": "All (Non-High Amylose)",
+   "leg": "harvest",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "states": [
+    "Arizona",
+    "California",
+    "Colorado",
+    "Connecticut",
+    "Delaware",
+    "Illinois",
+    "Indiana",
+    "Iowa",
+    "Kansas",
+    "Kentucky",
+    "Maine",
+    "Maryland",
+    "Massachusetts",
+    "Minnesota",
+    "Missouri",
+    "Montana",
+    "Nebraska",
+    "Nevada",
+    "New Hampshire",
+    "New Jersey",
+    "New Mexico",
+    "New York",
+    "North Dakota",
+    "Ohio",
+    "Pennsylvania",
+    "Rhode Island",
+    "South Dakota",
+    "Tennessee",
+    "Utah",
+    "Vermont",
+    "Virginia",
+    "West Virginia",
+    "Wisconsin",
+    "Wyoming"
+   ],
+   "n_states": 34,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "December"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 47
+  },
+  {
+   "crop": "Corn",
+   "type": "High Amylose",
+   "leg": "harvest",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "states": [
+    "Illinois",
+    "Indiana",
+    "Iowa",
+    "Kansas",
+    "Missouri",
+    "Nebraska",
+    "South Dakota"
+   ],
+   "n_states": 7,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "December"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 47
+  },
+  {
+   "crop": "Cotton",
+   "type": "All",
+   "leg": "harvest",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "states": [
+    "Alabama",
+    "Arizona",
+    "Arkansas",
+    "California",
+    "Florida",
+    "Georgia",
+    "Louisiana",
+    "Mississippi",
+    "Missouri",
+    "North Carolina",
+    "South Carolina",
+    "Tennessee",
+    "Texas",
+    "Virginia"
+   ],
+   "n_states": 14,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "ICE"
+   ],
+   "contract": [
+    "December"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 47
+  },
+  {
+   "crop": "Grain Sorghum",
+   "type": "All",
+   "leg": "harvest",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "states": [
+    "Arizona",
+    "California",
+    "Colorado",
+    "Delaware",
+    "Illinois",
+    "Indiana",
+    "Iowa",
+    "Kansas",
+    "Kentucky",
+    "Maryland",
+    "Minnesota",
+    "Missouri",
+    "Nebraska",
+    "New Jersey",
+    "New Mexico",
+    "New York",
+    "North Carolina",
+    "North Dakota",
+    "Ohio",
+    "Oklahoma",
+    "Pennsylvania",
+    "South Dakota",
+    "Tennessee",
+    "Virginia",
+    "Wisconsin"
+   ],
+   "n_states": 25,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "December"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 47
+  },
+  {
+   "crop": "Peanuts",
+   "type": "Runners",
+   "leg": "harvest",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "states": [
+    "Alabama",
+    "Arkansas",
+    "Florida",
+    "Georgia",
+    "Louisiana",
+    "Mississippi",
+    "Missouri",
+    "New Mexico",
+    "North Carolina",
+    "Oklahoma",
+    "South Carolina",
+    "Texas",
+    "Virginia"
+   ],
+   "n_states": 13,
+   "lo": null,
+   "hi": null,
+   "exch": [],
+   "contract": [],
+   "day": null,
+   "span": null,
+   "in_days": 47
+  },
+  {
+   "crop": "Peanuts",
+   "type": "Spanish",
+   "leg": "harvest",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "states": [
+    "Alabama",
+    "Arkansas",
+    "Florida",
+    "Georgia",
+    "Louisiana",
+    "Mississippi",
+    "New Mexico",
+    "Oklahoma",
+    "Texas"
+   ],
+   "n_states": 9,
+   "lo": null,
+   "hi": null,
+   "exch": [],
+   "contract": [],
+   "day": null,
+   "span": null,
+   "in_days": 47
+  },
+  {
+   "crop": "Peanuts",
+   "type": "Virginia",
+   "leg": "harvest",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "states": [
+    "Alabama",
+    "Florida",
+    "Georgia",
+    "Mississippi",
+    "New Mexico",
+    "North Carolina",
+    "Oklahoma",
+    "South Carolina",
+    "Texas",
+    "Virginia"
+   ],
+   "n_states": 10,
+   "lo": null,
+   "hi": null,
+   "exch": [],
+   "contract": [],
+   "day": null,
+   "span": null,
+   "in_days": 47
+  },
+  {
+   "crop": "Peanuts",
+   "type": "Valencia",
+   "leg": "harvest",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "states": [
+    "New Mexico",
+    "North Carolina",
+    "Oklahoma",
+    "Texas",
+    "Virginia"
+   ],
+   "n_states": 5,
+   "lo": null,
+   "hi": null,
+   "exch": [],
+   "contract": [],
+   "day": null,
+   "span": null,
+   "in_days": 47
+  },
+  {
+   "crop": "Popcorn",
+   "type": "All",
+   "leg": "harvest",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "states": [
+    "Colorado",
+    "Illinois",
+    "Indiana",
+    "Iowa",
+    "Kentucky",
+    "Minnesota",
+    "Missouri",
+    "Nebraska",
+    "Ohio",
+    "South Dakota",
+    "Tennessee",
+    "Wisconsin"
+   ],
+   "n_states": 12,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "December"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 47
+  },
+  {
+   "crop": "Rice",
+   "type": "Long Grain",
+   "leg": "harvest",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "states": [
+    "California",
+    "Illinois",
+    "Missouri",
+    "Oklahoma",
+    "Tennessee"
+   ],
+   "n_states": 5,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "November"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 47
+  },
+  {
+   "crop": "Rice",
+   "type": "Short/Medium Grain",
+   "leg": "harvest",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "states": [
+    "California",
+    "Illinois",
+    "Missouri",
+    "Oklahoma",
+    "Tennessee"
+   ],
+   "n_states": 5,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "November"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 47
+  },
+  {
+   "crop": "Soybeans",
+   "type": "All",
+   "leg": "harvest",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "states": [
+    "Arkansas",
+    "Colorado",
+    "Illinois",
+    "Indiana",
+    "Iowa",
+    "Kansas",
+    "Kentucky",
+    "Louisiana",
+    "Maine",
+    "Massachusetts",
+    "Michigan",
+    "Minnesota",
+    "Mississippi",
+    "Missouri",
+    "Montana",
+    "Nebraska",
+    "New Jersey",
+    "New York",
+    "North Dakota",
+    "Ohio",
+    "Oregon",
+    "Pennsylvania",
+    "South Dakota",
+    "Tennessee",
+    "Texas",
+    "Vermont",
+    "Washington",
+    "Wisconsin"
+   ],
+   "n_states": 28,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "November"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 47
+  },
+  {
+   "crop": "Sunflowers",
+   "type": "Confectionery",
+   "leg": "harvest",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "states": [
+    "Colorado",
+    "Kansas",
+    "Minnesota",
+    "Montana",
+    "Nebraska",
+    "North Dakota",
+    "Oklahoma",
+    "South Dakota",
+    "Texas",
+    "Wyoming"
+   ],
+   "n_states": 10,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "December"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 47
+  },
+  {
+   "crop": "Sunflowers",
+   "type": "Oil",
+   "leg": "harvest",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "states": [
+    "Colorado",
+    "Kansas",
+    "Minnesota",
+    "Montana",
+    "Nebraska",
+    "North Dakota",
+    "Oklahoma",
+    "South Dakota",
+    "Texas",
+    "Wyoming"
+   ],
+   "n_states": 10,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "December"
+   ],
+   "day": null,
+   "span": null,
+   "in_days": 47
+  }
+ ]
 }
