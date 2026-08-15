@@ -160,8 +160,12 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .chevron { opacity: .4; transition: transform .2s; margin-left: 1px; flex-shrink: 0 }
 .nav-dd.open .chevron { transform: rotate(180deg); opacity: .9 }
 .nav-dd { position: relative }
-.nav-panel { position: absolute; top: calc(100% + 8px); left: 0; min-width: 210px; background: var(--surface); border: 2px solid var(--border-g); border-radius: var(--r-md); padding: .5rem 0; box-shadow: 0 8px 32px rgba(0,0,0,.35); opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity .15s, transform .15s; z-index: 500; }
-.nav-dd.open .nav-panel { opacity: 1; pointer-events: all; transform: translateY(0) }
+.nav-panel { position: absolute; top: calc(100% + 8px); left: 0; min-width: 210px; background: var(--surface); border: 2px solid var(--border-g); border-radius: var(--r-md); padding: .5rem 0; box-shadow: 0 8px 32px rgba(0,0,0,.35); opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity .15s, transform .15s, visibility .15s; z-index: 500;
+  /* visibility, not just opacity: an opacity-0 panel still holds its ~80 links
+     in the tab order on every page of the site. The mobile drawer was inerted
+     correctly (loader.js); these desktop panels were missed. */
+  visibility: hidden; }
+.nav-dd.open .nav-panel { opacity: 1; pointer-events: all; transform: translateY(0); visibility: visible }
 /* The Markets panel is 17 links and ~912px tall — taller than most laptop
    screens — and it used to run straight off the bottom with no way to reach
    the rest. Cap it to what actually fits under the header and let it scroll. */
