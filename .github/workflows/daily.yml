@@ -234,10 +234,21 @@ jobs:
           # stakes push (a rejection here silently skips the daily email for
           # a fully generated, gated briefing while 11:20/11:25 workflows
           # race the same files).
+          # 2026-08-15 audit: without the abort, a rebase CONFLICT leaves
+          # .git/rebase-merge in place and attempts 2 and 3 die instantly on
+          # "Pulling is not possible because you have unmerged files" — so the
+          # retries were dead weight for the one failure they exist for. The
+          # step then fails, the send step is skipped by its implicit
+          # success(), and a fully generated, GATE-2-passed briefing is
+          # neither published nor emailed with nothing saying why. Every other
+          # pusher in this repo (cot, mesh, ncei, harvest-prices) aborts first.
           for i in 1 2 3; do
-            git pull --rebase --autostash origin main && git push && break
+            git rebase --abort 2>/dev/null || true   # clear any half-finished rebase
+            if git pull --rebase --autostash origin main && git push; then
+              echo "push ok on attempt $i"; break
+            fi
             echo "push attempt $i failed; retrying in 20s"; sleep 20
-            [ "$i" = "3" ] && exit 1
+            [ "$i" = "3" ] && { git rebase --abort 2>/dev/null || true; exit 1; }
           done
 
       # Email the finished briefing as a clean, reforwardable copy. Runs only after
