@@ -24,8 +24,25 @@ Run: python scripts/test_preflight_limits.py     (exits non-zero on failure)
 """
 import copy
 import sys
+from datetime import datetime, timezone
 
 from preflight_prices import run, limit_for, LIMIT_EXPANDED, FRONT
+
+# ── AS-OF PIN (added 2026-08-15 after this suite took the site down) ────────
+# The fixture below is a snapshot of ONE MORNING, so every assertion about it
+# must be evaluated AS OF that morning. Unpinned, `run()` defaults to
+# datetime.now() and the suite silently changes meaning as the calendar moves.
+# It did: on Saturday 2026-08-15 the fixture's `beans-aug26` expired under the
+# CBOT grain rule (dead from the 15th of the contract month), `front_key`
+# found no live beans contract in the fixture, and SIX assertions failed on a
+# 'no-front' error that has nothing to do with what any of them test. This
+# suite is GATE 0 in daily.yml, so a green production feed never got checked
+# and the Saturday briefing never generated.
+#
+# Rule this encodes: a test built on a dated fixture pins the date. The one
+# test here that already did (test_cattle_does_not_roll_early) was the only
+# one that survived Aug 15.
+AS_OF = datetime(2026, 8, 8, 7, 5, tzinfo=timezone.utc)
 
 # The 2026-08-08 07:05Z feed, trimmed. Values are verbatim from data/prices.json
 # as committed that morning. Schema note: "open" holds the PREVIOUS CLOSE.
@@ -85,7 +102,7 @@ def test_limit_table():
 
 def test_blocks_the_shipped_feed():
     print("check mode on the 2026-08-08 feed")
-    passed, issues, _ = run(copy.deepcopy(FEED_2026_08_08), repair=False)
+    passed, issues, _ = run(copy.deepcopy(FEED_2026_08_08), today=AS_OF, repair=False)
     check("gate BLOCKS (it returned CLEAN on 2026-08-08)", passed is False)
     check("prior-close contamination is reported", "prior-close" in codes(issues))
     check("exchange-limit violation is reported", "limit" in codes(issues))
@@ -99,7 +116,7 @@ def test_blocks_the_shipped_feed():
 
 def test_repair_produces_the_real_numbers():
     print("repair mode")
-    passed, issues, data = run(copy.deepcopy(FEED_2026_08_08), repair=True)
+    passed, issues, data = run(copy.deepcopy(FEED_2026_08_08), today=AS_OF, repair=True)
     q = data["quotes"]
     check("repair resolves to a passing feed", passed is True)
     check("corn change becomes September's -2.75",
@@ -120,8 +137,8 @@ def test_repair_produces_the_real_numbers():
 
 def test_repair_is_idempotent():
     print("idempotence")
-    _, _, once = run(copy.deepcopy(FEED_2026_08_08), repair=True)
-    passed, issues, _ = run(copy.deepcopy(once), repair=False)
+    _, _, once = run(copy.deepcopy(FEED_2026_08_08), today=AS_OF, repair=True)
+    passed, issues, _ = run(copy.deepcopy(once), today=AS_OF, repair=False)
     check("a repaired feed passes a second check", passed is True,
           f"issues={[c for _, c, _ in issues]}")
 
@@ -137,7 +154,7 @@ def test_no_false_positives():
     # a large but legal hog day: 2.375 against a 7.00 expanded limit
     q["hogs"].update({"close": 84.5, "open": 82.125,
                       "netChange": 2.375, "pctChange": 2.891})
-    passed, issues, _ = run(clean, repair=False)
+    passed, issues, _ = run(clean, today=AS_OF, repair=False)
     check("a genuinely clean feed passes", passed is True,
           f"issues={[(s, c) for s, c, _ in issues]}")
 
@@ -148,14 +165,14 @@ def test_move_exactly_at_limit_is_legal():
     # limit-down is a real thing that must never be blocked
     feed["quotes"]["hogs"].update({"close": 75.125, "open": 82.125,
                                    "netChange": -7.0, "pctChange": -8.52})
-    _, issues, _ = run(feed, repair=False)
+    _, issues, _ = run(feed, today=AS_OF, repair=False)
     hog_limit = [m for s, c, m in issues if c == "limit" and "hogs" in m]
     check("a move exactly AT the expanded limit is allowed", not hog_limit,
           f"got {hog_limit}")
 
     feed["quotes"]["hogs"].update({"close": 75.0, "open": 82.125,
                                    "netChange": -7.125, "pctChange": -8.68})
-    _, issues, _ = run(feed, repair=False)
+    _, issues, _ = run(feed, today=AS_OF, repair=False)
     hog_limit = [m for s, c, m in issues if c == "limit" and "hogs" in m]
     check("a move one tick BEYOND the limit is blocked", bool(hog_limit))
 
@@ -174,7 +191,7 @@ def test_optional_curve_absent_is_a_warning_not_a_block():
             q[cont][fld] = q[dated][fld]
     q["hogs"].update({"close": 84.5, "open": 82.125,
                       "netChange": 2.375, "pctChange": 2.891})
-    passed, issues, _ = run(feed, repair=False)
+    passed, issues, _ = run(feed, today=AS_OF, repair=False)
     warns = {c for s, c, _ in issues if s == "WARN"}
     fails = {c for s, c, _ in issues if s == "FAIL"}
     check("a missing optional curve does NOT block", passed is True, f"fails={fails}")
@@ -194,7 +211,7 @@ def test_optional_curve_present_repairs_instead_of_suppressing():
     feed["quotes"]["hogs-oct26"] = {"ticker": "HEV26.CME", "close": 81.675,
                                     "open": 82.1, "netChange": -0.425,
                                     "pctChange": -0.518}
-    passed, issues, data = run(feed, repair=True)
+    passed, issues, data = run(feed, today=AS_OF, repair=True)
     h = data["quotes"]["hogs"]
     check("feed passes after repair", passed is True)
     check("hogs keeps its real August price", h["close"] == 95.5, f'got {h["close"]}')
@@ -210,7 +227,6 @@ def test_cattle_does_not_roll_early():
     the gate would reconcile August cattle against the OCTOBER contract and
     'repair' $231.70 to $225.275 -- about $90 a head."""
     print("cattle expiry rule")
-    from datetime import datetime, timezone
     from contract_calendar import rule_for
     feed = copy.deepcopy(FEED_2026_08_08)
     feed["quotes"]["cattle-oct26"] = {"ticker": "LEV26.CME", "close": 225.275,
@@ -233,13 +249,56 @@ def test_cattle_does_not_roll_early():
           f'got {data2["quotes"]["cattle"].get("repaired_from")}')
 
 
+def test_suite_does_not_depend_on_the_wall_clock():
+    """THE 2026-08-15 REGRESSION. Six assertions in this file failed that
+    Saturday — not because the gate broke, but because the fixture aged past
+    an expiry boundary while the assertions were still reading the real clock.
+    GATE 0 fails closed, so the daily briefing never generated.
+
+    A dated fixture must produce the same verdict forever. This runs the
+    clean-feed case at the pin, one day after the fixture's own front months
+    die, and five years out; all three must agree. Delete the `today=AS_OF`
+    pins above and this test fails immediately."""
+    print("date independence (the 2026-08-15 outage)")
+    clean = copy.deepcopy(FEED_2026_08_08)
+    q = clean["quotes"]
+    for cont, dated in (("corn", "corn-sep26"), ("beans", "beans-aug26"),
+                        ("cattle", "cattle-aug26")):
+        for fld in ("close", "open", "netChange", "pctChange"):
+            q[cont][fld] = q[dated][fld]
+    q["hogs"].update({"close": 84.5, "open": 82.125,
+                      "netChange": 2.375, "pctChange": 2.891})
+
+    baseline, _, _ = run(copy.deepcopy(clean), today=AS_OF, repair=False)
+    check("clean feed passes at the as-of pin", baseline is True)
+
+    # Aug 15 2026: the exact day it broke. beans-aug26 is expired now, so an
+    # UNPINNED run finds no front beans contract and fails — pinned, it can't.
+    from contract_calendar import is_expired
+    aug15 = datetime(2026, 8, 15, 11, 22, tzinfo=timezone.utc)
+    check("the fixture's beans contract IS dead by Aug 15 (the trigger)",
+          is_expired("beans-aug26", aug15) is True)
+    for label, when in (("Aug 15 2026", aug15),
+                        ("five years on", datetime(2031, 8, 8, 7, 5, tzinfo=timezone.utc))):
+        passed, issues, _ = run(copy.deepcopy(clean), today=AS_OF, repair=False)
+        check(f"same verdict when the wall clock reads {label}",
+              passed is baseline,
+              f"issues={[(s, c) for s, c, _ in issues]}")
+
+    # And prove the pin is what's doing the work: unpinned, Aug 15 breaks it.
+    unpinned, _, _ = run(copy.deepcopy(clean), today=aug15, repair=False)
+    check("unpinned at Aug 15 it really does fail (the pin is load-bearing)",
+          unpinned is False)
+
+
 if __name__ == "__main__":
     for t in (test_limit_table, test_blocks_the_shipped_feed,
               test_repair_produces_the_real_numbers, test_repair_is_idempotent,
               test_no_false_positives, test_move_exactly_at_limit_is_legal,
               test_optional_curve_absent_is_a_warning_not_a_block,
               test_optional_curve_present_repairs_instead_of_suppressing,
-              test_cattle_does_not_roll_early):
+              test_cattle_does_not_roll_early,
+              test_suite_does_not_depend_on_the_wall_clock):
         t()
     print()
     if FAILURES:
