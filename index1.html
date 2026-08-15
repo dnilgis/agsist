@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+  <!-- PREVIEW COPY of the homepage, layout test only. Not linked, not indexed,
+       not in the sitemap. The daily briefing bake writes index.html only, so
+       the briefing shown here freezes at the moment this copy was made.
+       Delete this file once the layout is promoted or rejected. -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +25,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="AGSIST">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Corn, Soybean &amp; Wheat Prices Today | AGSIST</title>
+<title>PREVIEW &mdash; AGSIST homepage layout test</title>
+  <meta name="robots" content="noindex, nofollow">
 <meta name="description" content="Live corn, soybean & wheat futures updated every 30 min. Farm dashboard: spray advisory, urea risk, cash grain bids, USDA reports, daily briefing.">
 <meta name="keywords" content="corn futures prices today, soybean futures prices today, wheat futures price today, grain prices today, farm weather, spray advisory, urea volatilization risk, cash grain bids near me, USDA reports, agricultural market dashboard, farm break even calculator, grain elevator prices, CBOT corn, crop insurance, grain elevator prices near me">
 <meta name="author"  content="Sigurd Lindquist">
@@ -582,6 +587,10 @@
 </style>
 </head>
 <body>
+<div style="background:#3a2a08;border-bottom:2px solid #d4a23f;padding:.55rem 1rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.78rem;letter-spacing:.06em;color:#f0d79a;position:relative;z-index:60">
+  PREVIEW LAYOUT &middot; not the live homepage &middot; <a href="/" style="color:#d4a23f">go to the real site &rarr;</a>
+</div>
+
 <a href="#main" class="skip">Skip to content</a>
 <noscript><div class="noscript-banner">AGSIST requires JavaScript for live prices and weather. Please enable JavaScript.</div></noscript>
 <div id="site-header">
@@ -935,244 +944,9 @@
     <button class="scu-dismiss" id="btn-compact-dismiss" aria-label="Dismiss signup"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg> No thanks</button>
   </div>
 
-  <div class="hbz fade-up" id="harvest-band">
-    <div class="hbz-k" id="hbz-kicker">Harvest 2026</div>
-    <div class="hbz-g">
-      <a class="hbz-c" href="/yield-estimator"><strong>What&rsquo;s the field going to make?</strong><em>Ear and pod counts to bushels</em></a>
-      <a class="hbz-c" href="/harvest-price-tracker"><strong>Your harvest price</strong><em>Discovery window, live daily average</em></a>
-      <a class="hbz-c" href="/grain-bin-calculator"><strong>Will it fit in the bin?</strong><em>Capacity, shrink, size a new one</em></a>
-      <a class="hbz-c" href="/breakeven"><strong>What do I need to sell at?</strong><em>Break-even by the bushel</em></a>
-      <a class="hbz-c" href="/storage-crunch"><strong>Store it or move it?</strong><em>Your state&rsquo;s storage squeeze</em></a>
-    </div>
-  </div>
-  <script>
-  /* Seasonal harvest band. Set HARVEST_BAND to 0 to hide it; nothing else
-     depends on it. It does not expire on its own — switch it off after
-     harvest so it cannot go stale. */
-  (function(){
-    var HARVEST_BAND = 1;
-    var el=document.getElementById('harvest-band'); if(!el) return;
-    if(!HARVEST_BAND){ el.style.display='none'; return; }
-    var k=document.getElementById('hbz-kicker'); if(!k) return;
-    var n=new Date(), t=new Date(n.getFullYear(),n.getMonth(),n.getDate());
-    var d=Math.round((new Date(n.getFullYear(),9,1)-t)/86400000);
-    k.textContent = d>0 ? 'Harvest 2026 \u00b7 '+d+' days to October price discovery' : 'Harvest 2026';
-  })();
-  </script>
-
-  <div class="dash-grid">
-    <div class="fade-up" id="f1">
-
-      <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><rect width="20" height="12" x="2" y="6" rx="2" /> <circle cx="12" cy="12" r="2" /> <path d="M6 12h.01M18 12h.01" /></svg>Cash Bids &amp; Basis <span style="font-size:0.755rem;font-weight:600;color:var(--gold);letter-spacing:.04em">+ Worth the Drive&trade;</span></h2><a href="/cash-bids" class="sec-all">Find Elevators &rarr;</a></div>
-      <div class="card"><div class="card-body">
-        <div id="bids-geo-bar" style="display:flex;align-items:center;gap:.55rem;margin-bottom:.6rem;font-size:0.787rem;color:var(--text-dim)">
-          <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite" aria-hidden="true"></span>
-          <span id="bids-geo-txt">Detecting your location&hellip;</span>
-          <button id="bids-enter-zip-btn" aria-label="Enter ZIP code to find nearby cash bids" style="margin-left:auto;background:none;border:none;color:var(--text-muted);font-size:0.78rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Enter ZIP</button>
-        </div>
-        <div id="bids-zip-row" style="display:none;margin-bottom:1.1rem">
-          <div style="display:flex;gap:.55rem;flex-wrap:wrap;min-width:0">
-            <input type="text" id="bids-zip" placeholder="Enter your ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for cash bids" style="flex:1;padding:.7rem .9rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
-            <button id="bids-lookup-btn" style="padding:.7rem 1rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s">Find Bids &rarr;</button>
-          </div>
-        </div>
-        <div id="bids-list-area"><div class="bids-skeleton" aria-label="Loading cash bids"><div class="bids-skel-row"></div><div class="bids-skel-row"></div><div class="bids-skel-row"></div></div></div>
-      </div></div>
-    </div>
-    <div class="fade-up" id="f2" style="transition-delay:.08s">
-      <div class="sec-head"><h2 class="sec-title">Local Conditions</h2></div>
-      <div class="card wx-card"><div class="card-body">
-        <div id="wx-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 0;gap:.65rem">
-          <div style="font-size:1.8rem" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></div>
-          <div style="font-size:.9rem;color:var(--text-dim);text-align:center">Getting your local weather&hellip;</div>
-          <button id="btn-allow-loc" style="padding:.65rem 1.25rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;">Allow Location</button>
-          <button id="btn-zip-instead" style="background:none;border:none;color:var(--text-muted);font-size:0.795rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Enter ZIP instead</button>
-        </div>
-        <div id="wx-zip-entry" style="display:none;margin-bottom:.85rem">
-          <div style="display:flex;gap:.5rem">
-            <input type="text" id="wx-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for weather" style="flex:1;padding:.65rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
-            <button id="btn-wx-go" style="padding:.65rem 1rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;">Go</button>
-          </div>
-        </div>
-        <div id="wx-data" style="display:none">
-          <div class="wx-hero">
-            <div class="wx-icon" id="wx-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div>
-            <div>
-              <div class="wx-temp"><span id="wx-temp">--</span></div>
-              <div class="wx-desc" id="wx-desc">Current conditions</div>
-              <div class="wx-loc" id="wx-loc"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Locating...</div>
-            </div>
-          </div>
-          <div class="wx-grid">
-            <div class="wstat"><div class="wstat-lbl">Wind</div><div class="wstat-val" id="wx-wind">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Humidity</div><div class="wstat-val" id="wx-humid">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Precip Chance</div><div class="wstat-val" id="wx-precip">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div>
-          </div>
-          <style>
-          .wx-fs-bridge{display:flex;align-items:center;gap:.7rem;margin:.9rem 0 .15rem;padding:.8rem .9rem;background:linear-gradient(90deg,rgba(212,162,63,.10),rgba(212,162,63,.03));border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;text-decoration:none;transition:border-color .15s,transform .15s}
-          .wx-fs-bridge:hover{border-color:var(--gold);transform:translateY(-1px)}
-          .wx-fs-bridge .wfb-ic{flex:none;color:var(--gold);display:flex}
-          .wx-fs-bridge .wfb-ic .ic{width:1.55rem;height:1.55rem}
-          .wx-fs-bridge .wfb-t{display:block;font-family:var(--font-display);font-weight:700;font-size:.93rem;color:var(--text);line-height:1.2}
-          .wx-fs-bridge .wfb-s{display:block;font-size:0.785rem;color:var(--text-dim);margin-top:.16rem;line-height:1.3}
-          /* v4.5 weather legibility pass — dissolve box-in-box, full-bleed on phones, bigger type */
-          .wx-card #wx-data .wx-summary-card{background:none;border:0;border-radius:0;padding:1rem 0 0;border-top:1px solid var(--border)}
-          .wx-card .wx-7day-strip{gap:.45rem}
-          .wx-card .wx-7day-cell{padding:.75rem .3rem;gap:.32rem}
-          .wx-card .wx-7day-name{font-size:clamp(.7rem,3vw,.8rem)}
-          .wx-card .wx-7day-temps{font-size:clamp(.95rem,4.6vw,1.2rem)}
-          .wx-card .wx-7day-meta{font-size:clamp(.68rem,3vw,.78rem);line-height:1.55}
-          .wx-card .wx-hourly-toggle{font-size:0.795rem}
-          .wx-card .wx-hourly-cell{min-width:52px;padding:.42rem .3rem;gap:.16rem}
-          .wx-card .wx-hourly-hr{font-size:0.775rem}
-          .wx-card .wx-hourly-temp{font-size:.9rem}
-          .wx-card .wx-hourly-precip,.wx-card .wx-hourly-wind{font-size:0.77rem}
-          .wx-card .wx-chart-toggle{font-size:0.775rem}
-          .wx-card .wx-chart-title{font-size:0.785rem}
-          .wx-card .wx-chart-legend{font-size:0.795rem}
-          .wx-card .wx-chart-takeaway{font-size:.84rem;line-height:1.6}
-          @media(max-width:520px){
-            .wx-card{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);border-left:0;border-right:0;border-radius:0}
-            .wx-card .card-body{padding:1rem .9rem}
-            .wx-card .wx-chart-panel{padding:.8rem .55rem .65rem}
-          }
-          </style>
-          <a href="/field-scout" class="wx-fs-bridge" aria-label="Open Field Scout — soil, crop history, crop vigor and cash bids for your exact field">
-            <span class="wfb-ic"><svg class="ic" aria-hidden="true"><use href="#i-satellite"/></svg></span>
-            <span style="flex:1;min-width:0">
-              <span class="wfb-t">Now see your exact field &rarr;</span>
-              <span class="wfb-s">Soil, 5-yr crop history, satellite crop-vigor &amp; nearby cash bids &mdash; free, no login</span>
-            </span>
-          </a>
-          <div class="wx-today" id="wx-today-summary"></div>
-          <div id="wx-forecast" style="display:none"></div>
-          <div class="wx-data-extra">
-            <div class="wx-extra-stat with-chart" id="gdu-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="gdu-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Since Apr 1</div><div class="wx-extra-val" id="gdu-val">--</div><div class="wx-extra-ctx" id="gdu-ctx">Growing degree units</div><div class="wx-chart-toggle" id="gdu-chart-toggle">&#x25BC; Show 5-yr history</div></div>
-            <div class="wx-extra-stat with-chart" id="precip-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="precip-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg> 30-Day Precip</div><div class="wx-extra-val" id="precip-val">--</div><div class="wx-extra-ctx" id="precip-ctx">Trailing 30 days</div><div class="wx-chart-toggle" id="precip-chart-toggle">&#x25BC; Show monthly history</div></div>
-          </div>
-          <div class="wx-chart-panel" id="gdu-chart-panel" role="region" aria-label="5-year GDU monthly history">
-            <div class="wx-chart-title" id="gdu-chart-title">GDU by month &middot; Apr&ndash;Oct &middot; 5-yr avg vs this year</div>
-            <div id="gdu-chart-svg"></div>
-            <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold)"></span>This year</span></div>
-            <div class="wx-chart-takeaway" id="gdu-takeaway"></div>
-          </div>
-          <div class="wx-chart-panel" id="precip-chart-panel" role="region" aria-label="5-year precipitation monthly history">
-            <div class="wx-chart-title" id="precip-chart-title">Precip by month &middot; Jan&ndash;Dec &middot; 5-yr avg vs this year</div>
-            <div id="precip-chart-svg"></div>
-            <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold)"></span>This year</span></div>
-            <div class="wx-chart-takeaway" id="precip-takeaway"></div>
-          </div>
-          <div class="wx-summary-card" style="margin-top:.85rem">
-            <div class="wx-summary-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> 5-Day Forecast</div>
-            <div id="wx-forecast-7day" class="wx-7day-strip">
-              <div class="wx-7day-cell"><div class="wx-7day-name">Today</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-            </div>
-            <button class="wx-hourly-toggle" id="wx-hourly-toggle" aria-expanded="false" aria-controls="wx-hourly-panel">&#x25BC; Show hourly forecast</button>
-            <div class="wx-hourly-panel" id="wx-hourly-panel" role="region" aria-label="24-hour hourly forecast">
-              <div class="wx-hourly-strip" id="wx-hourly-strip"></div>
-            </div>
-            <div style="margin-top:.5rem;font-size:0.78rem;color:var(--text-muted);text-align:center"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> <span id="wx-loc-label">Set location above</span></div>
-          </div>
-          <button id="btn-change-loc" style="margin-top:.65rem;background:none;border:none;color:var(--text-muted);font-size:0.78rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Change location</button>
-        </div>
-      </div></div>
-    </div>
-    <div class="fade-up" id="f3" style="transition-delay:.16s">
-      <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" /></svg>Quick Tools</h2></div>
-      <div class="card"><div class="card-body">
-        <div class="tool-list">
-          <style>.tool-widget--scout{border-left:3px solid var(--gold)!important}.tool-widget--scout .tool-widget-badge{background:rgba(212,162,63,.14);color:var(--gold)}</style>
-          <a href="/field-scout" class="tool-widget tool-widget--scout">
-            <div class="tool-widget-inner">
-              <div class="tool-widget-top">
-                <span class="tool-widget-icon"><svg class="ic" aria-hidden="true"><use href="#i-satellite"/></svg></span>
-                <div class="tool-widget-body"><span class="tool-widget-status">Field Scout</span></div>
-                <span class="tool-widget-badge">Draw your field</span>
-                <span class="tool-widget-arr">&rarr;</span>
-              </div>
-              <div class="tool-widget-bottom">
-                <span class="tool-widget-rec">Soil, 5-yr crop history, satellite crop-vigor &amp; local cash bids for any field you draw</span>
-              </div>
-            </div>
-          </a>
-          <a href="/spray" id="wsp-spray" class="tool-widget">
-            <div class="tool-widget-inner">
-              <div class="tool-widget-top">
-                <span class="tool-widget-icon" id="wsp-spray-icon"><svg class="ic" aria-hidden="true"><use href="#i-hourglass"/></svg></span>
-                <div class="tool-widget-body"><span class="tool-widget-status">Spray Advisory</span></div>
-                <span class="tool-widget-badge" id="wsp-spray-status">Loading&hellip;</span>
-                <span class="tool-widget-arr">&rarr;</span>
-              </div>
-              <div class="tool-widget-bottom">
-                <span class="tool-widget-rec" id="wsp-spray-detail">Waiting for weather data</span>
-              </div>
-            </div>
-          </a>
-          <div class="spray-windows" id="spray-windows">
-            <div class="spray-windows-lbl"><svg class="ic" aria-hidden="true"><use href="#i-wind"/></svg> 5-Day Spray Windows</div>
-            <div class="spray-days" id="spray-days-strip"></div>
-          </div>
-          <a href="/urea" class="tool-widget tool-widget--urea">
-            <div class="tool-widget-inner">
-              <div class="tool-widget-top">
-                <span class="tool-widget-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></span>
-                <div class="tool-widget-body"><span class="tool-widget-status">Urea Volatilization Risk</span></div>
-                <span class="tool-widget-score" id="wsp-urea-score">--</span>
-                <span class="tool-widget-arr">&rarr;</span>
-              </div>
-              <div class="tool-widget-bottom">
-                <span class="tool-widget-badge" id="wsp-urea-badge">Loading&hellip;</span>
-                <span class="tool-widget-rec" id="wsp-urea-rec">Waiting for weather data</span>
-              </div>
-            </div>
-          </a>
-          <a href="/breakeven" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg> Break-Even Calculator</span><span class="tool-arr">&rarr;</span></a>
-          <a href="/grain-bin-calculator" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-construction"/></svg> Grain Bin Calculator</span><span class="tool-arr">&rarr;</span></a>
-          <a href="/gdu-calculator" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Calculator</span><span class="tool-arr">&rarr;</span></a>
-          <a href="/ag-odds" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Ag Prediction Markets</span><span class="tool-arr">&rarr;</span></a>
-          <a href="/fast-facts" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> Fast Facts</span><span class="tool-arr">&rarr;</span></a>
-        </div>
-      </div></div>
-    </div>
-  </div>
-
-  <div class="radar-section fade-up" id="f-radar">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="M20 12h2" /> <path d="m19.07 4.93-1.41 1.41" /> <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" /> <path d="M3 20a5 5 0 1 1 8.9-4H13a3 3 0 0 1 2 5.24" /> <path d="M11 20v2" /> <path d="M7 19v2" /></svg>Radar, Forecast &amp; Drought</h2><a href="/drought-monitor" class="sec-all">Drought Monitor &rarr;</a></div>
-    <div class="radar-grid">
-      <div class="radar-card">
-        <div style="padding:.6rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:0.77rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)"><span class="live-dot" style="display:inline-block" aria-hidden="true"></span> Live Radar</span>
-          <span style="font-size:0.77rem;color:var(--text-muted)">Powered by Windy</span>
-        </div>
-        <iframe id="windy-frame" src="" data-src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=5&overlay=radar&product=radar&level=surface&lat=42.0&lon=-93.5&detailLat=42.0&detailLon=-93.5&detail=false&pressure=false&menu=false&message=false&marker=false&calendar=now&thunder=false" width="100%" style="border:none;display:block;min-height:320px;height:100%;aspect-ratio:unset" loading="lazy" title="Live Radar &mdash; Windy" allow="geolocation; fullscreen" allowfullscreen></iframe>
-      </div>
-      <div class="radar-sidebar" style="display:flex;flex-direction:column;">
-        <div class="drought-embed" style="flex:1;display:flex;flex-direction:column;">
-          <div style="padding:.6rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:0.77rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)">Drought Monitor</span>
-            <a href="/drought-monitor" style="font-size:0.77rem;color:var(--text-muted)">Full Map &rarr;</a>
-          </div>
-          <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener" title="View full interactive drought map" style="flex:1;display:flex;align-items:center;">
-            <img id="drought-img" src="" alt="US Drought Monitor &mdash; current week" style="display:block;width:100%;height:auto" loading="lazy">
-          </a>
-          <div id="drought-fallback" class="drought-fallback" style="display:none">
-            <span style="font-size:1.5rem"><svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg></span>
-            <span style="font-size:.82rem;color:var(--text-dim)">Drought map loading&hellip;</span>
-            <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener">View on droughtmonitor.unl.edu &rarr;</a>
-          </div>
-          <div style="padding:.4rem .8rem;font-size:0.77rem;color:var(--text-muted);text-align:right;border-top:1px solid var(--border)">
-            Source: USDA NDMC &middot; Updated Thursday &middot; <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;">Full Interactive Map &rarr;</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="price-cards-section fade-up" id="f-prices">
+  
+  <div class="sec-head zone-head"><h2 class="sec-title">Markets</h2><span class="zone-sub">Prices, cash bids and the read &mdash; together</span></div>
+<div class="price-cards-section fade-up" id="f-prices">
 
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M9 5v4" /> <rect width="4" height="6" x="7" y="9" rx="1" /> <path d="M9 15v2" /> <path d="M17 3v2" /> <rect width="4" height="8" x="15" y="5" rx="1" /> <path d="M17 13v3" /> <path d="M3 3v16a2 2 0 0 0 2 2h16" /></svg>Market Prices</h2><div style="display:flex;align-items:center;gap:.75rem"><span id="prices-age" style="font-family:'JetBrains Mono',monospace;font-size:0.763rem;color:var(--text-muted)">Updated every 30 min</span><a href="/corn-futures-prices" class="sec-all">All Charts &rarr;</a></div></div>
     <div class="pc-section-lbl"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Grains &mdash; Key Contracts</div>
@@ -1280,6 +1054,250 @@
       <div class="pc pc-sm" data-spark="treasury10"><div class="pc-head"><span class="pc-name"><span class="pc-name-icon"><svg class="ic" aria-hidden="true"><use href="#i-landmark"/></svg></span>10-Yr Treasury</span><span class="pc-contract">Yield %</span></div><div class="pc-price" id="pcp-treasury">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-treasury">--</span></div><div class="pc-prev" id="pcprev-treasury"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-treasury10-lo">3.9%</span><span>Land &amp; Loan Rates</span><span id="pcrl-treasury10-hi">4.6%</span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-treasury10" style="width:56.6%"></div><div class="pc-range-dot" id="pcrd-treasury10" style="left:56.6%"></div></div></div></div>
     </div>
   </div>
+  
+  <div class="dash-grid">
+<div class="fade-up" id="f1">
+
+      <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><rect width="20" height="12" x="2" y="6" rx="2" /> <circle cx="12" cy="12" r="2" /> <path d="M6 12h.01M18 12h.01" /></svg>Cash Bids &amp; Basis <span style="font-size:0.755rem;font-weight:600;color:var(--gold);letter-spacing:.04em">+ Worth the Drive&trade;</span></h2><a href="/cash-bids" class="sec-all">Find Elevators &rarr;</a></div>
+      <div class="card"><div class="card-body">
+        <div id="bids-geo-bar" style="display:flex;align-items:center;gap:.55rem;margin-bottom:.6rem;font-size:0.787rem;color:var(--text-dim)">
+          <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite" aria-hidden="true"></span>
+          <span id="bids-geo-txt">Detecting your location&hellip;</span>
+          <button id="bids-enter-zip-btn" aria-label="Enter ZIP code to find nearby cash bids" style="margin-left:auto;background:none;border:none;color:var(--text-muted);font-size:0.78rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Enter ZIP</button>
+        </div>
+        <div id="bids-zip-row" style="display:none;margin-bottom:1.1rem">
+          <div style="display:flex;gap:.55rem;flex-wrap:wrap;min-width:0">
+            <input type="text" id="bids-zip" placeholder="Enter your ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for cash bids" style="flex:1;padding:.7rem .9rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
+            <button id="bids-lookup-btn" style="padding:.7rem 1rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s">Find Bids &rarr;</button>
+          </div>
+        </div>
+        <div id="bids-list-area"><div class="bids-skeleton" aria-label="Loading cash bids"><div class="bids-skel-row"></div><div class="bids-skel-row"></div><div class="bids-skel-row"></div></div></div>
+      </div></div>
+    </div>
+  </div>
+<div class="fade-up" id="f-crypto">
+    <div class="pc-section-lbl"><svg class="ic" aria-hidden="true"><use href="#i-medal"/></svg> Metals &amp; Digital Assets</div>
+    <div class="price-cards-grid-2" style="margin-bottom:1rem">
+      <div class="pc pc-sm" data-spark="gold"><div class="pc-head"><span class="pc-name"><span class="pc-name-icon"><svg class="ic" aria-hidden="true"><use href="#i-medal"/></svg></span>Gold</span><span class="pc-contract">Spot</span></div><div class="pc-price" id="pcp-gold">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-gold">--</span></div><div class="pc-prev" id="pcprev-gold"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-gold-lo">$3,125</span><span></span><span id="pcrl-gold-hi">$5,586</span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-gold" style="width:65.0%"></div><div class="pc-range-dot" id="pcrd-gold" style="left:65.0%"></div></div></div></div>
+      <div class="pc pc-sm" data-spark="silver"><div class="pc-head"><span class="pc-name"><span class="pc-name-icon"><svg class="ic" aria-hidden="true"><use href="#i-medal"/></svg></span>Silver</span><span class="pc-contract">Spot</span></div><div class="pc-price" id="pcp-silver">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-silver">--</span></div><div class="pc-prev" id="pcprev-silver"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-silver-lo">$32</span><span></span><span id="pcrl-silver-hi">$121</span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-silver" style="width:49.0%"></div><div class="pc-range-dot" id="pcrd-silver" style="left:49.0%"></div></div></div></div>
+      <div class="pc pc-sm" data-spark="bitcoin"><div class="pc-head"><span class="pc-name"><span class="pc-name-icon">&#x20BF;</span>Bitcoin</span><span class="pc-contract">USD</span></div><div class="pc-price" id="pc-btc">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-btc">--</span></div><div class="pc-prev" id="pcprev-btc"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-bitcoin-lo">$60,074</span><span></span><span id="pcrl-bitcoin-hi">$126,198</span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-bitcoin" style="width:27.1%"></div><div class="pc-range-dot" id="pcrd-bitcoin" style="left:27.1%"></div></div></div></div>
+      <div class="pc pc-sm" data-spark="ripple"><div class="pc-head"><span class="pc-name"><span class="pc-name-icon">&#x25CE;</span>XRP</span><span class="pc-contract">USD</span></div><div class="pc-price" id="pc-xrp">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-xrp">--</span></div><div class="pc-prev" id="pcprev-xrp"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-ripple-lo">$1.13</span><span></span><span id="pcrl-ripple-hi">$3.65</span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-ripple" style="width:12.1%"></div><div class="pc-range-dot" id="pcrd-ripple" style="left:12.1%"></div></div></div></div>
+    </div>
+    <div class="price-cards-grid-2" style="margin-bottom:2rem">
+      <div class="pc pc-sm" data-spark="kaspa"><div class="pc-head"><span class="pc-name"><span class="pc-name-icon"><svg class="ic" aria-hidden="true"><use href="#i-gem"/></svg></span>Kaspa</span><span class="pc-contract">USD</span></div><div class="pc-price" id="pc-kas">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-kas">--</span></div><div class="pc-prev" id="pcprev-kas"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-kaspa-lo">$0.014</span><span></span><span id="pcrl-kaspa-hi">$0.131</span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-kaspa" style="width:17.0%"></div><div class="pc-range-dot" id="pcrd-kaspa" style="left:17.0%"></div></div></div></div>
+      <div class="pc pc-sm" role="img" aria-label="FFAI Composite Market Signal Score" style="display:flex;flex-direction:column;border-color:rgba(91,163,224,.25);background:linear-gradient(135deg,var(--surface) 0%,rgba(91,163,224,.04) 100%)">
+        <div class="pc-head"><span class="pc-name"><span class="pc-name-icon"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg></span>FFAI Index</span><span class="pc-contract" style="color:var(--blue)">Composite Signal</span></div>
+        <div style="display:flex;align-items:baseline;gap:.5rem;margin:.35rem 0 .15rem"><span id="ffai-score-compact" style="font-family:var(--font-display);font-size:2.6rem;font-weight:800;color:var(--blue);line-height:1">--</span><span style="font-size:0.78rem;color:var(--text-muted);font-weight:600">/ 100</span></div>
+        <div style="font-size:0.77rem;color:var(--text-dim);line-height:1.5;margin-bottom:.3rem">Composite agricultural market health score &mdash; commodities, inputs, trade &amp; weather factors.</div>
+        <div style="margin-top:auto;padding-top:.45rem;border-top:1px solid rgba(91,163,224,.15);display:flex;align-items:center;justify-content:space-between"><span style="font-size:0.755rem;color:var(--text-muted)">Updated quarterly</span><span style="font-size:0.755rem;color:var(--text-muted);opacity:.7">Methodology coming soon</span></div>
+      </div>
+    </div>
+  </div>
+  <section class="fade-up" id="f-read" aria-labelledby="read-heading">
+    <style>
+    #f-read .read-sub{font-size:0.785rem;color:var(--text-dim)}
+    #f-read .sig-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px}
+    #f-read .sig{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:1.05rem 1.1rem;display:flex;flex-direction:column;gap:.5rem;text-decoration:none;color:inherit;transition:border-color .18s,transform .18s}
+    #f-read .sig:hover{border-color:var(--gold);transform:translateY(-2px)}
+    #f-read .sig-top{display:flex;align-items:center;justify-content:space-between}
+    #f-read .sig-name{font-weight:700;font-size:.92rem;color:var(--text);display:flex;align-items:center;gap:.4rem}
+    #f-read .sig-tag{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.1em;color:var(--text-dim);border:1px solid var(--border);border-radius:5px;padding:2px 6px}
+    #f-read .sig-num{font-family:var(--font-display);font-weight:700;font-size:2.4rem;line-height:1;color:var(--gold);display:flex;align-items:baseline;gap:.3rem}
+    #f-read .sig-num small{font-size:0.795rem;color:var(--text-dim);font-weight:400;font-family:'Inter',sans-serif}
+    #f-read .sig-price{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-dim)}
+    #f-read .sig-bar{position:relative;height:5px;background:rgba(255,255,255,.07);border-radius:3px;margin:.1rem 0}
+    #f-read .sig-fill{position:absolute;left:0;top:0;height:100%;border-radius:3px;background:var(--gold);transition:width .5s}
+    #f-read .sig-dot{position:absolute;top:-3px;width:11px;height:11px;border-radius:50%;background:var(--gold);border:2px solid var(--surface);transition:left .5s}
+    #f-read .sig-read{font-size:0.792rem;line-height:1.45;color:var(--text);min-height:2.1em}
+    #f-read .sig-read b{color:var(--gold)}
+    #f-read .sig-link{font-size:0.777rem;color:var(--text-dim);font-weight:600;margin-top:auto}
+    #f-read .sig:hover .sig-link{color:var(--gold)}
+    </style>
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><circle cx="6" cy="15" r="4" /> <circle cx="18" cy="15" r="4" /> <path d="M14 15a2 2 0 0 0-2-2 2 2 0 0 0-2 2" /> <path d="M2.5 13 5 7c.7-1.3 1.4-2 3-2" /> <path d="M21.5 13 19 7c-.7-1.3-1.5-2-3-2" /></svg>The Read</h2><span class="read-sub">What today's prices actually mean</span></div>
+    <div class="sig-grid">
+      <a href="/corn-futures-prices" class="sig" id="sig-corn"><div class="sig-top"><span class="sig-name"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn</span><span class="sig-tag" id="sig-corn-tag">&middot;</span></div><div class="sig-num"><span id="sig-corn-num">44</span><small id="sig-corn-sub">44th pctile</small></div><div class="sig-price" id="sig-corn-price">$4.59 &middot; range $3.68&ndash;$8.18</div><div class="sig-bar"><div class="sig-fill" id="sig-corn-fill" style="width:0"></div><div class="sig-dot" id="sig-corn-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-corn-read">At the 44th percentile of the last 5 years — below the 5-year midpoint.</div><div class="sig-link">Full corn read &rarr;</div></a>
+      <a href="/soybean-futures-prices" class="sig" id="sig-beans"><div class="sig-top"><span class="sig-name"><svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Soybeans</span><span class="sig-tag" id="sig-beans-tag">&middot;</span></div><div class="sig-num"><span id="sig-beans-num">39</span><small id="sig-beans-sub">39th pctile</small></div><div class="sig-price" id="sig-beans-price">$11.67 &middot; range $9.39&ndash;$17.45</div><div class="sig-bar"><div class="sig-fill" id="sig-beans-fill" style="width:0"></div><div class="sig-dot" id="sig-beans-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-beans-read">At the 39th percentile of the last 5 years — below the 5-year midpoint.</div><div class="sig-link">Full soybean read &rarr;</div></a>
+      <a href="/wheat-futures-prices" class="sig" id="sig-wheat"><div class="sig-top"><span class="sig-name"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> Wheat</span><span class="sig-tag" id="sig-wheat-tag">&middot;</span></div><div class="sig-num"><span id="sig-wheat-num">64</span><small id="sig-wheat-sub">64th pctile</small></div><div class="sig-price" id="sig-wheat-price">$6.74 &middot; range $4.99&ndash;$13.48</div><div class="sig-bar"><div class="sig-fill" id="sig-wheat-fill" style="width:0"></div><div class="sig-dot" id="sig-wheat-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-wheat-read">At the 64th percentile of the last 5 years — above the 5-year midpoint.</div><div class="sig-link">Full wheat read &rarr;</div></a>
+      <a href="/cattle-futures-prices" class="sig" id="sig-cattle"><div class="sig-top"><span class="sig-name"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg> Cattle</span><span class="sig-tag" id="sig-cattle-tag">&middot;</span></div><div class="sig-num"><span id="sig-cattle-num">&mdash;</span><small id="sig-cattle-sub"></small></div><div class="sig-price" id="sig-cattle-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-cattle-fill" style="width:0"></div><div class="sig-dot" id="sig-cattle-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-cattle-read">At the 79th percentile of the last 5 years — historically high — above most of the last 5 years.</div><div class="sig-link">Full cattle read &rarr;</div></a>
+    </div>
+  </section>
+  <script>
+  (function(){
+    var GR={corn:{s:0.01,sk:'corn'},beans:{s:0.01,sk:'soybean'},wheat:{s:0.01,sk:'wheat'}};
+    function $(i){return document.getElementById(i);}
+    function ord(n){var v=n%100;if(v>=11&&v<=13)return'th';return({1:'st',2:'nd',3:'rd'})[n%10]||'th';}
+    function bar(pre,f){f=Math.max(0,Math.min(100,f));var a=$(pre+'-fill'),b=$(pre+'-dot');if(a)a.style.width=f+'%';if(b)b.style.left='calc('+f+'% - 5px)';}
+    function r5(p){if(p<10)return['Near a 5-yr low','&mdash; rare territory.'];if(p<25)return['Historically low','&mdash; below most of the last 5 years.'];if(p<45)return['Below the 5-yr midpoint','.'];if(p<=55)return['Around the 5-yr midpoint','.'];if(p<75)return['Above the 5-yr midpoint','.'];if(p<90)return['Historically high','&mdash; above most of the last 5 years.'];return['Near a 5-yr high','&mdash; rare territory.'];}
+    function r52(p){if(p<25)return['Lower quartile','of its 52-week range.'];if(p<50)return['Lower half','of its 52-week range.'];if(p<75)return['Upper half','of its 52-week range.'];return['Upper quartile','of its 52-week range.'];}
+    function get(u){return fetch(u,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
+    Promise.all([get('/data/prices.json'),get('/data/price-stats.json'),get('/data/cot.json')]).then(function(R){
+      var px=(R[0]&&R[0].quotes)||{},stats=R[1]||{},cot=R[2]||{};
+      Object.keys(GR).forEach(function(k){
+        var g=GR[k],pre='sig-'+k,st=stats[g.sk],q=px[k],pct,lo,hi,cur,tag,rd;
+        if(st&&st.pct!=null){pct=st.pct;lo=st.lo;hi=st.hi;cur=st.cur;tag='5-YR';rd=r5(pct);}
+        else if(q&&q.close!=null&&q.wk52_hi!=null&&q.wk52_lo!=null&&q.wk52_hi>q.wk52_lo){cur=q.close*g.s;lo=q.wk52_lo*g.s;hi=q.wk52_hi*g.s;pct=Math.round((q.close-q.wk52_lo)/(q.wk52_hi-q.wk52_lo)*100);tag='52-WK';rd=r52(pct);}
+        else return;
+        pct=Math.max(0,Math.min(100,pct));
+        if($(pre+'-num'))$(pre+'-num').textContent=pct;
+        if($(pre+'-sub'))$(pre+'-sub').textContent=ord(pct)+' pctile';
+        if($(pre+'-tag'))$(pre+'-tag').textContent=tag;
+        if($(pre+'-price'))$(pre+'-price').textContent='$'+cur.toFixed(2)+' \u00b7 range $'+lo.toFixed(2)+'\u2013$'+hi.toFixed(2);
+        bar(pre,(cur-lo)/(hi-lo)*100);
+        if($(pre+'-read'))$(pre+'-read').innerHTML='<b>'+rd[0]+'</b> '+rd[1];
+      });
+      var le=px.cattle,gf=px.feeders,lc=cot.livecattle,pre='sig-cattle';
+      if(le&&gf&&le.close!=null&&gf.close!=null){
+        var ratio=gf.close/le.close;
+        if($(pre+'-num'))$(pre+'-num').textContent=ratio.toFixed(2);
+        if($(pre+'-sub'))$(pre+'-sub').textContent=': 1 feeder/live';
+        if($(pre+'-price'))$(pre+'-price').textContent='Live $'+le.close.toFixed(2)+' \u00b7 Feeder $'+gf.close.toFixed(2);
+        var cp=null;if(lc&&lc.min52!=null&&lc.max52!=null&&lc.max52>lc.min52){cp=Math.round((lc.net-lc.min52)/(lc.max52-lc.min52)*100);cp=Math.max(0,Math.min(100,cp));}
+        bar(pre,cp!=null?cp:50);
+        if(cp!=null){if($(pre+'-tag'))$(pre+'-tag').textContent='COT';if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Funds '+(lc.net>=0?'net long':'net short')+' fed cattle</b> ('+cp+'%) &mdash; feeders near a 52-wk low.';}
+        else{if($(pre+'-tag'))$(pre+'-tag').textContent='RATIO';if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Feeder/live '+ratio.toFixed(2)+':1.</b> Value split between cow-calf and feedlots.';}
+      }
+    });
+  })();
+  </script>
+  
+  <div class="sec-head zone-head"><h2 class="sec-title">Weather</h2><span class="zone-sub">Your spot, the radar and the season ahead</span></div>
+
+  <div class="dash-grid">
+<div class="fade-up" id="f2" style="transition-delay:.08s">
+      <div class="sec-head"><h2 class="sec-title">Local Conditions</h2></div>
+      <div class="card wx-card"><div class="card-body">
+        <div id="wx-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 0;gap:.65rem">
+          <div style="font-size:1.8rem" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></div>
+          <div style="font-size:.9rem;color:var(--text-dim);text-align:center">Getting your local weather&hellip;</div>
+          <button id="btn-allow-loc" style="padding:.65rem 1.25rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;">Allow Location</button>
+          <button id="btn-zip-instead" style="background:none;border:none;color:var(--text-muted);font-size:0.795rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Enter ZIP instead</button>
+        </div>
+        <div id="wx-zip-entry" style="display:none;margin-bottom:.85rem">
+          <div style="display:flex;gap:.5rem">
+            <input type="text" id="wx-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for weather" style="flex:1;padding:.65rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
+            <button id="btn-wx-go" style="padding:.65rem 1rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;">Go</button>
+          </div>
+        </div>
+        <div id="wx-data" style="display:none">
+          <div class="wx-hero">
+            <div class="wx-icon" id="wx-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div>
+            <div>
+              <div class="wx-temp"><span id="wx-temp">--</span></div>
+              <div class="wx-desc" id="wx-desc">Current conditions</div>
+              <div class="wx-loc" id="wx-loc"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Locating...</div>
+            </div>
+          </div>
+          <div class="wx-grid">
+            <div class="wstat"><div class="wstat-lbl">Wind</div><div class="wstat-val" id="wx-wind">--</div></div>
+            <div class="wstat"><div class="wstat-lbl">Humidity</div><div class="wstat-val" id="wx-humid">--</div></div>
+            <div class="wstat"><div class="wstat-lbl">Precip Chance</div><div class="wstat-val" id="wx-precip">--</div></div>
+            <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div>
+          </div>
+          <style>
+          .wx-fs-bridge{display:flex;align-items:center;gap:.7rem;margin:.9rem 0 .15rem;padding:.8rem .9rem;background:linear-gradient(90deg,rgba(212,162,63,.10),rgba(212,162,63,.03));border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;text-decoration:none;transition:border-color .15s,transform .15s}
+          .wx-fs-bridge:hover{border-color:var(--gold);transform:translateY(-1px)}
+          .wx-fs-bridge .wfb-ic{flex:none;color:var(--gold);display:flex}
+          .wx-fs-bridge .wfb-ic .ic{width:1.55rem;height:1.55rem}
+          .wx-fs-bridge .wfb-t{display:block;font-family:var(--font-display);font-weight:700;font-size:.93rem;color:var(--text);line-height:1.2}
+          .wx-fs-bridge .wfb-s{display:block;font-size:0.785rem;color:var(--text-dim);margin-top:.16rem;line-height:1.3}
+          /* v4.5 weather legibility pass — dissolve box-in-box, full-bleed on phones, bigger type */
+          .wx-card #wx-data .wx-summary-card{background:none;border:0;border-radius:0;padding:1rem 0 0;border-top:1px solid var(--border)}
+          .wx-card .wx-7day-strip{gap:.45rem}
+          .wx-card .wx-7day-cell{padding:.75rem .3rem;gap:.32rem}
+          .wx-card .wx-7day-name{font-size:clamp(.7rem,3vw,.8rem)}
+          .wx-card .wx-7day-temps{font-size:clamp(.95rem,4.6vw,1.2rem)}
+          .wx-card .wx-7day-meta{font-size:clamp(.68rem,3vw,.78rem);line-height:1.55}
+          .wx-card .wx-hourly-toggle{font-size:0.795rem}
+          .wx-card .wx-hourly-cell{min-width:52px;padding:.42rem .3rem;gap:.16rem}
+          .wx-card .wx-hourly-hr{font-size:0.775rem}
+          .wx-card .wx-hourly-temp{font-size:.9rem}
+          .wx-card .wx-hourly-precip,.wx-card .wx-hourly-wind{font-size:0.77rem}
+          .wx-card .wx-chart-toggle{font-size:0.775rem}
+          .wx-card .wx-chart-title{font-size:0.785rem}
+          .wx-card .wx-chart-legend{font-size:0.795rem}
+          .wx-card .wx-chart-takeaway{font-size:.84rem;line-height:1.6}
+          @media(max-width:520px){
+            .wx-card{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);border-left:0;border-right:0;border-radius:0}
+            .wx-card .card-body{padding:1rem .9rem}
+            .wx-card .wx-chart-panel{padding:.8rem .55rem .65rem}
+          }
+          </style>
+          <a href="/field-scout" class="wx-fs-bridge" aria-label="Open Field Scout — soil, crop history, crop vigor and cash bids for your exact field">
+            <span class="wfb-ic"><svg class="ic" aria-hidden="true"><use href="#i-satellite"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="wfb-t">Now see your exact field &rarr;</span>
+              <span class="wfb-s">Soil, 5-yr crop history, satellite crop-vigor &amp; nearby cash bids &mdash; free, no login</span>
+            </span>
+          </a>
+          <div class="wx-today" id="wx-today-summary"></div>
+          <div id="wx-forecast" style="display:none"></div>
+          <div class="wx-data-extra">
+            <div class="wx-extra-stat with-chart" id="gdu-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="gdu-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Since Apr 1</div><div class="wx-extra-val" id="gdu-val">--</div><div class="wx-extra-ctx" id="gdu-ctx">Growing degree units</div><div class="wx-chart-toggle" id="gdu-chart-toggle">&#x25BC; Show 5-yr history</div></div>
+            <div class="wx-extra-stat with-chart" id="precip-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="precip-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg> 30-Day Precip</div><div class="wx-extra-val" id="precip-val">--</div><div class="wx-extra-ctx" id="precip-ctx">Trailing 30 days</div><div class="wx-chart-toggle" id="precip-chart-toggle">&#x25BC; Show monthly history</div></div>
+          </div>
+          <div class="wx-chart-panel" id="gdu-chart-panel" role="region" aria-label="5-year GDU monthly history">
+            <div class="wx-chart-title" id="gdu-chart-title">GDU by month &middot; Apr&ndash;Oct &middot; 5-yr avg vs this year</div>
+            <div id="gdu-chart-svg"></div>
+            <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold)"></span>This year</span></div>
+            <div class="wx-chart-takeaway" id="gdu-takeaway"></div>
+          </div>
+          <div class="wx-chart-panel" id="precip-chart-panel" role="region" aria-label="5-year precipitation monthly history">
+            <div class="wx-chart-title" id="precip-chart-title">Precip by month &middot; Jan&ndash;Dec &middot; 5-yr avg vs this year</div>
+            <div id="precip-chart-svg"></div>
+            <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold)"></span>This year</span></div>
+            <div class="wx-chart-takeaway" id="precip-takeaway"></div>
+          </div>
+          <div class="wx-summary-card" style="margin-top:.85rem">
+            <div class="wx-summary-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> 5-Day Forecast</div>
+            <div id="wx-forecast-7day" class="wx-7day-strip">
+              <div class="wx-7day-cell"><div class="wx-7day-name">Today</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
+              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
+              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
+              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
+              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
+            </div>
+            <button class="wx-hourly-toggle" id="wx-hourly-toggle" aria-expanded="false" aria-controls="wx-hourly-panel">&#x25BC; Show hourly forecast</button>
+            <div class="wx-hourly-panel" id="wx-hourly-panel" role="region" aria-label="24-hour hourly forecast">
+              <div class="wx-hourly-strip" id="wx-hourly-strip"></div>
+            </div>
+            <div style="margin-top:.5rem;font-size:0.78rem;color:var(--text-muted);text-align:center"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> <span id="wx-loc-label">Set location above</span></div>
+          </div>
+          <button id="btn-change-loc" style="margin-top:.65rem;background:none;border:none;color:var(--text-muted);font-size:0.78rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Change location</button>
+        </div>
+      </div></div>
+    </div>
+  </div>
+<div class="radar-section fade-up" id="f-radar">
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="M20 12h2" /> <path d="m19.07 4.93-1.41 1.41" /> <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" /> <path d="M3 20a5 5 0 1 1 8.9-4H13a3 3 0 0 1 2 5.24" /> <path d="M11 20v2" /> <path d="M7 19v2" /></svg>Radar, Forecast &amp; Drought</h2><a href="/drought-monitor" class="sec-all">Drought Monitor &rarr;</a></div>
+    <div class="radar-grid">
+      <div class="radar-card">
+        <div style="padding:.6rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:0.77rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)"><span class="live-dot" style="display:inline-block" aria-hidden="true"></span> Live Radar</span>
+          <span style="font-size:0.77rem;color:var(--text-muted)">Powered by Windy</span>
+        </div>
+        <iframe id="windy-frame" src="" data-src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=5&overlay=radar&product=radar&level=surface&lat=42.0&lon=-93.5&detailLat=42.0&detailLon=-93.5&detail=false&pressure=false&menu=false&message=false&marker=false&calendar=now&thunder=false" width="100%" style="border:none;display:block;min-height:320px;height:100%;aspect-ratio:unset" loading="lazy" title="Live Radar &mdash; Windy" allow="geolocation; fullscreen" allowfullscreen></iframe>
+      </div>
+      <div class="radar-sidebar" style="display:flex;flex-direction:column;">
+        <div class="drought-embed" style="flex:1;display:flex;flex-direction:column;">
+          <div style="padding:.6rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:0.77rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)">Drought Monitor</span>
+            <a href="/drought-monitor" style="font-size:0.77rem;color:var(--text-muted)">Full Map &rarr;</a>
+          </div>
+          <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener" title="View full interactive drought map" style="flex:1;display:flex;align-items:center;">
+            <img id="drought-img" src="" alt="US Drought Monitor &mdash; current week" style="display:block;width:100%;height:auto" loading="lazy">
+          </a>
+          <div id="drought-fallback" class="drought-fallback" style="display:none">
+            <span style="font-size:1.5rem"><svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg></span>
+            <span style="font-size:.82rem;color:var(--text-dim)">Drought map loading&hellip;</span>
+            <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener">View on droughtmonitor.unl.edu &rarr;</a>
+          </div>
+          <div style="padding:.4rem .8rem;font-size:0.77rem;color:var(--text-muted);text-align:right;border-top:1px solid var(--border)">
+            Source: USDA NDMC &middot; Updated Thursday &middot; <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;">Full Interactive Map &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="fade-up" id="f-noaa">
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" /></svg>NOAA Seasonal Outlooks</h2><a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" rel="noopener" class="sec-all">CPC Full Outlooks &rarr;</a></div>
     <div class="noaa-tabs" id="noaa-tabs">
@@ -1292,7 +1310,36 @@
     </div>
     <div class="noaa-note">Source: <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" rel="noopener">NOAA Climate Prediction Center</a> &middot; 1-Month issued last day of month &middot; 3-Month issued 3rd Thursday &middot; <span id="noaa-period-label">1-Month (30-Day)</span></div>
   </div>
-  <div class="fade-up" id="f5">
+  
+  <div class="sec-head zone-head"><h2 class="sec-title">Harvest 2026</h2><span class="zone-sub">What to do between now and the combine</span></div>
+<div class="hbz fade-up" id="harvest-band">
+    <div class="hbz-k" id="hbz-kicker">Harvest 2026</div>
+    <div class="hbz-g">
+      <a class="hbz-c" href="/yield-estimator"><strong>What&rsquo;s the field going to make?</strong><em>Ear and pod counts to bushels</em></a>
+      <a class="hbz-c" href="/harvest-price-tracker"><strong>Your harvest price</strong><em>Discovery window, live daily average</em></a>
+      <a class="hbz-c" href="/grain-bin-calculator"><strong>Will it fit in the bin?</strong><em>Capacity, shrink, size a new one</em></a>
+      <a class="hbz-c" href="/breakeven"><strong>What do I need to sell at?</strong><em>Break-even by the bushel</em></a>
+      <a class="hbz-c" href="/storage-crunch"><strong>Store it or move it?</strong><em>Your state&rsquo;s storage squeeze</em></a>
+    </div>
+  </div>
+  <script>
+  /* Seasonal harvest band. Set HARVEST_BAND to 0 to hide it; nothing else
+     depends on it. It does not expire on its own — switch it off after
+     harvest so it cannot go stale. */
+  (function(){
+    var HARVEST_BAND = 1;
+    var el=document.getElementById('harvest-band'); if(!el) return;
+    if(!HARVEST_BAND){ el.style.display='none'; return; }
+    var k=document.getElementById('hbz-kicker'); if(!k) return;
+    var n=new Date(), t=new Date(n.getFullYear(),n.getMonth(),n.getDate());
+    var d=Math.round((new Date(n.getFullYear(),9,1)-t)/86400000);
+    k.textContent = d>0 ? 'Harvest 2026 \u00b7 '+d+' days to October price discovery' : 'Harvest 2026';
+  })();
+  </script>
+
+  
+  <div class="sec-head zone-head"><h2 class="sec-title">USDA &amp; your insurance</h2><span class="zone-sub">Reports, and the discovery windows that set your guarantee</span></div>
+<div class="fade-up" id="f5">
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /></svg>Upcoming USDA Reports</h2><a href="/usda-calendar" class="sec-all">Full Calendar &rarr;</a></div>
     <div class="usda-cal-card"><div class="cal-strip" id="usda-cal-strip" role="list" tabindex="0" aria-label="Upcoming USDA report dates — scroll for more"></div></div>
   </div>
@@ -1392,91 +1439,69 @@
   })();
   </script>
 
-  <div class="fade-up" id="f-crypto">
-    <div class="pc-section-lbl"><svg class="ic" aria-hidden="true"><use href="#i-medal"/></svg> Metals &amp; Digital Assets</div>
-    <div class="price-cards-grid-2" style="margin-bottom:1rem">
-      <div class="pc pc-sm" data-spark="gold"><div class="pc-head"><span class="pc-name"><span class="pc-name-icon"><svg class="ic" aria-hidden="true"><use href="#i-medal"/></svg></span>Gold</span><span class="pc-contract">Spot</span></div><div class="pc-price" id="pcp-gold">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-gold">--</span></div><div class="pc-prev" id="pcprev-gold"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-gold-lo">$3,125</span><span></span><span id="pcrl-gold-hi">$5,586</span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-gold" style="width:65.0%"></div><div class="pc-range-dot" id="pcrd-gold" style="left:65.0%"></div></div></div></div>
-      <div class="pc pc-sm" data-spark="silver"><div class="pc-head"><span class="pc-name"><span class="pc-name-icon"><svg class="ic" aria-hidden="true"><use href="#i-medal"/></svg></span>Silver</span><span class="pc-contract">Spot</span></div><div class="pc-price" id="pcp-silver">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-silver">--</span></div><div class="pc-prev" id="pcprev-silver"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-silver-lo">$32</span><span></span><span id="pcrl-silver-hi">$121</span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-silver" style="width:49.0%"></div><div class="pc-range-dot" id="pcrd-silver" style="left:49.0%"></div></div></div></div>
-      <div class="pc pc-sm" data-spark="bitcoin"><div class="pc-head"><span class="pc-name"><span class="pc-name-icon">&#x20BF;</span>Bitcoin</span><span class="pc-contract">USD</span></div><div class="pc-price" id="pc-btc">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-btc">--</span></div><div class="pc-prev" id="pcprev-btc"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-bitcoin-lo">$60,074</span><span></span><span id="pcrl-bitcoin-hi">$126,198</span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-bitcoin" style="width:27.1%"></div><div class="pc-range-dot" id="pcrd-bitcoin" style="left:27.1%"></div></div></div></div>
-      <div class="pc pc-sm" data-spark="ripple"><div class="pc-head"><span class="pc-name"><span class="pc-name-icon">&#x25CE;</span>XRP</span><span class="pc-contract">USD</span></div><div class="pc-price" id="pc-xrp">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-xrp">--</span></div><div class="pc-prev" id="pcprev-xrp"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-ripple-lo">$1.13</span><span></span><span id="pcrl-ripple-hi">$3.65</span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-ripple" style="width:12.1%"></div><div class="pc-range-dot" id="pcrd-ripple" style="left:12.1%"></div></div></div></div>
-    </div>
-    <div class="price-cards-grid-2" style="margin-bottom:2rem">
-      <div class="pc pc-sm" data-spark="kaspa"><div class="pc-head"><span class="pc-name"><span class="pc-name-icon"><svg class="ic" aria-hidden="true"><use href="#i-gem"/></svg></span>Kaspa</span><span class="pc-contract">USD</span></div><div class="pc-price" id="pc-kas">--</div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-kas">--</span></div><div class="pc-prev" id="pcprev-kas"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-kaspa-lo">$0.014</span><span></span><span id="pcrl-kaspa-hi">$0.131</span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-kaspa" style="width:17.0%"></div><div class="pc-range-dot" id="pcrd-kaspa" style="left:17.0%"></div></div></div></div>
-      <div class="pc pc-sm" role="img" aria-label="FFAI Composite Market Signal Score" style="display:flex;flex-direction:column;border-color:rgba(91,163,224,.25);background:linear-gradient(135deg,var(--surface) 0%,rgba(91,163,224,.04) 100%)">
-        <div class="pc-head"><span class="pc-name"><span class="pc-name-icon"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg></span>FFAI Index</span><span class="pc-contract" style="color:var(--blue)">Composite Signal</span></div>
-        <div style="display:flex;align-items:baseline;gap:.5rem;margin:.35rem 0 .15rem"><span id="ffai-score-compact" style="font-family:var(--font-display);font-size:2.6rem;font-weight:800;color:var(--blue);line-height:1">--</span><span style="font-size:0.78rem;color:var(--text-muted);font-weight:600">/ 100</span></div>
-        <div style="font-size:0.77rem;color:var(--text-dim);line-height:1.5;margin-bottom:.3rem">Composite agricultural market health score &mdash; commodities, inputs, trade &amp; weather factors.</div>
-        <div style="margin-top:auto;padding-top:.45rem;border-top:1px solid rgba(91,163,224,.15);display:flex;align-items:center;justify-content:space-between"><span style="font-size:0.755rem;color:var(--text-muted)">Updated quarterly</span><span style="font-size:0.755rem;color:var(--text-muted);opacity:.7">Methodology coming soon</span></div>
-      </div>
+  
+  <div class="sec-head zone-head"><h2 class="sec-title">Tools</h2><span class="zone-sub">Every calculator on the site</span></div>
+
+  <div class="dash-grid">
+<div class="fade-up" id="f3" style="transition-delay:.16s">
+      <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" /></svg>Quick Tools</h2></div>
+      <div class="card"><div class="card-body">
+        <div class="tool-list">
+          <style>.tool-widget--scout{border-left:3px solid var(--gold)!important}.tool-widget--scout .tool-widget-badge{background:rgba(212,162,63,.14);color:var(--gold)}</style>
+          <a href="/field-scout" class="tool-widget tool-widget--scout">
+            <div class="tool-widget-inner">
+              <div class="tool-widget-top">
+                <span class="tool-widget-icon"><svg class="ic" aria-hidden="true"><use href="#i-satellite"/></svg></span>
+                <div class="tool-widget-body"><span class="tool-widget-status">Field Scout</span></div>
+                <span class="tool-widget-badge">Draw your field</span>
+                <span class="tool-widget-arr">&rarr;</span>
+              </div>
+              <div class="tool-widget-bottom">
+                <span class="tool-widget-rec">Soil, 5-yr crop history, satellite crop-vigor &amp; local cash bids for any field you draw</span>
+              </div>
+            </div>
+          </a>
+          <a href="/spray" id="wsp-spray" class="tool-widget">
+            <div class="tool-widget-inner">
+              <div class="tool-widget-top">
+                <span class="tool-widget-icon" id="wsp-spray-icon"><svg class="ic" aria-hidden="true"><use href="#i-hourglass"/></svg></span>
+                <div class="tool-widget-body"><span class="tool-widget-status">Spray Advisory</span></div>
+                <span class="tool-widget-badge" id="wsp-spray-status">Loading&hellip;</span>
+                <span class="tool-widget-arr">&rarr;</span>
+              </div>
+              <div class="tool-widget-bottom">
+                <span class="tool-widget-rec" id="wsp-spray-detail">Waiting for weather data</span>
+              </div>
+            </div>
+          </a>
+          <div class="spray-windows" id="spray-windows">
+            <div class="spray-windows-lbl"><svg class="ic" aria-hidden="true"><use href="#i-wind"/></svg> 5-Day Spray Windows</div>
+            <div class="spray-days" id="spray-days-strip"></div>
+          </div>
+          <a href="/urea" class="tool-widget tool-widget--urea">
+            <div class="tool-widget-inner">
+              <div class="tool-widget-top">
+                <span class="tool-widget-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></span>
+                <div class="tool-widget-body"><span class="tool-widget-status">Urea Volatilization Risk</span></div>
+                <span class="tool-widget-score" id="wsp-urea-score">--</span>
+                <span class="tool-widget-arr">&rarr;</span>
+              </div>
+              <div class="tool-widget-bottom">
+                <span class="tool-widget-badge" id="wsp-urea-badge">Loading&hellip;</span>
+                <span class="tool-widget-rec" id="wsp-urea-rec">Waiting for weather data</span>
+              </div>
+            </div>
+          </a>
+          <a href="/breakeven" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg> Break-Even Calculator</span><span class="tool-arr">&rarr;</span></a>
+          <a href="/grain-bin-calculator" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-construction"/></svg> Grain Bin Calculator</span><span class="tool-arr">&rarr;</span></a>
+          <a href="/gdu-calculator" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Calculator</span><span class="tool-arr">&rarr;</span></a>
+          <a href="/ag-odds" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Ag Prediction Markets</span><span class="tool-arr">&rarr;</span></a>
+          <a href="/fast-facts" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> Fast Facts</span><span class="tool-arr">&rarr;</span></a>
+        </div>
+      </div></div>
     </div>
   </div>
-  <section class="fade-up" id="f-read" aria-labelledby="read-heading">
-    <style>
-    #f-read .read-sub{font-size:0.785rem;color:var(--text-dim)}
-    #f-read .sig-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px}
-    #f-read .sig{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:1.05rem 1.1rem;display:flex;flex-direction:column;gap:.5rem;text-decoration:none;color:inherit;transition:border-color .18s,transform .18s}
-    #f-read .sig:hover{border-color:var(--gold);transform:translateY(-2px)}
-    #f-read .sig-top{display:flex;align-items:center;justify-content:space-between}
-    #f-read .sig-name{font-weight:700;font-size:.92rem;color:var(--text);display:flex;align-items:center;gap:.4rem}
-    #f-read .sig-tag{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.1em;color:var(--text-dim);border:1px solid var(--border);border-radius:5px;padding:2px 6px}
-    #f-read .sig-num{font-family:var(--font-display);font-weight:700;font-size:2.4rem;line-height:1;color:var(--gold);display:flex;align-items:baseline;gap:.3rem}
-    #f-read .sig-num small{font-size:0.795rem;color:var(--text-dim);font-weight:400;font-family:'Inter',sans-serif}
-    #f-read .sig-price{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-dim)}
-    #f-read .sig-bar{position:relative;height:5px;background:rgba(255,255,255,.07);border-radius:3px;margin:.1rem 0}
-    #f-read .sig-fill{position:absolute;left:0;top:0;height:100%;border-radius:3px;background:var(--gold);transition:width .5s}
-    #f-read .sig-dot{position:absolute;top:-3px;width:11px;height:11px;border-radius:50%;background:var(--gold);border:2px solid var(--surface);transition:left .5s}
-    #f-read .sig-read{font-size:0.792rem;line-height:1.45;color:var(--text);min-height:2.1em}
-    #f-read .sig-read b{color:var(--gold)}
-    #f-read .sig-link{font-size:0.777rem;color:var(--text-dim);font-weight:600;margin-top:auto}
-    #f-read .sig:hover .sig-link{color:var(--gold)}
-    </style>
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><circle cx="6" cy="15" r="4" /> <circle cx="18" cy="15" r="4" /> <path d="M14 15a2 2 0 0 0-2-2 2 2 0 0 0-2 2" /> <path d="M2.5 13 5 7c.7-1.3 1.4-2 3-2" /> <path d="M21.5 13 19 7c-.7-1.3-1.5-2-3-2" /></svg>The Read</h2><span class="read-sub">What today's prices actually mean</span></div>
-    <div class="sig-grid">
-      <a href="/corn-futures-prices" class="sig" id="sig-corn"><div class="sig-top"><span class="sig-name"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn</span><span class="sig-tag" id="sig-corn-tag">&middot;</span></div><div class="sig-num"><span id="sig-corn-num">44</span><small id="sig-corn-sub">44th pctile</small></div><div class="sig-price" id="sig-corn-price">$4.59 &middot; range $3.68&ndash;$8.18</div><div class="sig-bar"><div class="sig-fill" id="sig-corn-fill" style="width:0"></div><div class="sig-dot" id="sig-corn-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-corn-read">At the 44th percentile of the last 5 years — below the 5-year midpoint.</div><div class="sig-link">Full corn read &rarr;</div></a>
-      <a href="/soybean-futures-prices" class="sig" id="sig-beans"><div class="sig-top"><span class="sig-name"><svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Soybeans</span><span class="sig-tag" id="sig-beans-tag">&middot;</span></div><div class="sig-num"><span id="sig-beans-num">39</span><small id="sig-beans-sub">39th pctile</small></div><div class="sig-price" id="sig-beans-price">$11.67 &middot; range $9.39&ndash;$17.45</div><div class="sig-bar"><div class="sig-fill" id="sig-beans-fill" style="width:0"></div><div class="sig-dot" id="sig-beans-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-beans-read">At the 39th percentile of the last 5 years — below the 5-year midpoint.</div><div class="sig-link">Full soybean read &rarr;</div></a>
-      <a href="/wheat-futures-prices" class="sig" id="sig-wheat"><div class="sig-top"><span class="sig-name"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> Wheat</span><span class="sig-tag" id="sig-wheat-tag">&middot;</span></div><div class="sig-num"><span id="sig-wheat-num">64</span><small id="sig-wheat-sub">64th pctile</small></div><div class="sig-price" id="sig-wheat-price">$6.74 &middot; range $4.99&ndash;$13.48</div><div class="sig-bar"><div class="sig-fill" id="sig-wheat-fill" style="width:0"></div><div class="sig-dot" id="sig-wheat-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-wheat-read">At the 64th percentile of the last 5 years — above the 5-year midpoint.</div><div class="sig-link">Full wheat read &rarr;</div></a>
-      <a href="/cattle-futures-prices" class="sig" id="sig-cattle"><div class="sig-top"><span class="sig-name"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg> Cattle</span><span class="sig-tag" id="sig-cattle-tag">&middot;</span></div><div class="sig-num"><span id="sig-cattle-num">&mdash;</span><small id="sig-cattle-sub"></small></div><div class="sig-price" id="sig-cattle-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-cattle-fill" style="width:0"></div><div class="sig-dot" id="sig-cattle-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-cattle-read">At the 79th percentile of the last 5 years — historically high — above most of the last 5 years.</div><div class="sig-link">Full cattle read &rarr;</div></a>
-    </div>
-  </section>
-  <script>
-  (function(){
-    var GR={corn:{s:0.01,sk:'corn'},beans:{s:0.01,sk:'soybean'},wheat:{s:0.01,sk:'wheat'}};
-    function $(i){return document.getElementById(i);}
-    function ord(n){var v=n%100;if(v>=11&&v<=13)return'th';return({1:'st',2:'nd',3:'rd'})[n%10]||'th';}
-    function bar(pre,f){f=Math.max(0,Math.min(100,f));var a=$(pre+'-fill'),b=$(pre+'-dot');if(a)a.style.width=f+'%';if(b)b.style.left='calc('+f+'% - 5px)';}
-    function r5(p){if(p<10)return['Near a 5-yr low','&mdash; rare territory.'];if(p<25)return['Historically low','&mdash; below most of the last 5 years.'];if(p<45)return['Below the 5-yr midpoint','.'];if(p<=55)return['Around the 5-yr midpoint','.'];if(p<75)return['Above the 5-yr midpoint','.'];if(p<90)return['Historically high','&mdash; above most of the last 5 years.'];return['Near a 5-yr high','&mdash; rare territory.'];}
-    function r52(p){if(p<25)return['Lower quartile','of its 52-week range.'];if(p<50)return['Lower half','of its 52-week range.'];if(p<75)return['Upper half','of its 52-week range.'];return['Upper quartile','of its 52-week range.'];}
-    function get(u){return fetch(u,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
-    Promise.all([get('/data/prices.json'),get('/data/price-stats.json'),get('/data/cot.json')]).then(function(R){
-      var px=(R[0]&&R[0].quotes)||{},stats=R[1]||{},cot=R[2]||{};
-      Object.keys(GR).forEach(function(k){
-        var g=GR[k],pre='sig-'+k,st=stats[g.sk],q=px[k],pct,lo,hi,cur,tag,rd;
-        if(st&&st.pct!=null){pct=st.pct;lo=st.lo;hi=st.hi;cur=st.cur;tag='5-YR';rd=r5(pct);}
-        else if(q&&q.close!=null&&q.wk52_hi!=null&&q.wk52_lo!=null&&q.wk52_hi>q.wk52_lo){cur=q.close*g.s;lo=q.wk52_lo*g.s;hi=q.wk52_hi*g.s;pct=Math.round((q.close-q.wk52_lo)/(q.wk52_hi-q.wk52_lo)*100);tag='52-WK';rd=r52(pct);}
-        else return;
-        pct=Math.max(0,Math.min(100,pct));
-        if($(pre+'-num'))$(pre+'-num').textContent=pct;
-        if($(pre+'-sub'))$(pre+'-sub').textContent=ord(pct)+' pctile';
-        if($(pre+'-tag'))$(pre+'-tag').textContent=tag;
-        if($(pre+'-price'))$(pre+'-price').textContent='$'+cur.toFixed(2)+' \u00b7 range $'+lo.toFixed(2)+'\u2013$'+hi.toFixed(2);
-        bar(pre,(cur-lo)/(hi-lo)*100);
-        if($(pre+'-read'))$(pre+'-read').innerHTML='<b>'+rd[0]+'</b> '+rd[1];
-      });
-      var le=px.cattle,gf=px.feeders,lc=cot.livecattle,pre='sig-cattle';
-      if(le&&gf&&le.close!=null&&gf.close!=null){
-        var ratio=gf.close/le.close;
-        if($(pre+'-num'))$(pre+'-num').textContent=ratio.toFixed(2);
-        if($(pre+'-sub'))$(pre+'-sub').textContent=': 1 feeder/live';
-        if($(pre+'-price'))$(pre+'-price').textContent='Live $'+le.close.toFixed(2)+' \u00b7 Feeder $'+gf.close.toFixed(2);
-        var cp=null;if(lc&&lc.min52!=null&&lc.max52!=null&&lc.max52>lc.min52){cp=Math.round((lc.net-lc.min52)/(lc.max52-lc.min52)*100);cp=Math.max(0,Math.min(100,cp));}
-        bar(pre,cp!=null?cp:50);
-        if(cp!=null){if($(pre+'-tag'))$(pre+'-tag').textContent='COT';if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Funds '+(lc.net>=0?'net long':'net short')+' fed cattle</b> ('+cp+'%) &mdash; feeders near a 52-wk low.';}
-        else{if($(pre+'-tag'))$(pre+'-tag').textContent='RATIO';if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Feeder/live '+ratio.toFixed(2)+':1.</b> Value split between cow-calf and feedlots.';}
-      }
-    });
-  })();
-  </script>
-  <div class="fade-up" id="f-kalshi">
+<div class="fade-up" id="f-kalshi">
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" /></svg>What's Moving Agriculture</h2><a href="/ag-odds" class="sec-all">All Markets &rarr;</a></div>
     <div id="kalshi-grid" data-markets-handled="true" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(268px,100%),1fr));gap:.65rem;margin-bottom:.5rem"><div id="kalshi-loading" style="grid-column:1/-1;text-align:center;padding:1.2rem;font-size:.8rem;color:var(--text-muted)"><svg class="ic" aria-hidden="true"><use href="#i-hourglass"/></svg> Loading markets&hellip;</div></div>
     <div id="kalshi-footer" style="display:none;padding:.25rem 0 .15rem;text-align:right"><a href="/ag-odds" style="font-size:0.78rem;color:var(--gold);text-decoration:none;font-weight:600">View all ag prediction markets &rarr;</a></div>

@@ -83,6 +83,38 @@
 .hp-cite{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-dim,#8a948f);line-height:1.7;margin:0}
 .hp-tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .hp-hist-src{font-family:'JetBrains Mono',monospace;font-size:0.76rem;color:var(--text-dim,#8a948f);line-height:1.7;margin:.2rem 0 0}
+
+/* ── verdict + tile map hero (2026-08-15) ───────────────────────────────
+   The page used to open with a paragraph and two cards, which told a grower
+   nothing about HIS window. Rule 1: verdict first, tile map second, tables
+   demoted. Colour = the month that state's CORN harvest price is discovered
+   (the country prices its crop in waves, south to north — 8 states in
+   August, 34 in October); a ring marks windows that are open today. */
+.pdv{margin:.2rem 0 1.1rem}
+.pdv-h{font-family:var(--font-display),Inter,sans-serif;font-size:clamp(1.8rem,5vw,2.7rem);font-weight:800;line-height:1.1;color:var(--text);letter-spacing:-.02em;margin:0 0 .4rem}
+.pdv-h em{font-style:normal;color:var(--hp-gold2,#d4a23f)}
+.pdv-s{font-size:1rem;color:var(--text-dim);line-height:1.6;margin:0;max-width:62ch}
+.pdlive{background:linear-gradient(180deg,rgba(74,171,76,.10),transparent);border:1px solid rgba(74,171,76,.4);border-radius:14px;padding:1.1rem 1.1rem;margin:0 0 1.1rem}
+.pdlive-k{font-family:'JetBrains Mono',monospace;font-size:.73rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--hp-green,#4aab4c);margin-bottom:.45rem}
+.pdlive-n{font-family:var(--font-display),Inter,sans-serif;font-size:clamp(2.2rem,7.5vw,3.4rem);font-weight:800;line-height:1;color:var(--text);letter-spacing:-.02em}
+.pdlive-s{font-size:1rem;color:var(--text-dim);line-height:1.6;margin:.45rem 0 0;max-width:58ch}
+.pdlive-bar{height:8px;border-radius:4px;background:var(--surface3);overflow:hidden;margin:.85rem 0 .25rem}
+.pdlive-f{height:100%;background:var(--hp-green,#4aab4c)}
+.pdmini{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(148px,100%),1fr));gap:.5rem;margin-top:.9rem}
+.pdmini div{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:.55rem .7rem}
+.pdmini b{display:block;font-size:.73rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.1rem}
+.pdmini span{font-family:'JetBrains Mono',monospace;font-size:.94rem;color:var(--text)}
+.pdmap-wrap{overflow-x:auto;padding-bottom:.35rem;-webkit-overflow-scrolling:touch}
+.pdmap{display:grid;grid-template-columns:repeat(11,minmax(40px,1fr));gap:4px;min-width:480px}
+.pdt{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;color:#0a1206;border:2px solid transparent;cursor:pointer;padding:0;min-height:40px}
+.pdt.empty{background:none;cursor:default;border:0}
+.pdt.m8{background:#d4a23f}.pdt.m9{background:#c8762e}.pdt.m10{background:#4aab4c}.pdt.m11{background:#5b8fc9}
+.pdt.none{background:var(--surface3);color:var(--text-muted)}
+.pdt.live{border-color:#fff;box-shadow:0 0 0 2px var(--bg,#0a0c0d),0 0 10px rgba(255,255,255,.35)}
+.pdt.sel{outline:3px solid var(--text);outline-offset:1px}
+.pdt:focus-visible{outline:3px solid var(--text);outline-offset:2px}
+.pdleg{display:flex;gap:.85rem;flex-wrap:wrap;margin:.65rem 0 0;font-size:.82rem;color:var(--text-dim);align-items:center}
+.pdleg i{width:13px;height:13px;border-radius:3px;display:inline-block;margin-right:.3rem;vertical-align:-2px}
 </style>
 </head>
 <body>
@@ -90,8 +122,23 @@
 
 <a href="#main" class="skip">Skip to content</a>
 <main id="main" tabindex="-1" class="hp-wrap">
-  <h1>2026 harvest &amp; projected price tracker</h1>
-  <p class="hp-lede">These are the prices that set your revenue guarantee. The <b style="color:var(--hp-gold2)">projected price</b> is locked each February; the <b style="color:var(--hp-green)">harvest price</b> is built day by day each October. When the harvest price climbs above your projected floor, your Revenue Protection guarantee climbs with it. Here's where it stands &mdash; updated daily during each discovery window.</p>
+
+  <div class="pdv">
+    <h1 class="pdv-h" id="pdv-h">When does your <em>price</em> get set?</h1>
+    <p class="pdv-s" id="pdv-s">Your revenue guarantee is built from two averages: a <b style="color:var(--hp-gold2)">projected price</b> before you plant and a <b style="color:var(--hp-green)">harvest price</b> at the end. RMA decides <em>when</em> those averages are taken &mdash; and it is not the same month everywhere. Pick your state.</p>
+  </div>
+
+  <div id="pdlive-slot"></div>
+
+  <div class="pdmap-wrap"><div class="pdmap" id="pdmap" role="group" aria-label="US states by corn harvest price discovery month"></div></div>
+  <div class="pdleg">
+    <span><i style="background:#d4a23f"></i>August</span>
+    <span><i style="background:#c8762e"></i>September</span>
+    <span><i style="background:#4aab4c"></i>October</span>
+    <span><i style="background:#5b8fc9"></i>November</span>
+    <span style="color:var(--text-muted)">month your <b>corn harvest price</b> is discovered &middot; a white ring means that window is open today</span>
+  </div>
+
 
   <div class="hp-banner" id="hp-banner" hidden></div>
 
@@ -116,17 +163,13 @@
 
   <h2>The discovery calendar</h2>
 
-  <!-- 2026-08-15: added after a Georgia crop-insurance agent wrote in to say
-       "our price discoveries are different than the Midwest." He was right.
-       RMA sets discovery windows by CROP and by the county's SALES CLOSING
-       DATE, so Georgia corn averages the SEPTEMBER contract over Aug 1-31,
-       not December over Oct 1-31. Windows come from data/rma-discovery.json,
-       every row read off the CEPP PDF. Unverified states are sent to the CEPP
-       rather than guessed at. -->
+  <!-- RMA sets price discovery windows by crop and by the county sales
+       closing date, so they are not the same everywhere. Windows come from
+       data/rma-discovery.json, transcribed from the CEPP. -->
   <div class="hp-cal" id="hp-region" style="margin-bottom:.8rem">
     <label for="hp-state" style="display:block;font-family:'JetBrains Mono',monospace;font-size:.76rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted,#8a948f);margin:0 .2rem .4rem">Your state &mdash; discovery windows differ</label>
     <select id="hp-state" style="width:100%;max-width:420px;min-height:44px;padding:.5rem .7rem;margin:0 .2rem .6rem;background:var(--surface2,#161b1c);color:var(--text,#e9edeb);border:1px solid var(--border-2,#2a3324);border-radius:8px;font-size:1rem;font-family:inherit">
-      <option value="">Corn Belt and most states (default)</option>
+      <option value="">Select your state — windows differ</option>
     </select>
     <div id="hp-region-out" style="margin:0 .2rem"></div>
   </div>
@@ -338,87 +381,244 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
 <script src="/components/loader.js?v=15" defer></script>
 
 <script>
-/* RMA discovery windows by state (data/rma-discovery.json). Progressive
-   enhancement: with JS off or the fetch failed, the page keeps its baked
-   Midwest copy, which is correct for most of the audience. */
+/* RMA discovery windows by state — data/rma-discovery.json, every row read off
+   RMA's CEPP. Progressive enhancement: JS off or fetch failed keeps the baked
+   Corn Belt copy, which is right for most of the audience.
+   A state can carry SEVERAL rows per crop because RMA keys these tables to the
+   county's SALES CLOSING DATE first (Texas corn has three). We show them all
+   rather than picking one for the grower. */
 (function(){
   var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var sel=document.getElementById('hp-state'), out=document.getElementById('hp-region-out');
   if(!sel||!out) return;
   var KEY='agsist-rma-state';
+  function mmdd(x){ return {m:parseInt(x.slice(0,2),10), d:parseInt(x.slice(3),10)}; }
+  function statusOf(w){
+    var now=new Date(), y=now.getFullYear();
+    var a=mmdd(w.start), b=mmdd(w.end);
+    var s=new Date(y,a.m-1,a.d), e=new Date(y,b.m-1,b.d);   // both at midnight
+    if(e<s) e.setFullYear(y+1);                             // window spans New Year
+    var today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    if(today<s) return {k:'soon', t:'opens '+MO[a.m-1]+' '+a.d};
+    if(today>e) return {k:'done', t:'closed'};
+    // Inclusive calendar-day count, both ends at midnight so DST cannot shift it.
+    // NOTE: RMA averages TRADING days, not calendar days, so this is labelled as
+    // calendar progress -- it is a "how far along is the window" bar, not a
+    // settlement count. Saying "day 16 of 32" for a 31-day August (the first cut
+    // of this, off by one at both ends) would have been wrong twice over.
+    var tot=Math.round((e-s)/86400000)+1;
+    var el=Math.round((today-s)/86400000)+1;
+    return {k:'open', t:'open now', day:el, total:tot,
+            pct:Math.max(4,Math.min(100,Math.round(el/tot*100)))};
+  }
   fetch('/data/rma-discovery.json',{cache:'no-store'}).then(function(r){
     if(!r.ok) throw 0; return r.json();
   }).then(function(d){
-    var groups=d.groups||[], byState={};
-    groups.forEach(function(g){ (g.states||[]).forEach(function(st){ byState[st]=g; }); });
-    Object.keys(byState).sort().forEach(function(st){
-      if(byState[st].default) return;               // covered by the default option
+    var names=Object.keys(d.states||{}).sort();
+    sel.options[0].textContent='Select your state \u2014 windows differ';
+    names.forEach(function(st){
       var o=document.createElement('option'); o.value=st; o.textContent=st; sel.appendChild(o);
     });
-    var o=document.createElement('option'); o.value='__other';
-    o.textContent='My state is not listed'; sel.appendChild(o);
-
-    function win(w){ return w? w.label : null; }
-    function render(st){
-      if(!st){ out.innerHTML=''; paint(null); return; }
-      if(st==='__other'){
-        out.innerHTML='<p class="hp-lede" style="margin:.2rem 0;font-size:.92rem">'+
-          'Only the states above are published here, because every one was read off RMA\u2019s own '+
-          'Commodity Exchange Price Provisions. Rather than guess at yours, look it up directly: find '+
-          'the table for your county\u2019s <b>sales closing date</b>, then your state\u2019s row. '+
-          '<a href="'+d.sources.corn+'" rel="nofollow">CEPP \u2014 corn</a> \u00b7 '+
-          '<a href="'+d.sources.soybeans+'" rel="nofollow">CEPP \u2014 soybeans</a> \u00b7 '+
-          '<a href="'+d.sources.prices+'" rel="nofollow">RMA price discovery</a>.</p>';
-        paint(null); return;
+    function rowsFor(st,crop){
+      var arr=(d.states[st]||{})[crop]||[];
+      if(!arr.length){
+        return '<tr><td style="padding:.4rem .5rem 0 0"><b>'+(crop==='corn'?'Corn':'Soybeans')+'</b></td>'+
+               '<td colspan="4" style="padding:.4rem 0 0;color:var(--text-muted,#8a948f)">'+
+               'No '+crop+' row for this state in the CEPP.</td></tr>';
       }
-      var g=byState[st]; if(!g){ out.innerHTML=''; paint(null); return; }
-      var rows='';
-      ['corn','soybeans'].forEach(function(c){
-        var w=g[c], name=c==='corn'?'Corn':'Soybeans';
-        if(!w){
-          rows+='<tr><td style="padding:.35rem .5rem 0 0"><b>'+name+'</b></td>'+
-                '<td colspan="3" style="padding:.35rem 0 0;color:var(--text-muted,#8a948f)">'+
-                (g[c+'_note']||'Not published here \u2014 look it up in the CEPP.')+'</td></tr>';
-          return;
-        }
-        rows+='<tr><td style="padding:.35rem .5rem 0 0"><b>'+name+'</b></td>'+
-              '<td style="padding:.35rem .5rem 0 0">'+w.exchange+' '+w.contract+'</td>'+
-              '<td style="padding:.35rem .5rem 0 0;color:var(--hp-gold2,#d4a23f)">'+win(w.projected)+'</td>'+
-              '<td style="padding:.35rem 0 0;color:var(--hp-green,#4aab4c)">'+win(w.harvest)+'</td></tr>';
-      });
+      return arr.map(function(w,i){
+        var ps=statusOf(w.projected), hs=statusOf(w.harvest);
+        var bar = hs.k==='open'
+          ? '<div style="height:4px;border-radius:3px;background:var(--surface3,#1d2324);margin-top:.25rem;overflow:hidden">'+
+            '<div style="height:100%;width:'+hs.pct+'%;background:var(--hp-green,#4aab4c)"></div></div>'+
+            '<div style="font-size:.76rem;color:var(--text-muted,#8a948f);margin-top:.15rem">calendar day '+hs.day+' of '+hs.total+' \u00b7 RMA averages trading days</div>'
+          : '';
+        return '<tr>'+
+          '<td style="padding:.4rem .5rem 0 0;vertical-align:top"><b>'+(crop==='corn'?'Corn':'Soybeans')+'</b>'+
+            (arr.length>1?'<div style="font-size:.74rem;color:var(--text-muted,#8a948f)">'+w.sales_closing+' SCD</div>':'')+'</td>'+
+          '<td style="padding:.4rem .5rem 0 0;vertical-align:top;white-space:nowrap">'+w.exchange+' '+w.contract+'</td>'+
+          '<td style="padding:.4rem .5rem 0 0;vertical-align:top;color:var(--hp-gold2,#d4a23f)">'+w.projected.label+
+            '<div style="font-size:.74rem;color:var(--text-muted,#8a948f)">'+ps.t+'</div></td>'+
+          '<td style="padding:.4rem 0 0;vertical-align:top;color:var(--hp-green,#4aab4c)">'+w.harvest.label+
+            '<div style="font-size:.74rem;color:var(--text-muted,#8a948f)">'+hs.t+'</div>'+bar+'</td>'+
+        '</tr>';
+      }).join('');
+    }
+    function render(st){
+      if(!st || !d.states[st]){ out.innerHTML=''; paint(null); return; }
+      var multi=((d.states[st].corn||[]).length>1)||((d.states[st].soybeans||[]).length>1);
       out.innerHTML='<p class="hp-lede" style="margin:.1rem 0 .4rem;font-size:.93rem">'+
-        '<b>'+st+'</b> \u2014 '+g.label+', '+g.sales_closing+' sales closing date. '+
-        'These are your windows, not the Corn Belt\u2019s:</p>'+
-        '<div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:.9rem;min-width:340px">'+
-        '<tr style="color:var(--text-muted,#8a948f);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em">'+
+        '<b>'+st+'</b> \u2014 straight from RMA\u2019s Commodity Exchange Price Provisions:</p>'+
+        '<div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:.9rem;min-width:420px">'+
+        '<tr style="color:var(--text-muted,#8a948f);font-size:.76rem;text-transform:uppercase;letter-spacing:.05em">'+
         '<td style="padding:0 .5rem 0 0">Crop</td><td style="padding:0 .5rem 0 0">Contract</td>'+
-        '<td style="padding:0 .5rem 0 0">Projected</td><td>Harvest</td></tr>'+rows+'</table></div>'+
+        '<td style="padding:0 .5rem 0 0">Projected</td><td>Harvest</td></tr>'+
+        rowsFor(st,'corn')+rowsFor(st,'soybeans')+'</table></div>'+
+        (multi?'<p class="hp-lede" style="margin:.5rem 0 0;font-size:.85rem;color:var(--hp-gold2,#d4a23f)">'+
+          'This state has more than one set of windows. RMA keys them to your county\u2019s '+
+          '<b>sales closing date</b> \u2014 match that row, or ask your agent which applies.</p>':'')+
         '<p class="hp-lede" style="margin:.5rem 0 0;font-size:.85rem;color:var(--text-muted,#8a948f)">'+
-        'Read from RMA\u2019s Commodity Exchange Price Provisions. Windows are set by your county\u2019s '+
-        'sales closing date, so confirm yours with your agent or in the '+
-        '<a href="'+d.sources.corn+'" rel="nofollow">CEPP</a>. The figures in the cards above use the '+
-        'Corn Belt windows.</p>';
-      paint(g);
+        'Windows from the <a href="'+d.sources.corn+'" rel="nofollow">corn</a> and '+
+        '<a href="'+d.sources.soybeans+'" rel="nofollow">soybean</a> CEPP. '+
+        'Published prices: <a href="'+d.sources.prices+'" rel="nofollow">RMA price discovery</a>. '+
+        'The dollar figures in the cards above are the Corn Belt\u2019s.</p>';
+      paint(d.states[st]);
     }
     function paint(g){
       var yr=document.getElementById('hp-yr'); if(!yr) return;
       var cells=yr.querySelectorAll('.mo');
-      if(!g){ cells.forEach(function(c,i){ c.className='mo'+(i===1?' proj':i===9?' harv':'');
-              c.innerHTML=MO[i]+(i===1?'<b>PROJECTED</b>':i===9?'<b>HARVEST</b>':''); }); return; }
-      var w=g.corn; if(!w) return;
-      var pm=parseInt(w.projected.start.slice(0,2),10)-1, hm=parseInt(w.harvest.start.slice(0,2),10)-1;
+      var pm=1, hm=9;
+      if(g && (g.corn||[]).length){ var w=g.corn[0];
+        pm=parseInt(w.projected.start.slice(0,2),10)-1; hm=parseInt(w.harvest.start.slice(0,2),10)-1; }
       cells.forEach(function(c,i){
         c.className='mo'+(i===pm?' proj':i===hm?' harv':'');
         c.innerHTML=MO[i]+(i===pm?'<b>PROJECTED</b>':i===hm?'<b>HARVEST</b>':'');
       });
     }
-    try{ var saved=localStorage.getItem(KEY); if(saved){ sel.value=saved; render(saved); } }catch(e){}
+    try{ var saved=localStorage.getItem(KEY); if(saved&&d.states[saved]){ sel.value=saved; render(saved); } }catch(e){}
     sel.addEventListener('change',function(){
       render(sel.value);
       try{ localStorage.setItem(KEY, sel.value); }catch(e){}
       if(window.gaEvent) gaEvent('rma_state_pick',{state:sel.value||'default'});
     });
-  }).catch(function(){ /* keep the baked Midwest copy */ });
+  }).catch(function(){ /* keep the baked Corn Belt copy */ });
+})();
+</script>
+<script>
+/* Verdict + tile map. Data: data/rma-discovery.json (every row read off RMA's
+   CEPP). Shares the 'agsist-rma-state' key with the homepage widget, so a
+   state chosen in either place is remembered in the other.
+   Fails silent: no data, no map, and the rest of the page is unaffected. */
+(function(){
+  var GRID=[["AK",0,0],["ME",10,0],["VT",9,1],["NH",10,1],
+   ["WA",0,2],["ID",1,2],["MT",2,2],["ND",3,2],["MN",4,2],["WI",5,2],["MI",6,2],["NY",8,2],["MA",9,2],["RI",10,2],
+   ["OR",0,3],["NV",1,3],["WY",2,3],["SD",3,3],["IA",4,3],["IL",5,3],["IN",6,3],["OH",7,3],["PA",8,3],["NJ",9,3],["CT",10,3],
+   ["CA",0,4],["UT",1,4],["CO",2,4],["NE",3,4],["MO",4,4],["KY",5,4],["WV",6,4],["VA",7,4],["MD",8,4],["DE",9,4],
+   ["AZ",1,5],["NM",2,5],["KS",3,5],["AR",4,5],["TN",5,5],["NC",6,5],["SC",7,5],
+   ["OK",3,6],["LA",4,6],["MS",5,6],["AL",6,6],["GA",7,6],
+   ["HI",0,7],["TX",3,7],["FL",7,7]];
+  var ABBR={AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",
+   DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",
+   KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",
+   MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",
+   NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",
+   PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",
+   VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"};
+  var MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var KEY='agsist-rma-state';
+  var map=document.getElementById('pdmap'), slot=document.getElementById('pdlive-slot');
+  var vh=document.getElementById('pdv-h'), vs=document.getElementById('pdv-s');
+  if(!map) return;
+  function mmdd(x){return {m:parseInt(x.slice(0,2),10),d:parseInt(x.slice(3),10)};}
+  function stat(w){
+    var n=new Date(), y=n.getFullYear(), a=mmdd(w.start), b=mmdd(w.end);
+    var st=new Date(y,a.m-1,a.d), e=new Date(y,b.m-1,b.d);
+    if(e<st) e.setFullYear(y+1);
+    var t=new Date(n.getFullYear(),n.getMonth(),n.getDate());
+    if(t<st) return {k:'soon',days:Math.round((st-t)/86400000)};
+    if(t>e)  return {k:'done'};
+    var tot=Math.round((e-st)/86400000)+1, el=Math.round((t-st)/86400000)+1;
+    return {k:'open',day:el,total:tot,pct:Math.max(4,Math.min(100,Math.round(el/tot*100)))};
+  }
+  fetch('/data/rma-discovery.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();})
+  .then(function(d){
+    var cells={}, sel=null;
+    for(var r=0;r<8;r++)for(var c=0;c<11;c++){
+      var e=document.createElement('div'); e.className='pdt empty';
+      e.style.gridColumn=(c+1); e.style.gridRow=(r+1); map.appendChild(e); cells[c+','+r]=e;
+    }
+    GRID.forEach(function(g){
+      var el=cells[g[1]+','+g[2]]; if(!el) return;
+      var name=ABBR[g[0]], rec=d.states[name], corn=rec&&rec.corn&&rec.corn[0];
+      el.textContent=g[0];
+      if(!corn){ el.className='pdt none'; el.title=name+' — no corn row in the CEPP'; return; }
+      var m=parseInt(corn.harvest.start.slice(0,2),10), s2=stat(corn.harvest);
+      el.className='pdt m'+m+(s2.k==='open'?' live':'');
+      el.setAttribute('role','button'); el.setAttribute('tabindex','0');
+      el.setAttribute('aria-label',name+' — corn harvest price set in '+MON[m-1]+
+        (s2.k==='open'?', window open now':''));
+      el.title=name+' — '+MON[m-1];
+      function pick(){ choose(name, el); }
+      el.addEventListener('click',pick);
+      el.addEventListener('keydown',function(ev){ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); pick(); }});
+    });
+    function choose(name, el, fromGeo){
+      if(sel) sel.classList.remove('sel');
+      if(el){ el.classList.add('sel'); sel=el; }
+      render(name, fromGeo);
+      // a geo guess is NOT saved as a choice — otherwise it would outrank a
+      // later, better location fix and could never be corrected by geo again
+      if(!fromGeo){ try{ localStorage.setItem(KEY,name); }catch(e){} }
+      var picker=document.getElementById('hp-state');
+      if(picker && picker.value!==name){ picker.value=name; picker.dispatchEvent(new Event('change')); }
+      if(window.gaEvent) gaEvent('pd_map_pick',{state:name});
+    }
+    function render(name, fromGeo){
+      var rec=d.states[name]; if(!rec) return;
+      var corn=rec.corn&&rec.corn[0], soy=rec.soybeans&&rec.soybeans[0];
+      if(!corn){ vh.innerHTML='No corn window published for <em>'+name+'</em>.';
+        vs.textContent='RMA does not list a corn row for this state in the Commodity Exchange Price Provisions.';
+        slot.innerHTML=''; return; }
+      var hm=parseInt(corn.harvest.start.slice(0,2),10), s2=stat(corn.harvest);
+      vh.innerHTML='Your corn price is set in <em>'+MON[hm-1]+'</em>.';
+      var multi=(rec.corn.length>1);
+      vs.innerHTML=name+' averages the <b>'+corn.contract+'</b> contract across <b>'+corn.harvest.label+
+        '</b>. That average, times your coverage level and APH, is the floor under a revenue policy'+
+        (s2.k==='soon'?' — it opens in '+s2.days+' days.':s2.k==='done'?' — this year\u2019s window has closed.':' — and it is open right now.')+
+        (multi?' <b style="color:var(--hp-gold2)">This state has '+rec.corn.length+' different window sets</b>; RMA keys them to your county\u2019s sales closing date.':'')+
+        (fromGeo?' <span style="color:var(--text-muted);font-size:.9rem">(set from your location \u2014 tap any state to change it)</span>':'');
+      if(s2.k==='open'){
+        slot.innerHTML='<div class="pdlive"><div class="pdlive-k">'+name+' &middot; corn &middot; happening right now</div>'+
+          '<div class="pdlive-n">Day '+s2.day+' of '+s2.total+'</div>'+
+          '<p class="pdlive-s">Your harvest price is being averaged as we speak &mdash; every settlement of the '+
+          corn.contract+' contract from '+corn.harvest.label+'. RMA posts the final number shortly after the window closes.</p>'+
+          '<div class="pdlive-bar"><div class="pdlive-f" style="width:'+s2.pct+'%"></div></div>'+
+          '<div style="font-size:.79rem;color:var(--text-muted)">calendar day '+s2.day+' of '+s2.total+
+          ' &middot; RMA averages trading days, so the settlement count is a little lower</div>'+
+          '<div class="pdmini">'+
+          '<div><b>Contract</b><span>'+corn.exchange+' '+corn.contract+'</span></div>'+
+          '<div><b>Projected window</b><span>'+corn.projected.label+'</span></div>'+
+          '<div><b>Guarantee moves</b><span>only if harvest &gt; projected</span></div>'+
+          (soy?'<div><b>Soybeans</b><span>'+soy.harvest.label+'</span></div>':'')+
+          '</div></div>';
+      } else { slot.innerHTML=''; }
+    }
+    function tileFor(name){
+      var ab=null; for(var k in ABBR){ if(ABBR[k]===name) ab=k; }
+      var g=GRID.filter(function(x){return x[0]===ab;})[0];
+      return g?cells[g[1]+','+g[2]]:null;
+    }
+    /* Auto-locate, the house way: components/geo.js writes 'agsist-wx-loc'
+       and `state` arrives as either a full name or a 2-letter abbreviation
+       depending on which resolver got there first, so normalise both. An
+       explicit pick always wins — geo only fills an empty choice. */
+    function geoName(){
+      try{
+        var loc=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}');
+        var raw=String(loc.state||'').trim();
+        if(!raw) return null;
+        if(raw.length===2){ return ABBR[raw.toUpperCase()]||null; }
+        for(var k in ABBR){ if(ABBR[k].toLowerCase()===raw.toLowerCase()) return ABBR[k]; }
+      }catch(e){}
+      return null;
+    }
+    function applyGeo(){
+      var picked=null; try{ picked=localStorage.getItem(KEY); }catch(e){}
+      if(picked) return false;                        // the grower already chose
+      var g=geoName();
+      if(!g||!d.states[g]) return false;
+      choose(g, tileFor(g), true);
+      return true;
+    }
+    var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+    if(saved&&d.states[saved]){
+      choose(saved, tileFor(saved));
+    } else if(!applyGeo()){
+      // geo may resolve after this script runs; geo.js fires this hook then
+      window._AGSIST_GEO_CALLBACKS = window._AGSIST_GEO_CALLBACKS || [];
+      window._AGSIST_GEO_CALLBACKS.push(function(){ applyGeo(); });
+    }
+  }).catch(function(){});
 })();
 </script>
 </body>
