@@ -1,0 +1,455 @@
+{
+ "_note": "Derived from data/rma-prices.json. 'open' = a discovery window containing today; 'next' = one opening within 75 days. Price range is Conventional practice.",
+ "updated": "2026-08-15T19:37:34Z",
+ "as_of": "2026-08-15",
+ "crop_year": 2026,
+ "open": [
+  {
+   "crop": "Barley",
+   "type": "Spring",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "California",
+    "Colorado",
+    "Idaho",
+    "Maine",
+    "Michigan",
+    "Minnesota",
+    "Montana",
+    "Nevada",
+    "North Dakota",
+    "Oregon",
+    "South Dakota",
+    "Utah",
+    "Vermont",
+    "Washington",
+    "Wisconsin",
+    "Wyoming"
+   ],
+   "n_states": 16,
+   "lo": 4.18,
+   "hi": 4.18,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "September"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Barley",
+   "type": "Winter",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "California",
+    "Idaho",
+    "Nevada",
+    "Oregon",
+    "Utah",
+    "Washington"
+   ],
+   "n_states": 6,
+   "lo": 4.18,
+   "hi": 4.18,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "September"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Canola",
+   "type": "Fall",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "Idaho",
+    "Oregon",
+    "Washington"
+   ],
+   "n_states": 3,
+   "lo": 0.255,
+   "hi": 0.255,
+   "exch": [
+    "ICE"
+   ],
+   "contract": [
+    "November"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Canola",
+   "type": "Fall Rapeseed",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "Idaho",
+    "Oregon",
+    "Washington"
+   ],
+   "n_states": 3,
+   "lo": 0.282,
+   "hi": 0.282,
+   "exch": [
+    "ICE"
+   ],
+   "contract": [
+    "November"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Corn",
+   "type": "All (Non-High Amylose)",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "Alabama",
+    "Florida",
+    "Georgia",
+    "Louisiana",
+    "South Carolina",
+    "Texas"
+   ],
+   "n_states": 6,
+   "lo": 4.45,
+   "hi": 4.45,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "September"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Grain Sorghum",
+   "type": "All",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "Alabama",
+    "Florida",
+    "Georgia",
+    "South Carolina",
+    "Texas"
+   ],
+   "n_states": 5,
+   "lo": 4.44,
+   "hi": 4.67,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "December",
+    "September"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Oats",
+   "type": "Winter",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "California"
+   ],
+   "n_states": 1,
+   "lo": 3.69,
+   "hi": 3.69,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "September"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Oats",
+   "type": "Spring",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "Colorado",
+    "Idaho",
+    "Illinois",
+    "Indiana",
+    "Iowa",
+    "Kansas",
+    "Maryland",
+    "Michigan",
+    "Minnesota",
+    "Missouri",
+    "Montana",
+    "Nebraska",
+    "Nevada",
+    "New Jersey",
+    "New York",
+    "North Dakota",
+    "Ohio",
+    "Oregon",
+    "Pennsylvania",
+    "South Dakota",
+    "Utah",
+    "Washington",
+    "West Virginia",
+    "Wisconsin",
+    "Wyoming"
+   ],
+   "n_states": 25,
+   "lo": 3.69,
+   "hi": 3.69,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "September"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Popcorn",
+   "type": "All",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "Alabama"
+   ],
+   "n_states": 1,
+   "lo": 0.1914,
+   "hi": 0.1914,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "September"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Rice",
+   "type": "Long Grain",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "Louisiana",
+    "Texas"
+   ],
+   "n_states": 2,
+   "lo": 0.141,
+   "hi": 0.141,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "September"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Rice",
+   "type": "Short/Medium Grain",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "Louisiana",
+    "Texas"
+   ],
+   "n_states": 2,
+   "lo": 0.169,
+   "hi": 0.169,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "September"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Rye",
+   "type": "Winter",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "Iowa",
+    "Minnesota",
+    "North Dakota",
+    "South Dakota",
+    "Wisconsin"
+   ],
+   "n_states": 5,
+   "lo": 7.16,
+   "hi": 7.16,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "September"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Wheat",
+   "type": "Spring",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "Alaska",
+    "California",
+    "Colorado",
+    "Idaho",
+    "Iowa",
+    "Maine",
+    "Minnesota",
+    "Montana",
+    "Nebraska",
+    "Nevada",
+    "North Dakota",
+    "Oregon",
+    "South Dakota",
+    "Utah",
+    "Vermont",
+    "Washington",
+    "Wisconsin",
+    "Wyoming"
+   ],
+   "n_states": 18,
+   "lo": 6.76,
+   "hi": 6.76,
+   "exch": [
+    "MGE"
+   ],
+   "contract": [
+    "September"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Wheat",
+   "type": "Winter",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "California",
+    "Idaho",
+    "Montana",
+    "Nevada",
+    "Oregon",
+    "Utah",
+    "Washington",
+    "Wisconsin",
+    "Wyoming"
+   ],
+   "n_states": 9,
+   "lo": 6.45,
+   "hi": 7.16,
+   "exch": [
+    "CBOT",
+    "KCBT"
+   ],
+   "contract": [
+    "August",
+    "September"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Wheat",
+   "type": "Durum",
+   "leg": "harvest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "states": [
+    "Montana",
+    "North Dakota",
+    "South Dakota"
+   ],
+   "n_states": 3,
+   "lo": 7.63,
+   "hi": 7.63,
+   "exch": [
+    "MGE"
+   ],
+   "contract": [
+    "September"
+   ],
+   "day": 15,
+   "span": 31,
+   "in_days": null
+  },
+  {
+   "crop": "Corn",
+   "type": "All (Non-High Amylose)",
+   "leg": "harvest",
+   "start": "2026-08-15",
+   "end": "2026-09-14",
+   "states": [
+    "Arkansas",
+    "Mississippi"
+   ],
+   "n_states": 2,
+   "lo": null,
+   "hi": null,
+   "exch": [
+    "CBOT"
+   ],
+   "contract": [
+    "December"
+   ],
+   "day": 1,
+   "span": 31,
+   "in_days": null
+  }
+ ],
+ "next": []
+}
