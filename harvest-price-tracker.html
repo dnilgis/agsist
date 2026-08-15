@@ -506,6 +506,12 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
       try{ localStorage.setItem(KEY, sel.value); }catch(e){}
       if(window.gaEvent) gaEvent('rma_state_pick',{state:sel.value||'default'});
     });
+    // Driven by the tile map (and by geolocation through it). Redraw only —
+    // whether the choice is worth remembering is the map's call to make, and
+    // it does not remember guesses.
+    sel.addEventListener('agsist:state',function(ev){
+      render((ev.detail&&ev.detail.name)||sel.value);
+    });
   }).catch(function(){ /* keep the baked Corn Belt copy */ });
 })();
 </script>
@@ -668,7 +674,15 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
       // later, better location fix and could never be corrected by geo again
       if(!fromGeo){ try{ localStorage.setItem(KEY,name); }catch(e){} }
       var picker=document.getElementById('hp-state');
-      if(picker && picker.value!==name){ picker.value=name; picker.dispatchEvent(new Event('change')); }
+      if(picker && picker.value!==name){
+        picker.value=name;
+        // NOT a plain 'change' event. The picker's own change handler persists
+        // unconditionally, so dispatching one here defeated the guard three
+        // lines above: a geo guess was being written to localStorage as a
+        // deliberate choice, and geo could then never correct itself.
+        // A custom event redraws the calendar block without persisting.
+        picker.dispatchEvent(new CustomEvent('agsist:state',{detail:{name:name,fromGeo:!!fromGeo}}));
+      }
       if(window.gaEvent) gaEvent('pd_map_pick',{state:name});
     }
     function render(name, fromGeo){
@@ -678,12 +692,42 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
         vs.textContent='RMA does not list a corn row for this state in the Commodity Exchange Price Provisions.';
         slot.innerHTML=''; return; }
       var hm=parseInt(corn.harvest.start.slice(0,2),10), s2=stat(corn.harvest);
-      vh.innerHTML='Your corn price is set in <em>'+MON[hm-1]+'</em>.';
       var multi=(rec.corn.length>1);
-      vs.innerHTML=name+' averages the <b>'+corn.contract+'</b> contract across <b>'+corn.harvest.label+
-        '</b>. That average, times your coverage level and APH, is the floor under a revenue policy'+
-        (s2.k==='soon'?' — it opens in '+s2.days+' days.':s2.k==='done'?' — this year\u2019s window has closed.':' — and it is open right now.')+
-        (multi?' <b style="color:var(--hp-gold2)">This state has '+rec.corn.length+' different window sets</b>; RMA keys them to your county\u2019s sales closing date.':'')+
+      // Never assert one month for a state RMA prices more than one way. Texas
+      // corn carries three window sets keyed to the county's sales closing
+      // date; printing the first as "your" month is a confident wrong answer.
+      if(multi){
+        var months=[]; rec.corn.forEach(function(w){
+          var mn=MON[parseInt(w.harvest.start.slice(0,2),10)-1];
+          if(months.indexOf(mn)<0) months.push(mn);
+        });
+        vh.innerHTML=name+' prices corn in <em>'+
+          (months.length>1?months.slice(0,-1).join(', ')+' or '+months[months.length-1]:months[0])+
+          '</em> \u2014 it depends on your county.';
+      } else {
+        vh.innerHTML='Your corn price is set in <em>'+MON[hm-1]+'</em>.';
+      }
+      // The floor is the PROJECTED price. A revenue guarantee escalates to the
+      // harvest price and never recalculates down, so calling the harvest
+      // average "the floor" is backwards. It was live on this page.
+      // For a multi-window state, listing corn[0]'s contract in the body would
+      // put a single confident window under a headline that just said it
+      // depends. Show every set, labelled by the sales closing date that
+      // selects it, and let the grower match their own policy.
+      var lede;
+      if(multi){
+        lede='RMA prices '+name+' corn '+rec.corn.length+' different ways, keyed to your county\u2019s '+
+          '<b>sales closing date</b>: '+rec.corn.map(function(w){
+            return '<b>'+w.sales_closing+'</b> \u2192 '+w.harvest.label+' on the '+w.contract+' contract';
+          }).join('; ')+'. Confirm which one your policy uses with your agent.';
+      } else {
+        lede=name+' averages the <b>'+corn.contract+'</b> contract across <b>'+corn.harvest.label+
+          '</b>'+(s2.k==='soon'?' \u2014 discovery opens in '+s2.days+' days.':
+                  s2.k==='done'?' \u2014 this year\u2019s window has closed.':
+                  ' \u2014 and it is being built right now.');
+      }
+      vs.innerHTML=lede+' That average is your <b>harvest price</b>: your guarantee is locked at the '+
+        'projected price and rises only if this average finishes above it.'+
         (fromGeo?' <span style="color:var(--text-muted);font-size:.9rem">(set from your location \u2014 tap any state to change it)</span>':'');
       if(s2.k==='open'){
         slot.innerHTML='<div class="pdlive"><div class="pdlive-k">'+name+' &middot; corn &middot; happening right now</div>'+
