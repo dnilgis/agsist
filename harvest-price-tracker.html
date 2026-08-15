@@ -22,122 +22,221 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="/components/styles.css?v=15">
 <style>
-:root{--hp-green:#4aab4c;--hp-gold:var(--gold);--hp-gold2:#e6b042;--hp-bg:#0f1311;--hp-panel:#161b18;--hp-panel2:#1d2420;--hp-line:#2a332d;--hp-txt:#e7ece8;--hp-mut:#9bb0a3;--hp-up:#4aab4c;--hp-dn:#d9534f;}
-.hp-wrap{max-width:920px;margin:0 auto;padding:1.25rem 1rem 3rem;color:var(--hp-txt);font-family:Inter,system-ui,sans-serif;}
-.hp-wrap h1{font-family:var(--font-display),sans-serif;font-weight:700;font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.08;margin:.2rem 0 .4rem;text-wrap:balance;}
-.hp-wrap h2{font-family:var(--font-display),sans-serif;font-weight:600;font-size:1.25rem;margin:2rem 0 .6rem;color:var(--hp-gold2);}
-.hp-lede{color:var(--hp-mut);font-size:1.05rem;line-height:1.5;max-width:64ch;margin:.2rem 0 1.2rem;}
-.hp-banner{display:flex;gap:.6rem;align-items:flex-start;background:linear-gradient(180deg,rgba(var(--gold-rgb),.10),rgba(var(--gold-rgb),.03));border:1px solid var(--hp-gold);border-radius:12px;padding:.85rem 1rem;margin:0 0 1.4rem;font-size:.95rem;line-height:1.45;}
-.hp-banner b{color:var(--hp-gold2);}
-.hp-cards{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-@media(max-width:640px){.hp-cards{grid-template-columns:1fr;}}
-.hp-card{background:var(--hp-panel);border:1px solid var(--hp-line);border-radius:14px;padding:1.05rem 1.1rem 1.15rem;}
-.hp-card .top{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;}
-.hp-card .cname{font-family:var(--font-display),sans-serif;font-weight:700;font-size:1.45rem;color:#fff;}
-.hp-card .ctr{font-size:0.795rem;color:var(--hp-mut);font-family:'JetBrains Mono',monospace;}
-.hp-row{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:.9rem;}
-.hp-box{background:var(--hp-panel2);border:1px solid var(--hp-line);border-radius:11px;padding:.75rem .8rem;border-top:3px solid var(--hp-line);}
-.hp-box.proj{border-top-color:var(--hp-gold);}
-.hp-box.harv{border-top-color:var(--hp-green);}
-.hp-box .lbl{font-size:0.78rem;text-transform:uppercase;letter-spacing:.03em;color:var(--hp-mut);}
-.hp-box .px{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.55rem;color:#fff;line-height:1.1;margin:.2rem 0 .1rem;}
-.hp-box .sub{font-size:0.79rem;color:var(--hp-mut);line-height:1.3;}
-.hp-box .pend{font-family:var(--font-display),sans-serif;font-weight:600;font-size:1.05rem;color:var(--hp-gold2);margin:.2rem 0 .1rem;}
-.hp-delta{margin-top:.85rem;font-size:.92rem;line-height:1.45;color:var(--hp-txt);background:var(--hp-bg);border:1px solid var(--hp-line);border-radius:10px;padding:.7rem .8rem;}
-.hp-delta b{color:var(--hp-gold2);}
-.hp-delta .up{color:var(--hp-up);font-weight:700;}
-.hp-delta .dn{color:var(--hp-dn);font-weight:700;}
-.hp-spark{display:block;width:100%;height:38px;margin-top:.6rem;}
-.hp-meta{font-size:0.785rem;color:var(--hp-mut);margin-top:.7rem;font-family:'JetBrains Mono',monospace;}
-.hp-cal{background:var(--hp-panel);border:1px solid var(--hp-line);border-radius:12px;padding:1rem 1.1rem;margin:.4rem 0 0;}
-.hp-cal .yr{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.7rem;}
-.hp-cal .mo{flex:1 1 60px;text-align:center;font-size:0.78rem;font-family:'JetBrains Mono',monospace;color:var(--hp-mut);background:var(--hp-panel2);border:1px solid var(--hp-line);border-radius:8px;padding:.4rem .2rem;min-width:54px;}
-.hp-cal .mo.proj{border-color:var(--hp-gold);color:var(--hp-gold2);}
-.hp-cal .mo.harv{border-color:var(--hp-green);color:var(--hp-green);}
-.hp-cal .mo b{display:block;font-size:0.76rem;font-weight:700;margin-top:.15rem;}
-.hp-faq details{border:1px solid var(--hp-line);border-radius:10px;background:var(--hp-panel);margin:.5rem 0;padding:0 1rem;}
-.hp-faq summary{cursor:pointer;padding:.85rem 0;font-weight:600;list-style:none;}
-.hp-faq summary::-webkit-details-marker{display:none;}
-.hp-faq summary::after{content:"+";float:right;color:var(--hp-gold2);font-weight:700;}
-.hp-faq details[open] summary::after{content:"\2212";}
-.hp-faq p{margin:0 0 .9rem;color:var(--hp-mut);line-height:1.55;font-size:.95rem;}
-.hp-cred{margin-top:1.6rem;font-size:.86rem;color:var(--hp-mut);line-height:1.5;border-top:1px solid var(--hp-line);padding-top:1rem;}
-.hp-cred a{color:var(--hp-gold2);}
-.hp-err{color:var(--hp-mut);background:var(--hp-panel);border:1px solid var(--hp-line);border-radius:10px;padding:1rem;}
-.hp-cta{margin-top:1rem;font-size:.95rem;}
-.hp-cta a{color:var(--hp-gold2);font-weight:600;}
-.hp-card-s{border:1px solid var(--border,rgba(132,160,168,.25));border-radius:10px;padding:.8rem .95rem;margin:.5rem 0}
-.hpc-t{font-family:'JetBrains Mono',monospace;font-size:0.765rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim,#8a948f);margin-bottom:.45rem}
-.hpc-leg{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:.22rem 0}
-.hpc-l{font-size:.85rem;color:var(--text-dim,#8a948f)}
-.hpc-v{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700}
-.hpc-pend{font-size:.8rem;font-weight:400;color:var(--text-dim,#8a948f)}
-.hp-seed-note{font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:1rem;color:var(--text-dim,#8a948f);margin:.35rem .1rem .1rem;line-height:1.6}
-.hp-hist{width:100%;border-collapse:collapse;font-size:.85rem;margin:.6rem 0 .3rem}
-.hp-hist th,.hp-hist td{padding:.4rem .5rem;border-bottom:1px solid var(--border,rgba(132,160,168,.15));text-align:right;font-family:'JetBrains Mono',monospace}
-.hp-hist th:first-child,.hp-hist td:first-child{text-align:left}
-.hp-hist .dn{color:var(--hp-red,#e0685f)}.hp-hist .up{color:var(--hp-green,#5fc28a)}
-.hp-figs{border:1px solid var(--border,rgba(132,160,168,.25));border-radius:10px;padding:.85rem 1rem;margin:1rem 0}
-.hp-figs ul{margin:.3rem 0 .6rem;padding-left:1.15rem}
-.hp-figs li{line-height:1.75;margin:.3rem 0;font-size:.92rem}
-.hp-cite{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-dim,#8a948f);line-height:1.7;margin:0}
-.hp-tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.hp-hist-src{font-family:'JetBrains Mono',monospace;font-size:0.76rem;color:var(--text-dim,#8a948f);line-height:1.7;margin:.2rem 0 0}
+:root{--pd-gold:#d4a23f;--pd-gold2:#e6b042;--pd-green:#5fc28a;--pd-green2:#4aab4c;
+  --pd-red:#c8562e;--pd-bg:#0f1311;--pd-p1:#161b18;--pd-p2:#1d2420;--pd-line:#2a332d;
+  --pd-txt:#e7ece8;--pd-mut:#9bb0a3;--pd-mono:'JetBrains Mono',ui-monospace,monospace;}
+.hp-wrap{max-width:900px;margin:0 auto;padding:1.25rem 1rem 3rem;color:var(--pd-txt);
+  font-family:Inter,system-ui,sans-serif;}
+.hp-wrap h1{font-family:var(--font-display),Inter,sans-serif;font-weight:800;
+  font-size:clamp(1.7rem,5vw,2.35rem);line-height:1.1;margin:.2rem 0 .35rem;text-wrap:balance;}
+.hp-wrap h2{font-family:var(--font-display),Inter,sans-serif;font-weight:700;font-size:1.2rem;
+  margin:1.9rem 0 .55rem;color:var(--pd-gold2);}
+.hp-lede{color:var(--pd-mut);font-size:1rem;line-height:1.5;max-width:64ch;margin:.2rem 0 1rem;}
+.pd-num{font-family:var(--pd-mono);}
 
-/* ── verdict + tile map hero (2026-08-15) ───────────────────────────────
-   The page used to open with a paragraph and two cards, which told a grower
-   nothing about HIS window. Rule 1: verdict first, tile map second, tables
-   demoted. Colour = the month that state's CORN harvest price is discovered
-   (the country prices its crop in waves, south to north — 8 states in
-   August, 34 in October); a ring marks windows that are open today. */
-.pdv{margin:.2rem 0 1.1rem}
-.pdv-h{font-family:var(--font-display),Inter,sans-serif;font-size:clamp(1.8rem,5vw,2.7rem);font-weight:800;line-height:1.1;color:var(--text);letter-spacing:-.02em;margin:0 0 .4rem}
-.pdv-h em{font-style:normal;color:var(--hp-gold2,#d4a23f)}
-.pdv-s{font-size:1rem;color:var(--text-dim);line-height:1.6;margin:0;max-width:62ch}
-.pdlive{background:linear-gradient(180deg,rgba(74,171,76,.10),transparent);border:1px solid rgba(74,171,76,.4);border-radius:14px;padding:1.1rem 1.1rem;margin:0 0 1.1rem}
-.pdlive-k{font-family:'JetBrains Mono',monospace;font-size:.73rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--hp-green,#4aab4c);margin-bottom:.45rem}
-.pdlive-n{font-family:var(--font-display),Inter,sans-serif;font-size:clamp(2.2rem,7.5vw,3.4rem);font-weight:800;line-height:1;color:var(--text);letter-spacing:-.02em}
-.pdlive-s{font-size:1rem;color:var(--text-dim);line-height:1.6;margin:.45rem 0 0;max-width:58ch}
-.pdlive-bar{height:8px;border-radius:4px;background:var(--surface3);overflow:hidden;margin:.85rem 0 .25rem}
-.pdlive-f{height:100%;background:var(--hp-green,#4aab4c)}
-.pdmini{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(148px,100%),1fr));gap:.5rem;margin-top:.9rem}
-.pdmini div{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:.55rem .7rem}
-.pdmini b{display:block;font-size:.73rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.1rem}
-.pdmini span{font-family:'JetBrains Mono',monospace;font-size:.94rem;color:var(--text)}
-.pdmap-wrap{overflow-x:auto;padding-bottom:.35rem;-webkit-overflow-scrolling:touch}
-.pdmap{display:grid;grid-template-columns:repeat(11,minmax(40px,1fr));gap:4px;min-width:480px}
-.pdt{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;color:#0a1206;border:2px solid transparent;cursor:pointer;padding:0;min-height:40px}
-.pdt.empty{background:none;cursor:default;border:0}
-.pdt.m8{background:#d4a23f}.pdt.m9{background:#c8762e}.pdt.m10{background:#4aab4c}.pdt.m11{background:#5b8fc9}
-.pdt.none{background:var(--surface3);color:var(--text-muted)}
-.pdt.live{border-color:#fff;box-shadow:0 0 0 2px var(--bg,#0a0c0d),0 0 10px rgba(255,255,255,.35)}
-.pdt.sel{outline:3px solid var(--text);outline-offset:1px}
-.pdt:focus-visible{outline:3px solid var(--text);outline-offset:2px}
-.pdleg{display:flex;gap:.85rem;flex-wrap:wrap;margin:.65rem 0 0;font-size:.82rem;color:var(--text-dim);align-items:center}
-.pdleg i{width:13px;height:13px;border-radius:3px;display:inline-block;margin-right:.3rem;vertical-align:-2px}
-/* In-discovery banner — data/rma-discovery-now.json */
-.dnow{margin:0 0 1.4rem}
-.dnow-h{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin:0 0 .6rem}
-.dnow-h h2{font-family:var(--font-display),Inter,sans-serif;font-size:1.05rem;font-weight:800;letter-spacing:-.01em;margin:0;color:var(--text)}
-.dnow-h .dot{width:8px;height:8px;border-radius:50%;background:#4aab4c;display:inline-block;flex:0 0 auto;align-self:center}
-.dnow-h .as-of{font-size:.78rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
-.dnow-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:.6rem}
-.dnow-c{background:var(--surface2);border:1px solid var(--border);border-left:3px solid #4aab4c;border-radius:10px;padding:.7rem .8rem}
-.dnow-c.soon{border-left-color:var(--border);opacity:.94}
-.dnow-c .crop{display:block;font-weight:700;font-size:1.02rem;color:var(--text);line-height:1.25}
-.dnow-c .leg{display:block;font-size:.66rem;text-transform:uppercase;letter-spacing:.07em;font-weight:700;color:var(--hp-gold2,#d4a23f);margin-bottom:.15rem}
-.dnow-c .leg.h{color:var(--hp-green,#4aab4c)}
-.dnow-c .px{font-family:'JetBrains Mono',monospace;font-size:1.45rem;font-weight:700;color:var(--text);line-height:1.2;margin:.3rem 0 .1rem}
-.dnow-c .px small{font-size:.75rem;font-weight:400;color:var(--text-muted);font-family:inherit}
-.dnow-c .meta{font-size:.8rem;color:var(--text-dim);line-height:1.5}
-.dnow-c .bar{height:4px;border-radius:2px;background:var(--surface3);margin:.5rem 0 .35rem;overflow:hidden}
-.dnow-c .bar i{display:block;height:100%;background:#4aab4c;border-radius:2px}
-.dnow-c .sts{font-size:.78rem;color:var(--text-muted);margin-top:.35rem;line-height:1.5;word-break:break-word}
-.dnow-c details summary{cursor:pointer;font-size:.78rem;color:var(--text-dim);margin-top:.35rem}
-.dnow-next{margin-top:.8rem;font-size:.83rem;color:var(--text-dim);line-height:1.75}
-.dnow-next b{color:var(--text);font-weight:700}
-.dnow-note{font-size:.76rem;color:var(--text-muted);margin:.6rem 0 0;line-height:1.6}
-@media(max-width:520px){.dnow-grid{grid-template-columns:1fr}}
+/* ── the one control ─────────────────────────────────────────────── */
+.pd-pick{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;background:var(--pd-p1);
+  border:1px solid var(--pd-line);border-radius:12px;padding:.7rem .8rem;margin:0 0 1.3rem;}
+.pd-pick label{font-family:var(--pd-mono);font-size:.72rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--pd-mut);}
+.pd-pick select{background:var(--pd-p2);color:var(--pd-txt);border:1px solid var(--pd-line);
+  border-radius:8px;padding:.6rem .7rem;font:600 1rem Inter,sans-serif;min-height:44px;
+  min-width:200px;flex:1 1 200px;max-width:340px;}
+.pd-pick select:focus-visible{outline:2px solid var(--pd-gold);outline-offset:2px;}
+.pd-pick .pd-clear{background:none;border:0;color:var(--pd-mut);font:inherit;font-size:.85rem;
+  text-decoration:underline;cursor:pointer;min-height:44px;padding:0 .3rem;}
+
+/* ── verdict ─────────────────────────────────────────────────────── */
+.pd-verdict{margin:0 0 1.4rem;}
+.pd-verdict h2{font-size:clamp(1.35rem,4.2vw,1.7rem);line-height:1.2;margin:0 0 .35rem;
+  color:var(--pd-txt);font-weight:800;}
+.pd-verdict h2 em{font-style:normal;color:var(--pd-gold2);}
+.pd-verdict p{margin:0;color:var(--pd-mut);font-size:.98rem;max-width:62ch;}
+
+/* ── crop card ───────────────────────────────────────────────────── */
+.pd-sect{font-family:var(--pd-mono);font-size:.72rem;font-weight:700;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--pd-mut);margin:1.6rem 0 .6rem;padding-bottom:.4rem;
+  border-bottom:1px solid var(--pd-line);}
+.pd-crop{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:12px;
+  padding:.95rem 1rem;margin-bottom:.7rem;}
+.pd-crop.live{border-color:rgba(95,194,138,.45);}
+.pd-crop-top{display:flex;justify-content:space-between;align-items:center;gap:.7rem;
+  flex-wrap:wrap;margin-bottom:.55rem;}
+.pd-cname{font-size:1.25rem;font-weight:800;margin:0;font-family:var(--font-display),Inter,sans-serif;}
+.pd-cname small{font-weight:600;color:var(--pd-mut);font-size:.85rem;}
+.pd-pill{font-family:var(--pd-mono);font-size:.68rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;border-radius:999px;padding:.3rem .6rem;white-space:nowrap;}
+.pd-pill.open{background:rgba(95,194,138,.15);color:var(--pd-green);
+  border:1px solid rgba(95,194,138,.4);}
+.pd-pill.wait{background:rgba(233,237,235,.06);color:var(--pd-mut);border:1px solid var(--pd-line);}
+.pd-big{display:flex;align-items:baseline;gap:.65rem;flex-wrap:wrap;margin-bottom:.2rem;}
+.pd-big b{font-family:var(--pd-mono);font-size:2.15rem;font-weight:700;line-height:1;}
+.pd-big i{font-style:normal;font-family:var(--pd-mono);font-size:1.25rem;color:var(--pd-mut);}
+.pd-big span{color:var(--pd-mut);font-size:.9rem;}
+.pd-say{color:var(--pd-txt);font-size:.92rem;margin:0 0 .7rem;max-width:62ch;line-height:1.5;}
+
+/* ── journey: three stops, no dead calendar ──────────────────────── */
+.pd-steps{display:grid;grid-template-columns:repeat(3,1fr);margin-top:.85rem;position:relative;}
+.pd-steps::before{content:'';position:absolute;left:16.6%;right:16.6%;top:9px;height:2px;
+  background:linear-gradient(90deg,var(--pd-gold) 0 50%,var(--pd-line) 50% 100%);}
+.pd-step{position:relative;padding:0 .5rem;text-align:center;}
+.pd-step:first-child{text-align:left;padding-left:0;}
+.pd-step:last-child{text-align:right;padding-right:0;}
+.pd-step .pd-dot{position:relative;z-index:2;display:block;width:20px;height:20px;
+  border-radius:50%;background:var(--pd-p2);border:2px solid var(--pd-line);margin:0 auto .5rem;
+  font-size:.68rem;line-height:17px;color:var(--pd-bg);}
+.pd-step:first-child .pd-dot{margin-left:0;}
+.pd-step:last-child .pd-dot{margin-right:0;}
+.pd-step.done .pd-dot{background:var(--pd-gold);border-color:var(--pd-gold);font-weight:700;}
+.pd-step.now .pd-dot{background:var(--pd-txt);border-color:var(--pd-txt);
+  box-shadow:0 0 0 4px rgba(231,236,232,.10);}
+.pd-step h4{margin:0 0 .1rem;font-family:var(--pd-mono);font-size:.66rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--pd-mut);}
+.pd-step p{margin:0 0 .15rem;font-size:.76rem;color:var(--pd-mut);font-family:var(--pd-mono);}
+.pd-step b{display:block;font-size:.98rem;font-weight:700;}
+.pd-step i{display:block;font-style:normal;font-size:.75rem;color:var(--pd-mut);margin-top:.1rem;
+  line-height:1.35;}
+@media(max-width:560px){
+  .pd-steps{grid-template-columns:1fr;gap:.85rem;}
+  .pd-steps::before{left:9px;right:auto;top:10px;bottom:10px;height:auto;width:2px;
+    background:linear-gradient(180deg,var(--pd-gold) 0 50%,var(--pd-line) 50% 100%);}
+  .pd-step,.pd-step:first-child,.pd-step:last-child{text-align:left;padding:0 0 0 1.9rem;}
+  .pd-step .pd-dot{position:absolute;left:0;top:1px;margin:0;}
+}
+
+/* ── price bar: dollars, guarantee as the reference line ─────────── */
+.pd-pb{margin-top:.9rem;padding-top:.8rem;border-top:1px solid var(--pd-line);}
+.pd-pb-h{font-family:var(--pd-mono);font-size:.68rem;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--pd-mut);margin-bottom:.5rem;}
+.pd-track{position:relative;height:14px;background:var(--pd-p2);border-radius:7px;
+  border:1px solid var(--pd-line);}
+.pd-gap{position:absolute;top:0;bottom:0;}
+.pd-gap.up{background:rgba(95,194,138,.30);} .pd-gap.dn{background:rgba(200,86,46,.30);}
+.pd-ref{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--pd-txt);opacity:.85;}
+.pd-mark{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;
+  transform:translate(-50%,-50%);border:2px solid var(--pd-bg);}
+.pd-mark.up{background:var(--pd-green);} .pd-mark.dn{background:var(--pd-red);}
+.pd-tags{position:relative;height:34px;margin-top:.4rem;font-size:.72rem;line-height:1.3;
+  color:var(--pd-mut);}
+.pd-tag{position:absolute;top:0;white-space:nowrap;}
+.pd-tag.r{text-align:right;}
+.pd-tag b{font-family:var(--pd-mono);font-size:.86rem;color:var(--pd-txt);}
+.pd-tag.up b{color:var(--pd-green);} .pd-tag.dn b{color:var(--pd-red);}
+.pd-pct{margin-top:.1rem;display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;}
+.pd-pct b{font-family:var(--pd-mono);font-size:1.65rem;font-weight:700;line-height:1.1;}
+.pd-pct.up b{color:var(--pd-green);} .pd-pct.dn b{color:var(--pd-red);}
+.pd-pct span{font-size:.85rem;color:var(--pd-mut);}
+.pd-mean{font-size:.87rem;color:var(--pd-txt);margin:.4rem 0 0;max-width:62ch;line-height:1.5;}
+.pd-mean b{font-family:var(--pd-mono);}
+
+/* ── tables and drawers ──────────────────────────────────────────── */
+.pd-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table.pd-t{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:.3rem;}
+table.pd-t th,table.pd-t td{text-align:left;padding:.55rem .5rem;
+  border-bottom:1px solid var(--pd-line);overflow-wrap:normal;}
+table.pd-t th{font-family:var(--pd-mono);font-size:.66rem;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--pd-mut);font-weight:700;}
+table.pd-t td.n{font-family:var(--pd-mono);text-align:right;white-space:nowrap;}
+table.pd-t td:first-child{font-weight:600;}
+.pd-up{color:var(--pd-green);} .pd-dn{color:var(--pd-red);}
+.pd-sub2{font-size:.7rem;color:var(--pd-mut);font-weight:400;}
+details.pd-d{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:12px;
+  margin:.6rem 0;}
+details.pd-d>summary{cursor:pointer;padding:.85rem 1rem;font-weight:700;font-size:.98rem;
+  list-style:none;display:flex;justify-content:space-between;gap:.6rem;align-items:center;
+  min-height:44px;}
+details.pd-d>summary::-webkit-details-marker{display:none;}
+details.pd-d>summary::after{content:'\25BE';color:var(--pd-mut);font-size:.8rem;}
+details.pd-d[open]>summary::after{content:'\25B4';}
+details.pd-d>summary:focus-visible{outline:2px solid var(--pd-gold);outline-offset:-2px;
+  border-radius:12px;}
+details.pd-d .pd-db{padding:0 1rem 1rem;}
+.pd-note{color:var(--pd-mut);font-size:.86rem;line-height:1.55;margin:.5rem 0 0;}
+
+/* ── guarantee calculator ────────────────────────────────────────── */
+.pd-calc{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:12px;padding:1rem;}
+.pd-calc .pd-r3{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:.7rem;margin-bottom:.7rem;}
+@media(max-width:620px){.pd-calc .pd-r3{grid-template-columns:1fr;}}
+.pd-calc label{display:block;font-family:var(--pd-mono);font-size:.66rem;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--pd-mut);margin-bottom:.3rem;}
+.pd-calc input,.pd-calc select{width:100%;background:var(--pd-p2);color:var(--pd-txt);
+  border:1px solid var(--pd-line);border-radius:8px;padding:.6rem .7rem;min-height:44px;
+  font:700 1rem var(--pd-mono);}
+.pd-calc select{font-family:Inter,sans-serif;font-weight:600;}
+.pd-calc input:focus-visible,.pd-calc select:focus-visible{outline:2px solid var(--pd-gold);
+  outline-offset:2px;}
+.pd-out{background:var(--pd-p2);border:1px solid var(--pd-line);border-radius:10px;padding:.8rem .9rem;}
+.pd-out>b{font-family:var(--pd-mono);font-size:1.9rem;font-weight:700;display:block;
+  margin-bottom:.15rem;}
+.pd-out>span{color:var(--pd-mut);font-size:.83rem;display:block;line-height:1.5;}
+.pd-out2{border-radius:10px;padding:.75rem .9rem;margin-top:.55rem;border:1px solid var(--pd-line);}
+.pd-out2>b{font-family:var(--pd-mono);font-size:1.3rem;font-weight:700;display:block;
+  margin-bottom:.15rem;}
+.pd-out2>span{font-size:.83rem;color:var(--pd-mut);display:block;line-height:1.5;}
+.pd-out2.up{background:rgba(95,194,138,.10);border-color:rgba(95,194,138,.35);}
+.pd-out2.up>b{color:var(--pd-green);}
+.pd-out2.flat{background:var(--pd-p2);}
+.pd-out2.flat>b{font-family:Inter,sans-serif;font-size:.95rem;color:var(--pd-mut);}
+.pd-out span b,.pd-out2 span b{display:inline;font-family:var(--pd-mono);font-weight:700;
+  font-size:inherit;color:var(--pd-txt);margin:0;}
+.pd-out2.up span b{color:var(--pd-green);}
+
+/* ── baked fallback cards. fetch_harvest_prices.py owns this markup;
+      never hand-edit between the SEED markers, edit the script. ────────── */
+.hp-cards{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.6rem 0 0;}
+@media(max-width:640px){.hp-cards{grid-template-columns:1fr;}}
+.hp-card-s{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:12px;
+  padding:.85rem .95rem;}
+.hpc-t{font-family:var(--pd-mono);font-size:.72rem;letter-spacing:.05em;color:var(--pd-mut);
+  margin-bottom:.5rem;}
+.hpc-leg{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;
+  padding:.3rem 0;border-top:1px solid var(--pd-line);}
+.hpc-leg:first-of-type{border-top:0;}
+.hpc-l{font-size:.82rem;color:var(--pd-mut);}
+.hpc-v{font-family:var(--pd-mono);font-weight:700;font-size:1.05rem;white-space:nowrap;}
+.hpc-v.hpc-pend{font-family:Inter,sans-serif;font-weight:600;font-size:.82rem;
+  color:var(--pd-gold2);white-space:normal;text-align:right;}
+.hp-seed-note{grid-column:1/-1;font-size:.76rem;color:var(--pd-mut);line-height:1.5;}
+
+/* ── key figures, history, FAQ, credit ───────────────────────────── */
+.hp-figs{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:12px;
+  padding:1rem 1.1rem;margin:1rem 0;}
+.hp-figs h2{margin-top:0;}
+.hp-figs ul{margin:.4rem 0 .6rem;padding-left:1.1rem;color:var(--pd-txt);font-size:.93rem;
+  line-height:1.6;}
+.hp-figs li{margin-bottom:.35rem;}
+table.hp-hist{width:100%;border-collapse:collapse;font-size:.86rem;}
+table.hp-hist th,table.hp-hist td{padding:.4rem .45rem;border-bottom:1px solid var(--pd-line);
+  text-align:right;overflow-wrap:normal;font-family:var(--pd-mono);}
+table.hp-hist th{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--pd-mut);}
+table.hp-hist td:first-child,table.hp-hist th:first-child{text-align:left;}
+table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-red);}
+.hp-faq details{border:1px solid var(--pd-line);border-radius:10px;background:var(--pd-p1);
+  margin:.45rem 0;padding:0 1rem;}
+.hp-faq summary{cursor:pointer;padding:.8rem 0;font-weight:600;list-style:none;min-height:44px;
+  display:flex;align-items:center;}
+.hp-faq summary::-webkit-details-marker{display:none;}
+.hp-faq summary:focus-visible{outline:2px solid var(--pd-gold);outline-offset:2px;}
+.hp-faq p{color:var(--pd-mut);font-size:.9rem;line-height:1.6;margin:0 0 .8rem;}
+.hp-cred{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--pd-line);
+  color:var(--pd-mut);font-size:.8rem;line-height:1.6;}
+.hp-cred a{color:var(--pd-gold2);}
+
+/* ── map: reference, desktop, below the fold, not an input ───────── */
+.pd-map-wrap{display:none;}
+@media(min-width:820px){.pd-map-wrap{display:block;}}
+.pd-map{display:grid;grid-template-columns:repeat(11,1fr);gap:4px;max-width:620px;
+  margin:.6rem auto 0;}
+.pd-map:focus-visible{outline:2px solid var(--pd-gold);outline-offset:6px;border-radius:8px;}
+.pd-map .pd-st{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;
+  justify-content:center;font-family:var(--pd-mono);font-size:.62rem;font-weight:700;
+  color:#0b0f0c;background:var(--pd-p2);border:1px solid var(--pd-line);}
+.pd-map .pd-st.sel{outline:2px solid #fff;outline-offset:1px;}
+.pd-mleg{display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center;margin-top:.6rem;
+  font-size:.76rem;color:var(--pd-mut);}
+.pd-mleg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:.35rem;
+  vertical-align:-1px;}
 </style>
 </head>
 <body>
@@ -146,106 +245,112 @@
 <a href="#main" class="skip">Skip to content</a>
 <main id="main" tabindex="-1" class="hp-wrap">
 
-  <div class="pdv">
-    <h1 class="pdv-h" id="pdv-h">When does your <em>price</em> get set?</h1>
-    <p class="pdv-s" id="pdv-s">Your revenue guarantee is built from two averages: a <b style="color:var(--hp-gold2)">projected price</b> before you plant and a <b style="color:var(--hp-green)">harvest price</b> at the end. RMA decides <em>when</em> those averages are taken &mdash; and it is not the same month everywhere. Pick your state.</p>
+  <h1 id="pdv-h">When does your <em style="font-style:normal;color:var(--pd-gold2)">price</em> get set?</h1>
+  <p class="hp-lede" style="margin-bottom:.9rem">Your revenue guarantee is built from two averages &mdash; a projected price before you plant, and a harvest price at the end. RMA decides when each one is taken, and it is not the same month everywhere.</p>
+
+  <div class="pd-pick">
+    <label for="pd-state">Your state</label>
+    <select id="pd-state" aria-describedby="pd-verdict-p">
+      <option value="">Choose your state</option>
+    </select>
+    <button type="button" class="pd-clear" id="pd-clear" hidden>show all states</button>
   </div>
 
-  <section class="dnow" id="dnow" hidden aria-label="Price discovery windows open now"></section>
-
-  <div id="pdlive-slot"></div>
-
-  <div class="pdmap-wrap"><div class="pdmap" id="pdmap" role="group" aria-label="US states by corn harvest price discovery month"></div></div>
-  <div class="pdleg">
-    <span><i style="background:#d4a23f"></i>August</span>
-    <span><i style="background:#c8762e"></i>September</span>
-    <span><i style="background:#4aab4c"></i>October</span>
-    <span><i style="background:#5b8fc9"></i>November</span>
-    <span style="color:var(--text-muted)">month your <b>corn harvest price</b> is discovered &middot; a white ring means that window is open today</span>
+  <div class="pd-verdict" id="pd-verdict" role="status" aria-live="polite">
+    <h2 id="pd-verdict-h">Corn and soybean harvest prices are set in October.</h2>
+    <p id="pd-verdict-p">Across most of the country. Eight southern states discover in August instead &mdash; pick your state and this page will only show you yours.</p>
   </div>
 
+  <!-- Filled from data/rma-prices.json. The baked block below it is what a
+       crawler and a reader with JS off get, and it is true for the Corn Belt. -->
+  <div id="pd-your"></div>
+  <div id="pd-open"></div>
+  <div id="pd-other"></div>
 
-  <div class="hp-banner" id="hp-banner" hidden></div>
-
-  <div class="hp-cards" id="hp-cards">
+  <div id="pd-fallback">
+    <div class="pd-sect">Corn and soybeans, 2026 crop year</div>
+    <div class="pd-crop">
+      <div class="pd-crop-top"><h3 class="pd-cname">Corn</h3>
+        <span class="pd-pill wait">October</span></div>
+      <p class="pd-say">The projected price is <b class="pd-num">$4.62 /bu</b>, the February average of December CBOT corn settlements. The harvest price is the same contract averaged across October 1&ndash;31. Your guarantee is locked at the projected price and rises only if October finishes above it.</p>
+    </div>
+    <div class="pd-crop">
+      <div class="pd-crop-top"><h3 class="pd-cname">Soybeans</h3>
+        <span class="pd-pill wait">October</span></div>
+      <p class="pd-say">The projected price is <b class="pd-num">$11.09 /bu</b>, the February average of November CBOT soybean settlements. The harvest price is that contract averaged across October 1&ndash;31, on the same up-only rule.</p>
+    </div>
+    <div class="hp-cards">
     <!--SEED:hpcards-->
-      <div class="hp-card-s"><div class="hpc-t">Corn · Dec '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$4.62</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price (October)</span><span class="hpc-v hpc-pend">pending — discovery opens October 1</span></div></div>
-      <div class="hp-card-s"><div class="hpc-t">Soybeans · Nov '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$11.09</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price (October)</span><span class="hpc-v hpc-pend">pending — discovery opens October 1</span></div></div>
+      <div class="hp-card-s"><div class="hpc-t">Corn &middot; Dec '26 &middot; 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February &middot; final)</span><span class="hpc-v">$4.62</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price (October)</span><span class="hpc-v hpc-pend">pending &mdash; discovery opens October 1</span></div></div>
+      <div class="hp-card-s"><div class="hpc-t">Soybeans &middot; Nov '26 &middot; 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February &middot; final)</span><span class="hpc-v">$11.09</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price (October)</span><span class="hpc-v hpc-pend">pending &mdash; discovery opens October 1</span></div></div>
       <div class="hp-seed-note">Figures above are baked in daily on trading days; in-window numbers are running estimates until the month closes. Official prices: USDA RMA.</div>
       <!--/SEED:hpcards-->
+    </div>
+    <p class="pd-note">Those are the Corn Belt's windows. Alabama, Arkansas, Florida, Georgia, Louisiana, Mississippi, South Carolina and Texas discover corn in August, or mid-August to mid-September. Pick your state above for your own dates.</p>
   </div>
+
+  <h2 id="guarantee-math">What your guarantee is worth</h2>
+  <p class="hp-lede" style="margin-bottom:.6rem">Revenue Protection starts at <b>APH yield &times; coverage level &times; projected price</b>, and rises to the harvest price if that average finishes higher. It never recalculates down.</p>
+  <div class="pd-calc">
+    <div class="pd-r3">
+      <div><label for="pd-crop">Crop</label><select id="pd-crop"></select></div>
+      <div><label for="pd-aph">Your APH yield <span id="pd-aphu" style="text-transform:none">(bu/ac)</span></label>
+        <input id="pd-aph" type="number" inputmode="decimal" min="1" max="20000" value="180"></div>
+      <div><label for="pd-cov">Coverage level</label>
+        <select id="pd-cov">
+          <option value="0.50">50%</option><option value="0.55">55%</option>
+          <option value="0.60">60%</option><option value="0.65">65%</option>
+          <option value="0.70">70%</option><option value="0.75">75%</option>
+          <option value="0.80">80%</option><option value="0.85" selected>85%</option>
+        </select></div>
+    </div>
+    <div class="pd-out"><b id="pd-gout">&mdash;</b><span id="pd-gsub"></span></div>
+    <div class="pd-out2 flat" id="pd-gout2"></div>
+  </div>
+  <p class="pd-note">Estimate at 100% price election, computed on your device and stored nowhere. Your actual guarantee depends on unit structure, practice and county &mdash; confirm it with your agent. Then fold that floor into your own costs with the <a href="/breakeven" style="color:var(--pd-gold2)">break-even calculator</a>.</p>
+
+  <h2 id="history">Fifteen years of projected vs. harvest</h2>
+  <p class="hp-lede" style="margin-bottom:.5rem">The question every Revenue Protection decision quietly asks: how often does the harvest price finish below the projected price? For corn, <b>10 of the last 15 crop years</b> (2011&ndash;2025). For soybeans, <b>10 of 15</b>. That history is why the price side of RP exists.</p>
+
+  <details class="pd-d" id="pd-hist">
+    <summary>Year by year, 2011&ndash;2026 <span style="color:var(--pd-mut);font-weight:400">corn and soybeans</span></summary>
+    <div class="pd-db">
+      <div class="pd-tw"><table class="hp-hist"><thead><tr><th scope="col">Crop year</th><th scope="col">Corn proj.</th><th scope="col">Corn harvest</th><th scope="col">Beans proj.</th><th scope="col">Beans harvest</th></tr></thead><tbody><tr><td>2011</td><td>$6.01</td><td class="up">&#9650; $6.32</td><td>$13.49</td><td class="dn">&#9660; $12.14</td></tr><tr><td>2012</td><td>$5.68</td><td class="up">&#9650; $7.50</td><td>$12.55</td><td class="up">&#9650; $15.39</td></tr><tr><td>2013</td><td>$5.65</td><td class="dn">&#9660; $4.39</td><td>$12.87</td><td>$12.87</td></tr><tr><td>2014</td><td>$4.62</td><td class="dn">&#9660; $3.49</td><td>$11.36</td><td class="dn">&#9660; $9.65</td></tr><tr><td>2015</td><td>$4.15</td><td class="dn">&#9660; $3.83</td><td>$9.73</td><td class="dn">&#9660; $8.91</td></tr><tr><td>2016</td><td>$3.86</td><td class="dn">&#9660; $3.49</td><td>$8.85</td><td class="up">&#9650; $9.75</td></tr><tr><td>2017</td><td>$3.96</td><td class="dn">&#9660; $3.49</td><td>$10.19</td><td class="dn">&#9660; $9.75</td></tr><tr><td>2018</td><td>$3.96</td><td class="dn">&#9660; $3.68</td><td>$10.16</td><td class="dn">&#9660; $8.60</td></tr><tr><td>2019</td><td>$4.00</td><td class="dn">&#9660; $3.90</td><td>$9.54</td><td class="dn">&#9660; $9.25</td></tr><tr><td>2020</td><td>$3.88</td><td class="up">&#9650; $3.99</td><td>$9.17</td><td class="up">&#9650; $10.55</td></tr><tr><td>2021</td><td>$4.58</td><td class="up">&#9650; $5.37</td><td>$11.87</td><td class="up">&#9650; $12.30</td></tr><tr><td>2022</td><td>$5.90</td><td class="up">&#9650; $6.86</td><td>$14.33</td><td class="dn">&#9660; $13.81</td></tr><tr><td>2023</td><td>$5.91</td><td class="dn">&#9660; $4.88</td><td>$13.76</td><td class="dn">&#9660; $12.84</td></tr><tr><td>2024</td><td>$4.66</td><td class="dn">&#9660; $4.16</td><td>$11.55</td><td class="dn">&#9660; $10.03</td></tr><tr><td>2025</td><td>$4.70</td><td class="dn">&#9660; $4.22</td><td>$10.54</td><td class="dn">&#9660; $10.35</td></tr><tr><td>2026</td><td>$4.62</td><td>&mdash;</td><td>$11.09</td><td>&mdash;</td></tr></tbody></table></div>
+      <p class="pd-note">Corn and soybean figures are the December corn / November soybean CBOT contracts. &#9660; red = harvest finished below projected; &#9650; green = above. A discovery price is a plain average of daily settlements &mdash; about 19 trading days in February, 22 in October &mdash; so early in a window one limit move swings it hard, and by mid-month the same move barely nudges it. That is why every in-window figure on this page is labelled a running estimate and carries its day count.</p>
+    </div>
+  </details>
 
   <section class="hp-figs" id="key-figures">
     <h2 style="margin-top:0">Key figures at a glance</h2>
     <ul>
-      <li>The 2026 projected price is <b id="hp-proj-corn">$4.62</b> for corn and <b id="hp-proj-beans">$11.09</b> for soybeans (February average of December corn / November soybean CBOT settlements).</li>
-      <li>Corn’s harvest price has finished below its projected price in <b>10 of the last 15 crop years</b> (2011–2025); soybeans’ in <b>10 of 15</b>.</li>
-      <li>The biggest single-year harvest rally was 2012 corn: <b>$5.68 projected → $7.50 harvest</b>, lifting standard Revenue Protection guarantees (policies without the harvest-price exclusion) by 32% in one October.</li>
-      <li>The steepest percentage fall was 2014 corn: <b>$4.62 → $3.49</b> (−24%), the kind of year the price side of RP is bought for.</li>
+      <li>The 2026 projected price is <b id="hp-proj-corn">$4.62</b> for corn and <b id="hp-proj-beans">$11.09</b> for soybeans (February average of December corn / November soybean CBOT settlements). Per-state projected prices differ &mdash; Georgia's 2026 corn projected price is <b>$4.42</b>.</li>
+      <li>Corn&rsquo;s harvest price has finished below its projected price in <b>10 of the last 15 crop years</b> (2011&ndash;2025); soybeans&rsquo; in <b>10 of 15</b>.</li>
+      <li>The biggest single-year harvest rally was 2012 corn: <b>$5.68 projected &rarr; $7.50 harvest</b>, lifting standard Revenue Protection guarantees (policies without the harvest-price exclusion) by 32% in one October.</li>
+      <li>The steepest percentage fall was 2014 corn: <b>$4.62 &rarr; $3.49</b> (&minus;24%), the kind of year the price side of RP is bought for.</li>
     </ul>
-    <p class="hp-cite">Citing these figures? Attribution: <em>AGSIST Harvest Price Tracker, https://agsist.com/harvest-price-tracker (RMA price discovery records, CBOT)</em>. Available at no charge; a link back keeps it that way.</p>
   </section>
 
-  <h2>The discovery calendar</h2>
-
-  <!-- RMA sets price discovery windows by crop and by the county sales
-       closing date, so they are not the same everywhere. Windows come from
-       data/rma-discovery.json, transcribed from the CEPP. -->
-  <div class="hp-cal" id="hp-region" style="margin-bottom:.8rem">
-    <label for="hp-state" style="display:block;font-family:'JetBrains Mono',monospace;font-size:.76rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted,#8a948f);margin:0 .2rem .4rem">Your state &mdash; discovery windows differ</label>
-    <select id="hp-state" style="width:100%;max-width:420px;min-height:44px;padding:.5rem .7rem;margin:0 .2rem .6rem;background:var(--surface2,#161b1c);color:var(--text,#e9edeb);border:1px solid var(--border-2,#2a3324);border-radius:8px;font-size:1rem;font-family:inherit">
-      <option value="">Select your state — windows differ</option>
-    </select>
-    <div id="hp-region-out" style="margin:0 .2rem"></div>
+  <div class="pd-map-wrap">
+    <h2 id="pd-map-h">Every state's corn harvest window</h2>
+    <p class="hp-lede" style="margin-bottom:.4rem">Reference. Windows, not months &mdash; Arkansas and Mississippi straddle mid-August to mid-September and belong to neither.</p>
+    <div class="pd-map" id="pd-map" role="img" aria-labelledby="pd-map-h" aria-describedby="pd-map-desc" tabindex="0"></div>
+    <p id="pd-map-desc" class="pd-note" style="text-align:center">Use the picker at the top of the page to choose your state.</p>
+    <div class="pd-mleg" id="pd-mleg"></div>
   </div>
-
-  <div class="hp-cal">
-    <p class="hp-lede" style="margin:0 .2rem .2rem;font-size:.95rem">Corn &amp; soybeans: projected price set in February, harvest price set in October (December corn / November soybean contracts). Other crops and regions discover in different windows &mdash; added as they're configured.</p>
-    <p class="hp-lede" style="margin:0 .2rem .4rem;font-size:.9rem">The 2026 harvest prices are averaged over October 1&ndash;31 and published by USDA RMA in early November. Until discovery opens, December corn and November soybean futures are the closest live proxy &mdash; <a href="/corn-futures-prices" style="color:var(--hp-gold2)">corn futures</a> &middot; <a href="/soybean-futures-prices" style="color:var(--hp-gold2)">soybean futures</a>.</p>
-    <p class="hp-lede" style="margin:0 .2rem .2rem;font-size:.85rem;color:var(--text-dim,#8a948f)">Wheat, cotton, and rice discover in crop- and state-specific windows under the same provisions — each gets added here once its exact contract and window are wired and verified, never before.</p>
-    <div class="yr" id="hp-yr">
-      <div class="mo">Jan</div>
-      <div class="mo proj">Feb<b>PROJECTED</b></div>
-      <div class="mo">Mar</div><div class="mo">Apr</div><div class="mo">May</div><div class="mo">Jun</div>
-      <div class="mo">Jul</div><div class="mo">Aug</div><div class="mo">Sep</div>
-      <div class="mo harv">Oct<b>HARVEST</b></div>
-      <div class="mo">Nov</div><div class="mo">Dec</div>
-    </div>
-  </div>
-
-  <h2 id="history">Fifteen years of projected vs. harvest</h2>
-  <p class="hp-lede" style="margin-bottom:.3rem">The question every Revenue Protection decision quietly asks: how often does October finish below February? Corn’s harvest price has finished <b>below</b> its projected price in <b>10 of the last 15 crop years</b> (2011–2025); soybeans, <b>10 of 15</b>. That history is why the price side of RP exists.</p>
-  <div class="hp-tablewrap"><table class="hp-hist"><thead><tr><th scope="col">Crop year</th><th scope="col">Corn proj.</th><th scope="col">Corn harvest</th><th scope="col">Beans proj.</th><th scope="col">Beans harvest</th></tr></thead><tbody><tr><td>2011</td><td>$6.01</td><td class="up">▲ $6.32</td><td>$13.49</td><td class="dn">▼ $12.14</td></tr><tr><td>2012</td><td>$5.68</td><td class="up">▲ $7.50</td><td>$12.55</td><td class="up">▲ $15.39</td></tr><tr><td>2013</td><td>$5.65</td><td class="dn">▼ $4.39</td><td>$12.87</td><td>$12.87</td></tr><tr><td>2014</td><td>$4.62</td><td class="dn">▼ $3.49</td><td>$11.36</td><td class="dn">▼ $9.65</td></tr><tr><td>2015</td><td>$4.15</td><td class="dn">▼ $3.83</td><td>$9.73</td><td class="dn">▼ $8.91</td></tr><tr><td>2016</td><td>$3.86</td><td class="dn">▼ $3.49</td><td>$8.85</td><td class="up">▲ $9.75</td></tr><tr><td>2017</td><td>$3.96</td><td class="dn">▼ $3.49</td><td>$10.19</td><td class="dn">▼ $9.75</td></tr><tr><td>2018</td><td>$3.96</td><td class="dn">▼ $3.68</td><td>$10.16</td><td class="dn">▼ $8.60</td></tr><tr><td>2019</td><td>$4.00</td><td class="dn">▼ $3.90</td><td>$9.54</td><td class="dn">▼ $9.25</td></tr><tr><td>2020</td><td>$3.88</td><td class="up">▲ $3.99</td><td>$9.17</td><td class="up">▲ $10.55</td></tr><tr><td>2021</td><td>$4.58</td><td class="up">▲ $5.37</td><td>$11.87</td><td class="up">▲ $12.30</td></tr><tr><td>2022</td><td>$5.90</td><td class="up">▲ $6.86</td><td>$14.33</td><td class="dn">▼ $13.81</td></tr><tr><td>2023</td><td>$5.91</td><td class="dn">▼ $4.88</td><td>$13.76</td><td class="dn">▼ $12.84</td></tr><tr><td>2024</td><td>$4.66</td><td class="dn">▼ $4.16</td><td>$11.55</td><td class="dn">▼ $10.03</td></tr><tr><td>2025</td><td>$4.70</td><td class="dn">▼ $4.22</td><td>$10.54</td><td class="dn">▼ $10.35</td></tr><tr><td>2026</td><td>$4.62</td><td>—</td><td>$11.09</td><td>—</td></tr></tbody></table></div>
-  <p class="hp-hist-src">Source: USDA RMA price discovery records (December corn / November soybean contracts, CBOT). ▼ red = harvest finished below projected; ▲ green = above. Verify any figure at prices.rma.usda.gov. Citing this table? Attribution: <em>AGSIST Harvest Price Tracker, https://agsist.com/harvest-price-tracker</em>.</p>
-
-  <h2 id="guarantee-math">The guarantee math, worked out</h2>
-  <p class="hp-lede" style="margin-bottom:.35rem">Revenue Protection’s per-acre guarantee starts at <b>APH yield × coverage level × projected price</b> — and rises to the harvest price if October averages higher. With the 2026 projected prices locked, a 180-bushel corn APH at 85% coverage guarantees <b>180 × 0.85 × $4.62 = $706.86 per acre</b>; a 55-bushel soybean APH at 80% guarantees <b>55 × 0.80 × $11.09 = $487.96</b>. If October’s harvest price finishes <em>above</em> the projected price, the guarantee recalculates upward at the harvest price — it never recalculates down. Run your own numbers with your agent; every unit, practice, and county differs. Then fold that floor into your own costs with the <a href="/breakeven" style="color:var(--hp-gold2)">break-even calculator</a>.</p>
-  <div class="hp-mine" id="hp-mine" style="display:flex;flex-wrap:wrap;gap:.7rem;align-items:flex-end;background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-radius:10px;padding:.8rem .95rem;margin:.2rem 0 .4rem">
-    <label style="display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted,#8a948f);font-weight:700">Crop<select id="hpm-crop" style="padding:.45rem;background:var(--surface2,#1a1f18);border:1px solid var(--border,#2a3324);border-radius:6px;color:var(--text,#e7ece8);min-height:44px;font-size:.9rem"><option value="corn" selected>Corn</option><option value="beans">Soybeans</option></select></label>
-    <label style="display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted,#8a948f);font-weight:700">Your APH (bu/ac)<input type="number" id="hpm-aph" inputmode="decimal" min="1" max="400" placeholder="180" style="padding:.45rem;background:var(--surface2,#1a1f18);border:1px solid var(--border,#2a3324);border-radius:6px;color:var(--text,#e7ece8);min-height:44px;width:110px;font-size:.9rem"></label>
-    <label style="display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted,#8a948f);font-weight:700">Coverage<select id="hpm-cov" style="padding:.45rem;background:var(--surface2,#1a1f18);border:1px solid var(--border,#2a3324);border-radius:6px;color:var(--text,#e7ece8);min-height:44px;font-size:.9rem"><option value="0.50">50%</option><option value="0.55">55%</option><option value="0.60">60%</option><option value="0.65">65%</option><option value="0.70">70%</option><option value="0.75" selected>75%</option><option value="0.80">80%</option><option value="0.85">85%</option></select></label>
-    <div id="hpm-out" role="status" style="flex:1;min-width:220px;font-size:.92rem;line-height:1.5;color:var(--text-dim,#c3ccc4)">Enter your APH to see your own minimum guarantee.</div>
-  </div>
-  <p class="hp-lede" style="font-size:.78rem;color:var(--text-dim,#8a948f);margin:0 0 .4rem">Estimate at 100% price election, saved only on your device. Your actual guarantee depends on unit structure, practice, and county &mdash; confirm with your agent.</p>
-
-  <h2 id="how-averaging-works">Why the running average calms down as October fills</h2>
-  <p class="hp-lede" style="margin-bottom:.35rem">Each discovery price is a plain average of daily settlements — roughly 19 trading days in February, 22 in October. Early in the month, one limit move can swing the running average hard; by day 15, that same move barely nudges it, because it’s one voice among fifteen. That’s why this page labels every in-window figure a running estimate and shows the day count beside it: the number’s reliability is the day count.</p>
-
-  <h2>What this means for you</h2>
-  <p class="hp-lede" style="margin-bottom:.4rem">If you carry Revenue Protection, watch the October harvest price against your February projected price. Above it, your guarantee escalates &mdash; good news whether you're selling or holding. Below it, the price side of your policy is doing its job. Want to see how many bushels your guarantee lets you forward-price?</p>
-  <p class="hp-cta"><a href="/presell-calculator">&rarr; Run the insurance-backed pre-sell calculator</a></p>
 
   <h2>Common questions</h2>
   <div class="hp-faq" id="hp-faq">
-    <details><summary>How is the projected price set?</summary><p>It's the average daily settlement of the December corn (or November soybean) futures contract across every trading day in February, rounded to the nearest cent. That number, times your coverage level, times your APH yield, is your minimum per-acre revenue guarantee — under Revenue Protection it rises to the harvest price if October averages higher.</p></details>
+    <details><summary>How is the projected price set?</summary><p>It's the average daily settlement of the December corn (or November soybean) futures contract across every trading day in February, rounded to the nearest cent. That number, times your coverage level, times your APH yield, is your minimum per-acre revenue guarantee &mdash; under Revenue Protection it rises to the harvest price if October averages higher.</p></details>
     <details><summary>How is the harvest price set?</summary><p>The same contract, averaged across every trading day in October. Revenue Protection uses the higher of the projected or harvest price, so an October rally raises your guarantee; a decline does not lower it.</p></details>
     <details><summary>How often does the harvest price come in below the projected price?</summary><p>Across 2011&ndash;2025, corn&rsquo;s harvest price finished below its projected price in 10 of 15 crop years, and soybeans&rsquo; in 10 of 15. A lower harvest price never lowers a Revenue Protection guarantee &mdash; the policy uses the higher of the two &mdash; but it is central to how price-loss indemnities are figured. The full year-by-year table is on this page; verify official figures at prices.rma.usda.gov and talk to your own agent about what it means for your policy.</p></details>
     <details><summary>Why do other crops show different months?</summary><p>Each crop &mdash; and sometimes each region within a crop &mdash; has its own contract and discovery window under RMA's Commodity Exchange Price Provisions. Winter wheat keys off the July contract of harvest year &mdash; Kansas City for hard red winter states, Chicago for soft red &mdash; discovered in a late-summer window before planting; spring wheat keys off September Minneapolis futures. Exact windows vary by state; those tracks are added here once verified.</p></details>
-    <details><summary>Are these the official RMA prices?</summary><p>This tracks the same publicly traded futures RMA uses and applies the same averaging. Treat in-window figures as running estimates until the window closes; the USDA Risk Management Agency publishes the official prices. Always verify with your agent and policy documents.</p></details>
+    <details><summary>What about cotton and peanuts?</summary><p>Cotton is not wired here yet &mdash; it discovers against the ICE December contract, and it goes on this page when its windows are verified, not before. Peanuts have no futures discovery window at all: RMA sets the peanut price administratively, so there is nothing to track daily.</p></details>
+    <details><summary>Are these the official RMA prices?</summary><p>No. These are RMA's own published figures, mirrored from their price discovery service. While a window is open, the figure is RMA's running average to date, not a final price, and it is labelled that way. The official price is RMA's alone &mdash; verify at prices.rma.usda.gov and talk to your agent.</p></details>
   </div>
 
   <div class="hp-cred">
-    Built and maintained by a licensed crop-insurance agent, available at no charge for non-commercial use. Questions: <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &middot; 715-797-2428. Nothing here is insurance, marketing, or financial advice; official prices are set by the USDA Risk Management Agency. Not affiliated with or endorsed by USDA or RMA.
+    Source: USDA RMA Price Discovery, mirrored daily &mdash; in-window figures are RMA's running averages, not final prices. Citing this page? Attribution: <em>AGSIST Price Discovery Tracker, https://agsist.com/harvest-price-tracker</em>. Available at no charge; a link back keeps it that way.<br><br>
+    Built and maintained by a licensed crop-insurance agent. Questions: <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &middot; 715-797-2428. Nothing here is insurance, marketing, or financial advice; official prices are set by the USDA Risk Management Agency. Not affiliated with or endorsed by USDA or RMA.
   </div>
 </main>
 
@@ -260,8 +365,8 @@
 {
   "@context":"https://schema.org",
   "@type":"Dataset",
-  "name":"RMA Crop Insurance Projected and Harvest Prices",
-  "description":"Projected and harvest prices for corn and soybeans used to set Revenue Protection crop insurance guarantees, tracked during the February and October discovery periods.",
+  "name":"USDA RMA Crop Insurance Projected and Harvest Price Discovery, by state",
+  "description":"USDA RMA projected and harvest price discovery windows and prices, by state, crop, type and practice — the figures that set Revenue Protection guarantees. Mirrored from RMA's own price discovery service; in-window figures are RMA running averages, not final prices.",
   "url":"https://agsist.com/harvest-price-tracker",
   "creator":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Licensed Crop Insurance Agent"},
   "isAccessibleForFree":true,
@@ -272,7 +377,7 @@
 }
 </script>
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the projected price set?", "acceptedAnswer": {"@type": "Answer", "text": "It's the average daily settlement of the December corn (or November soybean) futures contract across every trading day in February, rounded to the nearest cent. That number, times your coverage level, times your APH yield, is your minimum per-acre revenue guarantee — under Revenue Protection it rises to the harvest price if October averages higher."}}, {"@type": "Question", "name": "How is the harvest price set?", "acceptedAnswer": {"@type": "Answer", "text": "The same contract, averaged across every trading day in October. Revenue Protection uses the higher of the projected or harvest price, so an October rally raises your guarantee; a decline does not lower it."}}, {"@type": "Question", "name": "How often does the harvest price come in below the projected price?", "acceptedAnswer": {"@type": "Answer", "text": "Across 2011–2025, corn’s harvest price finished below its projected price in 10 of 15 crop years, and soybeans’ in 10 of 15. A lower harvest price never lowers a Revenue Protection guarantee — the policy uses the higher of the two — but it is central to how price-loss indemnities are figured. The full year-by-year table is on this page; verify official figures at prices.rma.usda.gov and talk to your own agent about what it means for your policy."}}, {"@type": "Question", "name": "Why do other crops show different months?", "acceptedAnswer": {"@type": "Answer", "text": "Each crop — and sometimes each region within a crop — has its own contract and discovery window under RMA's Commodity Exchange Price Provisions. Winter wheat keys off the July contract of harvest year — Kansas City for hard red winter states, Chicago for soft red — discovered in a late-summer window before planting; spring wheat keys off September Minneapolis futures. Exact windows vary by state; those tracks are added here once verified."}}, {"@type": "Question", "name": "Are these the official RMA prices?", "acceptedAnswer": {"@type": "Answer", "text": "This tracks the same publicly traded futures RMA uses and applies the same averaging. Treat in-window figures as running estimates until the window closes; the USDA Risk Management Agency publishes the official prices. Always verify with your agent and policy documents."}}]}
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the projected price set?", "acceptedAnswer": {"@type": "Answer", "text": "It's the average daily settlement of the December corn (or November soybean) futures contract across every trading day in February, rounded to the nearest cent. That number, times your coverage level, times your APH yield, is your minimum per-acre revenue guarantee — under Revenue Protection it rises to the harvest price if October averages higher."}}, {"@type": "Question", "name": "How is the harvest price set?", "acceptedAnswer": {"@type": "Answer", "text": "The same contract, averaged across every trading day in October. Revenue Protection uses the higher of the projected or harvest price, so an October rally raises your guarantee; a decline does not lower it."}}, {"@type": "Question", "name": "How often does the harvest price come in below the projected price?", "acceptedAnswer": {"@type": "Answer", "text": "Across 2011–2025, corn’s harvest price finished below its projected price in 10 of 15 crop years, and soybeans’ in 10 of 15. A lower harvest price never lowers a Revenue Protection guarantee — the policy uses the higher of the two — but it is central to how price-loss indemnities are figured. The full year-by-year table is on this page; verify official figures at prices.rma.usda.gov and talk to your own agent about what it means for your policy."}}, {"@type": "Question", "name": "Why do other crops show different months?", "acceptedAnswer": {"@type": "Answer", "text": "Each crop — and sometimes each region within a crop — has its own contract and discovery window under RMA's Commodity Exchange Price Provisions. Winter wheat keys off the July contract of harvest year — Kansas City for hard red winter states, Chicago for soft red — discovered in a late-summer window before planting; spring wheat keys off September Minneapolis futures. Exact windows vary by state; those tracks are added here once verified."}}, {"@type": "Question", "name": "What about cotton and peanuts?", "acceptedAnswer": {"@type": "Answer", "text": "Cotton is not wired here yet — it discovers against the ICE December contract, and it goes on this page when its windows are verified, not before. Peanuts have no futures discovery window at all: RMA sets the peanut price administratively, so there is nothing to track daily."}}, {"@type": "Question", "name": "Are these the official RMA prices?", "acceptedAnswer": {"@type": "Answer", "text": "No. These are RMA's own published figures, mirrored from their price discovery service. While a window is open, the figure is RMA's running average to date, not a final price, and it is labelled that way. The official price is RMA's alone — verify at prices.rma.usda.gov and talk to your agent."}}]}
 </script>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
@@ -280,508 +385,454 @@
 window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');
 function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
 </script>
-
 <script>
+/* Price discovery, per grower.
+
+   Data: data/rma-prices.json — USDA RMA's own price discovery service, mirrored
+   by scripts/fetch_rma_prices.py. Every price here is RMA's arithmetic, not
+   ours; while a window is open the figure is their running average to date and
+   is labelled that way.
+
+   Three rules this file exists to keep:
+   1. One picker, one setState, every block subscribes. Nothing personal is
+      rendered upstream of the control that produced it.
+   2. A state that RMA keys to more than one sales closing date gets a card per
+      window set, each named. Texas corn has three; collapsing them to the first
+      is how the old page told a Panhandle grower the wrong month.
+   3. A guess is not a choice. A state inferred from a stored weather location
+      selects the picker but is never written back to storage, and nothing
+      downstream of that write may persist it either. */
 (function(){
-  var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  function px(n){return '$'+Number(n).toFixed(2);}
-  function spark(series){
-    if(!series||series.length<2)return '';
-    var w=180,h=38,min=Math.min.apply(null,series),max=Math.max.apply(null,series),rng=(max-min)||1;
-    var pts=series.map(function(v,i){var x=(i/(series.length-1))*w;var y=h-((v-min)/rng)*(h-6)-3;return x.toFixed(1)+','+y.toFixed(1);}).join(' ');
-    var lbl='Daily average trend: started '+px(series[0])+', now '+px(series[series.length-1])+', range '+px(min)+' to '+px(max);
-    return '<svg class="hp-spark" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" role="img" aria-label="'+lbl+'"><polyline points="'+pts+'" fill="none" stroke="var(--hp-gold)" stroke-width="2" stroke-linejoin="round"/></svg>';
+  var SRC='/data/rma-prices.json', KEY='agsist-pd-state';
+  var LEAD={Corn:1,Soybeans:2};
+  var CENT={Rice:1,Popcorn:1,Canola:1,Cotton:1};   // priced per pound
+  var APH={Corn:180,Soybeans:55,Wheat:70,Oats:80,Barley:75,Rye:45,
+           'Grain Sorghum':90,Rice:7500,Popcorn:4000,Canola:1800};
+  var MON=['January','February','March','April','May','June','July','August',
+           'September','October','November','December'];
+  var $=function(id){return document.getElementById(id);};
+  var ROWS=[], BYST={}, TODAY=new Date();
+  TODAY.setHours(12,0,0,0);
+
+  function d(s){ var p=String(s).split('-'); return new Date(+p[0],+p[1]-1,+p[2],12,0,0); }
+  function days(a,b){ return Math.round((b-a)/86400000); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function unit(r){ return CENT[r.crop]?'lb':'bu'; }
+  function money(v,u){ return '$'+(u==='lb'?Number(v).toFixed(4):Number(v).toFixed(2)); }
+  function shortd(s){ var x=d(s); return MON[x.getMonth()].slice(0,3)+' '+x.getDate(); }
+  function realType(t){
+    // "All", "All (Non-High Amylose)" and friends mean "every type of this
+    // crop". They distinguish nothing, so they are not shown.
+    return (t && !/^all\b/i.test(String(t))) ? String(t) : '';
   }
-  function harvestBox(c){
-    var hv=c.harvest;
-    if(hv.status==='final'&&hv.price!=null){
-      return '<div class="lbl">Harvest price</div><div class="px">'+px(hv.price)+'</div><div class="sub">'+hv.window+' final</div>';
-    }
-    if(hv.status==='active'&&hv.running_avg!=null){
-      return '<div class="lbl">Harvest price (running estimate)</div><div class="px">'+px(hv.running_avg)+'</div><div class="sub">day '+hv.days_counted+' of ~'+hv.days_total+' &middot; not final until the month closes</div>'+spark(hv.series);
-    }
-    return '<div class="lbl">Harvest price</div><div class="pend">Opens '+hv.window+'</div><div class="sub">~'+hv.days_total+' trading days</div>';
+  function label(r){ var t=realType(r.type); return r.crop+(t?' · '+t:''); }
+  function price(v,status){
+    // "Yet To Start" ships as 0.0000. A zero is not a price.
+    if(v===null||v===undefined||v==='') return null;
+    var n=Number(v); if(!isFinite(n)||n<=0) return null;
+    if(/yet to start/i.test(status||'')) return null;
+    return n;
   }
-  function deltaLine(c){
-    var pp=c.projected.price, hv=c.harvest;
-    var hval=(hv.status==='final')?hv.price:(hv.status==='active'?hv.running_avg:null);
-    if(pp==null)return '';
-    if(hval==null){
-      // Pre-discovery: show where the underlying futures sit against the locked price today.
-      var q=LIVE_Q[qKey(c)];
-      if(q&&q.close){
-        var f=q.close/100, fd=f-pp, fp=(fd/pp*100);
-        var rel=(fd>0.0049)?('<span class="up">'+px(fd)+' ('+fp.toFixed(1)+'%) above</span>'):((fd<-0.0049)?('<span class="dn">'+px(Math.abs(fd))+' ('+Math.abs(fp).toFixed(1)+'%) below</span>'):'right at');
-        return '<div class="hp-delta">Your price floor is locked at the projected price of <b>'+px(pp)+'</b> (revenue guarantee = that price &times; your APH &times; your coverage level). '+qLabel(c)+' futures today: <b>'+px(f)+'</b> &mdash; '+rel+' the floor. If October averaged here, '+((fd>0.0049)?'guarantees would escalate.':'guarantees would hold at the projected price.')+'</div>';
+
+  /* ---- shaping -------------------------------------------------------- */
+  function windowKey(r){
+    return [r.crop,r.type,r.p_start,r.p_end,r.h_start,r.h_end].join('|');
+  }
+  function group(rows){
+    // one entry per crop/type/window-set, Conventional practice, organic kept
+    // aside so the two are never averaged into a price that is nobody's
+    var m={}, order=[];
+    rows.forEach(function(r){
+      if(!r.h_start||!r.h_end||!r.p_start) return;
+      var k=windowKey(r);
+      if(!m[k]){ m[k]={crop:r.crop,type:r.type,scd:[],ps:r.p_start,pe:r.p_end,
+                      hs:r.h_start,he:r.h_end,ex:r.h_exch||r.p_exch,mo:r.h_mon||r.p_mon,
+                      p:null,h:null,po:null,ho:null,hstatus:r.h_status,u:unit(r)};
+                 order.push(k); }
+      var g=m[k];
+      if(g.scd.indexOf(r.scd)<0 && r.scd) g.scd.push(r.scd);
+      if(r.practice==='Organic'){
+        if(g.po==null) g.po=price(r.p_price,r.p_status);
+        if(g.ho==null) g.ho=price(r.h_price,r.h_status);
+      }else{
+        if(g.p==null) g.p=price(r.p_price,r.p_status);
+        if(g.h==null) g.h=price(r.h_price,r.h_status);
       }
-      return '<div class="hp-delta">Your price floor is locked at the projected price of <b>'+px(pp)+'</b> (revenue guarantee = that price &times; your APH &times; your coverage level). When '+hv.window+' discovery opens, watch whether the harvest price runs above it.</div>';
-    }
-    var run=(hv.status==='active')?('Running average through day '+hv.days_counted+': harvest price is '):'Harvest price is ';
-    var d=hval-pp, pct=(d/pp*100);
-    if(d>0.0049){
-      return '<div class="hp-delta">'+run+'<span class="up">'+px(d)+' ('+pct.toFixed(1)+'%) above</span> the projected floor &mdash; '+((hv.status==='active')?'<b>on pace to escalate</b> Revenue Protection guarantees toward the harvest price.':'Revenue Protection guarantees <b>escalated</b> to the harvest price.')+'</div>';
-    }else if(d<-0.0049){
-      return '<div class="hp-delta">'+run+'<span class="dn">'+px(Math.abs(d))+' ('+Math.abs(pct).toFixed(1)+'%) below</span> the projected floor &mdash; guarantees <b>hold at the projected price</b>; the price protection you bought is in play. Whether it pays depends on your yield.</div>';
-    }
-    return '<div class="hp-delta">'+run+'right at the projected floor of <b>'+px(pp)+'</b>.</div>';
-  }
-  function card(c){
-    var pj=c.projected;
-    var projInner = (pj.status==='final'&&pj.price!=null)
-      ? '<div class="lbl">Projected price</div><div class="px">'+px(pj.price)+'</div><div class="sub">'+pj.window+' final</div>'+spark(pj.series)
-      : '<div class="lbl">Projected price</div><div class="pend">Opens '+pj.window+'</div><div class="sub">~'+pj.days_total+' trading days</div>';
-    return '<div class="hp-card"><div class="top"><span class="cname">'+c.label+'</span>'
-      +'<span class="ctr">'+c.contract+' &middot; '+c.exchange+'</span></div>'
-      +'<div class="hp-row"><div class="hp-box proj">'+projInner+'</div>'
-      +'<div class="hp-box harv">'+harvestBox(c)+'</div></div>'
-      +deltaLine(c)
-      +'<div class="hp-meta">'+(c.projected.window)+' &amp; '+(c.harvest.window)+' discovery</div></div>';
-  }
-  function banner(data){
-    var b=document.getElementById('hp-banner');
-    var anyActive=data.commodities.some(function(c){return c.harvest.status==='active';});
-    var anyPending=data.commodities.some(function(c){return c.harvest.status==='pending';});
-    if(anyActive){b.innerHTML='<span>\u25CF</span><div><b>Harvest discovery is open.</b> The harvest-price averages below are building day by day this month.</div>';b.hidden=false;}
-    else if(anyPending){b.innerHTML='<span>\u25CF</span><div><b>Projected prices are locked.</b> Harvest discovery for corn &amp; soybeans opens in October &mdash; that\u2019s when the harvest-price averages start building.</div>';b.hidden=false;}
-  }
-  var LIVE_Q={};
-  function qKey(c){return /corn/i.test(c.label||'')?'corn-dec':(/soy|bean/i.test(c.label||'')?'beans-nov':null);}
-  function qLabel(c){return /corn/i.test(c.label||'')?'December corn':'November soybean';}
-  // Live new-crop futures (Dec corn / Nov beans) — best-effort; page works without it.
-  var livePromise=fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(p){
-    if(p&&p.quotes){LIVE_Q['corn-dec']=p.quotes['corn-dec']||null;LIVE_Q['beans-nov']=p.quotes['beans-nov']||null;}
-  }).catch(function(){});
-  fetch('/data/harvest-prices.json',{cache:'no-store'}).then(function(r){
-    if(!r.ok)throw new Error('status '+r.status);return r.json();
-  }).then(function(data){
-    livePromise.then(function(){
-      var host=document.getElementById('hp-cards');
-      host.innerHTML=data.commodities.map(card).join('');
-      if(data.updated)host.insertAdjacentHTML('beforeend','<div class="hp-seed-note">Data as of '+data.updated+' &middot; county provisions vary &mdash; your agent of record is the authority &middot; official prices: USDA RMA</div>');
-      banner(data);
-      gaEvent('harvest_view',{crop_year:data.crop_year});
     });
-  }).catch(function(){
-    // Keep the seeded (correct) cards on screen; just note the live update failed.
-    document.getElementById('hp-cards').insertAdjacentHTML('beforeend','<div class="hp-seed-note">Live update unavailable right now &mdash; the locked prices above are current. See <a href="/corn-futures-prices" style="color:var(--hp-gold2)">corn futures</a> for today&rsquo;s market.</div>');
-  });
-  document.querySelectorAll('#hp-faq details').forEach(function(d){
-    d.addEventListener('toggle',function(){if(d.open)gaEvent('faq_open',{page:'harvest-tracker'});});
-  });
-  // "Your guarantee" mini-calc — projected prices from the same seeded values the cards use.
-  (function(){
-    // Fallback constants only. The REAL numbers load from the same JSON the
-    // seed cards are baked from, so a February refresh updates the cards, this
-    // calculator and the key-figures bullet in one place instead of four.
-    var PROJ={corn:4.62,beans:11.09};
-    fetch('/data/harvest-prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
-      if(!d||!d.commodities)return;
-      d.commodities.forEach(function(c){
-        var k=/corn/i.test(c.label)?'corn':(/soy/i.test(c.label)?'beans':null);
-        var p=c.projected&&c.projected.price;
-        if(k&&p!=null){
-          PROJ[k]=p;
-          var b=document.getElementById(k==='corn'?'hp-proj-corn':'hp-proj-beans');
-          if(b)b.textContent='$'+p.toFixed(2);
-        }
-      });
-      if(typeof upd==='function')upd(); // recompute the guarantee with live numbers
-    }).catch(function(){});
-    var crop=document.getElementById('hpm-crop'),aph=document.getElementById('hpm-aph'),cov=document.getElementById('hpm-cov'),out=document.getElementById('hpm-out');
-    if(!crop||!aph||!cov||!out)return;
-    try{var sv=JSON.parse(localStorage.getItem('agsist-hp-mine')||'null');if(sv){if(sv.crop)crop.value=sv.crop;if(sv.aph)aph.value=sv.aph;if(sv.cov)cov.value=sv.cov;}}catch(e){}
-    function upd(){
-      var a=parseFloat(aph.value),c=parseFloat(cov.value),p=PROJ[crop.value];
-      try{localStorage.setItem('agsist-hp-mine',JSON.stringify({crop:crop.value,aph:aph.value,cov:cov.value}));}catch(e){}
-      if(!a||a<=0){out.textContent='Enter your APH to see your own minimum guarantee.';return;}
-      var g=a*c*p;
-      out.innerHTML='Your minimum guarantee: '+a+' &times; '+(c*100).toFixed(0)+'% &times; $'+p.toFixed(2)+' = <b style="color:var(--hp-gold2,#e6b042)">$'+g.toFixed(2)+'/acre</b> &mdash; rises with the harvest price if October averages higher (standard RP).';
-      if(window.gaEvent)gaEvent('hp_guarantee_calc',{crop:crop.value});
+    return order.map(function(k){return m[k];}).filter(function(g){return g.p!=null;});
+  }
+  function isOpen(g){ return d(g.hs)<=TODAY && TODAY<=d(g.he); }
+  function isDone(g){ return d(g.he)<TODAY; }
+  function rank(g){ return (LEAD[g.crop]||99); }
+  function pct(g){ return (g.h!=null&&g.p) ? (g.h-g.p)/g.p*100 : null; }
+
+  /* ---- pieces --------------------------------------------------------- */
+  function steps(g){
+    var py=d(g.ps).getFullYear(), open=isOpen(g), now;
+    if(open){
+      var dayN=days(d(g.hs),TODAY)+1, spanN=days(d(g.hs),d(g.he))+1;
+      now='<b class="pd-num">Day '+dayN+' / '+spanN+'</b>'+
+          '<i>open — RMA has not posted an average yet</i>';
+    }else{
+      now='<b class="pd-num">'+days(TODAY,d(g.hs))+' days</b><i>until discovery opens</i>';
     }
-    crop.addEventListener('change',upd);aph.addEventListener('input',upd);cov.addEventListener('change',upd);
-    upd();
-  })();
+    return '<div class="pd-steps">'+
+      '<div class="pd-step done"><span class="pd-dot">✓</span>'+
+        '<h4>Projected price</h4><p>'+shortd(g.ps)+' – '+shortd(g.pe)+' '+py+'</p>'+
+        '<b class="pd-num">'+money(g.p,g.u)+'</b><i>locked — this is your guarantee</i></div>'+
+      '<div class="pd-step now"><span class="pd-dot"></span>'+
+        '<h4>Today</h4><p>'+shortd(iso(TODAY))+'</p>'+now+'</div>'+
+      '<div class="pd-step'+(open?' done':'')+'"><span class="pd-dot"></span>'+
+        '<h4>Harvest price</h4><p>'+shortd(g.hs)+' – '+shortd(g.he)+'</p>'+
+        '<b>'+esc(g.ex||'')+' '+esc(g.mo||'')+'</b><i>sets what you actually get</i></div>'+
+      '</div>';
+  }
+  function iso(x){ var m=x.getMonth()+1,dd=x.getDate();
+    return x.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(dd<10?'0':'')+dd; }
+
+  function bar(g){
+    var diff=g.h-g.p, up=diff>=0, p=pct(g), live=d(g.he)>=TODAY;
+    var pad=Math.max(Math.abs(diff)*1.6, g.p*0.045);
+    var lo=Math.min(g.p,g.h)-pad, hi=Math.max(g.p,g.h)+pad;
+    var at=function(v){ return (v-lo)/(hi-lo)*100; };
+    var gx=at(g.p), hx=at(g.h), l=Math.min(gx,hx), w=Math.abs(hx-gx);
+    var side=function(x){ return x>60 ? 'right:'+(100-x)+'%' : 'left:'+x+'%'; };
+    var cls=up?'up':'dn';
+    var mean = up
+      ? 'If the window closed today your revenue guarantee would revise up <b>'+
+        Math.abs(p).toFixed(1)+'%</b>, to <b class="pd-num">'+money(g.h,g.u)+' /'+g.u+'</b>.'
+      : 'A '+(live?'running':'final')+' average below the projected price does not cut your '+
+        'guarantee — it stays at <b class="pd-num">'+money(g.p,g.u)+' /'+g.u+'</b>. '+
+        'It changes what your crop is worth against that guarantee.';
+    return '<div class="pd-pb">'+
+      '<div class="pd-pb-h">'+(live?'Running average':'Final harvest price')+
+        ' against your guarantee</div>'+
+      '<div class="pd-track">'+
+        '<div class="pd-gap '+cls+'" style="left:'+l+'%;width:'+w+'%"></div>'+
+        '<div class="pd-ref" style="left:'+gx+'%"></div>'+
+        '<div class="pd-mark '+cls+'" style="left:'+hx+'%"></div></div>'+
+      '<div class="pd-tags">'+
+        '<div class="pd-tag'+(gx>60?' r':'')+'" style="'+side(gx)+'">'+
+          '<b class="pd-num">'+money(g.p,g.u)+'</b><br>guarantee</div>'+
+        '<div class="pd-tag '+cls+(hx>60?' r':'')+'" style="'+side(hx)+'">'+
+          '<b class="pd-num">'+money(g.h,g.u)+'</b><br>'+(live?'running':'final')+'</div></div>'+
+      '<div class="pd-pct '+cls+'"><b>'+(up?'+':'−')+Math.abs(p).toFixed(1)+'%</b>'+
+        '<span>'+(up?'+':'−')+money(Math.abs(diff),g.u)+' /'+g.u+' · '+
+        (up?'above':'below')+' your '+money(g.p,g.u)+' guarantee'+(live?' so far':'')+'</span></div>'+
+      '<p class="pd-mean">'+mean+'</p></div>';
+  }
+
+  function card(g,st){
+    var open=isOpen(g), done=isDone(g), big, say;
+    var spanN=days(d(g.hs),d(g.he))+1;
+    if(open){
+      var dayN=days(d(g.hs),TODAY)+1;
+      big='<div class="pd-big"><b>Day '+dayN+'</b><i>/'+spanN+'</i>'+
+          '<span>'+(spanN-dayN)+' days left · '+esc(g.ex||'')+' '+esc(g.mo||'')+
+          ' contract</span></div>';
+      say='Every trading day between now and '+shortd(g.he)+' moves this average. Your '+
+          'guarantee follows it up if it finishes above the projected price — it never '+
+          'follows it down.';
+    }else if(done){
+      big='<div class="pd-big"><b>Set</b><span>window closed '+shortd(g.he)+'</span></div>';
+      say='Discovery is finished for this crop. The figure below is what RMA published.';
+    }else{
+      big='<div class="pd-big"><b>'+days(TODAY,d(g.hs))+'</b><i> days</i>'+
+          '<span>until your harvest price starts</span></div>';
+      say=esc(st)+' averages the '+esc(g.ex||'')+' '+esc(g.mo||'')+' contract every trading '+
+          'day of that window. Your guarantee is already locked and can only go up — '+
+          'never down.';
+    }
+    var scd = g.scd.length ? '<p class="pd-note" style="margin-top:.5rem">Applies where the '+
+      'sales closing date is '+g.scd.map(esc).join(' or ')+'.</p>' : '';
+    var org = g.po!=null ? '<p class="pd-note" style="margin-top:.35rem">Organic practice is '+
+      'priced separately: <b class="pd-num">'+money(g.po,g.u)+' /'+g.u+'</b> projected'+
+      (g.ho!=null?', <b class="pd-num">'+money(g.ho,g.u)+' /'+g.u+'</b> '+
+      (isOpen(g)?'running':'harvest'):'')+'.</p>' : '';
+    return '<div class="pd-crop'+(open?' live':'')+'">'+
+      '<div class="pd-crop-top"><h3 class="pd-cname">'+esc(g.crop)+
+        (realType(g.type)?' <small>· '+esc(realType(g.type))+'</small>':'')+'</h3>'+
+        '<span class="pd-pill '+(open?'open':'wait')+'">'+
+        (open?'in discovery now':(done?'window closed':'opens '+shortd(g.hs)))+'</span></div>'+
+      big+'<p class="pd-say">'+say+'</p>'+
+      (g.h!=null ? bar(g) : steps(g)) + scd + org + '</div>';
+  }
+
+  function row(g){
+    var p=pct(g), diff=(g.h!=null)?g.h-g.p:null, open=isOpen(g);
+    var cls=p==null?'':(p>=0?'pd-up':'pd-dn');
+    var vs = p==null ? '—'
+      : '<b>'+(p>=0?'+':'−')+Math.abs(p).toFixed(1)+'%</b><br><span class="pd-sub2">'+
+        (diff>=0?'+':'−')+Math.abs(diff).toFixed(g.u==='lb'?4:2)+'</span>';
+    return '<tr><td>'+esc(label(g))+'</td>'+
+      '<td class="n">'+money(g.p,g.u)+'</td>'+
+      '<td class="n">'+(g.h!=null?money(g.h,g.u):'—')+'</td>'+
+      '<td class="n '+cls+'">'+vs+'</td>'+
+      '<td class="n">'+(open?days(TODAY,d(g.he)):'opens '+shortd(g.hs))+'</td></tr>';
+  }
+  function table(list){
+    return '<div class="pd-tw"><table class="pd-t"><thead><tr><th scope="col">Crop</th>'+
+      '<th scope="col" style="text-align:right">Guarantee</th>'+
+      '<th scope="col" style="text-align:right">Harvest</th>'+
+      '<th scope="col" style="text-align:right">vs projected</th>'+
+      '<th scope="col" style="text-align:right">Days left</th></tr></thead><tbody>'+
+      list.map(row).join('')+'</tbody></table></div>';
+  }
+
+  /* ---- the single state setter ---------------------------------------- */
+  function setState(code, persist){
+    var sel=$('pd-state');
+    if(sel.value!==code) sel.value=code;
+    // A guess never becomes a stored preference. Nothing below this line may
+    // write to storage, and nothing here dispatches an event at a control whose
+    // own handler would.
+    try{
+      if(persist===true && code) localStorage.setItem(KEY,code);
+      if(persist===true && !code) localStorage.removeItem(KEY);
+    }catch(e){}
+
+    $('pd-clear').hidden = !code;
+    var groups = code ? group(BYST[code]||[]) : [];
+
+    if(!code){
+      $('pd-fallback').hidden=false;
+      $('pd-your').innerHTML=''; $('pd-open').innerHTML=''; $('pd-other').innerHTML='';
+      $('pd-verdict-h').textContent='Corn and soybean harvest prices are set in October.';
+      $('pd-verdict-p').textContent='Across most of the country. Eight southern states '+
+        'discover in August instead — pick your state and this page will only show you yours.';
+      fillCrops([]); calc(true); paintMap(''); return;
+    }
+
+    // Generic blocks suppress the moment a state is chosen. That is the whole
+    // point: picking your state has to make this page shorter, not longer.
+    $('pd-fallback').hidden=true;
+
+    var name=(BYST[code]&&BYST[code][0]&&BYST[code][0].state)||code;
+    if(!groups.length){
+      $('pd-your').innerHTML='<div class="pd-sect">'+esc(name)+'</div>'+
+        '<p class="pd-note">RMA publishes no revenue price discovery for '+esc(name)+
+        ' in this crop year’s data. That is an honest gap, not a loading '+
+        'problem — some states and crops are insured on other plans.</p>';
+      $('pd-open').innerHTML=''; $('pd-other').innerHTML='';
+      $('pd-verdict-h').textContent='No revenue price discovery in '+name+'.';
+      $('pd-verdict-p').textContent='';
+      fillCrops([]); calc(true); paintMap(code); return;
+    }
+
+    groups.sort(function(a,b){ return rank(a)-rank(b) ||
+      a.crop.localeCompare(b.crop) || String(a.type).localeCompare(String(b.type)); });
+    var lead=groups.filter(function(g){return LEAD[g.crop];});
+    var rest=groups.filter(function(g){return !LEAD[g.crop];});
+    if(!lead.length){ lead=groups.slice(0,1); rest=groups.slice(1); }
+
+    var c0=lead[0];
+    if(isOpen(c0)){
+      $('pd-verdict-h').innerHTML='Your '+esc(c0.crop.toLowerCase())+
+        ' price is being set <em>right now</em>.';
+      $('pd-verdict-p').textContent=name+' is day '+(days(d(c0.hs),TODAY)+1)+' of a '+
+        (days(d(c0.hs),d(c0.he))+1)+'-day window.';
+    }else if(isDone(c0)){
+      $('pd-verdict-h').innerHTML='Your '+esc(c0.crop.toLowerCase())+' price is <em>set</em>.';
+      $('pd-verdict-p').textContent=name+' · discovery closed '+shortd(c0.he)+'.';
+    }else{
+      $('pd-verdict-h').innerHTML='Your '+esc(c0.crop.toLowerCase())+
+        ' price is set in <em>'+MON[d(c0.hs).getMonth()]+'</em>.';
+      $('pd-verdict-p').textContent=name+' · '+groups.length+' crop'+
+        (groups.length>1?'s':'')+' with a revenue price this year.';
+    }
+
+    $('pd-your').innerHTML='<div class="pd-sect">Your window</div>'+
+      lead.map(function(g){return card(g,name);}).join('');
+
+    var openRest=rest.filter(isOpen).sort(function(a,b){
+      return Math.abs(pct(b)||0)-Math.abs(pct(a)||0); });
+    if(openRest.length){
+      var upN=openRest.filter(function(g){return g.h>=g.p;}).length;
+      $('pd-open').innerHTML='<div class="pd-sect">Also in discovery right now in '+
+        esc(name)+'</div><p class="hp-lede" style="margin-bottom:.7rem">'+openRest.length+
+        ' more crop'+(openRest.length>1?'s':'')+' of yours '+(openRest.length>1?'are':'is')+
+        ' mid-window. '+upN+' of '+openRest.length+' '+(upN===1?'is':'are')+
+        ' running above guarantee. Ranked by percent change against the projected price.</p>'+
+        card(openRest[0],name)+
+        (openRest.length>1?table(openRest.slice(1)):'');
+    }else{ $('pd-open').innerHTML=''; }
+
+    var other=rest.filter(function(g){return openRest.indexOf(g)<0;});
+    $('pd-other').innerHTML = other.length
+      ? '<details class="pd-d"><summary>Other crops insured in '+esc(name)+
+        ' <span style="color:var(--pd-mut);font-weight:400">'+other.length+'</span></summary>'+
+        '<div class="pd-db">'+table(other)+'</div></details>'
+      : '';
+
+    fillCrops(groups); calc(true); paintMap(code);
+  }
+
+  /* ---- calculator ------------------------------------------------------ */
+  var CROPS=[];
+  function fillCrops(groups){
+    CROPS=groups.slice();
+    var sel=$('pd-crop');
+    var keep=sel.selectedOptions&&sel.selectedOptions[0]?sel.selectedOptions[0].textContent:'';
+    if(!CROPS.length){
+      sel.innerHTML='<option value="">Pick your state first</option>';
+      sel.disabled=true; return;
+    }
+    sel.disabled=false;
+    sel.innerHTML=CROPS.map(function(g,i){
+      var extra = g.scd.length>1 || CROPS.filter(function(x){
+        return x.crop===g.crop&&x.type===g.type; }).length>1
+        ? ' ('+shortd(g.hs)+')' : '';
+      return '<option value="'+i+'">'+esc(label(g))+extra+'</option>';
+    }).join('');
+    var i=-1;
+    for(var n=0;n<sel.options.length;n++){ if(sel.options[n].textContent===keep){i=n;break;} }
+    sel.selectedIndex = i>=0 ? i : 0;
+  }
+  function calc(seed){
+    var g=CROPS[+$('pd-crop').value];
+    var out=$('pd-gout'), sub=$('pd-gsub'), box=$('pd-gout2');
+    if(!g){ out.textContent='—';
+      sub.textContent='Choose your state above and this works off your own state’s '+
+        'projected price, not the national one.';
+      box.className='pd-out2 flat'; box.innerHTML=''; return; }
+    $('pd-aphu').textContent='('+(g.u==='lb'?'lb/ac':'bu/ac')+')';
+    if(seed) $('pd-aph').value = APH[g.crop]||100;
+    var aph=+$('pd-aph').value||0, cov=+$('pd-cov').value||0;
+    var val=aph*cov*g.p;
+    out.textContent='$'+Math.round(val).toLocaleString('en-US')+' /ac';
+    sub.innerHTML=aph.toLocaleString('en-US')+' '+g.u+' × '+(cov*100).toFixed(0)+
+      '% × <b class="pd-num">'+money(g.p,g.u)+'</b> — '+esc(label(g))+
+      ' projected price, locked '+shortd(g.ps)+'–'+shortd(g.pe)+'.';
+    if(g.h!=null && g.h>g.p){
+      var v2=aph*cov*g.h, p=(g.h-g.p)/g.p*100, live=d(g.he)>=TODAY;
+      box.className='pd-out2 up';
+      box.innerHTML='<b class="pd-num">$'+Math.round(v2).toLocaleString('en-US')+' /ac</b>'+
+        '<span>at the '+(live?'running':'final')+' harvest price of <b class="pd-num">'+
+        money(g.h,g.u)+'</b> — up <b>+'+p.toFixed(1)+'%</b>, or <b class="pd-num">$'+
+        Math.round(v2-val).toLocaleString('en-US')+' /ac</b>.'+
+        (live?' That average is still moving.':'')+'</span>';
+    }else if(g.h!=null){
+      box.className='pd-out2 flat';
+      box.innerHTML='<b>No change</b><span>The harvest average is '+
+        Math.abs((g.h-g.p)/g.p*100).toFixed(1)+'% below the projected price, so your '+
+        'guarantee stays at <b class="pd-num">$'+Math.round(val).toLocaleString('en-US')+
+        ' /ac</b>. A revenue guarantee revises up only.</span>';
+    }else{
+      box.className='pd-out2 flat';
+      box.innerHTML='<b>Not set yet</b><span>'+esc(label(g))+' harvest discovery '+
+        (isOpen(g) ? 'opened '+shortd(g.hs)+' and RMA has not posted a running average yet'
+                   : 'opens '+shortd(g.hs))+
+        '. If that average finishes above <b class="pd-num">'+money(g.p,g.u)+
+        '</b>, this figure goes up with it.</span>';
+    }
+  }
+
+  /* ---- map: reference only. It reports, it does not accept input. ------ */
+  var GRID=[
+    ['','','','','','','','','','','ME'],
+    ['','','','','','','','','VT','NH',''],
+    ['WA','ID','MT','ND','MN','WI','','MI','NY','MA','RI'],
+    ['OR','NV','WY','SD','IA','IL','IN','OH','PA','NJ','CT'],
+    ['CA','UT','CO','NE','MO','KY','WV','VA','MD','DE',''],
+    ['','AZ','NM','KS','AR','TN','NC','SC','','',''],
+    ['AK','','','OK','LA','MS','AL','GA','','',''],
+    ['HI','','','TX','','','','FL','','','']
+  ];
+  var BUCKETS=[
+    {t:'August',            c:'#d4a23f', m:function(g){return d(g.hs).getMonth()===7 && d(g.he).getMonth()===7;}},
+    {t:'Mid-Aug to mid-Sep',c:'#c8762e', m:function(g){return d(g.hs).getMonth()===7 && d(g.he).getMonth()===8;}},
+    {t:'September',         c:'#8a6fbf', m:function(g){return d(g.hs).getMonth()===8;}},
+    {t:'October',           c:'#4aab4c', m:function(g){return d(g.hs).getMonth()===9;}},
+    {t:'November or later', c:'#5b8fc9', m:function(g){return d(g.hs).getMonth()>=10;}}
+  ];
+  function cornWindow(code){
+    var gs=group(BYST[code]||[]).filter(function(g){return g.crop==='Corn';});
+    return gs.length?gs[0]:null;
+  }
+  function paintMap(sel){
+    var wrap=$('pd-map'); if(!wrap) return;
+    var used={}, html='';
+    for(var r=0;r<GRID.length;r++) for(var c=0;c<GRID[r].length;c++){
+      var code=GRID[r][c];
+      if(!code){ html+='<span></span>'; continue; }
+      var g=cornWindow(code), col='#232a26', fg='#5c6a62', title=code+' — no corn revenue price';
+      if(g){ for(var b=0;b<BUCKETS.length;b++){ if(BUCKETS[b].m(g)){ col=BUCKETS[b].c;
+              used[b]=1; fg='#0b0f0c'; title=code+' — '+shortd(g.hs)+' to '+shortd(g.he); break; } } }
+      html+='<span class="pd-st'+(code===sel?' sel':'')+'" style="background:'+col+
+        ';color:'+fg+'" title="'+esc(title)+'">'+code+'</span>';
+    }
+    wrap.innerHTML=html;
+    $('pd-mleg').innerHTML=BUCKETS.filter(function(b,i){return used[i];}).map(function(b){
+      return '<span><i style="background:'+b.c+'"></i>'+b.t+'</span>'; }).join('')+
+      '<span style="color:var(--pd-mut)">corn harvest price discovery window</span>';
+  }
+
+  /* ---- boot ------------------------------------------------------------ */
+  // RMA keys states by FIPS ("55"); the tile map, the stored choice and the
+  // weather location all speak USPS ("WI"). Translate once, here, so every
+  // other line in this file uses one alphabet.
+  var FIPS={'01':'AL','02':'AK','04':'AZ','05':'AR','06':'CA','08':'CO','09':'CT',
+    '10':'DE','11':'DC','12':'FL','13':'GA','15':'HI','16':'ID','17':'IL','18':'IN',
+    '19':'IA','20':'KS','21':'KY','22':'LA','23':'ME','24':'MD','25':'MA','26':'MI',
+    '27':'MN','28':'MS','29':'MO','30':'MT','31':'NE','32':'NV','33':'NH','34':'NJ',
+    '35':'NM','36':'NY','37':'NC','38':'ND','39':'OH','40':'OK','41':'OR','42':'PA',
+    '44':'RI','45':'SC','46':'SD','47':'TN','48':'TX','49':'UT','50':'VT','51':'VA',
+    '53':'WA','54':'WV','55':'WI','56':'WY','72':'PR'};
+
+  function boot(rows){
+    ROWS=rows;
+    BYST={};
+    rows.forEach(function(r){
+      if(!r.st||!r.state) return;
+      var k=FIPS[String(r.st)]||String(r.st);
+      (BYST[k]=BYST[k]||[]).push(r);
+    });
+    var codes=Object.keys(BYST).sort(function(a,b){
+      return BYST[a][0].state.localeCompare(BYST[b][0].state); });
+    var sel=$('pd-state');
+    sel.innerHTML='<option value="">Choose your state</option>'+codes.map(function(c){
+      return '<option value="'+esc(c)+'">'+esc(BYST[c][0].state)+'</option>'; }).join('');
+
+    // A stored choice is a choice. A weather location is a guess: it selects,
+    // it does not persist, and setState is told so explicitly.
+    var chosen='', guess='';
+    try{ chosen=localStorage.getItem(KEY)||''; }catch(e){}
+    if(!chosen){
+      try{
+        var wx=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');
+        var abbr=wx&&(wx.state||wx.st||wx.abbr);
+        if(abbr) for(var i=0;i<codes.length;i++){
+          if(BYST[codes[i]][0].state===abbr||codes[i]===abbr){ guess=codes[i]; break; }
+        }
+      }catch(e){}
+    }
+    if(BYST[chosen]) setState(chosen,false); else if(guess) setState(guess,false);
+    else setState('',false);
+
+    sel.addEventListener('change',function(){ setState(sel.value,true);
+      try{ if(window.gaEvent) gaEvent('pd_state',{state:sel.value}); }catch(e){} });
+    $('pd-clear').addEventListener('click',function(){ setState('',true);
+      document.getElementById('pd-state').focus(); });
+    $('pd-crop').addEventListener('change',function(){ calc(true); });
+    ['pd-aph','pd-cov'].forEach(function(id){
+      $(id).addEventListener('input',function(){ calc(false); });
+      $(id).addEventListener('change',function(){ calc(false); });
+    });
+  }
+
+  fetch(SRC,{cache:'no-cache'}).then(function(r){
+    if(!r.ok) throw new Error(r.status); return r.json();
+  }).then(function(j){
+    if(!j||!j.rows||!j.rows.length) throw new Error('empty');
+    boot(j.rows);
+  }).catch(function(){
+    // No file, no personalisation. The baked Corn Belt block stays, because it
+    // is true, and a broken picker is worse than no picker.
+    var p=document.querySelector('.pd-pick'); if(p) p.hidden=true;
+  });
 })();
 </script>
 <script src="/components/loader.js?v=15" defer></script>
-
-<script>
-/* RMA discovery windows by state — data/rma-discovery.json, every row read off
-   RMA's CEPP. Progressive enhancement: JS off or fetch failed keeps the baked
-   Corn Belt copy, which is right for most of the audience.
-   A state can carry SEVERAL rows per crop because RMA keys these tables to the
-   county's SALES CLOSING DATE first (Texas corn has three). We show them all
-   rather than picking one for the grower. */
-(function(){
-  var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var sel=document.getElementById('hp-state'), out=document.getElementById('hp-region-out');
-  if(!sel||!out) return;
-  var KEY='agsist-rma-state';
-  function mmdd(x){ return {m:parseInt(x.slice(0,2),10), d:parseInt(x.slice(3),10)}; }
-  function statusOf(w){
-    var now=new Date(), y=now.getFullYear();
-    var a=mmdd(w.start), b=mmdd(w.end);
-    var s=new Date(y,a.m-1,a.d), e=new Date(y,b.m-1,b.d);   // both at midnight
-    if(e<s) e.setFullYear(y+1);                             // window spans New Year
-    var today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-    if(today<s) return {k:'soon', t:'opens '+MO[a.m-1]+' '+a.d};
-    if(today>e) return {k:'done', t:'closed'};
-    // Inclusive calendar-day count, both ends at midnight so DST cannot shift it.
-    // NOTE: RMA averages TRADING days, not calendar days, so this is labelled as
-    // calendar progress -- it is a "how far along is the window" bar, not a
-    // settlement count. Saying "day 16 of 32" for a 31-day August (the first cut
-    // of this, off by one at both ends) would have been wrong twice over.
-    var tot=Math.round((e-s)/86400000)+1;
-    var el=Math.round((today-s)/86400000)+1;
-    return {k:'open', t:'open now', day:el, total:tot,
-            pct:Math.max(4,Math.min(100,Math.round(el/tot*100)))};
-  }
-  fetch('/data/rma-discovery.json',{cache:'no-store'}).then(function(r){
-    if(!r.ok) throw 0; return r.json();
-  }).then(function(d){
-    var names=Object.keys(d.states||{}).sort();
-    sel.options[0].textContent='Select your state \u2014 windows differ';
-    names.forEach(function(st){
-      var o=document.createElement('option'); o.value=st; o.textContent=st; sel.appendChild(o);
-    });
-    function rowsFor(st,crop){
-      var arr=(d.states[st]||{})[crop]||[];
-      if(!arr.length){
-        return '<tr><td style="padding:.4rem .5rem 0 0"><b>'+(crop==='corn'?'Corn':'Soybeans')+'</b></td>'+
-               '<td colspan="4" style="padding:.4rem 0 0;color:var(--text-muted,#8a948f)">'+
-               'No '+crop+' row for this state in the CEPP.</td></tr>';
-      }
-      return arr.map(function(w,i){
-        var ps=statusOf(w.projected), hs=statusOf(w.harvest);
-        var bar = hs.k==='open'
-          ? '<div style="height:4px;border-radius:3px;background:var(--surface3,#1d2324);margin-top:.25rem;overflow:hidden">'+
-            '<div style="height:100%;width:'+hs.pct+'%;background:var(--hp-green,#4aab4c)"></div></div>'+
-            '<div style="font-size:.76rem;color:var(--text-muted,#8a948f);margin-top:.15rem">calendar day '+hs.day+' of '+hs.total+' \u00b7 RMA averages trading days</div>'
-          : '';
-        return '<tr>'+
-          '<td style="padding:.4rem .5rem 0 0;vertical-align:top"><b>'+(crop==='corn'?'Corn':'Soybeans')+'</b>'+
-            (arr.length>1?'<div style="font-size:.74rem;color:var(--text-muted,#8a948f)">'+w.sales_closing+' SCD</div>':'')+'</td>'+
-          '<td style="padding:.4rem .5rem 0 0;vertical-align:top;white-space:nowrap">'+w.exchange+' '+w.contract+'</td>'+
-          '<td style="padding:.4rem .5rem 0 0;vertical-align:top;color:var(--hp-gold2,#d4a23f)">'+w.projected.label+
-            '<div style="font-size:.74rem;color:var(--text-muted,#8a948f)">'+ps.t+'</div></td>'+
-          '<td style="padding:.4rem 0 0;vertical-align:top;color:var(--hp-green,#4aab4c)">'+w.harvest.label+
-            '<div style="font-size:.74rem;color:var(--text-muted,#8a948f)">'+hs.t+'</div>'+bar+'</td>'+
-        '</tr>';
-      }).join('');
-    }
-    function render(st){
-      if(!st || !d.states[st]){ out.innerHTML=''; paint(null); return; }
-      var multi=((d.states[st].corn||[]).length>1)||((d.states[st].soybeans||[]).length>1);
-      out.innerHTML='<p class="hp-lede" style="margin:.1rem 0 .4rem;font-size:.93rem">'+
-        '<b>'+st+'</b> \u2014 straight from RMA\u2019s Commodity Exchange Price Provisions:</p>'+
-        '<div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:.9rem;min-width:420px">'+
-        '<tr style="color:var(--text-muted,#8a948f);font-size:.76rem;text-transform:uppercase;letter-spacing:.05em">'+
-        '<td style="padding:0 .5rem 0 0">Crop</td><td style="padding:0 .5rem 0 0">Contract</td>'+
-        '<td style="padding:0 .5rem 0 0">Projected</td><td>Harvest</td></tr>'+
-        rowsFor(st,'corn')+rowsFor(st,'soybeans')+'</table></div>'+
-        (multi?'<p class="hp-lede" style="margin:.5rem 0 0;font-size:.85rem;color:var(--hp-gold2,#d4a23f)">'+
-          'This state has more than one set of windows. RMA keys them to your county\u2019s '+
-          '<b>sales closing date</b> \u2014 match that row, or ask your agent which applies.</p>':'')+
-        '<p class="hp-lede" style="margin:.5rem 0 0;font-size:.85rem;color:var(--text-muted,#8a948f)">'+
-        'Windows from the <a href="'+d.sources.corn+'" rel="nofollow">corn</a> and '+
-        '<a href="'+d.sources.soybeans+'" rel="nofollow">soybean</a> CEPP. '+
-        'Published prices: <a href="'+d.sources.prices+'" rel="nofollow">RMA price discovery</a>. '+
-        'The dollar figures in the cards above are the Corn Belt\u2019s.</p>';
-      paint(d.states[st]);
-    }
-    function paint(g){
-      var yr=document.getElementById('hp-yr'); if(!yr) return;
-      var cells=yr.querySelectorAll('.mo');
-      var pm=1, hm=9;
-      if(g && (g.corn||[]).length){ var w=g.corn[0];
-        pm=parseInt(w.projected.start.slice(0,2),10)-1; hm=parseInt(w.harvest.start.slice(0,2),10)-1; }
-      cells.forEach(function(c,i){
-        c.className='mo'+(i===pm?' proj':i===hm?' harv':'');
-        c.innerHTML=MO[i]+(i===pm?'<b>PROJECTED</b>':i===hm?'<b>HARVEST</b>':'');
-      });
-    }
-    try{ var saved=localStorage.getItem(KEY); if(saved&&d.states[saved]){ sel.value=saved; render(saved); } }catch(e){}
-    sel.addEventListener('change',function(){
-      render(sel.value);
-      try{ localStorage.setItem(KEY, sel.value); }catch(e){}
-      if(window.gaEvent) gaEvent('rma_state_pick',{state:sel.value||'default'});
-    });
-    // Driven by the tile map (and by geolocation through it). Redraw only —
-    // whether the choice is worth remembering is the map's call to make, and
-    // it does not remember guesses.
-    sel.addEventListener('agsist:state',function(ev){
-      render((ev.detail&&ev.detail.name)||sel.value);
-    });
-  }).catch(function(){ /* keep the baked Corn Belt copy */ });
-})();
-</script>
-<script>
-/* "In discovery right now" banner.
-
-   Data: data/rma-discovery-now.json, written by scripts/fetch_rma_prices.py
-   straight from USDA RMA's own price discovery service. The price shown for an
-   open window is RMA's running average to date — their arithmetic, not ours.
-
-   Open/closed is recomputed here against the reader's own clock rather than
-   trusted from the file, so a run that missed a night cannot leave a finished
-   window sitting on the page marked open. Prices carry the date they were
-   pulled. No file, no banner. */
-(function(){
-  var host=document.getElementById('dnow'); if(!host) return;
-  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var ENT={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'};
-  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return ENT[c];});}
-  function ymd(s){var p=String(s||'').split('-');
-    return p.length===3?new Date(+p[0],+p[1]-1,+p[2]):null;}
-  function nice(s){var d=ymd(s);return d?MON[d.getMonth()]+' '+d.getDate():esc(s);}
-  function money(v){return '$'+Number(v).toFixed(2);}
-  function today(){var n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate());}
-  function days(a,b){return Math.round((b-a)/86400000);}
-  function title(g){
-    var t=esc(g.crop);
-    if(g.type&&!/^all\b/i.test(g.type)&&g.type.toLowerCase()!==g.crop.toLowerCase())
-      t+=' <span style="font-weight:400;color:var(--text-dim)">&middot; '+esc(g.type)+'</span>';
-    return t;
-  }
-  function priceLine(g,open){
-    if(g.lo==null) return '<div class="px"><small>'+
-      (open?'RMA has not posted a running average yet':'not yet in discovery')+'</small></div>';
-    var v=money(g.lo)+(g.hi!=null&&g.hi!==g.lo?' &ndash; '+money(g.hi):'');
-    return '<div class="px">'+v+' <small>'+(open?'running avg':'projected')+
-      (g.n_states>1&&g.hi!==g.lo?', by state':'')+'</small></div>';
-  }
-  function card(g,open){
-    var t=today(), st=ymd(g.start), en=ymd(g.end), h='';
-    h+='<div class="dnow-c'+(open?'':' soon')+'">';
-    h+='<span class="leg'+(g.leg==='harvest'?' h':'')+'">'+esc(g.leg)+' price</span>'+
-       '<span class="crop">'+title(g)+'</span>';
-    h+=priceLine(g,open);
-    if(open){
-      var span=days(st,en)+1, el=days(st,t)+1, left=days(t,en);
-      h+='<div class="bar"><i style="width:'+Math.max(4,Math.min(100,Math.round(el/span*100)))+'%"></i></div>';
-      h+='<div class="meta">'+nice(g.start)+' &ndash; '+nice(g.end)+' &middot; '+
-         (left===0?'last day':left===1?'1 day left':left+' days left')+'</div>';
-    }else{
-      h+='<div class="meta">opens '+nice(g.start)+' &middot; in '+days(t,st)+' days &middot; runs to '+nice(g.end)+'</div>';
-    }
-    if(g.exch&&g.exch.length)
-      h+='<div class="meta">'+esc(g.exch.join(' / '))+
-         (g.contract&&g.contract.length?' &middot; '+esc(g.contract.join(' / '))+' contract':'')+'</div>';
-    var s=g.states||[];
-    if(s.length<=6){ h+='<div class="sts">'+esc(s.join(', '))+'</div>'; }
-    else { h+='<details><summary>'+s.length+' states</summary><div class="sts">'+
-      esc(s.join(', '))+'</div></details>'; }
-    return h+'</div>';
-  }
-  fetch('/data/rma-discovery-now.json',{cache:'no-store'})
-  .then(function(r){if(!r.ok)throw 0;return r.json();})
-  .then(function(d){
-    var t=today();
-    function live(g){var s=ymd(g.start),e=ymd(g.end);return s&&e&&s<=t&&t<=e;}
-    function ahead(g){var s=ymd(g.start);return s&&s>t;}
-    // Re-sort by our own clock: anything the file called "next" that has since
-    // opened moves up, anything it called "open" that has closed drops out.
-    var all=(d.open||[]).concat(d.next||[]);
-    var open=all.filter(live), soon=all.filter(ahead)
-      .sort(function(a,b){return a.start<b.start?-1:a.start>b.start?1:0;});
-    if(!open.length&&!soon.length) return;
-    var pulled=ymd(d.as_of), age=pulled?days(pulled,t):null;
-    var h='<div class="dnow-h"><span class="dot"></span><h2>'+
-      (open.length?'In price discovery right now':'Nothing in discovery today')+
-      '</h2><span class="as-of">RMA figures '+
-      (age===0?'as of today':age===1?'as of yesterday':pulled?'as of '+nice(d.as_of):'')+
-      '</span></div>';
-    if(open.length) h+='<div class="dnow-grid">'+open.map(function(g){return card(g,true);}).join('')+'</div>';
-    if(soon.length){
-      h+='<div class="dnow-next"><b>Opens next.</b> '+soon.slice(0,6).map(function(g){
-        return esc(g.crop)+' '+g.leg+' '+nice(g.start)+' ('+g.n_states+
-          (g.n_states===1?' state':' states')+')';
-      }).join(' &middot; ')+'</div>';
-    }
-    h+='<p class="dnow-note">Mirrored from USDA RMA&rsquo;s price discovery service. RMA '+
-       'averages the daily settlements on trading days inside each window, so a running '+
-       'average is not a final price &mdash; the official figure posts after the window '+
-       'closes. Your county&rsquo;s sales closing date, not just your state, decides which '+
-       'window applies to you.'+
-       (age!=null&&age>3?' <b>These figures are '+age+' days old.</b>':'')+'</p>';
-    host.innerHTML=h;
-    host.hidden=false;
-  }).catch(function(){ /* no feed yet — the page stands on its own */ });
-})();
-
-/* Verdict + tile map. Data: data/rma-discovery.json (every row read off RMA's
-   CEPP). Shares the 'agsist-rma-state' key with the homepage widget, so a
-   state chosen in either place is remembered in the other.
-   Fails silent: no data, no map, and the rest of the page is unaffected. */
-(function(){
-  var GRID=[["AK",0,0],["ME",10,0],["VT",9,1],["NH",10,1],
-   ["WA",0,2],["ID",1,2],["MT",2,2],["ND",3,2],["MN",4,2],["WI",5,2],["MI",6,2],["NY",8,2],["MA",9,2],["RI",10,2],
-   ["OR",0,3],["NV",1,3],["WY",2,3],["SD",3,3],["IA",4,3],["IL",5,3],["IN",6,3],["OH",7,3],["PA",8,3],["NJ",9,3],["CT",10,3],
-   ["CA",0,4],["UT",1,4],["CO",2,4],["NE",3,4],["MO",4,4],["KY",5,4],["WV",6,4],["VA",7,4],["MD",8,4],["DE",9,4],
-   ["AZ",1,5],["NM",2,5],["KS",3,5],["AR",4,5],["TN",5,5],["NC",6,5],["SC",7,5],
-   ["OK",3,6],["LA",4,6],["MS",5,6],["AL",6,6],["GA",7,6],
-   ["HI",0,7],["TX",3,7],["FL",7,7]];
-  var ABBR={AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",
-   DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",
-   KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",
-   MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",
-   NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",
-   PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",
-   VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"};
-  var MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  var KEY='agsist-rma-state';
-  var map=document.getElementById('pdmap'), slot=document.getElementById('pdlive-slot');
-  var vh=document.getElementById('pdv-h'), vs=document.getElementById('pdv-s');
-  if(!map) return;
-  function mmdd(x){return {m:parseInt(x.slice(0,2),10),d:parseInt(x.slice(3),10)};}
-  function stat(w){
-    var n=new Date(), y=n.getFullYear(), a=mmdd(w.start), b=mmdd(w.end);
-    var st=new Date(y,a.m-1,a.d), e=new Date(y,b.m-1,b.d);
-    if(e<st) e.setFullYear(y+1);
-    var t=new Date(n.getFullYear(),n.getMonth(),n.getDate());
-    if(t<st) return {k:'soon',days:Math.round((st-t)/86400000)};
-    if(t>e)  return {k:'done'};
-    var tot=Math.round((e-st)/86400000)+1, el=Math.round((t-st)/86400000)+1;
-    return {k:'open',day:el,total:tot,pct:Math.max(4,Math.min(100,Math.round(el/tot*100)))};
-  }
-  fetch('/data/rma-discovery.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();})
-  .then(function(d){
-    var cells={}, sel=null;
-    for(var r=0;r<8;r++)for(var c=0;c<11;c++){
-      var e=document.createElement('div'); e.className='pdt empty';
-      e.style.gridColumn=(c+1); e.style.gridRow=(r+1); map.appendChild(e); cells[c+','+r]=e;
-    }
-    GRID.forEach(function(g){
-      var el=cells[g[1]+','+g[2]]; if(!el) return;
-      var name=ABBR[g[0]], rec=d.states[name], corn=rec&&rec.corn&&rec.corn[0];
-      el.textContent=g[0];
-      if(!corn){ el.className='pdt none'; el.title=name+' — no corn row in the CEPP'; return; }
-      var m=parseInt(corn.harvest.start.slice(0,2),10), s2=stat(corn.harvest);
-      el.className='pdt m'+m+(s2.k==='open'?' live':'');
-      el.setAttribute('role','button'); el.setAttribute('tabindex','0');
-      el.setAttribute('aria-label',name+' — corn harvest price set in '+MON[m-1]+
-        (s2.k==='open'?', window open now':''));
-      el.title=name+' — '+MON[m-1];
-      function pick(){ choose(name, el); }
-      el.addEventListener('click',pick);
-      el.addEventListener('keydown',function(ev){ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); pick(); }});
-    });
-    function choose(name, el, fromGeo){
-      if(sel) sel.classList.remove('sel');
-      if(el){ el.classList.add('sel'); sel=el; }
-      render(name, fromGeo);
-      // a geo guess is NOT saved as a choice — otherwise it would outrank a
-      // later, better location fix and could never be corrected by geo again
-      if(!fromGeo){ try{ localStorage.setItem(KEY,name); }catch(e){} }
-      var picker=document.getElementById('hp-state');
-      if(picker && picker.value!==name){
-        picker.value=name;
-        // NOT a plain 'change' event. The picker's own change handler persists
-        // unconditionally, so dispatching one here defeated the guard three
-        // lines above: a geo guess was being written to localStorage as a
-        // deliberate choice, and geo could then never correct itself.
-        // A custom event redraws the calendar block without persisting.
-        picker.dispatchEvent(new CustomEvent('agsist:state',{detail:{name:name,fromGeo:!!fromGeo}}));
-      }
-      if(window.gaEvent) gaEvent('pd_map_pick',{state:name});
-    }
-    function render(name, fromGeo){
-      var rec=d.states[name]; if(!rec) return;
-      var corn=rec.corn&&rec.corn[0], soy=rec.soybeans&&rec.soybeans[0];
-      if(!corn){ vh.innerHTML='No corn window published for <em>'+name+'</em>.';
-        vs.textContent='RMA does not list a corn row for this state in the Commodity Exchange Price Provisions.';
-        slot.innerHTML=''; return; }
-      var hm=parseInt(corn.harvest.start.slice(0,2),10), s2=stat(corn.harvest);
-      var multi=(rec.corn.length>1);
-      // Never assert one month for a state RMA prices more than one way. Texas
-      // corn carries three window sets keyed to the county's sales closing
-      // date; printing the first as "your" month is a confident wrong answer.
-      if(multi){
-        var months=[]; rec.corn.forEach(function(w){
-          var mn=MON[parseInt(w.harvest.start.slice(0,2),10)-1];
-          if(months.indexOf(mn)<0) months.push(mn);
-        });
-        vh.innerHTML=name+' prices corn in <em>'+
-          (months.length>1?months.slice(0,-1).join(', ')+' or '+months[months.length-1]:months[0])+
-          '</em> \u2014 it depends on your county.';
-      } else {
-        vh.innerHTML='Your corn price is set in <em>'+MON[hm-1]+'</em>.';
-      }
-      // The floor is the PROJECTED price. A revenue guarantee escalates to the
-      // harvest price and never recalculates down, so calling the harvest
-      // average "the floor" is backwards. It was live on this page.
-      // For a multi-window state, listing corn[0]'s contract in the body would
-      // put a single confident window under a headline that just said it
-      // depends. Show every set, labelled by the sales closing date that
-      // selects it, and let the grower match their own policy.
-      var lede;
-      if(multi){
-        lede='RMA prices '+name+' corn '+rec.corn.length+' different ways, keyed to your county\u2019s '+
-          '<b>sales closing date</b>: '+rec.corn.map(function(w){
-            return '<b>'+w.sales_closing+'</b> \u2192 '+w.harvest.label+' on the '+w.contract+' contract';
-          }).join('; ')+'. Confirm which one your policy uses with your agent.';
-      } else {
-        lede=name+' averages the <b>'+corn.contract+'</b> contract across <b>'+corn.harvest.label+
-          '</b>'+(s2.k==='soon'?' \u2014 discovery opens in '+s2.days+' days.':
-                  s2.k==='done'?' \u2014 this year\u2019s window has closed.':
-                  ' \u2014 and it is being built right now.');
-      }
-      vs.innerHTML=lede+' That average is your <b>harvest price</b>: your guarantee is locked at the '+
-        'projected price and rises only if this average finishes above it.'+
-        (fromGeo?' <span style="color:var(--text-muted);font-size:.9rem">(set from your location \u2014 tap any state to change it)</span>':'');
-      if(s2.k==='open'){
-        slot.innerHTML='<div class="pdlive"><div class="pdlive-k">'+name+' &middot; corn &middot; happening right now</div>'+
-          '<div class="pdlive-n">Day '+s2.day+' of '+s2.total+'</div>'+
-          '<p class="pdlive-s">Your harvest price is being averaged as we speak &mdash; every settlement of the '+
-          corn.contract+' contract from '+corn.harvest.label+'. RMA posts the final number shortly after the window closes.</p>'+
-          '<div class="pdlive-bar"><div class="pdlive-f" style="width:'+s2.pct+'%"></div></div>'+
-          '<div style="font-size:.79rem;color:var(--text-muted)">calendar day '+s2.day+' of '+s2.total+
-          ' &middot; RMA averages trading days, so the settlement count is a little lower</div>'+
-          '<div class="pdmini">'+
-          '<div><b>Contract</b><span>'+corn.exchange+' '+corn.contract+'</span></div>'+
-          '<div><b>Projected window</b><span>'+corn.projected.label+'</span></div>'+
-          '<div><b>Guarantee moves</b><span>only if harvest &gt; projected</span></div>'+
-          (soy?'<div><b>Soybeans</b><span>'+soy.harvest.label+'</span></div>':'')+
-          '</div></div>';
-      } else { slot.innerHTML=''; }
-    }
-    function tileFor(name){
-      var ab=null; for(var k in ABBR){ if(ABBR[k]===name) ab=k; }
-      var g=GRID.filter(function(x){return x[0]===ab;})[0];
-      return g?cells[g[1]+','+g[2]]:null;
-    }
-    /* Auto-locate, the house way: components/geo.js writes 'agsist-wx-loc'
-       and `state` arrives as either a full name or a 2-letter abbreviation
-       depending on which resolver got there first, so normalise both. An
-       explicit pick always wins — geo only fills an empty choice. */
-    function geoName(){
-      try{
-        var loc=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}');
-        var raw=String(loc.state||'').trim();
-        if(!raw) return null;
-        if(raw.length===2){ return ABBR[raw.toUpperCase()]||null; }
-        for(var k in ABBR){ if(ABBR[k].toLowerCase()===raw.toLowerCase()) return ABBR[k]; }
-      }catch(e){}
-      return null;
-    }
-    function applyGeo(){
-      var picked=null; try{ picked=localStorage.getItem(KEY); }catch(e){}
-      if(picked) return false;                        // the grower already chose
-      var g=geoName();
-      if(!g||!d.states[g]) return false;
-      choose(g, tileFor(g), true);
-      return true;
-    }
-    var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
-    if(saved&&d.states[saved]){
-      choose(saved, tileFor(saved));
-    } else if(!applyGeo()){
-      // geo may resolve after this script runs; geo.js fires this hook then
-      window._AGSIST_GEO_CALLBACKS = window._AGSIST_GEO_CALLBACKS || [];
-      window._AGSIST_GEO_CALLBACKS.push(function(){ applyGeo(); });
-    }
-  }).catch(function(){});
-})();
-</script>
 </body>
 </html>
