@@ -278,17 +278,49 @@ def test_suite_does_not_depend_on_the_wall_clock():
     aug15 = datetime(2026, 8, 15, 11, 22, tzinfo=timezone.utc)
     check("the fixture's beans contract IS dead by Aug 15 (the trigger)",
           is_expired("beans-aug26", aug15) is True)
-    for label, when in (("Aug 15 2026", aug15),
-                        ("five years on", datetime(2031, 8, 8, 7, 5, tzinfo=timezone.utc))):
-        passed, issues, _ = run(copy.deepcopy(clean), today=AS_OF, repair=False)
-        check(f"same verdict when the wall clock reads {label}",
-              passed is baseline,
-              f"issues={[(s, c) for s, c, _ in issues]}")
 
-    # And prove the pin is what's doing the work: unpinned, Aug 15 breaks it.
-    unpinned, _, _ = run(copy.deepcopy(clean), today=aug15, repair=False)
-    check("unpinned at Aug 15 it really does fail (the pin is load-bearing)",
-          unpinned is False)
+    # Move the WALL CLOCK, not the argument. `run(today=...)` IS the pin, so
+    # passing it a date proves nothing about clock-independence — the first cut
+    # of this test looped over dates it never used and asserted two tautologies
+    # (caught in the 2026-08-15 audit, same day it was written). Freezing
+    # datetime.now() is the only way to exercise run()'s DEFAULT path.
+    import preflight_prices as _pp
+
+    def _frozen(when):
+        class _Clock(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return when
+        return _Clock
+
+    _real = _pp.datetime
+    try:
+        for label, when in (("Aug 15 2026", aug15),
+                            ("five years on", datetime(2031, 8, 8, 7, 5, tzinfo=timezone.utc))):
+            _pp.datetime = _frozen(when)
+            pinned, issues, _ = run(copy.deepcopy(clean), today=AS_OF, repair=False)
+            check(f"pinned verdict unchanged with the clock at {label}",
+                  pinned is baseline, f"issues={[(s, c) for s, c, _ in issues]}")
+            # ...and the same feed with NO pin really does break, which is both
+            # the proof the pin is load-bearing and a replay of the outage.
+            unpinned, _, _ = run(copy.deepcopy(clean), repair=False)
+            check(f"UNPINNED run fails with the clock at {label} (the outage)",
+                  unpinned is False)
+    finally:
+        _pp.datetime = _real
+
+    check("the clock was restored after the freeze",
+          _pp.datetime is _real)
+
+    # Structural lock: no future edit may add an unpinned fixture call. This
+    # catches the regression at the source rather than by symptom.
+    import pathlib, re as _re
+    _src = pathlib.Path(__file__).read_text()
+    _body = _src.split("def test_suite_does_not_depend_on_the_wall_clock", 1)[0]
+    _bad = [c for c in _re.findall(r"run\(\s*(?:copy\.deepcopy\([^)]*\)|\w+)[^)]*\)", _body)
+            if "today=" not in c]
+    check("every fixture-driven run() above passes an explicit today=",
+          not _bad, f"unpinned: {_bad}")
 
 
 if __name__ == "__main__":

@@ -15,11 +15,14 @@ hydration is unchanged — the bake only changes what non-JS readers see.
 
 Regions:
   whats-priced-in.html : PRERENDER:wp-result  (latest-report banner, 5-day window)
+                         PRERENDER:wp-nexthead (the <h2> that names the next report)
+                         PRERENDER:wp-farmbox (the "here is what to do about it" box)
                          PRERENDER:wp-next    (next-report expectation card)
                          PRERENDER:wp-history (scored track record)
                          PRERENDER:as-board   (analyst leaderboard / building table)
                          + Dataset JSON-LD dateModified stamp
-  scorecard.html       : PRERENDER:sc-stats   (hit rate / W-L-pending / streak / total)
+  scorecard.html       : PRERENDER:sc-nextrep (next-report pointer box)
+                         PRERENDER:sc-stats   (hit rate / W-L-pending / streak / total)
                          PRERENDER:sc-prose-hit (the "A NN% hit rate" sentence number)
                          PRERENDER:sc-list    (latest 25 graded calls + archive pointer)
 
@@ -64,6 +67,54 @@ def days_until(date_iso):
 
 
 # ── WPI renderers (ports of the page's JS) ─────────────────────────────────
+
+# 2026-08-15 audit: three hand-written blocks named a specific report and went
+# stale the moment it printed. On Aug 15 the page's <h2> still read "the August
+# WASDE" above a card rendering September, and a farmbox told readers to get
+# ready for a report that had printed three days earlier. Anything that names a
+# report or a date is baked from data now.
+
+def _report_when(n):
+    """'Aug 12, 11:00 a.m. Central' style stamp from the upcoming record."""
+    try:
+        d = datetime.strptime(n["date"], "%Y-%m-%d")
+    except (KeyError, ValueError):
+        return ""
+    t = (n.get("time") or "").replace("12:00 PM ET", "11:00 a.m. Central")
+    return f"{d.strftime('%b %-d')}" + (f", {t}" if t else "")
+
+
+def next_head(n):
+    if not n:
+        return "Next report"
+    return f"Next report: what the trade expects from the {esc(n.get('report', 'next USDA report'))}"
+
+
+def farm_box(n):
+    if not n:
+        return ('<div class="wp-farmbox">No USDA report is on the board right now. '
+                'Your own numbers: <a href="/breakeven">break-even</a> &middot; '
+                '<a href="/presell-calculator">safe pre-sell</a>.</div>')
+    when = _report_when(n)
+    metric = esc(n.get("metric", "the next set of USDA numbers"))
+    return ('<div class="wp-farmbox"><b>' + esc(n.get("report", "Next report")) +
+            (f' &mdash; {when}.</b> ' if when else '.</b> ') +
+            f'{metric}. If you are holding unpriced bushels, know the number to beat '
+            'before that morning. Your own numbers: <a href="/breakeven">break-even</a> '
+            '&middot; <a href="/presell-calculator">safe pre-sell</a>.</div>')
+
+
+def sc_next_report(n):
+    if not n:
+        return ('<b style="color:var(--text)">No USDA report scheduled.</b> '
+                'See <a href="/usda-calendar" style="color:var(--gold)">the calendar</a>.')
+    when = _report_when(n)
+    return ('<b style="color:var(--text)">' + (when + ': ' if when else '') + '</b>' +
+            esc(n.get("report", "Next USDA report")) + ' &mdash; ' +
+            esc(n.get("metric", "the next USDA numbers")) + '. See '
+            '<a href="/whats-priced-in" style="color:var(--gold)">what the trade has '
+            'priced in</a> before the number drops.')
+
 
 def next_card(n):
     if not n:
@@ -316,6 +367,8 @@ def bake_wpi(check_only=False):
         src = f.read()
     orig = src
     src = replace_region(src, "wp-result", result_banner(wpi.get("latest_result")), WPI_HTML)
+    src = replace_region(src, "wp-nexthead", next_head(wpi.get("upcoming")), WPI_HTML)
+    src = replace_region(src, "wp-farmbox", farm_box(wpi.get("upcoming")), WPI_HTML)
     src = replace_region(src, "wp-next", next_card(wpi.get("upcoming")), WPI_HTML)
     src = replace_region(src, "wp-history", history_el(wpi.get("history")), WPI_HTML)
     src = replace_region(src, "as-board", board_tbl(asd.get("leaderboard"), asd.get("building")), WPI_HTML)
@@ -330,7 +383,15 @@ def bake_scorecard(check_only=False):
         sc = json.load(f)
     with open(SC_HTML, encoding="utf-8") as f:
         src = f.read()
+    # the next-report pointer lives in whats-priced-in.json (single source for
+    # "which report is next"), so scorecard reads it rather than keeping a copy
+    try:
+        with open(WPI_JSON, encoding="utf-8") as f:
+            _up = json.load(f).get("upcoming")
+    except (OSError, ValueError):
+        _up = None
     orig = src
+    src = replace_region(src, "sc-nextrep", sc_next_report(_up), SC_HTML)
     src = replace_region(src, "sc-stats", "\n        " + sc_stats_html(sc) + "\n      ", SC_HTML)
     src = replace_region(src, "sc-list", sc_list_html(sc), SC_HTML)
     if sc.get("hit_rate") is not None:

@@ -69,12 +69,37 @@ def fetch(key, short, agg, year_ge, _opener=None):
     print("  ! failed:", short, "->", last, file=sys.stderr)
     return []
 
+IN_SEASON_SKIPPED = {"n": 0}
+
+
+def is_forecast(row):
+    """True for NASS in-season forecast rows (AUG/SEP/OCT/NOV FORECAST).
+
+    2026-08-15: `build_state_stats.py` published the Aug 12 Crop Production
+    forecast as "USDA NASS final". These long-history files are the same trap
+    one step worse -- a forecast appended here becomes an unlabelled point
+    sitting beside sixteen finals in the USDA Data Explorer charts, and the
+    payload schema has nowhere to say which is which. `fetch_cond_yield.py`
+    learned this in July ("YEAR-only pin kills AUG-NOV FORECAST
+    contamination"); this file never got the fix and fires on the 16th, four
+    days after every August Crop Production release.
+
+    These files are explicitly the HISTORICAL series. The in-season number has
+    its own surfaces (fast-facts state cards, the nowcast, crop tour), so the
+    honest choice here is to leave the forecast out and say so in the payload.
+    """
+    return "FORECAST" in str(row.get("reference_period_desc", "")).upper()
+
+
 def shape_state(rows, div, dig):
     by_state, years = {}, set()
     for r in rows:
         st = r.get("state_name")
         yr = str(r.get("year", "")).strip()
         if not st or st.upper() == "US TOTAL" or not yr.isdigit():
+            continue
+        if is_forecast(r):
+            IN_SEASON_SKIPPED["n"] += 1
             continue
         val = conv(parse_val(r.get("Value")), div, dig)
         if val is None:
@@ -93,6 +118,9 @@ def shape_national(rows, div, dig):
         yr = str(r.get("year", "")).strip()
         if not yr.isdigit():
             continue
+        if is_forecast(r):
+            IN_SEASON_SKIPPED["n"] += 1
+            continue
         val = conv(parse_val(r.get("Value")), div, dig)
         if val is None:
             continue
@@ -108,13 +136,15 @@ def build_one(key, spec, key_api, outdir):
         if not years:
             print(f"  - {key}: no data, skipped"); return False
         payload = {"type": "state", "updated": now, "unit": spec["unit"],
-                   "source": "USDA NASS Quick Stats", "years": years, "rows": out_rows}
+                   "source": "USDA NASS Quick Stats", "years": years, "rows": out_rows,
+                   "scope": "final estimates only; USDA in-season forecasts excluded"}
     else:
         years, vals = shape_national(rows, spec["div"], spec["dig"])
         if not years:
             print(f"  - {key}: no data, skipped"); return False
         payload = {"type": "national", "updated": now, "unit": spec["unit"],
-                   "source": "USDA NASS Quick Stats", "years": years, "values": vals}
+                   "source": "USDA NASS Quick Stats", "years": years, "values": vals,
+                   "scope": "final estimates only; USDA in-season forecasts excluded"}
     path = os.path.join(outdir, key + ".json")
     with open(path, "w") as fh:
         json.dump(payload, fh, separators=(",", ":"))
@@ -125,7 +155,8 @@ def build_one(key, spec, key_api, outdir):
 def build(key_api, outdir):
     os.makedirs(outdir, exist_ok=True)
     wrote = sum(build_one(k, s, key_api, outdir) for k, s in DATASETS.items())
-    print(f"[nass-series] wrote {wrote}/{len(DATASETS)} datasets to {outdir}")
+    print(f"[nass-series] wrote {wrote}/{len(DATASETS)} datasets to {outdir} "
+          f"| in-season forecast rows excluded: {IN_SEASON_SKIPPED['n']}")
     return 0 if wrote else 1
 
 # ---- offline self-test ---------------------------------------------------
@@ -153,7 +184,32 @@ def selftest():
     # acres conversion end-to-end
     ac_years, ac_rows = shape_state([{"state_name": "IOWA", "year": "2025", "Value": "12,900,000"}], 1e6, 2)
     assert ac_rows[0]["values"]["2025"] == 12.9
-    print("selftest OK — state+national shaping, suppression, US-exclusion, unit conversion")
+
+    # ---- 2026-08-15: in-season forecast contamination -------------------
+    # The Aug 12 Crop Production release puts 2026 AUG FORECAST rows in the
+    # same response as sixteen years of finals. This file runs on the 16th.
+    # Unfiltered, 2026 lands in the chart as an ordinary point.
+    before = IN_SEASON_SKIPPED["n"]
+    mixed = [
+        {"state_name": "IOWA", "year": "2025", "Value": "219",
+         "reference_period_desc": "YEAR"},
+        {"state_name": "IOWA", "year": "2026", "Value": "216",
+         "reference_period_desc": "YEAR - AUG FORECAST"},
+    ]
+    yrs, rws = shape_state(mixed, 1, 1)
+    assert yrs == [2025], f"in-season forecast leaked into the series: {yrs}"
+    assert rws[0]["values"] == {"2025": 219.0}, rws[0]
+    nyrs, nvals = shape_national(
+        [{"year": "2025", "Value": "186.5", "reference_period_desc": "YEAR"},
+         {"year": "2026", "Value": "180.7", "reference_period_desc": "YEAR - AUG FORECAST"}], 1, 1)
+    assert nyrs == [2025] and nvals == {"2025": 186.5}, (nyrs, nvals)
+    assert IN_SEASON_SKIPPED["n"] - before == 2, IN_SEASON_SKIPPED
+    # a row with no reference_period_desc at all is still treated as final
+    y2, r2 = shape_state([{"state_name": "IOWA", "year": "2024", "Value": "200"}], 1, 1)
+    assert y2 == [2024], y2
+
+    print("selftest OK — shaping, suppression, US-exclusion, conversion, "
+          "in-season forecast exclusion")
     return 0
 
 if __name__ == "__main__":

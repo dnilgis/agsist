@@ -283,8 +283,29 @@ def main():
         print(f'FAILED:    usdm_latest.png — {src_url}', file=sys.stderr)
 
     # ── Manifest write ──────────────────────────────────────────────────
-    (OUT_DIR / 'manifest.json').write_text(
-        json.dumps(manifest, indent=2, sort_keys=True) + '\n',
+    # 2026-08-15 audit: `fetched_at` was stamped unconditionally, so the
+    # workflow's `git diff --cached --quiet` guard could never fire and this
+    # hourly job committed ~24 content-free changes a DAY (~8,700/yr). Two
+    # real costs: data/outlooks mtime stopped meaning anything, and every
+    # empty push is one more rebase for the briefing's own push to lose to.
+    # NOAA updates twice a month, USDM weekly — silence is the normal state.
+    # Keep the previous fetched_at when nothing about the payload changed, so
+    # the file only moves when the DATA moves. `checked_at` records the poll.
+    mpath = OUT_DIR / 'manifest.json'
+    payload_now = {k: v for k, v in manifest.items() if k != 'fetched_at'}
+    try:
+        prev = json.loads(mpath.read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        prev = None
+    if prev is not None and {k: v for k, v in prev.items()
+                             if k not in ('fetched_at', 'checked_at')} == payload_now:
+        manifest['fetched_at'] = prev.get('fetched_at', manifest['fetched_at'])
+        print('manifest: payload unchanged — keeping fetched_at '
+              f'{manifest["fetched_at"]} (no commit expected)')
+    manifest['checked_at'] = datetime.now(timezone.utc).isoformat(timespec='seconds')
+    mpath.write_text(
+        json.dumps({k: v for k, v in manifest.items() if k != 'checked_at'},
+                   indent=2, sort_keys=True) + '\n',
         encoding='utf-8',
     )
 

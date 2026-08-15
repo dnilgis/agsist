@@ -709,6 +709,12 @@ def load_yesterdays_call_context():
     return None
 
 
+# How old data/ongoing-situations.json may get before the prompt is told to
+# distrust its dates. Two weeks spans a normal refresh cadence without letting
+# a whole report cycle go by unflagged.
+STALE_SITUATIONS_DAYS = 14
+
+
 def load_ongoing_situations():
     """Load standing macro/geopolitical situations from data/ongoing-situations.json.
     These are facts the generator must respect across briefings, preventing
@@ -724,6 +730,35 @@ def load_ongoing_situations():
     except Exception:
         return ""
     situations = data.get("situations", {}) if isinstance(data, dict) else {}
+
+    # ── staleness guard (2026-08-15) ──────────────────────────────────────
+    # This file is standing context the model is told NOT to contradict, so a
+    # stale fact in here outranks today's news in the model's head. On
+    # 2026-08-15 it still said "Pro Farmer scouts are in fields the week of
+    # Aug 3" (the tour is Aug 17-20), called the Aug 12 WASDE "the next
+    # catalyst" three days after it printed, and carried USDA's superseded
+    # 183.0/53.0 as current. That is the same shape as the 2026-08-11
+    # fabrication: a wrong date in trusted context, narrated as fact.
+    # We cannot auto-refresh it, but we can stop presenting it as timeless.
+    stale_note = ""
+    _lu = (data.get("_last_updated") or "").strip() if isinstance(data, dict) else ""
+    if _lu:
+        try:
+            _age = (datetime.now().date() - datetime.strptime(_lu, "%Y-%m-%d").date()).days
+            if _age > STALE_SITUATIONS_DAYS:
+                print(f"  [v4.6] ⚠ ongoing-situations.json is {_age} days old "
+                      f"(updated {_lu}) — prompt will flag it as possibly stale")
+                stale_note = (
+                    f"\n  ⚠ THIS BLOCK WAS LAST UPDATED {_lu}, {_age} DAYS AGO. Treat every DATE and\n"
+                    f"  every 'upcoming'/'next' claim in it as possibly overtaken. If a date in here has\n"
+                    f"  already passed, the event has happened — never describe a past date as upcoming,\n"
+                    f"  and never resolve it from these facts alone. Today's news block and the release\n"
+                    f"  calendar outrank this block on anything time-sensitive.\n")
+            else:
+                print(f"  [v4.6] ongoing-situations.json is {_age} days old (updated {_lu})")
+        except ValueError:
+            pass
+
     active = []
     for key, sit in situations.items():
         if (sit.get("status") or "").lower() != "active":
@@ -750,7 +785,7 @@ def load_ongoing_situations():
         "If today's news block contradicts a standing fact, prefer today's news but flag the\n"
         "shift explicitly (e.g., \"Iran tensions, ongoing since late April, escalated overnight as...\")\n"
     )
-    return header + "\n" + "\n\n".join(active) + "\n"
+    return header + stale_note + "\n" + "\n\n".join(active) + "\n"
 
 
 def load_editorial_notes(n=15):
