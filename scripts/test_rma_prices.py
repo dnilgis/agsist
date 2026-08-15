@@ -23,6 +23,14 @@ def check(name, ok, detail=""):
         FAILED.append(name)
 
 
+def _raises(fn):
+    try:
+        fn()
+    except Exception:
+        return True
+    return False
+
+
 def entry(**kw):
     body = "".join(f"<d:{k}>{v}</d:{k}>" for k, v in kw.items())
     return ("<entry><content type='application/xml'>"
@@ -178,6 +186,89 @@ u = M.page_url("8/15/2026", 32, "CommodityYear eq 2026")
 check("skip is sent", "%24skip=32" in u or "$skip=32" in u, u)
 check("filter is sent", "CommodityYear" in u, u)
 check("date is sent unescaped-slash-safe", "8%2F15%2F2026" in u or "8/15/2026" in u, u)
+
+print("\ncalendar walk (the 2026-08-15 single-date bug)")
+# A stand-in for the real service: it returns a row only when the requested
+# discoveryPeriodDate falls inside one of that row's windows. That is exactly
+# what public-rma does, verified live — 10/15/2026 returns soybeans, 8/15/2026
+# returns none — and it is what the old single-date pull could not see.
+import urllib.parse as _up  # noqa: E402
+
+WORLD = [
+    # crop,        state,      projected window,        harvest window
+    ("Corn",      "Georgia",   ("2026-01-15", "2026-02-14"), ("2026-08-01", "2026-08-31")),
+    ("Corn",      "Texas",     ("2025-12-15", "2026-01-14"), ("2026-08-01", "2026-08-31")),
+    ("Soybeans",  "Illinois",  ("2026-02-01", "2026-02-28"), ("2026-10-01", "2026-10-31")),
+    ("Soybeans",  "Wisconsin", ("2026-02-01", "2026-02-28"), ("2026-10-01", "2026-10-31")),
+    ("Wheat",     "Kansas",    ("2025-08-15", "2025-09-14"), ("2026-06-01", "2026-06-30")),
+]
+
+
+def _world_entries(disc):
+    mo, dy, yr = (int(x) for x in disc.split("/"))
+    d = date(yr, mo, dy)
+    out = []
+    for crop, st, (ps, pe), (hs, he) in WORLD:
+        hit = any(date.fromisoformat(a) <= d <= date.fromisoformat(b)
+                  for a, b in ((ps, pe), (hs, he)))
+        if hit:
+            out.append(entry(CompositeKey=f"{crop}-{st}", CommodityYear="2026",
+                             CommodityName=crop, TypeName="All",
+                             InsurancePracticeName="Conventional", StateName=st,
+                             ProjectedPriceBeginDate=ps + "T00:00:00",
+                             ProjectedPriceEndDate=pe + "T00:00:00",
+                             HarvestPriceBeginDate=hs + "T00:00:00",
+                             HarvestPriceEndDate=he + "T00:00:00"))
+    return out
+
+
+def world_get(url):
+    q = _up.parse_qs(_up.urlparse(url).query)
+    disc = q["discoveryPeriodDate"][0]
+    skip = int(q.get("$skip", ["0"])[0])
+    return feed(*_world_entries(disc)[skip:skip + M.PAGE])
+
+
+try:
+    M._get = world_get
+
+    one_day = M.shape(M.pull("8/15/2026", verbose=False))
+    crops_1d = {r["crop"] for r in one_day}
+    check("a single-date pull really does miss whole crops (the live bug)",
+          "Soybeans" not in crops_1d, f"got {sorted(crops_1d)}")
+
+    walked = M.shape(M.pull_year(2026, verbose=False))
+    crops_w = {r["crop"] for r in walked}
+    check("the walk finds every crop the single date missed",
+          {"Corn", "Soybeans", "Wheat"} <= crops_w, f"got {sorted(crops_w)}")
+    check("the walk reaches a projected window that closed in the prior year",
+          any(r["state"] == "Texas" for r in walked),
+          "Texas 2025-12-15 window not recovered")
+    check("the walk reaches a prior-year August window (winter wheat)",
+          any(r["state"] == "Kansas" for r in walked))
+    check("the walk deduplicates rather than repeating a row per probe date",
+          len(walked) == len(WORLD), f"{len(walked)} rows for {len(WORLD)} in the world")
+finally:
+    M._get = real_get
+
+check("a stride that could step over a 28-day window is refused",
+      _raises(lambda: M.walk_dates(2026, 30)), "walk_dates(2026, 30) returned")
+check("the walk starts in the prior year", M.walk_dates(2026)[0].endswith("/2025"),
+      M.walk_dates(2026)[0])
+check("the walk ends at the close of the crop year",
+      M.walk_dates(2026)[-1].endswith("/2026"), M.walk_dates(2026)[-1])
+
+print("\ncoverage floor")
+slice_rows = ([{"crop": "Corn", "state": s} for s in
+               ("Alabama", "Arkansas", "Florida", "Georgia", "Louisiana",
+                "Mississippi", "South Carolina", "Texas")])
+check("the shape of the live bug trips the floor",
+      any("Corn" in c for c in M.check_coverage(slice_rows)),
+      str(M.check_coverage(slice_rows)))
+full_rows = ([{"crop": "Corn", "state": f"S{i}"} for i in range(40)] +
+             [{"crop": "Soybeans", "state": f"S{i}"} for i in range(34)])
+check("a whole-year pull clears the floor", M.check_coverage(full_rows) == [],
+      str(M.check_coverage(full_rows)))
 
 print()
 if FAILED:

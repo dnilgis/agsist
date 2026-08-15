@@ -21,6 +21,20 @@ Source (OData/Atom):
 The service pages at 16 records. $skip and $filter work; $inlinecount does not
 (500s). So we page until a page comes back empty.
 
+discoveryPeriodDate is NOT cosmetic — this cost us a week of wrong data. The
+service returns only rows with a discovery window containing that date. Asking
+for today alone on 2026-08-15 returned 228 rows across 9 crops with ZERO
+soybeans and corn in only the 8 states whose August window happened to be open;
+a Wisconsin grower's own corn and beans were simply absent from the file, and
+the page filled the hole with barley and popcorn. Verified against the service:
+10/15/2026 returns soybeans for all the October states, 8/15/2026 returns none.
+
+So we WALK the calendar and union on CompositeKey. The walk starts in the PRIOR
+year because RMA's projected windows do: 2026 winter wheat was discovered
+2025-08-15..09-14, and Texas corn 2025-12-15..2026-01-14. Stride is 7 days,
+which is strictly shorter than the shortest window RMA publishes (28 days), so
+every window is hit at least four times.
+
 Honesty rails
   - Nothing is written unless the pull succeeded and returned records.
   - Prices inside an open window are carried with their RMA status verbatim
@@ -171,6 +185,73 @@ def pull(disc_date, filt=None, verbose=True):
     return rows
 
 
+# ------------------------------------------------------- the calendar walk
+
+WALK_STRIDE = 7           # days; must stay < the shortest RMA window (28)
+WALK_START_MONTH = 8      # prior-year August: winter wheat / Texas corn
+
+
+def walk_dates(year, stride=WALK_STRIDE):
+    """Every probe date needed to see a whole crop year's windows.
+
+    Prior-year August through the end of the crop year, one date every
+    `stride` days. Returned as M/D/YYYY, which is what the service wants.
+    """
+    if stride < 1 or stride > 27:
+        raise ValueError(
+            f"stride {stride} is not shorter than RMA's shortest window (28 "
+            "days); a longer stride can step over a window entirely")
+    d = date(year - 1, WALK_START_MONTH, 1)
+    stop = date(year, 12, 31)
+    out = []
+    while d <= stop:
+        out.append(f"{d.month}/{d.day}/{d.year}")
+        d += timedelta(days=stride)
+    return out
+
+
+# RMA runs revenue price discovery for corn and soybeans in far more states
+# than this. It is a floor, not an estimate: if a walk comes back under it,
+# something has silently truncated the pull and the file must not be written.
+COVERAGE_FLOOR = {"Corn": 30, "Soybeans": 25}
+
+
+def check_coverage(rows, floor=None):
+    """Return a list of complaints; empty means the pull looks whole."""
+    floor = COVERAGE_FLOOR if floor is None else floor
+    bad = []
+    for crop, need in sorted(floor.items()):
+        states = {r.get("state") for r in rows
+                  if r.get("crop") == crop and r.get("state")}
+        if len(states) < need:
+            bad.append(f"{crop}: {len(states)} states, expected at least {need}")
+    return bad
+
+
+def pull_year(year, filt=None, stride=WALK_STRIDE, verbose=True):
+    """Walk the crop year's calendar and union every window into one set."""
+    dates = walk_dates(year, stride)
+    seen = set()
+    rows = []
+    print(f"  walking {len(dates)} discovery dates "
+          f"({dates[0]} .. {dates[-1]}), stride {stride}d", flush=True)
+    for n, disc in enumerate(dates, 1):
+        got = pull(disc, filt, verbose=False)
+        fresh = 0
+        for e in got:
+            k = e.get("CompositeKey") or json.dumps(e, sort_keys=True)
+            if k in seen:
+                continue
+            seen.add(k)
+            rows.append(e)
+            fresh += 1
+        if verbose:
+            print(f"    [{n:3d}/{len(dates)}] {disc:>11}  "
+                  f"got {len(got):4d}  new {fresh:4d}  total {len(rows):5d}",
+                  flush=True)
+    return rows
+
+
 # ---------------------------------------------------------------- shaping
 
 def _num(v):
@@ -297,26 +378,40 @@ def main():
     ap.add_argument("--today", default=None, help="YYYY-MM-DD, for tests")
     ap.add_argument("--no-filter", action="store_true",
                     help="do not send $filter; keep everything and filter here")
+    ap.add_argument("--stride", type=int, default=WALK_STRIDE,
+                    help="days between probe dates (must be < 28)")
+    ap.add_argument("--skip-coverage", action="store_true",
+                    help="report the coverage floor but do not fail on it")
     args = ap.parse_args()
 
     today = date.fromisoformat(args.today) if args.today else date.today()
     year = args.year or today.year
-    disc = f"{today.month}/{today.day}/{today.year}"
 
     filt = None if args.no_filter else f"CommodityYear eq {year}"
-    print(f"RMA price discovery — crop year {year}, discoveryPeriodDate={disc}")
+    print(f"RMA price discovery — crop year {year}")
     try:
-        raw = pull(disc, filt)
+        raw = pull_year(year, filt, args.stride)
     except Exception as exc:                              # noqa: BLE001
         if filt is None:
             raise
-        print(f"  filtered pull failed ({exc}); retrying unfiltered", flush=True)
-        raw = pull(disc, None)
+        print(f"  filtered walk failed ({exc}); retrying unfiltered", flush=True)
+        raw = pull_year(year, None, args.stride)
 
     rows = shape(raw)
     rows = [r for r in rows if r.get("year") == year] or rows
     if not rows:
         raise SystemExit("RMA returned zero rows — refusing to write an empty file")
+
+    gaps = check_coverage(rows)
+    if gaps:
+        print("\nCOVERAGE FLOOR NOT MET:")
+        for g in gaps:
+            print(f"  {g}")
+        if not args.skip_coverage:
+            raise SystemExit(
+                "the walk came back thinner than RMA's real coverage, which is "
+                "how the single-date bug looked. Refusing to write a slice.")
+        print("  --skip-coverage: writing anyway")
 
     crops = sorted({r["crop"] for r in rows if r["crop"]})
     states = sorted({r["state"] for r in rows if r["state"]})
