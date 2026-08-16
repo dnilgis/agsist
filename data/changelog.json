@@ -6,6 +6,48 @@
    "date": "2026-08-16",
    "items": [
     {
+     "tag": "fixed",
+     "page": "/hail-map",
+     "name": "Three hail map controls could not be tapped on a phone",
+     "text": "The storm swath layer, the last-30-days view and the play button were sitting underneath another control bar on any screen narrower than 640 pixels. Not hidden -- covered, so a thumb landing on \"Storm swaths\" hit the button behind it instead. Anyone arriving on a phone looking for swaths or the live layer could not reach either one. The cause was a single styling rule: two bars were told to stick to the same line at the bottom of the map, and one of them was a bar the page had already switched off and which was refusing to go. That same bar was also putting a date stepper under the five-year map, where there is no date to step to, and showing the words \"radar-estimated, not a ground measurement\" underneath a map made entirely of human ground reports -- a caution attached to the wrong thing. All of it was one line. The page is 245 pixels shorter on a desktop and 314 shorter on a phone, and the nine map controls are all reachable again. Found by putting the page in front of a review panel, including one reviewer whose only job was to try to prove the others wrong -- which is also how four things the panel reported turned out to be faults in how we photographed the page rather than faults in the page."
+    },
+    {
+     "tag": "improved",
+     "page": "/",
+     "name": "The home page stopped jumping while it loads",
+     "text": "Open the site and the briefing used to lurch twice before it settled -- the headline, the lead paragraph and the takeaway all dropping a line, and the whole page sliding upward once the navigation arrived. Two causes, both measured. The date line under AGSIST DAILY ships empty and gets filled a moment later, and nothing was holding its space, so everything below it moved down 32 pixels. And the plain navigation that non-JavaScript readers and search crawlers see was rendering four lines deep on eight pages before being swapped for the real one, which is a single line -- so those pages jumped 171 pixels upward. Both now hold their space. Google scores this; the home page went from 0.356 to 0.098 against a 0.1 threshold for good, and the cash bids page and field scout went to a flat zero."
+    },
+    {
+     "tag": "fixed",
+     "page": "/",
+     "name": "An empty quote card could never be hidden",
+     "text": "On a day with no quote, the briefing script hid the Daily Quote card -- except three styling rules added to force those cards visible on phones were written strongly enough to overrule it. The card stayed on screen containing nothing but a dash. Same for the Things You Might Know block. Both now hide properly when there is nothing to put in them, and both were tested twice: once with the data present, once with it stripped out."
+    },
+    {
+     "tag": "improved",
+     "page": "/corn-futures-prices",
+     "name": "Prices are typeset as numbers now",
+     "text": "The last-close tables on the corn, soybean and wheat pages set their figures in the body typeface, ranged left, with digits of differing widths -- so the column had a ragged edge and numbers shifted sideways when a value changed. They now use tabular figures, where every digit occupies the same width, and sit ranged right so the decimal points line up. It is a small thing that a reader will not name but will notice, and it applies to every table on the site."
+    },
+    {
+     "tag": "fixed",
+     "page": "/basis",
+     "name": "Six pages told Google they answered questions that appear nowhere on them",
+     "text": "Structured data is what search engines read to decide whether a page deserves a rich result, and on six pages ours described a page that does not exist. /basis advertised the question \"Is basis set by my local elevator?\" The page has never asked that. What it actually asks is \"Is my elevator ripping me off?\" -- and that question was missing from the markup entirely. On /conditions and /foreign-land the two lists had no questions in common at all. The cause was the ordinary one: the markup was written once by hand, the visible page was edited afterwards, and nothing tied them together. Two hand-written copies of one fact is a failure this site keeps relearning. The markup is now generated from the visible page every time the site builds, so the two cannot disagree again, and it refuses to publish rather than emit an empty or half-built question. Seven pages were corrected."
+    },
+    {
+     "tag": "fixed",
+     "page": "/wheat-futures-prices",
+     "name": "Wheat page carried icon definitions that would have blanked the navigation",
+     "text": "Every page shares one set of icon drawings, and the wheat futures page had its own copy of twenty-four of them missing the instructions that say draw the outline, do not fill it in. Whichever copy the browser reaches first wins for the whole page. This exact mistake turned every navigation icon into a solid blob on eight pages once before. It had not broken yet here -- it was one edit away from it."
+    },
+    {
+     "tag": "fixed",
+     "page": "/markets",
+     "name": "Search results were cutting our descriptions off mid-sentence",
+     "text": "The corn, soybean and wheat descriptions Google shows under the link had grown to between 167 and 184 characters against a limit of about 160, so the last clause was being chopped. They are now built in two parts: the sentence with the price and the date in it always ships, and the keyword list after it ships only if the whole thing still fits. That decision is made fresh each time the prices are written, so it cannot break again when a price gains a digit or a contract label runs long. Nine page titles were over length for the same reason and were shortened."
+    },
+    {
      "tag": "new",
      "page": "/farm-bill",
      "name": "What actually happens on October 1 — and why January 1 is the date that should worry you",
