@@ -73,6 +73,13 @@
   .hero-sidebar > .s-card { display: block !important; }
   #daily-quote-text, #daily-quote-attr { display: block !important; }
   #daily-tmyk-wrap { display: flex !important; }
+  /* 2026-08-16: the three rules above are unscoped !important, so they also beat
+     the briefing script's own `style.display='none'`. On a day with no quote or
+     no TMYK block the card could never be hidden and rendered an empty shell —
+     a quote card containing nothing but an em dash. The script now toggles the
+     `hidden` attribute instead, and these give it enough weight to win. */
+  .hero-sidebar > .s-card[hidden],
+  #daily-tmyk-wrap[hidden] { display: none !important; }
   .main{overflow-x:clip;padding-left:max(0px,env(safe-area-inset-left));padding-right:max(0px,env(safe-area-inset-right));}
   .spray-windows{margin-top:.4rem;margin-bottom:.15rem;display:none;}
   .spray-windows.loaded{display:block;}
@@ -2528,9 +2535,9 @@ window.hydrateDaily = function(data) {
   if(tmyk&&(tmyk.title||tmyk.body)){
     setText('daily-tmyk-title',tmyk.title||'');
     setHTML('daily-tmyk-body',mdInline(tmyk.body||''));
-    if(tmykWrap)tmykWrap.style.display='';
+    if(tmykWrap)tmykWrap.hidden=false;
   } else {
-    if(tmykWrap)tmykWrap.style.display='none';
+    if(tmykWrap)tmykWrap.hidden=true;
   }
 
   // Daily Quote — canonical: daily_quote, legacy: quote
@@ -2540,9 +2547,9 @@ window.hydrateDaily = function(data) {
   if(quote&&(quote.text||quote.attribution)){
     setHTML('daily-quote-text','\u201c'+(quote.text||'')+'\u201d');
     setText('daily-quote-attr','\u2014 '+(quote.attribution||''));
-    if(qCard)qCard.style.display='';
+    if(qCard)qCard.hidden=false;
   } else {
-    if(qCard)qCard.style.display='none';
+    if(qCard)qCard.hidden=true;
   }
 
   // Watch list
