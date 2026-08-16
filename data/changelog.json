@@ -6,6 +6,18 @@
    "date": "2026-08-16",
    "items": [
     {
+     "tag": "new",
+     "page": "/farm-bill",
+     "name": "What actually happens on October 1 — and why January 1 is the date that should worry you",
+     "text": "Every story about this deadline says the farm bill expires September 30. The page said it too and never once said what expires. So here it is, sourced, in three parts. Nothing you depend on changes on October 1: crop insurance runs on permanent statutory authority and has never lapsed, and reference prices, ARC, PLC and base acres were reauthorized through 2031 by the 2025 reconciliation law. What actually stops is the handful of programs that law left without any money attached -- Biobased Markets, Specialty Crop Block Grants, the Local Agriculture Market Program, Organic Agriculture Research and Extension, Animal Disease Prevention and Management, and Farming Opportunities Training and Outreach -- and they start again whenever a bill or an extension funds them. If you are not in one of those, October 1 is a headline and not an event. The part nobody puts in the headline is that the suspension of permanent law -- the 1938 and 1949 Acts sitting underneath all of this -- runs only through the 2026 crop year, and the reconciliation law deliberately did not extend it, because that kind of extension does not score as costing anything. Without action the old law starts taking effect January 1, 2027. Dairy first, then wheat on June 1 and corn on October 1. In July 2025 the parity support price for milk under that old law was 252 percent of what milk was actually worth. Every figure here is from the Congressional Research Service report R48775, linked on the page, and the parity number is labelled as theirs because we have not checked it against USDA's own tables."
+    },
+    {
+     "tag": "improved",
+     "page": "/wheat-futures-prices",
+     "name": "The futures pages now say which exchange they are quoting, in the title",
+     "text": "People search for \\u201ccbot wheat,\\u201d \\u201ccbot corn,\\u201d \\u201ccme feeder cattle futures.\\u201d Last month those searches showed this site 3,205 times and were clicked once. Looking at why, a pattern turned up: the corn and soybean pages had the exchange in their title and ranked around 16th and 22nd; the wheat and cattle pages did not have it and ranked 33rd and 29th, with no clicks at all. Both pages say CBOT and CME dozens of times in the body, so it was never a coverage problem. All four titles now open with the exchange and the front-month price, and they rebuild twice a day. Whether that moves the ranking is something we will only know in a few weeks, and we will report it either way. One thing did get caught on the way: the first version read the continuous contract while printing the dated month's name, which would have published September's soybean price under an August label, three lines above the correct number in the page body. The corn and wheat contracts happened to agree that day so only soybeans exposed it."
+    },
+    {
      "tag": "improved",
      "page": "/usda-calendar",
      "name": "Five pages now put the answer in the search result, not a description of themselves",
