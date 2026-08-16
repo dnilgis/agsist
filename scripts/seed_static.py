@@ -25,6 +25,7 @@ v1.1 — 2026-07-03 (added the weekly-changing pages to DATEMOD_ONLY: urea,
          ag-odds, cot, whats-priced-in, drought-monitor)
 """
 
+import html as H
 import json
 import re
 import sys
@@ -50,18 +51,51 @@ PAGES = {
 # Meta-description templates. A numeric, dated description is the main
 # crawler-visible CTR lever these pages have (Google may rewrite, but a fresh
 # number raises the odds it keeps ours). Placeholders: {px} nearby close,
-# {chg} signed pct, {mon} contract label, {date} price date.
+# {chg} signed pct, {mon} contract label, {date} price date, {kc} KC HRW clause.
+#
+# Split in two on 2026-08-16. All three descriptions were running 167-184
+# characters and getting cut mid-clause in the result. The HEAD is the numeric,
+# dated sentence -- the reason to click -- and it always ships. The TAIL is the
+# keyword clause, and it ships only if the whole thing still fits. Losing the
+# tail costs a few secondary terms; a sentence cut mid-word costs the click.
+#
+# This also has to survive its own inputs: {px} gains a character when beans
+# cross $100 wide or a contract label runs long, and the wheat {kc} clause is
+# 18 characters that appear only when the KC quote is usable. A fixed string
+# cannot be checked once and trusted -- the length is decided at bake time.
+DESC_MAX = 160
+
 DESC = {
-    "corn-futures-prices.html":
+    "corn-futures-prices.html": (
         "Corn {mon} closed ${px} ({chg}) on {date} — live CBOT corn futures refreshed every "
-        "30 min in session. December new-crop, RP revenue floor, basis-to-cash, daily read.",
-    "soybean-futures-prices.html":
+        "30 min in session.",
+        " December new-crop, RP floor, basis-to-cash, daily read."),
+    "soybean-futures-prices.html": (
         "Soybeans {mon} closed ${px} ({chg}) on {date} — live CBOT soybean futures refreshed "
-        "every 30 min in session. November new-crop, crush spread, cash bids by ZIP, daily read.",
-    "wheat-futures-prices.html":
+        "every 30 min in session.",
+        " November new-crop, crush spread, cash bids."),
+    "wheat-futures-prices.html": (
         "Wheat {mon} closed ${px} ({chg}) on {date} — live Chicago SRW futures refreshed every "
-        "30 min in session{kc}. Class spreads, cash bids by ZIP, fund positioning, daily read.",
+        "30 min in session{kc}.",
+        " Class spreads, cash bids by ZIP."),
 }
+
+
+def render_desc(tmpl, **kw):
+    """(description, note). None means do not stamp -- leave what is there.
+
+    Entities are counted decoded, because that is what the result shows: the
+    wheat description carries `&middot;` in the attribute and a single `·` in
+    the SERP, and counting the source overstates it by six characters.
+    """
+    head, tail = tmpl
+    h, t = head.format(**kw), tail.format(**kw)
+    n = len(H.unescape(h))
+    if n > DESC_MAX:
+        return None, f"head alone is {n} chars — refusing to publish a cut sentence"
+    if n + len(H.unescape(t)) <= DESC_MAX:
+        return h + t, f"{n + len(H.unescape(t))} chars"
+    return h, f"{n} chars, keyword tail dropped to fit"
 
 # pages whose schema dateModified is stamped with today (price pages get it in
 # the loop above; these get it too because their content changes daily)
@@ -146,8 +180,9 @@ def px_table(rows, flabel):
     grain quotes in cents; quotes may be None (row skipped)."""
     out = ['<table class="seed-tbl"><caption>Last close &middot; as of ' + flabel +
            ' &middot; live quotes above update in session</caption>',
-           '<thead><tr><th scope="col">Contract</th><th scope="col">Close</th>'
-           '<th scope="col">Change</th><th scope="col">52-wk range</th></tr></thead><tbody>']
+           '<thead><tr><th scope="col">Contract</th><th scope="col" class="num">Close</th>'
+           '<th scope="col" class="num">Change</th><th scope="col" class="num">52-wk range</th>'
+           '</tr></thead><tbody>']
     n = 0
     for label, q in rows:
         usd = grain_dollars(q)
@@ -158,8 +193,12 @@ def px_table(rows, flabel):
         if q.get("wk52_lo") and q.get("wk52_hi"):
             rng = "$%.2f&ndash;$%.2f" % (q["wk52_lo"] / 100.0, q["wk52_hi"] / 100.0)
         stale = " (last good quote)" if q.get("stale") else ""
-        out.append("<tr><td>" + label + stale + "</td><td>$" + usd + "</td><td>" +
-                   (_chg(q) or "&mdash;") + "</td><td>" + rng + "</td></tr>")
+        # class="num" -> tabular figures, ranged right. A price column set in a
+        # proportional face and ranged left is the loudest "not a finance site"
+        # signal there is; the styling rule lives once in components/styles.css.
+        out.append('<tr><td>' + label + stale + '</td><td class="num">$' + usd +
+                   '</td><td class="num">' + (_chg(q) or "&mdash;") +
+                   '</td><td class="num">' + rng + '</td></tr>')
     out.append("</tbody></table>")
     return "".join(out) if n else None
 
@@ -307,12 +346,16 @@ def main():
             tmpl = DESC.get(page)
             if tmpl:
                 kc_usd = grain_dollars(quotes.get("kcwheat"))
-                desc = tmpl.format(px=f_usd, chg=_chg(fq) or "flat", mon=mon or "front month",
-                                   date=flabel,
-                                   kc=(" &middot; KC HRW $" + kc_usd) if kc_usd else "")
-                # entity-decode for attribute text: &middot; is fine in content=""
-                t, c5 = stamp_meta_description(t, desc)
-                changed = changed or c5
+                desc, dnote = render_desc(
+                    tmpl, px=f_usd, chg=_chg(fq) or "flat", mon=mon or "front month",
+                    date=flabel,
+                    kc=(" &middot; KC HRW $" + kc_usd) if kc_usd else "")
+                if desc is None:
+                    print(f"  {page}: description {dnote}")
+                else:
+                    # entity-decode for attribute text: &middot; is fine in content=""
+                    t, c5 = stamp_meta_description(t, desc)
+                    changed = changed or c5
         else:
             print(f"  {page}: no usable {crop_key} quote — seeds left as-is")
         t, c3 = stamp_datemodified(t, today)
