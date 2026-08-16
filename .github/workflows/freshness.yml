@@ -39,6 +39,15 @@ jobs:
       - name: Seed static content
         run: python scripts/seed_static.py
 
+      # Titles and meta descriptions that carry a live answer instead of a
+      # description of the tool. Selftest first: bake_seo refuses to write a
+      # title it cannot fit, cannot source, or that carries a date already in
+      # the past, and a page whose data is missing keeps what it has.
+      - name: Bake answer-first titles
+        run: |
+          python scripts/bake_seo.py --selftest
+          python scripts/bake_seo.py
+
       - name: Commit if changed
         run: |
           git config user.name  "agsist-bot"
@@ -47,7 +56,7 @@ jobs:
             echo "No changes — nothing to commit."
           else
             git add -A
-            git commit -m "freshness: seed static prices + dateModified + sitemap lastmod"
+            git commit -m "freshness: seed static prices, answer-first titles, dateModified, sitemap lastmod"
             git pull --rebase origin main
             git push
           fi
