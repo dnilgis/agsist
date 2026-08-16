@@ -6,6 +6,12 @@
    "date": "2026-08-16",
    "items": [
     {
+     "tag": "improved",
+     "page": "/usda-calendar",
+     "name": "Five pages now put the answer in the search result, not a description of themselves",
+     "text": "Search traffic to this site nearly quadrupled last month and the share of people who clicked did not move at all -- 1.30% to 1.28% -- while the average ranking improved from 13.5 to 10.3. Pages sitting in the top ten of Google were being skipped. The USDA report calendar was seen 9,017 times and clicked 30. Quick Stats, 7,310 times and clicked 13. The reason is that the titles described the tool instead of answering the question. Somebody searching for the WASDE schedule, looking at a list that includes usda.gov, does not pick \\u201cUSDA Report Calendar 2026\\u201d -- they pick whichever one shows the date. So five titles now carry the answer and are rebuilt twice a day from live data: the calendar leads with the next WASDE and how many days out it is, the trader positioning page leads with which way managed money is leaning in corn and by how much, the crop tour page counts the nights as they post, the state crop data page opens with a real Iowa number labelled forecast or final, and the break-even calculator opens with where corn is. Nothing here is hand-typed, so none of it can go stale between edits, and if the data behind a page is missing the page keeps the title it had rather than printing a guess."
+    },
+    {
      "tag": "fixed",
      "page": "/farm-bill",
      "name": "The farm bill page was still writing about a vote that had already happened",
