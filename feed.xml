@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 15 Aug 2026 15:15:47 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 16 Aug 2026 11:24:09 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>TOUR WEEK ARRIVES: CORN, WHEAT LED FRIDAY HIGHER</title>
+      <link>https://agsist.com/daily/2026-08-16</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-16</guid>
+      <pubDate>Sun, 16 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed Friday at $4.59, up 9 cents, and wheat finished at $6.74, up 17 cents. Both moves came on fund and technical buying into a week that will either validate or punish those positions. The Pro Farmer Crop Tour starts Monday with USDA already on record at 180.7 bushels per acre on corn. Whatever the scouts find, it hits a market that went into the weekend leaning bullish.
+Pro Farmer scouts hit the road Monday; Friday's close sets the stakes for what they find.
+• GRAINS ENTER TOUR WEEK LEANING BULLISH
+  → Old-crop corn sellers: $4.59 held into the weekend. Wednesday's tour summary is your exit trigger; above 182 bu/acre from scouts, the board softens. Do not wait for Friday.
+• BEANS LAG, BUT TOUR WEEK IS THE REAL TEST
+• CATTLE SLIP ON FUND EXIT, STRUCTURAL STORY INTACT
+Read more: https://agsist.com/daily/2026-08-16</description>
+    </item>
     <item>
       <title>PRO FARMER TOUR STARTS MONDAY: GRAINS FINISH STRONG</title>
       <link>https://agsist.com/daily/2026-08-15</link>
@@ -379,19 +392,6 @@ Nearby corn fell hard Friday on profit-taking, but hogs had their biggest single
   → Producers who locked near-term production earlier this week: hold. Producers still exposed above $95: this window is worth pricing 20-30% of remaining open production.
 • Cattle: Cash Market Is the Problem
 Read more: https://agsist.com/daily/2026-07-18</description>
-    </item>
-    <item>
-      <title>GRAINS WIN THE WEEK; CATTLE TAKE A HIT</title>
-      <link>https://agsist.com/daily/2026-07-17</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-17</guid>
-      <pubDate>Fri, 17 Jul 2026 05:00:00 -0600</pubDate>
-      <description>The weekly thread resolves cleanly: the good-crop thesis corn was pricing got tested by weather and answered by the export board, not undermined. Friday's corn close at $4.46 and wheat at $6.85 both built on Thursday's momentum, with USDA announcing 340,000 MT of U.S. beans sold to China ahead of the open. The grain complex won the week. Cattle didn't. A steep drop in direct cash prices sent live cattle to $224.35 and feeders to $339.08, and the processing math from the ongoing Cargill Fort Morgan/Schuyler plant lockout that began May 19 is still in that number.
-Corn, wheat, and beans all close higher Friday as weather and fresh China sales push grains to weekly gains, while a sharp cash-market decline drags cattle to session lows.
-• Grains Win the Week
-• Cattle Break on Cash
-  → Feeders testing the low end of the summer range. Producers carrying unhedged feeder inventory should look at September options if $335 breaks on Monday.
-• Crude Runs Again
-Read more: https://agsist.com/daily/2026-07-17</description>
     </item>
   </channel>
 </rss>
