@@ -10,6 +10,7 @@ Requires env NASS_API_KEY (free: https://quickstats.nass.usda.gov/api).
 Stdlib only. Run with --selftest to validate parsing/conversion offline.
 """
 import os, sys, json, time, datetime, urllib.request, urllib.parse
+from datetime import date
 
 API = "https://quickstats.nass.usda.gov/api/api_GET/"
 
@@ -101,11 +102,39 @@ MONTHS = {"JAN": "January", "FEB": "February", "MAR": "March", "APR": "April",
           "SEP": "September", "OCT": "October", "NOV": "November", "DEC": "December"}
 
 
-def is_forecast(ref):
-    return "FORECAST" in (ref or "").upper()
+# USDA does not publish a FINAL yield for a crop year until the Annual Crop
+# Production summary the following January. Anything carrying the current crop
+# year before then is a forecast no matter what the reference period says.
+FINAL_MONTH, FINAL_DAY = 1, 10          # ~Jan 10 of year+1, deliberately early
 
 
-def status_label(year, ref):
+def finals_possible(year, today=None):
+    """Could USDA have published a FINAL for this crop year by today?"""
+    today = today or date.today()
+    return (today.year, today.month, today.day) >= (year + 1, FINAL_MONTH, FINAL_DAY)
+
+
+def is_forecast(ref, year=None, today=None):
+    """True if this row cannot honestly be called final.
+
+    The string test alone is not enough and the 2026-08-15 21:51Z run proved
+    it: the fixed script ran, and every one of 42 states still came out
+    forecast=False with Iowa corn at 216 bu/ac labelled "2026 crop year - USDA
+    NASS final" for a crop standing in the field. Whatever NASS put in
+    reference_period_desc for those rows, "FORECAST" was not in it.
+
+    So the calendar is the authority, not the string. A crop year whose final
+    cannot exist yet is a forecast, full stop. The string test stays as well,
+    because it correctly catches an in-season forecast for a PRIOR year.
+    """
+    if "FORECAST" in (ref or "").upper():
+        return True
+    if year is not None and not finals_possible(year, today):
+        return True
+    return False
+
+
+def status_label(year, ref, today=None):
     """The honest description of one NASS row.
 
     2026-08-15 INCIDENT: this used to be the unconditional string
@@ -116,7 +145,7 @@ def status_label(year, ref):
     The register predicted this on 2026-08-08 and it shipped anyway.
     """
     ref = (ref or "").upper()
-    if is_forecast(ref):
+    if is_forecast(ref, year, today):
         mon = next((MONTHS[m] for m in MONTHS if m in ref), None)
         return f"{year} crop \u00b7 USDA NASS {mon} forecast" if mon else \
                f"{year} crop \u00b7 USDA NASS in-season forecast"
@@ -235,7 +264,7 @@ def assemble(raw_by_field, year, by_state=None):
                 ref = pick_vintage(cells)
                 break
         rec = {"name": STATE_NAMES.get(sa, sa), "meta": status_label(yr, ref),
-               "year": yr, "forecast": bool(is_forecast(ref))}
+               "year": yr, "forecast": bool(is_forecast(ref, yr))}
         has = False
         for field in SERIES:
             cells = by_state.get(field, {}).get(sa, {}).get(yr) or {}
@@ -266,6 +295,20 @@ def assemble(raw_by_field, year, by_state=None):
         raise ValueError(f"{len(incoherent)} state records do not reconcile; "
                          "refusing to publish a table that contradicts itself")
     return stats
+
+    # ── GATE: nothing standing in a field gets published as "final" ───────
+    # This is the rail the label fix needed. On 2026-08-15 the labelling fix
+    # shipped, ran, and still produced 42 states of current-crop-year rows
+    # marked forecast=False. A gate that only labels is not a gate.
+    liars = [f"{sa} {r['year']}" for sa, r in stats.items()
+             if not r.get("forecast") and not finals_possible(r.get("year", 0))]
+    if liars:
+        print("\nSTANDING CROP PUBLISHED AS FINAL:")
+        for line in liars[:20]:
+            print(f"  {line}")
+        raise ValueError(
+            f"{len(liars)} state records claim a final USDA yield for a crop "
+            "year whose final cannot exist yet. Refusing to write.")
 
 def build(key, out_path):
     this_year = datetime.date.today().year
@@ -371,8 +414,27 @@ def selftest():
     only_fc = {"YEAR - AUG FORECAST": 216.0, "YEAR - JUL FORECAST": 181.0}
     assert only_fc[pick_vintage(only_fc)] == 216.0
 
-    assert is_forecast("YEAR - SEP FORECAST") and not is_forecast("YEAR")
-    assert status_label(2026, "YEAR") == "2026 crop year \u00b7 USDA NASS final"
+    # ---- final-vs-forecast --------------------------------------------
+    # These two lines used to assert the bug. status_label(2026, "YEAR") was
+    # asserted to equal "2026 crop year - USDA NASS final", which is exactly
+    # what shipped on 2026-08-15 at 21:51Z with Iowa corn at 216 bu/ac for a
+    # crop standing in the field. Whatever NASS puts in reference_period_desc
+    # for those rows, "FORECAST" is not in it, so the string test alone can
+    # never catch them. The calendar is the authority now.
+    T = date(2026, 8, 16)
+    assert is_forecast("YEAR - SEP FORECAST", 2025, T), "string test lost"
+    assert not is_forecast("YEAR", 2025, T), "a real 2025 final must stay final"
+    assert is_forecast("YEAR", 2026, T), \
+        "a 2026 row read in Aug 2026 cannot be final -- this is the live bug"
+    assert status_label(2026, "YEAR", T) == \
+        "2026 crop \u00b7 USDA NASS in-season forecast", status_label(2026, "YEAR", T)
+    assert status_label(2026, "YEAR - AUG FORECAST", T) == \
+        "2026 crop \u00b7 USDA NASS August forecast"
+    assert status_label(2025, "YEAR", T) == "2025 crop year \u00b7 USDA NASS final"
+    # the boundary: USDA's Annual Crop Production summary, ~Jan 10
+    assert not finals_possible(2026, date(2027, 1, 9))
+    assert finals_possible(2026, date(2027, 1, 10))
+    assert finals_possible(2025, T)
 
     # ---- same-vintage resolution + coherence gate -----------------------
     # The real 2026-08-15 shape: the August forecast carries yield AND
