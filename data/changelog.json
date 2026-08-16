@@ -7,6 +7,18 @@
    "items": [
     {
      "tag": "fixed",
+     "page": "/usda-quick-stats",
+     "name": "We said we fixed the standing-crop-called-final bug. We had not.",
+     "text": "This morning we told you the state crop numbers had stopped calling a standing crop final. The corrected script ran again at 9:51 last night and published all 42 states exactly the same way -- Iowa corn 216 bushels labelled \\u201c2026 crop year, USDA NASS final\\u201d for a crop still in the field. The fix looked for the word FORECAST in the field USDA uses to describe each row. Whatever USDA put in that field for those rows, the word was not in it, so the check passed everything through. We had written a test that asserted the wrong answer was right, which is how it survived twice. The calendar decides now instead of the wording: USDA does not publish a final yield for a crop year until its annual summary the following January, so any row carrying this crop year before then is a forecast and is labelled one, whatever the paperwork says. And the build now refuses to write the file at all if a single state comes out claiming a final that cannot exist yet. Run the state stats job to replace the numbers on the page."
+    },
+    {
+     "tag": "fixed",
+     "page": "/harvest-price-tracker",
+     "name": "Cotton and peanuts are on the page, and we had said they would not be",
+     "text": "When the full USDA RMA feed ran tonight it came back with 951 rows across 14 crops instead of 228 across 9 -- corn in 48 states, soybeans in 38, and cotton and peanuts in states we had just told readers we could not cover. Our answer said cotton was not wired yet and that peanuts had no discovery window at all. Cotton has one in 17 states against the ICE December contract, projected at 69 cents a pound. Peanuts have one in 13 states priced by type -- Runners 24.55 cents, Virginia 28.48, Spanish 31.91. What is true about peanuts is narrower than what we said: there is a window, there is just no exchange and no contract month behind it, because RMA sets that price without a futures board. The answer now says that instead. Two things broke on the way: a crop with no contract behind it printed a sentence with a blank where the contract should be, and peanuts were being priced per bushel when they sell by the pound, which told a Georgia grower his guarantee was 21 dollars an acre instead of 835. Both fixed, and the page now refuses to print a unit at all rather than print a wrong one."
+    },
+    {
+     "tag": "fixed",
      "page": "/harvest-price-tracker",
      "name": "The price discovery page was showing you other people's crops",
      "text": "A Wisconsin reader who picked his state got a headline about October corn and then nine cards of barley, canola, popcorn and oats -- and the corn card listed Alabama, Florida, Georgia, Louisiana, South Carolina and Texas. The cause was in our feed, not the page. Our job asked USDA RMA for today's date and nothing else, and RMA answers that question literally: it returns only the crops whose discovery window happens to be open today. That is 228 rows across 9 crops, with no soybeans anywhere and corn in eight southern states. Wisconsin corn and beans were never in the file, so the page filled the space with whatever was. The feed now walks the whole crop year -- starting the prior August, because 2026 winter wheat was priced in September 2025 and Texas corn in December 2025 -- and refuses to publish at all if corn comes back in fewer than 30 states. That is the exact shape this failure had."
