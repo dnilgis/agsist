@@ -48,6 +48,25 @@ jobs:
           python scripts/bake_seo.py --selftest
           python scripts/bake_seo.py
 
+      # FAQ structured data, regenerated from the visible FAQ. Six pages had
+      # told Google they answered questions that appear nowhere on them --
+      # /basis advertised "Is basis set by my local elevator?" while the page
+      # asks "Is my elevator ripping me off?" -- because the markup was written
+      # by hand once and the copy was edited afterwards.
+      #
+      # Must run AFTER anything that bakes live numbers into visible answers
+      # (build_condyield, build_croptour), or it publishes one bake behind.
+      # Here it is last, and cond-yield.yml runs it again at the end of its own
+      # job so the markup is never stale between freshness runs.
+      #
+      # Selftest first: it refuses to write rather than publish an empty
+      # question, template syntax, or an answer under 25 characters, and a page
+      # with no visible FAQ is left alone rather than blanked.
+      - name: Bake FAQ structured data
+        run: |
+          python scripts/bake_faq.py --selftest
+          python scripts/bake_faq.py
+
       - name: Commit if changed
         run: |
           git config user.name  "agsist-bot"

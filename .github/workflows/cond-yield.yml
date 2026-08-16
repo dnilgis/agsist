@@ -50,6 +50,16 @@ jobs:
         # (entered on release day per the playbook), then locks the call for
         # the next report from the nowcast it just built. Both idempotent.
         run: python scripts/nowcast_direction.py --grade --lock
+      # This job bakes live numbers into visible FAQ answers, so the FAQ's
+      # structured data has to be regenerated after it or Google is served the
+      # previous week's wording. Runs here as well as in freshness.yml so the
+      # markup is never stale in between. Idempotent; refuses rather than
+      # publishes a malformed question.
+      - name: Bake FAQ structured data
+        if: steps.window.outputs.go == '1'
+        run: |
+          python scripts/bake_faq.py --selftest
+          python scripts/bake_faq.py
       - name: Commit
         if: steps.window.outputs.go == '1'
         run: |
