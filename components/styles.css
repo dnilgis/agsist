@@ -251,7 +251,12 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .daily-left { min-width: 0; overflow: hidden }
 .daily-eyebrow { display: inline-flex; align-items: center; gap: .5rem; font-family: 'JetBrains Mono', monospace; font-size:0.77rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--brand); margin-bottom: .9rem; padding: .3rem .75rem; background: rgba(var(--brand-rgb),.06); border: 1px solid rgba(var(--brand-rgb),.18); border-radius: 3px; }
 .daily-eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand); animation: blink 2s ease-in-out infinite }
-.daily-date { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--text-muted); letter-spacing: .08em; margin-bottom: .6rem; text-transform: uppercase; }
+/* min-height reserves the line this fills with. The element ships empty and is
+   populated by setText('daily-date', ...) after load; with no reserved height
+   the greeting, headline, subheadline, lead and takeaway below it all dropped
+   32px the moment it filled -- the whole of the home page's 0.333 layout shift.
+   22px is the settled height at both 1440 and 390. */
+.daily-date { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--text-muted); letter-spacing: .08em; margin-bottom: .6rem; text-transform: uppercase; min-height: 22px; }
 .daily-greeting { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; color: var(--text-dim); margin-bottom: .75rem; letter-spacing: .03em }
 .daily-headline { font-family: var(--font-display); font-size: clamp(2.4rem, 4.5vw, 3.6rem); font-weight: 700; line-height: 1.15; color: var(--text); margin-bottom: 1rem; letter-spacing: -.01em; text-transform: uppercase; }
 .daily-headline span { color: var(--gold) }
@@ -738,7 +743,30 @@ summary:focus-visible, .pc:focus-visible {
 .draw-grp-lbl{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:0.755rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);padding:.5rem 1.1rem .1rem}
 
 /* Reserve nav height so injected chrome doesn't shift the page on load (CLS). */
+/* The header placeholder, and the static crawlable nav that eight pages put
+   inside it. loader.js REPLACES this div with the live nav, which is 74px.
+   Left to wrap, the fallback renders 245px at desktop widths, so those eight
+   pages lurched 171px upward the moment the header landed -- measured CLS 0.356
+   on the home page, in Google's "poor" band and a Core Web Vitals drag.
+
+   The links are not removed: non-JS crawlers still read them, and they stay
+   reachable by horizontal scroll if the header fetch fails. They are simply
+   held to the height of the thing that replaces them, so nothing moves.
+
+   The !important is deliberate and narrow. The fallback's layout lives in
+   inline style attributes duplicated across those eight files, and an inline
+   style outranks a stylesheet rule. One overriding rule beats eight hand-edits
+   that would drift apart -- the single-definition rule applied to CSS. */
 #site-header{min-height:74px}
+#site-header>header>div{flex-wrap:nowrap!important;align-items:center!important;min-width:0}
+/* Without this the wordmark is the shrinkable flex item next to a very wide
+   nav, and "AGSIST" wraps one letter per line into a 177px column. */
+#site-header>header>div>a{flex:0 0 auto;white-space:nowrap}
+#site-header>header nav{min-width:0}
+#site-header>header nav{line-height:1.4!important;white-space:nowrap;
+  overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+#site-header>header nav br{display:none}
+#site-header>header nav::-webkit-scrollbar{display:none}
 
 /* Skip-link — keyboard users jump past the nav to main content. */
 .skip-link{position:absolute;left:-9999px;top:0;z-index:1000;background:var(--brand);color:var(--bg);font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.8rem;font-weight:700;padding:.6rem 1rem;border-radius:0 0 var(--r-sm) 0;text-decoration:none}
@@ -749,3 +777,40 @@ summary:focus-visible, .pc:focus-visible {
 .draw-lbl{display:flex;align-items:center}
 .draw-lbl-ic{width:15px;height:15px;flex:0 0 auto;margin-right:.4rem;opacity:.9}
 @media (max-width: 960px){ .nav-ic{display:none} }
+
+/* ── Numerals ─────────────────────────────────────────────────────────────
+   Measured 2026-08-16: not one element on the site used tabular figures, and
+   the corn/soybean/wheat price tables set their numbers in Inter, ranged left.
+   A price column in a proportional face with a ragged right edge is the
+   loudest "this is not a finance product" signal there is, and it is one line
+   of CSS.
+
+   tabular-nums forces every digit to the same advance width, so a column of
+   prices lines up on the decimal and figures stop twitching when a value
+   updates in session. Inter and JetBrains Mono both ship the feature.
+
+   Applied to tables generally (digits only -- prose is untouched) and .num is
+   the explicit opt-in for a numeric column, emitted by px_table() in
+   seed_static.py. Right alignment is deliberate: numbers are read from the
+   decimal point, not the left edge.
+
+   The .seed-tbl selectors are not redundant. Each price page carries an inline
+   `.seed-tbl-wrap td,.seed-tbl-wrap th{text-align:left}` in its own <style>,
+   which has the same specificity as a bare `td.num` and sits later in the
+   cascade, so the bare rule loses. Matching on the table's class outranks it. */
+table{font-variant-numeric:tabular-nums}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum" 1,"lnum" 1}
+.seed-tbl td.num,.seed-tbl th.num{text-align:right}
+
+/* ── Reduced motion ───────────────────────────────────────────────────────
+   Honoured on 16 of 61 pages before this. One shared rule beats 45 more
+   copies. Durations are collapsed rather than zeroed so that transitionend
+   and animationend listeners still fire and nothing hangs waiting on them. */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+    scroll-behavior:auto!important}
+}
