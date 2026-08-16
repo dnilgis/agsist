@@ -1,7 +1,18 @@
 {
- "updated": "2026-08-15",
+ "updated": "2026-08-16",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here — that updates continuously.",
  "entries": [
+  {
+   "date": "2026-08-16",
+   "items": [
+    {
+     "tag": "fixed",
+     "page": "/farm-bill",
+     "name": "The farm bill page was still writing about a vote that had already happened",
+     "text": "Six sentences on the farm bill page were written in the future tense about the Senate committee markup -- a markup that took place on August 6 and failed. One of them promised to email you \\u201cwhen the Senate marks it up.\\u201d The top of the page knew the vote had failed; the middle of it did not. Worse, the update log stopped at August 3, so the single biggest event on the page was missing from the log while the page told you the log showed every revision. All six sentences are rewritten, the log now carries August 6 and today, and it carries the miss too: on August 3 this page said the SNAP cost-share delay would show up at the markup, and it did not move a vote. The conservation table also listed its five largest line items above a row that said the net change was zero; those five do not sum to zero on their own and the page now says they are the largest items rather than the whole ledger. And the page finally says who writes it."
+    }
+   ]
+  },
   {
    "date": "2026-08-15",
    "items": [

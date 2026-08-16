@@ -1,7 +1,7 @@
 {
  "_comment": "AGSIST farm-bill page data. Edit this, then run build_farmbill.py (or push — the GitHub Action bakes it). Values are baked into static HTML so AI crawlers see them. HTML entities allowed in text fields. Keep <b> for emphasis.",
- "updated": "2026-08-06",
- "updated_display": "Aug 6, 2026",
+ "updated": "2026-08-16",
+ "updated_display": "Aug 16, 2026",
  "pills": [
   {
    "cls": "live",
