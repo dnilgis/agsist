@@ -1,7 +1,7 @@
 {
  "_note": "Derived from data/rma-prices.json. 'open' = a discovery window containing today; 'next' = one opening within 75 days. Price range is Conventional practice.",
- "updated": "2026-08-16T22:43:53Z",
- "as_of": "2026-08-16",
+ "updated": "2026-08-17T22:51:37Z",
+ "as_of": "2026-08-17",
  "crop_year": 2026,
  "open": [
   {
@@ -37,7 +37,7 @@
    "contract": [
     "September"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -64,7 +64,7 @@
    "contract": [
     "September"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -88,7 +88,7 @@
    "contract": [
     "November"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -112,7 +112,7 @@
    "contract": [
     "November"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -139,7 +139,7 @@
    "contract": [
     "September"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -166,7 +166,7 @@
     "December",
     "September"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -188,7 +188,7 @@
    "contract": [
     "September"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -234,7 +234,7 @@
    "contract": [
     "September"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -256,7 +256,7 @@
    "contract": [
     "September"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -279,7 +279,7 @@
    "contract": [
     "September"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -302,7 +302,7 @@
    "contract": [
     "September"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -328,7 +328,7 @@
    "contract": [
     "September"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -367,7 +367,7 @@
    "contract": [
     "September"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -399,7 +399,7 @@
     "August",
     "September"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -423,7 +423,7 @@
    "contract": [
     "September"
    ],
-   "day": 16,
+   "day": 17,
    "span": 31,
    "in_days": null
   },
@@ -446,7 +446,7 @@
    "contract": [
     "December"
    ],
-   "day": 2,
+   "day": 3,
    "span": 31,
    "in_days": null
   }
@@ -472,7 +472,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 16
+   "in_days": 15
   },
   {
    "crop": "Canola",
@@ -500,7 +500,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 16
+   "in_days": 15
   },
   {
    "crop": "Canola",
@@ -527,7 +527,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 16
+   "in_days": 15
   },
   {
    "crop": "Corn",
@@ -551,7 +551,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 16
+   "in_days": 15
   },
   {
    "crop": "Cotton",
@@ -573,7 +573,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 16
+   "in_days": 15
   },
   {
    "crop": "Flax",
@@ -599,7 +599,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 16
+   "in_days": 15
   },
   {
    "crop": "Grain Sorghum",
@@ -624,7 +624,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 16
+   "in_days": 15
   },
   {
    "crop": "Oats",
@@ -648,7 +648,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 16
+   "in_days": 15
   },
   {
    "crop": "Rice",
@@ -673,7 +673,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 16
+   "in_days": 15
   },
   {
    "crop": "Rice",
@@ -698,7 +698,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 16
+   "in_days": 15
   },
   {
    "crop": "Soybeans",
@@ -720,7 +720,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 16
+   "in_days": 15
   },
   {
    "crop": "Corn",
@@ -775,7 +775,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 46
+   "in_days": 45
   },
   {
    "crop": "Corn",
@@ -803,7 +803,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 46
+   "in_days": 45
   },
   {
    "crop": "Cotton",
@@ -838,7 +838,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 46
+   "in_days": 45
   },
   {
    "crop": "Grain Sorghum",
@@ -884,7 +884,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 46
+   "in_days": 45
   },
   {
    "crop": "Peanuts",
@@ -914,7 +914,7 @@
    "contract": [],
    "day": null,
    "span": null,
-   "in_days": 46
+   "in_days": 45
   },
   {
    "crop": "Peanuts",
@@ -940,7 +940,7 @@
    "contract": [],
    "day": null,
    "span": null,
-   "in_days": 46
+   "in_days": 45
   },
   {
    "crop": "Peanuts",
@@ -967,7 +967,7 @@
    "contract": [],
    "day": null,
    "span": null,
-   "in_days": 46
+   "in_days": 45
   },
   {
    "crop": "Peanuts",
@@ -989,7 +989,7 @@
    "contract": [],
    "day": null,
    "span": null,
-   "in_days": 46
+   "in_days": 45
   },
   {
    "crop": "Popcorn",
@@ -1022,7 +1022,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 46
+   "in_days": 45
   },
   {
    "crop": "Rice",
@@ -1048,7 +1048,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 46
+   "in_days": 45
   },
   {
    "crop": "Rice",
@@ -1074,7 +1074,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 46
+   "in_days": 45
   },
   {
    "crop": "Soybeans",
@@ -1123,7 +1123,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 46
+   "in_days": 45
   },
   {
    "crop": "Sunflowers",
@@ -1154,7 +1154,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 46
+   "in_days": 45
   },
   {
    "crop": "Sunflowers",
@@ -1185,7 +1185,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 46
+   "in_days": 45
   }
  ]
 }
