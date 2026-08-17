@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-16T11:24:09+00:00",
- "total": 89,
+ "updated": "2026-08-17T11:31:32+00:00",
+ "total": 90,
  "played_out": 32,
- "didnt": 52,
+ "didnt": 53,
  "pending": 5,
- "hit_rate": 38.1,
+ "hit_rate": 37.6,
  "by_method": {
   "deterministic": {
    "played": 6,
-   "missed": 42,
-   "graded": 48,
-   "hit_rate": 12.5,
+   "missed": 43,
+   "graded": 49,
+   "hit_rate": 12.2,
    "first": "2026-06-24",
-   "last": "2026-08-15"
+   "last": "2026-08-17"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 2,
-   "missed": 2,
-   "graded": 4,
-   "hit_rate": 50.0,
+   "missed": 3,
+   "graded": 5,
+   "hit_rate": 40.0,
    "first": "2026-08-12",
-   "last": "2026-08-15"
+   "last": "2026-08-17"
   }
  },
  "direction_only": {
   "right_way": 19,
-  "graded": 48,
-  "rate": 39.6
+  "graded": 49,
+  "rate": 38.8
  },
  "by_instrument": {
   "wheat": {
@@ -54,8 +54,8 @@
   },
   "corn": {
    "played": 2,
-   "graded": 17,
-   "hit_rate": 11.8
+   "graded": 18,
+   "hit_rate": 11.1
   },
   "beans": {
    "played": 2,
@@ -89,8 +89,24 @@
   "hit_rate": 25.0
  },
  "mismatched": 23,
- "current_streak": 1,
+ "current_streak": 0,
  "records": [
+  {
+   "made": "2026-08-16",
+   "judged": "2026-08-17",
+   "call": "Called December corn down toward $4.72. December corn settled at $4.84 today -- never threatened that level.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Corn did not cooperate; $4.84 held comfortably above the $4.72 target. Miss owned. Tour week opens with December corn still needing a catalyst to break lower.",
+   "instrument": "corn",
+   "direction": "down",
+   "level": 4.72,
+   "p0": 4.5925,
+   "p1": 4.595,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-08-14",
    "judged": "2026-08-15",

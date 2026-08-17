@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 16 Aug 2026 11:24:09 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 17 Aug 2026 11:31:32 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>TOUR WEEK OPENS: SCOUTS IN FIELDS, PRICES QUIET</title>
+      <link>https://agsist.com/daily/2026-08-17</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-17</guid>
+      <pubDate>Mon, 17 Aug 2026 05:00:00 -0600</pubDate>
+      <description>The Pro Farmer Crop Tour put boots in the Belt this morning and the market is doing what markets do before a verdict: nothing. Corn at $4.59 off a fraction, beans at $11.81 up a nickel, wheat the only real mover at $6.67, down 7 cents. Crop Progress at 3 PM CT is the first live number of the week.
+Pro Farmer crop tour begins today with corn and beans barely moving; Crop Progress at 3 PM CT resets the week.
+• GRAINS MARK TIME BEFORE TOUR DATA
+  → Old-crop corn: hold. Wednesday's scout summary is still your exit trigger if ears come in above 182 bu/acre.
+• BEANS FIRM; TOUR IS THE REAL TEST
+• CATTLE SLIP; STRUCTURAL STORY INTACT
+Read more: https://agsist.com/daily/2026-08-17</description>
+    </item>
     <item>
       <title>TOUR WEEK ARRIVES: CORN, WHEAT LED FRIDAY HIGHER</title>
       <link>https://agsist.com/daily/2026-08-16</link>
@@ -379,19 +392,6 @@ Old-crop corn fell hard Friday while new-crop held. Beans, wheat, hogs, and crud
   → New-crop beans at $12.03: if you have less than 50% of expected production priced, this is a window worth using on 10-15% more before pollination weather enters the story.
 • Wheat Closes at a 52-Week High Neighborhood
 Read more: https://agsist.com/daily/2026-07-19</description>
-    </item>
-    <item>
-      <title>GRAINS AND HOGS END THE WEEK LOUD</title>
-      <link>https://agsist.com/daily/2026-07-18</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-18</guid>
-      <pubDate>Sat, 18 Jul 2026 05:00:00 -0600</pubDate>
-      <description>The week ended with two stories that do not belong in the same session: nearby corn dropped 3.6% to $4.45 on old-crop profit-taking while December corn added 1.4% to $4.67, a 22-cent carry that says the market is not bearish on corn, it is done with old corn. Soybeans closed at $12.04 on 716,634 MT of flash sales to China and Mexico confirmed before the open -- three straight weeks of that pattern is not goodwill, it is physical grain moving. And lean hogs finished at $101.65, up 16.9% in a single session, the biggest one-day move in recent memory. Before you read that as a new bull trend, check Tuesday's briefing: funds may just be unwinding the 14.1% breakdown from July 15 that had no fundamental story under it. Monday's open tells you which one this was.
-Nearby corn fell hard Friday on profit-taking, but hogs had their biggest single-session run in recent memory, crude pushed past $82, and the week belonged to grain bulls.
-• Grains: Old Crop Fades, New Crop Holds
-• Hogs Run 16.9%
-  → Producers who locked near-term production earlier this week: hold. Producers still exposed above $95: this window is worth pricing 20-30% of remaining open production.
-• Cattle: Cash Market Is the Problem
-Read more: https://agsist.com/daily/2026-07-18</description>
     </item>
   </channel>
 </rss>
