@@ -3,6 +3,7 @@
 AGSIST — bake the answer into the title and the description.
 
 WHY THIS EXISTS
+
 The 2026-08-16 export said the traffic problem is not ranking any more. Google
 impressions grew 230% in a month and click-through did not move at all: 1.30%
 to 1.28%, with average position improving 13.5 to 10.3. The pages sitting in
@@ -30,17 +31,20 @@ and still be true next week. A page whose data is missing keeps whatever it has
 worse than a dull accurate one.
 
 RAILS
+
   - title <= TITLE_MAX chars, description <= DESC_MAX (the new-page checklist's
     160), both asserted before anything is written
   - no double quotes anywhere near a content= attribute
   - a computed date that has already passed is a bug, not a title: refuse
   - missing or unreadable data for a page skips that page loudly
+  - a title may not claim a result the data file does not contain
   - --selftest runs offline against synthetic data and plants known failures
 
 Stamps <title>, meta description, og:title, og:description, twitter:title and
 twitter:description, so the SERP, the share card and the assistant summary all
 say the same thing.
 """
+
 import argparse
 import json
 import re
@@ -68,10 +72,10 @@ def span(a, b):
     """Aug 17-20, 2026 — not Aug 17, 2026-Aug 20, 2026. Descriptions have a
     160-character cap and a repeated year is the cheapest thing to give up."""
     if a.year == b.year and a.month == b.month:
-        return f"{MONTHS[a.month - 1][:3]} {a.day}\u2013{b.day}, {a.year}"
+        return f"{MONTHS[a.month - 1][:3]} {a.day}–{b.day}, {a.year}"
     if a.year == b.year:
-        return f"{MONTHS[a.month - 1][:3]} {a.day}\u2013{MONTHS[b.month - 1][:3]} {b.day}, {a.year}"
-    return f"{mdY(a)}\u2013{mdY(b)}"
+        return f"{MONTHS[a.month - 1][:3]} {a.day}–{MONTHS[b.month - 1][:3]} {b.day}, {a.year}"
+    return f"{mdY(a)}–{mdY(b)}"
 
 
 # ---------------------------------------------------------------- context
@@ -159,20 +163,49 @@ def seo_crop_tour(c):
     today = c["today"]
     nights = d.get("nights") or []
     posted = [n for n in nights if n.get("posted")]
+
     if today < start:
         days = (start - today).days
+        # WAS: f"starts in {days} days".
+        #
+        # That form is 69 to 70 characters once the year, the tail and the
+        # suffix are on it, TITLE_MAX is 68, and check() refuses an over-long
+        # title by skipping the page entirely. So through the whole run-up to
+        # the 2026 tour this branch never wrote anything, and crop-tour.html
+        # kept a title left over from an earlier bake. That is how a page ends
+        # up saying "Night 1 Results" on a day when the builder was trying to
+        # say "starts in 5 days": the refusal was correct and silent, and the
+        # stale title outlived it.
+        #
+        # A date is the same answer at a fixed width, and it fits: 66.
         lead = ("starts tomorrow" if days == 1 else
-                "starts today" if days == 0 else f"starts in {days} days")
+                "starts today" if days == 0 else f"starts {mdY(start)[:-6]}")
         return (f"Pro Farmer Crop Tour {yr} {lead.title()} — Nightly Results{SUFFIX}",
                 f"The {yr} Pro Farmer Crop Tour runs {span(start, end)}. "
                 f"State numbers here every night, next to USDA's and ours, plus "
                 f"how close the tour has actually been.")
+
     if today <= end or not posted:
         n = len(posted)
-        return (f"Pro Farmer Crop Tour {yr} — Night {max(n,1)} Results{SUFFIX}",
+        # WAS: f"... Night {max(n,1)} Results ..."
+        #
+        # The max() was guarding against printing "Night 0". It did stop that.
+        # It stopped it by printing a CLAIM instead of a placeholder: on the
+        # first day of the 2026 tour, with all four nights still posted:false
+        # and every corn and pods value null, this page went out titled
+        # "Night 1 Results" and there were no results. Zero posted nights is
+        # not an edge case to round away, it is the true state of the page for
+        # the whole week before the tour and for the first day of it.
+        #
+        # Tested on n == 0, because that is the state it shipped wrong in.
+        title = (f"Pro Farmer Crop Tour {yr} — Scout Results Nightly{SUFFIX}"
+                 if n == 0 else
+                 f"Pro Farmer Crop Tour {yr} — Night {n} Results{SUFFIX}")
+        return (title,
                 f"Pro Farmer Crop Tour {yr} results by state, posted each night "
                 f"of {span(start, end)}, next to USDA's number and ours — "
                 f"plus the tour's own accuracy record.")
+
     tour = (d.get("benchmarks") or {}).get("tour") or {}
     if tour.get("corn"):
         return (f"Pro Farmer Crop Tour {yr}: Corn {tour['corn']} bu/ac{SUFFIX}",
@@ -383,7 +416,6 @@ TAGS = [
     (_meta("name", "twitter:title"), "title"),
     (_meta("name", "twitter:description"), "desc"),
 ]
-
 EXPECT_TAGS = 6
 
 
@@ -483,11 +515,13 @@ def selftest():
 
     t, d = seo_crop_tour(ctx)
     ck("tour title says it starts tomorrow", "Starts Tomorrow" in t, t)
+
     ctx2 = dict(ctx, today=date(2026, 8, 19),
                 crop_tour=dict(ctx["crop_tour"],
                                nights=[{"posted": True}, {"posted": True}, {"posted": False}, {"posted": False}]))
     t2, _ = seo_crop_tour(ctx2)
     ck("mid-tour title counts posted nights", "Night 2 Results" in t2, t2)
+
     ctx3 = dict(ctx, today=date(2026, 8, 22),
                 crop_tour=dict(ctx["crop_tour"], nights=[{"posted": True}] * 4,
                                benchmarks={"tour": {"corn": 179.4}}))
@@ -501,6 +535,35 @@ def selftest():
                                                         "forecast": False}}})
     _, d4 = seo_quick_stats(ctx4)
     ck("a final is called a final", "2025 final" in d4, d4)
+
+    # THE 2026-08-17 BUG. Day one of the tour, nothing announced yet, and the
+    # title said "Night 1 Results". Every assertion below is on the state that
+    # shipped wrong, not on the state that happened to work.
+    for label, day in (("day one of the tour", date(2026, 8, 17)),
+                       ("mid-tour before that night's meeting", date(2026, 8, 19))):
+        t0, d0 = seo_crop_tour(dict(ctx, today=day,
+                                    crop_tour=dict(ctx["crop_tour"],
+                                                   nights=[{"posted": False}] * 4)))
+        ck(f"{label} claims no night", re.search(r"Night \d", t0) is None, t0)
+        ck(f"{label} still names the tour and the year",
+           "Pro Farmer Crop Tour 2026" in t0, t0)
+        ck(f"{label} description promises a schedule, not a result",
+           "posted each night" in d0, d0)
+    t1, _ = seo_crop_tour(dict(ctx, today=date(2026, 8, 17),
+                               crop_tour=dict(ctx["crop_tour"],
+                                              nights=[{"posted": True}, {"posted": False},
+                                                      {"posted": False}, {"posted": False}])))
+    ck("the night the first one posts, Night 1 is earned", "Night 1 Results" in t1, t1)
+    ck("the pre-tour title fits the cap on every day of the run-up",
+       all(len(seo_crop_tour(dict(ctx, today=date(2026, 8, d_)))[0]) <= TITLE_MAX
+           for d_ in range(1, 17)),
+       max((seo_crop_tour(dict(ctx, today=date(2026, 8, d_)))[0]
+            for d_ in range(1, 17)), key=len))
+    ck("no reachable state prints Night 0",
+       all("Night 0" not in (seo_crop_tour(dict(ctx, today=date(2026, 8, d_),
+                                                crop_tour=dict(ctx["crop_tour"],
+                                                               nights=[{"posted": False}] * 4)))[0])
+           for d_ in (17, 18, 19, 20, 21, 22)))
 
     print("\nrails")
     try:
@@ -534,6 +597,24 @@ def selftest():
             check(got[0], got[1], page, owns); ck(f"{page} within caps", True)
         except ValueError as exc:
             ck(f"{page} within caps", False, str(exc))
+    # every crop-tour branch, not just the one today's date happens to hit
+    for label, day, nights, bench in (
+            ("before", date(2026, 8, 14), [{"posted": False}] * 4, {}),
+            ("starts tomorrow", date(2026, 8, 16), [{"posted": False}] * 4, {}),
+            ("day one, nothing posted", date(2026, 8, 17), [{"posted": False}] * 4, {}),
+            ("mid-tour, two posted", date(2026, 8, 19),
+             [{"posted": True}, {"posted": True}, {"posted": False}, {"posted": False}], {}),
+            ("over, no national number", date(2026, 8, 22), [{"posted": True}] * 4, {}),
+            ("over, national number in", date(2026, 8, 22), [{"posted": True}] * 4,
+             {"tour": {"corn": 179.4}})):
+        got = seo_crop_tour(dict(ctx, today=day,
+                                 crop_tour=dict(ctx["crop_tour"], nights=nights,
+                                                benchmarks=bench)))
+        try:
+            check(got[0], got[1], f"crop-tour.html ({label})")
+            ck(f"crop tour '{label}' within caps [{len(got[0])}]", True)
+        except ValueError as exc:
+            ck(f"crop tour '{label}' within caps", False, str(exc))
 
     print("\nfutures titles carry the exchange the query uses")
     for page, want in (("wheat-futures-prices.html", "CBOT Wheat Futures: Sep '26 $6.74"),
