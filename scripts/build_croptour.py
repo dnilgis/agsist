@@ -23,7 +23,35 @@ Idempotent. Self-validating: refuses to write if the result fails the gauntlet.
 Usage:
     python3 scripts/build_croptour.py            # bake in place
     python3 scripts/build_croptour.py --check    # verify only (CI-safe)
+    python3 scripts/build_croptour.py --selftest # arithmetic + claim checks
     python3 scripts/build_croptour.py --html PATH --json PATH
+
+
+2026-08-17 — WHY THE BIAS SENTENCE CHANGED
+------------------------------------------
+This file printed, for months:
+
+    it came in under the final yield in 7 of 11 years, by an average of
+    2.6 bushels
+
+Both numbers were real and neither belonged to that sentence. `tour_low` (7)
+counts the years the tour finished below the final. `tour_bias` (-2.6) is the
+mean signed error across ALL ELEVEN years, high ones included. Joining them
+reads as "in those seven years it was 2.6 low", which is false: in those seven
+years it was 5.3 low. The sentence halved the tour's own low bias, in the one
+week of the year anybody reads the page, and it said the same thing inside the
+FAQPage JSON-LD, where Google reads it.
+
+That is a whole class of bug — a correct statistic wired to the wrong clause —
+and it is invisible to a test that only asks whether the arithmetic is right,
+because the arithmetic WAS right. So `--selftest` below does not just recompute
+the means; it asserts that every number appearing in a rendered claim is one
+this module actually derived for that claim. See `_check_claim_numbers`.
+
+The other half of the same bug: "it ran high three times, once by 5.5 bushels"
+was hand-typed into a file whose docstring promises derived statistics are
+"never hand-typed". True in 2026, wrong the first year the tour runs high.
+Both figures are computed now.
 """
 
 import argparse
@@ -84,12 +112,38 @@ def stats(history):
     usda_bias = sum(r["usda_err"] for r in rows) / n
     tour_wins = sum(1 for r in rows if r["winner"] == "tour")
     usda_wins = sum(1 for r in rows if r["winner"] == "usda")
-    low = sum(1 for r in rows if r["tour_err"] < 0)
 
+    # THE THREE POPULATIONS, KEPT APART ON PURPOSE.
+    #
+    #   tour_bias      mean signed error over ALL n years          (a net lean)
+    #   tour_low_mean  mean shortfall over ONLY the years it ran low
+    #   tour_high_*    the same for the years it ran high
+    #
+    # These are different numbers about different sets of years and they are
+    # not interchangeable. Naming them apart is the fix; see the module
+    # docstring for what happened when they were not.
+    lows = [r["tour_err"] for r in rows if r["tour_err"] < 0]
+    highs = [r["tour_err"] for r in rows if r["tour_err"] > 0]
+    ties = [r["tour_err"] for r in rows if r["tour_err"] == 0]
+    # A year present in `history` but not scoreable (a missing usda_aug_corn,
+    # say) is dropped silently above. The lead sentence says "the last N tours
+    # (first-last)", which is a lie if a year inside that span was skipped.
+    span = [h for h in history if rows[0]["year"] <= h["year"] <= rows[-1]["year"]]
+    skipped = len(span) - len(rows)
+    tour_low_mean = (sum(abs(e) for e in lows) / len(lows)) if lows else None
+    tour_high_mean = (sum(highs) / len(highs)) if highs else None
+    tour_high_max = max(highs) if highs else None
+
+    # The soy set is filtered independently of the corn set and is NOT
+    # necessarily the same years. render_soy() used to say "across the same N
+    # years" regardless, which becomes false the moment one year carries soy
+    # figures and no usda_aug_corn, or vice versa.
     soy = [h for h in history
            if h.get("tour_soy_prod") is not None
            and h.get("usda_final_soy_prod") is not None
            and h.get("usda_aug_soy_prod") is not None]
+    soy_years = [h["year"] for h in soy]
+    corn_years = [r["year"] for r in rows]
     soy_tour_mae = (sum(abs(h["tour_soy_prod"] - h["usda_final_soy_prod"])
                         for h in soy) / len(soy)) if soy else None
     soy_usda_mae = (sum(abs(h["usda_aug_soy_prod"] - h["usda_final_soy_prod"])
@@ -97,10 +151,102 @@ def stats(history):
 
     return {"rows": rows, "n": n, "tour_mae": tour_mae, "usda_mae": usda_mae,
             "tour_bias": tour_bias, "usda_bias": usda_bias,
-            "tour_wins": tour_wins, "usda_wins": usda_wins, "tour_low": low,
+            "tour_wins": tour_wins, "usda_wins": usda_wins,
+            "tour_low": len(lows), "tour_low_mean": tour_low_mean,
+            "tour_high": len(highs), "tour_high_mean": tour_high_mean,
+            "tour_high_max": tour_high_max, "tour_tie": len(ties),
             "first": rows[0]["year"], "last": rows[-1]["year"],
+            "skipped": skipped, "years": corn_years,
             "soy_n": len(soy), "soy_tour_mae": soy_tour_mae,
-            "soy_usda_mae": soy_usda_mae}
+            "soy_usda_mae": soy_usda_mae, "soy_years": soy_years,
+            "soy_same_years": soy_years == corn_years,
+            "soy_first": soy_years[0] if soy_years else None,
+            "soy_last": soy_years[-1] if soy_years else None}
+
+
+def state_stats(data):
+    """Per-state prior-year and 3-year-average tour figures, computed.
+
+    Pro Farmer's own state results pages carry exactly these two comparison
+    columns, so this is the context a reader already expects next to a fresh
+    state number. Computed from `state_history` rather than typed, for the
+    same reason the national statistics are.
+
+    Keyed by state code. A code with no history simply gets nothing, which
+    renders as nothing.
+    """
+    hist = data.get("state_history") or {}
+    out = {}
+    for code, rows in hist.items():
+        rows = sorted(rows, key=lambda r: r["year"])
+        if not rows:
+            continue
+        recent = rows[-3:]
+        corn = [r["corn"] for r in recent if r.get("corn") is not None]
+        pods = [r["pods"] for r in recent if r.get("pods") is not None]
+        prior = rows[-1]
+        out[code] = {
+            "prior_year": prior["year"],
+            "prior_corn": prior.get("corn"),
+            "prior_pods": prior.get("pods"),
+            "avg_years": [r["year"] for r in recent],
+            "avg_corn": (sum(corn) / len(corn)) if corn else None,
+            "avg_pods": (sum(pods) / len(pods)) if pods else None,
+            # COUNT THE VALUES AVERAGED, NOT THE ROWS SCANNED. A state with a
+            # null corn figure in the middle of three rows would otherwise
+            # print a two-year mean labelled "3-yr avg", right next to a fresh
+            # number the reader is being invited to judge against it. null is
+            # the only way to record "the tour did not publish that state that
+            # year" and validate() explicitly permits it.
+            "avg_corn_n": len(corn),
+            "avg_pods_n": len(pods),
+            "n": len(recent),
+        }
+    return out
+
+
+def tour_progress(data):
+    """How far through the nightly board we are, counted rather than averaged.
+
+    Deliberately NOT a running average of the state figures. An unweighted
+    mean of state yields is not a national yield and would be read as one;
+    Pro Farmer's own national number is acreage-weighted and does not arrive
+    until Friday. Counting is the honest summary during the week.
+
+    A state marked `publishes: false` is excluded from the denominator — it is
+    not a figure that is late, it is a figure that never comes.
+    """
+    expected = up = down = flat = posted = 0
+    prior_years = set()
+    for nt in data["nights"]:
+        for s in nt["states"]:
+            if s.get("publishes") is False:
+                continue
+            expected += 1
+            if s.get("corn") is None:
+                continue
+            posted += 1
+            prior = s.get("_prior_corn")
+            if prior is None:
+                # Posted, but with nothing to compare against -- a state code
+                # with no state_history entry. It stays in `posted` and in
+                # `expected`, so it must NOT be silently absent from the move
+                # counts as well, or the summary reads "7 of 7 in - 1 above,
+                # 5 below" and the reader does the arithmetic.
+                continue
+            prior_years.add(s.get("_prior_year"))
+            if s["corn"] > prior:
+                up += 1
+            elif s["corn"] < prior:
+                down += 1
+            else:
+                flat += 1
+    compared = up + down + flat
+    return {"expected": expected, "posted": posted, "compared": compared,
+            "up": up, "down": down, "flat": flat,
+            # None unless every comparison is against the same year, in which
+            # case the summary may name it instead of saying "last year".
+            "prior_year": prior_years.pop() if len(prior_years) == 1 else None}
 
 
 def phase(data, today):
@@ -115,6 +261,14 @@ def phase(data, today):
     if today <= end:
         return "during"
     return "waiting"
+
+
+def next_night(data, today):
+    """The next night that has not posted, or None once they all have."""
+    for nt in data["nights"]:
+        if not nt.get("posted") and date.fromisoformat(nt["date"]) >= today:
+            return nt
+    return None
 
 
 # ── region renderers ──────────────────────────────────────────────────────
@@ -142,18 +296,22 @@ def render_hero(data, st, ph, today):
         kicker = "Tour number is in"
         verdict = "Now compare it to the record below"
 
-    lead = (f"Over the last {n} tours ({first}&ndash;{last}), Pro Farmer's final corn number missed "
+    # "the last N tours (first-last)" is only true if nothing inside that span
+    # was dropped for want of a figure. stats() counts what it skipped.
+    span = (f"the last {n} tours ({first}&ndash;{last})" if not st["skipped"]
+            else f"the {n} scoreable tours between {first} and {last}")
+    lead = (f"Over {span}, Pro Farmer's final corn number missed "
             f"USDA's eventual final by <b>{tm:.1f} bushels</b> on average. USDA's own August forecast "
             f"missed by <b>{um:.1f}</b>. {closer_start} came closer in "
             f"{max(st['usda_wins'], st['tour_wins'])} of those {n} years.")
-    bias = ("The tour has also leaned one way: it came in <b>under</b> the final yield in "
-            f"{st['tour_low']} of {n} years, by an average of {abs(st['tour_bias']):.1f} bushels. "
-            "That is a real tendency, not a rule &mdash; it ran high three times, once by 5.5 bushels.")
+    bias = render_bias_claim(st)
     # The page must advance its OWN phase. NOTHING rebakes crop-tour.html on a
     # schedule (2026-08-15 audit: grep the workflows -- no job runs this
     # baker), so a hero baked "before" stayed "before" once scouts rolled.
-    # data-start alone only fixed the countdown; these carry everything the
-    # client needs to reproduce the baker's own strings for the later phases.
+    # FIXED 2026-08-17: .github/workflows/croptour.yml now runs this baker on
+    # push and at 09:20 UTC daily. The data-* attributes below stay anyway --
+    # they cost nothing and they are what let the page describe its own state
+    # to anything reading it without running the baker.
     _attrs = (f' data-phase="{ph}" data-start="{esc(t["start"])}"'
               f' data-end="{esc(t["end"])}"'
               f' data-final-label="{esc(t.get("final_expected_label", ""))}"')
@@ -164,30 +322,163 @@ def render_hero(data, st, ph, today):
             f'<p class="ct-lead">{lead}</p><p class="ct-lead">{bias}</p></div>')
 
 
-def render_nights(data, ph):
+def render_bias_claim(st, plain=False):
+    """The tour's directional lean, with each figure attached to its own set.
+
+    `plain=True` returns the JSON-string-safe form for the FAQ answer, so the
+    page and the structured data cannot drift apart: one function, two skins.
+    """
+    n = st["n"]
+    b = "" if plain else "<b>"
+    _b = "" if plain else "</b>"
+    dash = " - " if plain else " &mdash; "
+    parts = [f"The tour has also leaned one way: it came in {b}under{_b} the final yield in "
+             f"{st['tour_low']} of {n} years"]
+    if st["tour_low_mean"] is not None:
+        parts.append(f", and in those years it finished {st['tour_low_mean']:.1f} bushels low "
+                     f"on average")
+    net = abs(st["tour_bias"])
+    if round(net, 1) == 0:
+        # "0.0 bushels high" is a direction claim about no direction.
+        parts.append(f". Across all {n}, the highs and lows cancel to nothing")
+    else:
+        parts.append(f". Across all {n}, the net lean is {net:.1f} bushels "
+                     f"{'low' if st['tour_bias'] < 0 else 'high'}")
+    if st["tour_high"]:
+        parts.append(f". That is a real tendency, not a rule{dash}it ran high in "
+                     f"{st['tour_high']} of them, the widest by {st['tour_high_max']:.1f} bushels")
+    else:
+        parts.append(". It has not once finished above the final")
+    # Without this the reader is left short: 7 low plus 3 high is 10 of 11, and
+    # the missing year is the dead-on one the table already shows as "dead on".
+    if st["tour_tie"]:
+        one = st["tour_tie"] == 1
+        parts.append(f", and it landed exactly on the final "
+                     f"{'once' if one else str(st['tour_tie']) + ' times'}")
+    parts.append(".")
+    return "".join(parts)
+
+
+def render_nights(data, ph, sst, today):
     out = []
+    prog = tour_progress(data)
+    nxt = next_night(data, today)
     for nt in data["nights"]:
         posted = bool(nt.get("posted"))
         cls = "ct-night" + (" ct-night--posted" if posted else "")
+        if nxt is not None and nt is nxt and ph in ("before", "during"):
+            cls += " ct-night--next"
         cells = []
         for s in nt["states"]:
             corn = s.get("corn")
             pods = s.get("pods")
-            if corn is None and pods is None:
-                val = '<span class="ct-pend">not posted yet</span>'
+            ctx = sst.get(s.get("code"))
+            if s.get("publishes") is False:
+                # Not a number that is late. A number that never comes.
+                val = ('<span class="ct-pend">'
+                       + esc(s.get("note") or "no state figure published this night")
+                       + "</span>")
+            elif corn is None and pods is None:
+                # The expected time goes on the NEXT night only. Repeated down
+                # every row it stops being information and becomes wallpaper.
+                when = s.get("expected_label") or nt.get("expected_label")
+                show = when and nxt is not None and nt is nxt and ph in ("before", "during")
+                val = ('<span class="ct-pend">not posted yet'
+                       + (f" &mdash; {esc(when)}" if show else "")
+                       + "</span>")
             else:
                 bits = []
                 if corn is not None:
-                    bits.append(f'<span class="ct-num">{corn:.1f}</span> <span class="ct-lbl">bu corn</span>')
+                    delta = ""
+                    if ctx and ctx.get("prior_corn") is not None:
+                        d = corn - ctx["prior_corn"]
+                        sign = "+" if d > 0 else ""
+                        delta = (f' <span class="ct-lbl">({sign}{d:.1f} vs '
+                                 f'{ctx["prior_year"]})</span>')
+                    bits.append(f'<span class="ct-num">{corn:.1f}</span> '
+                                f'<span class="ct-lbl">bu corn</span>{delta}')
                 if pods is not None:
-                    bits.append(f'<span class="ct-num">{pods:,.0f}</span> <span class="ct-lbl">pods in 3x3</span>')
+                    delta = ""
+                    if ctx and ctx.get("prior_pods") is not None:
+                        d = pods - ctx["prior_pods"]
+                        sign = "+" if d > 0 else ""
+                        delta = (f' <span class="ct-lbl">({sign}{d:,.0f} vs '
+                                 f'{ctx["prior_year"]})</span>')
+                    bits.append(f'<span class="ct-num">{pods:,.0f}</span> '
+                                f'<span class="ct-lbl">pods in 3x3</span>{delta}')
                 val = '<div class="ct-vals">' + "".join(f"<div>{b}</div>" for b in bits) + "</div>"
-            cells.append(f'<div class="ct-state"><div class="ct-st-name">{esc(s["name"])}</div>{val}</div>')
+            cells.append(f'<div class="ct-state"><div class="ct-st-name">{esc(s["name"])}</div>'
+                         f'{val}{render_state_context(ctx, s)}</div>')
         out.append(f'<div class="{cls}"><div class="ct-n-hd">'
                    f'<span class="ct-n-day">{esc(nt["label"])}</span>'
                    f'<span class="ct-n-date">{short(nt["date"])}</span></div>'
                    f'<div class="ct-states">{"".join(cells)}</div></div>')
-    return "".join(out)
+    return render_progress(prog, data, ph, today) + "".join(out)
+
+
+def render_state_context(ctx, s):
+    """Last year's figure and the recent average, so a fresh number lands
+    with something to land against. Silent when there is no history."""
+    if not ctx or s.get("publishes") is False:
+        return ""
+    bits = []
+    if ctx.get("prior_corn") is not None:
+        prior = f'{ctx["prior_year"]}: {ctx["prior_corn"]:.1f} bu'
+        if ctx.get("prior_pods") is not None:
+            prior += f', {ctx["prior_pods"]:,.0f} pods'
+        bits.append(prior)
+    elif ctx.get("prior_pods") is not None:
+        bits.append(f'{ctx["prior_year"]}: {ctx["prior_pods"]:,.0f} pods')
+    if ctx.get("avg_corn") is not None and ctx["avg_corn_n"] > 1:
+        bits.append(f'{ctx["avg_corn_n"]}-yr avg {ctx["avg_corn"]:.1f} bu')
+    if not bits:
+        return ""
+    return f'<div class="ct-yr-note">{esc(" &middot; ".join(bits))}</div>'.replace(
+        "&amp;middot;", "&middot;")
+
+
+def render_progress(prog, data, ph, today):
+    """A counted, not averaged, summary of the week so far.
+
+    See tour_progress() for why this refuses to print a running mean.
+    """
+    if ph == "before":
+        n = next_night(data, today)
+        when = (n.get("expected_label") if n else None) or ""
+        first = ", ".join(s["name"] for s in n["states"]) if n else ""
+        body = (f'First results {esc(first)}'
+                + (f' {esc(when)}' if when else "")
+                + ". Nothing is posted until scouts report.")
+    elif prog["posted"] == 0:
+        n = next_night(data, today)
+        when = (n.get("expected_label") if n else None) or ""
+        body = ("No state figures are posted yet."
+                + (f' Tonight\'s come in {esc(when)}.' if when else ""))
+    else:
+        # The move counts cover only the posted states that HAVE a prior figure
+        # to compare against. If that is fewer than the posted count, the
+        # sentence has to say so, or "7 of 7 in - 1 above, 5 below" invites the
+        # reader to do arithmetic that does not add up.
+        against = (f'{prog["prior_year"]}' if prog["prior_year"] else "their last tour figure")
+        moved = []
+        if prog["up"]:
+            moved.append(f'{prog["up"]} above {against}')
+        if prog["down"]:
+            moved.append(f'{prog["down"]} below')
+        if prog["flat"]:
+            moved.append(f'{prog["flat"]} level')
+        if moved and prog["compared"] == prog["posted"]:
+            tail = " &mdash; " + ", ".join(moved) + "."
+        elif moved:
+            tail = (f' &mdash; of the {prog["compared"]} with a prior figure to compare, '
+                    + ", ".join(moved) + ".")
+        else:
+            tail = "."
+        body = (f'<b>{prog["posted"]} of {prog["expected"]}</b> state corn figures are in'
+                + tail
+                + ' These are state samples, not a national yield: Pro Farmer\'s national '
+                  'number is acreage-weighted and posts at the end of the week.')
+    return f'<p class="ct-lead ct-progress">{body}</p>'
 
 
 def render_bench(data):
@@ -246,12 +537,29 @@ def render_history(st):
 
 
 def render_soy(st):
+    """The soybean record.
+
+    The soy years are filtered independently of the corn years and are not
+    necessarily the same set, so the sentence says which it means instead of
+    asserting "the same" and hoping. And the verdict at the end is derived from
+    the gap rather than typed: "close to a coin flip" was hand-written and
+    would have gone on saying coin flip at 0.30 against 0.10.
+    """
     if not st["soy_n"]:
         return ""
-    return (f'Across the same {st["soy_n"]} years, the tour\'s soybean production number missed the final '
+    when = (f'Across the same {st["soy_n"]} years' if st["soy_same_years"]
+            else f'Across the {st["soy_n"]} tours from {st["soy_first"]} '
+                 f'through {st["soy_last"]}')
+    gap = abs(st["soy_tour_mae"] - st["soy_usda_mae"])
+    if gap < 0.02:
+        verdict = "On beans it is close to a coin flip between them."
+    elif st["soy_tour_mae"] < st["soy_usda_mae"]:
+        verdict = "On beans the tour has been the better of the two."
+    else:
+        verdict = "On beans USDA's August number has been the better of the two."
+    return (f'{when}, the tour\'s soybean production number missed the final '
             f'by <b>{st["soy_tour_mae"]:.2f} billion bushels</b> on average, against '
-            f'<b>{st["soy_usda_mae"]:.2f} billion</b> for USDA\'s August forecast. On beans it is close '
-            'to a coin flip between them.')
+            f'<b>{st["soy_usda_mae"]:.2f} billion</b> for USDA\'s August forecast. {verdict}')
 
 
 def bake_faq(html, st):
@@ -280,9 +588,8 @@ def render_faq_answer(st):
            f"national corn yield estimate missed USDA's eventual final figure by "
            f"{st['tour_mae']:.1f} bushels per acre on average. USDA's own August forecast missed by "
            f"{st['usda_mae']:.1f} bushels over the same years, and {closer} came closer in "
-           f"{max(st['usda_wins'], st['tour_wins'])} of the {st['n']}. The tour has also tended to run "
-           f"low, finishing under the final yield in {st['tour_low']} of {st['n']} years by an average "
-           f"of {abs(st['tour_bias']):.1f} bushels.")
+           f"{max(st['usda_wins'], st['tour_wins'])} of the {st['n']}. "
+           + render_bias_claim(st, plain=True))
     # Lands inside a JSON string literal in the head - no quotes, no backslashes.
     assert "<" not in txt, "a < inside a script block would end it early"
     return txt
@@ -354,19 +661,232 @@ def validate(data):
             c, p = s.get("corn"), s.get("pods")
             assert c is None or 40 <= c <= 300, f"{s['code']}: corn {c} implausible"
             assert p is None or 200 <= p <= 2500, f"{s['code']}: pods {p} implausible"
+            # A slot the operator never publishes must stay empty. Otherwise
+            # the only way to fill it is to compute or guess an aggregate that
+            # the tour itself does not report.
+            if s.get("publishes") is False:
+                assert c is None and p is None, (
+                    f"{s['code']} is marked publishes:false but carries numbers. "
+                    "Pro Farmer does not publish a figure for this slot, so any "
+                    "number here was derived rather than reported.")
         if nt.get("posted"):
             assert any(s.get("corn") is not None or s.get("pods") is not None
                        for s in nt["states"]), \
                 f"{nt['date']} marked posted but carries no numbers"
+    for code, rows in (data.get("state_history") or {}).items():
+        yy = [r["year"] for r in rows]
+        assert yy == sorted(yy), f"state_history[{code}] must be oldest-first"
+        assert len(set(yy)) == len(yy), f"state_history[{code}] has a duplicate year"
+        for r in rows:
+            c, p = r.get("corn"), r.get("pods")
+            assert c is None or 40 <= c <= 300, f"state_history[{code}] {r['year']}: corn {c}"
+            assert p is None or 200 <= p <= 2500, f"state_history[{code}] {r['year']}: pods {p}"
+
+
+def attach_state_context(data, sst):
+    """Hang each state's prior-year corn on its night entry, so
+    tour_progress() can count moves without re-walking state_history."""
+    for nt in data["nights"]:
+        for s in nt["states"]:
+            ctx = sst.get(s.get("code"))
+            s["_prior_corn"] = ctx.get("prior_corn") if ctx else None
+            s["_prior_year"] = ctx.get("prior_year") if ctx else None
+
+
+# ── selftest ──────────────────────────────────────────────────────────────
+
+def _nums(text):
+    """Every number a reader would see in a rendered claim."""
+    plain = re.sub(r"<[^>]+>", "", text)
+    plain = plain.replace("&mdash;", " ").replace("&ndash;", " ").replace("&middot;", " ")
+    return [x.replace(",", "") for x in re.findall(r"\d[\d,]*(?:\.\d+)?", plain)]
+
+
+def _check_claim_numbers(label, text, allowed, fails):
+    """Assert every figure in a claim is one this module derived FOR that claim.
+
+    This is the check the old bias sentence needed and did not have. Its
+    arithmetic was correct; its wiring was not. Recomputing the means would
+    have passed. Asking "is 2.6 a number this sentence is entitled to print"
+    would have failed, because the sentence was only entitled to 5.3.
+    """
+    ok = {f"{v:g}" for v in allowed} | {f"{v:.1f}" for v in allowed} | \
+         {f"{v:.2f}" for v in allowed} | {f"{v:.0f}" for v in allowed}
+    for got in _nums(text):
+        if got not in ok:
+            fails.append(f"{label}: printed {got!r}, which is not a value derived "
+                         f"for this claim (allowed: {sorted(ok)})")
+
+
+def selftest():
+    fails = []
+    checks = 0
+
+    def ck(name, cond):
+        nonlocal checks
+        checks += 1
+        if cond:
+            print(f"  ok   {name}")
+        else:
+            print(f"  FAIL {name}")
+            fails.append(name)
+
+    print("statistics keep their populations apart")
+    # Hand-computed: errors -4, -6, +2, 0.  n=4.
+    #   mae   = (4+6+2+0)/4 = 3.0
+    #   bias  = (-4-6+2+0)/4 = -2.0     <- ALL four years
+    #   low   = 2 years, mean shortfall (4+6)/2 = 5.0   <- only the low years
+    #   high  = 1 year, max +2.0
+    toy = [{"year": 2001, "tour_corn": 96.0, "usda_aug_corn": 100.0, "usda_final_corn": 100.0},
+           {"year": 2002, "tour_corn": 94.0, "usda_aug_corn": 100.0, "usda_final_corn": 100.0},
+           {"year": 2003, "tour_corn": 102.0, "usda_aug_corn": 100.0, "usda_final_corn": 100.0},
+           {"year": 2004, "tour_corn": 100.0, "usda_aug_corn": 100.0, "usda_final_corn": 100.0}]
+    t = stats(toy)
+    ck("mean absolute error over all years", abs(t["tour_mae"] - 3.0) < 1e-9)
+    ck("net bias is the mean over ALL years", abs(t["tour_bias"] - -2.0) < 1e-9)
+    ck("low-year mean covers ONLY the low years", abs(t["tour_low_mean"] - 5.0) < 1e-9)
+    ck("the two are different numbers here", abs(t["tour_low_mean"] - abs(t["tour_bias"])) > 1e-9)
+    ck("low years counted", t["tour_low"] == 2)
+    ck("high years counted", t["tour_high"] == 1)
+    ck("widest high year", abs(t["tour_high_max"] - 2.0) < 1e-9)
+    ck("exact ties counted separately", t["tour_tie"] == 1)
+
+    # The structural invariant the old sentence violated. Whenever the tour has
+    # run high at least once, the average shortfall in its low years MUST be
+    # strictly larger than the whole-record net lean, because the high years
+    # pull the net toward zero. Printing the smaller number as if it were the
+    # larger one is exactly the bug.
+    ck("low-year mean exceeds the net lean whenever any year ran high",
+       t["tour_high"] == 0 or t["tour_low_mean"] > abs(t["tour_bias"]))
+
+    print()
+    print("no claim prints a number it did not derive")
+    claim = render_bias_claim(t)
+    allowed = {t["tour_low"], t["n"], round(t["tour_low_mean"], 1),
+               round(abs(t["tour_bias"]), 1), t["tour_high"],
+               round(t["tour_high_max"], 1)}
+    before = len(fails)
+    _check_claim_numbers("bias claim", claim, allowed, fails)
+    ck("every figure in the bias claim is derived for it", len(fails) == before)
+
+    # The regression itself, stated as a test: the sentence must not describe
+    # the low years using the whole-record lean.
+    ck("the low-year clause carries the low-year mean, not the net lean",
+       f"{t['tour_low_mean']:.1f} bushels low" in claim)
+    ck("the net lean is labelled as covering all years",
+       f"Across all {t['n']}" in claim)
+
+    print()
+    print("the FAQ answer and the page cannot drift")
+    faq = render_faq_answer(t)
+    ck("FAQ carries the same bias clause as the page",
+       render_bias_claim(t, plain=True) in faq)
+    ck("FAQ is JSON-string safe", "<" not in faq and '"' not in faq)
+    ck("page version is marked up, FAQ version is not",
+       "<b>" in claim and "<b>" not in faq)
+
+    print()
+    print("a slot the tour never publishes cannot be filled")
+    bad = {"history": toy,
+           "nights": [{"date": "2026-08-19", "label": "x", "posted": False,
+                       "states": [{"code": "IA-W", "name": "Western Iowa",
+                                   "publishes": False, "corn": 190.0, "pods": None}]}],
+           "benchmarks": {"tour": {"corn": None}}}
+    try:
+        validate(bad)
+        ck("validate refuses a number in an unpublished slot", False)
+    except AssertionError as e:
+        ck("validate refuses a number in an unpublished slot", "publishes:false" in str(e))
+
+    good = json.loads(json.dumps(bad))
+    good["nights"][0]["states"][0]["corn"] = None
+    try:
+        validate(good)
+        ck("validate accepts the same slot left empty", True)
+    except AssertionError:
+        ck("validate accepts the same slot left empty", False)
+
+    print()
+    print("the running summary counts, it does not average")
+    d = {"nights": [{"date": "2026-08-17", "label": "n", "posted": True, "states": [
+            {"code": "OH", "name": "Ohio", "corn": 190.0, "pods": 1200, "_prior_corn": 185.0},
+            {"code": "SD", "name": "South Dakota", "corn": 170.0, "pods": 1100, "_prior_corn": 174.0}]},
+         {"date": "2026-08-19", "label": "n", "posted": False, "states": [
+            {"code": "IL", "name": "Illinois", "corn": None, "pods": None, "_prior_corn": 199.0},
+            {"code": "IA-W", "name": "Western Iowa", "publishes": False,
+             "corn": None, "pods": None}]}]}
+    pr = tour_progress(d)
+    ck("unpublished slots leave the denominator", pr["expected"] == 3)
+    ck("posted figures counted", pr["posted"] == 2)
+    ck("moves counted against last year", pr["up"] == 1 and pr["down"] == 1)
+    txt = render_progress(pr, d, "during", date(2026, 8, 17))
+    ck("the summary prints no running mean of state yields",
+       "average" not in txt.lower() or "not a national yield" in txt)
+    ck("the summary says these are not a national yield",
+       "not a national yield" in txt)
+
+    print()
+    print("per-state context is computed, not typed")
+    sd = {"state_history": {"OH": [{"year": 2023, "corn": 183.94, "pods": 1252.93},
+                                   {"year": 2024, "corn": 183.29, "pods": 1229.93},
+                                   {"year": 2025, "corn": 185.69, "pods": 1287.28}]}}
+    ss = state_stats(sd)
+    ck("prior year is the newest row", ss["OH"]["prior_year"] == 2025)
+    ck("prior corn matches", abs(ss["OH"]["prior_corn"] - 185.69) < 1e-9)
+    ck("3-year average computed",
+       abs(ss["OH"]["avg_corn"] - (183.94 + 183.29 + 185.69) / 3) < 1e-9)
+    ck("average window reported", ss["OH"]["avg_years"] == [2023, 2024, 2025])
+
+    print()
+    print("live data still bakes every claim")
+    root = Path(__file__).resolve().parent.parent
+    jp = root / "data" / "crop-tour.json"
+    if jp.exists():
+        live = json.loads(jp.read_text(encoding="utf-8"))
+        validate(live)
+        lst = stats(live["history"])
+        lss = state_stats(live)
+        attach_state_context(live, lss)
+        lc = render_bias_claim(lst)
+        la = {lst["tour_low"], lst["n"], round(lst["tour_low_mean"], 1),
+              round(abs(lst["tour_bias"]), 1), lst["tour_high"],
+              round(lst["tour_high_max"], 1)}
+        before = len(fails)
+        _check_claim_numbers("live bias claim", lc, la, fails)
+        ck("live bias claim prints only derived figures", len(fails) == before)
+        ck("live low-year mean is not the net lean",
+           abs(lst["tour_low_mean"] - abs(lst["tour_bias"])) > 0.05)
+        for ph in ("before", "during", "waiting", "scored"):
+            r = render_nights(live, ph, lss, date(2026, 8, 17))
+            ck(f"nights render in phase {ph}", "ct-night" in r)
+        ck("no night claims a number for an unpublished slot",
+           all(s.get("corn") is None
+               for nt in live["nights"] for s in nt["states"]
+               if s.get("publishes") is False))
+    else:
+        ck("live data present", False)
+
+    print()
+    if fails:
+        print(f"{len(fails)} FAILED of {checks}")
+        for f in fails:
+            print(f"  - {f}")
+        return 1
+    print(f"all {checks} crop tour checks pass")
+    return 0
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--html", default=None)
     ap.add_argument("--json", default=None)
     ap.add_argument("--today", default=None, help="override date (YYYY-MM-DD) for testing")
     args = ap.parse_args()
+
+    if args.selftest:
+        return selftest()
 
     root = Path(__file__).resolve().parent.parent
     html_path = Path(args.html) if args.html else root / "crop-tour.html"
@@ -375,12 +895,14 @@ def main():
     data = json.loads(json_path.read_text(encoding="utf-8"))
     validate(data)
     st = stats(data["history"])
+    sst = state_stats(data)
+    attach_state_context(data, sst)
     today = date.fromisoformat(args.today) if args.today else date.today()
     ph = phase(data, today)
 
     html = html_path.read_text(encoding="utf-8")
     baked = splice(html, "hero", render_hero(data, st, ph, today))
-    baked = splice(baked, "nights", render_nights(data, ph))
+    baked = splice(baked, "nights", render_nights(data, ph, sst, today))
     baked = splice(baked, "bench", render_bench(data))
     baked = splice(baked, "history", render_history(st))
     baked = splice(baked, "soy", render_soy(st))

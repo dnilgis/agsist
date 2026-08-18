@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-12",
+ "updated": "2026-08-17",
  "tour": {
   "year": 2026,
   "start": "2026-08-17",
@@ -15,21 +15,22 @@
   {
    "date": "2026-08-17",
    "label": "Monday night",
-   "posted": false,
+   "posted": true,
+   "expected_label": "about 8pm Central",
    "states": [
     {
      "code": "OH",
      "name": "Ohio",
      "leg": "eastern",
-     "corn": null,
-     "pods": null
+     "corn": 180.18,
+     "pods": 1197.25
     },
     {
      "code": "SD",
      "name": "South Dakota",
      "leg": "western",
-     "corn": null,
-     "pods": null
+     "corn": 149.09,
+     "pods": 945.98
     }
    ]
   },
@@ -37,6 +38,7 @@
    "date": "2026-08-18",
    "label": "Tuesday night",
    "posted": false,
+   "expected_label": "about 8pm Central",
    "states": [
     {
      "code": "IN",
@@ -58,6 +60,7 @@
    "date": "2026-08-19",
    "label": "Wednesday night",
    "posted": false,
+   "expected_label": "about 8pm Central",
    "states": [
     {
      "code": "IL",
@@ -70,6 +73,8 @@
      "code": "IA-W",
      "name": "Western Iowa",
      "leg": "western",
+     "publishes": false,
+     "note": "crop districts 1, 4 and 7 only - Iowa's state figure posts Thursday",
      "corn": null,
      "pods": null
     }
@@ -79,11 +84,12 @@
    "date": "2026-08-20",
    "label": "Thursday night",
    "posted": false,
+   "expected_label": "about 8pm Central",
    "states": [
     {
-     "code": "IA-E",
-     "name": "Eastern Iowa",
-     "leg": "eastern",
+     "code": "IA",
+     "name": "Iowa",
+     "leg": "both",
      "corn": null,
      "pods": null
     },
@@ -97,7 +103,7 @@
    ]
   }
  ],
- "nights_note": "Which states report on which night follows the tour's usual route order. If the tour reorders a leg, this page follows what actually gets announced.",
+ "nights_note": "Which states report on which night follows the tour's route order, which has held since at least 2022. Pro Farmer publishes one figure per state. Wednesday's western Iowa session reports crop districts 1, 4 and 7 only and no western-Iowa state number; the single Iowa figure covering all nine districts posts Thursday when both legs meet in Rochester. If the tour reorders a leg, this page follows what actually gets announced.",
  "benchmarks": {
   "usda": {
    "corn": 180.7,
@@ -242,5 +248,163 @@
    "name": "USDA NASS Crop Production Historical Track Records",
    "url": "https://www.nass.usda.gov/Publications/Todays_Reports/"
   }
- ]
+ ],
+ "results_time_note": "Pro Farmer's state results have carried an 8:00 pm Central byline every night of the 2022 through 2025 tours. Treat it as the usual time, not a guarantee.",
+ "state_history": {
+  "OH": [
+   {
+    "year": 2022,
+    "corn": 174.17,
+    "pods": 1131.64
+   },
+   {
+    "year": 2023,
+    "corn": 183.94,
+    "pods": 1252.93
+   },
+   {
+    "year": 2024,
+    "corn": 183.29,
+    "pods": 1229.93
+   },
+   {
+    "year": 2025,
+    "corn": 185.69,
+    "pods": 1287.28
+   }
+  ],
+  "SD": [
+   {
+    "year": 2022,
+    "corn": 118.45,
+    "pods": 871.4
+   },
+   {
+    "year": 2023,
+    "corn": 157.42,
+    "pods": 1013.0
+   },
+   {
+    "year": 2024,
+    "corn": 156.51,
+    "pods": 1025.89
+   },
+   {
+    "year": 2025,
+    "corn": 174.18,
+    "pods": 1188.45
+   }
+  ],
+  "IN": [
+   {
+    "year": 2022,
+    "corn": 177.85,
+    "pods": 1165.97
+   },
+   {
+    "year": 2023,
+    "corn": 180.89,
+    "pods": 1309.96
+   },
+   {
+    "year": 2024,
+    "corn": 187.54,
+    "pods": 1409.02
+   },
+   {
+    "year": 2025,
+    "corn": 193.82,
+    "pods": 1376.59
+   }
+  ],
+  "NE": [
+   {
+    "year": 2022,
+    "corn": 158.53,
+    "pods": 1063.72
+   },
+   {
+    "year": 2023,
+    "corn": 167.22,
+    "pods": 1160.02
+   },
+   {
+    "year": 2024,
+    "corn": 173.25,
+    "pods": 1172.48
+   },
+   {
+    "year": 2025,
+    "corn": 179.5,
+    "pods": 1348.31
+   }
+  ],
+  "IL": [
+   {
+    "year": 2022,
+    "corn": 190.71,
+    "pods": 1249.7
+   },
+   {
+    "year": 2023,
+    "corn": 193.72,
+    "pods": 1270.61
+   },
+   {
+    "year": 2024,
+    "corn": 204.14,
+    "pods": 1419.11
+   },
+   {
+    "year": 2025,
+    "corn": 199.57,
+    "pods": 1479.22
+   }
+  ],
+  "IA": [
+   {
+    "year": 2022,
+    "corn": 183.81,
+    "pods": 1174.43
+   },
+   {
+    "year": 2023,
+    "corn": 182.8,
+    "pods": 1190.41
+   },
+   {
+    "year": 2024,
+    "corn": 192.79,
+    "pods": 1312.31
+   },
+   {
+    "year": 2025,
+    "corn": 198.43,
+    "pods": 1384.38
+   }
+  ],
+  "MN": [
+   {
+    "year": 2022,
+    "corn": 190.39,
+    "pods": 1100.75
+   },
+   {
+    "year": 2023,
+    "corn": 181.34,
+    "pods": 984.39
+   },
+   {
+    "year": 2024,
+    "corn": 164.9,
+    "pods": 1036.59
+   },
+   {
+    "year": 2025,
+    "corn": 202.86,
+    "pods": 1247.86
+   }
+  ]
+ },
+ "state_history_note": "State figures as Pro Farmer published them, 2022 through 2025. Each three-year average reconciles exactly against the comparison column Pro Farmer prints on its own 2025 state pages, which is how these were checked. Two cautions carried from that check: Pro Farmer's 2025 Iowa page has a wrong social-share description quoting 1,562.54 pods, which is district 7's number and not the state's - the state figure is 1,384.38. And Minnesota's 2023 pod count was published as 984.39 and later restated as 985.00 in Pro Farmer's own comparison tables; the figure here is the one in the original 2023 release. CAUTION, SEEN TWICE NOW: Pro Farmer's social-share meta descriptions carry wrong pod counts. The 2025 Iowa page quotes 1,562.54, which is district 7 and not the state. The 2026 Ohio page quotes 1,186.3 while its own soybean table says 1,197.25 - and only 1,197.25 satisfies the declines Pro Farmer itself states on that page (7% from 1,287.28, 4.7% from the 1,256.71 three-year average). Take figures from the table, then check them against the percentages in the same article before publishing."
 }
