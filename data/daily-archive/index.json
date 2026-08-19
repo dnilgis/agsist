@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-08-19",
+      "date_display": "Wednesday, August 19, 2026",
+      "headline": "TOUR DAY 3: BEANS FIRM, CORN FLAT, HORMUZ TIGHTENS",
+      "teaser": "Fort Morgan lockout over, Hormuz tightening, soybeans firm but fading at the highs.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-08-19",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-08-18",
       "date_display": "Tuesday, August 18, 2026",
       "headline": "HORMUZ FLARES AGAIN; TOUR SCOUTS FIND GOOD CROPS",
@@ -1818,6 +1830,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-18T11:29:40.583279+00:00",
-  "count": 159
+  "updated": "2026-08-19T11:28:56.949081+00:00",
+  "count": 160
 }

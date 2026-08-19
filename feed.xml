@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 18 Aug 2026 11:29:41 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 19 Aug 2026 11:28:58 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>TOUR DAY 3: BEANS FIRM, CORN FLAT, HORMUZ TIGHTENS</title>
+      <link>https://agsist.com/daily/2026-08-19</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-19</guid>
+      <pubDate>Wed, 19 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Soybeans closed at $12.11, up 4.5 cents, and finished well off the day's highs after profit-takers hit the afternoon session. Corn sat exactly flat at $4.65. The tour is halfway done, boxed beef is sharply higher, and the Cargill Fort Morgan lockout just ended. Three things changed today. The prices mostly didn't.
+Soybeans hold gains as Cargill lockout ends and tanker traffic at Hormuz slows further; corn goes nowhere on day three of the Pro Farmer tour.
+• TOUR DAY 3: BEANS LEAD, CORN WAITS
+• FORT MORGAN DEAL DONE; CATTLE FIRM
+  → If you are backgrounding feeders targeting fall placement: the Aug 24 port date is now conditional. Watch the Juarez screwworm report before pricing Mexican feeder expectations into your break-even.
+• HORMUZ TIGHTENS AGAIN; CRUDE HOLDS
+Read more: https://agsist.com/daily/2026-08-19</description>
+    </item>
     <item>
       <title>HORMUZ FLARES AGAIN; TOUR SCOUTS FIND GOOD CROPS</title>
       <link>https://agsist.com/daily/2026-08-18</link>
@@ -377,20 +390,6 @@ A Kuwaiti tanker struck in the Strait this morning sent crude back toward $90 wh
   → Harvest-season diesel still unhedged: $82.90 is not the ceiling with a fresh tanker strike and U.S.-Iran strikes on nuclear infrastructure overnight. Lock remaining needs today.
 • Crop Conditions Undercut Corn Premium
 Read more: https://agsist.com/daily/2026-07-21</description>
-    </item>
-    <item>
-      <title>HOGS RUN 16.9%; CORN BREAKS HARD; HORMUZ ESCALATES</title>
-      <link>https://agsist.com/daily/2026-07-20</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-20</guid>
-      <pubDate>Mon, 20 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Three markets moved hard enough this morning to demand separate explanations, and only one of them has a clean story. Lean hogs are up 16.9% to $101.65, the biggest single-session move in this contract in recent memory, with no obvious headline catalyst in the livestock bucket. Nearby corn fell 3.6% to $4.45 while December corn added 1.4% to $4.67, a 22-cent inversion that tells you the crop-condition story has taken a turn. And crude oil ran 4.2% to $82.49 as Iran-Hormuz tensions, ongoing since early April, escalated sharply overnight: LNG shipments through the Strait appear to have halted for three straight days, and a Malta-flagged tanker anchored at the Hormuz mouth Monday rather than attempt transit. Today's USDA Crop Progress report at 3:00 PM CT will tell you whether the corn market's split is justified or overdone.
-Lean hogs post their biggest single-session gain in years while nearby corn drops 3.6% and LNG shipments through the Strait of Hormuz halt entirely.
-• Corn Breaks; December Holds
-  → Old-crop corn still in the bin: basis is your only remaining lever on the front month. If local basis is not firming this week, move it before the Crop Progress print resets expectations.
-• Beans and Wheat Stay Firm
-  → New-crop beans at $12.03: if you are below 60% priced on expected production, add 10-15% before pollination weather enters the soybean story in earnest.
-• Hogs Move Hard; Cattle Hold
-Read more: https://agsist.com/daily/2026-07-20</description>
     </item>
   </channel>
 </rss>

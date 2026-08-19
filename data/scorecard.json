@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-18T11:29:41+00:00",
- "total": 91,
+ "updated": "2026-08-19T11:28:58+00:00",
+ "total": 92,
  "played_out": 33,
- "didnt": 53,
+ "didnt": 54,
  "pending": 5,
- "hit_rate": 38.4,
+ "hit_rate": 37.9,
  "by_method": {
   "deterministic": {
    "played": 7,
-   "missed": 43,
-   "graded": 50,
-   "hit_rate": 14.0,
+   "missed": 44,
+   "graded": 51,
+   "hit_rate": 13.7,
    "first": "2026-06-24",
-   "last": "2026-08-18"
+   "last": "2026-08-19"
   },
   "self_reported": {
    "played": 26,
@@ -34,22 +34,22 @@
   },
   "v2": {
    "played": 3,
-   "missed": 3,
-   "graded": 6,
-   "hit_rate": 50.0,
+   "missed": 4,
+   "graded": 7,
+   "hit_rate": 42.9,
    "first": "2026-08-12",
-   "last": "2026-08-18"
+   "last": "2026-08-19"
   }
  },
  "direction_only": {
   "right_way": 20,
-  "graded": 50,
-  "rate": 40.0
+  "graded": 51,
+  "rate": 39.2
  },
  "by_instrument": {
   "wheat": {
    "played": 0,
-   "graded": 9,
+   "graded": 10,
    "hit_rate": 0.0
   },
   "corn": {
@@ -89,8 +89,24 @@
   "hit_rate": 30.0
  },
  "mismatched": 23,
- "current_streak": 1,
+ "current_streak": 0,
  "records": [
+  {
+   "made": "2026-08-18",
+   "judged": "2026-08-19",
+   "call": "Called wheat up toward $6.83; wheat closed $6.64 today, down from $6.77 yesterday.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Missed it cleanly. Wheat dropped 13 cents on the day, moving the wrong direction entirely. The call was wrong; own it and move on.",
+   "instrument": "wheat",
+   "direction": "up",
+   "level": "6.83",
+   "p0": 6.77,
+   "p1": 6.6375,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-08-17",
    "judged": "2026-08-18",
