@@ -58,7 +58,7 @@ import argparse
 import json
 import re
 import sys
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -249,6 +249,25 @@ def tour_progress(data):
             "prior_year": prior_years.pop() if len(prior_years) == 1 else None}
 
 
+def tour_today():
+    """Today on the tour's own clock, which is Central.
+
+    The nightly meetings are Central time and Pro Farmer's state results have
+    carried an 8:00pm Central byline every night since 2022. 8pm CDT is 01:00
+    UTC the NEXT day, so date.today() on a UTC runner rolls the board forward
+    at the exact minute the meeting that fills it begins: at 7pm Central on
+    Tuesday the baker already believes it is Wednesday, marks Wednesday as
+    tonight, and demotes the Indiana/Nebraska card the reader is refreshing
+    for. Verified 2026-08-18 19:31 Central: UTC date 2026-08-19.
+    """
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.now(ZoneInfo("America/Chicago")).date()
+    except Exception:
+        # No tzdata on the runner. The tour runs in August; Central is UTC-5.
+        return (datetime.now(timezone.utc) - timedelta(hours=5)).date()
+
+
 def phase(data, today):
     """Where we are relative to the tour: before / during / scored."""
     t = data["tour"]
@@ -273,53 +292,168 @@ def next_night(data, today):
 
 # ── region renderers ──────────────────────────────────────────────────────
 
-def render_hero(data, st, ph, today):
+def latest_posted_night(data):
+    """The most recent night that carries at least one figure, or None.
+
+    This is the block a reader refreshing during tour week came for, so it is
+    picked by walking the data rather than by trusting `posted`, which is an
+    operator flag and can be set before the numbers land.
+    """
+    out = None
+    for nt in data["nights"]:
+        if any(s.get("corn") is not None or s.get("pods") is not None
+               for s in nt["states"]):
+            out = nt
+    return out
+
+
+def render_fig(num, unit, delta_txt, delta_dir):
+    """One figure: value, unit, and its change against last year.
+
+    The value+unit and the parenthetical are each their own nowrap group, so
+    a narrow column can drop the parenthetical to its own line but can never
+    split it into "(-90 vs" / "2025)".
+    """
+    d = ""
+    if delta_txt:
+        d = f'<span class="ct-dlt ct-dlt--{delta_dir}">{delta_txt}</span>'
+    return (f'<div class="ct-fig"><span class="ct-fig-m">'
+            f'<span class="ct-num">{num}</span> '
+            f'<span class="ct-lbl">{unit}</span></span>{d}</div>')
+
+
+def _state_figs(s, ctx):
+    """The figure rows for one state, or None if nothing has posted."""
+    corn, pods = s.get("corn"), s.get("pods")
+    if corn is None and pods is None:
+        return None
+    bits = []
+    if corn is not None:
+        txt = dirn = ""
+        if ctx and ctx.get("prior_corn") is not None:
+            d = corn - ctx["prior_corn"]
+            dirn = "up" if d > 0 else ("dn" if d < 0 else "fl")
+            txt = f'{"+" if d > 0 else ""}{d:.1f} vs {ctx["prior_year"]}'
+        bits.append(render_fig(f"{corn:.1f}", "bu corn", txt, dirn))
+    if pods is not None:
+        txt = dirn = ""
+        if ctx and ctx.get("prior_pods") is not None:
+            d = pods - ctx["prior_pods"]
+            dirn = "up" if d > 0 else ("dn" if d < 0 else "fl")
+            txt = f'{"+" if d > 0 else ""}{d:,.0f} vs {ctx["prior_year"]}'
+        bits.append(render_fig(f"{pods:,.0f}", "pods in 3x3", txt, dirn))
+    return '<div class="ct-figs">' + "".join(bits) + "</div>"
+
+
+def render_hero(data, st, ph, today, sst=None):
+    """The top of the page, which is a different object in each phase.
+
+    before   the record is the story, because nothing has posted. MAE leads.
+    during   last night's state figures lead. The 11-year MAE is a statistic
+             about 2015-2025; it is not what a reader refreshing at 8pm came
+             for, and at 320px it was rendering at 54px while the figures
+             they wanted sat 1,500px further down at 19.5px.
+    waiting  same, plus when the national number lands.
+    scored   the tour's own national number leads; the MAE goes back to the
+             record section, where the reader can now score this year against it.
+
+    Every figure here is read out of the data or off `stats()` / `state_stats()`;
+    nothing in this function is typed.
+    """
     t = data["tour"]
     n, first, last = st["n"], st["first"], st["last"]
-    # Sentence-start form kept separate: .capitalize() would mangle "USDA".
     usda_ahead = st["usda_wins"] > st["tour_wins"]
     closer_start = "USDA" if usda_ahead else "The tour"
     tm, um = st["tour_mae"], st["usda_mae"]
-    big = f"{tm:.1f}"
-    if ph == "before":
-        days = (date.fromisoformat(t["start"]) - today).days
-        kicker = (f"Scouts roll {short(t['start'])}"
-                  + (f" &mdash; {days} day{'s' if days != 1 else ''} out" if days > 0 else ""))
-        verdict = "Worth watching, not worth trading blind"
-    elif ph == "during":
-        kicker = "Tour underway &mdash; results post each night"
-        verdict = "Read the nightly numbers against this record"
-    elif ph == "waiting":
-        kicker = f"Scouting done &mdash; national number posts {esc(t['final_expected_label'])}"
-        verdict = "Read the nightly numbers against this record"
-    else:
-        kicker = "Tour number is in"
-        verdict = "Now compare it to the record below"
-
-    # "the last N tours (first-last)" is only true if nothing inside that span
-    # was dropped for want of a figure. stats() counts what it skipped.
+    sst = sst or {}
+    _attrs = (f' data-phase="{ph}" data-start="{esc(t["start"])}"'
+              f' data-end="{esc(t["end"])}"'
+              f' data-final-label="{esc(t.get("final_expected_label", ""))}"')
     span = (f"the last {n} tours ({first}&ndash;{last})" if not st["skipped"]
             else f"the {n} scoreable tours between {first} and {last}")
     lead = (f"Over {span}, Pro Farmer's final corn number missed "
             f"USDA's eventual final by <b>{tm:.1f} bushels</b> on average. USDA's own August forecast "
             f"missed by <b>{um:.1f}</b>. {closer_start} came closer in "
             f"{max(st['usda_wins'], st['tour_wins'])} of those {n} years.")
-    bias = render_bias_claim(st)
-    # The page must advance its OWN phase. NOTHING rebakes crop-tour.html on a
-    # schedule (2026-08-15 audit: grep the workflows -- no job runs this
-    # baker), so a hero baked "before" stayed "before" once scouts rolled.
-    # FIXED 2026-08-17: .github/workflows/croptour.yml now runs this baker on
-    # push and at 09:20 UTC daily. The data-* attributes below stay anyway --
-    # they cost nothing and they are what let the page describe its own state
-    # to anything reading it without running the baker.
-    _attrs = (f' data-phase="{ph}" data-start="{esc(t["start"])}"'
-              f' data-end="{esc(t["end"])}"'
-              f' data-final-label="{esc(t.get("final_expected_label", ""))}"')
-    return (f'<div class="ct-hero"><div class="ct-kick"{_attrs}>{kicker}</div>'
-            f'<div class="ct-big">{big}<span class="ct-unit">bu</span></div>'
-            f'<div class="ct-vd">Average tour miss vs the final crop &mdash; '
-            f'<span class="ct-verdict">{esc(verdict)}</span></div>'
-            f'<p class="ct-lead">{lead}</p><p class="ct-lead">{bias}</p></div>')
+
+    # ---- before / scored: a single headline number, as today --------------
+    if ph in ("before", "scored"):
+        if ph == "before":
+            days = (date.fromisoformat(t["start"]) - today).days
+            kicker = (f"Scouts roll {short(t['start'])}"
+                      + (f" &mdash; {days} day{'s' if days != 1 else ''} out" if days > 0 else ""))
+            big, unit = f"{tm:.1f}", "bu"
+            vd = ("Average tour miss vs the final crop &mdash; "
+                  '<span class="ct-verdict">Worth watching, not worth trading blind</span>')
+        else:
+            corn = data["benchmarks"]["tour"].get("corn")
+            kicker = "Tour number is in"
+            big, unit = f"{corn:.1f}", "bu"
+            usda = data["benchmarks"]["usda"].get("corn")
+            gap = (f" &mdash; {abs(corn - usda):.1f} bu "
+                   f"{'above' if corn > usda else 'below'} USDA's August number"
+                   if usda is not None else "")
+            vd = (f"Pro Farmer's final national corn yield{gap} &mdash; "
+                  '<span class="ct-verdict">Now compare it to the record below</span>')
+        return (f'<div class="ct-hero"><div class="ct-kick"{_attrs}>{kicker}</div>'
+                f'<div class="ct-big">{big}<span class="ct-unit">{unit}</span></div>'
+                f'<div class="ct-vd">{vd}</div>'
+                f'<p class="ct-lead">{lead}</p>'
+                f'<p class="ct-lead">{render_bias_claim(st)}</p></div>')
+
+    # ---- during / waiting: last night's figures lead -----------------------
+    prog = tour_progress(data)
+    nt = latest_posted_night(data)
+    if ph == "during":
+        kicker = "Tour underway &mdash; results post each night"
+    else:
+        kicker = f"Scouting done &mdash; national number posts {esc(t['final_expected_label'])}"
+
+    if nt is None:
+        # Nothing has posted yet on day one. Do not invent a headline: say so.
+        nxt = next_night(data, today)
+        when = (nxt.get("expected_label") if nxt else None) or ""
+        body = ('<div class="ct-hero-empty">No state figures have posted yet.'
+                + (f' The first come in {esc(when)}.' if when else "") + "</div>")
+        counter = f'0 of {prog["expected"]}'
+    else:
+        cards = []
+        for s in nt["states"]:
+            figs = _state_figs(s, sst.get(s.get("code")))
+            if figs is None:
+                continue
+            cards.append(f'<div class="ct-hs"><div class="ct-hs-name">{esc(s["name"])}</div>'
+                         f'{figs}</div>')
+        body = ('<div class="ct-hero-board">'
+                f'<div class="ct-hs-hd">{esc(nt["label"])} &middot; {short(nt["date"])}</div>'
+                + '<div class="ct-hs-grid">' + "".join(cards) + "</div></div>")
+        counter = f'{prog["posted"]} of {prog["expected"]}'
+
+    nxt = next_night(data, today)
+    if nxt is not None:
+        when = nxt.get("expected_label") or ""
+        # Only states that actually publish a figure belong in "Next:". A slot
+        # the tour never reports is named separately rather than dropped, or
+        # the hero and the board below disagree about who reports that night.
+        pub = [s for s in nxt["states"] if s.get("publishes") is not False]
+        non = [s for s in nxt["states"] if s.get("publishes") is False]
+        names = ", ".join(s["name"] for s in pub)
+        nxt_txt = (f'Next: {esc(names)} {esc(short(nxt["date"]))}'
+                   + (f", {esc(when)}" if when else "") + ".")
+        for s in non:
+            nxt_txt += f' {esc(s["name"])}: {esc(s.get("note") or "no state figure")}.'
+    else:
+        nxt_txt = f'All {prog["expected"]} state figures are in.'
+
+    return (f'<div class="ct-hero ct-hero--live"><div class="ct-kick"{_attrs}>{kicker}</div>'
+            f'{body}'
+            f'<p class="ct-hero-meta"><b>{counter}</b> state corn figures in. '
+            f'{nxt_txt} State samples, not a national yield &mdash; Pro Farmer\'s '
+            f'national number is acreage-weighted and posts '
+            f'{esc(t["final_expected_label"])}.</p>'
+            f'<p class="ct-hero-rec"><a href="#record">The tour has missed the final crop by '
+            f'{tm:.1f} bu on average over {n} years</a> &mdash; USDA\'s August forecast '
+            f'missed by {um:.1f}.</p></div>')
 
 
 def render_bias_claim(st, plain=False):
@@ -360,60 +494,81 @@ def render_bias_claim(st, plain=False):
 
 
 def render_nights(data, ph, sst, today):
+    """The nightly board.
+
+    Two changes from the first version, both measured at 320px:
+
+    * A figure is a nowrap value+unit group plus a nowrap parenthetical, so
+      "(-90 vs 2025)" can drop to its own line but cannot break in half. It
+      was breaking in half on Ohio's pod count at 320px.
+    * Nights after the next one are rendered compact. Eight full state cards,
+      six of them empty placeholders, cost 1,675px of scroll at 320px during
+      the week the page is actually read.
+    """
     out = []
     prog = tour_progress(data)
     nxt = next_night(data, today)
     for nt in data["nights"]:
-        posted = bool(nt.get("posted"))
+        posted = any(s.get("corn") is not None or s.get("pods") is not None
+                     for s in nt["states"])
+        is_next = nxt is not None and nt is nxt and ph in ("before", "during")
+        # Collapsing is only ever safe for a night still AHEAD of tonight. If
+        # the clock is wrong (see tour_today) `nxt` can point past a night that
+        # has not posted, and this keeps that night a full card instead of a
+        # one-line schedule entry on the evening it posts.
+        ahead = (nxt is not None
+                 and date.fromisoformat(nt["date"]) > date.fromisoformat(nxt["date"]))
         cls = "ct-night" + (" ct-night--posted" if posted else "")
-        if nxt is not None and nt is nxt and ph in ("before", "during"):
+        if is_next:
             cls += " ct-night--next"
+        # A night with nothing posted that is not tonight is a schedule entry,
+        # not a result. It gets one line, not two cards.
+        if not posted and not is_next and ahead:
+            names = []
+            for s in nt["states"]:
+                if s.get("publishes") is False:
+                    names.append(f'<span class="ct-ahead-s">{esc(s["name"])} '
+                                 f'<span class="ct-lbl">{esc(s.get("note") or "no state figure")}</span></span>')
+                else:
+                    names.append(f'<span class="ct-ahead-s">{esc(s["name"])}</span>')
+            out.append(f'<div class="{cls} ct-night--ahead"><div class="ct-n-hd">'
+                       f'<span class="ct-n-day">{esc(nt["label"])}</span>'
+                       f'<span class="ct-n-date">{short(nt["date"])}</span>'
+                       f'<span class="ct-n-tag">to come</span></div>'
+                       f'<div class="ct-ahead">{" ".join(names)}</div></div>')
+            continue
         cells = []
         for s in nt["states"]:
-            corn = s.get("corn")
-            pods = s.get("pods")
             ctx = sst.get(s.get("code"))
+            figs = _state_figs(s, ctx)
+            scls = "ct-state"
             if s.get("publishes") is False:
-                # Not a number that is late. A number that never comes.
+                scls += " ct-state--none"
                 val = ('<span class="ct-pend">'
                        + esc(s.get("note") or "no state figure published this night")
                        + "</span>")
-            elif corn is None and pods is None:
-                # The expected time goes on the NEXT night only. Repeated down
-                # every row it stops being information and becomes wallpaper.
+            elif figs is None:
+                scls += " ct-state--wait"
                 when = s.get("expected_label") or nt.get("expected_label")
-                show = when and nxt is not None and nt is nxt and ph in ("before", "during")
                 val = ('<span class="ct-pend">not posted yet'
-                       + (f" &mdash; {esc(when)}" if show else "")
+                       + (f" &mdash; {esc(when)}" if when and is_next else "")
                        + "</span>")
             else:
-                bits = []
-                if corn is not None:
-                    delta = ""
-                    if ctx and ctx.get("prior_corn") is not None:
-                        d = corn - ctx["prior_corn"]
-                        sign = "+" if d > 0 else ""
-                        delta = (f' <span class="ct-lbl">({sign}{d:.1f} vs '
-                                 f'{ctx["prior_year"]})</span>')
-                    bits.append(f'<span class="ct-num">{corn:.1f}</span> '
-                                f'<span class="ct-lbl">bu corn</span>{delta}')
-                if pods is not None:
-                    delta = ""
-                    if ctx and ctx.get("prior_pods") is not None:
-                        d = pods - ctx["prior_pods"]
-                        sign = "+" if d > 0 else ""
-                        delta = (f' <span class="ct-lbl">({sign}{d:,.0f} vs '
-                                 f'{ctx["prior_year"]})</span>')
-                    bits.append(f'<span class="ct-num">{pods:,.0f}</span> '
-                                f'<span class="ct-lbl">pods in 3x3</span>{delta}')
-                val = '<div class="ct-vals">' + "".join(f"<div>{b}</div>" for b in bits) + "</div>"
-            cells.append(f'<div class="ct-state"><div class="ct-st-name">{esc(s["name"])}</div>'
+                scls += " ct-state--in"
+                val = figs
+            cells.append(f'<div class="{scls}"><div class="ct-st-name">{esc(s["name"])}</div>'
                          f'{val}{render_state_context(ctx, s)}</div>')
+        tag = ("posted" if posted else "tonight")
         out.append(f'<div class="{cls}"><div class="ct-n-hd">'
                    f'<span class="ct-n-day">{esc(nt["label"])}</span>'
-                   f'<span class="ct-n-date">{short(nt["date"])}</span></div>'
+                   f'<span class="ct-n-date">{short(nt["date"])}</span>'
+                   f'<span class="ct-n-tag">{tag}</span></div>'
                    f'<div class="ct-states">{"".join(cells)}</div></div>')
-    return render_progress(prog, data, ph, today) + "".join(out)
+    # In the live phases the hero already carries the counted summary. Printing
+    # it again 900px lower is the same sentence twice on the page a reader is
+    # scanning for numbers.
+    head = "" if ph in ("during", "waiting") else render_progress(prog, data, ph, today)
+    return head + "".join(out)
 
 
 def render_state_context(ctx, s):
@@ -501,7 +656,13 @@ def render_bench(data):
 # Widest a bar may reach, as a percentage of the cell measured from the centre
 # tick. The remaining 100 - 2*MAXW is gutter the printed value lives in, so the
 # biggest miss in the table can never shove its own label into the next column.
-BAR_MAXW = 34.0
+# Widest a bar may reach, as a percentage of the cell measured from the centre
+# tick. The remaining 100 - 2*MAXW is gutter the printed value lives in, so the
+# biggest miss in the table can never shove its own label out of the card.
+# 30 not 34: in the stacked card the track is 260px at a 320px viewport, so the
+# 20% gutter is 52px - enough for a five-character value like "-10.4" (47.8px
+# measured) with room to spare. At 34 a five-character value overflowed.
+BAR_MAXW = 30.0
 
 
 def render_history(st):
@@ -525,12 +686,17 @@ def render_history(st):
             edge = 50 + pct
             bar = (f'<span class="ct-bar ct-bar--pos" style="left:50%;width:{pct:.1f}%"></span>'
                    f'<span class="ct-bar-v ct-bar-v--pos" style="left:{edge:.1f}%">+{e:.1f}</span>')
-        note = f'<div class="ct-yr-note">{esc(r["note"])}</div>' if r.get("note") else ""
-        out.append(f'<tr><td data-label="Year"><b>{r["year"]}</b>{note}</td>'
+        # A disclosure, not a naked div: on a phone the three caveat years were
+        # 262-393px tall against 190px for a plain one, and on desktop the note
+        # wrapped inside a 104px-wide Year column and dragged the row to 423px.
+        # The text is still in the first-byte HTML either way.
+        note = (f'<details class="ct-yr-note"><summary>Note on {r["year"]}</summary>'
+                f'<p>{esc(r["note"])}</p></details>') if r.get("note") else ""
+        out.append(f'<tr><td class="ct-yrcell" data-label="Year"><b>{r["year"]}</b>{note}</td>'
                    f'<td class="num" data-label="Tour">{r["tour_corn"]:.1f}</td>'
                    f'<td class="num" data-label="USDA Aug">{r["usda_aug_corn"]:.1f}</td>'
                    f'<td class="num" data-label="Final">{r["usda_final_corn"]:.1f}</td>'
-                   f'<td class="ct-barcell {side}" data-label="Tour vs final">'
+                   f'<td class="ct-barcell {side}" data-label="Tour vs final &mdash; bu/acre">'
                    f'<span class="ct-tick"></span>{bar}</td></tr>')
     out.append('</tbody></table></div>')
     return "".join(out)
@@ -560,6 +726,89 @@ def render_soy(st):
     return (f'{when}, the tour\'s soybean production number missed the final '
             f'by <b>{st["soy_tour_mae"]:.2f} billion bushels</b> on average, against '
             f'<b>{st["soy_usda_mae"]:.2f} billion</b> for USDA\'s August forecast. {verdict}')
+
+
+SEC_NIGHTS = ("nights", "Nightly results", "Scouts run two routes at once, Monday "
+              "through Thursday, and states report at the nightly meetings. Corn is a "
+              "sampled yield in bushels per acre. Soybeans are pod counts in a "
+              "three-foot square &mdash; more pods means more beans, but pods do not "
+              "convert cleanly into bushels, so treat them as a direction, not a yield.")
+SEC_BENCH = ("bench", "Three numbers on the table", "USDA's forecast, our own model's "
+             "number, and the tour's &mdash; all published before anyone knows the answer.")
+SEC_HIST = ("record", "How good has the tour actually been?", "Every tour since "
+            "{first}, against the crop that actually came in. Bar shows how far the "
+            "tour's final corn number landed from USDA's final yield: left of the line "
+            "means the tour called it too small, right means too big.")
+
+
+def section_order(ph):
+    """DOM order of the middle of the page, by phase.
+
+    During the tour the nightly board leads, because that is what a reader
+    refreshing at 8pm Central came for. Once the national number posts, the
+    record leads again, because the question becomes how much to trust it.
+
+    This returns real document order and the baker emits the sections in this
+    sequence. It is deliberately NOT a CSS `order:` value: `order` reorders the
+    painted boxes and leaves the DOM alone, so a crawler, a reader-mode view
+    and a screen reader would all get the sequence this page does not mean.
+    """
+    if ph in ("during", "waiting"):
+        return ["nights", "bench", "record"]
+    return ["record", "bench", "nights"]
+
+
+def render_board(data, st, sst, ph, today):
+    """Hero plus the three middle sections, spliced as one region."""
+    parts = [render_hero(data, st, ph, today, sst)]
+    bodies = {
+        "nights": lambda: f'<div id="ct-nights">{render_nights(data, ph, sst, today)}</div>',
+        "bench": lambda: f'<div class="ct-benches">{render_bench(data)}</div>',
+        "record": lambda: (render_history(st)
+                           + f'<p class="ct-legend">{render_soy(st)}</p>'),
+    }
+    for key in section_order(ph):
+        sid, h2, sub = {"nights": SEC_NIGHTS, "bench": SEC_BENCH, "record": SEC_HIST}[key]
+        sub = sub.format(first=st["first"])
+        # The "record updated" stamp is a fact about the record, so it rides
+        # with the record section rather than sitting above a live board.
+        st_line = ("" if key != "record" else
+                   f'<div class="ct-stamp ct-stamp--sec">Record updated '
+                   f'{pretty(data["updated"])} &middot; {st["n"]} tours scored</div>')
+        parts.append(f'<section id="{sid}"><h2 class="ct-h2">{h2}</h2>'
+                     f'<p class="ct-sub">{sub}</p>{st_line}{bodies[key]()}</section>')
+    return "".join(parts)
+
+
+def title_for(data, ph):
+    """The <title> a reader sees in search results, derived from the data.
+
+    Hand-typed it said "Night 1 Results" for the whole week: it was still
+    saying Night 1 in the SERP and in every share card after two nights had
+    posted. Counting the nights that carry figures is the same arithmetic the
+    board already does.
+    """
+    y = data["tour"]["year"]
+    n = sum(1 for nt in data["nights"]
+            if any(s.get("corn") is not None or s.get("pods") is not None
+                   for s in nt["states"]))
+    if ph == "scored":
+        tail = "Final Number & Accuracy Record"
+    elif n == 0:
+        tail = "Nightly Results & Accuracy Record"
+    else:
+        tail = f"Night {n} Results"
+    return f"Pro Farmer Crop Tour {y} \u2014 {tail} | AGSIST"
+
+
+def bake_titles(html, data, ph):
+    t = title_for(data, ph)
+    html = re.sub(r"(<title>).*?(</title>)", lambda m: m.group(1) + esc(t) + m.group(2), html, count=1)
+    for prop in ('og:title', 'twitter:title'):
+        html = re.sub(r'(<meta (?:property|name)="' + prop + r'"\s+content=")[^"]*(")',
+                      lambda m: m.group(1) + esc(t) + m.group(2), html, count=1)
+    assert esc(t) in html, "title did not bake"
+    return html
 
 
 def bake_faq(html, st):
@@ -628,7 +877,7 @@ class DivBalance(HTMLParser):
                 self.bad = True
 
 
-def gauntlet(html, st):
+def gauntlet(html, st, expect_order):
     p = DivBalance()
     p.feed(html)
     assert not p.bad and p.depth == 0, "div balance broken"
@@ -636,6 +885,9 @@ def gauntlet(html, st):
     assert m, "JSON-LD block missing"
     json.loads(m.group(1))
     assert html.count("ct-night") >= 4, "nightly board did not bake"
+    # Section order is a claim about the DOM, so check the DOM, not a class.
+    order = re.findall(r'<section id="(nights|bench|record)"', html)
+    assert order == expect_order, f"section DOM order {order} != {expect_order}"
     assert html.count("<tr>") >= st["n"], "history table short"
     for cp in html:
         o = ord(cp)
@@ -897,29 +1149,28 @@ def main():
     st = stats(data["history"])
     sst = state_stats(data)
     attach_state_context(data, sst)
-    today = date.fromisoformat(args.today) if args.today else date.today()
+    today = date.fromisoformat(args.today) if args.today else tour_today()
     ph = phase(data, today)
 
     html = html_path.read_text(encoding="utf-8")
-    baked = splice(html, "hero", render_hero(data, st, ph, today))
-    baked = splice(baked, "nights", render_nights(data, ph, sst, today))
-    baked = splice(baked, "bench", render_bench(data))
-    baked = splice(baked, "history", render_history(st))
-    baked = splice(baked, "soy", render_soy(st))
+    baked = splice(html, "board", render_board(data, st, sst, ph, today))
     baked = splice(baked, "sources", render_sources(data))
     # The FAQ answer restates the headline statistics. It used to be hand-typed
     # in the head, which meant adding a tour year would leave a stale claim in
     # the structured data that nobody would notice. Bake it from the same stats.
     baked = bake_faq(baked, st)
-    baked = splice(baked, "stamp", f"Record updated {pretty(data['updated'])} &middot; "
-                                   f"{st['n']} tours scored")
+    baked = bake_titles(baked, data, ph)
+    # Above the H1 the stamp is only worth its 64px when the record leads.
+    baked = splice(baked, "stamp",
+                   "" if ph in ("during", "waiting") else
+                   f"Record updated {pretty(data['updated'])} &middot; {st['n']} tours scored")
     baked, n = re.subn(r'("dateModified":")\d{4}-\d{2}-\d{2}(")',
                        r"\g<1>" + data["updated"] + r"\g<2>", baked)
     # This page carries two: the WebPage node and the Dataset node. Both should
     # move together. Zero means the JSON-LD block was renamed or lost.
     assert n >= 1, "no dateModified found in the JSON-LD — head block changed?"
 
-    gauntlet(baked, st)
+    gauntlet(baked, st, section_order(ph))
 
     if baked == html:
         print("crop-tour.html already in sync.")
