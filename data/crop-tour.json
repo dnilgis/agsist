@@ -51,8 +51,8 @@
           "code": "NE",
           "name": "Nebraska",
           "leg": "western",
-          "corn": null,
-          "pods": null
+          "corn": 163.61,
+          "pods": 1219.62
         }
       ]
     },
