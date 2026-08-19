@@ -1,410 +1,410 @@
 {
- "updated": "2026-08-17",
- "tour": {
-  "year": 2026,
-  "start": "2026-08-17",
-  "end": "2026-08-20",
-  "final_expected": "2026-08-21",
-  "final_expected_label": "Friday, Aug 21",
-  "operator": "Pro Farmer / Farm Journal",
-  "official_url": "https://www.profarmer.com/pro-farmer-crop-tour",
-  "routes_note": "Two legs run at once. The eastern leg overnights in Noblesville IN, Bloomington IL, Riverside IA, then Rochester MN. The western leg runs Grand Island NE, Nebraska City NE, Spencer IA, then Rochester MN. Scouts pull corn ear counts and measure soybean pods in a 3-foot-by-3-foot square, and the samples get averaged into state numbers announced at the nightly meetings.",
-  "measure_note": "Tour corn numbers are a scout-sampled yield estimate in bushels per acre. Tour soybean numbers are pod counts in a 3x3 foot square, not a yield — more pods generally means more beans, but pod counts do not convert cleanly to bushels, and the tour does not publish a state soybean yield. Pro Farmer publishes its national numbers as point estimates with a band around them — plus or minus 1 percent on corn, 2 percent on soybean production. The figures on this page are the point estimates, so a source quoting the band will show a range around the same number."
- },
- "nights": [
-  {
-   "date": "2026-08-17",
-   "label": "Monday night",
-   "posted": true,
-   "expected_label": "about 8pm Central",
-   "states": [
-    {
-     "code": "OH",
-     "name": "Ohio",
-     "leg": "eastern",
-     "corn": 180.18,
-     "pods": 1197.25
-    },
-    {
-     "code": "SD",
-     "name": "South Dakota",
-     "leg": "western",
-     "corn": 149.09,
-     "pods": 945.98
-    }
-   ]
-  },
-  {
-   "date": "2026-08-18",
-   "label": "Tuesday night",
-   "posted": false,
-   "expected_label": "about 8pm Central",
-   "states": [
-    {
-     "code": "IN",
-     "name": "Indiana",
-     "leg": "eastern",
-     "corn": null,
-     "pods": null
-    },
-    {
-     "code": "NE",
-     "name": "Nebraska",
-     "leg": "western",
-     "corn": null,
-     "pods": null
-    }
-   ]
-  },
-  {
-   "date": "2026-08-19",
-   "label": "Wednesday night",
-   "posted": false,
-   "expected_label": "about 8pm Central",
-   "states": [
-    {
-     "code": "IL",
-     "name": "Illinois",
-     "leg": "eastern",
-     "corn": null,
-     "pods": null
-    },
-    {
-     "code": "IA-W",
-     "name": "Western Iowa",
-     "leg": "western",
-     "publishes": false,
-     "note": "crop districts 1, 4 and 7 only - Iowa's state figure posts Thursday",
-     "corn": null,
-     "pods": null
-    }
-   ]
-  },
-  {
-   "date": "2026-08-20",
-   "label": "Thursday night",
-   "posted": false,
-   "expected_label": "about 8pm Central",
-   "states": [
-    {
-     "code": "IA",
-     "name": "Iowa",
-     "leg": "both",
-     "corn": null,
-     "pods": null
-    },
-    {
-     "code": "MN",
-     "name": "Minnesota",
-     "leg": "both",
-     "corn": null,
-     "pods": null
-    }
-   ]
-  }
- ],
- "nights_note": "Which states report on which night follows the tour's route order, which has held since at least 2022. Pro Farmer publishes one figure per state. Wednesday's western Iowa session reports crop districts 1, 4 and 7 only and no western-Iowa state number; the single Iowa figure covering all nine districts posts Thursday when both legs meet in Rochester. If the tour reorders a leg, this page follows what actually gets announced.",
- "benchmarks": {
-  "usda": {
-   "corn": 180.7,
-   "soy_yield": 52.7,
-   "label": "USDA, August WASDE",
-   "as_of": "2026-08-12",
-   "note": "USDA's first survey-based 2026 estimate, printed Aug 12: corn 180.7 bu/acre (down 2.3 from July), soybeans 52.7 (down 0.3). This is the number the tour's scouts will be checking against in the field."
-  },
-  "agsist": {
-   "corn": 183.6,
-   "soy_yield": 53.8,
-   "label": "AGSIST nowcast",
-   "as_of": "2026-08-11",
-   "note": "Our model's number locked Aug 11, the day before the August WASDE (supersedes the retired July model's 189.4/56.2 — the swap is on the record in git history). USDA printed lower on both. Locked calls stay on the record whether they look good or not."
-  },
+  "updated": "2026-08-18",
   "tour": {
-   "corn": null,
-   "soy_prod": null,
-   "label": "Pro Farmer tour",
-   "note": "Posts Friday evening, Aug 21."
-  }
- },
- "history": [
-  {
-   "year": 2015,
-   "tour_corn": 164.3,
-   "usda_aug_corn": 168.8,
-   "usda_final_corn": 168.4,
-   "tour_soy_prod": 3.887,
-   "usda_aug_soy_prod": 3.92,
-   "usda_final_soy_prod": 3.93
+    "year": 2026,
+    "start": "2026-08-17",
+    "end": "2026-08-20",
+    "final_expected": "2026-08-21",
+    "final_expected_label": "Friday, Aug 21",
+    "operator": "Pro Farmer / Farm Journal",
+    "official_url": "https://www.profarmer.com/pro-farmer-crop-tour",
+    "routes_note": "Two legs run at once. The eastern leg overnights in Noblesville IN, Bloomington IL, Riverside IA, then Rochester MN. The western leg runs Grand Island NE, Nebraska City NE, Spencer IA, then Rochester MN. Scouts pull corn ear counts and measure soybean pods in a 3-foot-by-3-foot square, and the samples get averaged into state numbers announced at the nightly meetings.",
+    "measure_note": "Tour corn numbers are a scout-sampled yield estimate in bushels per acre. Tour soybean numbers are pod counts in a 3x3 foot square, not a yield — more pods generally means more beans, but pod counts do not convert cleanly to bushels, and the tour does not publish a state soybean yield. Pro Farmer publishes its national numbers as point estimates with a band around them — plus or minus 1 percent on corn, 2 percent on soybean production. The figures on this page are the point estimates, so a source quoting the band will show a range around the same number."
   },
-  {
-   "year": 2016,
-   "tour_corn": 170.2,
-   "usda_aug_corn": 175.1,
-   "usda_final_corn": 174.6,
-   "tour_soy_prod": 4.093,
-   "usda_aug_soy_prod": 4.06,
-   "usda_final_soy_prod": 4.31
-  },
-  {
-   "year": 2017,
-   "tour_corn": 167.1,
-   "usda_aug_corn": 169.5,
-   "usda_final_corn": 176.6,
-   "tour_soy_prod": 4.331,
-   "usda_aug_soy_prod": 4.38,
-   "usda_final_soy_prod": 4.39
-  },
-  {
-   "year": 2018,
-   "tour_corn": 177.3,
-   "usda_aug_corn": 178.4,
-   "usda_final_corn": 176.4,
-   "tour_soy_prod": 4.683,
-   "usda_aug_soy_prod": 4.59,
-   "usda_final_soy_prod": 4.54
-  },
-  {
-   "year": 2019,
-   "tour_corn": 163.3,
-   "usda_aug_corn": 169.5,
-   "usda_final_corn": 168.0,
-   "tour_soy_prod": 3.497,
-   "usda_aug_soy_prod": 3.68,
-   "usda_final_soy_prod": 3.56,
-   "note": "USDA changed how it builds the August corn and soybean forecast this year, dropping the August field-measurement survey. August numbers from 2019 on are not built the same way as the years before."
-  },
-  {
-   "year": 2020,
-   "tour_corn": 177.5,
-   "usda_aug_corn": 181.8,
-   "usda_final_corn": 172.0,
-   "tour_soy_prod": 4.362,
-   "usda_aug_soy_prod": 4.42,
-   "usda_final_soy_prod": 4.14,
-   "note": "The August 10 derecho flattened millions of Iowa acres the day before USDA's data cutoff. The tour ran but scouts reported from the road instead of meeting up at night. The tour ran in modified form that year, so 2020 is not measuring quite the same exercise as the others."
-  },
-  {
-   "year": 2021,
-   "tour_corn": 177.0,
-   "usda_aug_corn": 174.6,
-   "usda_final_corn": 177.0,
-   "tour_soy_prod": 4.436,
-   "usda_aug_soy_prod": 4.34,
-   "usda_final_soy_prod": 4.44
-  },
-  {
-   "year": 2022,
-   "tour_corn": 168.1,
-   "usda_aug_corn": 175.4,
-   "usda_final_corn": 173.3,
-   "tour_soy_prod": 4.535,
-   "usda_aug_soy_prod": 4.53,
-   "usda_final_soy_prod": 4.28
-  },
-  {
-   "year": 2023,
-   "tour_corn": 172.0,
-   "usda_aug_corn": 175.1,
-   "usda_final_corn": 177.3,
-   "tour_soy_prod": 4.11,
-   "usda_aug_soy_prod": 4.21,
-   "usda_final_soy_prod": 4.16
-  },
-  {
-   "year": 2024,
-   "tour_corn": 181.1,
-   "usda_aug_corn": 183.1,
-   "usda_final_corn": 179.3,
-   "tour_soy_prod": 4.74,
-   "usda_aug_soy_prod": 4.59,
-   "usda_final_soy_prod": 4.37
-  },
-  {
-   "year": 2025,
-   "tour_corn": 182.7,
-   "usda_aug_corn": 188.8,
-   "usda_final_corn": 186.5,
-   "tour_soy_prod": 4.246,
-   "usda_aug_soy_prod": 4.29,
-   "usda_final_soy_prod": 4.26,
-   "note": "A government shutdown killed the October reports, so this crop year rests on one fewer USDA forecast round than the others."
-  }
- ],
- "history_note": "Final yield means the number USDA published the following January in its annual summary. USDA quietly revises some of those later — 2019 through 2022 corn each moved by a tenth to half a bushel in later editions. This page uses the January figure for every year so the comparison stays consistent, and the revisions are too small to change the picture.",
- "sources": [
-  {
-   "name": "Pro Farmer national estimates (2021-2025)",
-   "url": "https://www.profarmer.com/topics/pro-farmer-crop-tour"
-  },
-  {
-   "name": "USDA NASS August Crop Production reports",
-   "url": "https://www.nass.usda.gov/Publications/Todays_Reports/"
-  },
-  {
-   "name": "USDA NASS Crop Production Annual Summary (January finals)",
-   "url": "https://usda.library.cornell.edu/concern/publications/k3569432s"
-  },
-  {
-   "name": "USDA NASS Crop Production Historical Track Records",
-   "url": "https://www.nass.usda.gov/Publications/Todays_Reports/"
-  }
- ],
- "results_time_note": "Pro Farmer's state results have carried an 8:00 pm Central byline every night of the 2022 through 2025 tours. Treat it as the usual time, not a guarantee.",
- "state_history": {
-  "OH": [
-   {
-    "year": 2022,
-    "corn": 174.17,
-    "pods": 1131.64
-   },
-   {
-    "year": 2023,
-    "corn": 183.94,
-    "pods": 1252.93
-   },
-   {
-    "year": 2024,
-    "corn": 183.29,
-    "pods": 1229.93
-   },
-   {
-    "year": 2025,
-    "corn": 185.69,
-    "pods": 1287.28
-   }
+  "nights": [
+    {
+      "date": "2026-08-17",
+      "label": "Monday night",
+      "posted": true,
+      "expected_label": "about 8pm Central",
+      "states": [
+        {
+          "code": "OH",
+          "name": "Ohio",
+          "leg": "eastern",
+          "corn": 180.18,
+          "pods": 1197.25
+        },
+        {
+          "code": "SD",
+          "name": "South Dakota",
+          "leg": "western",
+          "corn": 149.09,
+          "pods": 945.98
+        }
+      ]
+    },
+    {
+      "date": "2026-08-18",
+      "label": "Tuesday night",
+      "posted": true,
+      "expected_label": "about 8pm Central",
+      "states": [
+        {
+          "code": "IN",
+          "name": "Indiana",
+          "leg": "eastern",
+          "corn": 183.54,
+          "pods": 1318.64
+        },
+        {
+          "code": "NE",
+          "name": "Nebraska",
+          "leg": "western",
+          "corn": null,
+          "pods": null
+        }
+      ]
+    },
+    {
+      "date": "2026-08-19",
+      "label": "Wednesday night",
+      "posted": false,
+      "expected_label": "about 8pm Central",
+      "states": [
+        {
+          "code": "IL",
+          "name": "Illinois",
+          "leg": "eastern",
+          "corn": null,
+          "pods": null
+        },
+        {
+          "code": "IA-W",
+          "name": "Western Iowa",
+          "leg": "western",
+          "publishes": false,
+          "note": "crop districts 1, 4 and 7 only - Iowa's state figure posts Thursday",
+          "corn": null,
+          "pods": null
+        }
+      ]
+    },
+    {
+      "date": "2026-08-20",
+      "label": "Thursday night",
+      "posted": false,
+      "expected_label": "about 8pm Central",
+      "states": [
+        {
+          "code": "IA",
+          "name": "Iowa",
+          "leg": "both",
+          "corn": null,
+          "pods": null
+        },
+        {
+          "code": "MN",
+          "name": "Minnesota",
+          "leg": "both",
+          "corn": null,
+          "pods": null
+        }
+      ]
+    }
   ],
-  "SD": [
-   {
-    "year": 2022,
-    "corn": 118.45,
-    "pods": 871.4
-   },
-   {
-    "year": 2023,
-    "corn": 157.42,
-    "pods": 1013.0
-   },
-   {
-    "year": 2024,
-    "corn": 156.51,
-    "pods": 1025.89
-   },
-   {
-    "year": 2025,
-    "corn": 174.18,
-    "pods": 1188.45
-   }
+  "nights_note": "Which states report on which night follows the tour's route order, which has held since at least 2022. Pro Farmer publishes one figure per state. Wednesday's western Iowa session reports crop districts 1, 4 and 7 only and no western-Iowa state number; the single Iowa figure covering all nine districts posts Thursday when both legs meet in Rochester. If the tour reorders a leg, this page follows what actually gets announced.",
+  "benchmarks": {
+    "usda": {
+      "corn": 180.7,
+      "soy_yield": 52.7,
+      "label": "USDA, August WASDE",
+      "as_of": "2026-08-12",
+      "note": "USDA's first survey-based 2026 estimate, printed Aug 12: corn 180.7 bu/acre (down 2.3 from July), soybeans 52.7 (down 0.3). This is the number the tour's scouts will be checking against in the field."
+    },
+    "agsist": {
+      "corn": 183.6,
+      "soy_yield": 53.8,
+      "label": "AGSIST nowcast",
+      "as_of": "2026-08-11",
+      "note": "Our model's number locked Aug 11, the day before the August WASDE (supersedes the retired July model's 189.4/56.2 — the swap is on the record in git history). USDA printed lower on both. Locked calls stay on the record whether they look good or not."
+    },
+    "tour": {
+      "corn": null,
+      "soy_prod": null,
+      "label": "Pro Farmer tour",
+      "note": "Posts Friday evening, Aug 21."
+    }
+  },
+  "history": [
+    {
+      "year": 2015,
+      "tour_corn": 164.3,
+      "usda_aug_corn": 168.8,
+      "usda_final_corn": 168.4,
+      "tour_soy_prod": 3.887,
+      "usda_aug_soy_prod": 3.92,
+      "usda_final_soy_prod": 3.93
+    },
+    {
+      "year": 2016,
+      "tour_corn": 170.2,
+      "usda_aug_corn": 175.1,
+      "usda_final_corn": 174.6,
+      "tour_soy_prod": 4.093,
+      "usda_aug_soy_prod": 4.06,
+      "usda_final_soy_prod": 4.31
+    },
+    {
+      "year": 2017,
+      "tour_corn": 167.1,
+      "usda_aug_corn": 169.5,
+      "usda_final_corn": 176.6,
+      "tour_soy_prod": 4.331,
+      "usda_aug_soy_prod": 4.38,
+      "usda_final_soy_prod": 4.39
+    },
+    {
+      "year": 2018,
+      "tour_corn": 177.3,
+      "usda_aug_corn": 178.4,
+      "usda_final_corn": 176.4,
+      "tour_soy_prod": 4.683,
+      "usda_aug_soy_prod": 4.59,
+      "usda_final_soy_prod": 4.54
+    },
+    {
+      "year": 2019,
+      "tour_corn": 163.3,
+      "usda_aug_corn": 169.5,
+      "usda_final_corn": 168.0,
+      "tour_soy_prod": 3.497,
+      "usda_aug_soy_prod": 3.68,
+      "usda_final_soy_prod": 3.56,
+      "note": "USDA changed how it builds the August corn and soybean forecast this year, dropping the August field-measurement survey. August numbers from 2019 on are not built the same way as the years before."
+    },
+    {
+      "year": 2020,
+      "tour_corn": 177.5,
+      "usda_aug_corn": 181.8,
+      "usda_final_corn": 172.0,
+      "tour_soy_prod": 4.362,
+      "usda_aug_soy_prod": 4.42,
+      "usda_final_soy_prod": 4.14,
+      "note": "The August 10 derecho flattened millions of Iowa acres the day before USDA's data cutoff. The tour ran but scouts reported from the road instead of meeting up at night. The tour ran in modified form that year, so 2020 is not measuring quite the same exercise as the others."
+    },
+    {
+      "year": 2021,
+      "tour_corn": 177.0,
+      "usda_aug_corn": 174.6,
+      "usda_final_corn": 177.0,
+      "tour_soy_prod": 4.436,
+      "usda_aug_soy_prod": 4.34,
+      "usda_final_soy_prod": 4.44
+    },
+    {
+      "year": 2022,
+      "tour_corn": 168.1,
+      "usda_aug_corn": 175.4,
+      "usda_final_corn": 173.3,
+      "tour_soy_prod": 4.535,
+      "usda_aug_soy_prod": 4.53,
+      "usda_final_soy_prod": 4.28
+    },
+    {
+      "year": 2023,
+      "tour_corn": 172.0,
+      "usda_aug_corn": 175.1,
+      "usda_final_corn": 177.3,
+      "tour_soy_prod": 4.11,
+      "usda_aug_soy_prod": 4.21,
+      "usda_final_soy_prod": 4.16
+    },
+    {
+      "year": 2024,
+      "tour_corn": 181.1,
+      "usda_aug_corn": 183.1,
+      "usda_final_corn": 179.3,
+      "tour_soy_prod": 4.74,
+      "usda_aug_soy_prod": 4.59,
+      "usda_final_soy_prod": 4.37
+    },
+    {
+      "year": 2025,
+      "tour_corn": 182.7,
+      "usda_aug_corn": 188.8,
+      "usda_final_corn": 186.5,
+      "tour_soy_prod": 4.246,
+      "usda_aug_soy_prod": 4.29,
+      "usda_final_soy_prod": 4.26,
+      "note": "A government shutdown killed the October reports, so this crop year rests on one fewer USDA forecast round than the others."
+    }
   ],
-  "IN": [
-   {
-    "year": 2022,
-    "corn": 177.85,
-    "pods": 1165.97
-   },
-   {
-    "year": 2023,
-    "corn": 180.89,
-    "pods": 1309.96
-   },
-   {
-    "year": 2024,
-    "corn": 187.54,
-    "pods": 1409.02
-   },
-   {
-    "year": 2025,
-    "corn": 193.82,
-    "pods": 1376.59
-   }
+  "history_note": "Final yield means the number USDA published the following January in its annual summary. USDA quietly revises some of those later — 2019 through 2022 corn each moved by a tenth to half a bushel in later editions. This page uses the January figure for every year so the comparison stays consistent, and the revisions are too small to change the picture.",
+  "sources": [
+    {
+      "name": "Pro Farmer national estimates (2021-2025)",
+      "url": "https://www.profarmer.com/topics/pro-farmer-crop-tour"
+    },
+    {
+      "name": "USDA NASS August Crop Production reports",
+      "url": "https://www.nass.usda.gov/Publications/Todays_Reports/"
+    },
+    {
+      "name": "USDA NASS Crop Production Annual Summary (January finals)",
+      "url": "https://usda.library.cornell.edu/concern/publications/k3569432s"
+    },
+    {
+      "name": "USDA NASS Crop Production Historical Track Records",
+      "url": "https://www.nass.usda.gov/Publications/Todays_Reports/"
+    }
   ],
-  "NE": [
-   {
-    "year": 2022,
-    "corn": 158.53,
-    "pods": 1063.72
-   },
-   {
-    "year": 2023,
-    "corn": 167.22,
-    "pods": 1160.02
-   },
-   {
-    "year": 2024,
-    "corn": 173.25,
-    "pods": 1172.48
-   },
-   {
-    "year": 2025,
-    "corn": 179.5,
-    "pods": 1348.31
-   }
-  ],
-  "IL": [
-   {
-    "year": 2022,
-    "corn": 190.71,
-    "pods": 1249.7
-   },
-   {
-    "year": 2023,
-    "corn": 193.72,
-    "pods": 1270.61
-   },
-   {
-    "year": 2024,
-    "corn": 204.14,
-    "pods": 1419.11
-   },
-   {
-    "year": 2025,
-    "corn": 199.57,
-    "pods": 1479.22
-   }
-  ],
-  "IA": [
-   {
-    "year": 2022,
-    "corn": 183.81,
-    "pods": 1174.43
-   },
-   {
-    "year": 2023,
-    "corn": 182.8,
-    "pods": 1190.41
-   },
-   {
-    "year": 2024,
-    "corn": 192.79,
-    "pods": 1312.31
-   },
-   {
-    "year": 2025,
-    "corn": 198.43,
-    "pods": 1384.38
-   }
-  ],
-  "MN": [
-   {
-    "year": 2022,
-    "corn": 190.39,
-    "pods": 1100.75
-   },
-   {
-    "year": 2023,
-    "corn": 181.34,
-    "pods": 984.39
-   },
-   {
-    "year": 2024,
-    "corn": 164.9,
-    "pods": 1036.59
-   },
-   {
-    "year": 2025,
-    "corn": 202.86,
-    "pods": 1247.86
-   }
-  ]
- },
- "state_history_note": "State figures as Pro Farmer published them, 2022 through 2025. Each three-year average reconciles exactly against the comparison column Pro Farmer prints on its own 2025 state pages, which is how these were checked. Two cautions carried from that check: Pro Farmer's 2025 Iowa page has a wrong social-share description quoting 1,562.54 pods, which is district 7's number and not the state's - the state figure is 1,384.38. And Minnesota's 2023 pod count was published as 984.39 and later restated as 985.00 in Pro Farmer's own comparison tables; the figure here is the one in the original 2023 release. CAUTION, SEEN TWICE NOW: Pro Farmer's social-share meta descriptions carry wrong pod counts. The 2025 Iowa page quotes 1,562.54, which is district 7 and not the state. The 2026 Ohio page quotes 1,186.3 while its own soybean table says 1,197.25 - and only 1,197.25 satisfies the declines Pro Farmer itself states on that page (7% from 1,287.28, 4.7% from the 1,256.71 three-year average). Take figures from the table, then check them against the percentages in the same article before publishing."
+  "results_time_note": "Pro Farmer's state results have carried an 8:00 pm Central byline every night of the 2022 through 2025 tours. Treat it as the usual time, not a guarantee.",
+  "state_history": {
+    "OH": [
+      {
+        "year": 2022,
+        "corn": 174.17,
+        "pods": 1131.64
+      },
+      {
+        "year": 2023,
+        "corn": 183.94,
+        "pods": 1252.93
+      },
+      {
+        "year": 2024,
+        "corn": 183.29,
+        "pods": 1229.93
+      },
+      {
+        "year": 2025,
+        "corn": 185.69,
+        "pods": 1287.28
+      }
+    ],
+    "SD": [
+      {
+        "year": 2022,
+        "corn": 118.45,
+        "pods": 871.4
+      },
+      {
+        "year": 2023,
+        "corn": 157.42,
+        "pods": 1013.0
+      },
+      {
+        "year": 2024,
+        "corn": 156.51,
+        "pods": 1025.89
+      },
+      {
+        "year": 2025,
+        "corn": 174.18,
+        "pods": 1188.45
+      }
+    ],
+    "IN": [
+      {
+        "year": 2022,
+        "corn": 177.85,
+        "pods": 1165.97
+      },
+      {
+        "year": 2023,
+        "corn": 180.89,
+        "pods": 1309.96
+      },
+      {
+        "year": 2024,
+        "corn": 187.54,
+        "pods": 1409.02
+      },
+      {
+        "year": 2025,
+        "corn": 193.82,
+        "pods": 1376.59
+      }
+    ],
+    "NE": [
+      {
+        "year": 2022,
+        "corn": 158.53,
+        "pods": 1063.72
+      },
+      {
+        "year": 2023,
+        "corn": 167.22,
+        "pods": 1160.02
+      },
+      {
+        "year": 2024,
+        "corn": 173.25,
+        "pods": 1172.48
+      },
+      {
+        "year": 2025,
+        "corn": 179.5,
+        "pods": 1348.31
+      }
+    ],
+    "IL": [
+      {
+        "year": 2022,
+        "corn": 190.71,
+        "pods": 1249.7
+      },
+      {
+        "year": 2023,
+        "corn": 193.72,
+        "pods": 1270.61
+      },
+      {
+        "year": 2024,
+        "corn": 204.14,
+        "pods": 1419.11
+      },
+      {
+        "year": 2025,
+        "corn": 199.57,
+        "pods": 1479.22
+      }
+    ],
+    "IA": [
+      {
+        "year": 2022,
+        "corn": 183.81,
+        "pods": 1174.43
+      },
+      {
+        "year": 2023,
+        "corn": 182.8,
+        "pods": 1190.41
+      },
+      {
+        "year": 2024,
+        "corn": 192.79,
+        "pods": 1312.31
+      },
+      {
+        "year": 2025,
+        "corn": 198.43,
+        "pods": 1384.38
+      }
+    ],
+    "MN": [
+      {
+        "year": 2022,
+        "corn": 190.39,
+        "pods": 1100.75
+      },
+      {
+        "year": 2023,
+        "corn": 181.34,
+        "pods": 984.39
+      },
+      {
+        "year": 2024,
+        "corn": 164.9,
+        "pods": 1036.59
+      },
+      {
+        "year": 2025,
+        "corn": 202.86,
+        "pods": 1247.86
+      }
+    ]
+  },
+  "state_history_note": "State figures as Pro Farmer published them, 2022 through 2025. Each three-year average reconciles exactly against the comparison column Pro Farmer prints on its own 2025 state pages, which is how these were checked. Two cautions carried from that check: Pro Farmer's 2025 Iowa page has a wrong social-share description quoting 1,562.54 pods, which is district 7's number and not the state's - the state figure is 1,384.38. And Minnesota's 2023 pod count was published as 984.39 and later restated as 985.00 in Pro Farmer's own comparison tables; the figure here is the one in the original 2023 release. CAUTION, SEEN TWICE NOW: Pro Farmer's social-share meta descriptions carry wrong pod counts. The 2025 Iowa page quotes 1,562.54, which is district 7 and not the state. The 2026 Ohio page quotes 1,186.3 while its own soybean table says 1,197.25 - and only 1,197.25 satisfies the declines Pro Farmer itself states on that page (7% from 1,287.28, 4.7% from the 1,256.71 three-year average). Take figures from the table, then check them against the percentages in the same article before publishing."
 }
