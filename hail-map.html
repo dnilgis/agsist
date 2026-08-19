@@ -881,18 +881,35 @@
     // checker (alert-check.yml, after mesh.yml) tests every watch area against
     // the new swath day and emails hits — estimates flagged as estimates. ──
     var alertsWired=false;
+    // WIRE ON LOAD. This box started life hidden and was revealed by the first
+    // map lookup, so wiring it inside runLookup() was correct then. On
+    // 2026-07-14 it became the always-on .hm-alerts--bar and lost its `hidden`
+    // attribute, but the wiring stayed where it was. From that day until
+    // 2026-08-19 every visitor who typed an address into the bar before
+    // searching the map pressed a button with no listener on it: no request,
+    // no error, no status line, address left sitting in the box. A dead form
+    // that renders identically to a live one. Wiring is now independent of
+    // lookup state; whether there is a pin yet is the submit handler's problem,
+    // and it says so out loud.
     function wireAlerts(){
       var box=document.getElementById('hm-alerts');
-      if(!box) return;
-      box.hidden = !lastLookup;
-      if(box.hidden || alertsWired) return;
-      alertsWired=true;
+      if(!box || alertsWired) return;
       var btn=document.getElementById('hm-alert-btn'), em=document.getElementById('hm-alert-email'),
           stx=document.getElementById('hm-alert-status');
+      if(!btn || !em || !stx) return;
+      alertsWired=true;
       function submit(){
         var v=(em.value||'').trim();
         if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){ stx.textContent='That email doesn\u2019t look right \u2014 check it and try again.'; return; }
-        if(!lastLookup){ stx.textContent='Search or tap a spot on the map first.'; return; }
+        if(!lastLookup){
+          // Never silently swallow the address. Say what is missing, put the
+          // cursor on the thing that fixes it, and leave what they typed alone.
+          stx.textContent='Almost \u2014 pick your spot first. Search an address or tap the map, then press Save my spot again. Your email stays where it is.';
+          var q=document.getElementById('hm-q');
+          if(q){ try{ q.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){ try{ q.scrollIntoView(); }catch(e2){} }
+                 try{ q.focus({preventScroll:true}); }catch(e3){ try{ q.focus(); }catch(e4){} } }
+          return;
+        }
         btn.disabled=true; stx.textContent='Saving\u2026';
         var rc=document.querySelector('.hm-rchip[aria-pressed="true"]');
         var radius=rc?parseInt(rc.getAttribute('data-r'),10):5;
@@ -1447,8 +1464,18 @@
       ga('hail_county_state', { state:st });
     }
 
-    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
-    else init();
+    // The alerts bar is painted by the server and is on screen before any of
+    // this runs, so its wiring must not sit behind anything that can bail.
+    // init() returns early when the Leaflet CDN fails to load - that is a
+    // reasonable thing for the MAP to do, but it must not also cost us the
+    // email capture, which needs no map to accept a keystroke and no map to
+    // explain itself. Wire the bar first, then bring the map up.
+    function boot(){
+      try{ wireAlerts(); }catch(e){}
+      init();
+    }
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
   })();
   </script>
 </body>
