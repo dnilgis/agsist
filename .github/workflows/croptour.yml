@@ -34,10 +34,20 @@ on:
       - "data/crop-tour.json"
       - "scripts/build_croptour.py"
       - "scripts/bake_seo.py"
+      # crop-tour.html is a HAND-MAINTAINED TEMPLATE. Editing it in the browser
+      # -- which is how the template gets edited -- used not to trigger this
+      # job, so a pasted template sat unbaked until the 09:20 UTC cron the next
+      # morning. During tour week that is the whole evening spike.
+      - "crop-tour.html"
   schedule:
     # 09:20 UTC is 4:20am Central in CDT and 3:20am in CST. Before dawn in
     # both, so the clocks changing cannot walk this into daylight.
     - cron: "20 9 * * *"
+    # TOUR WEEK ONLY, and it is the whole point of the job during that week:
+    # 01:30 UTC is 8:30pm Central, half an hour after the nightly meetings
+    # start reporting. It costs one run a night and it means a night's numbers
+    # cannot sit unpublished because nobody happened to push.
+    - cron: "30 1 17-22 8 *"
   workflow_dispatch:
 
 permissions:
@@ -50,6 +60,13 @@ concurrency:
 jobs:
   bake:
     runs-on: ubuntu-latest
+    # BELT. build_croptour.py resolves America/Chicago itself and refuses to
+    # bake if it cannot, so this is not load-bearing -- but it also makes
+    # date.today(), the shell one-liner at the bottom of this file, and
+    # bake_seo.py agree with the baker instead of running a day ahead after
+    # 7pm Central.
+    env:
+      TZ: America/Chicago
     steps:
       - uses: actions/checkout@v4
 
@@ -61,6 +78,13 @@ jobs:
       # second, and it is the thing that catches a title branch that no longer
       # fits TITLE_MAX -- the failure that silently froze this page's title
       # through the whole run-up to the 2026 tour.
+      # BRACES. ubuntu-latest ships /usr/share/zoneinfo today, but nothing in
+      # this file guarantees it will tomorrow, and the baker treats a missing
+      # zone as a hard failure rather than a silent fall back to UTC. Installing
+      # the wheel makes zoneinfo work with or without the system database.
+      - name: Timezone database
+        run: python3 -m pip install --quiet tzdata
+
       - name: Check bake_seo
         run: python3 scripts/bake_seo.py --selftest
 
@@ -84,6 +108,6 @@ jobs:
           git config user.email "bot@agsist.com"
           git add crop-tour.html
           git diff --cached --quiet && { echo "nothing to bake"; exit 0; }
-          phase=$(python3 -c "import json,datetime;d=json.load(open('data/crop-tour.json'));t=datetime.date.today().isoformat();b=d['benchmarks']['tour'].get('corn');print('scored' if b is not None else ('before' if t<d['tour']['start'] else ('during' if t<=d['tour']['end'] else 'waiting')))")
+          phase=$(python3 -c "import json,datetime,zoneinfo;d=json.load(open('data/crop-tour.json'));t=datetime.datetime.now(zoneinfo.ZoneInfo('America/Chicago')).date().isoformat();b=d['benchmarks']['tour'].get('corn');print('scored' if b is not None else ('before' if t<d['tour']['start'] else ('during' if t<=d['tour']['end'] else 'waiting')))")
           git commit -m "crop tour: rebaked ($phase)"
           git push
