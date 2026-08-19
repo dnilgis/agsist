@@ -42,6 +42,7 @@ CADENCE = {
     "/whats-priced-in": 1,
     "/cattle-futures-prices": 1,
     "/scorecard": 1,
+    "/crop-tour": 1,
     "/drought-monitor": 7,
     "/cot": 7,
 }

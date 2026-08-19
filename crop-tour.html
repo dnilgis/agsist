@@ -70,21 +70,7 @@
   .ct-tbl th.num,.ct-tbl td.num{text-align:right;font-family:'JetBrains Mono',monospace;}
   .ct-tbl td{padding:.55rem .6rem;border-bottom:1px solid var(--border,#2a3324);color:var(--text-dim,#c3ccc4);vertical-align:middle;}
   .ct-tbl td b{color:var(--text,#e7ece8);}
-  /* The footnote is a disclosure everywhere, so a caveat year costs one line
-     until the reader asks for it. Content is in the HTML either way. */
-  .ct-yr-note{font-size:.76rem;color:var(--text-muted,#9bb0a3);line-height:1.45;margin-top:.2rem;}
-  .ct-yr-note>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:.3rem;
-    font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.06em;
-    text-transform:uppercase;color:var(--gold,#d4a23f);border:1px solid var(--border,#2a3324);
-    border-radius:999px;padding:.15rem .5rem;min-height:28px;}
-  .ct-yr-note>summary::-webkit-details-marker{display:none;}
-  .ct-yr-note>summary::after{content:"+";font-weight:700;}
-  .ct-yr-note[open]>summary::after{content:"\2212";}
-  .ct-yr-note>summary:focus-visible{outline:2px solid var(--gold,#d4a23f);outline-offset:2px;}
-  .ct-yr-note>p{margin:.4rem 0 0;}
-  /* The centre tick used to paint between "dead" and "on". The words already
-     sit on zero, so the tick is redundant on that one row. */
-  .ct-barcell.zero .ct-tick{display:none;}
+  .ct-yr-note{font-size:.76rem;color:var(--text-muted,#9bb0a3);line-height:1.45;margin-top:.2rem;max-width:30ch;}
   .ct-barcell{position:relative;min-width:260px;height:38px;}
   .ct-tick{position:absolute;left:50%;top:8px;bottom:8px;width:1px;background:var(--text-muted,#9bb0a3);opacity:.5;}
   .ct-bar{position:absolute;top:50%;transform:translateY(-50%);height:12px;border-radius:2px;display:block;}
@@ -104,18 +90,64 @@
   .ct-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.3rem 0 0;}
   .ct-chip{display:inline-flex;align-items:center;min-height:44px;padding:.4rem .8rem;border:1px solid var(--border,#2a3324);border-radius:8px;font-size:.87rem;color:var(--text-dim,#c3ccc4);text-decoration:none;}
   .ct-chip:hover{border-color:var(--gold,#d4a23f);color:var(--gold,#d4a23f);}
+  /* ---- theme + record table, panel rebuild 2026-08-18 ---------------- */
+  /* --card is not defined anywhere in components/styles.css, so every
+     var(--card,#161b14) resolved to the dark fallback in BOTH themes: in
+     light mode the cards stayed near-black while the text flipped to
+     near-black. Measured contrast ratio 1.00. Scoped to .ct-wrap so no other
+     page moves; the dark value is today's exact colour, so dark is unchanged. */
+  .ct-wrap{--card:#161b14;}
+  [data-theme="light"] .ct-wrap{--card:#ffffff;}
+  [data-theme="light"] .ct-wrap .ct-kick,
+  [data-theme="light"] .ct-wrap .breadcrumb a,
+  [data-theme="light"] .ct-wrap .ct-note a{color:#8a6612;}
+  [data-theme="light"] .ct-wrap .ct-chip:hover{color:#8a6612;border-color:#8a6612;}
+  :root{color-scheme:dark;}
+  [data-theme="light"]{color-scheme:light;}
 
-  /* ── board + hero, redesigned 2026-08-18 ─────────────────────────────── */
   /* 30ch was written for the history table's Year column. The same class is
      reused inside the nightly board, where the cap forced every state card's
-     footnote onto two lines at desktop inside a 382px card. Scope it. */
-  /* 34ch is a history-table rule. The same class is reused inside the nightly
-     board, where any cap forced every state card's footnote onto two lines. */
+     footnote onto two lines at 768px and up inside a 383px card. */
+  .ct-yr-note{max-width:none;}
   .ct-tbl .ct-yr-note{max-width:34ch;}
 
-  /* A figure: value+unit is one nowrap group, the change is another. At 320px
-     the old inline spans broke "(-90 vs 2025)" into "(-90 vs" / "2025)". */
-  .ct-figs{display:flex;flex-direction:column;gap:.28rem;margin:.1rem 0 .35rem;}
+  .ct-cap{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0;}
+  .ct-td-lbl{display:none;}
+  /* The words "dead on" are centred on the same x as the axis tick, so the
+     1px rule ran through the middle of the phrase. That row sits on zero; the
+     tick is redundant there. */
+  .ct-barcell.zero .ct-tick{display:none;}
+
+  .ct-tbl details.ct-yr-note{margin-top:.2rem;}
+  .ct-yr-note>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:.3rem;
+    font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--gold,#d4a23f);border:1px solid var(--border,#2a3324);
+    border-radius:999px;padding:.15rem .55rem;min-height:32px;}
+  .ct-yr-note>summary::-webkit-details-marker{display:none;}
+  .ct-yr-note>summary::after{content:"";width:8px;height:8px;border-right:2px solid currentColor;
+    border-bottom:2px solid currentColor;transform:rotate(45deg) translate(-2px,-2px);}
+  .ct-yr-note[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px);}
+  .ct-yr-note>p{margin:.4rem 0 0;}
+
+  @media (forced-colors: active){
+    .ct-bar{forced-color-adjust:none;background:CanvasText;border:1px solid CanvasText;}
+    .ct-bar--neg,.ct-bar--pos{background:CanvasText;}
+    .ct-tick{forced-color-adjust:none;background:CanvasText;opacity:1;}
+  }
+
+  /* ── the lede board: last night's figures, under the H1 ───────────────
+     Reuses .ct-num / .ct-lbl so a state figure has one set of rules. The
+     delta is its own nowrap chip because as a loose inline span it broke
+     "(-90 vs 2025)" across two lines in a 222.5px column at 320px. */
+  .ct-hero-board{background:var(--card,#161b14);border:1px solid rgba(74,171,76,.55);
+                 border-radius:14px;padding:.85rem 1rem 1rem;margin:.15rem 0 .8rem;}
+  .ct-hs-hd{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;
+            letter-spacing:.08em;text-transform:uppercase;color:var(--green,#4aab4c);margin-bottom:.6rem;}
+  .ct-hs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:.75rem;}
+  .ct-hs-name{font-weight:700;font-size:.95rem;color:var(--text,#e7ece8);margin-bottom:.15rem;}
+  .ct-hs .ct-num{font-size:clamp(1.9rem,8.5vw,2.6rem);line-height:1.05;letter-spacing:-.01em;}
+  .ct-hs .ct-lbl{font-size:.82rem;}
+  .ct-figs{display:flex;flex-direction:column;gap:.32rem;margin:.1rem 0 0;}
   .ct-fig{display:flex;flex-wrap:wrap;align-items:baseline;gap:.1rem .45rem;}
   .ct-fig-m{white-space:nowrap;}
   .ct-dlt{white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:.76rem;
@@ -123,101 +155,54 @@
           border-radius:5px;border:1px solid var(--border,#2a3324);color:var(--text-muted,#9bb0a3);}
   .ct-dlt--dn{color:var(--red,#e0685f);border-color:rgba(224,104,95,.4);}
   .ct-dlt--up{color:var(--green,#4aab4c);border-color:rgba(74,171,76,.4);}
-
-  /* Night cards. A posted night must not look like an empty one. */
-  .ct-n-hd{margin-bottom:.5rem;flex-wrap:nowrap;gap:.5rem;}
-  .ct-n-day{flex:0 1 auto;min-width:0;}
-  .ct-n-date{flex:0 0 auto;}
-  .ct-n-tag{flex:0 0 auto;font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;
-            letter-spacing:.08em;text-transform:uppercase;padding:.12rem .4rem;border-radius:5px;
-            border:1px solid var(--border,#2a3324);color:var(--text-muted,#9bb0a3);margin-left:auto;}
-  .ct-night--posted{border-color:rgba(74,171,76,.55);}
-  .ct-night--posted .ct-n-tag{color:var(--green,#4aab4c);border-color:rgba(74,171,76,.45);}
-  .ct-night--next{border-color:rgba(212,162,63,.5);}
-  .ct-night--next .ct-n-tag{color:var(--gold,#d4a23f);border-color:rgba(212,162,63,.45);}
-  .ct-state--in{border-color:rgba(74,171,76,.3);}
-  .ct-state--wait,.ct-state--none{border-style:dashed;opacity:.85;}
-  /* Nights past tonight are a schedule line, not two empty cards. */
-  .ct-night--ahead{padding:.6rem 1rem;}
-  .ct-night--ahead .ct-n-hd{margin-bottom:.3rem;}
-  .ct-ahead{display:flex;flex-wrap:wrap;gap:.3rem .9rem;font-size:.9rem;color:var(--text-dim,#c3ccc4);}
-  .ct-ahead-s{white-space:normal;}
-
-  /* Live hero: last night's figures lead during the tour. */
-  .ct-hero--live .ct-kick{margin-bottom:.55rem;}
-  .ct-hero-board{background:var(--card,#161b14);border:1px solid rgba(74,171,76,.55);
-                 border-radius:14px;padding:.85rem 1rem 1rem;}
-  .ct-hs-hd{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;
-            letter-spacing:.08em;text-transform:uppercase;color:var(--green,#4aab4c);margin-bottom:.6rem;}
-  .ct-hs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:.75rem;}
-  .ct-hs-name{font-weight:700;font-size:.95rem;color:var(--text,#e7ece8);margin-bottom:.15rem;}
-  .ct-hs .ct-num{font-size:clamp(1.9rem,8.5vw,2.6rem);line-height:1.05;letter-spacing:-.01em;}
-  .ct-hs .ct-lbl{font-size:.82rem;}
-  .ct-hs .ct-figs{gap:.4rem;}
-  .ct-hero-empty{background:var(--card,#161b14);border:1px dashed var(--border,#2a3324);
-                 border-radius:14px;padding:1rem;color:var(--text-dim,#c3ccc4);font-size:.95rem;}
-  .ct-hero-meta{font-size:.87rem;color:var(--text-dim,#c3ccc4);line-height:1.6;margin:.7rem 0 .35rem;}
-  .ct-hero-meta b{color:var(--text,#e7ece8);}
-  .ct-hero-rec{font-size:.85rem;color:var(--text-muted,#9bb0a3);line-height:1.6;margin:0;}
-  .ct-hero-rec a{color:var(--gold,#d4a23f);}
-  /* clamp(3.2rem,13vw,5rem) with line-height .95 leaves 2.3px between the
-     digit glyphs and .ct-vd at 320px. Give the line box the glyphs it needs. */
-  .ct-big{line-height:1.04;}
-  .ct-h2{margin:2rem 0 .3rem;scroll-margin-top:5rem;}
-  /* 34px at line-height 1.65 cost 112px for two lines at 320px, all of it
-     above the live board. */
+  .ct-hero--live .ct-vd{margin-top:.2rem;}
+  /* 34px at line-height 1.65 cost 112px over two lines at 320px, all of it
+     above the figures the reader came for. */
   .ct-wrap h1{font-size:clamp(1.7rem,7.4vw,2.1rem);line-height:1.14;letter-spacing:-.01em;}
-  .ct-stamp:empty{display:none;margin:0;}
-  .ct-stamp--sec{margin:.2rem 0 .8rem;}
-  section{scroll-margin-top:5rem;}
+  @media (forced-colors: active){
+    .ct-dlt{border-color:currentColor;}
+    .ct-hero-board{border-color:currentColor;}
+  }
+
   @media(max-width:620px){
-    /* Card grid. Real DOM order is untouched: the table is still one table,
-       one row per year, so a crawler and a screen reader read it in order. */
+    /* One grid card per year. Still one <table>, one <tr> per year, one DOM
+       order — no CSS `order:`, no duplicated markup, no JS. */
     .ct-tbl{min-width:0;}
-    /* Visually hidden, NOT display:none, so the column headers stay in the
-       accessibility tree and a screen reader still announces "Tour", "USDA
-       Aug", "Final", "Tour vs final" for each cell. */
-    .ct-tbl thead{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0;}
+    /* Visually hidden, NOT display:none: display:none deletes all five
+       columnheader roles from the accessibility tree (measured: 0 headers at
+       320px, 5 at 900px on the old rule). */
+    .ct-tbl thead{position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+      overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0;}
     .ct-tbl tbody{display:block;}
-    .ct-tbl tr{
-      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    .ct-tbl tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
       column-gap:.55rem;row-gap:.15rem;align-items:end;
       background:var(--card,#161b14);border:1px solid var(--border,#2a3324);
-      border-radius:10px;padding:.55rem .7rem .6rem;margin:0 0 .5rem;
-    }
+      border-radius:10px;padding:.55rem .7rem .6rem;margin:0 0 .5rem;}
     .ct-tbl td{display:block;border:0;padding:0;}
-    .ct-tbl td::before{content:none;}
-    .ct-tbl td.num{
-      text-align:left;font-family:'JetBrains Mono',monospace;
-      font-size:1.02rem;font-weight:700;color:var(--text,#e7ece8);line-height:1.25;
-    }
-    .ct-tbl td.num::before{
-      content:attr(data-label);display:block;
-      font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
-      color:var(--text-muted,#9bb0a3);line-height:1.5;
-    }
-    /* Year owns its own full-width line; the footnote chip sits beside it
-       instead of being flung to the right edge by space-between. */
+    .ct-td-lbl{display:block;font-family:'JetBrains Mono',monospace;font-size:.63rem;
+      font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+      color:var(--text-muted,#9bb0a3);line-height:1.5;}
+    .ct-tbl td.num{text-align:left;font-family:'JetBrains Mono',monospace;
+      font-size:1.02rem;font-weight:700;color:var(--text,#e7ece8);line-height:1.25;}
     .ct-yrcell{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;
       gap:.45rem;margin-bottom:.15rem;}
+    .ct-yrcell .ct-td-lbl{display:none;}
     .ct-yrcell b{font-family:var(--font-display),'Inter',system-ui,sans-serif;
       font-size:1.12rem;font-weight:800;color:var(--text,#e7ece8);line-height:1.2;}
-    .ct-yr-note{max-width:none;margin-top:0;}
-    .ct-yr-note>p{margin:.35rem 0 0;}
-    /* The bar gets its own line. ::after reserves a 22px track and the
-       absolutely-positioned tick / bar / value are anchored to the BOTTOM of
-       the cell, so they land in the track and can never reach the label. */
+    /* The bar gets its own line and its own 22px track, and the tick / bar /
+       value are anchored to the BOTTOM of the cell. On the old rule the cell
+       kept height:38px while the label rendered as a block inside it and the
+       bar stayed at top:50%, so the value painted through the label glyphs in
+       7 of 11 rows at 320-430px. */
     .ct-barcell{display:block!important;grid-column:1/-1;min-width:0;width:100%;
       height:auto;margin-top:.35rem;}
-    .ct-tbl td.ct-barcell::before{content:attr(data-label);display:block;margin:0 0 .15rem;
-      font-family:'JetBrains Mono',monospace;font-size:.63rem;font-weight:700;
-      letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted,#9bb0a3);
-      line-height:1.5;}
+    .ct-barcell .ct-td-lbl{margin:0 0 .15rem;}
     .ct-barcell::after{content:"";display:block;height:22px;}
     .ct-tick{top:auto;bottom:1px;height:20px;opacity:.6;}
     .ct-bar{top:auto;bottom:6px;transform:none;height:11px;}
     .ct-bar-v{top:auto;bottom:0;transform:none;line-height:22px;font-size:.8rem;}
     .ct-bar-zero{top:auto;bottom:0;left:50%;transform:translateX(-50%);line-height:22px;}
+    .ct-tbl .ct-yr-note{max-width:none;}
   }
   </style>
 </head>
@@ -231,9 +216,11 @@
         <a href="/">Home</a> &rarr; Crop Tour
       </nav>
       <h1 style="margin:0 0 .2rem">Pro Farmer Crop Tour 2026</h1>
-      <div class="ct-stamp"><!-- CT:stamp --><!-- /CT:stamp --></div>
+      <div class="ct-stamp"><!-- CT:stamp -->Record updated August 17, 2026 &middot; 11 tours scored<!-- /CT:stamp --></div>
 
-      <!-- CT:board --><div class="ct-hero ct-hero--live"><div class="ct-kick" data-phase="during" data-start="2026-08-17" data-end="2026-08-20" data-final-label="Friday, Aug 21">Tour underway &mdash; results post each night</div><div class="ct-hero-board"><div class="ct-hs-hd">Monday night &middot; Aug 17</div><div class="ct-hs-grid"><div class="ct-hs"><div class="ct-hs-name">Ohio</div><div class="ct-figs"><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">180.2</span> <span class="ct-lbl">bu corn</span></span><span class="ct-dlt ct-dlt--dn">-5.5 vs 2025</span></div><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">1,197</span> <span class="ct-lbl">pods in 3x3</span></span><span class="ct-dlt ct-dlt--dn">-90 vs 2025</span></div></div></div><div class="ct-hs"><div class="ct-hs-name">South Dakota</div><div class="ct-figs"><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">149.1</span> <span class="ct-lbl">bu corn</span></span><span class="ct-dlt ct-dlt--dn">-25.1 vs 2025</span></div><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">946</span> <span class="ct-lbl">pods in 3x3</span></span><span class="ct-dlt ct-dlt--dn">-242 vs 2025</span></div></div></div></div></div><p class="ct-hero-meta"><b>2 of 7</b> state corn figures in. Next: Indiana, Nebraska Aug 18, about 8pm Central. State samples, not a national yield &mdash; Pro Farmer's national number is acreage-weighted and posts Friday, Aug 21.</p><p class="ct-hero-rec"><a href="#record">The tour has missed the final crop by 4.1 bu on average over 11 years</a> &mdash; USDA's August forecast missed by 3.1.</p></div><section id="nights"><h2 class="ct-h2">Nightly results</h2><p class="ct-sub">Scouts run two routes at once, Monday through Thursday, and states report at the nightly meetings. Corn is a sampled yield in bushels per acre. Soybeans are pod counts in a three-foot square &mdash; more pods means more beans, but pods do not convert cleanly into bushels, so treat them as a direction, not a yield.</p><div id="ct-nights"><div class="ct-night ct-night--posted"><div class="ct-n-hd"><span class="ct-n-day">Monday night</span><span class="ct-n-date">Aug 17</span><span class="ct-n-tag">posted</span></div><div class="ct-states"><div class="ct-state ct-state--in"><div class="ct-st-name">Ohio</div><div class="ct-figs"><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">180.2</span> <span class="ct-lbl">bu corn</span></span><span class="ct-dlt ct-dlt--dn">-5.5 vs 2025</span></div><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">1,197</span> <span class="ct-lbl">pods in 3x3</span></span><span class="ct-dlt ct-dlt--dn">-90 vs 2025</span></div></div><div class="ct-yr-note">2025: 185.7 bu, 1,287 pods &middot; 3-yr avg 184.3 bu</div></div><div class="ct-state ct-state--in"><div class="ct-st-name">South Dakota</div><div class="ct-figs"><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">149.1</span> <span class="ct-lbl">bu corn</span></span><span class="ct-dlt ct-dlt--dn">-25.1 vs 2025</span></div><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">946</span> <span class="ct-lbl">pods in 3x3</span></span><span class="ct-dlt ct-dlt--dn">-242 vs 2025</span></div></div><div class="ct-yr-note">2025: 174.2 bu, 1,188 pods &middot; 3-yr avg 162.7 bu</div></div></div></div><div class="ct-night ct-night--next"><div class="ct-n-hd"><span class="ct-n-day">Tuesday night</span><span class="ct-n-date">Aug 18</span><span class="ct-n-tag">tonight</span></div><div class="ct-states"><div class="ct-state ct-state--wait"><div class="ct-st-name">Indiana</div><span class="ct-pend">not posted yet &mdash; about 8pm Central</span><div class="ct-yr-note">2025: 193.8 bu, 1,377 pods &middot; 3-yr avg 187.4 bu</div></div><div class="ct-state ct-state--wait"><div class="ct-st-name">Nebraska</div><span class="ct-pend">not posted yet &mdash; about 8pm Central</span><div class="ct-yr-note">2025: 179.5 bu, 1,348 pods &middot; 3-yr avg 173.3 bu</div></div></div></div><div class="ct-night ct-night--ahead"><div class="ct-n-hd"><span class="ct-n-day">Wednesday night</span><span class="ct-n-date">Aug 19</span><span class="ct-n-tag">to come</span></div><div class="ct-ahead"><span class="ct-ahead-s">Illinois</span> <span class="ct-ahead-s">Western Iowa <span class="ct-lbl">crop districts 1, 4 and 7 only - Iowa's state figure posts Thursday</span></span></div></div><div class="ct-night ct-night--ahead"><div class="ct-n-hd"><span class="ct-n-day">Thursday night</span><span class="ct-n-date">Aug 20</span><span class="ct-n-tag">to come</span></div><div class="ct-ahead"><span class="ct-ahead-s">Iowa</span> <span class="ct-ahead-s">Minnesota</span></div></div></div></section><section id="bench"><h2 class="ct-h2">Three numbers on the table</h2><p class="ct-sub">USDA's forecast, our own model's number, and the tour's &mdash; all published before anyone knows the answer.</p><div class="ct-benches"><div class="ct-bench ct-bench--usda"><div class="ct-b-lbl">USDA, August WASDE &middot; Aug 12</div><div class="ct-b-val">180.7<span class="ct-b-u">bu</span></div><div class="ct-b-note">USDA's first survey-based 2026 estimate, printed Aug 12: corn 180.7 bu/acre (down 2.3 from July), soybeans 52.7 (down 0.3). This is the number the tour's scouts will be checking against in the field.</div></div><div class="ct-bench ct-bench--agsist"><div class="ct-b-lbl">AGSIST nowcast &middot; Aug 11</div><div class="ct-b-val">183.6<span class="ct-b-u">bu</span></div><div class="ct-b-note">Our model's number locked Aug 11, the day before the August WASDE (supersedes the retired July model's 189.4/56.2 — the swap is on the record in git history). USDA printed lower on both. Locked calls stay on the record whether they look good or not.</div></div><div class="ct-bench ct-bench--tour"><div class="ct-b-lbl">Pro Farmer tour</div><div class="ct-b-val">&mdash;<span class="ct-b-u">bu</span></div><div class="ct-b-note">Posts Friday evening, Aug 21.</div></div></div></section><section id="record"><h2 class="ct-h2">How good has the tour actually been?</h2><p class="ct-sub">Every tour since 2015, against the crop that actually came in. Bar shows how far the tour's final corn number landed from USDA's final yield: left of the line means the tour called it too small, right means too big.</p><div class="ct-stamp ct-stamp--sec">Record updated August 17, 2026 &middot; 11 tours scored</div><div class="ct-tbl-wrap"><table class="ct-tbl"><thead><tr><th>Year</th><th class="num">Tour</th><th class="num">USDA Aug</th><th class="num">Final</th><th>Tour vs final &mdash; bushels per acre</th></tr></thead><tbody><tr><td class="ct-yrcell" data-label="Year"><b>2025</b><details class="ct-yr-note"><summary>Note on 2025</summary><p>A government shutdown killed the October reports, so this crop year rests on one fewer USDA forecast round than the others.</p></details></td><td class="num" data-label="Tour">182.7</td><td class="num" data-label="USDA Aug">188.8</td><td class="num" data-label="Final">186.5</td><td class="ct-barcell neg" data-label="Tour vs final &mdash; bu/acre"><span class="ct-tick"></span><span class="ct-bar ct-bar--neg" style="left:38.0%;width:12.0%"></span><span class="ct-bar-v ct-bar-v--neg" style="right:62.0%">-3.8</span></td></tr><tr><td class="ct-yrcell" data-label="Year"><b>2024</b></td><td class="num" data-label="Tour">181.1</td><td class="num" data-label="USDA Aug">183.1</td><td class="num" data-label="Final">179.3</td><td class="ct-barcell pos" data-label="Tour vs final &mdash; bu/acre"><span class="ct-tick"></span><span class="ct-bar ct-bar--pos" style="left:50%;width:5.7%"></span><span class="ct-bar-v ct-bar-v--pos" style="left:55.7%">+1.8</span></td></tr><tr><td class="ct-yrcell" data-label="Year"><b>2023</b></td><td class="num" data-label="Tour">172.0</td><td class="num" data-label="USDA Aug">175.1</td><td class="num" data-label="Final">177.3</td><td class="ct-barcell neg" data-label="Tour vs final &mdash; bu/acre"><span class="ct-tick"></span><span class="ct-bar ct-bar--neg" style="left:33.3%;width:16.7%"></span><span class="ct-bar-v ct-bar-v--neg" style="right:66.7%">-5.3</span></td></tr><tr><td class="ct-yrcell" data-label="Year"><b>2022</b></td><td class="num" data-label="Tour">168.1</td><td class="num" data-label="USDA Aug">175.4</td><td class="num" data-label="Final">173.3</td><td class="ct-barcell neg" data-label="Tour vs final &mdash; bu/acre"><span class="ct-tick"></span><span class="ct-bar ct-bar--neg" style="left:33.6%;width:16.4%"></span><span class="ct-bar-v ct-bar-v--neg" style="right:66.4%">-5.2</span></td></tr><tr><td class="ct-yrcell" data-label="Year"><b>2021</b></td><td class="num" data-label="Tour">177.0</td><td class="num" data-label="USDA Aug">174.6</td><td class="num" data-label="Final">177.0</td><td class="ct-barcell zero" data-label="Tour vs final &mdash; bu/acre"><span class="ct-tick"></span><span class="ct-bar-zero">dead on</span></td></tr><tr><td class="ct-yrcell" data-label="Year"><b>2020</b><details class="ct-yr-note"><summary>Note on 2020</summary><p>The August 10 derecho flattened millions of Iowa acres the day before USDA's data cutoff. The tour ran but scouts reported from the road instead of meeting up at night. The tour ran in modified form that year, so 2020 is not measuring quite the same exercise as the others.</p></details></td><td class="num" data-label="Tour">177.5</td><td class="num" data-label="USDA Aug">181.8</td><td class="num" data-label="Final">172.0</td><td class="ct-barcell pos" data-label="Tour vs final &mdash; bu/acre"><span class="ct-tick"></span><span class="ct-bar ct-bar--pos" style="left:50%;width:17.4%"></span><span class="ct-bar-v ct-bar-v--pos" style="left:67.4%">+5.5</span></td></tr><tr><td class="ct-yrcell" data-label="Year"><b>2019</b><details class="ct-yr-note"><summary>Note on 2019</summary><p>USDA changed how it builds the August corn and soybean forecast this year, dropping the August field-measurement survey. August numbers from 2019 on are not built the same way as the years before.</p></details></td><td class="num" data-label="Tour">163.3</td><td class="num" data-label="USDA Aug">169.5</td><td class="num" data-label="Final">168.0</td><td class="ct-barcell neg" data-label="Tour vs final &mdash; bu/acre"><span class="ct-tick"></span><span class="ct-bar ct-bar--neg" style="left:35.2%;width:14.8%"></span><span class="ct-bar-v ct-bar-v--neg" style="right:64.8%">-4.7</span></td></tr><tr><td class="ct-yrcell" data-label="Year"><b>2018</b></td><td class="num" data-label="Tour">177.3</td><td class="num" data-label="USDA Aug">178.4</td><td class="num" data-label="Final">176.4</td><td class="ct-barcell pos" data-label="Tour vs final &mdash; bu/acre"><span class="ct-tick"></span><span class="ct-bar ct-bar--pos" style="left:50%;width:2.8%"></span><span class="ct-bar-v ct-bar-v--pos" style="left:52.8%">+0.9</span></td></tr><tr><td class="ct-yrcell" data-label="Year"><b>2017</b></td><td class="num" data-label="Tour">167.1</td><td class="num" data-label="USDA Aug">169.5</td><td class="num" data-label="Final">176.6</td><td class="ct-barcell neg" data-label="Tour vs final &mdash; bu/acre"><span class="ct-tick"></span><span class="ct-bar ct-bar--neg" style="left:20.0%;width:30.0%"></span><span class="ct-bar-v ct-bar-v--neg" style="right:80.0%">-9.5</span></td></tr><tr><td class="ct-yrcell" data-label="Year"><b>2016</b></td><td class="num" data-label="Tour">170.2</td><td class="num" data-label="USDA Aug">175.1</td><td class="num" data-label="Final">174.6</td><td class="ct-barcell neg" data-label="Tour vs final &mdash; bu/acre"><span class="ct-tick"></span><span class="ct-bar ct-bar--neg" style="left:36.1%;width:13.9%"></span><span class="ct-bar-v ct-bar-v--neg" style="right:63.9%">-4.4</span></td></tr><tr><td class="ct-yrcell" data-label="Year"><b>2015</b></td><td class="num" data-label="Tour">164.3</td><td class="num" data-label="USDA Aug">168.8</td><td class="num" data-label="Final">168.4</td><td class="ct-barcell neg" data-label="Tour vs final &mdash; bu/acre"><span class="ct-tick"></span><span class="ct-bar ct-bar--neg" style="left:37.1%;width:12.9%"></span><span class="ct-bar-v ct-bar-v--neg" style="right:62.9%">-4.1</span></td></tr></tbody></table></div><p class="ct-legend">Across the same 11 years, the tour's soybean production number missed the final by <b>0.13 billion bushels</b> on average, against <b>0.12 billion</b> for USDA's August forecast. On beans it is close to a coin flip between them.</p></section><!-- /CT:board -->
+      <!-- CT:hero --><div class="ct-hero ct-hero--lede ct-hero--live"><div class="ct-kick" data-phase="during" data-start="2026-08-17" data-end="2026-08-20" data-final-label="Friday, Aug 21">Tour underway &mdash; results post each night</div><div class="ct-hero-board"><div class="ct-hs-hd">Monday night &middot; Aug 17</div><div class="ct-hs-grid"><div class="ct-hs"><div class="ct-hs-name">Ohio</div><div class="ct-figs"><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">180.2</span> <span class="ct-lbl">bu corn</span></span><span class="ct-dlt ct-dlt--dn">-5.5 vs 2025</span></div><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">1,197</span> <span class="ct-lbl">pods in 3x3</span></span><span class="ct-dlt ct-dlt--dn">-90 vs 2025</span></div></div></div><div class="ct-hs"><div class="ct-hs-name">South Dakota</div><div class="ct-figs"><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">149.1</span> <span class="ct-lbl">bu corn</span></span><span class="ct-dlt ct-dlt--dn">-25.1 vs 2025</span></div><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">946</span> <span class="ct-lbl">pods in 3x3</span></span><span class="ct-dlt ct-dlt--dn">-242 vs 2025</span></div></div></div></div></div><div class="ct-vd"><span class="ct-verdict">Read the nightly numbers against this record</span></div></div><!-- /CT:hero -->
+
+      <!-- CT:flow --><div class="ct-flow" data-phase="during" data-order="nights bench history"><section class="ct-sec ct-sec--nights" id="nightly-results"><h2 class="ct-h2">Nightly results</h2><p class="ct-sub">Scouts run two routes at once, Monday through Thursday, and states report at the nightly meetings. Corn is a sampled yield in bushels per acre. Soybeans are pod counts in a three-foot square &mdash; more pods means more beans, but pods do not convert cleanly into bushels, so treat them as a direction, not a yield.</p><div id="ct-nights"><!-- CT:nights --><p class="ct-lead ct-progress"><b>2 of 7</b> state corn figures are in &mdash; 2 below. These are state samples, not a national yield: Pro Farmer's national number is acreage-weighted and posts at the end of the week.</p><div class="ct-night ct-night--posted"><div class="ct-n-hd"><span class="ct-n-day">Monday night</span><span class="ct-n-date">Aug 17</span></div><div class="ct-states"><div class="ct-state"><div class="ct-st-name">Ohio</div><div class="ct-figs"><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">180.2</span> <span class="ct-lbl">bu corn</span></span><span class="ct-dlt ct-dlt--dn">-5.5 vs 2025</span></div><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">1,197</span> <span class="ct-lbl">pods in 3x3</span></span><span class="ct-dlt ct-dlt--dn">-90 vs 2025</span></div></div><div class="ct-yr-note">2025: 185.7 bu, 1,287 pods &middot; 3-yr avg 184.3 bu</div></div><div class="ct-state"><div class="ct-st-name">South Dakota</div><div class="ct-figs"><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">149.1</span> <span class="ct-lbl">bu corn</span></span><span class="ct-dlt ct-dlt--dn">-25.1 vs 2025</span></div><div class="ct-fig"><span class="ct-fig-m"><span class="ct-num">946</span> <span class="ct-lbl">pods in 3x3</span></span><span class="ct-dlt ct-dlt--dn">-242 vs 2025</span></div></div><div class="ct-yr-note">2025: 174.2 bu, 1,188 pods &middot; 3-yr avg 162.7 bu</div></div></div></div><div class="ct-night ct-night--next"><div class="ct-n-hd"><span class="ct-n-day">Tuesday night</span><span class="ct-n-date">Aug 18</span></div><div class="ct-states"><div class="ct-state"><div class="ct-st-name">Indiana</div><span class="ct-pend">not posted yet &mdash; about 8pm Central</span><div class="ct-yr-note">2025: 193.8 bu, 1,377 pods &middot; 3-yr avg 187.4 bu</div></div><div class="ct-state"><div class="ct-st-name">Nebraska</div><span class="ct-pend">not posted yet &mdash; about 8pm Central</span><div class="ct-yr-note">2025: 179.5 bu, 1,348 pods &middot; 3-yr avg 173.3 bu</div></div></div></div><div class="ct-night"><div class="ct-n-hd"><span class="ct-n-day">Wednesday night</span><span class="ct-n-date">Aug 19</span></div><div class="ct-states"><div class="ct-state"><div class="ct-st-name">Illinois</div><span class="ct-pend">not posted yet</span><div class="ct-yr-note">2025: 199.6 bu, 1,479 pods &middot; 3-yr avg 199.1 bu</div></div><div class="ct-state"><div class="ct-st-name">Western Iowa</div><span class="ct-pend">crop districts 1, 4 and 7 only - Iowa's state figure posts Thursday</span></div></div></div><div class="ct-night"><div class="ct-n-hd"><span class="ct-n-day">Thursday night</span><span class="ct-n-date">Aug 20</span></div><div class="ct-states"><div class="ct-state"><div class="ct-st-name">Iowa</div><span class="ct-pend">not posted yet</span><div class="ct-yr-note">2025: 198.4 bu, 1,384 pods &middot; 3-yr avg 191.3 bu</div></div><div class="ct-state"><div class="ct-st-name">Minnesota</div><span class="ct-pend">not posted yet</span><div class="ct-yr-note">2025: 202.9 bu, 1,248 pods &middot; 3-yr avg 183.0 bu</div></div></div></div><!-- /CT:nights --></div></section><section class="ct-sec ct-sec--bench" id="three-numbers"><h2 class="ct-h2">Three numbers on the table</h2><p class="ct-sub">USDA's forecast, our own model's number, and the tour's &mdash; all published before anyone knows the answer.</p><div class="ct-benches"><!-- CT:bench --><div class="ct-bench ct-bench--usda"><div class="ct-b-lbl">USDA, August WASDE &middot; Aug 12</div><div class="ct-b-val">180.7<span class="ct-b-u">bu</span></div><div class="ct-b-note">USDA's first survey-based 2026 estimate, printed Aug 12: corn 180.7 bu/acre (down 2.3 from July), soybeans 52.7 (down 0.3). This is the number the tour's scouts will be checking against in the field.</div></div><div class="ct-bench ct-bench--agsist"><div class="ct-b-lbl">AGSIST nowcast &middot; Aug 11</div><div class="ct-b-val">183.6<span class="ct-b-u">bu</span></div><div class="ct-b-note">Our model's number locked Aug 11, the day before the August WASDE (supersedes the retired July model's 189.4/56.2 — the swap is on the record in git history). USDA printed lower on both. Locked calls stay on the record whether they look good or not.</div></div><div class="ct-bench ct-bench--tour"><div class="ct-b-lbl">Pro Farmer tour</div><div class="ct-b-val">&mdash;<span class="ct-b-u">bu</span></div><div class="ct-b-note">Posts Friday evening, Aug 21.</div></div><!-- /CT:bench --></div></section><section class="ct-sec ct-sec--history" id="accuracy-record"><h2 class="ct-h2">How good has the tour actually been?</h2><p class="ct-sub">Every tour since 2015, against the crop that actually came in. Bar shows how far the tour's final corn number landed from USDA's final yield: left of the line means the tour called it too small, right means too big.</p><!-- CT:record --><div class="ct-hero ct-hero--record"><div class="ct-big">4.1<span class="ct-unit">bu</span></div><div class="ct-vd">Average tour miss vs the final crop</div><p class="ct-lead">Over the last 11 tours (2015&ndash;2025), Pro Farmer's final corn number missed USDA's eventual final by <b>4.1 bushels</b> on average. USDA's own August forecast missed by <b>3.1</b>. USDA came closer in 7 of those 11 years.</p><p class="ct-lead">The tour has also leaned one way: it came in <b>under</b> the final yield in 7 of 11 years, and in those years it finished 5.3 bushels low on average. Across all 11, the net lean is 2.6 bushels low. That is a real tendency, not a rule &mdash; it ran high in 3 of them, the widest by 5.5 bushels, and it landed exactly on the final once.</p></div><!-- /CT:record --><!-- CT:history --><div class="ct-tbl-wrap"><table class="ct-tbl"><caption class="ct-cap">Pro Farmer Crop Tour final corn yield against USDA&rsquo;s August forecast and USDA&rsquo;s final yield, 2015&ndash;2025, bushels per acre.</caption><thead><tr><th scope="col">Year</th><th scope="col" class="num">Tour</th><th scope="col" class="num">USDA Aug</th><th scope="col" class="num">Final</th><th scope="col">Tour vs final &mdash; bushels per acre</th></tr></thead><tbody><tr><td class="ct-yrcell"><span class="ct-td-lbl" aria-hidden="true">Year</span><b>2025</b><details class="ct-yr-note"><summary>Note on 2025</summary><p>A government shutdown killed the October reports, so this crop year rests on one fewer USDA forecast round than the others.</p></details></td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Tour</span>182.7</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">USDA Aug</span>188.8</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Final</span>186.5</td><td class="ct-barcell neg"><span class="ct-td-lbl" aria-hidden="true">Tour vs final &mdash; bu/acre</span><span class="ct-tick"></span><span class="ct-bar ct-bar--neg" style="left:36.4%;width:13.6%"></span><span class="ct-bar-v ct-bar-v--neg" style="right:63.6%">-3.8</span></td></tr><tr><td class="ct-yrcell"><span class="ct-td-lbl" aria-hidden="true">Year</span><b>2024</b></td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Tour</span>181.1</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">USDA Aug</span>183.1</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Final</span>179.3</td><td class="ct-barcell pos"><span class="ct-td-lbl" aria-hidden="true">Tour vs final &mdash; bu/acre</span><span class="ct-tick"></span><span class="ct-bar ct-bar--pos" style="left:50%;width:6.4%"></span><span class="ct-bar-v ct-bar-v--pos" style="left:56.4%">+1.8</span></td></tr><tr><td class="ct-yrcell"><span class="ct-td-lbl" aria-hidden="true">Year</span><b>2023</b></td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Tour</span>172.0</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">USDA Aug</span>175.1</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Final</span>177.3</td><td class="ct-barcell neg"><span class="ct-td-lbl" aria-hidden="true">Tour vs final &mdash; bu/acre</span><span class="ct-tick"></span><span class="ct-bar ct-bar--neg" style="left:31.0%;width:19.0%"></span><span class="ct-bar-v ct-bar-v--neg" style="right:69.0%">-5.3</span></td></tr><tr><td class="ct-yrcell"><span class="ct-td-lbl" aria-hidden="true">Year</span><b>2022</b></td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Tour</span>168.1</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">USDA Aug</span>175.4</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Final</span>173.3</td><td class="ct-barcell neg"><span class="ct-td-lbl" aria-hidden="true">Tour vs final &mdash; bu/acre</span><span class="ct-tick"></span><span class="ct-bar ct-bar--neg" style="left:31.4%;width:18.6%"></span><span class="ct-bar-v ct-bar-v--neg" style="right:68.6%">-5.2</span></td></tr><tr><td class="ct-yrcell"><span class="ct-td-lbl" aria-hidden="true">Year</span><b>2021</b></td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Tour</span>177.0</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">USDA Aug</span>174.6</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Final</span>177.0</td><td class="ct-barcell zero"><span class="ct-td-lbl" aria-hidden="true">Tour vs final &mdash; bu/acre</span><span class="ct-tick"></span><span class="ct-bar-zero">dead on</span></td></tr><tr><td class="ct-yrcell"><span class="ct-td-lbl" aria-hidden="true">Year</span><b>2020</b><details class="ct-yr-note"><summary>Note on 2020</summary><p>The August 10 derecho flattened millions of Iowa acres the day before USDA's data cutoff. The tour ran but scouts reported from the road instead of meeting up at night. The tour ran in modified form that year, so 2020 is not measuring quite the same exercise as the others.</p></details></td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Tour</span>177.5</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">USDA Aug</span>181.8</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Final</span>172.0</td><td class="ct-barcell pos"><span class="ct-td-lbl" aria-hidden="true">Tour vs final &mdash; bu/acre</span><span class="ct-tick"></span><span class="ct-bar ct-bar--pos" style="left:50%;width:19.7%"></span><span class="ct-bar-v ct-bar-v--pos" style="left:69.7%">+5.5</span></td></tr><tr><td class="ct-yrcell"><span class="ct-td-lbl" aria-hidden="true">Year</span><b>2019</b><details class="ct-yr-note"><summary>Note on 2019</summary><p>USDA changed how it builds the August corn and soybean forecast this year, dropping the August field-measurement survey. August numbers from 2019 on are not built the same way as the years before.</p></details></td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Tour</span>163.3</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">USDA Aug</span>169.5</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Final</span>168.0</td><td class="ct-barcell neg"><span class="ct-td-lbl" aria-hidden="true">Tour vs final &mdash; bu/acre</span><span class="ct-tick"></span><span class="ct-bar ct-bar--neg" style="left:33.2%;width:16.8%"></span><span class="ct-bar-v ct-bar-v--neg" style="right:66.8%">-4.7</span></td></tr><tr><td class="ct-yrcell"><span class="ct-td-lbl" aria-hidden="true">Year</span><b>2018</b></td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Tour</span>177.3</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">USDA Aug</span>178.4</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Final</span>176.4</td><td class="ct-barcell pos"><span class="ct-td-lbl" aria-hidden="true">Tour vs final &mdash; bu/acre</span><span class="ct-tick"></span><span class="ct-bar ct-bar--pos" style="left:50%;width:3.2%"></span><span class="ct-bar-v ct-bar-v--pos" style="left:53.2%">+0.9</span></td></tr><tr><td class="ct-yrcell"><span class="ct-td-lbl" aria-hidden="true">Year</span><b>2017</b></td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Tour</span>167.1</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">USDA Aug</span>169.5</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Final</span>176.6</td><td class="ct-barcell neg"><span class="ct-td-lbl" aria-hidden="true">Tour vs final &mdash; bu/acre</span><span class="ct-tick"></span><span class="ct-bar ct-bar--neg" style="left:16.0%;width:34.0%"></span><span class="ct-bar-v ct-bar-v--neg" style="right:84.0%">-9.5</span></td></tr><tr><td class="ct-yrcell"><span class="ct-td-lbl" aria-hidden="true">Year</span><b>2016</b></td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Tour</span>170.2</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">USDA Aug</span>175.1</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Final</span>174.6</td><td class="ct-barcell neg"><span class="ct-td-lbl" aria-hidden="true">Tour vs final &mdash; bu/acre</span><span class="ct-tick"></span><span class="ct-bar ct-bar--neg" style="left:34.3%;width:15.7%"></span><span class="ct-bar-v ct-bar-v--neg" style="right:65.7%">-4.4</span></td></tr><tr><td class="ct-yrcell"><span class="ct-td-lbl" aria-hidden="true">Year</span><b>2015</b></td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Tour</span>164.3</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">USDA Aug</span>168.8</td><td class="num"><span class="ct-td-lbl" aria-hidden="true">Final</span>168.4</td><td class="ct-barcell neg"><span class="ct-td-lbl" aria-hidden="true">Tour vs final &mdash; bu/acre</span><span class="ct-tick"></span><span class="ct-bar ct-bar--neg" style="left:35.3%;width:14.7%"></span><span class="ct-bar-v ct-bar-v--neg" style="right:64.7%">-4.1</span></td></tr></tbody></table></div><!-- /CT:history --><p class="ct-legend"><!-- CT:soy -->Across the same 11 years, the tour's soybean production number missed the final by <b>0.13 billion bushels</b> on average, against <b>0.12 billion</b> for USDA's August forecast. On beans it is close to a coin flip between them.<!-- /CT:soy --></p></section></div><!-- /CT:flow -->
 
       <div class="ct-note">
         <b>How to use this.</b> The tour is the only wide, boots-in-the-field count of this crop, and in a year where the trade doubts USDA it moves the board. But it samples fields along fixed routes in seven states, which is not the same thing as measuring the country &mdash; and the record above says it has not been more accurate than USDA's August number. Read the nightly state figures for where the crop is better or worse than expected, and be careful about trading the national estimate as though it settles the argument.
@@ -284,9 +271,14 @@
       txt='Tour underway \u2014 results post each night';
       verdict='Read the nightly numbers against this record';
     } else if(end && now>end){
-      var fl=k.getAttribute('data-final-label')||'';
-      txt='Scouting done'+(fl?' \u2014 national number posts '+fl:'');
-      verdict='Read the nightly numbers against this record';
+      // DELIBERATELY SILENT. This branch used to rewrite the kicker to
+      // 'Scouting done - national number posts <final label>' on every visit,
+      // forever, with no idea whether that date had passed. On a page baked in
+      // August and read in September it re-asserted 'posts Friday, Aug 21' over
+      // the top of whatever the baker had said. The baker knows the phase, the
+      // grace window and whether the number ever landed; the browser does not.
+      // Once the tour is over, the baked text stands.
+      return;
     }
     if(txt) k.innerHTML=txt;
     if(verdict){
