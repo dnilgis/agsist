@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-18",
+  "updated": "2026-08-19",
   "tour": {
     "year": 2026,
     "start": "2026-08-17",
@@ -59,15 +59,15 @@
     {
       "date": "2026-08-19",
       "label": "Wednesday night",
-      "posted": false,
+      "posted": true,
       "expected_label": "about 8pm Central",
       "states": [
         {
           "code": "IL",
           "name": "Illinois",
           "leg": "eastern",
-          "corn": null,
-          "pods": null
+          "corn": 184.19,
+          "pods": 1430.37
         },
         {
           "code": "IA-W",
