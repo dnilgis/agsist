@@ -556,12 +556,138 @@ def render_nights(data, ph, sst, today):
                 # but cannot split.
                 val = _lede_figs(s, ctx)
             cells.append(f'<div class="ct-state"><div class="ct-st-name">{esc(s["name"])}</div>'
-                         f'{val}{render_state_context(ctx, s)}</div>')
+                         f'{val}{render_districts(s)}{render_state_context(ctx, s)}</div>')
         out.append(f'<div class="{cls}"><div class="ct-n-hd">'
                    f'<span class="ct-n-day">{esc(nt["label"])}</span>'
                    f'<span class="ct-n-date">{short(nt["date"])}</span></div>'
                    f'<div class="ct-states">{"".join(cells)}</div></div>')
     return render_progress(prog, data, ph, today) + "".join(out)
+
+
+def combine_districts(d):
+    """One figure for the districts a state reported, weighted by samples.
+
+    WHY THIS IS ARITHMETIC AND NOT A GUESS. Pro Farmer's state figures are
+    pooled means over every sample taken in that state. Each district figure
+    it prints is the mean of that district's samples, and it prints the sample
+    count beside it. So weighting the district means by their own sample
+    counts reconstructs the pooled mean of exactly those samples -- the same
+    calculation Pro Farmer would run if it published a figure for this set.
+    Nothing is modelled, extrapolated or assumed about the districts that were
+    not walked.
+
+    WHAT IT IS STILL NOT. It is not the state. Districts 1, 4 and 7 are the
+    western third of Iowa; the other six districts have not been sampled and
+    are not represented here at any weight. The renderer says so on its face
+    and validate() refuses a data file that tries to supply this number by
+    hand -- it is computed here or it is not printed.
+
+    Returns None if any row is missing its sample count. An unweighted mean
+    would be a different number (1,366.86 pods against 1,342.62 on the 2026
+    Iowa rows) and it would be the wrong one, so a missing weight is a refusal
+    rather than a fallback.
+    """
+    rows = (d or {}).get("rows") or []
+    if not rows:
+        return None
+    out = {}
+    for key, pkey, skey in (("corn", "prior_corn", "samples"),
+                            ("pods", "prior_pods", "samples")):
+        have = [r for r in rows if r.get(key) is not None]
+        if not have or len(have) != len(rows):
+            continue
+        if any(not isinstance(r.get(skey), int) or r[skey] <= 0 for r in have):
+            continue
+        n = sum(r[skey] for r in have)
+        out[key] = sum(r[key] * r[skey] for r in have) / n
+        out.setdefault("samples", n)
+        pn = [r for r in have if r.get(pkey) is not None
+              and isinstance(r.get("prior_samples"), int) and r["prior_samples"] > 0]
+        if len(pn) == len(have):
+            tot = sum(r["prior_samples"] for r in pn)
+            out["prior_" + key] = sum(r[pkey] * r["prior_samples"] for r in pn) / tot
+    return out or None
+
+
+def render_districts(s):
+    """The crop districts a state reported when the tour published no state
+    figure for it.
+
+    WHY THIS EXISTS. On Wednesday the western leg reports Iowa crop districts
+    1, 4 and 7. Pro Farmer publishes a full table for those three and NO
+    western-Iowa state number, because it does not compute one -- the single
+    Iowa figure covering all nine districts posts Thursday. Before this the
+    card read as an empty slot, which is wrong twice over: it looks like a
+    failed read, and it throws away numbers the tour did publish.
+
+    WHAT THIS MUST NEVER DO. It must not average, sum or weight these rows
+    into anything. Three western districts are not Iowa. validate() refuses a
+    district whose code matches its state's, which is the door that trick
+    would have to come through, and tour_progress() counts a publishes:false
+    slot as neither posted nor expected whether it carries districts or not.
+
+    The figure rows go through _lede_figs, the same helper the state cards and
+    the lede board use, so a district and a state figure cannot drift into two
+    sets of type rules. CSS scales .ct-dists down; the markup is identical.
+    """
+    d = s.get("districts")
+    if not d:
+        return ""
+    rows = d.get("rows") or []
+    if not rows:
+        return ""
+    py = d.get("prior_year")
+    out = []
+    for r in rows:
+        ctx = None
+        if py is not None and (r.get("prior_corn") is not None
+                               or r.get("prior_pods") is not None):
+            ctx = {"prior_year": py,
+                   "prior_corn": r.get("prior_corn"),
+                   "prior_pods": r.get("prior_pods")}
+        figs = _lede_figs(r, ctx)
+        if not figs:
+            continue
+        n = r.get("samples")
+        # "70 samples" is not decoration. A district yield off 46 samples is a
+        # thinner read than one off 217 and the reader is entitled to see it.
+        cnt = (f'<span class="ct-d-n">{n:,} sample{"" if n == 1 else "s"}</span>'
+               if isinstance(n, int) else "")
+        out.append(f'<div class="ct-dist"><div class="ct-d-hd">'
+                   f'<span class="ct-d-code">{esc(r["code"])}</span>{cnt}</div>'
+                   f'{figs}</div>')
+    if not out:
+        return ""
+    # The label is the baker's, not the data's. A file cannot mislabel a
+    # district block as a state figure by typing a different string.
+    head = ""
+    c = combine_districts(d)
+    if c:
+        ctx = None
+        if py is not None and (c.get("prior_corn") is not None
+                               or c.get("prior_pods") is not None):
+            ctx = {"prior_year": py, "prior_corn": c.get("prior_corn"),
+                   "prior_pods": c.get("prior_pods")}
+        head = ('<div class="ct-dsum">'
+                f'<div class="ct-d-lbl">Districts {_district_list(rows)} combined'
+                f' &middot; {c["samples"]:,} samples</div>'
+                + _lede_figs(c, ctx)
+                + '<div class="ct-dwarn">The western third of Iowa, not the state.'
+                  ' Iowa\'s own figure covers all nine districts.</div></div>')
+    body = ('<details class="ct-dtoggle"><summary>Show each district</summary>'
+            + "".join(out) + "</details>") if head else "".join(out)
+    lbl = "" if head else ('<div class="ct-d-lbl">Districts only '
+                           "&mdash; not a state figure</div>")
+    return f'<div class="ct-dists">{head}{lbl}{body}</div>'
+
+
+def _district_list(rows):
+    """"1, 4 and 7" from the row codes, so the heading cannot name a district
+    the block does not carry."""
+    nums = [r["code"].split()[-1] for r in rows]
+    if len(nums) == 1:
+        return nums[0]
+    return ", ".join(nums[:-1]) + " and " + nums[-1]
 
 
 def render_state_context(ctx, s):
@@ -929,6 +1055,67 @@ def gauntlet(html, st, ph=None):
             "a section lost or gained its heading"
 
 
+def _has_districts(s):
+    return bool((s.get("districts") or {}).get("rows"))
+
+
+def _validate_districts(s):
+    """District rows are reported figures at a finer grain, never an aggregate.
+
+    THE DOOR THIS SHUTS. A publishes:false slot already refuses `corn` and
+    `pods`, so the only remaining way to get a made-up state figure onto the
+    card is to file it as a district. Hence the code check: a row may not
+    carry the state's own code, and it may not be the sole row while claiming
+    to cover the state. Everything else here is the same plausibility fence
+    the state figures live behind, applied one level down.
+    """
+    d = s.get("districts")
+    if d is None:
+        return
+    assert isinstance(d, dict), f"{s['code']}: districts must be an object"
+    rows = d.get("rows")
+    assert isinstance(rows, list) and rows, \
+        f"{s['code']}: districts.rows must be a non-empty list"
+    py = d.get("prior_year")
+    assert py is None or (isinstance(py, int) and 2000 <= py <= 2100), \
+        f"{s['code']}: districts.prior_year {py} implausible"
+    # ONE WRITER. The combined figure is computed by combine_districts() from
+    # the rows below it. A file that carries its own is a second writer on the
+    # same artefact, and the two would drift the first time a row changed.
+    for k in ("combined", "total", "average", "mean", "state"):
+        assert k not in d, (
+            f"{s['code']}: districts.{k} is supplied by hand. The combined "
+            "figure is computed from the rows; delete this key.")
+    seen = set()
+    for r in rows:
+        code = r.get("code")
+        assert isinstance(code, str) and code.strip(), \
+            f"{s['code']}: a district row has no code"
+        key = code.strip().upper().replace(" ", "")
+        assert key not in seen, f"{s['code']}: duplicate district {code}"
+        seen.add(key)
+        # A district row wearing the state's code is a state figure smuggled
+        # past the publishes:false assert. It is the one failure mode that
+        # would produce a number nobody reported.
+        assert key != str(s["code"]).upper().replace(" ", "").replace("-W", ""), (
+            f"{s['code']}: district {code} carries the state's own code. "
+            "A district is a district; the state figure has its own slot.")
+        assert r.get("corn") is not None or r.get("pods") is not None, \
+            f"{s['code']} {code}: a district row with no figures"
+        for k in ("corn", "prior_corn"):
+            v = r.get(k)
+            assert v is None or 40 <= v <= 300, f"{s['code']} {code}: {k} {v} implausible"
+        for k in ("pods", "prior_pods"):
+            v = r.get(k)
+            assert v is None or 200 <= v <= 2500, f"{s['code']} {code}: {k} {v} implausible"
+        n = r.get("samples")
+        assert n is None or (isinstance(n, int) and 1 <= n <= 5000), \
+            f"{s['code']} {code}: samples {n} implausible"
+        if r.get("prior_corn") is not None or r.get("prior_pods") is not None:
+            assert py is not None, \
+                f"{s['code']} {code}: carries a prior figure with no districts.prior_year"
+
+
 def validate(data):
     h = data["history"]
     assert h, "history empty"
@@ -956,9 +1143,10 @@ def validate(data):
                     f"{s['code']} is marked publishes:false but carries numbers. "
                     "Pro Farmer does not publish a figure for this slot, so any "
                     "number here was derived rather than reported.")
+            _validate_districts(s)
         if nt.get("posted"):
             assert any(s.get("corn") is not None or s.get("pods") is not None
-                       for s in nt["states"]), \
+                       or _has_districts(s) for s in nt["states"]), \
                 f"{nt['date']} marked posted but carries no numbers"
     for code, rows in (data.get("state_history") or {}).items():
         yy = [r["year"] for r in rows]
@@ -1092,6 +1280,150 @@ def selftest():
         ck("validate accepts the same slot left empty", True)
     except AssertionError:
         ck("validate accepts the same slot left empty", False)
+
+    print()
+    print("districts are reported figures, never an aggregate")
+    dist = {"prior_year": 2025, "rows": [
+        {"code": "IA 1", "corn": 191.80, "pods": 1269.26, "samples": 70,
+         "prior_corn": 197.89, "prior_pods": 1279.25},
+        {"code": "IA 4", "corn": 189.73, "pods": 1273.77, "samples": 69,
+         "prior_corn": 207.25, "prior_pods": 1376.15},
+        {"code": "IA 7", "corn": 190.59, "pods": 1557.54, "samples": 46,
+         "prior_corn": 195.03, "prior_pods": 1562.54}]}
+    st = {"code": "IA-W", "name": "Western Iowa", "publishes": False,
+          "corn": None, "pods": None, "districts": dist}
+    html = render_districts(st)
+    ck("a district block renders", 'class="ct-dists"' in html and html.count("ct-dist\"") == 3)
+    ck("it says on its face it is not a state figure",
+       "not the state" in html or "not a state figure" in html)
+    ck("sample counts are shown", "70 samples" in html and "46 samples" in html)
+
+    # The whole point. Every number a reader sees must be one that was
+    # reported or a difference between two that were -- never a mean, a sum,
+    # or a weighted anything.
+    # Enumerate exactly what the renderer is ENTITLED to print, at the
+    # precision it prints it: the reported corn to 1dp, the reported pods
+    # whole, the sample count, the district's own numeral, the prior year,
+    # and the two differences. Anything else on the page is derived, and
+    # derived is the thing this whole card is not allowed to be.
+    allowed = {2025.0, 9.0}          # the prior year, and "all nine districts"
+    for r in dist["rows"]:
+        allowed |= {round(r["corn"], 1), float(round(r["pods"])),
+                    float(r["samples"]),
+                    float(r["code"].split()[-1]),
+                    abs(round(r["corn"] - r["prior_corn"], 1)),
+                    abs(float(round(r["pods"] - r["prior_pods"])))}
+    _c = combine_districts(dist)      # the combined figure and its sample total
+    allowed |= {round(_c["corn"], 1), float(round(_c["pods"])), float(_c["samples"])}
+    # _nums() strips tags with no separator, which is right for a prose claim
+    # and wrong here: "IA 1" next to "70 samples" fuses into "170" and a delta
+    # chip next to the following figure fuses into "20251269". Adjacent
+    # elements need a space where the tag was, or this check invents numbers
+    # of its own and then fails on them.
+    def dnums(t):
+        plain = re.sub(r"<[^>]+>", " ", t).replace("&mdash;", " ")
+        return [x.replace(",", "") for x in re.findall(r"\d[\d,]*(?:\.\d+)?", plain)]
+
+    allowed.add(3.0)          # the literal "3x3" in the pods label
+    stray = {g for g in (float(x) for x in dnums(html)) if g not in allowed}
+    ck("no number is printed that was not reported or differenced", not stray)
+    # Corn is a bad discriminator here: the weighted mean (190.7271) and the
+    # unweighted one (190.7067) both print as 190.7. Pods separate cleanly --
+    # 1,343 weighted against 1,367 unweighted -- so that is the one to assert
+    # on. combine_districts() is checked against hand arithmetic further down.
+    upods = round(sum(r["pods"] for r in dist["rows"]) / 3)
+    ck("the unweighted district mean appears nowhere", f"{upods:,}" not in html)
+
+    dd = {"history": toy, "benchmarks": {"tour": {"corn": None}},
+          "nights": [{"date": "2026-08-19", "label": "x", "posted": True,
+                      "states": [json.loads(json.dumps(st))]}]}
+    try:
+        validate(dd)
+        ck("validate accepts districts in an unpublished slot", True)
+    except AssertionError as e:
+        ck("validate accepts districts in an unpublished slot", False)
+    ck("a night carrying only districts may be marked posted", True)
+
+    smuggle = json.loads(json.dumps(dd))
+    smuggle["nights"][0]["states"][0]["districts"]["rows"][0]["code"] = "IA"
+    try:
+        validate(smuggle)
+        ck("validate refuses a district wearing the state's code", False)
+    except AssertionError as e:
+        ck("validate refuses a district wearing the state's code",
+           "state's own code" in str(e))
+
+    dup = json.loads(json.dumps(dd))
+    dup["nights"][0]["states"][0]["districts"]["rows"][1]["code"] = "IA 1"
+    try:
+        validate(dup)
+        ck("validate refuses a duplicate district", False)
+    except AssertionError as e:
+        ck("validate refuses a duplicate district", "duplicate district" in str(e))
+
+    orphan = json.loads(json.dumps(dd))
+    del orphan["nights"][0]["states"][0]["districts"]["prior_year"]
+    try:
+        validate(orphan)
+        ck("validate refuses a prior figure with no year", False)
+    except AssertionError as e:
+        ck("validate refuses a prior figure with no year", "prior_year" in str(e))
+
+    wild = json.loads(json.dumps(dd))
+    wild["nights"][0]["states"][0]["districts"]["rows"][0]["corn"] = 900.0
+    try:
+        validate(wild)
+        ck("validate fences district figures by plausibility", False)
+    except AssertionError as e:
+        ck("validate fences district figures by plausibility", "implausible" in str(e))
+
+    pg = tour_progress({"nights": dd["nights"]})
+    ck("districts do not enter the posted count", pg["posted"] == 0)
+    ck("districts do not enter the denominator", pg["expected"] == 0)
+
+    print()
+    print("the combined district figure is a pooled mean, not a shortcut")
+    dist2 = json.loads(json.dumps(dist))
+    for r, ps in zip(dist2["rows"], (85, 71, 39)):
+        r["prior_samples"] = ps
+    c = combine_districts(dist2)
+    # Hand-computed from the 2026 Iowa rows, written out so a future edit that
+    # changes the arithmetic has to change these too:
+    #   n     = 70 + 69 + 46 = 185
+    #   corn  = (191.80*70 + 189.73*69 + 190.59*46) / 185
+    #         = (13426.00 + 13091.37 + 8767.14) / 185 = 35284.51/185 = 190.7271
+    #   pods  = (1269.26*70 + 1273.77*69 + 1557.54*46) / 185
+    #         = (88848.20 + 87890.13 + 71646.84) / 185 = 248385.17/185 = 1342.6225
+    ck("samples add up", c["samples"] == 185)
+    ck("combined corn is the sample-weighted mean", abs(c["corn"] - 190.7271) < 5e-4)
+    ck("combined pods is the sample-weighted mean", abs(c["pods"] - 1342.6225) < 5e-4)
+    ck("it is NOT the unweighted mean", abs(c["pods"] - 1366.8567) > 20)
+    #   2025: n = 85 + 71 + 39 = 195
+    #   corn = (197.89*85 + 207.25*71 + 195.03*39)/195 = 39141.57/195 = 200.7260
+    ck("the prior year is weighted by ITS OWN samples",
+       abs(c["prior_corn"] - 200.7260) < 5e-4)
+
+    nosamp = json.loads(json.dumps(dist2))
+    del nosamp["rows"][1]["samples"]
+    ck("a missing weight refuses the combination rather than guessing",
+       combine_districts(nosamp) is None)
+
+    h2 = render_districts({"code": "IA-W", "name": "Western Iowa",
+                           "publishes": False, "districts": dist2})
+    ck("the combined figure leads the block", "190.7" in h2)
+    ck("it names the districts it actually carries", "1, 4 and 7 combined" in h2)
+    ck("it says on its face it is not the state",
+       "not the state" in h2 and "all nine districts" in h2)
+    ck("the per-district rows are still there, behind a toggle",
+       "<details" in h2 and "191.8" in h2 and "189.7" in h2 and "190.6" in h2)
+
+    byhand = json.loads(json.dumps(dd))
+    byhand["nights"][0]["states"][0]["districts"]["combined"] = {"corn": 190.7}
+    try:
+        validate(byhand)
+        ck("validate refuses a hand-typed combined figure", False)
+    except AssertionError as e:
+        ck("validate refuses a hand-typed combined figure", "computed from the rows" in str(e))
 
     print()
     print("the running summary counts, it does not average")

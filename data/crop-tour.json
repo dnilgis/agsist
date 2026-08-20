@@ -75,6 +75,14 @@
           "leg": "western",
           "publishes": false,
           "note": "crop districts 1, 4 and 7 only - Iowa's state figure posts Thursday",
+          "districts": {
+            "prior_year": 2025,
+            "rows": [
+              {"code": "IA 1", "corn": 191.80, "pods": 1269.26, "samples": 70, "prior_corn": 197.89, "prior_pods": 1279.25, "prior_samples": 85},
+              {"code": "IA 4", "corn": 189.73, "pods": 1273.77, "samples": 69, "prior_corn": 207.25, "prior_pods": 1376.15, "prior_samples": 71},
+              {"code": "IA 7", "corn": 190.59, "pods": 1557.54, "samples": 46, "prior_corn": 195.03, "prior_pods": 1562.54, "prior_samples": 39}
+            ]
+          },
           "corn": null,
           "pods": null
         }
