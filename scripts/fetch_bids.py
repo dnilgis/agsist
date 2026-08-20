@@ -40,7 +40,31 @@ MAX_DISTANCE = 60  # miles from each ZIP
 # 200 is a starting point, not a finding. The run reports saturation per ZIP,
 # so the first live run says whether 200 binds. If it does, raise it and run
 # again. Measure, do not reason.
-TOTAL_LOCATIONS = int(os.environ.get("BARCHART_TOTAL_LOCATIONS", "200"))
+def _env_int(name, default):
+    """An env var that is set-but-empty means UNSET, not zero and not a crash.
+
+    GitHub Actions passes an unfilled workflow_dispatch input as the empty
+    string, and it passes it on SCHEDULED runs too. int("") raises, so a blank
+    box in the Run-workflow dialog would have taken down every scheduled fetch
+    as well as the manual one. Caught before shipping; kept honest by a test.
+    """
+    raw = (os.environ.get(name) or "").strip()
+    if not raw:
+        return default
+    try:
+        v = int(raw)
+    except ValueError:
+        print(f"[fetch_bids] {name}={raw!r} is not a number — using {default}",
+              file=sys.stderr)
+        return default
+    if v <= 0:
+        print(f"[fetch_bids] {name}={v} is not a usable ceiling — using {default}",
+              file=sys.stderr)
+        return default
+    return v
+
+
+TOTAL_LOCATIONS = _env_int("BARCHART_TOTAL_LOCATIONS", 200)
 OUTPUT_PATH = "data/bids.json"
 
 # ── National grid of ZIP codes ───────────────────────────────────
@@ -540,6 +564,43 @@ def selftest():
            "totalLocations" not in seen["url"])
     finally:
         globals()["urlopen"] = real
+
+    print()
+    print("a blank dispatch input is unset, not a crash")
+    keep = os.environ.get("BARCHART_TOTAL_LOCATIONS")
+    default_for_noise = 200
+    try:
+        for raw, want, why in (
+            (None, 200, "variable absent"),
+            ("", 200, "empty string — an unfilled Run-workflow box"),
+            ("   ", 200, "whitespace"),
+            ("400", 400, "a real value"),
+            ("nope", 200, "not a number"),
+            ("0", 200, "zero is not a ceiling"),
+            ("-5", 200, "negative"),
+        ):
+            if raw is None:
+                os.environ.pop("BARCHART_TOTAL_LOCATIONS", None)
+            else:
+                os.environ["BARCHART_TOTAL_LOCATIONS"] = raw
+            err = io.StringIO()
+            with redirect_stderr(err):
+                got = _env_int("BARCHART_TOTAL_LOCATIONS", 200)
+            ck(f"{why} -> {want}", got == want)
+            # AND SILENTLY, for the blank cases. The try/except alone already
+            # returns 200 for "" -- the blank check is not what makes the
+            # value right, it is what stops EVERY SCHEDULED RUN printing
+            # "BARCHART_TOTAL_LOCATIONS='' is not a number". A warning that
+            # fires on every green run is how you learn to ignore warnings,
+            # so silence here is the contract, not a nicety.
+            if raw is None or not raw.strip():
+                ck(f"...and says nothing about it ({why})", err.getvalue() == "")
+            elif want == default_for_noise:
+                ck(f"...and says why ({why})", "using 200" in err.getvalue())
+    finally:
+        os.environ.pop("BARCHART_TOTAL_LOCATIONS", None)
+        if keep is not None:
+            os.environ["BARCHART_TOTAL_LOCATIONS"] = keep
 
     print()
     print("saturation is judged against what was asked for")
