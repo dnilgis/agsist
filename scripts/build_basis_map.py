@@ -15,6 +15,11 @@ import json, os, sys
 from datetime import datetime, timezone
 from collections import defaultdict
 
+# data/bids.json is now SLIM -- a few hundred bids, only the ones the futures
+# pages can select. A national basis map built from that would be wrong and
+# would look fine. The full set is written by fetch_bids.py to BIDS_FULL_PATH
+# and is NOT committed, so this script must run in the same job as the fetch.
+BIDS_FULL_PATH = os.environ.get("BIDS_FULL_PATH", "bids-full.json")
 BIDS_PATH = "data/bids.json"
 OUT_PATH  = "data/basis-map.json"
 COMMODITIES = ["corn", "soybeans", "wheat"]
@@ -36,12 +41,43 @@ STATE_NAMES = {
  "VA":"Virginia","WA":"Washington","WV":"West Virginia","WI":"Wisconsin","WY":"Wyoming",
 }
 
-def load_cash_bids(path=BIDS_PATH):
+def resolve_bids_path():
+    """The full feed, or a refusal. Never the slim file.
+
+    fetch_bids.py stamps `full: true` on the complete payload and `full: false`
+    on the browser copy. Reading the flag rather than the filename means a
+    renamed or relocated file cannot sneak past this: what is checked is what
+    the file says it is.
+    """
+    if os.path.exists(BIDS_FULL_PATH):
+        return BIDS_FULL_PATH
+    if os.path.exists(BIDS_PATH):
+        with open(BIDS_PATH) as f:
+            head = json.load(f)
+        if head.get("full") is True:
+            return BIDS_PATH
+        n = len(head.get("bids") or [])
+        raise SystemExit(
+            f"[build_basis_map] REFUSING to run.\n"
+            f"  {BIDS_FULL_PATH} is absent and {BIDS_PATH} is the slim browser\n"
+            f"  copy ({n} bids, full=false). A national basis map built from it\n"
+            f"  would average a handful of elevators per state and would look\n"
+            f"  entirely plausible.\n"
+            f"  This script must run in the SAME JOB as fetch_bids.py, which\n"
+            f"  writes the full set to {BIDS_FULL_PATH}. See fetch_bids.yml."
+        )
+    raise SystemExit(f"[build_basis_map] no bids file at {BIDS_FULL_PATH} or {BIDS_PATH}")
+
+
+def load_cash_bids(path=None):
     """Adapter over fetch_bids.py output. Returns basis records:
     {commodity, state, city, facility, name, basis}. Keeps only bids with a
     real basis value and a known state + tracked commodity."""
+    path = path or resolve_bids_path()
     with open(path) as f:
         data = json.load(f)
+    print(f"[build_basis_map] reading {path} "
+          f"({len(data.get('bids') or []):,} bids, full={data.get('full')})")
     out = []
     for b in data.get("bids", []):
         cat   = (b.get("category") or "").strip().lower()
@@ -90,10 +126,11 @@ def build(records):
     return commodities
 
 def main():
-    if not os.path.exists(BIDS_PATH):
-        print(f"ERROR: {BIDS_PATH} not found — run fetch_bids.py first", file=sys.stderr)
-        sys.exit(1)
-    records = load_cash_bids()
+    # resolve_bids_path() is the gate now: it refuses the slim browser copy
+    # and says why. The old bare os.path.exists check would have passed the
+    # slim file straight through.
+    src = resolve_bids_path()
+    records = load_cash_bids(src)
     commodities = build(records)
     has_data = any(commodities[c]["states"] for c in COMMODITIES)
     # AUDIT 2026-08-11: `updated` reflects the AGE OF THE BIDS, not the
@@ -101,7 +138,7 @@ def main():
     # data as fresh. Falls back to build time only if bids carry no stamp.
     _src_ts = None
     try:
-        with open(BIDS_PATH) as _f:
+        with open(src) as _f:
             _src_ts = (json.load(_f).get("fetched") or "")[:10] or None
     except Exception:
         pass

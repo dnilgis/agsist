@@ -65,7 +65,23 @@ def _env_int(name, default):
 
 
 TOTAL_LOCATIONS = _env_int("BARCHART_TOTAL_LOCATIONS", 200)
-OUTPUT_PATH = "data/bids.json"
+OUTPUT_PATH = "data/bids.json"        # SLIM. Browsers fetch this one.
+FULL_PATH = os.environ.get("BIDS_FULL_PATH", "bids-full.json")  # never committed
+
+# ── Why there are two files now ──────────────────────────────────
+# data/bids.json is fetched CLIENT-SIDE by /corn-futures-prices,
+# /soybean-futures-prices and /wheat-futures-prices. Lifting the location cap
+# took it from roughly 2.5 MB to 6.3 MB, which is 6.3 MB downloaded by a phone
+# to render one cash-bid card. That is not a repo problem, it is a page-weight
+# problem, and the cap fix made it worse.
+#
+# So: the browser file carries only the bids that can actually be SELECTED by
+# the page, and the full set goes to FULL_PATH for build_basis_map.py to
+# aggregate in the same job. The full file is gitignored and never committed.
+#
+# slim_for_browser() below reproduces the page's own selection exactly; the
+# selftest proves it by running the page's algorithm over both files for every
+# grid ZIP and every crop and comparing the chosen bid.
 
 # ── National grid of ZIP codes ───────────────────────────────────
 # ~50 ZIPs across all major US agricultural regions
@@ -338,6 +354,71 @@ def flatten(data, source_zip):
     return [b for b in flat if b["cashPrice"] is not None or b["basis"] is not None]
 
 
+def _page_crop(name):
+    """The page's normalizeCommodity(), ported exactly."""
+    n = str(name or "").lower().strip()
+    if "corn" in n:
+        return "corn"
+    if "soy" in n or n == "beans":
+        return "beans"
+    if "wheat" in n:
+        return "wheat"
+    return None
+
+
+def page_pick(bids, grid_zip, crop):
+    """findBestBidForCrop() from the futures pages, ported exactly.
+
+    Ported rather than paraphrased BECAUSE the point is equivalence: the slim
+    file is only safe if the page computes the same answer from it as from the
+    full set, and the only way to assert that is to run the page's own logic.
+
+    Note what this port makes visible. The distance branch reads bid.lat /
+    bid.lng, and Barchart's payload carries NEITHER -- flatten() never sets
+    them. So the middle branch is dead code on live data, and any grid ZIP with
+    no exact-ZIP match falls through to "highest-priced bid in the country".
+    That is a real defect on the live pages and it is NOT fixed here; fixing it
+    means editing three pages. It is ported faithfully, warts included, so this
+    change cannot be blamed for it later.
+    """
+    crop_bids = [b for b in bids if _page_crop(b.get("commodity")) == crop]
+    if not crop_bids:
+        return None
+    for b in crop_bids:
+        if b.get("zip") and b["zip"] == grid_zip:
+            return b
+    for b in crop_bids:                      # the dead distance branch
+        if b.get("lat") is not None and b.get("lng") is not None:
+            break
+    else:
+        return max(crop_bids,
+                   key=lambda b: float(b.get("cashPrice") or 0))
+    return None
+
+
+def slim_for_browser(bids, grid):
+    """The smallest set of bids from which the page picks the same bid.
+
+    Two paths can select a bid, so two sets are kept and nothing else:
+      1. exact match  -> every bid whose own ZIP is one of the grid ZIPs
+      2. the fallback -> the highest-priced bid per crop, nationally
+
+    Keeping the union means the page's algorithm, unchanged, reaches the same
+    answer it reaches on the full set. Fields are NOT stripped: the page reads
+    a dozen of them under several alternative names and dropping the wrong one
+    fails silently as an empty card. Cutting 17,956 rows to a few hundred is
+    where the bytes are; the fields are noise by comparison.
+    """
+    gz = {g["zip"] for g in grid}
+    keep = {id(b): b for b in bids if b.get("zip") in gz}
+    for crop in ("corn", "beans", "wheat"):
+        cb = [b for b in bids if _page_crop(b.get("commodity")) == crop]
+        if cb:
+            top = max(cb, key=lambda b: float(b.get("cashPrice") or 0))
+            keep[id(top)] = top
+    return list(keep.values())
+
+
 def deduplicate(bids):
     """Deduplicate by facility + branch + commodity + delivery. Keep closest."""
     seen = {}
@@ -471,12 +552,53 @@ def main():
         "bids": all_bids,
     }
 
+    # FULL first, to the gitignored path, because build_basis_map.py needs
+    # every row to average a state and the browser must never be sent them.
+    # The `full` flag is a handshake: build_basis_map refuses a file without
+    # it, so a national basis map can never be built from the slim few hundred.
+    full = dict(output, full=True, bids=all_bids)
+    os.makedirs(os.path.dirname(FULL_PATH) or ".", exist_ok=True)
+    with open(FULL_PATH, "w") as f:
+        json.dump(full, f, separators=(",", ":"))
+
+    slim = slim_for_browser(all_bids, zip_index)
+    output["bids"] = slim
+    output["full"] = False
+    output["slim_note"] = (
+        "Only the bids the futures pages can select: every bid at a grid ZIP, "
+        "plus the highest-priced bid per crop. The complete set is not "
+        "committed - see scripts/fetch_bids.py."
+    )
     os.makedirs(os.path.dirname(OUTPUT_PATH) or ".", exist_ok=True)
     with open(OUTPUT_PATH, "w") as f:
         json.dump(output, f, separators=(",", ":"))
 
+    # PROVE IT, ON THE REAL DATA, EVERY RUN. Not a unit test on a fixture:
+    # the actual payload that is about to be committed, checked against the
+    # actual payload it was cut from, for every grid ZIP and every crop. If
+    # the two ever disagree the run fails rather than quietly serving a
+    # different bid than the page used to show.
+    bad = []
+    for g in zip_index:
+        for crop in ("corn", "beans", "wheat"):
+            a = page_pick(all_bids, g["zip"], crop)
+            b = page_pick(slim, g["zip"], crop)
+            if a != b:
+                bad.append(f'{g["label"]}/{crop}')
+    if bad:
+        print("[fetch_bids] FATAL: the slim file would change what the futures "
+              f"pages display for {len(bad)} grid ZIP/crop pairs: "
+              f"{', '.join(bad[:8])}{'...' if len(bad) > 8 else ''}",
+              file=sys.stderr)
+        sys.exit(4)
+
+    full_kb = os.path.getsize(FULL_PATH) / 1024
     size_kb = os.path.getsize(OUTPUT_PATH) / 1024
-    print(f"[fetch_bids] Wrote {OUTPUT_PATH} ({size_kb:.1f} KB)")
+    print(f"[fetch_bids] Wrote {OUTPUT_PATH} ({size_kb:.1f} KB, {len(slim)} bids) "
+          f"— identical page output to the full set, checked on "
+          f"{len(zip_index) * 3} ZIP/crop pairs")
+    print(f"[fetch_bids] Wrote {FULL_PATH} ({full_kb:.1f} KB, {len(all_bids)} bids) "
+          f"— not committed; build_basis_map.py reads it in this job")
     print(f"[fetch_bids] {len(all_bids)} bids, {len(facilities)} facilities, {len(states)} states")
     print(f"[fetch_bids] Commodities: {commodities}")
 
@@ -608,6 +730,44 @@ def selftest():
                              (30, 30, True), (200, 0, False)):
         ck(f"asked {asked}, got {got} -> {'at ceiling' if want else 'below'}",
            (got >= asked) is want)
+
+    print()
+    print("the slim browser file cannot change what the page shows")
+    grid = [{"zip": "50010", "lat": 42.0, "lng": -93.6, "label": "Ames, IA"},
+            {"zip": "54703", "lat": 44.8, "lng": -91.5, "label": "Eau Claire, WI"}]
+    B = lambda z, c, p_: {"zip": z, "commodity": c, "cashPrice": p_, "city": z}
+    full = [
+        B("50010", "Corn", 4.10),            # exact match at a grid ZIP
+        B("50014", "Corn", 9.99),            # highest price, NOT at a grid ZIP
+        B("54703", "Soybeans", 10.20),
+        B("99999", "Soybeans", 99.00),       # the national fallback for beans
+        B("12345", "Wheat", 5.00),
+        B("12346", "Wheat", 5.50),           # wheat has no grid-ZIP bid at all
+    ]
+    slim = slim_for_browser(full, grid)
+    ck("the slim set is smaller", len(slim) < len(full))
+    ck("every grid-ZIP bid is kept",
+       all(any(b is k for k in slim) for b in full if b["zip"] in {"50010", "54703"}))
+    ck("the national top price per crop is kept, so the fallback still works",
+       any(b["cashPrice"] == 9.99 for b in slim)
+       and any(b["cashPrice"] == 99.00 for b in slim)
+       and any(b["cashPrice"] == 5.50 for b in slim))
+    same = all(page_pick(full, g["zip"], c) == page_pick(slim, g["zip"], c)
+               for g in grid for c in ("corn", "beans", "wheat"))
+    ck("the page picks the same bid from either file", same)
+    ck("an exact ZIP match beats a higher price elsewhere",
+       page_pick(full, "50010", "corn")["cashPrice"] == 4.10)
+    ck("with no ZIP match the page falls back to the national top price",
+       page_pick(full, "50010", "wheat")["cashPrice"] == 5.50)
+    ck("a crop with no bids at all returns nothing",
+       page_pick([], "50010", "corn") is None)
+
+    # The dropped rows must be exactly the ones no grid ZIP can reach. If this
+    # ever fires, the slim file is throwing away a bid the page could select.
+    dropped = [b for b in full if not any(b is k for k in slim)]
+    ck("every dropped bid is unreachable from every grid ZIP",
+       all(page_pick(full, g["zip"], _page_crop(b["commodity"])) is not b
+           for b in dropped for g in grid))
 
     print()
     print("dedup still collapses the overlap a bigger radius creates")
