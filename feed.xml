@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 19 Aug 2026 11:28:58 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 20 Aug 2026 11:30:31 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>EXPORT SALES AT 7:30; BEANS HOLD, CRUDE RUNS</title>
+      <link>https://agsist.com/daily/2026-08-20</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-20</guid>
+      <pubDate>Thu, 20 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Beans added a dime and a half to $12.25, corn sat dead flat at $4.77, and crude ran nearly 3% to $86.86 as Iranian supply routes fracture further. The export sales number at 7:30 AM CT is the last data point that can move this week's grain story. Tour results have run below last year; the question is whether buyers care.
+Pro Farmer's final tour day sets up this morning's export print as the week's last live catalyst.
+• BEANS FIRM, CORN FLAT
+• EXPORT SALES: 7:30 AM CT
+  → Old-crop corn: if export sales print above 500K MT on corn, that is your window to re-evaluate holds before harvest pressure builds.
+• CRUDE RUNS ON HORMUZ FRACTURES
+Read more: https://agsist.com/daily/2026-08-20</description>
+    </item>
     <item>
       <title>TOUR DAY 3: BEANS FIRM, CORN FLAT, HORMUZ TIGHTENS</title>
       <link>https://agsist.com/daily/2026-08-19</link>
@@ -377,19 +390,6 @@ Houthi threats to Bab el-Mandeb add a second chokepoint to the Hormuz story, pus
 • Grains Hold, Heat Builds
 • Cattle Mixed; Feeders Slip
 Read more: https://agsist.com/daily/2026-07-22</description>
-    </item>
-    <item>
-      <title>HORMUZ ESCALATES AGAIN; FEEDERS RUN HARD</title>
-      <link>https://agsist.com/daily/2026-07-21</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-21</guid>
-      <pubDate>Tue, 21 Jul 2026 05:00:00 -0600</pubDate>
-      <description>The Strait of Hormuz just got louder. A projectile hit the Kuwaiti tanker Kaifan near Oman this morning, pushing Brent back above $90 and pulling WTI to $82.90, up nearly a dollar from yesterday's close. That's the headline risk, and it's real. Meanwhile, Monday's USDA Crop Progress report told a cleaner crop story than the weather-premium crowd wanted to hear: Iowa corn at 80% good-to-excellent, Nebraska climbing to 65%, soybeans improving across Kansas and Missouri. The weekly thread's core question, whether crop condition data would confirm or undercut the pollination stress premium, got its first answer today. The crops look better than feared.
-A Kuwaiti tanker struck in the Strait this morning sent crude back toward $90 while crop condition upgrades across the Belt quietly undercut the corn weather premium.
-• Feeders Run on Oversold Signals
-• Crude Climbs; Hormuz Re-Escalates
-  → Harvest-season diesel still unhedged: $82.90 is not the ceiling with a fresh tanker strike and U.S.-Iran strikes on nuclear infrastructure overnight. Lock remaining needs today.
-• Crop Conditions Undercut Corn Premium
-Read more: https://agsist.com/daily/2026-07-21</description>
     </item>
   </channel>
 </rss>
