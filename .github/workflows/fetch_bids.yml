@@ -1,18 +1,49 @@
 name: Fetch Grain Bids
 
+# ONE JOB, TWO OUTPUTS, AND THE BIG FILE NEVER LANDS IN GIT.
+#
+# fetch_bids.py now writes two things:
+#   data/bids.json   SLIM  - what /corn-futures-prices and its two siblings
+#                            fetch in the browser. ~116 KB against 6.3 MB, and
+#                            the script proves on every run that the page picks
+#                            the same bid from it as from the full set.
+#   bids-full.json   FULL  - every row, gitignored, for build_basis_map.py.
+#
+# build_basis_map.py therefore has to run HERE, in the same job, while the full
+# file still exists on the runner. That is why basis-map.yml no longer runs on
+# a schedule. It refuses to build from the slim file rather than quietly
+# averaging a handful of elevators per state.
+
 on:
   schedule:
     - cron: '*/30 11-21 * * 1-5'
     - cron: '37 11 * * 6'
   workflow_dispatch:
+    inputs:
+      total_locations:
+        description: 'Max locations per ZIP (blank = the script default, 200)'
+        required: false
+        default: ''
+      dry_run:
+        description: 'Fetch and report, but do not commit'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write
 
+concurrency:
+  group: bids-and-basis
+  cancel-in-progress: false
+
 jobs:
   fetch-bids:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Was 10. Two hundred locations per ZIP is a lot more payload across 50
+    # ZIPs, and a run that dies on the clock looks exactly like one that died
+    # on an error. Headroom is cheaper than that ambiguity.
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,17 +53,39 @@ jobs:
         with:
           python-version: '3.11'
 
+      # Offline, no API key, under a second. Cheap insurance against a parsing
+      # edit reaching the live feed.
+      - name: Check fetch_bids
+        run: python scripts/fetch_bids.py --selftest
+
       - name: Fetch grain bids
         env:
           BARCHART_API_KEY: ${{ secrets.BARCHART_API_KEY }}
+          BARCHART_TOTAL_LOCATIONS: ${{ github.event.inputs.total_locations }}
         run: python scripts/fetch_bids.py
 
+      # Same job, while bids-full.json is still on disk. This step failing is
+      # a real failure: it means the full file was not written.
+      - name: Build the national basis map
+        run: python scripts/build_basis_map.py
+
+      - name: Sizes
+        run: |
+          ls -lh data/bids.json data/basis-map.json bids-full.json
+
       - name: Commit and push
+        if: github.event.inputs.dry_run != 'true'
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add data/bids.json
+          # bids-full.json is gitignored. Adding it explicitly here would put
+          # 6 MB into every commit, which is the whole thing this avoids.
+          git add data/bids.json data/basis-map.json
           git diff --staged --quiet && echo "No changes" && exit 0
-          git commit -m "Update grain bids $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git commit -m "Update grain bids + basis map $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git pull --rebase origin main
           git push
+
+      - name: Say why nothing was committed
+        if: github.event.inputs.dry_run == 'true'
+        run: echo "dry_run was set - both files were written in the runner and thrown away."

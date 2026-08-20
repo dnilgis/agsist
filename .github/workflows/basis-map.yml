@@ -1,17 +1,28 @@
 name: Build National Basis Map
 
+# NO LONGER ON A SCHEDULE, ON PURPOSE.
+#
+# This job used to check out the repo and read the committed data/bids.json.
+# That file is now the SLIM browser copy - a few hundred bids, only the ones
+# the futures pages can select - and a national basis map built from it would
+# average two or three elevators per state and look entirely plausible.
+#
+# build_basis_map.py refuses to run on it (it checks the `full` flag in the
+# file, not the filename), so the old schedule would simply have gone red
+# twice an hour. The map is now built inside fetch_bids.yml, in the same job
+# as the fetch, while the full file still exists on the runner.
+#
+# Kept as dispatch-only because the refusal message is the documentation: run
+# it by hand and it tells you exactly why it will not build.
+
 on:
-  schedule:
-    # 10 min past each half-hour, weekdays, ~US market hours (UTC).
-    # Runs just after fetch_bids.py commits fresh data/bids.json.
-    - cron: "10,40 12-21 * * 1-5"
   workflow_dispatch: {}
 
 permissions:
   contents: write
 
 concurrency:
-  group: basis-map
+  group: bids-and-basis
   cancel-in-progress: false
 
 jobs:
