@@ -817,6 +817,17 @@ def render_bench(data, ph="during"):
 # Widest a bar may reach, as a percentage of the cell measured from the centre
 # tick. The remaining 100 - 2*MAXW is gutter the printed value lives in, so the
 # biggest miss in the table can never shove its own label into the next column.
+PAPER_CARD = (
+    '<div class="ct-paper"><a class="ct-paper-a" href="/pod-counts">'
+    '<span class="ct-paper-k">Working paper</span>'
+    '<span class="ct-paper-t">Do pod counts predict soybean yield?</span>'
+    '<span class="ct-paper-d">The tour counts pods and never publishes a bean '
+    'yield. We measured what those counts actually predict, against USDA&rsquo;s '
+    'final state numbers &mdash; and what the rule of thumb everyone repeats '
+    'gets wrong.</span>'
+    '<span class="ct-paper-go">Read it &rarr;</span></a></div>')
+
+
 BAR_MAXW = 34.0
 
 
@@ -1053,10 +1064,21 @@ SECTIONS = {
         "sub": ("Every tour since 2015, against the crop that actually came in. Bar shows how "
                 "far the tour's final corn number landed from USDA's final yield: left of the "
                 "line means the tour called it too small, right means too big."),
+        # PAPER_CARD is literal, not spliced, and DELIBERATELY CARRIES NO
+        # FIGURES. The study's numbers live on /pod-counts and nothing on this
+        # page bakes them, so a figure here would be a second writer that goes
+        # quietly stale the day the panel is extended past 2025.
+        #
+        # It is emitted by the baker rather than hand-typed into the template
+        # because everything between the CT:flow markers is regenerated on
+        # every bake. A card written into crop-tour.html by hand survives
+        # exactly until the next run of this script, and then vanishes without
+        # failing anything -- which is how it vanished the first time.
         "body": ('<!-- CT:record --><!-- /CT:record -->'
                  '<!-- CT:history --><!-- /CT:history -->'
                  '<p class="ct-legend"><!-- CT:soy --><!-- /CT:soy --></p>'
-                 '<!-- CT:soytbl --><!-- /CT:soytbl -->'),
+                 '<!-- CT:soytbl --><!-- /CT:soytbl -->'
+                 + PAPER_CARD),
     },
 }
 
@@ -1580,6 +1602,10 @@ def selftest():
     ck("during: the nightly board is first in source order", dur[0] == "nights")
     ck("scored: the accuracy record is first in source order", sco[0] == "history")
     ck("the flow reorders nothing with CSS", "order:" not in render_flow("during"))
+    ck("the paper card survives a bake, because the baker writes it",
+       "ct-paper-a" in render_flow("during") and "ct-paper-a" in render_flow("scored"))
+    ck("the paper card prints no figure that could go stale",
+       not re.search(r"\d", re.sub(r"<[^>]+>", "", PAPER_CARD)))
     ck("every section carries its own heading and nested marker",
        all(f'<!-- CT:{m} -->' in render_flow("during")
            for m in ("nights", "bench", "history", "soy", "soytbl", "record")))

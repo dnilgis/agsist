@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <link rel="preload" href="/components/styles.css?v=15" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=15">
+  <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32"  href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16"  href="/img/favicon-16.png">
+  <link rel="apple-touch-icon"                     href="/img/apple-touch-icon.png">
+  <link rel="manifest"                             href="/manifest.json">
+
+  <title>Do Pod Counts Predict Soybean Yield? We Measured It | AGSIST</title>
+  <meta name="description" content="Pro Farmer's Crop Tour counts soybean pods and never publishes a yield. We measured what 28 state-years of those counts actually predict.">
+  <link rel="canonical"    href="https://agsist.com/pod-counts">
+  <meta name="robots"      content="index, follow, max-image-preview:large">
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="AGSIST">
+  <meta property="og:locale"       content="en_US">
+  <meta property="og:title"        content="Do Pod Counts Predict Soybean Yield? We Measured It | AGSIST">
+  <meta property="og:description"  content="Pro Farmer's Crop Tour counts soybean pods and never publishes a yield. We measured what 28 state-years of those counts actually predict.">
+  <meta property="og:url"          content="https://agsist.com/pod-counts">
+  <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="Do Pod Counts Predict Soybean Yield? We Measured It | AGSIST">
+  <meta name="twitter:description" content="Pro Farmer's Crop Tour counts soybean pods and never publishes a yield. We measured what 28 state-years of those counts actually predict.">
+  <style>
+  .ct-wrap{max-width:900px;margin:0 auto;padding:0 1rem 3rem;}
+  .ct-hero{margin:.4rem 0 1.6rem;}
+  .ct-kick{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold,#d4a23f);margin-bottom:.5rem;}
+  .ct-big{font-family:var(--font-display),'Inter',system-ui,sans-serif;font-size:clamp(3.2rem,13vw,5rem);font-weight:800;line-height:.95;color:var(--text,#e7ece8);letter-spacing:-.02em;}
+  .ct-unit{font-size:.32em;font-weight:700;color:var(--text-muted,#9bb0a3);margin-left:.35rem;letter-spacing:0;}
+  .ct-vd{font-size:1.02rem;font-weight:700;color:var(--text,#e7ece8);margin:.45rem 0 .9rem;line-height:1.35;}
+  .ct-lead{font-size:.98rem;color:var(--text-dim,#c3ccc4);line-height:1.7;margin:0 0 .75rem;}
+  .ct-lead b{color:var(--text,#e7ece8);}
+  .ct-h2{font-family:var(--font-display),'Inter',system-ui,sans-serif;font-size:1.28rem;font-weight:800;color:var(--text,#e7ece8);margin:2.2rem 0 .3rem;}
+  .ct-sub{font-size:.9rem;color:var(--text-muted,#9bb0a3);line-height:1.6;margin:0 0 1rem;}
+  .ct-benches{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:.6rem;margin:0 0 .8rem;}
+  .ct-bench{background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:.9rem 1rem;}
+  .ct-bench--agsist{border-color:rgba(212,162,63,.45);}
+  .ct-b-lbl{font-family:'JetBrains Mono',monospace;font-size:.73rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted,#9bb0a3);}
+  .ct-b-val{font-family:var(--font-display),'Inter',system-ui,sans-serif;font-size:2rem;font-weight:800;color:var(--text,#e7ece8);line-height:1.1;margin:.25rem 0 .2rem;}
+  .ct-b-u{font-size:.42em;font-weight:700;color:var(--text-muted,#9bb0a3);margin-left:.25rem;}
+  .ct-b-note{font-size:.82rem;color:var(--text-dim,#c3ccc4);line-height:1.5;}
+  .ct-night{background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:.85rem 1rem;margin-bottom:.6rem;}
+  .ct-night--posted{border-color:rgba(74,171,76,.4);}
+  .ct-n-hd{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.6rem;}
+  .ct-n-day{font-weight:700;font-size:1rem;color:var(--text,#e7ece8);}
+  .ct-n-date{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-muted,#9bb0a3);}
+  .ct-states{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr));gap:.55rem;}
+  .ct-state{border:1px solid var(--border,#2a3324);border-radius:9px;padding:.6rem .75rem;}
+  .ct-st-name{font-weight:700;font-size:.92rem;color:var(--text,#e7ece8);margin-bottom:.25rem;}
+  .ct-num{font-family:'JetBrains Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--green,#4aab4c);}
+  .ct-lbl{font-size:.78rem;color:var(--text-muted,#9bb0a3);}
+  .ct-vals div{margin-top:.15rem;}
+  .ct-pend{font-size:.83rem;color:var(--text-muted,#9bb0a3);font-style:normal;}
+  .ct-tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .ct-tbl{width:100%;border-collapse:collapse;font-size:.9rem;min-width:540px;}
+  .ct-tbl th{text-align:left;font-family:'JetBrains Mono',monospace;font-size:.73rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted,#9bb0a3);border-bottom:1px solid var(--border,#2a3324);padding:.5rem .6rem;}
+  .ct-tbl th.num,.ct-tbl td.num{text-align:right;font-family:'JetBrains Mono',monospace;}
+  .ct-tbl td{padding:.55rem .6rem;border-bottom:1px solid var(--border,#2a3324);color:var(--text-dim,#c3ccc4);vertical-align:middle;}
+  .ct-tbl td b{color:var(--text,#e7ece8);}
+  .ct-yr-note{font-size:.76rem;color:var(--text-muted,#9bb0a3);line-height:1.45;margin-top:.2rem;max-width:30ch;}
+  .ct-barcell{position:relative;min-width:260px;height:38px;}
+  .ct-tick{position:absolute;left:50%;top:8px;bottom:8px;width:1px;background:var(--text-muted,#9bb0a3);opacity:.5;}
+  .ct-bar{position:absolute;top:50%;transform:translateY(-50%);height:12px;border-radius:2px;display:block;}
+  .ct-bar--neg{background:var(--red,#e0685f);}
+  .ct-bar--pos{background:var(--green,#4aab4c);}
+  .ct-bar-v{position:absolute;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;white-space:nowrap;}
+  .ct-bar-v--neg{padding-right:.4rem;color:var(--red,#e0685f);}
+  .ct-bar-v--pos{padding-left:.4rem;color:var(--green,#4aab4c);}
+  .ct-bar-zero{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;color:var(--text-muted,#9bb0a3);}
+  .ct-legend{font-size:.82rem;color:var(--text-muted,#9bb0a3);line-height:1.6;margin:.7rem 0 0;}
+  .ct-note{background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:1rem 1.15rem;margin-top:1.4rem;font-size:.87rem;color:var(--text-dim,#c3ccc4);line-height:1.68;}
+  .ct-note b{color:var(--text,#e7ece8);}
+  .ct-note a{color:var(--gold,#d4a23f);}
+  .ct-note ul{margin:.5rem 0 0;padding-left:1.1rem;}
+  .ct-note li{margin-bottom:.25rem;}
+  .ct-stamp{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-muted,#9bb0a3);margin:.2rem 0 1.2rem;}
+  .ct-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.3rem 0 0;}
+  .ct-chip{display:inline-flex;align-items:center;min-height:44px;padding:.4rem .8rem;border:1px solid var(--border,#2a3324);border-radius:8px;font-size:.87rem;color:var(--text-dim,#c3ccc4);text-decoration:none;}
+  .ct-chip:hover{border-color:var(--gold,#d4a23f);color:var(--gold,#d4a23f);}
+  /* ---- theme + record table, panel rebuild 2026-08-18 ---------------- */
+  /* --card is not defined anywhere in components/styles.css, so every
+     var(--card,#161b14) resolved to the dark fallback in BOTH themes: in
+     light mode the cards stayed near-black while the text flipped to
+     near-black. Measured contrast ratio 1.00. Scoped to .ct-wrap so no other
+     page moves; the dark value is today's exact colour, so dark is unchanged. */
+  .ct-wrap{--card:#161b14;}
+  [data-theme="light"] .ct-wrap{--card:#ffffff;}
+  [data-theme="light"] .ct-wrap .ct-kick,
+  [data-theme="light"] .ct-wrap .breadcrumb a,
+  [data-theme="light"] .ct-wrap .ct-note a{color:#8a6612;}
+  [data-theme="light"] .ct-wrap .ct-chip:hover{color:#8a6612;border-color:#8a6612;}
+  :root{color-scheme:dark;}
+  [data-theme="light"]{color-scheme:light;}
+
+  /* 30ch was written for the history table's Year column. The same class is
+     reused inside the nightly board, where the cap forced every state card's
+     footnote onto two lines at 768px and up inside a 383px card. */
+  .ct-yr-note{max-width:none;}
+  .ct-tbl .ct-yr-note{max-width:34ch;}
+
+  .ct-cap{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0;}
+  .ct-td-lbl{display:none;}
+  /* The words "dead on" are centred on the same x as the axis tick, so the
+     1px rule ran through the middle of the phrase. That row sits on zero; the
+     tick is redundant there. */
+  .ct-barcell.zero .ct-tick{display:none;}
+
+  .ct-tbl details.ct-yr-note{margin-top:.2rem;}
+  .ct-yr-note>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:.3rem;
+    font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--gold,#d4a23f);border:1px solid var(--border,#2a3324);
+    border-radius:999px;padding:.15rem .55rem;min-height:32px;}
+  .ct-yr-note>summary::-webkit-details-marker{display:none;}
+  .ct-yr-note>summary::after{content:"";width:8px;height:8px;border-right:2px solid currentColor;
+    border-bottom:2px solid currentColor;transform:rotate(45deg) translate(-2px,-2px);}
+  .ct-yr-note[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px);}
+  .ct-yr-note>p{margin:.4rem 0 0;}
+
+  @media (forced-colors: active){
+    .ct-bar{forced-color-adjust:none;background:CanvasText;border:1px solid CanvasText;}
+    .ct-bar--neg,.ct-bar--pos{background:CanvasText;}
+    .ct-tick{forced-color-adjust:none;background:CanvasText;opacity:1;}
+  }
+
+  /* ── the lede board: last night's figures, under the H1 ───────────────
+     Reuses .ct-num / .ct-lbl so a state figure has one set of rules. The
+     delta is its own nowrap chip because as a loose inline span it broke
+     "(-90 vs 2025)" across two lines in a 222.5px column at 320px. */
+  .ct-hero-board{background:var(--card,#161b14);border:1px solid rgba(74,171,76,.55);
+                 border-radius:14px;padding:.85rem 1rem 1rem;margin:.15rem 0 .8rem;}
+  .ct-hs-hd{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;
+            letter-spacing:.08em;text-transform:uppercase;color:var(--green,#4aab4c);margin-bottom:.6rem;}
+  .ct-hs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:.75rem;}
+  .ct-hs-name{font-weight:700;font-size:.95rem;color:var(--text,#e7ece8);margin-bottom:.15rem;}
+  .ct-hs .ct-num{font-size:clamp(1.9rem,8.5vw,2.6rem);line-height:1.05;letter-spacing:-.01em;}
+  .ct-hs .ct-lbl{font-size:.82rem;}
+  .ct-figs{display:flex;flex-direction:column;gap:.32rem;margin:.1rem 0 0;}
+  .ct-fig{display:flex;flex-wrap:wrap;align-items:baseline;gap:.1rem .45rem;}
+  .ct-fig-m{white-space:nowrap;}
+  .ct-dlt{white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:.76rem;
+          font-weight:700;font-variant-numeric:tabular-nums;padding:.05rem .35rem;
+          border-radius:5px;border:1px solid var(--border,#2a3324);color:var(--text-muted,#9bb0a3);}
+  .ct-dlt--dn{color:var(--red,#e0685f);border-color:rgba(224,104,95,.4);}
+  .ct-dlt--up{color:var(--green,#4aab4c);border-color:rgba(74,171,76,.4);}
+  /* DISTRICTS. Same .ct-num/.ct-lbl/.ct-dlt markup as a state figure, scaled
+     down here and nowhere else, so a district cannot read as heavy as the
+     state number it is not -- and cannot drift into a second set of type
+     rules the way the lede board nearly did. */
+  .ct-dists{margin-top:.55rem;padding-top:.45rem;border-top:1px solid var(--border,#2a3324);
+            display:flex;flex-direction:column;gap:.5rem;}
+  .ct-d-lbl{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.09em;
+            text-transform:uppercase;color:var(--text-muted,#9bb0a3);}
+  .ct-d-hd{display:flex;align-items:baseline;gap:.45rem;flex-wrap:wrap;}
+  .ct-d-code{font-weight:700;font-size:.82rem;color:var(--text,#e7ece8);}
+  .ct-d-n{font-size:.68rem;color:var(--text-muted,#9bb0a3);}
+  .ct-dists .ct-num{font-size:.98rem;}
+  .ct-dists .ct-lbl{font-size:.72rem;}
+  .ct-dists .ct-dlt{font-size:.67rem;padding:.03rem .28rem;}
+  .ct-dists .ct-figs{gap:.16rem;margin-top:.05rem;}
+  .ct-dsum .ct-num{font-size:1.15rem;}
+  .ct-dwarn{font-size:.72rem;color:var(--text-muted,#9bb0a3);line-height:1.45;margin-top:.3rem;}
+  .ct-dtoggle{margin-top:.1rem;}
+  .ct-dtoggle>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:.3rem;
+    font-size:.74rem;color:var(--text-muted,#9bb0a3);padding:.15rem 0;}
+  .ct-dtoggle>summary::-webkit-details-marker{display:none;}
+  .ct-dtoggle>summary::after{content:"";width:7px;height:7px;border-right:2px solid currentColor;
+    border-bottom:2px solid currentColor;transform:rotate(45deg) translate(-1px,-1px);}
+  .ct-dtoggle[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px);}
+  .ct-dtoggle .ct-dist{margin-top:.5rem;}
+  /* The soybean record, folded under the corn one. Beans are the softer half
+     of the tour -- pods counted, never a yield measured -- so they get depth
+     without competing with corn for the top of the section. */
+  .ct-soytbl{margin-top:1.1rem;border-top:1px solid var(--border,#2a3324);padding-top:.7rem;}
+  .ct-soytbl>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;
+    gap:.4rem;font-weight:700;font-size:.95rem;color:var(--text,#e7ece8);padding:.2rem 0;}
+  .ct-soytbl>summary::-webkit-details-marker{display:none;}
+  .ct-soytbl>summary::after{content:"";width:8px;height:8px;border-right:2px solid currentColor;
+    border-bottom:2px solid currentColor;transform:rotate(45deg) translate(-2px,-2px);}
+  .ct-soytbl[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px);}
+  .ct-hero--live .ct-vd{margin-top:.2rem;}
+  /* 34px at line-height 1.65 cost 112px over two lines at 320px, all of it
+     above the figures the reader came for. */
+  .ct-wrap h1{font-size:clamp(1.7rem,7.4vw,2.1rem);line-height:1.14;letter-spacing:-.01em;}
+  @media (forced-colors: active){
+    .ct-dlt{border-color:currentColor;}
+    .ct-hero-board{border-color:currentColor;}
+  }
+
+  @media(max-width:620px){
+    /* One grid card per year. Still one <table>, one <tr> per year, one DOM
+       order — no CSS `order:`, no duplicated markup, no JS. */
+    .ct-tbl{min-width:0;}
+    /* Visually hidden, NOT display:none: display:none deletes all five
+       columnheader roles from the accessibility tree (measured: 0 headers at
+       320px, 5 at 900px on the old rule). */
+    .ct-tbl thead{position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+      overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0;}
+    .ct-tbl tbody{display:block;}
+    .ct-tbl tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+      column-gap:.55rem;row-gap:.15rem;align-items:end;
+      background:var(--card,#161b14);border:1px solid var(--border,#2a3324);
+      border-radius:10px;padding:.55rem .7rem .6rem;margin:0 0 .5rem;}
+    .ct-tbl td{display:block;border:0;padding:0;}
+    .ct-td-lbl{display:block;font-family:'JetBrains Mono',monospace;font-size:.63rem;
+      font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+      color:var(--text-muted,#9bb0a3);line-height:1.5;}
+    .ct-tbl td.num{text-align:left;font-family:'JetBrains Mono',monospace;
+      font-size:1.02rem;font-weight:700;color:var(--text,#e7ece8);line-height:1.25;}
+    .ct-yrcell{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;
+      gap:.45rem;margin-bottom:.15rem;}
+    .ct-yrcell .ct-td-lbl{display:none;}
+    .ct-yrcell b{font-family:var(--font-display),'Inter',system-ui,sans-serif;
+      font-size:1.12rem;font-weight:800;color:var(--text,#e7ece8);line-height:1.2;}
+    /* The bar gets its own line and its own 22px track, and the tick / bar /
+       value are anchored to the BOTTOM of the cell. On the old rule the cell
+       kept height:38px while the label rendered as a block inside it and the
+       bar stayed at top:50%, so the value painted through the label glyphs in
+       7 of 11 rows at 320-430px. */
+    .ct-barcell{display:block!important;grid-column:1/-1;min-width:0;width:100%;
+      height:auto;margin-top:.35rem;}
+    .ct-barcell .ct-td-lbl{margin:0 0 .15rem;}
+    .ct-barcell::after{content:"";display:block;height:22px;}
+    .ct-tick{top:auto;bottom:1px;height:20px;opacity:.6;}
+    .ct-bar{top:auto;bottom:6px;transform:none;height:11px;}
+    .ct-bar-v{top:auto;bottom:0;transform:none;line-height:22px;font-size:.8rem;}
+    .ct-bar-zero{top:auto;bottom:0;left:50%;transform:translateX(-50%);line-height:22px;}
+    .ct-tbl .ct-yr-note{max-width:none;}
+  }
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","@id":"https://agsist.com/pod-counts#article","headline":"Do pod counts predict soybean yield?","description":"Pro Farmer's Crop Tour counts soybean pods and never publishes a yield. We measured what 28 state-years of those counts actually predict.","url":"https://agsist.com/pod-counts","datePublished":"2026-08-19","dateModified":"2026-08-19","inLanguage":"en-US","author":{"@id":"https://agsist.com/#org"},"publisher":{"@id":"https://agsist.com/#org"},"isPartOf":{"@id":"https://agsist.com/#website"}},{"@type":"Dataset","@id":"https://agsist.com/pod-counts#dataset","name":"Pro Farmer Crop Tour state pod counts against USDA final state soybean yields, 2022-2025","description":"Twenty-eight state-years pairing Pro Farmer Crop Tour soybean pod counts in a 3-foot square with USDA NASS final state soybean yields.","url":"https://agsist.com/pod-counts","license":"https://agsist.com/terms","creator":{"@id":"https://agsist.com/#org"},"temporalCoverage":"2022/2025","variableMeasured":["soybean pods in a 3x3 foot square","soybean yield bushels per acre"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Crop Tour","item":"https://agsist.com/crop-tour"},{"@type":"ListItem","position":3,"name":"Pod counts and yield","item":"https://agsist.com/pod-counts"}]}]}</script>
+
+  <style>
+  .pc-wrap{max-width:820px;margin:0 auto;padding:0 1rem 3rem;}
+  .pc-lede{font-size:1.06rem;line-height:1.65;color:var(--text,#e7ece8);margin:.8rem 0 1.2rem;}
+  .pc-stamp{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--text-muted,#9bb0a3);
+    letter-spacing:.04em;margin-bottom:.4rem;}
+  .pc-h2{font-size:1.18rem;margin:2.1rem 0 .5rem;padding-top:1.2rem;
+    border-top:1px solid var(--border,#2a3324);}
+  .pc-wrap p{line-height:1.68;margin:0 0 .9rem;}
+  .pc-k{font-family:'JetBrains Mono',monospace;color:var(--green,#4aab4c);font-weight:700;}
+  .pc-charts{display:grid;gap:.9rem;grid-template-columns:1fr;margin:1rem 0 1.2rem;}
+  @media(min-width:760px){.pc-charts{grid-template-columns:1fr 1fr;}}
+  .pc-card{border:1px solid var(--border,#2a3324);border-radius:10px;padding:.5rem;min-width:0;}
+  .pc-card svg{display:block;width:100%;height:auto;}
+  .pc-tbl-wrap{margin:.6rem 0 1.1rem;}
+  .pc-tbl{border-collapse:collapse;width:100%;font-size:.86rem;}
+  .pc-lbl{display:none;}
+  .pc-tbl th,.pc-tbl td{border-bottom:1px solid var(--border,#2a3324);padding:.45rem .5rem;text-align:right;}
+  .pc-tbl th:first-child,.pc-tbl td:first-child{text-align:left;}
+  .pc-tbl th{color:var(--text-muted,#9bb0a3);font-weight:400;font-size:.72rem;
+    text-transform:uppercase;letter-spacing:.07em;}
+  .pc-tbl td.n{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--text,#e7ece8);}
+  .pc-tbl tr.hl td{color:var(--green,#4aab4c);}
+  /* PHONES: the six-column fit table becomes one card per fit. A horizontally
+     scrolling table is the fault the 2026-08-18 audit spent a night removing
+     from the record table; it does not get to come back through a new page.
+     Labels are real aria-hidden spans, not ::before generated content --
+     Chromium folds generated content into the accessible name, so a restored
+     column header plus a generated label makes a screen reader say it twice. */
+  @media (max-width:620px){
+    .pc-tbl thead{position:absolute;width:1px;height:1px;overflow:hidden;
+      clip-path:inset(50%);white-space:nowrap;}
+    .pc-tbl,.pc-tbl tbody,.pc-tbl tr,.pc-tbl td{display:block;width:auto;}
+    .pc-tbl tr{border:1px solid var(--border,#2a3324);border-radius:9px;
+      padding:.55rem .7rem;margin-bottom:.6rem;
+      display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.3rem .8rem;}
+    .pc-tbl td{border:0;padding:0;text-align:left;}
+    .pc-tbl td:first-child{grid-column:1/-1;font-weight:700;
+      color:var(--text,#e7ece8);margin-bottom:.1rem;}
+    .pc-lbl{display:block;font-size:.66rem;letter-spacing:.07em;
+      text-transform:uppercase;color:var(--text-muted,#9bb0a3);}
+  }
+  .pc-note{border-left:3px solid var(--green,#4aab4c);padding:.1rem 0 .1rem .9rem;margin:1rem 0;}
+  .pc-warn{border-left:3px solid var(--red,#e0685f);padding:.1rem 0 .1rem .9rem;margin:1rem 0;
+    color:var(--text-muted,#9bb0a3);font-size:.95rem;}
+  .pc-warn b,.pc-note b{color:var(--text,#e7ece8);}
+  .pc-src{font-size:.84rem;color:var(--text-muted,#9bb0a3);line-height:1.6;}
+  .pc-back{display:inline-block;margin-top:1.6rem;font-size:.9rem;}
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header"></div>
+
+  <main id="main">
+    <div class="pc-wrap">
+      <nav class="breadcrumb" aria-label="Breadcrumb" style="margin:1rem 0 .4rem">
+        <a href="/">Home</a> &rarr; <a href="/crop-tour">Crop Tour</a> &rarr; Pod counts
+      </nav>
+      <h1 style="margin:0 0 .3rem">Do pod counts predict soybean yield?</h1>
+      <div class="pc-stamp">AGSIST working paper &middot; 19 August 2026 &middot; 28 state-years</div>
+
+      <p class="pc-lede">Nobody quotes a pod count when they talk soybean yield. The reason usually
+      given is that pod counts don&rsquo;t convert &mdash; and that is half true. They do not convert
+      through any published formula. But they carry real signal, and it can be measured instead of
+      argued about. So far as we can find, nobody has published the measurement. This is it.</p>
+
+      <h2 class="pc-h2">What the tour actually does with soybeans</h2>
+      <p>Pro Farmer&rsquo;s scouts measure corn as a yield in the field &mdash; ear counts, grain
+      length, kernel rows. They never measure a soybean yield at all. The published method is to
+      count pods: <em>&ldquo;Count all pods on the three plants &mdash; any pod &frac14;&Prime; or
+      larger &mdash; and average.&rdquo;</em> That count is normalised to a three-foot square and
+      published per state. No state soybean yield is published, ever.</p>
+      <p>Their stated reason is exact, and it is the reason this page has to be careful:
+      <em>&ldquo;The number of pods it takes to make a bushel is different in each state and
+      varies from year to year.&rdquo;</em></p>
+
+      <h2 class="pc-h2">The measurement</h2>
+      <p>Twenty-eight state-years: seven tour states, 2022 through 2025. Pod counts as Pro Farmer
+      published them. Soybean yields as USDA NASS finally published them, in the Crop Production
+      Annual Summary each January, cross-checked against the state field-office releases.</p>
+      <p>Each dot is one state in one year, shown as a difference from that state&rsquo;s own
+      four-year average. Working within state is not a stylistic choice. Pooling every state
+      together gives r&nbsp;=&nbsp;+0.85, but most of that is just South Dakota having both low pod
+      counts and low yields &mdash; it measures the gap between states, not the thing anyone wants
+      to know. Subtracting each state&rsquo;s own average isolates the real question:
+      <em>when a state&rsquo;s pod count moves, does its yield move with it?</em></p>
+      <p>The corn side of the same tour, run through exactly the same arithmetic, is the control.
+      Shaded band is 95%.</p>
+
+      <div class="pc-charts"><div class="pc-card"><svg viewBox="0 0 520 380" width="100%" role="img" aria-label="Soybeans: pod count vs USDA final yield"><text x="64" y="20" fill="#e7ece8" font-size="14" font-weight="700">Soybeans: pod count vs USDA final yield</text><text x="64" y="35" fill="#9bb0a3" font-size="11">r = +0.66 &#183; R&#178; = 0.43 &#183; residual SD 2.54 bu &#183; n = 28</text><line x1="276.9675130105661" y1="42" x2="276.9675130105661" y2="328" stroke="#2a3324"/><line x1="64" y1="204.8611111111111" x2="502" y2="204.8611111111111" stroke="#2a3324"/><line x1="64.0" y1="265.50846069729266" x2="502.0" y2="140.7779854091223" stroke="#4aab4c" stroke-width="2"/><path d="M64.0 193.69348841916985 L502.0 68.96301313099946 L502.0 212.59295768724513 L64.0 337.32343297541547 Z" fill="#4aab4c" opacity=".10"/><circle cx="169.0" cy="185.0" r="4" fill="#4aab4c" opacity=".8"><title>OH 2022: -94, +1.4</title></circle><circle cx="308.6" cy="148.9" r="4" fill="#4aab4c" opacity=".8"><title>OH 2023: +27, +3.9</title></circle><circle cx="282.1" cy="264.4" r="4" fill="#4aab4c" opacity=".8"><title>OH 2024: +4, -4.1</title></circle><circle cx="348.2" cy="221.1" r="4" fill="#4aab4c" opacity=".8"><title>OH 2025: +62, -1.1</title></circle><circle cx="100.5" cy="277.1" r="4" fill="#4aab4c" opacity=".8"><title>SD 2022: -153, -5.0</title></circle><circle cx="263.5" cy="190.4" r="4" fill="#4aab4c" opacity=".8"><title>SD 2023: -12, +1.0</title></circle><circle cx="278.4" cy="204.9" r="4" fill="#4aab4c" opacity=".8"><title>SD 2024: +1, +0.0</title></circle><circle cx="465.5" cy="147.1" r="4" fill="#4aab4c" opacity=".8"><title>SD 2025: +164, +4.0</title></circle><circle cx="105.0" cy="230.1" r="4" fill="#4aab4c" opacity=".8"><title>IN 2022: -149, -1.8</title></circle><circle cx="270.7" cy="179.6" r="4" fill="#4aab4c" opacity=".8"><title>IN 2023: -5, +1.8</title></circle><circle cx="384.8" cy="208.5" r="4" fill="#4aab4c" opacity=".8"><title>IN 2024: +94, -0.2</title></circle><circle cx="347.4" cy="201.2" r="4" fill="#4aab4c" opacity=".8"><title>IN 2025: +61, +0.2</title></circle><circle cx="136.0" cy="304.2" r="4" fill="#4aab4c" opacity=".8"><title>NE 2022: -122, -6.9</title></circle><circle cx="246.9" cy="268.1" r="4" fill="#4aab4c" opacity=".8"><title>NE 2023: -26, -4.4</title></circle><circle cx="261.3" cy="181.4" r="4" fill="#4aab4c" opacity=".8"><title>NE 2024: -14, +1.6</title></circle><circle cx="463.7" cy="65.8" r="4" fill="#4aab4c" opacity=".8"><title>NE 2025: +162, +9.6</title></circle><circle cx="156.1" cy="206.7" r="4" fill="#4aab4c" opacity=".8"><title>IL 2022: -105, -0.1</title></circle><circle cx="180.2" cy="206.7" r="4" fill="#4aab4c" opacity=".8"><title>IL 2023: -84, -0.1</title></circle><circle cx="351.2" cy="192.2" r="4" fill="#4aab4c" opacity=".8"><title>IL 2024: +64, +0.9</title></circle><circle cx="420.4" cy="213.9" r="4" fill="#4aab4c" opacity=".8"><title>IL 2025: +125, -0.6</title></circle><circle cx="172.3" cy="226.5" r="4" fill="#4aab4c" opacity=".8"><title>IA 2022: -91, -1.5</title></circle><circle cx="190.7" cy="233.8" r="4" fill="#4aab4c" opacity=".8"><title>IA 2023: -75, -2.0</title></circle><circle cx="331.0" cy="204.9" r="4" fill="#4aab4c" opacity=".8"><title>IA 2024: +47, +0.0</title></circle><circle cx="414.0" cy="154.3" r="4" fill="#4aab4c" opacity=".8"><title>IA 2025: +119, +3.5</title></circle><circle cx="286.6" cy="188.6" r="4" fill="#4aab4c" opacity=".8"><title>MN 2022: +8, +1.1</title></circle><circle cx="152.6" cy="217.5" r="4" fill="#4aab4c" opacity=".8"><title>MN 2023: -108, -0.9</title></circle><circle cx="212.7" cy="260.8" r="4" fill="#4aab4c" opacity=".8"><title>MN 2024: -56, -3.9</title></circle><circle cx="455.9" cy="152.5" r="4" fill="#4aab4c" opacity=".8"><title>MN 2025: +155, +3.6</title></circle><text x="283.0" y="366" fill="#9bb0a3" font-size="11" text-anchor="middle">pod count, difference from that state's 4-year mean</text><text x="14" y="185.0" fill="#9bb0a3" font-size="11" text-anchor="middle" transform="rotate(-90 14 185.0)">USDA final yield, difference from mean (bu/ac)</text></svg></div><div class="pc-card"><svg viewBox="0 0 520 380" width="100%" role="img" aria-label="Control &#8212; corn: tour yield vs USDA final yield"><text x="64" y="20" fill="#e7ece8" font-size="14" font-weight="700">Control &#8212; corn: tour yield vs USDA final yield</text><text x="64" y="35" fill="#9bb0a3" font-size="11">r = +0.85 &#183; R&#178; = 0.73 &#183; residual SD 4.87 bu &#183; n = 28</text><line x1="317.8757401758477" y1="42" x2="317.8757401758477" y2="328" stroke="#2a3324"/><line x1="64" y1="165.13888888888889" x2="502" y2="165.13888888888889" stroke="#2a3324"/><line x1="64.0" y1="336.47619415638894" x2="502.0" y2="40.87591484185356" stroke="#4aab4c" stroke-width="2"/><path d="M64.0 278.17561642576305 L502.0 -17.42466288877239 L502.0 99.1764925724795 L64.0 394.7767718870149 Z" fill="#4aab4c" opacity=".10"/><circle cx="268.1" cy="163.6" r="4" fill="#4aab4c" opacity=".8"><title>OH 2022: -8, +0.2</title></circle><circle cx="332.1" cy="96.4" r="4" fill="#4aab4c" opacity=".8"><title>OH 2023: +2, +11.2</title></circle><circle cx="327.8" cy="224.7" r="4" fill="#4aab4c" opacity=".8"><title>OH 2024: +2, -9.8</title></circle><circle cx="343.5" cy="175.8" r="4" fill="#4aab4c" opacity=".8"><title>OH 2025: +4, -1.8</title></circle><circle cx="100.5" cy="304.2" r="4" fill="#4aab4c" opacity=".8"><title>SD 2022: -33, -22.8</title></circle><circle cx="355.7" cy="181.9" r="4" fill="#4aab4c" opacity=".8"><title>SD 2023: +6, -2.8</title></circle><circle cx="349.8" cy="108.6" r="4" fill="#4aab4c" opacity=".8"><title>SD 2024: +5, +9.2</title></circle><circle cx="465.5" cy="65.8" r="4" fill="#4aab4c" opacity=".8"><title>SD 2025: +23, +16.2</title></circle><circle cx="270.9" cy="218.6" r="4" fill="#4aab4c" opacity=".8"><title>IN 2022: -7, -8.8</title></circle><circle cx="290.8" cy="139.2" r="4" fill="#4aab4c" opacity=".8"><title>IN 2023: -4, +4.2</title></circle><circle cx="334.3" cy="169.7" r="4" fill="#4aab4c" opacity=".8"><title>IN 2024: +3, -0.8</title></circle><circle cx="375.5" cy="133.1" r="4" fill="#4aab4c" opacity=".8"><title>IN 2025: +9, +5.2</title></circle><circle cx="245.2" cy="270.6" r="4" fill="#4aab4c" opacity=".8"><title>NE 2022: -11, -17.2</title></circle><circle cx="302.1" cy="166.7" r="4" fill="#4aab4c" opacity=".8"><title>NE 2023: -2, -0.2</title></circle><circle cx="341.6" cy="130.0" r="4" fill="#4aab4c" opacity=".8"><title>NE 2024: +4, +5.8</title></circle><circle cx="382.6" cy="93.3" r="4" fill="#4aab4c" opacity=".8"><title>NE 2025: +10, +11.8</title></circle><circle cx="276.5" cy="157.5" r="4" fill="#4aab4c" opacity=".8"><title>IL 2022: -6, +1.2</title></circle><circle cx="296.2" cy="206.4" r="4" fill="#4aab4c" opacity=".8"><title>IL 2023: -3, -6.8</title></circle><circle cx="364.4" cy="139.2" r="4" fill="#4aab4c" opacity=".8"><title>IL 2024: +7, +4.2</title></circle><circle cx="334.5" cy="157.5" r="4" fill="#4aab4c" opacity=".8"><title>IL 2025: +3, +1.2</title></circle><circle cx="280.9" cy="198.8" r="4" fill="#4aab4c" opacity=".8"><title>IA 2022: -6, -5.5</title></circle><circle cx="274.3" cy="192.6" r="4" fill="#4aab4c" opacity=".8"><title>IA 2023: -7, -4.5</title></circle><circle cx="339.7" cy="131.5" r="4" fill="#4aab4c" opacity=".8"><title>IA 2024: +3, +5.5</title></circle><circle cx="376.6" cy="137.6" r="4" fill="#4aab4c" opacity=".8"><title>IA 2025: +9, +4.5</title></circle><circle cx="354.0" cy="126.9" r="4" fill="#4aab4c" opacity=".8"><title>MN 2022: +6, +6.2</title></circle><circle cx="294.7" cy="188.1" r="4" fill="#4aab4c" opacity=".8"><title>MN 2023: -4, -3.8</title></circle><circle cx="187.1" cy="255.3" r="4" fill="#4aab4c" opacity=".8"><title>MN 2024: -20, -14.8</title></circle><circle cx="435.7" cy="90.3" r="4" fill="#4aab4c" opacity=".8"><title>MN 2025: +18, +12.2</title></circle><text x="283.0" y="366" fill="#9bb0a3" font-size="11" text-anchor="middle">tour corn reading, difference from that state's 4-year mean</text><text x="14" y="185.0" fill="#9bb0a3" font-size="11" text-anchor="middle" transform="rotate(-90 14 185.0)">USDA final yield, difference from mean (bu/ac)</text></svg></div></div>
+
+      <div class="pc-tbl-wrap"><table class="pc-tbl">
+        <caption class="sr-only">Fit statistics for pod counts and tour corn readings against USDA final yields.</caption>
+        <thead><tr><th scope="col">Fit</th><th scope="col">n</th><th scope="col">r</th>
+        <th scope="col">R&sup2;</th><th scope="col">Typical miss</th><th scope="col">of mean yield</th></tr></thead>
+        <tbody>
+        <tr class="hl"><td>Pods &rarr; soybean yield, within state</td><td class="n"><span class="pc-lbl" aria-hidden="true">n</span>28</td><td class="n"><span class="pc-lbl" aria-hidden="true">r</span>+0.66</td><td class="n"><span class="pc-lbl" aria-hidden="true">R&sup2;</span>0.43</td><td class="n"><span class="pc-lbl" aria-hidden="true">Typical miss</span>2.54 bu</td><td class="n"><span class="pc-lbl" aria-hidden="true">of mean yield</span>4.6%</td></tr>
+        <tr><td>Tour corn &rarr; corn yield, within state</td><td class="n"><span class="pc-lbl" aria-hidden="true">n</span>28</td><td class="n"><span class="pc-lbl" aria-hidden="true">r</span>+0.85</td><td class="n"><span class="pc-lbl" aria-hidden="true">R&sup2;</span>0.73</td><td class="n"><span class="pc-lbl" aria-hidden="true">Typical miss</span>4.87 bu</td><td class="n"><span class="pc-lbl" aria-hidden="true">of mean yield</span>2.6%</td></tr>
+        <tr><td>Pods &rarr; soybean yield, pooled</td><td class="n"><span class="pc-lbl" aria-hidden="true">n</span>28</td><td class="n"><span class="pc-lbl" aria-hidden="true">r</span>+0.85</td><td class="n"><span class="pc-lbl" aria-hidden="true">R&sup2;</span>0.72</td><td class="n"><span class="pc-lbl" aria-hidden="true">Typical miss</span>3.95 bu</td><td class="n"><span class="pc-lbl" aria-hidden="true">of mean yield</span>7.2%</td></tr>
+        <tr><td>Year-on-year % change in pods</td><td class="n"><span class="pc-lbl" aria-hidden="true">n</span>21</td><td class="n"><span class="pc-lbl" aria-hidden="true">r</span>+0.70</td><td class="n"><span class="pc-lbl" aria-hidden="true">R&sup2;</span>0.49</td><td class="n"><span class="pc-lbl" aria-hidden="true">Typical miss</span>5.6 pts</td><td><span class="pc-lbl" aria-hidden="true">of mean yield</span>&mdash;</td></tr>
+        </tbody></table></div>
+
+      <div class="pc-note"><p style="margin:0"><b>The answer.</b> Pod counts are about
+      <b>1.8&times; looser</b> than the tour&rsquo;s corn reading &mdash; a typical miss of 4.6% of
+      mean yield against 2.6%. That is worse, and it is nothing like useless. The tour measures
+      corn directly and never measures a soybean yield at all, so a factor of 1.8 is a small price
+      for a number that is only ever counted, never weighed. Pod counts deserve to be quoted. They
+      deserve to be quoted with a band around them.</p></div>
+
+      <h2 class="pc-h2">The divisor everyone repeats is wrong</h2>
+      <p>The rule of thumb you will hear is &ldquo;divide the pod count by 27.&rdquo; It traces to a
+      single 2013 DTN blog post quoting an unnamed source, and the journalist who printed it
+      attached her own warning: <em>&ldquo;I just wouldn&rsquo;t put too much stock in that yield
+      estimate&rsquo;s accuracy.&rdquo;</em> It is not a Pro Farmer number and never was.</p>
+      <p>Our twenty-eight state-years put it at <span class="pc-k">22.0</span> as a simple ratio of
+      pods to bushels, and <span class="pc-k">23.5</span> as the marginal slope of the fit. Both sit
+      inside the 21.8&ndash;25.8 range implied by Pro Farmer&rsquo;s own published national pairs.
+      Three independent routes, one answer, and 27 is not it.</p>
+      <p>Worth knowing if you are tempted by a textbook: the extension formulas &mdash; Purdue,
+      Ohio State, Iowa State, and USDA&rsquo;s own objective-yield conversion &mdash; all give
+      <span class="pc-k">15 to 18</span> on this basis. Apply any of them to a Pro Farmer count and
+      you will overstate yield by 55 to 60%, because Pro Farmer counts <em>any pod a quarter-inch or
+      larger</em> off three plants on fields chosen by the route. Different scale, on purpose. Never
+      import those constants.</p>
+
+      <h2 class="pc-h2">What would break this</h2>
+      <p class="pc-warn"><b>Four years is four years.</b> Leaving any one state out moves the
+      correlation between +0.60 and +0.74, which is stable. Leaving out a <em>year</em> is the
+      worry: drop 2025 and it falls to <b>+0.47</b>. One season is carrying a lot of the signal,
+      which is exactly what four points per state should be expected to do. Extending the panel
+      back to 2016 is the next job, and it is cheap &mdash; every Pro Farmer nightly report carries
+      a year-ago comparison, so each one read yields two years of data.</p>
+      <p class="pc-warn"><b>Pod weight compensates, and the tour cannot see it.</b> USDA&rsquo;s own
+      eleven-state pod counts fell 12.6% from 2018 to 2019 while yield fell only 6.3%, because the
+      average pod got heavier. Seed size alone swings a yield estimate by about 17% with no change
+      in pod count whatsoever. The tour counts pods and never weighs them, so that whole term is
+      invisible to it. This is the structural ceiling, and no amount of extra data removes it.</p>
+      <p class="pc-warn"><b>One state, one year, is a coin flip and a half.</b> On year-over-year
+      change, pod count and yield move the same direction 14 times in 21. The corn control manages
+      16 of 21. Read a single state&rsquo;s pod count as a yield signal and you will be right about
+      two times in three.</p>
+
+      <h2 class="pc-h2">What we will not do</h2>
+      <p>Print a single number and call it a soybean yield. On this fit the 95% band is roughly
+      <b>&plusmn;5 bushels an acre</b>, and pooled it is nearly &plusmn;8. A point estimate inside a
+      band that wide is a decoration, not a forecast. When we do publish an estimate it will be a
+      range, it will carry the band, and it will be labelled as ours &mdash; a calibration, not a
+      translation of anything Pro Farmer said.</p>
+
+      <h2 class="pc-h2">Where the numbers came from</h2>
+      <p class="pc-src">Pod counts: Pro Farmer Crop Tour state results, 2022&ndash;2025, as
+      published each night of the tour. Soybean yields: USDA NASS Crop Production Annual Summary,
+      the January-following edition each year, cross-checked against NASS state field-office
+      releases and Executive Briefings. Every cell sourced; none interpolated or filled in.
+      Two cautions we are carrying openly: Ohio and South Dakota 2025 come from the NASS State
+      Agriculture Overview rather than a January field-office release, and NASS revised several
+      2021 state figures upward between the January 2022 and January 2023 prints &mdash; 2021 is
+      not used in any fit on this page. Arithmetic is ours; the underlying figures are not.</p>
+
+      <p><a class="pc-back" href="/crop-tour">&larr; Back to the 2026 Crop Tour</a></p>
+    </div>
+  </main></main>
+
+  <div id="site-footer"></div>
+  <script src="/components/loader.js?v=15"></script>
+  
+</body>
+</html>

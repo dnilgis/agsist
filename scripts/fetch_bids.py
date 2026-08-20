@@ -28,6 +28,19 @@ from urllib.parse import urlencode
 API_KEY = os.environ.get("BARCHART_API_KEY", "")
 BASE_URL = "https://ondemand.websol.barchart.com/getGrainBids.json"
 MAX_DISTANCE = 60  # miles from each ZIP
+
+# ── The cap that was never lifted ────────────────────────────────
+# getGrainBids takes a `totalLocations` parameter. This file never sent one,
+# so every ZIP came back with Barchart's DEFAULT of 30 locations — and the
+# per-ZIP log printed kept BIDS, not locations, so a ZIP that hit the ceiling
+# looked exactly like one that did not. Fifty ZIPs times a silent 30-location
+# ceiling is why "this elevator is absent from Barchart" has been an unsafe
+# claim: absent from the first 30 within 60 miles is not absent.
+#
+# 200 is a starting point, not a finding. The run reports saturation per ZIP,
+# so the first live run says whether 200 binds. If it does, raise it and run
+# again. Measure, do not reason.
+TOTAL_LOCATIONS = int(os.environ.get("BARCHART_TOTAL_LOCATIONS", "200"))
 OUTPUT_PATH = "data/bids.json"
 
 # ── National grid of ZIP codes ───────────────────────────────────
@@ -95,27 +108,76 @@ ZIP_GRID = [
 ]
 
 
-def fetch_bids_for_zip(zip_code, max_distance=MAX_DISTANCE):
-    """Fetch grain bids for a single ZIP code.
-
-    Mirrors cash-bids.html: passes getAllBids=1 so Barchart returns the
-    full per-elevator payload (without it the response shape is thinner).
-    """
-    params = urlencode({
+def _get(zip_code, max_distance, total_locations):
+    """One request. Returns the decoded body, or raises."""
+    q = {
         "apikey": API_KEY,
         "zipCode": zip_code,
         "maxDistance": max_distance,
         "getAllBids": 1,
-    })
-    url = f"{BASE_URL}?{params}"
+    }
+    if total_locations:
+        q["totalLocations"] = total_locations
+    req = Request(f"{BASE_URL}?{urlencode(q)}", headers={"User-Agent": "AGSIST/1.0"})
+    with urlopen(req, timeout=20) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+
+def fetch_bids_for_zip(zip_code, max_distance=MAX_DISTANCE,
+                       total_locations=TOTAL_LOCATIONS):
+    """Fetch grain bids for a single ZIP code.
+
+    Mirrors cash-bids.html: passes getAllBids=1 so Barchart returns the
+    full per-elevator payload (without it the response shape is thinner).
+    Now also passes totalLocations — see the constant for why.
+
+    Returns (data, degraded). `degraded` is True when the request had to fall
+    back to the old no-totalLocations form because Barchart rejected the
+    parameter. That fallback is DELIBERATELY LOUD: silently reverting to a
+    30-location ceiling is the same class of failure as the green-but-empty
+    run this file already carries two guards against.
+    """
     try:
-        req = Request(url, headers={"User-Agent": "AGSIST/1.0"})
-        with urlopen(req, timeout=15) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-        return data
+        return _get(zip_code, max_distance, total_locations), False
+    except (URLError, HTTPError, json.JSONDecodeError) as e:
+        if not total_locations:
+            print(f"  ⚠ Error fetching ZIP {zip_code}: {e}", file=sys.stderr)
+            return None, False
+        print(f"  ⚠ ZIP {zip_code}: totalLocations={total_locations} rejected "
+              f"({e}) — retrying WITHOUT it, coverage falls back to Barchart's "
+              f"default 30 locations", file=sys.stderr)
+    try:
+        return _get(zip_code, max_distance, None), True
     except (URLError, HTTPError, json.JSONDecodeError) as e:
         print(f"  ⚠ Error fetching ZIP {zip_code}: {e}", file=sys.stderr)
-        return None
+        return None, True
+
+
+def location_count(data):
+    """How many distinct LOCATIONS the response carried.
+
+    Not bids. The two differ by an order of magnitude and only the location
+    count can be compared against totalLocations to see whether the ceiling
+    bound. Handles both response shapes flatten() handles.
+    """
+    raw = (data.get("results") or data.get("bids") or data.get("data") or [])
+    if not isinstance(raw, list):
+        return 0
+    if any(isinstance(i, dict) and isinstance(i.get("bids"), list) for i in raw):
+        return sum(1 for i in raw
+                   if isinstance(i, dict) and isinstance(i.get("bids"), list))
+    seen = set()
+    for i in raw:
+        if not isinstance(i, dict):
+            continue
+        loc = i.get("location")
+        seen.add((
+            i.get("company") or i.get("name") or i.get("facility")
+            or i.get("locationName") or "",
+            loc if isinstance(loc, str) else "",
+            i.get("city") or "", i.get("zip") or "",
+        ))
+    return len(seen)
 
 
 def _float(val):
@@ -271,28 +333,65 @@ def main():
         sys.exit(1)
 
     print(f"[fetch_bids] Starting — {len(ZIP_GRID)} ZIP codes, "
-          f"max {MAX_DISTANCE}mi radius")
+          f"max {MAX_DISTANCE}mi radius, up to {TOTAL_LOCATIONS} locations each")
 
     all_bids = []
     errors = 0
     raw_total = 0  # bids Barchart returned (kept), for sanity vs. drops
+    loc_total = 0
+    saturated = []   # ZIPs that came back at the ceiling — the ceiling bound
+    degraded = []    # ZIPs that fell back to the 30-location default
 
     for entry in ZIP_GRID:
         z = entry["zip"]
         print(f"  📍 {entry['label']} ({z})…", end=" ")
-        data = fetch_bids_for_zip(z)
+        data, fell_back = fetch_bids_for_zip(z)
+        if fell_back:
+            degraded.append(z)
 
         if data is None:
             errors += 1
             print("FAIL")
             continue
 
+        locs = location_count(data)
+        loc_total += locs
         kept = flatten(data, z)
         raw_total += len(kept)
         all_bids.extend(kept)
-        # KEPT count, not raw response length — a green-but-empty run is now visible per ZIP
-        print(f"{len(kept)} bids")
+        # LOCATIONS as well as kept bids. The bid count alone cannot show a
+        # ZIP sitting on the ceiling, which is the whole thing this run is
+        # meant to measure.
+        ceiling = TOTAL_LOCATIONS if not fell_back else 30
+        hit = locs >= ceiling
+        if hit:
+            saturated.append((z, entry["label"], locs))
+        print(f"{locs} locations, {len(kept)} bids{'  ← AT CEILING' if hit else ''}")
         time.sleep(0.3)
+
+    # Report the ceiling BEFORE the dedup summary, because it is the finding
+    # that decides whether this grid is complete or merely full.
+    print(f"\n[fetch_bids] {loc_total} locations across {len(ZIP_GRID)} ZIPs")
+    if degraded:
+        print(f"[fetch_bids] ⚠ {len(degraded)} ZIP(s) fell back to Barchart's "
+              f"default 30-location cap: {', '.join(degraded)}")
+        if len(degraded) == len(ZIP_GRID):
+            print("[fetch_bids] ⚠ EVERY ZIP fell back — Barchart is rejecting "
+                  "totalLocations outright. Coverage is exactly what it was "
+                  "before this parameter was added; do not read this run as "
+                  "evidence of anything.")
+    if saturated:
+        print(f"[fetch_bids] ⚠ {len(saturated)} ZIP(s) returned at the ceiling — "
+              f"there are more locations than we asked for. Raise "
+              f"BARCHART_TOTAL_LOCATIONS above {TOTAL_LOCATIONS} and run again:")
+        for z, label, n in saturated:
+            print(f"[fetch_bids]     {label} ({z}): {n}")
+        print("[fetch_bids] Until that is clear, 'absent from Barchart' is "
+              "NOT a safe claim for anything near these ZIPs.")
+    else:
+        print(f"[fetch_bids] No ZIP reached {TOTAL_LOCATIONS} locations — the "
+              f"ceiling did not bind, so this grid saw everything Barchart "
+              f"has within {MAX_DISTANCE} miles of each point.")
 
     if not all_bids:
         # Fail LOUD: zero bids across every ZIP = dead/expired BARCHART_API_KEY
@@ -358,5 +457,123 @@ def main():
     print(f"[fetch_bids] Commodities: {commodities}")
 
 
+def selftest():
+    """Offline checks. No API key, no network.
+
+    This file had none. It fetches money numbers into a public page and its
+    only safety net was two end-of-run guards, both of which fire long after
+    a parsing mistake has already been made.
+    """
+    import io
+    from contextlib import redirect_stdout, redirect_stderr
+
+    checks = 0
+    fails = []
+
+    def ck(name, cond):
+        nonlocal checks
+        checks += 1
+        print(f"  {'ok  ' if cond else 'FAIL'} {name}")
+        if not cond:
+            fails.append(name)
+
+    print("location_count counts LOCATIONS, not bids")
+    nested = {"results": [
+        {"company": "A", "location": "x", "bids": [{"cashprice": 4.0}, {"cashprice": 4.1}]},
+        {"company": "B", "location": "y", "bids": [{"cashprice": 4.2}]},
+    ]}
+    ck("nested shape: one per elevator, not per bid", location_count(nested) == 2)
+    ck("...and flatten sees more bids than there are locations",
+       len(flatten(nested, "00000")) == 3)
+    flat = {"results": [
+        {"company": "A", "city": "Loyal", "zip": "1", "commodity": "Corn", "cashprice": 4.0},
+        {"company": "A", "city": "Loyal", "zip": "1", "commodity": "Beans", "cashprice": 9.0},
+        {"company": "B", "city": "Thorp", "zip": "2", "commodity": "Corn", "cashprice": 4.1},
+    ]}
+    ck("flat shape: two commodities at one elevator is ONE location",
+       location_count(flat) == 2)
+    ck("a response with no list is zero, not a crash",
+       location_count({"results": "nope"}) == 0 and location_count({}) == 0)
+
+    print()
+    print("the request carries totalLocations, and only when it is set")
+    seen = {}
+
+    class FakeResp:
+        def __init__(self, body):
+            self.body = body
+        def read(self):
+            return json.dumps(self.body).encode()
+        def __enter__(self):
+            return self
+        def __exit__(self, *a):
+            return False
+
+    def fake_open(req, timeout=None):
+        seen["url"] = req.full_url
+        if seen.get("boom") and "totalLocations" in req.full_url:
+            raise HTTPError(req.full_url, 400, "Bad Request", None, None)
+        return FakeResp({"results": []})
+
+    real = globals()["urlopen"]
+    globals()["urlopen"] = fake_open
+    try:
+        fetch_bids_for_zip("54436", 60, 200)
+        ck("totalLocations is sent when set", "totalLocations=200" in seen["url"])
+        ck("the other parameters survive",
+           "getAllBids=1" in seen["url"] and "maxDistance=60" in seen["url"]
+           and "zipCode=54436" in seen["url"])
+        fetch_bids_for_zip("54436", 60, None)
+        ck("totalLocations is absent when unset", "totalLocations" not in seen["url"])
+
+        # Barchart rejects the parameter: fall back, but say so.
+        seen["boom"] = True
+        err = io.StringIO()
+        with redirect_stderr(err):
+            data, fell = fetch_bids_for_zip("54436", 60, 200)
+        ck("a rejected totalLocations falls back rather than losing the ZIP",
+           data is not None)
+        ck("...and the fallback is reported, not silent", fell is True)
+        ck("...loudly, naming the cap it fell back to",
+           "default 30 locations" in err.getvalue())
+        ck("...and the retry really did drop the parameter",
+           "totalLocations" not in seen["url"])
+    finally:
+        globals()["urlopen"] = real
+
+    print()
+    print("saturation is judged against what was asked for")
+    for asked, got, want in ((200, 200, True), (200, 199, False),
+                             (30, 30, True), (200, 0, False)):
+        ck(f"asked {asked}, got {got} -> {'at ceiling' if want else 'below'}",
+           (got >= asked) is want)
+
+    print()
+    print("dedup still collapses the overlap a bigger radius creates")
+    dup = [
+        {"facility": "A", "branch": "", "commodity": "Corn", "deliveryStart": "",
+         "deliveryEnd": "", "deliveryMonth": "Sep", "distance": 12.0},
+        {"facility": "A", "branch": "", "commodity": "Corn", "deliveryStart": "",
+         "deliveryEnd": "", "deliveryMonth": "Sep", "distance": 3.0},
+        {"facility": "B", "branch": "", "commodity": "Corn", "deliveryStart": "",
+         "deliveryEnd": "", "deliveryMonth": "Sep", "distance": 8.0},
+    ]
+    out = deduplicate(dup)
+    ck("one row per facility+commodity+delivery", len(out) == 2)
+    ck("the closest of a duplicate pair wins",
+       [b for b in out if b["facility"] == "A"][0]["distance"] == 3.0)
+
+    print()
+    if fails:
+        print(f"{len(fails)} FAILED of {checks}")
+        for f in fails:
+            print(f"  - {f}")
+        return 1
+    print(f"all {checks} fetch_bids checks pass")
+    return 0
+
+
 if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        sys.exit(selftest())
     main()
