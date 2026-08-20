@@ -173,6 +173,32 @@ def stats(history):
            and h.get("usda_aug_soy_prod") is not None]
     soy_years = [h["year"] for h in soy]
     corn_years = [r["year"] for r in rows]
+    # Same shape as the corn rows, so render_soy_table() can reuse the bar
+    # geometry instead of growing a second copy of it.
+    # ROUNDED TO THE PRECISION THE TABLE PRINTS, ON PURPOSE. 2021 is tour
+    # 4.436 against a final of 4.44: a difference of -0.004, which printed as
+    # "-0.00" -- a signed zero, which is not a number anybody says out loud.
+    # Worse, the lead sentence counted it as a year the tour came in under,
+    # so the prose and the row disagreed on the same screen. Classifying and
+    # displaying off the same rounded value fixes both at once. USDA publishes
+    # this series to two decimals, so a third decimal of difference is not a
+    # difference. soy_tour_mae below stays on the raw figures.
+    soy_rows = [{**h,
+                 "tour_err": round(h["tour_soy_prod"] - h["usda_final_soy_prod"], 2),
+                 "usda_err": round(h["usda_aug_soy_prod"] - h["usda_final_soy_prod"], 2)}
+                for h in soy]
+    # WINS ARE JUDGED ON THE RAW FIGURES, not the rounded display values.
+    # 2022 is the case: tour missed by 0.2550 and USDA by 0.2500, so USDA was
+    # closer -- but both print as 0.25, and counting off the printed numbers
+    # scored it a draw and lost USDA a year it won. Rounding is for reading,
+    # not for scoring.
+    def _raw(h, who):
+        return abs(h[f"{who}_soy_prod"] - h["usda_final_soy_prod"])
+    soy_tour_wins = sum(1 for h in soy if _raw(h, "tour") < _raw(h, "usda_aug"))
+    soy_usda_wins = sum(1 for h in soy if _raw(h, "usda_aug") < _raw(h, "tour"))
+    soy_draws = len(soy) - soy_tour_wins - soy_usda_wins
+    soy_low = [r["tour_err"] for r in soy_rows if r["tour_err"] < 0]
+    soy_high = [r["tour_err"] for r in soy_rows if r["tour_err"] > 0]
     soy_tour_mae = (sum(abs(h["tour_soy_prod"] - h["usda_final_soy_prod"])
                         for h in soy) / len(soy)) if soy else None
     soy_usda_mae = (sum(abs(h["usda_aug_soy_prod"] - h["usda_final_soy_prod"])
@@ -186,6 +212,10 @@ def stats(history):
             "tour_high_max": tour_high_max, "tour_tie": len(ties),
             "first": rows[0]["year"], "last": rows[-1]["year"],
             "skipped": skipped, "years": corn_years,
+            "soy_rows": soy_rows, "soy_tour_wins": soy_tour_wins,
+            "soy_usda_wins": soy_usda_wins, "soy_draws": soy_draws,
+            "soy_low": len(soy_low), "soy_high": len(soy_high),
+            "soy_tie": len(soy_rows) - len(soy_low) - len(soy_high),
             "soy_n": len(soy), "soy_tour_mae": soy_tour_mae,
             "soy_usda_mae": soy_usda_mae, "soy_years": soy_years,
             "soy_same_years": soy_years == corn_years,
@@ -844,6 +874,82 @@ def render_history(st):
     return "".join(out)
 
 
+def render_soy_table(st):
+    """The soybean record, as a table with the same geometry as the corn one.
+
+    WHY IT IS PRODUCTION AND NOT YIELD. Every number here already lives in
+    data/crop-tour.json and has been checked; nothing new was sourced to build
+    this table. Pro Farmer does publish a national soybean YIELD each year and
+    that series is worth adding, but it has to be verified year by year first
+    and a table is not the place to find out one cell was wrong.
+
+    WHY BEANS GET LESS PROMINENCE THAN CORN, AND SHOULD. The tour measures
+    corn as a yield in the field -- ear counts, grain length, kernel rows. It
+    does not measure soybean yield at all; scouts only count pods, and the
+    national bean number is built from those counts plus judgement. Pro Farmer
+    says so itself: the Friday figure "is a Pro Farmer estimate, not a Tour
+    estimate". Two series, two different amounts of direct measurement, so the
+    bean table sits inside a <details> under the corn one rather than beside
+    it as an equal.
+    """
+    rows = list(reversed(st.get("soy_rows") or []))
+    if not rows:
+        return ""
+    span = max(max(abs(r["tour_err"]) for r in rows), 0.01)
+    L = lambda s: f'<span class="ct-td-lbl" aria-hidden="true">{s}</span>'
+    out = ['<div class="ct-tbl-wrap"><table class="ct-tbl ct-tbl--soy">'
+           '<caption class="ct-cap">Pro Farmer Crop Tour final soybean production '
+           'against USDA&rsquo;s August forecast and USDA&rsquo;s final crop, '
+           f'{st["soy_first"]}&ndash;{st["soy_last"]}, billion bushels.</caption>'
+           '<thead><tr>'
+           '<th scope="col">Year</th><th scope="col" class="num">Tour</th>'
+           '<th scope="col" class="num">USDA Aug</th><th scope="col" class="num">Final</th>'
+           '<th scope="col">Tour vs final &mdash; billion bushels</th>'
+           '</tr></thead><tbody>']
+    for r in rows:
+        e = r["tour_err"]
+        pct = min(abs(e) / span, 1.0) * BAR_MAXW
+        side = "neg" if e < 0 else ("pos" if e > 0 else "zero")
+        if e == 0:
+            bar = '<span class="ct-bar-zero">dead on</span>'
+        elif e < 0:
+            edge = 50 - pct
+            bar = (f'<span class="ct-bar ct-bar--neg" style="left:{edge:.1f}%;width:{pct:.1f}%"></span>'
+                   f'<span class="ct-bar-v ct-bar-v--neg" style="right:{100 - edge:.1f}%">{e:.2f}</span>')
+        else:
+            edge = 50 + pct
+            bar = (f'<span class="ct-bar ct-bar--pos" style="left:50%;width:{pct:.1f}%"></span>'
+                   f'<span class="ct-bar-v ct-bar-v--pos" style="left:{edge:.1f}%">+{e:.2f}</span>')
+        out.append(f'<tr><td class="ct-yrcell">{L("Year")}<b>{r["year"]}</b></td>'
+                   f'<td class="num">{L("Tour")}{r["tour_soy_prod"]:.3f}</td>'
+                   f'<td class="num">{L("USDA Aug")}{r["usda_aug_soy_prod"]:.2f}</td>'
+                   f'<td class="num">{L("Final")}{r["usda_final_soy_prod"]:.2f}</td>'
+                   f'<td class="ct-barcell {side}">{L("Tour vs final &mdash; billion bu")}'
+                   f'<span class="ct-tick"></span>{bar}</td></tr>')
+    out.append('</tbody></table></div>')
+    lean = ("under" if st["soy_low"] > st["soy_high"] else
+            "over" if st["soy_high"] > st["soy_low"] else "either way")
+    n = st["soy_n"]
+    most = max(st["soy_low"], st["soy_high"])
+    tie = (f' It landed on the final once, in '
+           f'{[r["year"] for r in rows if r["tour_err"] == 0][0]}.'
+           if st["soy_tie"] == 1 else
+           f' It landed on the final in {st["soy_tie"]} of them.'
+           if st["soy_tie"] else '')
+    lead = (f'<p class="ct-lead">The tour called the crop {lean} the final in '
+            f'<b>{most} of {n}</b> years.{tie} Against USDA\'s August forecast it '
+            f'came closer <b>{st["soy_tour_wins"]}</b> times and USDA came closer '
+            f'<b>{st["soy_usda_wins"]}</b>'
+            + (f', with {st["soy_draws"]} drawn' if st["soy_draws"] else '')
+            + '. Beans are the softer half of the '
+            'tour: scouts measure corn as a yield in the field, but they never '
+            'measure a soybean yield at all &mdash; they count pods, and the '
+            'production number is built from those counts plus judgement.</p>')
+    return ('<details class="ct-soytbl"><summary>Show the soybean record, '
+            f'{st["soy_first"]}&ndash;{st["soy_last"]}</summary>'
+            + lead + "".join(out) + '</details>')
+
+
 def render_soy(st):
     """The soybean record.
 
@@ -949,7 +1055,8 @@ SECTIONS = {
                 "line means the tour called it too small, right means too big."),
         "body": ('<!-- CT:record --><!-- /CT:record -->'
                  '<!-- CT:history --><!-- /CT:history -->'
-                 '<p class="ct-legend"><!-- CT:soy --><!-- /CT:soy --></p>'),
+                 '<p class="ct-legend"><!-- CT:soy --><!-- /CT:soy --></p>'
+                 '<!-- CT:soytbl --><!-- /CT:soytbl -->'),
     },
 }
 
@@ -1030,6 +1137,10 @@ def gauntlet(html, st, ph=None):
     assert m, "JSON-LD block missing"
     json.loads(m.group(1))
     assert html.count("ct-night") >= 4, "nightly board did not bake"
+    # A signed zero reads as a miss the page did not measure. It got onto the
+    # soybean table once; the gauntlet is where it stops being possible.
+    assert ">-0.00<" not in html and ">+0.00<" not in html and \
+        "-0.00 " not in html and "+0.00 " not in html, "signed zero in output"
     assert html.count("<tr>") >= st["n"], "history table short"
     for cp in html:
         o = ord(cp)
@@ -1471,7 +1582,7 @@ def selftest():
     ck("the flow reorders nothing with CSS", "order:" not in render_flow("during"))
     ck("every section carries its own heading and nested marker",
        all(f'<!-- CT:{m} -->' in render_flow("during")
-           for m in ("nights", "bench", "history", "soy", "record")))
+           for m in ("nights", "bench", "history", "soy", "soytbl", "record")))
 
     print()
     print("the clock is Central, and never silently UTC")
@@ -1506,6 +1617,70 @@ def selftest():
         lst = stats(live["history"])
         lss = state_stats(live)
         attach_state_context(live, lss)
+        print()
+        print("the soybean record is the same arithmetic as the corn one")
+        sy = lst["soy_rows"]
+        ck("every soy row is scoreable", all(
+            r.get("tour_soy_prod") is not None and r.get("usda_aug_soy_prod") is not None
+            and r.get("usda_final_soy_prod") is not None for r in sy))
+        # The row error IS tour minus final, rounded to the two decimals the
+        # table prints and the sentence counts on. Asserting the rounding is
+        # the point, not a concession to it.
+        ck("soy row errors are tour minus final at the printed precision", all(
+            r["tour_err"] == round(r["tour_soy_prod"] - r["usda_final_soy_prod"], 2)
+            for r in sy))
+        ck("no row error carries precision the table does not show",
+           all(abs(r["tour_err"] * 100 - round(r["tour_err"] * 100)) < 1e-9 for r in sy))
+        # The MAE stays on the RAW figures. It is a summary of the record, not
+        # a sum of what the rows display, and rounding first would let eleven
+        # half-cent roundings walk the headline number.
+        ck("the soy MAE is the mean of the RAW absolute errors",
+           abs(lst["soy_tour_mae"]
+               - sum(abs(r["tour_soy_prod"] - r["usda_final_soy_prod"])
+                     for r in sy) / len(sy)) < 1e-12)
+        ck("the MAE and the displayed errors agree to the printed precision",
+           abs(lst["soy_tour_mae"] - sum(abs(r["tour_err"]) for r in sy) / len(sy)) < 0.01)
+        ck("low + high + tie accounts for every soy year",
+           lst["soy_low"] + lst["soy_high"] + lst["soy_tie"] == lst["soy_n"])
+        ck("wins never exceed the years played",
+           lst["soy_tour_wins"] + lst["soy_usda_wins"] <= lst["soy_n"])
+
+        stbl = render_soy_table(lst)
+        ck("the soy table carries one row per soy year", stbl.count("<tr>") == lst["soy_n"] + 1)
+        ck("it is a table, not a restated claim", "<caption" in stbl and "billion bushels" in stbl)
+        ck("it is folded away under the corn record", stbl.startswith("<details"))
+        # Every figure in the table must come from the file. The bar geometry emits
+        # percentages too, so check the DATA cells rather than the whole string.
+        cells = re.findall(r'aria-hidden="true">(?:Year|Tour|USDA Aug|Final)</span>([0-9.]+)', stbl)
+        ok = set()
+        for r in sy:
+            ok |= {str(r["year"]), f'{r["tour_soy_prod"]:.3f}',
+                   f'{r["usda_aug_soy_prod"]:.2f}', f'{r["usda_final_soy_prod"]:.2f}'}
+        ck("every printed soy figure is one from the data file",
+           cells and all(c in ok for c in cells))
+        ck("the lead sentence counts, it does not average",
+           "of " + str(lst["soy_n"]) in stbl and "average" not in stbl.lower())
+        # A signed zero is not a number. -0.004 printed as "-0.00" while the
+        # sentence above it counted the same year as a miss.
+        ck("no signed zero is printed anywhere on the page",
+           "-0.00" not in stbl and "+0.00" not in stbl)
+        ck("a year that rounds to nothing is called dead on",
+           all(("dead on" in stbl) or r["tour_err"] != 0 for r in lst["soy_rows"]))
+        ck("the low/high/tie split matches what the rows print",
+           lst["soy_low"] == sum(1 for r in lst["soy_rows"] if r["tour_err"] < 0)
+           and lst["soy_high"] == sum(1 for r in lst["soy_rows"] if r["tour_err"] > 0))
+        ck("wins, losses and draws account for every soy year exactly",
+           lst["soy_tour_wins"] + lst["soy_usda_wins"] + lst["soy_draws"]
+           == lst["soy_n"])
+        # 2022: tour 0.2550 off, USDA 0.2500 off. Both print 0.25. Scoring off
+        # the printed value hands USDA's win back as a draw.
+        ck("a win decided in the third decimal is still counted",
+           lst["soy_tour_wins"] + lst["soy_usda_wins"]
+           > sum(1 for r in lst["soy_rows"] if abs(r["tour_err"]) != abs(r["usda_err"])))
+
+        empty = dict(lst); empty["soy_rows"] = []
+        ck("no soy data means no soy table, not an empty one", render_soy_table(empty) == "")
+
         lc = render_bias_claim(lst)
         la = {lst["tour_low"], lst["n"], round(lst["tour_low_mean"], 1),
               round(abs(lst["tour_bias"]), 1), lst["tour_high"],
@@ -1587,6 +1762,7 @@ def main():
     baked = splice(baked, "record", render_record(data, st, ph, today))
     baked = splice(baked, "history", render_history(st))
     baked = splice(baked, "soy", render_soy(st))
+    baked = splice(baked, "soytbl", render_soy_table(st))
     baked = splice(baked, "sources", render_sources(data))
     # The FAQ answer restates the headline statistics. It used to be hand-typed
     # in the head, which meant adding a tour year would leave a stale claim in
