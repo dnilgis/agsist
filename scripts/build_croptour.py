@@ -839,6 +839,12 @@ POST = lambda r: (r["PF"] + r["USDA"] + r["PERSIST"]) / 3
 PFONLY = lambda r: r["PF"]
 USDAONLY = lambda r: r["USDA"]   # the free, public number any reader already has
 
+# How much better than USDA-August-alone a combination has to be before it is
+# worth a reader's attention -- applied to the full sample AND to the worst
+# leave-one-out, because an edge that only exists with every year present is an
+# edge one year is carrying.
+COMBINE_MIN_MARGIN = 0.5
+
 
 def combine_stats(data):
     """The accuracy record of both combinations against Pro Farmer's own.
@@ -943,6 +949,8 @@ def render_bench(data, ph="during"):
             # it sits under. The data file cannot know when that flips, so the
             # renderer does -- and refuses if the copy was not updated.
             sub = e.get("short_posted") or ""
+            assert sub, ("benchmarks.tour.short_posted must be set once the number posts; "
+                         "deleting the key satisfies the check below and leaves the tile blank")
             assert "Posts" not in sub, (
                 'benchmarks.tour still promises the number will post, and it has posted. '
                 'Set benchmarks.tour.short_posted.')
@@ -957,6 +965,72 @@ def render_bench(data, ph="during"):
                    f'<div class="ct-b-val">{val}<span class="ct-b-u">bu</span></div>'
                    f'<div class="ct-b-note">{esc(sub)}</div></div>')
     return "".join(out)
+
+
+def tour_error_spread(data):
+    """The tour's own misses, as a distribution rather than a single average.
+
+    The page has always printed the MEAN of the tour's error. The mean hides
+    the shape, and the shape is the interesting part: of eleven tours, seven
+    missed low by between 3.8 and 5.3 bushels. That is not scatter around
+    zero, it is a cluster.
+
+    COUNTS, NOT PROBABILITIES. Everything here is "it happened in k of n
+    years". No probability is attached to 2026 and no interval is called a
+    confidence interval, because eleven observations do not support either.
+    This is the same discipline tour_progress() uses on the nightly board.
+
+    AND DELIBERATELY NOT A CORRECTION. The obvious move -- add the tour's mean
+    low bias back onto its number -- was tested out of sample and scored WORSE
+    than leaving the number alone (MAE 4.08 against 3.60), because a bias
+    estimated on a handful of years is mostly noise. So this describes the
+    spread and stops. It does not tell anyone to adjust Friday's figure.
+    """
+    e = sorted(r["tour_corn"] - r["usda_final_corn"] for r in data["history"]
+               if r.get("tour_corn") is not None and r.get("usda_final_corn") is not None)
+    if len(e) < 5:
+        return None
+    n = len(e)
+    # THE INTERVAL IS COUNTED, NOT NAMED. This used to call q(0.25)..q(0.75)
+    # "the middle half". Python's round() is banker's rounding, so with n=11
+    # round(2.5) went DOWN to 2 and round(7.5) went UP to 8 -- both ends
+    # widened, and the interval held 7 of 11 observations, which is 64% and not
+    # a half. Naming a fraction is a claim about a quantile convention. Naming
+    # the COUNT is a fact about these rows, it is what the rest of this page
+    # already does, and it cannot be wrong by a rounding rule.
+    q1, q3 = e[n // 4], e[n - 1 - n // 4]
+    return {"n": n, "low": sum(x < 0 for x in e), "high": sum(x > 0 for x in e),
+            "exact": sum(x == 0 for x in e), "q1": q1, "q3": q3,
+            "inside": sum(q1 <= x <= q3 for x in e),
+            "min": e[0], "max": e[-1],
+            "within": {k: sum(abs(x) <= k for x in e) for k in (3, 4, 5, 6)}}
+
+
+def render_band(data):
+    """How to read the tour's number against its own record."""
+    b = tour_error_spread(data)
+    if not b:
+        return ""
+    pending = (data["benchmarks"].get("tour") or {}).get("corn") is None
+    when = data["tour"].get("final_expected_label") or "at the end of tour week"
+    lead = (f'When the tour\'s national number lands {esc(when)}, here is what its own '
+            f'record says to expect of it.' if pending else
+            'Set the number above against what the tour\'s own record says to expect of it.')
+    # The widest band that still holds in all but one year is the useful one to
+    # name; picked by the data, not by taste.
+    k = next((k for k in (3, 4, 5, 6) if b["within"][k] >= b["n"] - 1), 6)
+    return (f'<p class="ct-band">{lead} Across {b["n"]} tours it has finished '
+            f'<b>below</b> the crop that actually came in {b["low"]} times and above it '
+            f'{b["high"]}'
+            + (f', landing on it exactly {"once" if b["exact"] == 1 else str(b["exact"]) + " times"}'
+               if b["exact"] else "")
+            + f'. {b["inside"]} of those {b["n"]} misses fall between '
+            f'{b["q1"]:+.1f} and {b["q3"]:+.1f} bushels, the widest between '
+            f'{b["min"]:+.1f} and {b["max"]:+.1f}, and it has landed within {k} bushels of '
+            f'the final crop in {b["within"][k]} of {b["n"]} years. '
+            f'That is a count of what happened, not a forecast: it is not a reason to '
+            f'adjust the tour\'s figure, and adding its average lean back on tested worse '
+            f'than leaving it alone.</p>')
 
 
 def render_benchnote(data):
@@ -977,7 +1051,32 @@ def render_benchnote(data):
         e = b.get(key)
         if not e or not e.get("note"):
             continue
-        bits.append(f'<p class="ct-bn"><b>{esc(e["label"])}.</b> {esc(e["note"])}</p>')
+        note = e.get("note")
+        if key == "tour" and e.get("corn") is not None:
+            # SAME BUG, SECOND WRITER. render_bench refuses a tile caption that
+            # still promises the number will post once it has posted -- and
+            # this function printed the identical promise from `note`, on the
+            # same page, unguarded. A guard on one of two renderers of the same
+            # string is not a guard.
+            note = e.get("note_posted") or note
+            assert "Posts" not in note, (
+                "benchmarks.tour.note still promises the number will post, and it has "
+                "posted. Set benchmarks.tour.note_posted.")
+        bits.append(f'<p class="ct-bn"><b>{esc(e["label"])}.</b> {esc(note)}</p>')
+    # THE SUBHEAD SAYS "and what each one is worth". When the combine card was
+    # withdrawn this paragraph went with it, and the promise was left standing
+    # with nothing under it. The tour's record and USDA August's are computed
+    # from the same history table and belong here whether or not we have a
+    # number of our own on the board.
+    st_ = stats(data["history"])
+    if st_ and st_.get("n"):
+        bits.append(
+            f'<p class="ct-bn"><b>What they have been worth.</b> Over the {st_["n"]} tours '
+            f'from {st_["first"]} to {st_["last"]}, Pro Farmer\'s final corn number missed '
+            f'the crop that actually came in by {st_["tour_mae"]:.1f} bushels on average and '
+            f'USDA\'s August forecast missed by {st_["usda_mae"]:.1f}. USDA came closer in '
+            f'{max(st_["usda_wins"], st_["tour_wins"])} of those {st_["n"]} years. The full '
+            f'table is below.</p>')
     if cst and b.get("combine"):
         # Which record to quote follows which number the tile is showing.
         k = "post" if combine_now(data).get("post") is not None else "pre"
@@ -1263,6 +1362,7 @@ SECTIONS = {
         # exactly until the next run of this script, and then vanishes without
         # failing anything -- which is how it vanished the first time.
         "body": ('<!-- CT:record --><!-- /CT:record -->'
+                 '<!-- CT:band --><!-- /CT:band -->'
                  '<!-- CT:history --><!-- /CT:history -->'
                  '<p class="ct-legend"><!-- CT:soy --><!-- /CT:soy --></p>'
                  '<!-- CT:soytbl --><!-- /CT:soytbl -->'
@@ -1482,19 +1582,29 @@ def check_combine_beats_usda(data):
     k = "post" if combine_now(data).get("post") is not None else "pre"
     fn = POST if k == "post" else PRE
     margin = cst["usda"]["mae"] - cst[k]["mae"]
-    assert margin > 0.5, (
+    assert rows, "a combine card is on the board with no scoreable history to justify it"
+    assert margin > COMBINE_MIN_MARGIN, (
         f"the tour-combine number beats USDA August alone by only {margin:.2f} bu "
         f"({cst[k]['mae']:.2f} vs {cst['usda']['mae']:.2f}). That is not an edge a "
         "reader should act on. Do not publish it.")
-    worst = None
+    worst, worst_year = None, None
     for i in range(len(rows)):
         rr = rows[:i] + rows[i + 1:]
         m = (sum(abs(USDAONLY(r) - r["final"]) for r in rr)
              - sum(abs(fn(r) - r["final"]) for r in rr)) / len(rr)
-        worst = m if worst is None else min(worst, m)
-    assert worst > 0, (
-        f"dropping a single year turns the tour-combine edge over USDA alone into "
-        f"{worst:+.2f} bu. One year is carrying the entire result. Do not publish it.")
+        if worst is None or m < worst:
+            worst, worst_year = m, rows[i]["year"]
+    # SAME BAR. This said `worst > 0` while the full-sample test said `> 0.5`,
+    # which let a combination through on a leave-one-out margin of +0.107 -- a
+    # margin the very next line of this file calls "not an edge a reader should
+    # act on". Measured 2026-08-20: POST cleared the full-sample bar at +0.700
+    # and its worst leave-one-out was +0.107, dropping 2020. That is precisely
+    # the shape this guard exists to catch, and two different thresholds is how
+    # it caught nothing.
+    assert worst > COMBINE_MIN_MARGIN, (
+        f"dropping {worst_year} turns the tour-combine edge over USDA alone into "
+        f"{worst:+.2f} bu, under the {COMBINE_MIN_MARGIN} bu bar the full sample has to "
+        "clear. One year is carrying the result. Do not publish it.")
 
 
 def validate(data):
@@ -1877,17 +1987,67 @@ def selftest():
 
         # THE LESSON, AS A TEST. Reinstating the card must fail while the
         # numbers say what they say.
-        back = json.loads(json.dumps(live))
-        back["benchmarks"]["combine"] = {"label": "AGSIST tour-combine", "locked": cn["pre"]}
-        try:
-            check_combine_beats_usda(back)
-            ck("reinstating the withdrawn card is refused", False)
-        except AssertionError as e:
-            ck("reinstating the withdrawn card is refused",
-               "beats USDA August alone by only" in str(e) or "carrying the entire result" in str(e))
+        # PINNED TO A FIXTURE, NOT TO THE LIVE FILE. This test used to read
+        # whatever state data/crop-tour.json happened to be in, so the branch
+        # it exercised flipped from PRE to POST the moment Pro Farmer's number
+        # was entered -- on Friday evening, the single most important edit of
+        # tour week. A test that changes what it tests when the data changes is
+        # not a regression test. Both branches are now exercised, always.
+        def _reinstated(tour_corn):
+            back = json.loads(json.dumps(live))
+            back["benchmarks"]["tour"]["corn"] = tour_corn
+            back["benchmarks"]["combine"] = {"label": "AGSIST tour-combine"}
+            try:
+                check_combine_beats_usda(back)
+                return None
+            except AssertionError as exc:
+                return str(exc)
+
+        pre_msg = _reinstated(None)
+        ck("reinstating the withdrawn card (pre) is refused", pre_msg is not None)
+        ck("and it is refused for beating USDA too narrowly",
+           bool(pre_msg) and "beats USDA August alone by only" in pre_msg)
+        # POST clears the full-sample bar at +0.70 and dies on leave-one-out at
+        # +0.107, which is the whole reason both tests carry the same threshold.
+        post_msg = _reinstated(179.0)
+        ck("reinstating it after the tour publishes is refused too", post_msg is not None)
+        ck("and POST is refused on leave-one-out, not on the full sample",
+           bool(post_msg) and "carrying the result" in post_msg)
+        ck("both guards use the same bar",
+           f"{COMBINE_MIN_MARGIN}" in (post_msg or "") or COMBINE_MIN_MARGIN == 0.5)
         ck("USDA alone is scored, not just Pro Farmer", "usda" in cs and cs["usda"]["mae"] > 0)
         ck("and it is the benchmark that actually bites",
            cs["usda"]["mae"] < cs["pf"]["mae"])
+
+    print()
+    print("the tour's error is described as a spread, and never as a correction")
+    if live:
+        sp = tour_error_spread(live)
+        band = render_band(live)
+        ck("every tour is accounted for",
+           sp["low"] + sp["high"] + sp["exact"] == sp["n"])
+        ck("the sentence leaves no year for the reader to work out",
+           str(sp["low"]) in band and str(sp["high"]) in band
+           and (sp["exact"] == 0 or "exactly" in band))
+        ck("the interval endpoints are ordered", sp["q1"] <= sp["q3"])
+        ck("the interval reports the count it actually contains",
+           sp["inside"] == sum(sp["q1"] <= (r["tour_corn"] - r["usda_final_corn"]) <= sp["q3"]
+                               for r in live["history"]))
+        ck("no fraction is named that a rounding rule could falsify",
+           "middle half" not in band and "%" not in band)
+        ck("the widest range contains the counted interval",
+           sp["min"] <= sp["q1"] and sp["q3"] <= sp["max"])
+        ck("the named coverage really is what the record shows",
+           any(f'within {k} bushels of the final crop in {sp["within"][k]} of {sp["n"]}' in band
+               for k in (3, 4, 5, 6)))
+        # THE LINE THAT MUST NOT MOVE. Debiasing the tour scored WORSE out of
+        # sample, so the page must never read as advice to adjust the number.
+        ck("the band refuses to be a correction",
+           "not a reason to adjust" in band and "tested worse" in band)
+        ck("no probability language anywhere in it",
+           not any(w in band.lower() for w in
+                   ("probability", "likely", "confidence interval", "% chance", "expect a")))
+        ck("it says count, not forecast", "not a forecast" in band)
 
     print()
     print("per-state context is computed, not typed")
@@ -2103,6 +2263,7 @@ def main():
     baked = splice(baked, "history", render_history(st))
     baked = splice(baked, "soy", render_soy(st))
     baked = splice(baked, "soytbl", render_soy_table(st))
+    baked = splice(baked, "band", render_band(data))
     baked = splice(baked, "benchnote", render_benchnote(data))
     baked = splice(baked, "sources", render_sources(data))
     # The FAQ answer restates the headline statistics. It used to be hand-typed

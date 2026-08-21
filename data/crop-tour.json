@@ -151,7 +151,8 @@
       "label": "AGSIST nowcast",
       "as_of": "2026-08-11",
       "note": "Our model's number locked Aug 11, the day before the August WASDE (supersedes the retired July model's 189.4/56.2 — the swap is on the record in git history). USDA printed lower on both. Locked calls stay on the record whether they look good or not.",
-      "short": "Our ratings model, locked Aug 11 before the August WASDE."
+      "short": "Our ratings model, locked Aug 11 before the August WASDE.",
+      "correction": "2026-08-20: the Aug 11 lock was computed against data/nass/corn-yield-us.json at a vintage that carried USDA SEPTEMBER IN-SEASON FORECASTS in place of final yields (2010 read 162.5 against a true final of 152.6; 2020 read 178.5 against 171.4; 2017 read 169.9 against 176.6). The file was corrected on 2026-08-16. On the corrected series the same model reads 182.6 with an 80% band of 7.3, against the locked 183.6 and a band of 4.8 — so the stated uncertainty was also far too tight. The locked call stays on the record; this note is the correction, not a silent edit. Awaiting Sig's decision on whether the tile republishes."
     },
     "tour": {
       "corn": null,
@@ -159,7 +160,8 @@
       "label": "Pro Farmer tour",
       "note": "Posts Friday evening, Aug 21.",
       "short": "Posts Friday evening, Aug 21.",
-      "short_posted": "Pro Farmer's 2026 national estimate."
+      "short_posted": "Pro Farmer's 2026 national estimate.",
+      "note_posted": "Pro Farmer's 2026 national corn estimate, published at the end of tour week."
     },
     "_withdrawn_combine": {
       "withdrawn": "2026-08-20",
@@ -222,7 +224,7 @@
       "tour_soy_prod": 4.362,
       "usda_aug_soy_prod": 4.42,
       "usda_final_soy_prod": 4.14,
-      "note": "The August 10 derecho flattened millions of Iowa acres the day before USDA's data cutoff. The tour ran but scouts reported from the road instead of meeting up at night. The tour ran in modified form that year, so 2020 is not measuring quite the same exercise as the others."
+      "note": "The August 10 derecho flattened millions of Iowa acres. USDA's August forecast, approved August 12, was based on conditions as of August 1 and so contains none of that damage — the report says so on its face. The tour walked those fields the following week, though it ran in modified form that year, with scouts reporting from the road instead of meeting up at night, so 2020 is not measuring quite the same exercise as the others. It is the year the two numbers diverge most, and it carries more weight than any other year in comparisons drawn from this table."
     },
     {
       "year": 2021,
@@ -271,7 +273,7 @@
       "note": "A government shutdown killed the October reports, so this crop year rests on one fewer USDA forecast round than the others."
     }
   ],
-  "history_note": "Final yield means the number USDA published the following January in its annual summary. USDA quietly revises some of those later — 2019 through 2022 corn each moved by a tenth to half a bushel in later editions. This page uses the January figure for every year so the comparison stays consistent, and the revisions are too small to change the picture.",
+  "history_note": "Final yield means the number USDA published the following January in its annual summary. USDA quietly revises some of those later — 2019 through 2022 corn each moved by between a tenth and six-tenths of a bushel in later editions (2020 is the biggest, 172.0 down to 171.4). This page uses the January figure for every year so the comparison stays consistent, and the revisions are too small to change the picture.",
   "sources": [
     {
       "name": "Pro Farmer national estimates (2021-2025)",
