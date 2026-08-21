@@ -766,11 +766,32 @@ def render_progress(prog, data, ph, today):
         against = (f'{prog["prior_year"]}' if prog["prior_year"] else "their last tour figure")
         moved = []
         if prog["up"]:
-            moved.append(f'{prog["up"]} above {against}')
+            moved.append(f'{prog["up"]} above')
         if prog["down"]:
             moved.append(f'{prog["down"]} below')
         if prog["flat"]:
             moved.append(f'{prog["flat"]} level')
+        # THE BASIS RIDES THE FIRST CLAUSE, WHICHEVER ONE THAT IS.
+        #
+        # It used to be welded to the `up` clause: f'{up} above {against}'.
+        # That reads correctly for a mixed night -- "1 above 2025, 5 below" --
+        # and it silently drops the year the moment nothing is above, because
+        # the clause carrying it never runs. On 2026-08-20, with all seven
+        # state corn figures in and every one of them below 2025, this printed:
+        #
+        #     7 of 7 state corn figures are in - 7 below.
+        #
+        # Below WHAT. The count is right and the sentence lost its object; it
+        # reads as "7 listed further down the page". And it was not a Thursday
+        # problem -- Ohio, South Dakota, Indiana, Nebraska and Illinois were
+        # all down too, so the comparison year was missing from this line every
+        # night of the 2026 tour, which is the only week anyone reads it.
+        #
+        # The selftest below covers up==0 and down==0 explicitly, because the
+        # old test picked a 1-up-1-down night, and in that night the bug cannot
+        # fire.
+        if moved:
+            moved[0] += f' {against}'
         if moved and prog["compared"] == prog["posted"]:
             tail = " &mdash; " + ", ".join(moved) + "."
         elif moved:
@@ -1576,6 +1597,33 @@ def selftest():
        "average" not in txt.lower() or "not a national yield" in txt)
     ck("the summary says these are not a national yield",
        "not a national yield" in txt)
+    ck("a mixed night still names its basis once",
+       "1 above their last tour figure, 1 below." in txt)
+
+    # THE ALL-ONE-DIRECTION NIGHTS. The case above is 1 up and 1 down, and the
+    # comparison year cannot go missing there because the `up` clause always
+    # runs. Every state being down is not an exotic input -- it is what the
+    # whole 2026 tour did.
+    def _prog_txt(rows):
+        dd = {"nights": [{"date": "2026-08-17", "label": "n", "posted": True,
+                          "states": [{"code": c, "name": c, "corn": v, "pods": 1,
+                                      "_prior_corn": pv, "_prior_year": 2025}
+                                     for c, v, pv in rows]}]}
+        return render_progress(tour_progress(dd), dd, "during", date(2026, 8, 17))
+
+    alldown = _prog_txt([("OH", 180.0, 185.0), ("SD", 149.0, 174.0), ("IL", 184.0, 199.0)])
+    ck("all-below still names the year", "3 below 2025." in alldown)
+    ck("all-below claims nothing above", "above" not in alldown)
+    allup = _prog_txt([("OH", 190.0, 185.0), ("SD", 180.0, 174.0)])
+    ck("all-above still names the year", "2 above 2025." in allup)
+    allflat = _prog_txt([("OH", 185.0, 185.0)])
+    ck("all-level still names the year", "1 level 2025." in allflat)
+    # THE INVARIANT, stated once: any summary that reports a move must also
+    # say what the move is against. Which clause carries it does not matter --
+    # that it is there at all is the thing the old code got wrong.
+    ck("every summary that reports a move names its basis",
+       all(("2025" in t or "their last tour figure" in t)
+           for t in (alldown, allup, allflat, txt)))
 
     print()
     print("per-state context is computed, not typed")
