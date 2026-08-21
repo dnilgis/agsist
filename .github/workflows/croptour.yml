@@ -88,6 +88,15 @@ jobs:
       - name: Check bake_seo
         run: python3 scripts/bake_seo.py --selftest
 
+      # THE BAKER'S OWN SUITE HAS NEVER GATED A PUBLISH. This job ran
+      # bake_seo's tests -- a different script's -- and then baked. Every check
+      # in build_croptour.py, including the ones written to stop a withdrawn
+      # forecast being quietly reinstated, ran only when somebody remembered to
+      # type --selftest on their own machine. Found by audit 2026-08-20.
+      # Offline, about a second, same as the gate above it.
+      - name: Check the baker
+        run: python3 scripts/build_croptour.py --selftest
+
       # Order matters. The baker writes crop-tour.html between its CT: markers,
       # and the SEO pass stamps the head of the page it just wrote.
       - name: Bake the page
