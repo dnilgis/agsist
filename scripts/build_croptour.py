@@ -837,6 +837,7 @@ def combine_rows(data):
 PRE = lambda r: (r["USDA"] + r["PERSIST"]) / 2
 POST = lambda r: (r["PF"] + r["USDA"] + r["PERSIST"]) / 3
 PFONLY = lambda r: r["PF"]
+USDAONLY = lambda r: r["USDA"]   # the free, public number any reader already has
 
 
 def combine_stats(data):
@@ -850,7 +851,25 @@ def combine_stats(data):
     if not rows:
         return None
     out = {"n": len(rows), "first": rows[0]["year"], "last": rows[-1]["year"]}
-    for key, fn in (("pre", PRE), ("post", POST), ("pf", PFONLY)):
+    # WHY THE CORRELATION IS ON THE PAGE. Pro Farmer publishes about nine days
+    # AFTER the August WASDE and has plainly read it, so the two outside
+    # forecasts are not independent draws. Their errors track closely, which
+    # means averaging them buys much less than averaging two independent views
+    # would, and most of the diversification actually comes from persistence.
+    # Saying "we average three forecasts" without saying this would overstate
+    # what the method is doing. Derived, so it moves when the table moves.
+    ePF = [r["PF"] - r["final"] for r in rows]
+    eUS = [r["USDA"] - r["final"] for r in rows]
+    mp, mu = sum(ePF) / len(ePF), sum(eUS) / len(eUS)
+    cov = sum((a - mp) * (b - mu) for a, b in zip(ePF, eUS))
+    den = (sum((a - mp) ** 2 for a in ePF) * sum((b - mu) ** 2 for b in eUS)) ** 0.5
+    out["corr_pf_usda"] = cov / den if den else None
+    # USDAONLY IS NOT OPTIONAL. A combination was published on 2026-08-20 that
+    # had only ever been scored against Pro Farmer -- the weakest of the three
+    # signals -- and it turned out not to beat simply quoting USDA's free
+    # August forecast. Scoring against the strongest available alternative is
+    # now part of the statistic, not a check someone might remember to run.
+    for key, fn in (("pre", PRE), ("post", POST), ("pf", PFONLY), ("usda", USDAONLY)):
         e = [fn(r) - r["final"] for r in rows]
         out[key] = {
             "mae": sum(map(abs, e)) / len(e),
@@ -883,7 +902,12 @@ def combine_now(data):
 
 
 def render_bench(data, ph="during"):
-    """The three published numbers.
+    """The forecast tiles: one label, one figure, one short line each.
+
+    The prose that used to live in every tile now renders once, beneath the
+    grid, in render_benchnote. Five paragraphs of explanation stacked into a
+    row of cards made them wildly unequal in height and read as generated
+    filler; the numbers are the point and they were the smallest thing there.
 
     In phase `stale` the tour card stops printing its hand-typed "Posts Friday
     evening, Aug 21." — that string is a promise about a date that has passed,
@@ -893,42 +917,80 @@ def render_bench(data, ph="during"):
     """
     b = data["benchmarks"]
     order = [("usda", "usda"), ("agsist", "agsist"), ("tour", "tour"),
-             ("combine_pre", "combine"), ("combine_post", "combine")]
-    cst, cnow = combine_stats(data), combine_now(data)
+             ("combine", "combine")]
+    cnow = combine_now(data)
     out = []
     for key, cls in order:
         e = b.get(key)
         if e is None:
             continue
         corn = e.get("corn")
-        # OUR TWO NUMBERS ARE COMPUTED, NOT READ. There is no `corn` in either
-        # entry to go stale, because there is nowhere to type one.
-        if key == "combine_pre":
-            corn = cnow.get("pre")
-        elif key == "combine_post":
-            corn = cnow.get("post")
-        val = f'{corn:.1f}' if corn is not None else "&mdash;"
-        sub = e.get("note", "")
-        # And the accuracy claim beside them is derived from the same history
-        # table the tour's own record is scored on. Flagging the sample size is
-        # part of the claim, not a footnote to it: ten years is ten years.
-        if key in ("combine_pre", "combine_post") and cst:
-            k = "pre" if key == "combine_pre" else "post"
-            sub += (f' Over {cst["first"]}-{cst["last"]} it missed the final crop by '
-                    f'{cst[k]["mae"]:.1f} bu on average against the tour\'s '
-                    f'{cst["pf"]["mae"]:.1f}, and was closer in {cst[k]["ahead"]} of '
-                    f'{cst["n"]} of those years. {cst["n"]} years cannot tell a real '
-                    f'edge from a lucky one.')
+        sub = e.get("short") or ""
+        if key == "combine":
+            # ONE CARD, TWO STATES. pre and post are the same call before and
+            # after Pro Farmer publishes, not two rival numbers. Shown as two
+            # cards they orphaned a fifth tile onto its own row and printed
+            # 183.6 twice, which read as corroboration when it is one method.
+            # OUR NUMBER IS COMPUTED, NOT READ. There is no `corn` to go stale
+            # in this entry because there is nowhere to type one.
+            post = cnow.get("post")
+            corn = post if post is not None else cnow.get("pre")
+            sub = e.get("short_post" if post is not None else "short_pre") or sub
+        if key == "tour" and corn is not None:
+            # A PROMISE THAT THE NUMBER WILL POST, PRINTED BESIDE THE NUMBER.
+            # "Posts Friday evening, Aug 21." is correct right up until the
+            # figure lands, and then it is furniture that contradicts the tile
+            # it sits under. The data file cannot know when that flips, so the
+            # renderer does -- and refuses if the copy was not updated.
+            sub = e.get("short_posted") or ""
+            assert "Posts" not in sub, (
+                'benchmarks.tour still promises the number will post, and it has posted. '
+                'Set benchmarks.tour.short_posted.')
         if key == "tour" and corn is None and ph == "stale":
             sub = ("Not recorded here yet. Pro Farmer's number was expected "
                    + (data["tour"].get("final_expected_label") or "at the end of tour week")
                    + "; this page has not been updated with it.")
+        val = f'{corn:.1f}' if corn is not None else "&mdash;"
         asof = f' &middot; {short(e["as_of"])}' if e.get("as_of") else ""
         out.append(f'<div class="ct-bench ct-bench--{cls}">'
                    f'<div class="ct-b-lbl">{esc(e["label"])}{asof}</div>'
                    f'<div class="ct-b-val">{val}<span class="ct-b-u">bu</span></div>'
                    f'<div class="ct-b-note">{esc(sub)}</div></div>')
     return "".join(out)
+
+
+def render_benchnote(data):
+    """What the tiles mean and what they are worth — said once, under the grid.
+
+    Two things go here and nowhere else: the per-source detail that used to
+    bloat each card, and the accuracy record of our own combination, which is
+    DERIVED from the same history table the tour's own record is scored on.
+
+    The sample-size caveat is in the same sentence as the claim, not appended
+    after it, because ten observations is the size of the evidence and not a
+    footnote to it.
+    """
+    b = data["benchmarks"]
+    cst = combine_stats(data)
+    bits = []
+    for key in ("usda", "agsist", "tour", "combine"):
+        e = b.get(key)
+        if not e or not e.get("note"):
+            continue
+        bits.append(f'<p class="ct-bn"><b>{esc(e["label"])}.</b> {esc(e["note"])}</p>')
+    if cst and b.get("combine"):
+        # Which record to quote follows which number the tile is showing.
+        k = "post" if combine_now(data).get("post") is not None else "pre"
+        bits.append(
+            f'<p class="ct-bn"><b>What that is worth.</b> Run back over '
+            f'{cst["first"]}&ndash;{cst["last"]}, this average missed the crop that actually '
+            f'came in by {cst[k]["mae"]:.1f} bushels a year against the tour\'s own '
+            f'{cst["pf"]["mae"]:.1f}, and landed closer in {cst[k]["ahead"]} of those '
+            f'{cst["n"]} years. Ten years is not enough to tell a real edge from a lucky '
+            f'one, and the two outside forecasts are not independent of each other &mdash; '
+            f'their errors track at {cst["corr_pf_usda"]:.2f}, so most of what the averaging '
+            f'buys comes from putting last year\'s actual crop back on the table.</p>')
+    return "".join(bits)
 
 
 # Widest a bar may reach, as a percentage of the cell measured from the centre
@@ -1170,10 +1232,19 @@ SECTIONS = {
     },
     "bench": {
         "id": "three-numbers",
-        "h2": "Three numbers on the table",
-        "sub": ("USDA's forecast, our own model's number, and the tour's &mdash; all "
-                "published before anyone knows the answer."),
-        "body": '<div class="ct-benches"><!-- CT:bench --><!-- /CT:bench --></div>',
+        # NO COUNT IN THE HEADING. It read "Three numbers on the table" while
+        # the board rendered five, because the copy was hand-typed and the
+        # cards are data. A heading that names a quantity is a claim about the
+        # data and has to be derived or dropped; this one is dropped.
+        "h2": "The numbers on the table",
+        "sub": ("Every forecast for this year's corn crop, published before anyone knows "
+                "the answer &mdash; and what each one is worth."),
+        # The card is a NUMBER, not an essay. One label, one figure, one short
+        # line. Everything that used to make the cards different heights and
+        # read like a wall of generated text now lives in one place under the
+        # grid, said once instead of five times.
+        "body": ('<div class="ct-benches"><!-- CT:bench --><!-- /CT:bench --></div>'
+                 '<!-- CT:benchnote --><!-- /CT:benchnote -->'),
     },
     "history": {
         "id": "accuracy-record",
@@ -1369,7 +1440,7 @@ def _validate_districts(s):
 def check_locked_combine(data):
     """A locked call that recomputes to a different number is not locked.
 
-    combine_pre is published as a call made on a date, before Pro Farmer's
+    combine.locked is published as a call made on a date, before Pro Farmer's
     number existed. Both its inputs -- USDA's August forecast and last year's
     final -- are fixed quantities, so the recomputation must return exactly
     what was locked, forever. If it ever does not, something upstream moved
@@ -1377,13 +1448,53 @@ def check_locked_combine(data):
     the build and look, NOT to quietly republish a different number under the
     old lock date.
     """
-    e = (data.get("benchmarks") or {}).get("combine_pre")
+    e = (data.get("benchmarks") or {}).get("combine")
     if not e or e.get("locked") is None:
         return
     now = combine_now(data).get("pre")
     assert now is not None and abs(now - e["locked"]) < 1e-9, (
-        f'combine_pre was locked at {e["locked"]} and now recomputes to {now}. '
+        f'the tour-combine call was locked at {e["locked"]} and now recomputes to {now}. '
         "An input moved. Do not republish under the old lock date.")
+
+
+def check_combine_beats_usda(data):
+    """A combination must beat the number a reader already has for free.
+
+    THIS IS THE 2026-08-20 LESSON, WIRED SHUT. A tour-combine card was
+    published having been benchmarked only against Pro Farmer's number. It
+    beat Pro Farmer comfortably and was 0.43 bu better than USDA's August
+    forecast alone, with a 95% CI of [-1.21, +2.32] -- and it lost to USDA in
+    6 of the 10 years. Drop the 2020 derecho and it was WORSE than USDA.
+
+    Beating the weakest available benchmark is not an edge, it is a choice of
+    opponent. If a combination card is ever reinstated, this refuses the build
+    unless it beats USDA-August-alone on the same window by a margin big
+    enough to be worth a reader's attention, AND still beats it with the
+    single most influential year removed -- because one tail event carrying
+    the entire result is exactly what happened the first time.
+    """
+    if not (data.get("benchmarks") or {}).get("combine"):
+        return
+    rows = combine_rows(data)
+    cst = combine_stats(data)
+    if not cst or not rows:
+        return
+    k = "post" if combine_now(data).get("post") is not None else "pre"
+    fn = POST if k == "post" else PRE
+    margin = cst["usda"]["mae"] - cst[k]["mae"]
+    assert margin > 0.5, (
+        f"the tour-combine number beats USDA August alone by only {margin:.2f} bu "
+        f"({cst[k]['mae']:.2f} vs {cst['usda']['mae']:.2f}). That is not an edge a "
+        "reader should act on. Do not publish it.")
+    worst = None
+    for i in range(len(rows)):
+        rr = rows[:i] + rows[i + 1:]
+        m = (sum(abs(USDAONLY(r) - r["final"]) for r in rr)
+             - sum(abs(fn(r) - r["final"]) for r in rr)) / len(rr)
+        worst = m if worst is None else min(worst, m)
+    assert worst > 0, (
+        f"dropping a single year turns the tour-combine edge over USDA alone into "
+        f"{worst:+.2f} bu. One year is carrying the entire result. Do not publish it.")
 
 
 def validate(data):
@@ -1752,47 +1863,31 @@ def selftest():
            cn["persist"] == max((r for r in live["history"]
                                  if r.get("usda_final_corn") is not None),
                                 key=lambda r: r["year"])["usda_final_corn"])
-        ck("the pre call is the flat mean of USDA August and last year's final",
-           abs(cn["pre"] - (live["benchmarks"]["usda"]["corn"] + cn["persist"]) / 2) < 1e-9)
-        ck("the locked call still recomputes to what was locked",
-           abs(cn["pre"] - live["benchmarks"]["combine_pre"]["locked"]) < 1e-9)
 
-        # THE WHOLE POINT. If either combination stops beating Pro Farmer on
-        # the record, the page is making a claim its own table refutes, and
-        # this is where that gets caught -- not by a reader.
-        ck("the pre combination still beats the tour on the record",
-           cs["pre"]["mae"] < cs["pf"]["mae"])
-        ck("the post combination still beats the tour on the record",
-           cs["post"]["mae"] < cs["pf"]["mae"])
-        ck("the post combination is the more accurate of the two",
-           cs["post"]["mae"] < cs["pre"]["mae"])
+        # WITHDRAWN 2026-08-20, AND THE REASON STAYS IN THE FILE. The card was
+        # scored only against Pro Farmer and did not beat USDA August alone.
+        ck("the tour-combine card is not on the board",
+           "combine" not in live["benchmarks"])
+        ck("why it was withdrawn is still on the record",
+           "USDA August alone" in live["benchmarks"]["_withdrawn_combine"]["why"])
+        ck("no board tile mentions a combination",
+           "combine" not in render_bench(live))
+        ck("no accuracy claim renders without a card to attach it to",
+           "What that is worth" not in render_benchnote(live))
 
-        # No tour number yet means no post number. A mean of three things
-        # where one of them is missing is not a mean of three things.
-        ck("no post number while the tour has not published",
-           (cn["post"] is None) == (live["benchmarks"]["tour"].get("corn") is None))
-        withpf = json.loads(json.dumps(live))
-        withpf["benchmarks"]["tour"]["corn"] = 179.0
-        got = combine_now(withpf)["post"]
-        ck("the post number appears the moment the tour publishes",
-           abs(got - (179.0 + live["benchmarks"]["usda"]["corn"] + cn["persist"]) / 3) < 1e-9)
-
-        # A locked call whose inputs moved must stop the build.
-        moved = json.loads(json.dumps(live))
-        moved["benchmarks"]["usda"]["corn"] = 179.0
+        # THE LESSON, AS A TEST. Reinstating the card must fail while the
+        # numbers say what they say.
+        back = json.loads(json.dumps(live))
+        back["benchmarks"]["combine"] = {"label": "AGSIST tour-combine", "locked": cn["pre"]}
         try:
-            check_locked_combine(moved)
-            ck("a moved input breaks the lock", False)
+            check_combine_beats_usda(back)
+            ck("reinstating the withdrawn card is refused", False)
         except AssertionError as e:
-            ck("a moved input breaks the lock", "locked at" in str(e))
-
-        # And the rendered cards must carry no number this module did not derive.
-        card = render_bench(live)
-        for want in (f'{cs["pre"]["mae"]:.1f}', f'{cs["post"]["mae"]:.1f}',
-                     f'{cs["pf"]["mae"]:.1f}', str(cs["n"])):
-            ck(f"card states derived figure {want}", want in card)
-        ck("the cards flag the sample size rather than burying it",
-           "cannot tell a real edge from a lucky one" in card)
+            ck("reinstating the withdrawn card is refused",
+               "beats USDA August alone by only" in str(e) or "carrying the entire result" in str(e))
+        ck("USDA alone is scored, not just Pro Farmer", "usda" in cs and cs["usda"]["mae"] > 0)
+        ck("and it is the benchmark that actually bites",
+           cs["usda"]["mae"] < cs["pf"]["mae"])
 
     print()
     print("per-state context is computed, not typed")
@@ -1988,6 +2083,7 @@ def main():
     data = json.loads(json_path.read_text(encoding="utf-8"))
     validate(data)
     check_locked_combine(data)
+    check_combine_beats_usda(data)
     st = stats(data["history"])
     sst = state_stats(data)
     attach_state_context(data, sst)
@@ -2007,6 +2103,7 @@ def main():
     baked = splice(baked, "history", render_history(st))
     baked = splice(baked, "soy", render_soy(st))
     baked = splice(baked, "soytbl", render_soy_table(st))
+    baked = splice(baked, "benchnote", render_benchnote(data))
     baked = splice(baked, "sources", render_sources(data))
     # The FAQ answer restates the headline statistics. It used to be hand-typed
     # in the head, which meant adding a tour year would leave a stale claim in

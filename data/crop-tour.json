@@ -78,9 +78,33 @@
           "districts": {
             "prior_year": 2025,
             "rows": [
-              {"code": "IA 1", "corn": 191.80, "pods": 1269.26, "samples": 70, "prior_corn": 197.89, "prior_pods": 1279.25, "prior_samples": 85},
-              {"code": "IA 4", "corn": 189.73, "pods": 1273.77, "samples": 69, "prior_corn": 207.25, "prior_pods": 1376.15, "prior_samples": 71},
-              {"code": "IA 7", "corn": 190.59, "pods": 1557.54, "samples": 46, "prior_corn": 195.03, "prior_pods": 1562.54, "prior_samples": 39}
+              {
+                "code": "IA 1",
+                "corn": 191.8,
+                "pods": 1269.26,
+                "samples": 70,
+                "prior_corn": 197.89,
+                "prior_pods": 1279.25,
+                "prior_samples": 85
+              },
+              {
+                "code": "IA 4",
+                "corn": 189.73,
+                "pods": 1273.77,
+                "samples": 69,
+                "prior_corn": 207.25,
+                "prior_pods": 1376.15,
+                "prior_samples": 71
+              },
+              {
+                "code": "IA 7",
+                "corn": 190.59,
+                "pods": 1557.54,
+                "samples": 46,
+                "prior_corn": 195.03,
+                "prior_pods": 1562.54,
+                "prior_samples": 39
+              }
             ]
           },
           "corn": null,
@@ -118,31 +142,29 @@
       "soy_yield": 52.7,
       "label": "USDA, August WASDE",
       "as_of": "2026-08-12",
-      "note": "USDA's first survey-based 2026 estimate, printed Aug 12: corn 180.7 bu/acre (down 2.3 from July), soybeans 52.7 (down 0.3). This is the number the tour's scouts will be checking against in the field."
+      "note": "USDA's first survey-based 2026 estimate, printed Aug 12: corn 180.7 bu/acre (down 2.3 from July), soybeans 52.7 (down 0.3). This is the number the tour's scouts will be checking against in the field.",
+      "short": "USDA's first survey-based 2026 estimate."
     },
     "agsist": {
       "corn": 183.6,
       "soy_yield": 53.8,
       "label": "AGSIST nowcast",
       "as_of": "2026-08-11",
-      "note": "Our model's number locked Aug 11, the day before the August WASDE (supersedes the retired July model's 189.4/56.2 — the swap is on the record in git history). USDA printed lower on both. Locked calls stay on the record whether they look good or not."
-    },
-    "combine_pre": {
-      "locked": 183.6,
-      "locked_note": "Locked 2026-08-20, before Pro Farmer published. The build recomputes this from usda.corn and the newest final in the history table and REFUSES TO BAKE if it no longer matches, so a locked call cannot drift.",
-      "label": "AGSIST tour-combine, pre",
-      "as_of": "2026-08-20",
-      "note": "The flat mean of USDA's August forecast and last year's final yield. No tour input at all, so it can be locked before Pro Farmer publishes. This year it lands on the same figure as our ratings nowcast; the two methods share no inputs and that is coincidence, not corroboration."
-    },
-    "combine_post": {
-      "label": "AGSIST tour-combine, post",
-      "note": "The flat mean of Pro Farmer's number, USDA's August forecast and last year's final. The most accurate of anything we have tested, and it cannot exist until Pro Farmer publishes, so it is a correction of their number rather than a forecast ahead of it."
+      "note": "Our model's number locked Aug 11, the day before the August WASDE (supersedes the retired July model's 189.4/56.2 — the swap is on the record in git history). USDA printed lower on both. Locked calls stay on the record whether they look good or not.",
+      "short": "Our ratings model, locked Aug 11 before the August WASDE."
     },
     "tour": {
       "corn": null,
       "soy_prod": null,
       "label": "Pro Farmer tour",
-      "note": "Posts Friday evening, Aug 21."
+      "note": "Posts Friday evening, Aug 21.",
+      "short": "Posts Friday evening, Aug 21.",
+      "short_posted": "Pro Farmer's 2026 national estimate."
+    },
+    "_withdrawn_combine": {
+      "withdrawn": "2026-08-20",
+      "was": 183.6,
+      "why": "Pulled before it stood a full evening. It was scored only against Pro Farmer's number, the weakest of the three signals, and never against USDA's August forecast alone. Against USDA alone it is 0.43 bu better with a 95% CI of [-1.21, +2.32], it is the worse of the two in 6 of 10 years, and dropping the 2020 derecho flips it to WORSE than USDA (2.94 vs 2.66). The apparent edge is one tail event. And 2026 is the minority regime where persistence sits above USDA (3 of 10 prior years), in which the method was worse than USDA alone and read high by +1.10 — while the tour found all seven states below last year. Do not reinstate without a benchmark against USDA August alone on the same window."
     }
   },
   "history": [
