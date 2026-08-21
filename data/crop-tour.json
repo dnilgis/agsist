@@ -127,6 +127,17 @@
       "as_of": "2026-08-11",
       "note": "Our model's number locked Aug 11, the day before the August WASDE (supersedes the retired July model's 189.4/56.2 — the swap is on the record in git history). USDA printed lower on both. Locked calls stay on the record whether they look good or not."
     },
+    "combine_pre": {
+      "locked": 183.6,
+      "locked_note": "Locked 2026-08-20, before Pro Farmer published. The build recomputes this from usda.corn and the newest final in the history table and REFUSES TO BAKE if it no longer matches, so a locked call cannot drift.",
+      "label": "AGSIST tour-combine, pre",
+      "as_of": "2026-08-20",
+      "note": "The flat mean of USDA's August forecast and last year's final yield. No tour input at all, so it can be locked before Pro Farmer publishes. This year it lands on the same figure as our ratings nowcast; the two methods share no inputs and that is coincidence, not corroboration."
+    },
+    "combine_post": {
+      "label": "AGSIST tour-combine, post",
+      "note": "The flat mean of Pro Farmer's number, USDA's August forecast and last year's final. The most accurate of anything we have tested, and it cannot exist until Pro Farmer publishes, so it is a correction of their number rather than a forecast ahead of it."
+    },
     "tour": {
       "corn": null,
       "soy_prod": null,

@@ -806,6 +806,82 @@ def render_progress(prog, data, ph, today):
     return f'<p class="ct-lead ct-progress">{body}</p>'
 
 
+def combine_rows(data):
+    """Every scoreable transition, with each signal's value for that year.
+
+    persistence is LAST YEAR'S FINAL, so the first history row cannot be
+    scored -- there is nothing before it to persist from.
+    """
+    h = {r["year"]: r for r in data["history"]}
+    out = []
+    for y in sorted(h)[1:]:
+        prev = h.get(y - 1)
+        if not prev or prev.get("usda_final_corn") is None:
+            continue
+        r = h[y]
+        if None in (r.get("tour_corn"), r.get("usda_aug_corn"), r.get("usda_final_corn")):
+            continue
+        out.append({"year": y, "final": r["usda_final_corn"], "PF": r["tour_corn"],
+                    "USDA": r["usda_aug_corn"], "PERSIST": prev["usda_final_corn"]})
+    return out
+
+
+#   PRE  needs nothing from Pro Farmer, so it can be locked before they publish.
+#   POST is the more accurate one and cannot exist until their number lands.
+# Both are FLAT MEANS. Nothing is fitted, nothing is estimated from the sample,
+# so there is no window to pick and nothing to overfit -- which is exactly why
+# every scoreable year can be scored. Every weighted and debiased variant tried
+# scored WORSE out of sample than these, because a bias estimated on five or
+# six years is mostly noise. Do not add a tuning knob here without a backtest
+# that survives leave-one-out.
+PRE = lambda r: (r["USDA"] + r["PERSIST"]) / 2
+POST = lambda r: (r["PF"] + r["USDA"] + r["PERSIST"]) / 3
+PFONLY = lambda r: r["PF"]
+
+
+def combine_stats(data):
+    """The accuracy record of both combinations against Pro Farmer's own.
+
+    DERIVED. Every figure the page prints about how well these do is computed
+    here from the same history table the tour's own record comes from. None of
+    it is typed into the data file, so adding a tour year moves every claim.
+    """
+    rows = combine_rows(data)
+    if not rows:
+        return None
+    out = {"n": len(rows), "first": rows[0]["year"], "last": rows[-1]["year"]}
+    for key, fn in (("pre", PRE), ("post", POST), ("pf", PFONLY)):
+        e = [fn(r) - r["final"] for r in rows]
+        out[key] = {
+            "mae": sum(map(abs, e)) / len(e),
+            "bias": sum(e) / len(e),
+            "worst": max(map(abs, e)),
+            "ahead": sum(abs(fn(r) - r["final"]) < abs(r["PF"] - r["final"]) for r in rows),
+        }
+    return out
+
+
+def combine_now(data):
+    """This year's two numbers, from this year's inputs.
+
+    persistence is the newest final in the history table. It is READ, not
+    typed, so it cannot drift away from the table the record is scored on.
+    """
+    h = data["history"]
+    finals = [r for r in h if r.get("usda_final_corn") is not None]
+    if not finals:
+        return {}
+    persist = max(finals, key=lambda r: r["year"])["usda_final_corn"]
+    usda = (data["benchmarks"].get("usda") or {}).get("corn")
+    tour = (data["benchmarks"].get("tour") or {}).get("corn")
+    if usda is None:
+        return {}
+    r = {"USDA": usda, "PERSIST": persist, "PF": tour}
+    out = {"pre": PRE(r), "persist": persist}
+    out["post"] = POST(r) if tour is not None else None
+    return out
+
+
 def render_bench(data, ph="during"):
     """The three published numbers.
 
@@ -816,13 +892,33 @@ def render_bench(data, ph="during"):
     wrong about the calendar.
     """
     b = data["benchmarks"]
-    order = [("usda", "usda"), ("agsist", "agsist"), ("tour", "tour")]
+    order = [("usda", "usda"), ("agsist", "agsist"), ("tour", "tour"),
+             ("combine_pre", "combine"), ("combine_post", "combine")]
+    cst, cnow = combine_stats(data), combine_now(data)
     out = []
     for key, cls in order:
-        e = b[key]
+        e = b.get(key)
+        if e is None:
+            continue
         corn = e.get("corn")
+        # OUR TWO NUMBERS ARE COMPUTED, NOT READ. There is no `corn` in either
+        # entry to go stale, because there is nowhere to type one.
+        if key == "combine_pre":
+            corn = cnow.get("pre")
+        elif key == "combine_post":
+            corn = cnow.get("post")
         val = f'{corn:.1f}' if corn is not None else "&mdash;"
         sub = e.get("note", "")
+        # And the accuracy claim beside them is derived from the same history
+        # table the tour's own record is scored on. Flagging the sample size is
+        # part of the claim, not a footnote to it: ten years is ten years.
+        if key in ("combine_pre", "combine_post") and cst:
+            k = "pre" if key == "combine_pre" else "post"
+            sub += (f' Over {cst["first"]}-{cst["last"]} it missed the final crop by '
+                    f'{cst[k]["mae"]:.1f} bu on average against the tour\'s '
+                    f'{cst["pf"]["mae"]:.1f}, and was closer in {cst[k]["ahead"]} of '
+                    f'{cst["n"]} of those years. {cst["n"]} years cannot tell a real '
+                    f'edge from a lucky one.')
         if key == "tour" and corn is None and ph == "stale":
             sub = ("Not recorded here yet. Pro Farmer's number was expected "
                    + (data["tour"].get("final_expected_label") or "at the end of tour week")
@@ -1270,6 +1366,26 @@ def _validate_districts(s):
                 f"{s['code']} {code}: carries a prior figure with no districts.prior_year"
 
 
+def check_locked_combine(data):
+    """A locked call that recomputes to a different number is not locked.
+
+    combine_pre is published as a call made on a date, before Pro Farmer's
+    number existed. Both its inputs -- USDA's August forecast and last year's
+    final -- are fixed quantities, so the recomputation must return exactly
+    what was locked, forever. If it ever does not, something upstream moved
+    (a revised final, an edited benchmark) and the honest response is to fail
+    the build and look, NOT to quietly republish a different number under the
+    old lock date.
+    """
+    e = (data.get("benchmarks") or {}).get("combine_pre")
+    if not e or e.get("locked") is None:
+        return
+    now = combine_now(data).get("pre")
+    assert now is not None and abs(now - e["locked"]) < 1e-9, (
+        f'combine_pre was locked at {e["locked"]} and now recomputes to {now}. '
+        "An input moved. Do not republish under the old lock date.")
+
+
 def validate(data):
     h = data["history"]
     assert h, "history empty"
@@ -1626,6 +1742,59 @@ def selftest():
            for t in (alldown, allup, allflat, txt)))
 
     print()
+    print("the tour-combine numbers are computed, and the lock cannot drift")
+    _jp = Path(__file__).resolve().parent.parent / "data" / "crop-tour.json"
+    live = json.loads(_jp.read_text(encoding="utf-8")) if _jp.exists() else None
+    if live:
+        cs, cn = combine_stats(live), combine_now(live)
+        ck("every scoreable transition is scored", cs["n"] == len(live["history"]) - 1)
+        ck("persistence is read from the newest final, not typed",
+           cn["persist"] == max((r for r in live["history"]
+                                 if r.get("usda_final_corn") is not None),
+                                key=lambda r: r["year"])["usda_final_corn"])
+        ck("the pre call is the flat mean of USDA August and last year's final",
+           abs(cn["pre"] - (live["benchmarks"]["usda"]["corn"] + cn["persist"]) / 2) < 1e-9)
+        ck("the locked call still recomputes to what was locked",
+           abs(cn["pre"] - live["benchmarks"]["combine_pre"]["locked"]) < 1e-9)
+
+        # THE WHOLE POINT. If either combination stops beating Pro Farmer on
+        # the record, the page is making a claim its own table refutes, and
+        # this is where that gets caught -- not by a reader.
+        ck("the pre combination still beats the tour on the record",
+           cs["pre"]["mae"] < cs["pf"]["mae"])
+        ck("the post combination still beats the tour on the record",
+           cs["post"]["mae"] < cs["pf"]["mae"])
+        ck("the post combination is the more accurate of the two",
+           cs["post"]["mae"] < cs["pre"]["mae"])
+
+        # No tour number yet means no post number. A mean of three things
+        # where one of them is missing is not a mean of three things.
+        ck("no post number while the tour has not published",
+           (cn["post"] is None) == (live["benchmarks"]["tour"].get("corn") is None))
+        withpf = json.loads(json.dumps(live))
+        withpf["benchmarks"]["tour"]["corn"] = 179.0
+        got = combine_now(withpf)["post"]
+        ck("the post number appears the moment the tour publishes",
+           abs(got - (179.0 + live["benchmarks"]["usda"]["corn"] + cn["persist"]) / 3) < 1e-9)
+
+        # A locked call whose inputs moved must stop the build.
+        moved = json.loads(json.dumps(live))
+        moved["benchmarks"]["usda"]["corn"] = 179.0
+        try:
+            check_locked_combine(moved)
+            ck("a moved input breaks the lock", False)
+        except AssertionError as e:
+            ck("a moved input breaks the lock", "locked at" in str(e))
+
+        # And the rendered cards must carry no number this module did not derive.
+        card = render_bench(live)
+        for want in (f'{cs["pre"]["mae"]:.1f}', f'{cs["post"]["mae"]:.1f}',
+                     f'{cs["pf"]["mae"]:.1f}', str(cs["n"])):
+            ck(f"card states derived figure {want}", want in card)
+        ck("the cards flag the sample size rather than burying it",
+           "cannot tell a real edge from a lucky one" in card)
+
+    print()
     print("per-state context is computed, not typed")
     sd = {"state_history": {"OH": [{"year": 2023, "corn": 183.94, "pods": 1252.93},
                                    {"year": 2024, "corn": 183.29, "pods": 1229.93},
@@ -1818,6 +1987,7 @@ def main():
 
     data = json.loads(json_path.read_text(encoding="utf-8"))
     validate(data)
+    check_locked_combine(data)
     st = stats(data["history"])
     sst = state_stats(data)
     attach_state_context(data, sst)
