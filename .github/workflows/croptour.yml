@@ -34,6 +34,10 @@ on:
       - "data/crop-tour.json"
       - "scripts/build_croptour.py"
       - "scripts/bake_seo.py"
+      # THE NOWCAST TILE IS READ FROM THE MODEL'S OWN FILE, so when the model
+      # reruns, this page is out of date until something rebakes it. Without
+      # this path the tile lagged the model by nine days. Found 2026-08-20.
+      - "data/yield-nowcast.json"
       # crop-tour.html is a HAND-MAINTAINED TEMPLATE. Editing it in the browser
       # -- which is how the template gets edited -- used not to trigger this
       # job, so a pasted template sat unbaked until the 09:20 UTC cron the next
