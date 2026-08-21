@@ -1104,6 +1104,8 @@ def render_benchnote(data):
                 + (f' with an 80% band of {nc["band80"]:.1f}' if nc.get("band80") else "")
                 + (f', week ending {short(nc["week_ending"])}' if nc.get("week_ending") else "")
                 + (f', model {nc["model"]}' if nc.get("model") else "") + ".")
+            if e.get("correction"):
+                note += f' {e["correction"]}'
         if key == "tour" and e.get("corn") is not None:
             # SAME BUG, SECOND WRITER. render_bench refuses a tile caption that
             # still promises the number will post once it has posted -- and
@@ -2117,8 +2119,13 @@ def selftest():
         check_nowcast_single_writer(blind)
         ck("a missing model file falls back rather than failing the bake",
            "ct-bench--agsist" in render_bench(blind))
-        ck("the correction stays on the record",
-           "SEPTEMBER IN-SEASON FORECASTS" in live["benchmarks"]["agsist"]["correction"])
+        # Stated once, briefly, and it does reach the page -- a correction kept
+        # only in the data file is not a correction anyone can see.
+        corr = live["benchmarks"]["agsist"]["correction"]
+        ck("the correction names the superseded figure and its cause",
+           "183.6" in corr and "in-season forecasts" in corr)
+        ck("it is a note, not an essay", len(corr) < 260)
+        ck("and it renders on the page", corr in render_benchnote(dict(live, _nowcast=nc)))
 
     print()
     print("the tour's error is described as a spread, and never as a correction")

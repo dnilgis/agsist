@@ -155,9 +155,17 @@ def grade(today=None, croptour_path=CROPTOUR, ledger=None):
 def save(led):
     led["updated"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
     g = [c for c in led["calls"] if c["outcome"] is not None]
+    # A CALL COMPUTED ON A CORRUPTED INPUT SERIES IS STILL A CALL. It stays in
+    # the ledger, it stays GRADED, and it keeps counting against the record --
+    # voiding a loss because the inputs were bad is the one move a scorecard
+    # exists to prevent. What it also gets is a flag, so anyone reading the
+    # record can see WHICH results rest on a known-bad input rather than having
+    # to take the bare tally on trust.
+    flagged = [c for c in led["calls"] if c.get("input_defect")]
     led["record"] = {"graded": len(g),
                      "correct": sum(1 for c in g if c["outcome"] == "correct"),
-                     "pending": sum(1 for c in led["calls"] if c["outcome"] is None)}
+                     "pending": sum(1 for c in led["calls"] if c["outcome"] is None),
+                     "on_defective_input": len(flagged)}
     LEDGER.write_text(json.dumps(led, indent=1, ensure_ascii=False))
     print(f"[nowcast-dir] ledger: {led['record']}")
 

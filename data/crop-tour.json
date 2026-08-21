@@ -147,8 +147,8 @@
     },
     "agsist": {
       "label": "AGSIST nowcast",
-      "note": "Our ratings-only nowcast of the US final yield, read straight from the model's own output file so this page and the model cannot disagree. The band is the 80th percentile of leave-one-year-out backtest errors at this week of the season, recomputed every run rather than assumed.",
-      "correction": "2026-08-20: this tile published 183.6 'locked Aug 11' for nine days after the model had moved on. The Aug 11 run was computed against a data/nass/corn-yield-us.json vintage that carried USDA SEPTEMBER IN-SEASON FORECASTS in place of final yields — 2010 read 162.5 against a true final of 152.6, 2020 read 178.5 against 171.4, 2017 read 169.9 against 176.6. That file was corrected on 2026-08-16 and the model was rerun on 2026-08-18. The old figure also carried an 80% band of 4.8 where the corrected series gives 7.3, so the stated uncertainty was far too tight as well. The number now shown is the current run; the superseded 183.6 is on the record here and in git history.",
+      "note": "Our ratings-only nowcast of the US final yield, read straight from the model's own output file. The band is the 80th percentile of leave-one-year-out backtest errors at this week of the season, recomputed every run.",
+      "correction": "Corrected 2026-08-20. An earlier 183.6, locked Aug 11, was computed on a history file that carried in-season forecasts in place of final yields. Superseded; the source defect is fixed.",
       "source": "data/yield-nowcast.json"
     },
     "tour": {

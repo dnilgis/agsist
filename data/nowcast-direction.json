@@ -19,7 +19,8 @@
    "usda_after": 180.7,
    "actual": "down",
    "outcome": "incorrect",
-   "graded_on": "2026-08-12"
+   "graded_on": "2026-08-12",
+   "input_defect": "Computed on a history file that carried in-season forecasts as finals; corrected 2026-08-16. Graded as called, not voided."
   },
   {
    "wasde": "2026-08-12",
@@ -34,7 +35,8 @@
    "usda_after": 52.7,
    "actual": "down",
    "outcome": "incorrect",
-   "graded_on": "2026-08-12"
+   "graded_on": "2026-08-12",
+   "input_defect": "Computed on a history file that carried in-season forecasts as finals; corrected 2026-08-16. Graded as called, not voided."
   },
   {
    "wasde": "2026-09-11",
@@ -71,6 +73,7 @@
  "record": {
   "graded": 2,
   "correct": 0,
-  "pending": 2
+  "pending": 2,
+  "on_defective_input": 2
  }
 }

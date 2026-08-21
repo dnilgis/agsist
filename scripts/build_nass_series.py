@@ -54,6 +54,14 @@ def fetch(key, short, agg, year_ge, _opener=None):
     params = {
         "key": key, "short_desc": short, "agg_level_desc": agg,
         "source_desc": "SURVEY", "format": "JSON", "year__GE": str(year_ge),
+        # PIN THE PERIOD AT THE QUERY, not in a filter afterwards. This is the
+        # fix fetch_cond_yield.py has carried since July ("reference_period_desc
+        # ='YEAR' pins out the AUG..NOV FORECAST contamination"). This file
+        # filtered on the substring instead and let the August 2026 forecast
+        # through on ten of eleven datasets -- and inconsistently, which is the
+        # tell: wheat-yield.json excluded it while wheat-yield-us.json did not,
+        # from the same run, because the label differs by aggregation.
+        "reference_period_desc": "YEAR",
     }
     url = API + "?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"User-Agent": "AGSIST/1.0 (+https://agsist.com)"})
@@ -70,6 +78,28 @@ def fetch(key, short, agg, year_ge, _opener=None):
     return []
 
 IN_SEASON_SKIPPED = {"n": 0}
+
+SCOPE = ("final estimates only; USDA in-season forecasts excluded "
+         "(reference_period_desc pinned to YEAR at the query, and any year at or "
+         "after the current calendar year dropped -- a crop year is not final "
+         "until NASS's January annual summary)")
+
+
+def assert_no_in_season(payload, key):
+    """Refuse to WRITE a file whose scope string would be a lie.
+
+    The old scope string was a constant stamped onto the payload whatever the
+    rows contained, so for nine days ten of these files declared "in-season
+    forecasts excluded" while carrying the August 2026 forecast. A claim that
+    cannot fail is not a claim. This one fails the build.
+    """
+    year_now = datetime.date.today().year
+    if payload["type"] == "national":
+        bad = sorted(y for y in payload["values"] if int(y) >= year_now)
+    else:
+        bad = sorted({y for r in payload["rows"] for y in r["values"] if int(y) >= year_now})
+    assert not bad, (f"{key}: in-season year(s) {bad} survived into a payload whose scope "
+                     f"says forecasts are excluded. Do not publish it.")
 
 
 def is_forecast(row):
@@ -88,7 +118,18 @@ def is_forecast(row):
     its own surfaces (fast-facts state cards, the nowcast, crop tour), so the
     honest choice here is to leave the forecast out and say so in the payload.
     """
-    return "FORECAST" in str(row.get("reference_period_desc", "")).upper()
+    if "FORECAST" in str(row.get("reference_period_desc", "")).upper():
+        return True
+    # BELT, BECAUSE THE LABEL CANNOT BE TRUSTED ALONE. A crop year's yield is
+    # not final until NASS publishes its annual summary the following January,
+    # so any row for the current calendar year or later is an in-season
+    # forecast whatever it calls itself. The substring test above was the only
+    # guard for a year and it let 2026 through; this one does not depend on
+    # NASS's wording staying put.
+    try:
+        return int(str(row.get("year", "")).strip()) >= datetime.date.today().year
+    except ValueError:
+        return True
 
 
 def shape_state(rows, div, dig):
@@ -137,14 +178,15 @@ def build_one(key, spec, key_api, outdir):
             print(f"  - {key}: no data, skipped"); return False
         payload = {"type": "state", "updated": now, "unit": spec["unit"],
                    "source": "USDA NASS Quick Stats", "years": years, "rows": out_rows,
-                   "scope": "final estimates only; USDA in-season forecasts excluded"}
+                   "scope": SCOPE, "newest_year": max(years) if years else None}
     else:
         years, vals = shape_national(rows, spec["div"], spec["dig"])
         if not years:
             print(f"  - {key}: no data, skipped"); return False
         payload = {"type": "national", "updated": now, "unit": spec["unit"],
                    "source": "USDA NASS Quick Stats", "years": years, "values": vals,
-                   "scope": "final estimates only; USDA in-season forecasts excluded"}
+                   "scope": SCOPE, "newest_year": max(years) if years else None}
+    assert_no_in_season(payload, key)
     path = os.path.join(outdir, key + ".json")
     with open(path, "w") as fh:
         json.dump(payload, fh, separators=(",", ":"))
@@ -207,6 +249,38 @@ def selftest():
     # a row with no reference_period_desc at all is still treated as final
     y2, r2 = shape_state([{"state_name": "IOWA", "year": "2024", "Value": "200"}], 1, 1)
     assert y2 == [2024], y2
+
+    # ---- 2026-08-20: the label was never enough -------------------------
+    # The substring test above catches a row that SAYS "AUG FORECAST". It let
+    # 2026 through on ten of eleven datasets anyway, because the label is not
+    # applied consistently across aggregations -- wheat-yield.json excluded it
+    # while wheat-yield-us.json did not, from the same run. A current-year row
+    # is an in-season forecast whatever it is called.
+    yr = datetime.date.today().year
+    assert is_forecast({"year": str(yr), "reference_period_desc": "YEAR"}), \
+        "a current-year row labelled YEAR is still an in-season forecast"
+    assert is_forecast({"year": str(yr + 1), "reference_period_desc": "YEAR"})
+    assert not is_forecast({"year": str(yr - 1), "reference_period_desc": "YEAR"})
+    assert is_forecast({"year": "", "reference_period_desc": "YEAR"}), \
+        "an unparseable year must be refused, not admitted"
+    ys, rs = shape_state([{"state_name": "IOWA", "year": str(yr - 1), "Value": "211"},
+                          {"state_name": "IOWA", "year": str(yr), "Value": "216"}], 1, 1)
+    assert ys == [yr - 1], ys
+    assert str(yr) not in rs[0]["values"], rs
+
+    # ---- the scope string must not be able to lie -----------------------
+    # It used to be a constant stamped on whatever the rows contained, so for
+    # nine days ten files declared "forecasts excluded" while carrying one.
+    good = {"type": "national", "values": {str(yr - 1): 186.5}, "scope": SCOPE}
+    assert_no_in_season(good, "good")
+    for bad in ({"type": "national", "values": {str(yr): 180.7}},
+                {"type": "state", "rows": [{"state": "Iowa", "values": {str(yr): 216.0}}]}):
+        try:
+            assert_no_in_season(bad, "bad")
+            raise SystemExit("assert_no_in_season did not refuse an in-season year")
+        except AssertionError as e:
+            assert "Do not publish it" in str(e), e
+    assert "YEAR" in SCOPE and "January" in SCOPE, "the scope must state the rule it applied"
 
     print("selftest OK — shaping, suppression, US-exclusion, conversion, "
           "in-season forecast exclusion")
