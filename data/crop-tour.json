@@ -146,13 +146,10 @@
       "short": "USDA's first survey-based 2026 estimate."
     },
     "agsist": {
-      "corn": 183.6,
-      "soy_yield": 53.8,
       "label": "AGSIST nowcast",
-      "as_of": "2026-08-11",
-      "note": "Our model's number locked Aug 11, the day before the August WASDE (supersedes the retired July model's 189.4/56.2 — the swap is on the record in git history). USDA printed lower on both. Locked calls stay on the record whether they look good or not.",
-      "short": "Our ratings model, locked Aug 11 before the August WASDE.",
-      "correction": "2026-08-20: the Aug 11 lock was computed against data/nass/corn-yield-us.json at a vintage that carried USDA SEPTEMBER IN-SEASON FORECASTS in place of final yields (2010 read 162.5 against a true final of 152.6; 2020 read 178.5 against 171.4; 2017 read 169.9 against 176.6). The file was corrected on 2026-08-16. On the corrected series the same model reads 182.6 with an 80% band of 7.3, against the locked 183.6 and a band of 4.8 — so the stated uncertainty was also far too tight. The locked call stays on the record; this note is the correction, not a silent edit. Awaiting Sig's decision on whether the tile republishes."
+      "note": "Our ratings-only nowcast of the US final yield, read straight from the model's own output file so this page and the model cannot disagree. The band is the 80th percentile of leave-one-year-out backtest errors at this week of the season, recomputed every run rather than assumed.",
+      "correction": "2026-08-20: this tile published 183.6 'locked Aug 11' for nine days after the model had moved on. The Aug 11 run was computed against a data/nass/corn-yield-us.json vintage that carried USDA SEPTEMBER IN-SEASON FORECASTS in place of final yields — 2010 read 162.5 against a true final of 152.6, 2020 read 178.5 against 171.4, 2017 read 169.9 against 176.6. That file was corrected on 2026-08-16 and the model was rerun on 2026-08-18. The old figure also carried an 80% band of 4.8 where the corrected series gives 7.3, so the stated uncertainty was far too tight as well. The number now shown is the current run; the superseded 183.6 is on the record here and in git history.",
+      "source": "data/yield-nowcast.json"
     },
     "tour": {
       "corn": null,

@@ -907,6 +907,40 @@ def combine_now(data):
     return out
 
 
+def nowcast_now(json_path=None):
+    """The AGSIST nowcast, READ from the model's own output file.
+
+    ONE WRITER. This number used to be hand-typed into crop-tour.json beside a
+    date, which made crop-tour.json a second writer for a figure that
+    build_yield_nowcast.py owns. On 2026-08-20 that cost exactly what a second
+    writer always costs: the tile published 183.6 "locked Aug 11" for nine days
+    after the model's own file had moved to 182.6, because the Aug 11 run had
+    been computed against a corn-yield-us.json vintage carrying USDA SEPTEMBER
+    IN-SEASON FORECASTS where final yields belonged (2010 read 162.5 against a
+    true 152.6; 2020 read 178.5 against 171.4). Nobody retyped it, because
+    retyping is a thing a person has to remember.
+
+    Now there is nothing to retype. The figure has one home and this reads it.
+
+    A NICETY, NOT A DEPENDENCY. If the file is missing or will not parse, this
+    returns None and the tile falls back to whatever the manifest carries. The
+    crop tour page must still bake when an unrelated model's output is being
+    rewritten.
+    """
+    base = Path(json_path).resolve().parent if json_path else \
+        Path(__file__).resolve().parent.parent / "data"
+    try:
+        d = json.loads((base / "yield-nowcast.json").read_text(encoding="utf-8"))
+        c = (d.get("crops") or {}).get("corn") or {}
+        if c.get("nowcast") is None:
+            return None
+        return {"corn": c["nowcast"], "band80": c.get("band80"),
+                "week_ending": c.get("week_ending"), "model": d.get("model"),
+                "generated": d.get("generated")}
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
 def render_bench(data, ph="during"):
     """The forecast tiles: one label, one figure, one short line each.
 
@@ -925,6 +959,7 @@ def render_bench(data, ph="during"):
     order = [("usda", "usda"), ("agsist", "agsist"), ("tour", "tour"),
              ("combine", "combine")]
     cnow = combine_now(data)
+    nc = data.get("_nowcast")
     out = []
     for key, cls in order:
         e = b.get(key)
@@ -932,6 +967,12 @@ def render_bench(data, ph="during"):
             continue
         corn = e.get("corn")
         sub = e.get("short") or ""
+        if key == "agsist" and nc:
+            # READ, NEVER RETYPED. See nowcast_now().
+            corn = nc["corn"]
+            band = f' \u00b7 80% band \u00b1{nc["band80"]:.1f}' if nc.get("band80") else ""
+            sub = (f'Ratings model, week ending {short(nc["week_ending"])}'
+                   if nc.get("week_ending") else "Ratings model") + band
         if key == "combine":
             # ONE CARD, TWO STATES. pre and post are the same call before and
             # after Pro Farmer publishes, not two rival numbers. Shown as two
@@ -960,6 +1001,10 @@ def render_bench(data, ph="during"):
                    + "; this page has not been updated with it.")
         val = f'{corn:.1f}' if corn is not None else "&mdash;"
         asof = f' &middot; {short(e["as_of"])}' if e.get("as_of") else ""
+        if key == "agsist" and nc and nc.get("week_ending"):
+            # The label carried "Aug 11" while the figure had moved on. A date
+            # printed beside a number has to be that number's date.
+            asof = ""
         out.append(f'<div class="ct-bench ct-bench--{cls}">'
                    f'<div class="ct-b-lbl">{esc(e["label"])}{asof}</div>'
                    f'<div class="ct-b-val">{val}<span class="ct-b-u">bu</span></div>'
@@ -1052,6 +1097,13 @@ def render_benchnote(data):
         if not e or not e.get("note"):
             continue
         note = e.get("note")
+        if key == "agsist" and data.get("_nowcast"):
+            nc = data["_nowcast"]
+            note = (f'{note} ' if note else "") + (
+                f'Current run: {nc["corn"]:.1f} bu'
+                + (f' with an 80% band of {nc["band80"]:.1f}' if nc.get("band80") else "")
+                + (f', week ending {short(nc["week_ending"])}' if nc.get("week_ending") else "")
+                + (f', model {nc["model"]}' if nc.get("model") else "") + ".")
         if key == "tour" and e.get("corn") is not None:
             # SAME BUG, SECOND WRITER. render_bench refuses a tile caption that
             # still promises the number will post once it has posted -- and
@@ -1537,6 +1589,23 @@ def _validate_districts(s):
                 f"{s['code']} {code}: carries a prior figure with no districts.prior_year"
 
 
+def check_nowcast_single_writer(data):
+    """crop-tour.json may not carry its own copy of the nowcast figure.
+
+    The tile reads data/yield-nowcast.json. A `corn` left behind in
+    benchmarks.agsist is a second writer for the same number, and a second
+    writer is how 183.6 stayed on this page for nine days after the model had
+    moved to 182.6. If the reader is working, the manifest must be silent.
+    """
+    e = (data.get("benchmarks") or {}).get("agsist") or {}
+    if data.get("_nowcast") is None:
+        return          # reader unavailable; the manifest is the fallback
+    assert e.get("corn") is None and e.get("soy_yield") is None, (
+        "benchmarks.agsist still carries a hand-typed corn/soy_yield while "
+        "data/yield-nowcast.json is readable. Delete them -- the model's own file "
+        "is the one writer for that figure.")
+
+
 def check_locked_combine(data):
     """A locked call that recomputes to a different number is not locked.
 
@@ -2020,6 +2089,38 @@ def selftest():
            cs["usda"]["mae"] < cs["pf"]["mae"])
 
     print()
+    print("the nowcast has one writer, and it is not this file")
+    if live:
+        nc = nowcast_now(Path(__file__).resolve().parent.parent / "data" / "crop-tour.json")
+        ck("the model's own file is readable", nc is not None and nc["corn"] is not None)
+        ck("the manifest carries no rival copy of the figure",
+           live["benchmarks"]["agsist"].get("corn") is None
+           and live["benchmarks"]["agsist"].get("soy_yield") is None)
+        shown = render_bench(dict(live, _nowcast=nc))
+        ck("the tile prints the model's number",
+           f'{nc["corn"]:.1f}' in shown)
+        ck("and no longer prints the superseded one", ">183.6<" not in shown)
+        ck("the band travels with the number",
+           nc.get("band80") is None or f'{nc["band80"]:.1f}' in shown)
+        ck("no stale lock date is printed beside a moved figure",
+           "Aug 11" not in shown)
+        # A retyped figure must stop the build.
+        rival = json.loads(json.dumps(live)); rival["_nowcast"] = nc
+        rival["benchmarks"]["agsist"]["corn"] = 183.6
+        try:
+            check_nowcast_single_writer(rival)
+            ck("a retyped nowcast figure is refused", False)
+        except AssertionError as exc:
+            ck("a retyped nowcast figure is refused", "one writer" in str(exc))
+        # And the page must still bake when the model's file is unavailable.
+        blind = dict(live, _nowcast=None)
+        check_nowcast_single_writer(blind)
+        ck("a missing model file falls back rather than failing the bake",
+           "ct-bench--agsist" in render_bench(blind))
+        ck("the correction stays on the record",
+           "SEPTEMBER IN-SEASON FORECASTS" in live["benchmarks"]["agsist"]["correction"])
+
+    print()
     print("the tour's error is described as a spread, and never as a correction")
     if live:
         sp = tour_error_spread(live)
@@ -2241,6 +2342,10 @@ def main():
     json_path = Path(args.json) if args.json else root / "data" / "crop-tour.json"
 
     data = json.loads(json_path.read_text(encoding="utf-8"))
+    # Read the nowcast from the model's own file before anything renders, and
+    # refuse if the manifest still carries a rival copy of the same figure.
+    data["_nowcast"] = nowcast_now(json_path)
+    check_nowcast_single_writer(data)
     validate(data)
     check_locked_combine(data)
     check_combine_beats_usda(data)
