@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-19",
+  "updated": "2026-08-21",
   "tour": {
     "year": 2026,
     "start": "2026-08-17",
@@ -91,22 +91,22 @@
     {
       "date": "2026-08-20",
       "label": "Thursday night",
-      "posted": false,
+      "posted": true,
       "expected_label": "about 8pm Central",
       "states": [
         {
           "code": "IA",
           "name": "Iowa",
           "leg": "both",
-          "corn": null,
-          "pods": null
+          "corn": 193.98,
+          "pods": 1362.93
         },
         {
           "code": "MN",
           "name": "Minnesota",
           "leg": "both",
-          "corn": null,
-          "pods": null
+          "corn": 199.01,
+          "pods": 1257.8
         }
       ]
     }
